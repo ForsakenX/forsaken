@@ -1,0 +1,6 @@
+REGEDIT4
+
+[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\ProjectX.exe]
+"Path"="C:\\ProjectX"
+@="C:\\ProjectX\\ProjectX.exe"
+
