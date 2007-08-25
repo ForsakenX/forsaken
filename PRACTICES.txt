@@ -1,0 +1,94 @@
+
+
+Binary Files:
+
+  Any files which are not text files cannot be merged by svn.
+
+  For example if your editing an image but another artists commits
+  changes there is no way to merge the images.  Hence one person
+  has to lose their work!
+
+  To stop someone from changing a file while your working on it you
+  need to lock the file.
+
+  Please read the next section.
+
+
+svn:needs-lock
+
+  If you add a file that is none text to the repository it's your
+  duty to add the svn:needs-lock attribute to the file.
+
+  The svn:needs-lock proptery causes a file to be read-only.  Thus
+  when someone tries to edit a file most programs normally warn
+  the user that the file is read-only.
+
+  *This is to remind the user they need to lock the file*
+
+  This way you never forget to remind others that your working on 
+  a file.
+
+  Example:
+
+    svn propset svn:needs-lock 1 path/to/some/file.ico
+
+  Please read the next section.
+
+
+Locking Files:
+
+  To stop others from editing a file while you are working on it you
+  need to lock the file.
+
+  Example:
+
+    svn lock ProjectX.ico
+    svn commit -m 'Adding highlights to ProjectX.ico, should take 20 minutes'
+
+  The lock should disapear the next time you commit changes.
+
+  If attempting to lock the file while someone else has then you will
+  get an error like the following.
+
+    "svn: Lock request failed: 423 Locked"
+
+  To get information on why you can use 'svn info' on the file url:
+
+    "svn info svn://example.com/some/file.ico"
+
+  You will see the comment left by the person who has locked the file.
+
+  Please read the next section.
+
+
+Uneeded Locks:
+
+  Sometimes it is apparent that a person forget to unlock a file.  For example,
+  the lock comment might say, "Touching up should take few moments".  But the 
+  lock data was from two days ago.
+
+  Any user has the ability to remove a lock that any other user has set.  Locks
+  are not an ego trip, they are simply to communicate between cooperating devel-
+  opers.
+
+  You have the choice to unlock and then relock the file or you can take over
+  the lock in one step.
+
+  Examples:
+
+    Unlocking: (unlock --force)
+
+      svn unlock http://svn.example.com/repos/project/raisin.jpg
+      svn: Unlock request failed: 403 Forbidden (http://svn.example.com)
+
+      svn unlock --force http://svn.example.com/repos/project/raisin.jpg
+      'raisin.jpg' unlocked.
+
+    Stealing: (lock --force)
+
+      svn lock raisin.jpg
+      svn: Lock request failed: 423 Locked (http://svn.example.com)
+
+      svn lock --force raisin.jpg
+      'raisin.jpg' locked by user 'sally'.
+
