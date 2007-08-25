@@ -5653,19 +5653,39 @@ ReleaseView(void)
 		
 		FreeTxtFile();
 		FreeMsgFile();
-		ReleaseDDSurf(lpDDSOne);
-		ReleaseDDSurf(lpDDSTwo);
-		lpDDSTwo = NULL;
-		lpDDSOne = NULL;
 
+//
+// start: wine debug
+//   Error: "Tried to free NULL DDSurf in .\Oct.c"
+//   Added the various != NULL checks...
+//
 
-		if( !DrawPanel && DrawSimplePanel )
-		{
-			ReleaseDDSurf(lpDDSThree);
-		   
-			ReleaseDDSurf(lpDDSFour);
-		}
+    if( lpDDSOne != NULL ) {
+      ReleaseDDSurf(lpDDSOne);
+		  lpDDSOne = NULL;
+    }
+ 
+    if( lpDDSTwo != NULL ) {
+		  ReleaseDDSurf(lpDDSTwo);
+		  lpDDSTwo = NULL;
+    }
+
+    if( !DrawPanel && DrawSimplePanel ) {
+      if( lpDDSThree != NULL ) {
+	  	  ReleaseDDSurf(lpDDSThree);
+        lpDDSTwo = NULL;
+      }
+      if( lpDDSFour != NULL ) {
+        ReleaseDDSurf(lpDDSFour);
+        lpDDSTwo = NULL;
+      }
+    }
 		RELEASE(lpBmat);
+
+//
+// end: wine debug
+//
+
 
 //		TaskerInit();
 
