@@ -1228,12 +1228,34 @@ char*
 D3DAppErrorToString(HRESULT error)
 {
     switch(error) {
+
+	    //
+
         case DD_OK:
             return "No error.\0";
+
+	    // A
+
         case DDERR_ALREADYINITIALIZED:
             return "This object is already initialized.\0";
+
+	    // B
+
+        case D3DERR_BADMAJORVERSION:
+            return "D3DERR_BADMAJORVERSION\0";
+        case D3DERR_BADMINORVERSION:
+            return "D3DERR_BADMINORVERSION\0";
         case DDERR_BLTFASTCANTCLIP:
             return "Return if a clipper object is attached to the source surface passed into a BltFast call.\0";
+
+	    // C
+
+        case D3DERR_CONFLICTINGTEXTUREPALETTE:
+            return "D3DERR_CONFLICTINGTEXTUREPALETTE\0";
+        case D3DERR_CONFLICTINGTEXTUREFILTER:
+            return "D3DERR_CONFLICTINGTEXTUREFILTER\0";
+        case D3DERR_CONFLICTINGRENDERSTATE:
+            return "D3DERR_CONFLICTINGRENDERSTATE\0";
         case DDERR_CANNOTATTACHSURFACE:
             return "This surface can not be attached to the requested surface.\0";
         case DDERR_CANNOTDETACHSURFACE:
@@ -1248,20 +1270,65 @@ D3DAppErrorToString(HRESULT error)
             return "No src color key specified for this operation.\0";
         case DDERR_CURRENTLYNOTAVAIL:
             return "Support is currently not available.\0";
+        case D3DERR_COLORKEYATTACHED:
+            return "D3DERR_COLORKEYATTACHED\0";
+
+		// D
+
         case DDERR_DIRECTDRAWALREADYCREATED:
             return "A DirectDraw object representing this driver has already been created for this process.\0";
+
+	    // E
+
         case DDERR_EXCEPTION:
             return "An exception was encountered while performing the requested operation.\0";
         case DDERR_EXCLUSIVEMODEALREADYSET:
             return "An attempt was made to set the cooperative level when it was already set to exclusive.\0";
+        case D3DERR_EXECUTE_LOCKED:
+            return "D3DERR_EXECUTE_LOCKED\0";
+        case D3DERR_EXECUTE_NOT_LOCKED:
+            return "D3DERR_EXECUTE_NOT_LOCKED\0";
+        case D3DERR_EXECUTE_CREATE_FAILED:
+            return "D3DERR_EXECUTE_CREATE_FAILED\0";
+        case D3DERR_EXECUTE_DESTROY_FAILED:
+            return "D3DERR_EXECUTE_DESTROY_FAILED\0";
+        case D3DERR_EXECUTE_LOCK_FAILED:
+            return "D3DERR_EXECUTE_LOCK_FAILED\0";
+        case D3DERR_EXECUTE_UNLOCK_FAILED:
+            return "D3DERR_EXECUTE_UNLOCK_FAILED\0";
+        case D3DERR_EXECUTE_FAILED:
+            return "D3DERR_EXECUTE_FAILED\0";
+        case D3DERR_EXECUTE_CLIPPED_FAILED:
+            return "D3DERR_EXECUTE_CLIPPED_FAILED\0";
+
+	    // F
+
+	    // G
+
         case DDERR_GENERIC:
             return "Generic failure.\0";
+
+	    // H
+
         case DDERR_HEIGHTALIGN:
             return "Height of rectangle provided is not a multiple of reqd alignment.\0";
         case DDERR_HWNDALREADYSET:
             return "The CooperativeLevel HWND has already been set. It can not be reset while the process has surfaces or palettes created.\0";
         case DDERR_HWNDSUBCLASSED:
             return "HWND used by DirectDraw CooperativeLevel has been subclassed, this prevents DirectDraw from restoring state.\0";
+
+	    // I
+
+        case D3DERR_INVALIDMATRIX:
+            return "D3DERR_INVALIDMATRIX.\0";
+        case D3DERR_NOTINBEGINSTATEBLOCK:
+            return "D3DERR_NOTINBEGINSTATEBLOCK.\0";
+        case D3DERR_INBEGINSTATEBLOCK:
+            return "D3DERR_INBEGINSTATEBLOCK.\0";
+        case D3DERR_INVALIDSTATEBLOCK:
+            return "D3DERR_INVALIDSTATEBLOCK.\0";
+        case D3DERR_INVALIDVERTEXFORMAT:
+            return "D3DERR_INVALIDVERTEXFORMAT.\0";
         case DDERR_IMPLICITLYCREATED:
             return "This surface can not be restored because it is an implicitly created surface.\0";
         case DDERR_INCOMPATIBLEPRIMARY:
@@ -1284,8 +1351,69 @@ D3DAppErrorToString(HRESULT error)
             return "Returned when the position of the overlay on the destination is no longer legal for that destination.\0";
         case DDERR_INVALIDRECT:
             return "Rectangle provided was invalid.\0";
+		case D3DERR_INVALID_DEVICE:
+            return "D3DERR_INVALID_DEVICE.\0";
+		case D3DERR_INITFAILED:
+            return "D3DERR_INITFAILED.\0";
+		case D3DERR_INVALIDCURRENTVIEWPORT:
+            return "D3DERR_INVALIDCURRENTVIEWPORT.\0";
+		case D3DERR_INVALIDPRIMITIVETYPE:
+            return "D3DERR_INVALIDPRIMITIVETYPE.\0";
+		case D3DERR_INVALIDVERTEXTYPE:
+            return "D3DERR_INVALIDVERTEXTYPE.\0";
+		case D3DERR_TEXTURE_BADSIZE:
+            return "D3DERR_TEXTURE_BADSIZE.\0";
+		case D3DERR_INVALIDRAMPTEXTURE:
+            return "D3DERR_INVALIDRAMPTEXTURE.\0";
+		case D3DERR_INVALIDPALETTE:
+            return "D3DERR_INVALIDPALETTE.\0";
+		case D3DERR_INBEGIN:
+            return "D3DERR_INBEGIN.\0";
+
+	    // J
+	
+		// K
+
+		// L
+
+        case D3DERR_LIGHT_SET_FAILED:
+            return "D3DERR_LIGHT_SET_FAILED\0";
+        case D3DERR_LIGHTHASVIEWPORT:
+            return "D3DERR_LIGHTHASVIEWPORT\0";
+        case D3DERR_LIGHTNOTINTHISVIEWPORT:
+            return "D3DERR_LIGHTNOTINTHISVIEWPORT\0";
         case DDERR_LOCKEDSURFACES:
-            return "Operation could not be carried out because one or more surfaces are locked.\0";
+            return "Operation could not be carried out because one or more surfaces are locked.\0";	
+
+		// M
+
+        case D3DERR_MATRIX_CREATE_FAILED:
+            return "D3DERR_MATRIX_CREATE_FAILED\0";
+        case D3DERR_MATRIX_DESTROY_FAILED:
+            return "D3DERR_MATRIX_DESTROY_FAILED\0";
+        case D3DERR_MATRIX_SETDATA_FAILED:
+            return "D3DERR_MATRIX_SETDATA_FAILED\0";
+        case D3DERR_MATERIAL_CREATE_FAILED:
+            return "D3DERR_MATERIAL_CREATE_FAILED\0";
+        case D3DERR_MATERIAL_DESTROY_FAILED:
+            return "D3DERR_MATERIAL_DESTROY_FAILED\0";
+        case D3DERR_MATERIAL_SETDATA_FAILED:
+            return "D3DERR_MATERIAL_SETDATA_FAILED\0";
+        case D3DERR_MATRIX_GETDATA_FAILED:
+            return "D3DERR_MATRIX_GETDATA_FAILED\0";
+
+	    // N
+
+        case D3DERR_NOCURRENTVIEWPORT:
+            return "D3DERR_NOCURRENTVIEWPORT\0";
+        case D3DERR_VIEWPORTHASNODEVICE:
+            return "D3DERR_VIEWPORTHASNODEVICE\0";
+        case D3DERR_VIEWPORTDATANOTSET:
+            return "D3DERR_VIEWPORTDATANOTSET\0";
+        case D3DERR_NOVIEWPORTS:
+            return "D3DERR_NOVIEWPORTS\0";
+        case D3DERR_NOTINBEGIN:
+            return "D3DERR_NOTINBEGIN\0";
         case DDERR_NO3D:
             return "There is no 3D present.\0";
         case DDERR_NOALPHAHW:
@@ -1360,6 +1488,9 @@ D3DAppErrorToString(HRESULT error)
             return "Operation could not be carried out because there is no hardware support for zbuffer blitting.\0";
         case DDERR_NOZOVERLAYHW:
             return "Overlay surfaces could not be z layered based on their BltOrder because the hardware does not support z layering of overlays.\0";
+
+	    // O
+
         case DDERR_OUTOFCAPS:
             return "The hardware needed for the requested operation has already been allocated.\0";
         case DDERR_OUTOFMEMORY:
@@ -1372,12 +1503,33 @@ D3DAppErrorToString(HRESULT error)
             return "Can only have ony color key active at one time for overlays.\0";
         case DDERR_OVERLAYNOTVISIBLE:
             return "Returned when GetOverlayPosition is called on a hidden overlay.\0";
+
+	    // P
+
         case DDERR_PALETTEBUSY:
             return "Access to this palette is being refused because the palette is already locked by another thread.\0";
         case DDERR_PRIMARYSURFACEALREADYEXISTS:
             return "This process already has created a primary surface.\0";
+
+	    // Q
+
+		// R
+
         case DDERR_REGIONTOOSMALL:
             return "Region passed to Clipper::GetClipList is too small.\0";
+
+	    // S
+
+		case D3DERR_STENCILBUFFER_NOTPRESENT:
+			return "D3DERR_STENCILBUFFER_NOTPRESENT\n";
+		case D3DERR_SCENE_IN_SCENE:
+			return "D3DERR_SCENE_IN_SCENE\n";
+		case D3DERR_SCENE_BEGIN_FAILED:
+			return "D3DERR_SCENE_BEGIN_FAILED\n";
+		case D3DERR_SCENE_END_FAILED:
+			return "D3DERR_SCENE_END_FAILED\n";
+		case D3DERR_SCENE_NOT_IN_SCENE:
+			return "D3DERR_SCENE_NOT_IN_SCENE\n";
         case DDERR_SURFACEALREADYATTACHED:
             return "This surface is already attached to the surface it is being attached to.\0";
         case DDERR_SURFACEALREADYDEPENDENT:
@@ -1390,46 +1542,25 @@ D3DAppErrorToString(HRESULT error)
             return "Access to this surface is being refused because the surface memory is gone. The DirectDrawSurface object representing this surface should have Restore called on it.\0";
         case DDERR_SURFACENOTATTACHED:
             return "The requested surface is not attached.\0";
+        case D3DERR_SETVIEWPORTDATA_FAILED:
+            return "D3DERR_SETVIEWPORTDATA_FAILED\0";
+        case D3DERR_SURFACENOTINVIDMEM:
+            return "D3DERR_SURFACENOTINVIDMEM\0";
+
+	    // T
+
+        case D3DERR_TOOMANYOPERATIONS:
+            return "D3DERR_TOOMANYOPERATIONS\0";
+        case D3DERR_TOOMANYPRIMITIVES:
+            return "D3DERR_TOOMANYPRIMITIVES\0";
+        case D3DERR_TOOMANYVERTICES:
+            return "D3DERR_TOOMANYVERTICES\0";
         case DDERR_TOOBIGHEIGHT:
             return "Height requested by DirectDraw is too large.\0";
         case DDERR_TOOBIGSIZE:
             return "Size requested by DirectDraw is too large, but the individual height and width are OK.\0";
         case DDERR_TOOBIGWIDTH:
             return "Width requested by DirectDraw is too large.\0";
-        case DDERR_UNSUPPORTED:
-            return "Action not supported.\0";
-        case DDERR_UNSUPPORTEDFORMAT:
-            return "FOURCC format requested is unsupported by DirectDraw.\0";
-        case DDERR_UNSUPPORTEDMASK:
-            return "Bitmask in the pixel format requested is unsupported by DirectDraw.\0";
-        case DDERR_VERTICALBLANKINPROGRESS:
-            return "Vertical blank is in progress.\0";
-        case DDERR_WASSTILLDRAWING:
-            return "Informs DirectDraw that the previous Blt which is transfering information to or from this Surface is incomplete.\0";
-        case DDERR_WRONGMODE:
-            return "This surface can not be restored because it was created in a different mode.\0";
-        case DDERR_XALIGN:
-            return "Rectangle provided was not horizontally aligned on required boundary.\0";
-        case D3DERR_BADMAJORVERSION:
-            return "D3DERR_BADMAJORVERSION\0";
-        case D3DERR_BADMINORVERSION:
-            return "D3DERR_BADMINORVERSION\0";
-        case D3DERR_EXECUTE_LOCKED:
-            return "D3DERR_EXECUTE_LOCKED\0";
-        case D3DERR_EXECUTE_NOT_LOCKED:
-            return "D3DERR_EXECUTE_NOT_LOCKED\0";
-        case D3DERR_EXECUTE_CREATE_FAILED:
-            return "D3DERR_EXECUTE_CREATE_FAILED\0";
-        case D3DERR_EXECUTE_DESTROY_FAILED:
-            return "D3DERR_EXECUTE_DESTROY_FAILED\0";
-        case D3DERR_EXECUTE_LOCK_FAILED:
-            return "D3DERR_EXECUTE_LOCK_FAILED\0";
-        case D3DERR_EXECUTE_UNLOCK_FAILED:
-            return "D3DERR_EXECUTE_UNLOCK_FAILED\0";
-        case D3DERR_EXECUTE_FAILED:
-            return "D3DERR_EXECUTE_FAILED\0";
-        case D3DERR_EXECUTE_CLIPPED_FAILED:
-            return "D3DERR_EXECUTE_CLIPPED_FAILED\0";
         case D3DERR_TEXTURE_NO_SUPPORT:
             return "D3DERR_TEXTURE_NO_SUPPORT\0";
         case D3DERR_TEXTURE_NOT_LOCKED:
@@ -1446,22 +1577,72 @@ D3DAppErrorToString(HRESULT error)
             return "D3DERR_TEXTURE_UNLOCK_FAILED\0";
         case D3DERR_TEXTURE_LOAD_FAILED:
             return "D3DERR_TEXTURE_LOAD_FAILED\0";
-        case D3DERR_MATRIX_CREATE_FAILED:
-            return "D3DERR_MATRIX_CREATE_FAILED\0";
-        case D3DERR_MATRIX_DESTROY_FAILED:
-            return "D3DERR_MATRIX_DESTROY_FAILED\0";
-        case D3DERR_MATRIX_SETDATA_FAILED:
-            return "D3DERR_MATRIX_SETDATA_FAILED\0";
-        case D3DERR_SETVIEWPORTDATA_FAILED:
-            return "D3DERR_SETVIEWPORTDATA_FAILED\0";
-        case D3DERR_MATERIAL_CREATE_FAILED:
-            return "D3DERR_MATERIAL_CREATE_FAILED\0";
-        case D3DERR_MATERIAL_DESTROY_FAILED:
-            return "D3DERR_MATERIAL_DESTROY_FAILED\0";
-        case D3DERR_MATERIAL_SETDATA_FAILED:
-            return "D3DERR_MATERIAL_SETDATA_FAILED\0";
-        case D3DERR_LIGHT_SET_FAILED:
-            return "D3DERR_LIGHT_SET_FAILED\0";
+        case D3DERR_TEXTURE_SWAP_FAILED:
+            return "D3DERR_TEXTURE_SWAP_FAILED\0";
+        case D3DERR_TEXTURE_GETSURF_FAILED:
+            return "D3DERR_TEXTURE_GETSURF_FAILED\0";
+
+	    // U
+
+        case D3DERR_UNSUPPORTEDTEXTUREFILTER:
+            return "D3DERR_UNSUPPORTEDTEXTUREFILTER\0";
+        case D3DERR_UNSUPPORTEDFACTORVALUE:
+            return "D3DERR_UNSUPPORTEDFACTORVALUE\0";
+        case D3DERR_UNSUPPORTEDCOLOROPERATION:
+            return "D3DERR_UNSUPPORTEDCOLOROPERATION\0";
+        case D3DERR_UNSUPPORTEDCOLORARG:
+            return "D3DERR_UNSUPPORTEDCOLORARG\0";
+        case D3DERR_UNSUPPORTEDALPHAOPERATION:
+            return "D3DERR_UNSUPPORTEDALPHAOPERATION\0";
+        case D3DERR_UNSUPPORTEDALPHAARG:
+            return "D3DERR_UNSUPPORTEDALPHAARG\0";
+        case DDERR_UNSUPPORTED:
+            return "Action not supported.\0";
+        case DDERR_UNSUPPORTEDFORMAT:
+            return "FOURCC format requested is unsupported by DirectDraw.\0";
+        case DDERR_UNSUPPORTEDMASK:
+            return "Bitmask in the pixel format requested is unsupported by DirectDraw.\0";
+
+	    // V
+
+        case DDERR_VERTICALBLANKINPROGRESS:
+            return "Vertical blank is in progress.\0";
+        case D3DERR_VERTEXBUFFEROPTIMIZED:
+            return "D3DERR_VERTEXBUFFEROPTIMIZED\0";
+        case D3DERR_VBUF_CREATE_FAILED:
+            return "D3DERR_VBUF_CREATE_FAILED\0";
+        case D3DERR_VERTEXBUFFERLOCKED:
+            return "D3DERR_VERTEXBUFFERLOCKED\0";
+        case D3DERR_VERTEXBUFFERUNLOCKFAILED:
+            return "D3DERR_VERTEXBUFFERUNLOCKFAILED\0";
+
+	    // W
+
+        case D3DERR_WRONGTEXTUREFORMAT:
+            return "D3DERR_WRONGTEXTUREFORMAT.\0";
+        case DDERR_WASSTILLDRAWING:
+            return "Informs DirectDraw that the previous Blt which is transfering information to or from this Surface is incomplete.\0";
+        case DDERR_WRONGMODE:
+            return "This surface can not be restored because it was created in a different mode.\0";
+
+	    // X
+
+        case DDERR_XALIGN:
+            return "Rectangle provided was not horizontally aligned on required boundary.\0";
+
+	    // Y
+				
+		// Z
+
+        case D3DERR_ZBUFF_NEEDS_SYSTEMMEMORY:
+            return "D3DERR_ZBUFF_NEEDS_SYSTEMMEMORY.\0";
+        case D3DERR_ZBUFF_NEEDS_VIDEOMEMORY:
+            return "D3DERR_ZBUFF_NEEDS_VIDEOMEMORY.\0";
+        case D3DERR_ZBUFFER_NOTPRESENT:
+            return "D3DERR_ZBUFFER_NOTPRESENT.\0";
+
+	    //
+
         default:
             return "Unrecognized error value.\0";
     }
