@@ -9,6 +9,8 @@
 	Defines
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 //#define DEBUG_PICKUPS			0
+
+#define	PIC_VERSION_NUMBER	1
 								
 #define	MAXPICKUPS				256
 #define MAXPICKUPTYPES			46

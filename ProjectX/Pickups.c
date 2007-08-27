@@ -55,7 +55,6 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Defines
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-#define	PIC_VERSION_NUMBER	1
 
 #define HOST_BOUNTY_TIME	( 10 * ANIM_SECOND )
 #define HOST_FLAG_TIME		( 10 * ANIM_SECOND )
