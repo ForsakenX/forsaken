@@ -1807,7 +1807,6 @@ BOOL SecondaryValid[ MAXSECONDARYWEAPONS ] =
 #else
 	TRUE,	// mug
 	TRUE,	// solaris
-//	FALSE,	// thief
 	TRUE,	// thief
 	TRUE,	// scatter
 	TRUE,	// gravgon
