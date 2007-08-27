@@ -1764,7 +1764,12 @@ BIKEMOD	BikeMods[MAXBIKETYPES+3] = {
 		1.0F
 	},
 	{	// Slow Default
-		MAXMOVESPEED * 0.9F, 
+//
+// Speed Cap ?
+// Who ordered that ?
+//		MAXMOVESPEED * 0.9F, 
+//
+		MAXMOVESPEED,
 		MOVEACCELL,	
 		MOVEDECELL,	
 		MAXTURBOSPEED,
