@@ -169,6 +169,7 @@
 				OutputFile="..\skeleton\ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
@@ -745,6 +746,10 @@
 			</File>
 			<File
 				RelativePath="Oct2.c"
+				>
+			</File>
+			<File
+				RelativePath=".\parse_file_formats.c"
 				>
 			</File>
 			<File
