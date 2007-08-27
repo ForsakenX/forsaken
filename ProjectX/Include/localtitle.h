@@ -66,6 +66,7 @@ Notes for translator:
 #define LT_MENU_NEW_ValidPickups17 "stealth mantle"
 #define LT_MENU_NEW_ValidPickups18 "orbit pulsar"
 #define LT_MENU_NEW_ValidPickups19 "golden power pod"
+#define LT_MENU_NEW_ValidPickups20 "thief missile"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions0 "Multiplayer options"
 #define LT_MENU_NEW_MoreMultiplayerOptions1 "lag tolerance"

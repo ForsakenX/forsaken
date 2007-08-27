@@ -3741,6 +3741,7 @@ MENU	MENU_NEW_ValidPickups = {
 		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups17/*"stealth mantle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mantle ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
 		{ 10, 156, 120, 164, 0, LT_MENU_NEW_ValidPickups18/*"orbit pulsar"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Orb ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
 		{ 10, 164, 120, 172, 0, LT_MENU_NEW_ValidPickups19/*"golden power pod"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_GoldenPowerPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 172, 120, 180, 0, LT_MENU_NEW_ValidPickups20/*"thief missle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Thief ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
