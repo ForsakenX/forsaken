@@ -13933,61 +13933,6 @@ static int CheckFileWriteable( char *fname )
 	return 1;
 }
 
-
-#define CHECK_LEVEL		"probeworld"
-
-int ValidInstall( void )
-{
-#if defined ( FINAL_RELEASE ) && !defined ( WIN98SHAREWARE ) 
-	struct _stat stat;
-	static char path[ MAX_PATH ];
-	int j;
-
-	for ( j = 0; j < __argc; j++ )
-	{
-		DebugPrintf( "argv[ %d ] = '%s'\n", j, __argv[ j ] );
-	}
-
-	if ( _stat( __argv[ 0 ], &stat ) )
-	{
-		DebugPrintf( "_stat( %s ) failed\n", __argv[ 0 ] );
-		return 0;
-	}
-	if ( !( stat.st_mode & _S_IEXEC ) )
-	{
-		DebugPrintf( "_stat( %s ).st_mode not executable\n", __argv[ 0 ] );
-		return 0;
-	}
-	if ( stat.st_mode & _S_IFDIR )
-	{
-		DebugPrintf( "_stat( %s ).st_mode is a directory\n", __argv[ 0 ] );
-		return 0;
-	}
-	sprintf( path, "%c:\\", 'A' + stat.st_dev );
-	if ( GetDriveType( path ) == DRIVE_CDROM )
-	{
-		DebugPrintf( "GetDriveType( %s ) returned CDROM (st_dev=%d)\n",
-			path, stat.st_dev );
-		return 0;
-	}
-	if ( CheckFileWriteable( "data\\models\\menu.mx" ) <= 0 )
-		return 0; // this should always be installed
-	sprintf( path, "%sdata\\levels\\%s\\%s.mxv", cd_path, CHECK_LEVEL, CHECK_LEVEL );
-	switch ( CheckFileWriteable( path ) ) // this should exist, but never be writeable
-	{
-	case 0: // file not found
-	case -1: // cannot get attrs
-		return 0;
-	case -2: // cannot set attrs
-	case -3:
-		break;
-	default: // file writeable...!
-		return 0;
-	}
-#endif
-	return 1;
-}
-
 #ifdef	REFLECTION
 LPDIRECTDRAWSURFACE lpDestTextureSurf = NULL;
 void WierdShit( void )

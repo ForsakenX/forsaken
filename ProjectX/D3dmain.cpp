@@ -245,7 +245,6 @@ extern	BOOL	SoftwareVersion;
 	extern HKEY ghLobbyKey;     // lobby registry key handle
 #endif
 	extern	int DPlayUpdateIntervalCmdLine;
-	extern int ValidInstall( void );
 	extern void GetGamePrefs( void );
 	extern int ScreenWidth;
 	extern int ScreenHeight;
