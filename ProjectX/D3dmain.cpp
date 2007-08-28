@@ -247,7 +247,6 @@ extern	BOOL	SoftwareVersion;
 	extern	int DPlayUpdateIntervalCmdLine;
 	extern BOOL GetValidCDPath( void );
 	extern int ValidInstall( void );
-	extern int ValidCD( void );
 	extern void GetGamePrefs( void );
 	extern int ScreenWidth;
 	extern int ScreenHeight;
@@ -1384,8 +1383,8 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 
     switch( message ) {
 
+		// some i/o device has changed state -- make sure the CD is still valid
 		case WM_DEVICECHANGE:
-			// some i/o device has changed state -- make sure the CD is still valid
 #ifndef FINAL_RELEASE
 			DebugPrintf( "DeviceChange detected\n" );
 			switch( wParam )
@@ -1410,15 +1409,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 				break;
 			}
 #endif
-			// for patch, only single player requires CD
-			if ( ( (MyGameStatus==STATUS_SinglePlayer) || (MyGameStatus==STATUS_StartingSinglePlayer) )
-			    && !ValidCD() )
-			{
-				Msg( "Forsaken CD required" );
-				SeriousError = TRUE;
-				CleanUpAndPostQuit();
-			}
-			break;
+		break;
 
         case WM_MOUSEMOVE:
         case WM_LBUTTONDOWN:

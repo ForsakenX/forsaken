@@ -3133,7 +3133,6 @@ extern char *JoystickPOVDirections[];
 extern VECTOR BikePos;
 
 extern char cd_path[];
-extern int ValidCD( void );
 
 extern BOOL	CTF;
 extern BOOL CD_OK;
@@ -6973,20 +6972,6 @@ BOOL ChangeLevel( void )
 			InitCheckSum( &glpdpSD->guidInstance );
 		}else{
 			LevelCheckSum = 0;
-		}
-
-
-
-
-		// for patch, only single player requires CD
-		if( ( ( MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
-			  ( MyGameStatus == STATUS_SinglePlayer ) ||
-			  ( MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer ) )
-		  && !ValidCD() )
-		{
-			Msg( "Forsaken CD required" );
-			SeriousError = TRUE;
-			return( FALSE );
 		}
 
 		InitScene();
@@ -13939,19 +13924,6 @@ int cd_present( void )
 #endif
 	return 1;
 }
-
-
-
-int ValidCD( void )
-{
-	while ( !cd_present() )
-	{
-		if ( !RetryMsg( "Please insert the Forsaken CD\n" ) )
-			return 0;
-	}
-	return 1;
-}
-
 
 
 #ifndef ACCLAIM_NY

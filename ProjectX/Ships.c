@@ -1234,7 +1234,6 @@ void MultiSfxHandle( void );
 extern	BOOL IsServerGame;
 extern	BOOL IsServer;
 extern SLIDER BikeCompSpeechSlider;
-extern int ValidCD( void );
 extern BOOL SeriousError;
 
 extern float LevelTimeTaken;
@@ -3487,14 +3486,6 @@ void InitShipStartPos( int16 i, int16 pos )
 	float	autolevel;
 #endif
 	JustGenerated = TRUE;
-
-	// for patch, only single player requires CD
-	if ( ( (MyGameStatus==STATUS_SinglePlayer) || (MyGameStatus==STATUS_StartingSinglePlayer) )
-		&& !ValidCD() )
-	{
-		Msg( "Forsaken CD required" );
-		SeriousError = TRUE;
-	}
 
 	if( (MyGameStatus==STATUS_SinglePlayer) || (MyGameStatus==STATUS_StartingSinglePlayer) )
 	{
