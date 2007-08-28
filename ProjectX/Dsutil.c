@@ -628,17 +628,8 @@ void GetSfxPath( int sfxnum, char *path, char *data_path_to_use )
 
 	if ( sfxnum > SFX_LEVELSPEC_Start )
 		sfxnum = SFX_LEVELSPEC_Start;
-	
-#ifndef CD_REQUIRED
-	if ( use_data_path && File_Exists( tempdir ) )
-		strcpy( path, data_path );
-	else
-		strcpy( path, normdata_path );
-#else
 
 	strcpy( path, data_path_to_use );
-
-#endif
 
 
 	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_BikeComp )

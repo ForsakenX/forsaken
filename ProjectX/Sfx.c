@@ -2578,20 +2578,6 @@ void GetFullBikeCompSfxPath( char *fullpath, int sfxnum, int variant, int total_
 
 void GetSfxPathsToTry( int sfx, int *num_paths_to_try, char **data_path_to_use )
 {
-#ifndef CD_REQUIRED
-	char tempdir[256];
-
-	strcpy( tempdir, data_path );
-	strcat( tempdir, "sound" );
-
-	*num_paths_to_try = 1;
-
-	if ( use_data_path && File_Exists( tempdir ) )
-		data_path_to_use[ 0 ] = data_path;
-	else
-		data_path_to_use[ 0 ] = normdata_path;
-#else
-
 	if ( Sfx_Filenames[ sfx ].Flags & SFX_Dynamic )
 	{
 		*num_paths_to_try = 1;
@@ -2602,8 +2588,6 @@ void GetSfxPathsToTry( int sfx, int *num_paths_to_try, char **data_path_to_use )
 	*num_paths_to_try = 2;
 	data_path_to_use[ 0 ] = data_path;
 	data_path_to_use[ 1 ] = normdata_path;
-
-#endif
 }
 
 

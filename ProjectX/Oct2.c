@@ -13944,13 +13944,11 @@ int cd_present( void )
 
 int ValidCD( void )
 {
-#ifdef CD_REQUIRED
 	while ( !cd_present() )
 	{
 		if ( !RetryMsg( "Please insert the Forsaken CD\n" ) )
 			return 0;
 	}
-#endif
 	return 1;
 }
 

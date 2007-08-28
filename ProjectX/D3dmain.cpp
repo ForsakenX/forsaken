@@ -958,26 +958,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 	*/
 	GetGamePrefs();
 	GetDeviceGuid();
-#ifdef CD_REQUIRED
-	if (!GetValidCDPath() )	// validates CD path
-	{
-	 	Msg("Installation corrupted!\n-- please uninstall existing version of Forsaken\nand re-install from original Forsaken CD\n" );
-		return FALSE;
-	}
-#endif
-	// for patch, only single player requires CD
-#ifdef CD_CHECK_INIT
-	if ( !ValidCD() )
-	{
-		Msg( "Forsaken CD required\n" );
-		return FALSE;
-	}
-	if ( !ValidInstall() )
-	{
-		Msg( "Installation invalid\n" );
-		return FALSE;
-	}
-#endif
 
 	SoundInit();	// cd audio
 	OpenCD();
