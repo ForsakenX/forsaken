@@ -13859,39 +13859,6 @@ BOOL SaveFullScreenSnapShot( int8 * Filename )
 	return( TRUE );
 }
 
-BOOL GetValidCDPath( void )
-{
-	DWORD drivemask;
-	int drive;
-	UINT type;
-#ifdef FINAL_RELEASE
-	static char temp_path[128];
-#endif
-
-	if ( !cd_path[ 0 ] )
-		return FALSE;
-	drivemask = GetLogicalDrives();
-	drive = toupper( cd_path[ 0 ] ) - 'A';
-	if ( drive < 0 )
-		return FALSE;
-	if ( !( drivemask & ( 1 << drive ) ) )
-		return FALSE;
-	sprintf( cd_path, "%c:\\", 'A' + drive );
-	type = GetDriveType( cd_path );
-	if ( type != DRIVE_CDROM )
-		return FALSE;
-#ifdef FINAL_RELEASE
-	strcpy( data_path, cd_path );
-	strcat( data_path, "data\\" );
-	use_data_path = 1;
-	strncpy( temp_path, data_path, sizeof( temp_path ) );
-	temp_path[ sizeof( temp_path ) - 1 ] = 0;
-	strcpy( data_path, normdata_path );
-	strcpy( normdata_path, temp_path );
-#endif
-	return TRUE;
-}
-
 int cd_present( void )
 {
 	static char volume_name[ 256 ];
