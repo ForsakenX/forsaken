@@ -1275,8 +1275,6 @@ extern	BOOL	BombTag;
 extern int  no_collision;
 extern	XLIGHT	XLights[MAXXLIGHTS];
 extern	BOOL	flush_input;
-extern BOOL	E3DemoHost;
-extern BOOL	E3DemoClient;
 extern	LONGLONG	Freq;
 
 
@@ -3125,11 +3123,6 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 			Ships[i].enable = 0;
 		}else{
 			Ships[i].enable = TRUE;
-		}
-		if( E3DemoHost || E3DemoClient )
-		{
-			Ships[i].Kills = 0;
-			Ships[i].Deaths = 0;
 		}
 
 		Ships[i].Object.NodeNetwork = 1;

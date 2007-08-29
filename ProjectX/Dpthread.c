@@ -1,3 +1,6 @@
+
+// This is the only file that included gsutils.h
+
 // #define INITGUID
 #include <windows.h>
 #include <dplay.h>
@@ -25,12 +28,13 @@
 #include "XMem.h"
 #include "ddsurfhand.h"
 #include "pickups.h"
-#include "local.h"
 #include "comm.h"
-#include "gsutils.h"
 
 #include "dpthread.h"
-#include "demo_id.h"
+
+#include "registry.h"
+#include "Local.h"
+
 #include "primary.h"
 
 //#define	DPTEST
@@ -79,9 +83,6 @@ playerlist_t PlayerInfo[ MAX_PLAYERS ];
 BOOL SendShutdownPacket;
 
 uint16 PlayerPort[ MAX_PLAYERS ];
-char GamespyEchoText[ 128 ];
-char GamespySecureText[ 128 ];
-BOOL bGameSpy = FALSE;
 BOOL ServerHeartbeat = FALSE;
 BOOL PeerPeerHeartbeat = FALSE;
 BOOL ForceHeartbeat = FALSE;
@@ -141,8 +142,6 @@ int	heartbeat_type;
 static const BYTE GuidMap[] = { 3, 2, 1, 0, '-', 5, 4, '-', 7, 6, '-', 
                                 8, 9, '-', 10, 11, 12, 13, 14, 15 }; 
 static const char szDigits[] = "0123456789ABCDEF"; 
-
-char Gamespy_Secret_Key[] = "znoJ6k";
 
 BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz) 
 { 
@@ -371,178 +370,6 @@ BOOL IsGameJoinable( LPDPSESSIONDESC2 pSD )
 
 }
 
-BOOL ProcessGamespy( int type )
-{
-	LPDPSESSIONDESC2 pSD = NULL;
-	DWORD dwSize;
-	HRESULT hr;
-	char *levelname;
-	char buf[ 128 ];
-	int16 i, j;
- 	char *pCh;
-
-	// first get the size for the session desc
-    if ((hr = IDirectPlay3_GetSessionDesc(glpDP, NULL, &dwSize)) == DPERR_BUFFERTOOSMALL)
-    {
-		// allocate memory for it
-        pSD = (LPDPSESSIONDESC2) malloc(dwSize);
-        if (pSD)
-        {
-            // now get the session desc
-            hr = IDirectPlay3_GetSessionDesc(glpDP, pSD, &dwSize);
-        }
-        else
-        {
-            hr = E_OUTOFMEMORY;
-        }
-    }
-
-	if ( !pSD )
-		return FALSE;
-
-	if ( hr != DP_OK )
-	{
-	 	free( pSD );
-		return FALSE;
-	}
-
-	GrabMutex(&SendMutex, NULL);
-
-	srv_info = &pBuf[0];
-
-	if ( type & HEARTBEAT_GAMESPY_Pulse )
-	{
-		srv_info += sprintf( srv_info, "\\heartbeat\\%d\\gamename\\forsaken", DEF_PORT );
-		ReleaseMutex(SendMutex);
-	 	free( pSD );
-		return TRUE;	// no need to append query ID / packet num / security code
-	}
-	if ( ( type & HEARTBEAT_GAMESPY_Basic ) || ( type & HEARTBEAT_GAMESPY_Status ) )
-	{
-		srv_info += sprintf( srv_info, "\\gamename\\forsaken\\gamever\\%1.2f\\location\\%s", PATCH_VERSION, heartbeat_location );
-	}
-	if ( ( type & HEARTBEAT_GAMESPY_Info ) || ( type & HEARTBEAT_GAMESPY_Status ) )
-	{
-		// get map name
-		levelname = strchr( pSD->lpszSessionNameA, '~' );
-		if ( levelname )
-		{
-			*levelname++ = 0;
-		}else
-		{
-			levelname = "unknown";
-		}
-		
-		GetGameType( buf, pSD );
-				
-		srv_info += sprintf( srv_info, "\\hostname\\%s\\hostport\\%d\\mapname\\%s\\gametype\\%s\\numplayers\\%d\\maxplayers\\%d", 
-			heartbeat_servername[ 0 ] ? heartbeat_servername : pSD->lpszSessionNameA,
-			DEF_PORT,
-			levelname,
-			buf,
-			IsServerGame ? ( pSD->dwCurrentPlayers - 1 ) : pSD->dwCurrentPlayers,
-			IsServerGame ? ( pSD->dwMaxPlayers - 1 ) : pSD->dwMaxPlayers );
-
-			srv_info += sprintf( srv_info, "\\gamemode\\%s", 
-				( pSD->dwUser3 & ServerGameStateBits ) ? "server" : "peer-peer"  );
-
-	}
-	if ( ( type & HEARTBEAT_GAMESPY_Rules ) || ( type & HEARTBEAT_GAMESPY_Status ) )
-	{
-		// session GUID
-		StringFromGUID(&pSD->guidInstance, buf );
-		srv_info += sprintf(srv_info, "\\cl_session\\%s", buf );
-
-		srv_info += sprintf(srv_info, "\\cl_TCP\\%s", IPAddressText );
-		srv_info += sprintf(srv_info, "\\cl_AutoStart\\" );
-
-		// application GUID
-		//StringFromGUID(&pSD->guidApplication, buf );
-		//srv_info += sprintf(srv_info, "\\cl_application\\%s", buf );
-
-		// up time
-		GetUpTime( buf, pSD->dwUser1 );
-		srv_info += sprintf( srv_info, "%s", buf );
-
-		srv_info += sprintf( srv_info, "\\joinable\\%d", IsGameJoinable( pSD ) );
-
-		buf[ 0 ] = 0;
-		GetGameSubType( buf, pSD );
-		if ( buf[ 0 ] )
-		{
-			srv_info += sprintf( srv_info, "\\ctftype\\%s", buf );
-		}
-
-		if ( pSD->dwUser3 & TeamGameBit )
-		{
-			srv_info += sprintf( srv_info, "\\HarmTM\\%d",( pSD->dwUser3 & HarmTeamMatesBit ) );
-		}
-
-		srv_info += sprintf( srv_info, "\\shortpackets\\%d",( pSD->dwUser3 & ShortPacketsBit ) ? 1 : 0 );
-		srv_info += sprintf( srv_info, "\\bigpackets\\%d",( pSD->dwUser3 & BigPacketsBit ) ? 1 : 0 );
-		srv_info += sprintf( srv_info, "\\packetrate\\%d", PacketsSlider.value );
-		srv_info += sprintf( srv_info, "\\maxkills\\%d", ( pSD->dwUser2 & MaxKillsBits ) >> MaxKills_Shift );
-		srv_info += sprintf( srv_info, "\\timelimit\\%d", ( pSD->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift );
-
-		switch( ( pSD->dwUser3 & CollisionTypeBits ) >> Collision_Type_BitShift )
-		{
-		case COLPERS_Forsaken:
-			pCh = "on";
-			break;
-		case COLPERS_Descent:
-			pCh = "off";
-			break;
-		case COLPERS_Server:
-			pCh = "server";
-			break;
-
-			srv_info += sprintf(srv_info, "\\lagtolerance\\%s", pCh );
-		}
-
-		srv_info += sprintf(srv_info, "\\brightbikes\\%d", ( pSD->dwUser3 & BrightShipsBit ) ? 1 : 0 );
-		srv_info += sprintf(srv_info, "\\exhausts\\%d", ( pSD->dwUser3 & BikeExhaustBit ) ? 1 : 0 );
-		srv_info += sprintf(srv_info, "\\serverspec\\%s", heartbeat_serverspec );
-		srv_info += sprintf(srv_info, "\\serverconnection\\%s", heartbeat_serverconnection );
-		srv_info += sprintf(srv_info, "\\serveradmin\\%s", heartbeat_serveradmin );
-	}
-
-	if ( ( type & HEARTBEAT_GAMESPY_Players ) || ( type & HEARTBEAT_GAMESPY_Status ) )
-	{
-		j = 0;
-		for ( i = IsServerGame ? 1 : 0 ; i < MAX_PLAYERS; i++ )
-		{
-			if ( ( i == WhoIAm ) || ( ( GameStatus[ i ] != STATUS_Null ) && ( GameStatus[ i ] != STATUS_Left ) && ( GameStatus[ i ] != STATUS_LeftCrashed ) ) )
-			{
-				srv_info += sprintf( srv_info, "\\player_%d\\%s", j, PlayerInfo[ i ].PlayerName );
-				srv_info += sprintf( srv_info, "\\frags_%d\\%d", j, PlayerInfo[ i ].CurScore );
-				srv_info += sprintf( srv_info, "\\ping_%d\\%d", j, PlayerInfo[ i ].Ping );
-				srv_info += sprintf( srv_info, "\\team_%d\\%d", j, PlayerInfo[ i ].Team );
-				j++;
-			}
-		}
-	}
-	
-	if ( type & HEARTBEAT_GAMESPY_Echo )
-	{
-		srv_info += sprintf( srv_info, "\\echo\\%s", GamespyEchoText );
-	}
-
-	if ( type & HEARTBEAT_GAMESPY_Secure )
-	{
-		char encoded_val[(GAMESPY_VALIDATE_SIZE * 4) / 3 + 1];
-
-		gs_encrypt(GamespySecureText, GAMESPY_VALIDATE_SIZE, Gamespy_Secret_Key);
-		gs_encode(GamespySecureText, GAMESPY_VALIDATE_SIZE, encoded_val);
-
-		srv_info += sprintf( srv_info, "\\validate\\%s", encoded_val );
-	}
-
-	ReleaseMutex(SendMutex);
-	free( pSD );
-
-	return TRUE;
-}
-
 BOOL ProcessForsakenInfo( int type )
 {
 	static char strAppGuid[128], strInstGuid[128];
@@ -755,80 +582,6 @@ BOOL ProcessForsakenInfo( int type )
 	return TRUE;
 }
 
-char *GAMESPY_KEY_Basic = "basic";
-char *GAMESPY_KEY_Info = "info";
-char *GAMESPY_KEY_Rules = "rules";
-char *GAMESPY_KEY_Players = "players";
-char *GAMESPY_KEY_Status = "status";
-char *GAMESPY_KEY_Echo = "echo";
-char *GAMESPY_KEY_Secure = "secure";
-
-void ProcessGamespyKey( char *key, char *value, int *type )
-{
-	if ( !_strnicmp( key, GAMESPY_KEY_Basic, sizeof( GAMESPY_KEY_Basic ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Basic;
-	}else if ( !_strnicmp( key, GAMESPY_KEY_Info, sizeof( GAMESPY_KEY_Info ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Info;
-	}else if ( !_strnicmp( key, GAMESPY_KEY_Rules, sizeof( GAMESPY_KEY_Rules ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Rules;
-	}else if ( !_strnicmp( key, GAMESPY_KEY_Players, sizeof( GAMESPY_KEY_Players ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Players;
-	}else if ( !_strnicmp( key, GAMESPY_KEY_Status, sizeof( GAMESPY_KEY_Status ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Status;
-	}else if ( !_strnicmp( key, GAMESPY_KEY_Echo, sizeof( GAMESPY_KEY_Echo ) ) )
-	{
-		char *pCh;
-		
-		*type |= HEARTBEAT_GAMESPY_Echo;
-		strncpy( GamespyEchoText, value, sizeof( GamespyEchoText ) );
-		pCh = strchr( GamespyEchoText, '\\' );
-		if ( pCh )
-		{
-			*pCh = 0;
-		}
-	}
-	else if ( !_strnicmp( key, GAMESPY_KEY_Secure, sizeof( GAMESPY_KEY_Secure ) ) )
-	{
-		*type |= HEARTBEAT_GAMESPY_Secure;
-		strncpy( GamespySecureText, value, sizeof( GamespySecureText ) );
-	}
-}
-
-void GamespyParsePacket( char *packet )
-{
- 	char *key, *value, *str;
-	int type; 
-
-	type = 0;
-	str = packet;
-
-	do
-	{
-		key = strchr(str, '\\' );
-		if ( key )
-		{
-			value = strchr( ++key, '\\' );
-			{
-				if ( value )
-				{
-					ProcessGamespyKey( key, ++value, &type );
-				}
-			}
-		}
-		str = value;
-	}while( key && value );
-
-	if ( type )
-	{
-		ProcessGamespy( type );
-	}
-}
-
 
 DWORD WINAPI ListenThread(LPVOID p) {
 
@@ -871,16 +624,6 @@ DWORD WINAPI ListenThread(LPVOID p) {
 				(struct sockaddr *) &from, &from_len );
 			if (len == SOCKET_ERROR && WSAGetLastError() != WSAEMSGSIZE)
 				break;
-
-			if ( bGameSpy )
-			{
-				if ( len )
-				{
-					GamespyParsePacket( tmpbuf );
-					PostGamespyServerInfo( &from );
-				}
-				continue;
-			}
 			
 			if ( len < ( sizeof( udp_header ) - 1 ) )
 				continue;	// message is not even big enough for header
@@ -1039,86 +782,6 @@ void PostServerInfo( struct sockaddr_in *addr )
 	ReleaseMutex(SendMutex);
 }
 
-#define GAMESPY_MAX_PACKET_SIZE 1000 
-#define GAMESPY_EXTRAS_SIZE 32
-
-void PostGamespyServerInfo( struct sockaddr_in *addr ) 
-{
-	char *start, *mid, *end, *pCh;
-	char packet[ GAMESPY_MAX_PACKET_SIZE + GAMESPY_EXTRAS_SIZE ];	// extra is for queryid key / value
-	DWORD datasize;
-	BOOL done;
-	static uint16 qid = 1;
-	char buf[ GAMESPY_EXTRAS_SIZE ];
-	uint16 packet_num = 0;
-	
-	GrabMutex(&SendMutex, NULL);
-
-	if ( !srv_info || ( srv_info == pBuf ) )
-		return;
-
-	*(++srv_info) = 0;	// ensure NULL terminated
-
-	pCh = pBuf;
-	packet[ 0 ] = 0;
-	done = FALSE;
-	do
-	{
-		start = NULL; mid = NULL; end = NULL;
-		start = strchr( pCh, '\\' );
-		if ( start )
-			mid = strchr( ( start + 1 ), '\\' );
-		if ( mid )
-			end = strchr( ( mid + 1 ), '\\' );
-
-		if ( !end )
-		{
-			end = pCh + strlen( pCh );
-			done = TRUE;
-		}
-
-		if ( start && mid && end )
-		{
-			datasize = end - start;
-
-			if ( strlen( packet ) + datasize > GAMESPY_MAX_PACKET_SIZE )
-			{
-				// append qid...
-				sprintf( buf, "\\queryid\\%d.%d", qid, packet_num++ );
-				strcat( packet, buf );
-				
-				// send existing packet
-				sendto(sockfd, packet, strlen( packet ), 0, (struct sockaddr*)addr, sizeof(struct sockaddr_in));
-
-				// clear packet
-				packet[ 0 ] = 0;
-			}
-
-			strncat( packet, start, GAMESPY_MAX_PACKET_SIZE < ( end - start ) ? GAMESPY_MAX_PACKET_SIZE : ( end - start ) );
-		}
-
-		pCh = end;
-
-	}while ( !done );
-
-	// append qid...
-	sprintf( buf, "\\queryid\\%d.%d", qid, packet_num++ );
-   	strcat( packet, buf );
-
-	// append final key...
-	sprintf( buf, "\\final\\" );
-   	strcat( packet, buf );
-
-	sendto(sockfd, packet, strlen( packet ), 0, (struct sockaddr*)addr, sizeof(struct sockaddr_in));
-
-	
-	qid++;
-	if ( qid > 100 )
-		qid = 0;
-
-	ReleaseMutex(SendMutex);
-}
-
 BOOL ConnectToWinsock(void)
 {
 	int err;
@@ -1222,19 +885,11 @@ DWORD WINAPI DPThread(LPVOID p)
 	{
 		if ( IsHost )
 		{							
-			if ( bGameSpy )
-			{
-				if ( ProcessGamespy( HEARTBEAT_GAMESPY_Pulse ) )
-				{
-					PostServerInfo( &TrackerIP );	
-				}
-			}else
-			{
+
 				if ( ProcessForsakenInfo( heartbeat_type ) )
 				{
 					PostServerInfo( &TrackerIP );	
 				}
-			}
 		}
 
 		WaitForSingleObject( DPSendThreadKillEvent, heartbeat_freq );
@@ -1532,13 +1187,6 @@ BOOL set_shutdown_flag( FILE *f, char *last_token )
 	return TRUE;
 }
 
-BOOL set_gamespy_flag( FILE *f, char *last_token )
-{
-	bGameSpy = TRUE;
-	fscanf( f, " %80s", last_token );
-	return TRUE;
-}
-
 BOOL set_location( FILE *f, char *last_token )
 {
 	if ( fscanf( f, " %32[^\n]", &heartbeat_location ) == 1 )
@@ -1606,7 +1254,6 @@ BOOL read_heartbeat_info( char *file )
 		{ "heartbeat_freq",	set_heartbeat_freq		},
 		{ "heartbeat_type",	set_heartbeat_type		},
 		{ "send_shutdown",	set_shutdown_flag		},
-		{ "gamespy",		set_gamespy_flag		},
 		{ "location",		set_location			},
 		{ "servername",		set_servername			},
 		{ "serverspec",		set_serverspec			},
@@ -1636,8 +1283,6 @@ BOOL read_heartbeat_info( char *file )
 	heartbeat_serverspec[ 0 ] = 0;
 	heartbeat_serverconnection[ 0 ] = 0;
 	heartbeat_serveradmin[ 0 ] = 0;
-
-	bGameSpy = FALSE;
 
 	f = fopen( file, "r" );
 	if ( !f )

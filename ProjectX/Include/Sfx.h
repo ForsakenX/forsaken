@@ -572,20 +572,12 @@ enum {
 #define SFX_NUM_BIKE_PHRASES ( SFX_BIKER_EX - SFX_BIKER_GP + 1 )
 #define SFX_NUM_BIKECOMP_PHRASES ( SFX_Select_Trojax - SFX_BIKECOMP_AM + 1 )
 
-#ifdef WIN98SHAREWARE
-
-#define MAXBIKECOMPTYPES 1
-
-#else 
-
 #if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 #define MAXBIKECOMPTYPES 5
 #elif defined( VERSION_SPANISH ) || defined( VERSION_ITALIAN ) || defined( VERSION_FRENCH )
 #define MAXBIKECOMPTYPES 3
 #elif defined( VERSION_GERMAN )
 #define MAXBIKECOMPTYPES 4
-#endif
-
 #endif
 
 /*************************************

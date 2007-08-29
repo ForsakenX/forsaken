@@ -22,11 +22,6 @@
  * 
  * 15    1-08-97 11:03a Philipy
  * fixed start-up res problem
- * 
- * 14    31/07/97 15:57 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
- * 
  * 13    5/21/97 10:57a Phillipd
  * no need to specifically go to full screen ..it should go full screen
  * first time you run
@@ -388,13 +383,6 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
         }
     }
 
-#ifdef SELF_PLAY
-	if ( driver < 2 ) // only permit HAL for self-playing demo for hardware card manufacturers
-	{
-		D3DAppISetErrorString( "No D3D hardware driver found\n" );
-		goto exit_with_error;
-	}
-#endif
     /* 
      * At this stage, I have a driver I want to match the mode to.
      */

@@ -298,31 +298,6 @@ SPLASHSCREENINFO AttractSplashInfo = {
 	NULL,	// variable for post splash function
 };
 
-#if 0
-NEWSPLASHSCREENS NewSplashScreens[MAX_SPLASH_SCREENS] = {
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_ShowNext, 5000, "le", &BitmapSplashInfo },	// 0
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return | SPLASH_ShowNext, 5000, "aklm", &BitmapSplashInfo },	// 1
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return | SPLASH_ShowNext, 5000, "pr", &BitmapSplashInfo },	// 2
-#ifdef MINDSPRING
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return | SPLASH_ShowNext, 5000, "mind", &BitmapSplashInfo },	// 3
-#else
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return | SPLASH_ShowNext | SPLASH_Dummy, 5000, "mind", &BitmapSplashInfo },	// 3
-#endif
-#ifdef MARKET_USA
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return | SPLASH_ShowNext, 5000, "tt", &BitmapSplashInfo },	// 4
-	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return, 5000, "db", &LastBitmapSplashInfo },	// 5
-	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "fb", &BitmapSplashInfo },	// 6
-#else
-	{ SPLASH_TYPE_Bitmap, /*SPLASH_Timed |*/ SPLASH_Return | SPLASH_ShowNext, 5000, "us", &BitmapSplashInfo },	// 4
-	//{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_Return, 5000, "ds", &LastBitmapSplashInfo },	// 5
-	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "test", &AVISplashInfo },	// 5
-	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "fs", &BitmapSplashInfo },	// 6
-#endif
-
-	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "gamecomplete", &DemoSplashInfo },	// 7
-};
-#else
-
 NEWSPLASHSCREENS NewSplashScreens[MAX_SPLASH_SCREENS] = {
 	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_ShowNext, 5000, "le", &BitmapSplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed  | SPLASH_ShowNext, 15000, "acclaim", &LimitedDemoSplashInfo },	
@@ -334,7 +309,6 @@ NEWSPLASHSCREENS NewSplashScreens[MAX_SPLASH_SCREENS] = {
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "", &AttractSplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed, 330000, "probe", &LimitedDemoSplashInfo },	
 };
-#endif
 
 BOOL NoAVI = FALSE;
 BOOL InSplashDemo = FALSE;

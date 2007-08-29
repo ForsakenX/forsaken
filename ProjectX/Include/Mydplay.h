@@ -1917,7 +1917,6 @@ typedef struct _TRACKERINFOMSG
 	DWORD	freq;
 	int		type;
 	BOOL	shutdown;
-	BOOL	gamespy;
 }TRACKERINFOMSG, *LPTRACKERINFOMSG;
 
 // globals needed in other modules

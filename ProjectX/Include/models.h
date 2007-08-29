@@ -711,7 +711,6 @@ enum {
 	MODEL_BlueFlag,				// 99
 	MODEL_YellowFlag,			// 99
 
-#if !defined( SELF_PLAY ) && !defined( SHAREWARE ) && !defined( WIN98SHAREWARE ) && !defined( GATEWAY )
 	MODEL_Tom0,					// 100
 	MODEL_Tom1,
 	MODEL_Tom2,
@@ -739,10 +738,9 @@ enum {
 	MODEL_Tom24,
 	MODEL_Tom25,
 	MODEL_Tom26,
-#endif
 
 /*--------------- Bikes -----------------*/
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
+
 	MODEL_Borg,					// 127
 	MODEL_Borg_LOD1,
 	MODEL_Borg_LOD2,
@@ -753,7 +751,6 @@ enum {
 	MODEL_Borg_Stealth_LOD2,
 	MODEL_Borg_Stealth_LOD3,
 	MODEL_Borg_Stealth_LOD4,
-#endif
 
 	MODEL_Beard,				// 137
 	MODEL_Beard_LOD1,
@@ -766,7 +763,6 @@ enum {
 	MODEL_Beard_Stealth_LOD3,
 	MODEL_Beard_Stealth_LOD4,
 	
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
 	MODEL_LaJay,				// 147
 	MODEL_LaJay_LOD1,
 	MODEL_LaJay_LOD2,
@@ -777,7 +773,6 @@ enum {
 	MODEL_LaJay_Stealth_LOD2,
 	MODEL_LaJay_Stealth_LOD3,
 	MODEL_LaJay_Stealth_LOD4,
-#endif
 	
 	MODEL_Excop,				// 157
 	MODEL_Excop_LOD1,
@@ -801,7 +796,6 @@ enum {
 	MODEL_Trucker_Stealth_LOD3,
 	MODEL_Trucker_Stealth_LOD4,
 	
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
 	MODEL_Foetoid,				// 177
 	MODEL_Foetoid_LOD1,
 	MODEL_Foetoid_LOD2,
@@ -878,7 +872,6 @@ enum {
 	MODEL_HK5_Stealth_LOD2,
 	MODEL_HK5_Stealth_LOD3,
 	MODEL_HK5_Stealth_LOD4,
-#endif
 	
 	MODEL_Nubia,				// 247
 	MODEL_Nubia_LOD1,
@@ -890,8 +883,7 @@ enum {
 	MODEL_Nubia_Stealth_LOD2,
 	MODEL_Nubia_Stealth_LOD3,
 	MODEL_Nubia_Stealth_LOD4,
-	
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
+
 	MODEL_Mofisto,				// 257
 	MODEL_Mofisto_LOD1,
 	MODEL_Mofisto_LOD2,
@@ -902,7 +894,6 @@ enum {
 	MODEL_Mofisto_Stealth_LOD2,
 	MODEL_Mofisto_Stealth_LOD3,
 	MODEL_Mofisto_Stealth_LOD4,
-#endif
 
 	MODEL_Cerbero,				// 267
 	MODEL_Cerbero_LOD1,
@@ -915,7 +906,6 @@ enum {
 	MODEL_Cerbero_Stealth_LOD3,
 	MODEL_Cerbero_Stealth_LOD4,
 
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
 	MODEL_Slick,				// 277
 	MODEL_Slick_LOD1,
 	MODEL_Slick_LOD2,
@@ -926,7 +916,6 @@ enum {
 	MODEL_Slick_Stealth_LOD2,
 	MODEL_Slick_Stealth_LOD3,
 	MODEL_Slick_Stealth_LOD4,
-#endif
 
 /*---------------------------------------*/
 

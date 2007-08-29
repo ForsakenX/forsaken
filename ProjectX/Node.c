@@ -338,14 +338,12 @@ int     __cdecl _matherr(struct _exception * except)
 		unhandled_exceptions,
 		except->name, except->arg1, except->arg2,
 		except->retval, MathErrStrings[ except->type - 1 ] );
-#if !defined( SELF_PLAY ) && !defined( EXTERNAL_DEMO )
 	if ( !ignore )
 	{
 		if ( MsgBox( MB_OKCANCEL | MB_ICONEXCLAMATION, "MathErr() %s( %lf, %lf ) = %lf %s\n",
 			except->name, except->arg1, except->arg2, except->retval, MathErrStrings[ except->type - 1 ] ) != IDOK )
 			ignore = 1;
 	}
-#endif
 
 	return 0;
 }

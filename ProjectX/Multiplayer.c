@@ -336,9 +336,6 @@
  * 
  * 180   3/06/98 5:13p Phillipd
  * 
- * 179   4/03/98 12:54 Oliverc
- * Added ACCLAIM_EUROPE fingerprint and re-enabled IP protection 
- * 
  * 178   4/03/98 12:33 Oliverc
  * CTF mode fully enabled
  * 
@@ -493,8 +490,6 @@
  * Prevented demo playback from showing Current_Camera_View until that
  * player's position has been updated from the DMO file
  * 
- * 129   1/12/97 12:21 Oliverc
- * Disabled ReleaseView() for Attract mode in SELF_PLAY mode
  * 
  * 128   11/21/97 10:56a Phillipd
  * Max Kills to end a level....
@@ -554,9 +549,6 @@
  * 
  * 108   5-09-97 11:12a Philipy
  * demo playback stuff from new menus
- * 
- * 107   3/09/97 19:55 Oliverc
- * Forced player names & bike to match player slot number for ECTS demo
  * 
  * 106   1-09-97 5:47p Philipy
  * removed warnings....oops!
@@ -647,9 +639,6 @@
  * 
  * 72    30/04/97 10:58 Oliverc
  * Moved FingerPrint[] to lastcomp.c
- * 
- * 71    29/04/97 17:50 Oliverc
- * Disabled POWERVR_DEMO
  * 
  * 70    29/04/97 17:49 Oliverc
  * 
@@ -855,7 +844,10 @@
 #include "mxload.h"
 #include "mxaload.h"
 #include <stdio.h>
-#include "demo_id.h"
+
+#include "registry.h"
+#include "Local.h"
+
 #include "text.h"
 #include "ships.h"
 #include "LoadSave.h"
@@ -863,7 +855,6 @@
 #include "primary.h"
 #include "controls.h"
 #include "xmem.h"
-#include "Local.h"
 #include "dpthread.h"
 
 // required version of Direct Play is 6.0 (4.6.0.318)
@@ -941,9 +932,6 @@ extern	BOOL	MyBrightShips;
 
 extern float Pulse;
 extern char *EmptyString;
-#if defined (SELF_PLAY) || defined(ECTS)
-extern	LIST	BikeList;
-#endif
 
 extern	BOOL                    IsServer;
 extern	BOOL					IsHost;   // is the user hosting/joining a game
@@ -1053,8 +1041,6 @@ extern	BOOL	NoSFX;
 BOOL ServiceProviderSet = FALSE;
 
 BOOL IPAddressExists = FALSE;
-BOOL	E3DemoHost = FALSE;
-BOOL	E3DemoClient = FALSE;
 
 uint32	IPAddress = 0;
 char    IPAddressText[16];
@@ -1216,12 +1202,6 @@ void GetServiceProviders( MENU *Menu )
 BOOL WINAPI EnumServiceProviders(LPGUID lpGuid, LPTSTR lpSpName, DWORD dwMajorVersion,
 						         DWORD dwMinorVersion, LPVOID lpv)
 {
-#ifdef SHAREWARE
-	if (IsEqualGUID( lpGuid, &DPSPGUID_TCPIP) )
-	{
-		return TRUE;
-	}
-#endif
 	
 	if( ServiceProvidersList.items < MAXSERVICEPROVIDERS )
 	{
@@ -1523,12 +1503,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	if ( !IsLobbyLaunched )
 	{
-		if ( !E3DemoClient && !E3DemoHost )
 			d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-
-		// E3demo Must have a 5 minute limit....
-		if ( E3DemoClient || E3DemoHost )
-			TimeLimit.value = 5;
 
 		// create session
 		if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
@@ -1537,11 +1512,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 		}
 	
 		// create player
-#ifdef ECTS
-		if ((hr = DPlayCreatePlayer(&dcoID, BikeList.item[0], NULL, NULL, 0)) != DP_OK)
-#else
 		if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
-#endif
 		{
 		    return FALSE;
 		}
@@ -1588,23 +1559,12 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	StatsStatus = 1;						// I started it so the Stats Are Valid...
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-#ifdef ECTS
-	for( i = 0 ; i < 7 ; i++ )
-	{
-		// force player to use same name as his bike
-		Names[WhoIAm][i] = BikeList.item[WhoIAm % MAXBIKETYPES][i];
-	}
-	Names[WhoIAm][7] = 0;
-	Ships[WhoIAm].BikeNum = (int16) WhoIAm % MAXBIKETYPES;
-#else
     strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
 	Names[WhoIAm][7] = 0;
 	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
-#endif
 	
 	NewLevelNum = LevelList.selected_item;	// I Select Which Level We Start on...
 
-#ifndef SHAREWARE
 	if( TimeLimit.value )
 	{
 		CountDownOn = TRUE;
@@ -1613,12 +1573,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	{
 		CountDownOn = FALSE;
 	}
-#else
-	CountDownOn = TRUE;
-	if ( !TimeLimit.value )
-		TimeLimit.value = TimeLimit.max;
-#endif
-	
+
 
 	if( RecordDemo || RecordDemoToRam )
 	{
@@ -1636,11 +1591,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 			sprintf( DemoGameName.text, "%s's Demo %d.%02d %d-%d-%d",
 				biker_name,
 				now->tm_hour, now->tm_min,
-#ifdef MARKET_USA
 				1 + now->tm_mon, now->tm_mday,
-#else
-				now->tm_mday, 1 + now->tm_mon,
-#endif
 				1900 + now->tm_year );
 		}
 		else
@@ -1755,7 +1706,6 @@ void GetCurrentSessions( MENU *Menu )
 		SessionsRefresh[i] = FALSE;
 	}
 	
-	if ( !E3DemoClient && !E3DemoHost )
 		d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// enum sessions and we will decide the timeout
@@ -2130,10 +2080,6 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 	{
 		PlayerIDs[PlayersList.items] = pidID;
 
-#ifdef ECTS
-		strncpy( PlayersList.item[PlayersList.items] , BikeList.item[ PlayersList.items ] , sizeof(PlayersList.item[0])  );
-		if( strlen( BikeList.item[ PlayersList.items ] ) >= sizeof(PlayersList.item[0]) )
-#else
 #ifdef UNICODE
 		strncpy( PlayersList.item[PlayersList.items] , lpName->lpszShortName , sizeof(PlayersList.item[0])  );
 #else
@@ -2144,7 +2090,6 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 		if( strlen(lpName->lpszShortName ) >= sizeof(PlayersList.item[0]) )
 #else
 		if( strlen(lpName->lpszShortNameA ) >= sizeof(PlayersList.item[0]) )
-#endif
 #endif
 		{
 			strcpy( PlayersList.item[PlayersList.items] + sizeof(PlayersList.item[0]) - 4 , "..." );
@@ -2720,71 +2665,6 @@ BOOL Mymemcmp( BYTE * buf1 , BYTE * buf2 , int size )
 		}
 	}
 	return TRUE;
-}
-
-int CheckLegalIP( void )
-{
-#ifndef DISABLE_IP_CHECKING
-#if 0
-	int error;
-	struct hostent *hp;
-	static char hname[1024];
-#endif
-	struct
-	{
-		uint32 mask, addr;
-	} allowed_ip_address[] =
-	{
-		{ 0x00FFFFFFL, 0x001281C2L },	// Probe's local IP domain
-		{ 0x00FFFFFFL, 0x00006A64L },	/* Probe internal 100.106.0.?? */
-#ifdef EXTRA_IP
-		EXTRA_IP
-#endif
-		0, 0						// end of list
-	};
-	int j;
-	uint32 LoBytes = 0x000000FF;
-
-#if 0
-	if ( error = gethostname( hname, sizeof( hname ) ) )
-	{
-
-		error = WSAGetLastError();
-		switch( error )
-		{
-		case WSAEFAULT:
-			break;
-		case WSANOTINITIALISED:
-			break;
-		case WSAENETDOWN:
-			break;
-		case WSAEINPROGRESS:
-			break;
-		default:
-			break;
-		}
-		
-		return 0;
-	}
-
-	hp = gethostbyname ( hname );	
-	if ( !hp )
-		return 0;
-	IPAddress = *(uint32 *) *hp->h_addr_list;
-	sprintf(IPAddressText, "%d.%d.%d.%d", IPAddress & LoBytes, (IPAddress >> 8) & LoBytes, (IPAddress >> 16) & LoBytes, (IPAddress >> 24) & LoBytes);
-#endif
-
-	if(!IPAddressExists )
-		return 0;
-	for ( j = 0; allowed_ip_address[ j ].mask; j++ )
-	{
-		if ( ( IPAddress & allowed_ip_address[ j ].mask ) == allowed_ip_address[ j ].addr )
-			break;
-	}
-	if ( !allowed_ip_address[ j ].mask )
-		return 0; // invalid
-#endif
-	return 1;
 }
 
 int GetIPAdd( void )
@@ -3745,11 +3625,7 @@ BOOL StartAHostSessionServer( MENUITEM * Item )
 			sprintf( DemoGameName.text, "%s's Demo %d.%02d %d-%d-%d",
 				biker_name,
 				now->tm_hour, now->tm_min,
-#ifdef MARKET_USA
 				1 + now->tm_mon, now->tm_mday,
-#else
-				now->tm_mday, 1 + now->tm_mon,
-#endif
 				1900 + now->tm_year );
 		}
 		else

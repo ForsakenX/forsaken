@@ -180,12 +180,6 @@ BOOL LoadSpotFX( void )
 			if( Type == SPOTFX_SoundFX )
 			{
 				SoundFX = ReturnSFXIndex( &SFXFilename[ 0 ] );
-#if !defined( SHAREWARE ) && !defined( EXTERNAL_DEMO ) && !defined( FINAL_RELEASE )
-				if( SoundFX == -1 )
-				{
-					Msg( "SoundFX %s Does not exist\n", &SFXFilename[ 0 ] );
-				}
-#endif
 			}
 			else
 			{

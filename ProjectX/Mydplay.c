@@ -1038,12 +1038,6 @@
  * Also if player becomes host during titles, error message displayed &
  * menus quit back to start
  * 
- * 295   3/09/97 19:55 Oliverc
- * Forced player names & bike to match player slot number for ECTS demo
- * 
- * 294   3-09-97 3:42p Philipy
- * ECTS demo stuff
- * 
  * 293   3-09-97 12:29p Philipy
  * changed some team game messages
  * 
@@ -1065,9 +1059,6 @@
  * 286   31-07-97 5:26p Philipy
  * switched off buffering for demo playback
  * 
- * 285   31/07/97 15:57 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
  * 
  * 284   25/07/97 12:10 Collinsd
  * Changed ships bike index, and changed skin for olly.
@@ -1999,9 +1990,6 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt );
 #pragma optimize( "gty", on )
 #endif
 
-#if defined (SELF_PLAY) || defined(ECTS) || defined( SHAREWARE )
-extern	LIST	BikeList;
-#endif
 
 extern	SLIDER	MaxKillsSlider;
 int16	MaxKills = 0;
@@ -2089,7 +2077,6 @@ extern	BOOL		RandomPickups;
 extern	BOOL		HarmTeamMates;
 
 
-#if !defined ( SHAREWARE ) && !defined ( WIN98SHAREWARE )
 int16	BikeModels[ MAXBIKETYPES ] = {
 
 	MODEL_Borg,
@@ -2111,29 +2098,6 @@ int16	BikeModels[ MAXBIKETYPES ] = {
 	MODEL_Borg,
 
 };
-#else
-int16	BikeModels[ MAXBIKETYPES ] = {
-
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Excop,
-	MODEL_Trucker,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Beard,
-	MODEL_Nubia,
-	MODEL_Beard,
-	MODEL_Cerbero,
-	MODEL_Beard,
-	MODEL_Beard,
-
-};
-#endif
 
 char					MyName[ 32 ] = "Default game";
 char					NickName[ 32 ] = "Default game";
@@ -2406,15 +2370,10 @@ BOOL CheckForName( BYTE Player )
 			lpDpName = (LPDPNAME) &namebuf[0];
 			lpDpName->dwSize = sizeof(DPNAME);
 			NamePnt = (char*) &Names[Player][0];
-#if defined (ECTS)
-			// force player to use same name as his bike
-			NamePnt2 = &BikeList.item[Player % MAXBIKETYPES][0];
-#else
 #ifdef UNICODE
 			NamePnt2 = (char*) lpDpName->lpszShortName;
 #else				
 			NamePnt2 = (char*) lpDpName->lpszShortNameA;
-#endif				
 #endif
 			for( i = 0 ; i < 7 ; i++ )
 			{
@@ -2479,7 +2438,6 @@ void SendANormalUpdate( void )
  
 void DplayGameUpdate()
 {
-#ifndef SELF_PLAY
 	int i;
 	VECTOR	Move_Off;
 
@@ -2661,7 +2619,6 @@ void DplayGameUpdate()
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 		}
 	}
-#endif
 }
 
 
@@ -3333,7 +3290,6 @@ void smallinitShip( uint16 i )
 
 void ReceiveGameMessages( void )
 {
-#ifndef SELF_PLAY
 	DPID	dcoReceiveID;
     DWORD               nBytes;
 	BYTE * BufferPnt;
@@ -3526,7 +3482,6 @@ void ReceiveGameMessages( void )
 
 
 
-#endif
 }
 
 
@@ -4845,22 +4800,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		for( i = 0 ; i < 8 ; i++ )
 		{
-#if defined (SELF_PLAY) || defined (ECTS)
-			// force player to use same name as his bike
-			Names[lpName->WhoIAm][i] = BikeList.item[lpName->WhoIAm % MAXBIKETYPES][i];
-#elif defined( SHAREWARE )
-			if ( PlayDemo )
-			{
-				Names[lpName->WhoIAm][i] = BikeList.item[AllowedBike[lpName->WhoIAm % ALLOWED_BIKETYPES]][i];
-			}
-			else
-			{
-				Names[lpName->WhoIAm][i] = lpName->Name[i];
-			}
-#else
 			Names[lpName->WhoIAm][i] = lpName->Name[i];
-#endif
-  
 			if( WhoIAm < MAX_PLAYERS )
 				Names[WhoIAm][i] = biker_name[i];
 
@@ -6021,12 +5961,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case TEXTMSGTYPE_Taunt3:
 		case TEXTMSGTYPE_QuickTaunt:
 			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-#if defined( SHAREWARE )
-			if ( !PlayDemo )
-				AddMessageToQue( (char*)&tempstr[0] );
-#elif !defined( SELF_PLAY ) 
 			AddMessageToQue( (char*)&tempstr[0] );
-#endif
 			return;
 		case TEXTMSGTYPE_JoiningTeamGame:
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
@@ -6192,20 +6127,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		Ships[lpKillsDeathsMsg->WhoIAm].Kills = lpKillsDeathsMsg->Kills;
 		Ships[lpKillsDeathsMsg->WhoIAm].Deaths = lpKillsDeathsMsg->Deaths;
 
-#if defined( SELF_PLAY ) || defined (ECTS)
-		// force player to use different bike based on his player number
-		Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) AllowedBike[ lpKillsDeathsMsg->WhoIAm % MAXBIKETYPES ];
-#elif defined( SHAREWARE )
-		if ( PlayDemo )
-		{
-			// force player to use different bike based on his player number
-			Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) AllowedBike[ lpKillsDeathsMsg->WhoIAm % ALLOWED_BIKETYPES ];
-		}
-		else
-		{
-			Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) lpKillsDeathsMsg->BikeNum;
-		}
-#else
 	  	if( PlayDemo )
 		{
 			// if we are playing end game demo, we want to substitute the displayed bike for the players bike
@@ -6222,7 +6143,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		{
 			Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) lpKillsDeathsMsg->BikeNum;
 		}
-#endif
+
 		return;
 	case MSG_GAMEPARAMETERS:
 		lpGameParamMsg = ( LPGAMEPARAMETERSMSG )MsgPnt;
@@ -6473,7 +6394,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		heartbeat_freq = lpTrackerInfoMsg->freq;
 		heartbeat_type = lpTrackerInfoMsg->type;
 		SendShutdownPacket = lpTrackerInfoMsg->shutdown;
-		bGameSpy = lpTrackerInfoMsg->gamespy;
 		return;
 
 	case MSG_SHIELDHULL:
@@ -6585,7 +6505,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
-#ifndef SELF_PLAY
     LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
     LPUPDATEMSG			lpUpdate;
     LPFUPDATEMSG		lpFUpdate;
@@ -6740,26 +6659,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpName->WhoIAm = WhoIAm;
 		for( i = 0 ; i < 8 ; i++ )
 		{
-#if defined (SELF_PLAY) || defined (ECTS)
-			// force player to use same name as his bike
-			lpName->Name[i] = BikeList.item[lpName->WhoIAm % MAXBIKETYPES][i];
-
-			Names[WhoIAm][i] = BikeList.item[lpName->WhoIAm % MAXBIKETYPES][i];
-#elif defined( SHAREWARE )
-			if ( PlayDemo )
-			{
-				lpName->Name[i] = BikeList.item[AllowedBike[lpName->WhoIAm % ALLOWED_BIKETYPES]][i];
-				Names[lpName->WhoIAm][i] = BikeList.item[AllowedBike[lpName->WhoIAm % ALLOWED_BIKETYPES]][i];
-			}
-			else
-			{
-				lpName->Name[i] = biker_name[i];
-				Names[WhoIAm][i] = biker_name[i];
-			}
-#else
 			lpName->Name[i] = biker_name[i];
 			Names[WhoIAm][i] = biker_name[i];
-#endif
 		}
 		lpName->Name[7] = 0;
 		Names[WhoIAm][7] = 0;
@@ -7660,7 +7561,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpTrackerInfoMsg->freq = heartbeat_freq;
 		lpTrackerInfoMsg->type = heartbeat_type;
 		lpTrackerInfoMsg->shutdown = SendShutdownPacket;
-		lpTrackerInfoMsg->gamespy = bGameSpy;
 
 		nBytes = sizeof( TRACKERINFOMSG );
 
@@ -7742,7 +7642,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	{
 		OutputDebugString( "Dplay Send Error" );
 	}
-#endif
 }
 
 
@@ -7775,11 +7674,9 @@ void DemoPlayingDplayGameUpdate()
 			}
 		}else{
 			size = fread( &DemoTimeSoFar , sizeof(LONGLONG), 1, DemoFp );
-#ifndef SELF_PLAY
 //			if( (MyGameStatus == STATUS_PlayingDemo ) && ( ( ( GameElapsedTime * 1000.0F ) / Freq ) >= (1000.0F * 60.0F * 1.0F ) ) )
 			if( (MyGameStatus == STATUS_AttractMode ) && ( ( ( GameElapsedTime * 1000.0F ) / Freq ) >= (1000.0F * 60.0F * 5.0F ) ) )
 				size = 0;
-#endif
 			if( size != 1 || ferror(DemoFp) || feof(DemoFp) ) 
 			{
 				PreDemoEndMyGameStatus = MyGameStatus;

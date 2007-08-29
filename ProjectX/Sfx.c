@@ -1248,13 +1248,7 @@ LEVELSPEC_SFX_FILES LevelSpecificSfxLookup[ 256 ] = {
 	{ "", SFX_End },
 };
 
-#ifdef WIN98SHAREWARE
 
-char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
-	"BRE",	//	-	Brenda
-};
-
-#else
 
 #if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
@@ -1279,7 +1273,6 @@ char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
 };
 #endif
 
-#endif
 
 
 char *BikeComputerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {
@@ -1854,9 +1847,7 @@ int16 ReturnSFXIndex( char *file )
 		// if still not flags...
 		if ( !found )
 		{
-#if !defined( SHAREWARE ) && !defined( EXTERNAL_DEMO ) && !defined( FINAL_RELEASE )
 			Msg("Level specific sfx %s not found in LevelSpecificSfxLookup - please tell Phil\n", file);
-#endif
 			return -1;
 		}
 	}
@@ -1878,7 +1869,7 @@ int16 ReturnSFXIndex( char *file )
 		}
 	}
 
-#if !defined( SHAREWARE ) && !defined( EXTERNAL_DEMO ) && !defined( FINAL_RELEASE )
+#if _DEBUG
 	Msg("Too many sfx!! - Please tell Phil\n");
 #endif
 	return -1;

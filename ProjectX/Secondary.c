@@ -1792,19 +1792,7 @@ char *SecondaryDescription[MAXSECONDARYWEAPONS] = {
 // is weapon valid as far as order processing & keydefs concerned?
 BOOL SecondaryValid[ MAXSECONDARYWEAPONS ] =
 {
-#ifdef SHAREWARE
-	TRUE,	// mug
-	TRUE,	// solaris
-	FALSE,	// thief
-	FALSE,	// scatter
-	TRUE,	// gravgon
-	TRUE,	// mfrl
-	TRUE,	// titan
-	TRUE,	// purge
-	FALSE,	// pine
-	FALSE,	// quantum
-	FALSE,	// spider
-#else
+
 	TRUE,	// mug
 	TRUE,	// solaris
 	TRUE,	// thief
@@ -1816,7 +1804,7 @@ BOOL SecondaryValid[ MAXSECONDARYWEAPONS ] =
 	TRUE,	// pine
 	TRUE,	// quantum
 	FALSE,	// spider
-#endif
+
 };
 
 ENTRY		EntryList[ MAX_ENTRYS ];

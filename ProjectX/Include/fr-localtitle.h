@@ -784,7 +784,6 @@ Notes for translator:
 			
 #define MENU_NEW_CreateGamePseudoHost0 "Le serveur détecte des collisions"
 			
-#define LT_GameCompleteWin98Shareware "Bien joué, vous avez terminé la démo de forsaken. Si vous l'avez apprécier, pourquoi n'achèteriez vous pas le jeu complet ?"
 			
 #define LT_MENU_NEW_ChooseConnectionToStart1 "Appuyer sur esc pour quitter"
 			

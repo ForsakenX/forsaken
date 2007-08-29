@@ -616,7 +616,6 @@ void SetupGameCompleteCredits( void )
 		case GAMECOMPLETE_GotAllCrystalsSoFar:
 		case GAMECOMPLETE_Cheated:
 		case GAMECOMPLETE_AdditionalLevels:
-		case GAMECOMPLETE_Win98Shareware:
 			break;
 
 		default:

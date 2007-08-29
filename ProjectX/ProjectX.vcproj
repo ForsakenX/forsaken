@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
-				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,PROTECT_IP,BSP,OPT_ON,DEBUG_ON"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,OPT_ON,DEBUG_ON,_CRT_SECURE_NO_WARNINGS"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug_OPT_ON\"
@@ -140,7 +140,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
-				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,PROTECT_IP,BSP,DEBUG_ON,MANUAL_SESSIONDESC_PROPAGATE,FINAL_RELEASE"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,DEBUG_ON,MANUAL_SESSIONDESC_PROPAGATE,FINAL_RELEASE,_CRT_SECURE_NO_WARNINGS"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug\trash\"
@@ -233,7 +233,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
-				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,USEASM"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,USEASM,_CRT_SECURE_NO_WARNINGS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -265,6 +265,100 @@
 				SuppressStartupBanner="true"
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
+				SubSystem="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Debug - Remote Cam|Win32"
+			OutputDirectory=".\temp\ProjectX___Debug_RemoteCam"
+			IntermediateDirectory=".\temp\ProjectX___Debug_RemoteCam"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="_DEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\temp\ProjectX___Debug_RemoteCam\ProjectX.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
+				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,DEBUG_ON,MANUAL_SESSIONDESC_PROPAGATE,FINAL_RELEASE,_CRT_SECURE_NO_WARNINGS,REMOTE_CAMERA_ENABLED"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\temp\ProjectX___Debug_RemoteCam\trash\ProjectX.pch"
+				AssemblerListingLocation=".\temp\ProjectX___Debug_RemoteCam\trash\"
+				ObjectFile=".\temp\ProjectX___Debug_RemoteCam\trash\"
+				ProgramDataBaseFileName=".\temp\ProjectX___Debug_RemoteCam\trash\"
+				WarningLevel="3"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="_DEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				OutputFile="..\skeleton\ProjectX___Debug_RemoteCam.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				IgnoreAllDefaultLibraries="false"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\temp\ProjectX___Debug_RemoteCam\ProjectX.pdb"
 				SubSystem="2"
 			/>
 			<Tool
@@ -482,14 +576,6 @@
 			</File>
 			<File
 				RelativePath="goal.c"
-				>
-			</File>
-			<File
-				RelativePath="gsutils.c"
-				>
-			</File>
-			<File
-				RelativePath="lastcomp.c"
 				>
 			</File>
 			<File
@@ -774,10 +860,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\demo_id.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\Dpthread.h"
 				>
 			</File>
@@ -834,19 +916,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\gsutils.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\it-localtitle.h"
 				>
 			</File>
 			<File
 				RelativePath="Include\ItalianLocal.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\lastcomp.h"
 				>
 			</File>
 			<File
@@ -951,6 +1025,10 @@
 			</File>
 			<File
 				RelativePath="Include\Readini.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\registry.h"
 				>
 			</File>
 			<File

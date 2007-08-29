@@ -98,7 +98,10 @@ num_start_points : uint16
 #include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
-#include "demo_id.h"
+
+#include "registry.h"
+#include "Local.h"
+
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"

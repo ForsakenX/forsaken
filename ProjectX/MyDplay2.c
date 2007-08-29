@@ -53,8 +53,6 @@
  * 21    9/29/97 11:55a Phillipd
  * Dawn of a new age with directplay 3
  * 
- * 20    31/07/97 15:57 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
  * code and setting default values appropriate to demo attract mode
  * 
  * 19    17/07/97 15:38 Collinsd
@@ -198,7 +196,6 @@ DWORD WINAPI	ReceiveThread(LPVOID lpThreadParameter);
 
 HRESULT SetupConnection(HINSTANCE hInstance)
 {
-#ifndef SELF_PLAY
 	HRESULT		hr;
 
 	hPlayerEvent = NULL;					// player event to use
@@ -275,14 +272,10 @@ FAILURE:
 	ShutdownConnection();
 
 	return (hr);
-#else
-	return DP_OK;
-#endif
 }
 
 HRESULT ShutdownConnection(void)
 {
-#ifndef SELF_PLAY
 	StopDemoRecording();
 	
 	if (ghReceiveThread)
@@ -316,13 +309,11 @@ HRESULT ShutdownConnection(void)
 	{
 		free(Buffer2Pnt);
 	}
-#endif	
 	return (DP_OK);
 }
 
 DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter)
 {
-#ifndef SELF_PLAY
 	HANDLE		eventHandles[2];
 
 	eventHandles[0] = hPlayerEvent;
@@ -339,7 +330,6 @@ DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter)
 
 	ExitThread(0);
 
-#endif
 	return (0);
 }
 
@@ -348,7 +338,6 @@ DWORD WINAPI ReceiveThread(LPVOID lpThreadParameter)
 
 HRESULT ReceiveMessage(void)
 {
-#ifndef SELF_PLAY
 	DPID				idFrom,idTo;
 	DWORD				dwMsgBufferSize;
 	HRESULT				hr;
@@ -462,7 +451,6 @@ HRESULT ReceiveMessage(void)
 //		Msg( "Dplay error" );
 		break;
 	}
-#endif
 	return (DP_OK);
 }
 

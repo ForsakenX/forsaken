@@ -182,16 +182,15 @@
  */
 
 #include "typedefs.h"
-#include "demo_id.h"
+
+#include "registry.h"
+#include "Local.h"
+
 
 #include "resource.h"
 #include "d3dmain.h"
 #include "main.h"
 #include "dsound.h"
-#ifdef PCIDENT
-#include "finger.h"
-#define PCIDENT_FILE "data\\offsets.dat"
-#endif
 #include "dbt.h"
 
 #ifdef SOFTWARE_ENABLE
@@ -254,10 +253,7 @@ extern	BOOL	SoftwareVersion;
 	extern int LogosEnable;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
-	extern BOOL	E3DemoHost;
-	extern BOOL	E3DemoClient;
 	extern	BOOL	PowerVR_Overide;
-	extern	BOOL	E3DemoLoop;
 	extern	BOOL	Is3Dfx;
 	extern	BOOL	Is3Dfx2;
 	extern	BOOL	TriLinear;
@@ -269,7 +265,6 @@ extern	BOOL	SoftwareVersion;
 	extern	BOOL	PolygonText;
 	extern	BOOL	UseSendAsync;
 	extern	float	UV_Fix;
-	extern BOOL	ECTSDemo;
 	extern BOOL AllWires;
 	extern BOOL NoAVI;
 	extern BOOL CanDoStrechBlt;
@@ -614,8 +609,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 #ifdef EXTERNAL_DEMO
     myglobs.bShowFrameRate = FALSE;
 #else
-
-	myglobs.bShowFrameRate = ( ECTSDemo || E3DemoHost || E3DemoClient || E3DemoLoop ) ? FALSE : TRUE;
+	myglobs.bShowFrameRate = TRUE;
 #endif
 
     return TRUE;
@@ -640,11 +634,7 @@ CreateD3DApp(LPSTR lpCmdLine)
     BOOL bOnlySystemMemory, bOnlyEmulation;
     DWORD flags;
     Defaults defaults;
-#if defined( SHAREWARE_MAGAZINE ) || defined( SHAREWARE_RETAIL ) || defined( SHAREWARE_INTERNET ) || defined( SHAREWARE_TCP )
-	BOOL game_ok = TRUE;
-#else
 	BOOL game_ok = FALSE;
-#endif
 	char * DataPath;
 	char *cmdlineptr;
 	char tempcmdline[ 256 ];
@@ -669,21 +659,7 @@ CreateD3DApp(LPSTR lpCmdLine)
     bOnlySystemMemory = FALSE;
     bOnlyEmulation = FALSE;
 
-	E3DemoHost = FALSE;
-	E3DemoClient = FALSE;
-#if defined( ECTS )
 	LogosEnable = 1;
-#endif
-#ifdef SELF_PLAY
-	E3DemoLoop = TRUE;
-#ifdef BOOT_DEMO
-	LogosEnable = 2;
-#else
-	LogosEnable = 1;
-#endif
-#else
-	E3DemoLoop = FALSE;
-#endif
 	PowerVR_Overide = FALSE;
 	Is3Dfx = FALSE;
 	Is3Dfx2 = FALSE;
@@ -692,7 +668,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 	TextureMemory = 0;
 	MipMap = FALSE;
 	TripleBuffer = FALSE;
-	ECTSDemo = FALSE;
 	NoTextureScaling = FALSE;
 	DplayRecieveThread = FALSE;
 	PolygonText = FALSE;
@@ -737,14 +712,8 @@ CreateD3DApp(LPSTR lpCmdLine)
             bOnlyEmulation = TRUE;
         } else if (!_stricmp(option, "xmen")) {
             game_ok = TRUE;
-        } else if (!_stricmp(option, "E3DemoHost")) {
-			E3DemoHost = TRUE;
         } else if (!_stricmp(option, "DS")) {
 			DS = TRUE;
-        } else if (!_stricmp(option, "E3DemoClient")) {
-			E3DemoClient = TRUE;
-        } else if (!_stricmp(option, "E3DemoLoop")) {
-			E3DemoLoop = TRUE;
         } else if (!_stricmp(option, "PowerVR")) {
 			PowerVR_Overide = TRUE;
         } else if (!_stricmp(option, "3Dfx")) {
@@ -768,8 +737,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 			MipMap = TRUE;
         } else if (!_stricmp(option, "TripleBuffer")) {
 			TripleBuffer = TRUE;
-        } else if (!_stricmp(option, "ECTS")) {
-			ECTSDemo = TRUE;
         } else if (!_stricmp(option, "BatchFile")) {
             CreateBatchFile = TRUE;
         } else if (!_stricmp(option, "LogFile")) {
@@ -925,7 +892,6 @@ CreateD3DApp(LPSTR lpCmdLine)
         }
         option = strtok(NULL, " -+");
     }
-#ifndef SELF_PLAY
 
 	GetGamePrefs();
 	GetDeviceGuid();
@@ -944,7 +910,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 		}
 		default_bpp = ScreenBPP;
 	}
-#endif
 	if ( !default_bpp )
 		default_bpp = 16;
     /*

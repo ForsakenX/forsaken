@@ -16,14 +16,6 @@
 #define HEARTBEAT_PlayersList	( 1 << 6 )	// player(text), score(word), ping( 3 bytes ) 	( for all players )
 #define HEARTBEAT_ValidPickups	( 1 << 7 )	// 64 bit packed
 #define HEARTBEAT_ExtraInfo		( 1 << 8 )	// lag tolerance, bright bikes, bike exhausts, randomise pickups ( packed byte )
-#define HEARTBEAT_GAMESPY_Pulse ( 1 << 9 )
-#define HEARTBEAT_GAMESPY_Basic ( 1 << 10 )
-#define HEARTBEAT_GAMESPY_Info	( 1 << 11 )
-#define HEARTBEAT_GAMESPY_Rules ( 1 << 12 )
-#define HEARTBEAT_GAMESPY_Players ( 1 << 13 )
-#define HEARTBEAT_GAMESPY_Status ( 1 << 14 )
-#define HEARTBEAT_GAMESPY_Echo ( 1 << 15 )
-#define HEARTBEAT_GAMESPY_Secure ( 1 << 16 )
 
 extern uint16 PlayerPort[];
 extern u_short host_port;
@@ -35,7 +27,6 @@ extern u_short tracker_port;
 extern DWORD	heartbeat_freq;
 extern int	heartbeat_type;
 extern BOOL SendShutdownPacket;
-extern BOOL bGameSpy;
 extern BOOL TrackerOveride;
 
 extern BOOL WSA_Active;
@@ -46,7 +37,6 @@ BOOL DPStartThreadListenOnly( void );
 BOOL read_heartbeat_info( char *file );
 void UpdatePlayerInfo( void );
 BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz);
-void PostGamespyServerInfo( struct sockaddr_in *addr );
 void InitTrackersList( MENU *menu );
 void ExitSetUpTracker( MENU *menu );
 BOOL GetTrackerFiles( void );

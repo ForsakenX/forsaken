@@ -1246,9 +1246,7 @@ BOOL CollectPickup( uint16 i )
 	float	Sfx_Volume = 1.0F;
 	int16	Temp;
 
-#ifndef SHAREWARE
 	float	TempFloat;
-#endif
 
 	uint8	Message[ 128 ];
 	int16	MessageSFX = -1;
@@ -1281,7 +1279,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Pyrolite:
-#ifndef SHAREWARE
+
 				if( !PrimaryWeaponsGot[ PYROLITE_RIFLE ] )
 				{
 					PrimaryWeaponsGot[ PYROLITE_RIFLE ] = 1;
@@ -1303,14 +1301,11 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					sprintf( &Message[0], YOU_ALREADY_HAVE_A, Messages[ Pickups[i].Type ] );
 				}
-#else
-				PickupEnable = FALSE;
-#endif
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Transpulse:
-#ifndef SHAREWARE
+
 				if( !PrimaryWeaponsGot[ TRANSPULSE_CANNON ] )
 				{
 					PrimaryWeaponsGot[ TRANSPULSE_CANNON ] = 1;
@@ -1324,9 +1319,7 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					sprintf( &Message[0], YOU_ALREADY_HAVE_A, Messages[ Pickups[i].Type ] );
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1356,7 +1349,6 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Laser:
-#ifndef SHAREWARE
 				if( !PrimaryWeaponsGot[ LASER ] )
 				{
 					PrimaryWeaponsGot[ LASER ] = 1;
@@ -1369,9 +1361,7 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1428,7 +1418,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Thief:
-#ifndef SHAREWARE
+
 				if( !SecondaryAmmo[ THIEFMISSILE ] )
 				{
 					SecondaryAmmo[ THIEFMISSILE ] += 1;
@@ -1441,14 +1431,11 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Scatter:
-#ifndef SHAREWARE
+
 				if( SecondaryAmmo[ SCATTERMISSILE ] < 3 )
 				{
 					SecondaryAmmo[ SCATTERMISSILE ] += 1;
@@ -1460,10 +1447,8 @@ BOOL CollectPickup( uint16 i )
 					sprintf( &Message[0], YOU_ALREADY_HAVE_MAX, Messages[ Pickups[i].Type ] );
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
-				}
-#else
-				PickupEnable = FALSE;
-#endif
+        }
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1545,7 +1530,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_PinePickup:
-#ifndef SHAREWARE
+
 				if( SecondaryAmmo[ PINEMINE ] < 6 )
 				{
 					SecondaryAmmo[ PINEMINE ] += 3;
@@ -1564,14 +1549,12 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_QuantumPickup:
-#ifndef SHAREWARE
+
 				if( !SecondaryAmmo[ QUANTUMMINE ] )
 				{
 					SecondaryAmmo[ QUANTUMMINE ] += 1;
@@ -1584,14 +1567,12 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_SpiderPod:
-#ifndef SHAREWARE
+
 				if( SecondaryAmmo[ SPIDERMINE ] < 6 )
 				{
 					SecondaryAmmo[ SPIDERMINE ] += 3;
@@ -1609,25 +1590,16 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Parasite:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Flare:
-#ifndef SHAREWARE
 				MessageSFX = SFX_BIKECOMP_FL;
-#else
-				PickupEnable = FALSE;
-#endif
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1664,7 +1636,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_PyroliteAmmo:
-#ifndef SHAREWARE
+
 				if( ( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) )
 				{
 					if( CopyOfPyroliteAmmo < MAXPYROLITEAMMO )
@@ -1693,9 +1665,7 @@ BOOL CollectPickup( uint16 i )
 						MessageSFX = SFX_BIKECOMP_MA;
 					}
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1782,7 +1752,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_GoldenPowerPod:
-#ifndef SHAREWARE
+
 				if( !( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) )
 				{
 					GivemeSuperNashram();
@@ -1794,9 +1764,7 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1820,7 +1788,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Inv:
-#ifndef SHAREWARE
+
 				if( !Ships[ WhoIAm ].Invul )
 				{
 					Ships[ WhoIAm ].InvulTimer = INVULNERABILITY_TIME;
@@ -1834,9 +1802,7 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1848,23 +1814,19 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Computer:
-#ifndef SHAREWARE
+
 				TargetComputerOn = TRUE;
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Smoke:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Nitro:
-#ifndef SHAREWARE
+
 				if( ( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) )
 				{
 					if( CopyOfNitroFuel < MAX_NITRO_FUEL )
@@ -1905,16 +1867,12 @@ BOOL CollectPickup( uint16 i )
 						PickupEnable = FALSE;
 					}
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Goggles:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1939,7 +1897,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Mantle:
-#ifndef SHAREWARE
+
 				if( !( Ships[ WhoIAm ].Object.Flags & SHIP_Stealth ) )
 				{
 					Ships[ WhoIAm ].Object.Flags |= SHIP_Stealth;
@@ -1953,9 +1911,7 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-#else
-				PickupEnable = FALSE;
-#endif
+
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1976,9 +1932,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_DNA:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				MessageSFX = SFX_PickupGeneral;
 				Speech = FALSE;
 				ShowTextAnyway = TRUE;
@@ -1986,9 +1940,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_SkeletonKey:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				MessageSFX = SFX_PickupGeneral;
 				Speech = FALSE;
 				ShowTextAnyway = TRUE;
@@ -1996,9 +1948,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Bomb:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				MessageSFX = SFX_PickupGeneral;
 				Speech = FALSE;
 				ShowTextAnyway = TRUE;
@@ -2006,9 +1956,7 @@ BOOL CollectPickup( uint16 i )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_GoldFigure:
-#ifdef SHAREWARE
-				PickupEnable = FALSE;
-#endif
+
 				MessageSFX = SFX_PickupGeneral;
 				Speech = FALSE;
 				ShowTextAnyway = TRUE;
@@ -2026,9 +1974,7 @@ BOOL CollectPickup( uint16 i )
 					sprintf( CTFMessage, SOMEONE_HAS_GOT_THE_FLAG, Names[ WhoIAm ], TeamName[ TeamNumber[ WhoIAm ] ] );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_CaptureFlagMessage, 0);
 					
-#ifdef SHAREWARE
-					PickupEnable = FALSE;
-#endif
+
 				}
 				break;
 
@@ -2042,10 +1988,7 @@ BOOL CollectPickup( uint16 i )
 					AddMessageToQue( YOU_HAVE_GOT_THE_BOUNTY );
 					
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_BountyMessage, 0);
-					
-#ifdef SHAREWARE
-					PickupEnable = FALSE;
-#endif
+
 				}
 				break;
 
@@ -2117,9 +2060,7 @@ BOOL CollectPickup( uint16 i )
 						}
 					}
 					
-#ifdef SHAREWARE
-					PickupEnable = FALSE;
-#endif
+
 				}
 				break;
 

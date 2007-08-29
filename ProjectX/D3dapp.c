@@ -78,11 +78,6 @@
  * 
  * 16    16/09/97 10:59 Collinsd
  * Added Chris's code
- * 
- * 15    31/07/97 15:57 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
- * 
  * 14    6/16/97 2:57p Phillipd
  * Tripple buffering can now be done....
  * 

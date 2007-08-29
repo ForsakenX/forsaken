@@ -337,7 +337,7 @@ BOOL PackAndCopy(void *dest, uint8 * uint8pnt, LPDDSURFACEDESC lpFormat, int pit
 	s++, m >>= 1);
 	blue_shift = s;
 	blue_scale = 255 / (format.ddpfPixelFormat.dwBBitMask >> s);
-	if( format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS != 0 )
+	if( (format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0 )
 	{
 		for (s = 0, m = format.ddpfPixelFormat.dwRGBAlphaBitMask ; !(m & 1);
 		s++, m >>= 1);

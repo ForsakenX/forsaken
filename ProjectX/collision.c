@@ -1847,7 +1847,9 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 
 		if ( !not_bsp++ )
 		{
+#ifdef POLYGONAL_COLLISIONS
 			Msg( "Polygonal collisions still being used -- THIS WILL FAIL!" );
+#endif
 		}
 
 #ifdef POLYGONAL_COLLISIONS

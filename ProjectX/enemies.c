@@ -957,9 +957,6 @@ VECTOR	Avatar5AimPos = { ( -360.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ), 
 VECTOR	DummyAimPos = { 0.0F, 0.0F, 0.0F };
 
 ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
-#ifdef SELF_PLAY
-;
-#else
 = {
 	{	"Beamtrt.cob",
 		NO_STEALTH_MODE,
@@ -3764,7 +3761,6 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 },				// 55 FlyGirl
 
 };
-#endif
 
 ENEMY * TestEnemy = NULL;
 	
@@ -3784,7 +3780,6 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move );
 BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy );
 void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy );
 
-#ifndef SELF_PLAY
 void EnemyFlyUnderPlayerControl( ENEMY * Enemy );
 void EnemyFlyUnderAiControl( ENEMY * Enemy );
 void EnemyCrawlUnderPlayerControl( ENEMY * Enemy );
@@ -3795,7 +3790,6 @@ void EnemyUnderSplineControl( ENEMY * Enemy );
 void EnemyUnderExogenonControl( ENEMY * Enemy );
 void EnemyUnderFleshMorphControl( ENEMY * Enemy );
 void EnemyUnderLittleGeekControl( ENEMY * Enemy );
-#endif
 void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object );
 void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, uint16 Group , uint16 * DestGroup );
 BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move );
@@ -3803,7 +3797,6 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos);
 void AutoDisplayMatrix( OBJECT * Object );
 
 	
-#ifndef SELF_PLAY
 void (* EnemyControlType[ ])( ENEMY * Enemy ) = {
 	NULL,
 	EnemyFlyUnderPlayerControl,
@@ -3817,7 +3810,6 @@ void (* EnemyControlType[ ])( ENEMY * Enemy ) = {
 	EnemyUnderLittleGeekControl,
 	EnemyUnderFleshMorphControl,
 };
-#endif
 
 _inline
 void AccellDecell(  float *  value ,  float  Decell ) 
@@ -4232,7 +4224,6 @@ void ReleaseAllEnemies( void )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL PreLoadEnemies( void )
 {
-#ifndef SELF_PLAY
 	FILE	*	fp;
 	int16		Count;
 	char	*	NewExt = ".NME";
@@ -4436,10 +4427,6 @@ BOOL PreLoadEnemies( void )
 
 		fclose( fp );
 	}
-#endif
-
-	
-	
 	return( TRUE );
 }
 
@@ -4450,7 +4437,6 @@ BOOL PreLoadEnemies( void )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL LoadEnemies( void )
 {
-#ifndef SELF_PLAY
 	FILE	*	fp;
 	int16		Count;
 	int16		CompCount;
@@ -5151,8 +5137,6 @@ BOOL LoadEnemies( void )
 		}
 		Enemy = Enemy->NextUsed;
 	}
-#endif
-
 	return( TRUE );
 }
 
@@ -5173,7 +5157,6 @@ BOOL LoadEnemies( void )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 Group, uint16 ModelNum, uint16 TriggerMod , uint16 EnemyType , uint32 Network , int32 PickupHeld , uint16 FormationLink , float GenerationDelay)
 {
-#ifndef SELF_PLAY
 	int16		Count;
 	ENEMY	*	Enemy;
 	uint16		ModelIndex;
@@ -5373,8 +5356,6 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 		return( Enemy );
 	
 	}
-
-#endif
 	return( NULL );
 }
 
@@ -5385,7 +5366,6 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void ProcessEnemies( void )
 {
-#ifndef SELF_PLAY
 	GUNOBJECT	*	GunObject;
 	ENEMY		*	Enemy;
 	ENEMY		*	NextEnemy;
@@ -5605,7 +5585,6 @@ void ProcessEnemies( void )
 KilledInAI:
 		Enemy = NextEnemy;
 	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -5667,7 +5646,6 @@ void SetCurAnimSeq( int16 Seq, OBJECT * Object )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void EnableEnemy( uint16 EnemyIndex )
 {
-#ifndef SELF_PLAY
 	ENEMY	*	Enemy;
 	VECTOR		TempVector;
 	VECTOR		DirVector;
@@ -5725,7 +5703,6 @@ void EnableEnemy( uint16 EnemyIndex )
 			PlayEnemyBikerTaunt( Enemy );
 		}
 	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -5735,14 +5712,12 @@ void EnableEnemy( uint16 EnemyIndex )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void DisableEnemy( ENEMY * Enemy )
 {
-#ifndef SELF_PLAY
 	Enemy->Status &= ~ENEMY_STATUS_Enable;
 
 	if( Enemy->TriggerModPtr != NULL )
 	{
 		ApplyTriggerMod( Enemy->TriggerModPtr );
 	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -5777,7 +5752,6 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 //	return( NULL );
 
 	ClosestEnemy = NULL;
-#ifndef SELF_PLAY
 	ClosestLength = *Dist;
 
 	Enemy = FirstEnemyUsed;
@@ -5903,13 +5877,11 @@ SkipIt:
 
 	if( ClosestEnemy != NULL ) *Dist = ClosestLength;
 
-#endif
 	return( ClosestEnemy );
 }
 
 
 
-#ifndef SELF_PLAY
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Flying Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
@@ -6170,11 +6142,6 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 }
 
 
-
-
-#endif
-
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Carry out all movement / collision/ turning...
 	Output		:	OBJECt * Object
@@ -6182,7 +6149,6 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 {
-#ifndef SELF_PLAY
 	VECTOR	ImpactPoint;
 	float	Speed;
 	VECTOR	Move_Off;	
@@ -6366,8 +6332,6 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 		Object->Angle.x = 0.0F;
 		Object->Angle.y = 0.0F;
 	}
-
-#endif
 }
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Carry out all movement / collision/ turning for a Crawling Enemy...
@@ -6376,7 +6340,6 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 {
-#ifndef SELF_PLAY
 	VECTOR	Move_Off = { 0.0F , 0.0F , 0.0F };	
 	MATRIX	StepMat;	
 	VECTOR	StartPos;
@@ -6592,11 +6555,6 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 			Enemy->AIMoveRestrictClearTime = 30.0F + Random_Range_Float (30.0F) ;
 		}
 	}
-
-
-
-
-#endif
 }
 
 
@@ -6608,7 +6566,6 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 {
-#ifndef SELF_PLAY
 	MATRIX	StepMat;	
 
 	AccellDecell( &Object->Angle.y , EnemyTypes[Enemy->Type].TurnRateDecell );
@@ -6617,7 +6574,6 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 	MatrixTranspose( &Object->Mat, &Object->InvMat );
 	Object->FinalMat = Object->Mat;
 	Object->FinalInvMat = Object->InvMat;
-#endif
 }
 
 
@@ -6638,7 +6594,6 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 __inline
 void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, uint16 Group , uint16 * DestGroup )
 {
-#ifndef SELF_PLAY
 	VECTOR	MoveOffset;
 	MoveOffset.x = ( xoff*Right->x ) + ( zoff*Forward->x );
 	MoveOffset.y = ( xoff*Right->y ) + ( zoff*Forward->y );
@@ -6648,7 +6603,6 @@ void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zof
 	DestPos->y = SourcePos->y + MoveOffset.y;
 	DestPos->z = SourcePos->z + MoveOffset.z;
 	*DestGroup = MoveGroup( &Mloadheader, SourcePos, Group, &MoveOffset );
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -6659,13 +6613,11 @@ void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zof
 __inline
 void AutoDisplay( OBJECT * Object )
 {
-#ifndef SELF_PLAY
 	QuatToMatrix( &Object->Quat, &Object->Mat );
 	MatrixTranspose( &Object->Mat, &Object->InvMat );
 	Object->FinalQuat = Object->Quat;
 	Object->FinalMat = Object->Mat;
 	Object->FinalInvMat = Object->InvMat;
-#endif
 }
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Carry out all updating of quats/mats..
@@ -6675,18 +6627,15 @@ void AutoDisplay( OBJECT * Object )
 __inline
 void AutoDisplayMatrix( OBJECT * Object )
 {
-#ifndef SELF_PLAY
 	MatrixTranspose( &Object->Mat, &Object->InvMat );
 	Object->FinalQuat = Object->Quat;
 	Object->FinalMat = Object->Mat;
 	Object->FinalInvMat = Object->InvMat;
-#endif
 }
 
 
 
 
-#ifndef SELF_PLAY
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Carry out the movement required by AI....
 	Output		:	ENEMY	*	Enemy 
@@ -7005,7 +6954,6 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 		Object->Angle.x	= 0.0F;
 	}
 }
-#endif
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Get Display Matrix of last
 				:	user controlled componented object.
@@ -7018,7 +6966,6 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16 BaseIndex )
 {
-#ifndef SELF_PLAY
 	int16	Last = -1;
 
 	if( Object->UserContComps[ BaseIndex + 1 ] )
@@ -7043,7 +6990,6 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 	MatrixMultiply( Matrix, &Object->UserContComps[ Last ]->InitMatrix, Matrix );
 	MatrixTranspose( Matrix, TMatrix );
 
-#endif
 	return( TRUE );
 }
 
@@ -7056,7 +7002,6 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 {
-#ifndef SELF_PLAY
 	if( Object->UserContComps[ BaseIndex ] )
 	{
 		Object->UserContComps[ BaseIndex ]->UserAngle = D2R( -Vector->y );
@@ -7066,7 +7011,6 @@ void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 	{
 		Object->UserContComps[ BaseIndex + 1 ]->UserAngle = D2R( Vector->x );
 	}
-#endif
 }
 
 
@@ -7079,7 +7023,6 @@ void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 {
-#ifndef SELF_PLAY
 	GUNOBJECT * GunObject;
 	int i;
 	
@@ -7118,7 +7061,6 @@ void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 		GunObject->FirePosCount = 0;
 		GunObject++;
 	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -7129,7 +7071,6 @@ void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 {
-#ifndef SELF_PLAY
 	VECTOR v;
 	ApplyMatrix( &Enemy->Object.InvMat , Move , &v);
 
@@ -7164,7 +7105,6 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 		// Probably no Forward Movement...
 		Enemy->AIMoveFlags |= AI_CONTROL_NO_FORWARD;
 	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -7175,7 +7115,6 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 {
-#ifndef SELF_PLAY
 	ENEMY * TEnemy;
 	float Move_Length;
 	VECTOR	Move_Dir;
@@ -7222,7 +7161,6 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	}
 	return FALSE;
 
-#endif
 }
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Enemy to Enemy Collide Special for crawling enemies only..
@@ -7231,7 +7169,6 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 {
-#ifndef SELF_PLAY
 	ENEMY * TEnemy;
 	float Move_Length;
  	float Move_Length2;
@@ -7264,7 +7201,6 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 	}
 	return FALSE;
 
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -8249,7 +8185,6 @@ void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 {
-#ifndef SELF_PLAY
 	float	Speed;
 	VECTOR	Move_Off;	
 	VECTOR	Move_Dir;
@@ -8311,7 +8246,6 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 	Object->Pos.z += Move_Off.z;
 
 	Object->Group = MoveGroup( &Mloadheader, &StartPos, Object->Group, &Move_Off );
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -8321,7 +8255,6 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 {
-#ifndef SELF_PLAY
 	VECTOR	ImpactPoint;
 	VECTOR	Move_Off;	
 	uint16	ImpactGroup;
@@ -8453,7 +8386,6 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 		return TRUE;
 	else
 		return FALSE;
-#endif
 }
 
 

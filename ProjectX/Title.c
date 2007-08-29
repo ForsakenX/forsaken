@@ -1155,9 +1155,6 @@
  * 312   29/12/97 19:53 Philipy
  * various bug fixes
  * 
- * 311   29/12/97 9:16 Philipy
- * Shareware bug fixes
- * 
  * 310   24/12/97 9:17 Philipy
  * fixed a few minor spelling errors, plus 800x600 corruption
  * 
@@ -1191,9 +1188,6 @@
  * 300   12/16/97 2:44p Phillipd
  * 
  * 299   12/15/97 2:43p Phillipd
- * 
- * 298   12/12/97 15:36 Oliverc
- * Disabled cerain menu items for PCIDENT version
  * 
  * 297   12/12/97 10:22a Phillipd
  * Packets per second now dynamic
@@ -1229,8 +1223,6 @@
  * VDU now pulsates on both sides, mode selection fixed ( although
  * choosing non-supported modes causes text to not be aligned properly )
  * 
- * 287   2/12/97 17:08 Oliverc
- * Removed total frame display from BOOT_DEMO SELF_PLAY mode
  * 
  * 286   2/12/97 14:52 Philipy
  * correct surface now restored after alt+tab
@@ -1321,9 +1313,6 @@
  * 259   16/10/97 18:08 Philipy
  * Implemented pre-game AVI player
  * 
- * 258   15/10/97 19:09 Oliverc
- * Last-minute bug fixes for SELF_PLAY demo version (done by Phil...not
- * Olly!)
  * 
  * 257   14/10/97 15:48 Oliverc
  * Fixed bug in list selection
@@ -1401,8 +1390,6 @@
  * and view current scores.
  * Set up VDU error message system
  * 
- * 237   12/09/97 18:00 Oliverc
- * Fixed crash bug in SELF_PLAY mode
  * 
  * 236   5-09-97 5:47p Philipy
  * Menus now use buffered keys
@@ -1416,23 +1403,9 @@
  * 233   5-09-97 11:12a Philipy
  * demo playback stuff from new menus
  * 
- * 232   3/09/97 21:27 Oliverc
- * Disabled more menu keys for ECTS demo
- * 
- * 231   3/09/97 19:55 Oliverc
- * Forced player names & bike to match player slot number for ECTS demo
- * 
- * 230   3/09/97 17:05 Oliverc
- * More ECTS demo stuff
- * 
  * 229   3-09-97 3:52p Philipy
  * 
- * 228   3-09-97 3:42p Philipy
- * ECTS demo stuff
- * 
  * 227   3-09-97 12:33p Philipy
- * some text messaging stuff
- * started on ECTS demo
  * moved Our_CalculateFrameRate to above menu processing so that demos now
  * work.
  * 
@@ -1455,9 +1428,6 @@
  * 220   26-08-97 4:19p Philipy
  * most new menu versions of current menus now implemented
  * 
- * 219   22/08/97 11:49 Oliverc
- * Disabled first splash screen in SELF_PLAY mode unless
- * TWO_SPLASH_SCREENS is defined
  * 
  * 218   20/08/97 12:36 Oliverc
  * Changed (old) use_level_path to (new) use_local_data to indicate that a
@@ -1500,29 +1470,14 @@
  * 205   2/08/97 12:34 Oliverc
  * Added wireframe mode option for debugging group/portal visibility
  * 
- * 204   31/07/97 16:00 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
  * 
  * 203   31-07-97 3:47p Philipy
  * started detail level menus, plus additional stuff for self play mode
- * 
- * 202   29-07-97 11:02a Philipy
- * more SELF_PLAY stuff
- * 
- * 201   28-07-97 5:38p Philipy
- * SELF_PLAY stuff
- * 
- * 200   28-07-97 4:45p Philipy
- * SELF_PLAY option stuff
  * 
  * 199   28/07/97 16:44 Collinsd
  * Tracker uses ships to target, demo mode works again?
  * 
  * 198   28-07-97 12:12p Philipy
- * 
- * 197   28/07/97 11:59 Oliverc
- * Disabled selected menu items in SELF_PLAY mode
  * 
  * 196   25/07/97 12:10 Collinsd
  * Changed ships bike index, and changed skin for olly.
@@ -2097,14 +2052,16 @@
 #include "triggers.h"
 #include "pickups.h"
 #include "models.h"
-#include "lastcomp.h"
 #include "camera.h"
 #include "models.h"
 #include "polysort.h"
 #include "polys.h"
 #include "2dpolys.h"
 #include "screenpolys.h"
-#include "demo_id.h"
+
+#include "registry.h"
+#include "Local.h"
+
 #include "lines.h"
 #include "loadsave.h"
 #include "splash.h"
@@ -2116,9 +2073,7 @@
 #include "force.h"
 #include "feedback.h"
 #include "comm.h"
-#include "restart.h" 
-
-#include "local.h"
+#include "restart.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 
@@ -2424,9 +2379,6 @@ extern	int16	ModesX[8];
 extern	int16	ModesY[8];
 extern	float	ModeScaleX[8];
 extern	float	ModeScaleY[8];
-extern BOOL	E3DemoHost;
-extern BOOL	E3DemoClient;
-extern BOOL E3DemoLoop;
 
 extern	DWORD                   Old_WhoIAm;
 
@@ -2514,8 +2466,6 @@ SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, Set
 LIST	LevelList = { 0 };
 char SelectedLevel[128];
 char SelectedLevelText[MAX_LEVEL_TEXT_LENGTH];
-
-BOOL	ECTSDemo;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Joystick stuff..
@@ -2654,8 +2604,6 @@ void ExitMoreMultiplayerOptions( MENU *Menu );
 void SetAutolevel( MENUITEM *item );
 void SelectQuitCurrentGame( MENUITEM *Item );
 void ExitBikeSelection( MENUITEM * menu );
-void InitShareWareBikeList( MENU *Menu );
-void ExitShareWareBikeSelection( MENUITEM * menu );
 void ExitBikeComputerSelection( MENUITEM * item );
 void InitDebugMenu( MENU *Menu );
 void InitDebugMode( MENU *Menu );
@@ -2674,8 +2622,6 @@ void GetGamePrefs( void );
 void SetGamePrefs( void );
 void GetMultiplayerPrefs( void );
 void SetMultiplayerPrefs( void );
-void InitShareWareBikeList( MENU *Menu );
-void ExitShareWareBikeSelection( MENUITEM * menu );
 void InitFeedbackMenu( MENU *Menu );
 void ExitFeedbackMenu( MENU *Menu );
 void InitLoadSavedGameList( MENU * Menu );
@@ -2905,9 +2851,6 @@ void ExitEventRotateInRightVDU(TITLE_EVENT *TitleEvent);
 void ExitEventRaiseHolopad(TITLE_EVENT *TitleEvent);
 void ExitEventJudderHoloPad(TITLE_EVENT *TitleEvent);
 
-#ifdef SELF_PLAY
-void StartAttractModeForSelfPlay(MENUITEM *Item);
-#endif
 
 void InitStartDiscPanTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void InitGeneralTimer( TITLE_EVENT_TIMER *TitleEventTimer );
@@ -3041,11 +2984,7 @@ BOOL	GoreGuts = FALSE;
 BOOL	DebugInfo = FALSE;
 BOOL	GodMode = FALSE;
 
-#if defined ( EXTERNAL_DEMO ) || defined ( WIN98SHAREWARE ) || defined ( GATEWAY ) 
-BOOL	LevelSelectMode = FALSE;
-#else
 BOOL	LevelSelectMode = TRUE;
-#endif
 
 BOOL	TexturesEnabled = TRUE;
 BOOL	DebugVisible = FALSE;
@@ -3062,7 +3001,7 @@ BOOL	DemoScreenGrab = FALSE;
 
 BOOL	ServerMode = FALSE;
 
-BOOL	ScreenSaving = FALSE;
+BOOL	ScreenSaving = TRUE;
 
 BOOL	ShowNode = FALSE;
 BOOL	NodeCube = FALSE;
@@ -3073,34 +3012,6 @@ BOOL	HarmTeamMates = TRUE;
 BYTE	TeamNumber[MAX_PLAYERS];
 WORD	Version= 0;
 
-#if defined ( SHAREWARE ) || defined ( WIN98SHAREWARE )
-BOOL	CanSelectBike[ MAXBIKETYPES ] =
-{
-	FALSE,	// Borg,
-	TRUE,	// Beard,
-	FALSE,	// LaJay,
-	TRUE,	// Excop,
-	TRUE,	// Trucker,
-	FALSE,	// Foetoid,
-	FALSE,	// JapBird,
-	FALSE,	// Nutter,
-	FALSE,	// Rhesus,
-	FALSE,	// Joe,
-	FALSE,	// Shark,
-	FALSE,	// HK5,
-	TRUE,	// Nubia,
-	FALSE,	// Mofisto,
-	FALSE,	// Cerbero,
-	FALSE,	// Slick,
-};
-int		AllowedBike[ ALLOWED_BIKETYPES ] =
-{
-	1,		// Beard
-	3,		// Excop
-	4,		// Trucker
-	12,		// Nubia
-};
-#else
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
 {
 	TRUE,	// Borg,
@@ -3141,7 +3052,6 @@ int		AllowedBike[ ALLOWED_BIKETYPES ] =
 	15,	// Slick,
 	16,	// FlyGirl,
 };
-#endif
 
 
 BOOL	PickupLightDetail = TRUE;
@@ -3167,17 +3077,9 @@ SLIDER PseudoHostTimeoutSlider2 = { 1, 20, 1, 5, 0, 0.0F };
 SLIDER ServerTimeoutSlider = { 1, 20, 1, 5, 0, 0.0F };
 BOOL PseudoHostCanSetMaxPlayers = TRUE;
 
-#if defined	( SHAREWARE ) || defined ( WIN98SHAREWARE )
-SLIDER	NumOfPlayersSlider = { 1, 4, 1, 1, 0, 0.0F };
-#else
 SLIDER	NumOfPlayersSlider = { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
-#endif
 
-#ifdef SHAREWARE
-SLIDER	TimeLimit = { 1, 15, 1, 15, 0, 0.0F };
-#else
 SLIDER	TimeLimit = { 0, 30, 1, 0, 0, 0.0F };
-#endif
 
 SLIDER	MaxPlayersSlider = { 1, MAX_PLAYERS, 1, MAX_PLAYERS, 0, 0.0F };
 SLIDER	MaxServerPlayersSlider = { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
@@ -3230,15 +3132,6 @@ LIST	DemoList = { 0, 8 };	// list of all demo file in the current dir...
 
 
 LIST	BikeList = { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
-#if defined	( SHAREWARE ) || defined ( WIN98SHAREWARE )
-LIST	ShareWareBikeList = { 4, 4, 0, 1, { "Beard", "Ex-Cop", "Rex Hardy", "Nubia" }, 0, 0 };
-#endif
-
-#ifdef WIN98SHAREWARE
-
-LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 0, { "brenda" },  0, 0 };
-
-#else
 
 #if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
@@ -3248,7 +3141,6 @@ LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "Roa
 LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "linda 7", "l.u.l.u.", "razor", "thor" },  0, 0 };
 #endif
 
-#endif
 
 LIST	TestList = { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
 
@@ -3292,21 +3184,12 @@ SLIDER	DemoSpeed = { 1, 16, 1, 8, 0, 0.0F };
 SLIDER	FSBCompensation = { 1, 2048*4, 256, 2048, 0, 0.0F };
 SLIDER  SfxSlider = { 0, 10, 1, 10, 0, 0.0F };
 
-#ifdef WIN98SHAREWARE
-SLIDER BikerSpeechSlider = { 0, 10, 1, 0, 0, 0.0F };
-#else
 SLIDER BikerSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
-#endif
 
 SLIDER BikeCompSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
 BOOL BikeEnginesOn = TRUE;
 
-#if defined( SELF_PLAY ) || defined( EXTERNAL_DEMO )
 SLIDER	DemoEyesSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
-//SLIDER	DemoEyesSelect = { 0, MAX_PLAYERS - 1, 1, 0 };
-#else
-SLIDER	DemoEyesSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
-#endif
 float CharWidth;
 BOOL ToggleTest;
 TEXT TCPAddress = { 0, 0, "", NULL};
@@ -3480,8 +3363,6 @@ char *GameCompleteGotAllCrystalsSoFar = LT_GameCompleteGotAllCrystalsSoFar/*"wel
 char *GameCompleteWithAllCrystals = LT_GameCompleteWithAllCrystals/*"well done, you got all the crystals. You get the secret biker."*/; 
 char *GameCompleteWithAllCrystalsExceptLast = LT_GameCompleteWithAllCrystalsExceptLast/*"well you got through the secret level, but you didn't get the final crystal. Better luck next time."*/;
 char *GameCompleteWithCheating = LT_GameCompleteWithCheating/*"well, you completed the game but you cheated, didn't you. If you want to see the secret level and have a chance to get a special reward, you'll have to do it properly!"*/;
-
-char *GameCompleteWin98Shareware = LT_GameCompleteWin98Shareware/*"well done, you have completed the demo version of Forsaken. Now go and fucking well buy it!!!"*/;
 
 char *GameCompleteAdditionalLevels = LT_GameCompleteAdditionalLevels/*"congratulations. You have completed all the currently installed additional levels. Look out for further mission packs!!"*/;
 
@@ -3760,9 +3641,7 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 		{ 10, 114, 120, 121, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions11/*"flag capture score"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GoalScoreSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 121, 120, 128, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions12/*"bounty bonus interval"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &BountyBonusSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 128, 120, 135, SLIDER_User, LT_MENU_NEW_MoreMultiplayerOptions13/*"own flag rule"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &CTFSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-#if !defined( PRESS_PREVIEW_DEMO ) && !defined( ACCLAIM_LANFEST )
 		{ 10, 135, 100, 142, 0, LT_MENU_NEW_MoreMultiplayerOptions14/*"record demo"*/, FONT_Small, TEXTFLAG_CentreY, &RecordDemo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-#endif
 		{ 10, 142, 180, 149, 0, LT_MENU_NEW_MoreMultiplayerOptions19/*"change allowed pickups"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ValidPickups, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 149, 120, 156, 0, LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize pickups"*/, FONT_Small, TEXTFLAG_CentreY, &RandomPickups, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
 
@@ -3802,7 +3681,6 @@ MENU	MENU_NEW_CreateGame = {
 		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
-#ifndef SHAREWARE
 		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
@@ -3812,7 +3690,6 @@ MENU	MENU_NEW_CreateGame = {
 		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 #ifdef BOMBTAG_ENABLE
 		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
 #endif
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerPeerPeer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 
@@ -3852,7 +3729,6 @@ MENU	MENU_NEW_CreateGameServerChooses = {
 		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
-#ifndef SHAREWARE
 		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
@@ -3862,7 +3738,6 @@ MENU	MENU_NEW_CreateGameServerChooses = {
 		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 #ifdef BOMBTAG_ENABLE
 		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
 #endif
 
 		{ 10, 136, 100, 144, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerServer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
@@ -3933,7 +3808,6 @@ MENU MENU_NEW_CreateGamePseudoHost = {
 		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
-#ifndef SHAREWARE
 		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
@@ -3943,7 +3817,6 @@ MENU MENU_NEW_CreateGamePseudoHost = {
 		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 #ifdef BOMBTAG_ENABLE
 		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
 #endif
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 
@@ -3970,7 +3843,6 @@ MENU	MENU_NEW_CreateLobbyGame = {
 		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateLobbyGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateLobbyGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
-#ifndef SHAREWARE
 		{ 0, 75, 200, 85, 0, LT_MENU_NEW_CreateLobbyGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 90, 100, 98, 0, LT_MENU_NEW_CreateLobbyGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 98, 100, 106, 0, LT_MENU_NEW_CreateLobbyGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
@@ -3979,7 +3851,6 @@ MENU	MENU_NEW_CreateLobbyGame = {
 		{ 10, 122, 110, 130, 0, LT_MENU_NEW_CreateLobbyGame13 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 #ifdef BOMBTAG_ENABLE
 		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
 #endif
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateLobbyGame15 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
@@ -4077,18 +3948,14 @@ MENU	MENU_NEW_SecondaryWeaponKeys = {
 
 		VDUKDEF( 3, 42, 89, 50, LT_MENU_NEW_SecondaryWeaponKeys3 /*"mug missile"*/, KDselect_secondary[ MUGMISSILE ] ),
 		VDUKDEF( 3, 50, 89, 58, LT_MENU_NEW_SecondaryWeaponKeys4 /*"solaris missile"*/, KDselect_secondary[ SOLARISMISSILE ] ),
-#ifndef SHAREWARE
 		VDUKDEF( 3, 58, 89, 66, LT_MENU_NEW_SecondaryWeaponKeys5 /*"scatter missile"*/, KDselect_secondary[ SCATTERMISSILE ] ),
-#endif
 		VDUKDEF( 3, 66, 89, 74, LT_MENU_NEW_SecondaryWeaponKeys6 /*"gravgon missile"*/, KDselect_secondary[ GRAVGONMISSILE ] ),
 		VDUKDEF( 3, 74, 89, 82, LT_MENU_NEW_SecondaryWeaponKeys7 /*"mfrl"*/, KDselect_secondary[ MULTIPLEMISSILE ] ),
 		VDUKDEF( 3, 82, 89, 90, LT_MENU_NEW_SecondaryWeaponKeys8 /*"Titan Missile"*/, KDselect_secondary[ TITANSTARMISSILE ] ),
 
 		VDUKDEF( 3, 98, 89, 106, LT_MENU_NEW_SecondaryWeaponKeys9 /*"purge mine"*/, KDselect_secondary[ PURGEMINE ] ),
-#ifndef SHAREWARE
 		VDUKDEF( 3, 106, 89, 114, LT_MENU_NEW_SecondaryWeaponKeys10 /*"pine mine"*/, KDselect_secondary[ PINEMINE ] ),
 		VDUKDEF( 3, 114, 89, 122, LT_MENU_NEW_SecondaryWeaponKeys11 /*"quantum mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
-#endif
 		
 		VDUKDEF( 3, 136, 89, 144, LT_MENU_NEW_SecondaryWeaponKeys12 /*"Next weapon"*/, KDselect_next_secondary ),
 		VDUKDEF( 3, 144, 89, 152, LT_MENU_NEW_SecondaryWeaponKeys13 /*"Prev weapon"*/, KDselect_prev_secondary ),
@@ -4100,18 +3967,14 @@ MENU	MENU_NEW_SecondaryWeaponKeys = {
 
 		VDUKEYDEF( 3, 42, 89, 50, LT_MENU_NEW_SecondaryWeaponKeys17 /*"mug missile:"*/, (void *)&Config.select_secondary[ MUGMISSILE ] ),
 		VDUKEYDEF( 3, 50, 89, 58, LT_MENU_NEW_SecondaryWeaponKeys18 /*"solaris missile:"*/, (void *)&Config.select_secondary[ SOLARISMISSILE ] ),
-#ifndef SHAREWARE
 		VDUKEYDEF( 3, 58, 89, 66, LT_MENU_NEW_SecondaryWeaponKeys19 /*"scatter missile:"*/, (void *)&Config.select_secondary[ SCATTERMISSILE ] ),
-#endif
 		VDUKEYDEF( 3, 66, 89, 74, LT_MENU_NEW_SecondaryWeaponKeys20 /*"gravgon missile:"*/, (void *)&Config.select_secondary[ GRAVGONMISSILE ] ),
 		VDUKEYDEF( 3, 74, 89, 82, LT_MENU_NEW_SecondaryWeaponKeys21 /*"mfrl:"*/, (void *)&Config.select_secondary[ MULTIPLEMISSILE ] ),
 		VDUKEYDEF( 3, 82, 89, 90, LT_MENU_NEW_SecondaryWeaponKeys22 /*"Titan Missile:"*/, (void *)&Config.select_secondary[ TITANSTARMISSILE ] ),
 
 		VDUKEYDEF( 3, 98, 89, 106, LT_MENU_NEW_SecondaryWeaponKeys23 /*"purge mine:"*/, (void *)&Config.select_secondary[ PURGEMINE ] ),
-#ifndef SHAREWARE
 		VDUKEYDEF( 3, 106, 89, 114, LT_MENU_NEW_SecondaryWeaponKeys24 /*"pine mine:"*/, (void *)&Config.select_secondary[ PINEMINE ] ),
 		VDUKEYDEF( 3, 114, 89, 122, LT_MENU_NEW_SecondaryWeaponKeys25 /*"quantum mine:"*/, (void *)&Config.select_secondary[ QUANTUMMINE ] ),
-#endif
 		
 		VDUKEYDEF( 3, 136, 89, 144, LT_MENU_NEW_SecondaryWeaponKeys26 /*"Next weapon:"*/, (void *)&Config.select_next_secondary ),
 		VDUKEYDEF( 3, 144, 89, 152, LT_MENU_NEW_SecondaryWeaponKeys27 /*"Prev weapon:"*/, (void *)&Config.select_prev_secondary ),
@@ -4135,14 +3998,10 @@ MENU	MENU_NEW_PrimaryWeaponKeys = {
 
 		VDUKDEF( 3, 34, 89, 42, LT_MENU_NEW_PrimaryWeaponKeys2 /*"pulsar"*/, KDselect_primary[ PULSAR ] ),
 		VDUKDEF( 3, 42, 89, 50, LT_MENU_NEW_PrimaryWeaponKeys3 /*"trojax"*/, KDselect_primary[ TROJAX ] ),
-#ifndef SHAREWARE
 		VDUKDEF( 3, 50, 89, 58, LT_MENU_NEW_PrimaryWeaponKeys4 /*"pyrolite"*/, KDselect_primary[ PYROLITE_RIFLE ] ),
 		VDUKDEF( 3, 58, 89, 66, LT_MENU_NEW_PrimaryWeaponKeys5 /*"transpulse"*/, KDselect_primary[ TRANSPULSE_CANNON ] ),
-#endif
 		VDUKDEF( 3, 66, 89, 74, LT_MENU_NEW_PrimaryWeaponKeys6 /*"suss gun"*/, KDselect_primary[ SUSS_GUN ] ),
-#ifndef SHAREWARE
 		VDUKDEF( 3, 74, 89, 82, LT_MENU_NEW_PrimaryWeaponKeys7 /*"laser"*/, KDselect_primary[ LASER ] ),
-#endif
 
 		VDUKDEF( 3, 88, 89, 96, LT_MENU_NEW_PrimaryWeaponKeys8 /*"Next weapon"*/, KDselect_next_primary ),
 		VDUKDEF( 3, 96, 89, 104, LT_MENU_NEW_PrimaryWeaponKeys9 /*"Prev weapon"*/, KDselect_prev_primary ),
@@ -4156,11 +4015,9 @@ MENU	MENU_NEW_PrimaryWeaponKeys = {
 		VDUKEYDEF( 3, 34, 89, 42, LT_MENU_NEW_PrimaryWeaponKeys13 /*"pulsar:"*/, (void *)&Config.select_primary[ PULSAR ] ),
 		VDUKEYDEF( 3, 42, 89, 50, LT_MENU_NEW_PrimaryWeaponKeys14 /*"trojax:"*/, (void *)&Config.select_primary[ TROJAX ] ),
 		VDUKEYDEF( 3, 50, 89, 58, LT_MENU_NEW_PrimaryWeaponKeys15 /*"suss gun:"*/, (void *)&Config.select_primary[ SUSS_GUN ] ),
-#ifndef SHAREWARE
 		VDUKEYDEF( 3, 58, 89, 66, LT_MENU_NEW_PrimaryWeaponKeys16 /*"pyrolite:"*/, (void *)&Config.select_primary[ TRANSPULSE_CANNON ] ),
 		VDUKEYDEF( 3, 66, 89, 74, LT_MENU_NEW_PrimaryWeaponKeys17 /*"transpulse:"*/, (void *)&Config.select_primary[ PYROLITE_RIFLE ] ),
 		VDUKEYDEF( 3, 74, 89, 82, LT_MENU_NEW_PrimaryWeaponKeys18 /*"laser:"*/, (void *)&Config.select_primary[ LASER ] ),
-#endif
 
 		VDUKEYDEF( 3, 88, 89, 96, LT_MENU_NEW_PrimaryWeaponKeys19 /*"Next weapon:"*/, (void *)&Config.select_next_primary ),
 		VDUKEYDEF( 3, 96, 89, 104, LT_MENU_NEW_PrimaryWeaponKeys20 /*"Prev weapon:"*/, (void *)&Config.select_prev_primary ),
@@ -4433,16 +4290,14 @@ MENU	MENU_NEW_DetailLevels = {
 		{ 10, 90, 115, 100, 0, LT_MENU_NEW_DetailLevels6/*"Smoke Trail Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 100, 115, 110, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 110, 115, 120, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-#ifndef NO_GORE
 		{ 10, 120, 140, 130, 0, LT_MENU_NEW_DetailLevels9/*"mature content"*/, FONT_Small, TEXTFLAG_CentreY,		&GoreGuts,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-#endif
 #ifndef SEPARATE_PRE_GAME_LIGHTS_MENU
 		{ 10, 130, 140, 140, 0, LT_MENU_NEW_DetailLevels10/*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 140, 140, 150, 0, LT_MENU_NEW_DetailLevels11/*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 150, 140, 160, 0, LT_MENU_NEW_DetailLevels12/*"Pickup Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PickupLightDetail,		SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #else
 		{ 10, 130, 140, 140, 0, LT_MENU_NEW_DetailLevels13/*"Lights..."*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		&MENU_NEW_Lights,	MenuChange,	DrawFlatMenuItem, NULL, 0 },
-#if !defined( SHAREWARE ) && !defined( PCIDENT ) && !defined( EXTERNAL_DEMO ) && !defined ( FINAL_RELEASE )
+#if !defined ( FINAL_RELEASE )
 		{ 10 ,140, 150, 140, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10 ,150, 160, 150, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #endif
@@ -4834,9 +4689,7 @@ MENU	MENU_NEW_RestoreGame = {
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_RestoreGame0 /*"Restore Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 5, 30, 100, 40, 0, LT_MENU_NEW_RestoreGame1 /*"Play Demo"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_DemoPlayBack, MenuChange, DrawFlatMenuItem, NULL, 0  },
-#if !defined( SHAREWARE ) && !defined( PRESS_PREVIEW_DEMO ) && !defined( ACCLAIM_LANFEST )
 		{ 5, 50, 100, 60, 0, LT_MENU_NEW_RestoreGame2 /*"Clean Demo"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_DemoCleaning, MenuChange, DrawFlatMenuItem, NULL, 0  },
-#endif
 		{ 5, 70, 100, 80, 0, LT_MENU_NEW_RestoreGame3 /*"load game"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_LoadGame, MenuChange, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -4871,41 +4724,19 @@ MENU	MENU_NEW_Setup = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };  
-MENUITEM ECTSStartGameItem = { 0, TITLE_MODEL_Disc2, 0, 0, 4, "Create Game", 0, 0, NULL, &MENU_NEW_ChooseConnectionToStart, MenuChange, NULL, NULL, 0 };
-#ifdef ECTS
-MENU	MENU_NEW_Battle = {
-	"d", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
-	{
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 3,"death match", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, "Create Game", 0, 0, NULL, &MENU_NEW_ChooseConnectionToStart, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc3, 0, 0, 2, "Join Game", 0, 0, NULL, &MENU_NEW_ChooseConnectionToJoin, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 6, "server", 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 2, "blank", 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc6, 0, 0, 2, "Blank", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-#else
 MENU	MENU_NEW_Battle = {
 	"", InitBattleMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
 	{
 		{ 0, TITLE_MODEL_Disc1, 0, 0, 3,LT_MENU_NEW_Battle0 /*"death match"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, LT_MENU_NEW_Battle1 /*"Create Game"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToStart, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc3, 0, 0, 2, LT_MENU_NEW_Battle2 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToJoin, MenuChange, NULL, NULL, 0 },
-#if defined ( WIN98SHAREWARE ) || defined ( GATEWAY )
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 2, LT_MENU_NEW_Battle3 /*"back"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 2, "Blank", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-#else
 		{ 0, TITLE_MODEL_Disc4, 0, 0, 6, LT_MENU_NEW_Battle4 /*"Server"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToStartServer, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc5, 0, 0, 3, LT_MENU_NEW_Battle3 /*"back"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-#endif
 		{ 0, TITLE_MODEL_Disc6, 0, 0, 2, "Blank", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-#endif
 
 MENU	MENU_NEW_CoOp = {
 	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
@@ -4936,43 +4767,19 @@ MENU	MENU_NEW_MissionMenu = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-#ifdef ECTS
 MENU	MENU_NEW_Start = {
 	"", InitStartMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan,
 	{
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 1, "single player", 0, 0, NULL, &MENU_NEW_MissionMenu, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, "death match", 0, 0, NULL, &MENU_NEW_Battle, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, "Setup Biker", 0, 0, NULL, &MENU_NEW_Setup, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, "load game Game", 0, 0, NULL, &MENU_NEW_RestoreGame, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, "options", 0, 0, NULL, &MENU_NEW_Options, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "exit game" , 0, 0, NULL, NULL, SelectQuit, NULL, NULL, 0 } ,
-
-		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-#else
-MENU	MENU_NEW_Start = {
-	"", InitStartMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan,
-	{
-#ifdef PCIDENT
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 1, LT_MENU_NEW_Start0 /*"single player"*/, 0, 0, NULL, &MENU_NEW_NotAvailable, MenuChange, NULL, NULL, 0 },
-#else
 		{ 0, TITLE_MODEL_Disc1, 0, 0, 1, LT_MENU_NEW_Start1 /*"single player"*/, 0, 0, NULL, &MENU_NEW_MissionMenu, MenuChange, NULL, NULL, 0 },
-#endif
 		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_Start2 /*"death match"*/, 0, 0, NULL, &MENU_NEW_Battle, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_Start3 /*"Setup Biker"*/, 0, 0, NULL, &MENU_NEW_Setup, MenuChange, NULL, NULL, 0 },
-#if defined( SHAREWARE ) || defined( PRESS_PREVIEW_DEMO ) || defined( ACCLAIM_LANFEST )
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_Start4 /*"Play demo"*/, 0, 0, NULL, &MENU_NEW_DemoPlayBack, MenuChange, NULL, NULL, 0 },
-#else
 		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_Start5 /*"load Game"*/, 0, 0, NULL, &MENU_NEW_RestoreGame, MenuChange, NULL, NULL, 0 },
-#endif
 		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_Start6 /*"Options"*/, 0, 0, NULL, &MENU_NEW_Options, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, LT_MENU_NEW_Start7 /*"Exit"*/ , 0, 0, NULL, NULL, SelectQuit, NULL, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-#endif
 
 MENU	MENU_STATS_Start = {
 	"a", InitStartMenu, NULL, NULL, TITLE_TIMER_NormalPanToRightVDU,
@@ -5242,14 +5049,12 @@ MENU	MENU_WeaponKeys =
 		KEYDEF( 32, 128,"Trojax", (void *)&Config.select_primary[ TROJAX ] ),
 
 		KEYDEF( 32, 144,"Suss Gun", (void *)&Config.select_primary[ SUSS_GUN ] ),
-#ifndef SHAREWARE
 		KEYDEF( 32, 160,"Transpulse", (void *)&Config.select_primary[ TRANSPULSE_CANNON ] ),
 	  
 		KEYDEF( 32, 176,"Pyrolite", (void *)&Config.select_primary[ PYROLITE_RIFLE ] ),
 		
 		KEYDEF( 32, 192,"Beam Laser", (void *)&Config.select_primary[ LASER ] ),
 
-#endif
 		
 		KEYDEF( 32, 224,"Next Prim", (void *)&Config.select_next_primary ),
 
@@ -5265,9 +5070,7 @@ MENU	MENU_WeaponKeys =
 
 		KEYDEF( 352, 128,"Solaris", (void *)&Config.select_secondary[ SOLARISMISSILE ] ),
 
-#ifndef SHAREWARE
 		KEYDEF( 352, 160, "Scatter", (void *)&Config.select_secondary[ SCATTERMISSILE ] ),
-#endif
 		KEYDEF( 352, 176, "Gravgon", (void *)&Config.select_secondary[ GRAVGONMISSILE ] ),
 
 		KEYDEF( 352, 192, "MFRL", (void *)&Config.select_secondary[ MULTIPLEMISSILE ] ),
@@ -5276,11 +5079,9 @@ MENU	MENU_WeaponKeys =
 
 
 		KEYDEF( 352, 240, "Purge Mine", (void *)&Config.select_secondary[ PURGEMINE ] ),
-#ifndef SHAREWARE
 		KEYDEF( 352, 256, "Pine Mine", (void *)&Config.select_secondary[ PINEMINE ] ),
 
 		KEYDEF( 352, 272, "Quantum Mine", (void *)&Config.select_secondary[ QUANTUMMINE ] ),
-#endif
 
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -5339,11 +5140,9 @@ MENU	MENU_Keyboard =
 		
 		KDEF( 1, 200, 240, LT_MENU_Keyboard20 /*"Drop Mine"*/, KDfire_mine ),
 
-#ifndef SHAREWARE
 		KDEF( 1, 200, 264, LT_MENU_Keyboard21 /*"Drop Prim"*/, KDdrop_primary ),
 
 		KDEF( 1, 200, 280, LT_MENU_Keyboard22 /*"Drop Sec"*/, KDdrop_secondary ),
-#endif
 
 		KDEF( 1, 200, 296, LT_MENU_Keyboard23 /*"Drop Shield"*/, KDdrop_shield ),
 
@@ -5354,15 +5153,11 @@ MENU	MENU_Keyboard =
 		KDEF( 2, 200, 112,LT_MENU_Keyboard25 /*"Pulsar"*/, KDselect_primary[ PULSAR ] ),
 
 		KDEF( 2, 200, 128,LT_MENU_Keyboard26 /*"Trojax"*/, KDselect_primary[ TROJAX ] ),
-#ifndef SHAREWARE
 		KDEF( 2, 200, 144,LT_MENU_Keyboard27 /*"Pyrolite"*/, KDselect_primary[ PYROLITE_RIFLE ] ),
 
 		KDEF( 2, 200, 160,LT_MENU_Keyboard28 /*"Transpulse"*/, KDselect_primary[ TRANSPULSE_CANNON ] ),
-#endif
 		KDEF( 2, 200, 176,LT_MENU_Keyboard29 /*"Suss Gun"*/, KDselect_primary[ SUSS_GUN ] ),
-#ifndef SHAREWARE
 		KDEF( 2, 200, 192,LT_MENU_Keyboard30 /*"Beam Laser"*/, KDselect_primary[ LASER ] ),
-#endif
 
 		KDEF( 2, 200, 216,LT_MENU_Keyboard31 /*"Next Prim"*/, KDselect_next_primary ),
 
@@ -5388,9 +5183,7 @@ MENU	MENU_Keyboard =
 
 		KDEF( 3, 200, 128,LT_MENU_Keyboard38 /*"Solaris"*/, KDselect_secondary[ SOLARISMISSILE ] ),
 
-#ifndef SHAREWARE
 		KDEF( 3, 200, 144, LT_MENU_Keyboard39 /*"Scatter"*/, KDselect_secondary[ SCATTERMISSILE ] ),
-#endif
 		KDEF( 3, 200, 160, LT_MENU_Keyboard40 /*"Gravgon"*/, KDselect_secondary[ GRAVGONMISSILE ] ),
 
 		KDEF( 3, 200, 176, LT_MENU_Keyboard41 /*"MFRL"*/, KDselect_secondary[ MULTIPLEMISSILE ] ),
@@ -5399,11 +5192,9 @@ MENU	MENU_Keyboard =
 
 
 		KDEF( 3, 200, 216, LT_MENU_Keyboard43 /*"Purge Mine"*/, KDselect_secondary[ PURGEMINE ] ),
-#ifndef SHAREWARE
 		KDEF( 3, 200, 232, LT_MENU_Keyboard44 /*"Pine Mine"*/, KDselect_secondary[ PINEMINE ] ),
 
 		KDEF( 3, 200, 248, LT_MENU_Keyboard45 /*"Quantum Mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
-#endif
 
 		{ 200, 32, 0, 0, 0, "help3", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp3, NULL, 0 },
 		{ 200, 336, 0, 0, 0, "help1", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp1, NULL, 0 },
@@ -5466,11 +5257,9 @@ MENU	MENU_Keyboard =
 		
 		KEYDEF( 352, 256, "Drop Mine", (void *)&Config.fire_mine ),
 
-#ifndef SHAREWARE
 		KEYDEF( 352, 288, "Drop Prim", (void *)&Config.drop_primary ),
 
 		KEYDEF( 352, 304, "Drop Sec", (void *)&Config.drop_secondary ),
-#endif
 
 		KEYDEF( 352, 320, "Drop Shield", (void *)&Config.drop_shield ),
 
@@ -5578,9 +5367,8 @@ MENU	MENU_Detail = {
 #endif
 		//{ 200, 292, 0, 0, 0, LT_MENU_Detail12 /*"Water Detail       "*/, 0, 0,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		//{ 200, 308, 0, 0, 0, LT_MENU_Detail13 /*"gamma              "*/, 0, 0,		&GammaSlider,			NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-#ifndef NO_GORE
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail14 /*"mature content     "*/, 0, 0,		&GoreGuts,				NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-#endif
+
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5612,15 +5400,9 @@ MENU	MENU_DebugMode = {
 };
 
 MENU	MENU_SelectBike = {
-#if defined ( SHAREWARE ) || defined ( WIN98SHAREWARE ) 
-	"Select Bike" , InitShareWareBikeList , NULL , NULL,	0,
-	{
-		{ 200, 128, 0, 0, 0, "Choose From...", 0, 0, &ShareWareBikeList, ExitShareWareBikeSelection , SelectList , DrawList, NULL, 0 } ,
-#else
 	LT_MENU_SelectBike0 /*"Select Bike"*/ , InitBikeList , NULL , NULL,	0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_SelectBike1 /*"Choose From..."*/, 0, 0, &BikeList, ExitBikeSelection , SelectList , DrawList, NULL, 0 } ,
-#endif
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5705,13 +5487,9 @@ MENU	MENU_Options = {
 		OLDMENUITEM(  200 , 128+4*16,LT_MENU_Options5/*"Packets Per Second "*/,(void*)&PacketsSlider, NULL, SelectSlider, DrawSlider),
 		OLDMENUITEM(  200 , 128+5*16,LT_MENU_Options6/*"show ping"*/, &ShowPing, NULL, SelectToggle , DrawToggle),
 		OLDMENUITEM(  200 , 128+6*16,LT_MENU_Options7/*"update (secs)"*/, &PingFreqSlider, NULL, SelectSlider , DrawSlider),
-#if !defined( SHAREWARE ) && !defined( PCIDENT )
-#if !defined( EXTERNAL_DEMO ) || defined( ACCLAIM_NY_UK_IGUANA_UK_US ) || defined( ACCLAIM_NY )
 		{ 200 ,128 + ( 7*16 ), 0, 0, 0, LT_MENU_Options8/*"Show Extra Info "*/, 0, 0, &myglobs.bShowInfo, NULL, SelectToggle, DrawToggle, NULL, 0 },
-#endif
 		{ 200 ,128 + ( 8*16 ), 0, 0, 0, LT_MENU_Options9/*"Show Weapon Kills"*/, 0, 0, &ShowWeaponKills, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		//{ 200, 128 + ( 9*16 ), 0, 0, 0, LT_MENU_Options10/*"Restore Defaults"*/, 0, 0, NULL, &MENU_NotYet, MenuChange, MenuItemDrawName, NULL, 0 },
-#endif
 		OLDMENUITEM(  200 , 128+9*16,"throttle",(void*)&ThrottleSlider, StoreThrottleSettings, SelectSlider, DrawSlider),
 		//OLDMENUITEM(  200 , 128+10*16,"throttle",(void*)&ThrottleReset, ResetThrottle, SelectToggle, DrawToggle),
 
@@ -5736,13 +5514,6 @@ MENU	MENU_DemoPlaying = {
 	LT_MENU_DemoPlaying0 /*"Demo Playing"*/ , NULL, NULL, NULL, 0,
 	{
 		{ 200 , 128           , 0, 0, 0, LT_MENU_DemoPlaying1 /*"Pause Demo "*/, 0, 0,	&PauseDemo,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
-#if defined( SELF_PLAY ) || defined( EXTERNAL_DEMO )
-		{ 200 , 128 + ( 1*16 ), 0, 0, 0, LT_MENU_DemoPlaying2 /*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 10, 128 + ( 2*16 ), 100, 50, SLIDER_Value, "FSB Compensation", FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &FSBCompensation, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 200 , 128 + ( 3*16 ), 0, 0, 0, LT_MENU_DemoPlaying3 /*"Watch Player"*/, 0, 0,		&DemoEyesSelect,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200 , 128 + ( 4*16 ), 0, 0, 0, LT_MENU_DemoPlaying4 /*"Options"*/ , 0, 0, NULL, &MENU_SelfPlayOptions , MenuChange , MenuItemDrawName, NULL, 0 } ,
-		OLDMENUITEM( 200 , 128 + ( 5 * 16), LT_MENU_DemoPlaying5 /*"Quit to Main Menu"*/, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName ),
-#else
 		{ 200 , 128 + ( 1*16 ), 0, 0, 0, LT_MENU_DemoPlaying6 /*"Grab 3dfx demo "*/, 0, 0,	&DemoScreenGrab,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
 		{ 200 , 128 + ( 2*16 ), 0, 0, 0, LT_MENU_DemoPlaying7 /*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 10, 128 + ( 3*16 ), 100, 50, SLIDER_Value, "FSB Compensation", FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &FSBCompensation, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
@@ -5751,7 +5522,6 @@ MENU	MENU_DemoPlaying = {
 		{ 200 , 128 + ( 6*16 ), 0, 0, 0, LT_MENU_DemoPlaying10 /*"Debugging"*/, 0, 0,	&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle, NULL, 0 },
 		{ 200 , 128 + ( 7*16 ), 0, 0, 0, LT_MENU_DemoPlaying11 /*"Quit to Title Screen"*/ , 0, 0, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName, NULL, 0 } ,
 //		{ 200 , 128 + ( 8*16 ), 0, 0, 0, LT_MENU_DemoPlaying12 /*"Server Mode"*/, 0, 0, &ServerMode, NULL, SelectToggle, DrawToggle, NULL, 0 },
-#endif
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5826,7 +5596,6 @@ MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, 
 
 MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
-#if !defined( PCIDENT ) && !defined( SHAREWARE ) && !defined( PRESS_PREVIEW_DEMO ) && !defined( ACCLAIM_LANFEST )
 					  OLDMENUITEM(	200 , 112,LT_MENU_InGame1 /*"Set Up Biker  "*/, (void *)biker_name, &MENU_SetUpBiker , MenuChange , DrawNameVar),
 #ifndef SOFTWARE_ENABLE
 					  OLDMENUITEM(  200 , 128,LT_MENU_InGame2 /*"Toggle Full Screen"*/, NULL, NULL , MenuGoFullScreen , MenuItemDrawName),
@@ -5848,38 +5617,11 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM(	200 , 320,LT_MENU_InGame15 /*"Debug Menu"*/, NULL, &MENU_DebugMode , MenuChange , MenuItemDrawName),
 					  OLDMENUITEM(	200 , 336,LT_MENU_InGame16 /*"IP "*/, (void *)&IPAddressText[0], NULL , NULL , DrawNameVar),
 //					  OLDMENUITEM(  200 , 352,LT_MENU_InGame17 /*"Packets Per Second "*/,(void*)&PacketsSlider, NULL, SelectSlider, DrawSlider),
-#else
-					  OLDMENUITEM(	200 , 112,LT_MENU_InGame18 /*"Set Up Biker  "*/, (void *)biker_name, &MENU_SetUpBiker , MenuChange , DrawNameVar),
-					  OLDMENUITEM(	200 , 128,LT_MENU_InGame19 /*"Load Game"*/, NULL, &MENU_LoadSavedGame , MenuChange, MenuItemDrawName),
-					  OLDMENUITEM(	200 , 144,LT_MENU_InGame20 /*"Save Game"*/, NULL, &MENU_SaveGame, MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 160,LT_MENU_InGame21 /*"options"*/, NULL, &MENU_Options , MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 176,LT_MENU_InGame22 /*"Quit to Main Menu"*/, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName),
-#ifdef SHAREWARE_DEBUGGING
-					  OLDMENUITEM(  200 , 256,LT_MENU_InGame23 /*"Debugging"*/,&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle),
-#endif
-#endif
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
-
-#ifdef SELF_PLAY
-MENU	MENU_Copyright = { "" , InitAvgFrameRateGlobals, NULL , NULL, 0,
-
-						{
-#ifdef BOOT_DEMO
-						OLDMENUITEM( 280 , 352, "", (void *)DemoAvgFpsText, NULL , NULL , DrawCenteredNameVar) ,
-//						OLDMENUITEM( 280 , 368, "", (void *)DemoTotalFramesText, NULL , NULL , DrawCenteredNameVar) ,
-#endif
-						OLDMENUITEM( 280 , 384, "Press enter", NULL, NULL , ChangeStatus_Title , MenuItemDrawName) ,
-						{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } 
-						}
- };
-
-#else
 
 MENU	MENU_Copyright = { "" , NULL, NULL , NULL, 0,
 						{OLDMENUITEM( 280 , 384, "Press enter", NULL, &MENU_Start , ChangeStatus_Title , MenuItemDrawName) ,
 					     {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
-#endif
-
 
 MENU	MENU_ForceAbort = {
 	"Sorry Directplay has forced you to quit due to 1 of its bugs" , NULL , NULL , NULL, 0,
@@ -6072,26 +5814,10 @@ char	SplashScreens[NUMSPLASHSCREENS][8][64] = {
 #define FLAGS 0
 #define SECS  1
 
-#if defined( ECTS )
 int SplashInfo[NUMSPLASHSCREENS][2] = {
-	{ SPLASH_FLAG_Timed, 5 },		// flags, secs
-	{ SPLASH_FLAG_PressReturn | SPLASH_FLAG_Timed, 120 },
+	{ SPLASH_FLAG_Timed, 0 }, // flags, sec
+	{SPLASH_FLAG_PressReturn, 0 },
 };
-#elif defined( SELF_PLAY ) || defined( EXTERNAL_DEMO )
-int SplashInfo[NUMSPLASHSCREENS][2] = {
-	{ SPLASH_FLAG_Timed, 10 },		// flags, secs
-	{ SPLASH_FLAG_PressReturn 
-#ifndef BOOT_DEMO
-	| SPLASH_FLAG_Timed
-#endif
-	, 15 },
-};
-#else
-int SplashInfo[NUMSPLASHSCREENS][2] = {
-	{ SPLASH_FLAG_Timed, 0 },		// flags, secs
-	{ SPLASH_FLAG_PressReturn, 0 },
-};
-#endif
 
 int CurrentSplashScreen = INITIAL_SPLASH_SCREEN;						
 
@@ -6565,14 +6291,10 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
  */
 LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 {
-#ifdef SELF_PLAY
-	return ERROR_SUCCESS;
-#else
 #ifdef UNICODE
     dwSize *= 2; // calc number of bytes
 #endif
 	return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_BINARY, lpData, dwSize );
-#endif
 }
 
 /*
@@ -6582,11 +6304,7 @@ LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
  */
 LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 {
-#ifdef SELF_PLAY
-	return ~ERROR_SUCCESS;
-#else
     return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_SZ, lpData, dwSize);
-#endif
 }
 
 /*
@@ -6596,13 +6314,9 @@ LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
  */
 LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize)
 {
-#ifdef SELF_PLAY
-	return ~ERROR_SUCCESS;
-#else
     DWORD dwType;
 
     return RegQueryValueEx(ghCondemnedKey, lptszName, NULL, &dwType, lpData, lpdwDataSize);
-#endif
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -6980,7 +6694,6 @@ BOOL LoadTitleModels(void)
 
 	NumTitleModelsToLoad = 15;
 
-#ifndef SELF_PLAY
 	for (i=0; i < NumTitleModelsToLoad; i++)
 	{
 		BackgroundModel[i] = FindFreeModel();
@@ -7014,7 +6727,6 @@ BOOL LoadTitleModels(void)
 	PlaceObjects();
 
 	TitleInitDone = FALSE;
-#endif
 
 	// init all holo-object stuff...
 	
@@ -7973,7 +7685,6 @@ BOOL DisplayTitle(void)
 /*---------------------------------------------------------------------------*/
 #endif
 	
-#ifndef SELF_PLAY
 	if (!InitialTexturesSet && CameraStatus != CAMERA_AtStart)
 	{
 		InitialTexturesSet = TRUE;
@@ -7990,7 +7701,6 @@ BOOL DisplayTitle(void)
        			HighlightDisc(CurrentDiscHighlight);
 
 	}
-#endif
 
 	NumOfTransExe = 0;
 
@@ -8007,27 +7717,12 @@ BOOL DisplayTitle(void)
 	    // open/create Condemned registry key 
 		if ( !ghCondemnedKey )
 		{
-#ifndef SELF_PLAY
-#ifdef FINAL_RELEASE
 			RegOpenKeyEx(REGISTRY_ROOT_KEY,
 				REGISTRY_GAME_KEY,
 				0,
 				KEY_ALL_ACCESS,
 				&ghCondemnedKey
 				);
-#else
-			RegCreateKeyEx(REGISTRY_ROOT_KEY,
-							REGISTRY_GAME_KEY,
-							0,
-							NULL,                   
-							REG_OPTION_NON_VOLATILE,
-							KEY_ALL_ACCESS,
-							NULL,
-							&ghCondemnedKey,
-							&gdwCondemnedDisp
-							);
-#endif
-#endif
 			// init all levels to find out if any are on CD
 			InitLevels( SINGLEPLAYER_LEVELS );
 			InitLevels( MULTIPLAYER_LEVELS );
@@ -8560,17 +8255,12 @@ Event handling
 				GetCurrentSessions_ReScan( NULL );
 			}
 		}
-//#ifndef SELF_PLAY
   		if (MyGameStatus == STATUS_Copyright)
 		{
 			if (SplashInfo[CurrentSplashScreen][FLAGS] & SPLASH_FLAG_PressReturn)
 				MenuDraw( CurrentMenu );
 		}else
 			MenuDraw( CurrentMenu );
-//#else
-//		if (SplashInfo[CurrentSplashScreen][FLAGS] & SPLASH_FLAG_PressReturn)
-//			MenuDraw( CurrentMenu );
-//#endif
 
 		if (!WasteAFrame)
 		{
@@ -8713,26 +8403,6 @@ void	MenuItemDrawName( MENUITEM * Item )
 	int	y;
 	static int col = 2;
 
-#ifdef SELF_PLAY
-	static float pause = 0.0F;
-
-	if ( MyGameStatus == STATUS_Copyright )
-	{
-		pause += framelag;
-
-		if ( pause >= 10.0F )
-		{
-			col++;
-			pause -= 10.0F;
-		}
-
-		if ( col > 8 )
-			col = 0;
-	}else
-		col = 2;
-
-#endif
-
 	if ( Item->StrPnt )
 	{
 		x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
@@ -8754,26 +8424,6 @@ void	MenuItemDrawPageName( MENUITEM * Item )
 	int	y;
 	static int col = 2;
 	int page;
-
-#ifdef SELF_PLAY
-	static float pause = 0.0F;
-
-	if ( MyGameStatus == STATUS_Copyright )
-	{
-		pause += framelag;
-
-		if ( pause >= 10.0F )
-		{
-			col++;
-			pause -= 10.0F;
-		}
-
-		if ( col > 8 )
-			col = 0;
-	}else
-		col = 2;
-
-#endif
 
 	page = (int) Item->Value;
 	if ( Item->StrPnt && page == CurrentPage )
@@ -10984,14 +10634,12 @@ BOOL ProcessText( int Key )
 
 void ProcessSelect( int Key )
 {
-//#ifdef SELF_PLAY
 
 	if (MyGameStatus == STATUS_Copyright)
 	{
 		if (Key != DIK_RETURN)
 			return;
 	}
-//#endif
 	
 	if (StackStatus == DISC_NOTHING)
 	{	switch(Key)
@@ -11414,13 +11062,11 @@ void	MenuProcess()
 
 #endif
 
-	sprintf( str, "Dans Special patch release %1.2fa beta 5", PATCH_VERSION );
-	CenterPrint4x5Text( str, d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Edition", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	//sprintf( str, "ColPerspective %d", ColPerspective );
 	//CenterPrint4x5Text( str, d3dapp->szClient.cy - FontHeight * 4, 2 );
 
-//#ifdef SHAREWARE
 	if ( CameraStatus == CAMERA_AtDiscs && CurrentMenu == &MENU_Start )
 	{
 		AttractModeCountDown -= framelag;
@@ -11450,7 +11096,6 @@ void	MenuProcess()
 	{
 		AttractModeCountDown = ATTRACTMODECOUNTVALUE;
 	}
-//#endif
 
 	Pulse += framelag/60.0F;
 	if (Pulse > 1.0F)
@@ -11464,15 +11109,6 @@ void	MenuProcess()
 	//DebugPrintf("Current Menu %s\n",CurrentMenu->Name);
 
 
- 	if (ECTSDemo)
-	{
-		if  ((CurrentMenu == &MENU_NEW_Battle) && 
-			(IsKeyPressed (DIK_NUMPAD0) && IsKeyHeld (DIK_LSHIFT) && IsKeyHeld (DIK_F12)))
-		{
-			MenuChange (&ECTSStartGameItem);
-		}
-	}
-	
 	//Key = WhichKeyPressed();
 	ReadBufferedKeyboard();
 
@@ -12321,34 +11957,6 @@ void InitBikeList( MENU *Menu )
 	strcpy(bike_name,BikeList.item[BikeList.selected_item]);
 }
 
-
-#if defined ( SHAREWARE ) || defined ( WIN98SHAREWARE )
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Initialise the in-game bike list menu items
-	Input		:		pointer to menu
-	Output		:		Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void InitShareWareBikeList( MENU *Menu )
-{
-	int j;
-
-	ShareWareBikeList.selected_item = -1;
-	for ( j = 0; j < ShareWareBikeList.items; j++ )
-	{
-		if ( !strcmp( ShareWareBikeList.item[ j ], BikeList.item[ SelectedBike ] ) )
-		{
-			ShareWareBikeList.selected_item = j;
-			strcpy(bike_name, ShareWareBikeList.item[ShareWareBikeList.selected_item]);
-			break;
-		}
-	}
-
-	ShareWareBikeList.top_item = 0;
-	if (ShareWareBikeList.selected_item == -1)
-		ShareWareBikeList.selected_item = 0;
-
-}
-#endif
 
 // auto selects bike list and prevents box highlight.
 void InitBikeListVDU( MENU *Menu )
@@ -13602,9 +13210,7 @@ void SelectQuit( MENUITEM *Item )
 	MyGameStatus = STATUS_QuittingFromTitles;
 	//MenuExit();
 	MenuAbort();
-//#ifdef SHAREWARE
 	ShowSplashScreen( SPLASHSCREEN_Quitting );
-//#endif
 /*	
 	SetGamePrefs();
 	quitting = TRUE;
@@ -13616,11 +13222,7 @@ void SelectQuit( MENUITEM *Item )
 void InitMultiplayerHost( MENU *Menu )
 {
 	int i;
-#ifdef ECTS
-	sprintf( MultiPlayerGameName.text, "%s's Game", BikeList.item[ 0 ] );
-#else
 	sprintf( MultiPlayerGameName.text, LT_PlayersGame/*"%s's Game"*/, biker_name );
-#endif
 
 	LevelList.items = 0;
 	LevelList.top_item = 0;
@@ -13745,11 +13347,7 @@ void InitMultiplayerHostVDU( MENU *Menu )
 
 	if ( !IsLobbyLaunched )
 	{
-#ifdef ECTS
-		sprintf( MultiPlayerGameName.text, "%s's Game", BikeList.item[ 0 ] );
-#else
 		sprintf( MultiPlayerGameName.text, LT_PlayersGame2/*"%s's Game"*/, biker_name );
-#endif
 	}else
 	{
 		// if lobby launched, use given session name
@@ -13759,9 +13357,6 @@ void InitMultiplayerHostVDU( MENU *Menu )
 			*pCh = 0;
 	}
 
-#ifdef SHAREWARE
-	LogosEnable = 0;
-#endif
 }
 
 void InitMultiplayerHostVDUServer( MENU *Menu )
@@ -13872,11 +13467,7 @@ void GetSavedGameData( void )
 	{
 		GetFileTime( hfile,	NULL,  NULL, &Time );
 		FileTimeToSystemTime( &Time, &systime );
-#ifdef MARKET_USA
 		sprintf( CurrentSavedGameDate, "saved %d-%d-%d at %2d:%02d", systime.wMonth, systime.wDay, systime.wYear, systime.wHour, systime.wMinute );
-#else
-		sprintf( CurrentSavedGameDate, LT_SavedGameName/*"saved %d-%d-%d at %2d:%02d"*/, systime.wDay, systime.wMonth, systime.wYear, systime.wHour, systime.wMinute );
-#endif
 		CloseHandle(hfile);
 	}
 	else
@@ -14053,7 +13644,6 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void GetLastGameInfo( void )
 {
-#ifndef SELF_PLAY
 	DWORD size;
 	char templevelname[ 8 ];
 	int i;
@@ -14107,7 +13697,6 @@ void GetLastGameInfo( void )
 			}
 		}
 	}
-#endif
 }
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Set last game played info from the registry..
@@ -14116,7 +13705,6 @@ void GetLastGameInfo( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SetLastGameInfo( void )
 {
-#ifndef SELF_PLAY
 	if( RegSet( "OldWhoIAm",  (LPBYTE)&Old_WhoIAm ,  sizeof(Old_WhoIAm) ) != ERROR_SUCCESS )
 	{
 		return;
@@ -14141,29 +13729,8 @@ void SetLastGameInfo( void )
 	{
 		return;
 	}
-#endif
 }
 
-
-#if defined ( SHAREWARE ) || defined ( WIN98SHAREWARE )
-void ExitShareWareBikeSelection( MENUITEM * item )
-{
-	int j;
-
-	if ( ShareWareBikeList.selected_item >= 0 && ShareWareBikeList.selected_item < ShareWareBikeList.items )
-	{
-		for ( j = 0; j < BikeList.items; j++ )
-		{
-			if ( !strcmp( BikeList.item[ j ], ShareWareBikeList.item[ ShareWareBikeList.selected_item ] ) )
-			{
-				BikeList.selected_item = j;
-				ExitBikeSelection( item );
-				break;
-			}
-		}
-	}
-}
-#endif
 
 void AddBikeArrow( char *name, int num )
 {
@@ -14657,60 +14224,6 @@ void NewMenuTextureMode( MENU *Menu )
 	}
 }
 
-int AllowGame( void )
-{
-#if !defined( SELF_PLAY ) && defined( EXTRA_IP ) && !defined( FINAL_RELEASE )
-	time_t expire_time;
-	time_t now;
-	time_t expired;
-	DWORD size;
-
-    // open/create Condemned registry key 
-	if ( !ghCondemnedKey )
-	{
-#ifdef FINAL_RELEASE
-		RegOpenKeyEx(REGISTRY_ROOT_KEY,
-			REGISTRY_GAME_KEY,
-			0,
-			KEY_ALL_ACCESS,
-			&ghCondemnedKey
-			);
-#else
-		RegCreateKeyEx(REGISTRY_ROOT_KEY,
-						REGISTRY_GAME_KEY,
-						0,
-						NULL,                   
-						REG_OPTION_NON_VOLATILE,
-						KEY_ALL_ACCESS,
-						NULL,
-						&ghCondemnedKey,
-						&gdwCondemnedDisp
-						);
-#endif
-	}
-	expire_time = compile_time() + EXPIRE_DAYS * 24 * 60 * 60; // expires 14 days after last compilation
-	time( &now );
-	if ( now >= expire_time )
-	{
-		if( RegSet( REGISTRY_EXPIRE_TIME,  (LPBYTE)&expire_time ,  sizeof(expire_time) ) != ERROR_SUCCESS )
-		{
-			return 0;
-		}
-		return 0;
-	}
-
-	size = sizeof( expired );
-	if( RegGet( REGISTRY_EXPIRE_TIME, (LPBYTE)&expired, &size ) == ERROR_SUCCESS)
-	{
-		if ( expired >= expire_time )
-			return 0;
-	}
-#endif
-	return 1;
-}
-
-
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Get Version of Current exe...
 	Input		:		Nothing
@@ -14761,7 +14274,6 @@ void ChangeStatus_Title ( MENUITEM * Item )
 	ReleaseView();
 	MyGameStatus = STATUS_Title;
 
-#ifndef SELF_PLAY
 	//MenuChange( Item );
 	MenuRestart( &MENU_Start );
 	CurrentSplashScreen = INITIAL_SPLASH_SCREEN;
@@ -14770,10 +14282,6 @@ void ChangeStatus_Title ( MENUITEM * Item )
        Msg("InitView failed.\n");
 	   exit(1);
 	}
-#else
-	StartAttractModeForSelfPlay(NULL);
-	CurrentSplashScreen = INITIAL_SPLASH_SCREEN;
-#endif
 
 	//set initial texture frames for discs
 	//SetTextures(&MENU_NEW_Start);
@@ -15066,9 +14574,6 @@ void InitDemoList( MENU * Menu )
 	FindClose(h);
 
 	InitAvgFrameRateGlobals( NULL );
-#ifdef SHAREWARE
-	LogosEnable = 1;
-#endif
 	DemoList.FuncDelete = ( DemoList.items > 0 ) ? DeleteDemo : NULL;
 }
 
@@ -15230,33 +14735,17 @@ void ExitLevelSelect( MENU * Menu )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void GetGamePrefs( void )
 {
-#ifndef SELF_PLAY
 	DWORD size;
 	DWORD temp;
 
 	if ( !ghCondemnedKey )
 	{
-#ifndef SELF_PLAY
-#ifdef FINAL_RELEASE
 		RegOpenKeyEx(REGISTRY_ROOT_KEY,
 			REGISTRY_GAME_KEY,
 			0,
 			KEY_ALL_ACCESS,
 			&ghCondemnedKey
 			);
-#else
-		RegCreateKeyEx(REGISTRY_ROOT_KEY,
-			REGISTRY_GAME_KEY,
-			0,
-			NULL,                   
-			REG_OPTION_NON_VOLATILE,
-			KEY_ALL_ACCESS,
-			NULL,
-			&ghCondemnedKey,
-			&gdwCondemnedDisp
-			);
-#endif
-#endif
 	}
 	if ( !ghCondemnedKey )
 		return;
@@ -15463,7 +14952,6 @@ void GetGamePrefs( void )
 
 	SetOurRenderStates( (MENUITEM *)NULL );
 	SetSoundLevels( NULL );
-#endif
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -20592,9 +20080,6 @@ void GetMyCurrentSessions(MENU *Menu)
 	}
 	InitMySessionsList();
 	GetCurrentSessions( Menu );
-#ifdef SHAREWARE
-	LogosEnable = 0;
-#endif
 }
 
 void SendTitleMessage(MENUITEM *Item)
@@ -21667,9 +21152,6 @@ void NextLevelOrGameComplete( MENUITEM *Item )
 	 case GAMECOMPLETE_Cheated:
 		 strcpy( GameCompleteText, GameCompleteWithCheating );
 		 break;
-	 case GAMECOMPLETE_Win98Shareware:
-		 strcpy( GameCompleteText, GameCompleteWin98Shareware );
-		 break;
  	 case GAMECOMPLETE_GotAllCrystalsSoFar:
 		 strcpy( GameCompleteText, GameCompleteGotAllCrystalsSoFar );
 		 break;
@@ -22432,27 +21914,12 @@ void	GetDeviceGuid( void )
 
 	if ( !ghCondemnedKey )
 	{
-#ifndef SELF_PLAY
-#ifdef FINAL_RELEASE
 		RegOpenKeyEx(REGISTRY_ROOT_KEY,
 			REGISTRY_GAME_KEY,
 			0,
 			KEY_ALL_ACCESS,
 			&ghCondemnedKey
 			);
-#else
-		RegCreateKeyEx(REGISTRY_ROOT_KEY,
-						REGISTRY_GAME_KEY,
-						0,
-						NULL,                   
-						REG_OPTION_NON_VOLATILE,
-						KEY_ALL_ACCESS,
-						NULL,
-						&ghCondemnedKey,
-						&gdwCondemnedDisp
-						);
-#endif
-#endif
 	}
 	size = sizeof(GUID);
 	if( RegGet("DeviceGuid", (LPBYTE)&DeviceGuid, &size ) == ERROR_SUCCESS )
@@ -22721,13 +22188,8 @@ void UpdateSessionInfo( LIST *List )
 			if ( FileTimeToSystemTime( &LocalFileTime, &SystemTime ) )
 			{
 				sprintf( Session_Info_Created, LT_Extra3/*"session created %d-%d-%d at %02d:%02d"*/,
-#ifdef MARKET_USA
 					SystemTime.wMonth,
 					SystemTime.wDay,
-#else
-					SystemTime.wDay,
-					SystemTime.wMonth,
-#endif
 					SystemTime.wYear,
 					SystemTime.wHour,
 					SystemTime.wMinute

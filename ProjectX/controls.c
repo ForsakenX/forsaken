@@ -994,8 +994,6 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 	ReadInput();
 #endif
 
-#ifndef SELF_PLAY
-
 	if ( CurrentMenu )
 		return; // disable bike controls if using menus
 
@@ -1254,7 +1252,6 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 	{
 		CLAMP( ctrl->forward, MaxMove );
 	}
-#endif // !SELF_PLAY
 }
 
 
@@ -2106,7 +2103,6 @@ static BOOL RepeatShipActionOK ( int action )
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 {
-#ifndef SELF_PLAY
 
    int	ShipAction, axis;
    float amount;
@@ -2144,7 +2140,6 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 		}
 	}
 
-#endif
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

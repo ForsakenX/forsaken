@@ -786,8 +786,6 @@ Notes for translator:
 
 #define MENU_NEW_CreateGamePseudoHost0 "server verwaltet kollisionen"
 
-#define LT_GameCompleteWin98Shareware "bravo, sie haben die demo von forsaken durchgespielt. versuchen sie sich auch an der vollversion."
-
 #define LT_MENU_NEW_ChooseConnectionToStart1 "drücken sie 'q' zum verlassen"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions21 "anzahl primäre waffen"

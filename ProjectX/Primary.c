@@ -236,9 +236,6 @@
  * 295   18/01/98 23:42 Philipy
  * removed LastPannedSfx buffer
  * 
- * 294   16/01/98 18:01 Oliverc
- * Only disabled selected weapons for SHAREWARE instead of always...
- * 
  * 293   1/16/98 3:59p Phillipd
  * 
  * 292   16/01/98 14:43 Philipy
@@ -1425,21 +1422,14 @@ char *PrimaryDescription[MAXPRIMARYWEAPONS] =
 // is weapon valid as far as order processing & keydefs concerned?
 BOOL PrimaryValid[ MAXPRIMARYWEAPONS ] =
 {
-#ifdef SHAREWARE
-	TRUE,	// pulsar
-	TRUE,	// trojax
-	FALSE,	// pyrolite
-	FALSE,	// transpulse
-	TRUE,	// suss gun
-	FALSE,	// laser
-#else
+
 	TRUE,	// pulsar
 	TRUE,	// trojax
 	TRUE,	// pyrolite
 	TRUE,	// transpulse
 	TRUE,	// suss gun
 	TRUE,	// laser
-#endif
+
 };
 
 int16 PrimarySfxLookup[ MAXPRIMARYWEAPONS ] = {
@@ -2141,9 +2131,7 @@ static int16	OnceOnlyFlag = 0;
 	int		firing;
 	float	fb_power;
 
-#ifndef SHAREWARE
 	float	Speed;
-#endif
 
 	if( WhoIAm == MAX_PLAYERS ) return;
 
@@ -2564,7 +2552,6 @@ static int16	OnceOnlyFlag = 0;
 								break;
 			
 							case PYROLITE_RIFLE:
-#ifndef SHAREWARE
 								if( PyroliteAmmo )
 								{
 									Ships[ WhoIAm ].Object.Flags |= SHIP_PrimFire;
@@ -2601,11 +2588,10 @@ static int16	OnceOnlyFlag = 0;
 
 #endif
 								}
-#endif
 								break;
 			
 							case TRANSPULSE_CANNON:
-#ifndef SHAREWARE
+
 								if( GeneralAmmo )
 								{
 									Ships[ WhoIAm ].Object.Flags |= SHIP_PrimFire;
@@ -2622,7 +2608,7 @@ static int16	OnceOnlyFlag = 0;
 													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
 
 								}
-#endif
+
 								break;
 			
 							case SUSS_GUN:
@@ -2651,7 +2637,7 @@ static int16	OnceOnlyFlag = 0;
 								break;
 			
 							case LASER:
-#ifndef SHAREWARE
+
 								if( GeneralAmmo && !LaserOverheated )
 								{
 									Ships[ WhoIAm ].Object.Flags |= SHIP_PrimFire;
@@ -2679,11 +2665,11 @@ static int16	OnceOnlyFlag = 0;
 
 
 								}
-#endif
+
 								break;
 
 							case NME_LIGHTNING:
-#ifndef SHAREWARE
+
 								if( GeneralAmmo && !LaserOverheated )
 								{
 									Ships[ WhoIAm ].Object.Flags |= SHIP_PrimFire;
@@ -2709,11 +2695,11 @@ static int16	OnceOnlyFlag = 0;
 													Ships[ WhoIAm ].Object.Group, &Ships[ WhoIAm ].Object.Pos, &Pos, &Dir, &UpVector,
 													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
 								}
-#endif
+
 								break;
 
 							case NME_POWERLASER:
-#ifndef SHAREWARE
+
 								if( GeneralAmmo )
 								{
 									Ships[ WhoIAm ].Object.Flags |= SHIP_PrimFire;
@@ -2730,7 +2716,7 @@ static int16	OnceOnlyFlag = 0;
 													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
 
 								}
-#endif
+
 								break;
 
 

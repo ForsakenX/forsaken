@@ -58,11 +58,7 @@ extern char *JoystickPOVDirections[];
 USERCONFIG default_config = {
 	"Player",						// player name
 	1,								// bike (1=Beard)
-#ifdef WIN98SHAREWARE 
-	0,								// bike computer ( 0 = Brenda )
-#else
 	1,								// bike computer ( 1 = Brenda )
-#endif
 	0.6F,							// mouse x sensitivity
 	0.6F,							// mouse y sensitivity
 	0,								// pilot control (pitch forward = down, backward = up)
@@ -177,11 +173,7 @@ USERCONFIG default_config = {
 USERCONFIG my_controls = {
 	"Player",						// player name
 	1,								// bike (1=Beard)
-#ifdef WIN98SHAREWARE 
-	0,								// bike computer ( 0 = Brenda )
-#else
 	1,								// bike computer ( 1 = Brenda )
-#endif
 	0.6F,							// mouse x sensitivity
 	0.6F,							// mouse y sensitivity
 	0,								// pilot control (pitch forward = down, backward = up)

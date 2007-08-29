@@ -264,12 +264,7 @@
  * 51    5-09-97 11:13a Philipy
  * demo playback stuff from new menus
  * 
- * 50    3-09-97 3:42p Philipy
- * ECTS demo stuff
- * 
  * 49    3-09-97 12:33p Philipy
- * some text messaging stuff
- * started on ECTS demo
  * moved Our_CalculateFrameRate to above menu processing so that demos now
  * work.
  * 
@@ -446,11 +441,7 @@ extern float PseudoHostAck_Timeout;
 #define QUICKSTART_SelectSession	4
 #define QUICKSTART_Notify	5
 
-#if defined ( SHAREWARE ) || defined ( WIN98SHAREWARE )
-#define ALLOWED_BIKETYPES	4
-#else
 #define ALLOWED_BIKETYPES	MAXBIKETYPES
-#endif
 
 #define MAX_LEVEL_TEXT_LENGTH 512
 #define MAX_LEVEL_NAME_LENGTH 128
@@ -505,7 +496,6 @@ extern float PseudoHostAck_Timeout;
 #define GAMECOMPLETE_WithAllCrystalsExceptLast	4	// with all crystals except secret level crystal ( standard end game sequence )
 #define GAMECOMPLETE_Cheated					5	// got to last but one level, but with cheating
 #define GAMECOMPLETE_AdditionalLevels			6	// completed all levels ( not original levels )
-#define GAMECOMPLETE_Win98Shareware				7	// win98 shareware version completed
 
 #define PAN_TIME 1.0F
 
@@ -951,8 +941,6 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 void InitTitleFont(void);
 void ReleaseTitle(void);
 BOOL DisplayTitle(void);
-
-extern int AllowGame( void );
 
 void MenuBackSpecific( MENU *Menu, BOOL UseExitFuncs );
 void	MenuRestart( MENU * Menu );

@@ -785,8 +785,6 @@ Notes for translator:
 
 #define MENU_NEW_CreateGamePseudoHost0 "Impactos calculados por servidor"
 
-#define LT_GameCompleteWin98Shareware "Bien hecho, has finalizado la demo de Forsaken. Si te has gustado....¿a qué esperas para comprar la versión final?"
-
 #define LT_MENU_NEW_ChooseConnectionToStart1 "Pulsa 'q' para salir"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions21 "Número de armas básicas"
