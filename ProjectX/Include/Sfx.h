@@ -19,7 +19,6 @@
  * modified max sound volume
  * 
  * 83    3/04/98 17:02 Philipy
- * cd audio now only retriggered if enabled!
  * added generic pickup sound if bike computer speech is zero
  * 
  * 82    3/04/98 13:13 Philipy
@@ -36,12 +35,10 @@
  * added new sfx for title
  * 
  * 80    30/03/98 17:31 Philipy
- * added cd specific path stuff
  * added new bike computers
  * prevented File_Exists being called every time a dynamic sfx is played
  * 
  * 79    29/03/98 20:00 Philipy
- * cd path now verified earlier
  * sfx no longer reloaded when changing biker / bike computer
  * mouse sensitivity rounding error fixed
  * 

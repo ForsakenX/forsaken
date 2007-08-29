@@ -438,7 +438,6 @@
  * Added OriginalLevels flag (TRUE iff original levels are being used...)
  * 
  * 909   5/04/98 16:58 Philipy
- * moved CD_OK flag from config to registry
  * cheats now disabled for multiplayer
  * sfx now paused for shortcut single player menus
  * 
@@ -3030,7 +3029,6 @@
 #include "Mxaload.h"
 #include "dinput.h"
 #include "camera.h"
-#include "cdaudio.h"
 #include "title.h"
 #include "screenpolys.h"
 #include "controls.h"
@@ -3112,7 +3110,6 @@ void DefaultJoystickSettings( USERCONFIG *u );
 int folder_exists( char *pathspec, ... );
 
 extern const char last_compiled[];
-extern BOOL LevelsOnCD;
 extern	float	Countdown_Float;
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
@@ -3132,10 +3129,7 @@ extern	uint32 MaxCurrentBytesPerSecSent;
 extern char *JoystickPOVDirections[];
 extern VECTOR BikePos;
 
-extern char cd_path[];
-
 extern BOOL	CTF;
-extern BOOL CD_OK;
 
 extern BOOL IPAddressExists;
 extern uint8 QuickStart;
@@ -3196,12 +3190,6 @@ extern MENU MENU_NEW_BetweenLevels;
 extern MENU MENU_NEW_StartAttractMode;
 extern MENU MENU_NEW_NumberOfCrystals;
 extern MENU	MENU_NEW_WatchTeamSelect;
-
-#ifdef CD_LOOP_THREAD
-extern BOOL RestartCDTrack;
-extern CRITICAL_SECTION	CDKey;
-extern DWORD CDFinishTime;
-#endif
 
 extern float VDUoffsetX;
 extern float VDUoffsetY;
@@ -3268,7 +3256,6 @@ extern MENUSTATE MenuState;
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS]; 
 extern	char * LogFilename;
 extern	char * BatchFilename;
-extern int	CDTrack[];
 extern	BOOL	ShowEFZones;
 extern	BOOL	ShowTeleports;
 extern BOOL MenuFrozen;
@@ -3517,9 +3504,6 @@ extern	ENEMY	*	FirstEnemyUsed;
 
 extern	CAMERA	CurrentCamera;
 extern	CAMERA	MainCamera;			// the main viewing screen...
-
-extern	CDInfo	cd_info;
-extern	BOOL	CD_Present;
 
 float	FPS = 0.0F;					// Frames Per Second...
 double	TPS = 0.0;					// Textures Per Second...			
@@ -4613,403 +4597,109 @@ static BOOL LevelValid( char *level )
 	return FALSE;
 }
 
-BOOL InitLevels( char *levels_list )
+BOOL InitLevels( char * levels_list )
 {
+
 	int j;
-#if !defined( SHAREWARE ) && !defined( LIMITED_LEVELS )
 	FILE *f;
-	char *short_start;
-	int len;
-	char TempFilename[ 256 ];
 	char levels_file[ 256 ];
-#endif
-	char * LevelPath = "";
-#if defined( SHAREWARE_MAGAZINE ) || defined( SHAREWARE_INTERNET )
-	char *singleplayer_levels[] =
-	{
-		"volcano",
-		"subway",
-		NULL
-	};
-	char *multiplayer_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char *demo_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char **levels_table = NULL;
-#elif defined( SHAREWARE_RETAIL ) || defined( SHAREWARE )
-	char *singleplayer_levels[] =
-	{
-		"volcano",
-		"subway",
-		NULL
-	};
-	char *multiplayer_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char *demo_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char **levels_table = NULL;
-#elif defined( LIMITED_LEVELS )
-	char *singleplayer_levels[] =
-	{
-		NULL
-	};
-	char *multiplayer_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char *demo_levels[] =
-	{
-		"biodome",
-		NULL
-	};
-	char **levels_table = NULL;
+	char * DataPath;
 
-#elif defined( WIN98SHAREWARE )
-	char *singleplayer_levels[] =
-	{
-		"vol2 5",
-		"asubchb 9",
-		NULL
-	};
-	char *multiplayer_levels[] =
-	{
-		"ship 10",
-		NULL
-	};
-	char *splash_levels[] =
-	{
-		"endscene",
-		"probeworld",
-		"accworld",
-		NULL
-	};
-	char **levels_table = NULL;
-
-#elif defined( FINAL_RELEASE )
-	char *singleplayer_levels[] =
-	{
-		"vol2 5",
-		"asubchb 9",
-		"nps-sp01 6",
-		"thermal 3",
-		"fedbankv 2",
-		"pship 8",
-		"spc-sp01 4",
-		"bio-sphere 9",
-		"nukerf 3",
-		"capship 7",
-		"space 8",
-		"high 10",
-		"military 5",
-		"azt-sp01 3",
-		"azchb 6",
-		NULL
-	};
-	char *multiplayer_levels[] =
-	{
-		"biodome 6",
-		"alpha 4",
-		"ship 10",
-		"sewer 3",
-		"nuke-mp 9",
-		"nedwheel 2",
-		"tube 8",
-		"oldtemple 9",
-		"refinery 3",
-		"cruise 7",
-		"arena 8",
-		"pandora 6",
-		"midpand 3",
-		NULL
-	};
-	char *splash_levels[] =
-	{
-		"endscene",
-		"probeworld",
-		"accworld",
-		NULL
-	};
-	char **levels_table = NULL;
-#endif
-
-	CurrentLevelsList = levels_list;
-	OriginalLevels = FALSE;
-
-#if defined( SHAREWARE ) || defined( LIMITED_LEVELS )
-	NumLevels = 0;
-	levels_table = NULL;
-	if ( !strcmp( levels_list, SINGLEPLAYER_LEVELS ) )
-	{
-		levels_table = singleplayer_levels;
+	if ( !levels_list ){
+	  levels_list = LEVELSFILE;
 	}
-	else if ( !strcmp( levels_list, MULTIPLAYER_LEVELS ) )
-	{
-		levels_table = multiplayer_levels;
+
+	// path to Data
+	DataPath = normdata_path;
+	if ( use_data_path ) {
+		DataPath = data_path;
 	}
-	else if ( !strcmp( levels_list, DEMO_LEVELS ) )
-	{
-		levels_table = demo_levels;
+	
+	// path to Levels\\<type>.bat
+    sprintf( levels_file, "%s\\levels\\%s", DataPath, levels_list );
+	
+	// set some globals
+    CurrentLevelsList = levels_list;
+    OriginalLevels = TRUE;
+
+	/////
+    // Read Levels From File
+	/////
+
+    f = fopen( levels_file, "r" );
+	if (!f ){
+		return FALSE;
 	}
-	if ( levels_table )
+
+	// scan each level name into ShortLevelNames[j]
+    j=0;
+	while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
 	{
-		LevelPath = &normdata_path[ 0 ];
-		NumLevels = 0;
-		for ( j = 0; levels_table[ j ]; j++ )
+
+        // if the level is a valid hard coded server level
+		// or if we are the psuedo host
+		if ( LevelValid( ShortLevelNames[ j ] ) )
 		{
-			strncpy( ShortLevelNames[ NumLevels ], levels_table[ NumLevels ], sizeof( ShortLevelNames[ NumLevels ] ) );
-			ShortLevelNames[ NumLevels ][ sizeof( ShortLevelNames[ NumLevels ] ) - 1 ] = 0;
 
-			if ( LevelValid( ShortLevelNames[ NumLevels ] ) )
-			{
-				CDTrack[ NumLevels ] = 2 + NumLevels;
-				sprintf( LevelNames[ NumLevels ], "%slevels\\%s\\%s.mxv", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( CollisionNames[ NumLevels ], "%slevels\\%s\\%s.mc", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( CollisionZNames[ NumLevels ], "%slevels\\%s\\%sz.mc", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( BspNames[ NumLevels ], "%slevels\\%s\\%s.bsp", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( BspZNames[ NumLevels ], "%slevels\\%s\\%sz.bsp", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( ZoneNames[ NumLevels ], "%slevels\\%s\\%s.zon", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( WaterNames[ NumLevels ], "%slevels\\%s\\%s.wat", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( TextNames[ NumLevels ], "%slevels\\%s\\%s.txt", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( MsgNames[ NumLevels ], "%slevels\\%s\\%s.msg", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( ExternalForceNames[ NumLevels ], "%slevels\\%s\\%s.gf", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( TeleportNames[ NumLevels ], "%slevels\\%s\\%s.tel", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
+			// get the path to the current mxv file
+			sprintf( LevelNames[ j ], "%slevels\\%s\\%s.mxv", DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
 
-				sprintf( MissionTextNames[ NumLevels ], "%slevels\\%s\\%s.mis", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-				sprintf( MissionTextPics[ NumLevels ], "levels\\%s\\%s.ppm", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-
-				NumLevels++;
+			// check to see if the level mxv file exists
+			if ( !File_Exists( LevelNames[ j ] ) ){
+			   continue;
 			}
+
+			// add paths for a level to the lists
+			sprintf( CollisionNames[ j ],		"%slevels\\%s\\%s.mc",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( CollisionZNames[ j ],		"%slevels\\%s\\%sz.mc",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( BspNames[ j ],				"%slevels\\%s\\%s.bsp",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( BspZNames[ j ],			"%slevels\\%s\\%sz.bsp",	DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( ZoneNames[ j ],			"%slevels\\%s\\%s.zon",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( WaterNames[ j ],			"%slevels\\%s\\%s.wat",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( TextNames[ j ],			"%slevels\\%s\\%s.txt",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( MsgNames[ j ],				"%slevels\\%s\\%s.msg",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( ExternalForceNames[ j ],	"%slevels\\%s\\%s.gf",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( TeleportNames[ j ],		"%slevels\\%s\\%s.tel",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( MissionTextNames[ j ],		"%slevels\\%s\\%s.mis",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+			sprintf( MissionTextPics[ j ],		"%slevels\\%s\\%s.ppm",		DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+
+			// increment counter
+			j++;
+
 		}
 	}
-#else
-	if ( !levels_list )
-		levels_list = LEVELSFILE;
-	sprintf( levels_file, "levels\\%s", levels_list );
-#ifndef FINAL_RELEASE
-	if ( use_level_path )
-	{
-		Add_Path( level_path, levels_file, &TempFilename[ 0 ] );
-		f = fopen( TempFilename, "r" );
-		if ( !f )
-			return FALSE;
-		j = 0;
-		while ( j < MAXLEVELS )
-		{
-			if ( !fgets( level_names[ j ], sizeof( level_names[ j ] ), f ) )
-				break;
-			len = strlen( level_names[ j ] );
-			if ( !len )
-				break;
-			if ( level_names[ j ][ len - 1 ] == '\n' )
-				level_names[ j ][ len - 1 ] = 0;
-			short_start = strrchr( level_names[ j ], '\\' );
-			if ( short_start )
-				short_start++;
-			else
-				short_start = level_names[ j ];
-			strncpy( ShortLevelNames[ j ], short_start, sizeof( ShortLevelNames[ j ] ) );
-			ShortLevelNames[ j ][ sizeof( ShortLevelNames[ j ] ) - 1 ] = 0;
 
-			if ( LevelValid( ShortLevelNames[ j ] ) )
-			{
-				sprintf( LevelNames[ j ], "%s.mxv", level_names[ j ] );
-				sprintf( CollisionNames[ j ], "%s.mc",  level_names[ j ] );
-				sprintf( CollisionZNames[ j ], "%sz.mc", level_names[ j ] );
-				sprintf( BspNames[ j ], "%s.bsp",  level_names[ j ] );
-				sprintf( BspZNames[ j ], "%sz.bsp",  level_names[ j ] );
-				sprintf( ZoneNames[ j ], "%s.zon",  level_names[ j ] );
-				sprintf( WaterNames[ j ], "%s.Wat",  level_names[ j ] );
-				sprintf( TextNames[ j ], "%s.txt",  level_names[ j ] );
-				sprintf( MsgNames[ j ], "%s.msg",  level_names[ j ] );
-				sprintf( ExternalForceNames[ j ], "%s.gf",  level_names[ j ] );
-				sprintf( TeleportNames[ j ], "%s.tel",  level_names[ j ] );
+	NumLevels = j;
+	fclose( f );
 
-				sprintf( MissionTextNames[ j ], "%slevels\\%s\\%s.mis", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-				sprintf( MissionTextPics[ j ], "levels\\%s\\%s.ppm", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-
-				j++;
-			}
-		}
-		NumLevels = j;
-		fclose( f );
-	}
-	else
-#endif
-	{
-#ifndef WIN98SHAREWARE
-		if( use_data_path )
-		{
-			Add_Path( &data_path[ 0 ], levels_file, &TempFilename[ 0 ] );
-			f = fopen( &TempFilename[ 0 ], "r" );
-#if 0
-			if( f == NULL )
-			{
-				Add_Path( &normdata_path[ 0 ], levels_file, &TempFilename[ 0 ] );
-				f = fopen( &TempFilename[ 0 ], "r" );
-				LevelPath = &normdata_path[ 0 ];
-			}
-			else
-#endif
-			{
-				LevelPath = &data_path[ 0 ];
-			}
-		}
-		else
-		{
-			Add_Path( &normdata_path[ 0 ], levels_file, &TempFilename[ 0 ] );
-			f = fopen( &TempFilename[ 0 ], "r" );
-			LevelPath = &normdata_path[ 0 ];
-		}
-
-		if ( f )
-#else
-		if ( 0 )	// fucking cheesy, but quick & easy!! - Phil
-#endif
-		{
-			j = 0;
-			while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
-			{
-				if ( LevelValid( ShortLevelNames[ j ] ) )
-				{
-					if (!fscanf( f, " %d", &CDTrack[ j ] ))
-						CDTrack[ j ] = 2;
-#ifdef FINAL_RELEASE
-					LevelPath = data_path;
-#endif
-					sprintf( LevelNames[ j ], "%slevels\\%s\\%s.mxv", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-#ifdef FINAL_RELEASE
-					// added check for level to patch
-					if ( !File_Exists( LevelNames[ j ] ) )
-					{
-						// level not on HD
-						LevelPath = normdata_path;
-						sprintf( LevelNames[ j ], "%slevels\\%s\\%s.mxv", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-						// added check for level on CD to patch
-						if ( !File_Exists( LevelNames[ j ] ) )
-						{
-							continue; // level not on CD or CD not present
-						}
-					}
-#endif
-					sprintf( CollisionNames[ j ], "%slevels\\%s\\%s.mc", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( CollisionZNames[ j ], "%slevels\\%s\\%sz.mc", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( BspNames[ j ], "%slevels\\%s\\%s.bsp", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( BspZNames[ j ], "%slevels\\%s\\%sz.bsp", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( ZoneNames[ j ], "%slevels\\%s\\%s.zon", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( WaterNames[ j ], "%slevels\\%s\\%s.wat", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( TextNames[ j ], "%slevels\\%s\\%s.txt", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( MsgNames[ j ], "%slevels\\%s\\%s.msg", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( ExternalForceNames[ j ], "%slevels\\%s\\%s.gf", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( TeleportNames[ j ], "%slevels\\%s\\%s.tel", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-
-					sprintf( MissionTextNames[ j ], "%slevels\\%s\\%s.mis", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-					sprintf( MissionTextPics[ j ], "%slevels\\%s\\%s.ppm", LevelPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-
-					j++;
-				}
-			}
-			NumLevels = j;
-			fclose( f );
-		}
-		else
-		{
-#ifdef FINAL_RELEASE
-			NumLevels = 0;
-			levels_table = NULL;
-			if ( !strcmp( levels_list, SINGLEPLAYER_LEVELS ) )
-			{
-				levels_table = singleplayer_levels;
-			}
-			else if ( !strcmp( levels_list, MULTIPLAYER_LEVELS ) )
-			{
-				levels_table = multiplayer_levels;
-			}
-			else if ( !strcmp( levels_list, DEMO_LEVELS ) )
-			{
-				levels_table = multiplayer_levels;
-			}
-			else if ( !strcmp( levels_list, SPLASH_LEVELS ) )
-			{
-				levels_table = splash_levels;
-			}
-			if ( levels_table )
-			{
-				for ( j = 0; levels_table[ j ]; j++ )
-				{
-					CDTrack[ NumLevels ] = 0;
-					if ( sscanf( levels_table[ j ], "%s %d", ShortLevelNames[ NumLevels ], &CDTrack[ NumLevels ] ) >= 1 )
-					{
-						LevelPath = data_path;
-						sprintf( LevelNames[ NumLevels ], "%slevels\\%s\\%s.mxv", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						if ( !File_Exists ( LevelNames[ NumLevels ] ) )
-						{
-							LevelPath = normdata_path;
-							sprintf( LevelNames[ NumLevels ], "%slevels\\%s\\%s.mxv", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-							// added check for level on CD to patch
-							if ( !File_Exists( LevelNames[ NumLevels ] ) )
-							{
-								continue; // level not on CD or CD not present
-							}
-							LevelsOnCD = TRUE;
-						}
-						sprintf( CollisionNames[ NumLevels ], "%slevels\\%s\\%s.mc", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( CollisionZNames[ NumLevels ], "%slevels\\%s\\%sz.mc", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( BspNames[ NumLevels ], "%slevels\\%s\\%s.bsp", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( BspZNames[ NumLevels ], "%slevels\\%s\\%sz.bsp", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( ZoneNames[ NumLevels ], "%slevels\\%s\\%s.zon", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( WaterNames[ NumLevels ], "%slevels\\%s\\%s.wat", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( TextNames[ NumLevels ], "%slevels\\%s\\%s.txt", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( MsgNames[ NumLevels ], "%slevels\\%s\\%s.msg", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( ExternalForceNames[ NumLevels ], "%slevels\\%s\\%s.gf", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( TeleportNames[ NumLevels ], "%slevels\\%s\\%s.tel", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-
-						sprintf( MissionTextNames[ NumLevels ], "%slevels\\%s\\%s.mis", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						sprintf( MissionTextPics[ NumLevels ], "%slevels\\%s\\%s.ppm", LevelPath, ShortLevelNames[ NumLevels ], ShortLevelNames[ NumLevels ] );
-						NumLevels++;
-					}
-				}
-				if ( NumLevels == j )
-					OriginalLevels = TRUE;
-			}
-#else
-			return FALSE;
-#endif
-		}
-
-	}
-#endif
-
+	// no levels were found
+	// this should never happen
+	// unless you delete all the level directories
+	// or the level file doesn't exist
 	if( !NumLevels ) return FALSE;
 
+	// select default level
 	LevelList.items = 0;
 	LevelList.top_item = 0;
 	LevelList.display_items = 8;
 	LevelList.selected_item = 0;	// you can only ever start game on first level!
 	NewLevelNum = 0;
 
+	// add each level to the master list
     for (j = 0; j < NumLevels; j++)
 	{
 		strcpy( (char*) &LevelList.item[LevelList.items][0] , (char*) &ShortLevelNames[j][0] );
 		LevelList.items++;
     }
 
+	// Read TXT in of default level
 	LoadLevelText( NULL );
 
+	// success !
 	return TRUE;
+
 }
+
 
 BOOL SetMatrixViewPort( void )
 {
@@ -5653,12 +5343,6 @@ ReleaseView(void)
 		FreeTxtFile();
 		FreeMsgFile();
 
-//
-// start: wine debug
-//   Error: "Tried to free NULL DDSurf in .\Oct.c"
-//   Added the various != NULL checks...
-//
-
     if( lpDDSOne != NULL ) {
       ReleaseDDSurf(lpDDSOne);
 		  lpDDSOne = NULL;
@@ -5679,23 +5363,13 @@ ReleaseView(void)
         lpDDSTwo = NULL;
       }
     }
-		RELEASE(lpBmat);
 
-//
-// end: wine debug
-//
+	RELEASE(lpBmat);
 
 
 //		TaskerInit();
 
 	}
-
-	if (CD_Present)
-	{
-		if (CdIsPlaying())
-			CdStop();
-	}
-
 }
 //extern	uint16	BackgroundModel;
 
@@ -5936,15 +5610,6 @@ InitView( void )
 		if ( !CurrentMenu )
 			MenuRestart( &MENU_Start );
 
-		// if any levels are on CD, do not play CD audio in titles
-		if ( !LevelsOnCD )
-		{
-			cd_info.current_track = CD_TITLE_TRACK;
-			if( CD_OK )
-			{
-				PlayAudioTrack();
-			}
-		}
 		break;
 
 	case STATUS_ViewingScore:
@@ -7308,23 +6973,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	CalculateFramelag();
 	AnimOncePerFrame++;
 
-
-
-#ifdef CD_LOOP_THREAD
-	if ( cd_info.IsPlaying )
-	{
-		EnterCriticalSection( &CDKey );
-
-		if ( timeGetTime() > CDFinishTime )
-		{
-			CdStop();
-			RestartCDTrack = TRUE;
-		}
-			
-		LeaveCriticalSection( &CDKey );
-	}
-#endif
-
 #if 0
 	QuitTime -= framelag;
 	if( QuitTime <= 0.0F )
@@ -7412,24 +7060,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 		if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Timed )
 		{
 			DWORD currenttime = timeGetTime();
-
-#ifdef WORK_IN_PROGRESS
-			if ( ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_AccessCD ) && ( currenttime > ( SplashFinishTime - 500 ) ) )
-			{
-				char file[ 128 ];
-				FILE	*	fp;
-				uint32 dummy32;
-
-				//NewSplashScreens[ NewCurrentSplashScreen ].flags & ~SPLASH_AccessCD;
-
-				strcpy( file, normdata_path );
-				strcat( file, "splash\\main.avi" );
-
-				fp = fopen( file, "rb" );
-				fread( &dummy32, sizeof( uint32 ), 1, fp );
-				fclose( fp );
-			}
-#endif
 			
 			if ( currenttime > SplashFinishTime )
 			{
@@ -9286,12 +8916,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 		GodModeOnceOnly = TRUE;
 
 		QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
-
-		if ( !LimitedLoad && !PlayDemo )
-		{
-			cd_info.current_track = CDTrack[ NewLevelNum ];
-			PlayAudioTrack();
-		}
 
 		MyGameStatus = ChangeLevel_MyGameStatus;
 		break;
@@ -13059,12 +12683,6 @@ void	OnceOnlyRelease( void )
 	DestroySound( DESTROYSOUND_All );
 	TermDInput();
 
-	if (CdIsPlaying())
-	{
-		CdStop();
-		CloseCD();
-	}
-
 	for (joystick = 0; joystick < Num_Joysticks; joystick++)
 	{
 		free (JoystickInfo[joystick].Name);
@@ -13858,40 +13476,6 @@ BOOL SaveFullScreenSnapShot( int8 * Filename )
 	}
 	return( TRUE );
 }
-
-int cd_present( void )
-{
-	static char volume_name[ 256 ];
-	static char filesystem_name[ 256 ];
-	DWORD sectors_per_cluster;
-	DWORD bytes_per_sector;
-	DWORD free_clusters;
-	DWORD total_clusters;
-	DWORD serial_number;
-	DWORD max_pathname;
-	DWORD flags;
-	UINT errmode;
-	BOOL vol_ok;
-
-	if ( !GetDiskFreeSpace( cd_path, &sectors_per_cluster, &bytes_per_sector,
-		&free_clusters, &total_clusters ) )
-		return 0;
-	if ( free_clusters )
-		return 0;
-	errmode = SetErrorMode( SEM_FAILCRITICALERRORS );
-	vol_ok = GetVolumeInformation( cd_path, volume_name, sizeof( volume_name ),
-		&serial_number, &max_pathname, &flags,
-		filesystem_name, sizeof( filesystem_name ) );
-	SetErrorMode( errmode );
-	if ( !vol_ok )
-		return 0;
-#ifdef CD_VOLUME_NAME
-	if ( _stricmp( volume_name, CD_VOLUME_NAME ) )
-		return 0;
-#endif
-	return 1;
-}
-
 
 #ifndef ACCLAIM_NY
 #define DebugPrintf if ( 0 ) DebugPrintf

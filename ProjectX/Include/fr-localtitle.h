@@ -349,7 +349,6 @@ Notes for translator:
 #define LT_MENU_NEW_Sound0 "son"
 #define LT_MENU_NEW_Sound1 "options sonores"
 #define LT_MENU_NEW_Sound2 "vol. eff. Son."
-#define LT_MENU_NEW_Sound3 "CD audio"
 #define LT_MENU_NEW_Sound4 "moteurs moto"
 #define LT_MENU_NEW_Sound5 "options dialogues"
 #define LT_MENU_NEW_Sound6 "dialogues biker"
@@ -357,7 +356,6 @@ Notes for translator:
 
 #define LT_MENU_NEW_InGameSound0 "son"
 #define LT_MENU_NEW_InGameSound1 "vol. eff. son.    "
-#define LT_MENU_NEW_InGameSound2 "cd audio      "
 #define LT_MENU_NEW_InGameSound3 "moteur moto  "
 #define LT_MENU_NEW_InGameSound4 "volume biker  "
 #define LT_MENU_NEW_InGameSound5 "ordi moto "
@@ -809,9 +807,9 @@ Notes for translator:
 
 #define QUERYING_SERVER_FOR_LEVELS "Interrogation du serveur pour les niveaux"
 			
-#define LT_NoLevelsInstalled "Aucun niveau installé !veuillez insérer le CD Rom, ou installez les niveaux à partir du CD Rom"
+#define LT_NoLevelsInstalled "Aucun niveau installé !"
 			
-#define LT_NoSinglePlayerLevelsInstalled "Pas de niveau à un seul joueur installé, veuillez insérer le CD rom"
+#define LT_NoSinglePlayerLevelsInstalled "Pas de niveau à un seul joueur installé!"
 			
 #define SERVER_FUCKED "Erreur grave du serveur - le serveur va s'arrêter"
 			 

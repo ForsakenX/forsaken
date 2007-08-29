@@ -11,9 +11,6 @@
  * 
  * 20    7/08/98 10:25a Phillipd
  * 
- * 19    23/03/98 10:19 Oliverc
- * Added basic CD checking at startup and whenever player respawns
- * 
  * 18    16/10/97 18:11 Philipy
  * Implemented pre-game AVI player
  * 

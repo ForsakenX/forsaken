@@ -111,9 +111,6 @@
  * changed splash screen code, + added splash screen on exit
  * 
  * 26    9/01/98 11:14 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
  * loading bar now displayed when loading
  * 
  * 25    11/27/97 12:25p Phillipd

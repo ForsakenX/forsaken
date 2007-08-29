@@ -349,7 +349,6 @@ Notes for translator:
 #define LT_MENU_NEW_Sound0 "sonoro"
 #define LT_MENU_NEW_Sound1 "opzioni sonore"
 #define LT_MENU_NEW_Sound2 "volume sfx"
-#define LT_MENU_NEW_Sound3 "cd audio"
 #define LT_MENU_NEW_Sound4 "motori moto"
 #define LT_MENU_NEW_Sound5 "opzioni parlato"
 #define LT_MENU_NEW_Sound6 "parlato piloti"
@@ -357,7 +356,6 @@ Notes for translator:
 
 #define LT_MENU_NEW_InGameSound0 "sonoro"
 #define LT_MENU_NEW_InGameSound1 "volume sfx    "
-#define LT_MENU_NEW_InGameSound2 "cd audio      "
 #define LT_MENU_NEW_InGameSound3 "motori moto  "
 #define LT_MENU_NEW_InGameSound4 "volume piloti  "
 #define LT_MENU_NEW_InGameSound5 "moto computer "
@@ -809,8 +807,8 @@ Notes for translator:
 #define LT_Extra14 "scarichi moto: %s"
 
 #define QUERYING_SERVER_FOR_LEVELS "ricerca di livelli sul server"
-#define LT_NoLevelsInstalled "nessun livello installato! Inserisci il CD o installa i livelli da CD"
-#define LT_NoSinglePlayerLevelsInstalled "nessun livello a singolo giocatore installato! Inserisci il CD"
+#define LT_NoLevelsInstalled "nessun livello installato!"
+#define LT_NoSinglePlayerLevelsInstalled "nessun livello a singolo giocatore installato!"
 
 #define SERVER_FUCKED "grave errore di server - il server sarà terminato"
 #define LT_MENU_NEW_CreateGameServer1 "l'host può decidere il massimo di giocatori"

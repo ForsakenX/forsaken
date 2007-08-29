@@ -707,7 +707,6 @@
 #include "ia3d.h"
 #endif
 #include "title.h"
-#include "cdaudio.h"
 
 #include "text.h"
 #include "main.h"
@@ -827,7 +826,6 @@ char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
 /****************************************
 Externals
 *****************************************/
-extern BOOL CD_OK;
 extern 	ENEMY Enemies[];
 extern SLIDER BikeCompSpeechSlider;
 extern SLIDER BikerSpeechSlider;
@@ -842,8 +840,6 @@ extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
 extern SLIDER  SfxSlider; 
-extern SLIDER  CDSlider; 
-extern CDInfo  cd_info;
 extern DWORD CompoundSfxDataRate;
 
 extern DWORD CompoundSfxBitDepth;
@@ -2332,8 +2328,6 @@ void PauseAllSfx( void )
 {
 	uint16 i;
 	SPOT_SFX_LIST temp;
-
-	CdPause();
 	
 	// looping sfx info has to be stored for later retriggering
 	for ( i = 0; i < MAX_LOOPING_SFX; i++ )
@@ -2437,9 +2431,6 @@ void ReTriggerSfx( void )
 	SPOT_SFX_LIST temp;
 	uint32 tempuid;
 	uint16 i, j;
-
-	if( CD_OK )
-		CdUnPause();
 
 	// re-trigger all existing looping sfx...
 	for ( i = 0; i < MAX_LOOPING_SFX; i++ )
@@ -4375,33 +4366,6 @@ void SetSoundLevels( int *dummy )
 	// set sfx att.
 //	GlobalSoundAttenuation = SfxSlider.value / 12.5F;
 	GlobalSoundAttenuation = SfxSlider.value / ( SfxSlider.max / GLOBAL_MAX_SFX );
-#if 0
-	// set cd att.
-	
-	vol = CDSlider.value / 10.0F;
-	vol *= 0xFFFF;
-	volbits = (DWORD)vol | ((DWORD)vol << 16);
-	mmr = auxSetVolume( cd_info.volume_id, volbits );
-	
-	if (mmr == MMSYSERR_NOERROR)
-		return;
-	if (mmr == MMSYSERR_BADDEVICEID)
-	{
-		DebugPrintf("bad device id\n");
-		return;
-	}
-	
-	/*
-	vol = CDSlider.value * 5.0F * 1000.0F;
-	
-	if ( ! MCIWndSetVolume( cd_info.DeviceID, (DWORD)vol ) )
-		return;
-	else
-		DebugPrintf("CD volume set to %d\n", (DWORD)vol );
-  
-	DebugPrintf("Unable to set CD volume\n");
-	*/
-#endif
 }
 
 int FindFreeSBufferListNode( void )

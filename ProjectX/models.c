@@ -5740,8 +5740,8 @@ void ThrowOutRider( uint16 Ship )
 		Dir = Ships[ Ship ].LastMove;
 		NormaliseVector( &Dir );
 
-		ExplodeBody( &Ships[ Ship ].Object.Pos, &Dir, Ships[ Ship ].Object.Group );
-//		CreateTomCruise( &Ships[ Ship ].Object.Pos, Ships[ Ship ].Object.Group );
+//		ExplodeBody( &Ships[ Ship ].Object.Pos, &Dir, Ships[ Ship ].Object.Group );
+		CreateTomCruise( &Ships[ Ship ].Object.Pos, Ships[ Ship ].Object.Group );
 	}
 }
 

@@ -104,7 +104,6 @@
  * re-implemented holo-scanline
  * 
  * 94    29/03/98 20:00 Philipy
- * cd path now verified earlier
  * sfx no longer reloaded when changing biker / bike computer
  * mouse sensitivity rounding error fixed
  * 
@@ -463,11 +462,8 @@ extern float PseudoHostAck_Timeout;
 #define SINGLEPLAYER_LEVELS		"mission.dat"
 #define MULTIPLAYER_LEVELS		"battle.dat"
 #define SPLASH_LEVELS			"splash.dat"
-#ifdef SHAREWARE
-#define DEMO_LEVELS				"demo.dat"
-#else
+
 #define DEMO_LEVELS				MULTIPLAYER_LEVELS
-#endif
 
 #define MAXMENULEVELS	16
 #define MAXMENUITEMS	128

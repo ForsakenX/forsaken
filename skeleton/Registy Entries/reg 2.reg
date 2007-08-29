@@ -3,7 +3,6 @@ REGEDIT4
 [HKEY_LOCAL_MACHINE\SOFTWARE\ProjectX]
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\ProjectX\1.00]
-"IP"="F:"
 "Renderer"="generic"
 "Device"="Primary Display Device"
 "Device Number"=hex:00,00,00,00

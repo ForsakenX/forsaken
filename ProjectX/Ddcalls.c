@@ -55,9 +55,6 @@
  * 8 bit screenmodes enabled.....
  * 
  * 19    9/01/98 11:13 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
  * loading bar now displayed when loading
  * 
  * 18    1/08/98 4:18p Phillipd

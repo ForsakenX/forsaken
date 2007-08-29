@@ -48,9 +48,6 @@
  * 97    1/12/98 3:30p Phillipd
  * 
  * 96    9/01/98 11:13 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
  * loading bar now displayed when loading
  * 
  * 95    12/31/97 9:56a Phillipd

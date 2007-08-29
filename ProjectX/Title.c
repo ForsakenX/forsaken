@@ -477,7 +477,6 @@
  * Hacked demos to work.
  * 
  * 509   5/04/98 16:58 Philipy
- * moved CD_OK flag from config to registry
  * cheats now disabled for multiplayer
  * sfx now paused for shortcut single player menus
  * 
@@ -2107,7 +2106,6 @@
 #include "screenpolys.h"
 #include "demo_id.h"
 #include "lines.h"
-#include "cdaudio.h"
 #include "loadsave.h"
 #include "splash.h"
 #include "magic.h"
@@ -2166,7 +2164,6 @@ extern BOOL ShowNamesAnyway;
 extern	BOOL ResetKillsPerLevel;
 
 BOOL SpaceOrbSetup = FALSE;
-BOOL LevelsOnCD = FALSE;
 void DefaultJoystickSettings( USERCONFIG *u );
 void ReInitJoysticks( void );
 
@@ -2195,8 +2192,6 @@ void MoveConfigFile( MENU *Menu );
 
 extern void ShowNodeNetwork( uint32 NetMask );
 void ProcessTextItems (void);
-
-char cd_path[ 256 ] = "";
 
 
 BOOL	SWMonoChrome = FALSE;
@@ -2328,10 +2323,7 @@ extern	BOOL ShowTeleports;
 extern  BOOL ShowBoundingBoxes;
 extern  BOOL ShowColZones;
 
-extern	CDSound		sound;
-extern	CDInfo		cd_info;
 extern	int16		actual_volume;
-extern	BOOL		CD_Present;
 extern	int	RearCameraActive;
 
 	
@@ -2802,8 +2794,6 @@ void InitAttractMode( MENU *Menu );
 void PrepareNextLevelStart( MENU *Menu );
 void HostAboutToStart( MENUITEM *Item );
 void PseudoHostAboutToStart( MENUITEM *Item );
-void ToggleCDAudio( MENUITEM *Item );
-void ToggleCDAudioTitles( MENUITEM *Item );
 void ExitSoundMenu( MENU *Menu );
 void MakeUnselectable( MENUITEM *Item );
 void SendQuickText( MENUITEM *Item );
@@ -3300,8 +3290,7 @@ TEXT	OriginalText;
 
 SLIDER	DemoSpeed = { 1, 16, 1, 8, 0, 0.0F };
 SLIDER	FSBCompensation = { 1, 2048*4, 256, 2048, 0, 0.0F };
-SLIDER  SfxSlider = { 0, 10, 1, 10, 0, 0.0F }; 
-SLIDER  CDSlider = { 0, 10, 1, 10, 0, 0.0F }; 
+SLIDER  SfxSlider = { 0, 10, 1, 10, 0, 0.0F };
 
 #ifdef WIN98SHAREWARE
 SLIDER BikerSpeechSlider = { 0, 10, 1, 0, 0, 0.0F };
@@ -3311,8 +3300,6 @@ SLIDER BikerSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
 
 SLIDER BikeCompSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
 BOOL BikeEnginesOn = TRUE;
-
-BOOL CD_OK = TRUE;
 
 #if defined( SELF_PLAY ) || defined( EXTERNAL_DEMO )
 SLIDER	DemoEyesSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
@@ -4786,16 +4773,10 @@ MENU	MENU_NEW_Sound = {
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_Sound1 /*"sound options"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 40, 100, 50, 0, LT_MENU_NEW_Sound2 /*"sfx volume"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &SfxSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-#ifndef WIN98SHAREWARE
-		{ 10, 50, 100, 60, 0, LT_MENU_NEW_Sound3 /*"cd audio"*/, FONT_Small, TEXTFLAG_CentreY, &CD_OK, ToggleCDAudioTitles, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-#endif
 		{ 10, 60, 100, 70, 0, LT_MENU_NEW_Sound4 /*"bike engines"*/, FONT_Small, TEXTFLAG_CentreY, &BikeEnginesOn, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-
 		{ 0, 80, 200, 100, 0, LT_MENU_NEW_Sound5 /*"speech options"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 100, 100, 110, 0, LT_MENU_NEW_Sound6 /*"biker speech"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &BikerSpeechSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 110, 100, 120, 0, LT_MENU_NEW_Sound7 /*"bike computer"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &BikeCompSpeechSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -4804,13 +4785,9 @@ MENU	MENU_NEW_InGameSound = {
 	LT_MENU_NEW_InGameSound0 /*"sound"*/ , NULL, NULL, SetSoundLevels, 0,
 	{
 		{ 200, 128           , 0, 0, 0, LT_MENU_NEW_InGameSound1 /*"sfx volume    "*/, 0, 0, &SfxSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
-#ifndef WIN98SHAREWARE
-		{ 200, 128 + (1*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound2 /*"cd audio      "*/, 0, 0, &CD_OK, ToggleCDAudio, SelectToggle, DrawToggle, NULL, 0 },
-#endif
 		{ 200, 128 + (2*16)	 , 0, 0, 0, LT_MENU_NEW_InGameSound3 /*"bike engines  "*/, 0, 0, &BikeEnginesOn, ToggleBikeEngines, SelectToggle, DrawToggle, NULL, 0 } ,
 		{ 200, 128 + (3*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound4 /*"biker volume  "*/, 0, 0, &BikerSpeechSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 128 + (4*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound5 /*"bike computer "*/, 0, 0, &BikeCompSpeechSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
-
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -14039,10 +14016,6 @@ void InitSinglePlayerGame( MENU *Menu )
 		return;
 	}
 
-#ifdef SHAREWARE
-	LogosEnable = 0;
-#endif
-
 	Lives = 5;
 
 	if( Menu )
@@ -15018,46 +14991,15 @@ void InitDemoList( MENU * Menu )
 
 	if ( h == INVALID_HANDLE_VALUE )
 	{
-#ifdef FINAL_RELEASE
-		static char demopath[ MAX_PATH ];
-
-		sprintf( demopath, "%s" DEMOFILE_SEARCHPATH, cd_path );
-		h = FindFirstFile( demopath,	// pointer to name of file to search for  
-			(LPWIN32_FIND_DATA) &DemoFiles );	// pointer to returned information
-#endif
-		if ( h == INVALID_HANDLE_VALUE )
-		{
-#ifdef FINAL_RELEASE
-			DebugPrintf( "No demo files found in %s or %s\n",
-				DEMOFILE_SEARCHPATH, demopath );
-#endif
-			return;
-		}
+		return;
 	}
 
 	do{
-#if 1
 		strncpy( DemoList.item[ DemoList.items ], DemoName( DemoFiles.cFileName ), sizeof( DemoList.item[ 0 ] ) - 1 );
 		DemoList.item[ DemoList.items ][ sizeof( DemoList.item[ 0 ] ) - 1 ] = 0;
-#else
-		for ( bname = DemoList.item[DemoList.items] , fname = DemoFiles.cFileName; fname && *fname; bname++, fname++ )
-		{
-			if ( *fname == 0 ) //'.' )
-				break;
-			*bname = *fname;
-		}
-		*bname = 0;
-#endif
-		DemoFp = fopen( DemoFileName( DemoList.item[ DemoList.items ] ), "rb" );
-#ifdef FINAL_RELEASE
-		if ( !DemoFp )
-		{
-			static char demopath[ MAX_PATH ];
 
-			sprintf( demopath, "%s%s", cd_path, DemoFileName( DemoList.item[ DemoList.items ] ) );
-			DemoFp = fopen( demopath, "rb" );
-		}
-#endif
+		DemoFp = fopen( DemoFileName( DemoList.item[ DemoList.items ] ), "rb" );
+
 		if ( DemoFp )
 		{
 			uint32 mp_version;
@@ -15467,12 +15409,6 @@ void GetGamePrefs( void )
 	if ( RegGet( "SfxVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		SfxSlider.value = temp;
 
-	if ( RegGet( "CDVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		CDSlider.value = temp;
-
-	if ( RegGet( "CDOn", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		CD_OK = (BOOL)temp;
-
 	if ( RegGet( "BikeEngines", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		BikeEnginesOn = (BOOL)temp;
 
@@ -15524,10 +15460,6 @@ void GetGamePrefs( void )
 		BikerSpeechSlider.value = 0;
 		BikeCompSpeechSlider.value = 0;
 	}
-
-	size = sizeof( cd_path );
-	if ( RegGet( "IP", (LPBYTE)cd_path, &size) != ERROR_SUCCESS)
-		cd_path[ 0 ] = 0;
 
 	SetOurRenderStates( (MENUITEM *)NULL );
 	SetSoundLevels( NULL );
@@ -15603,10 +15535,7 @@ void SetGamePrefs( void )
 	
 	temp = SfxSlider.value;
 	RegSet( "SfxVolume",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = CDSlider.value;
-	RegSet( "CDVolume",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = (DWORD)CD_OK;
-	RegSet( "CDOn",  (LPBYTE)&temp ,  sizeof(temp) );
+
 	temp = (DWORD)BikeEnginesOn;
 	RegSet( "BikeEngines",  (LPBYTE)&temp ,  sizeof(temp) );
 	
@@ -21568,9 +21497,6 @@ void InitAttractMode( MENU *Menu )
 
 void PrepareNextLevelStart( MENU *Menu )
 {
-	if( cd_info.IsPlaying )
-		CdStop();
-
 	LoadLevelText( NULL );
 	MyGameStatus = STATUS_WaitingToStartSinglePlayer; 
 }
@@ -21602,36 +21528,6 @@ void PseudoHostAboutToStart( MENUITEM *Item )
 //		MenuChangeEx( &MENU_NEW_JoinWaitingToStart );
 	}
 }
-
-void ToggleCDAudio( MENUITEM *Item )
-{
-	if ( CD_OK )
-	{
-		if ( !cd_info.IsPlaying  )
-			PlayAudioTrack();
-	}else
-	{
-		if ( cd_info.IsPlaying )
-			CdStop();
-	}
-}
-
-void ToggleCDAudioTitles( MENUITEM *Item )
-{
-	if ( !LevelsOnCD )
-	{
-		if ( CD_OK )
-		{
-			if ( !cd_info.IsPlaying  )
-				PlayAudioTrack();
-		}else
-		{
-			if ( cd_info.IsPlaying )
-				CdStop();
-		}
-	}
-}
-
 
 void ExitSoundMenu( MENU *Menu )
 {

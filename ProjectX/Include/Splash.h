@@ -13,9 +13,7 @@
  * $Log: /PcProjectX/Include/Splash.h $
  * 
  * 10    5/04/98 15:01 Philipy
- * started pre AVI CD accesss ( not yet implemented )
  * bike engine freq now done on 5 frame average
- * prevented CD track from playing in titles if set to off
  * NoDynamic SFX does not bike bike computer static anymore
  * water detail slider now only has two levels
  * 
@@ -68,7 +66,6 @@
 #define SPLASH_Return 2
 #define SPLASH_ShowNext 4
 #define SPLASH_Dummy 8
-#define SPLASH_AccessCD 16
 
 #define MAX_SPLASH_SCREENS 16
 

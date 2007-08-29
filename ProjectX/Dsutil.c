@@ -29,12 +29,10 @@
  * multiplayer game
  * 
  * 39    30/03/98 17:30 Philipy
- * added cd specific path stuff
  * added new bike computers
  * prevented File_Exists being called every time a dynamic sfx is played
  * 
  * 38    29/03/98 19:59 Philipy
- * cd path now verified earlier
  * sfx no longer reloaded when changing biker / bike computer
  * mouse sensitivity rounding error fixed
  * 

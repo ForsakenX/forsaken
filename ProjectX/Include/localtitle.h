@@ -350,7 +350,6 @@ Notes for translator:
 #define LT_MENU_NEW_Sound0 "sound"
 #define LT_MENU_NEW_Sound1 "sound options"
 #define LT_MENU_NEW_Sound2 "sfx volume"
-#define LT_MENU_NEW_Sound3 "cd audio"
 #define LT_MENU_NEW_Sound4 "bike engines"
 #define LT_MENU_NEW_Sound5 "speech options"
 #define LT_MENU_NEW_Sound6 "biker speech"
@@ -358,7 +357,6 @@ Notes for translator:
 
 #define LT_MENU_NEW_InGameSound0 "sound"
 #define LT_MENU_NEW_InGameSound1 "sfx volume    "
-#define LT_MENU_NEW_InGameSound2 "cd audio      "
 #define LT_MENU_NEW_InGameSound3 "bike engines  "
 #define LT_MENU_NEW_InGameSound4 "biker volume  "
 #define LT_MENU_NEW_InGameSound5 "bike computer "
@@ -810,8 +808,8 @@ Notes for translator:
 #define LT_Extra14 "bike exhausts: %s"
 
 #define QUERYING_SERVER_FOR_LEVELS "querying server for levels"
-#define LT_NoLevelsInstalled "no levels installed! Please insert CD, or install levels from CD"
-#define LT_NoSinglePlayerLevelsInstalled "no single player levels installed! Please insert CD"
+#define LT_NoLevelsInstalled "no levels installed!"
+#define LT_NoSinglePlayerLevelsInstalled "no single player levels installed!"
 
 #define SERVER_FUCKED "serious server error - server will be terminated"
 #define LT_MENU_NEW_CreateGameServer1 "host can set max players"

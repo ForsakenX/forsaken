@@ -35,7 +35,6 @@ void DebugPrintf( const char * format, ... );
 #if 1
 extern int total_malloced;
 extern void *mem;
-extern BOOL CD_OK;
 #if 0
 #define X_malloc( THINGAMAJIG )\
  ( DebugPrintf( "malloc( %s ) total_malloced = %d address %X\n", #THINGAMAJIG, ++total_malloced , (int) (mem = malloc( THINGAMAJIG ) ) ), mem)
@@ -1939,7 +1938,6 @@ write_config( USERCONFIG *u, char *cfg_name )
 	fprintf( f, "INVERT\t\t%d\n", u->invert_pitch );
 	fprintf( f, "INVERT_TURN\t%d\n", u->invert_turn );
 	fprintf( f, "SENSITIVITY\t\t%f %f\n", u->mouse_x_sensitivity, u->mouse_y_sensitivity );
-	fprintf( f, "CDAUD\t%d\n", CD_OK );
 
 	write_keydef( f, "UP", &u->up );
 	write_keydef( f, "DOWN", &u->down );

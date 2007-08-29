@@ -213,7 +213,6 @@ extern	char	CWInTitle;
 
 extern BYTE	MyGameStatus;
 extern float WATER_CELLSIZE;
-extern char cd_path[];
 extern int GameCompleted;
 
 // Possibly not all needed?
@@ -327,7 +326,7 @@ NEWSPLASHSCREENS NewSplashScreens[MAX_SPLASH_SCREENS] = {
 NEWSPLASHSCREENS NewSplashScreens[MAX_SPLASH_SCREENS] = {
 	{ SPLASH_TYPE_Bitmap, SPLASH_Timed | SPLASH_ShowNext, 5000, "le", &BitmapSplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed  | SPLASH_ShowNext, 15000, "acclaim", &LimitedDemoSplashInfo },	
-	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed | SPLASH_ShowNext | SPLASH_AccessCD, 15000, "probe", &LimitedDemoSplashInfo },	
+	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed | SPLASH_ShowNext, 15000, "probe", &LimitedDemoSplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return, 10000, "main", &AVISplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Dummy, 10000, "fs", &BitmapSplashInfo },	
 	{ SPLASH_TYPE_Bitmap, SPLASH_Return | SPLASH_Timed, 20000, "ed1", &DemoSplashInfo },	
@@ -525,12 +524,6 @@ BOOL InitAttractDemo( void *Ptr )
 
 	if ( !File_Exists( CurrentSplashFile )  )
 	{
-#ifdef FINAL_RELEASE
-		static char demopath[ MAX_PATH ];
-		sprintf( demopath, "%s%s", cd_path, CurrentSplashFile );
-		strcpy( CurrentSplashFile, demopath );
-		if ( !File_Exists( CurrentSplashFile ) )
-#endif
 			return FALSE;
 	}
 	old_LogosEnable = LogosEnable;

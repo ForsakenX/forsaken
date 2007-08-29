@@ -12,7 +12,6 @@
 #include <stdio.h>
 #include "text.h"
 #include "d3dmain.h"
-#include "cdaudio.h"
 #include "main.h"
 #include "compobjects.h"
 #include "quat.h"

@@ -19,7 +19,6 @@
  * added new sfx for title
  * 
  * 29    30/03/98 17:31 Philipy
- * added cd specific path stuff
  * added new bike computers
  * prevented File_Exists being called every time a dynamic sfx is played
  * 

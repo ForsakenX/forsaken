@@ -907,7 +907,6 @@ extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern	uint32	BIGPACKETBUFFERSIZE;
 extern	uint32	SERVERPACKETBUFFERSIZE;
 
-extern char cd_path[];
 extern BOOL NoMenuBack;
 
 extern void DebugLastError( void );
@@ -2889,26 +2888,6 @@ void StartDemoPlayback( MENUITEM * Item )
 	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
 
 	DemoFp = fopen( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
-#ifdef FINAL_RELEASE
-	if ( !DemoFp )
-	{
-		static char demopath[ MAX_PATH ];
-		
-		sprintf( demopath, "%s%s", cd_path, DemoFileName( DemoList.item[ DemoList.selected_item ] ) );
-		DemoFp = fopen( demopath, "rb" );
-	}
-#endif
-//	DemoFp = CreateFile( 
-//		&DemoList.item[DemoList.selected_item][0], // pointer to name of the file 
-//		GENERIC_READ , // access (read-write) mode 
-//		FILE_SHARE_READ , // share mode 
-//		NULL, // pointer to security attributes 
-//		OPEN_EXISTING , // how to create 
-//		FILE_ATTRIBUTE_NORMAL | FILE_FLAG_SEQUENTIAL_SCAN , // file attributes 
-//		NULL // handle to file with attributes to copy 
-//		); 	
-
-//	setvbuf( DemoFp, NULL, _IOFBF , 32768 );		// size of stream buffer...
 
 	if( !DemoFp )
 	{

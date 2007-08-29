@@ -71,13 +71,8 @@
 //prevented "level select disabled" from appearing at start of
 //multiplayer game
 //
-//150   8/04/98 10:15 Philipy
-//Title CD track now only started after valid CD check
 //
 //149   7/04/98 11:00 Philipy
-//potentially fixed crash when going from AVI to titles
-//fixed CD audio looping
-//no CD audio in front end unless full install
 //bike features sliders now give correct values
 //
 //148   4/04/98 14:22 Philipy
@@ -141,8 +136,6 @@
 //changed splash screen code, + added splash screen on exit
 //
 //110   9/01/98 11:13 Philipy
-//CD nows plays last track
-//CD now replays current track from seperate  ( low priority ) thread -
 //but still causes pause
 //loading bar now displayed when loading
 //
@@ -158,16 +151,12 @@
 //AVI now plays for stats screens
 //implemented scrolling messages (not enabled)
 //
-//84    27/10/97 15:38 Philipy
-//added in-game cd track playing
-//
 //83    23/10/97 16:49 Philipy
 //added tggle (number key 1) for playing AVI on texture.
 //(no texture conversion yet, could appear corrupted)
 //
 //80    21/10/97 13:08 Philipy
 //AVI now no longer sends main game thread to sleep
-//WindowProc now handles CD track finishing
  * 
  */
 
@@ -218,7 +207,7 @@ extern "C" {
 #include	"title.h"
 //#include	"cplay.h"
 #include	"stdwin.h"
-#include	"cdaudio.h" 
+ 
 #include	"malloc.h"
 #include	"Exechand.h" 
 #include	"DDSurfhand.h" 
@@ -842,7 +831,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 			UseDDrawFlip = TRUE;
 #endif
         } else {
-#if 1
 			int num, denom;
 			float fnum;
 			DWORD mem;
@@ -934,30 +922,13 @@ CreateD3DApp(LPSTR lpCmdLine)
 			{
 				config_name = option;
 			}
-#else
-            Msg("Invalid command line options given.\nLegal options: -systemmemory, -emulation\n");
-            return FALSE;
-#endif
         }
         option = strtok(NULL, " -+");
     }
 #ifndef SELF_PLAY
-	/*
-#ifdef PCIDENT
-	if ( !game_ok || !AllowGame() || !ValidFingerPrint( PCIDENT_FILE ) )
-#else
-	if ( !game_ok || !AllowGame() )
-#endif
-	{
-        Msg( "Fatal initialization error\n" );
-        return FALSE;
-	}
-	*/
+
 	GetGamePrefs();
 	GetDeviceGuid();
-
-	SoundInit();	// cd audio
-	OpenCD();
 
 	if ( !default_width && !default_height && !default_bpp )
 	{
@@ -1381,7 +1352,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 
     switch( message ) {
 
-		// some i/o device has changed state -- make sure the CD is still valid
+		// some i/o device has changed state
 		case WM_DEVICECHANGE:
 #ifndef FINAL_RELEASE
 			DebugPrintf( "DeviceChange detected\n" );
@@ -1597,11 +1568,6 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
             break;
 		case MM_MCINOTIFY:
 			DebugPrintf("MCINOTIFY message %d\n",wParam);
-			if (wParam == MCI_NOTIFY_SUCCESSFUL)
-			{
-				DebugPrintf("CD audio track finished\n");
-				PlayAudioTrack();
-			}
 			break;
         case WM_COMMAND:
             switch(LOWORD(wParam)) {

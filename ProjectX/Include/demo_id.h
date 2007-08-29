@@ -66,11 +66,6 @@
 #define REGISTRY_LOBBY_KEY		(TEXT("Software\\Microsoft\\DirectPlay\\Applications\\Forsaken"))
 #endif
 
-// Forsaken CD name
-#define CD_VOLUME_NAME			"FORSAKEN"
-
-
-
 // localisations
 #if defined( VERSION_FRENCH )
 
