@@ -2942,7 +2942,7 @@ LIST	MySessionsList = { 0 };
 BOOL	OKToJoinSession = FALSE;
 LIST	PlayersList = { 0 };
 LIST	TeamList[MAX_TEAMS];
-BOOL	ShowTeamInfo = FALSE;
+BOOL	ShowTeamInfo = TRUE;
 TEXT	MultiPlayerGameName = { 0, 0, "Default", NULL };
 TEXT	DemoGameName = { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
 TEXT	TitlePlayerMessage = { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
