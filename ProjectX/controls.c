@@ -387,27 +387,6 @@ int ToggleServer( char *cheat )
 }
 
 
-#ifdef ABUSE_PAUL
-int FatPaul( char *cheat )
-{
-	static int n = 0;
-	static char *msg[] =
-	{
-		"Yes he is...homing titans enabled",
-		"and so is Adam, by the way",
-		"both of them.  very fat...",
-		"...and very gay.",
-	};
-
-	FlashMenuText( msg[ n ], 400.0F, SFX_Secret );
-	n++;
-	if ( n >= ( sizeof( msg ) / sizeof( msg[ 0 ] ) ) )
-		n = 0;
-	return 1;
-}
-#endif
-
-
 static struct
 {
 #if CHEATS_AS_PLAINTEXT
@@ -436,9 +415,6 @@ static struct
 	{ { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
 	{ { DIK_F, DIK_U, DIK_L, DIK_L, DIK_M, DIK_O, DIK_N, DIK_T, DIK_Y, 0 }, ToggleLevelSelectMode, FALSE },
 	{ { DIK_S, DIK_E, DIK_R, DIK_V, DIK_E, DIK_R, 0 }, ToggleServer, TRUE },
-#ifdef ABUSE_PAUL
-	{ { DIK_F, DIK_A, DIK_T, DIK_P, DIK_A, DIK_U, DIK_L, DIK_I, DIK_S, DIK_G, DIK_A, DIK_Y, 0 }, FatPaul, TRUE },
-#endif
 #endif
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
