@@ -412,9 +412,7 @@
 #ifndef TITLE_INCLUDED
 #define TITLE_INCLUDED
 
-#if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
-#include "localtitle.h"
-#elif defined( VERSION_SPANISH )
+#if defined( VERSION_SPANISH )
 #include "sp-localtitle.h"
 #elif defined( VERSION_ITALIAN )
 #include "it-localtitle.h"
@@ -422,6 +420,8 @@
 #include "ge-localtitle.h"
 #elif defined( VERSION_FRENCH )
 #include "fr-localtitle.h"
+#else
+#include "localtitle.h"
 #endif
 
 #include	"d3d.h"
