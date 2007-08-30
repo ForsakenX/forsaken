@@ -21,6 +21,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <ddraw.h>
+#include "typedefs.h"
 #include <dinput.h>
 #include <d3drm.h>
 
