@@ -5522,32 +5522,45 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 #endif		
 
+		// if you titaned them...
 		if( BombTag )
 		{
+
+			// print funny message
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpShipDied->WhoIAm][0] ,GOT_CAUGHT_WITH_A_BOMB);
 			AddMessageToQue( (char*)&tempstr[0] );
+
+			// no point if your cheating ?
 			if( !GodMode )
 				Ships[WhoIAm].Kills++;
+
+	    // if its not a titan
 		}else{
 			
 			GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
 			
+   			// if you killed them
    			if( WhoIAm == lpShipDied->WhoKilledMe )
    			{
-   				// me I did it ha ha..
+				// if this is a team game
 				if( TeamGame )
 				{
 					//if they were on my side
 					if( TeamNumber[lpShipDied->WhoIAm] == TeamNumber[WhoIAm] )
 					{
+						// if not god mode
 						if( !GodMode )
 						{
+							// print message
 							AddMessageToQue( "%s %s %s %s", YOU ,&methodstr[0], &Names[lpShipDied->WhoIAm][0] ,ON_YOUR_OWN_TEAM );
+							// you get a death
 							Ships[WhoIAm].Deaths++;
 						}
 					}
+					// if they weren't on your team
 					else
 					{
+						// bounty team game
 						if ( BountyHunt )
 						{
 							if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
@@ -5566,7 +5579,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 									Names[ lpShipDied->WhoIAm ] );
 							}
 						}
+						// i gues you dont get a point if your using the cheat ?
 						else if( !GodMode )
+						// any other team game
 						{
 							AddMessageToQue( "%s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0] );
 							Ships[WhoIAm].Kills++;
@@ -5576,6 +5591,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						}
 					}
 				}
+				// if not  team game
 				else
 				{
 					if ( BountyHunt )
@@ -5607,6 +5623,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			
 			}
+			// if you were not who killed them
 			else
 			{
 // ships now keep check of their individual scores during team game, not team scores as before....
