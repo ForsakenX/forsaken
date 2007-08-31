@@ -5912,8 +5912,8 @@ BOOL InitDInput(void)
     lpdiJoystick[i] = NULL;
   Num_Joysticks = 0;
 
-//  lpdi->lpVtbl->EnumDevices(lpdi, DIDEVTYPE_JOYSTICK, 
-//                         InitJoystickInput, lpdi, DIEDFL_ATTACHEDONLY); 
+  lpdi->lpVtbl->EnumDevices(lpdi, DIDEVTYPE_JOYSTICK, 
+                         InitJoystickInput, lpdi, DIEDFL_ATTACHEDONLY); 
 
   failjoystick = FALSE;
   for (i = 0; i < Num_Joysticks; i++)
