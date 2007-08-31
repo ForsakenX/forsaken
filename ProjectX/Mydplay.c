@@ -5522,7 +5522,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 #endif		
 
-		// if you titaned them...
+		// WHERE IS IS BOMBBB!! !!! ?
+		// SOME TYPE OF A BOMB NOT A TITAN !!!
 		if( BombTag )
 		{
 
@@ -5534,9 +5535,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( !GodMode )
 				Ships[WhoIAm].Kills++;
 
-	    // if its not a titan
+	    // if its not a bomb
 		}else{
 			
+			// print a message reflecting the weapon
 			GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
 			
    			// if you killed them
@@ -5553,8 +5555,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						{
 							// print message
 							AddMessageToQue( "%s %s %s %s", YOU ,&methodstr[0], &Names[lpShipDied->WhoIAm][0] ,ON_YOUR_OWN_TEAM );
-							// you get a death
-							Ships[WhoIAm].Deaths++;
+
+							
+							// nobody ever cares about deaths in a team game
+							// teams should loose a point if they kill each other
+							// we should really show scores that are products of kills - deaths
+
+							//Ships[WhoIAm].Deaths++;
+							Ships[WhoIAm].Kills--;
+
 						}
 					}
 					// if they weren't on your team
