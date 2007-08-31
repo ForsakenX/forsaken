@@ -6249,7 +6249,8 @@ void ProcessGameKeys( void )
 
       // F8
       if ( IsKeyPressed( DIK_F8 ) )
-        // wtf is this ?
+        // Awesome !!!
+        // We need to make this a standard feature!!!
         if( TargetComputerOn )
           TargetComputerOn = FALSE;
         else
