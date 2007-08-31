@@ -204,7 +204,6 @@
 extern "C" {
 
 #include	"title.h"
-//#include	"cplay.h"
 #include	"stdwin.h"
  
 #include	"malloc.h"
@@ -409,19 +408,9 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     hAccelApp = LoadAccelerators(hInstance, "AppAccel");    
 
 //	if( ModeCase == -1 )
-	{
+//	{
 //		D3DAppFullscreen(d3dapp->CurrMode);
-	}
-
-#if 0	// no movie will play...	
-#if 1
-	PlayVideoInWindow(myglobs.hWndMain);
-#else  	
-	PlayMovie( hInstance,
-               hPrevInstance,
-               0, myglobs.hWndMain );
-#endif
-#endif
+//	}
 
 	while (!myglobs.bQuit) {
         /* 
@@ -606,11 +595,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     if (!CreateD3DApp(lpCmdLine))
         return FALSE;
 
-#ifdef EXTERNAL_DEMO
-    myglobs.bShowFrameRate = FALSE;
-#else
 	myglobs.bShowFrameRate = TRUE;
-#endif
 
     return TRUE;
 }
