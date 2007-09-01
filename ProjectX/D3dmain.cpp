@@ -595,8 +595,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     if (!CreateD3DApp(lpCmdLine))
         return FALSE;
 
-	myglobs.bShowFrameRate = TRUE;
-
     return TRUE;
 }
 
