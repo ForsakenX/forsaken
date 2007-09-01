@@ -820,10 +820,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Cplay.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\credits.h"
 				>
 			</File>
