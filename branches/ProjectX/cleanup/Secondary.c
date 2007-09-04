@@ -1578,7 +1578,6 @@
 #include "AI.h"
 #include "water.h"
 
-#include "feedback.h"
 #include "local.h"
 
 #define	SCATTER_TEST	0
@@ -2993,7 +2992,6 @@ static int16	OnceOnlyFlag = 0;
    {
 		SecondaryFireDelay -= framelag;
    }
-   FB_FireSecondary( firing );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

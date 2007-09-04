@@ -1141,7 +1141,6 @@
 #include "main.h"
 #include "controls.h"
 
-#include "feedback.h"
 #include "local.h"
 #include "xmem.h"
 
@@ -5446,7 +5445,6 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 								Recoil.x = ( ( DistVector.x / DistFromCenter ) * ( Damage / 4.0F ) );
 								Recoil.y = ( ( DistVector.y / DistFromCenter ) * ( Damage / 4.0F ) );
 								Recoil.z = ( ( DistVector.z / DistFromCenter ) * ( Damage / 4.0F ) );
-								FB_JoltForce( &Recoil );
 							}
 						}
 					}

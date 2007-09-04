@@ -1186,7 +1186,6 @@
 #include "shadows.h"
 #endif
 
-#include "feedback.h"
 #include "local.h"
 
 #if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
@@ -2794,7 +2793,6 @@ static int16	OnceOnlyFlag = 0;
 	{
 		PrimaryFireDelay -= framelag;
 	}
-	FB_FirePrimary( firing, fb_power );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

@@ -1187,7 +1187,6 @@
 #include "screenpolys.h"
 #include "restart.h"
 
-#include "feedback.h"
 #include "goal.h"
 #include "visi.h"
 #include "text.h"
@@ -2556,11 +2555,6 @@ BOOL ProcessShips()
 							CheckPickup();
 						}
 					}
-
-					FB_Jolt();
-					FB_Engine();
-					FB_Damper();
-					FB_Inertia();
 				}
 
 		
@@ -2754,8 +2748,6 @@ void ForceExternalOneOff( uint16 ship, VECTOR *force )
 	Ships[ ship ].Object.ExternalForce.x += force->x;
 	Ships[ ship ].Object.ExternalForce.y += force->y;
 	Ships[ ship ].Object.ExternalForce.z += force->z;
-	if ( ship == WhoIAm )
-		FB_JoltForce( force );
 }
 
 
@@ -3573,9 +3565,6 @@ void InitShipStartPos( int16 i, int16 pos )
 	Ships[i].Object.BobCount = 0.0F;
 
 	FindNearestNode( &Ships[i].Object );
-
-	if ( i == WhoIAm )
-		FB_Start();
 }
 
 
@@ -3832,7 +3821,6 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 		CreateShockwaveSend( OWNER_SHIP, WhoIAm, &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group, 6.0F, (BYTE) -1 );
 
 		ShipPnt->Object.Mode = LIMBO_MODE;
-		FB_Stop();
 
 		if( GoreGuts ) ThrowOutRider( i );
 		PlayPannedSfx( SFX_BikeExplode, Ships[ WhoIAm ].Object.Group , &Ships[WhoIAm].Object.Pos, 0.0F );
