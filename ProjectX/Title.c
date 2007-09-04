@@ -2070,8 +2070,6 @@
 #include "XMem.h"
 #include "ddsurfhand.h"
 
-#include "force.h"
-#include "feedback.h"
 #include "comm.h"
 #include "restart.h"
 
@@ -2241,17 +2239,6 @@ int BountyBonusInterval = 10;
 float LevelTimeTaken;
 
 BOOL NoMenuBack = FALSE;
-
-BOOL FeedbackEnable = TRUE;
-SLIDER FeedbackGainSlider = {0, 100, 10, 100 };
-SLIDER FeedbackXSlider = {-1, 1, 1, 1 };
-SLIDER FeedbackYSlider = {-1, 1, 1, 1 };
-BOOL FeedbackXEnable = TRUE;
-BOOL FeedbackYEnable = TRUE;
-BOOL FeedbackXInvert = FALSE;
-BOOL FeedbackYInvert = FALSE;
-BOOL FeedbackEffectEnable[ FF_EFFECT_MAX ];
-SLIDER FeedbackEffectGainSlider[ FF_EFFECT_MAX ];
 
 int16 DummyTextureIndex;
 extern FRAME_INFO	*	Title_LevelPics_Header;
@@ -5273,44 +5260,6 @@ MENU	MENU_Keyboard =
 };
 #endif
 
-MENU	MENU_Feedback_Advanced = {
-	LT_MENU_Feedback_Advanced0 /*"Advanced Feedback"*/, NULL, NULL, NULL, 0,
-	{
-		OLDMENUITEM(  200 , 128+0*16,	LT_MENU_Feedback_Advanced1 /*"Primary Feedback   "*/,	&FeedbackEffectEnable[ FF_EFFECT_PrimaryRecoil ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+1*16,	LT_MENU_Feedback_Advanced2 /*"Primary Strength   "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_PrimaryRecoil ], NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+2*16,	LT_MENU_Feedback_Advanced3 /*"Secondary Feedback "*/,	&FeedbackEffectEnable[ FF_EFFECT_SecondaryRecoil ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+3*16,	LT_MENU_Feedback_Advanced4 /*"Secondary Strength "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_SecondaryRecoil ], NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+4*16,	LT_MENU_Feedback_Advanced5 /*"Impact Feedback    "*/,	&FeedbackEffectEnable[ FF_EFFECT_Jolt ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+5*16,	LT_MENU_Feedback_Advanced6 /*"Impact Strength    "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_Jolt ], NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+6*16,	LT_MENU_Feedback_Advanced7 /*"Engine Feedback    "*/,	&FeedbackEffectEnable[ FF_EFFECT_Engine ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+7*16,	LT_MENU_Feedback_Advanced8 /*"Engine Strength    "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_Engine ], NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+8*16,	LT_MENU_Feedback_Advanced9 /*"Damper Feedback    "*/,	&FeedbackEffectEnable[ FF_EFFECT_Damper ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+9*16,	LT_MENU_Feedback_Advanced10 /*"Damper Strength    "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_Damper ], NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+10*16,	LT_MENU_Feedback_Advanced11 /*"Inertia Feedback   "*/,	&FeedbackEffectEnable[ FF_EFFECT_Inertia ], NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+11*16,	LT_MENU_Feedback_Advanced12 /*"Inertia Strength   "*/,	(void*)&FeedbackEffectGainSlider[ FF_EFFECT_Inertia ], NULL, SelectSlider, DrawSlider),
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_Feedback = {
-	LT_MENU_Feedback0 /*"Force Feedback"*/, InitFeedbackMenu, ExitFeedbackMenu, NULL, 0,
-	{
-		OLDMENUITEM(  200 , 128+0*16,	LT_MENU_Feedback1 /*"Force Feedback     "*/,	&FeedbackEnable, NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+1*16,	LT_MENU_Feedback2 /*"Feedback Strength  "*/,	(void*)&FeedbackGainSlider, NULL, SelectSlider, DrawSlider),
-#ifdef FEEDBACK_XYSLIDER
-		OLDMENUITEM(  200 , 128+2*16,	LT_MENU_Feedback3 /*"X axis             "*/,	(void*)&FeedbackXSlider, NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+3*16,	LT_MENU_Feedback4 /*"Y axis             "*/,	(void*)&FeedbackYSlider, NULL, SelectSlider, DrawSlider),
-#else
-		OLDMENUITEM(  200 , 128+2*16,	LT_MENU_Feedback5 /*"X axis "*/,	&FeedbackXEnable, NULL, SelectToggle, DrawToggle),
-		OLDMENUITEM(  350 , 128+2*16,	LT_MENU_Feedback6 /*"invert "*/,	&FeedbackXInvert, NULL, SelectToggle, DrawToggle),
-		OLDMENUITEM(  200 , 128+3*16,	LT_MENU_Feedback7 /*"Y axis "*/,	&FeedbackYEnable, NULL, SelectToggle, DrawToggle),
-		OLDMENUITEM(  350 , 128+3*16,	LT_MENU_Feedback8 /*"invert "*/,	&FeedbackYInvert, NULL, SelectToggle, DrawToggle),
-#endif
-		OLDMENUITEM(  200 , 128+4*16,	LT_MENU_Feedback9 /*"Advanced options..."*/, NULL, &MENU_Feedback_Advanced , MenuChange , MenuItemDrawName ),
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
-
 MENU	MENU_Primary;
 MENU	MENU_Secondary;
 MENU	MENU_Controls = {
@@ -5341,7 +5290,6 @@ MENU	MENU_Controls = {
 		{ 200, 240, 0, 0, 0, LT_MENU_Controls6 /*"Invert Y          "*/,  0, 0,			&Config.invert_pitch,			NULL,				SelectToggle,		DrawToggle, NULL, 0 },
 		{ 200, 272, 0, 0, 0, LT_MENU_Controls7 /*"X Sensitivity     "*/, 0, 0,		&SensitivityXSlider,		NULL,						SelectSlider,		DrawSlider, NULL, 0 },
 		{ 200, 288, 0, 0, 0, LT_MENU_Controls8 /*"Y Sensitivity     "*/, 0, 0,		&SensitivityYSlider,		NULL,						SelectSlider,		DrawSlider, NULL, 0 },
-		{ 200, 320, 0, 0, 0, LT_MENU_Controls9 /*"Force Feedback..."*/, 0, 0,		NULL,					&MENU_Feedback,				MenuChange,			MenuItemDrawName, NULL, 0 },
 #endif
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}																					
@@ -11034,7 +10982,7 @@ void	MenuProcess()
 	DWORD Key;
 	BOOL KeyFound = FALSE;
 	uint16 i;
-	char str[256];
+//	char str[256];
 
 #if 0
 
@@ -11985,7 +11933,7 @@ void InitLevelSelectVDU( MENUITEM *Item )
 void InitControls( MENU *Menu )
 {
 	float sensi;
-	MENUITEM *item;
+//	MENUITEM *item;
 
 	Autoleveling = ( Config.autolevel_rate != 0.0F ) ? TRUE : FALSE;
 
@@ -12007,25 +11955,6 @@ void InitControls( MENU *Menu )
 	if ( SensitivityYSlider.value > SensitivityYSlider.max )
 		SensitivityYSlider.value = SensitivityYSlider.max;
 
-	if ( Menu )
-	{
-		for ( item = Menu->Item; item->x >= 0; item++ )
-		{
-			if ( item->Value == &MENU_Feedback )
-			{
-				if ( FF_Supported( FB_Joystick ) )
-				{
-					item->FuncSelect = MenuChange;
-					item->FuncDraw = MenuItemDrawName;
-				}
-				else
-				{
-					item->FuncSelect = NULL;
-					item->FuncDraw = NULL;
-				}
-			}
-		}
-	}
 }
 
 void SetAutolevel( MENUITEM *item )
@@ -13031,122 +12960,6 @@ void InitInGameMenu( MENU *Menu )
 		}
 	}
 }
-
-
-void InitFeedbackMenu( MENU *Menu )
-{
-	FeedbackInfo *feedback;
-	FF_EffectID id;
-
-	feedback = JoystickInfo[ FB_Joystick ].feedback;
-
-	if ( feedback )
-	{
-		FeedbackEnable = feedback->enable;
-		FeedbackGainSlider.value = (int) floor( 0.5F + (FeedbackGainSlider.min +
-			( FeedbackGainSlider.max - FeedbackGainSlider.min ) * feedback->gain ) );
-#ifdef FEEDBACK_XYSLIDER
-		FeedbackXSlider.value =
-			( feedback->xscale < 0.0F ) ? -1 : ( feedback->xscale > 0.0F ) ? 1 : 0;
-		FeedbackYSlider.value =
-			( feedback->yscale < 0.0F ) ? -1 : ( feedback->yscale > 0.0F ) ? 1 : 0;
-#else
-		FeedbackXEnable = ( feedback->xscale ) ? TRUE : FALSE;
-		FeedbackYEnable = ( feedback->yscale ) ? TRUE : FALSE;
-		FeedbackXInvert = ( feedback->xscale < 0.0F ) ? TRUE : FALSE;
-		FeedbackYInvert = ( feedback->yscale < 0.0F ) ? TRUE : FALSE;
-#endif
-		for ( id = (FF_EffectID) 0; id < FF_EFFECT_MAX; id++ )
-		{
-			FeedbackEffectEnable[ id ] = feedback->effect_setting[ id ].enable;
-			FeedbackEffectGainSlider[ id ].min = 0;
-			FeedbackEffectGainSlider[ id ].max = 100;
-			FeedbackEffectGainSlider[ id ].step = 10;
-			FeedbackEffectGainSlider[ id ].value = (int) floor( 0.5F + (FeedbackEffectGainSlider[ id ].min +
-				( FeedbackEffectGainSlider[ id ].max - FeedbackEffectGainSlider[ id ].min ) * feedback->effect_setting[ id ].gain ) );
-		}
-		ForceConfigSave = TRUE;
-	}
-	else
-	{
-		FeedbackEnable = FALSE;
-	}
-}
-
-
-void ExitFeedbackMenu( MENU *Menu )
-{
-	FeedbackInfo *feedback;
-	int start, stop;
-	FF_EffectID id;
-
-	feedback = JoystickInfo[ FB_Joystick ].feedback;
-	start = 0;
-	stop = 0;
-
-	if ( feedback )
-	{
-		if ( FeedbackEnable )
-		{
-			if ( FeedbackGainSlider.value > FeedbackGainSlider.min )
-			{
-				if ( !feedback->enable )
-					start = 1;
-			}
-			else
-			{
-				if ( feedback->gain )
-					stop = 1;
-			}
-		}
-		else
-		{
-			if ( feedback->enable )
-				stop = 1;
-		}
-		feedback->enable = FeedbackEnable;
-		feedback->gain = (float) ( FeedbackGainSlider.value - FeedbackGainSlider.min ) /
-			( FeedbackGainSlider.max - FeedbackGainSlider.min );
-#ifdef FEEDBACK_XYSLIDER
-		feedback->xscale = ( FeedbackXSlider.value < 0 ) ? -1.0F : ( FeedbackXSlider.value > 0 ) ? 1.0F : 0.0F;
-		feedback->yscale = ( FeedbackYSlider.value < 0 ) ? -1.0F : ( FeedbackYSlider.value > 0 ) ? 1.0F : 0.0F;
-#else
-		feedback->xscale = ( FeedbackXEnable ) ? ( ( FeedbackXInvert ) ? -1.0F : 1.0F ) : 0.0F;
-		feedback->yscale = ( FeedbackYEnable ) ? ( ( FeedbackYInvert ) ? -1.0F : 1.0F ) : 0.0F;
-#endif
-		if ( stop )
-			FB_Stop();
-		if ( start )
-			FB_Start();
-		for ( id = (FF_EffectID) 0; id < FF_EFFECT_MAX; id++ )
-		{
-			feedback->effect_setting[ id ].enable = FeedbackEffectEnable[ id ];
-			feedback->effect_setting[ id ].gain = (float) 
-				( FeedbackEffectGainSlider[ id ].value - FeedbackEffectGainSlider[ id ].min ) /
-				( FeedbackEffectGainSlider[ id ].max - FeedbackEffectGainSlider[ id ].min );
-			if ( feedback->effect_setting[ id ].enable )
-			{
-				if ( feedback->effect_setting[ id ].gain > MIN_GAIN )
-				{
-					if ( !stop && !FF_EffectPlaying( FB_Joystick, id )
-						&& ( id == FF_EFFECT_Damper || id == FF_EFFECT_Inertia ) )
-						FF_StartEffect( FB_Joystick, id );
-				}
-				else
-				{
-					if ( FF_EffectPlaying( FB_Joystick, id ) )
-						FF_StopEffect( FB_Joystick, id );
-				}
-			}
-			else
-			{
-				if ( FF_EffectPlaying( FB_Joystick, id ) )
-					FF_StopEffect( FB_Joystick, id );
-			}
-		}
-	}
-}
-
 
 void InitDebugMode( MENU *Menu )
 {

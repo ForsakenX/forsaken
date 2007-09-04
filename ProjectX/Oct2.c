@@ -3011,8 +3011,6 @@
 #include "registry.h"
 #include "Local.h"
 
-#include  "force.h"
-#include  "feedback.h"
 #include  "goal.h"
 #include  "splash.h"
 #include  "LoadSave.h"
@@ -5906,7 +5904,6 @@ BOOL InitDInput(void)
 //            goto fail;
     }
 
-  FF_Init();
   // try to create Joystick devices
   for ( i = 0; i < MAX_JOYSTICKS; i++ )
     lpdiJoystick[i] = NULL;
@@ -5964,12 +5961,6 @@ BOOL InitDInput(void)
       {
         DebugPrintf( "Unable to turn autocentering off for forcefeedback joystick %s\n",
           JoystickInfo[ i ].Name );
-        goto fail;
-      }
-
-      if ( !FF_InitJoystick( i ) )
-      {
-        DebugPrintf( "Unable to initialise force feedback info\n" );
         goto fail;
       }
     }
@@ -6035,7 +6026,6 @@ fail:
   {
       if (lpdiJoystick[i])
     {
-      FF_ReleaseJoystick( i );
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i] = NULL;
     }
@@ -6076,7 +6066,6 @@ BOOL TermDInput( void )
   {
       if (lpdiJoystick[i])
     {
-      FF_ReleaseJoystick( i );
       IDirectInputDevice2_Unacquire(lpdiJoystick[i]);
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i]  = NULL;
@@ -12482,7 +12471,6 @@ void  OnceOnlyInit( void )
     DebugPrintf( "Oct2.c OnceOnlyInit() Failed on InitDInput()\n" );
     exit(1);
   }
-  FB_Initialise();
 
   InitValidPickups();
   SetupCharTransTable();

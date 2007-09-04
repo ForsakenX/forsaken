@@ -19,7 +19,6 @@
 #include "models.h"
 #include "mxaload.h"
 #include "config.h"
-#include "force.h"
 #include "XMem.h"
 
 extern int	Num_Joysticks;
@@ -1424,55 +1423,6 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 			joy->Axis[axis].exists = FALSE;
 	}
 
-	// check for force feedback info
-	if ( !_stricmp( last_token, "FEEDBACK" ) )
-	{
-		if ( !joy->feedback )
-			joy->feedback = (FeedbackInfo *) calloc( 1, sizeof( FeedbackInfo ) );
-		if ( !joy->feedback )
-			return 0;
-		if ( fscanf( f, " %d %f %f %f",
-			&joy->feedback->enable,
-			&joy->feedback->gain,
-			&joy->feedback->xscale,
-			&joy->feedback->yscale ) == 4 )
-		{
-			if ( fscanf( f, " %80s", last_token ) == 1 )
-			{
-				FF_EffectID id;
-				int enable;
-				float gain;
-				
-				for ( id = (FF_EffectID) 0; id < FF_EFFECT_MAX; id++ )
-				{
-					if ( !_stricmp( last_token, FF_EffectName( id ) ) )
-						break;
-				}
-				while ( id < FF_EFFECT_MAX )
-				{
-					if ( fscanf( f, " %d %f", &enable, &gain ) != 2 )
-					{
-						fscanf( f, " %80s", last_token );
-						break;
-					}
-					joy->feedback->effect_setting[ id ].enable = enable;
-					joy->feedback->effect_setting[ id ].gain = gain;
-					if ( fscanf( f, " %80s", last_token ) != 1 )
-						break;
-					for ( id = (FF_EffectID) 0; id < FF_EFFECT_MAX; id++ )
-					{
-						if ( !_stricmp( last_token, FF_EffectName( id ) ) )
-							break;
-					}
-				}
-			}
-		}
-		else
-		{
-			fscanf( f, " %80s", last_token );
-		}
-	}
-
 	if ( joy->connected )
 	{
 		SetUpJoystickAxis( joynum );
@@ -1916,7 +1866,6 @@ write_config( USERCONFIG *u, char *cfg_name )
 	FILE *f;
 	int j, joystick, axis, button, pov, povdir, action;
 	char axistok[MAX_JOYSTICK_AXIS][80] = { "AXISX", "AXISY", "AXISZ", "AXISRX", "AXISRY", "AXISRZ", "AXISS1", "AXISS2"};
-	FeedbackInfo *feedback;
 	uint32 code;
 
 	f = fopen( cfg_name, "w" );
@@ -2099,22 +2048,6 @@ write_config( USERCONFIG *u, char *cfg_name )
 						(int) floor( 0.49F + ( 100 * sensitivity - 1 ) / sensitivity ) : 100,
 						JoystickInfo[ joystick ].Axis[ axis ].fine,
 						JoystickInfo[joystick].Axis[axis].action );
-				}
-			}
-			feedback = JoystickInfo[ joystick ].feedback;
-			if ( feedback )
-			{
-				FF_EffectID e;
-
-				fprintf( f, "FEEDBACK %d %f %f %f\n",
-					feedback->enable, feedback->gain,
-					feedback->xscale, feedback->yscale );
-				for ( e = (FF_EffectID) 0; e < FF_EFFECT_MAX; e++ )
-				{
-					fprintf( f, "%s %d %f\n",
-						FF_EffectName( e ),
-						feedback->effect_setting[ e ].enable,
-						feedback->effect_setting[ e ].gain );
 				}
 			}
 		}

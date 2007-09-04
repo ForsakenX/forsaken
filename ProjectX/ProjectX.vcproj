@@ -559,15 +559,7 @@
 				>
 			</File>
 			<File
-				RelativePath="feedback.c"
-				>
-			</File>
-			<File
 				RelativePath="File.c"
-				>
-			</File>
-			<File
-				RelativePath="force.c"
 				>
 			</File>
 			<File
@@ -880,15 +872,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\feedback.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\File.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\force.h"
 				>
 			</File>
 			<File
