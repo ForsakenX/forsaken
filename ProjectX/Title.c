@@ -4140,9 +4140,9 @@ MENU MENU_NEW_ConfigJoyAxis = {
 MENU MENU_NEW_ConfigJoyBtns = {
 	"", InitJoystickButtonConfig, NULL, CheckJoyBtns, 0,
 	{
-		{ 5, 0, 190, 25, 0, "", FONT_Medium, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)JoystickModeText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 5, 25, 190, 35, 0, "", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)JoystickBtnText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 5, 40, 100, 160, 0, "", FONT_Small, TEXTFLAG_ManualListHighlight | TEXTFLAG_ForceFit | TEXTFLAG_SuppressHighlight | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ShipActionList, AssignShipActionToJoyBtn, SelectList, DrawSplitMenuList, NULL, 0  },
+		{ 5,  0, 190,  25, 0, "", FONT_Medium, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,                                                                             (void *)JoystickModeText,                      NULL,       NULL, DrawFlatMenuName,  NULL, 0  },
+		{ 5, 25, 190,  35, 0, "", FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,                                                          (void *)JoystickBtnText,                       NULL,       NULL, DrawFlatMenuName,  NULL, 0  },
+		{ 5, 40, 100, 160, 0, "", FONT_Small,  TEXTFLAG_ManualListHighlight | TEXTFLAG_ForceFit | TEXTFLAG_SuppressHighlight | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ShipActionList,           AssignShipActionToJoyBtn, SelectList, DrawSplitMenuList, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4164,9 +4164,9 @@ MENU MENU_NEW_ConfigJoyPOVs = {
 MENU	MENU_NEW_SetupJoystick2 = {
 	"", NULL, NULL, NULL, 0,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_SetupJoystick20 /*"joystick setup"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 30, 200, 40, 0, LT_MENU_NEW_SetupJoystick21 /*"configure buttons"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyBtns, MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 50, 200, 60, 0, LT_MENU_NEW_SetupJoystick22 /*"configure Axis"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConfigureAxisMenu, DrawFlatMenuItem, NULL, 0  },
+		{ 0,   0, 200, 20, 0, LT_MENU_NEW_SetupJoystick20 /*"joystick setup    "*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL,                    NULL,                    NULL, DrawFlatMenuItem, NULL, 0  },
+		{ 10, 30, 200, 40, 0, LT_MENU_NEW_SetupJoystick21 /*"configure buttons "*/, FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyBtns,              MenuChange, DrawFlatMenuItem, NULL, 0  },
+		{ 10, 50, 200, 60, 0, LT_MENU_NEW_SetupJoystick22 /*"configure Axis    "*/, FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL,                    NULL, SelectConfigureAxisMenu, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4222,7 +4222,13 @@ MENU	MENU_NEW_Controls = {
 
 		{ 10, 30, 200, 40, 0, LT_MENU_NEW_Controls1 /*"configure mouse"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetupMouse, MenuChange,	DrawFlatMenuItem, NULL, 0  },
 
-		{ 10, 45, 200, 55, 0, LT_MENU_NEW_Controls2 /*"configure joystick"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetupJoystick, MenuChange, DrawFlatMenuItem, NULL, 0  },
+
+		// old joystick menu
+		{ 10, 45, 200, 55, 0, LT_MENU_NEW_Controls2 /*"configure joystick"*/, FONT_Small, TEXTFLAG_CentreY, NULL,
+		  &MENU_NEW_SetupJoystick, MenuChange, DrawFlatMenuItem, NULL, 0  },
+
+
+
 		{ 10, 60, 200, 70, 0, LT_MENU_NEW_Controls3 /*"configure keys and buttons"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ConfigureKeyboard, MenuChange, DrawFlatMenuItem, NULL, 0  },
 #ifdef VERSION_GERMAN
 		{ 10, 75, 120, 85, 0, LT_MENU_NEW_Controls4 /*"autoleveling"*/, FONT_Small, TEXTFLAG_CentreY,  &Autoleveling, SetAutolevel, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0  },
@@ -4231,7 +4237,15 @@ MENU	MENU_NEW_Controls = {
 #endif
 		{ 10, 90, 200, 100, 0, LT_MENU_NEW_Controls5 /*"restore defaults"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, RestoreDefaultControlSettings, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 105, 200, 115, 0, LT_MENU_NEW_Controls6 /*"back"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, MenuItemBack, DrawFlatMenuItem, NULL, 0  },
-						 
+
+
+
+		// new joystick menu
+		{ 10, 120, 200, 130, 0, "configure joystick 2 ", FONT_Small, TEXTFLAG_CentreY, NULL,
+		  &MENU_NEW_SetupJoystick2, MenuChange, DrawFlatMenuItem, NULL, 0  },
+
+		
+
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -11058,68 +11072,63 @@ void	MenuProcess()
 
 
 	//Key = WhichKeyPressed();
+
+	// read keys into a buffer
 	ReadBufferedKeyboard();
 
-
+	// loop over the keys in the buffer
+	// + 2 loops to do special operations
 	for ( i = 0; i < NumKeysToProcess + 2; i++ )
 	{
-		if ( !CurrentMenu )	// if last key pressed exited from menu system, do not process any more keys
-		{
-			break;
-		}
+	    // if last key pressed exited from menu system
+		// do not process any more keys
+		if ( !CurrentMenu )	break;
 	
-		// force first key to be zero, so that any auto selection is done before any keys are processed
-		if ( !i )
-		{
-			Key = 0;
-		}
+		// force first key to be zero
+		// so that any auto selection is done before any keys are processed
+		if ( !i ) Key = 0;
 		
 		// force last key to be whatever mouse input was ( for key defs )
 		if ( i == NumKeysToProcess + 1 )
-		{
 			Key = CheckMouse();
-		}
 		 
+		// extract the current key from buffer
 		if ( ( i > 0 ) && ( i <= NumKeysToProcess ) )
-		{
 			Key = BufferedKey[ i - 1 ];
-		}
 
+		// if were at the copy right screen
 		if (Key && (CurrentMenu == &MENU_Copyright))
-		{
+			// escape will quite
 	 		if ( Key == DIK_ESCAPE )
-			{
 				SelectQuit( NULL );
-			}
+		    // other wise any other key becomes RETURN
 			else
-			{
 				Key = DIK_RETURN;
-			}
-		}
 
+		// check to see if we have entered a cheat code
+		// this is called every time in the loop
+		// CheckCheats must remember the keys fed previously
 		CheckCheats( ( VirtualKeycode)Key );
 
+        //
 		if (Key && (CurrentMenu == &MENU_NEW_Error))
-		{
 			Key = DIK_RETURN;
-		}
 
+		// if the menu is frozen
 		if (MenuFrozen)
-		{
-			if (!((Key == DIK_RETURN) || (Key == DIK_ESCAPE)))
-			{
+			// if key is not RETURN or ESCAPE quit
+			if ( ! ((Key == DIK_RETURN) || (Key == DIK_ESCAPE)))
 				return;
-			}
+		    // 
 			else
-			{
 				MenuFrozen = FALSE;
-			}
-		}
+
 
 		// pressing any key resets attract mode timer
 		if ( Key )
 			AttractModeCountDown = ATTRACTMODECOUNTVALUE;
 
+		//
 		switch ( MyGameStatus )
 		{
 			// in title room...
@@ -11134,42 +11143,50 @@ void	MenuProcess()
 				InTitleRoom = FALSE;
 		}
 
+		//
 		if ( !OKToProcessKeys )
-		{
 			Key = 0;
-		}
+
 
 		// no menu processing done while loading...
 		switch ( MyGameStatus )
 		{
-		case STATUS_WaitingToStartSinglePlayer:
-		case STATUS_WaitingToStartMultiPlayerHost:
-		case STATUS_WaitingToStartMultiPlayerClient:
-		case STATUS_WaitingToStartTeamGame:
-		case STATUS_WaitingToStartDemo:
+		  case STATUS_WaitingToStartSinglePlayer:
+		  case STATUS_WaitingToStartMultiPlayerHost:
+		  case STATUS_WaitingToStartMultiPlayerClient:
+		  case STATUS_WaitingToStartTeamGame:
+		  case STATUS_WaitingToStartDemo:
 			Key = 0;
 			break;
 		}
 
+
+		// if RETURN was hit
 		if ( Key == DIK_RETURN )
-		{
-			if ( InTitleRoom )
-			{
+			if ( InTitleRoom ){
+				// if were looking at the discs
 				if ( CameraStatus == CAMERA_AtDiscs )
+					// make a sound
 					PlaySfx( SFX_SelectStackOption, 1.0F );
 				else
+					// make a sound
 					PlaySfx( SFX_VidText, 1.0F );
-
 			}else
+				// make a sound
 				PlaySfx( SFX_VidText, 1.0F );
-		}
+
+
 
 		switch ( MenuState )
 		{
+
+
 			case MENUSTATE_SelectKeydef:
 				if ( !ProcessSelectKeydef( Key ) )
 					MenuState = MENUSTATE_Select;
 				break;
+
+
 			case MENUSTATE_Keydef:
 #ifdef KDEF
 				if ( !ProcessDefKey( Key ) )
@@ -11179,6 +11196,8 @@ void	MenuProcess()
 					MenuState = MENUSTATE_Select;
 #endif
 				break;
+
+
 			case MENUSTATE_Keydef2:
 #ifdef VDUKDEF
 				if ( !ProcessDefKey( Key ) )
@@ -11194,14 +11213,20 @@ void	MenuProcess()
 					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
 				}
 				break;
+
+
 			case MENUSTATE_Slider:
 				if ( !ProcessSlider( Key ) )
 					MenuState = MENUSTATE_Select;
 				break;
+
+
 			case MENUSTATE_Slider2:
 				if ( !ProcessSlider2( Key ) )
 					MenuState = MENUSTATE_Select;
 				break;
+
+
 			case MENUSTATE_List:
 				if ( !ProcessList( Key ) )
 				{
@@ -11215,75 +11240,96 @@ void	MenuProcess()
 					}
 				}
 			break;
-		case MENUSTATE_Text:
-			if ( !ProcessText( Key ) )
-			{
-				MenuState = MENUSTATE_Select;
-				if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
+
+
+		    case MENUSTATE_Text:
+				if ( !ProcessText( Key ) )
 				{
-					MenuBack();
+					MenuState = MENUSTATE_Select;
+					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
+					{
+						MenuBack();
+					}
 				}
-			}
-			break;
-		case MENUSTATE_Text2:
-			if ( !ProcessText( Key ) )
-			{	MenuState = MENUSTATE_Select;
-				CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
-				if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
-				{
-					MenuBack();
+				break;
+
+
+			case MENUSTATE_Text2:
+				if ( !ProcessText( Key ) )
+				{	MenuState = MENUSTATE_Select;
+					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
+					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
+					{
+						MenuBack();
+					}
 				}
-			}
-			break;
-		case MENUSTATE_SelectBiker:
-			if ( !ProcessBikerList ( Key ) )
-			{	MenuState = MENUSTATE_Select;
-			}
-			break;
-		case MENUSTATE_SelectSavedGame:
-			if ( !ProcessSavedGameList ( Key ) )
-			{	MenuState = MENUSTATE_Select;
-			}
-			break;
-		case MENUSTATE_SelectPlayer:
-			if ( !ProcessPlayerList ( Key ) )
-			{	MenuState = MENUSTATE_Select;
-			}
-			break;
-		case MENUSTATE_WeaponOrder:
-			if ( !ProcessWeaponOrder ( Key ) )
-			{	MenuState = MENUSTATE_Select;
-			}
-			break;
-		case MENUSTATE_SelectLevelQuick:
-		case MENUSTATE_SelectLevelSlow:
-			if ( !ProcessLevelList ( Key ) )
-				MenuState = MENUSTATE_Select;
-			break;
-		case MENUSTATE_PlaceTeamMember:
-			if ( !ProcessPlaceTeamMember ( Key ) )
-				MenuState = MENUSTATE_Select;
-			break;
-		case MENUSTATE_DifficultySet:
-			if ( !ProcessDifficultySet ( Key ) )
-				MenuState = MENUSTATE_Select;
-			break;
-		default:
-			if (CurrentMenuItem)
-			{
-				if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+				break;
+
+
+			case MENUSTATE_SelectBiker:
+				if ( !ProcessBikerList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectSavedGame:
+				if ( !ProcessSavedGameList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectPlayer:
+				if ( !ProcessPlayerList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_WeaponOrder:
+				if ( !ProcessWeaponOrder ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectLevelQuick:
+			case MENUSTATE_SelectLevelSlow:
+				if ( !ProcessLevelList ( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			case MENUSTATE_PlaceTeamMember:
+				if ( !ProcessPlaceTeamMember ( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			case MENUSTATE_DifficultySet:
+				if ( !ProcessDifficultySet ( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			default:
+
+				if (CurrentMenuItem)
 				{
 					if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
 					{
-						if (CurrentMenuItem->FuncSelect)
-							CurrentMenuItem->FuncSelect(CurrentMenuItem);
+						if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+						{
+							if (CurrentMenuItem->FuncSelect)
+								CurrentMenuItem->FuncSelect(CurrentMenuItem);
+						}
 					}
-				}
-				if (MenuState == MENUSTATE_Select)
-					ProcessSelect( Key );
+					if (MenuState == MENUSTATE_Select)
+						ProcessSelect( Key );
 
-				break;
-			}
+					break;
+				}
 		}
 	}
 

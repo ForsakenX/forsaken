@@ -5627,7 +5627,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
   AxisGUID[3] = GUID_RxAxis;
   AxisGUID[4] = GUID_RyAxis;
   AxisGUID[5] = GUID_RzAxis;
-  AxisGUID[6] = GUID_Slider; // js can have up to 2 sliders
+  AxisGUID[6] = GUID_Slider; // This holds an array of up to 2 sliders
 
   /* loop over the AxisGUID[] Array */
   /* find out if current object is one of type in AxisGUID[] */
@@ -9498,7 +9498,10 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
       return FALSE;
 
-  }else{
+  }
+  /* NOT SERVER MODE */
+  else
+  {
 
     if( !FullRearView )
     {
@@ -9704,13 +9707,14 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 #endif
     }
-  }
+  } /* done with rendering camera stuff */
 
   if( DrawPanel && (WhoIAm == Current_Camera_View ))
   {
     Disp3dPanel( lpDev, lpView );
   }
   
+  /* do the target c omputer trick */
   if( TargetComputerOn )
   {
       lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
@@ -9850,6 +9854,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     }
   }
 
+  // here is where we process menu keys
   ProcessGameKeys();
 
   CheckForRogueSfx();
@@ -10374,7 +10379,7 @@ BOOL NoDebugMsgs = FALSE;
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void DebugPrintf( const char * format, ... )
 {
-#ifndef FINAL_RELEASE
+#ifdef DEBUG_ON
     static char buf1[256], buf2[512];
   va_list args;
 
