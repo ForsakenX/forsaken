@@ -878,15 +878,13 @@ fail:
 		MouseState[ new_input ].rgbButtons[ j ] = 0;
 }
 
-int CurrentPolledJoystick = 0;
 float framelagfix = 0.0F;
-void
-ReadInput( void )
+
+void ReadInput( void )
 {
 	int i;
 
-	if ( WaitingToQuit )
-		return;
+	if ( WaitingToQuit ) return;
 
 	old_input = new_input;
 	new_input++;
@@ -895,6 +893,7 @@ ReadInput( void )
 
 	framelagfix -= framelag2;
 	
+	/* read mouse input */
 	if( framelagfix <= 0.0F )
 	{
 		ReadMouse( 0 );
@@ -905,28 +904,13 @@ ReadInput( void )
 		ReadMouse( 1 );
 	}
 
+	/* read keyboard input */
 	ReadKeyboard( 0 );
 
-#if 0
-	CurrentPolledJoystick++;
-	if (CurrentPolledJoystick > (Num_Joysticks - 1))
-		CurrentPolledJoystick = 0;
-
-	while (!JoystickInfo[CurrentPolledJoystick].assigned)
-	{
-		CurrentPolledJoystick++;
-		if (CurrentPolledJoystick > (Num_Joysticks - 1))
-			CurrentPolledJoystick = 0;
-	}
-
-	PollJoystick( CurrentPolledJoystick );
-#endif
-
+	/* read joysticks inputs */
 	for (i = 0; i < Num_Joysticks; i++)
-	{
 	 	if (JoystickInfo[i].connected)
 			PollJoystick(i);
-	}
 
 	flush_input = FALSE;
 }
@@ -1656,86 +1640,134 @@ void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
 }
 
 /*--------------------------------------------------------------------------
-| ReadJoystickInput
-|
 | Requests joystick data and performs any needed processing.
-|
 *-------------------------------------------------------------------------*/
 BOOL PollJoystick( int joysticknum )
 {
-   HRESULT					hRes, err;
+
+   HRESULT hRes;
    int i, j, povdir;
 
+   /* this global is changed by a menu toggle */
    if ( !JoystickInput )
-   {
 	   return TRUE;
-   }
 
+   /* joystick doesn't exist */
    if( !lpdiJoystick[joysticknum] )
-		return FALSE;
+	   return FALSE;
 
-   // poll the joystick to read the current state
-	hRes = IDirectInputDevice2_Poll(lpdiJoystick[joysticknum]);
+poll:
 
-	if(hRes != DI_OK)
-	{
-		switch (hRes)
-		{
-			case DIERR_INPUTLOST:
-			{
-				err = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
-				if (err != DI_OK)
-					return FALSE;
-			}
-			break;
-			default:
-				return FALSE;
-		}
-	}
+     /* poll the device */
+	 hRes = IDirectInputDevice2_Poll(lpdiJoystick[joysticknum]);
 
-	// get data from the joystick
-	hRes = IDirectInputDevice_GetDeviceState(lpdiJoystick[joysticknum],
-	                                         sizeof(DIJOYSTATE2), &js[ new_input ][joysticknum]);
-#if 1
-	if(hRes != DI_OK)
-	{
-		return FALSE;
-	}
-#else
-	if(hRes == DI_OK)
-	{
-		DebugPrintf("Joystick %d returned DI_OK\n",joysticknum);
-		return TRUE;
-	}
+     /* not needed or succeeded */
+     if ( hRes == DI_NOEFFECT && hRes == DI_OK )
+		 goto state;
 
-	switch (hRes)
-	{
+     /* lets look for some errors */
+     switch ( hRes )
+     {
+
+     // Access to the input device has been lost. It must be reacquired. 
+     case DIERR_INPUTLOST:
+
+     // The operation cannot be performed unless the device is acquired. 
+     case DIERR_NOTACQUIRED:
+
+		 // acquire the device
+         hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
+
+         // must be a deeper issue
+	     if ( hRes != DI_OK )
+	       return FALSE;
+
+		 // try again
+		 goto poll;
+
+	     break;
+
+     // The object has not been initialized. 
+     case DIERR_NOTINITIALIZED:
+
+		 // must be a deeper issue
+		 return FALSE;
+		 break;
+
+     }
+
+
+state:
+
+
+   // get data from the joystick
+   hRes = IDirectInputDevice_GetDeviceState( lpdiJoystick[joysticknum],
+	                                         sizeof(DIJOYSTATE2),
+			                                 &js[ new_input ][joysticknum]);
+   // if we got an error
+   if ( hRes == DI_OK )
+	   goto povs;
+   
+   // lets check out some errors
+   switch (hRes)
+   {
+
+	// Access to the input device has been lost. It must be reacquired. 
 	case DIERR_INPUTLOST:
-		DebugPrintf("Joystick %d returned DIERR_INPUTLOST\n",joysticknum);
-		break;
-	case DIERR_INVALIDPARAM:
-		DebugPrintf("Joystick %d returned DIERR_INVALIDPARAM\n",joysticknum);
-		break;
+
+	// The operation cannot be performed unless the device is acquired. 
 	case DIERR_NOTACQUIRED:
-		DebugPrintf("Joystick %d returned DIERR_NOTACQUIRED\n",joysticknum);
-		break;
+
+	  // acquire the device
+      hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
+
+	  // must be a deeper issue
+	  if ( hRes != DI_OK )
+  	    return FALSE;
+
+      // try again
+	  goto state;
+
+      break;
+
+	case DIERR_INVALIDPARAM:
 	case DIERR_NOTINITIALIZED:
-		DebugPrintf("Joystick %d returned DIERR_NOTINITIALIZED\n",joysticknum);
-		break;
+			
+      // must be a deeper issue
+	  return FALSE;
+	  break;
+
+	// Data is not yet available. 
 	case E_PENDING:
-		DebugPrintf("Joystick %d returned E_PENDING\n",joysticknum);
-		break;
+	  // no data just say ok and get out of here
+	  return TRUE;
+	  break;
+
 	}
-#endif
+
+
+povs:
+
+
+    /*
+      who knows what the rest of this does
+    */
+
+    // for each hat switch
 	for (i = 0; i < JoystickInfo[joysticknum].NumPOVs; i++)
 	{
 		povdir = GetPOVMask( js[ new_input ][ joysticknum ].rgdwPOV[ i ] );
 		for (j = 0; j < MAX_POV_DIRECTIONS; j++)
 		{
-			js_pov[ new_input ][ joysticknum ][ i ][ j ] = ( povdir & ( 1 << j ) ) ? 0x80 : 0;
+			js_pov[ new_input ][ joysticknum ][ i ][ j ] =
+				( povdir & ( 1 << j ) ) ? 0x80 : 0;
 		}
 	}
+
+
+	// leave happilly
 	return TRUE;
+
 }
 
 /*--------------------------------------------------------------------------
@@ -2082,40 +2114,64 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 
    int	ShipAction, axis;
    float amount;
-   LONG *axisptr[MAX_JOYSTICK_AXIS] =
-   {
-		&js[ new_input ][joysticknum].lX, &js[ new_input ][joysticknum].lY, &js[ new_input ][joysticknum].lZ, 
-		&js[ new_input ][joysticknum].lRx, &js[ new_input ][joysticknum].lRy, &js[ new_input ][joysticknum].lRz,
-		&js[ new_input ][joysticknum].rglSlider[0], &js[ new_input ][joysticknum].rglSlider[1]
-   };
+
    JOYSTICKAXIS *joyaxis;
 
+   LONG *axisptr[MAX_JOYSTICK_AXIS] =
+   {
+		&js[ new_input ][joysticknum].lX,
+		&js[ new_input ][joysticknum].lY,
+		&js[ new_input ][joysticknum].lZ, 
+		&js[ new_input ][joysticknum].lRx,
+		&js[ new_input ][joysticknum].lRy,
+		&js[ new_input ][joysticknum].lRz,
+		&js[ new_input ][joysticknum].rglSlider[0],
+		&js[ new_input ][joysticknum].rglSlider[1]
+   };
+
+   /* joystick is disabled by menu toggle */
    if ( !JoystickInput )
    {
+Msg("!JoystickInput");
 	   return;
    }
 
    if( !lpdiJoystick[joysticknum] )
-	return;
+   {
+Msg("!lpdiJoystick[joysticknum]");
+	  return;
+   }
 
-	for (axis = 0; axis < MAX_JOYSTICK_AXIS; axis++)
-	{
-		if ((JoystickInfo[joysticknum].Axis[axis].exists) && (*axisptr[axis]))
-		{
+	for (axis = 0; axis < MAX_JOYSTICK_AXIS; axis++){
+		if ((JoystickInfo[joysticknum].Axis[axis].exists) && (*axisptr[axis])){
+
+//Msg("Found");
+
+			/* the axis were looking at */
 			joyaxis = &JoystickInfo[ joysticknum ].Axis[ axis ];
+
+			/* the action it performs */
 			ShipAction = joyaxis->action;
-			if ( ShipAction != SHIPACTION_Nothing )
-			{
-				amount = (float) *axisptr[ axis ] * joyaxis->sensitivity;
-				if ( joyaxis->fine )
-					amount *= (float) fabs( amount );
-				if ( joyaxis->inverted )
-					amount = -amount;
-				DoShipAction( ctrl, ShipAction, framelag * amount );
-			}
+
+			/* continue if the action is nothing */
+			if ( ShipAction == SHIPACTION_Nothing ) continue;
+
+			/* amount of movement detected */
+      		amount = (float) *axisptr[ axis ] * joyaxis->sensitivity;
+
+			/* if were using fine control */
+			if ( joyaxis->fine )        amount *= (float) fabs( amount );
+
+			/* if the axis is inverted */
+			if ( joyaxis->inverted ) 	amount  = -amount;
+
+			/* perform the action */
+			DoShipAction( ctrl, ShipAction, framelag * amount );
+
+		}else{
+			//Msg("Not Found");
 		}
 	}
-
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
