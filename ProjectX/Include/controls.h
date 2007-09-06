@@ -68,13 +68,11 @@ typedef struct {
 	int deadzone;	// percentage
 	BOOL inverted;
 	BOOL fine;
-	BOOL feedback; // supports force feedback
 } JOYSTICKAXIS;
 
 typedef struct {
 	char *name;
 	int action;
-	BOOL feedback_trigger; // supports force feedback triggering
 } JOYSTICKBTN;
 
 #define MAX_POV_DIRECTIONS 4
@@ -115,7 +113,6 @@ typedef struct {
 	JOYSTICKPOV POV[MAX_JOYSTICK_POVS];
 	int NumAxis;
 	JOYSTICKAXIS Axis[MAX_JOYSTICK_AXIS];
-	struct _FeedbackInfo *feedback;
 } JOYSTICKINFO;
 
 #define NUM_SHIP_ACTIONS		SHIPACTION_MAX

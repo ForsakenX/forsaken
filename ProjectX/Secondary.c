@@ -233,9 +233,6 @@
  * 427   18/02/98 19:42 Oliverc
  * Enabled scatter, pine mine & quantum mine for non-SHAREWARE version
  * 
- * 426   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
- * 
  * 425   16/02/98 21:38 Collinsd
  * Started Save/Load BGObjects. 
  * 

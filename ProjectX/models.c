@@ -220,9 +220,6 @@
  * 298   19/02/98 22:00 Collinsd
  * Added flygirl biker.
  * 
- * 297   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
- * 
  * 296   17/02/98 9:17 Philipy
  * added frequency update for bike engine loop
  * 

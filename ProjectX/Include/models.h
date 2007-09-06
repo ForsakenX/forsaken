@@ -67,9 +67,6 @@
  * 147   19/02/98 22:01 Collinsd
  * Added flygirl biker.
  * 
- * 146   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
- * 
  * 145   16/02/98 14:34 Collinsd
  * Started LoadSave
  * 

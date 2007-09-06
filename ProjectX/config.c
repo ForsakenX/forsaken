@@ -1558,11 +1558,6 @@ void ReInitJoysticks( void )
 				free (JoystickInfo[j].Name);
 				JoystickInfo[ j ].Name = NULL;
 			}
-			if ( JoystickInfo[ j ].feedback )
-			{
-				free( JoystickInfo[ j ].feedback );
-				JoystickInfo[ j ].feedback = NULL;
-			}
 		}
 	}
 

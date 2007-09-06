@@ -596,8 +596,6 @@
  * 861   26/03/98 15:16 Collinsd
  * Mods for Chris
  * 
- * 860   24/03/98 21:36 Oliverc
- * Fixed memory leak in force feedback info
  * 
  * 859   24/03/98 21:07 Philipy
  * fixed quicktext stuff
@@ -762,9 +760,6 @@
  * added pseudo dithering for 8 bit saved game pic
  * flygirl now selectable from front end ( no model displayed )
  * 
- * 807   2/26/98 10:00p Oliverc
- * Fixed bug in force feedback joystick config reading (failed when no
- * joystick connected if one had been previously defined)
  * 
  * 806   26/02/98 20:41 Philipy
  * added front end for load game
@@ -828,11 +823,7 @@
  * 
  * 787   19/02/98 22:00 Collinsd
  * Added flygirl biker.
- * 
- * 786   18/02/98 19:41 Oliverc
- * 
- * 785   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
+ *
  * 
  * 784   17/02/98 17:15 Philipy
  * level.mis now used to store level name as well as mission briefing
@@ -843,8 +834,6 @@
  * updated
  * implemented mission briefing screens
  * 
- * 782   11/02/98 12:59 Oliverc
- * Added basic force feedback support for joysticks
  * 
  * 781   11/02/98 12:54 Philipy
  * changed calls to PlaySfx to call with volume rather than distance
@@ -5971,36 +5960,12 @@ BOOL InitDInput(void)
         JoystickInfo[i].POV[j].action[k] = SHIPACTION_Nothing;
     }
 
-    if ( diJoystickCaps[ i ].dwFlags & DIDC_FORCEFEEDBACK )
-    {
-      DIPROPDWORD DIPropAutoCenter;
-      
-      DIPropAutoCenter.diph.dwSize = sizeof(DIPropAutoCenter);
-      DIPropAutoCenter.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-      DIPropAutoCenter.diph.dwObj = 0;
-      DIPropAutoCenter.diph.dwHow = DIPH_DEVICE;
-      DIPropAutoCenter.dwData = 0;
-      
-      err = IDirectInputDevice2_SetProperty( lpdiJoystick[ i ], DIPROP_AUTOCENTER, &DIPropAutoCenter.diph );
-      if ( err != DI_OK )
-      {
-        DebugPrintf( "Unable to turn autocentering off for forcefeedback joystick %s\n",
-          JoystickInfo[ i ].Name );
-        goto fail;
-      }
-    }
-    else
-    {
-      JoystickInfo[ i ].feedback = NULL;
-    }
-
     // Tell DirectInput that we want to receive data in joystick format
     if (IDirectInputDevice2_SetDataFormat(lpdiJoystick[i], &c_dfDIJoystick2) == DI_OK)
     {                          
       // set cooperative level
       if(IDirectInputDevice2_SetCooperativeLevel(lpdiJoystick[i], myglobs.hWndMain,
-//                 DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) == DI_OK)
-                 DISCL_EXCLUSIVE | DISCL_FOREGROUND) == DI_OK) // need exclusive mode for force-feedback joysticks
+                 DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) == DI_OK)
       {
         // try to acquire the Joystick
         err = IDirectInputDevice2_Acquire(lpdiJoystick[i]);
@@ -6054,11 +6019,6 @@ fail:
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i] = NULL;
     }
-    if ( JoystickInfo[ i ].feedback )
-    {
-      free( JoystickInfo[ i ].feedback );
-      JoystickInfo[ i ].feedback = NULL;
-    }
   }
     if (lpdi)   IDirectInputDevice_Release(lpdi), lpdi     = NULL;
     return FALSE;               
@@ -6094,11 +6054,6 @@ BOOL TermDInput( void )
       IDirectInputDevice2_Unacquire(lpdiJoystick[i]);
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i]  = NULL;
-    }
-    if ( JoystickInfo[ i ].feedback )
-    {
-      free( JoystickInfo[ i ].feedback );
-      JoystickInfo[ i ].feedback = NULL;
     }
   }
 

@@ -765,9 +765,6 @@
  * 391   19/02/98 22:00 Collinsd
  * Added flygirl biker.
  * 
- * 390   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
- * 
  * 389   11/02/98 16:29 Collinsd
  * Added soundfx for bikes/enemies
  * 

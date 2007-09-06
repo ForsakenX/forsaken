@@ -849,13 +849,6 @@
  * 403   19/02/98 22:01 Collinsd
  * Added flygirl biker.
  * 
- * 402   19/02/98 10:05 Oliverc
- * Added force feedback config saving (in-game) and auto-detection of
- * which joystick is to be used for force feedback
- * 
- * 401   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
- * 
  * 400   17/02/98 17:15 Philipy
  * level.mis now used to store level name as well as mission briefing
  * if file not there, reverts back to old level name
@@ -2609,8 +2602,6 @@ void GetGamePrefs( void );
 void SetGamePrefs( void );
 void GetMultiplayerPrefs( void );
 void SetMultiplayerPrefs( void );
-void InitFeedbackMenu( MENU *Menu );
-void ExitFeedbackMenu( MENU *Menu );
 void InitLoadSavedGameList( MENU * Menu );
 
 char *SearchKey( char c );

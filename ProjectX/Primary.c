@@ -175,8 +175,6 @@
  * 315   23/02/98 21:20 Collinsd
  * Optimised Load/Save Functions.
  * 
- * 314   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
  * 
  * 313   16/02/98 14:33 Collinsd
  * Started LoadSave

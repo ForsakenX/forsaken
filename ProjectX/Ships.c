@@ -261,8 +261,6 @@
  * 337   19/02/98 22:00 Collinsd
  * Added flygirl biker.
  * 
- * 336   18/02/98 11:53 Oliverc
- * First feature-complete version of force feedback joystick code
  * 
  * 335   11/02/98 12:57 Philipy
  * Changed PlaySfx calls to use Vol instead of Dist
