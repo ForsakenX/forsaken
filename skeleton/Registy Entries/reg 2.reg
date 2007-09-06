@@ -4,6 +4,7 @@ REGEDIT4
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\ProjectX\1.00]
 "Renderer"="generic"
+"ServiceProvider"="{36E95EE0-8577-11CF-960C-0080C7534E82}"
 "Device"="Primary Display Device"
 "Device Number"=hex:00,00,00,00
 "DeviceGuid"=hex:00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
