@@ -31,8 +31,6 @@ REGEDIT4
 "TextureAlphaBPP"=hex:00,00,00,00
 "TextureIndexBPP"=hex:00,00,00,00
 "SfxVolume"=hex:0a,00,00,00
-"CDVolume"=hex:0a,00,00,00
-"CDOn"=hex:00,00,00,00
 "BikeEngines"=hex:01,00,00,00
 "Gamma"=hex:96,00,00,00
 "water"=hex:02,00,00,00

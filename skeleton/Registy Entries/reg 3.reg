@@ -1,9 +1,9 @@
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\DirectPlay\Applications\ProjectX]
-"CommandLine"="-NoAVI -xmen -opt:generic -dev0 "
+"CommandLine"="-NoAVI -xmen -opt:16MB -dev0 "
 "CurrentDirectory"="C:\\ProjectX"
 "File"="ProjectX.exe"
-"Guid"="{27E96003-B1C3-11d1-B00C-080009C042E7}"
+"Guid"="{7365f4b3-aeba-496f-ae26-558675489b31}"
 "Path"="C:\\ProjectX"
 
