@@ -5982,6 +5982,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case TEXTMSGTYPE_QuickTauntWhisper:
 			if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 				return;
+			sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+			AddMessageToQue( (char*)&tempstr[0] );
+			return;
 		case TEXTMSGTYPE_Taunt1:
 		case TEXTMSGTYPE_Taunt2:
 		case TEXTMSGTYPE_Taunt3:
