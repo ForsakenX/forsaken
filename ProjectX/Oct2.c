@@ -3555,7 +3555,7 @@ int   GetPlayerNumCount = 0;
 int RearCameraActive = 0;
 int MissileCameraActive = 0;
 uint16  CameraMissile = (uint16) -1;
-int MissileCameraEnable = 0;
+extern int MissileCameraEnable;
 BYTE  TempMissileCam;
 
 extern  uint16    PrimaryStats[TOTALPRIMARYWEAPONS*2];

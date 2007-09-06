@@ -2116,6 +2116,7 @@ void ReInitJoysticks( void );
 #define MAX_KEYDEF_PAGES	(4)
 int CurrentPage = 0;
 int MaxPage = 0;
+int MissileCameraEnable = 0;
 void GetLevelName( char *buf, int bufsize, int level );
 void MenuItemDrawPageName( MENUITEM *Item );
 void InitKeyDef( MENU *Menu );
@@ -14606,15 +14607,16 @@ void GetGamePrefs( void )
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
 	else
-	{
 		if( temp )
-		{
 			ResetKillsPerLevel = TRUE;
-		}else{
+		else
 			ResetKillsPerLevel = FALSE;
-		}
-	}
 
+	
+	if( RegGet( "MissileCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
+		MissileCameraEnable = 0;
+	else
+		MissileCameraEnable = temp;
 
 	if( RegGet( "RearCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		RearCameraActive = 0;
@@ -14814,6 +14816,8 @@ void SetGamePrefs( void )
 	DWORD temp;
 	temp = ResetKillsPerLevel;
 	RegSet( "ResetKills",  (LPBYTE)&temp ,  sizeof(temp) );
+	temp = MissileCameraEnable;
+	RegSet( "MissileCameraEnable",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = RearCameraActive;
 	RegSet( "RearCameraActive",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = AutoDetail;
