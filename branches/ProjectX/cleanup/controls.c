@@ -578,8 +578,7 @@ key_released( USERKEY *k )
 #ifdef USEINLINE
 _inline
 #endif
- short
-key_held( USERKEY *k )
+short key_held( USERKEY *k )
 {
   int j;
   VirtualKeycode c;
@@ -618,8 +617,10 @@ key_held( USERKEY *k )
       int joystick;
 
       joystick = KEY_JOYSTICK( c );
+
       if ( !JoystickInfo[ joystick ].connected )
         continue;
+
       if ( KEY_ON_JOYSTICK_BUTTON( c ) )
       {
         int button;
@@ -2122,21 +2123,13 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 
    /* joystick is disabled by menu toggle */
    if ( !JoystickInput )
-   {
-Msg("!JoystickInput");
      return;
-   }
 
    if( !lpdiJoystick[joysticknum] )
-   {
-Msg("!lpdiJoystick[joysticknum]");
     return;
-   }
 
   for (axis = 0; axis < MAX_JOYSTICK_AXIS; axis++){
     if ((JoystickInfo[joysticknum].Axis[axis].exists) && (*axisptr[axis])){
-
-//Msg("Found");
 
       /* the axis were looking at */
       joyaxis = &JoystickInfo[ joysticknum ].Axis[ axis ];
@@ -2148,19 +2141,19 @@ Msg("!lpdiJoystick[joysticknum]");
       if ( ShipAction == SHIPACTION_Nothing ) continue;
 
       /* amount of movement detected */
-          amount = (float) *axisptr[ axis ] * joyaxis->sensitivity;
+      amount = (float) *axisptr[ axis ] * joyaxis->sensitivity;
 
       /* if were using fine control */
-      if ( joyaxis->fine )        amount *= (float) fabs( amount );
+      if ( joyaxis->fine )
+        amount *= (float) fabs( amount );
 
       /* if the axis is inverted */
-      if ( joyaxis->inverted )  amount  = -amount;
+      if ( joyaxis->inverted )
+        amount  = -amount;
 
       /* perform the action */
       DoShipAction( ctrl, ShipAction, framelag * amount );
 
-    }else{
-      //Msg("Not Found");
     }
   }
 }
