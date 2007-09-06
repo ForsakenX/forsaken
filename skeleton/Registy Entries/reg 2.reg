@@ -8,6 +8,7 @@ REGEDIT4
 "Device Number"=hex:00,00,00,00
 "DeviceGuid"=hex:00,00,00,00,00,00,00,00,00,00,00,00,00,00,00,00
 "DeviceGuidPnt"=hex:00,00,00,00
+"MissileCameraEnable"=hex:01,00,00,00
 "RearCameraActive"=hex:01,00,00,00
 "AutoDetail"=hex:01,00,00,00
 "BikeDetail"=hex:05,00,00,00
