@@ -617,7 +617,6 @@ CreateD3DApp(LPSTR lpCmdLine)
     BOOL bOnlySystemMemory, bOnlyEmulation;
     DWORD flags;
     Defaults defaults;
-	BOOL game_ok = FALSE;
 	char * DataPath;
 	char *cmdlineptr;
 	char tempcmdline[ 256 ];
@@ -693,8 +692,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 #endif
         } else if (!_stricmp(option, "emulation")) {
             bOnlyEmulation = TRUE;
-        } else if (!_stricmp(option, "xmen")) {
-            game_ok = TRUE;
         } else if (!_stricmp(option, "DS")) {
 			DS = TRUE;
         } else if (!_stricmp(option, "PowerVR")) {

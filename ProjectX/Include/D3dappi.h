@@ -79,9 +79,6 @@
 #include "d3dmain.h"
 #include "lclib.h"  /* lclib is a override for standard string lib */
 
-// ProjX 09438c20-e06a-11ce-8681-00aa006c5d58
-//DEFINE_GUID(PROJX_GUID,0x09438c20,0xe06a,0x11CE,0x86,0x81,0x00,0xaa,0x00,0x6c,0x5d,0x58);
-
 #ifdef __cplusplus
 extern "C" {
 #endif
