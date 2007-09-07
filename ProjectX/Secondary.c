@@ -6376,20 +6376,56 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 
 	if( ( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) )
 	{
+
+/* new code */
+/* this code will cause golden to be taken away and regenerate somewhere else */
+
+		/* take away our golden abilities */
+		LoseSuperNashram();
+
+		/* rengerate golden */
+		if( RegeneratePickup( PICKUP_GoldenPowerPod ) )
+		  /* if were not in god mode */
+          if( !GodMode )
+		    /* take away our golden abilities */
+		    NumSuperNashrams--;
+
+		/* up the count of total pickups dropped */
+		TotalPickups++;
+
+/* end new code */
+
+/*  This code will drop the golden
+    But as stands objects don't remember their own values */
+
+/* 
 		LoseSuperNashram();
 
 		DirVector.x = ( Dir->x + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
 		DirVector.y = ( Dir->y + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
 		DirVector.z = ( Dir->z + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
+
 		NormaliseVector( &DirVector );
+
 		PickupNum = PICKUP_GoldenPowerPod;
-		if( MyGameStatus != STATUS_SinglePlayer ) LifeCount = (float) ( Random_Range( 600 ) + 600 );
-		else LifeCount = -1.0F;
-		Speed = ( (float) Random_Range( (uint16) ( PICKUP_SPEED / 2.0F ) ) ) + ( PICKUP_SPEED / 2.0F );
-		i = InitOnePickup( &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
+
+		if( MyGameStatus != STATUS_SinglePlayer )
+		  LifeCount = (float) ( Random_Range( 600 ) + 600 );
+		else
+		  LifeCount = -1.0F;
+
+		Speed = ( (float) Random_Range( (uint16) ( PICKUP_SPEED / 2.0F ) ) ) +
+		        ( PICKUP_SPEED / 2.0F );
+
+		i = InitOnePickup( &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group,
+		                   &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount,
+						   -1, FALSE, LifeCount, (uint16) -1 );
+
 		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 		{
-			DropPickupSend( &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group ,&DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
+			DropPickupSend( &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group ,&DirVector,
+			                Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount,
+							(uint16) -1 );
 			TotalPickups++;
 		}
 
@@ -6397,6 +6433,8 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 		{
 			NumSuperNashrams--;
 		}
+
+*/
 	}
 
 	if ( BountyHunt && Ships[ WhoIAm ].Object.Flags & SHIP_CarryingBounty )

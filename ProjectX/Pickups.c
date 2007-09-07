@@ -3861,6 +3861,10 @@ void RegeneratePickups( void )
 
 	RegenerateQuedPickups();
 
+	/* for all regen locations
+	   if location is a time based regen
+	   check the time and regenerate it */
+
 	for( Count = 0; Count < NumRegenPoints; Count++ )
 	{
 		if( ( RegenPoints[ Count ].Status == PU_REGENSTAT_Free ) &&
@@ -3895,23 +3899,30 @@ void RegeneratePickups( void )
 		}
 	}
 
+	/* if not single player mode
+	   and regen delay time is up */
+
 	if( ( MyGameStatus != STATUS_SinglePlayer ) && ( RegenDelay == 0.0F ) )
 	{
 		if( !IsServerGame )
 		{
+
+			/* regenerate ctf flags */
 			if ( CaptureTheFlag )
 			{
 				while ( FlagsToGenerate > 0 && RegeneratePickup( PICKUP_Flag ) )
 					FlagsToGenerate--;
 			}
 
+			/* regenerate bounty */
 			if ( BountyHunt )
 			{
 				while ( BountyToGenerate > 0 && RegeneratePickup( PICKUP_Bounty ) )
 					BountyToGenerate--;
 			}
 
-			if( NitroFuelUsed >= ( 50.0F - 0.1F ) )					// Floating point inacuaracy !!!!!
+			/* regenerate nitro */
+			if( NitroFuelUsed >= ( 50.0F - 0.1F ) )	// Floating point inacuaracy !!!!!
 			{
 				if( RegeneratePickup( PICKUP_Nitro ) )
 				{
@@ -3920,18 +3931,24 @@ void RegeneratePickups( void )
 				}
 			}
 
+			/* regen primaries */
 			for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
 			{
 				if( NumPrimWeapons[ Count ] )
 				{
-					if( RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) ) ) NumPrimWeapons[ Count ]--;
+					if( RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) ) )
+						NumPrimWeapons[ Count ]--;
 				}
 			}
 
+			/* regen power pods */
 			if( NumPowerPods > 0 )
 			{
 				if( RegeneratePickup( PICKUP_PowerPod ) ) NumPowerPods--;
 			}
+
+			/* host controls regenerating ammo
+			   if overall ammo is lower than the level minumum */
 
 			if( IsHost )
 			{
@@ -3951,6 +3968,7 @@ void RegeneratePickups( void )
 				}
 			}
 
+			/* regenerate golden */
 			if( NumSuperNashrams )
 			{
 				if( RegeneratePickup( PICKUP_GoldenPowerPod ) ) NumSuperNashrams--;
@@ -4262,8 +4280,12 @@ void RegenerateQuedPickups( void )
 	Input		:	uint16		Pickup Type
 	Output		:	BOOL		True/False
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-//BOOL	UseFarthest = TRUE;
-BOOL	UseFarthest = FALSE;
+
+/*
+	   If it fails it will add the pickup to list
+	   To be attempted again later 
+	   I don't know where this is happening though
+*/
 
 BOOL RegeneratePickup( uint16 Type )
 {
@@ -4280,75 +4302,106 @@ BOOL RegeneratePickup( uint16 Type )
 	NumFreeSlots = 0;
 	NumFreeTypeSlots = 0;
 
+	/* locate all free regen points
+	   if any regen points cator specifically to the given pickup type 
+	   then exclusively use them instead of random points */
+
+	/* for each regen point */
 	for( Slot = 0; Slot < NumRegenPoints; Slot++ )
 	{
-		if( ( RegenPoints[ Slot ].Status == PU_REGENSTAT_Free ) && ( RegenPoints[ Slot ].Wait == 0.0F ) )
-		{
-			if( RegenPoints[ Slot ].RegenType == PU_REGENTYPE_Const )	// Same each time
-			{
-				if( RegenPoints[ Slot ].Type == Type )
-				{
-					FreeTypeSlots[ NumFreeTypeSlots ] = Slot;
-					NumFreeTypeSlots++;
-				}
-			}
-			else
-			{
-				if( UseFarthest )
-				{
-					TempVector.x = ( RegenPoints[ Slot ].Pos.x - Ships[ WhoIAm ].Object.Pos.x );
-					TempVector.y = ( RegenPoints[ Slot ].Pos.y - Ships[ WhoIAm ].Object.Pos.y );
-					TempVector.z = ( RegenPoints[ Slot ].Pos.z - Ships[ WhoIAm ].Object.Pos.z );
-					Distance = VectorLength( &TempVector );
 
-					if( Distance > ( SHIP_RADIUS * 30.0F ) )
-					{
-						FreeSlots[ NumFreeSlots ] = Slot;
-						NumFreeSlots++;
-					}
-				}
-				else
-				{
-					FreeSlots[ NumFreeSlots ] = Slot;
-					NumFreeSlots++;
-				}
+		/* if the regen point is NOT free continue */
+
+		if( !( ( RegenPoints[ Slot ].Status == PU_REGENSTAT_Free ) &&
+			   ( RegenPoints[ Slot ].Wait == 0.0F ) ))
+          continue;
+
+		/* if regen point can only accept one type of pickup */
+
+		if( RegenPoints[ Slot ].RegenType == PU_REGENTYPE_Const )
+		{
+
+			/* if given pickup type is alloud here */
+			if( RegenPoints[ Slot ].Type == Type )
+			{
+				/* then add this regen point to the list of free slots */
+				FreeTypeSlots[ NumFreeTypeSlots ] = Slot;
+				NumFreeTypeSlots++;
 			}
 		}
+
+		/* if regen location can accept any type of pickup */
+
+		else if ( ! NumFreeTypeSlots )  /* added ( ! NumFreeTypeSlots )
+										   because if a "type specific slot" for given pickup
+										   was found... Then it will be exclusively used...
+										   So there is no need to use extra processing */
+		{
+
+			/* add the location to the free slot list */
+			FreeSlots[ NumFreeSlots ] = Slot;
+			NumFreeSlots++;
+
+		}
+
 	}
+
+	/* if there is regen points which only hold our specific type of pickup
+	   then use them exclusively for this current pickup */
 
 	if( NumFreeTypeSlots )
 	{
+		
+		/* pick a random slot */
 		Slot = FreeTypeSlots[ Random_Range( NumFreeTypeSlots ) ];
 
-		i = InitOnePickup( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir, 0.0F, Type, WhoIAm, ++Ships[WhoIAm].PickupIdCount, Slot, TRUE, -1.0F, (uint16) -1 );
-		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
-		{
-			RegenDelay = ( ANIM_SECOND * 0.5F );
-			DropPickupSend( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir, 0.0F, Type, Ships[WhoIAm].PickupIdCount, Slot, TRUE, -1.0F, (uint16) -1 );
-			return TRUE;
-		}
-
-		if( i == (uint16) -2 ) return TRUE;					// if didn't generate because too many of same type return True.
 	}
+
+	
+	/* There are no regen points which only cator the current pickup
+	   So use any pickup location that doesn't have a defined type */
+
 	else
 	{
-		if( NumFreeSlots >= 5 )
-		{
-			Slot = FreeSlots[ Random_Range( NumFreeSlots ) ];
-	
-			i = InitOnePickup( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir, 0.0F, Type, WhoIAm, ++Ships[WhoIAm].PickupIdCount, Slot, TRUE, -1.0F, (uint16) -1 );
-			if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
-			{
-				RegenDelay = ( ANIM_SECOND * 0.5F );
-				DropPickupSend( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir, 0.0F, Type, Ships[WhoIAm].PickupIdCount, Slot, TRUE, -1.0F, (uint16) -1 );
-				return TRUE;
-			}
-	
-			if( i == (uint16) -2 ) return TRUE;					// if didn't generate because too many of same type return True.
-		}
+		
+		/* pick a random location */
+		Slot = FreeSlots[ Random_Range( NumFreeSlots ) ];
+		
+     	/* if slots less than 5 ditch out */
+		if( NumFreeSlots < 5 )
+			return FALSE;
+
 	}
 
-	return FALSE;
+	/* Try to init a pickup */
+	i = InitOnePickup( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir,
+		               0.0F, Type, WhoIAm, ++Ships[WhoIAm].PickupIdCount, Slot,
+					   TRUE, -1.0F, (uint16) -1 );
+
+	/* the location given is occupied */
+	if ( i == (uint16) -1 )
+	{
+		Msg("RegeneratePickup (FAILED) location given is occupied.");
+		return FALSE;
+	}
+	
+	/* too many of same type */
+	if( i == (uint16) -2 ){
+		Msg("RegeneratePickup (FAILED) too many of same type");
+		/* dont complain */
+		return TRUE;	
+	}
+
+	/* tell others in networked game */
+	RegenDelay = ( ANIM_SECOND * 0.5F );
+	DropPickupSend( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group, &Dir,
+		            0.0F, Type, Ships[WhoIAm].PickupIdCount, Slot, TRUE, -1.0F,
+					(uint16) -1 );
+
+	/* Success ! */
+
+	return TRUE;
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
