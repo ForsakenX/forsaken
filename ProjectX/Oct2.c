@@ -7262,17 +7262,23 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     LevelTimeTaken += framelag;
 
     // if player is quiting nothing should stop him.....
-    if( ( MyGameStatus != STATUS_QuitCurrentGame ) && ( MyGameStatus != STATUS_QuittingFromInGame ) )
+    if( ( MyGameStatus != STATUS_QuitCurrentGame ) &&
+		( MyGameStatus != STATUS_QuittingFromInGame ) )
     {
       if( IsHost )
       {
         if( NewLevelNum != LevelNum )
         {
+
           // disable players joining...
           DPlayGetSessionDesc();
           
-          //glpdpSD->dwFlags = DPSESSION_MIGRATEHOST | DPSESSION_KEEPALIVE | DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
-          glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
+          glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
+		                     DPSESSION_KEEPALIVE;/* |
+		  //				   DPSESSION_NEWPLAYERSDISABLED |
+		  //				   DPSESSION_JOINDISABLED;*/
+
+          //glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
 
           DPlaySetSessionDesc(0);
 
@@ -7716,14 +7722,20 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-      // disable players joining...
+
       DPlayGetSessionDesc();
       
-      //glpdpSD->dwFlags = DPSESSION_MIGRATEHOST | DPSESSION_KEEPALIVE | DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
+      glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
+		                 DPSESSION_KEEPALIVE;/*   |
+						 DPSESSION_NEWPLAYERSDISABLED |
+						 DPSESSION_JOINDISABLED;*/
+
+// disable players joining...
 //      if( !IsServer )
-      glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
+//      glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
 
       DPlaySetSessionDesc(0);
+
       D3DAppIClearBuffers();
       ReleaseView();
       // tell them all to load up a level

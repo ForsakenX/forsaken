@@ -543,7 +543,9 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 
 	ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
-    dpDesc.dwFlags = DPSESSION_MIGRATEHOST | DPSESSION_KEEPALIVE | DPSESSION_DIRECTPLAYPROTOCOL;
+    dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
+		             DPSESSION_KEEPALIVE |
+		             DPSESSION_DIRECTPLAYPROTOCOL; 
 	dpDesc.dwMaxPlayers = MaxPlayersSlider.value;
 
 	StoreSessionUserFields( &dpDesc );
