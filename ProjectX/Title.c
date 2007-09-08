@@ -2271,6 +2271,7 @@ extern int ShipAxisLookup[];
 extern uint16 new_input;
 extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
 extern char  IPAddressText[];
+extern char  ServiceProviderShortName[];
 extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
 extern int	Num_Joysticks;
@@ -2456,14 +2457,10 @@ char	MultiBtnText[] = "multiple buttons assigned";
 char	NoPOVText[] = "No POV selected";
 char	JoyMode1[] = "use the cursor keys to select an action, then press enter";
 char	JoyMode2[] = "Press a joystick button to assign to this action";
-char	JoystickModeText[64];
 LIST	JoystickList = { 0 };
 char    JoystickBtnText[64];
-char    JoystickPOVText[64];
 char	AxisExtremeLeftText[64];
 char	AxisExtremeRightText[64];
-char    JoystickPOVDirectionText[64];
-char	SelectedActionText[64];
 LIST ShipActionList = { 0 };
 typedef struct
 {
@@ -2523,8 +2520,6 @@ void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
 void CheckForRogueSfx( void );
 void CheckCheats( VirtualKeycode key );
-
-void JoystickChosen(MENUITEM *Item);
 
 char *CTF_Type( SLIDER *s );
 
@@ -2853,16 +2848,10 @@ BOOL ProcessPlaceTeamMember( int Key );
 void DrawReadyStatus( MENUITEM *Item );
 void InitJoystickList ( MENU *Menu );
 void SelectConfigureAxisMenu ( MENUITEM *Item );
-void InitJoystickButtonConfig ( MENU *Menu );
-void InitJoystickPOVConfig ( MENU *Menu );
 void InitJoystickAxisConfig ( MENU *Menu);
 void SelectVDUList ( MENUITEM *Item );
 void InitShipActionList( void );
-void AssignShipActionToJoyBtn( MENUITEM *Item);
-void AssignShipActionToJoyPOV( MENUITEM *Item);
 void AssignShipActionToJoyAxis( MENUITEM *Item);
-void CheckJoyBtns( int *dummy );
-void CheckJoyPOVs( int *dummy );
 void CheckJoyAxis( int *dummy );
 void ExitJoySetup( MENU *Menu );
 void ChooseJoyAxis( MENUITEM *Item );
@@ -3644,36 +3633,80 @@ MENU	MENU_NEW_SetUpTrackerPeerPeer = {
 	}
 };
 
-
+/* create */
 MENU	MENU_NEW_CreateGame = {
-	"", InitMultiplayerHostVDUPeerPeer, ChangeServiceProvider, NULL, TITLE_TIMER_PanToLeftVDU,
+
+	"",
+	InitMultiplayerHostVDUPeerPeer,  /* join menu function */
+	SetMultiplayerPrefs, /* leave menu function */
+	NULL,
+	TITLE_TIMER_PanToLeftVDU,
+
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame0/*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+
 		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStart, StartAHostSession , DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 20, 105, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
 
-		{ 10, 30, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
-		{ 10, 38, 50, 46, 0, LT_MENU_NEW_CreateGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 38, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 46, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
+    	{ 90,  20, 120, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
+	    { 100, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
 
-		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 100, 200, 108, 0, LT_MENU_NEW_CreateGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CTF, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 108, 200, 116, 0, LT_MENU_NEW_CreateGame12 /*"flag chase"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 116, 200, 124, 0, LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+/* hack */
+
+{ 10, 34, 90, 36, 0,
+"Protocol",
+FONT_Small, TEXTFLAG_CentreY,
+NULL,
+&MENU_NEW_ChooseConnectionToStart,  MenuChange,
+DrawFlatMenuItem, NULL, 0 },
+
+
+{ 90, 34, 205, 40, 0,
+"", FONT_Small, TEXTFLAG_CentreY,
+(void *)ServiceProviderShortName,
+&ServiceProviderSet, NULL,
+DrawConditionalName, NULL, 0 } ,
+
+/* end hack */
+
+		{ 10, 52, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
+
+		{ 10, 60, 50, 46, 0, LT_MENU_NEW_CreateGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
+		{ 90, 60, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
+
+		{ 10, 68, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
+
+		{ 10, 76, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
+
+		{ 10, 84, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
+
+
+
+
+
+		{ 0,   92, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+
+		{ 10, 100, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+		{ 10, 108, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+		{ 10, 116, 200, 108, 0, LT_MENU_NEW_CreateGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CTF, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+		{ 10, 126, 200, 116, 0, LT_MENU_NEW_CreateGame12 /*"flag chase"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+		{ 10, 134, 200, 124, 0, LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
+		{ 10, 140, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+
 #ifdef BOMBTAG_ENABLE
-		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+		{ 10, 148, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 #endif
-		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerPeerPeer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 
-		{ 10, 148, 100, 156, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateGame17 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
+		//{ 10, 148, 100, 148, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerPeerPeer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
+		
+		{ 10, 156, 100, 156, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
+		
+		{ 10, 164, 100, 170, 0, LT_MENU_NEW_CreateGame17 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -3775,8 +3808,9 @@ MENU MENU_NEW_PseudoHostWaitingForAck = {
 };
 
 MENU MENU_NEW_CreateGamePseudoHost = {
-			"", InitPseudoHostGameScreen, ChangeServiceProviderPseudoHost, NULL, TITLE_TIMER_PanToLeftVDU,
+			"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
+		//InitPseudoHostGameScreen, ChangeServiceProviderPseudoHost,
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame0/*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, NULL, StartAPseudoHostSession , DrawFlatMenuItem, NULL, 0 } ,
 
@@ -3841,19 +3875,20 @@ MENU	MENU_NEW_CreateLobbyGame = {
 
 
 
-
+/* multiplayer */
 MENUITEM MENU_ITEM_StartMultiplayer = 
-		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL, &MENU_NEW_CreateGame, MenuChange, NULL, NULL, 0  };
+		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL
+		, &MENU_NEW_CreateGame, MenuChange, NULL, NULL, 0  };
 
+
+
+/* connection */
 MENU	MENU_NEW_ChooseConnectionToStart = {
 	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToStart0 /*"Choose connection type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 30, 195, 160, 0, "", FONT_Small,TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ServiceProvidersList, SelectConnectionToStart, SelectList, DrawFlatMenuList, NULL, 0  },
-//		{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+		{ 5, 30, 195, 160, 0, "", FONT_Small,TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &ServiceProvidersList, SelectConnectionToStart, SelectList, DrawFlatMenuList, NULL, 0  },
+		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
 
@@ -4129,62 +4164,23 @@ MENU MENU_NEW_ConfigJoyAxis = {
 	}
 };
 
-MENU MENU_NEW_ConfigJoyBtns = {
-	"", InitJoystickButtonConfig, NULL, CheckJoyBtns, 0,
-	{
-		{ 5,  0, 190,  25, 0, "", FONT_Medium, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,                                                                             (void *)JoystickModeText,                      NULL,       NULL, DrawFlatMenuName,  NULL, 0  },
-		{ 5, 25, 190,  35, 0, "", FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,                                                          (void *)JoystickBtnText,                       NULL,       NULL, DrawFlatMenuName,  NULL, 0  },
-		{ 5, 40, 100, 160, 0, "", FONT_Small,  TEXTFLAG_ManualListHighlight | TEXTFLAG_ForceFit | TEXTFLAG_SuppressHighlight | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ShipActionList,           AssignShipActionToJoyBtn, SelectList, DrawSplitMenuList, NULL, 0  },
 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU MENU_NEW_ConfigJoyPOVs = {
-	"", InitJoystickPOVConfig, NULL, CheckJoyPOVs, 0,
-	{
-		{ 10, 0, 190, 20, 0, "press POV to configure, then select required action", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 30, 190, 40, 0, "", FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)JoystickPOVText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 10, 40, 190, 50, 0, "", FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)JoystickPOVDirectionText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 10, 50, 190, 60, 0, "", FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)SelectedActionText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 10, 60, 190, 170, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ShipActionList, AssignShipActionToJoyPOV, SelectList, DrawFlatMenuList, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_NEW_SetupJoystick2 = {
-	"", NULL, NULL, NULL, 0,
-	{
-		{ 0,   0, 200, 20, 0, LT_MENU_NEW_SetupJoystick20 /*"joystick setup    "*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL,                    NULL,                    NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 30, 200, 40, 0, LT_MENU_NEW_SetupJoystick21 /*"configure buttons "*/, FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyBtns,              MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 50, 200, 60, 0, LT_MENU_NEW_SetupJoystick22 /*"configure Axis    "*/, FONT_Small,  TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL,                    NULL, SelectConfigureAxisMenu, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-
-};
-
+/* joystick */
 MENU	MENU_NEW_SetupJoystick = {
 	"", InitJoystickList, ExitJoySetup, NULL, 0,
 	{
-#if 1
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_SetupJoystick0 /*"choose joystick"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 30, 200, 100, 0, LT_MENU_NEW_SetupJoystick1 /*"joystick list"*/, FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_CentreY | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect,
-#ifdef VDUKDEF
-							&JoystickList, SelectConfigureAxisMenu, SelectList, DrawFlatMenuList, NULL, 0  },
-#else
-							&JoystickList, JoystickChosen, SelectList, DrawFlatMenuList, NULL, 0  },
-#endif
-#else
-		{ 0, 0, 200, 20, 0, "joystick setup", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 0, 20, 200, 30, 0, "select joystick", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  &JoystickList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 40, 200, 110, 0, "joystick list", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, &JoystickList, NULL, NULL, DrawFlatMenuList, NULL, 0  },
-		{ 10, 110, 90, 130, 0, "configure buttons", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyBtns, MenuChange, DrawFlatMenuItem, NULL, 0  },
-		//{ 110, 110, 180, 130, 0, "configure POVs", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyPOVs, MenuChange, DrawFlatMenuItem, NULL, 0  },
-//		{ 100, 110, 180, 130, 0, "configure Axis", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_ConfigJoyAxis, MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 100, 110, 180, 130, 0, "configure Axis", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConfigureAxisMenu, DrawFlatMenuItem, NULL, 0  },
-#endif						 
+
+		/* title */
+		{ 0, 0, 200, 20, 0, LT_MENU_NEW_SetupJoystick0 /*"choose joystick"*/,
+		FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL,
+		DrawFlatMenuItem, NULL, 0  },
+
+		{ 10, 30, 200, 100, 0,
+		LT_MENU_NEW_SetupJoystick1 /*"joystick list"*/, FONT_Small,
+		TEXTFLAG_SuppressHighlight | TEXTFLAG_CentreY | TEXTFLAG_ForceFit | 
+		TEXTFLAG_AutoSelect,
+        &JoystickList, SelectConfigureAxisMenu, SelectList, DrawFlatMenuList, NULL, 0  },
+
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 
@@ -4205,6 +4201,7 @@ MENU	MENU_NEW_SetupMouse = {
 
 };
 
+/* controls */
 MENU	MENU_NEW_Controls = {
 	"", InitControls, ExitControls, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
@@ -4214,8 +4211,6 @@ MENU	MENU_NEW_Controls = {
 
 		{ 10, 30, 200, 40, 0, LT_MENU_NEW_Controls1 /*"configure mouse"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetupMouse, MenuChange,	DrawFlatMenuItem, NULL, 0  },
 
-
-		// old joystick menu
 		{ 10, 45, 200, 55, 0, LT_MENU_NEW_Controls2 /*"configure joystick"*/, FONT_Small, TEXTFLAG_CentreY, NULL,
 		  &MENU_NEW_SetupJoystick, MenuChange, DrawFlatMenuItem, NULL, 0  },
 
@@ -4229,14 +4224,6 @@ MENU	MENU_NEW_Controls = {
 #endif
 		{ 10, 90, 200, 100, 0, LT_MENU_NEW_Controls5 /*"restore defaults"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, RestoreDefaultControlSettings, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 105, 200, 115, 0, LT_MENU_NEW_Controls6 /*"back"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, MenuItemBack, DrawFlatMenuItem, NULL, 0  },
-
-
-
-		// new joystick menu
-		{ 10, 120, 200, 130, 0, "configure joystick 2 ", FONT_Small, TEXTFLAG_CentreY, NULL,
-		  &MENU_NEW_SetupJoystick2, MenuChange, DrawFlatMenuItem, NULL, 0  },
-
-		
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4703,7 +4690,7 @@ MENU	MENU_NEW_Options = {
 	}
 };
 
-
+/* setup */
 MENU	MENU_NEW_Setup = {
 	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan,
 	{
@@ -4717,11 +4704,18 @@ MENU	MENU_NEW_Setup = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };  
+
+/* battle */
 MENU	MENU_NEW_Battle = {
 	"", InitBattleMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
 	{
 		{ 0, TITLE_MODEL_Disc1, 0, 0, 3,LT_MENU_NEW_Battle0 /*"death match"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, LT_MENU_NEW_Battle1 /*"Create Game"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToStart, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, LT_MENU_NEW_Battle1 /*"Create Game"*/, 0, 0, NULL, 
+/* hack */
+//		&MENU_NEW_ChooseConnectionToStart,
+/* end hack */
+		&MENU_NEW_CreateGame,
+		MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc3, 0, 0, 2, LT_MENU_NEW_Battle2 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToJoin, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc4, 0, 0, 6, LT_MENU_NEW_Battle4 /*"Server"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToStartServer, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc5, 0, 0, 3, LT_MENU_NEW_Battle3 /*"back"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
@@ -4760,6 +4754,8 @@ MENU	MENU_NEW_MissionMenu = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
+
+/* main */
 MENU	MENU_NEW_Start = {
 	"", InitStartMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan,
 	{
@@ -9645,10 +9641,14 @@ BOOL ProcessSlider2( int Key )
 		CursorEnd();
 		done = TRUE;
 		break;
+
+
+	case DIK_WHEELUP:
 	case DIK_UP:
 		CursorUp();
 		done = TRUE;
 		break;
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		CursorDown();
 		done = TRUE;
@@ -9750,6 +9750,8 @@ BOOL ProcessLevelList ( int Key )
 		done = TRUE;
 		MenuBack();
 		break;
+		
+	case DIK_WHEELUP:
 	case DIK_UP:
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{
@@ -9757,6 +9759,7 @@ BOOL ProcessLevelList ( int Key )
 			done = TRUE; 
 		}
 		break;
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{
@@ -9962,12 +9965,15 @@ BOOL ProcessPlayerList ( int Key )
 
 	switch(Key)
 	{
+		
+	case DIK_WHEELUP:
 	case DIK_UP:
 		//make selected item 1 up
 		PlayCursorSfx();
 		SelectListPrev( &PilotList );
 		redraw = TRUE;
 		break;
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		//make selected item 1 down
 		PlayCursorSfx();
@@ -10097,6 +10103,7 @@ BOOL ProcessWeaponOrder ( int Key )
 	
 	switch(Key)
 	{
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		PlayCursorSfx();
 		oldselectedweapon = SelectedWeapon;
@@ -10145,6 +10152,8 @@ BOOL ProcessWeaponOrder ( int Key )
 			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
 		}
 		break;
+		
+	case DIK_WHEELUP:
 	case DIK_UP:
 		PlayCursorSfx();
 		oldselectedweapon = SelectedWeapon;
@@ -10397,6 +10406,11 @@ void DeleteJoyButton( void )
 	}
 }
 
+/* process list movement
+   lists are not the rotating disks
+   but text lists ... 
+   while in the pregame menu's */
+
 BOOL ProcessList( int Key )
 {
 	BOOL done;
@@ -10405,9 +10419,8 @@ BOOL ProcessList( int Key )
 
 	if (CurrentList->Static)
 	{
-	 	if (Key == DIK_ESCAPE)
+	 	if ( Key == DIK_ESCAPE || Key == DIK_RBUTTON )
 			CurrentList->Static = FALSE;
-
 		return TRUE;
 	}
 
@@ -10415,10 +10428,13 @@ BOOL ProcessList( int Key )
 
 	if ( CurrentList->selected_item < 0 )
 		SelectListHome( CurrentList );
+
 	if ( CurrentList->selected_item > CurrentList->items )
 		SelectListEnd( CurrentList );
+
 	switch( Key )
 	{
+
 	case DIK_RIGHT:
 		// if there is an item of the same height to the left, move to this item
 		for (i = 0; i < CurrentList->items; i++)
@@ -10434,6 +10450,7 @@ BOOL ProcessList( int Key )
 			}
 		}
 		break;
+
 	case DIK_LEFT:
 		// if there is an item of the same height to the right, move to this item
 		for (i = 0; i < CurrentList->items; i++)
@@ -10449,30 +10466,40 @@ BOOL ProcessList( int Key )
 			}
 		}
 		break;
+
+	case DIK_WHEELUP:
 	case DIK_UP:
 		PlayCursorSfx();
 		SelectListPrev( CurrentList );
 		break;
+
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		PlayCursorSfx();
 		SelectListNext( CurrentList );
 		break;
+
 	case DIK_NEXT:
 		PlayCursorSfx();
 		SelectListNextPage( CurrentList );
 		break;
+
 	case DIK_PRIOR:
 		PlayCursorSfx();
 		SelectListPrevPage( CurrentList );
 		break;
+
 	case DIK_HOME:
 		PlayCursorSfx();
 		SelectListHome( CurrentList );
 		break;
+
 	case DIK_END:
 		PlayCursorSfx();
 		SelectListEnd( CurrentList );
 		break;
+	
+	case DIK_LBUTTON:
 	case DIK_RETURN:
 			//SelectListItem( CurrentList );
 			FuncSet = (MenuItemFunc) CurrentMenuItem->Value;
@@ -10482,17 +10509,17 @@ BOOL ProcessList( int Key )
 			}
 			done = TRUE;
 		break;
+
+	case DIK_MBUTTON:
+	case DIK_RBUTTON:
 	case DIK_ESCAPE:
 		CancelListSelection( CurrentList );
 		done = TRUE;
 		if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
 			MenuBack();
 		break;
+
 	case DIK_DELETE:
-		if ( CurrentMenu == &MENU_NEW_ConfigJoyBtns )
-		{ 
-			DeleteJoyButton();
-		}
 		if ( CurrentList->FuncDelete )
 		{
 			if ( CurrentList->selected_item >= 0 && CurrentList->selected_item < CurrentList->items 
@@ -10502,6 +10529,7 @@ BOOL ProcessList( int Key )
 			}
 		}
 		break;
+
 	default:
 		if ( Key )
 		{
@@ -10552,6 +10580,8 @@ BOOL ProcessText( int Key )
 		TextEnd( (TEXT *)(TextItem->Variable) );
 		break;
 	case DIK_RETURN:
+	case DIK_WHEELUP:
+	case DIK_WHEELDOWN:
 	case DIK_UP:
 	case DIK_DOWN:
 		TextEnter( TextItem );
@@ -10586,98 +10616,167 @@ BOOL ProcessText( int Key )
 	return !done;
 }
 
+
+/*****************************************************************\
+|
+| ProcessSelect
+|	
+|	Process keys the main menu
+|
+\*****************************************************************/
+
 void ProcessSelect( int Key )
 {
 
-	if (MyGameStatus == STATUS_Copyright)
+	/* should we process ? */
+	if (StackStatus != DISC_NOTHING)
+		return;
+
+	/* only allow these keys for copyright page */
+	/* this should probably get put somewhere else */
+	if (
+		 MyGameStatus == STATUS_Copyright &&
+		 (Key != DIK_RETURN || Key == DIK_LBUTTON )
+		)
+		return;
+
+	
+	/*********************\
+	|
+	| Key Definitions
+	|
+	\*********************/
+
+
+	if
+	(
+		CurrentMenuItem->Variable &&
+		(
+		   ( CurrentMenuItem->FuncSelect == SelectKey ) ||
+		   ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+		)
+	)
 	{
-		if (Key != DIK_RETURN)
-			return;
-	}
-	
-	if (StackStatus == DISC_NOTHING)
-	{	switch(Key)
-		{
-		case DIK_UP:
-			CursorUp();
-			break;
-	
-		case DIK_DOWN:
-			CursorDown();
-			break;
 
-		case DIK_LEFT:
-			if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
-			{
-				if ( CurrentMenuItem->Variable && *(BOOL *)(CurrentMenuItem->Variable) )
-				{
-					if ( CurrentMenuItem->FuncSelect )
-					{
-						CurrentMenuItem->FuncSelect( CurrentMenuItem );
-						PlayCursorSfx();
-					}
-				}
-			}else
-				CursorLeft();
-			break;
-		case DIK_RIGHT:
-			if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
-			{	
-				if ( CurrentMenuItem->Variable && !*(BOOL *)(CurrentMenuItem->Variable) )
-				{
-					if ( CurrentMenuItem->FuncSelect )
-					{
-						CurrentMenuItem->FuncSelect( CurrentMenuItem );
-						PlayCursorSfx();
-					}
-				}
-			}else
-				CursorRight();
-			break;
-		case DIK_HOME:
-			CursorHome();
-			break;
+		/* delete, backspace, right click */
+		if ( Key == DIK_DELETE || Key == DIK_BACK ){
 
-		case DIK_END:
-			CursorEnd();
-			break;
-		case DIK_RETURN:
-			if ( CurrentMenuItem->FuncSelect )
-			{
-				CurrentMenuItem->FuncSelect( CurrentMenuItem );
-			}
-			break;
-		case DIK_DELETE:
-			if ( ( ( CurrentMenuItem->FuncSelect == SelectKey ) || ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey ) ) && CurrentMenuItem->Variable )
-			{
-				*(VirtualKeycode *)(CurrentMenuItem->Variable) = (VirtualKeycode) 0; // delete key def
-			}
+			/* reset the key to nothing */
+			*(VirtualKeycode *)(CurrentMenuItem->Variable) = (VirtualKeycode) 0; 
 			
+			/* */
 			if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
 				CheckKeysForChanges();
 
-			break;
+		}
 
-		case DIK_ESCAPE:
-			// bodge to stop you getting 'stuck' in between menus...
-			if ( CurrentMenu == &MENU_NEW_WatchTeamSelect)
-				MenuBack();	
+		return; /* finish key definitions */
+	}
 
-			MenuBack();
-			break;
 
-		default:
-			if ( Key )
-			{
-				char *c;
+			
+	/************************\
+	|
+	| Selection & Navigation
+	|
+	\************************/
 
-				c = (char *) key_name( Key );
-				if ( c && strlen( c ) == 1 )
+
+
+	/* cursor up */
+	if ( Key == DIK_UP || Key == DIK_WHEELUP )
+		CursorUp();
+
+	/* cursor down */
+	else if ( Key == DIK_DOWN || Key == DIK_WHEELDOWN )
+
+		CursorDown();
+
+	/* cursor left */
+	else if ( Key == DIK_LEFT )
+	{
+
+		/* if were acting on a selection list */
+
+		if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		{
+
+				if
+				(
+					  (CurrentMenuItem->Variable && *(BOOL *)(CurrentMenuItem->Variable)) &&
+					  CurrentMenuItem->FuncSelect
+				)
 				{
-					CursorSearch( SearchKey( *c ) );
+				  CurrentMenuItem->FuncSelect( CurrentMenuItem );
+				  PlayCursorSfx();
 				}
+
+		}
+		else
+			
+			CursorLeft();
+
+	}
+				
+	/* cursor left */
+	else if ( Key == DIK_RIGHT  )
+	{
+
+		/* if were acting on a selection list */
+
+		if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		{
+
+			if (  CurrentMenuItem->Variable &&
+				  !*(BOOL *)(CurrentMenuItem->Variable) &&
+				  CurrentMenuItem->FuncSelect )
+			{
+				CurrentMenuItem->FuncSelect( CurrentMenuItem );
+				PlayCursorSfx();
 			}
-			break;
+
+		}
+		else
+
+			CursorRight();
+	
+	}
+
+	/* cursor first */
+	else if ( Key == DIK_HOME )
+
+		CursorHome();
+
+	/* cursor last */
+	else if ( Key == DIK_END )
+
+		CursorEnd();
+
+	/* go back */
+	/* escape, right click */
+	else if ( Key == DIK_ESCAPE || Key == DIK_RBUTTON )
+
+		MenuBack();
+
+	/* select */
+	/* enter, left mouse */
+	else if ( Key == DIK_RETURN || Key == DIK_LBUTTON || Key == DIK_MBUTTON ){
+
+		/* perform the menu's callback */
+		if ( CurrentMenuItem->FuncSelect )
+			CurrentMenuItem->FuncSelect( CurrentMenuItem );
+
+	}
+	else
+	{
+
+		/* move to position which starts with the letter you just hit */
+		if ( Key )
+		{
+			char *c;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+				CursorSearch( SearchKey( *c ) );
 		}
 	}
 }
@@ -10692,10 +10791,13 @@ BOOL ProcessSelectKeydef( int Key )
 	{
 		switch(Key)
 		{
+
+		case DIK_WHEELUP:
 		case DIK_UP:
 			CursorUp();
 			break;
 			
+	case DIK_WHEELDOWN:
 		case DIK_DOWN:
 			CursorDown();
 			break;
@@ -10868,11 +10970,13 @@ BOOL ProcessDifficultySet ( int Key )
 
 	switch(Key)
 	{
+	case DIK_WHEELUP:
 	case DIK_UP:
 		CursorUp();
 		done = TRUE;
 		break;
 
+	case DIK_WHEELDOWN:
 	case DIK_DOWN:
 		CursorDown();
 		done = TRUE;
@@ -11062,9 +11166,6 @@ void	MenuProcess()
 
 	//DebugPrintf("Current Menu %s\n",CurrentMenu->Name);
 
-
-	//Key = WhichKeyPressed();
-
 	// read keys into a buffer
 	ReadBufferedKeyboard();
 
@@ -11102,7 +11203,7 @@ void	MenuProcess()
 		// CheckCheats must remember the keys fed previously
 		CheckCheats( ( VirtualKeycode)Key );
 
-        //
+        // if error then any key acts like return
 		if (Key && (CurrentMenu == &MENU_NEW_Error))
 			Key = DIK_RETURN;
 
@@ -11120,7 +11221,7 @@ void	MenuProcess()
 		if ( Key )
 			AttractModeCountDown = ATTRACTMODECOUNTVALUE;
 
-		//
+		//  Are we in a title room ?
 		switch ( MyGameStatus )
 		{
 			// in title room...
@@ -11220,9 +11321,11 @@ void	MenuProcess()
 
 
 			case MENUSTATE_List:
+				/* process text list keys */
 				if ( !ProcessList( Key ) )
 				{
-					if ( CurrentMenuItem && (!(CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)) )
+					if ( CurrentMenuItem &&
+						(!(CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)) )
 					{
 						CurrentList = NULL;
 						MenuState = MENUSTATE_Select;
@@ -13218,12 +13321,25 @@ void InitMultiplayerHostVDUServer( MENU *Menu )
 	InitMultiplayerHostVDU( Menu );
 }
 
+/* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
 	IsServerGame = FALSE;
 	ColPerspective = ColPerspectivePeerPeer;
 
+	/* this calls InitLevels */
 	InitMultiplayerHostVDU( Menu );
+
+/* hack */
+	/* checks registry for last service provider */
+	/* calls LastGameInfo() which selects last multiplayer level from registry */
+	GetServiceProviders(NULL);
+	/* gets service provider short name and other stuff */
+	ExitProviderChosen(NULL);
+	/* Get the level box to refresh the new level chosen */
+	NewLevelNum = LevelList.selected_item;  /* set level name */
+	LoadLevelText( NULL ); /* load level name */
+/* end hack */
 }
 
 void LoadLevelText( MENU *Menu )
@@ -13496,8 +13612,9 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 void GetLastGameInfo( void )
 {
 	DWORD size;
-	char templevelname[ 8 ];
 	int i;
+
+	char templevelname[ 64 ];
 
 	Rejoining = FALSE;
 
@@ -13536,17 +13653,15 @@ void GetLastGameInfo( void )
 
 	LevelList.selected_item = 0;
 	size = sizeof ( templevelname );
-	if( RegGet( "LevelName", (LPBYTE)templevelname , &size ) == ERROR_SUCCESS)
+	if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
 	{
 		templevelname[ 7 ] = 0;
 		for ( i = 0; i < LevelList.items; i++ )
-		{
 			if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
 			{
 				LevelList.selected_item = i;
 				break;
 			}
-		}
 	}
 }
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -14603,7 +14718,6 @@ void GetGamePrefs( void )
 
 	size = sizeof(temp);
 
-
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
 	else
@@ -14902,6 +15016,7 @@ void SetGamePrefs( void )
 		temp = BikeCompSpeechSlider.value;
 		RegSet( "BikeCompSpeechVol",  (LPBYTE)&temp ,  sizeof(temp) );
 	}
+
 }
 
 void GetServerPrefs( void )
@@ -19760,10 +19875,13 @@ uint16 PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, uint8 
 
 void SelectConnectionToStart (MENUITEM *Item)
 {
+	/* if fail to set service provider dont exit */
 	if( !ExitProviderChosen( Item ) )
 		return;
+/* hack */
 	MenuState = MENUSTATE_Select;
-	MenuChange ( &MENU_ITEM_StartMultiplayer );
+//	MenuChange ( &MENU_ITEM_StartMultiplayer );
+/* end hack */
 }
 
 void SelectConnectionToStartServer (MENUITEM *Item)
@@ -20161,25 +20279,6 @@ void InitJoystickList ( MENU *Menu )
 
 }
 
-void InitJoystickButtonConfig ( MENU *Menu )
-{
-	strncpy( JoystickBtnText, NoBtnText, sizeof(JoystickBtnText) );
-	strncpy( JoystickModeText, JoyMode1, sizeof(JoystickModeText) );
-	JoystickConfigState = JOYCONFIG_SelectAction;
-}
-
-void InitJoystickPOVConfig ( MENU *Menu )
-{
-	strncpy( JoystickPOVText, NoPOVText, sizeof(JoystickBtnText) );
-	strcpy( JoystickPOVDirectionText, "" );
-	strncpy( SelectedActionText, ShipActionList.item[0], sizeof(SelectedActionText) );
-	CurrentJoyPOV = -1;
-	CurrentJoyPOVDirection = -1;
-
-	AxisExtremeLeftText[0] = 0;
-	AxisExtremeRightText[0] = 0;
-}
-
 
 void InitJoystickAxisConfig ( MENU *Menu)
 {
@@ -20462,24 +20561,6 @@ void InitShipActionList( void )
 	}
 }
 
-void AssignShipActionToJoyBtn( MENUITEM *Item)
-{
-	JoystickConfigState = JOYCONFIG_AssignButton;
-	// make highlight box static...
-	CurrentListItem->TextInfo[ShipActionList.selected_item]->highlighttype = HIGHLIGHT_Static;
-	CurrentList->Static = TRUE;
-
-}
-
-void AssignShipActionToJoyPOV( MENUITEM *Item)
-{
-	if ((CurrentJoyPOV != -1) && (CurrentJoyPOVDirection != -1))
-	{
-  		JoystickInfo[JoystickMap[JoystickList.selected_item]].POV[CurrentJoyPOV].action[CurrentJoyPOVDirection] = ShipActionList.selected_item;
-  		strncpy( SelectedActionText, ShipActionList.item[ShipActionList.selected_item], sizeof(SelectedActionText) );
-	}
-}
-
 void AssignShipActionToJoyAxis( MENUITEM *Item)
 {
 	int axis;
@@ -20533,158 +20614,6 @@ void SetAxisSensitivity( MENUITEM *Item )
 	axis = AxisMap[JoystickAxisList.selected_item];
 	JoystickInfo[JoystickMap[JoystickList.selected_item]].Axis[axis].sensitivity =
 		( SensitivitySlider.value < 100 ) ?	1.0F / ( 100 - SensitivitySlider.value ) : 1.0F;
-}
-
-void CheckJoyBtns( int *dummy )
-{
-	int i, j, num_buttons, num_POVs, joystick_num, multidir, dir;
-	int button_found = 0;
-	BOOL assigned = FALSE;
-
-	if (!CurrentList || !CurrentListItem)
-		return;
-
-	if (CurrentList->Static == FALSE)
-	{	JoystickConfigState = JOYCONFIG_SelectAction;
-		CurrentListItem->TextInfo[CurrentList->selected_item]->highlighttype = HIGHLIGHT_Pulsing;		
-	}
-
-	joystick_num = JoystickMap[JoystickList.selected_item];
-	num_buttons = JoystickInfo[joystick_num].NumButtons;
-	num_POVs = JoystickInfo[joystick_num].NumPOVs;
-
-	for (i = 0; i < num_buttons; i++)
-	{
-		if ( js[ new_input ][joystick_num].rgbButtons[i] & 0x80 )
-		{
-			assigned = TRUE;
-			switch (JoystickConfigState)
-			{
-			case JOYCONFIG_SelectAction:
-				ShipActionList.selected_item = JoystickInfo[joystick_num].Button[i].action;
-				break;
-			case JOYCONFIG_AssignButton:
-	  			JoystickInfo[joystick_num].Button[i].action = ShipActionList.selected_item;
-				// make highlight box pulsing...
-				CurrentListItem->TextInfo[ShipActionList.selected_item]->highlighttype = HIGHLIGHT_Pulsing;
-				JoystickConfigState = JOYCONFIG_SelectAction;
-				CurrentList->Static = FALSE;
-			break;
-			}
-		}
-	}
-
-	if (!assigned)
-	{
-		for (i = 0; i < JoystickInfo[JoystickMap[JoystickList.selected_item]].NumPOVs; i++)
-		{
-			dir = -1;
-			multidir = GetPOVDirection( &js[ new_input ][JoystickMap[JoystickList.selected_item]], i);	
-			if (multidir & POV_Up)
-				dir = BitPos(POV_Up);
-
-			if (multidir & POV_Down)
-				dir = BitPos(POV_Down);
-
-			if (multidir & POV_Left)
-				dir = BitPos(POV_Left);
-
-			if (multidir & POV_Right)
-				dir = BitPos(POV_Right);
-
-			if (dir != -1)
-			{
-				assigned = TRUE;
-				switch (JoystickConfigState)
-				{
-				case JOYCONFIG_SelectAction:
-					ShipActionList.selected_item = JoystickInfo[joystick_num].POV[i].action[dir];
-					break;
-				case JOYCONFIG_AssignButton:
-	  				JoystickInfo[joystick_num].POV[i].action[dir] = ShipActionList.selected_item;
-					// make highlight box pulsing...
-					CurrentListItem->TextInfo[ShipActionList.selected_item]->highlighttype = HIGHLIGHT_Pulsing;
-					JoystickConfigState = JOYCONFIG_SelectAction;
-					CurrentList->Static = FALSE;
-				break;
-				}
-			}
-		}
-	}
-
-	for (i = 0; i < num_buttons; i++)
-	{
-		if (JoystickInfo[joystick_num].Button[i].action == ShipActionList.selected_item)
-		{	
-			sprintf( JoystickBtnText, "current: %s", JoystickInfo[joystick_num].Button[i].name );
-			button_found++;
-		}
-	}
-
-	for (i = 0; i < num_POVs; i++)
-	{
-		for (j = 0; j < MAX_POV_DIRECTIONS; j++)
-		{
-			if (JoystickInfo[joystick_num].POV[i].action[j] == ShipActionList.selected_item)
-			{	
-				sprintf( JoystickBtnText, "current: %s %s", JoystickInfo[joystick_num].POV[i].name, JoystickPOVDirections[j] );
-				button_found++;
-			}
-		}
-	}
-
-	if (!button_found)
-		strcpy( JoystickBtnText, NoBtnText );
-
-	if (button_found > 1)
-		strcpy( JoystickBtnText, MultiBtnText );
-
-	if (CurrentList->selected_item == 0)
-		JoystickBtnText[0] = 0;
-
-	switch( JoystickConfigState )
-	{
-	case JOYCONFIG_SelectAction:
-		strncpy( JoystickModeText, JoyMode1, sizeof(JoystickModeText) );
-		break;
-	case JOYCONFIG_AssignButton:
-		strncpy( JoystickModeText, JoyMode2, sizeof(JoystickModeText) );
-		break;
-	}
-
-
-}
-
-void CheckJoyPOVs( int *dummy )
-{
-	int i, dir, multidir;
-
-	for (i = 0; i < JoystickInfo[JoystickMap[JoystickList.selected_item]].NumPOVs; i++)
-	{
-		dir = -1;
-		multidir = GetPOVDirection( &js[ new_input ][JoystickMap[JoystickList.selected_item]], i);	
-		if (multidir & POV_Up)
-			dir = BitPos(POV_Up);
-
-		if (multidir & POV_Down)
-			dir = BitPos(POV_Down);
-
-		if (multidir & POV_Left)
-			dir = BitPos(POV_Left);
-
-		if (multidir & POV_Right)
-			dir = BitPos(POV_Right);
-
-		if (dir != -1)
-		{
-			CurrentJoyPOV = i;
-			CurrentJoyPOVDirection = dir;
-			strncpy(JoystickPOVText, JoystickInfo[JoystickMap[JoystickList.selected_item]].POV[CurrentJoyPOV].name, sizeof(JoystickPOVText));
-			strncpy(JoystickPOVDirectionText, JoystickPOVDirections[CurrentJoyPOVDirection], sizeof(JoystickPOVText));
-			strncpy ( SelectedActionText, ShipActionList.item[JoystickInfo[JoystickMap[JoystickList.selected_item]].POV[CurrentJoyPOV].action[CurrentJoyPOVDirection]], sizeof(SelectedActionText) );
-			break;
-		}
-	}
 }
 
 void CheckJoyAxis( int *dummy )
@@ -21860,9 +21789,6 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_ConfigJoyPOVs\n");
 	GetFormatInfo ( &MENU_NEW_ConfigJoyPOVs );
-
-	DebugPrintf("MENU_NEW_SetupJoystick2\n");  
-	GetFormatInfo ( &MENU_NEW_SetupJoystick2 );
 
 	DebugPrintf("MENU_NEW_SetupJoystick\n");  
 	GetFormatInfo ( &MENU_NEW_SetupJoystick );

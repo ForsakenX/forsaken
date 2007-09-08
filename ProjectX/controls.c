@@ -1424,53 +1424,10 @@ int CheckMouse( void )
 int WhichKeyPressed( void )
 {
   int k;
-  int key;
-
-  key = 0;
   for ( k = 0; k < MAX_KEYS; k++ )
-  {
     if ( KEY_PRESSED( k ) )
-    {
-      if ( !key )
-        key = k;
-      else
-        return 0;
-    }
-  }
-  for ( k = 0; k < Num_Joysticks; k++ )
-  {
-    if ( JoystickInfo[ k ].connected )
-    {
-      int b, p, d;
-
-      for ( b = 0; b < JoystickInfo[ k ].NumButtons; b++ )
-      {
-        if ( JOYSTICK_BUTTON_PRESSED( k, b ) )
-        {
-          if ( !key )
-            key = JOYSTICK_BUTTON_KEYCODE( k, b );
-          else
-            return 0;
-        }
-      }
-
-      for ( p = 0; p < JoystickInfo[ k ].NumPOVs; p++ )
-      {
-        for ( d = 0; d < MAX_POV_DIRECTIONS; d++ )
-        {
-          if ( JOYSTICK_POV_PRESSED( k, p, d ) )
-          {
-            if ( !key )
-              key = JOYSTICK_POVDIR_KEYCODE( k, p, d );
-            else
-              return 0;
-          }
-        }
-      }
-    }
-  }
-
-  return key;
+		return k;
+  return 0;
 }
 
 

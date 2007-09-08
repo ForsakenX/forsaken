@@ -192,4 +192,7 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 void ExitServerSetup( MENU *Menu );
 
+
+char * CurrentServiceProviderShortName( void );
+
 #endif	// MULTIPLAYER_INCLUDED

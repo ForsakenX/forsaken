@@ -4537,27 +4537,26 @@ BOOL InitLevels( char * levels_list )
   }
   
   // path to Levels\\<type>.bat
-    sprintf( levels_file, "%s\\levels\\%s", DataPath, levels_list );
+  sprintf( levels_file, "%s\\levels\\%s", DataPath, levels_list );
   
   // set some globals
-    CurrentLevelsList = levels_list;
-    OriginalLevels = TRUE;
+  CurrentLevelsList = levels_list;
+  OriginalLevels = TRUE;
 
   /////
-    // Read Levels From File
+  // Read Levels From File
   /////
 
-    f = fopen( levels_file, "r" );
-  if (!f ){
+  f = fopen( levels_file, "r" );
+  if (!f )
     return FALSE;
-  }
 
   // scan each level name into ShortLevelNames[j]
-    j=0;
+  j=0;
   while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
   {
 
-        // if the level is a valid hard coded server level
+    // if the level is a valid hard coded server level
     // or if we are the psuedo host
     if ( LevelValid( ShortLevelNames[ j ] ) )
     {
@@ -4607,11 +4606,11 @@ BOOL InitLevels( char * levels_list )
   NewLevelNum = 0;
 
   // add each level to the master list
-    for (j = 0; j < NumLevels; j++)
+  for (j = 0; j < NumLevels; j++)
   {
     strcpy( (char*) &LevelList.item[LevelList.items][0] , (char*) &ShortLevelNames[j][0] );
     LevelList.items++;
-    }
+  }
 
   // Read TXT in of default level
   LoadLevelText( NULL );

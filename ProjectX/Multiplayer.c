@@ -1044,6 +1044,8 @@ BOOL IPAddressExists = FALSE;
 
 uint32	IPAddress = 0;
 char    IPAddressText[16];
+char    ServiceProviderShortName[16];
+
 DPSESSIONDESC2			Old_Session;
  
 DPCAPS					ServiceProviderCaps;
@@ -1090,7 +1092,41 @@ void InitMySessionsList(void);
 static int DirectPlayOK( LPGUID lpServiceProvider_guid );
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
-							
+
+
+/********************************************\
+|
+|  CurrentServiceProviderNameShort
+|
+\********************************************/
+
+void GetServiceProviderShortName( void )
+{
+
+	int size = 16;
+
+	memset( &ServiceProviderShortName, 0, size );
+
+	if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_TCPIP  ) )
+
+		_snprintf ( ServiceProviderShortName, size, "TCPIP" );
+		
+	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_IPX    ) )
+
+		_snprintf ( ServiceProviderShortName, size, "IPX" );
+
+	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_SERIAL ) )
+		
+		_snprintf ( ServiceProviderShortName, size, "SERIAL" );
+
+	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_MODEM  ) )
+		
+		_snprintf ( ServiceProviderShortName, size, "MODEM" );
+
+}
+
+
+
 /*
  * IsEqualGuid
  *
@@ -1285,7 +1321,8 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	hr = IDirectPlayX_GetCaps( glpDP , &ServiceProviderCaps , 0);
 	if( hr != DP_OK )
 	{
-		PrintErrorMessage ( COULDNT_GET_SERVICE_PROVIDER_CAPS, 2, NULL, ERROR_USE_MENUFUNCS );
+		PrintErrorMessage ( COULDNT_GET_SERVICE_PROVIDER_CAPS, 2, NULL,
+			                ERROR_USE_MENUFUNCS );
 		return FALSE;
 	}
 	SugestedEnumSessionsTimeout = ServiceProviderCaps.dwTimeout * 2;
@@ -1329,6 +1366,10 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	}
 
     RegSetA("TCPIP", (CONST BYTE *)&TCPAddress.text[0], sizeof(TCPAddress.text));
+
+/* hack */
+	GetServiceProviderShortName();
+/* end hack */
 
 	return TRUE;
 }

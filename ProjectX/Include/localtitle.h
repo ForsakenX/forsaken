@@ -242,8 +242,6 @@ Notes for translator:
 #define LT_MENU_NEW_ConfigJoyAxis6 "fine control"
 #define LT_MENU_NEW_ConfigJoyAxis7 "test:"
 
-#define LT_MENU_NEW_SetupJoystick20 "joystick setup"
-#define LT_MENU_NEW_SetupJoystick21 "configure buttons"
 #define LT_MENU_NEW_SetupJoystick22 "configure Axis"
 
 #define LT_MENU_NEW_SetupJoystick0 "choose joystick"
