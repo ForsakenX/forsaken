@@ -6380,25 +6380,25 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 /* new code */
 /* this code will cause golden to be taken away and regenerate somewhere else */
 
-		/* take away our golden abilities */
+		/* take away our golden abilities
+		   and add golden to the global regen list */
 		LoseSuperNashram();
-
-		/* rengerate golden */
-		if( RegeneratePickup( PICKUP_GoldenPowerPod ) )
-		  /* if were not in god mode */
-          if( !GodMode )
-		    /* take away our golden abilities */
-		    NumSuperNashrams--;
 
 		/* up the count of total pickups dropped */
 		TotalPickups++;
 
 /* end new code */
 
-/*  This code will drop the golden
-    But as stands objects don't remember their own values */
+/*
+    This code will drop the golden
+    But as stands objects don't remember their own values
+	This should be an option once objects remember their own values
+	So leave this code here for later
+*/
 
 /* 
+
+        // take away golden and add to regen list
 		LoseSuperNashram();
 
 		DirVector.x = ( Dir->x + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
@@ -6429,6 +6429,8 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 			TotalPickups++;
 		}
 
+		// take golden off regen list
+		// cause we just spit it out
 		if( !GodMode )
 		{
 			NumSuperNashrams--;

@@ -1,4 +1,10 @@
 
+
+/*
+  Should add a check to see if regen point falls inside of group
+*/
+
+
 #include <stdio.h>
 #include <dplay.h>
 #include "new3d.h"

@@ -212,6 +212,9 @@ int8			TeamFlagPickup[ MAX_TEAMS ] = {
 	PICKUP_Flag4,
 };
 
+uint16 CopyOfSeed1;
+uint16 CopyOfSeed2;
+
 int16	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 int16	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 float	Host_GeneralAmmo[ MAX_PLAYERS ];
@@ -1218,21 +1221,21 @@ void ClearPickupsGot( void )
 {
 	int16	Count;
 
+	/* clear all pickups held */
 	for( Count = 0; Count < MAXPICKUPTYPES; Count++ )
-	{
 		PickupsGot[ Count ] = 0;
-	}
 
+	/* clear all primaries */
 	for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
-	{
 		NumPrimWeapons[ Count ] = 0;
-	}
 
+	/* clear special pickups */
 	NumStealths = 0;
 	NumInvuls = 0;
 	NumSuperNashrams = 0;
 	NumOrbs = 0;
 	NumPowerPods = 0;
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -2617,14 +2620,8 @@ void KillUsedPickup( uint16 i )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void CleanUpPickup( uint16 i )
 {
-	uint16	light;
-	uint16	fmpoly;
-	uint16	model;
 
-	light	= Pickups[ i ].Light;
-	fmpoly	= Pickups[ i ].Fmpoly;
-	model	= Pickups[ i ].ModelNum;
-
+    /* remove pickup from global counter */
 	NumPickupType[ Pickups[ i ].Type ]--;
 
 #if DEBUG_PICKUPS
@@ -2634,25 +2631,33 @@ void CleanUpPickup( uint16 i )
 	}
 #endif
 
-	if( light != (uint16) -1 )
+	/* kill the pickups light */
+	if( Pickups[ i ].Light != (uint16) -1 )
 	{
-		SetLightDie( Pickups[ i ].Light );				// Kill Light
+		/* cause a light to go red and get smaller then die */
+		SetLightDie( Pickups[ i ].Light );
 		Pickups[ i ].Light = (uint16) -1;
 	}
 
-	if ( fmpoly != (uint16) -1 )
+	/* kill the pickups faceme poly */
+	if ( Pickups[ i ].Fmpoly != (uint16) -1 )
 	{
-		KillUsedFmPoly( fmpoly );						// Kill Faceme Poly
+		/* Kill a used FmPoly and move it from the used list to the free list */
+		KillUsedFmPoly( Pickups[ i ].Fmpoly );
 		Pickups[ i ].Fmpoly = (uint16) -1;
 	}
 
-	if ( model != (uint16) -1 )
+	/* kill the pickups model */
+	if ( Pickups[ i ].ModelNum != (uint16) -1 )
 	{
-		KillUsedModel( model );							// Kill Model
+		/* Kill a used Model and move it from the used list to the free list */
+		KillUsedModel( Pickups[ i ].ModelNum );
 		Pickups[ i ].ModelNum = (uint16) -1;
 	}
 
-	KillUsedPickup( i );								// Kill Pickup
+	/* kill and remove pickup from used list to free list */
+	KillUsedPickup( i );
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -3511,8 +3516,6 @@ void SavePickupsPositions( void )
 	Input		:		Nothing
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-uint16	CopyOfSeed1;
-uint16	CopyOfSeed2;
 
 void RandomizePickups( void )
 {
@@ -3521,27 +3524,29 @@ void RandomizePickups( void )
 	VECTOR	TempPos;
 	uint16	TempGroup;
 
-	Seed1 = CopyOfSeed1;
-	Seed2 = CopyOfSeed2;
-
-#if DEBUG_PICKUPS
-	DebugPrintf( "Seed1 = %d, Seed2 = %d/n", Seed1, Seed2 );
-#endif
-
+	/* Shuffle the regen points around x number of times */
 	for( Count = 0; Count < 1000; Count++ )
 	{
+		/* pick 2 random regen points */
 		Slot1 = Random_Range( NumRegenPoints );
 		Slot2 = Random_Range( NumRegenPoints );
 
-		if( Slot1 != Slot2 )
-		{
-			TempGroup = RegenPoints[ Slot2 ].Group;
-			TempPos = RegenPoints[ Slot2 ].Pos;
-			RegenPoints[ Slot2 ].Group = RegenPoints[ Slot1 ].Group;
-			RegenPoints[ Slot2 ].Pos = RegenPoints[ Slot1 ].Pos;
-			RegenPoints[ Slot1 ].Group = TempGroup;
-			RegenPoints[ Slot1 ].Pos = TempPos;
-		}
+		/* make sure they are differen't points */
+		if( Slot1 == Slot2 )
+			continue;
+
+		/* copy location of slot2 into a temporary holder */
+		TempGroup = RegenPoints[ Slot2 ].Group;
+		TempPos   = RegenPoints[ Slot2 ].Pos;
+
+		/* assign the position of slot 1 to slot 2 */
+		RegenPoints[ Slot2 ].Group = RegenPoints[ Slot1 ].Group;
+		RegenPoints[ Slot2 ].Pos   = RegenPoints[ Slot1 ].Pos;
+
+		/* assign the temporary position to slot 1 */
+		RegenPoints[ Slot1 ].Group = TempGroup;
+		RegenPoints[ Slot1 ].Pos   = TempPos;
+
 	}
 }
 
@@ -3552,251 +3557,375 @@ void RandomizePickups( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL CheckValidRegenSlot( int16 Slot )
 {
-	if( !PointInsideSkin( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group ) )
-	{
-		RegenPoints[ Slot ].Status = PU_REGENSTAT_Used;
-		RegenPoints[ Slot ].Wait = 0.0F;
+	/* if the position is inside the group */
+	if( PointInsideSkin( &RegenPoints[ Slot ].Pos, RegenPoints[ Slot ].Group ) )
+		return( TRUE );
 
-		if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
-		{
-			AddPickupToRegen( RegenPoints[ Slot ].Type );
-		}
+	/* set it to be used even though its really not
+	   so we don't assign a pickup to it again */
 
-		return( FALSE );
-	}
+	RegenPoints[ Slot ].Status = PU_REGENSTAT_Used;
+	RegenPoints[ Slot ].Wait = 0.0F;
+	RegenPoints[ Slot ].Type = (uint16) -1;
 
-	return( TRUE );
+	/* if you are server or host add pickup thats in the slot to regen list */
+	if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
+		AddPickupToRegen( RegenPoints[ Slot ].Type );
+
+#ifdef DEBUG_ON
+
+	/* let people know the pic file is messed up! */
+    Msg("Bad regen point detected! The PIC file needs to be fixed!");
+
+#endif
+
+	/* failed */
+	return( FALSE );
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Save Pickup Positions
-	Input		:	Nothing
-	Output		:	BOOL	True/False
+  Procedure : Save Pickup Positions
+  Input   : Nothing
+  Output    : BOOL  True/False
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL LoadPickupsPositions( void )
 {
-	char	*	NewExt = ".PIC";
-	FILE	*	fp;
-	int16		Count;
-	VECTOR		Dir = { 0.0F, 0.0F, 0.0F };
-	uint16		i;
-	uint16		TriggerMod = (uint16) -1;
-	int32		StartingState = 1;
-	int32		FileSize;
-	uint32		MagicNumber;
-	uint32		VersionNumber;
 
-	KillAllPickups();
+  /* the extension of the file with pickup data */
+  char  * NewExt = ".PIC";
+
+  FILE    * fp;
+  int16   Count;
+  VECTOR  Dir = { 0.0F, 0.0F, 0.0F };
+  uint16  i;
+  uint16  TriggerMod = (uint16) -1;
+  int32   StartingState = 1;
+  int32   FileSize;
+  uint32  MagicNumber;
+  uint32  VersionNumber;
+
+  /* wipes out all pickups, so we can load new ones */
+  KillAllPickups();
 
 #if 0
-	DebugPrintf( "RandomSeeds %d, %d : NumPrimaryPickups %d\n", CopyOfSeed1, CopyOfSeed2, NumPrimaryPickups );
+  DebugPrintf( "RandomSeeds %d, %d : NumPrimaryPickups %d\n", CopyOfSeed1, CopyOfSeed2, NumPrimaryPickups );
 #endif
 
-	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
+  /* convert the level_name into level_name.pic */
+  Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	for( Count = 0; Count < MAXGROUPS; Count++ ) NumPickupsPerGroup[ Count ] = 0;
+  /* reset number of pickups in groups to 0 */
+  for( Count = 0; Count < MAXGROUPS; Count++ )
+    NumPickupsPerGroup[ Count ] = 0;
 
-	for( Count = 0; Count < MAXPICKUPTYPES; Count++ )
-	{
-		NumPickupType[ Count ] = 0;
-		MaxPickupType[ Count ] = 1000;
-	}
+  /* reset the number of each pickup to 0
+     and the max number of each to 1000 */
+  for( Count = 0; Count < MAXPICKUPTYPES; Count++ )
+  {
+    NumPickupType[ Count ] = 0;
+    MaxPickupType[ Count ] = 1000;
+  }
 
-	NumRegenPoints = 0;
+  /* counter */
+  NumRegenPoints = 0;
 
-	Ships[WhoIAm].PickupIdCount = (uint16) 0;
+  /* reset number of pickups in current biker */
+  Ships[WhoIAm].PickupIdCount = (uint16) 0;
 
-	FileCheckSum( &NewFilename[ 0 ] );
+  /* update LevelCheckSum with checksum of given file */
+  FileCheckSum( &NewFilename[ 0 ] );
 
-	FileSize = Get_File_Size( &NewFilename[ 0 ] );
+  /* get the size of the file */
+  FileSize = Get_File_Size( &NewFilename[ 0 ] );
 
-	fp = fopen( &NewFilename[ 0 ], "rb" );
+  /* open the file for reading */
+  fp = fopen( &NewFilename[ 0 ], "rb" );
 
-	if( fp != NULL )
-	{
-		fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
+  /* if the file handle is valid */
+  if( fp != NULL )
+  {
 
-		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != PIC_VERSION_NUMBER  ) )
-		{
-			fclose( fp );
-			Msg( "LoadPickupsPositions() Incompatible pickup (.PIC) file %s", &NewFilename[ 0 ] );
-			return( FALSE );
-		}
+    /* read in the magic number */
+    fread( &MagicNumber, sizeof( uint32 ), 1, fp );
 
-		fread( &NumRegenPoints, sizeof( int16 ), 1, fp );
+    /* read in the pic version number */
+    fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
-		if( RegenPoints != NULL )
-		{
-			free( RegenPoints );
+    /* fail if the magic/version numbers are not proper */
+    if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != PIC_VERSION_NUMBER  ) )
+    {
+      fclose( fp );
+      Msg( "LoadPickupsPositions() Incompatible pickup (.PIC) file %s", &NewFilename[ 0 ] );
+      return( FALSE );
+    }
 
-			for( Count = 0; Count < MAX_PLAYERS; Count++ )
-			{
-				if( RegenSlotsCopy[ Count ] != NULL )
-					free( RegenSlotsCopy[ Count ] );
-			}
-		}
+    /* read in the number of regen points contained in the file */
+    fread( &NumRegenPoints, sizeof( int16 ), 1, fp );
 
-		RegenPoints = malloc( sizeof( REGENPOINT ) * NumRegenPoints );
+    /* if global RegenPoints list of regen points IS set */
+    if( RegenPoints != NULL )
+    {
+      /* free the memory */
+      free( RegenPoints );
 
-		for( Count = 0; Count < MAX_PLAYERS; Count++ )
-		{
-			RegenSlotsCopy[ Count ] = malloc( sizeof( REGENPOINT ) * NumRegenPoints );
-		}
+      /* for each possible player */
+      for( Count = 0; Count < MAX_PLAYERS; Count++ )
 
-		if( RegenPoints != NULL )
-		{
-			for( Count = 0; Count < NumRegenPoints; Count++ )
-			{
-				RegenPoints[ Count ].Status = PU_REGENSTAT_Free;
-				RegenPoints[ Count ].Wait = 0.0F;
-		
-				fread( &RegenPoints[ Count ].GenType, sizeof( uint16 ), 1, fp );
-				fread( &RegenPoints[ Count ].RegenType, sizeof( uint16 ), 1, fp );
-				fread( &RegenPoints[ Count ].GenDelay, sizeof( float ), 1, fp );
-				fread( &RegenPoints[ Count ].Lifespan, sizeof( float ), 1, fp );
-				fread( &RegenPoints[ Count ].Pos.x, sizeof( float ), 1, fp );
-				fread( &RegenPoints[ Count ].Pos.y, sizeof( float ), 1, fp );
-				fread( &RegenPoints[ Count ].Pos.z, sizeof( float ), 1, fp );
-				fread( &RegenPoints[ Count ].Group, sizeof( uint16 ), 1, fp );
-				fread( &RegenPoints[ Count ].Type, sizeof( uint16 ), 1, fp );
-				fread( &RegenPoints[ Count ].TriggerMod, sizeof( uint16 ), 1, fp );
+        /* if regen slot copy IS set */
+        if( RegenSlotsCopy[ Count ] != NULL )
 
-				if( ( RegenPoints[ Count ].Type >= MAXPICKUPTYPES ) ||
-					( ( RegenPoints[ Count ].TriggerMod != (uint16) -1 ) && ( RegenPoints[ Count ].TriggerMod >= NumOfTrigMods ) ) )
-				{
-					Msg( "Error loading pickups\nIllegal pickup or trigger\n" );
-					fclose( fp );
-					return( FALSE );
-				}
-			}
-		}
+          /* free the memory */
+          free( RegenSlotsCopy[ Count ] );
 
-		fclose( fp );
+    }
 
-		if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
-			   ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-			   ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) )
-		{
-			if( RandomPickups && ( NumRegenPoints > 1 ) )
-			{
-				RandomizePickups();
-			}
-		}
+    /* allocate memory for the global which holds the regen points */
+    RegenPoints = malloc( sizeof( REGENPOINT ) * NumRegenPoints );
 
-		for( Count = 0; Count < NumRegenPoints; Count++ )
-		{
-			if( CheckValidRegenSlot( Count ) )
-			{
-				if( FilterPickup( RegenPoints[ Count ].Type ) 
-					&& ( RegenPoints[ Count ].Type != PICKUP_Flag || CaptureTheFlag )
-					&& ( RegenPoints[ Count ].Type != PICKUP_Bounty || BountyHunt ) )
-				{
-					if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
-						   ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-						   ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) || IsServerGame )
-					{
-//					if( IsServerGame )					// No Timed or Triggered pickups in server game.
-//					{
-						RegenPoints[ Count ].GenType = PU_GENTYPE_Initialised;
-						RegenPoints[ Count ].RegenType = PU_REGENTYPE_Random;
-						RegenPoints[ Count ].Wait = 0.0F;
-						RegenPoints[ Count ].GenDelay = 0.0F;
-						RegenPoints[ Count ].TriggerMod = (uint16) -1;
-					}
+    /* allocate memory for each regen slot copy */
+    for( Count = 0; Count < MAX_PLAYERS; Count++ )
+      RegenSlotsCopy[ Count ] = malloc( sizeof( REGENPOINT ) * NumRegenPoints );
 
-					switch( RegenPoints[ Count ].GenType )
-					{
-						case PU_GENTYPE_Initialised:
-							MaxPickupType[ RegenPoints[ Count ].Type ]++;
+    /* if the global is not NULL */
+    if( RegenPoints != NULL )
+    {
+      /* loop each regen point in the file */
+      for( Count = 0; Count < NumRegenPoints; Count++ )
+      {
+        /* reset the regen point */
+        RegenPoints[ Count ].Status = PU_REGENSTAT_Free;
+        RegenPoints[ Count ].Wait = 0.0F;
+    
+        /* extract each field for the regen point */
+        fread( &RegenPoints[ Count ].GenType,  sizeof( uint16 ), 1, fp );
+        fread( &RegenPoints[ Count ].RegenType,  sizeof( uint16 ), 1, fp );
+        fread( &RegenPoints[ Count ].GenDelay,   sizeof( float ),  1, fp );
+        fread( &RegenPoints[ Count ].Lifespan,   sizeof( float ),  1, fp );
+        fread( &RegenPoints[ Count ].Pos.x,    sizeof( float ),  1, fp );
+        fread( &RegenPoints[ Count ].Pos.y,    sizeof( float ),  1, fp );
+        fread( &RegenPoints[ Count ].Pos.z,    sizeof( float ),  1, fp );
+        fread( &RegenPoints[ Count ].Group,    sizeof( uint16 ), 1, fp );
+        fread( &RegenPoints[ Count ].Type,     sizeof( uint16 ), 1, fp );
+        fread( &RegenPoints[ Count ].TriggerMod, sizeof( uint16 ), 1, fp );
 
-							i = InitOnePickup( &RegenPoints[ Count ].Pos, RegenPoints[ Count ].Group,
-											   &Dir, 0.0F, RegenPoints[ Count ].Type, (uint16) -1,
-											   ++Ships[WhoIAm].PickupIdCount, Count, FALSE,
-											   RegenPoints[ Count ].Lifespan, RegenPoints[ Count ].TriggerMod );
-			
-#if DEBUG_PICKUPS
-							if( ( i == (uint16) -1 ) || ( i == (uint16) -2 ) )
-							{
-								DebugPrintf( "Unable to initialise pickup in slot %d\n", Count );
-							}
-#endif
-							break;
+        /* if pickup is not valid */
+        if(
+          /* if pickup is NOT a valid type */
+          ( RegenPoints[ Count ].Type >= MAXPICKUPTYPES ) ||
+          /* or */
+          (
+             /* triggerMod is set */
+             /* and is NOT valid */
+            ( RegenPoints[ Count ].TriggerMod != (uint16) -1 ) &&
+            ( RegenPoints[ Count ].TriggerMod >= NumOfTrigMods ) 
+          )
+        )
+        {
+          /* quit */
+          Msg( "Error loading pickups\nIllegal pickup or trigger\n" );
+          fclose( fp );
+          return( FALSE );
+        }
+      }
+    }
 
-						case PU_GENTYPE_Time:
-							RegenPoints[ Count ].GenDelay = ( RegenPoints[ Count ].GenDelay * ANIM_SECOND );
+    /* done reading file */
+    fclose( fp );
 
-							MaxPickupType[ RegenPoints[ Count ].Type ]++;
-							RegenPoints[ Count ].PickupID = ++Ships[WhoIAm].PickupIdCount;
-							RegenPoints[ Count ].Status = PU_REGENSTAT_TimeGen;
-							RegenPoints[ Count ].Wait = RegenPoints[ Count ].GenDelay;
-							break;
+    /* if not single player */
+    if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
+         ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
+         ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) )
+      /* if randomize pickups is set and we have more than one regen point */
+      if( RandomPickups && ( NumRegenPoints > 1 ) )
+        /* shuffle around regen points */
+        RandomizePickups();
 
-						case PU_GENTYPE_Trigger:
-							MaxPickupType[ RegenPoints[ Count ].Type ]++;
-							RegenPoints[ Count ].PickupID = ++Ships[WhoIAm].PickupIdCount;
-							RegenPoints[ Count ].Status = PU_REGENSTAT_TrigGen;
-							break;
-					}
-				}
-				else
-				{
-					RegenPoints[ Count ].Status = PU_REGENSTAT_Free;
-					RegenPoints[ Count ].Wait = 0.0F;
-				}
-			}
-		}
+    /* for each regeneration point */
+    for( Count = 0; Count < NumRegenPoints; Count++ )
+    {
 
-	}
+      /* if the regen point is outside of its group
+         it will be decalred as used and forgetten about
+         the pickup it holds will be added to the regenerate list */
 
-	for( Count = 0; Count < MAXPICKUPTYPES; Count++ ) MaxPickupType[ Count ] -= 1000;
+      if( ! CheckValidRegenSlot( Count ) )
+        continue;
 
-	if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
-		   ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-		   ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) )
-	{
-		for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
-		{
-			i = PICKUP_Trojax + ( Count - 1 );
+      /* if pickup is NOT valid */
+      if( !(
 
-			if( FilterPickup( i ) )
-			{
-				if( ( MaxPickupType[ i ] < NumPrimaryPickups ) && ( MaxPickupType[ i ] != 0 ) )
-				{
-					MaxPickupType[ i ] = NumPrimaryPickups;
+         /* this pickup is on the global valid list */
+         FilterPickup( RegenPoints[ Count ].Type ) &&
 
-					if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
-					{
-						NumPrimWeapons[ Count ] += ( NumPrimaryPickups - NumPickupType[ i ] );
-					}
-				}
-			}
-		}
-	}
+         /* this pickup if it is flag only good in ctf mode */
+         ( (RegenPoints[ Count ].Type != PICKUP_Flag)   || CaptureTheFlag ) && 
 
-	if( MaxPickupType[ PICKUP_GeneralAmmo ] < 3 ) MaxPickupType[ PICKUP_GeneralAmmo ] = 3;
+         /* this pickup if it is bounty only good in bounty mode) */
+         ( (RegenPoints[ Count ].Type != PICKUP_Bounty) || BountyHunt )
 
-	if( ( MaxPickupType[ PICKUP_PyroliteAmmo ] == 0 ) && ( MaxPickupType[ PICKUP_Pyrolite ] != 0 ) )
-	{
-		MaxPickupType[ PICKUP_PyroliteAmmo ] = 2;
-	}
+         ))
+        /* not valid pickup */
+      continue;
 
-	if( ( MaxPickupType[ PICKUP_SussGunAmmo ] == 0 ) && ( MaxPickupType[ PICKUP_SussGun ] != 0 ) )
-	{
-		MaxPickupType[ PICKUP_SussGunAmmo ] = 2;
-	}
+      /* No Timed or Triggered pickups in server games */
+      if( IsServerGame )
+      {
+        /* reset any intervals or triggers */
+        RegenPoints[ Count ].GenType = PU_GENTYPE_Initialised;
+        RegenPoints[ Count ].RegenType = PU_REGENTYPE_Random;
+        RegenPoints[ Count ].Wait = 0.0F;
+        RegenPoints[ Count ].GenDelay = 0.0F;
+        RegenPoints[ Count ].TriggerMod = (uint16) -1;
+      }
 
-	if ( CTF )
-	{
-		int team;
+      /* setup regen point
+         based on its GenType */
 
-		for ( team = 0; team < MAX_TEAMS; team++ )
-		{
-			MaxPickupType[ TeamFlagPickup[ team ] ] = 1;
-		}
-	}
+      switch( RegenPoints[ Count ].GenType )
+      {
 
-	return( TRUE );
+        /* Initialised Regen Point */
+        /* AKA: Regen Points that have their pickups loaded at start */
+        case PU_GENTYPE_Initialised:
+
+          /* add one to global count for this type of pickup */
+          MaxPickupType[ RegenPoints[ Count ].Type ]++;
+
+          /* try to create the pickup */
+          i = InitOnePickup(
+                &RegenPoints[ Count ].Pos,
+                RegenPoints[ Count ].Group,
+                &Dir,
+                0.0F,
+                RegenPoints[ Count ].Type,
+                (uint16) -1,
+                ++Ships[WhoIAm].PickupIdCount,
+                Count,
+                FALSE,
+                RegenPoints[ Count ].Lifespan,
+                RegenPoints[ Count ].TriggerMod
+              );
+
+          break;
+
+        /* timed regen point */
+        /* AKA: The Regen point will continously generate the pickup ever N seconds */
+        case PU_GENTYPE_Time:
+
+          /* apply the generation delay */
+          RegenPoints[ Count ].GenDelay = ( RegenPoints[ Count ].GenDelay * ANIM_SECOND );
+
+          /* add one to global count for this type of pickup */
+          MaxPickupType[ RegenPoints[ Count ].Type ]++;
+
+          /* ? */
+          RegenPoints[ Count ].PickupID = ++Ships[WhoIAm].PickupIdCount;
+
+          /* set the status of the regen point */
+          RegenPoints[ Count ].Status = PU_REGENSTAT_TimeGen;
+
+          /* set timer to regen event */
+          RegenPoints[ Count ].Wait = RegenPoints[ Count ].GenDelay;
+
+          break;
+
+        case PU_GENTYPE_Trigger:
+
+          /* add one to global count for this type of pickup */
+          MaxPickupType[ RegenPoints[ Count ].Type ]++;
+
+          /* ? */
+          RegenPoints[ Count ].PickupID = ++Ships[WhoIAm].PickupIdCount;
+
+          /* set the status of the regen point */
+          RegenPoints[ Count ].Status = PU_REGENSTAT_TrigGen;
+
+          break;
+      }
+    }
+  }
+
+  /* minus 1000 from the count of pickups
+     why did we even add 1000 further up ?? */
+
+  for( Count = 0; Count < MAXPICKUPTYPES; Count++ )
+    MaxPickupType[ Count ] -= 1000;
+
+  /* if were not in single player mode */
+  if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
+       ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
+       ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) )
+  {
+    /* for each of the primary weapons */
+    for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
+    {
+      /* if NOT an enabled weapon */
+      if( ! FilterPickup( i ) )
+        /* then bail out */
+        continue;
+
+      /* this probably garentees that we have at least a 1 to 1 mapping
+         for primary ammo and number of primary guns in the level */
+
+      /* if this pickup type */
+      if(
+        /* has a minimum number of pickups that must always exist*/
+        /* this is usually ammo */
+        ( MaxPickupType[ i ] != 0 )  &&
+        /* and the minimum is less than the number of current primary weapons */
+        ( MaxPickupType[ i ] < NumPrimaryPickups )
+      )
+      {
+        /* set the minimum number of this type
+           to the number of primary pickups */
+
+        MaxPickupType[ i ] = NumPrimaryPickups;
+
+        /* if we are the game manager */
+        if(
+          /* if this is a server game and we are the server */
+          ( IsServerGame && IsServer ) ||
+          /* if its a p2p game and we are host */
+          ( !IsServerGame && IsHost )
+        )
+          /* add N number of these pickups to the current regen list */
+          /* N = (minimum that must exist) - (currently existing) */
+          NumPrimWeapons[ Count ] += ( MaxPickupType[ i ] - NumPickupType[ i ] );
+      }
+    }
+  }
+
+  /* if the minimum ammount of general ammo to allways exist is lower then 3 */
+  if( MaxPickupType[ PICKUP_GeneralAmmo ] < 3 )
+    /* set the minimum of general ammo to to 3 */
+    MaxPickupType[ PICKUP_GeneralAmmo ] = 3;
+
+  /* if the minimum ammount of pryolite ammo to allways exist is 0 */
+  /* and we currently have a pyro on the level */
+  if( ( MaxPickupType[ PICKUP_PyroliteAmmo ] == 0 ) &&
+    ( MaxPickupType[ PICKUP_Pyrolite ] != 0 ) )
+    /* set the minimum of pyro ammo that always exists to 2 */
+    MaxPickupType[ PICKUP_PyroliteAmmo ] = 2;
+
+  /* if the minimum ammount of suss gun ammo to allways exist is 0 */
+  /* and we currently have a suss gun on the level */
+  if( ( MaxPickupType[ PICKUP_SussGunAmmo ] == 0 ) &&
+    ( MaxPickupType[ PICKUP_SussGun ] != 0 ) )
+    /* set the minimum of suss gun ammot that allways exists to 2 */
+    MaxPickupType[ PICKUP_SussGunAmmo ] = 2;
+
+  /* if we are in ctf mode */
+  if ( CTF )
+    /* for each team */
+    for ( Count = 0; Count < MAX_TEAMS; Count++ )
+      /* set the minimum ammount of flags for this team that allways has to exist to 1 */
+      MaxPickupType[ TeamFlagPickup[ Count ] ] = 1;
+
+  /* finally done */
+  return( TRUE );
+
 }
 
 #ifdef OPT_ON
@@ -4281,12 +4410,6 @@ void RegenerateQuedPickups( void )
 	Output		:	BOOL		True/False
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-/*
-	   If it fails it will add the pickup to list
-	   To be attempted again later 
-	   I don't know where this is happening though
-*/
-
 BOOL RegeneratePickup( uint16 Type )
 {
 	int16				Slot;
@@ -4296,8 +4419,6 @@ BOOL RegeneratePickup( uint16 Type )
 	int16				NumFreeSlots;
 	int16				FreeTypeSlots[ MAXPICKUPS ];
 	int16				NumFreeTypeSlots;
-	VECTOR				TempVector;
-	float				Distance;
 
 	NumFreeSlots = 0;
 	NumFreeTypeSlots = 0;
@@ -4331,11 +4452,9 @@ BOOL RegeneratePickup( uint16 Type )
 		}
 
 		/* if regen location can accept any type of pickup */
+		/* skip this if type specific regen locations found for this type */
 
-		else if ( ! NumFreeTypeSlots )  /* added ( ! NumFreeTypeSlots )
-										   because if a "type specific slot" for given pickup
-										   was found... Then it will be exclusively used...
-										   So there is no need to use extra processing */
+		else if ( ! NumFreeTypeSlots )
 		{
 
 			/* add the location to the free slot list */
@@ -4381,13 +4500,17 @@ BOOL RegeneratePickup( uint16 Type )
 	/* the location given is occupied */
 	if ( i == (uint16) -1 )
 	{
+#ifdef DEBUG_ON
 		Msg("RegeneratePickup (FAILED) location given is occupied.");
+#endif
 		return FALSE;
 	}
 	
 	/* too many of same type */
 	if( i == (uint16) -2 ){
+#ifdef DEBUG_ON
 		Msg("RegeneratePickup (FAILED) too many of same type");
+#endif
 		/* dont complain */
 		return TRUE;	
 	}
@@ -4399,7 +4522,6 @@ BOOL RegeneratePickup( uint16 Type )
 					(uint16) -1 );
 
 	/* Success ! */
-
 	return TRUE;
 
 }
@@ -4535,20 +4657,26 @@ void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 void KillAllPickups( void )
 {
 	uint16	i;
-	uint16	NextPickup;
 
+	/* get the first pickup */
 	i = FirstPickupUsed;
 
+	/* if pointer points to a valid pickup id */
 	while( i != (uint16) -1 )
 	{
-		NextPickup = Pickups[ i ].Prev;							/* Next Pickup */
  
+		/* Reset the pickups triggerMod */
 		Pickups[ i ].TriggerModPtr = NULL;
-		Pickups[ i ].TriggerMod = (uint16) -1;
+		Pickups[ i ].TriggerMod    = (uint16) -1;
+
+		/* cleanup the pickup
+		   remove any lighting or other affect the pickup does */
 
 		CleanUpPickup( i );
  		
-		i = NextPickup;											/* Next Pickup */
+		/* go to the next pickup */
+		i = Pickups[ i ].Prev;
+
 	}																				
 
 #if DEBUG_PICKUPS
@@ -5138,25 +5266,25 @@ void InitValidPickups()
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL FilterPickup( uint16 PickupType )
 {
-	if( ( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayer ) ||
+	/* if were not in any of these modes back out */
+	if(!(
+		( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayer ) ||
 		( ChangeLevel_MyGameStatus == STATUS_WaitingAfterScore ) ||
 		( ChangeLevel_MyGameStatus == STATUS_PreStartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostInitView ) ||
 		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostPlayingDemo ) ||
-		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostAttractMode	) )
-	{
-		if( PickupValid[ PickupType ] )
-		{
-			return( TRUE );
-		}
-		else
-		{
-			return( FALSE );
-		}
-	}
+		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostAttractMode	) ))
+		return TRUE;
 
-	return( TRUE );
+	/* is this pickup on the global valid list ? */
+	if( PickupValid[ PickupType ] )
+		/* yes */
+		return( TRUE );
+	else
+		/* no */
+		return( FALSE );
+
 }
 
 void PackPickupInfo( uint32 *packed )
