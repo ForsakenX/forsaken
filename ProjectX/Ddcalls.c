@@ -351,16 +351,22 @@ static HRESULT
 CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
 {
 
+	/* how much memory this current mode will need */
 	int ScreenMemoryUsed = 0;
 
+	/* total video memory available */
+    DWORD TotVidMem = D3DAppTotalVideoMemory();
+
+	/*
     if( (pddsd->ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) ||
 		(pddsd->ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED4) ||
 		(pddsd->ddpfPixelFormat.dwRGBBitCount <= 8) )
         return DDENUMRET_OK;
+	*/
 
-    if(	(pddsd->ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED4) ||
-		(pddsd->ddpfPixelFormat.dwRGBBitCount < 8) )
-        return DDENUMRET_OK;
+	/*
+	  screen memory required by this mode
+	*/
 
 	ScreenMemoryUsed = pddsd->dwWidth * pddsd->dwHeight * ( pddsd->ddpfPixelFormat.dwRGBBitCount / 8 );
 
@@ -369,22 +375,29 @@ CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
 	else
 		ScreenMemoryUsed *= 3; // 2 screens + zbuffer
 
+	/*
+		make sure we have enough memory
+	*/
+
+	if( TotVidMem && (unsigned)ScreenMemoryUsed > (TotVidMem * 1024) )
+		return DDENUMRET_OK;
+
+	/*
+		software version checks
+	*/
+
 #ifdef SOFTWARE_ENABLE
 
+	// dont allow modes over 640x480 in software mode
 	if ( ( SoftwareVersion ) && ( pddsd->dwWidth > 640 && pddsd->dwHeight > 480 ) )
         return DDENUMRET_OK;
 
+	// dont allow modes over 16 bits in software mode
 	if( SoftwareVersion )
 		if ( pddsd->ddpfPixelFormat.dwRGBBitCount > 16 )
 			return DDENUMRET_OK; // hack to prevent colourkeying messing up
 
 #endif
-
-	if( ScreenMemory )
-		if( ScreenMemoryUsed > (ScreenMemory * 1024 ) )
-		{
-//	        return DDENUMRET_OK; // There isnt enough screen memory for that display mode...
-		}
 
 	/*
 	 * Save this mode at the end of the mode array and increment mode count
@@ -396,10 +409,12 @@ CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
 	d3dappi.Mode[d3dappi.NumModes].bThisDriverCanDo = TRUE;
 	d3dappi.NumModes++;
 
-	if (d3dappi.NumModes == D3DAPP_MAXMODES)
+	// used internally to control size of lists
+	if (d3dappi.NumModes >= D3DAPP_MAXMODES)
 		return DDENUMRET_CANCEL;
 	else
 		return DDENUMRET_OK;
+
 }
 
 /*
