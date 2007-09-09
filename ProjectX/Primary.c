@@ -1486,7 +1486,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		1000.0F,											// float	LifeCount         
 		{ 0, 0, 0 },										// uint16	FireDelay         
 		{ 1.0F, 2.0F, 3.0F },								// float	AmmoUsage         
-		{ 64.0F, 160.0F, 256.0F },							// float	Damage            
+		{ 160.0F, 160.0F, 256.0F },							// float	Damage            
 		{ TROJAX_COLRADIUS,									// float	Collision Radius
 		  TROJAX_COLRADIUS,									// float	Collision Radius
 		  TROJAX_COLRADIUS },								// float	Collision Radius
@@ -2284,7 +2284,7 @@ static int16	OnceOnlyFlag = 0;
 	{
 		if( control.fire_primary != 0 && GeneralAmmo )
 		{
-//			if( PowerLevel > 10.0F ) Ships[ WhoIAm ].Object.Flags |= SHIP_Charging;
+			if( PowerLevel > 10.0F ) Ships[ WhoIAm ].Object.Flags |= SHIP_Charging; // -- unpatched
 			Ships[ WhoIAm ].Object.Flags |= SHIP_Charging;
 
 			Old_PowerLevel = PowerLevel;
@@ -3180,8 +3180,8 @@ void ProcessPrimaryBullets( void )
 
 					case TRANSPULSE_CANNON:
 	   	   			case NME_TRANSPULSE:
-						if( !PrimBulls[i].Bounces ) Damage /= 4.0F;
-//						Damage /= ( ( TRANSPULSE_BOUNCES + 1 ) - PrimBulls[i].Bounces );
+						if( !PrimBulls[i].Bounces ) // Damage /= 4.0F; // -- patched
+						Damage /= ( ( TRANSPULSE_BOUNCES + 1 ) - PrimBulls[i].Bounces ); // - unpatched
 						break;
 
 					case LASER:
@@ -3545,8 +3545,9 @@ void ProcessPrimaryBullets( void )
    				switch( PrimBulls[ i ].Weapon )
    				{
    					case TROJAX:
-//						Damage = PrimBulls[i].TrojPower / 100.0F * 256.0F;
-						Damage = 32.0F + (PrimBulls[i].TrojPower / 100.0F * (256.0F-32.0F));
+						Damage =  160.0F; // unpatched damage - fudged but works
+						// PrimBulls[i].TrojPower / 100.0F * 512.0F; // -- unpatched?
+						// Damage = 32.0F + (PrimBulls[i].TrojPower / 100.0F * (256.0F-32.0F)); // -- patched
    						break;
    					case PULSAR:
    					case PYROLITE_RIFLE:
