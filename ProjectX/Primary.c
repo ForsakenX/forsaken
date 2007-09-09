@@ -3545,10 +3545,9 @@ void ProcessPrimaryBullets( void )
    				switch( PrimBulls[ i ].Weapon )
    				{
    					case TROJAX:
-						Damage =  160.0F; // unpatched damage - fudged but works
-						// PrimBulls[i].TrojPower / 100.0F * 512.0F; // -- unpatched?
-						// Damage = 32.0F + (PrimBulls[i].TrojPower / 100.0F * (256.0F-32.0F)); // -- patched
-   						break;
+					//	Damage =  PrimBulls[i].TrojPower / 100.0F * 512.0F; // -- unpatched? (doesn't work as it should)
+					//  Damage = 32.0F + (PrimBulls[i].TrojPower / 100.0F * (256.0F-32.0F)); // -- patched
+   					//	break;
    					case PULSAR:
    					case PYROLITE_RIFLE:
    					case SUSS_GUN:
