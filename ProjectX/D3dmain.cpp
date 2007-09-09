@@ -209,8 +209,7 @@ extern "C" {
 #include	"malloc.h"
 #include	"Exechand.h" 
 #include	"DDSurfhand.h" 
-#include	"SBufferHand.h" 
-#include	"Readini.h" 
+#include	"SBufferHand.h"
 #include	"file.h" 
 #include	"splash.h"
 #include	"XMem.h" 
@@ -267,6 +266,9 @@ extern	BOOL	SoftwareVersion;
 	extern BOOL AllWires;
 	extern BOOL NoAVI;
 	extern BOOL CanDoStrechBlt;
+
+	extern BOOL RecordDemoToRam;
+	extern BOOL DontColourKey;
 
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
@@ -657,6 +659,7 @@ CreateD3DApp(LPSTR lpCmdLine)
 	NoSplash = FALSE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
+	DontColourKey = FALSE;
 
 	DPlayUpdateIntervalCmdLine = 0;
 
@@ -685,7 +688,11 @@ CreateD3DApp(LPSTR lpCmdLine)
     option = strtok(cmdlineptr, " -+");
     while(option != NULL )   {
 
-        if (!_stricmp(option, "systemmemory")) {
+		if (!_stricmp(option,"DontColourKey")) {
+			DontColourKey = TRUE;
+		} else if (!_stricmp(option, "RecordDemoToRam")) {
+			RecordDemoToRam = TRUE;
+		} else if (!_stricmp(option, "systemmemory")) {
             bOnlySystemMemory = TRUE;
 #ifdef SOFTWARE_ENABLE
 			SoftwareVersion = TRUE;
@@ -827,14 +834,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 			else if ( sscanf( option, "lev:%s", level_path ) == 1 )
 			{
 				use_level_path = 1;
-			}
-			else if ( sscanf( option, "opt:%s", optname ) == 1 )
-			{
-				if ( strstr( optname, ".opt" ) || strstr( optname, ".OPT" ) )
-					sprintf( optfile, "%s", optname );
-				else
-					sprintf( optfile, "opt\\%s.opt", optname );
-				ReadIniFile( optfile );
 			}
 			else if ( !strcmp( option, "data" ) )
 			{
