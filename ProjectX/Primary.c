@@ -3562,8 +3562,8 @@ void ProcessPrimaryBullets( void )
 
 					case NME_TRANSPULSE:
    					case TRANSPULSE_CANNON:
-						if( !PrimBulls[i].Bounces ) Damage /= 4.0F;
-//   						Damage /= ( ( TRANSPULSE_BOUNCES + 1 ) - PrimBulls[i].Bounces );
+						if( !PrimBulls[i].Bounces ) // Damage /= 4.0F; // -- patched 
+   						Damage /= ( ( TRANSPULSE_BOUNCES + 1 ) - PrimBulls[i].Bounces ); // -- unpatched
    						break;
 
 					case NME_LIGHTNING:
