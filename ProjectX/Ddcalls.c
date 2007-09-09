@@ -350,6 +350,7 @@ D3DAppICreateDD(DWORD flags)
 static HRESULT
 CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
 {
+
 	int ScreenMemoryUsed = 0;
 
     if( (pddsd->ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) ||
@@ -362,44 +363,39 @@ CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
         return DDENUMRET_OK;
 
 	ScreenMemoryUsed = pddsd->dwWidth * pddsd->dwHeight * ( pddsd->ddpfPixelFormat.dwRGBBitCount / 8 );
+
 	if( TripleBuffer )
-	{
 		ScreenMemoryUsed *= 4; // 3 screens + zbuffer
-	}else{
+	else
 		ScreenMemoryUsed *= 3; // 2 screens + zbuffer
-	}
-#ifdef SOFTWARE_ENABLE
-	if ( ( SoftwareVersion ) && ( pddsd->dwWidth > 640 && pddsd->dwHeight > 480 ) )
-        return DDENUMRET_OK;
-#endif
 
 #ifdef SOFTWARE_ENABLE
+
+	if ( ( SoftwareVersion ) && ( pddsd->dwWidth > 640 && pddsd->dwHeight > 480 ) )
+        return DDENUMRET_OK;
+
 	if( SoftwareVersion )
-	{
 		if ( pddsd->ddpfPixelFormat.dwRGBBitCount > 16 )
 			return DDENUMRET_OK; // hack to prevent colourkeying messing up
-	}
+
 #endif
 
 	if( ScreenMemory )
-	{
 		if( ScreenMemoryUsed > (ScreenMemory * 1024 ) )
 		{
 //	        return DDENUMRET_OK; // There isnt enough screen memory for that display mode...
 		}
-	}
-	if( pddsd->dwWidth < 1024 || pddsd->dwHeight < 768 || pddsd->ddpfPixelFormat.dwRGBBitCount < 32 )
-		return DDENUMRET_OK;
-
 
 	/*
-		* Save this mode at the end of the mode array and increment mode count
-		*/
+	 * Save this mode at the end of the mode array and increment mode count
+	 */
+
 	d3dappi.Mode[d3dappi.NumModes].w = pddsd->dwWidth;
 	d3dappi.Mode[d3dappi.NumModes].h = pddsd->dwHeight;
 	d3dappi.Mode[d3dappi.NumModes].bpp = pddsd->ddpfPixelFormat.dwRGBBitCount;
 	d3dappi.Mode[d3dappi.NumModes].bThisDriverCanDo = TRUE;
 	d3dappi.NumModes++;
+
 	if (d3dappi.NumModes == D3DAPP_MAXMODES)
 		return DDENUMRET_CANCEL;
 	else
@@ -1238,6 +1234,8 @@ D3DAppIClearBuffers(void)
 DWORD
 D3DAppIBPPToDDBD(int bpp)
 {
+	/* which depths do we support ? */
+	/* 1, 2, 4, 8, 16, 24, 32 */
     switch(bpp) {
         case 1:
             return DDBD_1;
