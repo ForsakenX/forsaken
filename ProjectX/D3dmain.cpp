@@ -259,6 +259,7 @@ extern	BOOL	SoftwareVersion;
 	extern	int		TextureMemory;
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
+	extern  BOOL	DontColourKey;
 	extern	BOOL	TripleBuffer;
 	extern	BOOL	PolygonText;
 	extern	BOOL	UseSendAsync;
@@ -268,7 +269,6 @@ extern	BOOL	SoftwareVersion;
 	extern BOOL CanDoStrechBlt;
 
 	extern BOOL RecordDemoToRam;
-	extern BOOL DontColourKey;
 
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
@@ -285,8 +285,6 @@ extern	BOOL	SoftwareVersion;
 	extern BOOL NoSplash;
 
 	extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
-	extern BOOL	OptFileOnCommandline;
-	extern BOOL	DeviceOnCommandline;
 
 	extern DWORD UserTotalCompoundSfxBufferSize;
 	extern BOOL CustomCompoundBufferSize;
@@ -320,6 +318,7 @@ extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 
 }
+
 
 /*
  * GLOBAL VARIABLES
@@ -611,8 +610,6 @@ extern char *config_name;
 static BOOL
 CreateD3DApp(LPSTR lpCmdLine)
 {
-	char optname[256];
-	char optfile[256];
     HMENU hmenu;
     int i;
     LPSTR option;
@@ -623,6 +620,7 @@ CreateD3DApp(LPSTR lpCmdLine)
 	char *cmdlineptr;
 	char tempcmdline[ 256 ];
 	char buf[ 256 ];
+	BOOL DeviceOnCommandline = FALSE;
 
 
 #ifdef SOFTWARE_ENABLE
@@ -659,7 +657,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 	NoSplash = FALSE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
-	DontColourKey = FALSE;
 
 	DPlayUpdateIntervalCmdLine = 0;
 

@@ -104,20 +104,21 @@
  *      misc.c      Miscellaneous calls
  */
 
-//#define INITGUID
 #include "typedefs.h"
-
 #include "d3dappi.h"
+#include "tload.h"
+
+extern  BOOL DontColourKey;
 extern	BOOL MipMap;
 extern	BOOL	Is3Dfx2;
-BOOL	TriLinear;
-extern	BOOL	DontColourKey;
 extern	int		TexturePalettized;
 extern	int		TextureRedBPP;
 extern	int		TextureGreenBPP;
 extern	int		TextureBlueBPP;
 extern	int		TextureAlphaBPP;
 extern	int		TextureIndexBPP;
+
+BOOL	TriLinear;
 
 /***************************************************************************/
 /*                            Creation of D3D                              */

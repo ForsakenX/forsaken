@@ -356,6 +356,7 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 extern char data_path[];
 extern char normdata_path[];
 extern int use_data_path;
@@ -368,7 +369,6 @@ extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
 extern	void DebugPrintf( const char * format, ... );
 extern	char	normdata_path[ 128 ];
-extern	BOOL	DontColourKey;
 BOOL FreeTextureMemory( int * TMem);
 
 #ifdef SOFTWARE_ENABLE
@@ -390,7 +390,8 @@ TLOADNAME	TloadNames[MAXTPAGESPERTLOAD];
 TLOADHEADER	Tloadheader;
 BOOL	Pal332 = FALSE;
 int		TextureMemory = 0;
-BOOL	MipMap = FALSE;
+BOOL	MipMap = TRUE;
+BOOL	DontColourKey = FALSE;
 BOOL	NoTextureScaling = FALSE;
 int Print4x5Text( char * Text , int x , int y , int col );
 double	Gamma = 1.0;

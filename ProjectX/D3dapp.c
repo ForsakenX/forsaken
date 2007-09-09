@@ -287,7 +287,7 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
      * level and create the front and back buffers for this mode.
      */
     driver = D3DAPP_YOUDECIDE;
-    mode = D3DAPP_YOUDECIDE;
+    mode   = D3DAPP_USEWINDOW; //D3DAPP_YOUDECIDE;
     ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
     D3DAppIGetClientWin(hwnd);
     if (mode == D3DAPP_USEWINDOW) {
