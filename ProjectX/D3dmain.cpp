@@ -645,10 +645,10 @@ CreateD3DApp(LPSTR lpCmdLine)
 	PowerVR_Overide = FALSE;
 	Is3Dfx = FALSE;
 	Is3Dfx2 = FALSE;
-	TriLinear = FALSE;
+	TriLinear = TRUE;
 	NoSFX = FALSE;
 	TextureMemory = 0;
-	MipMap = FALSE;
+	MipMap = TRUE;
 	TripleBuffer = FALSE;
 	NoTextureScaling = FALSE;
 	DplayRecieveThread = FALSE;
@@ -703,8 +703,8 @@ CreateD3DApp(LPSTR lpCmdLine)
         } else if (!_stricmp(option, "3Dfx2")) {
 			Is3Dfx2 = TRUE;
 			TriLinear = TRUE;
-        } else if (!_stricmp(option, "TriLinear")) {
-			TriLinear = TRUE;
+        } else if (!_stricmp(option, "NoTriLinear")) {
+			TriLinear = FALSE;
         } else if (!_stricmp(option, "NoSFX")) {
 			NoSFX = TRUE;
         } else if (!_stricmp(option, "PolyText")) {
@@ -713,8 +713,8 @@ CreateD3DApp(LPSTR lpCmdLine)
 			DplayRecieveThread = TRUE;
         } else if (!_stricmp(option, "NoTextureScaling")) {
 			NoTextureScaling = TRUE;
-        } else if (!_stricmp(option, "MipMap")) {
-			MipMap = TRUE;
+        } else if (!_stricmp(option, "NoMipMap")) {
+			MipMap = FALSE;
         } else if (!_stricmp(option, "TripleBuffer")) {
 			TripleBuffer = TRUE;
         } else if (!_stricmp(option, "BatchFile")) {
