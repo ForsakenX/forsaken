@@ -164,31 +164,65 @@ D3DAppIPickDriver(int* driver, DWORD depths)
 {
     int i, j;
     j = 0;
+
+	/* fill in the j variable before looping */
+
+	/* for each driver */
     for (i = 0; i < d3dappi.NumDrivers; i++)
+		/* if the driver supports out depth */
         if (d3dappi.Driver[i].Desc.dwDeviceRenderBitDepth & depths)
+			/* "i" is set to "first" supported driver */
             break;
+
+	/* this should be impossible to reach */
     if (i >= d3dappi.NumDrivers) {
         *driver = D3DAPP_BOGUS;
         return TRUE;
     }
+
+	/* "j" is set to "first" supported driver */
     j = i;
-    for (i = 0; i < d3dappi.NumDrivers; i++) {
-        if (d3dappi.Driver[i].Desc.dwDeviceRenderBitDepth & depths) {
-            if (d3dappi.Driver[i].bIsHardware &&
-                                              !d3dappi.Driver[j].bIsHardware)
-                                                  j = i;
-            else if (d3dappi.Driver[i].bIsHardware ==
-                                             d3dappi.Driver[j].bIsHardware) {
-                if (d3dappi.Driver[i].Desc.dcmColorModel & D3DCOLOR_MONO &&
-                    !(d3dappi.Driver[j].Desc.dcmColorModel & D3DCOLOR_MONO))
-                        j = i;
-            }
-        }
+
+	/* for each driver */
+    for (i = (j+1); i < d3dappi.NumDrivers; i++) {  /*  added (j+1), if j is first supported
+														then why loop over them all again ? */
+
+		/* does driver support our depths */
+        if ( ! (d3dappi.Driver[i].Desc.dwDeviceRenderBitDepth & depths) )
+			continue;
+
+		/* prefer hardware driver */
+
+		/* if current driver is hardware and last driver is not hardware */
+        if (d3dappi.Driver[i].bIsHardware && !d3dappi.Driver[j].bIsHardware)
+
+			/* set "j" to current */
+            j = i;
+
+		/* prefer mono lighting over rgb */
+
+		/* if they are both hardware */
+        else if (d3dappi.Driver[i].bIsHardware == d3dappi.Driver[j].bIsHardware)
+
+			/* if current driver is based on mono lighting and last one was not */
+            if (
+				 (d3dappi.Driver[i].Desc.dcmColorModel & D3DCOLOR_MONO) &&
+                !(d3dappi.Driver[j].Desc.dcmColorModel & D3DCOLOR_MONO)
+			)
+				/* set "j" to current */
+				j = i;
+
     }
+
+	/* again should never be possible */
     if (j >= d3dappi.NumDrivers)
         *driver = D3DAPP_BOGUS;
+
+	/* return the index of the selected driver */
     else
         *driver = j;
+
+	/* done */
     return TRUE;
 }
 
@@ -199,20 +233,26 @@ D3DAppIPickDriver(int* driver, DWORD depths)
  * total video memory for front/back/z-buffer in video memory if it's a
  * hardware device.
  */
+
 BOOL
 D3DAppIFilterDisplayModes(int driver)
 {
     int i;
     DWORD depths = d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth;
     DWORD TotVidMem = D3DAppTotalVideoMemory();
+	/* for each display mode */
     for (i = 0; i < d3dappi.NumModes; i++) {
+		/* default deny */
         d3dappi.Mode[i].bThisDriverCanDo = FALSE;
+		/* skip if does NOT support depth */
         if (!(D3DAppIBPPToDDBD(d3dappi.Mode[i].bpp) & depths))
             continue;
+		/* skip if not enough video memory */
         if (d3dappi.Driver[driver].bIsHardware && TotVidMem &&
             TotVidMem < (unsigned)3 * d3dappi.Mode[i].w * d3dappi.Mode[i].h *
                         d3dappi.Mode[i].bpp / 8)
             continue;
+		/* allow it */
         d3dappi.Mode[i].bThisDriverCanDo = TRUE;
             
     }
@@ -322,11 +362,6 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
     int driver, mode, i;
     driver = *lpdriver; mode = *lpmode;
 
-    if (mode == D3DAPP_USEWINDOW && !d3dappi.bIsPrimary) {
-        D3DAppISetErrorString("Cannot render to a window when the DirectDraw device is not the primary.\n");
-        goto exit_with_error;
-    }
-
     /*
      * If I've been ask to choose a driver, choose one which is compatible
      * with the specified mode.
@@ -352,16 +387,24 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
              * I'm free to choose any driver which can use even one
              * supported depth
              */
+
+			/*
+			  get depths from window and all possible d3d modes
+			*/
             if (d3dappi.bIsPrimary)
                 depths = D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp);
             else
                 depths = 0;
             for (i = 0; i < d3dappi.NumModes; i++)
                 depths |= D3DAppIBPPToDDBD(d3dappi.Mode[i].bpp);
+
+			/* pick a driver favor hardware and mono lighting */
             ATTEMPT(D3DAppIPickDriver(&driver, depths));
+
             if (driver == D3DAPP_BOGUS) {
                 D3DAppISetErrorString("Cannot find a D3D device driver which is compatible with the current display depth or any supported fullscreen mode.\n");
             }
+
             /*
              * The mode will be chosen in the next section
              */
@@ -390,9 +433,17 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
         /*
          * If it's my choice, I prefer windowed over fullscreen
          */
-        if (d3dappi.bIsPrimary && !FirstTime ) {
-            if (D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp) & 
-                    d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth) {
+
+		/* if this is the first time then use fullscreen */
+		if ( d3dappi.bIsPrimary && !FirstTime )
+		{
+			/* if window depth is compatible with our driver */
+            if (
+				/* convert window depth to friendly format */
+				D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp) & 
+				  d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth
+			)
+			{
                 mode = D3DAPP_USEWINDOW;
                 goto ret_ok;
             }
