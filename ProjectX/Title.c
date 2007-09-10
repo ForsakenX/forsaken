@@ -2097,6 +2097,12 @@ void *mem;
 
 #define DEMO_MENUS
 
+// registry.c
+extern HKEY ghCondemnedKey;
+extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
+extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+
 extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
@@ -2326,9 +2332,6 @@ char	biker_text[512];
 BOOL	quitting = FALSE;
 int16	SelectedBike = 0; //MODEL_Borg;
 int16	NumTitleModelsToLoad;
-
-HKEY                     ghCondemnedKey=NULL;     // Condemned registry key handle
-DWORD                    gdwCondemnedDisp;        // key created or opened
 
 float TriggerInitialAnimation = 0.0F;
 
@@ -6234,40 +6237,6 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE}
 };
 
-/*
- * RegSet
- *
- * Stores a data value in the registry
- */
-LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
-{
-#ifdef UNICODE
-    dwSize *= 2; // calc number of bytes
-#endif
-	return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_BINARY, lpData, dwSize );
-}
-
-/*
- * RegSetA
- *
- * Stores data as an ascii string in the registry
- */
-LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
-{
-    return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_SZ, lpData, dwSize);
-}
-
-/*
- * RegGet
- *
- * Queries a value from the registry
- */
-LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize)
-{
-    DWORD dwType;
-
-    return RegQueryValueEx(ghCondemnedKey, lptszName, NULL, &dwType, lpData, lpdwDataSize);
-}
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Init Title load in all graphics etc for Titles..

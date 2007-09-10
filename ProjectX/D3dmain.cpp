@@ -313,7 +313,6 @@ void ShowSplashScreen( int num );
 void RemoveDynamicSfx( void );
 void FillStatusTab( void );
 
-void	GetDeviceGuid( void );
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 
 HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
@@ -874,7 +873,6 @@ CreateD3DApp(LPSTR lpCmdLine)
     }
 
 	GetGamePrefs();
-	GetDeviceGuid();
 
 	if ( !default_width && !default_height && !default_bpp )
 	{

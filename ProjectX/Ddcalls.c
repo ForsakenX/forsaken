@@ -148,9 +148,6 @@ extern	BOOL	SoftwareVersion;
 #endif
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 
-extern	LPGUID	DeviceGuidPnt;
-extern	GUID	DeviceGuid;
-
 int ddcount3d = 0;	// number of 3D DD devices
 int ddchosen3d = 0;	// currently selected one
 
@@ -200,17 +197,7 @@ BOOL FAR PASCAL D3DAppIDDEnumCallback(GUID FAR* lpGUID, LPSTR lpDriverDesc,
 #ifdef FINAL_RELEASE
         if (DriverCaps.dwCaps & DDCAPS_3D )
 		{
-			if( !lpGUID && !DeviceGuidPnt)
-			{
-				ThisOne = TRUE;
-			}
-			if( DeviceGuidPnt && lpGUID )
-			{
-				if( IsEqualGuid( lpGUID, &DeviceGuid) )
-				{
-					ThisOne = TRUE;
-				}
-			}
+			ThisOne = TRUE;
 			if( ThisOne )
 			{
 				/*

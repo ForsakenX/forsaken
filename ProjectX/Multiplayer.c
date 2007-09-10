@@ -890,7 +890,8 @@ extern BOOL	BrightShips;
 extern BOOL	BikeExhausts;
 extern int32 ColPerspective;
 
-extern HKEY ghCondemnedKey;     // Condemned registry key handle
+// registry.c
+extern HKEY ghCondemnedKey;
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
