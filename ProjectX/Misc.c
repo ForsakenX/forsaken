@@ -391,6 +391,15 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
     int driver, mode, i;
     driver = *lpdriver; mode = *lpmode;
 
+
+	/* cannot use window in primary mode */
+	/* primary mode would be for a second monitor etc... */
+	if ( mode == D3DAPP_USEWINDOW && d3dappi.bIsPrimary )
+	{
+		D3DAppISetErrorString("Cannot render to a window when the DirectDraw device is not the primary.\n");
+		goto exit_with_error;
+	}
+
     /*
      * If I've been ask to choose a driver, choose one which is compatible
      * with the specified mode.
