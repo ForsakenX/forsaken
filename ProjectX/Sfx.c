@@ -1706,7 +1706,7 @@ BOOL SfxExists( uint16 sfx, char *name )
 	char *data_path_to_use[ 2 ];
 	int num_paths_to_try;
 	int i;
-	
+
 	GetSfxPathsToTry( sfx, &num_paths_to_try, data_path_to_use );
 
 	for ( i = 0; i < num_paths_to_try; i++ )
@@ -1730,7 +1730,6 @@ BOOL SfxExists( uint16 sfx, char *name )
 			return TRUE;
 		}
 	}
-
 	return FALSE;
 }
 
@@ -2560,16 +2559,17 @@ void GetFullBikeCompSfxPath( char *fullpath, int sfxnum, int variant, int total_
 
 void GetSfxPathsToTry( int sfx, int *num_paths_to_try, char **data_path_to_use )
 {
-	if ( Sfx_Filenames[ sfx ].Flags & SFX_Dynamic )
+	if ( data_path != "" )
+	{
+		*num_paths_to_try = 2;
+		data_path_to_use[ 0 ] = data_path;
+		data_path_to_use[ 1 ] = normdata_path;
+	}
+	else
 	{
 		*num_paths_to_try = 1;
-		data_path_to_use[ 0 ] = data_path;
-		return;
+		data_path_to_use[ 0 ] = normdata_path;
 	}
-
-	*num_paths_to_try = 2;
-	data_path_to_use[ 0 ] = data_path;
-	data_path_to_use[ 1 ] = normdata_path;
 }
 
 
