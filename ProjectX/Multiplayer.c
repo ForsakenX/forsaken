@@ -1158,7 +1158,7 @@ void GetServiceProviders( MENU *Menu )
 	static GUID last_service_provider;
 	LPVOID *ptr;
 	MENUITEM *item;
-	char sp_guidtext[ 256 ];
+	char *temp;
 
 	/* setup menu */
 	if ( Menu )
@@ -1194,20 +1194,17 @@ void GetServiceProviders( MENU *Menu )
 	ptr = (LPVOID) &DPSPGUID_TCPIP;
 
 	/* try to get last provider used */
-	size = sizeof( sp_guidtext );
-	if ( RegGet( "ServiceProvider", (LPBYTE)&sp_guidtext, &size ) == ERROR_SUCCESS )
+    temp = (char *) malloc ( 256 );
+	size = sizeof( temp );
+	if ( RegGet( "ServiceProvider", (LPBYTE)temp, &size ) == ERROR_SUCCESS )
 	{
 		/* convert the guid string from the registry into a GUID object */
-		if ( GUIDFromString( sp_guidtext, &last_service_provider ) != S_OK )
+		if ( GUIDFromString( temp, &last_service_provider ) != S_OK )
 			DebugPrintf("unable to convert session guid from string\n");
 		else
 			/* set to last used provider */
 			ptr = (LPVOID) &last_service_provider;
 	}
-
-	/* get the last used ip address */
-	size = sizeof( TCPAddress.text );
-	RegGet("TCPIP", (LPBYTE)&TCPAddress.text[0],&size);
 
 	/* create a direct play lobby object to query for service providers */	
 	DPlayCreateLobby();
@@ -1356,8 +1353,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	{
 		RegSetA( "ServiceProvider",  (LPBYTE)&sp_guidtext,  sizeof( sp_guidtext ) );
 	}
-
-    RegSetA("TCPIP", (CONST BYTE *)&TCPAddress.text[0], sizeof(TCPAddress.text));
 
 /* hack */
 	GetServiceProviderShortName();
