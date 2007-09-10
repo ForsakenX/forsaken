@@ -238,27 +238,56 @@ BOOL
 D3DAppIFilterDisplayModes(int driver)
 {
     int i;
+
+	/* supported depths */
     DWORD depths = d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth;
+
+	/* video memory of system */
     DWORD TotVidMem = D3DAppTotalVideoMemory();
+
 	/* for each display mode */
     for (i = 0; i < d3dappi.NumModes; i++) {
+
 		/* default deny */
         d3dappi.Mode[i].bThisDriverCanDo = FALSE;
+
+#ifdef SOFTWARE_ENABLE
+
+		if ( SoftwareVersion )
+		{
+			// dont allow modes over 640x480 in software mode
+			if ( d3dappi.Mode[i].w > 640 && d3dappi.Mode[i].h > 480 )
+				continue;
+
+			// dont allow modes over 16 bits in software mode
+			// hack to prevent colourkeying messing up
+			if( d3dappi.Mode[i].bpp > 16 )
+				continue;
+		}
+
+#endif
+
 		/* skip if does NOT support depth */
         if (!(D3DAppIBPPToDDBD(d3dappi.Mode[i].bpp) & depths))
             continue;
+
 		/* skip if not enough video memory */
         if (d3dappi.Driver[driver].bIsHardware && TotVidMem &&
             TotVidMem < (unsigned)3 * d3dappi.Mode[i].w * d3dappi.Mode[i].h *
                         d3dappi.Mode[i].bpp / 8)
             continue;
+
 		/* allow it */
         d3dappi.Mode[i].bThisDriverCanDo = TRUE;
             
     }
-    d3dappi.ThisMode.bThisDriverCanDo =
-                             d3dappi.Mode[d3dappi.CurrMode].bThisDriverCanDo;
+
+	//
+    d3dappi.ThisMode.bThisDriverCanDo = d3dappi.Mode[d3dappi.CurrMode].bThisDriverCanDo;
+
+	/* done */
     return TRUE;
+
 }
 
 /*
