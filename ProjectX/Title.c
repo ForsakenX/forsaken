@@ -14727,8 +14727,8 @@ void GetGamePrefs( void )
 			ResetKillsPerLevel = FALSE;
 
 	
-	if( RegGet( "MissileCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		MissileCameraEnable = 0;
+	if( RegGet( "MissileCameraEnable", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
+		MissileCameraEnable = 1;
 	else
 		MissileCameraEnable = temp;
 
@@ -21685,38 +21685,6 @@ void InitTitleMessaging( void )
 }
 
 #endif
-
-
-
-LPGUID	DeviceGuidPnt = NULL;
-GUID	DeviceGuid;
-
-void	GetDeviceGuid( void )
-{
-	DWORD size;
-
-	if ( !ghCondemnedKey )
-	{
-		RegOpenKeyEx(REGISTRY_ROOT_KEY,
-			REGISTRY_GAME_KEY,
-			0,
-			KEY_ALL_ACCESS,
-			&ghCondemnedKey
-			);
-	}
-	size = sizeof(GUID);
-	if( RegGet("DeviceGuid", (LPBYTE)&DeviceGuid, &size ) == ERROR_SUCCESS )
-	{
-
-
-	}
-	size = sizeof(LPGUID);
-
-	if( RegGet("DeviceGuidPnt", (LPBYTE)&DeviceGuidPnt, &size ) != ERROR_SUCCESS )
-	{
-		DeviceGuidPnt = NULL;
-	}
-}
 
 #ifdef MENU_FORMAT_DEBUG
 
