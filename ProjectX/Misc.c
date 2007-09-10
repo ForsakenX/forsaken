@@ -202,7 +202,7 @@ D3DAppIPickDriver(int* driver, DWORD depths)
 		/* prefer mono lighting over rgb */
 
 		/* if they are both hardware */
-        else if (d3dappi.Driver[i].bIsHardware == d3dappi.Driver[j].bIsHardware)
+		else if (d3dappi.Driver[i].bIsHardware == d3dappi.Driver[j].bIsHardware)
 
 			/* if current driver is based on mono lighting and last one was not */
             if (
@@ -325,11 +325,9 @@ D3DAppIPickDisplayMode(int *mode, DWORD depths)
             break;
     j = i;
 #endif
-#if 1
-    for (i = 0; i < d3dappi.NumModes; i++) {
-#else
-    for (; i < d3dappi.NumModes; i++) {
-#endif
+
+    for (i = 0; i < d3dappi.NumModes; i++)
+	{
         if (!(D3DAppIBPPToDDBD(d3dappi.Mode[i].bpp) & depths))
             continue;
 #if 1
@@ -359,8 +357,10 @@ D3DAppIPickDisplayMode(int *mode, DWORD depths)
 			}
 		}
 #else
-        if (d3dappi.Mode[i].w == default_width && d3dappi.Mode[i].h == default_height &&
-            d3dappi.Mode[i].bpp == default_bpp) {
+        if ( d3dappi.Mode[i].w   == default_width  &&
+			 d3dappi.Mode[i].h   == default_height &&
+             d3dappi.Mode[i].bpp == default_bpp )
+		{
 //        if (d3dappi.Mode[i].w == 320 && d3dappi.Mode[i].h == 200 &&
 //            d3dappi.Mode[i].bpp == 16) {
             j = i;
@@ -471,16 +471,11 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
         /*
          * If it's my choice, I prefer windowed over fullscreen
          */
-
-		/* if this is the first time then use fullscreen */
 		if ( d3dappi.bIsPrimary && !FirstTime )
 		{
 			/* if window depth is compatible with our driver */
-            if (
-				/* convert window depth to friendly format */
-				D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp) & 
-				  d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth
-			)
+            if (  D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp) & 
+				  d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth )
 			{
                 mode = D3DAPP_USEWINDOW;
                 goto ret_ok;
