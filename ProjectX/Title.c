@@ -12924,7 +12924,7 @@ void InitBikerName( char *name )
 	strncpy( biker_name, name, sizeof( biker_name ) );
 	biker_name[ sizeof( biker_name ) - 1 ] = 0;
 	sprintf( biker_config, "%s.cfg", name );
-    RegSetA("PlayerName", (CONST BYTE *)biker_name, sizeof(biker_name));
+    RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
 	SendGameMessage(MSG_NAME, 0, 0, 0, 0);
 }
 
@@ -12934,36 +12934,12 @@ void InitStartMenu( MENU *Menu )
 	char bname[256];
 	DWORD bname_size = sizeof( bname );
 
-	// ignore command-line CFG file option
-#if 0
-	char *bname, *fname;
-
-	if ( config_name )
-	{
-		for ( bname = biker_name , fname = config_name; fname && *fname; bname++, fname++ )
-		{
-			if ( *fname == '.' )
-				break;
-			*bname = *fname;
-		}
-		*bname = 0;
-		InitBikerName( biker_name );
-		biker_config[ sizeof( biker_config ) - 1 ] = 0;
-		config_name = NULL;
-	}
-#endif
-	if ( ghCondemnedKey && (RegGet("PlayerName", (LPBYTE)bname,&bname_size) == ERROR_SUCCESS))  
+	if ( ghCondemnedKey &&
+		(RegGet("PlayerName", (LPBYTE)bname,&bname_size) == ERROR_SUCCESS))  
 	{
 		InitBikerName( bname );
 	}
 
-
-#if 0 // this is now done in d3dmain.cpp
-	if ( ghCondemnedKey )
-	{
-		GetGamePrefs();
-	}
-#endif
 	read_config( player_config, biker_config );
 
 	if ( player_config->bike > ( BikeList.items - 1 ) )
@@ -14733,7 +14709,7 @@ void GetGamePrefs( void )
 		MissileCameraEnable = temp;
 
 	if( RegGet( "RearCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		RearCameraActive = 0;
+		RearCameraActive = 1;
 	else
 		RearCameraActive = temp;
 
@@ -14758,7 +14734,7 @@ void GetGamePrefs( void )
 		BiLinearFiltering = temp;
 
 	if( RegGet( "TriLinear", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		TriLinear = FALSE;
+		TriLinear = TRUE;
 	else
 		TriLinear = temp;
 
