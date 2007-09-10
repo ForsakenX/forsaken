@@ -1,19 +1,37 @@
-README-:
 
-If you extracted the files to a location other than C:\ProjectX then continue reading. Otherwise simply add the registry files to your registry by double clicking on them.
 
-You must edit registry2.reg and registry3.reg to correctly point to the folder where you extracted ProjectX before you add them to your registry.
+Default Install:
 
-At the moment they are set for C:\ProjectX.
+  To install to the default location simply click on the registry files.
 
-Note: each folder is delimited by "\\"
 
-For registry2.reg update:
+Custom Install:
 
-"CurrentDirectory"="C:\\ProjectX"
-"Path"="C:\\ProjectX"
+  If you would like to install to another location.
 
-For registry3.reg update:
+  Edit "app_paths.reg" and "direct_play.reg" and change the paths.
 
-"Path"="C:\\ProjectX\\"
-@="C:\\ProjectX\\ProjectX___Win32_Debug.exe"
+  At the moment they are set for "C:\\ProjectX".
+
+  [Re]Install them by double clicking them.
+
+
+Secondary Install:
+
+  No changes are required.
+
+  As long as the registry entries point to a valid installation.
+
+
+Secondary Install: (Developers)
+
+    There really is no need to worry about anything.
+
+    Unless you are developing an external DirectPlay lobby application.
+
+    Then you might want to create a full secondary install.
+
+    You must change the paths including the name of the exe and the GUID.
+
+    Note: You must change the GUID within the forsaken source as well.
+
