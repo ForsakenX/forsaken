@@ -1153,18 +1153,17 @@ void GetMultiplayerPrefs( void );
 
 void GetServiceProviders( MENU *Menu )
 {
+
 	DWORD size;
 	static GUID last_service_provider;
 	LPVOID *ptr;
 	MENUITEM *item;
 	char sp_guidtext[ 256 ];
 
+	/* setup menu */
 	if ( Menu )
-	{
 		for ( item = Menu->Item; item->x >= 0; item++ )
-		{
 			if ( item->FuncSelect == SelectQuit )
-			{
 				if ( QuickStart )
 				{
 					item->FuncDraw = DrawFlatMenuItem;
@@ -1174,59 +1173,52 @@ void GetServiceProviders( MENU *Menu )
 					item->FuncDraw = NULL;
 					item->highlightflags |= TEXTFLAG_Unselectable;
 				}
-			}
-		}
-	}
 
+	/* reset render state */
 	SetOurRenderStates( NULL );
 	
+	/* get the info of last game */
 	GetLastGameInfo();
-	ServiceProvidersList.items = 0;
 
-	ServiceProvidersList.top_item = 0;
+	/* default settings */
+	ServiceProvidersList.items			= 0;
+	ServiceProvidersList.top_item		= 0;
+	ServiceProvidersList.display_items	= 8;
+	ServiceProvidersList.selected_item	= 0;
+	ServiceProvidersList.FuncInfo		= NULL;
+
+	/* default not set */
 	ServiceProviderSet = FALSE;
 
-	if (CameraStatus != CAMERA_AtStart)
-		ServiceProvidersList.display_items = 8;
-	else
-		ServiceProvidersList.display_items = 8;
+	/* default use tcpip */
+	ptr = (LPVOID) &DPSPGUID_TCPIP;
 
-	ServiceProvidersList.FuncInfo = NULL;
+	/* try to get last provider used */
+	size = sizeof( sp_guidtext );
+	if ( RegGet( "ServiceProvider", (LPBYTE)&sp_guidtext, &size ) == ERROR_SUCCESS )
+	{
+		/* convert the guid string from the registry into a GUID object */
+		if ( GUIDFromString( sp_guidtext, &last_service_provider ) != S_OK )
+			DebugPrintf("unable to convert session guid from string\n");
+		else
+			/* set to last used provider */
+			ptr = (LPVOID) &last_service_provider;
+	}
 
+	/* get the last used ip address */
+	size = sizeof( TCPAddress.text );
+	RegGet("TCPIP", (LPBYTE)&TCPAddress.text[0],&size);
+
+	/* create a direct play lobby object to query for service providers */	
 	DPlayCreateLobby();
 
-	ptr = NULL;
-	if ( ghCondemnedKey )
-	{
-		if ( !bTCP )	// if we are not forcing TCP service provider...
-		{
-			size = sizeof( sp_guidtext );
-			if ( RegGet( "ServiceProvider", (LPBYTE)&sp_guidtext, &size ) == ERROR_SUCCESS)
-			{
-		 		// convert to GUID
-				if ( GUIDFromString( sp_guidtext, &last_service_provider ) != S_OK )
-				{
-					DebugPrintf("unable to convert session guid from string\n");
-				}else
-				{
-					ptr = (LPVOID) &last_service_provider;
-				}
-			}
-		}else
-		{
-			ptr = (LPVOID) &DPSPGUID_TCPIP;
-		}
-
-		if ( !bTCP )
-		{
-			size = sizeof( TCPAddress.text );
-			RegGet("TCPIP", (LPBYTE)&TCPAddress.text[0],&size);
-		}
-	}
-	ServiceProvidersList.selected_item = 0;
+	/* get a list of the supported providers */
 	DirectPlayEnumerate( EnumServiceProviders, ptr );
+
+	/* load up saved settings */
 	GetMultiplayerPrefs();
 	GetServerPrefs();
+
 }
 
 
