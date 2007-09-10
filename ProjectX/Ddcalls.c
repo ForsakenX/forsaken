@@ -351,6 +351,12 @@ static HRESULT
 CALLBACK EnumDisplayModesCallback(LPDDSURFACEDESC pddsd, LPVOID lpContext)
 {
 
+	// Don't add resolutions under 640x480 or under 16bit 
+    if( (pddsd->dwWidth  < 640) ||
+		(pddsd->dwHeight < 480) || 
+		(pddsd->ddpfPixelFormat.dwRGBBitCount < 16) )	
+			return DDENUMRET_OK;
+
 	/*
 	 * Save this mode at the end of the mode array and increment mode count
 	 */
