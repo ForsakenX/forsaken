@@ -205,7 +205,7 @@ extern "C" {
 
 #include	"title.h"
 #include	"stdwin.h"
- 
+#include	"d3dapp.h"
 #include	"malloc.h"
 #include	"Exechand.h" 
 #include	"DDSurfhand.h" 
@@ -222,6 +222,7 @@ extern CWmain(void);	// Main render loop on chris' stuff....
 extern	BOOL	SoftwareVersion;
 /*-------------------------------------------------------------------------*/
 #endif
+	extern BOOL FullScreen;
 	extern BOOL ZClearsOn;
 	extern BOOL AllowServer;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
@@ -657,6 +658,7 @@ CreateD3DApp(LPSTR lpCmdLine)
 	NoSplash = FALSE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
+	FullScreen = TRUE;
 
 	DPlayUpdateIntervalCmdLine = 0;
 
@@ -685,7 +687,9 @@ CreateD3DApp(LPSTR lpCmdLine)
     option = strtok(cmdlineptr, " -+");
     while(option != NULL )   {
 
-		if (!_stricmp(option,"DontColourKey")) {
+		if (!_stricmp(option,"NoFullScreen")){
+			FullScreen = FALSE;
+		} else if (!_stricmp(option,"DontColourKey")) {
 			DontColourKey = TRUE;
 		} else if (!_stricmp(option, "RecordDemoToRam")) {
 			RecordDemoToRam = TRUE;
