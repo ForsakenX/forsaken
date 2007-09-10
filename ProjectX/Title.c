@@ -4480,7 +4480,7 @@ MENUITEM MENU_ITEM_JoinMultiplayer =
 
 
 MENU	MENU_NEW_ChooseConnectionToJoin = {
-	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
+	"", GetServiceProviders, ExitProviderChosen, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToJoin0/*"start"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConnectionToJoin, DrawFlatMenuItem, NULL, 0  },
 		{ 5, 20, 200, 30, 0, LT_MENU_NEW_ChooseConnectionToJoin1/*"Choose connection type:"*/, FONT_Small, TEXTFLAG_CentreY, &ServiceProvidersList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },

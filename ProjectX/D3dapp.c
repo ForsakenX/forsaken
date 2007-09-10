@@ -258,8 +258,9 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
         d3dappi.bOnlySystemMemory = TRUE;
         d3dappi.bOnlyEmulation = TRUE;
     }
-    if (flags & D3DAPP_ONLYD3DEMULATION)
+	if (flags & D3DAPP_ONLYD3DEMULATION){
         d3dappi.bOnlyEmulation = TRUE;
+	}
     /* 
      * Create DirectDraw, remember the Windows display mode and enumerate the
      * display modes
@@ -287,6 +288,7 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
      * prefered, but a fullscreen mode may be selected.  Set the cooperative
      * level and create the front and back buffers for this mode.
      */
+/* here */
     driver = D3DAPP_YOUDECIDE;
 	mode   = FullScreen ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
     ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));

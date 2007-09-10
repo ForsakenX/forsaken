@@ -1158,7 +1158,7 @@ void GetServiceProviders( MENU *Menu )
 	static GUID last_service_provider;
 	LPVOID *ptr;
 	MENUITEM *item;
-	char *temp;
+	char temp[256];
 
 	/* setup menu */
 	if ( Menu )
@@ -1194,7 +1194,6 @@ void GetServiceProviders( MENU *Menu )
 	ptr = (LPVOID) &DPSPGUID_TCPIP;
 
 	/* try to get last provider used */
-    temp = (char *) malloc ( 256 );
 	size = sizeof( temp );
 	if ( RegGet( "ServiceProvider", (LPBYTE)temp, &size ) == ERROR_SUCCESS )
 	{
