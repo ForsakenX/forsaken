@@ -227,7 +227,6 @@ BOOL bD3DAppInitialized;       /* Is D3DApp initialized? */
 BOOL bPrimaryPalettized;       /* Is the front buffer palettized? */
 BOOL bPaletteActivate;         /* Is the front buffer's palette valid? */
 BOOL bIgnoreWM_SIZE;           /* Ignore this WM_SIZE messages */
-BOOL FullScreen;			   /* Use fullscreen ? */
 SIZE szLastClient;             /* Dimensions of the last window */
 SIZE szBuffers;                /* Current buffer dimensions, not necessarily
                                   the same as the client window */
@@ -290,7 +289,7 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
      */
 /* here */
     driver = D3DAPP_YOUDECIDE;
-	mode   = FullScreen ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
+	mode   = d3dappi.bFullscreen ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
     ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
     D3DAppIGetClientWin(hwnd);
     if (mode == D3DAPP_USEWINDOW) {

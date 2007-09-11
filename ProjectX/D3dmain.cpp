@@ -214,6 +214,7 @@ extern "C" {
 #include	"splash.h"
 #include	"XMem.h" 
 #include	"registry.h"
+#include	"d3dapp.h"
 
 #ifdef SOFTWARE_ENABLE
 /*---------------------------------------------------------------------------
@@ -224,13 +225,14 @@ extern	BOOL	SoftwareVersion;
 /*-------------------------------------------------------------------------*/
 #endif
 
+	extern D3DAppInfo d3dappi;
+
 	extern BOOL InitRegistry();
 	extern BOOL CloseRegistry();
 	extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 	extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 	extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
-	extern BOOL FullScreen;
 	extern BOOL ZClearsOn;
 	extern BOOL AllowServer;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
@@ -661,7 +663,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 	NoSplash = FALSE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
-	FullScreen = TRUE;
 
 	DPlayUpdateIntervalCmdLine = 0;
 
@@ -671,7 +672,7 @@ CreateD3DApp(LPSTR lpCmdLine)
     while(option != NULL )   {
 
 		if (!_stricmp(option,"NoFullScreen")){
-			FullScreen = FALSE;
+			d3dappi.bFullscreen = FALSE;
 		} else if (!_stricmp(option,"DontColourKey")) {
 			DontColourKey = TRUE;
 		} else if (!_stricmp(option, "RecordDemoToRam")) {
