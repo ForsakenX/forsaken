@@ -13987,21 +13987,18 @@ void MakeModeList( MENU *Menu )
 		{
 			if( ModeList.items < MAXLISTITEMS )
 			{
-				if( d3dapp->Mode[i].bpp >= 32  )
-				{
-					WhichMode[ModeList.items] = i;
-					sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
-						d3dapp->Mode[i].w , d3dapp->Mode[i].h , d3dapp->Mode[i].bpp );
+				WhichMode[ModeList.items] = i;
+				sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
+					d3dapp->Mode[i].w , d3dapp->Mode[i].h , d3dapp->Mode[i].bpp );
 
-					if( (d3dapp->Mode[i].w == d3dapp->ThisMode.w) &&				
-						(d3dapp->Mode[i].h == d3dapp->ThisMode.h) &&
-						(d3dapp->Mode[i].bpp == d3dapp->ThisMode.bpp) )
-					{
-						ModeList.selected_item = ModeList.items;
-					}
-					
-					ModeList.items++;
+				if( (d3dapp->Mode[i].w == d3dapp->ThisMode.w) &&				
+					(d3dapp->Mode[i].h == d3dapp->ThisMode.h) &&
+					(d3dapp->Mode[i].bpp == d3dapp->ThisMode.bpp) )
+				{
+					ModeList.selected_item = ModeList.items;
 				}
+				
+				ModeList.items++;
 			}
 		}
 	}
