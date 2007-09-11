@@ -53,7 +53,7 @@ BOOL InitRegistry(void)
 {
 	int i = 1;
 	i = (InstallDirectPlayRegistry()) ? 1 : 0;
-	i = ((i)&&OpenOrCreateRegistry()) ? 1 : 0;
+	i = (OpenOrCreateRegistry()&&(i)) ? 1 : 0;
 	return (i) ? TRUE : FALSE;
 }
 
@@ -101,7 +101,7 @@ BOOL OpenOrCreateRegistry(void)
 	// successfull
 	if ( result == ERROR_SUCCESS )
 	{
-		/*
+#ifdef REGISTRY_DEBUG
 		if ( disposition == REG_CREATED_NEW_KEY )
 		{
 			Msg("Registry Key Created");
@@ -115,7 +115,7 @@ BOOL OpenOrCreateRegistry(void)
 		{
 			Msg("Unknown Disposition");
 		}
-		*/
+#endif
 	}
 	// failed
 	else
@@ -149,7 +149,7 @@ BOOL OpenOrCreateRegistry(void)
 
 /**********************************************\
 |
-| InstallRegistry
+| InstallDirectPlayRegistry
 |   Initializes DirectPlay registry entries.
 |   Uses the current exe and path used.
 |
@@ -209,7 +209,7 @@ BOOL InstallDirectPlayRegistry( void )
 
 	// successfully opened/created registry key
 
-	/*
+#ifdef REGISTRY_DEBUG
 	if ( disposition == REG_CREATED_NEW_KEY )
 	{
 		Msg("Registry Key Created");
@@ -223,7 +223,7 @@ BOOL InstallDirectPlayRegistry( void )
 	{
 		Msg("Unknown Disposition");
 	}
-	*/
+#endif
 
 	// set the guid
 	StringFromGUID( &PROJX_GUID, (LPSTR)&buf );
