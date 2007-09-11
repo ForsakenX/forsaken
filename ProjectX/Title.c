@@ -2098,7 +2098,6 @@ void *mem;
 #define DEMO_MENUS
 
 // registry.c
-extern HKEY ghCondemnedKey;
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
@@ -7631,21 +7630,12 @@ BOOL DisplayTitle(void)
 
 		AttractModeCountDown = ATTRACTMODECOUNTVALUE;
 		
-	// make a version number for this game
+		// make a version number for this game
 		CreateVersion();
-	    // open/create Condemned registry key 
-		if ( !ghCondemnedKey )
-		{
-			RegOpenKeyEx(REGISTRY_ROOT_KEY,
-				REGISTRY_GAME_KEY,
-				0,
-				KEY_ALL_ACCESS,
-				&ghCondemnedKey
-				);
-			// init all levels to find out if any are on CD
-			InitLevels( SINGLEPLAYER_LEVELS );
-			InitLevels( MULTIPLAYER_LEVELS );
-		}
+
+		InitLevels( SINGLEPLAYER_LEVELS );
+		InitLevels( MULTIPLAYER_LEVELS );
+
 		TitleOnceOnly = FALSE;
 		WhoIAm = (uint8) -1;
 
@@ -12903,11 +12893,8 @@ void InitStartMenu( MENU *Menu )
 	char bname[256];
 	DWORD bname_size = sizeof( bname );
 
-	if ( ghCondemnedKey &&
-		(RegGet("PlayerName", (LPBYTE)bname,&bname_size) == ERROR_SUCCESS))  
-	{
+	if ( RegGet("PlayerName", (LPBYTE)bname,&bname_size) == ERROR_SUCCESS )
 		InitBikerName( bname );
-	}
 
 	read_config( player_config, biker_config );
 
@@ -14649,20 +14636,7 @@ void GetGamePrefs( void )
 	DWORD size;
 	DWORD temp;
 
-	if ( !ghCondemnedKey )
-	{
-		RegOpenKeyEx(REGISTRY_ROOT_KEY,
-			REGISTRY_GAME_KEY,
-			0,
-			KEY_ALL_ACCESS,
-			&ghCondemnedKey
-			);
-	}
-	if ( !ghCondemnedKey )
-		return;
-
 	size = sizeof(temp);
-
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
 	else
@@ -14671,7 +14645,6 @@ void GetGamePrefs( void )
 		else
 			ResetKillsPerLevel = FALSE;
 
-	
 	if( RegGet( "MissileCameraEnable", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		MissileCameraEnable = 1;
 	else
@@ -14969,9 +14942,6 @@ void GetServerPrefs( void )
 	DWORD size;
 	DWORD temp;
 
-	if ( !ghCondemnedKey )
-		return;
-
 	size = sizeof(temp);
 
 	MaxServerPlayersSlider.value = ( RegGet( "MaxServerPlayers", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
@@ -15001,9 +14971,6 @@ void GetMultiplayerPrefs( void )
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 	char file[ 256 ];
 	int i;
-
-	if ( !ghCondemnedKey )
-		return;
 
 	size = sizeof(temp);
 

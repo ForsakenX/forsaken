@@ -891,7 +891,6 @@ extern BOOL	BikeExhausts;
 extern int32 ColPerspective;
 
 // registry.c
-extern HKEY ghCondemnedKey;
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
@@ -3416,7 +3415,7 @@ static int DirectPlayOK( LPGUID lpServiceProvider_guid )
 		return 1;
 	}
 
-	if ( RegOpenKeyEx( REGISTRY_ROOT_KEY, REGISTRY_DIRECTPLAY_SERVICEPROVIDERS_KEY,
+	if ( RegOpenKeyEx( HKEY_LOCAL_MACHINE, REGISTRY_DIRECTPLAY_SERVICEPROVIDERS_KEY,
 			0, KEY_ENUMERATE_SUB_KEYS, &DP_ServiceProviders )
 		== ERROR_SUCCESS )
 	{

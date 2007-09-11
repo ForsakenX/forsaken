@@ -12364,87 +12364,13 @@ BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   return TRUE;
 }
 
-#ifdef LOBBY_DEBUG
-
-#define REGISTRY_LOBBY_KEY    (TEXT("Software\\Microsoft\\DirectPlay\\Applications\\Forsaken"))
-
-#define LOBBY_GUID        "{27E96003-B1C3-11d1-B00C-080009C042E7}"
-//#define LOBBY_COMMANDLINE   "-xmen -LogFile -NoAVI"
-
-
-HKEY ghLobbyKey = NULL;     // lobby registry key handle
-static DWORD                    gdwLobbyDisp;        // key created or opened
-
-static LONG RegSetLobby(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
-{
-    return RegSetValueEx(ghLobbyKey, lptszName, 0, REG_SZ, lpData, dwSize);
-}
-
-void SetLobbyRegistrySettings( void )
-{
-  char buf[ 256 ];
-  char *appname;
-  int i;
-  
-  // set up registry key
-  if ( !ghLobbyKey )
-  {
-#ifdef FINAL_RELEASE
-    RegOpenKeyEx(REGISTRY_ROOT_KEY,
-      REGISTRY_LOBBY_KEY,
-      0,
-      KEY_ALL_ACCESS,
-      &ghLobbyKey
-      );
-#else
-    RegCreateKeyEx(REGISTRY_ROOT_KEY,
-      REGISTRY_LOBBY_KEY,
-      0,
-      NULL,                   
-      REG_OPTION_NON_VOLATILE,
-      KEY_ALL_ACCESS,
-      NULL,
-      &ghLobbyKey,
-      &gdwLobbyDisp
-      );
-#endif
-  }
-
-  // set individual items 
-  strcpy( buf, LOBBY_GUID );
-    RegSetLobby("Guid", (CONST BYTE *)buf, sizeof( char ) * strlen( buf ) );
-
-  buf[ 0 ] = 0;
-  for ( i = 1; i < __argc; i++ )
-  {
-    strcat( buf, __argv[ i ] );
-    strcat( buf, " " );
-  }
-
-//  strcpy( buf, LOBBY_COMMANDLINE );
-    RegSetLobby("CommandLine", (CONST BYTE *)buf, sizeof( char ) * strlen( buf ) );
-
-  _getcwd( buf, 256 );
-    RegSetLobby("CurrentDirectory", (CONST BYTE *)buf, sizeof( char ) * strlen( buf ) );
-  
-  strcpy( buf, __argv[ 0 ] );
-  appname = strrchr( buf, 92 );
-  if( appname )
-  {
-    *appname = 0;
-      RegSetLobby("Path", (CONST BYTE *)buf, sizeof( char ) * strlen( buf ) );
-    RegSetLobby("File", (CONST BYTE *)&appname[ 1 ], sizeof( char ) * strlen( &appname[ 1 ] ) );
-  }
-}
-
-#endif
-
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure : Once only init Stuff
   Input   : Nothing
   Output    : Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 void  OnceOnlyInit( void )
 {
   DWORD dwPlatform, dwVersion;

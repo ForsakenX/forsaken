@@ -213,6 +213,7 @@ extern "C" {
 #include	"file.h" 
 #include	"splash.h"
 #include	"XMem.h" 
+#include	"registry.h"
 
 #ifdef SOFTWARE_ENABLE
 /*---------------------------------------------------------------------------
@@ -222,15 +223,18 @@ extern CWmain(void);	// Main render loop on chris' stuff....
 extern	BOOL	SoftwareVersion;
 /*-------------------------------------------------------------------------*/
 #endif
+
+	extern BOOL InitRegistry();
+	extern BOOL CloseRegistry();
+	extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
+	extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+	extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+
 	extern BOOL FullScreen;
 	extern BOOL ZClearsOn;
 	extern BOOL AllowServer;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern BOOL CheckDirectPlayVersion;
-	extern HKEY ghCondemnedKey;     // Condemned registry key handle
-#ifdef LOBBY_DEBUG
-	extern HKEY ghLobbyKey;     // lobby registry key handle
-#endif
 	extern	int DPlayUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
 	extern int ScreenWidth;
@@ -313,8 +317,6 @@ void ShowSplashScreen( int num );
 void RemoveDynamicSfx( void );
 void FillStatusTab( void );
 
-extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
-
 HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 
 }
@@ -326,8 +328,6 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 D3DAppInfo* d3dapp;         /* Pointer to read only collection of DD and D3D
                                objects maintained by D3DApp */
 d3dmainglobals myglobs;     /* collection of global variables */
-
-HKEY ghLobbyKey = NULL;     // lobby registry key handle
 
 static UINT CancelAutoPlayMessage;
 
@@ -377,6 +377,9 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 	UINT	param1;
 	UINT	param2;
 
+	// Initialize registry
+	InitRegistry();
+
 	// sets the minimum amount of memory allocated froma single malloc.....
 	//_amblksiz = 1024;
 
@@ -396,6 +399,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 	hr = CoInitialize(NULL);
 	if FAILED(hr)
 		goto FAILURE;
+
 	/*
      * Create the window and initialize all objects needed to begin rendering
      */
@@ -485,18 +489,18 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
                 myglobs.bDrawAFrame = FALSE;
         }
     }
+
 	ClipCursor( NULL );
 	ReallyShowCursor( TRUE );
-	if ( ghCondemnedKey )
-		RegCloseKey( ghCondemnedKey );
-#ifdef LOBBY_DEBUG
-	if ( ghLobbyKey )
-		RegCloseKey( ghLobbyKey );
-#endif
 
 FAILURE:
+
 	// Uninitialize the COM library
 	CoUninitialize();
+
+	// close up the registry 
+	CloseRegistry();
+
 #ifdef DEBUG_ON
 	DebugMathErrors();
 	if ( UnMallocedBlocks() )
@@ -662,26 +666,6 @@ CreateD3DApp(LPSTR lpCmdLine)
 	DPlayUpdateIntervalCmdLine = 0;
 
 	cmdlineptr = lpCmdLine;
-
-	// get around dplay bug of not propagating command line when lobby launched
-	// if app was launched from launcher, -xmen is always specified and so command line cannot be empty
-	if ( !lpCmdLine || !lpCmdLine[ 0 ] )
-	{
-		DWORD dwType;
-		DWORD dwDataSize = 256;
-		
-		// get command line from registery...
-
-		// open key...
-		if ( RegOpenKeyEx(REGISTRY_ROOT_KEY, REGISTRY_LOBBY_KEY, 0, /*KEY_ALL_ACCESS*/KEY_QUERY_VALUE, &ghLobbyKey	) == ERROR_SUCCESS )
-		{
-	    	// get command line...
-			if ( RegQueryValueEx(ghLobbyKey, "CommandLine", NULL, &dwType, ( unsigned char * )tempcmdline, &dwDataSize) == ERROR_SUCCESS )
-			{
-				cmdlineptr = tempcmdline;
-			}
-		}
-	}
 
     option = strtok(cmdlineptr, " -+");
     while(option != NULL )   {
@@ -890,9 +874,11 @@ CreateD3DApp(LPSTR lpCmdLine)
 	}
 	if ( !default_bpp )
 		default_bpp = 16;
+
     /*
      * Set the flags to pass to the D3DApp creation based on command line
      */
+
     flags = ((bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0) | 
             ((bOnlyEmulation) ? (D3DAPP_ONLYD3DEMULATION |
                                  D3DAPP_ONLYDDEMULATION) : 0);
@@ -914,14 +900,17 @@ CreateD3DApp(LPSTR lpCmdLine)
      * AfterDeviceCreated callback function is called by D3DApp to create the
      * viewport and the example's execute buffers.
      */
+
     if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, AfterDeviceCreated,
                               NULL, BeforeDeviceDestroyed, NULL, &d3dapp)) {
         ReportD3DAppError();
         return FALSE;
     }
+
     /*
      * Add the the list of display modes D3DApp found to the mode menu
      */
+
     hmenu = GetSubMenu(GetMenu(myglobs.hWndMain), 4);
     for (i = 0; i < d3dapp->NumModes; i++) {
         char ach[80];
@@ -929,9 +918,11 @@ CreateD3DApp(LPSTR lpCmdLine)
                  d3dapp->Mode[i].bpp);
         AppendMenu(hmenu, MF_STRING, MENU_FIRST_MODE+i, ach);
     }
+
     /*
      * Add the list of D3D drivers D3DApp foudn to the file menu
      */
+
     hmenu = GetSubMenu(GetSubMenu(GetMenu(myglobs.hWndMain), 0),6);
     for (i = 0; i < d3dapp->NumDrivers; i++) {
         InsertMenu(hmenu, 6 + i, MF_BYPOSITION | MF_STRING,
@@ -943,10 +934,12 @@ CreateD3DApp(LPSTR lpCmdLine)
      * Allow the sample to override the default render state and other
      * settings
      */
+
     if (!D3DAppGetRenderState(&defaults.rs)) {
         ReportD3DAppError();
         return FALSE;
     }
+
     strcpy(defaults.Name, "D3D ProjectX Demo");
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
@@ -954,9 +947,11 @@ CreateD3DApp(LPSTR lpCmdLine)
     OverrideDefaults(&defaults);
     myglobs.bClearsOn = defaults.bClearsOn;
     myglobs.bResizingDisabled = defaults.bResizingDisabled;
+
     /*
      * Apply any changes to the render state
      */
+
     memcpy(&myglobs.rstate, &defaults.rs, sizeof(D3DAppRenderState));
     if (!D3DAppSetRenderState(&myglobs.rstate)) {
         ReportD3DAppError();
@@ -967,6 +962,7 @@ CreateD3DApp(LPSTR lpCmdLine)
 	SetWindowText(myglobs.hWndMain, defaults.Name);
 
 	CancelAutoPlayMessage = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
+
 #ifndef FINAL_RELEASE
 	DebugPrintf( "CancelAutoPlayMessage=0x%08X\n", CancelAutoPlayMessage );
 #endif

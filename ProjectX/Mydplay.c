@@ -1881,9 +1881,12 @@ extern SLIDER	FSBCompensation;
 #define FSB_COMPENSATION ((LONGLONG)FSBCompensation.value)
 
 
-extern int FontHeight;
-extern HKEY ghCondemnedKey;
+// registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
+extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
+
+extern int FontHeight;
 extern SLIDER ServerTimeoutSlider;
 extern SLIDER	MaxServerPlayersSlider;
 extern LIST	SessionsList;
@@ -10885,21 +10888,12 @@ BOOL AutoJoinSession( void )
 
 	if ( !SessionGuidExists )
 	{
-		// get session GUID from reg
-		if ( ghCondemnedKey )
+		size = sizeof( session_guidtext );
+		if ( RegGet( "SessionGuid", (LPBYTE)&session_guidtext, &size ) != ERROR_SUCCESS)
 		{
-			size = sizeof( session_guidtext );
-			if ( RegGet( "SessionGuid", (LPBYTE)&session_guidtext, &size ) != ERROR_SUCCESS)
-			{
-				DebugPrintf("unable to open reg key 'SessionGuid' ");
-				return FALSE;
-			}
-		}else
-		{
-			DebugPrintf("no forsaken registery entries\n");
+			DebugPrintf("unable to open reg key 'SessionGuid' ");
 			return FALSE;
 		}
-
 		if ( GUIDFromString( session_guidtext, &autojoin_session_guid ) != S_OK )
 		{
 			DebugPrintf("unable to convert session guid from string\n");
