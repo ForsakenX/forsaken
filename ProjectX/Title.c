@@ -3593,9 +3593,8 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_MoreMultiplayerOptions0/*"Multiplayer options"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 
-		{ 10, 15, 120, 22, 0, LT_MENU_NEW_MoreMultiplayerOptions3a/*"server collisions"*/, FONT_Small, TEXTFLAG_CentreY, &ColPerspective, (void *)COLPERS_Server, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 22, 120, 29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a/*"lag tolerance on"*/, FONT_Small, TEXTFLAG_CentreY, &ColPerspective, (void *)COLPERS_Forsaken, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 29, 120, 36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a/*"lag tolerance off"*/, FONT_Small, TEXTFLAG_CentreY, &ColPerspective, (void *)COLPERS_Descent, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+		{ 10, 22, 120, 29, 0, "Lag Tolerance", FONT_Small, TEXTFLAG_CentreY,
+		&ColPerspective, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
 
 		{ 10, 44, 100, 51, 0, LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/, FONT_Small, TEXTFLAG_CentreY, &UseShortPackets, ShortPacketsSelected, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
 		{ 10, 51, 100, 58, 0, LT_MENU_NEW_MoreMultiplayerOptions3/*"packet grouping"*/, FONT_Small, TEXTFLAG_CentreY, &BigPackets, BigPacketsSelected, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
@@ -14634,6 +14633,7 @@ void GetGamePrefs( void )
 	DWORD temp;
 
 	size = sizeof(temp);
+
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
 	else
@@ -14811,7 +14811,7 @@ void GetGamePrefs( void )
 	if ( !AllowServer )
 	{
 		if( RegGet( "AllowServer", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-			AllowServer = FALSE;
+			AllowServer = TRUE;
 		else
 			AllowServer = temp;
 	}
@@ -14971,6 +14971,9 @@ void GetMultiplayerPrefs( void )
 
 	size = sizeof(temp);
 
+	if( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		ColPerspective = ((temp) ? 1 : 0);
+
 	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
 
@@ -15115,6 +15118,8 @@ void SetMultiplayerPrefs( void )
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 	char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
 
+	temp = ColPerspective;
+	RegSet( "ColPerspective", (LPBYTE)&temp , sizeof(temp));
 	temp = MyBrightShips;
 	RegSet( "BrightShips",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = BikeExhausts;
@@ -15139,13 +15144,6 @@ void SetMultiplayerPrefs( void )
 	}
 	temp = GameType;
 	RegSet( "GameType", (LPBYTE)&temp, sizeof( temp ) );
-
-	temp = ColPerspective;
-	if ( IsServerGame )
-		RegSet( "LagToleranceServer", (LPBYTE)&temp, sizeof( temp ) );
-	else
-		RegSet( "LagTolerancePeerPeer", (LPBYTE)&temp, sizeof( temp ) );
-
 	temp =ShowPing;
 	RegSet( "ShowPing", (LPBYTE)&temp, sizeof( temp ) );
 	temp = PingFreqSlider.value;
