@@ -3556,31 +3556,42 @@ MENU	MENU_NEW_SelectLevel = {
 
 MENUITEM SlowLevelSelectItem = { 0, 0, 0, 0, 0, "", 0, 0, NULL, &MENU_NEW_SelectLevel, NULL, NULL, NULL, 0 };
 
+MENU	MENU_NEW_ValidPickups_Second_Page = {
+	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
+	{
+		{  0,   0, 200, 20, 0, LT_MENU_NEW_ValidPickups0/*"allowed pickups"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{ 10,  20, 120, 28, 0, LT_MENU_NEW_ValidPickups15/*"invulnerability"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Inv ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  28, 120, 36, 0, LT_MENU_NEW_ValidPickups16/*"nitro"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Nitro ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  36, 120, 44, 0, LT_MENU_NEW_ValidPickups17/*"stealth mantle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mantle ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  44, 120, 52, 0, LT_MENU_NEW_ValidPickups18/*"orbit pulsar"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Orb ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120, 60, 0, LT_MENU_NEW_ValidPickups19/*"golden power pod"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_GoldenPowerPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		
+		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+	}
+};
+
 MENU	MENU_NEW_ValidPickups = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ValidPickups0/*"allowed pickups"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 20, 120, 28, 0, LT_MENU_NEW_ValidPickups1/*"trojax"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Trojax ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 28, 120, 36, 0, LT_MENU_NEW_ValidPickups2/*"pyrolite"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Pyrolite ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 36, 120, 44, 0, LT_MENU_NEW_ValidPickups3/*"transpulse"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Transpulse ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 44, 120, 52, 0, LT_MENU_NEW_ValidPickups4/*"suss gun"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_SussGun ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 52, 120, 60, 0, LT_MENU_NEW_ValidPickups5/*laser*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Laser ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 60, 120, 68, 0, LT_MENU_NEW_ValidPickups6/*mug*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mug ], &PickupValid[ PICKUP_Mugs ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 68, 120, 76, 0, LT_MENU_NEW_ValidPickups7/*"solaris"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_HeatseakerPickup ], &PickupValid[ PICKUP_Heatseaker ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 76, 120, 84, 0, LT_MENU_NEW_ValidPickups8/*"scatter"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Scatter ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 84, 120, 92, 0, LT_MENU_NEW_ValidPickups9/*"gravgon"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Gravgon ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 92, 120, 100, 0, LT_MENU_NEW_ValidPickups10/*"mfrl"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Launcher ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0/*"allowed pickups"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{ 10,  20, 120,  28, 0, LT_MENU_NEW_ValidPickups1/*"trojax"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Trojax ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  28, 120,  36, 0, LT_MENU_NEW_ValidPickups2/*"pyrolite"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Pyrolite ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  36, 120,  44, 0, LT_MENU_NEW_ValidPickups3/*"transpulse"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Transpulse ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups4/*"suss gun"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_SussGun ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups5/*laser*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Laser ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups6/*mug*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mug ], &PickupValid[ PICKUP_Mugs ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups7/*"solaris"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_HeatseakerPickup ], &PickupValid[ PICKUP_Heatseaker ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups8/*"scatter"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Scatter ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups9/*"gravgon"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Gravgon ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups10/*"mfrl"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Launcher ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
 		{ 10, 100, 120, 108, 0, LT_MENU_NEW_ValidPickups11/*"titan"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_TitanStar ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups12/*"purge mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PurgePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups13/*"pine mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PinePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups14/*"quantum mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_QuantumPickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups15/*"invulnerability"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Inv ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups16/*"nitro"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Nitro ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups17/*"stealth mantle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mantle ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 156, 120, 164, 0, LT_MENU_NEW_ValidPickups18/*"orbit pulsar"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Orb ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 164, 120, 172, 0, LT_MENU_NEW_ValidPickups19/*"golden power pod"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_GoldenPowerPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 172, 120, 180, 0, LT_MENU_NEW_ValidPickups20/*"thief missle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Thief ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-
+		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups20/*"thief missle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Thief ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups12/*"purge mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PurgePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups13/*"pine mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PinePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups14/*"quantum mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_QuantumPickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups21/*"spider mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_SpiderPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 156, 120, 164, 0, LT_MENU_NEW_MoreMultiplayerOptions22/*"next page"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ValidPickups_Second_Page, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
+		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -3967,11 +3978,13 @@ MENU	MENU_NEW_SecondaryWeaponKeys = {
 		VDUKDEF( 3, 66, 89, 74, LT_MENU_NEW_SecondaryWeaponKeys6 /*"gravgon missile"*/, KDselect_secondary[ GRAVGONMISSILE ] ),
 		VDUKDEF( 3, 74, 89, 82, LT_MENU_NEW_SecondaryWeaponKeys7 /*"mfrl"*/, KDselect_secondary[ MULTIPLEMISSILE ] ),
 		VDUKDEF( 3, 82, 89, 90, LT_MENU_NEW_SecondaryWeaponKeys8 /*"Titan Missile"*/, KDselect_secondary[ TITANSTARMISSILE ] ),
-
-		VDUKDEF( 3, 98, 89, 106, LT_MENU_NEW_SecondaryWeaponKeys9 /*"purge mine"*/, KDselect_secondary[ PURGEMINE ] ),
+		VDUKDEF( 3, 90, 89, 98, LT_MENU_NEW_SecondaryWeaponKeys29 /*"Thief Missile"*/, KDselect_secondary[ THIEFMISSILE ] ),
+		
+		VDUKDEF( 3,  98, 89, 106, LT_MENU_NEW_SecondaryWeaponKeys9 /*"purge mine"*/, KDselect_secondary[ PURGEMINE ] ),
 		VDUKDEF( 3, 106, 89, 114, LT_MENU_NEW_SecondaryWeaponKeys10 /*"pine mine"*/, KDselect_secondary[ PINEMINE ] ),
 		VDUKDEF( 3, 114, 89, 122, LT_MENU_NEW_SecondaryWeaponKeys11 /*"quantum mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
-		
+		VDUKDEF( 3, 122, 89, 130, LT_MENU_NEW_SecondaryWeaponKeys30 /*"spider mine"*/, KDselect_secondary[ SPIDERMINE ] ),
+
 		VDUKDEF( 3, 136, 89, 144, LT_MENU_NEW_SecondaryWeaponKeys12 /*"Next weapon"*/, KDselect_next_secondary ),
 		VDUKDEF( 3, 144, 89, 152, LT_MENU_NEW_SecondaryWeaponKeys13 /*"Prev weapon"*/, KDselect_prev_secondary ),
 
@@ -3986,11 +3999,13 @@ MENU	MENU_NEW_SecondaryWeaponKeys = {
 		VDUKEYDEF( 3, 66, 89, 74, LT_MENU_NEW_SecondaryWeaponKeys20 /*"gravgon missile:"*/, (void *)&Config.select_secondary[ GRAVGONMISSILE ] ),
 		VDUKEYDEF( 3, 74, 89, 82, LT_MENU_NEW_SecondaryWeaponKeys21 /*"mfrl:"*/, (void *)&Config.select_secondary[ MULTIPLEMISSILE ] ),
 		VDUKEYDEF( 3, 82, 89, 90, LT_MENU_NEW_SecondaryWeaponKeys22 /*"Titan Missile:"*/, (void *)&Config.select_secondary[ TITANSTARMISSILE ] ),
-
+		VDUKEYDEF( 3, 90, 89, 98, LT_MENU_NEW_SecondaryWeaponKeys29 /*"Thief Missile"*/, (void *)&Config.select_secondary[ THIEFMISSILE ] ),
+		
 		VDUKEYDEF( 3, 98, 89, 106, LT_MENU_NEW_SecondaryWeaponKeys23 /*"purge mine:"*/, (void *)&Config.select_secondary[ PURGEMINE ] ),
 		VDUKEYDEF( 3, 106, 89, 114, LT_MENU_NEW_SecondaryWeaponKeys24 /*"pine mine:"*/, (void *)&Config.select_secondary[ PINEMINE ] ),
 		VDUKEYDEF( 3, 114, 89, 122, LT_MENU_NEW_SecondaryWeaponKeys25 /*"quantum mine:"*/, (void *)&Config.select_secondary[ QUANTUMMINE ] ),
-		
+		VDUKEYDEF( 3, 122, 89, 130, LT_MENU_NEW_SecondaryWeaponKeys30 /*"spider mine"*/, (void *)&Config.select_secondary[ SPIDERMINE ] ),
+
 		VDUKEYDEF( 3, 136, 89, 144, LT_MENU_NEW_SecondaryWeaponKeys26 /*"Next weapon:"*/, (void *)&Config.select_next_secondary ),
 		VDUKEYDEF( 3, 144, 89, 152, LT_MENU_NEW_SecondaryWeaponKeys27 /*"Prev weapon:"*/, (void *)&Config.select_prev_secondary ),
 
@@ -5035,43 +5050,30 @@ MENU	MENU_WeaponKeys =
 	"Weapon Selection", NULL, NULL, NULL, 0,
 	{
 		KEYDEF( 32, 112,"Pulsar", (void *)&Config.select_primary[ PULSAR ] ),
-
 		KEYDEF( 32, 128,"Trojax", (void *)&Config.select_primary[ TROJAX ] ),
-
 		KEYDEF( 32, 144,"Suss Gun", (void *)&Config.select_primary[ SUSS_GUN ] ),
 		KEYDEF( 32, 160,"Transpulse", (void *)&Config.select_primary[ TRANSPULSE_CANNON ] ),
-	  
 		KEYDEF( 32, 176,"Pyrolite", (void *)&Config.select_primary[ PYROLITE_RIFLE ] ),
-		
 		KEYDEF( 32, 192,"Beam Laser", (void *)&Config.select_primary[ LASER ] ),
-
 		
 		KEYDEF( 32, 224,"Next Prim", (void *)&Config.select_next_primary ),
-
 		KEYDEF( 32, 240,"Prev Prim", (void *)&Config.select_prev_primary ),
-
 		
 		KEYDEF( 32, 272,"Next Sec", (void *)&Config.select_next_secondary ),
-
 		KEYDEF( 32, 288,"Prev Sec", (void *)&Config.select_prev_secondary ),
-
 		
 		KEYDEF( 352, 112, "Mug Missile", (void *)&Config.select_secondary[ MUGMISSILE ] ),
-
 		KEYDEF( 352, 128,"Solaris", (void *)&Config.select_secondary[ SOLARISMISSILE ] ),
-
 		KEYDEF( 352, 160, "Scatter", (void *)&Config.select_secondary[ SCATTERMISSILE ] ),
 		KEYDEF( 352, 176, "Gravgon", (void *)&Config.select_secondary[ GRAVGONMISSILE ] ),
-
 		KEYDEF( 352, 192, "MFRL", (void *)&Config.select_secondary[ MULTIPLEMISSILE ] ),
-
 		KEYDEF( 352, 208, "Titan Star", (void *)&Config.select_secondary[ TITANSTARMISSILE ] ),
+		KEYDEF( 352, 224, "Thief Missile", (void *)&Config.select_secondary[ THIEFMISSILE ] ),
 
-
-		KEYDEF( 352, 240, "Purge Mine", (void *)&Config.select_secondary[ PURGEMINE ] ),
-		KEYDEF( 352, 256, "Pine Mine", (void *)&Config.select_secondary[ PINEMINE ] ),
-
-		KEYDEF( 352, 272, "Quantum Mine", (void *)&Config.select_secondary[ QUANTUMMINE ] ),
+		KEYDEF( 352, 256, "Purge Mine", (void *)&Config.select_secondary[ PURGEMINE ] ),
+		KEYDEF( 352, 272, "Pine Mine", (void *)&Config.select_secondary[ PINEMINE ] ),
+		KEYDEF( 352, 288, "Quantum Mine", (void *)&Config.select_secondary[ QUANTUMMINE ] ),
+		KEYDEF( 352, 304, "Spider Mine", (void *)&Config.select_secondary[ SPIDERMINE ] ),
 
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -5084,107 +5086,73 @@ MENU	MENU_Keyboard =
 	LT_MENU_Keyboard0 /*"Configure controls"*/, InitKeyDefPage, NULL, NULL, 0,
 	{
 		KDEF( 0, 200, 112, LT_MENU_Keyboard1 /*"Rotate Left"*/, KDleft ),
-
 		KDEF( 0, 200, 128, LT_MENU_Keyboard2 /*"Rotate Right"*/, KDright ),
-
-		KDEF( 0, 200, 144, LT_MENU_Keyboard3 /*"Rotate Up"*/, KDup ),
-			      
+		KDEF( 0, 200, 144, LT_MENU_Keyboard3 /*"Rotate Up"*/, KDup ),	      
 		KDEF( 0, 200, 160, LT_MENU_Keyboard4 /*"Rotate Down"*/, KDdown ),
-
 			      
-		KDEF( 0, 200, 184, LT_MENU_Keyboard5 /*"Slide Left"*/, KDmove_left ),
-			         
+		KDEF( 0, 200, 184, LT_MENU_Keyboard5 /*"Slide Left"*/, KDmove_left ),	         
 		KDEF( 0, 200, 200, LT_MENU_Keyboard6 /*"Slide Right"*/, KDmove_right ),
 			   
-		KDEF( 0, 200, 216, LT_MENU_Keyboard7 /*"Slide Up"*/, KDmove_up ),
-			         
+		KDEF( 0, 200, 216, LT_MENU_Keyboard7 /*"Slide Up"*/, KDmove_up ),         
 		KDEF( 0, 200, 232, LT_MENU_Keyboard8 /*"Slide Down"*/, KDmove_down ),
-
 			   
-		KDEF( 0, 200, 256, LT_MENU_Keyboard9 /*"Roll Left"*/, KDroll_left ),
-			      
+		KDEF( 0, 200, 256, LT_MENU_Keyboard9 /*"Roll Left"*/, KDroll_left ),  
 		KDEF( 0, 200, 272, LT_MENU_Keyboard10 /*"Roll Right"*/, KDroll_right ),
 
-
 		KDEF( 0, 200, 296, LT_MENU_Keyboard11 /*"Slide Mode"*/, KDmove ),
-
 		KDEF( 0, 200, 312, LT_MENU_Keyboard12 /*"Roll Mode"*/, KDroll ),
 
 		// 2nd page
 
 		KDEF( 1, 200, 112, LT_MENU_Keyboard13 /*"Forward"*/, KDmove_forward ),
-
 		KDEF( 1, 200, 128, LT_MENU_Keyboard14 /*"Reverse"*/, KDmove_backward ),
-		
 		KDEF( 1, 200, 144, LT_MENU_Keyboard15 /*"Nitro"*/, KDturbo ),
 
-
 		KDEF( 1, 200, 168, LT_MENU_Keyboard16 /*"Speed Up"*/, KDcruise_faster ),
-
 		KDEF( 1, 200, 184, LT_MENU_Keyboard17 /*"Slow Down"*/, KDcruise_slower ),
 
-
 		KDEF( 1, 200, 208, LT_MENU_Keyboard18 /*"Fire Prim"*/, KDfire_primary ),
-
 		KDEF( 1, 200, 224, LT_MENU_Keyboard19 /*"Fire Sec"*/, KDfire_secondary ),
-		
 		KDEF( 1, 200, 240, LT_MENU_Keyboard20 /*"Drop Mine"*/, KDfire_mine ),
-
 		KDEF( 1, 200, 264, LT_MENU_Keyboard21 /*"Drop Prim"*/, KDdrop_primary ),
-
 		KDEF( 1, 200, 280, LT_MENU_Keyboard22 /*"Drop Sec"*/, KDdrop_secondary ),
-
 		KDEF( 1, 200, 296, LT_MENU_Keyboard23 /*"Drop Shield"*/, KDdrop_shield ),
-
 		KDEF( 1, 200, 312, LT_MENU_Keyboard24 /*"Drop Ammo"*/, KDdrop_ammo ),
 
 		// 3rd page
 
 		KDEF( 2, 200, 112,LT_MENU_Keyboard25 /*"Pulsar"*/, KDselect_primary[ PULSAR ] ),
-
 		KDEF( 2, 200, 128,LT_MENU_Keyboard26 /*"Trojax"*/, KDselect_primary[ TROJAX ] ),
 		KDEF( 2, 200, 144,LT_MENU_Keyboard27 /*"Pyrolite"*/, KDselect_primary[ PYROLITE_RIFLE ] ),
-
 		KDEF( 2, 200, 160,LT_MENU_Keyboard28 /*"Transpulse"*/, KDselect_primary[ TRANSPULSE_CANNON ] ),
 		KDEF( 2, 200, 176,LT_MENU_Keyboard29 /*"Suss Gun"*/, KDselect_primary[ SUSS_GUN ] ),
 		KDEF( 2, 200, 192,LT_MENU_Keyboard30 /*"Beam Laser"*/, KDselect_primary[ LASER ] ),
-
 		KDEF( 2, 200, 216,LT_MENU_Keyboard31 /*"Next Prim"*/, KDselect_next_primary ),
-
 		KDEF( 2, 200, 232,LT_MENU_Keyboard32 /*"Prev Prim"*/, KDselect_prev_primary ),
-
-		
 		KDEF( 2, 200, 256,LT_MENU_Keyboard33 /*"Next Sec"*/, KDselect_next_secondary ),
-
 		KDEF( 2, 200, 272,LT_MENU_Keyboard34 /*"Prev Sec"*/, KDselect_prev_secondary ),
-
-
 		KDEF( 2, 200, 296,LT_MENU_Keyboard35 /*"Send Msg"*/, KDsend_msg),
+
 #ifdef PLAYER_SPEECH_TAUNTS
 		KDEF( 2, 200, 312,LT_MENU_Keyboard36 /*"speech taunt"*/, KDsend_speech),
 #endif
 		KDEF( 2, 200, 312,LT_MENU_Keyboard1a /*"headlights"*/, KDheadlights),
-		
 		KDEF( 2, 200, 328,LT_MENU_Keyboard1b /*"full rear view"*/, KDfull_rearview),
 
 		// 4th page
 		
 		KDEF( 3, 200, 112, LT_MENU_Keyboard37 /*"Mug Missile"*/, KDselect_secondary[ MUGMISSILE ] ),
-
-		KDEF( 3, 200, 128,LT_MENU_Keyboard38 /*"Solaris"*/, KDselect_secondary[ SOLARISMISSILE ] ),
-
+		KDEF( 3, 200, 128, LT_MENU_Keyboard38 /*"Solaris"*/, KDselect_secondary[ SOLARISMISSILE ] ),
 		KDEF( 3, 200, 144, LT_MENU_Keyboard39 /*"Scatter"*/, KDselect_secondary[ SCATTERMISSILE ] ),
 		KDEF( 3, 200, 160, LT_MENU_Keyboard40 /*"Gravgon"*/, KDselect_secondary[ GRAVGONMISSILE ] ),
-
 		KDEF( 3, 200, 176, LT_MENU_Keyboard41 /*"MFRL"*/, KDselect_secondary[ MULTIPLEMISSILE ] ),
-
 		KDEF( 3, 200, 192, LT_MENU_Keyboard42 /*"Titan Star"*/, KDselect_secondary[ TITANSTARMISSILE ] ),
+		KDEF( 3, 200, 208, LT_MENU_Keyboard46 /*"Thief Missile"*/, KDselect_secondary[ THIEFMISSILE ] ),
 
-
-		KDEF( 3, 200, 216, LT_MENU_Keyboard43 /*"Purge Mine"*/, KDselect_secondary[ PURGEMINE ] ),
-		KDEF( 3, 200, 232, LT_MENU_Keyboard44 /*"Pine Mine"*/, KDselect_secondary[ PINEMINE ] ),
-
-		KDEF( 3, 200, 248, LT_MENU_Keyboard45 /*"Quantum Mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
+		KDEF( 3, 200, 232, LT_MENU_Keyboard43 /*"Purge Mine"*/, KDselect_secondary[ PURGEMINE ] ),
+		KDEF( 3, 200, 248, LT_MENU_Keyboard44 /*"Pine Mine"*/, KDselect_secondary[ PINEMINE ] ),
+		KDEF( 3, 200, 264, LT_MENU_Keyboard45 /*"Quantum Mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
+		KDEF( 3, 200, 280, LT_MENU_Keyboard47 /*"Spider Mine"*/, KDselect_secondary[ SPIDERMINE ] ),
 
 		{ 200, 32, 0, 0, 0, "help3", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp3, NULL, 0 },
 		{ 200, 336, 0, 0, 0, "help1", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp1, NULL, 0 },
@@ -21625,6 +21593,9 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_ValidPickups\n");
 	GetFormatInfo ( &MENU_NEW_ValidPickups );
+
+	DebugPrintf("ValidPickups_Second_Page\n");
+	GetFormatInfo ( &ValidPickups_Second_Page );
 
 	DebugPrintf("MENU_NEW_MoreMultiplayerOptions\n");
 	GetFormatInfo ( &MENU_NEW_MoreMultiplayerOptions );

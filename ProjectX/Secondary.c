@@ -1774,15 +1774,15 @@ char *SecondaryDescription[MAXSECONDARYWEAPONS] = {
 char *SecondaryDescription[MAXSECONDARYWEAPONS] = {
 	LT_MENU_NEW_SecondaryWeaponKeys17 /*"mug missile:"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys18 /*"solaris missile:"*/,
-	"Thief",
 	LT_MENU_NEW_SecondaryWeaponKeys5 /*"scatter missile"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys6 /*"gravgon missile"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys21 /*"mfrl:"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys22 /*"Titan Missile:"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys23 /*"purge mine:"*/,
 	LT_MENU_NEW_SecondaryWeaponKeys24 /*"pine mine:"*/,
-	 LT_MENU_NEW_SecondaryWeaponKeys25 /*"quantum mine:"*/,
-	 "spider mine",
+	LT_MENU_NEW_SecondaryWeaponKeys25 /*"quantum mine:"*/,
+	LT_MENU_NEW_SecondaryWeaponKeys29 /*"Thief"*/,
+	LT_MENU_NEW_SecondaryWeaponKeys30 /*"spider mine"*/,
 };
 
 // is weapon valid as far as order processing & keydefs concerned?
@@ -1799,7 +1799,7 @@ BOOL SecondaryValid[ MAXSECONDARYWEAPONS ] =
 	TRUE,	// purge
 	TRUE,	// pine
 	TRUE,	// quantum
-	FALSE,	// spider
+	TRUE,	// spider
 
 };
 

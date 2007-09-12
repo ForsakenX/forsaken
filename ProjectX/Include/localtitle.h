@@ -67,6 +67,7 @@ Notes for translator:
 #define LT_MENU_NEW_ValidPickups18 "orbit pulsar"
 #define LT_MENU_NEW_ValidPickups19 "golden power pod"
 #define LT_MENU_NEW_ValidPickups20 "thief missile"
+#define LT_MENU_NEW_ValidPickups21 "spider mine"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions0 "Multiplayer options"
 #define LT_MENU_NEW_MoreMultiplayerOptions1 "lag tolerance"
@@ -89,6 +90,8 @@ Notes for translator:
 #define LT_MENU_NEW_MoreMultiplayerOptions18 "i think your shots hit me"
 #define LT_MENU_NEW_MoreMultiplayerOptions19 "change allowed pickups"
 #define LT_MENU_NEW_MoreMultiplayerOptions20 "randomize pickups"
+#define LT_MENU_NEW_MoreMultiplayerOptions21 "num primary weapons"
+#define LT_MENU_NEW_MoreMultiplayerOptions22 "next page of pickups"
 
 #define LT_MENU_NEW_CreateGame0 "Create Multiplayer Game"
 #define LT_MENU_NEW_CreateGame1 "Start game"
@@ -166,6 +169,8 @@ Notes for translator:
 #define LT_MENU_NEW_SecondaryWeaponKeys26 "Next weapon"
 #define LT_MENU_NEW_SecondaryWeaponKeys27 "Prev weapon"
 #define LT_MENU_NEW_SecondaryWeaponKeys28 "drop weapon"
+#define LT_MENU_NEW_SecondaryWeaponKeys29 "thief missile"
+#define LT_MENU_NEW_SecondaryWeaponKeys30 "spider mine"
 
 #define LT_MENU_NEW_PrimaryWeaponKeys0 "primary weapon"
 #define LT_MENU_NEW_PrimaryWeaponKeys1 "fire primary"
@@ -505,6 +510,8 @@ Notes for translator:
 #define LT_MENU_Keyboard43 "Purge Mine"
 #define LT_MENU_Keyboard44 "Pine Mine"
 #define LT_MENU_Keyboard45 "Quantum Mine"
+#define LT_MENU_Keyboard46 "Thief Missile"
+#define LT_MENU_Keyboard47 "Spider Mine"
 
 #define LT_MENU_Controls0 "Bike Controls"
 #define LT_MENU_Controls1 "Configure controls"
@@ -760,8 +767,6 @@ Notes for translator:
 
 
 #define LT_MENU_NEW_ChooseConnectionToStart1 "press 'esc' to quit"
-
-#define LT_MENU_NEW_MoreMultiplayerOptions21 "num primary weapons"
 
 #define LT_Extra1 "empty server session - select to host session on this server"
 #define LT_Extra2 "server session - host is selecting game type"
