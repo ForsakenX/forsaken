@@ -1078,20 +1078,23 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 		return (DPERR_INVALIDOBJECT);
 
 	// get service provider address from information in dialog
-	hr = CreateServiceProviderAddress( lpGuid,lpDPlayLobby, &lpAddress, &dwAddressSize ,TCPIPAddress);
-	if FAILED(hr)
+	if (FAILED(
+		  CreateServiceProviderAddress( lpGuid, lpDPlayLobby, &lpAddress,
+		                                &dwAddressSize, TCPIPAddress )))
 		goto FAILURE;
-	// interface already exists, so release it
+
+	// if direct play interface exists
 	if (*lplpDPlay)
 	{
+		// release it
 		(*lplpDPlay)->lpVtbl->Release(*lplpDPlay);
 		*lplpDPlay = NULL;
 	}
 
-	// create an ANSI DirectPlay3 interface
-	hr = CoCreateInstance(&CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, 
-						  &IID_IDirectPlay4A, (LPVOID*)&lpDPlay);
-	if FAILED(hr)
+	// create a DirectPlay ANSI interface
+	if FAILED(
+		CoCreateInstance(&CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, 
+		                 &IID_IDirectPlay4A, (LPVOID*)&lpDPlay))
 		goto FAILURE;
 
 	// initialize the connection using the address

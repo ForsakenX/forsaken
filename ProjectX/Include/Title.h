@@ -894,9 +894,6 @@ extern TEXT TCPAddress;
 
 extern MENU * CurrentMenu;
 extern MENUITEM * CurrentMenuItem;
-
-extern MENU MENU_NEW_ChooseServerGameType;
-
 extern MENU MENU_ForceAbort;
 extern MENU MENU_Start;
 extern MENU MENU_Copyright;
@@ -908,16 +905,11 @@ extern MENU MENU_DemoPlaying;
 extern MENU MENU_NEW_JoinWaitingToStart;
 extern MENU MENU_NEW_HostWaitingToStart;
 extern MENU MENU_NEW_WatchTeamSelect;
-
-extern MENU MENU_NEW_ServerWaitingToStartGame;
-extern MENU MENU_NEW_ServerWaitingForGameParameters;
-extern MENU MENU_NEW_HostWaitingToStartServer;
 extern MENU MENU_NEW_CreateGamePseudoHost;
 extern MENU MENU_NEW_ChooseTeamForExistingGame;
 extern MENU MENU_NEW_PseudoHostWaitingForAck;
 extern MENU MENU_NEW_ChooseSessionToJoin;
 extern MENU MENU_NEW_PseudoHostWaitingToStart;
-extern MENU	MENU_NEW_ChooseConnectionToStartServer;
 
 extern MENU MENU_NEW_ChooseConnectionToStart;
 extern MENU MENU_NEW_ChooseConnectionToJoin;
@@ -925,7 +917,6 @@ extern MENU MENU_NEW_ChooseConnectionToJoin;
 extern MENU MENU_NEW_GeneralLoading;
 
 extern MENU	MENU_STATS_Start;
-extern MENU MENU_NEW_ServerHasQuit;
 
 extern BOOL quitting;
 extern LIST	SessionsList;

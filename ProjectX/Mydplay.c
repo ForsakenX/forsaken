@@ -3637,23 +3637,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 				IMustQuit = TRUE;
 			}
 #endif
-			// if server game & server has quit...
-			if ( IsServerGame && ( lpDestroyMsg->dpId == HostDPID ) )
-			{
-				switch( MyGameStatus )
-				{
-				case STATUS_Title:
-				case STATUS_StartingMultiplayer:
-				case STATUS_PseudoHostWaitingForAck:
-					MenuChangeEx( &MENU_NEW_ServerHasQuit );
-					break;
-				default:
-					IMustQuit = TRUE;
-					break;
-				}
-
-				return;
-			}
 			
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
@@ -3662,18 +3645,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 					
 					if( MyGameStatus == STATUS_Normal )
 					{
-						
-						if( IsServerGame && IsServer )
-						{
-							VECTOR	ScatterDir;
-
-							KillOwnersSecBulls( (uint16) i );
-
-							ScatterDir = Ships[ i ].LastMove;
-							NormaliseVector( &ScatterDir );
-							ScatterWeaponsForShip( (uint16) i, &ScatterDir, MAXPICKUPS ); // Scatter all weapons in direction.
-						}
-
 						sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
 				   		AddMessageToQue( (char*)&tempstr[0] );
 					}
@@ -3702,36 +3673,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 					break;
 				}
 			}
-
-			if( IsServer )
-			{
-				if ( PseudoHostDPID == lpDestroyMsg->dpId ) 
-				{
-					PseudoHostDPID = 0;
-					switch( MyGameStatus )
-					{
-					case STATUS_StartingMultiplayer:
-					case STATUS_Title:
-						MenuBackSpecific( &MENU_NEW_HostWaitingToStartServer, FALSE );
-	
-						// reset server state
-						DPlayGetSessionDesc();
-						if ( glpdpSD )
-						{
-		 					glpdpSD->dwUser3 &= ~ServerGameStateBits;
-							glpdpSD->dwUser3 |=	SERVER_STATE_NeedHost;
-							DPlaySetSessionDesc( 0 );
-						}else
-						{
-							Msg("Serious error - unable to get session description for server\n");
-						}
-						break;
-					default:
-						AllocatePseudoHost();
-					}
-				}
-			}
-
 		}
 		break;
 #if 1
@@ -4915,37 +4856,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			BOOL Done = FALSE;
 			lpHereIAm = (LPHEREIAMMSG)MsgPnt;
 
-			// if host is server, need to move to relevent menu depending on current server status
 			DPlayGetSessionDesc();
-			switch( glpdpSD->dwUser3 & ServerGameStateBits )
-			{
-			case SERVER_STATE_NeedHost:
-				// change to 'host is choosing' menu
-				MenuChangeEx( &MENU_NEW_ServerWaitingForGameParameters );
-				
-				AllocatingPseudoHost = TRUE;
-
-				/*
-				// modify server state in session description
-				DPlayGetSessionDesc();
-				glpdpSD->dwUser3 &= ~ServerGameStateBits;	// mask out old server state
-				glpdpSD->dwUser3 |=	SERVER_STATE_HostChoosing;
-				DebugPrintf("server - about to change state to HostChoosing\n");
-				DPlaySetSessionDesc(0);
-				*/
-				break;
-			case SERVER_STATE_HostChoosing:
-				// should never get here, as you will not be able to join a game if host is choosing game type
-#ifdef DEBUG_ON
-				// this could happen if packets recieved in wrong order
-
-				//Msg("Error - client has requested player number for server based game before game parameters set ( %s %d )", __FILE__, __LINE__ );
-#endif
-				return;	// return without sending any messages back, thus joining player will never get player number
-			case SERVER_STATE_Joinable:
-				// allow joining as normal
-				break;
-			}
 
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
@@ -6277,10 +6188,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			{
 				// change menu ( viewing team selection )
 				MenuChangeEx( &MENU_NEW_WatchTeamSelect );
-			}else
-			{
-				// change menu ( 'waiting for host to start game' )
-				MenuChangeEx( &MENU_NEW_ServerWaitingToStartGame );
 			}
 		}
 
@@ -6311,44 +6218,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 #endif
-	case MSG_TOSERVER:
-		if ( IsServer )
-		{
-			lpToServerMsg = ( LPTOSERVERMSG )MsgPnt;
-
-			switch( lpToServerMsg->Type )
-			{
-			case TOSERVERMSG_StartGame:
-				MyGameStatus = STATUS_WaitingToStartMultiPlayerHost;
-				MenuChangeEx( &MENU_NEW_GeneralLoading );
-				break;
-			case TOSERVERMSG_Reset:
-				// destroy session
-
-				// go back to correct waiting state ( which will recreate session )
-
-				DPlayGetSessionDesc();
-				glpdpSD->dwUser3 &= ~ServerGameStateBits;	// mask out old server state
-				glpdpSD->dwUser3 |=	SERVER_STATE_NeedHost;
-				DebugPrintf("server - about to change state to HostChoosing\n");
-				DPlaySetSessionDesc(0);
-
-				MenuBackSpecific( &MENU_NEW_HostWaitingToStartServer, TRUE );
-
-//				GetServiceProviders( NULL );
-
-				break;
-			case TOSERVERMSG_ChangeLevel:
-				LevelList.selected_item = lpToServerMsg->Data;
-				NewLevelNum = lpToServerMsg->Data;
-				break;
-			case TOSERVERMSG_IAmPseudoHost:
-				PseudoHostDPID = from_dcoID;
-				break;
-			}
-		}
-
-		return;
 	case MSG_TOCLIENT:
 		if ( !IsHost )
 		{

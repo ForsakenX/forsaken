@@ -1,2013 +1,3 @@
-/* 
- * The X Men, October 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 666 $
- * $Header: /PcProjectX/Title.c 666   11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/Title.c $
- * 
- * 666   11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 665   5/11/98 3:34p Oliverc
- * Made Z_TRICK work as it should (but left disabled for patch beta 4 as
- * it messes up on translucent external views in certain levels)
- * 
- * 664   23/10/98 2:04p Oliverc
- * Patch 1.00a beta 3
- * 
- * 663   22/10/98 4:24p Oliverc
- * Added "beta" to patch release verison msg
- * 
- * 662   24/09/98 9:33a Oliverc
- * 
- * 661   15/09/98 11:11 Philipy
- * 
- * 660   15/09/98 9:57 Philipy
- * 
- * 659   14/09/98 15:35 Philipy
- * added facility for server based collisions
- * 
- * 658   9/09/98 16:11 Philipy
- * 
- * 657   9/09/98 15:31 Philipy
- * fixed crash bug when toggling group packets on/off
- * 
- * 656   3/09/98 10:23 Philipy
- * 
- * 655   2/09/98 9:50 Philipy
- * added throttle rate slider
- * some Gamespy changes
- * 
- * 654   1/09/98 9:52 Philipy
- * 
- * 653   28/08/98 9:19 Collinsd
- * 
- * 652   27/08/98 20:12 Philipy
- * manual / auto server mode now selectable from menus
- * text now displayed when server in game & not rendering
- * dynamic PPS setting re-enabled for server
- * 
- * 651   27/08/98 19:17 Philipy
- * no need to keep pressing return when trying to quit
- * 'waiting to quit...' now displayed until automatically quitting
- * 
- * 650   27/08/98 17:48 Philipy
- * 
- * 649   27/08/98 17:26 Philipy
- * Pseudohost can select level, & migrates on quitting
- * players booted to titles due to not having new level are now informed
- * 
- * 648   26/08/98 12:07 Philipy
- * message now displayed when server boots you out due to invalid CRC
- * 
- * 647   26/08/98 9:51 Philipy
- * 
- * 646   25/08/98 17:38 Philipy
- * added gamespy support
- * tracker config now selectable from start server game menu, & stored in
- * reg
- * 
- * 645   20/08/98 4:03p Oliverc
- * Added SetViewportError() debug function (enabled on DEBUG_VIEWPORT
- * build switch)
- * 
- * 644   18/08/98 10:11 Philipy
- * 
- * 643   17/08/98 18:00 Philipy
- * removed loads of unreferenced local variables
- * 
- * 642   17/08/98 17:13 Philipy
- * added -ServerChoosesGame & ServerAutoStart command line options
- * 
- * 641   14/08/98 15:25 Philipy
- * added trilinear option to menus
- * fixed level name / shutdown packet in heartbeat
- * 
- * 
- * 640   14/08/98 9:13 Phillipd
- * DirectX6 is in effect.......
- * 
- * 639   11/08/98 16:52 Philipy
- * fixed bug which caused max players to always be set to 32 if lobby
- * launched & lobby sets max players to 0.
- * status request codes now expected in hex format ( eg.
- * FFFFFFFFstatus\nfe<NULL> )
- * heartbeat frequencies less than 5000 mS can now be specified. If none (
- * or 0 ) specified, no heartbeat packets will be sent.
- * 
- * 638   7/08/98 12:45 Philipy
- * heartbeat now enabled for non tcp games ( if heartbeat.txt exists )
- * status type 0 now treated as status type 254
- * if lobby launched with max players set to 0, host is able to set max
- * players
- * shutdown udp packet now sent ( if specified in heartbeat.txt )
- * 
- * 637   6/08/98 9:31 Philipy
- * added 'beta' to patch version number
- * 
- * 636   5/08/98 16:38 Philipy
- * fixed single player patch bug
- * 
- * 635   5/08/98 11:04 Philipy
- * added AutoStart facility ( joins game based on GUID in registery )
- * upped patch version to 1.02
- * 
- * 634   31/07/98 16:17 Philipy
- * added PPS to session desc
- * 
- * 633   31/07/98 12:17 Philipy
- * 
- * 632   30/07/98 16:58 Philipy
- * 
- * 631   30/07/98 10:43a Oliverc
- * Fixed TCP/IP address saving
- * 
- * 630   28/07/98 15:25 Philipy
- * added patch version no - displayed when in menus
- * 
- * 629   28/07/98 14:44 Philipy
- * all server timeouts now configurable
- * 
- * 628   28/07/98 10:39 Philipy
- * Max players now works properly for server games
- * 
- * 627   27/07/98 12:59 Philipy
- * 
- * 626   24/07/98 14:22 Philipy
- * fixed auto-quit after error msg when quickjoining
- * 
- * 625   24/07/98 11:25 Philipy
- * you now cannot record demo if group packets set and/or it is a server
- * based game
- * 
- * 624   23/07/98 18:40 Philipy
- * server now properly resets after timing out ( no msgs recieved ) while
- * in game
- * 
- * 623   23/07/98 15:38 Philipy
- * server now resets if no packets recieved for 5 mins
- * 
- * 622   23/07/98 14:34 Phillipd
- * 
- * 621   22/07/98 3:36p Oliverc
- * Join game menu TCP address saved in registry
- * 
- * 620   22/07/98 14:06 Phillipd
- * 
- * 619   22/07/98 12:45 Phillipd
- * if a server game show 1 less players.....
- * 
- * 618   21/07/98 17:31 Philipy
- * added timeout stuff for titles
- * 
- * 617   21/07/98 12:10 Collinsd
- * MAX_PLAYERS increased to 24 and version number incremented.
- * 
- * 616   21/07/98 11:21 Philipy
- * 
- * 615   20/07/98 17:44 Philipy
- * various patch bugs
- * 
- * 614   20/07/98 12:27 Philipy
- * nicer handling of uninstalled levels
- * 
- * 613   7/16/98 11:27a Phillipd
- * 
- * 612   15/07/98 16:56 Philipy
- * removed superfluous menu from server pseudohost startup
- * 
- * 611   15/07/98 16:25 Philipy
- * now handles pseudohost quitting in titles & server quitting ( in
- * titiles or in game )
- * 
- * 610   14/07/98 17:18 Philipy
- * 
- * 609   14/07/98 16:41 Philipy
- * 
- * 608   14/07/98 11:15 Philipy
- * various patch bugs
- * pseudohost quitting in titles
- * 
- * 607   7/10/98 11:30a Phillipd
- * 
- * 606   7/10/98 11:29a Phillipd
- * 
- * 605   7/10/98 11:17a Phillipd
- * 
- * 604   9/07/98 12:43 Philipy
- * few minor fixes for patch release
- * 
- * 603   7/08/98 3:07p Phillipd
- * 
- * 602   8/07/98 10:42 Oliverc
- * Added "server" text to deathmatch menu for shortcut keypress purposes
- * 
- * 601   8/07/98 10:13 Philipy
- * 
- * 600   7/08/98 9:59a Phillipd
- * 
- * 599   7/07/98 18:05 Philipy
- * added lobby autostart code ( when all players have recieved init msg )
- * added num primary weapons menu option ( propergated to other players &|
- * server )
- * extracted new title text for localisation
- * 
- * 598   3/07/98 17:46 Philipy
- * added quit option when using quickstart
- * 
- * 597   3/07/98 12:56 Philipy
- * 
- * 596   3/07/98 11:54 Philipy
- * heartbeat & quickstart stuff
- * 
- * 595   24/06/98 11:04 Philipy
- * added gateway flag
- * 
- * 594   23/06/98 12:46 Philipy
- * 
- * 593   22/06/98 17:32 Philipy
- * move #includes around for localisations so that title text is available
- * in other files
- * 
- * 592   6/22/98 2:16p Phillipd
- * Option to reset the score for every level..............
- * 
- * 591   19/06/98 11:08 Oliverc
- * Added the record demo option back to multiplayer game start options
- * menu
- * 
- * 590   18/06/98 14:16 Philipy
- * fixed end of game gol bar bug
- * 
- * 589   17/06/98 19:33 Philipy
- * more win98 stuff
- * 
- * 588   16/06/98 16:33 Philipy
- * more lobby / join game stuff
- * 
- * 587   15/06/98 17:56 Philipy
- * 
- * 586   15/06/98 17:55 Philipy
- * max players now clamped after getting prefered value from reg
- * 
- * 585   13/06/98 20:46 Philipy
- * improved lobby support:
- * host now migrates properly
- * you can quit b4 starting game without screwing up session
- * 
- * 584   13/06/98 14:35 Philipy
- * only 1 bike computer available for win98 demo version
- * 
- * 583   11/06/98 16:57 Philipy
- * loads of win98 shareware version stuff
- * 
- * 582   6/11/98 12:43p Phillipd
- * 
- * 581   11/06/98 9:54 Philipy
- * files checked in prior to starting Win98 shareware version
- * 
- * 580   10/06/98 15:17 Philipy
- * put back more multiplayer options
- * 
- * 579   8/06/98 12:28 Philipy
- * server levels now sent across to pseudohost. Pseudohost can only pick
- * valid levels
- * 
- * 578   6/04/98 9:32a Phillipd
- * 
- * 577   6/03/98 4:33p Phillipd
- * 
- * 576   3/06/98 16:19 Philipy
- * 
- * 575   6/03/98 4:11p Phillipd
- * 
- * 574   3/06/98 15:30 Philipy
- * added server in game options for rendering on/off and selecting players
- * pseudohost can now select if server does collisions. This gets
- * propagated in MSG_GameParams and MSG_Init
- * 
- * 573   22/05/98 17:51 Philipy
- * more work on session info
- * 
- * 572   20/05/98 16:14 Philipy
- * added full screen rearview and headlight keys to in game menu
- * 
- * 571   20/05/98 9:39 Philipy
- * implemented front end server menus
- * removed ( invalid ) ping from sessions menu
- * changed EnumPlayers so that it solely uses MSG_NAME
- * 
- * 570   12/05/98 11:39 Philipy
- * fixed session name bug when hosting game
- * 
- * 569   11/05/98 15:15 Philipy
- * added session info stuff ( game type, ping etc )
- * 
- * 568   4/30/98 3:52p Phillipd
- * 
- * 567   4/30/98 3:48p Phillipd
- * 
- * 566   29/04/98 16:43 Philipy
- * added server mode cog
- * 
- * 565   4/27/98 4:01p Phillipd
- * 
- * 564   25/04/98 16:47 Collinsd
- * 
- * 563   25/04/98 16:40 Collinsd
- * 
- * 562   24/04/98 1:37 Philipy
- * weapon order text now comes from local files
- * 
- * 561   23/04/98 23:56 Oliverc
- * Hacked extra space for in-game key def label text for euro versions
- * 
- * 560   23/04/98 23:28 Oliverc
- * 
- * 559   23/04/98 22:05 Oliverc
- * 
- * 558   23/04/98 21:02 Philipy
- * 
- * 557   23/04/98 20:03 Philipy
- * 
- * 556   23/04/98 19:51 Philipy
- * 
- * 555   23/04/98 18:32 Philipy
- * 
- * 554   23/04/98 11:54 Philipy
- * 
- * 553   22/04/98 17:39 Philipy
- * 
- * 552   22/04/98 12:00 Philipy
- * 
- * 551   22/04/98 9:25 Philipy
- * 
- * 550   21/04/98 16:23 Philipy
- * more localisation stuff
- * 
- * 549   21/04/98 14:12 Philipy
- * added support for more foreign chars
- * 
- * 548   21/04/98 11:08 Philipy
- * slight localisation change
- * 
- * 547   21/04/98 9:27 Philipy
- * foreign char lookup table now indexed correctly
- * 
- * 546   20/04/98 17:12 Philipy
- * added localisation stuff
- * 
- * 545   17/04/98 9:22 Philipy
- * extracted all text for localisation
- * 
- * 544   15/04/98 11:46 Collinsd
- * Flygirl now stealths correctly
- * 
- * 543   4/14/98 7:15p Phillipd
- * 
- * 542   14/04/98 14:44 Philipy
- * selecting packet grouping ensures small packets are on
- * unselecting short packets ensures that packet grouping is off
- * 
- * 541   4/14/98 2:23p Phillipd
- * 
- * 540   13/04/98 23:38 Philipy
- * fixed inter-level crash bug
- * 
- * 539   12/04/98 23:50 Oliverc
- * Fixed bug with MyGameStatus following completing game after cheating
- * 
- * 538   11/04/98 20:06 Collinsd
- * 
- * 537   11/04/98 19:06 Philipy
- * fixed AVI bug
- * fixed stripping bug
- * lobby launched game now goes to next level after stats
- * 
- * 536   11/04/98 17:09 Collinsd
- * 
- * 535   11/04/98 12:52 Philipy
- * fixed attract mode glitch
- * 
- * 534   11/04/98 12:24 Oliverc
- * InitDemoList() only adds demos to list if level exists
- * Added demo playing option to show player names
- * 
- * 533   10/04/98 17:36 Philipy
- * 
- * 532   9/04/98 21:18 Collinsd
- * 
- * 531   9/04/98 20:21 Philipy
- * fixed inter-level holo-scan line & added software hack to scan all
- * bikes on entering titles
- * 
- * 530   9/04/98 18:28 Collinsd
- * 
- * 529   9/04/98 17:50 Philipy
- * added CWscan routine after loading each bike (sw)
- * 
- * 528   9/04/98 10:24 Philipy
- * 
- * 527   9/04/98 10:19 Philipy
- * added more debug info to textitem bounding box check
- * 
- * 526   8/04/98 20:47 Philipy
- * title text messages now properly initialised
- * holo-glaire removed for sw version
- * compound buffer size can now be set in command line and opt file
- * prevented "level select disabled" from appearing at start of
- * multiplayer game
- * 
- * 525   8/04/98 19:14 Collinsd
- * 
- * 524   8/04/98 18:44 Philipy
- * moved highlight box and slider stuff into processtextitems due to sw
- * version
- * 
- * 523   8/04/98 17:01 Oliverc
- * Last service provider now stored in registry
- * 
- * 522   8/04/98 15:02 Philipy
- * level picture size reduced
- * 
- * 521   8/04/98 12:48 Philipy
- * added bike engine toggle
- * 
- * 520   8/04/98 11:06 Philipy
- * fixed host not displaying player names bug
- * 
- * 519   8/04/98 10:19 Philipy
- * fixed multiple 'I' bug
- * 
- * 518   7/04/98 17:50 Philipy
- * removed multiplayer taunts
- * AVI thread now allowed to exit nicely rather than being terminated
- * fixed inter-level bug
- * fixed bug in enemy taunts
- * 
- * 517   7/04/98 11:01 Philipy
- * potentially fixed crash when going from AVI to titles
- * fixed CD audio looping
- * no CD audio in front end unless full install
- * bike features sliders now give correct values
- * 
- * 516   6/04/98 20:51 Oliverc
- * Added new help message to in-game control config screen to show
- * duplicate key definitions and unconnected devices
- * 
- * 515   6/04/98 14:56 Philipy
- * fixed bike scan line
- * 
- * 514   4/06/98 2:23p Phillipd
- * 
- * 513   4/06/98 12:52p Phillipd
- * 
- * 512   6/04/98 11:32 Collinsd
- * Added show restart zone to debug menu.
- * 
- * 511   6/04/98 11:29 Philipy
- * added big packets option
- * upped frequency of some speech sfx
- * re-implemented holo-scanline
- * 
- * 510   5/04/98 17:10 Collinsd
- * Hacked demos to work.
- * 
- * 509   5/04/98 16:58 Philipy
- * cheats now disabled for multiplayer
- * sfx now paused for shortcut single player menus
- * 
- * 508   5/04/98 15:01 Philipy
- * started pre AVI CD accesss ( not yet implemented )
- * bike engine freq now done on 5 frame average
- * prevented CD track from playing in titles if set to off
- * NoDynamic SFX does not bike bike computer static anymore
- * water detail slider now only has two levels
- * 
- * 507   4/04/98 14:23 Philipy
- * mode scaling stuff is now calculated rather than based on fixed values
- * added -NoBlitTextScaling option to ReadIni and command line options
- * 
- * 506   4/04/98 13:44 Oliverc
- * Changed default collision perspective to Descent-stylee (boo-hoo!)
- * 
- * 505   4/04/98 11:19 Oliverc
- * Attract mode splash demo now plays from CD if not found installed
- * Software screen res now stored separately from HW in registry
- * Registry keys now opened in-game as creation done by installer
- * 
- * 504   3/04/98 19:15 Philipy
- * blitted text now scales properly
- * added -NoBlitTextScaling flag for cards that can't do a strech blit
- * properly ( Riva )
- * 
- * 503   3/04/98 18:23 Philipy
- * fixed placeholder memory problem
- * remove existing team scores from team join menu
- * 
- * 502   3/04/98 16:03 Philipy
- * fixed CD audio stuff
- * 
- * 501   3/04/98 14:04 Philipy
- * fixed credit toggle stuff
- * 
- * 500   3/04/98 13:13 Philipy
- * Taunts are now affected by biker volume slider ( taunt volume slider
- * removed )
- * Enemy bikers now give out death cry
- * fixed problem with speech ignoring volume settings
- * fixed end game sequences
- * 
- * 499   3/04/98 12:25 Collinsd
- * Fix for attract mode if no dmo.
- * 
- * 498   2/04/98 21:07 Philipy
- * Added taunts ( single & multiplayer, plus enemy biker taunts )
- * added flygirl to front end.
- * sliders for biker, bike computer and taunt speech volume
- * added new sfx for title
- * 
- * 497   2/04/98 14:29 Oliverc
- * Added default settings for joystick axes & buttons
- * 
- * 496   1/04/98 21:14 Oliverc
- * Changed joystick axis config to indicate position of joystick relative
- * to key points (middle+extreme left/right)
- * 
- * 495   1/04/98 16:27 Oliverc
- * Added player delete and rename options
- * Fixed bugs in player change option (bike & speech not in synch)
- * Added command-line option to allow SpaceOrb axes to be configured in
- * normal joystick screen
- * 
- * 494   31/03/98 16:04 Oliverc
- * Disabled toggle full screen option in visuals menu for software version
- * 
- * 493   30/03/98 23:42 Oliverc
- * Fixed minor glitch in PreferedMaxPlayer multiplayer game preference
- * settings
- * Fixed multiplayer start more options menus formatting
- * Improved list item selection and diplay for in-game load/save game menu
- * 
- * 492   3/30/98 7:35p Phillipd
- * 
- * 491   30/03/98 19:32 Philipy
- * fixed level timer fuck up
- * 
- * 490   3/30/98 7:11p Phillipd
- * 
- * 489   3/30/98 6:45p Phillipd
- * 
- * 488   30/03/98 17:31 Philipy
- * added cd specific path stuff
- * added new bike computers
- * prevented File_Exists being called every time a dynamic sfx is played
- * 
- * 487   30/03/98 12:32 Oliverc
- * Fixed potential bug with defining buttons on joysticks not flagging
- * joystick as assigned
- * 
- * 486   30/03/98 12:03 Oliverc
- * Attract mode now kicks in only when on start menu
- * 
- * 485   30/03/98 10:20 Collinsd
- * SOFTWARE_ENABLE # fixed.
- * 
- * 484   30/03/98 10:01 Collinsd
- * Gamma for software now works.
- * 
- * 483   29/03/98 20:00 Philipy
- * cd path now verified earlier
- * sfx no longer reloaded when changing biker / bike computer
- * mouse sensitivity rounding error fixed
- * 
- * 482   28/03/98 17:33 Philipy
- * corrected some sfx
- * added legal screen
- * fixed mission briefing text bug
- * 
- * 481   28/03/98 13:35 Philipy
- * added all biker speech
- * 
- * 480   27/03/98 21:06 Philipy
- * added end game sequence for completing the game with cheating
- * 
- * 479   27/03/98 19:06 Philipy
- * water always at max detail for splash screen
- * 
- * 478   3/27/98 5:49p Phillipd
- * 
- * 477   27/03/98 12:58 Philipy
- * changed cheat mode stuff
- * fixed bug that prevented individual variants of variant sfx to be
- * mapped
- * correct menutv now displayed between levels
- * 
- * 476   26/03/98 19:42 Philipy
- * 
- * 475   26/03/98 12:28 Philipy
- * added water detail & gamma sliders
- * fixed holo object swapping stuff
- * fixed crash bug when selecting room in debug mode
- * 
- * 474   26/03/98 9:21 Collinsd
- * SW ZBUFFER 
- * 
- * 473   24/03/98 21:42 Oliverc
- * Added sensitivity and fine control options to joystick axis config
- * screens
- * 
- * 472   24/03/98 21:07 Philipy
- * fixed quicktext stuff
- * sfx do not pause when in multiplayer mode
- * rear camera not shown for splash demos
- * 
- * 471   24/03/98 18:01 Collinsd
- * Added ZBuffer clear for title/splash
- * 
- * 470   24/03/98 16:20 Philipy
- * added new sfx
- * 
- * 469   3/23/98 3:23p Phillipd
- * 
- * 468   23/03/98 15:13 Oliverc
- * Fixed bugs introduced by Sourcesafe merge failing and deleting new axis
- * setup functions (hope this works...!)
- * 
- * 467   23/03/98 10:36 Oliverc
- * 
- * 466   21/03/98 16:18 Philipy
- * added gamma slider ( not yet operational)
- * fixed multiple copies of level in list bug
- * 
- * 465   3/20/98 2:52p Phillipd
- * fixed level select bug....
- * 
- * 464   3/20/98 10:36a Phillipd
- * 
- * 463   19/03/98 20:32 Philipy
- * added different end of game scenarios
- * code now written to config to indicate if secret biker is available
- * 
- * 462   18/03/98 17:46 Philipy
- * fixed quick text & buffered key flush bugs
- * 
- * 461   3/18/98 4:33p Phillipd
- * 
- * 460   3/18/98 4:32p Phillipd
- * 
- * 459   18/03/98 16:25 Philipy
- * removed some debug msgs
- * 
- * 458   16/03/98 21:55 Collinsd
- * Randomize Pickups now in multiplayer start menu
- * 
- * 457   16/03/98 17:24 Philipy
- * removed annoying debug message
- * 
- * 456   16/03/98 16:40 Philipy
- * fixed buffered key problem
- * added AVI to splash screens
- * 
- * 455   16/03/98 12:19 Collinsd
- * Random Pickups option added.  Sphere dislpay of trigger areas
- * 
- * 454   15/03/98 18:40 Philipy
- * added water effect splash screen
- * fixed bug with end game sequence
- * implemented attract mode
- * text macros now saved in config
- * 
- * 453   14/03/98 18:59 Collinsd
- * Added godmode and made debug mode work even when you change level.
- * 
- * 452   13/03/98 16:14 Collinsd
- * Added Magic and Version number to save game.
- * 
- * 451   11/03/98 10:55 Philipy
- * all sfx now stopped for pause mode
- * correct level info now displayed in briefing screen
- * correct level now entered after completing a previously saved level
- * level timer now accurate
- * 
- * 450   10/03/98 20:15 Collinsd
- * 
- * 449   10/03/98 14:51 Oliverc
- * Enabled options menu/extra info for Acclaim NY version as well
- * 
- * 448   9/03/98 22:03 Oliverc
- * Removed Options/Misc menu
- * Fixed crash bug in Controls/Restore defaults
- * 
- * 447   9/03/98 20:45 Oliverc
- * Allowed twice as much space per item to display joystick selection list
- * 
- * 446   9/03/98 16:57 Philipy
- * if selecting new player, displayed bike now defaults back to Beard
- * 
- * 445   9/03/98 14:18 Oliverc
- * 
- * 444   8/03/98 16:51 Philipy
- * prevent MenuBack from some menus when lobby launched
- * added team game support for lobby
- * 
- * 443   7/03/98 20:00 Oliverc
- * Changed BikeExhausts default to TRUE
- * 
- * 442   7/03/98 19:38 Oliverc
- * Added BikeExhausts display option to multiplayer start menu
- * Automatically advance selected game whenever game saved
- * 
- * 441   3/07/98 4:13p Phillipd
- * 
- * 440   3/07/98 3:48p Phillipd
- * 
- * 439   7/03/98 15:35 Philipy
- * 'quit' option on host setup menu now only appears when lobby launched
- * 
- * 438   7/03/98 14:27 Oliverc
- * Clean demo no longer needs different output name
- * 
- * 437   3/07/98 2:24p Phillipd
- * -PPS packets per second command line option added...1 to 30
- * 
- * 436   7/03/98 14:03 Philipy
- * removed annoying debug messages
- * 
- * 435   6/03/98 17:37 Philipy
- * implemented ability to run when launched by lobby
- * 
- * 434   6/03/98 15:29 Oliverc
- * Added GetMissionName() routine to convert short level name to full
- * mission name for use in load/save game info display (both in-game in in
- * front end)
- * 
- * 433   6/03/98 12:09 Collinsd
- * Taken out drop pickup code.
- * 
- * 432   6/03/98 10:29 Collinsd
- * Screen Saving now using my routine... and is on f8
- * 
- * 431   5/03/98 21:46 Oliverc
- * Changed save games to use fixed number of slots
- * Added option to delete items from any list (currently enabled only on
- * demos)
- * 
- * 430   4/03/98 12:33 Oliverc
- * CTF mode fully enabled
- * 
- * 429   3/03/98 14:08 Oliverc
- * 
- * 428   2/03/98 17:29 Oliverc
- * Added optional validation function to TEXT structure to filter
- * permitted characters for demo filenames
- * All .DMO files now kept in Demos folder
- * 
- * 427   2/03/98 12:10 Oliverc
- * Hidden ".DMO" extension from demo file names
- * and added extra info to .DMO file to specify game type etc
- * 
- * 426   28/02/98 20:07 Philipy
- * 
- * 425   28/02/98 18:56 Philipy
- * 
- * 424   27/02/98 20:00 Collinsd
- * SWMonoChrome & Last_SWMonoChrome moved outside chris's code.
- * 
- * 423   27/02/98 19:11 Philipy
- * fixed load game sfx bug
- * added pseudo dithering for 8 bit saved game pic
- * flygirl now selectable from front end ( no model displayed )
- * 
- * 422   27/02/98 18:54 Oliverc
- * Added monochrome model/level RGBs option to in-game detail levels menu
- * 
- * 421   27/02/98 16:30 Oliverc
- * Multiplayer game options always restored from registry on entering
- * "create multiplayer game" menu, and only saved back to registry when
- * multiplayer game started
- * 
- * 420   27/02/98 10:02 Collinsd
- * Fixed Trans
- * 
- * 419   26/02/98 20:41 Philipy
- * added front end for load game
- * 
- * 418   26/02/98 9:30 Oliverc
- * Disabled Bombtag
- * Fixed pickup flags bug
- * Disabled logos for EXTERNAL_DEMOs
- * 
- * 417   25/02/98 16:19 Oliverc
- * More multiplayer tweaks
- * 
- * 416   25/02/98 16:06 Collinsd
- * Save Picture for save game...
- * 
- * 415   25/02/98 15:44 Philipy
- * more efficient use of hw sound mixing buffers
- * 
- * 414   24/02/98 22:00 Oliverc
- * Tweaks to multiplayer games
- * 
- * 413   24/02/98 16:56 Oliverc
- * 1st attempt at bounty hunt multiplayer game
- * 
- * 412   23/02/98 15:31 Philipy
- * implemented single player level timer
- * 
- * 411   2/23/98 2:02p Phillipd
- * Load Save now works.
- * 
- * 410   23/02/98 13:00 Philipy
- * added scan lines for inter-level objects
- * added speech for bike selection in front end
- * 
- * 409   23/02/98 10:37 Philipy
- * added inter level stuff
- * 
- * 408   21/02/98 17:00 Oliverc
- * Fixed bug in goal score option (not initialised when entering menu)
- * 
- * 407   21/02/98 16:25 Philipy
- * added text messages for capture flag
- * 
- * 406   21/02/98 15:56 Oliverc
- * Added user-definable goal score option and fixed bug in goal scoring
- * when flag appears in goal
- * 
- * 405   21/02/98 13:04 Philipy
- * added in game load / save for sfx
- * 
- * 404   20/02/98 15:29 Philipy
- * re-implented AVI
- * splash screens can now play demos and AVIs
- * 
- * 403   19/02/98 22:01 Collinsd
- * Added flygirl biker.
- * 
- * 400   17/02/98 17:15 Philipy
- * level.mis now used to store level name as well as mission briefing
- * if file not there, reverts back to old level name
- * 
- * 399   17/02/98 9:17 Philipy
- * added support for placeholder textures, which can be dynamically
- * updated
- * implemented mission briefing screens
- * 
- * 398   16/02/98 21:38 Collinsd
- * Started Save/Load BGObjects. 
- * 
- * 397   16/02/98 14:34 Collinsd
- * Started LoadSave
- * 
- * 396   13/02/98 14:18 Philipy
- * moved damage perspective options
- * 
- * 395   11/02/98 12:58 Philipy
- * Changed PlaySfx calls to use Vol instead of Dist
- * 
- * 394   10/02/98 11:51 Philipy
- * added collision type option
- * 
- * 393   7/02/98 19:35 Oliverc
- * Enabled standard debugging options for EXTERNAL_DEMO (but not for
- * SHAREWARE)
- * 
- * 392   5/02/98 10:45 Oliverc
- * GoreGuts off by default (including registry setting)
- * 
- * 391   2/02/98 20:08 Philipy
- * added configurable quick text message buttons
- * 
- * 390   2/02/98 14:20 Philipy
- * Harm Teammates, Disable Pickups front end stuff done
- * 
- * 389   2/02/98 10:07 Philipy
- * 
- * 388   1/31/98 1:22p Phillipd
- * 
- * 387   1/29/98 2:27p Phillipd
- * Demo can now be saved to ram....and can be saved if your not the
- * host...
- * 
- * 386   29/01/98 13:30 Philipy
- * fixed bright title screen bikes prob
- * 
- * 385   28/01/98 23:08 Oliverc
- * Fixed a few presentation glitches in the menus
- * 
- * 384   28/01/98 17:16 Philipy
- * lock out windows now disabled
- * 
- * 383   28/01/98 14:24 Oliverc
- * Moved REGISTRY key names to demo_id.h
- * 
- * 382   27/01/98 23:10 Philipy
- * joystick POV now deletable
- * 
- * 381   27/01/98 15:32 Oliverc
- * Made REGISTRY_GAME_KEY version 1.0 for SHAREWARE version ONLY (ie still
- * version 0.1 for compatibility with development settings)
- * 
- * 380   27/01/98 15:28 Oliverc
- * Updated REGISTRY_GAME_KEY version to 1.0 (VERY IMPORTANT for SHAREWARE
- * version)
- * 
- * 379   27/01/98 14:09 Oliverc
- * Added NO_GORE build option to disable switching gore on/off
- * 
- * 378   27/01/98 13:03 Philipy
- * fixe bike name arrow thing
- * 
- * 377   27/01/98 12:25 Philipy
- * level pic now never displayed for multiplayer game
- * 
- * 376   27/01/98 12:12 Philipy
- * demo settings now always restored b4 playing demo
- * drop primary / drop secondary removed
- * 
- * 375   1/27/98 12:08p Philipy
- * fixed mode changing bug
- * 
- * 374   27/01/98 11:14 Oliverc
- * Fixed demo playback speeds so only a single 100% appears
- * Eliminated intermediate "restore game" menu between "play demo" on
- * start screen and actual "play demo" menu
- * 
- * 373   27/01/98 11:05 Philipy
- * fixed team game stuff
- * 
- * 372   26/01/98 18:23 Philipy
- * fixed video memory leaks
- * splash screens now display after release view, and call InitScene,
- * InitView after  completion
- * 
- * 371   1/26/98 11:08a Phillipd
- * Couple of Viewport changes taken out...
- * RearView is now i the registry....And disabled for death mode
- * 
- * 370   24/01/98 18:38 Philipy
- * time limit max now 15 mins
- * impossible to have unlimited time
- * 
- * 369   24/01/98 17:38 Philipy
- * fixed multiplayer join-quit-join bug
- * fixed attract mode loading wrong level
- * 
- * 368   23/01/98 16:38 Philipy
- * CD audio now on/off toggle, saved to config file
- * triggered pickup sfx now 1 in 4 chance
- * Trojax sfx now only stopped once
- * 
- * 367   23/01/98 11:24 Collinsd
- * Added override for solid screen poly bilinear
- * 
- * 366   22/01/98 22:40 Oliverc
- * Force bike in SHAREWARE demo playback to use only those bikes (and
- * corresponding player names) allowed in SHAREWARE version
- * 
- * 365   22/01/98 19:14 Philipy
- * fixed re-loading looping sfx while in level
- * biker speech now switchable
- * 
- * 364   22/01/98 18:08 Oliverc
- * Fixed bug in demo playback menu (quit now just returns to main menu
- * instead of exiting program)
- * 
- * 363   22/01/98 9:48 Philipy
- * level change bug
- * joystick allocation bug
- * shareware time limit maximum is now 5
- * 
- * 362   21/01/98 17:27 Philipy
- * attract mode splash screen stuff
- * 
- * 361   21/01/98 14:54 Philipy
- * fixed level changing bug
- * 
- * 360   21/01/98 12:19 Philipy
- * Added attract mode for shareware
- * fixed looping sfx volume bug
- * 
- * 359   20/01/98 12:25 Philipy
- * Fixed level starting bug
- * 
- * 358   1/19/98 4:21p Phillipd
- * Bright Ships flag added.....
- * 
- * 357   1/19/98 2:40p Phillipd
- * 
- * 356   19/01/98 13:01 Philipy
- * fixed mission text not being displayed
- * possibly fixed stats bug ?
- * 
- * 355   19/01/98 11:15 Philipy
- * fixed menus locking up on choosing texture format
- * 
- * 354   19/01/98 10:08 Philipy
- * fixed lock up when pressing escape
- * 
- * 353   17/01/98 16:53 Philipy
- * You can now use delete key to un-assign joystick buttons
- * 
- * 352   16/01/98 18:01 Oliverc
- * Only disabled selected weapons for SHAREWARE instead of always...
- * 
- * 351   16/01/98 17:12 Philipy
- * fixed single player loading crash bug
- * 
- * 350   16/01/98 12:11 Philipy
- * added spaceorb auto configure stuff
- * splash screen now displays in highest res it can find
- * 
- * 349   16/01/98 9:22 Oliverc
- * Changed "load game" menu option to "play demo" for SHAREWARE
- * and changed front-end cruise control edit labels to match in-game speed
- * up/down
- * 
- * 348   15/01/98 18:55 Philipy
- * added new splash screens
- * 
- * 347   15/01/98 17:06 Philipy
- * changed PlayPannedSfx calls to use float for freq
- * 
- * 346   1/15/98 12:29p Phillipd
- * 
- * 345   15/01/98 11:14 Oliverc
- * hacked out level pic stuff temporarily
- * 
- * 344   14/01/98 17:17 Oliverc
- * Separate DEMO_LEVELS for SHAREWARE version
- * 
- * 343   13/01/98 10:58 Philipy
- * lives now carry over between levels as before
- * put #ifdefs around splash screens for shareware
- * 
- * 342   13/01/98 9:39 Collinsd
- * Added debug to show untriggered enemies.  Started Enemy Poly Colisions.
- * 
- * 341   12/01/98 20:01 Collinsd
- * Fixed warnings.
- * 
- * 340   12/01/98 16:36 Philipy
- * fixed level loading bug
- * 
- * 339   12/01/98 15:40 Philipy
- * added arrows to indicate selectable bikes
- * 
- * 338   12/01/98 12:19 Oliverc
- * Fixed bug: Lokasenna visible in SHAREWARE version
- * 
- * 337   12/01/98 0:08 Philipy
- * bug fixes
- * added inter-level mission briefing
- * changed splash screen code, + added splash screen on exit
- * 
- * 336   11/01/98 17:54 Philipy
- * inter level mission screen
- * 
- * 335   10/01/98 20:35 Philipy
- * fixed no speech option
- * 
- * 334   10/01/98 19:31 Philipy
- * bug fixes
- * 
- * 333   10/01/98 17:39 Oliverc
- * Fixed bug with font translation table for chars '[', ']', and '='
- * 
- * 332   10/01/98 15:14 Oliverc
- * Disabled logos by default for SHAREWARE except for demo playback
- * 
- * 331   9/01/98 17:26 Philipy
- * player is now forced to start on level 0
- * 
- * 330   9/01/98 16:59 Oliverc
- * Abbreviated labels in in-game keyboard config menus
- * 
- * 329   9/01/98 12:49 Oliverc
- * Disabled demo recording and cleaning from SHAREWARE version
- * 
- * 328   9/01/98 11:14 Philipy
- * 
- * 327   9/01/98 11:00 Oliverc
- * Made SHAREWARE bike selection work in non-SHAREWARE
- * 
- * 326   9/01/98 10:51 Oliverc
- * Fixed bug: shareware version now only has 4 bikers selectable in game
- * Fixed bug: in-game bike selection crashes if press left/right in list
- * Changed CreateVersion() to use MULTIPLAYER_VERSION instead of file
- * modified day
- * Tidied in-game options menus
- * 
- * 325   7/01/98 15:03 Oliverc
- * SHAREWARE versions now use built-in level lists instead of external
- * mission.dat and battle.dat files
- * 
- * 324   7/01/98 12:13 Philipy
- * fixed level spec sfx bug
- * 
- * 323   1/07/98 11:07a Phillipd
- * 
- * 322   7/01/98 11:01 Philipy
- * added extra level names
- * 
- * 321   7/01/98 9:34 Philipy
- * added title room sfx
- * added ability to select bike computer, biker with sfx loaded
- * 
- * 320   6/01/98 19:02 Oliverc
- * Disabled expiry date check if EXPIRE_DAYS not defined
- * 
- * 319   5/01/98 19:59 Oliverc
- * Current screen mode, texture format and sound volume settings now saved
- * to registry on exit and restored on startup
- * 
- * 318   5/01/98 16:41 Collinsd
- * 
- * 317   3/01/98 17:51 Oliverc
- * In-game screen mode changes only if mode selected different from
- * current used
- * Disabled in-game level changing for EXTERNAL_DEMOs
- * 
- * 316   3/01/98 15:01 Oliverc
- * Cut down bike controls menu to only that currently implemented
- * 
- * 315   31/12/97 12:19 Philipy
- * fixed screen res bug
- * 
- * 314   30/12/97 18:55 Philipy
- * new cogs
- * 
- * 313   30/12/97 12:23 Philipy
- * fixed difficulty setting text
- * 
- * 312   29/12/97 19:53 Philipy
- * various bug fixes
- * 
- * 310   24/12/97 9:17 Philipy
- * fixed a few minor spelling errors, plus 800x600 corruption
- * 
- * 309   12/23/97 9:59a Phillipd
- * Unwanted Tetxure Formats commented out...
- * Unwanted ScreenModes out...
- * Pickup Generation Sfx added
- * 
- * 308   19/12/97 10:32 Oliverc
- * Validate player bike after config file loaded
- * 
- * 307   18/12/97 23:07 Oliverc
- * Disabled debug mode etc from in-game menu for EXTERNAL_DEMOs
- * 
- * 306   18/12/97 22:07 Oliverc
- * Restricted selectable bikes in SHAREWARE version
- * 
- * 305   12/18/97 5:38p Phillipd
- * 
- * 304   12/18/97 5:37p Phillipd
- * 
- * 303   12/18/97 2:47p Phillipd
- * 
- * 302   12/17/97 5:19p Phillipd
- * 
- * 301   16/12/97 16:36 Oliverc
- * Level list now loaded from arbitrary file in Levels folder (mission.dat
- * for single player and battle.dat for multiplayer games), with existing
- * levels.dat used as a fallback for compatibility with existing levels
- * 
- * 300   12/16/97 2:44p Phillipd
- * 
- * 299   12/15/97 2:43p Phillipd
- * 
- * 297   12/12/97 10:22a Phillipd
- * Packets per second now dynamic
- * 
- * 296   11/12/97 16:45 Oliverc
- * Fixed 2nd "roll left" keydef to "roll right"
- * 
- * 295   12/11/97 2:09p Phillipd
- * Made a few changes.....SHAREWARE can now be defined to take out some
- * options..
- * 
- * 294   11/12/97 12:49 Oliverc
- * Changed registry key used to store game settings to be compatible with
- * InstallSheild3's automatic unInstall function
- * 
- * 293   12/10/97 10:39a Phillipd
- * Players names are now propergated across the network when changed...
- * Difficulty levels are functional....
- * 
- * 292   12/06/97 2:53p Phillipd
- * Fixed Phils Sfx Crash Bug....Doh
- * 
- * 291   5/12/97 21:55 Philipy
- * fixed sessions list bug
- * 
- * 290   3/12/97 16:28 Philipy
- * removed org_color from MX header group structure
- * 
- * 289   3/12/97 14:18 Philipy
- * added packets per second slider
- * 
- * 288   3/12/97 9:20 Philipy
- * VDU now pulsates on both sides, mode selection fixed ( although
- * choosing non-supported modes causes text to not be aligned properly )
- * 
- * 
- * 286   2/12/97 14:52 Philipy
- * correct surface now restored after alt+tab
- * 
- * 285   2/12/97 11:52 Philipy
- * boot demo stuff
- * 
- * 284   1/12/97 17:07 Philipy
- * fixed no sound bug when in self play demo
- * 
- * 283   11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 282   27/11/97 12:35 Philipy
- * fixed sound bug on self play demo
- * demo playback speed now given as true percentage
- * 
- * 281   27/11/97 12:33 Oliverc
- * Added show node network option to debug menu
- * 
- * 280   11/27/97 10:39a Phillipd
- * 
- * 279   25/11/97 21:30 Oliverc
- * Phil fixed bug in level changing in-game
- * 
- * 278   21/11/97 11:21 Philipy
- * fxed releasing of splash screen
- * 
- * 277   11/21/97 10:56a Phillipd
- * Max Kills to end a level....
- * 
- * 276   17/11/97 17:45 Philipy
- * added average fps stuff
- * 
- * 275   14/11/97 17:36 Philipy
- * implemented mouse invert & sensitivity options.
- * You can now assign a key to more than one action (allows triple
- * chording)
- * 
- * 274   12/11/97 14:48 Philipy
- * fixed joining multiplayer bug
- * 
- * 273   7/11/97 14:25 Philipy
- * fixed bug when changing mode from title room: InitTitle was not being
- * called
- * 
- * 272   6/11/97 20:59 Philipy
- * fixed bug with joystick stuff
- * 
- * 271   6/11/97 10:26 Oliverc
- * 
- * 270   5/11/97 17:41 Philipy
- * fixed a couple of joystick bits
- * add invert mouse axis options
- * 
- * 269   5/11/97 10:54 Philipy
- * Fixed joystick button config stuff
- * 
- * 268   4/11/97 16:26 Philipy
- * AVI now plays for stats screens
- * implemented scrolling messages (not enabled)
- * 
- * 267   28/10/97 9:41 Philipy
- * Team member names now flash on team select screen when not ready
- * 
- * 266   27/10/97 15:35 Philipy
- * added in-game volume controls
- * 
- * 265   24/10/97 12:33 Philipy
- * more debug menu stuff
- * 
- * 264   24/10/97 12:07 Collinsd
- * zone display now works of menus.
- * 
- * 263   24/10/97 10:36 Philipy
- * Updated debug menus
- * 
- * 262   23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 261   21/10/97 13:12 Philipy
- * added sound control options
- * 
- * 260   20/10/97 16:06 Oliverc
- * Enabled splash screen for EXTERNAL_DEMO mode
- * 
- * 259   16/10/97 18:08 Philipy
- * Implemented pre-game AVI player
- * 
- * 
- * 257   14/10/97 15:48 Oliverc
- * Fixed bug in list selection
- * 
- * 256   8/10/97 20:31 Philipy
- * 
- * 255   7/10/97 10:16 Philipy
- * fixed mouse look-up bug when starting subsequent games.
- * DInput() was being called every restart, with no corresponding
- * TermDInput().
- * DInput is now only ever done once (TitleOnceOnly)
- * 
- * 254   6-10-97 3:40p Philipy
- * Joystick info now loaded/saved for unconnected joysticks (prevents
- * information being lost from config file)
- * 
- * 253   3-10-97 12:17p Philipy
- * Joystick stuff almost done
- * 
- * 252   1-10-97 8:26p Philipy
- * IP address now only displayed when hosting IP game
- * 
- * 251   1-10-97 7:21p Philipy
- * more joystick stuff - writing to config, changed JOYSTICKINFO
- * structure, user interface for assigning buttons & axis.
- * Fixed bug that prevented you from going into wireframe mode - keyboard
- * buffer is now flushed in InitView, and TermDInput is not called from
- * ReleaseView (something needs to be done about releasing DirectX objects
- * when quitting from titles!)
- * 
- * 250   30-09-97 10:46a Philipy
- * "Create Game" screen now shows host IP Address
- * 
- * 249   30-09-97 9:49a Philipy
- * added in game ping options
- * 
- * 248   29-09-97 4:59p Philipy
- * fixed TCP address thing
- * some joystick btn config stuff
- * 
- * 247   29-09-97 4:04p Philipy
- * fixed menu select bug
- * 
- * 246   29-09-97 3:00p Philipy
- * added menu option for entering TCP address
- * 
- * 245   26-09-97 3:27p Philipy
- * config file can now store joystick info.
- * now only does InitDInput() at start of title screen, and TermDInput()
- * when quitting game
- * 
- * 244   18-09-97 4:45p Philipy
- * fixed single player level select and dynamic texture loading bugs
- * 
- * 243   18-09-97 11:07a Philipy
- * single player is f*cked
- * 
- * 242   17-09-97 4:10p Philipy
- * dynamic loading of bike chars and level pics, plus textures now not
- * loaded until after splash screen
- * 
- * 241   17/09/97 11:02 Collinsd
- * Hardware Text works again.
- * 
- * 240   16/09/97 17:52 Collinsd
- * More of Chris's stuff works.
- * 
- * 239   15-09-97 3:23p Philipy
- * message displayed, then correct menu displayed on new host machine if
- * host migrates.
- * Host can now start another game, having quit 'waiting to start' menu
- * 
- * 238   14-09-97 6:56p Philipy
- * joining existing team game - you can now select which team to go into,
- * and view current scores.
- * Set up VDU error message system
- * 
- * 
- * 236   5-09-97 5:47p Philipy
- * Menus now use buffered keys
- * 
- * 235   5-09-97 4:12p Philipy
- * Changed menus to use buffered keys
- * 
- * 234   5/09/97 11:57 Collinsd
- * Reload same level added
- * 
- * 233   5-09-97 11:12a Philipy
- * demo playback stuff from new menus
- * 
- * 229   3-09-97 3:52p Philipy
- * 
- * 227   3-09-97 12:33p Philipy
- * moved Our_CalculateFrameRate to above menu processing so that demos now
- * work.
- * 
- * 226   3/09/97 12:20 Oliverc
- * Added command-line options to set normal FOV and screen aspect ratio
- * for widescreen TVs
- * 
- * 225   2-09-97 2:45p Philipy
- * stopped menus from messing up when you press escape
- * 
- * 224   2-09-97 11:53a Philipy
- * fixed invalid bike no. problem
- * 
- * 223   2-09-97 10:14a Philipy
- * fixed level select bug
- * 
- * 221   1-09-97 5:35p Philipy
- * changes made for 3 & 4 player team game
- * 
- * 220   26-08-97 4:19p Philipy
- * most new menu versions of current menus now implemented
- * 
- * 
- * 218   20/08/97 12:36 Oliverc
- * Changed (old) use_level_path to (new) use_local_data to indicate that a
- * player is testing a local copy of a level and doesn't want anyone else
- * to join his game
- * 
- * 217   14/08/97 17:56 Oliverc
- * 2nd splash screen now stays on for 10secs
- * 
- * 216   14-08-97 5:43p Philipy
- * added ability for any number of splash screens & properties
- * 
- * 215   14-08-97 4:37p Philipy
- * 
- * 214   14-08-97 3:54p Philipy
- * 
- * 213   11-08-97 5:01p Philipy
- * fixed problem of returning to title screen from main game
- * 
- * 212   11-08-97 3:17p Philipy
- * 
- * 211   9/08/97 14:56 Collinsd
- * Added ScreenPoly TPage Link list and flat shaded screen polys for phil
- * 
- * 210   8/08/97 14:18 Collinsd
- * Display of Polys has now been updated to use TPage link list.
- * 
- * 209   8-08-97 9:21a Philipy
- * Highlight box stuff
- * 
- * 208   7/08/97 21:25 Collinsd
- * Change FmPolys to use tpage link list.
- * 
- * 207   6-08-97 4:47p Philipy
- * finished new visuals menus
- * 
- * 206   6-08-97 11:35a Philipy
- * sliders and lists for VDU
- * 
- * 205   2/08/97 12:34 Oliverc
- * Added wireframe mode option for debugging group/portal visibility
- * 
- * 
- * 203   31-07-97 3:47p Philipy
- * started detail level menus, plus additional stuff for self play mode
- * 
- * 199   28/07/97 16:44 Collinsd
- * Tracker uses ships to target, demo mode works again?
- * 
- * 198   28-07-97 12:12p Philipy
- * 
- * 196   25/07/97 12:10 Collinsd
- * Changed ships bike index, and changed skin for olly.
- * 
- * 195   24/07/97 17:46 Collinsd
- * 
- * 194   24-07-97 5:10p Philipy
- * 
- * 193   24/07/97 17:08 Collinsd
- * Added slick
- * 
- * 192   22-07-97 5:42p Philipy
- * loads of animation stuff switched over to new event system
- * 
- * 191   21/07/97 17:31 Collinsd
- * 
- * 190   17-07-97 3:49p Philipy
- * Started to create TITLE_EVENT structure and processes
- * 
- * 189   17/07/97 15:39 Oliverc
- * Added mouse wheel controls options to key configuration
- * as well as new cruise control keys
- * 
- * 188   17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 187   16-07-97 4:36p Philipy
- * fixed selecting cerbero
- * 
- * 186   16-07-97 4:11p Philipy
- * added holo-bikes and scan lines
- * 
- * 185   16/07/97 12:34 Collinsd
- * Adder cerbero bike
- * 
- * 184   9-07-97 8:23p Philipy
- * changed so that only one VDU font is loaded at a time
- * 
- * 183   9-07-97 5:02p Philipy
- * added new font for 340x200
- * 
- * 182   9/07/97 16:59 Collinsd
- * Fixed MXA models in titles
- * 
- * 181   9-07-97 11:37a Philipy
- * changed all vdu text stuff, added a test bike
- * 
- * 180   8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 179   1/07/97 16:05 Collinsd
- * Added mofisto bike.
- * 
- * 178   25-06-97 9:20a Philipy
- * 
- * 177   25-06-97 9:14a Philipy
- * added 2nd VDU location, starting to use screen polys
- * 
- * 176   6/24/97 5:11p Phillipd
- * 
- * 175   6/24/97 11:12a Phillipd
- * 
- * 174   20-06-97 9:13a Philipy
- * added new models, room darkening effect and VDU pulsing effect
- * 
- * 173   20/06/97 8:51 Collinsd
- * Added more error messages to modeldisp.
- * 
- * 172   19/06/97 12:36 Collinsd
- * Added sprite text for menus
- * 
- * 171   6/19/97 10:25a Phillipd
- * 
- * 170   19/06/97 9:01 Collinsd
- * Added error checking to displaytitle()
- * 
- * 169   6/18/97 2:48p Phillipd
- * 
- * 168   17/06/97 17:18 Oliverc
- * Disabled debug mode and server mode menu items
- * 
- * 167   17/06/97 9:30 Oliverc
- * Made expiry period depend on EXPIRE_DAYS in demo_id.h
- * 
- * 166   17-06-97 9:23a Philipy
- * 
- * 165   16-06-97 2:12p Philipy
- * player select routine tidyed up
- * 
- * 164   16-06-97 9:17a Philipy
- * room darkens on panning to VDU
- * 
- * 163   6/14/97 2:27p Phillipd
- * 
- * 162   6/14/97 2:22p Phillipd
- * 
- * 161   13/06/97 16:03 Collinsd
- * Took out old bgobjects
- * 
- * 160   13/06/97 15:30 Collinsd
- * Taken out save BGObjects
- * 
- * 159   13-06-97 3:28p Philipy
- * new set up biker menus
- * 
- * 158   6/12/97 2:27p Phillipd
- * 
- * 157   10-06-97 9:00a Philipy
- * if'd out keys for moving around room
- * 
- * 156   9-06-97 9:04p Philipy
- * disabled some new menu commands for E3 demo
- * 
- * 155   9-06-97 6:45p Philipy
- * fixed vdu bug
- * 
- * 154   9-06-97 3:08p Philipy
- * 
- * 153   8-06-97 8:11p Philipy
- * set up menus for E3 Client demo
- * 
- * 152   7-06-97 9:13p Philipy
- * auto join a game
- * 
- * 151   7-06-97 4:50p Philipy
- * fixed more slider probs
- * 
- * 150   7-06-97 3:55p Philipy
- * fixed slider problem
- * 
- * 149   7-06-97 3:05p Philipy
- * control screens done
- * 
- * 148   6/07/97 1:20p Phillipd
- * 
- * 147   6/07/97 1:18p Phillipd
- * 
- * 146   6/07/97 10:52a Phillipd
- * 
- * 145   6/06/97 2:23p Phillipd
- * 
- * 144   6-06-97 2:19p Philipy
- * joining a game with new menus
- * 
- * 143   5/06/97 12:41 Collinsd
- * Reduced texture pages
- * 
- * 142   4-06-97 9:12p Philipy
- * coded all vdu processing functions
- * 
- * 141   21-05-97 10:27a Philipy
- * removed test numbers from menu
- * 
- * 140   5/21/97 10:18a Phillipd
- * 
- * 139   21-05-97 9:57a Philipy
- * set up status for camera
- * 
- * 138   19-05-97 8:21p Philipy
- * Texture animation stuff, plus correct disc stacks for new menu system
- * 
- * 137   12-05-97 6:13p Philipy
- * Disc animation stuff
- * 
- * 136   9-05-97 6:26p Philipy
- * positioned discs. Now highlights selected disc
- * 
- * 135   8-05-97 6:10p Philipy
- * Added functions to select appropriate disc
- * Modified MenuItemDrawCursor
- * 
- * 134   8-05-97 12:02p Philipy
- * started to place discs....
- * 
- * 133   7-05-97 6:13p Philipy
- * Implemented MenuFuncDraw (part of MENU structure)
- * Started to implement new menu system
- * 
- * 132   7-05-97 10:16a Philipy
- * Moved initialisation of camera, flags and rotation to LoadTitleModels
- * 
- * 131   7/05/97 9:57 Collinsd
- * Fixed reloading of title models.
- * 
- * 130   6-05-97 7:12p Philipy
- * 
- * 129   6-05-97 12:28p Philipy
- * 
- * 128   2-05-97 6:33p Philipy
- * 
- * 127   1-05-97 7:30p Philipy
- * Testing zooming in and out of menu room
- * 
- * 126   5/01/97 8:59a Phillipd
- * 
- * 125   4/30/97 5:35p Phillipd
- * 
- * 124   4/30/97 4:37p Phillipd
- * 
- * 123   30-04-97 3:22p Philipy
- * 
- * 122   4/30/97 12:28p Phillipd
- * 
- * 121   30/04/97 12:08 Oliverc
- * Removed "About" menu
- * 
- * 120   4/30/97 11:24a Phillipd
- * 
- * 119   29/04/97 17:36 Oliverc
- * Added "About" item to main menu
- * 
- * 118   4/28/97 4:14p Phillipd
- * 
- * 117   25/04/97 17:14 Collinsd
- * Added new bike
- * 
- * 116   4/25/97 5:12p Phillipd
- * 
- * 115   4/22/97 1:52p Phillipd
- * 
- * 114   16-04-97 4:38p Collinsd
- * Added reflecting bullets for all weapons except laser.
- * Cheat mode now has invul effect.
- * 
- * 113   4/15/97 10:57a Phillipd
- * 
- * 112   4/12/97 1:09p Phillipd
- * Detail levels are stored in the registry
- * 
- * 111   10-04-97 4:41p Collinsd
- * Added new bike models.
- * 
- * 110   4/08/97 12:39p Phillipd
- * 
- * 109   4/08/97 11:40a Phillipd
- * 
- * 108   4/05/97 12:08p Phillipd
- * 
- * 107   4/02/97 4:08p Phillipd
- * Added Weapon kill Stats..
- * 
- * 106   2-04-97 11:54a Collinsd
- * Added Jo bike
- * 
- * 105   4/02/97 11:01a Phillipd
- * 
- * 104   3/27/97 11:41a Phillipd
- * added texture format selection to the menus...
- * 
- * 103   3/25/97 9:21a Phillipd
- * current screen mode iis highlighted when you try and change it..
- * 
- * 102   24-03-97 3:55p Collinsd
- * Updated Lajay, Excop and added rhesus...
- * 
- * 101   3/20/97 2:34p Phillipd
- * Level Select is now in the menus....
- * 
- * 100   3/14/97 5:32p Phillipd
- * 
- * 99    3/13/97 11:28a Phillipd
- * Auto Detail level added..
- * Text all one colour unless printing own name...
- * 
- * 98    3/12/97 4:43p Phillipd
- * 
- * 97    3/11/97 5:41p Phillipd
- * 
- * 96    3/11/97 4:55p Phillipd
- * Demo Interpolate stuff is now working but not finished...
- * 
- * 95    10-03-97 7:49p Collinsd
- * Cheat mode no longer buggers up pickups.
- * 
- * 94    3/10/97 9:53a Phillipd
- * 
- * 93    2/26/97 3:10p Phillipd
- * 
- * 92    2/25/97 2:51p Phillipd
- * 
- * 91    2/24/97 4:47p Phillipd
- * GameElapsedTime is now relative to the demo not the
- * real world....so dynamic speed change is possible..
- * 
- * 90    2/24/97 12:21p Phillipd
- * 89    24-02-97 11:21a Collinsd
- * Added gravgon check for restart. and added bounding on object selection
- * depending on mode.
- * 
- * 88    2/24/97 10:00a Phillipd
- * Demo mode with multispeed has been added..
- * 
- * 87    2/14/97 3:21p Phillipd
- * 
- * 86    2/14/97 12:47p Phillipd
- * 
- * 85    13/02/97 13:48 Oliverc
- * Added genuine last compile time function and version fingerprinting
- * 
- * 84    12-02-97 3:27p Collinsd
- * 
- * 83    6/02/97 9:36 Oliverc
- * Added ENABLE_DEBUG_MENU #define flag
- * 
- * 82    2/05/97 12:01p Phillipd
- * nicer directplay bug handle..
- * 
- * 81    4-02-97 4:29p Collinsd
- * 
- * 80    2/03/97 5:16p Phillipd
- * Translusceny is now controlled by global execute buffers.... which is
- * much better...
- * 
- * 79    31-01-97 10:20a Collinsd
- * Light Details moved into detail menu.
- * 
- * 78    31-01-97 9:24a Collinsd
- * Added detail level for missile trails.
- * 
- * 77    30-01-97 3:47p Collinsd
- * 
- * 76    27-01-97 2:27p Collinsd
- * Added bsp volume display
- * 
- * 75    1/27/97 10:58a Phillipd
- * Textures enabled flag added to debug menu
- * 
- * 74    24-01-97 2:48p Collinsd
- * Added skin thickness to nodecube.
- * 
- * 73    22-01-97 6:00p Collinsd
- * Added debug node cube.
- * 
- * 72    1/22/97 3:17p Phillipd
- * moved toggle full screen
- * 
- * 71    20-01-97 11:21a Collinsd
- * Added time limit to multiplayer games.
- * 
- * 70    1/15/97 12:15p Phillipd
- * started work on the server mode
- * 
- * 69    1/13/97 5:40p Phillipd
- * added message macors to multiplayer....
- * 
- * 68    13/01/97 15:29 Oliverc
- * 
- * 67    10-01-97 3:54p Collinsd
- * Missile/Primary weapons no longer open doors before collision.
- * 
- * 66    10-01-97 12:51p Collinsd
- * Ooopss, Fixed Save Pickup/BGObject Menu.
- * 
- * 65    10-01-97 12:34p Collinsd
- * Added Doors, Chanded pickups/door/mine dropping.
- * 
- * 64    6-01-97 11:09a Collinsd
- * All references to timer now replaced with titanstar.
- * 
- * 63    6-01-97 9:06a Collinsd
- * Added drop ammo/shield options.
- * Started working on titan start missile.
- * 
- * 62    12/27/96 3:38p Phillipd
- * Primary.h Secondary.h pickups.h are now clean....
- * Still Lots to do though.....
- * 
- * 61    12/27/96 12:34p Phillipd
- * all files are not dependant on mydplay.h...just some..
- * including it several times in the same files didnt help..
- * 
- * 60    24/12/96 12:26 Oliverc
- * Added 14-day expiry date from time of last compilation of Title.c, as
- * well as saving current bike selection in player config file
- * 
- * 59    12/23/96 6:04p Phillipd
- * 
- * 58    12/23/96 8:50a Phillipd
- * 
- * 57    21/12/96 19:44 Oliverc
- * Changed bike select menu so that changes take effect immediately
- * 
- * 56    20-12-96 5:06p Collinsd
- * Added debug weapon feature.
- * 
- * 55    20/12/96 15:19 Oliverc
- * Changed debug menu to be on SHIFT-F1
- * 
- * 54    20/12/96 11:25 Oliverc
- * Fixed bug in menu searchkey processing
- * 
- * 53    19/12/96 16:20 Oliverc
- * 
- * 52    19/12/96 16:17 Oliverc
- * Added debug options menu with "go to room" function
- * 
- * 51    12/19/96 2:52p Phillipd
- * new 512x384/640x400 font added
- * 
- * 50    12/19/96 11:52a Phillipd
- * 
- * 49    12/19/96 11:43a Phillipd
- * 
- * 48    12/18/96 12:41p Phillipd
- * Copyright screen added..
- * 
- * 47    12/18/96 9:29a Phillipd
- * 
- * 46    12/18/96 9:22a Phillipd
- * 
- * 45    12/17/96 5:54p Phillipd
- * 
- * 44    12/17/96 4:57p Phillipd
- * Version Control Added..
- * 
- * 43    12/17/96 2:33p Phillipd
- * 
- * 42    12/17/96 9:20a Phillipd
- * 
- * 41    16/12/96 10:48 Oliverc
- * Added programmer-definable expiry date feature
- * 
- * 40    12/14/96 5:04p Phillipd
- * 
- * 39    13/12/96 14:22 Oliverc
- * Added debug help screen
- * 
- * 38    12/13/96 12:52p Phillipd
- * 
- * 37    12/13/96 11:19a Phillipd
- * 
- * 36    13/12/96 10:56 Oliverc
- * Added in-game help screen
- * 
- * 35    12/12/96 16:23 Oliverc
- * Changed game key reading to use DirectInput
- * 
- * 34    12/12/96 10:56a Phillipd
- * 
- * 33    11/12/96 17:59 Oliverc
- * Added weapon selection key definition menus
- * 
- * 32    12/11/96 5:25p Collinsd
- * Added nutter biker.
- * 
- * 31    12/10/96 3:54p Phillipd
- * 
- * 30    12/07/96 8:43p Collinsd
- * Added Jap Bird bike, Fixed mines being dropped and firing missile at
- * same time bug.  Added rotations when hit ( depending on damage ).
- * 
- * 29    12/04/96 4:55p Phillipd
- * 
- * 28    12/04/96 11:22a Collinsd
- * Added foetoid and new scaled bikes. Added sussgun richochet and sussgun
- * no ammo sfx, new load weapon sfx, and new transpulse/trojax sfx.
- * 
- * 27    12/04/96 11:20a Phillipd
- * Simplified Panel Started
- * 
- * 26    12/03/96 5:00p Phillipd
- * Quting if not host bug fixed...
- * game doesnt start if ya just quit the title screen...
- * 
- * 25    12/03/96 10:40a Phillipd
- * Multiplay can now back out
- * 
- * 24    12/02/96 11:22a Phillipd
- * 
- * 23    2/12/96 11:20 Oliverc
- * Made bike selection available in-game
- * 
- * 22    12/01/96 1:21p Phillipd
- * You can now quit a game go back to the title screen and start or join
- * another....
- * 
- * 21    11/29/96 3:10p Phillipd
- * Full screen from menu toggle...
- * Fixed the mouse lag problem again....
- * 
- * 20    11/28/96 11:28a Phillipd
- * You can see who is in a game and how many players
- * there should be...
- * 
- * 19    11/28/96 10:00a Phillipd
- * Multiplayer join changed beyond all recognition,,,
- * 
- * 18    11/26/96 5:23p Collinsd
- * Added trucker biker
- * 
- * 17    11/26/96 12:35p Collinsd
- * Should hopefully fix problem.
- * 
- * 16    11/25/96 11:59a Phillipd
- * 
- * 15    11/22/96 5:10p Phillipd
- * 
- * 14    11/22/96 9:20a Phillipd
- * Put in c for asm flag and made a bit more watcom compatible
- * 
- * 13    21/11/96 11:46 Collinsd
- * Added f6-f12 controlled by main menu dubug option.
- * 
- * 12    11/21/96 11:23a Phillipd
- * 
- * 11    11/20/96 2:42p Phillipd
- * players can now restart and keep there score...
- * 
- * 10    18/11/96 19:30 Oliverc
- * Changed menu toggle/back out key to ESC and stopped ESC from quitting
- * the program
- * 
- * 9     11/18/96 3:26p Phillipd
- * 
- * 8     11/18/96 12:23p Phillipd
- * New stuff..
- * 
- * 7     14/11/96 17:37 Oliverc
- * Added in-window in-game menus
- * 
- * 6     11/13/96 5:07p Phillipd
- * title pics name now 8 chars long...
- * 
- * 5     11/13/96 9:08a Phillipd
- * All the Menus in the world....And then Some
- * 
- * 4     7/11/96 10:47 Collinsd
- * Shortened short ships structures.
- * 
- * 3     10/29/96 4:02p Phillipd
- * 
- * 2     10/29/96 2:49p Phillipd
- * panning sfx and new panel....with lights...
- * 
- * 1     10/28/96 8:49a Phillipd
- */
-
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Include Files...	
@@ -2516,8 +506,6 @@ BOOL IgnoreMenuFuncs = FALSE;
 		Fucntions without a header..
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void InitBattleMenu( MENU *Menu );
-void StartAManualServer( MENUITEM *Item );
-void StartAnAutoServer( MENUITEM *Item );
 void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
 void CheckForRogueSfx( void );
@@ -2566,9 +554,8 @@ void InitPilotReName( MENU *menu );
 void RenamePilotName( MENUITEM *item );
 void InitStartMenu( MENU *Menu );
 void ExitInGameMenu( MENU *Menu );
-void InitMultiplayerHostVDU( MENU *Menu );
-void InitMultiplayerHostVDUServer( MENU *Menu );
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu );
+void ExitMultiplayerHostVDUPeerPeer( MENU *Menu );
 void InitPseudoHostGameScreen( MENU *Menu );
 void InitLobbyWaitingForHost( MENU *Menu );
 void InitSinglePlayerGame( MENU *Menu );
@@ -2839,7 +826,6 @@ void InitVisualsTimer (TITLE_EVENT_TIMER *TitleEventTimer);
 void NewMenuSelectMode( MENUITEM *Item );
 BOOL ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
-void SelectConnectionToStartServer (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
 void GetInitialSessions ( MENU *menu );
 
@@ -2876,13 +862,7 @@ BOOL SetWaterDetail( SLIDER *slider );
 BOOL SetNumPrimaryPickups( SLIDER *slider );
 void UpdateSessionInfo( LIST *List );
 void InitHostWaitingToStart( MENU *Menu );
-void ResetServer( MENU *Menu );
-void RestartServer( void );
 void BackToJoinSession( MENUITEM *Item );
-void InitServerWaitingForGameParameters( MENU *Menu );
-void InitServerWaitingToStartGame( MENU *Menu );
-void ServerCountDown( int *dummy );
-void ServerCountDown2( int *dummy );
 void InitPseudoHostWaitingForAck( MENU *Menu );
 void PseudoHostWaitingForAckTimer( int *dummy );
 void MenuReleaseDPlay( MENU *Menu );
@@ -3474,75 +1454,6 @@ MENU	MENU_NEW_PseudoHostWaitingToStart = {
 	}
 };
 
-#if 0
-
-MENU	MENU_NEW_HostWaitingToStartServer = {
-	"", GetInitialSessions, BailMultiplayerFrontEnd, UpdateSessions, 0,
-	{
-		{ 0, 0, 200, 10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 15, 90, 25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, HostAboutToStart/*GoToSynchup*/, DrawFlatMenuItem, NULL, 0  },
-		{ 90, 15, 105, 25, 0, LT_MENU_NEW_HostWaitingToStart2/*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 15, 200, 25, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-		{ 5, 27, 100, 37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
-		{ 5, 40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
-
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-#else
-
-MENU	MENU_NEW_ServerHasQuit = {
-	"", NULL, NULL, NULL, 0,
-	{
-		{ 10, 0, 200, 150, 0, LT_MENU_NEW_ServerHasQuit1/*"the server has quit"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 150, 200, 170, 0, LT_MENU_NEW_ServerHasQuit2/*"ok"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  NULL, NULL, BackToJoinSession, DrawFlatMenuItem, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-// this menu can time out and go back to MENU_NEW_ServerWaitingForPseudoHost 
-MENU	MENU_NEW_ServerWaitingToStartGame = {
-	"", InitServerWaitingToStartGame, ResetServer, ServerCountDown2, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 10, 0, 200, 170, 0, LT_MENU_NEW_ServerWaitingToStartGame1/*"server - waiting for host to start game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-// this menu can time out and go back to MENU_NEW_ServerWaitingForPseudoHost 
-MENU	MENU_NEW_ServerWaitingForGameParameters = {
-	"", InitServerWaitingForGameParameters, ResetServer, ServerCountDown, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 10, 0, 200, 170, 0, LT_MENU_NEW_ServerWaitingForGameParameters1/*"server - waiting for host to select game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_NEW_HostWaitingToStartServer = {
-	"", NULL, ResetServer, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 10, 0, 200, 170, 0, LT_MENU_NEW_HostWaitingToStartServer1/*"server - waiting to allocate host"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-#endif
-
-
-
-
 MENU	MENU_NEW_SelectLevel = {
 	"", LoadLevelText, KillLevelPic, NULL, 0,
 	{
@@ -3596,7 +1507,6 @@ MENU	MENU_NEW_ValidPickups = {
 	}
 };
 
-uint32 ColPerspectivePeerPeer;
 uint32 ColPerspectiveServer;
 
 MENU	MENU_NEW_MoreMultiplayerOptions = {
@@ -3649,37 +1559,22 @@ MENU	MENU_NEW_SetUpTrackerPeerPeer = {
 MENU	MENU_NEW_CreateGame = {
 
 	"",
-	InitMultiplayerHostVDUPeerPeer,  /* join menu function */
-	SetMultiplayerPrefs, /* leave menu function */
-	NULL,
-	TITLE_TIMER_PanToLeftVDU,
+	InitMultiplayerHostVDUPeerPeer,
+	ExitMultiplayerHostVDUPeerPeer,
+	NULL, TITLE_TIMER_PanToLeftVDU,
 
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame0/*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 
 		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStart, StartAHostSession , DrawFlatMenuItem, NULL, 0 } ,
 
-    	{ 90,  20, 120, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-	    { 100, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
+		// taken out cause of lag in wsa startup, leave for later in case new method found
+    	//{ 90,  20, 120, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
+	    //{ 100, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
 
+        { 10, 34, 90, 36, 0, "Protocol", FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ChooseConnectionToStart,  MenuChange, DrawFlatMenuItem, NULL, 0 },
 
-/* hack */
-
-{ 10, 34, 90, 36, 0,
-"Protocol",
-FONT_Small, TEXTFLAG_CentreY,
-NULL,
-&MENU_NEW_ChooseConnectionToStart,  MenuChange,
-DrawFlatMenuItem, NULL, 0 },
-
-
-{ 90, 34, 205, 40, 0,
-"", FONT_Small, TEXTFLAG_CentreY,
-(void *)ServiceProviderShortName,
-&ServiceProviderSet, NULL,
-DrawConditionalName, NULL, 0 } ,
-
-/* end hack */
+        { 90, 34, 205, 40, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)ServiceProviderShortName, &ServiceProviderSet, NULL, DrawConditionalName, NULL, 0 } ,
 
 		{ 10, 52, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
 
@@ -3691,10 +1586,6 @@ DrawConditionalName, NULL, 0 } ,
 		{ 10, 76, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
 		{ 10, 84, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-
-
-
 
 		{ 0,   92, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 
@@ -3723,92 +1614,6 @@ DrawConditionalName, NULL, 0 } ,
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-
-MENU	MENU_NEW_SetUpTrackerServer = {
-	"", InitTrackersList, ExitSetUpTracker, NULL, 0,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame18/*"setup tracker"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-
-		{ 5, 20, 100, 28, 0, LT_MENU_NEW_SetUpTracker1/*send tracker info*/, FONT_Small, TEXTFLAG_CentreY, &ServerHeartbeat, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-
-		{ 5, 30, 200, 38, 0, LT_MENU_NEW_SetUpTracker2/*"Choose tracker config"*/, FONT_Small, TEXTFLAG_CentreY, &TrackersList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 40, 200, 100, 0, "", FONT_Small,TEXTFLAG_Unselectable | TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,  &TrackersList, NULL, SelectList, DrawFlatMenuList, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_NEW_CreateGameServerChooses = {
-	"", InitMultiplayerHostVDUServer, ExitServerSetup, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGameServer5/*"Create a Server"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, NULL, StartAHostSessionServer , DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 20, 105, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-		//{ 10, 30, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
-		{ 10, 38, 50, 46, 0, LT_MENU_NEW_CreateGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 38, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 46, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxServerPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 100, 200, 108, 0, LT_MENU_NEW_CreateGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CTF, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 108, 200, 116, 0, LT_MENU_NEW_CreateGame12 /*"flag chase"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 116, 200, 124, 0, LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#ifdef BOMBTAG_ENABLE
-		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
-
-		{ 10, 136, 100, 144, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerServer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		
-		{ 10, 148, 100, 156, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-
-		{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateGame17 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_NEW_CreateGameServer = {
-	"", InitMultiplayerHostVDUServer, ExitServerSetup, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0,   0,   200, 20,  0, LT_MENU_NEW_CreateGameServer5/*"Create a Server"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10,  20,  90,  28,  0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStartServer, StartAHostSessionServer , DrawFlatMenuItem, NULL, 0 } ,
-		{ 90,  20,  105, 28,  0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 20,  200, 28,  0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-//		{ 10,  30,  85,  38,  0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
-
-		{ 10, 40, 85, 48, SLIDER_Value, LT_MENU_NEW_CreateLobbyGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxServerPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 10, 50, 100, 58, 0, LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/, FONT_Small, TEXTFLAG_CentreY, &UseShortPackets, ShortPacketsSelected, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 60, 100, 68, 0, LT_MENU_NEW_MoreMultiplayerOptions3/*"packet grouping"*/, FONT_Small, TEXTFLAG_CentreY, &BigPackets, BigPacketsSelected, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 70, 100, 78, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &PacketsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		// host can set max players
-		{ 10, 86, 150, 94, 0, LT_MENU_NEW_CreateGameServer1/*"host can set max players"*/, FONT_Small, TEXTFLAG_CentreY, &PseudoHostCanSetMaxPlayers, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-
-		// host game setup timout
-		{ 10, 94, 150, 102, SLIDER_Value, LT_MENU_NEW_CreateGameServer2/*"host game setup timout"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &PseudoHostTimeoutSlider1, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		// host game start timeout
-		{ 10, 102, 150, 110, SLIDER_Value, LT_MENU_NEW_CreateGameServer3/*"host game start timout"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &PseudoHostTimeoutSlider2, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		// global server timeout
-		{ 10, 110, 150, 118, SLIDER_Value, LT_MENU_NEW_CreateGameServer4/*"global server timout"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &ServerTimeoutSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 10, 126, 100, 134, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerServer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-
-		{ 10, 150, 100, 160, 0, LT_MENU_NEW_CreateGame17 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};														    
 
 MENU MENU_NEW_PseudoHostWaitingForAck = {
 	"", InitPseudoHostWaitingForAck, ChangeServiceProviderPseudoHost, PseudoHostWaitingForAckTimer, TITLE_TIMER_PanToLeftVDU,
@@ -3884,16 +1689,6 @@ MENU	MENU_NEW_CreateLobbyGame = {
 	}
 };
 
-
-
-
-/* multiplayer */
-MENUITEM MENU_ITEM_StartMultiplayer = 
-		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL
-		, &MENU_NEW_CreateGame, MenuChange, NULL, NULL, 0  };
-
-
-
 /* connection */
 MENU	MENU_NEW_ChooseConnectionToStart = {
 	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
@@ -3903,32 +1698,6 @@ MENU	MENU_NEW_ChooseConnectionToStart = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-
-MENU MENU_NEW_ChooseServerGameType = {
-	"", NULL, ChangeServiceProvider, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseServerGameType0 /*"Choose server type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-			
-		{ 10, 30, 100, 40, 0, LT_MENU_NEW_ChooseServerGameType1 /*"manual"*/, FONT_Medium, TEXTFLAG_CentreY, NULL, NULL, StartAManualServer , DrawFlatMenuItem, NULL, 0 } ,
-
-		{ 10, 45, 100, 55, 0, LT_MENU_NEW_ChooseServerGameType2 /*"auto"*/, FONT_Medium, TEXTFLAG_CentreY, NULL, NULL, StartAnAutoServer , DrawFlatMenuItem, NULL, 0 } ,
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_NEW_ChooseConnectionToStartServer = {
-	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToStart0 /*"Choose connection type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 30, 195, 170, 0, "", FONT_Small,TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,  &ServiceProvidersList, SelectConnectionToStartServer, SelectList, DrawFlatMenuList, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-
-
 
 MENUITEM MENU_ITEM_IdiotText = 
 		{ 0, 150, 200, 170, 0, "", FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, NULL, NULL, NULL, 0  };
@@ -4504,7 +2273,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"tcp add:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
-//		{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
+		{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4725,16 +2494,11 @@ MENU	MENU_NEW_Setup = {
 MENU	MENU_NEW_Battle = {
 	"", InitBattleMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
 	{
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 3,LT_MENU_NEW_Battle0 /*"death match"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, LT_MENU_NEW_Battle1 /*"Create Game"*/, 0, 0, NULL, 
-/* hack */
-//		&MENU_NEW_ChooseConnectionToStart,
-/* end hack */
-		&MENU_NEW_CreateGame,
-		MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc3, 0, 0, 2, LT_MENU_NEW_Battle2 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToJoin, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 6, LT_MENU_NEW_Battle4 /*"Server"*/, 0, 0, NULL, &MENU_NEW_ChooseConnectionToStartServer, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 3, LT_MENU_NEW_Battle3 /*"back"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc1, 0, 0, 3, LT_MENU_NEW_Battle0 /*"death match"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc2, 0, 0, 2, LT_MENU_NEW_Battle1 /*"Create Game"*/, 0, 0, NULL, &MENU_NEW_CreateGame, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc3, 0, 0, 2, LT_MENU_NEW_Battle2 /*"Join Game"  */, 0, 0, NULL, &MENU_NEW_ChooseConnectionToJoin, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc4, 0, 0, 3, LT_MENU_NEW_Battle3 /*"back"       */, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc5, 0, 0, 2, "Blank", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc6, 0, 0, 2, "Blank", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
@@ -5018,7 +2782,9 @@ MENU	MENU_HostOrJoin = {
 };
 
 MENU	MENU_MultiPlayer = {
-	"Choose Provider" , GetServiceProviders , NULL , NULL, 0,
+	"Choose Provider" ,
+	NULL, //GetServiceProviders ,
+	NULL , NULL, 0,
 	{
 		{ 200, 112, 0, 0, 0, "Next", 0, 0,	NULL,	&MENU_HostOrJoin,	ExitProviderChosen,		MenuItemDrawName, NULL, 0 },
 		{ 200, 128, 0, 0, 0, "Choose From...", 0, 0, &ServiceProvidersList, NULL , SelectList , DrawList, NULL, 0 } ,
@@ -7726,26 +5492,6 @@ BOOL DisplayTitle(void)
 					PrintErrorMessage( UNABLE_TO_JOIN_SESSION, 0, NULL, ERROR_QUIT );  
 
 				break;
-			case QUICKSTART_Server:
-				InitStartMenu( NULL );
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				MENU_Start = MENU_NEW_ChooseConnectionToStartServer;
-				
-				MenuRestart( &MENU_Start );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-
-				if ( ServiceProviderSet )
-				{
-					SelectConnectionToStartServer( NULL );
-					GetLastGameInfo();	// for level name
-					StartAHostSessionServer( NULL );
-				}
-
-				return TRUE;
 			case QUICKSTART_Notify:
    				InitStartMenu( NULL );
 				CameraStatus = CAMERA_AtLeftVDU;
@@ -9659,7 +7405,6 @@ BOOL ProcessLevelList ( int Key )
 		if ( MenuState == MENUSTATE_SelectLevelQuick )
 		{
 			if ( ( CurrentMenu != &MENU_NEW_CreateGame ) &&
-				 ( CurrentMenu != &MENU_NEW_CreateGameServerChooses ) &&
 				 ( CurrentMenu != &MENU_NEW_CreateGamePseudoHost ) &&
 				 ( CurrentMenu != &MENU_NEW_CreateLobbyGame ) )
 			{
@@ -13144,102 +10889,122 @@ void InitPseudoHostGameScreen( MENU *Menu )
 		MaxServerPlayersSlider.value = MaxServerPlayersSlider.max;
 }
 
-void InitMultiplayerHostVDU( MENU *Menu )
-{
-	MENUITEM *item;
-	uint16 selected_level;
-	char *pCh;
-
-	if ( IsLobbyLaunched )
-		NoMenuBack = TRUE;
-
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( item->FuncSelect == SelectQuit )
-		{
-			if ( !IsLobbyLaunched )
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-
-		if ( item->Variable == &MaxPlayersSlider )
-		{
-			if ( IsLobbyLaunched )
-			{
-				DPlayGetSessionDesc();
-
-				if ( glpdpSD )
-				{
-					if ( glpdpSD->dwMaxPlayers )
-					{
-						item->FuncSelect = NULL;
-						item->FuncDraw = NULL;
-					}else
-					{
-						glpdpSD->dwMaxPlayers = MAX_PLAYERS;
-						DPlaySetSessionDesc( 0 );
-						MaxPlayersSlider.value = MAX_PLAYERS;
-					}
-				}
-			}
-		}
-	}
-	
-	selected_level = LevelList.selected_item;	// from reg, or zero
-	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
-	{
-		//Msg( "No multiplayer levels" );
-		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
-		return;
-	}
-	LevelList.selected_item = selected_level;
-	NewLevelNum = LevelList.selected_item;
-	LoadLevelText( NULL );
-
-	if ( !IsLobbyLaunched )
-	{
-		sprintf( MultiPlayerGameName.text, LT_PlayersGame2/*"%s's Game"*/, biker_name );
-	}else
-	{
-		// if lobby launched, use given session name
-		strncpy( MultiPlayerGameName.text, glpdplConnection->lpSessionDesc->lpszSessionNameA, MAXTEXTMSG );
-		pCh = strchr( MultiPlayerGameName.text, '~' );
-		if ( pCh )
-			*pCh = 0;
-	}
-
-}
-
-void InitMultiplayerHostVDUServer( MENU *Menu )
-{
-	IsServerGame = TRUE;
-	ColPerspective = ColPerspectiveServer;
-
-	InitMultiplayerHostVDU( Menu );
-}
 
 /* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
-	IsServerGame = FALSE;
-	ColPerspective = ColPerspectivePeerPeer;
 
-	/* this calls InitLevels */
-	InitMultiplayerHostVDU( Menu );
+	MENUITEM *item;
+	uint16 selected_level;
+	char *pCh;
+	
+	// if we were launched from a lobby application
+	if ( IsLobbyLaunched )
+	{
+		// lobby's throws us right into this menu
+		// so there is no menu to go back too...
+		NoMenuBack = TRUE;
 
-/* hack */
-	/* checks registry for last service provider */
-	/* calls LastGameInfo() which selects last multiplayer level from registry */
-	GetServiceProviders(NULL);
-	/* gets service provider short name and other stuff */
-	ExitProviderChosen(NULL);
-	/* Get the level box to refresh the new level chosen */
-	NewLevelNum = LevelList.selected_item;  /* set level name */
-	LoadLevelText( NULL ); /* load level name */
-/* end hack */
+		// load direct play session description into global
+		// that was passed to us from the lobby application
+		DPlayGetSessionDesc();
+
+		// if the description was retrieved
+		if ( glpdpSD )
+			// loop over all the menu items
+			for ( item = Menu->Item; item->x >= 0; item++ )
+				// if this item is the max player slider
+				if ( item->Variable == &MaxPlayersSlider )
+					// if the lobby has set the max players
+					if ( glpdpSD->dwMaxPlayers )
+					{
+						// deactivate the max player slider
+						item->FuncSelect = NULL;
+						item->FuncDraw = NULL;
+					}
+					// if the lobby has NOT set the max players
+					else
+					{
+						// set max players to default
+						glpdpSD->dwMaxPlayers = MAX_PLAYERS;
+						MaxPlayersSlider.value = MAX_PLAYERS;
+						// setup the rest of the description
+						DPlaySetSessionDesc( 0 );
+					}
+	
+		// use given session name
+		strncpy( MultiPlayerGameName.text,
+			     glpdplConnection->lpSessionDesc->lpszSessionNameA,
+				 MAXTEXTMSG );
+
+		// search for the first occurence of "~"
+		pCh = strchr( MultiPlayerGameName.text, '~' );
+
+		// if found terminate the c string at that point
+		if ( pCh ) *pCh = 0;
+
+	}
+
+	// if we are NOT launched by a lobby
+	else
+	{
+
+		// for each menu item
+		for ( item = Menu->Item; item->x >= 0; item++ )
+
+			// if the item is the quit button
+			if ( item->FuncSelect == SelectQuit )
+			{
+				// disable it
+				item->FuncSelect = NULL;
+				item->FuncDraw = NULL;
+			}
+			
+		// set the name of the game
+		sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
+
+	}
+	
+	// back up current selected level
+	selected_level = LevelList.selected_item;
+
+	// load the multiplayer levels into the global
+	if ( !InitLevels( MULTIPLAYER_LEVELS ) )
+	{
+		Msg( "No multiplayer levels" );
+		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
+		return;
+	}
+
+	// reset the selected level
+	LevelList.selected_item = selected_level;
+
+	// get the info of last game: player, score, level etc...
+	GetLastGameInfo();
+
+	// load multiplayer settings: lagtol, weapons, bright bikes, packets etc..
+	GetMultiplayerPrefs();
+
+	// set the selected level to the last level played
+	NewLevelNum = LevelList.selected_item;
+
+	// load level names to be displayed in the list
+	LoadLevelText( NULL );
+
+	// populate global list of service providers selecting last used
+	GetServiceProviders();
+
 }
+
+/* exit */
+void ExitMultiplayerHostVDUPeerPeer ( MENU *Menu )
+{
+
+	// save any changes to multi player prefrences
+	SetMultiplayerPrefs();
+
+}
+
 
 void LoadLevelText( MENU *Menu )
 {
@@ -14976,16 +12741,6 @@ void GetMultiplayerPrefs( void )
 
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : GAME_Normal;
-
-	ColPerspectivePeerPeer = ( RegGet( "LagTolerancePeerPeer", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : COLPERS_Descent;
-	if ( ColPerspectivePeerPeer > COLPERS_Descent )
-		ColPerspectivePeerPeer = COLPERS_Descent;
-
-	ColPerspectiveServer = ( RegGet( "LagToleranceServer", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : COLPERS_Descent;
-	if ( ColPerspectiveServer > COLPERS_Server )
-		ColPerspectivePeerPeer = COLPERS_Server;
 
 	ShowPing = ( RegGet( "ShowPing", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : FALSE;
@@ -19759,34 +17514,6 @@ void SelectConnectionToStart (MENUITEM *Item)
 /* end hack */
 }
 
-void SelectConnectionToStartServer (MENUITEM *Item)
-{
-	if( !ExitProviderChosen( Item ) )
-		return;
-	MenuState = MENUSTATE_Select;
-
-	/*
-	if ( ServerChoosesGameType )
-		MenuChangeEx( &MENU_NEW_CreateGameServerChooses );
-	else
-		MenuChangeEx( &MENU_NEW_CreateGameServer );
-	*/
-	MenuChangeEx( &MENU_NEW_ChooseServerGameType );
-}
-
-void StartAManualServer( MENUITEM *Item )
-{
-	ServerChoosesGameType = TRUE;
-	MenuChangeEx( &MENU_NEW_CreateGameServerChooses );
-}
-
-void StartAnAutoServer( MENUITEM *Item )
-{
-	ServerChoosesGameType = FALSE;
-	MenuChangeEx( &MENU_NEW_CreateGameServer );
-}
-
-
 void SelectConnectionToJoin (MENUITEM *Item)
 {
 	if( !ExitProviderChosen( Item ) )
@@ -22046,62 +19773,6 @@ void InitHostWaitingToStart( MENU *Menu )
 	*/
 } 
 
-void ServerCleanup( void )
-{
-	ProcessGuaranteedMessages( FALSE, TRUE, TRUE );
-	ProcessGuaranteedMessages( TRUE, FALSE, FALSE );
-	ServiceServer( TRUE );
-}
-
-// use if server quits
-void ResetServer( MENU *Menu )
-{
-	ServerCleanup();
-	
-	//MenuBackSpecific( &MENU_NEW_ChooseConnectionToStartServer, FALSE );	// ignore exit menu funcs
-	MenuBackSpecific( &MENU_NEW_CreateGameServer, FALSE );	// ignore exit menu funcs
-	
-	DPlayRelease();
-
-	MyGameStatus = STATUS_Title;
-}
-
-// use if pseudohost times out b4 starting game
-void RestartServer( void )
-{
-	GUID spguid;
-	int i;
-	
-	ServerCleanup();
-
-	// store old sp GUID
-	spguid = ServiceProvidersGuids[ServiceProvidersList.selected_item];
-
-	MenuBackSpecific( &MENU_NEW_ChooseConnectionToStartServer, FALSE );	// ignore exit menu funcs
-
-	DPlayRelease();
-
-	MyGameStatus = STATUS_Title;
-
-	MenuChangeEx( &MENU_NEW_ChooseConnectionToStartServer );
-
-	// match up old sp GUID with one from new list ( not guaranteed to be in same order )
-	for ( i = 0; i < MAXSERVICEPROVIDERS; i++ )
-	{
-		if ( !memcmp( &ServiceProvidersGuids[ i ], &spguid , sizeof(GUID) ) )
-		{
-			ServiceProvidersList.selected_item = i;
-			SelectConnectionToStartServer( NULL );
-			StartAHostSessionServer( NULL );	// packet rate etc. used will be same as b4 since they were stored in reg.
-			return;
-		}
-	}
-
-	// fuck.. could not find service provider we were just using!
-	PrintErrorMessage( SERVER_FUCKED, 0, NULL, ERROR_QUIT );  
-}
-
-
 extern	DPID					dcoID;    // player id
 
 void BackToJoinSession( MENUITEM *Item )
@@ -22143,54 +19814,6 @@ BOOL GeneralTimeout( float *timer )
 	return FALSE;
 }
 
-
-
-float Server_Timeout;
-//#define SERVER_WAIT_TIME 7200.0F	// 2 minutes ( sort of!! ) 
-//#define SERVER_WAIT_TIME2 18000.0F	// 5 minutes ( sort of!! ) 
-
-#define SERVER_TIMEOUT_Reset 0
-#define SERVER_TIMEOUT_Start 1
-
-uint8 ServerTimeoutAction = SERVER_TIMEOUT_Start;
-
-void InitServerWaitingForGameParameters( MENU *Menu )
-{
-	//Server_Timeout = SERVER_WAIT_TIME;
-	Server_Timeout = (float)PseudoHostTimeoutSlider1.value * 60.0F * 60.0F;
-}
-
-void ServerCountDown( int *dummy )
-{
-	if ( GeneralTimeout( &Server_Timeout ) )
-	{
-		RestartServer();
-	}
-}
-
-void InitServerWaitingToStartGame( MENU *Menu )
-{
-	//Server_Timeout = SERVER_WAIT_TIME2;
-	Server_Timeout = (float)PseudoHostTimeoutSlider2.value * 60.0F * 60.0F;
-}
-
-void ServerCountDown2( int *dummy )
-{
-	if ( GeneralTimeout( &Server_Timeout ) )
-	{
-		switch ( ServerTimeoutAction )
-		{
-		case SERVER_TIMEOUT_Start:
-			// start game...
-			MyGameStatus = STATUS_WaitingToStartMultiPlayerHost;
-			MenuChangeEx( &MENU_NEW_GeneralLoading );
-			break;
-		case SERVER_TIMEOUT_Reset:
-		default:
-			RestartServer();
-		}
-	}
-}
 
 float PseudoHostAck_Timeout;
 
@@ -22272,36 +19895,16 @@ void InitBattleMenu( MENU *menu )
 		switch ( item->y  )
 		{
 		case TITLE_MODEL_Disc4:
-			if ( AllowServer )
-			{
-				item->StrPnt = LT_MENU_NEW_Battle4;
-				item->FrameNo = 6;
-				item->Value = &MENU_NEW_ChooseConnectionToStartServer;
-				item->FuncSelect = MenuChange;
-			}
-			else
-			{
-				item->StrPnt = LT_MENU_NEW_Battle3;
-				item->FrameNo = 2;
-				item->Value = NULL;
-				item->FuncSelect = MenuItemBack;
-			}
+			item->StrPnt = LT_MENU_NEW_Battle3;
+			item->FrameNo = 2;
+			item->Value = NULL;
+			item->FuncSelect = MenuItemBack;
 			break;
 		case TITLE_MODEL_Disc5:
-			if ( AllowServer )
-			{
-				item->StrPnt = LT_MENU_NEW_Battle3;
-				item->FrameNo = 3;
-				item->Value = NULL;
-				item->FuncSelect = MenuItemBack;
-			}
-			else
-			{
-				item->StrPnt = "Blank";
-				item->FrameNo = 2;
-				item->Value = NULL;
-				item->FuncSelect = NULL;
-			}
+			item->StrPnt = "Blank";
+			item->FrameNo = 2;
+			item->Value = NULL;
+			item->FuncSelect = NULL;
 			break;
 		}
 	}

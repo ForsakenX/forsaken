@@ -1104,24 +1104,32 @@ void GetServiceProviderShortName( void )
 {
 
 	int size = 16;
+    LPGUID  lpGuid;
+
+	lpGuid = (LPGUID)&ServiceProvidersGuids[ServiceProvidersList.selected_item];
+
+	if ( ! ServiceProviderSet )
+		return;
 
 	memset( &ServiceProviderShortName, 0, size );
 
-	if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_TCPIP  ) )
+	if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_TCPIP  ) )
 
 		_snprintf ( ServiceProviderShortName, size, "TCPIP" );
 		
-	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_IPX    ) )
+	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_IPX    ) )
 
 		_snprintf ( ServiceProviderShortName, size, "IPX" );
 
-	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_SERIAL ) )
+	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_SERIAL ) )
 		
 		_snprintf ( ServiceProviderShortName, size, "SERIAL" );
 
-	else if ( IsEqualGuid( &gSPGuid , (GUID*)&DPSPGUID_MODEM  ) )
+	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_MODEM  ) )
 		
 		_snprintf ( ServiceProviderShortName, size, "MODEM" );
+
+	//Msg("Set %s",&ServiceProviderShortName);
 
 }
 
@@ -1151,34 +1159,18 @@ void GetMultiplayerPrefs( void );
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void GetServiceProviders( MENU *Menu )
+void GetServiceProviders( void )
 {
 
 	DWORD size;
 	static GUID last_service_provider;
 	LPVOID *ptr;
-	MENUITEM *item;
 	char temp[256];
+	LPVOID lpAddress = NULL;
+	DWORD  dwAddressSize = 0;
 
-	/* setup menu */
-	if ( Menu )
-		for ( item = Menu->Item; item->x >= 0; item++ )
-			if ( item->FuncSelect == SelectQuit )
-				if ( QuickStart )
-				{
-					item->FuncDraw = DrawFlatMenuItem;
-					item->highlightflags &= ~TEXTFLAG_Unselectable;
-				}else
-				{
-					item->FuncDraw = NULL;
-					item->highlightflags |= TEXTFLAG_Unselectable;
-				}
-
-	/* reset render state */
-	SetOurRenderStates( NULL );
-	
-	/* get the info of last game */
-	GetLastGameInfo();
+	/* default not set */
+	ServiceProviderSet = FALSE;
 
 	/* default settings */
 	ServiceProvidersList.items			= 0;
@@ -1187,33 +1179,47 @@ void GetServiceProviders( MENU *Menu )
 	ServiceProvidersList.selected_item	= 0;
 	ServiceProvidersList.FuncInfo		= NULL;
 
-	/* default not set */
-	ServiceProviderSet = FALSE;
-
 	/* default use tcpip */
 	ptr = (LPVOID) &DPSPGUID_TCPIP;
 
-	/* try to get last provider used */
+	// try to get last provider used
 	size = sizeof( temp );
 	if ( RegGet( "ServiceProvider", (LPBYTE)temp, &size ) == ERROR_SUCCESS )
 	{
-		/* convert the guid string from the registry into a GUID object */
-		if ( GUIDFromString( temp, &last_service_provider ) != S_OK )
-			DebugPrintf("unable to convert session guid from string\n");
-		else
-			/* set to last used provider */
+		// convert the guid string from the registry into a GUID object
+		if ( GUIDFromString( temp, &last_service_provider ) == S_OK )
+		{
+			// set to last used provider
 			ptr = (LPVOID) &last_service_provider;
+		}
+		else
+			Msg("Unable to convert Session GUID from string\n");
 	}
 
 	/* create a direct play lobby object to query for service providers */	
 	DPlayCreateLobby();
 
-	/* get a list of the supported providers */
+	// get a list of the supported providers
+	// and select ptr as the default
 	DirectPlayEnumerate( EnumServiceProviders, ptr );
 
-	/* load up saved settings */
-	GetMultiplayerPrefs();
-	GetServerPrefs();
+	// reset the ip address exists flag
+	IPAddressExists = FALSE;
+
+	// taken out cause of laggy wsa startup
+	// leave for later in case new way to get ip found
+
+	// if were using tcpip
+	// then setup the IPAddress global
+	//if (IsEqualGUID( &last_service_provider, &DPSPGUID_TCPIP ))
+		// get the ip address
+		//if (GetIPAdd())	IPAddressExists = TRUE;
+
+	// release created direct play object
+	DPlayRelease();
+
+	// set ServiceProviderShortName global to the selected provider: tcpip, modem, serial, ipx
+	GetServiceProviderShortName();
 
 }
 
@@ -1258,15 +1264,8 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
     LPGUID  lpGuid;
 	char sp_guidtext[ 256 ];
 
-	// release any previously created Dplay Objects...
-	DPlayRelease();
-
-	// used to determine whether to display IP address on VDU;
-	IPAddressExists = FALSE;
-
 	// get a pointer to the guid
 	lpGuid = (LPGUID ) &ServiceProvidersGuids[ServiceProvidersList.selected_item];
-
 
 	// Check for modem
 	Modem2Modem = FALSE;
@@ -1276,15 +1275,25 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	// Check for acceptable version of Direct Play
 	if ( CheckDirectPlayVersion && !DirectPlayOK( lpGuid ) )
 	{
-		PrintErrorMessage ( YOU_NEED_TO_INSATLL_THE_DIRECT_PLAY_50A_UPDATE, 2, NULL, ERROR_USE_MENUFUNCS );
+		PrintErrorMessage ( YOU_NEED_TO_INSATLL_THE_DIRECT_PLAY_50A_UPDATE,
+			                2, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
 	}
-	
-	
+
 	// remember the selection
 	gSPGuid = *lpGuid;
 
-	if ((hr = OnceServiceProviderChosen( &ServiceProvidersGuids[ServiceProvidersList.selected_item] , lpDPlayLobby, &glpDP , &TCPAddress.text[0])) != DP_OK)
+	IPAddressExists = FALSE;
+
+	if (
+		OnceServiceProviderChosen(
+		  &ServiceProvidersGuids[ServiceProvidersList.selected_item],
+		  lpDPlayLobby,
+		  &glpDP,
+		  &TCPAddress.text[0]
+		)
+		!= DP_OK
+	)
 	{
 		PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
@@ -1328,8 +1337,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	}else{
 		SERVERPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
 	}
-
-	
 	
 //	if (!AutoSelectConnection)
 //		MenuChange ( Item );
@@ -1352,10 +1359,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	{
 		RegSetA( "ServiceProvider",  (LPBYTE)&sp_guidtext,  sizeof( sp_guidtext ) );
 	}
-
-/* hack */
-	GetServiceProviderShortName();
-/* end hack */
 
 	return TRUE;
 }
@@ -1497,6 +1500,9 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	uint32		Seed;
 	uint32		PackedInfo[ MAX_PICKUPFLAGS ];
 
+	// setup the chose directplay object
+	ExitProviderChosen(NULL);
+
 	IsServer = FALSE;
 	IsServerGame = FALSE;
 
@@ -1535,12 +1541,14 @@ BOOL StartAHostSession ( MENUITEM * Item )
 		// create session
 		if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
 		{
+			Msg("!DPlayCreateSession");
 			return FALSE;
 		}
 	
 		// create player
 		if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
 		{
+			Msg("!DPlayCreatePlayer");
 		    return FALSE;
 		}
 	}else
@@ -2285,7 +2293,7 @@ void BailMultiplayerFrontEnd( MENU *Menu )
 
 	BailMultiplayer( Menu );
 
-	GetServiceProviders( NULL );
+	GetServiceProviders();
 	ServiceProvidersList.selected_item = selected_item;
 
 	ExitProviderChosen( NULL );
@@ -2314,12 +2322,6 @@ void ChangeServiceProvider( MENU * Menu )
 	MyGameStatus = STATUS_Title;
 
 	ServiceProvidersList.selected_item = -1;
-}
-
-void ExitServerSetup( MENU *Menu )
-{
-	MenuBackSpecific( &MENU_NEW_ChooseServerGameType, FALSE );
-	ChangeServiceProvider( NULL );
 }
 
 void ChangeServiceProviderPseudoHost( MENU * Menu )
@@ -2694,72 +2696,101 @@ BOOL Mymemcmp( BYTE * buf1 , BYTE * buf2 , int size )
 	return TRUE;
 }
 
+
+#define WSA_DEBUG
 int GetIPAdd( void )
 {
-	int error;
-	static char hname[1024];
+	int result;
+	WSADATA wsaData;
 	struct hostent *hp;
+	static char hostname[1024];
 	uint32 LoBytes = 0x000000FF;
-	uint32 prefIPAddress;
-	uint32 ip1, ip2, ip3, ip4;
 
-	if ( error = gethostname( hname, sizeof( hname ) ) )
+	// initialize wsa
+	result = WSAStartup( 0x0101, &wsaData );
+	if ( result != 0 )
 	{
-
-		error = WSAGetLastError();
-		switch( error )
+#ifdef WSA_DEBUG
+		switch( result )
 		{
-		case WSAEFAULT:
-			DebugPrintf("WSAEFAULT\n");
+		case WSASYSNOTREADY:
+			Msg("Underlying network subsystem is not ready for network communication.");
 			break;
-		case WSANOTINITIALISED:
-			DebugPrintf("WSANOTINITIALISED\n");
-			break;
-		case WSAENETDOWN:
-			DebugPrintf("WSAENETDOWN\n");
+		case WSAVERNOTSUPPORTED:
+			Msg("Version of Windows Sockets requested is not provided by this implementation.");
 			break;
 		case WSAEINPROGRESS:
-			DebugPrintf("WSAEINPROGRESS\n");
+			Msg("A blocking Windows Sockets 1.1 operation is in progress.");
+			break;
+		case WSAEPROCLIM:
+			Msg("Limit on the number of tasks supported has been reached.");
+			break;
+		case WSAEFAULT:
+			Msg("The lpWSAData parameter is not a valid pointer.");
 			break;
 		default:
-			DebugPrintf("default\n");
+			Msg("WSAStartup failed\n");
+		}
+#endif
+		return 0;
+	}
+
+	// get the hostname of the current machine
+	result = gethostname( hostname, sizeof(hostname) );
+	if( result == SOCKET_ERROR )
+	{
+#ifdef WSA_DEBUG
+		result = WSAGetLastError();
+		switch( result )
+		{
+		case WSAEFAULT:
+			Msg("%s %s",
+				"name is a NULL pointer or is not a valid part of the user address space.\n",
+				"Or the buffer size specified is too small to hold the complete host name.\n");
+			break;
+		case WSANOTINITIALISED:
+			Msg("A successful WSAStartup call must occur before using this function.\n");
+			break;
+		case WSAENETDOWN:
+			Msg("The network subsystem has failed.\n");
+			break;
+		case WSAEINPROGRESS:
+			Msg("%s %s",
+				"A blocking Windows Sockets 1.1 call is in progress,\n",
+				"or the service provider is still processing a callback function.\n");
+			break;
+		default:
+			Msg("gethostname failed\n");
 			break;
 		}
-		
+#endif
 		return 0;
 	}
-
-	hp = gethostbyname ( hname );	
+	
+	// get the host by the name
+	hp = gethostbyname ( hostname );	
 	if ( !hp )
-		return 0;
-
-	// if preferred address was specified in heartbeat.txt, verify
-	if ( sscanf( host_ip, " %d.%d.%d.%d", &ip1, &ip2, &ip3, &ip4 ) == 4 )
 	{
-		char FAR * FAR *add; 
-
-		prefIPAddress = ip1 | ( ip2 << 8 ) | ( ip3 << 16 ) | ( ip4 << 24 );
-
-		add = hp->h_addr_list;
-		while ( *add )
-		{
-			IPAddress = *(uint32 *) *add;
-			if ( IPAddress == prefIPAddress )
-			{
-				sprintf(IPAddressText, "%d.%d.%d.%d", IPAddress & LoBytes, (IPAddress >> 8) & LoBytes, (IPAddress >> 16) & LoBytes, (IPAddress >> 24) & LoBytes);
-				return 1;
-			}
-			add++;
-		}
+#ifdef WSA_DEBUG
+		Msg("gethostbyname failed");
+#endif
+		return 0;
 	}
 
-	// if we get here, just use 1st IP address in list
+	// convert the data into standard decimal format
 	IPAddress = *(uint32 *) *hp->h_addr_list;
-	sprintf(IPAddressText, "%d.%d.%d.%d", IPAddress & LoBytes, (IPAddress >> 8) & LoBytes, (IPAddress >> 16) & LoBytes, (IPAddress >> 24) & LoBytes);
+	sprintf( IPAddressText, "%d.%d.%d.%d",
+		                     IPAddress			& LoBytes,
+							(IPAddress >> 8)	& LoBytes,
+							(IPAddress >> 16)	& LoBytes,
+							(IPAddress >> 24)	& LoBytes);
 
+	// cleanup the wsa
+	WSACleanup();
+
+	// success
 	return 1;
 }
-
 
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -3495,227 +3526,3 @@ static int DirectPlayOK( LPGUID lpServiceProvider_guid )
 
 	return !old;
 }
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Hosting a Server session ...
-	Input		:	nothing
-	Output		:	nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL StartAHostSessionServer( MENUITEM * Item )
-{
-	HRESULT hr;
-	int i;
-	DWORD		Temp;
-	BYTE		msg;
-	int			size;
-	LONGLONG	TempTime;
-	uint32		Seed;
-	uint32		PackedInfo[ MAX_PICKUPFLAGS ];
-	char		ServerName[256];
-	char		*pCh;
-
-	IsServer = TRUE;
-	IsServerGame = TRUE;
-
-	NoSFX = TRUE;
-//	d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures = FALSE;
-	PolygonText = FALSE;
-	ServerRendering = FALSE;
-	
-	PreferedMaxPlayers = MaxServerPlayersSlider.value;
-	MaxPlayersSlider.value = MaxServerPlayersSlider.value;
-	SetMultiplayerPrefs();
-	SetServerPrefs();
-
-	Seed = timeGetTime();
-	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
-	Seed2 = (uint16) ( Seed & 0xffff );
-	CopyOfSeed1 = Seed1;
-	CopyOfSeed2 = Seed2;
-
-	PlayDemo = FALSE;
-	IsHost = TRUE;
-
-	TeamGame = FALSE;
-	BombTag = FALSE;
-	CaptureTheFlag = FALSE;
-	BountyHunt = FALSE;
-	CTF = FALSE;
-
-	if ( ServerChoosesGameType )
-		SetUpGameType( GameType );
-
-	SetBikeMods( 0 );
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
-
-	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-
-	pCh = ServerName;
-
-	if( IPAddressExists )
-	{
-		pCh += sprintf( pCh , " %s's Server At %s~" , &biker_name[0],&IPAddressText );
-	}else{
-		pCh += sprintf( pCh , " %s's Server~" , &biker_name[0]);
-	}
-
-	GetLevelName( pCh, MAX_LEVEL_NAME_LENGTH, LevelList.selected_item );
-
-	// create session
-//	if ((hr = DPlayCreateSessionServer( &MultiPlayerGameName.text[0])) != DP_OK)
-	if ((hr = DPlayCreateSessionServer( &ServerName[0])) != DP_OK)
-	{
-		return FALSE;
-	}
-
-	// create player
-	if ((hr = DPlayCreatePlayerServer(&dcoID, "Server", NULL, NULL, 0)) != DP_OK)
-	{
-		return FALSE;
-	}
-	sprintf( &biker_name[0] , "Server" );
-
-	DPlayUpdateInterval	= 60.0F / PacketsSlider.value;
-	OldPPSValue = PacketsSlider.value;
-	
-	SetupDplayGame();
-
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		GameStatus[i] = STATUS_Null;
-	}
-	
-	WhoIAm = 0;								// I was the first to join...
-	Ships[WhoIAm].dcoID = dcoID;
-
-	if ( !ServerChoosesGameType )
-	{
-		MenuChangeEx( &MENU_NEW_HostWaitingToStartServer );
-	}else
-	{
-		OKToProcessKeys = TRUE;
- 		DPlayGetSessionDesc();
-		if ( !glpdpSD )
-		{
-			return FALSE;
-		}
-
-		glpdpSD->dwMaxPlayers = MaxServerPlayersSlider.value + 1;
-
-		glpdpSD->dwUser3 &= ~ServerGameStateBits;	// mask out old server state
-		glpdpSD->dwUser3 |=	SERVER_STATE_Joinable;
-
-		DPlaySetSessionDesc( 0 );
-
-		MenuAbort();
-	}
-
-	MyGameStatus = STATUS_StartingMultiplayer;
-	
-	Current_Camera_View = 0;				// set camera to that view
-	Ships[WhoIAm].Pickups = 0;
-	Ships[WhoIAm].RegenSlots = 0;
-	Ships[WhoIAm].Mines = 0;
-	Ships[WhoIAm].Triggers = 0;
-	Ships[WhoIAm].TrigVars = 0;
-	
-	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-	Names[WhoIAm][7] = 0;
-	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
-	NewLevelNum = LevelList.selected_item;	// I Select Which Level We Start on...
-
-	if( TimeLimit.value )
-	{
-		CountDownOn = TRUE;
-	}
-	else
-	{
-		CountDownOn = FALSE;
-	}
-	if( RecordDemo || RecordDemoToRam )
-	{
-		uint32 mp_version = MULTIPLAYER_VERSION;
-		uint32 flags;
-		time_t now_time;
-		struct tm *now;
-
-		RecordDemo = TRUE;
-		time( &now_time );
-		now = localtime( &now_time );
-#ifndef HOST_CHOOSES_DEMO_NAME
-		if ( now )
-		{
-			sprintf( DemoGameName.text, "%s's Demo %d.%02d %d-%d-%d",
-				biker_name,
-				now->tm_hour, now->tm_min,
-				1 + now->tm_mon, now->tm_mday,
-				1900 + now->tm_year );
-		}
-		else
-		{
-			sprintf( DemoGameName.text, "%s's Demo",
-				biker_name );
-		}
-#endif
-		DemoFp = fopen( DemoFileName( DemoGameName.text ) , "wb" );
-		setvbuf( DemoFp, NULL, _IONBF , 0 );		// size of stream buffer...
-
-		Demo_fwrite( &mp_version, sizeof( mp_version ), 1, DemoFp );
-		flags = 0;
-		if( TeamGame )
-			flags |= TeamGameBit;
-		if( BombTag )
-			flags |= BombGameBit;
-		if( CTF )
-			flags |= CTFGameBit;
-		if( CaptureTheFlag )
-			flags |= FlagGameBit;
-		if ( BountyHunt )
-			flags |= BountyGameBit;
-
-		Demo_fwrite( &CopyOfSeed1, sizeof( CopyOfSeed1 ), 1, DemoFp );
-		Demo_fwrite( &CopyOfSeed2, sizeof( CopyOfSeed2 ), 1, DemoFp );
-		Demo_fwrite( &RandomPickups, sizeof( RandomPickups ), 1, DemoFp );
-		PackPickupInfo( &PackedInfo[ 0 ] );
-		Demo_fwrite( &PackedInfo[ 0 ], sizeof( PackedInfo ), 1, DemoFp );
-
-		Demo_fwrite( &flags, sizeof( flags ), 1, DemoFp );
-		Demo_fwrite( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFp );
-		for( i = 0 ; i < 256 ; i++ )
-		{
-			Demo_fwrite( &ShortLevelNames[NewLevelNum][i], sizeof(char), 1, DemoFp );
-			if( ShortLevelNames[NewLevelNum][i] == 0 )
-			{
-				break;
-			}
-		}
-
-		// Best way I can Think of to send the Host Name to the demo file...
-		Temp = 1;
-		TempTime = 1;
-		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		size = sizeof( NAMEMSG );
-		Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-		Demo_fwrite( &Temp, sizeof(DWORD), 1, DemoFp );
-		msg = MSG_NAME;
-		Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
-		msg = 0;
-		Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );				// Whos Name it is..
-		Demo_fwrite( &biker_name[0], 7, 1, DemoFp );
-		msg = 0;
-		Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );				// terminator for name..
-	}
-	
-	BrightShips = MyBrightShips;
-
-	tracker_addr = 0;
-	DPStartThread();
-
-	return TRUE;
-}
-
-
