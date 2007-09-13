@@ -1,164 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 177 $
- *
- * $Header: /PcProjectX/D3dmain.cpp 177   11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/D3dmain.cpp $
-//
-//177   11/11/98 16:00 Philipy
-//various fixes for warnings / errors when compiling under VC6
-//
-//171   3/09/98 14:25 Philipy
-//tidied up window mode slightly
-//( no resize allowed, removed menu bar )
-//
-//170   3/09/98 9:31 Philipy
-//somw Gamespy fixes
-//added Session ( GUID ) and TCP command line flags
-//added TRACKER_NAME facility
-//
-//169   27/08/98 20:12 Philipy
-//manual / auto server mode now selectable from menus
-//text now displayed when server in game & not rendering
-//dynamic PPS setting re-enabled for server
-//
-//168   25/08/98 17:38 Philipy
-//added gamespy support
-//tracker config now selectable from start server game menu, & stored in
-//reg
-//
-//166   17/08/98 17:13 Philipy
-//added -ServerChoosesGame & ServerAutoStart command line options
-//
-//165   14/08/98 15:25 Philipy
-//added trilinear option to menus
-//fixed level name / shutdown packet in heartbeat
-//
-//
-//163   10/08/98 17:33 Philipy
-//rewrote AVI player
-//
-//162   5/08/98 11:04 Philipy
-//added AutoStart facility ( joins game based on GUID in registery )
-//upped patch version to 1.02
-//
-//161   9/07/98 12:43 Philipy
-//few minor fixes for patch release
-//
-//160   8/07/98 11:42 Philipy
-//re-enabled -NoSplash command line option
-//
-//159   7/07/98 18:05 Philipy
-//added lobby autostart code ( when all players have recieved init msg )
-//added num primary weapons menu option ( propergated to other players &|
-//server )
-//extracted new title text for localisation
-//
-//158   3/07/98 17:46 Philipy
-//added quit option when using quickstart
-//
-//157   3/07/98 11:53 Philipy
-//heartbeat & quickstart stuff
-//
-//151   8/04/98 20:47 Philipy
-//title text messages now properly initialised
-//holo-glaire removed for sw version
-//compound buffer size can now be set in command line and opt file
-//prevented "level select disabled" from appearing at start of
-//multiplayer game
-//
-//
-//149   7/04/98 11:00 Philipy
-//bike features sliders now give correct values
-//
-//148   4/04/98 14:22 Philipy
-//mode scaling stuff is now calculated rather than based on fixed values
-//added -NoBlitTextScaling option to ReadIni and command line options
-//
-//146   3/04/98 19:15 Philipy
-//blitted text now scales properly
-//added -NoBlitTextScaling flag for cards that can't do a strech blit
-//properly ( Riva )
-//
-//139   28/03/98 17:33 Philipy
-//corrected some sfx
-//added legal screen
-//fixed mission briefing text bug
-//
-//135   15/03/98 18:40 Philipy
-//added water effect splash screen
-//fixed bug with end game sequence
-//implemented attract mode
-//text macros now saved in config
-//
-//131   7/03/98 15:25 Philipy
-//re-implemented -NoAVI option
-//
-//129   6/03/98 16:51 Philipy
-//
-//126   20/02/98 15:28 Philipy
-//re-implented AVI
-//splash screens can now play demos and AVIs
-//
-//125   9/02/98 12:21 Philipy
-//added sound buffer memory managment
-//only one piece of bike computer speech can now play at a time
-//
-//122   1/27/98 12:07p Philipy
-//fixed mode changing bug
-//
-//121   26/01/98 18:23 Philipy
-//fixed video memory leaks
-//splash screens now display after release view, and call InitScene,
-//InitView after  completion
-//
-//120   24/01/98 17:38 Philipy
-//fixed multiplayer join-quit-join bug
-//fixed attract mode loading wrong level
-//
-//118   21/01/98 12:19 Philipy
-//Added attract mode for shareware
-//fixed looping sfx volume bug
-//
-//117   18/01/98 23:36 Philipy
-//added -NoDynamicSfx option
-//
-//113   13/01/98 12:05 Philipy
-//put ifdefs around initial splash screen for shareware
-//
-//112   12/01/98 0:08 Philipy
-//bug fixes
-//added inter-level mission briefing
-//changed splash screen code, + added splash screen on exit
-//
-//110   9/01/98 11:13 Philipy
-//but still causes pause
-//loading bar now displayed when loading
-//
-//95    2/12/97 11:52 Philipy
-//boot demo stuff
-//
-//91    26/11/97 11:48 Philipy
-//implemented dynamic loading of SFX, dynamic allocation of mixing
-//channels.
-//3D sound currently disabled.
-//
-//85    4/11/97 16:26 Philipy
-//AVI now plays for stats screens
-//implemented scrolling messages (not enabled)
-//
-//83    23/10/97 16:49 Philipy
-//added tggle (number key 1) for playing AVI on texture.
-//(no texture conversion yet, could appear corrupted)
-//
-//80    21/10/97 13:08 Philipy
-//AVI now no longer sends main game thread to sleep
- * 
- */
 
 /*
  *  Copyright (C) 1996 Microsoft Corporation. All Rights Reserved.
@@ -225,8 +64,9 @@ extern	BOOL	SoftwareVersion;
 /*-------------------------------------------------------------------------*/
 #endif
 
+	extern BOOL bFullscreen;
+	extern char *config_name;
 	extern D3DAppInfo d3dappi;
-
 	extern BOOL InitRegistry();
 	extern BOOL CloseRegistry();
 	extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
@@ -306,20 +146,20 @@ extern	BOOL	SoftwareVersion;
 	
 	int PreferredWidth, PreferredHeight;
 
-int DebugMathErrors( void );
-void	OnceOnlyInit( void );
-void	OnceOnlyRelease( void );
-void DebugPrintf( const char * format, ... );
+	int DebugMathErrors( void );
+	void	OnceOnlyInit( void );
+	void	OnceOnlyRelease( void );
+	void DebugPrintf( const char * format, ... );
 
-void MovieRedraw (HWND);      // ID_MOVE_REDRAW
-void MovieStop (HWND);
-void MoviePlay (HWND hwnd);
-void AviFinished( void );
-void ShowSplashScreen( int num );
-void RemoveDynamicSfx( void );
-void FillStatusTab( void );
+	void MovieRedraw (HWND);      // ID_MOVE_REDRAW
+	void MovieStop (HWND);
+	void MoviePlay (HWND hwnd);
+	void AviFinished( void );
+	void ShowSplashScreen( int num );
+	void RemoveDynamicSfx( void );
+	void FillStatusTab( void );
 
-HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
+	HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 
 }
 
@@ -327,8 +167,12 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 /*
  * GLOBAL VARIABLES
  */
+
+
+
 D3DAppInfo* d3dapp;         /* Pointer to read only collection of DD and D3D
                                objects maintained by D3DApp */
+
 d3dmainglobals myglobs;     /* collection of global variables */
 
 static UINT CancelAutoPlayMessage;
@@ -336,8 +180,6 @@ static UINT CancelAutoPlayMessage;
 // AVI Specific stuff...
 int AVI_bpp = 16;
 int AVI_ZoomMode = 0;
-
-
 HANDLE AVIThreadControlEvent;
 
 
@@ -346,6 +188,8 @@ HANDLE AVIThreadControlEvent;
 /*
  *  INTERNAL FUNCTION PROTOTYPES
  */
+
+
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(LPSTR lpCmdLine);
 static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
@@ -360,6 +204,8 @@ static BOOL RestoreSurfaces();
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
                            LPARAM lParam );
 
+
+
 /****************************************************************************/
 /*                            WinMain                                       */
 /****************************************************************************/
@@ -367,10 +213,13 @@ long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
  * Initializes the application then enters a message loop which calls sample's
  * RenderScene until a quit message is received.
  */
+
+
 int PASCAL
 WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
         int nCmdShow)
 {
+
 	HRESULT hr;
     int failcount = 0; /* number of times RenderLoop has failed */
     MSG msg;
@@ -378,9 +227,6 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
     hPrevInstance;
 	UINT	param1;
 	UINT	param2;
-
-	// Initialize registry
-	InitRegistry();
 
 	// sets the minimum amount of memory allocated froma single malloc.....
 	//_amblksiz = 1024;
@@ -391,6 +237,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 	DDSurf_Init();
 	XSBuffer_Init();
 #endif
+
 	FillStatusTab();
 
 	MyGameStatus = STATUS_Title;
@@ -414,19 +261,21 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 	}
     hAccelApp = LoadAccelerators(hInstance, "AppAccel");    
 
-//	if( ModeCase == -1 )
-//	{
-//		D3DAppFullscreen(d3dapp->CurrMode);
-//	}
+	/*
+	if( ModeCase == -1 )
+	{
+		D3DAppFullscreen(d3dapp->CurrMode);
+	}
+	*/
 
 	while (!myglobs.bQuit) {
+
         /* 
          * Monitor the message queue until there are no pressing
          * messages
          */
-#if 1
 
-//	This will disable windows key and alt-tab and ctrl-alt-del
+		//	This will disable windows key and alt-tab and ctrl-alt-del
 		if( LockOutWindows )
 		{
 			param1 = WM_NULL;
@@ -435,6 +284,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 			param1 = 0;
 			param2 = 0;
 		}
+
 		if (PeekMessage(&msg, NULL, param1, param2, PM_REMOVE))
 		{
             if (msg.message == WM_QUIT)
@@ -451,7 +301,7 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 				DispatchMessage(&msg);
 			}
         }
-#endif
+
 		/* 
          * If the app is not minimized, not about to quit, not paused and D3D
          * has been initialized, we can render
@@ -536,39 +386,62 @@ FAILURE:
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
+
     WNDCLASS wc;
+
+	
+	/*
+	 * Initialize registry
+	 */
+
+
+	InitRegistry();
+
 
     /*
      * Initialize the global variables
      */
-    InitGlobals();
-    myglobs.hInstApp = hInstance;
+
+    d3dapp = NULL;
+
+    memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
+    memset(&myglobs, 0, sizeof(myglobs));
+
+    myglobs.bClearsOn		= FALSE;
+    myglobs.bShowFrameRate	= TRUE;
+    myglobs.bShowInfo		= FALSE;
+    myglobs.hInstApp		= hInstance;
+
     /*
      * Register the window class
      */
-    wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = WindowProc;
-    wc.cbClsExtra = 0;
-    wc.cbWndExtra = 0;
-    wc.hInstance = hInstance;
-    wc.hIcon = LoadIcon( hInstance, "AppIcon");
-    wc.hCursor = LoadCursor( NULL, IDC_ARROW );
-    wc.hbrBackground = (HBRUSH)GetStockObject(BLACK_BRUSH);
-//  wc.lpszMenuName = "AppMenu";
-    wc.lpszMenuName = NULL;
-    wc.lpszClassName = "Example";
+
+    wc.style			= CS_HREDRAW | CS_VREDRAW;
+    wc.lpfnWndProc		= WindowProc;
+    wc.cbClsExtra		= 0;
+    wc.cbWndExtra		= 0;
+    wc.hInstance		= hInstance;
+    wc.hIcon			= LoadIcon( hInstance, "AppIcon");
+    wc.hCursor			= LoadCursor( NULL, IDC_ARROW );
+    wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
+    wc.lpszMenuName		= "AppMenu";
+    wc.lpszClassName	= "ProjectX";
+
     if (!RegisterClass(&wc))
+	{
+        Msg("RegistryClass failed");
         return FALSE;
-    /*
+	}
+    
+	/*
      * Create a window with some default settings that may change
      */
 
 	myglobs.hWndMain = CreateWindowEx(
          WS_EX_APPWINDOW,
-         "Example",
-         "Forsaken",
-         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU |
-         WS_THICKFRAME | WS_MINIMIZEBOX,
+         "ProjectX",
+         "ProjectX",
+         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX,
          0, 0,								// start position of Window..
          START_WIN_SIZE_X, START_WIN_SIZE_Y,
          NULL,                              /* parent window */
@@ -576,15 +449,22 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
          hInstance,                         /* program handle */
          NULL);                             /* create parms */  
 
-    if (!myglobs.hWndMain){
+    if (!myglobs.hWndMain)
+	{
         Msg("CreateWindowEx failed");
         return FALSE;
     }
+
     /*
      * Display the window
      */
+
+	// show the window
     ShowWindow(myglobs.hWndMain, SW_SHOWNORMAL);
+
+	// force a repaint
     UpdateWindow(myglobs.hWndMain);
+
     /* 
      * Have the example initialize it components which remain constant
      * throughout execution
@@ -594,27 +474,27 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	if (!InitScene())
         return FALSE;
+
     /*
      * Call D3DApp to initialize all DD and D3D objects necessary to render.
      * D3DApp will call the device creation callback which will initialize the
      * viewport and the sample's execute buffers.
      */
+
     if (!CreateD3DApp(lpCmdLine))
         return FALSE;
 
     return TRUE;
+
 }
 
-extern "C" {
-extern char *config_name;
-}
 /*
  * CreateD3DApp
  * Create all DirectDraw and Direct3D objects necessary to begin rendering.
  * Add the list of D3D drivers to the file menu.
  */
-static BOOL
-CreateD3DApp(LPSTR lpCmdLine)
+
+static BOOL CreateD3DApp(LPSTR lpCmdLine)
 {
     HMENU hmenu;
     int i;
@@ -663,6 +543,9 @@ CreateD3DApp(LPSTR lpCmdLine)
 	NoSplash = FALSE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
+	bFullscreen = TRUE;
+
+	Msg("Before CLI: %i", (d3dappi.bFullscreen?1:0));
 
 	DPlayUpdateIntervalCmdLine = 0;
 
@@ -672,7 +555,7 @@ CreateD3DApp(LPSTR lpCmdLine)
     while(option != NULL )   {
 
 		if (!_stricmp(option,"NoFullScreen")){
-			d3dappi.bFullscreen = FALSE;
+			bFullscreen = FALSE;
 		} else if (!_stricmp(option,"DontColourKey")) {
 			DontColourKey = TRUE;
 		} else if (!_stricmp(option, "RecordDemoToRam")) {
@@ -941,11 +824,13 @@ CreateD3DApp(LPSTR lpCmdLine)
         return FALSE;
     }
 
-    strcpy(defaults.Name, "D3D ProjectX Demo");
+    strcpy(defaults.Name, "ProjectX");
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
     defaults.bClearsOn = myglobs.bClearsOn;
+
     OverrideDefaults(&defaults);
+
     myglobs.bClearsOn = defaults.bClearsOn;
     myglobs.bResizingDisabled = defaults.bResizingDisabled;
 
@@ -1927,20 +1812,6 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 /****************************************************************************/
 /*          Initialization, error reporting and release functions.          */
 /****************************************************************************/
-/*
- * InitGlobals
- * Called once at program initialization to initialize global variables.
- */
-static void
-InitGlobals(void)
-{
-    d3dapp = NULL;
-    memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
-    memset(&myglobs, 0, sizeof(myglobs));
-    myglobs.bClearsOn = FALSE;
-    myglobs.bShowFrameRate = TRUE;
-    myglobs.bShowInfo = FALSE;
-}
 
 /*
  * CleanUpAndPostQuit

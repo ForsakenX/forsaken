@@ -227,6 +227,7 @@ BOOL bD3DAppInitialized;       /* Is D3DApp initialized? */
 BOOL bPrimaryPalettized;       /* Is the front buffer palettized? */
 BOOL bPaletteActivate;         /* Is the front buffer's palette valid? */
 BOOL bIgnoreWM_SIZE;           /* Ignore this WM_SIZE messages */
+BOOL bFullscreen;			   /* Fullscreen flag from cli */
 SIZE szLastClient;             /* Dimensions of the last window */
 SIZE szBuffers;                /* Current buffer dimensions, not necessarily
                                   the same as the client window */
@@ -249,47 +250,67 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
                           D3DAppInfo** D3DApp)
 {
     int driver, mode, w, h;
+
     /* 
      * Clean the global varaibles and check the flags
      */
+
     D3DAppISetDefaults();
+
     if (flags & D3DAPP_ONLYSYSTEMMEMORY) {
         d3dappi.bOnlySystemMemory = TRUE;
         d3dappi.bOnlyEmulation = TRUE;
     }
+
 	if (flags & D3DAPP_ONLYD3DEMULATION){
         d3dappi.bOnlyEmulation = TRUE;
 	}
+
+	/*
+	 *  Command line Switches
+	 */
+
+	d3dappi.bFullscreen = &bFullscreen;
+
     /* 
      * Create DirectDraw, remember the Windows display mode and enumerate the
      * display modes
      */
-    ATTEMPT(D3DAppICreateDD(d3dappi.bOnlyEmulation ?
-                            D3DAPP_ONLYDDEMULATION : 0L));
+
+    ATTEMPT(D3DAppICreateDD(d3dappi.bOnlyEmulation ? D3DAPP_ONLYDDEMULATION : 0L));
     ATTEMPT(D3DAppIRememberWindowsMode());
     ATTEMPT(D3DAppIEnumDisplayModes());
+
     /*
      * Create Direct3D and enumerate the D3D drivers
      */
+
     ATTEMPT(D3DAppICreateD3D());
     ATTEMPT(D3DAppIEnumDrivers());
+
     /*
      * Set the device creation and destroy callback functions
      */
-    D3DDeviceDestroyCallback = DeviceDestroyCallback;
+
+    D3DDeviceDestroyCallback		= DeviceDestroyCallback;
     D3DDeviceDestroyCallbackContext = lpDestroyContext;
-    D3DDeviceCreateCallback = DeviceCreateCallback;
-    D3DDeviceCreateCallbackContext = lpCreateContext;
+    D3DDeviceCreateCallback			= DeviceCreateCallback;
+    D3DDeviceCreateCallbackContext	= lpCreateContext;
+
     *D3DApp = &d3dappi;
+
     d3dappi.hwnd = hwnd;
+
     /*
      * Choose a driver and display mode.  Using the current window is 
      * prefered, but a fullscreen mode may be selected.  Set the cooperative
      * level and create the front and back buffers for this mode.
      */
-/* here */
+
+	Msg("After CLI: %i",(d3dappi.bFullscreen?1:0));
+
     driver = D3DAPP_YOUDECIDE;
-	mode   = d3dappi.bFullscreen ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
+	mode   = (d3dappi.bFullscreen == TRUE) ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
     ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
     D3DAppIGetClientWin(hwnd);
     if (mode == D3DAPP_USEWINDOW) {
@@ -307,25 +328,33 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
         d3dappi.CurrMode = mode;
         ATTEMPT(D3DAppICreateBuffers(hwnd, w, h, d3dappi.Mode[mode].bpp, TRUE));
     }
+
     /*
      * If the front buffer is palettized, initialize its palette
      */
+
     ATTEMPT(D3DAppICheckForPalettized());
+
     /*
      * Create the Z-buffer
      */
+
     ATTEMPT(D3DAppICreateZBuffer(w, h, driver));
+
     /*
      * Create the D3D device, load the textures, call the device create
      * callback and set a default render state
      */
+
     ATTEMPT(D3DAppICreateDevice(driver));
     ATTEMPT(D3DAppIFilterDisplayModes(driver));  /* bThisDriverCanDo flags */
     ATTEMPT(D3DAppICallDeviceCreateCallback(w, h));
     ATTEMPT(D3DAppISetRenderState());
+
     /*
      * Ready to render
      */
+
     bD3DAppInitialized = TRUE;
     d3dappi.bRenderingIsOK = TRUE;
 
@@ -335,6 +364,7 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
 		CWAfterModeSwitch();
 	}
 #endif
+
     return TRUE;
 
 exit_with_error:

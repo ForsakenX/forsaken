@@ -3460,7 +3460,7 @@ float DemoAvgFps = 0.0F;
 
 extern  TLOADHEADER Tloadheader;
 extern  int16   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
-BOOL LockOutWindows = FALSE;
+BOOL LockOutWindows = TRUE;
 
 extern uint16 OnceOnly;
 extern char         MyName[ 32 ];
@@ -12390,6 +12390,7 @@ void  OnceOnlyInit( void )
   DeleteFile( LogFilename );
   DeleteFile( BatchFilename );
 #endif
+
   if (!InitDInput())
   {
     DebugPrintf( "Oct2.c OnceOnlyInit() Failed on InitDInput()\n" );
@@ -12401,12 +12402,9 @@ void  OnceOnlyInit( void )
 
   QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
   LastTime = LargeTime;
+
 #ifdef SCROLLING_MESSAGES
   InitStatsMessages();
-#endif
-
-#ifdef LOBBY_DEBUG
-    SetLobbyRegistrySettings();
 #endif
 
 }
