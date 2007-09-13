@@ -27,3 +27,12 @@ Visual Studio Directories:
 
     $(MSSDK_DIR)\include
     $(MSSDK_DIR)\include\mfc
+
+Executing:
+
+  After compliation an exe will be generated in the this folder.
+  You can leave the exe in the current directory.  As long as you
+  pass the data directory as a command line option.
+
+  You can simply make a link to the exe to specify the options.
+
