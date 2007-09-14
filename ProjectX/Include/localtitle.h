@@ -61,7 +61,7 @@ Notes for translator:
 #define LT_MENU_NEW_ValidPickups12 "purge mine"
 #define LT_MENU_NEW_ValidPickups13 "pine mine"
 #define LT_MENU_NEW_ValidPickups14 "quantum mine"
-#define LT_MENU_NEW_ValidPickups15 "invulnerability"
+#define LT_MENU_NEW_ValidPickups15 "chaos shield"
 #define LT_MENU_NEW_ValidPickups16 "nitro"
 #define LT_MENU_NEW_ValidPickups17 "stealth mantle"
 #define LT_MENU_NEW_ValidPickups18 "orbit pulsar"
