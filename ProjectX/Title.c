@@ -1131,7 +1131,6 @@ MENUITEM	*	TextItem = NULL;
 TEXT	OriginalText;
 
 SLIDER	DemoSpeed = { 1, 16, 1, 8, 0, 0.0F };
-SLIDER	FSBCompensation = { 1, 2048*4, 256, 2048, 0, 0.0F };
 SLIDER  SfxSlider = { 0, 10, 1, 10, 0, 0.0F };
 
 SLIDER BikerSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
@@ -2363,7 +2362,6 @@ MENU	MENU_NEW_DemoPlayBack = {
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_DemoPlayBack0 /*"play back demo"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		{ 0, 20, 200, 30, 0, LT_MENU_NEW_DemoPlayBack1 /*"Start"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, StartDemoPlayback , DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 40, 100, 50, SLIDER_Demo, LT_MENU_NEW_DemoPlayBack2 /*"playback speed"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &DemoSpeed, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 50, 100, 50, SLIDER_Value, "FSB Compensation", FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &FSBCompensation, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 10, 60, 90, 60, SLIDER_Value, LT_MENU_NEW_DemoPlayBack3 /*"watch player"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &DemoEyesSelect, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 
 		{ 10, 75, 200, 75, 0, LT_MENU_NEW_DemoPlayBack4 /*"choose demo"*/, FONT_Small, TEXTFLAG_CentreY, &DemoList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0 } ,
@@ -3197,7 +3195,6 @@ MENU	MENU_DemoPlaying = {
 		{ 200 , 128           , 0, 0, 0, LT_MENU_DemoPlaying1 /*"Pause Demo "*/, 0, 0,	&PauseDemo,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
 		{ 200 , 128 + ( 1*16 ), 0, 0, 0, LT_MENU_DemoPlaying6 /*"Grab 3dfx demo "*/, 0, 0,	&DemoScreenGrab,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
 		{ 200 , 128 + ( 2*16 ), 0, 0, 0, LT_MENU_DemoPlaying7 /*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 10, 128 + ( 3*16 ), 100, 50, SLIDER_Value, "FSB Compensation", FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &FSBCompensation, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 200 , 128 + ( 4*16 ), 0, 0, 0, LT_MENU_DemoPlaying8 /*"Watch Player"*/, 0, 0,		&DemoEyesSelect,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 128 + ( 5*16 ), 0, 0, 0, LT_MENU_DemoPlaying9 /*"Options"*/ , 0, 0, NULL, &MENU_Options , MenuChange , MenuItemDrawName, NULL, 0 } ,
 		{ 200 , 128 + ( 6*16 ), 0, 0, 0, LT_MENU_DemoPlaying10 /*"Debugging"*/, 0, 0,	&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle, NULL, 0 },
@@ -3214,7 +3211,6 @@ MENU	MENU_DemoPlayBack = {
 	{
 		{ 200 , 128, 0, 0, 0, "Start"/*"Start"*/ , 0, 0, NULL, &MENU_NotYet , StartDemoPlayback , MenuItemDrawName, NULL, 0 } ,
 		{ 200 , 144, 0, 0, 0, "Playback Speed"/*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 10,	160, 100, 50, SLIDER_Value, "FSB Compensation", FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &FSBCompensation, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
 		{ 200 , 176, 0, 0, 0, "Watch Player"/*"Watch Player"*/, 0, 0,		&DemoEyesSelect,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 192, 0, 0, 0, "Choose From..."/*"Choose From..."*/, 0, 0, &DemoList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }

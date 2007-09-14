@@ -1877,10 +1877,6 @@ uint32 MaxCurrentBytesPerSecRec = 0;
 uint32 MaxCurrentBytesPerSecSent = 0;
 float BytesPerSecTimer = 0.0F;
 
-extern SLIDER	FSBCompensation;
-#define FSB_COMPENSATION ((LONGLONG)FSBCompensation.value)
-
-
 // registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
@@ -5975,8 +5971,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		Ships[lpInterpolate->WhoIAm].OldBank = Ships[lpInterpolate->WhoIAm].Object.Bank;
 		Ships[lpInterpolate->WhoIAm].NextBank = lpInterpolate->NextBank;
 //		Ships[lpInterpolate->WhoIAm].OldTime = GameElapsedTime;
-		Ships[lpInterpolate->WhoIAm].OldTime = DemoTimeSoFar* FSB_COMPENSATION;
-		Ships[lpInterpolate->WhoIAm].NextTime = lpInterpolate->NextTime * FSB_COMPENSATION;
+		Ships[lpInterpolate->WhoIAm].OldTime = DemoTimeSoFar;
+		Ships[lpInterpolate->WhoIAm].NextTime = lpInterpolate->NextTime;
 		Ships[lpInterpolate->WhoIAm].DemoInterpolate = TRUE;
 		return;
     case MSG_VERYSHORTINTERPOLATE:
@@ -5992,12 +5988,12 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.z = (float)(lpVeryShortInterpolate->NextQuat.z * ONEOVER32767 );
 		Ships[lpVeryShortInterpolate->WhoIAm].NextBank = (float) (lpVeryShortInterpolate->NextBank / SHORTBANKMODIFIER);
 		
-		Ships[lpVeryShortInterpolate->WhoIAm].NextTime = lpVeryShortInterpolate->NextTime * FSB_COMPENSATION;
+		Ships[lpVeryShortInterpolate->WhoIAm].NextTime = lpVeryShortInterpolate->NextTime;
 		Ships[lpVeryShortInterpolate->WhoIAm].DemoInterpolate = TRUE;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldPos = Ships[lpVeryShortInterpolate->WhoIAm].Object.Pos;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldQuat = Ships[lpVeryShortInterpolate->WhoIAm].Object.Quat;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldBank = Ships[lpVeryShortInterpolate->WhoIAm].Object.Bank;
-		Ships[lpVeryShortInterpolate->WhoIAm].OldTime = DemoTimeSoFar* FSB_COMPENSATION;
+		Ships[lpVeryShortInterpolate->WhoIAm].OldTime = DemoTimeSoFar;
 		return;
 
 
@@ -7559,7 +7555,7 @@ void DemoPlayingDplayGameUpdate()
 	{
 		if( DemoTimeSoFar )
 		{
-			if( DemoTimeSoFar * FSB_COMPENSATION > GameElapsedTime )
+			if( DemoTimeSoFar > GameElapsedTime )
 			{
 			 	if (ferror(DemoFp) || feof(DemoFp) )
 				{
@@ -7611,7 +7607,7 @@ void DemoPlayingDplayGameUpdate()
 				return;
 			}
 	
-			if( DemoTimeSoFar * FSB_COMPENSATION > GameElapsedTime )
+			if( DemoTimeSoFar > GameElapsedTime )
 				return;
 		}
 		
