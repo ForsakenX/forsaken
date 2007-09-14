@@ -1,4 +1,6 @@
 
+
+
 Requirements:
 
   VISUAL STUDIO 2005 Express C++ Edition (sp1)
@@ -6,6 +8,7 @@ Requirements:
   Windows 2003 Platform SDK R2
 
   DirectX 9 SDK (summer 2004)
+
 
 
 Environment Variables:
@@ -19,6 +22,8 @@ Environment Variables:
   NOTE: Restart Visual Studio
 
 
+
+
 Visual Studio Directories:
 
   NOTE: Don't know why we still have to do this...
@@ -28,11 +33,29 @@ Visual Studio Directories:
     $(MSSDK_DIR)\include
     $(MSSDK_DIR)\include\mfc
 
-Executing:
 
-  After compliation an exe will be generated in the this folder.
-  You can leave the exe in the current directory.  As long as you
-  pass the data directory as a command line option.
 
-  You can simply make a link to the exe to specify the options.
+Debugging:
+
+
+  Visual Studios:
+
+	project -> propeteries -> debuggin -> command line
+
+  	-NoFullScreen -debug -chdir c:\\path\\to\\your\\skeleton
+
+  Explanation:
+  
+	NoFullScreen:
+
+ 	  stops vs debuggin mode from freezing your pc.
+
+	debug:
+
+	  log files and debuggin error messages.
+
+	chdir:
+
+	  so the exe can find all the files.
+
 
