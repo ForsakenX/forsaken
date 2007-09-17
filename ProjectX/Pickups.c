@@ -3574,7 +3574,7 @@ BOOL CheckValidRegenSlot( int16 Slot )
 		AddPickupToRegen( RegenPoints[ Slot ].Type );
 
 	/* let people know the pic file is messed up! */
-    DebugPrintf("Bad regen point detected! The PIC file needs to be fixed!");
+    DebugPrintf("Bad regen point detected! The PIC file needs to be fixed!\n");
 
 	/* failed */
 	return( FALSE );
