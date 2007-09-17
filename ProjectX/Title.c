@@ -2505,7 +2505,8 @@ MENU	MENU_NEW_CoOp = {
 		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
 		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-
+	}
+};
 
 
 /* single */
