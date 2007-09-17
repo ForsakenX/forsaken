@@ -1,691 +1,3 @@
-/*
- * Project X, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 217 $
- *
- * $Header: /PcProjectX/Sfx.c 217   11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/Sfx.c $
- * 
- * 217   11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 216   21/07/98 3:32p Oliverc
- * Put A3D code on USE_A3D build switch (currently disabled)
- * 
- * 215   14/07/98 17:48 Philipy
- * 
- * 214   14/07/98 12:27 Philipy
- * no space allocated for sfx names if no sfx enabled
- * 
- * 213   14/07/98 11:28 Philipy
- * removed unec. debug msgs
- * 
- * 212   15/06/98 14:39 Philipy
- * 
- * 211   13/06/98 14:35 Philipy
- * only 1 bike computer available for win98 demo version
- * 
- * 210   11/06/98 16:57 Philipy
- * loads of win98 shareware version stuff
- * 
- * 209   20/04/98 17:12 Philipy
- * added localisation stuff
- * 
- * 208   14/04/98 11:51 Philipy
- * primary buffer is now stereo again ( doh )
- * 
- * 207   11/04/98 20:14 Philipy
- * primary buffer format is now set to 16 bit!!!
- * 
- * 206   10/04/98 12:51 Philipy
- * fixed crash when trying to play enemy biker taunt & no speech installed
- * 
- * 205   8/04/98 14:17 Philipy
- * modified max sound volume
- * 
- * 204   7/04/98 17:50 Philipy
- * removed multiplayer taunts
- * AVI thread now allowed to exit nicely rather than being terminated
- * fixed inter-level bug
- * fixed bug in enemy taunts
- * 
- * 203   7/04/98 11:00 Philipy
- * potentially fixed crash when going from AVI to titles
- * fixed CD audio looping
- * no CD audio in front end unless full install
- * bike features sliders now give correct values
- * 
- * 202   5/04/98 17:10 Philipy
- * added huntreng back
- * 
- * 201   5/04/98 15:01 Philipy
- * started pre AVI CD accesss ( not yet implemented )
- * bike engine freq now done on 5 frame average
- * prevented CD track from playing in titles if set to off
- * NoDynamic SFX does not bike bike computer static anymore
- * water detail slider now only has two levels
- * 
- * 200   3/04/98 17:02 Philipy
- * cd audio now only retriggered if enabled!
- * added generic pickup sound if bike computer speech is zero
- * 
- * 199   3/04/98 16:03 Philipy
- * fixed CD audio stuff
- * 
- * 198   3/04/98 13:13 Philipy
- * Taunts are now affected by biker volume slider ( taunt volume slider
- * removed )
- * Enemy bikers now give out death cry
- * fixed problem with speech ignoring volume settings
- * fixed end game sequences
- * 
- * 197   2/04/98 21:07 Philipy
- * Added taunts ( single & multiplayer, plus enemy biker taunts )
- * added flygirl to front end.
- * sliders for biker, bike computer and taunt speech volume
- * added new sfx for title
- * 
- * 196   1/04/98 12:37 Collinsd
- * 
- * 195   30/03/98 20:36 Collinsd
- * Done end game stuff, Added more credits and made sfx for capship non
- * looping.
- * 
- * 194   30/03/98 17:31 Philipy
- * added cd specific path stuff
- * added new bike computers
- * prevented File_Exists being called every time a dynamic sfx is played
- * 
- * 193   29/03/98 21:31 Collinsd
- * Pyrolite SoundfX added
- * 
- * 192   29/03/98 20:00 Philipy
- * cd path now verified earlier
- * sfx no longer reloaded when changing biker / bike computer
- * mouse sensitivity rounding error fixed
- * 
- * 191   28/03/98 17:33 Philipy
- * corrected some sfx
- * added legal screen
- * fixed mission briefing text bug
- * 
- * 190   28/03/98 13:35 Philipy
- * added all biker speech
- * 
- * 189   27/03/98 18:04 Philipy
- * fixed bug where mapped sfx did not play.
- * 
- * 188   27/03/98 14:15 Philipy
- * made one shot underwater noise non looping
- * 
- * 187   27/03/98 12:58 Philipy
- * changed cheat mode stuff
- * fixed bug that prevented individual variants of variant sfx to be
- * mapped
- * correct menutv now displayed between levels
- * 
- * 186   26/03/98 19:41 Philipy
- * fixed corruption bug & renamed forklift sfx
- * 
- * 185   26/03/98 15:24 Philipy
- * re added sfx missing from new batch
- * 
- * 184   25/03/98 21:37 Philipy
- * increased max levelspec sfx
- * 
- * 183   25/03/98 12:26 Philipy
- * fixed comparing of variant sfx with lookup table
- * 
- * 182   25/03/98 9:26 Collinsd
- * 
- * 181   24/03/98 21:07 Philipy
- * fixed quicktext stuff
- * sfx do not pause when in multiplayer mode
- * rear camera not shown for splash demos
- * 
- * 180   24/03/98 16:20 Philipy
- * added new sfx
- * 
- * 179   21/03/98 14:52 Philipy
- * only relevent sfx are loaded between levels
- * 
- * 178   19/03/98 15:44 Philipy
- * added ForcePlayPannedSfx function
- * 
- * 177   18/03/98 16:25 Philipy
- * removed some debug msgs
- * 
- * 176   18/03/98 16:14 Philipy
- * messed about with stopping memory from being paged out
- * Stopped due to lack of time & information
- * 
- * 175   11/03/98 14:47 Philipy
- * fixed invalid frequency bug
- * 
- * 174   11/03/98 11:06 Philipy
- * .wav extension ignored if mistakenly given when placing sfx
- * 
- * 173   11/03/98 10:51 Philipy
- * all sfx now paused when single player game paused, not just looping sfx
- * 
- * 172   9/03/98 16:54 Philipy
- * added 'requested' flag to SfxLookup. ( At present all sfx requested )
- * 
- * 171   6/03/98 17:37 Philipy
- * implemented ability to run when launched by lobby
- * 
- * 170   3/03/98 12:08 Philipy
- * fixed looping sfx bug
- * 
- * 169   28/02/98 16:18 Philipy
- * fixed memory leak
- * sfx loader does not now try to load sfx into hw if it knows that there
- * are insufficient resources
- * added buffer valid check b4 modifying looping sfx
- * 
- * 168   27/02/98 19:11 Philipy
- * fixed load game sfx bug
- * added pseudo dithering for 8 bit saved game pic
- * flygirl now selectable from front end ( no model displayed )
- * 
- * 167   27/02/98 16:00 Philipy
- * 
- * 166   27/02/98 14:53 Philipy
- * fixed modify looping sfx function
- * 
- * 165   25/02/98 15:44 Philipy
- * more efficient use of hw sound mixing buffers
- * 
- * 164   24/02/98 16:55 Oliverc
- * 1st attempt at bounty hunt multiplayer game
- * 
- * 163   23/02/98 13:00 Philipy
- * added scan lines for inter-level objects
- * added speech for bike selection in front end
- * 
- * 162   21/02/98 16:25 Philipy
- * added text messages for capture flag
- * 
- * 161   21/02/98 13:04 Philipy
- * added in game load / save for sfx
- * 
- * 160   20/02/98 11:50 Philipy
- * 
- * 159   19/02/98 22:00 Collinsd
- * Added flygirl biker.
- * 
- * 158   17/02/98 17:12 Philipy
- * check for buffer in hw now fixed
- * 
- * 157   17/02/98 9:17 Philipy
- * added frequency update for bike engine loop
- * 
- * 156   12/02/98 16:36 Philipy
- * 
- * 155   12/02/98 15:37 Philipy
- * 
- * 154   12/02/98 11:27 Philipy
- * releasing buffer now sets pointer to NULL to try and trap error
- * 
- * 153   12/02/98 9:05 Philipy
- * 
- * 152   11/02/98 19:38 Philipy
- * fixed crash bug
- * 
- * 151   11/02/98 15:52 Philipy
- * fixed memory leak
- * 
- * 150   11/02/98 12:57 Philipy
- * sbufferhand now gives call stack to 2 levels
- * 
- * 149   10/02/98 19:41 Philipy
- * added support for 2d looping sfx
- * 
- * 148   10/02/98 10:49 Philipy
- * 
- * 147   9/02/98 12:21 Philipy
- * added sound buffer memory managment
- * only one piece of bike computer speech can now play at a time
- * 
- * 146   5/02/98 17:12 Oliverc
- * Prevented sound fx warning dialogs appearing in EXTERNAL_DEMO versions
- * 
- * 145   3/02/98 15:38 Philipy
- * fixed sfx bug
- * 
- * 144   2/02/98 20:08 Philipy
- * added configurable quick text message buttons
- * 
- * 143   29/01/98 12:16 Philipy
- * added new sfx
- * fixed playing of specific level spec variant sfx
- * 
- * 142   29/01/98 11:30 Philipy
- * fixed loading bar
- * 
- * 141   29/01/98 10:46 Philipy
- * fixed corruption bug
- * 
- * 140   28/01/98 21:55 Philipy
- * 
- * 139   28/01/98 18:38 Philipy
- * disabled hw sfx temporarily
- * 
- * 138   28/01/98 17:16 Philipy
- * added new sfx
- * 
- * 137   28/01/98 10:18 Philipy
- * only one piece of biker speech can play at any one time
- * death cry overides any existing speech
- * 
- * 136   23/01/98 16:38 Philipy
- * CD audio now on/off toggle, saved to config file
- * triggered pickup sfx now 1 in 4 chance
- * Trojax sfx now only stopped once
- * 
- * 135   23/01/98 11:31 Philipy
- * added new level spec sfx
- * 
- * 134   22/01/98 21:16 Philipy
- * 
- * 133   22/01/98 20:19 Philipy
- * put in debug msg
- * 
- * 132   22/01/98 19:49 Philipy
- * added sfx batch file stuff for sfx
- * 
- * 131   22/01/98 19:14 Philipy
- * fixed re-loading looping sfx while in level
- * biker speech now switchable
- * 
- * 130   21/01/98 18:04 Philipy
- * 
- * 129   21/01/98 17:27 Philipy
- * added new sfx
- * 
- * 128   21/01/98 16:30 Philipy
- * fixed some spotsfx bugs
- * 
- * 127   21/01/98 12:19 Philipy
- * Added attract mode for shareware
- * fixed looping sfx volume bug
- * 
- * 126   20/01/98 16:58 Philipy
- * fixed looping grate sfx
- * 
- * 125   20/01/98 16:33 Philipy
- * added new sfx fn: PlaySpotFixedSfx
- * -data option now reverts to working dir for sfx if no local sfx dir
- * exists
- * 
- * 124   19/01/98 9:50 Philipy
- * more changes to critical sections
- * 
- * 123   18/01/98 23:46 Philipy
- * added triggered sfx, tidied up critical sections
- * 
- * 122   17/01/98 16:52 Philipy
- * put in debug dialogue box to identify crash bug
- * made biker speech dynamic again
- * took out some unneccesary critical sections ( SfxHolderKey )
- * 
- * 121   1/17/98 1:40p Phillipd
- * 
- * 120   1/17/98 10:39a Phillipd
- * 
- * 119   16/01/98 16:16 Philipy
- * 
- * 118   16/01/98 16:09 Philipy
- * All sfx holders now reset on DestroySound()
- * 
- * 117   16/01/98 14:43 Philipy
- * added new sfx 
- * 
- * 116   16/01/98 8:53 Philipy
- * 
- * 115   16/01/98 8:44 Philipy
- * fixed no sound card bug
- * 
- * 114   15/01/98 17:25 Philipy
- * 
- * 113   15/01/98 17:01 Philipy
- * added spot sfx stuff.
- * PlayPannedSfx and PlaySpotSfx now return unique uint32 - use StopSfx to
- * stop sound
- * 
- * 112   13/01/98 12:06 Philipy
- * added looping spot sfx support, and changed looping sfx to use static
- * list rather than dynamic linked list
- * 
- * 111   12/01/98 16:24 Philipy
- * spot sfx stuff
- * 
- * 110   12/01/98 15:10 Philipy
- * added check for no file in ReturnSfxIndex
- * 
- * 109   12/01/98 12:45 Philipy
- * redid ReturnSfxIndex
- * 
- * 108   12/01/98 11:00 Philipy
- * changed level spec sfx operation
- * added ReturnSfxIndex fn
- * 
- * 107   12/01/98 0:08 Philipy
- * bug fixes
- * added inter-level mission briefing
- * changed splash screen code, + added splash screen on exit
- * 
- * 106   10/01/98 20:35 Philipy
- * fixed no speech option
- * 
- * 105   10/01/98 19:31 Philipy
- * bug fixes
- * 
- * 104   10/01/98 13:02 Collinsd
- * Fixed sussgun again ( Dont change back ).
- * 
- * 103   9/01/98 17:25 Philipy
- * player is now forced to start on level 0
- * 
- * 102   9/01/98 15:57 Philipy
- * fixed FileExists bug
- * 
- * 101   9/01/98 14:04 Collinsd
- * No Optimisations around certain functions.
- * 
- * 100   9/01/98 11:36 Philipy
- * made guts static 
- * 
- * 99    9/01/98 11:14 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
- * loading bar now displayed when loading
- * 
- * 98    7/01/98 12:13 Philipy
- * fixed level spec sfx bug
- * 
- * 97    7/01/98 9:34 Philipy
- * added title room sfx
- * added ability to select bike computer, biker with sfx loaded
- * 
- * 96    5/01/98 10:38 Philipy
- * speech sfx implemented - currently defaults to 1 biker & computer only,
- * none selectable
- * 
- * 95    30/12/97 14:26 Philipy
- * Changed dynamic sfx linked list to static list
- * 
- * 94    24/12/97 9:20 Philipy
- * fixed dynamic sound stuff by making X_Malloc, X_Free etc. atomic
- * 
- * 93    12/22/97 2:01p Phillipd
- * 
- * 92    22/12/97 11:44 Collinsd
- * Added spotfx sound.  and added wesnik weanimator
- * 
- * 91    12/19/97 12:36p Phillipd
- * 
- * 90    12/19/97 11:14a Phillipd
- * 
- * 89    12/19/97 8:53a Phillipd
- * 
- * 88    18/12/97 22:03 Oliverc
- * Tried to fix sfx bug ("tried to free unmalloced block in line 2574"
- * and/or crash out with access violation in middle of nowhere) by
- * initialising SBufferList_Start and _Current to NULL, and moving
- * CheckSBufferList() call inside critical section -- but didn't seem to
- * make any difference...
- * 
- * 87    12/18/97 5:37p Phillipd
- * 
- * 86    12/18/97 2:47p Phillipd
- * 
- * 85    12/17/97 5:19p Phillipd
- * 
- * 84    12/06/97 2:53p Phillipd
- * Fixed Phils Sfx Crash Bug....Doh
- * 
- * 83    5/12/97 21:52 Philipy
- * various changes to looping sfx stuff
- * 
- * 82    4/12/97 10:01 Philipy
- * DupSWBuffers now initialised properly
- * 
- * 81    3/12/97 18:51 Philipy
- * changed some sfx timer stuff
- * 
- * 80    3/12/97 9:16 Philipy
- * PlaySfx() now can use static sounds
- * 
- * 79    2/12/97 16:46 Philipy
- * compound sfx buffer is now stopped when quitting game
- * 
- * 78    2/12/97 11:52 Philipy
- * boot demo stuff
- * 
- * 77    1/12/97 16:15 Philipy
- * fixed crash bug when quitting
- * 
- * 76    1/12/97 12:15 Philipy
- * fixed trojax bug
- * 
- * 75    1/12/97 10:39 Philipy
- * fixed no sound card bug
- * 
- * 74    1/12/97 10:11 Philipy
- * fixed no sound bug
- * 
- * 73    1/12/97 9:47 Philipy
- * checked in with changes commented out in order to get Xmem update
- * 
- * 72    11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 71    28/11/97 18:05 Collinsd
- * 
- * 70    28/11/97 17:36 Philipy
- * some looping sfx stuff done
- * 
- * 69    27/11/97 15:17 Philipy
- * made all speech static for now
- * 
- * 68    27/11/97 14:43 Philipy
- * hit speech now static
- * 
- * 67    27/11/97 12:35 Philipy
- * fixed sound bug on self play demo
- * demo playback speed now given as true percentage
- * 
- * 66    26/11/97 19:02 Philipy
- * fixed crash bug when quitting
- * 
- * 65    26/11/97 18:07 Collinsd
- * Fixed sound when no sound card.  Added bootlogo as -logos2 on command
- * line.
- * 
- * 64    26/11/97 15:59 Philipy
- * sounds now ignored if no soundcard on machine
- * 
- * 63    26/11/97 11:48 Philipy
- * implemented dynamic loading of SFX, dynamic allocation of mixing
- * channels.
- * 3D sound currently disabled.
- * 
- * 62    27/10/97 15:36 Philipy
- * Added sfx vol control
- * 
- * 61    21/10/97 13:11 Philipy
- * added sound control options
- * 
- * 60    16/10/97 18:06 Philipy
- * lpDirectSound now declared as NULL
- * 
- * 59    15/10/97 16:29 Collinsd
- * Added sfx and offsets to batch file
- * 
- * 58    11/08/97 10:12 Collinsd
- * Added override data directory option. ( SFX don't work yet! )
- * 
- * 57    6/08/97 19:21 Collinsd
- * Changed external/internal forces. Commented out some more A3D Sfx stuff
- * 
- * 56    4/08/97 11:58 Collinsd
- * A3D:Sound stuff added
- * 
- * 55    17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 54    8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 53    6/24/97 5:11p Phillipd
- * 
- * 52    6/24/97 11:12a Phillipd
- * 
- * 51    6/12/97 2:53p Phillipd
- * 
- * 50    6/12/97 11:15a Phillipd
- * 
- * 49    6/11/97 5:55p Phillipd
- * 
- * 48    6/11/97 5:42p Phillipd
- * 
- * 47    6/11/97 5:42p Phillipd
- * 
- * 46    6/07/97 2:22p Phillipd
- * 
- * 45    6/07/97 12:04p Phillipd
- * New Brenda Sfx added....Not All there
- * 
- * 44    6/02/97 9:09a Phillipd
- * 
- * 43    5/31/97 12:36p Phillipd
- * 
- * 42    5/30/97 8:57a Phillipd
- * 
- * 41    5/28/97 2:54p Phillipd
- * 
- * 40    5/27/97 5:40p Phillipd
- * 
- * 39    5/23/97 5:52p Phillipd
- * 
- * 38    5/23/97 9:18a Phillipd
- * 
- * 37    5/21/97 12:01p Phillipd
- * 
- * 36    5/15/97 11:42a Phillipd
- * 
- * 35    25/04/97 12:52 Collinsd
- * Added invul sfx
- * 
- * 34    3/20/97 11:21a Phillipd
- * 
- * 33    20-03-97 10:00a Collinsd
- * new sfx
- * 
- * 32    3/07/97 9:51a Phillipd
- * 
- * 31    15-02-97 9:32p Collinsd
- * Portals now use variable execute buffers.  They also
- * allocate/deallocate themselves properly now.
- * 
- * 30    13-01-97 5:03p Collinsd
- * Added Temp Door SFX
- * 
- * 29    19-12-96 3:19p Collinsd
- * Changed sfx funtion to allow frequency changing.
- * Added Trojax Charging SFX.
- * 
- * 28    12/10/96 3:32p Collinsd
- * Added new laser sfx.
- * 
- * 27    12/10/96 11:17a Collinsd
- * Added drop mine sfx.
- * 
- * 26    12/04/96 11:39a Collinsd
- * Ooopppps, fixed launch sfx.
- * 
- * 25    12/04/96 11:22a Collinsd
- * Added foetoid and new scaled bikes. Added sussgun richochet and sussgun
- * no ammo sfx, new load weapon sfx, and new transpulse/trojax sfx.
- * 
- * 24    12/02/96 1:24p Collinsd
- * Added new cloaking/decloaking sfx.  Also new sussgun fire.
- * 
- * 23    17/11/96 17:28 Collinsd
- * Changed Pulsar & Trojax. Added Trojax Charge sfx to list.
- * 
- * 22    14/11/96 16:40 Collinsd
- * Added incoming sound effect and scattered message if no sound card
- * present.
- * 
- * 21    14/11/96 15:42 Collinsd
- * added targeted sound fx.
- * 
- * 20    14/11/96 12:22 Collinsd
- * Added new sfx ( Golden PowerPod, Scattered, Missile Launch )
- * 
- * 19    30/10/96 16:21 Collinsd
- * stealth sfx and regeneration
- * 
- * 18    30/10/96 14:34 Collinsd
- * Added stealthmode.
- * 
- * 17    29/10/96 16:01 Collinsd
- * changed over to panned sfx.
- * 
- * 16    10/29/96 2:49p Phillipd
- * panning sfx and new panel....with lights...
- * 
- * 15    22/10/96 12:08 Collinsd
- * Added body parts and blood splats.
- * 
- * 14    18/10/96 19:26 Collinsd
- * Sfx are now in data directory!
- * 
- * 13    10/18/96 12:44p Phillipd
- * number of sfx buffers is now done on a per sfx basis....
- * 
- * 12    9/10/96 10:02 Collinsd
- * Old Sfx back, new gravgon trail.
- * 
- * 11    8/10/96 10:40 Collinsd
- * Added generic pickup sfx, and changed smoke trail.
- * 
- * 10    8/10/96 9:15 Collinsd
- * restricted sfx, added debug lines to pickupmode only.
- * 
- * 9     3/10/96 15:49 Collinsd
- * Added new sfx
- * 
- * 8     1/10/96 17:44 Collinsd
- * Reduced pulsar to half.  Tidied up primary weapons.
- * deleted redundant code in 2dpolys/primary weapons.
- * 
- * 7     18/09/96 10:58 Collinsd
- * Change sfx to 4 channels and distance limit. Also reduced amount of
- * sparks generated by beam laser.
- * 
- * 6     8/08/96 15:53 Collinsd
- * Tidied up sfx routines
- * 
- * 5     8/08/96 9:13 Collinsd
- * Added Sfx and pickups
- * 
- * 4     7/25/96 10:05a Phillipd
- * 
- * 3     7/24/96 3:08p Phillipd
- * 
- * 2     7/24/96 2:42p Phillipd
- * 
- * 1     7/24/96 2:15p Phillipd
- * 
- */
-
 
 #include "typedefs.h"
 #include <stdio.h>
@@ -706,6 +18,7 @@
 #ifdef USE_A3D
 #include "ia3d.h"
 #endif
+
 #include "title.h"
 
 #include "text.h"
@@ -829,9 +142,6 @@ Externals
 extern 	ENEMY Enemies[];
 extern SLIDER BikeCompSpeechSlider;
 extern SLIDER BikerSpeechSlider;
-extern	int use_data_path;
-extern	char	normdata_path[];
-extern char data_path[];
 extern USERCONFIG	*player_config;
 extern int	CurrentLoadingStep;
 extern VECTOR	SlideUp;
@@ -1702,35 +1012,47 @@ void ClearLevelSpecSfx( void )
 *****************************************/
 BOOL SfxExists( uint16 sfx, char *name )
 {
-	char fullpath[128];
-	char *data_path_to_use[ 2 ];
-	int num_paths_to_try;
-	int i;
+	char fullpath[128] = "";
+	char dirname[128]  = "";
+	char *ptr;
 
-	GetSfxPathsToTry( sfx, &num_paths_to_try, data_path_to_use );
+	// try to find the sfx file
+	// using the standard <name>.wav format
 
-	for ( i = 0; i < num_paths_to_try; i++ )
-	{
-		GetSfxPath( sfx , fullpath, data_path_to_use[ i ] );
+	GetSfxPath( sfx , dirname );  // get path to sfx file
+	strcat( fullpath, dirname );  // set the path
+	strcat( fullpath, name    );  // add the name
+	strcat( fullpath, ".wav"  );  // add the extension
 
-		strcat( fullpath, name );
-		strcat( fullpath, ".wav" );
-		if( File_Exists ( fullpath ) )
-		{
-			return TRUE;
-		}
+	// success !
+	if(File_Exists(fullpath))
+		return TRUE;
 
-		GetSfxPath( sfx, fullpath, data_path_to_use[ i ] );
+	// get pointer to extension
+	if ( ! (ptr = strstr(fullpath,".wav")))
+	  return FALSE;
 
-		strcat( fullpath, name );
-		strcat( fullpath, "01" );
-		strcat( fullpath, ".wav" );
-		if( File_Exists ( fullpath ) )
-		{
-			return TRUE;
-		}
-	}
+	// remove the extension
+	*ptr = 0;
+
+	// try to find the sfx file
+	// using the <name>01.wav format
+
+	// add the 01
+	strcat( fullpath, "01" );
+
+	// add the extension
+	strcat( fullpath, ".wav" );
+
+	// if file exists
+	if( File_Exists ( fullpath ) )
+
+		// success
+		return TRUE;
+
+	// failure
 	return FALSE;
+
 }
 
 
@@ -1745,11 +1067,12 @@ BOOL IsDigit( char check )
 /****************************************
 	Procedure	: ReturnSFXIndex
 	description	: returns an index to Sfx_Filenames for the requested sfx.
-				  if sfx does not already exist in table, sfx is added as a level specific sfx at the end of
-				  the table.
+				  if sfx does not already exist in table, sfx is added as 
+				  a level specific sfx at the end of the table.
 	Input		:  char *file: Sfx name
 	Output		: int16: index no.
 *****************************************/
+
 int16 ReturnSFXIndex( char *file )
 {
 	int16 i, level_spec_flags, filelen;
@@ -1769,9 +1092,7 @@ int16 ReturnSFXIndex( char *file )
 
 	// check all non level specific sfx for file
 	for( i = 0; i < SFX_LEVELSPEC_Start; i++ )
-	{
 		if ( Sfx_Filenames[ i ].Name && ( !_stricmp( Sfx_Filenames[ i ].Name, file ) ) )
-		{
 			if ( SfxExists( i, file ) )
 			{
 				RequestSfx( i );
@@ -1779,12 +1100,9 @@ int16 ReturnSFXIndex( char *file )
 			}
 			else
 				return -1;
-		}
-	}
 
 	// check all existing level specific sfx for file
 	for ( i = SFX_LEVELSPEC_Start; i <= SFX_LEVELSPEC_End; i++ )
-	{
 		//if ( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file[0] )
 		if ( Sfx_Filenames[ i ].Name )
 		{
@@ -1796,7 +1114,6 @@ int16 ReturnSFXIndex( char *file )
 			}
 		}else
 			break;
-	}
 		
 	// look up sfx in table of possible level spec sfx ( neccesary in order to get correct flags )...
 	i = 0;
@@ -1855,7 +1172,7 @@ int16 ReturnSFXIndex( char *file )
 	// add to end of level specific table
 	for ( i = SFX_LEVELSPEC_Start; i <= SFX_LEVELSPEC_End; i++ )
 	{
-//		if (!( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file[0] ))
+	//		if (!( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file[0] ))
 		if ( !Sfx_Filenames[ i ].Name  )
 		{
 			//LevelSpecificEffects[ Sfx_Filenames[ i ].SfxLookup ].flags = level_spec_flags;
@@ -1868,9 +1185,8 @@ int16 ReturnSFXIndex( char *file )
 		}
 	}
 
-#if _DEBUG
-	Msg("Too many sfx!! - Please tell Phil\n");
-#endif
+	DebugPrintf("Too many sfx!! - Please tell Phil\n");
+
 	return -1;
 }
 
@@ -1904,7 +1220,9 @@ BOOL CreateSndObj( char *file, int sfxnum, int flags )
 
 /****************************************
 	Procedure	: LoadSfx 
-	description	: Fills in SndLookup info for the given sfx. If static, also loads sfx ( or sfx's if variants exist ) & stores info in SndObjs
+	description	: Fills in SndLookup info for the given sfx.
+	              If static, also loads sfx ( or sfx's if variants exist )
+				  & stores info in SndObjs
 	Input		: int sfxnum
 	Output		: none
 *****************************************/
@@ -1917,7 +1235,8 @@ void LoadSfx( int sfxnum )
 	flags = Sfx_Filenames[ sfxnum ].Flags;
 
 	DrawLoadingBox( CurrentLoadingStep, sfxnum, SFX_LEVELSPEC_End );
-/*	
+
+	/*	
 	// get correct flags...
 	if ( flags & SFX_LevelSpec )
 	{
@@ -1926,8 +1245,6 @@ void LoadSfx( int sfxnum )
 
 		flags = LevelSpecificEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ].flags;
 	}
-*/
-	/*
 	else		   
 	{
 		// only load in level specific and biker sfx for title room...
@@ -1936,6 +1253,8 @@ void LoadSfx( int sfxnum )
 			return;
 	}
 	*/
+
+
 
 	if ( !SndLookup[ sfxnum ].Num_Variants )
 		return;
@@ -1951,10 +1270,9 @@ void LoadSfx( int sfxnum )
 			{
 				DebugPrintf( "Error loading sfx %d - marking sound as invalid\n", sfxnum, SndLookup[ sfxnum ].Num_Variants );
 				return;
-			}else
-			{
-				AddFileToBat( fullpath );
 			}
+			else
+				AddFileToBat( fullpath );
 		}
 	}else
 	{
@@ -1983,32 +1301,32 @@ void LoadSfx( int sfxnum )
 #define NUM_ESSENTIAL_SFX 26
 
 int16 EssentialSfx[ NUM_ESSENTIAL_SFX ] = {
-	SFX_BIKECOMP_AP	, //	picking up a weapon which is already present
-	SFX_Select_BeamLaser,//	-	beam laser
-	SFX_Select_Invul,//	-	chaos shield
-	SFX_Select_Ammo,//	-	extra ammo
-	SFX_Select_GravgonMissile,//	-	gravgon missile
-	SFX_Select_GoldenPowerPod,//	-	golden power pod
-	SFX_Incoming,//	-	incoming
-	SFX_Select_MFRL,//	-	MRFL
-	SFX_Select_MugMissile,//	-	mug
-	SFX_DontHaveThat,//	-	selecting a weapon which is not present
-	SFX_Select_Nitro,//	-	nitro
-	SFX_Orbital,//	-	orbit pulsar
-	SFX_Select_PineMine,//	-	pine mine
-	SFX_Select_PowerPod,//	-	power pod
-	SFX_Select_PurgeMine,//	-	purge mine
-	SFX_Select_Pulsar,//	-	pulsar
-	SFX_Select_QuantumMine,//	-	quantum mine
-	SFX_Select_ScatterMissile,//	-	scatter missile
-	SFX_Select_SussGun,//	-	suss-gun
-	SFX_Select_Shield,//	-	shield
-	SFX_Scattered,//	-	scatter missile impact
-	SFX_Select_SolarisMissile,//	-	solaris heatseaker
-	SFX_BIKECOMP_ST	, //	stealth mantle
-	SFX_Select_TitanStarMissile,//	-	titan star missile
-	SFX_Select_Transpulse,//	-	transpulse
-	SFX_Select_Trojax,//	-	trojax
+	SFX_BIKECOMP_AP,				//	-	picking up a weapon which is already present
+	SFX_Select_BeamLaser,			//	-	beam laser
+	SFX_Select_Invul,				//	-	chaos shield
+	SFX_Select_Ammo,				//	-	extra ammo
+	SFX_Select_GravgonMissile,		//	-	gravgon missile
+	SFX_Select_GoldenPowerPod,		//	-	golden power pod
+	SFX_Incoming,					//	-	incoming
+	SFX_Select_MFRL,				//	-	MRFL
+	SFX_Select_MugMissile,			//	-	mug
+	SFX_DontHaveThat,				//	-	selecting a weapon which is not present
+	SFX_Select_Nitro,				//	-	nitro
+	SFX_Orbital,					//	-	orbit pulsar
+	SFX_Select_PineMine,			//	-	pine mine
+	SFX_Select_PowerPod,			//	-	power pod
+	SFX_Select_PurgeMine,			//	-	purge mine
+	SFX_Select_Pulsar,				//	-	pulsar
+	SFX_Select_QuantumMine,			//	-	quantum mine
+	SFX_Select_ScatterMissile,		//	-	scatter missile
+	SFX_Select_SussGun,				//	-	suss-gun
+	SFX_Select_Shield,				//	-	shield
+	SFX_Scattered,					//	-	scatter missile impact
+	SFX_Select_SolarisMissile,		//	-	solaris heatseaker
+	SFX_BIKECOMP_ST,				//	-	stealth mantle
+	SFX_Select_TitanStarMissile,	//	-	titan star missile
+	SFX_Select_Transpulse,			//	-	transpulse
+	SFX_Select_Trojax,				//	-	trojax
 };
 
 /****************************************
@@ -2468,9 +1786,6 @@ void GetFullBikeSfxPath( char *fullpath, int sfxnum, int variant, int total_vari
 {
 	char filename[256];
 	char numstr[3];
-	char *data_path_to_use[ 2 ];
-	int num_paths_to_try;
-	int i;
 
 	if ( ( variant > total_variants ) && total_variants )
 	{
@@ -2479,45 +1794,39 @@ void GetFullBikeSfxPath( char *fullpath, int sfxnum, int variant, int total_vari
 		return;
 	}
 
-	
-	GetSfxPathsToTry( sfxnum, &num_paths_to_try, data_path_to_use );
+	// name of speach file
+	strcpy( filename, BikerSpeechNames[ bike ] );
 
-	for ( i = 0; i < num_paths_to_try; i++ )
+	// add _
+	strcat( filename, "_" );
+
+	// 
+	strcat( filename, BikerSpeechEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ] );
+
+	// create filename with no num extension
+	if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
 	{
-		strcpy( filename, BikerSpeechNames[ bike ] );
-		strcat( filename, "_" );
-		strcat( filename, BikerSpeechEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ] );
-
-		if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
-		{
-			// create filename with no num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			strcat( fullpath, ".wav" );
-		}else
-		{
-			// create filename with num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
-			strcat( fullpath, numstr );
-			strcat( fullpath, ".wav" );
-		}
-
-		if( File_Exists( fullpath ) )
-		{
-			break;
-		}
+		GetSfxPath( sfxnum , fullpath );
+		strcat( fullpath, filename );
+		strcat( fullpath, ".wav" );
 	}
+
+	// create filename with num extension
+	else
+	{
+		GetSfxPath( sfxnum , fullpath );
+		strcat( fullpath, filename );
+		sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
+		strcat( fullpath, numstr );
+		strcat( fullpath, ".wav" );
+	}
+
 }
 
 void GetFullBikeCompSfxPath( char *fullpath, int sfxnum, int variant, int total_variants, int bikecomp )
 {
 	char filename[256];
 	char numstr[3];
-	char *data_path_to_use[ 2 ];
-	int num_paths_to_try;
-	int i;
 
 	if ( ( variant > total_variants ) && total_variants )
 	{
@@ -2526,50 +1835,27 @@ void GetFullBikeCompSfxPath( char *fullpath, int sfxnum, int variant, int total_
 		return;
 	}
 
-	GetSfxPathsToTry( sfxnum, &num_paths_to_try, data_path_to_use );
 
-	for ( i = 0; i < num_paths_to_try; i++ )
+	strcpy( filename, BikeComputerSpeechNames[ bikecomp ] );
+	strcat( filename, "_" );
+	strcat( filename, BikeComputerSpeechEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ] );
+
+	if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
 	{
-		strcpy( filename, BikeComputerSpeechNames[ bikecomp ] );
-		strcat( filename, "_" );
-		strcat( filename, BikeComputerSpeechEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ] );
-
-		if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
-		{
-			// create filename with no num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			strcat( fullpath, ".wav" );
-		}else
-		{
-			// create filename with num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
-			strcat( fullpath, numstr );
-			strcat( fullpath, ".wav" );
-		}
-
-		if( File_Exists( fullpath ) )
-		{
-			break;
-		}
-	}
-}
-
-void GetSfxPathsToTry( int sfx, int *num_paths_to_try, char **data_path_to_use )
-{
-	if ( data_path != "" )
+		// create filename with no num extension
+		GetSfxPath( sfxnum, fullpath );
+		strcat( fullpath, filename );
+		strcat( fullpath, ".wav" );
+	}else
 	{
-		*num_paths_to_try = 2;
-		data_path_to_use[ 0 ] = data_path;
-		data_path_to_use[ 1 ] = normdata_path;
+		// create filename with num extension
+		GetSfxPath( sfxnum, fullpath );
+		strcat( fullpath, filename );
+		sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
+		strcat( fullpath, numstr );
+		strcat( fullpath, ".wav" );
 	}
-	else
-	{
-		*num_paths_to_try = 1;
-		data_path_to_use[ 0 ] = normdata_path;
-	}
+
 }
 
 
@@ -2577,9 +1863,6 @@ void GetFullSfxPath( char *fullpath, int sfxnum, int variant, int total_variants
 {
 	char filename[256];
 	char numstr[3];
-	char *data_path_to_use[ 2 ];
-	int num_paths_to_try;
-	int i;
 	
 	if ( ( variant > total_variants ) && total_variants )
 	{
@@ -2588,33 +1871,24 @@ void GetFullSfxPath( char *fullpath, int sfxnum, int variant, int total_variants
 		return;
 	}
 
-	GetSfxPathsToTry( sfxnum, &num_paths_to_try, data_path_to_use );
+	GetSfxFileNamePrefix( sfxnum, filename );
 
-	for ( i = 0; i < num_paths_to_try; i++ )
+	if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
 	{
-		GetSfxFileNamePrefix( sfxnum, filename );
-
-		if ( ( total_variants == 0 ) || ( total_variants == 1 ) )
-		{
-			// create filename with no num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			strcat( fullpath, ".wav" );
-		}else
-		{
-			// create filename with num extension
-			GetSfxPath( sfxnum, fullpath, data_path_to_use[ i ] );
-			strcat( fullpath, filename );
-			sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
-			strcat( fullpath, numstr );
-			strcat( fullpath, ".wav" );
-		}
-
-		if( File_Exists( fullpath ) )
-		{
-			break;
-		}
+		// create filename with no num extension
+		GetSfxPath( sfxnum , fullpath );
+		strcat( fullpath, filename );
+		strcat( fullpath, ".wav" );
+	}else
+	{
+		// create filename with num extension
+		GetSfxPath( sfxnum , fullpath );
+		strcat( fullpath, filename );
+		sprintf( numstr, "%02d", variant + 1 );	// file convention states that variant sounds start at 01.
+		strcat( fullpath, numstr );
+		strcat( fullpath, ".wav" );
 	}
+
 }
 
 void PreInitSfx( void )
@@ -2716,8 +1990,10 @@ void GetBikeVariants( void )
 
 		if ( Sfx_Filenames[ i ].Flags & SFX_Biker )
 		{
+
 			for( bike = 0; bike < MAXBIKETYPES; bike++ )
 			{
+
 				BikeSpeechVariants[ i - SFX_BIKER_START ][ bike ] = 0;
 
 				// try filename with no num extension
@@ -2733,24 +2009,18 @@ void GetBikeVariants( void )
 				j = 0;
 				while( 1 )
 				{
+
 					if ( BikeSpeechVariants[ i - SFX_BIKER_START ][ bike ] < 2 )
-					{
 						GetFullBikeSfxPath( filename, i, j++, 2, bike );
-					}
 					else
-					{
 						GetFullBikeSfxPath( filename, i, j++, BikeSpeechVariants[ i - SFX_BIKER_START ][ bike ], bike );
-					}					  
+
 					if ( File_Exists( filename ) )
-					{
 						BikeSpeechVariants[ i - SFX_BIKER_START ][ bike ]++; 
-					}else
-					{
+					else
 						break;
-					}
+
 				}
-
-
 			}
 		}
 	}
@@ -2768,6 +2038,7 @@ void GetBikeCompVariants( void )
 
 		if ( Sfx_Filenames[ i ].Flags & SFX_BikeComp )
 		{
+
 			for( bikecomp = 0; bikecomp < MAXBIKECOMPTYPES; bikecomp++ )
 			{
 				BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ] = 0;
@@ -2785,24 +2056,19 @@ void GetBikeCompVariants( void )
 				j = 0;
 				while( 1 )
 				{
-					if ( BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ] < 2 )
-					{
+
+					if ( BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ] &&
+						 BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ] < 2 )
 						GetFullBikeCompSfxPath( filename, i, j++, 2, bikecomp );
-					}
 					else
-					{
 						GetFullBikeCompSfxPath( filename, i, j++, BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ], bikecomp );
-					}					  
+
 					if ( File_Exists( filename ) )
-					{
 						BikeCompVariants[ i - SFX_BIKECOMP_START ][ bikecomp ]++; 
-					}else
-					{
+					else
 						break;
-					}
+
 				}
-
-
 			}
 		}
 	}
@@ -2815,12 +2081,7 @@ void PreProcessSfx( void )
 	char fullpath[256];
 
 	memset( SfxFullPath, 0, sizeof( SfxFullPath ) );
-/*
-#define MAX_SFX_VARIANTS 16
-char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
-*/
-	i = 0;
-	//while(!( Sfx_Filenames[ i ].Flags & SFX_End ))
+
 	for ( i = 0; i < MAX_SFX; i++ )
 	{
 		// all speech must be dynamic!!!
@@ -2830,59 +2091,49 @@ char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
 		if ( ( i >= SFX_LEVELSPEC_Start ) && !Sfx_Filenames[ i ].Name )
 			break;
 		
-		if ( SndLookup[ i ].Requested )
+		if ( ! SndLookup[ i ].Requested )
+			continue;
+
+		SndLookup[ i ].Num_Variants = 0; 
+
+		GetSfxFileNamePrefix( i, filename );
+	
+		// if no filename given, sound is left marked with zero variants
+		if ( !filename[0] )
+			continue;
+
+		// try filename with no num extension
+		GetFullSfxPath( fullpath, i, 1, 0 );
+
+		if ( File_Exists ( fullpath ) )
 		{
-			SndLookup[ i ].Num_Variants = 0; 
-
-			GetSfxFileNamePrefix( i, filename );
-		
-			// if no filename given, sound is left marked with zero variants
-			if ( !filename[0] )
-			{
-//				i++;
-				continue;
-			}
-
-			// try filename with no num extension
-			GetFullSfxPath( fullpath, i, 1, 0 );
-
-			if ( File_Exists ( fullpath ) )
-			{
-				SndLookup[ i ].Num_Variants++; 
-//				i++;
-				SfxFullPath[ i ][ 0 ] = (char *)malloc( strlen( fullpath ) + 1 );
-				strcpy( SfxFullPath[ i ][ 0 ], fullpath );
-				continue;
-			}
-
-			// try filename for variants
-			j = 0;
-			while( 1 )
-			{
-				if ( SndLookup[ i ].Num_Variants < 2 )
-				{
-					GetFullSfxPath( fullpath, i, j, 2 );
-				}
-				else
-				{
-					GetFullSfxPath( fullpath, i, j, SndLookup[ i ].Num_Variants );
-				}
-
-				if ( File_Exists( fullpath ) )
-				{
-					SndLookup[ i ].Num_Variants++; 
-
-					SfxFullPath[ i ][ j ] = (char *)malloc( strlen( fullpath ) + 1 );
-					strcpy( SfxFullPath[ i ][ j ], fullpath );
-					j++;
-				}else
-				{
-					break;
-				}
-			}
+			SndLookup[ i ].Num_Variants++;
+			SfxFullPath[ i ][ 0 ] = (char *)malloc( strlen( fullpath ) + 1 );
+			strcpy( SfxFullPath[ i ][ 0 ], fullpath );
+			continue;
 		}
 
-//		i++;
+		// try filename for variants
+		j = 0;
+		while( 1 )
+		{
+			if ( SndLookup[ i ].Num_Variants < 2 )
+				GetFullSfxPath( fullpath, i, j, 2 );
+			else
+				GetFullSfxPath( fullpath, i, j, SndLookup[ i ].Num_Variants );
+
+			if ( File_Exists( fullpath ) )
+			{
+				SndLookup[ i ].Num_Variants++; 
+
+				SfxFullPath[ i ][ j ] = (char *)malloc( strlen( fullpath ) + 1 );
+				strcpy( SfxFullPath[ i ][ j ], fullpath );
+				j++;
+			}
+			else
+				break;
+		}
+
 	}
 
 	GetBikeVariants();
@@ -2910,14 +2161,9 @@ void RequestMainSfx( void )
 void RequestTitleSfx( void )
 {
 	uint16 i;
-
 	for ( i = 0; i < MAX_SFX; i++ )
-	{
 		if( Sfx_Filenames[ i ].Flags & SFX_Title )
-		{
 			RequestSfx( i );
-		}
-	}
 }
 
 
@@ -2980,7 +2226,7 @@ BOOL InitializeSound( int flags )
 	TauntID = 0;
 	TauntUpdatable = FALSE;
 	EnemyTaunter = NULL;
-//	TauntDist = 0.0F;
+	//TauntDist = 0.0F;
 
 	// try to load hw sfx
 	AllocatedCompoundSfx = LoadSfxToHW();
@@ -2988,17 +2234,12 @@ BOOL InitializeSound( int flags )
 	AddCommentToBat( "Loading Sfx" );
 	
 	// load sfx
-	//while(!( Sfx_Filenames[ Num_Sfx ].Flags & SFX_End ))
 	for( Num_Sfx = 0; Num_Sfx < MAX_SFX; Num_Sfx++ )
-	{
 		if ( SndLookup[ Num_Sfx ].Requested )
 		{
 			SndLookup[ Num_Sfx ].SndObjIndex = Num_SndObjs;
 			LoadSfx( Num_Sfx );
 		}
-
-//		Num_Sfx++;
-	}
 
 	DrawLoadingBox( ++CurrentLoadingStep, 0, 1 );
 	
@@ -3103,15 +2344,9 @@ void DestroySound( int flags )
 		return;
 
 	for ( i = 0; i < MAX_SFX; i++ )
-	{
 		for( j = 0; j < MAX_SFX_VARIANTS; j++ )
-		{
 			if( SfxFullPath[ i ][ j ] )
-			{
 				free( SfxFullPath[ i ][ j ] );
-			}
-		}
-	}
 
 	FreeSBufferList();
 
@@ -3296,7 +2531,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	switch ( SndLookup[ Sfx ].Num_Variants )
 	{
 	case 0:
-		//DebugPrintf("Sfx.c: PlaySfx() - sfx #%d does not exist!\n", Sfx);
+		DebugPrintf("Sfx.c: PlaySfx() - sfx #%d does not exist!\n", Sfx);
 		return FALSE;
 	case 1:
 		sndobj_index = SndLookup[ Sfx ].SndObjIndex;
@@ -3666,12 +2901,8 @@ void InitSfxHolders( void )
 {
 	int i;
 
-		
 	for( i = 0; i < MAX_ANY_SFX; i++ )
-	{
 		SfxHolder[ i ].Used = FALSE;
-	}
-
 
 	SfxUniqueID = 1;
 	BikerSpeechPlaying = FALSE;
@@ -3742,6 +2973,7 @@ uint32 PlaySfxWithTrigger( int16 Sfx, int16 TriggeredSfx )
 	return 0;
 }
 
+
 // note Dist is ignored - all 2D sfx assumed to be at zero distance
 uint32 PlaySfx( int16 Sfx, float Vol )
 {
@@ -3751,12 +2983,10 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 		return 0;
 
 	index = FindFreeSfxHolder();
+
 	if ( index < 0 )
-	{
 		DebugPrintf("Unable to play sfx %d - no free sfx holders\n");
-	}
 	else
-	{
 		if ( !StartPannedSfx( Sfx, NULL, NULL, 0.0F, SFX_2D, index, Vol, 0, FALSE ) )
 		{
 			/*
@@ -3764,13 +2994,11 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 			*/
 			FreeSfxHolder( index );
 		}
-	}
+
 
 	// if sound was played, return unique ID
 	if ( SfxHolder[ index ].Used )
-	{
 		return SfxHolder[ index ].UniqueID;
-	}
 
 	return 0;
 }
@@ -3893,12 +3121,8 @@ int GetSfxHolderIndex( uint32 uid )
 	int i;
 	
 	for( i = 0; i < MAX_ANY_SFX; i++ )
-	{
 		if ( SfxHolder[ i ].Used && ( uid == SfxHolder[ i ].UniqueID ) )
-		{
 			return i;
-		}
-	}
 
 	return -1;
 }
@@ -4355,7 +3579,7 @@ void SetSoundLevels( int *dummy )
 	MMRESULT mmr;
 #endif
 	// set sfx att.
-//	GlobalSoundAttenuation = SfxSlider.value / 12.5F;
+	//GlobalSoundAttenuation = SfxSlider.value / 12.5F;
 	GlobalSoundAttenuation = SfxSlider.value / ( SfxSlider.max / GLOBAL_MAX_SFX );
 }
 
@@ -4364,10 +3588,8 @@ int FindFreeSBufferListNode( void )
 	int i;
 	
 	for ( i = 0; i < MAX_SYNCHRONOUS_DYNAMIC_SFX; i++ )
-	{
 		if ( SBufferList[ i ].used == FALSE )
 			return i;
-	}
 
 	return -1;
 }
@@ -5053,24 +4275,16 @@ FILE *SaveAllSfx( FILE *fp )
 	{
 		// work out number of sfx to save...
 		for ( i = 0; i < MAX_LOOPING_SFX; i++ )
-		{
 			if ( SpotSfxList[ i ].used )
-			{
 				num_active_sfx++;
-			}
-		}
 
 		// write out number of sfx...
 		fwrite( &num_active_sfx, sizeof( uint16 ), 1, fp );
 
 		// write out sfx data...
 		for ( i = 0; i < MAX_LOOPING_SFX; i++ )
-		{
 			if ( SpotSfxList[ i ].used )
-			{
 				fwrite( &SpotSfxList[ i ], sizeof( SPOT_SFX_LIST ), 1, fp );
-			}
-		}
 
 		fwrite( &SfxUniqueID, sizeof( uint32 ), 1, fp );
 	}

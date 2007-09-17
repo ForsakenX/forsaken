@@ -1,333 +1,4 @@
-/*
- * The X Men, July 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 115 $
- *
- * $Header: /PcProjectX/Tload.c 115   7/14/98 11:20a Phillipd $
- *
- * $Log: /PcProjectX/Tload.c $
- * 
- * 115   7/14/98 11:20a Phillipd
- * 
- * 114   6/24/98 10:44a Phillipd
- * 
- * 113   11/06/98 17:28 Collinsd
- * Fixed some warnings.
- * 
- * 112   5/13/98 4:48p Phillipd
- * 
- * 111   4/27/98 12:47p Phillipd
- * 
- * 110   9/04/98 11:52 Philipy
- * added facility to enable individual cheats for multiplayer
- * 
- * 109   8/04/98 19:14 Oliverc
- * Fixed bug in SysTload() for final CD version
- * 
- * 108   4/04/98 14:23 Philipy
- * mode scaling stuff is now calculated rather than based on fixed values
- * added -NoBlitTextScaling option to ReadIni and command line options
- * 
- * 107   3/04/98 18:23 Philipy
- * fixed placeholder memory problem
- * remove existing team scores from team join menu
- * 
- * 106   3/04/98 17:58 Collinsd
- * 
- * 105   30/03/98 10:20 Collinsd
- * SOFTWARE_ENABLE # fixed.
- * 
- * 104   27/03/98 19:58 Philipy
- * changed TloadReloadPlaceHolder() to use MovePPMtoVidMem()
- * fixed level pic display
- * 
- * 103   27/03/98 18:46 Collinsd
- * Update
- * 
- * 102   3/27/98 12:37p Phillipd
- * sfx added
- * 
- * 101   26/03/98 20:26 Philipy
- * fixed CD thread bug
- * bmps now work for level pictures
- * 
- * 100   26/03/98 19:42 Philipy
- * fixed sys tload texture problem
- * 
- * 99    3/26/98 5:18p Phillipd
- * 
- * 98    3/26/98 4:59p Phillipd
- * colour key only happens if colour 0 is true black.....
- * 
- * 97    3/26/98 10:56a Phillipd
- * 
- * 96    3/19/98 11:41a Phillipd
- * 
- * 95    3/18/98 5:59p Phillipd
- * 
- * 94    3/17/98 5:25p Phillipd
- * 
- * 93    3/14/98 4:15p Phillipd
- * 
- * 92    3/14/98 3:32p Phillipd
- * bmp files for textures are now supported...
- * 
- * 91    3/12/98 9:26a Phillipd
- * 
- * 90    11/03/98 21:01 Collinsd
- * Added naked bikers.
- * 
- * 89    28/02/98 20:16 Oliverc
- * Tweaked Pal332 noise levels
- * 
- * 88    27/02/98 19:11 Philipy
- * fixed load game sfx bug
- * added pseudo dithering for 8 bit saved game pic
- * flygirl now selectable from front end ( no model displayed )
- * 
- * 87    27/02/98 11:39 Oliverc
- * Textures loaded into palettized texture surface with Pal332 flag set
- * now forced to be quantized to fixed 332 palette
- * 
- * 86    26/02/98 21:56 Philipy
- * fixed data path fuck up for system textures
- * 
- * 85    26/02/98 21:11 Philipy
- * 
- * 84    26/02/98 20:41 Philipy
- * added front end for load game
- * 
- * 83    20/02/98 15:29 Philipy
- * re-implented AVI
- * splash screens can now play demos and AVIs
- * 
- * 82    18/02/98 14:58 Philipy
- * fixed placeholder bug for sw
- * 
- * 81    17/02/98 17:15 Philipy
- * level.mis now used to store level name as well as mission briefing
- * if file not there, reverts back to old level name
- * 
- * 80    17/02/98 9:17 Philipy
- * added support for placeholder textures, which can be dynamically
- * updated
- * implemented mission briefing screens
- * 
- * 79    1/31/98 3:23p Phillipd
- * 
- * 78    1/03/98 1:35p Phillipd
- * 
- * 77    12/31/97 12:17p Phillipd
- * no pauses in ramp mode....
- * 
- * 76    12/30/97 12:30p Phillipd
- * 
- * 75    12/22/97 10:19a Phillipd
- * Texture memory is now got from directdraw2 interface....
- * Modecase is set to nearest resolution that is smaller.....
- * 
- * 74    12/19/97 3:21p Phillipd
- * 
- * 73    12/18/97 9:21a Phillipd
- * 
- * 72    18/12/97 9:07 Oliverc
- * Added -TextureMemory option to command line
- * 
- * 71    11/27/97 6:04p Phillipd
- * Fixed scaling bug
- * 
- * 70    19/11/97 9:42 Collinsd
- * Added new level specific loading.
- * 
- * 69    11/14/97 5:25p Phillipd
- * 
- * 68    11/13/97 12:32p Phillipd
- * NoTextureScaling added....
- * 
- * 67    11/11/97 9:41a Phillipd
- * 
- * 66    11/10/97 4:11p Phillipd
- * 
- * 65    11/07/97 12:30p Phillipd
- * 
- * 64    11/07/97 12:19p Phillipd
- * New enemy aiming...
- * Started MipMap Stuff
- * 
- * 63    6/11/97 10:24 Oliverc
- * Texture disabling and wireframe modes no longer require re-loading
- * level
- * and plane RGB values can be toggled from debug menu
- * 
- * 62    27/10/97 15:35 Philipy
- * if'd out some AVI poly stuff
- * 
- * 61    27/10/97 10:39 Philipy
- * if'd out AVI display on poly routines
- * compile with AVI_UsePolys if needed
- * 
- * 60    23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 59    16/10/97 18:10 Philipy
- * added CreateTextureSurface function
- * 
- * 58    15/10/97 9:37 Collinsd
- * Added logfile/batchfile creation code.
- * 
- * 57    29/09/97 16:25 Collinsd
- * Added error display.
- * 
- * 56    17-09-97 4:11p Philipy
- * dynamic loading of textures now possible
- * 
- * 55    16/09/97 10:59 Collinsd
- * Added Chris's code
- * 
- * 54    19/08/97 15:18 Collinsd
- * Fixed bug in data loading from user path.
- * 
- * 53    18/08/97 16:16 Collinsd
- * Added TPage number overflow check.
- * 
- * 52    17/08/97 14:58 Collinsd
- * Taken out old code.
- * 
- * 51    11/08/97 10:12 Collinsd
- * Added override data directory option. ( SFX don't work yet! )
- * 
- * 50    8/08/97 9:33a Phillipd
- * 
- * 49    31/07/97 16:00 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
- * 
- * 48    5/07/97 16:31 Collinsd
- * Put OPT_ON's around opimisations off
- * 
- * 47    6/17/97 2:12p Phillipd
- * 
- * 46    11/06/97 11:13 Collinsd
- * 
- * 45    10/06/97 14:50 Collinsd
- * Added more error checking for mload
- * 
- * 44    10/06/97 14:29 Collinsd
- * Added ACTUAL_TRANS
- * 
- * 43    6/04/97 9:40a Phillipd
- * 
- * 42    5/20/97 2:20p Phillipd
- * 
- * 41    5/16/97 10:06a Phillipd
- * 
- * 40    4/29/97 2:01p Phillipd
- * Scaleing re-done
- * 
- * 39    26/04/97 14:49 Collinsd
- * Optimisations now on def.
- * 
- * 38    4/23/97 4:32p Phillipd
- * optimised....
- * 
- * 37    4/05/97 12:08p Phillipd
- * 
- * 36    4/02/97 11:01a Phillipd
- * 
- * 35    2/26/97 11:06a Phillipd
- * textures can now be set to non scaleable
- * 
- * 34    2/20/97 3:16p Phillipd
- * 
- * 33    15-02-97 9:32p Collinsd
- * Portals now use variable execute buffers.  They also
- * allocate/deallocate themselves properly now.
- * 
- * 32    4-02-97 4:29p Collinsd
- * 
- * 31    1/27/97 10:58a Phillipd
- * Textures enabled flag added to debug menu
- * 
- * 30    12/18/96 3:23p Phillipd
- * 
- * 29    12/16/96 5:08p Collinsd
- * memory only limited if 3dfx.
- * 
- * 28    12/03/96 5:00p Phillipd
- * Quting if not host bug fixed...
- * game doesnt start if ya just quit the title screen...
- * 
- * 27    11/21/96 11:23a Phillipd
- * 
- * 26    11/13/96 9:08a Phillipd
- * All the Menus in the world....And then Some
- * 
- * 25    11/07/96 9:07a Phillipd
- * non case sensitive check for duplicate textures..
- * 
- * 24    11/06/96 2:40p Phillipd
- * new culling stuff for models....
- * 
- * 23    10/30/96 2:55p Phillipd
- * 
- * 22    10/29/96 4:02p Phillipd
- * 
- * 21    10/09/96 2:33p Phillipd
- * 
- * 20    7/10/96 16:31 Collinsd
- * Added execsize to mx and mxafiles. Also fixed colour keying on models.
- * 
- * 19    10/07/96 12:29p Phillipd
- * colour key now works with 255,0,255 rgb...
- * 
- * 18    9/17/96 12:07p Phillipd
- * 
- * 17    8/30/96 2:32p Phillipd
- * 
- * 16    8/06/96 3:59p Phillipd
- * 
- * 15    8/05/96 5:53p Phillipd
- * 
- * 14    8/03/96 4:39p Phillipd
- * all Models can be env mapped..
- * Alpha texture formats are detected and reported...
- * But cant load a system Alpha texture into a Video Alpha Texture!!
- * 
- * 13    7/29/96 3:22p Phillipd
- * 
- * 12    24/07/96 15:52 Collinsd
- * 
- * 11    7/24/96 11:25a Phillipd
- * re jigged texture scale so it does Y then  YX cause
- * of S3 not doing higher than wide Textures
- * 
- * 10    23/07/96 18:01 Collinsd
- * Added visipoly line mode and group in mode.
- * 
- * 9     23/07/96 15:26 Collinsd
- * Added new offset file loading/format.
- * 
- * 8     7/22/96 4:31p Phillipd
- * 
- * 7     22/07/96 15:14 Collinsd
- * Added flags to allow wireframe mode.
- * 
- * 6     7/21/96 12:25p Phillipd
- * 
- * 5     7/19/96 5:41p Phillipd
- * 
- * 4     7/19/96 4:51p Phillipd
- * scarrrey changes to how textures are handled.....
- * 
- * 3     7/17/96 5:46p Phillipd
- * 
- * 2     7/17/96 12:16p Phillipd
- * 
- * 1     7/17/96 12:05p Phillipd
- */											    
+			    
 /*==========================================================================
  *
  *  File: Tload.c
@@ -357,10 +28,6 @@
 		Externals...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-extern char data_path[];
-extern char normdata_path[];
-extern int use_data_path;
-
 extern	BOOL	TexturesEnabled;
 
 extern	PALETTEENTRY ppe[256];
@@ -368,7 +35,6 @@ extern	BOOL	PowerVR;
 extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
 extern	void DebugPrintf( const char * format, ... );
-extern	char	normdata_path[ 128 ];
 BOOL FreeTextureMemory( int * TMem);
 
 #ifdef SOFTWARE_ENABLE
@@ -645,31 +311,17 @@ BOOL SysTload( SYSTEMMEMTPAGES *SysTextures, int num_tpages )
 {
 	int i;
 
-	char Filename[ 256 ];
-
 	for (i = 0; i < num_tpages; i++)
 	{
 		SysTextures[i].lpSrcTextureSurf = NULL;
 
-#ifdef FINAL_RELEASE
-		if( use_data_path )
-		{
-			Add_Path( data_path, SysTextures[i].FileName, Filename );
-			SysTextures[i].lpSrcTextureSurf = LoadPPMToSystemMemory( Filename, 
-											Tloadheader.CurScale[ SysTextures[i].VidTPageIndex ] );
-		}
-
-		if( !SysTextures[i].lpSrcTextureSurf )
-#endif
-		{
-			Add_Path( normdata_path, SysTextures[i].FileName, Filename );
-			SysTextures[i].lpSrcTextureSurf = LoadPPMToSystemMemory( Filename, 
-											Tloadheader.CurScale[ SysTextures[i].VidTPageIndex ] );
-		}
+		SysTextures[i].lpSrcTextureSurf = LoadPPMToSystemMemory(
+												SysTextures[i].FileName, 
+												Tloadheader.CurScale[ SysTextures[i].VidTPageIndex ] );
 
 		if (SysTextures[i].lpSrcTextureSurf == NULL)
 		{
-			Msg( "SysTLoad() Failed on %s\n", SysTextures[i].FileName );
+			DebugPrintf( "SysTLoad() Failed on %s\n", SysTextures[i].FileName );
 			return FALSE;
 		}
 	}
@@ -743,14 +395,14 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
     LPDIRECTDRAWPALETTE lpDstPalette = NULL;
     PALETTEENTRY ppe[256];
     DWORD pcaps;
-	char NewName[256];
 	char NewName2[256];
-	BOOL GoodFileName;
 
     /*
      * Release the surface if it is hanging around
      */
+
     RELEASE(Tloadheader->lpTextureSurf[n]);
+
     /*
      * Create a surface in system memory and load the PPM file into it.
      * Query for the texture interface.
@@ -759,20 +411,11 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	// only load source texture if not a placeholder
 	if ( !Tloadheader->PlaceHolder[ n ] )
 	{
-		GoodFileName = FALSE;
-		if( use_data_path )
-		{
-			Add_Path( &data_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-			Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-			GoodFileName = File_Exists( &NewName2[ 0 ] );
-		}
-		if( !GoodFileName )
-		{
-			Add_Path( &normdata_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-			Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-			GoodFileName = File_Exists( &NewName2[ 0 ] );
-		}
-		if( GoodFileName )
+		// change extension of file name
+		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
+
+		// if file exists
+		if( File_Exists( &NewName2[ 0 ] ) )
 		{
 			if( !HasBmpGotRealBlack( &NewName2[0] ) )
 			{
@@ -789,10 +432,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 
 		if ( !lpSrcTextureSurf )
 		{
-			if( use_data_path )
-			{
-				Msg( "You should have a .bmp version of this ppm, %s\n", Tloadheader->ImageFile[n][0] );
-			}
+			DebugPrintf( "You should have a .bmp version of this ppm, %s\n", Tloadheader->ImageFile[n][0] );
 
 			if (bPrimaryPalettized)
 			{
@@ -809,7 +449,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 				}else{
 					lpSrcTextureSurf = TloadSurfaceScale(d3dappi.lpDD, Tloadheader->ImageFile[n],
 						&d3dappi.ThisTextureFormat.ddsd,
-						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n], TRUE);	// use data dir
+						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
 				}
 
 			}
@@ -1127,7 +767,7 @@ LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpForma
  */
 LPDIRECTDRAWSURFACE
 TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
-                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale, BOOL usedatadir )
+                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale )
 {
     LPDIRECTDRAWSURFACE lpDDS;
     DDSURFACEDESC ddsd, format;
@@ -1149,45 +789,51 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 	int XScale,YScale;
 
 	char TempFilename[ 256 ];
+
     /*
      * Find the image file and open it
      */
 
 	strcpy( &TempFilename[ 0 ], (char *) lpName );
 
-	if ( usedatadir )
-		fp = DataPath_fopen( &TempFilename[ 0 ], "rb" );
-	else
-		fp = fopen( &TempFilename[ 0 ], "rb" );
+	fp = fopen( &TempFilename[ 0 ], "rb" );
 
     if (fp == NULL) {
 		Msg( "Cannot find %s.\n", lpName);
         return NULL;
     }
+
     /*
      * Is it a PPM file?
      */
+
     fgets(buf, sizeof buf, fp);
     if (lstrcmp(buf, "P6\n")) {
         fclose(fp);
 		Msg( "%s Is Not a PPM File\n", lpName);
         return NULL;
     }
+
     /*
      * Skip any comments
      */
+
     do {
         fgets(buf, sizeof buf, fp);
     } while (buf[0] == '#');
+
     /*
      * Read the width and height
      */
+
     sscanf(buf, "%d %d\n", &dwWidth, &dwHeight);
     fgets(buf, sizeof buf, fp); /* skip next line */
+
     /*
      * Create a surface of the given format using the dimensions of the PPM
      * file.
      */
+
     memcpy(&format, lpFormat, sizeof(DDSURFACEDESC));
     if (format.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) {
         bQuant = TRUE;
@@ -1201,26 +847,20 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
     memcpy(&ddsd, &format, sizeof(DDSURFACEDESC));
     ddsd.dwSize = sizeof(DDSURFACEDESC);
     ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-
     ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | memoryflag;
 
 	XScale = Scale;
 	YScale = Scale;
+
 	// PowerVR Only Like Square Textures...
-	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
+	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly && dwHeight != dwWidth )
 	{
-		if( dwHeight != dwWidth )
-		{
 			if( dwHeight > dwWidth )
 				YScale++;
 			if( dwWidth > dwHeight )
 				XScale++;
-		}
 	}
 
-	
-
-	
 	ddsd.dwHeight = dwHeight / ( 1 << YScale );
 	ddsd.dwWidth = dwWidth / ( 1 << XScale );
 	
@@ -1230,9 +870,11 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                               D3DAppErrorToString(ddrval));
         return NULL;
     }
+
     /*
      * Lock the surface so it can be filled with the PPM file
      */
+
     memset(&ddsd, 0, sizeof(DDSURFACEDESC));
     ddsd.dwSize = sizeof(DDSURFACEDESC);
     ddrval = lpDDS->lpVtbl->Lock(lpDDS, NULL, &ddsd, 0, NULL);
@@ -1243,12 +885,16 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
         return NULL;
     }
     /*
+
      * The method of loading depends on the pixel format of the dest surface
      */
+
     if (!bQuant) {
+
         /*
          * The texture surface is not palettized
          */
+
         unsigned long* lpLP;
         unsigned short* lpSP;
         unsigned char* lpCP;
@@ -1258,9 +904,11 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
         int green_shift, green_scale;
         int blue_shift, blue_scale;
         int alpha_shift, alpha_scale;
+
         /*
          * Determine the red, green and blue masks' shift and scale.
          */
+
         for (s = 0, m = format.ddpfPixelFormat.dwRBitMask; !(m & 1);
                                                                s++, m >>= 1);
         red_shift = s;
@@ -1287,20 +935,25 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 		/*
          * Each RGB bit count requires different pointers
          */
+
         switch (format.ddpfPixelFormat.dwRGBBitCount) {
             case 32 :
                 for (j = 0; j < (int)ddsd.dwHeight; j++) {
+
                     /*
                      * Point to next row in texture surface
                      */
+
 					lpLP = (unsigned long*)(((char*)ddsd.lpSurface) +
 						                                    ddsd.lPitch * j);
 
 
                     for (i = 0; i < (int)ddsd.dwWidth; i++) {
+
                         /*
                          * Read each value, scale it and shift it into position
                          */
+
                         r = GammaTab[getc(fp)] / red_scale;
                         g = GammaTab[getc(fp)] / green_scale;
                         b = GammaTab[getc(fp)] / blue_scale;
@@ -1439,18 +1092,22 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                 }
                 break;
             default:
+
                 /*
                  * This wasn't a format I recognize
                  */
+
                 lpDDS->lpVtbl->Unlock(lpDDS, NULL);
                 fclose(fp);
                 lpDDS->lpVtbl->Release(lpDDS);
 				Msg("Unknown pixel format (loadtex).");
                 return NULL;
         }
+
         /*
          * Unlock the texture and return the surface pointer
          */
+
         lpDDS->lpVtbl->Unlock(lpDDS, NULL);
         fclose(fp);
         return (lpDDS);
@@ -1459,21 +1116,26 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
     /*
      * We assume the 8-bit palettized case
      */
+
 	// Allways make color 0 black for transparency..
 	colors[0] = RGB_MAKE(0, 0, 0);
 	color_count = 1;    /* number of colors in the texture */
     for (j = 0; j < (int)ddsd.dwHeight; j++)
 	{
+
         /*
          * Point to next row in surface
          */
+
         lpC = ((char*)ddsd.lpSurface) + ddsd.lPitch * j;
         for (i = 0; i < (int)ddsd.dwWidth; i++)
 		{
+
             /*
              * Get the next red, green and blue values and turn them into a
              * D3DCOLOR
              */
+
             r = GammaTab[getc(fp)];
             g = GammaTab[getc(fp)];
             b = GammaTab[getc(fp)];
@@ -1498,19 +1160,25 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 				b |= 0x10;
 			}
             c = RGB_MAKE(r, g, b);
+
             /*
              * Search for this color in a table of colors in this texture
              */
+
             for (k = 0; k < color_count; k++)
                 if (c == colors[k]) break;
             if (k == color_count) {
+
                 /*
                  * This is a new color, so add it to the list
                  */
+
                 color_count++;
+
                 /*
                  * More than 256 and we fail (8-bit) 
                  */
+
                 if (color_count > psize) {
                     color_count--;
                     k = color_count - 1;
@@ -1518,10 +1186,12 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                 }
                 colors[k] = c;
             }
+
             /*
              * Set the "pixel" value on the surface to be the index into the
              * color table
              */
+
             if (psize == 16) {
                 if ((i & 1) == 0)
                     *lpC = k & 0xf;
@@ -1553,17 +1223,21 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 			}
 		}
     }
+
     /*
      * Close the file and unlock the surface
      */
+
     fclose(fp);
     lpDDS->lpVtbl->Unlock(lpDDS, NULL);
 
 //burst_colors:
     if (color_count > psize) {
+
         /*
          * If there are more than 256 colors, we overran our palette
          */
+
         lpDDS->lpVtbl->Unlock(lpDDS, NULL);
         lpDDS->lpVtbl->Release(lpDDS);
 		Msg("Palette burst. (loadtex).\n");
@@ -1573,22 +1247,27 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
     /*
      * Create a palette with the colors in our color table
      */
+
     memset(ppe, 0, sizeof(PALETTEENTRY) * 256);
     for (i = 0; i < color_count; i++) {
         ppe[i].peRed = (unsigned char)RGB_GETRED(colors[i]);
         ppe[i].peGreen = (unsigned char)RGB_GETGREEN(colors[i]);
         ppe[i].peBlue = (unsigned char)RGB_GETBLUE(colors[i]);
     }
+
     /*
      * Set all remaining entry flags to D3DPAL_RESERVED, which are ignored by
      * the renderer.
      */
+
     for (; i < 256; i++)
         ppe[i].peFlags = D3DPAL_RESERVED;
+
     /*
      * Create the palette with the DDPCAPS_ALLOW256 flag because we want to
      * have access to all entries.
      */
+
     ddrval = lpDD->lpVtbl->CreatePalette(lpDD,
                                          DDPCAPS_INITIALIZE | pcaps | DDPCAPS_ALLOW256,
                                          ppe, &lpDDPal, NULL);
@@ -1598,9 +1277,11 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                               D3DAppErrorToString(ddrval));
         return (NULL);
     }
+
     /*
-     * Finally, bind the palette to the surface
+     * Finally,bind the palette to the surface
      */
+
     ddrval = lpDDS->lpVtbl->SetPalette(lpDDS, lpDDPal);
     if (ddrval != DD_OK) {
         lpDDS->lpVtbl->Release(lpDDS);
@@ -1977,8 +1658,7 @@ TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
     if (ddrval != DD_OK) {
         lpDDS->lpVtbl->Release(lpDDS);
         lpDDPal->lpVtbl->Release(lpDDPal);
-		Msg("SetPalette failed while loading surface (loadtex).\n%s",
-                              D3DAppErrorToString(ddrval));
+		Msg("SetPalette failed while loading surface (loadtex).\n%s", D3DAppErrorToString(ddrval));
         return (NULL);
     }
 
@@ -2002,25 +1682,12 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
     FILE *fp;
     CHAR buf[100];
 	int8 TempFilename[ 256 ];
-	char NewName[256];
 	char NewName2[256];
-	BOOL GoodFileName;
 	BITMAPINFOHEADER Header;
 
-	GoodFileName = FALSE;
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], &Tloadheader->ImageFile[i][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( !GoodFileName )
-	{
-		Add_Path( &normdata_path[ 0 ], &Tloadheader->ImageFile[i][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( GoodFileName )
+	Change_Ext( &Tloadheader->ImageFile[i][0], &NewName2[ 0 ], ".BMP" );
+
+	if( File_Exists( &NewName2[ 0 ] ) )
 	{
 		fp = fopen( &NewName2[ 0 ], "rb" );
 		fseek( fp , sizeof(BITMAPFILEHEADER) ,0 );
@@ -2036,8 +1703,7 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
 		 * Find the image file and open it
 		 */
 		strcpy( &TempFilename[ 0 ], (char *) lpName );
-		AddDataPathFileToBat( &TempFilename[ 0 ] );
-		fp = DataPath_fopen( &TempFilename[ 0 ], "rb" );
+		fp = fopen( &TempFilename[ 0 ], "rb" );
 		if (fp == NULL) {
 			Msg( "Couldnt Find %s\n", lpName );
 			return FALSE;
@@ -2161,43 +1827,42 @@ LPDIRECTDRAWSURFACE LoadPPMToSystemMemory( char *ImageFile, int ScaleBy )
 {
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
 	char NewName2[256];
-	BOOL GoodFileName;
 
-	GoodFileName = FALSE;
-	if( use_data_path )
-	{
-		Change_Ext( ImageFile, &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( !GoodFileName )
-	{
-		Change_Ext( ImageFile, &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( GoodFileName )
-	{
-		lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) ScaleBy , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-	}
+	Change_Ext( ImageFile, &NewName2[ 0 ], ".BMP" );
+
+	if( File_Exists( &NewName2[ 0 ] ) )
+		lpSrcTextureSurf = DDLoadBitmapTexture(
+								d3dappi.lpDD,
+								&NewName2[0],
+								&d3dappi.ThisTextureFormat.ddsd,
+								(int) ScaleBy,
+								d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+
+	/*
+	 * Create a surface in system memory and load the PPM file into it.
+	 * Query for the texture interface.
+	 */
 
 	if( !lpSrcTextureSurf )
-	{
-		/*
-		 * Create a surface in system memory and load the PPM file into it.
-		 * Query for the texture interface.
-		 */
-		lpSrcTextureSurf = TloadSurfaceScale(d3dappi.lpDD, ImageFile,
-											  &d3dappi.ThisTextureFormat.ddsd,
-											  DDSCAPS_SYSTEMMEMORY, (int16)ScaleBy, FALSE ); // dont use data dir
-	}
+		lpSrcTextureSurf = TloadSurfaceScale(
+								d3dappi.lpDD,
+								ImageFile,
+								&d3dappi.ThisTextureFormat.ddsd,
+								DDSCAPS_SYSTEMMEMORY,
+								(int16)ScaleBy); // dont use data dir
 
     if (!lpSrcTextureSurf)
         goto exit_with_error;
 
 	return lpSrcTextureSurf;
 
+
 exit_with_error:
+
     RELEASE(lpSrcTextureSurf);
+
     return NULL;       
+
 }
 
 BOOL BlitTextureToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf )
@@ -2279,32 +1944,18 @@ TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	//HRESULT	result;
 	char NewName2[256];
-	BOOL GoodFileName;
-
-	GoodFileName = FALSE;
 
 	/*
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
+		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
 		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( !GoodFileName )
-	{
-		Add_Path( &normdata_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
 	*/
 
 	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
 		return FALSE;
 
 	Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
-	GoodFileName = File_Exists( &NewName2[0] );
 
-	if( GoodFileName )
+	if( File_Exists( &NewName2[0] ) )
 	{
 		if( MipMap && Tloadheader->MipMap[n] )
 		{
@@ -2372,29 +2023,16 @@ TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 {
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
-	char NewName[256];
 	char NewName2[256];
-	BOOL GoodFileName;
 
     /*
      * Create a surface in system memory and load the PPM file into it.
      * Query for the texture interface.
      */
 
-	GoodFileName = FALSE;
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( !GoodFileName )
-	{
-		Add_Path( &normdata_path[ 0 ], &Tloadheader->ImageFile[n][0], &NewName[ 0 ] );
-		Change_Ext( &NewName[0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	}
-	if( GoodFileName )
+	Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
+
+	if( File_Exists( &NewName2[ 0 ] ) )
 	{
 		if( MipMap && Tloadheader->MipMap[n] )
 		{
@@ -2414,7 +2052,7 @@ TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 		}else{
 			lpSrcTextureSurf = TloadSurfaceScale(d3dappi.lpDD, Tloadheader->ImageFile[n],
 				&d3dappi.ThisTextureFormat.ddsd,
-				DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n], TRUE); // use data dir
+				DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
 		}
 	}
     if (!lpSrcTextureSurf)
@@ -2584,7 +2222,7 @@ TloadSurfaceScale8BitPrimary( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
 	strcpy( &TempFilename[ 0 ], (char *) lpName );
 
-	fp = DataPath_fopen( &TempFilename[ 0 ], "rb" );
+	fp = fopen( &TempFilename[ 0 ], "rb" );
 
     if (fp == NULL) {
         D3DAppISetErrorString("Cannot find %s.\n", &TempName[0]);

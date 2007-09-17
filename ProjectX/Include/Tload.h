@@ -101,7 +101,7 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpFormat, DWORD memoryflag, DWORD dwWidth, DWORD dwHeight);
 LPDIRECTDRAWSURFACE
 TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
-                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale, BOOL usedatadir );
+                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
 
 int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );

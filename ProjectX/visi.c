@@ -1,309 +1,8 @@
-/*
- * V I S I . C
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 96 $
- *
- * $Header: /PcProjectX/visi.c 96    5/11/98 3:34p Oliverc $
- *
- * $Log: /PcProjectX/visi.c $
- * 
- * 96    5/11/98 3:34p Oliverc
- * Made Z_TRICK work as it should (but left disabled for patch beta 4 as
- * it messes up on translucent external views in certain levels)
- * 
- * 95    20/08/98 4:04p Oliverc
- * Added SetViewportError() debug function (enabled on DEBUG_VIEWPORT
- * build switch)
- * 
- * 94    17/08/98 18:00 Philipy
- * removed loads of unreferenced local variables
- * 
- * 93    24/07/98 16:03 Phillipd
- * 
- * 92    6/11/98 9:29a Phillipd
- * 
- * 91    28/04/98 9:50 Oliverc
- * Enabled debug rays for non-FINAL_RELEASE version
- * 
- * 90    6/04/98 11:32 Collinsd
- * Added show restart zone to debug menu.
- * 
- * 89    3/04/98 18:10 Collinsd
- * Moved position of xmem.h
- * 
- * 88    23/03/98 9:45 Philipy
- * fixed corruption bug in AddIndirectVisible
- * 
- * 87    7/03/98 20:05 Collinsd
- * Bike Glows now on option and debug rays no longer loaded.
- * 
- * 86    3/03/98 17:00 Oliverc
- * New multiplayer CTF mode stuff (1st attempt)
- * 
- * 85    21/02/98 19:44 Oliverc
- * Added optimisation: portals not visible if camera behind them
- * 
- * 84    20/02/98 19:41 Oliverc
- * 2nd prototype of capture the flag game
- * 
- * 83    20/02/98 12:30 Oliverc
- * Prototype goal load/release/check/display for capture the flag
- * multiplayer
- * 
- * 82    26/01/98 17:49 Oliverc
- * Moved calculation of clip planes to once per frame instead of once per
- * portal vertex (!) and optimised clip plane test
- * 
- * 81    24/01/98 18:42 Oliverc
- * 2D portal extent now considered empty is min >= max (rather than just
- * >)
- * 
- * 80    1/24/98 5:10p Phillipd
- * 
- * 79    1/23/98 11:10a Phillipd
- * malloc Bug fixed
- * 
- * 78    22/01/98 15:06 Oliverc
- * Added loading of pre-calculated group connectivity, visibility,
- * indirect visibility, and sound attentuation tables
- * 
- * 77    5/01/98 19:04 Collinsd
- * Olly fixed visiblegroups list.
- * 
- * 76    20/12/97 17:41 Oliverc
- * 1st attempt at fixing portal Z-clipping bug
- * 
- * 75    1/12/97 10:51 Oliverc
- * Fixed memory alloced but not freed bugs
- * 
- * 74    11/29/97 4:36p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 73    7/11/97 9:24 Collinsd
- * Added point in group bounding box function
- * 
- * 72    6/11/97 19:03 Collinsd
- * Find Overlapping Visible Groups function Added.
- * 
- * 71    30/10/97 17:00 Collinsd
- * Clipping of BGObjects now works.
- * 
- * 70    30/10/97 11:20 Oliverc
- * Added FindClipGroup() function for clipping objects that span multiple
- * groups
- * 
- * 69    24/10/97 10:37 Philipy
- * Updated debug menus
- * 
- * 68    24/10/97 10:01 Collinsd
- * Added display of all zones/forces.
- * 
- * 67    23/10/97 14:22 Oliverc
- * Changed lights to check visibility between displayed group and group
- * light is in
- * 
- * 66    23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 65    22/10/97 19:27 Collinsd
- * Fixed bug in debug code....
- * 
- * 64    22/10/97 15:48 Collinsd
- * Ooopss
- * 
- * 63    22/10/97 15:37 Collinsd
- * Added error checking in secondary missile collision.
- * 
- * 62    21/10/97 13:14 Philipy
- * MAXLEVELS is now defined in main.h
- * 
- * 61    15/10/97 19:06 Collinsd
- * Fixed guts comming out bug. and fixed mutually visible group bug.
- * 
- * 60    26/09/97 11:13 Oliverc
- * Added function to test visible overlap between two groups
- * 
- * 59    25/09/97 16:58 Collinsd
- * Added group link list to pickups/secondary added more code for
- * bgobjects.
- * 
- * 58    25/09/97 16:05 Oliverc
- * Added group connectivity and visibility functions
- * 
- * 57    22/09/97 10:40 Collinsd
- * Software version works again. ( Now with trasnsluecency )
- * 
- * 56    18/09/97 11:09 Collinsd
- * Added Chris's 565 stretch.
- * 
- * 55    17/09/97 16:37 Collinsd
- * Blit now works in software.
- * 
- * 54    16/09/97 17:52 Collinsd
- * More of Chris's stuff works.
- * 
- * 53    16/09/97 11:00 Collinsd
- * Added Chris's code
- * 
- * 52    15/09/97 10:46 Oliverc
- * Started to fix portal clipping bug
- * 
- * 51    12/09/97 10:50 Collinsd
- * Added global portal clipping on/off using shift f7
- * 
- * 50    2/09/97 17:37 Oliverc
- * Added debug lines display from .RAY file
- * 
- * 49    20/08/97 12:18 Oliverc
- * Triangle visibility statistics now kept (min, max, avg) for all
- * background groups and written to .VIS file in level folder iff player
- * using vanilla '-data' command line option to indicate he wants to use
- * PROJXDATA environment variable
- * 
- * 48    17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 47    16/07/97 11:31 Collinsd
- * Added collision zone display.
- * 
- * 46    15/07/97 10:11 Collinsd
- * Added display of triggerzones on Shift F10 in debug mode.
- * 
- * 45    8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 44    5/07/97 16:31 Collinsd
- * Put OPT_ON's around opimisations off
- * 
- * 43    6/24/97 11:12a Phillipd
- * 
- * 42    6/12/97 2:27p Phillipd
- * 
- * 41    5/22/97 9:19a Phillipd
- * 
- * 40    26/04/97 14:49 Collinsd
- * Optimisations now on def.
- * 
- * 39    27-02-97 2:08p Collinsd
- * Added optimisation to various files.
- * 
- * 38    15-02-97 9:32p Collinsd
- * Portals now use variable execute buffers.  They also
- * allocate/deallocate themselves properly now.
- * 
- * 37    14-02-97 11:27a Collinsd
- * Added check for portal display code overflow
- * 
- * 36    13/02/97 18:00 Oliverc
- * Fixed bug in whole level display when outside map
- * 
- * 35    12/02/97 12:54 Oliverc
- * Clears turned on automatically when whole level displayed
- * 
- * 34    11/02/97 21:00 Oliverc
- * Now displays all groups when go outside map
- * 
- * 33    2/03/97 5:16p Phillipd
- * Translusceny is now controlled by global execute buffers.... which is
- * much better...
- * 
- * 32    22-01-97 6:00p Collinsd
- * Added debug node cube.
- * 
- * 31    12/27/96 3:38p Phillipd
- * Primary.h Secondary.h pickups.h are now clean....
- * Still Lots to do though.....
- * 
- * 30    12/27/96 12:34p Phillipd
- * all files are not dependant on mydplay.h...just some..
- * including it several times in the same files didnt help..
- * 
- * 29    5/12/96 16:17 Oliverc
- * Integrated new portal format (portalpolys grouped into logical portals
- * and converted into preprojected collisionpolys), BUT bug in portal
- * transition routine remains to be fixed
- * 
- * 28    11/21/96 2:37p Phillipd
- * 
- * 27    4/11/96 10:45 Oliverc
- * Changed display routines to clip to visible portal boundaries of each
- * group
- * 
- * 26    17/10/96 12:40 Collinsd
- * Added blend types to all transparent exec lists.
- * 
- * 25    10/15/96 2:21p Phillipd
- * 
- * 24    11/10/96 10:31 Oliverc
- * Revised portal clipping to work with odd main window sizes
- * 
- * 23    10/10/96 21:23 Oliverc
- * Fixed portal clipping bug (but not entirely sure why it works...)
- * 
- * 22    10/07/96 11:54a Phillipd
- * 
- * 21    10/06/96 5:04p Phillipd
- * We now have our own text debug print info thing...
- * which speeds up the game by 10%.....
- * 
- * 20    10/05/96 2:02p Phillipd
- * 
- * 19    10/04/96 10:32a Phillipd
- * 
- * 18    9/18/96 5:35p Phillipd
- * 
- * 17    11/09/96 19:00 Collinsd
- * Added tests for RAMP emulation ( Although may not work)
- * Also fixed gravity effect to be dependent on GLOBAL_SCALE
- * 
- * 16    30/08/96 17:31 Collinsd
- * Fixed bug in rgba colours ( Cheers Dan ).
- * 
- * 15    28/08/96 11:55 Collinsd
- * Added show skin code + more options for show visi.
- * 
- * 14    28/08/96 11:15 Collinsd
- * 
- * 13    8/16/96 2:43p Phillipd
- * 
- * 12    8/09/96 2:02p Phillipd
- * 
- * 11    8/08/96 5:39p Phillipd
- * 
- * 10    7/29/96 12:16p Phillipd
- * 
- * 9     7/24/96 9:51a Phillipd
- * 
- * 8     23/07/96 18:01 Collinsd
- * Added visipoly line mode and group in mode.
- * 
- * 7     7/23/96 2:38p Phillipd
- * 
- * 6     22/07/96 14:47 Collinsd
- * 
- * 5     22/07/96 14:08 Collinsd
- * Added visipoly display.
- * 
- * 4     7/21/96 4:27p Phillipd
- * added asynchrinus(??) execution ..so lights happen at the same time as
- * the last group is being displayed...
- * 
- * 3     19/07/96 12:34 Oliverc
- * Changed ship <-> background collision routine
- * to track movement of ship through portals
- * 
- * 2     7/16/96 11:11a Phillipd
- * moved all visipoly stuff to visi.c and visi.h..
- * 
- * 1     7/16/96 10:58a Phillipd
- */
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 *	All routines to do with Visipolys...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #include <stdio.h>
 #include "typedefs.h"
 #include <dplay.h>
@@ -346,6 +45,7 @@ extern	CAMERA	CurrentCamera;
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Externals...	
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 extern	BOOL			CTF;
 extern	BOOL			CaptureTheFlag;
 
@@ -367,7 +67,6 @@ extern	BSP_NODE *	OldCollideNode;
 extern	BOOL			PowerVR;
 extern	BOOL			bPolySort;
 extern	uint16			GroupTris[ MAXGROUPS ];
-extern	int				use_local_data;
 extern	LINE			Lines[ MAXLINES ];
 extern	char			LevelNames[MAXLEVELS][128];                        
 extern	MLOADHEADER		Mloadheader;
@@ -375,6 +74,7 @@ extern	MLOADHEADER		Mloadheader;
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Globals...	
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #define MAXPORTVERTS (MAXPORTALSPERGROUP * MAXVERTSPERPORTAL)
 
 #define	MAXGROUPSVISIBLE 16
@@ -525,9 +225,6 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 	FILE *f;
 	char fname[ 256 ];
 	int j, k;
-
-	if ( !use_local_data )
-		return TRUE;
 
 	Change_Ext( lname, fname, ".vis" );
 	f = fopen( fname, "w" );

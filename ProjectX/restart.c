@@ -321,7 +321,7 @@ BOOL LoadStartPoints( void )
 BOOL PreLoadRestartPoints( void )
 {
 	char	*	NewExt = ".RES";
-	char	*	RestartFilename = "bgobjects\\Restart.cob";
+	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";
 	int16		TempModel;
 
 	if( !ENABLE_RESTART ) return( TRUE );
@@ -363,7 +363,7 @@ BOOL LoadRestartPoints( void )
 {
 	int16		Count;
 	char	*	NewExt = ".RES";
-	char	*	RestartFilename = "bgobjects\\Restart.cob";
+	char	*	RestartFilename = "data\\bgobjects\\Restart.cob";
 	uint16		Group;
 	VECTOR		Pos;
 	VECTOR		DirVector;

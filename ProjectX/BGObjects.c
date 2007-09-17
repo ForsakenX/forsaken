@@ -1084,7 +1084,7 @@ BOOL PreLoadBGOFiles( void )
 				}
 				while( TempFilename[ ( i - 1 ) ] != 0 );
 
-				sprintf( &FilePtr->Filename[ 0 ], "levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &TempFilename[ 0 ] );
+				sprintf( &FilePtr->Filename[ 0 ], "data\\levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &TempFilename[ 0 ] );
 
 				fread( &FilePtr->Type, sizeof( int16 ), 1, fp );
 
@@ -2608,7 +2608,7 @@ BOOL PreLoadShips( void )
 	{
 		if( BikeCompFiles[ Count ].Filename[ 0 ] )
 		{
-			sprintf( &TempFilename[ 0 ], "bgobjects\\%s", BikeCompFiles[ Count ].Filename );
+			sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", BikeCompFiles[ Count ].Filename );
 
 			BikeCompFiles[ Count ].BaseModel = BaseModel;
 			BikeModels[ Count ] = BaseModel;
@@ -2619,7 +2619,7 @@ BOOL PreLoadShips( void )
 				return( FALSE );
 			}
 
-			sprintf( &TempFilename[ 0 ], "bgobjects\\s%s", BikeCompFiles[ Count ].Filename );
+			sprintf( &TempFilename[ 0 ], "data\\bgobjects\\s%s", BikeCompFiles[ Count ].Filename );
 
 			BikeCompFiles[ Count ].StealthBaseModel = BaseModel;
 
@@ -2655,7 +2655,7 @@ BOOL AllocateCompShip( uint16 Ship )
 
 	if( BikeCompFiles[ Type ].Filename[ 0 ] )
 	{
-		sprintf( &TempFilename[ 0 ], "bgobjects\\%s", BikeCompFiles[ Type ].Filename );
+		sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", BikeCompFiles[ Type ].Filename );
 
 		BaseModel = BikeCompFiles[ Type ].BaseModel;
 		StartModel = BaseModel;
@@ -2706,7 +2706,7 @@ int NakedGirls( char *cheat )
 
 		NudeGirls = TRUE;
 
-		i = FindTexture( &Tloadheader, "Textures\\BUTGRID.BMP" );
+		i = FindTexture( &Tloadheader, "data\\textures\\BUTGRID.BMP" );
 		if( i != -1 )
 		{
 			if ( !Tloadheader.PlaceHolder[ i ] )
@@ -2715,12 +2715,12 @@ int NakedGirls( char *cheat )
 				Tloadheader.PlaceHolder[ i ] = TRUE;
 			}
 
-			strcpy( Tloadheader.PlaceHolderFile[ i ], "Data\\Textures\\NBUTGRID.BMP" );
+			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NBUTGRID.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
 			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 
-		i = FindTexture( &Tloadheader, "Textures\\NGRID8BT.BMP" );
+		i = FindTexture( &Tloadheader, "data\\textures\\NGRID8BT.BMP" );
 		if( i != -1 )
 		{
 			if ( !Tloadheader.PlaceHolder[ i ] )
@@ -2729,7 +2729,7 @@ int NakedGirls( char *cheat )
 				Tloadheader.PlaceHolder[ i ] = TRUE;
 			}
 
-			strcpy( Tloadheader.PlaceHolderFile[ i ], "Data\\Textures\\NNGRID8BT.BMP" );
+			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NNGRID8BT.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
 			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
@@ -2741,7 +2741,7 @@ int NakedGirls( char *cheat )
 
 		NudeGirls = FALSE;
 
-		i = FindTexture( &Tloadheader, "Textures\\BUTGRID.BMP" );
+		i = FindTexture( &Tloadheader, "data\\textures\\BUTGRID.BMP" );
 		if( i != -1 )
 		{
 			if ( !Tloadheader.PlaceHolder[ i ] )
@@ -2749,12 +2749,12 @@ int NakedGirls( char *cheat )
 				Tloadheader.PlaceHolderFile[ i ] = ( char * )malloc( 256 );
 				Tloadheader.PlaceHolder[ i ] = TRUE;
 			}
-			strcpy( Tloadheader.PlaceHolderFile[ i ], "Data\\Textures\\BUTGRID.BMP" );
+			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\BUTGRID.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
 			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 
-		i = FindTexture( &Tloadheader, "Textures\\NGRID8BT.BMP" );
+		i = FindTexture( &Tloadheader, "data\\textures\\NGRID8BT.BMP" );
 		if( i != -1 )
 		{
 			if ( !Tloadheader.PlaceHolder[ i ] )
@@ -2762,7 +2762,7 @@ int NakedGirls( char *cheat )
 				Tloadheader.PlaceHolderFile[ i ] = ( char * )malloc( 256 );
 				Tloadheader.PlaceHolder[ i ] = TRUE;
 			}
-			strcpy( Tloadheader.PlaceHolderFile[ i ], "Data\\Textures\\NGRID8BT.BMP" );
+			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NGRID8BT.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
 			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
@@ -2873,7 +2873,7 @@ BOOL PreLoadFlyGirl( void )
 
 	if( FlyGirlCompFile.Filename[ 0 ] )
 	{
-		sprintf( &TempFilename[ 0 ], "bgobjects\\%s", FlyGirlCompFile.Filename );
+		sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", FlyGirlCompFile.Filename );
 
 		FlyGirlCompFile.BaseModel = BaseModel;
 
@@ -2902,7 +2902,7 @@ BOOL AllocateCompFlyGirl( void )
 
 	if( FlyGirlCompFile.Filename[ 0 ] )
 	{
-		sprintf( &TempFilename[ 0 ], "bgobjects\\%s", FlyGirlCompFile.Filename );
+		sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", FlyGirlCompFile.Filename );
 
 		BaseModel = FlyGirlCompFile.BaseModel;
 

@@ -1,487 +1,13 @@
-/*
- * The X Men, August 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 169 $
- *
- * $Header: /PcProjectX/Text.c 169   22/10/98 17:40 Phillipd $
- *
- * $Log: /PcProjectX/Text.c $
- * 
- * 169   22/10/98 17:40 Phillipd
- * 
- * 168   22/10/98 17:33 Phillipd
- * 
- * 167   17/09/98 15:29 Phillipd
- * 
- * 166   10/09/98 10:52 Philipy
- * fixed bug in ping stuff
- * changed checksum kicking out to use in game message ( now also works in
- * peer-peer )
- * 
- * 165   4/09/98 11:26 Phillipd
- * 
- * 164   18/08/98 18:14 Philipy
- * all pings in server game are now from server perspective
- * windowed mode re-enabled ( still needs some work )
- * 
- * 163   11/08/98 17:22 Philipy
- * pings sent in heartbeat packet are now obtained from normal
- * MSG_PINGREQUEST.
- * pings requests are always sent even if not shown if you are the server,
- * or you are responding to UDP status requests, or if you are sending out
- * heartbeat packets.
- * 
- * 162   10/08/98 17:33 Philipy
- * rewrote AVI player
- * 
- * 161   30/07/98 12:06 Philipy
- * increased max ping to 999999
- * 
- * 160   7/16/98 12:25p Phillipd
- * 
- * 159   7/16/98 11:37a Phillipd
- * 
- * 158   7/16/98 11:26a Phillipd
- * 
- * 157   7/09/98 11:50a Phillipd
- * Polytext now works being turned off for the Server.....HooRay...
- * 
- * 156   6/29/98 2:42p Phillipd
- * 
- * 155   6/26/98 2:13p Phillipd
- * 
- * 154   12/06/98 16:06 Philipy
- * fixed lobby stuff for Wireplay
- * 
- * 153   6/11/98 2:36p Phillipd
- * 
- * 152   6/10/98 10:48a Phillipd
- * 
- * 151   6/08/98 9:19a Phillipd
- * 
- * 150   5/21/98 9:42a Phillipd
- * 
- * 149   5/20/98 12:14p Phillipd
- * 
- * 148   20/05/98 9:39 Philipy
- * implemented front end server menus
- * removed ( invalid ) ping from sessions menu
- * changed EnumPlayers so that it solely uses MSG_NAME
- * 
- * 147   5/13/98 3:59p Phillipd
- * 
- * 146   5/12/98 2:46p Phillipd
- * 
- * 145   5/11/98 12:29p Phillipd
- * 
- * 144   28/04/98 13:05 Oliverc
- * Disabled text message debugging unless DEBUG_TEXT_MESSAGES if defined
- * AND fixed probable bugette in Tmi->ActivateOrder setting
- * 
- * 143   24/04/98 10:46 Oliverc
- * Added default display chars for weird foreign stuff we don't have in
- * our font images
- * 
- * 142   24/04/98 10:24 Oliverc
- * Fixed missing uppercase chars in font table
- * 
- * 141   4/23/98 5:49p Phillipd
- * 
- * 140   4/22/98 2:14p Phillipd
- * 
- * 139   21/04/98 15:42 Collinsd
- * 
- * 138   4/21/98 11:13a Phillipd
- * 
- * 137   4/21/98 10:01a Phillipd
- * 
- * 136   15/04/98 12:31 Oliverc
- * In-game text substituted for localised definitions
- * 
- * 135   4/08/98 5:33p Phillipd
- * 
- * 134   4/04/98 14:22 Philipy
- * mode scaling stuff is now calculated rather than based on fixed values
- * added -NoBlitTextScaling option to ReadIni and command line options
- * 
- * 133   4/02/98 2:07p Phillipd
- * 
- * 132   3/31/98 3:56p Phillipd
- * 
- * 131   3/31/98 3:55p Phillipd
- * 
- * 130   3/31/98 2:51p Phillipd
- * 
- * 129   3/31/98 2:47p Phillipd
- * 
- * 128   3/30/98 3:37p Phillipd
- * 
- * 127   3/30/98 3:35p Phillipd
- * 
- * 126   3/27/98 4:44p Phillipd
- * 
- * 125   3/27/98 4:42p Phillipd
- * 
- * 124   3/27/98 4:38p Phillipd
- * 
- * 123   3/27/98 4:38p Phillipd
- * 
- * 122   3/26/98 9:13a Phillipd
- * 
- * 121   3/25/98 11:22a Phillipd
- * 
- * 120   24/03/98 16:20 Philipy
- * added new sfx
- * 
- * 119   3/21/98 2:34p Phillipd
- * 
- * 118   3/20/98 10:36a Phillipd
- * 
- * 117   15/03/98 18:40 Philipy
- * added water effect splash screen
- * fixed bug with end game sequence
- * implemented attract mode
- * text macros now saved in config
- * 
- * 116   3/12/98 9:26a Phillipd
- * 
- * 115   3/11/98 4:09p Phillipd
- * 
- * 114   3/11/98 11:06a Phillipd
- * 
- * 113   3/10/98 3:54p Phillipd
- * 
- * 112   3/10/98 10:45a Phillipd
- * 
- * 111   6/03/98 16:28 Oliverc
- * Changed way teams names flash grey to indicate bad connections
- * 
- * 110   3/05/98 5:58p Phillipd
- * Text Load/Save done just needs calling....
- * 
- * 109   3/05/98 12:47p Phillipd
- * 
- * 108   3/05/98 11:52a Phillipd
- * Previously triggered text message are now accessable in single player
- * by pressing
- * f9-10 previous and last
- * 
- * 107   3/05/98 11:02a Phillipd
- * Text message timing changed slightly.....
- * 
- * 106   3/03/98 17:00 Oliverc
- * New multiplayer CTF mode stuff (1st attempt)
- * 
- * 105   27/02/98 16:32 Oliverc
- * Fixed bug: player name displayed topleft after all lives lost in
- * singleplayer game
- * 
- * 104   25/02/98 16:19 Oliverc
- * More multiplayer tweaks
- * 
- * 103   25/02/98 14:52 Oliverc
- * Fixed bug in bounty team display
- * and added BadConnection[] display
- * 
- * 102   24/02/98 22:00 Oliverc
- * Tweaks to multiplayer games
- * 
- * 101   24/02/98 16:56 Oliverc
- * 1st attempt at bounty hunt multiplayer game
- * 
- * 100   23/02/98 15:31 Philipy
- * implemented single player level timer
- * 
- * 99    21/02/98 16:25 Philipy
- * added text messages for capture flag
- * 
- * 98    21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 97    20/02/98 19:41 Oliverc
- * 2nd prototype of capture the flag game
- * 
- * 96    20/02/98 15:29 Philipy
- * re-implented AVI
- * splash screens can now play demos and AVIs
- * 
- * 95    11/02/98 12:57 Philipy
- * Changed PlaySfx calls to use Vol instead of Dist
- * 
- * 94    29/01/98 14:19 Oliverc
- * 
- * 93    28/01/98 21:43 Oliverc
- * Fixed bugs in team tally screen display
- * 
- * 92    1/28/98 9:42a Phillipd
- * New text message stuff done....
- * 
- * 91    26/01/98 18:23 Philipy
- * fixed video memory leaks
- * splash screens now display after release view, and call InitScene,
- * InitView after  completion
- * 
- * 90    1/23/98 11:29a Phillipd
- * 
- * 89    22/01/98 9:47 Philipy
- * team game stats
- * 
- * 88    21/01/98 12:19 Philipy
- * Added attract mode for shareware
- * fixed looping sfx volume bug
- * 
- * 87    19/01/98 13:01 Philipy
- * fixed mission text not being displayed
- * possibly fixed stats bug ?
- * 
- * 86    1/19/98 10:10a Phillipd
- * max kills for team game works...
- * 
- * 85    18/01/98 23:45 Philipy
- * added debuging text for sfx ( if SFX_DEBUG defined )
- * 
- * 84    1/12/98 3:45p Phillipd
- * 
- * 83    10/01/98 17:39 Oliverc
- * Fixed bug in multiplayer max kills test (used to fail when only 1
- * multiplayer level)
- * Added new keyboard chars to font translation table
- * 
- * 82    9/01/98 11:14 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
- * loading bar now displayed when loading
- * 
- * 81    7/01/98 9:34 Philipy
- * added title room sfx
- * added ability to select bike computer, biker with sfx loaded
- * 
- * 80    1/03/98 2:57p Phillipd
- * 
- * 79    12/31/97 9:19a Phillipd
- * 
- * 78    12/03/97 5:18p Phillipd
- * 
- * 77    2/12/97 11:52 Philipy
- * boot demo stuff
- * 
- * 76    11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 75    11/21/97 10:56a Phillipd
- * Max Kills to end a level....
- * 
- * 74    12/11/97 14:48 Philipy
- * fixed joining multiplayer bug
- * 
- * 73    7/11/97 14:25 Philipy
- * fixed bug when changing mode from title room: InitTitle was not being
- * called
- * 
- * 72    11/06/97 12:04p Phillipd
- * 
- * 71    4/11/97 16:26 Philipy
- * AVI now plays for stats screens
- * implemented scrolling messages (not enabled)
- * 
- * 70    27/10/97 10:39 Philipy
- * if'd out AVI display on poly routines
- * compile with AVI_UsePolys if needed
- * 
- * 69    17/10/97 15:13 Philipy
- * 
- * 68    10/08/97 2:05p Phillipd
- * 
- * 67    9/30/97 4:20p Phillipd
- * 
- * 66    9/29/97 9:08a Phillipd
- * 
- * 65    9/18/97 3:56p Phillipd
- * Fixed stats bug....
- * 
- * 64    9/18/97 10:48a Phillipd
- * 
- * 63    17-09-97 4:09p Philipy
- * now always uses blitted text when in STATUS_Copyright (because poly
- * text texture is not loaded yet)
- * 
- * 62    14-09-97 6:55p Philipy
- * stopped space from appearing between teams.
- * Team now greys out if all players in team leave
- * 
- * 61    3-09-97 12:31p Philipy
- * only teams with > 0 players have their score displayed
- * 
- * 60    1-09-97 5:47p Philipy
- * removed warnings....oops!
- * 
- * 59    1-09-97 5:35p Philipy
- * changes made for 3 & 4 player team game
- * 
- * 58    31-07-97 3:48p Philipy
- * Text flashes if in self play mode and showing 'press return'
- * (Print4X5Text() )
- * 
- * 57    17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 56    8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 55    6/24/97 5:11p Phillipd
- * 
- * 54    6/24/97 11:12a Phillipd
- * 
- * 53    6/23/97 9:53a Phillipd
- * 
- * 52    6/23/97 9:43a Phillipd
- * 
- * 51    6/19/97 2:29p Phillipd
- * 
- * 50    6/19/97 2:28p Phillipd
- * 
- * 49    6/19/97 2:17p Phillipd
- * 
- * 48    19/06/97 12:36 Collinsd
- * Added sprite text for menus
- * 
- * 47    6/18/97 6:01p Phillipd
- * 
- * 46    6/18/97 5:47p Phillipd
- * 
- * 45    6/17/97 5:06p Phillipd
- * 
- * 44    6/17/97 4:03p Phillipd
- * 
- * 43    6/16/97 11:10a Phillipd
- * 
- * 42    6/10/97 9:46a Phillipd
- * 
- * 41    6/07/97 10:52a Phillipd
- * 
- * 40    4/30/97 5:35p Phillipd
- * 
- * 39    3/21/97 12:23p Phillipd
- * 
- * 38    3/20/97 3:41p Phillipd
- * removed c&c backdrop from scores...
- * 
- * 37    3/13/97 11:28a Phillipd
- * Auto Detail level added..
- * Text all one colour unless printing own name...
- * 
- * 36    2/27/97 2:41p Phillipd
- * 
- * 35    2/27/97 2:08p Phillipd
- * 
- * 34    2/26/97 3:27p Phillipd
- * 
- * 33    2/26/97 3:10p Phillipd
- * 
- * 32    12/27/96 3:38p Phillipd
- * Primary.h Secondary.h pickups.h are now clean....
- * Still Lots to do though.....
- * 
- * 31    12/27/96 12:34p Phillipd
- * all files are not dependant on mydplay.h...just some..
- * including it several times in the same files didnt help..
- * 
- * 30    20/12/96 15:19 Oliverc
- * Changed debug menu to be on SHIFT-F1
- * 
- * 29    12/19/96 2:52p Phillipd
- * new 512x384/640x400 font added
- * 
- * 28    12/19/96 12:02p Phillipd
- * got rid of dpid from short ship packet
- * added location names to team members...
- * 
- * 27    12/17/96 4:57p Phillipd
- * Version Control Added..
- * 
- * 26    12/17/96 2:56p Phillipd
- * 
- * 25    12/17/96 12:55p Phillipd
- * 
- * 24    12/17/96 9:20a Phillipd
- * 
- * 23    12/10/96 2:06p Phillipd
- * 
- * 22    12/02/96 4:26p Phillipd
- * 
- * 21    12/01/96 1:21p Phillipd
- * You can now quit a game go back to the title screen and start or join
- * another....
- * 
- * 20    11/25/96 11:59a Phillipd
- * 
- * 19    11/13/96 9:08a Phillipd
- * All the Menus in the world....And then Some
- * 
- * 18    7/11/96 10:47 Collinsd
- * Shortened short ships structures.
- * 
- * 17    10/31/96 4:31p Phillipd
- * light float to int in assembler....
- * 
- * 16    26/10/96 18:33 Collinsd
- * Centered and moved up name tags.
- * 
- * 15    10/20/96 4:13p Phillipd
- * 
- * 14    18/10/96 17:46 Collinsd
- * Changed all file loading to load from tidy directories.
- * 
- * 13    10/17/96 4:43p Phillipd
- * proper score sort....dont work on stats yet...
- * 
- * 12    10/11/96 2:34p Phillipd
- * Players who leave or who crash should now be greyed
- * out..
- * 
- * 11    10/06/96 5:04p Phillipd
- * We now have our own text debug print info thing...
- * which speeds up the game by 10%.....
- * 
- * 10    9/27/96 10:26a Phillipd
- * 
- * 9     9/18/96 5:35p Phillipd
- * 
- * 8     9/18/96 3:59p Phillipd
- * 
- * 7     9/16/96 10:16a Phillipd
- * Big changes to Full screen display...
- * And Pickups being set to joining player
- * 
- * 6     9/04/96 5:54p Phillipd
- * 
- * 5     8/20/96 12:06p Phillipd
- * lots of new panel / text stuff...new stats array...
- * 
- * 4     8/19/96 8:51a Phillipd
- * 
- * 3     8/14/96 4:30p Phillipd
- * 
- * 2     8/14/96 9:41a Phillipd
- * 
- * 1     8/14/96 9:30a Phillipd
- * 
- * 
- */
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Include File...	
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include "typedefs.h"
 #include "New3D.h"
-
 #include "typedefs.h"
 #include <dplay.h>
 #include "new3d.h"
@@ -490,13 +16,10 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "mydplay.h"
-
 #include "ships.h"
 #include "main.h"
 #include "Title.h"
-
 #include "Text.h"
-
 #include "screenpolys.h"
 #include "magic.h"
 #include "XMem.h"
@@ -504,19 +27,20 @@
 #include "local.h"
 #include "dpthread.h"
 
-
 #define MSG_VERSION_NUMBER 1
 
 #define	MAXFONTCOLOURS	9
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Externals ...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-//#define SFX_DEBUG
-extern	BOOL	CanDoDamage[MAX_PLAYERS+1];
 
-extern	BOOL	PlayDemo;
-extern	LONGLONG	LastPacketTime[MAX_PLAYERS+1];
-extern	LONGLONG	Freq;
+//#define SFX_DEBUG
+extern BOOL Debug;
+extern BOOL	CanDoDamage[MAX_PLAYERS+1];
+extern BOOL	PlayDemo;
+extern LONGLONG	LastPacketTime[MAX_PLAYERS+1];
+extern LONGLONG	Freq;
 extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
@@ -551,9 +75,11 @@ extern	LONGLONG	LargeTime;
 extern BOOL InSplashDemo;
 extern	BOOL IsServerGame;
 extern	BOOL IsServer;
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Globals ...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 int TextSrcX[MAXFONTCOLOURS][256];
 int	TextSrcY[MAXFONTCOLOURS][256];
 
@@ -613,7 +139,7 @@ char * TextMessagesPnt[MAXTEXTMESSAGES];
 char * TextMessages = NULL;
 TEXTMSGINFO * TextMsgInfo = NULL;
 
-char StatsMessageFile[] = "statsmessages.txt";
+char StatsMessageFile[] = "data\\txt\\statsmessages.txt";
 
 STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
@@ -623,6 +149,7 @@ STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 	Input		:		int16 num, uint16 x , uint16 y
 	Output		:		nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 void Printint16( int16 num , int x , int y , int col )
 {
 	static char buf[ 128 ];
@@ -642,6 +169,7 @@ void Printint16( int16 num , int x , int y , int col )
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;
@@ -1307,12 +835,8 @@ void PrintScoreSort( void )
 						sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[ScoreSortTab[i]] );
 						Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
 					}
-#ifdef DEBUG_ON
-					if(  IsServer && !CanDoDamage[ScoreSortTab[i]] )
-					{
+					if ( Debug && IsServer && !CanDoDamage[ScoreSortTab[i]] )
 						Print4x5Text( "Cheater" , 8+(24*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
-					}
-#endif
 					NumOfActivePlayers++;
 				}
 			}
@@ -1611,14 +1135,13 @@ BOOL ReadTxtFile( char *Filename )
 	long			File_Size;
 	long			Read_Size;
 	char		*	Buffer;
-#ifdef DEBUG_ON
-	int i;
 
-	for( i = 0 ; i < MAXTEXTMESSAGES ; i ++ )
+	if ( Debug )
 	{
-		TextMessagesPnt[i] = "\n";
+		int i;
+		for( i = 0 ; i < MAXTEXTMESSAGES ; i ++ )
+			TextMessagesPnt[i] = "\n";
 	}
-#endif
 
 
 	TextMessages = NULL;
@@ -1727,10 +1250,12 @@ typedef struct {
 	void *var_ptr;
 } MESSAGE_VAR_LOOKUP;
 
-#ifdef SCROLLING_MESSAGES
 
 void InitStatsMessages( void )
 {
+
+#ifdef SCROLLING_MESSAGES
+
 	int i, j;
 	char *str;
 
@@ -1863,11 +1388,10 @@ typedef struct
 
 	fclose( f );
 
-
+#endif
 
 }
 
-#endif
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Read in the level specific text message Info.......
@@ -2421,16 +1945,11 @@ void DisplayOldTextMessage( void )
 	TEXTMSGINFO * Tmi;
 	int16	i;
 
-
 	Tmi = TextMsgInfo;
 	if( !Tmi )
 		return;
 
-#ifdef DEBUG_ON
-	for( i = 0 ; i < MAXTEXTMESSAGES ; i++ )
-#else
-	for( i = 0 ; i < NumOfTextMessages ; i++ )
-#endif
+	for( i = 0 ; i < ((Debug)?MAXTEXTMESSAGES:NumOfTextMessages) ; i++ )
 	{
 		if( Tmi->ActivatedOrder == CurrentTextActivated )
 		{
@@ -2843,8 +2362,11 @@ void InitFont( BOOL OverridePolytext )
 		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
 
 		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-		lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-		DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+		if (lpDDSTwo && ddpal)
+		{
+			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
+			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+		}
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
@@ -2853,8 +2375,11 @@ void InitFont( BOOL OverridePolytext )
 	{
    		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   		DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+		if (lpDDSTwo && ddpal)
+		{
+			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
+   			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+		}
    		FontWidth = 4;
    		FontHeight = 5;
    		FontSourceWidth = 4;

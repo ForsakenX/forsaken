@@ -1,159 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 44 $
- *
- * $Header: /PcProjectX/Dsutil.c 44    11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/Dsutil.c $
- * 
- * 44    11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 43    14/07/98 11:28 Philipy
- * removed unec. debug msgs
- * 
- * 42    21/04/98 18:36 Philipy
- * reverted local sound directories back to root
- * 
- * 41    20/04/98 17:12 Philipy
- * added localisation stuff
- * 
- * 40    8/04/98 20:47 Philipy
- * title text messages now properly initialised
- * holo-glaire removed for sw version
- * compound buffer size can now be set in command line and opt file
- * prevented "level select disabled" from appearing at start of
- * multiplayer game
- * 
- * 39    30/03/98 17:30 Philipy
- * added new bike computers
- * prevented File_Exists being called every time a dynamic sfx is played
- * 
- * 38    29/03/98 19:59 Philipy
- * sfx no longer reloaded when changing biker / bike computer
- * mouse sensitivity rounding error fixed
- * 
- * 37    28/03/98 13:35 Philipy
- * added all biker speech
- * 
- * 36    27/03/98 18:04 Philipy
- * fixed bug where mapped sfx did not play.
- * 
- * 35    24/03/98 16:20 Philipy
- * added new sfx
- * 
- * 34    18/03/98 17:24 Collinsd
- * Fixed function header
- * 
- * 33    18/03/98 16:25 Philipy
- * removed some debug msgs
- * 
- * 32    18/03/98 16:14 Philipy
- * messed about with stopping memory from being paged out
- * Stopped due to lack of time & information
- * 
- * 31    9/03/98 16:54 Philipy
- * added 'requested' flag to SfxLookup. ( At present all sfx requested )
- * 
- * 30    9/03/98 10:03 Philipy
- * added extra debug info for compound sfx
- * 
- * 29    7/03/98 18:57 Philipy
- * fixed bug where sfx with variant marked as compound sfx when not all
- * variants would fit into hw memory
- * 
- * 28    28/02/98 16:18 Philipy
- * fixed memory leak
- * sfx loader does not now try to load sfx into hw if it knows that there
- * are insufficient resources
- * added buffer valid check b4 modifying looping sfx
- * 
- * 27    25/02/98 18:15 Philipy
- * fixed optimesed sfx stuff
- * 
- * 26    25/02/98 15:44 Philipy
- * more efficient use of hw sound mixing buffers
- * 
- * 25    12/02/98 11:27 Philipy
- * releasing buffer now sets pointer to NULL to try and trap error
- * 
- * 24    11/02/98 12:57 Philipy
- * sbufferhand now gives call stack to 2 levels
- * 
- * 23    9/02/98 12:21 Philipy
- * added sound buffer memory managment
- * only one piece of bike computer speech can now play at a time
- * 
- * 22    3/02/98 15:38 Philipy
- * fixed sfx bug
- * 
- * 21    20/01/98 17:11 Philipy
- * fixed data path stuff
- * 
- * 20    20/01/98 16:33 Philipy
- * added new sfx fn: PlaySpotFixedSfx
- * -data option now reverts to working dir for sfx if no local sfx dir
- * exists
- * 
- * 19    15/01/98 17:01 Philipy
- * added spot sfx stuff.
- * PlayPannedSfx and PlaySpotSfx now return unique uint32 - use StopSfx to
- * stop sound
- * 
- * 18    13/01/98 12:06 Philipy
- * added looping spot sfx support, and changed looping sfx to use static
- * list rather than dynamic linked list
- * 
- * 17    5/01/98 10:37 Philipy
- * speech sfx implemented - currently defaults to 1 biker & computer only,
- * none selectable
- * 
- * 16    30/12/97 14:26 Philipy
- * Changed dynamic sfx linked list to static list
- * 
- * 15    5/12/97 21:52 Philipy
- * various changes to looping sfx stuff
- * 
- * 14    1/12/97 16:15 Philipy
- * fixed crash bug when quitting
- * 
- * 13    1/12/97 12:15 Philipy
- * fixed trojax bug
- * 
- * 12    11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 11    26/11/97 11:48 Philipy
- * implemented dynamic loading of SFX, dynamic allocation of mixing
- * channels.
- * 3D sound currently disabled.
- * 
- * 10    11/08/97 10:12 Collinsd
- * Added override data directory option. ( SFX don't work yet! )
- * 
- * 9     4/08/97 11:58 Collinsd
- * A3D:Sound stuff added
- * 
- * 8     5/15/97 11:42a Phillipd
- * 3d Sound fx added but suspended due to crap DirectSound Docs..
- * 
- * 7     12-02-97 12:03p Collinsd
- * Added error checking to readfiles();  Also added triggers to enemies.
- * 
- * 6     10/24/96 3:01p Phillipd
- * 
- * 5     7/29/96 11:24a Phillipd
- * 
- * 4     7/25/96 10:05a Phillipd
- * 
- * 3     7/24/96 2:42p Phillipd
- * 
- * 2     7/24/96 2:11p Phillipd
- * 
- */
 
 /*==========================================================================
  *
@@ -187,10 +31,6 @@ extern LPDIRECTSOUND lpDS;
 extern BOOL    A3DCapable;
 extern SNDLOOKUP SndLookup[];
 
-extern int use_data_path;
-extern char data_path[];
-extern char normdata_path[];
-
 BOOL UseSfxHardware = FALSE;
 extern BOOL CompoundSfxAllocated[MAX_SFX];
 extern BOOL FreeHWBuffers;
@@ -203,16 +43,16 @@ BOOL CustomCompoundBufferSize = FALSE;
 #define SFX_FOLDER "sound"
 
 char *GenericSfxPath = {
-	"sound\\generic\\",
+	"data\\sound\\generic\\",
 };
 char *BikeCompSfxPath = {
-	"sound\\BikeComp\\",
+	"data\\sound\\BikeComp\\",
 };
 char *BikerSfxPath = {
-	"sound\\Biker\\",
+	"data\\sound\\Biker\\",
 };
 char *LevelSpecSfxPath = {
-	"sound\\Mapped\\",
+	"data\\sound\\Mapped\\",
 };
 
 // establish compound sample format...temporarily hard coded for now...
@@ -617,39 +457,34 @@ void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData
 	return Buffer;
 }
 
-void GetSfxPath( int sfxnum, char *path, char *data_path_to_use )
+void GetSfxPath( int sfxnum, char *path )
 {
-	char tempdir[256];
-
-	strcpy( tempdir, data_path );
-	strcat( tempdir, SFX_FOLDER );
 
 	if ( sfxnum > SFX_LEVELSPEC_Start )
 		sfxnum = SFX_LEVELSPEC_Start;
 
-	strcpy( path, data_path_to_use );
-
-
 	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_BikeComp )
 	{
-		strcat( path, BikeCompSfxPath );
+		strcpy( path, BikeCompSfxPath );
 		return;
 	}
 
 	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_Biker )
 	{
-		strcat( path, BikerSfxPath );
+		strcpy( path, BikerSfxPath );
 		return;
 	}
 
 	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_LevelSpec )
 	{
-		strcat( path, LevelSpecSfxPath );
+		strcpy( path, LevelSpecSfxPath );
 		return;
 	}
 
-	strcat( path, GenericSfxPath );
-}																	
+	strcpy( path, GenericSfxPath );
+
+}
+
 void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr )
 {
 	long File_Size;
@@ -746,9 +581,7 @@ void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD
 
 		// find sfx with next highest priority...
 		for ( i = 0; Sfx_Filenames[ i ].Name; i++ )
-		{
 			if ( IS_COMPOUND( Sfx_Filenames[ i ].Flags ) )
-			{
 				if ( ( min == -1 ) && !SfxChecked[ i ] && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Num_Variants && SndLookup[ i ].Requested )
 				{
 					min = Sfx_Filenames[ i ].Priority;
@@ -761,8 +594,6 @@ void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD
 						index = i;
 					}
 				}
-			}
-		}
 
 		if ( index != -1 )	// sfx has been found...
 		{

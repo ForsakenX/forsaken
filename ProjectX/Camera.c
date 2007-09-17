@@ -1,42 +1,4 @@
-/*
- * The X Men, October 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 10 $
- *
- * $Header: /PcProjectX/Camera.c 10    18/02/98 10:42 Collinsd $
- *
- * $Log: /PcProjectX/Camera.c $
- * 
- * 10    18/02/98 10:42 Collinsd
- * Added Save/Load for RemoteCameras.
- * 
- * 9     11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 8     11/17/97 4:34p Phillipd
- * 
- * 7     17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 6     8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 5     7/08/97 12:51p Phillipd
- * 
- * 4     6/24/97 11:12a Phillipd
- * 
- * 3     12/27/96 3:38p Phillipd
- * Primary.h Secondary.h pickups.h are now clean....
- * Still Lots to do though.....
- * 
- * 2     12/27/96 12:33p Phillipd
- * all files are not dependant on mydplay.h...just some..
- * including it several times in the same files didnt help..
- * 
- * 1     10/05/96 2:02p Phillipd
- */
+
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Include File...	

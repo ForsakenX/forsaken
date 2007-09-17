@@ -1,22 +1,4 @@
 /*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 3 $
- *
- * $Header: /PcProjectX/Include/D3dmacs.h 3     4/10/97 12:11p Phillipd $
- *
- * $Log: /PcProjectX/Include/D3dmacs.h $
- * 
- * 3     4/10/97 12:11p Phillipd
- * added qword allignment to triangle data...
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
-/*
  *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
  *
  *  File: d3dmacs.h

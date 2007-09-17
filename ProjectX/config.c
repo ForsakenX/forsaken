@@ -1859,11 +1859,15 @@ int
 write_config( USERCONFIG *u, char *cfg_name )
 {
 	FILE *f;
+	char path[256] = "pilots\\";
 	int j, joystick, axis, button, pov, povdir, action;
-	char axistok[MAX_JOYSTICK_AXIS][80] = { "AXISX", "AXISY", "AXISZ", "AXISRX", "AXISRY", "AXISRZ", "AXISS1", "AXISS2"};
+	char axistok[MAX_JOYSTICK_AXIS][80] = { "AXISX",  "AXISY",  "AXISZ",  "AXISRX",
+		                                    "AXISRY", "AXISRZ", "AXISS1", "AXISS2"};
 	uint32 code;
 
-	f = fopen( cfg_name, "w" );
+	strcat(path,cfg_name);
+
+	f = fopen( path, "w" );
 	if ( !f )
 		return 0;
 

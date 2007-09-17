@@ -1,35 +1,4 @@
-/*
- * The X Men, October 1997
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 8 $
- *
- * $Header: /PcProjectX/Include/Teleport.h 8     9/03/98 20:13 Oliverc $
- *
- * $Log: /PcProjectX/Include/Teleport.h $
- * 
- * 8     9/03/98 20:13 Oliverc
- * Changed teleports to orient player's bike consistently using direction
- * and up vector
- * 
- * 7     17/02/98 16:35 Collinsd
- * Added ExternalForce and Teleports load/save function.
- * 
- * 6     11/19/97 12:37p Phillipd
- * 
- * 5     24/10/97 10:01 Collinsd
- * Added display of all zones/forces.
- * 
- * 4     10/21/97 5:07p Phillipd
- * 
- * 3     10/20/97 3:50p Phillipd
- * 
- * 2     10/14/97 4:49p Phillipd
- * 
- * 1     10/13/97 10:37a Phillipd
- * 
- */
+
 #ifndef TELEPORT_INCLUDED
 #define TELEPORT_INCLUDED
 

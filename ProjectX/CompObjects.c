@@ -64,7 +64,6 @@ extern	int				NumOfTrigMods;
 extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	MXALOADHEADER	MxaModelHeaders[MAXMODELHEADERS];
 extern	LINE			Lines[ MAXLINES ];
-extern	char			normdata_path[ 128 ];
 extern	MLOADHEADER		Mloadheader;
 
 void DebugPrintf( const char * format, ... );
@@ -81,7 +80,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Global Variables
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-int8 * CompObjPath = "bgobjects\\";
+int8 * CompObjPath = "data\\bgobjects\\";
 MODELNAME	*	ModNames = &ModelNames[ 0 ];
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -103,11 +102,9 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 
 	strcpy( &TempFilename[ 0 ], Filename );
 
-	AddDataPathFileToBat( &TempFilename[ 0 ] );
+	FileCheckSum( &TempFilename[ 0 ] );
 
-	DataPath_FileCheckSum( &TempFilename[ 0 ] );
-
-	fp = DataPath_fopen( &TempFilename[ 0 ], "rb" );
+	fp = fopen( &TempFilename[ 0 ], "rb" );
 
 	if( fp != NULL )
 	{
@@ -222,7 +219,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
 
-	fp = DataPath_fopen( Filename, "rb" );
+	fp = fopen( Filename, "rb" );
 
 	if( fp != NULL )
 	{

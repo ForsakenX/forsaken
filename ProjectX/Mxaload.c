@@ -109,7 +109,6 @@ extern	MATRIX	MATRIX_Identity;
 extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX  TempWorld;	
 extern	BOOL	CanCullFlag;
-extern	char	normdata_path[ 128 ];
 extern	BOOL	PowerVR;
 
 int16		NewLevelNum;
@@ -894,11 +893,9 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	Mxaloadheader->state = FALSE;
 	Mxaloadheader->Buffer = NULL;
 
-	DataPath_FileCheckSum( Filename );
-	
-	AddDataPathFileToBat( Filename );
+	FileCheckSum( Filename );
 
-	File_Size = DataPath_Get_File_Size( Filename );	
+	File_Size = Get_File_Size( Filename );	
 
 	if( !File_Size )
 	{
@@ -914,7 +911,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 		return( FALSE );
 	}
 
-	Read_Size = DataPath_Read_File( Filename, Buffer, File_Size );
+	Read_Size = Read_File( Filename, Buffer, File_Size );
 
 	if( Read_Size != File_Size )
 	{
@@ -956,20 +953,20 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 
 			if( LevelSpecific )
 			{
-				sprintf( &TempFilename[ 0 ], "levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &Mxaloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &Mxaloadheader->ImageFile[i] );
 			}
 			else
 			{
-				sprintf( &TempFilename[ 0 ], "textures\\%s", &Mxaloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxaloadheader->ImageFile[i] );
 			}
 
-			if( !_stricmp( "default.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\default.ppm" );
-			if( !_stricmp( "pkups.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "default.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\default.ppm" );
-			if( !_stricmp( "pkups.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
+			if( !_stricmp( "default.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
+			if( !_stricmp( "pkups.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "pkupsa.ppm", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "default.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
+			if( !_stricmp( "pkups.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "pkupsa.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
 			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES_SYSMEM)
 			{

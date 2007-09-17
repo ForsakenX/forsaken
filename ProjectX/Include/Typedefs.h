@@ -1,27 +1,8 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 4 $
- *
- * $Header: /PcProjectX/Include/Typedefs.h 4     25/09/96 11:11 Collinsd $
- *
- * $Log: /PcProjectX/Include/Typedefs.h $
- * 
- * 4     25/09/96 11:11 Collinsd
- * 
- * 3     11/09/96 10:25 Collinsd
- * Added global_scale to typedefs.h
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Define True/False and Data sizes
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 #ifndef	DATATYPES
 #define	DATATYPES
 

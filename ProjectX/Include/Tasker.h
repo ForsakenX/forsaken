@@ -1,26 +1,3 @@
-/*
- * t a s k e r . h
- *
- * Tasking System Header File
- *
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 2 $
- *
- * $Header: /PcProjectX/Include/tasker.h 2     11/27/96 11:05a Phillipd $
- *
- * $Log: /PcProjectX/Include/tasker.h $
- * 
- * 2     11/27/96 11:05a Phillipd
- * Fixed Mouse speed on fast machines.....
- * 
- * 1     11/25/96 5:07p Phillipd
- * New working tasker system...
- * 
- * 
- */
 
 #ifndef	TASKER_H
 #define	TASKER_H

@@ -20,17 +20,19 @@
  *  in d3ddemo.h.
  */
 
-#include "typedefs.h"
 
+// Includes
+
+#include "typedefs.h"
 #include "registry.h"
 #include "Local.h"
-
-
 #include "resource.h"
 #include "d3dmain.h"
 #include "main.h"
 #include "dsound.h"
 #include "dbt.h"
+#include <direct.h>
+
 
 #ifdef SOFTWARE_ENABLE
 /*---------------------------------------------------------------------------
@@ -39,6 +41,9 @@
  int MakeCodeWritable( void );
 /*-------------------------------------------------------------------------*/
 #endif
+
+
+// load up C externals
 
 extern "C" {
 
@@ -56,12 +61,12 @@ extern "C" {
 #include	"d3dapp.h"
 
 #ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-extern CWmain(void);	// Main render loop on chris' stuff....
-extern	BOOL	SoftwareVersion;
-/*-------------------------------------------------------------------------*/
+	/*---------------------------------------------------------------------------
+		Chris Walsh's code
+	---------------------------------------------------------------------------*/
+	extern CWmain(void);	// Main render loop on chris' stuff....
+	extern	BOOL	SoftwareVersion;
+	/*-------------------------------------------------------------------------*/
 #endif
 
 	extern BOOL bFullscreen;
@@ -90,11 +95,6 @@ extern	BOOL	SoftwareVersion;
 	extern int default_width;
 	extern int default_height;
 	extern int default_bpp;
-	extern int use_level_path;
-	extern char level_path[];
-	extern int use_data_path;
-	extern int use_local_data;
-	extern char data_path[];
 	extern int LogosEnable;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
@@ -125,7 +125,7 @@ extern	BOOL	SoftwareVersion;
 	extern	BOOL	DplayRecieveThread;
 	extern BOOL PreventFlips;
 	extern	BOOL DS;
-	extern	BOOL NoDebugMsgs;
+	extern	BOOL Debug;
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
@@ -164,45 +164,39 @@ extern	BOOL	SoftwareVersion;
 }
 
 
-/*
- * GLOBAL VARIABLES
- */
+// GLOBAL VARIABLES
 
+D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D objects maintained by D3DApp
 
-
-D3DAppInfo* d3dapp;         /* Pointer to read only collection of DD and D3D
-                               objects maintained by D3DApp */
-
-d3dmainglobals myglobs;     /* collection of global variables */
+d3dmainglobals myglobs;     // collection of global variables
 
 static UINT CancelAutoPlayMessage;
 
+BOOL Debug = FALSE;
+
 // AVI Specific stuff...
+
 int AVI_bpp = 16;
 int AVI_ZoomMode = 0;
 HANDLE AVIThreadControlEvent;
 
 
-
-
-/*
- *  INTERNAL FUNCTION PROTOTYPES
- */
-
+// INTERNAL FUNCTION PROTOTYPES
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(LPSTR lpCmdLine);
 static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
-static BOOL AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lpViewport,
-                               LPVOID lpContext);
+static BOOL AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lpViewport, LPVOID lpContext);
+
+long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
+
+void ReportD3DAppError(void);
 void CleanUpAndPostQuit(void);
+
 static void InitGlobals(void);
 static BOOL AppPause(BOOL f);
-void ReportD3DAppError(void);
 static BOOL RenderLoop(void);
 static BOOL RestoreSurfaces();
-long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
-                           LPARAM lParam );
 
 
 
@@ -215,65 +209,54 @@ long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
  */
 
 
-int PASCAL
-WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
-        int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 
-	HRESULT hr;
-    int failcount = 0; /* number of times RenderLoop has failed */
-    MSG msg;
+    int failcount = 0; // number of times RenderLoop has failed
     HACCEL hAccelApp;
     hPrevInstance;
-	UINT	param1;
-	UINT	param2;
+	UINT param1;
+	UINT param2;
+    MSG msg;
 
-	// sets the minimum amount of memory allocated froma single malloc.....
+	// sets the minimum amount of memory allocated from a single malloc.....
 	//_amblksiz = 1024;
 
 #ifdef DEBUG_ON
+
 	XMem_Init();
 	XExec_Init();
 	DDSurf_Init();
 	XSBuffer_Init();
+
 #endif
 
+	// fill status tab on window 
 	FillStatusTab();
 
-	MyGameStatus = STATUS_Title;
-
+	// create a thread for AVI
 	AVIThreadControlEvent = CreateEvent(NULL, FALSE, FALSE, NULL ); 
 			
 	// initialize COM library
-	hr = CoInitialize(NULL);
-	if FAILED(hr)
+	if FAILED( CoInitialize(NULL) )
 		goto FAILURE;
 
-	/*
-     * Create the window and initialize all objects needed to begin rendering
-     */
-
+    // Create the window and initialize all objects needed to begin rendering
     if(!AppInit(hInstance, lpCmdLine))
+		goto FAILURE;
+
+	// look for APPACCEL in D3dmain.rc
+	// keystroke or combination of keystrokes
+	// that generates a WM_COMMAND or WM_SYSCOMMAND
+	// message for an application.
+    hAccelApp = LoadAccelerators( hInstance , "AppAccel" );
+
+	//if( ModeCase == -1 )
+	//	D3DAppFullscreen(d3dapp->CurrMode);
+
+    // Monitor the message queue until there are no pressing  messages
+	while (!myglobs.bQuit)
 	{
-		ClipCursor( NULL );
-		ReallyShowCursor( TRUE );
-        return FALSE;
-	}
-    hAccelApp = LoadAccelerators(hInstance, "AppAccel");    
-
-	/*
-	if( ModeCase == -1 )
-	{
-		D3DAppFullscreen(d3dapp->CurrMode);
-	}
-	*/
-
-	while (!myglobs.bQuit) {
-
-        /* 
-         * Monitor the message queue until there are no pressing
-         * messages
-         */
 
 		//	This will disable windows key and alt-tab and ctrl-alt-del
 		if( LockOutWindows )
@@ -285,38 +268,52 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 			param2 = 0;
 		}
 
+		// dispatches incoming sent messages
+		// checks the thread message queue for a posted message
+		// and retrieves the message (if any exist).
 		if (PeekMessage(&msg, NULL, param1, param2, PM_REMOVE))
 		{
+
+			// if the window got the WM_QUIT message
             if (msg.message == WM_QUIT)
 			{
+				// quit
                 CleanUpAndPostQuit();
                 break;
             }
-			if (!d3dapp->bPaused ||
-				!myglobs.hWndMain
-				|| !TranslateAccelerator(myglobs.hWndMain, hAccelApp, &msg)
-				)
-			{
-				TranslateMessage(&msg); 
-				DispatchMessage(&msg);
-			}
-        }
 
-		/* 
-         * If the app is not minimized, not about to quit, not paused and D3D
-         * has been initialized, we can render
-         */
-        if (d3dapp->bRenderingIsOK && !d3dapp->bMinimized && !d3dapp->bPaused
-            && !myglobs.bQuit) {
-            /*
-             * If were are not in single step mode or if we are and the
-             * bDrawAFrame flag is set, render one frame
-             */
-            if (!(myglobs.bSingleStepMode && !myglobs.bDrawAFrame)) {
-                /* 
-                 * Attempt to render a frame, if it fails, take a note.  If
-                 * rendering fails more than twice, abort execution.
-                 */
+			if
+			(
+				! d3dapp->bPaused  ||  // not paused
+				! myglobs.hWndMain ||  // 
+				// processes accelerator keys for menu commands.
+				// does not return until the window procedure has processed the message.
+				! TranslateAccelerator( myglobs.hWndMain, hAccelApp, &msg )
+			)
+			{
+
+				// translates virtual-key messages into character messages
+				// posts them to the calling thread's message queue
+				// to be read the next time the thread calls the PeekMessage
+				TranslateMessage(&msg);
+
+				// dispatches a message to a window procedure
+				DispatchMessage(&msg);
+
+			}
+
+        }
+ 
+        // Render if app is not minimized, not about to quit, not paused and D3D initialized
+        if (d3dapp->bRenderingIsOK && !d3dapp->bMinimized && !d3dapp->bPaused && !myglobs.bQuit)
+		{
+
+            // NOT in single step mode
+			// OR  in single step mode with bDrawAFrame flag is set
+            if (!(myglobs.bSingleStepMode && !myglobs.bDrawAFrame))
+
+                // Attempt to render a frame, if it fails, take a note.  If
+                // rendering fails more than twice, abort execution.
                 if( !RenderLoop() )
 				{
                     ++failcount;
@@ -327,25 +324,28 @@ WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine,
 						break;
 					}
 
-//                  if (failcount == 3) {
-//	                  Msg("Rendering has failed too many times.  Aborting execution.\n");
-//                    CleanUpAndPostQuit();
-//                    break;
-//					}
+					if (failcount == 3) {
+						DebugPrintf("Rendering has failed too many times.  Aborting execution.\n");
+						CleanUpAndPostQuit();
+						break;
+					}
+
                 }
-            }
-            /*
-             * Reset the bDrawAFrame flag if we are in single step mode
-             */
+
+            // Reset the bDrawAFrame flag if we are in single step mode
             if (myglobs.bSingleStepMode)
                 myglobs.bDrawAFrame = FALSE;
+
         }
     }
 
-	ClipCursor( NULL );
-	ReallyShowCursor( TRUE );
-
 FAILURE:
+
+	// free the cursor to move outside the window
+	ClipCursor( NULL );
+
+	// show the cursor
+	ReallyShowCursor( TRUE );
 
 	// Uninitialize the COM library
 	CoUninitialize();
@@ -353,54 +353,49 @@ FAILURE:
 	// close up the registry 
 	CloseRegistry();
 
-#ifdef DEBUG_ON
-	DebugMathErrors();
-	if ( UnMallocedBlocks() )
-	{
-		DebugPrintf( "Un-malloced blocks found!" );
-	}
-	if ( UnMallocedExecBlocks() )
-	{
-		DebugPrintf( "Un-malloced Exec blocks found!" );
-	}
-	if ( UnMallocedDDSurfBlocks() )
-	{
-		DebugPrintf( "Un-malloced DDSurf blocks found!" );
-	}
-	if ( UnMallocedSBufferBlocks() )
-	{
-		DebugPrintf( "Un-malloced SBuffer blocks found!" );
-	}
-#endif
+	// debug messages
 
+	DebugMathErrors();
+
+	if ( UnMallocedBlocks() )
+		DebugPrintf( "Un-malloced blocks found!" );
+
+	if ( UnMallocedExecBlocks() )
+		DebugPrintf( "Un-malloced Exec blocks found!" );
+
+	if ( UnMallocedDDSurfBlocks() )
+		DebugPrintf( "Un-malloced DDSurf blocks found!" );
+
+	if ( UnMallocedSBufferBlocks() )
+		DebugPrintf( "Un-malloced SBuffer blocks found!" );
+
+	//
     return msg.wParam;
+
 }
+
 
 /****************************************************************************/
 /*             D3DApp Initialization and callback functions                 */
 /****************************************************************************/
+
+
 /*
  * AppInit
  * Creates the window and initializes all objects necessary to begin rendering
  */
+
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 
     WNDCLASS wc;
-
 	
-	/*
-	 * Initialize registry
-	 */
+	// Initialize the global variables
 
+	MyGameStatus = STATUS_Title; // starting screen
 
 	InitRegistry();
-
-
-    /*
-     * Initialize the global variables
-     */
 
     d3dapp = NULL;
 
@@ -412,78 +407,77 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
 
-    /*
-     * Register the window class
-     */
+	// Register the window class
 
-    wc.style			= CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc		= WindowProc;
-    wc.cbClsExtra		= 0;
-    wc.cbWndExtra		= 0;
-    wc.hInstance		= hInstance;
-    wc.hIcon			= LoadIcon( hInstance, "AppIcon");
-    wc.hCursor			= LoadCursor( NULL, IDC_ARROW );
-    wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);
-    wc.lpszMenuName		= "AppMenu";
-    wc.lpszClassName	= "ProjectX";
+	wc.style			= CS_HREDRAW | CS_VREDRAW;					//
+    wc.lpfnWndProc		= WindowProc;								// processer for window messages
+    wc.cbClsExtra		= 0;										//
+	wc.cbWndExtra		= 0;										//
+    wc.hInstance		= hInstance;								// window instance
+    wc.hIcon			= LoadIcon( hInstance, "AppIcon");			// window icon
+    wc.hCursor			= LoadCursor( NULL, IDC_ARROW );			// the cursor for mouse over window
+    wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
+    //wc.lpszMenuName		= "AppMenu";								// Menu & Accelorator Name
+    wc.lpszClassName	= "ProjectX";								// class name
 
     if (!RegisterClass(&wc))
 	{
-        Msg("RegistryClass failed");
+        DebugPrintf("RegistryClass failed");
         return FALSE;
 	}
     
-	/*
-     * Create a window with some default settings that may change
-     */
+    // Create a window with some default settings that may change
+	
+	if( ! (myglobs.hWndMain = CreateWindowEx(
 
-	myglobs.hWndMain = CreateWindowEx(
-         WS_EX_APPWINDOW,
-         "ProjectX",
-         "ProjectX",
-         WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME | WS_MINIMIZEBOX,
-         0, 0,								// start position of Window..
-         START_WIN_SIZE_X, START_WIN_SIZE_Y,
-         NULL,                              /* parent window */
-         NULL,                              /* menu handle */
-         hInstance,                         /* program handle */
-         NULL);                             /* create parms */  
+         WS_EX_APPWINDOW,	//
 
-    if (!myglobs.hWndMain)
+         "ProjectX",  // window class name 
+
+         "ProjectX",  // window title
+
+	     WS_OVERLAPPED	| //
+		 WS_CAPTION		| //
+		 //WS_SYSMENU		| // put a menu on the window
+		 WS_THICKFRAME	| // add resizing border order window
+		 WS_MINIMIZEBOX,  // add minimize, fullscreen, close widgets
+
+		 
+         0, 0, // start position
+
+         START_WIN_SIZE_X, START_WIN_SIZE_Y, // start size
+
+         NULL,       // parent window
+         NULL,       // menu handle
+         hInstance,  // program handle
+         NULL		 // create parms
+
+	)))
 	{
-        Msg("CreateWindowEx failed");
+        DebugPrintf("CreateWindowEx failed");
         return FALSE;
     }
 
-    /*
-     * Display the window
-     */
-
-	// show the window
+    // Display the window
     ShowWindow(myglobs.hWndMain, SW_SHOWNORMAL);
 
-	// force a repaint
-    UpdateWindow(myglobs.hWndMain);
+	// force a repaint ( probably just to show it right away )
+	UpdateWindow(myglobs.hWndMain);
 
-    /* 
-     * Have the example initialize it components which remain constant
-     * throughout execution
-     */
-
+    // initailize components which remain constant throughout execution
 	OnceOnlyInit();
 
+	// start the scene
 	if (!InitScene())
-        return FALSE;
+		return FALSE;
 
-    /*
-     * Call D3DApp to initialize all DD and D3D objects necessary to render.
-     * D3DApp will call the device creation callback which will initialize the
-     * viewport and the sample's execute buffers.
-     */
-
+    // Call D3DApp to initialize all DD and D3D objects necessary to render.
+    // D3DApp will call the device creation callback which will initialize the
+    // viewport and the sample's execute buffers.
     if (!CreateD3DApp(lpCmdLine))
         return FALSE;
 
+	// done
     return TRUE;
 
 }
@@ -497,14 +491,12 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 static BOOL CreateD3DApp(LPSTR lpCmdLine)
 {
     HMENU hmenu;
-    int i;
-    LPSTR option;
+    int i, size;
+    LPSTR option = "";
     BOOL bOnlySystemMemory, bOnlyEmulation;
     DWORD flags;
     Defaults defaults;
-	char * DataPath;
-	char *cmdlineptr;
-	char tempcmdline[ 256 ];
+	char cmdline[256];
 	char buf[ 256 ];
 	BOOL DeviceOnCommandline = FALSE;
 
@@ -517,17 +509,11 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 /*-------------------------------------------------------------------------*/
 #endif
 
-    /*
-     * Parse the command line in search of one of the following options:
-     *     systemmemory  All surfaces should be created in system memory.
-     *                   Hardware DD and D3D devices are disabled, but
-     *                   debugging during the Win16 lock becomes possible.
-     *     emulation     Do not use hardware DD or D3D devices.
-     */
+    // Parse the command line
+
     bOnlySystemMemory = FALSE;
     bOnlyEmulation = FALSE;
-
-	LogosEnable = 1;
+	LogosEnable = 0;
 	PowerVR_Overide = FALSE;
 	Is3Dfx = FALSE;
 	Is3Dfx2 = FALSE;
@@ -540,119 +526,261 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 	DplayRecieveThread = FALSE;
 	PolygonText = FALSE;
 	DS = FALSE;
-	NoSplash = FALSE;
+	NoSplash = TRUE;
 	SessionGuidExists = FALSE;
 	UseSendAsync = FALSE;
 	bFullscreen = TRUE;
-
-	Msg("Before CLI: %i", (d3dappi.bFullscreen?1:0));
-
 	DPlayUpdateIntervalCmdLine = 0;
 
-	cmdlineptr = lpCmdLine;
+	// get the command line string
+	size = sizeof(strlen(lpCmdLine)+1);
+	if ( size > sizeof(cmdline) )
+	{
+		Msg("Command line to long!");
+		return FALSE;
+	}
+	strcpy(cmdline,lpCmdLine);
 
-    option = strtok(cmdlineptr, " -+");
-    while(option != NULL )   {
+	// extract first token from the command line
+	option = strtok(cmdline, " -+");
 
-		if (!_stricmp(option,"NoFullScreen")){
+	// loop over every option
+    while(option != NULL )
+	{
+
+
+		/***************************************************************\
+		|
+		|  Change Directory
+		|  
+		|    Description:  Changes to the given directory.
+		|    Purpose:      When Running the exe outside the root folder
+		|    Synatx:       -chdir <dir>
+		|    Example:      -chdir c:\\Program Files\\ProjectX
+		|    
+		|    WARNING:	   Must be LAST option !!!
+		|
+		\***************************************************************/
+
+
+		if (!_stricmp(option,"chdir"))
+		{
+
+			// get the pointer to "chdir" in the command line
+			option = strstr(lpCmdLine,"chdir");
+
+			// move pointer to the space after "-chdir"
+			option = &option[ (strlen("chdir")+1) ];
+
+			if (!option)
+			{
+				Msg("Error using chdir");
+				break;
+			}
+
+			// change to root directory
+			// the rest of the command line will be used as the path
+			if( _chdir( option ) != 0 )
+
+				// error
+				Msg("Could not change to directory: %s", option);
+
+			// dont loop anymore were done
+			break;
+
+		}
+
+        else if (!_stricmp(option, "Debug"))
+		{
+            Debug = TRUE;
+		}
+
+		else if (!_stricmp(option,"NoFullScreen"))
+		{
 			bFullscreen = FALSE;
-		} else if (!_stricmp(option,"DontColourKey")) {
+		}
+
+		else if (!_stricmp(option,"DontColourKey")) 
+		{
 			DontColourKey = TRUE;
-		} else if (!_stricmp(option, "RecordDemoToRam")) {
+		}
+
+		else if (!_stricmp(option, "RecordDemoToRam")) 
+		{
 			RecordDemoToRam = TRUE;
-		} else if (!_stricmp(option, "systemmemory")) {
-            bOnlySystemMemory = TRUE;
+		}
+
+		else if (!_stricmp(option, "systemmemory")) 
+		{
+			bOnlySystemMemory = TRUE;
 #ifdef SOFTWARE_ENABLE
 			SoftwareVersion = TRUE;
 #endif
-        } else if (!_stricmp(option, "emulation")) {
+        }
+
+		else if (!_stricmp(option, "emulation")) 
+		{
             bOnlyEmulation = TRUE;
-        } else if (!_stricmp(option, "DS")) {
+        }
+
+		else if (!_stricmp(option, "DS"))
+		{
 			DS = TRUE;
-        } else if (!_stricmp(option, "PowerVR")) {
+        } 
+
+		else if (!_stricmp(option, "PowerVR"))
+		{
 			PowerVR_Overide = TRUE;
-        } else if (!_stricmp(option, "3Dfx")) {
+        }
+
+		else if (!_stricmp(option, "3Dfx"))
+		{
 			Is3Dfx = TRUE;
-        } else if (!_stricmp(option, "SendAsync")) {
+        }
+
+		else if (!_stricmp(option, "SendAsync"))
+		{
 			UseSendAsync = TRUE;
-        } else if (!_stricmp(option, "3Dfx2")) {
+        }
+
+		else if (!_stricmp(option, "3Dfx2"))
+		{
 			Is3Dfx2 = TRUE;
 			TriLinear = TRUE;
-        } else if (!_stricmp(option, "NoTriLinear")) {
+        }
+
+		else if (!_stricmp(option, "NoTriLinear")) 
+		{
 			TriLinear = FALSE;
-        } else if (!_stricmp(option, "NoSFX")) {
+        }
+
+		else if (!_stricmp(option, "NoSFX"))
+		{
 			NoSFX = TRUE;
-        } else if (!_stricmp(option, "PolyText")) {
+        }
+
+		else if (!_stricmp(option, "PolyText"))
+		{
 			PolygonText = TRUE;
-        } else if (!_stricmp(option, "DplayThread")) {
+        }
+
+		else if (!_stricmp(option, "DplayThread"))
+		{
 			DplayRecieveThread = TRUE;
-        } else if (!_stricmp(option, "NoTextureScaling")) {
+        }
+
+		else if (!_stricmp(option, "NoTextureScaling")) 
+		{
 			NoTextureScaling = TRUE;
-        } else if (!_stricmp(option, "NoMipMap")) {
+        }
+
+		else if (!_stricmp(option, "NoMipMap"))
+		{
 			MipMap = FALSE;
-        } else if (!_stricmp(option, "TripleBuffer")) {
+        }
+
+		else if (!_stricmp(option, "TripleBuffer")) 
+		{
 			TripleBuffer = TRUE;
-        } else if (!_stricmp(option, "BatchFile")) {
-            CreateBatchFile = TRUE;
-        } else if (!_stricmp(option, "LogFile")) {
-            CreateLogFile = TRUE;
-        } else if (!_stricmp(option, "AllWires")) {
+        }
+
+		else if (!_stricmp(option, "AllWires")) 
+		{
             AllWires = TRUE;
-        } else if (!_stricmp(option, "NoDynamicSfx")) {
+        }
+
+		else if (!_stricmp(option, "NoDynamicSfx")) 
+		{
             RemoveDynamicSfx();
-        } else if (!_stricmp(option, "NoAVI")) {
-            NoAVI = TRUE;								 
-        } else if (!_stricmp(option, "NoDebug")) {
-            NoDebugMsgs = TRUE;
-        } else if (!_stricmp(option, "Debug")) {
-            NoDebugMsgs = FALSE;
-		} else if ( !_stricmp( option, "SetupSpaceOrb" ) ) {
+        } 
+
+		else if (!_stricmp(option, "NoAVI")) 
+		{
+            NoAVI = TRUE;
+		}
+
+		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
+		{
 			SpaceOrbSetup = TRUE;
-		} else if ( !_stricmp( option, "NoBlitTextScaling" ) ) {
+		} 
+
+		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
+		{
 			CanDoStrechBlt = FALSE;
-		} else if ( !_stricmp( option, "NoCompoundSfxBuffer" ) ) {
+		}
+
+		else if ( !_stricmp( option, "NoCompoundSfxBuffer" ) )
+		{
 			NoCompoundSfxBuffer = TRUE;
-		} else if ( !_stricmp( option, "AnyDPlayVersion" ) ) {
+		}
+
+		else if ( !_stricmp( option, "AnyDPlayVersion" ) )
+		{
 			CheckDirectPlayVersion = FALSE;
-		} else if ( !_stricmp( option, "QuickHost" ) ) {
+		}
+
+		else if ( !_stricmp( option, "QuickHost" ) ) 
+		{
 			NoSplash = TRUE;
 			QuickStart = QUICKSTART_Start;
-		} else if ( !_stricmp( option, "NoSplash" ) ) {
+		}
+
+		else if ( !_stricmp( option, "NoSplash" ) ) 
+		{
 			NoSplash = TRUE;
-		}else if ( !_stricmp( option, "Server" ) ) {
-			AllowServer = TRUE;	 
-		} else if ( !_stricmp( option, "ServerAutoStart" ) ) {
-			QuickStart = QUICKSTART_Server;
-			ServerChoosesGameType = TRUE;
-			NoSplash = TRUE;
-		} else if ( !_stricmp( option, "QuickJoin" ) ) {
+		}
+
+		else if ( !_stricmp( option, "QuickJoin" ) ) 
+		{
 			NoSplash = TRUE;
 			QuickStart = QUICKSTART_Join;
-		}else if ( !_stricmp( option, "ForceHeartbeat" ) ) {
+		}
+
+		else if ( !_stricmp( option, "ForceHeartbeat" ) )
+		{
 			ForceHeartbeat = TRUE;	 
-		}else if ( !_stricmp( option, "session" ) ) {
+		}
+
+		else if ( !_stricmp( option, "session" ) )
+		{
 	        option = strtok(NULL, "{}");
 			sprintf( buf, "{%s}", option );
 			if ( GUIDFromString( buf, &autojoin_session_guid ) == S_OK )
-			{
 				SessionGuidExists = TRUE;
-			}
-		}else if ( !_stricmp( option, "TCP" ) ) {
+		}
+
+		else if ( !_stricmp( option, "TCP" ) )
+		{
 			bTCP = TRUE;
 	        option = strtok(NULL, " ");
 			strcpy( (LPSTR)TCPAddress.text, option );
-		} else if ( !_stricmp( option, "AutoStart" ) ) {
+		}
+
+		else if ( !_stricmp( option, "AutoStart" ) )
+		{
 			NoSplash = TRUE;
 			QuickStart = QUICKSTART_SelectSession;
+		}
+
 #ifdef Z_TRICK
-		} else if ( !_stricmp( option, "NoZClear" ) ) {
+		else if ( !_stricmp( option, "NoZClear" ) )
+		{
 			ZClearsOn = FALSE;
+		}
 #endif
+
 #ifdef SOFTWARE_ENABLE
-		} else if ( !_stricmp( option, "UseDDrawFlip" ) ) {
+		else if ( !_stricmp( option, "UseDDrawFlip" ) )
+		{
 			UseDDrawFlip = TRUE;
+			
+        }
 #endif
-        } else {
+
+		// use sscanf
+		else 
+		{
+
 			int num, denom;
 			float fnum;
 			DWORD mem;
@@ -662,86 +790,84 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
 			}
-			if ( sscanf( option, "CompoundSfxBufferMem%d", &mem ) == 1 )
+
+			else if ( sscanf( option , "pilot:%s", &config_name ))
+			{
+				//
+			}
+
+			else if ( sscanf( option, "CompoundSfxBufferMem%d", &mem ) == 1 )
 			{
 				UserTotalCompoundSfxBufferSize = mem;
 				CustomCompoundBufferSize = TRUE;
 			}
+
 			else if ( sscanf( option, "PPS%d", &num ) == 1 )
 			{
 				DPlayUpdateIntervalCmdLine = num;
 			}
+
 			else if ( sscanf( option, "w%d", &num ) == 1 )
 			{
 				default_width = num;
 			}
+
 			else if ( sscanf( option, "h%d", &num ) == 1 )
 			{
 				default_height = num;
 			}
+
 			else if ( sscanf( option, "bpp%d", &num ) == 1 )
 			{
 				default_bpp = num;
 			}
+
 			else if ( sscanf( option, "pw%d", &num ) == 1 )
 			{
 				PreferredWidth = num;
 			}
+
 			else if ( sscanf( option, "ph%d", &num ) == 1 )
 			{
 				PreferredHeight = num;
 			}
+
 			else if ( sscanf( option, "TextureMemory%d", &num ) == 1 )
 			{
 				TextureMemory = num;
 			}
+
 			else if ( sscanf( option, "UVFix%f", &fnum ) == 1 )
 			{
 				UV_Fix = fnum;
 			}
-			else if ( sscanf( option, "lev:%s", level_path ) == 1 )
-			{
-				use_level_path = 1;
-			}
-			else if ( !strcmp( option, "data" ) )
-			{
-				DataPath = getenv( "PROJXDATA" );
-				if( DataPath )
-				{
-					use_data_path = 1;
-					use_local_data = 1;
-					strcpy( &data_path[ 0 ], DataPath );
-					strcat( &data_path[ 0 ], "\\" );
-				}
-			}
-			else if ( sscanf( option, "data:%s", data_path ) == 1 )
-			{
-				strcat( &data_path[ 0 ], "\\" );
-				use_data_path = 1;
-			}
+
 			else if ( sscanf( option, "logos%d", &num ) == 1 )
 			{
 				LogosEnable = num;
 			}
+
 			else if ( sscanf( option, "fov%d", &num ) == 1 )
 			{
 				normal_fov = (float) num;
 			}
+
 			else if ( sscanf( option, "screen%d:%d", &num, &denom ) == 2 )
 			{
 				if ( num && denom )
 					screen_aspect_ratio = (float) num / denom;
 			}
-			else
-			{
-				config_name = option;
-			}
         }
+
+		// get the next token
         option = strtok(NULL, " -+");
+
     }
 
+	// get registry settings
 	GetGamePrefs();
 
+	// setup the width, height and bpp
 	if ( !default_width && !default_height && !default_bpp )
 	{
 		if ( ScreenWidth || ScreenHeight )
@@ -849,9 +975,7 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 
 	CancelAutoPlayMessage = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
 
-#ifndef FINAL_RELEASE
 	DebugPrintf( "CancelAutoPlayMessage=0x%08X\n", CancelAutoPlayMessage );
-#endif
 
     return TRUE;
 }
@@ -863,6 +987,7 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
  * returned.  The sample's execute buffers are also created (or re-created)
  * here.
  */
+
 BOOL SplashOnceOnly = TRUE;
 
 static BOOL
@@ -927,7 +1052,8 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
 	{
 		SplashOnceOnly = FALSE;
 		ShowSplashScreen( SPLASHSCREEN_Legal );
-	}else
+	}
+	else
 	{
 		if (!InitView() )
 		{
@@ -990,58 +1116,53 @@ BeforeDeviceDestroyed(LPVOID lpContext)
 /****************************************************************************/
 /*                            Rendering loop                                */
 /****************************************************************************/
-/*
- * RenderLoop
- * Render the next frame and update the window
- */
-static BOOL
-RenderLoop()
+
+// Render the next frame and update the window
+
+static BOOL RenderLoop()
 {
-    /*
-     * If all the DD and D3D objects have been initialized we can render
-     */
-    if (d3dapp->bRenderingIsOK) {
-        /*
-         * Restore any lost surfaces
-         */
+
+    // If all the DD and D3D objects have been initialized we can render
+
+    if (d3dapp->bRenderingIsOK)
+	{
+
+        // Restore any lost surfaces
+
         if (!RestoreSurfaces())
 		{
-            /*
-             * Restoring surfaces sometimes fails because the surfaces cannot
-             * yet be restored.  If this is the case, the error will show up
-             * somewhere else and we should return success here to prevent
-             * unnecessary error's being reported.
-             */
+
+            // Restoring surfaces sometimes fails because the surfaces cannot
+            // yet be restored.  If this is the case, the error will show up
+            // somewhere else and we should return success here to prevent
+            // unnecessary error's being reported.
+
             return TRUE;
         }
-        /*
-         * Call the sample's RenderScene to render this frame
-         */
-        {
-            if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport)) {
-                Msg("RenderScene failed.\n");
-                return FALSE;
-            }
 
-			if ( quitting )
-			{
-				quitting = FALSE;
-				DebugPrintf("about to CleanUpAndPostQuit ( from RenderLoop )\n");
-				CleanUpAndPostQuit();
-			}
+        // Call the sample's RenderScene to render this frame
+
+        if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
+		{
+            Msg("RenderScene failed.\n");
+            return FALSE;
         }
-        /*
-         * Blt or flip the back buffer to the front buffer
-         */
+
+		if ( quitting )
+		{
+			quitting = FALSE;
+			CleanUpAndPostQuit();
+		}
+
+        // Blt or flip the back buffer to the front buffer
+
 		if( !myglobs.bQuit )
 		{
-			if ( ( !PlayDemo ||
-				!( MyGameStatus == STATUS_AttractMode || MyGameStatus == STATUS_PlayingDemo ) ||
-				DemoShipInit[ Current_Camera_View ] )
-				&& !PreventFlips )
+			if (( !PlayDemo || !( MyGameStatus == STATUS_AttractMode || MyGameStatus == STATUS_PlayingDemo ) || DemoShipInit[ Current_Camera_View ] ) && !PreventFlips )
 			{
 				if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
 				{
+					Msg("!D3DAppShowBackBuffer");
 					ReportD3DAppError();
 					return FALSE;
 				}
@@ -1049,15 +1170,12 @@ RenderLoop()
 
 			// if there is 3D sound, commit 3D sound processing
 			if ( lpDS3DListener )
-			{
-				//DebugPrintf("Commiting 3D settings\n");
 				if ( lpDS3DListener->CommitDeferredSettings() != DS_OK )
 					DebugPrintf("Error commiting 3D\n");
-			}
+
 		}
-		/*
-		 * Reset the resize flag
-	     */
+
+		// Reset the resize flag
 		myglobs.bResized = FALSE;
     }
 
@@ -1100,9 +1218,8 @@ RestoreSurfaces()
     /*
      * Have D3DApp check all the surfaces it's in charge of
      */
-    if (!D3DAppCheckForLostSurfaces()) {
+    if (!D3DAppCheckForLostSurfaces())
             return FALSE;
-    }
     return TRUE;
 }
 
@@ -1110,10 +1227,12 @@ RestoreSurfaces()
 /*************************************************************************
   Windows message handlers
  *************************************************************************/
+
 /*
  * AppAbout
  * About box message handler
  */
+
 BOOL
 FAR PASCAL AppAbout(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
@@ -1134,6 +1253,7 @@ FAR PASCAL AppAbout(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
  * WindowProc
  * Main window message handler.
  */
+
 long
 FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
                            LPARAM lParam )
@@ -1146,15 +1266,18 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
      * Give D3DApp an opportunity to process any messages it MUST see in order
      * to perform it's function.
      */
+
     if (!D3DAppWindowProc(&bStop, &lresult, hWnd, message, wParam, lParam)) {
         ReportD3DAppError();
         CleanUpAndPostQuit();
         return 0;
     }
+
     /* 
      * If bStop is set by D3DApp, the app should not process the message but
      * return lresult.
      */
+
     if (bStop)
         return lresult;
 
@@ -1169,9 +1292,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 	{
 		// return 1 to cancel AutoPlay
 		// return 0 to allow AutoPlay
-#ifndef FINAL_RELEASE
 		DebugPrintf( "AutoPlay cancelled\n" );
-#endif
 		return 1L;
 	}
 
@@ -1179,7 +1300,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 
 		// some i/o device has changed state
 		case WM_DEVICECHANGE:
-#ifndef FINAL_RELEASE
+
 			DebugPrintf( "DeviceChange detected\n" );
 			switch( wParam )
 			{
@@ -1202,7 +1323,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam,
 				DebugPrintf( "TYPESPECIFIC\n" );
 				break;
 			}
-#endif
+
 		break;
 
         case WM_MOUSEMOVE:

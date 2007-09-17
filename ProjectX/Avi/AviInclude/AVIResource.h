@@ -1,7 +1,9 @@
+
 //{{NO_DEPENDENCIES}}
 // Microsoft Developer Studio generated include file.
 // Used by Kscale.RC
 //
+
 #define IDS_FILTERSTRING                1
 #define IDS_FILTERSTRING_AVI            1
 #define IDS_FILTERSTRING_BMP            2

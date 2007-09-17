@@ -1,2903 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- * $Header: /PcProjectX/Oct2.c 1062  11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/Oct2.c $
- * 
- * 1062  11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 1061  5/11/98 3:34p Oliverc
- * Made Z_TRICK work as it should (but left disabled for patch beta 4 as
- * it messes up on translucent external views in certain levels)
- * 
- * 1060  3/11/98 16:06 Philipy
- * z trick stuff
- * 
- * 1059  23/10/98 12:29 Phillipd
- * 
- * 1058  22/10/98 8:09p Oliverc
- * Added support for international versions of Direct Input key labels
- * -- may be enabled on USE_DINPUT_NAMES define
- * 
- * 1057  22/10/98 14:35 Phillipd
- * 
- * 1056  22/10/98 12:31 Phillipd
- * 
- * 1055  22/10/98 12:02p Oliverc
- * Added BSP corruption check code (temporary)
- * 
- * 1054  22/10/98 11:35 Phillipd
- * 
- * 1053  21/10/98 17:27 Phillipd
- * 
- * 1052  21/10/98 12:39 Phillipd
- * 
- * 1051  17/09/98 15:27 Phillipd
- * 
- * 1050  7/09/98 12:36 Philipy
- * added DX version check
- * 
- * 1049  3/09/98 10:43 Phillipd
- * 
- * 1048  3/09/98 10:41 Phillipd
- * Fixed Viewport error......
- * 
- * 1047  27/08/98 20:12 Philipy
- * manual / auto server mode now selectable from menus
- * text now displayed when server in game & not rendering
- * dynamic PPS setting re-enabled for server
- * 
- * 1046  27/08/98 19:17 Philipy
- * no need to keep pressing return when trying to quit
- * 'waiting to quit...' now displayed until automatically quitting
- * 
- * 1045  27/08/98 17:26 Philipy
- * Pseudohost can select level, & migrates on quitting
- * players booted to titles due to not having new level are now informed
- * 
- * 1044  26/08/98 17:06 Philipy
- * tracker now migrates along with host
- * 
- * 1043  25/08/98 17:38 Philipy
- * added gamespy support
- * tracker config now selectable from start server game menu, & stored in
- * reg
- * 
- * 1042  25/08/98 15:44 Phillipd
- * 
- * 1041  20/08/98 4:03p Oliverc
- * Added SetViewportError() debug function (enabled on DEBUG_VIEWPORT
- * build switch)
- * 
- * 1040  20/08/98 15:28 Philipy
- * You can now join server based games after being launched by a lobby.
- * Level name is updated after pseudohost selects level
- * AVI can now play if no sound hw exists
- * started gamespy support
- * 
- * 1039  17/08/98 18:00 Philipy
- * removed loads of unreferenced local variables
- * 
- * 1038  17/08/98 17:13 Philipy
- * added -ServerChoosesGame & ServerAutoStart command line options
- * 
- * 1037  17/08/98 11:16 Philipy
- * prevented \n appearing in session desc
- * 
- * 1036  14/08/98 16:15 Philipy
- * heartbeat now migrates with host
- * 
- * 1035  14/08/98 15:25 Philipy
- * added trilinear option to menus
- * fixed level name / shutdown packet in heartbeat
- * 
- * 
- * 1034  14/08/98 9:13 Phillipd
- * DirectX6 is in effect.......
- * 
- * 1033  12/08/98 6:12p Oliverc
- * Changed colorkey from pink to blank for panel.bmp to fix 32 bit bug
- * 
- * 1032  10/08/98 17:33 Philipy
- * rewrote AVI player
- * 
- * 1031  7/08/98 12:45 Philipy
- * heartbeat now enabled for non tcp games ( if heartbeat.txt exists )
- * status type 0 now treated as status type 254
- * if lobby launched with max players set to 0, host is able to set max
- * players
- * shutdown udp packet now sent ( if specified in heartbeat.txt )
- * 
- * 1030  6/08/98 1:09p Oliverc
- * Levels not on HD now looked for on CD as well for patch
- * 
- * 1029  5/08/98 11:04 Philipy
- * added AutoStart facility ( joins game based on GUID in registery )
- * upped patch version to 1.02
- * 
- * 1028  4/08/98 9:57 Philipy
- * fixed 'server state reset to xxx' bug
- * 
- * 1027  28/07/98 10:39 Philipy
- * Max players now works properly for server games
- * 
- * 1026  24/07/98 12:40 Phillipd
- * 
- * 1025  24/07/98 10:02 Phillipd
- * 
- * 1024  23/07/98 18:40 Philipy
- * server now properly resets after timing out ( no msgs recieved ) while
- * in game
- * 
- * 1023  23/07/98 15:38 Philipy
- * server now resets if no packets recieved for 5 mins
- * 
- * 1022  23/07/98 15:20 Phillipd
- * 
- * 1021  23/07/98 15:16 Phillipd
- * 
- * 1020  22/07/98 16:29 Phillipd
- * 
- * 1019  22/07/98 16:24 Phillipd
- * 
- * 1018  22/07/98 16:23 Phillipd
- * 
- * 1017  22/07/98 14:57 Phillipd
- * 
- * 1016  22/07/98 12:39 Phillipd
- * 
- * 1015  21/07/98 17:31 Philipy
- * added timeout stuff for titles
- * 
- * 1014  21/07/98 15:25 Phillipd
- * Changed score display to cope with more than 16 players.....
- * 
- * 1013  17/07/98 5:39p Oliverc
- * Added level MXV file existance check to InitLevels()
- * 
- * 1012  7/16/98 12:25p Phillipd
- * 
- * 1011  7/16/98 11:37a Phillipd
- * 
- * 1010  7/16/98 11:27a Phillipd
- * 
- * 1009  16/07/98 10:53 Philipy
- * fixed dissapearing session after level change on server based game
- * 
- * 1008  7/15/98 11:44a Phillipd
- * 
- * 1007  7/14/98 11:27a Phillipd
- * 
- * 1006  14/07/98 11:15 Philipy
- * various patch bugs
- * pseudohost quitting in titles
- * 
- * 1005  7/14/98 10:38a Phillipd
- * 
- * 1004  14/07/98 10:27 Collinsd
- * Shadow code added under SHADOWTEST
- * 
- * 1003  7/14/98 10:07a Phillipd
- * 
- * 1002  7/13/98 11:47a Phillipd
- * 
- * 1001  7/13/98 11:43a Phillipd
- * 
- * 1000  7/13/98 11:22a Phillipd
- * 
- * 999   7/13/98 11:20a Phillipd
- * 
- * 998   7/09/98 11:50a Phillipd
- * Polytext now works being turned off for the Server.....HooRay...
- * 
- * 997   7/08/98 2:48p Phillipd
- * 
- * 996   7/08/98 2:46p Phillipd
- * 
- * 995   8/07/98 9:31 Oliverc
- * Converted multiplayer bounty and flag games to server operation for
- * patch
- * 
- * 994   7/07/98 18:05 Philipy
- * added lobby autostart code ( when all players have recieved init msg )
- * added num primary weapons menu option ( propergated to other players &|
- * server )
- * extracted new title text for localisation
- * 
- * 993   7/07/98 9:31a Phillipd
- * 
- * 992   7/06/98 5:09p Phillipd
- * 
- * 991   7/06/98 5:02p Phillipd
- * 
- * 990   7/03/98 5:03p Phillipd
- * 
- * 989   7/03/98 4:51p Phillipd
- * 
- * 988   7/03/98 4:27p Phillipd
- * 
- * 987   7/03/98 4:26p Phillipd
- * 
- * 986   7/03/98 4:20p Phillipd
- * 
- * 985   7/03/98 3:25p Phillipd
- * 
- * 984   3/07/98 11:54 Philipy
- * heartbeat & quickstart stuff
- * 
- * 983   1/07/98 15:29 Collinsd
- * Hopefully fixed bug that lost pickups.
- * 
- * 982   30/06/98 10:38 Collinsd
- * Better
- * 
- * 981   26/06/98 17:45 Collinsd
- * Added server debug info.
- * 
- * 980   6/24/98 10:22a Phillipd
- * 
- * 979   24/06/98 10:04 Philipy
- * heartbeat stuff ( not currently active )
- * 
- * 978   22/06/98 17:38 Oliverc
- * Removed CD checks in multiplayer games for patch
- * 
- * 977   6/22/98 2:16p Phillipd
- * Option to reset the score for every level..............
- * 
- * 976   6/22/98 9:56a Phillipd
- * 
- * 975   19/06/98 11:36 Collinsd
- * Fixed software Fullscreen Rearview
- * 
- * 974   17/06/98 19:33 Philipy
- * more win98 stuff
- * 
- * 973   6/17/98 12:49p Phillipd
- * 
- * 972   16/06/98 16:32 Philipy
- * more lobby / join game stuff
- * 
- * 971   13/06/98 20:46 Philipy
- * improved lobby support:
- * host now migrates properly
- * you can quit b4 starting game without screwing up session
- * 
- * 970   11/06/98 17:28 Collinsd
- * Fixed some warnings.
- * 
- * 969   11/06/98 16:57 Philipy
- * loads of win98 shareware version stuff
- * 
- * 968   11/06/98 9:54 Philipy
- * files checked in prior to starting Win98 shareware version
- * 
- * 967   6/11/98 9:29a Phillipd
- * 
- * 966   6/10/98 11:12a Phillipd
- * 
- * 965   6/09/98 3:49p Phillipd
- * 
- * 964   6/09/98 12:09p Phillipd
- * 
- * 963   9/06/98 11:23 Philipy
- * server now reset if pseudohost does not have any valid levels
- * fixed timed game bug for server based games
- * 
- * 962   8/06/98 12:28 Philipy
- * server levels now sent across to pseudohost. Pseudohost can only pick
- * valid levels
- * 
- * 961   6/04/98 2:44p Phillipd
- * 
- * 960   3/06/98 15:30 Philipy
- * added server in game options for rendering on/off and selecting players
- * pseudohost can now select if server does collisions. This gets
- * propagated in MSG_GameParams and MSG_Init
- * 
- * 959   22/05/98 17:51 Philipy
- * more work on session info
- * 
- * 958   5/22/98 10:29a Phillipd
- * 
- * 957   5/20/98 4:50p Phillipd
- * Full Screen Rearview Functional....
- * 
- * 956   5/20/98 4:46p Phillipd
- * 
- * 955   20/05/98 16:42 Philipy
- * stoped server team games starting straight away
- * 
- * 954   5/20/98 12:19p Phillipd
- * 
- * 953   20/05/98 9:39 Philipy
- * implemented front end server menus
- * removed ( invalid ) ping from sessions menu
- * changed EnumPlayers so that it solely uses MSG_NAME
- * 
- * 952   5/11/98 10:16a Phillipd
- * 
- * 951   4/29/98 4:41p Phillipd
- * 
- * 950   28/04/98 14:53 Oliverc
- * Disabled most of extra info on specific compile switches
- * 
- * 949   4/27/98 4:01p Phillipd
- * 
- * 948   21/04/98 10:20 Collinsd
- * Added french and italian.
- * 
- * 947   4/17/98 11:51a Phillipd
- * 
- * 946   17/04/98 11:46 Collinsd
- * 
- * 945   4/17/98 10:51a Phillipd
- * 
- * 944   4/17/98 10:40a Phillipd
- * 
- * 943   4/17/98 9:28a Phillipd
- * 
- * 942   15/04/98 12:28 Oliverc
- * In-game text substituted for localised definitions
- * 
- * 941   4/13/98 9:47p Phillipd
- * 
- * 940   11/04/98 17:09 Collinsd
- * 
- * 939   11/04/98 16:34 Oliverc
- * Disabled DebugPrintf() for FINAL_RELEASE
- * along with log file & batch file deletion
- * 
- * 938   4/11/98 11:53a Phillipd
- * 
- * 937   4/10/98 2:21p Phillipd
- * 
- * 936   4/10/98 1:21p Phillipd
- * 
- * 935   4/10/98 12:43p Phillipd
- * 
- * 934   4/09/98 4:37p Phillipd
- * 
- * 933   4/09/98 12:05p Phillipd
- * 
- * 932   9/04/98 11:52 Philipy
- * added facility to enable individual cheats for multiplayer
- * 
- * 931   8/04/98 20:47 Philipy
- * title text messages now properly initialised
- * holo-glaire removed for sw version
- * compound buffer size can now be set in command line and opt file
- * prevented "level select disabled" from appearing at start of
- * multiplayer game
- * 
- * 930   8/04/98 15:09 Oliverc
- * 
- * 929   4/08/98 2:12p Phillipd
- * 
- * 928   8/04/98 13:34 Oliverc
- * Changed CD file check to work with compressed/uncompressed install
- * version
- * 
- * 927   8/04/98 12:36 Oliverc
- * Changed internal multipayer level order to match T:\Gamedata
- * 
- * 926   8/04/98 10:22 Collinsd
- * Screenshots folder created if doesn't exist.
- * 
- * 925   8/04/98 10:15 Philipy
- * Title CD track now only started after valid CD check
- * 
- * 924   8/04/98 9:41 Collinsd
- * 
- * 923   8/04/98 9:39 Collinsd
- * 
- * 922   7/04/98 17:50 Philipy
- * removed multiplayer taunts
- * AVI thread now allowed to exit nicely rather than being terminated
- * fixed inter-level bug
- * fixed bug in enemy taunts
- * 
- * 921   4/07/98 3:02p Phillipd
- * 
- * 920   4/07/98 2:45p Phillipd
- * 
- * 919   7/04/98 11:00 Philipy
- * potentially fixed crash when going from AVI to titles
- * fixed CD audio looping
- * no CD audio in front end unless full install
- * bike features sliders now give correct values
- * 
- * 918   4/07/98 10:59a Phillipd
- * 
- * 917   4/07/98 10:57a Phillipd
- * 
- * 916   6/04/98 21:18 Philipy
- * flips now reenabled when joining existing game
- * 
- * 915   6/04/98 19:33 Oliverc
- * Fixed unnecessary D3D Zbuffer clearing for software version
- * 
- * 914   6/04/98 17:06 Philipy
- * modified various sfx
- * 
- * 913   6/04/98 12:33 Oliverc
- * Dropped "flag" level (earlier version of "midpand") from internal
- * multiplayer level table
- * 
- * 912   6/04/98 11:28 Philipy
- * added big packets option
- * upped frequency of some speech sfx
- * re-implemented holo-scanline
- * 
- * 911   4/06/98 9:39a Phillipd
- * 
- * 910   5/04/98 17:16 Oliverc
- * Added OriginalLevels flag (TRUE iff original levels are being used...)
- * 
- * 909   5/04/98 16:58 Philipy
- * cheats now disabled for multiplayer
- * sfx now paused for shortcut single player menus
- * 
- * 908   5/04/98 15:01 Philipy
- * started pre AVI CD accesss ( not yet implemented )
- * bike engine freq now done on 5 frame average
- * prevented CD track from playing in titles if set to off
- * NoDynamic SFX does not bike bike computer static anymore
- * water detail slider now only has two levels
- * 
- * 907   4/04/98 23:04 Oliverc
- * Changed InitLevels() for the FINAL_RELEASE to use an internal level
- * list if no levels.dat file found installed
- * 
- * 906   4/04/98 7:59p Phillipd
- * 
- * 905   4/04/98 7:53p Phillipd
- * If host quits viewing score everyone does....
- * 
- * 904   4/04/98 7:27p Phillipd
- * 
- * 903   4/04/98 18:31 Collinsd
- * 
- * 902   4/04/98 14:22 Philipy
- * mode scaling stuff is now calculated rather than based on fixed values
- * added -NoBlitTextScaling option to ReadIni and command line options
- * 
- * 901   4/04/98 2:03p Phillipd
- * 
- * 900   4/04/98 11:52 Oliverc
- * Added default joystick axis & buttons config (including SpaceOrb)
- * Added extra CD check
- * 
- * 899   4/03/98 8:36p Phillipd
- * 
- * 898   3/04/98 18:23 Philipy
- * fixed placeholder memory problem
- * remove existing team scores from team join menu
- * 
- * 897   3/04/98 18:04 Collinsd
- * 
- * 896   3/04/98 17:19 Collinsd
- * 
- * 895   3/04/98 17:06 Collinsd
- * Change for software version
- * 
- * 894   3/04/98 16:03 Philipy
- * fixed CD audio stuff
- * 
- * 893   4/03/98 3:35p Phillipd
- * 
- * 892   3/04/98 14:04 Philipy
- * fixed credit toggle stuff
- * 
- * 891   3/04/98 12:25 Collinsd
- * Fix for attract mode if no dmo.
- * 
- * 890   2/04/98 21:06 Philipy
- * Added taunts ( single & multiplayer, plus enemy biker taunts )
- * added flygirl to front end.
- * sliders for biker, bike computer and taunt speech volume
- * added new sfx for title
- * 
- * 889   2/04/98 16:53 Oliverc
- * Added Z-buffer clear override (independent of background clears) for
- * software version
- * 
- * 888   2/04/98 14:29 Oliverc
- * Added default settings for joystick axes & buttons
- * 
- * 887   2/04/98 12:29 Collinsd
- * Fixed bug in bgobjects in multiplayer
- * 
- * 886   4/02/98 8:49a Phillipd
- * 
- * 
- * 884   1/04/98 16:39 Collinsd
- * Background transparancies now work, zbuffer clear called when clear
- * screen called.
- * 
- * 883   1/04/98 11:44 Collinsd
- * Invulnerability effect now no longer appears in demos. and god mode
- * works properly over multiple levels.
- * 
- * 882   1/04/98 9:15 Oliverc
- * Changed in-game function key assignments
- * 
- * 881   31/03/98 20:01 Collinsd
- * Colour keying working.
- * 
- * 879   31/03/98 14:04 Collinsd
- * Game complete credits done.
- * 
- * 878   31/03/98 10:30 Collinsd
- * Temp clear zbuffer added
- * 
- * 877   30/03/98 23:40 Oliverc
- * Added shortcut keys F2, F3 & F4 for in-game options, load & save game
- * menus
- * 
- * 876   3/30/98 6:57p Phillipd
- * 
- * 875   30/03/98 17:30 Philipy
- * added cd specific path stuff
- * added new bike computers
- * prevented File_Exists being called every time a dynamic sfx is played
- * 
- * 874   3/30/98 2:25p Phillipd
- * 
- * 873   30/03/98 12:05 Oliverc
- * Added valid installation check for FINAL_RELEASE
- * Added code to re-check CD whenever a DEVICECHANGE message is received
- * to prevent users removing CD during play (for FINAL_RELEASE)
- * Added code to try to cancel CD autoplay from disturbing the game (but
- * didn't seem to work)
- * 
- * 872   29/03/98 20:27 Oliverc
- * 
- * 871   29/03/98 20:05 Philipy
- * LOBBY_DEBUG is now no longer defined - no Direct Play registery
- * settings are written out
- * 
- * 870   29/03/98 19:59 Philipy
- * cd path now verified earlier
- * sfx no longer reloaded when changing biker / bike computer
- * mouse sensitivity rounding error fixed
- * 
- * 869   3/28/98 2:06p Phillipd
- * 
- * 868   27/03/98 21:06 Philipy
- * added end game sequence for completing the game with cheating
- * 
- * 867   27/03/98 19:58 Philipy
- * changed TloadReloadPlaceHolder() to use MovePPMtoVidMem()
- * fixed level pic display
- * 
- * 866   27/03/98 17:09 Oliverc
- * replaced old "outside_map => bomb killed you" code with new version
- * that puts you back into your last valid restart position
- * 
- * 865   27/03/98 15:57 Oliverc
- * Fixed bug in default joystick config for Spaceorb
- * 
- * 864   27/03/98 15:52 Collinsd
- * Software version update.
- * 
- * 863   27/03/98 12:58 Philipy
- * changed cheat mode stuff
- * fixed bug that prevented individual variants of variant sfx to be
- * mapped
- * correct menutv now displayed between levels
- * 
- * 862   26/03/98 15:29 Oliverc
- * Added LIMITED_LEVELS build option to allow hardcoding of allowed levels
- * 
- * 861   26/03/98 15:16 Collinsd
- * Mods for Chris
- * 
- * 
- * 859   24/03/98 21:07 Philipy
- * fixed quicktext stuff
- * sfx do not pause when in multiplayer mode
- * rear camera not shown for splash demos
- * 
- * 858   24/03/98 18:01 Collinsd
- * Added ZBuffer clear for title/splash
- * 
- * 857   24/03/98 16:20 Philipy
- * added new sfx
- * 
- * 856   24/03/98 12:14 Collinsd
- * Added credits as splash screen.
- * 
- * 855   23/03/98 10:21 Oliverc
- * Merged all button and keyboard control configurations into one
- * 
- * 854   21/03/98 14:52 Philipy
- * only relevent sfx are loaded between levels
- * 
- * 853   3/21/98 2:48p Phillipd
- * 
- * 852   3/21/98 2:34p Phillipd
- * 
- * 851   3/21/98 1:43p Phillipd
- * 
- * 850   21/03/98 11:07 Collinsd
- * FIX UV's included again in 2dtextures.c
- * 
- * 849   3/20/98 11:08a Phillipd
- * 
- * 848   3/20/98 10:36a Phillipd
- * 
- * 847   19/03/98 20:49 Collinsd
- * Added Model and Texture loading optimisation. ( Doesn't load
- * textures/models not used in level/mode ).
- * 
- * 846   19/03/98 20:32 Philipy
- * added different end of game scenarios
- * code now written to config to indicate if secret biker is available
- * 
- * 845   19/03/98 14:43 Collinsd
- * 
- * 844   19/03/98 14:22 Collinsd
- * Invulnerability effect no longer visible in demo.
- * 
- * 843   19/03/98 11:29 Philipy
- * implemented new acclaim splash screen plus AVI
- * 
- * 842   19/03/98 11:29 Collinsd
- * Bike appears in missile and pip cameras
- * 
- * 841   3/18/98 4:03p Phillipd
- * re jigged stats screen......
- * 
- * 840   3/18/98 3:31p Phillipd
- * 
- * 839   3/17/98 10:40a Phillipd
- * 
- * 838   16/03/98 19:36 Collinsd
- * Changed Clipping Distance when nitro used. ( Fixes Laser )
- * 
- * 837   16/03/98 16:40 Philipy
- * fixed buffered key problem
- * added AVI to splash screens
- * 
- * 836   15/03/98 18:40 Philipy
- * added water effect splash screen
- * fixed bug with end game sequence
- * implemented attract mode
- * text macros now saved in config
- * 
- * 835   14/03/98 18:58 Collinsd
- * Added godmode and made debug mode work even when you change level.
- * 
- * 834   14/03/98 15:55 Collinsd
- * Taken out frame clamp.
- * 
- * 833   14/03/98 14:06 Collinsd
- * Scatter works with Collision Perspective.
- * 
- * 832   12/03/98 10:36 Collinsd
- * 
- * 831   11/03/98 21:01 Collinsd
- * Added naked bikers.
- * 
- * 830   11/03/98 12:40 Philipy
- * allowed debug msgs
- * 
- * 829   11/03/98 10:55 Philipy
- * all sfx now stopped for pause mode
- * correct level info now displayed in briefing screen
- * correct level now entered after completing a previously saved level
- * level timer now accurate
- * 
- * 828   3/10/98 12:17p Phillipd
- * 
- * 827   3/10/98 11:18a Phillipd
- * 
- * 826   3/10/98 10:45a Phillipd
- * 
- * 825   9/03/98 16:57 Philipy
- * only one 'player is joining the game' message is broadcast when joining
- * team game
- * 
- * 824   3/09/98 4:30p Phillipd
- * Check for secret level..16 and secret biker put in....
- * if you dont collect 15 crystals and complete level 15 then it goes to
- * the end seq...
- * otherwise you go to the secret level...if you collect the crystal there
- * and complete
- * that level then the secret biker should be enabled....
- * 
- * 823   8/03/98 17:08 Philipy
- * correct command line information now stored in registery for lobby
- * session
- * 
- * 822   8/03/98 16:50 Philipy
- * prevent MenuBack from some menus when lobby launched
- * added team game support for lobby
- * 
- * 821   6/03/98 17:37 Philipy
- * implemented ability to run when launched by lobby
- * 
- * 820   3/06/98 5:13p Phillipd
- * 
- * 819   6/03/98 14:43 Collinsd
- * 25fps
- * 
- * 818   6/03/98 14:25 Collinsd
- * 
- * 817   6/03/98 12:09 Collinsd
- * Taken out drop pickup code.
- * 
- * 816   6/03/98 10:29 Collinsd
- * Screen Saving now using my routine... and is on f8
- * 
- * 815   3/05/98 11:52a Phillipd
- * Previously triggered text message are now accessable in single player
- * by pressing
- * f9-10 previous and last
- * 
- * 814   5/03/98 10:50 Collinsd
- * Fixed glitch and text overlay on save game.
- * 
- * 813   3/05/98 8:47a Phillipd
- * 
- * 812   3/03/98 16:59 Oliverc
- * New multiplayer CTF mode stuff (1st attempt)
- * 
- * 811   2/03/98 21:13 Collinsd
- * No longer use multiple bit or secfire.
- * 
- * 810   2/28/98 11:26a Phillipd
- * 
- * 809   28/02/98 11:06 Collinsd
- * Fixed Crystal and Gold bars tally over multiple levels.
- * 
- * 808   27/02/98 19:11 Philipy
- * fixed load game sfx bug
- * added pseudo dithering for 8 bit saved game pic
- * flygirl now selectable from front end ( no model displayed )
- * 
- * 
- * 806   26/02/98 20:41 Philipy
- * added front end for load game
- * 
- * 805   2/26/98 4:50p Phillipd
- * 
- * 804   26/02/98 9:30 Oliverc
- * Disabled Bombtag
- * Fixed pickup flags bug
- * Disabled logos for EXTERNAL_DEMOs
- * 
- * 803   25/02/98 21:08 Collinsd
- * Fixed Stats memsets
- * 
- * 802   25/02/98 18:38 Collinsd
- * Added solid poly option.
- * 
- * 801   25/02/98 16:19 Oliverc
- * More multiplayer tweaks
- * 
- * 800   25/02/98 16:06 Collinsd
- * Save Picture for save game...
- * 
- * 799   2/25/98 10:50a Phillipd
- * 
- * 798   24/02/98 16:54 Oliverc
- * 1st attempt at bounty hunt multiplayer game
- * 
- * 797   23/02/98 15:31 Philipy
- * implemented single player level timer
- * 
- * 796   2/23/98 2:02p Phillipd
- * Load Save now works.
- * 
- * 795   23/02/98 10:37 Philipy
- * added inter level stuff
- * 
- * 794   21/02/98 16:24 Philipy
- * added text messages for capture flag
- * 
- * 793   21/02/98 13:04 Philipy
- * added in game load / save for sfx
- * 
- * 792   21/02/98 12:48 Oliverc
- * Active goals now re-checked every game loop
- * as well as number of flags held by each team
- * 
- * 791   20/02/98 19:41 Oliverc
- * 2nd prototype of capture the flag game
- * 
- * 790   20/02/98 15:29 Philipy
- * re-implented AVI
- * splash screens can now play demos and AVIs
- * 
- * 789   20/02/98 12:30 Oliverc
- * Prototype goal load/release/check/display for capture the flag
- * multiplayer
- * 
- * 788   20/02/98 11:53 Collinsd
- * Fixed small bug in bgobject collision.  And updated software code.
- * 
- * 787   19/02/98 22:00 Collinsd
- * Added flygirl biker.
- *
- * 
- * 784   17/02/98 17:15 Philipy
- * level.mis now used to store level name as well as mission briefing
- * if file not there, reverts back to old level name
- * 
- * 783   17/02/98 9:16 Philipy
- * added support for placeholder textures, which can be dynamically
- * updated
- * implemented mission briefing screens
- * 
- * 
- * 781   11/02/98 12:54 Philipy
- * changed calls to PlaySfx to call with volume rather than distance
- * 
- * 780   9/02/98 12:21 Philipy
- * added sound buffer memory managment
- * only one piece of bike computer speech can now play at a time
- * 
- * 779   7/02/98 18:58 Collinsd
- * Release of Thermal gauge now in.
- * 
- * 778   7/02/98 18:42 Collinsd
- * Added Temperature Gauege.
- * 
- * 777   2/07/98 1:39p Phillipd
- * Int the bombs now in......
- * 
- * 776   5/02/98 10:06 Oliverc
- * PowerVR hacks (texture blend mode now MODULATEALPHA, COLORKEY_ENABLE
- * switched on)
- * 
- * 775   2/02/98 20:08 Philipy
- * added configurable quick text message buttons
- * 
- * 774   2/02/98 14:20 Philipy
- * Harm Teammates, Disable Pickups front end stuff done
- * 
- * 773   2/02/98 9:19 Philipy
- * fixed splashscreen bug
- * 
- * 772   30/01/98 9:12 Collinsd
- * Added Laser for exogenon and added corruption checking for componented
- * objects.
- * 
- * 770   1/29/98 2:35p Phillipd
- * 
- * 769   1/29/98 2:27p Phillipd
- * Demo can now be saved to ram....and can be saved if your not the
- * host...
- * 
- * 768   29/01/98 14:19 Oliverc
- * 
- * 767   29/01/98 11:30 Philipy
- * fixed loading bar
- * 
- * 766   28/01/98 21:43 Oliverc
- * Fixed bugs in team tally screen display
- * 
- * 765   1/28/98 6:45p Phillipd
- * 
- * 764   1/28/98 4:55p Phillipd
- * 
- * 763   1/28/98 2:35p Phillipd
- * 
- * 762   1/28/98 2:29p Phillipd
- * 
- * 761   28/01/98 14:25 Oliverc
- * Changed splash screens for different markets
- * 
- * 760   28/01/98 10:03 Philipy
- * added SPLASH_Dummy
- * 
- * 759   27/01/98 14:08 Oliverc
- * Added MindSpring splash screen
- * 
- * 758   27/01/98 12:30 Oliverc
- * 
- * 757   27/01/98 11:13 Oliverc
- * Fixed demo playback speeds so only a single 100% appears
- * Eliminated intermediate "restore game" menu between "play demo" on
- * start screen and actual "play demo" menu
- * 
- * 756   27/01/98 11:05 Philipy
- * fixed team game stuff
- * 
- * 755   1/27/98 10:09a Phillipd
- * 
- * 754   26/01/98 18:34 Philipy
- * Opps! - fixed bug with new splashscreen stuff
- * 
- * 753   26/01/98 18:23 Philipy
- * fixed video memory leaks
- * splash screens now display after release view, and call InitScene,
- * InitView after  completion
- * 
- * 752   26/01/98 10:20 Collinsd
- * 
- * 751   24/01/98 17:38 Philipy
- * fixed multiplayer join-quit-join bug
- * fixed attract mode loading wrong level
- * 
- * 750   1/24/98 5:10p Phillipd
- * 
- * 749   24/01/98 15:27 Collinsd
- * Updated Code for SFX on Animations ( Disabled )
- * 
- * 748   24/01/98 12:47 Collinsd
- * Fixed Bug where on machine with blitted text.  Font page was
- * deallocated on loading rolling demo.
- * 
- * 747   23/01/98 17:36 Philipy
- * sorted out release view for client joining game
- * 
- * 746   23/01/98 16:35 Collinsd
- * ReleaseLevel() now done between single player levels.
- * 
- * 745   1/23/98 12:33p Phillipd
- * 
- * 744   23/01/98 11:24 Collinsd
- * Added override for solid screen poly bilinear
- * 
- * 743   22/01/98 19:14 Philipy
- * fixed re-loading looping sfx while in level
- * biker speech now switchable
- * 
- * 741   22/01/98 15:06 Oliverc
- * Added loading of pre-calculated group connectivity, visibility,
- * indirect visibility, and sound attentuation tables
- * 
- * 740   22/01/98 11:57 Collinsd
- * Added DoDamage override invul.
- * 
- * 739   22/01/98 9:46 Philipy
- * team game stats
- * 
- * 738   22/01/98 9:38 Collinsd
- * Single player timelimit does not effect multiplayer limit any more.
- * 
- * 737   22/01/98 8:45 Collinsd
- * Deallocate CountDownDigits in release level.
- * Turned off CoundDown when playing Demos
- * 
- * 736   21/01/98 17:27 Philipy
- * attract mode splash screen stuff
- * 
- * 735   21/01/98 16:30 Philipy
- * fixed some spotsfx bugs
- * 
- * 734   21/01/98 12:19 Philipy
- * Added attract mode for shareware
- * fixed looping sfx volume bug
- * 
- * 733   1/20/98 12:25p Phillipd
- * 
- * 732   20/01/98 12:25 Philipy
- * Fixed level starting bug
- * 
- * 731   1/20/98 11:40a Phillipd
- * 
- * 730   1/19/98 4:21p Phillipd
- * Bright Ships flag added.....
- * 
- * 729   19/01/98 13:01 Philipy
- * fixed mission text not being displayed
- * possibly fixed stats bug ?
- * 
- * 728   1/19/98 12:19p Phillipd
- * Lights now have a visible link list.....
- * 
- * 727   1/19/98 10:00a Phillipd
- * 
- * 726   19/01/98 9:50 Philipy
- * more changes to critical sections
- * 
- * 725   18/01/98 23:39 Philipy
- * Rogue sfx killing code changed slightly
- * 
- * 724   1/16/98 5:43p Phillipd
- * 
- * 723   16/01/98 12:11 Philipy
- * added spaceorb auto configure stuff
- * splash screen now displays in highest res it can find
- * 
- * 722   15/01/98 18:55 Philipy
- * added new splash screens
- * 
- * 720   15/01/98 17:04 Philipy
- * changed PlayPannedSfx calls to use float for freq
- * 
- * 719   1/15/98 3:52p Phillipd
- * 
- * 718   15/01/98 12:51 Collinsd
- * Time now works when people join an existing timed game.  Crystals
- * reinitialised.  Damage Flash only in Normal_Mode.
- * 
- * 716   14/01/98 12:25 Oliverc
- * Changed level format MXV to include pre-calculated ambient lighting
- * info
- * Added UVFix option to command line options and OPT file to allow
- * texture coordinates to be adjusted at runtime (currently only for level
- * backgrounds)
- * 
- * 715   14/01/98 11:34 Collinsd
- * Dont scale textures.
- * 
- * 714   14/01/98 10:12 Collinsd
- * Add logfile and batchfile works again.
- * 
- * 713   13/01/98 12:06 Philipy
- * added looping spot sfx support, and changed looping sfx to use static
- * list rather than dynamic linked list
- * 
- * 712   13/01/98 9:39 Collinsd
- * Added debug to show untriggered enemies.  Started Enemy Poly Colisions.
- * 
- * 711   12/01/98 16:57 Philipy
- * now properly releasing splash screen surfaces
- * 
- * 710   12/01/98 16:47 Philipy
- * fixed deallocation errors
- * 
- * 709   12/01/98 16:02 Collinsd
- * 
- * 708   12/01/98 14:29 Philipy
- * fixed bug that prevented loading with no soundcard
- * 
- * 707   12/01/98 11:23 Philipy
- * fixed leveloading bug
- * 
- * 706   12/01/98 0:08 Philipy
- * bug fixes
- * added inter-level mission briefing
- * changed splash screen code, + added splash screen on exit
- * 
- * 705   11/01/98 17:54 Philipy
- * inter level mission screen
- * 
- * 704   10/01/98 20:35 Philipy
- * fixed no speech option
- * 
- * 703   10/01/98 19:30 Philipy
- * bug fixes
- * 
- * 702   10/01/98 15:12 Oliverc
- * Fixed triggerload bug for multiplayer
- * 
- * 701   1/10/98 1:44p Phillipd
- * Quick Fix
- * 
- * 700   1/10/98 11:52a Phillipd
- * 
- * 699   9/01/98 17:25 Philipy
- * player is now forced to start on level 0
- * 
- * 698   9/01/98 11:27 Collinsd
- * 
- * 697   9/01/98 11:14 Philipy
- * CD nows plays last track
- * CD now replays current track from seperate  ( low priority ) thread -
- * but still causes pause
- * loading bar now displayed when loading
- * 
- * 696   9/01/98 11:01 Collinsd
- * Stuff back to normal and goldbars not get carried over levels.
- * 
- * 695   8/01/98 15:23 Collinsd
- * Added Timer for single player levels.
- * 
- * 694   7/01/98 16:06 Collinsd
- * Changed pickups you already got not to play sfx constantly.
- * Changed Blend mode code to check for trans first
- * 
- * 693   1/07/98 3:17p Phillipd
- * 
- * 691   7/01/98 14:51 Collinsd
- * Fixed ScreenPolys crashing game when changing screen mode.
- * 
- * 690   7/01/98 9:34 Philipy
- * added title room sfx
- * added ability to select bike computer, biker with sfx loaded
- * 
- * 689   6/01/98 18:29 Oliverc
- * Enabled bike controls menu on F1 key in game for external demo
- * 
- * 688   6/01/98 12:06 Oliverc
- * Fixed "no cursor after ALT+TAB/Close" bug by changing un-malloc'ed
- * Msg() to DebugPrintf()
- * 
- * 687   5/01/98 16:41 Collinsd
- * 
- * 686   1/05/98 3:29p Phillipd
- * Sfx for score....
- * 
- * 685   1/05/98 3:18p Phillipd
- * More sfx...
- * 
- * 684   5/01/98 14:27 Collinsd
- * Moved Spotfx so the fireprimary is in sync.
- * 
- * 683   5/01/98 11:36 Philipy
- * physically removed some comented out lines
- * 
- * 682   3/01/98 15:01 Oliverc
- * Pressing F1 key in-game now goes straight to bike controls menu
- * 
- * 681   1/02/98 12:38p Phillipd
- * Pause mode added for single player.....
- * 
- * 680   1/02/98 9:50a Phillipd
- * 
- * 679   31/12/97 12:51 Collinsd
- * 
- * 678   31/12/97 11:53 Collinsd
- * 
- * 677   31/12/97 11:41 Philipy
- * CD no longer plays in title room
- * 
- * 676   31/12/97 11:34 Oliverc
- * Disabled POLYGONAL_COLLISIONS
- * 
- * 675   12/31/97 9:19a Phillipd
- * 
- * 674   30/12/97 12:53 Philipy
- * removed redundant function
- * 
- * 673   12/30/97 12:09p Phillipd
- * 
- * 672   12/29/97 11:18a Phillipd
- * 
- * 671   24/12/97 9:20 Philipy
- * fixed dynamic sound stuff by making X_Malloc, X_Free etc. atomic
- * 
- * 670   12/22/97 10:19a Phillipd
- * Texture memory is now got from directdraw2 interface....
- * Modecase is set to nearest resolution that is smaller.....
- * 
- * 669   12/20/97 5:03p Phillipd
- * 
- * 668   12/20/97 12:43p Phillipd
- * Levelname is now sent across for a level change in Multiplayer....
- * Enemies dont appear in Multiplayer Games....
- * 
- * 666   19/12/97 14:41 Collinsd
- * Gold bars not carried over levels.
- * 
- * 665   19/12/97 9:39 Collinsd
- * Fixed model trans colours. ( orig verts ).
- * 
- * 664   18/12/97 21:16 Collinsd
- * Start pos loading from .stp first then mxv
- * 
- * 663   18/12/97 11:31 Collinsd
- * Added Restart Points, Changed Oneoff anim to only activate if not
- * already animating.
- * 
- * 662   12/18/97 11:25a Phillipd
- * 
- * 661   12/18/97 9:21a Phillipd
- * 
- * 660   12/17/97 12:06p Phillipd
- * 
- * 659   16/12/97 16:36 Oliverc
- * Level list now loaded from arbitrary file in Levels folder (mission.dat
- * for single player and battle.dat for multiplayer games), with existing
- * levels.dat used as a fallback for compatibility with existing levels
- * 
- * 658   12/16/97 2:44p Phillipd
- * 
- * 657   12/15/97 2:43p Phillipd
- * 
- * 656   12/15/97 12:00p Phillipd
- * 
- * 655   12/13/97 1:35p Phillipd
- * 
- * 653   12/10/97 10:39a Phillipd
- * Players names are now propergated across the network when changed...
- * Difficulty levels are functional....
- * 
- * 652   6/12/97 19:31 Oliverc
- * Level loading now fails if no BSP found in BSP_ONLY mode
- * 
- * 651   12/06/97 2:53p Phillipd
- * Fixed Phils Sfx Crash Bug....Doh
- * 
- * 650   5/12/97 14:11 Collinsd
- * Allocated ships fixed.
- * 
- * 649   12/05/97 9:36a Phillipd
- * 
- * 648   4/12/97 15:11 Collinsd
- * Ships are now allocated models.
- * 
- * 647   3/12/97 20:01 Oliverc
- * Added NULL pointer checks before misc free() calls
- * 
- * 646   3/12/97 18:51 Philipy
- * changed some sfx timer stuff
- * 
- * 645   12/03/97 5:18p Phillipd
- * 
- * 644   12/03/97 12:05p Phillipd
- * 
- * 643   2/12/97 18:05 Oliverc
- * 
- * 642   2/12/97 16:46 Philipy
- * compound sfx buffer is now stopped when quitting game
- * 
- * 641   12/02/97 4:20p Phillipd
- * 
- * 640   2/12/97 11:52 Philipy
- * boot demo stuff
- * 
- * 639   12/01/97 3:27p Phillipd
- * 
- * 638   12/01/97 11:16a Phillipd
- * 
- * 637   1/12/97 11:06 Philipy
- * fixed de-allocation bug with axis / button names of unconnected
- * joysticks
- * 
- * 636   1/12/97 10:51 Oliverc
- * Fixed memory alloced but not freed bugs
- * 
- * 635   1/12/97 10:19 Collinsd
- * Fixed Memory Allocation Bugs.
- * 
- * 634   12/01/97 10:11a Phillipd
- * 
- * 633   1/12/97 9:48 Philipy
- * checked in with changes commented out in order to get Xmem stuff
- * 
- * 632   12/01/97 9:46a Phillipd
- * 
- * 631   11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 630   27/11/97 12:34 Philipy
- * fixed sound bug on self play demo
- * demo playback speed now given as true percentage
- * 
- * 629   27/11/97 12:34 Oliverc
- * Changed ship inside/outside map check to use PointInsideSkin()
- * 
- * 628   11/27/97 12:25p Phillipd
- * 
- * 627   26/11/97 11:48 Philipy
- * implemented dynamic loading of SFX, dynamic allocation of mixing
- * channels.
- * 3D sound currently disabled.
- * 
- * 626   11/21/97 2:47p Phillipd
- * 
- * 625   21/11/97 11:21 Philipy
- * fxed releasing of splash screen
- * 
- * 624   11/21/97 10:56a Phillipd
- * Max Kills to end a level....
- * 
- * 623   21/11/97 9:09 Collinsd
- * Taken out all models not used.
- * 
- * 622   11/21/97 9:06a Phillipd
- * 
- * 621   11/19/97 12:37p Phillipd
- * Trigger bug fixed...
- * Teleports now trigger on offable....
- * num of Secrets Are calculated
- * 
- * 620   11/18/97 3:44p Phillipd
- * 
- * 619   18/11/97 14:54 Oliverc
- * Prevented remote camera from inadvertently using player's main FOV (eg
- * when nitroing)
- * 
- * 618   11/18/97 2:44p Phillipd
- * 
- * 617   11/17/97 4:34p Phillipd
- * 
- * 616   11/17/97 10:13a Phillipd
- * Trig area V2...
- * 
- * 615   13/11/97 15:04 Philipy
- * fixed crash bug - unable to restart game second time
- * 
- * 614   11/11/97 9:41a Phillipd
- * 
- * 613   11/11/97 8:49 Collinsd
- * 
- * 612   7/11/97 14:25 Philipy
- * fixed bug when changing mode from title room: InitTitle was not being
- * called
- * 
- * 611   6/11/97 15:23 Philipy
- * JoystickInfo structure now dynamically allocates space for Joystick /
- * Button / POV names.
- * All deallocated in OnceOnlyRelease().
- * 
- * 610   6/11/97 10:25 Oliverc
- * 
- * 609   11/05/97 3:35p Phillipd
- * 3d panel disabled...
- * 
- * 608   4/11/97 17:34 Philipy
- * now skips stats AVI with -NoAVI flag
- * 
- * 607   4/11/97 16:26 Philipy
- * AVI now plays for stats screens
- * implemented scrolling messages (not enabled)
- * 
- * 606   11/03/97 6:20p Phillipd
- * 
- * 605   30/10/97 19:21 Collinsd
- * Enemies clip properly to groups now.
- * 
- * 604   30/10/97 17:00 Collinsd
- * Clipping of BGObjects now works.
- * 
- * 603   10/30/97 9:30a Phillipd
- * Bikes with different mods started...
- * 
- * 602   27/10/97 15:38 Philipy
- * added in-game cd track playing
- * 
- * 601   24/10/97 12:33 Philipy
- * more debug menu stuff
- * 
- * 600   24/10/97 12:07 Collinsd
- * zone display now works of menus.
- * 
- * 599   24/10/97 10:36 Philipy
- * Updated debug menus
- * 
- * 598   24/10/97 10:03 Collinsd
- * 
- * 597   24/10/97 10:01 Collinsd
- * 
- * 596   10/24/97 9:40a Phillipd
- * 
- * 595   10/24/97 9:18a Phillipd
- * 
- * 594   23/10/97 16:49 Philipy
- * added tggle (number key 1) for playing AVI on texture.
- * (no texture conversion yet, could appear corrupted)
- * 
- * 593   23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 592   21/10/97 13:10 Philipy
- * levels.dat can now (optionally) store CD track num after each level
- * 
- * 591   20/10/97 11:58 Oliverc
- * Trigger info now dynamically allocated on loading
- * 
- * 590   17/10/97 15:13 Philipy
- * 
- * 589   17/10/97 14:23 Philipy
- * 
- * 588   16/10/97 18:18 Philipy
- * Implemented pre-game AVI player
- * 
- * 587   16/10/97 18:17 Philipy
- * 
- * 586   16/10/97 17:56 Oliverc
- * Changed BSP loading so no *z.bsp files loaded any more
- * 
- * 585   10/16/97 11:34a Phillipd
- * 
- * 584   10/16/97 10:06a Phillipd
- * 
- * 583   10/16/97 10:00a Phillipd
- * 
- * 582   10/16/97 9:56a Phillipd
- * 
- * 580   15/10/97 17:00 Collinsd
- * 
- * 579   15/10/97 9:37 Collinsd
- * Added logfile/batchfile creation code.
- * 
- * 578   10/14/97 4:48p Phillipd
- * 
- * 577   11/10/97 19:07 Oliverc
- * Added real-time mapped lights in level
- * 
- * 576   10/09/97 3:29p Phillipd
- * External forces coming...
- * Shield and Hull now floats
- * 
- * 575   8/10/97 20:31 Philipy
- * 
- * 574   8/10/97 16:32 Collinsd
- * Added spotfx and started lightning bolt.
- * 
- * 573   10/08/97 2:05p Phillipd
- * 
- * 572   7/10/97 12:37 Collinsd
- * Added spotfx for a level and point and vector stuff for MX and MXA
- * models.
- * 
- * 571   10/07/97 12:00p Phillipd
- * 
- * 570   10/07/97 10:18a Phillipd
- * 
- * 569   7/10/97 10:16 Philipy
- * fixed mouse look-up bug when starting subsequent games.
- * DInput() was being called every restart, with no corresponding
- * TermDInput().
- * DInput is now only ever done once (TitleOnceOnly)
- * 
- * 568   10/06/97 7:19p Phillipd
- * water stuff...more
- * 
- * 567   6-10-97 3:40p Philipy
- * Joystick info now loaded/saved for unconnected joysticks (prevents
- * information being lost from config file)
- * 
- * 566   4/10/97 12:53 Collinsd
- * Fixed level change. ( Preload Enemies ).
- * 
- * 565   3/10/97 17:08 Collinsd
- * Fixed mode change/level change bug.
- * 
- * 564   10/03/97 4:24p Phillipd
- * 
- * 563   3-10-97 12:17p Philipy
- * Joystick stuff almost done
- * 
- * 562   1-10-97 7:21p Philipy
- * more joystick stuff - writing to config, changed JOYSTICKINFO
- * structure, user interface for assigning buttons & axis.
- * Fixed bug that prevented you from going into wireframe mode - keyboard
- * buffer is now flushed in InitView, and TermDInput is not called from
- * ReleaseView (something needs to be done about releasing DirectX objects
- * when quitting from titles!)
- * 
- * 561   1/10/97 17:29 Collinsd
- * Fixed model init.
- * 
- * 560   10/01/97 2:48p Phillipd
- * 
- * 559   9/29/97 11:55a Phillipd
- * Dawn of a new age with directplay 3
- * 
- * 558   29/09/97 11:35 Collinsd
- * New bgobject stuff enabled. Pickups/Secondary and Enemies now have
- * group link lists.  Flags for secondary bullets being targeted and hit
- * now added.
- * 
- * 557   9/29/97 9:08a Phillipd
- * 
- * 556   26-09-97 3:27p Philipy
- * config file can now store joystick info.
- * now only does InitDInput() at start of title screen, and TermDInput()
- * when quitting game
- * 
- * 555   24/09/97 16:55 Collinsd
- * Added new bgobject stuff.  Added bounding box calc and display code.
- * and changes bgobject state changes.
- * 
- * 554   9/23/97 4:24p Phillipd
- * 
- * 553   22/09/97 10:40 Collinsd
- * Software version works again. ( Now with trasnsluecency )
- * 
- * 552   9/19/97 2:40p Phillipd
- * 
- * 551   9/18/97 3:56p Phillipd
- * Fixed stats bug....
- * 
- * 550   9/18/97 12:16p Phillipd
- * 
- * 549   9/18/97 10:48a Phillipd
- * 
- * 548   17-09-97 4:08p Philipy
- * enabled dynamic loading of textures, plus splash screen now released
- * before othe textures are loaded
- * 
- * 547   17/09/97 15:58 Collinsd
- * Fixed blit's in software.
- * 
- * 546   17/09/97 9:55 Collinsd
- * Blitting now works in software versions in 320x240 mode.
- * 
- * 545   16/09/97 17:52 Collinsd
- * More of Chris's stuff works.
- * 
- * 544   16/09/97 10:59 Collinsd
- * Added Chris's code
- * 
- * 543   15-09-97 3:23p Philipy
- * message displayed, then correct menu displayed on new host machine if
- * host migrates.
- * Host can now start another game, having quit 'waiting to start' menu
- * 
- * 541   14-09-97 6:54p Philipy
- * joining existing team game - you can now select which team to go into,
- * and view current scores
- * 
- * 540   12/09/97 10:52 Collinsd
- * Oops f6
- * 
- * 539   12/09/97 10:50 Collinsd
- * Added global portal clipping on/off using shift f7
- * 
- * 538   10/09/97 11:27 Collinsd
- * Fixed clipping of models to portals
- * 
- * 537   5-09-97 5:47p Philipy
- * Menus now use buffered keys
- * 
- * 536   5-09-97 4:12p Philipy
- * Changed menus to use buffered keys
- * 
- * 535   5/09/97 11:57 Collinsd
- * Fixed Scores bug.
- * 
- * 534   9/04/97 3:28p Phillipd
- * 
- * 529   3-09-97 12:30p Philipy
- * game now returns to copyright screen
- * 
- * 528   3/09/97 12:20 Oliverc
- * Added command-line options to set normal FOV and screen aspect ratio
- * for widescreen TVs
- * 
- * 527   3/09/97 11:10 Collinsd
- * Added ColourMode Variable
- * 
- * 526   3-09-97 11:09a Philipy
- * moved lpDDSSplash definition to Title.c
- * changed ATTRACTMODECOUNTVALUE to 1.0F 
- * 
- * 525   2/09/97 15:06 Oliverc
- * Disabled portal clipping of lines
- * 
- * 524   31/08/97 13:24 Collinsd
- * Added aiming pos, firing pos and laser works with enemies now.
- * 
- * 523   8/31/97 12:40p Phillipd
- * 
- * 522   26-08-97 4:18p Philipy
- * VDU screen is cleared before starting multiplayer game from new menus
- * 
- * 521   20/08/97 12:18 Oliverc
- * Triangle visibility statistics now kept (min, max, avg) for all
- * background groups and written to .VIS file in level folder iff player
- * using vanilla '-data' command line option to indicate he wants to use
- * PROJXDATA environment variable
- * 
- * 520   8/19/97 12:59p Phillipd
- * 
- * 519   17/08/97 14:58 Collinsd
- * Taken out old code.
- * 
- * 518   8/17/97 1:17p Phillipd
- * Enemies coming along....
- * 
- * 517   8/15/97 4:24p Phillipd
- * enemies coming along
- * 
- * 516   14-08-97 5:42p Philipy
- * added direct draw surface for splash screens
- * 
- * 515   14/08/97 12:38 Collinsd
- * Targeting computer only in debug mode.
- * 
- * 514   13/08/97 10:16 Oliverc
- * (Dave) Fixed bug in call to InitLogos() due changes to screenpolys
- * 
- * 513   12/08/97 16:50 Collinsd
- * Added warp5 mode for blending. ( Modulate alpha, srcalpha, invsrcalpha
- * )
- * 
- * 
- * 511   11/08/97 11:59 Collinsd
- * Added data override for levels as well
- * 
- * 510   11/08/97 10:12 Collinsd
- * Added override data directory option. ( SFX don't work yet! )
- * 
- * 509   9/08/97 14:56 Collinsd
- * Added ScreenPoly TPage Link list and flat shaded screen polys for phil
- * 
- * 508   8/08/97 14:18 Collinsd
- * Display of Polys has now been updated to use TPage link list.
- * 
- * 507   8/08/97 9:33a Phillipd
- * 
- * 506   7/08/97 21:25 Collinsd
- * Change FmPolys to use tpage link list.
- * 
- * 505   8/04/97 3:48p Phillipd
- * Water effects..Temporary and not finished..currently disabled
- * 
- * 504   2/08/97 12:34 Oliverc
- * Added wireframe mode option for debugging group/portal visibility
- * 
- * 501   28/07/97 16:44 Collinsd
- * Tracker uses ships to target, demo mode works again?
- * 
- * 500   25/07/97 12:10 Collinsd
- * Changed ships bike index, and changed skin for olly.
- * 
- * 499   21/07/97 17:31 Collinsd
- * 
- * 498   17/07/97 16:06 Oliverc
- * Added ship cruise control keys
- * 
- * 497   17/07/97 15:38 Collinsd
- * BGObjects now use compobjs.
- * 
- * 496   16/07/97 11:57 Collinsd
- * Made lines more flexible
- * 
- * 495   16/07/97 11:31 Collinsd
- * Added collision zone display.
- * 
- * 494   15/07/97 10:10 Collinsd
- * Added display of triggerzones on Shift F10 in debug mode.
- * 
- * 493   7/14/97 5:07p Phillipd
- * 
- * 492   7/12/97 3:34p Phillipd
- * 
- * 491   9/07/97 16:59 Collinsd
- * Fixed MXA models in titles
- * 
- * 490   8/07/97 16:30 Collinsd
- * Dicked about with include files FUCK!
- * 
- * 489   8/07/97 14:06 Collinsd
- * Added componented objects to enemies.
- * 
- * 488   7/07/97 4:31p Phillipd
- * Slght change to the autodetail calculation....
- * 
- * 487   4/07/97 16:35 Collinsd
- * Started user control componented objects
- * 
- * 486   7/03/97 5:27p Phillipd
- * 
- * 485   7/03/97 4:49p Phillipd
- * 
- * 484   7/03/97 10:11a Phillipd
- * More Ai and node
- * 
- * 483   6/30/97 10:27a Phillipd
- * enemy ai started....
- * 
- * 482   6/24/97 5:10p Phillipd
- * 
- * 481   6/24/97 11:12a Phillipd
- * 
- * 480   6/23/97 10:51a Phillipd
- * 
- * 479   6/23/97 9:56a Phillipd
- * 
- * 478   6/23/97 9:53a Phillipd
- * 
- * 477   6/23/97 9:43a Phillipd
- * 
- * 476   6/19/97 3:01p Phillipd
- * 
- * 475   6/19/97 2:24p Phillipd
- * 
- * 474   6/19/97 2:17p Phillipd
- * 
- * 473   6/19/97 10:24a Phillipd
- * 
- * 472   19/06/97 9:00 Collinsd
- * Added error checking to displaytitle()
- * 
- * 471   6/18/97 6:02p Phillipd
- * 
- * 470   6/18/97 5:47p Phillipd
- * 
- * 469   6/18/97 4:26p Phillipd
- * 
- * 468   6/18/97 3:44p Phillipd
- * 
- * 467   6/17/97 5:06p Phillipd
- * 
- * 466   6/17/97 4:05p Phillipd
- * 
- * 465   6/17/97 4:03p Phillipd
- * 
- * 464   6/17/97 12:13p Phillipd
- * 
- * 463   16/06/97 16:22 Collinsd
- * Changed blend modes again
- * 
- * 462   6/16/97 10:16a Phillipd
- * 
- * 461   14/06/97 14:01 Collinsd
- * Changed death blend mode
- * 
- * 460   6/14/97 1:51p Phillipd
- * 
- * 459   6/14/97 1:11p Phillipd
- * 
- * 458   6/14/97 11:03a Phillipd
- * Made all on screen info for 512x384 !bPrimary to use Polys.....
- * 
- * 457   13/06/97 16:04 Collinsd
- * Taken out old bgobjects
- * 
- * 456   13/06/97 14:24 Collinsd
- * Added more error information
- * 
- * 455   13/06/97 14:22 Collinsd
- * Added more error information
- * 
- * 454   13/06/97 12:37 Collinsd
- * Changed blend mode checking.
- * 
- * 453   12/06/97 17:39 Oliverc
- * Added check to kill off player if he manages to get outside the map
- * 
- * 452   6/12/97 4:33p Phillipd
- * 
- * 451   6/12/97 2:27p Phillipd
- * 
- * 450   6/12/97 11:15a Phillipd
- * 
- * 449   6/11/97 3:48p Phillipd
- * 
- * 448   6/11/97 11:16a Phillipd
- * 
- * 447   6/11/97 10:17a Phillipd
- * 
- * 446   6/10/97 4:00p Phillipd
- * 
- * 445   10/06/97 14:50 Collinsd
- * Added more error checking again for mload
- * 
- * 444   6/10/97 11:54a Phillipd
- * 
- * 443   6/10/97 11:51a Phillipd
- * 
- * 442   6/10/97 11:11a Phillipd
- * 
- * 441   6/10/97 10:17a Phillipd
- * 
- * 440   6/10/97 9:41a Phillipd
- * 
- * 439   6/10/97 9:01a Phillipd
- * 
- * 438   6/07/97 4:46p Phillipd
- * 
- * 437   6/07/97 4:11p Phillipd
- * 
- * 436   6/07/97 4:10p Phillipd
- * 
- * 435   6/07/97 10:52a Phillipd
- * 
- * 434   6/06/97 17:01 Oliverc
- * 
- * 433   6/06/97 4:54p Phillipd
- * 
- * 432   6/06/97 3:32p Phillipd
- * 
- * 431   6-06-97 10:15a Philipy
- * CameraStatus is reset at default case of InitView - prevents in game
- * menus from being suppressed
- * 
- * 430   6/05/97 4:09p Phillipd
- * 
- * 429   6/05/97 10:45a Phillipd
- * Joystick now works with directinput2.....
- * 
- * 428   5/06/97 9:59 Collinsd
- * Changed texture blend recognition
- * 
- * 427   6/04/97 4:56p Phillipd
- * 
- * 426   6/04/97 3:39p Phillipd
- * 
- * 425   6/04/97 9:40a Phillipd
- * 
- * 424   3/06/97 14:17 Collinsd
- * 
- * 423   3/06/97 14:03 Collinsd
- * Added more error checking.
- * 
- * 422   6/03/97 11:47a Phillipd
- * 
- * 421   6/03/97 10:46a Phillipd
- * 
- * 420   6/02/97 9:09a Phillipd
- * 
- * 419   5/31/97 12:35p Phillipd
- * Sfx bug fixed...Now check distance for an overide rather than just
- * checking to see if its the same sfx num...You can quit out of the menus
- * again.....
- * 
- * 418   30/05/97 16:49 Collinsd
- * added logos
- * 
- * 417   5/30/97 11:41a Phillipd
- * 
- * 416   5/30/97 11:08a Phillipd
- * 
- * 415   5/28/97 2:53p Phillipd
- * 
- * 414   5/27/97 5:40p Phillipd
- * 
- * 413   22-05-97 4:32p Philipy
- * Fixed merge fuckup
- * 
- * 412   22-05-97 4:04p Philipy
- * 
- * 411   22/05/97 9:18 Collinsd
- * Fixed loading of BGObjects.
- * 
- * 410   5/21/97 5:00p Phillipd
- * 
- * 409   5/21/97 3:44p Phillipd
- * All Game processes are now in a seperate routine to MainGame so they
- * can be called before or after rendering
- * 
- * 408   5/21/97 10:25a Phillipd
- * 
- * 407   5/21/97 10:17a Phillipd
- * 
- * 406   5/21/97 9:56a Phillipd
- * 
- * 405   5/20/97 2:20p Phillipd
- * 
- * 404   20/05/97 10:17 Collinsd
- * Made texture loading for polys/fmpolys and screenpolys flexible.
- * 
- * 403   18/05/97 22:27 Collinsd
- * Done more work on BGObjects
- * 
- * 402   17/05/97 20:15 Collinsd
- * Add PowerVR code for polys and screenpolys as well.......
- * 
- * 401   5/17/97 5:17p Phillipd
- * 
- * 400   17/05/97 16:01 Collinsd
- * 
- * 399   5/17/97 3:45p Phillipd
- * 
- * 398   5/17/97 2:15p Phillipd
- * 
- * 397   16/05/97 15:55 Oliverc
- * New BSP stuff
- * 
- * 396   5/08/97 3:48p Phillipd
- * Background clear to non black is now done if the affected group is
- * visible not just if you are in it....
- * 
- * 395   5/08/97 3:48p Phillipd
- * 
- * 394   5/07/97 5:44p Phillipd
- * 
- * 393   5/07/97 10:47a Phillipd
- * 
- * 392   7/05/97 9:57 Collinsd
- * Fixed reloading of title models.
- * 
- * 391   6/05/97 14:52 Oliverc
- * Changed demograb path (for TimB)
- * 
- * 390   6-05-97 12:28p Philipy
- * 
- * 389   6-05-97 12:25p Philipy
- * 
- * 388   5/01/97 3:12p Phillipd
- * Mxamodels now take a file list..
- * 
- * 387   5/01/97 11:00a Phillipd
- * Added Quit.bat optout....Just put Quit.bat in the same dir as
- * Projectx.exe and it will quit.....
- * 
- * 386   4/30/97 5:35p Phillipd
- * 
- * 385   4/30/97 4:37p Phillipd
- * 
- * 384   30-04-97 3:22p Philipy
- * 
- * 383   4/30/97 12:27p Phillipd
- * 
- * 382   4/30/97 11:23a Phillipd
- * 
- * 381   29/04/97 17:49 Oliverc
- * Moved FingerPrint[] to Multiplayer.c
- * 
- * 380   29/04/97 15:05 Collinsd
- * Fixing bug in screenpolys.
- * 
- * 379   26/04/97 20:29 Collinsd
- * Added more checks and fixed one small bug in screenpolys.c
- * 
- * 378   4/25/97 2:51p Phillipd
- * 
- * 377   4/25/97 10:36a Phillipd
- * Better demo playback...which player eyes works again
- * 
- * 376   4/24/97 5:22p Phillipd
- * 
- * 375   4/19/97 3:44p Phillipd
- * 
- * 374   4/19/97 1:23p Phillipd
- * Only Ships Dont collide when no_collisions is set...
- * Trigger areas work better.....
- * 
- * 373   4/15/97 3:32p Phillipd
- * Simple Panel is now only loaded when you need it..
- * 
- * 372   4/09/97 10:00a Phillipd
- * 
- * 371   4/07/97 12:27p Phillipd
- * 
- * 370   4/05/97 12:08p Phillipd
- * 
- * 369   4/02/97 4:08p Phillipd
- * Added Weapon kill Stats..
- * 
- * 368   4/02/97 11:44a Phillipd
- * 
- * 367   4/02/97 8:51a Phillipd
- * Bsps enabled...
- * 
- * 366   1-04-97 5:01p Collinsd
- * Added clear override for groups.
- * 
- * 365   1-04-97 3:41p Collinsd
- * Added colour key for background and clear colour per group.
- * 
- * 364   27/03/97 14:56 Oliverc
- * New fingerprint
- * 
- * 363   25/03/97 17:37 Oliverc
- * 
- * 362   3/22/97 11:19a Phillipd
- * made all check for currdriver >= 2 into
- * d3dappi.thisdriver.bishardware....more reliable..
- * 
- * 361   3/21/97 12:23p Phillipd
- * 
- * 360   20-03-97 5:46p Collinsd
- * Countdown timer now works in multiplayer.
- * 
- * 359   3/20/97 3:41p Phillipd
- * removed c&c backdrop from scores...
- * 
- * 358   3/20/97 12:23p Phillipd
- * Init Sound is only called once as is destroysound...
- * 
- * 357   3/19/97 3:34p Phillipd
- * Added Invulnerable flag and timer....gets sent across network...
- * 
- * 356   17-03-97 8:57a Collinsd
- * Poly's, Screen Polys, FmPolys now can create up to 1000 each.
- * 
- * 355   3/14/97 5:32p Phillipd
- * 
- * 354   3/13/97 4:35p Phillipd
- * 
- * 353   3/13/97 11:28a Phillipd
- * Auto Detail level added..
- * Text all one colour unless printing own name...
- * 
- * 352   13-03-97 9:02a Collinsd
- * 
- * 351   12-03-97 4:47p Collinsd
- * Added recoil and new shrapnel model.
- * 
- * 350   12-03-97 2:13p Collinsd
- * Added more error handling.
- * 
- * 349   3/12/97 12:39p Phillipd
- * 
- * 348   3/11/97 4:55p Phillipd
- * Demo Interpolate stuff is now working but not finished...
- * 
- * 347   3/07/97 9:51a Phillipd
- * 
- * 346   5-03-97 5:00p Collinsd
- * 
- * 345   5-03-97 9:44a Collinsd
- * ZBuffer clipped.
- * 
- * 344   4-03-97 6:01p Collinsd
- * Added fog to tracker.
- * 
- * 343   4-03-97 4:50p Collinsd
- * Added Tracker.
- * 
- * 342   3/01/97 12:57p Phillipd
- * handles multiple join requests from 1 person,,,,
- * 
- * 341   27-02-97 2:08p Collinsd
- * Added optimisation to various files.
- * 
- * 340   2/27/97 8:58a Phillipd
- * 
- * 339   2/26/97 4:05p Phillipd
- * 
- * 338   2/26/97 3:10p Phillipd
- * 
- * 337   26-02-97 12:02p Collinsd
- * 
- * 336   26-02-97 12:01p Collinsd
- * Added screen poly text.
- * 
- * 335   2/25/97 5:14p Phillipd
- * 
- * 334   2/25/97 4:05p Phillipd
- * 
- * 333   2/24/97 4:47p Phillipd
- * GameElapsedTime is now relative to the demo not the
- * real world....so dynamic speed change is possible..
- * 
- * 332   2/24/97 11:55a Phillipd
- * 
- * 331   24-02-97 11:55a Collinsd
- * Pickups not generated in demo mode.
- * 
- * 330   24-02-97 11:21a Collinsd
- * Added gravgon check for restart. and added bounding on object selection
- * depending on mode.
- * 
- * 329   2/24/97 10:00a Phillipd
- * Demo mode with multispeed has been added..
- * 
- * 328   2/20/97 11:10a Phillipd
- * Changed the way a Player Get his Player Number...
- * Much more stable and friendly...
- * 
- * 327   15-02-97 9:32p Collinsd
- * Portals now use variable execute buffers.  They also
- * allocate/deallocate themselves properly now.
- * 
- * 326   15-02-97 2:45p Collinsd
- * Added error checking for most file loading.
- * 
- * 325   2/14/97 12:47p Phillipd
- * 
- * 324   2/13/97 9:42a Phillipd
- * 
- * 323   12-02-97 12:03p Collinsd
- * Added error checking to readfiles();  Also added triggers to enemies.
- * 
- * 322   11-02-97 5:08p Collinsd
- * Triggers/RegenPoints and pickups now are sent across correctly.
- * 
- * 321   2/10/97 12:10p Phillipd
- * 
- * 320   2/08/97 12:33p Phillipd
- * 
- * 319   2/07/97 4:59p Phillipd
- * 
- * 318   6/02/97 16:18 Oliverc
- * Fixed bug in level name reading for user-supplied levels file
- * 
- * 317   6/02/97 9:35 Oliverc
- * Added alternate level spec file command line option
- * 
- * 316   2/05/97 4:16p Phillipd
- * 
- * 315   2/05/97 12:01p Phillipd
- * nicer directplay bug handle..
- * 
- * 314   5/02/97 9:01 Oliverc
- * Added trigger loading
- * 
- * 313   2/04/97 5:11p Phillipd
- * new player joining brute force reject..
- * 
- * 312   4-02-97 4:11p Collinsd
- * 
- * 311   2/03/97 5:16p Phillipd
- * Translusceny is now controlled by global execute buffers.... which is
- * much better...
- * 
- * 310   31-01-97 9:24a Collinsd
- * Added detail level for missile trails.
- * 
- * 309   29-01-97 5:55p Collinsd
- * fixed a couple of bugs.
- * 
- * 308   27-01-97 2:27p Collinsd
- * Added bsp volume display
- * 
- * 307   1/27/97 10:58a Phillipd
- * Textures enabled flag added to debug menu
- * 
- * 306   1/25/97 5:32p Phillipd
- * 
- * 305   1/23/97 3:55p Phillipd
- * 
- * 304   22-01-97 6:00p Collinsd
- * Added debug node cube.
- * 
- * 303   20-01-97 2:45p Collinsd
- * Temp, added test for Dave Hodgeson.
- * 
- * 302   20-01-97 11:21a Collinsd
- * Added time limit to multiplayer games.
- * 
- * 301   1/17/97 6:04p Phillipd
- * 
- * 300   1/16/97 12:16p Phillipd
- * 
- * 299   1/15/97 12:15p Phillipd
- * started work on the server mode
- * 
- * 298   1/13/97 5:40p Phillipd
- * added message macors to multiplayer....
- * 
- * 297   13-01-97 4:28p Collinsd
- * Added 6 Door Types.
- * 
- * 296   10-01-97 12:34p Collinsd
- * Added Doors, Chanded pickups/door/mine dropping.
- * 
- * 295   1/10/97 11:30a Phillipd
- * movies are now doable
- * 
- * 294   12/27/96 3:38p Phillipd
- * Primary.h Secondary.h pickups.h are now clean....
- * Still Lots to do though.....
- * 
- * 293   12/27/96 12:34p Phillipd
- * all files are not dependant on mydplay.h...just some..
- * including it several times in the same files didnt help..
- * 
- * 292   12/23/96 6:04p Phillipd
- * 
- * 291   22-12-96 7:27p Collinsd
- * Increased model count.  Decreased scatter viewcone.  Lensflare now
- * works properly on scatter missiles.  Names are printed after the
- * endscene.
- * 
- * 290   20/12/96 15:19 Oliverc
- * Changed debug menu to be on SHIFT-F1
- * 
- * 289   19/12/96 16:16 Oliverc
- * Added debug options menu with "go to room" function
- * 
- * 288   12/19/96 2:52p Phillipd
- * new 512x384/640x400 font added
- * 
- * 287   12/19/96 11:47a Phillipd
- * 
- * 286   18-12-96 2:23p Collinsd
- * Put back in Enhanced crosshair
- * 
- * 285   12/18/96 12:41p Phillipd
- * Copyright screen added..
- * 
- * 284   12/17/96 5:28p Collinsd
- * Added team stuff.
- * 
- * 283   12/17/96 12:55p Phillipd
- * 
- * 282   12/17/96 9:20a Phillipd
- * 
- * 281   12/16/96 5:48p Collinsd
- * Uses various flags set in menus
- * 
- * 280   12/13/96 7:17p Collinsd
- * Added target for targeting computer. ( Disabled at the moment though ).
- * 
- * 279   13/12/96 10:56 Oliverc
- * Added in-game help screen
- * 
- * 278   12/12/96 16:23 Oliverc
- * Changed game key reading to use DirectInput
- * 
- * 277   12/12/96 4:16p Collinsd
- * Changed the way screen polys works.
- * 
- * 276   12/12/96 12:46p Phillipd
- * 
- * 275   12/12/96 10:56a Phillipd
- * 
- * 274   12/12/96 10:15a Phillipd
- * 
- * 273   12/10/96 2:06p Phillipd
- * 
- * 272   12/09/96 4:08p Phillipd
- * 
- * 271   12/08/96 2:30p Phillipd
- * 
- * 270   6/12/96 16:42 Oliverc
- * Fixed bug with group transition in portal/background collision
- * 
- * 269   12/06/96 4:05p Collinsd
- * fixed warning
- * 
- * 268   12/06/96 4:03p Collinsd
- * Changed timer
- * 
- * 267   12/06/96 4:03p Phillipd
- * 
- * 266   12/06/96 12:22p Phillipd
- * 
- * 265   12/06/96 9:13a Phillipd
- * More simplified panel stuff
- * 
- * 264   12/05/96 4:49p Collinsd
- * New fingerprint
- * 
- * 263   12/04/96 3:15p Phillipd
- * 
- * 262   12/04/96 2:21p Phillipd
- * 
- * 261   12/04/96 11:20a Phillipd
- * Simplified Panel Started
- * 
- * 260   12/03/96 5:00p Phillipd
- * Quting if not host bug fixed...
- * game doesnt start if ya just quit the title screen...
- * 
- * 259   12/03/96 10:38a Collinsd
- * Fixed dropped mine orientation
- * 
- * 258   12/02/96 4:26p Phillipd
- * 
- * 257   12/02/96 1:26p Collinsd
- * No longer use quatfromvector routines, now use quatfrom2vectors.
- * 
- * 256   2/12/96 12:02 Oliverc
- * Added code to detect invalid levels and fail gracefully
- * 
- * 255   2/12/96 11:19 Oliverc
- * 
- * 254   12/01/96 1:21p Phillipd
- * You can now quit a game go back to the title screen and start or join
- * another....
- * 
- * 253   11/29/96 3:10p Phillipd
- * Full screen from menu toggle...
- * Fixed the mouse lag problem again....
- * 
- * 252   11/28/96 4:26p Phillipd
- * 
- * 251   11/28/96 3:32p Phillipd
- * Better Multiplayer Starting...
- * 
- * 250   11/28/96 12:37p Phillipd
- * clear screen when starting multiplayer
- * 
- * 249   11/28/96 11:43a Collinsd
- * Taken out debug info on shields and hull
- * 
- * 248   28/11/96 11:42 Oliverc
- * 
- * 247   11/28/96 11:19a Collinsd
- * Added shield and hull sending across network
- * 
- * 246   11/28/96 10:00a Phillipd
- * Multiplayer join changed beyond all recognition,,,
- * 
- * 245   11/27/96 2:05p Phillipd
- * 
- * 244   11/27/96 11:05a Phillipd
- * Fixed Mouse speed on fast machines.....
- * 
- * 243   11/26/96 4:33p Phillipd
- * 
- * 242   11/25/96 5:14p Phillipd
- * 
- * 241   11/22/96 5:10p Phillipd
- * 
- * 240   11/22/96 11:17a Phillipd
- * New frequency dplay stuff added..only sends a packet every n frames
- * unless fireing..
- * 
- * 239   11/22/96 9:20a Phillipd
- * Put in c for asm flag and made a bit more watcom compatible
- * 
- * 238   11/21/96 2:37p Phillipd
- * 
- * 237   21/11/96 11:45 Collinsd
- * Added f6-f12 controlled by main menu dubug option.
- * 
- * 236   21/11/96 8:55 Collinsd
- * New NY-21-11-96 fingerprint
- * 
- * 235   11/19/96 9:32a Phillipd
- * 
- * 234   18/11/96 19:30 Oliverc
- * Changed menu toggle/back out key to ESC and stopped ESC from quitting
- * the program
- * 
- * 233   16/11/96 20:30 Collinsd
- * Added pickups per group variables/display.  Also fixed gravgon hitting
- * mine position problem.
- * 
- * 232   16/11/96 13:50 Oliverc
- * Made user-selected FOV compatible with "nitro-rush" effect
- * 
- * 231   15/11/96 18:03 Collinsd
- * Added all levels of detail for LAJ
- * 
- * 230   15/11/96 16:49 Collinsd
- * Mines now sent across when joining. Also fixed bug in pickup sending.
- * 
- * 229   11/15/96 3:40p Phillipd
- * 
- * 228   14/11/96 17:37 Oliverc
- * Added in-window in-game menus
- * 
- * 227   11/14/96 11:28a Phillipd
- * mines are displayed..fov grows if speed > max
- * 
- * 226   11/13/96 5:04p Phillipd
- * Changed blitting slightly...
- * Offscreen surface is now smaller...50%
- * 
- * 225   11/13/96 12:57p Phillipd
- * space now works when you change level...
- * and there is a bar for the nitro..
- * 
- * 223   11/13/96 9:08a Phillipd
- * All the Menus in the world....And then Some
- * 
- * 222   11/07/96 4:28p Phillipd
- * 
- * 221   11/07/96 4:12p Phillipd
- * 
- * 220   11/07/96 4:00p Phillipd
- * 
- * 219   11/07/96 2:33p Phillipd
- * Another bug...
- * 
- * 218   11/07/96 2:15p Phillipd
- * bug fixes....changing level...
- * 
- * 217   11/07/96 2:00p Phillipd
- * Change Level multiplayer bug fixed
- * 
- * 216   7/11/96 10:47 Collinsd
- * Shortened short ships structures.
- * 
- * 215   11/07/96 10:47a Phillipd
- * 
- * 214   7/11/96 10:13 Oliverc
- * Fixed viewport resizing
- * 
- * 213   11/05/96 5:26p Phillipd
- * 
- * 212   4/11/96 16:35 Collinsd
- * Fixed fmpolys/polys/lines exec lists.
- * 
- * 211   4/11/96 11:18 Oliverc
- * 
- * 210   4/11/96 10:45 Oliverc
- * Changed display routines to clip to visible portal boundaries of each
- * group
- * 
- * 209   10/31/96 4:31p Phillipd
- * light float to int in assembler....
- * 
- * 208   10/30/96 2:55p Phillipd
- * 
- * 207   29/10/96 16:00 Collinsd
- * changed over to panned sfx.
- * 
- * 206   10/29/96 2:49p Phillipd
- * panning sfx and new panel....with lights...
- * 
- * 205   10/28/96 8:50a Phillipd
- * 
- * 204   25/10/96 16:40 Collinsd
- * Added audio cd playing code.
- * 
- * 203   10/25/96 2:23p Phillipd
- * 
- * 202   10/25/96 2:07p Phillipd
- * 3d panel tested, test for lost packets
- * 
- * 201   10/24/96 3:01p Phillipd
- * 
- * 200   10/24/96 12:45p Phillipd
- * Added CanCullFlag for turning on/off cull mode so ya dont have to
- * process double sided stuff so much..
- * 
- * 199   24/10/96 11:47 Collinsd
- * Added total verts/poly for POLY's and added player
- * name display.
- * 
- * 198   10/23/96 4:24p Phillipd
- * Lots of crap taken out of D3dapp and its associated functions and
- * files....
- * 
- * 197   18/10/96 17:46 Collinsd
- * Changed all file loading to load from tidy directories.
- * 
- * 196   10/18/96 11:57a Phillipd
- * 
- * 195   10/17/96 4:43p Phillipd
- * proper score sort....dont work on stats yet...
- * 
- * 194   17/10/96 14:33 Oliverc
- * Fixed alpha blending function detection
- * 
- * 193   10/17/96 12:23p Phillipd
- * 
- * 192   10/17/96 10:37a Phillipd
- * 
- * 191   16/10/96 15:11 Oliverc
- * Player's control inputs now flushed between levels & lives
- * 
- * 190   10/16/96 3:11p Phillipd
- * 
- * 189   10/16/96 9:06a Phillipd
- * 
- * 188   15/10/96 15:30 Collinsd
- * Added missile/mine view toggled on/off with delete
- * 
- * 187   10/15/96 2:21p Phillipd
- * 
- * 186   14/10/96 9:48 Oliverc
- * Increased MAXLEVELS from 8 to 16
- * 
- * 185   10/10/96 4:37p Phillipd
- * 
- * 184   10/09/96 2:33p Phillipd
- * 
- * 183   8/10/96 20:26 Collinsd
- * fixed pickup transfer for new player.
- * 
- * 182   10/08/96 4:43p Phillipd
- * 
- * 181   10/08/96 10:43a Phillipd
- * 
- * 180   10/08/96 10:24a Phillipd
- * 
- * 179   8/10/96 9:24 Collinsd
- * added loading of pickups when changing level.
- * 
- * 178   10/08/96 8:59a Phillipd
- * 
- * 177   10/07/96 11:41a Phillipd
- * 
- * 176   10/07/96 11:29a Phillipd
- * 
- * 175   10/06/96 5:04p Phillipd
- * We now have our own text debug print info thing...
- * which speeds up the game by 10%.....
- * 
- * 174   5/10/96 21:34 Collinsd
- * Added drop pickup mode. speeded up pickups even more now 0.9% of
- * processing
- * 
- * 173   10/05/96 7:00p Phillipd
- * Got rid of the extents management from RenderLoop()
- * Removed clearing back buffers from d3dmain.cpp..
- * now done every time a camera view needs to do it..
- * Removed load of / 2.0f from quat.c and made some of the functions
- * __inline
- * 
- * 172   10/05/96 3:12p Phillipd
- * 
- * 171   10/05/96 2:02p Phillipd
- * 
- * 170   10/03/96 3:06p Phillipd
- * 
- * 169   3/10/96 14:04 Collinsd
- * Added nitro limit.
- * 
- * 168   10/03/96 11:56a Phillipd
- * 
- * 167   10/03/96 9:14a Phillipd
- * 
- * 166   2/10/96 12:21 Collinsd
- * Now display pickup i want to drop in full screen as well.
- * 
- * 165   10/02/96 10:36a Phillipd
- * 
- * 164   10/02/96 10:35a Phillipd
- * 
- * 163   1/10/96 17:43 Collinsd
- * Reduced pulsar to half.  Tidied up primary weapons.
- * deleted redundant code in 2dpolys/primary weapons.
- * 
- * 162   10/01/96 4:58p Phillipd
- * added more panel position correct stuff..
- * 
- * 161   10/01/96 10:34a Phillipd
- * 
- * 160   29/09/96 18:47 Collinsd
- * Added turbo to ship structure. Fixed pine mine firing pos.
- * 
- * 159   29/09/96 16:02 Collinsd
- * Lensflare effect in ( NO CLIPPING YET )
- * 
- * 158   9/27/96 10:26a Phillipd
- * 
- * 157   9/27/96 8:54a Phillipd
- * put alpha blit test in Testblt....Doesnt work on our hardware
- * 
- * 156   9/26/96 5:03p Phillipd
- * New Font Sizes..
- * 
- * 155   25/09/96 11:11 Collinsd
- * 
- * 154   23/09/96 14:20 Collinsd
- * Started spider mine.
- * 
- * 153   23/09/96 12:32 Collinsd
- * Random  rotations for pickups
- * 
- * 152   9/23/96 11:49a Phillipd
- * Added Level Select to the Menus..
- * 
- * 151   23/09/96 10:22 Oliverc
- * Set NumLevels = number of levels in levels.dat (up to a maximum of
- * MAXLEVELS)
- * 
- * 150   23/09/96 10:17 Oliverc
- * Level names now read in from levels.dat at startup
- * 
- * 149   20/09/96 17:13 Collinsd
- * Changed 2Dpolys and Polys to display only polys in visible groups.
- * Changed secondary ammo to use array.
- * Pickups now use correct index's.  You can now drop a mine using 'B'.
- * 
- * 148   9/20/96 3:16p Phillipd
- * 
- * 147   9/19/96 2:33p Phillipd
- * 
- * 146   19/09/96 9:20 Oliverc
- * Converted mouse input to use DirectInput instead of dmouse.vxd
- * 
- * 145   9/18/96 5:35p Phillipd
- * 
- * 144   9/18/96 3:59p Phillipd
- * 
- * 143   9/17/96 3:28p Phillipd
- * new 320x400 panel..
- * 
- * 142   17/09/96 14:13 Oliverc
- * Changed FOV setting to take current screen mode (and thus pixel aspect
- * ratio) into account so odd sizes (eg 320x400) should now work without
- * distortion
- * 
- * 141   17/09/96 13:58 Collinsd
- * Added autoselection of primary and secondary weapons.
- * Also you can pickup anything if F12 enabled.
- * 
- * 140   9/17/96 11:35a Phillipd
- * 
- * 139   9/17/96 11:26a Phillipd
- * 
- * 138   17/09/96 11:23 Oliverc
- * Made aztec level the default and removed plain level
- * 
- * 137   9/16/96 3:10p Phillipd
- * 
- * 136   16/09/96 15:05 Collinsd
- * 
- * 135   9/16/96 10:16a Phillipd
- * Big changes to Full screen display...
- * And Pickups being set to joining player
- * 
- * 134   15/09/96 18:14 Collinsd
- * Changed scatter weapons, now scatters even more. (ooooooohhhhh!)
- * 
- * 133   9/15/96 3:43p Phillipd
- * 
- * 132   15/09/96 14:48 Collinsd
- * Scaled primary weapons, changed defauls ammo levels.
- * 
- * 131   13/09/96 17:04 Collinsd
- * Added quantun fireball mine.
- * 
- * 130   9/13/96 4:46p Phillipd
- * 
- * 129   11/09/96 14:19 Collinsd
- * Added global scale to hopefully everything that needs it.
- * 
- * 128   9/11/96 10:25a Phillipd
- * 
- * 127   7/09/96 20:21 Collinsd
- * Collision with pine mine now added.  Trojax power
- * fixed, now does proper damage.  Transpulse speeded
- * up and made more lethal.
- * 
- * 126   9/06/96 12:56p Phillipd
- * 
- * 125   9/05/96 4:47p Phillipd
- * 
- * 124   5/09/96 10:45 Collinsd
- * Fixed next prim/sec weapons selection. 
- * 
- * 123   5/09/96 9:29 Oliverc
- * Added "toggle ship-to-background collisions" key F12
- * 
- * 122   9/04/96 5:54p Phillipd
- * 
- * 121   9/03/96 8:57a Phillipd
- * 
- * 120   9/02/96 2:39p Phillipd
- * 
- * 119   9/02/96 2:19p Phillipd
- * 
- * 118   8/30/96 2:32p Phillipd
- * 
- * 117   8/29/96 5:52p Phillipd
- * 
- * 116   28/08/96 11:55 Collinsd
- * Added show skin code + more options for show visi.
- * 
- * 115   8/28/96 11:13a Phillipd
- * Game now works under a GameStatus flag...
- * So you can view scores load a new level and restart..
- * 
- * 114   8/23/96 2:41p Phillipd
- * 
- * 113   23/08/96 9:18 Collinsd
- * All weapons have limits. New pickups in but not correct.
- * 
- * 112   21/08/96 15:26 Collinsd
- * Changed the way the timer works.....
- * 
- * 111   21/08/96 11:25 Collinsd
- * Added saving and loading of pickups positions.
- * 
- * 110   21/08/96 8:46 Collinsd
- * Added descent level, and powerlevel bar for trojax.
- * 
- * 109   8/21/96 8:44a Phillipd
- * 
- * 108   8/20/96 12:06p Phillipd
- * lots of new panel / text stuff...new stats array...
- * 
- * 107   8/19/96 8:51a Phillipd
- * 
- * 106   8/16/96 5:53p Phillipd
- * 
- * 105   8/16/96 4:15p Phillipd
- * 
- * 104   8/16/96 2:43p Phillipd
- * 
- * 103   8/16/96 11:04a Phillipd
- * 
- * 102   16/08/96 11:01 Collinsd
- * You now see explosions close to walls and when hit. Pickups and bullets
- * don't dissapear when changing mode.
- * 
- * 101   8/15/96 4:46p Phillipd
- * 
- * 100   15/08/96 9:54 Collinsd
- * Added glow to pickups and started primary wepon powerups
- * 
- * 99    8/14/96 5:48p Phillipd
- * 
- * 98    8/14/96 4:30p Phillipd
- * 
- * 97    8/14/96 9:41a Phillipd
- * 
- * 96    14/08/96 9:27 Collinsd
- * 
- * 95    13/08/96 15:52 Collinsd
- * Added powerup pods
- * 
- * 94    13/08/96 14:57 Collinsd
- * Now prints strings to tell you what you've  picked up.
- * 
- * 93    8/13/96 12:50p Phillipd
- * 
- * 92    8/13/96 10:15a Phillipd
- * Player name and score now given to everyone for printing....4x5 print
- * routine and uint16 printing
- * 
- * 91    8/11/96 5:35p Phillipd
- * 
- * 90    8/09/96 2:02p Phillipd
- * 
- * 89    8/08/96 9:18 Oliverc
- * 
- * 88    8/07/96 10:49a Phillipd
- * 
- * 87    8/06/96 3:19p Phillipd
- * different panels for each resolotion...
- * 
- * 86    8/06/96 3:10p Phillipd
- * 
- * 85    5/08/96 20:04 Collinsd
- * Network for pickups now works,
- * 
- * 84    8/05/96 5:53p Phillipd
- * 
- * 83    5/08/96 9:06 Collinsd
- * 
- * 82    4/08/96 17:04 Collinsd
- * All  primary weapons are now in. ( no power ups )
- * 
- * 81    2/08/96 18:59 Collinsd
- * Added lines into game.
- * 
- * 80    2/08/96 15:29 Collinsd
- * Added pickups
- * 
- * 79    8/02/96 3:26p Phillipd
- * 
- * 78    7/31/96 4:05p Phillipd
- * 
- * 77    7/30/96 5:45p Phillipd
- * 
- * 76    7/29/96 5:24p Phillipd
- * 
- * 75    7/29/96 4:43p Phillipd
- * 
- * 74    7/29/96 12:16p Phillipd
- * 
- * 73    7/26/96 4:27p Phillipd
- * 
- * 72    7/25/96 5:44p Phillipd
- * 
- * 71    7/25/96 5:38p Phillipd
- * 
- * 70    24/07/96 15:05 Oliverc
- * 
- * 69    7/24/96 2:42p Phillipd
- * 
- * 68    7/24/96 9:52a Phillipd
- * 
- * 67    23/07/96 18:01 Collinsd
- * Added visipoly line mode and group in mode.
- * 
- * 66    7/23/96 4:50p Phillipd
- * 
- * 65    7/23/96 4:10p Phillipd
- * 
- * 64    7/23/96 3:37p Phillipd
- * 
- * 63    23/07/96 15:26 Collinsd
- * Added new offset file loading/format.
- * 
- * 62    23/07/96 14:50 Oliverc
- * 
- * 61    7/23/96 9:41a Phillipd
- * 
- * 60    7/22/96 5:49p Phillipd
- * 
- * 59    7/22/96 3:51p Phillipd
- * 
- * 58    22/07/96 14:47 Collinsd
- * 
- * 57    22/07/96 14:08 Collinsd
- * Added visipoly display.
- * 
- * 56    7/22/96 11:16a Phillipd
- * 
- * 55    7/21/96 4:27p Phillipd
- * added asynchrinus(??) execution ..so lights happen at the same time as
- * the last group is being displayed...
- * 
- * 54    7/21/96 2:36p Phillipd
- * 
- * 53    7/21/96 2:29p Phillipd
- * 
- * 52    21/07/96 12:52 Collinsd
- * Now all works with Dan's new tloader
- * 
- * 51    21/07/96 12:28 Collinsd
- * Primary Weapon Selection added.  Missiles now have multiple fireing
- * methods/directions.  Now uses tload.
- * 
- * 50    7/21/96 12:25p Phillipd
- * 
- * 49    19/07/96 16:56 Collinsd
- * Now have seperate explosion for Ship and Background.
- * Increased Max 2DPolys, and have framelag compensated fireing of the
- * primary and secondary weapons.
- * 
- * 48    19/07/96 12:36 Collinsd
- * New Explosions and better smoke trails.
- * 
- * 47    19/07/96 12:34 Oliverc
- * Changed ship <-> background collision routine
- * to track movement of ship through portals
- * 
- * 46    7/17/96 5:46p Phillipd
- * 
- * 45    7/16/96 11:11a Phillipd
- * moved all visipoly stuff to visi.c and visi.h..
- * 
- * 44    15/07/96 14:30 Collinsd
- * Transparency & Translucency work (With hardware)
- * 
- * 43    11/07/96 17:47 Oliverc
- * 
- * 42    11/07/96 17:35 Oliverc
- * 
- * 41    7/11/96 4:27p Phillipd
- * 
- * 40    7/11/96 2:55p Phillipd
- * added D3DAppFreeVideoMemory...returns total free..
- * 
- * 39    11/07/96 12:50 Collinsd
- * Drop missiles started
- * 
- * 38    7/10/96 5:10p Phillipd
- * 
- * 37    7/09/96 12:55p Phillipd
- * 
- * 36    7/09/96 12:52p Phillipd
- * 
- * 35    7/08/96 5:35p Phillipd
- * 
- * 34    7/08/96 10:20a Phillipd
- * 
- * 33    6/07/96 16:24 Oliverc
- * 
- * 32    7/06/96 1:40p Phillipd
- * 
- * 31    7/06/96 1:08p Phillipd
- * 
- * 30    5/07/96 17:59 Collinsd
- * Faceme poly's now use boxtoppm data
- * 
- * 29    7/05/96 5:44p Phillipd
- * 
- * 28    4/07/96 16:54 Collinsd
- * 
- * 27    4/07/96 16:09 Collinsd
- * 
- * 26    4/07/96 11:57 Oliverc
- * 
- * 25    4/07/96 10:34 Collinsd
- * 
- * 24    3/07/96 10:45 Oliverc
- * 
- * 23    2/07/96 17:57 Oliverc
- * 
- * 22    2/07/96 16:50 Oliverc
- * 
- * 21    2/07/96 15:45 Oliverc
- * 
- * 20    2/07/96 15:20 Collinsd
- * 
- * 19    28/06/96 17:35 Collinsd
- * 
- * 18    28/06/96 14:10 Oliverc
- * 
- * 17    28/06/96 12:48 Collinsd
- * 
- * 16    28/06/96 10:05 Collinsd
- * 
- * 15    6/27/96 3:13p Phillipd
- * 
- * 14    6/27/96 12:29p Phillipd
- * 
- * 13    6/27/96 9:40a Phillipd
- * Major rearange of ships and oct2....
- * 
- * 12    26/06/96 17:23 Oliverc
- * 
- * 11    6/26/96 12:42p Phillipd
- * 
- * 10    25/06/96 16:10 Collinsd
- * 
- * 9     25/06/96 14:41 Collinsd
- * 
- * 8     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
-
- /*==========================================================================
- *
- *  Copyright (C) 1995 Microsoft Corporation. All Rights Reserved.
- *
- *  File: oct2.c
- *
- ***************************************************************************/
 
 //#define REFLECTION
 
@@ -2924,8 +24,6 @@
 #include "mydplay.h"
 #include "ddsurfhand.h"
 #include "getdxver.h"
-
-
 
 #include <stdarg.h>
 #include <math.h>
@@ -3012,7 +110,7 @@
 #include "shadows.h"
 #endif
 
-
+extern BOOL Debug;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
@@ -3674,14 +772,8 @@ char  TeleportNames[MAXLEVELS][128];
 
 char MissionTextNames[MAXLEVELS][128];
 char MissionTextPics[MAXLEVELS][128];
-
-int use_level_path = 0;
-char level_path[128];
 char level_names[MAXLEVELS][128];
-int use_data_path = 0;
-int use_local_data = 0;
-char data_path[ 128 ] = "";
-char normdata_path[128] = "data\\";
+
 int16 CameraRendering = CAMRENDERING_None;
 
 BOOL SeriousError = FALSE;
@@ -3852,13 +944,15 @@ float ModeScaleY[8] ={ 1.0F  ,      //320X200
              3.0F   };      //800X600
 
 
-char  FontNames[8][64] = { { "data\\pictures\\font.bmp" } , //320X200
-               { "data\\pictures\\font.bmp" } , //320X240
-               { "data\\pictures\\font.bmp" } , //320X400
-               { "data\\pictures\\font512.bmp" } ,  //512X384
-               { "data\\pictures\\font512.bmp" } ,  //640X400
-               { "data\\pictures\\font800.bmp" } ,  //640X480
-               { "data\\pictures\\font800.bmp" } }; //800X600
+char  FontNames[8][64] = {
+	           { "data\\pictures\\font.bmp"		} , //320X200
+               { "data\\pictures\\font.bmp"		} , //320X240
+               { "data\\pictures\\font.bmp"		} , //320X400
+               { "data\\pictures\\font512.bmp"	} , //512X384
+               { "data\\pictures\\font512.bmp"	} , //640X400
+               { "data\\pictures\\font800.bmp"	} , //640X480
+               { "data\\pictures\\font800.bmp"	}	//800X600
+			   };
 
 char  DynamicFontNames[ 64 ];
 
@@ -4426,19 +1520,20 @@ FullScreenViewport()
   return TRUE;
 }
 
-
+// show or hide the cursor
 void ReallyShowCursor( BOOL show )
 {
+
+  // increment display count by one
   if ( show )
-  {
     while ( ShowCursor( TRUE ) < 0 )
       ; // try again
-  }
+
+  // deincrement display count by one
   else
-  {
     while ( ShowCursor( FALSE ) >= 0 )
       ; // try again
-  }
+
 }
 
 void
@@ -4524,20 +1619,13 @@ BOOL InitLevels( char * levels_list )
   int j;
   FILE *f;
   char levels_file[ 256 ];
-  char * DataPath;
 
   if ( !levels_list ){
     levels_list = LEVELSFILE;
   }
-
-  // path to Data
-  DataPath = normdata_path;
-  if ( use_data_path ) {
-    DataPath = data_path;
-  }
   
-  // path to Levels\\<type>.bat
-  sprintf( levels_file, "%s\\levels\\%s", DataPath, levels_list );
+  // path to data\\levels\\<type>.bat
+  sprintf( levels_file, "data\\levels\\%s", levels_list );
   
   // set some globals
   CurrentLevelsList = levels_list;
@@ -4556,37 +1644,34 @@ BOOL InitLevels( char * levels_list )
   while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
   {
 
-    // if the level is a valid hard coded server level
-    // or if we are the psuedo host
-    if ( LevelValid( ShortLevelNames[ j ] ) )
-    {
+    // if the level is not a valid level
+    if ( ! LevelValid( ShortLevelNames[ j ] ) )
+		continue;
 
-      // get the path to the current mxv file
-      sprintf( LevelNames[ j ], "%slevels\\%s\\%s.mxv", DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	// get the path to the current mxv file
+	sprintf( LevelNames[ j ], "data\\levels\\%s\\%s.mxv", ShortLevelNames[ j ], ShortLevelNames[ j ] );
 
-      // check to see if the level mxv file exists
-      if ( !File_Exists( LevelNames[ j ] ) ){
-         continue;
-      }
+	// check to see if the level mxv file exists
+	if ( !File_Exists( LevelNames[ j ] ) )
+	 continue;
 
-      // add paths for a level to the lists
-      sprintf( CollisionNames[ j ],   "%slevels\\%s\\%s.mc",    DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( CollisionZNames[ j ],    "%slevels\\%s\\%sz.mc",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( BspNames[ j ],       "%slevels\\%s\\%s.bsp",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( BspZNames[ j ],      "%slevels\\%s\\%sz.bsp",  DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( ZoneNames[ j ],      "%slevels\\%s\\%s.zon",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( WaterNames[ j ],     "%slevels\\%s\\%s.wat",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( TextNames[ j ],      "%slevels\\%s\\%s.txt",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( MsgNames[ j ],       "%slevels\\%s\\%s.msg",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( ExternalForceNames[ j ], "%slevels\\%s\\%s.gf",    DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( TeleportNames[ j ],    "%slevels\\%s\\%s.tel",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( MissionTextNames[ j ],   "%slevels\\%s\\%s.mis",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
-      sprintf( MissionTextPics[ j ],    "%slevels\\%s\\%s.ppm",   DataPath, ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	// add paths for a level to the lists
+	sprintf( CollisionNames[ j ],		"data\\levels\\%s\\%s.mc",    ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( CollisionZNames[ j ],		"data\\levels\\%s\\%sz.mc",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( BspNames[ j ],				"data\\levels\\%s\\%s.bsp",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( BspZNames[ j ],			"data\\levels\\%s\\%sz.bsp",  ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( ZoneNames[ j ],			"data\\levels\\%s\\%s.zon",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( WaterNames[ j ],			"data\\levels\\%s\\%s.wat",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( TextNames[ j ],			"data\\levels\\%s\\%s.txt",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( MsgNames[ j ],				"data\\levels\\%s\\%s.msg",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( ExternalForceNames[ j ],	"data\\levels\\%s\\%s.gf",    ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( TeleportNames[ j ],		"data\\levels\\%s\\%s.tel",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( MissionTextNames[ j ],		"data\\levels\\%s\\%s.mis",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
+	sprintf( MissionTextPics[ j ],		"data\\levels\\%s\\%s.ppm",   ShortLevelNames[ j ], ShortLevelNames[ j ] );
 
-      // increment counter
-      j++;
+	// increment counter
+	j++;
 
-    }
   }
 
   NumLevels = j;
@@ -5085,7 +2170,7 @@ void TestBlt()
     }
   }
       
-//    TaskSleep( 1 );
+  // TaskSleep( 1 );
 }
 
 void
@@ -5284,10 +2369,9 @@ ReleaseView(void)
       }
     }
 
-  RELEASE(lpBmat);
+    RELEASE(lpBmat);
 
-
-//    TaskerInit();
+    // TaskerInit();
 
   }
 }
@@ -5297,7 +2381,7 @@ BOOL
 InitScene(void)
 {
   int i;
-//  BackgroundModel = (uint16) -1;
+  //BackgroundModel = (uint16) -1;
 
   OnceOnlyInitModel();
   InitXLights();
@@ -5325,7 +2409,6 @@ InitScene(void)
     Ships[i].ModelNum = (uint16) -1;
   }
 
-
   QueryPerformanceFrequency((LARGE_INTEGER *) &Freq);
 
   switch( MyGameStatus )
@@ -5342,11 +2425,10 @@ InitScene(void)
       return FALSE;
     }
     break;
-  default:
-    break;
   }
   
   return TRUE;
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -5360,11 +2442,11 @@ InitScene(void)
 BOOL
 InitView( void )
 {
-  LPDIRECTDRAW lpDD = d3dapp->lpDD;
-  LPDIRECT3D lpD3D = d3dapp->lpD3D;
-  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
-  DWORD dwItems = INFINITE;
+  LPDIRECTDRAW lpDD				= d3dapp->lpDD;
+  LPDIRECT3D lpD3D				= d3dapp->lpD3D;
+  LPDIRECT3DDEVICE lpDev		= d3dapp->lpD3DDevice;
+  LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
+  DWORD dwItems					= INFINITE;
 
   CheatsDisabled = FALSE;
 
@@ -5406,12 +2488,12 @@ InitView( void )
       DestroySound( DESTROYSOUND_All );
     break;
   case  STATUS_Copyright:
-    AddCommandToBat( "mkdir %%2\\data\\BGObjects\n" );
-    AddCommandToBat( "mkdir %%2\\data\\Models\n" );
-    AddCommandToBat( "mkdir %%2\\data\\Textures\n" );
-    AddCommandToBat( "mkdir %%2\\data\\Pictures\n" );
-    AddCommandToBat( "mkdir %%2\\data\\Offsets\n" );
-    AddCommandToBat( "mkdir %%2\\data\\Sfx\n" );
+    AddCommandToBat( "mkdir %%2\\BGObjects\n" );
+    AddCommandToBat( "mkdir %%2\\Models\n" );
+    AddCommandToBat( "mkdir %%2\\Textures\n" );
+    AddCommandToBat( "mkdir %%2\\Pictures\n" );
+    AddCommandToBat( "mkdir %%2\\Offsets\n" );
+    AddCommandToBat( "mkdir %%2\\Sfx\n" );
 
     InitFont( FALSE );
     
@@ -5515,8 +2597,8 @@ InitView( void )
 
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
-    //DummyTextureIndex = FindTexture( &Tloadheader, "textures\\dummy.ppm" );
-    DummyTextureIndex = FindTexture( &Tloadheader, "textures\\dummy.bmp" );
+    //DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.ppm" );
+    DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
     if ( DummyTextureIndex != -1 )
     {
       Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
@@ -6806,13 +3888,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   uint16  i,e,o;
   char  buf[256];
   char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
-    LPDIRECTDRAWPALETTE ddpal;
+  LPDIRECTDRAWPALETTE ddpal;
   LPDIRECTDRAW lpDD = d3dapp->lpDD;
   LPDIRECT3D lpD3D = d3dapp->lpD3D;
   LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
   LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
-//  struct _stat stat_buf;
-//  int result;
+  //struct _stat stat_buf;
+  //int result;
   static int WaitFrames = 2;
   BOOL done;
   DWORD   Temp;
@@ -6828,10 +3910,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   if ( SeriousError )
     return FALSE;
 
-//  if ( !Bsp_Identical( &Bsp_Header[ 0 ], &Bsp_Original ) )
-//  {
-//    hr = 0;
-//  }
+  //if ( !Bsp_Identical( &Bsp_Header[ 0 ], &Bsp_Original ) )
+  //  hr = 0;
 
   CalculateFramelag();
   AnimOncePerFrame++;
@@ -6854,24 +3934,26 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   if ( bSoundEnabled )
   {
     EnterCriticalSection (&SfxKey);
-  
     CheckSBufferList();
-  
     LeaveCriticalSection (&SfxKey);
   }
 
-// This is where in game we are getting input data read
-// Why would it be wrapped in this def check ?
 #ifndef MULTIPLE_READINPUTS
+
+  // This is where in game we are getting input data read
+  // Why would it be wrapped in this def check ?
   ReadInput();
+
 #endif
+
 
   switch( MyGameStatus )
   {
+
   case STATUS_TryingToFindSession:
     D3DAppClearScreenOnly();
 
-      if ( GeneralTimeout( &FindSessionTimeout ) )
+    if ( GeneralTimeout( &FindSessionTimeout ) )
     {
       PrintErrorMessage( CANNOT_FIND_SESSION, 0, NULL, ERROR_QUIT );
       MyGameStatus = STATUS_Title;
@@ -6898,6 +3980,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GetCurrentSessions_ReScan( NULL );
     }
     break;
+
+
   case STATUS_QuittingFromTitles:
     quitting = TRUE;
     if ( IsLobbyLaunched )
@@ -6911,6 +3995,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_QuittingFromInGame:
     StopCompoundSfx();
     OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
@@ -6920,6 +4006,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     ReleaseLevel();
     quitting = TRUE;
     break;
+
+
   case STATUS_SplashScreen:
     
     if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Timed )
@@ -6951,11 +4039,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
       
     break;
-    
+
+
   case STATUS_FinishedShowingSplashScreen:
-       
+
     if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_ShowNext )
     {
+
       // call post splash function
       if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc )
         NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashVar );
@@ -6967,21 +4057,17 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       // set finish time if required
       if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Timed )
-      {
         SplashFinishTime = timeGetTime() + NewSplashScreens[ NewCurrentSplashScreen ].time;
-      }
 
       // call initialization function
       if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashFunc )
-      {
         if ( !NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashVar ) )
-        {
           MyGameStatus = STATUS_FinishedShowingSplashScreen;
-        }
-      }
+
     }
     else
     {
+
       // finished current batch of splash screens...
 
       // restore old game status
@@ -6996,8 +4082,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashVar );
 
     }
-    
+
     break;
+
   case STATUS_WaitingToStartSinglePlayer:
     
     if( DisplayTitle() != TRUE )
@@ -7021,6 +4108,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     
     break;
+
+
   case STATUS_WaitingToStartDemo:
     if( DisplayTitle() != TRUE )
     {
@@ -7053,6 +4142,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_WaitingToStartEndGameSequence:
     if( DisplayTitle() != TRUE )
     {
@@ -7090,6 +4181,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_WaitingToStartMultiPlayerHost:
     Browl -= framelag;
 
@@ -7120,6 +4213,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GoToSynchup( NULL );
     }
     break;
+
+
   case STATUS_WaitingToStartMultiPlayerClient:
     Browl -= framelag;
 
@@ -7159,6 +4254,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         return( FALSE );
     }
     break;
+
+
   case STATUS_WaitingToStartTeamGame:
     Browl -= framelag;
 
@@ -7199,6 +4296,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SpecialDestroyGame();
 
     break;
+
+
   case STATUS_Title:
   case STATUS_BetweenLevels:
   case STATUS_Copyright:
@@ -7209,12 +4308,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     break;
 
+
   case STATUS_Normal:
     
     PreventFlips = FALSE;
-
-
-
 
     if ( !CheatsDisabled )
       DisableCheats();
@@ -7222,33 +4319,14 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IMustQuit )
       SpecialDestroyGame();
 
-    if( IsServer )
-    {
-      if( ServerMainGame( lpDev , lpView ) != TRUE )
-        return FALSE;
-    }else{
-      if( MainGame( lpDev , lpView ) != TRUE )
-        return FALSE;
-    }
+    if( MainGame( lpDev , lpView ) != TRUE )
+      return FALSE;
 
     if ( IsHost )
     {
       UpdateKillsTime();
       UpdatePlayerInfo();
     }
-
-    
-    if ( IsServer )
-    {
-      if ( !CheckPlayersActive() )
-      {
-        // no players active....reset back to titles
-        QuickStart = QUICKSTART_Server;
-        SelectQuitCurrentGame( NULL );
-        PreventFlips = FALSE;
-      }
-    }
-
 
     if ( bSoundEnabled )
     {
@@ -7269,28 +4347,21 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         if( NewLevelNum != LevelNum )
         {
 
-          // disable players joining...
           DPlayGetSessionDesc();
           
           glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
-		                     DPSESSION_KEEPALIVE;/* |
-		  //				   DPSESSION_NEWPLAYERSDISABLED |
-		  //				   DPSESSION_JOINDISABLED;*/
-
-          //glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
+		                     DPSESSION_KEEPALIVE;
 
           DPlaySetSessionDesc(0);
 
           for( i = 0 ; i < MAX_PLAYERS ; i++ )
-          {
-            if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && i != WhoIAm )
-            {
-              if( GameStatus[i] != STATUS_Normal )
-              {
+            if( (GameStatus[i] != STATUS_LeftCrashed ) &&
+				(GameStatus[i] != STATUS_Left        ) &&
+				(GameStatus[i] != STATUS_Null        ) &&
+                (GameStatus[i] != STATUS_Normal      ) &&
+				i != WhoIAm )
                 SendGameMessage(MSG_YOUQUIT, 0, (BYTE) i , 0, 0);
-              }
-            }
-          }
+
           // the level has ended or changed ..tell everyone to go onto new level
           MyGameStatus = STATUS_LevelEnd;
           GameStatus[WhoIAm] = MyGameStatus;
@@ -7319,6 +4390,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SelectQuitCurrentGame( NULL );
     }
     break;
+
+
   case STATUS_LevelEnd:
     D3DAppClearScreenOnly();
 
@@ -7394,6 +4467,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_ViewingScore:
 
     ReceiveGameMessages();
@@ -7457,10 +4532,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           if( !ChangeLevel() ) return( FALSE );
         }
       }else{
-//          if ( IsLobbyLaunched )
-//          {
-//            MyGameStatus = STATUS_QuittingFromInGame;
-//          }else
+		//          if ( IsLobbyLaunched )
+		//          {
+		//            MyGameStatus = STATUS_QuittingFromInGame;
+		//          }else
         {
           // tell the host that I am now Waiting for him to finish viewing the score....
           ReleaseView();
@@ -7471,7 +4546,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         }
       }
     }
-        break;
+    break;
+
+
   case STATUS_WaitingAfterScore:
 
     InitFontTransTable( TRUE );
@@ -7504,12 +4581,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) )
         {
 
-  //        if( GameStatus[i] == STATUS_ViewingScore )
-  //        {
-  //          wsprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
-  //          CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
-  //        }
-  //        else
+		//        if( GameStatus[i] == STATUS_ViewingScore )
+		//        {
+		//          wsprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
+		//          CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
+		//        }
+		//        else
           {
             wsprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
             CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
@@ -7599,6 +4676,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     break;
 
+
   case STATUS_Joining:
     PreventFlips = FALSE;
     D3DAppClearScreenOnly();
@@ -7669,6 +4747,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     break;
 
+
   case STATUS_StartingMultiplayer:
 
     Browl -= framelag;
@@ -7680,7 +4759,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         if( TeamGame &&  (OverallGameStatus == STATUS_Normal) )
         {
-//          SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
+		//          SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
         }
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
@@ -7725,13 +4804,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       DPlayGetSessionDesc();
       
       glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
-		                 DPSESSION_KEEPALIVE;/*   |
-						 DPSESSION_NEWPLAYERSDISABLED |
-						 DPSESSION_JOINDISABLED;*/
-
-// disable players joining...
-//      if( !IsServer )
-//      glpdpSD->dwFlags |= DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED;
+		                 DPSESSION_KEEPALIVE;
 
       DPlaySetSessionDesc(0);
 
@@ -7778,6 +4851,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case  STATUS_PreStartingMultiplayerSynch:
     PreventFlips = FALSE;
 
@@ -7800,6 +4875,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     GameStatus[WhoIAm] = MyGameStatus;
     break;
+
 
   case  STATUS_StartingMultiplayerSynch:
     PreventFlips = FALSE;
@@ -7895,6 +4971,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     break;
   
+
   case STATUS_QuitCurrentGame:
     StopCompoundSfx();
     OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
@@ -7920,6 +4997,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       InitView();
     }
     break;
+
+
   case STATUS_WaitingForLobbyConnect:
 
     ReceiveGameMessages();
@@ -7976,6 +5055,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     DebugPrintf("STATUS_WaitingForLobbyConnect 3\n");
 
     break;
+
+
   case STATUS_GetPlayerNum:
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
@@ -8033,7 +5114,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       ServiceBigPacket(TRUE);
       ServiceServer( TRUE );
 
-// hack for ramdemo...
+		// hack for ramdemo...
       if( RecordDemoToRam )
         RecordDemo = TRUE;
 
@@ -8083,9 +5164,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       PrintErrorMessage ( "Couldnt Get a Player Number", 3, NULL, ERROR_USE_MENUFUNCS );
       MyGameStatus = STATUS_Title;
       break;
-//      BailMultiplayer( (MENU*) NULL );
-//      MenuRestart( &MENU_Start );
-//      MyGameStatus = STATUS_Title;
+		//      BailMultiplayer( (MENU*) NULL );
+		//      MenuRestart( &MENU_Start );
+		//      MyGameStatus = STATUS_Title;
     }
 
     if( GetPlayerNumCount1 <= 0.0F )
@@ -8099,6 +5180,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
     break;
+
+
   case STATUS_GetLevelNames:
     D3DAppClearScreenOnly();
 
@@ -8150,6 +5233,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
     break;
+
+
   case STATUS_PlayingDemo:
 
     DemoGameLoops++;
@@ -8173,7 +5258,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( DemoScreenGrab && !CurrentMenu )
     {
-//      framelag = 2.24F;   // 30 fps
+	//      framelag = 2.24F;   // 30 fps
       framelag = 2.613333F; // 25 fps
       Demoframelag = 1.0F;
       Oldframelag = framelag;
@@ -8181,15 +5266,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( DemoScreenGrab && !CurrentMenu )
     {
-      sprintf( fname, "ScreenS\\scr%04d.ppm", fnum );
-//      _spawnl( _P_WAIT, "grab.exe", "grab.exe", "-fp" , "-w 512" , "-h 384" , fname, NULL );
+	sprintf( fname, "ScreenShots\\scr%04d.ppm", fnum );
+	//      _spawnl( _P_WAIT, "grab.exe", "grab.exe", "-fp" , "-w 512" , "-h 384" , fname, NULL );
       folder_exists( FMVSNAPSHOT_FOLDER );
       SaveFullScreenSnapShot( fname );
       fnum++;
       if( fnum > 9999 )
-      {
         DemoScreenGrab = FALSE;
-      }
     }
 
     if( MainGame( lpDev , lpView ) != TRUE )
@@ -8297,7 +5380,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     FillInPanelPositions();
     ReMakeSimplePanel = TRUE;
     
-//    InitVisiExecList( lpDev );
+	//    InitVisiExecList( lpDev );
     InitSkinExecs();
     InitPortalExecs();
     InitRenderBufs( lpDev );
@@ -8538,12 +5621,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 #endif
     Bsp_Header[ 1 ].State = FALSE; // no non-zero .BSP any more
 #endif
-//    if ( !Bsp_Duplicate( &Bsp_Header[ 0 ], &Bsp_Original ) )
-//    {
-//      SeriousError = TRUE;
-//      Msg( "Bsp_Duplicate failed\n" );
-//      return FALSE;
-//    }
+	//    if ( !Bsp_Duplicate( &Bsp_Header[ 0 ], &Bsp_Original ) )
+	//    {
+	//		    SeriousError = TRUE;
+	//		    Msg( "Bsp_Duplicate failed\n" );
+	//		    return FALSE;
+	//    }
     
     // might not be any water...
     WaterLoad();
@@ -8577,8 +5660,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       return FALSE;
     }
     
-//    TaskerInit();
-//    TaskCreate( (TaskFunc) Test , 0 );
+	//    TaskerInit();
+	//    TaskCreate( (TaskFunc) Test , 0 );
 
     MyGameStatus = STATUS_InitView_6;
     PrintInitViewStatus( MyGameStatus );
@@ -8607,6 +5690,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     MyGameStatus = STATUS_InitView_7;
     PrintInitViewStatus( MyGameStatus );
     break;
+
+
   case STATUS_InitView_7:
     if( IsHost )
     {
@@ -8631,6 +5716,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     PrintInitViewStatus( MyGameStatus );
 
     break;
+
+
   case STATUS_InitView_8:
     if( IsHost )
     {
@@ -8660,6 +5747,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     Current_Max_Score = 0;  // used by host to store highest score in session desc
 
     break;
+
+
   case STATUS_ChangeLevelPostInitView:
     Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NodeName[ 0 ], ".NOD" );
 
@@ -8776,6 +5865,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     MyGameStatus = ChangeLevel_MyGameStatus;
     break;
+
+
   case STATUS_ChangeLevelPostPlayingDemo:
     WhoIAm = MAX_PLAYERS;
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
@@ -8807,6 +5898,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     TempGameElapsedTime = GameStartedTime;
     MyGameStatus = STATUS_PlayingDemo;
     break;
+
+
   case STATUS_ChangeLevelPostAttractMode:
     WhoIAm = MAX_PLAYERS;
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
@@ -8847,6 +5940,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     DemoGameLoops = 0;
 
     break;
+
+
   case STATUS_AttractMode:
 
     DemoGameLoops++;
@@ -8859,7 +5954,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       Demoframelag = 1.0F * (float) ( 9 - DemoSpeed.value );
     }
     
-//    Demoframelag = 10.0F;
+	//    Demoframelag = 10.0F;
     Oldframelag = framelag;
 
     if( PauseDemo )
@@ -8880,7 +5975,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       return FALSE;
     break;
 
-//  *********************** Single Player Game Stuff **********************************
+
+	//  *********************** Single Player Game Stuff **********************************
+
+
   case  STATUS_StartingSinglePlayer:
     //D3DAppIClearBuffers();
     MenuAbort();
@@ -8899,13 +5997,14 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( !ChangeLevel() ) return( FALSE );
     break;
 
+
   case  STATUS_PostStartingSinglePlayer:
     smallinitShip( WhoIAm );
-//    if( CountDownOn )
-//    {
-//      CreateCountdownDigits();
-//      StartCountDown( (int16) TimeLimit.value, 0 );
-//    }
+	//    if( CountDownOn )
+	//    {
+	//      CreateCountdownDigits();
+	//      StartCountDown( (int16) TimeLimit.value, 0 );
+	//    }
     
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
     MyGameStatus = STATUS_SinglePlayer;
@@ -8917,6 +6016,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     Old_LevelTime_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
 
     break;
+
+
   case STATUS_SinglePlayer:
 
     PreventFlips = FALSE;
@@ -8943,10 +6044,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       LevelTimeTaken += time_diff;
     }
 
-    /*
-    sprintf( buf, "time so far %d", ((uint32)LevelTimeTaken) / 100 );
-    Print4x5Text( buf, 10, 30, 2 );
-    */
+    //sprintf( buf, "time so far %d", ((uint32)LevelTimeTaken) / 100 );
+    //Print4x5Text( buf, 10, 30, 2 );
 
     // if player is quiting nothing should stop him.....
     if( MyGameStatus != STATUS_QuitCurrentGame )
@@ -8965,6 +6064,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_ViewingStats:
     D3DAppIClearBuffers();
 
@@ -8994,6 +6095,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GameCompleted = GAMECOMPLETE_NotComplete;
     if( !ChangeLevel() ) return( FALSE );
     break;
+
+
   case  STATUS_InGameLoadGameStartingSinglePlayer:
     //D3DAppIClearBuffers();
 
@@ -9009,6 +6112,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GameCompleted = GAMECOMPLETE_NotComplete;
     if( !ChangeLevel() ) return( FALSE );
     break;
+
+
   case  STATUS_TitleLoadGamePostStartingSinglePlayer:
 
     smallinitShip( WhoIAm );
@@ -9021,7 +6126,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GameStatus[WhoIAm] = MyGameStatus;
     break;
 
-//  ******************** End of Single Player Game Stuff *******************************
+
+	//  ******************** End of Single Player Game Stuff *******************************
+
 
   case STATUS_PseudoHostWaitingForAck:
     ReceiveGameMessages();
@@ -9068,6 +6175,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
     break;
+
+
   case STATUS_WaitingToSendMessages:
 #ifdef  GUARANTEEDMESSAGES
     if ( GuaranteedMessagesActive )
@@ -9087,8 +6196,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       MyGameStatus = PreWaitingToSendMessagesStatus;
     }
-  default:
-    break;
+
   }
   return TRUE;
 }
@@ -10332,35 +7440,34 @@ BOOL ScoreDisplay()
         ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSThree, &src, DDBLT_KEYSRC | DDBLT_WAIT | DDBLT_ALPHASRCCONSTOVERRIDE | DDBLT_ALPHADESTCONSTOVERRIDE | DDBLT_ALPHADEST | DDBLT_ALPHASRC , &fx );
 #endif
 
-#if defined( FINAL_RELEASE )
-BOOL NoDebugMsgs = FALSE;
-#else
-BOOL NoDebugMsgs = FALSE;
-#endif
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :   Check for a valid Crc in a Dplay Message..
   Input   :   int8  * String
   Output    :   BOOL TRUE/FALSE
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 void DebugPrintf( const char * format, ... )
 {
-#ifdef DEBUG_ON
-    static char buf1[256], buf2[512];
+
+  static char buf1[256], buf2[512];
   va_list args;
 
-  if ( NoDebugMsgs )
+  // command line switch
+  if ( ! Debug )
     return;
 
   va_start( args, format );
   vsprintf( buf1, format, args );
   wsprintf( buf2, "%hs", buf1 );
 
+  // send string to debugger
   OutputDebugString( buf2 );
+
   va_end( args );
 
+  // add the comment to the log file
   AddCommentToLog( buf2 );
-#endif
+
 }
 
 
@@ -12375,31 +9482,38 @@ void  OnceOnlyInit( void )
 {
   DWORD dwPlatform, dwVersion;
 
+  // check dx version
   GetDXVersion( &dwVersion, &dwPlatform);
-
   if ( dwVersion < 0x600 )
   {
     Msg("You need to install Direct X 6 or later in order to run 'Forsaken'\n");
     exit( 1 );
   }
   
-  
+  //
   InitPolyText();
 
-#ifndef FINAL_RELEASE
-  DeleteFile( LogFilename );
-  DeleteFile( BatchFilename );
-#endif
+  // refresh log files
+  if ( Debug )
+  {
+	DeleteFile( LogFilename   );
+    DeleteFile( BatchFilename );
+  }
 
+  // initialize direct input
   if (!InitDInput())
   {
     DebugPrintf( "Oct2.c OnceOnlyInit() Failed on InitDInput()\n" );
     exit(1);
   }
 
+  // create the valid pickups global
   InitValidPickups();
+
+  // character translation table
   SetupCharTransTable();
 
+  // ? timer ?
   QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
   LastTime = LargeTime;
 

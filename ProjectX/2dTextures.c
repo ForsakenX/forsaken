@@ -305,7 +305,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 
 		for( Count = 0; Count < Num_TPages; Count++ )
 		{
-			sprintf( &TempFilename[ 0 ], "textures\\%s", Char_Ptr );
+			sprintf( &TempFilename[ 0 ], "data\\textures\\%s", Char_Ptr );
 
 			if( LoadTPages & LOAD_TPAGES_VIDMEM)
 			{

@@ -1,35 +1,4 @@
-/*
- * w a t e r . h
- *
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 8 $
- *
- * $Header: /PcProjectX/Include/Water.h 8     5/01/98 10:39 Collinsd $
- *
- * $Log: /PcProjectX/Include/Water.h $
- * 
- * 8     5/01/98 10:39 Collinsd
- * Water Splash is now tinted by water colour.
- * 
- * 7     12/06/97 3:12p Phillipd
- * 
- * 6     12/04/97 4:55p Phillipd
- * 
- * 5     10/24/97 5:54p Phillipd
- * 
- * 4     10/21/97 5:07p Phillipd
- * 
- * 3     10/07/97 12:00p Phillipd
- * 
- * 2     10/06/97 7:20p Phillipd
- * 
- * 1     10/06/97 5:09p Phillipd
- *
- */
- 
+
 #ifndef WATER_H
 #define WATER_H
 

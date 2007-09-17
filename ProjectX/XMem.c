@@ -1,38 +1,4 @@
-/*
- * The X Men, November 1997
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 8 $
- *
- * $Header: /PcProjectX/XMem.c 8     30/03/98 20:55 Philipy $
- *
- * $Log: /PcProjectX/XMem.c $
- * 
- * 8     30/03/98 20:55 Philipy
- * increased max memory blocks
- * 
- * 7     18/03/98 16:14 Philipy
- * messed about with stopping memory from being paged out
- * Stopped due to lack of time & information
- * 
- * 6     28/01/98 12:56 Oliverc
- * Changed allocation checking to working on DEBUG_ON flag instead of the
- * generic _DEBUG
- * 
- * 5     24/12/97 9:20 Philipy
- * fixed dynamic sound stuff by making X_Malloc, X_Free etc. atomic
- * 
- * 4     15/12/97 14:18 Oliverc
- * Increased MAXBLOCKS from 4096 to 8192...
- * 
- * 3     12/01/97 3:27p Phillipd
- * 
- * 2     11/29/97 4:36p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 1     11/29/97 4:34p Phillipd
- */
+
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Include Files...	

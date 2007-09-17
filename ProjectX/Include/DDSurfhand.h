@@ -1,28 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 2 $
- *
- * $Header: /PcProjectX/Include/DDSurfhand.h 2     28/01/98 12:56 Oliverc $
- *
- * $Log: /PcProjectX/Include/DDSurfhand.h $
- * 
- * 2     28/01/98 12:56 Oliverc
- * Changed allocation checking to working on DEBUG_ON flag instead of the
- * generic _DEBUG
- * 
- * 1     26/01/98 19:05 Philipy
- * 
- * 4     12/01/97 3:27p Phillipd
- * 
- * 3     1/10/97 4:25p Phillipd
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*==========================================================================
  *
@@ -42,6 +17,7 @@
 #define ReleaseDDSurf( A )	{XReleaseDDSurf( (A), __FILE__, __LINE__ ); A = NULL;}
 
 #define DDLoadBitmap( A, B, C, D ) DDLoadBitmapDebug( A, B, C, D, __FILE__, __LINE__ ) 
+
 /*
  * fn prototypes
  */

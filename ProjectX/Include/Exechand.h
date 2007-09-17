@@ -1,26 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 5 $
- *
- * $Header: /PcProjectX/Include/Exechand.h 5     28/01/98 12:57 Oliverc $
- *
- * $Log: /PcProjectX/Include/Exechand.h $
- * 
- * 5     28/01/98 12:57 Oliverc
- * Changed allocation checking to working on DEBUG_ON flag instead of the
- * generic _DEBUG
- * 
- * 4     12/01/97 3:27p Phillipd
- * 
- * 3     1/10/97 4:25p Phillipd
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*==========================================================================
  *

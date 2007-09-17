@@ -4007,28 +4007,29 @@ void KillUsedEnemy( ENEMY * Object )
 
 	if( Object )
 	{
+
 		if( !Object->Used )
 		{
-#ifdef DEBUG_ON
-			Msg( "An %s enemy Freed Previously in %s line %d\n has been freed again in %s line %d\n" ,
+
+			DebugPrintf(
+				"An %s enemy Freed Previously in %s line %d\n has been freed again in %s line %d\n" ,
 				EnemyTypes[Object->Type].ModelFilename,
 				Object->EnemyInFile,
 				Object->EnemyInLine,
 				in_file,
 				in_line
 				);
-#else
-			// This enemy has been Freed before....
-//			Msg( "An %s enemy has been Freed more than once\n" , EnemyTypes[Object->Type].ModelFilename );
-#endif
+
+			Msg( "An %s enemy has been Freed more than once\n" , EnemyTypes[Object->Type].ModelFilename );
+
 		}
-		
 
 #ifdef DEBUG_ON
 		Object->EnemyInFile = in_file;
 		Object->EnemyInLine = in_line;
 #endif
 		
+
 		NumKilledEnemies++;
 		StopEnemyBikerTaunt( Object );
 		Object->Alive = FALSE;
@@ -4254,13 +4255,9 @@ BOOL PreLoadEnemies( void )
 	if( ( ChangeLevel_MyGameStatus != STATUS_PostStartingSinglePlayer ) &&
 		( ChangeLevel_MyGameStatus != STATUS_SinglePlayer ) &&
 		( ChangeLevel_MyGameStatus != STATUS_TitleLoadGamePostStartingSinglePlayer ) )
-	{
 		return TRUE;
-	}
 
-
-
-	ReadEnemyTxtFile( "Enemies.txt" );
+	ReadEnemyTxtFile( "data\\txt\\Enemies.txt" );
 
 	NextEnemyModel = NextNewModel;
 
@@ -4400,11 +4397,11 @@ BOOL PreLoadEnemies( void )
 
 								if( EnemyTypes[ ModelNum ].LevelSpecific )
 								{
-									sprintf( &TempFilename[ 0 ], "levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
+									sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
 								}
 								else
 								{
-									sprintf( &TempFilename[ 0 ], "bgobjects\\%s", EnemyTypes[ ModelNum ].ModelFilename );
+									sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", EnemyTypes[ ModelNum ].ModelFilename );
 								}
 
 								if( !PreLoadCompObj( &TempFilename[ 0 ], &NextEnemyModel, EnemyTypes[ ModelNum ].LevelSpecific ) )
@@ -4556,11 +4553,11 @@ BOOL LoadEnemies( void )
 
 									if( EnemyTypes[ ModelNum ].LevelSpecific )
 									{
-										sprintf( &TempFilename[ 0 ], "levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
+										sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\bgobjects\\%s", &ShortLevelNames[ LevelNum ][ 0 ], EnemyTypes[ ModelNum ].ModelFilename );
 									}
 									else
 									{
-										sprintf( &TempFilename[ 0 ], "bgobjects\\%s", EnemyTypes[ ModelNum ].ModelFilename );
+										sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", EnemyTypes[ ModelNum ].ModelFilename );
 									}
 
 									Comp = LoadCompObj( &TempFilename[ 0 ], &Pos, &DirVector, Group,
@@ -8145,10 +8142,14 @@ BOOL ReadEnemyTxtFile( char *Filename )
 	CurrentEnemy = 0;
 	CurrentGun = 0;
 
-//	f = fopen( Filename, "r" );
-	f = DataPath_fopen( Filename, "r" );
+	f = fopen( Filename, "r" );
 	if ( !f )
+	{
+		DebugPrintf("Could not read enemy text file: %s\n", Filename);
+		Msg("Could not read enemy text file: %s\n",Filename);
 		return FALSE;
+	}
+
 	if ( fscanf( f, " %80s", token ) == 1 )
 	{
 		do

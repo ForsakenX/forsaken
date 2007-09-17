@@ -89,7 +89,7 @@ extern	BOOL	DrawSimplePanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS];
 extern	float	framelag;
 extern	BOOL	PowerVR;
-extern	char	normdata_path[ 128 ];
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -1121,11 +1121,9 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 		}
 	}
 
-	DataPath_FileCheckSum( Filename );
+	FileCheckSum( Filename );
 
-	AddDataPathFileToBat( Filename );
-
-	File_Size = DataPath_Get_File_Size( Filename );	
+	File_Size = Get_File_Size( Filename );	
 
 	if( !File_Size )
 	{
@@ -1141,7 +1139,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 		return( FALSE );
 	}
 
-	Read_Size = DataPath_Read_File( Filename, Buffer, File_Size );
+	Read_Size = Read_File( Filename, Buffer, File_Size );
 
 	if( Read_Size != File_Size )
 	{
@@ -1183,20 +1181,20 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 
 			if( LevelSpecific )
 			{
-				sprintf( &TempFilename[ 0 ], "levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &Mxloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &Mxloadheader->ImageFile[i] );
 			}
 			else
 			{
-				sprintf( &TempFilename[ 0 ], "textures\\%s", &Mxloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxloadheader->ImageFile[i] );
 			}
 
-			if( !_stricmp( "default.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\default.ppm" );
-			if( !_stricmp( "pkups.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "default.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\default.ppm" );
-			if( !_stricmp( "pkups.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
-			if( !_stricmp( "titana.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "textures\\titana.ppm" );
+			if( !_stricmp( "default.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
+			if( !_stricmp( "pkups.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "pkupsa.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "default.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
+			if( !_stricmp( "pkups.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "pkupsa.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+			if( !_stricmp( "titana.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
 			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );		// colourkey , can scale
 			if( Mxloadheader->TloadIndex[i] == -1 )

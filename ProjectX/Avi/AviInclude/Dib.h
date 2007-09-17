@@ -1,3 +1,5 @@
+
+//
 // DIB.H
 //
 // Portions (almost all) taken from Nigel Thompson's "Animation techniques in Win32"

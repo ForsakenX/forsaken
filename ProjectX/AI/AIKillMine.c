@@ -1,46 +1,4 @@
-/*
- * k i l l m i n e . c
- *
- * AIMODE_KILLMINE
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 10 $
- *
- * $Header: /PcProjectX/Ai/AIKillMine.c 10    3/28/98 10:06a Phillipd $
- *
- * $Log: /PcProjectX/Ai/AIKillMine.c $
- * 
- * 10    3/28/98 10:06a Phillipd
- * 
- * 9     3/05/98 9:29a Phillipd
- * added the OPT_ON stuff to all AI files....
- * 
- * 8     21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 7     5/12/97 16:35 Collinsd
- * Laser now updated to work with new nme code.
- * 
- * 6     26/11/97 11:02 Collinsd
- * Enemies firing primary weapons now works again.
- * 
- * 5     11/19/97 6:50p Phillipd
- * Clean up
- * 
- * 4     11/11/97 11:00a Phillipd
- * 
- * 3     10/11/97 19:16 Collinsd
- * Added Bodge to fix mappers fuckup.
- * 
- * 2     9/16/97 2:19p Phillipd
- * 
- * 1     9/15/97 10:20a Phillipd
- * 
- *
- */
+
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>

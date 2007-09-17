@@ -1,42 +1,4 @@
-/*
- * The X Men, April 1997
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 10 $
- *
- * $Header: /PcProjectX/Include/TrigArea.h 10    18/02/98 9:53 Collinsd $
- *
- * $Log: /PcProjectX/Include/TrigArea.h $
- * 
- * 10    18/02/98 9:53 Collinsd
- * Added Save/load functions for Timer/Temp guage and trigger areas
- * 
- * 9     11/17/97 10:13a Phillipd
- * 
- * 8     17/11/97 9:13 Oliverc
- * New format trigger areas
- * 
- * 7     15/11/97 18:21 Collinsd
- * Checking for -1 not 0 now ( Ooops ).
- * 
- * 6     12/11/97 18:17 Collinsd
- * Added what weapon activates trigger area code ( Disabled for now )
- * 
- * 5     10/30/97 9:30a Phillipd
- * 
- * 4     15/07/97 10:11 Collinsd
- * Added display of triggerzones on Shift F10 in debug mode.
- * 
- * 3     1/07/97 10:57 Collinsd
- * Added playershoots trigger area code.
- * 
- * 2     4/19/97 1:23p Phillipd
- * Only Ships Dont collide when no_collisions is set...
- * Trigger areas work better.....
- * 
- * 1     4/17/97 10:54a Phillipd
- */
+
 #ifndef TRIGGERAREA_INCLUDED
 #define TRIGGERAREA_INCLUDED
 

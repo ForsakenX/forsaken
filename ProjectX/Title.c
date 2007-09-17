@@ -191,9 +191,6 @@ extern BOOL ResetKillsPerLevel;
 extern BOOL IsLobbyLaunched;
 extern BOOL LobbyAutoStart;
 extern BOOL	Pal332;
-extern char data_path[];
-extern char normdata_path[];
-extern int use_data_path;
 extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
 extern	int16	NumGoldBars;
@@ -298,7 +295,6 @@ void Build_View();
 
 extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
 
-extern	int			use_local_data;
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 
@@ -2499,22 +2495,20 @@ MENU	MENU_NEW_Battle = {
 	}
 };
 
-//MENU	MENU_NEW_CoOp = {
-//	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
-//	{
-//		{ 0, TITLE_MODEL_Disc1, 0, 0, 0,LT_MENU_NEW_CoOp0 /*"Co Op"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_CoOp1 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_CoOp2 /*"Network Setup"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-//
-//		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
-//	}
-//};
+/* coop */
+MENU	MENU_NEW_CoOp = {
+	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
+	{
+		{ 0, TITLE_MODEL_Disc1, 0, 0, 0,LT_MENU_NEW_CoOp0 /*"Co Op"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_CoOp1 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_CoOp2 /*"Network Setup"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
 
 
 
+/* single */
 MENU	MENU_NEW_MissionMenu = {
 	"", InitDifficultyLevel, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
 	{
@@ -2533,12 +2527,13 @@ MENU	MENU_NEW_MissionMenu = {
 MENU	MENU_NEW_Start = {
 	"", InitStartMenu, NULL, NULL, TITLE_TIMER_ChooseDiscPan,
 	{
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 1, LT_MENU_NEW_Start1 /*"single player"*/, 0, 0, NULL, &MENU_NEW_MissionMenu, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_Start2 /*"death match"*/, 0, 0, NULL, &MENU_NEW_Battle, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_Start3 /*"Setup Biker"*/, 0, 0, NULL, &MENU_NEW_Setup, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_Start5 /*"load Game"*/, 0, 0, NULL, &MENU_NEW_RestoreGame, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_Start6 /*"Options"*/, 0, 0, NULL, &MENU_NEW_Options, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, LT_MENU_NEW_Start7 /*"Exit"*/ , 0, 0, NULL, NULL, SelectQuit, NULL, NULL, 0 } ,
+		{ 0, TITLE_MODEL_Disc1, 0, 0, 1, LT_MENU_NEW_Start1 /*"single player" */, 0, 0, NULL, &MENU_NEW_MissionMenu, MenuChange, NULL, NULL, 0 },
+		//{ 0, TITLE_MODEL_Disc1, 0, 0, 0, "CoOp",                                  0, 0, NULL, &MENU_NEW_CoOp,        MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_Start2 /*"death match"   */, 0, 0, NULL, &MENU_NEW_Battle,      MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_Start3 /*"Setup Biker"   */, 0, 0, NULL, &MENU_NEW_Setup,       MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_Start5 /*"load Game"     */, 0, 0, NULL, &MENU_NEW_RestoreGame, MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_Start6 /*"Options"       */, 0, 0, NULL, &MENU_NEW_Options,     MenuChange, NULL, NULL, 0 },
+		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, LT_MENU_NEW_Start7 /*"Exit"          */, 0, 0, NULL, NULL,                  SelectQuit, NULL, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4069,21 +4064,23 @@ void InitTitleFont(void)
 		break;
 	}
 #endif
-#if 1
+
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
 		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
 	}else
-#endif
 	{
 		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
 	}
 
 
-	lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
-   	DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
+	if ( lpDDSTitleFont && ddpal)
+	{
+	  lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
+   	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
+	}
 
 }
 
@@ -4140,12 +4137,13 @@ ReleaseTitle(void)
 	
 	// only release font if not showing loading bar...
 	if ( !PreventFlips )
-	{
-		ReleaseDDSurf(lpDDSTwo);
-		lpDDSTwo = NULL;
-	}
+		if ( lpDDSTwo )
+		{
+		 ReleaseDDSurf(lpDDSTwo);
+		 lpDDSTwo = NULL;
+		}
 
-	if(!bPolyText)
+	if(!bPolyText && lpDDSTitleFont)
 		ReleaseDDSurf(lpDDSTitleFont);
 
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
@@ -5307,9 +5305,9 @@ uint8 QuickStart = QUICKSTART_None;
 BOOL DisplayTitle(void)
 {
 	uint16 i;
-	LPDIRECTDRAW lpDD = d3dapp->lpDD;
-	LPDIRECT3D lpD3D = d3dapp->lpD3D;
-	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
+	LPDIRECT3D lpD3D		  = d3dapp->lpD3D;
+	LPDIRECT3DDEVICE lpDev	  = d3dapp->lpD3DDevice;
     LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
 	uint16	group;
 	MENUITEM *Item;
@@ -5369,10 +5367,7 @@ BOOL DisplayTitle(void)
 		if ( LaunchedByLobby() )
 		{
 			if ( !InitLevels( MULTIPLAYER_LEVELS )  )
-			{
-				//Msg( "No multiplayer levels" );
 				PrintErrorMessage (LT_NoLevelsInstalled, 0, NULL, ERROR_QUIT );
-			}
 
 			GetMultiplayerPrefs();
 			
@@ -5414,10 +5409,13 @@ BOOL DisplayTitle(void)
 	}
 
 	if (!TitleInitDone && (( MyGameStatus == STATUS_Title ) || ( MyGameStatus == STATUS_BetweenLevels )))
-	{	DarkenRoomForStart( NULL );
+	{
+
+		DarkenRoomForStart( NULL );
 		TitleInitDone = TRUE;
 		NoTeamSelect = FALSE;
 		SetFOV( START_FOV );	// in case player was using nitro when finishing level!
+
 #ifdef SOFTWARE_ENABLE
 		if( SoftwareVersion )
 		{
@@ -5425,6 +5423,7 @@ BOOL DisplayTitle(void)
 				ScanAllBikes();
 		}
 #endif
+
 		if (UseNewMenus)
 			MENU_Start = MENU_NEW_Start;
 
@@ -5463,6 +5462,7 @@ BOOL DisplayTitle(void)
 				if ( ServiceProviderSet )
 					SelectConnectionToJoin( NULL );
 				break;
+
 			case QUICKSTART_SelectSession:
 				InitStartMenu( NULL );
 				CameraStatus = CAMERA_AtLeftVDU;
@@ -5516,9 +5516,7 @@ BOOL DisplayTitle(void)
 
 	// initialise sfx
 	for( i = 0 ; i < MAX_SFX ; i++ )
-	{
 		LastDistance[i] = 100000.0F;
-	}
 
 	CheckForRogueSfx();
 
@@ -8695,21 +8693,14 @@ BOOL ProcessDifficultySet ( int Key )
 void StartTimer( int timer )
 {
 	if (Title_Timers[ timer ].Status == TITLE_EVENT_TIMER_IDLE)
-	{
 		if (Title_Timers[ timer ].InitFunc)
 			Title_Timers[ timer ].InitFunc (&Title_Timers[ timer ]);
-	}
 }
 
 void CheckMenuTimer( void )
 {
 	if ((CurrentMenu) && (CurrentMenu->MenuStatus))
-	{
-		if (CurrentMenu->MenuStatus)
-		{
-			StartTimer( CurrentMenu->MenuStatus );
-		}
-	}
+		StartTimer( CurrentMenu->MenuStatus );
 }
 
 void SetVolumeLevels( void )
@@ -9886,7 +9877,7 @@ void InitPilotList( void )
 
 	PilotList.selected_item = -1;
 	
-	h = FindFirstFile( "*.cfg" ,	// pointer to name of file to search for  
+	h = FindFirstFile( "pilots\\*.cfg" ,	// pointer to name of file to search for  
 						(LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
 
 	if ( h == INVALID_HANDLE_VALUE )
@@ -9938,22 +9929,26 @@ void InitPilotName( MENU *menu )
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 void SetPilotName( MENUITEM *item )
 {
 	FILE *f;
 	uint16 tempbike;
-	static char fname[ MAX_PATH ];
+	static char filepath[ MAX_PATH ];
 
 	if ( !strlen( PilotName.text ) )
 		return; // abort if pilot name empty
-	sprintf( fname, "%s.cfg", PilotName.text );
-	f = fopen( fname, "r" );
+
+	sprintf( filepath, "pilots\\%s.cfg", PilotName.text );
+
+	f = fopen( filepath, "r" );
 	if ( f )
 	{
 		fclose( f );
 		PlaySfx( SFX_Error, 1.0F );
 		return; // config file already exists with that name (should display error message)
 	}
+
 	InitBikerName( PilotName.text );
 	*player_config = default_config;
 	strcpy( player_config->name, PilotName.text );
@@ -9992,7 +9987,9 @@ void SetPilotNameInGame( MENUITEM *item )
 
 	if ( !strlen( PilotNameInGame.text ) )
 		return; // abort if pilot name empty
-	sprintf( fname, "%s.cfg", PilotNameInGame.text );
+
+	sprintf( fname, "pilots\\%s.cfg", PilotNameInGame.text );
+
 	f = fopen( fname, "r" );
 	if ( f )
 	{
@@ -10000,6 +9997,7 @@ void SetPilotNameInGame( MENUITEM *item )
 		PlaySfx( SFX_Error, 1.0F );
 		return; // config file already exists with that name (should display error message)
 	}
+
 	InitBikerName( PilotNameInGame.text );
 	*player_config = default_config;
 	strcpy( player_config->name, PilotNameInGame.text );
@@ -10009,9 +10007,8 @@ void SetPilotNameInGame( MENUITEM *item )
 	Config.bike = ValidBikeSelected( Config.bike );
 	write_config( player_config, biker_config );
 	SelectedBike = Config.bike;
-	
-		GetBikeDetails(SelectedBike, NULL );
-		UpdateSfxForBiker( SelectedBike );
+	GetBikeDetails(SelectedBike, NULL );
+	UpdateSfxForBiker( SelectedBike );
 	
 	InitPilotList();
 }
@@ -10046,7 +10043,9 @@ void RenamePilotName( MENUITEM *item )
 
 	if ( !strlen( PilotReName.text ) )
 		return; // abort if pilot name empty
-	sprintf( fname, "%s.cfg", PilotReName.text );
+
+	sprintf( fname, "pilots\\%s.cfg", PilotReName.text );
+
 	f = fopen( fname, "r" );
 	if ( f )
 	{
@@ -10586,7 +10585,7 @@ void InitBikerName( char *name )
 {
 	strncpy( biker_name, name, sizeof( biker_name ) );
 	biker_name[ sizeof( biker_name ) - 1 ] = 0;
-	sprintf( biker_config, "%s.cfg", name );
+	sprintf( biker_config, "pilots\\%s.cfg", name );
     RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
 	SendGameMessage(MSG_NAME, 0, 0, 0, 0);
 }
@@ -10603,9 +10602,7 @@ void InitStartMenu( MENU *Menu )
 	read_config( player_config, biker_config );
 
 	if ( player_config->bike > ( BikeList.items - 1 ) )
-	{
 		player_config->bike = 0;
-	}		
 
 	Config = *player_config;
 	Config.bike = ValidBikeSelected( Config.bike );
@@ -10613,24 +10610,8 @@ void InitStartMenu( MENU *Menu )
 	if (SelectedBike > ( BikeList.items - 1 ) )
 		SelectedBike = 0;
 
-	if ( use_local_data )
-		MaxPlayersSlider.value = 1; // default to private game when testing own levels
-
 }
 
-
-static int PlayerCanDebug( char *name )
-{
-	if ( !_stricmp( name, "Dan" ) )
-		return 1;
-	if ( !_stricmp( name, "Fodder" ) )
-		return 1;
-	if ( !_stricmp( name, "Super" ) )
-		return 1;
-	if ( !_stricmp( name, "Phil" ) )
-		return 1;
-	return 0;
-}
 
 void ExitInGameMenu( MENU *Menu )
 {
@@ -10672,7 +10653,7 @@ void InitInGameMenu( MENU *Menu )
 
 		else if ( item->Value == &MENU_Save || item->Value == &MENU_DebugMode )
 		{
-			if ( DebugInfo ) // && PlayerCanDebug( biker_name ) )
+			if ( DebugInfo )
 			{
 				item->FuncSelect = MenuChange;
 				item->FuncDraw = MenuItemDrawName;
@@ -10743,13 +10724,13 @@ void InitDebugMode( MENU *Menu )
 	MENUITEM *item;
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
+
 		if ( item->Value == &ScreenSaving ||
 			 item->Value == &OldNodeCube ||
 			 item->Value == &NodeCube ||
 			 item->Value == &NodeCubeType )
-		{
-			if ( DebugInfo && PlayerCanDebug( biker_name ) )
+
+			if ( DebugInfo )
 			{
 				item->FuncSelect = SelectToggle;
 				item->FuncDraw = DrawToggle;
@@ -10759,8 +10740,6 @@ void InitDebugMode( MENU *Menu )
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
 			}
-		}
-	}
 }
 
 
@@ -11850,37 +11829,7 @@ void NewMenuTextureMode( MENU *Menu )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void CreateVersion(void)
 {
-#ifdef MULTIPLAYER_VERSION
 	Version = MULTIPLAYER_VERSION;
-#else
-	HANDLE hfile;
-	FILETIME Time;
-	WORD	date;
-	WORD	time;
-
-	hfile = CreateFile( "ProjectX.exe",	// pointer to name of the file 
-						GENERIC_READ,	// access (read-write) mode 
-						FILE_SHARE_READ,	// share mode 
-						NULL,	// pointer to security descriptor 
-						OPEN_EXISTING,	// how to create 
-						FILE_ATTRIBUTE_NORMAL,	// file attributes 
-						NULL 	// handle to file with attributes to copy  
-						);
-
-	GetFileTime( hfile,	// identifies the file 
-			     NULL,	// address of creation time 
-			     NULL,	// address of last access time  
-			     &Time	// address of last write time 
-				 );
-	FileTimeToDosDateTime( &Time , &date , &time );
-
-//	Version = 0;
-	Version = date;
-//	Version <<= 16;		
-//	Version |=time;
-
-	CloseHandle(hfile);
-#endif
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -14871,45 +14820,39 @@ void VduClear ( void )
 	tempstacklevel = 0;
 
 	for (i=0; i<TextStackLevel; i++)
-	{
 		if ( TextStack[ i ] )
 		{
 			TextStack[i]->boxdone = FALSE;
 			KillTextInfo( TextStack[i] );
 		}
-	}
 
 	TextStackLevel = 0;
 	CurrentTeletype = 0;
 
-
 	for( Item = LastMenu->Item ; Item->x >= 0 ; Item++ )
-	{	
 		Item->numtextitems = 0;
-	}
-
 
 		
 	// kill all polys used for boxes...
 	for (i=0; i<CurrentScreenPoly; i++)
-	{	KillUsedScrPoly( screenpoly[i] );
+	{
+		KillUsedScrPoly( screenpoly[i] );
 		screenpoly[i] = (uint16)-1;
 	}
 
 	CurrentScreenPoly = 0;
 
 	for (i=0; i<MAXSLIDERSPERMENU; i++)
-	{	
 		if (ActiveSliderItem[i].Item)
 		{
 			slider = GetSlider ( ActiveSliderItem[i].Item, &slidertype );
 			if (slider->poly != (uint16) -1)
-			{	KillUsedScrPoly( slider->poly );
+			{
+				KillUsedScrPoly( slider->poly );
 				slider->poly = (uint16)-1;
 			}
 			ActiveSliderItem[i].Item = NULL;
 		}
-	}
 
 	PlaySfx( SFX_VduClear, 0.4F );
 
@@ -16708,10 +16651,9 @@ void InitEventGeneralPan(TITLE_EVENT *TitleEvent)
 
 void InitEventDiscPan(TITLE_EVENT *TitleEvent)
 {
-//	InitEventGeneralPan(TitleEvent);
-
-//	VduClear();
-//	VDU_Ready = FALSE;
+	//InitEventGeneralPan(TitleEvent);
+	//VduClear();
+	//VDU_Ready = FALSE;
 }
 
 
@@ -19167,7 +19109,7 @@ BOOL DeletePilot( LIST *l, int item )
 {
 	static char fname[ MAX_PATH ];
 
-	sprintf( fname, "%s.cfg", l->item[ item ] );
+	sprintf( fname, "pilots\\%s.cfg", l->item[ item ] );
 	if ( l->items > 1 && DeleteFile( fname ) && ListDelete( l, item ) )
 	{
 		SelectPilot( NULL );

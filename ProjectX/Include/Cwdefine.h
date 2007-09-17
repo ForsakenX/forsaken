@@ -1,11 +1,6 @@
+
 /*
-
-
   Defines for software renderer.
-
-
-
-
 */
 
 

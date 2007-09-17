@@ -1,164 +1,3 @@
-/*
- * a v i . c 
- *
- * AVI playback Routines
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 40 $
- *
- * $Header: /PcProjectX/splash.c 40    10/08/98 17:33 Philipy $
- *
- * $Log: /PcProjectX/splash.c $
- * 
- * 40    10/08/98 17:33 Philipy
- * rewrote AVI player
- * 
- * 39    29/04/98 17:54 Philipy
- * fixed splash screen bug when booting in 1024x768
- * 
- * 38    11/04/98 19:32 Collinsd
- * 
- * 37    11/04/98 19:04 Philipy
- * fixed AVI bug
- * fixed stripping bug
- * lobby launched game now goes to next level after stats
- * 
- * 36    10/04/98 19:54 Philipy
- * added time limit for end game demos
- * 
- * 35    8/04/98 20:26 Collinsd
- * 
- * 34    8/04/98 14:34 Philipy
- * renamed end game demos
- * 
- * 33    8/04/98 10:19 Philipy
- * AVI is now looked for locally first, then on CD ( FINAL_RELEASE )
- * 
- * 32    7/04/98 17:50 Philipy
- * removed multiplayer taunts
- * AVI thread now allowed to exit nicely rather than being terminated
- * fixed inter-level bug
- * fixed bug in enemy taunts
- * 
- * 31    7/04/98 11:01 Philipy
- * potentially fixed crash when going from AVI to titles
- * fixed CD audio looping
- * no CD audio in front end unless full install
- * bike features sliders now give correct values
- * 
- * 30    5/04/98 15:01 Philipy
- * started pre AVI CD accesss ( not yet implemented )
- * bike engine freq now done on 5 frame average
- * prevented CD track from playing in titles if set to off
- * NoDynamic SFX does not bike bike computer static anymore
- * water detail slider now only has two levels
- * 
- * 29    4/04/98 22:23 Collinsd
- * Fixed forsakenanykey
- * 
- * 28    4/04/98 19:01 Oliverc
- * Added "Forsaken/Press any key" to attract mode demo playback
- * 
- * 27    4/04/98 17:02 Philipy
- * correct res splash screen now displayed
- * 
- * 26    4/04/98 11:19 Oliverc
- * Attract mode splash demo now plays from CD if not found installed
- * Software screen res now stored separately from HW in registry
- * Registry keys now opened in-game as creation done by installer
- * 
- * 25    3/04/98 18:10 Collinsd
- * Moved position of xmem.h
- * 
- * 24    3/04/98 13:13 Philipy
- * Taunts are now affected by biker volume slider ( taunt volume slider
- * removed )
- * Enemy bikers now give out death cry
- * fixed problem with speech ignoring volume settings
- * fixed end game sequences
- * 
- * 23    30/03/98 20:36 Collinsd
- * Done end game stuff, Added more credits and made sfx for capship non
- * looping.
- * 
- * 22    29/03/98 20:00 Philipy
- * cd path now verified earlier
- * sfx no longer reloaded when changing biker / bike computer
- * mouse sensitivity rounding error fixed
- * 
- * 21    28/03/98 17:33 Philipy
- * corrected some sfx
- * added legal screen
- * fixed mission briefing text bug
- * 
- * 20    28/03/98 14:54 Collinsd
- * Updated
- * 
- * 19    27/03/98 19:06 Philipy
- * water always at max detail for splash screen
- * 
- * 18    26/03/98 9:15 Collinsd
- * ZBuffer 
- * 
- * 17    24/03/98 22:04 Collinsd
- * 
- * 16    24/03/98 21:49 Philipy
- * temporarily prevent splash screen demos for sw version
- * 
- * 15    24/03/98 21:07 Philipy
- * fixed quicktext stuff
- * sfx do not pause when in multiplayer mode
- * rear camera not shown for splash demos
- * 
- * 14    24/03/98 18:01 Collinsd
- * Added ZBuffer clear for title/splash
- * 
- * 13    24/03/98 15:46 Philipy
- * changed water fade stuff
- * 
- * 12    24/03/98 12:14 Collinsd
- * Added credits as splash screen.
- * 
- * 11    20/03/98 10:27 Philipy
- * 
- * 10    19/03/98 20:32 Philipy
- * added different end of game scenarios
- * code now written to config to indicate if secret biker is available
- * 
- * 9     19/03/98 11:29 Philipy
- * implemented new acclaim splash screen plus AVI
- * 
- * 8     17/03/98 15:58 Philipy
- * water fade now rest to 1 on post demo splash
- * 
- * 7     16/03/98 16:40 Philipy
- * fixed buffered key problem
- * added AVI to splash screens
- * 
- * 6     15/03/98 18:40 Philipy
- * added water effect splash screen
- * fixed bug with end game sequence
- * implemented attract mode
- * text macros now saved in config
- * 
- * 5     7/03/98 15:25 Philipy
- * re-implemented -NoAVI option
- * 
- * 4     23/02/98 10:37 Philipy
- * added inter level stuff
- * 
- * 3     20/02/98 15:58 Philipy
- * removed splash bitmaps for version
- * 
- * 2     20/02/98 15:29 Philipy
- * re-implented AVI
- * splash screens can now play demos and AVIs
- * 
- * 1     20/02/98 12:23 Philipy
- * 
- */
 
 #include "typedefs.h"
 #include "splash.h"
@@ -686,55 +525,46 @@ void PostSplashDemo( void *Ptr )
 BOOL InitSplashAVI( void *Ptr )
 {
 
+    IMultiMediaStream *pMMStream;
+
+	// return if NoAVI is set
 	if ( NoAVI )
 		return FALSE;
 
-	D3DAppIClearBuffers();
-	
-	InitModeCase();
-#ifdef FINAL_RELEASE
-	// look on hard drive, if not there default to CD
-	sprintf( CurrentSplashFile, "%ssplash\\%s.avi", data_path, NewSplashScreens[ NewCurrentSplashScreen ].filename );
-	if ( !File_Exists ( CurrentSplashFile ) )
-	{
-		sprintf( CurrentSplashFile, "%ssplash\\%s.avi", normdata_path, NewSplashScreens[ NewCurrentSplashScreen ].filename );
-	}
-#else
-	if( use_data_path )
-	{
-		// look on data path, if not there default to normal path
-		sprintf( CurrentSplashFile, "%ssplash\\%s.avi", data_path, NewSplashScreens[ NewCurrentSplashScreen ].filename );
-		if ( !File_Exists ( CurrentSplashFile ) )
-		{
-			sprintf( CurrentSplashFile, "%ssplash\\%s.avi", normdata_path, NewSplashScreens[ NewCurrentSplashScreen ].filename );
-		}
-	}else
-	{
-		// use normal data path
-		sprintf( CurrentSplashFile, "%ssplash\\%s.avi", normdata_path, NewSplashScreens[ NewCurrentSplashScreen ].filename );
-	}
-#endif
+	// path to file
+	sprintf( CurrentSplashFile, "data\\splash\\%s.avi", NewSplashScreens[ NewCurrentSplashScreen ].filename );
 
-//	AVI_Mode = AVI_MODE_FullScreen;
+	// full screen mode
+	//AVI_Mode = AVI_MODE_FullScreen;
 	
+	// if the file doesn't exist exit
 	if ( !File_Exists( CurrentSplashFile )  )
 		return FALSE;
-	else
-	{
-	    IMultiMediaStream *pMMStream;
-		HRESULT hr;
-	    hr = OpenMMStream(CurrentSplashFile, d3dappi.lpDD, &pMMStream);
-	    if (SUCCEEDED(hr)) 
-		{
-			RenderStreamToSurface(d3dappi.lpDD, d3dapp->lpFrontBuffer, pMMStream);
-			D3DAppIClearBuffers();
-			pMMStream->lpVtbl->Release( pMMStream );
-		}
 
-	 //	InitAVI( CurrentSplashFile );
+	// clear the buffers
+	D3DAppIClearBuffers();
+	
+	//
+	InitModeCase();	
+
+	// open the multi media stream
+    if (SUCCEEDED(OpenMMStream(CurrentSplashFile, d3dappi.lpDD, &pMMStream))) 
+	{
+		// render the stream
+		RenderStreamToSurface(d3dappi.lpDD, d3dapp->lpFrontBuffer, pMMStream);
+
+		// clear the buffers
+		D3DAppIClearBuffers();
+
+		// release the stream memeory
+		pMMStream->lpVtbl->Release( pMMStream );
 	}
 
+	// 
+ 	//InitAVI( CurrentSplashFile );
+
 	return TRUE;
+
 }
 
 BOOL PlaySplashAVI( void *Ptr )

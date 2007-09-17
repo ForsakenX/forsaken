@@ -1,40 +1,4 @@
-/*
- * a i p s y c h o . c
- *
- * AIMODE_DEATH_PSYCHO
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 9 $
- *
- * $Header: /PcProjectX/Ai/AIPsycho.c 9     3/28/98 10:06a Phillipd $
- *
- * $Log: /PcProjectX/Ai/AIPsycho.c $
- * 
- * 9     3/28/98 10:06a Phillipd
- * 
- * 8     21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 7     5/12/97 16:35 Collinsd
- * Laser now updated to work with new nme code.
- * 
- * 6     5/12/97 15:57 Collinsd
- * Uses EnemyFirePrimary
- * 
- * 5     11/26/97 10:44a Phillipd
- * 
- * 4     11/25/97 4:13p Phillipd
- * 
- * 3     11/25/97 3:13p Phillipd
- * 
- * 2     11/25/97 2:37p Phillipd
- * 
- * 1     11/25/97 2:37p Phillipd
- * 
- */
+
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>

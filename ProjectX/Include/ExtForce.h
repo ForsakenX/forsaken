@@ -1,35 +1,4 @@
-/*
- * The X Men, October 1997
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 7 $
- *
- * $Header: /PcProjectX/Include/ExtForce.h 7     17/02/98 16:35 Collinsd $
- *
- * $Log: /PcProjectX/Include/ExtForce.h $
- * 
- * 7     17/02/98 16:35 Collinsd
- * Added ExternalForce and Teleports load/save function.
- * 
- * 6     18/11/97 12:40 Oliverc
- * Added origin, up, width, and height to external force, and changed
- * force calculation accordingly
- * 
- * 5     24/10/97 10:01 Collinsd
- * Added display of all zones/forces.
- * 
- * 4     10/17/97 11:48a Phillipd
- * 
- * 3     10/14/97 4:49p Phillipd
- * 
- * 2     10/09/97 3:30p Phillipd
- * External Forces coming...
- * Shield and hull are now floats
- * 
- * 1     10/09/97 12:16p Phillipd
- * 
- */
+
 #ifndef EXTFORCE_INCLUDED
 #define EXTFORCE_INCLUDED
 

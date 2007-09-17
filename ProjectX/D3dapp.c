@@ -1,119 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 38 $
- *
- * $Header: /PcProjectX/D3dapp.c 38    11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/D3dapp.c $
- * 
- * 38    11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 37    3/09/98 14:25 Philipy
- * tidied up window mode slightly
- * ( no resize allowed, removed menu bar )
- * 
- * 36    18/08/98 18:14 Philipy
- * all pings in server game are now from server perspective
- * windowed mode re-enabled ( still needs some work )
- * 
- * 35    15/06/98 15:42 Collinsd
- * Fixed software menus in demo mode.
- * 
- * 34    10/04/98 18:03 Collinsd
- * 
- * 33    10/04/98 17:11 Philipy
- * 
- * 32    8/04/98 10:14 Philipy
- * removed error message when checking alt+tabbing back into game on 3dfx
- * 
- * 31    7/04/98 22:13 Collinsd
- * Hack for chris's goals.  CWClear screen added.
- * 
- * 30    4/04/98 17:38 Collinsd
- * Updated Software
- * 
- * 29    3/04/98 11:25 Collinsd
- * Mono lighting and acclaim logo now work and display of goals added
- * again.
- * 
- * 28    26/03/98 15:15 Collinsd
- * Mods for Chris
- * 
- * 27    6/03/98 14:25 Collinsd
- * 
- * 26    16/02/98 16:53 Collinsd
- * Added Chris's new code.
- * 
- * 25    5/01/98 19:58 Oliverc
- * Current screen mode, texture format and sound volume settings now saved
- * to registry on exit and restored on startup
- * 
- * 24    12/11/97 18:26 Collinsd
- * 
- * 23    7/11/97 14:25 Philipy
- * fixed bug when changing mode from title room: InitTitle was not being
- * called
- * 
- * 22    23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 21    22/09/97 10:40 Collinsd
- * Software version works again. ( Now with trasnsluecency )
- * 
- * 20    9/18/97 12:16p Phillipd
- * 
- * 19    17/09/97 16:37 Collinsd
- * Blit now works in software.
- * 
- * 18    17/09/97 9:55 Collinsd
- * Blitting now works in software versions in 320x240 mode.
- * 
- * 17    16/09/97 17:52 Collinsd
- * More of Chris's stuff works.
- * 
- * 16    16/09/97 10:59 Collinsd
- * Added Chris's code
- * 14    6/16/97 2:57p Phillipd
- * Tripple buffering can now be done....
- * 
- * 13    1/10/97 11:30a Phillipd
- * movies are now doable
- * 
- * 12    11/06/96 6:10p Phillipd
- * Got rid of some useless files...
- * 
- * 11    5/11/96 17:19 Oliverc
- * Added calls to FlipToGDISurface() when in fullscreen mode and entering
- * DPlay Wizard or pausing game to use menus so that 3Dfx card works
- * 
- * 10    10/24/96 3:01p Phillipd
- * 
- * 9     10/23/96 4:23p Phillipd
- * Lots of crap taken out of D3dapp and its associated functions and
- * files....
- * 
- * 8     10/03/96 9:09a Phillipd
- * 
- * 7     17/09/96 16:19 Oliverc
- * Added auto unpause whenever window moved or resized
- * 
- * 6     9/17/96 11:26a Phillipd
- * 
- * 5     7/26/96 4:27p Phillipd
- * 
- * 4     7/22/96 11:16a Phillipd
- * 
- * 3     4/07/96 11:56 Oliverc
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*
  *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
@@ -266,12 +150,6 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
         d3dappi.bOnlyEmulation = TRUE;
 	}
 
-	/*
-	 *  Command line Switches
-	 */
-
-	d3dappi.bFullscreen = &bFullscreen;
-
     /* 
      * Create DirectDraw, remember the Windows display mode and enumerate the
      * display modes
@@ -307,12 +185,17 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
      * level and create the front and back buffers for this mode.
      */
 
-	Msg("After CLI: %i",(d3dappi.bFullscreen?1:0));
-
+	// let the rest of the code decide
     driver = D3DAPP_YOUDECIDE;
-	mode   = (d3dappi.bFullscreen == TRUE) ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
+
+	// use window mode if command line says so
+	// other wise let the rest of the code decide
+	mode = (bFullscreen) ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
+
     ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
+
     D3DAppIGetClientWin(hwnd);
+
     if (mode == D3DAPP_USEWINDOW) {
         w = d3dappi.szClient.cx;
         h = d3dappi.szClient.cy;
@@ -849,8 +732,8 @@ D3DAppGetRenderState(D3DAppRenderState* lpState)
 /*
  * D3DAppShowBackBuffer
  */
-BOOL
-D3DAppShowBackBuffer(DWORD flags)
+
+BOOL D3DAppShowBackBuffer(DWORD flags)
 {
     if (!d3dappi.bRenderingIsOK) {
         D3DAppISetErrorString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");

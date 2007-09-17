@@ -1,48 +1,4 @@
-/*
- * a i s p l i n e . c
- *
- * AISPLINE AIMODE_FOLLOWPATH
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 12 $
- *
- * $Header: /PcProjectX/Ai/AISpline.c 12    3/05/98 9:29a Phillipd $
- *
- * $Log: /PcProjectX/Ai/AISpline.c $
- * 
- * 12    3/05/98 9:29a Phillipd
- * added the OPT_ON stuff to all AI files....
- * 
- * 11    21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 10    11/27/97 6:39p Phillipd
- * 
- * 9     11/27/97 12:25p Phillipd
- * 
- * 8     11/19/97 6:50p Phillipd
- * Clean up
- * 
- * 7     11/15/97 1:09p Phillipd
- * 
- * 6     10/30/97 3:40p Phillipd
- * 
- * 5     10/30/97 3:17p Phillipd
- * 
- * 4     10/30/97 9:30a Phillipd
- * Bikes with different mods started...
- * 
- * 3     10/29/97 12:25p Phillipd
- * 
- * 2     10/25/97 3:49p Phillipd
- * 
- * 1     10/25/97 1:32p Phillipd
- * 
- *
- */
+
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>

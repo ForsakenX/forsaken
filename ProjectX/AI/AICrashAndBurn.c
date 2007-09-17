@@ -1,43 +1,4 @@
-/*
- * a i c r a s h a n d b u r n . c
- *
- * AIMODE_DEATH_CRASHANDBURN
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 11 $
- *
- * $Header: /PcProjectX/Ai/AICrashAndBurn.c 11    3/19/98 5:17p Phillipd $
- *
- * $Log: /PcProjectX/Ai/AICrashAndBurn.c $
- * 
- * 11    3/19/98 5:17p Phillipd
- * 
- * 10    3/05/98 9:29a Phillipd
- * added the OPT_ON stuff to all AI files....
- * 
- * 9     21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 8     11/26/97 10:44a Phillipd
- * 
- * 7     11/25/97 4:13p Phillipd
- * 
- * 6     11/25/97 3:13p Phillipd
- * 
- * 5     11/25/97 2:37p Phillipd
- * 
- * 4     11/22/97 1:23p Phillipd
- * 
- * 3     11/21/97 10:56a Phillipd
- * Max Kills to end a level....
- * 
- * 2     11/20/97 12:39p Phillipd
- * 
- * 1     11/20/97 12:05p Phillipd
- */
+
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>

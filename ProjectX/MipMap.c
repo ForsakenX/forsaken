@@ -1,36 +1,8 @@
-/*
- * The X Men, November 1997
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 8 $
- *
- * $Header: /PcProjectX/MipMap.c 8     3/14/98 3:31p Phillipd $
- *
- * $Log: /PcProjectX/MipMap.c $
- * 
- * 8     3/14/98 3:31p Phillipd
- * bmp files for textures are now supported...
- * 
- * 7     12/30/97 12:30p Phillipd
- * 
- * 6     11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 5     11/19/97 6:25p Phillipd
- * 
- * 4     11/19/97 6:22p Phillipd
- * 
- * 3     11/13/97 6:51p Phillipd
- * 
- * 2     11/10/97 4:13p Phillipd
- * 
- * 1     11/10/97 4:08p Phillipd
- * 
- */											    
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Include File...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 #include "typedefs.h"
 #include "tload.h"
 #include "MipMap.h"
@@ -57,6 +29,7 @@ extern	BYTE  GammaTab[256];
  * memory flag specifies DDSCAPS_SYSTEMMEMORY or DDSCAPS_VIDEOMEMORY.
  * Scale...divide X and Y by Scale..
  */
+
 BOOL InitMipMap(LPCSTR lpName , int16 Scale , MIPMAPDESC * MipMapDesc )
 {
     DWORD dwWidth, dwHeight;
@@ -64,42 +37,47 @@ BOOL InitMipMap(LPCSTR lpName , int16 Scale , MIPMAPDESC * MipMapDesc )
     FILE *fp;
     CHAR buf[100];
 	int XScale,YScale;
-//	char TempFilename[ 128 ];
 	uint8 * uint8pnt;
 
     /*
      * Find the image file and open it
      */
-//	Add_Path( "textures\\", (char *) lpName, &TempFilename[ 0 ] );
-//	fp = DataPath_fopen( &TempFilename[ 0 ], "rb" );
-	fp = DataPath_fopen( (char*) lpName, "rb" );
+
+	fp = fopen( (char*) lpName, "rb" );
     if (fp == NULL) {
 		Msg( "Cannot find %s.\n", lpName);
         return FALSE;
     }
+
     /*
      * Is it a PPM file?
      */
+
     fgets(buf, sizeof buf, fp);
     if (lstrcmp(buf, "P6\n")) {
         fclose(fp);
 		Msg( "%s Is Not a PPM File\n", lpName);
         return FALSE;
     }
+
     /*
      * Skip any comments
      */
+
     do {
         fgets(buf, sizeof buf, fp);
     } while (buf[0] == '#');
+
     /*
      * Read the width and height
      */
+
     sscanf(buf, "%d %d\n", &dwWidth, &dwHeight);
     fgets(buf, sizeof buf, fp); /* skip next line */
 
 	XScale = Scale;
 	YScale = Scale;
+
 	// Some cards Only Like Square Textures...
 	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 	{

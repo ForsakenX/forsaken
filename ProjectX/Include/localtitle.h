@@ -1,12 +1,3 @@
-// localtitle.h
-
-/*********************
-Notes for translator:
-
-1) Only translate text enclosed between quotation marks
-2) Any problems mail philipy@probe.co.uk
-
-**********************/
 
 #ifndef LOCALTITLE_INCLUDED
 #define LOCALTITLE_INCLUDED

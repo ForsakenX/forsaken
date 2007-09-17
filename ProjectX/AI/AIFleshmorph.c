@@ -1,44 +1,4 @@
-/*
- * a i f l e s h m o r p h . c
- *
- * AIFLESHMORPH
- *
- * Copyright (c) 1998 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 11 $
- *
- * $Header: /PcProjectX/Ai/AIFleshmorph.c 11    3/28/98 10:06a Phillipd $
- *
- * $Log: /PcProjectX/Ai/AIFleshmorph.c $
- * 
- * 11    3/28/98 10:06a Phillipd
- * 
- * 10    3/19/98 5:05p Phillipd
- * 
- * 9     3/09/98 4:19p Phillipd
- * 
- * 8     3/05/98 9:29a Phillipd
- * added the OPT_ON stuff to all AI files....
- * 
- * 7     2/26/98 4:50p Phillipd
- * 
- * 6     2/25/98 3:18p Phillipd
- * 
- * 5     2/25/98 10:50a Phillipd
- * 
- * 4     2/23/98 4:46p Phillipd
- * 
- * 3     21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 2     2/03/98 5:38p Phillipd
- * 
- * 1     2/03/98 5:36p Phillipd
- * 
- * 
- */
+
 #include	<stdio.h>
 #include <math.h>
 #include <malloc.h>

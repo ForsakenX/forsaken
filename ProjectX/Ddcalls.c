@@ -1,114 +1,3 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 36 $
- *
- * $Header: /PcProjectX/Ddcalls.c 36    21/08/98 15:28 Philipy $
- *
- * $Log: /PcProjectX/Ddcalls.c $
- * 
- * 36    21/08/98 15:28 Philipy
- * modified free video memory check to account for frame buffer size
- * 
- * 35    18/08/98 18:14 Philipy
- * all pings in server game are now from server perspective
- * windowed mode re-enabled ( still needs some work )
- * 
- * 34    12/08/98 15:37 Philipy
- * removed mode limitaions
- * 
- * 33    6/19/98 10:57a Phillipd
- * 
- * 32    6/04/98 3:49p Phillipd
- * Shield and Hull Get saved and restored during minimizeation
- * 
- * 31    6/03/98 4:42p Phillipd
- * 
- * 30    4/27/98 4:01p Phillipd
- * 
- * 29    14/04/98 21:52 Oliverc
- * Fixed glitches in new device selection code
- * 
- * 28    4/14/98 7:15p Phillipd
- * 
- * 27    4/04/98 14:22 Philipy
- * mode scaling stuff is now calculated rather than based on fixed values
- * added -NoBlitTextScaling option to ReadIni and command line options
- * 
- * 26    3/29/98 6:45p Phillipd
- * 
- * 25    3/29/98 6:41p Phillipd
- * 
- * 24    29/03/98 17:49 Collinsd
- * 
- * 23    3/29/98 1:21p Phillipd
- * 
- * 22    26/03/98 9:22 Collinsd
- * SW Restricted to 640x480 or less
- * 
- * 21    17/03/98 20:29 Collinsd
- * Fixed pinemines targeting own team mates mines.
- * 
- * 20    3/17/98 4:14p Phillipd
- * 8 bit screenmodes enabled.....
- * 
- * 19    9/01/98 11:13 Philipy
- * loading bar now displayed when loading
- * 
- * 18    1/08/98 4:18p Phillipd
- * 
- * 17    12/23/97 9:59a Phillipd
- * Unwanted Tetxure Formats commented out...
- * Unwanted ScreenModes out...
- * Pickup Generation Sfx added
- * 
- * 16    12/19/97 4:17p Phillipd
- * ScreenMemory switch added for 3dfx.....
- * 
- * 15    12/16/97 3:24p Phillipd
- * 
- * 14    7/11/97 14:25 Philipy
- * fixed bug when changing mode from title room: InitTitle was not being
- * called
- * 
- * 13    16/09/97 11:17 Oliverc
- * Prevented dodgy video modes being available
- * 
- * 12    31/07/97 15:57 Oliverc
- * Added special SELF_PLAY features, including disabling critical unused
- * code and setting default values appropriate to demo attract mode
- * 
- * 11    6/21/97 11:37a Phillipd
- * Left comments in for how to get a dd2 interface which can allow for
- * frequency stting of monitors when a display mode is set
- * 
- * 10    6/16/97 2:57p Phillipd
- * 
- * 9     10/29/96 2:52p Phillipd
- * 
- * 8     10/23/96 4:23p Phillipd
- * Lots of crap taken out of D3dapp and its associated functions and
- * files....
- * 
- * 7     14/10/96 15:02 Oliverc
- * Added command line options to select default DirectDraw device and
- * fullscreen video mode
- * 
- * 6     10/09/96 2:33p Phillipd
- * 
- * 5     9/15/96 11:49a Phillipd
- * 
- * 4     8/20/96 9:08a Phillipd
- * 
- * 3     7/11/96 2:55p Phillipd
- * added D3DAppFreeVideoMemory...returns total free..
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*
  *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
@@ -703,18 +592,20 @@ D3DAppICheckForPalettized(void)
     bPrimaryPalettized = 
         (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) ? TRUE : FALSE;
 
-    if (bPrimaryPalettized) {
+    if (bPrimaryPalettized) 
+	{
         int i;
+
         /*
          * Get the current palette.
          */
+
         HDC hdc = GetDC(NULL);
         GetSystemPaletteEntries(hdc, 0, (1 << 8), ppe);
         ReleaseDC(NULL, hdc);
 
-		lpPalette = DDLoadPalette( d3dappi.lpDD , ".\\data\\pictures\\pal.bmp");
-		lpPalette->lpVtbl->GetEntries(lpPalette, 0, 0, 256,
-	                                  &ppe[0]);
+		lpPalette = DDLoadPalette( d3dappi.lpDD , "data\\pictures\\pal.bmp");
+		lpPalette->lpVtbl->GetEntries(lpPalette, 0, 0, 256, &ppe[0]);
 
         
 		/*

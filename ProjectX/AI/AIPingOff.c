@@ -1,40 +1,4 @@
-/*
- * a i p i n g o f f . c
- *
- * AIMODE_DEATH_PINGOFF
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 10 $
- *
- * $Header: /PcProjectX/Ai/AIPingOff.c 10    3/05/98 9:29a Phillipd $
- *
- * $Log: /PcProjectX/Ai/AIPingOff.c $
- * 
- * 10    3/05/98 9:29a Phillipd
- * added the OPT_ON stuff to all AI files....
- * 
- * 9     21/02/98 14:29 Collinsd
- * Added dan's new enemy code and fixed flashing of team in capture the
- * flag.
- * 
- * 8     11/26/97 10:44a Phillipd
- * 
- * 7     11/25/97 4:13p Phillipd
- * 
- * 6     11/25/97 3:13p Phillipd
- * 
- * 5     11/25/97 2:37p Phillipd
- * 
- * 4     11/24/97 3:43p Phillipd
- * 
- * 3     11/22/97 2:11p Phillipd
- * 
- * 2     11/22/97 1:23p Phillipd
- * 
- * 1     11/22/97 1:23p Phillipd
- */
+
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>

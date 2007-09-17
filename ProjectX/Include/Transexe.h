@@ -1,35 +1,4 @@
-/*
- * t r a n s e x e .h
- *
- * Translucent exexcute Routines
- *
- * Project X, July 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 6 $
- *
- * $Header: /PcProjectX/Include/Transexe.h 6     24-03-97 12:54p Collinsd $
- *
- * $Log: /PcProjectX/Include/Transexe.h $
- * 
- * 6     24-03-97 12:54p Collinsd
- * changed detail level of explosion.  Changed process model function
- * 
- * 5     4/11/96 10:45 Oliverc
- * Changed display routines to clip to visible portal boundaries of each
- * group
- * 
- * 4     17/10/96 14:43 Collinsd
- * Explosion and gravgon effects now work properly.
- * 
- * 3     8/29/96 5:41p Phillipd
- * 
- * 2     7/29/96 12:16p Phillipd
- * 
- * 1     7/29/96 11:25a Phillipd
- * 
- */
+
 
 #ifndef TRANSEXE_INCLUDED
 #define TRANSEXE_INCLUDED

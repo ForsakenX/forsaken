@@ -1,27 +1,4 @@
-/*
- * The X Men, November 1997
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 4 $
- *
- * $Header: /PcProjectX/Include/XMem.h 4     18/03/98 16:14 Philipy $
- *
- * $Log: /PcProjectX/Include/XMem.h $
- * 
- * 4     18/03/98 16:14 Philipy
- * messed about with stopping memory from being paged out
- * Stopped due to lack of time & information
- * 
- * 3     28/01/98 12:57 Oliverc
- * Changed allocation checking to working on DEBUG_ON flag instead of the
- * generic _DEBUG
- * 
- * 2     11/29/97 4:35p Phillipd
- * 
- * 1     11/29/97 4:35p Phillipd
- * 
- */
+
 #ifndef XMEM_INCLUDED
 #define XMEM_INCLUDED
 

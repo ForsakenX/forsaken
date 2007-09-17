@@ -1,109 +1,4 @@
-/*
- * w a t e r . c
- *
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 33 $
- *
- * $Header: /PcProjectX/Water.c 33    25/08/98 8:51 Collinsd $
- *
- * $Log: /PcProjectX/Water.c $
- * 
- * 33    25/08/98 8:51 Collinsd
- * Added checksum call to all loaded files.
- * 
- * 32    4/13/98 7:37p Phillipd
- * 
- * 31    15/03/98 18:40 Philipy
- * added water effect splash screen
- * fixed bug with end game sequence
- * implemented attract mode
- * text macros now saved in config
- * 
- * 30    11/03/98 11:37 Collinsd
- * Shooting out of water now works.
- * 
- * 29    10/03/98 15:56 Oliverc
- * Flipped water texture coords only veritcally
- * 
- * 28    9/03/98 20:12 Oliverc
- * Fixed water texture UV orientation
- * 
- * 27    17/02/98 9:17 Philipy
- * added support for placeholder textures, which can be dynamically
- * updated
- * implemented mission briefing screens
- * 
- * 26    1/31/98 4:40p Phillipd
- * Water impact now uses pointers,.....
- * 
- * 25    1/26/98 4:31p Phillipd
- * 
- * 24    1/20/98 11:27a Phillipd
- * Slight water optimization...
- * 
- * 23    5/01/98 10:39 Collinsd
- * Water Splash is now tinted by water colour.
- * 
- * 22    1/05/98 9:30a Phillipd
- * 
- * 21    12/15/97 12:00p Phillipd
- * 
- * 20    12/12/97 17:42 Oliverc
- * 
- * 19    12/09/97 4:24p Phillipd
- * 
- * 18    12/06/97 2:53p Phillipd
- * Fixed Phils Sfx Crash Bug....Doh
- * 
- * 17    12/04/97 4:55p Phillipd
- * 
- * 16    12/01/97 4:45p Phillipd
- * 
- * 15    12/01/97 3:27p Phillipd
- * 
- * 14    11/29/97 4:36p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 13    28/11/97 19:01 Collinsd
- * Fixed nmelightning, fixed mines not owned by player, fixed targeting of
- * non player missiles.
- * 
- * 12    19/11/97 9:42 Collinsd
- * Added new level specific loading.
- * 
- * 11    11/11/97 15:39 Collinsd
- * Fixed lots of bugs. ( in deallocation of buffers ).
- * 
- * 10    11/07/97 12:19p Phillipd
- * New enemy aiming...
- * Started MipMap Stuff
- * 
- * 9     10/30/97 12:52p Phillipd
- * 
- * 8     10/24/97 5:54p Phillipd
- * 
- * 7     23/10/97 13:52 Collinsd
- * Added code to enable/disable compilation of software version.
- * SOFTWARE_ENABLE & softblit.lib.
- * 
- * 6     10/21/97 5:07p Phillipd
- * 
- * 5     20/10/97 11:58 Oliverc
- * Trigger info now dynamically allocated on loading
- * 
- * 4     8/10/97 20:34 Collinsd
- * Added Header and Version Code.
- * 
- * 3     10/07/97 12:00p Phillipd
- * 
- * 2     10/06/97 7:19p Phillipd
- * water stuff...more
- * 
- * 1     10/06/97 5:08p Phillipd
- * 
- */
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Include File...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -275,8 +170,8 @@ BOOL PreWaterLoad( char * Filename )
 	FileNamePnt = (char *) &buf[0];
 	while ( ( *FileNamePnt++ = *Buffer++ ) != 0 );
 
-	if( !_stricmp( "default.ppm", (char *) &buf[0] ) ) sprintf( &TempFilename[ 0 ], "textures\\%s", (char *) &buf[0] );
-	else sprintf( &TempFilename[ 0 ], "levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], (char *) &buf[0] );
+	if( !_stricmp( "default.ppm", (char *) &buf[0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\%s", (char *) &buf[0] );
+	else sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], (char *) &buf[0] );
 
 	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE , TRUE, 0, 0 );		// dont colourkey
 	WaterBuffer = Buffer;

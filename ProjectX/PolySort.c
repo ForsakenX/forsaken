@@ -1,34 +1,4 @@
-/*
- * The X Men, May 1997
- * Copyright (c) 1997 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 9 $
- *
- * $Header: /PcProjectX/PolySort.c 9     11/11/98 16:00 Philipy $
- *
- * $Log: /PcProjectX/PolySort.c $
- * 
- * 9     11/11/98 16:00 Philipy
- * various fixes for warnings / errors when compiling under VC6
- * 
- * 8     12/01/97 3:27p Phillipd
- * 
- * 7     11/29/97 4:35p Phillipd
- * Xmem is now in effect...use it allways....
- * 
- * 6     6/12/97 2:27p Phillipd
- * 
- * 5     5/27/97 5:40p Phillipd
- * 
- * 4     5/21/97 9:56a Phillipd
- * 
- * 3     5/20/97 2:20p Phillipd
- * 
- * 2     5/17/97 5:17p Phillipd
- * 
- * 1     5/17/97 2:15p Phillipd
- */											    
+									    
 #include "typedefs.h"
 #include "main.h"
 #include "new3d.h"

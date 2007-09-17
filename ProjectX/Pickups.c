@@ -63,6 +63,7 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Externs
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+extern void DebugPrintf( const char * format, ... );
 extern SLIDER BikeCompSpeechSlider;
 extern BOOL CTF;
 extern BOOL CanCarryOwnFlag;
@@ -3572,12 +3573,8 @@ BOOL CheckValidRegenSlot( int16 Slot )
 	if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
 		AddPickupToRegen( RegenPoints[ Slot ].Type );
 
-#ifdef DEBUG_ON
-
 	/* let people know the pic file is messed up! */
-    Msg("Bad regen point detected! The PIC file needs to be fixed!");
-
-#endif
+    DebugPrintf("Bad regen point detected! The PIC file needs to be fixed!");
 
 	/* failed */
 	return( FALSE );
@@ -4500,19 +4497,14 @@ BOOL RegeneratePickup( uint16 Type )
 	/* the location given is occupied */
 	if ( i == (uint16) -1 )
 	{
-#ifdef DEBUG_ON
-		Msg("RegeneratePickup (FAILED) location given is occupied.");
-#endif
+		DebugPrintf("RegeneratePickup (FAILED) location given is occupied.");
 		return FALSE;
 	}
 	
 	/* too many of same type */
 	if( i == (uint16) -2 ){
-#ifdef DEBUG_ON
-		Msg("RegeneratePickup (FAILED) too many of same type");
-#endif
-		/* dont complain */
-		return TRUE;	
+		DebugPrintf("RegeneratePickup (FAILED) too many of same type");
+		return TRUE; /* dont complain */
 	}
 
 	/* tell others in networked game */

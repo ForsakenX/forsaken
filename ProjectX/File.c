@@ -1,80 +1,8 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 23 $
- *
- * $Header: /PcProjectX/File.c 23    25/08/98 4:10p Oliverc $
- *
- * $Log: /PcProjectX/File.c $
- * 
- * 23    25/08/98 4:10p Oliverc
- * Modified checksum routine again to make even better (I hope)
- * 
- * 22    25/08/98 15:44 Phillipd
- * 
- * 21    25/08/98 3:01p Oliverc
- * 
- * 20    25/08/98 2:53p Oliverc
- * Added InitCheckSum() routine and modified checksum calculation to be
- * more position/order-sensistive than before
- * 
- * 19    25/08/98 9:45 Collinsd
- * Added debug info
- * 
- * 18    25/08/98 8:50 Collinsd
- * Added checksum call to all loaded files.
- * 
- * 17    24/08/98 5:53p Oliverc
- * Added FileCheckSum() routine for multiplayer levels
- * 
- * 16    11/04/98 16:44 Collinsd
- * 
- * 15    14/01/98 10:12 Collinsd
- * Add logfile and batchfile works again.
- * 
- * 14    9/01/98 16:02 Philipy
- * 
- * 13    9/01/98 15:57 Philipy
- * fixed FileExists bug
- * 
- * 12    9/01/98 11:48 Collinsd
- * 
- * 11    9/01/98 11:01 Collinsd
- * Stuff back to normal and goldbars not get carried over levels.
- * 
- * 10    5/01/98 10:37 Philipy
- * speech sfx implemented - currently defaults to 1 biker & computer only,
- * none selectable
- * 
- * 9     6/12/97 16:35 Collinsd
- * Debuginfo put on #define
- * 
- * 8     5/12/97 14:11 Collinsd
- * Allocated ships fixed.
- * 
- * 7     15/10/97 9:37 Collinsd
- * Added logfile/batchfile creation code.
- * 
- * 6     13/10/97 19:36 Collinsd
- * 
- * 5     13/08/97 15:09 Collinsd
- * Taken out debug messages.
- * 
- * 4     11/08/97 10:12 Collinsd
- * Added override data directory option. ( SFX don't work yet! )
- * 
- * 3     11/25/96 5:14p Phillipd
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Header files
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #include	<fcntl.h>
 #include	<sys/types.h>
 #include	<sys/stat.h>
@@ -88,55 +16,22 @@
 #include	"d3dmain.h"
 #include	"file.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-//#define	DEBUG_DATAPATH	1
+// prototypes
+void DebugPrintf( const char * format, ... );
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	External Variables
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-extern	int	 use_data_path;
-extern	char data_path[ 128 ];
-extern	char normdata_path[ 128 ];
 
-void DebugPrintf( const char * format, ... );
+extern BOOL Debug;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Globals
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 LONGLONG	LevelCheckSum = 0;
 BOOL	CreateBatchFile = FALSE;
 BOOL	CreateLogFile = FALSE;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Return Size of File given Filename
-	Input		:		char	*	Filename
-	Output		:		long		Size of File
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-long Get_File_Size( char * Filename )
-{
-	int		Handle = -1;
-	long	Read_Size = 0;
-#ifdef	WATCOM
-	Handle = open( Filename, O_RDONLY | O_BINARY );
-	if( Handle != -1 )
-	{
-		Read_Size = filelength( Handle );
-		close( Handle );
-	}
-
-#else
-	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
-	if( Handle != -1 )
-	{
-		Read_Size = _filelength( Handle );
-		_close( Handle );
-	}
-#endif
-
-	return ( Read_Size );
-}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		See if file exists
@@ -145,65 +40,12 @@ long Get_File_Size( char * Filename )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL File_Exists( char * Filename )
 {
-	/*
-	int		Handle = -1;
-#ifdef	WATCOM
-	Handle = open( Filename, O_RDONLY | O_BINARY );
-	if( Handle != -1 )
-	{
-		close( Handle );
-		return TRUE;
-	}
-
-#else
-	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
-	if( Handle != -1 )
-	{
-		close( Handle );
-		return TRUE;
-	}
-#endif
-	*/
 	if ( !_access( Filename, 00 ) )
 		return TRUE;
-	else
-		return FALSE;
+	DebugPrintf("File does not exist: %s\n", Filename);
+	return FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Read Part or All of File Into Memory
-	Input		:		char	*	Filename
-				:		char	*	Buffer to Load into
-				:		long		Bytes to Read ( 0 = All )
-	Output		:		long		Number of bytes Read
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-long Read_File( char * Filename, char * File_Buffer, long Read_Size )
-{
-	int		Handle = -1;
-	long	Bytes_Read = 0;
-
-#ifdef	WATCOM
-	Handle = open( Filename, O_RDONLY | O_BINARY );
-	if( Handle != -1 )
-	{
-		if( Read_Size == 0 ) Read_Size = filelength( Handle );
-		Bytes_Read = read( Handle, File_Buffer, Read_Size );
-		if( Bytes_Read == -1 ) Bytes_Read = 0;
-		close( Handle );
-	}
-#else
-	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
-	if( Handle != -1 )
-	{
-		if( Read_Size == 0 ) Read_Size = _filelength( Handle );
-		Bytes_Read = _read( Handle, File_Buffer, Read_Size );
-		if( Bytes_Read == -1 ) Bytes_Read = 0;
-		_close( Handle );
-	}
-#endif
-
-	return ( Bytes_Read );
-}
 
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -218,20 +60,13 @@ long Write_File( char * Filename, char * File_Buffer, long Write_Size )
 	int		Handle = -1;
 	long	Bytes_Written = 0;
 
-#ifdef	WATCOM
-	Handle = open( Filename, O_CREAT | O_TRUNC | O_BINARY | O_RDWR);
-	if( Handle != -1 ) {
-		Bytes_Written = write( Handle, File_Buffer, Write_Size );
-		close( Handle );
-	}
-#else
 	Handle = _open( Filename, _O_CREAT | _O_TRUNC | _O_BINARY | _O_RDWR ,
 							  _S_IREAD | _S_IWRITE );
 	if( Handle != -1 ) {
 		Bytes_Written = _write( Handle, File_Buffer, Write_Size );
 		_close( Handle );
 	}
-#endif
+
 	return ( Bytes_Written );
 }
 
@@ -336,78 +171,33 @@ void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Return Size of File given Filename
-				:		data\ as base directory
 				:		scan override dir first, then normal
 	Input		:		char	*	Filename
 	Output		:		long		Size of File
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-long DataPath_Get_File_Size( char * Filename )
+long Get_File_Size( char * Filename )
 {
+
 	int		Handle = -1;
 	long	Read_Size = 0;
-	char	TempFilename[ 256 ];
-#ifdef	WATCOM
 
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], Filename, &TempFilename[0] );
-		Handle = open( &TempFilename[ 0 ], O_RDONLY | O_BINARY );
+	// open the file
+	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
 
-		if( Handle != -1 )
-		{
-#ifdef DEBUG_DATAPATH
-			DebugPrintf( "DataPath_Get_File_Size() : %s\n", &TempFilename[ 0 ] );
-#endif
-
-			Read_Size = filelength( Handle );
-			close( Handle );
-			return( Read_Side );
-		}
-	}
-
-	Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[0] );
-	Handle = open( &TempFilename[ 0 ], O_RDONLY | O_BINARY );
+	// opened successfully
 	if( Handle != -1 )
 	{
-#ifdef DEBUG_DATAPATH
-		DebugPrintf( "Get_File_Size() : %s\n", &TempFilename[ 0 ] );
-#endif
-		Read_Size = filelength( Handle );
-		close( Handle );
-	}
-	
-#else
-
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], Filename, &TempFilename[0] );
-		Handle = _open( &TempFilename[ 0 ], _O_RDONLY | _O_BINARY );
-
-		if( Handle != -1 )
-		{
-#ifdef DEBUG_DATAPATH
-			DebugPrintf( "DataPath_Get_File_Size() : %s\n", &TempFilename[ 0 ] );
-#endif
-			Read_Size = _filelength( Handle );
-			_close( Handle );
-			return( Read_Size );
-		}
-	}
-
-	Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[0] );
-	Handle = _open( &TempFilename[ 0 ], _O_RDONLY | _O_BINARY );
-	if( Handle != -1 )
-	{
-#ifdef DEBUG_DATAPATH
-		DebugPrintf( "Get_File_Size() : %s\n", &TempFilename[ 0 ] );
-#endif
+		// get the size
 		Read_Size = _filelength( Handle );
+
+		// close the file
 		_close( Handle );
+
 	}
 
-#endif
-
+	// return the size
 	return ( Read_Size );
+
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -419,132 +209,56 @@ long DataPath_Get_File_Size( char * Filename )
 				:		long		Bytes to Read ( 0 = All )
 	Output		:		long		Number of bytes Read
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-long DataPath_Read_File( char * Filename, char * File_Buffer, long Read_Size )
+long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 {
+
 	int		Handle = -1;
 	long	Bytes_Read = 0;
-	char	TempFilename[ 256 ];
 
-#ifdef	WATCOM
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], Filename, &TempFilename[0] );
-		Handle = open( &TempFilename[ 0 ], O_RDONLY | O_BINARY );
-	
-		if( Handle != -1 )
-		{
-#ifdef DEBUG_DATAPATH
-			DebugPrintf( "DataPath_Read_File() : %s\n", &TempFilename[ 0 ] );
-#endif
-			if( Read_Size == 0 ) Read_Size = filelength( Handle );
-			Bytes_Read = read( Handle, File_Buffer, Read_Size );
-			if( Bytes_Read == -1 ) Bytes_Read = 0;
-			close( Handle );
-			return ( Bytes_Read );
-		}
-	}
+	// open the file handle
+	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
 
-	Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[0] );
-	Handle = open( &TempFilename[ 0 ], O_RDONLY | O_BINARY );
-
+	// file opened successfully
 	if( Handle != -1 )
 	{
-#ifdef DEBUG_DATAPATH
-		DebugPrintf( "Read_File() : %s\n", &TempFilename[ 0 ] );
-#endif
-		if( Read_Size == 0 ) Read_Size = filelength( Handle );
-		Bytes_Read = read( Handle, File_Buffer, Read_Size );
-		if( Bytes_Read == -1 ) Bytes_Read = 0;
-		close( Handle );
-	}
-
-#else
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], Filename, &TempFilename[0] );
-		Handle = _open( &TempFilename[ 0 ], _O_RDONLY | _O_BINARY );
-
-		if( Handle != -1 )
-		{
-#ifdef DEBUG_DATAPATH
-			DebugPrintf( "DataPath_Read_File() : %s\n", &TempFilename[ 0 ] );
-#endif
-			if( Read_Size == 0 ) Read_Size = _filelength( Handle );
-			Bytes_Read = _read( Handle, File_Buffer, Read_Size );
-			if( Bytes_Read == -1 ) Bytes_Read = 0;
-			_close( Handle );
-			return ( Bytes_Read );
-		}
-	}
-
-	Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[0] );
-	Handle = _open( &TempFilename[ 0 ], _O_RDONLY | _O_BINARY );
-
-	if( Handle != -1 )
-	{
-#ifdef DEBUG_DATAPATH
-		DebugPrintf( "Read_File() : %s\n", &TempFilename[ 0 ] );
-#endif
+		// get the size of the file
 		if( Read_Size == 0 ) Read_Size = _filelength( Handle );
+
+		// read in the file
 		Bytes_Read = _read( Handle, File_Buffer, Read_Size );
+
+		// set bytes read to 0
+		// if no data was read
 		if( Bytes_Read == -1 ) Bytes_Read = 0;
+
+		// close up the file
 		_close( Handle );
-	}
-#endif
 
+	}
+
+	// return the size of the file
 	return ( Bytes_Read );
+
 }
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Open file using fopen
-				:		data\ as base directory
-				:		read from override dir first, then normal
-	Input		:		char	*	Filename
-				:		char	*	Access right
-	Output		:		FILE	*	FilePtr
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-FILE * DataPath_fopen( char * Filename, char * Rights )
-{
-	FILE	*	fp;
-	char		TempFilename[ 256 ];
-	char		TempFilename2[ 256 ];
-
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], Filename, &TempFilename[ 0 ] );
-		fp = fopen( &TempFilename[ 0 ], Rights );
-		if( fp != NULL ) return( fp );
-	}
-
-	Add_Path( &normdata_path[ 0 ], Filename, &TempFilename2[ 0 ] );
-	fp = fopen( &TempFilename2[ 0 ], Rights );
-
-#if 0
-	if( !fp )
-	{
-		Msg( "Cannot open /n%s/n%s/n", &TempFilename[ 0 ], &TempFilename2[ 0 ] );
-	}
-#endif
-
-	return( fp );
-}
-
-char * LogFilename = "projectx.log";
-char * BatchFilename = "filesused.bat";
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Add Comment to log
 	Input		:		const char * format, .....
 	Output		:		Nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
+char * LogFilename = "logs\\projectx.log";
+char * BatchFilename = "logs\\filesused.bat";
+
 void AddCommentToLog( const char * format, ... )
 {
-#ifndef FINAL_RELEASE
+
 	FILE	*	fp;
     static char buf1[256], buf2[512];
 	va_list		args;
 
-	if( !CreateLogFile ) return;
+	if ( ! Debug || !CreateLogFile )
+		return;
 
 	fp = fopen( LogFilename, "a" );
 
@@ -557,7 +271,7 @@ void AddCommentToLog( const char * format, ... )
 		va_end( args );
 		fclose( fp );
 	}
-#endif
+
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -567,12 +281,13 @@ void AddCommentToLog( const char * format, ... )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AddCommentToBat( const char * format, ... )
 {
-#ifndef FINAL_RELEASE
+
 	FILE	*	fp;
     static char buf1[256], buf2[512];
 	va_list		args;
 
-	if( !CreateBatchFile ) return;
+	if ( ! Debug || !CreateBatchFile )
+		return;
 
 	fp = fopen( BatchFilename, "a" );
 
@@ -587,56 +302,7 @@ void AddCommentToBat( const char * format, ... )
 		va_end( args );
 		fclose( fp );
 	}
-#endif
-}
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add DataPath Filename to batch file
-	Input		:		char	*	Filename
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddDataPathFileToBat( char * Filename )
-{
-#ifndef FINAL_RELEASE
-	FILE	*	fp = NULL;
-	FILE	*	fp2 = NULL;
-	char		TempFilename[ 512 ];
-
-	if( !Filename ) return;
-	if( !Filename[ 0 ] ) return;
-	if( !CreateBatchFile ) return;
-
-	fp = fopen( BatchFilename, "a" );
-
-	if( fp )
-	{
-		if( use_data_path )
-		{
-			Add_Path( &data_path[ 0 ], Filename, &TempFilename[ 0 ] );
-			fp2 = fopen( &TempFilename[ 0 ], "r" );
-
-			if( !fp2 )
-			{
-				Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[ 0 ] );
-				fp2 = fopen( &TempFilename[ 0 ], "r" );
-			}
-		}
-		else
-		{
-			Add_Path( &normdata_path[ 0 ], Filename, &TempFilename[ 0 ] );
-			fp2 = fopen( &TempFilename[ 0 ], "r" );
-		}
-
-		if( fp2 )
-		{
-			fprintf( fp, "copy %%1\\%s %%2\\%s\n", &TempFilename[ 0 ], &TempFilename[ 0 ] );
-			fclose( fp2 );
-		}
-
-		fclose( fp );
-	}
-#endif
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -646,12 +312,14 @@ void AddDataPathFileToBat( char * Filename )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AddFileToBat( char * Filename )
 {
-#ifndef FINAL_RELEASE
+
 	FILE	*	fp = NULL;
+
+	if ( ! Debug || !CreateBatchFile )
+		return;
 
 	if( !Filename ) return;
 	if( !Filename[ 0 ] ) return;
-	if( !CreateBatchFile ) return;
 
 	fp = fopen( BatchFilename, "a" );
 
@@ -661,7 +329,7 @@ void AddFileToBat( char * Filename )
 
 		fclose( fp );
 	}
-#endif
+
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -671,12 +339,13 @@ void AddFileToBat( char * Filename )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void AddCommandToBat( const char * format, ... )
 {
-#ifndef FINAL_RELEASE
+
 	FILE	*	fp;
     static char buf1[256], buf2[512];
 	va_list		args;
 
-	if( !CreateBatchFile ) return;
+	if ( ! Debug || !CreateBatchFile )
+		return;
 
 	fp = fopen( BatchFilename, "a" );
 
@@ -689,43 +358,7 @@ void AddCommandToBat( const char * format, ... )
 		va_end( args );
 		fclose( fp );
 	}
-#endif
-}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Compute checksum for file
-	Input		:		const char * fname
-	Output		:		Nothing
-	Side effect :		LevelCheckSum updated
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void DataPath_FileCheckSum( char *fname )
-{
-	FILE	*	fp = NULL;
-	FILE	*	fp2 = NULL;
-	char		TempFilename[ 512 ];
-
-	if( use_data_path )
-	{
-		Add_Path( &data_path[ 0 ], fname, &TempFilename[ 0 ] );
-		fp2 = fopen( &TempFilename[ 0 ], "r" );
-
-		if( !fp2 )
-		{
-			Add_Path( &normdata_path[ 0 ], fname, &TempFilename[ 0 ] );
-			fp2 = fopen( &TempFilename[ 0 ], "r" );
-		}
-	}
-	else
-	{
-		Add_Path( &normdata_path[ 0 ], fname, &TempFilename[ 0 ] );
-		fp2 = fopen( &TempFilename[ 0 ], "r" );
-	}
-
-	if( fp2 )
-	{
-		fclose( fp2 );
-		FileCheckSum( &TempFilename[ 0 ] );
-	}
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ

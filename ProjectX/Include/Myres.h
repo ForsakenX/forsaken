@@ -1,20 +1,4 @@
-/*
- * The X Men, June 1996
- * Copyright (c) 1996 Probe Entertainment Limited
- * All Rights Reserved
- *
- * $Revision: 3 $
- *
- * $Header: /PcProjectX/Include/Myres.h 3     10/10/96 3:10p Phillipd $
- *
- * $Log: /PcProjectX/Include/Myres.h $
- * 
- * 3     10/10/96 3:10p Phillipd
- * 
- * 2     6/25/96 11:37a Phillipd
- * First SS update
- * 
- */
+
 
 /*==========================================================================
  *		PROJX STUFF
