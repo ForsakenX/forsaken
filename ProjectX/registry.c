@@ -41,8 +41,9 @@ extern void DebugPrintf( const char * format, ... );
 \*******************/
 
 char dirname  [256];  // C:\ProjectX
-char basename [256];  // ProjectX.exe
+char basename [256];  // ProjectX_1.0.exe
 char appname  [256];  // ProjectX
+char version  [256];  // 1.0
 char lobbyKey [256];  // Software\\Microsoft\\DirectPlay\\Applications\\ProjectX
 char appKey   [256];  // Software\\ProjectX
 HKEY appHKey = NULL;
@@ -141,7 +142,7 @@ BOOL GetRegistrySettings(void)
 	}
 
 	// full path to exe used
-	// C:\ProjectX\ProjectX.exe
+	// C:\ProjectX\ProjectX_1.0.exe
 	strcpy( buffer, (const char *)&long_path );
 
 	// get pointer to last occurance of \ character
@@ -162,7 +163,7 @@ BOOL GetRegistrySettings(void)
 	strncpy((char*)&dirname,(char*)&buffer,(sizeof(dirname)-1));
 
 	// get the basename
-	// ProjectX.exe
+	// ProjectX_1.0.exe
 	strncpy((char*)&basename,(char*)&strptr[1],(sizeof(basename)-1));
 
     // get pointer to last occurance of . character
@@ -177,6 +178,23 @@ BOOL GetRegistrySettings(void)
 
 	// set the last . to 0
 	*strptr2 = 0;
+
+    // get pointer to last occurance of _ character
+	strptr2 = strrchr( (char*)&strptr[1], '_' );
+
+	// check
+	if ( strptr2 == NULL )
+	{
+		DebugPrintf("Could not get last occurance of '_'\n");
+		return FALSE;
+	}
+
+	// set the last _ to 0
+	*strptr2 = 0;
+
+	// get the version number
+	// 1.0
+	strncpy((char*)&version,(char*)&strptr2[1],(sizeof(version)-1));
 
     // get the appname
 	// ProjectX
