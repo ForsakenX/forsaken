@@ -1,8 +1,6 @@
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Include Files...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -53,11 +51,9 @@
 #include "restart.h"
 
 #define MAX_SAVEGAME_SLOTS		16
-
 #define MAX_DEMONAME_LENGTH		(60)
 #define MAX_DEMOFILENAME_LENGTH	(80) // must be at least MAX_DEMONAME_LENGTH + strlen( DEMOFOLDER ) + strlen( DEMOFILE_EXTENSION ) + 1
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
-
 #define DEMOFOLDER				"Demos"
 #define DEMOFILE_EXTENSION		".DMO"
 #define DEMOFILE_SEARCHPATH		DEMOFOLDER"\\*"DEMOFILE_EXTENSION
@@ -77,10 +73,8 @@ void *mem;
 
 
 #define HardClear TRUE
-
 #define ENABLE_DEBUG_MENU
 //#undef ENABLE_DEBUG_MENU
-
 #define DEMO_MENUS
 
 // registry.c
@@ -98,7 +92,7 @@ extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 BOOL AllowServer = FALSE;
 
 extern BOOL ShowNamesAnyway;
-extern	BOOL ResetKillsPerLevel;
+extern BOOL ResetKillsPerLevel;
 
 BOOL SpaceOrbSetup = FALSE;
 void DefaultJoystickSettings( USERCONFIG *u );
@@ -230,27 +224,23 @@ extern char MissionTextPics[MAXLEVELS][128];
 extern int32 ColPerspective;
 extern BOOL	JustExitedMenu;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
-extern	BOOL LockOutWindows;
+extern BOOL LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16 Lives;
 extern BYTE	GameStatus[];	// Game Status for every Ship...
 extern BOOL LogosEnable;
 extern BOOL PreventFlips;
 extern BOOL bSoundEnabled;
+extern BOOL ShowTrigZones;
+extern BOOL ShowEFZones;
+extern BOOL ShowTeleports;
+extern BOOL ShowBoundingBoxes;
+extern BOOL ShowColZones;
 extern float DemoAvgFps;
 extern float DemoTotalTime;
 extern int32 DemoGameLoops;
-
-extern	BOOL ShowTrigZones;
-extern	BOOL ShowEFZones;
-extern	BOOL ShowTeleports;
-extern  BOOL ShowBoundingBoxes;
-extern  BOOL ShowColZones;
-
-extern	int16		actual_volume;
+extern	int16 actual_volume;
 extern	int	RearCameraActive;
-
-	
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
 extern BOOL IPAddressExists;
@@ -273,34 +263,24 @@ extern	int16	ShowPortal;
 extern BOOL	Is3Dfx;
 extern BOOL	PolyText[255];
 extern float VduScaleX, VduScaleY;
-
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY   			Polys[MAXPOLYS];
 extern  SCRPOLY			ScrPolys[ MAXNUMOFSCRPOLYS ];
 extern	LINE			Lines[ MAXLINES ];
 extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
-
 extern	FRAME_INFO	*	Title_Fonts_Header;
 extern	FRAME_INFO	*	Title_Chars1_Header;
 extern	FRAME_INFO	*	Title_Chars2_Header;
 extern	OFF_FILES Title_OffsetFiles[];
-
 extern	CAMERA	CurrentCamera;
-
 void Build_View();
-
 extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
-
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
-
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
-
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
-
 #define REGISTRY_EXPIRE_TIME	"ServiceID"
-
 #define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".cfg"
 
 char	*config_name = NULL;
@@ -309,15 +289,11 @@ char	biker_config[256] = DEFAULT_CONFIG_FILE;
 char	biker_name[256] = DEFAULT_PLAYER_NAME;
 char	bike_name[16];
 char	biker_text[512];
-
 BOOL	quitting = FALSE;
 int16	SelectedBike = 0; //MODEL_Borg;
 int16	NumTitleModelsToLoad;
-
 float TriggerInitialAnimation = 0.0F;
-
 BOOL	Our_CalculateFrameRate(void);
-
 float	AttractModeCountDown;
 extern	uint16			FirstFmPolyUsed;
 extern	uint16			FirstPolyUsed;
@@ -336,38 +312,27 @@ BOOL	ShowWeaponKills = FALSE;
 extern	LPDIRECTDRAWSURFACE     lpDDSTwo;
 extern	DDCOLORKEY				ddcolorkey;
 LPDIRECTDRAWSURFACE		lpDDSTitleFont;
-
-extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing
-		
+extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
 extern	int16	ModeCase;
-
 extern	int16	ModesX[8];
 extern	int16	ModesY[8];
 extern	float	ModeScaleX[8];
 extern	float	ModeScaleY[8];
-
 extern	DWORD                   Old_WhoIAm;
-
 extern	DPSESSIONDESC2			Old_Session;
-
 extern	DWORD					Old_Kills;
 extern	DWORD					Old_Deaths;
 extern	DWORD					Old_TeamNumber;
 extern	char					Old_Name[256];
 extern	BOOL					Rejoining;
-
 extern	BOOL					HostDuties;
-
 extern	int16	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
 extern  LONGLONG GameStartedTime;
-
-
 extern int16		LevelNum;
 extern int16		NewLevelNum;
 extern int16		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
-
 extern	BOOL                    IsHost;
 extern	D3DMATRIXHANDLE hView;
 extern	D3DMATRIXHANDLE hWorld;
@@ -378,7 +343,6 @@ extern	LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
 extern	LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
 extern	MATRIX	MATRIX_Identity;
 extern	D3DVIEWPORT viewport;
-
 extern	MODEL	Models[];
 uint16	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
@@ -393,6 +357,7 @@ extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	RandomPickups;
 extern	BOOL CreditsToggle;
+// SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 #ifdef SOFTWARE_ENABLE
 
@@ -888,69 +853,68 @@ BOOL	ShowTeamInfo = TRUE;
 TEXT	MultiPlayerGameName = { 0, 0, "Default", NULL };
 TEXT	DemoGameName = { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
 TEXT	TitlePlayerMessage = { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
-extern	BOOL	SessionsRefresh[MAXSESSIONS];
-extern	BOOL	SessionsRefreshActive;
-extern	BYTE	TeamNumber[MAX_PLAYERS];
-extern	BOOL	ShowStartPoints;
+
+extern BOOL	SessionsRefresh[MAXSESSIONS];
+extern BOOL	SessionsRefreshActive;
+extern BYTE	TeamNumber[MAX_PLAYERS];
+extern BOOL	ShowStartPoints;
+extern BOOL	TriLinear;
+extern BOOL	MipMap;
 
 int Team1 = 0;
 int Team2 = 1;
 int Team3 = 2;
 int Team4 = 3;
-
-// Menu globals
-BOOL OKToProcessKeys = FALSE;
 int FramesIgnored = 0;
+int	DifficultyLevel = DIFF_Norm;
+int	ControlMethod = CONTROL_Mouse;
+int	GameType = GAME_Normal;
 
 float Pulse = 0.0F;
+
+int16 PreferedMaxPlayers = MAX_PLAYERS;
+
+BOOL OKToProcessKeys = FALSE;
 BOOL MenuFrozen = FALSE;
 BOOL NoTeamSelect = FALSE;
-
 BOOL UseNewMenus = TRUE;
+BOOL GameRestricted = FALSE;
+BOOL Autoleveling = TRUE;
+BOOL BiLinearFiltering = TRUE;
+BOOL PerspectiveCorrect = TRUE;
+BOOL EnhancedXHair = FALSE;
+BOOL LensFlare = TRUE;
+BOOL GoreGuts = FALSE;
+BOOL DebugInfo = FALSE;
+BOOL GodMode = FALSE;
+BOOL LevelSelectMode = TRUE;
+BOOL TexturesEnabled = TRUE;
+BOOL DebugVisible = FALSE;
+BOOL ShowPlaneRGB = FALSE;
+BOOL PlayDemo = FALSE;
+BOOL PauseDemo = FALSE;
+BOOL RecordDemo = FALSE;
+BOOL RecordDemoToRam = FALSE;
+BOOL BrightShips = FALSE;
+BOOL MyBrightShips = FALSE;
+BOOL BikeExhausts = TRUE;
+BOOL DemoScreenGrab = FALSE;
+BOOL ServerMode = FALSE;
+BOOL ScreenSaving = TRUE;
+BOOL ShowNode = FALSE;
+BOOL NodeCube = FALSE;
+BOOL OldNodeCube = FALSE;
+BOOL NodeCubeType = FALSE;
+BOOL TeamGame = FALSE;
+BOOL HarmTeamMates = TRUE;
+BOOL PickupLightDetail = TRUE;
+BOOL PrimaryLightDetail = TRUE;
+BOOL SecondaryLightDetail = TRUE;
+BOOL AutoDetail = TRUE;
+BOOL ShowPing = FALSE;
+BOOL BountyBonus = TRUE;
+BOOL PseudoHostCanSetMaxPlayers = TRUE;
 
-int16	PreferedMaxPlayers = MAX_PLAYERS;
-int		DifficultyLevel = DIFF_Norm;
-int		ControlMethod = CONTROL_Mouse;
-
-int		GameType = GAME_Normal;
-BOOL	GameRestricted = FALSE;
-
-BOOL	Autoleveling = TRUE;
-BOOL	BiLinearFiltering = TRUE;
-extern BOOL	TriLinear;
-extern BOOL	MipMap;
-BOOL	PerspectiveCorrect = TRUE;
-BOOL	EnhancedXHair = FALSE;
-BOOL	LensFlare = TRUE;
-BOOL	GoreGuts = FALSE;
-BOOL	DebugInfo = FALSE;
-BOOL	GodMode = FALSE;
-
-BOOL	LevelSelectMode = TRUE;
-
-BOOL	TexturesEnabled = TRUE;
-BOOL	DebugVisible = FALSE;
-BOOL	ShowPlaneRGB = FALSE;
-
-BOOL	PlayDemo = FALSE;
-BOOL	PauseDemo = FALSE;
-BOOL	RecordDemo = FALSE;
-BOOL	RecordDemoToRam = FALSE;//FALSE;
-BOOL	BrightShips = FALSE;
-BOOL	MyBrightShips = FALSE;
-BOOL	BikeExhausts = TRUE;
-BOOL	DemoScreenGrab = FALSE;
-
-BOOL	ServerMode = FALSE;
-
-BOOL	ScreenSaving = TRUE;
-
-BOOL	ShowNode = FALSE;
-BOOL	NodeCube = FALSE;
-BOOL	OldNodeCube = FALSE;
-BOOL	NodeCubeType = FALSE;
-BOOL	TeamGame = FALSE;
-BOOL	HarmTeamMates = TRUE;
 BYTE	TeamNumber[MAX_PLAYERS];
 
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
@@ -994,42 +958,27 @@ int		AllowedBike[ ALLOWED_BIKETYPES ] =
 	16,	// FlyGirl,
 };
 
-
-BOOL	PickupLightDetail = TRUE;
-BOOL	PrimaryLightDetail = TRUE;
-BOOL	SecondaryLightDetail = TRUE;
-BOOL	AutoDetail = TRUE;
-BOOL	ShowPing = FALSE;
-
 SLIDER	SensitivityXSlider = { 1, 16, 1, 5, 0, 0.0F };
 SLIDER	SensitivityYSlider = { 1, 16, 1, 5, 0, 0.0F };
 SLIDER  PingFreqSlider = { 1, 30, 1, 10, 0, 0.0F }; 
 SLIDER	BikeDetailSlider = { 0, 5, 1, 5, 0, 0.0F };
 SLIDER	WaterDetailSlider = { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
-
 SLIDER	NumPrimaryPickupsSlider = { 1, 3, 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
-
 SLIDER	TrailDetailSlider = { 0, 10, 1, 9, 0, 0.0F };
-SLIDER  PacketsSlider = { 1, 30, 1, 6, 0, 0.0F };
+SLIDER  PacketsSlider = { 1, 100, 1, 5, 0, 0.0F };
 SLIDER  ThrottleSlider = { 25, 1000, 25, 1000, 0, 0.0F };
-
 SLIDER PseudoHostTimeoutSlider1 = { 1, 10, 1, 2, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider2 = { 1, 20, 1, 5, 0, 0.0F };
 SLIDER ServerTimeoutSlider = { 1, 20, 1, 5, 0, 0.0F };
-BOOL PseudoHostCanSetMaxPlayers = TRUE;
-
 SLIDER	NumOfPlayersSlider = { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
-
 SLIDER	TimeLimit = { 0, 30, 1, 0, 0, 0.0F };
-
 SLIDER	MaxPlayersSlider = { 1, MAX_PLAYERS, 1, MAX_PLAYERS, 0, 0.0F };
 SLIDER	MaxServerPlayersSlider = { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
-
 SLIDER	MaxKillsSlider = { 0, 255, 1, 0, 0, 0.0F };
 SLIDER	GoalScoreSlider = { 1, 10, 1, 5, 0, 0.0F };
 SLIDER	BountyBonusSlider = { 1, 30, 1, 10, 0, 0.0F };
-BOOL BountyBonus = TRUE;
 SLIDER	CTFSlider = { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
+
 
 #define BIKEFEATURESLIDER( VALUE1, VALUE2, VALUE3, VALUE4, VALUE5, VALUE6, VALUE7, VALUE8 ) \
 	{ 0, 10, 1, (VALUE1), 0, 0.0F, 0.0F, 0, FALSE },\
@@ -3285,6 +3234,9 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM(	200 , 320,LT_MENU_InGame15 /*"Debug Menu"*/, NULL, &MENU_DebugMode , MenuChange , MenuItemDrawName),
 					  OLDMENUITEM(	200 , 336,LT_MENU_InGame16 /*"IP "*/, (void *)&IPAddressText[0], NULL , NULL , DrawNameVar),
 //					  OLDMENUITEM(  200 , 352,LT_MENU_InGame17 /*"Packets Per Second "*/,(void*)&PacketsSlider, NULL, SelectSlider, DrawSlider),
+//					  OLDMENUITEM(  200 , 352,LT_MENU_InGame24 /*"Watch Player "*/,(void*)&WatchPlayerSelect, NULL, SelectSlider, DrawSlider),
+					 
+					  
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
 
 MENU	MENU_Copyright = { "" , NULL, NULL , NULL, 0,
