@@ -77,6 +77,7 @@ extern	uint32	SERVERPACKETBUFFERSIZE;
 extern BOOL NoMenuBack;
 
 extern void DebugLastError( void );
+extern BOOL Debug;
 
 extern BOOL NeedFlagAtHome;
 extern BOOL OwnFlagTeleportsHome;
