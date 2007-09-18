@@ -357,18 +357,13 @@ extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	RandomPickups;
 extern	BOOL CreditsToggle;
-// SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
+//SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 #ifdef SOFTWARE_ENABLE
 
 extern	long	GlBright;
 
 #endif
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-		Tracker stuff..
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-LIST	TrackersList = { 0 };
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Mode changing stuff..
@@ -443,9 +438,7 @@ float AxisPtr_xmin, AxisPtr_xmax, AxisPtr_ymin, AxisPtr_ymax, AxisPtr_mid;
 #define JOYCONFIG_AssignButton 1
 int JoystickConfigState;
 
-
 BOOL InTitleRoom;
-
 
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
@@ -841,18 +834,6 @@ void GetTitleMessage(void);
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	MultiPlayer Stuff...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-LIST	LoadSavedGameList = { 0 };
-LIST	ServiceProvidersList = { 0 };
-LIST	SessionsList = { 0 };
-LIST	MySessionsList = { 0 };
-//LIST	SessionPingList = { 0 };
-BOOL	OKToJoinSession = FALSE;
-LIST	PlayersList = { 0 };
-LIST	TeamList[MAX_TEAMS];
-BOOL	ShowTeamInfo = TRUE;
-TEXT	MultiPlayerGameName = { 0, 0, "Default", NULL };
-TEXT	DemoGameName = { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
-TEXT	TitlePlayerMessage = { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
 
 extern BOOL	SessionsRefresh[MAXSESSIONS];
 extern BOOL	SessionsRefreshActive;
@@ -861,61 +842,153 @@ extern BOOL	ShowStartPoints;
 extern BOOL	TriLinear;
 extern BOOL	MipMap;
 
-int Team1 = 0;
-int Team2 = 1;
-int Team3 = 2;
-int Team4 = 3;
-int FramesIgnored = 0;
-int	DifficultyLevel = DIFF_Norm;
-int	ControlMethod = CONTROL_Mouse;
-int	GameType = GAME_Normal;
+enum
+{
+	BIKE_FEATURE_Speed,
+	BIKE_FEATURE_Accel,
+	BIKE_FEATURE_Handling,
+	BIKE_FEATURE_Power,
+	BIKE_FEATURE_Shield,
+	BIKE_FEATURE_Hull,
+	BIKE_FEATURE_Missiles,
+	BIKE_FEATURE_Ammo,
+};
 
-float Pulse = 0.0F;
+#define TITLE_TEXT_MSGS_STORED 4
+char TitleMessage[TITLE_TEXT_MSGS_STORED][MAXTEXTMSG];
+char TeamCurrentScore[MAX_TEAMS][64];
+
+void SelectKeyDef( MENUITEM *Item );
+void DrawKeyDef( MENUITEM *Item );
+
+int SpeedFeat			= BIKE_FEATURE_Speed;
+int AccelFeat			= BIKE_FEATURE_Accel;
+int HandleFeat			= BIKE_FEATURE_Handling;
+int PowerFeat			= BIKE_FEATURE_Power;
+int ShieldFeat			= BIKE_FEATURE_Shield;
+int HullFeat			= BIKE_FEATURE_Hull;
+int MissileFeat			= BIKE_FEATURE_Missiles;
+int AmmoFeat			= BIKE_FEATURE_Ammo;
+int	OriginalSelection	= 0;
+int	OriginalSliderValue;
+int Team1				= 0;
+int Team2				= 1;
+int Team3				= 2;
+int Team4				= 3;
+int FramesIgnored		= 0;
+int	DifficultyLevel		= DIFF_Norm;
+int	ControlMethod		= CONTROL_Mouse;
+int	GameType			= GAME_Normal;
 
 int16 PreferedMaxPlayers = MAX_PLAYERS;
 
-BOOL OKToProcessKeys = FALSE;
-BOOL MenuFrozen = FALSE;
-BOOL NoTeamSelect = FALSE;
-BOOL UseNewMenus = TRUE;
-BOOL GameRestricted = FALSE;
-BOOL Autoleveling = TRUE;
-BOOL BiLinearFiltering = TRUE;
-BOOL PerspectiveCorrect = TRUE;
-BOOL EnhancedXHair = FALSE;
-BOOL LensFlare = TRUE;
-BOOL GoreGuts = FALSE;
-BOOL DebugInfo = FALSE;
-BOOL GodMode = FALSE;
-BOOL LevelSelectMode = TRUE;
-BOOL TexturesEnabled = TRUE;
-BOOL DebugVisible = FALSE;
-BOOL ShowPlaneRGB = FALSE;
-BOOL PlayDemo = FALSE;
-BOOL PauseDemo = FALSE;
-BOOL RecordDemo = FALSE;
-BOOL RecordDemoToRam = FALSE;
-BOOL BrightShips = FALSE;
-BOOL MyBrightShips = FALSE;
-BOOL BikeExhausts = TRUE;
-BOOL DemoScreenGrab = FALSE;
-BOOL ServerMode = FALSE;
-BOOL ScreenSaving = TRUE;
-BOOL ShowNode = FALSE;
-BOOL NodeCube = FALSE;
-BOOL OldNodeCube = FALSE;
-BOOL NodeCubeType = FALSE;
-BOOL TeamGame = FALSE;
-BOOL HarmTeamMates = TRUE;
-BOOL PickupLightDetail = TRUE;
-BOOL PrimaryLightDetail = TRUE;
-BOOL SecondaryLightDetail = TRUE;
-BOOL AutoDetail = TRUE;
-BOOL ShowPing = FALSE;
-BOOL BountyBonus = TRUE;
-BOOL PseudoHostCanSetMaxPlayers = TRUE;
+float CharWidth;
+float Pulse = 0.0F;
 
-BYTE	TeamNumber[MAX_PLAYERS];
+BYTE TeamNumber[MAX_PLAYERS];
+BYTE ServerGamePlayersWhoIAm[ MAX_PLAYERS ];
+
+LIST TeamList[MAX_TEAMS];
+LIST LoadSavedGameList		= { 0 };
+LIST ServiceProvidersList	= { 0 };
+LIST SessionsList			= { 0 };
+LIST MySessionsList			= { 0 };
+LIST PlayersList			= { 0 };
+LIST PilotList				= { 0 };
+LIST ServerGamePlayersList	= { 0 };
+LIST DemoList				= { 0, 8 };	// list of all demo file in the current dir...
+LIST BikeList				= { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
+LIST BikeComputerList		= { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
+LIST TestList				= { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
+LIST RoomList				= { 0, 10 };
+LIST *CurrentList			= NULL;
+
+TEXT MultiPlayerGameName	= { 0, 0, "Default", NULL };
+TEXT DemoGameName			= { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
+TEXT TitlePlayerMessage		= { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
+TEXT PilotNameInGame		= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotNameInGame, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT PilotName				= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT PilotReName			= { 0, 0, DEFAULT_PLAYER_NAME, RenamePilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT RoomName				= { 0, 0, "room", SetRoomName };
+TEXT MacroText1				= { 0, 0, LT_MacroText1/*"you ugly son of a bitch..."*/, SaveMacros };
+TEXT MacroText2				= { 0, 0, LT_MacroText2/*"Time to die..."*/, SaveMacros };
+TEXT MacroText3				= { 0, 0, LT_MacroText3/*"I will tear your soul apart..."*/, SaveMacros };
+TEXT MacroText4				= { 0, 0, "", NULL };
+TEXT QuickText				= { 0, 0, "", SendQuickText };
+TEXT QuickTextWhisper		= { 0, 0, "", SendQuickTextWhisper };
+TEXT TCPAddress				= { 0, 0, "", NULL};
+TEXT OriginalText;
+
+SLIDER SensitivityXSlider		= { 1, 16, 1, 5, 0, 0.0F };
+SLIDER SensitivityYSlider		= { 1, 16, 1, 5, 0, 0.0F };
+SLIDER PingFreqSlider			= { 0, 60, 5, 60, 0, 0.0F }; 
+SLIDER BikeDetailSlider			= { 0, 5, 1, 5, 0, 0.0F };
+SLIDER WaterDetailSlider		= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
+SLIDER NumPrimaryPickupsSlider	= { 1, 3, 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
+SLIDER TrailDetailSlider		= { 0, 10, 1, 9, 0, 0.0F };
+SLIDER PacketsSlider			= { 1, 100, 1, 5, 0, 0.0F };
+SLIDER ThrottleSlider			= { 25, 1000, 25, 1000, 0, 0.0F };
+SLIDER PseudoHostTimeoutSlider1 = { 1, 10, 1, 2, 0, 0.0F };
+SLIDER PseudoHostTimeoutSlider2 = { 1, 20, 1, 5, 0, 0.0F };
+SLIDER ServerTimeoutSlider		= { 1, 20, 1, 5, 0, 0.0F };
+SLIDER NumOfPlayersSlider		= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
+SLIDER TimeLimit				= { 0, 30, 1, 0, 0, 0.0F };
+SLIDER MaxPlayersSlider			= { 1, MAX_PLAYERS, 1, 6, 0, 0.0F };
+SLIDER MaxServerPlayersSlider	= { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
+SLIDER MaxKillsSlider			= { 0, 255, 1, 0, 0, 0.0F };
+SLIDER GoalScoreSlider			= { 1, 10, 1, 5, 0, 0.0F };
+SLIDER BountyBonusSlider		= { 1, 30, 1, 10, 0, 0.0F };
+SLIDER CTFSlider				= { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
+SLIDER DemoSpeed				= { 1, 16, 1, 8, 0, 0.0F };
+SLIDER SfxSlider				= { 0, 10, 1, 10, 0, 0.0F };
+SLIDER BikerSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
+SLIDER BikeCompSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
+SLIDER DemoEyesSelect			= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
+
+BOOL OKToJoinSession			= FALSE;
+BOOL ShowTeamInfo				= TRUE;
+BOOL OKToProcessKeys			= FALSE;
+BOOL MenuFrozen					= FALSE;
+BOOL NoTeamSelect				= FALSE;
+BOOL UseNewMenus				= TRUE;
+BOOL GameRestricted				= FALSE;
+BOOL Autoleveling				= TRUE;
+BOOL BiLinearFiltering			= TRUE;
+BOOL PerspectiveCorrect			= TRUE;
+BOOL EnhancedXHair				= FALSE;
+BOOL LensFlare					= TRUE;
+BOOL GoreGuts					= FALSE;
+BOOL DebugInfo					= FALSE;
+BOOL GodMode					= FALSE;
+BOOL LevelSelectMode			= TRUE;
+BOOL TexturesEnabled			= TRUE;
+BOOL DebugVisible				= FALSE;
+BOOL ShowPlaneRGB				= FALSE;
+BOOL PlayDemo					= FALSE;
+BOOL PauseDemo					= FALSE;
+BOOL RecordDemo					= FALSE;
+BOOL RecordDemoToRam			= FALSE;
+BOOL BrightShips				= FALSE;
+BOOL MyBrightShips				= FALSE;
+BOOL BikeExhausts				= TRUE;
+BOOL DemoScreenGrab				= FALSE;
+BOOL ServerMode					= FALSE;
+BOOL ScreenSaving				= TRUE;
+BOOL ShowNode					= FALSE;
+BOOL NodeCube					= FALSE;
+BOOL OldNodeCube				= FALSE;
+BOOL NodeCubeType				= FALSE;
+BOOL TeamGame					= FALSE;
+BOOL HarmTeamMates				= TRUE;
+BOOL PickupLightDetail			= TRUE;
+BOOL PrimaryLightDetail			= TRUE;
+BOOL SecondaryLightDetail		= TRUE;
+BOOL AutoDetail					= TRUE;
+BOOL ShowPing					= TRUE;
+BOOL BountyBonus				= TRUE;
+BOOL PseudoHostCanSetMaxPlayers = TRUE;
+BOOL BikeEnginesOn				= TRUE;
+BOOL ToggleTest;
 
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
 {
@@ -958,28 +1031,6 @@ int		AllowedBike[ ALLOWED_BIKETYPES ] =
 	16,	// FlyGirl,
 };
 
-SLIDER	SensitivityXSlider = { 1, 16, 1, 5, 0, 0.0F };
-SLIDER	SensitivityYSlider = { 1, 16, 1, 5, 0, 0.0F };
-SLIDER  PingFreqSlider = { 1, 30, 1, 10, 0, 0.0F }; 
-SLIDER	BikeDetailSlider = { 0, 5, 1, 5, 0, 0.0F };
-SLIDER	WaterDetailSlider = { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
-SLIDER	NumPrimaryPickupsSlider = { 1, 3, 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
-SLIDER	TrailDetailSlider = { 0, 10, 1, 9, 0, 0.0F };
-SLIDER  PacketsSlider = { 1, 100, 1, 5, 0, 0.0F };
-SLIDER  ThrottleSlider = { 25, 1000, 25, 1000, 0, 0.0F };
-SLIDER PseudoHostTimeoutSlider1 = { 1, 10, 1, 2, 0, 0.0F };
-SLIDER PseudoHostTimeoutSlider2 = { 1, 20, 1, 5, 0, 0.0F };
-SLIDER ServerTimeoutSlider = { 1, 20, 1, 5, 0, 0.0F };
-SLIDER	NumOfPlayersSlider = { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
-SLIDER	TimeLimit = { 0, 30, 1, 0, 0, 0.0F };
-SLIDER	MaxPlayersSlider = { 1, MAX_PLAYERS, 1, MAX_PLAYERS, 0, 0.0F };
-SLIDER	MaxServerPlayersSlider = { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
-SLIDER	MaxKillsSlider = { 0, 255, 1, 0, 0, 0.0F };
-SLIDER	GoalScoreSlider = { 1, 10, 1, 5, 0, 0.0F };
-SLIDER	BountyBonusSlider = { 1, 30, 1, 10, 0, 0.0F };
-SLIDER	CTFSlider = { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
-
-
 #define BIKEFEATURESLIDER( VALUE1, VALUE2, VALUE3, VALUE4, VALUE5, VALUE6, VALUE7, VALUE8 ) \
 	{ 0, 10, 1, (VALUE1), 0, 0.0F, 0.0F, 0, FALSE },\
 	{ 0, 10, 1, (VALUE2), 0, 0.0F, 0.0F, 0, FALSE },\
@@ -990,155 +1041,64 @@ SLIDER	CTFSlider = { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, 
 	{ 0, 10, 1, (VALUE7), 0, 0.0F, 0.0F, 0, FALSE },\
 	{ 0, 10, 1, (VALUE8), 0, 0.0F, 0.0F, 0, FALSE }
 
-//#define HELPKEY( X, Y, KEY, MSG )\
-//		{ (X), (Y), 0, 0, 0, (MSG), 0, 0, NULL, (KEY), NULL, DrawHelpKey, NULL, 0 }
-
 SLIDER BikeFeatureSlider[MAXBIKETYPES][8] = {
-	{BIKEFEATURESLIDER( 4,	5,	6, 10,	5,	5,	10, 10)},	// Lokasenna
-	{BIKEFEATURESLIDER( 5,	5,	5, 10,	5,	5,	10, 10)},  // Beard
-	{BIKEFEATURESLIDER( 8,	8,	8, 10,	3,	2,	10, 10)},  // L.A. Jay
-	{BIKEFEATURESLIDER( 6,	4,	6, 10,	6,	3,	10, 10)},	// Ex-Cop
-	{BIKEFEATURESLIDER( 2,	2,	4, 10,	10,	5,	10, 10)},	// Rex Hardy
-	{BIKEFEATURESLIDER( 5,	4,	4, 10,	7,	5,	10, 10)},	// Foetoid
-	{BIKEFEATURESLIDER( 5,	5,	4, 10,	6,	5,	10, 10)},	// Nim Soo
-	{BIKEFEATURESLIDER( 10,	6,	6 ,10,	1,	2,	10, 10)},	// Nutta
-	{BIKEFEATURESLIDER( 2,	2,	4, 10,	9,	5,	10, 10)},	// Sceptre
-	{BIKEFEATURESLIDER( 5,	9,	6, 10,	3,	3,	10, 10)},	// Jo
-	{BIKEFEATURESLIDER( 10,	10,	10, 10,	0,	0,	10, 10)},	// Cuvel Clark
-	{BIKEFEATURESLIDER( 3,	3,	3, 10,	8,	4,	10, 10 )},	// HK-5
-	{BIKEFEATURESLIDER( 6,	8,	6, 10,	3,	4,	10, 10)},	// Nubia
-	{BIKEFEATURESLIDER( 3,	3,	5, 10,	5,	5,	10, 10)},	// Mofisto
-	{BIKEFEATURESLIDER( 5,	5,	5, 10,	5,	5,	10, 10)},	// Cerbero
-	{BIKEFEATURESLIDER( 5,	6,	8, 10,	6,	4,	10, 10)},	// Slick
-	{BIKEFEATURESLIDER( 5,	6,	8,10,	6,	4,	10, 10 )},	// flygirl
+	{BIKEFEATURESLIDER(  4,	 5,	 6, 10,	 5,	5, 10, 10)},	// Lokasenna
+	{BIKEFEATURESLIDER(  5,	 5,	 5, 10,	 5,	5, 10, 10)},    // Beard
+	{BIKEFEATURESLIDER(  8,	 8,	 8, 10,	 3,	2, 10, 10)},    // L.A. Jay
+	{BIKEFEATURESLIDER(  6,	 4,	 6, 10,	 6,	3, 10, 10)},	// Ex-Cop
+	{BIKEFEATURESLIDER(  2,	 2,	 4, 10,	10,	5, 10, 10)},	// Rex Hardy
+	{BIKEFEATURESLIDER(  5,	 4,	 4, 10,	 7,	5, 10, 10)},	// Foetoid
+	{BIKEFEATURESLIDER(  5,	 5,	 4, 10,	 6,	5, 10, 10)},	// Nim Soo
+	{BIKEFEATURESLIDER( 10,	 6,	 6, 10,	 1,	2, 10, 10)},	// Nutta
+	{BIKEFEATURESLIDER(  2,	 2,	 4, 10,	 9,	5, 10, 10)},	// Sceptre
+	{BIKEFEATURESLIDER(  5,	 9,	 6, 10,	 3,	3, 10, 10)},	// Jo
+	{BIKEFEATURESLIDER( 10,	10,	10, 10,	 0,	0, 10, 10)},	// Cuvel Clark
+	{BIKEFEATURESLIDER(  3,	 3,	 3, 10,	 8,	4, 10, 10)},	// HK-5
+	{BIKEFEATURESLIDER(  6,	 8,	 6, 10,	 3,	4, 10, 10)},	// Nubia
+	{BIKEFEATURESLIDER(  3,	 3,	 5, 10,	 5,	5, 10, 10)},	// Mofisto
+	{BIKEFEATURESLIDER(  5,	 5,	 5, 10,	 5,	5, 10, 10)},	// Cerbero
+	{BIKEFEATURESLIDER(  5,	 6,	 8, 10,	 6,	4, 10, 10)},	// Slick
+	{BIKEFEATURESLIDER(  5,	 6,	 8, 10,	 6,	4, 10, 10)},	// flygirl
 };
-
-
-LIST	PilotList = { 0 };
-LIST ServerGamePlayersList = { 0 };
-BYTE ServerGamePlayersWhoIAm[ MAX_PLAYERS ];
-
-LIST	DemoList = { 0, 8 };	// list of all demo file in the current dir...
-
-
-LIST	BikeList = { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
-
-#if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
-LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
-#elif defined( VERSION_SPANISH ) || defined( VERSION_ITALIAN ) || defined( VERSION_FRENCH )
-LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "Roadster" },  0, 0 };
-#elif defined( VERSION_GERMAN )
-LIST	BikeComputerList = { MAXBIKECOMPTYPES, 8, 0, 1, { "linda 7", "l.u.l.u.", "razor", "thor" },  0, 0 };
-#endif
-
-
-LIST	TestList = { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
-
-LIST	RoomList = { 0, 10 };
-
-TEXT	PilotNameInGame = { 0, 0, DEFAULT_PLAYER_NAME, SetPilotNameInGame, MAX_PILOTNAME_LENGTH, TypeFileName };
-
-TEXT	PilotName = { 0, 0, DEFAULT_PLAYER_NAME, SetPilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
-
-TEXT	PilotReName = { 0, 0, DEFAULT_PLAYER_NAME, RenamePilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
-
-TEXT	RoomName = { 0, 0, "room", SetRoomName };
-
-TEXT	MacroText1 = { 0, 0, LT_MacroText1/*"you ugly son of a bitch..."*/, SaveMacros };
-TEXT	MacroText2 = { 0, 0, LT_MacroText2/*"Time to die..."*/, SaveMacros };
-TEXT	MacroText3 = { 0, 0, LT_MacroText3/*"I will tear your soul apart..."*/, SaveMacros };
-TEXT	MacroText4 = { 0, 0, "", NULL };
-
-TEXT	QuickText = { 0, 0, "", SendQuickText };
-TEXT	QuickTextWhisper = { 0, 0, "", SendQuickTextWhisper };
 
 USERCONFIG	Config;
 
-MENUSTATE MenuState = MENUSTATE_Select;
-
-MENUITEM	*	KeyItem = NULL;
-
-MENUITEM	*	SliderItem = NULL;
-int		OriginalSliderValue;
-
-LIST *	CurrentList = NULL;
-MENUITEM *CurrentListItem = NULL;
+MENUSTATE MenuState			= MENUSTATE_Select;
+MENUITEM *KeyItem			= NULL;
+MENUITEM *SliderItem		= NULL;
+MENUITEM *CurrentListItem	= NULL;
+MENUITEM *TextItem			= NULL;
 MENUITEM *PreListItem;
 MENU *PreListMenu;
-int		OriginalSelection = 0;
-
-MENUITEM	*	TextItem = NULL;
-TEXT	OriginalText;
-
-SLIDER	DemoSpeed = { 1, 16, 1, 8, 0, 0.0F };
-SLIDER  SfxSlider = { 0, 10, 1, 10, 0, 0.0F };
-
-SLIDER BikerSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
-
-SLIDER BikeCompSpeechSlider = { 0, 10, 1, 8, 0, 0.0F };
-BOOL BikeEnginesOn = TRUE;
-
-SLIDER	DemoEyesSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
-float CharWidth;
-BOOL ToggleTest;
-TEXT TCPAddress = { 0, 0, "", NULL};
-
-enum
-{
-	BIKE_FEATURE_Speed,
-	BIKE_FEATURE_Accel,
-	BIKE_FEATURE_Handling,
-	BIKE_FEATURE_Power,
-	BIKE_FEATURE_Shield,
-	BIKE_FEATURE_Hull,
-	BIKE_FEATURE_Missiles,
-	BIKE_FEATURE_Ammo,
-};
-
-int SpeedFeat = BIKE_FEATURE_Speed;
-int AccelFeat = BIKE_FEATURE_Accel;
-int HandleFeat = BIKE_FEATURE_Handling;
-int PowerFeat = BIKE_FEATURE_Power;
-int ShieldFeat = BIKE_FEATURE_Shield;
-int HullFeat = BIKE_FEATURE_Hull;
-int MissileFeat = BIKE_FEATURE_Missiles;
-int AmmoFeat = BIKE_FEATURE_Ammo;
-
-#define TITLE_TEXT_MSGS_STORED 4
-char TitleMessage[TITLE_TEXT_MSGS_STORED][MAXTEXTMSG];
-char TeamCurrentScore[MAX_TEAMS][64];
-
-void SelectKeyDef( MENUITEM *Item );
-void DrawKeyDef( MENUITEM *Item );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Menus...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-DEFKEY KDleft = { &Config.left, 0 };
-DEFKEY KDright = { &Config.right, 0 };
-DEFKEY KDup = { &Config.up, 0 };
-DEFKEY KDdown = { &Config.down, 0 };
-DEFKEY KDmove_left = { &Config.move_left, 0 };
-DEFKEY KDmove_right = { &Config.move_right, 0 };
-DEFKEY KDmove_up = { &Config.move_up, 0 };
-DEFKEY KDmove_down = { &Config.move_down, 0 };
-DEFKEY KDroll_left = { &Config.roll_left, 0 };
-DEFKEY KDroll_right = { &Config.roll_right, 0 };
-DEFKEY KDmove = { &Config.move, 0 };
-DEFKEY KDroll = { &Config.roll, 0 };
-DEFKEY KDmove_forward = { &Config.move_forward, 0 };
-DEFKEY KDmove_backward = { &Config.move_backward, 0 };
-DEFKEY KDturbo = { &Config.turbo, 0 };
-DEFKEY KDcruise_faster = { &Config.cruise_faster, 0 };
-DEFKEY KDcruise_slower = { &Config.cruise_slower, 0 };
-DEFKEY KDfire_primary = { &Config.fire_primary, 0 };
-DEFKEY KDfire_secondary = { &Config.fire_secondary, 0 };
-DEFKEY KDfire_mine = { &Config.fire_mine, 0 };
-DEFKEY KDdrop_primary = { &Config.drop_primary, 0 };
-DEFKEY KDdrop_secondary = { &Config.drop_secondary, 0 };
-DEFKEY KDdrop_shield = { &Config.drop_shield, 0 };
-DEFKEY KDdrop_ammo = { &Config.drop_ammo, 0 };
+DEFKEY KDleft				= { &Config.left, 0 };
+DEFKEY KDright				= { &Config.right, 0 };
+DEFKEY KDup					= { &Config.up, 0 };
+DEFKEY KDdown				= { &Config.down, 0 };
+DEFKEY KDmove_left			= { &Config.move_left, 0 };
+DEFKEY KDmove_right			= { &Config.move_right, 0 };
+DEFKEY KDmove_up			= { &Config.move_up, 0 };
+DEFKEY KDmove_down			= { &Config.move_down, 0 };
+DEFKEY KDroll_left			= { &Config.roll_left, 0 };
+DEFKEY KDroll_right			= { &Config.roll_right, 0 };
+DEFKEY KDmove				= { &Config.move, 0 };
+DEFKEY KDroll				= { &Config.roll, 0 };
+DEFKEY KDmove_forward		= { &Config.move_forward, 0 };
+DEFKEY KDmove_backward		= { &Config.move_backward, 0 };
+DEFKEY KDturbo				= { &Config.turbo, 0 };
+DEFKEY KDcruise_faster		= { &Config.cruise_faster, 0 };
+DEFKEY KDcruise_slower		= { &Config.cruise_slower, 0 };
+DEFKEY KDfire_primary		= { &Config.fire_primary, 0 };
+DEFKEY KDfire_secondary		= { &Config.fire_secondary, 0 };
+DEFKEY KDfire_mine			= { &Config.fire_mine, 0 };
+DEFKEY KDdrop_primary		= { &Config.drop_primary, 0 };
+DEFKEY KDdrop_secondary		= { &Config.drop_secondary, 0 };
+DEFKEY KDdrop_shield		= { &Config.drop_shield, 0 };
+DEFKEY KDdrop_ammo			= { &Config.drop_ammo, 0 };
 DEFKEY KDselect_primary[] = {
 	{ &Config.select_primary[ PULSAR ], 0 },
 	{ &Config.select_primary[ TROJAX ], 0 },
@@ -1147,10 +1107,10 @@ DEFKEY KDselect_primary[] = {
 	{ &Config.select_primary[ PYROLITE_RIFLE ], 0 },
 	{ &Config.select_primary[ LASER ], 0 },
 };
-DEFKEY KDselect_next_primary = { &Config.select_next_primary, 0 };
-DEFKEY KDselect_prev_primary = { &Config.select_prev_primary, 0 };
-DEFKEY KDselect_next_secondary = { &Config.select_next_secondary, 0 };
-DEFKEY KDselect_prev_secondary = { &Config.select_prev_secondary, 0 };
+DEFKEY KDselect_next_primary	= { &Config.select_next_primary, 0 };
+DEFKEY KDselect_prev_primary	= { &Config.select_prev_primary, 0 };
+DEFKEY KDselect_next_secondary	= { &Config.select_next_secondary, 0 };
+DEFKEY KDselect_prev_secondary	= { &Config.select_prev_secondary, 0 };
 DEFKEY KDselect_secondary[] = {
 	{ &Config.select_secondary[ MUGMISSILE ], 0 },
 	{ &Config.select_secondary[ SOLARISMISSILE ], 0 },
@@ -1164,9 +1124,9 @@ DEFKEY KDselect_secondary[] = {
 	{ &Config.select_secondary[ QUANTUMMINE ], 0 },
 	{ &Config.select_secondary[ SPIDERMINE ], 0 },
 };
-DEFKEY KDsend_msg = { &Config.send_msg, 0 };
-DEFKEY KDheadlights = { &Config.headlights, 0 };
-DEFKEY KDfull_rearview = { &Config.full_rear_view, 0 };
+DEFKEY KDsend_msg		= { &Config.send_msg, 0 };
+DEFKEY KDheadlights		= { &Config.headlights, 0 };
+DEFKEY KDfull_rearview	= { &Config.full_rear_view, 0 };
 
 #ifdef PLAYER_SPEECH_TAUNTS
 DEFKEY KDsend_speech = { &Config.send_speech, 0 };
@@ -1220,7 +1180,7 @@ MENU	MENU_NEW_NotYet = {
 MENU	MENU_NEW_NotAvailable = {
 	"Not Available in Demo", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 20, 0, "Not Available in Demo", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{ 0,  0, 200, 20, 0, "Not Available in Demo", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 0, 30, 200, 50, 0, "Press ESC to return", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -1230,13 +1190,11 @@ MENU	MENU_NEW_NotAvailable = {
 MENU MENU_NEW_BetweenLevels = {
 	"", PrepareNextLevelStart, NULL, NULL, 0,
 	{
-		{ 0, 0, 200, 20, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-
-		{ 36, 20, 164, 72, 0,"", 0, 0, NULL, NULL, NULL, LoadLevelPic, NULL, 0 },
-
+		{  0,  0, 200,  20, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 36, 20, 164,  72, 0, "", 0, 0, NULL, NULL, NULL, LoadLevelPic, NULL, 0 },
 		{ 10, 80, 190, 155, 0, "", FONT_Small, TEXTFLAG_ForceFit , (void *)SelectedLevelText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-	 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+
+		{ -1, -1,   0,   0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
 
@@ -1247,19 +1205,18 @@ char EnemiesKilledText[ 64 ];
 char TimeTakenText[ 64 ];
 char GameCompleteText[ 256 ];
 			       
-char *GameCompleteWithoutCrystals = LT_GameCompleteWithoutCrystals/*"well done. You completed all the levels but you didn't get all the crystals. You'll have to do it all over again if you want to be properly rewarded."*/;
-char *GameCompleteGotAllCrystalsSoFar = LT_GameCompleteGotAllCrystalsSoFar/*"well done, you got all the crystals. Take an extra life for the secret level. Find the crystal here for a special award."*/;
-char *GameCompleteWithAllCrystals = LT_GameCompleteWithAllCrystals/*"well done, you got all the crystals. You get the secret biker."*/; 
-char *GameCompleteWithAllCrystalsExceptLast = LT_GameCompleteWithAllCrystalsExceptLast/*"well you got through the secret level, but you didn't get the final crystal. Better luck next time."*/;
-char *GameCompleteWithCheating = LT_GameCompleteWithCheating/*"well, you completed the game but you cheated, didn't you. If you want to see the secret level and have a chance to get a special reward, you'll have to do it properly!"*/;
-
-char *GameCompleteAdditionalLevels = LT_GameCompleteAdditionalLevels/*"congratulations. You have completed all the currently installed additional levels. Look out for further mission packs!!"*/;
+char *GameCompleteWithoutCrystals			= LT_GameCompleteWithoutCrystals			/* "well done. You completed all the levels but you didn't get all the crystals. You'll have to do it all over again if you want to be properly rewarded."*/;
+char *GameCompleteGotAllCrystalsSoFar		= LT_GameCompleteGotAllCrystalsSoFar		/* "well done, you got all the crystals. Take an extra life for the secret level. Find the crystal here for a special award."*/;
+char *GameCompleteWithAllCrystals			= LT_GameCompleteWithAllCrystals			/* "well done, you got all the crystals. You get the secret biker."*/; 
+char *GameCompleteWithAllCrystalsExceptLast = LT_GameCompleteWithAllCrystalsExceptLast	/* "well you got through the secret level, but you didn't get the final crystal. Better luck next time."*/;
+char *GameCompleteWithCheating				= LT_GameCompleteWithCheating				/* "well, you completed the game but you cheated, didn't you. If you want to see the secret level and have a chance to get a special reward, you'll have to do it properly!"*/;
+char *GameCompleteAdditionalLevels			= LT_GameCompleteAdditionalLevels			/* "congratulations. You have completed all the currently installed additional levels. Look out for further mission packs!!"*/;
 
 MENU MENU_NEW_SpecialMessage = {
 	"", NULL, NULL, NULL, TITLE_TIMER_LowerHolopad,
 	{
-		{ 30, 0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreYBunched,  (void *)&GameCompleteText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 0, 150, 200, 170, 0, LT_MENU_NEW_SpecialMessage0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, AfterSpecialMessage, DrawFlatMenuItem, NULL, 0  },
+		{ 30,   0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreYBunched,  (void *)&GameCompleteText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{  0, 150, 200, 170, 0, LT_MENU_NEW_SpecialMessage0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, AfterSpecialMessage, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1268,10 +1225,10 @@ MENU MENU_NEW_SpecialMessage = {
 MENU MENU_NEW_NumberOfSecretsEnemys = {
 	"", NULL, NULL, NULL, TITLE_TIMER_LowerHolopad,
 	{
-		{ 30, 0, 170, 50, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&SecretsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 30, 50, 170, 100, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&EnemiesKilledText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 30,   0, 170,  50, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&SecretsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 30,  50, 170, 100, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&EnemiesKilledText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 		{ 30, 100, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&TimeTakenText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfSecretsEnemys0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NextLevelOrGameComplete, DrawFlatMenuItem, NULL, 0  },
+		{  0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfSecretsEnemys0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NextLevelOrGameComplete, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1280,8 +1237,8 @@ MENU MENU_NEW_NumberOfSecretsEnemys = {
 MENU MENU_NEW_NumberOfGoldBars = {
 	"", SelectGoldBarModel, NULL, NULL, TITLE_TIMER_InterLevelPan,
 	{
-		{ 30, 0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&GoldBarsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfGoldBars0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_NumberOfSecretsEnemys, MenuChange, DrawFlatMenuItem, NULL, 0  },
+		{ 30,   0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&GoldBarsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{  0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfGoldBars0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_NumberOfSecretsEnemys, MenuChange, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1290,8 +1247,8 @@ MENU MENU_NEW_NumberOfGoldBars = {
 MENU MENU_NEW_NumberOfCrystals = {
 	"", InitCrystalsFoundText, NULL, NULL, TITLE_TIMER_InterLevelPan,
 	{
-		{ 30, 0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&CrystalsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfCrystals0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_NumberOfGoldBars, MenuChange, DrawFlatMenuItem, NULL, 0  },
+		{ 30,   0, 170, 150, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreYBunched,  (void *)&CrystalsFoundText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{  0, 150, 200, 170, 0, LT_MENU_NEW_NumberOfCrystals0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_NumberOfGoldBars, MenuChange, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1300,10 +1257,9 @@ MENU MENU_NEW_NumberOfCrystals = {
 MENU	MENU_NEW_StartSinglePlayer = {
 	"Not Implemented Yet", InitSinglePlayerGame, NULL, NULL, TITLE_TIMER_NormalPanToRightVDU,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_StartSinglePlayer0/*"single player Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 0, 30, 200, 50, 0, LT_MENU_NEW_StartSinglePlayer1/*"start"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, &MENU_NEW_BetweenLevels, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-
-		{ 10, 60, 70, 80, 0, LT_MENU_NEW_StartSinglePlayer2/*"level"*/, FONT_Medium, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
+		{  0,  0, 200, 20, 0, LT_MENU_NEW_StartSinglePlayer0/*"single player Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{  0, 30, 200, 50, 0, LT_MENU_NEW_StartSinglePlayer1/*"start"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, &MENU_NEW_BetweenLevels, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
+		{ 10, 60,  70, 80, 0, LT_MENU_NEW_StartSinglePlayer2/*"level"*/, FONT_Medium, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ 75, 58, 200, 82, 0, "", FONT_Medium, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
 
@@ -1314,7 +1270,7 @@ MENU	MENU_NEW_StartSinglePlayer = {
 MENU	MENU_NEW_Error = {
 	"", NULL, NULL, NULL, 0,
 	{
-		{ 0, 0, 200, 150, 0, "", FONT_Small, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, (void *)ErrorMessage, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 0,   0, 200, 150, 0, "", FONT_Small, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, (void *)ErrorMessage, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 		{ 0, 150, 200, 170, 0, LT_MENU_NEW_Error0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, MenuItemBackFromError, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -1324,7 +1280,7 @@ MENU	MENU_NEW_Error = {
 MENU	MENU_NEW_Notify = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 150, 0, "", FONT_Small, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, (void *)NotifyMessage, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 0,   0, 200, 150, 0, "", FONT_Small, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, (void *)NotifyMessage, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 		{ 0, 150, 200, 170, 0, LT_MENU_NEW_Error0/*ok*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, TitleReset, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -1354,21 +1310,18 @@ MENU	MENU_NEW_StartAttractMode = {
 MENU	MENU_NEW_HostWaitingToStart = {
 	"", InitHostWaitingToStart, BailMultiplayerFrontEnd, UpdateSessions, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 15, 90, 25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, HostAboutToStart/*GoToSynchup*/, DrawFlatMenuItem, NULL, 0  },
-		{ 90, 15, 105, 25, 0, LT_MENU_NEW_HostWaitingToStart2/*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 15, 200, 25, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-		{ 5, 27, 100, 37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
-		{ 5, 40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
-
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-
-		{ 5, 163, 25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
+		{   0,   0, 200,  10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{   5,  15,  90,  25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, HostAboutToStart/*GoToSynchup*/, DrawFlatMenuItem, NULL, 0  },
+		{  90,  15, 105,  25, 0, LT_MENU_NEW_HostWaitingToStart2/*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
+		{ 105,  15, 200,  25, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
+		{   5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
+		{   5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
+		{   5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{   5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{   5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{   5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{   5, 155,  25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{   5, 163,  25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1377,17 +1330,15 @@ MENU	MENU_NEW_HostWaitingToStart = {
 MENU	MENU_NEW_PseudoHostWaitingToStart = {
 	"", GetInitialSessions, /*BailMultiplayerFrontEnd*/ChangeServiceProviderPseudoHost, UpdateSessions, 0,
 	{
-		{ 0, 0, 200, 10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 15, 90, 25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, PseudoHostAboutToStart, DrawFlatMenuItem, NULL, 0  },
-
-		{ 5, 27, 100, 37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
-		{ 5, 40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
-
+		{ 0,   0, 200,  10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  } ,
+		{ 5,  15,  90,  25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, PseudoHostAboutToStart, DrawFlatMenuItem, NULL, 0  } ,
+		{ 5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 } ,
+		{ 5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
 		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155, 25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 155,  25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1396,8 +1347,8 @@ MENU	MENU_NEW_PseudoHostWaitingToStart = {
 MENU	MENU_NEW_SelectLevel = {
 	"", LoadLevelText, KillLevelPic, NULL, 0,
 	{
-		{ 0, 0, 200, 20, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0  },
-		{ 30, 20, 168, 76, 0,"", 0, 0, NULL, NULL, NULL, LoadLevelPic, NULL, 0 },
+		{  0,  0, 200,  20, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0  },
+		{ 30, 20, 168,  76, 0, "", 0, 0, NULL, NULL, NULL, LoadLevelPic, NULL, 0 },
 		{ 10, 84, 190, 155, 0, "", FONT_Small, TEXTFLAG_ForceFit , (void *)SelectedLevelText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 	 
 		{ -1, -1, 0, 0, 0,"", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
@@ -1409,12 +1360,22 @@ MENUITEM SlowLevelSelectItem = { 0, 0, 0, 0, 0, "", 0, 0, NULL, &MENU_NEW_Select
 MENU	MENU_NEW_ValidPickups_Second_Page = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200, 20, 0, LT_MENU_NEW_ValidPickups0/*"allowed pickups"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10,  20, 120, 28, 0, LT_MENU_NEW_ValidPickups15/*"invulnerability"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Inv ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  28, 120, 36, 0, LT_MENU_NEW_ValidPickups16/*"nitro"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Nitro ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  36, 120, 44, 0, LT_MENU_NEW_ValidPickups17/*"stealth mantle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mantle ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  44, 120, 52, 0, LT_MENU_NEW_ValidPickups18/*"orbit pulsar"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Orb ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120, 60, 0, LT_MENU_NEW_ValidPickups19/*"golden power pod"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_GoldenPowerPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 },
+		
+		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mug ],					&PickupValid[ PICKUP_Mugs ],		SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_HeatseakerPickup ],	&PickupValid[ PICKUP_Heatseaker ],	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Scatter ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Gravgon ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Launcher ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_TitanStar ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Thief ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		
+		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PurgePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PinePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_QuantumPickup ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SpiderPod ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1423,24 +1384,23 @@ MENU	MENU_NEW_ValidPickups_Second_Page = {
 MENU	MENU_NEW_ValidPickups = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0/*"allowed pickups"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10,  20, 120,  28, 0, LT_MENU_NEW_ValidPickups1/*"trojax"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Trojax ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  28, 120,  36, 0, LT_MENU_NEW_ValidPickups2/*"pyrolite"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Pyrolite ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  36, 120,  44, 0, LT_MENU_NEW_ValidPickups3/*"transpulse"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Transpulse ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups4/*"suss gun"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_SussGun ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups5/*laser*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Laser ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups6/*mug*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Mug ], &PickupValid[ PICKUP_Mugs ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups7/*"solaris"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_HeatseakerPickup ], &PickupValid[ PICKUP_Heatseaker ], SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups8/*"scatter"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Scatter ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups9/*"gravgon"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Gravgon ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups10/*"mfrl"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Launcher ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 100, 120, 108, 0, LT_MENU_NEW_ValidPickups11/*"titan"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_TitanStar ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups20/*"thief missle"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_Thief ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups12/*"purge mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PurgePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups13/*"pine mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_PinePickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups14/*"quantum mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_QuantumPickup ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups21/*"spider mine"*/, FONT_Small, TEXTFLAG_CentreY, &PickupValid[ PICKUP_SpiderPod ], NULL, SelectMultiToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 156, 120, 164, 0, LT_MENU_NEW_MoreMultiplayerOptions22/*"next page"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ValidPickups_Second_Page, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
+		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0				/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+		
+		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups22				/*"primary weapons"*/,	FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups1				/*"trojax"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Trojax ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups2				/*"pyrolite"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Pyrolite ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups3				/*"transpulse"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Transpulse ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups4				/*"suss gun"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SussGun ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups5				/*laser*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Laser ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		
+		{ 10,  92, 200, 100, 0, LT_MENU_NEW_ValidPickups23				/*"power-ups"*/,		FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups15				/*"invulnerability"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Inv ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups16				/*"nitro"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Nitro ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups17				/*"stealth mantle"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mantle ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups18				/*"orbit pulsar"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Orb ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups19				/*"golden power pod"*/, FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_GoldenPowerPod ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		
+		{ 10, 156, 120, 164, 0, LT_MENU_NEW_MoreMultiplayerOptions22	/*"next page"*/,		FONT_Small,		TEXTFLAG_CentreY,						NULL,										&MENU_NEW_ValidPickups_Second_Page, MenuChange,			DrawFlatMenuItem,	NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1476,20 +1436,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 	}
 };
 
-//MENU	MENU_NEW_SetUpTrackerPeerPeer = {
-//	"", InitTrackersList, ExitSetUpTracker, NULL, 0,
-//	{
-//		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame18/*"setup tracker"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-//
-//		{ 5, 20, 100, 28, 0, LT_MENU_NEW_SetUpTracker1/*send tracker info*/, FONT_Small, TEXTFLAG_CentreY, &PeerPeerHeartbeat, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-//
-//		{ 5, 30, 200, 38, 0, LT_MENU_NEW_SetUpTracker2/*"Choose tracker config"*/, FONT_Small, TEXTFLAG_CentreY, &TrackersList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },
-//		{ 10, 40, 200, 100, 0, "", FONT_Small,TEXTFLAG_Unselectable | TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,  &TrackersList, NULL, SelectList, DrawFlatMenuList, NULL, 0  },
-//
-//		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-//	}
-//};
-
 /* create */
 MENU	MENU_NEW_CreateGame = {
 
@@ -1499,52 +1445,31 @@ MENU	MENU_NEW_CreateGame = {
 	NULL, TITLE_TIMER_PanToLeftVDU,
 
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame0/*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{   0,   0, 200,  20, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
+		{  10,  20,  90,  28, 0,			LT_MENU_NEW_CreateGame1  /*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_HostWaitingToStart,		StartAHostSession,		DrawFlatMenuItem,		NULL, 0 } ,
 
-		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStart, StartAHostSession , DrawFlatMenuItem, NULL, 0 } ,
-
-		// taken out cause of lag in wsa startup, leave for later in case new method found
-    	//{ 90,  20, 120, 28, 0, LT_MENU_NEW_CreateGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-	    //{ 100, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-        { 10, 34, 90, 36, 0, "Protocol", FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ChooseConnectionToStart,  MenuChange, DrawFlatMenuItem, NULL, 0 },
-
-        { 90, 34, 205, 40, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)ServiceProviderShortName, &ServiceProviderSet, NULL, DrawConditionalName, NULL, 0 } ,
-
-		{ 10, 52, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, SelectFlatMenutext, DrawSessionNameText, NULL, 0 } ,
-
-		{ 10, 60, 50, 46, 0, LT_MENU_NEW_CreateGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 60, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-
-		{ 10, 68, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 10, 76, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 10, 84, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 0,   92, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-
-		{ 10, 100, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-		{ 10, 108, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-		{ 10, 116, 200, 108, 0, LT_MENU_NEW_CreateGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CTF, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-		{ 10, 126, 200, 116, 0, LT_MENU_NEW_CreateGame12 /*"flag chase"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-		{ 10, 134, 200, 124, 0, LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-		{ 10, 140, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-
-#ifdef BOMBTAG_ENABLE
-		{ 10, 148, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
-
-		//{ 10, 148, 100, 148, 0, LT_MENU_NEW_CreateGame18 /*"setup tracker"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_SetUpTrackerPeerPeer, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		
-		{ 10, 156, 100, 156, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		
-		{ 10, 164, 100, 170, 0, LT_MENU_NEW_CreateGame17 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
+	  // taken out cause of lag in wsa startup, leave for later in case new method found
+      //{  90,  20, 120,  28, 0,			LT_MENU_NEW_CreateGame2  /*"IP:"*/,						FONT_Small,		TEXTFLAG_CentreY,													NULL,								&IPAddressExists,					NULL,					DrawConditionalText,	NULL, 0 } ,
+	  //{ 100,  20, 200,  28, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)IPAddressText,				&IPAddressExists,					NULL,					DrawConditionalName,	NULL, 0 } ,
+        
+		{  10,  34,  90,  36, 0,			"Protocol",												FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+        {  90,  34, 205,  40, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
+		{  10,  52,  85,  38, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,								&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
+		{  10,  60,  50,  46, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  60, 200,  46, 0,			"",														FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+		{  10,  68,  85,  54, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  76,  85,  62, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  84,  85,  70, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{   0,  92, 200,  84, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 100, 200,  92, 0,			LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Normal,				SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 108, 200, 100, 0,			LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Team,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 116, 200, 108, 0,			LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CTF,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 126, 200, 116, 0,			LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CaptureFlag,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 134, 200, 124, 0,			LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_BountyHunt,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 140, 200, 132, 0,			LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_TeamBounty,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+	  //{  10, 148, 100, 138, 0,			LT_MENU_NEW_CreateGame15 /*"bomb tag"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Tag,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+	  //{  10, 164, 100, 170, 0,			LT_MENU_NEW_CreateGame17 /*"quit"*/,					FONT_Small,		TEXTFLAG_CentreY,													NULL,								NULL,								SelectQuit,				DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1563,29 +1488,24 @@ MENU MENU_NEW_CreateGamePseudoHost = {
 			"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		//InitPseudoHostGameScreen, ChangeServiceProviderPseudoHost,
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateGame0/*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, NULL, StartAPseudoHostSession , DrawFlatMenuItem, NULL, 0 } ,
-
-		{ 10, 30, 85, 38, 0, LT_MENU_NEW_CreateGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, NULL, DrawSessionNameText, NULL, 0 } ,
-		{ 10, 38, 50, 46, 0, LT_MENU_NEW_CreateGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 38, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 46, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxServerPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 0, 74, 200, 84, 0, LT_MENU_NEW_CreateGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 84, 200, 92, 0, LT_MENU_NEW_CreateGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 92, 200, 100, 0, LT_MENU_NEW_CreateGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 100, 200, 108, 0, LT_MENU_NEW_CreateGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CTF, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 108, 200, 116, 0, LT_MENU_NEW_CreateGame12 /*"flag chase"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 116, 200, 124, 0, LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 124, 200, 132, 0, LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#ifdef BOMBTAG_ENABLE
-		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateGame15 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
-		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateGame16 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-
-//		{ 10, 150, 100, 160, 0, MENU_NEW_CreateGamePseudoHost0 /*"server does collisions"*/, FONT_Small, TEXTFLAG_CentreY, &ServerCollisions, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
+		{  0,   0, 200,  20, 0,				LT_MENU_NEW_CreateGame0			/*"Create Multiplayer Game"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,						NULL,								NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10,  20,  90,  28, 0,				LT_MENU_NEW_CreateGame1			/*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,						NULL,								StartAPseudoHostSession,	DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10,  30,  85,  38, 0,				LT_MENU_NEW_CreateGame3			/*"session name"*/,				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,								&MultiPlayerGameName,		NULL,								NULL,						DrawSessionNameText,	NULL, 0 } ,
+		{ 10,  38,  50,  46, 0,				LT_MENU_NEW_CreateGame4			/*"level"*/,					FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								NULL,						NULL,								InitLevelSelectVDU,			DrawFlatMenuItem,		NULL, 0 } ,
+		{ 90,  38, 200,  46, 0,				"",																FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	(void *)SelectedLevel,		NULL,								NULL,						DrawFlatMenuName,		NULL, 0 } ,
+		{ 10,  46,  85,  54, SLIDER_Value,	LT_MENU_NEW_CreateGame5			/*"player limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxServerPlayersSlider,	NULL,								SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,  54,  85,  62, SLIDER_Value,	LT_MENU_NEW_CreateGame6			/*"score limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxKillsSlider,			NULL,								SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,  62,  85,  70, SLIDER_Time,	LT_MENU_NEW_CreateGame7			/*"time limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&TimeLimit,					NULL,								SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{  0,  74, 200,  84, 0,				LT_MENU_NEW_CreateGame8			/*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,						NULL,								NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10,  84, 200,  92, 0,				LT_MENU_NEW_CreateGame9			/*"free for all"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_Normal,				SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10,  92, 200, 100, 0,				LT_MENU_NEW_CreateGame10		/*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_Team,					SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 100, 200, 108, 0,				LT_MENU_NEW_CreateGame11		/*"capture the flag"*/,			FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_CTF,					SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 108, 200, 116, 0,				LT_MENU_NEW_CreateGame12		/*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_CaptureFlag,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 116, 200, 124, 0,				LT_MENU_NEW_CreateGame13		/*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_BountyHunt,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 124, 200, 132, 0,				LT_MENU_NEW_CreateGame14		/*"Team bounty hunt"*/,			FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_TeamBounty,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+	  //{ 10, 130, 100, 138, 0,				LT_MENU_NEW_CreateGame15		/*"bomg tag"*/,					FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_Tag,					SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 140, 100, 148, 0,				LT_MENU_NEW_CreateGame16		/*"more options"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,						&MENU_NEW_MoreMultiplayerOptions,	MenuChange,					DrawFlatMenuItem,		NULL, 0 } ,
+      //{ 10, 150, 100, 160, 0,				MENU_NEW_CreateGamePseudoHost0	/*"server does collisions"*/,	FONT_Small,		TEXTFLAG_CentreY,													&ServerCollisions,			NULL,								SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1614,11 +1534,9 @@ MENU	MENU_NEW_CreateLobbyGame = {
 		{ 10, 106, 110, 114, 0, LT_MENU_NEW_CreateLobbyGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 114, 110, 122, 0, LT_MENU_NEW_CreateLobbyGame12 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 122, 110, 130, 0, LT_MENU_NEW_CreateLobbyGame13 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#ifdef BOMBTAG_ENABLE
-		{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-#endif
+	  //{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"bomb tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateLobbyGame15 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
+	  //{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -2208,7 +2126,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"tcp add:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
-		{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
+		//{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -2440,17 +2358,17 @@ MENU	MENU_NEW_Battle = {
 };
 
 /* coop */
-MENU	MENU_NEW_CoOp = {
-	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
-	{
-		{ 0, TITLE_MODEL_Disc1, 0, 0, 0,LT_MENU_NEW_CoOp0 /*"Co Op"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_CoOp1 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_CoOp2 /*"Network Setup"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-	}
-};
+//*MENU	MENU_NEW_CoOp = {
+//	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
+//	{
+//		{ 0, TITLE_MODEL_Disc1, 0, 0, 0,LT_MENU_NEW_CoOp0 /*"Co Op"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
+//		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_CoOp1 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+//		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_CoOp2 /*"Network Setup"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+//		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
+//		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
+//		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
+//	}
+//};
 
 
 /* single */
@@ -3213,28 +3131,27 @@ MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, 
 
 MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
-					  OLDMENUITEM(	200 , 112,LT_MENU_InGame1 /*"Set Up Biker  "*/, (void *)biker_name, &MENU_SetUpBiker , MenuChange , DrawNameVar),
+					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker  "*/,				(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
 #ifndef SOFTWARE_ENABLE
-					  OLDMENUITEM(  200 , 128,LT_MENU_InGame2 /*"Toggle Full Screen"*/, NULL, NULL , MenuGoFullScreen , MenuItemDrawName),
+					  OLDMENUITEM( 200, 128, LT_MENU_InGame2  /*"Toggle Full Screen"*/,			NULL,						NULL,					MenuGoFullScreen,		MenuItemDrawName),
 #endif
-					  OLDMENUITEM(	200 , 144,LT_MENU_InGame3 /*"Load Game"*/, NULL, &MENU_LoadSavedGame , MenuChange, MenuItemDrawName),
-					  OLDMENUITEM(	200 , 160,LT_MENU_InGame4 /*"Save Game"*/, NULL, &MENU_SaveGame, MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 176,LT_MENU_InGame5 /*"Options"*/, NULL, &MENU_Options , MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 192,LT_MENU_InGame6 /*"Level Select"*/, NULL, &MENU_LevelSelect , MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 192,LT_MENU_InGame7 /*"End level and show stats"*/, NULL, NULL , GoToStats, MenuItemDrawName),
-					  OLDMENUITEM(	200 , 208,LT_MENU_InGame8 /*"Quit to Main Menu"*/, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 224,LT_MENU_InGame9 /*"show ping"*/, &ShowPing, NULL, SelectToggle , DrawToggle),
-					  OLDMENUITEM(	200 , 240,LT_MENU_InGame10 /*"update (secs)"*/, &PingFreqSlider, NULL, SelectSlider , DrawSlider),
+					  OLDMENUITEM( 200, 144, LT_MENU_InGame3  /*"Load Game"*/,					NULL,						&MENU_LoadSavedGame,	MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"*/,					NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"*/,					NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 192, LT_MENU_InGame6  /*"Level Select"*/,				NULL,						&MENU_LevelSelect,		MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 192, LT_MENU_InGame7  /*"End level and show stats"*/,	NULL,						NULL,					GoToStats,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 208, LT_MENU_InGame8  /*"Quit to Main Menu"*/,			NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
+					  OLDMENUITEM( 200, 224, LT_MENU_InGame25 /*"Quit to desktop"*/,			NULL,						NULL,					SelectQuit,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 240, LT_MENU_InGame9  /*"show ping"*/,					&ShowPing,					NULL,					SelectToggle,			DrawToggle),
+					  OLDMENUITEM( 200, 256, LT_MENU_InGame10 /*"update (secs)"*/,				&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
 #ifndef EXTERNAL_DEMO
-					  OLDMENUITEM(  200 , 256,LT_MENU_InGame11 /*"Debugging"*/,&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle),
+					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"*/,					&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
 #endif
-				  	  OLDMENUITEM(  200 , 272,LT_MENU_InGame1a /*"server menu"*/, NULL, &MENU_ServerMenu, MenuChange, MenuItemDrawName),
-					  OLDMENUITEM(	200 , 288,LT_MENU_InGame13 /*"Wireframe Mode"*/ , &DebugVisible, DebugVisibleChanged, SelectToggle, DrawToggle),
-					  OLDMENUITEM(	200 , 304,LT_MENU_InGame14 /*"Save Menu"*/ , NULL, &MENU_Save , MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 320,LT_MENU_InGame15 /*"Debug Menu"*/, NULL, &MENU_DebugMode , MenuChange , MenuItemDrawName),
-					  OLDMENUITEM(	200 , 336,LT_MENU_InGame16 /*"IP "*/, (void *)&IPAddressText[0], NULL , NULL , DrawNameVar),
-//					  OLDMENUITEM(  200 , 352,LT_MENU_InGame17 /*"Packets Per Second "*/,(void*)&PacketsSlider, NULL, SelectSlider, DrawSlider),
-//					  OLDMENUITEM(  200 , 352,LT_MENU_InGame24 /*"Watch Player "*/,(void*)&WatchPlayerSelect, NULL, SelectSlider, DrawSlider),
+				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"*/,				&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
+					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"*/ ,					NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"*/,					NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 336, LT_MENU_InGame16 /*"IP "*/,						(void *)&IPAddressText[0],	NULL,					NULL,					DrawNameVar),
+					//OLDMENUITEM( 200, 352, LT_MENU_InGame24 /*"Watch Player "*/,				(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),
 					 
 					  
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
@@ -12246,18 +12163,15 @@ void GetGamePrefs( void )
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
 	else
-		if( temp )
-			ResetKillsPerLevel = TRUE;
-		else
-			ResetKillsPerLevel = FALSE;
+		ResetKillsPerLevel = temp;
 
 	if( RegGet( "MissileCameraEnable", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		MissileCameraEnable = 1;
+		MissileCameraEnable = TRUE;
 	else
 		MissileCameraEnable = temp;
 
 	if( RegGet( "RearCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		RearCameraActive = 1;
+		RearCameraActive = TRUE;
 	else
 		RearCameraActive = temp;
 
@@ -12580,11 +12494,11 @@ void GetMultiplayerPrefs( void )
 
 	size = sizeof(temp);
 
-	if( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		ColPerspective = ((temp) ? 1 : 0);
+	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : 0;
 
 	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
+		? temp : TRUE;
 
 	BikeExhausts = ( RegGet( "BikeExhausts", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : TRUE;
@@ -12612,17 +12526,17 @@ void GetMultiplayerPrefs( void )
 		PacketsSlider.value	= DPlayUpdateIntervalCmdLine;
 	}else{
 		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			? temp : 6;
+			? temp : 5;
 	}
 
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : GAME_Normal;
 
 	ShowPing = ( RegGet( "ShowPing", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
+		? temp : TRUE;
 
 	PingFreqSlider.value = ( RegGet( "PingFreq", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 10;
+		? temp : 60;
 
 	HarmTeamMates = ( RegGet( "HarmTeamMates", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : TRUE;
@@ -12640,7 +12554,7 @@ void GetMultiplayerPrefs( void )
 		? temp : 10;
 
 	ShowTeamInfo = ( RegGet( "TeamInfo", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
+		? temp : TRUE;
 
 	RandomPickups = ( RegGet( "RandomPickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : FALSE;
@@ -12664,26 +12578,7 @@ void GetMultiplayerPrefs( void )
 	PeerPeerHeartbeat = ( RegGet( "PeerPeerHeartbeat", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : FALSE;
 
-	TrackersList.selected_item = -1;
 	DoHeartbeat = FALSE;
-	if ( GetTrackerFiles() )
-	{
-		TrackersList.selected_item = 0;
-		size = sizeof( file );
-		if ( RegGet( "TrackerFile", (LPBYTE)file, &size ) == ERROR_SUCCESS )
-		{
-			for ( i = 0; i < TrackersList.items; i++ )
-			{
-				if ( !_stricmp( TrackersList.item[ i ], file ) )
-				{
-					TrackersList.selected_item = i;
-					sprintf( file, "tracker\\%s.trk", TrackersList.item[ TrackersList.selected_item ] );
-					DoHeartbeat = read_heartbeat_info( file );
-					break;
-				}
-			}
-		}
-	}
 
 	ThrottleSlider.value = ( RegGet( "ThrottleSlider", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 1000;
@@ -12772,8 +12667,6 @@ void SetMultiplayerPrefs( void )
 
 	temp = PeerPeerHeartbeat;
 	RegSet( "PeerPeerHeartbeat",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	RegSetA( "TrackerFile",  (LPBYTE)TrackersList.item[ TrackersList.selected_item ] , sizeof( TrackersList.item[ TrackersList.selected_item ] ) );
 
 	GoalScore = GoalScoreSlider.value;
 	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;

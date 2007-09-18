@@ -59,6 +59,10 @@
 #define LT_MENU_NEW_ValidPickups19 "golden power pod"
 #define LT_MENU_NEW_ValidPickups20 "thief missile"
 #define LT_MENU_NEW_ValidPickups21 "spider mine"
+#define LT_MENU_NEW_ValidPickups22 "primary weapons"
+#define LT_MENU_NEW_ValidPickups23 "power-ups"
+#define LT_MENU_NEW_ValidPickups24 "missiles"
+#define LT_MENU_NEW_ValidPickups25 "mines"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions0 "Multiplayer options"
 #define LT_MENU_NEW_MoreMultiplayerOptions1 "lag tolerance"
@@ -117,7 +121,7 @@
 #define LT_MENU_NEW_CreateLobbyGame11 "capture the flag"
 #define LT_MENU_NEW_CreateLobbyGame12 "bounty hunt"
 #define LT_MENU_NEW_CreateLobbyGame13 "Team bounty hunt"
-#define LT_MENU_NEW_CreateLobbyGame14 "tag"
+#define LT_MENU_NEW_CreateLobbyGame14 "bomb tag"
 #define LT_MENU_NEW_CreateLobbyGame15 "more options"
 #define LT_MENU_NEW_CreateLobbyGame16 "quit"
 
@@ -618,7 +622,6 @@
 #define LT_MENU_InGame9 "show ping"
 #define LT_MENU_InGame10 "update (secs)"
 #define LT_MENU_InGame11 "Debugging"
-#define LT_MENU_InGame12 "Server Mode"
 #define LT_MENU_InGame13 "Wireframe Mode"
 #define LT_MENU_InGame14 "Save Menu"
 #define LT_MENU_InGame15 "Debug Menu"
@@ -630,6 +633,8 @@
 #define LT_MENU_InGame21 "options"
 #define LT_MENU_InGame22 "Quit to Main Menu"
 #define LT_MENU_InGame23 "Debugging"
+#define LT_MENU_InGame24 "Watch Player"
+#define LT_MENU_InGame25 "Quit to desktop"
 
 #define LT_MENU_Help0 "In-Game Help"
 #define LT_MENU_Help1 "Toggle menu"
@@ -752,10 +757,6 @@
 #define LT_MENU_ServerMenu0 "server options"
 #define LT_MENU_ServerMenu1 "server rendering"
 #define LT_MENU_ServerMenu2 "remove player"
-
-
-#define MENU_NEW_CreateGamePseudoHost0 "server does collisions"
-
 
 #define LT_MENU_NEW_ChooseConnectionToStart1 "press 'esc' to quit"
 
