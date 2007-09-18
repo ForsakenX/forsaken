@@ -29,12 +29,8 @@
 #include "ddsurfhand.h"
 #include "pickups.h"
 #include "comm.h"
-
 #include "dpthread.h"
-
-#include "registry.h"
 #include "Local.h"
-
 #include "primary.h"
 
 //#define	DPTEST

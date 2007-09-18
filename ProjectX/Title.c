@@ -2,6 +2,7 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Include Files...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -13,7 +14,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "mydplay.h"
-
 #include "d3dmain.h"
 #include "typedefs.h"
 #include <time.h>
@@ -41,10 +41,7 @@
 #include "polys.h"
 #include "2dpolys.h"
 #include "screenpolys.h"
-
-#include "registry.h"
 #include "Local.h"
-
 #include "lines.h"
 #include "loadsave.h"
 #include "splash.h"
@@ -52,7 +49,6 @@
 #include "dpthread.h"
 #include "XMem.h"
 #include "ddsurfhand.h"
-
 #include "comm.h"
 #include "restart.h"
 

@@ -23,10 +23,7 @@
 #include "mxload.h"
 #include "mxaload.h"
 #include <stdio.h>
-
-#include "registry.h"
 #include "Local.h"
-
 #include "text.h"
 #include "ships.h"
 #include "LoadSave.h"

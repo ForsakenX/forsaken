@@ -24,21 +24,16 @@
 #include "mydplay.h"
 #include "ddsurfhand.h"
 #include "getdxver.h"
-
 #include <stdarg.h>
 #include <math.h>
 #include <time.h>
-
 #include "d3dmain.h"
-
 #include "2dtextures.h"
 #include "mload.h"
-
 #include "primary.h"
 #include "secondary.h"
 #include "triggers.h"
 #include "pickups.h"
-
 #include "Ships.h"
 #include "exechand.h"
 #include "collision.h"
@@ -63,12 +58,10 @@
 #include "comm.h"
 #include "triggers.h"
 #include "enemies.h"
-
 #include "tasker.h"
 #include "bsp.h"
 #include "trigarea.h"
 #include "multiplayer.h"
-
 #include  <fcntl.h>
 #include  <sys/types.h>
 #include  <sys/stat.h>
@@ -79,25 +72,17 @@
 #include  <string.h>
 #include  "file.h"
 #include  "pvrd3d.h"
-
 #include  "PolySort.h"
-
 #include  "Ai.h"
 #include  "Water.h"
 #include  "spotfx.h"
-
 #include <process.h>
 #include  "ExtForce.h"
 #include  "Teleport.h"
-
 #include  "rtlight.h"
 #include  "avi.h"
 #include  "restart.h"
-
-
-#include "registry.h"
 #include "Local.h"
-
 #include  "goal.h"
 #include  "splash.h"
 #include  "LoadSave.h"

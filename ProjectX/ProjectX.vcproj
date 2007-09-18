@@ -1005,10 +1005,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\registry.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\restart.h"
 				>
 			</File>

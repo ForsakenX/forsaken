@@ -1,11 +1,11 @@
 
+
 /*******************\
 |
 | Includes
 |
 \*******************/
 
-#include "registry.h"
 #include "new3d.h"
 #include "winreg.h"
 #include "d3dmain.h"
@@ -20,13 +20,29 @@
 #include "Title.h"
 #include "dpthread.h"
 
+
+/*******************\
+|
+| Externals
+|
+\*******************/
+
+extern BOOL Debug;
+extern void DebugPrintf( const char * format, ... );
+
+
 /*******************\
 |
 | Globals
 |
 \*******************/
 
-HKEY  ghCondemnedKey = NULL;
+char dirname  [256];  // C:\ProjectX
+char basename [256];  // ProjectX.exe
+char appname  [256];  // ProjectX
+char lobbyKey [256];  // Software\\Microsoft\\DirectPlay\\Applications\\ProjectX
+char appKey   [256];  // Software\\ProjectX
+HKEY appHKey = NULL;
 
 
 /*******************\
@@ -36,12 +52,14 @@ HKEY  ghCondemnedKey = NULL;
 \*******************/
 
 BOOL InitRegistry(void);
+BOOL GetRegistrySettings(void);
 BOOL CloseRegistry(void);
 BOOL OpenOrCreateRegistry(void);
 BOOL InstallDirectPlayRegistry(void);
 LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
+
 
 /*******************\
 |
@@ -51,24 +69,81 @@ LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 
 BOOL InitRegistry(void)
 {
-	int i = 1;
-	i = (InstallDirectPlayRegistry()) ? 1 : 0;
-	i = (OpenOrCreateRegistry()&&(i)) ? 1 : 0;
-	return (i) ? TRUE : FALSE;
+	if (!GetRegistrySettings())
+		return FALSE;
+	if (!InstallDirectPlayRegistry())
+		return FALSE;
+	if (!OpenOrCreateRegistry())
+		return FALSE;
+	return TRUE;
 }
 
 
 /*******************\
 |
-| RegSet
+| GetRegistrySettings
 |
 \*******************/
 
-BOOL CloseRegistry(void)
+BOOL GetRegistrySettings(void)
 {
-	if ( !ghCondemnedKey ) return FALSE;
-	RegCloseKey( ghCondemnedKey );
+	
+	// temporary holders
+	char buffer[ 256 ];
+	char *strptr;
+	char *strptr2;
+
+	// full path to exe used
+	// C:\ProjectX\ProjectX.exe
+	strcpy( buffer, __argv[ 0 ] );
+
+	// get pointer to last occurance of \ character
+	strptr = strrchr( buffer, '\\' );
+
+	// set the last \ to 0
+	*strptr = 0;
+
+	// check
+	if ( strptr == NULL )
+	{
+		DebugPrintf("Could not get last occurance of '\\'\n");
+		return FALSE;
+	}
+
+    // get the dirname
+	// C:\ProjectX
+	strncpy((char*)&dirname,(char*)&buffer,(sizeof(dirname)-1));
+
+	// get the basename
+	// ProjectX.exe
+	strncpy((char*)&basename,(char*)&strptr[1],(sizeof(basename)-1));
+
+    // get pointer to last occurance of . character
+	strptr2 = strrchr( (char*)&strptr[1], '.' );
+
+	// check
+	if ( strptr2 == NULL )
+	{
+		DebugPrintf("Could not get last occurance of '.'\n");
+		return FALSE;
+	}
+
+	// set the last . to 0
+	*strptr2 = 0;
+
+    // get the appname
+	// ProjectX
+    strncpy((char*)&appname,(char*)&strptr[1],(sizeof(appname)-1));
+
+	// setup lobby key
+	_snprintf(lobbyKey,(sizeof(lobbyKey)-1),"%s\\%s","Software\\Microsoft\\DirectPlay\\Applications",&appname);
+
+	// setup app key
+	_snprintf(appKey,(sizeof(lobbyKey)-1),"%s\\%s","Software",&appname);
+
+	// success
 	return TRUE;
+
 }
 
 
@@ -88,37 +163,18 @@ BOOL OpenOrCreateRegistry(void)
 	/* open or create the GAME_KEY */
 	result = RegCreateKeyEx(
 				HKEY_LOCAL_MACHINE,			/* registry root */
-				REGISTRY_GAME_KEY,			/* registry key */
+				(const char*)&appKey,		/* registry key */
 				0,							/* reserved */
 				NULL,						/* object type */
 				REG_OPTION_NON_VOLATILE,	/* save mode */
 				KEY_ALL_ACCESS,				/* access rights */
 				NULL,						/* lpSecurityAttributes */
-				&ghCondemnedKey,			/* handle */
+				&appHKey,				/* handle */
 				&disposition				/* created or opened result */
 				);
 
-	// successfull
-	if ( result == ERROR_SUCCESS )
-	{
-#ifdef REGISTRY_DEBUG
-		if ( disposition == REG_CREATED_NEW_KEY )
-		{
-			Msg("Registry Key Created");
-		}
-		else
-		if ( disposition == REG_OPENED_EXISTING_KEY )
-		{
-			Msg("Registry Key Openned");
-		}
-		else
-		{
-			Msg("Unknown Disposition");
-		}
-#endif
-	}
 	// failed
-	else
+	if ( result != ERROR_SUCCESS )
 	{
 		// get error message
 		FormatMessage(
@@ -131,18 +187,57 @@ BOOL OpenOrCreateRegistry(void)
 			  NULL
 		);
 
+		DebugPrintf("OpenOrCreateRegistry: Failed to open registry\n");
+
 		// print error message
 		Msg("%s %s %s %s",
-			"Failed to open registry!\n",
+			"Failed to open application registry!\n",
 			"You will not be able to use saved settings!\n",
 			"error: ",
 			&description);
 
 		// error
 		return FALSE;
+
+	}
+
+	
+	/* success */
+	if ( Debug )
+	{
+
+		/* print status */
+		if ( disposition == REG_CREATED_NEW_KEY )
+
+			DebugPrintf("OpenOrCreateRegistry: Registry Key Created\n");
+
+		else
+		if ( disposition == REG_OPENED_EXISTING_KEY )
+
+			DebugPrintf("OpenOrCreateRegistry: Registry Key Openned\n");
+
+		else
+
+			DebugPrintf("OpenOrCreateRegistry: Registry Unknown Disposition\n");
+
 	}
 
 	/* success */
+	return TRUE;
+
+}
+
+
+/*******************\
+|
+| CloseRegistry
+|
+\*******************/
+
+BOOL CloseRegistry(void)
+{
+	if ( !appHKey ) return FALSE;
+	RegCloseKey( appHKey );
 	return TRUE;
 }
 
@@ -162,23 +257,24 @@ BOOL InstallDirectPlayRegistry( void )
 	DWORD	disposition;
 	char	description[256];
 	HKEY	hKey = NULL;
-	
-	char buf[ 256 ];
-	char *appname;
-	
-	BOOL failed = FALSE;
+	BOOL	failed = FALSE;
+	char	buffer[ 256 ];
 
-	/* open or create the GAME_KEY */
+	//
+	//  Open/Create Registry Key
+	// 
+
+	// open or create the GAME_KEY 
 	result = RegCreateKeyEx(
-				HKEY_LOCAL_MACHINE,			/* registry root */
-				REGISTRY_LOBBY_KEY,			/* registry key */
-				0,							/* reserved */
-				NULL,						/* object type */
-				REG_OPTION_NON_VOLATILE,	/* save mode */
-				KEY_ALL_ACCESS,				/* access rights */
-				NULL,						/* lpSecurityAttributes */
-				&hKey,						/* handle */
-				&disposition				/* created or opened result */
+				HKEY_LOCAL_MACHINE,			// registry root
+				(const char*)&lobbyKey,		// registry key
+				0,							// reserved
+				NULL,						// object type
+				REG_OPTION_NON_VOLATILE,	// save mode
+				KEY_ALL_ACCESS,				// access rights 
+				NULL,						// lpSecurityAttributes
+				&hKey,						// handle
+				&disposition				// created or opened result
 				);
 
 	// failed
@@ -209,68 +305,67 @@ BOOL InstallDirectPlayRegistry( void )
 
 	// successfully opened/created registry key
 
-#ifdef REGISTRY_DEBUG
-	if ( disposition == REG_CREATED_NEW_KEY )
+	if ( ! Debug )
 	{
-		Msg("Registry Key Created");
+
+		if ( disposition == REG_CREATED_NEW_KEY )
+
+			DebugPrintf("DirectPlay Registry: Registry Key Created\n");
+
+		else
+		if ( disposition == REG_OPENED_EXISTING_KEY )
+
+			DebugPrintf("DirectPlay Registry: Registry Key Openned\n");
+
+		else
+
+			DebugPrintf("DirectPlay Registry: Unknown Disposition\n");
+
 	}
-	else
-	if ( disposition == REG_OPENED_EXISTING_KEY )
-	{
-		Msg("Registry Key Openned");
-	}
-	else
-	{
-		Msg("Unknown Disposition");
-	}
-#endif
+
+
+	//
+	//  Set the registry values
+	// 
+
 
 	// set the guid
-	StringFromGUID( &PROJX_GUID, (LPSTR)&buf );
+	// this is set dynamically in Stdwin.h
+	StringFromGUID( &PROJX_GUID, (LPSTR)&buffer );
 	if(RegSetValueEx(hKey, "Guid", 0, REG_SZ,
-	             (CONST BYTE *)buf, (sizeof( char ) * (strlen( buf )+1)) ) != ERROR_SUCCESS)
+	             (CONST BYTE *)buffer, (sizeof( char ) * (strlen( buffer )+1)) ) != ERROR_SUCCESS)
 	{
+		DebugPrintf("Failed to set the DirectPlay GUID\n");
 		Msg("Failed to set the DirectPlay GUID\n");
 		failed = TRUE;
 	}
 
 	// set the current working directory
-	_getcwd( buf, 256 );
+	_getcwd( buffer, 256 );
 	if(RegSetValueEx(hKey, "CurrentDirectory", 0, REG_SZ,
-	                (CONST BYTE *)buf, (sizeof( char ) * (strlen( buf )+1)) ) != ERROR_SUCCESS)
+	                (CONST BYTE *)buffer, (sizeof( char ) * (strlen( buffer )+1)) ) != ERROR_SUCCESS)
 	{
+		DebugPrintf("DPlay: Failed to set CurrentDirectory\n");
 		Msg("DPlay: Failed to set CurrentDirectory");
 		failed = TRUE;
 	}
 
-	// full path to exe used
-	// C:\ProjectX\ProjectX.exe
-	strcpy( buf, __argv[ 0 ] );
-
-	/* get pointer to last occurance of "\" character */
-	appname = strrchr( buf, 92 );
-
-	// set file name
-	// appname[1] start after the last "\" until "\0"
-	// ProjectX.exe
-	if( appname != NULL &&
-		(RegSetValueEx(hKey, "File", 0, REG_SZ,
-		              (CONST BYTE *)&appname[ 1 ],
-					  (sizeof(char) * (strlen(appname)+1))) != ERROR_SUCCESS))
+	// set the basename: ProjectX.exe
+	if( RegSetValueEx(hKey, "File", 0, REG_SZ,
+		              (CONST BYTE *)&basename,
+					  (sizeof(char) * (strlen(basename)+1))) != ERROR_SUCCESS )
 	{
+		DebugPrintf("DPlay: Failed to set File\n");
 		Msg("DPlay: Failed to set File");
 		failed = TRUE;
 	}
 
-	/* set the last "\" to "\0" */
-	/* effectively sets the end of the buff character array to the last "\" */
-	*appname = 0;
-
-	// set path
+	// set the dirname: C:\ProjectX
 	if(RegSetValueEx(hKey, "Path", 0, REG_SZ,
-	                (CONST BYTE *)buf,
-					(sizeof(char) * (strlen( buf )+1))) != ERROR_SUCCESS)
+	                (CONST BYTE *)&dirname,
+					(sizeof(char) * (strlen( buffer )+1))) != ERROR_SUCCESS)
 	{
+		DebugPrintf("DPlay: Failed to set Path\n");
 		Msg("DPlay: Failed to set Path");
 		failed = TRUE;
 	}
@@ -290,7 +385,6 @@ failed:
 		"Lobbies may not be able to find this installation!\n");
 
 	return FALSE;
-
 }
 
 
@@ -305,8 +399,8 @@ LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 #ifdef UNICODE
     dwSize *= 2; // calc number of bytes
 #endif
-	if ( ! ghCondemnedKey )	return -1;
-	return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_BINARY, lpData, dwSize );
+	if ( ! appHKey )	return -1;
+	return RegSetValueEx(appHKey, lptszName, 0, REG_BINARY, lpData, dwSize );
 }
 
 
@@ -320,8 +414,8 @@ LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 
 LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 {
-	if ( ! ghCondemnedKey )	return -1;
-    return RegSetValueEx(ghCondemnedKey, lptszName, 0, REG_SZ, lpData, dwSize);
+	if ( ! appHKey )	return -1;
+    return RegSetValueEx(appHKey, lptszName, 0, REG_SZ, lpData, dwSize);
 }
 
 
@@ -336,7 +430,7 @@ LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize)
 {
     DWORD dwType;
-	if ( ! ghCondemnedKey )	return -1;
-    return RegQueryValueEx(ghCondemnedKey, lptszName, NULL, &dwType, lpData, lpdwDataSize);
+	if ( ! appHKey )	return -1;
+    return RegQueryValueEx(appHKey, lptszName, NULL, &dwType, lpData, lpdwDataSize);
 }
 

@@ -24,7 +24,6 @@
 // Includes
 
 #include "typedefs.h"
-#include "registry.h"
 #include "Local.h"
 #include "resource.h"
 #include "d3dmain.h"
@@ -57,7 +56,6 @@ extern "C" {
 #include	"file.h" 
 #include	"splash.h"
 #include	"XMem.h" 
-#include	"registry.h"
 #include	"d3dapp.h"
 
 #ifdef SOFTWARE_ENABLE
@@ -172,7 +170,10 @@ d3dmainglobals myglobs;     // collection of global variables
 
 static UINT CancelAutoPlayMessage;
 
-BOOL Debug = FALSE;
+BOOL Debug					= FALSE;
+BOOL DeviceOnCommandline	= FALSE;
+BOOL bOnlySystemMemory		= FALSE;
+BOOL bOnlyEmulation			= FALSE;
 
 // AVI Specific stuff...
 
@@ -184,7 +185,7 @@ HANDLE AVIThreadControlEvent;
 // INTERNAL FUNCTION PROTOTYPES
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
-static BOOL CreateD3DApp(LPSTR lpCmdLine);
+static BOOL CreateD3DApp(void);
 static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
 static BOOL AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lpViewport, LPVOID lpContext);
 
@@ -198,6 +199,7 @@ static BOOL AppPause(BOOL f);
 static BOOL RenderLoop(void);
 static BOOL RestoreSurfaces();
 
+BOOL ParseCommandLine(LPSTR lpCmdLine);
 
 
 /****************************************************************************/
@@ -390,25 +392,38 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 
     WNDCLASS wc;
-	
+
+	//
 	// Initialize the global variables
+	//
 
-	MyGameStatus = STATUS_Title; // starting screen
+	// parse the command line
+	// and setup global variables
+	// NOTE: This should be called first...
+	if(!ParseCommandLine(lpCmdLine))
+		return FALSE;
 
+	// connect or setup registry
 	InitRegistry();
 
+	// and extract game settings
+	GetGamePrefs();
+
+    // starting screen
+	MyGameStatus = STATUS_Title;
+
+	//
     d3dapp = NULL;
 
+	//
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
-
     myglobs.bClearsOn		= FALSE;
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
 
 	// Register the window class
-
 	wc.style			= CS_HREDRAW | CS_VREDRAW;					//
     wc.lpfnWndProc		= WindowProc;								// processer for window messages
     wc.cbClsExtra		= 0;										//
@@ -427,7 +442,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	}
     
     // Create a window with some default settings that may change
-	
 	if( ! (myglobs.hWndMain = CreateWindowEx(
 
          WS_EX_APPWINDOW,	//
@@ -474,7 +488,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     // Call D3DApp to initialize all DD and D3D objects necessary to render.
     // D3DApp will call the device creation callback which will initialize the
     // viewport and the sample's execute buffers.
-    if (!CreateD3DApp(lpCmdLine))
+    if (!CreateD3DApp())
         return FALSE;
 
 	// done
@@ -482,57 +496,52 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 }
 
-/*
- * CreateD3DApp
- * Create all DirectDraw and Direct3D objects necessary to begin rendering.
- * Add the list of D3D drivers to the file menu.
- */
+//
+// Parse the Command Line
+//
 
-static BOOL CreateD3DApp(LPSTR lpCmdLine)
+BOOL ParseCommandLine(LPSTR lpCmdLine)
 {
-    HMENU hmenu;
-    int i, size;
+	
+	//
+	//  Locals
+	//
+
     LPSTR option = "";
-    BOOL bOnlySystemMemory, bOnlyEmulation;
-    DWORD flags;
-    Defaults defaults;
 	char cmdline[256];
-	char buf[ 256 ];
-	BOOL DeviceOnCommandline = FALSE;
+	char buf[256];
+	int size;
 
+    //
+    //  Set Global Defaults
+    //
+	
+	DeviceOnCommandline			= FALSE;
+    bOnlySystemMemory			= FALSE;
+    bOnlyEmulation				= FALSE;
+	LogosEnable					= 0;
+	PowerVR_Overide				= FALSE;
+	Is3Dfx						= FALSE;
+	Is3Dfx2						= FALSE;
+	TriLinear					= TRUE;
+	NoSFX						= FALSE;
+	TextureMemory				= 0;
+	MipMap						= TRUE;
+	TripleBuffer				= FALSE;
+	NoTextureScaling			= FALSE;
+	DplayRecieveThread			= FALSE;
+	PolygonText					= FALSE;
+	DS							= FALSE;
+	NoSplash					= TRUE;
+	SessionGuidExists			= FALSE;
+	UseSendAsync				= FALSE;
+	bFullscreen					= TRUE;
+	DPlayUpdateIntervalCmdLine	= 0;
 
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-	int	Writeable;
-/*-------------------------------------------------------------------------*/
-#endif
+	//
+	// Get the command line string
+	//
 
-    // Parse the command line
-
-    bOnlySystemMemory = FALSE;
-    bOnlyEmulation = FALSE;
-	LogosEnable = 0;
-	PowerVR_Overide = FALSE;
-	Is3Dfx = FALSE;
-	Is3Dfx2 = FALSE;
-	TriLinear = TRUE;
-	NoSFX = FALSE;
-	TextureMemory = 0;
-	MipMap = TRUE;
-	TripleBuffer = FALSE;
-	NoTextureScaling = FALSE;
-	DplayRecieveThread = FALSE;
-	PolygonText = FALSE;
-	DS = FALSE;
-	NoSplash = TRUE;
-	SessionGuidExists = FALSE;
-	UseSendAsync = FALSE;
-	bFullscreen = TRUE;
-	DPlayUpdateIntervalCmdLine = 0;
-
-	// get the command line string
 	size = sizeof(strlen(lpCmdLine)+1);
 	if ( size > sizeof(cmdline) )
 	{
@@ -541,7 +550,10 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 	}
 	strcpy(cmdline,lpCmdLine);
 
-	// extract first token from the command line
+	//
+	// extract and process tokens from command line
+	//
+
 	option = strtok(cmdline, " -+");
 
 	// loop over every option
@@ -864,10 +876,34 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 
     }
 
-	// get registry settings
-	GetGamePrefs();
+	return TRUE;
+}
 
-	// setup the width, height and bpp
+/*
+ * CreateD3DApp
+ * Create all DirectDraw and Direct3D objects necessary to begin rendering.
+ * Add the list of D3D drivers to the file menu.
+ */
+
+static BOOL CreateD3DApp(void)
+{
+
+    HMENU hmenu;
+    int i;
+    DWORD flags;
+    Defaults defaults;
+
+
+#ifdef SOFTWARE_ENABLE
+/*---------------------------------------------------------------------------
+	Chris Walsh's code
+---------------------------------------------------------------------------*/
+	int	Writeable;
+/*-------------------------------------------------------------------------*/
+#endif
+
+
+	// setup the width and height
 	if ( !default_width && !default_height && !default_bpp )
 	{
 		if ( ScreenWidth || ScreenHeight )
@@ -882,16 +918,17 @@ static BOOL CreateD3DApp(LPSTR lpCmdLine)
 		}
 		default_bpp = ScreenBPP;
 	}
+
+
+	// setup default bits per pixel
 	if ( !default_bpp )
 		default_bpp = 16;
 
-    /*
-     * Set the flags to pass to the D3DApp creation based on command line
-     */
 
-    flags = ((bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0) | 
-            ((bOnlyEmulation) ? (D3DAPP_ONLYD3DEMULATION |
-                                 D3DAPP_ONLYDDEMULATION) : 0);
+	// Set the flags to pass to the D3DApp creation based on command line
+    flags = ( (bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0 ) | 
+            ( (bOnlyEmulation)    ? (D3DAPP_ONLYD3DEMULATION |	D3DAPP_ONLYDDEMULATION) : 0 );
+
 
 #ifdef SOFTWARE_ENABLE
 /*---------------------------------------------------------------------------
