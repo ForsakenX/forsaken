@@ -29,7 +29,6 @@ extern BOOL Debug;
 	Globals
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
-LONGLONG	LevelCheckSum = 0;
 BOOL	CreateBatchFile = FALSE;
 BOOL	CreateLogFile = FALSE;
 
@@ -171,7 +170,6 @@ void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Return Size of File given Filename
-				:		scan override dir first, then normal
 	Input		:		char	*	Filename
 	Output		:		long		Size of File
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -360,92 +358,3 @@ void AddCommandToBat( const char * format, ... )
 	}
 
 }
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Compute checksum for file
-	Input		:		const char * fname
-	Output		:		Nothing
-	Side effect :		LevelCheckSum updated
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void FileCheckSum( char *fname )
-{
-	FILE *f;
-	char buf[ 4096 ];
-	uint32 *pdata;
-	LONGLONG data;
-	uint32 current, size, shift;
-	uint32 mask[] = {
-		0x00000000L,
-		0x000000FFL,
-		0x0000FFFFL,
-		0x00FFFFFFL };
-
-	if( !fname ) return;
-	if( !fname[ 0 ] ) return;
-
-	strncpy( buf, fname, sizeof( buf ) );
-	_strlwr( buf );
-	if ( !strstr( buf, "data\\levels\\" ) )
-		return;
-	f = fopen( fname, "rb" );
-	if ( !f )
-		return;
-
-	while ( !feof( f ) && !ferror( f ) )
-	{
-		size = fread( (void *) buf, 1, sizeof( buf ), f );
-		for ( current = shift = 0; current < size; current += 3 )
-		{
-			pdata = (uint32 *) &buf[ current ];
-			data = *pdata & mask[ ( size - current < 3 ) ? size - current : 3 ];
-			LevelCheckSum += data << shift;
-			shift = ( shift + 7 ) & 31;
-		}
-	}
-
-	fclose( f );
-
-	pdata = (uint32 *) &LevelCheckSum;
-	DebugPrintf( "FileCheckSum() : %s : 0x%08X%08X\n", fname, pdata[ 1 ], pdata[ 0 ] );
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Initialise checksum
-	Input		:		LPGUID lpguid
-	Output		:		Nothing
-	Side effect :		LevelCheckSum reset using lpguid
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void InitCheckSum( LPGUID lpguid )
-{
-	uint8 *buf;
-	uint32 *pdata;
-	LONGLONG data;
-	uint32 current, size, shift;
-	uint32 mask[] = {
-		0x00000000L,
-		0x000000FFL,
-		0x0000FFFFL,
-		0x00FFFFFFL };
-
-	buf = (uint8 *) lpguid;
-	LevelCheckSum = 0;
-	size = sizeof( *lpguid );
-	for ( current = shift = 0; current < size; current += 3 )
-	{
-		pdata = (uint32 *) &buf[ current ];
-		data = *pdata & mask[ ( size - current < 3 ) ? size - current : 3 ];
-		LevelCheckSum += data << shift;
-		shift = ( shift + 7 ) & 31;
-	}
-
-	DebugPrintf( "InitCheckSum() : 0x" );
-	for ( current = 1; current <= size; current++ )
-	{
-		DebugPrintf( "%02X", buf[ size - current ] );
-	}
-	pdata = (uint32 *) &LevelCheckSum;
-	DebugPrintf( " : 0x%08X%08X\n", pdata[ 1 ], pdata[ 0 ] );
-}
-
-

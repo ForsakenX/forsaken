@@ -1023,7 +1023,6 @@ typedef struct _STATUSMSG
 	BYTE		Triggers;		// tells how much of the mine list I have recieved..
 	BYTE		TrigVars;		// tells how much of the mine list I have recieved..
 	float		PacketsPerSecond;
-	LONGLONG	LevelCheckSum;
 } STATUSMSG, *LPSTATUSMSG;
 
 typedef struct _LONGSTATUSMSG

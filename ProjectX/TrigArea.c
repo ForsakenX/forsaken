@@ -121,7 +121,6 @@ BOOL TriggerAreaload( char * Filename )
 		GroupTriggerArea_enemy_shoots[i] = NULL;		
 	}
 	
-	FileCheckSum( Filename );
 
 	File_Size = Get_File_Size( Filename );	
 

@@ -228,7 +228,6 @@ BOOL Nodeload( char * Filename )
 	
 	NodeNetworkHeader.State = FALSE;
 
-	FileCheckSum( Filename );
 
 	File_Size = Get_File_Size( Filename );	
 

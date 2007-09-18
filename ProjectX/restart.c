@@ -257,7 +257,6 @@ BOOL LoadStartPoints( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	FileCheckSum( &NewFilename[ 0 ] );
 
 	fp = fopen( &NewFilename[ 0 ], "rb" );
 

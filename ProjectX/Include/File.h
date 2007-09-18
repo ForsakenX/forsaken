@@ -19,7 +19,5 @@ void AddCommentToBat( const char * format, ... );
 void AddFileToBat( char * Filename );
 void AddCommandToBat( const char * format, ... );
 BOOL File_Exists( char * Filename );
-void FileCheckSum( char *fname );
-void InitCheckSum( LPGUID lpguid );
 
 #endif // FILE_H

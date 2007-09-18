@@ -112,7 +112,6 @@ extern int    TeamFlagsInShips[ MAX_TEAMS ];
 extern BOOL NeedFlagAtHome;
 extern BOOL OwnFlagTeleportsHome;
 extern BOOL CanCarryOwnFlag;
-extern LONGLONG LevelCheckSum;
 
 BOOL OriginalLevels = FALSE;
 BOOL CheatsDisabled = FALSE;
@@ -3541,51 +3540,44 @@ char TriggerName[256];
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL ChangeLevel( void )
 {
-  //if( NewLevelNum != LevelNum )
-  //{
-    LevelNum = NewLevelNum;
+	//if( NewLevelNum != LevelNum )
+	//  return TRUE;
 
-//    NumGoldBars = 0;
-    
-    ReleaseLevel();
-    KillNodeCubeLines();
-    KillBoxLines();
+	LevelNum = NewLevelNum;
 
-    NextworkOldKills = -1;
-    NextworkOldDeaths = -1;
-    NextworkOldBikeNum = -1;
+	//NumGoldBars = 0;
 
-    ActiveRemoteCamera = NULL;
-    MissileCameraActive = 0;
-    CameraMissile = (uint16) -1;
+	ReleaseLevel();
+	KillNodeCubeLines();
+	KillBoxLines();
 
-    DPlayGetSessionDesc();
+	NextworkOldKills = -1;
+	NextworkOldDeaths = -1;
+	NextworkOldBikeNum = -1;
 
-    if (glpdpSD && glpDP )
-    {
-      // call LevelCheckSum init
-      InitCheckSum( &glpdpSD->guidInstance );
-    }else{
-      LevelCheckSum = 0;
-    }
+	ActiveRemoteCamera = NULL;
+	MissileCameraActive = 0;
+	CameraMissile = (uint16) -1;
 
-    InitScene();
-    InitTextMessages();
-    InitMultiSfxHandle();
+	DPlayGetSessionDesc();
 
-    OnceOnlyChangeLevel = TRUE;
-    ChangeLevel_MyGameStatus = MyGameStatus;
-    Change_Ext( &LevelNames[ LevelNum ][ 0 ], &TriggerName[ 0 ], ".TRG" );
-    if( !Triggerload( TriggerName ) )
-    {
-      SeriousError = TRUE;
-      return( FALSE );
-    }
+	InitScene();
+	InitTextMessages();
+	InitMultiSfxHandle();
 
-    MyGameStatus = STATUS_ChangeLevelPostInitView;
-    InitView();
-  //}
-  return( TRUE );
+	OnceOnlyChangeLevel = TRUE;
+	ChangeLevel_MyGameStatus = MyGameStatus;
+	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &TriggerName[ 0 ], ".TRG" );
+	if( !Triggerload( TriggerName ) )
+	{
+	  SeriousError = TRUE;
+	  return( FALSE );
+	}
+
+	MyGameStatus = STATUS_ChangeLevelPostInitView;
+	InitView();
+
+	return( TRUE );
 }
 
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )

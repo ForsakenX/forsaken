@@ -88,7 +88,6 @@ BOOL LoadRTLights( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &Filename[ 0 ], NewExt );
 
-	FileCheckSum( &Filename[ 0 ] );
 
 	fp = fopen( &Filename[ 0 ], "rb" );
 

@@ -722,10 +722,8 @@ BOOL Triggerload( char * Filename )
 	MinimumTemperature = NULL;
 	TimeLimitTrigger = NULL;
 
-	FileCheckSum( Filename );
 
-	File_Size = Get_File_Size( Filename );	
-//	if( !File_Size ) return FALSE;
+	File_Size = Get_File_Size( Filename );
 	if( !File_Size ) return TRUE;
 
 	Buffer = malloc( File_Size );

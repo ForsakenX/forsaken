@@ -102,8 +102,6 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 
 	strcpy( &TempFilename[ 0 ], Filename );
 
-	FileCheckSum( &TempFilename[ 0 ] );
-
 	fp = fopen( &TempFilename[ 0 ], "rb" );
 
 	if( fp != NULL )

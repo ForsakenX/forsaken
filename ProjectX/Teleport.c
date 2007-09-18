@@ -85,7 +85,6 @@ BOOL TeleportsLoad( char * Filename )
 		TeleportsGroupLink[i] = NULL;
 	}
 
-	FileCheckSum( Filename );
 	
 	File_Size = Get_File_Size( Filename );	
 	if( !File_Size )

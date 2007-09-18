@@ -1401,8 +1401,6 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
 	Mloadheader->Buffer = NULL;
-	
-	FileCheckSum( Filename );
 
 	File_Size = Get_File_Size( Filename );
 	

@@ -893,8 +893,6 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	Mxaloadheader->state = FALSE;
 	Mxaloadheader->Buffer = NULL;
 
-	FileCheckSum( Filename );
-
 	File_Size = Get_File_Size( Filename );	
 
 	if( !File_Size )

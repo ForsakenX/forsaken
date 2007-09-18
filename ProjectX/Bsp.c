@@ -193,8 +193,6 @@ static BOOL BSP_LoadPortals( char *fname )
 
 	Change_Ext( fname, Filename, ".PBS" );
 
-	FileCheckSum( Filename );
-
 	File_Size = Get_File_Size( Filename );	
 	if( !File_Size )
 	{
@@ -259,8 +257,6 @@ BOOL Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 	uint32			VersionNumber;
 
 	Bsp_Header->State = FALSE;
-
-	FileCheckSum( Filename );
 
 	File_Size = Get_File_Size( Filename );	
 	if( !File_Size )

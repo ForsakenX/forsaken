@@ -273,7 +273,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 	}
 	else
 	{
-		FileCheckSum( Filename );
 
 		File_Size = Get_File_Size( Filename );								// Get size of file to load
 		if( File_Size == 0 )

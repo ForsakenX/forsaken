@@ -1121,7 +1121,6 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 		}
 	}
 
-	FileCheckSum( Filename );
 
 	File_Size = Get_File_Size( Filename );	
 

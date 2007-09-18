@@ -186,7 +186,6 @@ extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
 extern	float	DemoAvgFps;
 extern	LONGLONG	TimeDiff;
-extern LONGLONG	LevelCheckSum;
 
 extern	LONGLONG	Freq;
 extern	BOOL	Buffer1InUse;
@@ -3873,25 +3872,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 		}
-		if( IsHost )
-		{
-			// Check they are playing the same version of the level....
-			if( ( MyGameStatus == STATUS_StartingMultiplayerSynch && lpStatus->Status == STATUS_StartingMultiplayerSynch ) || 
-				( MyGameStatus == STATUS_Normal && lpStatus->Status == STATUS_Joining ) || 
-				( MyGameStatus == STATUS_WaitingAfterScore && lpStatus->Status == STATUS_WaitingAfterScore ) )
-			{
-
-				if( lpStatus->LevelCheckSum	!= LevelCheckSum )
-				{
-					// They have the wrong version of the current level.....Kick em.....
-#ifdef DIRECTPLAY_KICK_PLAYER
-					IDirectPlayX_DestroyPlayer( glpDP , from_dcoID );
-#else
-					SendGameMessage(MSG_YOUQUIT, 0, lpStatus->WhoIAm, 0, 0);
-#endif
-				}
-			}
-		}
 
 
 
@@ -5207,14 +5187,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpStatus->Triggers		= Ships[WhoIAm].Triggers;	 
 		lpStatus->TrigVars		= Ships[WhoIAm].TrigVars;	 
 
-		if( !IsHost && !IsServer )
-		{
-			lpStatus->LevelCheckSum	= LevelCheckSum;
-		}else{
-			lpStatus->LevelCheckSum	= 0;
-		}
-
-
 		nBytes = sizeof( STATUSMSG );
 
 #ifdef	GUARANTEEDMESSAGES
@@ -5242,14 +5214,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpLongStatus->Status.Mines			= Ships[WhoIAm].Mines;		 
 		lpLongStatus->Status.Triggers		= Ships[WhoIAm].Triggers;	 
 		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;	 
-		if( !IsHost && !IsServer )
-		{
-			lpLongStatus->Status.LevelCheckSum = LevelCheckSum;
-		}else{
-			lpLongStatus->Status.LevelCheckSum = 0;
-		}
 
-
+		
 		for( Count = 0 ; Count < 32 ; Count++ )
 		{
 			lpLongStatus->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];

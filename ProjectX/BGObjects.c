@@ -1042,8 +1042,6 @@ BOOL PreLoadBGOFiles( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &TempFilename[ 0 ], NewExt );
 
-	FileCheckSum( &TempFilename[ 0 ] );
-
 	fp = fopen( &TempFilename[ 0 ], "rb" );
 
 	if( fp != NULL )

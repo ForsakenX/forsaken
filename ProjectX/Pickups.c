@@ -3630,9 +3630,6 @@ BOOL LoadPickupsPositions( void )
   /* reset number of pickups in current biker */
   Ships[WhoIAm].PickupIdCount = (uint16) 0;
 
-  /* update LevelCheckSum with checksum of given file */
-  FileCheckSum( &NewFilename[ 0 ] );
-
   /* get the size of the file */
   FileSize = Get_File_Size( &NewFilename[ 0 ] );
 

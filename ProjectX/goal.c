@@ -101,8 +101,6 @@ BOOL GoalLoad( void )
 	
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &Filename[ 0 ], NewExt );
 
-	FileCheckSum( Filename );
-
 	File_Size = Get_File_Size( Filename );	
 
 	if( !File_Size ) return TRUE;
