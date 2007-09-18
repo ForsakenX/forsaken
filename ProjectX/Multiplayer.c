@@ -158,12 +158,8 @@ extern	LPDIRECTPLAY4A                       glpDP;				// directplay object point
 extern	LPDIRECTPLAYLOBBY2A					lpDPlayLobby;		//Lobby stuff...
 extern	LPDPLCONNECTION						glpdplConnection;	// connection settings
 extern	TEXT TCPAddress;
-
 extern	DPID	dcoID;
-
-extern	WORD	Version;
 extern	BOOL	CountDownOn;
-
 extern	float	GetPlayerNumCount1;
 extern	float	GetPlayerNumCount2;
 extern	int		GetPlayerNumCount;
@@ -957,11 +953,15 @@ void GetCurrentSessions_ReScan( MENUITEM *Item )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
 
-BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, 
-                        LPVOID lpContext)
+BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID lpContext)
 {
 	int i;
 	GUID	tempGuid;
+
+	//
+	// is the session timed out ?
+	//
+
     if(dwFlags & DPESC_TIMEDOUT)
 	{
 		SessionsRefreshActive = FALSE;
@@ -994,45 +994,57 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 		return FALSE;       // don't try again
 	}
 
+	//
+	//  Do we allready have this entry in the list ?
+	//
+
+	// the applications guid
 	tempGuid = lpDPSessionDesc->guidInstance;
+
+	// for each session in our existing list
 	for( i = 0 ; i < SessionsList.items ; i++ )
 	{
+		// if current guid equals existing guid
 		if(	IsEqualGuid( &tempGuid, &Sessions[i].guidInstance) )
 		{
+			// just leave since we allready added it
 			SessionsRefresh[ i ] = TRUE;
-			// allready in the list...
 			return TRUE;
 		}
 	}
 
-	if( ( lpDPSessionDesc->dwUser4 & 0xffff ) == Version )
-	{
-		if( SessionsList.items < MAXSESSIONS )
-		{
-	
-			// store away its guid...
-			Sessions[SessionsList.items] = *lpDPSessionDesc;
-			strncpy( SessionNames[ SessionsList.items ], lpDPSessionDesc->lpszSessionNameA, sizeof( SessionNames[ SessionsList.items ] ) );
-	
-#ifdef UNICODE
-			strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionName , sizeof(SessionsList.item[0])  );
-#else
-			strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionNameA , sizeof(SessionsList.item[0])  );
-#endif
-	
-#ifdef UNICODE
-			if( strlen(lpDPSessionDesc->lpszSessionName ) >= sizeof(SessionsList.item[0]) )
-#else
-			if( strlen(lpDPSessionDesc->lpszSessionNameA ) >= sizeof(SessionsList.item[0]) )
-#endif
-			{
-				strcpy( SessionsList.item[SessionsList.items] + sizeof(SessionsList.item[0]) - 4 , "..." );
-			}
-			SessionsRefresh[SessionsList.items] = TRUE;
+	//
+	//  Have we reached the session list limit ?
+	//
 
-			SessionsList.items++;
-		}
+	if( SessionsList.items < MAXSESSIONS )
+		return TRUE;
+
+	//
+	//  Add it to the list
+	//
+
+	// store away its guid...
+	Sessions[SessionsList.items] = *lpDPSessionDesc;
+	strncpy( SessionNames[ SessionsList.items ], lpDPSessionDesc->lpszSessionNameA, sizeof( SessionNames[ SessionsList.items ] ) );
+
+#ifdef UNICODE
+	strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionName , sizeof(SessionsList.item[0])  );
+#else
+	strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionNameA , sizeof(SessionsList.item[0])  );
+#endif
+
+#ifdef UNICODE
+	if( strlen(lpDPSessionDesc->lpszSessionName ) >= sizeof(SessionsList.item[0]) )
+#else
+	if( strlen(lpDPSessionDesc->lpszSessionNameA ) >= sizeof(SessionsList.item[0]) )
+#endif
+	{
+		strcpy( SessionsList.item[SessionsList.items] + sizeof(SessionsList.item[0]) - 4 , "..." );
 	}
+	SessionsRefresh[SessionsList.items] = TRUE;
+
+	SessionsList.items++;
 
     return(TRUE);
 }
@@ -1884,62 +1896,58 @@ int GetIPAdd( void )
 
 	// initialize wsa
 	result = WSAStartup( 0x0101, &wsaData );
-	if ( result != 0 )
+	if ( result != 0 && Debug )
 	{
-#ifdef WSA_DEBUG
 		switch( result )
 		{
 		case WSASYSNOTREADY:
-			Msg("Underlying network subsystem is not ready for network communication.");
+			DebugPrintf("Underlying network subsystem is not ready for network communication.");
 			break;
 		case WSAVERNOTSUPPORTED:
-			Msg("Version of Windows Sockets requested is not provided by this implementation.");
+			DebugPrintf("Version of Windows Sockets requested is not provided by this implementation.");
 			break;
 		case WSAEINPROGRESS:
-			Msg("A blocking Windows Sockets 1.1 operation is in progress.");
+			DebugPrintf("A blocking Windows Sockets 1.1 operation is in progress.");
 			break;
 		case WSAEPROCLIM:
-			Msg("Limit on the number of tasks supported has been reached.");
+			DebugPrintf("Limit on the number of tasks supported has been reached.");
 			break;
 		case WSAEFAULT:
-			Msg("The lpWSAData parameter is not a valid pointer.");
+			DebugPrintf("The lpWSAData parameter is not a valid pointer.");
 			break;
 		default:
-			Msg("WSAStartup failed\n");
+			DebugPrintf("WSAStartup failed\n");
 		}
-#endif
 		return 0;
 	}
 
 	// get the hostname of the current machine
 	result = gethostname( hostname, sizeof(hostname) );
-	if( result == SOCKET_ERROR )
+	if( result == SOCKET_ERROR && Debug )
 	{
-#ifdef WSA_DEBUG
 		result = WSAGetLastError();
 		switch( result )
 		{
 		case WSAEFAULT:
-			Msg("%s %s",
+			DebugPrintf("%s %s",
 				"name is a NULL pointer or is not a valid part of the user address space.\n",
 				"Or the buffer size specified is too small to hold the complete host name.\n");
 			break;
 		case WSANOTINITIALISED:
-			Msg("A successful WSAStartup call must occur before using this function.\n");
+			DebugPrintf("A successful WSAStartup call must occur before using this function.\n");
 			break;
 		case WSAENETDOWN:
-			Msg("The network subsystem has failed.\n");
+			DebugPrintf("The network subsystem has failed.\n");
 			break;
 		case WSAEINPROGRESS:
-			Msg("%s %s",
+			DebugPrintf("%s %s",
 				"A blocking Windows Sockets 1.1 call is in progress,\n",
 				"or the service provider is still processing a callback function.\n");
 			break;
 		default:
-			Msg("gethostname failed\n");
+			DebugPrintf("gethostname failed\n");
 			break;
 		}
-#endif
 		return 0;
 	}
 	

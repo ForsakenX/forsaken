@@ -589,7 +589,6 @@ void MenuGoFullScreen( MENUITEM *Item );
 void MenuSelectMode( MENU *Menu );
 void MakeModeList( MENU *Menu );
 void ChangeStatus_Title ( MENUITEM * Item );
-void CreateVersion(void);
 BOOL LoadTitleModels(void);
 void VduClear ( void );
 void UpdateSessions ( int *dummy );

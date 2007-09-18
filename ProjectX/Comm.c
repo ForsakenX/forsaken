@@ -73,8 +73,6 @@ extern	DWORD					Old_Deaths;
 extern	char					Old_Name[256];
 extern	BOOL					Rejoining;
 extern	BOOL					TeamGame;
-
-extern	WORD					Version;
 extern	HANDLE					hPlayerEvent;					// player event to use
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	TimeLimit;
@@ -271,8 +269,6 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 	if ( PseudoHostCanSetMaxPlayers )
 		lpDesc->dwUser3 |= EnableMaxPlayersChangeBit;
 
-	lpDesc->dwUser4 = Version;		// only the lower word is used...
-
 	lpDesc->dwUser4 |= ( MaxPlayersSlider.value << MaxPlayers_Shift );	// max players must be stored seperately for server game
 
 	lpDesc->dwUser4 |= ( PacketsSlider.value << PacketsPerSecond_Shift );
@@ -314,9 +310,8 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 
     if (glpDP)
         hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_CREATE);
-
-
-
+	else
+		DebugPrintf("DPlayCreateSession: !glpDP Could not create direct play session.");
 
     return hr;
 }
@@ -359,21 +354,20 @@ HRESULT DPlayEnumPlayers(LPGUID lpSessionGuid, LPDPENUMPLAYERSCALLBACK2 lpEnumCa
  *
  * Wrapper for DirectPlay EnumSessions API.
  */
-HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, 
-                          LPVOID lpContext, DWORD dwFlags)
+HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags)
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
     ZeroMemory(&dpDesc, sizeof(dpDesc));
+
     dpDesc.dwSize = sizeof(dpDesc);
-        dpDesc.guidApplication = PROJX_GUID;
+    dpDesc.guidApplication = PROJX_GUID;
 
     if (glpDP)
-	{
-        hr = IDirectPlayX_EnumSessions(glpDP, &dpDesc, dwTimeout, lpEnumCallback,
-                                        lpContext, dwFlags);
-	}
+        hr = IDirectPlayX_EnumSessions(glpDP, &dpDesc, dwTimeout, lpEnumCallback, lpContext, dwFlags);
+	else
+		DebugPrintf("DPlayEnumSessions: !glpDP Could not enumerate sessions...");
 
     return hr;
 }
@@ -541,12 +535,15 @@ HRESULT DPlayOpenSession(LPGUID lpSessionGuid)
     // set the session guid
     if (lpSessionGuid)
         dpDesc.guidInstance = *lpSessionGuid;
+
     // set the application guid
-        dpDesc.guidApplication = PROJX_GUID;
+    dpDesc.guidApplication = PROJX_GUID;
 
     // open it
     if (glpDP)
         hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
+	else
+		DebugPrintf("DPlayOpenSession: could not join !glpDP\n");
 
     return hr;
 }

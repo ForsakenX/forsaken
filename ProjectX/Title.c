@@ -952,7 +952,6 @@ BOOL	NodeCubeType = FALSE;
 BOOL	TeamGame = FALSE;
 BOOL	HarmTeamMates = TRUE;
 BYTE	TeamNumber[MAX_PLAYERS];
-WORD	Version= 0;
 
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
 {
@@ -5349,9 +5348,6 @@ BOOL DisplayTitle(void)
 		InitShipActionList();
 
 		AttractModeCountDown = ATTRACTMODECOUNTVALUE;
-		
-		// make a version number for this game
-		CreateVersion();
 
 		InitLevels( SINGLEPLAYER_LEVELS );
 		InitLevels( MULTIPLAYER_LEVELS );
@@ -11817,16 +11813,6 @@ void NewMenuTextureMode( MENU *Menu )
 		FadeHoloLight(HoloLightBrightness);
 		DarkenRoom2(RoomDarkness);
 	}
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Get Version of Current exe...
-	Input		:		Nothing
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void CreateVersion(void)
-{
-	Version = MULTIPLAYER_VERSION;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
