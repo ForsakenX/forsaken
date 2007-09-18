@@ -19,6 +19,9 @@
 #include "mydplay.h"
 #include "Title.h"
 #include "dpthread.h"
+#include <stdio.h>
+#include <shellapi.h>
+
 
 
 /*******************\
@@ -87,15 +90,43 @@ BOOL InitRegistry(void)
 
 BOOL GetRegistrySettings(void)
 {
-	
+
 	// temporary holders
 	char buffer[ 256 ];
 	char *strptr;
 	char *strptr2;
 
+	//
+	//  Window truncates long names to dos 8.3 format
+	//  We must use this to expand to the full path
+	//
+
+	// get the long path
+	DWORD returned_size  = 0;
+	char long_path[4096] = "";
+
+	// try to get the path
+	returned_size = GetLongPathName( __argv[0], long_path, 4096 );
+
+	// some type of error
+	if ( returned_size == 0 )
+	{
+		Msg("Could not get full exe path: %d",GetLastError());
+		DebugPrintf("Could not get full exe Path: %d",GetLastError());
+		return FALSE;
+	}
+
+	// path is way to long fo...
+	if ( returned_size > 4096 )
+	{
+		Msg("Path to exe is to long");
+		DebugPrintf("Path to exe is to long");
+		return FALSE;
+	}
+
 	// full path to exe used
 	// C:\ProjectX\ProjectX.exe
-	strcpy( buffer, __argv[ 0 ] );
+	strcpy( buffer, (const char *)&long_path );
 
 	// get pointer to last occurance of \ character
 	strptr = strrchr( buffer, '\\' );
