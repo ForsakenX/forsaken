@@ -72,13 +72,29 @@ LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 
 BOOL InitRegistry(void)
 {
+
 	if (!GetRegistrySettings())
-		return FALSE;
+		goto failure;
+
 	if (!InstallDirectPlayRegistry())
-		return FALSE;
+		goto failure;
+
 	if (!OpenOrCreateRegistry())
-		return FALSE;
+		goto failure;
+
 	return TRUE;
+
+failure:
+
+	Msg("%s %s %s %s",
+		"A registry error occurred.\n",
+		"You may not be able to save/access settings.\n",
+		"You may not be able to play networked games.\n",
+		"A Lobby may not be able to find the installation.");
+
+	DebugPrintf("Registry Error...\n");
+
+	return FALSE;
 }
 
 
