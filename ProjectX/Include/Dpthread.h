@@ -37,9 +37,5 @@ BOOL DPStartThreadListenOnly( void );
 BOOL read_heartbeat_info( char *file );
 void UpdatePlayerInfo( void );
 BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz);
-void InitTrackersList( MENU *menu );
-void ExitSetUpTracker( MENU *menu );
-BOOL GetTrackerFiles( void );
-
 
 #endif	// DPTHREAD_H

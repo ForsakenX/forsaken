@@ -48,7 +48,6 @@ extern	LIST	ServiceProvidersList;
 extern uint16 PingTimes[MAX_PLAYERS];
 extern SLIDER	MaxServerPlayersSlider;
 extern BYTE	TeamNumber[];
-extern LIST	TrackersList;
 extern	BOOL IsServerGame;
 
 extern BOOL IsLobbyLaunched;
@@ -1311,73 +1310,3 @@ BOOL read_heartbeat_info( char *file )
 #define TRACKERFOLDER				"TRACKER"
 #define TRACKERFILE_EXTENSION		".trk"
 #define TRACKERFILE_SEARCHPATH		TRACKERFOLDER"\\*"TRACKERFILE_EXTENSION
-
-BOOL GetTrackerFiles( void )
-{
-	HANDLE h;
-	WIN32_FIND_DATA TrackerFiles;
-	char *tracker;
-	char	TrackerList[256][256];
-	int Count;
-	int i;
-
-	h = FindFirstFile( TRACKERFILE_SEARCHPATH,	// pointer to name of file to search for  
-						(LPWIN32_FIND_DATA) &TrackerFiles );	// pointer to returned information 
-
-	if ( h == INVALID_HANDLE_VALUE )
-	{
-		return FALSE;
-	}
-
-	Count = 0;
-	do{
-		// Get rid of the .trk
-		tracker = strstr( &TrackerFiles.cFileName[0], "." );
-		if( tracker )
-			_strlwr( tracker );
-		tracker = strstr( &TrackerFiles.cFileName[0], TRACKERFILE_EXTENSION );
-		if ( tracker )
-			*tracker = 0;
-		strcpy( &TrackerList[Count][0] , &TrackerFiles.cFileName[0] );
-		Count++;
-
-	}while(	FindNextFile( h , (LPWIN32_FIND_DATA) &TrackerFiles ) );
-
-	if ( !Count )
-	{
-		PrintErrorMessage ( NO_TRACKER_FILES, 1, NULL, ERROR_DONTUSE_MENUFUNCS);
-		return FALSE;
-	}
-
-	qsort( (void *)TrackerList[0], (size_t) Count , 256 , strcmp );
-
-	memset( &TrackersList, 0, sizeof( LIST ) );
-	TrackersList.display_items = 8;
-	for( i = 0 ; i < Count ; i++ )
-	{
-		strncpy( TrackersList.item[ TrackersList.items++ ], TrackerList[ i ], sizeof( TrackersList.item[ 0 ] ) ); 
-	}
-
-	FindClose(h);
-
-	return TRUE;
-}
-
-void InitTrackersList( MENU *menu )
-{
-	if ( TrackersList.selected_item < 0 )
-	{
-		PrintErrorMessage ( NO_TRACKER_FILES, 1, NULL, ERROR_DONTUSE_MENUFUNCS);
-	}
-}
-
-void ExitSetUpTracker( MENU *menu )
-{
-	char buf[ 256 ];
-
-	SetMultiplayerPrefs();
-	
-	sprintf( buf, "tracker\\%s.trk", TrackersList.item[ TrackersList.selected_item ] );
-	DoHeartbeat = read_heartbeat_info( buf );
-
-}
