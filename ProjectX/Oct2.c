@@ -6350,10 +6350,6 @@ void CheckLevelEnd ( void )
         // They have completed the Secret level
         if( CrystalsFound == ( LevelList.items ) )
         {
-          // they found the crystal on the secret level...Therefore they have access to the Secret Biker..
-          BikeList.items = MAXBIKETYPES;
-          // record this in their config
-          write_config( player_config, biker_config );
           GameCompleted = GAMECOMPLETE_WithAllCrystals;
         }else
         {

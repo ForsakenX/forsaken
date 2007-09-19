@@ -5211,8 +5211,7 @@ BOOL DisplayTitle(void)
 
 	if( TitleOnceOnly )
 	{
-		BikeList.items = MAXBIKETYPES - 1;
-		
+
 		InitShipActionList();
 
 		AttractModeCountDown = ATTRACTMODECOUNTVALUE;

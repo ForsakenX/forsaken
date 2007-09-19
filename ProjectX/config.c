@@ -1006,32 +1006,6 @@ uint32 EncodePlayerName( char *name )
 }
 
 static int
-read_validate( FILE *f, USERCONFIG *u, char *last_token )
-{
-	int ok;
-	uint32 check;
-
-	ok = fscanf( f, " %d", &check );
-	fscanf( f, " %80s", last_token );
-	if ( ok == 1 )
-	{
-		// if valid code, allow secret biker
-		if ( check == EncodePlayerName( u->name ) )
-		{
-			BikeList.items = MAXBIKETYPES;
-		}else
-		{
-			BikeList.items = MAXBIKETYPES - 1;
-		}
-
-		return 1;
-	}
-	else
-		return 0;
-}
-
-
-static int
 read_invert_pitch( FILE *f, USERCONFIG *u, char *last_token )
 {
 	if ( fscanf( f, " %d", &u->invert_pitch ) == 1 )
@@ -1649,7 +1623,6 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{ "macro1",  		read_macro1					},
 		{ "macro2",  		read_macro2					},
 		{ "macro3",  		read_macro3					},
-		{ "validate",  		read_validate				},
 		{ NULL,				NULL						}
 	};
 
@@ -1682,9 +1655,6 @@ read_config( USERCONFIG *u, char *cfg_name )
 
 	// reset all joystick settings
 	ReInitJoysticks();
-
-	// default is to not allow last ( secret ) biker
-	BikeList.items = MAXBIKETYPES - 1;
 
 	// get a 80 character wide string from file
 	if ( fscanf( f, " %80s", token ) == 1 )
@@ -1975,21 +1945,6 @@ write_config( USERCONFIG *u, char *cfg_name )
 	fprintf( f, "MACRO2\t%s\n", MacroText2.text );
 	fprintf( f, "MACRO3\t%s\n", MacroText3.text );
 
-
-	if ( BikeList.items == MAXBIKETYPES )
-	{
-		// biker is able to select secret bike, so write valid code to config
-		fprintf( f, "VALIDATE\t%d\n", EncodePlayerName( u->name ) );
-	}
-	else
-	{
-		// biker is not able to select secret bike, so write out random 32 bit num to config;
-		code = Random_Range( 0xff );
-		code <<= 16;
-		code |= Random_Range( 0xff );
-	 
-		fprintf( f, "VALIDATE\t%d\n", code ^ 0x7c1b2207 );
-	}
 
 	for (joystick = 0; joystick < Num_Joysticks; joystick++)
 	{
