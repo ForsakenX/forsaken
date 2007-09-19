@@ -8344,19 +8344,31 @@ Our_CalculateFrameRate(void)
     if( DS )
     {
       DisplayStatusMessages();
-    }else if( ShowWeaponKills )
+    }
+	else if( ShowWeaponKills )
     {
-      for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
-      {
-        Printuint16( PrimaryStats[i] , (d3dappi.szClient.cx>>1)-(5*FontWidth), (viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-      }
+		char *PrimaryWeaponName[MAXPRIMARYWEAPONS]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER" };
+		char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
 
-      for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
-      {
-        Printuint16( SecondaryStats[i] , (d3dappi.szClient.cx>>1)+(1*FontWidth), (viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-      }
+		for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
+		{
+			// primary weapon name
+			Print4x5Text( PrimaryWeaponName[i],	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+	   		// primary weapon kills
+			Printuint16( PrimaryStats[i],		(d3dappi.szClient.cx>>1)-(15*FontWidth),		(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+		}
+
+		for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
+		{		
+			// secondary weapon name
+			Print4x5Text( SecondaryWeaponName[i],	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+	   		// secondary weapon kills
+			Printuint16( SecondaryStats[i] ,		(d3dappi.szClient.cx>>1)+(1*FontWidth),		(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+		}
         
-    }else{
+    }
+	else
+	{
       sprintf( &buf[0], "CurRec %5d CurSent %5d MaxRec %5d MaxSent %5d", CurrentBytesPerSecRec , CurrentBytesPerSecSent , MaxCurrentBytesPerSecRec ,MaxCurrentBytesPerSecSent );
       CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 8) + (FontHeight>>1) + viewport.dwY , 2 );
       sprintf(&buf[0], "Rec %5d Sent %5d MaxRec %5d MaxSent %5d", RecPacketSize , BigPacketSize , MaxRecPacketSize , MaxBigPacketSize );
