@@ -12561,10 +12561,18 @@ void GetMultiplayerPrefs( void )
 
 	size = sizeof( pickupflags );
 	if ( RegGet( "PickupFlags", (LPBYTE)&pickupflags, &size ) == ERROR_SUCCESS )
-	{
 		UnpackPickupInfo( pickupflags );
+	else
+	{
+		// default these to false
+		PickupValid[2]	= FALSE; // transpulse
+		PickupValid[9]	= FALSE; // thief missile
+		PickupValid[17]	= FALSE; // spider mines
+		PickupValid[25]	= FALSE; // chaos shield
+		PickupValid[15]	= FALSE; // pine mines
+		PickupValid[32]	= FALSE; // stealth mantle
+	
 	}
-
 	if ( RegGet( "primarypickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 	{
 		NumPrimaryPickupsSlider.value = temp;
