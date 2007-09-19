@@ -8355,7 +8355,7 @@ Our_CalculateFrameRate(void)
 			// primary weapon name
 			Print4x5Text( PrimaryWeaponName[i],	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 	   		// primary weapon kills
-			Printuint16( PrimaryStats[i],		(d3dappi.szClient.cx>>1)-(15*FontWidth),		(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+			Printuint16( PrimaryStats[i],		(d3dappi.szClient.cx>>1)-(15*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 		}
 
 		for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
@@ -8363,7 +8363,7 @@ Our_CalculateFrameRate(void)
 			// secondary weapon name
 			Print4x5Text( SecondaryWeaponName[i],	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 	   		// secondary weapon kills
-			Printuint16( SecondaryStats[i] ,		(d3dappi.szClient.cx>>1)+(1*FontWidth),		(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+			Printuint16( SecondaryStats[i] ,		(d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 		}
         
     }
