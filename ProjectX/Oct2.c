@@ -2859,10 +2859,9 @@ char *DI_KeyName( DWORD key )
  **************************************************************************/
 BOOL InitDInput(void)
 {
-  HRESULT         err;
-  GUID     guid_mouse = GUID_SysMouse;
-  GUID     guid_keyboard = GUID_SysKeyboard;
-//  GUID     guid_joystick = GUID_Joystick;
+  HRESULT  err;
+  GUID     guid_mouse		= GUID_SysMouse;
+  GUID     guid_keyboard	= GUID_SysKeyboard;
   DIPROPDWORD dipdw =
         {
             {
@@ -3065,13 +3064,11 @@ BOOL InitDInput(void)
     }
 #endif
   }
+
   DebugPrintf( "InitDInput: %d joysticks connected\n", Num_Joysticks );
-  DefaultJoystickSettings( &default_config );
-  *player_config = default_config;
-  DebugPrintf( "InitDInput: default configs initialised\n" );
 
   // if we get here, all DirectInput objects were created ok
-    return TRUE;
+  return TRUE;
 
 fail:
     if (lpdiMouse)  IDirectInputDevice_Release(lpdiMouse), lpdiMouse  = NULL;
@@ -9442,58 +9439,6 @@ BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   }
 
   return TRUE;
-}
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-  Procedure : Once only init Stuff
-  Input   : Nothing
-  Output    : Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
-void  OnceOnlyInit( void )
-{
-  DWORD dwPlatform, dwVersion;
-
-  // check dx version
-  GetDXVersion( &dwVersion, &dwPlatform);
-  if ( dwVersion < 0x600 )
-  {
-    Msg("You need to install Direct X 6 or later in order to run 'Forsaken'\n");
-    exit( 1 );
-  }
-  
-  //
-  InitPolyText();
-
-  // refresh log files
-  if ( Debug )
-  {
-	DeleteFile( LogFilename   );
-    DeleteFile( BatchFilename );
-  }
-
-  // initialize direct input
-  if (!InitDInput())
-  {
-    DebugPrintf( "Oct2.c OnceOnlyInit() Failed on InitDInput()\n" );
-    exit(1);
-  }
-
-  // create the valid pickups global
-  InitValidPickups();
-
-  // character translation table
-  SetupCharTransTable();
-
-  // ? timer ?
-  QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-  LastTime = LargeTime;
-
-#ifdef SCROLLING_MESSAGES
-  InitStatsMessages();
-#endif
-
 }
 
 

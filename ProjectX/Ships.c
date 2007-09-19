@@ -1323,8 +1323,6 @@ BOOL ProcessShips()
 							SetBikeMods( (uint16) (SelectedBike+2) );
 						}else{
 							SetBikeMods( 0 );
-							// Slow down the bike for Multiplayer games...
-//							SetBikeMods( MAXBIKETYPES+2 );
 						}
 					}
 

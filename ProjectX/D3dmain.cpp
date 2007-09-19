@@ -31,6 +31,7 @@
 #include "dsound.h"
 #include "dbt.h"
 #include <direct.h>
+#include "getdxver.h"
 
 
 #ifdef SOFTWARE_ENABLE
@@ -67,6 +68,14 @@ extern "C" {
 	/*-------------------------------------------------------------------------*/
 #endif
 
+	extern LONGLONG  LargeTime;
+	extern LONGLONG  LastTime;
+	extern void SetupCharTransTable( void );
+	extern void InitValidPickups();
+	extern void InitPolyText( void );
+	extern BOOL InitDInput(void);
+	extern char * LogFilename;
+	extern char * BatchFilename;
 	extern BOOL bFullscreen;
 	extern char *config_name;
 	extern D3DAppInfo d3dappi;
@@ -145,8 +154,7 @@ extern "C" {
 	int PreferredWidth, PreferredHeight;
 
 	int DebugMathErrors( void );
-	void	OnceOnlyInit( void );
-	void	OnceOnlyRelease( void );
+	void OnceOnlyRelease( void );
 	void DebugPrintf( const char * format, ... );
 
 	void MovieRedraw (HWND);      // ID_MOVE_REDRAW
@@ -382,46 +390,44 @@ FAILURE:
 /****************************************************************************/
 
 
-/*
- * AppInit
- * Creates the window and initializes all objects necessary to begin rendering
- */
-
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 
     WNDCLASS wc;
+	DWORD dwPlatform, dwVersion;
 
 	//
-	// Initialize the global variables
-	//
+	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
+	LastTime = LargeTime;
 
-	// parse the command line
-	// and setup global variables
-	// NOTE: This should be called first...
-	if(!ParseCommandLine(lpCmdLine))
+	// refresh log files
+	if ( Debug )
+	{
+	  DeleteFile( LogFilename   );
+	  DeleteFile( BatchFilename );
+	}
+
+	// check direct x version
+	GetDXVersion( &dwVersion, &dwPlatform );
+	if ( dwVersion < 0x600 )
+	{
+		DebugPrintf( "DirectX version less than 6\n" );
+		Msg("You need to install Direct X 6 or later.");
 		return FALSE;
+	}
 
-	// connect or setup registry
-	InitRegistry();
-
-	// and extract game settings
-	GetGamePrefs();
-
-    // starting screen
-	MyGameStatus = STATUS_Title;
-
-	//
-    d3dapp = NULL;
-
-	//
+	// globals
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
     myglobs.bClearsOn		= FALSE;
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
+
+	// parse the command line
+	if(!ParseCommandLine(lpCmdLine))
+		return FALSE;
 
 	// Register the window class
 	wc.style			= CS_HREDRAW | CS_VREDRAW;					//
@@ -477,13 +483,44 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// force a repaint ( probably just to show it right away )
 	UpdateWindow(myglobs.hWndMain);
+	
+	//
+	InitPolyText();
 
-    // initailize components which remain constant throughout execution
-	OnceOnlyInit();
+	// create the valid pickups global
+	InitValidPickups();
+
+	// character translation table
+	SetupCharTransTable();
+
+
+#ifdef SCROLLING_MESSAGES
+
+	// scrolling messages
+	InitStatsMessages();
+
+#endif
+
+	// connect or setup registry
+	InitRegistry();
+
+    // starting screen
+	MyGameStatus = STATUS_Title;
 
 	// start the scene
 	if (!InitScene())
 		return FALSE;
+
+	// initialize direct input
+	if (!InitDInput())
+	{
+		DebugPrintf( "Failed on InitDInput()\n" );
+		Msg("Failed to initialized Direct Input!");
+		return FALSE;
+	}
+
+	// and extract game settings
+	GetGamePrefs();
 
     // Call D3DApp to initialize all DD and D3D objects necessary to render.
     // D3DApp will call the device creation callback which will initialize the
