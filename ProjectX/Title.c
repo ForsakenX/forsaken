@@ -944,6 +944,7 @@ SLIDER BikerSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER BikeCompSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect			= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 
+BOOL LightningLaser				= FALSE; // false = LASER, true = NME_LIGHTNING
 BOOL OKToJoinSession			= FALSE;
 BOOL ShowTeamInfo				= TRUE;
 BOOL OKToProcessKeys			= FALSE;
@@ -1466,7 +1467,7 @@ MENU	MENU_NEW_CreateGame = {
 		{  10, 126, 200, 116, 0,			LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CaptureFlag,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 134, 200, 124, 0,			LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_BountyHunt,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 140, 200, 132, 0,			LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_TeamBounty,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-	  //{  10, 148, 100, 138, 0,			LT_MENU_NEW_CreateGame15 /*"bomb tag"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Tag,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+	    {  10, 148, 100, 138, 0,			LT_MENU_NEW_CreateGame15 /*"bomb tag"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Tag,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 	  //{  10, 164, 100, 170, 0,			LT_MENU_NEW_CreateGame17 /*"quit"*/,					FONT_Small,		TEXTFLAG_CentreY,													NULL,								NULL,								SelectQuit,				DrawFlatMenuItem,		NULL, 0 } ,
 
@@ -1502,7 +1503,7 @@ MENU MENU_NEW_CreateGamePseudoHost = {
 		{ 10, 108, 200, 116, 0,				LT_MENU_NEW_CreateGame12		/*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_CaptureFlag,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10, 116, 200, 124, 0,				LT_MENU_NEW_CreateGame13		/*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_BountyHunt,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10, 124, 200, 132, 0,				LT_MENU_NEW_CreateGame14		/*"Team bounty hunt"*/,			FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_TeamBounty,			SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
-	  //{ 10, 130, 100, 138, 0,				LT_MENU_NEW_CreateGame15		/*"bomg tag"*/,					FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_Tag,					SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
+	    { 10, 130, 100, 138, 0,				LT_MENU_NEW_CreateGame15		/*"bomg tag"*/,					FONT_Small,		TEXTFLAG_CentreY,													&GameType,					(void *)GAME_Tag,					SelectFlatRadioButton,		DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10, 140, 100, 148, 0,				LT_MENU_NEW_CreateGame16		/*"more options"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,						&MENU_NEW_MoreMultiplayerOptions,	MenuChange,					DrawFlatMenuItem,		NULL, 0 } ,
       //{ 10, 150, 100, 160, 0,				MENU_NEW_CreateGamePseudoHost0	/*"server does collisions"*/,	FONT_Small,		TEXTFLAG_CentreY,													&ServerCollisions,			NULL,								SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 
@@ -1533,7 +1534,7 @@ MENU	MENU_NEW_CreateLobbyGame = {
 		{ 10, 106, 110, 114, 0, LT_MENU_NEW_CreateLobbyGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 114, 110, 122, 0, LT_MENU_NEW_CreateLobbyGame12 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 122, 110, 130, 0, LT_MENU_NEW_CreateLobbyGame13 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-	  //{ 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"bomb tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
+	    { 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"bomb tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateLobbyGame15 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 	  //{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 
@@ -1952,12 +1953,13 @@ MENU	MENU_NEW_Visuals = {
 	"", NULL, NULL, NULL, TITLE_TIMER_Visuals,
 	{
 #if 1
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_Visuals0 /*"Visuals"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 20, 40, 200, 50, 0, LT_MENU_NEW_Visuals1 /*"Change Detail Levels"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, &MENU_NEW_DetailLevels , MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 20, 60, 200, 70, 0, LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, &MENU_NEW_ScreenRes , MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 20, 80, 200, 90, 0, LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, &MENU_NEW_TextureFormat , MenuChange, DrawFlatMenuItem, NULL, 0  },
-		{ 20, 100, 50, 110, SLIDER_Percent, LT_MENU_NEW_Visuals4 /*"gamma"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 },
-		{ 20, 120, 200, 130, 0, LT_MENU_NEW_Visuals5 /*"back"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL , MenuItemBack, DrawFlatMenuItem, NULL, 0  },
+		{  0,   0, 200,  20, 0,					LT_MENU_NEW_Visuals0 /*"Visuals"*/,					FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
+		{ 20,  40, 200,  50, 0,					LT_MENU_NEW_Visuals1 /*"Change Detail Levels"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_DetailLevels,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
+		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
+		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
+		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
+		{ 20, 120, 100, 130, 0,					LT_MENU_NEW_Visuals6 /*"lightning laser"*/,			FONT_Small, TEXTFLAG_CentreY,						&LightningLaser,NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
+		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },
 #else
   /*
   128  Ç ( 199 )  144  É ( 201 )  160  á ( 225 )   
@@ -2886,25 +2888,26 @@ MENU	MENU_Sound;
 MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
-		{ 200, 100, 0, 0, 0, LT_MENU_Detail1 /*"Bi Linear Filtering"*/, 0, 0,		&BiLinearFiltering,		SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 116, 0, 0, 0, LT_MENU_Detail1a /*"Tri Linear Filtering"*/, 0, 0,		&TriLinear,				SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 148, 0, 0, 0, LT_MENU_Detail2 /*"Perspective Correct"*/, 0, 0,		&PerspectiveCorrect,	SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 164, 0, 0, 0, LT_MENU_Detail3 /*"Lens Flare         "*/, 0, 0,		&LensFlare,				NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 180, 0, 0, 0, LT_MENU_Detail4 /*"Team Info          "*/, 0, 0,		&ShowTeamInfo,			NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 196, 0, 0, 0, LT_MENU_Detail5 /*"Primary Lights     "*/, 0, 0,		&PrimaryLightDetail,	SetLightStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 212, 0, 0, 0, LT_MENU_Detail6 /*"Secondary Lights   "*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 228, 0, 0, 0, LT_MENU_Detail7 /*"Pickup Lights      "*/, 0, 0,		&PickupLightDetail,		SetLightStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 244, 0, 0, 0, LT_MENU_Detail8 /*"Mono Lighting      "*/, 0, 0,		&SWMonoChrome,			NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 260, 0, 0, 0, LT_MENU_Detail9 /*"Smoke Trail Detail "*/, 0, 0,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200, 276, 0, 0, 0, LT_MENU_Detail10 /*"Auto Detail       "*/, 0, 0,		&AutoDetail,			NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 292, 0, 0, 0, LT_MENU_Detail11 /*"Bike Detail       "*/, 0, 0,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
+		{ 200, 100, 0, 0, 0, LT_MENU_Detail1	/*"Bi Linear Filtering"		*/, 0, 0,		&BiLinearFiltering,		SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 116, 0, 0, 0, LT_MENU_Detail1a	/*"Tri Linear Filtering"	*/, 0, 0,		&TriLinear,				SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 148, 0, 0, 0, LT_MENU_Detail2	/*"Perspective Correct"		*/, 0, 0,		&PerspectiveCorrect,	SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 164, 0, 0, 0, LT_MENU_Detail3	/*"Lens Flare"				*/, 0, 0,		&LensFlare,				NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,	SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 212, 0, 0, 0, LT_MENU_Detail6	/*"Secondary Lights"		*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 228, 0, 0, 0, LT_MENU_Detail7	/*"Pickup Lights"			*/, 0, 0,		&PickupLightDetail,		SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 244, 0, 0, 0, LT_MENU_Detail8	/*"Mono Lighting"			*/, 0, 0,		&SWMonoChrome,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 260, 0, 0, 0, LT_MENU_Detail9	/*"Smoke Trail Detail"		*/, 0, 0,		&TrailDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
+		{ 200, 276, 0, 0, 0, LT_MENU_Detail10	/*"Auto Detail"				*/, 0, 0,		&AutoDetail,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
 #ifdef Z_TRICK
-		{ 200, 308, 0, 0, 0, LT_MENU_Detail15 /*"Z Clears          "*/, 0, 0,		&ZClearsOn,		SetZCompare,	SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 308, 0, 0, 0, LT_MENU_Detail15	/*"Z Clears"				*/, 0, 0,		&ZClearsOn,				SetZCompare,		SelectToggle,	DrawToggle, NULL, 0 },
 #endif
-		//{ 200, 292, 0, 0, 0, LT_MENU_Detail12 /*"Water Detail       "*/, 0, 0,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		//{ 200, 308, 0, 0, 0, LT_MENU_Detail13 /*"gamma              "*/, 0, 0,		&GammaSlider,			NULL,	SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200, 324, 0, 0, 0, LT_MENU_Detail14 /*"mature content     "*/, 0, 0,		&GoreGuts,				NULL,	SelectToggle,	DrawToggle, NULL, 0 },
-
+		{ 200, 292, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
+		{ 200, 308, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,			NULL,				SelectSlider,	DrawSlider, NULL, 0 },
+		{ 200, 324, 0, 0, 0, LT_MENU_Detail14	/*"mature content"			*/, 0, 0,		&GoreGuts,				NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		{ 200, 340, 0, 0, 0, LT_MENU_Detail16	/*"lightning laser"			*/, 0, 0,		&LightningLaser,		NULL,				SelectToggle,	DrawToggle, NULL, 0 },
+		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -19470,7 +19473,7 @@ void UpdateSessionInfo( LIST *List )
 
 	// game type
     if ( session->dwUser3 & BombGameBit ) {
-		pchGameType = LT_MENU_NEW_CreateGame15/*"tag"*/;
+		pchGameType = LT_MENU_NEW_CreateGame15/*"bomb tag"*/;
 	} else if ( session->dwUser3 & CTFGameBit ) {
 		pchGameType = LT_MENU_NEW_CreateGame11 /*"capture the flag"*/;
     } else if ( session->dwUser3 & FlagGameBit ) {

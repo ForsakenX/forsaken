@@ -103,7 +103,7 @@
 #define LT_MENU_NEW_CreateGame12 "flag chase"
 #define LT_MENU_NEW_CreateGame13 "bounty hunt"
 #define LT_MENU_NEW_CreateGame14 "Team bounty hunt"
-#define LT_MENU_NEW_CreateGame15 "tag"
+#define LT_MENU_NEW_CreateGame15 "bomb tag"
 #define LT_MENU_NEW_CreateGame16 "more options"
 #define LT_MENU_NEW_CreateGame17 "quit"
 
@@ -298,6 +298,7 @@
 #define LT_MENU_NEW_Visuals3 "Select Texture Format"
 #define LT_MENU_NEW_Visuals4 "gamma"
 #define LT_MENU_NEW_Visuals5 "back"
+#define LT_MENU_NEW_Visuals6 "lightning laser"
 
 #define LT_MENU_NEW_LobbyWaitingForHost0 "host is choosing game type, please wait"
 #define LT_MENU_NEW_LobbyWaitingForHost1 "quit"
@@ -534,6 +535,7 @@
 #define LT_MENU_Detail13 "gamma              "
 #define LT_MENU_Detail14 "mature content     "
 #define LT_MENU_Detail15 "Z-Buffer clearing  "
+#define LT_MENU_Detail16 "Lightning Laser    "
 
 #define LT_MENU_SelectBike0 "Select Bike"
 #define LT_MENU_SelectBike1 "Choose From..."

@@ -117,6 +117,7 @@ extern	float			NitroFuelUsed;
 extern	BOOL			PrimaryLightDetail;
 extern	BOOL			SecondaryLightDetail;
 extern	BOOL            bSoundEnabled;
+extern  BOOL			LightningLaser; // user chooses normal laser or lightning from visuals
 
 extern	FRAME_INFO	*	Pulsar_Header;
 extern	FRAME_INFO	*	Pulsar_Trail_Header;
@@ -317,6 +318,16 @@ int8 PrimaryToFireLookup[ MAXPRIMARYWEAPONS ] = {
 	TRANSPULSE_CANNON,
 	SUSS_GUN,
 	LASER,
+};
+
+int8 PrimaryToFireLookup2[ MAXPRIMARYWEAPONS ] = {
+
+	PULSAR,
+	TROJAX,
+	PYROLITE_RIFLE,
+	TRANSPULSE_CANNON,
+	SUSS_GUN,
+	NME_LIGHTNING,
 };
 
 BOOL	PrimaryWeaponCheat = FALSE;
@@ -1328,7 +1339,13 @@ static int16	OnceOnlyFlag = 0;
 		
 					if( PrimaryWeaponsGot[ Ships[ WhoIAm ].Primary ] )
 					{
-						switch( PrimaryToFireLookup[ Ships[WhoIAm].Primary ] )
+						int8 prm;
+						if(LightningLaser)
+							prm = PrimaryToFireLookup2[ Ships[WhoIAm].Primary ];
+						else
+							prm = PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+
+						switch( prm )
 						{
 							case PULSAR:
 								if( GeneralAmmo )
@@ -1548,19 +1565,36 @@ static int16	OnceOnlyFlag = 0;
 									Pos.x = ( -100.0F * GLOBAL_SCALE ) + (   0.0F * GLOBAL_SCALE );
 									Pos.y = (    0.0F * GLOBAL_SCALE ) + ( -75.0F * GLOBAL_SCALE );
 									Pos.z = (    0.0F * GLOBAL_SCALE ) + (   0.0F * GLOBAL_SCALE );
-									InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup[ Ships[WhoIAm].Primary ],
+									if(LightningLaser)
+									{
+										InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup2[ Ships[WhoIAm].Primary ],
 													Ships[ WhoIAm ].Object.Group, &Ships[ WhoIAm ].Object.Pos, &Pos, &Dir, &UpVector,
 													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
-
+									}
+									else
+									{
+										InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup[ Ships[WhoIAm].Primary ],
+													Ships[ WhoIAm ].Object.Group, &Ships[ WhoIAm ].Object.Pos, &Pos, &Dir, &UpVector,
+													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
+									}
 								}
 								if( GeneralAmmo && !LaserOverheated )
 								{
 									Pos.x = -( -100.0F * GLOBAL_SCALE ) + (   0.0F * GLOBAL_SCALE );
 									Pos.y = -(    0.0F * GLOBAL_SCALE ) + ( -75.0F * GLOBAL_SCALE );
 									Pos.z = -(    0.0F * GLOBAL_SCALE ) + (   0.0F * GLOBAL_SCALE );
-									InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup[ Ships[WhoIAm].Primary ],
+									if(LightningLaser)
+									{
+										InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup2[ Ships[WhoIAm].Primary ],
 													Ships[ WhoIAm ].Object.Group, &Ships[ WhoIAm ].Object.Pos, &Pos, &Dir, &UpVector,
 													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
+									}
+									else
+									{
+										InitOnePrimBull( OWNER_SHIP, WhoIAm, ++Ships[ WhoIAm ].PrimBullIdCount, PrimaryToFireLookup[ Ships[WhoIAm].Primary ],
+													Ships[ WhoIAm ].Object.Group, &Ships[ WhoIAm ].Object.Pos, &Pos, &Dir, &UpVector,
+													Ships[ WhoIAm ].Object.PowerLevel, PowerLevel, FALSE );
+									}
 								}
 
 								break;
