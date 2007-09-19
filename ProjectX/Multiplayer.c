@@ -332,7 +332,7 @@ void GetMultiplayerPrefs( void );
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void GetServiceProviders( void )
+void GetServiceProviders( MENUITEM * Item )
 {
 
 	DWORD size;
@@ -1482,7 +1482,7 @@ void BailMultiplayerFrontEnd( MENU *Menu )
 
 	BailMultiplayer( Menu );
 
-	GetServiceProviders();
+	GetServiceProviders( NULL );
 	ServiceProvidersList.selected_item = selected_item;
 
 	ExitProviderChosen( NULL );

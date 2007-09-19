@@ -81,7 +81,6 @@ void *mem;
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
-
 extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
@@ -9730,44 +9729,75 @@ void InitPilotList( void )
 	int j;
 	char *fname, *bname;
 
+	// set PilotsList to defaults
 	PilotList.items = 0;
 	PilotList.top_item = 0;
+	PilotList.selected_item = -1;
 	if ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU))
 		PilotList.display_items = 16;
 	else
 		PilotList.display_items = 8;
 
-	PilotList.selected_item = -1;
-	
-	h = FindFirstFile( "pilots\\*.cfg" ,	// pointer to name of file to search for  
-						(LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
+	// search for files that match *.cfg
+	h = FindFirstFile( "pilots\\*.cfg" , (LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
 
+	// if we didn't find any cfg's return
 	if ( h == INVALID_HANDLE_VALUE )
 		return;
 
+	// for each found cfg
 	do{
+
+        // the next empty pilot slot to fill in
 		bname = PilotList.item[PilotList.items];
+
+		// temporary holder for file name found
 		fname = ConfigFiles.cFileName;
+
+		// size of the pilot name
 		j = strlen( fname ) - strlen( ".cfg" );
+
+		// if pilot name size is within boundaries
 		if ( j > 0 && j < MAX_PLAYER_NAME_LENGTH )
 		{
+
+			// set the pilot name
 			strncpy( bname, fname, j );
+
+			// set end of c string
 			bname[ j ] = 0;
+
+			// up the count of pilots
 			PilotList.items++;
+
 		}
+
+	// get the next file
 	}while(	FindNextFile( h , (LPWIN32_FIND_DATA) &ConfigFiles ) );
+
+	// sort the pilot list
 	qsort( (void *)PilotList.item, (size_t) PilotList.items, sizeof( PilotList.item[ 0 ] ), compare );
+
+	// for each pilot
 	for ( j = 0; j < PilotList.items; j++ )
 	{
+		// 
 		if ( !_stricmp( PilotList.item[ j ], biker_name ) )
 			PilotList.selected_item = j;
 	}
+
+	// if selected pilot is ????
 	if ( PilotList.selected_item >= PilotList.top_item + PilotList.display_items )
+
+		// ???
 		PilotList.top_item = PilotList.selected_item - PilotList.display_items + 1;
 
+	// close the find handle
 	FindClose(h);
 
+	// delete function
 	PilotList.FuncDelete = DeletePilot;
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -9777,12 +9807,22 @@ void InitPilotList( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void InitPilotName( MENU *menu )
 {
+
+	// back up current config
 	strcpy( old_config, biker_config );
+
+	// copy in default name
 	strcpy( PilotName.text, DEFAULT_NEWNAME );
+
+	//
 	PilotName.insert_pos = strlen( PilotName.text );
+
+	// set play name length limitation
 	PilotName.limit_length = MAX_PLAYER_NAME_LENGTH - 1;
 
+	//
 	KillBikeChar( NULL );
+
 }
 
 
@@ -9798,42 +9838,85 @@ void SetPilotName( MENUITEM *item )
 	uint16 tempbike;
 	static char filepath[ MAX_PATH ];
 
+	// abort if pilot name empty
 	if ( !strlen( PilotName.text ) )
-		return; // abort if pilot name empty
+		return;
 
+	// path to the cfg file
 	sprintf( filepath, "pilots\\%s.cfg", PilotName.text );
 
+	// open the new/existing file to cfg open
 	f = fopen( filepath, "r" );
+
+	// if cfg found report error
+	// since we want to create a new pilot
 	if ( f )
 	{
+
+		// close it
 		fclose( f );
+
+		// play an error sound
 		PlaySfx( SFX_Error, 1.0F );
-		return; // config file already exists with that name (should display error message)
+
+		// file allready exists !!!
+		return;
+
 	}
 
+	//
 	InitBikerName( PilotName.text );
+
+	// set the default config
 	*player_config = default_config;
+
+	// set the pilot name
 	strcpy( player_config->name, PilotName.text );
+
+	// re-initialize joystick to remove any existing settings
 	ReInitJoysticks();
+
+	// set the default joystick settings
 	DefaultJoystickSettings( player_config );
+
+	//
 	Config = *player_config;
+
+	//
 	Config.bike = ValidBikeSelected( Config.bike );
+
+	// write the cfg file
 	write_config( player_config, biker_config );
+
+	// 
 	tempbike = SelectedBike;
+
+	//
 	SelectedBike = Config.bike;
 	
+	// if config bike and selected bike are not the same
+	// then swap displayed bike
 	if ( tempbike != SelectedBike )
 	{
-		// need to swap displayed bike
+
+		//
 		GetBikeDetails(SelectedBike, NULL );
+
+		// make a biker sound
 		UpdateSfxForBiker( SelectedBike );
+
+		// show the bike model
 		ShowHoloModel( BikeModelLookup[ SelectedBike ] );
+
 	}
 	
+	// re-initialize the biker list
 	InitPilotList();
 
+	// were done back out of menu
 	if (CurrentMenu == &MENU_NEW_NewPlayer)
 		MenuBack();
+
 }
 
 
@@ -10445,33 +10528,123 @@ void TextCancel( TEXT *t )
 
 void InitBikerName( char *name )
 {
+
+	// copy biker name into biker_name
 	strncpy( biker_name, name, sizeof( biker_name ) );
+
+	// set the last character to end of c string
 	biker_name[ sizeof( biker_name ) - 1 ] = 0;
+
+	// set the biker config
 	sprintf( biker_config, "pilots\\%s.cfg", name );
+
+	// set the player name in registry
     RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
+
+	// tell everyone else in multiplayer
 	SendGameMessage(MSG_NAME, 0, 0, 0, 0);
+
 }
 
 
-void InitStartMenu( MENU *Menu )
+/************************************\
+|
+|  Sets up the default selected pilot
+|
+\************************************/
+
+
+void GetDefaultPilot(void)
 {
-	char bname[256];
-	DWORD bname_size = sizeof( bname );
 
-	if ( RegGet("PlayerName", (LPBYTE)bname,&bname_size) == ERROR_SUCCESS )
-		InitBikerName( bname );
+	// pointer to a char
+	char * strptr;
 
+	// holds the pilot name
+	char pilot_name[256];
+
+	// size
+	int size = sizeof( pilot_name );
+
+	// did we find a player name ?
+	BOOL found = FALSE;
+
+	// get the PlayerName from registry
+	if ( RegGet("PlayerName", (LPBYTE)pilot_name, &size ) == ERROR_SUCCESS )
+
+		// found
+		found = TRUE;
+
+	// if failed to get registry setting
+	else
+	{
+	
+		WIN32_FIND_DATA files;
+		HANDLE h;
+
+		// search for files that match pattern
+		h = FindFirstFile( "Pilots\\*.cfg" , (LPWIN32_FIND_DATA) &files );
+
+		// if we had an error
+		if ( h == INVALID_HANDLE_VALUE )
+		{
+			// tell developers
+			DebugPrintf("FindFirstFile: failed %d\n", GetLastError());
+		}
+
+		// if we found files
+		else
+		{
+			// return the filename
+			strncpy( pilot_name , files.cFileName , sizeof(pilot_name) );
+
+			// remove the .cfg
+			strptr = strrchr( pilot_name , '.' );
+			if ( strptr != NULL )
+				*strptr = 0;
+
+			// found
+			found = TRUE;
+		}
+
+		// close the find handle
+		FindClose(h);
+	}
+	
+	// if found
+	if ( found )
+
+		// initialize this biker
+		InitBikerName( pilot_name );
+
+	// read in the biker config
 	read_config( player_config, biker_config );
 
+	// if the bike selected is not valid
 	if ( player_config->bike > ( BikeList.items - 1 ) )
+
+		// default it to the first bike
 		player_config->bike = 0;
 
+	// set the config
 	Config = *player_config;
+
+	// set the bike selected
 	Config.bike = ValidBikeSelected( Config.bike );
+
+	// set the bike selected
 	SelectedBike = Config.bike;
+
+	// if the bike selected is not valid
 	if (SelectedBike > ( BikeList.items - 1 ) )
+
+		// default it to the first bike
 		SelectedBike = 0;
 
+}
+
+void InitStartMenu( MENU *Menu )
+{
 }
 
 
@@ -10825,7 +10998,7 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	LoadLevelText( NULL );
 
 	// populate global list of service providers selecting last used
-	GetServiceProviders();
+	GetServiceProviders(NULL);
 
 }
 
@@ -12341,6 +12514,10 @@ void GetGamePrefs( void )
 		BikeCompSpeechSlider.value = 0;
 	}
 
+	// get the last used Pilot
+	// or use first cfg found
+	GetDefaultPilot();
+
 	SetOurRenderStates( (MENUITEM *)NULL );
 	SetSoundLevels( NULL );
 }
@@ -12476,8 +12653,6 @@ void GetMultiplayerPrefs( void )
 	DWORD size;
 	DWORD temp;
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-	char file[ 256 ];
-	int i;
 
 	size = sizeof(temp);
 

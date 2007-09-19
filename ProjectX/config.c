@@ -1591,6 +1591,12 @@ void ReInitJoysticks( void )
 int
 read_config( USERCONFIG *u, char *cfg_name )
 {
+
+	FILE *f;
+	char token[80];
+	int j;
+
+	// all the config settings
 	static READCONFIGTABLE jumptab[] = {
 		{ "down",			read_down					},
 		{ "up",				read_up						},
@@ -1646,14 +1652,23 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{ "validate",  		read_validate				},
 		{ NULL,				NULL						}
 	};
-	FILE *f;
-	char token[80];
-	int j;
 
-	DebugPrintf( "read_config: opening '%s'\n", cfg_name );
+	// try to open the config file.
 	f = fopen( cfg_name, "r" );
+
+	// leave if it failed
 	if ( !f )
+	{
+
+		// tell debuggers
+		DebugPrintf( "read_config: couldn't open '%s'\n", cfg_name );
+
+		// failed ...
 		return 0;
+
+	}
+
+	// clear the memory in the passed in user config
 	memset( u, 0, sizeof( *u ) );
 
 	// since all config settings are now zero, any new additions to config structure
@@ -1665,35 +1680,55 @@ read_config( USERCONFIG *u, char *cfg_name )
 	u->mouse_y_sensitivity = 0.6F;
 	u->send_msg.key[ 0 ] = DIK_RETURN;
 
+	// reset all joystick settings
 	ReInitJoysticks();
 
 	// default is to not allow last ( secret ) biker
 	BikeList.items = MAXBIKETYPES - 1;
-	
-	DebugPrintf( "read_config: reading '%s'\n", cfg_name );
+
+	// get a 80 character wide string from file
 	if ( fscanf( f, " %80s", token ) == 1 )
 	{
 		do
 		{
+			// find which keyword is equal to the current cfg value
 			for ( j = 0; jumptab[ j ].keyword; j++ )
-			{
 				if ( !_stricmp( token, jumptab[ j ].keyword ) )
 					break;
-			}
+
+			// if the handle is valid
 			if ( jumptab[ j ].handle )
-			{
+
+				// execute the handle
 				(jumptab[ j ].handle)( f, u, token );
-			}
+
+			// the handle was not valid
 			else
+
+				// get the next token
 				fscanf( f, " %80s", token );
+
+		// while were not at the end of the file
 		} while ( !feof( f ) );
 	}
-	fclose( f );
-	DebugPrintf( "read_config: closing '%s'\n", cfg_name );
+	else
+	{
+		// tell debuggers
+		DebugPrintf( "read_config: failed at first fscanf() '%s'\n", cfg_name );
+	}
 
+	// close the config file
+	fclose( f );
+
+	// tell debuggers
+	DebugPrintf( "read_config: finished reading '%s'\n", cfg_name );
+
+	// setup the default joystick settings
 	DefaultJoystickSettings( u );
 
+	// success !
 	return 1;
+
 }
 
 

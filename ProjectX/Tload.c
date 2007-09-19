@@ -921,7 +921,7 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                                                                s++, m >>= 1);
         blue_shift = s;
         blue_scale = 255 / (format.ddpfPixelFormat.dwBBitMask >> s);
-		if( format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS != 0 )
+		if( (format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0 )
 		{
 			for (s = 0, m = format.ddpfPixelFormat.dwRGBAlphaBitMask ; !(m & 1);
                                                                s++, m >>= 1);
@@ -1421,7 +1421,7 @@ TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
                                                                s++, m >>= 1);
         blue_shift = s;
         blue_scale = 255 / (format.ddpfPixelFormat.dwBBitMask >> s);
-		if( format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS != 0 )
+		if( (format.ddpfPixelFormat.dwFlags & DDPF_ALPHAPIXELS) != 0 )
 		{
 			for (s = 0, m = format.ddpfPixelFormat.dwRGBAlphaBitMask ; !(m & 1);
                                                                s++, m >>= 1);
