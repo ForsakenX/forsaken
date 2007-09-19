@@ -11464,19 +11464,6 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 			}
 		}
 		*/
-		else if ( item->Variable == &RecordDemo )
-		{
-			if ( !BigPackets && !IsServerGame )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
 		
 		else if ( item->Variable == &UseShortPackets )
 		{
@@ -18983,43 +18970,12 @@ void UnToggleOption( BOOL *toggle )
 
 void BigPacketsSelected( MENUITEM *Item )
 {
-	MENUITEM *tempitem;
-	int i;
-	
 	if( BigPackets )
 	{
 		if( !UseShortPackets )
 		{
 			FlashMenuText( LT_BigPacketsSelected/*"short packets have been automatically enabled"*/, 60.0F * 3.0F, (uint16) -1 );
 			UnToggleOption( &UseShortPackets );
-		}
-	}
-
-	if ( !IsServerGame )
-	{
-		for ( tempitem = CurrentMenu->Item; tempitem->x >= 0; tempitem++ )
-		{
-			if ( tempitem->Variable == &RecordDemo )
-			{
-				if ( !BigPackets )
-				{
-					tempitem->FuncSelect = SelectFlatMenuToggle;
-					tempitem->FuncDraw = DrawFlatMenuToggle;
-					DrawFlatMenuToggle( tempitem );
-				}
-				else
-				{
-					RecordDemo = FALSE;
-					tempitem->FuncSelect = NULL;
-					tempitem->FuncDraw = NULL;
-					for ( i = 0; i < tempitem->numtextitems; i++ )
-					{
-						KillTextInfo( tempitem->TextInfo[ i ] );
-						TextStackLevel--;
-					}
-					tempitem->numtextitems = 0;
-				}
-			}
 		}
 	}
 }
