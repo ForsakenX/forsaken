@@ -57,7 +57,7 @@
 #define LT_MENU_NEW_ValidPickups17 "stealth mantle"
 #define LT_MENU_NEW_ValidPickups18 "orbit pulsar"
 #define LT_MENU_NEW_ValidPickups19 "golden power pod"
-#define LT_MENU_NEW_ValidPickups20 "thief missile"
+#define LT_MENU_NEW_ValidPickups20 "thief"
 #define LT_MENU_NEW_ValidPickups21 "spider mine"
 #define LT_MENU_NEW_ValidPickups22 "primary weapons"
 #define LT_MENU_NEW_ValidPickups23 "power-ups"
