@@ -944,7 +944,6 @@ SLIDER BikerSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER BikeCompSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect			= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 
-BOOL LightningLaser				= FALSE; // false = LASER, true = NME_LIGHTNING
 BOOL OKToJoinSession			= FALSE;
 BOOL ShowTeamInfo				= TRUE;
 BOOL OKToProcessKeys			= FALSE;
@@ -1958,7 +1957,6 @@ MENU	MENU_NEW_Visuals = {
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
-		{ 20, 120, 100, 130, 0,					LT_MENU_NEW_Visuals6 /*"lightning laser"*/,			FONT_Small, TEXTFLAG_CentreY,						&LightningLaser,NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },
 #else
   /*
@@ -2907,7 +2905,6 @@ MENU	MENU_Detail = {
 		{ 200, 292, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,			NULL,				SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail14	/*"mature content"			*/, 0, 0,		&GoreGuts,				NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 340, 0, 0, 0, LT_MENU_Detail16	/*"lightning laser"			*/, 0, 0,		&LightningLaser,		NULL,				SelectToggle,	DrawToggle, NULL, 0 },
 		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}

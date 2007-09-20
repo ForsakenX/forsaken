@@ -298,7 +298,6 @@
 #define LT_MENU_NEW_Visuals3 "Select Texture Format"
 #define LT_MENU_NEW_Visuals4 "gamma"
 #define LT_MENU_NEW_Visuals5 "back"
-#define LT_MENU_NEW_Visuals6 "lightning laser"
 
 #define LT_MENU_NEW_LobbyWaitingForHost0 "host is choosing game type, please wait"
 #define LT_MENU_NEW_LobbyWaitingForHost1 "quit"
