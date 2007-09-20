@@ -2431,7 +2431,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			else
 				strcpy(&teamstr[0], "");
 
-   			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], YOU ,&teamstr );
+   			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    			AddMessageToQue( (char*)&tempstr[0] );
 			ShipDiedSend( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon );
 		}
@@ -3476,7 +3476,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], YOU ,&teamstr );
+   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
@@ -3577,7 +3577,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], YOU ,&teamstr );
+					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
 					ShipDiedSend( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon );
    				}
@@ -3640,7 +3640,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						if( !GodMode )
 						{
 							// print message
-							AddMessageToQue( "%s %s %s %s", YOU ,&methodstr[0], &Names[lpShipDied->WhoIAm][0] ,ON_YOUR_OWN_TEAM );
+							AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], ON_YOUR_OWN_TEAM );
 
 							
 							// nobody ever cares about deaths in a team game
@@ -3661,9 +3661,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
 							{
 								if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-									AddMessageToQue( "%s %s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0] , WITH_THE_BOUNTY );
+									AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
 								else
-									AddMessageToQue( "%s %s %s", YOU , &methodstr[0] , &Names[lpShipDied->WhoIAm][0] );
+									AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 								PlaySfx( SFX_BIKER_VP, 1.0F );
 								Ships[WhoIAm].Kills++;
 								AddKill();
@@ -3678,7 +3678,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						else if( !GodMode )
 						// any other team game
 						{
-							AddMessageToQue( "%s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0] );
+							AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 							Ships[WhoIAm].Kills++;
 							AddKill();
 							if ( !Random_Range( 4 ) )
@@ -3694,9 +3694,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
 						{
 							if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-								AddMessageToQue( "%s %s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY );
+								AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
 							else
-								AddMessageToQue( "%s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0] );
+								AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 							Ships[WhoIAm].Kills++;
 							AddKill();
@@ -3709,7 +3709,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					}
 					else if( !GodMode )
 					{
-	   					AddMessageToQue( "%s %s %s", YOU , &methodstr[0], &Names[lpShipDied->WhoIAm][0] );
+	   					AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 						Ships[WhoIAm].Kills++;
 						AddKill();
 						if ( !Random_Range( 4 ) )
@@ -3720,31 +3720,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 			// if you were not who killed them
 			else
-			{
-// ships now keep check of their individual scores during team game, not team scores as before....
-/*
-				// is it a team game
-				if( TeamGame )
-				{
-
-					//if they were on my side
-					if( TeamNumber[lpShipDied->WhoIAm] == TeamNumber[WhoIAm] )
-					{
-						// one of us got killed...
-						Ships[WhoIAm].Deaths++;
-					}
-					else{
-						if( !GodMode )
-							Ships[WhoIAm].Kills++;
-					}
-
-				}
-*/
-				
+			{				
 				if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
    				{
    					// gee someone killed themselves...
-   					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], &methodstr[0] , HIMSELF);
+   					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH ", &methodstr[0] );
    					AddMessageToQue( (char*)&tempstr[0] );
 			
    				}
@@ -3756,7 +3736,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						strcpy (&teamstr[0], "");
 
 					// gee someone killed somebody...who cares...
-   					sprintf( (char*) &tempstr[0] ,"%s %s %s %s", &Names[lpShipDied->WhoKilledMe][0], &methodstr[0], &Names[lpShipDied->WhoIAm][0], &teamstr );
+					sprintf( (char*) &tempstr[0] ,"%s %s %s %s" "%s" "%s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
    				}
    			}

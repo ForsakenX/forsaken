@@ -8046,22 +8046,59 @@ void GetDeathString( BYTE WeaponType, BYTE Weapon, char * DstString )
 			switch( Weapon )
 			{
 				case PULSAR:
+					sprintf( DstString, LT_DEATHMETHOD_PULSAR );
+					break;
 				case TROJAX:
-				case TRANSPULSE_CANNON:
+					sprintf( DstString, LT_DEATHMETHOD_TROJAX );
+					break;
 				case PYROLITE_RIFLE:
+					sprintf( DstString, LT_DEATHMETHOD_PYROLITE );
+					break;
+				case TRANSPULSE_CANNON:
+					sprintf( DstString, LT_DEATHMETHOD_TRANSPULSE );
+					break;
 				case SUSS_GUN:
+					sprintf( DstString, LT_DEATHMETHOD_SUSS_GUN );
+					break;
 				case LASER:
+					sprintf( DstString, LT_DEATHMETHOD_LASER );
+					break;
 				case ORBITPULSAR:
+					sprintf( DstString, LT_DEATHMETHOD_ORBITOR );
+					break;
 				case NME_BULLET1:
+					sprintf( DstString, LT_DEATHMETHOD_NME_BULLET1 );
+					break;
 				case NME_PULSAR:
+					sprintf( DstString, LT_DEATHMETHOD_NME_PULSAR );
+					break;
 				case NME_TROJAX:
-				case NME_TRANSPULSE:
+					sprintf( DstString, LT_DEATHMETHOD_NME_TROJAX );
+					break;
 				case NME_PYROLITE:
+					sprintf( DstString, LT_DEATHMETHOD_NME_PYROLITE );
+					break;
+				case NME_TRANSPULSE:
+					sprintf( DstString, LT_DEATHMETHOD_NME_TRANSPULSE );
+					break;
 				case NME_SUSS_GUN:
+					sprintf( DstString, LT_DEATHMETHOD_NME_SUSS_GUN );
+					break;
 				case NME_LASER:
-				case NME_POWERLASER:
+					sprintf( DstString, LT_DEATHMETHOD_NME_LASER );
+					break;
 				case NME_LIGHTNING:
+					sprintf( DstString, LT_DEATHMETHOD_NME_LIGHTNING );
+					break;
 				case FLAMES:
+					sprintf( DstString, LT_DEATHMETHOD_FLAMES );
+					break;
+				case NME_POWERLASER:
+					sprintf( DstString, LT_DEATHMETHOD_NME_POWERLASER );
+					break;
+				case NO_PRIMARY:
+					sprintf( DstString, LT_DEATHMETHOD_NO_PRIMARY );
+					break;
 				default:
 	   				sprintf( DstString, LT_DEATHMETHOD_KILLED );
 					break;
@@ -8071,32 +8108,65 @@ void GetDeathString( BYTE WeaponType, BYTE Weapon, char * DstString )
 		case WEPTYPE_Secondary:
 			switch( Weapon )
 			{
-				case ENEMYSPIRALMISSILE:
-				case ENEMYHOMINGMISSILE:
-				case ENEMYBLUEHOMINGMISSILE:
-				case ENEMYFIREBALL:
-				case ENEMYDEPTHCHARGE:
 				case MUGMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_MUG );
+					break;
 				case SOLARISMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_SOLARIS );
+					break;
 				case THIEFMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_THEIF );
+					break;
 				case SCATTERMISSILE:
-				case ENEMYTENTACLE:
+					sprintf( DstString, LT_DEATHMETHOD_SCATTER );
+					break;
 				case GRAVGONMISSILE:
-				case TITANSTARMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_GRAVGON );
+					break;
 				case MULTIPLEMISSILE:
-	   				sprintf( DstString, LT_DEATHMETHOD_KILLED );
+	   				sprintf( DstString, LT_DEATHMETHOD_MFRL );
+					break;
+				case TITANSTARMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_TITAN );
 					break;
 				case PURGEMINE:
-	   				sprintf( DstString, LT_DEATHMETHOD_PURGE_MINED );
+	   				sprintf( DstString, LT_DEATHMETHOD_PURGE_MINE );
 					break;
 				case PINEMINE:
-	   				sprintf( DstString, LT_DEATHMETHOD_PINE_MINED );
+	   				sprintf( DstString, LT_DEATHMETHOD_PINE_MINE);
 					break;
 				case QUANTUMMINE:
-	   				sprintf( DstString, LT_DEATHMETHOD_QUANTUM_MINED );
+	   				sprintf( DstString, LT_DEATHMETHOD_QUANTUM_MINE );
 					break;
 				case SPIDERMINE:
-	   				sprintf( DstString, LT_DEATHMETHOD_SPIDER_MINED );
+	   				sprintf( DstString, LT_DEATHMETHOD_SPIDER_MINE );
+					break;
+				case PINEMISSILE:
+	   				sprintf( DstString, LT_DEATHMETHOD_PINE_MISSILE );
+					break;
+				case TITANSTARSHRAPNEL:
+					sprintf( DstString, LT_DEATHMETHOD_TITAN_SHRAPNEL );
+					break;
+				case ENEMYSPIRALMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_ENEMYSPIRALMISSILE );
+					break;
+				case ENEMYHOMINGMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_NMEHOMINGMISSILE );
+					break;
+				case ENEMYBLUEHOMINGMISSILE:
+					sprintf( DstString, LT_DEATHMETHOD_ENEMYBLUEHOMINGMISSILE );
+					break;
+				case ENEMYFIREBALL:
+					sprintf( DstString, LT_DEATHMETHOD_ENEMYFIREBALL );
+					break;
+				case ENEMYTENTACLE:
+					sprintf( DstString, LT_DEATHMETHOD_ENEMYTENTACLE );
+					break;
+				case ENEMYDEPTHCHARGE:
+					sprintf( DstString, LT_DEATHMETHOD_ENEMYDEPTHCHARGE );
+					break;
+				case NO_SECONDARY:
+					sprintf( DstString, LT_DEATHMETHOD_NO_SECONDARY );
 					break;
 				default:
 	   				sprintf( DstString, LT_DEATHMETHOD_KILLED );

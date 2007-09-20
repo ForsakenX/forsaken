@@ -17,7 +17,6 @@
 #define HAS_LEFT_THE_GAME "has left the game"
 #define YOUVE_BEEN_SCATTERED "You've been scattered"
 #define FROM_YOUR_OWN_TEAM "from your own team"
-#define YOU "you"
 #define GOT_CAUGHT_WITH_A_BOMB "Got caught With a Bomb"
 #define WITH_THE_BOUNTY "with the bounty"
 #define NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY "no points for killing %s without the bounty" // %s= Name of Player
@@ -116,19 +115,53 @@
 // models.c
 // in the following text:
 // <death method>=any one of the LT_DEATHMETHOD_??? defined below
-#define AN_ENEMY_KILLED_YOU				"an enemy %s you" // %s=<death method>
-#define ENEMY_KILLED_YOU				"enemy %s you" // %s=<death method>
-#define YOU_KILLED_YOURSELF_HOW			"you %s yourself" // %s=<death method>
-#define SOMEONE_KILLED_YOU				"%s %s you %s" // %s1=<player name> %s2=<death method>, %s3=either FROM_YOUR_OWN_TEAM (see following line) or empty
+#define AN_ENEMY_KILLED_YOU				"an enemy killed you with %s"	// %s=<death method>
+#define ENEMY_KILLED_YOU				"enemy killed you with %s"		// %s=<death method>
+#define YOU_KILLED_YOURSELF_HOW			"you killed yourself with %s"	// %s=<death method>
+#define SOMEONE_KILLED_YOU				"%s killed you with %s %s"		// %s1=<player name> %s2=<death method>, %s3=either FROM_YOUR_OWN_TEAM (see following line) or empty
 #define FROM_YOUR_OWN_TEAM				"from your own team"
 #define YOU_DIED						"you died"
 
 // primary.c
-#define LT_DEATHMETHOD_KILLED			"killed"
-#define LT_DEATHMETHOD_PURGE_MINED		"purge mined"
-#define LT_DEATHMETHOD_PINE_MINED		"pine mined"
-#define LT_DEATHMETHOD_QUANTUM_MINED	"quantum mined"
-#define LT_DEATHMETHOD_SPIDER_MINED		"spider mined"
+#define LT_DEATHMETHOD_KILLED					""
+#define LT_DEATHMETHOD_PURGE_MINE				"a purge mine"
+#define LT_DEATHMETHOD_PINE_MINE				"a pine mine"
+#define LT_DEATHMETHOD_QUANTUM_MINE				"a quantum mine"
+#define LT_DEATHMETHOD_SPIDER_MINE				"a spider mine"
+#define LT_DEATHMETHOD_TITAN					"a titan"
+#define LT_DEATHMETHOD_TITAN_SHRAPNEL			"titan shrapnel"
+#define LT_DEATHMETHOD_SCATTER					"a scatter"
+#define LT_DEATHMETHOD_GRAVGON					"a gravgon"
+#define LT_DEATHMETHOD_SOLARIS					"a solaris"
+#define LT_DEATHMETHOD_MFRL						"the mfrl"
+#define LT_DEATHMETHOD_MUG						"a mug"
+#define LT_DEATHMETHOD_THEIF					"a theif missile"
+#define LT_DEATHMETHOD_PINE_MISSILE				"a pine mine missile"
+#define LT_DEATHMETHOD_PULSAR					"pulsars"
+#define LT_DEATHMETHOD_TROJAX					"trojax"
+#define LT_DEATHMETHOD_PYROLITE					"pyrolite"
+#define LT_DEATHMETHOD_TRANSPULSE				"transpulse"
+#define LT_DEATHMETHOD_SUSS_GUN					"suss-gun"
+#define LT_DEATHMETHOD_LASER					"lasers"
+#define LT_DEATHMETHOD_ORBITOR					"an orbitor"
+#define LT_DEATHMETHOD_NO_PRIMARY				"no primary weapon rofl"
+#define LT_DEATHMETHOD_NO_SECONDARY				"no secondary weapon rofl"
+#define LT_DEATHMETHOD_NME_BULLET1				"an enemy bullet"
+#define LT_DEATHMETHOD_NME_PULSAR				"enemy pulsars"
+#define LT_DEATHMETHOD_NME_TROJAX				"enemy trojax"
+#define LT_DEATHMETHOD_NME_PYROLITE				"enemy pyrolite"
+#define LT_DEATHMETHOD_NME_TRANSPULSE			"enemy transpulse"
+#define LT_DEATHMETHOD_NME_SUSS_GUN				"enemy suss-gun"
+#define LT_DEATHMETHOD_NME_LASER				"enemy lasers"
+#define LT_DEATHMETHOD_NME_LIGHTNING			"lightning lasers"
+#define LT_DEATHMETHOD_FLAMES					"flames"
+#define LT_DEATHMETHOD_NME_POWERLASER			"power laser"
+#define LT_DEATHMETHOD_ENEMYSPIRALMISSILE		"enemy spiral missile"
+#define LT_DEATHMETHOD_NMEHOMINGMISSILE			"enemy homing missile"
+#define LT_DEATHMETHOD_ENEMYBLUEHOMINGMISSILE	"enemy blue homing missile"
+#define LT_DEATHMETHOD_ENEMYFIREBALL			"enemy fireball"
+#define LT_DEATHMETHOD_ENEMYTENTACLE			"enemy tentacle"
+#define LT_DEATHMETHOD_ENEMYDEPTHCHARGE			"enemy depth charge"
 
 #define YOU_DONT_HAVE_ANY_AMMO			"You don't have any ammo"
 #define YOU_DONT_HAVE_THAT_WEAPON		"You don't have that weapon"
