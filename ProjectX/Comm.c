@@ -354,21 +354,52 @@ HRESULT DPlayEnumPlayers(LPGUID lpSessionGuid, LPDPENUMPLAYERSCALLBACK2 lpEnumCa
  *
  * Wrapper for DirectPlay EnumSessions API.
  */
+
 HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags)
 {
+
+	// default failed
     HRESULT hr = E_FAIL;
+
+	// describes the sessions we want to find
     DPSESSIONDESC2 dpDesc;
 
+	// set it up
     ZeroMemory(&dpDesc, sizeof(dpDesc));
-
     dpDesc.dwSize = sizeof(dpDesc);
+
+	// guid of applicaton we want to enumerate
+	// use GUID_NULL to enumerate all applications
     dpDesc.guidApplication = PROJX_GUID;
 
+	// we want to find private sessions as well
+	// do we need to provide a password now ???
+#ifdef UNICODE
+	dpDesc.lpszPassword = "";
+#else
+	dpDesc.lpszPasswordA = "";
+#endif
+
+	// if we have a direct play lobby available
     if (glpDP)
-        hr = IDirectPlayX_EnumSessions(glpDP, &dpDesc, dwTimeout, lpEnumCallback, lpContext, dwFlags);
+
+		// enumerate the sessions
+        hr = IDirectPlayX_EnumSessions(
+				glpDP,			// pointer to lobby object
+				&dpDesc,		// describes the sessions we want to find
+				dwTimeout,		// interval to ask for sessions
+				lpEnumCallback,	// callback which receives each found session
+				lpContext,		// pointer to object to pass to the callback
+				dwFlags			// flags for the enumeration process
+				);
+
+	// we dont have a dp lobby
 	else
+
+		// tell developers
 		DebugPrintf("DPlayEnumSessions: !glpDP Could not enumerate sessions...");
 
+	// return result
     return hr;
 }
 
@@ -830,9 +861,25 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 	}
 
 	// create a DirectPlay ANSI interface
+#ifdef UNICODE
 	if FAILED(
-		CoCreateInstance(&CLSID_DirectPlay, NULL, CLSCTX_INPROC_SERVER, 
-		                 &IID_IDirectPlay4A, (LPVOID*)&lpDPlay))
+		CoCreateInstance(
+			&CLSID_DirectPlay,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IDirectPlay4,
+			(LPVOID*)&lpDPlay
+			))
+#else
+	if FAILED(
+		CoCreateInstance(
+			&CLSID_DirectPlay,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IDirectPlay4A,
+			(LPVOID*)&lpDPlay
+			))
+#endif
 		goto FAILURE;
 
 	// initialize the connection using the address

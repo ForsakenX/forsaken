@@ -17536,20 +17536,27 @@ void SetSessionJoinFlag( MENUITEM *Item )
 void InitMySessionsList(void)
 {									
 	
-	MySessionsList.display_items = 8;
+	// how many items displayed
+	MySessionsList.display_items		= 8;
 
-	MySessionsList.top_item = 0;
-	MySessionsList.selected_item = -1;
-	MySessionsList.old_top_item = 0;
-	MySessionsList.old_selected_item = -1;
+	// default top item
+	MySessionsList.top_item				= 0;
+	MySessionsList.old_top_item			= 0;
 
+	// none currently selected
+	MySessionsList.selected_item		= -1;
+	MySessionsList.old_selected_item	= -1;
+
+	//
 	MySessionsList.FuncInfo = UpdateSessionInfo;
-		
+	
+	//
 	OKToJoinSession = FALSE;
 
 	// init ping list...
-//	SessionPingList = MySessionsList;
-//	SessionPingList.FuncInfo = NULL;
+	//SessionPingList = MySessionsList;
+	//SessionPingList.FuncInfo = NULL;
+
 }
 
 void CopySessionsList(int *dummy)
@@ -17580,14 +17587,21 @@ void CopySessionsList(int *dummy)
 
 void GetMyCurrentSessions(MENU *Menu)
 {
+
+	// initialize levels
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
 	{
-		//Msg( "No multiplayer levels" );
+		Msg( "No multiplayer levels" );
 		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
 		return;
 	}
+
+	// Initialize the displayed list
 	InitMySessionsList();
+
+	// get the list of sessions
 	GetCurrentSessions( Menu );
+
 }
 
 void SendTitleMessage(MENUITEM *Item)

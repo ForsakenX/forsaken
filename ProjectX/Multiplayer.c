@@ -893,37 +893,30 @@ void StartAPseudoHostSession( MENUITEM *Item )
 
 void GetCurrentSessions( MENU *Menu )
 {
-	int i;
+
+	// we are a joiner
 	IsHost = FALSE;
 	IsPseudoHost = FALSE;
+
+	// reset session list
 	SessionsList.items = 0;
 	SessionsList.top_item = 0;
 	SessionsList.display_items = 8;
 	SessionsList.selected_item = -1;
 
+	// reset player list
 	PlayersList.items = 0;
 	PlayersList.top_item = 0;
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
-
-	SessionsRefreshActive = TRUE;
-
-	for( i = 0 ; i < MAXSESSIONS ; i++ )
-	{
-		SessionsRefresh[i] = FALSE;
-	}
-	
-		d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-
-	// enum sessions and we will decide the timeout
-	DPlayEnumSessions(SugestedEnumSessionsTimeout, EnumSessions, (LPVOID) NULL, DPENUMSESSIONS_AVAILABLE | DPENUMSESSIONS_ASYNC);
-//	DPlayEnumSessions(SugestedEnumSessionsTimeout, EnumSessions, (LPVOID) NULL, DPENUMSESSIONS_ALL | DPENUMSESSIONS_ASYNC);
+	// look bellow
+	GetCurrentSessions_ReScan(NULL);
 
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Get a List of Current Sessions	Again..
+	Procedure	:	Get a List of Current Sessions
 	Input		:	nothing
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -931,19 +924,46 @@ void GetCurrentSessions( MENU *Menu )
 void GetCurrentSessions_ReScan( MENUITEM *Item )
 {
 	int i;
-	if( !SessionsRefreshActive )
-	{
-		SessionsRefreshActive = TRUE;
+
+	// if we are currently refreshing
+	if( SessionsRefreshActive )
+
+		// then dont start again
+		return;
+
+	// set refreshing flag on
+	SessionsRefreshActive = TRUE;
+	
+	// set the refreshed flag to false for all sessions in list
+	for( i = 0 ; i < MAXSESSIONS ; i++ )
+		SessionsRefresh[i] = FALSE;
+
+	// Enumerate Sessions
+	// and we will decide the timeout
+	DPlayEnumSessions(
+
+		SugestedEnumSessionsTimeout,	// interval which dplay broadcasts for games
+
+		EnumSessions,					// callback called with each found session
+
+		(LPVOID) NULL,					// pointer for user to pass in data
 		
-		for( i = 0 ; i < MAXSESSIONS ; i++ )
-		{
-			SessionsRefresh[i] = FALSE;
-		}
- 
-		// enum sessions and we will decide the timeout
-		DPlayEnumSessions(SugestedEnumSessionsTimeout, EnumSessions, (LPVOID) NULL, DPENUMSESSIONS_AVAILABLE | DPENUMSESSIONS_ASYNC);
-//		DPlayEnumSessions(SugestedEnumSessionsTimeout, EnumSessions, (LPVOID) NULL, DPENUMSESSIONS_ALL | DPENUMSESSIONS_ASYNC);
-	}
+		// dwFlags
+
+			DPENUMSESSIONS_ALL			// Enumerate all active sessions even if:
+										// not accepting new players
+										// player limit has been reached
+										// new players have been disabled
+										// joining has been disabled
+
+		|	DPENUMSESSIONS_PASSWORDREQUIRED // also retrieve passworded sessions
+
+		|	DPENUMSESSIONS_ASYNC		// Enumerate current sessions in the cache.
+										// Does not block returns immediately.
+										// Starts asynchronous process if not started.
+										// Updates continue until canceled
+		);
+
 }
 
 
@@ -957,97 +977,166 @@ void GetCurrentSessions_ReScan( MENUITEM *Item )
 BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID lpContext)
 {
 	int i;
-	GUID	tempGuid;
 
 	//
-	// is the session timed out ?
+	// DPESC_TIMEOUT
+	// Means all sessions have been enumerated
+	// And we have been called one more time to let us know
 	//
 
     if(dwFlags & DPESC_TIMEDOUT)
 	{
+
+		// we are done refreshing the list
 		SessionsRefreshActive = FALSE;
 
-		SessionsListCopy.items = 0;
-		SessionsListCopy.top_item = 0;
-		SessionsListCopy.display_items = 8;
-		SessionsListCopy.selected_item = -1;
+		// set defaults
+		SessionsListCopy.items			= 0;	//
+		SessionsListCopy.top_item		= 0;	//
+		SessionsListCopy.display_items	= 8;	//
+		SessionsListCopy.selected_item	= -1;	// nothing selected
 
+		// for each session
 		for( i = 0 ; i < SessionsList.items ; i ++ )
 		{
-			if( SessionsRefresh[i] )
-			{
-				memcpy(&SessionsCopy[SessionsListCopy.items] ,&Sessions[i] , sizeof(DPSESSIONDESC2) );
-				memcpy(&SessionsListCopy.item[SessionsListCopy.items] ,&SessionsList.item[i] , sizeof(SessionsList.item[i]) );
 
-				if( i == SessionsList.selected_item )
-				{
-					SessionsListCopy.selected_item = SessionsListCopy.items;
-				}
-				SessionsListCopy.items++;
-			}
+			// if the session was not refreshed
+			if( ! SessionsRefresh[i] )
+
+				// don't copy it to the list
+				break;
+
+			// copy the memory of the session pointer previously stored into SessionsCopy
+			memcpy(
+				&SessionsCopy[SessionsListCopy.items],
+				&Sessions[i],
+				sizeof(DPSESSIONDESC2)
+				);
+
+			// copy the memory of the session name previously stored into SessionsListCopy
+			memcpy(
+				&SessionsListCopy.item[SessionsListCopy.items],
+				&SessionsList.item[i],
+				sizeof(SessionsList.item[i])
+				);
+
+			// if this is the selected item
+			if( i == SessionsList.selected_item )
+
+				// set the selected_item in the SessionsListCopy
+				SessionsListCopy.selected_item = SessionsListCopy.items;
+
+			// up count of items coppied
+			SessionsListCopy.items++;
+
 		}
+
+		// copy SessionsCopy into Sessions
 		memcpy(&Sessions ,&SessionsCopy , sizeof(Sessions) );
+
+		// copy SessionsListCopy into SessionsList
 		memcpy(&SessionsList ,&SessionsListCopy , sizeof(SessionsList) );
+
+		// for each SessionsList
 		for( i = 0 ; i < SessionsList.items ; i ++ )
-		{
+
+			// we have refreshed this item
 			SessionsRefresh[i] = TRUE;
-		}
-		return FALSE;       // don't try again
+
+		// were done so tell enumerate sessions to stop calling us
+		return FALSE;
+
 	}
 
 	//
-	//  Do we allready have this entry in the list ?
+	//  We are being called with a new session
 	//
-
-	// the applications guid
-	tempGuid = lpDPSessionDesc->guidInstance;
 
 	// for each session in our existing list
 	for( i = 0 ; i < SessionsList.items ; i++ )
-	{
-		// if current guid equals existing guid
-		if(	IsEqualGuid( &tempGuid, &Sessions[i].guidInstance) )
+
+		// if the current session guid equals an existing guid
+		if(	IsEqualGuid(
+				(const LPGUID)&(lpDPSessionDesc->guidInstance),
+				(const LPGUID)&Sessions[i].guidInstance)
+				)
 		{
-			// just leave since we allready added it
+
+			// we have refreshed this entry
 			SessionsRefresh[ i ] = TRUE;
+
+			// we allready have this entry in the list
+			// tell enum sessions to keep enumerating
 			return TRUE;
+
 		}
-	}
 
-	//
-	//  Have we reached the session list limit ?
-	//
-
-	if( SessionsList.items < MAXSESSIONS )
-		return TRUE;
-
-	//
-	//  Add it to the list
-	//
-
-	// store away its guid...
-	Sessions[SessionsList.items] = *lpDPSessionDesc;
-	strncpy( SessionNames[ SessionsList.items ], lpDPSessionDesc->lpszSessionNameA, sizeof( SessionNames[ SessionsList.items ] ) );
-
-#ifdef UNICODE
-	strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionName , sizeof(SessionsList.item[0])  );
-#else
-	strncpy( SessionsList.item[SessionsList.items] , lpDPSessionDesc->lpszSessionNameA , sizeof(SessionsList.item[0])  );
-#endif
-
-#ifdef UNICODE
-	if( strlen(lpDPSessionDesc->lpszSessionName ) >= sizeof(SessionsList.item[0]) )
-#else
-	if( strlen(lpDPSessionDesc->lpszSessionNameA ) >= sizeof(SessionsList.item[0]) )
-#endif
+	// have we reached the limit of storable sessions ?
+	if( SessionsList.items > MAXSESSIONS )
 	{
-		strcpy( SessionsList.item[SessionsList.items] + sizeof(SessionsList.item[0]) - 4 , "..." );
+		// tell developers
+		DebugPrintf("EnumSessions: has reached MAXSESSIONS\n");
+
+		// we can't save anymore sessions
+		// tell enumsessions to keep refreshing
+		// since we need to hit the primary block above
+		// to copy any new sessions into the displayed list
+		return TRUE;
 	}
+
+	//
+	//  add this session to the globals
+	//
+
+	// store away pointer to session description
+	Sessions[SessionsList.items] = *lpDPSessionDesc;
+
+	// copy name of session into SessionNames
+	strncpy(
+		SessionNames[ SessionsList.items ],				// reciever
+#ifdef UNICODE
+		lpDPSessionDesc->lpszSessionName,				// giver
+#else
+		lpDPSessionDesc->lpszSessionNameA,				// giver
+#endif
+		sizeof( SessionNames[ SessionsList.items ] )	// size to give
+		);
+
+	// copy name of session into SessionsList
+	strncpy(
+		SessionsList.item[SessionsList.items],			// reciever
+#ifdef UNICODE
+		lpDPSessionDesc->lpszSessionName,				// giver
+#else
+		lpDPSessionDesc->lpszSessionNameA,				// giver
+#endif
+		sizeof(SessionsList.item[0])					// size to give
+		);
+
+	// if
+	if(
+		// the size of the given name
+		strlen(
+#ifdef UNICODE
+			lpDPSessionDesc->lpszSessionName
+#else
+			lpDPSessionDesc->lpszSessionNameA
+#endif
+		// is bigger than our holder
+		) >= sizeof(SessionsList.item[0])
+	)
+		// append "..." to the end of the name
+		strcpy( SessionsList.item[SessionsList.items] + sizeof(SessionsList.item[0]) - 4 , "..." );
+
+	// we have refreshed this session
 	SessionsRefresh[SessionsList.items] = TRUE;
 
+	// up the count of items
 	SessionsList.items++;
 
-    return(TRUE);
+	// were done tell enum sessions to keep enumerating
+    return TRUE;
+
 }
 
 void GetSessionInfo ( LPDPSESSIONDESC2 sd )
