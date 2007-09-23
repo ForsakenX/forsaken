@@ -1,0 +1,309 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+#include "include\d3dres.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""d3dres.h""\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""winver.h""\r\n"
+    "#include ""myres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+APPICON                 ICON    DISCARDABLE     "Projectx.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+APPMENU MENU DISCARDABLE 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&About..\tF1",                MENU_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "&Single Step\tSpc",           MENU_STEP
+        MENUITEM "&Go\tEnter",                  MENU_GO
+        MENUITEM "&Toggle Stats\tTab",          MENU_STATS
+        MENUITEM SEPARATOR
+        POPUP "Which Driver"
+        BEGIN
+            MENUITEM SEPARATOR
+        END
+        MENUITEM SEPARATOR
+        POPUP "Level"
+        BEGIN
+            MENUITEM SEPARATOR
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit\tESC",                  MENU_EXIT
+    END
+    POPUP "&Render"
+    BEGIN
+        POPUP "Shading Options"
+        BEGIN
+            MENUITEM "&Flat\tF2",                   MENU_FLAT
+            MENUITEM "&Gouraud\tF3",                MENU_GOURAUD
+            MENUITEM "P&hong\tF4",                  MENU_PHONG
+        END
+        POPUP "Style Options"
+        BEGIN
+            MENUITEM "&Point\tCtrl+P",              MENU_POINT
+            MENUITEM "&Wireframe\tCtrl+W",          MENU_WIREFRAME
+            MENUITEM "&Solid\tCtrl+S",              MENU_SOLID
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Dithering\tCtrl+D",          MENU_DITHERING
+        MENUITEM "&Anti-aliasing\tCtrl+A",      MENU_ANTIALIAS
+        MENUITEM SEPARATOR
+        MENUITEM "&Z Buffer\tF5",               MENU_ZBUFFER
+        MENUITEM "&Clears\tF6",                 MENU_CLEARS
+    END
+    POPUP "&Lighting"
+    BEGIN
+        MENUITEM "&Specular Highlights\tF7",    MENU_SPECULAR
+        MENUITEM "&Fog\tCtrl+F",                MENU_FOG
+    END
+    POPUP "&Textures"
+    BEGIN
+        MENUITEM "&Textures On\tF8",            MENU_TEXTURE_TOGGLE
+        MENUITEM "&Swap Textures\tF9",          MENU_TEXTURE_SWAP
+        MENUITEM "Perspective &Correct\tF10",   MENU_PERSPCORRECT
+        MENUITEM SEPARATOR
+        POPUP "Filter Options"
+        BEGIN
+            MENUITEM "P&oint Filtering\tCtrl+O",    MENU_POINT_FILTER
+            MENUITEM "Bi-&Linear Filtering\tCtrl+L", MENU_LINEAR_FILTER
+        END
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Modes"
+    BEGIN
+        MENUITEM "&Fullscreen\tAlt+Enter",      MENU_FULLSCREEN
+        MENUITEM "&Previous Mode\tAlt+PgUp",    MENU_PREVIOUS_MODE
+        MENUITEM "&Next Mode\tAlt+PgDown",      MENU_NEXT_MODE
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Detail"
+    BEGIN
+        POPUP "BikeDetail"
+        BEGIN
+            MENUITEM "Level6",                      MENU_BIKEDETAIL6
+            MENUITEM "Level5",                      MENU_BIKEDETAIL5
+            MENUITEM "Level4",                      MENU_BIKEDETAIL4
+            MENUITEM "Level3",                      MENU_BIKEDETAIL3
+            MENUITEM "Level2",                      MENU_BIKEDETAIL2
+            MENUITEM "Level1",                      MENU_BIKEDETAIL1
+        END
+        POPUP "Primary Lights"
+        BEGIN
+            MENUITEM "On",                          MENU_PLIGHTDETAIL1
+            MENUITEM "Off",                         MENU_PLIGHTDETAIL2
+        END
+        POPUP "Secondary Lights"
+        BEGIN
+            MENUITEM "On",                          MENU_SLIGHTDETAIL1
+            MENUITEM "Off",                         MENU_SLIGHTDETAIL2
+        END
+        POPUP "Pickup Lights"
+        BEGIN
+            MENUITEM "On",                          MENU_PKLIGHTDETAIL1
+            MENUITEM "Off",                         MENU_PKLIGHTDETAIL2
+        END
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+APPACCEL ACCELERATORS DISCARDABLE 
+BEGIN
+    VK_F1,          MENU_ABOUT,             VIRTKEY, NOINVERT
+    VK_F2,          MENU_FLAT,              VIRTKEY, NOINVERT
+    VK_F3,          MENU_GOURAUD,           VIRTKEY, NOINVERT
+    VK_F4,          MENU_PHONG,             VIRTKEY, NOINVERT
+    VK_F5,          MENU_ZBUFFER,           VIRTKEY, NOINVERT
+    VK_F6,          MENU_CLEARS,            VIRTKEY, NOINVERT
+    VK_F7,          MENU_SPECULAR,          VIRTKEY, NOINVERT
+    VK_F8,          MENU_TEXTURE_TOGGLE,    VIRTKEY, NOINVERT
+    VK_F9,          MENU_TEXTURE_SWAP,      VIRTKEY, NOINVERT
+    VK_F10,         MENU_PERSPCORRECT,      VIRTKEY, NOINVERT
+    "P",            MENU_POINT,             VIRTKEY, CONTROL, NOINVERT
+    "W",            MENU_WIREFRAME,         VIRTKEY, CONTROL, NOINVERT
+    "D",            MENU_DITHERING,         VIRTKEY, CONTROL, NOINVERT
+    "F",            MENU_FOG,               VIRTKEY, CONTROL, NOINVERT
+    "O",            MENU_POINT_FILTER,      VIRTKEY, CONTROL, NOINVERT
+    "L",            MENU_LINEAR_FILTER,     VIRTKEY, CONTROL, NOINVERT
+    VK_ESCAPE,      MENU_EXIT,              VIRTKEY, NOINVERT
+    VK_RETURN,      MENU_GO,                VIRTKEY, NOINVERT
+    VK_RETURN,      MENU_FULLSCREEN,        VIRTKEY, ALT, NOINVERT
+    VK_NEXT,        MENU_NEXT_MODE,         VIRTKEY, ALT, NOINVERT
+    VK_PRIOR,       MENU_PREVIOUS_MODE,     VIRTKEY, ALT, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+APPABOUT DIALOG DISCARDABLE  0, 0, 188, 96
+STYLE DS_MODALFRAME | WS_POPUP
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,76,75,35,14
+    CTEXT           "Condemned Demo",IDC_STATIC,61,5,65,15
+    CTEXT           "Copyright (c) 1996 Probe Entertainment",IDC_STATIC,21,
+                    55,145,12
+    ICON            "AppIcon",IDC_STATIC,86,25,18,20
+END
+
+IDD_REMCONNABORTDLG DIALOG DISCARDABLE  0, 0, 183, 20
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Waiting for connection"
+FONT 8, "MS Sans Serif"
+BEGIN
+    PUSHBUTTON      "Cancel",IDCANCEL,129,2,50,14
+    LTEXT           "Press Cancel to abort",IDC_STATIC,28,5,75,8
+END
+
+IDD_DIALOG1 DIALOG DISCARDABLE  0, 0, 187, 95
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,130,7,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,130,24,50,14
+END
+
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG1, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 180
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 88
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_WIZARD_TITLE_JS     "Join Session (3/3)"
+    IDS_WIZARD_TITLE_HS     "Host Session (3/3)"
+    IDS_WIZARD_TITLE        "Duel Setup"
+    IDS_WIZARD_ERROR_GSG    "Session guid couldn't be obtained from the parent item"
+    IDS_DPLAY_ERROR_IDC     "DirectPlay object create failed"
+    IDS_DPLAY_ERROR_SL      "You have been disconnected from the session"
+    IDS_DPLAY_ERROR_GPLD    "Get player local data failed"
+    IDS_DPLAY_ERROR_SPLD    "Set player local data failed"
+    IDS_DPLAY_ERROR_GPRD    "Get player remote data failed"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
