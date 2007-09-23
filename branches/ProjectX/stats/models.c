@@ -17,13 +17,10 @@
 #include "mydplay.h"
 #include "triggers.h"
 #include "pickups.h"
-
 #include "models.h"
-
 #include "Secondary.h"
 #include "Primary.h"
 #include "enemies.h"
-
 #include "title.h"
 #include "text.h"
 #include "lines.h"
@@ -33,9 +30,9 @@
 #include "water.h"
 #include "main.h"
 #include "controls.h"
-
 #include "local.h"
 #include "xmem.h"
+
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -62,7 +59,6 @@ extern	D3DMATRIX		view;
 extern	D3DMATRIX		identity;
 extern	D3DMATRIXHANDLE	hWorld;
 extern	BOOL			UsedStippledAlpha;
-extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -116,8 +112,10 @@ extern	BYTE			ChangeLevel_MyGameStatus;
 extern	BOOL			CaptureTheFlag;
 extern	BOOL			CTF;
 extern	BOOL			BikeEnginesOn;
-extern	BOOL                    IsServer;
-extern	BYTE	Server_WhoHitYou;
+extern	BOOL            IsServer;
+extern	BYTE			Server_WhoHitYou;
+
+
 
 void DebugPrintf( const char * format, ... );
 void RefreshModel( uint16 model );
@@ -128,6 +126,9 @@ void RefreshModel( uint16 model );
 #ifdef SOFTWARE_ENABLE
 extern	BOOL	SoftwareVersion;
 #endif
+
+// statistics (stats.c)
+extern void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals
@@ -4157,7 +4158,6 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 													Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 													Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 													Ships[ WhoIAm ].Timer = 0.0F;
-													Stats[ WhoIAm ][ WhoIAm ]++;
 													if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 													else{
 														PlaySfx( SFX_BIKECOMP_DY, 1.0F );
@@ -4244,7 +4244,6 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 												Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 												Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 												Ships[ WhoIAm ].Timer = 0.0F;
-												Stats[ WhoIAm ][ WhoIAm ]++;
 												if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 												else{
 													PlaySfx( SFX_BIKECOMP_DY, 1.0F );
@@ -4315,7 +4314,6 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 									Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 									Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 									Ships[ WhoIAm ].Timer = 0.0F;
-									Stats[ WhoIAm ][ WhoIAm ]++;
 									if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 									else{
 										PlaySfx( SFX_BIKECOMP_DY, 1.0F );
@@ -4800,6 +4798,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												Ships[ WhoIAm ].Damage = Damage;
 												Ships[WhoIAm].ShipThatLastHitMe = WhoIAm;
 									
+												// we are in server mode
 												if( DoDamage( DONT_OVERRIDE_INVUL ) == 1 )						// Did I Die?
 												{
 													GetDeathString( WEPTYPE_Secondary, Weapon, &methodstr[0] );
@@ -4807,7 +4806,6 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 													Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 													Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 													Ships[ WhoIAm ].Timer = 0.0F;
-													Stats[ WhoIAm ][ WhoIAm ]++;
 													PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 													sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 													AddMessageToQue( &tempstr[0] );
@@ -4872,9 +4870,8 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 												Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 												Ships[ WhoIAm ].Timer = 0.0F;
-												Stats[ WhoIAm ][ WhoIAm ]++;
 												PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // never called?
 												AddMessageToQue( &tempstr[0] );
 												ShipDiedSend( WEPTYPE_Secondary, Weapon );
 											}
@@ -4926,7 +4923,6 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 									Ships[ WhoIAm ].ShipThatLastKilledMe = WhoIAm;
 									Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 									Ships[ WhoIAm ].Timer = 0.0F;
-									Stats[ WhoIAm ][ WhoIAm ]++;
 									PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 									sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 									AddMessageToQue( &tempstr[0] );
@@ -5066,18 +5062,23 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 			else Ships[ WhoIAm ].ShipThatLastKilledMe = (uint8) OwnerID;
 			Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 			Ships[ WhoIAm ].Timer = 0.0F;
-
+			
+			// i killed myself lolzers
 			if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 			{
+				// update stats 4 - i killed myself
+				UpdateStats(WhoIAm,WhoIAm,WeaponType,Weapon); 
 				PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-				sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+				sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // called in both multiplayer  & single player
 			}
 			else
 			{
+				// single player enemy killed me
 				if( OwnerType == OWNER_ENEMY )
 				{
 					sprintf( &tempstr[0], ENEMY_KILLED_YOU, &methodstr[0] );
 				}
+				// someone killed me in multiplayer - it was probably XXXXXXX cuz he's a badass!
 				else
 				{
 					if( OwnerType == OWNER_SHIP )
@@ -5091,8 +5092,12 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 							strcpy(&teamstr[0], "");
 						}
 
-   						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
+						// update stats 5 - somebody killed me
+						UpdateStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 
+						// print somebody killed you
+						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
 					}
+					// wtf i died? why? please tell me!
 					else
 					{
 						sprintf( &tempstr[0], YOU_DIED );
