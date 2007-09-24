@@ -112,6 +112,7 @@ struct ENEMY * FormationLink;
 	float	SmokeTime;
 
 	int16				FirePosCount;	// if I have more than 1 firing position then cycle between them..
+
 #ifdef DEBUG_ON
 	// used for finding out where an enemy is killed from...
 	char *	EnemyInFile;

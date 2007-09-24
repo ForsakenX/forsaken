@@ -363,7 +363,11 @@ FAILURE:
 	// close up the registry 
 	CloseRegistry();
 
+#ifdef DEBUG_ON
+
+	//
 	// debug messages
+	//
 
 	DebugMathErrors();
 
@@ -378,6 +382,8 @@ FAILURE:
 
 	if ( UnMallocedSBufferBlocks() )
 		DebugPrintf( "Un-malloced SBuffer blocks found!" );
+
+#endif
 
 	//
     return msg.wParam;

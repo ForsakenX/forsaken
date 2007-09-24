@@ -4011,6 +4011,7 @@ void KillUsedEnemy( ENEMY * Object )
 		if( !Object->Used )
 		{
 
+#ifdef DEBUG_ON
 			DebugPrintf(
 				"An %s enemy Freed Previously in %s line %d\n has been freed again in %s line %d\n" ,
 				EnemyTypes[Object->Type].ModelFilename,
@@ -4019,6 +4020,7 @@ void KillUsedEnemy( ENEMY * Object )
 				in_file,
 				in_line
 				);
+#endif
 
 			Msg( "An %s enemy has been Freed more than once\n" , EnemyTypes[Object->Type].ModelFilename );
 

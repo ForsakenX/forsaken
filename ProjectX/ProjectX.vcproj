@@ -233,7 +233,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
-				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,USEASM,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -1063,7 +1063,7 @@
 			<File
 				RelativePath="Include\stats.h"
 				>
-			</File>			
+			</File>
 			<File
 				RelativePath="Include\Stdwin.h"
 				>
