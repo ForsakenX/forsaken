@@ -18,9 +18,6 @@
 
 CRITICAL_SECTION	gPlayKey; // Guards one variable, gbPlay
 extern BOOL ForsakenAnyKey;
-extern int use_data_path;
-extern char data_path[];
-extern char normdata_path[];
 
 BOOL LoadSplashBitmap( void *VarPtr );
 BOOL DisplayBitmap( void *Ptr );
