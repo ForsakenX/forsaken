@@ -40,6 +40,7 @@
 #include "XMem.h"
 #include "Local.h"
 
+
 extern BOOL Debug;
 
 int average_server_packet_size = 0;
@@ -295,14 +296,11 @@ BYTE					MyGameStatus = STATUS_Normal;//
 BYTE					PreDemoEndMyGameStatus = 0;
 BYTE					OverallGameStatus = STATUS_Null;
 BYTE					GameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
-													// this tells the drones what status the host thinks hes in..
+														// this tells the drones what status the host thinks hes in..
 BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
 int16					StatsStatus = 0;
-int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 int16					StatsCount = -1;
-uint16					PrimaryStats[TOTALPRIMARYWEAPONS*2];
-uint16					SecondaryStats[TOTALSECONDARYWEAPONS*2];
 
 DPID PseudoHostDPID;
 DPID HostDPID;
@@ -538,6 +536,9 @@ extern	float	Host_CopyOfPyroliteAmmo[ MAX_PLAYERS ];
 extern	int16	Host_PickupsGot[ MAX_PLAYERS ][ MAXPICKUPTYPES ];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	int16	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
+
+// statistics (stats.c)
+extern void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
 BOOL CheckForName( BYTE Player )
 {
@@ -1174,11 +1175,6 @@ void SetupDplayGame()
 
 	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-
-	memset(&Stats, 0, sizeof(int16) * MAX_PLAYERS * MAX_PLAYERS );
-
-	memset(&PrimaryStats, 0, sizeof(uint16) * TOTALPRIMARYWEAPONS*2 );
-	memset(&SecondaryStats, 0, sizeof(uint16) * TOTALSECONDARYWEAPONS*2 );
 
 	AddCommentToLog( "SetupDPlayGame()\n ");
 	
@@ -2420,10 +2416,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    			Ships[WhoIAm].ShipThatLastKilledMe = lpServerSaysShipDiedMsg->WhoKilledThem;
    			Ships[WhoIAm].Object.Mode = DEATH_MODE;
    			Ships[WhoIAm].Timer = 0.0F;
-   			// make a note of who killed who...
-			Stats[Ships[WhoIAm].ShipThatLastKilledMe][WhoIAm]++;
-   			// print up who killed me
 
+   			// print up who killed me
 			GetDeathString( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon, &methodstr[0] );
 
 			if (TeamGame && ( TeamNumber[Ships[WhoIAm].ShipThatLastKilledMe] == TeamNumber[WhoIAm]))
@@ -2431,7 +2425,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			else
 				strcpy(&teamstr[0], "");
 
-   			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
+			// we're in server mode
+   			//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
+   			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " XXX ", &methodstr[0], &teamstr );
    			AddMessageToQue( (char*)&tempstr[0] );
 			ShipDiedSend( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon );
 		}
@@ -3465,10 +3461,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    					Ships[WhoIAm].ShipThatLastKilledMe = lpShipHit->WhoHitYou;
    					Ships[WhoIAm].Object.Mode = DEATH_MODE;
    					Ships[WhoIAm].Timer = 0.0F;
-   					// make a note of who killed who...
-					Stats[Ships[WhoIAm].ShipThatLastKilledMe][WhoIAm]++;
    					// print up who killed me
-
 					GetDeathString( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon, &methodstr[0] );
 
 					if (TeamGame && ( TeamNumber[Ships[WhoIAm].ShipThatLastKilledMe] == TeamNumber[WhoIAm]))
@@ -3476,7 +3469,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
+					// we're in server mode
+   					//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
+   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " ZZZ ", &methodstr[0], &teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
@@ -3550,26 +3545,21 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 
    				if( Random_Range( 16 ) )
-   				{
 					PlayPannedSfx( SFX_ShipHit, Ships[ WhoIAm ].Object.Group , &Point, 0.0F );
-				}else{
+				else
    					PlaySfx( SFX_BikerPain , 1.0F );
-   				}
 
 				Ships[WhoIAm].ShipThatLastHitMe = lpShortShipHit->WhoHitYou;
-   				Ships[WhoIAm].Damage = lpShortShipHit->ShipHit.Damage;
+   				Ships[WhoIAm].Damage			= lpShortShipHit->ShipHit.Damage;
 
    				// do the damage...
    				if ( DoDamage( DONT_OVERRIDE_INVUL ) == 1 )
    				{
 					// if I died...
-   					Ships[WhoIAm].ShipThatLastKilledMe = lpShortShipHit->WhoHitYou;
-   					Ships[WhoIAm].Object.Mode = DEATH_MODE;
-   					Ships[WhoIAm].Timer = 0.0F;
-   					// make a note of who killed who...
-					Stats[Ships[WhoIAm].ShipThatLastKilledMe][WhoIAm]++;
+   					Ships[WhoIAm].ShipThatLastKilledMe	= lpShortShipHit->WhoHitYou;
+   					Ships[WhoIAm].Object.Mode			= DEATH_MODE;
+   					Ships[WhoIAm].Timer					= 0.0F;
    					// print up who killed me
-
 					GetDeathString( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon, &methodstr[0] );
 
 					if (TeamGame && ( TeamNumber[Ships[WhoIAm].ShipThatLastKilledMe] == TeamNumber[WhoIAm]))
@@ -3577,6 +3567,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
+					// Update Stats 1 - somebody killed me
+					UpdateStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
+					// called in TOL OFF multiplayer!!
 					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
 					ShipDiedSend( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon );
@@ -3586,27 +3579,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    		return;
 
 	// Someone has Died....Did I kill Them ??
+	// this is called in multiplayer
     case MSG_SHIPDIED:
 
 		lpShipDied = (LPSHIPDIEDMSG)MsgPnt;
-
-		if( IsServer )
-		{
-			CanDoDamage[lpShipDied->WhoIAm] = TRUE;
-		}
-
-   		// make a note of who killed who...
-   		Stats[lpShipDied->WhoKilledMe][lpShipDied->WhoIAm]++;
-#if 1
-		if( lpShipDied->WeaponType == WEPTYPE_Primary )
-		{
-			PrimaryStats[lpShipDied->Weapon]++;
-		}
-		if( lpShipDied->WeaponType == WEPTYPE_Secondary )
-		{
-			SecondaryStats[lpShipDied->Weapon]++;
-		}
-#endif		
 
 		// WHERE IS IS BOMBBB!! !!! ?
 		// SOME TYPE OF A BOMB NOT A TITAN !!!
@@ -3621,8 +3597,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( !GodMode )
 				Ships[WhoIAm].Kills++;
 
-	    // if its not a bomb
-		}else{
+		}
+		// if its not a bomb
+		else
+		{
 			
 			// print a message reflecting the weapon
 			GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
@@ -3642,14 +3620,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							// print message
 							AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], ON_YOUR_OWN_TEAM );
 
-							
-							// nobody ever cares about deaths in a team game
-							// teams should loose a point if they kill each other
-							// we should really show scores that are products of kills - deaths
-
-							//Ships[WhoIAm].Deaths++;
+							// teams lose a point if they kill each other
 							Ships[WhoIAm].Kills--;
-
 						}
 					}
 					// if they weren't on your team
@@ -3716,7 +3688,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 					}
 				}
-			
+
+				// update stats 2 -- you killed someone 
+   				UpdateStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
 			}
 			// if you were not who killed them
 			else
@@ -3724,7 +3698,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
    				{
    					// gee someone killed themselves...
-   					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH ", &methodstr[0] );
+   					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
    					AddMessageToQue( (char*)&tempstr[0] );
 			
    				}
@@ -3739,13 +3713,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					sprintf( (char*) &tempstr[0] ,"%s %s %s %s" "%s" "%s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
    				}
+
+				// make a note of who somebody killed
+   				UpdateStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); // update stats 3 -- somebody killed someone
    			}
 		}
 
 		return;
     case MSG_SHORTSTATS:
    		lpShortStats = (LPSHORTSTATSMSG)MsgPnt;
-   		memcpy( (void*) &Stats[lpShortStats->WhosStats][0] , (void*) lpShortStats->ShortStats , sizeof(SHORTSTATSTYPE) );
    		if( lpShortStats->WhosStats == 0 )
    		{
    			StatsStatus = 1;
@@ -4806,7 +4782,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				if(	MyGameStatus == STATUS_Normal )
 				{
 //					StatsCount = MAX_PLAYERS;
-					memset(&Stats[i][0], 0, sizeof(int16) * MAX_PLAYERS);
 					// not sure if I should do this again DAVE ???
 					CopyPickups( (uint16) i );
 					CopyRegenSlots( (uint16) i );
@@ -4879,7 +4854,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 					if(	MyGameStatus == STATUS_Normal )
 					{
 //						StatsCount = MAX_PLAYERS;
-						memset(&Stats[i][0], 0, sizeof(int16) * MAX_PLAYERS);
 						CopyPickups( (uint16) i );
 						CopyRegenSlots( (uint16) i );
 						CopyTriggers( (uint16) i );
@@ -5142,7 +5116,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortStats->MsgCode = msg;
         lpShortStats->WhoIAm = WhoIAm;
         lpShortStats->WhosStats = ShipNum;
-		memcpy( (void*) lpShortStats->ShortStats , (void*) &Stats[ShipNum][0] , sizeof(SHORTSTATSTYPE) ) ;
         nBytes = sizeof( SHORTSTATSMSG );
         break;
     case MSG_STATUS:

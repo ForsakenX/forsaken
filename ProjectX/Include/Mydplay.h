@@ -350,59 +350,59 @@ typedef struct _SETTIME
 
 typedef struct _GLOBALSHIP
 {
-	OBJECT				Object;		//
+	OBJECT				Object;						//
 	
-	BYTE				enable;     // is this ship active?
+	BYTE				enable;						// is this ship active?
 	BYTE				ShipThatLastKilledMe;		// the ship who killed me last...
-	BYTE				ShipThatLastHitMe;		// the ship who killed me last...
-	BYTE				NumMultiples;	// Number of multiples
-	float				StealthTime; // Stealth Mode Time Limit
-	float				Timer;		// General Purpose Mode Timer....How Long to stay dead ...etc..
-	float				InvulTimer;	// HowLong am I Invulnerable
-	BOOL				Invul;		// Am I Invulnerable...
-	VECTOR				LastAngle;	// what my last Step Turn Angles Were...
-	int16				Kills;		// number of kills
-	int16				Deaths;		// number of deaths
-	uint16				PrimBullIdCount;// Id count for every bullet I fire....
-	uint16				SecBullIdCount;// Id count for every bullet I fire....
-	uint16				PickupIdCount;// Id count for every pickup I generate.....
-	float				Damage;		// how much Damege I Have Taken...
-	BYTE				Primary;	// which weapon is my primary....
-	BYTE				Secondary;	// which wepaon is my secondary....
-	uint16				ModelNum;	// which model to display for them...
-	int16				BikeNum;	// which model to display for them...
+	BYTE				ShipThatLastHitMe;			// the ship who killed me last...
+	BYTE				NumMultiples;				// Number of multiples
+	float				StealthTime;				// Stealth Mode Time Limit
+	float				Timer;						// General Purpose Mode Timer....How Long to stay dead ...etc..
+	float				InvulTimer;					// HowLong am I Invulnerable
+	BOOL				Invul;						// Am I Invulnerable...
+	VECTOR				LastAngle;					// what my last Step Turn Angles Were...
+	int16				Kills;						// number of kills
+	int16				Deaths;						// number of deaths
+	uint16				PrimBullIdCount;			// Id count for every bullet I fire....
+	uint16				SecBullIdCount;				// Id count for every bullet I fire....
+	uint16				PickupIdCount;				// Id count for every pickup I generate.....
+	float				Damage;						// how much Damege I Have Taken...
+	BYTE				Primary;					// which weapon is my primary....
+	BYTE				Secondary;					// which wepaon is my secondary....
+	uint16				ModelNum;					// which model to display for them...
+	int16				BikeNum;					// which model to display for them...
 	BYTE				Pickups;
 	BYTE				RegenSlots;
 	BYTE				Triggers;
 	BYTE				TrigVars;
 	BYTE				Mines;
-	BOOL				JustRecievedPacket;//
-	VECTOR				LastMove;	// last movement vector (framelagged)
-	VECTOR				Move_Off;	// Last MoveMent...x , y , z
+	BOOL				JustRecievedPacket;			//
+	VECTOR				LastMove;					// last movement vector (framelagged)
+	VECTOR				Move_Off;					// Last MoveMent...x , y , z
 	DPID                dcoID;
 	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
 	int8				LastPacketID;
 	BOOL				FirstPacketRecieved;
 
-	float				PrimPowerLevel; // Trojax Powerlevel
-	uint16				PrimID;		// Bullet ID
-	uint16				SecID;		// Missile ID
-	BYTE				SecWeapon;	// Weapon
+	float				PrimPowerLevel;				// Trojax Powerlevel
+	uint16				PrimID;						// Bullet ID
+	uint16				SecID;						// Missile ID
+	BYTE				SecWeapon;					// Weapon
 
 
 	BOOL				DemoInterpolate;
 
-	VECTOR		OldPos;				//
-	VECTOR		NextPos;			// what my next position will be
-	QUAT		OldQuat;			//
-	QUAT		NextQuat;			// what my next view angle will be
-	float		OldBank;			//
-	float		NextBank;			// what my next bank angle will be..
-	LONGLONG	OldTime;			// how long before I am at those positions
-	LONGLONG	NextTime;			// how long before I am at those positions
+	VECTOR		OldPos;								//
+	VECTOR		NextPos;							// what my next position will be
+	QUAT		OldQuat;							//
+	QUAT		NextQuat;							// what my next view angle will be
+	float		OldBank;							//
+	float		NextBank;							// what my next bank angle will be..
+	LONGLONG	OldTime;							// how long before I am at those positions
+	LONGLONG	NextTime;							// how long before I am at those positions
 
-	float		SuperNashramTimer;	// HowLong have i left with the super nashram?
+	float		SuperNashramTimer;					// HowLong have i left with the super nashram?
 	uint16		TempLines[ 12 ];
 
 	float		ShakeTimer;
@@ -431,11 +431,11 @@ typedef struct _SHORTGLOBALSHIP
 	VECTOR				Move_Off;		// Last MoveMent...x , y , z
 	VECTOR				Angle;			// Last Rotation..
 #ifdef	SHORTBANK
-	int16				Bank;		// How much Am I banked....
+	int16				Bank;			// How much Am I banked....
 #else
-	float				Bank;		// How much Am I banked....
+	float				Bank;			// How much Am I banked....
 #endif
-	QUAT				Quat;		// Final Quat...
+	QUAT				Quat;			// Final Quat...
 //	int8				LastPacketID;	// should go in order.....
 } SHORTGLOBALSHIP, *LPSHORTGLOBALSHIP;
 
@@ -447,9 +447,9 @@ typedef struct _VERYSHORTGLOBALSHIP
 	SHORTVECTOR			Pos;			// x , y , z position
 	SHORTVECTOR			Move_Off;		// Last MoveMent...x , y , z
 	SHORTVECTOR			Angle;			// Last Rotation..
-	int16				Bank;		// How much Am I banked....
+	int16				Bank;			// How much Am I banked....
 	uint16				Move_Off_Scalar;
-	SHORTQUAT			Quat;		// Final Quat...
+	SHORTQUAT			Quat;			// Final Quat...
 } VERYSHORTGLOBALSHIP, *LPVERYSHORTGLOBALSHIP;
 
 

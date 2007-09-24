@@ -1375,13 +1375,14 @@ BOOL ProcessShips()
 					{
 						ShipPnt->Damage = ShieldModifier;
 
+						// this never gets called in multiplayer
 						if( DoDamage( DONT_OVERRIDE_INVUL ) )
 						{
 							ShipPnt->ShipThatLastKilledMe = i;
 							ShipObjPnt->Mode = DEATH_MODE;
 							ShipPnt->Timer = 0.0F;
 							// make a note of who killed who...
-							Stats[i][i]++;
+							//Stats[i][i]++;
 							// print up I killed Myself
 							AddMessageToQue( YOU_KILLED_YOURSELF );
 							PlaySfx( SFX_BIKECOMP_DY, 1.0F );
