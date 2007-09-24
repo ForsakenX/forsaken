@@ -3055,7 +3055,9 @@ MENU	MENU_DemoPlaying = {
 		{ 200 , 128 + ( 2*16 ), 0, 0, 0, LT_MENU_DemoPlaying7 /*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 128 + ( 4*16 ), 0, 0, 0, LT_MENU_DemoPlaying8 /*"Watch Player"*/, 0, 0,		&DemoEyesSelect,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 128 + ( 5*16 ), 0, 0, 0, LT_MENU_DemoPlaying9 /*"Options"*/ , 0, 0, NULL, &MENU_Options , MenuChange , MenuItemDrawName, NULL, 0 } ,
+#ifdef DEBUG_ON
 		{ 200 , 128 + ( 6*16 ), 0, 0, 0, LT_MENU_DemoPlaying10 /*"Debugging"*/, 0, 0,	&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle, NULL, 0 },
+#endif
 		{ 200 , 128 + ( 7*16 ), 0, 0, 0, LT_MENU_DemoPlaying11 /*"Quit to Title Screen"*/ , 0, 0, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName, NULL, 0 } ,
 //		{ 200 , 128 + ( 8*16 ), 0, 0, 0, LT_MENU_DemoPlaying12 /*"Server Mode"*/, 0, 0, &ServerMode, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -3145,7 +3147,9 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM( 200, 240, LT_MENU_InGame9  /*"show ping"*/,					&ShowPing,					NULL,					SelectToggle,			DrawToggle),
 					  OLDMENUITEM( 200, 256, LT_MENU_InGame10 /*"update (secs)"*/,				&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
 #ifndef EXTERNAL_DEMO
+#ifdef DEBUG_ON
 					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"*/,					&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
+#endif
 #endif
 				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"*/,				&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
 					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"*/ ,					NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
