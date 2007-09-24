@@ -3567,9 +3567,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-					// not called in TOL OFF multiplayer!!
-					//sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
-   					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " AAAA ", &methodstr[0]  ,&teamstr );
+					// Update Stats 6 - somebody killed me
+					UpdateStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
+					// called in TOL OFF multiplayer!!
+					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
 					ShipDiedSend( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon );
    				}

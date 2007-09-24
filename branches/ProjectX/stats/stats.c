@@ -86,6 +86,8 @@
 #include  "XMem.h"
 #include "dpthread.h"
 
+/* external variables */
+extern  BYTE  TeamNumber[MAX_PLAYERS];									// which team each player is on
 
 /* internal variables */
 uint16	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
@@ -95,7 +97,8 @@ int x, z;																// index counters
 
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]		= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITOR" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
-		
+	
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   Get name of player's weapon with most kills...
   Input   :   int Player ID, int: Weapon Type
@@ -244,6 +247,35 @@ int GetStats(int Killer, int Victim)
 {
 	// return the amount of kills on victim
 	return Stats[Killer][Victim];	
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get Team Score...
+  Input   :   killer id
+  Output    :   total kills achieved by all players on the same team (excludes suicides and 'friendly kills')
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Get A Player's Total Kills */
+int GetTeamScore(int Killer)
+{
+	int TeamScore = 0; // team score
+
+	// search all players
+	for(x = 0; x < MAX_PLAYERS; x++)
+	{
+		// found a team mate or myself
+		if(TeamNumber[Killer] == TeamNumber[x])
+		{
+			// search all the players that my team mate or i killed
+			for(z = 0; z < MAX_PLAYERS; z++)
+			{
+				// don't add suicides 'or friendly kills'
+				if(x!=z && TeamNumber[x] != TeamNumber[z])
+					TeamScore += GetStats(x,z);	// add kills
+			}
+		}
+	}
+
+	return TeamScore;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
