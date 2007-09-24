@@ -227,7 +227,6 @@ extern BOOL LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16 Lives;
 extern BYTE	GameStatus[];	// Game Status for every Ship...
-extern BOOL LogosEnable;
 extern BOOL PreventFlips;
 extern BOOL bSoundEnabled;
 extern BOOL ShowTrigZones;

@@ -5453,8 +5453,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     }
 
-    InitLogos();
-
     MyGameStatus = STATUS_InitView_2;
     PrintInitViewStatus( MyGameStatus );
     break;

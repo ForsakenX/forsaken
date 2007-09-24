@@ -17,7 +17,6 @@
 #include "showstrm.h"
 
 CRITICAL_SECTION	gPlayKey; // Guards one variable, gbPlay
-extern int LogosEnable;
 extern BOOL ForsakenAnyKey;
 extern int use_data_path;
 extern char data_path[];
@@ -323,8 +322,6 @@ void PostGameCompleteSplash( void *Ptr )
 	InitializeSound( DESTROYSOUND_All );
 }
 
-static int old_LogosEnable = 0;
-
 BOOL InitAttractDemo( void *Ptr )
 {
 #ifdef SOFTWARE_ENABLE
@@ -339,11 +336,9 @@ BOOL InitAttractDemo( void *Ptr )
 	{
 			return FALSE;
 	}
-	old_LogosEnable = LogosEnable;
-	LogosEnable = 1;
+
  	if ( !StartSplashDemo( CurrentSplashFile, MULTIPLAYER_LEVELS ) )
 	{
-		LogosEnable = old_LogosEnable;
 		return FALSE;
 	}
 
@@ -503,7 +498,6 @@ void PostSplashDemo( void *Ptr )
 
 	LimitedLoad = FALSE;
 	InSplashDemo = FALSE;
-	LogosEnable = old_LogosEnable;
 	ForsakenAnyKey = FALSE;
 
 	InitScene();

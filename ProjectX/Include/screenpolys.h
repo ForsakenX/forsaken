@@ -148,8 +148,6 @@ void ShowScreenMultiples( void );
 void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *ScreenPolyStore, int16 SeqNum );
 void InitThermo( void );
 void KillThermo( void );
-void InitLogos( void );
-void KillLogos( void );
 BOOL PVR_ScreenPolysDisp( uint16 * Next );
 void ResetCountDownBombTag( float Amount );
 void InitScrPolyTPages( void );

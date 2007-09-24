@@ -33,7 +33,6 @@
 	extern	BOOL	bPolyText;
 	extern	BOOL	PolyText[255];
 	extern	TRIGGERVAR	*	DecreaseTemperature;
-	extern	BOOL	LogosEnable;
 	extern	BOOL	CaptureTheFlag;
 	extern	BOOL	CTF;
 	extern	BOOL	BountyHunt;
@@ -143,7 +142,6 @@ OFF_FILES OffsetFiles[] = {
 	{ "Solid.off",		&Solid_Header,			DO_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Solid 8x8
 	{ "Multiple.off",	&Multiple_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Multiple
 	{ "Thermo.off",		&Thermo_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Thermo Meter
-	{ "Logo.off",		&Logos_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Logos
 	{ "Nmebuits.off",	&NMEBullet_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// NME Bullets
 	{ "Bigexp1.off",	&BigExp1_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Big Explosion 1
 	{ "Mushroom.off",	&Mushroom_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES_VIDMEM, 0, 0 },	// Mushroom Explosion
@@ -667,9 +665,6 @@ void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 		if( !DecreaseTemperature ) DisableOffFile( &OffsetFiles[ 0 ], "Thermo.off" );
 		else EnableOffFile( &OffsetFiles[ 0 ], "Thermo.off" );
 
-		if( !LogosEnable ) DisableOffFile( &OffsetFiles[ 0 ], "Logo.off" );
-		else EnableOffFile( &OffsetFiles[ 0 ], "Logo.off" );
-
 		DisableOffFile( &OffsetFiles[ 0 ], "Restart.off" );
 		DisableOffFile( &OffsetFiles[ 0 ], "Flag.off" );
 		DisableOffFile( &OffsetFiles[ 0 ], "Flags.off" );
@@ -679,9 +674,6 @@ void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 	{
 		if( !DecreaseTemperature ) DisableOffFile( &OffsetFiles[ 0 ], "Thermo.off" );
 		else EnableOffFile( &OffsetFiles[ 0 ], "Thermo.off" );
-
-		if( !LogosEnable ) DisableOffFile( &OffsetFiles[ 0 ], "Logo.off" );
-		else EnableOffFile( &OffsetFiles[ 0 ], "Logo.off" );
 
 		if( !ENABLE_RESTART ) DisableOffFile( &OffsetFiles[ 0 ], "Restart.off" );
 		else EnableOffFile( &OffsetFiles[ 0 ], "Restart.off" );

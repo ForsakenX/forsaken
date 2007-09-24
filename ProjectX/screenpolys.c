@@ -93,7 +93,6 @@ extern	int				LowestBombTime;
 extern	BOOL			PowerVR;
 extern	int16			MakeColourMode;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	int				LogosEnable;
 extern	SLIDER			TimeLimit;
 extern	BOOL			CountDownOn;
 extern	int16			LevelNum;
@@ -157,7 +156,6 @@ uint16	FirstScrPolyUsed;
 uint16	FirstScrPolyFree;
 float	Old_Time_Float;
 float	Countdown_Float = 3000.0F;	// 30 Seconds
-int		LogosEnable = 0;
 float	ZValue;
 float	RHWValue;
 BOOL	BilinearSolidScrPolys = FALSE;
@@ -482,8 +480,6 @@ void ScreenPolyProcess( void )
 						if( ScrPolys[i].LifeCount >= 600.0F )
 						{
 							ScrPolys[i].Frame += 2.0F;
-							if( LogosEnable == 1 ) ScrPolys[i].Frame = (float) floor( FMOD( ScrPolys[i].Frame, 4.0F ) );
-							if( LogosEnable == 2 ) ScrPolys[i].Frame = (float) floor( FMOD( ScrPolys[i].Frame, 6.0F ) );
 							ScrPolys[i].LifeCount = 0.0F;
 						}
 
@@ -2009,104 +2005,6 @@ void KillThermo( void )
 	{
 		KillUsedScrPoly( ThermoScrPoly );
 		ThermoScrPoly = (uint16) -1;
-	}
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Setup Logos Screenpolys
-	Input		:	Nothing
-	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void InitLogos( void )
-{
-	uint16	i;
-	float	Center_X;
-	float	Center_Y;
-
-	if( !LogosEnable ) return;
-
-	if( LogoScrPoly == (uint16) -1 )
-	{
-		i = FindFreeScrPoly();
-	
-		if( i != (uint16) -1 )
-		{
-			LogoScrPoly = i;
-
-	   		if( d3dappi.szClient.cx == 320.0F )
-	   		{
-	   			Center_X = ( d3dappi.szClient.cx - 80.0F );
-	   			Center_Y = ( d3dappi.szClient.cy - ( 25.0F + ( FontHeight * 2.0F ) + 5.0F ) );
-	   			ScrPolys[ i ].Frame = 1.0F;
-	   		}
-	   		else
-	   		{
-	   			Center_X = ( d3dappi.szClient.cx - 160.0F );
-	   			Center_Y = ( d3dappi.szClient.cy - ( 50.0F + ( FontHeight * 2.0F ) + 5.0F ) );
-	   			ScrPolys[ i ].Frame = 0.0F;
-	   		}
-			
-			ScrPolys[ i ].Flags = SCRFLAG_Nothing;
-			ScrPolys[ i ].Type = SCRTYPE_Normal;
-			ScrPolys[ i ].LifeCount = 255.0F;
-			ScrPolys[ i ].Pos.x = Center_X;
-			ScrPolys[ i ].Pos.y = Center_Y;
-			ScrPolys[ i ].x1 = 0.0F;
-			ScrPolys[ i ].y1 = 0.0F;
-			ScrPolys[ i ].x2 = 0.0F;
-			ScrPolys[ i ].y2 = 0.0F;
-			ScrPolys[ i ].x3 = 0.0F;
-			ScrPolys[ i ].y3 = 0.0F;
-			ScrPolys[ i ].x4 = 0.0F;
-			ScrPolys[ i ].y4 = 0.0F;
-			ScrPolys[ i ].R = 0;					// R Colour
-			ScrPolys[ i ].G = 0;					// G Colour
-			ScrPolys[ i ].B = 0;					// B Colour
-			ScrPolys[ i ].Trans = 0;				// Amount of transparency
-			ScrPolys[ i ].FadeRed = (float) 0.0F;
-			ScrPolys[ i ].FadeGreen = (float) 0.0F;
-			ScrPolys[ i ].FadeBlue = (float) 0.0F;
-			ScrPolys[ i ].FadeTrans = (float) 0.0F;
-			ScrPolys[ i ].FrameRate = 0.0F;
-			ScrPolys[ i ].SeqNum = SCRSEQ_Logo;
-			ScrPolys[ i ].Frm_Info = &Logos_Header;	// Offset Info
-			ScrPolys[ i ].Xscale = 1.0F;
-			ScrPolys[ i ].Yscale = 1.0F;
-			AddScrPolyToTPage( i, GetTPage( *ScrPolys[ i ].Frm_Info, 0 ) );
-		}
-	}
-	else
-	{
-		i = LogoScrPoly;
-
-	   	if( d3dappi.szClient.cx == 320.0F )
-	   	{
-	   		Center_X = ( d3dappi.szClient.cx - 80.0F );
-	   		Center_Y = ( d3dappi.szClient.cy - ( 25.0F + ( FontHeight * 2.0F ) + 5.0F ) );
-	   		ScrPolys[ i ].Frame = 1.0F;
-	   	}
-	   	else
-	   	{
-	   		Center_X = ( d3dappi.szClient.cx - 160.0F );
-	   		Center_Y = ( d3dappi.szClient.cy - ( 50.0F + ( FontHeight * 2.0F ) + 5.0F ) );
-	   		ScrPolys[ i ].Frame = 0.0F;
-	   	}
-
-		ScrPolys[ i ].Pos.x = Center_X;
-		ScrPolys[ i ].Pos.y = Center_Y;
-	}
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Remove Logos Screenpolys
-	Input		:	Nothing
-	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void KillLogos( void )
-{
-	if( LogoScrPoly != (uint16) -1 )
-	{
-		KillUsedScrPoly( LogoScrPoly );
 	}
 }
 	

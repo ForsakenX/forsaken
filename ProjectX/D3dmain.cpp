@@ -102,7 +102,6 @@ extern "C" {
 	extern int default_width;
 	extern int default_height;
 	extern int default_bpp;
-	extern int LogosEnable;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
 	extern	BOOL	PowerVR_Overide;
@@ -562,7 +561,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DeviceOnCommandline			= FALSE;
     bOnlySystemMemory			= FALSE;
     bOnlyEmulation				= FALSE;
-	LogosEnable					= 0;
 	PowerVR_Overide				= FALSE;
 	Is3Dfx						= FALSE;
 	Is3Dfx2						= FALSE;
@@ -895,11 +893,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			else if ( sscanf( option, "UVFix%f", &fnum ) == 1 )
 			{
 				UV_Fix = fnum;
-			}
-
-			else if ( sscanf( option, "logos%d", &num ) == 1 )
-			{
-				LogosEnable = num;
 			}
 
 			else if ( sscanf( option, "fov%d", &num ) == 1 )
