@@ -4161,7 +4161,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 													if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 													else{
 														PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-														sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+														//sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 													}
 													AddMessageToQue( &tempstr[0] );
 													ShipDiedSend( WEPTYPE_Secondary, Weapon );
@@ -4247,7 +4247,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 												if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 												else{
 													PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-													sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+													//sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 												}
 												AddMessageToQue( &tempstr[0] );
 												ShipDiedSend( WEPTYPE_Secondary, Weapon );
@@ -4317,7 +4317,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 									if( OwnerType != OWNER_SHIP ) sprintf( &tempstr[0], AN_ENEMY_KILLED_YOU, &methodstr[0] );
 									else{
 										PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-										sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+										//sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 									}
 									AddMessageToQue( &tempstr[0] );
 									ShipDiedSend( WEPTYPE_Secondary, Weapon );
@@ -4807,7 +4807,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 													Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 													Ships[ WhoIAm ].Timer = 0.0F;
 													PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-													sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+													//sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 													AddMessageToQue( &tempstr[0] );
 													ShipDiedSend( WEPTYPE_Secondary, Weapon );
 												}
@@ -4871,7 +4871,10 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 												Ships[ WhoIAm ].Timer = 0.0F;
 												PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // never called?
+												// update stats 6 - killed yourself with missile splash damage
+												UpdateStats(WhoIAm,WhoIAm,WEPTYPE_Secondary, Weapon);
+												// killed yourself with missile splash damage (e.g. mfrl)
+												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 												AddMessageToQue( &tempstr[0] );
 												ShipDiedSend( WEPTYPE_Secondary, Weapon );
 											}
