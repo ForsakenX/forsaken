@@ -8118,7 +8118,10 @@ void ProcessSelect( int Key )
 
 		/* if were acting on a selection list */
 
-		if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		if (
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle) || 
+			(CurrentMenuItem->FuncSelect == SelectColFlatMenuToggle)
+		)
 		{
 
 				if
@@ -8144,7 +8147,10 @@ void ProcessSelect( int Key )
 
 		/* if were acting on a selection list */
 
-		if (CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		if (
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle) || 
+			(CurrentMenuItem->FuncSelect == SelectColFlatMenuToggle)
+		)
 		{
 
 			if (  CurrentMenuItem->Variable &&
