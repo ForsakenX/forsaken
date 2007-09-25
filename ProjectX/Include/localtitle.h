@@ -619,7 +619,7 @@
 #define LT_MENU_InGame7 "End level and show stats"
 #define LT_MENU_InGame8 "Quit to Main Menu"
 #define LT_MENU_InGame9 "show ping"
-#define LT_MENU_InGame10 "update (secs)"
+#define LT_MENU_InGame10 "ping update (secs)"
 #define LT_MENU_InGame11 "Debugging"
 #define LT_MENU_InGame13 "Wireframe Mode"
 #define LT_MENU_InGame14 "Save Menu"
@@ -634,6 +634,8 @@
 #define LT_MENU_InGame23 "Debugging"
 #define LT_MENU_InGame24 "Watch Player"
 #define LT_MENU_InGame25 "Quit to desktop"
+#define LT_MENU_InGame26 "Host Options"
+#define LT_MENU_InGame27 "Collision Perspective"
 
 #define LT_MENU_Help0 "In-Game Help"
 #define LT_MENU_Help1 "Toggle menu"

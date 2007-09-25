@@ -626,6 +626,7 @@ void SelectColFlatMenuToggle( MENUITEM *Iem );	// collision perspective
 void SelectMultiToggle( MENUITEM *Item );
 void DrawFlatMenuToggle( MENUITEM *Item );
 void DrawColFlatMenuToggle( MENUITEM *Item );	// collision perspective
+void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
 void SelectFlatMenuKey( MENUITEM *Item );
 void CheckKeysForChanges( void );
@@ -3003,19 +3004,13 @@ void StoreThrottleSettings( MENUITEM *item );
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, InitInGameOptions, NULL, NULL, 0,
 	{
-		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Options1/*"Visuals"*/, 0, 0, NULL, &MENU_Visuals, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Options2/*"Sound FX and Music"*/, 0, 0, NULL, &MENU_NEW_InGameSound, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200, 128 + ( 2*16 ), 0, 0, 0, LT_MENU_Options3/*"Detail Levels"*/, 0, 0, NULL, &MENU_Detail, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200 ,128 + ( 3*16 ), 0, 0, 0, LT_MENU_Options4/*"Show Frame Rate "*/, 0, 0, &myglobs.bShowFrameRate, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		OLDMENUITEM(  200 , 128+4*16,LT_MENU_Options5/*"Packets Per Second "*/,(void*)&PacketsSlider, NULL, SelectSlider, DrawSlider),
-		OLDMENUITEM(  200 , 128+5*16,LT_MENU_Options6/*"show ping"*/, &ShowPing, NULL, SelectToggle , DrawToggle),
-		OLDMENUITEM(  200 , 128+6*16,LT_MENU_Options7/*"update (secs)"*/, &PingFreqSlider, NULL, SelectSlider , DrawSlider),
-		{ 200 ,128 + ( 7*16 ), 0, 0, 0, LT_MENU_Options8/*"Show Extra Info "*/, 0, 0, &myglobs.bShowInfo, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		{ 200 ,128 + ( 8*16 ), 0, 0, 0, LT_MENU_Options9/*"Show Weapon Kills"*/, 0, 0, &ShowWeaponKills, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		//{ 200, 128 + ( 9*16 ), 0, 0, 0, LT_MENU_Options10/*"Restore Defaults"*/, 0, 0, NULL, &MENU_NotYet, MenuChange, MenuItemDrawName, NULL, 0 },
-		OLDMENUITEM(  200 , 128+9*16,"throttle",(void*)&ThrottleSlider, StoreThrottleSettings, SelectSlider, DrawSlider),
-		//OLDMENUITEM(  200 , 128+10*16,"throttle",(void*)&ThrottleReset, ResetThrottle, SelectToggle, DrawToggle),
-
+		{ 200, 128, 0, 0, 0, LT_MENU_Options1 /*"Visuals"				*/, 0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200, 144, 0, 0, 0, LT_MENU_Options2 /*"Sound FX and Music"	*/, 0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200, 160, 0, 0, 0, LT_MENU_Options3 /*"Detail Levels"			*/, 0, 0, NULL,						&MENU_Detail,			MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200 ,176, 0, 0, 0, LT_MENU_Options4 /*"Show Frame Rate "		*/, 0, 0, &myglobs.bShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200 ,192, 0, 0, 0, LT_MENU_Options8 /*"Show Extra Info "		*/, 0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200 ,208, 0, 0, 0, LT_MENU_Options9 /*"Show Weapon Kills"		*/, 0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -3116,35 +3111,45 @@ MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, 
 	}
 };
 
+MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
+			{
+					OLDMENUITEM( 200, 112, LT_MENU_InGame27 /*"collision perspective"		*/,	&ColPerspective,			NULL,					SelectToggle,			DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame10 /*"ping update (secs)"			*/,	&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
+					OLDMENUITEM( 200, 144, LT_MENU_Options5 /*"Packets Per Second"			*/,	(void*)&PacketsSlider,		NULL,					SelectSlider,			DrawSlider),
+					OLDMENUITEM( 200, 160, LT_MENU_InGame6  /*"Level Select"				*/,	NULL,						&MENU_LevelSelect,		MenuChange,				MenuItemDrawName),
+					OLDMENUITEM( 200, 176, LT_MENU_InGame7  /*"End level and show stats"	*/,	NULL,						NULL,					GoToStats,				MenuItemDrawName),
+					  
+
+			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
+};
 
 MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
-					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker  "*/,				(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
+					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker"				*/,	(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
 #ifndef SOFTWARE_ENABLE
-					  OLDMENUITEM( 200, 128, LT_MENU_InGame2  /*"Toggle Full Screen"*/,			NULL,						NULL,					MenuGoFullScreen,		MenuItemDrawName),
+					  OLDMENUITEM( 200, 128, LT_MENU_InGame2  /*"Toggle Full Screen"		*/,	NULL,						NULL,					MenuGoFullScreen,		MenuItemDrawName),
 #endif
-					  OLDMENUITEM( 200, 144, LT_MENU_InGame3  /*"Load Game"*/,					NULL,						&MENU_LoadSavedGame,	MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"*/,					NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"*/,					NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 192, LT_MENU_InGame6  /*"Level Select"*/,				NULL,						&MENU_LevelSelect,		MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 192, LT_MENU_InGame7  /*"End level and show stats"*/,	NULL,						NULL,					GoToStats,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 208, LT_MENU_InGame8  /*"Quit to Main Menu"*/,			NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
-					  OLDMENUITEM( 200, 224, LT_MENU_InGame25 /*"Quit to desktop"*/,			NULL,						NULL,					SelectQuit,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 240, LT_MENU_InGame9  /*"show ping"*/,					&ShowPing,					NULL,					SelectToggle,			DrawToggle),
-					  OLDMENUITEM( 200, 256, LT_MENU_InGame10 /*"update (secs)"*/,				&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
+					  OLDMENUITEM( 200, 144, LT_MENU_InGame3  /*"Load Game"					*/,	NULL,						&MENU_LoadSavedGame,	MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"					*/,	NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"					*/,	NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 192, LT_MENU_InGame26 /*"Host Options"				*/,	NULL,						&MENU_Host_Options,		MenuChange,				MenuItemDrawName),
+				   	  OLDMENUITEM( 200, 208, LT_MENU_InGame9  /*"show ping"					*/,	&ShowPing,					NULL,					SelectToggle,			DrawToggle),					  
+					  OLDMENUITEM( 200, 224, LT_MENU_InGame8  /*"Quit to Main Menu"			*/,	NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
+					  OLDMENUITEM( 200, 240, LT_MENU_InGame25 /*"Quit to desktop"			*/,	NULL,						NULL,					SelectQuit,				MenuItemDrawName),
+					//OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"				*/,	(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),	
 #ifndef EXTERNAL_DEMO
 #ifdef DEBUG_ON
-					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"*/,					&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
+					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
 #endif
 #endif
-				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"*/,				&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
-					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"*/ ,					NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"*/,					NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 336, LT_MENU_InGame16 /*"IP "*/,						(void *)&IPAddressText[0],	NULL,					NULL,					DrawNameVar),
-					//OLDMENUITEM( 200, 352, LT_MENU_InGame24 /*"Watch Player "*/,				(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),
-					 
+				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"			*/,	&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
+					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"					*/,	NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"				*/,	NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 352, LT_MENU_InGame16 /*"IP"						*/,	(void *)&IPAddressText[0],	NULL,					NULL,					DrawNameVar),
+					
 					  
-					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
+					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
+};
 
 MENU	MENU_ForceAbort = {
 	"Sorry Directplay has forced you to quit due to 1 of its bugs" , NULL , NULL , NULL, 0,
@@ -8999,6 +9004,7 @@ void SelectToggle( MENUITEM *Item )
 
 }
 
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Draw a toggle menuitem
 	Input		:		MENUITEM * Item...
@@ -9026,6 +9032,32 @@ void DrawToggle( MENUITEM *Item )
 	}
 }
 
+/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+	Procedure	:		Draw a collision perspective toggle menuitem
+	Input		:		MENUITEM * Item...
+	Output		:		Nothing
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+void DrawColToggle( MENUITEM *Item )
+{
+	int	x;
+	int	y;
+
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+
+	Print4x5Text( Item->StrPnt , x , y , 2 );
+	if ( Item->Variable )
+	{
+		if ( *(BOOL *)(Item->Variable ) )
+		{
+			Print4x5Text( LT_ToggleShooter/*" SHOOTER"*/, -1 , y , 1 );
+		}
+		else
+		{
+			Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
+		}
+	}
+}
 
 
 
@@ -10588,6 +10620,21 @@ void InitInGameMenu( MENU *Menu )
 				item->FuncDraw = NULL;
 			}
 		}
+
+		// only display host options if you are the host
+		if ( item->Value == &MENU_Host_Options )
+		{
+			if ( IsHost )
+			{
+				item->FuncSelect = MenuChange;
+				item->FuncDraw = MenuItemDrawName;
+			}
+			else
+			{
+				item->FuncSelect = NULL;
+				item->FuncDraw = NULL;
+			}
+		}
 	}
 }
 
@@ -12061,7 +12108,6 @@ void PauseDemoToggle( MENUITEM *Item )
 	SelectToggle( Item );
 }
 
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Init the level select menu...
 	Input		:		Nothing
@@ -13194,7 +13240,8 @@ void DrawFlatMenuListText ( MENUITEM *Item )
 {
 	LIST *l;
 	TEXTINFO *TextInfo;
-	int i, current;
+	int i = 0;
+	int current = 0;
 
 	l = (LIST *)(Item->Variable);
 
@@ -15434,7 +15481,7 @@ BOOL VduFinished( MENU *Menu )
 void DisplayTextItem (TEXTINFO *TextInfo)
 {
 	int i, j, font, num_invalid_chars, skip, UpToChar;
-	float totalheight;
+	float totalheight = 0.0;
 	TEXTINFO TempTextInfo;
   	TEXT *t;
 	BOOL DoForceFit;
