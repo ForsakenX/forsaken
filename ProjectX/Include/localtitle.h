@@ -63,7 +63,7 @@
 #define LT_MENU_NEW_ValidPickups25 "mines"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions0 "Multiplayer options"
-#define LT_MENU_NEW_MoreMultiplayerOptions1 "lag tolerance"
+#define LT_MENU_NEW_MoreMultiplayerOptions1 "collision perspective"
 #define LT_MENU_NEW_MoreMultiplayerOptions2 "short packets"
 #define LT_MENU_NEW_MoreMultiplayerOptions3 "packet grouping" 
 #define LT_MENU_NEW_MoreMultiplayerOptions4 "packet rate" 
@@ -669,6 +669,9 @@
 
 #define LT_ToggleStatusOn "on"
 #define LT_ToggleStatusOff "off"
+#define LT_ToggleStatusShooter "shooter"
+#define LT_ToggleStatusTarget "target"
+
 #define LT_Undef "undef"	// ( short for undefined )
 #define LT_SelectWhenReady "Select when ready"
 #define LT_WaitingForReset "Waiting..."
@@ -691,6 +694,8 @@
 
 #define LT_ToggleOn " ON"  
 #define LT_ToggleOff " OFF"
+#define LT_ToggleShooter " SHOOTER"  
+#define LT_ToggleTarget " TARGET"
 #define LT_Undef "undef"	// short for undefined 
 
 #define LT_QuitToLobby "quit to lobby"   
@@ -766,7 +771,7 @@
 #define LT_Extra5 "players: %d / %d"
 #define LT_Extra6 "game: %s%s"
 #define LT_Extra7 "packets: short %s, grouped %s"
-#define LT_Extra8 "lag tolerance: %s"
+#define LT_Extra8 "collision perspective: %s"
 #define LT_Extra9 "server based game"
 #define LT_Extra10 "Harm Team Mates %s"
 #define LT_Extra11 "kills limit %d ( current top %d )"
@@ -818,10 +823,6 @@
 #define FORSAKEN_SERVER "Forsaken server - press 'Esc' for menu"
 #define UNSUPPORTED_MSG_QUE "unable to auto-throttle messages - unsupported by service provider"
 #define THROTTLE "auto-throttle kicking in"
-
-#define LT_MENU_NEW_MoreMultiplayerOptions1a "lag tolerance on"
-#define LT_MENU_NEW_MoreMultiplayerOptions2a "lag tolerance off"
-#define LT_MENU_NEW_MoreMultiplayerOptions3a "server collisions"
 
 #define LT_Server "server"
 

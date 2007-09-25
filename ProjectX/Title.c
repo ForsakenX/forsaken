@@ -617,12 +617,15 @@ void DrawSessionNameText( MENUITEM *Item );
 void DrawConditionalText( MENUITEM *Item );
 void DrawConditionalName( MENUITEM *Item );
 TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item );
+TEXTINFO * DrawColFlatToggleStatus( MENUITEM *Item );	// collision perspective
 void UpdateSlider (MENUITEM *Item);
 void DrawFlatSliderStatus( MENUITEM *Item );
 void SelectFlatRadioButton( MENUITEM *Item );
 void SelectFlatMenuToggle( MENUITEM *Iem );
+void SelectColFlatMenuToggle( MENUITEM *Iem );	// collision perspective
 void SelectMultiToggle( MENUITEM *Item );
 void DrawFlatMenuToggle( MENUITEM *Item );
+void DrawColFlatMenuToggle( MENUITEM *Item );	// collision perspective
 void RedrawFlatMenuKey( MENUITEM *Item);
 void SelectFlatMenuKey( MENUITEM *Item );
 void CheckKeysForChanges( void );
@@ -1393,26 +1396,26 @@ uint32 ColPerspectiveServer;
 MENU	MENU_NEW_MoreMultiplayerOptions = {
 	"", InitMoreMultiplayerOptions, ExitMoreMultiplayerOptions, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,					DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  22, 120,  29, 0,				LT_MENU_NEW_MoreMultiplayerOptions1  /* "lag tolerance"          */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			ShortPacketsSelected,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  51, 100,  58, 0,				LT_MENU_NEW_MoreMultiplayerOptions3  /* "packet grouping"        */, FONT_Small,  TEXTFLAG_CentreY,							&BigPackets,				BigPacketsSelected,		SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10,  65, 100,  72, 0,				LT_MENU_NEW_MoreMultiplayerOptions5  /* "show ping"              */, FONT_Small,  TEXTFLAG_CentreY,							&ShowPing,					NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  72, 100,  79, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions6  /* "ping interval"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PingFreqSlider,			NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10,  79, 100,  86, 0,				"Reset Kills"                        /* "Reset Kills"            */, FONT_Small,  TEXTFLAG_CentreY,							&ResetKillsPerLevel,		NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 107, 100, 114, 0,				LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small,  TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 114, 120, 121, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 121, 120, 128, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 128, 120, 135, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 135, 100, 142, 0,				LT_MENU_NEW_MoreMultiplayerOptions14 /* "record demo"            */, FONT_Small,  TEXTFLAG_CentreY,							&RecordDemo,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 142, 180, 149, 0,				LT_MENU_NEW_MoreMultiplayerOptions19 /* "change allowed pickups" */, FONT_Small,  TEXTFLAG_CentreY,							NULL,						&MENU_NEW_ValidPickups, MenuChange,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 149, 120, 156, 0,				LT_MENU_NEW_MoreMultiplayerOptions20 /* "randomize pickups"      */, FONT_Small,  TEXTFLAG_CentreY,							&RandomPickups,				NULL,					SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10,  22, 120,  29, 0,				LT_MENU_NEW_MoreMultiplayerOptions1  /* "collision perspective"  */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			NULL,					SelectColFlatMenuToggle,	DrawColFlatMenuToggle,	NULL, 0 } ,
+		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			ShortPacketsSelected,	SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  51, 100,  58, 0,				LT_MENU_NEW_MoreMultiplayerOptions3  /* "packet grouping"        */, FONT_Small,  TEXTFLAG_CentreY,							&BigPackets,				BigPacketsSelected,		SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,  65, 100,  72, 0,				LT_MENU_NEW_MoreMultiplayerOptions5  /* "show ping"              */, FONT_Small,  TEXTFLAG_CentreY,							&ShowPing,					NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  72, 100,  79, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions6  /* "ping interval"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PingFreqSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,  79, 100,  86, 0,				"Reset Kills"                        /* "Reset Kills"            */, FONT_Small,  TEXTFLAG_CentreY,							&ResetKillsPerLevel,		NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 107, 100, 114, 0,				LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small,  TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 114, 120, 121, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 121, 120, 128, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 128, 120, 135, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 135, 100, 142, 0,				LT_MENU_NEW_MoreMultiplayerOptions14 /* "record demo"            */, FONT_Small,  TEXTFLAG_CentreY,							&RecordDemo,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 142, 180, 149, 0,				LT_MENU_NEW_MoreMultiplayerOptions19 /* "change allowed pickups" */, FONT_Small,  TEXTFLAG_CentreY,							NULL,						&MENU_NEW_ValidPickups, MenuChange,					DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10, 149, 120, 156, 0,				LT_MENU_NEW_MoreMultiplayerOptions20 /* "randomize pickups"      */, FONT_Small,  TEXTFLAG_CentreY,							&RandomPickups,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 
-		{ 10, 156, 120, 162, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21 /* "num primary weapons"	 */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&NumPrimaryPickupsSlider,	NULL,					SelectSlider,			DrawFlatMenuSlider, NULL, 0 } ,
+		{ 10, 156, 120, 162, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21 /* "num primary weapons"	 */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&NumPrimaryPickupsSlider,	NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -3535,6 +3538,8 @@ int OldMenuStatus;
 
 char *ToggleStatusOn = LT_ToggleStatusOn;
 char *ToggleStatusOff = LT_ToggleStatusOff;
+char *ToggleStatusShooter = LT_ToggleStatusShooter;	// collision perspective
+char *ToggleStatusTarget = LT_ToggleStatusTarget;
 char *RadioBtnSelected = "*";
 char *RadioBtnNotSelected = "";
 char *EmptyString = "";
@@ -13637,6 +13642,37 @@ TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item )
 	return TextInfo;
 }
 
+TEXTINFO * DrawColFlatToggleStatus( MENUITEM *Item )
+{
+	TEXTINFO *TextInfo;
+	char *status;
+
+	if ( *(BOOL *)(Item->Variable ) )
+	{
+		status = ToggleStatusShooter;
+	}
+	else
+	{
+		status = ToggleStatusTarget;
+	}
+		
+	//write relevent info into structure
+	TextInfo = Item->TextInfo[1];
+
+	TextInfo->text = status;
+	TextInfo->xmin = Item->xmax + 5;
+	TextInfo->ymin = Item->y;
+	TextInfo->xmax = Item->xmax + 45;
+	TextInfo->ymax = Item->ymax;
+	TextInfo->font = Item->font;
+	TextInfo->flags = Item->highlightflags;
+
+	//format text item...
+	PrintTextItem(TextInfo);
+
+	return TextInfo;
+}
+
 void SelectFlatRadioButton( MENUITEM *Item )
 {
 	MENUITEM *TempItem;
@@ -13658,6 +13694,16 @@ void SelectFlatMenuToggle( MENUITEM *Item )
 	{
 		SelectToggle(Item);
 		DrawFlatToggleStatus(Item);
+	}
+	
+}
+
+void SelectColFlatMenuToggle( MENUITEM *Item )
+{
+	if (VDU_Ready)
+	{
+		SelectToggle(Item);
+		DrawColFlatToggleStatus(Item);
 	}
 	
 }
@@ -13691,6 +13737,21 @@ void DrawFlatMenuToggle( MENUITEM *Item )
 
 	//add to text stack...
 	AddToTextStack( DrawFlatToggleStatus(Item) );
+
+}
+
+void DrawColFlatMenuToggle( MENUITEM *Item )
+{
+	// draw text in textinfo 0
+	DrawFlatMenuItem(Item);
+
+	//allocate space for toggle status
+	Item->TextInfo[1] = InitTextInfo();
+
+	Item->numtextitems++;
+
+	//add to text stack...
+	AddToTextStack( DrawColFlatToggleStatus(Item) );
 
 }
 
@@ -19334,17 +19395,17 @@ void UpdateSessionInfo( LIST *List )
 	switch( ( session->dwUser3 & CollisionTypeBits ) >> Collision_Type_BitShift )
 	{
 	case COLPERS_Forsaken:
-		pCh = LT_ToggleOn/*on*/;
+		pCh = LT_ToggleShooter/*shooter*/;
 		break;
 	case COLPERS_Descent:
-		pCh = LT_ToggleOff/*off*/;
+		pCh = LT_ToggleTarget/*target*/;
 		break;
 	case COLPERS_Server:
 		pCh = LT_Server/*server*/;
 		break;
 	}
 
-	_snprintf( Session_Info_LagTolerance, sizeof( Session_Info_LagTolerance ),LT_Extra8/*"lag tolerance: %s"*/, pCh );
+	_snprintf( Session_Info_LagTolerance, sizeof( Session_Info_LagTolerance ),LT_Extra8/*"collision perspective: %s"*/, pCh );
 
 	// shuffle up extra values...
 	current_y = SESSIONJOIN_EXTRAS_TOP_Y;
