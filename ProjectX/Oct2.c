@@ -6926,7 +6926,7 @@ BOOL ScoreDisplay()
 {
 	int active_players;	// number of active players currently in the game
 	BOOL DetailedStats; // TRUE = Detailed Stats, FALSE = Basic Stats
-	BOOL KillsBased;	// TRUE = Kills Based game (e.g. FFA), FLASE = Object Based game (e.g. CTF)
+	BOOL KillsBased;	// TRUE = Kills Based game (e.g. FFA), FALSE = Objective Based game (e.g. CTF)
 	 
 	// find how many active players there are
 	active_players = 0;
@@ -7023,6 +7023,10 @@ void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BO
 			if( ddrval != DDERR_WASSTILLDRAWING )
 			  break;
 		}
+
+
+		// display how to exit stats screen for dorks who don't know how (i.e. Deadly_Methods lol)
+		CenterPrint4x5Text( "Press Space to continue" , d3dappi.szClient.cy - (FontHeight*2) , 0 );	
 
 		scaler = 1+NumActivePlayers; // adjust positioning based on number of active players
 
