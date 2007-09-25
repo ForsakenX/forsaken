@@ -158,7 +158,6 @@ char *TeamName[];
 extern int	AllowedBike[ ALLOWED_BIKETYPES ];
 extern int32 ColPerspective;
 extern BOOL Panel;
-extern BOOL PreAttractModePanel;
 
 extern BOOL	BrightShips;
 extern BOOL	BikeExhausts;
@@ -470,7 +469,6 @@ extern	uint16	RandomStartPosModify;
 BOOL	ChAngleevel( void );
 void	DebugPrintf( const char * format, ... );
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
-void ShowSplashScreen( int num );
 //void CheckServerDeathTimes( void );
 
 MATRIX	TempMatrix = {
@@ -2348,7 +2346,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 	}else{
 		// Some messages should be ignored when im not in normal multiplayer mode
-		if( MyGameStatus != STATUS_Normal && !( MyGameStatus == STATUS_PlayingDemo || MyGameStatus == STATUS_AttractMode || MyGameStatus == STATUS_SplashScreen) )
+		if(
+			MyGameStatus != STATUS_Normal &&
+			MyGameStatus != STATUS_PlayingDemo
+		)
 		{
 			switch (*MsgPnt)
 			{
@@ -5663,9 +5664,6 @@ void DemoPlayingDplayGameUpdate()
 			}
 		}else{
 			size = fread( &DemoTimeSoFar , sizeof(LONGLONG), 1, DemoFp );
-//			if( (MyGameStatus == STATUS_PlayingDemo ) && ( ( ( GameElapsedTime * 1000.0F ) / Freq ) >= (1000.0F * 60.0F * 1.0F ) ) )
-			if( (MyGameStatus == STATUS_AttractMode ) && ( ( ( GameElapsedTime * 1000.0F ) / Freq ) >= (1000.0F * 60.0F * 5.0F ) ) )
-				size = 0;
 			if( size != 1 || ferror(DemoFp) || feof(DemoFp) ) 
 			{
 				PreDemoEndMyGameStatus = MyGameStatus;

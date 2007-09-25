@@ -80,9 +80,7 @@
 #include  "restart.h"
 #include "Local.h"
 #include  "goal.h"
-#include  "splash.h"
 #include  "LoadSave.h"
-#include  "Credits.h"
 #include  "XMem.h"
 #include "dpthread.h"
 

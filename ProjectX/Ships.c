@@ -1421,7 +1421,11 @@ BOOL ProcessShips()
 					StartPos = ShipObjPnt->Pos;
 					if( ShipObjPnt->Mode != LIMBO_MODE )
 					{
-						if( ( ( MyGameStatus == STATUS_SplashScreen ) || ( MyGameStatus == STATUS_PlayingDemo ) || ( MyGameStatus == STATUS_AttractMode ) ) && ShipPnt->DemoInterpolate && (ShipObjPnt->Mode != GAMEOVER_MODE) )
+						if( 
+							(MyGameStatus == STATUS_PlayingDemo) &&
+							ShipPnt->DemoInterpolate &&
+							(ShipObjPnt->Mode != GAMEOVER_MODE) 
+						)
 						{
 							TempTime = ShipPnt->NextTime - ShipPnt->OldTime;
 							TempTime2 = GameElapsedTime - ShipPnt->OldTime;

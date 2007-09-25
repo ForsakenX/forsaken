@@ -29,8 +29,6 @@
 
 #define LT_MENU_NEW_GeneralLoading0 "caricamento..."
 
-#define LT_MENU_NEW_StartAttractMode0 "caricamento..."
-
 #define LT_MENU_NEW_HostWaitingToStart0 "in attesa di cominciare..." 
 #define LT_MENU_NEW_HostWaitingToStart1 "inizia" 
 #define LT_MENU_NEW_HostWaitingToStart2 "IP:" 

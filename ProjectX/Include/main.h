@@ -7,9 +7,7 @@
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Game Status Defines...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#define STATUS_PlayingAVI					0x01	// Playing AVI
 #define	STATUS_Title						0x02	// On the Title Screen...
-#define	STATUS_Copyright					0x03	// On the Copyright Screen...
 #define	STATUS_StartingMultiplayer			0x04	// On the Multiplayer Starting Screen...
 #define	STATUS_PreStartingMultiplayerSynch	0x05	// Waiting for everyone to have loaded the right level and be ready
 #define	STATUS_StartingMultiplayerSynch		0x06	// Waiting for everyone to have loaded the right level and be ready
@@ -27,8 +25,6 @@
 #define	STATUS_Left							0x10	// I have left your game...
 #define	STATUS_ChangeLevelPostInitView		0x11	// after a change level init view
 #define	STATUS_ChangeLevelPostPlayingDemo	0x12	// after a change level Playing Demo...
-#define	STATUS_ChangeLevelPostAttractMode	0x13	// after a change level Attract Mode...
-#define	STATUS_AttractMode					0x14	// Playing Back a Demo In Attract Mode...
 											
 #define	STATUS_StartingSinglePlayer			0x20	// Starting Single Player in game...
 #define	STATUS_PostStartingSinglePlayer		0x21	// Starting Single Player in game after the level has been loaded...
@@ -51,12 +47,7 @@
 #define STATUS_WaitingForLobbyConnect			0x37	// waiting for host to select game info in lobby launched game
 #define STATUS_QuittingFromInGame				0x38	// quitting completely after stats ( ie. when playing lobby launched game )
 
-#define	STATUS_SplashScreen					0x40	// showing splash screen or AVI...
-#define STATUS_FinishedShowingSplashScreen	0x41	// finished showing current splash screen;
-
-
 #define	STATUS_DisabledByServer				0x50	// Disabled by the Server
-
 
 #define	STATUS_InitView_0					0x80	// 0 of Preping for a level..
 #define	STATUS_InitView_1					0x81	// 1 of Preping for a level..
@@ -77,6 +68,7 @@
 #define	STATUS_LeftCrashed					0xfe	// I have left and crashed...
 #define	STATUS_Null							0xff	// Im not doing anything yet...
 #define STATUS_TryingToFindSession			0xf9
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	MultiPlayer Bit Defines...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -101,10 +93,8 @@ dwUser3
 #define CTF_TypeMask				0xe00000 // bits 21-23
 #define CurrentGameTimeBits			0x1f000000 // bits 24-28 ( 0 to 30 mins )
 #define CurrentGameTime_Shift		0x18
-
 #define ResetKillsPerLevelBit		0x20000000 // bit 29
 #define CollisionTypeBits			0xC0000000 // bits 30 & 31
-
 #define Collision_Type_BitShift		0x1e		
 
 #define CTF_Type_BitShift			0x15

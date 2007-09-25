@@ -59,8 +59,6 @@ extern float PseudoHostAck_Timeout;
 #define ERROR_QUIT					2
 #define ERROR_OVERIDE_LOBBY_QUIT	4
 
-#define ATTRACTMODECOUNTVALUE ( 60.0F * 60.0F )
-
 #define	DIFF_Easy 0
 #define	DIFF_Norm 1
 #define	DIFF_Hard 2
@@ -487,7 +485,6 @@ extern MENU * CurrentMenu;
 extern MENUITEM * CurrentMenuItem;
 extern MENU MENU_ForceAbort;
 extern MENU MENU_Start;
-extern MENU MENU_Copyright;
 extern MENU MENU_InGame;
 extern MENU MENU_Help;
 extern MENU	MENU_DebugHelp;
@@ -588,7 +585,6 @@ void SetLastGameInfo( void );
 void MenuGoFullScreen( MENUITEM *Item );
 void MenuSelectMode( MENU *Menu );
 void MakeModeList( MENU *Menu );
-void ChangeStatus_Title ( MENUITEM * Item );
 BOOL LoadTitleModels(void);
 void VduClear ( void );
 void UpdateSessions ( int *dummy );

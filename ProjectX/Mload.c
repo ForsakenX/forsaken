@@ -92,7 +92,6 @@ num_start_points : uint16
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 #include "typedefs.h"
 #include "main.h"
-#include "splash.h"
 #include <stdio.h>
 #include "typedefs.h"
 #include <dplay.h>

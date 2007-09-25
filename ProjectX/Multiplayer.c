@@ -93,10 +93,8 @@ extern char *DemoFileName( char *demoname );
 extern char *DemoName( char *demofilename );
 extern void SetMultiplayerPrefs( void );
 
-extern BOOL LimitedLoad;
 extern LIST	MySessionsList;
 extern BOOL	Panel;
-extern BOOL PreAttractModePanel;
 extern	BOOL	RecordDemoToRam;
 
 extern MENUITEM TeamGameHostMenuItem;
@@ -2299,121 +2297,6 @@ void StartDemoCleaning( MENUITEM * Item )
 		MenuExit();
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	We Are About to Start a Demo Playback In Attract Mode...
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-// demo playback as splash screen...
-BOOL StartSplashDemo( char *demofile, char *levels )
-{
-	char buf[256];
-	int i;
-	char *old_levels_list;
-	uint32 mp_version;
-	uint32 flags;
-	uint32 PackedInfo[ MAX_PICKUPFLAGS ];
-
-	RestoreDemoSettings();
-
-	TeamGame = FALSE;
-	CountDownOn = FALSE;
-	IsServer = FALSE;
-	IsServerGame = FALSE;
-
-
-	old_levels_list = CurrentLevelsList;
-
-	if ( !InitLevels( levels ) )
-	{
-		//Msg( "No splash levels" );
-		return FALSE;
-	}
-
-	LevelNum = -1;
-	NewLevelNum = -1;
-
-	CurrentLevelsList = old_levels_list;	// CurrentLevelsList was changed by InitLevels
-
-	for ( i = 0; i < MAX_PLAYERS; i++ )
-		DemoShipInit[ i ] = FALSE;
-	DemoShipInit[ MAX_PLAYERS ] = TRUE;
-	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
-	
-	// Choose the appropriate demo...
-	DemoFp = fopen( demofile , "rb" );
-	if ( !DemoFp )
-	{
-		return FALSE;
-	}
-
-//	setvbuf( DemoFp, NULL, _IOFBF , 32768 );		// size of stream buffer...
-	setvbuf( DemoFp, NULL, _IONBF , 0 );		// size of stream buffer...
-
-	fread( &mp_version, sizeof( mp_version ), 1, DemoFp );
-	if ( (mp_version > MULTIPLAYER_VERSION) || (mp_version < DEMO_MULTIPLAYER_VERSION) )
-	{
-		return FALSE;
-	}
-
-	fread( &CopyOfSeed1, sizeof( CopyOfSeed1 ), 1, DemoFp );
-	fread( &CopyOfSeed2, sizeof( CopyOfSeed2 ), 1, DemoFp );
-	fread( &RandomPickups, sizeof( RandomPickups ), 1, DemoFp );
-	fread( &PackedInfo[ 0 ], sizeof( PackedInfo ), 1, DemoFp );
-	UnpackPickupInfo( &PackedInfo[ 0 ] );
-
-	fread( &flags, sizeof( flags ), 1, DemoFp );
-	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	BombTag = ( flags & BombGameBit ) ? TRUE : FALSE;
-	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
-	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
-	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
-
-	fread( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFp );
-
-	for( i = 0 ; i < 256 ; i++ )
-	{
-		fread( &buf[i], sizeof(char), 1, DemoFp );
-		if( buf[i] == 0 )
-		{
-			break;
-		}
-	}
-	
-    for (i = 0; i < NumLevels; i++)
-	{
-
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
-		{
-			NewLevelNum = i;
-			break;
-		}
-    }
-	
-	if( ( NewLevelNum == -1 ) || ( i == 256 ) )
-	{
-		fclose( DemoFp );
-		return FALSE;
-	}
-	CurrentMenu = NULL;
-	CurrentMenuItem = NULL;
-	MenuStackLevel = 0;
-
-	PlayDemo = TRUE;
- 
-	MyGameStatus = STATUS_ChangeLevelPostAttractMode;
-	WhoIAm = MAX_PLAYERS;
-	
-//	RandomStartPosModify = 0;
-	SetupDplayGame();
-	ChangeLevel();
-
-	PreAttractModePanel = Panel;
-	Panel = FALSE;
-
-	return TRUE;
-}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Starting a Single Player Game...

@@ -72,7 +72,6 @@ extern	int16			PickupsGot[ MAXPICKUPTYPES ];
 extern	int16			BikeModels[ MAXBIKETYPES ];
 extern	MODELNAME	*	ModNames;
 extern	TLOADHEADER		Tloadheader;
-extern	BOOL LimitedLoad;
 extern	SECONDARYWEAPONBULLET *	SecBullGroups[ MAXGROUPS ];
 
 void DebugPrintf( const char * format, ... );
@@ -1028,17 +1027,8 @@ BOOL PreLoadBGOFiles( void )
 
 	AddCommentToBat( "BGObjects" );
 
-	if ( LimitedLoad )
-	{
-		ModNames = &SplashModelNames[ 0 ];
-		BaseModel = 0;
-	}
-	else
-	{
-		ModNames = &ModelNames[ 0 ];
-		BaseModel = NextNewModel;
-	}
-
+	ModNames = &ModelNames[ 0 ];
+	BaseModel = NextNewModel;
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &TempFilename[ 0 ], NewExt );
 

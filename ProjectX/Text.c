@@ -72,7 +72,6 @@ extern	int16			NewLevelNum;
 extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 extern	LONGLONG	LargeTime;
-extern BOOL InSplashDemo;
 extern	BOOL IsServerGame;
 extern	BOOL IsServer;
 
@@ -304,9 +303,6 @@ int Print4x5Text( char * Text , int x , int y , int col )
 	uint8 r , g , b;
     DDBLTFX fx;
 	BOOL ignore;
-
-	if ( InSplashDemo )
-		return x;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
 		return PermX;
@@ -1104,12 +1100,10 @@ void InitPolyText( void )
 
 	PolyText[STATUS_Title]					= TRUE;
 	PolyText[STATUS_BetweenLevels]			= TRUE;
-//	PolyText[STATUS_Copyright]				= TRUE;					
 	PolyText[STATUS_StartingMultiplayer]	= TRUE;			
 
 	PolyText[STATUS_PlayingDemo]			= TRUE;
-	PolyText[STATUS_Normal]					= TRUE;
-	PolyText[STATUS_AttractMode]			= TRUE;					
+	PolyText[STATUS_Normal]					= TRUE;					
 	PolyText[STATUS_SinglePlayer]			= TRUE;					
 
 	//PolyText[STATUS_ViewingScore]			= TRUE;					
@@ -2073,9 +2067,7 @@ void FillStatusTab( void )
 		StatusTab[i] = "No Status Defined";
 	}
 
-    StatusTab[STATUS_PlayingAVI                           ] = "PlayingAVI   ";
     StatusTab[STATUS_Title                                ] = "Title        ";
-    StatusTab[STATUS_Copyright                            ] = "Copyright    ";
     StatusTab[STATUS_StartingMultiplayer                  ] = "Preping      ";
     StatusTab[STATUS_PreStartingMultiplayerSynch          ] = "Preping      ";
     StatusTab[STATUS_StartingMultiplayerSynch             ] = "Ready        ";
@@ -2091,8 +2083,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_Left                                 ] = "Left         ";
     StatusTab[STATUS_ChangeLevelPostInitView              ] = "Preping      ";
     StatusTab[STATUS_ChangeLevelPostPlayingDemo           ] = "Preping      ";
-    StatusTab[STATUS_ChangeLevelPostAttractMode           ] = "Preping      ";
-    StatusTab[STATUS_AttractMode                          ] = "AttractMode  ";
     StatusTab[STATUS_StartingSinglePlayer                 ] = "StartingSingl";
     StatusTab[STATUS_PostStartingSinglePlayer             ] = "PostStartingS";
     StatusTab[STATUS_SinglePlayer                         ] = "SinglePlayer ";
@@ -2110,8 +2100,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_WaitingToStartEndGameSequence        ] = "WaitingToStar";
     StatusTab[STATUS_WaitingForLobbyConnect               ] = "WaitingForLob";
     StatusTab[STATUS_QuittingFromInGame                   ] = "Quiting      ";
-    StatusTab[STATUS_SplashScreen                         ] = "SplashScreen ";
-    StatusTab[STATUS_FinishedShowingSplashScreen          ] = "FinishedShowi";
     StatusTab[STATUS_InitView_0                           ] = "Loading 1/10 ";
     StatusTab[STATUS_InitView_1                           ] = "Loading 2/10 ";
     StatusTab[STATUS_InitView_2                           ] = "Loading 3/10 ";
@@ -2132,7 +2120,6 @@ void FillStatusTab( void )
 #if 0
     StatusTab[STATUS_PlayingAVI                           ] = "PlayingAVI                 ";
     StatusTab[STATUS_Title                                ] = "Title                      ";
-    StatusTab[STATUS_Copyright                            ] = "Copyright                  ";
     StatusTab[STATUS_StartingMultiplayer                  ] = "StartingMultiplayer        ";
     StatusTab[STATUS_PreStartingMultiplayerSynch          ] = "PreStartingMultiplayerSy...";
     StatusTab[STATUS_StartingMultiplayerSynch             ] = "StartingMultiplayerSynch   ";
@@ -2148,8 +2135,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_Left                                 ] = "Left                       ";
     StatusTab[STATUS_ChangeLevelPostInitView              ] = "ChangeLevelPostInitView    ";
     StatusTab[STATUS_ChangeLevelPostPlayingDemo           ] = "ChangeLevelPostPlayingDe...";
-    StatusTab[STATUS_ChangeLevelPostAttractMode           ] = "ChangeLevelPostAttractMo...";
-    StatusTab[STATUS_AttractMode                          ] = "AttractMode                ";
     StatusTab[STATUS_StartingSinglePlayer                 ] = "StartingSinglePlayer       ";
     StatusTab[STATUS_PostStartingSinglePlayer             ] = "PostStartingSinglePlayer   ";
     StatusTab[STATUS_SinglePlayer                         ] = "SinglePlayer               ";
@@ -2167,8 +2152,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_WaitingToStartEndGameSequence        ] = "WaitingToStartEndGameSeq...";
     StatusTab[STATUS_WaitingForLobbyConnect               ] = "WaitingForLobbyConnect     ";
     StatusTab[STATUS_QuittingFromInGame                   ] = "QuittingFromInGame         ";
-    StatusTab[STATUS_SplashScreen                         ] = "SplashScreen               ";
-    StatusTab[STATUS_FinishedShowingSplashScreen          ] = "FinishedShowingSplashScr...";
     StatusTab[STATUS_InitView_0                           ] = "InitView_0                 ";
     StatusTab[STATUS_InitView_1                           ] = "InitView_1                 ";
     StatusTab[STATUS_InitView_2                           ] = "InitView_2                 ";

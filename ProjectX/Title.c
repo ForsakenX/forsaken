@@ -42,7 +42,6 @@
 #include "Local.h"
 #include "lines.h"
 #include "loadsave.h"
-#include "splash.h"
 #include "magic.h"
 #include "dpthread.h"
 #include "XMem.h"
@@ -173,7 +172,6 @@ extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
-extern uint16 CurrentAttractDemo;
 extern LPDPLCONNECTION glpdplConnection;
 extern BOOL UseShortPackets;
 extern BOOL ResetKillsPerLevel;
@@ -292,7 +290,6 @@ int16	SelectedBike = 0; //MODEL_Borg;
 int16	NumTitleModelsToLoad;
 float TriggerInitialAnimation = 0.0F;
 BOOL	Our_CalculateFrameRate(void);
-float	AttractModeCountDown;
 extern	uint16			FirstFmPolyUsed;
 extern	uint16			FirstPolyUsed;
 extern	uint16			FirstLineUsed;
@@ -354,7 +351,6 @@ extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	RandomPickups;
-extern	BOOL CreditsToggle;
 //SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 #ifdef SOFTWARE_ENABLE
@@ -472,7 +468,6 @@ void LoadLevelText( MENU *Menu );
 BOOL InitDInput(void);
 BOOL TermDInput( void );
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );
-void ShowSplashScreen( int num );
 void BigPacketsSelected( MENUITEM *Item );
 void ShortPacketsSelected( MENUITEM *Item );
 void ToggleBikeEngines( MENUITEM *Item );
@@ -647,7 +642,6 @@ void DrawPrimaryWeapons( MENUITEM *Item );
 void GetBikeDetails(int Bike, MENUITEM *item);
 void SelectFlatMenutext( MENUITEM *Item );
 void SendTitleMessage(MENUITEM *Item);
-void InitAttractMode( MENU *Menu );
 void PrepareNextLevelStart( MENU *Menu );
 void HostAboutToStart( MENUITEM *Item );
 void PseudoHostAboutToStart( MENUITEM *Item );
@@ -1290,16 +1284,6 @@ MENU	MENU_NEW_GeneralLoading = {
 	"", NULL, NULL, NULL, 0,
 	{
 		{ 0, 0, 200, 150, 0, LT_MENU_NEW_GeneralLoading0/*loading..."*/, FONT_Medium, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-
-MENU	MENU_NEW_StartAttractMode = {
-	"", InitAttractMode, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 150, 0, LT_MENU_NEW_StartAttractMode0/*loading..."*/, FONT_Medium, TEXTFLAG_BottomY | TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -3159,10 +3143,6 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
 
-MENU	MENU_Copyright = { "" , NULL, NULL , NULL, 0,
-						{OLDMENUITEM( 280 , 384, "Press enter", NULL, &MENU_Start , ChangeStatus_Title , MenuItemDrawName) ,
-					     {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
-
 MENU	MENU_ForceAbort = {
 	"Sorry Directplay has forced you to quit due to 1 of its bugs" , NULL , NULL , NULL, 0,
 	{
@@ -3289,77 +3269,6 @@ char *BikerText[MAXBIKETYPES] =
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-#if 0
-char	TitleNames[8][64] ={	
-						   { "data\\pictures\\T320X200.bmp" } ,
-						   { "data\\pictures\\T320X240.bmp" } ,
-						   { "data\\pictures\\T320X400.bmp" } ,
-						   { "data\\pictures\\T512X384.bmp" } ,
-						   { "data\\pictures\\T640X400.bmp" } ,
-						   { "data\\pictures\\T640X480.bmp" } ,
-						   { "data\\pictures\\T800X600.bmp" } ,
-						   { "" }
-};
-#endif
-char	TitleNames[8][64] ={	
-						   { "data\\pictures\\Ti320200.bmp" } ,
-						   { "data\\pictures\\Ti320240.bmp" } ,
-						   { "data\\pictures\\Ti320400.bmp" } ,
-						   { "data\\pictures\\Ti512384.bmp" } ,
-						   { "data\\pictures\\Ti640400.bmp" } ,
-						   { "data\\pictures\\Ti640480.bmp" } ,
-						   { "data\\pictures\\Ti800600.bmp" } ,
-						   { "" }
-};
-
-char	CopyrightNames[8][64] ={	
-						   { "data\\pictures\\C320X200.bmp" } ,
-						   { "data\\pictures\\C320X240.bmp" } ,
-						   { "data\\pictures\\C320X400.bmp" } ,
-						   { "data\\pictures\\C512X384.bmp" } ,
-						   { "data\\pictures\\C640X400.bmp" } ,
-						   { "data\\pictures\\C640X480.bmp" } ,
-						   { "data\\pictures\\C800X600.bmp" } ,
-						   { "" }
-};
-
-#define NUMSPLASHSCREENS 2
-#define INITIAL_SPLASH_SCREEN 0
-
-char	SplashScreens[NUMSPLASHSCREENS][8][64] = {
-						{  { "data\\pictures\\le320200.bmp" } ,
-						   { "data\\pictures\\le320240.bmp" } ,
-						   { "data\\pictures\\le320400.bmp" } ,
-						   { "data\\pictures\\le512384.bmp" } ,
-						   { "data\\pictures\\le640400.bmp" } ,
-						   { "data\\pictures\\le640480.bmp" } ,
-						   { "data\\pictures\\le800600.bmp" } ,
-						   { "" },
-						},
-
-						{  { "data\\pictures\\Ti320200.bmp" } ,
-						   { "data\\pictures\\Ti320240.bmp" } ,
-						   { "data\\pictures\\Ti320400.bmp" } ,
-						   { "data\\pictures\\Ti512384.bmp" } ,
-						   { "data\\pictures\\Ti640400.bmp" } ,
-						   { "data\\pictures\\Ti640480.bmp" } ,
-						   { "data\\pictures\\Ti800600.bmp" } ,
-						   { "" }
-						},
-};
-
-#define SPLASH_FLAG_Timed		1
-#define SPLASH_FLAG_PressReturn	2
-
-#define FLAGS 0
-#define SECS  1
-
-int SplashInfo[NUMSPLASHSCREENS][2] = {
-	{ SPLASH_FLAG_Timed, 0 }, // flags, sec
-	{SPLASH_FLAG_PressReturn, 0 },
-};
-
-int CurrentSplashScreen = INITIAL_SPLASH_SCREEN;						
 
 #define MAXHIGHLIGHTITEMS 8
 #define HIGHLIGHT_Pulsing	0
@@ -5218,8 +5127,6 @@ BOOL DisplayTitle(void)
 
 		InitShipActionList();
 
-		AttractModeCountDown = ATTRACTMODECOUNTVALUE;
-
 		InitLevels( SINGLEPLAYER_LEVELS );
 		InitLevels( MULTIPLAYER_LEVELS );
 
@@ -5731,12 +5638,8 @@ Event handling
 				GetCurrentSessions_ReScan( NULL );
 			}
 		}
-  		if (MyGameStatus == STATUS_Copyright)
-		{
-			if (SplashInfo[CurrentSplashScreen][FLAGS] & SPLASH_FLAG_PressReturn)
-				MenuDraw( CurrentMenu );
-		}else
-			MenuDraw( CurrentMenu );
+
+		MenuDraw( CurrentMenu );
 
 		if (!WasteAFrame)
 		{
@@ -5747,12 +5650,11 @@ Event handling
 		{	NewMenuSelectMode(NULL);
 			WasteAFrame = FALSE;
 		}
-	}else{
-		if( MyGameStatus == STATUS_Copyright)
-			MenuRestart( &MENU_Copyright );
+	}
+	else
+	{
 		if( MyGameStatus == STATUS_Title )
-			MenuRestart( &MENU_Start );
-		
+			MenuRestart( &MENU_Start );	
 		SetFOV(START_FOV);
 	}
 
@@ -6332,9 +6234,6 @@ void MenuBack()
 		LastMenu = CurrentMenu;
 		CurrentMenu = MenuStack[ MenuStackLevel ];
 		CurrentMenuItem = MenuItemStack[ MenuStackLevel ];
-
-		if (CurrentMenu == &MENU_Copyright)
-			CameraStatus = CAMERA_AtStart;
 
 		if (CameraStatus == CAMERA_AtDiscs)
 			SetTextures(CurrentMenu);
@@ -8156,15 +8055,6 @@ void ProcessSelect( int Key )
 	/* should we process ? */
 	if (StackStatus != DISC_NOTHING)
 		return;
-
-	/* only allow these keys for copyright page */
-	/* this should probably get put somewhere else */
-	if (
-		 MyGameStatus == STATUS_Copyright &&
-		 (Key != DIK_RETURN || Key == DIK_LBUTTON )
-		)
-		return;
-
 	
 	/*********************\
 	|
@@ -8599,92 +8489,35 @@ void SetVolumeLevels( void )
 
 }
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Menu Process...
-	Input		:		Nothing
-	Output		:		Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+/***********************************************\
+|
+|  MenuProces()
+|
+|    Description: Processes keys for menus
+|
+\***********************************************/
 
 void	MenuProcess()
 {
 	DWORD Key;
 	BOOL KeyFound = FALSE;
 	uint16 i;
-//	char str[256];
 
-#if 0
-
-	DPlayGetSessionDesc(); 
-	if ( glpdpSD )
-	{
-		sprintf( str, "dw1 %x dw2 %x dw3 %x dw4 %x", glpdpSD->dwUser1, glpdpSD->dwUser2, glpdpSD->dwUser3, glpdpSD->dwUser4 );
-		Print4x5Text( str, 10, 10, 2 );
-		sprintf( str, "dwflags %x", glpdpSD->dwFlags );
-		Print4x5Text( str, 10, 20, 2 );
-		sprintf( str, "server state %d", ( glpdpSD->dwUser3 & ServerGameStateBits ) >> Server_State_BitShift );
-		Print4x5Text( str, 10, 30, 2 );
-		sprintf( str, "max players %d", ( glpdpSD->dwMaxPlayers ) );
-		Print4x5Text( str, 10, 40, 2 );
-	}
-
-	sprintf( str, "MyGameStatus %x", MyGameStatus );
-	Print4x5Text( str, 10, 50, 2 );
-
-	for ( i = 0; i < MAX_PLAYERS; i++ )
-	{
-		sprintf( str, "player %d status %x", i, GameStatus[ i ] );
-		Print4x5Text( str, 10, 60 + ( i * FontHeight ), 2 );
-	}
-
-#endif
-
+	// print text to screen
 	CenterPrint4x5Text( "Open Source Edition", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
-	//sprintf( str, "ColPerspective %d", ColPerspective );
-	//CenterPrint4x5Text( str, d3dapp->szClient.cy - FontHeight * 4, 2 );
-
-	if ( CameraStatus == CAMERA_AtDiscs && CurrentMenu == &MENU_Start )
-	{
-		AttractModeCountDown -= framelag;
-		if ( AttractModeCountDown < 0.0F )
-		{
-			CreditsToggle = !CreditsToggle;
-			AttractModeCountDown = ATTRACTMODECOUNTVALUE;
-			
-			if ( !CreditsToggle )
-			{
-				InitDemoList( NULL );
-				if ( DemoList.items )
-				{
-					CurrentAttractDemo++;
-					if ( CurrentAttractDemo >= DemoList.items )
-					{
-						CurrentAttractDemo = 0;
-					}
-					MenuChangeEx( &MENU_NEW_StartAttractMode );
-				}
-			}else
-			{
-				MenuChangeEx( &MENU_NEW_StartAttractMode );
-			}
-		}
-	}else
-	{
-		AttractModeCountDown = ATTRACTMODECOUNTVALUE;
-	}
-
+	// ??
 	Pulse += framelag/60.0F;
 	if (Pulse > 1.0F)
 		Pulse -= (float)floor((double)Pulse);
 
+	// if we are not in a menu
 	if ( !CurrentMenu || !CurrentMenuItem )
-	{
+
+		// dont process any keys
 		return;
-	}
 
-	//DebugPrintf("Current Menu %s\n",CurrentMenu->Name);
-
-	// read keys into a buffer
+	// read keyboard buffer
 	ReadBufferedKeyboard();
 
 	// loop over the keys in the buffer
@@ -8699,22 +8532,14 @@ void	MenuProcess()
 		// so that any auto selection is done before any keys are processed
 		if ( !i ) Key = 0;
 		
-		// force last key to be whatever mouse input was ( for key defs )
+		// first special operation
+		// set key equal to whatever last mouse input was
 		if ( i == NumKeysToProcess + 1 )
 			Key = CheckMouse();
 		 
-		// extract the current key from buffer
+		// get a handle on the current key from globals
 		if ( ( i > 0 ) && ( i <= NumKeysToProcess ) )
 			Key = BufferedKey[ i - 1 ];
-
-		// if were at the copy right screen
-		if (Key && (CurrentMenu == &MENU_Copyright))
-			// escape will quite
-	 		if ( Key == DIK_ESCAPE )
-				SelectQuit( NULL );
-		    // other wise any other key becomes RETURN
-			else
-				Key = DIK_RETURN;
 
 		// check to see if we have entered a cheat code
 		// this is called every time in the loop
@@ -8727,22 +8552,17 @@ void	MenuProcess()
 
 		// if the menu is frozen
 		if (MenuFrozen)
-			// if key is not RETURN or ESCAPE quit
+			// if key is not RETURN or ESCAPE
 			if ( ! ((Key == DIK_RETURN) || (Key == DIK_ESCAPE)))
+				// quit
 				return;
 		    // 
 			else
 				MenuFrozen = FALSE;
 
-
-		// pressing any key resets attract mode timer
-		if ( Key )
-			AttractModeCountDown = ATTRACTMODECOUNTVALUE;
-
-		//  Are we in a title room ?
+		//  set global to define if we are in a title room
 		switch ( MyGameStatus )
 		{
-			// in title room...
 			case	STATUS_StartingMultiplayer:
 			case	STATUS_GetPlayerNum:
 			case	STATUS_Title:
@@ -8754,7 +8574,8 @@ void	MenuProcess()
 				InTitleRoom = FALSE;
 		}
 
-		//
+		// if someone told us not to process keys
+		// then default key to 0
 		if ( !OKToProcessKeys )
 			Key = 0;
 
@@ -10550,11 +10371,13 @@ void InitBikerName( char *name )
 }
 
 
-/************************************\
+/********************************************\
 |
 |  Sets up the default selected pilot
+|    Looks in registry for last used biker.
+|    Then looks for first cfg file found.
 |
-\************************************/
+\********************************************/
 
 
 void GetDefaultPilot(void)
@@ -10815,14 +10638,7 @@ void SelectQuit( MENUITEM *Item )
 {
 	SetGamePrefs();
 	MyGameStatus = STATUS_QuittingFromTitles;
-	//MenuExit();
 	MenuAbort();
-	ShowSplashScreen( SPLASHSCREEN_Quitting );
-/*	
-	SetGamePrefs();
-	quitting = TRUE;
-	MenuExit();
-*/
 }
 
 
@@ -11846,31 +11662,6 @@ void NewMenuTextureMode( MENU *Menu )
 		DarkenRoom2(RoomDarkness);
 	}
 }
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		finished viewing the copyright screen ...
-	Input		:		Nothing
-	Output		:		Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void ChangeStatus_Title ( MENUITEM * Item )
-{
-	ReleaseView();
-	MyGameStatus = STATUS_Title;
-
-	//MenuChange( Item );
-	MenuRestart( &MENU_Start );
-	CurrentSplashScreen = INITIAL_SPLASH_SCREEN;
-	if (!InitView())
-	{
-       Msg("InitView failed.\n");
-	   exit(1);
-	}
-
-	//set initial texture frames for discs
-	//SetTextures(&MENU_NEW_Start);
-
-}
-
 
 void InitDebugMenu( MENU *Menu )
 {
@@ -18309,11 +18100,6 @@ void InitSelectedLevelText( MENU *Menu )
 //	strcpy( SelectedLevelText, MissionBriefing[ CurrentLevel ] );
 }
 
-void InitAttractMode( MENU *Menu )
-{
-	MyGameStatus = STATUS_WaitingToStartDemo;
-}
-
 void PrepareNextLevelStart( MENU *Menu )
 {
 	LoadLevelText( NULL );
@@ -19229,9 +19015,6 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_GeneralLoading\n");
 	GetFormatInfo ( &MENU_NEW_GeneralLoading );
-
-	DebugPrintf("MENU_NEW_StartAttractMode\n");
-	GetFormatInfo ( &MENU_NEW_StartAttractMode );
 
 	DebugPrintf("MENU_NEW_HostWaitingToStart\n");
 	GetFormatInfo ( &MENU_NEW_HostWaitingToStart );

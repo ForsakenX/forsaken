@@ -54,8 +54,7 @@ extern "C" {
 #include	"Exechand.h" 
 #include	"DDSurfhand.h" 
 #include	"SBufferHand.h"
-#include	"file.h" 
-#include	"splash.h"
+#include	"file.h"
 #include	"XMem.h" 
 #include	"d3dapp.h"
 
@@ -70,7 +69,6 @@ extern "C" {
 
 	extern LONGLONG  LargeTime;
 	extern LONGLONG  LastTime;
-	extern void SetupCharTransTable( void );
 	extern void InitValidPickups();
 	extern void InitPolyText( void );
 	extern BOOL InitDInput(void);
@@ -118,7 +116,6 @@ extern "C" {
 	extern	BOOL	UseSendAsync;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
-	extern BOOL NoAVI;
 	extern BOOL CanDoStrechBlt;
 
 	extern BOOL RecordDemoToRam;
@@ -160,7 +157,6 @@ extern "C" {
 	void MovieStop (HWND);
 	void MoviePlay (HWND hwnd);
 	void AviFinished( void );
-	void ShowSplashScreen( int num );
 	void RemoveDynamicSfx( void );
 	void FillStatusTab( void );
 
@@ -495,10 +491,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// create the valid pickups global
 	InitValidPickups();
 
-	// character translation table
-	SetupCharTransTable();
-
-
 #ifdef SCROLLING_MESSAGES
 
 	// scrolling messages
@@ -746,11 +738,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
             RemoveDynamicSfx();
         } 
-
-		else if (!_stricmp(option, "NoAVI")) 
-		{
-            NoAVI = TRUE;
-		}
 
 		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
 		{
@@ -1120,20 +1107,11 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
      */
     *lplpViewport = lpD3DViewport;
 
-	// if showing splash screen, post-splash function is responsible for init view
-	if ( SplashOnceOnly && !NoSplash )
+	if (!InitView() )
 	{
-		SplashOnceOnly = FALSE;
-		ShowSplashScreen( SPLASHSCREEN_Legal );
-	}
-	else
-	{
-		if (!InitView() )
-		{
-		    Msg("InitView failed.\n");
-			CleanUpAndPostQuit();
-	        return FALSE;
-		}
+	    Msg("InitView failed.\n");
+		CleanUpAndPostQuit();
+        return FALSE;
 	}
 
     /*
@@ -1231,7 +1209,14 @@ static BOOL RenderLoop()
 
 		if( !myglobs.bQuit )
 		{
-			if (( !PlayDemo || !( MyGameStatus == STATUS_AttractMode || MyGameStatus == STATUS_PlayingDemo ) || DemoShipInit[ Current_Camera_View ] ) && !PreventFlips )
+			if (
+				(
+					!PlayDemo ||
+					( MyGameStatus != STATUS_PlayingDemo ) ||
+					DemoShipInit[ Current_Camera_View ]
+				) &&
+				!PreventFlips
+			)
 			{
 				if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
 				{

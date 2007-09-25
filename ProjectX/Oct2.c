@@ -84,9 +84,7 @@
 #include  "restart.h"
 #include "Local.h"
 #include  "goal.h"
-#include  "splash.h"
 #include  "LoadSave.h"
-#include  "Credits.h"
 #include  "XMem.h"
 #include "dpthread.h"
 
@@ -175,21 +173,6 @@ extern char*GetWeaponName(int WeaponType, int Weapon);							// Get weapon name
 extern int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon);		// get player's weapon kill statistics
 extern char* GetFavWeapon(int PlayerID, int WeaponType);						// get primary or secondary weapon with highest kills
 
-/********************
-splash externs
-*******************/
-extern NEWSPLASHSCREENS NewSplashScreens[];
-extern int NewCurrentSplashScreen;
-extern DWORD SplashFinishTime;
-extern DWORD SplashStartTime;
-extern BYTE PreSplash_MyGameStatus;
-extern MENU *PreSplash_Menu;
-extern MENUITEM *PreSplash_MenuItem;
-extern LPDIRECTDRAWSURFACE lpDDS_NewSplash;
-
-extern BOOL LimitedLoad;
-extern BOOL InSplashDemo;
-
 extern MODELNAME *TitleModelSet;
 extern float LevelTimeTaken;
 
@@ -212,7 +195,6 @@ extern MENU MENU_LoadSavedGame;
 extern MENU MENU_SaveGame;
 extern MENU MENU_NEW_BetweenLevels;
 extern MENU MENU_NEW_BetweenLevels;
-extern MENU MENU_NEW_StartAttractMode;
 extern MENU MENU_NEW_NumberOfCrystals;
 extern MENU MENU_NEW_WatchTeamSelect;
 
@@ -688,7 +670,6 @@ BOOL  ClearZBuffer();
 BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void FreeSfxHolder( int index ) ;
-void ShowSplashScreen( int num );
 void InitValidPickups();
 
 void  PlotSimplePanel( void );
@@ -715,7 +696,6 @@ BOOL  ReMakeSimplePanel = TRUE;
 BOOL  OldDrawPanel = TRUE;
 BOOL  DrawCrosshair = TRUE;
 BOOL  Panel = TRUE;
-BOOL PreAttractModePanel = TRUE;
 
 BOOL  UsedStippledAlpha = FALSE;
 BOOL  CanCullFlag = FALSE;
@@ -723,8 +703,6 @@ BOOL  CanCullFlag = FALSE;
 
 BOOL ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
-
-BOOL ForsakenAnyKey = FALSE;
 
 float pixel_aspect_ratio;
 float ticksperframe = 14.0F;  
@@ -2173,7 +2151,6 @@ ReleaseLevel(void)
 {
   switch( MyGameStatus )
   {
-  case  STATUS_Copyright:
   case  STATUS_Title:
   case  STATUS_BetweenLevels:
   case  STATUS_StartingSinglePlayer:
@@ -2245,7 +2222,6 @@ ReleaseScene(void)
 
   switch( MyGameStatus )
   {
-  case  STATUS_Copyright:
   case  STATUS_BetweenLevels:
   case  STATUS_Title:
   case  STATUS_StartingSinglePlayer:
@@ -2264,13 +2240,6 @@ ReleaseView(void)
 {
   switch( MyGameStatus )
   {
-  case  STATUS_PlayingAVI:
-    ReleaseDDSurf(lpDDSTwo);  //font
-    lpDDSTwo = NULL;
-    break;
-  case  STATUS_Copyright:
-    ReleaseTitle();
-    break;
   case  STATUS_StartingMultiplayer:
   case  STATUS_GetPlayerNum:
   case  STATUS_BetweenLevels:
@@ -2408,7 +2377,6 @@ InitScene(void)
 
   switch( MyGameStatus )
   {
-  case  STATUS_Copyright:
   case  STATUS_BetweenLevels:
   case  STATUS_Title:
   case  STATUS_StartingSinglePlayer:
@@ -2445,10 +2413,6 @@ InitView( void )
 
   CheatsDisabled = FALSE;
 
-  // if viewing splash screens, initview will be called after viewing final screen
-  if (( MyGameStatus == STATUS_SplashScreen ) || ( MyGameStatus == STATUS_FinishedShowingSplashScreen ))
-    return TRUE;
-
   // flush keyboard buffer...
   if (lpdiBufferedKeyboard)
   {
@@ -2478,30 +2442,6 @@ InitView( void )
 
   switch( MyGameStatus )
   {
-  case  STATUS_PlayingAVI:
-    if ( bSoundEnabled )
-      DestroySound( DESTROYSOUND_All );
-    break;
-  case  STATUS_Copyright:
-    AddCommandToBat( "mkdir %%2\\BGObjects\n" );
-    AddCommandToBat( "mkdir %%2\\Models\n" );
-    AddCommandToBat( "mkdir %%2\\Textures\n" );
-    AddCommandToBat( "mkdir %%2\\Pictures\n" );
-    AddCommandToBat( "mkdir %%2\\Offsets\n" );
-    AddCommandToBat( "mkdir %%2\\Sfx\n" );
-
-    InitFont( FALSE );
-    
-    AddCommentToBat( "Started Loading Titles" );
-
-    if( InitTitle( lpDD, lpD3D, lpDev, lpView ) != TRUE )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-
-
-    break;
   case  STATUS_BetweenLevels:
   case  STATUS_Title:
   case  STATUS_StartingSinglePlayer:
@@ -3150,8 +3090,7 @@ void ProcessGameKeys( void )
   if ( ! (
            ( MyGameStatus == STATUS_Normal       ) ||
            ( MyGameStatus == STATUS_SinglePlayer ) ||
-           ( MyGameStatus == STATUS_PlayingDemo  ) ||
-           ( MyGameStatus == STATUS_AttractMode  )
+           ( MyGameStatus == STATUS_PlayingDemo  )
      )   )
   {
     return;
@@ -3857,7 +3796,6 @@ float HostMultiPlayerTimeout;
 
 int colourflash = 0;
 char NodeName[256];
-BOOL CreditsToggle = FALSE;
 
 extern LPDPLCONNECTION glpdplConnection;
 BOOL SetZCompare( void );
@@ -3997,84 +3935,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     quitting = TRUE;
     break;
 
-
-  case STATUS_SplashScreen:
-    
-    if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Timed )
-    {
-      DWORD currenttime = timeGetTime();
-      
-      if ( currenttime > SplashFinishTime )
-      {
-        MyGameStatus = STATUS_FinishedShowingSplashScreen;
-        break;
-      }
-    }
-
-    if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Return )
-    {
-      if ( AnyKeyPressed() )
-      {
-        MyGameStatus = STATUS_FinishedShowingSplashScreen;
-        break;
-      }
-    }
-
-    if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->SplashDisplayFunc )
-    {
-      if ( !NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->SplashDisplayFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->SplashDisplayVar ) )
-      {
-        MyGameStatus = STATUS_FinishedShowingSplashScreen;
-      }
-    }
-      
-    break;
-
-
-  case STATUS_FinishedShowingSplashScreen:
-
-    if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_ShowNext )
-    {
-
-      // call post splash function
-      if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc )
-        NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashVar );
-
-      // increment splash screen
-      NewCurrentSplashScreen++;
-
-      MyGameStatus = STATUS_SplashScreen;
-
-      // set finish time if required
-      if ( NewSplashScreens[ NewCurrentSplashScreen ].flags & SPLASH_Timed )
-        SplashFinishTime = timeGetTime() + NewSplashScreens[ NewCurrentSplashScreen ].time;
-
-      // call initialization function
-      if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashFunc )
-        if ( !NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PreSplashVar ) )
-          MyGameStatus = STATUS_FinishedShowingSplashScreen;
-
-    }
-    else
-    {
-
-      // finished current batch of splash screens...
-
-      // restore old game status
-      MyGameStatus = PreSplash_MyGameStatus; 
-
-      // restore old menu status
-      CurrentMenu = PreSplash_Menu;
-      CurrentMenuItem = PreSplash_MenuItem;
-
-      // call post splash function  ( now that game status has been changed back )
-      if ( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc )
-        NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashFunc( NewSplashScreens[ NewCurrentSplashScreen ].splashinfo->PostSplashVar );
-
-    }
-
-    break;
-
   case STATUS_WaitingToStartSinglePlayer:
     
     if( DisplayTitle() != TRUE )
@@ -4106,31 +3966,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SeriousError = TRUE;
       return FALSE;
     }
-    done = VduFinished( &MENU_NEW_StartAttractMode );
-      
-    if ( done )
-      WaitFrames--;
-    if ( !WaitFrames )
-    {
-      WaitFrames = 2;
-          PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      LastMenu = CurrentMenu;
-      VduClear();
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-      ReleaseView();
-      MyGameStatus = STATUS_Title;
-
-      if( !CreditsToggle )
-      {
-        ShowSplashScreen( SPLASHSCREEN_AttractMode );
-      }
-      else
-      {
-        ShowSplashScreen( SPLASHSCREEN_Credits );
-        SetupCredits();
-      }
-    }
     break;
 
 
@@ -4147,28 +3982,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if ( !WaitFrames )
     {
       WaitFrames = 2;
-          PreventFlips = TRUE;
+      PreventFlips = TRUE;
       CurrentLoadingStep = 1;
       DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
       MyGameStatus = STATUS_Title;
       ReleaseView();
-
-      switch( GameCompleted )
-      {
-      case GAMECOMPLETE_WithoutAllCrystals:
-      case GAMECOMPLETE_WithAllCrystalsExceptLast:
-        SetupGameCompleteCredits();
-        ShowSplashScreen( SPLASHSCREEN_GameComplete );
-        break;
-      case GAMECOMPLETE_WithAllCrystals:
-        SetupGameCompleteCredits();
-        ShowSplashScreen( SPLASHSCREEN_SpecialGameComplete );
-        break;
-      default:
-        SetupGameCompleteCredits();
-        ShowSplashScreen( SPLASHSCREEN_GameComplete );
-      }
     }
     break;
 
@@ -4290,7 +4108,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   case STATUS_Title:
   case STATUS_BetweenLevels:
-  case STATUS_Copyright:
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -4966,21 +4783,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     MyGameStatus = STATUS_QuitCurrentGame;
     ReleaseView();
     ReleaseLevel();
+    MyGameStatus = STATUS_Title;
+    InitScene();
+    InitView();
 
-
-    if ( PreDemoEndMyGameStatus == STATUS_AttractMode )
-    {
-      PreDemoEndMyGameStatus = 0;
-
-      MyGameStatus = STATUS_Title;
-    }
-    else
-    {
-      MyGameStatus = STATUS_Title;
-
-      InitScene();
-      InitView();
-    }
     break;
 
 
@@ -5419,40 +5225,19 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
 
-    if ( !LimitedLoad )
-    {
-      EnableRelavantModels( &ModelNames[0] );
+    EnableRelavantModels( &ModelNames[0] );
 
-      if( !PreInitModel( lpDev , &ModelNames[0] ) )
-      {
-        SeriousError = TRUE;
-        return FALSE;
-      }
-    }else
-    {
-      if( !PreInitModel( lpDev , &SplashModelNames[0] ) )
-      {
-        SeriousError = TRUE;
-        return FALSE;
-      }
-    }
+	if( !PreInitModel( lpDev , &ModelNames[0] ) )
+	{
+		SeriousError = TRUE;
+		return FALSE;
+	}
 
-    if ( !LimitedLoad )
-    {
-      if( !Load_All_Off_Files( &OffsetFiles[ 0 ] ) )
-      {
-        SeriousError = TRUE;
-        return FALSE;
-      }
-    }else
-    {
-      if( !Load_All_Off_Files( &Splash_OffsetFiles[ 0 ] ) )
-      {
-        SeriousError = TRUE;
-        return FALSE;
-      }
-
-    }
+	if( !Load_All_Off_Files( &OffsetFiles[ 0 ] ) )
+	{
+		SeriousError = TRUE;
+		return FALSE;
+	}
 
     MyGameStatus = STATUS_InitView_2;
     PrintInitViewStatus( MyGameStatus );
@@ -5485,8 +5270,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       return FALSE;
     }
   
-    if ( !LimitedLoad ) FixTextureUVs( &OffsetFiles[ 0 ] );
-    else FixTextureUVs( &Splash_OffsetFiles[ 0 ] );
+    FixTextureUVs( &OffsetFiles[ 0 ] );
 
     // Load all system memory textures...
     if( !SysTload( SystemMemTPages, CurrentSysTexture ) )
@@ -5518,22 +5302,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     ReceiveGameMessages();
 
-    if ( !LimitedLoad )
-    {
       if( !InitModel( lpDev , &ModelNames[0] ) )
         {
         SeriousError = TRUE;
         return FALSE;               // all 3d models....
       }
-    }else
-    {
-      if( !InitModel( lpDev , &SplashModelNames[0] ) )
-        {
-        SeriousError = TRUE;
-        return FALSE;               // all 3d models....
-      }
-    }
-
     MyGameStatus = STATUS_InitView_4;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -5775,14 +5548,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       return( FALSE );
     }
 
-    if ( !LimitedLoad )
-    {
       if ( !InitializeSound( DESTROYSOUND_All ))
       {
         Msg("InitializeSound() failed\n");
         return FALSE;
       }
-    }
 
 
     Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NodeName[ 0 ], ".CAM" );
@@ -5881,83 +5651,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     TempGameElapsedTime = GameStartedTime;
     MyGameStatus = STATUS_PlayingDemo;
     break;
-
-
-  case STATUS_ChangeLevelPostAttractMode:
-    WhoIAm = MAX_PLAYERS;
-    Ships[WhoIAm].Object.Mode = DEMO_MODE;
-    Ships[WhoIAm].enable = 1;
-    dcoID = 0;
-    glpDP = NULL;
-    IsHost = TRUE;
-    Current_Camera_View = 0;    // which object is currently using the camera view....
-    AutoDetail = FALSE;
-  
-    for( i = 0 ; i < MAX_PLAYERS ; i++ )
-    {
-      GameStatus[i] = STATUS_Null;
-    }
-    DemoTimeSoFar = 0;
-    Demoframelag = 1.0F;
-    QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
-    GameElapsedTime = 0;
-    TempGameElapsedTime = GameStartedTime;
-    
-    if ( InSplashDemo )
-    {
-      MyGameStatus = STATUS_SplashScreen;
-
-      // if this demo is being used for splash screen, timer to start from here...
-      SplashStartTime = timeGetTime();
-      SplashFinishTime = SplashStartTime + NewSplashScreens[ NewCurrentSplashScreen ].time;
-    }else
-    {
-      MyGameStatus = STATUS_AttractMode;
-    }
-
-    PreventFlips = FALSE;
-
-    QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
-    QueryPerformanceCounter((LARGE_INTEGER *) &DemoStartedTime);
-    GameElapsedTime = 0;
-    DemoGameLoops = 0;
-
-    break;
-
-
-  case STATUS_AttractMode:
-
-    DemoGameLoops++;
-
-    if( DemoSpeed.value > 8 )
-    {
-      // slower or normal playback speed...
-      Demoframelag = 1.0F / (float) ( DemoSpeed.value - 7 );
-    }else{
-      Demoframelag = 1.0F * (float) ( 9 - DemoSpeed.value );
-    }
-    
-	//    Demoframelag = 10.0F;
-    Oldframelag = framelag;
-
-    if( PauseDemo )
-    {
-      framelag = 0.0F;
-    }else{
-      framelag *= Demoframelag;
-    }
-
-#if 0
-    DemoEyesSelect.value = 0;
-#endif
-    Current_Camera_View = DemoEyesSelect.value;   // which object is currently using the camera view....
-
-    framelag *= Demoframelag;
-
-    if( MainGame( lpDev , lpView ) != TRUE )
-      return FALSE;
-    break;
-
 
 	//  *********************** Single Player Game Stuff **********************************
 
@@ -6256,7 +5949,6 @@ void MainRoutines( void )
   FmPolyProcess();
   CheckTimeLimit();
   if( CountDownOn ) UpdateCountdownDigits();
-  if( ForsakenAnyKey ) DisplayForsakenAnyKey();
   ShowScreenMultiples();
   ProcessActiveConditions();
   ProcessTriggerAreas();
@@ -6590,7 +6282,8 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 #endif
   
-      if( RearCameraActive && !PowerVR && !RearCameraDisable && !InSplashDemo )
+      if( RearCameraActive && !PowerVR && !RearCameraDisable 
+		  )
       {
         CameraRendering = CAMRENDERING_Rear;
 
@@ -6776,7 +6469,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
 
 #ifdef REFLECTION
-  if( !InSplashDemo )
   {
     VECTOR  TempUp;
     CameraRendering = CAMRENDERING_Missile;
@@ -8056,19 +7748,8 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
     ClipGroup( &CurrentCamera, group );
 
-
-    if( MyGameStatus == STATUS_SplashScreen )
-      GroupWaterProcessDisplay( group );
-
-    if ( !LimitedLoad )
-    {
       if( !ModelDisp( group, lpDev, &ModelNames[0] ) )
         return FALSE;
-    }else
-    {
-      if( !ModelDisp( group, lpDev, &SplashModelNames[0] ) )
-        return FALSE;
-    }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Display Group Clipped Non Faceme Transluecent Polys
@@ -8167,8 +7848,7 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   {
     group = g->group;
     ClipGroup( &CurrentCamera, group );
-    if( MyGameStatus != STATUS_SplashScreen )
-      GroupWaterProcessDisplay( group );
+    GroupWaterProcessDisplay( group );
 
 
 
@@ -8391,7 +8071,7 @@ Our_CalculateFrameRate(void)
   }
 
     
-  if( ( MyGameStatus == STATUS_PlayingDemo ) || ( MyGameStatus == STATUS_AttractMode ) )
+  if( MyGameStatus == STATUS_PlayingDemo )
   {
     QueryPerformanceCounter((LARGE_INTEGER *) &DemoEndedTime);
     TimeDiff = DemoEndedTime - DemoStartedTime;
@@ -9371,7 +9051,6 @@ void SpecialDestroyGame( void )
   
   if ( PlayDemo )
   {
-    Panel = PreAttractModePanel;
     PlayDemo = FALSE;
   }
 
@@ -9380,7 +9059,6 @@ void SpecialDestroyGame( void )
   case STATUS_WaitingToStartTeamGame:
   case STATUS_StartingMultiplayer:
   case STATUS_GetPlayerNum:
-
     DPlayDestroyPlayer(dcoID);
     dcoID = 0;
     DPlayRelease();
@@ -10552,7 +10230,6 @@ void ServerMainRoutines( void )
   FmPolyProcess();
   CheckTimeLimit();
   if( CountDownOn ) UpdateCountdownDigits();
-//  if( ForsakenAnyKey ) DisplayForsakenAnyKey();
 //  ShowScreenMultiples();
   ProcessActiveConditions();
   ProcessTriggerAreas();

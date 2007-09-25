@@ -504,10 +504,6 @@
 				>
 			</File>
 			<File
-				RelativePath="credits.c"
-				>
-			</File>
-			<File
 				RelativePath="Cwtload.c"
 				>
 			</File>
@@ -704,10 +700,6 @@
 				>
 			</File>
 			<File
-				RelativePath="splash.c"
-				>
-			</File>
-			<File
 				RelativePath="spotfx.c"
 				>
 			</File>
@@ -814,10 +806,6 @@
 			</File>
 			<File
 				RelativePath="Include\controls.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\credits.h"
 				>
 			</File>
 			<File
@@ -1050,10 +1038,6 @@
 			</File>
 			<File
 				RelativePath="Include\sphere.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Splash.h"
 				>
 			</File>
 			<File

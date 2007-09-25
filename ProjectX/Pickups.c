@@ -5262,8 +5262,8 @@ BOOL FilterPickup( uint16 PickupType )
 		( ChangeLevel_MyGameStatus == STATUS_PreStartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostInitView ) ||
-		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostPlayingDemo ) ||
-		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostAttractMode	) ))
+		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostPlayingDemo )
+		))
 		return TRUE;
 
 	/* is this pickup on the global valid list ? */
