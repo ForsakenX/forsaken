@@ -15679,7 +15679,6 @@ void ProcessTextItems (void)
 {
 	int i, teletypenum;
 	char temptext[64];
-	BOOL textstored;
 	static float VidTextSfxPause = 0.0F;
 	static float theta = 0.0F;
 	uint8 r, g, b;
@@ -15701,88 +15700,75 @@ void ProcessTextItems (void)
 	NewTextCharDisplayed = FALSE;
 	for (i=0; i<TextStackLevel; i++)
 	{	
-		if ( TextStack[ i ] )
+		if ( ! TextStack[ i ] )
+			continue;
+
+		if ((TextStack[i]->flags & TEXTFLAG_Pulse) && (Pulse >= 0.5F))
+
+			PrintTextItem(TextStack[i]);
+
+		if (
+			(TextStack[i]->flags & TEXTFLAG_CheckForRefresh) &&
+			(strncmp(TextStack[i]->oldtext, TextStack[i]->text, MAX_TEXT_LENGTH) != 0)
+		)
 		{
-			textstored = FALSE;
-			if (TextStack[i]->flags & TEXTFLAG_Pulse)
-			{
-				if (Pulse >= 0.5F)
-				{
-					//strcpy( temptext, TextStack[i]->text );
-					//TextStack[i]->text[0] = 0;
-					PrintTextItem(TextStack[i]);
-					//textstored = TRUE;
-				}
-			}
-			if (TextStack[i]->flags & TEXTFLAG_CheckForRefresh)
-			{
-				if (strncmp(TextStack[i]->oldtext, TextStack[i]->text, MAX_TEXT_LENGTH) != 0)
-				{
-					strncpy(TextStack[i]->oldtext, TextStack[i]->text, MAX_TEXT_LENGTH);
-					PrintTextItem(TextStack[i]);
-				}
-			}
-
-			if (TextStack[i]->highlight)
-			{ 
-				HighlightItem[ CurrentHighlightItem ] = TextStack[i];
-				HighlightStatus[ CurrentHighlightItem++ ] = TextStack[i]->highlighttype;
-			}
-
-			if (DrawTextItemBox && !TextStack[i]->boxdone)
-			{
-				TextStack[i]->boxdone = TRUE;
-
-		  		if (!Plot2dBox (TextStack[i]))
-		  			Msg( "Plot2dBox() : failed\n" );
-			}
-			
-			DisplayTextItem (TextStack[i]);
-			if ( TextStack[i]->flags & TEXTFLAG_Instant )
-				NewTextCharDisplayed = FALSE;	// do not do sfx for instant text
-
-			if (textstored)
-			{
-				strcpy( TextStack[i]->text, temptext );
-				PrintTextItem(TextStack[i]);
-			}
+			strncpy(TextStack[i]->oldtext, TextStack[i]->text, MAX_TEXT_LENGTH);
+			PrintTextItem(TextStack[i]);
 		}
+
+		if (TextStack[i]->highlight)
+		{ 
+			HighlightItem[ CurrentHighlightItem ] = TextStack[i];
+			HighlightStatus[ CurrentHighlightItem++ ] = TextStack[i]->highlighttype;
+		}
+
+		if (DrawTextItemBox && !TextStack[i]->boxdone)
+		{
+			TextStack[i]->boxdone = TRUE;
+	  		if (!Plot2dBox (TextStack[i]))
+	  			Msg( "Plot2dBox() : failed\n" );
+		}
+		
+		DisplayTextItem (TextStack[i]);
+
+		// do not do sfx for instant text
+		if ( TextStack[i]->flags & TEXTFLAG_Instant )
+			NewTextCharDisplayed = FALSE;
+
 	}
 
 	VidTextSfxPause += framelag;
-	if ( NewTextCharDisplayed )
+
+	if ( NewTextCharDisplayed && (VidTextSfxPause > 5.0F) )
 	{
-		if ( VidTextSfxPause > 5.0F )
-		{
-			PlaySfx( SFX_VidText, 0.4F );
-			VidTextSfxPause = 0.0F;
-		}
+		PlaySfx( SFX_VidText, 0.4F );
+		VidTextSfxPause = 0.0F;
 	}
 
-	if (VDU_Ready && ((CameraStatus == CAMERA_AtRightVDU) || (CameraStatus == CAMERA_AtLeftVDU)))
+	if (
+		VDU_Ready &&
+		((CameraStatus == CAMERA_AtRightVDU) || (CameraStatus == CAMERA_AtLeftVDU)) &&
+		((LastMenuItem != CurrentMenuItem) || !(bPolyText && PolyText[MyGameStatus]))
+	)
 	{
-		if ((LastMenuItem != CurrentMenuItem) || !(bPolyText && PolyText[MyGameStatus]))
-		{
-			LastMenuItem = CurrentMenuItem;
-		}
+		LastMenuItem = CurrentMenuItem;
 	}
 	
-	if (CurrentMenuItem && VDU_Ready && TextStackLevel )
+	if (
+		 CurrentMenuItem	&&
+		 VDU_Ready			&&
+		 TextStackLevel		&&
+		 CurrentMenuItem->TextInfo[0] &&
+		 !(CurrentMenuItem->TextInfo[0]->flags & TEXTFLAG_SuppressHighlight) &&
+		 !(CurrentMenuItem->TextInfo[0]->highlight)	// ensures item is not highlighted twice
+	)
 	{
-		if (CurrentMenuItem->TextInfo[0])
-		{
-			if (!(CurrentMenuItem->TextInfo[0]->flags & TEXTFLAG_SuppressHighlight))
-			{
-				if (!CurrentMenuItem->TextInfo[0]->highlight)	// ensures item is not highlighted twice
-				{
-					HighlightItem[ CurrentHighlightItem ] = CurrentMenuItem->TextInfo[0];
-					HighlightStatus[ CurrentHighlightItem++ ] = CurrentMenuItem->TextInfo[0]->highlighttype;
-				}
-			}
-		}
+		HighlightItem[ CurrentHighlightItem ] = CurrentMenuItem->TextInfo[0];
+		HighlightStatus[ CurrentHighlightItem++ ] = CurrentMenuItem->TextInfo[0]->highlighttype;
 	}
 
 	CursorTimer += framelag/(CursorInterval * 60.0F) * 2.0F;
+
 	if (CursorTimer >= 2.0F)
 		CursorTimer -= 2.0F;
 
@@ -15791,7 +15777,8 @@ void ProcessTextItems (void)
 
 /******************
 Highlight box
-*******************/	
+*******************/
+
 	theta += 360.0F * framelag/(60.0F);
 	if (theta > 360.0F)
 		theta -= 360.0F;
