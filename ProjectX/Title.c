@@ -617,15 +617,12 @@ void DrawSessionNameText( MENUITEM *Item );
 void DrawConditionalText( MENUITEM *Item );
 void DrawConditionalName( MENUITEM *Item );
 TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item );
-TEXTINFO * DrawColFlatToggleStatus( MENUITEM *Item );	// collision perspective
 void UpdateSlider (MENUITEM *Item);
 void DrawFlatSliderStatus( MENUITEM *Item );
 void SelectFlatRadioButton( MENUITEM *Item );
 void SelectFlatMenuToggle( MENUITEM *Iem );
-void SelectColFlatMenuToggle( MENUITEM *Iem );	// collision perspective
 void SelectMultiToggle( MENUITEM *Item );
 void DrawFlatMenuToggle( MENUITEM *Item );
-void DrawColFlatMenuToggle( MENUITEM *Item );	// collision perspective
 void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
 void SelectFlatMenuKey( MENUITEM *Item );
@@ -1398,7 +1395,10 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 	"", InitMoreMultiplayerOptions, ExitMoreMultiplayerOptions, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
-		{ 10,  22, 120,  29, 0,				LT_MENU_NEW_MoreMultiplayerOptions1  /* "collision perspective"  */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			NULL,					SelectColFlatMenuToggle,	DrawColFlatMenuToggle,	NULL, 0 } ,
+		
+		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*"shooter decides if target is hit"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"target decides if it is hit			 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+
 		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			ShortPacketsSelected,	SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  51, 100,  58, 0,				LT_MENU_NEW_MoreMultiplayerOptions3  /* "packet grouping"        */, FONT_Small,  TEXTFLAG_CentreY,							&BigPackets,				BigPacketsSelected,		SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
@@ -3113,7 +3113,7 @@ MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, 
 
 MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
-					OLDMENUITEM( 200, 112, LT_MENU_InGame27 /*"collision perspective"		*/,	&ColPerspective,			NULL,					SelectToggle,			DrawColToggle),
+					//OLDMENUITEM( 200, 112, LT_MENU_InGame27 /*"collision perspective"		*/,	&ColPerspective,			NULL,					SelectToggle,			DrawColToggle),
 					OLDMENUITEM( 200, 128, LT_MENU_InGame10 /*"ping update (secs)"			*/,	&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
 					OLDMENUITEM( 200, 144, LT_MENU_Options5 /*"Packets Per Second"			*/,	(void*)&PacketsSlider,		NULL,					SelectSlider,			DrawSlider),
 					OLDMENUITEM( 200, 160, LT_MENU_InGame6  /*"Level Select"				*/,	NULL,						&MENU_LevelSelect,		MenuChange,				MenuItemDrawName),
@@ -8124,8 +8124,7 @@ void ProcessSelect( int Key )
 		/* if were acting on a selection list */
 
 		if (
-			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle) || 
-			(CurrentMenuItem->FuncSelect == SelectColFlatMenuToggle)
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
 		)
 		{
 
@@ -8153,8 +8152,7 @@ void ProcessSelect( int Key )
 		/* if were acting on a selection list */
 
 		if (
-			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle) || 
-			(CurrentMenuItem->FuncSelect == SelectColFlatMenuToggle)
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
 		)
 		{
 
@@ -13752,16 +13750,6 @@ void SelectFlatMenuToggle( MENUITEM *Item )
 	
 }
 
-void SelectColFlatMenuToggle( MENUITEM *Item )
-{
-	if (VDU_Ready)
-	{
-		SelectToggle(Item);
-		DrawColFlatToggleStatus(Item);
-	}
-	
-}
-
 void SelectMultiToggle( MENUITEM *Item )
 {
 	if (VDU_Ready)
@@ -13794,20 +13782,6 @@ void DrawFlatMenuToggle( MENUITEM *Item )
 
 }
 
-void DrawColFlatMenuToggle( MENUITEM *Item )
-{
-	// draw text in textinfo 0
-	DrawFlatMenuItem(Item);
-
-	//allocate space for toggle status
-	Item->TextInfo[1] = InitTextInfo();
-
-	Item->numtextitems++;
-
-	//add to text stack...
-	AddToTextStack( DrawColFlatToggleStatus(Item) );
-
-}
 
 void SelectFlatMenuKey( MENUITEM *Item )
 {

@@ -804,6 +804,9 @@
 #define LT_MENU_NEW_ServerWaitingForGameParameters1 "server - waiting for host to select game type"
 #define LT_MENU_NEW_HostWaitingToStartServer1 "server - waiting to allocate host"
 
+#define LT_MENU_NEW_MoreMultiplayerOptions1a "shooter collision perspective"
+#define LT_MENU_NEW_MoreMultiplayerOptions2a "target collision perspective"
+
 /*********************************************************************
 
   ADDED SINCE 20/8/98
