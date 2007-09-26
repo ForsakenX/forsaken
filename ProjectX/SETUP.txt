@@ -37,6 +37,11 @@ Visual Studio Directories:
 
 Debugging:
 
+  Default Debugger:
+
+	Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+	Value: "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv.exe" -p %ld -e %ld
+
 
   Visual Studios:
 

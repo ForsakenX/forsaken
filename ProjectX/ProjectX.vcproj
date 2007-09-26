@@ -14,7 +14,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug with OPT_ON|Win32"
+			Name="Debug - OPT_ON|Win32"
 			OutputDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON"
 			IntermediateDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON\"
 			ConfigurationType="1"
@@ -201,7 +201,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release|Win32"
+			Name="Release - Optimizations|Win32"
 			OutputDirectory=".\temp\ProjectX___Win32_Release"
 			IntermediateDirectory=".\temp\ProjectX___Win32_Releas\Xtrash"
 			ConfigurationType="1"
@@ -454,6 +454,198 @@
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_SW\ProjectX.pdb"
+				SubSystem="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release - Debug|Win32"
+			OutputDirectory=".\temp\$(ConfigurationName)"
+			IntermediateDirectory=".\temp\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\temp\$(ConfigurationName)\ProjectX.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="0"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\temp\$(ConfigurationName)\ProjectX.pch"
+				AssemblerListingLocation=".\temp\$(ConfigurationName)\Xtrash\"
+				ObjectFile=".\temp\$(ConfigurationName)\Xtrash\"
+				ProgramDataBaseFileName=".\temp\$(ConfigurationName)\Xtrash\"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CallingConvention="1"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				OutputFile="ProjectX__Release_Debug.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				IgnoreAllDefaultLibraries="false"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\temp\$(ConfigurationName)\Xrelease.pdb"
+				SubSystem="2"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release - Debug, Optimizations|Win32"
+			OutputDirectory=".\temp\$(ConfigurationName)"
+			IntermediateDirectory=".\temp\$(ConfigurationName)"
+			ConfigurationType="1"
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
+			UseOfMFC="0"
+			ATLMinimizesCRunTimeLibraryUsage="false"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+				PreprocessorDefinitions="NDEBUG"
+				MkTypLibCompatible="true"
+				SuppressStartupBanner="true"
+				TargetEnvironment="1"
+				TypeLibraryName=".\temp\$(ConfigurationName)\ProjectX.tlb"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude;.\Avi\AviInclude"
+				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
+				StringPooling="true"
+				EnableFunctionLevelLinking="true"
+				UsePrecompiledHeader="0"
+				PrecompiledHeaderFile=".\temp\$(ConfigurationName)\ProjectX.pch"
+				AssemblerListingLocation=".\temp\$(ConfigurationName)\Xtrash\"
+				ObjectFile=".\temp\$(ConfigurationName)\Xtrash\"
+				ProgramDataBaseFileName=".\temp\$(ConfigurationName)\Xtrash\"
+				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
+				CallingConvention="1"
+				CompileAs="0"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+				PreprocessorDefinitions="NDEBUG"
+				Culture="1033"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalOptions="/MACHINE:I386"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				OutputFile="ProjectX__Release_Debug_Optimizations.exe"
+				LinkIncremental="1"
+				SuppressStartupBanner="true"
+				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				IgnoreAllDefaultLibraries="false"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile=".\temp\$(ConfigurationName)\Xrelease.pdb"
 				SubSystem="2"
 			/>
 			<Tool

@@ -15708,10 +15708,10 @@ void ProcessTextItems (void)
 			{
 				if (Pulse >= 0.5F)
 				{
-					strcpy( temptext, TextStack[i]->text );
-					TextStack[i]->text[0] = 0;
+					//strcpy( temptext, TextStack[i]->text );
+					//TextStack[i]->text[0] = 0;
 					PrintTextItem(TextStack[i]);
-					textstored = TRUE;
+					//textstored = TRUE;
 				}
 			}
 			if (TextStack[i]->flags & TEXTFLAG_CheckForRefresh)
@@ -15742,7 +15742,8 @@ void ProcessTextItems (void)
 				NewTextCharDisplayed = FALSE;	// do not do sfx for instant text
 
 			if (textstored)
-			{	strcpy( TextStack[i]->text, temptext );
+			{
+				strcpy( TextStack[i]->text, temptext );
 				PrintTextItem(TextStack[i]);
 			}
 		}

@@ -3404,33 +3404,6 @@ void ProcessGameKeys( void )
 } // ProcessGameKeys
 
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Handle all things keys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-int My_Key_Up ( WPARAM wParam , LPARAM lParam )
-{
-  switch( wParam )
-  {
-  case VK_PAUSE:
-      return 2; // signal pause
-      break;
-  }
-  return 0;
-}
-
-
-void My_Key_Down ( WPARAM wParam , LPARAM lParam )
-{
-  switch( wParam )
-  {
-    case VK_ESCAPE:
-    case VK_F12:
-      break;
-    }
-}
-
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   Set the View Matrix
   Input   :   nothing...  Current_Camera_View must be set
@@ -9298,23 +9271,15 @@ BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure : Once only Release Stuff
-  Input   : Nothing
-  Output    : Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void  OnceOnlyRelease( void )
+/***************************************\
+|
+|  Release Joysticks
+|
+\***************************************/
+
+void  ReleaseJoysticks( void )
 {
   int joystick, i, j;
-
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-    if ( glpdpSD_copy )
-    free ( glpdpSD_copy );
-#endif
-  
-  DestroySound( DESTROYSOUND_All );
-  TermDInput();
 
   for (joystick = 0; joystick < Num_Joysticks; joystick++)
   {

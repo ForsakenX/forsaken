@@ -32,6 +32,7 @@
 #include "dbt.h"
 #include <direct.h>
 #include "getdxver.h"
+#include "dplay.h"
 
 
 #ifdef SOFTWARE_ENABLE
@@ -57,6 +58,7 @@ extern "C" {
 #include	"file.h"
 #include	"XMem.h" 
 #include	"d3dapp.h"
+#include	"Sfx.h"
 
 #ifdef SOFTWARE_ENABLE
 	/*---------------------------------------------------------------------------
@@ -66,6 +68,12 @@ extern "C" {
 	extern	BOOL	SoftwareVersion;
 	/*-------------------------------------------------------------------------*/
 #endif
+
+#ifdef MANUAL_SESSIONDESC_PROPAGATE
+	extern LPDPSESSIONDESC2 glpdpSD_copy;
+#endif
+
+	extern BOOL TermDInput( void );
 
 	extern LONGLONG  LargeTime;
 	extern LONGLONG  LastTime;
@@ -1208,33 +1216,31 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
     BOOL bStop;
     LRESULT lresult;
 
-    /*
-     * Give D3DApp an opportunity to process any messages it MUST see in order
-     * to perform it's function.
-     */
-
-    if (!D3DAppWindowProc(&bStop, &lresult, hWnd, message, wParam, lParam)) {
+    // Give D3DApp an opportunity to process any messages
+    if (!D3DAppWindowProc(&bStop, &lresult, hWnd, message, wParam, lParam))
+	{
+		// print error message
         ReportD3DAppError();
+
+		// quit
         CleanUpAndPostQuit();
         return 0;
     }
 
-    /* 
-     * If bStop is set by D3DApp, the app should not process the message but
-     * return lresult.
-     */
-
+	// if bStop is set by D3DApp, dont process message and return lresult
     if (bStop)
         return lresult;
 
+	//
 	if ( quitting )
 	{
-		quitting = FALSE;
 		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
+		quitting = FALSE;
 		CleanUpAndPostQuit();
 	}
 
-	if( CancelAutoPlayMessage && message == CancelAutoPlayMessage )
+	//
+	if( CancelAutoPlayMessage && (message == CancelAutoPlayMessage) )
 	{
 		// return 1 to cancel AutoPlay
 		// return 0 to allow AutoPlay
@@ -1242,118 +1248,8 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 		return 1L;
 	}
 
-    switch( message ) {
-
-		// some i/o device has changed state
-		case WM_DEVICECHANGE:
-
-			DebugPrintf( "DeviceChange detected\n" );
-			switch( wParam )
-			{
-			case DBT_DEVICEARRIVAL:
-				DebugPrintf( "ARRIVAL\n" );
-				break;
-			case DBT_DEVICEQUERYREMOVE:
-				DebugPrintf( "QUERYREMOVE\n" );
-				break;
-			case DBT_DEVICEQUERYREMOVEFAILED:
-				DebugPrintf( "QUERYREMOVEFAILED\n" );
-				break;
-			case DBT_DEVICEREMOVECOMPLETE:
-				DebugPrintf( "REMOVECOMPLETE\n" );
-				break;
-			case DBT_DEVICEREMOVEPENDING:
-				DebugPrintf( "REMOVEPENDING\n" );
-				break;
-			case DBT_DEVICETYPESPECIFIC:
-				DebugPrintf( "TYPESPECIFIC\n" );
-				break;
-			}
-
-		break;
-
-        case WM_MOUSEMOVE:
-        case WM_LBUTTONDOWN:
-        case WM_LBUTTONUP:
-        case WM_RBUTTONDOWN:
-        case WM_RBUTTONUP:
-        case WM_MBUTTONDOWN:
-        case WM_MBUTTONUP:
-
-	/*
-			if (GetCapture() != NULL )
-			{
-				SetCapture(myglobs.hWndMain);
-			}
-			if ( message != WM_MOUSEMOVE && d3dapp->bPaused )
-			{
-				AppPause( FALSE );
-			}
-	*/
-			return 1;
-            break;
-
-		case WM_SYSKEYUP:
-        case WM_KEYUP:
-	/*
-			if ( !d3dapp->bPaused )
-			{
-				i = My_Key_Up( wParam,lParam);
-				if ( !i )
-					break;
-				if ( i < 0 )
-					CleanUpAndPostQuit();
-				if ( i == 2 )
-				{
-					AppPause( !d3dapp->bPaused );
-				}
-				return 1;
-			}
-	*/
-			break;
-
-		case WM_SYSKEYDOWN:
-        case WM_KEYDOWN:
-	/*
-				if ( !d3dapp->bPaused )
-				{
-					My_Key_Down( wParam,lParam);
-					return 1;
-				}
-	*/
-			break;
-
-		// closing window
-        case WM_DESTROY:
-            myglobs.hWndMain = NULL;
-            CleanUpAndPostQuit();
-            break;
-
-        case WM_GETMINMAXINFO:
-            //
-            // Some samples don't like being resized, such as those which use
-            // screen coordinates (TLVERTEXs).
-            //
-/*
-            if (myglobs.bResizingDisabled) {
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.x = START_WIN_SIZE_X;
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.y = START_WIN_SIZE_Y;
-                ((LPMINMAXINFO)lParam)->ptMinTrackSize.x = START_WIN_SIZE_X;
-                ((LPMINMAXINFO)lParam)->ptMinTrackSize.y = START_WIN_SIZE_Y;
-                return 0;
-            }
-*/
-            break;
-
-		case MM_MCINOTIFY:
-			DebugPrintf("MCINOTIFY message %d\n",wParam);
-			break;
-
-    }
-
 	// default processing for any messages not processed
     return DefWindowProc(hWnd, message, wParam, lParam);
-
 }
 
 
@@ -1369,24 +1265,43 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 void
 CleanUpAndPostQuit(void)
 {
+	// unpause d3d
 	AppPause( FALSE );
+
+	// check if this function was ran allready
     if (myglobs.bQuit)
-	{
-     	DebugPrintf("myglobs.bQuit was TRUE\n");
 		return;
-	}
+
+	// tell d3d to stop and report any errors
     if (!D3DAppDestroy())
         ReportD3DAppError();
 
-	OnceOnlyRelease();
+	// release direct play copy
+#ifdef MANUAL_SESSIONDESC_PROPAGATE
+    if ( glpdpSD_copy )
+    free ( glpdpSD_copy );
+#endif
   
-	ReleaseScene();
-    myglobs.bQuit = TRUE;
-	cursorclipped = FALSE;
-	SetCursorClip();
-    PostQuitMessage( 0 );
+	// destroy the sound
+	DestroySound( DESTROYSOUND_All );
 
-    DebugPrintf("done CleanUpAndPostQuit\n");
+	// destroy direct input
+	TermDInput();
+  
+	// release the scene
+	ReleaseScene();
+
+	// set flag
+    myglobs.bQuit = TRUE;
+
+	// we dont control the cursor anymore
+	cursorclipped = FALSE;
+
+	//
+	SetCursorClip();
+
+	//
+    PostQuitMessage( 0 );
 }
 
 /*

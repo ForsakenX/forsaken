@@ -61,7 +61,6 @@ extern "C" {
      */
 
 	void My_Key_Down ( WPARAM  , LPARAM  );
-	int My_Key_Up ( WPARAM  , LPARAM  );
     extern D3DAppInfo* d3dapp;         /* Pointer to read only collection of DD and D3D	*/
 	extern	short	ModeCase;
 
