@@ -1565,12 +1565,6 @@ SetCursorClip( void )
   }
 }
 
-void
-OverrideDefaults(Defaults* defaults)
-{
-    strcpy(defaults->Name, "Forsaken");
-}
-
 static BOOL LevelValid( char *level )
 {
   uint16 i;

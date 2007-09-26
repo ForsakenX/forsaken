@@ -57,11 +57,6 @@ extern "C" {
     } Defaults;
 
     /*
-     * Allows each example to begin with different defaults
-     */
-    void OverrideDefaults(Defaults* defaults);
-
-    /*
      * Some of our own Functions and some stuff thats usefull externed
      */
 

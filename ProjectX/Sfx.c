@@ -824,6 +824,9 @@ void SfxThreadProc (void * pParm)
 
 	while (1)
 	{
+		if ( &SfxKey == NULL)
+			continue;
+
 		EnterCriticalSection (&SfxKey);
 		
 		for ( i = 0; i < MAX_THREADED_SFX; i++ )
