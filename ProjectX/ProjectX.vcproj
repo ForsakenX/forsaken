@@ -998,6 +998,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\swver.c"
+				>
+			</File>
+			<File
 				RelativePath="Tasker.c"
 				>
 			</File>

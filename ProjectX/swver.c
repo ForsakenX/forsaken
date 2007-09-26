@@ -1,3 +1,8 @@
+
+#ifdef SOFTWARE_ENABLE // top most software enable
+
+
+
 #define ZBUFFER
 //#define NEWGOUR	// for gouraud remap code.
 
@@ -6156,3 +6161,7 @@ void CWFreeZBuffer()
 
 
 #endif
+
+
+
+#endif // top most software enable

@@ -20,6 +20,10 @@
 #include "typedefs.h"
 #include "d3dappi.h"
 
+#ifdef SOFTWARE_ENABLE
+	extern BOOL SoftwareVersion;
+#endif
+
 int default_width	= 0;
 int default_height	= 0;
 int default_bpp		= 0;

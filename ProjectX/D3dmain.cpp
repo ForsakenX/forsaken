@@ -64,7 +64,7 @@ extern "C" {
 	/*---------------------------------------------------------------------------
 		Chris Walsh's code
 	---------------------------------------------------------------------------*/
-	extern CWmain(void);	// Main render loop on chris' stuff....
+	//extern CWmain(void);	// Main render loop on chris' stuff....
 	extern	BOOL	SoftwareVersion;
 	/*-------------------------------------------------------------------------*/
 #endif
@@ -942,7 +942,7 @@ static BOOL CreateD3DApp(void)
 	if( SoftwareVersion )
 	{
 		Writeable = MakeCodeWritable();	
-		CWmain();
+		//CWmain();
 	}
 /*-------------------------------------------------------------------------*/
 #endif
