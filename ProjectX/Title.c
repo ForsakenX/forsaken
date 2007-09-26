@@ -8529,9 +8529,10 @@ void	MenuProcess()
 
 	// if we are not in a menu
 	if ( !CurrentMenu || !CurrentMenuItem )
-
+	{
 		// dont process any keys
 		return;
+	}
 
 	// read keyboard buffer
 	ReadBufferedKeyboard();

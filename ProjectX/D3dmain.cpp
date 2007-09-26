@@ -1174,69 +1174,63 @@ static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
+    if ( ! d3dapp->bRenderingIsOK)
+		return TRUE;
 
-    if (d3dapp->bRenderingIsOK)
+    // Restore any lost surfaces
+    if (!RestoreSurfaces())
 	{
-
-        // Restore any lost surfaces
-
-        if (!RestoreSurfaces())
-		{
-
-            // Restoring surfaces sometimes fails because the surfaces cannot
-            // yet be restored.  If this is the case, the error will show up
-            // somewhere else and we should return success here to prevent
-            // unnecessary error's being reported.
-
-            return TRUE;
-        }
-
-        // Call the sample's RenderScene to render this frame
-
-        if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
-		{
-            Msg("RenderScene failed.\n");
-            return FALSE;
-        }
-
-		if ( quitting )
-		{
-			quitting = FALSE;
-			CleanUpAndPostQuit();
-		}
-
-        // Blt or flip the back buffer to the front buffer
-
-		if( !myglobs.bQuit )
-		{
-			if (
-				(
-					!PlayDemo ||
-					( MyGameStatus != STATUS_PlayingDemo ) ||
-					DemoShipInit[ Current_Camera_View ]
-				) &&
-				!PreventFlips
-			)
-			{
-				if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
-				{
-					Msg("!D3DAppShowBackBuffer");
-					ReportD3DAppError();
-					return FALSE;
-				}
-			}
-
-			// if there is 3D sound, commit 3D sound processing
-			if ( lpDS3DListener )
-				if ( lpDS3DListener->CommitDeferredSettings() != DS_OK )
-					DebugPrintf("Error commiting 3D\n");
-
-		}
-
-		// Reset the resize flag
-		myglobs.bResized = FALSE;
+        // Restoring surfaces sometimes fails because the surfaces cannot
+        // yet be restored.  If this is the case, the error will show up
+        // somewhere else and we should return success here to prevent
+        // unnecessary error's being reported.
+        return TRUE;
     }
 
+    // Call the sample's RenderScene to render this frame
+    if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
+	{
+        Msg("RenderScene failed.\n");
+        return FALSE;
+    }
+
+	if ( quitting )
+	{
+		quitting = FALSE;
+		CleanUpAndPostQuit();
+	}
+
+    // Blt or flip the back buffer to the front buffer
+	if( !myglobs.bQuit )
+	{
+		if (
+			(
+				! PlayDemo ||
+				( MyGameStatus != STATUS_PlayingDemo ) ||
+				DemoShipInit[ Current_Camera_View ]
+			) &&
+			! PreventFlips
+		)
+		{
+			if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
+			{
+				Msg("!D3DAppShowBackBuffer");
+				ReportD3DAppError();
+				return FALSE;
+			}
+		}
+
+		// if there is 3D sound, commit 3D sound processing
+		if ( lpDS3DListener )
+			if ( lpDS3DListener->CommitDeferredSettings() != DS_OK )
+				DebugPrintf("Error commiting 3D\n");
+
+	}
+
+	// Reset the resize flag
+	myglobs.bResized = FALSE;
+
+	//
     return TRUE;
 }
 
