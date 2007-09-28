@@ -19479,9 +19479,10 @@ void RefreshServerPlayersList( LIST *List )
 
 	ServerGamePlayersList.items = 0;
 	
-	for ( i = 1; i < MAX_PLAYERS; i++ )	// server is player 0
+	//for ( i = 1; i < MAX_PLAYERS; i++ )	// server is player 0
+	for(i = 0; i < MAX_PLAYERS; i++ )
 	{
-		if ( GameStatus[ i ] == STATUS_Normal )
+		if ( GameStatus[ i ] == STATUS_Normal && i != WhoIAm)
 		{
 			strncpy( ServerGamePlayersList.item[ ServerGamePlayersList.items ], Names[ i ], sizeof( ServerGamePlayersList.item[ 0 ] ) );
 			ServerGamePlayersWhoIAm[ ServerGamePlayersList.items ] = i;
