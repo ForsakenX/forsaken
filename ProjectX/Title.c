@@ -3111,14 +3111,14 @@ MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, 
 	}
 };
 
-MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
+MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitServerMenu , NULL , NULL,	0,
 			{
-					//OLDMENUITEM( 200, 112, LT_MENU_InGame27 /*"collision perspective"		*/,	&ColPerspective,			NULL,					SelectToggle,			DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame10 /*"ping update (secs)"			*/,	&PingFreqSlider,			NULL,					SelectSlider,			DrawSlider),
-					OLDMENUITEM( 200, 144, LT_MENU_Options5 /*"Packets Per Second"			*/,	(void*)&PacketsSlider,		NULL,					SelectSlider,			DrawSlider),
-					OLDMENUITEM( 200, 160, LT_MENU_InGame6  /*"Level Select"				*/,	NULL,						&MENU_LevelSelect,		MenuChange,				MenuItemDrawName),
-					OLDMENUITEM( 200, 176, LT_MENU_InGame7  /*"End level and show stats"	*/,	NULL,						NULL,					GoToStats,				MenuItemDrawName),
-					  
+					//OLDMENUITEM( 200, 112, LT_MENU_InGame27	/*"collision perspective"		*/,	&ColPerspective,			NULL,						SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame10		/*"ping update (secs)"			*/,	&PingFreqSlider,			NULL,						SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 144, LT_MENU_Options5		/*"Packets Per Second"			*/,	(void*)&PacketsSlider,		NULL,						SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 160, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,						&MENU_LevelSelect,			MenuChange,		MenuItemDrawName),
+					//OLDMENUITEM( 200, 176, LT_MENU_InGame7		/*"End level and show stats"	*/,	NULL,						NULL,						GoToStats,		MenuItemDrawName),
+					OLDMENUITEM( 200, 192, LT_MENU_ServerMenu2	/*"remove player"				*/, &ServerGamePlayersList,		ServerListPlayerSelected,	SelectList,		DrawList ),  
 
 			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
