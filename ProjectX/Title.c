@@ -15678,7 +15678,6 @@ void PrintTextItem (TEXTINFO *TextInfo)
 void ProcessTextItems (void)
 {
 	int i, teletypenum;
-	char temptext[64];
 	static float VidTextSfxPause = 0.0F;
 	static float theta = 0.0F;
 	uint8 r, g, b;

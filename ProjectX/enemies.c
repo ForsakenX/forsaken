@@ -7918,10 +7918,11 @@ static int read_EnemyType( FILE *f, char *last_token )
 	{
 		for( i = 0 ; i < ENEMY_LAST ; i++ )
 		{
-			if ( !_stricmp( last_token, tab[i].keyword ) )
-			{
+			if (
+				(tab[i].keyword != NULL) &&
+				(!_stricmp( last_token, tab[i].keyword ))
+			)
 				break;
-			}
 		}
 		if( i < ENEMY_LAST )
 		{
