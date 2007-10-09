@@ -3849,10 +3849,14 @@ BOOL LoadPickupsPositions( void )
   for( Count = 0; Count < MAXPICKUPTYPES; Count++ )
     MaxPickupType[ Count ] -= 1000;
 
-  /* if were not in single player mode */
-  if( !( ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
-       ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer ) ||
-       ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) ) )
+  /* if were not in the blow modes */
+  if(
+    !(
+	  ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
+      ( ChangeLevel_MyGameStatus == STATUS_SinglePlayer )			  ||
+      ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer)
+     )
+  )
   {
     /* for each of the primary weapons */
     for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
@@ -3880,15 +3884,12 @@ BOOL LoadPickupsPositions( void )
         MaxPickupType[ i ] = NumPrimaryPickups;
 
         /* if we are the game manager */
-        if(
-          /* if this is a server game and we are the server */
-          ( IsServerGame && IsServer ) ||
-          /* if its a p2p game and we are host */
-          ( !IsServerGame && IsHost )
-        )
+		if( IsHost )
+		{
           /* add N number of these pickups to the current regen list */
           /* N = (minimum that must exist) - (currently existing) */
           NumPrimWeapons[ Count ] += ( MaxPickupType[ i ] - NumPickupType[ i ] );
+		}
       }
     }
   }
@@ -4024,271 +4025,157 @@ void RegeneratePickups( void )
 		}
 	}
 
-	/* if not single player mode
-	   and regen delay time is up */
 
-	if( ( MyGameStatus != STATUS_SinglePlayer ) && ( RegenDelay == 0.0F ) )
+	// if single player mode
+	// or regen delay is at 0
+	if(
+		(MyGameStatus == STATUS_SinglePlayer) ||
+		(RegenDelay != 0.0F)
+	)
 	{
-		if( !IsServerGame )
+		// quit
+		return;
+	}
+
+	// regenerate ctf flags
+	if ( CaptureTheFlag )
+	{
+		while (
+			(FlagsToGenerate > 0) &&
+		    RegeneratePickup( PICKUP_Flag )
+		)
+			FlagsToGenerate--;
+	}
+
+	/* regenerate bounty */
+	if ( BountyHunt )
+	{
+		while ( BountyToGenerate > 0 && RegeneratePickup( PICKUP_Bounty ) )
+			BountyToGenerate--;
+	}
+
+	/* regenerate nitro */
+	if( NitroFuelUsed >= ( 50.0F - 0.1F ) )	// Floating point inacuaracy !!!!!
+	{
+		if( RegeneratePickup( PICKUP_Nitro ) )
 		{
-
-			/* regenerate ctf flags */
-			if ( CaptureTheFlag )
-			{
-				while ( FlagsToGenerate > 0 && RegeneratePickup( PICKUP_Flag ) )
-					FlagsToGenerate--;
-			}
-
-			/* regenerate bounty */
-			if ( BountyHunt )
-			{
-				while ( BountyToGenerate > 0 && RegeneratePickup( PICKUP_Bounty ) )
-					BountyToGenerate--;
-			}
-
-			/* regenerate nitro */
-			if( NitroFuelUsed >= ( 50.0F - 0.1F ) )	// Floating point inacuaracy !!!!!
-			{
-				if( RegeneratePickup( PICKUP_Nitro ) )
-				{
-					if( NitroFuelUsed <= 50.0F ) NitroFuelUsed = 0.0F;
-					else NitroFuelUsed -= 50.0F;
-				}
-			}
-
-			/* regen primaries */
-			for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
-			{
-				if( NumPrimWeapons[ Count ] )
-				{
-					if( RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) ) )
-						NumPrimWeapons[ Count ]--;
-				}
-			}
-
-			/* regen power pods */
-			if( NumPowerPods > 0 )
-			{
-				if( RegeneratePickup( PICKUP_PowerPod ) ) NumPowerPods--;
-			}
-
-			/* host controls regenerating ammo
-			   if overall ammo is lower than the level minumum */
-
-			if( IsHost )
-			{
-				if( NumPickupType[ PICKUP_GeneralAmmo ] < MaxPickupType[ PICKUP_GeneralAmmo ] )
-				{
-					RegeneratePickup( PICKUP_GeneralAmmo );
-				}
-			
-				if( NumPickupType[ PICKUP_SussGunAmmo ] < MaxPickupType[ PICKUP_SussGunAmmo ] )
-				{
-					RegeneratePickup( PICKUP_SussGunAmmo );
-				}
-			
-				if( NumPickupType[ PICKUP_PyroliteAmmo ] < MaxPickupType[ PICKUP_PyroliteAmmo ] )
-				{
-					RegeneratePickup( PICKUP_PyroliteAmmo );
-				}
-			}
-
-			/* regenerate golden */
-			if( NumSuperNashrams )
-			{
-				if( RegeneratePickup( PICKUP_GoldenPowerPod ) ) NumSuperNashrams--;
-			}
-
-			if( NumStealths )
-			{
-				if( RegeneratePickup( PICKUP_Mantle ) ) NumStealths--;
-			}
-
-			if( NumInvuls )
-			{
-				if( RegeneratePickup( PICKUP_Inv ) ) NumInvuls--;
-			}
-
-			if( NumOrbs )
-			{
-				if( RegeneratePickup( PICKUP_Orb ) ) NumOrbs--;
-			}
-
-			if( SecAmmoUsed[ SOLARISMISSILE ] >= 3 )
-			{
-				if( RegeneratePickup( PICKUP_HeatseakerPickup ) ) SecAmmoUsed[ SOLARISMISSILE ] -= 3;
-			}
-
-			if( SecAmmoUsed[ THIEFMISSILE ] )
-			{
-				if( RegeneratePickup( PICKUP_Thief ) ) SecAmmoUsed[ THIEFMISSILE ] --;
-			}
-
-			if( SecAmmoUsed[ SCATTERMISSILE ] )
-			{
-				if( RegeneratePickup( PICKUP_Scatter ) ) SecAmmoUsed[ SCATTERMISSILE ]--;
-			}
-
-			if( SecAmmoUsed[ GRAVGONMISSILE ] )
-			{
-				if( RegeneratePickup( PICKUP_Gravgon ) ) SecAmmoUsed[ GRAVGONMISSILE ]--;
-			}
-
-			if( SecAmmoUsed[ MULTIPLEMISSILE ] >= 50  )
-			{
-				if( RegeneratePickup( PICKUP_Launcher ) ) SecAmmoUsed[ MULTIPLEMISSILE ] -= 50;
-			}
-
-			if( SecAmmoUsed[ TITANSTARMISSILE ] )
-			{
-				if( RegeneratePickup( PICKUP_TitanStar ) ) SecAmmoUsed[ TITANSTARMISSILE ]--;
-			}
-
-			if( SecAmmoUsed[ PURGEMINE ] >= 3 )
-			{
-				if( RegeneratePickup( PICKUP_PurgePickup ) ) SecAmmoUsed[ PURGEMINE ] -= 3;
-			}
-
-			if( SecAmmoUsed[ PINEMINE ] >= 3 )
-			{
-				if( RegeneratePickup( PICKUP_PinePickup ) ) SecAmmoUsed[ PINEMINE ] -= 3;
-			}
-
-			if( SecAmmoUsed[ QUANTUMMINE ] )
-			{
-				if( RegeneratePickup( PICKUP_QuantumPickup ) ) SecAmmoUsed[ QUANTUMMINE ]--;
-			}
-
-			if( SecAmmoUsed[ SPIDERMINE ] >= 3 )
-			{
-				if( RegeneratePickup( PICKUP_SpiderPod ) ) SecAmmoUsed[ SPIDERMINE ]--;
-			}
-		}
-		else
-		{
-			if( IsServer )
-			{
-				if ( CaptureTheFlag )
-				{
-					while ( FlagsToGenerate > 0 && RegeneratePickup( PICKUP_Flag ) )
-						FlagsToGenerate--;
-				}
-
-				if ( BountyHunt )
-				{
-					while ( BountyToGenerate > 0 && RegeneratePickup( PICKUP_Bounty ) )
-						BountyToGenerate--;
-				}
-
-				if( Host_NitroFuelUsed >= ( 50.0F - 0.1F ) )					// Floating point inacuaracy !!!!!
-				{
-					if( RegeneratePickup( PICKUP_Nitro ) )
-					{
-						if( Host_NitroFuelUsed <= 50.0F ) Host_NitroFuelUsed = 0.0F;
-						else Host_NitroFuelUsed -= 50.0F;
-					}
-				}
-
-				for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
-				{
-					if( NumPrimWeapons[ Count ] )
-					{
-						if( RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) ) ) NumPrimWeapons[ Count ]--;
-					}
-				}
-
-				if( NumPowerPods > 0 )
-				{
-					if( RegeneratePickup( PICKUP_PowerPod ) ) NumPowerPods--;
-				}
-
-				if( NumPickupType[ PICKUP_GeneralAmmo ] < MaxPickupType[ PICKUP_GeneralAmmo ] )
-				{
-					RegeneratePickup( PICKUP_GeneralAmmo );
-				}
-				
-				if( NumPickupType[ PICKUP_SussGunAmmo ] < MaxPickupType[ PICKUP_SussGunAmmo ] )
-				{
-					RegeneratePickup( PICKUP_SussGunAmmo );
-				}
-				
-				if( NumPickupType[ PICKUP_PyroliteAmmo ] < MaxPickupType[ PICKUP_PyroliteAmmo ] )
-				{
-					RegeneratePickup( PICKUP_PyroliteAmmo );
-				}
-
-				if( NumSuperNashrams )
-				{
-					if( RegeneratePickup( PICKUP_GoldenPowerPod ) ) NumSuperNashrams--;
-				}
-
-				if( NumStealths )
-				{
-					if( RegeneratePickup( PICKUP_Mantle ) ) NumStealths--;
-				}
-
-				if( NumInvuls )
-				{
-					if( RegeneratePickup( PICKUP_Inv ) ) NumInvuls--;
-				}
-
-				if( NumOrbs )
-				{
-					if( RegeneratePickup( PICKUP_Orb ) ) NumOrbs--;
-				}
-
-				if( Host_SecAmmoUsed[ SOLARISMISSILE ] >= 3 )
-				{
-					if( RegeneratePickup( PICKUP_HeatseakerPickup ) ) Host_SecAmmoUsed[ SOLARISMISSILE ] -= 3;
-				}
-
-				if( Host_SecAmmoUsed[ THIEFMISSILE ] )
-				{
-					if( RegeneratePickup( PICKUP_Thief ) ) Host_SecAmmoUsed[ THIEFMISSILE ] --;
-				}
-
-				if( Host_SecAmmoUsed[ SCATTERMISSILE ] )
-				{
-					if( RegeneratePickup( PICKUP_Scatter ) ) Host_SecAmmoUsed[ SCATTERMISSILE ]--;
-				}
-
-				if( Host_SecAmmoUsed[ GRAVGONMISSILE ] )
-				{
-					if( RegeneratePickup( PICKUP_Gravgon ) ) Host_SecAmmoUsed[ GRAVGONMISSILE ]--;
-				}
-
-				if( Host_SecAmmoUsed[ MULTIPLEMISSILE ] >= 50  )
-				{
-					if( RegeneratePickup( PICKUP_Launcher ) ) Host_SecAmmoUsed[ MULTIPLEMISSILE ] -= 50;
-				}
-
-				if( Host_SecAmmoUsed[ TITANSTARMISSILE ] )
-				{
-					if( RegeneratePickup( PICKUP_TitanStar ) ) Host_SecAmmoUsed[ TITANSTARMISSILE ]--;
-				}
-
-				if( Host_SecAmmoUsed[ PURGEMINE ] >= 3 )
-				{
-					if( RegeneratePickup( PICKUP_PurgePickup ) ) Host_SecAmmoUsed[ PURGEMINE ] -= 3;
-				}
-
-				if( Host_SecAmmoUsed[ PINEMINE ] >= 3 )
-				{
-					if( RegeneratePickup( PICKUP_PinePickup ) ) Host_SecAmmoUsed[ PINEMINE ] -= 3;
-				}
-
-				if( Host_SecAmmoUsed[ QUANTUMMINE ] )
-				{
-					if( RegeneratePickup( PICKUP_QuantumPickup ) ) Host_SecAmmoUsed[ QUANTUMMINE ]--;
-				}
-
-				if( Host_SecAmmoUsed[ SPIDERMINE ] >= 3 )
-				{
-					if( RegeneratePickup( PICKUP_SpiderPod ) ) Host_SecAmmoUsed[ SPIDERMINE ]--;
-				}
-			}
+			if( NitroFuelUsed <= 50.0F ) NitroFuelUsed = 0.0F;
+			else NitroFuelUsed -= 50.0F;
 		}
 	}
+
+	/* regen primaries */
+	for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
+	{
+		if(
+			NumPrimWeapons[ Count ] &&
+			RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) )
+		)
+			NumPrimWeapons[ Count ]--;
+	}
+
+	/* regen power pods */
+	if(
+		NumPowerPods > 0 &&
+		RegeneratePickup( PICKUP_PowerPod )
+	)
+	{
+		NumPowerPods--;
+	}
+
+	/* host controls regenerating ammo
+	   if overall ammo is lower than the level minumum */
+
+	if( IsHost )
+	{
+		if( NumPickupType[ PICKUP_GeneralAmmo ] < MaxPickupType[ PICKUP_GeneralAmmo ] )
+		{
+			RegeneratePickup( PICKUP_GeneralAmmo );
+		}
+
+		if( NumPickupType[ PICKUP_SussGunAmmo ] < MaxPickupType[ PICKUP_SussGunAmmo ] )
+		{
+			RegeneratePickup( PICKUP_SussGunAmmo );
+		}
+
+		if( NumPickupType[ PICKUP_PyroliteAmmo ] < MaxPickupType[ PICKUP_PyroliteAmmo ] )
+		{
+			RegeneratePickup( PICKUP_PyroliteAmmo );
+		}
+	}
+
+	/* regenerate golden */
+	if( NumSuperNashrams )
+	{
+		if( RegeneratePickup( PICKUP_GoldenPowerPod ) ) NumSuperNashrams--;
+	}
+
+	if( NumStealths )
+	{
+		if( RegeneratePickup( PICKUP_Mantle ) ) NumStealths--;
+	}
+
+	if( NumInvuls )
+	{
+		if( RegeneratePickup( PICKUP_Inv ) ) NumInvuls--;
+	}
+
+	if( NumOrbs )
+	{
+		if( RegeneratePickup( PICKUP_Orb ) ) NumOrbs--;
+	}
+
+	if( SecAmmoUsed[ SOLARISMISSILE ] >= 3 )
+	{
+		if( RegeneratePickup( PICKUP_HeatseakerPickup ) )
+			SecAmmoUsed[ SOLARISMISSILE ] -= 3;
+	}
+
+	if( SecAmmoUsed[ THIEFMISSILE ] )
+	{
+		if( RegeneratePickup( PICKUP_Thief ) ) SecAmmoUsed[ THIEFMISSILE ] --;
+	}
+
+	if( SecAmmoUsed[ SCATTERMISSILE ] )
+	{
+		if( RegeneratePickup( PICKUP_Scatter ) ) SecAmmoUsed[ SCATTERMISSILE ]--;
+	}
+
+	if( SecAmmoUsed[ GRAVGONMISSILE ] )
+	{
+		if( RegeneratePickup( PICKUP_Gravgon ) ) SecAmmoUsed[ GRAVGONMISSILE ]--;
+	}
+
+	if( SecAmmoUsed[ MULTIPLEMISSILE ] >= 50  )
+	{
+		if( RegeneratePickup( PICKUP_Launcher ) ) SecAmmoUsed[ MULTIPLEMISSILE ] -= 50;
+	}
+
+	if( SecAmmoUsed[ TITANSTARMISSILE ] )
+	{
+		if( RegeneratePickup( PICKUP_TitanStar ) ) SecAmmoUsed[ TITANSTARMISSILE ]--;
+	}
+
+	if( SecAmmoUsed[ PURGEMINE ] >= 3 )
+	{
+		if( RegeneratePickup( PICKUP_PurgePickup ) ) SecAmmoUsed[ PURGEMINE ] -= 3;
+	}
+
+	if( SecAmmoUsed[ PINEMINE ] >= 3 )
+	{
+		if( RegeneratePickup( PICKUP_PinePickup ) ) SecAmmoUsed[ PINEMINE ] -= 3;
+	}
+
+	if( SecAmmoUsed[ QUANTUMMINE ] )
+	{
+		if( RegeneratePickup( PICKUP_QuantumPickup ) ) SecAmmoUsed[ QUANTUMMINE ]--;
+	}
+
+	if( SecAmmoUsed[ SPIDERMINE ] >= 3 )
+	{
+		if( RegeneratePickup( PICKUP_SpiderPod ) ) SecAmmoUsed[ SPIDERMINE ]--;
+	}
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -4357,7 +4244,11 @@ void RegenerateQuedPickups( void )
 	SHORTKILLPICKUP			*	KP_Ptr;
 	SHORTSERVERKILLPICKUP	*	SKP_Ptr;
 
-	if( !Ships[ WhoIAm ].Pickups && !Ships[ WhoIAm ].RegenSlots && NumMissedPickups )
+	if(
+		(!Ships[ WhoIAm ].Pickups)		&&
+		(!Ships[ WhoIAm ].RegenSlots)	&&
+		(NumMissedPickups)
+	)
 	{
 		for( Count = 0; Count < NumMissedPickups; Count++ )
 		{
@@ -4405,8 +4296,6 @@ void RegenerateQuedPickups( void )
 	Input		:	uint16		Pickup Type
 	Output		:	BOOL		True/False
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-//BOOL	UseFarthest = TRUE;
-BOOL	UseFarthest = FALSE;
 
 BOOL RegeneratePickup( uint16 Type )
 {
@@ -4778,186 +4667,91 @@ void DisablePickupLights( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void AddPickupToRegen( uint16 Type )
 {
-	if( !IsServerGame )
+	switch( Type )
 	{
-		switch( Type )
-		{
-			case PICKUP_Trojax:
-				NumPrimWeapons[ TROJAX ]++;
-				break;
+		case PICKUP_Trojax:
+			NumPrimWeapons[ TROJAX ]++;
+			break;
 
-			case PICKUP_Pyrolite:
-				NumPrimWeapons[ PYROLITE_RIFLE ]++;
-				break;
+		case PICKUP_Pyrolite:
+			NumPrimWeapons[ PYROLITE_RIFLE ]++;
+			break;
 
-			case PICKUP_Transpulse:
-				NumPrimWeapons[ TRANSPULSE_CANNON ]++;
-				break;
+		case PICKUP_Transpulse:
+			NumPrimWeapons[ TRANSPULSE_CANNON ]++;
+			break;
 
-			case PICKUP_SussGun:
-				NumPrimWeapons[ SUSS_GUN ]++;
-				break;
+		case PICKUP_SussGun:
+			NumPrimWeapons[ SUSS_GUN ]++;
+			break;
 
-			case PICKUP_Laser:
-				NumPrimWeapons[ LASER ]++;
-				break;
+		case PICKUP_Laser:
+			NumPrimWeapons[ LASER ]++;
+			break;
 
-			case PICKUP_PowerPod:
-				NumPowerPods++;
-				break;
+		case PICKUP_PowerPod:
+			NumPowerPods++;
+			break;
 
-			case PICKUP_GoldenPowerPod:
-				NumSuperNashrams++;
-				break;
+		case PICKUP_GoldenPowerPod:
+			NumSuperNashrams++;
+			break;
 
-			case PICKUP_PurgePickup:
-				SecAmmoUsed[ PURGEMINE ] += 3;
-				break;
+		case PICKUP_PurgePickup:
+			SecAmmoUsed[ PURGEMINE ] += 3;
+			break;
 
-			case PICKUP_PinePickup:
-				SecAmmoUsed[ PINEMINE ] += 3;
-				break;
+		case PICKUP_PinePickup:
+			SecAmmoUsed[ PINEMINE ] += 3;
+			break;
 
-			case PICKUP_QuantumPickup:
-				SecAmmoUsed[ QUANTUMMINE ] += 1;
-				break;
+		case PICKUP_QuantumPickup:
+			SecAmmoUsed[ QUANTUMMINE ] += 1;
+			break;
 
-			case PICKUP_SpiderPod:
-				SecAmmoUsed[ SPIDERMINE ] += 3;
-				break;
+		case PICKUP_SpiderPod:
+			SecAmmoUsed[ SPIDERMINE ] += 3;
+			break;
 
-			case PICKUP_Gravgon:
-				SecAmmoUsed[ GRAVGONMISSILE ] += 1;
-				break;
+		case PICKUP_Gravgon:
+			SecAmmoUsed[ GRAVGONMISSILE ] += 1;
+			break;
 
-			case PICKUP_TitanStar:
-				SecAmmoUsed[ TITANSTARMISSILE ] += 1;
-				break;
+		case PICKUP_TitanStar:
+			SecAmmoUsed[ TITANSTARMISSILE ] += 1;
+			break;
 
-			case PICKUP_Scatter:
-				SecAmmoUsed[ SCATTERMISSILE ] += 1;
-				break;
+		case PICKUP_Scatter:
+			SecAmmoUsed[ SCATTERMISSILE ] += 1;
+			break;
 
-			case PICKUP_Thief:
-				SecAmmoUsed[ THIEFMISSILE ] += 1;
-				break;
+		case PICKUP_Thief:
+			SecAmmoUsed[ THIEFMISSILE ] += 1;
+			break;
 
-			case PICKUP_Launcher:
-				SecAmmoUsed[ MULTIPLEMISSILE ] += 50;
-				break;
+		case PICKUP_Launcher:
+			SecAmmoUsed[ MULTIPLEMISSILE ] += 50;
+			break;
 
-			case PICKUP_HeatseakerPickup:
-				SecAmmoUsed[ SOLARISMISSILE ] += 3;
-				break;
+		case PICKUP_HeatseakerPickup:
+			SecAmmoUsed[ SOLARISMISSILE ] += 3;
+			break;
 
-			case PICKUP_Mugs:
-				SecAmmoUsed[ MUGMISSILE ] += 3;
-				break;
+		case PICKUP_Mugs:
+			SecAmmoUsed[ MUGMISSILE ] += 3;
+			break;
 
-			case PICKUP_Mantle:
-				NumStealths++;
-				break;
+		case PICKUP_Mantle:
+			NumStealths++;
+			break;
 
-			case PICKUP_Inv:
-				NumInvuls++;
-				break;
+		case PICKUP_Inv:
+			NumInvuls++;
+			break;
 
-			case PICKUP_Orb:
-				NumOrbs++;
-				break;
-		}
-	}
-	else
-	{
-		if( IsServer )
-		{
-			switch( Type )
-			{
-				case PICKUP_Trojax:
-					NumPrimWeapons[ TROJAX ]++;
-					break;
-
-				case PICKUP_Pyrolite:
-					NumPrimWeapons[ PYROLITE_RIFLE ]++;
-					break;
-
-				case PICKUP_Transpulse:
-					NumPrimWeapons[ TRANSPULSE_CANNON ]++;
-					break;
-
-				case PICKUP_SussGun:
-					NumPrimWeapons[ SUSS_GUN ]++;
-					break;
-
-				case PICKUP_Laser:
-					NumPrimWeapons[ LASER ]++;
-					break;
-
-				case PICKUP_PowerPod:
-					NumPowerPods++;
-					break;
-
-				case PICKUP_GoldenPowerPod:
-					NumSuperNashrams++;
-					break;
-
-				case PICKUP_PurgePickup:
-					Host_SecAmmoUsed[ PURGEMINE ] += 3;
-					break;
-
-				case PICKUP_PinePickup:
-					Host_SecAmmoUsed[ PINEMINE ] += 3;
-					break;
-
-				case PICKUP_QuantumPickup:
-					Host_SecAmmoUsed[ QUANTUMMINE ] += 1;
-					break;
-
-				case PICKUP_SpiderPod:
-					Host_SecAmmoUsed[ SPIDERMINE ] += 3;
-					break;
-
-				case PICKUP_Gravgon:
-					Host_SecAmmoUsed[ GRAVGONMISSILE ] += 1;
-					break;
-
-				case PICKUP_TitanStar:
-					Host_SecAmmoUsed[ TITANSTARMISSILE ] += 1;
-					break;
-
-				case PICKUP_Scatter:
-					Host_SecAmmoUsed[ SCATTERMISSILE ] += 1;
-					break;
-
-				case PICKUP_Thief:
-					Host_SecAmmoUsed[ THIEFMISSILE ] += 1;
-					break;
-
-				case PICKUP_Launcher:
-					Host_SecAmmoUsed[ MULTIPLEMISSILE ] += 50;
-					break;
-
-				case PICKUP_HeatseakerPickup:
-					Host_SecAmmoUsed[ SOLARISMISSILE ] += 3;
-					break;
-
-				case PICKUP_Mugs:
-					Host_SecAmmoUsed[ MUGMISSILE ] += 3;
-					break;
-
-				case PICKUP_Mantle:
-					NumStealths++;
-					break;
-
-				case PICKUP_Inv:
-					NumInvuls++;
-					break;
-
-				case PICKUP_Orb:
-					NumOrbs++;
-					break;
-			}
-		}
+		case PICKUP_Orb:
+			NumOrbs++;
+			break;
 	}
 }
 
@@ -5266,8 +5060,7 @@ BOOL FilterPickup( uint16 PickupType )
 		( ChangeLevel_MyGameStatus == STATUS_PreStartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayerSynch ) ||
 		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostInitView ) ||
-		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostPlayingDemo ) //||
-		//( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostAttractMode	) 
+		( ChangeLevel_MyGameStatus == STATUS_ChangeLevelPostPlayingDemo )
 		)
 	{
 		// valid pickup type
