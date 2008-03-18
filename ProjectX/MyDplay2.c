@@ -159,8 +159,14 @@ HRESULT SetupConnection(HINSTANCE hInstance)
 			goto FAILURE;
 		*/
 		
-		//if (!(SetThreadPriority( ghReceiveThread, THREAD_PRIORITY_BELOW_NORMAL )) )
-		//	DebugPrintf("Unable to set thread priority\n");
+/*
+ * Change made by Methods
+ * Tuesday March 18 07:42pm
+ * Uncommented bellow lines
+ * Attempt to find networking issue affecting entire game play
+ */
+		if (!(SetThreadPriority( ghReceiveThread, THREAD_PRIORITY_BELOW_NORMAL )) )
+			DebugPrintf("Unable to set thread priority\n");
 
 
 		
