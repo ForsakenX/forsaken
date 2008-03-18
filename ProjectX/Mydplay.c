@@ -2073,6 +2073,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}else{
 				FloatPnt = (float*) ( &MsgPnt[ BigOffset + RealPacketSize[MsgPnt[BigOffset] ] ]  );
 
+				// access viloation
+				// GlobalFramelogAddtion is at 0000000
 				GlobalFramelagAddition = *FloatPnt;
 
 				if( GlobalFramelagAddition < 0.0F || GlobalFramelagAddition > 300.0F )
