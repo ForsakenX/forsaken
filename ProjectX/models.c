@@ -129,6 +129,8 @@ extern	BOOL	SoftwareVersion;
 
 // statistics (stats.c)
 extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
+extern void UpdateKillCount(int Killer);															// update a player's kill counter for this life
+extern void ResetKillCount(int Killer);															// reset a player's kill counter for next life
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Globals
@@ -4871,11 +4873,14 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 												Ships[ WhoIAm ].Timer = 0.0F;
 												PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-												// update stats 6 - killed yourself with missile splash damage
+												// update stats 4 (stats.c) - killed yourself with missile splash damage
 												UpdateKillStats(WhoIAm,WhoIAm,WEPTYPE_Secondary, Weapon);
 												// killed yourself with missile splash damage (e.g. mfrl)
 												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 												AddMessageToQue( &tempstr[0] );
+												// (stats.c) reset kill counter for next life
+												ResetKillCount(WhoIAm);
+												
 												ShipDiedSend( WEPTYPE_Secondary, Weapon );
 											}
 
@@ -5069,10 +5074,13 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 			// i killed myself lolzers
 			if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 			{
-				// update stats 4 - i killed myself
+				// (stats.c) update stats 5 - i killed myself
 				UpdateKillStats(WhoIAm,WhoIAm,WeaponType,Weapon); 
 				PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 				sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // called in both multiplayer  & single player
+				// (stats.c) reset kill counter for next life
+				//ResetKillCount(WhoIAm);
+				UpdateKillCount(WhoIAm);
 			}
 			else
 			{
@@ -5095,10 +5103,14 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 							strcpy(&teamstr[0], "");
 						}
 
-						// update stats 5 - somebody killed me
+						// update stats 6 (stats.c) - somebody killed me
 						UpdateKillStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 
 						// print somebody killed you
 						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
+						// (stats.c) reset kill counter for next life
+						ResetKillCount(WhoIAm);
+						// (stats.c) update killer's kill counter
+						UpdateKillCount(Ships[WhoIAm].ShipThatLastKilledMe);
 					}
 					// wtf i died? why? please tell me!
 					else
@@ -5327,6 +5339,17 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
 	return TRUE;
 }
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:	Returns a player's short name...
+	Input		:	 player id
+	Output		:	player's short name
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+char *GetName(int Player)
+{
+	return &Names[Player][0];
+}
+
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Get .MXA File Bouning Box

@@ -2952,9 +2952,6 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 }
 
-
-
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	Is there a Bike near this restart point...
 	Input		:	nothing

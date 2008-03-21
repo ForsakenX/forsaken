@@ -86,12 +86,14 @@
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
+extern GetName(int Player);															// returns player's short name from Ships.c
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
 int	SecondaryStats[MAX_PLAYERS+1][TOTALSECONDARYWEAPONS];		// SecondaryStats[Killer][SecondaryWeaponType];
 int	KillStats[MAX_PLAYERS+1][MAX_PLAYERS+1];								// KillStats[Killer][Victim];
 int BonusStats[MAX_PLAYERS+1];
+int KillCounter[MAX_PLAYERS+1];													// number of kills made during this life
 int x, z;																						// index counters
 
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITOR" };
@@ -219,7 +221,21 @@ void ResetAllStats()
 
 		// reset all player's bonus stats
 		BonusStats[x] = 0;
+
+		// reset all player's sequential kill counters
+		ResetKillCount(x);
 	}
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Reset each player's kill counter for this life...
+  Input   :   killer id
+  Output    :   nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Reset this life's kill counter */
+void ResetKillCount(int Killer)
+{
+	KillCounter[Killer] = 0;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -237,6 +253,67 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 		PrimaryStats[Killer][Weapon]++;
 	else if (WeaponType == WEPTYPE_Secondary)
 		SecondaryStats[Killer][Weapon]++;
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Update Sequential Kill Count and displays messages as appropriate...
+  Input   :   killer id
+  Output    :   nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Update number of kills made during this life */
+void UpdateKillCount(int Killer)
+{
+	char	tempstr[256];
+	char	prefix[256];
+
+	// update counter
+	KillCounter[Killer]++;
+
+	// name of killer
+	if(Killer == WhoIAm)
+		strcpy(prefix, "YOU ARE");
+	else
+	{
+		strcpy(prefix, GetName(Killer));
+		strcat(prefix, " IS");
+	}
+
+	// check for milestone achievements
+	switch(KillCounter[Killer])
+	{
+		case 3:	
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A KILLING SPREE (3 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 5:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A RAMPAGE (5 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 8:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "DOMINATING (8 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 11:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "UNSTOPPABLE (11 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 15:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "SLAUGHTERING (15 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 20:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (20 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 25:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON FIRE (25 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+		case 30:
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (30 KILLS)" );
+   					AddMessageToQue( (char*)&tempstr[0] );
+					break;
+	}
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ

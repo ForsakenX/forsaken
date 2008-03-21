@@ -53,6 +53,8 @@ extern	BOOL IsServerGame;
 extern BOOL IsLobbyLaunched;
 extern BOOL NoMenuBack;
 
+// (stats.c)
+extern int GetScoreStats(int Player); // get individual player's score
 
 // TEMP?
 extern char MissionTextNames[MAXLEVELS][128];
@@ -187,7 +189,7 @@ void UpdatePlayerInfo( void )
 	{
 		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) || ( GameStatus[ i ] == STATUS_StartingMultiplayer ) )
 		{
-			// IN-GAME-SCORE!
+			// never called in multi?
 			PlayerInfo[ i ].CurScore = Ships[ i ].Kills;
 
 			// copy names / pings here ( inside critical section ) in case of simultaneous access by seperate threads
