@@ -208,6 +208,7 @@ extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
 extern	BOOL		JustGenerated;
 extern	BOOL		JustPickedUpShield;
 
+extern int UpdateBonusStats(int Player, int Points);
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Bike Modifiers.....
@@ -933,6 +934,9 @@ BOOL ProcessShips()
 						BountyTime += framelag / 60.0F;
 						if ( BountyBonusInterval > 0 && BountyTime >= BountyBonusInterval )
 						{
+							// Bounty Hunt Points (stats.c)
+							UpdateBonusStats(WhoIAm,(int16) floor( BountyTime / BountyBonusInterval ));
+							// normal update
 							ShipPnt->Kills += (int16) floor( BountyTime / BountyBonusInterval );
 							BountyTime = FMOD( BountyTime, BountyBonusInterval );
 						}
@@ -1214,7 +1218,10 @@ BOOL ProcessShips()
 								PickupsGot[ PICKUP_Flag ] = 0;
 								Ships[ i ].Object.Flags &= ~SHIP_CarryingFlag;
 								FlagsToGenerate++;
+								// normal update -- remove later...
 								Ships[ i ].Kills += GoalScore;
+								// Flag Chase Scored -- Update Statistics (stats.c) 
+								UpdateBonusStats(i,GoalScore);
 								AddMessageToQue( TEAM_SCORED,
 									TeamName[ TeamNumber[ i ] ] );
 
@@ -1260,7 +1267,10 @@ BOOL ProcessShips()
 									}
 									if ( score )
 									{
+										// normal update
 										Ships[ i ].Kills += score;
+										// CTF Flag Scored -- Update Statistics (stats.c) 
+										UpdateBonusStats(i,score);
 										AddMessageToQue( TEAM_SCORED,
 											TeamName[ TeamNumber[ i ] ] );
 										
@@ -2171,6 +2181,8 @@ int16 DoDamage( BOOL OverrideInvul )
 						{
 							// killed myself....Doh
 							Ships[WhoIAm].Kills--;
+							// stats.c (not sure when this is callled or what weapon caused it??)
+							//UpdateKillStats(WhoIAm, WhoIAm, int WeaponType, int Weapon)
 						}
 						return 1;
 					}

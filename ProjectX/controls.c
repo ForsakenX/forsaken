@@ -218,6 +218,7 @@ float FlashTextActive = 0.0F;
 
 BOOL FullRearView = FALSE;
 BOOL Headlights = FALSE;
+BOOL ShowStats = FALSE;
 
 void FlashMenuText( char *text, float activetime, uint16 sfx )
 {

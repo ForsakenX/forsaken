@@ -2743,7 +2743,6 @@ MENU	MENU_Keyboard =
 #endif
 		KDEF( 2, 200, 312,LT_MENU_Keyboard1a /*"headlights"*/, KDheadlights),
 		KDEF( 2, 200, 328,LT_MENU_Keyboard1b /*"full rear view"*/, KDfull_rearview),
-
 		// 4th page
 		
 		KDEF( 3, 200, 112, LT_MENU_Keyboard37 /*"Mug Missile"*/, KDselect_secondary[ MUGMISSILE ] ),
@@ -3004,12 +3003,12 @@ void StoreThrottleSettings( MENUITEM *item );
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, InitInGameOptions, NULL, NULL, 0,
 	{
-		{ 200, 128, 0, 0, 0, LT_MENU_Options1 /*"Visuals"				*/, 0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
-		{ 200, 144, 0, 0, 0, LT_MENU_Options2 /*"Sound FX and Music"	*/, 0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
-		{ 200, 160, 0, 0, 0, LT_MENU_Options3 /*"Detail Levels"			*/, 0, 0, NULL,						&MENU_Detail,			MenuChange,		MenuItemDrawName,	NULL, 0 },
-		{ 200 ,176, 0, 0, 0, LT_MENU_Options4 /*"Show Frame Rate "		*/, 0, 0, &myglobs.bShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200 ,192, 0, 0, 0, LT_MENU_Options8 /*"Show Extra Info "		*/, 0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200 ,208, 0, 0, 0, LT_MENU_Options9 /*"Show Weapon Kills"		*/, 0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"						*/, 0, 0, NULL,									&MENU_Visuals,					MenuChange,	MenuItemDrawName,	NULL, 0 },
+		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"		*/, 0, 0, NULL,									&MENU_NEW_InGameSound,	MenuChange,	MenuItemDrawName,	NULL, 0 },
+		{ 200, 160, 0, 0, 0, LT_MENU_Options3	/*"Detail Levels"				*/, 0, 0, NULL,									&MENU_Detail,						MenuChange,	MenuItemDrawName,	NULL, 0 },
+		{ 200 ,176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "		*/, 0, 0, &myglobs.bShowFrameRate,	NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200 ,192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "			*/, 0, 0, &myglobs.bShowInfo,			NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200 ,208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"		*/, 0, 0, &ShowWeaponKills,				NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
 		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}

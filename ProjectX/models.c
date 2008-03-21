@@ -128,7 +128,7 @@ extern	BOOL	SoftwareVersion;
 #endif
 
 // statistics (stats.c)
-extern void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
+extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals
@@ -4872,7 +4872,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												Ships[ WhoIAm ].Timer = 0.0F;
 												PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 												// update stats 6 - killed yourself with missile splash damage
-												UpdateStats(WhoIAm,WhoIAm,WEPTYPE_Secondary, Weapon);
+												UpdateKillStats(WhoIAm,WhoIAm,WEPTYPE_Secondary, Weapon);
 												// killed yourself with missile splash damage (e.g. mfrl)
 												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
 												AddMessageToQue( &tempstr[0] );
@@ -5070,7 +5070,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 			if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 			{
 				// update stats 4 - i killed myself
-				UpdateStats(WhoIAm,WhoIAm,WeaponType,Weapon); 
+				UpdateKillStats(WhoIAm,WhoIAm,WeaponType,Weapon); 
 				PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 				sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // called in both multiplayer  & single player
 			}
@@ -5096,7 +5096,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 						}
 
 						// update stats 5 - somebody killed me
-						UpdateStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 
+						UpdateKillStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 
 						// print somebody killed you
 						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
 					}

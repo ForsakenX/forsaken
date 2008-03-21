@@ -536,7 +536,7 @@ extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	int16	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
 
 // statistics (stats.c)
-extern void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
+extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
 BOOL CheckForName( BYTE Player )
 {
@@ -3571,7 +3571,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						strcpy(&teamstr[0], "");
 
 					// Update Stats 1 - somebody killed me
-					UpdateStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
+					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// called in TOL OFF multiplayer!!
 					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
@@ -3693,7 +3693,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 
 				// update stats 2 -- you killed someone 
-   				UpdateStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
+   				UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
 			}
 			// if you were not who killed them
 			else
@@ -3718,7 +3718,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    				}
 
 				// make a note of who somebody killed
-   				UpdateStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); // update stats 3 -- somebody killed someone
+   				UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); // update stats 3 -- somebody killed someone
    			}
 		}
 

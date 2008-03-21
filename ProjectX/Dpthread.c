@@ -187,6 +187,7 @@ void UpdatePlayerInfo( void )
 	{
 		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) || ( GameStatus[ i ] == STATUS_StartingMultiplayer ) )
 		{
+			// IN-GAME-SCORE!
 			PlayerInfo[ i ].CurScore = Ships[ i ].Kills;
 
 			// copy names / pings here ( inside critical section ) in case of simultaneous access by seperate threads

@@ -1,9 +1,9 @@
 /*******************************************************************\
-*																	*
-*	stats.c															*
-*																	*
-*	Deals with all statistical related proceedures					*
-*																	*
+*																	
+*	stats.c														
+*																
+*	Deals with all statistical related proceedures				
+*																
 \*******************************************************************/
 
 #include "stats.h"
@@ -85,15 +85,16 @@
 #include "dpthread.h"
 
 /* external variables */
-extern  BYTE  TeamNumber[MAX_PLAYERS];									// which team each player is on
+extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
 
 /* internal variables */
-uint16	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
-uint16	SecondaryStats[MAX_PLAYERS+1][TOTALSECONDARYWEAPONS];			// SecondaryStats[Killer][SecondaryWeaponType];
-int16	Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];							// Stats[Killer][Victim];
-int x, z;																// index counters
+int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
+int	SecondaryStats[MAX_PLAYERS+1][TOTALSECONDARYWEAPONS];		// SecondaryStats[Killer][SecondaryWeaponType];
+int	KillStats[MAX_PLAYERS+1][MAX_PLAYERS+1];								// KillStats[Killer][Victim];
+int BonusStats[MAX_PLAYERS+1];
+int x, z;																						// index counters
 
-char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]		= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITOR" };
+char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITOR" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
 	
 
@@ -206,7 +207,7 @@ void ResetAllStats()
 	{
 		// reset all player's individual kill stats
 		for(z = 0; z < MAX_PLAYERS; z++)
-			Stats[x][z] = 0;
+			KillStats[x][z] = 0;
 
 		// reset all player's primary weapon kill stats
 		for(z = 0; z < MAXPRIMARYWEAPONS+1; z++)
@@ -215,19 +216,22 @@ void ResetAllStats()
 		// reset all player's secondary weapon kill stats
 		for(z= 0; z < TOTALSECONDARYWEAPONS; z++)
 			SecondaryStats[x][z] = 0;
+
+		// reset all player's bonus stats
+		BonusStats[x] = 0;
 	}
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Update Statistics...
+  Procedure :   Update Kill Statistics...
   Input   :   killer id, victim id, weapon type, weapon used
   Output    :   nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 /* Update Individual Kill and Weapon Kill Statistics */
-void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon)
+void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 {
 	// note who killed whom
-	Stats[Killer][Victim]++;
+	KillStats[Killer][Victim]++;
 	// note weapon used
 	if(WeaponType == WEPTYPE_Primary)
 		PrimaryStats[Killer][Weapon]++;
@@ -236,26 +240,76 @@ void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon)
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Get Individual Statistics...
+  Procedure :   Update Individual bonus statistics...
+  Input   :   player id, points scored
+  Output    :   nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Update Individual bonus statistics */
+void UpdateBonusStats(int Player, int Points)
+{
+	BonusStats[Player] += Points;
+}
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get Individual Kill Statistics...
   Input   :   killer id, victim id
   Output    :   amount of kills
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 /* Get An Individual Kill Statistic */
-int GetStats(int Killer, int Victim)
+int GetKillStats(int Killer, int Victim)
 {
 	// return the amount of kills on victim
-	return Stats[Killer][Victim];	
+	return KillStats[Killer][Victim];	
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Get Team Score...
-  Input   :   killer id
-  Output    :   total kills achieved by all players on the same team (excludes suicides and 'friendly kills')
+  Procedure :   Get a player's score...
+  Input   :   player id
+  Output    :   score
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-/* Get A Player's Total Kills */
-int GetTeamScore(int Killer)
+/* Get An Individual Score */
+int GetScoreStats(int Player)
 {
-	int TeamScore = 0; // team score
+	int score = 0;
+
+	// search all players
+	for(x = 0; x < MAX_PLAYERS; x++)
+	{
+		// add kills
+		if(x!=z && TeamNumber[x] != TeamNumber[z])
+			score += GetKillStats(Player,x);
+		// minus suicides and friendly kills
+		else
+			score -= GetKillStats(Player,x);
+	}
+
+	// add bonus points
+	score += GetBonusStats(Player);
+
+	// return an individual player's score
+	return score;
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get an individual's bonus statistics (e.g. flag or bounty points)...
+  Input   :   player id
+  Output    :   bonus points
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Get an individual's bonus statistics */
+int GetBonusStats(int Player)
+{
+	// return an individual player's bonus points
+	return BonusStats[Player];	
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get Team Kills...
+  Input   :   killer id
+  Output    :   total kills achieved by all players on the same team (minuses suicides and 'friendly kills')
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Get A Player's Team's Total Kills */
+int GetTeamKills(int Killer)
+{
+	int TeamKills = 0; // total kills team made
 
 	// search all players
 	for(x = 0; x < MAX_PLAYERS; x++)
@@ -266,11 +320,39 @@ int GetTeamScore(int Killer)
 			// search all the players that my team mate or i killed
 			for(z = 0; z < MAX_PLAYERS; z++)
 			{
-				// don't add suicides 'or friendly kills'
+				// add kills
 				if(x!=z && TeamNumber[x] != TeamNumber[z])
-					TeamScore += GetStats(x,z);	// add kills
+					TeamKills += GetKillStats(x,z);
+				// minus suicides and friendly kills
+				else
+					TeamKills -= GetKillStats(x,z);
 			}
 		}
+	}
+
+	return TeamKills;
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get Team Score (includes kills)...
+  Input   :   killer id
+  Output    :   total score achieved by all players on the same team (minuses suicides and 'friendly kills')
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Get A Team's Total Score */
+int GetTeamScore(int Player)
+{
+	int TeamScore = 0; // total score team achieved
+
+	// for every player
+	for(x = 0; x < MAX_PLAYERS; x++)
+	{
+		// add my team's scores
+		if(TeamNumber[Player] == TeamNumber[x])
+		{
+			for(z = 0; z < MAX_PLAYERS; z++)
+				TeamScore += GetScoreStats(z);
+		}
+
 	}
 
 	return TeamScore;
@@ -291,7 +373,7 @@ int GetTotalKills(int Killer)
 	{
 		// don't add suicides
 		if(Killer!=x)
-			kills += GetStats(Killer,x);	// add kills
+			kills += GetKillStats(Killer,x);	// add kills
 	}
 
 	return kills;
@@ -309,7 +391,7 @@ int GetTotalDeaths(int Victim)
 
 	// sum deaths
 	for(x = 0; x < MAX_PLAYERS; x++)
-		deaths += GetStats(x,Victim);
+		deaths += GetKillStats(x,Victim);
 
 	return deaths;
 }
