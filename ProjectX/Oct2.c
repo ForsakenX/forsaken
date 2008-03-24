@@ -5079,8 +5079,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     {
       lpPalette = DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
       ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-      d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
-      d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
+      LastError = d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
+      LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
     }
   
 
@@ -5129,20 +5129,20 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     // Create the offscreen surface, by loading our bitmap
       lpDDSOne = DDLoadBitmap( lpDD, "data\\pictures\\panel.bmp" , 0, 0 );
     ddpal =  DDLoadPalette( lpDD , "data\\pictures\\panel.bmp");
-    lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
     DDSetColorKey( lpDDSOne, RGB_MAKE( 0 , 0 , 0 ) );
     // Create the offscreen surface, by loading our bitmap.
     if( ( ModeCase != -1 ) && ( DrawPanel == FALSE ) && DrawSimplePanel )
     {
       lpDDSThree = DDLoadBitmap( lpDD, (char*) &PanelNames[ModeCase] , 0, 0 );
       ddpal =  DDLoadPalette( lpDD , (char*) &PanelNames[ModeCase]);
-      lpDDSThree->lpVtbl->SetPalette( lpDDSThree , ddpal );
+      LastError = lpDDSThree->lpVtbl->SetPalette( lpDDSThree , ddpal );
       DDSetColorKey( lpDDSThree, RGB_MAKE( 255 , 0 , 255 ) );
       PanelHeight = PanelVisibleY[ModeCase];
 
       lpDDSFour = DDLoadBitmap( lpDD, "data\\pictures\\pcontent.bmp" , 0, 0 );
       ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pcontent.bmp" );
-      lpDDSFour->lpVtbl->SetPalette( lpDDSFour , ddpal );
+      LastError = lpDDSFour->lpVtbl->SetPalette( lpDDSFour , ddpal );
     }
   
 
@@ -6840,7 +6840,7 @@ BOOL  InitScoreDisplay()
   {
     lpDDSOne = DDLoadBitmap( d3dapp->lpDD,/* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames , 0, 0 );
     ddpal =  DDLoadPalette( d3dapp->lpDD , /*(char*) &ScoreNames[ModeCase]*/DynamicScoreNames);
-    lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
   }
 
   InitFont(TRUE);
@@ -7770,7 +7770,7 @@ Our_CalculateFrameRate(void)
         stats.dwSize = sizeof(D3DSTATS);
         d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
         p = stats.dwTrianglesDrawn - our_last_polygons;
-    Our_TrianglesDrawn = p;
+		Our_TrianglesDrawn = p;
         our_last_polygons = stats.dwTrianglesDrawn;
 
 
@@ -7796,8 +7796,8 @@ Our_CalculateFrameRate(void)
   
   if( myglobs.bShowFrameRate )
   {
-//    sprintf(&buf[0], "%4.2f %4d %4d %4d %4d", FPS , BigPacketSize , MaxBigPacketSize ,RecPacketSize , MaxRecPacketSize );
-      sprintf(&buf[0], "%4.2f", FPS );
+    sprintf(&buf[0], "%4.2f %4d %4d %4d %4d", FPS , BigPacketSize , MaxBigPacketSize ,RecPacketSize , MaxRecPacketSize );
+//      sprintf(&buf[0], "%4.2f", FPS );
     CenterPrint4x5Text( (char *) &buf[0] , FontHeight+viewport.dwY , 2 );
   }
 
