@@ -3763,8 +3763,8 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 	{
 		lpPalette = DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
 		ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-		d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
-		d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
+		LastError = d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
+		LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
 	}
 
 	memset(&bmat, 0, sizeof(D3DMATERIAL));
@@ -3864,7 +3864,7 @@ void InitTitleFont(void)
 
 	if ( lpDDSTitleFont && ddpal)
 	{
-	  lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
+	  LastError = lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
    	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
 	}
 

@@ -37,6 +37,9 @@ extern	BOOL	Is3Dfx2;
 extern	void DebugPrintf( const char * format, ... );
 BOOL FreeTextureMemory( int * TMem);
 
+extern void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
+extern char* D3DAppErrorToString(HRESULT error);
+
 #ifdef SOFTWARE_ENABLE
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Chris Walsh's Code
@@ -455,25 +458,33 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 			}
 		}
 
-		if (!lpSrcTextureSurf)
+		if (!lpSrcTextureSurf){
+			Msg( "TloadTextureSurf() !lpSrcTextureSurf\n" );
 			goto exit_with_error;
+		}
+
 		LastError = lpSrcTextureSurf->lpVtbl->QueryInterface(lpSrcTextureSurf,
 												 &IID_IDirect3DTexture,
 												 (LPVOID*)&lpSrcTexture);
-		if (LastError != DD_OK) {
+		if (LastError != DD_OK){
+			Msg( "TloadTextureSurf() !lpSrcTextureSurf->lpVtbl->QueryInterface\n" );
 			goto exit_with_error;
 		}
 
 		LastError = D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);
-	    if (LastError != DD_OK) {
+
+		if (LastError != DD_OK){
+			Msg( "TloadTextureSurf() !D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);\n" );
 		    goto exit_with_error;
-	    }
+		}
 
 	}else
 	{
 		// do not allow mip map placeholders
-		if( MipMap && Tloadheader->MipMap[n] )
+		if( MipMap && Tloadheader->MipMap[n] ){
+			Msg( "TloadTextureSurf() MipMap && Tloadheader->MipMap[n]  \n" );
 			return FALSE;
+		}
 		
 		// we still need surface description for placeholder...
 		memcpy(&ddsd, &d3dappi.ThisTextureFormat.ddsd, sizeof(DDSURFACEDESC));
@@ -523,6 +534,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 
 	LastError = D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n]);
     if (LastError != DD_OK) {
+		Msg( "TloadTextureSurf() ! D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n])  \n" );
         goto exit_with_error;
     }
     if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) {
@@ -532,16 +544,22 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
     } else {
         pcaps = 0;
     }
+
+	//Msg("pcaps = %d", pcaps);
+	//Msg("ddsd.ddpfPixelFormat.dwFlags = %d", ddsd.ddpfPixelFormat.dwFlags);
+
     if (pcaps) {
         memset(ppe, 0, sizeof(PALETTEENTRY) * 256);
         LastError = d3dappi.lpDD->lpVtbl->CreatePalette(d3dappi.lpDD, pcaps,
                                                  ppe, &lpDstPalette, NULL);
         if (LastError != DD_OK) {
+			Msg( "TloadTextureSurf() ! d3dappi.lpDD->lpVtbl->CreatePalette  \n" );
             goto exit_with_error;
         }
         LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette(Tloadheader->lpTextureSurf[n],
                                 lpDstPalette);
         if (LastError != DD_OK) {
+			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette  \n" );
             goto exit_with_error;
         }
     }
@@ -557,6 +575,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 		LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey( Tloadheader->lpTextureSurf[n],
 			DDCKEY_SRCBLT, &ddcolorkey);
 		if (LastError != DD_OK) {
+			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey  \n" );
 			goto exit_with_error;
 		}
 	}
@@ -568,6 +587,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
                                              &IID_IDirect3DTexture,
                                              (LPVOID*)&Tloadheader->lpTexture[n]);
     if (LastError != DD_OK) {
+		Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->QueryInterface  \n" );
         goto exit_with_error;
     }
     /*
@@ -579,6 +599,12 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
     
  	if ( !Tloadheader->PlaceHolder[ n ] )
 	{
+
+		// test
+		//IDirectDrawPalette *pal = NULL;
+		//lpSrcTextureSurf->lpVtbl->GetPalette(lpSrcTextureSurf, &pal);
+		//Msg("%p\n", pal);
+
 		LastError = Tloadheader->lpTexture[n]->lpVtbl->Load(Tloadheader->lpTexture[n], lpSrcTexture);
 
 	//	LastError =	Tloadheader->lpTextureSurf[n]->lpVtbl->Blt(Tloadheader->lpTextureSurf[n],
@@ -586,8 +612,13 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	//													   NULL, DDBLT_WAIT, NULL);
 		
 		if (LastError != DD_OK) {
-	//			D3DAppErrorToString(LastError);
-		    goto exit_with_error;
+			D3DAppISetErrorString(
+				"TloadTextureSurf() ! Tloadheader->lpTexture[n]->lpVtbl->Load: %s %d \n",
+				D3DAppErrorToString(LastError),
+				Tloadheader->MipMap[n]
+			);
+			Msg("%s",LastErrorString);
+		    //goto exit_with_error;
 	    }
 		/* 
 	     * Now we are done with the source texture
@@ -601,6 +632,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
      */
     LastError = D3DAppIGetSurfDesc(&ddsd, Tloadheader->lpTextureSurf[n]);
     if (LastError != DD_OK) {
+		Msg( "TloadTextureSurf() ! D3DAppIGetSurfDesc  \n" );
         goto exit_with_error;
     }
     if (!(ddsd.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY))
