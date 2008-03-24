@@ -76,7 +76,7 @@ DWORD			gidReceiveThread = 0;			// id of receive thread
 HANDLE			ghKillReceiveEvent = NULL;		// event used to kill receive thread
 
 
-BOOL	DplayRecieveThread = TRUE;
+BOOL	DplayRecieveThread = FALSE;
 
 
 BOOL	Buffer1InUse = FALSE;
