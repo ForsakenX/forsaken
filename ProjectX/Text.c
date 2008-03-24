@@ -2347,7 +2347,7 @@ void InitFont( BOOL OverridePolytext )
 		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
 		if (lpDDSTwo && ddpal)
 		{
-			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
+			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
 			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
 		}
 		FontWidth = 8;
@@ -2360,7 +2360,7 @@ void InitFont( BOOL OverridePolytext )
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
 		if (lpDDSTwo && ddpal)
 		{
-			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
+			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
    			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
 		}
    		FontWidth = 4;
