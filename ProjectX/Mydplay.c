@@ -5367,7 +5367,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
     case MSG_PINGREQUEST:
 
-//		RequestPings();	// used for UDP pings
+#ifdef UDP_PINGS
+		RequestPings();
+#endif
 
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         lpPingMsg->MsgCode = msg;
