@@ -245,8 +245,8 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-char * LogFilename = "logs\\projectx.log";
-char * BatchFilename = "logs\\filesused.bat";
+char * LogFilename = "Logs\\projectx.log";
+char * BatchFilename = "Logs\\filesused.bat";
 
 void AddCommentToLog( const char * format, ... )
 {
