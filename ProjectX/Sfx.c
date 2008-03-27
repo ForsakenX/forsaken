@@ -191,6 +191,12 @@ SFXNAME		Sfx_Filenames[MAX_SFX] =
 	/************************************************
 	Generic
 	*************************************************/
+	{ "killingspree", 0, 0, -1 },  // voices
+	{ "rampage", 0, 0, -1 },  
+	{ "dominating", 0, 0, -1 },  
+	{ "unstoppable", 0, 0, -1 },  
+	{ "wickedsick", 0, 0, -1 },  
+	{ "godlike", 0, 0, -1 },  
 	{ "airbubb1", 0, 0, -1 },  // bubbles rising in water
 	{ "bikexpl", 0, 0, -1 },  // bike explodes, as player dies
 	//{ "bminelay", 0, 0, -1 },  // quantum/pine mine drop

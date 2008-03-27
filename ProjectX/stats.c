@@ -262,13 +262,17 @@ void UpdateKillCount(int Killer)
 {
 	char	tempstr[256];
 	char	prefix[256];
+	BOOL PlaySound = FALSE;
 
 	// update counter
 	KillCounter[Killer]++;
 
 	// name of killer
 	if(Killer == WhoIAm)
+	{
 		strcpy(prefix, "YOU ARE");
+		PlaySound = TRUE;
+	}
 	else
 	{
 		strcpy(prefix, GetName(Killer));
@@ -279,35 +283,33 @@ void UpdateKillCount(int Killer)
 	switch(KillCounter[Killer])
 	{
 		case 3:	
+					if(PlaySound) PlaySfx( SFX_KILLINGSPREE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A KILLING SPREE (3 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 5:
+					if(PlaySound) PlaySfx( SFX_RAMPAGE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A RAMPAGE (5 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 8:
+					if(PlaySound) PlaySfx( SFX_DOMINATING, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "DOMINATING (8 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 11:
+					if(PlaySound) PlaySfx( SFX_UNSTOPPABLE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "UNSTOPPABLE (11 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 15:
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "PWNING (15 KILLS)" );
+					if(PlaySound) PlaySfx( SFX_WICKEDSICK, 1.0F );
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (15 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 20:
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (20 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
-					break;
-		case 25:
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON FIRE (25 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
-					break;
-		case 30:
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (30 KILLS)" );
+					if(PlaySound) PlaySfx( SFX_GODLIKE, 1.0F );
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (20 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 	}

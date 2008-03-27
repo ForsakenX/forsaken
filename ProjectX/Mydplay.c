@@ -1283,6 +1283,7 @@ void InitShipStructure( int i , BOOL ResetScore )
 	{
 		Ships[i].Deaths = 0;
 		Ships[i].Kills = 0;
+		ResetAllStats(); // (stats.c)
 	}
 
 

@@ -77,6 +77,12 @@ defines
 #define MAX_LEVELSPECIFIC_SFX 64
 
 enum {
+	SFX_KILLINGSPREE, //** voices
+	SFX_RAMPAGE,
+	SFX_DOMINATING,
+	SFX_UNSTOPPABLE,
+	SFX_WICKEDSICK,
+	SFX_GODLIKE,
 	SFX_Bubbles,  //**  bubbles rising in water
 	SFX_BikeExplode,  //**  bike explodes, as player dies
 	//SFX_BigMine,  //  quantum/pine mine drop
