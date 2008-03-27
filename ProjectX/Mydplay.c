@@ -537,8 +537,6 @@ extern	int16	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
 
 // statistics (stats.c)
 extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
-extern void UpdateKillCount(int Killer);															// update a player's kill counter for this life
-extern void ResetKillCount(int Killer);															// reset a player's kill counter for next life
 
 BOOL CheckForName( BYTE Player )
 {
@@ -3572,15 +3570,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-					// Update Stats 1 (stats.c) - somebody killed me
-					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// called in TOL OFF multiplayer!!
 					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
-					// (stats.c) reset kill counter for next life
-					ResetKillCount(WhoIAm);
-					// (stats.c) update killer's counter
-					UpdateKillCount(lpShortShipHit->WhoHitYou);
+					// Update Stats 1 (stats.c) - somebody killed me
+					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// kill me :(
 					ShipDiedSend( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon );
    				}
@@ -3701,10 +3695,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				// update stats 2 (stats.c) -- you killed someone 
    				UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
-				// (stats.c) update my kill counter for this life
-				UpdateKillCount(WhoIAm);
-				// (stats.c) reset the victim's kill counter
-				ResetKillCount(lpShipDied->WhoIAm);
 			}
 			// if you were not who killed them
 			else
@@ -3730,10 +3720,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				// Update Stats 3 (stats.c) - somebody killed someone
    				UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon);
-				// (stats.c) Update a killer's kill count   			
-				UpdateKillCount(lpShipDied->WhoKilledMe);
-				// (stats.c) Reset a victim's kill count
-				ResetKillCount(lpShipDied->WhoIAm);
 			}
 		}
 

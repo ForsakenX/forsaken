@@ -223,20 +223,11 @@ void ResetAllStats()
 		BonusStats[x] = 0;
 
 		// reset all player's sequential kill counters
-		ResetKillCount(x);
+		KillCounter[x] = 0;
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Reset each player's kill counter for this life...
-  Input   :   killer id
-  Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-/* Reset this life's kill counter */
-void ResetKillCount(int Killer)
-{
-	KillCounter[Killer] = 0;
-}
+
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   Update Kill Statistics...
@@ -253,6 +244,12 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 		PrimaryStats[Killer][Weapon]++;
 	else if (WeaponType == WEPTYPE_Secondary)
 		SecondaryStats[Killer][Weapon]++;
+
+	// update the current kills this life for the killer
+	UpdateKillCount(Killer);
+
+	// reset the current kills this life for the victim
+	KillCounter[Victim] = 0;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -298,7 +295,7 @@ void UpdateKillCount(int Killer)
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 15:
-					sprintf( (char*)&tempstr[0], "%s %s", prefix, "SLAUGHTERING (15 KILLS)" );
+					sprintf( (char*)&tempstr[0], "%s %s", prefix, "PWNING (15 KILLS)" );
    					AddMessageToQue( (char*)&tempstr[0] );
 					break;
 		case 20:

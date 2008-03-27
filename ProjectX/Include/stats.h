@@ -17,7 +17,6 @@ int GetScoreStats(int Player);																// Get an individual score statist
 int GetBonusStats(int Player);															// Get an individual bonus statistic
 int GetTeamScore(int Player);																// Get a player's team's total score (including kills)
 void ResetAllStats();																			// Resets all statistics
-void ResetKillCount(int Killer);																// Resets player's kill counter for this life
 char* GetFavWeapon(int PlayerID, int WeaponType);								// Get name of player's weapon with the most kills of specified type
 char* GetWeaponName(int WeaponType, int Weapon);							// Get weapon name
 int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon);			// Get Weapon Kill Stats	
