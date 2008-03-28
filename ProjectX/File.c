@@ -29,7 +29,6 @@ extern BOOL Debug;
 	Globals
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
-BOOL	CreateBatchFile = FALSE;
 BOOL	CreateLogFile = FALSE;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -246,7 +245,6 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
 char * LogFilename = "Logs\\projectx.log";
-char * BatchFilename = "Logs\\filesused.bat";
 
 void AddCommentToLog( const char * format, ... )
 {
@@ -259,93 +257,6 @@ void AddCommentToLog( const char * format, ... )
 		return;
 
 	fp = fopen( LogFilename, "a" );
-
-	if( fp )
-	{
-		va_start( args, format );
-		vsprintf( buf1, format, args );
-		wsprintf( buf2, "%hs", buf1 );
-		fprintf( fp, "%s", buf2 );
-		va_end( args );
-		fclose( fp );
-	}
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Comment to Batch file
-	Input		:		const char * format, .....
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddCommentToBat( const char * format, ... )
-{
-
-	FILE	*	fp;
-    static char buf1[256], buf2[512];
-	va_list		args;
-
-	if ( ! Debug || !CreateBatchFile )
-		return;
-
-	fp = fopen( BatchFilename, "a" );
-
-	if( fp )
-	{
-		va_start( args, format );
-		vsprintf( buf1, format, args );
-		wsprintf( buf2, "%hs", buf1 );
-
-		fprintf( fp, "\nREM %s\n\n", buf2 );
-
-		va_end( args );
-		fclose( fp );
-	}
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Filename to batch file
-	Input		:		char	*	Filename
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddFileToBat( char * Filename )
-{
-
-	FILE	*	fp = NULL;
-
-	if ( ! Debug || !CreateBatchFile )
-		return;
-
-	if( !Filename ) return;
-	if( !Filename[ 0 ] ) return;
-
-	fp = fopen( BatchFilename, "a" );
-
-	if( fp )
-	{
-		fprintf( fp, "copy %%1\\%s %%2\\%s\n", Filename, Filename );
-
-		fclose( fp );
-	}
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Comment to Batch file
-	Input		:		const char * format, .....
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddCommandToBat( const char * format, ... )
-{
-
-	FILE	*	fp;
-    static char buf1[256], buf2[512];
-	va_list		args;
-
-	if ( ! Debug || !CreateBatchFile )
-		return;
-
-	fp = fopen( BatchFilename, "a" );
 
 	if( fp )
 	{

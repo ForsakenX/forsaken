@@ -62,7 +62,6 @@ extern "C" {
 	extern void InitPolyText( void );
 	extern BOOL InitDInput(void);
 	extern char * LogFilename;
-	extern char * BatchFilename;
 	extern BOOL bFullscreen;
 	extern char *config_name;
 	extern D3DAppInfo d3dappi;
@@ -111,7 +110,6 @@ extern "C" {
 
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
-	extern	BOOL	CreateBatchFile;
 	extern	BOOL	CreateLogFile;
 	extern	BOOL LockOutWindows;
 	extern	BOOL	DplayRecieveThread;
@@ -373,7 +371,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if ( Debug )
 	{
 	  DeleteFile( LogFilename   );
-	  DeleteFile( BatchFilename );
 	}
 
 	// check direct x version

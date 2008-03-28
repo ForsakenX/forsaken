@@ -131,8 +131,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	int LeastScaledThatCanbe;
 	int LeastScaledThatCanbeScale;
 
-
-	AddCommentToBat( "Textures" );
 	BuildGammaTab( Gamma );
 
 	// work out the current Bytes per pixel...min of 8...

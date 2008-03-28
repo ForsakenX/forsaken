@@ -24,9 +24,6 @@
 
 
 extern "C" void DebugPrintf( const char * format, ... );
-extern "C" void AddCommentToBat( const char * format, ... );
-extern "C" void	AddFileToBat( char * Filename );
-extern "C" void AddCommandToBat( const char * format, ... );
 extern "C" BOOL bPrimaryPalettized;
 extern "C" double	Gamma;
 
@@ -59,8 +56,6 @@ IDirectDrawSurface * DDLoadBitmapDebug(IDirectDraw *pdd, LPCSTR szBitmap, int dx
         return NULL;
 
 	DebugPrintf( "DDLoadBitmap: bitmap %2d = %s\n", bitmaps++, szBitmap );
-
-	AddFileToBat( (char *) szBitmap );
 
     //
     // get size of the bitmap
@@ -109,8 +104,6 @@ IDirectDrawSurface * DDLoadBitmap(IDirectDraw *pdd, LPCSTR szBitmap, int dx, int
         return NULL;
 
 	DebugPrintf( "DDLoadBitmap: bitmap %2d = %s\n", bitmaps++, szBitmap );
-
-	AddFileToBat( (char *) szBitmap );
 
     //
     // get size of the bitmap
@@ -625,8 +618,6 @@ IDirectDrawSurface * DDLoadBitmapTexture(IDirectDraw *pdd, LPCSTR szBitmap, LPDD
     if (hbm == NULL)
         return NULL;
 
-	AddFileToBat( (char *) szBitmap );
-
     //
     // get size of the bitmap
     //
@@ -717,8 +708,6 @@ IDirectDrawSurface * DDLoadBitmapTextureMipMap(IDirectDraw *pdd, LPCSTR szBitmap
 
     if (hbm == NULL)
         return NULL;
-
-	AddFileToBat( (char *) szBitmap );
 
     //
     // get size of the bitmap

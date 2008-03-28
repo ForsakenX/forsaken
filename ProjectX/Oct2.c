@@ -263,7 +263,6 @@ extern  BOOL  PolyText[255];
 extern MENUSTATE MenuState;
 extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS]; 
 extern  char * LogFilename;
-extern  char * BatchFilename;
 extern  BOOL  ShowEFZones;
 extern  BOOL  ShowTeleports;
 extern BOOL MenuFrozen;
@@ -5088,8 +5087,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
-    AddCommentToBat( "Started Loading Level" );
 
     SetOurRenderStates( NULL );
     D3DAppClearScreenOnly();

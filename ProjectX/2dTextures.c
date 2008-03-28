@@ -387,8 +387,6 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 	int8		*	OffsetPath = "data\\offsets\\";
 	int16			last_tpage;
 
-	AddCommentToBat( "Offsets" );
-
 	if( !FileInfo ) return( FALSE );
 
 	EnableRelevantOffFiles( FileInfo );
@@ -486,7 +484,6 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 			}
 
 			Add_Path( OffsetPath, FileInfo->Filename, &TempFilename[ 0 ] );
-			AddFileToBat( &TempFilename[ 0 ] );
 
 			*FileInfo->InfoPtrAddr = Load_Off_File( &TempFilename[ 0 ], FileInfo->Scale, FileInfo->LoadTPages, &last_tpage, FileInfo->xsize, FileInfo->ysize, ( FileInfo->LoadTPages & LOAD_TPAGES_PLACEHOLDER ) );
 			if( *FileInfo->InfoPtrAddr == NULL )

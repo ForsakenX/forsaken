@@ -1025,8 +1025,6 @@ BOOL PreLoadBGOFiles( void )
 	uint32			MagicNumber;
 	uint32			VersionNumber;
 
-	AddCommentToBat( "BGObjects" );
-
 	ModNames = &ModelNames[ 0 ];
 	BaseModel = NextNewModel;
 

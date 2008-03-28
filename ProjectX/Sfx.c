@@ -1280,8 +1280,6 @@ void LoadSfx( int sfxnum )
 				DebugPrintf( "Error loading sfx %d - marking sound as invalid\n", sfxnum, SndLookup[ sfxnum ].Num_Variants );
 				return;
 			}
-			else
-				AddFileToBat( fullpath );
 		}
 	}else
 	{
@@ -1296,9 +1294,6 @@ void LoadSfx( int sfxnum )
 				{
 					DebugPrintf( "Error loading sfx %d variant %d - marking sound as invalid\n", sfxnum, SndLookup[ sfxnum ].Num_Variants );
 					return;
-				}else
-				{
-					AddFileToBat( fullpath );
 				}
 			}
 		}
@@ -2239,8 +2234,6 @@ BOOL InitializeSound( int flags )
 
 	// try to load hw sfx
 	AllocatedCompoundSfx = LoadSfxToHW();
-
-	AddCommentToBat( "Loading Sfx" );
 	
 	// load sfx
 	for( Num_Sfx = 0; Num_Sfx < MAX_SFX; Num_Sfx++ )

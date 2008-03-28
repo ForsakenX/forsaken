@@ -802,11 +802,8 @@ BOOL PreInitModel( LPDIRECT3DDEVICE lpDev , MODELNAME *	NamePnt )
 	int8		TempFilename[ 256 ];
 	int8		Ext[ 32 ];
 
-	AddCommentToBat( "Models" );
-
 	for( i = 0 ; i < MAXMODELHEADERS ; i++ )
 	{
-		if( i == MODEL_ExtraModels ) AddCommentToBat( "Level Models" );
 
 		if( NamePnt->Name[0] )
 		{
