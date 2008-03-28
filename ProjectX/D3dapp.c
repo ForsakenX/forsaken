@@ -42,36 +42,6 @@ extern BOOL CanRenderWindowed;
 extern d3dmainglobals myglobs;     /* collection of global variables */
 //#define INITGUID
 
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-extern void SetVTables();
-extern void CWFlip( void );
-//extern void CWStretchBlit( WORD, WORD, long, char *);
-extern long LineWidth;
-extern char * ScreenBase;
-extern WORD SurfBpp;
-extern void ClrOT();
-extern void SWRendView();
-extern long Highestz;
-extern char DrawnYet;
-extern WORD SurfWidth, SurfHeight;
-extern BYTE MyGameStatus;
-extern BOOL	ServerMode;
-extern BOOL	DrawSimplePanel;
-extern BOOL	JustExitedMenu;
-extern BOOL Our_CalculateFrameRate(void);
-extern BOOL	SoftwareVersion;
-extern void CWAfterModeSwitch(void);
-extern	long	zRW;
-
-void CWClearScreen( void );
-
-char CWInTitle = 1;
-/*-------------------------------------------------------------------------*/
-#endif
-
 /***************************************************************************/
 /*                           GLOBAL VARIABLES                              */
 /***************************************************************************/
@@ -241,13 +211,6 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
     bD3DAppInitialized = TRUE;
     d3dappi.bRenderingIsOK = TRUE;
 
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-	{
-		CWAfterModeSwitch();
-	}
-#endif
-
     return TRUE;
 
 exit_with_error:
@@ -339,13 +302,6 @@ BOOL D3DAppFullscreen(int mode)
      */
     d3dappi.CurrMode = mode;
     d3dappi.bRenderingIsOK = TRUE;
-
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-	{
-		CWAfterModeSwitch();
-	}
-#endif
 
     return TRUE;
 
@@ -742,162 +698,50 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
     if (d3dappi.bPaused)
         return TRUE;
 
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-	{
-/*-----------------------------------------------------------------------------
-	Chris Walsh's Code
------------------------------------------------------------------------------*/
-		// SETUP V TABLE.
-
-		if (d3dappi.bFullscreen)
-		{  
-		//   . . . . . . . . . F U L L S C R E E N     M O D E . . . . . . . . . . . 
-
-		// LOCK THE BACK BUFFER.
-
-			if ( (SurfBpp!=8 && SurfBpp!=16) ) //|| (SurfBpp==16 && CWInTitle) )
-			{
-				CWInTitle = 0;
-				ClrOT();
-
-				LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
-															d3dappi.lpBackBuffer,
-															0);
-					
-				if (LastError == DDERR_SURFACELOST)
-				{
-				 d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
-				 d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-				 //D3DAppIClearBuffers();
-				}
-				else if (LastError != DD_OK)
-				{
-				   return TRUE; //FALSE;
-				}
-
-				return TRUE;
-			}
-
-			SetVTables();
-			if( CWInTitle )
-			{
-				zRW = 1;
-			}
-			SWRendView();
-			d3dappi.lpBackBuffer->lpVtbl->Unlock( d3dappi.lpBackBuffer, NULL );
-
-			if( CWInTitle )
-			{
-				ProcessTextItems();
-			}
-			else
-			{
-				if( (MyGameStatus == STATUS_Normal) || (MyGameStatus == STATUS_PlayingDemo) ||(MyGameStatus == STATUS_SinglePlayer) )
-				{
-					if( Our_CalculateFrameRate() != TRUE)
-						return FALSE;
-
-					if( CurrentMenu && CurrentMenuItem )
-					{
-						MenuDraw( CurrentMenu );
-						MenuItemDrawCursor( CurrentMenuItem );
-
-						if ( DrawSimplePanel )
-							TestBlt();
-						MenuProcess();
-						// Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
-						JustExitedMenu = TRUE;
-					}
-					else
-					{
-						if( !ServerMode )
-						{
-							TestBlt();
-						}
-				//		TaskDispatch();
-					}
-				}
-			}
-
-			CWInTitle = 0;
-			Highestz = 1;				//cw: for next time round.
-#if 0
-			if (SurfWidth == 320 && SurfHeight == 240)
-			{
-				if (!DrawnYet || (SurfWidth==320 && SurfHeight==240))
-		   		LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
-															d3dappi.lpBackBuffer,
-															0);
-				if (LastError == DDERR_SURFACELOST)
-				{
-				 d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
-				 d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-				 //D3DAppIClearBuffers();
-				}
-				else if (LastError != DD_OK)
-				{
-				   return TRUE; //FALSE;
-				}
-			}
-			else
-			{
-				CWStretchBlit( SurfWidth, SurfHeight, LineWidth, ScreenBase); // Stretch it up..
-			}
-#else
-			CWFlip();
-#endif
+	if (d3dappi.bFullscreen) {  
+		/*
+		 * Flip the back and front buffers
+		 */
+		LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
+														d3dappi.lpBackBuffer,
+														1);
+//        LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
+//                                                        NULL,
+//                                                        DDFLIP_WAIT );
+		if (LastError == DDERR_SURFACELOST) {
+			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
+			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
+			D3DAppIClearBuffers();
+		} else if (LastError != DD_OK) {
+			//D3DAppISetErrorString("Flipping complex display surface failed.\n%s", D3DAppErrorToString(LastError));
+			//return FALSE;
+			return TRUE;
 		}
-/*---------------------------------------------------------------------------*/
-	}
-	else
-#endif
-	{
-		if (d3dappi.bFullscreen) {  
-			/*
-			 * Flip the back and front buffers
-			 */
-			LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
-															d3dappi.lpBackBuffer,
-															1);
-	//        LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
-	//                                                        NULL,
-	//                                                        DDFLIP_WAIT );
-			if (LastError == DDERR_SURFACELOST) {
-				d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
-				d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-				D3DAppIClearBuffers();
-			} else if (LastError != DD_OK) {
-				//D3DAppISetErrorString("Flipping complex display surface failed.\n%s", D3DAppErrorToString(LastError));
-				//return FALSE;
-				return TRUE;
-			}
-		} else {
-			RECT front;
-			RECT buffer;
-			/*
-			 * Set the rectangle to blt from the back to front bufer ..Set to entire client window
-			 */
-			SetRect(&buffer, 0, 0, d3dappi.szClient.cx,
-					d3dappi.szClient.cy);
-			SetRect(&front,
-					d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y,
-					d3dappi.szClient.cx + d3dappi.pClientOnPrimary.x,
-					d3dappi.szClient.cy + d3dappi.pClientOnPrimary.y);
-			/*
-			 * Blt the list of rectangles from the back to front buffer
-			 */
-			LastError =	d3dappi.lpFrontBuffer->lpVtbl->Blt(d3dappi.lpFrontBuffer,
-												 &front, d3dappi.lpBackBuffer,
-												 &buffer, DDBLT_WAIT , NULL);
-			if (LastError == DDERR_SURFACELOST) {
-				d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
-				d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-				D3DAppIClearBuffers();
-			} else if (LastError != DD_OK) {
-				D3DAppISetErrorString("Blt of back buffer to front buffer failed.\n%s", D3DAppErrorToString(LastError));
-				return FALSE;
-			}
+	} else {
+		RECT front;
+		RECT buffer;
+		/*
+		 * Set the rectangle to blt from the back to front bufer ..Set to entire client window
+		 */
+		SetRect(&buffer, 0, 0, d3dappi.szClient.cx,
+				d3dappi.szClient.cy);
+		SetRect(&front,
+				d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y,
+				d3dappi.szClient.cx + d3dappi.pClientOnPrimary.x,
+				d3dappi.szClient.cy + d3dappi.pClientOnPrimary.y);
+		/*
+		 * Blt the list of rectangles from the back to front buffer
+		 */
+		LastError =	d3dappi.lpFrontBuffer->lpVtbl->Blt(d3dappi.lpFrontBuffer,
+											 &front, d3dappi.lpBackBuffer,
+											 &buffer, DDBLT_WAIT , NULL);
+		if (LastError == DDERR_SURFACELOST) {
+			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
+			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
+			D3DAppIClearBuffers();
+		} else if (LastError != DD_OK) {
+			D3DAppISetErrorString("Blt of back buffer to front buffer failed.\n%s", D3DAppErrorToString(LastError));
+			return FALSE;
 		}
 	}
     return TRUE;
@@ -912,14 +756,6 @@ D3DAppClearScreenOnly()
 {
     int clearflags;
     D3DRECT dummy;
-
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-	{
-		CWClearScreen();
-		return( TRUE );
-	}
-#endif
 
     if (!d3dappi.bRenderingIsOK)
 	{

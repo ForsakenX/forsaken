@@ -55,19 +55,4 @@ uint16 FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max );
 uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, uint16 * group );
 BOOL PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, uint16 group );
 
-
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-void  MyVispolyTransformVertices( DWORD VertexCount, D3DTRANSFORMDATA * Data );
-BOOL CWDisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam );
-void	CWExecute( D3DEXECUTEBUFFERDESC *debDesc, long NumVertsToXform);
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-/*-------------------------------------------------------------------------*/
-#endif
-
 #endif	// VISI_INCLUDED

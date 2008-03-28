@@ -51,18 +51,6 @@ mxtype : uint16 // always 0 for mx format
 #include "spotfx.h"
 #include "XMem.h"
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern	BOOL	SoftwareVersion;
-extern void CWScanExecuteBuffer( LPDIRECT3DEXECUTEBUFFER execbuf );
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Defines
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -426,9 +414,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 					{
 						// colourkey triangle found
 						colourkey++;
-#ifndef SOFTWARE_ENABLE
 						MFacePnt->pad &= ~1;
-#endif
 					}
 					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 //					FacePnt->wFlags = MFacePnt->pad;
@@ -770,19 +756,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		Buffer = (char *) ( Uint16Pnt + 1 );
 	}
 
-#ifdef SOFTWARE_ENABLE
-	if ( SoftwareVersion )
-	{
-		for( group=0 ; group<Mxloadheader->num_groups; group++)
-		{
-			for( execbuf=0 ; execbuf<Mxloadheader->Group[group].num_execbufs; execbuf++)
-			{
-				CWScanExecuteBuffer( Mxloadheader->Group[group].lpExBuf[execbuf] );
-			}
-		}
-	}
-#endif
-
 	if ( colourkey )
 		DebugPrintf( "Mxload: %d colourkey triangles found\n", colourkey );
 	// Mxloadheader is valid and can be executed...
@@ -946,17 +919,8 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Display )
 					{
-#ifdef SOFTWARE_ENABLE
-						if( SoftwareVersion )
-						{
-							CWExecute2(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
-						}
-						else
-#endif
-						{
-							if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-								return FALSE;
-						}
+						if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+							return FALSE;
 					}
 				}
 			}

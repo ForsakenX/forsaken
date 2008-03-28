@@ -30,14 +30,6 @@
 #define	USE_SPECULAR
 #undef USE_SPECULAR
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-extern	BOOL	SoftwareVersion;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Externals...	
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -613,14 +605,9 @@ clear:					mov		eax, [esi]
 						blf	= XLightPnt->b;
 						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
 						{
-#ifdef SOFTWARE_ENABLE
-							if( !SoftwareVersion )
-#endif
-							{
-								rlf = ( rlf+glf+blf ) * 0.33333F;
-								glf = rlf;
-								blf = glf;
-							}
+							rlf = ( rlf+glf+blf ) * 0.33333F;
+							glf = rlf;
+							blf = glf;
 						}
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
@@ -1076,14 +1063,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 
 						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
 						{
-#ifdef SOFTWARE_ENABLE
-							if( !SoftwareVersion )
-#endif
-							{
-								rlf = ( rlf+glf+blf ) * 0.33333F;
-								glf = rlf;
-								blf = glf;
-							}
+							rlf = ( rlf+glf+blf ) * 0.33333F;
+							glf = rlf;
+							blf = glf;
 						}
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
@@ -1324,14 +1306,9 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 
 						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
 						{
-#ifdef SOFTWARE_ENABLE
-							if( !SoftwareVersion )
-#endif
-							{
-								rlf = ( rlf+glf+blf ) * 0.33333F;
-								glf = rlf;
-								blf = glf;
-							}
+							rlf = ( rlf+glf+blf ) * 0.33333F;
+							glf = rlf;
+							blf = glf;
 						}
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{

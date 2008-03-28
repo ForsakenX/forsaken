@@ -111,11 +111,6 @@ num_start_points : uint16
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-#ifdef SOFTWARE_ENABLE
-extern void CWScanExecuteBuffer( LPDIRECT3DEXECUTEBUFFER execbuf );
-extern	BOOL	SoftwareVersion;
-#endif
-
 extern	BOOL SWMonoChrome;
 extern	TRIGGERMOD	*	TrigMods;
 extern	PALETTEENTRY ppe[256];
@@ -602,17 +597,12 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						// colourkey triangle found
 						colourkey++;
 						MFacePnt->pad &= ~1;
-#ifdef SOFTWARE_ENABLE
-						if ( SoftwareVersion )
-							MFacePnt->pad |= 32768;
-#endif
 					}
-#ifndef SOFTWARE_ENABLE
 					if ( AllWires )
 						FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 					else
-#endif
-						FacePnt->wFlags = MFacePnt->pad;
+
+					FacePnt->wFlags = MFacePnt->pad;
 					FixUV( FacePnt, lpBufStart, tpage, Mloadheader->Group[group].org_vertpnt[execbuf] );
 					FacePnt++;
 					MFacePnt++;
@@ -1143,19 +1133,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		}
 	}
 	Buffer = (char *) Uint16Pnt;
-
-#ifdef SOFTWARE_ENABLE
-	if ( SoftwareVersion )
-	{
-		for( group=0 ; group<Mloadheader->num_groups; group++)
-		{
-			for( execbuf=0 ; execbuf<Mloadheader->Group[group].num_execbufs; execbuf++)
-			{
-				CWScanExecuteBuffer( Mloadheader->Group[group].lpExBuf[execbuf] );
-			}
-		}
-	}
-#endif
 
 	DebugPrintf( "Mload: %d colourkey triangles found\n", colourkey );
 	// Mloadheader is valid and can be executed...

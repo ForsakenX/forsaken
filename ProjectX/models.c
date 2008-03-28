@@ -123,10 +123,6 @@ void RefreshModel( uint16 model );
 #define BALL_RADIUS	( 256 * GLOBAL_SCALE )
 #define	NUMBIKEDETAILS	4
 
-#ifdef SOFTWARE_ENABLE
-extern	BOOL	SoftwareVersion;
-#endif
-
 // statistics (stats.c)
 extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
@@ -1167,9 +1163,6 @@ BOOL ModelDisp( uint16 group, LPDIRECT3DDEVICE lpDev, MODELNAME * NamePnt  )
 	float r , g , b;
 	BOOL	InTitle;
 	BOOL	DoDisplay;
-#ifdef SOFTWARE_ENABLE
-	float	Trans;
-#endif
 
 	if( NamePnt == &ModelNames[0] ) InTitle = FALSE;
 	else InTitle = TRUE;
@@ -1420,25 +1413,12 @@ BOOL ModelDisp( uint16 group, LPDIRECT3DDEVICE lpDev, MODELNAME * NamePnt  )
 								{
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
-#ifdef SOFTWARE_ENABLE
-								if( SoftwareVersion )
-								{
-//									if( !LightMxaModel( ModelNum, &Models[i].Pos, 0.0F, 0.0F, 0.0F, 0.0F ) )
-									Trans = (float) ( floor( ( (float) Models[i].Red ) + ( (float) Models[i].Green ) + ( (float) Models[i].Blue ) ) / 3.0F );
 
-									if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, Trans ) )
-									{
-										DoDisplay = FALSE;
-									}
-								}
-								else
-#endif
+								if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
 								{
-									if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
-									{
-										DoDisplay = FALSE;
-									}
+									DoDisplay = FALSE;
 								}
+					
 							}
 
 							if( !( Models[i].Flags & MODFLAG_RealLight ) &&
@@ -1494,24 +1474,9 @@ BOOL ModelDisp( uint16 group, LPDIRECT3DDEVICE lpDev, MODELNAME * NamePnt  )
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
 
-#ifdef SOFTWARE_ENABLE
-								if( SoftwareVersion )
+								if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
 								{
-//									if( !LightMxModel( ModelNum, &Models[i].Pos, 0.0F, 0.0F, 0.0F, 0.0F ) )
-									Trans = (float) ( floor( ( (float) Models[i].Red ) + ( (float) Models[i].Green ) + ( (float) Models[i].Blue ) ) / 3.0F );
-
-									if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, Trans ) )
-									{
-										DoDisplay = FALSE;
-									}
-								}
-								else
-#endif
-								{
-									if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
-									{
-										DoDisplay = FALSE;
-									}
+									DoDisplay = FALSE;
 								}
 							}
 
@@ -5934,14 +5899,9 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 	}
 	if ( !d3dapp->CurrDriver || PowerVR )
 	{
-#ifdef SOFTWARE_ENABLE
-		if ( !SoftwareVersion )
-#endif
-		{
-			RF = ( RF+GF+BF ) * 0.33333F;
-			GF = RF;
-			BF = RF;
-		}
+		RF = ( RF+GF+BF ) * 0.33333F;
+		GF = RF;
+		BF = RF;
 	}
 	if( RF > 255.0F ) RF = 255.0F;
 	if( GF > 255.0F ) GF = 255.0F;

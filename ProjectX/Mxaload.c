@@ -64,18 +64,6 @@ num_frames : uint16 // number of animation frames
 #include "spotfx.h"
 #include "XMem.h"
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern	BOOL	SoftwareVersion;
-extern void CWScanExecuteBuffer( LPDIRECT3DEXECUTEBUFFER execbuf );
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Defines
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -378,9 +366,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					{
 						// colourkey triangle found
 						colourkey++;
-#ifndef SOFTWARE_ENABLE
 						MFacePnt->pad &= ~1;
-#endif
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 					FacePnt->wFlags = MFacePnt->pad;
@@ -707,19 +693,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	}
 #endif
 
-#ifdef SOFTWARE_ENABLE
-	if ( SoftwareVersion )
-	{
-		for( group=0 ; group<Mxaloadheader->num_groups; group++)
-		{
-			for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
-			{
-				CWScanExecuteBuffer( Mxaloadheader->Group[group].lpExBuf[execbuf] );
-			}
-		}
-	}
-#endif
-
 	if ( colourkey )
 		DebugPrintf( "Mxaload: %d colourkey triangles found\n", colourkey );
 	// Mxaloadheader is valid and can be executed...
@@ -754,17 +727,8 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 					if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
 					AddTransExe( &Matrix , Mxaloadheader->Group[group].lpExBuf[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
 				}else{
-#ifdef SOFTWARE_ENABLE
-					if( SoftwareVersion )
-					{
-						CWExecute2(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
-					}
-					else
-#endif
-					{
 						if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 							return FALSE;
-					}
 				}
 			}
 		}
@@ -1290,17 +1254,8 @@ void DisplayWaterMesh()
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
 		return;
 	/*	Execute it	*/
-#ifdef SOFTWARE_ENABLE
-	if ( SoftwareVersion )
-	{
-		CWExecute2( d3dappi.lpD3DDevice, WaterExecbuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED );
-	}
-	else
-#endif
-	{
-		if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, WaterExecbuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-			return;
-	}
+	if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, WaterExecbuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+		return;
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 		return;
 }

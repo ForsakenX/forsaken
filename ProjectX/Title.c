@@ -127,24 +127,6 @@ void ProcessTextItems (void);
 BOOL	SWMonoChrome = FALSE;
 BOOL	Last_SWMonoChrome = FALSE;
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern void CWScanExecuteBuffer( LPDIRECT3DEXECUTEBUFFER execbuf );
-void CWClearZBuffer( void );
-
-extern char CWInTitle;
-extern	BOOL	SoftwareVersion;
-void ScanAllBikes( void );
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Externals ...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -352,12 +334,6 @@ extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	RandomPickups;
 //SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
-
-#ifdef SOFTWARE_ENABLE
-
-extern	long	GlBright;
-
-#endif
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Mode changing stuff..
@@ -2989,9 +2965,7 @@ MENU	MENU_Visuals = {
 	{
 		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1 /*"Select Screen Mode"*/, 0, 0, NULL, &MENU_SelectScreenMode, MenuChange, MenuItemDrawName, NULL, 0 },
 		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2 /*"Select Texture Format"*/, 0, 0, NULL, &MENU_SelectTextureFormat, MenuChange, MenuItemDrawName, NULL, 0 },
-#ifndef SOFTWARE_ENABLE
 		OLDMENUITEM(  200 , 128+2*16,LT_MENU_Visuals3 /*"Toggle Full Screen"*/, NULL, NULL , MenuGoFullScreen , MenuItemDrawName),
-#endif
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -3086,9 +3060,7 @@ MENU	MENU_Save = { LT_MENU_Save0 /*"Save Menu"*/ , NULL , NULL , NULL, 0,
 MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 					{ OLDMENUITEM( 200 , 112,  "Set Up Biker  ", (void *)biker_name, &MENU_SetUpBiker, MenuChange, DrawNameVar ),
-#ifndef SOFTWARE_ENABLE
 					  OLDMENUITEM( 200 , 128, "Toggle Full Screen", NULL, NULL , MenuGoFullScreen , MenuItemDrawName ),
-#endif
 					  OLDMENUITEM( 200 , 144, "Single Player", NULL, &MENU_SinglePlayer , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 160, "Multi Player", NULL, &MENU_MultiPlayer , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 176, "Load Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
@@ -3125,9 +3097,7 @@ MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitServerMenu 
 MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
 					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker"				*/,	(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
-#ifndef SOFTWARE_ENABLE
 					  OLDMENUITEM( 200, 128, LT_MENU_InGame2  /*"Toggle Full Screen"		*/,	NULL,						NULL,					MenuGoFullScreen,		MenuItemDrawName),
-#endif
 					  OLDMENUITEM( 200, 144, LT_MENU_InGame3  /*"Load Game"					*/,	NULL,						&MENU_LoadSavedGame,	MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"					*/,	NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"					*/,	NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
@@ -4216,10 +4186,6 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 	MATRIX Mat_R;
 	float scaleout = 1.01F;
 
-#ifdef SOFTWARE_ENABLE
-	return TRUE;
-#endif
-
 	font = GetScreenFont(FONT_Large);
 	 
 	BuildRotMatrix(rot->x, rot->y, rot->z, &Mat_R);
@@ -5098,19 +5064,6 @@ BOOL DisplayTitle(void)
 	uint16	group;
 	MENUITEM *Item;
 	LIST *l;
-
-#ifdef SOFTWARE_ENABLE
-/*-----------------------------------------------------------------------------
-		Chris Walsh's Code
------------------------------------------------------------------------------*/
-	if( SoftwareVersion )
-	{
-		CWInTitle = 1;
-		CWClearZBuffer();
-	}
-
-/*---------------------------------------------------------------------------*/
-#endif
 	
 	if (!InitialTexturesSet && CameraStatus != CAMERA_AtStart)
 	{
@@ -5195,14 +5148,6 @@ BOOL DisplayTitle(void)
 		TitleInitDone = TRUE;
 		NoTeamSelect = FALSE;
 		SetFOV( START_FOV );	// in case player was using nitro when finishing level!
-
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			if( MyGameStatus == STATUS_Title )
-				ScanAllBikes();
-		}
-#endif
 
 		if (UseNewMenus)
 			MENU_Start = MENU_NEW_Start;
@@ -5375,16 +5320,7 @@ BOOL DisplayTitle(void)
 		}
 
 		// reset all the normal execute status flags...
-	#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-		}
-		else
-	#endif
-		{
-			lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
+		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 		if( !ModelDisp( 0, lpDev, TitleModelSet ) )
 		{
@@ -5410,35 +5346,16 @@ BOOL DisplayTitle(void)
 			}
 
 		// set all the Translucent execute status flags...
-	#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-		}
-		else
-	#endif
-		{
-			lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
+		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 //		ExecuteTransExe( 0 );
 //		ExecuteTransExeUnclipped( 0 );
 		
 
 		// set all the Translucent execute status flags...
-	#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
-		else
-	#endif
-		{
-			lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
+		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 		// display clipped translucencies
-		{
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display 0 Clipped Non Faceme Transluecent Polys
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -5473,7 +5390,6 @@ BOOL DisplayTitle(void)
 					PVR_PolyDispGroup( 0, &i );
 				}
 			}
-		}
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display Non 0 Clipped Faceme Transluecent Polys
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -5515,10 +5431,6 @@ BOOL DisplayTitle(void)
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Display Opaque Lines
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	#ifdef SOFTWARE_ENABLE
-		if( !SoftwareVersion )
-	#endif
-		{
 			group = (uint16)-1;
 
 #ifndef FINAL_RELEASE
@@ -5532,19 +5444,9 @@ BOOL DisplayTitle(void)
 				}
 			}
 #endif
-		}
 
 		// reset all the normal execute status flags...
-	#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
-		else
-	#endif
-		{
-			lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		}
+		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display Solid Screen Polys
@@ -5557,10 +5459,6 @@ BOOL DisplayTitle(void)
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Display Solid Lines
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	#ifdef SOFTWARE_ENABLE
-		if( !SoftwareVersion )
-	#endif
-		{
 			group = (uint16)-1;
 
 #ifndef FINAL_RELEASE
@@ -5574,7 +5472,6 @@ BOOL DisplayTitle(void)
 				}
 			}
 #endif
-		}
 
 		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
 		{
@@ -5626,11 +5523,7 @@ Event handling
 	
 	//MorphHoloLight();
 	
-#ifdef SOFTWARE_ENABLE
-	if( !SoftwareVersion ) ProcessTextItems();
-#else
 	ProcessTextItems();
-#endif
 
 	//Our_CalculateFrameRate();
 
@@ -12247,22 +12140,7 @@ void GetGamePrefs( void )
 	SWMonoChrome = ( RegGet( "SWMonoChrome", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
 
-#ifdef SOFTWARE_ENABLE
-	if ( RegGet( "SWScreenWidth", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenWidth = temp;
-	else
-		ScreenWidth = 0;
 
-	if ( RegGet( "SWScreenHeight", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenHeight = temp;
-	else
-		ScreenHeight = 0;
-
-	if ( RegGet( "SWScreenBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenBPP = temp;
-	else
-		ScreenBPP = 0;
-#else
 	if ( RegGet( "ScreenWidth", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		ScreenWidth = temp;
 	else
@@ -12277,7 +12155,7 @@ void GetGamePrefs( void )
 		ScreenBPP = temp;
 	else
 		ScreenBPP = 0;
-#endif
+
 	if ( RegGet( "TexturePalettized", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		TexturePalettized = temp;
 	else
@@ -12318,10 +12196,6 @@ void GetGamePrefs( void )
 	{
 		GammaSlider.value = temp;
 		Gamma = ( (double)GammaSlider.value ) / 100.0F;
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-		GlBright = (long) ( Gamma * 32.0F );
-#endif
 	}
 
 	if ( RegGet( "water", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
@@ -12411,22 +12285,12 @@ void SetGamePrefs( void )
 	RegSet( "GoreGuts",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = SWMonoChrome;
 	RegSet( "SWMonoChrome", (LPBYTE)&temp , sizeof( temp ) );
-
-#ifdef SOFTWARE_ENABLE
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].w;
-	RegSet( "SWScreenWidth",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].h;
-	RegSet( "SWScreenHeight",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].bpp;
-	RegSet( "SWScreenBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-#else
 	temp = d3dapp->Mode[ d3dapp->CurrMode ].w;
 	RegSet( "ScreenWidth",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = d3dapp->Mode[ d3dapp->CurrMode ].h;
 	RegSet( "ScreenHeight",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = d3dapp->Mode[ d3dapp->CurrMode ].bpp;
 	RegSet( "ScreenBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-#endif
 	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized;
 	RegSet( "TexturePalettized",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP;
@@ -16740,9 +16604,7 @@ void EventLightenRoom(TITLE_EVENT *TitleEvent)
 void InitEventFadeOnHoloLight(TITLE_EVENT *TitleEvent)
 {
 	OldHoloLightBrightness = HoloLightBrightness;
-#ifndef SOFTWARE_ENABLE
 	Models[BackgroundModel[TITLE_MODEL_HoloLight]].Visible = 1;
-#endif
 }
 
 void TriggerBikeSpeech( TITLE_EVENT *TitleEvent )
@@ -18532,11 +18394,6 @@ BOOL SetGamma( SLIDER *slider )
 	
 	Gamma = ( (double)slider->value ) / 100.0F;
 
-#ifdef SOFTWARE_ENABLE
-	if( SoftwareVersion )
-		GlBright = (long) ( Gamma * 32.0F );
-#endif
-
 	if ( tempgamma == Gamma )
 		return TRUE;
 
@@ -18782,34 +18639,6 @@ void LoadHoloModel( uint16 model )
 		Models[CurrentHoloModel].Flags = MODFLAG_Original;
 	}
 }
-
-#ifdef SOFTWARE_ENABLE
-
-void ScanAllBikes( void )
-{
-	int16 systpageindex, i;
-	int				execbuf;
-	int				group;
-	int	model;
-
-	for( model = TITLE_MODEL_Lokasenna; model <= TITLE_MODEL_Slick; model++ )
-	{
-		systpageindex = MxaModelHeaders[ model ].SysTloadIndex[0];
-		MovePPMToVideoMemory( &Tloadheader, MxaModelHeaders[ model ].TloadIndex[0], SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
-
-		if ( SoftwareVersion )
-		{
-			for( group=0 ; group<MxaModelHeaders[ model ].num_groups; group++)
-			{
-				for( execbuf=0 ; execbuf<MxaModelHeaders[ model ].Group[ group ].num_execbufs; execbuf++)
-				{
-					CWScanExecuteBuffer( MxaModelHeaders[ model ].Group[ group ].lpExBuf[execbuf] );
-				}
-			}
-		}
-	}
-}
-#endif
 
 void ScaleHoloModel( float scale )
 {

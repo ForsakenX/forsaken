@@ -139,12 +139,4 @@ void ScaleMatrix( MATRIX * m, VECTOR * v );
 void MatrixFromAxisAndAngle( float angle, VECTOR * axis, MATRIX * rot );
 void spline(VECTOR * p, float t, VECTOR * p1, VECTOR * p2, VECTOR * p3, VECTOR * p4);
 
-#ifdef SOFTWARE_ENABLE
-/*-----------------------------------------------------------------------------
-	Chris Walsh's Code
------------------------------------------------------------------------------*/
-void CWVisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 );
-/*---------------------------------------------------------------------------*/
-#endif
-
 #endif

@@ -790,10 +790,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Cwtload.c"
-				>
-			</File>
-			<File
 				RelativePath="D3dapp.c"
 				>
 			</File>
@@ -995,10 +991,6 @@
 			</File>
 			<File
 				RelativePath="Stdwin.c"
-				>
-			</File>
-			<File
-				RelativePath=".\swver.c"
 				>
 			</File>
 			<File

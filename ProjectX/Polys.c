@@ -24,18 +24,6 @@
 #pragma optimize( "gty", on )
 #endif
 
-#ifdef SOFTWARE_ENABLE
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-		Chris's Code
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern	BOOL	SoftwareVersion;
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-#endif
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Externs
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -749,17 +737,8 @@ BOOL DisplayGroupClippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
  		if( !PolyDispGroupClipped( Group, ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -786,17 +765,8 @@ BOOL DisplayGroupUnclippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
  		if( !PolyDispGroupUnclipped( ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -951,18 +921,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -995,18 +954,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1039,18 +987,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1083,18 +1020,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 	   		
@@ -1322,18 +1248,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1366,18 +1281,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1410,18 +1314,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1454,18 +1347,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 	   		
@@ -1567,17 +1449,8 @@ BOOL DisplaySolidGroupClippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Gro
  		if( !SolidPolyDispGroupClipped( Group, ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -1604,17 +1477,8 @@ BOOL DisplaySolidGroupUnclippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
  		if( !SolidPolyDispGroupUnclipped( ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -1769,18 +1633,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1813,18 +1666,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1857,18 +1699,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -1901,18 +1732,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 	   		
@@ -2140,18 +1960,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -2184,18 +1993,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -2228,18 +2026,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
    		
@@ -2272,18 +2059,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									break;
 				
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
-									}
-									else
-									{
-										Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 	   		

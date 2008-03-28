@@ -288,27 +288,6 @@ char *CurrentLevelsList;
 float Old_LevelTime_Float;
 void InitFontTransTable( BOOL BlitText );
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-    Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void  CWExecute2( LPDIRECT3DDEVICE lpDev,
-          LPDIRECT3DEXECUTEBUFFER execbuf,
-          LPDIRECT3DVIEWPORT lpView,
-          WORD cwFlags);
-void  SWRendView( void );
-void  SetVTables( void );
-void CWClearZBuffer( void );
-BOOL CWRenderSmallCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
-
-extern  BOOL  SoftwareVersion;
-extern  long  RenderingSmall;
-extern  long  RenderingSmallXOff;
-extern  long  RenderingSmallYOff;
-extern  long  zRW;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#endif
-
 void InitModeCase(void);
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 void InitPolyText( void );
@@ -2183,15 +2162,6 @@ ReleaseLevel(void)
     ProcessGuaranteedMessages( TRUE , FALSE , FALSE );
     FreeServerMessageQue();
 
-
-#ifdef SOFTWARE_ENABLE
-    if( SoftwareVersion )
-    {
-      SetVTables();
-      SWRendView();
-      d3dappi.lpBackBuffer->lpVtbl->Unlock( d3dappi.lpBackBuffer, NULL );
-    }
-#endif
     break;
   }
 
@@ -6144,13 +6114,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     LastDistance[i] = 100000.0F;
   }
 
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-//    CWClearZBuffer();
-  }
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :  Now the Rendering can begin...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -6304,18 +6267,8 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         
         CurrentCamera.UseLowestLOD = TRUE;
 
-  #ifdef SOFTWARE_ENABLE
-        if( SoftwareVersion )
-        {
-          if( !CWRenderSmallCamera( lpDev , lpView ) )
+        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
             return FALSE;
-        }
-        else
-  #endif
-        {
-          if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-            return FALSE;
-        }
       }
 
       if( !PowerVR && ( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) ) )
@@ -6362,19 +6315,9 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         
         CurrentCamera.UseLowestLOD = TRUE;
 
-  #ifdef SOFTWARE_ENABLE
-        if( SoftwareVersion )
-        {
-          if( !CWRenderSmallCamera( lpDev , lpView ) )
+        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
             return FALSE;
-        }
-        else
-  #endif
-        {
-          if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-            return FALSE;
-        }
-
+       
         Current_Camera_View=TempMissileCam;
         SetFOV( main_fov );
 
@@ -6406,20 +6349,9 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   
       CurrentCamera.UseLowestLOD = FALSE;
 
-#if 0
-#ifdef SOFTWARE_ENABLE
-      if( SoftwareVersion )
-      {
-        if( !CWRenderSmallCamera( lpDev , lpView ) )
+      if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
           return FALSE;
-      }
-      else
-#endif
-#endif
-      {
-        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-          return FALSE;
-      }
+
 #ifdef Z_TRICK
       if ( !ZClearsOn )
       {
@@ -6510,14 +6442,8 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   Inside = PointInsideSkin( &Ships[WhoIAm].Object.Pos, Ships[WhoIAm].Object.Group );
 #endif
 
-#ifdef SOFTWARE_ENABLE
-  if( !SoftwareVersion )
-#endif
-  {
-    if( Our_CalculateFrameRate() != TRUE)
+  if( Our_CalculateFrameRate() != TRUE)
       return FALSE;
-  }
-
 
 /* Secondary routines called after rendering */
     
@@ -6549,10 +6475,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   }
   SetFOV( chosen_fov + fov_inc );
 
-#ifdef SOFTWARE_ENABLE
-  if( !SoftwareVersion )
-#endif
-  {
     if( CurrentMenu && CurrentMenuItem )
     {
       MenuDraw( CurrentMenu );
@@ -6577,7 +6499,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 //      TaskDispatch();
     }
-  }
 
   // here is where we process menu keys
   ProcessGameKeys();
@@ -7164,7 +7085,6 @@ BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
     clearflags |= D3DCLEAR_TARGET;
   }
 
-#ifndef SOFTWARE_ENABLE
 #ifdef Z_TRICK
   if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
 #else
@@ -7173,46 +7093,14 @@ BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
   {
     clearflags |= D3DCLEAR_ZBUFFER;
     }
-#endif
-
-#ifdef SOFTWARE_ENABLE
-  if ( ( myglobs.bClearsOn || ClearScreen || ClearZBuffer ) && SoftwareVersion )
-  {
-    CWClearZBuffer();
-  }
-#endif
 
   if( clearflags != 0 )
   {
-#ifdef SOFTWARE_ENABLE
-    if( SoftwareVersion )
-    {
-      if (RenderingSmall)
-      {
-        dummy.x1 = CurrentCamera.Viewport.dwX+RenderingSmallXOff;
-        dummy.y1 = CurrentCamera.Viewport.dwY+RenderingSmallYOff;
-        dummy.x2 = CurrentCamera.Viewport.dwX+CurrentCamera.Viewport.dwWidth+RenderingSmallXOff;
-        dummy.y2 = CurrentCamera.Viewport.dwY+CurrentCamera.Viewport.dwHeight+RenderingSmallYOff;
-
-        
-      }
-      else
-      {
-        dummy.x1 = CurrentCamera.Viewport.dwX;
-        dummy.y1 = CurrentCamera.Viewport.dwY;
-        dummy.x2 = CurrentCamera.Viewport.dwX+CurrentCamera.Viewport.dwWidth;
-        dummy.y2 = CurrentCamera.Viewport.dwY+CurrentCamera.Viewport.dwHeight;
-      }
-    }
-    else
-#endif
-    {
       dummy.x1 = CurrentCamera.Viewport.dwX;
       dummy.y1 = CurrentCamera.Viewport.dwY;
       dummy.x2 = CurrentCamera.Viewport.dwX+CurrentCamera.Viewport.dwWidth;
       dummy.y2 = CurrentCamera.Viewport.dwY+CurrentCamera.Viewport.dwHeight;
-    }
-
+   
     LastError =
               d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
                                                    1, &dummy,
@@ -7346,10 +7234,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
           ChangeBackgroundColour( R, G, B );
           ClearScrOverride = TRUE;
         }
-#ifdef SOFTWARE_ENABLE
-        else
-          ClearZOverride = TRUE; // this never had any effect before Z_TRICK, now it messes it up, so...get rid!
-#endif
         break;
       }
     }
@@ -7359,63 +7243,22 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     return FALSE;
 
   // reset all the normal execute status flags...
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-    CWExecute2( lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-  }
-  else
-#endif
-  {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
+  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
   // set all the Translucent execute status flags...
   if( WhiteOut != 0.0F)
   {
-#ifdef SOFTWARE_ENABLE
-    if( SoftwareVersion )
-    {
-      CWExecute2( lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-    }
-    else
-#endif
-    {
       lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-    }
   }
 
 
   // display background
-#ifdef SOFTWARE_ENABLE
-/*-----------------------------------------------------------------------------
-    Chris Walsh's Code
------------------------------------------------------------------------------*/
-  if( SoftwareVersion )
-  {
-    if ( !CWDisplayBackground( &Mloadheader, &CurrentCamera ) )
-      return FALSE;
-  }
-  else
-/*---------------------------------------------------------------------------*/
-#endif
-  {
-    if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
-      return FALSE;
-  }
+  if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
+    return FALSE;
 
   // reset all the normal execute status flags...
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-    CWExecute2( lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-  }
-  else
-#endif
-  {
-    if( WhiteOut == 0.0F)
+  if( WhiteOut == 0.0F)
         lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
 
   if( !bPolySort )
   {
@@ -7487,16 +7330,8 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 //  DisplayWaterMesh();
 
   // set all the Translucent execute status flags...
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-    CWExecute2( lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED );
-  }
-  else
-#endif
-  {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
+  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+
 
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -7510,17 +7345,8 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     {
       if( Skin_Execs[ Count ] != NULL )
       {
-#ifdef SOFTWARE_ENABLE
-        if( SoftwareVersion )
-        {
-          CWExecute2( lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED );
-        }
-        else
-#endif
-        {
           if (lpDev->lpVtbl->Execute(lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
             return FALSE;
-        }
       }
     }
 
@@ -7547,16 +7373,7 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
   }
 
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-    CWExecute2( lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
-  else
-#endif
-  {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
+  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
   // display clipped translucencies
   for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -7647,17 +7464,8 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     {
       if( Portal_Execs[ Count ] != NULL )
       {
-#ifdef SOFTWARE_ENABLE
-        if( SoftwareVersion )
-        {
-          CWExecute2( lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED );
-        }
-        else
-#endif
-        {
           if (lpDev->lpVtbl->Execute(lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
             return FALSE;
-        }
       }
     }
   }
@@ -7688,17 +7496,7 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   }
 
   // reset all the normal execute status flags...
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-    CWExecute2( lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
-  else
-#endif
-  {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
-
+  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Solid Screen Polys
@@ -7717,17 +7515,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif
         return FALSE;
     }
-
-#ifdef SOFTWARE_ENABLE
-
-  if( SoftwareVersion )
-  {
-    SetVTables();
-    SWRendView();
-    d3dappi.lpBackBuffer->lpVtbl->Unlock( d3dappi.lpBackBuffer, NULL );
-  }
-
-#endif
 
   return TRUE;
 }
@@ -10007,13 +9794,6 @@ BOOL ServerMainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     LastDistance[i] = 100000.0F;
   }
 
-#ifdef SOFTWARE_ENABLE
-  if( SoftwareVersion )
-  {
-//    CWClearZBuffer();
-  }
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :  Now the Rendering can begin...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -10062,11 +9842,6 @@ BOOL ServerMainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   if( Our_CalculateFrameRate() != TRUE)
     return FALSE;
 
-
-#ifdef SOFTWARE_ENABLE
-  if( !SoftwareVersion )
-#endif
-  {
     if( CurrentMenu && CurrentMenuItem )
     {
       if( !ServerRendering )
@@ -10086,8 +9861,6 @@ BOOL ServerMainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       ScoreSort();
       PrintScoreSort();
     }
-
-  }
 
   ProcessGameKeys();
 

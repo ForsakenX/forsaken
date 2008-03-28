@@ -789,32 +789,6 @@ void MatrixFromAxisAndAngle( float angle, VECTOR * axis, MATRIX * rot )
 	MatrixMultiply( rot, &rotx, rot );
 }
 
-#ifdef SOFTWARE_ENABLE
-/*-----------------------------------------------------------------------------
-	Chris Walsh's Code
------------------------------------------------------------------------------*/
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Function	:	Apply Matrix to a Vector
-	Input		:	MATRIX	*	Matrix
-				:	VECTOR	*	Vert
-				:	VECTOR	*	New Vert
-	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void CWVisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
-{
-	float w;
-	v1->x = ( ( m->_11 * v0->x ) + ( m->_21 * v0->y ) + ( m->_31 * v0->z ) +m->_41 );
-	v1->y = ( ( m->_12 * v0->x ) + ( m->_22 * v0->y ) + ( m->_32 * v0->z ) +m->_42);
-	v1->z = ( ( m->_13 * v0->x ) + ( m->_23 * v0->y ) + ( m->_33 * v0->z ) +m->_43);
-	w	  = ( ( m->_14 * v0->x ) + ( m->_24 * v0->y ) + ( m->_34 * v0->z ) +m->_44);
- //	v1->x /= w;
- //	v1->y /= w;
-	v1->z = w;	//cwxcwxcwx was /=w
-}
-/*---------------------------------------------------------------------------*/
-#endif
-
-
 /*
  * Calculates a point along a B-Spline curve defined by four points. p
  * n output, contain the point. t                                Position

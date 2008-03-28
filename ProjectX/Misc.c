@@ -20,10 +20,6 @@
 #include "typedefs.h"
 #include "d3dappi.h"
 
-#ifdef SOFTWARE_ENABLE
-	extern BOOL SoftwareVersion;
-#endif
-
 int default_width	= 0;
 int default_height	= 0;
 int default_bpp		= 0;
@@ -198,22 +194,6 @@ D3DAppIFilterDisplayModes(int driver)
 
 		/* default deny */
         d3dappi.Mode[i].bThisDriverCanDo = FALSE;
-
-#ifdef SOFTWARE_ENABLE
-
-		if ( SoftwareVersion )
-		{
-			// dont allow modes over 640x480 in software mode
-			if ( d3dappi.Mode[i].w > 640 && d3dappi.Mode[i].h > 480 )
-				continue;
-
-			// dont allow modes over 16 bits in software mode
-			// hack to prevent colourkeying messing up
-			if( d3dappi.Mode[i].bpp > 16 )
-				continue;
-		}
-
-#endif
 
 		/* skip if does NOT support depth */
         if (!(D3DAppIBPPToDDBD(d3dappi.Mode[i].bpp) & depths))

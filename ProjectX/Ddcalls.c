@@ -31,10 +31,6 @@ extern BOOL PreventFlips;
 BOOL CanDoStrechBlt = TRUE;
 BOOL	TripleBuffer = FALSE;
 BOOL CanRenderWindowed;
-
-#ifdef SOFTWARE_ENABLE
-extern	BOOL	SoftwareVersion;
-#endif
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 
 int ddcount3d = 0;	// number of 3D DD devices

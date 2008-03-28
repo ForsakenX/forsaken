@@ -27,19 +27,6 @@
 
 #define	FMPOLYSCALE	32.0F
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#define	CHRISFLAG	8192
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern	BOOL	SoftwareVersion;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Externs
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -1829,17 +1816,8 @@ BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
  		if( !FmPolyDispGroupClipped( Group, ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -1866,17 +1844,8 @@ BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
  		if( !FmPolyDispGroupUnclipped( ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if( SoftwareVersion )
-		{
-			CWExecute2( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -2039,18 +2008,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 								break;
 			
 							case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-								if( SoftwareVersion )
-								{
-									Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans );
-								}
-								else
-								{
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-								}
-#else
 								Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 								break;
 						}
 			
@@ -2216,61 +2174,29 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 	  
-#ifdef SOFTWARE_ENABLE
-  							if( ( FmPolys[ i ].SeqNum == FM_GOALSPARKLE ) &&  SoftwareVersion )
+				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
+				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
+				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
+				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+				   			FmPolyFacePnt++;
+				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
+				   			FmPolyFacePnt->v2 = ( StartVert + 2 );
+				   			FmPolyFacePnt->v3 = ( StartVert + 3 );
+				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+				   			FmPolyFacePnt++;
+			
+							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
 					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   			FmPolyFacePnt->v2 = ( StartVert + 1 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-								FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 | CHRISFLAG );
-					   			FmPolyFacePnt++;
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 3 );
-					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 | CHRISFLAG );
-					   			FmPolyFacePnt++;
-				
-								if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
-								{
-						   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-									FmPolyFacePnt->v2 = ( StartVert + 3 );
-						   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-						   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 | CHRISFLAG  );
-						   			FmPolyFacePnt++;
-						   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-						   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-						   			FmPolyFacePnt->v3 = ( StartVert + 1 );
-						   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 | CHRISFLAG  );
-						   			FmPolyFacePnt++;
-								}
-							}
-							else
-#endif
-							{
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   			FmPolyFacePnt->v2 = ( StartVert + 1 );
+								FmPolyFacePnt->v2 = ( StartVert + 3 );
 					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
 					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			FmPolyFacePnt++;
 					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 3 );
+					   			FmPolyFacePnt->v3 = ( StartVert + 1 );
 					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
-				
-								if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
-								{
-						   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-									FmPolyFacePnt->v2 = ( StartVert + 3 );
-						   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-						   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
-						   			FmPolyFacePnt++;
-						   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-						   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-						   			FmPolyFacePnt->v3 = ( StartVert + 1 );
-						   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
-						   			FmPolyFacePnt++;
-								}
 							}
 			
 							StartVert += 4;
@@ -2470,18 +2396,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 								break;
 			
 							case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-								if( SoftwareVersion )
-								{
-									Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans );
-								}
-								else
-								{
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-								}
-#else
 								Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 								break;
 						}
 			

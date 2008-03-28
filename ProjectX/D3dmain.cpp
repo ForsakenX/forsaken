@@ -34,16 +34,6 @@
 #include "getdxver.h"
 #include "dplay.h"
 
-
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
- int MakeCodeWritable( void );
-/*-------------------------------------------------------------------------*/
-#endif
-
-
 // load up C externals
 
 extern "C" {
@@ -59,15 +49,6 @@ extern "C" {
 #include	"XMem.h" 
 #include	"d3dapp.h"
 #include	"Sfx.h"
-
-#ifdef SOFTWARE_ENABLE
-	/*---------------------------------------------------------------------------
-		Chris Walsh's code
-	---------------------------------------------------------------------------*/
-	//extern CWmain(void);	// Main render loop on chris' stuff....
-	extern	BOOL	SoftwareVersion;
-	/*-------------------------------------------------------------------------*/
-#endif
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	extern LPDPSESSIONDESC2 glpdpSD_copy;
@@ -642,9 +623,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option, "systemmemory")) 
 		{
 			bOnlySystemMemory = TRUE;
-#ifdef SOFTWARE_ENABLE
-			SoftwareVersion = TRUE;
-#endif
         }
 
 		else if (!_stricmp(option, "emulation")) 
@@ -793,14 +771,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		}
 #endif
 
-#ifdef SOFTWARE_ENABLE
-		else if ( !_stricmp( option, "UseDDrawFlip" ) )
-		{
-			UseDDrawFlip = TRUE;
-			
-        }
-#endif
-
 		// use sscanf
 		else 
 		{
@@ -898,16 +868,6 @@ static BOOL CreateD3DApp(void)
     DWORD flags;
     Defaults defaults;
 
-
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-	int	Writeable;
-/*-------------------------------------------------------------------------*/
-#endif
-
-
 	// setup the width and height
 	if ( !default_width && !default_height && !default_bpp )
 	{
@@ -933,19 +893,6 @@ static BOOL CreateD3DApp(void)
 	// Set the flags to pass to the D3DApp creation based on command line
     flags = ( (bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0 ) | 
             ( (bOnlyEmulation)    ? (D3DAPP_ONLYD3DEMULATION |	D3DAPP_ONLYDDEMULATION) : 0 );
-
-
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-	if( SoftwareVersion )
-	{
-		Writeable = MakeCodeWritable();	
-		//CWmain();
-	}
-/*-------------------------------------------------------------------------*/
-#endif
 
     /*
      * Create all the DirectDraw and D3D objects neccesary to render.  The
@@ -1394,63 +1341,6 @@ int __cdecl MsgBox( int type, char *msg, ... )
 
 	return res;
 }
-
-#ifdef SOFTWARE_ENABLE
-/*---------------------------------------------------------------------------
-	Chris Walsh's code
----------------------------------------------------------------------------*/
-
-  int MakeCodeWritable( void )
-  {
-        int ReturnValue  = 0;
-
-        HMODULE OurModule = GetModuleHandle(0);
-        BYTE *pBaseOfImage = 0;
-
-        if((GetVersion() & 0xC0000000) == 0x80000000)
-        {
-        // We're on Win32s, so get the real pointer
-        HMODULE Win32sKernel = GetModuleHandle("W32SKRNL.DLL");
-
-        typedef DWORD __stdcall translator( DWORD );
-        translator *pImteFromHModule =
-                (translator
-*)GetProcAddress(Win32sKernel,"_ImteFromHModule@4");
-        translator *pBaseAddrFromImte =
-                (translator
-*)GetProcAddress(Win32sKernel,"_BaseAddrFromImte@4");
-
-        if(pImteFromHModule && pBaseAddrFromImte)
-        {
-                DWORD Imte = (*pImteFromHModule)((DWORD)OurModule);
-                pBaseOfImage = (BYTE *)(*pBaseAddrFromImte)(Imte);
-        }
-        }
-        else
-        {
-        pBaseOfImage = (BYTE *)OurModule;
-        }
-
-        if(pBaseOfImage)
-        {
-        IMAGE_OPTIONAL_HEADER *pHeader = (IMAGE_OPTIONAL_HEADER *)
-                (pBaseOfImage + ((IMAGE_DOS_HEADER
-*)pBaseOfImage)->e_lfanew +
-                sizeof(IMAGE_NT_SIGNATURE) + sizeof(IMAGE_FILE_HEADER));
-
-        DWORD OldRights;
-
-       
-if(VirtualProtect(pBaseOfImage+pHeader->BaseOfCode,pHeader->SizeOfCode,
-                        PAGE_READWRITE,&OldRights))
-        {
-                ReturnValue = 1;
-        }
-        }
-
-        return ReturnValue;
-   }
-#endif
 
 /*************************************************************************
 AVI Stuff

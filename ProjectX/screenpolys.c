@@ -115,18 +115,6 @@ void DebugPrintf( const char * format, ... );
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 #define	CUTOFF				( 5.0F * 1024.0F * GLOBAL_SCALE )
 
-#ifdef SOFTWARE_ENABLE
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Chris's Code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void	CWExecute2(	LPDIRECT3DDEVICE lpDev,
-					LPDIRECT3DEXECUTEBUFFER execbuf,
-					LPDIRECT3DVIEWPORT lpView,
-					WORD cwFlags);
-extern	BOOL	SoftwareVersion;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#endif
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Globals
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -568,13 +556,7 @@ void DoLensflareEffect( void )
 	uint16		i;
 
 	if( d3dapp->CurrDriver == 0 )
-	{
-#ifdef SOFTWARE_ENABLE
-		if( !SoftwareVersion ) return;
-#else
-		return;
-#endif
-	}
+	{	}
 	else
 	{
 		if( UsedStippledAlpha == TRUE ) return;
@@ -979,13 +961,7 @@ void SecBullLensflare( uint16 i )
 	uint8		Int;
 
 	if( d3dapp->CurrDriver == 0 )
-	{
-#ifdef SOFTWARE_ENABLE
-		if( !SoftwareVersion ) return;
-#else
-		return;
-#endif
-	}
+	{	}
 	else
 	{
 		if( UsedStippledAlpha == TRUE ) return;
@@ -1400,29 +1376,8 @@ void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, flo
 			}
 			else
 			{
-#ifdef SOFTWARE_ENABLE
-				if( SoftwareVersion )
-				{
-					if( NumberSegments[ Number ][ Count ] )
-					{
-						Red = (uint8) ( 255.0F * Col );
-						Trans = (uint8) ( 255.0F * Col );
-					}
-					else
-					{
-						Red = (uint8) ( 80.0F * Col );
-						Trans = (uint8) ( 64.0F * Col );
-					}
-				}
-				else
-				{
-					if( NumberSegments[ Number ][ Count ] ) Red = (uint8) ( 255.0F * Col );
-					else Red = (uint8) ( 80.0F * Col );
-				}
-#else
 				if( NumberSegments[ Number ][ Count ] ) Red = (uint8) ( 255.0F * Col );
 				else Red = (uint8) ( 80.0F * Col );
-#endif
 			}
 
 			ScrPolys[i].Pos.x = XPos;
@@ -2334,17 +2289,8 @@ BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, LPDIRECT3DDEVICE D3
  		if( !ScrPolyDispSolid( ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if (SoftwareVersion)
-		{
-			CWExecute2(  D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -2370,17 +2316,8 @@ BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, LPDIRECT3DDEVICE
  		if( !ScrPolyDispNonSolid( ExecBuff, &TPage, &i ) )
 			return( TRUE );
 
-#ifdef SOFTWARE_ENABLE
-		if (SoftwareVersion)
-		{
-			CWExecute2(  D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED );
-		}
-		else
-#endif
-		{
 			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 				return FALSE;
-		}
 	}
 
 	return( FALSE );
@@ -2675,18 +2612,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 									break;
 			
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 
@@ -2809,18 +2735,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 									break;
 							
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 									
@@ -3240,18 +3155,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									break;
 			
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 								
@@ -3374,18 +3278,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									break;
 							
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 									
@@ -3418,18 +3311,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									break;
 							
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 
@@ -3458,18 +3340,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									break;
 							
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 							
@@ -3502,18 +3373,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									break;
 							
 								case MCM_Software:
-#ifdef SOFTWARE_ENABLE
-									if( SoftwareVersion )
-									{
-										Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
-									}
-									else
-									{
-										Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									}
-#else
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-#endif
 									break;
 							}
 							
