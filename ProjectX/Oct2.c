@@ -2821,9 +2821,9 @@ BOOL InitDInput(void)
             goto fail;
     }
 
-    // set desired access mode
+    // set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
     err = IDirectInputDevice_SetCooperativeLevel(lpdiMouse, myglobs.hWndMain,
-    DISCL_NONEXCLUSIVE | DISCL_FOREGROUND);
+    DISCL_EXCLUSIVE | DISCL_FOREGROUND);
     if(err != DI_OK)
     {
             goto fail;
