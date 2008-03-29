@@ -1656,6 +1656,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 	// reset all joystick settings
 	ReInitJoysticks();
 
+
 	// get a 80 character wide string from file
 	if ( fscanf( f, " %80s", token ) == 1 )
 	{
