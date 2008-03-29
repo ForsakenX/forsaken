@@ -259,7 +259,7 @@ extern	GLOBALSHIP              Ships[MAX_PLAYERS];
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
 #define REGISTRY_EXPIRE_TIME	"ServiceID"
-#define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".cfg"
+#define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".txt"
 
 char	*config_name = NULL;
 char	old_config[256] = "";
@@ -8408,9 +8408,11 @@ void	MenuProcess()
 	DWORD Key;
 	BOOL KeyFound = FALSE;
 	uint16 i;
+	char * str="";
 
 	// print text to screen
-	CenterPrint4x5Text( "Open Source Edition", d3dapp->szClient.cy - FontHeight * 3, 2 );
+    sprintf(str,"Open Source Edition %.2f",VERSION);
+	CenterPrint4x5Text( str, d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;
@@ -9497,7 +9499,7 @@ void InitPilotList( void )
 		PilotList.display_items = 8;
 
 	// search for files that match *.cfg
-	h = FindFirstFile( "pilots\\*.cfg" , (LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
+	h = FindFirstFile( "pilots\\*.txt" , (LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
 
 	// if we didn't find any cfg's return
 	if ( h == INVALID_HANDLE_VALUE )
@@ -9513,7 +9515,7 @@ void InitPilotList( void )
 		fname = ConfigFiles.cFileName;
 
 		// size of the pilot name
-		j = strlen( fname ) - strlen( ".cfg" );
+		j = strlen( fname ) - strlen( ".txt" );
 
 		// if pilot name size is within boundaries
 		if ( j > 0 && j < MAX_PLAYER_NAME_LENGTH )
@@ -9601,7 +9603,7 @@ void SetPilotName( MENUITEM *item )
 		return;
 
 	// path to the cfg file
-	sprintf( filepath, "pilots\\%s.cfg", PilotName.text );
+	sprintf( filepath, "pilots\\%s.txt", PilotName.text );
 
 	// open the new/existing file to cfg open
 	f = fopen( filepath, "r" );
@@ -9691,7 +9693,7 @@ void SetPilotNameInGame( MENUITEM *item )
 	if ( !strlen( PilotNameInGame.text ) )
 		return; // abort if pilot name empty
 
-	sprintf( fname, "pilots\\%s.cfg", PilotNameInGame.text );
+	sprintf( fname, "pilots\\%s.txt", PilotNameInGame.text );
 
 	f = fopen( fname, "r" );
 	if ( f )
@@ -9747,7 +9749,7 @@ void RenamePilotName( MENUITEM *item )
 	if ( !strlen( PilotReName.text ) )
 		return; // abort if pilot name empty
 
-	sprintf( fname, "pilots\\%s.cfg", PilotReName.text );
+	sprintf( fname, "pilots\\%s.txt", PilotReName.text );
 
 	f = fopen( fname, "r" );
 	if ( f )
@@ -10294,7 +10296,7 @@ void InitBikerName( char *name )
 	biker_name[ sizeof( biker_name ) - 1 ] = 0;
 
 	// set the biker config
-	sprintf( biker_config, "pilots\\%s.cfg", name );
+	sprintf( biker_config, "pilots\\%s.txt", name );
 
 	// set the player name in registry
     RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
@@ -10343,7 +10345,7 @@ void GetDefaultPilot(void)
 		HANDLE h;
 
 		// search for files that match pattern
-		h = FindFirstFile( "Pilots\\*.cfg" , (LPWIN32_FIND_DATA) &files );
+		h = FindFirstFile( "Pilots\\*.txt" , (LPWIN32_FIND_DATA) &files );
 
 		// if we had an error
 		if ( h == INVALID_HANDLE_VALUE )
@@ -18814,7 +18816,7 @@ BOOL DeletePilot( LIST *l, int item )
 {
 	static char fname[ MAX_PATH ];
 
-	sprintf( fname, "pilots\\%s.cfg", l->item[ item ] );
+	sprintf( fname, "pilots\\%s.txt", l->item[ item ] );
 	if ( l->items > 1 && DeleteFile( fname ) && ListDelete( l, item ) )
 	{
 		SelectPilot( NULL );
