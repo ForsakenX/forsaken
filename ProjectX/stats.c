@@ -352,7 +352,7 @@ int GetScoreStats(int Player)
 	for(x = 0; x < MAX_PLAYERS; x++)
 	{
 		// add kills
-		if(x!=z && TeamNumber[x] != TeamNumber[z])
+		if((x!=Player) && (TeamNumber[x] != TeamNumber[Player]))
 			score += GetKillStats(Player,x);
 		// minus suicides and friendly kills
 		else
