@@ -4,83 +4,44 @@
 *																
 *	Deals with all statistical related proceedures				
 *																
+********************************************************************\
+*
+*	List of places where UpdateKillStats() is called:
+*		
+*		Mydplay.c	- update stats  1 (stats.c) -- somebody killed me
+*		Mydplay.c	- update stats  2 (stats.c) -- you killed someone
+*		Mydplay.c	- update stats  3 (stats.c) -- somebody killed someone
+*		models.c		- update stats  4 (stats.c) -- killed yourself with missile splash damage
+*		models.c		- update stats  5 (stats.c) -- i killed myself
+*		models.c		- update stats  6 (stats.c) -- somebody killed me
+*		Mydplay.c	- update stats  7 (stats.c) -- you killed someone on your own team
+*		Mydplay.c	- update stats  8 (stats.c) -- you killed someone in a team bounty game
+*		Mydplay.c	- update stats  9 (stats.c) -- you killed someone in a team game
+*		Mydplay.c	- update stats 10 (stats.c) -- you killed someone in a bounty game
+*
+*	List of places where UpdateBonusStats() is called:
+*
+*		Mydplay.c	- update bonus 1 (stats.c) -- killed someone in bomb tag
+*		Ships.c		- update bonus 2 (stats.c) -- flag chase scored
+*		Ships.c		- update bonus 3 (stats.c) -- CTF scored
+*		Ships.c		- update bonus 4 (stats.c) -- bounty hunt points
+*
 \*******************************************************************/
 
 #include "stats.h"
 #include <stdio.h>
-#include "main.h"
-#include "typedefs.h"
 #include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
-#include "Node.h"
 #include "CompObjects.h"
-#include "bgobjects.h"
 #include "Object.h"
 #include "mydplay.h"
-#include "ddsurfhand.h"
-#include "getdxver.h"
-#include <stdarg.h>
-#include <math.h>
-#include <time.h>
-#include "d3dmain.h"
 #include "2dtextures.h"
-#include "mload.h"
 #include "primary.h"
 #include "secondary.h"
-#include "triggers.h"
-#include "pickups.h"
-#include "Ships.h"
-#include "exechand.h"
-#include "collision.h"
-#include "ddutil.h"
-#include "2dpolys.h"
-#include "lines.h"
-#include "polys.h"
-#include "lights.h"
-#include "models.h"
-#include "2dtextures.h"
 #include "visi.h"
-#include "tload.h"
-#include "sfx.h"
-#include "transexe.h"
 #include "Text.h"
-#include "Mxaload.h"
-#include "dinput.h"
-#include "camera.h"
-#include "title.h"
-#include "screenpolys.h"
-#include "controls.h"
-#include "comm.h"
-#include "triggers.h"
-#include "enemies.h"
-#include "bsp.h"
-#include "trigarea.h"
-#include "multiplayer.h"
-#include  <fcntl.h>
-#include  <sys/types.h>
-#include  <sys/stat.h>
-#include  <io.h>
-#include  <stdio.h>
-#include  <stdlib.h>
-#include  <malloc.h>
-#include  <string.h>
-#include  "file.h"
-#include  "pvrd3d.h"
-#include  "PolySort.h"
-#include  "Ai.h"
-#include  "Water.h"
-#include  "spotfx.h"
-#include <process.h>
-#include  "ExtForce.h"
-#include  "Teleport.h"
-#include  "rtlight.h"
-#include  "restart.h"
-#include "Local.h"
-#include  "goal.h"
-#include  "LoadSave.h"
-#include  "XMem.h"
-#include "dpthread.h"
+
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
@@ -94,7 +55,7 @@ int BonusStats[MAX_PLAYERS+1];
 int KillCounter[MAX_PLAYERS+1];													// number of kills made during this life
 int x, z;																						// index counters
 
-char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITOR" };
+char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
 	
 
@@ -106,9 +67,9 @@ char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", 
 /* Get name of player's weapon with the most kills of specified type */
 char* GetFavWeapon(int PlayerID, int WeaponType)
 {
-	char* FavWeapon = "";	// weapon text to return
-	char WeaponKills[6];	// used to convert highest kills as int to char
-	int highest = 0;		// highest number of kills with a single weapon
+	char* FavWeapon = "";		// weapon text to return
+	char WeaponKills[6];			// used to convert highest kills as int to char
+	int highest = 0;				// highest number of kills with a single weapon
 	BOOL Found = FALSE;		// could we find at least one weapon with some kills?
 
 	// find primary weapon(s) with most kills
@@ -132,7 +93,7 @@ char* GetFavWeapon(int PlayerID, int WeaponType)
 		if(Found == TRUE)
 			return FavWeapon;	// return primary weapon with most kills
 		else
-			return "NONE";		// couldn't find any primary weapons with kills
+			return "NONE";			// couldn't find any primary weapons with kills
 	}
 	// find secondary weapon(s) with most kills
 	else if(WeaponType == WEPTYPE_Secondary)
@@ -155,7 +116,7 @@ char* GetFavWeapon(int PlayerID, int WeaponType)
 		if(Found == TRUE)
 			return FavWeapon;	// return secondary weapon with most kills
 		else
-			return "NONE";		// couldn't find any secondary weapons with kills
+			return "NONE";			// couldn't find any secondary weapons with kills
 	}
 	// invalid weapon type given
 	else

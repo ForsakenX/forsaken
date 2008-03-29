@@ -85,7 +85,7 @@
 #include  "LoadSave.h"
 #include  "XMem.h"
 #include "dpthread.h"
-
+#include "stats.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -159,21 +159,6 @@ extern  BOOL  RearCameraDisable;
 extern  MODELNAME   SplashModelNames[MAXMODELHEADERS];
 extern USERCONFIG *player_config;
 extern char biker_config[];
-
-// statistics (stats.c)
-extern void UpdateStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
-extern int GetTotalKills(int Killer);															// Get total number of kills (not including suicides)
-extern int GetTotalDeaths(int Victim);														// Get total number of deaths
-extern int GetTeamKills(int Player);															// Get team's total kills
-extern int GetTeamScore(int Killer);															// Get team score
-extern int GetKillStats(int Killer, int Victim);												// Get Individual Statistics
-extern int GetScoreStats(int Player);														// Get an individual score
-extern int GetBonusStats(int Player);														// Get an individual bonus stats (e.g. ctf or bounty points)
-extern void ResetAllStats();																	// Resets all statistics
-extern char*GetWeaponName(int WeaponType, int Weapon);						// Get weapon name		
-extern int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon);		// get player's weapon kill statistics
-extern char* GetFavWeapon(int PlayerID, int WeaponType);						// get primary or secondary weapon with highest kills
-
 
 extern MODELNAME *TitleModelSet;
 extern float LevelTimeTaken;
@@ -3602,24 +3587,20 @@ static void UpdateKillsTime( void )
       }
     }
 
-    // find highest score
+    // find highest score in a non-team game
     if ( !TeamGame )
     {
       for( i = 0 ; i < MAX_PLAYERS ; i++ )
       {
         if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
         {
-          /*if ( Ships[ i ].Kills > highest_score )
-          {
-            highest_score = Ships[ i ].Kills;
-          }*/
-
 			if(GetScoreStats(i) > highest_score)
 				highest_score = GetScoreStats(i);
-
         }
       }
-    }else
+    }
+	// find highest score in a team game
+	else
     {
       uint16 current_team_score[ MAX_TEAMS ];
 
@@ -3629,7 +3610,6 @@ static void UpdateKillsTime( void )
       {
         if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
         {
-          //current_team_score[ TeamNumber[ i ] ] += Ships[ i ].Kills;
 			current_team_score[ TeamNumber[ i ] ] += GetScoreStats(i);
 		}
       }

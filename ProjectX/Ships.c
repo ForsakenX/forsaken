@@ -795,6 +795,8 @@ BOOL ProcessShips()
 	}else{
 		NumToDo = MAX_PLAYERS;
 	}
+
+	// for every player in the game
 	for( i=0;i<NumToDo;i++)
 	{
 		ShipObjPnt = &Ships[i].Object;
@@ -849,6 +851,8 @@ BOOL ProcessShips()
 
 			StartPos = ShipObjPnt->Pos;
 			OldGroup = ShipObjPnt->Group;
+
+			// processing you
 			if( WhoIAm == i)
 			{
 
@@ -934,8 +938,8 @@ BOOL ProcessShips()
 						BountyTime += framelag / 60.0F;
 						if ( BountyBonusInterval > 0 && BountyTime >= BountyBonusInterval )
 						{
-							// Bounty Hunt Points (stats.c)
-							UpdateBonusStats(WhoIAm,(int16) floor( BountyTime / BountyBonusInterval ));
+							// update bonus 4 (stats.c) -- bounty hunt points
+							UpdateBonusStats(i,(int16) floor( BountyTime / BountyBonusInterval ));
 							// normal update
 							ShipPnt->Kills += (int16) floor( BountyTime / BountyBonusInterval );
 							BountyTime = FMOD( BountyTime, BountyBonusInterval );
@@ -1220,7 +1224,7 @@ BOOL ProcessShips()
 								FlagsToGenerate++;
 								// normal update -- remove later...
 								Ships[ i ].Kills += GoalScore;
-								// Flag Chase Scored -- Update Statistics (stats.c) 
+								// update bonus 2 (stats.c) -- flag chase scored
 								UpdateBonusStats(i,GoalScore);
 								AddMessageToQue( TEAM_SCORED,
 									TeamName[ TeamNumber[ i ] ] );
@@ -1269,7 +1273,7 @@ BOOL ProcessShips()
 									{
 										// normal update
 										Ships[ i ].Kills += score;
-										// CTF Flag Scored -- Update Statistics (stats.c) 
+										// update bonus 3 (stats.c) -- CTF scored
 										UpdateBonusStats(i,score);
 										AddMessageToQue( TEAM_SCORED,
 											TeamName[ TeamNumber[ i ] ] );
@@ -1385,14 +1389,12 @@ BOOL ProcessShips()
 					{
 						ShipPnt->Damage = ShieldModifier;
 
-						// this never gets called in multiplayer
+						// this never gets called in multiplayer?
 						if( DoDamage( DONT_OVERRIDE_INVUL ) )
 						{
 							ShipPnt->ShipThatLastKilledMe = i;
 							ShipObjPnt->Mode = DEATH_MODE;
 							ShipPnt->Timer = 0.0F;
-							// make a note of who killed who...
-							//Stats[i][i]++;
 							// print up I killed Myself
 							AddMessageToQue( YOU_KILLED_YOURSELF );
 							PlaySfx( SFX_BIKECOMP_DY, 1.0F );
@@ -1422,8 +1424,11 @@ BOOL ProcessShips()
 				}
 
 		
-			}else{
-// Start of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
+			} // end of processing 'you'
+
+			// Start of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
+			else
+			{
 
 				if( !ShipPnt->JustRecievedPacket )
 				{

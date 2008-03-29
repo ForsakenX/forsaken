@@ -3575,7 +3575,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					// called in TOL OFF multiplayer!!
 					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
    					AddMessageToQue( (char*)&tempstr[0] );
-					// Update Stats 1 (stats.c) - somebody killed me
+					// update stats 1 (stats.c) -- somebody killed me
 					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// kill me :(
 					ShipDiedSend( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon );
@@ -3601,33 +3601,37 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 			// no point if your cheating ?
 			if( !GodMode )
+			{
+				// original update
 				Ships[WhoIAm].Kills++;
+				// update bonus 1 (stats.c) -- killed someone in bomb tag
+				UpdateBonusStats(WhoIAm,1);
+			}
 
 		}
 		// if its not a bomb
 		else
 		{
-			
 			// print a message reflecting the weapon
 			GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
 			
    			// if you killed them
    			if( WhoIAm == lpShipDied->WhoKilledMe )
    			{
-				// if this is a team game
 				if( TeamGame )
 				{
-					//if they were on my side
 					if( TeamNumber[lpShipDied->WhoIAm] == TeamNumber[WhoIAm] )
 					{
-						// if not god mode
 						if( !GodMode )
 						{
-							// print message
-							AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], ON_YOUR_OWN_TEAM );
+							// you killed someone on your own team
+							AddMessageToQue( "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], ON_YOUR_OWN_TEAM );
 
 							// teams lose a point if they kill each other
+							// normal update
 							Ships[WhoIAm].Kills--;
+							// update stats 7 (stats.c) -- you killed someone on your own team
+							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
 					}
 					// if they weren't on your team
@@ -3638,27 +3642,38 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						{
 							if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
 							{
+								// you killed the person who was carrying the bounty
 								if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
 									AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+								// you had the bounty and killed someone
 								else
 									AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+								
 								PlaySfx( SFX_BIKER_VP, 1.0F );
+								// normal update
 								Ships[WhoIAm].Kills++;
 								AddKill();
+								// update stats 8 (stats.c) -- you killed someone in a team bounty game
+								UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
 							}
 							else
 							{
+								// you killed someone who wasnt carrying the bounty (team bounty) (no points for you!!)
 								AddMessageToQue( NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
 									Names[ lpShipDied->WhoIAm ] );
 							}
 						}
-						// i gues you dont get a point if your using the cheat ?
 						else if( !GodMode )
 						// any other team game
 						{
+							// you killed someone in a team game
 							AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+							// normal update
 							Ships[WhoIAm].Kills++;
 							AddKill();
+							// update stats 9 (stats.c) -- you killed someone in a team game
+							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
+							
 							if ( !Random_Range( 4 ) )
 								PlaySfx( SFX_BIKER_VP, 1.0F );
 						}
@@ -3667,36 +3682,47 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				// if not  team game
 				else
 				{
+					// standard bounty hunt
 					if ( BountyHunt )
 					{
 						if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
 						{
+							// you killed the person who was carrying the bounty
 							if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
 								AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+							// you had the bounty and killed someone
 							else
 								AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+							
 							PlaySfx( SFX_BIKER_VP, 1.0F );
+							// normal update
 							Ships[WhoIAm].Kills++;
 							AddKill();
+							// update stats 10 (stats.c) -- you killed someone in a bounty game
+							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
+						
 						else
 						{
+							// you killed someone who wasnt carrying the bounty (no points for you!!)
 							AddMessageToQue( NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
 								Names[ lpShipDied->WhoIAm ] );
 						}
 					}
+					// not a team game or bounty hunt
 					else if( !GodMode )
 					{
-	   					AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+	   					// you killed someone
+						AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+						// normal update
 						Ships[WhoIAm].Kills++;
 						AddKill();
+						// update stats 2 (stats.c) -- you killed someone 
+   						UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
 						if ( !Random_Range( 4 ) )
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 					}
 				}
-
-				// update stats 2 (stats.c) -- you killed someone 
-   				UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
 			}
 			// if you were not who killed them
 			else
@@ -3706,7 +3732,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    					// gee someone killed themselves...
    					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
    					AddMessageToQue( (char*)&tempstr[0] );
-			
    				}
 				else
 				{
@@ -3720,7 +3745,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    					AddMessageToQue( (char*)&tempstr[0] );
    				}
 
-				// Update Stats 3 (stats.c) - somebody killed someone
+				// update stats 3 (stats.c) -- somebody killed someone
    				UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon);
 			}
 		}
