@@ -8408,11 +8408,9 @@ void	MenuProcess()
 	DWORD Key;
 	BOOL KeyFound = FALSE;
 	uint16 i;
-	char * str="";
 
 	// print text to screen
-    sprintf(str,"Open Source Edition %.2f",VERSION);
-	CenterPrint4x5Text( str, d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Version 1.01", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;
