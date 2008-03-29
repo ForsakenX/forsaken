@@ -1203,10 +1203,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Media.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\MipMap.h"
 				>
 			</File>
