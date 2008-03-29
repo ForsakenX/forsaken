@@ -39,6 +39,7 @@
 #include "mydplay2.h"
 #include "XMem.h"
 #include "Local.h"
+#include "stats.h"
 
 
 extern BOOL Debug;

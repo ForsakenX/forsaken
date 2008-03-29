@@ -896,10 +896,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Tasker.c"
-				>
-			</File>
-			<File
 				RelativePath="Teleport.c"
 				>
 			</File>
@@ -1226,10 +1222,6 @@
 			</File>
 			<File
 				RelativePath="Include\Stdwin.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Tasker.h"
 				>
 			</File>
 			<File

@@ -54,7 +54,6 @@
 #include "comm.h"
 #include "triggers.h"
 #include "enemies.h"
-#include "tasker.h"
 #include "bsp.h"
 #include "trigarea.h"
 #include "multiplayer.h"
@@ -276,7 +275,7 @@ void UpdateKillCount(int Killer)
 	}
 	else
 	{
-		strcpy(prefix, GetName(Killer));
+		strcpy(prefix, (const char *)GetName(Killer));
 		strcat(prefix, " IS");
 	}
 

@@ -58,7 +58,6 @@
 #include "comm.h"
 #include "triggers.h"
 #include "enemies.h"
-#include "tasker.h"
 #include "bsp.h"
 #include "trigarea.h"
 #include "multiplayer.h"
@@ -408,13 +407,6 @@ BOOL  PowerVR = FALSE;
 BOOL  PowerVR_Overide = FALSE;
 BOOL  bPolySort = FALSE;
 
-void  Test( void )
-{
-  while( 1 )
-  {
-    TaskSleep(1);
-  }
-}
 extern int GameCompleted;
 extern  OFF_FILES OffsetFiles[];
 extern  OFF_FILES Title_OffsetFiles[];
@@ -2120,8 +2112,7 @@ void TestBlt()
       CenterPrint4x5Text( "Game Over" , (d3dappi.szClient.cy >> 1) - (FontHeight*2) , 2 );
     }
   }
-      
-  // TaskSleep( 1 );
+
 }
 
 void
@@ -2303,8 +2294,6 @@ ReleaseView(void)
     }
 
     RELEASE(lpBmat);
-
-    // TaskerInit();
 
   }
 }
@@ -5360,9 +5349,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       Msg( "InitSpecialExecBufs() failed\n" );
       return FALSE;
     }
-    
-	//    TaskerInit();
-	//    TaskCreate( (TaskFunc) Test , 0 );
 
     MyGameStatus = STATUS_InitView_6;
     PrintInitViewStatus( MyGameStatus );
@@ -6494,7 +6480,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
           TestBlt();
 #endif
       }
-//      TaskDispatch();
     }
 
   // here is where we process menu keys

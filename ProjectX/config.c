@@ -1868,7 +1868,6 @@ write_config( USERCONFIG *u, char *cfg_name )
 	int j, joystick, axis, button, pov, povdir, action;
 	char axistok[MAX_JOYSTICK_AXIS][80] = { "AXISX",  "AXISY",  "AXISZ",  "AXISRX",
 		                                    "AXISRY", "AXISRZ", "AXISS1", "AXISS2"};
-	uint32 code;
 
 	strcat(path,cfg_name);
 
