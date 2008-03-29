@@ -55,7 +55,6 @@ typedef struct tagd3dmainglobals {
 } d3dmainglobals;
 
 #ifdef SUPER
-	extern HANDLE AVIThreadControlEvent;
 	extern	d3dmainglobals	myglobs;
 	extern	VECTOR Camera_Pos;
 	extern	uint16 NumGroupsVisible;

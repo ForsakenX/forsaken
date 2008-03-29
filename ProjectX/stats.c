@@ -75,7 +75,6 @@
 #include  "ExtForce.h"
 #include  "Teleport.h"
 #include  "rtlight.h"
-#include  "avi.h"
 #include  "restart.h"
 #include "Local.h"
 #include  "goal.h"

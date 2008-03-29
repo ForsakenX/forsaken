@@ -140,10 +140,6 @@ extern "C" {
 	void OnceOnlyRelease( void );
 	void DebugPrintf( const char * format, ... );
 
-	void MovieRedraw (HWND);      // ID_MOVE_REDRAW
-	void MovieStop (HWND);
-	void MoviePlay (HWND hwnd);
-	void AviFinished( void );
 	void RemoveDynamicSfx( void );
 	void FillStatusTab( void );
 
@@ -164,13 +160,6 @@ BOOL Debug					= FALSE;
 BOOL DeviceOnCommandline	= FALSE;
 BOOL bOnlySystemMemory		= FALSE;
 BOOL bOnlyEmulation			= FALSE;
-
-// AVI Specific stuff...
-
-int AVI_bpp = 16;
-int AVI_ZoomMode = 0;
-HANDLE AVIThreadControlEvent;
-
 
 // INTERNAL FUNCTION PROTOTYPES
 
@@ -1337,23 +1326,5 @@ int __cdecl MsgBox( int type, char *msg, ... )
     AppPause(FALSE);
 
 	return res;
-}
-
-/*************************************************************************
-AVI Stuff
-*************************************************************************/
-
-// error: end proces
-//
-void EndProcess (int errcode)
-{
-	if (errcode == ERROR_NOT_ENOUGH_MEMORY)
-	{
-		//MessageBox (ghWnd, "Error: Not enough memory", "Error",
-		//            MB_APPLMODAL|MB_ICONSTOP|MB_OK);
-		Msg("AVI error: Not enough memory");
-	}
-	Msg("AVI error");
-	ExitProcess (errcode);
 }
 
