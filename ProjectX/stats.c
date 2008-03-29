@@ -42,10 +42,10 @@
 #include "visi.h"
 #include "Text.h"
 
-
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
 extern GetName(int Player);															// returns player's short name from Ships.c
+extern BOOL TeamGame;																// team game? (from Title.c)
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
@@ -310,12 +310,12 @@ int GetScoreStats(int Player)
 	// search all players
 	for(x = 0; x < MAX_PLAYERS; x++)
 	{
-		// add kills
-		if((x!=Player) && (TeamNumber[x] != TeamNumber[Player]))
-			score += GetKillStats(Player,x);
 		// minus suicides and friendly kills
-		else
+		if((Player==x) || ((TeamNumber[x] == TeamNumber[Player]) && TeamGame))
 			score -= GetKillStats(Player,x);
+		// add kills
+		else
+			score += GetKillStats(Player,x);
 	}
 
 	// add bonus points
