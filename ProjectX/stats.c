@@ -245,8 +245,9 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	else if (WeaponType == WEPTYPE_Secondary)
 		SecondaryStats[Killer][Weapon]++;
 
-	// update the current kills this life for the killer
-	UpdateKillCount(Killer);
+	// update the current kills this life for the killer - but not if i killed myself
+	if(Killer != Victim)
+		UpdateKillCount(Killer);
 
 	// reset the current kills this life for the victim
 	KillCounter[Victim] = 0;
