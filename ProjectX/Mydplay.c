@@ -3630,8 +3630,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							// teams lose a point if they kill each other
 							// normal update
 							Ships[WhoIAm].Kills--;
-							// update stats 7 (stats.c) -- you killed someone on your own team
-							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
+							// update stats 7 (stats.c) -- you killed someone on your own team (CRASHES)
+							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
 					}
 					// if they weren't on your team
@@ -3654,7 +3654,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 								Ships[WhoIAm].Kills++;
 								AddKill();
 								// update stats 8 (stats.c) -- you killed someone in a team bounty game
-								UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
+								UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 							}
 							else
 							{
@@ -3672,7 +3672,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Ships[WhoIAm].Kills++;
 							AddKill();
 							// update stats 9 (stats.c) -- you killed someone in a team game
-							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
+							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 							
 							if ( !Random_Range( 4 ) )
 								PlaySfx( SFX_BIKER_VP, 1.0F );
@@ -3699,7 +3699,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Ships[WhoIAm].Kills++;
 							AddKill();
 							// update stats 10 (stats.c) -- you killed someone in a bounty game
-							UpdateKillStats(WhoIAm, (int) &Names[lpShipDied->WhoIAm][0], lpShipDied->WeaponType, lpShipDied->Weapon);
+							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
 						
 						else

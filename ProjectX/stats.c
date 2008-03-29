@@ -9,7 +9,7 @@
 *	List of places where UpdateKillStats() is called:
 *		
 *		Mydplay.c	- update stats  1 (stats.c) -- somebody killed me
-*		Mydplay.c	- update stats  2 (stats.c) -- you killed someone
+*		Mydplay.c	- update stats  2 (stats.c) -- you killed someone 
 *		Mydplay.c	- update stats  3 (stats.c) -- somebody killed someone
 *		models.c		- update stats  4 (stats.c) -- killed yourself with missile splash damage
 *		models.c		- update stats  5 (stats.c) -- i killed myself
