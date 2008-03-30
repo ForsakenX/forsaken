@@ -2817,7 +2817,7 @@ BOOL InitDInput(void)
 
     // set cooperative level
     if(IDirectInputDevice_SetCooperativeLevel(lpdiKeyboard, myglobs.hWndMain,
-                     DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
+                     DISCL_EXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
     {
             goto fail;
     }
