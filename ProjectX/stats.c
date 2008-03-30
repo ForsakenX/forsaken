@@ -205,7 +205,9 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 		SecondaryStats[Killer][Weapon]++;
 
 	// update the current kills this life for the killer - but not if player killed himself or his team mate
-	if((Killer != Victim) && (TeamNumber[Killer] !=TeamNumber[Victim]))
+	if((Killer == Victim) || ((TeamNumber[Killer] ==TeamNumber[Victim]) && TeamGame))
+	{ }
+	else
 		UpdateKillCount(Killer);
 
 	// reset the current kills this life for the victim
