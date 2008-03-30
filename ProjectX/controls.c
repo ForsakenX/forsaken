@@ -829,55 +829,52 @@ again:;
 
 static void ReadMouse( int dup_last )
 {
-  int j;
-  HRESULT hr;
+	int j;
+	HRESULT hr;
 
-  if ( !MouseInput )
-    goto fail;
-  if (lpdiMouse)
-  {
-    if ( dup_last )
-    {
-      MouseState[ new_input ] = MouseState[ old_input ];
-      if ( MOUSE_WHEEL_UP() )
-        MouseState[ new_input ].lZ--;
-      if ( MOUSE_WHEEL_DOWN() )
-        MouseState[ new_input ].lZ++;
-    }else
-    {
-      hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
-      switch (hr)
-      {
-      case DI_OK:
+	if ( !MouseInput || !lpdiMouse )
+		goto fail;
+
+	if ( dup_last )
+	{
+		MouseState[ new_input ] = MouseState[ old_input ];
+		if ( MOUSE_WHEEL_UP()   )	MouseState[ new_input ].lZ--;
+		if ( MOUSE_WHEEL_DOWN() )	MouseState[ new_input ].lZ++;
+		return;
+	}
+
+	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
+
+	switch (hr)
+	{
+	case DI_OK:
 #if 1
-        if ( MouseState[ new_input ].lZ > 0 )
-          MouseState[ new_input ].lZ = 1;
-        else if ( MouseState[ new_input ].lZ < 0 )
-          MouseState[ new_input ].lZ = -1;
+		if ( MouseState[ new_input ].lZ > 0 )		MouseState[ new_input ].lZ =  1;
+		else if ( MouseState[ new_input ].lZ < 0 )	MouseState[ new_input ].lZ = -1;
 #else
-        MouseState[ new_input ].lZ /= MOUSE_ZSTEP;
+		MouseState[ new_input ].lZ /= MOUSE_ZSTEP;
 #endif
-        break;
-      case DIERR_INPUTLOST:
-        // re-aquire mouse
-        hr = IDirectInputDevice_Acquire(lpdiMouse);
-        goto fail;
-      default:
-        goto fail;
-      }
-    }
-  }else
-    goto fail;
+		break;
+	case DIERR_INPUTLOST:
+		// re-aquire mouse
+		hr = IDirectInputDevice_Acquire(lpdiMouse);
+		goto fail;
+	default:
+		goto fail;
+	}
 
-  return;
+	return;
 
+// failed to read the mouse
 fail:
-  // failed to read the mouse
-  MouseState[ new_input ].lX = 0;
-  MouseState[ new_input ].lY = 0;
-  MouseState[ new_input ].lZ = 0;
-  for ( j = 0; j < 4; j++ )
-    MouseState[ new_input ].rgbButtons[ j ] = 0;
+
+	MouseState[ new_input ].lX = 0;
+	MouseState[ new_input ].lY = 0;
+	MouseState[ new_input ].lZ = 0;
+
+	for ( j = 0; j < 4; j++ )
+		MouseState[ new_input ].rgbButtons[ j ] = 0;
+
 }
 
 float framelagfix = 0.0F;
