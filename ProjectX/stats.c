@@ -187,7 +187,32 @@ void ResetAllStats()
 }
 
 
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Reset one player's statistics...
+  Input   :   player id
+  Output    :   nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Reset All Statistics */
+void ResetIndividualStats(int Player)
+{
+	// reset player's individual kill stats
+	for(z = 0; z < MAX_PLAYERS; z++)
+		KillStats[Player][z] = 0;
 
+	// reset player's primary weapon kill stats
+	for(z = 0; z < MAXPRIMARYWEAPONS+1; z++)
+		PrimaryStats[Player][z] = 0;
+
+	// reset player's secondary weapon kill stats
+	for(z= 0; z < TOTALSECONDARYWEAPONS; z++)
+		SecondaryStats[Player][z] = 0;
+
+	// reset player's bonus stats
+	BonusStats[Player] = 0;
+
+	// reset player's sequential kill counter
+	KillCounter[Player] = 0;
+}
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   Update Kill Statistics...
   Input   :   killer id, victim id, weapon type, weapon used

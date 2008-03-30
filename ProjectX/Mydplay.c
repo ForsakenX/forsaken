@@ -1284,7 +1284,7 @@ void InitShipStructure( int i , BOOL ResetScore )
 	{
 		Ships[i].Deaths = 0;
 		Ships[i].Kills = 0;
-		ResetAllStats(); // (stats.c)
+		ResetIndividualStats(i); // (stats.c)
 	}
 
 
@@ -1325,6 +1325,7 @@ void DestroyGame( void )
 		{
 			// kills would have been sent to somebody else on team, so reset
 			Ships[WhoIAm].Kills = 0;
+			ResetIndividualStats(WhoIAm); // stats.c
 		}
 
 		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
@@ -3630,7 +3631,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							// teams lose a point if they kill each other
 							// normal update
 							Ships[WhoIAm].Kills--;
-							// update stats 7 (stats.c) -- you killed someone on your own team (CRASHES)
+							// update stats 7 (stats.c) -- you killed someone on your own team
 							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
 					}
