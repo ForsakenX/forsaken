@@ -1857,6 +1857,7 @@ MENU MENU_NEW_Misc = {
 };
 
 
+// Out-of-game menu
 MENU	MENU_NEW_DetailLevels = {
 	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
@@ -2846,28 +2847,28 @@ MENU	MENU_Controls = {
 	}																					
 };
 MENU	MENU_Sound;
+// in-game-menu
 MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
-		{ 200, 100, 0, 0, 0, LT_MENU_Detail1	/*"Bi Linear Filtering"		*/, 0, 0,		&BiLinearFiltering,		SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 116, 0, 0, 0, LT_MENU_Detail1a	/*"Tri Linear Filtering"	*/, 0, 0,		&TriLinear,				SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 148, 0, 0, 0, LT_MENU_Detail2	/*"Perspective Correct"		*/, 0, 0,		&PerspectiveCorrect,	SetOurRenderStates,	SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 164, 0, 0, 0, LT_MENU_Detail3	/*"Lens Flare"				*/, 0, 0,		&LensFlare,				NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,	SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 212, 0, 0, 0, LT_MENU_Detail6	/*"Secondary Lights"		*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 228, 0, 0, 0, LT_MENU_Detail7	/*"Pickup Lights"			*/, 0, 0,		&PickupLightDetail,		SetLightStates,		SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 244, 0, 0, 0, LT_MENU_Detail8	/*"Mono Lighting"			*/, 0, 0,		&SWMonoChrome,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 260, 0, 0, 0, LT_MENU_Detail9	/*"Smoke Trail Detail"		*/, 0, 0,		&TrailDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200, 276, 0, 0, 0, LT_MENU_Detail10	/*"Auto Detail"				*/, 0, 0,		&AutoDetail,			NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
+		{ 200, 100, 0, 0, 0, LT_MENU_Detail1	/*"Bi Linear Filtering"		*/, 0, 0,		&BiLinearFiltering,			SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 116, 0, 0, 0, LT_MENU_Detail1a	/*"Tri Linear Filtering"	*/, 0, 0,		&TriLinear,					SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 148, 0, 0, 0, LT_MENU_Detail2	/*"Perspective Correct"	*/, 0, 0,		&PerspectiveCorrect,	SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 164, 0, 0, 0, LT_MENU_Detail3	/*"Lens Flare"				*/, 0, 0,		&LensFlare,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 212, 0, 0, 0, LT_MENU_Detail6	/*"Secondary Lights"		*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 228, 0, 0, 0, LT_MENU_Detail7	/*"Pickup Lights"			*/, 0, 0,		&PickupLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 244, 0, 0, 0, LT_MENU_Detail8	/*"Mono Lighting"			*/, 0, 0,		&SWMonoChrome,		NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 260, 0, 0, 0, LT_MENU_Detail9	/*"Smoke Trail Detail"	*/, 0, 0,		&TrailDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 276, 0, 0, 0, LT_MENU_Detail10	/*"Auto Detail"				*/, 0, 0,		&AutoDetail,				NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 340, 0, 0, 0, LT_MENU_Detail14	/*"mature content"		*/, 0, 0,		&GoreGuts,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 #ifdef Z_TRICK
-		{ 200, 308, 0, 0, 0, LT_MENU_Detail15	/*"Z Clears"				*/, 0, 0,		&ZClearsOn,				SetZCompare,		SelectToggle,	DrawToggle, NULL, 0 },
-#endif
-		{ 200, 292, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,				SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200, 308, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,			NULL,				SelectSlider,	DrawSlider, NULL, 0 },
-		{ 200, 324, 0, 0, 0, LT_MENU_Detail14	/*"mature content"			*/, 0, 0,		&GoreGuts,				NULL,				SelectToggle,	DrawToggle, NULL, 0 },
-		
+		{ 200, 356, 0, 0, 0, LT_MENU_Detail15	/*"Z Clears"					*/, 0, 0,		&ZClearsOn,				SetZCompare,				SelectToggle,	DrawToggle,	NULL, 0 },
+#endif		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
