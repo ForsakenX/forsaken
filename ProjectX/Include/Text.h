@@ -53,6 +53,7 @@ int	 Print4x5Text( char * Text , int x , int y , int col );
 void PrintClipped4x5Text( char * Text , int x , int y , int col );
 void Printuint16( uint16 tempnum , int x , int y , int col );
 void MessageQuePrint( void );
+void AddColourMessageToQue(  int Colour, char * Text, ... );
 void AddMessageToQue( char * Text, ... );
 void RightJustifyPrint4x5Text( char * Text , int x , int y, int col );
 void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y);

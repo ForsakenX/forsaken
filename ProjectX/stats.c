@@ -272,32 +272,32 @@ void UpdateKillCount(int Killer)
 		case 3:	
 					if(PlaySound) PlaySfx( SFX_KILLINGSPREE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A KILLING SPREE (3 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 		case 5:
 					if(PlaySound) PlaySfx( SFX_RAMPAGE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A RAMPAGE (5 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 		case 8:
 					if(PlaySound) PlaySfx( SFX_DOMINATING, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "DOMINATING (8 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 		case 11:
 					if(PlaySound) PlaySfx( SFX_UNSTOPPABLE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "UNSTOPPABLE (11 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 		case 15:
 					if(PlaySound) PlaySfx( SFX_WICKEDSICK, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (15 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 		case 20:
 					if(PlaySound) PlaySfx( SFX_GODLIKE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (20 KILLS)" );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
 					break;
 	}
 }

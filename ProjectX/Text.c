@@ -116,6 +116,7 @@ uint16 little[4] = { 1000 , 100 , 10 , 1 };
 
 int CurrentMessage = 0;
 float MessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
+int MessageColour[MAX_MESSAGES];
 char MessageBank[MAX_MESSAGES][200];
 uint8	CharTrans[256];
 uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
@@ -512,11 +513,10 @@ void	MessageQuePrint( void )
 		{
 			MessageTime[e] = 0.0F;
 			MessageBank[e][0] = 0;
-		}else{
-			if( MessageBank[e][0] != 0 )
-			{
-				CenterPrint4x5Text( &MessageBank[e][0] , (i*(FontHeight+1))+16 , 2 );
-			}
+		}
+		else
+		{
+			CenterPrint4x5Text( &MessageBank[e][0] , (i*(FontHeight+1))+16 , MessageColour[e] );
 		}
 		e++;
 		e &= 3;
@@ -542,6 +542,8 @@ void AddMessageToQueShort( uint8 ** Text )
 	CurrentMessage++;
 	CurrentMessage&=3;
 	MessageTime[CurrentMessage] = ThisMessageTime;
+
+	MessageColour[CurrentMessage] = 2; // Set colour to green (default)
 	
 	for( i = 0 ; i < MAXPERLINE ; i++ )
 	{
@@ -572,6 +574,51 @@ void AddMessageToQueShort( uint8 ** Text )
 	*Text = NULL;
 }
 
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Add Colour Message to the Que Short...
+	Input		:		char * Text
+	Output		:		nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void AddColourMessageToQueShort( uint8 ** Text, int Colour )
+{
+	uint8 * Pnt;
+	int i;
+	Pnt = *Text;
+
+	CurrentMessage++;
+	CurrentMessage&=3;
+	MessageTime[CurrentMessage] = ThisMessageTime;
+
+	MessageColour[CurrentMessage] = Colour; // Set colour
+	
+	for( i = 0 ; i < MAXPERLINE ; i++ )
+	{
+		MessageBank[CurrentMessage][i] = *Pnt;
+		if( *Pnt == 0 )
+		{
+			*Text = NULL;
+			return;
+		}
+		Pnt++;
+	}
+
+	i = MAXPERLINE-1;
+	while( *Pnt != 0x20 && i >= 0 )
+	{
+		Pnt--;
+		i--;
+	}
+
+	if( i >= 0 )
+	{
+		MessageBank[CurrentMessage][i+1] = 0;
+		*Text = Pnt+1;
+		return;
+	}
+
+	MessageBank[CurrentMessage][0] = 0;
+	*Text = NULL;
+}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Add Message to the Que...
@@ -603,7 +650,30 @@ void AddMessageToQue( char * Text, ... )
 	}
 }
 
+void AddColourMessageToQue( int Colour, char * Text, ... )
+{
+	uint8 * Pnt;
+	va_list args;
 
+	va_start( args, Text );
+	vsprintf( &TempMessage[0], Text, args);
+	va_end( args );
+
+	TempMessage[511] = 0;
+
+	Pnt = &TempMessage[0];
+
+	MessageSize = (float) strlen(&TempMessage[0]);
+	ThisMessageTime = MAXMESSAGETIME * (MessageSize / MAXPERLINE);
+	if( ThisMessageTime < (MAXMESSAGETIME * 0.25F) )
+		ThisMessageTime = MAXMESSAGETIME * 0.25F;
+
+
+	while( Pnt )
+	{
+		AddColourMessageToQueShort( &Pnt, Colour );
+	}
+}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Sort players according to Score.....

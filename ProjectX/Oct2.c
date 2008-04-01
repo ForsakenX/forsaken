@@ -2078,7 +2078,9 @@ void TestBlt()
         PrintScoreSort();
       }
       MessageQuePrint();
-    }else{
+    }
+	else
+	{
       if( Panel )
       {
         ScoreSort();
