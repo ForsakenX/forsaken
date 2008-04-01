@@ -123,7 +123,7 @@
 #define YOU_DIED						"you died"
 
 // primary.c
-#define LT_DEATHMETHOD_KILLED					""
+#define LT_DEATHMETHOD_KILLED					"a kamikaze"
 #define LT_DEATHMETHOD_PURGE_MINE				"a purge mine"
 #define LT_DEATHMETHOD_PINE_MINE				"a pine mine"
 #define LT_DEATHMETHOD_QUANTUM_MINE				"a quantum mine"
