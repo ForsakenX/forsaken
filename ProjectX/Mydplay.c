@@ -3626,7 +3626,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						if( !GodMode )
 						{
 							// you killed someone on your own team
-							AddMessageToQue( "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], ON_YOUR_OWN_TEAM );
+							AddMessageToQue( "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
 
 							// teams lose a point if they kill each other
 							// normal update
