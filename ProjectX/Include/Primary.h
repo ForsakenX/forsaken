@@ -154,8 +154,8 @@
 #define	OWNER_MINE			4
 #define	OWNER_MODELSPOTFX	5
 
-#define	COLPERS_Forsaken	0					// Forsaken Collision ( My Perspective )
-#define	COLPERS_Descent		1					// Descent Collision ( Your Perspective )
+#define	COLPERS_Forsaken	0					// Forsaken Collision ( shooter Perspective )
+#define	COLPERS_Descent	1					// Descent Collision ( target Perspective )
 #define	COLPERS_Server		2					// Server decides who gets hit....
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
