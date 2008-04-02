@@ -115,7 +115,7 @@ extern	BOOL			BikeEnginesOn;
 extern	BOOL            IsServer;
 extern	BYTE			Server_WhoHitYou;
 
-
+extern int KillMessageColour;
 
 void DebugPrintf( const char * format, ... );
 void RefreshModel( uint16 model );
@@ -4769,8 +4769,8 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 													Ships[ WhoIAm ].Object.Mode = DEATH_MODE;
 													Ships[ WhoIAm ].Timer = 0.0F;
 													PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-													//sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
-													AddMessageToQue( &tempstr[0] );
+													sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
+													AddColourMessageToQue( KillMessageColour, &tempstr[0] );
 													ShipDiedSend( WEPTYPE_Secondary, Weapon );
 												}
 
@@ -4835,7 +4835,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 												PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 												// killed yourself with missile splash damage (e.g. mfrl)
 												sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] );
-												AddMessageToQue( &tempstr[0] );												
+												AddColourMessageToQue( KillMessageColour, &tempstr[0] );												
 												// update stats 4 (stats.c) -- killed yourself with missile splash damage
 												UpdateKillStats(WhoIAm,WhoIAm,WEPTYPE_Secondary, Weapon);
 												ShipDiedSend( WEPTYPE_Secondary, Weapon );
@@ -5033,7 +5033,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 			{
 				PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 				sprintf( &tempstr[0], YOU_KILLED_YOURSELF_HOW, &methodstr[0] ); // called in both multiplayer  & single player
-				AddMessageToQue( &tempstr[0] );
+				AddColourMessageToQue(KillMessageColour, &tempstr[0] );
 				// update stats 5 (stats.c) -- i killed myself
 				UpdateKillStats(WhoIAm,WhoIAm,WeaponType,Weapon); 
 			}
@@ -5043,7 +5043,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 				if( OwnerType == OWNER_ENEMY )
 				{
 					sprintf( &tempstr[0], ENEMY_KILLED_YOU, &methodstr[0] );
-					AddMessageToQue( &tempstr[0] );
+					AddColourMessageToQue( KillMessageColour, &tempstr[0] );
 				}
 				// someone killed me in multiplayer
 				else
@@ -5061,7 +5061,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 
 						// somebody killed me
 						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
-						AddMessageToQue( &tempstr[0] );
+						AddColourMessageToQue( KillMessageColour, &tempstr[0] );
 						// update stats 6 (stats.c) -- somebody killed me
 						UpdateKillStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 
 						
@@ -5070,7 +5070,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 					else
 					{
 						sprintf( &tempstr[0], YOU_DIED );
-						AddMessageToQue( &tempstr[0] );
+						AddColourMessageToQue( KillMessageColour, &tempstr[0] );
 					}
 				}
 			}

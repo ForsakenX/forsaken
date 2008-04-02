@@ -208,7 +208,14 @@ extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
 extern	BOOL		JustGenerated;
 extern	BOOL		JustPickedUpShield;
 
+// statistics updates (stats.c)
 extern int UpdateBonusStats(int Player, int Points);
+
+// message colours (Title.c)
+extern int KillMessageColour; 
+extern int SystemMessageColour;
+extern int FlagMessageColour;
+extern int PlayerMessageColour;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Bike Modifiers.....
@@ -1148,7 +1155,7 @@ BOOL ProcessShips()
 											if ( PointInsideSkin( &ShipObjPnt->Pos, g ) )
 											{
 												ShipObjPnt->Group = g;
-												AddMessageToQue( "You are now in %s", Mloadheader.Group[ g ].name );
+												AddColourMessageToQue(SystemMessageColour, "You are now in %s", Mloadheader.Group[ g ].name );
 												break;
 											}
 										}
@@ -1226,7 +1233,7 @@ BOOL ProcessShips()
 								Ships[ i ].Kills += GoalScore;
 								// update bonus 2 (stats.c) -- flag chase scored
 								UpdateBonusStats(i,GoalScore);
-								AddMessageToQue( TEAM_SCORED,
+								AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
 									TeamName[ TeamNumber[ i ] ] );
 
 								SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ScoredWithFlag, 0);
@@ -1234,7 +1241,7 @@ BOOL ProcessShips()
 						}
 						else if ( goalcheck == GOAL_WRONG )
 						{
-							AddMessageToQue( TAKE_FLAG_TO_GOAL,
+							AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 								TeamName[ TeamNumber[ i ] ] );
 						}
 					}
@@ -1275,14 +1282,14 @@ BOOL ProcessShips()
 										Ships[ i ].Kills += score;
 										// update bonus 3 (stats.c) -- CTF scored
 										UpdateBonusStats(i,score);
-										AddMessageToQue( TEAM_SCORED,
+										AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
 											TeamName[ TeamNumber[ i ] ] );
 										
 										SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ScoredWithFlag, 0);
 									}
 									else
 									{
-										AddMessageToQue( OTHER_TEAM_FLAG_RETURNED,
+										AddColourMessageToQue(FlagMessageColour, OTHER_TEAM_FLAG_RETURNED,
 											TeamName[ TeamNumber[ i ] ] );
 										SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturnedFlag, 0);
 									}
@@ -1293,7 +1300,7 @@ BOOL ProcessShips()
 							{
 								if ( !IKnowINeedFlag )
 								{
-									AddMessageToQue( YOU_NEED_FLAG,
+									AddColourMessageToQue(FlagMessageColour, YOU_NEED_FLAG,
 										TeamName[ TeamNumber[ i ] ] );
 									IKnowINeedFlag = TRUE;
 								}
@@ -1303,7 +1310,7 @@ BOOL ProcessShips()
 						{
 							if ( goalcheck == GOAL_WRONG )
 							{
-								AddMessageToQue( TAKE_FLAG_TO_GOAL,
+								AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 									TeamName[ TeamNumber[ i ] ] );
 							}
 							IKnowINeedFlag = FALSE;
@@ -1396,7 +1403,7 @@ BOOL ProcessShips()
 							ShipObjPnt->Mode = DEATH_MODE;
 							ShipPnt->Timer = 0.0F;
 							// print up I killed Myself
-							AddMessageToQue( YOU_KILLED_YOURSELF );
+							AddColourMessageToQue(KillMessageColour, YOU_KILLED_YOURSELF );
 							PlaySfx( SFX_BIKECOMP_DY, 1.0F );
 
 						}
@@ -2737,7 +2744,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			{
 				if( Lives == 0 )
 				{
-					AddMessageToQue( NO_LIVES_LEFT );
+					AddColourMessageToQue(SystemMessageColour, NO_LIVES_LEFT );
 					ShipPnt->Timer = 0.0F;
 					ShipPnt->Object.Mode = GAMEOVER_MODE;
 					PlaySfx( SFX_BIKER_LP, 1.0F );
@@ -2746,13 +2753,13 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 				Lives--;
 				if( Lives == 0 )
 				{
-					AddMessageToQue( LAST_LIFE );
+					AddColourMessageToQue(SystemMessageColour, LAST_LIFE );
 				}else{
 					if( Lives == 1 )
 					{
-						AddMessageToQue( ONE_LIFE_LEFT , Lives );
+						AddColourMessageToQue(SystemMessageColour, ONE_LIFE_LEFT , Lives );
 					}else{
-						AddMessageToQue( LIVES_LEFT, Lives );
+						AddColourMessageToQue(SystemMessageColour, LIVES_LEFT, Lives );
 					}
 				}
 			}
@@ -3125,7 +3132,7 @@ void	UpdateStartPos( void )
 					ActivateRestartPoint( startpos, last_start_position );
 
 					PlaySfx( SFX_RestartPointReached, 1.0F );
-					AddMessageToQue( RESTART_ACTIVATED );
+					AddColourMessageToQue(SystemMessageColour, RESTART_ACTIVATED );
 					last_start_position = startpos;
 					return;
 				}

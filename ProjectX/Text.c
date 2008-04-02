@@ -652,26 +652,30 @@ void AddMessageToQue( char * Text, ... )
 
 void AddColourMessageToQue( int Colour, char * Text, ... )
 {
-	uint8 * Pnt;
-	va_list args;
-
-	va_start( args, Text );
-	vsprintf( &TempMessage[0], Text, args);
-	va_end( args );
-
-	TempMessage[511] = 0;
-
-	Pnt = &TempMessage[0];
-
-	MessageSize = (float) strlen(&TempMessage[0]);
-	ThisMessageTime = MAXMESSAGETIME * (MessageSize / MAXPERLINE);
-	if( ThisMessageTime < (MAXMESSAGETIME * 0.25F) )
-		ThisMessageTime = MAXMESSAGETIME * 0.25F;
-
-
-	while( Pnt )
+	// -1 = do not display
+	if(Colour > -1)
 	{
-		AddColourMessageToQueShort( &Pnt, Colour );
+		uint8 * Pnt;
+		va_list args;
+
+		va_start( args, Text );
+		vsprintf( &TempMessage[0], Text, args);
+		va_end( args );
+
+		TempMessage[511] = 0;
+
+		Pnt = &TempMessage[0];
+
+		MessageSize = (float) strlen(&TempMessage[0]);
+		ThisMessageTime = MAXMESSAGETIME * (MessageSize / MAXPERLINE);
+		if( ThisMessageTime < (MAXMESSAGETIME * 0.25F) )
+			ThisMessageTime = MAXMESSAGETIME * 0.25F;
+
+
+		while( Pnt )
+		{
+			AddColourMessageToQueShort( &Pnt, Colour );
+		}
 	}
 }
 

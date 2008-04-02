@@ -110,6 +110,12 @@ extern	uint16			TargScrPolys[ 4 ];
 extern	uint32			TeamFlagMask[ MAX_TEAMS ];
 extern	TRIGGERVAR	*	TimeLimitTrigger;
 
+// message colours (Title.c)
+extern int KillMessageColour; 
+extern int SystemMessageColour;
+extern int FlagMessageColour;
+extern int PlayerMessageColour;
+
 void DebugPrintf( const char * format, ... );
 
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
@@ -448,8 +454,8 @@ void ScreenPolyProcess( void )
 											}else{
 												Ships[WhoIAm].Object.Mode = DEATH_MODE;
 											}
-											AddMessageToQue( IF_YOU_CANT_TAKE_THE_HEAT );
-											AddMessageToQue( GET_OUT_OF_THE_KITCHEN );
+											AddColourMessageToQue(SystemMessageColour, IF_YOU_CANT_TAKE_THE_HEAT );
+											AddColourMessageToQue(SystemMessageColour, GET_OUT_OF_THE_KITCHEN );
 											Ships[WhoIAm].Timer = 0.0F;
 
 											KilledPlayer = TRUE;
@@ -1239,7 +1245,7 @@ void UpdateCountdownDigits( void )
 				}else{
 					Ships[WhoIAm].Object.Mode = DEATH_MODE;
 				}
-				AddMessageToQue( OUT_OF_TIME );
+				AddColourMessageToQue(SystemMessageColour, OUT_OF_TIME );
 				Ships[WhoIAm].Timer = 0.0F;
 
 				KilledPlayer = TRUE;

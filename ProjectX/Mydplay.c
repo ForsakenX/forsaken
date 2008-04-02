@@ -539,6 +539,12 @@ extern	int16	SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ];
 // statistics (stats.c)
 extern void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon);	// update the statistics
 
+// message colours (Title.c)
+extern int KillMessageColour; 
+extern int SystemMessageColour;
+extern int FlagMessageColour;
+extern int PlayerMessageColour;
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -1696,7 +1702,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		{
 			lpAddMsg = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
 			sprintf( (char*) &tempstr[0] ,"%s %s", lpAddMsg->dpnName.lpszShortNameA , IS_JOINING_THE_GAME );
-   			AddMessageToQue( (char*)&tempstr[0] );
+   			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 		}
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
@@ -1714,9 +1720,9 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 	case DPSYS_SESSIONLOST:
 		DebugPrintf("DPSYS_SESSIONLOST recieved\n");
 		// The Whole Game has been Lost....Oops...
-		AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-		AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-		AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
 		break;
 
     case DPSYS_HOST:
@@ -1724,9 +1730,9 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		if( IsServerGame && !IsServer )
 		{
 			// The Whole Game has been Lost....Oops...
-			AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-			AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-			AddMessageToQue( THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
+			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
 			return;
 		}
 
@@ -1770,7 +1776,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, &MENU_NEW_CreateLobbyGame, ERROR_DONTUSE_MENUFUNCS | ERROR_OVERIDE_LOBBY_QUIT );
 			break;
 		default:
-			AddMessageToQue( YOU_HAVE_BECOME_THE_HOST );
+			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
 		}
 
 		IsHost = TRUE;					// I have Become the host
@@ -1820,7 +1826,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 					if( MyGameStatus == STATUS_Normal )
 					{
 						sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
-				   		AddMessageToQue( (char*)&tempstr[0] );
+				   		AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 					}
 
 					if( Ships[i].Object.light != (uint16) -1  )
@@ -2434,7 +2440,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			// we're in server mode
    			//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " XXX ", &methodstr[0], &teamstr );
-   			AddMessageToQue( (char*)&tempstr[0] );
+   			AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 			ShipDiedSend( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon );
 		}
 		return;
@@ -3440,7 +3446,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 									ScatterWeapons( &NullVector, MAXSCATTERED );
 								}
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddMessageToQue( YOUVE_BEEN_SCATTERED );
+								if( !bSoundEnabled ) AddColourMessageToQue(SystemMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 							break;
 
@@ -3478,7 +3484,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					// we're in server mode
    					//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " ZZZ ", &methodstr[0], &teamstr );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
 			}
@@ -3541,7 +3547,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 								}
 
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddMessageToQue( YOUVE_BEEN_SCATTERED );
+								if( !bSoundEnabled ) AddColourMessageToQue( SystemMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 							break;
 
@@ -3575,7 +3581,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 					// called in TOL OFF multiplayer!!
 					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
 					// update stats 1 (stats.c) -- somebody killed me
 					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
 					// kill me :(
@@ -3598,7 +3604,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 			// print funny message
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpShipDied->WhoIAm][0] ,GOT_CAUGHT_WITH_A_BOMB);
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 
 			// no point if your cheating ?
 			if( !GodMode )
@@ -3626,7 +3632,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						if( !GodMode )
 						{
 							// you killed someone on your own team
-							AddMessageToQue( "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
+							AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
 
 							// teams lose a point if they kill each other
 							// normal update
@@ -3645,10 +3651,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							{
 								// you killed the person who was carrying the bounty
 								if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-									AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+									AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
 								// you had the bounty and killed someone
 								else
-									AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+									AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 								
 								PlaySfx( SFX_BIKER_VP, 1.0F );
 								// normal update
@@ -3660,7 +3666,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							else
 							{
 								// you killed someone who wasnt carrying the bounty (team bounty) (no points for you!!)
-								AddMessageToQue( NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
+								AddColourMessageToQue( KillMessageColour, NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
 									Names[ lpShipDied->WhoIAm ] );
 							}
 						}
@@ -3668,7 +3674,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						// any other team game
 						{
 							// you killed someone in a team game
-							AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+							AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 							// normal update
 							Ships[WhoIAm].Kills++;
 							AddKill();
@@ -3690,10 +3696,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						{
 							// you killed the person who was carrying the bounty
 							if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-								AddMessageToQue( "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+								AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
 							// you had the bounty and killed someone
 							else
-								AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+								AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 							
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 							// normal update
@@ -3706,7 +3712,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						else
 						{
 							// you killed someone who wasnt carrying the bounty (no points for you!!)
-							AddMessageToQue( NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
+							AddColourMessageToQue( KillMessageColour, NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
 								Names[ lpShipDied->WhoIAm ] );
 						}
 					}
@@ -3714,7 +3720,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else if( !GodMode )
 					{
 	   					// you killed someone
-						AddMessageToQue( "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+						AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 						// normal update
 						Ships[WhoIAm].Kills++;
 						AddKill();
@@ -3732,7 +3738,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    				{
    					// gee someone killed themselves...
    					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
    				}
 				else
 				{
@@ -3743,7 +3749,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 					// gee someone killed somebody...who cares...
 					sprintf( (char*) &tempstr[0] ,"%s %s %s %s" "%s" "%s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
-   					AddMessageToQue( (char*)&tempstr[0] );
+   					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
    				}
 
 				// update stats 3 (stats.c) -- somebody killed someone
@@ -3824,7 +3830,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					{
 						if( DPlayUpdateInterval != lpStatus->PacketsPerSecond )
 						{
-							AddMessageToQue( "%2.2f %s" , ( 60.0F / lpStatus->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
+							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpStatus->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
 						}
 					}
 					DPlayUpdateInterval = lpStatus->PacketsPerSecond;
@@ -3905,7 +3911,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				{
 					if( DPlayUpdateInterval != lpLongStatus->Status.PacketsPerSecond )
 					{
-						 AddMessageToQue( "%2.2f %s" , ( 60.0F / lpLongStatus->Status.PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
+						 AddColourMessageToQue( SystemMessageColour, "%2.2f %s" , ( 60.0F / lpLongStatus->Status.PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
 					}
 				}
 				DPlayUpdateInterval = lpLongStatus->Status.PacketsPerSecond;
@@ -4040,25 +4046,25 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 				return;
 			sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_Taunt1:
 		case TEXTMSGTYPE_Taunt2:
 		case TEXTMSGTYPE_Taunt3:
 		case TEXTMSGTYPE_QuickTaunt:
 			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_JoiningTeamGame:
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_TitleMessage:
 			AddTitleMessage(lpTextMsg);
 			return;
 		case TEXTMSGTYPE_CaptureFlagMessage:
 //			sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddMessageToQue( lpTextMsg->Text );
+			AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 				PlaySfx( SFX_MyTeamGotFlag, 1.0F );
 			else
@@ -4066,7 +4072,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			return;
 		case TEXTMSGTYPE_ScoredWithFlag:
 			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 				PlaySfx( SFX_MyTeamScored, 1.0F );
 			else
@@ -4075,36 +4081,36 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case TEXTMSGTYPE_ReturningFlag:
 			if ( IsServerGame )
 			{
-				AddMessageToQue( lpTextMsg->Text );
+				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 			}
 			else if ( lpTextMsg->WhoIAm != WhoIAm )
 			{
 				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]);
-				AddMessageToQue( (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			}
 			return;
 		case TEXTMSGTYPE_ReturnedFlag:
 			if ( IsServerGame )
 			{
-				AddMessageToQue( lpTextMsg->Text );
+				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 			}
 			else
 			{
 				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-				AddMessageToQue( (char*)&tempstr[0] );
+				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			}
 			return;
 		case TEXTMSGTYPE_FlagDriftedIn:
 			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_FlagEscaped:
 			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_BountyMessage:
 			sprintf( (char*) tempstr ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
-			AddMessageToQue( (char*)&tempstr[0] );
+			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			PlaySfx( SFX_OtherTeamGotFlag, 1.0F );
 			return;
 		case TEXTMSGTYPE_SpeechTaunt:
@@ -4152,7 +4158,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( lpBomb->WhoGotHit == WhoIAm )
 		{
 			// ahhh Ive got a fresh bomb....
-			AddMessageToQue( YOU_HAVE_GOT_A_NEW_BOMB );
+			AddColourMessageToQue(SystemMessageColour, YOU_HAVE_GOT_A_NEW_BOMB );
 			BombActive[lpBomb->BombNum] = TRUE;
 			BombTime[lpBomb->BombNum] = lpBomb->BombTime;
 		}
@@ -4375,7 +4381,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if ( !IsPseudoHost )
 				{
 					IsPseudoHost = TRUE;
-					AddMessageToQue( YOU_HAVE_BECOME_THE_HOST );
+					AddColourMessageToQue(SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
 				}
 				SendGameMessage(MSG_TOSERVER, 0, 0, TOSERVERMSG_IAmPseudoHost, 0);
 				break;
@@ -4523,7 +4529,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 		}
 		sprintf( (char*) tempstr, THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpServerScoredMsg->WhoScored ] ] );
-		AddMessageToQue( (char*)&tempstr[0] );
+		AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 		if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpServerScoredMsg->WhoScored ] )
 			PlaySfx( SFX_MyTeamScored, 1.0F );
 		else
@@ -5375,7 +5381,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 		if (MyGameStatus != STATUS_StartingMultiplayer)
 		{
-			AddMessageToQue( (char*) &lpTextMsg->Text[0] );
+			AddColourMessageToQue( FlagMessageColour, (char*) &lpTextMsg->Text[0] );
 		}
 		break;
 
@@ -6625,7 +6631,7 @@ BOOL AddAcknowledgeMessageQue( BYTE Player , uint32 ID )
 			AckMsgsActiveMax = AckMsgsActive;
 			if( AckMsgsActiveMax >= (MAXACKGUARANTEEDMSGS *0.95F) )
 			{
-	   			AddMessageToQue( "Ninety Five Percent of the AckMsgQue is full!" );
+	   			AddColourMessageToQue(SystemMessageColour, "Ninety Five Percent of the AckMsgQue is full!" );
 			}
 		}
 		return TRUE;

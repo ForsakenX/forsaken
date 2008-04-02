@@ -46,6 +46,7 @@
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
 extern GetName(int Player);															// returns player's short name from Ships.c
 extern BOOL TeamGame;																// team game? (from Title.c)
+extern MilestoneMessagesColour;													// colour to display messages (from Title.c)
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
@@ -272,32 +273,32 @@ void UpdateKillCount(int Killer)
 		case 3:	
 					if(PlaySound) PlaySfx( SFX_KILLINGSPREE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A KILLING SPREE (3 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 		case 5:
 					if(PlaySound) PlaySfx( SFX_RAMPAGE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "ON A RAMPAGE (5 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 		case 8:
 					if(PlaySound) PlaySfx( SFX_DOMINATING, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "DOMINATING (8 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 		case 11:
 					if(PlaySound) PlaySfx( SFX_UNSTOPPABLE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "UNSTOPPABLE (11 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 		case 15:
 					if(PlaySound) PlaySfx( SFX_WICKEDSICK, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "WICKED SICK (15 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 		case 20:
 					if(PlaySound) PlaySfx( SFX_GODLIKE, 1.0F );
 					sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOD LIKE (20 KILLS)" );
-   					AddColourMessageToQue( 1, (char*)&tempstr[0] );
+   					AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					break;
 	}
 }

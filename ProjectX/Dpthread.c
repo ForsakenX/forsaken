@@ -720,7 +720,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 			   }else if ( !_strnicmp( msgptr, UDP_MSG_Forsaken, strlen( UDP_MSG_Forsaken ) ) )
 			   {
 				  msgptr += strlen( UDP_MSG_Forsaken );
-				  AddMessageToQue( "game info recieved" );
+				  AddColourMessageToQue(SystemMessageColour, "game info recieved" );
 				  DebugPrintf( "\nrecieving: %s\n", msgptr );
 			   }else
 			   {

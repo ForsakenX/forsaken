@@ -637,6 +637,11 @@
 #define LT_MENU_InGame25 "Quit to desktop"
 #define LT_MENU_InGame26 "Host Options"
 #define LT_MENU_InGame27 "Collision Perspective"
+#define LT_MENU_InGame28 "normal kill messages "
+#define LT_MENU_InGame29 "milestone kill messages "
+#define LT_MENU_InGame30 "system messages "
+#define LT_MENU_InGame31 "flag/bounty messages "
+#define LT_MENU_InGame32 "player messages "
 
 #define LT_MENU_Help0 "In-Game Help"
 #define LT_MENU_Help1 "Toggle menu"
@@ -674,6 +679,18 @@
 #define LT_ToggleStatusOff "off"
 #define LT_ToggleStatusShooter "shooter"
 #define LT_ToggleStatusTarget "target"
+
+// Custom message colours
+#define LT_WHITE "white"
+#define LT_RED "red"
+#define LT_LIGHTGREEN "light green"
+#define LT_BLUE "blue"
+#define LT_YELLOW "yellow"
+#define LT_LIGHTBLUE "light blue"
+#define LT_PINK "pink"
+#define LT_TURQUOISE "turquoise"
+#define LT_GREY "grey"
+#define LT_DISABLED "disabled"
 
 #define LT_Undef "undef"	// ( short for undefined )
 #define LT_SelectWhenReady "Select when ready"

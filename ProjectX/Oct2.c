@@ -739,6 +739,11 @@ extern  int16 OrbsInLevel;
 extern  int16 OrbsToGenerate;
 extern  int16 OrbsInPlayers;
 
+// message colours (Title.c)
+extern int KillMessageColour; 
+extern int SystemMessageColour;
+extern int FlagMessageColour;
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
     Weapon Names...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -3111,7 +3116,7 @@ void ProcessGameKeys( void )
       if ( IsKeyPressed( DIK_F5 ) )
       {
         InitShipStartPos( WhoIAm, ++startpos );
-        AddMessageToQue(
+        AddColourMessageToQue(SystemMessageColour,
           "You are now in %s\n",
           Mloadheader.Group[ Ships[ WhoIAm ].Object.Group ].name
         );
@@ -5877,7 +5882,7 @@ void MainRoutines( void )
   
     Ships[WhoIAm].Object.Mode = DEATH_MODE;
     Ships[WhoIAm].Timer = 0.0F;
-    AddMessageToQue( "A Bomb Killed You..." );
+    AddColourMessageToQue(KillMessageColour, "A Bomb Killed You..." );
     ShipDiedSend( WEPTYPE_Primary, 0);
   }
 #endif
@@ -9355,7 +9360,7 @@ void UpdateBombs( void )
     
       Ships[WhoIAm].Object.Mode = DEATH_MODE;
       Ships[WhoIAm].Timer = 0.0F;
-      AddMessageToQue( A_BOMB_KILLED_YOU );
+      AddColourMessageToQue(KillMessageColour, A_BOMB_KILLED_YOU );
       ShipDiedSend( WEPTYPE_Primary, 0);
     
     

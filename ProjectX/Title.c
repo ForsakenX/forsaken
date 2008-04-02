@@ -599,6 +599,16 @@ void SelectFlatRadioButton( MENUITEM *Item );
 void SelectFlatMenuToggle( MENUITEM *Iem );
 void SelectMultiToggle( MENUITEM *Item );
 void DrawFlatMenuToggle( MENUITEM *Item );
+
+void DrawMessagesToggle( MENUITEM *Item);	// message colour toggle - in game
+
+// defaults are light green
+int KillMessageColour = 2;
+int MilestoneMessagesColour = 1; // red
+int SystemMessageColour = 2;
+int FlagMessageColour = 2;
+int PlayerMessageColour = 2;
+
 void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
 void SelectFlatMenuKey( MENUITEM *Item );
@@ -2960,13 +2970,19 @@ MENU	MENU_SelectTextureFormat = {
 	}
 };
 
-
+/*XXX*/
 MENU	MENU_Visuals = {
 	LT_MENU_Visuals0 /*"Visuals"*/, NULL, NULL, NULL, 0,
 	{
-		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1 /*"Select Screen Mode"*/, 0, 0, NULL, &MENU_SelectScreenMode, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2 /*"Select Texture Format"*/, 0, 0, NULL, &MENU_SelectTextureFormat, MenuChange, MenuItemDrawName, NULL, 0 },
-		OLDMENUITEM(  200 , 128+2*16,LT_MENU_Visuals3 /*"Toggle Full Screen"*/, NULL, NULL , MenuGoFullScreen , MenuItemDrawName),
+		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1		/*"Select Screen Mode"		*/, 0, 0, NULL,									&MENU_SelectScreenMode,		MenuChange,	MenuItemDrawName,		NULL, 0 },
+		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2		/*"Select Texture Format"	*/, 0, 0, NULL,									&MENU_SelectTextureFormat,		MenuChange,	MenuItemDrawName,		NULL, 0 },
+		
+		{ 200, 128 + ( 3*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 5*16 ), 0, 0, 0, LT_MENU_InGame30	/*"system messages"		*/, 0, 0,	&SystemMessageColour,		NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 6*16 ), 0, 0, 0, LT_MENU_InGame31	/*"flag/bounty messages"	*/, 0, 0,	&FlagMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 7*16 ), 0, 0, 0, LT_MENU_InGame32	/*"player messages"			*/, 0, 0,	&PlayerMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -3510,6 +3526,12 @@ BOOL NewTextCharDisplayed = FALSE;
 BOOL ListRedrawReq;
 
 int OldMenuStatus;
+
+// customisable display messages
+char *ToggleColourRed = LT_RED;
+char *ToggleColourBlue = LT_BLUE;
+char *ToggleColourDisabled = LT_DISABLED;
+
 
 char *ToggleStatusOn = LT_ToggleStatusOn;
 char *ToggleStatusOff = LT_ToggleStatusOff;
@@ -8951,7 +8973,71 @@ void DrawColToggle( MENUITEM *Item )
 	}
 }
 
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Select a toggle menuitem
+	Input		:		MENUITEM * Item...
+	Output		:		Nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void SelectColourToggle( MENUITEM *Item )
+{
+		if(*(int *) Item->Variable > 7)
+			*(int *) Item->Variable = -1;
+		else
+			*(int *) Item->Variable =*(int *)Item->Variable + 1;
+}
 
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Draw message display customisation toggle menuitem
+	Input		:		MENUITEM * Item...
+	Output		:		Nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void DrawMessagesToggle( MENUITEM *Item )
+{
+	int	x;
+	int	y;
+
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+
+	Print4x5Text( Item->StrPnt , x , y , 2 );
+	if ( Item->Variable )
+	{
+		switch(*(int*)(Item->Variable ))
+		{
+			case -1:
+						Print4x5Text( LT_DISABLED, -1 , y , 1 );
+						break;
+			case 0:
+						Print4x5Text( LT_WHITE, -1 , y , 1 );
+						break;
+			case 1:
+						Print4x5Text( LT_RED, -1 , y , 1 );
+						break;
+			case 2:
+						Print4x5Text( LT_LIGHTGREEN, -1 , y , 1 );
+						break;
+			case 3:
+						Print4x5Text( LT_BLUE, -1 , y , 1 );
+						break;
+			case 4:
+						Print4x5Text( LT_YELLOW, -1 , y , 1 );
+						break;
+			case 5:
+						Print4x5Text( LT_LIGHTBLUE, -1 , y , 1 );
+						break;
+			case 6:
+						Print4x5Text( LT_PINK, -1 , y , 1 );
+						break;
+			case 7:
+						Print4x5Text( LT_TURQUOISE, -1 , y , 1 );
+						break;
+			case 8:
+						Print4x5Text( LT_GREY, -1 , y , 1 );
+						break;
+		}
+
+	}
+}
 
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ

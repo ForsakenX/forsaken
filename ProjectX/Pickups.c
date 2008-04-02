@@ -178,6 +178,11 @@ extern	char PrimaryNames[7][16];
 
 void DebugPrintf( const char * format, ... );
 
+// message colours (Title.c)
+extern int KillMessageColour; 
+extern int SystemMessageColour;
+extern int FlagMessageColour;
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -1972,7 +1977,7 @@ BOOL CollectPickup( uint16 i )
 				{
 					// now I have the flag....?
 					Ships[ WhoIAm ].Object.Flags |= SHIP_CarryingFlag;
-					AddMessageToQue( TAKE_FLAG_TO_GOAL,
+					AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 						TeamName[ TeamNumber[ WhoIAm ] ] );
 
 					sprintf( CTFMessage, SOMEONE_HAS_GOT_THE_FLAG, Names[ WhoIAm ], TeamName[ TeamNumber[ WhoIAm ] ] );
@@ -1988,7 +1993,7 @@ BOOL CollectPickup( uint16 i )
 					// now I have the bounty....?
 					BountyTime = 0.0F;
 					Ships[ WhoIAm ].Object.Flags |= SHIP_CarryingBounty;
-					AddMessageToQue( YOU_HAVE_GOT_THE_BOUNTY );
+					AddColourMessageToQue(FlagMessageColour, YOU_HAVE_GOT_THE_BOUNTY );
 					
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_BountyMessage, 0);
 					
@@ -2028,7 +2033,7 @@ BOOL CollectPickup( uint16 i )
 										KillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
 										KillPickup( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
 										GenerateFlagAtHome( team );
-										AddMessageToQue( TEAM_FLAG_RETURNED,
+										AddColourMessageToQue(FlagMessageColour, TEAM_FLAG_RETURNED,
 											TeamName[ TeamNumber[ WhoIAm ] ] );
 										SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturnedFlag, 0);
 									}
@@ -2036,13 +2041,13 @@ BOOL CollectPickup( uint16 i )
 								else if ( CanCarryOwnFlag )
 								{
 									Ships[ WhoIAm ].Object.Flags |= TeamFlagMask[ team ];
-									AddMessageToQue( RETURN_TEAM_FLAG,
+									AddColourMessageToQue(FlagMessageColour, RETURN_TEAM_FLAG,
 										TeamName[ TeamNumber[ WhoIAm ] ] );
 									SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturningFlag, 0);
 								}
 								else
 								{
-									AddMessageToQue( CANNOT_PICKUP_OWN_FLAG );
+									AddColourMessageToQue(FlagMessageColour, CANNOT_PICKUP_OWN_FLAG );
 									PickupEnable = FALSE;
 								}
 							}
@@ -2050,7 +2055,7 @@ BOOL CollectPickup( uint16 i )
 							{
 								// now I have the flag....?
 								Ships[ WhoIAm ].Object.Flags |= TeamFlagMask[ team ];
-								AddMessageToQue( TAKE_FLAG_TO_GOAL,
+								AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 									TeamName[ TeamNumber[ WhoIAm ] ] );
 								
 								sprintf( CTFMessage, SOMEONE_HAS_OTHER_TEAM_FLAG,
@@ -3392,7 +3397,7 @@ void ProcessPickups( void )
 									Move.z = Pickups[ i ].Pos.z - OldPos.z;
 									MoveDist = VectorLength( &Move );
 									if ( MoveDist > 0.0F )
-										AddMessageToQue( FLAG_DRIFTED_BACK, TeamName[ team ] );
+										AddColourMessageToQue(FlagMessageColour, FLAG_DRIFTED_BACK, TeamName[ team ] );
 									TeamFlagAtHome[ team ] = TRUE;
 									//								SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_FlagDriftedIn, 0);
 								}
@@ -3405,7 +3410,7 @@ void ProcessPickups( void )
 									Move.z = Pickups[ i ].Pos.z - OldPos.z;
 									MoveDist = VectorLength( &Move );
 									if ( MoveDist > 0.0F )
-										AddMessageToQue( FLAG_ESCAPED, TeamName[ team ] );
+										AddColourMessageToQue(FlagMessageColour, FLAG_ESCAPED, TeamName[ team ] );
 									TeamFlagAtHome[ team ] = FALSE;
 									//								SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_FlagEscaped, 0);
 								}
@@ -3500,13 +3505,13 @@ void SavePickupsPositions( void )
 
 		fclose( fp );
 
-		AddMessageToQue( "Saved Pickup Positions" );
-		AddMessageToQue( &NewFilename[ 0 ] );
+		AddColourMessageToQue(SystemMessageColour, "Saved Pickup Positions" );
+		AddColourMessageToQue(SystemMessageColour, &NewFilename[ 0 ] );
 	}
 	else
 	{
-		AddMessageToQue( "Error Saving Pickup Positions" );
-		AddMessageToQue( &NewFilename[ 0 ] );
+		AddColourMessageToQue(SystemMessageColour, "Error Saving Pickup Positions" );
+		AddColourMessageToQue(SystemMessageColour, &NewFilename[ 0 ] );
 	}
 }
 
@@ -6648,7 +6653,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 				{
 					// now I have the flag....?
 					Ships[ WhoIAm ].Object.Flags |= SHIP_CarryingFlag;
-					AddMessageToQue( TAKE_FLAG_TO_GOAL,
+					AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 						TeamName[ TeamNumber[ WhoIAm ] ] );
 
 					sprintf( CTFMessage, SOMEONE_HAS_GOT_THE_FLAG, Names[ WhoIAm ], TeamName[ TeamNumber[ WhoIAm ] ] );
@@ -6663,7 +6668,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 					// now I have the bounty....?
 					BountyTime = 0.0F;
 					Ships[ WhoIAm ].Object.Flags |= SHIP_CarryingBounty;
-					AddMessageToQue( YOU_HAVE_GOT_THE_BOUNTY );
+					AddColourMessageToQue(FlagMessageColour, YOU_HAVE_GOT_THE_BOUNTY );
 					
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_BountyMessage, 0);
 				}
@@ -6688,7 +6693,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 								{
 									Ships[ WhoIAm ].Object.Flags |= TeamFlagMask[ team ];
 									TeamFlagAtHome[ team ] = FALSE;
-									AddMessageToQue( RETURN_TEAM_FLAG,
+									AddColourMessageToQue(FlagMessageColour, RETURN_TEAM_FLAG,
 										TeamName[ TeamNumber[ WhoIAm ] ] );
 								}
 							}
@@ -6697,7 +6702,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 								// now I have the flag....?
 								Ships[ WhoIAm ].Object.Flags |= TeamFlagMask[ team ];
 								TeamFlagAtHome[ team ] = FALSE;
-								AddMessageToQue( TAKE_FLAG_TO_GOAL,
+								AddColourMessageToQue(FlagMessageColour, TAKE_FLAG_TO_GOAL,
 									TeamName[ TeamNumber[ WhoIAm ] ] );
 							}
 							break;
@@ -7199,7 +7204,7 @@ BOOL PretendCollectPickup( uint16 i )
 							{
 								if ( !TeamFlagAtHome[ team ] &&	!OwnFlagTeleportsHome && !CanCarryOwnFlag )
 								{
-									AddMessageToQue( CANNOT_PICKUP_OWN_FLAG );
+									AddColourMessageToQue(FlagMessageColour, CANNOT_PICKUP_OWN_FLAG );
 									PickupEnable = FALSE;
 								}
 							}
