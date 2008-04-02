@@ -12419,6 +12419,21 @@ void SetGamePrefs( void )
 		RegSet( "BikeCompSpeechVol",  (LPBYTE)&temp ,  sizeof(temp) );
 	}
 
+	// save colours
+	temp = KillMessageColour;
+	RegSet( "KillMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+
+	temp = MilestoneMessagesColour;
+	RegSet( "MilestoneMessagesColour",  (LPBYTE)&temp ,  sizeof(temp) );
+	
+	temp = SystemMessageColour;
+	RegSet( "SystemMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+	
+	temp = FlagMessageColour;
+	RegSet( "FlagMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+	
+	temp = PlayerMessageColour;
+	RegSet( "PlayerMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
 }
 
 void GetServerPrefs( void )
@@ -12553,6 +12568,21 @@ void GetMultiplayerPrefs( void )
 	ThrottleSlider.value = ( RegGet( "ThrottleSlider", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 1000;
 
+	// get colours
+	KillMessageColour = ( RegGet( "KillMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 2;
+
+	MilestoneMessagesColour = ( RegGet( "MilestoneMessagesColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 1;
+	
+	SystemMessageColour = ( RegGet( "SystemMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 2;
+	
+	FlagMessageColour = ( RegGet( "FlagMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 2;
+	
+	PlayerMessageColour = ( RegGet( "PlayerMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 2;
 }
 
 void SetServerPrefs( void )
