@@ -1382,8 +1382,8 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 	{
 		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 		
-		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*"shooter decides if target is hit"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"target decides if it is hit			 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*"target decides if target is hit"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter decides if it is hit		*/, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
 		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			ShortPacketsSelected,	SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  51, 100,  58, 0,				LT_MENU_NEW_MoreMultiplayerOptions3  /* "packet grouping"        */, FONT_Small,  TEXTFLAG_CentreY,							&BigPackets,				BigPacketsSelected,		SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
@@ -12472,7 +12472,7 @@ void GetMultiplayerPrefs( void )
 	size = sizeof(temp);
 
 	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : 0;
+		? temp : COLPERS_Forsaken; // COLPERS_Forsaken is lag tol off right??
 
 	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : TRUE;

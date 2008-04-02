@@ -243,7 +243,7 @@ static	int16	Toggle = 0;
 int16	PrimaryWeaponsGot[ MAXPRIMARYWEAPONS ];
 float	SussgunTable[ MAXPOWERLEVELS ] = { 30720.0F, 25600.0F, 20480.0F }; //( 20480.0F + ( ( 5 - PrimBulls[ i ].PowerLevel ) * 2560.0F ) );
 uint16	GlobalPrimBullsID = 0;
-int32	ColPerspective = COLPERS_Descent;
+int32	ColPerspective = COLPERS_Forsaken;
 BOOL	GodModeOnceOnly = TRUE;
 BOOL	PyroLightFlag = TRUE;
 
