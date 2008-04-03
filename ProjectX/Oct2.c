@@ -264,6 +264,9 @@ extern  int BigPacketsSent;
 extern  LONGLONG  LastPacketTime[MAX_PLAYERS+1];
 extern  char * StatusTab[256];
 
+extern BOOL ShowMessages; // show long list of chat messages
+	
+
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
 
@@ -2082,7 +2085,11 @@ void TestBlt()
         ScoreSort();
         PrintScoreSort();
       }
-      MessageQuePrint();
+      
+	  if(ShowMessages) 
+		  MessageQuePrintAll();
+	  else
+		MessageQuePrint();
     }
 	else
 	{
@@ -2090,7 +2097,11 @@ void TestBlt()
       {
         ScoreSort();
         PrintScoreSort();
-        MessageQuePrint();
+
+		if(ShowMessages) 
+			MessageQuePrintAll();
+		else
+			MessageQuePrint();
 
         if( DemoEyesSelect.value != MAX_PLAYERS )
         {

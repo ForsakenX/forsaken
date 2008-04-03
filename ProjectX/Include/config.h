@@ -110,6 +110,7 @@ typedef struct {
 	USERKEY drop_secondary;
 	USERKEY drop_shield;
 	USERKEY drop_ammo;
+	USERKEY show_messages;
 	USERKEY send_msg;
 #ifdef PLAYER_SPEECH_TAUNTS
 	USERKEY send_speech;

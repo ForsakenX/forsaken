@@ -1105,6 +1105,7 @@ DEFKEY KDselect_secondary[] = {
 DEFKEY KDsend_msg		= { &Config.send_msg, 0 };
 DEFKEY KDheadlights		= { &Config.headlights, 0 };
 DEFKEY KDfull_rearview	= { &Config.full_rear_view, 0 };
+DEFKEY KDshow_messages = { &Config.show_messages, 0 };
 
 #ifdef PLAYER_SPEECH_TAUNTS
 DEFKEY KDsend_speech = { &Config.send_speech, 0 };
@@ -2743,6 +2744,8 @@ MENU	MENU_Keyboard =
 		KDEF( 3, 200, 248, LT_MENU_Keyboard44 /*"Pine Mine"*/, KDselect_secondary[ PINEMINE ] ),
 		KDEF( 3, 200, 264, LT_MENU_Keyboard45 /*"Quantum Mine"*/, KDselect_secondary[ QUANTUMMINE ] ),
 		KDEF( 3, 200, 280, LT_MENU_Keyboard47 /*"Spider Mine"*/, KDselect_secondary[ SPIDERMINE ] ),
+
+		KDEF( 3, 200, 310, LT_MENU_Keyboard48 /*"Show Messages"*/, KDshow_messages ),
 
 		{ 200, 32, 0, 0, 0, "help3", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp3, NULL, 0 },
 		{ 200, 336, 0, 0, 0, "help1", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp1, NULL, 0 },

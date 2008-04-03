@@ -118,6 +118,8 @@ int CurrentMessage = 0;
 float MessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
 int MessageColour[MAX_MESSAGES];
 char MessageBank[MAX_MESSAGES][200];
+char MessageBankLong[MAX_MESSAGES_LONG][200];
+int MessageColourLong[MAX_MESSAGES_LONG];
 uint8	CharTrans[256];
 uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
 						  { 255,64,64 }, // red 
@@ -492,7 +494,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 }
 				
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Print All Message in the Que...
+	Procedure	:		Print All Message in the normal Que (last 3 messages)...
 	Input		:		nothing
 	Output		:		nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -523,6 +525,20 @@ void	MessageQuePrint( void )
 	}
 }
 
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Print All Message in the long Que (last 50 messages)...
+	Input		:		nothing
+	Output		:		nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void	MessageQuePrintAll( void )
+{
+	int i;
+
+	for( i = MAX_MESSAGES_LONG; i >-1 ; i-- )
+	{
+			CenterPrint4x5Text( &MessageBankLong[i][0] ,((i*(FontHeight+1))+16) , MessageColourLong[i] );
+	}
+}
 
 uint8 TempMessage[512];
 float MessageSize;
@@ -582,18 +598,36 @@ void AddMessageToQueShort( uint8 ** Text )
 void AddColourMessageToQueShort( uint8 ** Text, int Colour )
 {
 	uint8 * Pnt;
-	int i;
+	int i,x,j;
 	Pnt = *Text;
 
 	CurrentMessage++;
 	CurrentMessage&=3;
 	MessageTime[CurrentMessage] = ThisMessageTime;
-
 	MessageColour[CurrentMessage] = Colour; // Set colour
-	
+
+	/* save to longer buffer */
+	// shunt long que up one
+	for(x = MAX_MESSAGES_LONG-1; x > 0; x--)
+	{
+		// clean buffer
+		for(j = 0; j < MAXPERLINE; j++)
+			MessageBankLong[x][j] = 0;
+		
+		// move message up que by one
+		strcpy((char *)MessageBankLong[x], (char *)MessageBankLong[x-1]);
+		MessageColourLong[x] = MessageColourLong[x-1];
+	}
+	/* end of saving to longer buffer */
+
 	for( i = 0 ; i < MAXPERLINE ; i++ )
 	{
 		MessageBank[CurrentMessage][i] = *Pnt;
+
+		// save current message to long que
+		MessageBankLong[0][i] = *Pnt;
+		MessageColourLong[0] = Colour;
+		
 		if( *Pnt == 0 )
 		{
 			*Text = NULL;

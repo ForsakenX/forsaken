@@ -115,6 +115,7 @@ USERCONFIG default_config = {
 	{ 0 },										// drop secondary
 	{ 0 },										// drop shield
 	{ 0 },										// drop ammo
+	{ 0 },										// show messages
 	{ 1, { DIK_RETURN } },					// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0 },					// send speech taunt
@@ -230,7 +231,7 @@ USERCONFIG my_controls = {
 	{ 0 },										// drop secondary
 	{ 0 },										// drop shield
 	{ 0 },										// drop ammo
-
+	{ 0 },										// show messages
 	{ 1, { DIK_RETURN } },					// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0 },					// send speech taunt
@@ -865,6 +866,12 @@ static int
 read_drop_ammo( FILE *f, USERCONFIG *u, char *last_token )
 {
 	return read_keydef( f, &u->drop_ammo, last_token );
+}
+
+static int
+read_show_messages( FILE *f, USERCONFIG *u, char *last_token )
+{
+	return read_keydef( f, &u->show_messages, last_token );
 }
 
 static int
@@ -1612,6 +1619,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{ "drop2",			read_drop_secondary			},
 		{ "dropshield",		read_drop_shield			},
 		{ "dropammo",  		read_drop_ammo				},
+		{ "showmessages",	read_show_messages	},
 		{ "joystick",  		read_joystick_info			},
 		{ "sendtext",  		read_send_text				},
 #ifdef PLAYER_SPEECH_TAUNTS
@@ -1934,6 +1942,7 @@ write_config( USERCONFIG *u, char *cfg_name )
 	write_keydef( f, "DROP2", &u->drop_secondary );
 	write_keydef( f, "DROPSHIELD", &u->drop_shield );
 	write_keydef( f, "DROPAMMO", &u->drop_ammo );
+	write_keydef( f, "SHOW_MESSAGES", &u->show_messages );
 
 	write_preferred( f, "PREFERRED1", u->primary_order, MAX_PRIMARY_WEAPONS );
 	write_preferred( f, "PREFERRED2", u->secondary_order, MAX_SECONDARY_WEAPONS );

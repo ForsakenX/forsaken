@@ -505,6 +505,7 @@
 #define LT_MENU_Keyboard45 "Quantum Mine"
 #define LT_MENU_Keyboard46 "Thief Missile"
 #define LT_MENU_Keyboard47 "Spider Mine"
+#define LT_MENU_Keyboard48 "Show Messages"
 
 #define LT_MENU_Controls0 "Bike Controls"
 #define LT_MENU_Controls1 "Configure controls"
