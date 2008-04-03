@@ -1619,7 +1619,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{ "drop2",			read_drop_secondary			},
 		{ "dropshield",		read_drop_shield			},
 		{ "dropammo",  		read_drop_ammo				},
-		{ "showmessages",	read_show_messages	},
+		{ "show_messages",	read_show_messages	},
 		{ "joystick",  		read_joystick_info			},
 		{ "sendtext",  		read_send_text				},
 #ifdef PLAYER_SPEECH_TAUNTS
