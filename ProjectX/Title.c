@@ -602,12 +602,11 @@ void DrawFlatMenuToggle( MENUITEM *Item );
 
 void DrawMessagesToggle( MENUITEM *Item);	// message colour toggle - in game
 
-// defaults are light green
-int KillMessageColour = 2;
-int MilestoneMessagesColour = 1; // red
-int SystemMessageColour = 2;
-int FlagMessageColour = 2;
-int PlayerMessageColour = 2;
+int KillMessageColour;
+int MilestoneMessagesColour;
+int SystemMessageColour;
+int FlagMessageColour;
+int PlayerMessageColour;
 
 void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
@@ -12309,6 +12308,32 @@ void GetGamePrefs( void )
 			AllowServer = temp;
 	}
 
+		// get colours
+	if ( RegGet( "KillMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		KillMessageColour = temp;
+	else
+		KillMessageColour = 2;
+
+	if ( RegGet( "MilestoneMessagesColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		MilestoneMessagesColour = temp;
+	else
+		MilestoneMessagesColour = 1;
+
+	if ( RegGet( "SystemMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		SystemMessageColour = temp;
+	else
+		SystemMessageColour = 2;
+
+	if ( RegGet( "FlagMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		FlagMessageColour = temp;
+	else
+		FlagMessageColour = 2;
+
+	if ( RegGet( "PlayerMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		PlayerMessageColour = temp;
+	else
+		PlayerMessageColour = 2;
+
 #ifdef Z_TRICK
 	if ( ZClearsOn )
 	{
@@ -12568,21 +12593,6 @@ void GetMultiplayerPrefs( void )
 	ThrottleSlider.value = ( RegGet( "ThrottleSlider", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 1000;
 
-	// get colours
-	KillMessageColour = ( RegGet( "KillMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 2;
-
-	MilestoneMessagesColour = ( RegGet( "MilestoneMessagesColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 1;
-	
-	SystemMessageColour = ( RegGet( "SystemMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 2;
-	
-	FlagMessageColour = ( RegGet( "FlagMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 2;
-	
-	PlayerMessageColour = ( RegGet( "PlayerMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 2;
 }
 
 void SetServerPrefs( void )
