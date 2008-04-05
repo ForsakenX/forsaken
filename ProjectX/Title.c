@@ -871,60 +871,61 @@ BYTE ServerGamePlayersWhoIAm[ MAX_PLAYERS ];
 
 LIST TeamList[MAX_TEAMS];
 LIST LoadSavedGameList		= { 0 };
-LIST ServiceProvidersList	= { 0 };
-LIST SessionsList			= { 0 };
-LIST MySessionsList			= { 0 };
-LIST PlayersList			= { 0 };
-LIST PilotList				= { 0 };
+LIST ServiceProvidersList		= { 0 };
+LIST SessionsList					= { 0 };
+LIST MySessionsList				= { 0 };
+LIST PlayersList					= { 0 };
+LIST PilotList						= { 0 };
 LIST ServerGamePlayersList	= { 0 };
-LIST DemoList				= { 0, 8 };	// list of all demo file in the current dir...
-LIST BikeList				= { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
-LIST BikeComputerList		= { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
-LIST TestList				= { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
-LIST RoomList				= { 0, 10 };
-LIST *CurrentList			= NULL;
+LIST DemoList						= { 0, 8 };	// list of all demo file in the current dir...
+LIST BikeList						= { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
+LIST BikeComputerList			= { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
+LIST TestList						= { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
+LIST RoomList						= { 0, 10 };
+LIST *CurrentList					= NULL;
 
 TEXT MultiPlayerGameName	= { 0, 0, "Default", NULL };
 TEXT DemoGameName			= { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
 TEXT TitlePlayerMessage		= { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
-TEXT PilotNameInGame		= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotNameInGame, MAX_PILOTNAME_LENGTH, TypeFileName };
-TEXT PilotName				= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
-TEXT PilotReName			= { 0, 0, DEFAULT_PLAYER_NAME, RenamePilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
-TEXT RoomName				= { 0, 0, "room", SetRoomName };
-TEXT MacroText1				= { 0, 0, LT_MacroText1/*"you ugly son of a bitch..."*/, SaveMacros };
-TEXT MacroText2				= { 0, 0, LT_MacroText2/*"Time to die..."*/, SaveMacros };
-TEXT MacroText3				= { 0, 0, LT_MacroText3/*"I will tear your soul apart..."*/, SaveMacros };
-TEXT MacroText4				= { 0, 0, "", NULL };
-TEXT QuickText				= { 0, 0, "", SendQuickText };
-TEXT QuickTextWhisper		= { 0, 0, "", SendQuickTextWhisper };
-TEXT TCPAddress				= { 0, 0, "", NULL};
+TEXT PilotNameInGame			= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotNameInGame, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT PilotName					= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT PilotReName				= { 0, 0, DEFAULT_PLAYER_NAME, RenamePilotName, MAX_PILOTNAME_LENGTH, TypeFileName };
+TEXT RoomName					= { 0, 0, "room", SetRoomName };
+TEXT MacroText1					= { 0, 0, LT_MacroText1/*"you ugly son of a bitch..."*/, SaveMacros };
+TEXT MacroText2					= { 0, 0, LT_MacroText2/*"Time to die..."*/, SaveMacros };
+TEXT MacroText3					= { 0, 0, LT_MacroText3/*"I will tear your soul apart..."*/, SaveMacros };
+TEXT MacroText4					= { 0, 0, "", NULL };
+TEXT QuickText					= { 0, 0, "", SendQuickText };
+TEXT QuickTextWhisper			= { 0, 0, "", SendQuickTextWhisper };
+TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
-SLIDER SensitivityXSlider		= { 1, 16, 1, 5, 0, 0.0F };
-SLIDER SensitivityYSlider		= { 1, 16, 1, 5, 0, 0.0F };
-SLIDER PingFreqSlider			= { 0, 60, 5, 60, 0, 0.0F }; 
-SLIDER BikeDetailSlider			= { 0, 5, 1, 5, 0, 0.0F };
-SLIDER WaterDetailSlider		= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
-SLIDER NumPrimaryPickupsSlider	= { 1, 3, 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
-SLIDER TrailDetailSlider		= { 0, 10, 1, 9, 0, 0.0F };
-SLIDER PacketsSlider			= { 1, 100, 1, 5, 0, 0.0F };
-SLIDER ThrottleSlider			= { 25, 1000, 25, 1000, 0, 0.0F };
-SLIDER PseudoHostTimeoutSlider1 = { 1, 10, 1, 2, 0, 0.0F };
-SLIDER PseudoHostTimeoutSlider2 = { 1, 20, 1, 5, 0, 0.0F };
-SLIDER ServerTimeoutSlider		= { 1, 20, 1, 5, 0, 0.0F };
-SLIDER NumOfPlayersSlider		= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
-SLIDER TimeLimit				= { 0, 30, 1, 0, 0, 0.0F };
-SLIDER MaxPlayersSlider			= { 1, MAX_PLAYERS, 1, 6, 0, 0.0F };
-SLIDER MaxServerPlayersSlider	= { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
-SLIDER MaxKillsSlider			= { 0, 255, 1, 0, 0, 0.0F };
-SLIDER GoalScoreSlider			= { 1, 10, 1, 5, 0, 0.0F };
-SLIDER BountyBonusSlider		= { 1, 30, 1, 10, 0, 0.0F };
-SLIDER CTFSlider				= { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
-SLIDER DemoSpeed				= { 1, 16, 1, 8, 0, 0.0F };
-SLIDER SfxSlider				= { 0, 10, 1, 10, 0, 0.0F };
-SLIDER BikerSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
-SLIDER BikeCompSpeechSlider		= { 0, 10, 1, 8, 0, 0.0F };
-SLIDER DemoEyesSelect			= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
+SLIDER SensitivityXSlider				= { 1, 16, 1, 5, 0, 0.0F };
+SLIDER SensitivityYSlider				= { 1, 16, 1, 5, 0, 0.0F };
+SLIDER PingFreqSlider					= { 0, 60, 5, 60, 0, 0.0F }; 
+SLIDER BikeDetailSlider					= { 0, 5, 1, 5, 0, 0.0F };
+SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
+SLIDER NumPrimaryPickupsSlider		= { 1, 3, 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
+SLIDER TrailDetailSlider					= { 0, 10, 1, 9, 0, 0.0F };
+SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
+SLIDER ThrottleSlider					= { 25, 1000, 25, 1000, 0, 0.0F };
+SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
+SLIDER PseudoHostTimeoutSlider2	= { 1, 20, 1, 5, 0, 0.0F };
+SLIDER ServerTimeoutSlider			= { 1, 20, 1, 5, 0, 0.0F };
+SLIDER NumOfPlayersSlider				= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
+SLIDER TimeLimit							= { 0, 30, 1, 0, 0, 0.0F };
+SLIDER MaxPlayersSlider				= { 1, MAX_PLAYERS, 1, 6, 0, 0.0F };
+SLIDER MaxServerPlayersSlider		= { 1, ( MAX_PLAYERS - 1 ), 1, ( MAX_PLAYERS - 1 ), 0, 0.0F };
+SLIDER MaxKillsSlider						= { 0, 255, 1, 0, 0, 0.0F };
+SLIDER GoalScoreSlider					= { 1, 10, 1, 5, 0, 0.0F };
+SLIDER BountyBonusSlider				= { 1, 30, 1, 10, 0, 0.0F };
+SLIDER CTFSlider							= { 0, CTF_MAX - 1, 1, CTF_STANDARD, -1, 0.0F, 0.0F, 0, FALSE, CTF_Type };
+SLIDER DemoSpeed						= { 1, 16, 1, 8, 0, 0.0F };
+SLIDER SfxSlider							= { 0, 10, 1, 10, 0, 0.0F };
+SLIDER BikerSpeechSlider				= { 0, 10, 1, 8, 0, 0.0F };
+SLIDER BikeCompSpeechSlider			= { 0, 10, 1, 8, 0, 0.0F };
+SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
+SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 
 BOOL OKToJoinSession			= FALSE;
 BOOL ShowTeamInfo				= TRUE;
@@ -932,10 +933,10 @@ BOOL OKToProcessKeys			= FALSE;
 BOOL MenuFrozen					= FALSE;
 BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
-BOOL GameRestricted				= FALSE;
+BOOL GameRestricted			= FALSE;
 BOOL Autoleveling				= TRUE;
 BOOL BiLinearFiltering			= TRUE;
-BOOL PerspectiveCorrect			= TRUE;
+BOOL PerspectiveCorrect		= TRUE;
 BOOL EnhancedXHair				= FALSE;
 BOOL LensFlare					= TRUE;
 BOOL GoreGuts					= FALSE;
@@ -947,12 +948,12 @@ BOOL DebugVisible				= FALSE;
 BOOL ShowPlaneRGB				= FALSE;
 BOOL PlayDemo					= FALSE;
 BOOL PauseDemo					= FALSE;
-BOOL RecordDemo					= FALSE;
-BOOL RecordDemoToRam			= FALSE;
-BOOL BrightShips				= FALSE;
+BOOL RecordDemo				= FALSE;
+BOOL RecordDemoToRam		= FALSE;
+BOOL BrightShips					= FALSE;
 BOOL MyBrightShips				= FALSE;
 BOOL BikeExhausts				= TRUE;
-BOOL DemoScreenGrab				= FALSE;
+BOOL DemoScreenGrab			= FALSE;
 BOOL ServerMode					= FALSE;
 BOOL ScreenSaving				= TRUE;
 BOOL ShowNode					= FALSE;
@@ -960,7 +961,7 @@ BOOL NodeCube					= FALSE;
 BOOL OldNodeCube				= FALSE;
 BOOL NodeCubeType				= FALSE;
 BOOL TeamGame					= FALSE;
-BOOL HarmTeamMates				= TRUE;
+BOOL HarmTeamMates			= TRUE;
 BOOL PickupLightDetail			= TRUE;
 BOOL PrimaryLightDetail			= TRUE;
 BOOL SecondaryLightDetail		= TRUE;
@@ -2220,12 +2221,14 @@ MENU	MENU_LoadSavedGame = {
 MENU	MENU_NEW_Sound = {
 	LT_MENU_NEW_Sound0 /*"sound"*/ , NULL, ExitSoundMenu, SetSoundLevels, TITLE_TIMER_NormalPanToRightVDU,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_Sound1 /*"sound options"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 40, 100, 50, 0, LT_MENU_NEW_Sound2 /*"sfx volume"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &SfxSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 60, 100, 70, 0, LT_MENU_NEW_Sound4 /*"bike engines"*/, FONT_Small, TEXTFLAG_CentreY, &BikeEnginesOn, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 } ,
-		{ 0, 80, 200, 100, 0, LT_MENU_NEW_Sound5 /*"speech options"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 100, 100, 110, 0, LT_MENU_NEW_Sound6 /*"biker speech"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &BikerSpeechSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 110, 100, 120, 0, LT_MENU_NEW_Sound7 /*"bike computer"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &BikeCompSpeechSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
+		{ 0,	0,		200,	20,	0, LT_MENU_NEW_Sound1 /*"sound options"		*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,								NULL, NULL,							DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10,	40,	100,	50,	0, LT_MENU_NEW_Sound2 /*"sfx volume"			*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&SfxSlider,						NULL, SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,	60,	100,	70,	0, LT_MENU_NEW_Sound4 /*"bike engines"		*/, FONT_Small,		TEXTFLAG_CentreY,										&BikeEnginesOn,				NULL, SelectFlatMenuToggle,	DrawFlatMenuToggle,	NULL, 0 } ,
+		{ 0,	80,	200,	100,	0, LT_MENU_NEW_Sound5 /*"speech options"	*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,								NULL, NULL,							DrawFlatMenuItem,		NULL, 0 } ,
+		{ 10, 100,	100,	110,	0, LT_MENU_NEW_Sound6 /*"biker speech"		*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BikerSpeechSlider,			NULL, SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 110,	100,	120,	0, LT_MENU_NEW_Sound7 /*"bike computer"		*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BikeCompSpeechSlider,	NULL, SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10,	120,	100,	130,	0, LT_MENU_NEW_Sound8 /*"flag sfx"				*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&FlagSfxSlider,					NULL, SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -2233,10 +2236,12 @@ MENU	MENU_NEW_Sound = {
 MENU	MENU_NEW_InGameSound = {
 	LT_MENU_NEW_InGameSound0 /*"sound"*/ , NULL, NULL, SetSoundLevels, 0,
 	{
-		{ 200, 128           , 0, 0, 0, LT_MENU_NEW_InGameSound1 /*"sfx volume    "*/, 0, 0, &SfxSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
-		{ 200, 128 + (2*16)	 , 0, 0, 0, LT_MENU_NEW_InGameSound3 /*"bike engines  "*/, 0, 0, &BikeEnginesOn, ToggleBikeEngines, SelectToggle, DrawToggle, NULL, 0 } ,
-		{ 200, 128 + (3*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound4 /*"biker volume  "*/, 0, 0, &BikerSpeechSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
-		{ 200, 128 + (4*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound5 /*"bike computer "*/, 0, 0, &BikeCompSpeechSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
+		{ 200, 128				 , 0, 0, 0, LT_MENU_NEW_InGameSound1 /*"sfx volume    "		*/, 0, 0, &SfxSlider,						NULL,						SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 128 + (2*16)	 , 0, 0, 0, LT_MENU_NEW_InGameSound3 /*"bike engines  "		*/, 0, 0, &BikeEnginesOn,				ToggleBikeEngines,	SelectToggle,	DrawToggle,	NULL, 0 },
+		{ 200, 128 + (3*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound4 /*"biker volume  "		*/, 0, 0, &BikerSpeechSlider,			NULL,						SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 128 + (4*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound5 /*"bike computer "	*/, 0, 0, &BikeCompSpeechSlider,	NULL,						SelectSlider,	DrawSlider,		NULL, 0 },
+		{ 200, 128 + (5*16)  , 0, 0, 0, LT_MENU_NEW_InGameSound6 /*"flag sfx "				*/, 0, 0, &FlagSfxSlider,					NULL,						SelectSlider,	DrawSlider,		NULL, 0 },
+		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -12287,6 +12292,9 @@ void GetGamePrefs( void )
 	if ( RegGet( "BikeEngines", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		BikeEnginesOn = (BOOL)temp;
 
+	if ( RegGet( "FlagSfxVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		FlagSfxSlider.value = temp;
+
 	if ( RegGet( "Gamma", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 	{
 		GammaSlider.value = temp;
@@ -12442,6 +12450,9 @@ void SetGamePrefs( void )
 	
 	temp = SfxSlider.value;
 	RegSet( "SfxVolume",  (LPBYTE)&temp ,  sizeof(temp) );
+
+	temp = FlagSfxSlider.value;
+	RegSet( "FlagSfxVolume",  (LPBYTE)&temp ,  sizeof(temp) );
 
 	temp = (DWORD)BikeEnginesOn;
 	RegSet( "BikeEngines",  (LPBYTE)&temp ,  sizeof(temp) );

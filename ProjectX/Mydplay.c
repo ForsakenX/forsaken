@@ -548,6 +548,10 @@ extern int PickupMessageColour;
 extern int TauntMessageColour;
 extern int MyMessageColour;
 
+// sfx volume (Title.c)
+extern SLIDER FlagSfxSlider;
+float FlagVolume;
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -1998,6 +2002,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	VECTOR TempVector;
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
+
+	// set flag sfx volume
+	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
 
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
@@ -4072,17 +4079,17 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 			AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
-				PlaySfx( SFX_MyTeamGotFlag, 1.0F );
+				PlaySfx( SFX_MyTeamGotFlag, FlagVolume );
 			else
-				PlaySfx( SFX_OtherTeamGotFlag , 1.0F );
+				PlaySfx( SFX_OtherTeamGotFlag , FlagVolume );
 			return;
 		case TEXTMSGTYPE_ScoredWithFlag:
 			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
-				PlaySfx( SFX_MyTeamScored, 1.0F );
+				PlaySfx( SFX_MyTeamScored, FlagVolume );
 			else
-				PlaySfx( SFX_OtherTeamScored , 1.0F );
+				PlaySfx( SFX_OtherTeamScored , FlagVolume );
 			return;
 		case TEXTMSGTYPE_ReturningFlag:
 			if ( IsServerGame )
@@ -4117,7 +4124,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case TEXTMSGTYPE_BountyMessage:
 			sprintf( (char*) tempstr ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
 			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			PlaySfx( SFX_OtherTeamGotFlag, 1.0F );
+			PlaySfx( SFX_OtherTeamGotFlag, FlagVolume );
 			return;
 		case TEXTMSGTYPE_SpeechTaunt:
 			PlayRecievedSpeechTaunt( lpTextMsg->WhoIAm, lpTextMsg->Text[ 0 ] );
@@ -4537,9 +4544,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		sprintf( (char*) tempstr, THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpServerScoredMsg->WhoScored ] ] );
 		AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 		if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpServerScoredMsg->WhoScored ] )
-			PlaySfx( SFX_MyTeamScored, 1.0F );
+			PlaySfx( SFX_MyTeamScored, FlagVolume );
 		else
-			PlaySfx( SFX_OtherTeamScored , 1.0F );
+			PlaySfx( SFX_OtherTeamScored , FlagVolume );
 		return;
 	}
 
@@ -4619,6 +4626,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
+
+	// set flag sfx volume
+	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
 
 	if( PlayDemo || !glpDP )
 		return;
@@ -5340,13 +5350,13 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		case TEXTMSGTYPE_CaptureFlagMessage:
 			lpTextMsg->TextMsgType = Type;
 			strncpy( &lpTextMsg->Text[0]	, CTFMessage , MAXTEXTMSG );
-			PlaySfx( SFX_MyTeamGotFlag , 1.0F );
+			PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
 			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_ScoredWithFlag:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
-			PlaySfx( SFX_MyTeamScored, 1.0F );
+			PlaySfx( SFX_MyTeamScored, FlagVolume );
 			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_ReturningFlag:
@@ -5386,7 +5396,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		case TEXTMSGTYPE_BountyMessage:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
-			PlaySfx( SFX_MyTeamGotFlag , 1.0F );
+			PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
 			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_SpeechTaunt:

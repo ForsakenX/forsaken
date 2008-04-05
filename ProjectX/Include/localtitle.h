@@ -350,12 +350,14 @@
 #define LT_MENU_NEW_Sound5 "speech options"
 #define LT_MENU_NEW_Sound6 "biker speech"
 #define LT_MENU_NEW_Sound7 "bike computer"
+#define LT_MENU_NEW_Sound8 "flag sfx"
 
 #define LT_MENU_NEW_InGameSound0 "sound"
 #define LT_MENU_NEW_InGameSound1 "sfx volume    "
 #define LT_MENU_NEW_InGameSound3 "bike engines  "
 #define LT_MENU_NEW_InGameSound4 "biker volume  "
 #define LT_MENU_NEW_InGameSound5 "bike computer "
+#define LT_MENU_NEW_InGameSound6 "flag sfx      "
 
 #define LT_MENU_NEW_DemoCleaning0 "clean a demo"
 #define LT_MENU_NEW_DemoCleaning1 "Start"
