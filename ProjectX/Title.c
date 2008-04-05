@@ -12560,20 +12560,20 @@ void GetMultiplayerPrefs( void )
 		? temp : 0;
 
 	UseShortPackets = ( RegGet( "ShortPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
+		? temp : FALSE;
 
 	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
 
 	BigPackets = ( RegGet( "GroupPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
+		? temp : FALSE;
 
 	if( DPlayUpdateIntervalCmdLine >= 1 && DPlayUpdateIntervalCmdLine <= 30 )
 	{
 		PacketsSlider.value	= DPlayUpdateIntervalCmdLine;
 	}else{
 		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			? temp : 5;
+			? temp : 10;
 	}
 
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
