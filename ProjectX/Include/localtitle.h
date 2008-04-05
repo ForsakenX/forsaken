@@ -643,6 +643,9 @@
 #define LT_MENU_InGame30 "system messages "
 #define LT_MENU_InGame31 "flag/bounty messages "
 #define LT_MENU_InGame32 "player messages "
+#define LT_MENU_InGame33 "pickup messages "
+#define LT_MENU_InGame34 "taunt messages "
+#define LT_MENU_InGame35 "your messages "
 
 #define LT_MENU_Help0 "In-Game Help"
 #define LT_MENU_Help1 "Toggle menu"

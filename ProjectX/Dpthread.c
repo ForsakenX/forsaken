@@ -628,7 +628,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 
 #ifdef DPTEST
 			sprintf( buf, "recieving packet" );
-			AddMessageToQue ( buf );
+			AddColourMessageToQue ( SystemMessageColour, buf );
 #endif
 
 			if ( !memcmp( tmpbuf, udp_header, strlen( udp_header ) ) )	// if we have correct header...
@@ -685,7 +685,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 					   LeaveCriticalSection( &PlayerInfoKey );
 #ifdef DPTEST
 					   sprintf( buf, "ping of %d recieved for player %d ( %s )", PlayerInfo[ player ].Ping, player, Names[ player ] );
-					   AddMessageToQue ( buf );
+					   AddColourMessageToQue ( SystemMessageColour, buf );
 #endif
 				   }
 			   // status request?
@@ -700,7 +700,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 					    ProcessForsakenInfo( 0 );
 #ifdef DPTEST
 						sprintf( buf, "sending status msg type 0\n");
-					    AddMessageToQue ( buf );
+					    AddColourMessageToQue ( SystemMessageColour, buf );
 #endif
 						PostServerInfo( &from );
 				  }else
@@ -710,7 +710,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 							ProcessForsakenInfo( status_type );
 #ifdef DPTEST
 							sprintf( buf, "sending status msg type %d\n", status_type);
-						    AddMessageToQue ( buf );
+						    AddColourMessageToQue ( SystemMessageColour, buf );
 #endif					
 							PostServerInfo( &from );
 					  }
@@ -724,7 +724,7 @@ DWORD WINAPI ListenThread(LPVOID p) {
 				  DebugPrintf( "\nrecieving: %s\n", msgptr );
 			   }else
 			   {
-					AddMessageToQue( msgptr );
+					AddColourMessageToQue ( SystemMessageColour, msgptr );
 			   }
 #else
 			   }

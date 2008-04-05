@@ -75,6 +75,9 @@ extern	LONGLONG	LargeTime;
 extern	BOOL IsServerGame;
 extern	BOOL IsServer;
 
+// custom colour messages (Title.c)
+extern int SystemMessageColour;
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -1318,7 +1321,7 @@ void TriggerTextMessage( uint16 * Data )
 	if(!DoneBefore)
 	{
 		PlaySfx( SFX_MessageBeep, 1.0F );
-		AddMessageToQue( "%s\n", TextMessagesPnt[*Data] );
+		AddColourMessageToQue( SystemMessageColour, "%s\n", TextMessagesPnt[*Data] );
 		if( Tmi->ActivatedOrder == -1 )
 		{
 			Tmi->ActivatedOrder = TextActivatedOrder++;
@@ -2056,7 +2059,7 @@ void DisplayOldTextMessage( void )
 		if( Tmi->ActivatedOrder == CurrentTextActivated )
 		{
 			PlaySfx( SFX_MessageBeep, 1.0F );
-			AddMessageToQue( "%s\n", TextMessagesPnt[i] );
+			AddColourMessageToQue( SystemMessageColour, "%s\n", TextMessagesPnt[i] );
 			return;
 		}
 		Tmi++;

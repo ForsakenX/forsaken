@@ -200,6 +200,9 @@ extern  float   Host_BountyTimer;
 extern  float   Host_FlagTimer;
 extern  float   Host_TeamFlagTimer[ MAX_TEAMS ];
 
+// custom colour messages (Title.c)
+extern int PickupMessageColour;
+
 #ifdef SINT_PEACEFROG_CHEAT
 extern	int16	TargetingWeaponCheat;
 #endif
@@ -1106,7 +1109,7 @@ static int16	OnceOnlyFlag = 0;
 				if( !OnceOnlyFlag )
 				{
 					OnceOnlyFlag = 1;
-					if( !bSoundEnabled ) AddMessageToQue( YOU_DONT_HAVE_ANY_AMMO );
+					if( !bSoundEnabled ) AddColourMessageToQue(PickupMessageColour, YOU_DONT_HAVE_ANY_AMMO );
 					PlaySfx( SFX_DontHaveThat, 1.0F );
 				}
 			}
@@ -1116,7 +1119,7 @@ static int16	OnceOnlyFlag = 0;
 			if( !OnceOnlyFlag )
 			{
 				OnceOnlyFlag = 1;
-				if( !bSoundEnabled ) AddMessageToQue( YOU_DONT_HAVE_THAT_WEAPON );
+				if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOU_DONT_HAVE_THAT_WEAPON );
 				PlaySfx( SFX_DontHaveThat, 1.0F );
 			}
 		}
@@ -4338,7 +4341,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 						{
 							LaserTemperature = 100.0F;
 							LaserOverheated = 1;
-							AddMessageToQue( LASER_OVERHEATED );
+							AddColourMessageToQue( PickupMessageColour, LASER_OVERHEATED );
 						}
 					}
 				}
@@ -5044,7 +5047,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 						{
 							LaserTemperature = 100.0F;
 							LaserOverheated = 1;
-							AddMessageToQue( LASER_OVERHEATED );
+							AddColourMessageToQue( PickupMessageColour, LASER_OVERHEATED );
 						}
 					}
 				}
@@ -5196,7 +5199,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 						{
 							LaserTemperature = 100.0F;
 							LaserOverheated = 1;
-							AddMessageToQue( LASER_OVERHEATED );
+							AddColourMessageToQue( PickupMessageColour, LASER_OVERHEATED );
 						}
 					}
 				}
@@ -5350,7 +5353,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 						{
 							LaserTemperature = 100.0F;
 							LaserOverheated = 1;
-							AddMessageToQue( LASER_OVERHEATED );
+							AddColourMessageToQue( PickupMessageColour, LASER_OVERHEATED );
 						}
 					}
 				}

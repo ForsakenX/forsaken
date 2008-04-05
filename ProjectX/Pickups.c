@@ -182,6 +182,7 @@ void DebugPrintf( const char * format, ... );
 extern int KillMessageColour; 
 extern int SystemMessageColour;
 extern int FlagMessageColour;
+extern int PickupMessageColour;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals
@@ -2120,7 +2121,7 @@ BOOL CollectPickup( uint16 i )
 					PlaySfx( MessageSFX, Sfx_Volume );
 				if( ShowTextAnyway )
 				{
-					AddMessageToQue( &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 				}
 			}
 			else
@@ -2130,7 +2131,7 @@ BOOL CollectPickup( uint16 i )
 					PlaySfx( SFX_PickupGeneral, Sfx_Volume );
 				}
 
-				AddMessageToQue( &Message[ 0 ] );
+				AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 			}
 
 			PickupsGot[ Pickups[ i ].Type ]++;
@@ -2152,12 +2153,12 @@ BOOL CollectPickup( uint16 i )
 	 
 					if( ShowTextAnyway )
 					{
-						AddMessageToQue( &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 					}
 				}
 				else
 				{
-					AddMessageToQue( &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = TRUE;
 			}
@@ -6749,7 +6750,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 					PlaySfx( MessageSFX, Sfx_Volume );
 				if( ShowTextAnyway )
 				{
-					AddMessageToQue( &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 				}
 			}
 			else
@@ -6759,7 +6760,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 					PlaySfx( SFX_PickupGeneral, Sfx_Volume );
 				}
 
-				AddMessageToQue( &Message[ 0 ] );
+				AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 			}
 
 			PickupsGot[ Pickups[ i ].Type ]++;
@@ -6780,7 +6781,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 	 
 					if( ShowTextAnyway )
 					{
-						AddMessageToQue( &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 					}
 				}
 				else
@@ -7255,12 +7256,12 @@ BOOL PretendCollectPickup( uint16 i )
 	 
 					if( ShowTextAnyway )
 					{
-						AddMessageToQue( &Message[ 0 ] );
+						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 					}
 				}
 				else
 				{
-					AddMessageToQue( &Message[ 0 ] );
+					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = TRUE;
 			}

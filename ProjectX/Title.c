@@ -607,6 +607,9 @@ int MilestoneMessagesColour;
 int SystemMessageColour;
 int FlagMessageColour;
 int PlayerMessageColour;
+int PickupMessageColour;
+int TauntMessageColour;
+int MyMessageColour;
 
 void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
@@ -2976,14 +2979,17 @@ MENU	MENU_SelectTextureFormat = {
 MENU	MENU_Visuals = {
 	LT_MENU_Visuals0 /*"Visuals"*/, NULL, NULL, NULL, 0,
 	{
-		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1		/*"Select Screen Mode"		*/, 0, 0, NULL,									&MENU_SelectScreenMode,		MenuChange,	MenuItemDrawName,		NULL, 0 },
-		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2		/*"Select Texture Format"	*/, 0, 0, NULL,									&MENU_SelectTextureFormat,		MenuChange,	MenuItemDrawName,		NULL, 0 },
+		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1		/*"Select Screen Mode"		*/, 0, 0, NULL,									&MENU_SelectScreenMode,		MenuChange,			MenuItemDrawName,		NULL, 0 },
+		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2		/*"Select Texture Format"	*/, 0, 0, NULL,									&MENU_SelectTextureFormat,		MenuChange,			MenuItemDrawName,		NULL, 0 },
 		
 		{ 200, 128 + ( 3*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 5*16 ), 0, 0, 0, LT_MENU_InGame30	/*"system messages"		*/, 0, 0,	&SystemMessageColour,		NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 6*16 ), 0, 0, 0, LT_MENU_InGame31	/*"flag/bounty messages"	*/, 0, 0,	&FlagMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 7*16 ), 0, 0, 0, LT_MENU_InGame32	/*"player messages"			*/, 0, 0,	&PlayerMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 8*16 ), 0, 0, 0, LT_MENU_InGame33	/*"pickup messages"			*/, 0, 0,	&PickupMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 9*16 ), 0, 0, 0, LT_MENU_InGame34	/*"taunt messages"			*/, 0, 0,	&TauntMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 10*16 ), 0, 0, 0, LT_MENU_InGame35	/*"your messages"			*/, 0, 0,	&MyMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -11739,12 +11745,12 @@ void SetRoomName( MENUITEM *item )
 	if ( GotoRoom( WhoIAm, RoomName.text ) )
 	{
 		RoomList.selected_item = Ships[WhoIAm].Object.Group;
-		AddMessageToQue( "You are now in %s", RoomName.text );
+		AddColourMessageToQue( SystemMessageColour, "You are now in %s", RoomName.text );
 	}
 	else
 	{
-		AddMessageToQue( "Could not find %s", RoomName.text );
-		AddMessageToQue( "You are still in %s", Mloadheader.Group[ Ships[WhoIAm].Object.Group ].name );
+		AddColourMessageToQue( SystemMessageColour, "Could not find %s", RoomName.text );
+		AddColourMessageToQue( SystemMessageColour, "You are still in %s", Mloadheader.Group[ Ships[WhoIAm].Object.Group ].name );
 	}
 	MenuExit();
 }
@@ -11757,12 +11763,12 @@ void ChooseRoom( MENUITEM *item )
 	if ( GotoRoom( WhoIAm, RoomList.item[ RoomList.selected_item ] ) )
 	{
 		strncpy( RoomName.text, RoomList.item[ RoomList.selected_item ], sizeof( RoomName.text ) );
-		AddMessageToQue( "You are now in %s", RoomList.item[ RoomList.selected_item ] );
+		AddColourMessageToQue( SystemMessageColour, "You are now in %s", RoomList.item[ RoomList.selected_item ] );
 	}
 	else
 	{
-		AddMessageToQue( "Could not find %s", RoomList.item[ RoomList.selected_item ] );
-		AddMessageToQue( "You are still in %s", Mloadheader.Group[ Ships[WhoIAm].Object.Group ].name );
+		AddColourMessageToQue( SystemMessageColour, "Could not find %s", RoomList.item[ RoomList.selected_item ] );
+		AddColourMessageToQue( SystemMessageColour, "You are still in %s", Mloadheader.Group[ Ships[WhoIAm].Object.Group ].name );
 	}
 	MenuExit();
 }
@@ -12337,6 +12343,21 @@ void GetGamePrefs( void )
 	else
 		PlayerMessageColour = 2;
 
+	if ( RegGet( "PickupMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		PickupMessageColour = temp;
+	else
+		PickupMessageColour = 2;
+
+	if ( RegGet( "TauntMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		TauntMessageColour = temp;
+	else
+		TauntMessageColour = 2;
+
+	if ( RegGet( "MyMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		MyMessageColour = temp;
+	else
+		MyMessageColour = 2;
+
 #ifdef Z_TRICK
 	if ( ZClearsOn )
 	{
@@ -12462,6 +12483,16 @@ void SetGamePrefs( void )
 	
 	temp = PlayerMessageColour;
 	RegSet( "PlayerMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+
+	temp = PickupMessageColour;
+	RegSet( "PickupMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+
+	temp = TauntMessageColour;
+	RegSet( "TauntMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+
+	temp = MyMessageColour;
+	RegSet( "MyMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+
 }
 
 void GetServerPrefs( void )

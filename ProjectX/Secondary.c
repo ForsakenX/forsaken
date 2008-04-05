@@ -217,6 +217,9 @@ extern	char PrimaryNames[7][16];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	float	RegenDelay;
 
+// custom colour messages (Title.c)
+extern int PickupMessageColour;
+
 void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -1071,7 +1074,7 @@ static int16	OnceOnlyFlag = 0;
 			if( !OnceOnlyFlag )
 			{
 				OnceOnlyFlag = 1;
-				if( !bSoundEnabled ) AddMessageToQue( YOU_DONT_HAVE_THAT_WEAPON );
+				if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOU_DONT_HAVE_THAT_WEAPON );
 				PlaySfx( SFX_DontHaveThat, 1.0F );
 			}
 		}
@@ -2796,7 +2799,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 								if( Ship == WhoIAm )
 								{
 									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddMessageToQue( INCOMING_MISSILE );
+										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
 									else
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
 								}
@@ -2852,7 +2855,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 								if( Ship == WhoIAm )
 								{
 									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddMessageToQue( INCOMING_MISSILE );
+										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
 									else
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
 								}
@@ -2896,7 +2899,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 								if( Ship == WhoIAm )
 								{
 									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddMessageToQue( INCOMING_MISSILE );
+										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
 									else
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
 								}
@@ -3604,7 +3607,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 
 								}
 								PlayPannedSfx( SFX_Scattered, Ships[ HitTarget ].Object.Group , &Ships[ HitTarget ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddMessageToQue( YOUVE_BEEN_SCATTERED );
+								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 						}
 						break;

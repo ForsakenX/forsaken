@@ -544,6 +544,9 @@ extern int KillMessageColour;
 extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PlayerMessageColour;
+extern int PickupMessageColour;
+extern int TauntMessageColour;
+extern int MyMessageColour;
 
 BOOL CheckForName( BYTE Player )
 {
@@ -3446,7 +3449,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 									ScatterWeapons( &NullVector, MAXSCATTERED );
 								}
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddColourMessageToQue(SystemMessageColour, YOUVE_BEEN_SCATTERED );
+								if( !bSoundEnabled ) AddColourMessageToQue(PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 							break;
 
@@ -3547,7 +3550,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 								}
 
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddColourMessageToQue( SystemMessageColour, YOUVE_BEEN_SCATTERED );
+								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 							break;
 
@@ -3748,7 +3751,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						strcpy (&teamstr[0], "");
 
 					// gee someone killed somebody...who cares...
-					sprintf( (char*) &tempstr[0] ,"%s %s %s %s" "%s" "%s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
+					sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
    					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
    				}
 
@@ -4051,6 +4054,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case TEXTMSGTYPE_Taunt1:
 		case TEXTMSGTYPE_Taunt2:
 		case TEXTMSGTYPE_Taunt3:
+			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+			AddColourMessageToQue(TauntMessageColour, (char*)&tempstr[0] );
+			return;
 		case TEXTMSGTYPE_QuickTaunt:
 			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 			AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
@@ -4063,7 +4069,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			AddTitleMessage(lpTextMsg);
 			return;
 		case TEXTMSGTYPE_CaptureFlagMessage:
-//			sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+			sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 			AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 				PlaySfx( SFX_MyTeamGotFlag, 1.0F );
@@ -4158,7 +4164,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( lpBomb->WhoGotHit == WhoIAm )
 		{
 			// ahhh Ive got a fresh bomb....
-			AddColourMessageToQue(SystemMessageColour, YOU_HAVE_GOT_A_NEW_BOMB );
+			AddColourMessageToQue(FlagMessageColour, YOU_HAVE_GOT_A_NEW_BOMB );
 			BombActive[lpBomb->BombNum] = TRUE;
 			BombTime[lpBomb->BombNum] = lpBomb->BombTime;
 		}
@@ -4612,6 +4618,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPSHIELDHULLMSG	lpShieldHullMsg;
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	LONGLONG	TimeFrig;
+	int MessageColour = 2; // default message colour is light green
 
 	if( PlayDemo || !glpDP )
 		return;
@@ -5298,40 +5305,49 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		case TEXTMSGTYPE_Taunt1:
 			strncpy( &lpTextMsg->Text[0]	, &MacroText1.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = TauntMessageColour;
 			break;
 		case TEXTMSGTYPE_Taunt2:
 			strncpy( &lpTextMsg->Text[0]	, &MacroText2.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = TauntMessageColour;
 			break;
 		case TEXTMSGTYPE_Taunt3:
 			strncpy( &lpTextMsg->Text[0]	, &MacroText3.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = TauntMessageColour;
 			break;
 		case TEXTMSGTYPE_TitleMessage:
 			strncpy( &lpTextMsg->Text[0]	, &MacroText4.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = SystemMessageColour;
 			break;
 		case TEXTMSGTYPE_JoiningTeamGame:
 //			strncpy( &lpTextMsg->Text[0]	, "%s is joining the game" , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = SystemMessageColour;
 			break;
 		case TEXTMSGTYPE_QuickTaunt:
 			strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = MyMessageColour;
 			break;
 		case TEXTMSGTYPE_QuickTauntWhisper:
 			strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
+			MessageColour = MyMessageColour;
 			break;
 		case TEXTMSGTYPE_CaptureFlagMessage:
 			lpTextMsg->TextMsgType = Type;
 			strncpy( &lpTextMsg->Text[0]	, CTFMessage , MAXTEXTMSG );
 			PlaySfx( SFX_MyTeamGotFlag , 1.0F );
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_ScoredWithFlag:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
 			PlaySfx( SFX_MyTeamScored, 1.0F );
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_ReturningFlag:
 			lpTextMsg->TextMsgType = Type;
@@ -5343,6 +5359,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			{
 				lpTextMsg->Text[0] = 0;
 			}
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_ReturnedFlag:
 			lpTextMsg->TextMsgType = Type;
@@ -5354,23 +5371,28 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			{
 				lpTextMsg->Text[0] = 0;
 			}
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_FlagDriftedIn:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_FlagEscaped:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_BountyMessage:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = 0;
 			PlaySfx( SFX_MyTeamGotFlag , 1.0F );
+			MessageColour = FlagMessageColour;
 			break;
 		case TEXTMSGTYPE_SpeechTaunt:
 			lpTextMsg->TextMsgType = Type;
 			lpTextMsg->Text[0] = CurrentTauntVariant;
+			MessageColour = PlayerMessageColour;
 			break;
 		default:
 			lpTextMsg->TextMsgType = TEXTMSGTYPE_Taunt1;
@@ -5381,7 +5403,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 		if (MyGameStatus != STATUS_StartingMultiplayer)
 		{
-			AddColourMessageToQue( FlagMessageColour, (char*) &lpTextMsg->Text[0] );
+			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 		}
 		break;
 
