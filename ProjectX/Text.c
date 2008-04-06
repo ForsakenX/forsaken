@@ -876,6 +876,8 @@ void PrintScoreSort( void )
 	sprintf( buf, "num free sfx holders = %d", numfreeholders ); 
 	Print4x5Text( buf , 8 , FontHeight * 3 , 2 );
 #endif
+
+	// single player
 	if( MyGameStatus == STATUS_SinglePlayer )
 	{
 		Print4x5Text( LIVES , 8 , FontHeight , 2 );
@@ -883,48 +885,24 @@ void PrintScoreSort( void )
 		return;
 	}
 
+	// quit game
 	if ( MyGameStatus == STATUS_QuitCurrentGame )
 		return;
 	
-	// pings must always be sent if server, or if heartbeat packets are being sent.
-	if( ShowPing || IsServer || ( IsHost && WSA_Active ) && !TeamGame )
+	// multiplayer pings
+	if( ShowPing || ( IsHost && WSA_Active ) && !TeamGame )
 	{
 		PingRefresh -= framelag;
 		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
 		{
 			PingRefresh = 71.0F * PingFreqSlider.value;
-			if ( IsServerGame )
-			{
-				if ( IsServer )
-				{
-					PingNonGuarenteed();
-					SendGameMessage( MSG_PLAYERPINGS , 0, 0, 0, 0 );
-				}
-			}else
-			{
-				PingNonGuarenteed();
-			}
+
+			PingNonGuarenteed();
 		}
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
 			if( ScoreSortTab[i] == WhoIAm)
-			{
-				if( IsServerGame )
-				{
-					if( ScoreSortTab[i] != 0 )
-					{
-						if ( ShowPing && !TeamGame )
-						{
-							sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[ScoreSortTab[i]] );
-							Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
-						}
-
-						NumOfActivePlayers++;
-					}
-				}else{
 					NumOfActivePlayers++;
-				}
-			}
 			else if( GameStatus[ScoreSortTab[i]] == STATUS_Left )
 			{
 				if ( ShowPing && !TeamGame )
@@ -933,23 +911,25 @@ void PrintScoreSort( void )
 					Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
 				}
 				NumOfActivePlayers++;
-			}else{
-//				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal && !( IsServerGame && i == 0 ) && Ships[ScoreSortTab[i]].enable )
-				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal && !( IsServerGame && ScoreSortTab[i] == 0 ) )
+			}
+			else
+			{
+				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal )
 				{
 					if ( ShowPing && !TeamGame )
 					{
 						sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[ScoreSortTab[i]] );
 						Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
 					}
-					if ( Debug && IsServer && !CanDoDamage[ScoreSortTab[i]] )
-						Print4x5Text( "Cheater" , 8+(24*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
 					NumOfActivePlayers++;
 				}
 			}
 		}
 		NumOfActivePlayers = 0;
-	}else{
+	}
+	// pings disabled
+	else
+	{
 		PingRefresh = 0.0F;
 	}
 	
@@ -961,6 +941,7 @@ void PrintScoreSort( void )
 		FlashSpeed = FMOD( FlashSpeed, FLASH_RATE );
 	}
 	
+	// not teams game
 	if( !TeamGame )
 	{
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -971,10 +952,10 @@ void PrintScoreSort( void )
 
 				Printint16( Ships[ScoreSortTab[i]].Kills , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
 				NumOfActivePlayers++;
-			}else{
-//				if( (GameStatus[ScoreSortTab[i]] == MyGameStatus || PlayDemo ) && Ships[ScoreSortTab[i]].enable &&
-				if( (GameStatus[ScoreSortTab[i]] == STATUS_Normal) &&
-					!( IsServerGame && ScoreSortTab[i] == 0 ) )
+			}
+			else
+			{
+				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal )
 				{
 					if ( !( Ships[ ScoreSortTab[ i ] ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 					{
@@ -988,8 +969,10 @@ void PrintScoreSort( void )
 				}
 			}
 		}
-	}else{
-
+	}
+	// teams game
+	else
+	{
 		memset(&TeamScore, 0, sizeof(int16) * MAX_TEAMS);
 
 		for (i = 0; i < MAX_TEAMS; i++)
@@ -1002,8 +985,7 @@ void PrintScoreSort( void )
 		
 		for (i = 0; i < MAX_PLAYERS; i++)
 		{
-//			if ( Ships[ScoreSortTab[i]].enable && (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] != STATUS_StartingMultiplayer) && (GameStatus[i] == MyGameStatus || PlayDemo ) && !( IsServerGame && i == 0 ))
-			if ( (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal ) && !( IsServerGame && i == 0 ))
+			if ( (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal ) )
 			{
 				if( Ships[i].Kills != -32767 )
 				{
@@ -1063,13 +1045,13 @@ void PrintScoreSort( void )
 			}
 		}
 
+		// show team info
 		if( ShowTeamInfo )
 		{
 			e = pos + 1;
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
-//				if( Ships[ScoreSortTab[i]].enable &&( TeamNumber[WhoIAm] == TeamNumber[i] ) && (GameStatus[i] == MyGameStatus || PlayDemo) && !( IsServerGame && i == 0 ))
-				if( ( TeamNumber[WhoIAm] == TeamNumber[i] ) && (GameStatus[i] == STATUS_Normal) && !( IsServerGame && i == 0 ))
+				if( ( TeamNumber[WhoIAm] == TeamNumber[i] ) && (GameStatus[i] == STATUS_Normal) )
 				{
 					col = ( WhoIAm == i ) ? 0 : TeamCol[ TeamNumber[ i ] ];
 					Print4x5Text( &Names[i][0] , 8 , e*(FontHeight+1)+(FontHeight*4) , col );
@@ -1081,6 +1063,7 @@ void PrintScoreSort( void )
 			}
 		}
 
+		// update number of active players
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
 			if ( (GameStatus[i] == STATUS_Normal ) )
