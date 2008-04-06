@@ -1046,8 +1046,8 @@ SLIDER BikeFeatureSlider[MAXBIKETYPES][8] = {
 USERCONFIG	Config;
 
 MENUSTATE MenuState			= MENUSTATE_Select;
-MENUITEM *KeyItem			= NULL;
-MENUITEM *SliderItem		= NULL;
+MENUITEM *KeyItem				= NULL;
+MENUITEM *SliderItem			= NULL;
 MENUITEM *CurrentListItem	= NULL;
 MENUITEM *TextItem			= NULL;
 MENUITEM *PreListItem;
@@ -1057,31 +1057,31 @@ MENU *PreListMenu;
 		Menus...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-DEFKEY KDleft				= { &Config.left, 0 };
-DEFKEY KDright				= { &Config.right, 0 };
-DEFKEY KDup					= { &Config.up, 0 };
-DEFKEY KDdown				= { &Config.down, 0 };
-DEFKEY KDmove_left			= { &Config.move_left, 0 };
+DEFKEY KDleft						= { &Config.left, 0 };
+DEFKEY KDright					= { &Config.right, 0 };
+DEFKEY KDup						= { &Config.up, 0 };
+DEFKEY KDdown					= { &Config.down, 0 };
+DEFKEY KDmove_left				= { &Config.move_left, 0 };
 DEFKEY KDmove_right			= { &Config.move_right, 0 };
-DEFKEY KDmove_up			= { &Config.move_up, 0 };
+DEFKEY KDmove_up				= { &Config.move_up, 0 };
 DEFKEY KDmove_down			= { &Config.move_down, 0 };
-DEFKEY KDroll_left			= { &Config.roll_left, 0 };
-DEFKEY KDroll_right			= { &Config.roll_right, 0 };
-DEFKEY KDmove				= { &Config.move, 0 };
-DEFKEY KDroll				= { &Config.roll, 0 };
+DEFKEY KDroll_left				= { &Config.roll_left, 0 };
+DEFKEY KDroll_right				= { &Config.roll_right, 0 };
+DEFKEY KDmove					= { &Config.move, 0 };
+DEFKEY KDroll						= { &Config.roll, 0 };
 DEFKEY KDmove_forward		= { &Config.move_forward, 0 };
 DEFKEY KDmove_backward		= { &Config.move_backward, 0 };
-DEFKEY KDturbo				= { &Config.turbo, 0 };
-DEFKEY KDcruise_faster		= { &Config.cruise_faster, 0 };
+DEFKEY KDturbo					= { &Config.turbo, 0 };
+DEFKEY KDcruise_faster			= { &Config.cruise_faster, 0 };
 DEFKEY KDcruise_slower		= { &Config.cruise_slower, 0 };
-DEFKEY KDfire_primary		= { &Config.fire_primary, 0 };
+DEFKEY KDfire_primary			= { &Config.fire_primary, 0 };
 DEFKEY KDfire_secondary		= { &Config.fire_secondary, 0 };
-DEFKEY KDfire_mine			= { &Config.fire_mine, 0 };
-DEFKEY KDdrop_primary		= { &Config.drop_primary, 0 };
+DEFKEY KDfire_mine				= { &Config.fire_mine, 0 };
+DEFKEY KDdrop_primary			= { &Config.drop_primary, 0 };
 DEFKEY KDdrop_secondary		= { &Config.drop_secondary, 0 };
-DEFKEY KDdrop_shield		= { &Config.drop_shield, 0 };
+DEFKEY KDdrop_shield			= { &Config.drop_shield, 0 };
 DEFKEY KDdrop_ammo			= { &Config.drop_ammo, 0 };
-DEFKEY KDselect_primary[] = {
+DEFKEY KDselect_primary[]	= {
 	{ &Config.select_primary[ PULSAR ], 0 },
 	{ &Config.select_primary[ TROJAX ], 0 },
 	{ &Config.select_primary[ SUSS_GUN ], 0 },
@@ -1089,8 +1089,8 @@ DEFKEY KDselect_primary[] = {
 	{ &Config.select_primary[ PYROLITE_RIFLE ], 0 },
 	{ &Config.select_primary[ LASER ], 0 },
 };
-DEFKEY KDselect_next_primary	= { &Config.select_next_primary, 0 };
-DEFKEY KDselect_prev_primary	= { &Config.select_prev_primary, 0 };
+DEFKEY KDselect_next_primary		= { &Config.select_next_primary, 0 };
+DEFKEY KDselect_prev_primary		= { &Config.select_prev_primary, 0 };
 DEFKEY KDselect_next_secondary	= { &Config.select_next_secondary, 0 };
 DEFKEY KDselect_prev_secondary	= { &Config.select_prev_secondary, 0 };
 DEFKEY KDselect_secondary[] = {
@@ -1106,10 +1106,11 @@ DEFKEY KDselect_secondary[] = {
 	{ &Config.select_secondary[ QUANTUMMINE ], 0 },
 	{ &Config.select_secondary[ SPIDERMINE ], 0 },
 };
-DEFKEY KDsend_msg		= { &Config.send_msg, 0 };
-DEFKEY KDheadlights		= { &Config.headlights, 0 };
-DEFKEY KDfull_rearview	= { &Config.full_rear_view, 0 };
-DEFKEY KDshow_messages = { &Config.show_messages, 0 };
+DEFKEY KDsend_msg				= { &Config.send_msg, 0 };
+DEFKEY KDheadlights				= { &Config.headlights, 0 };
+DEFKEY KDfull_rearview			= { &Config.full_rear_view, 0 };
+DEFKEY KDshow_messages		= { &Config.show_messages, 0 };
+DEFKEY KDshow_stats			= { &Config.show_stats, 0 };
 
 #ifdef PLAYER_SPEECH_TAUNTS
 DEFKEY KDsend_speech = { &Config.send_speech, 0 };
@@ -2754,6 +2755,7 @@ MENU	MENU_Keyboard =
 		KDEF( 3, 200, 280, LT_MENU_Keyboard47 /*"Spider Mine"*/, KDselect_secondary[ SPIDERMINE ] ),
 
 		KDEF( 3, 200, 310, LT_MENU_Keyboard48 /*"Show Messages"*/, KDshow_messages ),
+		KDEF( 3, 200, 326, LT_MENU_Keyboard49 /*"Show Statistics"*/, KDshow_stats ),
 
 		{ 200, 32, 0, 0, 0, "help3", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp3, NULL, 0 },
 		{ 200, 336, 0, 0, 0, "help1", 0, 0, NULL, NULL, NULL, DrawKeyDefHelp1, NULL, 0 },

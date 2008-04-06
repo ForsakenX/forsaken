@@ -219,7 +219,8 @@ float FlashTextActive = 0.0F;
 BOOL FullRearView = FALSE;
 BOOL Headlights = FALSE;
 BOOL ShowStats = FALSE;
-BOOL ShowMessages = FALSE; // display long list of chat messages
+BOOL ShowMessages = FALSE;	// display long list of chat messages
+BOOL ShowStatistics = FALSE;	// display statistics in game
 
 void FlashMenuText( char *text, float activetime, uint16 sfx )
 {
@@ -997,6 +998,11 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 	  ShowMessages = TRUE;
   else
 	  ShowMessages = FALSE;
+
+  if( key_held( &conf->show_stats))
+	  ShowStatistics = TRUE;
+  else
+	  ShowStatistics = FALSE;
 
   if ( key_pressed( &conf->headlights ) )
     Headlights = !Headlights;
