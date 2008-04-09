@@ -40,12 +40,6 @@ extern void DebugPrintf( const char * format, ... );
 |
 \*******************/
 
-char dirname  [256];  // C:\ProjectX
-char basename [256];  // ProjectX_1.0.exe
-char appname  [256];  // ProjectX
-char version  [256];  // 1.0
-char lobbyKey [256];  // Software\\Microsoft\\DirectPlay\\Applications\\ProjectX
-char appKey   [256];  // Software\\ProjectX
 HKEY appHKey = NULL;
 
 
@@ -55,15 +49,16 @@ HKEY appHKey = NULL;
 |
 \*******************/
 
-BOOL InitRegistry(void);
-BOOL GetRegistrySettings(void);
-BOOL CloseRegistry(void);
-BOOL OpenOrCreateRegistry(void);
-BOOL InstallDirectPlayRegistry(void);
+BOOL InitRegistry();
+BOOL CloseRegistry();
+BOOL OpenOrCreateRegistry();
 LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 
+#ifdef DPLAYLOBBY
+BOOL InstallDirectPlayRegistry();
+#endif
 
 /*******************\
 |
@@ -74,11 +69,10 @@ LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 BOOL InitRegistry(void)
 {
 
-	if (!GetRegistrySettings())
-		goto failure;
-
+#ifdef DPLAYLOBBY
 	if (!InstallDirectPlayRegistry())
 		goto failure;
+#endif
 
 	if (!OpenOrCreateRegistry())
 		goto failure;
@@ -99,126 +93,13 @@ failure:
 }
 
 
-/*******************\
-|
-| GetRegistrySettings
-|
-\*******************/
-
-BOOL GetRegistrySettings(void)
-{
-
-	// temporary holders
-	char buffer[ 256 ];
-	char *strptr;
-	char *strptr2;
-
-	//
-	//  Window truncates long names to dos 8.3 format
-	//  We must use this to expand to the full path
-	//
-
-	// get the long path
-	DWORD returned_size  = 0;
-	char long_path[4096] = "";
-
-	// try to get the path
-	returned_size = GetLongPathName( __argv[0], long_path, 4096 );
-
-	// some type of error
-	if ( returned_size == 0 )
-	{
-		Msg("Could not get full exe path: %d",GetLastError());
-		DebugPrintf("Could not get full exe Path: %d",GetLastError());
-		return FALSE;
-	}
-
-	// path is way to long fo...
-	if ( returned_size > 4096 )
-	{
-		Msg("Path to exe is to long");
-		DebugPrintf("Path to exe is to long");
-		return FALSE;
-	}
-
-	// full path to exe used
-	// C:\ProjectX\ProjectX_1.0.exe
-	strcpy( buffer, (const char *)&long_path );
-
-	// get pointer to last occurance of \ character
-	strptr = strrchr( buffer, '\\' );
-
-	// set the last \ to 0
-	*strptr = 0;
-
-	// check
-	if ( strptr == NULL )
-	{
-		DebugPrintf("Could not get last occurance of '\\'\n");
-		return FALSE;
-	}
-
-    // get the dirname
-	// C:\ProjectX
-	strncpy((char*)&dirname,(char*)&buffer,(sizeof(dirname)-1));
-
-	// get the basename
-	// ProjectX_1.0.exe
-	strncpy((char*)&basename,(char*)&strptr[1],(sizeof(basename)-1));
-
-    // get pointer to last occurance of . character
-	strptr2 = strrchr( (char*)&strptr[1], '.' );
-
-	// check
-	if ( strptr2 == NULL )
-	{
-		DebugPrintf("Could not get last occurance of '.'\n");
-		return FALSE;
-	}
-
-	// set the last . to 0
-	*strptr2 = 0;
-
-    // get pointer to last occurance of _ character
-	strptr2 = strrchr( (char*)&strptr[1], '_' );
-
-	// check
-	if ( strptr2 == NULL )
-	{
-		DebugPrintf("Could not get last occurance of '_'\n");
-		return FALSE;
-	}
-
-	// set the last _ to 0
-	*strptr2 = 0;
-
-	// get the version number
-	// 1.0
-	strncpy((char*)&version,(char*)&strptr2[1],(sizeof(version)-1));
-
-    // get the appname
-	// ProjectX
-    strncpy((char*)&appname,(char*)&strptr[1],(sizeof(appname)-1));
-
-	// setup lobby key
-	_snprintf(lobbyKey,(sizeof(lobbyKey)-1),"%s\\%s","Software\\Microsoft\\DirectPlay\\Applications",&appname);
-
-	// setup app key
-	_snprintf(appKey,(sizeof(lobbyKey)-1),"%s\\%s","Software",&appname);
-
-	// success
-	return TRUE;
-
-}
-
-
 /**********************\
 |
 | OpenOrCreateRegistry
 |
 \**********************/
 
-BOOL OpenOrCreateRegistry(void)
+BOOL OpenOrCreateRegistry()
 {
 
 	DWORD	result;
@@ -228,13 +109,18 @@ BOOL OpenOrCreateRegistry(void)
 	/* open or create the GAME_KEY */
 	result = RegCreateKeyEx(
 				HKEY_LOCAL_MACHINE,			/* registry root */
-				(const char*)&appKey,		/* registry key */
+				/* registry key */
+#ifdef DEBUG_ON
+				"Software\\ProjectX.debug",
+#else
+				"Software\\ProjectX",
+#endif
 				0,							/* reserved */
 				NULL,						/* object type */
 				REG_OPTION_NON_VOLATILE,	/* save mode */
 				KEY_ALL_ACCESS,				/* access rights */
 				NULL,						/* lpSecurityAttributes */
-				&appHKey,				/* handle */
+				&appHKey,					/* handle */
 				&disposition				/* created or opened result */
 				);
 
@@ -244,15 +130,15 @@ BOOL OpenOrCreateRegistry(void)
 		// get error message
 		FormatMessage(
 			  FORMAT_MESSAGE_FROM_SYSTEM,
-			  &result,
-			  0,
+			  NULL,
+			  result,
 			  0,
 			  (LPSTR)&description,
 			  (DWORD)sizeof(description)+1,
 			  NULL
 		);
 
-		DebugPrintf("OpenOrCreateRegistry: Failed to open registry\n");
+		DebugPrintf("OpenOrCreateRegistry: Failed to open registry: %s\n",&description);
 
 		// print error message
 		Msg("%s %s %s %s",
@@ -306,7 +192,7 @@ BOOL CloseRegistry(void)
 	return TRUE;
 }
 
-
+#ifdef DPLAYLOBBY
 /**********************************************\
 |
 | InstallDirectPlayRegistry
@@ -315,7 +201,7 @@ BOOL CloseRegistry(void)
 |
 \**********************************************/
 
-BOOL InstallDirectPlayRegistry( void )
+BOOL InstallDirectPlayRegistry()
 {
 
 	DWORD	result;
@@ -332,7 +218,12 @@ BOOL InstallDirectPlayRegistry( void )
 	// open or create the GAME_KEY 
 	result = RegCreateKeyEx(
 				HKEY_LOCAL_MACHINE,			// registry root
-				(const char*)&lobbyKey,		// registry key
+				// registry key
+#ifdef DEBUG_ON
+				"Software\\Microsoft\\DirectPlay\\Applications\\ProjectX.debug",
+#else
+				"Software\\Microsoft\\DirectPlay\\Applications\\ProjectX",
+#endif
 				0,							// reserved
 				NULL,						// object type
 				REG_OPTION_NON_VOLATILE,	// save mode
@@ -349,8 +240,8 @@ BOOL InstallDirectPlayRegistry( void )
 		// get error message
 		FormatMessage(
 			  FORMAT_MESSAGE_FROM_SYSTEM,
-			  &result,
-			  0,
+			  NULL
+			  result,
 			  0,
 			  (LPSTR)&description,
 			  (DWORD)sizeof(description)+1,
@@ -451,7 +342,7 @@ failed:
 
 	return FALSE;
 }
-
+#endif
 
 /*******************\
 |
