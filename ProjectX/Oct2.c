@@ -407,6 +407,9 @@ extern  BOOL  ScreenSaving;
 extern  float WhiteOut;
 extern float mouse_dx;
 extern float mouse_dy;
+
+void	MessageQuePrintAll( void );
+
 BOOL  InsideResizeViewport = FALSE;
 
 DWORD CurrentSrcBlend;

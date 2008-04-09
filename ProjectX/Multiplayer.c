@@ -330,7 +330,7 @@ void GetMultiplayerPrefs( void );
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void GetServiceProviders( MENUITEM * Item )
+void GetServiceProviders( MENU * Item )
 {
 
 	DWORD size;

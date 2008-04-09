@@ -26,7 +26,7 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 BOOL WINAPI EnumLobbyPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
     DWORD dwFlags, LPVOID lpContext);
 
-void GetServiceProviders( MENUITEM * Item );
+void GetServiceProviders( MENU * Item );
 BOOL ExitProviderChosen ( MENUITEM * Item );
 BOOL StartAHostSession ( MENUITEM * Item );
 void GetCurrentSessions( MENU *Menu );
