@@ -615,6 +615,8 @@ BOOL InitScoreDisplay();
 BOOL StatsDisplay();
 BOOL FreeStatsDisplay();
 BOOL InitStatsDisplay();
+BOOL ScoreDisplayOrig(void);
+
 void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BOOL DetailedStats);
 void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
@@ -6508,10 +6510,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /* Display the Statistics in-game when key is pressed */
 void ShowInGameStats()
 {
-		RECT    src;
-		RECT    dest;
-		HRESULT ddrval;
-		DDBLTFX fx;
 		int i;					// index counter
 		int j;					// index counter
 		int scaler = 2;		// used to adjust positioning of stats based on number of active players
@@ -6610,7 +6608,7 @@ void ShowInGameStats()
 				Print4x5Text( (char*) &Names[i]	,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*14) - (NumActivePlayers*FontWidth*2)))			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, col ); 
 								
 				// top row of matrix
-				FirstLetter[0] = ""; // stops weird characters appearing
+				FirstLetter[0] = 0; // stops weird characters appearing
 				strncpy(FirstLetter,(char*) &Names[i], 1);
 				Print4x5Text( FirstLetter,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*6) - (NumActivePlayers*FontWidth*2))) + (i*FontWidth*4)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 					, col );
 			
@@ -6715,7 +6713,7 @@ BOOL ScoreDisplay()
 }// end of displaying scores
 
 
-BOOL ScoreDisplayOrig()
+BOOL ScoreDisplayOrig(void)
 {
     RECT    src;
 	RECT    dest;
