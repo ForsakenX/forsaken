@@ -2703,6 +2703,10 @@ MENU	MENU_Keyboard =
 		KDEF( 0, 200, 296, LT_MENU_Keyboard11 /*"Slide Mode"*/, KDmove ),
 		KDEF( 0, 200, 312, LT_MENU_Keyboard12 /*"Roll Mode"*/, KDroll ),
 
+#ifdef PLAYER_SPEECH_TAUNTS
+		KDEF( 0, 200, 328,LT_MENU_Keyboard36 /*"speech taunt"*/, KDsend_speech),
+#endif
+
 		// 2nd page
 
 		KDEF( 1, 200, 112, LT_MENU_Keyboard13 /*"Forward"*/, KDmove_forward ),
@@ -2732,11 +2736,8 @@ MENU	MENU_Keyboard =
 		KDEF( 2, 200, 232,LT_MENU_Keyboard32 /*"Prev Prim"*/, KDselect_prev_primary ),
 		KDEF( 2, 200, 256,LT_MENU_Keyboard33 /*"Next Sec"*/, KDselect_next_secondary ),
 		KDEF( 2, 200, 272,LT_MENU_Keyboard34 /*"Prev Sec"*/, KDselect_prev_secondary ),
+		
 		KDEF( 2, 200, 296,LT_MENU_Keyboard35 /*"Send Msg"*/, KDsend_msg),
-
-#ifdef PLAYER_SPEECH_TAUNTS
-		KDEF( 2, 200, 312,LT_MENU_Keyboard36 /*"speech taunt"*/, KDsend_speech),
-#endif
 		KDEF( 2, 200, 312,LT_MENU_Keyboard1a /*"headlights"*/, KDheadlights),
 		KDEF( 2, 200, 328,LT_MENU_Keyboard1b /*"full rear view"*/, KDfull_rearview),
 		// 4th page
