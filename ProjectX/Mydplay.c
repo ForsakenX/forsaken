@@ -2003,13 +2003,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
 
-	// set flag sfx volume
-	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
-
-
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
 #endif
+
+	// set flag sfx volume
+	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
+
 
 	/*
 	if ( *MsgPnt == 0xe0 )
