@@ -14,12 +14,12 @@
 #ifndef	STDWIN_INC
 #define STDWIN_INC
 
-#ifdef NDEBUG
+/*#ifdef NDEBUG
   #define ASSERT( exp ) ((void)0)
 #else
   void DbgAssert(const char *pCondition, const char *pFileName, int iLine);
   #define ASSERT(exp) if(!(exp)) DbgAssert( TEXT(#exp), TEXT(__FILE__), TEXT(__LINE__) );
-#endif
+#endif*/
 
 #include <windows.h>
 #include <commdlg.h>
