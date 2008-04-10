@@ -55,6 +55,8 @@ extern BOOL NoMenuBack;
 
 // (stats.c)
 extern int GetScoreStats(int Player); // get individual player's score
+// custom message colours (Title.c)
+extern int SystemMessageColour;
 
 // TEMP?
 extern char MissionTextNames[MAXLEVELS][128];
