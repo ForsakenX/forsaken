@@ -26,12 +26,6 @@ void DebugPrintf( const char * format, ... );
 extern BOOL Debug;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-BOOL	CreateLogFile = FALSE;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		See if file exists
 	Input		:		char	*	Filename
 	Output		:		BOOL		TRUE if exists
@@ -244,19 +238,24 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	Output		:		Nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
+// log file name
 char * LogFilename = "Logs\\projectx.log";
 
+// pointer to log file
+FILE * fp;
+
+// add comment to log
 void AddCommentToLog( const char * format, ... )
 {
-
-	FILE	*	fp;
     static char buf1[256], buf2[512];
 	va_list		args;
 
-	if ( ! Debug || !CreateLogFile )
-		return;
+	// only log if debuggin on
+	if(!Debug)return;
 
-	fp = fopen( LogFilename, "a" );
+	// no file open
+	if(!fp)
+		fp = fopen( LogFilename, "w" );
 
 	if( fp )
 	{
@@ -265,7 +264,6 @@ void AddCommentToLog( const char * format, ... )
 		wsprintf( buf2, "%hs", buf1 );
 		fprintf( fp, "%s", buf2 );
 		va_end( args );
-		fclose( fp );
+		fflush(fp);
 	}
-
 }

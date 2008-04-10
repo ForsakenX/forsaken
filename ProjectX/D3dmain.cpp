@@ -110,7 +110,6 @@ extern "C" {
 
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
-	extern	BOOL	CreateLogFile;
 	extern	BOOL LockOutWindows;
 	extern	BOOL	DplayRecieveThread;
 	extern BOOL PreventFlips;
@@ -355,12 +354,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	//
 	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
 	LastTime = LargeTime;
-
-	// refresh log files
-	if ( Debug )
-	{
-	  DeleteFile( LogFilename   );
-	}
 
 	// check direct x version
 	GetDXVersion( &dwVersion, &dwPlatform );
