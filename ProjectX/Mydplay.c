@@ -3758,7 +3758,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						strcpy (&teamstr[0], "");
 
 					// gee someone killed somebody...who cares...
-					sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0], &teamstr );
+					sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr );
    					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
    				}
 
