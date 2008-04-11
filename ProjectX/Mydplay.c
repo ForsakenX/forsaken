@@ -1816,15 +1816,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		DebugPrintf("DPSYS_DESTROYPLAYERORGROUP recieved\n");
 		lpDestroyMsg = ( LPDPMSG_DESTROYPLAYERORGROUP ) lpMsg;
 		if( lpDestroyMsg->dwPlayerType == DPPLAYERTYPE_PLAYER )
-		{
-#ifdef DIRECTPLAY_KICK_PLAYER
-			if( lpDestroyMsg->dpId == dcoID )
-			{
-				SetTitleNotify( KICKED_OUT/*"you have been kicked out by the server"*/ );
-				IMustQuit = TRUE;
-			}
-#endif
-			
+		{			
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
 				if( ( i != WhoIAm ) && (lpDestroyMsg->dpId == Ships[i].dcoID) )
