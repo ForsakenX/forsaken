@@ -8098,17 +8098,13 @@ Our_CalculateFrameRate(void)
     CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 6) + (FontHeight>>1) + viewport.dwY , 2 );
 #endif
 
-
-#ifdef DEBUG_POLY_DETAILS
+	// show polygon information (when show extra info is turned on)
     sprintf(&buf[0], "FmPolys %d, Polys %d, ScrPolys %d",
                         (int) TotalFmPolysInUse,
                         (int) TotalPolysInUse,
                         (int) TotalScrPolysInUse
               );
-    
-
     CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 6) + (FontHeight>>1) + viewport.dwY , 2 );
-#endif
 
 #if 1
     sprintf( &buf[0] , "In %s framelag%5.2f Clear=%c%c",
