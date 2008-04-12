@@ -229,24 +229,25 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			param2 = 0;
 		}
 
+		// if retval is 1 there is a message
 		// dispatches incoming sent messages
 		// checks the thread message queue for a posted message
 		// and retrieves the message (if any exist).
-		if (PeekMessage(&msg, NULL, param1, param2, PM_REMOVE))
+		// if there is a message process it.
+		while(PeekMessage(&msg, NULL, param1, param2, PM_REMOVE))
 		{
-
 			// if the window got the WM_QUIT message
-            if (msg.message == WM_QUIT)
+			if (msg.message == WM_QUIT)
 			{
 				// quit
-                CleanUpAndPostQuit();
-                break;
-            }
+				CleanUpAndPostQuit();
+				break;
+			}
 
 			if
 			(
 				! d3dapp->bPaused  ||  // not paused
-				! myglobs.hWndMain
+				! myglobs.hWndMain		// window handel is not bad
 			)
 			{
 
@@ -259,9 +260,8 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				DispatchMessage(&msg);
 
 			}
+		}
 
-        }
- 
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
         if (d3dapp->bRenderingIsOK && !d3dapp->bMinimized && !d3dapp->bPaused && !myglobs.bQuit)
 		{
