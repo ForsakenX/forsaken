@@ -14,7 +14,7 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug - OPT_ON|Win32"
+			Name="Debug - Optimisations|Win32"
 			OutputDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON"
 			IntermediateDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON\"
 			ConfigurationType="1"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,OPT_ON,DEBUG_ON,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug_OPT_ON\"
@@ -140,7 +140,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,DEBUG_ON,MANUAL_SESSIONDESC_PROPAGATE,FINAL_RELEASE,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
+				PreprocessorDefinitions="DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug\trash\"
@@ -201,7 +201,7 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release - Optimizations|Win32"
+			Name="Release - Optimisations|Win32"
 			OutputDirectory=".\temp\ProjectX___Win32_Release"
 			IntermediateDirectory=".\temp\ProjectX___Win32_Releas\Xtrash"
 			ConfigurationType="1"
@@ -233,7 +233,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,OPT_ON"
+				PreprocessorDefinitions="USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -294,9 +294,9 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Debug - Remote Cam|Win32"
-			OutputDirectory=".\temp\ProjectX___Debug_RemoteCam"
-			IntermediateDirectory=".\temp\ProjectX___Debug_RemoteCam"
+			Name="Release|Win32"
+			OutputDirectory="$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -316,26 +316,26 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="NDEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\temp\ProjectX___Debug_RemoteCam\ProjectX.tlb"
+				TypeLibraryName=".\temp\ProjectX___Win32_Releas\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_DEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,USEASM,BSP,DEBUG_ON,MANUAL_SESSIONDESC_PROPAGATE,FINAL_RELEASE,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,REMOTE_CAMERA_ENABLED"
+				PreprocessorDefinitions="BSP,PLAYER_SPEECH_TAUNTS"
+				StringPooling="true"
+				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\ProjectX___Debug_RemoteCam\trash\ProjectX.pch"
-				AssemblerListingLocation=".\temp\ProjectX___Debug_RemoteCam\trash\"
-				ObjectFile=".\temp\ProjectX___Debug_RemoteCam\trash\"
-				ProgramDataBaseFileName=".\temp\ProjectX___Debug_RemoteCam\trash\"
-				WarningLevel="3"
+				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Release\ProjectX.pch"
+				AssemblerListingLocation=".\temp\ProjectX___Win32_Release\Xtrash\"
+				ObjectFile=".\temp\ProjectX___Win32_Release\Xtrash\"
+				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release\Xtrash\"
 				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
+				CallingConvention="1"
 				CompileAs="0"
 			/>
 			<Tool
@@ -343,7 +343,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="NDEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -353,13 +353,12 @@
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
-				OutputFile="ProjectX___Debug_RemoteCam.exe"
+				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\temp\ProjectX___Debug_RemoteCam\ProjectX.pdb"
+				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
 			/>
 			<Tool
@@ -388,13 +387,8 @@
 			/>
 		</Configuration>
 		<Configuration
-			Name="Release - Debug|Win32"
-			OutputDirectory=".\temp\$(ConfigurationName)"
-			IntermediateDirectory=".\temp\$(ConfigurationName)"
+			Name="Barebones|Win32"
 			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -410,149 +404,22 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\temp\$(ConfigurationName)\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
-				StringPooling="true"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\$(ConfigurationName)\ProjectX.pch"
-				AssemblerListingLocation=".\temp\$(ConfigurationName)\Xtrash\"
-				ObjectFile=".\temp\$(ConfigurationName)\Xtrash\"
-				ProgramDataBaseFileName=".\temp\$(ConfigurationName)\Xtrash\"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CallingConvention="1"
-				CompileAs="0"
+				PreprocessorDefinitions="BSP"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
-				OutputFile="ProjectX__Release_Debug.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
-				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\temp\$(ConfigurationName)\Xrelease.pdb"
-				SubSystem="2"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release - Debug, Optimizations|Win32"
-			OutputDirectory=".\temp\$(ConfigurationName)"
-			IntermediateDirectory=".\temp\$(ConfigurationName)"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\temp\$(ConfigurationName)\ProjectX.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="NDEBUG,WIN32,_WINDOWS,D3DDEMO,SUPER,USEINLINE,BSP,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE"
-				StringPooling="true"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\$(ConfigurationName)\ProjectX.pch"
-				AssemblerListingLocation=".\temp\$(ConfigurationName)\Xtrash\"
-				ObjectFile=".\temp\$(ConfigurationName)\Xtrash\"
-				ProgramDataBaseFileName=".\temp\$(ConfigurationName)\Xtrash\"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CallingConvention="1"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
-				OutputFile="ProjectX__Release_Debug_Optimizations.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
-				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\temp\$(ConfigurationName)\Xrelease.pdb"
-				SubSystem="2"
 			/>
 			<Tool
 				Name="VCALinkTool"
