@@ -2957,27 +2957,18 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	 					   lpDropPickup->PickupInfo.IDCount, lpDropPickup->PickupInfo.RegenSlot,
 	 					   lpDropPickup->PickupInfo.Sparkle, lpDropPickup->PickupInfo.LifeCount,
 						   lpDropPickup->PickupInfo.TriggerMod );
-
-		if( ( Pickup != (uint16) -1 ) && ( Pickup != (uint16) -2 ) )
-		{
-			if( IsServerGame && IsServer )
-			{
-				Pickups[ Pickup ].ActualOwner = lpDropPickup->WhoIAm;
-			}
-		}
 		return;
 
+
     case MSG_VERYSHORTDROPPICKUP:
+
 		lpVeryShortDropPickup = (LPVERYSHORTDROPPICKUPMSG)MsgPnt;
-
-
 		TempPickup.Pos.x = (float) lpVeryShortDropPickup->PickupInfo.Pos.x;
 		TempPickup.Pos.y = (float) lpVeryShortDropPickup->PickupInfo.Pos.y;
 		TempPickup.Pos.z = (float) lpVeryShortDropPickup->PickupInfo.Pos.z;
 		TempPickup.Dir.x = lpVeryShortDropPickup->PickupInfo.Dir.x * ONEOVER32767;
 		TempPickup.Dir.y = lpVeryShortDropPickup->PickupInfo.Dir.y * ONEOVER32767;
 		TempPickup.Dir.z = lpVeryShortDropPickup->PickupInfo.Dir.z * ONEOVER32767;
-
 		TempPickup.IDCount = lpVeryShortDropPickup->PickupInfo.IDCount;
 		TempPickup.Type = lpVeryShortDropPickup->PickupInfo.Type;
 		TempPickup.Group = lpVeryShortDropPickup->PickupInfo.Group;
@@ -2986,7 +2977,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		TempPickup.Sparkle = lpVeryShortDropPickup->PickupInfo.Sparkle;
 		TempPickup.LifeCount = lpVeryShortDropPickup->PickupInfo.LifeCount;
 		TempPickup.TriggerMod = lpVeryShortDropPickup->PickupInfo.TriggerMod;
-
 #if DEBUG_PICKUPS
 		if( lpDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
 		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
@@ -2997,18 +2987,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	 					   TempPickup.IDCount, TempPickup.RegenSlot,
 	 					   TempPickup.Sparkle, TempPickup.LifeCount,
 						   TempPickup.TriggerMod );
-
-		if( ( Pickup != (uint16) -1 ) && ( Pickup != (uint16) -2 ) )
-		{
-			if( IsServerGame && IsServer )
-			{
-				Pickups[ Pickup ].ActualOwner = lpVeryShortDropPickup->WhoIAm;
-			}
-		}
 		return;
 
 
     case MSG_KILLPICKUP:
+
    		lpKillPickup = (LPKILLPICKUPMSG)MsgPnt;
 		if( PlayDemo && ( Current_Camera_View == lpKillPickup->WhoIAm ) && ( lpKillPickup->KillPickupInfo.Style == PICKUPKILL_Immediate ) )
 		{
@@ -3074,9 +3057,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						&lpPrimBullPosDir->PrimBullPosDir.Up,
 						lpPrimBullPosDir->PrimBullPosDir.PowerLevel,
 						lpPrimBullPosDir->PrimBullPosDir.PLevel, FALSE );
-
    		return;
+
+
     case MSG_SECBULLPOSDIR:
+
    		lpSecBullPosDir = (LPSECBULLPOSDIRMSG)MsgPnt;
 		InitOneSecBull( lpSecBullPosDir->SecBullPosDir.OwnerType,
 						lpSecBullPosDir->SecBullPosDir.Owner,
@@ -3090,7 +3075,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						lpSecBullPosDir->SecBullPosDir.Weapon, FALSE );
 		return;
 
+
     case MSG_TITANBITS:
+
    		lpTitanBits = (LPTITANBITSMSG)MsgPnt;
 		for( Count = 0; Count < NUMTITANBITS; Count++ )
 		{
@@ -3105,11 +3092,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 								&lpTitanBits->TitanBits.DropDir,
 								lpTitanBits->TitanBits.Weapon, FALSE );
 			 if( i != (uint16) -1 )
-			 {
 				 SecBulls[i].FramelagAddition = GlobalFramelagAddition;
-			 }
 		}
 		return;
+
 
 	// Someone is claiming to have hit me...
     case MSG_SHIPHIT:
@@ -3134,9 +3120,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpShipHit->ShipHit.OneOffExternalForce ) ForceExternalOneOff( WhoIAm, &lpShipHit->ShipHit.Recoil );
 				else ForceExternal( WhoIAm, &lpShipHit->ShipHit.Recoil );
 				if( lpShipHit->ShipHit.Force )
-				{
 					RotateExternal( WhoIAm, &lpShipHit->ShipHit.Point, &lpShipHit->ShipHit.Dir, lpShipHit->ShipHit.Force );
-				}
 			}
 			if( Ships[ WhoIAm ].Object.Mode == NORMAL_MODE )
 			{
@@ -3146,35 +3130,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					switch( ColPerspective )
 					{
 						case COLPERS_Forsaken:
-						case COLPERS_Server:
-							if( !GodMode )
-							{
-								if( IsServerGame )
-								{
-									ExplodeShip( WhoIAm );
-									ShortScatterWeapons();
-								}
-								else
-								{
-									ScatterWeapons( &NullVector, MAXSCATTERED );
-								}
-								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddColourMessageToQue(PickupMessageColour, YOUVE_BEEN_SCATTERED );
-							}
-							break;
-
 						case COLPERS_Descent:
 							break;
-
 					}
 				}
 
    				if( Random_Range( 16 ) )
-   				{
 					PlayPannedSfx( SFX_ShipHit, Ships[ WhoIAm ].Object.Group , &lpShipHit->ShipHit.Point, 0.0F );
-				}else{
+				else
    					PlaySfx( SFX_BikerPain , 1.0F );
-   				}
 
 				Ships[WhoIAm].ShipThatLastHitMe = lpShipHit->WhoHitYou;
    				Ships[WhoIAm].Damage = lpShipHit->ShipHit.Damage;
@@ -3203,6 +3167,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
    		}
    		return;
+
 
 	// Someone is claiming to have hit me...
     case MSG_SHORTSHIPHIT:
@@ -3233,10 +3198,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 				if( lpShortShipHit->ShipHit.OneOffExternalForce != 0 ) ForceExternalOneOff( WhoIAm, &Recoil );
 				else ForceExternal( WhoIAm, &Recoil );
-				if( Force )
-				{
-					RotateExternal( WhoIAm, &Point, &Dir, Force );
-				}
+				if( Force ) RotateExternal( WhoIAm, &Point, &Dir, Force );
 			}
 			if( Ships[ WhoIAm ].Object.Mode == NORMAL_MODE )
 			{
@@ -3245,20 +3207,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				{
 					switch( ColPerspective )
 					{
-						case COLPERS_Server:
 						case COLPERS_Forsaken:
 							if( !GodMode )
 							{
-								if( IsServerGame )
-								{
-									ExplodeShip( WhoIAm );
-									ShortScatterWeapons();
-								}
-								else
-								{
-									ScatterWeapons( &NullVector, MAXSCATTERED );
-								}
-
+								ScatterWeapons( &NullVector, MAXSCATTERED );
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
 								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
@@ -3274,16 +3226,16 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				else
    					PlaySfx( SFX_BikerPain , 1.0F );
 
-				Ships[WhoIAm].ShipThatLastHitMe = lpShortShipHit->WhoHitYou;
-   				Ships[WhoIAm].Damage			= lpShortShipHit->ShipHit.Damage;
+				Ships[WhoIAm].ShipThatLastHitMe	= lpShortShipHit->WhoHitYou;
+   				Ships[WhoIAm].Damage					= lpShortShipHit->ShipHit.Damage;
 
    				// do the damage...
    				if ( DoDamage( DONT_OVERRIDE_INVUL ) == 1 )
    				{
 					// if I died...
    					Ships[WhoIAm].ShipThatLastKilledMe	= lpShortShipHit->WhoHitYou;
-   					Ships[WhoIAm].Object.Mode			= DEATH_MODE;
-   					Ships[WhoIAm].Timer					= 0.0F;
+   					Ships[WhoIAm].Object.Mode				= DEATH_MODE;
+   					Ships[WhoIAm].Timer						= 0.0F;
    					// print up who killed me
 					GetDeathString( lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon, &methodstr[0] );
 
@@ -3304,6 +3256,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    		}
    		return;
 
+
 	// Someone has Died....Did I kill Them ??
 	// this is called in multiplayer
     case MSG_SHIPDIED:
@@ -3314,7 +3267,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		// SOME TYPE OF A BOMB NOT A TITAN !!!
 		if( BombTag )
 		{
-
 			// print funny message
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpShipDied->WhoIAm][0] ,GOT_CAUGHT_WITH_A_BOMB);
 			AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
@@ -3346,7 +3298,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						{
 							// you killed someone on your own team
 							AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
-
 							// teams lose a point if they kill each other
 							// normal update
 							Ships[WhoIAm].Kills--;
@@ -3421,7 +3372,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							// update stats 10 (stats.c) -- you killed someone in a bounty game
 							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
-						
 						else
 						{
 							// you killed someone who wasnt carrying the bounty (no points for you!!)
@@ -3469,40 +3419,38 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    				UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon);
 			}
 		}
-
 		return;
+
+
     case MSG_SHORTSTATS:
+
    		lpShortStats = (LPSHORTSTATSMSG)MsgPnt;
    		if( lpShortStats->WhosStats == 0 )
-   		{
    			StatsStatus = 1;
-   		}
    		return;
+
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	This is where the host gets told what state he thinks we are in
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
     case MSG_STATUS:
    		lpStatus = (LPSTATUSMSG)MsgPnt;
 
 		if( ( GameStatus[lpStatus->WhoIAm] != STATUS_Normal) && (lpStatus->Status == STATUS_Normal ) ) 
-		{
 			CreateReGen( lpStatus->WhoIAm );
-		}
 
 		//DebugPrintf("setting status for player %d to %x\n", lpStatus->WhoIAm, lpStatus->Status );
-
 		GameStatus[lpStatus->WhoIAm] = lpStatus->Status;
 
 		if( GameStatus[lpStatus->WhoIAm] == STATUS_Left )
 		{
 			// This player has quit...
-			Ships[lpStatus->WhoIAm].enable = 0;
+			Ships[lpStatus->WhoIAm].enable		= 0;
 			Ships[lpStatus->WhoIAm].Pickups		= 0;
 			Ships[lpStatus->WhoIAm].RegenSlots	= 0;
-			Ships[lpStatus->WhoIAm].Mines		= 0;
-			Ships[lpStatus->WhoIAm].Triggers	= 0;
-			Ships[lpStatus->WhoIAm].TrigVars	= 0;
+			Ships[lpStatus->WhoIAm].Mines			= 0;
+			Ships[lpStatus->WhoIAm].Triggers		= 0;
+			Ships[lpStatus->WhoIAm].TrigVars		= 0;
 			FreeAllPlayersAcknowledgeMessageQue( lpStatus->WhoIAm );
 
 			if ( lpStatus->TeamScore )
@@ -3514,23 +3462,22 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					{
 						if( TeamNumber[ i ] == TeamNumber[ lpStatus->WhoIAm ] )
 						{
-							// wtf
 							Ships[ i ].Kills += lpStatus->TeamScore;
-							
 							break;
 						}
 					}
 				}
 			}
 
-		}else{
+		}
+		else
+		{
 	//		DebugPrintf("%s status = %d\n", Names[lpStatus->WhoIAm], GameStatus[lpStatus->WhoIAm] );
-
 			Ships[lpStatus->WhoIAm].Pickups		= lpStatus->Pickups;
 			Ships[lpStatus->WhoIAm].RegenSlots	= lpStatus->RegenSlots;
-			Ships[lpStatus->WhoIAm].Mines		= lpStatus->Mines;
-			Ships[lpStatus->WhoIAm].Triggers	= lpStatus->Triggers;
-			Ships[lpStatus->WhoIAm].TrigVars	= lpStatus->TrigVars;
+			Ships[lpStatus->WhoIAm].Mines			= lpStatus->Mines;
+			Ships[lpStatus->WhoIAm].Triggers		= lpStatus->Triggers;
+			Ships[lpStatus->WhoIAm].TrigVars		= lpStatus->TrigVars;
 
 			if( !IsHost )
    			{
@@ -3542,9 +3489,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					if( MyGameStatus == STATUS_Normal )
 					{
 						if( DPlayUpdateInterval != lpStatus->PacketsPerSecond )
-						{
 							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpStatus->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
-						}
 					}
 					DPlayUpdateInterval = lpStatus->PacketsPerSecond;
 					PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
@@ -3552,14 +3497,12 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					tempstatus = OverallGameStatus;
    					OverallGameStatus = lpStatus->Status;
 					if ( tempstatus != OverallGameStatus )
-					{
 						DebugPrintf("Setting overall game status to %x\n", lpStatus->Status );
-					}
 				}
    			}
 
-			TeamNumber[lpStatus->WhoIAm] = lpStatus->TeamNumber;
-			PlayerReady[lpStatus->WhoIAm] = lpStatus->IAmReady;
+			TeamNumber[lpStatus->WhoIAm]	= lpStatus->TeamNumber;
+			PlayerReady[lpStatus->WhoIAm]		= lpStatus->IAmReady;
 
 			if( !PlayDemo )
 			{
@@ -3581,17 +3524,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 		}
-
-
-
 		return;
+
+
     case MSG_LONGSTATUS:
+
    		lpLongStatus = (LPLONGSTATUSMSG)MsgPnt;
 
 		if( ( GameStatus[lpLongStatus->Status.WhoIAm] != STATUS_Normal) && (lpLongStatus->Status.Status == STATUS_Normal ) ) 
-		{
 			CreateReGen( lpLongStatus->Status.WhoIAm );
-		}
 		GameStatus[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.Status;
 		DebugPrintf("%s LongStatus = %d\n", Names[lpLongStatus->Status.WhoIAm], GameStatus[lpLongStatus->Status.WhoIAm] );
 		Ships[lpLongStatus->Status.WhoIAm].Pickups		= lpLongStatus->Status.Pickups;
@@ -3606,13 +3547,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    			{
 				RandomStartPosModify = lpLongStatus->RandomStartPosModify;
 				Ships[lpLongStatus->WhoIAm].Object.Flags |= SHIP_IsHost;
-
-		
 				NewLevelNum = FindSameLevel( &lpLongStatus->LevelName[0] );
 				if( NewLevelNum == -1 )
 				{
 					char buf[ 128 ];
-
 					sprintf( buf, DID_NOT_HAVE_LEVEL /*"you did not have the level chosen by the host ( %s )"*/,
 						lpLongStatus->LevelName );
 					SetTitleNotify( buf );
@@ -3623,9 +3561,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( MyGameStatus == STATUS_Normal )
 				{
 					if( DPlayUpdateInterval != lpLongStatus->Status.PacketsPerSecond )
-					{
 						 AddColourMessageToQue( SystemMessageColour, "%2.2f %s" , ( 60.0F / lpLongStatus->Status.PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
-					}
 				}
 				DPlayUpdateInterval = lpLongStatus->Status.PacketsPerSecond;
 				PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
@@ -3656,23 +3592,23 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 		}
 		return;
+
+
     case MSG_SHORTPICKUP:
+
    		lpShortPickup = (LPSHORTPICKUPMSG)MsgPnt;
    		if( lpShortPickup->Pickups == Ships[WhoIAm].Pickups )
    		{
 #if DEBUG_PICKUPS
 			DebugPrintf( "Message from host to init pickups\n" );
 #endif
-
 			if( lpShortPickup->HowManyPickups != 0 )
 			{
 				Ships[WhoIAm].Pickups -= 1;
 				RegenPickupList( &lpShortPickup->ShortPickup[0] , lpShortPickup->HowManyPickups );
 			}
 			else
-			{
 				Ships[WhoIAm].Pickups = 0;
-			}
 		}
 		return;
 
@@ -3689,13 +3625,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				RegenRegenSlotList( &lpShortRegenSlot->ShortRegenSlot[0] , lpShortRegenSlot->HowManyRegenSlots );
 			}
 			else
-			{
 				Ships[WhoIAm].RegenSlots = 0;
-			}
 		}
 		return;
 
+
     case MSG_SHORTTRIGGER:
+
 		lpShortTrigger = (LPSHORTTRIGGERMSG)MsgPnt;
    		if( lpShortTrigger->Triggers == Ships[WhoIAm].Triggers )
    		{
@@ -3705,13 +3641,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				RegenTriggerList( &lpShortTrigger->ShortTrigger[0] , lpShortTrigger->HowManyTriggers );
 			}
 			else
-			{
 				Ships[WhoIAm].Triggers -= 1;
-			}
 		}
 		return;
 
+
     case MSG_SHORTTRIGVAR:
+
 		lpShortTrigVar = (LPSHORTTRIGVARMSG)MsgPnt;
    		if( lpShortTrigVar->TrigVars == Ships[WhoIAm].TrigVars )
    		{
@@ -3721,20 +3657,18 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				RegenTrigVarList( &lpShortTrigVar->ShortTrigVar[0] , lpShortTrigVar->HowManyTrigVars );
 			}
 			else
-			{
 				Ships[WhoIAm].TrigVars -= 1;
-			}
 		}
 		return;
 
+
     case MSG_SHORTMINE:
+
    		lpShortMine = (LPSHORTMINEMSG)MsgPnt;
    		if( lpShortMine->Mines == Ships[WhoIAm].Mines )
    		{
 			if( Ships[WhoIAm].Mines == ( ( MAXSECONDARYWEAPONBULLETS / MAXGENMINECOUNT	) + 1 ) )
-			{
 				QueryPerformanceCounter( (LARGE_INTEGER *) &Time_LastValue );
-			}
 
   			DebugPrintf( "Message from host to init mines\n" );
 
@@ -3744,105 +3678,96 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	   			RegenMineList( &lpShortMine->ShortMine[0] , lpShortMine->HowManyMines );
 			}
 			else
-			{
 				Ships[WhoIAm].Mines = 0;
-			}
    		}
    		return;
 
 
     case MSG_TEXTMSG:
+
 		lpTextMsg = (LPTEXTMSG)MsgPnt;
 		switch (lpTextMsg->TextMsgType)
 		{
-		case TEXTMSGTYPE_QuickTauntWhisper:
-			if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
+			case TEXTMSGTYPE_QuickTauntWhisper:
+				if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
+					return;
+				sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				AddColourMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
 				return;
-			sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			AddColourMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_Taunt1:
-		case TEXTMSGTYPE_Taunt2:
-		case TEXTMSGTYPE_Taunt3:
-			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			AddColourMessageToQue(TauntMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_QuickTaunt:
-			sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-			AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_JoiningTeamGame:
-			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
-			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_EnteredWatchMode:
-			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE");
-			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_ExitedWatchMode:
-			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE");
-			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_TitleMessage:
-			AddTitleMessage(lpTextMsg);
-			return;
-		case TEXTMSGTYPE_CaptureFlagMessage:
-			sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
-			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
-				PlaySfx( SFX_MyTeamGotFlag, FlagVolume );
-			else
-				PlaySfx( SFX_OtherTeamGotFlag , FlagVolume );
-			return;
-		case TEXTMSGTYPE_ScoredWithFlag:
-			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
-				PlaySfx( SFX_MyTeamScored, FlagVolume );
-			else
-				PlaySfx( SFX_OtherTeamScored , FlagVolume );
-			return;
-		case TEXTMSGTYPE_ReturningFlag:
-			if ( IsServerGame )
-			{
+			case TEXTMSGTYPE_Taunt1:
+			case TEXTMSGTYPE_Taunt2:
+			case TEXTMSGTYPE_Taunt3:
+				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				AddColourMessageToQue(TauntMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_QuickTaunt:
+				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_JoiningTeamGame:
+				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
+				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_EnteredWatchMode:
+				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE");
+				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_ExitedWatchMode:
+				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE");
+				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_TitleMessage:
+				AddTitleMessage(lpTextMsg);
+				return;
+			case TEXTMSGTYPE_CaptureFlagMessage:
+				sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
-			}
-			else if ( lpTextMsg->WhoIAm != WhoIAm )
-			{
-				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]);
+				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
+					PlaySfx( SFX_MyTeamGotFlag, FlagVolume );
+				else
+					PlaySfx( SFX_OtherTeamGotFlag , FlagVolume );
+				return;
+			case TEXTMSGTYPE_ScoredWithFlag:
+				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			}
-			return;
-		case TEXTMSGTYPE_ReturnedFlag:
-			if ( IsServerGame )
-			{
-				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
-			}
-			else
-			{
-				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
+					PlaySfx( SFX_MyTeamScored, FlagVolume );
+				else
+					PlaySfx( SFX_OtherTeamScored , FlagVolume );
+				return;
+			case TEXTMSGTYPE_ReturningFlag:
+				if ( lpTextMsg->WhoIAm != WhoIAm )
+				{
+					sprintf( (char*) tempstr ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]);
+					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				}
+				return;
+			case TEXTMSGTYPE_ReturnedFlag:
+					sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_FlagDriftedIn:
+				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			}
-			return;
-		case TEXTMSGTYPE_FlagDriftedIn:
-			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_FlagEscaped:
-			sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
-			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			return;
-		case TEXTMSGTYPE_BountyMessage:
-			sprintf( (char*) tempstr ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
-			AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-			PlaySfx( SFX_OtherTeamGotFlag, FlagVolume );
-			return;
-		case TEXTMSGTYPE_SpeechTaunt:
-			PlayRecievedSpeechTaunt( lpTextMsg->WhoIAm, lpTextMsg->Text[ 0 ] );
-			return;
+				return;
+			case TEXTMSGTYPE_FlagEscaped:
+				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				return;
+			case TEXTMSGTYPE_BountyMessage:
+				sprintf( (char*) tempstr ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
+				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
+				PlaySfx( SFX_OtherTeamGotFlag, FlagVolume );
+				return;
+			case TEXTMSGTYPE_SpeechTaunt:
+				PlayRecievedSpeechTaunt( lpTextMsg->WhoIAm, lpTextMsg->Text[ 0 ] );
+				return;
 		}
 		return;
+
+
     case MSG_INTERPOLATE:
+
 		lpInterpolate = (LPINTERPOLATEMSG)MsgPnt;
 		Ships[lpInterpolate->WhoIAm].OldPos = Ships[lpInterpolate->WhoIAm].Object.Pos;
 		Ships[lpInterpolate->WhoIAm].NextPos = lpInterpolate->NextPos;
@@ -3855,29 +3780,30 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		Ships[lpInterpolate->WhoIAm].NextTime = lpInterpolate->NextTime;
 		Ships[lpInterpolate->WhoIAm].DemoInterpolate = TRUE;
 		return;
-    case MSG_VERYSHORTINTERPOLATE:
-		lpVeryShortInterpolate = (LPVERYSHORTINTERPOLATEMSG)MsgPnt;
 
-		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.x = (float) lpVeryShortInterpolate->NextPos.x;
-		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.y = (float) lpVeryShortInterpolate->NextPos.y;
-		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.z = (float) lpVeryShortInterpolate->NextPos.z;
-		
-		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.w = (float)(lpVeryShortInterpolate->NextQuat.w * ONEOVER32767 );
-		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.x = (float)(lpVeryShortInterpolate->NextQuat.x * ONEOVER32767 );
-		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.y = (float)(lpVeryShortInterpolate->NextQuat.y * ONEOVER32767 );
-		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.z = (float)(lpVeryShortInterpolate->NextQuat.z * ONEOVER32767 );
-		Ships[lpVeryShortInterpolate->WhoIAm].NextBank = (float) (lpVeryShortInterpolate->NextBank / SHORTBANKMODIFIER);
-		
-		Ships[lpVeryShortInterpolate->WhoIAm].NextTime = lpVeryShortInterpolate->NextTime;
+
+    case MSG_VERYSHORTINTERPOLATE:
+
+		lpVeryShortInterpolate = (LPVERYSHORTINTERPOLATEMSG)MsgPnt;
+		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.x		= (float) lpVeryShortInterpolate->NextPos.x;
+		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.y		= (float) lpVeryShortInterpolate->NextPos.y;
+		Ships[lpVeryShortInterpolate->WhoIAm].NextPos.z		= (float) lpVeryShortInterpolate->NextPos.z;
+		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.w	= (float)(lpVeryShortInterpolate->NextQuat.w * ONEOVER32767 );
+		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.x	= (float)(lpVeryShortInterpolate->NextQuat.x * ONEOVER32767 );
+		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.y	= (float)(lpVeryShortInterpolate->NextQuat.y * ONEOVER32767 );
+		Ships[lpVeryShortInterpolate->WhoIAm].NextQuat.z	= (float)(lpVeryShortInterpolate->NextQuat.z * ONEOVER32767 );
+		Ships[lpVeryShortInterpolate->WhoIAm].NextBank		= (float) (lpVeryShortInterpolate->NextBank / SHORTBANKMODIFIER);
+		Ships[lpVeryShortInterpolate->WhoIAm].NextTime		= lpVeryShortInterpolate->NextTime;
 		Ships[lpVeryShortInterpolate->WhoIAm].DemoInterpolate = TRUE;
-		Ships[lpVeryShortInterpolate->WhoIAm].OldPos = Ships[lpVeryShortInterpolate->WhoIAm].Object.Pos;
-		Ships[lpVeryShortInterpolate->WhoIAm].OldQuat = Ships[lpVeryShortInterpolate->WhoIAm].Object.Quat;
-		Ships[lpVeryShortInterpolate->WhoIAm].OldBank = Ships[lpVeryShortInterpolate->WhoIAm].Object.Bank;
-		Ships[lpVeryShortInterpolate->WhoIAm].OldTime = DemoTimeSoFar;
+		Ships[lpVeryShortInterpolate->WhoIAm].OldPos			= Ships[lpVeryShortInterpolate->WhoIAm].Object.Pos;
+		Ships[lpVeryShortInterpolate->WhoIAm].OldQuat		= Ships[lpVeryShortInterpolate->WhoIAm].Object.Quat;
+		Ships[lpVeryShortInterpolate->WhoIAm].OldBank		= Ships[lpVeryShortInterpolate->WhoIAm].Object.Bank;
+		Ships[lpVeryShortInterpolate->WhoIAm].OldTime		= DemoTimeSoFar;
 		return;
 
 
     case MSG_BOMB:
+
 		lpBomb = (LPBOMBMSG)MsgPnt;
 		if( lpBomb->WhoGotHit == WhoIAm )
 		{
@@ -3887,7 +3813,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			BombTime[lpBomb->BombNum] = lpBomb->BombTime;
 		}
 		return;
+
+
     case MSG_PINGREQUEST:
+
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		PingRequestTime = lpPingMsg->Time;
 		if( BigPackets )
@@ -3897,11 +3826,17 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		SendGameMessage(MSG_PINGREPLY, 0, 0 , lpPingMsg->WhoIAm , 0);
 		return;
+
+
 	case MSG_PLAYERPINGS:
+
 		lpPlayerPingsMsg = (LPPLAYERPINGSMSG)MsgPnt;
 		memcpy( PingTimes, lpPlayerPingsMsg->Ping, sizeof( PingTimes ) ); 
 		return;
+
+
     case MSG_PINGREPLY:
+
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		if( lpPingMsg->ToYou == WhoIAm )
 		{
@@ -3910,7 +3845,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 
+
     case MSG_SETTIME:
+
 		lpSetTime = (LPSETTIMEMSG)MsgPnt;
 		if( IllegalTime )
 		{
@@ -3918,27 +3855,25 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			IllegalTime = FALSE;
 		}
 		return;
+
+
     case MSG_REQTIME:
+
 		lpReqTime = (LPREQTIMEMSG)MsgPnt;
-		if( IsHost )
-		{
-			SetTime( Countdown_Float );
-		}
+		if( IsHost ) SetTime( Countdown_Float );
 		return;
+
+
     case MSG_ACKMSG:
+
 		lpAckMsg = (LPACKMSG)MsgPnt;
 		if( lpAckMsg->AckTo == WhoIAm )
-		{
-//			if( IsServerGame && !IsServer )
-//			{
-//				sprintf( &dBuf[0] , "Recieved an ACKMSG from %d\n" , lpAckMsg->WhoIAm );
-//				Msg( &dBuf[0] );
-//			}
-
 			AcknowledgeMessage( lpAckMsg->ID , 1 << lpAckMsg->WhoIAm , lpAckMsg->WhoIAm );
-		}
 		return;
+
+
     case MSG_KILLSDEATHSBIKENUM:
+
 		lpKillsDeathsMsg = (LPKILLSDEATHSBIKENUMMSG)MsgPnt;
 		Ships[lpKillsDeathsMsg->WhoIAm].Kills = lpKillsDeathsMsg->Kills;
 		Ships[lpKillsDeathsMsg->WhoIAm].Deaths = lpKillsDeathsMsg->Deaths;
@@ -3953,15 +3888,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				Ships[lpKillsDeathsMsg->WhoIAm].BikeNum = player_config->bike;
 				break;
 			default:
-				Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) lpKillsDeathsMsg->BikeNum;
+				Ships[lpKillsDeathsMsg->WhoIAm].BikeNum = (int16) lpKillsDeathsMsg->BikeNum;
 			}
-		}else
-		{
-			Ships[lpKillsDeathsMsg->WhoIAm].BikeNum		= (int16) lpKillsDeathsMsg->BikeNum;
 		}
+		else
+			Ships[lpKillsDeathsMsg->WhoIAm].BikeNum = (int16) lpKillsDeathsMsg->BikeNum;
 
 		return;
-
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	case MSG_SESSIONDESC:
@@ -3990,6 +3923,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 #endif
 
+
 	case MSG_LEVELNAMES:
 
 		if ( ( IsPseudoHost ) && ( MyGameStatus == STATUS_GetLevelNames ) )
@@ -3997,9 +3931,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			lpLevelNamesMsg = ( LPLEVELNAMESMSG )MsgPnt;
 
 			if ( !lpLevelNamesMsg->TotalLevels )
-			{
 				ServerLevelsListState = SERVERLEVELS_None;
-			}
 
 			// if we have not already recieved this batch...
 			if ( !ServerLevelNames[ lpLevelNamesMsg->FirstLevel ][ 0 ] )
@@ -4019,97 +3951,68 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if ( NumServerLevels == lpLevelNamesMsg->TotalLevels )
 				{
 					if ( !InitLevels( MULTIPLAYER_LEVELS ) )
-					{
 						ServerLevelsListState = SERVERLEVELS_None;
-					}else
-					{
+					else
 						ServerLevelsListState = SERVERLEVELS_Got;
-					}
 				}
 			}
 		}
-
 		return;
+
 
 	case MSG_TRACKERINFO:
 
 		//Msg("tracker msg got through\n");
 
 		lpTrackerInfoMsg = (LPTRACKERINFOMSG)MsgPnt;
-
-		TrackerOveride = TRUE;
-
-		tracker_addr = lpTrackerInfoMsg->addr;
-		tracker_port = lpTrackerInfoMsg->port;
-		heartbeat_freq = lpTrackerInfoMsg->freq;
-		heartbeat_type = lpTrackerInfoMsg->type;
+		TrackerOveride	= TRUE;
+		tracker_addr		= lpTrackerInfoMsg->addr;
+		tracker_port		= lpTrackerInfoMsg->port;
+		heartbeat_freq		= lpTrackerInfoMsg->freq;
+		heartbeat_type	= lpTrackerInfoMsg->type;
 		SendShutdownPacket = lpTrackerInfoMsg->shutdown;
 		return;
 
+
 	case MSG_SHIELDHULL:
+
 		lpShieldHullMsg = (LPSHIELDHULLMSG)MsgPnt;
-		if( !IsServer )
+		if( !lpShieldHullMsg->ValidChange && Ships[lpShieldHullMsg->WhoIAm].enable )
 		{
-			if( !lpShieldHullMsg->ValidChange && Ships[lpShieldHullMsg->WhoIAm].enable )
+			if ( ( ColPerspective == COLPERS_Descent ) && ( ( lpShieldHullMsg->Shield < Ships[lpShieldHullMsg->WhoIAm].Object.Shield ) ||
+				( lpShieldHullMsg->Hull < Ships[lpShieldHullMsg->WhoIAm].Object.Hull ) ) )
 			{
-				if ( ( ColPerspective == COLPERS_Descent || ColPerspective == COLPERS_Server ) && ( ( lpShieldHullMsg->Shield < Ships[lpShieldHullMsg->WhoIAm].Object.Shield ) ||
-					( lpShieldHullMsg->Hull < Ships[lpShieldHullMsg->WhoIAm].Object.Hull ) ) )
+				Int_Point.x		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x - Ships[WhoIAm].Object.Pos.x;
+				Int_Point.y		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y - Ships[WhoIAm].Object.Pos.y;
+				Int_Point.z		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z - Ships[WhoIAm].Object.Pos.z;
+				NormaliseVector( &Int_Point );
+				Int_Point2.x	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * SHIP_RADIUS );
+				Int_Point2.y	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * SHIP_RADIUS );
+				Int_Point2.z	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * SHIP_RADIUS );
+				Int_Point.x		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * -SHIP_RADIUS );
+				Int_Point.y		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * -SHIP_RADIUS );
+				Int_Point.z		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * -SHIP_RADIUS );
+				PlayPannedSfx( SFX_ShipHit, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group , &Int_Point, 0.0F );
+
+				if( lpShieldHullMsg->Shield )
+					CreateShieldEffect( (VECTOR *) &Ships[lpShieldHullMsg->WhoIAm].Object.Pos, &Int_Point, &Int_Point2, lpShieldHullMsg->WhoIAm, 2, 128, 0, 128 );
+				else
 				{
-					Int_Point.x = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x - Ships[WhoIAm].Object.Pos.x;
-					Int_Point.y = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y - Ships[WhoIAm].Object.Pos.y;
-					Int_Point.z = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z - Ships[WhoIAm].Object.Pos.z;
-					NormaliseVector( &Int_Point );
-
-					Int_Point2.x = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * SHIP_RADIUS );
-					Int_Point2.y = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * SHIP_RADIUS );
-					Int_Point2.z = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * SHIP_RADIUS );
-					Int_Point.x = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * -SHIP_RADIUS );
-					Int_Point.y = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * -SHIP_RADIUS );
-					Int_Point.z = Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * -SHIP_RADIUS );
-
-					PlayPannedSfx( SFX_ShipHit, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group , &Int_Point, 0.0F );
-
-					if( lpShieldHullMsg->Shield )
-					{
-						CreateShieldEffect( (VECTOR *) &Ships[lpShieldHullMsg->WhoIAm].Object.Pos, &Int_Point, &Int_Point2, lpShieldHullMsg->WhoIAm, 2, 128, 0, 128 );
-					}else{
-						TempVector.x = ( Int_Point.x - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.x );
-						TempVector.y = ( Int_Point.y - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.y );
-						TempVector.z = ( Int_Point.z - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.z );
-						NormaliseVector( &TempVector );
-						CreateColSparks( &Int_Point, &TempVector, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group );
-					}
+					TempVector.x = ( Int_Point.x - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.x );
+					TempVector.y = ( Int_Point.y - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.y );
+					TempVector.z = ( Int_Point.z - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.z );
+					NormaliseVector( &TempVector );
+					CreateColSparks( &Int_Point, &TempVector, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group );
 				}
 			}
-			
-			Ships[lpShieldHullMsg->WhoIAm].Object.Shield = lpShieldHullMsg->Shield;
-			Ships[lpShieldHullMsg->WhoIAm].Object.Hull = lpShieldHullMsg->Hull;
-		}else{
-			Ships[lpShieldHullMsg->WhoIAm].ShieldHullCount++;
-
-			if( !lpShieldHullMsg->ValidChange &&
-				( Ships[lpShieldHullMsg->WhoIAm].ShieldHullCount == lpShieldHullMsg->Count ) &&
-				( MyGameStatus == STATUS_Normal ) &&
-				( GameStatus[lpShieldHullMsg->WhoIAm] == STATUS_Normal ) )
-			{
-				if( ( ( lpShieldHullMsg->Hull - Ships[lpShieldHullMsg->WhoIAm].Object.Hull ) > 1.0F ) ||
-					( ( lpShieldHullMsg->Shield - Ships[lpShieldHullMsg->WhoIAm].Object.Shield ) > 1.0F ) )
-				{
-					CanDoDamage[lpShieldHullMsg->WhoIAm] = FALSE;
-				}
-				if( ( lpShieldHullMsg->Hull - START_HULL ) > 1.0F )
-				{
-					CanDoDamage[lpShieldHullMsg->WhoIAm] = FALSE;
-				}
-			}
-			Ships[lpShieldHullMsg->WhoIAm].Object.Shield = lpShieldHullMsg->Shield;
-			Ships[lpShieldHullMsg->WhoIAm].Object.Hull = lpShieldHullMsg->Hull;
-			Ships[lpShieldHullMsg->WhoIAm].ShieldHullCount = lpShieldHullMsg->Count;
-
 		}
+		Ships[lpShieldHullMsg->WhoIAm].Object.Shield	= lpShieldHullMsg->Shield;
+		Ships[lpShieldHullMsg->WhoIAm].Object.Hull		= lpShieldHullMsg->Hull;
 		return;
 
+
 	case MSG_SERVERSCORED:
+
 		lpServerScoredMsg = (LPSERVERSCOREDMSG)MsgPnt;
 		if ( lpServerScoredMsg->WhoScored == WhoIAm )
 		{
