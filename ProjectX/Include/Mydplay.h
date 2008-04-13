@@ -621,33 +621,25 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_VERYSHORTINTERPOLATE	0xf8
 #define MSG_TEAMGOALS				0xf9
 #define MSG_YOUQUIT					0xfa
-#define MSG_SENDKILLSDEATHSBIKENUM	0xfb
 #define MSG_SHORTSHIPHIT			0xfc
 #define MSG_TITANBITS				0xfd
 #define MSG_BIGPACKET				0xfe
-#define MSG_SERVERUPDATE			0xe1
-#define MSG_GAMEPARAMETERS			0xe2		// pseudohost sends this to server to set game info
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
-#define MSG_SESSIONDESC				0xe3		// message to maually propagate session desc
+#define MSG_SESSIONDESC			0xe3		// message to maually propagate session desc
 #endif
-#define MSG_TOSERVER				0xe4		// client uses to send messages to server ( ie. start game, reset etc )
 #define MSG_SERVERKILLPICKUP		0xe5
-#define MSG_SERVERSAYSSHIPDIED		0xe6
 #define MSG_LEVELNAMES				0xe7		// msg contining names of levels on server
-#define MSG_EXPLODESHIP				0xe8
+#define MSG_EXPLODESHIP			0xe8
 #define MSG_SHIELDHULL				0xe9
-#define MSG_SERVERSCORED			0xea
-
-#define MSG_TRACKERINFO				0xe0		// tracker info for if host migrates in peer-peer game
-#define MSG_TOCLIENT				0xeb		// message to client ( server game )
-
+#define MSG_SERVERSCORED			0xea		// necessary for ctf (server name is misleading!)
+#define MSG_TRACKERINFO			0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP				0xed
 
 typedef struct _SERVERSCOREDMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
+    BYTE     MsgCode;
+    BYTE     WhoIAm;
 	BYTE		WhoScored;
 	BYTE		Score;
 }SERVERSCOREDMSG, *LPSERVERSCOREDMSG;
@@ -824,38 +816,37 @@ typedef struct _GROUPONLY_VERYSHORTFUPDATEMSG
 
 typedef struct _HEREIAMMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE        Old_WhoIAm;
-	BYTE        Old_TeamNumber;
+    BYTE		MsgCode;
+    BYTE		WhoIAm;
+	BYTE     Old_WhoIAm;
+	BYTE     Old_TeamNumber;
 	DPID		ID;
 	BOOL		Rejoining;
 } HEREIAMMSG, *LPHEREIAMMSG;
 
 typedef struct _INITMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-    BYTE        YouAre;
+    BYTE     MsgCode;
+    BYTE     WhoIAm;
+    BYTE     YouAre;
 	BYTE		Status;
 	BOOL		PlayerReady[MAX_PLAYERS];
 	BYTE		TeamNumber[MAX_PLAYERS];
-	//int16		MaxKills;
+	int16		MaxKills;
 	float		PacketsPerSecond;
 	char		LevelName[32];
-	//BOOL		HarmTeamMates;
-	//BOOL		BrightShips;
-	//BOOL		BikeExhausts;
-	//int32		Collisions;
-	uint32		PickupFlags[ MAX_PICKUPFLAGS ];
+	BOOL		HarmTeamMates;
+	BOOL		BrightShips;
+	BOOL		BikeExhausts;
+	int32		Collisions;
+	uint32	PickupFlags[ MAX_PICKUPFLAGS ];
 	int16		GoalScore;
-	//int16		CTF_Type;
+	int16		CTF_Type;
 	int16		BountyBonusInterval;
 	BOOL		RandomPickups;
-	uint16		Seed1;
-	uint16		Seed2;
-	DWORD		dwUser3;	// user field 3 of session desc ( used for server state )
-	BOOL		ServerCollisions;
+	uint16	Seed1;
+	uint16	Seed2;
+	DWORD	dwUser3;	// user field 3 of session desc ( used for server state )
 	int16		PrimaryPickups;
 	DPID		FromDpid;
 	BYTE		GameStatus[MAX_PLAYERS];
@@ -863,18 +854,18 @@ typedef struct _INITMSG
 
 typedef struct _SHIPHITMSG
 {
-    BYTE        MsgCode;
+    BYTE     MsgCode;
 	BYTE		WhoHitYou;
-    BYTE        You;
-	SHIPHIT		ShipHit;
+    BYTE     You;
+	SHIPHIT	ShipHit;
 	int16		Deaths;			// number of deaths
 } SHIPHITMSG, *LPSHIPHITMSG;
 
 typedef struct _SHORTSHIPHITMSG
 {
-    BYTE        MsgCode;
+    BYTE		MsgCode;
 	BYTE		WhoHitYou;
-    BYTE        You;
+    BYTE		You;
 	SHORTSHIPHIT	ShipHit;
 	int16		Deaths;			// number of deaths
 } SHORTSHIPHITMSG, *LPSHORTSHIPHITMSG;
@@ -882,27 +873,15 @@ typedef struct _SHORTSHIPHITMSG
 
 typedef struct _SHIPDIEDMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-    BYTE        WhoKilledMe;
+    BYTE     MsgCode;
+    BYTE     WhoIAm;
+    BYTE     WhoKilledMe;
 	BYTE		Type;
 	BYTE		WeaponType;
 	BYTE		Weapon;
-	VECTOR		Pos;
+	VECTOR	Pos;
 } SHIPDIEDMSG, *LPSHIPDIEDMSG;
 
-typedef struct _SERVERSAYSSHIPDIEDMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		WhoWasKilled;
-    BYTE        WhoKilledThem;
-	BYTE		Type;
-	BYTE		WeaponType;
-	BYTE		Weapon;
-	VECTOR		Pos;
-	int16		Deaths;
-}SERVERSAYSSHIPDIEDMSG, *LPSERVERSAYSSHIPDIEDMSG;
 
 typedef struct _KILLPICKUPMSG
 {
@@ -1010,12 +989,12 @@ typedef struct _SHORTSTATSMSG
 
 typedef struct _STATUSMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
+    BYTE     MsgCode;
+    BYTE     WhoIAm;
 	BOOL		IsHost;			// from host ???
 	BYTE		Status;
 	BYTE		TeamNumber;
-	uint16		TeamScore;		// if leaving game, used to propagate my score to another team member
+	uint16	TeamScore;		// if leaving game, used to propagate my score to another team member
 	BOOL		IAmReady;		// used for team game - game cannot start until everyone is ready
 	BYTE		Pickups;		// tells how much of the pickup list I have recieved..
 	BYTE		RegenSlots;		// tells how much of the pickup regen slots list I have recieved..
@@ -1107,47 +1086,6 @@ typedef struct _REQTIMEMSG
 } REQTIMEMSG, *LPREQTIMEMSG;
 
 
-typedef struct _SERVERUPDATEMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	DWORD		Players;
-	BYTE		Group[MAX_PLAYERS];
-	BYTE		Status[MAX_PLAYERS];
-}SERVERUPDATEMSG, *LPSERVERUPDATEMSG;
-
-
-#define GAMEPARAM_GameTypeBits				0x7		// bits 0-2
-#define GAMEPARAM_GameTypeBitShift			0x0
-#define GAMEPARAM_CTFTypeBits				0x78	// bits 3-6
-#define GAMEPARAM_CTFTypeBitShift			0x3
-#define GAMEPARAM_BikeExhaustBit			0x80	// bit 7
-#define GAMEPARAM_BrightBikesBit			0x100	// bit 8
-#define GAMEPARAM_RandomisePickupsBit		0x200	// bit 9
-#define GAMEPARAM_BountyBonusBit			0x400	// bit 10
-#define GAMEPARAM_BountyBonusValueBits		0x3800	// bits 11 - 13 ( 5 second units )
-#define GAMEPARAM_BountyBonusValueBitShift	0xb
-#define GAMEPARAM_HarmTeamMatesBit			0x4000	// bit 14
-#define GAMEPARAM_FlagCaptureScoreBits		0x78000	// bits 15 - 18
-#define GAMEPARAM_FlagCaptureScoreBitShift	0xf
-#define GAMEPARAM_ServerCollisionBit		0x80000	// bit 19
-#define	GAMEPARAM_ResetKillsPerLevelBit		0x100000 // bit 20 
-#define	GAMEPARAM_LagCompensationBits		0x600000 // bit 21 & 22
-#define	GAMEPARAM_LagCompensationBitShift	0x15 
-
-typedef struct _GAMEPARAMETERSMSG
-{
-	BYTE		        MsgCode;
-    BYTE				WhoIAm;
-	uint8				Level[ 8 ];		// level ( limited to 8 chars )
-	uint8				ScoreLimit;			// score limit ( in units of 5 ) 
-	uint8				TimeLimit;			// time limit ( 5 minute units )
-	uint32				GameInfo;		// see above
-	uint32				AllowedPickups[ MAX_PICKUPFLAGS ]; // allowed pickups
-	int16				PrimaryPickups;
-	uint16				MaxPlayers;
-} GAMEPARAMETERSMSG, *LPGAMEPARAMETERSMSG;
-
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 
 typedef struct _SESSIONDESCMSG
@@ -1162,36 +1100,12 @@ typedef struct _SESSIONDESCMSG
 
 #endif
 
-#define TOSERVERMSG_StartGame 0
-#define TOSERVERMSG_Reset 1
-#define TOSERVERMSG_ChangeLevel 2
-#define TOSERVERMSG_IAmPseudoHost 3
-
-typedef struct _TOSERVERMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		Type;
-	BYTE		Data;
-}TOSERVERMSG, *LPTOSERVERMSG;
-
-#define TOCLIENTMSG_YouArePseudoHost 0
-
-typedef struct _TOCLIENTMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		Type;
-	BYTE		Data;
-}TOCLIENTMSG, *LPTOCLIENTMSG;
-
-
 #define MAXLEVELSPERBATCH 8
 
 typedef struct _LEVELNAMESMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
+    BYTE		MsgCode;
+    BYTE		WhoIAm;
 	BYTE		TotalLevels;
 	BYTE		ThisBatch;
 	BYTE		FirstLevel;
@@ -1223,11 +1137,11 @@ extern BOOL	ServerChoosesGameType;
 /*
  * fn prototypes
  */
-void    DestroyGame( void );
-void    SendGameMessage( BYTE msg, DWORD to, BYTE row, BYTE col, BYTE mask );
-void    EvaluateMessage( DWORD len , BYTE * MsgPnt );
-void    ReceiveGameMessages( void );
-void    initShip( uint16 i );
+void	DestroyGame( void );
+void	SendGameMessage( BYTE msg, DWORD to, BYTE row, BYTE col, BYTE mask );
+void	EvaluateMessage( DWORD len , BYTE * MsgPnt );
+void	ReceiveGameMessages( void );
+void	initShip( uint16 i );
 void	DplayGameUpdate();
 void	SetupDplayGame();
 void	PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
@@ -1249,7 +1163,6 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 void	EvalSysMessage( DWORD len , BYTE * MsgPnt );
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon );
 void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time );
-
 void	smallinitShip( uint16 i );
 void DemoPlayingDplayGameUpdate(void);
 void DemoClean( void );
@@ -1260,29 +1173,17 @@ void	RequestTime( void  );
 void	SetTime( float Time );
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
-
 BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BOOL OverideOlderMessage, BOOL AllPlayers );
 void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL SendGuaranteed );
 void AcknowledgeMessage( uint32 ID , uint32 Player , BYTE PlayerNum );
-
-
 void InitAcknowledgeMessageQue( void );
 void FreeAllPlayersAcknowledgeMessageQue( BYTE Player );
 void ProcessAcknowledgeMessageQue( void );
 BOOL CompareAcknowledgeMessageQue( BYTE Player , uint32 ID);
 BOOL AddAcknowledgeMessageQue( BYTE Player , uint32 ID );
-
 void SendBigPacket( BOOL SendGuaranteed );
 void ServiceBigPacket( BOOL OverideTime );
 void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType );
-
-
-BOOL AddMessageToSeverQue( void * Message );
-void ServiceServer( BOOL OverideTime );
-void InitServerMessageQue( void );
-void FreeServerMessageQue( void );
-
-void ServerIHitYou( BYTE Owner , BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL CheckPlayersActive( void );
 BOOL AutoJoinSession( void );

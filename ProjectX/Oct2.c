@@ -324,13 +324,10 @@ void WierdShit( void );
 
 BOOL  ScoreDisplaySfx = TRUE;
 BOOL  IMustQuit = FALSE;
-
 // Capture The Flag Stuff
-BOOL  CaptureTheFlag = FALSE;
-BOOL  IHaveAFlag = FALSE;
-
+BOOL  CaptureTheFlag	= FALSE;
+BOOL  IHaveAFlag			= FALSE;
 // End of Capture The Flag
-
 
 // Bounty Hunt
 BOOL  BountyHunt = FALSE;
@@ -338,7 +335,6 @@ BOOL  BountyHunt = FALSE;
 static char fname[256];
 static int fnum = 0;
 extern int CameraStatus;  
-
 
 char *  InitViewMessages[] = {
                  "Loading... 1 of 10" ,
@@ -2164,8 +2160,6 @@ ReleaseLevel(void)
     ReleaseAllRestartPoints();
     DestroySound( DESTROYSOUND_All );
     ProcessGuaranteedMessages( TRUE , FALSE , FALSE );
-    FreeServerMessageQue();
-
     break;
   }
 
@@ -4098,7 +4092,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         if( NewLevelNum != LevelNum )
         {
-
           DPlayGetSessionDesc();
           
           glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
@@ -4121,10 +4114,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
           ServiceBigPacket(TRUE);
-          ServiceServer( TRUE );
-
         }
-      }else{
+      }
+	  else
+	  {
         if( OverallGameStatus == STATUS_LevelEnd )
         {
           // tell the host that I am now in the same state as him....
@@ -4160,7 +4153,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         {
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
         }
-      }else{
+      }
+	  else
+	  {
         if( dcoID )
         {
           SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -4189,7 +4184,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
       ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
       ServiceBigPacket(TRUE);
-      ServiceServer( TRUE );
 
       InitScene();  // STATSTEST
       InitView();
@@ -4197,7 +4191,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       NextworkOldDeaths = -1;
       NextworkOldBikeNum = -1;
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
-    }else{
+    }
+	else
+	{
       if( MyGameStatus != OverallGameStatus )
       {
         OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
@@ -4251,15 +4247,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     HostMultiPlayerTimeout -= framelag;
 
     if( IsKeyPressed( DIK_SPACE ) ||
-      ( OverallGameStatus == STATUS_WaitingAfterScore ) ||
-      ( IsServer && ( HostMultiPlayerTimeout < ( (60.0F * 60.0F * 2.0F * 2.0F) - ( 30.0F * 60.0F ) ) ) )
-      )
+      ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
       D3DAppIClearBuffers();
-      if( !IsServer )
-        HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
-      else
-        HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
+      HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
       {
@@ -4280,10 +4271,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
           ServiceBigPacket(TRUE);
-          ServiceServer( TRUE );
           if( !ChangeLevel() ) return( FALSE );
         }
-      }else{
+      }
+	  else
+	  {
 		//          if ( IsLobbyLaunched )
 		//          {
 		//            MyGameStatus = STATUS_QuittingFromInGame;
@@ -4393,7 +4385,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
       ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
       ServiceBigPacket(TRUE);
-      ServiceServer( TRUE );
 
       DPlayGetSessionDesc();
 
@@ -4483,7 +4474,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       NextworkOldDeaths = -1;
       NextworkOldBikeNum = -1;
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-      SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
       if( CountDownOn || BombTag )
       {
         InitBombs();
@@ -4562,14 +4552,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       ServiceBigPacket(TRUE);
-      ServiceServer( TRUE );
 
       LevelNum = -1;
       if( !ChangeLevel() ) return( FALSE );
-      if( !IsServer )
-        HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
-      else
-        HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
+      HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
     }
     else
     {
@@ -4696,14 +4682,15 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GameStatus[WhoIAm] = STATUS_Normal;
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       ServiceBigPacket(TRUE);
-      ServiceServer( TRUE );
 
       NextworkOldKills = -1;
       NextworkOldDeaths = -1;
       NextworkOldBikeNum = -1;
       InitFontTransTable( !bPolyText );
 
-    }else{
+    }
+	else
+	{
       if( OverallGameStatus == STATUS_Normal )
       {
         QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
@@ -4846,11 +4833,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-      SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
       ServiceBigPacket(TRUE);
-      ServiceServer( TRUE );
 
-		// hack for ramdemo...
+	  // hack for ramdemo...
       if( RecordDemoToRam )
         RecordDemo = TRUE;
 
@@ -4950,24 +4935,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     CenterPrint4x5Text( QUERYING_SERVER_FOR_LEVELS, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
 
-    switch( ServerLevelsListState )
-    {
-    case SERVERLEVELS_None:
-      SendGameMessage(MSG_TOSERVER, 0, 0, TOSERVERMSG_Reset, 0);
-      PrintErrorMessage("you do not have any of the levels on this server", 0, NULL, ERROR_DONTUSE_MENUFUNCS );
-      PreWaitingToSendMessagesStatus = STATUS_Title;
-      MyGameStatus = STATUS_WaitingToSendMessages;  // to ensure all guaranteed messages get sent
-      SessionsList.selected_item = -1;
-      MySessionsList.selected_item = -1;
-
-      break;
-    case SERVERLEVELS_Got:
-      MenuChangeEx( &MENU_NEW_CreateGamePseudoHost );
-      MyGameStatus = STATUS_StartingMultiplayer;
-      MenuState = MENUSTATE_Select;
-      break;
-    }
-
     break;
 
 
@@ -5021,18 +4988,16 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
     D3DAppClearScreenOnly();
-
 
     MenuFrozen = FALSE; // ensure that menus are OK to use once in game
     JustExitedMenu = FALSE; 
@@ -5076,13 +5041,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5191,13 +5156,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5231,13 +5196,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5264,8 +5229,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5290,13 +5253,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5368,13 +5330,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5392,13 +5354,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+	else
+	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
@@ -5423,8 +5385,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-    ServiceServer( TRUE );
-
 
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
@@ -5766,29 +5726,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
 
       DPlayGetSessionDesc();
-      switch( glpdpSD->dwUser3 & ServerGameStateBits )
-      {
-      case SERVER_STATE_NoServer:
-      case SERVER_STATE_NeedHost:
-        // server is in wrong state.
-        // probably because we have quit & rejoined the session and are recieving first ack msg.
-        // therefore just ignore message
-        break;
-      case SERVER_STATE_HostChoosing:
-        // server state has not changed
-        break;
-      case SERVER_STATE_Joinable:
-        // server has made session joinable, therefore he must have recieved MSG_GAMEPARAMETERS
-        MyGameStatus = STATUS_StartingMultiplayer;
-        if ( TeamGame )
-        {
-          MenuChangeEx( &MENU_NEW_WatchTeamSelect );
-        }else
-        {
-          MenuChangeEx( &MENU_NEW_PseudoHostWaitingToStart );
-        }
-        break;
-      }
     }
     break;
 

@@ -871,14 +871,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 void StartAPseudoHostSession( MENUITEM *Item )
 {
-	SetMultiplayerPrefs();
-	
-	SetUpGameType( GameType );
-
-	SendGameMessage(MSG_GAMEPARAMETERS, 0, 0, 0, 0);
-
-	MyGameStatus = STATUS_PseudoHostWaitingForAck;
-	MenuChangeEx( &MENU_NEW_PseudoHostWaitingForAck );
+// server stuff removed
 }
 
 

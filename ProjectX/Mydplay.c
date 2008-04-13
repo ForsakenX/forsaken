@@ -97,7 +97,6 @@ extern char	ServerLevelNames[MAXLEVELS][ 8 ];
 extern	char LevelNames[MAXLEVELS][128];
 extern uint8	ServerLevelsListState;
 
-SERVERSAYSSHIPDIEDMSG	SSSDM;
 GUID autojoin_session_guid;
 float FindSessionTimeout;
 
@@ -430,7 +429,6 @@ int GuaranteedMessagesActiveMax = 0;
 uint32 GuaranteedMessagesID = 1234567890;
 int GuaranteedMessagesTime = 1;					// How many seconds before sending the message again...
 int GuaranteedMessagesOverallTime = 10;			// How long to keep the message around for...
-BOOL AddGuaranteedToServersGuaranteedQue( LPGUARANTEEDMSG lpGM );
 #endif
 
 
@@ -1155,22 +1153,15 @@ void SetupDplayGame()
 	RealPacketSize[MSG_VERYSHORTINTERPOLATE	 ] = sizeof( VERYSHORTINTERPOLATEMSG  );	 
 	RealPacketSize[MSG_TEAMGOALS			 ] = sizeof( TEAMGOALSMSG			  );	
 	RealPacketSize[MSG_YOUQUIT				 ] = sizeof( YOUQUITMSG				  );	
-	RealPacketSize[MSG_SENDKILLSDEATHSBIKENUM] = sizeof( SENDKILLSDEATHSBIKENUMMSG);	
 	RealPacketSize[MSG_SHORTSHIPHIT			 ] = sizeof( SHORTSHIPHITMSG		  );	 
 	RealPacketSize[MSG_TITANBITS			 ] = sizeof( TITANBITSMSG			  );	
-	RealPacketSize[MSG_GAMEPARAMETERS		 ] = sizeof( GAMEPARAMETERSMSG		  );	
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	RealPacketSize[MSG_SESSIONDESC			 ] = sizeof( SESSIONDESCMSG			  );	
 #endif
-	RealPacketSize[MSG_TOSERVER				 ] = sizeof( TOSERVERMSG			  );	
-	RealPacketSize[MSG_TOCLIENT				 ] = sizeof( TOCLIENTMSG			  );	
 	RealPacketSize[MSG_SERVERKILLPICKUP		 ] = sizeof( SERVERKILLPICKUPMSG	  );	
 	RealPacketSize[MSG_LEVELNAMES			 ] = sizeof( LEVELNAMESMSG			  );	
 	RealPacketSize[MSG_TRACKERINFO			 ] = sizeof( TRACKERINFOMSG			  );	
-	
-	RealPacketSize[MSG_SERVERUPDATE			 ] = sizeof( SERVERUPDATEMSG		  );	
 	RealPacketSize[MSG_EXPLODESHIP			 ] = sizeof( EXPLODESHIPMSG			  );
-
 	RealPacketSize[MSG_SHIELDHULL			 ] = sizeof( SHIELDHULLMSG			  );
 	RealPacketSize[MSG_SERVERSCORED			 ] = sizeof( SERVERSCOREDMSG		  );
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
@@ -1186,7 +1177,6 @@ void SetupDplayGame()
 		}
 
 	InitAcknowledgeMessageQue();
-	InitServerMessageQue();
 
 	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
@@ -1326,15 +1316,12 @@ void DestroyGame( void )
     {
 		DebugPrintf("Destroy game pos 1\n");
 
-		if( !IsServerGame )
-		{
-			KillOwnersSecBulls( WhoIAm );
+		KillOwnersSecBulls( WhoIAm );
 
-			if( GodMode ) LoseAllWeapons();
+		if( GodMode ) LoseAllWeapons();
 
-			ScatterWeapons( &DirVector, MAXPICKUPS );
-			RegeneratePickups();
-		}
+		ScatterWeapons( &DirVector, MAXPICKUPS );
+		RegeneratePickups();
 
 		SendGameMessage(MSG_STATUS, 0, 0, 1, 0);	// 1 for type indicates "give someone else on my team my current score" ( if team game )
 		if( TeamGame )
@@ -1346,7 +1333,6 @@ void DestroyGame( void )
 
 		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
 		ServiceBigPacket(TRUE);
-		ServiceServer( TRUE );
 		
 		DPlayGetSessionDesc();
 		DPlayDestroyPlayer(dcoID);
@@ -1361,7 +1347,9 @@ void DestroyGame( void )
 			Old_Kills = 0;
 			Old_TeamNumber = 0;
 			Old_Deaths = 0;
-		}else{
+		}
+		else
+		{
 			Old_Kills = Ships[WhoIAm].Kills;
 			Old_TeamNumber = TeamNumber[WhoIAm];
 			Old_Deaths = Ships[WhoIAm].Deaths;
@@ -1381,7 +1369,9 @@ void DestroyGame( void )
 		}
 
 
-	}else{
+	}
+	else
+	{
 
 		DebugPrintf("Destroy game pos a\n");
 		if( dcoID )
@@ -1511,7 +1501,9 @@ void ReceiveGameMessages( void )
 			BytesPerSecRec = 0;
 			BytesPerSecSent = 0;
 		}
-	}else{
+	}
+	else
+	{
 		BytesPerSecRec = 0;
 		BytesPerSecSent = 0;
 		CurrentBytesPerSecRec = 0;
@@ -1522,8 +1514,6 @@ void ReceiveGameMessages( void )
 
 		BytesPerSecTimer = 71.0F;
 	}
-
-
 
 	// Stuff to handle Kills And deaths....
 	if( MyGameStatus == STATUS_Normal )
@@ -1541,9 +1531,6 @@ void ReceiveGameMessages( void )
 	ProcessGuaranteedMessages( FALSE , FALSE , FALSE );
 	ProcessAcknowledgeMessageQue();
 	BuildReliabilityTab();
-	ServiceServer( FALSE );
-//	CheckServerDeathTimes();
-
 
 	if( DplayRecieveThread )
 	{
@@ -1553,7 +1540,6 @@ void ReceiveGameMessages( void )
 
 			while( Buffer2Count )
 			{
-
 				longpnt = (LONGLONG*) (Buffer2Pnt+offset);
 				TempTime = *longpnt++;
 				dwordpnt = (DWORD*) longpnt;
@@ -1585,7 +1571,6 @@ void ReceiveGameMessages( void )
 
 			while( Buffer1Count )
 			{
-
 				longpnt = (LONGLONG*) (Buffer1Pnt+offset);
 				TempTime = *longpnt++;
 				dwordpnt = (DWORD*) longpnt;
@@ -1611,7 +1596,9 @@ void ReceiveGameMessages( void )
 			Buffer1Offset = 0;
 			Buffer1InUse = FALSE;
 		}
-	}else{
+	}
+	else
+	{
 
 		// The old non Thread method......
 		if ( glpDP )
@@ -1650,7 +1637,9 @@ void ReceiveGameMessages( void )
 
 					if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , &ReceiveCommBuff[0] );
 					else EvaluateMessage( nBytes , &ReceiveCommBuff[0]);
-				}else{
+				}
+				else
+				{
 					// Error condition of some kind - we just stop
 					// checking for now
 					return;
@@ -1669,24 +1658,12 @@ void ReceiveGameMessages( void )
 			NextworkOldBikeNum = -1;
 		}
 	}
-
-
-
 }
 
 
 void AllocatePseudoHost( void )
 {
-	int i;
-	
-	for ( i = 1; i < MAX_PLAYERS; i++ )	// server is always player 0
-	{
-		if ( GameStatus[ i ] == STATUS_Normal )
-		{
-			SendGameMessage(MSG_TOCLIENT, Ships[ i ].dcoID, 0, TOCLIENTMSG_YouArePseudoHost, 0);
-			break;
-		}
-	}
+// server stuff removed
 }
 
 /*
@@ -1921,47 +1898,46 @@ BOOL CheckPlayersActive( void )
 
 void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 {
-    LPUPDATEMSG			lpUpdate;
-    LPVERYSHORTUPDATEMSG lpVeryShortUpdate;
-    LPFUPDATEMSG		lpFUpdate;
+    LPUPDATEMSG							lpUpdate;
+    LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
+    LPFUPDATEMSG						lpFUpdate;
     LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
     LPGROUPONLY_VERYSHORTFUPDATEMSG		lpGroupOnly_VeryShortFUpdate;
-    LPHEREIAMMSG		lpHereIAm;
-    LPINITMSG			lpInit;
-    LPSHIPHITMSG		lpShipHit;
-    LPSHORTSHIPHITMSG	lpShortShipHit;
-    LPSHIPDIEDMSG       lpShipDied;
-    LPPRIMBULLPOSDIRMSG lpPrimBullPosDir;
-    LPSECBULLPOSDIRMSG  lpSecBullPosDir;
-    LPTITANBITSMSG		lpTitanBits;
-    LPDROPPICKUPMSG     lpDropPickup;
-    LPVERYSHORTDROPPICKUPMSG     lpVeryShortDropPickup;
-    LPKILLPICKUPMSG     lpKillPickup;
-    LPSERVERKILLPICKUPMSG lpServerKillPickup;
-    LPEXPLODESHIPMSG	lpExplodeShip;
-    LPEXPSECONDARYMSG	lpExplodeSecondary;
-    LPTEAMGOALSMSG		lpTeamGoals;
-    LPSHOCKWAVEMSG		lpShockwave;
-    LPBGOUPDATEMSG		lpBGOUpdate;
-    LPSHORTSTATSMSG		lpShortStats;
-    LPSTATUSMSG			lpStatus;
-    LPLONGSTATUSMSG		lpLongStatus;
-    LPSHORTPICKUPMSG	lpShortPickup;
-    LPSHORTREGENSLOTMSG	lpShortRegenSlot;
-    LPSHORTTRIGGERMSG	lpShortTrigger;
-    LPSHORTTRIGVARMSG	lpShortTrigVar;
-    LPSHORTMINEMSG		lpShortMine;
-    LPTEXTMSG			lpTextMsg;
-	LPNAMEMSG			lpName;
-	LPINTERPOLATEMSG	lpInterpolate;
+    LPHEREIAMMSG						lpHereIAm;
+    LPINITMSG								lpInit;
+    LPSHIPHITMSG							lpShipHit;
+    LPSHORTSHIPHITMSG				lpShortShipHit;
+    LPSHIPDIEDMSG						lpShipDied;
+    LPPRIMBULLPOSDIRMSG				lpPrimBullPosDir;
+    LPSECBULLPOSDIRMSG				lpSecBullPosDir;
+    LPTITANBITSMSG						lpTitanBits;
+    LPDROPPICKUPMSG					lpDropPickup;
+    LPVERYSHORTDROPPICKUPMSG   lpVeryShortDropPickup;
+    LPKILLPICKUPMSG						lpKillPickup;
+    LPEXPLODESHIPMSG					lpExplodeShip;
+    LPEXPSECONDARYMSG				lpExplodeSecondary;
+    LPTEAMGOALSMSG					lpTeamGoals;
+    LPSHOCKWAVEMSG					lpShockwave;
+    LPBGOUPDATEMSG					lpBGOUpdate;
+    LPSHORTSTATSMSG					lpShortStats;
+    LPSTATUSMSG							lpStatus;
+    LPLONGSTATUSMSG					lpLongStatus;
+    LPSHORTPICKUPMSG					lpShortPickup;
+    LPSHORTREGENSLOTMSG			lpShortRegenSlot;
+    LPSHORTTRIGGERMSG				lpShortTrigger;
+    LPSHORTTRIGVARMSG				lpShortTrigVar;
+    LPSHORTMINEMSG					lpShortMine;
+    LPTEXTMSG								lpTextMsg;
+	LPNAMEMSG							lpName;
+	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
-	LPBOMBMSG			lpBomb;
-	LPPINGMSG			lpPingMsg;
-	LPPLAYERPINGSMSG	lpPlayerPingsMsg;
-	LPACKMSG			lpAckMsg;
-	LPGUARANTEEDMSG		lpGuaranteedMsg;
-	LPKILLSDEATHSBIKENUMMSG	lpKillsDeathsMsg;
-	LPYOUQUITMSG			lpYouQuitMsg;
+	LPBOMBMSG							lpBomb;
+	LPPINGMSG								lpPingMsg;
+	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
+	LPACKMSG								lpAckMsg;
+	LPGUARANTEEDMSG					lpGuaranteedMsg;
+	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
+	LPYOUQUITMSG						lpYouQuitMsg;
     char				dBuf[256];
 	char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
 	int					i;
@@ -1973,8 +1949,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	int					size;				// special for demo recording
 	BYTE				msg;				// special for demo recording
 	LONGLONG			TempLongLong;
-    LPSETTIMEMSG		lpSetTime;
-    LPREQTIMEMSG		lpReqTime;
+    LPSETTIMEMSG	lpSetTime;
+    LPREQTIMEMSG	lpReqTime;
 	uint32	ID;
 	BYTE	AckWhoIAm;
 	VECTOR	Point;
@@ -1983,10 +1959,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float	Force;
 	float * FloatPnt;
 	uint32	BigOffset = 2;
-	LPSERVERUPDATEMSG ServerUpdateMsg;
-	LPGAMEPARAMETERSMSG lpGameParamMsg;
-	LPSERVERSAYSSHIPDIEDMSG lpServerSaysShipDiedMsg;
-	LPTOCLIENTMSG lpToClientMsg;
 	LPLEVELNAMESMSG	lpLevelNamesMsg;
 	LPTRACKERINFOMSG	lpTrackerInfoMsg;
 	VECTOR	ScatterDir;
@@ -2026,29 +1998,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 	}
 
-	if( *MsgPnt == MSG_SERVERUPDATE )
-	{
-		ServerUpdateMsg = (LPSERVERUPDATEMSG) MsgPnt;
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			if( i != WhoIAm )
-			{
-				if( (ServerUpdateMsg->Players & (1 << i)) && i != 0 )
-				{
-					Ships[i].enable = TRUE;
-				}else{
-					Ships[i].enable = FALSE;
-					Ships[i].Object.Group = (uint16) ServerUpdateMsg->Group[i];
-				}
-				GameStatus[i] = ServerUpdateMsg->Status[i];
-				if( i == 0 )
-					OverallGameStatus = ServerUpdateMsg->Status[i];
-
-
-			}
-		}
-		return;
-	}
 	if( *MsgPnt == MSG_BIGPACKET )
 	{
 		while( MsgPnt[BigOffset] )
@@ -2056,9 +2005,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( MsgPnt[BigOffset] == MSG_GUARANTEEDMSG )
 			{
 				lpGuaranteedMsg = (LPGUARANTEEDMSG)(&MsgPnt[BigOffset]);
-
 				FloatPnt = (float*) ( &MsgPnt[ BigOffset + sizeof(GUARANTEEDMSG) + RealPacketSize[lpGuaranteedMsg->StartOfMessage] -1 ] );
-
 				GlobalFramelagAddition = *FloatPnt;
 
 				if( GlobalFramelagAddition < 0.0F || GlobalFramelagAddition > 300.0F  )
@@ -2076,15 +2023,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					Demo_fwrite( &len, sizeof(len), 1, DemoFp );
 					Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
 					Demo_fwrite( &lpGuaranteedMsg->StartOfMessage, len , 1, DemoFp );
-
-					AddGuaranteedToServersGuaranteedQue( lpGuaranteedMsg );
 					ItsAGuranteed = TRUE;
 					EvaluateMessage( len , &lpGuaranteedMsg->StartOfMessage );
 					ItsAGuranteed = FALSE;
 				}
 				SendGameMessage( MSG_ACKMSG, ID, AckWhoIAm, 0, 0 );
 				BigOffset += sizeof(GUARANTEEDMSG) + sizeof(float) + RealPacketSize[lpGuaranteedMsg->StartOfMessage] -1;
-			}else{
+			}
+			else
+			{
 				FloatPnt = (float*) ( &MsgPnt[ BigOffset + RealPacketSize[MsgPnt[BigOffset] ] ]  );
 
 				// access viloation
@@ -2128,8 +2075,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					Demo_fwrite( &lpGuaranteedMsg->StartOfMessage, len , 1, DemoFp );
 				}
 
-				AddGuaranteedToServersGuaranteedQue( lpGuaranteedMsg );
-
 				ItsAGuranteed = TRUE;
 				EvaluateMessage( len , &lpGuaranteedMsg->StartOfMessage );
 				ItsAGuranteed = FALSE;
@@ -2139,11 +2084,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 	}
-	
-
-	if( !ItsAGuranteed && *MsgPnt != MSG_HEREIAM )
-		AddMessageToSeverQue( MsgPnt );
-	
+		
 	if( MyGameStatus == STATUS_GetPlayerNum )
 	{
  		if ( ( *MsgPnt != MSG_INIT ) && ( *MsgPnt != MSG_TRACKERINFO ) )
@@ -2169,14 +2110,14 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 						MissedInitMines[ NumMissedInitMines ].OwnerType	= lpSecBullPosDir->SecBullPosDir.OwnerType;
 						MissedInitMines[ NumMissedInitMines ].Owner		= lpSecBullPosDir->SecBullPosDir.Owner;
-						MissedInitMines[ NumMissedInitMines ].BulletID	= lpSecBullPosDir->SecBullPosDir.BulletID;
-						MissedInitMines[ NumMissedInitMines ].Group		= lpSecBullPosDir->SecBullPosDir.Group;
-						MissedInitMines[ NumMissedInitMines ].Pos		= lpSecBullPosDir->SecBullPosDir.Pos;
-						MissedInitMines[ NumMissedInitMines ].Offset	= lpSecBullPosDir->SecBullPosDir.Offset;
-						MissedInitMines[ NumMissedInitMines ].Dir		= lpSecBullPosDir->SecBullPosDir.Dir;
+						MissedInitMines[ NumMissedInitMines ].BulletID		= lpSecBullPosDir->SecBullPosDir.BulletID;
+						MissedInitMines[ NumMissedInitMines ].Group			= lpSecBullPosDir->SecBullPosDir.Group;
+						MissedInitMines[ NumMissedInitMines ].Pos			= lpSecBullPosDir->SecBullPosDir.Pos;
+						MissedInitMines[ NumMissedInitMines ].Offset		= lpSecBullPosDir->SecBullPosDir.Offset;
+						MissedInitMines[ NumMissedInitMines ].Dir				= lpSecBullPosDir->SecBullPosDir.Dir;
 						MissedInitMines[ NumMissedInitMines ].UpVector	= lpSecBullPosDir->SecBullPosDir.UpVector;
-						MissedInitMines[ NumMissedInitMines ].DropDir	= lpSecBullPosDir->SecBullPosDir.DropDir;
-						MissedInitMines[ NumMissedInitMines ].Weapon	= lpSecBullPosDir->SecBullPosDir.Weapon;
+						MissedInitMines[ NumMissedInitMines ].DropDir		= lpSecBullPosDir->SecBullPosDir.DropDir;
+						MissedInitMines[ NumMissedInitMines ].Weapon		= lpSecBullPosDir->SecBullPosDir.Weapon;
 						MissedMines[ NumMissedMines ].Type = MM_TYPE_INIT;
 						MissedMines[ NumMissedMines ].Struct = &MissedInitMines[ NumMissedInitMines ];
 						NumMissedInitMines++;
@@ -2195,25 +2136,24 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				if( NumMissedPickups != MAXMISSEDPICKUPS )
 		 		{
-		 			MissedInitPickups[ NumMissedInitPickups ].Pos = lpDropPickup->PickupInfo.Pos;
-		 			MissedInitPickups[ NumMissedInitPickups ].Group = lpDropPickup->PickupInfo.Group;
-		 			MissedInitPickups[ NumMissedInitPickups ].Dir = lpDropPickup->PickupInfo.Dir;
-		 			MissedInitPickups[ NumMissedInitPickups ].Speed = lpDropPickup->PickupInfo.Speed;
-		 			MissedInitPickups[ NumMissedInitPickups ].Type = lpDropPickup->PickupInfo.Type;
-		 			MissedInitPickups[ NumMissedInitPickups ].Owner = lpDropPickup->WhoIAm;
-		 			MissedInitPickups[ NumMissedInitPickups ].ID = lpDropPickup->PickupInfo.IDCount;
-		 			MissedInitPickups[ NumMissedInitPickups ].RegenSlot = lpDropPickup->PickupInfo.RegenSlot;
-		 			MissedInitPickups[ NumMissedInitPickups ].Sparkle = lpDropPickup->PickupInfo.Sparkle;
-		 			MissedInitPickups[ NumMissedInitPickups ].LifeCount = lpDropPickup->PickupInfo.LifeCount;
-		 			MissedInitPickups[ NumMissedInitPickups ].TriggerMod = lpDropPickup->PickupInfo.TriggerMod;
-		 			MissedPickups[ NumMissedPickups ].Type = MPU_TYPE_INIT;
-		 			MissedPickups[ NumMissedPickups ].Struct = &MissedInitPickups[ NumMissedInitPickups ];
+		 			MissedInitPickups[ NumMissedInitPickups ].Pos				= lpDropPickup->PickupInfo.Pos;
+		 			MissedInitPickups[ NumMissedInitPickups ].Group			= lpDropPickup->PickupInfo.Group;
+		 			MissedInitPickups[ NumMissedInitPickups ].Dir				= lpDropPickup->PickupInfo.Dir;
+		 			MissedInitPickups[ NumMissedInitPickups ].Speed			= lpDropPickup->PickupInfo.Speed;
+		 			MissedInitPickups[ NumMissedInitPickups ].Type				= lpDropPickup->PickupInfo.Type;
+		 			MissedInitPickups[ NumMissedInitPickups ].Owner			= lpDropPickup->WhoIAm;
+		 			MissedInitPickups[ NumMissedInitPickups ].ID					= lpDropPickup->PickupInfo.IDCount;
+		 			MissedInitPickups[ NumMissedInitPickups ].RegenSlot		= lpDropPickup->PickupInfo.RegenSlot;
+		 			MissedInitPickups[ NumMissedInitPickups ].Sparkle			= lpDropPickup->PickupInfo.Sparkle;
+		 			MissedInitPickups[ NumMissedInitPickups ].LifeCount		= lpDropPickup->PickupInfo.LifeCount;
+		 			MissedInitPickups[ NumMissedInitPickups ].TriggerMod		= lpDropPickup->PickupInfo.TriggerMod;
+		 			MissedPickups[ NumMissedPickups ].Type		= MPU_TYPE_INIT;
+		 			MissedPickups[ NumMissedPickups ].Struct	= &MissedInitPickups[ NumMissedInitPickups ];
 #if DEBUG_PICKUPS
 	   	 	   		DebugPrintf( "Added Init '%s' to Que\n", Messages[ lpDropPickup->PickupInfo.Type ] );
 #endif
 		 	   		NumMissedInitPickups++;
 		 	   		NumMissedPickups++;
-
 		 	   	}
 		 	   	else
 		 	   	{
@@ -2229,29 +2169,28 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				if( NumMissedPickups != MAXMISSEDPICKUPS )
 		 		{
-		 			MissedInitPickups[ NumMissedInitPickups ].Pos.x = (float)lpVeryShortDropPickup->PickupInfo.Pos.x;
-		 			MissedInitPickups[ NumMissedInitPickups ].Pos.y = (float)lpVeryShortDropPickup->PickupInfo.Pos.y;
-		 			MissedInitPickups[ NumMissedInitPickups ].Pos.z = (float)lpVeryShortDropPickup->PickupInfo.Pos.z;
-		 			MissedInitPickups[ NumMissedInitPickups ].Dir.x = lpVeryShortDropPickup->PickupInfo.Dir.x * ONEOVER32767;
-		 			MissedInitPickups[ NumMissedInitPickups ].Dir.y = lpVeryShortDropPickup->PickupInfo.Dir.y * ONEOVER32767;
-		 			MissedInitPickups[ NumMissedInitPickups ].Dir.z = lpVeryShortDropPickup->PickupInfo.Dir.z * ONEOVER32767;
-		 			MissedInitPickups[ NumMissedInitPickups ].Group = lpVeryShortDropPickup->PickupInfo.Group;
-		 			MissedInitPickups[ NumMissedInitPickups ].Speed = lpVeryShortDropPickup->PickupInfo.Speed;
-		 			MissedInitPickups[ NumMissedInitPickups ].Type = lpVeryShortDropPickup->PickupInfo.Type;
-		 			MissedInitPickups[ NumMissedInitPickups ].Owner = lpVeryShortDropPickup->WhoIAm;
-		 			MissedInitPickups[ NumMissedInitPickups ].ID = lpVeryShortDropPickup->PickupInfo.IDCount;
-		 			MissedInitPickups[ NumMissedInitPickups ].RegenSlot = lpVeryShortDropPickup->PickupInfo.RegenSlot;
-		 			MissedInitPickups[ NumMissedInitPickups ].Sparkle = lpVeryShortDropPickup->PickupInfo.Sparkle;
-		 			MissedInitPickups[ NumMissedInitPickups ].LifeCount = lpVeryShortDropPickup->PickupInfo.LifeCount;
-		 			MissedInitPickups[ NumMissedInitPickups ].TriggerMod = lpVeryShortDropPickup->PickupInfo.TriggerMod;
-		 			MissedPickups[ NumMissedPickups ].Type = MPU_TYPE_INIT;
-		 			MissedPickups[ NumMissedPickups ].Struct = &MissedInitPickups[ NumMissedInitPickups ];
+		 			MissedInitPickups[ NumMissedInitPickups ].Pos.x			= (float)lpVeryShortDropPickup->PickupInfo.Pos.x;
+		 			MissedInitPickups[ NumMissedInitPickups ].Pos.y			= (float)lpVeryShortDropPickup->PickupInfo.Pos.y;
+		 			MissedInitPickups[ NumMissedInitPickups ].Pos.z			= (float)lpVeryShortDropPickup->PickupInfo.Pos.z;
+		 			MissedInitPickups[ NumMissedInitPickups ].Dir.x				= lpVeryShortDropPickup->PickupInfo.Dir.x * ONEOVER32767;
+		 			MissedInitPickups[ NumMissedInitPickups ].Dir.y				= lpVeryShortDropPickup->PickupInfo.Dir.y * ONEOVER32767;
+		 			MissedInitPickups[ NumMissedInitPickups ].Dir.z				= lpVeryShortDropPickup->PickupInfo.Dir.z * ONEOVER32767;
+		 			MissedInitPickups[ NumMissedInitPickups ].Group			= lpVeryShortDropPickup->PickupInfo.Group;
+		 			MissedInitPickups[ NumMissedInitPickups ].Speed			= lpVeryShortDropPickup->PickupInfo.Speed;
+		 			MissedInitPickups[ NumMissedInitPickups ].Type				= lpVeryShortDropPickup->PickupInfo.Type;
+		 			MissedInitPickups[ NumMissedInitPickups ].Owner			= lpVeryShortDropPickup->WhoIAm;
+		 			MissedInitPickups[ NumMissedInitPickups ].ID					= lpVeryShortDropPickup->PickupInfo.IDCount;
+		 			MissedInitPickups[ NumMissedInitPickups ].RegenSlot		= lpVeryShortDropPickup->PickupInfo.RegenSlot;
+		 			MissedInitPickups[ NumMissedInitPickups ].Sparkle			= lpVeryShortDropPickup->PickupInfo.Sparkle;
+		 			MissedInitPickups[ NumMissedInitPickups ].LifeCount		= lpVeryShortDropPickup->PickupInfo.LifeCount;
+		 			MissedInitPickups[ NumMissedInitPickups ].TriggerMod		= lpVeryShortDropPickup->PickupInfo.TriggerMod;
+		 			MissedPickups[ NumMissedPickups ].Type		= MPU_TYPE_INIT;
+		 			MissedPickups[ NumMissedPickups ].Struct	= &MissedInitPickups[ NumMissedInitPickups ];
 #if DEBUG_PICKUPS
 	   	 	   		DebugPrintf( "Added Init '%s' to Que\n", Messages[ lpVeryShortDropPickup->PickupInfo.Type ] );
 #endif
 		 	   		NumMissedInitPickups++;
 		 	   		NumMissedPickups++;
-
 		 	   	}
 		 	   	else
 		 	   	{
@@ -2262,19 +2201,17 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				return;
 				break;
 
-
-
 			case MSG_EXPSECONDARY:
 				lpExplodeSecondary = (LPEXPSECONDARYMSG)MsgPnt;
 
 				if( NumMissedMines != MAXMISSEDMINES )
    				{
    					MissedKillMines[ NumMissedKillMines ].OwnerType		= lpExplodeSecondary->ExplodeSecondaryInfo.OwnerType;
-   					MissedKillMines[ NumMissedKillMines ].Owner			= lpExplodeSecondary->ExplodeSecondaryInfo.Owner;
-   					MissedKillMines[ NumMissedKillMines ].ID			= lpExplodeSecondary->ExplodeSecondaryInfo.IDCount;
+   					MissedKillMines[ NumMissedKillMines ].Owner				= lpExplodeSecondary->ExplodeSecondaryInfo.Owner;
+   					MissedKillMines[ NumMissedKillMines ].ID					= lpExplodeSecondary->ExplodeSecondaryInfo.IDCount;
    					MissedKillMines[ NumMissedKillMines ].ShockwaveSize	= lpExplodeSecondary->ExplodeSecondaryInfo.ShockwaveSize;
-   					MissedMines[ NumMissedMines ].Type = MM_TYPE_KILL;
-   					MissedMines[ NumMissedMines ].Struct = &MissedKillMines[ NumMissedKillMines ];
+   					MissedMines[ NumMissedMines ].Type		= MM_TYPE_KILL;
+   					MissedMines[ NumMissedMines ].Struct		= &MissedKillMines[ NumMissedKillMines ];
    					NumMissedKillMines++;
    					NumMissedMines++;
    				}
@@ -2290,10 +2227,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    				if( NumMissedPickups != MAXMISSEDPICKUPS )
    				{
    					MissedKillPickups[ NumMissedKillPickups ].Owner = lpKillPickup->KillPickupInfo.Owner;
-   					MissedKillPickups[ NumMissedKillPickups ].ID = lpKillPickup->KillPickupInfo.IDCount;
-   					MissedKillPickups[ NumMissedKillPickups ].Style = lpKillPickup->KillPickupInfo.Style;
-   					MissedPickups[ NumMissedPickups ].Type = MPU_TYPE_KILL;
-   					MissedPickups[ NumMissedPickups ].Struct = &MissedKillPickups[ NumMissedKillPickups ];
+   					MissedKillPickups[ NumMissedKillPickups ].ID		= lpKillPickup->KillPickupInfo.IDCount;
+   					MissedKillPickups[ NumMissedKillPickups ].Style	= lpKillPickup->KillPickupInfo.Style;
+   					MissedPickups[ NumMissedPickups ].Type			= MPU_TYPE_KILL;
+   					MissedPickups[ NumMissedPickups ].Struct		= &MissedKillPickups[ NumMissedKillPickups ];
 #if DEBUG_PICKUPS
 					DebugPrintf( "Added Kill pickup of Owner '%s', ID %d, to que\n",
 								&Names[ lpKillPickup->KillPickupInfo.Owner ][ 0 ],
@@ -2308,37 +2245,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    					DebugPrintf( "Overflowed pickup que ( KILL )\n" );
 #endif
 				}
-
-
 				return;
 				break;
 
-			case MSG_SERVERKILLPICKUP:
-   				lpServerKillPickup = (LPSERVERKILLPICKUPMSG)MsgPnt;
-   				if( NumMissedPickups != MAXMISSEDPICKUPS )
-   				{
-   					MissedServerKillPickups[ NumMissedKillPickups ].NewOwner = lpServerKillPickup->ServerKillPickupInfo.NewOwner;
-   					MissedServerKillPickups[ NumMissedKillPickups ].Owner = lpServerKillPickup->ServerKillPickupInfo.Owner;
-   					MissedServerKillPickups[ NumMissedKillPickups ].ID = lpServerKillPickup->ServerKillPickupInfo.IDCount;
-   					MissedServerKillPickups[ NumMissedKillPickups ].Style = lpServerKillPickup->ServerKillPickupInfo.Style;
-   					MissedPickups[ NumMissedPickups ].Type = MPU_TYPE_SERVERKILL;
-   					MissedPickups[ NumMissedPickups ].Struct = &MissedServerKillPickups[ NumMissedKillPickups ];
-#if DEBUG_PICKUPS
-					DebugPrintf( "Added Kill pickup of Owner '%s', ID %d, to que\n",
-								&Names[ lpServerKillPickup->ServerKillPickupInfo.Owner ][ 0 ],
-								lpServerKillPickup->ServerKillPickupInfo.IDCount );
-#endif
-   					NumMissedKillPickups++;
-   					NumMissedPickups++;
-   				}
-   				else
-   				{
-#if DEBUG_PICKUPS
-   					DebugPrintf( "Overflowed pickup que ( KILL )\n" );
-#endif
-				}
-				return;
-				break;
 
 			case MSG_SHORTREGENSLOT:
 			case MSG_SHORTTRIGGER:
@@ -2348,10 +2257,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case MSG_YOUQUIT:
 			case MSG_NAME:
 			case MSG_ACKMSG:
-			case MSG_SENDKILLSDEATHSBIKENUM:
 			case MSG_KILLSDEATHSBIKENUM:
 			case MSG_STATUS:
-			case MSG_SERVERUPDATE:
 			case MSG_LONGSTATUS:
 			case MSG_TRACKERINFO:
 			case MSG_TEAMGOALS:
@@ -2395,21 +2302,16 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case MSG_VERYSHORTUPDATE:
 		case MSG_UPDATE:
 		case MSG_INIT:
-		case MSG_SERVERUPDATE:
 		case MSG_STATUS:
 		case MSG_LONGSTATUS:
 		case MSG_HEREIAM:
 		case MSG_TEXTMSG:
 		case MSG_YOUQUIT:
 		case MSG_NAME:
-		case MSG_SENDKILLSDEATHSBIKENUM:
  		case MSG_KILLSDEATHSBIKENUM:
-		case MSG_GAMEPARAMETERS:
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 		case MSG_SESSIONDESC:
 #endif
-		case MSG_TOSERVER:
-		case MSG_TOCLIENT:
 		case MSG_LEVELNAMES:
 		case MSG_BIGPACKET:
 		case MSG_ACKMSG:
@@ -2421,60 +2323,25 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	}
     switch( *MsgPnt )
     {
-	case MSG_SERVERSAYSSHIPDIED:
-		lpServerSaysShipDiedMsg	= (LPSERVERSAYSSHIPDIEDMSG) MsgPnt;
 
-		if( lpServerSaysShipDiedMsg->WhoWasKilled == WhoIAm && lpServerSaysShipDiedMsg->Deaths == Ships[WhoIAm].Deaths && Ships[WhoIAm].Object.Mode == NORMAL_MODE )
-		{
-			// I Must Die..
-			Ships[WhoIAm].Damage = 512.0F;
-   			DoDamage( OVERRIDE_INVUL );
-			// if I died...
-   			Ships[WhoIAm].ShipThatLastKilledMe = lpServerSaysShipDiedMsg->WhoKilledThem;
-   			Ships[WhoIAm].Object.Mode = DEATH_MODE;
-   			Ships[WhoIAm].Timer = 0.0F;
-
-   			// print up who killed me
-			GetDeathString( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon, &methodstr[0] );
-
-			if (TeamGame && ( TeamNumber[Ships[WhoIAm].ShipThatLastKilledMe] == TeamNumber[WhoIAm]))
-				strcpy(&teamstr[0], FROM_YOUR_OWN_TEAM );
-			else
-				strcpy(&teamstr[0], "");
-
-			// we're in server mode
-   			//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
-   			sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " XXX ", &methodstr[0], &teamstr );
-   			AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
-			ShipDiedSend( lpServerSaysShipDiedMsg->WeaponType, lpServerSaysShipDiedMsg->Weapon );
-		}
-		return;
-	case MSG_SENDKILLSDEATHSBIKENUM:
-		NextworkOldKills = -1;
-		NextworkOldDeaths = -1;
-		NextworkOldBikeNum = -1;
-		if( IsServerGame )
-			SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-		return;
 	case MSG_YOUQUIT:
+
 		// I have been asked by the host to quit......
 		lpYouQuitMsg = (LPYOUQUITMSG)MsgPnt;
 		if( lpYouQuitMsg->You == WhoIAm )
 			IMustQuit = TRUE;
-
-		SetTitleNotify( IsServerGame ? KICKED_SERVER : KICKED_HOST );
-
+		SetTitleNotify( KICKED_HOST );
 		return;
+
+
     case MSG_VERYSHORTFUPDATE:
 
 		lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG)MsgPnt;
 		if( lpVeryShortFUpdate->WhoIAm != WhoIAm )
 		{
 			OldMode = Ships[lpVeryShortFUpdate->WhoIAm].Object.Mode;
-
 			Ships[lpVeryShortFUpdate->WhoIAm].PacketDelay = PacketDelay;
 			CheckCharging( lpVeryShortFUpdate->WhoIAm, Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Flags, lpVeryShortFUpdate->ShortGlobalShip.Flags );
-
 			if( !( Ships[lpVeryShortFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpVeryShortFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 			{
 				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortFUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
@@ -2491,47 +2358,37 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 			UnPackShipFlags( lpVeryShortFUpdate->WhoIAm , lpVeryShortFUpdate->ShortGlobalShip.Flags );
-
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.x	= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.x;
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.y	= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.y;
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.z	= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.z;
-			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.x	= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
-			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.y	= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
-			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.z	= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Group= (int16) lpVeryShortFUpdate->ShortGlobalShip.GroupImIn;
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.x		= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.x;
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.y		= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.y;
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos.z		= (float) lpVeryShortFUpdate->ShortGlobalShip.Pos.z;
+			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.x		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
+			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.y		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
+			Ships[lpVeryShortFUpdate->WhoIAm].Move_Off.z		= (lpVeryShortFUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortFUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Group	= (int16) lpVeryShortFUpdate->ShortGlobalShip.GroupImIn;
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.w	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.x	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.y	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
 			Ships[lpVeryShortFUpdate->WhoIAm].Object.Quat.z	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Quat.z * ONEOVER32767 );
-			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.x	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.x * SHORTANGLEMODIFIERUNPACK );
-			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.y	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.y * SHORTANGLEMODIFIERUNPACK );
-			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.z	= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.z * SHORTANGLEMODIFIERUNPACK );
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Bank	= (float) (lpVeryShortFUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
-
-
-			Ships[lpVeryShortFUpdate->WhoIAm].Primary	= lpVeryShortFUpdate->ShortGlobalShip.Primary;
-			Ships[lpVeryShortFUpdate->WhoIAm].Secondary	= lpVeryShortFUpdate->ShortGlobalShip.Secondary;
+			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.x		= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.x * SHORTANGLEMODIFIERUNPACK );
+			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.y		= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.y * SHORTANGLEMODIFIERUNPACK );
+			Ships[lpVeryShortFUpdate->WhoIAm].LastAngle.z		= (float)(lpVeryShortFUpdate->ShortGlobalShip.Angle.z * SHORTANGLEMODIFIERUNPACK );
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Bank		= (float) (lpVeryShortFUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
+			Ships[lpVeryShortFUpdate->WhoIAm].Primary			= lpVeryShortFUpdate->ShortGlobalShip.Primary;
+			Ships[lpVeryShortFUpdate->WhoIAm].Secondary		= lpVeryShortFUpdate->ShortGlobalShip.Secondary;
 			Ships[lpVeryShortFUpdate->WhoIAm].PrimPowerLevel = (float) lpVeryShortFUpdate->ShortGlobalShip.PrimPowerLevel;
-
 			Ships[lpVeryShortFUpdate->WhoIAm].JustRecievedPacket = TRUE;
-
-
-			Ships[lpVeryShortFUpdate->WhoIAm].Object.Noise = 1.0F;
+			Ships[lpVeryShortFUpdate->WhoIAm].Object.Noise		= 1.0F;
 			
 
 			// Need This for missiles to work....
 			SetShipBankAndMat( &Ships[lpVeryShortFUpdate->WhoIAm].Object );
 			
 			if( ( Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_PrimFire ) || ( Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_MulFire ) )
-			{
 				FirePrimaryWeapons( lpVeryShortFUpdate->WhoIAm );					// Fire Primary Weapons	
-			}
 			if( ( Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_SecFire ) )
-			{
 				FireSecondaryWeapons( lpVeryShortFUpdate->WhoIAm );					// Fire Secondary Weapons
-			}
 
-			Ships[ lpVeryShortFUpdate->WhoIAm ].Primary = ConvPrimToNormWeapon( Ships[ lpVeryShortFUpdate->WhoIAm ].Primary );
+			Ships[ lpVeryShortFUpdate->WhoIAm ].Primary		= ConvPrimToNormWeapon( Ships[ lpVeryShortFUpdate->WhoIAm ].Primary );
 			Ships[ lpVeryShortFUpdate->WhoIAm ].Secondary = ConvSecToNormWeapon( Ships[ lpVeryShortFUpdate->WhoIAm ].Secondary );
 
 /* Added by DC 30/6/98 */
@@ -2543,9 +2400,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				StopTaunt();
 			}
 /* ------------------- */
-
 			DemoShipInit[ lpVeryShortFUpdate->WhoIAm ] = TRUE;
-
 			return;
 		}
 		else
@@ -2555,13 +2410,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			return;
 		}
 
+
     case MSG_GROUPONLY_VERYSHORTFUPDATE:
 
 		lpGroupOnly_VeryShortFUpdate = (LPGROUPONLY_VERYSHORTFUPDATEMSG)MsgPnt;
 		if( lpGroupOnly_VeryShortFUpdate->WhoIAm != WhoIAm )
 		{
 			OldMode = Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode;
-
 			CheckCharging( lpGroupOnly_VeryShortFUpdate->WhoIAm, Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Flags, lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags );
 
 			if( !( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
@@ -2580,7 +2435,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 			UnPackShipFlags( lpGroupOnly_VeryShortFUpdate->WhoIAm , lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags );
-
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.x		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.x;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.y		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.y;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.z		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.z;
@@ -2590,29 +2444,22 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.y	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.z	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.z * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Bank		= (float) (lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
-
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Primary	= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Primary;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Secondary	= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Secondary;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].PrimPowerLevel = (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.PrimPowerLevel;
-
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Noise = 1.0F;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Primary				= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Primary;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Secondary			= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Secondary;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].PrimPowerLevel	= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.PrimPowerLevel;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Noise		= 1.0F;
 			
 			// Need This for missiles to work....
 			SetShipBankAndMat( &Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object );
 			
 			if( ( Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_PrimFire ) || ( Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_MulFire ) )
-			{
 				FirePrimaryWeapons( lpGroupOnly_VeryShortFUpdate->WhoIAm );					// Fire Primary Weapons	
-			}
 			if( ( Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Flags & SHIP_SecFire ) )
-			{
 				FireSecondaryWeapons( lpGroupOnly_VeryShortFUpdate->WhoIAm );					// Fire Secondary Weapons
-			}
 
 			Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Primary = ConvPrimToNormWeapon( Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Primary );
 			Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Secondary = ConvSecToNormWeapon( Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Secondary );
 
-/* Added by DC 30/6/98 */
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
@@ -2620,7 +2467,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Group , &Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
 			}
-/* ------------------- */
 
 			DemoShipInit[ lpGroupOnly_VeryShortFUpdate->WhoIAm ] = TRUE;
 			return;
@@ -2632,22 +2478,20 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			return;
 		}
 
+
     case MSG_VERYSHORTUPDATE:
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
 			// only need ship scores...
 			lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
-
 			// ...and need to get host game status...
 			if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
-
 			// ...and need to get names...
 			CheckForName( lpVeryShortUpdate->WhoIAm );
-
 			// ...and fill out GameStatus
 			GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
- 
 			return;
 		}
 		else
@@ -2656,12 +2500,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( lpVeryShortUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpVeryShortUpdate->WhoIAm].PacketDelay = PacketDelay;
-
 				CheckCharging( lpVeryShortUpdate->WhoIAm, Ships[ lpVeryShortUpdate->WhoIAm ].Object.Flags, lpVeryShortUpdate->ShortGlobalShip.Flags );
-
 				OldMode = Ships[lpVeryShortUpdate->WhoIAm].Object.Mode;
 				OldStatus = GameStatus[lpVeryShortUpdate->WhoIAm];
-
 				if( !( Ships[lpVeryShortUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
 					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
@@ -2678,32 +2519,28 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					}
 				}
 				UnPackShipFlags( lpVeryShortUpdate->WhoIAm , lpVeryShortUpdate->ShortGlobalShip.Flags );
-
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.x	= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.x;
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.y	= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.y;
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.z	= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.z;
-				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.x	= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
-				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.y	= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
-				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.z	= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Group= (int16) lpVeryShortUpdate->ShortGlobalShip.GroupImIn;
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.x		= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.x;
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.y		= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.y;
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Pos.z		= (float) lpVeryShortUpdate->ShortGlobalShip.Pos.z;
+				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.x		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.x * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
+				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.y		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.y * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 );
+				Ships[lpVeryShortUpdate->WhoIAm].Move_Off.z		= (lpVeryShortUpdate->ShortGlobalShip.Move_Off.z * ONEOVER32767) * (lpVeryShortUpdate->ShortGlobalShip.Move_Off_Scalar * ONEOVER256 ); 
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Group		= (int16) lpVeryShortUpdate->ShortGlobalShip.GroupImIn;
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.w	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.x	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.x		= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.y	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.z	= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.z * ONEOVER32767 );
-				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.x	= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.x * SHORTANGLEMODIFIERUNPACK );
-				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.y	= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.y * SHORTANGLEMODIFIERUNPACK );
-				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.z	= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.z * SHORTANGLEMODIFIERUNPACK );
-
-				Ships[lpVeryShortUpdate->WhoIAm].Object.Bank	= (float) (lpVeryShortUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
-
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Quat.z		= (float)(lpVeryShortUpdate->ShortGlobalShip.Quat.z * ONEOVER32767 );
+				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.x		= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.x * SHORTANGLEMODIFIERUNPACK );
+				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.y		= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.y * SHORTANGLEMODIFIERUNPACK );
+				Ships[lpVeryShortUpdate->WhoIAm].LastAngle.z		= (float)(lpVeryShortUpdate->ShortGlobalShip.Angle.z * SHORTANGLEMODIFIERUNPACK );
+				Ships[lpVeryShortUpdate->WhoIAm].Object.Bank		= (float) (lpVeryShortUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
 				Ships[lpVeryShortUpdate->WhoIAm].JustRecievedPacket = TRUE;
-
-				GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
+				GameStatus[lpVeryShortUpdate->WhoIAm]				= lpVeryShortUpdate->ShortGlobalShip.Status;
 
 				if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
 				
-				Ships[lpVeryShortUpdate->WhoIAm].dcoID	= from_dcoID;
+				Ships[lpVeryShortUpdate->WhoIAm].dcoID = from_dcoID;
 				
 				if( glpDP )
 				{
@@ -2728,20 +2565,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 				{
-					if( IsServerGame && IsServer )
-					{
-						VECTOR	ScatterDir;
-
-						ScatterDir = Ships[ lpVeryShortUpdate->WhoIAm ].LastMove;
-						NormaliseVector( &ScatterDir );
-						ScatterWeaponsForShip( lpVeryShortUpdate->WhoIAm, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-					}
-
 					if( GoreGuts ) ThrowOutRider( lpVeryShortUpdate->WhoIAm );
 					PlayPannedSfx( SFX_BikeExplode, Ships[ lpVeryShortUpdate->WhoIAm ].Object.Group , &Ships[lpVeryShortUpdate->WhoIAm].Object.Pos, 0.0F );
 					StopTaunt();
 				}
-
 				
 				if( ( ( OldMode == LIMBO_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == NORMAL_MODE ) )
 					|| ( ( OldStatus != STATUS_Normal) && (GameStatus[lpVeryShortUpdate->WhoIAm] == STATUS_Normal ) ) )
@@ -2749,31 +2576,27 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					CreateReGen( lpVeryShortUpdate->WhoIAm );
 				}
 
-				DemoShipInit[ lpVeryShortUpdate->WhoIAm ] = TRUE;
-				if( IsServer )
-				{
-					Ships[lpVeryShortUpdate->WhoIAm].RealPos = Ships[lpVeryShortUpdate->WhoIAm].Object.Pos;
-					Ships[lpVeryShortUpdate->WhoIAm].RealGroup = Ships[lpVeryShortUpdate->WhoIAm].Object.Group;
-				}
-
-				
+				DemoShipInit[ lpVeryShortUpdate->WhoIAm ] = TRUE;				
 				return;
-			}else{
+			}
+			else
+			{
 				wsprintf(dBuf, "someone else is in your slot..%d\n", lpVeryShortUpdate->WhoIAm);
 				OutputDebugString( dBuf );
 				return;
 			}
 		}
+
+
     case MSG_UPDATE:
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
 			// only need ship scores...
 			lpUpdate = (LPUPDATEMSG) MsgPnt;
-
 			// ...and need to get host game status...
 			if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-
 			// ...and need to get names...
 			CheckForName( lpUpdate->WhoIAm );
 			return;
@@ -2784,12 +2607,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( lpUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpUpdate->WhoIAm].PacketDelay = PacketDelay;
-
 				CheckCharging( lpUpdate->WhoIAm, Ships[ lpUpdate->WhoIAm ].Object.Flags, lpUpdate->ShortGlobalShip.Flags );
-
 				OldMode = Ships[lpUpdate->WhoIAm].Object.Mode;
 				OldStatus = GameStatus[lpUpdate->WhoIAm];
-
 				if( !( Ships[lpUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
 					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
@@ -2807,21 +2627,17 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 
 				UnPackShipFlags( lpUpdate->WhoIAm , lpUpdate->ShortGlobalShip.Flags );
-
-
-				Ships[lpUpdate->WhoIAm].Object.Pos	= lpUpdate->ShortGlobalShip.Pos;
-				Ships[lpUpdate->WhoIAm].Move_Off	= lpUpdate->ShortGlobalShip.Move_Off;
-				Ships[lpUpdate->WhoIAm].Object.Group= (int16) lpUpdate->ShortGlobalShip.GroupImIn;
+				Ships[lpUpdate->WhoIAm].Object.Pos		= lpUpdate->ShortGlobalShip.Pos;
+				Ships[lpUpdate->WhoIAm].Move_Off		= lpUpdate->ShortGlobalShip.Move_Off;
+				Ships[lpUpdate->WhoIAm].Object.Group	= (int16) lpUpdate->ShortGlobalShip.GroupImIn;
 				Ships[lpUpdate->WhoIAm].Object.Quat	= lpUpdate->ShortGlobalShip.Quat;
-				Ships[lpUpdate->WhoIAm].LastAngle	= lpUpdate->ShortGlobalShip.Angle;
+				Ships[lpUpdate->WhoIAm].LastAngle		= lpUpdate->ShortGlobalShip.Angle;
 #ifdef	SHORTBANK
 				Ships[lpUpdate->WhoIAm].Object.Bank	= (float) (lpUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
 #else
 				Ships[lpUpdate->WhoIAm].Object.Bank	= lpUpdate->ShortGlobalShip.Bank;
 #endif
-
 				Ships[lpUpdate->WhoIAm].JustRecievedPacket = TRUE;
-
 				GameStatus[lpUpdate->WhoIAm] = lpUpdate->ShortGlobalShip.Status;
 
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
@@ -2838,12 +2654,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 //						OutputDebugString( dBuf );
 //					}
 //					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
-				}else{
+				}
+				else
+				{
 					Ships[lpUpdate->WhoIAm].FirstPacketRecieved = FALSE;
 //					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
 				}
 
-				
 				if( glpDP )
 				{
 					if( CheckForName( lpUpdate->WhoIAm ) )
@@ -2867,43 +2684,31 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 				{
-					if( IsServerGame && IsServer )
-					{
-						VECTOR	ScatterDir;
-
-						ScatterDir = Ships[ lpUpdate->WhoIAm ].LastMove;
-						NormaliseVector( &ScatterDir );
-						ScatterWeaponsForShip( lpUpdate->WhoIAm, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-					}
-
 					if( GoreGuts ) ThrowOutRider( lpUpdate->WhoIAm );
 					PlayPannedSfx( SFX_BikeExplode, Ships[ lpUpdate->WhoIAm ].Object.Group , &Ships[lpUpdate->WhoIAm].Object.Pos, 0.0F );
 					StopTaunt();
 				}
 
-				
 				if( ( ( OldMode == LIMBO_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == NORMAL_MODE ) )
 					|| ( ( OldStatus != STATUS_Normal) && (GameStatus[lpUpdate->WhoIAm] == STATUS_Normal ) ) )
 				{
 					CreateReGen( lpUpdate->WhoIAm );
 				}
 
-				DemoShipInit[ lpUpdate->WhoIAm ] = TRUE;
-				if( IsServer )
-				{
-					Ships[lpUpdate->WhoIAm].RealPos = Ships[lpUpdate->WhoIAm].Object.Pos;
-					Ships[lpUpdate->WhoIAm].RealGroup = Ships[lpUpdate->WhoIAm].Object.Group;
-				}
-
-				
+				DemoShipInit[ lpUpdate->WhoIAm ] = TRUE;				
 				return;
-			}else{
+			}
+			else
+			{
 				wsprintf(dBuf, "someone else is in your slot..%d\n", lpUpdate->WhoIAm);
 				OutputDebugString( dBuf );
 				return;
 			}
 		}
+
+
     case MSG_NAME:
+
 		lpName = (LPNAMEMSG)MsgPnt;
 		if( lpName->WhoIAm == WhoIAm )
 			return;
@@ -2913,17 +2718,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			Names[lpName->WhoIAm][i] = lpName->Name[i];
 			if( WhoIAm < MAX_PLAYERS )
 				Names[WhoIAm][i] = biker_name[i];
-
-		
 		}
 		Names[lpName->WhoIAm][7] = 0;
 		Names[WhoIAm][7] = 0;
-
 		DebugPrintf("Recieved name %s from player %d\n" , &Names[lpName->WhoIAm][0] , lpName->WhoIAm );
 		NextworkOldKills = -1;
 		NextworkOldDeaths = -1;
 		NextworkOldBikeNum = -1;
 		return;
+
 
     case MSG_FUPDATE:
 
@@ -2931,10 +2734,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( lpFUpdate->WhoIAm != WhoIAm )
 		{
 			OldMode = Ships[lpFUpdate->WhoIAm].Object.Mode;
-
 			Ships[lpFUpdate->WhoIAm].PacketDelay = PacketDelay;
 			CheckCharging( lpFUpdate->WhoIAm, Ships[ lpFUpdate->WhoIAm ].Object.Flags, lpFUpdate->ShortGlobalShip.Flags );
-
 
 			if( !( Ships[lpFUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpFUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 			{
@@ -2952,7 +2753,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 			UnPackShipFlags( lpFUpdate->WhoIAm , lpFUpdate->ShortGlobalShip.Flags );
-
 			Ships[lpFUpdate->WhoIAm].Object.Pos		= lpFUpdate->ShortGlobalShip.Pos;
 			Ships[lpFUpdate->WhoIAm].Move_Off	= lpFUpdate->ShortGlobalShip.Move_Off;
 			Ships[lpFUpdate->WhoIAm].Object.Group  = lpFUpdate->ShortGlobalShip.GroupImIn;
@@ -2966,44 +2766,27 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 #else
 			Ships[lpFUpdate->WhoIAm].Object.Bank	= lpFUpdate->ShortGlobalShip.Bank;
 #endif
-
 			Ships[lpFUpdate->WhoIAm].JustRecievedPacket = TRUE;
 
 			// Need This for missiles to work....
 			SetShipBankAndMat( &Ships[lpFUpdate->WhoIAm].Object );
-
 			Ships[lpFUpdate->WhoIAm].Object.Noise = 1.0F;
 			
 			if( ( Ships[ lpFUpdate->WhoIAm ].Object.Flags & SHIP_PrimFire ) || ( Ships[ lpFUpdate->WhoIAm ].Object.Flags & SHIP_MulFire ) )
-			{
 				FirePrimaryWeapons( lpFUpdate->WhoIAm );					// Fire Primary Weapons	
-			}
 			if( ( Ships[ lpFUpdate->WhoIAm ].Object.Flags & SHIP_SecFire ) )
-			{
 				FireSecondaryWeapons( lpFUpdate->WhoIAm );					// Fire Secondary Weapons
-			}
 
 			Ships[ lpFUpdate->WhoIAm ].Primary = ConvPrimToNormWeapon( Ships[ lpFUpdate->WhoIAm ].Primary );
 			Ships[ lpFUpdate->WhoIAm ].Secondary = ConvSecToNormWeapon( Ships[ lpFUpdate->WhoIAm ].Secondary );
 
-/* Added by DC 30/6/98 */
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( IsServerGame && IsServer )
-				{
-					VECTOR	ScatterDir;
-
-					ScatterDir = Ships[ lpFUpdate->WhoIAm ].LastMove;
-					NormaliseVector( &ScatterDir );
-					ScatterWeaponsForShip( lpFUpdate->WhoIAm, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-				}
-
 				if( GoreGuts ) ThrowOutRider( lpFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpFUpdate->WhoIAm ].Object.Group , &Ships[lpFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
 			}
-/* ------------------- */
 
 			DemoShipInit[ lpFUpdate->WhoIAm ] = TRUE;
 			if( IsServer )
@@ -3012,19 +2795,21 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				Ships[lpFUpdate->WhoIAm].RealGroup = Ships[lpFUpdate->WhoIAm].Object.Group;
 			}
 			return;
-		}else{
+		}
+		else
+		{
 			wsprintf(dBuf, "someone else is in your slot..%d\n", lpFUpdate->WhoIAm);
 			OutputDebugString( dBuf );
 			return;
 		}
 
+
 	case MSG_HEREIAM:
+
 		if( IsHost && !PlayDemo )
 		{
-			BOOL AllocatingPseudoHost = FALSE;
 			BOOL Done = FALSE;
 			lpHereIAm = (LPHEREIAMMSG)MsgPnt;
-
 			DPlayGetSessionDesc();
 
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -3048,52 +2833,24 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
 						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
-				}else{
+				}
+				else
+				{
 					SendGameMessage(MSG_INIT, lpHereIAm->ID, MAX_PLAYERS, 0, 0);
 					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
 						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
 				}
 			}
-			if ( AllocatingPseudoHost )
-			{
-				// modify server state in session description
-				DPlayGetSessionDesc();
-				glpdpSD->dwUser3 &= ~ServerGameStateBits;	// mask out old server state
-				glpdpSD->dwUser3 |=	SERVER_STATE_HostChoosing;
-				DebugPrintf("server - about to change state to HostChoosing\n");
-				DPlaySetSessionDesc(0);
-
-				PseudoHostDPID = lpHereIAm->ID; 
-			}
 		}
 		return;
+
+
     case MSG_INIT:
+
 		lpInit = (LPINITMSG) MsgPnt;
-
 		HostDPID = lpInit->FromDpid;
-
-		IsPseudoHost = FALSE;
-		// if we are getting a player number and this is a server game in the SERVER_NeedHost state, then we are the Pseudo Host
-		switch( lpInit->dwUser3 & ServerGameStateBits )
-		{
-		case SERVER_STATE_NeedHost:
-			IsPseudoHost = TRUE;
-			break;
-		case SERVER_STATE_HostChoosing:
-			DebugPrintf("Error - Server is sending out MSG_INIT when in state SERVER_STATE_HostChoosing\n");
-			return;	// ignore messsage
-		case SERVER_STATE_Joinable:
-			// just carry on as if normal game
-			break;
-		default:	// ie. not server game
-			break;
-		}
-
 		//MaxKills = lpInit->MaxKills;
-
-		ServerCollisions = lpInit->ServerCollisions;
-		
 		OverallGameStatus = lpInit->Status;
 		DPlayUpdateInterval = lpInit->PacketsPerSecond;
 		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
@@ -3103,103 +2860,92 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			PlayerReady[i] = lpInit->PlayerReady[i];
 			if( i != WhoIAm && i != lpInit->YouAre )
 				GameStatus[i] = lpInit->GameStatus[i];
-
 		}															
 		if ( WhoIAm == 0xff )
 		{
+			// no need to do any of this if pseudo host
 			if( !IsHost )
 			{
 				WhoIAm = lpInit->YouAre;
 				Current_Camera_View = WhoIAm;
 				WatchPlayerSelect.value = WhoIAm;
 
-				// no need to do any of this if pseudo host
-				if ( !IsPseudoHost )
+				//HarmTeamMates = lpInit->HarmTeamMates;
+				//BrightShips = lpInit->BrightShips;
+				//BikeExhausts = lpInit->BikeExhausts;
+				//ColPerspective = lpInit->Collisions;
+
+				UnpackPickupInfo( lpInit->PickupFlags );
+				DebugPrintf("host says level is %s\n", lpInit->LevelName );
+
+				NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
+				if( NewLevelNum == -1 )
 				{
-					//HarmTeamMates = lpInit->HarmTeamMates;
-					//BrightShips = lpInit->BrightShips;
-					//BikeExhausts = lpInit->BikeExhausts;
-					//ColPerspective = lpInit->Collisions;
-
-					UnpackPickupInfo( lpInit->PickupFlags );
-
-					DebugPrintf("host says level is %s\n", lpInit->LevelName );
-
-					NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
-					if( NewLevelNum == -1 )
-					{
-						DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
-						WhoIAm = MAX_PLAYERS+1;
-						return;
-					}
+					DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
+					WhoIAm = MAX_PLAYERS+1;
+					return;
 				}
 
 				for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				{
 					TeamNumber[i] = lpInit->TeamNumber[i];
-				}
 			}
-		}else{
+		}
+		else
+		{
 			// team selection order from the host..copies it for every one...
 			memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			{
 				TeamNumber[i] = lpInit->TeamNumber[i];
-			}
 			TeamNumber[WhoIAm] = 0;
 		}
 
-		// if we are the pseudo host, we will be setting these ourseleves
-		if ( !IsPseudoHost )
-		{
-			if ( BountyHunt )
-				BountyBonusInterval = lpInit->BountyBonusInterval;
-			if ( CaptureTheFlag || CTF )
-				GoalScore = lpInit->GoalScore;
+		if ( BountyHunt )
+			BountyBonusInterval = lpInit->BountyBonusInterval;
+		if ( CaptureTheFlag || CTF )
+			GoalScore = lpInit->GoalScore;
 
-			NumPrimaryPickups = lpInit->PrimaryPickups;
+		NumPrimaryPickups = lpInit->PrimaryPickups;
 
-			/*
-			if ( CTF )
+		if ( CTF )
+		{					
+			switch ( lpInit->CTF_Type )
 			{
-				switch ( lpInit->CTF_Type )
-				{
-				case CTF_MUST_CARRY:
-					NeedFlagAtHome			= TRUE;
-					OwnFlagTeleportsHome	= FALSE;
-					CanCarryOwnFlag			= TRUE;
-					break;
-				case CTF_CAN_CARRY:
-					NeedFlagAtHome			= FALSE;
-					OwnFlagTeleportsHome	= FALSE;
-					CanCarryOwnFlag			= TRUE;
-					break;
-				case CTF_ONE_TOUCH:
-					NeedFlagAtHome			= FALSE;
-					OwnFlagTeleportsHome	= TRUE;
-					CanCarryOwnFlag			= FALSE;
-					break;
-				case CTF_NO_RETURN:
-					NeedFlagAtHome			= FALSE;
-					OwnFlagTeleportsHome	= FALSE;
-					CanCarryOwnFlag			= FALSE;
-					break;
-				case CTF_STANDARD:
-				default:
-					NeedFlagAtHome			= TRUE;
-					OwnFlagTeleportsHome	= TRUE;
-					CanCarryOwnFlag			= FALSE;
-				}
+			case CTF_STANDARD:
+				NeedFlagAtHome			= TRUE;
+				OwnFlagTeleportsHome	= TRUE;
+				CanCarryOwnFlag			= FALSE;
+				break;
+			case CTF_MUST_CARRY:
+				NeedFlagAtHome			= TRUE;
+				OwnFlagTeleportsHome	= FALSE;
+				CanCarryOwnFlag			= TRUE;
+				break;
+			case CTF_NO_RETURN:
+				NeedFlagAtHome			= FALSE;
+				OwnFlagTeleportsHome	= FALSE;
+				CanCarryOwnFlag			= FALSE;
+				break;
+			case CTF_CAN_CARRY:
+				NeedFlagAtHome			= FALSE;
+				OwnFlagTeleportsHome	= FALSE;
+				CanCarryOwnFlag			= TRUE;
+				break;
+			case CTF_ONE_TOUCH:
+				NeedFlagAtHome			= FALSE;
+				OwnFlagTeleportsHome	= TRUE;
+				CanCarryOwnFlag			= FALSE;
+				break;
 			}
-			*/
 		}
-
+	
 		RandomPickups = lpInit->RandomPickups;
 		CopyOfSeed1 = lpInit->Seed1;
 		CopyOfSeed2 = lpInit->Seed2;
 		return;
 
+
     case MSG_DROPPICKUP:
+
 		lpDropPickup = (LPDROPPICKUPMSG)MsgPnt;
 #if DEBUG_PICKUPS
 		if( lpDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ lpDropPickup->PickupInfo.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], lpDropPickup->PickupInfo.IDCount );
@@ -3268,7 +3014,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		{
 			SfxForCollectPickup( lpKillPickup->KillPickupInfo.Owner, lpKillPickup->KillPickupInfo.IDCount );
 		}
-
 #if DEBUG_PICKUPS
 		if( lpKillPickup->KillPickupInfo.Owner != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Kill Pickup Owner '%s', ID %d\n", &Names[ lpKillPickup->WhoIAm ][ 0 ], &Names[ lpKillPickup->KillPickupInfo.Owner ][ 0 ], lpKillPickup->KillPickupInfo.IDCount );
 		else DebugPrintf( "PACKET OWNER '%s' : Kill Pickup No Owner, ID %d\n", &Names[ lpKillPickup->WhoIAm ][ 0 ], lpKillPickup->KillPickupInfo.IDCount );
@@ -3276,32 +3021,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		KillPickup( lpKillPickup->KillPickupInfo.Owner, lpKillPickup->KillPickupInfo.IDCount, lpKillPickup->KillPickupInfo.Style );
 		return;
 
-    case MSG_SERVERKILLPICKUP:
-   		lpServerKillPickup = (LPSERVERKILLPICKUPMSG)MsgPnt;
-		if( PlayDemo && ( Current_Camera_View == lpServerKillPickup->WhoIAm ) && ( lpServerKillPickup->ServerKillPickupInfo.Style == PICKUPKILL_Immediate ) )
-		{
-			SfxForCollectPickup( lpServerKillPickup->ServerKillPickupInfo.Owner, lpServerKillPickup->ServerKillPickupInfo.IDCount );
-		}
-
-#if DEBUG_PICKUPS
-		if( lpServerKillPickup->ServerKillPickupInfo.Owner != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Kill Pickup Owner '%s', ID %d\n", &Names[ lpServerKillPickup->WhoIAm ][ 0 ], &Names[ lpServerKillPickup->ServerKillPickupInfo.Owner ][ 0 ], lpServerKillPickup->ServerKillPickupInfo.IDCount );
-		else DebugPrintf( "PACKET OWNER '%s' : Kill Pickup No Owner, ID %d\n", &Names[ lpServerKillPickup->WhoIAm ][ 0 ], lpServerKillPickup->ServerKillPickupInfo.IDCount );
-#endif
-		ServerKillPickup( lpServerKillPickup->ServerKillPickupInfo.Owner, lpServerKillPickup->ServerKillPickupInfo.IDCount, lpServerKillPickup->ServerKillPickupInfo.Style, lpServerKillPickup->ServerKillPickupInfo.NewOwner  );
-		return;
-
+   
     case MSG_EXPLODESHIP:
-   		lpExplodeShip = (LPEXPLODESHIPMSG)MsgPnt;
 
-		if( IsServerGame && IsServer )
-		{
-			ScatterDir = Ships[ lpExplodeShip->ExplodeShipInfo.Ship ].LastMove;
-			NormaliseVector( &ScatterDir );
-			ScatterWeaponsForShip( lpExplodeShip->ExplodeShipInfo.Ship, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-		}
+   		lpExplodeShip = (LPEXPLODESHIPMSG)MsgPnt;
 		return;
+
 
     case MSG_EXPSECONDARY:
+
 		lpExplodeSecondary = (LPEXPSECONDARYMSG)MsgPnt;
 		ExplodeSecondary( &lpExplodeSecondary->ExplodeSecondaryInfo.Pos,
 						  lpExplodeSecondary->ExplodeSecondaryInfo.Group,
@@ -4233,113 +3961,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 
 		return;
-	case MSG_GAMEPARAMETERS:
-		lpGameParamMsg = ( LPGAMEPARAMETERSMSG )MsgPnt;
-						 
-		if ( IsHost )
-		{
-			DPlayGetSessionDesc();
 
-			// if pseudohost has quit b4 game params recieved, ignore message
-			for ( i = 0; i < MAX_PLAYERS; i++ )
-			{
-				if ( PseudoHostDPID == PlayerIDs[ i ] ) 
-				{
-					switch( GameStatus[ i ] )
-					{
-					case STATUS_Null:
-					case STATUS_Left:
-					case STATUS_LeftCrashed:
-						return;
-					}
-				}
-			}
 
-			// set all relevent game variables
-
-			LevelList.selected_item = -1;
-			for( i = 0; i < LevelList.items; i++ )
-			{
-				if ( !_strnicmp( lpGameParamMsg->Level, LevelList.item[ i ], 7 ) ) 
-				{
-					LevelList.selected_item = i;
-					NewLevelNum = i;
-					break;
-				}
-			}
-			if ( LevelList.selected_item < 0 )
-			{
-				// server does not have chosen level!!!
-				Msg("invalid level!!\n");
-				return;
-			}
-
-	 		// store full level name in session desc
-			GetLevelName( full_level_name, MAX_LEVEL_NAME_LENGTH, LevelList.selected_item );
-			StoreLevelNameInSessionDesc( full_level_name );
-
-			MaxKillsSlider.value = lpGameParamMsg->ScoreLimit;
-			MaxKills = lpGameParamMsg->ScoreLimit;
-			TimeLimit.value = lpGameParamMsg->TimeLimit;
-			if( TimeLimit.value )
-			{
-				CountDownOn = TRUE;
-			}
-			else
-			{
-				CountDownOn = FALSE;
-			}
-
-			GameType = ( ( lpGameParamMsg->GameInfo & GAMEPARAM_GameTypeBits ) >> GAMEPARAM_GameTypeBitShift );
-
-			CTFSlider.value = ( ( lpGameParamMsg->GameInfo & GAMEPARAM_CTFTypeBits ) >> GAMEPARAM_CTFTypeBitShift );
-
-			SetUpGameType( GameType );
-
-			ResetKillsPerLevel = ( lpGameParamMsg->GameInfo & GAMEPARAM_ResetKillsPerLevelBit );
-
-			BikeExhausts = ( lpGameParamMsg->GameInfo & GAMEPARAM_BikeExhaustBit );
-			MyBrightShips = ( lpGameParamMsg->GameInfo & GAMEPARAM_BrightBikesBit );
-			RandomPickups = ( lpGameParamMsg->GameInfo & GAMEPARAM_RandomisePickupsBit );
-			BountyBonus = ( lpGameParamMsg->GameInfo & GAMEPARAM_BountyBonusBit );
-			BountyBonusInterval = BountyBonusSlider.value = ( ( ( lpGameParamMsg->GameInfo & GAMEPARAM_BountyBonusValueBits ) >> GAMEPARAM_BountyBonusValueBitShift ) * 5 );
-			HarmTeamMates = ( lpGameParamMsg->GameInfo & GAMEPARAM_HarmTeamMatesBit );
-
-			ColPerspective = ( lpGameParamMsg->GameInfo & GAMEPARAM_LagCompensationBits ) >> GAMEPARAM_LagCompensationBitShift;
-
-			GoalScoreSlider.value = ( ( lpGameParamMsg->GameInfo & GAMEPARAM_FlagCaptureScoreBits ) >> GAMEPARAM_FlagCaptureScoreBitShift );
-
-			ServerCollisions = ( lpGameParamMsg->GameInfo & GAMEPARAM_ServerCollisionBit );
-
-			UnpackPickupInfo( lpGameParamMsg->AllowedPickups );
-
-			NumPrimaryPickups = lpGameParamMsg->PrimaryPickups;
-
-			// update user fields in session desc
-			StoreSessionUserFields( glpdpSD );
-
-			// update server status in session description
-			glpdpSD->dwUser3 &= ~ServerGameStateBits;	// mask out old server state
-			glpdpSD->dwUser3 |=	SERVER_STATE_Joinable;
-
-			/*
-			// set max_players to true amount
-			glpdpSD->dwMaxPlayers = MaxPlayersSlider.max;
-			*/
-
-			// set max_players to required amount
-			glpdpSD->dwMaxPlayers = lpGameParamMsg->MaxPlayers + 1;	// extra player is server
-
-			DPlaySetSessionDesc(0);
-
-			if ( TeamGame )
-			{
-				// change menu ( viewing team selection )
-				MenuChangeEx( &MENU_NEW_WatchTeamSelect );
-			}
-		}
-
-		return;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	case MSG_SESSIONDESC:
 		DebugPrintf("about to evaluate session desc packet\n");
@@ -4366,24 +3989,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 #endif
-	case MSG_TOCLIENT:
-		if ( !IsHost )
-		{
-			lpToClientMsg = ( LPTOCLIENTMSG )MsgPnt;
 
-			switch( lpToClientMsg->Type )
-			{
-			case TOCLIENTMSG_YouArePseudoHost:
-				if ( !IsPseudoHost )
-				{
-					IsPseudoHost = TRUE;
-					AddColourMessageToQue(SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
-				}
-				SendGameMessage(MSG_TOSERVER, 0, 0, TOSERVERMSG_IAmPseudoHost, 0);
-				break;
-			}
-		}
-		return;
 	case MSG_LEVELNAMES:
 
 		if ( ( IsPseudoHost ) && ( MyGameStatus == STATUS_GetLevelNames ) )
@@ -4550,62 +4156,57 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
     LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
-    LPUPDATEMSG			lpUpdate;
-    LPFUPDATEMSG		lpFUpdate;
-	LPVERYSHORTFUPDATEMSG lpVeryShortFUpdate;
-	LPGROUPONLY_VERYSHORTFUPDATEMSG lpGroupOnly_VeryShortFUpdate;
-    LPHEREIAMMSG		lpHereIAm;
-    LPINITMSG			lpInit;
-    LPPRIMBULLPOSDIRMSG lpPrimBullPosDir;
-    LPSECBULLPOSDIRMSG  lpSecBullPosDir;
-    LPTITANBITSMSG		lpTitanBits;
-    LPSHIPHITMSG		lpShipHit;
-    LPSHORTSHIPHITMSG	lpShortShipHit;
-    LPSHIPDIEDMSG       lpShipDied;
-    LPDROPPICKUPMSG		lpDropPickup;
-    LPVERYSHORTDROPPICKUPMSG		lpVeryShortDropPickup;
-    LPKILLPICKUPMSG		lpKillPickup;
-    LPSERVERKILLPICKUPMSG lpServerKillPickup;
-    LPEXPLODESHIPMSG	lpExplodeShip;
-    LPEXPSECONDARYMSG	lpExplodeSecondary;
-    LPTEAMGOALSMSG		lpTeamGoals;
-    LPSHOCKWAVEMSG		lpShockwave;
-    LPBGOUPDATEMSG		lpBGOUpdate;
-    LPSHORTSTATSMSG		lpShortStats;
-    LPSTATUSMSG			lpStatus;
-    LPLONGSTATUSMSG		lpLongStatus;
-    LPSHORTPICKUPMSG	lpShortPickup;
-    LPSHORTREGENSLOTMSG	lpShortRegenSlot;
-    LPSHORTTRIGGERMSG	lpShortTrigger;
-    LPSHORTTRIGVARMSG	lpShortTrigVar;
-    LPSHORTMINEMSG		lpShortMine;
-    LPTEXTMSG			lpTextMsg;
-    LPBOMBMSG			lpBomb;
-    LPPINGMSG			lpPingMsg;
-	LPPLAYERPINGSMSG	lpPlayerPingsMsg;
-	LPNAMEMSG			lpName;
-	LPACKMSG			lpAckMsg;
-	LPKILLSDEATHSBIKENUMMSG	lpKillsDeathsMsg;
-	LPYOUQUITMSG			lpYouQuitMsg;
+    LPUPDATEMSG							lpUpdate;
+    LPFUPDATEMSG						lpFUpdate;
+	LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
+	LPGROUPONLY_VERYSHORTFUPDATEMSG			lpGroupOnly_VeryShortFUpdate;
+    LPHEREIAMMSG						lpHereIAm;
+    LPINITMSG								lpInit;
+    LPPRIMBULLPOSDIRMSG				lpPrimBullPosDir;
+    LPSECBULLPOSDIRMSG				lpSecBullPosDir;
+    LPTITANBITSMSG						lpTitanBits;
+    LPSHIPHITMSG							lpShipHit;
+    LPSHORTSHIPHITMSG				lpShortShipHit;
+    LPSHIPDIEDMSG						lpShipDied;
+    LPDROPPICKUPMSG					lpDropPickup;
+    LPVERYSHORTDROPPICKUPMSG	lpVeryShortDropPickup;
+    LPKILLPICKUPMSG						lpKillPickup;
+    LPEXPLODESHIPMSG					lpExplodeShip;
+    LPEXPSECONDARYMSG				lpExplodeSecondary;
+    LPTEAMGOALSMSG					lpTeamGoals;
+    LPSHOCKWAVEMSG					lpShockwave;
+    LPBGOUPDATEMSG					lpBGOUpdate;
+    LPSHORTSTATSMSG					lpShortStats;
+    LPSTATUSMSG							lpStatus;
+    LPLONGSTATUSMSG					lpLongStatus;
+    LPSHORTPICKUPMSG					lpShortPickup;
+    LPSHORTREGENSLOTMSG			lpShortRegenSlot;
+    LPSHORTTRIGGERMSG				lpShortTrigger;
+    LPSHORTTRIGVARMSG				lpShortTrigVar;
+    LPSHORTMINEMSG					lpShortMine;
+    LPTEXTMSG								lpTextMsg;
+    LPBOMBMSG							lpBomb;
+    LPPINGMSG								lpPingMsg;
+	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
+	LPNAMEMSG							lpName;
+	LPACKMSG								lpAckMsg;
+	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
+	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSENDKILLSDEATHSBIKENUMMSG			lpSendKillsDeathsBikenum;
-	LPSERVERSAYSSHIPDIEDMSG lpServerSaysShipDiedMsg;
-    int					nBytes;
-    int					i;
-    DWORD				send_to = 0;
-	DWORD				Flags = 0;
-	int					Count;
-	HRESULT				hr;
+    int				nBytes;
+    int				i;
+    DWORD		send_to = 0;
+	DWORD		Flags = 0;
+	int				Count;
+	HRESULT		hr;
 	LPSETTIMEMSG		lpSetTime;
 	LPREQTIMEMSG		lpReqTime;
-	LPGAMEPARAMETERSMSG lpGameParamMsg;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
 #endif
-	LPTOSERVERMSG lpToServerMsg;
-	LPTOCLIENTMSG lpToClientMsg;
-	LPLEVELNAMESMSG	lpLevelNamesMsg;
-	LPTRACKERINFOMSG	lpTrackerInfoMsg;
-	LPSHIELDHULLMSG	lpShieldHullMsg;
+	LPLEVELNAMESMSG		lpLevelNamesMsg;
+	LPTRACKERINFOMSG		lpTrackerInfoMsg;
+	LPSHIELDHULLMSG		lpShieldHullMsg;
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
@@ -4619,9 +4220,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	//DebugPrintf("about to send msg %x\n",msg);	
 	switch( msg )
     {
-	case MSG_SERVERSCORED:
-		lpServerScoredMsg = (LPSERVERSCOREDMSG)&CommBuff[0];
 
+	case MSG_SERVERSCORED:
+
+		lpServerScoredMsg = (LPSERVERSCOREDMSG)&CommBuff[0];
         lpServerScoredMsg->MsgCode = msg;
 		lpServerScoredMsg->WhoIAm = WhoIAm;
 		lpServerScoredMsg->WhoScored = ShipNum;
@@ -4632,47 +4234,26 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		return;
 #endif
 		break;
-	case MSG_SHIELDHULL:
-		lpShieldHullMsg = (LPSHIELDHULLMSG)&CommBuff[0];
 
+
+	case MSG_SHIELDHULL:
+
+		lpShieldHullMsg = (LPSHIELDHULLMSG)&CommBuff[0];
         lpShieldHullMsg->MsgCode = msg;
 		lpShieldHullMsg->WhoIAm = WhoIAm;
 		lpShieldHullMsg->Shield = (BYTE) Ships[WhoIAm].Object.Shield;
 		lpShieldHullMsg->Hull = (BYTE) Ships[WhoIAm].Object.Hull;
-
 		lpShieldHullMsg->ValidChange = JustGenerated | JustPickedUpShield;
 		Ships[WhoIAm].ShieldHullCount++;
 		lpShieldHullMsg->Count = Ships[WhoIAm].ShieldHullCount;
-
 		JustPickedUpShield = FALSE;
 		JustGenerated = FALSE;
-
 		nBytes = sizeof( SHIELDHULLMSG );
 		break;
-	case MSG_SERVERSAYSSHIPDIED:
-		lpServerSaysShipDiedMsg = (LPSERVERSAYSSHIPDIEDMSG)&CommBuff[0];
-		*lpServerSaysShipDiedMsg = SSSDM;
 
-		nBytes = sizeof( SERVERSAYSSHIPDIEDMSG );
 
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SERVERSAYSSHIPDIED , FALSE , FALSE);
-		return;
-#endif
-		break;
-
-    case MSG_SENDKILLSDEATHSBIKENUM:
-		lpSendKillsDeathsBikenum = (LPSENDKILLSDEATHSBIKENUMMSG)&CommBuff[0];
-        lpSendKillsDeathsBikenum->MsgCode = msg;
-		lpSendKillsDeathsBikenum->WhoIAm = WhoIAm;
-		nBytes = sizeof( SENDKILLSDEATHSBIKENUMMSG );
-
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SENDKILLSDEATHSBIKENUM , FALSE , TRUE);
-		return;
-#endif
-		break;
     case MSG_YOUQUIT:
+
 		lpYouQuitMsg = (LPYOUQUITMSG)&CommBuff[0];
         lpYouQuitMsg->MsgCode = msg;
 		lpYouQuitMsg->WhoIAm = WhoIAm;
@@ -4686,6 +4267,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 
     case MSG_KILLSDEATHSBIKENUM:
+
 		lpKillsDeathsMsg = (LPKILLSDEATHSBIKENUMMSG)&CommBuff[0];
         lpKillsDeathsMsg->MsgCode = msg;
 		lpKillsDeathsMsg->WhoIAm = WhoIAm;
@@ -4698,10 +4280,11 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		return;
 #endif
 		break;
-    case MSG_NAME:
-		if( !IsServerGame )
-			DPlaySetPlayerName(dcoID, &biker_name[0], 0);
 
+
+    case MSG_NAME:
+
+		DPlaySetPlayerName(dcoID, &biker_name[0], 0);
 		lpName = (LPNAMEMSG)&CommBuff[0];
         lpName->MsgCode = msg;
 		lpName->WhoIAm = WhoIAm;
@@ -4713,87 +4296,61 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpName->Name[7] = 0;
 		Names[WhoIAm][7] = 0;
 		nBytes = sizeof( NAMEMSG );
-
 #ifdef	GUARANTEEDMESSAGES
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_NAME , FALSE, TRUE );
 		return;
 #endif
 		break;
 	
-	case MSG_HEREIAM:
 
-		// only applicable if I am the first to join a server game, but no harm in doing this anyway
-		memset( ServerLevelNames, 0, sizeof( ServerLevelNames ) );
-		NumServerLevels = 0;
-		ServerLevelsListState = SERVERLEVELS_Waiting;	
+	case MSG_HEREIAM:
 
         lpHereIAm = (LPHEREIAMMSG)&CommBuff[0];
         lpHereIAm->MsgCode = msg;
         lpHereIAm->WhoIAm = WhoIAm;
         lpHereIAm->ID = (DWORD)dcoID;
-
         lpHereIAm->Rejoining = Rejoining;
         lpHereIAm->Old_WhoIAm = (BYTE) Old_WhoIAm;
         lpHereIAm->Old_TeamNumber = (BYTE) Old_TeamNumber;
-        
 		nBytes = sizeof( HEREIAMMSG );
         break;
 
+
     case MSG_INIT:
+
 		if( !IsHost )
 			return;
-
 		lpInit = (LPINITMSG)&CommBuff[0];
-
 		lpInit->FromDpid = dcoID;
-
         lpInit->MsgCode = msg;
         lpInit->WhoIAm = WhoIAm;
-
 		DPlayGetSessionDesc();
-
 		lpInit->dwUser3 = glpdpSD->dwUser3;
-
-		if ( ( glpdpSD->dwUser3 & ServerGameStateBits ) == SERVER_STATE_HostChoosing )
-		{
-			DebugPrintf("error - server is about to send MSG_INIT before pseudohost has choosen game type\n");
-			return;	// requesting player will not get player number
-		}
-
         send_to = to;
 		lpInit->RandomPickups = RandomPickups;
 		lpInit->Seed1 = CopyOfSeed1;
 		lpInit->Seed2 = CopyOfSeed2;
-		//lpInit->HarmTeamMates = HarmTeamMates;
-		//lpInit->BrightShips = BrightShips;
-		//lpInit->BikeExhausts = BikeExhausts;
-		//lpInit->Collisions = ColPerspective;
-		//lpInit->MaxKills = MaxKills;
+		lpInit->HarmTeamMates = HarmTeamMates;
+		lpInit->BrightShips = BrightShips;
+		lpInit->BikeExhausts = BikeExhausts;
+		lpInit->Collisions = ColPerspective;
+		lpInit->MaxKills = MaxKills;
 		lpInit->PacketsPerSecond = DPlayUpdateInterval;
 		PackPickupInfo( lpInit->PickupFlags );
 		lpInit->GoalScore = GoalScore;
 		lpInit->BountyBonusInterval = BountyBonusInterval;
-		//lpInit->CTF_Type = CTFSlider.value;
-
+		lpInit->CTF_Type = CTFSlider.value;
 		lpInit->PrimaryPickups = NumPrimaryPickups;
-
-		lpInit->ServerCollisions = ServerCollisions;
-
 		for( Count = 0 ; Count < 32 ; Count++ )
-		{
 			lpInit->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
-		}
 
-		
 		if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
 		{
 			// tell the player who is host thinks is ready.
 			for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
 			{															
 				lpInit->PlayerReady[Count] = PlayerReady[Count];
-				
 				lpInit->GameStatus[Count] = GameStatus[Count];
-
 			}															
 			if( (mask != 0) && (ShipNum < MAX_PLAYERS) && GameStatus[ShipNum] == STATUS_GetPlayerNum )
 			{
@@ -4807,11 +4364,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				Names[i][0] = 0;
 
 				if( Type == (BYTE) -1 )
-				{
 					TeamNumber[i] = 0;
-				}else{
+				else
 					TeamNumber[i] = Type;
-				}
+
 				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			// Replaced i with Count
 				{															// Replaced i with Count
 					lpInit->TeamNumber[Count] = TeamNumber[Count];			// Replaced i with Count
@@ -4829,8 +4385,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 					CopyTrigVars( (uint16) i );
 					CopyMines( (uint16) i );
 				}
-			}else{
-			
+			}
+			else
+			{
 				// The game is currently ok to join......
 				i = MAX_PLAYERS;
 				if( ShipNum < MAX_PLAYERS )
@@ -4876,21 +4433,17 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
 
 					if( Type == (BYTE) -1 )
-					{
 						TeamNumber[i] = 0;
-					}else{
+					else
 						TeamNumber[i] = Type;
-					}
 					
-					for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			// Replaced i with Count
-					{															// Replaced i with Count
-						lpInit->TeamNumber[Count] = TeamNumber[Count];			// Replaced i with Count
-					}															// Replaced i with Count
+					for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
+						lpInit->TeamNumber[Count] = TeamNumber[Count];						
 					
 					lpInit->Status = MyGameStatus;
+					
 					// getplayer
 					// over the next few frames send the current stats table...
-	
 					if(	MyGameStatus == STATUS_Normal )
 					{
 //						StatsCount = MAX_PLAYERS;
@@ -4900,21 +4453,23 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 						CopyTrigVars( (uint16) i );
 						CopyMines( (uint16) i );
 					}
-				}else{
-					// The game is currently full or nearly so dont let anyone else join...
-					lpInit->YouAre = MAX_PLAYERS+2;
 				}
+				// The game is currently full or nearly so dont let anyone else join...
+				else
+					lpInit->YouAre = MAX_PLAYERS+2;
 			}
-		}else{
-			// The game is currently non joinable so dont let anyone else join...
-			lpInit->YouAre = MAX_PLAYERS;
 		}
+		// The game is currently non joinable so dont let anyone else join...
+		else
+			lpInit->YouAre = MAX_PLAYERS;
 
 		DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);
-
 		nBytes = sizeof( INITMSG );
 		break;
+
+
     case MSG_VERYSHORTUPDATE:
+
         lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG)&CommBuff[0];
         lpVeryShortUpdate->MsgCode = msg;
         lpVeryShortUpdate->WhoIAm = WhoIAm;
@@ -4993,17 +4548,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
-    case MSG_SERVERKILLPICKUP:
-        lpServerKillPickup = (LPSERVERKILLPICKUPMSG) &CommBuff[0];
-        lpServerKillPickup->MsgCode = msg;
-        lpServerKillPickup->WhoIAm = WhoIAm;
-        lpServerKillPickup->ServerKillPickupInfo = TempServerKillPickup;
-        nBytes = sizeof( SERVERKILLPICKUPMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SERVERKILLPICKUP , FALSE , FALSE);
-		return;
-#endif
-        break;
 
     case MSG_EXPLODESHIP:
         lpExplodeShip = (LPEXPLODESHIPMSG) &CommBuff[0];
@@ -5451,78 +4995,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpAckMsg->AckTo = ShipNum;
 		nBytes = sizeof( ACKMSG );
 		break;
-	case MSG_GAMEPARAMETERS:
-		lpGameParamMsg = ( LPGAMEPARAMETERSMSG )&CommBuff[ 0 ];
 
-        lpGameParamMsg->MsgCode = msg;
-        lpGameParamMsg->WhoIAm = WhoIAm;
 
-		lpGameParamMsg->MaxPlayers = MaxServerPlayersSlider.value; 
-
-		strncpy( lpGameParamMsg->Level, LevelList.item[ LevelList.selected_item ], sizeof( lpGameParamMsg->Level ) );
-		lpGameParamMsg->Level[ 7 ] = 0;
-		lpGameParamMsg->ScoreLimit = ( uint8 )( MaxKillsSlider.value );
-		MaxKills = MaxKillsSlider.value;
-
-		lpGameParamMsg->TimeLimit =  ( uint8 )( TimeLimit.value );
-		if( lpGameParamMsg->TimeLimit )
-		{
-			CountDownOn = TRUE;
-		}
-		else
-		{
-			CountDownOn = FALSE;
-		}
-
-		lpGameParamMsg->GameInfo = 0;
-		lpGameParamMsg->GameInfo |= ( GameType << GAMEPARAM_GameTypeBitShift );
-		lpGameParamMsg->GameInfo |= ( CTFSlider.value << GAMEPARAM_CTFTypeBitShift );
-		if ( BikeExhausts )
-		{
-			lpGameParamMsg->GameInfo |= ( GAMEPARAM_BikeExhaustBit );
-		}
-
-		if( ResetKillsPerLevel )
-		{
-			lpGameParamMsg->GameInfo |= (GAMEPARAM_ResetKillsPerLevelBit );
-		}
-		if ( MyBrightShips )
-		{
-			lpGameParamMsg->GameInfo |= ( GAMEPARAM_BrightBikesBit );
-		}
-		if ( RandomPickups )
-		{
-			lpGameParamMsg->GameInfo |= ( GAMEPARAM_RandomisePickupsBit );
-		}
-		if ( BountyBonus )
-		{
-			lpGameParamMsg->GameInfo |= ( GAMEPARAM_BountyBonusBit );
-			lpGameParamMsg->GameInfo |= ( ( BountyBonusSlider.value / 5 ) << GAMEPARAM_BountyBonusValueBitShift );
-		}
-		if ( HarmTeamMates )
-		{
-			lpGameParamMsg->GameInfo |= GAMEPARAM_HarmTeamMatesBit;
-		}
-
-		if ( ServerCollisions )
-		{
-			lpGameParamMsg->GameInfo |= GAMEPARAM_ServerCollisionBit;
-		}
-
-		lpGameParamMsg->GameInfo |= ( ColPerspective << GAMEPARAM_LagCompensationBitShift );
-
-		lpGameParamMsg->GameInfo |= ( ( GoalScoreSlider.value ) << GAMEPARAM_FlagCaptureScoreBitShift );
-
-		PackPickupInfo( lpGameParamMsg->AllowedPickups );
-
-		lpGameParamMsg->PrimaryPickups = NumPrimaryPickups;
-
-		nBytes = sizeof( GAMEPARAMETERSMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_GAMEPARAMETERS , FALSE , TRUE);
-		return;
-#endif
-		break;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	case MSG_SESSIONDESC:
 
@@ -5552,35 +5026,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
 		break;
 #endif
-	case MSG_TOSERVER:
-
-		lpToServerMsg = ( LPTOSERVERMSG )&CommBuff[ 0 ];
-		lpToServerMsg->MsgCode = msg;
-		lpToServerMsg->WhoIAm = WhoIAm;
-		lpToServerMsg->Type = Type;
-		lpToServerMsg->Data = mask;
-
-		nBytes = sizeof( TOSERVERMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_TOSERVER , FALSE , TRUE);
-		return;
-#endif
-		break;
-	case MSG_TOCLIENT:
-
-		send_to = to;
-
-		lpToClientMsg = ( LPTOCLIENTMSG )&CommBuff[ 0 ];
-		lpToClientMsg->MsgCode = msg;
-		lpToClientMsg->WhoIAm = WhoIAm;
-		lpToClientMsg->Type = Type;
-		lpToClientMsg->Data = mask;
-
-		nBytes = sizeof( TOCLIENTMSG );
-
-		Flags |= DPSEND_GUARANTEED;
-
-		break;
+	
 	case MSG_LEVELNAMES:
 
 		lpLevelNamesMsg = ( LPLEVELNAMESMSG )&CommBuff[ 0 ];
@@ -5653,11 +5099,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 	if( !send_to )
 	{
-		if( IsServer )
-		{
-			AddMessageToSeverQue( &CommBuff[0] );
-			return;
-		}else if( BigPackets )
+		if( BigPackets )
 		{
 			AddToBigPacket( nBytes , &CommBuff[0] , msg );
 			return;
@@ -6369,11 +5811,7 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 				GMm->Count = GM->Count++;
 
 
-				if( IsServer && !SendGuaranteed)
-				{
-					GlobalFramelagAddition = 0.0F;
-					AddMessageToSeverQue( &GM->Message );
-				}else if( BigPackets && !SendGuaranteed )
+				if( BigPackets && !SendGuaranteed )
 				{
 					AddToBigPacket( GM->MessageLength , &GM->Message , MSG_GUARANTEEDMSG);
 				}else
@@ -6735,13 +6173,6 @@ void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType)
 {
     DWORD       nBytes;
 
-	if( IsServer )
-	{
-		GlobalFramelagAddition = 0.0F;
-		AddMessageToSeverQue( Message );
-		return;
-	}
-
 	if( RecordDemo && MyGameStatus == STATUS_Normal && MsgType != MSG_GUARANTEEDMSG)
 	{
 		QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
@@ -6960,46 +6391,9 @@ DWORDLONG CurrentServerAck = 0;
 
 void AddToServicePacket( SERVERMSGHEADER * SMH, int i );
 void SendServerPacket( int i );
-void KillServiceMessageHeader( SERVERMSGHEADER * SMH );
 void BuildCurrentServerAck( void );
 BOOL CheckIfPacketRelevant( BYTE * Message , int Player );
 BOOL MakeTempSMH( void * Message );
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		InitServerMsgQue
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void InitServerMessageQue( void )
-{
-	ServerUpdateTimer = 0;
-	SMHs = NULL;
-	OldestSMHs = NULL;
-
-	ServerMessagesActive = 0;
-	ServerMessagesActiveMax = 0;
-}
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		InitServerMsgQue
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void FreeServerMessageQue( void )
-{
-	SERVERMSGHEADER * SMH;
-	SERVERMSGHEADER * NextSMH;
-
-	ServerUpdateTimer = 0;
-	OldestSMHs = NULL;
-	ServerMessagesActiveMax = 0;
-	SMH = SMHs;
-	while( SMH )
-	{
-		NextSMH = SMH->Next;
-		KillServiceMessageHeader( SMH );
-		SMH = NextSMH;
-	}
-}
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		BuildCurrentServerAck
@@ -7022,89 +6416,6 @@ void BuildCurrentServerAck( void )
 		}
 	}
 	CurrentServerAck = Ack;
-}
-
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Add Mesage to Server Que...
-	Input		:		void * Message
-	Output		:		BOOL TRUE/FALSE
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL AddMessageToSeverQue( void * Message )
-{
-	SERVERMSGHEADER * SMH;
-	SERVERMSGHEADER * LastSMH;
-	int MsgLength;
-	BYTE MsgType;
-	BYTE Player;
-	BYTE * BytePnt;
-	LPGUARANTEEDMSG		lpGuaranteedMsg;
-
-	if( PlayDemo || !IsServer )
-		return TRUE;
-	BytePnt = (BYTE*) Message;
-
-	MsgType = *BytePnt++;
-	MsgLength = RealPacketSize[MsgType];
-	Player = *BytePnt;
-
-	if( MsgType == MSG_ACKMSG && Player != WhoIAm )
-		return TRUE;
-
-	if( MsgType == MSG_GUARANTEEDMSG )
-	{
-		lpGuaranteedMsg = (LPGUARANTEEDMSG)Message;
-
-		if( lpGuaranteedMsg->Count == 0 )
-		{
-			if( !UpdateAmmoAndValidateMessage( Message ) )
-				return FALSE;
-		}
-		if( lpGuaranteedMsg->Ack == (uint32) (1<<WhoIAm) )
-		{
-			lpGuaranteedMsg->Ack = 0;
-			return TRUE;
-		}
-		MsgLength +=  RealPacketSize[lpGuaranteedMsg->StartOfMessage] -1 ;
-	}else{
-		if( !UpdateAmmoAndValidateMessage( Message ) )
-			return FALSE;
-	}
-	
-	if( Player >= MAX_PLAYERS )
-		return TRUE;
-
-	SMH = (SERVERMSGHEADER*) malloc( sizeof(SERVERMSGHEADER) + MsgLength -1 );
-	if( !SMH )
-	{
-		return FALSE;
-	}
-
-	ServerMessagesActive++;
-	if( ServerMessagesActive > ServerMessagesActiveMax )
-		ServerMessagesActiveMax = ServerMessagesActive;
-
-	LastSMH = SMHs;
-	if( LastSMH )
-	{
-		LastSMH->Prev = SMH;
-	}
-	SMH->Next = LastSMH;
-	SMH->Prev = NULL;
-	SMHs = SMH;
-
-	if( !OldestSMHs )
-	{
-		OldestSMHs = SMH;
-	}
-	memcpy( &SMH->Message, Message, MsgLength );
-
-	SMH->MsgType = MsgType;
-	SMH->MsgLength = MsgLength;
-	SMH->WhoIAm = Player;
-	SMH->framelag = GlobalFramelagAddition;
-	return TRUE;
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -7147,181 +6458,11 @@ BOOL MakeTempSMH( void * Message )
 	return TRUE;
 }
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Kill a Service header message...
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void KillServiceMessageHeader( SERVERMSGHEADER * SMH )
-{
-	SERVERMSGHEADER * PrevSMH;
-	SERVERMSGHEADER * NextSMH;
-
-	NextSMH = SMH->Next;
-	PrevSMH = SMH->Prev;
-
-	if( SMH == SMHs )
-	{
-		SMHs = NextSMH;
-	}
-	if( SMH == OldestSMHs )
-	{
-		OldestSMHs = PrevSMH;
-	}
-
-	if( NextSMH )
-	{
-		NextSMH->Prev = PrevSMH;
-	}
-	if( PrevSMH )
-	{
-		PrevSMH->Next = NextSMH;
-	}
-	free( SMH );
-	ServerMessagesActive--;
-}
-
-SERVERUPDATEMSG ServerUpdateMessage;
-
 #define SERVER_MAX_MESSAGES_IN_QUE 1
 
 extern SLIDER ThrottleSlider;
 DWORD MaxPacketsInQue = 0;
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Service The Server...
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void ServiceServer( BOOL OverideTime )
-{
-	int i,e;
-	int ServerPlayersActiveTemp = 0;
-	SERVERMSGHEADER * SMH;
-	SERVERMSGHEADER * PrevSMH;
-	//char buf[ 128 ];
-
-	if( !glpDP || !dcoID || PlayDemo || !IsServer )
-		return;
-	BuildCurrentServerAck();
-
-	ServerUpdateMessage.MsgCode = MSG_SERVERUPDATE;
-	ServerUpdateMessage.WhoIAm = WhoIAm;
-
-	GameStatus[WhoIAm] = MyGameStatus;
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-
-	if( ( TempTime > ServerUpdateTimer ) || OverideTime )
-	{
-		DWORD dwNumMsgs;
-		HRESULT hr;
-		BOOL throttle = FALSE;
-		
-		hr = IDirectPlayX_GetMessageQueue( glpDP, 0, 0, DPMESSAGEQUEUE_SEND , &dwNumMsgs, NULL );
-		switch ( hr )
-		{
-		case DP_OK:
-			if ( dwNumMsgs > (DWORD)ThrottleSlider.value )
-			{
-				if ( dwNumMsgs > MaxPacketsInQue )
-				{
-					MaxPacketsInQue = dwNumMsgs;
-				}
-				throttle = TRUE;
-			}
-			break;
-		case DPERR_UNSUPPORTED:
-			CenterPrint4x5Text( UNSUPPORTED_MSG_QUE, d3dapp->szClient.cy - FontHeight * 2, 2 );
-			break;
-		case DPERR_INVALIDFLAGS:
-		case DPERR_INVALIDPARAMS:
-		case DPERR_INVALIDPLAYER:
-		default:
-			Msg("serious error with IDirectPlayX_GetMessageQueue ( error = %d )\n", hr );
-		}
-		
-		if ( !throttle )
-		{
-			for( i = 0 ; i < MAX_PLAYERS ; i ++ )
-			{
-				if( (GameStatus[i]!=STATUS_GetPlayerNum) &&
-					(GameStatus[i]!=STATUS_LeftCrashed) &&
-					(GameStatus[i]!=STATUS_Left) &&
-					(GameStatus[i]!=STATUS_Null) )
-				{
-
-					// run through all the packets that have been sent to the server and check if player(i) has been sent it yet
-					// if he hasnt add it to the bigpacket and send when necessary...
-					// also check that the message still needs to be sent to someone...if it doesnt kill it off...
-					ServerUpdateMessage.Players = 0;
-					
-					SMH = OldestSMHs;
-					while( SMH )
-					{
-						PrevSMH = SMH->Prev;
-						if( (SMH->WhoIAm != i) && (i!=WhoIAm) )
-						{
-							if( CheckIfPacketRelevant( &SMH->Message , i ) )
-							{
-								AddToServicePacket( SMH, i );
-							}
-						}
-						SMH = PrevSMH;
-					}
-					if( i !=WhoIAm )
-					{
-						for( e = 0 ; e < MAX_PLAYERS ; e++ )
-						{
-							ServerUpdateMessage.Status[e] = GameStatus[e];
-
-							if( (GameStatus[e]!=STATUS_GetPlayerNum) &&
-								(GameStatus[e]!=STATUS_LeftCrashed) &&
-								(GameStatus[e]!=STATUS_Left) &&
-								(GameStatus[e]!=STATUS_Null) && Ships[e].enable )
-							{
-								if( (MyGameStatus != STATUS_Normal) || VisibleOverlap( Ships[ i ].Object.Group, Ships[ e ].Object.Group, NULL ) )
-								{
-										ServerUpdateMessage.Players |= 1 << e;
-								}else{
-									ServerUpdateMessage.Group[e] = (BYTE) Ships[e].RealGroup;
-								}
-							}
-						}
-
-						ServerUpdateMessage.Players &= ~1;
-						MakeTempSMH( (void *) &ServerUpdateMessage );
-						AddToServicePacket( TempSMH, i );
-						SendServerPacket( i );
-						free(TempSMH);
-						TempSMH = NULL;
-					}
-					ServerPlayersActiveTemp++;
-				}
-			}
-			if( MyGameStatus == STATUS_Normal )
-			{
-				ServerUpdateTimer = TempTime + ( Freq / PacketsSlider.value );
-			}else{
-				ServerUpdateTimer = TempTime + ( Freq / 2 );
-			}
-			// Clear out all message from the que as they have been sent to everyone...
-			SMH = OldestSMHs;
-			while( SMH )
-			{
-				PrevSMH = SMH->Prev;
-				KillServiceMessageHeader( SMH );
-				SMH = PrevSMH;
-			}
-		}else
-		{
-			CenterPrint4x5Text( THROTTLE, d3dapp->szClient.cy - FontHeight * 2, 2 );
-		}
-	}
-	//sprintf( buf, "Max packets in que = %d", MaxPacketsInQue );
-	//CenterPrint4x5Text( buf, d3dapp->szClient.cy - FontHeight * 4, 2 );
-
-}
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Check if a packet is relevant to someone
 	Input		:		BYTE Player
@@ -7618,16 +6759,10 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 //		if( lpAckMsg->WhoIAm != Player )
 //			return FALSE;
 		break;
-	case MSG_GAMEPARAMETERS:
-		return FALSE;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	case MSG_SESSIONDESC:
 		return FALSE;
 #endif
-	case MSG_TOSERVER:
-		return FALSE;
-	case MSG_TOCLIENT:
-		return TRUE;
 	case MSG_LEVELNAMES:
 		return TRUE;
 	case MSG_TRACKERINFO:
@@ -7749,129 +6884,6 @@ void SendServerPacket( int Player )
 	NumOfPacketsInServerPacket = 0;
 }
 
-#if 0
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Server Does Damage....
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-int16 ServerDoDamage( BYTE you );
-
-void	ServerIHitYou( BYTE Owner , BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil )
-{
-	// That player has Incremeted his shield or hull illegally...
-	if( !CanDoDamage[Owner] )
-		return;
-	
-	IHitYou( you, Damage, Recoil, Point, Dir, Force, WeaponType, Weapon, FramelagRecoil );
-
-	Ships[you].Damage = Damage;
-	Ships[you].ShipThatLastHitMe = Owner;
-
-
-	if( ServerDoDamage( you ) )
-	{
-		// That Ship Should have died....
-		Ships[you].Object.Hull = START_HULL;
-		Ships[you].Object.Shield = START_SHIELD;
-
-		SSSDM.MsgCode = MSG_SERVERSAYSSHIPDIED;
-		SSSDM.WhoIAm = WhoIAm;
-		SSSDM.WhoWasKilled = you;
-		SSSDM.WhoKilledThem = Owner;
-		SSSDM.Type = 0;
-		SSSDM.WeaponType = WeaponType;
-		SSSDM.Weapon = Weapon;
-		SSSDM.Pos = *Point;
-		SSSDM.Deaths = Ships[you].Deaths;
-		SendGameMessage( MSG_SERVERSAYSSHIPDIED, 0, 0, 0, 0 );
-
-		QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-		TimeSinceDeath[you] = TempTime + ( Freq * 10 );
-
-//		Ships[ship].Deaths++;
-	}
-}
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Check Server Death times...
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void	CheckServerDeathTimes( void )
-{
-	int i;
-	if( !IsServer )
-		return;
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	for( i = 1 ; i < MAX_PLAYERS ; i++ )
-	{
-		if( TimeSinceDeath[i] != 0 )
-		{
-
-			if( TimeSinceDeath[i] < TempTime )
-			{
-				CanDoDamage[i] = FALSE;
-				TimeSinceDeath[i] = 0;
-			}
-		}
-	}
-}
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-			Work Out How Much Damage Ive Taken
-			Input : Nothing....Ships[WhoIAm].Damage must be set
-			Output: 0 no kill...1 last hit killed me...
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴*/
-int16 ServerDoDamage( BYTE ship )
-{
-	if( Ships[ ship ].Invul ) return 0;
-	if( TeamGame && !HarmTeamMates )
-	{
-		if( Ships[ ship ].ShipThatLastHitMe != MAX_PLAYERS )
-		{
-			if( ( TeamNumber[ ship ] == TeamNumber[ Ships[ ship ].ShipThatLastHitMe ] ) &&
-				( ship != Ships[ ship ].ShipThatLastHitMe ) )
-			{
-				return 0;
-			}
-		}
-	}
-
-	if( Ships[ship].Object.Mode == NORMAL_MODE )
-	{
-		if( Ships[ship].Damage )
-		{
-			Ships[ship].Damage *= -1.0F;
-			Ships[ship].Object.Shield += Ships[ship].Damage;
-
-			if( Ships[ship].Object.Shield  >= MAX_SHIELD )
-			{
-				Ships[ship].Object.Shield  = MAX_SHIELD;
-			}else{
-				if( Ships[ship].Object.Shield  < 0.0F )
-				{
-					Ships[ship].Object.Hull += Ships[ship].Object.Shield;
-					Ships[ship].Object.Shield = 0.0F;
-
-					if( Ships[ship].Object.Hull <= 0 )
-					{
-						// reset shield & hull critical flags...
-
-						if( Ships[ship].ShipThatLastHitMe == ship )
-						{
-							// killed myself....Doh
-							Ships[ship].Kills--;
-						}
-						return 1;
-					}
-				}
-			}
-		}
-	}
-	return 0;
-}
-#endif
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Check Server Death times...
 	Input		:		void	*	Message
@@ -8732,152 +7744,6 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 	}
 
 	return( TRUE );
-}
-
-
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Add Guaranteed Message...
-	Input		:		int MessageLength, void * Message
-	Output		:		BOOL TRUE/FALSE
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL AddGuaranteedToServersGuaranteedQue( LPGUARANTEEDMSG lpGM )
-//BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BOOL OverideOlderMessage, BOOL AllPlayers )
-{
-#ifdef	GUARANTEEDMESSAGES
-	GUARANTEEDMSGHEADER * GM = NULL;
-	GUARANTEEDMSGHEADER * GM2 = NULL;
-	GUARANTEEDMSGHEADER * LastGM;
-	GUARANTEEDMSG * GMm;
-	DWORD send_to = 0;
-	uint32 Ack;
-	int i;
-	int MessageLength;
-	BYTE * Message;
-	BYTE MsgType;
-	BOOL OverideOlderMessage;
-	BOOL AllPlayers;
-
-	if( PlayDemo )
-		return TRUE;
-	if( !IsServer )
-		return TRUE;
-
-	Message = &lpGM->StartOfMessage;
-	MsgType = *Message;
-	MessageLength = RealPacketSize[MsgType];
-
-	OverideOlderMessage = lpGM->OverideOlderMessage;
-	AllPlayers = lpGM->AllPlayers;
-
-	// only record if message is sent to whole of the group....
-	if( RecordDemo && !BigPackets )
-	{
-		if( ( MyGameStatus == STATUS_Normal )
-		&& ( MsgType != MSG_INIT ) 
-		&& ( MsgType != MSG_HEREIAM ) 
-		&& ( MsgType != MSG_SHORTSTATS     ) 
-		&& ( MsgType != MSG_SHORTPICKUP    ) 
-		&& ( MsgType != MSG_SHORTREGENSLOT ) 
-		&& ( MsgType != MSG_SHORTTRIGGER   ) 
-		&& ( MsgType != MSG_SHORTTRIGVAR   )  
-		&& ( MsgType != MSG_LEVELNAMES     )  
-		&& ( MsgType != MSG_TRACKERINFO    )  
-		&& ( MsgType != MSG_SHORTMINE      ) )
-		{
-			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-			TempTime = TempTime - GameStartedTime;
-		
-			Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		
-			Demo_fwrite( &MessageLength, sizeof(int), 1, DemoFp );
-			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
-			Demo_fwrite( Message, MessageLength, 1, DemoFp );
-		}
-	}
-
-#if 0
-	if( OverideOlderMessage )
-	{
-		// Try and find a message of the same type that has allready been qued and overide it...
-		GM2 = GMs;
-		while( GM2 )
-		{
-			if( ( MsgType == GM2->MsgType ) && ( lpGM->WhoIAm == *(Message+1) ) )
-			{
-				GM = GM2;
-				break;
-			}
-			GM2 = GM2->Next;
-		}
-	}
-#endif
-
-	if( !GM )
-	{
-		GM = (GUARANTEEDMSGHEADER*) malloc( sizeof(GUARANTEEDMSGHEADER) + MessageLength + sizeof( GUARANTEEDMSG ) -1 );
-		if( !GM )
-		{
-			return FALSE;
-		}
-
-		GuaranteedMessagesActive++;
-		if( GuaranteedMessagesActive > GuaranteedMessagesActiveMax )
-			GuaranteedMessagesActiveMax = GuaranteedMessagesActive;
-
-		LastGM = GMs;
-		if( LastGM )
-		{
-			LastGM->Prev = GM;
-		}
-		GM->Next = LastGM;
-		GM->Prev = NULL;
-		GMs = GM;
-		if( !OldestGMs )
-		{
-			OldestGMs = GM;
-		}
-	}
-
-
-	GMm = (GUARANTEEDMSG*) &GM->Message;
-
-	
-	memcpy( &GMm->StartOfMessage, Message, MessageLength );
-
-	GM->MsgType = MsgType;
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->Time);
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime);
-	GM->OverallTime += GuaranteedMessagesOverallTime * Freq;
-	GM->ID = GuaranteedMessagesID++;
-	GM->OverideOlderMessage = OverideOlderMessage;
-	GM->AllPlayers = AllPlayers;
-
-	if( AllPlayers )
-	{
-		Ack = 0xffffffff;
-//		Ack &= ~(1<<WhoIAm);
-	}else{
-		Ack = 0;
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			if(
-			  ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
-			  (i!=WhoIAm) )
-			{
-				Ack |= 1<<i;
-			}
-		}
-	}
-	Ack &= ~(1<<lpGM->WhoIAm);
-	Ack |= 1;
-
-	GM->Ack = Ack;
-	GM->Count = 0;
-	GM->MessageLength = MessageLength + sizeof( GUARANTEEDMSG ) -1;
-#endif
-	return TRUE;
 }
 
 

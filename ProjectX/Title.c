@@ -12110,13 +12110,6 @@ void ExitLevelSelect( MENU * Menu )
 	NewLevelNum = LevelList.selected_item;
 //	LevelNum = -1;			// Force Level change even if same level;
 
-	if ( IsServerGame && IsPseudoHost )
-	{
-		if ( NewLevelNum >= 0 )
-		{
-			SendGameMessage(MSG_TOSERVER, 0, 0, TOSERVERMSG_ChangeLevel, ( BYTE )NewLevelNum );
-		}
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -18198,18 +18191,7 @@ void HostAboutToStart( MENUITEM *Item )
 	
 void PseudoHostAboutToStart( MENUITEM *Item )
 {
-	if( TeamGame )
-	{
-		MenuChange( &NewTeamItem );
-	}else
-	{
-		DebugPrintf("about to send message to server to start game\n");
-
-		SendGameMessage(MSG_TOSERVER, 0, 0, TOSERVERMSG_StartGame, 0);
-
-		MyGameStatus = STATUS_StartingMultiplayer;
-//		MenuChangeEx( &MENU_NEW_JoinWaitingToStart );
-	}
+	// server stuff removed
 }
 
 void ExitSoundMenu( MENU *Menu )
