@@ -126,7 +126,6 @@ extern "C" {
 	extern BOOL CustomCompoundBufferSize;
 
 	extern uint8 QuickStart;
-	extern BOOL ServerChoosesGameType;
 	extern BOOL ForceHeartbeat;
 
 	extern GUID autojoin_session_guid;
@@ -495,24 +494,24 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     //
 	
 	DeviceOnCommandline			= FALSE;
-    bOnlySystemMemory			= FALSE;
-    bOnlyEmulation				= FALSE;
-	PowerVR_Overide				= FALSE;
-	Is3Dfx						= FALSE;
-	Is3Dfx2						= FALSE;
-	TriLinear					= TRUE;
-	NoSFX						= FALSE;
-	TextureMemory				= 0;
-	MipMap						= TRUE;
-	TripleBuffer				= FALSE;
-	NoTextureScaling			= FALSE;
-	DplayRecieveThread			= FALSE;
-	PolygonText					= FALSE;
-	DS							= FALSE;
-	NoSplash					= TRUE;
-	SessionGuidExists			= FALSE;
-	UseSendAsync				= FALSE;
-	bFullscreen					= TRUE;
+    bOnlySystemMemory				= FALSE;
+    bOnlyEmulation					= FALSE;
+	PowerVR_Overide					= FALSE;
+	Is3Dfx								= FALSE;
+	Is3Dfx2								= FALSE;
+	TriLinear								= TRUE;
+	NoSFX								= FALSE;
+	TextureMemory					= 0;
+	MipMap								= TRUE;
+	TripleBuffer							= FALSE;
+	NoTextureScaling					= FALSE;
+	DplayRecieveThread				= FALSE;
+	PolygonText						= FALSE;
+	DS										= FALSE;
+	NoSplash							= TRUE;
+	SessionGuidExists					= FALSE;
+	UseSendAsync						= TRUE;
+	bFullscreen							= TRUE;
 	DPlayUpdateIntervalCmdLine	= 0;
 
 	//

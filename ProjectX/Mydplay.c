@@ -46,8 +46,7 @@ extern BOOL Debug;
 
 int average_server_packet_size = 0;
 
-BOOL	UseSendAsync = FALSE;
-BOOL	ServerChoosesGameType = FALSE;
+BOOL	UseSendAsync = TRUE;
 BOOL	SessionGuidExists = FALSE;
 
 int	PacketGot[256];
@@ -1879,9 +1878,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 BOOL CheckPlayersActive( void )
 {
 	uint16 i;
-
-	if ( ServerChoosesGameType )
-		return TRUE;
 	
 	for ( i = 1; i < MAX_PLAYERS; i++ )
 	{

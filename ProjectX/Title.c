@@ -1300,23 +1300,6 @@ MENU	MENU_NEW_HostWaitingToStart = {
 	}
 };
 
-MENU	MENU_NEW_PseudoHostWaitingToStart = {
-	"", GetInitialSessions, /*BailMultiplayerFrontEnd*/ChangeServiceProviderPseudoHost, UpdateSessions, 0,
-	{
-		{ 0,   0, 200,  10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  } ,
-		{ 5,  15,  90,  25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, PseudoHostAboutToStart, DrawFlatMenuItem, NULL, 0  } ,
-		{ 5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
-		{ 5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 155,  25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
 MENU	MENU_NEW_SelectLevel = {
 	"", LoadLevelText, KillLevelPic, NULL, 0,
 	{
@@ -3101,15 +3084,6 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 					{ 200 , 272, 0, 0, 0, "New Menu System" , 0, 0, NULL, &MENU_NEW_Start, MenuChange , MenuItemDrawName, NULL, 0, 0 } ,
 
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
-
-MENU	MENU_ServerMenu = { LT_MENU_ServerMenu0 /*"server menu"*/, InitServerMenu, NULL, NULL, 0,
-	{
-		OLDMENUITEM( 200, 112, LT_MENU_ServerMenu1 /*"server rendering"*/, &ServerRendering,  NULL, SelectToggle, DrawToggle ),
-		OLDMENUITEM( 200, 128, LT_MENU_ServerMenu2 /*"current players"*/, &ServerGamePlayersList, ServerListPlayerSelected, SelectList, DrawList ),
-
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
 
 MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitServerMenu , NULL , NULL,	0,
 			{
@@ -10530,19 +10504,6 @@ void InitInGameMenu( MENU *Menu )
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
 			}
-		}
-
-		if ( item->Value == &MENU_ServerMenu )
-		{
-			 if ( IsServer )
-			 {
-				item->FuncSelect = MenuChange;
-				item->FuncDraw = MenuItemDrawName;
-			 }else
-			 {
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			 }
 		}
 
 		else if ( item->Value == &MENU_Save || item->Value == &MENU_DebugMode )
@@ -18191,7 +18152,7 @@ void HostAboutToStart( MENUITEM *Item )
 	
 void PseudoHostAboutToStart( MENUITEM *Item )
 {
-	// server stuff removed
+	// server
 }
 
 void ExitSoundMenu( MENU *Menu )
