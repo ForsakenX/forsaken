@@ -5042,7 +5042,7 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 
 	Ships[ WhoIAm ].Object.PowerLevel = 0;
 
-	/*if( TotalPickups < MaxPickupsAllowed )
+	if( TotalPickups < MaxPickupsAllowed )
 	{
 		DirVector.x = ( Dir->x + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
 		DirVector.y = ( Dir->y + ( ( ( (float) Random_Range( 5120 ) ) / 5120.0F ) - 0.5F ) );
@@ -5058,7 +5058,7 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 			DropPickupSend( &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			TotalPickups++;
 		}
-	}*/
+	}
 
 	NumSecWeapons = GenerateSecondaryPickups( (int16) ( MaxPickupsAllowed - TotalPickups ) );
 
