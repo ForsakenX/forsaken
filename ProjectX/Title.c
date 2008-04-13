@@ -1083,9 +1083,9 @@ DEFKEY KDdrop_ammo			= { &Config.drop_ammo, 0 };
 DEFKEY KDselect_primary[]	= {
 	{ &Config.select_primary[ PULSAR ], 0 },
 	{ &Config.select_primary[ TROJAX ], 0 },
-	{ &Config.select_primary[ SUSS_GUN ], 0 },
-	{ &Config.select_primary[ TRANSPULSE_CANNON ], 0 },
 	{ &Config.select_primary[ PYROLITE_RIFLE ], 0 },
+	{ &Config.select_primary[ TRANSPULSE_CANNON ], 0 },
+	{ &Config.select_primary[ SUSS_GUN ], 0 },
 	{ &Config.select_primary[ LASER ], 0 },
 };
 DEFKEY KDselect_next_primary		= { &Config.select_next_primary, 0 };
