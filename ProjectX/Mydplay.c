@@ -552,6 +552,9 @@ extern int MyMessageColour;
 extern SLIDER FlagSfxSlider;
 float FlagVolume;
 
+// watch player mode select player (Title.c)
+extern SLIDER WatchPlayerSelect;
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -2535,15 +2538,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpVeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( IsServerGame && IsServer )
-				{
-					VECTOR	ScatterDir;
-
-					ScatterDir = Ships[ lpVeryShortFUpdate->WhoIAm ].LastMove;
-					NormaliseVector( &ScatterDir );
-					ScatterWeaponsForShip( lpVeryShortFUpdate->WhoIAm, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-				}
-
 				if( GoreGuts ) ThrowOutRider( lpVeryShortFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Group , &Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
@@ -2551,14 +2545,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 /* ------------------- */
 
 			DemoShipInit[ lpVeryShortFUpdate->WhoIAm ] = TRUE;
-			if( IsServer )
-			{
-				Ships[lpVeryShortFUpdate->WhoIAm].RealPos = Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos;
-				Ships[lpVeryShortFUpdate->WhoIAm].RealGroup = Ships[lpVeryShortFUpdate->WhoIAm].Object.Group;
-			}
 
 			return;
-		}else{
+		}
+		else
+		{
 			wsprintf(dBuf, "someone else is in your slot..%d\n", lpVeryShortFUpdate->WhoIAm);
 			OutputDebugString( dBuf );
 			return;
@@ -2590,15 +2581,15 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 			UnPackShipFlags( lpGroupOnly_VeryShortFUpdate->WhoIAm , lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags );
 
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.x	= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.x;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.y	= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.y;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.z	= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.z;
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Group= (int16) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.GroupImIn;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.x		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.x;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.y		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.y;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos.z		= (float) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Pos.z;
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Group		= (int16) lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.GroupImIn;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.w	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.w * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.x	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.x * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.y	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.y * ONEOVER32767 );
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Quat.z	= (float)(lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Quat.z * ONEOVER32767 );
-			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Bank	= (float) (lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
+			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Bank		= (float) (lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Bank / SHORTBANKMODIFIER);
 
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Primary	= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Primary;
 			Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Secondary	= lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Secondary;
@@ -2625,15 +2616,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( IsServerGame && IsServer )
-				{
-					VECTOR	ScatterDir;
-
-					ScatterDir = Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].LastMove;
-					NormaliseVector( &ScatterDir );
-					ScatterWeaponsForShip( lpGroupOnly_VeryShortFUpdate->WhoIAm, &ScatterDir, MAXSCATTERED );	// Scatter weapons in all directions.
-				}
-
 				if( GoreGuts ) ThrowOutRider( lpGroupOnly_VeryShortFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Group , &Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
@@ -2642,13 +2624,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 			DemoShipInit[ lpGroupOnly_VeryShortFUpdate->WhoIAm ] = TRUE;
 			return;
-		}else{
+		}
+		else
+		{
 			wsprintf(dBuf, "someone else is in your slot..%d\n", lpGroupOnly_VeryShortFUpdate->WhoIAm);
 			OutputDebugString( dBuf );
 			return;
 		}
-
-
 
     case MSG_VERYSHORTUPDATE:
 		if (MyGameStatus == STATUS_StartingMultiplayer)
@@ -3129,6 +3111,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			{
 				WhoIAm = lpInit->YouAre;
 				Current_Camera_View = WhoIAm;
+				WatchPlayerSelect.value = WhoIAm;
 
 				// no need to do any of this if pseudo host
 				if ( !IsPseudoHost )
@@ -4062,6 +4045,14 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			return;
 		case TEXTMSGTYPE_JoiningTeamGame:
 			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
+			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+			return;
+		case TEXTMSGTYPE_EnteredWatchMode:
+			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE");
+			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+			return;
+		case TEXTMSGTYPE_ExitedWatchMode:
+			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE");
 			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 			return;
 		case TEXTMSGTYPE_TitleMessage:
@@ -5326,6 +5317,16 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			break;
 		case TEXTMSGTYPE_JoiningTeamGame:
 //			strncpy( &lpTextMsg->Text[0]	, "%s is joining the game" , MAXTEXTMSG );
+			lpTextMsg->TextMsgType = Type;
+			MessageColour = SystemMessageColour;
+			break;
+		case TEXTMSGTYPE_EnteredWatchMode:
+//			strncpy( &lpTextMsg->Text[0]	, "%s entered watch mode" , MAXTEXTMSG );
+			lpTextMsg->TextMsgType = Type;
+			MessageColour = SystemMessageColour;
+			break;
+		case TEXTMSGTYPE_ExitedWatchMode:
+//			strncpy( &lpTextMsg->Text[0]	, "%s exited watch mode" , MAXTEXTMSG );
 			lpTextMsg->TextMsgType = Type;
 			MessageColour = SystemMessageColour;
 			break;

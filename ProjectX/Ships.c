@@ -208,6 +208,9 @@ extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
 extern	BOOL		JustGenerated;
 extern	BOOL		JustPickedUpShield;
 
+// watch mode select player (Title.c)
+extern SLIDER WatchPlayerSelect;
+
 // statistics updates (stats.c)
 extern int UpdateBonusStats(int Player, int Points);
 
@@ -696,6 +699,7 @@ float	SteamTime = 0.0F;
 BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos );
 BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos );
 BOOL ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
+BOOL SwitchedToWatchMode =FALSE;
 
 extern	BOOL Headlights;
 
@@ -711,6 +715,7 @@ void (* ModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		ShipMode2,
 		RemoteCameraMode3,			// needed for demo playback!!!!!!!!!
 		ShipMode4,
+		WatchMode5,
 };
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Function		:			RemoteCamera Control Mode Jump Table
@@ -779,11 +784,6 @@ BOOL ProcessShips()
 	int		goalcheck;
 	BOOL OldWaterOneshot;
 
-	if( !BombTag && IsServerGame && IsServer )
-	{
-		CheckPickupAllPlayers();
-	}
-
 	UpdateStartPos();
 	MultiSfxHandle();
 
@@ -797,11 +797,9 @@ BOOL ProcessShips()
 #endif
 
 	if( PlayDemo )
-	{
 		NumToDo = MAX_PLAYERS+1;
-	}else{
+	else
 		NumToDo = MAX_PLAYERS;
-	}
 
 	// for every player in the game
 	for( i=0;i<NumToDo;i++)
@@ -810,11 +808,8 @@ BOOL ProcessShips()
 		ShipPnt = &Ships[i];
 		Ships[i].Object.ID = ShipPnt;
 
-		if( ShipPnt->enable || (IsServer && i == 0) )
+		if( ShipPnt->enable )
 		{
-			if( IsServer && i == 0 )
-				ShipPnt->enable = 0;
-
 			if( ShipPnt->Invul )
 			{
 				if( !PlayDemo )
@@ -895,9 +890,6 @@ BOOL ProcessShips()
 				}
 #endif
 
-
-
-
 				ShipObjPnt->NodeNetwork = 1;
 				if( !ShipObjPnt->NearestNode )
 				{
@@ -973,13 +965,17 @@ BOOL ProcessShips()
 							ForceInternalOneOff( i, &ExtForce );
 						}
 						ShipPnt->ShakeForce *= 0.02F * framelag;
-					}else{
+					}
+					else
+					{
 						ShipPnt->ShakeTimer = 0.0F;
 					}
 				}
 
-
-				
+				// watch mode
+				if(WatchPlayerSelect.value != WhoIAm) 
+					ShipObjPnt->Mode = WATCH_MODE; 
+		
 				( * ModeControl[ ShipObjPnt->Mode ] )( ShipPnt , i );		//go off and do his thing...
 
 				if( (i==MAX_PLAYERS) || (ShipObjPnt->Mode != DEATH_MODE && ShipObjPnt->Mode != LIMBO_MODE && ShipObjPnt->Mode != GAMEOVER_MODE) )
@@ -997,17 +993,14 @@ BOOL ProcessShips()
 						}
 					}
 
-
-
 					AccellDecell( &ShipObjPnt->Angle.y , TurnDecell );
 			 		AccellDecell( &ShipObjPnt->Angle.x , TurnDecell );
 			 		AccellDecell( &ShipObjPnt->Angle.z , RollDecell );
 					ShipObjPnt->Autolevel = AutoLevelRot( i, AutoLevel * player_config->autolevel_rate * framelag );
-				
 			 		AccellDecell( &ShipObjPnt->Bank , BankDecell );
-				
 					AccellDecell( &ShipObjPnt->Speed.x , MoveDecell );
 					AccellDecell( &ShipObjPnt->Speed.y , MoveDecell );
+
 					if ( ( control.turbo || ( !control.forward && ShipObjPnt->CruiseControl == CRUISE_NITRO ) ) && NitroFuel > 0.0F )
 					{
 						if( !GodMode && !( ShipObjPnt->Flags & SHIP_SuperNashram ) )
@@ -1097,7 +1090,9 @@ BOOL ProcessShips()
 						ImpactPoint = ShipObjPnt->Pos;
 						ImpactGroup = ShipObjPnt->Group;
 						
-					}else{
+					}
+					else
+					{
 						if( !no_collision )
 						{
 							NumCollides = 0;
@@ -1120,19 +1115,15 @@ BOOL ProcessShips()
 #else
 								BGObject = NULL;
 
-								if( IsServer && i == WhoIAm )
+								if( !Object2Object )
 								{
-									ObjectCollideNoBGObject( &ShipPnt->Object, &Move_Off, SHIP_RADIUS);
-								}else{
-
-									if( !Object2Object )
-									{
-										ObjectCollide( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
-										if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
-									}else{
-										ObjectCollideNoBounce( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
-										if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
-									}
+									ObjectCollide( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
+									if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
+								}
+								else
+								{
+									ObjectCollideNoBounce( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
+									if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
 								}
 #endif
 								outside_map = !PointInsideSkin( &ShipObjPnt->Pos, ShipObjPnt->Group );
@@ -1198,15 +1189,15 @@ BOOL ProcessShips()
 								ShipObjPnt->Group = ImpactGroup;
 							}
 	#endif
-						}else{
+						}
+						else
+						{
 							ShipObjPnt->Group = MoveGroup( &Mloadheader, &ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off );
 							ShipObjPnt->Pos.x += Move_Off.x;
 							ShipObjPnt->Pos.y += Move_Off.y;
 							ShipObjPnt->Pos.z += Move_Off.z;
 						}
-
 					}
-
 
 					ExtForce.x = 0.0F;
 					ExtForce.y = 0.0F;
@@ -1214,6 +1205,7 @@ BOOL ProcessShips()
 					ShieldModifier = 0.0F;
 					HasBeenExternal = ExternalForcesAreaCheck( &ShipObjPnt->Pos , &StartPos , ShipObjPnt->Group, &ExtForce , &ShieldModifier);
 					TriggerAreaPlayerCheck( &StartPos , &ShipObjPnt->Pos , ShipObjPnt->Group);
+					
 					if( OldGroup != ShipObjPnt->Group )
 					{
 						TriggerAreaPlayerCheck( &StartPos , &ShipObjPnt->Pos , OldGroup);
@@ -1224,20 +1216,17 @@ BOOL ProcessShips()
 						goalcheck = GoalCheckTeam( &StartPos, &ShipObjPnt->Pos, ShipObjPnt->Group, TeamNumber[ i ] );
 						if ( goalcheck == GOAL_SCORED )
 						{
-							if ( !IsServerGame )
-							{
-								PickupsGot[ PICKUP_Flag ] = 0;
-								Ships[ i ].Object.Flags &= ~SHIP_CarryingFlag;
-								FlagsToGenerate++;
-								// normal update -- remove later...
-								Ships[ i ].Kills += GoalScore;
-								// update bonus 2 (stats.c) -- flag chase scored
-								UpdateBonusStats(i,GoalScore);
-								AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
-									TeamName[ TeamNumber[ i ] ] );
+							PickupsGot[ PICKUP_Flag ] = 0;
+							Ships[ i ].Object.Flags &= ~SHIP_CarryingFlag;
+							FlagsToGenerate++;
+							// normal update -- remove later...
+							Ships[ i ].Kills += GoalScore;
+							// update bonus 2 (stats.c) -- flag chase scored
+							UpdateBonusStats(i,GoalScore);
+							AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
+								TeamName[ TeamNumber[ i ] ] );
 
-								SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ScoredWithFlag, 0);
-							}
+							SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ScoredWithFlag, 0);
 						}
 						else if ( goalcheck == GOAL_WRONG )
 						{
@@ -1257,8 +1246,6 @@ BOOL ProcessShips()
 								|| TeamFlagAtHome[ TeamNumber[ i ] ]
 								|| ShipObjPnt->Flags & TeamFlagMask[ TeamNumber[ i ] ] )
 							{
-								if ( !IsServerGame )
-								{
 									int team;
 									int score;
 
@@ -1293,7 +1280,7 @@ BOOL ProcessShips()
 											TeamName[ TeamNumber[ i ] ] );
 										SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturnedFlag, 0);
 									}
-								}
+								
 								IKnowINeedFlag = FALSE;
 							}
 							else
@@ -1318,13 +1305,13 @@ BOOL ProcessShips()
 					}
 
 					// this is where we go into and out of water
-
 					OldInWater = ShipObjPnt->Flags & SHIP_InWater;
 					ShipObjPnt->Flags &= ~SHIP_InWater;
 					if( InWater( ShipObjPnt->Group , &ShipObjPnt->Pos , &ShieldModifier) )
 					{
 						ShipObjPnt->Flags |= SHIP_InWater;
-					}else
+					}
+					else
 					{
 						// not in water, therefore stop underwater looping sfx if currently playing
 						if ( UnderwaterSfxID )
@@ -1342,7 +1329,9 @@ BOOL ProcessShips()
 						if( MyGameStatus == STATUS_SinglePlayer )
 						{
 							SetBikeMods( (uint16) (SelectedBike+2) );
-						}else{
+						}
+						else
+						{
 							SetBikeMods( 0 );
 						}
 					}
@@ -1361,7 +1350,9 @@ BOOL ProcessShips()
 								StopSfx( UnderwaterSfxID );
 							}
 							UnderwaterSfxID = PlaySfx( SFX_UnderWaterAmb , 1.0F );
-						}else{
+						}
+						else
+						{
 							// exited the water....
 							PlaySfx( SFX_Surface , 1.0F );
 						}
@@ -1384,14 +1375,12 @@ BOOL ProcessShips()
 						}
 
 					}
-
-
 					
 					if( HasBeenExternal )
 					{
 						ForceExternalOneOff( i, &ExtForce );
-
 					}
+
 					if( ShieldModifier )
 					{
 						ShipPnt->Damage = ShieldModifier;
@@ -1405,7 +1394,6 @@ BOOL ProcessShips()
 							// print up I killed Myself
 							AddColourMessageToQue(KillMessageColour, YOU_KILLED_YOURSELF );
 							PlaySfx( SFX_BIKECOMP_DY, 1.0F );
-
 						}
 					}
 
@@ -1422,12 +1410,7 @@ BOOL ProcessShips()
 					}
 
 					if( !BombTag )
-					{
-						if( !IsServerGame || ( IsServerGame && !IsServer ) )
-						{
 							CheckPickup();
-						}
-					}
 				}
 
 		
@@ -1436,13 +1419,13 @@ BOOL ProcessShips()
 			// Start of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
 			else
 			{
-
 				if( !ShipPnt->JustRecievedPacket )
 				{
 
 					StartPos = ShipObjPnt->Pos;
-					if( ShipObjPnt->Mode != LIMBO_MODE )
+					if( ShipObjPnt->Mode != LIMBO_MODE && ShipObjPnt->Mode != WATCH_MODE)
 					{
+						// playing demo
 						if( 
 							(MyGameStatus == STATUS_PlayingDemo) &&
 							ShipPnt->DemoInterpolate &&
@@ -1468,14 +1451,16 @@ BOOL ProcessShips()
 								Quaternion_Slerp( -Interp, &ShipPnt->OldQuat, &ShipPnt->NextQuat, &ShipObjPnt->Quat, 0 );
 								
 								ShipObjPnt->Bank = ShipPnt->OldBank + ( ( ShipPnt->OldBank - ShipPnt->NextBank ) * Interp);
-							}else{
+							}
+							else
+							{
 								Interp = 0.0F;
 							}
 
-						}else{
-//							if( !IsServer )
-							{
-
+						}
+						// not playing a demo
+						else
+						{
 								// carry out movements
 								Move_Off.x = ShipPnt->Move_Off.x * framelag;
 								Move_Off.y = ShipPnt->Move_Off.y * framelag;
@@ -1498,14 +1483,15 @@ BOOL ProcessShips()
 				 					AccellDecell( &ShipPnt->LastAngle.z , RollDecell );
 								}
 							}
-						}
 						// Still need to update the group....
 						Move_Off.x = ShipObjPnt->Pos.x - StartPos.x;
 						Move_Off.y = ShipObjPnt->Pos.y - StartPos.y;
 						Move_Off.z = ShipObjPnt->Pos.z - StartPos.z;
 						ShipObjPnt->Group = MoveGroup( &Mloadheader, &StartPos, ShipObjPnt->Group, &Move_Off );
 					}
-				}else{
+				}
+				else
+				{
 					ShipPnt->JustRecievedPacket = FALSE;
 				}
 			}
@@ -1589,8 +1575,10 @@ BOOL ProcessShips()
 			// we have a remote Camera...
 			Current_Camera_View = MAX_PLAYERS;		// which object is currently using the camera view....
 			Process_Remote_Camera();
-		}else{
-			Current_Camera_View = WhoIAm;			// which object is currently using the camera view....
+		}
+		else
+		{	// main camera view when alive in multiplayer
+			Current_Camera_View = WatchPlayerSelect.value;//WhoIAm;			// which object is currently using the camera view....
 		}
 	}
 
@@ -2688,16 +2676,9 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 	if( (ShipPnt->Timer < -120.0F) || Impact )
 	{
-		if( !IsServerGame )
-		{
-			ScatterDir = ShipPnt->LastMove;
-			NormaliseVector( &ScatterDir );
-			ScatterWeapons( &ScatterDir, MAXSCATTERED );		// Scatter weapons in all directions.
-		}
-		else
-		{
-			ShortScatterWeapons();
-		}
+		ScatterDir = ShipPnt->LastMove;
+		NormaliseVector( &ScatterDir );
+		ScatterWeapons( &ScatterDir, MAXSCATTERED );		// Scatter weapons in all directions.
 
 		CreateShockwave( OWNER_SHIP, WhoIAm, &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group, 6.0F, (BYTE) -1 );
 		CreateShockwaveSend( OWNER_SHIP, WhoIAm, &Ships[ WhoIAm ].Object.Pos, Ships[ WhoIAm ].Object.Group, 6.0F, (BYTE) -1 );
@@ -2728,9 +2709,12 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		Current_Camera_View = WhoIAm;		// set it back to me...
 		Ships[MAX_PLAYERS].enable = 0;		// Turn Off the remote camera...
 		ShipMode0( ShipPnt , i );
-	}else{
-		Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
-		Ships[MAX_PLAYERS].enable = 1;		// Turn Off the remote camera...
+	}
+	else
+	{
+		// commented out because it was causing conflicts with watch mode
+	//	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
+	//	Ships[MAX_PLAYERS].enable = 1;		// Turn Off the remote camera...
 		ShipPnt->Timer -= framelag;
 		WhiteOut += framelag;
 		if( WhiteOut >= 512.0F )
@@ -2738,8 +2722,10 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		if( ShipPnt->Timer < -250.0F )
 			ShipPnt->Timer = -251.0F;
 
+		// hit respawn key
 		if( ( ShipPnt->Timer < -250.0F ) && ( AnyKeyReleased() != 0 ) )
 		{
+			// single player
 			if( MyGameStatus == STATUS_SinglePlayer )
 			{
 				if( Lives == 0 )
@@ -2752,17 +2738,24 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 				}
 				Lives--;
 				if( Lives == 0 )
-				{
 					AddColourMessageToQue(SystemMessageColour, LAST_LIFE );
-				}else{
+				else
+				{
 					if( Lives == 1 )
-					{
 						AddColourMessageToQue(SystemMessageColour, ONE_LIFE_LEFT , Lives );
-					}else{
+					else
 						AddColourMessageToQue(SystemMessageColour, LIVES_LEFT, Lives );
-					}
 				}
 			}
+
+			// reset watch mode
+			if(SwitchedToWatchMode)	
+			{
+				SwitchedToWatchMode = FALSE;
+				// send a message to everybody saying im in watch mode
+				SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ExitedWatchMode, 0);
+			}
+
 			WhiteOut = 0.0F;
 			InitShipRandomPos( i );
 			JustGenerated = TRUE;
@@ -2783,6 +2776,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			flush_input = TRUE;
 			control_ship( player_config, &control );
 		}
+		// respawn key not hit
 		else
 		{
 			control_ship( NULL, &control ); // clear ship controls
@@ -2813,6 +2807,39 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 	}
 }
 
+/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+	Procedure	:	Watch Mode 5	enables watching other players...
+	Input		:	int16 which Ship
+	Output		:	Nothing
+컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴*/
+void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
+{
+	VECTOR	ScatterDir;
+
+	// clear any white out
+	WhiteOut = 0.0F;
+
+	// only scatter weapons once
+	if(!SwitchedToWatchMode)
+	{
+		// make sure weapons are scattered
+		ScatterDir = ShipPnt->LastMove;
+		NormaliseVector( &ScatterDir );
+		ScatterWeapons( &ScatterDir, 15 );
+
+		// send a message to everybody saying im in watch mode
+		SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_EnteredWatchMode, 0);
+
+		// set flag so we don't redo this
+		SwitchedToWatchMode = TRUE;
+	}
+
+	//	Handle all the Input Stuff
+	control_ship( player_config, &control );
+	// i dont have a bike in the game
+	ShipPnt->Object.Mode = LIMBO_MODE;
+
+}
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	What the Remote Camera Does...

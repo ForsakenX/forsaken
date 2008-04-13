@@ -106,6 +106,7 @@ void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i );
 void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i );
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i );
 void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i );
+void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i );
 
 //	Mode Functions...
 void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i );

@@ -31,7 +31,7 @@
 #define LIMBO_MODE 2		// this is what the ship is in while viewing its own death....but has blown up...
 #define DEMO_MODE  3		// this is the mode the camera goes into when Playing back a Demo
 #define GAMEOVER_MODE  4	// this is the mode the player goes into when single player has finished...
-
+#define WATCH_MODE 5
 
 #define MAX_PLAYERS			32 //24 //16 //12
 BOOL PlayerReady[MAX_PLAYERS];
@@ -1040,6 +1040,8 @@ enum{
 	TEXTMSGTYPE_Taunt3,
 	TEXTMSGTYPE_TitleMessage,
 	TEXTMSGTYPE_JoiningTeamGame,
+	TEXTMSGTYPE_EnteredWatchMode,
+	TEXTMSGTYPE_ExitedWatchMode,
 	TEXTMSGTYPE_QuickTaunt,
 	TEXTMSGTYPE_CaptureFlagMessage,
 	TEXTMSGTYPE_ScoredWithFlag,

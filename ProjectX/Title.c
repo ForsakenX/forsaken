@@ -333,7 +333,6 @@ extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	RandomPickups;
-//SLIDER WatchPlayerSelect = { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Mode changing stuff..
@@ -483,7 +482,6 @@ void ExitTitleLoad( MENU *Menu );
 void InitBikerName( char *name );
 void InitMultiplayerHost( MENU *Menu );
 void InitMoreMultiplayerOptions( MENU *Menu );
-void InitInGameOptions( MENU *Menu );
 void ExitMoreMultiplayerOptions( MENU *Menu );
 void SetAutolevel( MENUITEM *item );
 void SelectQuitCurrentGame( MENUITEM *Item );
@@ -926,6 +924,7 @@ SLIDER BikerSpeechSlider				= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER BikeCompSpeechSlider			= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
+SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 BOOL OKToJoinSession			= FALSE;
 BOOL ShowTeamInfo				= TRUE;
@@ -2051,6 +2050,9 @@ MENU	MENU_NEW_ChooseSessionToJoin = {
 		//{ 10, 22, 100, 30, 0, "name", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		{ 10, 30, 200, 85, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MySessionsList, SetSessionJoinFlag , SelectList , DrawFlatMenuList, NULL, 0 } ,
 
+		// join in watch mode (add 'if host allows' later)
+//		{ 10, 30, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CentreY, "YOOYYO TEST", NULL , SelectList , DrawFlatMenuName, NULL, 0 } ,
+
 		// ping list
 //		{ 100, 22, 200, 30, 0, "ping", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 //		{ 100, 30, 200, 85, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_Unselectable | TEXTFLAG_CentreY, &SessionPingList, SetSessionJoinFlag , SelectList , DrawFlatMenuList, NULL, 0 } ,
@@ -2059,25 +2061,19 @@ MENU	MENU_NEW_ChooseSessionToJoin = {
 
 		// session created
 		{ 10, 86, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Created, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// level
 		{ 10, 93, 200, 100, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Level_Name, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// players
 		{ 10, 100, 200, 107, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Num_Players, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// game type 
 		{ 10, 107, 200, 114, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Game_Type, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// packet info
 		{ 10, 114, 200, 121, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_PacketInfo, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// lag tolerence
 		{ 10, 121, 200, 128, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_LagTolerance, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
 		// extras
 		{ 10, SESSIONJOIN_EXTRAS_TOP_Y, 200, 146, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_PPS, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 146, 200, 154, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Server, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
+	//	{ 10, 146, 200, 154, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Server, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 154, 200, 162, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_HarmTeamMates, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 162, 200, 170, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_MaxKills, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 170, 200, 178, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_TimeLimit, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
@@ -2102,7 +2098,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 		{ 5, 20, 200, 30, 0, LT_MENU_NEW_ChooseConnectionToJoin1/*"Choose connection type:"*/, FONT_Small, TEXTFLAG_CentreY, &ServiceProvidersList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 35, 200, 155, 0, "", FONT_Small,TEXTFLAG_Unselectable | TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,  &ServiceProvidersList, NULL, SelectList, DrawFlatMenuList, NULL, 0  },
 
-		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"tcp add:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		//{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
@@ -3008,7 +3004,7 @@ extern void ResetThrottle( MENUITEM *item );
 void StoreThrottleSettings( MENUITEM *item );
 
 MENU	MENU_Options = {
-	LT_MENU_Options0/*"Options"*/, InitInGameOptions, NULL, NULL, 0,
+	LT_MENU_Options0/*"Options"*/, NULL, NULL, NULL, 0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"						*/, 0, 0, NULL,									&MENU_Visuals,					MenuChange,	MenuItemDrawName,	NULL, 0 },
 		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"		*/, 0, 0, NULL,									&MENU_NEW_InGameSound,	MenuChange,	MenuItemDrawName,	NULL, 0 },
@@ -3138,7 +3134,7 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 				   	  OLDMENUITEM( 200, 208, LT_MENU_InGame9  /*"show ping"					*/,	&ShowPing,					NULL,					SelectToggle,			DrawToggle),					  
 					  OLDMENUITEM( 200, 224, LT_MENU_InGame8  /*"Quit to Main Menu"			*/,	NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
 					  OLDMENUITEM( 200, 240, LT_MENU_InGame25 /*"Quit to desktop"			*/,	NULL,						NULL,					SelectQuit,				MenuItemDrawName),
-					//OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"				*/,	(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),	
+					  OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"				*/,	(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),	
 #ifndef EXTERNAL_DEMO
 #ifdef DEBUG_ON
 					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
@@ -11368,28 +11364,6 @@ void ExitMoreMultiplayerOptions( MENU *Menu )
 		NoMenuBack = TRUE;
 }
 
-void InitInGameOptions( MENU *Menu )
-{
-	MENUITEM *item;
-
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( item->Variable == &PacketsSlider )
-		{
-			if ( IsServerGame && !IsServer )
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-			else
-			{
-				item->FuncSelect = SelectSlider;
-				item->FuncDraw = DrawSlider;
-			}
-		}							  
-	}
-}
-
 void InitMoreMultiplayerOptions( MENU *Menu )
 {
 	MENUITEM *item;
@@ -11439,16 +11413,8 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 		}
 		else if ( item->Variable == &PacketsSlider )
 		{
-			if ( IsServerGame && !IsServer )
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-			else
-			{
-				item->FuncSelect = SelectSlider;
-				item->FuncDraw = DrawFlatMenuSlider;
-			}
+			item->FuncSelect = SelectSlider;
+			item->FuncDraw = DrawFlatMenuSlider;
 		}
 		else if ( item->Variable == &GoalScoreSlider )
 		{
