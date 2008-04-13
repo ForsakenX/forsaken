@@ -4380,7 +4380,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( VERYSHORTUPDATEMSG );
         break;
 
+
     case MSG_UPDATE:
+
         lpUpdate = (LPUPDATEMSG)&CommBuff[0];
         lpUpdate->MsgCode = msg;
         lpUpdate->WhoIAm = WhoIAm;
@@ -4388,14 +4390,19 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( UPDATEMSG );
         break;
 
+
     case MSG_FUPDATE:
+
         lpFUpdate = (LPFUPDATEMSG)&CommBuff[0];
         lpFUpdate->MsgCode = msg;
         lpFUpdate->WhoIAm = WhoIAm;
 		lpFUpdate->ShortGlobalShip = FShortGlobalShip;
         nBytes = sizeof( FUPDATEMSG );
         break;
+
+
     case MSG_VERYSHORTFUPDATE:
+
         lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG)&CommBuff[0];
         lpVeryShortFUpdate->MsgCode = msg;
         lpVeryShortFUpdate->WhoIAm = WhoIAm;
@@ -4403,7 +4410,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( VERYSHORTFUPDATEMSG );
         break;
 
+
     case MSG_GROUPONLY_VERYSHORTFUPDATE:
+
         lpGroupOnly_VeryShortFUpdate = (LPGROUPONLY_VERYSHORTFUPDATEMSG)&CommBuff[0];
         lpGroupOnly_VeryShortFUpdate->MsgCode = msg;
         lpGroupOnly_VeryShortFUpdate->WhoIAm = WhoIAm;
@@ -4412,8 +4421,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         break;
 
 
-
     case MSG_DROPPICKUP:
+
         lpDropPickup = (LPDROPPICKUPMSG) &CommBuff[0];
         lpDropPickup->MsgCode = msg;
         lpDropPickup->WhoIAm = WhoIAm;
@@ -4425,7 +4434,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_VERYSHORTDROPPICKUP:
+
         lpVeryShortDropPickup = (LPVERYSHORTDROPPICKUPMSG) &CommBuff[0];
         lpVeryShortDropPickup->MsgCode = msg;
         lpVeryShortDropPickup->WhoIAm = WhoIAm;
@@ -4438,8 +4449,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         break;
 
 
-
     case MSG_KILLPICKUP:
+
         lpKillPickup = (LPKILLPICKUPMSG) &CommBuff[0];
         lpKillPickup->MsgCode = msg;
         lpKillPickup->WhoIAm = WhoIAm;
@@ -4453,6 +4464,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 
     case MSG_EXPLODESHIP:
+
         lpExplodeShip = (LPEXPLODESHIPMSG) &CommBuff[0];
         lpExplodeShip->MsgCode = msg;
         lpExplodeShip->WhoIAm = WhoIAm;
@@ -4464,7 +4476,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_EXPSECONDARY:
+
         lpExplodeSecondary = (LPEXPSECONDARYMSG) &CommBuff[0];
         lpExplodeSecondary->MsgCode = msg;
         lpExplodeSecondary->WhoIAm = WhoIAm;
@@ -4476,7 +4490,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_TEAMGOALS:
+
         lpTeamGoals = (LPTEAMGOALSMSG) &CommBuff[0];
         lpTeamGoals->MsgCode = msg;
         lpTeamGoals->WhoIAm = WhoIAm;
@@ -4488,7 +4504,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_SHOCKWAVE:
+
         lpShockwave = (LPSHOCKWAVEMSG) &CommBuff[0];
         lpShockwave->MsgCode = msg;
         lpShockwave->WhoIAm = WhoIAm;
@@ -4496,7 +4514,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( SHOCKWAVEMSG );
         break;
 
+
     case MSG_BGOUPDATE:
+
         lpBGOUpdate = (LPBGOUPDATEMSG) &CommBuff[0];
         lpBGOUpdate->MsgCode = msg;
         lpBGOUpdate->WhoIAm = WhoIAm;
@@ -4504,7 +4524,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( BGOUPDATEMSG );
         break;
 
+
     case MSG_PRIMBULLPOSDIR:
+
         lpPrimBullPosDir = (LPPRIMBULLPOSDIRMSG)&CommBuff[0];
         lpPrimBullPosDir->MsgCode = msg;
         lpPrimBullPosDir->WhoIAm = WhoIAm;
@@ -4512,7 +4534,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( PRIMBULLPOSDIRMSG );
         break;
 
+
     case MSG_SECBULLPOSDIR:
+
         lpSecBullPosDir = (LPSECBULLPOSDIRMSG)&CommBuff[0];
         lpSecBullPosDir->MsgCode = msg;
         lpSecBullPosDir->WhoIAm = WhoIAm;
@@ -4524,7 +4548,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_TITANBITS:
+
         lpTitanBits = (LPTITANBITSMSG)&CommBuff[0];
         lpTitanBits->MsgCode = msg;
         lpTitanBits->WhoIAm = WhoIAm;
@@ -4536,38 +4562,33 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_SHIPHIT:
 		
         lpShipHit = (LPSHIPHITMSG)&CommBuff[0];
         lpShipHit->MsgCode = msg;
         lpShipHit->You = ShipNum;
-		if( ColPerspective != COLPERS_Server )
-		{
-	        lpShipHit->WhoHitYou = WhoIAm;
-		}else{
-	        lpShipHit->WhoHitYou = Server_WhoHitYou;
-		}
+	    lpShipHit->WhoHitYou = WhoIAm;
         lpShipHit->ShipHit = TempShipHit;
         lpShipHit->Deaths = Ships[ShipNum].Deaths;
         nBytes = sizeof( SHIPHITMSG );
         break;
+
+
     case MSG_SHORTSHIPHIT:
 
         lpShortShipHit = (LPSHORTSHIPHITMSG)&CommBuff[0];
         lpShortShipHit->MsgCode = msg;
         lpShortShipHit->You = ShipNum;
-		if( ColPerspective != COLPERS_Server )
-		{
-	        lpShortShipHit->WhoHitYou = WhoIAm;
-		}else{
-	        lpShortShipHit->WhoHitYou = Server_WhoHitYou;
-		}
+		lpShortShipHit->WhoHitYou = WhoIAm;
         lpShortShipHit->ShipHit = ShortTempShipHit;
         lpShortShipHit->Deaths = Ships[ShipNum].Deaths;
         nBytes = sizeof( SHORTSHIPHITMSG );
         break;
 
+
     case MSG_SHIPDIED:
+
         lpShipDied = (LPSHIPDIEDMSG)&CommBuff[0];
         lpShipDied->MsgCode = msg;
         lpShipDied->WhoIAm = WhoIAm;
@@ -4583,6 +4604,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
         break;
 
+
     case MSG_REQTIME:
         lpReqTime = (LPREQTIMEMSG)&CommBuff[0];
         lpReqTime->MsgCode = msg;
@@ -4590,7 +4612,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes = sizeof( REQTIMEMSG );
         break;
 
+
     case MSG_SETTIME:
+
         lpSetTime = (LPSETTIMEMSG)&CommBuff[0];
         lpSetTime->MsgCode = msg;
         lpSetTime->WhoIAm = WhoIAm;
@@ -4598,35 +4622,36 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes = sizeof( SETTIMEMSG );
         break;
 
+
     case MSG_SHORTSTATS:
+
         lpShortStats = (LPSHORTSTATSMSG)&CommBuff[0];
         lpShortStats->MsgCode = msg;
         lpShortStats->WhoIAm = WhoIAm;
         lpShortStats->WhosStats = ShipNum;
         nBytes = sizeof( SHORTSTATSMSG );
         break;
+
+
     case MSG_STATUS:
-		lpStatus = (LPSTATUSMSG)&CommBuff[0];
-		lpStatus->TeamScore = 0;
+
+		lpStatus								= (LPSTATUSMSG)&CommBuff[0];
+		lpStatus->TeamScore			= 0;
 		if ( TeamGame && Type == 1 )
-		{
-			lpStatus->TeamScore = Ships[ WhoIAm ].Kills;
-		}
-        lpStatus->MsgCode = msg;
-        lpStatus->WhoIAm = WhoIAm;
-        lpStatus->IsHost = IsHost;
+			lpStatus->TeamScore		= Ships[ WhoIAm ].Kills;
+        lpStatus->MsgCode				= msg;
+        lpStatus->WhoIAm				= WhoIAm;
+        lpStatus->IsHost					= IsHost;
 		lpStatus->PacketsPerSecond = DPlayUpdateInterval;
 		// telling everyone what I am currently doing....
-		lpStatus->Status = MyGameStatus;
+		lpStatus->Status			= MyGameStatus;
 		lpStatus->TeamNumber = TeamNumber[WhoIAm];
-		lpStatus->IAmReady = PlayerReady[WhoIAm];
-
+		lpStatus->IAmReady		= PlayerReady[WhoIAm];
 		lpStatus->Pickups		= Ships[WhoIAm].Pickups;	 
 		lpStatus->RegenSlots	= Ships[WhoIAm].RegenSlots;
 		lpStatus->Mines			= Ships[WhoIAm].Mines;		 
 		lpStatus->Triggers		= Ships[WhoIAm].Triggers;	 
 		lpStatus->TrigVars		= Ships[WhoIAm].TrigVars;	 
-
 		nBytes = sizeof( STATUSMSG );
 
 #ifdef	GUARANTEEDMESSAGES
@@ -4637,232 +4662,219 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		}
 #endif
         break;
+
+
     case MSG_LONGSTATUS:
+
 		lpLongStatus = (LPLONGSTATUSMSG)&CommBuff[0];
-        lpLongStatus->MsgCode = msg;
-        lpLongStatus->WhoIAm = WhoIAm;
-        lpLongStatus->Status.MsgCode = msg;
-        lpLongStatus->Status.WhoIAm = WhoIAm;
-        lpLongStatus->Status.IsHost = IsHost;
+        lpLongStatus->MsgCode			= msg;
+        lpLongStatus->WhoIAm				= WhoIAm;
+        lpLongStatus->Status.MsgCode	= msg;
+        lpLongStatus->Status.WhoIAm	= WhoIAm;
+        lpLongStatus->Status.IsHost		= IsHost;
 		lpLongStatus->Status.PacketsPerSecond = DPlayUpdateInterval;
 		// telling everyone what I am currently doing....
-		lpLongStatus->Status.Status = MyGameStatus;
+		lpLongStatus->Status.Status			= MyGameStatus;
 		lpLongStatus->Status.TeamNumber = TeamNumber[WhoIAm];
-		lpLongStatus->Status.IAmReady = PlayerReady[WhoIAm];
+		lpLongStatus->Status.IAmReady		= PlayerReady[WhoIAm];
 		lpLongStatus->Status.Pickups		= Ships[WhoIAm].Pickups;	 
 		lpLongStatus->Status.RegenSlots	= Ships[WhoIAm].RegenSlots;
 		lpLongStatus->Status.Mines			= Ships[WhoIAm].Mines;		 
 		lpLongStatus->Status.Triggers		= Ships[WhoIAm].Triggers;	 
 		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;	 
 
-		
 		for( Count = 0 ; Count < 32 ; Count++ )
-		{
 			lpLongStatus->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
-		}
 		lpLongStatus->RandomStartPosModify = RandomStartPosModify;
 		nBytes = sizeof( LONGSTATUSMSG );
         break;
 
+
     case MSG_SHORTPICKUP:
+
 		lpShortPickup = (LPSHORTPICKUPMSG)&CommBuff[0];
         lpShortPickup->MsgCode = msg;
         lpShortPickup->WhoIAm = WhoIAm;
         lpShortPickup->Pickups = Ships[ShipNum].Pickups;
-
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
-        
 		nBytes = sizeof( SHORTPICKUPMSG );
 		send_to = Ships[ShipNum].dcoID;
         break;
 
-    case MSG_SHORTREGENSLOT:
-		lpShortRegenSlot = (LPSHORTREGENSLOTMSG)&CommBuff[0];
-        lpShortRegenSlot->MsgCode = msg;
-        lpShortRegenSlot->WhoIAm = WhoIAm;
-        lpShortRegenSlot->RegenSlots = Ships[ShipNum].RegenSlots;
 
+    case MSG_SHORTREGENSLOT:
+
+		lpShortRegenSlot = (LPSHORTREGENSLOTMSG)&CommBuff[0];
+        lpShortRegenSlot->MsgCode		= msg;
+        lpShortRegenSlot->WhoIAm		= WhoIAm;
+        lpShortRegenSlot->RegenSlots	= Ships[ShipNum].RegenSlots;
 		GenRegenSlotList( ShipNum, &lpShortRegenSlot->ShortRegenSlot[0] , &lpShortRegenSlot->HowManyRegenSlots , Ships[ShipNum].RegenSlots );
-        
-		nBytes = sizeof( SHORTREGENSLOTMSG );
+		nBytes	= sizeof( SHORTREGENSLOTMSG );
 		send_to = Ships[ShipNum].dcoID;
         break;
+
 
     case MSG_SHORTTRIGGER:
-		lpShortTrigger = (LPSHORTTRIGGERMSG)&CommBuff[0];
-        lpShortTrigger->MsgCode = msg;
-        lpShortTrigger->WhoIAm = WhoIAm;
-        lpShortTrigger->Triggers = Ships[ShipNum].Triggers;
 
+		lpShortTrigger = (LPSHORTTRIGGERMSG)&CommBuff[0];
+        lpShortTrigger->MsgCode	= msg;
+        lpShortTrigger->WhoIAm	= WhoIAm;
+        lpShortTrigger->Triggers	= Ships[ShipNum].Triggers;
 		GenTriggerList( ShipNum, &lpShortTrigger->ShortTrigger[0] , &lpShortTrigger->HowManyTriggers, Ships[ShipNum].Triggers );
-        
-		nBytes = sizeof( SHORTTRIGGERMSG );
-		send_to = Ships[ShipNum].dcoID;
+		nBytes	= sizeof( SHORTTRIGGERMSG );
+		send_to	= Ships[ShipNum].dcoID;
         break;
 
-    case MSG_SHORTTRIGVAR:
-		lpShortTrigVar = (LPSHORTTRIGVARMSG)&CommBuff[0];
-        lpShortTrigVar->MsgCode = msg;
-        lpShortTrigVar->WhoIAm = WhoIAm;
-        lpShortTrigVar->TrigVars = Ships[ShipNum].TrigVars;
 
+    case MSG_SHORTTRIGVAR:
+
+		lpShortTrigVar = (LPSHORTTRIGVARMSG)&CommBuff[0];
+        lpShortTrigVar->MsgCode	= msg;
+        lpShortTrigVar->WhoIAm	= WhoIAm;
+        lpShortTrigVar->TrigVars	= Ships[ShipNum].TrigVars;
 		GenTrigVarList( ShipNum, &lpShortTrigVar->ShortTrigVar[0] , &lpShortTrigVar->HowManyTrigVars, Ships[ShipNum].TrigVars );
-        
-		nBytes = sizeof( SHORTTRIGVARMSG );
+        nBytes = sizeof( SHORTTRIGVARMSG );
 		send_to = Ships[ShipNum].dcoID;
         break;
 
 
     case MSG_SHORTMINE:
-		lpShortMine = (LPSHORTMINEMSG)&CommBuff[0];
-        lpShortMine->MsgCode = msg;
-        lpShortMine->WhoIAm = WhoIAm;
-        lpShortMine->Mines = Ships[ShipNum].Mines;
 
+		lpShortMine					= (LPSHORTMINEMSG)&CommBuff[0];
+        lpShortMine->MsgCode	= msg;
+        lpShortMine->WhoIAm	= WhoIAm;
+        lpShortMine->Mines		= Ships[ShipNum].Mines;
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
-        
-		nBytes = sizeof( SHORTMINEMSG );
+		nBytes	= sizeof( SHORTMINEMSG );
 		send_to = Ships[ShipNum].dcoID;
         break;
 
+
     case MSG_BOMB:
-		lpBomb = (LPBOMBMSG)&CommBuff[0];
-        lpBomb->MsgCode = msg;
-        lpBomb->WhoIAm = WhoIAm;
+
+		lpBomb					= (LPBOMBMSG)&CommBuff[0];
+        lpBomb->MsgCode	= msg;
+        lpBomb->WhoIAm		= WhoIAm;
 		lpBomb->BombNum	= BombNumToSend;
-		lpBomb->BombTime = BombTimeToSend;
+		lpBomb->BombTime	= BombTimeToSend;
 		lpBomb->WhoGotHit = (BYTE) ShipNum;
 		nBytes = sizeof( BOMBMSG );
         break;
 
+
     case MSG_TEXTMSG:
+
 		lpTextMsg = (LPTEXTMSG)&CommBuff[0];
-        lpTextMsg->MsgCode = msg;
-        lpTextMsg->WhoIAm = WhoIAm;
+        lpTextMsg->MsgCode	= msg;
+        lpTextMsg->WhoIAm		= WhoIAm;
         
 		switch( Type )
 		{
-		case TEXTMSGTYPE_Taunt1:
-			strncpy( &lpTextMsg->Text[0]	, &MacroText1.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = TauntMessageColour;
-			break;
-		case TEXTMSGTYPE_Taunt2:
-			strncpy( &lpTextMsg->Text[0]	, &MacroText2.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = TauntMessageColour;
-			break;
-		case TEXTMSGTYPE_Taunt3:
-			strncpy( &lpTextMsg->Text[0]	, &MacroText3.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = TauntMessageColour;
-			break;
-		case TEXTMSGTYPE_TitleMessage:
-			strncpy( &lpTextMsg->Text[0]	, &MacroText4.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = SystemMessageColour;
-			break;
-		case TEXTMSGTYPE_JoiningTeamGame:
-//			strncpy( &lpTextMsg->Text[0]	, "%s is joining the game" , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = SystemMessageColour;
-			break;
-		case TEXTMSGTYPE_EnteredWatchMode:
-//			strncpy( &lpTextMsg->Text[0]	, "%s entered watch mode" , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = SystemMessageColour;
-			break;
-		case TEXTMSGTYPE_ExitedWatchMode:
-//			strncpy( &lpTextMsg->Text[0]	, "%s exited watch mode" , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = SystemMessageColour;
-			break;
-		case TEXTMSGTYPE_QuickTaunt:
-			strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = MyMessageColour;
-			break;
-		case TEXTMSGTYPE_QuickTauntWhisper:
-			strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
-			lpTextMsg->TextMsgType = Type;
-			MessageColour = MyMessageColour;
-			break;
-		case TEXTMSGTYPE_CaptureFlagMessage:
-			lpTextMsg->TextMsgType = Type;
-			strncpy( &lpTextMsg->Text[0]	, CTFMessage , MAXTEXTMSG );
-			PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_ScoredWithFlag:
-			lpTextMsg->TextMsgType = Type;
-			lpTextMsg->Text[0] = 0;
-			PlaySfx( SFX_MyTeamScored, FlagVolume );
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_ReturningFlag:
-			lpTextMsg->TextMsgType = Type;
-			if ( IsServerGame )
-			{
-				strncpy( &lpTextMsg->Text[0], CTFMessage , MAXTEXTMSG );
-			}
-			else
-			{
+			case TEXTMSGTYPE_Taunt1:
+				strncpy( &lpTextMsg->Text[0]	, &MacroText1.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = TauntMessageColour;
+				break;
+			case TEXTMSGTYPE_Taunt2:
+				strncpy( &lpTextMsg->Text[0]	, &MacroText2.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = TauntMessageColour;
+				break;
+			case TEXTMSGTYPE_Taunt3:
+				strncpy( &lpTextMsg->Text[0]	, &MacroText3.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = TauntMessageColour;
+				break;
+			case TEXTMSGTYPE_TitleMessage:
+				strncpy( &lpTextMsg->Text[0]	, &MacroText4.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = SystemMessageColour;
+				break;
+			case TEXTMSGTYPE_JoiningTeamGame:
+	//			strncpy( &lpTextMsg->Text[0]	, "%s is joining the game" , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = SystemMessageColour;
+				break;
+			case TEXTMSGTYPE_EnteredWatchMode:
+	//			strncpy( &lpTextMsg->Text[0]	, "%s entered watch mode" , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = SystemMessageColour;
+				break;
+			case TEXTMSGTYPE_ExitedWatchMode:
+	//			strncpy( &lpTextMsg->Text[0]	, "%s exited watch mode" , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = SystemMessageColour;
+				break;
+			case TEXTMSGTYPE_QuickTaunt:
+				strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = MyMessageColour;
+				break;
+			case TEXTMSGTYPE_QuickTauntWhisper:
+				strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
+				lpTextMsg->TextMsgType = Type;
+				MessageColour = MyMessageColour;
+				break;
+			case TEXTMSGTYPE_CaptureFlagMessage:
+				lpTextMsg->TextMsgType = Type;
+				strncpy( &lpTextMsg->Text[0]	, CTFMessage , MAXTEXTMSG );
+				PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_ScoredWithFlag:
+				lpTextMsg->TextMsgType = Type;
 				lpTextMsg->Text[0] = 0;
-			}
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_ReturnedFlag:
-			lpTextMsg->TextMsgType = Type;
-			if ( IsServerGame )
-			{
-				strncpy( &lpTextMsg->Text[0], CTFMessage , MAXTEXTMSG );
-			}
-			else
-			{
+				PlaySfx( SFX_MyTeamScored, FlagVolume );
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_ReturningFlag:
+				lpTextMsg->TextMsgType = Type;
 				lpTextMsg->Text[0] = 0;
-			}
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_FlagDriftedIn:
-			lpTextMsg->TextMsgType = Type;
-			lpTextMsg->Text[0] = 0;
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_FlagEscaped:
-			lpTextMsg->TextMsgType = Type;
-			lpTextMsg->Text[0] = 0;
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_BountyMessage:
-			lpTextMsg->TextMsgType = Type;
-			lpTextMsg->Text[0] = 0;
-			PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
-			MessageColour = FlagMessageColour;
-			break;
-		case TEXTMSGTYPE_SpeechTaunt:
-			lpTextMsg->TextMsgType = Type;
-			lpTextMsg->Text[0] = CurrentTauntVariant;
-			MessageColour = PlayerMessageColour;
-			break;
-		default:
-			lpTextMsg->TextMsgType = TEXTMSGTYPE_Taunt1;
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_ReturnedFlag:
+				lpTextMsg->TextMsgType = Type;
+				lpTextMsg->Text[0] = 0;
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_FlagDriftedIn:
+				lpTextMsg->TextMsgType = Type;
+				lpTextMsg->Text[0] = 0;
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_FlagEscaped:
+				lpTextMsg->TextMsgType = Type;
+				lpTextMsg->Text[0] = 0;
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_BountyMessage:
+				lpTextMsg->TextMsgType = Type;
+				lpTextMsg->Text[0] = 0;
+				PlaySfx( SFX_MyTeamGotFlag , FlagVolume );
+				MessageColour = FlagMessageColour;
+				break;
+			case TEXTMSGTYPE_SpeechTaunt:
+				lpTextMsg->TextMsgType = Type;
+				lpTextMsg->Text[0] = CurrentTauntVariant;
+				MessageColour = PlayerMessageColour;
+				break;
+			default:
+				lpTextMsg->TextMsgType = TEXTMSGTYPE_Taunt1;
 		}
 		// put a null at the end just in case...
 		lpTextMsg->Text[MAXTEXTMSG-1] = 0;
 		nBytes = sizeof( TEXTMSG );
 
 		if (MyGameStatus != STATUS_StartingMultiplayer)
-		{
 			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
-		}
 		break;
+
 
     case MSG_PINGREQUEST:
 
 #ifdef UDP_PINGS
 		RequestPings();
 #endif
-
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         lpPingMsg->MsgCode = msg;
         lpPingMsg->WhoIAm = WhoIAm;
@@ -4875,14 +4887,20 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		}
 		nBytes = sizeof( PINGMSG );
 		break;
+
+
 	case MSG_PLAYERPINGS:
+
 		lpPlayerPingsMsg = (LPPLAYERPINGSMSG)&CommBuff[0];
 		lpPlayerPingsMsg->MsgCode = msg;
 		lpPlayerPingsMsg->WhoIAm = WhoIAm;
 		memcpy( lpPlayerPingsMsg->Ping, PingTimes, sizeof( PingTimes ) );
 		nBytes = sizeof( PLAYERPINGSMSG );
 		break;
+
+
     case MSG_PINGREPLY:
+
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         lpPingMsg->MsgCode = msg;
         lpPingMsg->WhoIAm = WhoIAm;
@@ -4890,7 +4908,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
 		break;
+
+
     case MSG_ACKMSG:
+
 		lpAckMsg = (LPACKMSG)&CommBuff[0];
         lpAckMsg->MsgCode = msg;
         lpAckMsg->WhoIAm = WhoIAm;
@@ -4904,12 +4925,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	case MSG_SESSIONDESC:
 
 		DebugPrintf("about to manually send session desc\n");
-
 		lpSessionDescMsg = ( LPSESSIONDESCMSG )&CommBuff[ 0 ];
-
         lpSessionDescMsg->MsgCode = msg;
         lpSessionDescMsg->WhoIAm = WhoIAm;
-
 		DPlayGetSessionDesc();
 
 		if ( glpdpSD )
@@ -4918,10 +4936,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			lpSessionDescMsg->dwUser2 = glpdpSD->dwUser2;
 			lpSessionDescMsg->dwUser3 = glpdpSD->dwUser3;
 			lpSessionDescMsg->dwUser4 = glpdpSD->dwUser4;
-		}else
-		{
-			return;	// no SD to send!!
 		}
+		else
+			return;	// no SD to send!!
+
 		nBytes = sizeof( SESSIONDESCMSG );
 #ifdef	GUARANTEEDMESSAGES
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SESSIONDESC , FALSE , TRUE);
@@ -4930,15 +4948,14 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		break;
 #endif
 	
+
 	case MSG_LEVELNAMES:
 
 		lpLevelNamesMsg = ( LPLEVELNAMESMSG )&CommBuff[ 0 ];
 		lpLevelNamesMsg->MsgCode = msg;
 		lpLevelNamesMsg->WhoIAm = WhoIAm;
-
 		lpLevelNamesMsg->TotalLevels =  LevelList.items;
 		lpLevelNamesMsg->ThisBatch   = 0;
-
 		lpLevelNamesMsg->FirstLevel = Type;
 
 		for ( i = 0; i < MAXLEVELSPERBATCH; i++ )
@@ -4953,27 +4970,23 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 		nBytes = sizeof( LEVELNAMESMSG );
 		break;
+
+
 	case MSG_TRACKERINFO:
 
 		lpTrackerInfoMsg = ( LPTRACKERINFOMSG )&CommBuff[ 0 ];
 		lpTrackerInfoMsg->MsgCode = msg;
 		lpTrackerInfoMsg->WhoIAm = WhoIAm;
-
         send_to = to;
-
 		lpTrackerInfoMsg->addr = tracker_addr;
 		lpTrackerInfoMsg->port = tracker_port;
 		lpTrackerInfoMsg->freq = heartbeat_freq;
 		lpTrackerInfoMsg->type = heartbeat_type;
 		lpTrackerInfoMsg->shutdown = SendShutdownPacket;
-
 		nBytes = sizeof( TRACKERINFOMSG );
-
 		Flags |= DPSEND_GUARANTEED;
-
 		break;
 	}
-
 	// only record if message is sent to whole of the group....
 	if( RecordDemo )
 	{
@@ -4990,16 +5003,13 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		{
 			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 			TempTime = TempTime - GameStartedTime;
-		
 			Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		
 			Demo_fwrite( &nBytes, sizeof(int), 1, DemoFp );
 			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
 			Demo_fwrite( &CommBuff[0], nBytes, 1, DemoFp );
 		}
 	}
 	
-
 	if( !send_to )
 	{
 		if( BigPackets )
@@ -5010,17 +5020,17 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	}
 	
 	// Broadcast it to everyone in the group...
-
-	if( !UseSendAsync && !IsServer )
+	if( !UseSendAsync )
 	{
-		
 		hr = glpDP->lpVtbl->Send( glpDP,
 								  dcoID,   // From
 								  send_to, // send to everybody
 								  Flags ,
 								  (LPSTR)&CommBuff[0],
 								  nBytes);
-	}else{
+	}
+	else
+	{
 		Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
 		hr = IDirectPlayX_SendEx( glpDP,
 								  dcoID,   // From
@@ -5034,17 +5044,12 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 								  NULL		// lpdwMsgID
 								  );
 	}
-
-		BytesPerSecSent += nBytes;
-
-
-
+	BytesPerSecSent += nBytes;
 	if( hr != DP_OK && hr != DPERR_PENDING )
 	{
 		OutputDebugString( "Dplay Send Error" );
 	}
 }
-
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Read packet stuff from a file and pass it on..
