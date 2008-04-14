@@ -4714,28 +4714,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         if ( glpdpSD->dwUser4 != 0 )
         {
-          switch ( glpdpSD->dwUser3 & ServerGameStateBits )
-          {
-          case SERVER_STATE_NoServer:   
-          case SERVER_STATE_Joinable:   
-            if( TeamGame )
-            {
-              JoinASessionEx( &MENU_NEW_WatchTeamSelect );
-            }else
-            {
-              JoinASessionEx( &MENU_NEW_JoinWaitingToStart );
-            }
-            break;
-          case SERVER_STATE_NeedHost:   
-            JoinASessionEx( &MENU_NEW_CreateGamePseudoHost );
-            break;
-          case SERVER_STATE_HostChoosing: 
-            D3DAppClearScreenOnly();
-            CenterPrint4x5Text( HOST_IS_SETTING_UP_GAME, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
-            break;
-          }
         }
-      }else
+      }
+	  else
       {
         DebugPrintf("no DPlay ptr!\n");
       }

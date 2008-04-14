@@ -1130,37 +1130,25 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 
 	// new additions ( previously in MSG_INIT )
 	if( sd->dwUser3 & HarmTeamMatesBit )
-	{
 		HarmTeamMates = TRUE;
-	}else{
+	else
 		HarmTeamMates = FALSE;
-	}
+
 	if( sd->dwUser3 & BrightShipsBit )
-	{
 		BrightShips = TRUE;
-	}else{
+	else
 		BrightShips = FALSE;
-	}
+
 	if( sd->dwUser3 & ResetKillsPerLevelBit )
-	{
 		ResetKillsPerLevel = TRUE;
-	}else{
+	else
 		ResetKillsPerLevel = FALSE;
-	}
 	
 	if( sd->dwUser3 & BikeExhaustBit )
-	{
 		BikeExhausts = TRUE;
-	}else{
+	else
 		BikeExhausts = FALSE;
-	}
 	   
-	// if we are going to be the pseudohost, we must be responsible for setting collision type
-	if ( ( sd->dwUser3 & ServerGameStateBits ) != SERVER_STATE_NeedHost )
-	{
-		ColPerspective = ( sd->dwUser3 & CollisionTypeBits ) >> Collision_Type_BitShift;
-	}
-
 	Time = ( ( sd->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift );
 
 	if( Time )
@@ -1169,9 +1157,7 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 		CountDownOn = TRUE;
 	}
 	else
-	{
 		CountDownOn = FALSE;
-	}
 
 	RandomStartPosModify = (WORD) (sd->dwUser2 & 0xffff);
 	
@@ -1192,15 +1178,11 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 	
 	// new addition ( previously in MSG_INIT )
 	if ( CTF )
-	{
 		SetUpGameSubType( CTF_Type_Decode( sd->dwUser3 ) );
-	}
 
 	BountyHunt = ( sd->dwUser3 & BountyGameBit ) ? TRUE : FALSE;
-
 	UseShortPackets = ( sd->dwUser3 & ShortPacketsBit ) ? TRUE : FALSE;
 	BigPackets = ( sd->dwUser3 & BigPacketsBit ) ? TRUE : FALSE;
-
 	MaxKills = (int16)( ( sd->dwUser2 & MaxKillsBits ) >> MaxKills_Shift );
 }
 
@@ -1239,15 +1221,7 @@ BOOL JoinASession ( MENUITEM * Item )
 #endif
 
 	if ( !IsLobbyLaunched )
-	{
-		switch( Sessions[ SessionsList.selected_item ].dwUser3 & ServerGameStateBits )
-		{
-		case SERVER_STATE_HostChoosing:	
-			return TRUE;
-		default:
-			break;
-		}
-		
+	{		
 		// get a pointer to the guid
 		lpGuid = (LPGUID ) &Sessions[SessionsList.selected_item].guidInstance;
 
@@ -1267,38 +1241,32 @@ BOOL JoinASession ( MENUITEM * Item )
 
 
 	DPlayGetSessionDesc();
-
 	GetSessionInfo( glpdpSD );
-
 	SetupDplayGame();
-
 	Rejoining = FALSE;
-
 	temp_sd = Sessions[SessionsList.selected_item];
 
 	// zero Some stuff cos they might have changed..or they might be pointers...
-	temp_sd.dwCurrentPlayers = 0;
-	Old_Session.dwCurrentPlayers = 0;
-	temp_sd.lpszSessionNameA = 0;
-	Old_Session.lpszSessionNameA = 0;
-	temp_sd.lpszPasswordA = 0;
-	Old_Session.lpszPasswordA = 0;
-
-	temp_sd.dwFlags = 0;
-	Old_Session.dwFlags = 0;
-	temp_sd.dwSize = 0;
-	Old_Session.dwSize = 0;
-	temp_sd.dwMaxPlayers = 0;
-	Old_Session.dwMaxPlayers = 0;
-	temp_sd.dwReserved1 = 0;
-	Old_Session.dwReserved1 = 0;
-	temp_sd.dwReserved2 = 0;
-	Old_Session.dwReserved2 = 0;
-
-	temp_sd.dwUser2 = 0;
-	Old_Session.dwUser2 = 0;
-	temp_sd.dwUser3 = 0;
-	Old_Session.dwUser3 = 0;
+	temp_sd.dwCurrentPlayers			= 0;
+	Old_Session.dwCurrentPlayers		= 0;
+	temp_sd.lpszSessionNameA		= 0;
+	Old_Session.lpszSessionNameA	= 0;
+	temp_sd.lpszPasswordA				= 0;
+	Old_Session.lpszPasswordA		= 0;
+	temp_sd.dwFlags						= 0;
+	Old_Session.dwFlags					= 0;
+	temp_sd.dwSize						= 0;
+	Old_Session.dwSize					= 0;
+	temp_sd.dwMaxPlayers				= 0;
+	Old_Session.dwMaxPlayers			= 0;
+	temp_sd.dwReserved1				= 0;
+	Old_Session.dwReserved1			= 0;
+	temp_sd.dwReserved2				= 0;
+	Old_Session.dwReserved2			= 0;
+	temp_sd.dwUser2						= 0;
+	Old_Session.dwUser2				= 0;
+	temp_sd.dwUser3						= 0;
+	Old_Session.dwUser3				= 0;
 
 	if( ( Mymemcmp( (BYTE*) &Old_Session , (BYTE*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == TRUE ) &&
 		( _stricmp( (char*) &biker_name[0], (char*) &Old_Name[0] ) == 0 ) )
@@ -1307,9 +1275,7 @@ BOOL JoinASession ( MENUITEM * Item )
 	}
 	
 	WhoIAm = 0xff;
-
 	MyGameStatus = STATUS_GetPlayerNum;
-
 	GetPlayerNumCount1 = 0.0F;
 	GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
 	GetPlayerNumCount = 0;

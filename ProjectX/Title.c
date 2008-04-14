@@ -19118,19 +19118,6 @@ void UpdateSessionInfo( LIST *List )
 	}
 
 	session = &Sessions[ SessionsList.selected_item ];
-#if 1
-	switch( session->dwUser3 & ServerGameStateBits )
-	{
-	case SERVER_STATE_NoServer:		
-		break;
-	case SERVER_STATE_NeedHost:		
-		strncpy( Session_Info_Server_BigMsg, LT_Extra1/*"empty server session - select to host session on this server"*/, sizeof( Session_Info_Server_BigMsg ) );
-		return;
-	case SERVER_STATE_HostChoosing:	
-		strncpy( Session_Info_Server_BigMsg, LT_Extra2/*"server session - host is selecting game type"*/, sizeof( Session_Info_Server_BigMsg ) );
-		return;
-	}
-#endif
 
 	// creation date:time
 	if ( DosDateTimeToFileTime( ( WORD )( session->dwUser1 & 0xffff ), ( WORD )( ( session->dwUser1 >> 16 ) & 0xffff ), &FileTime ) )
@@ -19159,14 +19146,7 @@ void UpdateSessionInfo( LIST *List )
 	}
 
 	// number of players
-
-	if ( ( session->dwUser3 & ServerGameStateBits ) == SERVER_STATE_Joinable )
-	{
-		// if its a server game list the number of players as 1 less than it is..
-		_snprintf( Session_Info_Num_Players, sizeof( Session_Info_Num_Players ), LT_Extra5/*"players: %d / %d"*/, session->dwCurrentPlayers-1, session->dwMaxPlayers-1 ); 
-	}else{
-		_snprintf( Session_Info_Num_Players, sizeof( Session_Info_Num_Players ), LT_Extra5/*"players: %d / %d"*/, session->dwCurrentPlayers, session->dwMaxPlayers ); 
-	}
+	_snprintf( Session_Info_Num_Players, sizeof( Session_Info_Num_Players ), LT_Extra5/*"players: %d / %d"*/, session->dwCurrentPlayers, session->dwMaxPlayers ); 
 
 	// game type
     if ( session->dwUser3 & BombGameBit ) {
@@ -19250,16 +19230,7 @@ void UpdateSessionInfo( LIST *List )
 	
 	_snprintf( Session_Info_PPS, sizeof( Session_Info_PPS ), LT_Extra1b/*"%d packets per second"*/, ( session->dwUser4 & PacketsPerSecondBits ) >> PacketsPerSecond_Shift );
 	Shuffle_Y ( CurrentMenu, Session_Info_PPS, &current_y );
-	
-	// server game?
-	if ( ( session->dwUser3 & ServerGameStateBits ) == SERVER_STATE_Joinable )
-	{
-//		strcpy( Session_Info_Server, LT_Extra9/*"server based game"*/ );
-//		current_y += SESSIONJOIN_EXTRAS_LINEHEIGHT;
-		_snprintf( Session_Info_Server, sizeof( Session_Info_Server ), LT_Extra9/*"server based game"*/, ( session->dwUser3 & HarmTeamMatesBit ) ? LT_ToggleOn : LT_ToggleOff );
-		Shuffle_Y ( CurrentMenu, Session_Info_Server, &current_y );
-	}
-	
+		
 	// harm team mates?
 	if ( session->dwUser3 & TeamGameBit )
 	{
