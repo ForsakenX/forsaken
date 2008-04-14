@@ -5882,43 +5882,23 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :  Main Routines to be called before Rendering....  
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-  // set up groups indirectly visible by all active cameras
-  /*
-  // removed by Phil 11/11/98 ( VC6 warning )
-  if( ServerMode && !PowerVR )
-  {
-    ServerCount++;
-    if( ServerCount >= active )
-    {
-      ServerCount = 0;
-    }
-    InitIndirectVisible( Ships[enabled[ServerCount]].Object.Group );
-  }
-  else
-  */
-  {
-    InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
-  }
+
+  InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
+
   if( !PowerVR && ( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) ) )
-  {
     AddIndirectVisible( (uint16) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
-  }
 
   MainRoutines();
 
   if( MyGameStatus == STATUS_QuitCurrentGame )
     return TRUE;
 
-
-  
   TloadCheckForLostSurfaces(&Tloadheader);
   memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(uint16) );
   cral += (framelag*2.0F);
 
   for( i = 0 ; i < MAX_SFX ; i++ )
-  {
     LastDistance[i] = 100000.0F;
-  }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :  Now the Rendering can begin...
@@ -5940,7 +5920,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       MainCamera.Viewport = viewport; 
       MainCamera.Proj = proj; 
 
-      
       CurrentCamera = MainCamera;
 
       HUDNames();
@@ -5963,8 +5942,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 #endif
   
-      if( RearCameraActive && !PowerVR && !RearCameraDisable 
-		  )
+      if( RearCameraActive && !PowerVR && !RearCameraDisable )
       {
         CameraRendering = CAMRENDERING_Rear;
 
@@ -5976,21 +5954,18 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         CurrentCamera.Pos = Ships[Current_Camera_View].Object.Pos;  
         CurrentCamera.Viewport = viewport;  
         CurrentCamera.Proj = proj;  
-        
         CurrentCamera.InvMat._31 *= -1.0F;
         CurrentCamera.InvMat._32 *= -1.0F;
         CurrentCamera.InvMat._33 *= -1.0F;
         CurrentCamera.InvMat._11 *= -1.0F;
         CurrentCamera.InvMat._12 *= -1.0F;
         CurrentCamera.InvMat._13 *= -1.0F;
-        
         CurrentCamera.Mat._13 *= -1.0F;
         CurrentCamera.Mat._23 *= -1.0F;
         CurrentCamera.Mat._33 *= -1.0F;
         CurrentCamera.Mat._11 *= -1.0F;
         CurrentCamera.Mat._21 *= -1.0F;
         CurrentCamera.Mat._31 *= -1.0F;
-        
         CurrentCamera.Viewport.dwX = ( viewport.dwX + viewport.dwWidth ) - ( (viewport.dwWidth >>4) + ( viewport.dwWidth >>2 ) );
         CurrentCamera.Viewport.dwY = viewport.dwY + (viewport.dwHeight >>4);
         CurrentCamera.Viewport.dwWidth = viewport.dwWidth >>2;
@@ -6001,7 +5976,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
         CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-        
         
         CurrentCamera.UseLowestLOD = TRUE;
 
@@ -6018,20 +5992,20 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         if( ActiveRemoteCamera )
         {
           CameraRendering = CAMRENDERING_Pip;
-
           CurrentCamera.enable = 1;
           CurrentCamera.GroupImIn = ActiveRemoteCamera->Group;  
           CurrentCamera.Mat = ActiveRemoteCamera->Mat;  
           CurrentCamera.InvMat = ActiveRemoteCamera->InvMat;  
           CurrentCamera.Pos = ActiveRemoteCamera->Pos;
-        }else{
+        }
+		else
+		{
           CameraRendering = CAMRENDERING_Missile;
 
           CurrentCamera.enable = 1;
           CurrentCamera.GroupImIn = SecBulls[ CameraMissile ].GroupImIn;  
           CurrentCamera.Mat = SecBulls[ CameraMissile ].Mat;  
           MatrixTranspose( &SecBulls[ CameraMissile ].Mat, &CurrentCamera.InvMat );
-          
           CurrentCamera.Pos = SecBulls[ CameraMissile ].Pos;
         }
         CurrentCamera.Viewport = viewport;
@@ -6060,7 +6034,9 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         SetFOV( main_fov );
 
       }
-    }else{
+    }
+	else
+	{
       // Full Screen Rear View....
       CameraRendering = CAMRENDERING_Rear;
       CurrentCamera.enable = 1;
@@ -6070,21 +6046,18 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       CurrentCamera.Pos = Ships[Current_Camera_View].Object.Pos;  
       CurrentCamera.Viewport = viewport;  
       CurrentCamera.Proj = proj;  
-      
       CurrentCamera.InvMat._31 *= -1.0F;
       CurrentCamera.InvMat._32 *= -1.0F;
       CurrentCamera.InvMat._33 *= -1.0F;
       CurrentCamera.InvMat._11 *= -1.0F;
       CurrentCamera.InvMat._12 *= -1.0F;
       CurrentCamera.InvMat._13 *= -1.0F;
-      
       CurrentCamera.Mat._13 *= -1.0F;
       CurrentCamera.Mat._23 *= -1.0F;
       CurrentCamera.Mat._33 *= -1.0F;
       CurrentCamera.Mat._11 *= -1.0F;
       CurrentCamera.Mat._21 *= -1.0F;
       CurrentCamera.Mat._31 *= -1.0F;
-  
       CurrentCamera.UseLowestLOD = FALSE;
 
       if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
@@ -6106,17 +6079,14 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
  /* done with rendering camera stuff */
 
   if( DrawPanel && (WhoIAm == Current_Camera_View ))
-  {
     Disp3dPanel( lpDev, lpView );
-  }
   
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-    DispTracker( lpDev, lpView );
+		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		DispTracker( lpDev, lpView );
   }
-
 
 #ifdef REFLECTION
   {
@@ -6128,18 +6098,15 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     if( Ships[WhoIAm ^ 1].enable )
     {
       Current_Camera_View = WhoIAm ^ 1;
-
       CurrentCamera.enable = 1;
       CurrentCamera.UseLowestLOD = FALSE;
       CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;
-
       ApplyMatrix( &Ships[WhoIAm].Object.Mat, &SlideUp, &TempUp );      /* Calc Direction Vector */
-
       MakeViewMatrix( &Ships[Current_Camera_View].Object.Pos, &Ships[WhoIAm].Object.Pos, &TempUp, &CurrentCamera.Mat);
       MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
 
-//      CurrentCamera.Mat = Ships[Current_Camera_View].Object.FinalMat; 
-//      CurrentCamera.InvMat = Ships[Current_Camera_View].Object.FinalInvMat; 
+//    CurrentCamera.Mat = Ships[Current_Camera_View].Object.FinalMat; 
+//    CurrentCamera.InvMat = Ships[Current_Camera_View].Object.FinalInvMat; 
       CurrentCamera.Pos = Ships[Current_Camera_View].Object.Pos;  
       CurrentCamera.Viewport = viewport;  
       CurrentCamera.Proj = proj;  
@@ -6186,10 +6153,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /* Secondary routines called after rendering */
     
   if( !PlayDemo )
-  {
     DplayGameUpdate();
-  }
-
 
   if( (Ships[WhoIAm].Object.Speed.z) > (MaxMoveSpeed) )
   {
