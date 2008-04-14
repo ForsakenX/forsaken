@@ -4145,7 +4145,6 @@ void RegenerateQuedPickups( void )
 	int16						Count;
 	SHORTPICKUP				*	IP_Ptr;
 	SHORTKILLPICKUP			*	KP_Ptr;
-	SHORTSERVERKILLPICKUP	*	SKP_Ptr;
 
 	if(
 		(!Ships[ WhoIAm ].Pickups)		&&
@@ -4176,14 +4175,6 @@ void RegenerateQuedPickups( void )
 					DebugPrintf( "QUED KILL :" );
 #endif
 					KillPickup( KP_Ptr->Owner, KP_Ptr->ID, KP_Ptr->Style );
-					break;
-
-				case MPU_TYPE_SERVERKILL:
-					SKP_Ptr = (SHORTSERVERKILLPICKUP *) MissedPickups[ Count ].Struct;
-#if DEBUG_PICKUPS
-					DebugPrintf( "QUED KILL :" );
-#endif
-					ServerKillPickup( SKP_Ptr->Owner, SKP_Ptr->ID, SKP_Ptr->Style, SKP_Ptr->NewOwner );
 					break;
 			}
 		}
@@ -6079,8 +6070,7 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 			}
 
 			Host_PickupsGot[ Player ][ Pickups[ i ].Type ]++;
-			ServerKillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate, Player );
-//			KillPickup( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
+			//			KillPickup( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
 			CleanUpPickup( i );
 			return TRUE;
 		}

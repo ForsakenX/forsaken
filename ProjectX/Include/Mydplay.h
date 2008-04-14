@@ -158,17 +158,6 @@ typedef struct SHORTKILLPICKUP{
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Bodge Structures
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-typedef struct SHORTSERVERKILLPICKUP{
-	uint16	Owner;				// Owner ID
-	uint16	ID;					// ID
-	int16	Style;				// Style
-	uint16	NewOwner;
-
-}SHORTSERVERKILLPICKUP;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Bodge Structures
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 typedef struct MISSEDPICKUPMSG{
  	int16	Type;
 	void *	Struct;
@@ -220,14 +209,6 @@ typedef struct _KILLPICKUPINFO
 	uint16		IDCount;
 	int16		Style;
 }KILLPICKUPINFO;
-
-typedef struct _SERVERKILLPICKUPINFO
-{
-	uint16		Owner;
-	uint16		IDCount;
-	int16		Style;
-	uint16		NewOwner;
-}SERVERKILLPICKUPINFO;
 
 typedef struct _EXPLODESHIPINFO
 {
@@ -890,14 +871,6 @@ typedef struct _KILLPICKUPMSG
 	KILLPICKUPINFO	KillPickupInfo;
 
 } KILLPICKUPMSG, *LPKILLPICKUPMSG;
-
-typedef struct _SERVERKILLPICKUPMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	SERVERKILLPICKUPINFO	ServerKillPickupInfo;
-
-} SERVERKILLPICKUPMSG, *LPSERVERKILLPICKUPMSG;
 
 typedef struct _EXPLODESHIPMSG
 {

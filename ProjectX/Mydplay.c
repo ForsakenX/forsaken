@@ -343,7 +343,6 @@ GROUPONLY_FVERYSHORTGLOBALSHIP	GroupOnly_FVeryShortGlobalShip;
 PICKUPINFO				TempPickup;
 VERYSHORTPICKUPINFO		VeryShortTempPickup;
 KILLPICKUPINFO			TempKillPickup;
-SERVERKILLPICKUPINFO	TempServerKillPickup;
 EXPSECONDARYINFO		TempExplodeSecondary;
 TEAMGOALSINFO			TempTeamGoals;
 SHOCKWAVEINFO			TempShockwave;
@@ -352,11 +351,9 @@ SHIPHIT					TempShipHit;
 SHORTSHIPHIT			ShortTempShipHit;
 EXPLODESHIPINFO				TempExplodeShip;
 
-
 MISSEDPICKUPMSG			MissedPickups[ MAXMISSEDPICKUPS ];
 SHORTPICKUP				MissedInitPickups[ MAXMISSEDPICKUPS ];
 SHORTKILLPICKUP			MissedKillPickups[ MAXMISSEDPICKUPS ];
-SHORTSERVERKILLPICKUP	MissedServerKillPickups[ MAXMISSEDPICKUPS ];
 int16					NumMissedPickups = 0;
 int16					NumMissedInitPickups = 0;
 int16					NumMissedKillPickups = 0;
@@ -997,18 +994,6 @@ void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 	}
 }
 
-void	ServerKillPickupSend( uint16 Owner, uint16 IDCount, int16 Style, uint16 NewOwner )
-{
-	if( dcoID != 0 )
-	{
-		TempServerKillPickup.Owner = Owner;
-		TempServerKillPickup.IDCount = IDCount;
-		TempServerKillPickup.Style = Style;
-		TempServerKillPickup.NewOwner = NewOwner;
-		SendGameMessage( MSG_SERVERKILLPICKUP, 0, 0, 0, 0 );
-	}
-}
-
 void	ExplodeShip( uint16 Ship )
 {
 	if( dcoID != 0 )
@@ -1153,7 +1138,6 @@ void SetupDplayGame()
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	RealPacketSize[MSG_SESSIONDESC			 ] = sizeof( SESSIONDESCMSG			  );	
 #endif
-	RealPacketSize[MSG_SERVERKILLPICKUP		 ] = sizeof( SERVERKILLPICKUPMSG	  );	
 	RealPacketSize[MSG_LEVELNAMES			 ] = sizeof( LEVELNAMESMSG			  );	
 	RealPacketSize[MSG_TRACKERINFO			 ] = sizeof( TRACKERINFOMSG			  );	
 	RealPacketSize[MSG_EXPLODESHIP			 ] = sizeof( EXPLODESHIPMSG			  );
