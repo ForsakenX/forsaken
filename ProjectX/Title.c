@@ -8419,7 +8419,7 @@ void	MenuProcess()
 	uint16 i;
 
 	// print text to screen
-	CenterPrint4x5Text( "Open Source Version 1.01", d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Version 1.02", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;
