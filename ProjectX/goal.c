@@ -58,8 +58,6 @@ extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 extern	uint16			RandomStartPosModify;
 extern	int16			PickupsGot[ MAXPICKUPTYPES ];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	BOOL			IsServerGame;
-extern	BOOL			IsServer;
 extern	uint32			Host_Flags[ MAX_PLAYERS ];
 
 void DebugPrintf( const char * format, ... );
@@ -435,8 +433,7 @@ void ProcessGoals( void )
 	{
 		if ( ( ( GameStatus[ k ] == MyGameStatus && !PlayDemo ) 
 			|| ( GameStatus[ k ] == STATUS_Normal && PlayDemo ) )
-			&& TeamNumber[ k ] < MAX_TEAMS 
-			&& ( !IsServerGame || k ) )
+			&& TeamNumber[ k ] < MAX_TEAMS )
 		{
 			GoalTeamMembers[ TeamNumber[ k ] ]++;
 			if ( Ships[ k ].Object.Flags & SHIP_CarryingFlags )
@@ -500,7 +497,7 @@ void ProcessGoals( void )
 			NewPlayers = 0;
 			for ( j = 0; j < MAX_PLAYERS; j++ )
 			{
-				if ( Ships[ j ].enable && !LastEnable[ j ] && ( !IsServerGame || j ) )
+				if ( Ships[ j ].enable && !LastEnable[ j ] )
 					NewPlayers++;
 				LastEnable[ j ] = Ships[ j ].enable;
 			}
@@ -521,13 +518,6 @@ void ProcessGoals( void )
 				Ships[ WhoIAm ].Object.Flags &= ~TeamFlagMask[ j ];
 				PickupsGot[ TeamFlagPickup[ j ] ] = 0;
 				TeamFlagAtHome[ j ] = FALSE;
-				if ( IsServer )
-				{
-					for ( k = 0; k < MAX_PLAYERS; k++ )
-					{
-						Host_Flags[ k ] &= ~TeamFlagMask[ j ];
-					}
-				}
 			}
 		}
 	}

@@ -84,8 +84,6 @@ extern	uint16	RandomStartPosModify;
 extern	BOOL	DplayRecieveThread;
 extern	BOOL	UseShortPackets;
 extern	BOOL	BigPackets;
-
-extern	BOOL                    IsServer;
 extern	BOOL					IsHost;   // is the user hosting/joining a game
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
@@ -260,9 +258,6 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 		lpDesc->dwUser3 |= BikeExhaustBit;
 
 	lpDesc->dwUser3 |= ( ColPerspective << Collision_Type_BitShift );
-
-	if ( IsServer )
-		lpDesc->dwUser3 |= SERVER_STATE_NeedHost;
 
 	lpDesc->dwUser3 |= CTF_Type_Encode( ( DWORD )CTFSlider.value );
 
@@ -1322,7 +1317,6 @@ HRESULT DPlayCreateSessionServer( LPTSTR lptszSessionName )
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
-	IsServer = TRUE;
 	IsHost = TRUE;
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE

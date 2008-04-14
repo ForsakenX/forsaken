@@ -323,7 +323,6 @@ LPGUID                  g_lpGuid = NULL;
 HANDLE                  dphEvent = NULL;
 BOOL                    IsHost = TRUE;
 BOOL					IsPseudoHost = FALSE;
-BOOL                    IsServer = FALSE;
 BYTE                    WhoIAm = 0;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
@@ -493,7 +492,7 @@ extern	BOOL			GoreGuts;
 extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
-extern	BOOL IsServerGame;
+
 DPID	from_dcoID;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
@@ -560,7 +559,7 @@ BOOL CheckForName( BYTE Player )
 	int					i;
 	LPDPNAME			lpDpName;
 
-	if( Names[Player][0] == 0 && !IsServerGame )
+	if( Names[Player][0] == 0 )
 	{
 		tempsize = 256;
 		hr = IDirectPlayX_GetPlayerName( glpDP , from_dcoID , (LPVOID) &namebuf[0] , (LPDWORD) &tempsize );
@@ -589,9 +588,6 @@ BOOL CheckForName( BYTE Player )
 void SendANormalUpdate( void )
 {
 	VECTOR	Move_Off;
-
-	if( IsServer )
-		return;
 
 	if( !UseShortPackets )
 	{
@@ -1713,14 +1709,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 
     case DPSYS_HOST:
 		DebugPrintf("DPSYS_HOST recieved\n");
-		if( IsServerGame && !IsServer )
-		{
-			// The Whole Game has been Lost....Oops...
-			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-			AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-			return;
-		}
 
 		/*
 		if (MyGameStatus == STATUS_StartingMultiplayer)
@@ -2785,11 +2773,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 
 			DemoShipInit[ lpFUpdate->WhoIAm ] = TRUE;
-			if( IsServer )
-			{
-				Ships[lpFUpdate->WhoIAm].RealPos = Ships[lpFUpdate->WhoIAm].Object.Pos;
-				Ships[lpFUpdate->WhoIAm].RealGroup = Ships[lpFUpdate->WhoIAm].Object.Group;
-			}
 			return;
 		}
 		else
@@ -5362,9 +5345,6 @@ void CreateReGen( uint16 ship )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void PingGuarenteed(void)
 {
-	if ( IsServerGame && !IsServer )	// server will send me ping times if server game
-		return;
-
 	SendGameMessage( MSG_PINGREQUEST , 0, 0, 1, 0 );
 }
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -5374,9 +5354,6 @@ void PingGuarenteed(void)
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void PingNonGuarenteed(void)
 {
-	if ( IsServerGame && !IsServer )	// server will send me ping times if server game
-		return;
-
 	SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
 }
 
@@ -5659,24 +5636,12 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 					{
 						BadConnection[i] = TRUE;
 
-
 						if( !ReleaseMessages )
 						{
-							if( IsServerGame && !IsServer )
-							{
-								DebugPrintf( "Guaranteed %x Message Didnt Get Through to the Server\n" , GM->MsgType );
-							}else{
-								if( IsServer )
-								{
-									if( ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
-										(i!=WhoIAm) )
-									{
-										DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
-									}
-								}
-							}
+							if( ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
+								(i!=WhoIAm) )
+								DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
 						}
-
 					}
 				}
 			}
@@ -5773,12 +5738,7 @@ void AcknowledgeMessage( uint32 ID , uint32 Player , BYTE PlayerNum )
 	{
 		if( ID == GM->ID )
 		{
-			if( IsServerGame && !IsServer )
-			{
-				GM->Ack = 0;
-			}else{
-				GM->Ack &= ~Player;
-			}
+			GM->Ack &= ~Player;
 			BadConnection[PlayerNum] = FALSE;
 			return;
 		}
@@ -6057,12 +6017,9 @@ void UnPackShipFlags( BYTE Player , uint32 Flags )
 	Ships[Player].Object.PowerLevel = (int16)((Flags >> SHIP_PowerLevel_Bit1 ) & 3);
 	Ships[Player].Object.Mode = (BYTE)((Flags >> SHIP_Mode_Bit1 ) & 3);
 
-	if( !IsServer && !IsServerGame )
-	{
-		if( ( Flags & SHIP_Shield ) ) Ships[ Player ].Object.Shield = 1.0F;
-		else Ships[ Player ].Object.Shield = 0.0F;
-	 	Ships[Player].Object.Hull = ( ( (Flags>>SHIP_Hull_Bit1) & 3 ) + 1 ) * 16.0F;
-	}
+	if( ( Flags & SHIP_Shield ) ) Ships[ Player ].Object.Shield = 1.0F;
+	else Ships[ Player ].Object.Shield = 0.0F;
+ 	Ships[Player].Object.Hull = ( ( (Flags>>SHIP_Hull_Bit1) & 3 ) + 1 ) * 16.0F;
 
 	Ships[Player].NumMultiples = (BYTE)((Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 }
@@ -6117,13 +6074,7 @@ void ServiceBigPacket( BOOL OverideTime )
 	{
 		// the time for Sending The Big packet
 		if( MyGameStatus == STATUS_Normal )
-		{
 			SendANormalUpdate();
-			if( !IsServer && IsServerGame )
-			{
-				SendGameMessage( MSG_SHIELDHULL, 0, 0, 0, 0 );
-			}
-		}
 		SendBigPacket(OverideTime);
 	}
 }
@@ -6160,7 +6111,7 @@ void SendBigPacket( BOOL SendGuaranteed )
 
 
 		
-		if( !UseSendAsync && !SendGuaranteed && !IsServer )
+		if( !UseSendAsync && !SendGuaranteed )
 		{
 			
 			hr = glpDP->lpVtbl->Send( glpDP,
@@ -6220,31 +6171,19 @@ void SendBigPacket( BOOL SendGuaranteed )
 		}
 	}
 
-	if( !IsServer )
-	{
 		BigPacketSize = BigPacketOffset+1;
 		if( BigPacketSize > MaxBigPacketSize )
 			MaxBigPacketSize = BigPacketSize;
 
 		BytesPerSecSent += BigPacketOffset+1;
-	
-	}
-
 
 	BigPacketsSent = NumOfPacketsInBigPacket;
 	QueryPerformanceCounter((LARGE_INTEGER *) &LastBigPacketSent);
 
 	if( MyGameStatus == STATUS_Normal )
-	{
-		if( IsServer )
-		{
-			LastBigPacketSent += Freq / 2;
-		}else{
-			LastBigPacketSent += Freq / PacketsSlider.value;
-		}
-	}else{
+		LastBigPacketSent += Freq / PacketsSlider.value;
+	else
 		LastBigPacketSent += Freq / 2;
-	}
 
 	BigPacketOffset = 2;
 	BigPacketCommBuff[2] = 0;
@@ -6297,45 +6236,48 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 
 	switch( *MsgPnt )
     {
+
 	case MSG_SHIELDHULL:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
-
 		lpShieldHullMsg = (LPSHIELDHULLMSG)&CommBuff[0];
 		Group = Ships[ lpShieldHullMsg->WhoIAm ].RealGroup;
-		
 		if( !VisibleOverlap( Ships[ Player ].Object.Group, Group, NULL ) )
 			return FALSE;
 		break;
+
+
     case MSG_PINGREPLY:
+
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         if( lpPingMsg->ToYou != Player )
 			return FALSE;
 		break;
 
+
 	case MSG_GUARANTEEDMSG:
+
 		lpGuaranteedMsg = (LPGUARANTEEDMSG)MsgPnt;
 		if( !(lpGuaranteedMsg->Ack & (1 << Player)) )
 			return FALSE;
 		break;
+
+
     case MSG_VERYSHORTFUPDATE:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
-
 		lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG)MsgPnt;
-
 		if( !CanDoDamage[lpVeryShortFUpdate->WhoIAm] || CheckIfPlayerCheats(lpVeryShortFUpdate->WhoIAm) )
 			return FALSE;
-		
 		// They are mutually visible let it through...
 		if( VisibleOverlap( Ships[ Player ].Object.Group, lpVeryShortFUpdate->ShortGlobalShip.GroupImIn, NULL ) )
 			break;
-
 		if( ( lpVeryShortFUpdate->ShortGlobalShip.Flags & SHIP_SecFire ) )
 		{
 			switch( ConvSecToNormWeapon( lpVeryShortFUpdate->ShortGlobalShip.Secondary ) )
@@ -6351,35 +6293,31 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 				case SPIDERMINE:
 				case PINEMISSILE:
 					break;
-
 				default:
 					return FALSE;
 			}
-
-		}else{
-			return FALSE;
 		}
+		else
+			return FALSE;
 		break;
+
+
     case MSG_GROUPONLY_VERYSHORTFUPDATE:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
-
 		lpGroupOnly_VeryShortFUpdate = (LPGROUPONLY_VERYSHORTFUPDATEMSG)MsgPnt;
-
 		if( !CanDoDamage[lpGroupOnly_VeryShortFUpdate->WhoIAm] || CheckIfPlayerCheats(lpGroupOnly_VeryShortFUpdate->WhoIAm) )
 			return FALSE;
-		
 		// They are mutually visible let it through...
 		if( VisibleOverlap( Ships[ Player ].Object.Group, lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.GroupImIn, NULL ) )
 			break;
-
 		if( ( lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Flags & SHIP_SecFire ) )
 		{
 			switch( ConvSecToNormWeapon( lpGroupOnly_VeryShortFUpdate->ShortGlobalShip.Secondary ) )
 			{
-
 				case SOLARISMISSILE:
 				case SCATTERMISSILE:
 				case TITANSTARMISSILE:
@@ -6390,36 +6328,31 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 				case SPIDERMINE:
 				case PINEMISSILE:
 					break;
-
 				default:
 					return FALSE;
 			}
-
-		}else{
-			return FALSE;
 		}
+		else
+			return FALSE;
 		break;
+
+
 	case MSG_FUPDATE:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
 		lpFUpdate = (LPFUPDATEMSG)MsgPnt;
-
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
-
 		if( !CanDoDamage[lpFUpdate->WhoIAm] || CheckIfPlayerCheats(lpFUpdate->WhoIAm) )
 			return FALSE;
-
 		// They are mutually visible let it through...
 		if( VisibleOverlap( Ships[ Player ].Object.Group, lpFUpdate->ShortGlobalShip.GroupImIn, NULL ) )
 			break;
-
 		if( lpFUpdate->ShortGlobalShip.Flags & SHIP_SecFire )
 		{
 			switch( ConvSecToNormWeapon( lpFUpdate->ShortGlobalShip.Secondary ) )
 			{
-
 				case SOLARISMISSILE:
 				case SCATTERMISSILE:
 				case TITANSTARMISSILE:
@@ -6430,32 +6363,32 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 				case SPIDERMINE:
 				case PINEMISSILE:
 					break;
-
 				default:
 					return FALSE;
 			}
-
-		}else{
-			return FALSE;
 		}
+		else
+			return FALSE;
 		break;
+
+
     case MSG_VERYSHORTUPDATE:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
-
 		lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
 		Group = (int16)lpVeryShortUpdate->ShortGlobalShip.GroupImIn;
-
 		if( !VisibleOverlap( Ships[ Player ].Object.Group, Group, NULL ) )
 			return FALSE;
 		break;
+
+
     case MSG_UPDATE:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
 		if( GameStatus[Player] != STATUS_Normal )
 			return FALSE;
 		lpUpdate = (LPUPDATEMSG) MsgPnt;
@@ -6464,12 +6397,15 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 			return FALSE;
 		break;
 
+
     case MSG_PRIMBULLPOSDIR:
 		break;
+
+
     case MSG_SECBULLPOSDIR:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
    		lpSecBullPosDir = (LPSECBULLPOSDIRMSG)MsgPnt;
 		if( !CanDoDamage[lpSecBullPosDir->WhoIAm] || CheckIfPlayerCheats(lpSecBullPosDir->WhoIAm))
 			return FALSE;
@@ -6488,58 +6424,69 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 			case SPIDERMINE:
 			case PINEMISSILE:
 				break;
-
 			default:
 				return FALSE;
 		}
 		break;
 
+
     case MSG_TITANBITS:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
    		lpTitanBits = (LPTITANBITSMSG)MsgPnt;
 		Group = (int16)lpTitanBits->TitanBits.Group;
 		if( !VisibleOverlap( Ships[ Player ].Object.Group, Group, NULL ) )
 			return FALSE;
 		break;
+
+
 	// Someone is claiming to have hit me...
     case MSG_SHIPHIT:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
    		lpShipHit = (LPSHIPHITMSG)MsgPnt;
 		if( ( lpShipHit->You != Player ) || ( lpShipHit->Deaths != Ships[Player].Deaths ) || ( ColPerspective == COLPERS_Descent ) )
 			return FALSE;
 		break;
+
+
 	// Someone is claiming to have hit me...
     case MSG_SHORTSHIPHIT:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
    		lpShortShipHit = (LPSHORTSHIPHITMSG)MsgPnt;
 		if( ( lpShortShipHit->You != Player ) || ( lpShortShipHit->Deaths != Ships[Player].Deaths ) || ( ColPerspective == COLPERS_Descent ) )
 			return FALSE;
 		break;
+
+
 	// Someone has Died....Did I kill Them ??
     case MSG_SHIPDIED:
+
 		if( MyGameStatus != STATUS_Normal )
 			return FALSE;
-
 		lpShipDied = (LPSHIPDIEDMSG)MsgPnt;
-
 		if( Player != lpShipDied->WhoKilledMe )
 		{
 			if( !VisibleOverlap( Ships[ Player ].Object.Group, Ships[ lpShipDied->WhoIAm ].Object.Group , NULL ) )
 				return FALSE;
 		}
 		break;
+
+
     case MSG_STATUS:
 		break;
+
+
     case MSG_LONGSTATUS:
 		break;
 
+
     case MSG_TEXTMSG:
+
 		lpTextMsg = (LPTEXTMSG)MsgPnt;
 		switch (lpTextMsg->TextMsgType)
 		{
@@ -6560,17 +6507,25 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 			break;
 		}
 		break;
+
+
     case MSG_ACKMSG:
 //		lpAckMsg = (LPACKMSG)MsgPnt;
 //		if( lpAckMsg->WhoIAm != Player )
 //			return FALSE;
 		break;
+
+
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	case MSG_SESSIONDESC:
 		return FALSE;
 #endif
+
+
 	case MSG_LEVELNAMES:
 		return TRUE;
+
+
 	case MSG_TRACKERINFO:
 		return TRUE;
 	}

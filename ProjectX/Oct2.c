@@ -152,8 +152,6 @@ extern void Printint16( int16 num , int x , int y , int col );
 
 extern void InitIndirectVisible( uint16 g );
 
-extern  BOOL IsServerGame;
-
 extern void AddIndirectVisible( uint16 g );
 extern  BOOL  RearCameraDisable;
 extern  MODELNAME   SplashModelNames[MAXMODELHEADERS];
@@ -503,7 +501,6 @@ BOOL LockOutWindows = TRUE;
 extern uint16 OnceOnly;
 extern char         MyName[ 32 ];
 extern  BOOL                    IsHost;
-extern  BOOL                    IsServer;
 extern float  MessageTime[MAX_MESSAGES];
 extern  char MessageBank[MAX_MESSAGES][200];
 extern  int CurrentMessage;
@@ -4499,22 +4496,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 		//          SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
         }
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-
-        if ( IsServer )
-        {
-          static int first_of_batch = 0;
-          
-          DPlayGetSessionDesc();
-          if ( ( glpdpSD->dwUser3 & ServerGameStateBits ) == SERVER_STATE_HostChoosing )
-          {
-            SendGameMessage( MSG_LEVELNAMES, 0, 0, (BYTE)first_of_batch, 0 );
-            first_of_batch += MAXLEVELSPERBATCH;
-            if ( first_of_batch >= LevelList.items )
-            {
-              first_of_batch = 0;
-            }
-          }
-        }
       }
     }
 
@@ -5015,8 +4996,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
     }
   
-
-    
     if( !SetMatrixViewPort() )
     {
       SeriousError = TRUE;
@@ -5024,14 +5003,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       return FALSE;
     }
     
-    // Init the font....
-    if( !IsServer )
-    {
-      InitFont(FALSE);
-    }else{
-      InitFont(TRUE);
-    }
-  
+    InitFont(FALSE);
+
     MyGameStatus = STATUS_InitView_1;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -6618,7 +6591,7 @@ BOOL ScoreDisplay()
 		if ( ( (GameStatus[ i ] == STATUS_ViewingScore) 
 			|| (GameStatus[ i ] == STATUS_WaitingAfterScore ) 
 			|| (GameStatus[ i ] == STATUS_Left) 
-			|| ( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) )  && !( IsServerGame && i == 0 ) )
+			|| ( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) )  )
 		 active_players++;
 	}
 
@@ -6689,8 +6662,7 @@ BOOL ScoreDisplayOrig(void)
 		if ( ( (GameStatus[ i ] == STATUS_ViewingScore) ||
 			(GameStatus[ i ] == STATUS_WaitingAfterScore ) ||
 			(GameStatus[ i ] == STATUS_Left) ||
-			( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) ) 
-			&& !( IsServerGame && i == 0 ) )
+			( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) ) )
 			active_players++;
 	}
 
@@ -6816,8 +6788,7 @@ BOOL ScoreDisplayOrig(void)
 		if( ( (GameStatus[ ScoreSortTab[i] ] == STATUS_ViewingScore) ||
 			(GameStatus[ ScoreSortTab[i] ] == STATUS_WaitingAfterScore ) ||
 			(GameStatus[ ScoreSortTab[i] ] == STATUS_Left) ||
-			( ( GameStatus[ ScoreSortTab[i] ] >= STATUS_InitView_0 ) && ( GameStatus[ ScoreSortTab[i] ] <= STATUS_InitView_9 ) ) )
-			&& !( IsServerGame && ScoreSortTab[i] == 0 ) )
+			( ( GameStatus[ ScoreSortTab[i] ] >= STATUS_InitView_0 ) && ( GameStatus[ ScoreSortTab[i] ] <= STATUS_InitView_9 ) ) ))
 		{
 			if (TeamGame)
 			{
@@ -8076,45 +8047,6 @@ Our_CalculateFrameRate(void)
     Print4x5Text( (char *) &buf[0], 16, 50 + ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 9 + 2 ) * FontHeight ) , 2 );
     */
 
-#if 0
-    if( IsServerGame && IsServer )
-    {
-      CorrectForExtraOrMissingPickups();
-
-      for( i = 1; i < MAXPRIMARYWEAPONS; i++ )
-      {
-        sprintf( &buf[0], "L %hd - P %hd - G %hd %s", PrimaryInLevel[ i ], PrimaryInPlayers[ i ], PrimaryToGenerate[ i ], PrimaryNames[ i ] );
-        Print4x5Text( (char *) &buf[0], 16, ( ( i + 5 ) * FontHeight ) , 2 );
-      }
-
-      for( i = 1; i < MAXSECONDARYWEAPONS; i++ )
-      {
-        if( ( i >= PURGEMINE ) && ( i <= SPIDERMINE ) )
-        {
-          sprintf( &buf[0], "L %hd - P %hd - G %hd - D %hd %s", SecondaryInLevel[ i ], SecondaryInPlayers[ i ], SecondaryToGenerate[ i ], MinesInLevel[ i ], SecondaryNames[ i ] );
-        }
-        else
-        {
-          sprintf( &buf[0], "L %hd - P %hd - G %hd %s", SecondaryInLevel[ i ], SecondaryInPlayers[ i ], SecondaryToGenerate[ i ], SecondaryNames[ i ] );
-        }
-
-        Print4x5Text( (char *) &buf[0], 16, ( ( i + 6 + MAXPRIMARYWEAPONS ) * FontHeight ) , 2 );
-      }
-
-      sprintf( &buf[0], "L %hd - P %hd - G %hd Orbitals", OrbsInLevel, OrbsInPlayers, OrbsToGenerate );
-      Print4x5Text( (char *) &buf[0], 16, ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 7 ) * FontHeight ) , 2 );
-
-      if ( CTF )
-      {
-        for ( i = 0; i < MAX_TEAMS; i++ )
-        {
-          sprintf( &buf[0], "L %d - P %d Flag %s", TeamFlagsInLevel[ i ], TeamFlagsInShips[ i ], TeamName[ i ] );
-          Print4x5Text( (char *) &buf[0], 16, ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 9 + i ) * FontHeight ) , 2 );
-        }
-      }
-    }
-#endif
-
     if( DS )
     {
       DisplayStatusMessages();
@@ -9000,22 +8932,11 @@ void SpecialDestroyGame( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void CalculateFramelag( void )
 {
-  framelag = 0.0F;
-  if( IsServer )
-  {
-    while( framelag < 0.1F )
-    {
-      QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-      TimeDiff = LargeTime - LastTime;
-      framelag = (float) ( ( TimeDiff * 71.0 ) / Freq );
-      framelag2 = framelag;
-    }
-  }else{
-    QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-    TimeDiff = LargeTime - LastTime;
-    framelag = (float) ( ( TimeDiff * 71.0 ) / Freq );
-    framelag2 = framelag;
-  }
+	framelag = 0.0F;
+	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
+	TimeDiff = LargeTime - LastTime;
+	framelag = (float) ( ( TimeDiff * 71.0 ) / Freq );
+	framelag2 = framelag;
 
   LastTime = LargeTime;
 
@@ -9715,7 +9636,7 @@ void InitModeCase(void)
 
   // Check for Polygon Text.....
   bPolyText = FALSE;
-  if(( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 ) && PolygonText && !IsServer )
+  if(( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 ) && PolygonText )
     bPolyText = TRUE;
 
 }

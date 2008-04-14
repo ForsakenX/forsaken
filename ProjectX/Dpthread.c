@@ -48,7 +48,6 @@ extern	LIST	ServiceProvidersList;
 extern uint16 PingTimes[MAX_PLAYERS];
 extern SLIDER	MaxServerPlayersSlider;
 extern BYTE	TeamNumber[];
-extern	BOOL IsServerGame;
 
 extern BOOL IsLobbyLaunched;
 extern BOOL NoMenuBack;
@@ -456,22 +455,10 @@ BOOL ProcessForsakenInfo( int type )
 		}
 
 		// num players
-		srv_info += sprintf( srv_info, "\\curplayers\\%d", IsServerGame ? ( pSD->dwCurrentPlayers - 1 ) : pSD->dwCurrentPlayers );
+		srv_info += sprintf( srv_info, "\\curplayers\\%d", pSD->dwCurrentPlayers );
 
 		// max players
-		if ( ( ( pSD->dwUser3 & ServerGameStateBits ) == SERVER_STATE_NeedHost ) ||
-			( ( pSD->dwUser3 & ServerGameStateBits ) == SERVER_STATE_HostChoosing ) )
-		{
-			//server waiting for pseudohost )
-			srv_info += sprintf( srv_info, "\\maxplayers\\%d", MaxServerPlayersSlider.value );
-		}else
-		{
-			srv_info += sprintf( srv_info, "\\maxplayers\\%d", IsServerGame ? ( pSD->dwMaxPlayers - 1 ) : pSD->dwMaxPlayers );
-		}
-
-		// server game?
-		srv_info += sprintf( srv_info, "\\server\\%d", 
-			( ( pSD->dwUser3 & ServerGameStateBits ) > 0 ) );
+			srv_info += sprintf( srv_info, "\\maxplayers\\%d", pSD->dwMaxPlayers );
 	}
 
 	if ( !type || ( type & HEARTBEAT_GameType ) )
@@ -985,11 +972,7 @@ BOOL DPStartThread( void ) {
 		if ( !DoHeartbeat )
 			return TRUE;
 
-		// if no heartbeat info...
-		if ( IsServerGame && !ServerHeartbeat )
-			return TRUE;
-
-		if ( !IsServerGame && !PeerPeerHeartbeat )
+		if ( !PeerPeerHeartbeat )
 			return TRUE;
 		
 		if ( !ForceHeartbeat )

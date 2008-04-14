@@ -184,8 +184,6 @@ extern	BOOL			BountyHunt;
 extern	float			GlobalFramelagAddition;
 extern	BOOL			PlayDemo;
 
-extern	BOOL	IsServerGame;
-extern	BOOL	IsServer;
 extern	int16	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 extern	int16	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 extern	float	Host_GeneralAmmo[ MAX_PLAYERS ];
@@ -2424,9 +2422,8 @@ BOOL ProcessMines( uint16 i )
 
 				if( R2D( Angle ) < 1.0F )
 				{
-					if( ( IsServerGame && IsServer ) ||
-						( !IsServerGame && ( ( SecBulls[i].OwnerType == OWNER_SHIP ) && ( SecBulls[ i ].Owner == WhoIAm ) ) ) ||
-						( !IsServerGame && ( ( SecBulls[i].OwnerType != OWNER_SHIP ) && IsHost ) ) )
+					if( ( ( ( SecBulls[i].OwnerType == OWNER_SHIP ) && ( SecBulls[ i ].Owner == WhoIAm ) ) ) ||
+						( ( ( SecBulls[i].OwnerType != OWNER_SHIP ) && IsHost ) ) )
 					{
 						BulletID = GetSecondaryBulletID( SecBulls[i].OwnerType, SecBulls[i].Owner );
 
@@ -3399,38 +3396,10 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 	if( HitTarget != (uint16) -1 )												/* Hit Target? */
 	{
-		if( !( IsServerGame && ColPerspective != COLPERS_Forsaken )  )
-	 		PlayPannedSfx( SFX_ShipHit, Ships[ HitTarget ].Object.Group , &Int_Point, 0.0F );
+	 	PlayPannedSfx( SFX_ShipHit, Ships[ HitTarget ].Object.Group , &Int_Point, 0.0F );
 
 		switch( ColPerspective )
 		{
-			case COLPERS_Server:
-				if( IsServer )
-				{
-					if( ( ( SecBulls[i].OwnerType == OWNER_SHIP ) ) || ( SecBulls[i].OwnerType != OWNER_SHIP ) )
-   					{
-						Server_WhoHitYou = (BYTE)SecBulls[i].Owner;
-   						Damage = SecBulls[i].Damage;
-
-   						Recoil.x = ( SecBulls[i].DirVector.x * ( Damage / 10.0F ) );
-   						Recoil.y = ( SecBulls[i].DirVector.y * ( Damage / 10.0F ) );
-   						Recoil.z = ( SecBulls[i].DirVector.z * ( Damage / 10.0F ) );
-
-						if( SecBulls[i].OwnerType == OWNER_ENEMY ) Damage *= NmeDamageModifier;
-
-						if( HitTarget == WhoIAm )
-						{
-							HitMe( SecBulls[i].OwnerType, SecBulls[i].Owner, Damage, WEPTYPE_Secondary, SecBulls[i].Weapon );
-							ForceExternalOneOff( WhoIAm, &Recoil );
-						}
-						else
-						{
-	   						IHitYou( (BYTE) HitTarget, Damage, &Recoil, &Int_Point, &SecBulls[i].DirVector, D2R( ( Damage / 10.0F ) ), WEPTYPE_Secondary, SecBulls[i].Weapon, ONEOFF_RECOIL );
-						}
-   					}
-				}
-				break;
-
 			case COLPERS_Forsaken:
 				if( ( ( SecBulls[i].OwnerType == OWNER_SHIP ) && ( WhoIAm == SecBulls[i].Owner ) ) || ( SecBulls[i].OwnerType != OWNER_SHIP ) )
    				{
@@ -3472,7 +3441,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		}
 
 //		if( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) )
-		if( ( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) ) && !( IsServerGame && ColPerspective != COLPERS_Forsaken ) )
+		if( ( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) ) )
 		{
 			if( Ships[ HitTarget ].Object.Shield )
 			{
@@ -3592,20 +3561,11 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						{
 							if( !GodMode )
 							{
-								if( IsServerGame )
-								{
-									ExplodeShip( WhoIAm );
-									ShortScatterWeapons();
-								}
-								else
-								{
-									TempVector.x = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.x - Ships[ WhoIAm ].Object.Pos.x );
-									TempVector.y = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.y - Ships[ WhoIAm ].Object.Pos.y );
-									TempVector.z = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.z - Ships[ WhoIAm ].Object.Pos.z );
-									NormaliseVector( &TempVector );
-									ScatterWeapons( &TempVector, MAXSCATTERED );
-
-								}
+								TempVector.x = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.x - Ships[ WhoIAm ].Object.Pos.x );
+								TempVector.y = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.y - Ships[ WhoIAm ].Object.Pos.y );
+								TempVector.z = ( Ships[ SecBulls[ i ].Owner ].Object.Pos.z - Ships[ WhoIAm ].Object.Pos.z );
+								NormaliseVector( &TempVector );
+								ScatterWeapons( &TempVector, MAXSCATTERED );
 								PlayPannedSfx( SFX_Scattered, Ships[ HitTarget ].Object.Group , &Ships[ HitTarget ].Object.Pos, 0.0F );
 								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
@@ -4768,23 +4728,12 @@ void ExplodeSecondary( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owne
 				CreateShockwave( SecBulls[i].OwnerType, SecBulls[i].Owner, &SecBulls[i].Pos, SecBulls[i].GroupImIn, ShockwaveSize, SecBulls[i].Weapon );
 			}
 
-			if( IsServerGame && IsServer )
-			{
-				if( ( SecBulls[ i ].SecType == SEC_MINE ) &&
-					( SecBulls[ i ].OwnerType == OWNER_SHIP ) )
-				{
-					Host_SecAmmoUsed[ SecBulls[i].Weapon ]++;
-				}
-			}
-			else
-			{
 				if( ( SecBulls[ i ].SecType == SEC_MINE ) &&
 					( SecBulls[ i ].OwnerType == OWNER_SHIP ) &&
 					( SecBulls[ i ].Owner == WhoIAm ) )
 				{
 					SecAmmoUsed[ SecBulls[i].Weapon ]++;
 				}
-			}
 
  			CleanUpSecBull( i );
 			return;
@@ -8067,14 +8016,7 @@ void KillOwnerIDSecBulls( uint16 OwnerType, uint16 Owner, uint16 ID )
 
 		if( ( SecBulls[ i ].OwnerType == OwnerType ) && ( SecBulls[ i ].Owner == Owner ) && ( SecBulls[ i ].ID == ID ) )
 		{
-			if( IsServerGame && IsServer )
-			{
-				if( SecBulls[i].SecType == SEC_MINE ) Host_SecAmmoUsed[ SecBulls[i].Weapon ]++;
-			}
-			else
-			{
 				if( ( SecBulls[i].SecType == SEC_MINE ) && ( Owner == WhoIAm ) ) SecAmmoUsed[ SecBulls[i].Weapon ]++;
-			}
  			CleanUpSecBull( i );
 		}
 

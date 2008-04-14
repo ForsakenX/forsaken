@@ -165,8 +165,6 @@ extern	float			LevelTimeTaken;
 
 extern	uint16			Seed1;
 extern	uint16			Seed2;
-extern	BOOL			IsServerGame;
-extern	BOOL			IsServer;
 extern	uint16			FirstSecBullUsed;
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
@@ -2256,20 +2254,9 @@ void CheckPickup( void )
    			if( ( ( Pickup->Owner == WhoIAm ) && ( Pickup->Speed == 0.0F ) ) || ( Pickup->Owner != WhoIAm ) )
    			{
 				if( RaytoSphereShort( (VECTOR *) &Pickup->Pos, PICKUP_RADIUS, &Pos, &Dir, Length ) )
-   				{
-					if( IsServerGame )
-					{
-						PretendCollectPickup( Pickup->Index );
-					}
-					else
-					{
 						CollectPickup( Pickup->Index );
-					}
-				}
 				else
-				{
 					Pickup->CouldNotPickup = FALSE;
-				}
 			}
 
 			Pickup = NextPickup;
@@ -2688,7 +2675,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	uint16	fmpoly;
 	uint16	model;
 
-	if( !IsServerGame && !DebugInfo && ( MyGameStatus != STATUS_SinglePlayer ) )
+	if( !DebugInfo && ( MyGameStatus != STATUS_SinglePlayer ) )
 	{
 	   	if( NumPickupType[ Type ] >= MaxPickupType[ Type ] )
 	   	{
@@ -2727,20 +2714,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	{
 		if( RegenSlot != -1 )
 		{
-			if( IsServerGame )
-			{
-				if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used )
-				{
-					if( RegenPoints[ RegenSlot ].PickupIndex != (uint16) -1 )
-					{
-						CleanUpPickup( RegenPoints[ RegenSlot ].PickupIndex );
-					}
-				}
-			}
-			else
-			{
-				if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used ) RegenSlot = -1;	// if trying to use used slot then use no slot.
-			}
+			if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used ) RegenSlot = -1;	// if trying to use used slot then use no slot.
 		}
 
 		AddPickupToGroup( i, Group );
@@ -2904,19 +2878,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 			}
 			if ( team >= 0 )
 			{
-				if ( IsServer )
-				{
-					int j;
-					
-					for ( j = 0; j < MAX_PLAYERS; j++ )
-					{
-						Host_Flags[ j ] &= ~TeamFlagMask[ team ];
-					}
-				}
-				else
-				{
-					Ships[ WhoIAm ].Object.Flags &= ~TeamFlagMask[ team ];
-				}
+				Ships[ WhoIAm ].Object.Flags &= ~TeamFlagMask[ team ];
 				switch ( GoalCheckTeam( &Pickups[ i ].Pos, &Pickups[ i ].Pos, Pickups[ i ].Group, team ) )
 				{
 				case GOAL_SCORED:
@@ -2929,38 +2891,10 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 		}
 
 		if ( BountyHunt && Pickups[ i ].Type == PICKUP_Bounty )
-		{
-			if ( IsServer )
-			{
-				int i;
-
-				for ( i = 0; i < MAX_PLAYERS; i++ )
-				{
-					Host_Flags[ i ] &= ~SHIP_CarryingBounty;
-				}
-			}
-			else
-			{
 				Ships[ WhoIAm ].Object.Flags &= ~SHIP_CarryingBounty;
-			}
-		}
 
 		if ( CaptureTheFlag && Pickups[ i ].Type == PICKUP_Flag )
-		{
-			if ( IsServer )
-			{
-				int i;
-
-				for ( i = 0; i < MAX_PLAYERS; i++ )
-				{
-					Host_Flags[ i ] &= ~SHIP_CarryingFlag;
-				}
-			}
-			else
-			{
 				Ships[ WhoIAm ].Object.Flags &= ~SHIP_CarryingFlag;
-			}
-		}
 	}
 	else
 	{
@@ -3002,22 +2936,7 @@ uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, in
 	{
 #if 0 //-----------------------------------------------------------*/
 		if( RegenSlot != -1 )
-		{
-			if( IsServerGame )
-			{
-				if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used )
-				{
-					if( RegenPoints[ RegenSlot ].PickupIndex != (uint16) -1 )
-					{
-						CleanUpPickup( RegenPoints[ RegenSlot ].PickupIndex );
-					}
-				}
-			}
-			else
-			{
 				if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used ) RegenSlot = -1;	// if trying to use used slot then use no slot.
-			}
-		}
 #endif //----------------------------------------------------------*/
 
 		AddPickupToGroup( i, Group );
@@ -3207,12 +3126,10 @@ void ProcessPickups( void )
 				break;
 
 			case PICKUPMODE_Normal:
-//				if( ( IsServerGame && IsServer ) ||
-				if( ( IsServerGame ) ||
-					( !IsServerGame && ( Pickups[ i ].Owner == WhoIAm ) ) ||
-					( !IsServerGame && ( ( Pickups[ i ].Owner == (uint16) -1 ) && ( IsHost ) ) ) ||
-					( !IsServerGame && ( ( Pickups[ i ].Owner != (uint16) -1 ) && !Ships[ Pickups[ i ].Owner ].enable && ( IsHost ) ) ) ||
-					( !IsServerGame && PlayDemo ) )
+				if( ( ( Pickups[ i ].Owner == WhoIAm ) ) ||
+					( ( ( Pickups[ i ].Owner == (uint16) -1 ) && ( IsHost ) ) ) ||
+					( ( ( Pickups[ i ].Owner != (uint16) -1 ) && !Ships[ Pickups[ i ].Owner ].enable && ( IsHost ) ) ) ||
+					( PlayDemo ) )
 				{
 					if( Pickups[ i ].LifeCount != -1.0F )
 					{
@@ -3224,11 +3141,7 @@ void ProcessPickups( void )
 								DebugPrintf( "Tell %s to dissapear\n", Messages[ Pickups[ i ].Type ] );
 							}
 
-							if( ( IsServerGame && IsServer ) ||	( !IsServerGame ) )
-							{
-								KillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Disappear );
-							}
-
+							KillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Disappear );
 							KillPickup( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Disappear );
 
 							i = NextPickup;
@@ -3241,11 +3154,10 @@ void ProcessPickups( void )
 				Pickups[ i ].PickupCount -= framelag;
 				if( Pickups[ i ].PickupCount <= 0.0F )
 				{
-					if( ( IsServerGame && IsServer ) ||
-						( !IsServerGame && ( Pickups[ i ].Owner == WhoIAm ) ) ||
-						( !IsServerGame && ( ( Pickups[ i ].Owner == (uint16) -1 ) && ( IsHost ) ) ) ||
-						( !IsServerGame && ( ( Pickups[ i ].Owner != (uint16) -1 ) && !Ships[ Pickups[ i ].Owner ].enable && ( IsHost ) ) ) ||
-						( !IsServerGame && PlayDemo ) )
+					if( ( ( Pickups[ i ].Owner == WhoIAm ) ) ||
+						( ( ( Pickups[ i ].Owner == (uint16) -1 ) && ( IsHost ) ) ) ||
+						( ( ( Pickups[ i ].Owner != (uint16) -1 ) && !Ships[ Pickups[ i ].Owner ].enable && ( IsHost ) ) ) ||
+						( PlayDemo ) )
 					{
 //						if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 						{
@@ -3576,8 +3488,8 @@ BOOL CheckValidRegenSlot( int16 Slot )
 	RegenPoints[ Slot ].Wait = 0.0F;
 	RegenPoints[ Slot ].Type = (uint16) -1;
 
-	/* if you are server or host add pickup thats in the slot to regen list */
-	if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
+	/* if you are host add pickup thats in the slot to regen list */
+	if( ( IsHost ) )
 		AddPickupToRegen( RegenPoints[ Slot ].Type );
 
 	/* let people know the pic file is messed up! */
@@ -3771,17 +3683,6 @@ BOOL LoadPickupsPositions( void )
         /* not valid pickup */
       continue;
 
-      /* No Timed or Triggered pickups in server games */
-      if( IsServerGame )
-      {
-        /* reset any intervals or triggers */
-        RegenPoints[ Count ].GenType = PU_GENTYPE_Initialised;
-        RegenPoints[ Count ].RegenType = PU_REGENTYPE_Random;
-        RegenPoints[ Count ].Wait = 0.0F;
-        RegenPoints[ Count ].GenDelay = 0.0F;
-        RegenPoints[ Count ].TriggerMod = (uint16) -1;
-      }
-
       /* setup regen point
          based on its GenType */
 
@@ -3945,12 +3846,8 @@ uint16 InitSlotPickup( uint16 Slot )
 	uint16		i = (uint16) -1;
 	VECTOR		Dir = { 0.0F, 0.0F, 0.0F };
 
-	if( IsServerGame ) return( (uint16) -1 );	// No Timed or Triggered pickups in server game.
-
 	if( RegenPoints[ Slot ].Status != PU_REGENSTAT_TrigGen )
-	{
 		return( (uint16) -1 );
-	}
 
 	if( RegenPoints[ Slot ].GenDelay )
 	{
@@ -4011,7 +3908,7 @@ void RegeneratePickups( void )
 			RegenPoints[ Count ].Wait -= framelag;
 			if( RegenPoints[ Count ].Wait < 0.0F )
 			{
-				if( ( IsServerGame && IsServer ) || ( !IsServerGame && IsHost ) )
+				if( ( IsHost ) )
 				{
 					i = InitOnePickup( &RegenPoints[ Count ].Pos, RegenPoints[ Count ].Group,
 									   &Dir, 0.0F, RegenPoints[ Count ].Type, (uint16) -1,

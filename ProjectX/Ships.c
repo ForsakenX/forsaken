@@ -85,8 +85,6 @@ void MultiSfxHandle( void );
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-extern	BOOL IsServerGame;
-extern	BOOL IsServer;
 extern SLIDER BikeCompSpeechSlider;
 extern BOOL SeriousError;
 
@@ -1741,7 +1739,7 @@ void BobShip( uint16 ship, VECTOR *bob )
 
 	move = Ships[ ship ].Object.Speed;
 	move_len = (float) sqrt( move.x * move.x + move.y * move.y + move.z * move.z );
-	if ( move_len < MOVE_TOLERANCE && !DebugInfo && !IsServer )
+	if ( move_len < MOVE_TOLERANCE && !DebugInfo )
 	{
 		move.x = BOB_XSIZE * (float) sin( Ships[ ship ].Object.BobCount * BOB_XFREQ );
 		move.y = BOB_YSIZE * (float) sin( Ships[ ship ].Object.BobCount * BOB_YFREQ );
@@ -3240,9 +3238,6 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 	BOOL	HasBeen = FALSE;
 	BOOL	ok;
 	uint16	NewGroup;
-
-	if( IsServer )
-		return FALSE;
 	
 	Norm_Move_Off = *Move_Off;
 	NormaliseVector( &Norm_Move_Off );

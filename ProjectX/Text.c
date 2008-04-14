@@ -72,8 +72,6 @@ extern	int16			NewLevelNum;
 extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 extern	LONGLONG	LargeTime;
-extern	BOOL IsServerGame;
-extern	BOOL IsServer;
 
 // custom colour messages (Title.c)
 extern int SystemMessageColour;
@@ -2298,22 +2296,20 @@ void BuildReliabilityTab( void )
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
 		ReliabilityTab[i] = 0;
-		if( !IsServerGame || IsServer )
-		{
-			if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && (i != WhoIAm) )
-			{
-				if( BadConnection[i] )
-				{
-					ReliabilityTab[i]++;
-				}
-				Temp = (int32) (((LargeTime - LastPacketTime[i]) * 1000 ) / Freq);
 
-				if( Temp >= 10000 )
-				{
+		if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && (i != WhoIAm) )
+		{
+			if( BadConnection[i] )
+			{
+				ReliabilityTab[i]++;
+			}
+			Temp = (int32) (((LargeTime - LastPacketTime[i]) * 1000 ) / Freq);
+
+			if( Temp >= 10000 )
+			{
+				ReliabilityTab[i]++;
+				if( Temp >= 30000 )
 					ReliabilityTab[i]++;
-					if( Temp >= 30000 )
-						ReliabilityTab[i]++;
-				}
 			}
 		}
 	}

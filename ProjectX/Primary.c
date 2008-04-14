@@ -164,8 +164,6 @@ extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
 extern	int				outside_map;
 extern	BOOL			PlayDemo;
 
-extern	BOOL	IsServerGame;
-extern	BOOL	IsServer;
 extern	int16	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 extern	int16	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 extern	float	Host_GeneralAmmo[ MAX_PLAYERS ];
@@ -747,15 +745,6 @@ void	InitPrimBulls(void)
 
 	RestoreWeapons();
 	RestoreAmmo();
-
-	if( IsServerGame && IsServer )
-	{
-		for( Count = 0; Count < MAX_PLAYERS; Count++ )
-		{
-			HostRestoreWeapons( Count );
-			HostRestoreAmmo( Count );
-		}
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -873,27 +862,6 @@ void InitAmmoUsed( void )
 	PyroliteAmmoUsed = 0.0F;
 	SussGunAmmoUsed = 0.0F;
 	NitroFuelUsed = 0.0F;
-
-	if( IsServerGame && IsServer )
-	{
-		for( Player = 0; Player < MAX_PLAYERS; Player++ )
-		{
-			for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
-			{
-				Host_SecAmmoUsed[ Count ] = 0;
-			}
-		}
-		Host_GeneralAmmoUsed = 0.0F;
-		Host_PyroliteAmmoUsed = 0.0F;
-		Host_SussGunAmmoUsed = 0.0F;
-		Host_NitroFuelUsed = 0.0F;
-		Host_BountyTimer = 0;
-		Host_FlagTimer = 0;
-		for ( Count = 0; Count < MAX_TEAMS; Count++ )
-		{
-			Host_TeamFlagTimer[ Count ] = 0;
-		}
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -2413,8 +2381,7 @@ void ProcessPrimaryBullets( void )
 				TempVector.z = ( Int_Point.z - Ships[ HitTarget ].Object.Pos.z );
 				DistToCenter = VectorLength( &TempVector );
 
-				if( !( IsServerGame && ColPerspective != COLPERS_Forsaken ) )
-					PlayPannedSfx( SFX_ShipHit, Ships[ HitTarget ].Object.Group , &Int_Point, 0.0F );
+				PlayPannedSfx( SFX_ShipHit, Ships[ HitTarget ].Object.Group , &Int_Point, 0.0F );
 
 				Damage = PrimaryWeaponAttribs[ PrimBulls[i].Weapon ].Damage[ PrimBulls[i].PowerLevel ];
 
@@ -2458,41 +2425,6 @@ void ProcessPrimaryBullets( void )
 
 				switch( ColPerspective )
 				{
-					case COLPERS_Server:
-						if( IsServer )
-						{
-   							if( PrimBulls[i].OwnerType == OWNER_SHIP )
- 							{
-								Server_WhoHitYou = (BYTE)PrimBulls[i].Owner;
-
-   								if( DistToCenter >= ( SHIP_RADIUS + 1.0F ) )
-   								{
-   									Damage = Damage * ( ( PrimBulls[i].ColRadius - (DistToCenter - SHIP_RADIUS) ) / PrimBulls[i].ColRadius );
-									PrimBulls[i].TrojPower *= 1.0F - ( ( PrimBulls[i].ColRadius - (DistToCenter - SHIP_RADIUS) ) / PrimBulls[i].ColRadius );
-   								}
-
-								if( PrimBulls[i].OwnerType == OWNER_ENEMY ) Damage *= NmeDamageModifier;
-
-   								Recoil.x = ( PrimBulls[i].Dir.x * ( Damage / 10.0F ) );
-   								Recoil.y = ( PrimBulls[i].Dir.y * ( Damage / 10.0F ) );
-   								Recoil.z = ( PrimBulls[i].Dir.z * ( Damage / 10.0F ) );
-
-								if( HitTarget == WhoIAm )
-								{
-									HitMe( PrimBulls[i].OwnerType, PrimBulls[i].Owner, Damage, WEPTYPE_Primary, PrimBulls[i].Weapon );
-									ForceExternalOneOff( WhoIAm, &Recoil );
-								}
-								else
-								{
-	   								IHitYou( (BYTE) HitTarget, Damage, &Recoil, &Int_Point, &DirVector, D2R( ( Damage / 10.0F ) ), WEPTYPE_Primary, PrimBulls[i].Weapon, ONEOFF_RECOIL );
-								}
-   							}
-
-
-						}
-						break;
-
-
 					case COLPERS_Forsaken:
    						if( ( ( PrimBulls[i].OwnerType == OWNER_SHIP ) && ( PrimBulls[i].Owner == WhoIAm ) ) ||
 							  ( PrimBulls[i].OwnerType != OWNER_SHIP ) )
@@ -2543,7 +2475,7 @@ void ProcessPrimaryBullets( void )
 				}
 
 //				if( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) )
-				if( ( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) ) && !( IsServerGame && ColPerspective != COLPERS_Forsaken ) )
+				if( ( ( WhoIAm != HitTarget ) || ( Current_Camera_View != WhoIAm ) ) )
 				{
 					if( Ships[ HitTarget ].Object.Shield || Ships[ HitTarget ].Invul  )
 					{

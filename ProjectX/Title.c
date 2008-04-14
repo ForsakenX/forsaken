@@ -138,10 +138,7 @@ extern DPID LobbyPlayerIDs[ MAX_PLAYERS ];
 extern uint16 NumLobbyPlayers;
 extern int16	NumPrimaryPickups;
 extern BOOL ServiceProviderSet;
-extern	BOOL IsServerGame;
-extern BOOL ServerCollisions;
-extern	BOOL IsServer;
-extern BOOL ServerRendering;
+
 extern GUID	ServiceProvidersGuids[];
 extern char SessionNames[ MAXSESSIONS ][ 128 ];
 
@@ -474,7 +471,6 @@ void InitStartMenu( MENU *Menu );
 void ExitInGameMenu( MENU *Menu );
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu );
 void ExitMultiplayerHostVDUPeerPeer( MENU *Menu );
-void InitPseudoHostGameScreen( MENU *Menu );
 void InitLobbyWaitingForHost( MENU *Menu );
 void InitSinglePlayerGame( MENU *Menu );
 void InitTitleLoad( MENU *Menu );
@@ -10676,53 +10672,6 @@ void InitLobbyWaitingForHost( MENU *Menu )
 		NoMenuBack = TRUE;
 }
 
-void InitPseudoHostGameScreen( MENU *Menu )
-{
-
-	MENUITEM *item;
-
-	IsServerGame = TRUE;
-	ColPerspective = ColPerspectiveServer;
-
-	for ( item = Menu->Item; item->x >=0; item++ )
-	{
-		if ( item->Variable == &MaxServerPlayersSlider )
-		{
-			DPlayGetSessionDesc();
-			if ( glpdpSD && ( glpdpSD->dwUser3 & EnableMaxPlayersChangeBit ) )
-			{
-				item->FuncSelect = SelectSlider;
-			}else
-			{
-				item->FuncSelect = NULL;
-			}
-		}
-	}
-	
-	// levels in list will ultimately only be levels that exist both on server and on users machine
-	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
-	{
-		//Msg( "No multiplayer levels" );
-		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
-		return;
-	}
-
-	LoadLevelText( NULL );
-
-	DPlayGetSessionDesc();
-
-	if ( glpdpSD )
-	{
-		if ( glpdpSD->lpszSessionNameA )
-			strncpy( MultiPlayerGameName.text, glpdpSD->lpszSessionNameA, MAXTEXTMSG );
-
-		MaxServerPlayersSlider.max = ( ( glpdpSD->dwUser4 & MaxPlayerBits ) >> MaxPlayers_Shift ); 
-	}
-
-	if ( MaxServerPlayersSlider.value > MaxServerPlayersSlider.max )
-		MaxServerPlayersSlider.value = MaxServerPlayersSlider.max;
-}
-
 
 /* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
@@ -11081,7 +11030,7 @@ void InitSinglePlayerGame( MENU *Menu )
 void SelectQuitCurrentGame( MENUITEM *Item )
 {
 	// If the host is performing transfer of stuff to other players wait until hes finished before he quits..
-	if( HostDuties && !IsServer )
+	if( HostDuties )
 	{
 		if( IsHost )
 		{
@@ -11330,20 +11279,7 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 	MENUITEM *item;
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( item->Value == (void *)COLPERS_Server )
-		{
-			if ( IsServerGame )
-			{
-				item->FuncSelect = SelectFlatRadioButton;
-				item->FuncDraw = DrawFlatRadioButton;
-			}else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-		
+	{		
 		if ( item->Variable == &BountyBonus )
 		{
 			if ( GameType == GAME_BountyHunt
@@ -11423,44 +11359,20 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 		/*
 		else if ( item->Variable == &LagCompensation )
 		{
-			if ( !IsServerGame )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
+			item->FuncSelect = SelectFlatMenuToggle;
+			item->FuncDraw = DrawFlatMenuToggle;
 		}
 		*/
 		
 		else if ( item->Variable == &UseShortPackets )
 		{
-			if ( !IsServerGame )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
+			item->FuncSelect = SelectFlatMenuToggle;
+			item->FuncDraw = DrawFlatMenuToggle;
 		}
 		else if ( item->Variable == &BigPackets )
 		{
-			if ( !IsServerGame )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
+			item->FuncSelect = SelectFlatMenuToggle;
+			item->FuncDraw = DrawFlatMenuToggle;
 		}
 	}
 }
@@ -19549,15 +19461,7 @@ void InitInGameLevelSelect( MENU *menu )
 	for ( item = menu->Item; item->x >= 0; item++ )
 	{
 		if ( item->FuncDraw == DrawToggle )
-		{
-			if ( IsServerGame && !IsServer )
-			{
-				item->Variable = &IsPseudoHost;
-			}else
-			{
 				item->Variable = &IsHost;
-			}
-		}
 	}
 }
 

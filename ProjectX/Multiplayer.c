@@ -54,16 +54,14 @@ extern LPDPSESSIONDESC2                    glpdpSD_copy;
 #endif
 
 BOOL CheckDirectPlayVersion = TRUE;
-BOOL IsServerGame = FALSE;
 BOOL ResetKillsPerLevel = FALSE;
 BOOL bTCP = FALSE;
 
 extern uint8 QuickStart;
 
-extern	BOOL	HarmTeamMates;
-extern	BOOL ServerRendering;
-extern BOOL	BrightShips;
-extern BOOL	BikeExhausts;
+extern BOOL HarmTeamMates;
+extern BOOL BrightShips;
+extern BOOL BikeExhausts;
 extern int32 ColPerspective;
 
 // registry.c
@@ -108,7 +106,6 @@ extern	BOOL	MyBrightShips;
 extern float Pulse;
 extern char *EmptyString;
 
-extern	BOOL                    IsServer;
 extern	BOOL					IsHost;   // is the user hosting/joining a game
 extern	DPID					dcoID;    // player id
 extern	int16					Lives;
@@ -674,9 +671,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	// setup the chose directplay object
 	ExitProviderChosen(NULL);
 
-	IsServer = FALSE;
-	IsServerGame = FALSE;
-
 	if ( MaxPlayersSlider.max != 2 )
 		PreferedMaxPlayers = MaxPlayersSlider.value;
 	SetMultiplayerPrefs();
@@ -1182,32 +1176,17 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 	RandomStartPosModify = (WORD) (sd->dwUser2 & 0xffff);
 	
 	if( sd->dwUser3 & TeamGameBit )
-	{
 		TeamGame = TRUE;
-	}else{
+	else
 		TeamGame = FALSE;
-	}
 	if( sd->dwUser3 & BombGameBit )
-	{
 		BombTag = TRUE;
-	}else{
+	else
 		BombTag = FALSE;
-	}
 	if( sd->dwUser3 & FlagGameBit )
-	{
 		CaptureTheFlag = TRUE;
-	}else{
+	else
 		CaptureTheFlag = FALSE;
-	}
-
-	// check if any server bits are set
-	// server could be in one of 3 states ( see main.h )
-	if( sd->dwUser3 & ServerGameStateBits )
-	{
-		IsServerGame = TRUE;
-	}else{
-		IsServerGame = FALSE;
-	}
 
 	CTF = ( sd->dwUser3 & CTFGameBit ) ? TRUE : FALSE;
 	
@@ -1246,8 +1225,6 @@ BOOL JoinASession ( MENUITEM * Item )
 	DPSESSIONDESC2 temp_sd;
 
 	PlayDemo = FALSE;
-	IsServer = FALSE;
-	IsServerGame = FALSE;
 	TrackerOveride = FALSE;
 
 	SetBikeMods( 0 );
@@ -1323,13 +1300,10 @@ BOOL JoinASession ( MENUITEM * Item )
 	temp_sd.dwUser3 = 0;
 	Old_Session.dwUser3 = 0;
 
-	if ( !IsServerGame )
-	{	
-		if( ( Mymemcmp( (BYTE*) &Old_Session , (BYTE*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == TRUE ) &&
-			( _stricmp( (char*) &biker_name[0], (char*) &Old_Name[0] ) == 0 ) )
-		{
-		   	Rejoining = TRUE;
-		}
+	if( ( Mymemcmp( (BYTE*) &Old_Session , (BYTE*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == TRUE ) &&
+		( _stricmp( (char*) &biker_name[0], (char*) &Old_Name[0] ) == 0 ) )
+	{
+	   	Rejoining = TRUE;
 	}
 	
 	WhoIAm = 0xff;
@@ -1456,15 +1430,7 @@ void GetPlayersInCurrentSession( MENUITEM *Item )
 #ifdef DEBUG_ENUM_PLAYERS
 			sprintf( buf, "player %d status %x", i, GameStatus[ i ] );
 			Print4x5Text( buf, 10, 10 * i + 50, 2 );
-#endif
-			if ( IsServerGame )
-			{
-				if ( !i )
-				{
-					continue;	// don't add server name to list of players
-				}
-			}
-			
+#endif			
 			if( ( GameStatus[ i ] == MyGameStatus ) || ( i == WhoIAm ) )
 			{
 				NumOfPlayersSlider.value++;
@@ -1670,31 +1636,14 @@ void InitTeamSelection( MENU *Menu )
 	for( item = Menu->Item; item->x >=0; item++ )
 	{
 		if ( item->FuncDraw == DrawReadyButton )
-		{
-			
-			if ( IsServer )
-			{
-				item->FuncSelect = NULL;
-				PlayerReady[ WhoIAm ] = TRUE;
-			}else
-			{
-				item->FuncSelect = PlayerConfirm;
-			}
-			
-		}
+			item->FuncSelect = PlayerConfirm;
 
 		if 	( ( item->Variable == &TeamList[0] ) ||
 		    ( item->Variable == &TeamList[1] ) ||
 		    ( item->Variable == &TeamList[2] ) ||
 		    ( item->Variable == &TeamList[3] ) ) 
 		{
-			if( IsServer )
-			{
-				item->FuncSelect = NULL;
-			}else
-			{
-				item->FuncSelect = SelectTeamList;
-			}
+			item->FuncSelect = SelectTeamList;
 		}
 	}
 
@@ -1897,7 +1846,7 @@ void DistributeTeamsToLists(int *dummy)
 
 	num_players = 0;
 	
-	for ( player = ( IsServerGame ? 1 : 0 ); player < MAX_PLAYERS; player++ )	// server dosn't count as player
+	for ( player = 0; player < MAX_PLAYERS; player++ )	// server dosn't count as player
 	{
 		// player has left, therefore reset their team number...
 		if ((GameStatus[player] == STATUS_Left) || (GameStatus[player] == STATUS_LeftCrashed))
@@ -2073,9 +2022,6 @@ void StartDemoPlayback( MENUITEM * Item )
 
 	TeamGame = FALSE;
 	CountDownOn = FALSE;
-	IsServer = FALSE;
-	IsServerGame = FALSE;
-
 
 	if( DemoList.item[0][0] == 0 )
 	{
@@ -2309,8 +2255,6 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	TeamGame = FALSE;
 	CaptureTheFlag = FALSE;
 	CTF = FALSE;
-	IsServer = FALSE;
-	IsServerGame = FALSE;
 
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = 0;
@@ -2351,9 +2295,6 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
 	LONGLONG	TempTime;
-
-	IsServer = FALSE;
-	IsServerGame = FALSE;
 	PlayDemo = FALSE;
 	IsHost = TRUE;
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
@@ -2394,9 +2335,6 @@ int16 InGameLoadGameLevelNum;
 BOOL InGameLoadASinglePlayerGame( MENUITEM * Item )
 {
 	int16 OldNewLevelNum;
-
-	IsServer = FALSE;
-	IsServerGame = FALSE;
 	OldNewLevelNum = NewLevelNum;
 	WhoIAm = 0;								// I was the first to join...
 	NewLevelNum = -1;
