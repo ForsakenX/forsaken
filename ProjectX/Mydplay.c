@@ -44,10 +44,8 @@
 
 extern BOOL Debug;
 
-int average_server_packet_size = 0;
-
-BOOL	UseSendAsync = TRUE;
-BOOL	SessionGuidExists = FALSE;
+BOOL	UseSendAsync			= TRUE;
+BOOL	SessionGuidExists		= FALSE;
 
 int	PacketGot[256];
 int	PacketSize[256];
@@ -56,19 +54,17 @@ int	PacketSize[256];
 extern LPDPSESSIONDESC2                    glpdpSD_copy;
 #endif
 
-uint32 BigPacketSize = 0;
-uint32 MaxBigPacketSize = 0;
-
-uint32 RecPacketSize = 0;
-uint32 MaxRecPacketSize = 0;
-
-uint32 BytesPerSecRec = 0;
-uint32 BytesPerSecSent = 0;
-uint32 CurrentBytesPerSecRec = 0;
-uint32 CurrentBytesPerSecSent = 0;
-uint32 MaxCurrentBytesPerSecRec = 0;
+uint32 BigPacketSize						= 0;
+uint32 MaxBigPacketSize				= 0;
+uint32 RecPacketSize					= 0;
+uint32 MaxRecPacketSize				= 0;
+uint32 BytesPerSecRec					= 0;
+uint32 BytesPerSecSent				= 0;
+uint32 CurrentBytesPerSecRec		= 0;
+uint32 CurrentBytesPerSecSent		= 0;
+uint32 MaxCurrentBytesPerSecRec	= 0;
 uint32 MaxCurrentBytesPerSecSent = 0;
-float BytesPerSecTimer = 0.0F;
+float BytesPerSecTimer					= 0.0F;
 
 // registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
@@ -93,17 +89,13 @@ extern	LIST	ServiceProvidersList;
 
 extern	BOOL	CountDownOn;
 extern char	ServerLevelNames[MAXLEVELS][ 8 ];
-extern	char LevelNames[MAXLEVELS][128];
+extern char LevelNames[MAXLEVELS][128];
 extern uint8	ServerLevelsListState;
 
 GUID autojoin_session_guid;
 float FindSessionTimeout;
-
 extern int16 NumServerLevels;
-
 extern	SLIDER	MaxPlayersSlider;
-extern BOOL	ServerCollisions;
-
 
 extern	LONGLONG	LargeTime;
 extern SLIDER	GoalScoreSlider;
@@ -1639,12 +1631,6 @@ void ReceiveGameMessages( void )
 	}
 }
 
-
-void AllocatePseudoHost( void )
-{
-// server stuff removed
-}
-
 /*
  * EvalSysMessage
  *
@@ -1844,16 +1830,12 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 	}
 }
 
-
-//#define SERVER_MASTER_TIMEOUT 300	// 300s == 5 mins
-
 BOOL CheckPlayersActive( void )
 {
 	uint16 i;
 	
 	for ( i = 1; i < MAX_PLAYERS; i++ )
 	{
-		//if ( ( LastPacketTime [ i ] + Freq * SERVER_MASTER_TIMEOUT ) > TempTime )
 		if ( ( LastPacketTime [ i ] + Freq * ( ServerTimeoutSlider.value * 60 ) ) > TempTime )
 		{
 			return TRUE;
@@ -2249,7 +2231,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case MSG_DROPPICKUP:
 			case MSG_VERYSHORTDROPPICKUP:
 			case MSG_KILLPICKUP:
-			case MSG_SERVERKILLPICKUP:
 			case MSG_VERYSHORTFUPDATE:
 			case MSG_GROUPONLY_VERYSHORTFUPDATE:
 			case MSG_FUPDATE:
@@ -3121,9 +3102,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-					// we're in server mode
-   					//sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], " ZZZ ", &methodstr[0], &teamstr );
+					// we're in server mode or tol on??
+   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
@@ -6616,6 +6596,8 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					break;
 			}
 			break;
+
+
 		case MSG_VERYSHORTDROPPICKUP:
 			lpVeryShortDropPickup = (LPVERYSHORTDROPPICKUPMSG)MsgPnt;
 

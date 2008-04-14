@@ -205,9 +205,6 @@ extern uint32 CurrentBikeCompSpeech;
 BOOL PreventFlips = FALSE;
 BOOL Cheated = FALSE;
 
-BOOL ServerRendering = TRUE;
-BOOL ServerCollisions = TRUE;
-
 uint16 Current_Max_Score;
 
 void InitSoundInfo( MLOADHEADER * Mloadheader );
@@ -430,14 +427,9 @@ MENU  MENU_EditMacro1;
 MENU  MENU_EditMacro2;
 MENU  MENU_EditMacro3;
 
-extern  BOOL  ServerMode;
-int   ServerCount = 0;
-
 extern  DPID                    dcoID;
-
 extern  FILE  * DemoFp;
 extern  FILE  * DemoFpClean;
-
 extern  BOOL  PlayDemo;
 extern  BOOL  PauseDemo;
 extern  BOOL  RecordDemo;
@@ -1050,8 +1042,6 @@ extern  int16     ShowPortal;
 extern  int16     ShowSkin;
 extern  int16         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
-
-BOOL ServerMainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
 
 BOOL MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
 
@@ -6022,74 +6012,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
     return FALSE;
 
-
-  if( ServerMode && !PowerVR )
-  {
-    CameraRendering = CAMRENDERING_Server;
-      
-    active = 0;
-    for ( i = 0 ; i < MAX_PLAYERS ; i++ )
-    {
-      if( Ships[i].enable != 0 )
-      {
-        enabled[active] = i;
-        active++;
-      }
-    }
-    if( active > 1 )
-    {
-      src.top = 0;
-      src.left = 0;
-      src.right = d3dappi.szClient.cx;
-      src.bottom = d3dappi.szClient.cy;
-      while( 1 )
-      {
-        ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, 0, 0, d3dapp->lpFrontBuffer, &src, DDBLTFAST_WAIT );
-          if( ddrval == DD_OK )
-              break;
-          if( ddrval == DDERR_SURFACELOST )
-        {
-      
-          d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-          d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              break;
-        }
-          if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-      }
-    }
-    
-    Current_Camera_View = enabled[ServerCount];
-
-    MainCamera.enable = 1;
-    MainCamera.GroupImIn = Ships[enabled[ServerCount]].Object.Group;  
-    MainCamera.Mat = Ships[enabled[ServerCount]].Object.FinalMat; 
-    MainCamera.InvMat = Ships[enabled[ServerCount]].Object.FinalInvMat; 
-    MainCamera.Pos = Ships[enabled[ServerCount]].Object.Pos;  
-    MainCamera.Viewport = viewport; 
-    MainCamera.Proj = proj; 
-
-    
-    MainCamera.Viewport.dwX = (long) ( viewport.dwX + ( ( viewport.dwWidth * Hdiv[active-1] ) * (Hpos[active-1][ServerCount] ) ) );
-    MainCamera.Viewport.dwY = (long) ( viewport.dwY + ( ( viewport.dwHeight * Vdiv[active-1] ) * (Vpos[active-1][ServerCount]) ) );
-    MainCamera.Viewport.dwWidth = (long) ( viewport.dwWidth * Hdiv[active-1] );
-    MainCamera.Viewport.dwHeight = (long) ( viewport.dwHeight * Vdiv[active-1] );
-    MainCamera.Viewport.dvScaleX = MainCamera.Viewport.dwWidth / (float)2.0;
-    MainCamera.Viewport.dvScaleY = MainCamera.Viewport.dwHeight / (float)2.0;
-    MainCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(MainCamera.Viewport.dwWidth),
-                       D3DVAL(2 * MainCamera.Viewport.dvScaleX));
-    MainCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(MainCamera.Viewport.dwHeight),
-                       D3DVAL(2 * MainCamera.Viewport.dvScaleY));
-  
-    CurrentCamera = MainCamera;
-    CurrentCamera.UseLowestLOD = TRUE;
-    if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-      return FALSE;
-
-  }
-  /* NOT SERVER MODE */
-  else
-  {
    if(ShowStats)
 	  ScoreDisplay();
 
@@ -6267,7 +6189,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 #endif
     }
-  } /* done with rendering camera stuff */
+ /* done with rendering camera stuff */
 
   if( DrawPanel && (WhoIAm == Current_Camera_View ))
   {
@@ -6392,13 +6314,10 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     }
     else
     {
-      if( !ServerMode )
-      {
 #ifndef REFLECTION
         if( !FullRearView )
           TestBlt();
 #endif
-      }
     }
 
   // here is where we process menu keys
@@ -6446,9 +6365,6 @@ void ShowInGameStats()
 			if ( GameStatus[ i ] == STATUS_Normal ) 
 				NumActivePlayers++;
 		}
-
-
-			
 
 		// objective based game
 		if( CTF || CaptureTheFlag || BountyHunt )

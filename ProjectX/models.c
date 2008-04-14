@@ -112,7 +112,6 @@ extern	BYTE			ChangeLevel_MyGameStatus;
 extern	BOOL			CaptureTheFlag;
 extern	BOOL			CTF;
 extern	BOOL			BikeEnginesOn;
-extern	BYTE			Server_WhoHitYou;
 
 extern int KillMessageColour;
 
@@ -4148,7 +4147,6 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 
 #endif
 		case COLPERS_Forsaken:
-		case COLPERS_Server:
 		case COLPERS_Descent:
 			if( ( Ships[ WhoIAm ].enable ) && ( Ships[ WhoIAm ].Object.Mode != LIMBO_MODE ) )
 			{

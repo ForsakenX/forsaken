@@ -69,7 +69,6 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Externs
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-extern	BYTE	Server_WhoHitYou;
 extern SLIDER BikeCompSpeechSlider;
 extern BOOL CaptureTheFlag;
 extern BOOL CTF;
@@ -3550,9 +3549,6 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			case SCATTERMISSILE:
 				switch( ColPerspective )
 				{
-					case COLPERS_Server:
-						break;
-
 					case COLPERS_Forsaken:
 						break;
 
@@ -5225,7 +5221,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 		i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 		{
-			Pickups[ i ].ActualOwner = Ship;
 			DropPickupSend( &Pos, Group ,&DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			TotalPickups++;
 		}
@@ -5245,7 +5240,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 		i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 		{
-			Pickups[ i ].ActualOwner = Ship;
 			DropPickupSend( &Pos, Group ,&DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			TotalPickups++;
 		}
@@ -5269,7 +5263,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 				i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 				if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 				{
-					Pickups[ i ].ActualOwner = Ship;
 					DropPickupSend( &Pos, Group ,&DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 					TotalPickups++;
 					Host_PickupsGot[ Ship ][ TeamFlagPickup[ team ] ] = 0;
@@ -5298,7 +5291,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 			i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 			{
-				Pickups[ i ].ActualOwner = Ship;
 				DropPickupSend( &Pos, Group ,&DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 				Host_PrimaryWeaponsGot[ Ship ][ Count ] = 0;
 				TotalPickups++;
@@ -5326,7 +5318,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 			i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 			{
-				Pickups[ i ].ActualOwner = Ship;
 				DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 				TotalPickups++;
 			}
@@ -5352,7 +5343,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 		i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 		{
-			Pickups[ i ].ActualOwner = Ship;
 			DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			TotalPickups++;
 		}
@@ -5377,7 +5367,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 		i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 		if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 		{
-			Pickups[ i ].ActualOwner = Ship;
 			DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			TotalPickups++;
 		}
@@ -5406,7 +5395,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 					i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 					if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 					{
-						Pickups[ i ].ActualOwner = Ship;
 						DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 						TotalPickups++;
 					}
@@ -5446,7 +5434,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 			i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 			if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 			{
-				Pickups[ i ].ActualOwner = Ship;
 				DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 				TotalPickups++;
 			}
@@ -5483,7 +5470,6 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 				i = InitOnePickup( &Pos, Group, &DirVector, Speed, PickupNum, WhoIAm, ++Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 				if( ( i != (uint16) -1 ) && ( i != (uint16) -2 ) )
 				{
-					Pickups[ i ].ActualOwner = Ship;
 					DropPickupSend( &Pos, Group, &DirVector, Speed, PickupNum, Ships[ WhoIAm ].PickupIdCount, -1, FALSE, LifeCount, (uint16) -1 );
 					TotalPickups++;
 				}

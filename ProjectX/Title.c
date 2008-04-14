@@ -949,7 +949,6 @@ BOOL BrightShips					= FALSE;
 BOOL MyBrightShips				= FALSE;
 BOOL BikeExhausts				= TRUE;
 BOOL DemoScreenGrab			= FALSE;
-BOOL ServerMode					= FALSE;
 BOOL ScreenSaving				= TRUE;
 BOOL ShowNode					= FALSE;
 BOOL NodeCube					= FALSE;

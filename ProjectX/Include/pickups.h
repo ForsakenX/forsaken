@@ -24,7 +24,6 @@
 #define	MAXMISSEDPICKUPS		256
 #define	MPU_TYPE_KILL			0
 #define	MPU_TYPE_INIT			1
-#define	MPU_TYPE_SERVERKILL		2
 								
 #define	INVULNERABILITY_TIME	( 30.0F * 60.0F )
 
@@ -143,7 +142,6 @@ typedef struct PICKUP {
 	uint16	Index;
 	uint16	Type;				// which type of bullet am I
 	uint16	Owner;				// Owner ID
-	uint16	ActualOwner;		// Owner ( Only used on server )
 	uint16	ID;					// ID
 	int16	Mode;				// Mode Pickup is currently in ...
 	float	LifeCount;			// How long do i live ...
@@ -234,7 +232,6 @@ typedef struct FAILEDKILL {
 	uint16	ID;
 	int16	Style;
 	uint16	NewOwner;
-	BOOL	Server;
 
 } FAILEDKILL;
 
@@ -296,7 +293,6 @@ BOOL AddPrimaryToRegenQue( int8 Weapon );
 BOOL AddSecondaryToRegenQue( int8 Weapon );
 void PickupModelValid( void );
 void CheckPickupAllPlayers( void );
-void ServerKillPickup( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner );
 BOOL ActuallyCollectPickup( uint16 i );
 BOOL PretendCollectPickup( uint16 i );
 void CorrectForExtraOrMissingPickups( void );
@@ -304,7 +300,7 @@ void CountMinesInLevel( void );
 void KillAllPickupsOfTypeAndSend( uint16 Type, int16 Style );
 
 void InitFailedKillSlots( void );
-BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner, BOOL Server );
+BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner);
 int16 FindFreeFailedKillSlot( void );
 void ReleaseFailedKillSlot( int16 i );
 void ProcessFailedKills( void );

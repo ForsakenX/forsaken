@@ -2366,7 +2366,7 @@ void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 	}																				
 	
 
-	AddFailedKillToQue( Owner, ID, Style, (uint16) -1, FALSE );
+	AddFailedKillToQue( Owner, ID, Style, (uint16) -1 );
 
 #if DEBUG_PICKUPS
 	if( Owner != (uint16) -1 ) DebugPrintf( "Couldnt't kill pickup of Owner '%s', ID %d\n", &Names[ Owner ][ 0 ], ID );
@@ -2374,124 +2374,6 @@ void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Kill a specific Pickup
-	Input		:	uint16	Owner
-				:	uint16	ID
-				:	int16	Style to kill
-				:	uint16	NewOwner
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ServerKillPickup( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner )
-{
-	uint16	i;
-	uint16	NextPickup;
-	uint16	fmpoly;
-	int16	Count = 0;
-
-	i = FirstPickupUsed;
-
-	while( i != (uint16) -1 )
-	{
-		NextPickup = Pickups[ i ].Prev;							/* Next Pickup */
-
-		if( ( Pickups[ i ].Owner == Owner ) && ( Pickups[ i ].ID == ID ) )
-		{
-#if DEBUG_PICKUPS
-			DebugPrintf( "Killed '%s' Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
-#endif
-
-			switch( Style )
-			{
-				case PICKUPKILL_Immediate:
-					if ( CTF )
-					{
-						int team;
-
-						team = -1;
-						switch ( Pickups[ i ].Type )
-						{
-						case PICKUP_Flag1:
-							team = 0;
-							break;
-						case PICKUP_Flag2:
-							team = 1;
-							break;
-						case PICKUP_Flag3:
-							team = 2;
-							break;
-						case PICKUP_Flag4:
-							team = 3;
-							break;
-						}
-						if ( team >= 0 )
-						{
-							TeamFlagAtHome[ team ] = FALSE;
-						}
-					}
-
-					if( NewOwner == WhoIAm )
-					{
-						ActuallyCollectPickup( i );
-					}
-					else
-					{
-						CleanUpPickup( i );
-					}
-
-					Count++;
-					if( Count > 1 )
-					{
-						Msg( "Killed more than 1 pickup with same type\n" );
-					}
-					break;
-
-				case PICKUPKILL_Disappear:
-					if( Pickups[ i ].Mode == PICKUPMODE_Disappear ) break;
-
-					Pickups[ i ].LifeCount = 0.0F;
-					Pickups[ i ].Mode = PICKUPMODE_Disappear;
-					Pickups[ i ].PickupCount = 32.0F;
-			
-					fmpoly = FindFreeFmPoly();
-					if( fmpoly != (uint16) -1 )
-					{
-						FmPolys[ fmpoly ].LifeCount = 1000.0F;
-						FmPolys[ fmpoly ].Pos = Pickups[ i ].Pos;
-						FmPolys[ fmpoly ].SeqNum = FM_PICKUP_REGEN;
-						FmPolys[ fmpoly ].Frame = 0.0F;
-						FmPolys[ fmpoly ].Frm_Info = &PickupRegen_Header;
-						FmPolys[ fmpoly ].Flags = FM_FLAG_MOVEOUT;
-						FmPolys[ fmpoly ].Trans = 192;
-						FmPolys[ fmpoly ].Dir.x = 0.0F;
-						FmPolys[ fmpoly ].Dir.y = 0.0F;
-						FmPolys[ fmpoly ].Dir.z = 0.0F;
-						FmPolys[ fmpoly ].R = 192;
-						FmPolys[ fmpoly ].G = 192;
-						FmPolys[ fmpoly ].B = 192;
-						FmPolys[ fmpoly ].Speed = 0.0F;
-						FmPolys[ fmpoly ].Rot = 0.0F;
-						FmPolys[ fmpoly ].Group = Pickups[ i ].Group;
-						FmPolys[ fmpoly ].RotSpeed = 0.0F;
-						FmPolys[ fmpoly ].xsize = PICKUP_REGEN_SIZE;
-						FmPolys[ fmpoly ].ysize = PICKUP_REGEN_SIZE;
-						AddFmPolyToTPage( fmpoly, GetTPage( *FmPolys[ fmpoly ].Frm_Info, 0 ) );
-					}
-					break;
-			}
-			return;
-		}
-
-		i = NextPickup;											/* Next Pickup */
-	}																				
-
-	AddFailedKillToQue( Owner, ID, Style, NewOwner, TRUE );
-	
-#if DEBUG_PICKUPS
-	if( Owner != (uint16) -1 ) DebugPrintf( "Couldnt't kill pickup of Owner '%s', ID %d\n", &Names[ Owner ][ 0 ], ID );
-	else DebugPrintf( "Couldnt't kill pickup of No Owner, ID %d\n", ID );
-#endif
-}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Find a free Pickup and move it from the free
@@ -2728,7 +2610,6 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 		Pickups[ i ].Speed = Speed;					//PICKUP_SPEED;
 		Pickups[ i ].ExternalSpeed = 0.0F;
 		Pickups[ i ].LifeCount = LifeCount;
-		Pickups[ i ].ActualOwner = (uint16) -1;
 		Pickups[ i ].PickupTime = 0.0F;
 		Pickups[ i ].PickupCount = 0.0F;			//16.0F;
 		Pickups[ i ].Type = (int8) Type;
@@ -2949,7 +2830,6 @@ uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, in
 		Pickups[ i ].PickupCount = 0.0F;			//16.0F;
 		Pickups[ i ].Type = (int8) Type;
 		Pickups[ i ].Owner = Owner;
-		Pickups[ i ].ActualOwner = (uint16) -1;
 		Pickups[ i ].Dir = *Dir;
 		Pickups[ i ].Rot.x = ( ( (float) Random_Range( 256 ) ) / 64.0F ) - 2.0F;
 		Pickups[ i ].Rot.y = ( ( (float) Random_Range( 256 ) ) / 64.0F ) - 2.0F;
@@ -7269,17 +7149,12 @@ void CheckPickupAllPlayers( void )
 //					if( ( Pickup->Speed == 0.0F ) && ( Pickup->Mode == PICKUPMODE_Normal ) && ( Pickup->PickupTime > 0.0F ) )
 					if( Pickup->Mode == PICKUPMODE_Normal )
 					{
-						if( ( ( Pickup->ActualOwner == Ship ) && ( Pickup->Speed == 0.0F ) ) ||
-							( Pickup->ActualOwner != Ship ) )
+						if( Pickup->Speed == 0.0F )
 						{
 							if( RaytoSphereShort( (VECTOR *) &Pickup->Pos, PICKUP_RADIUS, &Pos, &Dir, Length ) )
-							{
 								CanPlayerCollectPickup( Pickup->Index, Ship );
-							}
 							else
-							{
 								Pickup->CouldNotPickup = FALSE;
-							}
 						}
 					}
 
@@ -7967,10 +7842,9 @@ void InitFailedKillSlots( void )
 				:	uint16	ID
 				:	int16	Style
 				:	uint16	NewOwner
-				:	BOOL	Server
 	Output		:	BOOL	TRUE/FALSE
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner, BOOL Server )
+BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner )
 {
 	int16	i;
 
@@ -7978,21 +7852,12 @@ BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner, 
 
 	if( i != -1 )
 	{
-		if( !Server )
-		{
-			DebugPrintf( "Added Failed KillPickup() Owner %d, ID %d to que\n", Owner, ID );
-		}
-		else
-		{
-			DebugPrintf( "Added Failed ServerKillPickup() Owner %d, ID %d to que\n", Owner, ID );
-		}
-
+		DebugPrintf( "Added Failed KillPickup() Owner %d, ID %d to que\n", Owner, ID );
 		FailedKill[ i ].ID = ID;
 		FailedKill[ i ].Owner = Owner;
 		FailedKill[ i ].NewOwner = NewOwner;
 		FailedKill[ i ].Style = Style;
 		FailedKill[ i ].Life = FAILEDKILLTIMEOUT;
-		FailedKill[ i ].Server = Server;
 		return( TRUE );
 	}
 
@@ -8069,14 +7934,7 @@ void ProcessFailedKills( void )
 		
 		if( FailedKill[ i ].Life < 0.0F )
 		{
-			if( !FailedKill[ i ].Server )
-			{
-				DebugPrintf( "************** Dropped Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
-			}
-			else
-			{
-				DebugPrintf( "************** Dropped Failed ServerKillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
-			}
+			DebugPrintf( "************** Dropped Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
 			ReleaseFailedKillSlot( i );
 		}
 		else
@@ -8085,17 +7943,8 @@ void ProcessFailedKills( void )
 
 			if( Pickup != (uint16) -1 )
 			{
-				if( !FailedKill[ i ].Server )
-				{
-					KillPickup( FailedKill[ i ].Owner, FailedKill[ i ].ID, FailedKill[ i ].Style );
-					DebugPrintf( "Removed Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
-				}
-				else
-				{
-					ServerKillPickup( FailedKill[ i ].Owner, FailedKill[ i ].ID, FailedKill[ i ].Style, FailedKill[ i ].NewOwner );
-					DebugPrintf( "Removed Failed ServerKillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
-				}
-
+				KillPickup( FailedKill[ i ].Owner, FailedKill[ i ].ID, FailedKill[ i ].Style );
+				DebugPrintf( "Removed Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
 				ReleaseFailedKillSlot( i );
 			}
 		}

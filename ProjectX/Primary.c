@@ -77,7 +77,6 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Externs
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-extern	BYTE	Server_WhoHitYou;
 extern SLIDER BikeCompSpeechSlider;
 extern	BOOL	BombTag;
 extern	int		LowestBombTime;
