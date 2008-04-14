@@ -6266,104 +6266,8 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Server Stuff...
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-typedef struct SERVERMSGHEADER
-{
-	int			MsgLength;
-struct SERVERMSGHEADER * Next;
-struct SERVERMSGHEADER * Prev;
-	BYTE		MsgType;
-	BYTE		WhoIAm;
-	float		framelag;
-	BYTE		Message;		// Must be last in structure!!!!!!!!!!!!
-}SERVERMSGHEADER, *LPSERVERMSGHEADER;
 
-SERVERMSGHEADER * SMHs;
-SERVERMSGHEADER * OldestSMHs;
-LONGLONG	ServerUpdateTimer = 0;
-SERVERMSGHEADER * TempSMH = NULL;
-
-int ServerMessagesActive = 0;
-int ServerMessagesActiveMax = 0;
-int	ServerPlayersActive = 0;
-
-DWORDLONG CurrentServerAck = 0;
-
-void AddToServicePacket( SERVERMSGHEADER * SMH, int i );
-void SendServerPacket( int i );
-void BuildCurrentServerAck( void );
 BOOL CheckIfPacketRelevant( BYTE * Message , int Player );
-BOOL MakeTempSMH( void * Message );
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		BuildCurrentServerAck
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void BuildCurrentServerAck( void )
-{
-	LONGLONG	Ack = 0;
-	int i;
-	ServerPlayersActive = 0;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if(
-		  ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
-		  (i!=WhoIAm) )
-		{
-			Ack |= 1<<i;
-			ServerPlayersActive++;
-		}
-	}
-	CurrentServerAck = Ack;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Make Temp Smh Add Mesage to Server Que...
-	Input		:		void * Message
-	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL MakeTempSMH( void * Message )
-{
-	SERVERMSGHEADER * SMH;
-	int MsgLength;
-	BYTE MsgType;
-	BYTE Player;
-	BYTE * BytePnt;
-
-	if( PlayDemo || !IsServer )
-		return TRUE;
-	BytePnt = (BYTE*) Message;
-
-	MsgType = *BytePnt++;
-	MsgLength = RealPacketSize[MsgType];
-	Player = *BytePnt;
-
-	if( Player >= MAX_PLAYERS )
-		return TRUE;
-
-	SMH = (SERVERMSGHEADER*) malloc( sizeof(SERVERMSGHEADER) + MsgLength -1 );
-	if( !SMH )
-	{
-		return FALSE;
-	}
-	SMH->Next = NULL;
-	SMH->Prev = NULL;
-	TempSMH = SMH;
-	memcpy( &SMH->Message, Message, MsgLength );
-	SMH->MsgType = MsgType;
-	SMH->MsgLength = MsgLength;
-	SMH->WhoIAm = Player;
-	SMH->framelag = 0.0F;
-	return TRUE;
-}
-
-#define SERVER_MAX_MESSAGES_IN_QUE 1
-
 extern SLIDER ThrottleSlider;
 DWORD MaxPacketsInQue = 0;
 
@@ -6374,22 +6278,22 @@ DWORD MaxPacketsInQue = 0;
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 {
-    LPUPDATEMSG				lpUpdate;
-    LPVERYSHORTUPDATEMSG	lpVeryShortUpdate;
-    LPFUPDATEMSG			lpFUpdate;
+    LPUPDATEMSG						lpUpdate;
+    LPVERYSHORTUPDATEMSG		lpVeryShortUpdate;
+    LPFUPDATEMSG					lpFUpdate;
     LPVERYSHORTFUPDATEMSG	lpVeryShortFUpdate;
     LPGROUPONLY_VERYSHORTFUPDATEMSG	lpGroupOnly_VeryShortFUpdate;
-    LPSHIPHITMSG			lpShipHit;
-    LPSHORTSHIPHITMSG		lpShortShipHit;
-    LPSHIPDIEDMSG			lpShipDied;
-    LPSECBULLPOSDIRMSG		lpSecBullPosDir;
-    LPTITANBITSMSG			lpTitanBits;
-    LPTEXTMSG				lpTextMsg;
-	LPGUARANTEEDMSG			lpGuaranteedMsg;
-	LPPINGMSG				lpPingMsg;
-//	LPACKMSG				lpAckMsg;
-	int16					Group;
-	LPSHIELDHULLMSG	lpShieldHullMsg;
+    LPSHIPHITMSG						lpShipHit;
+    LPSHORTSHIPHITMSG			lpShortShipHit;
+    LPSHIPDIEDMSG					lpShipDied;
+    LPSECBULLPOSDIRMSG			lpSecBullPosDir;
+    LPTITANBITSMSG					lpTitanBits;
+    LPTEXTMSG							lpTextMsg;
+	LPGUARANTEEDMSG				lpGuaranteedMsg;
+	LPPINGMSG							lpPingMsg;
+//	LPACKMSG							lpAckMsg;
+	int16									Group;
+	LPSHIELDHULLMSG				lpShieldHullMsg;
 
 	switch( *MsgPnt )
     {
@@ -6415,9 +6319,7 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 	case MSG_GUARANTEEDMSG:
 		lpGuaranteedMsg = (LPGUARANTEEDMSG)MsgPnt;
 		if( !(lpGuaranteedMsg->Ack & (1 << Player)) )
-		{
 			return FALSE;
-		}
 		break;
     case MSG_VERYSHORTFUPDATE:
 		if( MyGameStatus != STATUS_Normal )
@@ -6676,117 +6578,6 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add a packet to the Service Packet
-	Input		:		BYTE Player
-	Output		:		uint32 Flags
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddToServicePacket( SERVERMSGHEADER * SMH, int Player )
-{
-	int MessageLength;
-	void * Message;
-	BYTE MsgType;
-	uint32 TempSize;
-
-	MessageLength = SMH->MsgLength;
-	MsgType = SMH->MsgType;
-	Message = &SMH->Message;
-
-	TempSize = ServerPacketOffset+MessageLength+sizeof(float);
-
-	if( ( TempSize >= (SERVERPACKETBUFFERSIZE-1) ) ||
-		(NumOfPacketsInServerPacket >= MAXPACKETSPERSERVERPACKET-1) )
-		SendServerPacket( Player );
-
-	ServerPacketOffsets[NumOfPacketsInServerPacket] = ServerPacketOffset;
-	ServerPacketSizes[NumOfPacketsInServerPacket] = MessageLength;
-	ServerPacketTime[NumOfPacketsInServerPacket] = SMH->framelag;
-	NumOfPacketsInServerPacket++;
-	
-	memcpy( &ServerPacketCommBuff[ServerPacketOffset], Message, MessageLength );
-	ServerPacketOffset += MessageLength + sizeof(float);
-	ServerPacketCommBuff[ServerPacketOffset] = 0;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Send Server Packet...
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void SendServerPacket( int Player )
-{
-	HRESULT				hr;
-	DWORD				Flags = 0;
-	uint32 i;
-	DWORD send_to;
-	float * FloatPnt;
-
-	if( !NumOfPacketsInServerPacket )
-		return;
-	
-	ServerPacketCommBuff[0] = MSG_BIGPACKET;
-	ServerPacketCommBuff[1] = WhoIAm;
-	send_to = Ships[Player].dcoID;
-
-	for( i = 0 ; i < NumOfPacketsInServerPacket ; i++ )
-	{
-		FloatPnt = (float*) &ServerPacketCommBuff[ ServerPacketOffsets[i] + ServerPacketSizes[i] ];
-		*FloatPnt = ServerPacketTime[i];
-	}
-	
-
-	if( average_server_packet_size )
-	{
-		average_server_packet_size += ServerPacketOffset+1;
-		average_server_packet_size /= 2;
-
-	}else{
-		average_server_packet_size = ServerPacketOffset+1;
-
-
-	}
-
-
-
-	if( !UseSendAsync && !IsServer )
-//	if( 1 )
-	{
-		hr = glpDP->lpVtbl->Send( glpDP,
-								  dcoID,   // From
-								  send_to, // send to everybody
-								  Flags ,
-						  &ServerPacketCommBuff[0],
-						  ServerPacketOffset+1);
-	}else{
-		Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
-		hr = IDirectPlayX_SendEx( glpDP,
-								  dcoID,   // From
-								  send_to, // send to
-								  Flags ,
-								  &ServerPacketCommBuff[0],
-								  ServerPacketOffset+1,
-								  0,		// dwPriority
-								  0,		// dwTimeout
-								  NULL,		// lpContext
-								  NULL		// lpdwMsgID
-								  );
-	}
-
-	if( hr != DP_OK && hr != DPERR_PENDING )
-	{
-		OutputDebugString( "Dplay Server Packet Send Error" );
-	}
-
-	BigPacketSize = ServerPacketOffset+1;
-	if( BigPacketSize > MaxBigPacketSize )
-		MaxBigPacketSize = BigPacketSize;
-
-	BytesPerSecSent += ServerPacketOffset+1;
-
-	ServerPacketOffset = 2;
-	ServerPacketCommBuff[2] = 0;
-	NumOfPacketsInServerPacket = 0;
-}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Check Server Death times...
