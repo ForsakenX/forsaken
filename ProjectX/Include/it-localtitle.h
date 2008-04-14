@@ -740,14 +740,6 @@
 
 #define LT_MENU_InGame1a "menu server"
 
-#define LT_MENU_ServerMenu0 "opzioni del server"
-#define LT_MENU_ServerMenu1 "rendering del server"
-#define LT_MENU_ServerMenu2 "rimuovi giocatore"
-
-
-#define MENU_NEW_CreateGamePseudoHost0 "server gestisce collisioni"
-
-
 #define LT_MENU_NEW_ChooseConnectionToStart1 "premi 'esc' per uscire"
 
 #define LT_MENU_NEW_MoreMultiplayerOptions21 "num armi primarie"

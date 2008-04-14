@@ -1190,24 +1190,20 @@ void InitPolyText( void )
 		PolyText[i] = FALSE;
 	}
 
-	PolyText[STATUS_Title]					= TRUE;
-	PolyText[STATUS_BetweenLevels]			= TRUE;
-	PolyText[STATUS_StartingMultiplayer]	= TRUE;			
-
-	PolyText[STATUS_PlayingDemo]			= TRUE;
-	PolyText[STATUS_Normal]					= TRUE;					
-	PolyText[STATUS_SinglePlayer]			= TRUE;					
-
-	//PolyText[STATUS_ViewingScore]			= TRUE;					
-
-	PolyText[STATUS_WaitingToStartSinglePlayer]			= TRUE;					
-	PolyText[STATUS_WaitingToStartMultiPlayerHost]		= TRUE;					
-	PolyText[STATUS_WaitingToStartMultiPlayerClient]	= TRUE;					
+	PolyText[STATUS_Title]											= TRUE;
+	PolyText[STATUS_BetweenLevels]								= TRUE;
+	PolyText[STATUS_StartingMultiplayer]							= TRUE;			
+	PolyText[STATUS_PlayingDemo]									= TRUE;
+	PolyText[STATUS_Normal]											= TRUE;					
+	PolyText[STATUS_SinglePlayer]									= TRUE;					
+	//PolyText[STATUS_ViewingScore]								= TRUE;					
+	PolyText[STATUS_WaitingToStartSinglePlayer]				= TRUE;					
+	PolyText[STATUS_WaitingToStartMultiPlayerHost]			= TRUE;					
+	PolyText[STATUS_WaitingToStartMultiPlayerClient]			= TRUE;					
 	PolyText[STATUS_WaitingToStartTeamGame]				= TRUE;					
-	PolyText[STATUS_WaitingToStartDemo]					= TRUE;
+	PolyText[STATUS_WaitingToStartDemo]						= TRUE;
 	PolyText[STATUS_WaitingToStartEndGameSequence]		= TRUE;
-	PolyText[STATUS_PseudoHostWaitingForAck]			 = TRUE;
-	PolyText[STATUS_WaitingForLobbyConnect]			 = TRUE;
+	PolyText[STATUS_WaitingForLobbyConnect]					= TRUE;
 }
 
 

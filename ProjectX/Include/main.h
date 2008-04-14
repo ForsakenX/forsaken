@@ -60,9 +60,6 @@
 #define	STATUS_InitView_10					0x8a	// 10 of Preping for a level..
 											
 #define STATUS_WaitingToSendMessages		0xfa	// waiting until all guaranteed messages sent before continuing
-#define STATUS_GetLevelNames						0xfb	// Pseudo host is recieving level names from server
-#define STATUS_PseudoHostWaitingForAck		0xfc	// Pseudo host waiting for acknowledgement of game parameters from server
-#define STATUS_TurnedOffByServer				0xfd	// The Server has decided I dont need to know about this player...
 #define STATUS_LeftCrashed							0xfe	// I have left and crashed...
 #define STATUS_Null									0xff	// Im not doing anything yet...
 #define STATUS_TryingToFindSession				0xf9

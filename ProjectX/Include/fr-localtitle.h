@@ -738,13 +738,7 @@
 #define LT_MENU_Keyboard1b "Vue arrière complète"
 			
 #define LT_MENU_InGame1a "Menu du serveur"
-			
-#define LT_MENU_ServerMenu0 "Options du serveur"
-#define LT_MENU_ServerMenu1 "Rendu"
-#define LT_MENU_ServerMenu2 "Enlever un joueur"
-			
-#define MENU_NEW_CreateGamePseudoHost0 "Le serveur détecte des collisions"
-			
+						
 			
 #define LT_MENU_NEW_ChooseConnectionToStart1 "Appuyer sur esc pour quitter"
 			

@@ -369,8 +369,6 @@ extern	BOOL BombTag;
 extern	BOOL	BombActive[MAXBOMBS];
 extern	float	BombTime[MAXBOMBS];
 
-BYTE	Server_WhoHitYou;
-
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
 BOOL	DemoShipInit[MAX_PLAYERS+1];
 
@@ -419,14 +417,6 @@ int GuaranteedMessagesOverallTime = 10;			// How long to keep the message around
 #endif
 
 
-
-uint32	SERVERPACKETBUFFERSIZE = 1024;
-BYTE	ServerPacketCommBuff[MAXBIGPACKETBUFFERSIZE];
-uint32	ServerPacketOffset = 2;
-uint32	NumOfPacketsInServerPacket = 0;
-uint32	ServerPacketOffsets[MAXPACKETSPERSERVERPACKET];
-uint32	ServerPacketSizes[MAXPACKETSPERSERVERPACKET];
-float	ServerPacketTime[MAXPACKETSPERSERVERPACKET];
 BOOL	ItsAGuranteed = FALSE;
 
 
@@ -455,7 +445,6 @@ extern	uint16	RandomStartPosModify;
 BOOL	ChAngleevel( void );
 void	DebugPrintf( const char * format, ... );
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
-//void CheckServerDeathTimes( void );
 
 MATRIX	TempMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
@@ -3866,43 +3855,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 #endif
 
-
-	case MSG_LEVELNAMES:
-
-		if ( ( IsPseudoHost ) && ( MyGameStatus == STATUS_GetLevelNames ) )
-		{
-			lpLevelNamesMsg = ( LPLEVELNAMESMSG )MsgPnt;
-
-			if ( !lpLevelNamesMsg->TotalLevels )
-				ServerLevelsListState = SERVERLEVELS_None;
-
-			// if we have not already recieved this batch...
-			if ( !ServerLevelNames[ lpLevelNamesMsg->FirstLevel ][ 0 ] )
-			{
-				for( i = lpLevelNamesMsg->FirstLevel; i < ( lpLevelNamesMsg->ThisBatch + lpLevelNamesMsg->FirstLevel ); i++ )
-				{
-					strcpy( ServerLevelNames[ i ], lpLevelNamesMsg->Level[ i - lpLevelNamesMsg->FirstLevel ] );
-					NumServerLevels++;
-				}
-
-				if ( NumServerLevels > lpLevelNamesMsg->TotalLevels )
-				{
-					NumServerLevels = lpLevelNamesMsg->TotalLevels;
-					DebugPrintf("pseudohost has recieved too many levels from server!!!\n");
-				}
-
-				if ( NumServerLevels == lpLevelNamesMsg->TotalLevels )
-				{
-					if ( !InitLevels( MULTIPLAYER_LEVELS ) )
-						ServerLevelsListState = SERVERLEVELS_None;
-					else
-						ServerLevelsListState = SERVERLEVELS_Got;
-				}
-			}
-		}
-		return;
-
-
 	case MSG_TRACKERINFO:
 
 		//Msg("tracker msg got through\n");
@@ -6499,7 +6451,7 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Check Server Death times...
+	Procedure	:		Update Ammo And Validate Message...
 	Input		:		void	*	Message
 	Output		:		BOOL		True/False ( Valid Message )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -6582,16 +6534,13 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					}
 
 					if( Host_SecondaryAmmo[ Player ][ Weapon ] > SecondaryFromPickupTab[ ( Weapon * 2 ) + 1 ] )
-					{
 						Host_SecondaryAmmo[ Player ][ Weapon ] -= SecondaryFromPickupTab[ ( Weapon * 2 ) + 1 ];
-					}
 					else
 					{
 						Host_SecondaryAmmo[ Player ][ Weapon ] = 0;
 						Host_SecondaryWeaponsGot[ Player ][ Weapon ] = 0;
 					}
 					break;
-
 				default:
 					break;
 			}

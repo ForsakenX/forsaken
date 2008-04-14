@@ -4820,14 +4820,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
 
       // menu change is done when session description is changed for lobby session
-      if ( IsPseudoHost )
-      {
-        MyGameStatus = STATUS_GetLevelNames;
-        PseudoHostAck_Timeout = PSEUDOHOST_WAIT_TIME;
-      }else
-      {
-        MenuChangeEx( GetPlayerNumMenu );
-      }
+       MenuChangeEx( GetPlayerNumMenu );
+
       break;
     }
 
@@ -4853,42 +4847,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
     break;
-
-
-  case STATUS_GetLevelNames:
-    D3DAppClearScreenOnly();
-
-    if ( GeneralTimeout( &PseudoHostAck_Timeout ) )
-    {
-      if( dcoID )
-      {
-        DPlayDestroyPlayer(dcoID);
-        dcoID = 0;
-      }
-
-      DPlayRelease();
-      MyGameStatus = STATUS_Title;
-      RefreshDPlay();
-
-      OKToJoinSession = FALSE;
-      break;
-    }
-
-    ReceiveGameMessages();
-    Browl -= framelag;
-    if( Browl <= 0.0F )
-    {
-      Browl = 30.0F;
-      if( dcoID )
-      {
-        SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      }
-    }
-
-    CenterPrint4x5Text( QUERYING_SERVER_FOR_LEVELS, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
-
-    break;
-
 
   case STATUS_PlayingDemo:
 
@@ -5649,32 +5607,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 	//  ******************** End of Single Player Game Stuff *******************************
 
-
-  case STATUS_PseudoHostWaitingForAck:
-    ReceiveGameMessages();
-
-    if( DisplayTitle() != TRUE )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-
-    Browl -= framelag;
-
-    if( Browl <= 0.0F )
-    {
-      Browl = 30.0F;
-      if( dcoID )
-      {
-        SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      }
-
-      DPlayGetSessionDesc();
-    }
-    break;
-
-
-  case STATUS_WaitingToSendMessages:
+   case STATUS_WaitingToSendMessages:
 #ifdef  GUARANTEEDMESSAGES
     if ( GuaranteedMessagesActive )
     {

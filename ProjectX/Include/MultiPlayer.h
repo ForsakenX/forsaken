@@ -64,7 +64,6 @@ BOOL InGameLoadASinglePlayerGame( MENUITEM * Item );
 BOOL SplashDemoOK( char *demofile );
 void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 BOOL StartAHostSessionServer( MENUITEM * Item );
-void StartAPseudoHostSession( MENUITEM *Item );
 
 void SetUpGameType( int type );
 BOOL RefreshDPlay ( void );

@@ -76,7 +76,6 @@ extern BOOL BountyHunt;
 extern int8 TeamFlagPickup[ MAX_TEAMS ];
 extern uint32 TeamFlagMask[ MAX_TEAMS ];
 extern char *TeamName[ MAX_TEAMS ];
-
 extern int16			PickupsGot[ MAXPICKUPTYPES ];
 extern	FRAME_INFO	*	Flare_Header;
 extern	FRAME_INFO	*	Trojax_Exp_Header;
@@ -104,7 +103,6 @@ extern	GLOBALSHIP      Ships[MAX_PLAYERS+1];
 extern	BYTE			WhoIAm;
 extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	BOOL            bSoundEnabled;
-
 extern	FRAME_INFO	*	Exp_Header;
 extern	FRAME_INFO	*	Exp2_Header;
 extern	FRAME_INFO	*	GravgonTrail_Header;
@@ -131,38 +129,30 @@ extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
 extern	int16			NumStealths;
 extern	int16			NumOrbs;
-
 extern	BOOL			SecondaryLightDetail;
 extern	uint16			CameraMissile;
 extern	int				MissileCameraActive;
 extern	MATRIX			ProjMatrix;
 extern	SHORTNAMETYPE	Names;
 extern	CAMERA			CurrentCamera;
-
 extern	MISSEDMINEMSG	MissedMines[ MAXMISSEDMINES ];
 extern	SHORTMINE		MissedInitMines[ MAXMISSEDMINES ];
 extern	SHORTKILLMINE	MissedKillMines[ MAXMISSEDMINES ];
 extern	int16			NumMissedMines;
 extern	int16			NumMissedInitMines;
 extern	int16			NumMissedKillMines;
-
 extern	int16			NumPowerPods;
-
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
-													// this tells the drones what status the host thinks hes in..
+																	// this tells the drones what status the host thinks hes in..
 extern	float			ticksperframe;
-
 extern	SCRPOLY			ScrPolys[ MAXNUMOFSCRPOLYS ];
-
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
 extern	BOOL			EnhancedXHair;
-
 extern	BOOL			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
 extern	BOOL			DebugInfo;
 extern	BOOL			GodMode;
 extern	SLIDER			TrailDetailSlider;
-
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	BOOL			AutoDetail;
 extern	float			avgframelag;
@@ -176,13 +166,10 @@ extern	int				no_collision;		// disables player ship-to-background collisions
 extern	int				outside_map;
 extern	float			NmeDamageModifier;
 extern	int32			ColPerspective;
-
 extern	BOOL			CaptureTheFlag;
 extern	BOOL			BountyHunt;
-
 extern	float			GlobalFramelagAddition;
 extern	BOOL			PlayDemo;
-
 extern	int16	Host_PrimaryWeaponsGot[ MAX_PLAYERS ][ MAXPRIMARYWEAPONS ];
 extern	int16	Host_SecondaryWeaponsGot[ MAX_PLAYERS ][ MAXSECONDARYWEAPONS ];
 extern	float	Host_GeneralAmmo[ MAX_PLAYERS ];
@@ -207,9 +194,7 @@ extern	float	Host_CopyOfSussGunAmmo[ MAX_PLAYERS ];
 extern	float	Host_CopyOfPyroliteAmmo[ MAX_PLAYERS ];
 extern	int16	Host_PickupsGot[ MAX_PLAYERS ][ MAXPICKUPTYPES ];
 extern  uint32  Host_Flags[ MAX_PLAYERS ];
-
 extern	int16	NumSuperNashrams;
-
 extern	char PrimaryNames[7][16];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	float	RegenDelay;

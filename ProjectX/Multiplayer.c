@@ -70,7 +70,6 @@ extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 extern	uint32	BIGPACKETBUFFERSIZE;
-extern	uint32	SERVERPACKETBUFFERSIZE;
 
 extern BOOL NoMenuBack;
 
@@ -496,14 +495,10 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	if( ServiceProviderCaps.dwMaxBufferSize < MAXBIGPACKETBUFFERSIZE )
 	{
 		BIGPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
-	}else{
-		BIGPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
 	}
-	if( ServiceProviderCaps.dwMaxBufferSize < MAXBIGPACKETBUFFERSIZE )
+	else
 	{
-		SERVERPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
-	}else{
-		SERVERPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
+		BIGPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
 	}
 	
 //	if (!AutoSelectConnection)
@@ -512,12 +507,13 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	if ( (CameraStatus == CAMERA_AtStart) && Item )
 		MenuChange ( Item );
 
-
 	if( Modem2Modem )
 	{
 		MaxPlayersSlider.value = 2;
 		MaxPlayersSlider.max = 2;
-	}else{
+	}
+	else
+	{
 		MaxPlayersSlider.max = MAX_PLAYERS;
 		MaxPlayersSlider.value = PreferedMaxPlayers;
 	}
@@ -566,12 +562,6 @@ BOOL RefreshDPlay ( void )
 		BIGPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
 	}else{
 		BIGPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
-	}
-	if( ServiceProviderCaps.dwMaxBufferSize < MAXBIGPACKETBUFFERSIZE )
-	{
-		SERVERPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
-	}else{
-		SERVERPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
 	}
 
 	return TRUE;
@@ -862,12 +852,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	return TRUE;
 }
-
-void StartAPseudoHostSession( MENUITEM *Item )
-{
-// server stuff removed
-}
-
 
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -1523,24 +1507,6 @@ void ChangeServiceProvider( MENU * Menu )
 	MyGameStatus = STATUS_Title;
 
 	ServiceProvidersList.selected_item = -1;
-}
-
-void ChangeServiceProviderPseudoHost( MENU * Menu )
-{
-	MenuBackSpecific( &MENU_NEW_CreateGamePseudoHost, FALSE );	// ignore exit menu funcs
-	
-	if( dcoID )
-	{
-		DPlayDestroyPlayer(dcoID);
-		dcoID = 0;
-	}
-
-	DPlayRelease();
-	MyGameStatus = STATUS_Title;
-
-	RefreshDPlay();
-
-	OKToJoinSession = FALSE;
 }
 
 void InitTeamLists( MENU *Menu )
