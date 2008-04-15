@@ -10,9 +10,8 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
 #include "mload.h"
-
+#include "Mydplay.h"
 #include <objbase.h>
 #include <cguid.h>
 #ifdef USE_A3D
@@ -4529,6 +4528,28 @@ void ProcessEnemyBikerTaunt( void )
 #define TAUNT_OVERIDE_DISTANCE_FACTOR 2.0F
 #define MAX_TAUNT_DISTANCE 2240.0F 
 
+extern BYTE GameStatus[MAX_PLAYERS + 1];
+
+void SendBikerTaunt()
+{
+	float dist;
+	int i;
+
+	// for every player in the game
+	for(i = 0; i < MAX_PLAYERS; i++)
+	{
+		// excluding myself and those who aren't in normal mode
+		if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
+		{
+			// if they are close to me
+			dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
+			if( (dist >= 0.0F) && ( dist <= MAX_TAUNT_DISTANCE ))
+				// send them speech taunt
+				SendGameMessage(MSG_TEXTMSG, Ships[i].dcoID, WhoIAm, TEXTMSGTYPE_SpeechTaunt, 0);
+		}
+	}
+}
+
 void PlayUpdatableBikerTaunt( VECTOR *pos, uint16 Group, uint16 bike, char variant )
 {
 	float dist;
@@ -4553,13 +4574,16 @@ void PlayUpdatableBikerTaunt( VECTOR *pos, uint16 Group, uint16 bike, char varia
 	PlaySpecificBikerSpeech( SFX_BIKER_TN, Group, pos, 0.0F, bike, variant, TRUE );	// TRUE means update
 }
 
-
 void PlayRecievedSpeechTaunt( BYTE player, char variant )
 {
-	if( player != 0xFF )
+	uint16 Group;
+	VECTOR *Pos;
+	int Taunter = player;
+	if( Taunter != 0xFF )
 	{
-		Taunter = player;
-		PlayUpdatableBikerTaunt( &Ships[ Taunter ].Object.Pos, Ships[ Taunter ].Object.Group, Ships[ Taunter ].BikeNum, variant );
+		Group = Ships[ Taunter ].Object.Group;
+		Pos = &Ships[ Taunter ].Object.Pos;
+		PlaySpecificBikerSpeech( SFX_BIKER_TN, Group, Pos, 0.0F, Ships[ Taunter ].BikeNum, variant, TRUE );	// TRUE means update
 	}
 }
 

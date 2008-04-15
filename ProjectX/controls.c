@@ -147,6 +147,9 @@ extern MENU MENU_QuickTextSend;
 extern MENU MENU_QuickTextSendWhisper;
 extern MENU MENU_NEW_StartSinglePlayer;
 
+// (Sfx.c)
+extern SendBikerTaunt();
+
 BOOL flush_input = TRUE;
 
 static uint16 old_input = 0;
@@ -1190,7 +1193,8 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
     PlaySpecificBikerSpeech( SFX_BIKER_TN, Ships[ WhoIAm ].Object.Group, &Ships[WhoIAm].Object.Pos, 0.0F, player_config->bike, -1, FALSE ); // don't update
     if( MyGameStatus == STATUS_Normal )
     {
-      SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_SpeechTaunt, 0);
+		SendBikerTaunt(); // (Sfx.c)
+      //SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_SpeechTaunt, 0);
     }
   }
 #endif
