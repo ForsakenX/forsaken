@@ -137,7 +137,6 @@ extern char NickName[];
 extern	BYTE					Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE                    WhoIAm;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
-extern	int16					StatsStatus;
 extern	int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16					StatsCount;
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
@@ -746,7 +745,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	Ships[WhoIAm].Mines = 0;
 	Ships[WhoIAm].Triggers = 0;
 	Ships[WhoIAm].TrigVars = 0;
-	StatsStatus = 1;						// I started it so the Stats Are Valid...
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
     strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
@@ -2203,7 +2201,6 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	Ships[WhoIAm].dcoID = 0;
 	Current_Camera_View = 0;				// set camera to that view
 	Ships[WhoIAm].enable = 1;
-	StatsStatus = 1;						// I started it so the Stats Are Valid...
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
     strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
@@ -2241,7 +2238,6 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	Ships[WhoIAm].dcoID = 0;
 	Current_Camera_View = 0;				// set camera to that view
 	Ships[WhoIAm].enable = 1;
-	StatsStatus = 1;						// I started it so the Stats Are Valid...
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
     strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
 	Names[WhoIAm][7] = 0;																

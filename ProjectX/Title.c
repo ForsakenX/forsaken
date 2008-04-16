@@ -8378,9 +8378,9 @@ void	MenuProcess()
 	uint16 i;
 
 	// all version numbers are in these 2 spots
-	strcpy(ProjectXVersion, "1.02.385");
+	strcpy(ProjectXVersion, "1.02.XXX");
 	// print text to screen
-	CenterPrint4x5Text( "Open Source Version 1.02.385", d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Version 1.02.XXX", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;

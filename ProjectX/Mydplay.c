@@ -291,7 +291,6 @@ BYTE					GameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 														// this tells the drones what status the host thinks hes in..
 BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
-int16					StatsStatus = 0;
 int16					StatsCount = -1;
 
 DPID PseudoHostDPID;
@@ -580,33 +579,34 @@ void SendANormalUpdate( void )
 		ShortGlobalShip.Status		= MyGameStatus;
 		ShortGlobalShip.Angle		= Ships[WhoIAm].Object.Angle;
 #ifdef	SHORTBANK
-		ShortGlobalShip.Bank = (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+		ShortGlobalShip.Bank			= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 #else
 		ShortGlobalShip.Bank = Ships[ WhoIAm ].Object.Bank;
 #endif
 		SendGameMessage(MSG_UPDATE, 0, 0, 0, 0);
-	}else{
+	}
+	else
+	{
 		VeryShortGlobalShip.Flags = BuildShipFlags(WhoIAm);
-
-		VeryShortGlobalShip.GroupImIn	= (BYTE) Ships[WhoIAm].Object.Group;    // 
-		VeryShortGlobalShip.Pos.x		= (int16) Ships[WhoIAm].Object.Pos.x;
-		VeryShortGlobalShip.Pos.y		= (int16) Ships[WhoIAm].Object.Pos.y;
-		VeryShortGlobalShip.Pos.z		= (int16) Ships[WhoIAm].Object.Pos.z;
+		VeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
+		VeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
+		VeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
+		VeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
 		Move_Off = Ships[WhoIAm].Move_Off;
 		NormaliseVector( &Move_Off );
-		VeryShortGlobalShip.Move_Off_Scalar = (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
-		VeryShortGlobalShip.Move_Off.x	= (int16) (Move_Off.x * 32767.0F);
-		VeryShortGlobalShip.Move_Off.y	= (int16) (Move_Off.y * 32767.0F);
-		VeryShortGlobalShip.Move_Off.z	= (int16) (Move_Off.z * 32767.0F);
-		VeryShortGlobalShip.Quat.w		= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-		VeryShortGlobalShip.Quat.x		= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-		VeryShortGlobalShip.Quat.y		= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-		VeryShortGlobalShip.Quat.z		= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-		VeryShortGlobalShip.Status		= MyGameStatus;
-		VeryShortGlobalShip.Angle.x		= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Angle.y		= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Angle.z		= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-		VeryShortGlobalShip.Bank = (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+		VeryShortGlobalShip.Move_Off_Scalar	= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+		VeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
+		VeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
+		VeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
+		VeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+		VeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+		VeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+		VeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+		VeryShortGlobalShip.Status				= MyGameStatus;
+		VeryShortGlobalShip.Angle.x				= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Angle.y				= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Angle.z				= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+		VeryShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 		SendGameMessage(MSG_VERYSHORTUPDATE, 0, 0, 0, 0);
 	}
 }
@@ -620,79 +620,81 @@ void DplayGameUpdate()
 	if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		Ships[WhoIAm].Object.Noise = 1.0F;
 
-		
 	if( dcoID == 0 )
 	{
 		// Has to be done to stop missiles getting stuck in walls....!!!!!!!!!!!!!
 		Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
-	}else{
+	}
+	else
+	{
 		ReceiveGameMessages();
 		
 		if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		{
 			if( !UseShortPackets )
 			{
-				FShortGlobalShip.Flags = BuildShipFlags(WhoIAm);
-				FShortGlobalShip.GroupImIn	= (BYTE) Ships[WhoIAm].Object.Group;    // 
-				FShortGlobalShip.Primary	= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-				FShortGlobalShip.Secondary	= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-				FShortGlobalShip.Pos		= Ships[WhoIAm].Object.Pos		;	  // x , y , z position
-				FShortGlobalShip.Move_Off	= Ships[WhoIAm].Move_Off;	  // Last Movement..x , y , z
-				FShortGlobalShip.Quat	= Ships[WhoIAm].Object.Quat;// Final inverse view Quat.......after banking.. 
-				FShortGlobalShip.PrimPowerLevel = (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
-				FShortGlobalShip.Angle = Ships[ WhoIAm ].Object.Angle;
+				FShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
+				FShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
+				FShortGlobalShip.Primary				= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+				FShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+				FShortGlobalShip.Pos						= Ships[WhoIAm].Object.Pos		;	  // x , y , z position
+				FShortGlobalShip.Move_Off				= Ships[WhoIAm].Move_Off;	  // Last Movement..x , y , z
+				FShortGlobalShip.Quat					= Ships[WhoIAm].Object.Quat;// Final inverse view Quat.......after banking.. 
+				FShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
+				FShortGlobalShip.Angle					= Ships[ WhoIAm ].Object.Angle;
 #ifdef	SHORTBANK
-				FShortGlobalShip.Bank = (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+				FShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 #else
-				FShortGlobalShip.Bank = Ships[ WhoIAm ].Object.Bank;
+				FShortGlobalShip.Bank					= Ships[ WhoIAm ].Object.Bank;
 #endif
 				SendGameMessage(MSG_FUPDATE, 0, 0, 0, 0);
-			}else{
-
+			}
+			else
+			{
 				if( !BigPackets )
 				{
-					FVeryShortGlobalShip.Flags = BuildShipFlags(WhoIAm);
-					FVeryShortGlobalShip.GroupImIn	= (BYTE) Ships[WhoIAm].Object.Group;    // 
-					FVeryShortGlobalShip.Pos.x		= (int16) Ships[WhoIAm].Object.Pos.x;
-					FVeryShortGlobalShip.Pos.y		= (int16) Ships[WhoIAm].Object.Pos.y;
-					FVeryShortGlobalShip.Pos.z		= (int16) Ships[WhoIAm].Object.Pos.z;
+					FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
+					FVeryShortGlobalShip.GroupImIn				= (BYTE) Ships[WhoIAm].Object.Group;    // 
+					FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
+					FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
+					FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
 					Move_Off = Ships[WhoIAm].Move_Off;
 					NormaliseVector( &Move_Off );
-					FVeryShortGlobalShip.Move_Off_Scalar = (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
-					FVeryShortGlobalShip.Move_Off.x	= (int16) (Move_Off.x * 32767.0F);
-					FVeryShortGlobalShip.Move_Off.y	= (int16) (Move_Off.y * 32767.0F);
-					FVeryShortGlobalShip.Move_Off.z	= (int16) (Move_Off.z * 32767.0F);
-					FVeryShortGlobalShip.Quat.w		= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-					FVeryShortGlobalShip.Quat.x		= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-					FVeryShortGlobalShip.Quat.y		= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-					FVeryShortGlobalShip.Quat.z		= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-					FVeryShortGlobalShip.Angle.x	= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Angle.y	= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Angle.z	= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Bank = (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
-
-					FVeryShortGlobalShip.Primary	= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-					FVeryShortGlobalShip.Secondary	= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-					FVeryShortGlobalShip.PrimPowerLevel = (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
+					FVeryShortGlobalShip.Move_Off_Scalar		= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+					FVeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
+					FVeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
+					FVeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
+					FVeryShortGlobalShip.Quat.w					= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+					FVeryShortGlobalShip.Quat.x					= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+					FVeryShortGlobalShip.Quat.y					= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+					FVeryShortGlobalShip.Quat.z					= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+					FVeryShortGlobalShip.Angle.x					= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+					FVeryShortGlobalShip.Angle.y					= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+					FVeryShortGlobalShip.Angle.z					= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+					FVeryShortGlobalShip.Bank						= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+					FVeryShortGlobalShip.Primary					= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+					FVeryShortGlobalShip.Secondary				= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+					FVeryShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
 					
 					SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, 0);
-				}else{
-					GroupOnly_FVeryShortGlobalShip.Flags = BuildShipFlags(WhoIAm);
-					GroupOnly_FVeryShortGlobalShip.GroupImIn	= (BYTE) Ships[WhoIAm].Object.Group;    // 
-					GroupOnly_FVeryShortGlobalShip.Pos.x		= (int16) Ships[WhoIAm].Object.Pos.x;
-					GroupOnly_FVeryShortGlobalShip.Pos.y		= (int16) Ships[WhoIAm].Object.Pos.y;
-					GroupOnly_FVeryShortGlobalShip.Pos.z		= (int16) Ships[WhoIAm].Object.Pos.z;
-					GroupOnly_FVeryShortGlobalShip.Quat.w		= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.x		= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.y		= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.z		= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Bank = (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
-					GroupOnly_FVeryShortGlobalShip.Primary	= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-					GroupOnly_FVeryShortGlobalShip.Secondary	= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-					GroupOnly_FVeryShortGlobalShip.PrimPowerLevel = (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
+				}
+				else
+				{
+					GroupOnly_FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
+					GroupOnly_FVeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
+					GroupOnly_FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
+					GroupOnly_FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
+					GroupOnly_FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
+					GroupOnly_FVeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+					GroupOnly_FVeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+					GroupOnly_FVeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+					GroupOnly_FVeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+					GroupOnly_FVeryShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+					GroupOnly_FVeryShortGlobalShip.Primary				= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+					GroupOnly_FVeryShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+					GroupOnly_FVeryShortGlobalShip.PrimPowerLevel	= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
 					SendGameMessage(MSG_GROUPONLY_VERYSHORTFUPDATE, 0, 0, 0, 0);
 				}
-
 			}
 			Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
 			Interval = DPlayUpdateInterval;
@@ -719,15 +721,7 @@ void DplayGameUpdate()
 			HostDuties = FALSE;
 			// If someone has joined or somebody requests it then send everyone a stats update
 			if( IsHost == TRUE )
-			{
-//				if( (StatsCount > -1) && (StatsCount <= MAX_PLAYERS) )
-//				{
-//					StatsCount -= 1;
-//					SendGameMessage(MSG_SHORTSTATS, 0, (BYTE) StatsCount, 0, 0);
-//					HostDuties = TRUE;
-//				
-//				}
-				
+			{			
 				for( i = 0 ; i < MAX_PLAYERS ; i++ )
 				{
 					if( ( i != WhoIAm ) && (GameStatus[i] == STATUS_Joining ) ) 
@@ -1086,7 +1080,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_SHIPDIED				 ] = sizeof( SHIPDIEDMSG			  );	 
 	RealPacketSize[MSG_DROPPICKUP			 ] = sizeof( DROPPICKUPMSG			  );	
 	RealPacketSize[MSG_KILLPICKUP			 ] = sizeof( KILLPICKUPMSG			  );	
-	RealPacketSize[MSG_SHORTSTATS			 ] = sizeof( SHORTSTATSMSG			  );	
 	RealPacketSize[MSG_STATUS				 ] = sizeof( STATUSMSG				  );	
 	RealPacketSize[MSG_EXPSECONDARY			 ] = sizeof( EXPSECONDARYMSG		  );	 
 	RealPacketSize[MSG_SHORTPICKUP			 ] = sizeof( SHORTPICKUPMSG			  );	
@@ -3357,14 +3350,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
 
-    case MSG_SHORTSTATS:
-
-   		lpShortStats = (LPSHORTSTATSMSG)MsgPnt;
-   		if( lpShortStats->WhosStats == 0 )
-   			StatsStatus = 1;
-   		return;
-
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	This is where the host gets told what state he thinks we are in
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -3468,13 +3453,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		if( ( GameStatus[lpLongStatus->Status.WhoIAm] != STATUS_Normal) && (lpLongStatus->Status.Status == STATUS_Normal ) ) 
 			CreateReGen( lpLongStatus->Status.WhoIAm );
-		GameStatus[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.Status;
+		GameStatus[lpLongStatus->Status.WhoIAm]			= lpLongStatus->Status.Status;
 		DebugPrintf("%s LongStatus = %d\n", Names[lpLongStatus->Status.WhoIAm], GameStatus[lpLongStatus->Status.WhoIAm] );
 		Ships[lpLongStatus->Status.WhoIAm].Pickups		= lpLongStatus->Status.Pickups;
 		Ships[lpLongStatus->Status.WhoIAm].RegenSlots	= lpLongStatus->Status.RegenSlots;
-		Ships[lpLongStatus->Status.WhoIAm].Mines		= lpLongStatus->Status.Mines;
-		Ships[lpLongStatus->Status.WhoIAm].Triggers	= lpLongStatus->Status.Triggers;
-		Ships[lpLongStatus->Status.WhoIAm].TrigVars	= lpLongStatus->Status.TrigVars;
+		Ships[lpLongStatus->Status.WhoIAm].Mines			= lpLongStatus->Status.Mines;
+		Ships[lpLongStatus->Status.WhoIAm].Triggers		= lpLongStatus->Status.Triggers;
+		Ships[lpLongStatus->Status.WhoIAm].TrigVars		= lpLongStatus->Status.TrigVars;
 		
 		if( !IsHost )
    		{
@@ -4533,17 +4518,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes = sizeof( SETTIMEMSG );
         break;
 
-
-    case MSG_SHORTSTATS:
-
-        lpShortStats = (LPSHORTSTATSMSG)&CommBuff[0];
-        lpShortStats->MsgCode = msg;
-        lpShortStats->WhoIAm = WhoIAm;
-        lpShortStats->WhosStats = ShipNum;
-        nBytes = sizeof( SHORTSTATSMSG );
-        break;
-
-
     case MSG_STATUS:
 
 		lpStatus								= (LPSTATUSMSG)&CommBuff[0];
@@ -4916,7 +4890,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		&& ( msg != MSG_ACKMSG )
 		&& ( msg != MSG_INIT ) 
 		&& ( msg != MSG_HEREIAM ) 
-		&& ( msg != MSG_SHORTSTATS     ) 
 		&& ( msg != MSG_SHORTPICKUP    ) 
 		&& ( msg != MSG_SHORTREGENSLOT ) 
 		&& ( msg != MSG_SHORTTRIGGER   ) 
@@ -5428,7 +5401,6 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 		if( ( MyGameStatus == STATUS_Normal )
 		&& ( MsgType != MSG_INIT ) 
 		&& ( MsgType != MSG_HEREIAM ) 
-		&& ( MsgType != MSG_SHORTSTATS     ) 
 		&& ( MsgType != MSG_SHORTPICKUP    ) 
 		&& ( MsgType != MSG_SHORTREGENSLOT ) 
 		&& ( MsgType != MSG_SHORTTRIGGER   ) 

@@ -5265,56 +5265,39 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   case STATUS_InitView_7:
     if( IsHost )
-    {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }
 	else
-	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-    }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
-
-
 #ifdef NO_PRECALCULATED_CELL_COLOURS
     CreateCellColours( &Mloadheader );
 #endif
-
     MyGameStatus = STATUS_InitView_8;
     PrintInitViewStatus( MyGameStatus );
-
     break;
 
 
   case STATUS_InitView_8:
     if( IsHost )
-    {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-    }
+
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
     ServiceBigPacket(TRUE);
-
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
-
-
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
     // dummy call to timer ensures no pauses later...
     timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
-
     InitShipSpeeds();
-
     MyGameStatus = InitView_MyGameStatus;
-
     Current_Max_Score = 0;  // used by host to store highest score in session desc
-
     break;
 
 

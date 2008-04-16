@@ -563,59 +563,58 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 //----------------------------------------------------------
 // communication packet structures
 //----------------------------------------------------------
-#define MSG_UPDATE					0x11
-#define MSG_HEREIAM					0x22
-#define MSG_INIT					0x33
-#define MSG_SHIPHIT					0x44
-#define MSG_PRIMBULLPOSDIR			0x55
-#define MSG_SECBULLPOSDIR			0x66
-#define MSG_SHIPDIED				0x77
-#define MSG_DROPPICKUP				0x88
-#define MSG_KILLPICKUP				0x99
-#define MSG_SHORTSTATS				0xaa
-#define MSG_STATUS					0xbb
-#define MSG_EXPSECONDARY			0xcc
-#define MSG_SHORTPICKUP				0xee
-#define MSG_SHOCKWAVE				0xff
-#define MSG_FUPDATE					0x1f
-#define MSG_SHORTMINE				0x2f
-#define MSG_TEXTMSG					0x3f
-#define MSG_SHORTREGENSLOT			0x4f
-#define MSG_SHORTTRIGGER			0x5f
-#define MSG_SHORTTRIGVAR			0x6f
-#define MSG_NAME					0x7f
-#define MSG_INTERPOLATE				0x8f
-#define MSG_BOMB					0x9f
-#define MSG_BGOUPDATE				0xaf
-#define MSG_PINGREQUEST				0xbf
-#define MSG_PLAYERPINGS				0xbe
-#define MSG_PINGREPLY				0xcf
-#define MSG_LONGSTATUS				0xdf
-#define MSG_SETTIME					0xef
-#define MSG_REQTIME					0xf1
-#define MSG_ACKMSG					0xf2
-#define MSG_GUARANTEEDMSG			0xf3
-#define MSG_KILLSDEATHSBIKENUM		0xf4
+#define MSG_UPDATE							0x11
+#define MSG_HEREIAM							0x22
+#define MSG_INIT								0x33
+#define MSG_SHIPHIT							0x44
+#define MSG_PRIMBULLPOSDIR				0x55
+#define MSG_SECBULLPOSDIR					0x66
+#define MSG_SHIPDIED							0x77
+#define MSG_DROPPICKUP						0x88
+#define MSG_KILLPICKUP						0x99
+#define MSG_STATUS							0xbb
+#define MSG_EXPSECONDARY					0xcc
+#define MSG_SHORTPICKUP					0xee
+#define MSG_SHOCKWAVE						0xff
+#define MSG_FUPDATE							0x1f
+#define MSG_SHORTMINE						0x2f
+#define MSG_TEXTMSG							0x3f
+#define MSG_SHORTREGENSLOT				0x4f
+#define MSG_SHORTTRIGGER					0x5f
+#define MSG_SHORTTRIGVAR					0x6f
+#define MSG_NAME								0x7f
+#define MSG_INTERPOLATE					0x8f
+#define MSG_BOMB								0x9f
+#define MSG_BGOUPDATE						0xaf
+#define MSG_PINGREQUEST					0xbf
+#define MSG_PLAYERPINGS					0xbe
+#define MSG_PINGREPLY						0xcf
+#define MSG_LONGSTATUS					0xdf
+#define MSG_SETTIME							0xef
+#define MSG_REQTIME							0xf1
+#define MSG_ACKMSG							0xf2
+#define MSG_GUARANTEEDMSG				0xf3
+#define MSG_KILLSDEATHSBIKENUM			0xf4
 #define MSG_VERYSHORTUPDATE			0xf5
-#define MSG_VERYSHORTFUPDATE		0xf6
-#define MSG_ALIVE					0xf7		// short message to make sure people know im alive and still in the session....
+#define MSG_VERYSHORTFUPDATE			0xf6
+#define MSG_ALIVE								0xf7		// short message to make sure people know im alive and still in the session....
 #define MSG_VERYSHORTINTERPOLATE	0xf8
-#define MSG_TEAMGOALS				0xf9
-#define MSG_YOUQUIT					0xfa
-#define MSG_SHORTSHIPHIT			0xfc
-#define MSG_TITANBITS				0xfd
-#define MSG_BIGPACKET				0xfe
+#define MSG_TEAMGOALS						0xf9
+#define MSG_YOUQUIT							0xfa
+#define MSG_SHORTSHIPHIT					0xfc
+#define MSG_TITANBITS						0xfd
+#define MSG_BIGPACKET						0xfe
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
-#define MSG_SESSIONDESC			0xe3		// message to maually propagate session desc
+#define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
 #endif
-#define MSG_SERVERKILLPICKUP		0xe5
-#define MSG_LEVELNAMES				0xe7		// msg contining names of levels on server
-#define MSG_EXPLODESHIP			0xe8
-#define MSG_SHIELDHULL				0xe9
-#define MSG_SERVERSCORED			0xea		// necessary for ctf (server name is misleading!)
-#define MSG_TRACKERINFO			0xe0		// tracker info for if host migrates in peer-peer game
+#define MSG_SERVERKILLPICKUP				0xe5
+#define MSG_LEVELNAMES						0xe7		// msg contining names of levels on server
+#define MSG_EXPLODESHIP					0xe8
+#define MSG_SHIELDHULL						0xe9
+#define MSG_SERVERSCORED					0xea		// necessary for ctf (server name is misleading!)
+#define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
-#define MSG_VERYSHORTDROPPICKUP				0xed
+#define MSG_VERYSHORTDROPPICKUP		0xed
 
 typedef struct _SERVERSCOREDMSG
 {
