@@ -951,20 +951,6 @@ void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 	}
 }
 
-void	ExplodeSecondarySend( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owner, uint16 IDCount, float ShockwaveSize )
-{
-	if( dcoID != 0 )
-	{
-		TempExplodeSecondary.OwnerType = OwnerType;
-		TempExplodeSecondary.Owner = Owner;
-		TempExplodeSecondary.IDCount = IDCount;
-		TempExplodeSecondary.ShockwaveSize = ShockwaveSize;
-		TempExplodeSecondary.Pos = *Pos;
-		TempExplodeSecondary.Group = Group;
-		SendGameMessage( MSG_EXPSECONDARY, 0, 0, 0, 0 );
-	}
-}
-
 void	TeamGoalsSend( uint16 * TeamGoals )
 {
 	if( dcoID != 0 )
@@ -1052,7 +1038,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_DROPPICKUP						] = sizeof( DROPPICKUPMSG					);	
 	RealPacketSize[MSG_KILLPICKUP							] = sizeof( KILLPICKUPMSG						);	
 	RealPacketSize[MSG_STATUS								] = sizeof( STATUSMSG							);	
-	RealPacketSize[MSG_EXPSECONDARY					] = sizeof( EXPSECONDARYMSG				);	 
 	RealPacketSize[MSG_SHORTPICKUP						] = sizeof( SHORTPICKUPMSG					);	
 	RealPacketSize[MSG_SHOCKWAVE						] = sizeof( SHOCKWAVEMSG					);	
 	RealPacketSize[MSG_FUPDATE							] = sizeof( FUPDATEMSG						);	
@@ -2093,27 +2078,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				return;
 				break;
 
-			case MSG_EXPSECONDARY:
-				lpExplodeSecondary = (LPEXPSECONDARYMSG)MsgPnt;
-
-				if( NumMissedMines != MAXMISSEDMINES )
-   				{
-   					MissedKillMines[ NumMissedKillMines ].OwnerType		= lpExplodeSecondary->ExplodeSecondaryInfo.OwnerType;
-   					MissedKillMines[ NumMissedKillMines ].Owner				= lpExplodeSecondary->ExplodeSecondaryInfo.Owner;
-   					MissedKillMines[ NumMissedKillMines ].ID					= lpExplodeSecondary->ExplodeSecondaryInfo.IDCount;
-   					MissedKillMines[ NumMissedKillMines ].ShockwaveSize	= lpExplodeSecondary->ExplodeSecondaryInfo.ShockwaveSize;
-   					MissedMines[ NumMissedMines ].Type		= MM_TYPE_KILL;
-   					MissedMines[ NumMissedMines ].Struct		= &MissedKillMines[ NumMissedKillMines ];
-   					NumMissedKillMines++;
-   					NumMissedMines++;
-   				}
-   				else
-   				{
-   					DebugPrintf( "Overflowed mine que ( KILL )\n" );
-   				}
-   				return;
-				break;
-
 			case MSG_KILLPICKUP:
    				lpKillPickup = (LPKILLPICKUPMSG)MsgPnt;
    				if( NumMissedPickups != MAXMISSEDPICKUPS )
@@ -2169,7 +2133,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			switch (*MsgPnt)
 			{
 		    case MSG_SECBULLPOSDIR:
-			case MSG_EXPSECONDARY:
 			case MSG_DROPPICKUP:
 			case MSG_VERYSHORTDROPPICKUP:
 			case MSG_KILLPICKUP:
@@ -2889,18 +2852,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 #endif
 		KillPickup( lpKillPickup->KillPickupInfo.Owner, lpKillPickup->KillPickupInfo.IDCount, lpKillPickup->KillPickupInfo.Style );
 		return;
-
-   
-	case MSG_EXPSECONDARY:
-
-		lpExplodeSecondary = (LPEXPSECONDARYMSG)MsgPnt;
-		ExplodeSecondary( &lpExplodeSecondary->ExplodeSecondaryInfo.Pos,
-						  lpExplodeSecondary->ExplodeSecondaryInfo.Group,
-						  lpExplodeSecondary->ExplodeSecondaryInfo.OwnerType,
-						  lpExplodeSecondary->ExplodeSecondaryInfo.Owner,
-						  lpExplodeSecondary->ExplodeSecondaryInfo.IDCount,
-						  lpExplodeSecondary->ExplodeSecondaryInfo.ShockwaveSize );
-   		return;
 
     case MSG_TEAMGOALS:
 		lpTeamGoals = (LPTEAMGOALSMSG)MsgPnt;
@@ -4265,20 +4216,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( KILLPICKUPMSG );
 #ifdef	GUARANTEEDMESSAGES
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_KILLPICKUP , FALSE , FALSE);
-		return;
-#endif
-        break;
-
-
-    case MSG_EXPSECONDARY:
-
-        lpExplodeSecondary = (LPEXPSECONDARYMSG) &CommBuff[0];
-        lpExplodeSecondary->MsgCode = msg;
-        lpExplodeSecondary->WhoIAm = WhoIAm;
-        lpExplodeSecondary->ExplodeSecondaryInfo = TempExplodeSecondary;
-        nBytes = sizeof( EXPSECONDARYMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_EXPSECONDARY , FALSE , FALSE);
 		return;
 #endif
         break;

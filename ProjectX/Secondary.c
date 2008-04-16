@@ -7685,7 +7685,6 @@ void DestroySecondary( uint16 i, VECTOR * Int_Point )
 
 		case ENEMYDEPTHCHARGE:
 			PlayPannedSfx( SFX_BangBang, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, DEPTHCHARGE_SHOCKWAVE );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, DEPTHCHARGE_SHOCKWAVE );
 			break;
 
@@ -7739,32 +7738,26 @@ void DestroySecondary( uint16 i, VECTOR * Int_Point )
 
 		case TITANSTARSHRAPNEL:
 			PlayPannedSfx( SFX_Exp3, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			if( ( SecBulls[ i ].OwnerType == OWNER_SHIP ) && ( SecBulls[ i ].Owner == WhoIAm ) )
-				ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, TITANSTAR_SHOCKWAVE );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, TITANSTAR_SHOCKWAVE );
    			break;
 
 		case PINEMINE:
 			PlayPannedSfx( SFX_Exp5, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, ( PINE_SHOCKWAVE + ( SecBulls[ i ].Ammo / 2 ) ) );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, ( PINE_SHOCKWAVE + ( SecBulls[ i ].Ammo / 2 ) ) );
 			break;
 	  	
 		case PURGEMINE:
 			PlayPannedSfx( SFX_Exp4, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, PURGE_SHOCKWAVE );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, PURGE_SHOCKWAVE );
 			break;
 	  
 		case QUANTUMMINE:
 			PlayPannedSfx( SFX_QuantumMineExplode, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, QUANTUM_SHOCKWAVE );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, QUANTUM_SHOCKWAVE );
 			break;
 	
 		case SPIDERMINE:
 			PlayPannedSfx( SFX_Exp6, SecBulls[i].GroupImIn , &SecBulls[ i ].Pos, 0.0F );
-			ExplodeSecondarySend( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, SPIDER_SHOCKWAVE );
 			ExplodeSecondary( &SecBulls[ i ].Pos, SecBulls[ i ].GroupImIn, SecBulls[ i ].OwnerType, SecBulls[ i ].Owner, SecBulls[ i ].ID, SPIDER_SHOCKWAVE );
 			break;
 
