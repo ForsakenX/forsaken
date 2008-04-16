@@ -726,6 +726,8 @@ extern int FlagMessageColour;
 extern SLIDER WatchPlayerSelect;
 // (Ships.c)
 extern SwitchedToWatchMode;
+extern GetName(int Player);
+
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
     Weapon Names...

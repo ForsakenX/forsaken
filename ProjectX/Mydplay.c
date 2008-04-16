@@ -1827,7 +1827,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
     LPBGOUPDATEMSG					lpBGOUpdate;
-    LPSHORTSTATSMSG					lpShortStats;
     LPSTATUSMSG							lpStatus;
     LPLONGSTATUSMSG					lpLongStatus;
     LPSHORTPICKUPMSG					lpShortPickup;
@@ -1846,7 +1845,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
     char				dBuf[256];
-	char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
 	int					i;
 	BYTE				OldMode;
 	BYTE				OldStatus;
@@ -1866,9 +1864,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float	Force;
 	float * FloatPnt;
 	uint32	BigOffset = 2;
-	LPLEVELNAMESMSG	lpLevelNamesMsg;
 	LPTRACKERINFOMSG	lpTrackerInfoMsg;
-	VECTOR	ScatterDir;
 	LPSHIELDHULLMSG	lpShieldHullMsg;
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	VECTOR Int_Point;
@@ -3911,7 +3907,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
     LPBGOUPDATEMSG					lpBGOUpdate;
-    LPSHORTSTATSMSG					lpShortStats;
     LPSTATUSMSG							lpStatus;
     LPLONGSTATUSMSG					lpLongStatus;
     LPSHORTPICKUPMSG					lpShortPickup;
@@ -3926,7 +3921,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPACKMSG								lpAckMsg;
 	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
-	LPSENDKILLSDEATHSBIKENUMMSG			lpSendKillsDeathsBikenum;
     int				nBytes;
     int				i;
     DWORD		send_to = 0;
