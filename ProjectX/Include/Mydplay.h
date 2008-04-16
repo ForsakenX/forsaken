@@ -210,10 +210,6 @@ typedef struct _KILLPICKUPINFO
 	int16		Style;
 }KILLPICKUPINFO;
 
-typedef struct _EXPLODESHIPINFO
-{
-	uint16		Ship;
-}EXPLODESHIPINFO;
 
 typedef struct _EXPSECONDARYINFO
 {
@@ -608,7 +604,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #endif
 #define MSG_SERVERKILLPICKUP				0xe5
 #define MSG_LEVELNAMES						0xe7		// msg contining names of levels on server
-#define MSG_EXPLODESHIP					0xe8
 #define MSG_SHIELDHULL						0xe9
 #define MSG_SERVERSCORED					0xea		// necessary for ctf (server name is misleading!)
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
@@ -860,14 +855,6 @@ typedef struct _KILLPICKUPMSG
 
 } KILLPICKUPMSG, *LPKILLPICKUPMSG;
 
-typedef struct _EXPLODESHIPMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	EXPLODESHIPINFO	ExplodeShipInfo;
-
-} EXPLODESHIPMSG, *LPEXPLODESHIPMSG;
-
 typedef struct _EXPSECONDARYMSG
 {
     BYTE        MsgCode;
@@ -1117,7 +1104,6 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 IDCount, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod);
 void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style );
 void	ServerKillPickupSend( uint16 Owner, uint16 IDCount, int16 Style, uint16 NewOwner );
-void	ExplodeShip( uint16 Ship );
 void	ExplodeSecondarySend( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owner, uint16 IDCount, float ShockwaveSize );
 void	CreateShockwaveSend( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon );
 void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil );

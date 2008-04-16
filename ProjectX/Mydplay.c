@@ -309,55 +309,54 @@ extern	int	ScoreSortTab[MAX_PLAYERS];
 
 BOOL	HostDuties = FALSE;
 
-LPDIRECTPLAY4A                       glpDP=NULL;     // directplay object pointer
+LPDIRECTPLAY4A		glpDP=NULL;     // directplay object pointer
 
-DPID                    dcoID=0;        // our DirectPlay ID
-LPGUID                  g_lpGuid = NULL;
-HANDLE                  dphEvent = NULL;
-BOOL                    IsHost = TRUE;
-BOOL					IsPseudoHost = FALSE;
-BYTE                    WhoIAm = 0;
+DPID						dcoID=0;        // our DirectPlay ID
+LPGUID					g_lpGuid = NULL;
+HANDLE					dphEvent = NULL;
+BOOL						IsHost = TRUE;
+BOOL						IsPseudoHost = FALSE;
+BYTE						WhoIAm = 0;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
 BOOL					RemoteCameraActive = FALSE;
 
-PRIMBULLPOSDIR			TempPrimBullPosDir;
-SECBULLPOSDIR			TempSecBullPosDir;
+PRIMBULLPOSDIR				TempPrimBullPosDir;
+SECBULLPOSDIR				TempSecBullPosDir;
 SHORTGLOBALSHIP			ShortGlobalShip;
-VERYSHORTGLOBALSHIP		VeryShortGlobalShip;
-SHIPDIEDINFO			TempDied;
-SETTIME					TempTimeSet;
-TITANBITS				TempTitanBits;
+VERYSHORTGLOBALSHIP	VeryShortGlobalShip;
+SHIPDIEDINFO					TempDied;
+SETTIME							TempTimeSet;
+TITANBITS						TempTitanBits;
 
-FSHORTGLOBALSHIP		FShortGlobalShip;
+FSHORTGLOBALSHIP			FShortGlobalShip;
 FVERYSHORTGLOBALSHIP	FVeryShortGlobalShip;
 GROUPONLY_FVERYSHORTGLOBALSHIP	GroupOnly_FVeryShortGlobalShip;
 
-PICKUPINFO				TempPickup;
+PICKUPINFO						TempPickup;
 VERYSHORTPICKUPINFO		VeryShortTempPickup;
-KILLPICKUPINFO			TempKillPickup;
-EXPSECONDARYINFO		TempExplodeSecondary;
-TEAMGOALSINFO			TempTeamGoals;
-SHOCKWAVEINFO			TempShockwave;
-BGOUPDATEINFO			TempBGOUpdate;
-SHIPHIT					TempShipHit;
-SHORTSHIPHIT			ShortTempShipHit;
-EXPLODESHIPINFO				TempExplodeShip;
+KILLPICKUPINFO				TempKillPickup;
+EXPSECONDARYINFO			TempExplodeSecondary;
+TEAMGOALSINFO				TempTeamGoals;
+SHOCKWAVEINFO				TempShockwave;
+BGOUPDATEINFO				TempBGOUpdate;
+SHIPHIT							TempShipHit;
+SHORTSHIPHIT					ShortTempShipHit;
 
 MISSEDPICKUPMSG			MissedPickups[ MAXMISSEDPICKUPS ];
-SHORTPICKUP				MissedInitPickups[ MAXMISSEDPICKUPS ];
-SHORTKILLPICKUP			MissedKillPickups[ MAXMISSEDPICKUPS ];
-int16					NumMissedPickups = 0;
-int16					NumMissedInitPickups = 0;
-int16					NumMissedKillPickups = 0;
+SHORTPICKUP					MissedInitPickups[ MAXMISSEDPICKUPS ];
+SHORTKILLPICKUP				MissedKillPickups[ MAXMISSEDPICKUPS ];
+int16								NumMissedPickups = 0;
+int16								NumMissedInitPickups = 0;
+int16								NumMissedKillPickups = 0;
 
-MISSEDMINEMSG			MissedMines[ MAXMISSEDMINES ];
-SHORTMINE				MissedInitMines[ MAXMISSEDMINES ];
-SHORTKILLMINE			MissedKillMines[ MAXMISSEDMINES ];
-int16					NumMissedMines = 0;
-int16					NumMissedInitMines = 0;
-int16					NumMissedKillMines = 0;
-BOOL DPlayTest = FALSE;
+MISSEDMINEMSG				MissedMines[ MAXMISSEDMINES ];
+SHORTMINE						MissedInitMines[ MAXMISSEDMINES ];
+SHORTKILLMINE				MissedKillMines[ MAXMISSEDMINES ];
+int16								NumMissedMines = 0;
+int16								NumMissedInitMines = 0;
+int16								NumMissedKillMines = 0;
+BOOL								DPlayTest	= FALSE;
 
 LONGLONG	DemoTimeSoFar = 0;
 
@@ -952,15 +951,6 @@ void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 	}
 }
 
-void	ExplodeShip( uint16 Ship )
-{
-	if( dcoID != 0 )
-	{
-		TempExplodeShip.Ship = Ship;
-		SendGameMessage( MSG_EXPLODESHIP, 0, 0, 0, 0 );
-	}
-}
-
 void	ExplodeSecondarySend( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owner, uint16 IDCount, float ShockwaveSize )
 {
 	if( dcoID != 0 )
@@ -1096,7 +1086,6 @@ void SetupDplayGame()
 #endif
 	RealPacketSize[MSG_LEVELNAMES						] = sizeof( LEVELNAMESMSG					);	
 	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
-	RealPacketSize[MSG_EXPLODESHIP						] = sizeof( EXPLODESHIPMSG					);
 	RealPacketSize[MSG_SHIELDHULL						] = sizeof( SHIELDHULLMSG					);
 	RealPacketSize[MSG_SERVERSCORED					] = sizeof( SERVERSCOREDMSG				);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
@@ -1822,7 +1811,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     LPDROPPICKUPMSG					lpDropPickup;
     LPVERYSHORTDROPPICKUPMSG   lpVeryShortDropPickup;
     LPKILLPICKUPMSG						lpKillPickup;
-    LPEXPLODESHIPMSG					lpExplodeShip;
     LPEXPSECONDARYMSG				lpExplodeSecondary;
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
@@ -2903,13 +2891,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
    
-    case MSG_EXPLODESHIP:
-
-   		lpExplodeShip = (LPEXPLODESHIPMSG)MsgPnt;
-		return;
-
-
-    case MSG_EXPSECONDARY:
+	case MSG_EXPSECONDARY:
 
 		lpExplodeSecondary = (LPEXPSECONDARYMSG)MsgPnt;
 		ExplodeSecondary( &lpExplodeSecondary->ExplodeSecondaryInfo.Pos,
@@ -3902,7 +3884,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPDROPPICKUPMSG					lpDropPickup;
     LPVERYSHORTDROPPICKUPMSG	lpVeryShortDropPickup;
     LPKILLPICKUPMSG						lpKillPickup;
-    LPEXPLODESHIPMSG					lpExplodeShip;
     LPEXPSECONDARYMSG				lpExplodeSecondary;
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
@@ -4284,20 +4265,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         nBytes = sizeof( KILLPICKUPMSG );
 #ifdef	GUARANTEEDMESSAGES
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_KILLPICKUP , FALSE , FALSE);
-		return;
-#endif
-        break;
-
-
-    case MSG_EXPLODESHIP:
-
-        lpExplodeShip = (LPEXPLODESHIPMSG) &CommBuff[0];
-        lpExplodeShip->MsgCode = msg;
-        lpExplodeShip->WhoIAm = WhoIAm;
-        lpExplodeShip->ExplodeShipInfo = TempExplodeShip;
-        nBytes = sizeof( EXPLODESHIPMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_EXPLODESHIP , FALSE , FALSE);
 		return;
 #endif
         break;
