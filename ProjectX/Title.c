@@ -76,6 +76,9 @@ void *mem;
 //#undef ENABLE_DEBUG_MENU
 #define DEMO_MENUS
 
+// stores version number
+char ProjectXVersion[9];
+
 // registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
@@ -8374,8 +8377,10 @@ void	MenuProcess()
 	BOOL KeyFound = FALSE;
 	uint16 i;
 
+	// all version numbers are in these 2 spots
+	strcpy(ProjectXVersion, "1.02.385");
 	// print text to screen
-	CenterPrint4x5Text( "Open Source Version 1.02", d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Version 1.02.385", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;

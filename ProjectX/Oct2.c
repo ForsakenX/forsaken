@@ -738,6 +738,11 @@ extern int KillMessageColour;
 extern int SystemMessageColour;
 extern int FlagMessageColour;
 
+// watch mode select player (Title.c)
+extern SLIDER WatchPlayerSelect;
+// (Ships.c)
+extern SwitchedToWatchMode;
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
     Weapon Names...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -2085,6 +2090,12 @@ void TestBlt()
 	  // show statistics
 	  if(ShowStatistics)
 		  ShowInGameStats();
+
+	  // show who i am watching
+	  if(SwitchedToWatchMode)
+	  {
+			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 2 );
+	  }
     }
 	else
 	{

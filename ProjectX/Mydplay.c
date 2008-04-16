@@ -41,6 +41,8 @@
 #include "Local.h"
 #include "stats.h"
 
+// stores version number (Title.c)
+extern char ProjectXVersion[9];
 
 extern BOOL Debug;
 
@@ -1908,6 +1910,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	VECTOR TempVector;
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
+	char VersionMessage[30];
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
@@ -3635,6 +3638,18 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case TEXTMSGTYPE_QuickTaunt:
 				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 				AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
+				// received version request
+				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
+				{
+					// display my version number
+					strcpy(VersionMessage, "YOUR VERSION:");
+					strcat(VersionMessage, ProjectXVersion);
+					AddColourMessageToQue(SystemMessageColour, VersionMessage );
+					// send my version number back
+					strncpy( (char *)&QuickText.text, ProjectXVersion , 9 );
+					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
+					QuickText.text[0] = 0; // clean message buffer
+				}
 				return;
 			case TEXTMSGTYPE_JoiningTeamGame:
 				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
@@ -4008,6 +4023,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
+	char VersionMessage[30];
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -4704,6 +4720,16 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
 				lpTextMsg->TextMsgType = Type;
 				MessageColour = MyMessageColour;
+				AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
+				// sending version request
+				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
+				{
+					// display my version number
+					strcpy(VersionMessage, "YOUR VERSION:");
+					strcat(VersionMessage, ProjectXVersion);
+					AddColourMessageToQue(SystemMessageColour, VersionMessage );
+					VersionMessage[0] = 0;
+				}
 				break;
 			case TEXTMSGTYPE_QuickTauntWhisper:
 				strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
@@ -4760,7 +4786,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpTextMsg->Text[MAXTEXTMSG-1] = 0;
 		nBytes = sizeof( TEXTMSG );
 
-		if (MyGameStatus != STATUS_StartingMultiplayer)
+		// quick taunt already delt with
+		if (MyGameStatus != STATUS_StartingMultiplayer && Type != TEXTMSGTYPE_QuickTaunt)
 			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 		break;
 
