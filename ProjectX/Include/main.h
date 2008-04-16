@@ -137,7 +137,6 @@ dwUser4
 #define START_FOV			(90.0F) // initial horizontal field-of-view (in degrees)
 #define MAX_FOV				(120.0F) // max horizontal field-of-view (in degrees)
 
-#define	MAXBOMBS			8		// Maximum number of bombs......
 #define MAXLEVELS			(64)
 
 #endif	// MAIN_INCLUDED
