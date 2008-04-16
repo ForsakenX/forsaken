@@ -2806,10 +2806,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				Current_Camera_View = WhoIAm;
 				WatchPlayerSelect.value = WhoIAm;
 
-				//HarmTeamMates = lpInit->HarmTeamMates;
-				//BrightShips = lpInit->BrightShips;
-				//BikeExhausts = lpInit->BikeExhausts;
-				//ColPerspective = lpInit->Collisions;
+				HarmTeamMates = lpInit->HarmTeamMates;
+				BrightShips = lpInit->BrightShips;
+				BikeExhausts = lpInit->BikeExhausts;
+				ColPerspective = lpInit->Collisions;
 
 				UnpackPickupInfo( lpInit->PickupFlags );
 				DebugPrintf("host says level is %s\n", lpInit->LevelName );
