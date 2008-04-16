@@ -293,25 +293,9 @@ char * AiModes[] = {
   "",
   "",
 };
+
 extern  int EnemiesActive;
-
-// Bomb Stuff
-void  InitBombs( void );
-BOOL  BombTag = FALSE;//TRUE;
-float NewBombTime = ( 100.0F * 30.0F ); // approx 30 seconds...
-int   LowestBombTime = -1;
-int   OldLowestBombTime = -1;
-int   LastPersonISentABomb = 0;
-int   NumOfBombToStart = 1;
-BOOL  BombActive[MAXBOMBS];
-float BombTime[MAXBOMBS];
-extern  int BombNumToSend;
-extern  float BombTimeToSend;
-void PassOnNewBomb( int i );
-void UpdateBombs( void );
-// End of Bomb Stuff
 void CheckTimeLimit( void );
-
 extern  int16 InGameLoadGameLevelNum;
 #ifdef REFLECTION
 void WierdShit( void );
@@ -2148,10 +2132,8 @@ ReleaseLevel(void)
     ReleaseRTLights();
     ReleaseGoal();
 
-    if( CountDownOn || BombTag )
-    {
+    if( CountDownOn )
       DeleteCountdownDigits();
-    }
 
     KillAllBGObjects();
     ReleaseAllEnemies();
@@ -4369,9 +4351,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           break;  // not yet..
       }
       // tell them all they can now restart a new level...
-      if( CountDownOn || BombTag )
+      if( CountDownOn )
       {
-        InitBombs();
         CreateCountdownDigits();
         StartCountDown( (int16) TimeLimit.value, 0 );
       }
@@ -4398,9 +4379,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         InitFontTransTable( !bPolyText );
 
-        if( CountDownOn || BombTag )
+        if( CountDownOn )
         {
-          InitBombs();
           CreateCountdownDigits();
           StartCountDown( (int16) TimeLimit.value, 0 );
         }
@@ -4472,9 +4452,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       NextworkOldDeaths = -1;
       NextworkOldBikeNum = -1;
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-      if( CountDownOn || BombTag )
+      if( CountDownOn )
       {
-        InitBombs();
         CreateCountdownDigits();
         StartCountDown( (int16) TimeLimit.value, 0 );
         IllegalTime = TRUE;
@@ -4633,9 +4612,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
     }
 
-    if( CountDownOn || BombTag )
+    if( CountDownOn )
     {
-      InitBombs();
       CreateCountdownDigits();
       StartCountDown( (int16) TimeLimit.value, 0 );
       IllegalTime = FALSE;
@@ -5396,9 +5374,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       ( ChangeLevel_MyGameStatus == STATUS_PostStartingSinglePlayer ) ||
       ( ChangeLevel_MyGameStatus == STATUS_TitleLoadGamePostStartingSinglePlayer) )
     {
-      if( CountDownOn || BombTag )
+      if( CountDownOn )
       {
-        InitBombs();
         CreateCountdownDigits();
         StartCountDown( (int16) SinglePlayerTimeLimit, 0 );
       }
@@ -5680,8 +5657,7 @@ void MainRoutines( void )
 #endif
 
   FirePrimary();
-  if( !BombTag )
-    FireSecondary();
+  FireSecondary();
   ProcessEnemies();
   ProcessSpotFX();
   ProcessPrimaryBullets();
@@ -5700,7 +5676,6 @@ void MainRoutines( void )
   ShowScreenMultiples();
   ProcessActiveConditions();
   ProcessTriggerAreas();
-  UpdateBombs();
   ProcessGoals();
 #ifdef DOESNT_WORK_AND_A_BAD_IDEA_ANYWAY
   if ( outside_map && !DebugInfo && ( Ships[WhoIAm].Object.Mode != DEATH_MODE ) && ( Ships[WhoIAm].Object.Mode != LIMBO_MODE ) )
@@ -5713,7 +5688,6 @@ void MainRoutines( void )
   
     Ships[WhoIAm].Object.Mode = DEATH_MODE;
     Ships[WhoIAm].Timer = 0.0F;
-    AddColourMessageToQue(KillMessageColour, "A Bomb Killed You..." );
     ShipDiedSend( WEPTYPE_Primary, 0);
   }
 #endif
@@ -9100,156 +9074,6 @@ BOOL IsPowerVRD3DDevice(void)
   //  Must be PVR !
   return TRUE;
 }
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure : Pass On A New Bomb to SomeOne...
-  Input   : int Bomb Number...
-  Output    : Sets LowestBombTime...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void PassOnNewBomb( int i )
-{
-  int j , e;
-  
-  BombNumToSend = i;
-  BombTimeToSend = NewBombTime;
-
-
-  j = LastPersonISentABomb;
-
-  for( e = 0 ; e < MAX_PLAYERS ; e++ )
-  {
-    j++;
-    if( j >= MAX_PLAYERS )
-      j = 0;
-    if( ( j != WhoIAm ) && ( GameStatus[j] == STATUS_Normal ) )
-    {
-      SendGameMessage( MSG_BOMB, 0, (BYTE) j, 0, 0 );
-      LastPersonISentABomb = j;
-      return;
-    }
-  }
-  // uh oh Im the only one playing
-  BombActive[i] = TRUE;
-  BombTime[i] = NewBombTime;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure : Finds The Bomb With the Shortest Fuse ...
-  Input   : Nothing
-  Output    : Sets LowestBombTime...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-extern  float   Time_Diff;
-void UpdateBombs( void )
-{
-  int i;
-  BOOL  BombHasBlownUp = FALSE;
-
-  OldLowestBombTime = LowestBombTime;
-  LowestBombTime = -1;
-  if( !BombTag )
-    return;
-
-  for( i = 0 ; i < MAXBOMBS ; i++ )
-  {
-    if( BombActive[i] )
-    {
-      break;
-    }
-  }
-  if( i == MAXBOMBS )
-    ResetCountDownBombTag( 0.0F );
-
-  if( !NumOfBombToStart || !IsHost )
-  {
-    for( i = 0 ; i < MAXBOMBS ; i++ )
-    {
-      if( BombActive[i] )
-      {
-        if( (BombTime[i] -= Time_Diff ) <= 0.0F )
-        {
-          // One of My Bombs Has Blown Up.... Doh....
-          BombHasBlownUp = TRUE;
-          break;
-        }else if( ( LowestBombTime == -1 ) || (BombTime[i] < BombTime[LowestBombTime] ) )
-        {
-          LowestBombTime = i;
-        }
-      }
-    }
-    if( BombHasBlownUp )
-    {
-      Ships[WhoIAm].ShipThatLastHitMe = MAX_PLAYERS;
-      Ships[WhoIAm].Damage = 255 + 255; //make sure I Die....
-      DoDamage( OVERRIDE_INVUL );
-    
-    
-      Ships[WhoIAm].Object.Mode = DEATH_MODE;
-      Ships[WhoIAm].Timer = 0.0F;
-      AddColourMessageToQue(KillMessageColour, A_BOMB_KILLED_YOU );
-      ShipDiedSend( WEPTYPE_Primary, 0);
-    
-    
-      for( i = 0 ; i < MAXBOMBS ; i++ )
-      {
-        if( BombActive[i] )
-        {
-          BombActive[i] = FALSE;
-          PassOnNewBomb( i );
-        }
-      }
-      LowestBombTime = -1;
-    }
-
-    if( LowestBombTime != -1 )
-    {
-      if( LowestBombTime != OldLowestBombTime )
-      {
-        ResetCountDownBombTag( BombTime[LowestBombTime] );
-      }
-    }
-  }
-
-  UpdateCountdownDigits();
-
-
-  if( NumOfBombToStart && IsHost )
-  {
-    while( NumOfBombToStart )
-    {
-      NumOfBombToStart--;
-      PassOnNewBomb( NumOfBombToStart );
-    }
-    Time_Diff = 0.0F;
-  }
-
-
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Init The Bombs...
-  Input   :   nothing...
-  Output    :   nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void InitBombs( void )
-{
-  int i;
-  NewBombTime = ( 100.0F * 30.0F ); // approx 30 seconds...
-  LowestBombTime = -1;
-  OldLowestBombTime = -1;
-  LastPersonISentABomb = 0;
-  NumOfBombToStart = 1;
-
-  for( i = 0 ; i < MAXBOMBS ; i++ )
-  {
-    BombActive[i]= FALSE;
-    BombTime[i] = 0.0F;
-  }
-}
-
-
-
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   Init Stats Display Stuff...

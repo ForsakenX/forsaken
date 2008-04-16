@@ -112,7 +112,6 @@ extern	int16					Lives;
 extern	BOOL	BountyHunt;
 extern	BOOL	CaptureTheFlag;
 extern	BOOL	CTF;
-extern	BOOL	BombTag;
 extern	TEXT	DemoGameName;
 extern	BOOL	RecordDemo;
 extern	LIST	ServiceProvidersList;
@@ -601,7 +600,6 @@ void SetUpGameSubType( int type )
 void SetUpGameType( int type ) 
 {
 	TeamGame = FALSE;
-	BombTag = FALSE;
 	CTF = FALSE;
 	NeedFlagAtHome			= FALSE;
 	OwnFlagTeleportsHome	= FALSE;
@@ -615,9 +613,6 @@ void SetUpGameType( int type )
 		break;
 	case GAME_Team:
 		TeamGame = TRUE;
-		break;
-	case GAME_Tag:
-		BombTag = TRUE;
 		break;
 	case GAME_CTF:
 		CTF = TRUE;
@@ -674,7 +669,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	IsHost = TRUE;
 
 	TeamGame = FALSE;
-	BombTag = FALSE;
 	CaptureTheFlag = FALSE;
 	BountyHunt = FALSE;
 	CTF = FALSE;
@@ -795,8 +789,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 		flags = 0;
 		if( TeamGame )
 			flags |= TeamGameBit;
-		if( BombTag )
-			flags |= BombGameBit;
 		if( CTF )
 			flags |= CTFGameBit;
 		if( CaptureTheFlag )
@@ -1147,10 +1139,6 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 		TeamGame = TRUE;
 	else
 		TeamGame = FALSE;
-	if( sd->dwUser3 & BombGameBit )
-		BombTag = TRUE;
-	else
-		BombTag = FALSE;
 	if( sd->dwUser3 & FlagGameBit )
 		CaptureTheFlag = TRUE;
 	else
@@ -1993,7 +1981,6 @@ void StartDemoPlayback( MENUITEM * Item )
 
 	fread( &flags, sizeof( flags ), 1, DemoFp );
 	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	BombTag = ( flags & BombGameBit ) ? TRUE : FALSE;
 	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
 	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
 	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
@@ -2082,7 +2069,6 @@ void StartDemoCleaning( MENUITEM * Item )
 
 	fread( &flags, sizeof( flags ), 1, DemoFp );
 	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	BombTag = ( flags & BombGameBit ) ? TRUE : FALSE;
 	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
 	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
 	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
@@ -2181,7 +2167,6 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	IsHost = TRUE;
 	AutoDetail = TRUE;
 	// reset all bollocks...
-	BombTag = FALSE;
 	TeamGame = FALSE;
 	CaptureTheFlag = FALSE;
 	CTF = FALSE;

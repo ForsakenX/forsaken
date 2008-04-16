@@ -101,7 +101,6 @@
 #define LT_MENU_NEW_CreateGame12 "flag chase"
 #define LT_MENU_NEW_CreateGame13 "bounty hunt"
 #define LT_MENU_NEW_CreateGame14 "Team bounty hunt"
-#define LT_MENU_NEW_CreateGame15 "bomb tag"
 #define LT_MENU_NEW_CreateGame16 "more options"
 #define LT_MENU_NEW_CreateGame17 "quit"
 
@@ -119,7 +118,6 @@
 #define LT_MENU_NEW_CreateLobbyGame11 "capture the flag"
 #define LT_MENU_NEW_CreateLobbyGame12 "bounty hunt"
 #define LT_MENU_NEW_CreateLobbyGame13 "Team bounty hunt"
-#define LT_MENU_NEW_CreateLobbyGame14 "bomb tag"
 #define LT_MENU_NEW_CreateLobbyGame15 "more options"
 #define LT_MENU_NEW_CreateLobbyGame16 "quit"
 

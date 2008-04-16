@@ -1605,9 +1605,6 @@ BOOL ReadMsgFile( char *Filename )
 	TextMessagesPnt[i] = YOU											   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
-	TextMessagesPnt[i] = GOT_CAUGHT_WITH_A_BOMB						   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
 	TextMessagesPnt[i] = WITH_THE_BOUNTY								   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
@@ -1639,9 +1636,6 @@ BOOL ReadMsgFile( char *Filename )
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = HAS_GOT_THE_BOUNTY							   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
-	TextMessagesPnt[i] = YOU_HAVE_GOT_A_NEW_BOMB 						   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = ON_YOUR_OWN_TEAM								   ;
@@ -1843,9 +1837,6 @@ BOOL ReadMsgFile( char *Filename )
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = FLAG_ESCAPED									   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
-	TextMessagesPnt[i] = A_BOMB_KILLED_YOU							   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = AN_ENEMY_KILLED_YOU							   ;

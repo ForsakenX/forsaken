@@ -584,7 +584,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_SHORTTRIGVAR					0x6f
 #define MSG_NAME								0x7f
 #define MSG_INTERPOLATE					0x8f
-#define MSG_BOMB								0x9f
 #define MSG_BGOUPDATE						0xaf
 #define MSG_PINGREQUEST					0xbf
 #define MSG_PLAYERPINGS					0xbe
@@ -702,16 +701,6 @@ typedef struct _PLAYERPINGSMSG
     BYTE        WhoIAm;
 	uint16		Ping[ MAX_PLAYERS ];
 }PLAYERPINGSMSG, *LPPLAYERPINGSMSG;
-
-typedef struct _BOMBMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-    BYTE        WhoGotHit;
-	BYTE		BombNum;
-	float		BombTime;
-} BOMBMSG, *LPBOMBMSG;
-
 
 typedef struct _SHORTPICKUPMSG
 {

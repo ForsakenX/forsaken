@@ -18,7 +18,6 @@
 #define YOUVE_BEEN_SCATTERED "Vous avez été dispersé"
 #define FROM_YOUR_OWN_TEAM "de votre équipe"
 #define YOU "vous"
-#define GOT_CAUGHT_WITH_A_BOMB "avez été pris avec une bombe"
 #define WITH_THE_BOUNTY "avec le trésor"
 #define NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY "pas de points pour tuer %s sans le trésor" // %s= Name of Player
 #define HIMSELF "lui-même"
@@ -30,7 +29,6 @@
 #define THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL "le drapeau de l'équipe %s est passé dans son but" // %s=<team name>
 #define THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL "le drapeau de l'équipe %s a quitté son but "	// %s=<team name>
 #define HAS_GOT_THE_BOUNTY "détient le trésor"
-#define YOU_HAVE_GOT_A_NEW_BOMB "Vous avez une nouvelle bombe"
 #define ON_YOUR_OWN_TEAM "Dans votre équipe"
 
 // Multiplayer.c
@@ -84,7 +82,6 @@
 #define LT_PICKUP_ORBITAL				"Pulsar en orbite"
 #define LT_PICKUP_GOLDEN_POWER_POD		"Pod énerg. or"
 #define LT_PICKUP_DNA					"ADN"
-#define LT_PICKUP_BOMB					"Bombe"
 #define LT_PICKUP_GOLDEN_IDOL			"Statuette or"
 
 #define YOU_ALREADY_HAVE				"Vous avez déjà un(e) %s" // %s=<pickup name>
@@ -109,9 +106,6 @@
 #define SOMEONE_HAS_OTHER_TEAM_FLAG		"%s, de l'équipe %s, a le drapeau de l'équipe %s" // %s1=<player name>, %s2=<team name>, %s3=<team name>
 #define FLAG_DRIFTED_BACK				"le drapeau de l'équipe %s est retourné à son but" // %s=<team name>
 #define FLAG_ESCAPED					"le drapeau de l'équipe %s a quitté son but" // %s=<team name>
-
-// oct2.c
-#define A_BOMB_KILLED_YOU				"Vous avez été tué par une bombe..."
 
 // models.c
 // in the following text:

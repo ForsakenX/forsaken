@@ -295,28 +295,23 @@ void GetUpTime( char *str, DWORD dwTime )
 void GetGameType( char *buf, LPDPSESSIONDESC2 pSD )
 {
 	// game type
-	if ( pSD->dwUser3 & BombGameBit ) {
-		strcpy( buf, "bomb tag" );
-	} else if ( pSD->dwUser3 & CTFGameBit ) {
+	if ( pSD->dwUser3 & CTFGameBit ) 
 		strcpy( buf, "ctf" );
-	} else if ( pSD->dwUser3 & FlagGameBit ) {
+	else if ( pSD->dwUser3 & FlagGameBit ) 
 		strcpy( buf, "flag chase" );
-	} else if ( pSD->dwUser3 & BountyGameBit ) {
+	else if ( pSD->dwUser3 & BountyGameBit ) 
+	{
 		if ( pSD->dwUser3 & TeamGameBit )
-		{
 			strcpy( buf, "team bounty hunt" );
-		}else
-		{
+		else
 			strcpy( buf, "bounty hunt" );
-		}
-	} else {
+	} 
+	else 
+	{
 		if ( pSD->dwUser3 & TeamGameBit )
-		{
 			strcpy( buf, "team game" );
-		}else
-		{
+		else
 			strcpy( buf, "free for all" );
-		}
 	}
 }
 

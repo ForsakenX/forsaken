@@ -78,8 +78,6 @@
 	Externs
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern SLIDER BikeCompSpeechSlider;
-extern	BOOL	BombTag;
-extern	int		LowestBombTime;
 
 extern	SHIPCONTROL		control;
 extern	D3DMATRIX		view;
@@ -1015,15 +1013,6 @@ static int16	OnceOnlyFlag = 0;
 	PrimarySelectControl();
 
 	Ships[ WhoIAm ].Object.Flags &= ~SHIP_Charging;
-
-	// Bomb Mode...
-	if( BombTag )
-	{
-		if( LowestBombTime == -1 )
-		{
-			return;
-		}
-	}
 	
 	if( control.select_primary )
 	{
@@ -3787,7 +3776,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 		   	case PULSAR:
 				if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 				{
-					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) && !BombTag )
+					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) )
 					{
 						GeneralAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						GeneralAmmo -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
@@ -4467,7 +4456,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 			case NME_BULLET1:
 				if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 				{
-					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) && !BombTag )
+					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) )
 					{
 						GeneralAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						GeneralAmmo -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
@@ -4524,7 +4513,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 		   	case NME_PULSAR:
 				if( ( OwnerType == OWNER_SHIP ) && ( OwnerID == WhoIAm ) )
 				{
-					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) && !BombTag )
+					if( !GodMode && !( Ships[ OwnerID ].Object.Flags & SHIP_SuperNashram ) )
 					{
 						GeneralAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
 						GeneralAmmo -= PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];

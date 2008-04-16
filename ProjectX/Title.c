@@ -1422,7 +1422,6 @@ MENU	MENU_NEW_CreateGame = {
 		{  10, 126, 200, 116, 0,			LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CaptureFlag,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 134, 200, 124, 0,			LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_BountyHunt,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 140, 200, 132, 0,			LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_TeamBounty,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-	    {  10, 148, 100, 138, 0,			LT_MENU_NEW_CreateGame15 /*"bomb tag"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Tag,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 	  //{  10, 164, 100, 170, 0,			LT_MENU_NEW_CreateGame17 /*"quit"*/,					FONT_Small,		TEXTFLAG_CentreY,													NULL,								NULL,								SelectQuit,				DrawFlatMenuItem,		NULL, 0 } ,
 
@@ -1453,7 +1452,6 @@ MENU	MENU_NEW_CreateLobbyGame = {
 		{ 10, 106, 110, 114, 0, LT_MENU_NEW_CreateLobbyGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 114, 110, 122, 0, LT_MENU_NEW_CreateLobbyGame12 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 122, 110, 130, 0, LT_MENU_NEW_CreateLobbyGame13 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-	    { 10, 130, 100, 138, 0, LT_MENU_NEW_CreateLobbyGame14 /*"bomb tag"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Tag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
 		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateLobbyGame15 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 	  //{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 
@@ -19115,25 +19113,32 @@ void UpdateSessionInfo( LIST *List )
 	_snprintf( Session_Info_Num_Players, sizeof( Session_Info_Num_Players ), LT_Extra5/*"players: %d / %d"*/, session->dwCurrentPlayers, session->dwMaxPlayers ); 
 
 	// game type
-    if ( session->dwUser3 & BombGameBit ) {
-		pchGameType = LT_MENU_NEW_CreateGame15/*"bomb tag"*/;
-	} else if ( session->dwUser3 & CTFGameBit ) {
+	if ( session->dwUser3 & CTFGameBit )
+	{
 		pchGameType = LT_MENU_NEW_CreateGame11 /*"capture the flag"*/;
-    } else if ( session->dwUser3 & FlagGameBit ) {
+    }
+	else if ( session->dwUser3 & FlagGameBit ) 
+	{
 		pchGameType = LT_MENU_NEW_CreateGame12 /*"flag chase"*/;
-    } else if ( session->dwUser3 & BountyGameBit ) {
+    } 
+	else if ( session->dwUser3 & BountyGameBit ) 
+	{
 		if ( session->dwUser3 & TeamGameBit )
 		{
 			pchGameType = LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/;
-		}else
+		}
+		else
 		{
 			pchGameType = LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/;
 		}
-	} else {
+	} 
+	else 
+	{
 		if ( session->dwUser3 & TeamGameBit )
 		{
 			pchGameType = LT_MENU_NEW_CreateGame10 /*"team game"*/;
-		}else
+		}
+		else
 		{
 			pchGameType = LT_MENU_NEW_CreateGame9 /*"free for all"*/;
 		}

@@ -81,19 +81,17 @@ extern	DWORD			CurrentTextureBlend;
 extern	BOOL			CanCullFlag;
 extern	BOOL			LensFlare;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
-extern	uint16			FirstSecBullUsed;
+extern	uint16		FirstSecBullUsed;
 extern	float			ticksperframe;
 extern	int16			NewLevelNum;
 extern	int16			NumLevels;
-extern	MODEL			Models[ MAXNUMOFMODELS ];
+extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;
 extern	int				FontHeight;
-extern	BOOL			BombTag;
-extern	int				LowestBombTime;
 extern	BOOL			PowerVR;
 extern	int16			MakeColourMode;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	SLIDER			TimeLimit;
+extern	SLIDER		TimeLimit;
 extern	BOOL			CountDownOn;
 extern	int16			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
@@ -242,7 +240,7 @@ void InitScrPolys( void )
 
 	InitScrPolyTPages();
 
-	if( CountDownOn || BombTag ) CreateCountdownDigits();
+	if( CountDownOn ) CreateCountdownDigits();
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -1223,8 +1221,6 @@ void UpdateCountdownDigits( void )
 	{
 		if( MyGameStatus != STATUS_SinglePlayer )
 		{
-			if( BombTag )
-				return;
 			LevelNum = -1;
 			NewLevelNum++;
 			if( NewLevelNum >= NumLevels ) NewLevelNum = 0;
@@ -1293,14 +1289,6 @@ void UpdateCountdownDigits( void )
 		CountDown_Col += ( ( 1.0F / 300.0F ) * framelag );
 		if( CountDown_Col > 1.0F ) CountDown_Col = 1.0F;
 	}
-
-
-	if( BombTag )
-	{
-		if( LowestBombTime == -1 )
-			CountDown_Col = 0.0F;
-	}
-
 	
 	Center_X = CountDown_X;
 	Center_Y = CountDown_Y;
@@ -1604,66 +1592,6 @@ void StartCountDown( int16 Minutes, int16 Seconds )
 	CountDown_Wanted_Scale = TIMERSTARTSCALE;
 	CountDown_Col = 1.0F;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Start CountDown Timer
-	Input		:	int16	Minutes
-				:	int16	Seconds
-	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ResetCountDownBombTag( float Amount )
-{
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Value;
-
-	CurrentCountDownFont = 0;
-	Countdown_Float = Amount;
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Old_Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
-
-	Toggle = FALSE;
-	ScaleInc = 0.0F;
-	Interp_Time = 0.0F;
-	CountDown_X = TIMERSTARTSCREENX;
-	CountDown_Y = TIMERSTARTSCREENY;
-	CountDown_Xoff = 0.0F;
-	CountDown_Yoff = 0.0F;
-	CountDown_Wanted_X = TIMERSTARTSCREENX;
-	CountDown_Wanted_Y = TIMERSTARTSCREENY;
-	CountDown_Scale = TIMERSTARTSCALE;
-	CountDown_Wanted_Scale = TIMERSTARTSCALE;
-	CountDown_Col = 1.0F;
-
-	if( Countdown_Float < 1000.0F )
-	{
-		CurrentCountDownFont = 1;
-		CountDown_Wanted_X = TIMERENDSCREENX;
-		CountDown_Wanted_Y = TIMERENDSCREENY;
-		CountDown_Wanted_Scale = TIMERENDSCALE;
-		ScaleInc = ( ( CountDown_Wanted_Scale - CountDown_Scale ) / 420.0F );
-		CountDown_Xoff = ( ( CountDown_Wanted_X - CountDown_X ) / 420.0F );
-		CountDown_Yoff = ( ( CountDown_Wanted_Y - CountDown_Y ) / 420.0F );
-		Interp_Time = 420.0F;
-
-		if( Countdown_Float >= 300.0F )
-		{
-			Interp_Time = ( ( Countdown_Float - 300.0F ) * ( 600.0F / 1000.0F ) );
-			CountDown_X = ( TIMERSTARTSCREENX + ( CountDown_Xoff * ( 420.0F - Interp_Time ) ) );
-			CountDown_Y = ( TIMERSTARTSCREENY + ( CountDown_Yoff * ( 420.0F - Interp_Time ) ) );
-			CountDown_Scale = ( TIMERSTARTSCALE + ( ScaleInc * ( 420.0F - Interp_Time ) ) );
-		}
-		else
-		{
-			Interp_Time = 0.0F;
-			CountDown_X = CountDown_Wanted_X;
-			CountDown_Y = CountDown_Wanted_Y;
-			CountDown_Scale = CountDown_Wanted_Scale;
-			CountDown_Col = ( Countdown_Float / 300.0F );
-		}
-	}
-}
-
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Add Solid ScreenPoly Text
@@ -3566,7 +3494,6 @@ FILE * LoadScreenPolys( FILE * fp )
 			KilledPlayer = FALSE;
 			CreateCountdownDigits();
 			StartCountDown( 1, 0 );
-			ResetCountDownBombTag( Time );
 			TimeLimitTrigger = NULL;
 		}
 	}

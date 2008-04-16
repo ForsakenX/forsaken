@@ -19,7 +19,6 @@
 #define YOUVE_BEEN_SCATTERED "Sei stato polverizzato"
 #define FROM_YOUR_OWN_TEAM "dalla tua stessa squadra"
 #define YOU "tu"
-#define GOT_CAUGHT_WITH_A_BOMB "sei stato colpito da una bomba"
 #define WITH_THE_BOUNTY "con il lingotto"
 #define NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY "nessun punto per aver ucciso %s senza il lingotto" // %s= Name of Player
 #define HIMSELF "da solo"
@@ -31,7 +30,6 @@
 #define THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL "la bandiera della squadra %s è finita nella propria porta" // %s=<team name>
 #define THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL "la bandiera della squadra %s è sfuggita dalla propria porta"	// %s=<team name>
 #define HAS_GOT_THE_BOUNTY "ha il lingotto"
-#define YOU_HAVE_GOT_A_NEW_BOMB "adesso hai una nuova bomba"
 #define ON_YOUR_OWN_TEAM "per la tua squadra"
 
 // Multiplayer.c
@@ -110,9 +108,6 @@
 #define SOMEONE_HAS_OTHER_TEAM_FLAG		"%s della squadra %s ha raccolto la bandiera della squadra %s" // %s1=<player name>, %s2=<team name>, %s3=<team name>
 #define FLAG_DRIFTED_BACK				"la bandiera della squadra %s è finita in porta" // %s=<team name>
 #define FLAG_ESCAPED					"la bandiera della squadra %s è sfuggita dalla porta" // %s=<team name>
-
-// oct2.c
-#define A_BOMB_KILLED_YOU				"Una bomba ti ha ucciso..."
 
 // models.c
 // in the following text:

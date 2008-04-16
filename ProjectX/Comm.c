@@ -76,7 +76,6 @@ extern	BOOL					TeamGame;
 extern	HANDLE					hPlayerEvent;					// player event to use
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	TimeLimit;
-extern	BOOL	BombTag;
 extern	BOOL	CaptureTheFlag;
 extern	BOOL	CTF;
 extern	BOOL	BountyHunt;
@@ -233,8 +232,6 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 
 	if( TeamGame )
 		lpDesc->dwUser3 |= TeamGameBit;
-	if( BombTag )
-		lpDesc->dwUser3 |= BombGameBit;
 	if( CTF )
 		lpDesc->dwUser3 |= CTFGameBit;
 	if( CaptureTheFlag )

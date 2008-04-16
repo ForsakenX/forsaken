@@ -21,7 +21,6 @@
 *
 *	List of places where UpdateBonusStats() is called:
 *
-*		Mydplay.c	- update bonus 1 (stats.c) -- killed someone in bomb tag
 *		Ships.c		- update bonus 2 (stats.c) -- flag chase scored
 *		Ships.c		- update bonus 3 (stats.c) -- CTF scored
 *		Ships.c		- update bonus 4 (stats.c) -- bounty hunt points

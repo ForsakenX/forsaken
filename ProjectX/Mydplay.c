@@ -363,19 +363,11 @@ LONGLONG	DemoTimeSoFar = 0;
 
 extern uint16	num_start_positions;
 
-int LowestBombTime;
-int	BombNumToSend;
-float BombTimeToSend;
-extern	BOOL BombTag;
-extern	BOOL	BombActive[MAXBOMBS];
-extern	float	BombTime[MAXBOMBS];
-
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
 BOOL	DemoShipInit[MAX_PLAYERS+1];
 
 LONGLONG	LastPacketTime[MAX_PLAYERS+1];
 BYTE		CommBuff[MAX_BUFFER_SIZE];
-
 
 BOOL	BigPackets = TRUE;//FALSE;
 uint32	BIGPACKETBUFFERSIZE = 1024;
@@ -862,61 +854,50 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 
 void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil )
 {
-	VECTOR	Recoil_Off;
-	if( BombTag )
+	VECTOR	Recoil_Off;		
+	if( Ships[ you ].Object.Mode != LIMBO_MODE )
 	{
-		if( LowestBombTime != -1 )
+		if( dcoID != 0 )
 		{
-			BombNumToSend = LowestBombTime;
-			BombTimeToSend = BombTime[LowestBombTime];
-			SendGameMessage( MSG_BOMB , 0 , you , 0 , 0 );
-			BombActive[LowestBombTime] = FALSE;
-			LowestBombTime = -1;
-		}
-	}else{
-		
-		if( Ships[ you ].Object.Mode != LIMBO_MODE )
-		{
-			if( dcoID != 0 )
+			if( !UseShortPackets )
 			{
-				if( !UseShortPackets )
-				{
-					if( FramelagRecoil ) TempShipHit.OneOffExternalForce = TRUE;
-					else TempShipHit.OneOffExternalForce = FALSE;
-					TempShipHit.Damage = Damage;
-					TempShipHit.Recoil = *Recoil;
-					TempShipHit.Point = *Point;
-					TempShipHit.Point.x -= Ships[ you ].Object.Pos.x;
-					TempShipHit.Point.y -= Ships[ you ].Object.Pos.y;
-					TempShipHit.Point.z -= Ships[ you ].Object.Pos.z;
-					TempShipHit.Dir = *Dir;
-					TempShipHit.Force = Force;
-					TempShipHit.WeaponType = WeaponType;
-					TempShipHit.Weapon = Weapon;
-					SendGameMessage( MSG_SHIPHIT , Ships[you].dcoID , you , 0 , 0 );
-				}else{
-					if( FramelagRecoil ) ShortTempShipHit.OneOffExternalForce = 1;
-					else ShortTempShipHit.OneOffExternalForce = 0;
-					ShortTempShipHit.Damage = Damage;
+				if( FramelagRecoil ) TempShipHit.OneOffExternalForce = TRUE;
+				else TempShipHit.OneOffExternalForce = FALSE;
+				TempShipHit.Damage = Damage;
+				TempShipHit.Recoil = *Recoil;
+				TempShipHit.Point = *Point;
+				TempShipHit.Point.x -= Ships[ you ].Object.Pos.x;
+				TempShipHit.Point.y -= Ships[ you ].Object.Pos.y;
+				TempShipHit.Point.z -= Ships[ you ].Object.Pos.z;
+				TempShipHit.Dir = *Dir;
+				TempShipHit.Force = Force;
+				TempShipHit.WeaponType = WeaponType;
+				TempShipHit.Weapon = Weapon;
+				SendGameMessage( MSG_SHIPHIT , Ships[you].dcoID , you , 0 , 0 );
+			}
+			else
+			{
+				if( FramelagRecoil ) ShortTempShipHit.OneOffExternalForce = 1;
+				else ShortTempShipHit.OneOffExternalForce = 0;
+				ShortTempShipHit.Damage = Damage;
 
-					Recoil_Off = *Recoil;
-					NormaliseVector( &Recoil_Off );
-					ShortTempShipHit.Recoil_Scalar = (uint16) ( 256.0F * VectorLength( Recoil ) );
-					ShortTempShipHit.Recoil.x = (int16) (Recoil_Off.x * 32767.0F);
-					ShortTempShipHit.Recoil.y = (int16) (Recoil_Off.y * 32767.0F);
-					ShortTempShipHit.Recoil.z = (int16) (Recoil_Off.z * 32767.0F);
-					ShortTempShipHit.Point.x = (int16)(Point->x - Ships[ you ].Object.Pos.x);
-					ShortTempShipHit.Point.y = (int16)(Point->y - Ships[ you ].Object.Pos.y);
-					ShortTempShipHit.Point.z = (int16)(Point->z - Ships[ you ].Object.Pos.z);
-					ShortTempShipHit.Dir.x = (int16) (Dir->x * 32767.0F);
-					ShortTempShipHit.Dir.y = (int16) (Dir->y * 32767.0F);
-					ShortTempShipHit.Dir.z = (int16) (Dir->z * 32767.0F);
-					ShortTempShipHit.Force = Force;
-					ShortTempShipHit.WeaponType = WeaponType;
-					ShortTempShipHit.Weapon = Weapon;
-					SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].dcoID , you , 0 , 0 );
+				Recoil_Off = *Recoil;
+				NormaliseVector( &Recoil_Off );
+				ShortTempShipHit.Recoil_Scalar = (uint16) ( 256.0F * VectorLength( Recoil ) );
+				ShortTempShipHit.Recoil.x = (int16) (Recoil_Off.x * 32767.0F);
+				ShortTempShipHit.Recoil.y = (int16) (Recoil_Off.y * 32767.0F);
+				ShortTempShipHit.Recoil.z = (int16) (Recoil_Off.z * 32767.0F);
+				ShortTempShipHit.Point.x = (int16)(Point->x - Ships[ you ].Object.Pos.x);
+				ShortTempShipHit.Point.y = (int16)(Point->y - Ships[ you ].Object.Pos.y);
+				ShortTempShipHit.Point.z = (int16)(Point->z - Ships[ you ].Object.Pos.z);
+				ShortTempShipHit.Dir.x = (int16) (Dir->x * 32767.0F);
+				ShortTempShipHit.Dir.y = (int16) (Dir->y * 32767.0F);
+				ShortTempShipHit.Dir.z = (int16) (Dir->z * 32767.0F);
+				ShortTempShipHit.Force = Force;
+				ShortTempShipHit.WeaponType = WeaponType;
+				ShortTempShipHit.Weapon = Weapon;
+				SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].dcoID , you , 0 , 0 );
 
-				}
 			}
 		}
 	}
@@ -1071,56 +1052,55 @@ void SetupDplayGame()
 		RealPacketSize[i] = 0;
 	}
 
-	RealPacketSize[MSG_UPDATE				 ] = sizeof( UPDATEMSG				  );	
-	RealPacketSize[MSG_HEREIAM				 ] = sizeof( HEREIAMMSG				  );	
-	RealPacketSize[MSG_INIT					 ] = sizeof( INITMSG				  );	 
-	RealPacketSize[MSG_SHIPHIT				 ] = sizeof( SHIPHITMSG				  );	
-	RealPacketSize[MSG_PRIMBULLPOSDIR		 ] = sizeof( PRIMBULLPOSDIRMSG		  );	
-	RealPacketSize[MSG_SECBULLPOSDIR		 ] = sizeof( SECBULLPOSDIRMSG		  );	
-	RealPacketSize[MSG_SHIPDIED				 ] = sizeof( SHIPDIEDMSG			  );	 
-	RealPacketSize[MSG_DROPPICKUP			 ] = sizeof( DROPPICKUPMSG			  );	
-	RealPacketSize[MSG_KILLPICKUP			 ] = sizeof( KILLPICKUPMSG			  );	
-	RealPacketSize[MSG_STATUS				 ] = sizeof( STATUSMSG				  );	
-	RealPacketSize[MSG_EXPSECONDARY			 ] = sizeof( EXPSECONDARYMSG		  );	 
-	RealPacketSize[MSG_SHORTPICKUP			 ] = sizeof( SHORTPICKUPMSG			  );	
-	RealPacketSize[MSG_SHOCKWAVE			 ] = sizeof( SHOCKWAVEMSG			  );	
-	RealPacketSize[MSG_FUPDATE				 ] = sizeof( FUPDATEMSG				  );	
-	RealPacketSize[MSG_SHORTMINE			 ] = sizeof( SHORTMINEMSG			  );	
-	RealPacketSize[MSG_TEXTMSG				 ] = sizeof( TEXTMSG				  );	
-	RealPacketSize[MSG_SHORTREGENSLOT		 ] = sizeof( SHORTREGENSLOTMSG		  );	
-	RealPacketSize[MSG_SHORTTRIGGER			 ] = sizeof( SHORTTRIGGERMSG		  );	 
-	RealPacketSize[MSG_SHORTTRIGVAR			 ] = sizeof( SHORTTRIGVARMSG		  );	 
-	RealPacketSize[MSG_NAME					 ] = sizeof( NAMEMSG				  );	 
-	RealPacketSize[MSG_INTERPOLATE			 ] = sizeof( INTERPOLATEMSG			  );	
-	RealPacketSize[MSG_BOMB					 ] = sizeof( BOMBMSG				  );	 
-	RealPacketSize[MSG_BGOUPDATE			 ] = sizeof( BGOUPDATEMSG			  );	
-	RealPacketSize[MSG_PINGREQUEST			 ] = sizeof( PINGMSG				  );	
-	RealPacketSize[MSG_PLAYERPINGS			 ] = sizeof( PLAYERPINGSMSG			  );	
-	RealPacketSize[MSG_PINGREPLY			 ] = sizeof( PINGMSG				  );	
-	RealPacketSize[MSG_LONGSTATUS			 ] = sizeof( LONGSTATUSMSG			  );	
-	RealPacketSize[MSG_SETTIME				 ] = sizeof( SETTIMEMSG				  );	
-	RealPacketSize[MSG_REQTIME				 ] = sizeof( REQTIMEMSG				  );	
-	RealPacketSize[MSG_ACKMSG				 ] = sizeof( ACKMSG					  );	
-	RealPacketSize[MSG_GUARANTEEDMSG		 ] = sizeof( GUARANTEEDMSG   		  );	
-	RealPacketSize[MSG_KILLSDEATHSBIKENUM	 ] = sizeof( KILLSDEATHSBIKENUMMSG	  );	
-	RealPacketSize[MSG_VERYSHORTUPDATE		 ] = sizeof( VERYSHORTUPDATEMSG		  );	
-	RealPacketSize[MSG_VERYSHORTFUPDATE		 ] = sizeof( VERYSHORTFUPDATEMSG	  );	 
-	RealPacketSize[MSG_ALIVE				 ] = sizeof( ALIVEMSG				  );	
-	RealPacketSize[MSG_VERYSHORTINTERPOLATE	 ] = sizeof( VERYSHORTINTERPOLATEMSG  );	 
-	RealPacketSize[MSG_TEAMGOALS			 ] = sizeof( TEAMGOALSMSG			  );	
-	RealPacketSize[MSG_YOUQUIT				 ] = sizeof( YOUQUITMSG				  );	
-	RealPacketSize[MSG_SHORTSHIPHIT			 ] = sizeof( SHORTSHIPHITMSG		  );	 
-	RealPacketSize[MSG_TITANBITS			 ] = sizeof( TITANBITSMSG			  );	
+	RealPacketSize[MSG_UPDATE								] = sizeof( UPDATEMSG							);	
+	RealPacketSize[MSG_HEREIAM							] = sizeof( HEREIAMMSG						);	
+	RealPacketSize[MSG_INIT									] = sizeof( INITMSG								);	 
+	RealPacketSize[MSG_SHIPHIT								] = sizeof( SHIPHITMSG							);	
+	RealPacketSize[MSG_PRIMBULLPOSDIR					] = sizeof( PRIMBULLPOSDIRMSG				);	
+	RealPacketSize[MSG_SECBULLPOSDIR					] = sizeof( SECBULLPOSDIRMSG				);	
+	RealPacketSize[MSG_SHIPDIED							] = sizeof( SHIPDIEDMSG						);	 
+	RealPacketSize[MSG_DROPPICKUP						] = sizeof( DROPPICKUPMSG					);	
+	RealPacketSize[MSG_KILLPICKUP							] = sizeof( KILLPICKUPMSG						);	
+	RealPacketSize[MSG_STATUS								] = sizeof( STATUSMSG							);	
+	RealPacketSize[MSG_EXPSECONDARY					] = sizeof( EXPSECONDARYMSG				);	 
+	RealPacketSize[MSG_SHORTPICKUP						] = sizeof( SHORTPICKUPMSG					);	
+	RealPacketSize[MSG_SHOCKWAVE						] = sizeof( SHOCKWAVEMSG					);	
+	RealPacketSize[MSG_FUPDATE							] = sizeof( FUPDATEMSG						);	
+	RealPacketSize[MSG_SHORTMINE						] = sizeof( SHORTMINEMSG					);	
+	RealPacketSize[MSG_TEXTMSG							] = sizeof( TEXTMSG								);	
+	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG			);	
+	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG				);	 
+	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG				);	 
+	RealPacketSize[MSG_NAME									] = sizeof( NAMEMSG							);	 
+	RealPacketSize[MSG_INTERPOLATE						] = sizeof( INTERPOLATEMSG					);	
+	RealPacketSize[MSG_BGOUPDATE						] = sizeof( BGOUPDATEMSG					);	
+	RealPacketSize[MSG_PINGREQUEST						] = sizeof( PINGMSG								);	
+	RealPacketSize[MSG_PLAYERPINGS						] = sizeof( PLAYERPINGSMSG					);	
+	RealPacketSize[MSG_PINGREPLY							] = sizeof( PINGMSG								);	
+	RealPacketSize[MSG_LONGSTATUS						] = sizeof( LONGSTATUSMSG					);	
+	RealPacketSize[MSG_SETTIME							] = sizeof( SETTIMEMSG						);	
+	RealPacketSize[MSG_REQTIME							] = sizeof( REQTIMEMSG						);	
+	RealPacketSize[MSG_ACKMSG								] = sizeof( ACKMSG								);	
+	RealPacketSize[MSG_GUARANTEEDMSG					] = sizeof( GUARANTEEDMSG   				);	
+	RealPacketSize[MSG_KILLSDEATHSBIKENUM			] = sizeof( KILLSDEATHSBIKENUMMSG		);	
+	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG			);	
+	RealPacketSize[MSG_VERYSHORTFUPDATE			] = sizeof( VERYSHORTFUPDATEMSG		);	 
+	RealPacketSize[MSG_ALIVE								] = sizeof( ALIVEMSG							);	
+	RealPacketSize[MSG_VERYSHORTINTERPOLATE		] = sizeof( VERYSHORTINTERPOLATEMSG  );	 
+	RealPacketSize[MSG_TEAMGOALS						] = sizeof( TEAMGOALSMSG					);	
+	RealPacketSize[MSG_YOUQUIT							] = sizeof( YOUQUITMSG						);	
+	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG				);	 
+	RealPacketSize[MSG_TITANBITS							] = sizeof( TITANBITSMSG						);	
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
-	RealPacketSize[MSG_SESSIONDESC			 ] = sizeof( SESSIONDESCMSG			  );	
+	RealPacketSize[MSG_SESSIONDESC						] = sizeof( SESSIONDESCMSG					);	
 #endif
-	RealPacketSize[MSG_LEVELNAMES			 ] = sizeof( LEVELNAMESMSG			  );	
-	RealPacketSize[MSG_TRACKERINFO			 ] = sizeof( TRACKERINFOMSG			  );	
-	RealPacketSize[MSG_EXPLODESHIP			 ] = sizeof( EXPLODESHIPMSG			  );
-	RealPacketSize[MSG_SHIELDHULL			 ] = sizeof( SHIELDHULLMSG			  );
-	RealPacketSize[MSG_SERVERSCORED			 ] = sizeof( SERVERSCOREDMSG		  );
+	RealPacketSize[MSG_LEVELNAMES						] = sizeof( LEVELNAMESMSG					);	
+	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
+	RealPacketSize[MSG_EXPLODESHIP						] = sizeof( EXPLODESHIPMSG					);
+	RealPacketSize[MSG_SHIELDHULL						] = sizeof( SHIELDHULLMSG					);
+	RealPacketSize[MSG_SERVERSCORED					] = sizeof( SERVERSCOREDMSG				);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
-	RealPacketSize[MSG_VERYSHORTDROPPICKUP			 ] = sizeof( VERYSHORTDROPPICKUPMSG			  );	
+	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
 	
 
 	if ( Debug )
@@ -1137,13 +1117,7 @@ void SetupDplayGame()
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
 	AddCommentToLog( "SetupDPlayGame()\n ");
-	
 
-	for( i = 0 ; i < MAXBOMBS ; i++ )
-	{
-		BombActive[i] = FALSE;
-		BombTime[i] = 100.0F * 30.0F;
-	}
 	JustGenerated = TRUE;
 	
 	for(i=0; i<(MAX_PLAYERS+1); i++)
@@ -1865,7 +1839,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	LPNAMEMSG							lpName;
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
-	LPBOMBMSG							lpBomb;
 	LPPINGMSG								lpPingMsg;
 	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
 	LPACKMSG								lpAckMsg;
@@ -3191,97 +3164,31 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		lpShipDied = (LPSHIPDIEDMSG)MsgPnt;
 
-		// WHERE IS IS BOMBBB!! !!! ?
-		// SOME TYPE OF A BOMB NOT A TITAN !!!
-		if( BombTag )
+		// print a message reflecting the weapon
+		GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
+		
+		// if you killed them
+		if( WhoIAm == lpShipDied->WhoKilledMe )
 		{
-			// print funny message
-			sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpShipDied->WhoIAm][0] ,GOT_CAUGHT_WITH_A_BOMB);
-			AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
-
-			// no point if your cheating ?
-			if( !GodMode )
+			if( TeamGame )
 			{
-				// original update
-				Ships[WhoIAm].Kills++;
-				// update bonus 1 (stats.c) -- killed someone in bomb tag
-				UpdateBonusStats(WhoIAm,1);
-			}
-
-		}
-		// if its not a bomb
-		else
-		{
-			// print a message reflecting the weapon
-			GetDeathString( lpShipDied->WeaponType, lpShipDied->Weapon, &methodstr[0] );
-			
-   			// if you killed them
-   			if( WhoIAm == lpShipDied->WhoKilledMe )
-   			{
-				if( TeamGame )
+				if( TeamNumber[lpShipDied->WhoIAm] == TeamNumber[WhoIAm] )
 				{
-					if( TeamNumber[lpShipDied->WhoIAm] == TeamNumber[WhoIAm] )
+					if( !GodMode )
 					{
-						if( !GodMode )
-						{
-							// you killed someone on your own team
-							AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
-							// teams lose a point if they kill each other
-							// normal update
-							Ships[WhoIAm].Kills--;
-							// update stats 7 (stats.c) -- you killed someone on your own team
-							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
-						}
-					}
-					// if they weren't on your team
-					else
-					{
-						// bounty team game
-						if ( BountyHunt )
-						{
-							if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
-							{
-								// you killed the person who was carrying the bounty
-								if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
-									AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
-								// you had the bounty and killed someone
-								else
-									AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
-								
-								PlaySfx( SFX_BIKER_VP, 1.0F );
-								// normal update
-								Ships[WhoIAm].Kills++;
-								AddKill();
-								// update stats 8 (stats.c) -- you killed someone in a team bounty game
-								UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
-							}
-							else
-							{
-								// you killed someone who wasnt carrying the bounty (team bounty) (no points for you!!)
-								AddColourMessageToQue( KillMessageColour, NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
-									Names[ lpShipDied->WhoIAm ] );
-							}
-						}
-						else if( !GodMode )
-						// any other team game
-						{
-							// you killed someone in a team game
-							AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
-							// normal update
-							Ships[WhoIAm].Kills++;
-							AddKill();
-							// update stats 9 (stats.c) -- you killed someone in a team game
-							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
-							
-							if ( !Random_Range( 4 ) )
-								PlaySfx( SFX_BIKER_VP, 1.0F );
-						}
+						// you killed someone on your own team
+						AddColourMessageToQue( KillMessageColour, "%s %s %s %s" " %s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], ON_YOUR_OWN_TEAM );
+						// teams lose a point if they kill each other
+						// normal update
+						Ships[WhoIAm].Kills--;
+						// update stats 7 (stats.c) -- you killed someone on your own team
+						UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 					}
 				}
-				// if not  team game
+				// if they weren't on your team
 				else
 				{
-					// standard bounty hunt
+					// bounty team game
 					if ( BountyHunt )
 					{
 						if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
@@ -3297,55 +3204,99 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							// normal update
 							Ships[WhoIAm].Kills++;
 							AddKill();
-							// update stats 10 (stats.c) -- you killed someone in a bounty game
+							// update stats 8 (stats.c) -- you killed someone in a team bounty game
 							UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
 						}
 						else
 						{
-							// you killed someone who wasnt carrying the bounty (no points for you!!)
+							// you killed someone who wasnt carrying the bounty (team bounty) (no points for you!!)
 							AddColourMessageToQue( KillMessageColour, NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
 								Names[ lpShipDied->WhoIAm ] );
 						}
 					}
-					// not a team game or bounty hunt
 					else if( !GodMode )
+					// any other team game
 					{
-	   					// you killed someone
+						// you killed someone in a team game
 						AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
 						// normal update
 						Ships[WhoIAm].Kills++;
 						AddKill();
-						// update stats 2 (stats.c) -- you killed someone 
-   						UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
+						// update stats 9 (stats.c) -- you killed someone in a team game
+						UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
+						
 						if ( !Random_Range( 4 ) )
 							PlaySfx( SFX_BIKER_VP, 1.0F );
 					}
 				}
 			}
-			// if you were not who killed them
+			// if not  team game
 			else
-			{				
-				if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
-   				{
-   					// gee someone killed themselves...
-   					sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
-   					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
-   				}
-				else
+			{
+				// standard bounty hunt
+				if ( BountyHunt )
 				{
-   					if (TeamGame && (TeamNumber[lpShipDied->WhoIAm] == TeamNumber[lpShipDied->WhoKilledMe]))
-						strcpy (&teamstr[0], ON_HIS_OWN_TEAM);
+					if ( ( Ships[ WhoIAm ].Object.Flags | Ships[ lpShipDied->WhoIAm ].Object.Flags ) & SHIP_CarryingBounty )
+					{
+						// you killed the person who was carrying the bounty
+						if ( Ships[ lpShipDied->WhoIAm ].Object.Flags & SHIP_CarryingBounty )
+							AddColourMessageToQue( KillMessageColour, "%s %s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], WITH_THE_BOUNTY, "WITH ", &methodstr[0] );
+						// you had the bounty and killed someone
+						else
+							AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+						
+						PlaySfx( SFX_BIKER_VP, 1.0F );
+						// normal update
+						Ships[WhoIAm].Kills++;
+						AddKill();
+						// update stats 10 (stats.c) -- you killed someone in a bounty game
+						UpdateKillStats(WhoIAm, lpShipDied->WhoIAm, lpShipDied->WeaponType, lpShipDied->Weapon);
+					}
 					else
-						strcpy (&teamstr[0], "");
-
-					// gee someone killed somebody...who cares...
-					sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr );
-   					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
-   				}
-
-				// update stats 3 (stats.c) -- somebody killed someone
-   				UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon);
+					{
+						// you killed someone who wasnt carrying the bounty (no points for you!!)
+						AddColourMessageToQue( KillMessageColour, NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY,
+							Names[ lpShipDied->WhoIAm ] );
+					}
+				}
+				// not a team game or bounty hunt
+				else if( !GodMode )
+				{
+   					// you killed someone
+					AddColourMessageToQue( KillMessageColour, "%s %s %s" "%s", "YOU KILLED", &Names[lpShipDied->WhoIAm][0], "WITH ", &methodstr[0] );
+					// normal update
+					Ships[WhoIAm].Kills++;
+					AddKill();
+					// update stats 2 (stats.c) -- you killed someone 
+					UpdateKillStats(WhoIAm,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon); 
+					if ( !Random_Range( 4 ) )
+						PlaySfx( SFX_BIKER_VP, 1.0F );
+				}
 			}
+		}
+		// if you were not who killed them
+		else
+		{				
+			if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
+			{
+				// gee someone killed themselves...
+				sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
+				AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
+			}
+			else
+			{
+				if (TeamGame && (TeamNumber[lpShipDied->WhoIAm] == TeamNumber[lpShipDied->WhoKilledMe]))
+					strcpy (&teamstr[0], ON_HIS_OWN_TEAM);
+				else
+					strcpy (&teamstr[0], "");
+
+				// gee someone killed somebody...who cares...
+				sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr );
+				AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
+			}
+
+			// update stats 3 (stats.c) -- somebody killed someone
+			UpdateKillStats(lpShipDied->WhoKilledMe,lpShipDied->WhoIAm,lpShipDied->WeaponType,lpShipDied->Weapon);
 		}
 		return;
 
@@ -3733,20 +3684,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		Ships[lpVeryShortInterpolate->WhoIAm].OldTime		= DemoTimeSoFar;
 		return;
 
-
-    case MSG_BOMB:
-
-		lpBomb = (LPBOMBMSG)MsgPnt;
-		if( lpBomb->WhoGotHit == WhoIAm )
-		{
-			// ahhh Ive got a fresh bomb....
-			AddColourMessageToQue(FlagMessageColour, YOU_HAVE_GOT_A_NEW_BOMB );
-			BombActive[lpBomb->BombNum] = TRUE;
-			BombTime[lpBomb->BombNum] = lpBomb->BombTime;
-		}
-		return;
-
-
     case MSG_PINGREQUEST:
 
 		lpPingMsg = (LPPINGMSG)MsgPnt;
@@ -3983,7 +3920,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPSHORTTRIGVARMSG				lpShortTrigVar;
     LPSHORTMINEMSG					lpShortMine;
     LPTEXTMSG								lpTextMsg;
-    LPBOMBMSG							lpBomb;
     LPPINGMSG								lpPingMsg;
 	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
 	LPNAMEMSG							lpName;
@@ -4633,19 +4569,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes	= sizeof( SHORTMINEMSG );
 		send_to = Ships[ShipNum].dcoID;
         break;
-
-
-    case MSG_BOMB:
-
-		lpBomb					= (LPBOMBMSG)&CommBuff[0];
-        lpBomb->MsgCode	= msg;
-        lpBomb->WhoIAm		= WhoIAm;
-		lpBomb->BombNum	= BombNumToSend;
-		lpBomb->BombTime	= BombTimeToSend;
-		lpBomb->WhoGotHit = (BYTE) ShipNum;
-		nBytes = sizeof( BOMBMSG );
-        break;
-
 
     case MSG_TEXTMSG:
 
@@ -6738,7 +6661,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_LIGHTNING:
 					case FLAMES:
 					case NME_POWERLASER:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_GeneralAmmoUsed += Ammo;
@@ -6753,7 +6676,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case TROJAX:
 					case NME_TROJAX:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 						}
@@ -6765,7 +6688,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case PYROLITE_RIFLE:
 					case NME_PYROLITE:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_PyroliteAmmoUsed += Ammo;
@@ -6780,7 +6703,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case SUSS_GUN:
 					case NME_SUSS_GUN:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_SussGunAmmoUsed += Ammo;
@@ -6928,7 +6851,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_LIGHTNING:
 					case FLAMES:
 					case NME_POWERLASER:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_GeneralAmmoUsed += Ammo;
@@ -6943,7 +6866,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case TROJAX:
 					case NME_TROJAX:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 						}
@@ -6955,7 +6878,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case PYROLITE_RIFLE:
 					case NME_PYROLITE:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_PyroliteAmmoUsed += Ammo;
@@ -6970,7 +6893,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case SUSS_GUN:
 					case NME_SUSS_GUN:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_SussGunAmmoUsed += Ammo;
@@ -7119,7 +7042,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 					case NME_LIGHTNING:
 					case FLAMES:
 					case NME_POWERLASER:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_GeneralAmmoUsed += Ammo;
@@ -7142,7 +7065,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case PYROLITE_RIFLE:
 					case NME_PYROLITE:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_PyroliteAmmoUsed += Ammo;
@@ -7157,7 +7080,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 					case SUSS_GUN:
 					case NME_SUSS_GUN:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 						{
 							if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
 							Host_SussGunAmmoUsed += Ammo;
@@ -7210,7 +7133,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				case NME_LIGHTNING:
 				case FLAMES:
 				case NME_POWERLASER:
-						if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+						if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
 						if( Host_GeneralAmmo[ Player ] == 0.0F ) return( FALSE );
 						Host_GeneralAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
@@ -7225,7 +7148,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 				case PYROLITE_RIFLE:
 				case NME_PYROLITE:
-					if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+					if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
 						if( Host_PyroliteAmmo[ Player ] == 0.0F ) return( FALSE );
 						Host_PyroliteAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
@@ -7236,7 +7159,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 
 				case SUSS_GUN:
 				case NME_SUSS_GUN:
-					if( ( Ships[ Player ].SuperNashramTimer == 0.0F ) && !BombTag )
+					if( Ships[ Player ].SuperNashramTimer == 0.0F )
 					{
 						if( Host_SussGunAmmo[ Player ] == 0.0F ) return( FALSE );
 						Host_SussGunAmmoUsed += PrimaryWeaponAttribs[ Weapon ].AmmoUsage[ PowerLevel ];
