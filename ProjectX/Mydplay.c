@@ -2786,7 +2786,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		lpInit = (LPINITMSG) MsgPnt;
 		HostDPID = lpInit->FromDpid;
-		//MaxKills = lpInit->MaxKills;
+		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		DPlayUpdateInterval = lpInit->PacketsPerSecond;
 		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
