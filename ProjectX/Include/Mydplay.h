@@ -574,7 +574,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_KILLSDEATHSBIKENUM			0xf4
 #define MSG_VERYSHORTUPDATE			0xf5
 #define MSG_VERYSHORTFUPDATE			0xf6
-#define MSG_ALIVE								0xf7		// short message to make sure people know im alive and still in the session....
 #define MSG_VERYSHORTINTERPOLATE	0xf8
 #define MSG_TEAMGOALS						0xf9
 #define MSG_YOUQUIT							0xfa

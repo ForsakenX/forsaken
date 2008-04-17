@@ -1057,7 +1057,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_KILLSDEATHSBIKENUM			] = sizeof( KILLSDEATHSBIKENUMMSG		);	
 	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG			);	
 	RealPacketSize[MSG_VERYSHORTFUPDATE			] = sizeof( VERYSHORTFUPDATEMSG		);	 
-	RealPacketSize[MSG_ALIVE								] = sizeof( ALIVEMSG							);	
 	RealPacketSize[MSG_VERYSHORTINTERPOLATE		] = sizeof( VERYSHORTINTERPOLATEMSG  );	 
 	RealPacketSize[MSG_TEAMGOALS						] = sizeof( TEAMGOALSMSG					);	
 	RealPacketSize[MSG_YOUQUIT							] = sizeof( YOUQUITMSG						);	
