@@ -9,58 +9,42 @@
  /*
  * defines
  */
-#define FIND_SESSION_TIMEOUT	3600.0F
-
-#define MULTIPLAYER_VERSION		(0x010d)
-#define DEMO_MULTIPLAYER_VERSION (0x0109)
-
+#define FIND_SESSION_TIMEOUT			3600.0F
+#define MULTIPLAYER_VERSION				(0x010d)
+#define DEMO_MULTIPLAYER_VERSION		(0x0109)
 #define	GUARANTEEDMESSAGES
-
-#define MAXPACKETSPERBIGPACKET 64
-#define MAXBIGPACKETBUFFERSIZE 1024
-#define MAXPACKETSPERSERVERPACKET 64
-
-
-#define	SHORTBANK
-#define	VERYSHORTPACKETS
-
-#define	NOISEFALLOFFFACTOR ( 1.0F / 120.0F )	// approx 2 seconds....
-
+#define MAXPACKETSPERBIGPACKET		64
+#define MAXBIGPACKETBUFFERSIZE			1024
+#define MAXPACKETSPERSERVERPACKET	64
+#define SHORTBANK
+#define VERYSHORTPACKETS
+#define NOISEFALLOFFFACTOR				( 1.0F / 120.0F )	// approx 2 seconds....
 #define NORMAL_MODE 0
-#define DEATH_MODE 1
-#define LIMBO_MODE 2		// this is what the ship is in while viewing its own death....but has blown up...
-#define DEMO_MODE  3		// this is the mode the camera goes into when Playing back a Demo
-#define GAMEOVER_MODE  4	// this is the mode the player goes into when single player has finished...
-#define WATCH_MODE 5
+#define DEATH_MODE							1
+#define LIMBO_MODE							2			// this is what the ship is in while viewing its own death....but has blown up...
+#define DEMO_MODE								3			// this is the mode the camera goes into when Playing back a Demo
+#define GAMEOVER_MODE						4			// this is the mode the player goes into when single player has finished...
+#define WATCH_MODE							5
+#define MAX_PLAYERS							32			//24 //16 //12
+#define MAX_SHIELD								255.0F
+#define START_SHIELD							128.0F
+#define MAX_HULL								255.0F
+#define START_HULL								128.0F
+#define MAXTEXTMSG							128		// the number of chars in a message you can send.....
+#define MAXGENPICKUPCOUNT				5
+#define MAXGENREGENSLOTCOUNT			6
+#define MAXGENMINECOUNT					3 //4
+#define MAXGENTRIGGERCOUNT				60
+#define MAXGENTRIGVARCOUNT				60
+#define MAXMULTIPLES							8
+#define MAX_PICKUPFLAGS					2
+#define MAX_BUFFER_SIZE					1024
+#define FRAMELAGED_RECOIL					TRUE
+#define ONEOFF_RECOIL						FALSE
+#define MAX_TEAMS								4
+#define NUMTITANBITS							10 
 
-#define MAX_PLAYERS			32 //24 //16 //12
 BOOL PlayerReady[MAX_PLAYERS];
-#define MAX_SHIELD			255.0F
-#define START_SHIELD		128.0F
-#define MAX_HULL			255.0F
-#define START_HULL			128.0F
-
-#define	MAXTEXTMSG			128		// the number of chars in a message you can send.....
-
-#define	MAXGENPICKUPCOUNT	5
-#define	MAXGENREGENSLOTCOUNT 6
-#define	MAXGENMINECOUNT		3 //4
-#define	MAXGENTRIGGERCOUNT	60
-#define	MAXGENTRIGVARCOUNT	60
-
-#define	MAXMULTIPLES		8
-
-#define MAX_PICKUPFLAGS		2
-
-#define MAX_BUFFER_SIZE    1024
-
-#define	FRAMELAGED_RECOIL	TRUE
-#define	ONEOFF_RECOIL		FALSE
-
-#define MAX_TEAMS 4
-
-#define	NUMTITANBITS		10 
-
 /*
  * structures
  */
@@ -600,8 +584,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 #define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
 #endif
-#define MSG_SERVERKILLPICKUP				0xe5
-#define MSG_LEVELNAMES						0xe7		// msg contining names of levels on server
 #define MSG_SERVERSCORED					0xea		// necessary for ctf (server name is misleading!)
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec

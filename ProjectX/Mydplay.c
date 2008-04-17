@@ -1066,7 +1066,6 @@ void SetupDplayGame()
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	RealPacketSize[MSG_SESSIONDESC						] = sizeof( SESSIONDESCMSG					);	
 #endif
-	RealPacketSize[MSG_LEVELNAMES						] = sizeof( LEVELNAMESMSG					);	
 	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
 	RealPacketSize[MSG_SERVERSCORED					] = sizeof( SERVERSCOREDMSG				);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
@@ -2162,7 +2161,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 		case MSG_SESSIONDESC:
 #endif
-		case MSG_LEVELNAMES:
 		case MSG_BIGPACKET:
 		case MSG_ACKMSG:
 		case MSG_TRACKERINFO:
@@ -4592,29 +4590,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
 	
 
-	case MSG_LEVELNAMES:
-
-		lpLevelNamesMsg = ( LPLEVELNAMESMSG )&CommBuff[ 0 ];
-		lpLevelNamesMsg->MsgCode = msg;
-		lpLevelNamesMsg->WhoIAm = WhoIAm;
-		lpLevelNamesMsg->TotalLevels =  LevelList.items;
-		lpLevelNamesMsg->ThisBatch   = 0;
-		lpLevelNamesMsg->FirstLevel = Type;
-
-		for ( i = 0; i < MAXLEVELSPERBATCH; i++ )
-		{
-			if ( ( i + Type ) >= LevelList.items )	// type contains start level num for this batch
-				break;
-
-			strncpy( lpLevelNamesMsg->Level[ i ], ShortLevelNames[ i + Type ], 8 );
-			lpLevelNamesMsg->Level[ i ][ 7 ] = 0;
-			lpLevelNamesMsg->ThisBatch++;
-		}
-
-		nBytes = sizeof( LEVELNAMESMSG );
-		break;
-
-
 	case MSG_TRACKERINFO:
 
 		lpTrackerInfoMsg = ( LPTRACKERINFOMSG )&CommBuff[ 0 ];
@@ -5152,7 +5127,6 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 		&& ( MsgType != MSG_SHORTREGENSLOT ) 
 		&& ( MsgType != MSG_SHORTTRIGGER   ) 
 		&& ( MsgType != MSG_SHORTTRIGVAR   )  
-		&& ( MsgType != MSG_LEVELNAMES     )  
 		&& ( MsgType != MSG_TRACKERINFO    )  
 		&& ( MsgType != MSG_SHORTMINE      ) )
 		{
@@ -6169,11 +6143,6 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 	case MSG_SESSIONDESC:
 		return FALSE;
 #endif
-
-
-	case MSG_LEVELNAMES:
-		return TRUE;
-
 
 	case MSG_TRACKERINFO:
 		return TRUE;
