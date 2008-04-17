@@ -1048,7 +1048,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_INTERPOLATE						] = sizeof( INTERPOLATEMSG					);	
 	RealPacketSize[MSG_BGOUPDATE						] = sizeof( BGOUPDATEMSG					);	
 	RealPacketSize[MSG_PINGREQUEST						] = sizeof( PINGMSG								);	
-	RealPacketSize[MSG_PLAYERPINGS						] = sizeof( PLAYERPINGSMSG					);	
 	RealPacketSize[MSG_PINGREPLY							] = sizeof( PINGMSG								);	
 	RealPacketSize[MSG_LONGSTATUS						] = sizeof( LONGSTATUSMSG					);	
 	RealPacketSize[MSG_SETTIME							] = sizeof( SETTIMEMSG						);	
@@ -3623,13 +3622,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
 
-	case MSG_PLAYERPINGS:
-
-		lpPlayerPingsMsg = (LPPLAYERPINGSMSG)MsgPnt;
-		memcpy( PingTimes, lpPlayerPingsMsg->Ping, sizeof( PingTimes ) ); 
-		return;
-
-
     case MSG_PINGREPLY:
 
 		lpPingMsg = (LPPINGMSG)MsgPnt;
@@ -4547,16 +4539,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			lpPingMsg->Time += LastBigPacketSent - TimeFrig;
 		}
 		nBytes = sizeof( PINGMSG );
-		break;
-
-
-	case MSG_PLAYERPINGS:
-
-		lpPlayerPingsMsg = (LPPLAYERPINGSMSG)&CommBuff[0];
-		lpPlayerPingsMsg->MsgCode = msg;
-		lpPlayerPingsMsg->WhoIAm = WhoIAm;
-		memcpy( lpPlayerPingsMsg->Ping, PingTimes, sizeof( PingTimes ) );
-		nBytes = sizeof( PLAYERPINGSMSG );
 		break;
 
 

@@ -581,7 +581,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_INTERPOLATE					0x8f
 #define MSG_BGOUPDATE						0xaf
 #define MSG_PINGREQUEST					0xbf
-#define MSG_PLAYERPINGS					0xbe
 #define MSG_PINGREPLY						0xcf
 #define MSG_LONGSTATUS					0xdf
 #define MSG_SETTIME							0xef
