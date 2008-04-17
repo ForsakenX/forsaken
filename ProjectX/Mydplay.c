@@ -1367,23 +1367,20 @@ void smallinitShip( uint16 i )
 
 void ReceiveGameMessages( void )
 {
-	DPID	dcoReceiveID;
-    DWORD               nBytes;
-	BYTE * BufferPnt;
-	DWORD * dwordpnt;
-	DWORD offset = 0;
-	LONGLONG * longpnt;
-	HRESULT status;
+	DPID			dcoReceiveID;
+    DWORD		nBytes;
+	BYTE			* BufferPnt;
+	DWORD		* dwordpnt;
+	DWORD		offset = 0;
+	LONGLONG	* longpnt;
+	HRESULT		status;
 	int i;
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
 		OldGameStatus[i] = GameStatus[i];
-	}
 
 	if( MyGameStatus == STATUS_Normal )
 	{
-
 		BytesPerSecTimer -= framelag;
 		if( BytesPerSecTimer < 0.0F )
 		{
@@ -1398,32 +1395,28 @@ void ReceiveGameMessages( void )
 			BytesPerSecRec = 0;
 			BytesPerSecSent = 0;
 		}
-	}
-	else
-	{
-		BytesPerSecRec = 0;
-		BytesPerSecSent = 0;
-		CurrentBytesPerSecRec = 0;
-		CurrentBytesPerSecSent = 0;
-		MaxCurrentBytesPerSecRec = 0;
-		MaxCurrentBytesPerSecSent = 0;
-		RecPacketSize = BigPacketSize = MaxRecPacketSize = MaxBigPacketSize = 0;
 
-		BytesPerSecTimer = 71.0F;
-	}
-
-	// Stuff to handle Kills And deaths....
-	if( MyGameStatus == STATUS_Normal )
-	{
+		// Stuff to handle Kills And deaths....
 		if( (NextworkOldKills != Ships[WhoIAm].Kills) || (NextworkOldDeaths != Ships[WhoIAm].Deaths) || (NextworkOldBikeNum != Ships[WhoIAm].BikeNum) )
 		{
-			NextworkOldKills = Ships[WhoIAm].Kills;
-			NextworkOldDeaths = Ships[WhoIAm].Deaths;
+			NextworkOldKills		= Ships[WhoIAm].Kills;
+			NextworkOldDeaths	= Ships[WhoIAm].Deaths;
 			NextworkOldBikeNum = Ships[WhoIAm].BikeNum;
 			SendGameMessage( MSG_KILLSDEATHSBIKENUM, 0, 0, 0, 0 );
 		}
-
 	}
+	else
+	{
+		BytesPerSecRec					= 0;
+		BytesPerSecSent					= 0;
+		CurrentBytesPerSecRec			= 0;
+		CurrentBytesPerSecSent		= 0;
+		MaxCurrentBytesPerSecRec	= 0;
+		MaxCurrentBytesPerSecSent	= 0;
+		RecPacketSize = BigPacketSize = MaxRecPacketSize = MaxBigPacketSize = 0;
+		BytesPerSecTimer = 71.0F;
+	}
+
 	ServiceBigPacket(FALSE);
 	ProcessGuaranteedMessages( FALSE , FALSE , FALSE );
 	ProcessAcknowledgeMessageQue();
@@ -1447,9 +1440,7 @@ void ReceiveGameMessages( void )
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
 				{
 					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG && *BufferPnt != MSG_BIGPACKET )
-					{
 						Demo_fwrite( (Buffer2Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-					}
 				}
 				
 				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
@@ -1478,9 +1469,7 @@ void ReceiveGameMessages( void )
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
 				{
 					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG && *BufferPnt != MSG_BIGPACKET)
-					{
 						Demo_fwrite( (Buffer1Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-					}
 				}
 				
 				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
