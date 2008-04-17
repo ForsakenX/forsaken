@@ -8271,9 +8271,7 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 	VECTOR	Directions[ NUMTITANBITS ];
 
 	if( SecBulls[i].OwnerType == OWNER_SHIP )
-	{
 		if( TeamGame ) MyTeam = TeamNumber[ SecBulls[i].Owner ];
-	}
 
 	NumLeft = NUMTITANBITS;
 	ShipTargCount = 0;

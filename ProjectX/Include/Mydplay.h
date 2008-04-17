@@ -603,7 +603,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #endif
 #define MSG_SERVERKILLPICKUP				0xe5
 #define MSG_LEVELNAMES						0xe7		// msg contining names of levels on server
-#define MSG_SHIELDHULL						0xe9
 #define MSG_SERVERSCORED					0xea		// necessary for ctf (server name is misleading!)
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec

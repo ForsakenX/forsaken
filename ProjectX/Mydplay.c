@@ -834,18 +834,16 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 	if( dcoID != 0 )
 	{
 		TempTitanBits.OwnerType = OwnerType;
-		TempTitanBits.Owner = Owner;
-		TempTitanBits.BulletID = BulletID;
-		TempTitanBits.Group = Group;
-    	TempTitanBits.Pos = *Pos;
-		TempTitanBits.Offset = *Offset;
-		TempTitanBits.UpVector = *UpVector;
-		TempTitanBits.DropDir = *DropDir;
-		TempTitanBits.Weapon = Weapon;
+		TempTitanBits.Owner		= Owner;
+		TempTitanBits.BulletID		= BulletID;
+		TempTitanBits.Group			= Group;
+    	TempTitanBits.Pos			= *Pos;
+		TempTitanBits.Offset		= *Offset;
+		TempTitanBits.UpVector	= *UpVector;
+		TempTitanBits.DropDir		= *DropDir;
+		TempTitanBits.Weapon		= Weapon;
 		for( Count = 0; Count < NUMTITANBITS; Count++ )
-		{
 			TempTitanBits.Directions[ Count ] = Directions[ Count ];
-		}
 
 		SendGameMessage(MSG_TITANBITS, 0, 0, 0, 0);
 	}
@@ -1071,7 +1069,6 @@ void SetupDplayGame()
 #endif
 	RealPacketSize[MSG_LEVELNAMES						] = sizeof( LEVELNAMESMSG					);	
 	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
-	RealPacketSize[MSG_SHIELDHULL						] = sizeof( SHIELDHULLMSG					);
 	RealPacketSize[MSG_SERVERSCORED					] = sizeof( SERVERSCOREDMSG				);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
 	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
@@ -3735,43 +3732,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
 
-	case MSG_SHIELDHULL:
-
-		lpShieldHullMsg = (LPSHIELDHULLMSG)MsgPnt;
-		if( !lpShieldHullMsg->ValidChange && Ships[lpShieldHullMsg->WhoIAm].enable )
-		{
-			if ( ( ColPerspective == COLPERS_Descent ) && ( ( lpShieldHullMsg->Shield < Ships[lpShieldHullMsg->WhoIAm].Object.Shield ) ||
-				( lpShieldHullMsg->Hull < Ships[lpShieldHullMsg->WhoIAm].Object.Hull ) ) )
-			{
-				Int_Point.x		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x - Ships[WhoIAm].Object.Pos.x;
-				Int_Point.y		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y - Ships[WhoIAm].Object.Pos.y;
-				Int_Point.z		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z - Ships[WhoIAm].Object.Pos.z;
-				NormaliseVector( &Int_Point );
-				Int_Point2.x	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * SHIP_RADIUS );
-				Int_Point2.y	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * SHIP_RADIUS );
-				Int_Point2.z	= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * SHIP_RADIUS );
-				Int_Point.x		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.x + ( Int_Point.x * -SHIP_RADIUS );
-				Int_Point.y		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.y + ( Int_Point.y * -SHIP_RADIUS );
-				Int_Point.z		= Ships[lpShieldHullMsg->WhoIAm].Object.Pos.z + ( Int_Point.z * -SHIP_RADIUS );
-				PlayPannedSfx( SFX_ShipHit, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group , &Int_Point, 0.0F );
-
-				if( lpShieldHullMsg->Shield )
-					CreateShieldEffect( (VECTOR *) &Ships[lpShieldHullMsg->WhoIAm].Object.Pos, &Int_Point, &Int_Point2, lpShieldHullMsg->WhoIAm, 2, 128, 0, 128 );
-				else
-				{
-					TempVector.x = ( Int_Point.x - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.x );
-					TempVector.y = ( Int_Point.y - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.y );
-					TempVector.z = ( Int_Point.z - Ships[ lpShieldHullMsg->WhoIAm ].Object.Pos.z );
-					NormaliseVector( &TempVector );
-					CreateColSparks( &Int_Point, &TempVector, Ships[ lpShieldHullMsg->WhoIAm ].Object.Group );
-				}
-			}
-		}
-		Ships[lpShieldHullMsg->WhoIAm].Object.Shield	= lpShieldHullMsg->Shield;
-		Ships[lpShieldHullMsg->WhoIAm].Object.Hull		= lpShieldHullMsg->Hull;
-		return;
-
-
 	case MSG_SERVERSCORED:
 
 		lpServerScoredMsg = (LPSERVERSCOREDMSG)MsgPnt;
@@ -3894,22 +3854,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SERVERSCORED , FALSE , FALSE);
 		return;
 #endif
-		break;
-
-
-	case MSG_SHIELDHULL:
-
-		lpShieldHullMsg = (LPSHIELDHULLMSG)&CommBuff[0];
-        lpShieldHullMsg->MsgCode = msg;
-		lpShieldHullMsg->WhoIAm = WhoIAm;
-		lpShieldHullMsg->Shield = (BYTE) Ships[WhoIAm].Object.Shield;
-		lpShieldHullMsg->Hull = (BYTE) Ships[WhoIAm].Object.Hull;
-		lpShieldHullMsg->ValidChange = JustGenerated | JustPickedUpShield;
-		Ships[WhoIAm].ShieldHullCount++;
-		lpShieldHullMsg->Count = Ships[WhoIAm].ShieldHullCount;
-		JustPickedUpShield = FALSE;
-		JustGenerated = FALSE;
-		nBytes = sizeof( SHIELDHULLMSG );
 		break;
 
 
@@ -5972,19 +5916,6 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 
 	switch( *MsgPnt )
     {
-
-	case MSG_SHIELDHULL:
-
-		if( MyGameStatus != STATUS_Normal )
-			return FALSE;
-		if( GameStatus[Player] != STATUS_Normal )
-			return FALSE;
-		lpShieldHullMsg = (LPSHIELDHULLMSG)&CommBuff[0];
-		Group = Ships[ lpShieldHullMsg->WhoIAm ].RealGroup;
-		if( !VisibleOverlap( Ships[ Player ].Object.Group, Group, NULL ) )
-			return FALSE;
-		break;
-
 
     case MSG_PINGREPLY:
 
