@@ -968,7 +968,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 {
 	float dist;
 	int i;
-	char mess[30];
+	//char mess[30];
 
 	if( dcoID != 0 )
 	{
