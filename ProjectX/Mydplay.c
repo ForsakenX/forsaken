@@ -521,6 +521,10 @@ float FlagVolume;
 // watch player mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
 
+// calculates distance between you and a bike (Sfx.c)
+float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *listenerpos, uint16 listenergroup, long *vol, VECTOR *sfxvector );
+
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -962,6 +966,10 @@ void	TeamGoalsSend( uint16 * TeamGoals )
 
 void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon )
 {
+	float dist;
+	int i;
+	char mess[30];
+
 	if( dcoID != 0 )
 	{
 		TempShockwave.Owner = Owner;
@@ -969,7 +977,26 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 		TempShockwave.Group = Group;
 		TempShockwave.Weapon = Weapon;
 		TempShockwave.ShockwaveSize = ShockwaveSize;
-		SendGameMessage( MSG_SHOCKWAVE, 0, 0, 0, 0 );
+
+
+		// for every player in the game
+		for(i = 0; i < MAX_PLAYERS; i++)
+		{
+			// excluding myself and those who aren't in normal mode
+			if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
+			{
+				// if they are close to me
+				dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
+				if( (dist >= 0.0F) && ( dist <= 500.0F ))
+				{
+					// send them shockwave
+					SendGameMessage(MSG_SHOCKWAVE, Ships[i].dcoID, 0, 0, 0 );
+					// show me message (for debugging)
+					//sprintf(mess , "SENT SHOCKWAVE %g", dist);
+					//AddColourMessageToQue( 1, mess);
+				}
+			}
+		}
 	}
 }
 
