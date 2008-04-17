@@ -597,23 +597,6 @@ typedef struct _SERVERSCOREDMSG
 }SERVERSCOREDMSG, *LPSERVERSCOREDMSG;
 
 
-typedef struct _SHIELDHULLMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		Shield;
-	BYTE		Hull;
-	BYTE		ValidChange;
-	uint8		Count;
-}SHIELDHULLMSG, *LPSHIELDHULLMSG;
-
-
-typedef struct _ALIVEMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-}ALIVEMSG, *LPALIVEMSG;
-
 typedef struct _SENDKILLSDEATHSBIKENUMMSG
 {
     BYTE        MsgCode;
@@ -627,7 +610,6 @@ typedef struct _YOUQUITMSG
     BYTE        WhoIAm;
 	BYTE		You;
 }YOUQUITMSG, *LPYOUQUITMSG;
-
 
 
 typedef struct GUARANTEEDMSG
@@ -667,13 +649,6 @@ typedef struct _PINGMSG
 	BYTE		Pad;
 	LONGLONG	Time;
 }PINGMSG, *LPPINGMSG;
-
-typedef struct _PLAYERPINGSMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	uint16		Ping[ MAX_PLAYERS ];
-}PLAYERPINGSMSG, *LPPLAYERPINGSMSG;
 
 typedef struct _SHORTPICKUPMSG
 {
@@ -832,14 +807,6 @@ typedef struct _KILLPICKUPMSG
 	KILLPICKUPINFO	KillPickupInfo;
 
 } KILLPICKUPMSG, *LPKILLPICKUPMSG;
-
-typedef struct _EXPSECONDARYMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	EXPSECONDARYINFO	ExplodeSecondaryInfo;
-
-} EXPSECONDARYMSG, *LPEXPSECONDARYMSG;
 
 typedef struct _TEAMGOALSMSG
 {
@@ -1028,16 +995,6 @@ typedef struct _SESSIONDESCMSG
 
 #define MAXLEVELSPERBATCH 8
 
-typedef struct _LEVELNAMESMSG
-{
-    BYTE		MsgCode;
-    BYTE		WhoIAm;
-	BYTE		TotalLevels;
-	BYTE		ThisBatch;
-	BYTE		FirstLevel;
-	char		Level[ MAXLEVELSPERBATCH ][ 8 ];	// only first 8 chars of leve names are used
-}LEVELNAMESMSG, *LPLEVELNAMESMSG;
-
 typedef struct _TRACKERINFOMSG
 {
     BYTE    MsgCode;
@@ -1054,11 +1011,6 @@ extern BOOL	IsPseudoHost;
 extern int GuaranteedMessagesActive;
 extern GUID autojoin_session_guid;
 extern float FindSessionTimeout;
-extern BOOL	ServerChoosesGameType;
-
-#define SERVERLEVELS_Waiting	0
-#define SERVERLEVELS_None		1
-#define SERVERLEVELS_Got		2
 
 /*
  * fn prototypes

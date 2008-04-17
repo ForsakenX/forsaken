@@ -668,9 +668,6 @@ int16   NewLevelNum = 0 ;
 int16   NumLevels = 0;
 char  ShortLevelNames[MAXLEVELS][32];
 char  LevelNames[MAXLEVELS][128];
-char  ServerLevelNames[MAXLEVELS][ 8 ];
-uint8 ServerLevelsListState = SERVERLEVELS_Waiting;
-int16 NumServerLevels = 0;
 char  CollisionNames[MAXLEVELS][128];
 char  CollisionZNames[MAXLEVELS][128];
 char  BspNames[MAXLEVELS][128];
@@ -1513,22 +1510,6 @@ SetCursorClip( void )
   }
 }
 
-static BOOL LevelValid( char *level )
-{
-  uint16 i;
-  
-  if ( !IsPseudoHost )
-    return TRUE;
-
-  for ( i = 0; i < NumServerLevels; i++ )
-  {
-    if ( !_strnicmp( level, ServerLevelNames[ i ], 7 ) )  // 8th char could be null terminator
-      return TRUE;
-  }
-
-  return FALSE;
-}
-
 BOOL InitLevels( char * levels_list )
 {
 
@@ -1559,9 +1540,6 @@ BOOL InitLevels( char * levels_list )
   while ( j < MAXLEVELS && fscanf( f, " %s", ShortLevelNames[ j ] ) == 1 )
   {
 
-    // if the level is not a valid level
-    if ( ! LevelValid( ShortLevelNames[ j ] ) )
-		continue;
 
 	// get the path to the current mxv file
 	sprintf( LevelNames[ j ], "data\\levels\\%s\\%s.mxv", ShortLevelNames[ j ], ShortLevelNames[ j ] );

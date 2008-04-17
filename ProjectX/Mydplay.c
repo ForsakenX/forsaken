@@ -1790,7 +1790,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     LPDROPPICKUPMSG					lpDropPickup;
     LPVERYSHORTDROPPICKUPMSG   lpVeryShortDropPickup;
     LPKILLPICKUPMSG						lpKillPickup;
-    LPEXPSECONDARYMSG				lpExplodeSecondary;
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
     LPBGOUPDATEMSG					lpBGOUpdate;
@@ -1806,7 +1805,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
 	LPPINGMSG								lpPingMsg;
-	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
 	LPACKMSG								lpAckMsg;
 	LPGUARANTEEDMSG					lpGuaranteedMsg;
 	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
@@ -1832,7 +1830,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float * FloatPnt;
 	uint32	BigOffset = 2;
 	LPTRACKERINFOMSG	lpTrackerInfoMsg;
-	LPSHIELDHULLMSG	lpShieldHullMsg;
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	VECTOR Int_Point;
 	VECTOR Int_Point2;
@@ -3784,7 +3781,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPDROPPICKUPMSG					lpDropPickup;
     LPVERYSHORTDROPPICKUPMSG	lpVeryShortDropPickup;
     LPKILLPICKUPMSG						lpKillPickup;
-    LPEXPSECONDARYMSG				lpExplodeSecondary;
     LPTEAMGOALSMSG					lpTeamGoals;
     LPSHOCKWAVEMSG					lpShockwave;
     LPBGOUPDATEMSG					lpBGOUpdate;
@@ -3797,7 +3793,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPSHORTMINEMSG					lpShortMine;
     LPTEXTMSG								lpTextMsg;
     LPPINGMSG								lpPingMsg;
-	LPPLAYERPINGSMSG					lpPlayerPingsMsg;
 	LPNAMEMSG							lpName;
 	LPACKMSG								lpAckMsg;
 	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
@@ -3813,9 +3808,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
 #endif
-	LPLEVELNAMESMSG		lpLevelNamesMsg;
 	LPTRACKERINFOMSG		lpTrackerInfoMsg;
-	LPSHIELDHULLMSG		lpShieldHullMsg;
 	LPSERVERSCOREDMSG	lpServerScoredMsg;
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
@@ -5867,7 +5860,6 @@ BOOL CheckIfPacketRelevant( BYTE * MsgPnt , int Player )
 	LPPINGMSG							lpPingMsg;
 //	LPACKMSG							lpAckMsg;
 	int16									Group;
-	LPSHIELDHULLMSG				lpShieldHullMsg;
 
 	switch( *MsgPnt )
     {
