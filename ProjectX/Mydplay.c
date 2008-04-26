@@ -991,9 +991,6 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 				{
 					// send them shockwave
 					SendGameMessage(MSG_SHOCKWAVE, Ships[i].dcoID, 0, 0, 0 );
-					// show me message (for debugging)
-					//sprintf(mess , "SENT SHOCKWAVE %g", dist);
-					//AddColourMessageToQue( 1, mess);
 				}
 			}
 		}
@@ -4183,6 +4180,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShockwave->MsgCode = msg;
         lpShockwave->WhoIAm = WhoIAm;
         lpShockwave->ShockwaveInfo = TempShockwave;
+		send_to = to;
         nBytes = sizeof( SHOCKWAVEMSG );
         break;
 
@@ -4515,6 +4513,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				lpTextMsg->TextMsgType = Type;
 				lpTextMsg->Text[0] = CurrentTauntVariant;
 				MessageColour = PlayerMessageColour;
+				send_to = to;
 				break;
 			default:
 				lpTextMsg->TextMsgType = TEXTMSGTYPE_Taunt1;
