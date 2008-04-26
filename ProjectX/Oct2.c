@@ -3035,8 +3035,15 @@ void ProcessGameKeys( void )
         MenuRestart( &MENU_DemoPlaying );
       // if were playing the game
       else
-        // show the game menu
-        MenuRestart( &MENU_InGame );
+	  {
+			// show the multi-player menu
+			if(GameStatus[WhoIAm] != STATUS_PlayingDemo && GameStatus[WhoIAm] != STATUS_SinglePlayer)
+				 MenuRestart( &MENU_InGame );
+			// show the single-player menu
+			else
+				 MenuRestart( &MENU_InGameSingle );
+	  }
+
     // if were not in the menu
     // and the above check failed
     // reset variable so 3rd escape takes us back in

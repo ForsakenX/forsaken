@@ -486,6 +486,7 @@ extern MENUITEM * CurrentMenuItem;
 extern MENU MENU_ForceAbort;
 extern MENU MENU_Start;
 extern MENU MENU_InGame;
+extern MENU MENU_InGameSingle;
 extern MENU MENU_Help;
 extern MENU	MENU_DebugHelp;
 extern MENU	MENU_GotoRoom;

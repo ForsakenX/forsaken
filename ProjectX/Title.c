@@ -3081,6 +3081,28 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
 
+
+MENU	MENU_InGameSingle = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
+			{
+					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker"				*/,	(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
+					  OLDMENUITEM( 200, 128, LT_MENU_InGame2  /*"Toggle Full Screen"		*/,	NULL,						NULL,					MenuGoFullScreen,		MenuItemDrawName),
+					  OLDMENUITEM( 200, 144, LT_MENU_InGame3  /*"Load Game"					*/,	NULL,						&MENU_LoadSavedGame,	MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"					*/,	NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"					*/,	NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 224, LT_MENU_InGame8  /*"Quit to Main Menu"			*/,	NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
+					  OLDMENUITEM( 200, 240, LT_MENU_InGame25 /*"Quit to desktop"			*/,	NULL,						NULL,					SelectQuit,				MenuItemDrawName),
+#ifndef EXTERNAL_DEMO
+#ifdef DEBUG_ON
+					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
+#endif
+#endif
+				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"			*/,	&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
+					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"					*/,	NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
+					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"				*/,	NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
+					  					  
+					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
+};
+
 MENU	MENU_ForceAbort = {
 	"Sorry Directplay has forced you to quit due to 1 of its bugs" , NULL , NULL , NULL, 0,
 	{
