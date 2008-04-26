@@ -957,7 +957,7 @@ BOOL ProcessShips()
 				}
 
 				// watch mode
-				if(WatchPlayerSelect.value != WhoIAm) 
+				if(WatchPlayerSelect.value != WhoIAm && ShipObjPnt->Mode != DEMO_MODE	) 
 					ShipObjPnt->Mode = WATCH_MODE; 
 		
 				( * ModeControl[ ShipObjPnt->Mode ] )( ShipPnt , i );		//go off and do his thing...
