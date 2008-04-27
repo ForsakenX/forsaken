@@ -1478,6 +1478,7 @@ void CheckTimeLimit( void )
 
 			CreateCountdownDigits();
 			StartCountDown( 1, 0 );
+			ResetCountDownBombTag( ( TVpnt->State * 100.0F ) );
 			TimeLimitTrigger = NULL;
 		}
 	}

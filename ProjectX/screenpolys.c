@@ -1632,6 +1632,66 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:	Start CountDown Timer
+	Input		:	int16	Minutes
+				:	int16	Seconds
+	Output		:	Nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void ResetCountDownBombTag( float Amount )
+{
+	LONGLONG	Time_Freq;
+	LONGLONG	Time_Value;
+
+	CurrentCountDownFont = 0;
+	Countdown_Float = Amount;
+
+	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
+	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
+	Old_Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
+
+	Toggle = FALSE;
+	ScaleInc = 0.0F;
+	Interp_Time = 0.0F;
+	CountDown_X = TIMERSTARTSCREENX;
+	CountDown_Y = TIMERSTARTSCREENY;
+	CountDown_Xoff = 0.0F;
+	CountDown_Yoff = 0.0F;
+	CountDown_Wanted_X = TIMERSTARTSCREENX;
+	CountDown_Wanted_Y = TIMERSTARTSCREENY;
+	CountDown_Scale = TIMERSTARTSCALE;
+	CountDown_Wanted_Scale = TIMERSTARTSCALE;
+	CountDown_Col = 1.0F;
+
+	if( Countdown_Float < 1000.0F )
+	{
+		CurrentCountDownFont = 1;
+		CountDown_Wanted_X = TIMERENDSCREENX;
+		CountDown_Wanted_Y = TIMERENDSCREENY;
+		CountDown_Wanted_Scale = TIMERENDSCALE;
+		ScaleInc = ( ( CountDown_Wanted_Scale - CountDown_Scale ) / 420.0F );
+		CountDown_Xoff = ( ( CountDown_Wanted_X - CountDown_X ) / 420.0F );
+		CountDown_Yoff = ( ( CountDown_Wanted_Y - CountDown_Y ) / 420.0F );
+		Interp_Time = 420.0F;
+
+		if( Countdown_Float >= 300.0F )
+		{
+			Interp_Time = ( ( Countdown_Float - 300.0F ) * ( 600.0F / 1000.0F ) );
+			CountDown_X = ( TIMERSTARTSCREENX + ( CountDown_Xoff * ( 420.0F - Interp_Time ) ) );
+			CountDown_Y = ( TIMERSTARTSCREENY + ( CountDown_Yoff * ( 420.0F - Interp_Time ) ) );
+			CountDown_Scale = ( TIMERSTARTSCALE + ( ScaleInc * ( 420.0F - Interp_Time ) ) );
+		}
+		else
+		{
+			Interp_Time = 0.0F;
+			CountDown_X = CountDown_Wanted_X;
+			CountDown_Y = CountDown_Wanted_Y;
+			CountDown_Scale = CountDown_Wanted_Scale;
+			CountDown_Col = ( Countdown_Float / 300.0F );
+		}
+	}
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Add Solid ScreenPoly Text
 	Input		:	uint16	BoxNumber
 				:	float	XPos
