@@ -1874,7 +1874,9 @@ void TestBlt()
         }
 
       
-      }else{
+      }
+	  else
+	  {
         //  Blt Crosshair
         if( !EnhancedXHair )
         {
@@ -1925,7 +1927,9 @@ void TestBlt()
       if( DrawSimplePanel )
       {
         PlotSimplePanel();
-      }else{
+      }
+	  else
+	  {
         if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
         {
           // Full Screen Minimum Stats...
@@ -1967,7 +1971,9 @@ void TestBlt()
               HullHit -=1;
             
 
-          }else{
+          }
+		  else
+		  {
             // blt hull
             DoFontBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight , FontWidth , d3dappi.szClient.cy-((FontHeight*1)+2) );
             // blt shld
@@ -1990,7 +1996,9 @@ void TestBlt()
             {
               GeneralBltFast( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
                       lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, d3dapp->lpBackBuffer);
-            }else{
+            }
+			else
+			{
               ShieldHit -=1;
               GeneralBltFast( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
                       lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
@@ -2001,7 +2009,9 @@ void TestBlt()
             {
               GeneralBltFast( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
                       lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-            }else{
+            }
+			else
+			{
               HullHit -=1;
               GeneralBltFast( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
                       lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
@@ -2013,22 +2023,18 @@ void TestBlt()
           Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
           // blt hull num
           if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
-          {
             Printuint16( (uint16) 1 , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
-          }else{
+		  else
             Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
-          }
           // Blt Primary ammo
           if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
-          {
             energy =  (int) PyroliteAmmo;
-          }else{
+		  else
+		  {
             if( Ships[WhoIAm].Primary == SUSS_GUN )
-            {
               energy = (int) SussGunAmmo;
-            }else{
+			else
               energy = (int) GeneralAmmo;
-            }
           }
           Printuint16( (uint16) energy , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
           
@@ -2055,10 +2061,23 @@ void TestBlt()
 	  if(ShowStatistics)
 		  ShowInGameStats();
 
-	  // show who i am watching
+	  // watch mode
 	  if(SwitchedToWatchMode)
 	  {
-			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 2 );
+			// show who i am watching
+			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 4 );
+			// display cross-hair
+			GeneralBltFast( 0 , 0 , 16 , 16  , (viewport.dwX + (viewport.dwWidth>>1))-8 , (viewport.dwY + (viewport.dwHeight>>1))-8 ,
+				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+			// invulnerable
+			if( Ships[WatchPlayerSelect.value].Invul )
+				Print4x5Text( "Invulnerable" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
+			// golden power pod
+			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
+				Print4x5Text( "Golden Power Pod" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
+			// stealthed
+			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
+				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );	  
 	  }
     }
 	else
@@ -2074,21 +2093,16 @@ void TestBlt()
 			MessageQuePrint();
 
         if( DemoEyesSelect.value != MAX_PLAYERS )
-        {
           Print4x5Text( Names[DemoEyesSelect.value] ,d3dappi.szClient.cx - (FontWidth*9), FontHeight , 0 );
-        }
       }
     }
     if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
-    {
       CenterPrint4x5Text( "Game Over" , (d3dappi.szClient.cy >> 1) - (FontHeight*2) , 2 );
-    }
   }
 
 }
 
-void
-ReleaseLevel(void)
+void ReleaseLevel(void)
 {
   switch( MyGameStatus )
   {

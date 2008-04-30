@@ -12,14 +12,14 @@
 #define FIND_SESSION_TIMEOUT			3600.0F
 #define MULTIPLAYER_VERSION				(0x010d)
 #define DEMO_MULTIPLAYER_VERSION		(0x0109)
-#define	GUARANTEEDMESSAGES
+#define GUARANTEEDMESSAGES
 #define MAXPACKETSPERBIGPACKET		64
 #define MAXBIGPACKETBUFFERSIZE			1024
 #define MAXPACKETSPERSERVERPACKET	64
 #define SHORTBANK
 #define VERYSHORTPACKETS
 #define NOISEFALLOFFFACTOR				( 1.0F / 120.0F )	// approx 2 seconds....
-#define NORMAL_MODE 0
+#define NORMAL_MODE							0
 #define DEATH_MODE							1
 #define LIMBO_MODE							2			// this is what the ship is in while viewing its own death....but has blown up...
 #define DEMO_MODE								3			// this is the mode the camera goes into when Playing back a Demo

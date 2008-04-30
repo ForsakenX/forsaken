@@ -199,8 +199,13 @@ extern	char PrimaryNames[7][16];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	float	RegenDelay;
 
+
 // custom colour messages (Title.c)
 extern int PickupMessageColour;
+// player selected for watch mode - used to display their missile camera (Title.c)
+extern SLIDER WatchPlayerSelect;
+// player selected in demo mode - used to display their missile camera (Title.c)
+extern SLIDER DemoEyesSelect;
 
 void DebugPrintf( const char * format, ... );
 
@@ -1525,7 +1530,16 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 	uint16	fmpoly;
 	uint16	model;
 	int16	Count;
+	int Player; // used for watch or demo mode
 
+	// normal missile camera or watch mode camera
+	if(Ships[ WhoIAm ].Object.Mode != DEMO_MODE)
+		Player = WatchPlayerSelect.value;
+	// demo missile camera
+	else 
+		Player = DemoEyesSelect.value;
+	
+	
 	if( !VectorLength( Dir ) )
 	{
 		return( (uint16) -1 );
@@ -1570,7 +1584,7 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 
 	if( i != (uint16) -1 )
 	{
-		if( ( OwnerType == OWNER_SHIP ) && ( Owner == WhoIAm ) )
+		if( ( OwnerType == OWNER_SHIP ) && ( Owner == Player/*WhoIAm*/ ) )
 		{
 			CameraMissile = i;
 			MissileCameraActive = 1;
