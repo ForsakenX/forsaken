@@ -717,7 +717,6 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 void	InitPrimBulls(void)
 {
 	uint16	i;
-	int16	Count;
 	FirstPrimBullUsed = (uint16) -1;
 	FirstPrimBullFree = 0;
 	for( i = 0 ; i < MAXPRIMARYWEAPONBULLETS ; i++ )
@@ -848,7 +847,6 @@ void HostRestoreAmmo( int16 Player )
 void InitAmmoUsed( void )
 {
 	int16	Count;
-	int16	Player;
 
 	for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
 	{
