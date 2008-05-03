@@ -2687,7 +2687,6 @@ int NakedGirls( char *cheat )
 
 	if( !NudeGirls )
 	{
-		//AddMessageToQue( "Stripping...." );
 		FlashMenuText( "stripping....", 120.0F, SFX_Secret );
 
 		NudeGirls = TRUE;
@@ -2722,7 +2721,6 @@ int NakedGirls( char *cheat )
 	}
 	else
 	{
-		//AddMessageToQue( "You've seen enough !!!!" );
 		FlashMenuText( "You've seen enough !!!!", 120.0F, SFX_Secret );
 
 		NudeGirls = FALSE;

@@ -118,8 +118,8 @@ uint16 little[4] = { 1000 , 100 , 10 , 1 };
 int CurrentMessage = 0;
 float MessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
 int MessageColour[MAX_MESSAGES];
-char MessageBank[MAX_MESSAGES][200];
-char MessageBankLong[MAX_MESSAGES_LONG][200];
+char MessageBank[MAX_MESSAGES][MAXPERLINE];
+char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
 uint8	CharTrans[256];
 uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
@@ -501,7 +501,19 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void	MessageQuePrint( void )
 {
-	int i,e;
+	int i,e,j,y,z,MAX;
+	char MessageBuff[80];
+
+	// scale in-game text according to screenwidth
+	// small::: less than 800 res (e.g. 640x480)
+	if(d3dappi.szClient.cx < 800)
+		MAX = 38;
+	// medium::: less than 1024 res (e.g. 800x600)
+	else if(d3dappi.szClient.cx < 1024)
+		MAX = 59;
+	// big::: 1024+ (e.g. 1024x786, 1280x1024)
+	else
+		MAX = 80;
 
 	e = CurrentMessage + 1;
 	e &= 3;
@@ -509,7 +521,7 @@ void	MessageQuePrint( void )
 	MessageBank[e][0] = 0;
 	e = CurrentMessage -2;
 	e &= 3;
-	for( i = 0 ; i < 3 ; i++ )
+	for( i = 2, y=0 ; i >-1 ; i-- )
 	{
 		MessageTime[e] -= framelag;
 		if( MessageTime[e] < 0.0F && (MessageBank[(e-1)&3][0] == 0) )
@@ -519,7 +531,26 @@ void	MessageQuePrint( void )
 		}
 		else
 		{
-			CenterPrint4x5Text( &MessageBank[e][0] , (i*(FontHeight+1))+16 , MessageColour[e] );
+			
+				// for all lines of this message
+				for(z=0; z*MAX < MAXPERLINE; z++)
+				{
+					// that have contents 
+					if(strcmp(&MessageBankLong[i][MAX*z],(const char*) "\0") != 0)
+					{
+						// display it to the screen
+						strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
+						// centered
+						CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
+						// left-aligned
+						//Print4x5Text( &MessageBuff[0], FontWidth*20 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
+						y++; // move down to next line on screen
+					}
+					else
+						break;
+				}	
+			
+			//CenterPrint4x5Text( &MessageBank[e][0] , (i*(FontHeight+1))+16 , MessageColour[e] );
 		}
 		e++;
 		e &= 3;
@@ -533,72 +564,58 @@ void	MessageQuePrint( void )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void	MessageQuePrintAll( void )
 {
-	int i;
+	int i,j,y,z,MAX;
+	char MessageBuff[150];
 
-	for( i = MAX_MESSAGES_LONG; i >-1 ; i-- )
+	// scale in-game text according to screenwidth
+	// small::: less than 800 res (e.g. 640x480)
+	if(d3dappi.szClient.cx < 800)
+		MAX = 55;
+	// medium::: less than 1024 res (e.g. 800x600)
+	else if(d3dappi.szClient.cx < 1024)
+		MAX = 73;
+	// big::: 1024+ (e.g. 1024x786, 1280x1024)
+	else
+		MAX = 100;
+
+	// for all messages in history
+	for (i=0, y=0; i < MAX_MESSAGES_LONG; i++)
 	{
-			CenterPrint4x5Text( &MessageBankLong[i][0] ,((i*(FontHeight+1))+16) , MessageColourLong[i] );
+			// for all lines of this message
+			for(z=0; z*MAX < MAXPERLINE; z++)
+			{
+				// that have contents 
+				if(strcmp(&MessageBankLong[i][MAX*z],(const char*) "\0") != 0)
+				{
+					// display it to the screen
+					strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
+					//CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
+					Print4x5Text( &MessageBuff[0], FontWidth*25 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
+			
+					
+					y++; // move down to next line on screen
+				}
+				else
+					break;
+			}
 	}
+
+	
 }
 
-uint8 TempMessage[512];
+char TempMessage[512];
 float MessageSize;
 float ThisMessageTime;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Message to the Que Short...
-	Input		:		char * Text
-	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddMessageToQueShort( uint8 ** Text )
-{
-	uint8 * Pnt;
-	int i;
-	Pnt = *Text;
-
-	CurrentMessage++;
-	CurrentMessage&=3;
-	MessageTime[CurrentMessage] = ThisMessageTime;
-
-	MessageColour[CurrentMessage] = 2; // Set colour to green (default)
-	
-	for( i = 0 ; i < MAXPERLINE ; i++ )
-	{
-		MessageBank[CurrentMessage][i] = *Pnt;
-		if( *Pnt == 0 )
-		{
-			*Text = NULL;
-			return;
-		}
-		Pnt++;
-	}
-
-	i = MAXPERLINE-1;
-	while( *Pnt != 0x20 && i >= 0 )
-	{
-		Pnt--;
-		i--;
-	}
-
-	if( i >= 0 )
-	{
-		MessageBank[CurrentMessage][i+1] = 0;
-		*Text = Pnt+1;
-		return;
-	}
-
-	MessageBank[CurrentMessage][0] = 0;
-	*Text = NULL;
-}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Add Colour Message to the Que Short...
 	Input		:		char * Text
 	Output		:		nothing
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddColourMessageToQueShort( uint8 ** Text, int Colour )
+void AddColourMessageToQueShort( char ** Text, int Colour )
 {
-	uint8 * Pnt;
+	char * Pnt;
 	int i,x,j;
 	Pnt = *Text;
 
@@ -614,13 +631,18 @@ void AddColourMessageToQueShort( uint8 ** Text, int Colour )
 		// clean buffer
 		for(j = 0; j < MAXPERLINE; j++)
 			MessageBankLong[x][j] = 0;
-		
+
 		// move message up que by one
 		strcpy((char *)MessageBankLong[x], (char *)MessageBankLong[x-1]);
 		MessageColourLong[x] = MessageColourLong[x-1];
 	}
 	/* end of saving to longer buffer */
 
+	// clean first line of buffer
+	for(j = 0; j < MAXPERLINE; j++)
+			MessageBankLong[0][j] = 0;
+
+	// add message to buffers
 	for( i = 0 ; i < MAXPERLINE ; i++ )
 	{
 		MessageBank[CurrentMessage][i] = *Pnt;
@@ -655,42 +677,12 @@ void AddColourMessageToQueShort( uint8 ** Text, int Colour )
 	*Text = NULL;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Message to the Que...
-	Input		:		char * Text
-	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AddMessageToQue( char * Text, ... )
-{
-	uint8 * Pnt;
-	va_list args;
-
-	va_start( args, Text );
-	vsprintf( &TempMessage[0], Text, args);
-	va_end( args );
-
-	TempMessage[511] = 0;
-
-	Pnt = &TempMessage[0];
-
-	MessageSize = (float) strlen(&TempMessage[0]);
-	ThisMessageTime = MAXMESSAGETIME * (MessageSize / MAXPERLINE);
-	if( ThisMessageTime < (MAXMESSAGETIME * 0.25F) )
-		ThisMessageTime = MAXMESSAGETIME * 0.25F;
-
-
-	while( Pnt )
-	{
-		AddMessageToQueShort( &Pnt );
-	}
-}
-
 void AddColourMessageToQue( int Colour, char * Text, ... )
 {
 	// -1 = do not display
 	if(Colour > -1)
 	{
-		uint8 * Pnt;
+		char * Pnt;
 		va_list args;
 
 		va_start( args, Text );

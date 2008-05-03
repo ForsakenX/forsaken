@@ -208,7 +208,7 @@ enum
 };
 
 
-#define	MAXTEXTMSG			128		// the number of chars in a message you can send.....
+#define	MAXTEXTMSG			512		// the number of chars in a message you can send.....
 //	Strucures
 #define	TEXTFLAG_Nothing			0
 #define	TEXTFLAG_CentreX			1		// centre text along x axis of bounding box

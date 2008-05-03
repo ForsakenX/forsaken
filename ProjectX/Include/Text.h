@@ -7,7 +7,7 @@
  */
 
 #define	MAX_MESSAGES 4
-#define  MAX_MESSAGES_LONG 50
+#define  MAX_MESSAGES_LONG 100
 #define	MAXMESSAGETIME 480.0F
 //#define MAX_TEAMS 4
 #ifdef DEBUG_ON
@@ -15,7 +15,7 @@
 #else
 #define MAXTEXTMESSAGES 128
 #endif
-#define MAXPERLINE 48//62
+#define MAXPERLINE 512 // message buffer width - line width set in (Text.c) MessageQuePrint/All
 
 #define MAX_STATS_MESSAGES 32
 #define MAX_STATS_MESSAGE_VARIATIONS 16
@@ -55,7 +55,6 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col );
 void Printuint16( uint16 tempnum , int x , int y , int col );
 void MessageQuePrint( void );
 void AddColourMessageToQue(  int Colour, char * Text, ... );
-void AddMessageToQue( char * Text, ... );
 void RightJustifyPrint4x5Text( char * Text , int x , int y, int col );
 void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y);
 void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface );

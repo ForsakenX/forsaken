@@ -78,7 +78,6 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
 
 BOOL	IsStartPosVacant( int16 i , uint16 startpos );
 extern void DebugPrintf( const char * format, ... );
-void AddMessageToQue( char * Text, ... );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 
@@ -2185,7 +2184,7 @@ int16 DoDamage( BOOL OverrideInvul )
 	{
 		if ( Message[ 0 ] )
 		{
-			AddMessageToQue( &Message[ 0 ] );
+			AddColourMessageToQue( SystemMessageColour, &Message[ 0 ] );
 		}
 	}
 	

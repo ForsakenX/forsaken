@@ -253,7 +253,6 @@ void ProcessMenuFlashText( void )
 int EnableCheats( char *cheat )
 {
   CheatsEnabled = TRUE;
-  //AddMessageToQue( "cheat mode enabled" );
   FlashMenuText( "cheat mode enabled", 120.0F, SFX_Secret );
   Cheated = TRUE;
 
@@ -262,7 +261,6 @@ int EnableCheats( char *cheat )
 
 int JimBeam( char *cheat )
 {
-  //AddMessageToQue( cheat );
   if( PrimaryWeaponCheat )
   {
     PrimaryToFireLookup[ PULSAR ] = PULSAR;
@@ -294,7 +292,6 @@ int Lumberjack( char *cheat )
   };
   FlashMenuText( msg[ line++ % ( sizeof( msg ) / sizeof( msg[ 0 ] ) ) ], 120.0F, SFX_Secret );
 #else
-  //AddMessageToQue( cheat );
   if( SecondaryWeaponCheat )
   {
     FlashMenuText( "...and he sleeps all day", 120.0F, SFX_Secret );
@@ -350,13 +347,11 @@ int ToggleLevelSelectMode( char *cheat )
   if( !LevelSelectMode )
   {
     LevelSelectMode = TRUE;
-    //AddMessageToQue( "Level Select Mode Enabled" );
     FlashMenuText( "Level select mode enabled", 120.0F, SFX_Secret );
   }
   else
   {
     LevelSelectMode = FALSE;
-    //AddMessageToQue( "Level Select Mode Disabled" );
     FlashMenuText( "Level select mode disabled", 120.0F, SFX_Secret );
   }
   

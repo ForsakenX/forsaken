@@ -6553,7 +6553,7 @@ BOOL ActuallyCollectPickup( uint16 i )
 				}
 				else
 				{
-					AddMessageToQue( &Message[ 0 ] );
+					AddColourMessageToQue( SystemMessageColour, &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = TRUE;
 			}

@@ -1636,7 +1636,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		}
 		else
 		{
-			AddMessageToQue( YOU_HAVE_BECOME_THE_HOST );
+			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
 		}
 		*/
 

@@ -30,7 +30,7 @@
 #define START_SHIELD							128.0F
 #define MAX_HULL								255.0F
 #define START_HULL								128.0F
-#define MAXTEXTMSG							128		// the number of chars in a message you can send.....
+#define MAXTEXTMSG							512		// the number of chars in a message you can send.....
 #define MAXGENPICKUPCOUNT				5
 #define MAXGENREGENSLOTCOUNT			6
 #define MAXGENMINECOUNT					3 //4
