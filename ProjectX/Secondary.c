@@ -2775,7 +2775,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 												    SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 													&ClosestCos );
 						if( Enemy != (uint16) -1 ) Ship = (uint16) -1;
-#if 0
+#if 1
 						Secondary = TargetClosestSecondary( &SecBulls[i].Pos, &SecBulls[i].DirVector, SecBulls[i].GroupImIn,
 												  SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 												  &ClosestCos );
@@ -2831,7 +2831,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						Ship = TargetClosestShip( &SecBulls[i].Pos, &SecBulls[i].DirVector, SecBulls[i].GroupImIn,
 												  SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 												  &ClosestCos );
-#if 0
+#if 1
 						Secondary = TargetClosestSecondary( &SecBulls[i].Pos, &SecBulls[i].DirVector, SecBulls[i].GroupImIn,
 												  SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 												  &ClosestCos );
@@ -2875,7 +2875,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						Ship = TargetClosestShip( &SecBulls[i].Pos, &SecBulls[i].DirVector, SecBulls[i].GroupImIn,
 												  SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 												  &ClosestCos );
-#if 0
+#if 1
 						Secondary = TargetClosestSecondary( &SecBulls[i].Pos, &SecBulls[i].DirVector, SecBulls[i].GroupImIn,
 												  SecBulls[i].OwnerType, SecBulls[i].Owner, SecBulls[i].ViewCone,
 												  &ClosestCos );
