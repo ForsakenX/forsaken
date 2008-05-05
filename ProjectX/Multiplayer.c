@@ -1053,22 +1053,14 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 	// copy name of session into SessionNames
 	strncpy(
 		SessionNames[ SessionsList.items ],				// reciever
-#ifdef UNICODE
-		lpDPSessionDesc->lpszSessionName,				// giver
-#else
 		lpDPSessionDesc->lpszSessionNameA,				// giver
-#endif
 		sizeof( SessionNames[ SessionsList.items ] )	// size to give
 		);
 
 	// copy name of session into SessionsList
 	strncpy(
 		SessionsList.item[SessionsList.items],			// reciever
-#ifdef UNICODE
-		lpDPSessionDesc->lpszSessionName,				// giver
-#else
 		lpDPSessionDesc->lpszSessionNameA,				// giver
-#endif
 		sizeof(SessionsList.item[0])					// size to give
 		);
 
@@ -1076,11 +1068,7 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 	if(
 		// the size of the given name
 		strlen(
-#ifdef UNICODE
-			lpDPSessionDesc->lpszSessionName
-#else
 			lpDPSessionDesc->lpszSessionNameA
-#endif
 		// is bigger than our holder
 		) >= sizeof(SessionsList.item[0])
 	)
@@ -1293,18 +1281,8 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 	if( PlayersList.items < MAX_PLAYERS )
 	{
 		PlayerIDs[PlayersList.items] = pidID;
-
-#ifdef UNICODE
-		strncpy( PlayersList.item[PlayersList.items] , lpName->lpszShortName , sizeof(PlayersList.item[0])  );
-#else
 		strncpy( PlayersList.item[PlayersList.items] , lpName->lpszShortNameA , sizeof(PlayersList.item[0])  );
-#endif
-
-#ifdef UNICODE
-		if( strlen(lpName->lpszShortName ) >= sizeof(PlayersList.item[0]) )
-#else
 		if( strlen(lpName->lpszShortNameA ) >= sizeof(PlayersList.item[0]) )
-#endif
 		{
 			strcpy( PlayersList.item[PlayersList.items] + sizeof(PlayersList.item[0]) - 4 , "..." );
 		}

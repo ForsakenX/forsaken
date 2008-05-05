@@ -352,9 +352,6 @@ failed:
 
 LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize)
 {
-#ifdef UNICODE
-    dwSize *= 2; // calc number of bytes
-#endif
 	if ( ! appHKey )	return -1;
 	return RegSetValueEx(appHKey, lptszName, 0, REG_BINARY, lpData, dwSize );
 }

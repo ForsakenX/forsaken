@@ -542,12 +542,8 @@ BOOL CheckForName( BYTE Player )
 		{
 			lpDpName = (LPDPNAME) &namebuf[0];
 			lpDpName->dwSize = sizeof(DPNAME);
-			NamePnt = (char*) &Names[Player][0];
-#ifdef UNICODE
-			NamePnt2 = (char*) lpDpName->lpszShortName;
-#else				
+			NamePnt = (char*) &Names[Player][0];			
 			NamePnt2 = (char*) lpDpName->lpszShortNameA;
-#endif
 			for( i = 0 ; i < 7 ; i++ )
 			{
 				*NamePnt++ = *NamePnt2++;

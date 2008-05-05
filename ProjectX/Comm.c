@@ -107,8 +107,7 @@ HRESULT DPlayClose(void)
 /*
  * DPlayCreate
  *
- * Wrapper for DirectPlay Create API. Retrieves a DirectPlay3/DirectPlay3A interface
- * based on the UNICODE flag
+ * Wrapper for DirectPlay Create API.
  * 
  */
 HRESULT DPlayCreate(LPGUID lpGuid)
@@ -121,12 +120,8 @@ HRESULT DPlayCreate(LPGUID lpGuid)
     {
         if (lpDP)
         {
-            // query for a DirectPlay3(A) interface
-#ifdef UNICODE
-            hr = IDirectPlay_QueryInterface(lpDP,&IID_IDirectPlay4,(LPVOID *)&glpDP);
-#else
+            // query for a DirectPlay interface
             hr = IDirectPlay_QueryInterface(lpDP,&IID_IDirectPlay4A,(LPVOID *)&glpDP);
-#endif
             // no longer need the DirectPlay1 interface
             IDirectPlay_Release(lpDP);
         }
@@ -162,11 +157,7 @@ HRESULT DPlayCreatePlayer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent,
 		}
 	}
 
-#ifdef UNICODE
-    name.lpszShortName = lptszPlayerName;
-#else
     name.lpszShortNameA = lptszPlayerName;
-#endif
 
 	if( DplayRecieveThread )
 	{
@@ -290,12 +281,7 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 	Old_Kills = 0;
 	Old_Deaths = 0;
 
-
-#ifdef UNICODE
-    dpDesc.lpszSessionName = lptszSessionName;
-#else
     dpDesc.lpszSessionNameA = lptszSessionName;
-#endif
 
     // set the application guid
 	dpDesc.guidApplication = PROJX_GUID;
@@ -366,11 +352,7 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 
 	// we want to find private sessions as well
 	// do we need to provide a password now ???
-#ifdef UNICODE
-	dpDesc.lpszPassword = "";
-#else
 	dpDesc.lpszPasswordA = "";
-#endif
 
 	// if we have a direct play lobby available
     if (glpDP)
@@ -853,16 +835,6 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 	}
 
 	// create a DirectPlay ANSI interface
-#ifdef UNICODE
-	if FAILED(
-		CoCreateInstance(
-			&CLSID_DirectPlay,
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			&IID_IDirectPlay4,
-			(LPVOID*)&lpDPlay
-			))
-#else
 	if FAILED(
 		CoCreateInstance(
 			&CLSID_DirectPlay,
@@ -871,7 +843,6 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 			&IID_IDirectPlay4A,
 			(LPVOID*)&lpDPlay
 			))
-#endif
 		goto FAILURE;
 
 	// initialize the connection using the address
@@ -1178,11 +1149,7 @@ BOOL LaunchedByLobby(void)
     // create our player
     hr = DPlayCreatePlayer(
                             &dcoID,
-#ifdef UNICODE
-							glpdplConnection->lpPlayerName->lpszShortName,
-#else
 							glpdplConnection->lpPlayerName->lpszShortNameA,
-#endif
 							NULL,
 							NULL,
 							0
@@ -1264,25 +1231,6 @@ void ContinueLobbyLaunch( void )
 		}
 	}
 
-/*
-    // create our player
-    hr = DPlayCreatePlayer(
-                            &dcoID,
-#ifdef UNICODE
-							glpdplConnection->lpPlayerName->lpszShortName,
-#else
-							glpdplConnection->lpPlayerName->lpszShortNameA,
-#endif
-							NULL,
-							NULL,
-							0
-                          );
-    if (FAILED(hr))
-    {
-        goto FAIL;
-    }
-*/
-
 	if ( !IsHost )
 	{
 		MyGameStatus = STATUS_WaitingForLobbyConnect;
@@ -1334,11 +1282,7 @@ HRESULT DPlayCreateSessionServer( LPTSTR lptszSessionName )
 
 	StoreSessionUserFields( &dpDesc );
 
-#ifdef UNICODE
-    dpDesc.lpszSessionName = lptszSessionName;
-#else
     dpDesc.lpszSessionNameA = lptszSessionName;
-#endif
 
     // set the application guid
 	dpDesc.guidApplication = PROJX_GUID;
@@ -1363,11 +1307,7 @@ HRESULT DPlayCreatePlayerServer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE h
 	ZeroMemory(&name,sizeof(name));
     name.dwSize = sizeof(DPNAME);
 
-#ifdef UNICODE
-    name.lpszShortName = lptszPlayerName;
-#else
     name.lpszShortNameA = lptszPlayerName;
-#endif
 
 	// hPlayerEvent will be null if the recieve message stuff is not on a seperate thread
 	if (glpDP)
