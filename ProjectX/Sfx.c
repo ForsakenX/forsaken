@@ -14,12 +14,7 @@
 #include "Mydplay.h"
 #include <objbase.h>
 #include <cguid.h>
-#ifdef USE_A3D
-#include "ia3d.h"
-#endif
-
 #include "title.h"
-
 #include "text.h"
 #include "main.h"
 #include "dinput.h"
@@ -173,17 +168,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
 void InitSfxHolders( void );
 void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
 int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance );
-
-#ifdef USE_A3D
-/****************************************
-A3D specific
-*****************************************/
-LPIA3D	gpA3d = NULL;		// Allows access to resource-management, HF-absorption, etc.
-void A3DCleanup( void );	// Handler for cleanup of global interface pointer to A3D.
-int SetRezManMode( DWORD dwRMMode );	// Resource-manager mode-setting.
-#endif
-
-
 
 SFXNAME		Sfx_Filenames[MAX_SFX] =
 {
@@ -3300,7 +3284,7 @@ FUNCTION:   Init_SoundGlobals
 
 PURPOSE:    Initializes the tiErree main global variables. After this is done,
             we should have allocated:
-            a. A DirectSound/A3D Object
+            a. A DirectSound
             b. A DirectSound3DListener Object
             c. A Primary Buffer.
 
@@ -3310,64 +3294,34 @@ BOOL Init_SoundGlobals(void)
 {
 	DSBUFFERDESC  dsbdesc;
 	int			  iErr = 0;
-#ifdef USE_A3D
- 	LPIA3D		  lpA3d = NULL;
-#endif
 #ifdef DEBUG_ON
 	char *from_file = __FILE__;
 	int from_line = __LINE__;
 #endif
+	lpDS = NULL;
 
-#ifdef USE_A3D
-	// Attempt to initialize with A3D.
-	// First look for A3D.DLL using CoCreateInstance.
-	iErr = CoCreateInstance(&CLSID_A3d, NULL, CLSCTX_INPROC_SERVER,
+	// Attempt to initialize with DirectSound.
+	// First look for DSOUND.DLL using CoCreateInstance.
+	iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
 								 &IID_IDirectSound, (void **) &lpDS);
-#endif
-#if 0		// not allowing A3D for now...
-	if (iErr >= DS_OK)	// Found A3D.DLL
-	{
-		// See if an A3D accelerator is present on the machine.
-		iErr = IDirectSound_Initialize(lpDS, NULL);
 	
-		if ((iErr >= DS_OK) && (lpDS))	// Found A3D-accelerator.
-		{
-			// With A3D, we know there is 3D acceleration for sure.
-			Sound3D = TRUE;
-			A3DCapable = TRUE;
-			DebugPrintf("A3D detected...\n");
-		}
-	}
+	if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
+		iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init DS.
 
-	if (iErr < DS_OK)	// Failed to get A3D: either no DLL or no accelerator.
-#endif
+	if (iErr < DS_OK)
 	{
-		A3DCapable = FALSE;
-		lpDS = NULL;
-
-		// Attempt to initialize with DirectSound.
-		// First look for DSOUND.DLL using CoCreateInstance.
-		iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
-									 &IID_IDirectSound, (void **) &lpDS);
-		
-		if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
-			iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init DS.
-
-		if (iErr < DS_OK)
-		{
-			DebugPrintf("returning FALSE from Init_SoundGlobals at point 1\n");
-			return(FALSE);	// Failed to get DirectSound, so no sound-system available.
-		}
-		else
-		{
-			// Succeeded in getting DirectSound.
-			// Check to see if there is 3D acceleration.
-			DSCAPS	dsCaps;
-			dsCaps.dwSize = sizeof(DSCAPS);
-			IDirectSound_GetCaps(lpDS, &dsCaps);
-			// Allow 3D sound only if acceleration exists.
-			Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
-		}
+		DebugPrintf("returning FALSE from Init_SoundGlobals at point 1\n");
+		return(FALSE);	// Failed to get DirectSound, so no sound-system available.
+	}
+	else
+	{
+		// Succeeded in getting DirectSound.
+		// Check to see if there is 3D acceleration.
+		DSCAPS	dsCaps;
+		dsCaps.dwSize = sizeof(DSCAPS);
+		IDirectSound_GetCaps(lpDS, &dsCaps);
+		// Allow 3D sound only if acceleration exists.
+		Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
 	}
 
 	// TEMP!! no 3D sound for now
@@ -3380,7 +3334,7 @@ BOOL Init_SoundGlobals(void)
 	dsbdesc.dwBufferBytes = 0; //dwBufferBytes and lpwfxFormat must be set this way.
 	dsbdesc.lpwfxFormat = NULL;
 	
-	// Set control-level of DS/A3D. (To normal, default.)
+	// Set control-level of DS. (To normal, default.)
 	if (IDirectSound_SetCooperativeLevel(lpDS, myglobs.hWndMain ,DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
 	{
 		// Create primary buffer.
@@ -3411,16 +3365,6 @@ BOOL Init_SoundGlobals(void)
 				lpwaveinfo->wFormatTag, lpwaveinfo->nChannels, lpwaveinfo->nSamplesPerSec, lpwaveinfo->nAvgBytesPerSec, lpwaveinfo->nBlockAlign, lpwaveinfo->wBitsPerSample );
 			
 			free(lpwaveinfo);
-			
-			// If no A3D, return
-			if ( !A3DCapable )
-				return TRUE;
-
-/*			
-			// If no 3D, we are done.
-			if (!Sound3D)
-				return(TRUE);
-*/
 
 			// If 3D, need to get listener interface.
 			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener,
@@ -3428,13 +3372,6 @@ BOOL Init_SoundGlobals(void)
 			{
 				// Start primary-buffer looped-playing to reduce overhead on secondary-play calls.
 				glpPrimaryBuffer->lpVtbl->Play(glpPrimaryBuffer, 0, 0, DSBPLAY_LOOPING);
-
-#ifdef USE_A3D
-  				// Enable A3D resource-management.
-				if (A3DCapable)
-					SetRezManMode(A3D_RESOURCE_MODE_DYNAMIC);
-#endif
-
 				return(TRUE);
 			}
 			else
@@ -3500,7 +3437,7 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 				:	MATRIX * Matrix
 				:	VECTOR * Pos
 	Output		:	Nothing
-	Notes		:	Use to trace 3D moving sound sources. (A3D-Addition.)
+	Notes		:	Use to trace 3D moving sound sources. 
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void Update3DSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos , VECTOR * SfxVel )
 {
@@ -3526,51 +3463,6 @@ void Update3DSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos , VECTOR * SfxVel )
 	}
 #endif
 }
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	SetRezManMode
-	Input		:	DWORD flag indicating mode to set. (Usually make this DYNAMIC.)
- 	Output		:	Error-code integer. < 0 indicates error condition.
-	Notes		:	Use to set resource-management mode if A3D is present.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#ifdef USE_A3D
-int SetRezManMode( DWORD dwRMMode )
-{
-	if (gpA3d)	// Already have interface, so just set mode.
-		return(IA3d_SetResourceManagerMode(gpA3d, dwRMMode));
-	else		// Must get the interface pointer as well.
-	{
-		if (!lpDS)
-			return(-1);	// Invalid DirectSound interface, so can't query for A3D.
-
- 		if (IDirectSound_QueryInterface(lpDS, &IID_IA3d, (void **) &gpA3d) >= DS_OK)
-		{
-		   // A3D exists...turn on resource management.
-           return(IA3d_SetResourceManagerMode(gpA3d, A3D_RESOURCE_MODE_DYNAMIC));
-		}
-	}
-}
-#endif
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	A3DCleanup
-	Input		:	none.
- 	Output		:	none.
-	Notes		:	Use to cleanup the A3D interface if you queried it at startup.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#ifdef USE_A3D
-void A3DCleanup( void )
-{
-	if (!gpA3d)
-		return;
-
-	// Free the interface.
-	IA3d_Release(gpA3d);
-	gpA3d = NULL;
-}
-#endif
 
 void SetSoundLevels( int *dummy )
 {
