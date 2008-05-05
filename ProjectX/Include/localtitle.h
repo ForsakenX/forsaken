@@ -647,6 +647,7 @@
 #define LT_MENU_InGame33 "pickup messages "
 #define LT_MENU_InGame34 "taunt messages "
 #define LT_MENU_InGame35 "your messages "
+#define LT_MENU_InGame36 "short packets"
 
 #define LT_MENU_Help0 "In-Game Help"
 #define LT_MENU_Help1 "Toggle menu"

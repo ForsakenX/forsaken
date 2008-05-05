@@ -162,6 +162,8 @@ extern char CurrentTauntVariant;
 
 float DPlayUpdateInterval = 4.0F;
 int OldPPSValue;
+int OldUseShortPackets;
+int OldColPerspective;
 float PacketDelay = 4.0F;					// How long before I start to Declerate him.....
 float HostDutyTimer = 0.0F;
 float DPlayUpdateIntervalHostDuties = 30.0F;
@@ -770,14 +772,38 @@ void DplayGameUpdate()
 		}
 	}
 
-	// The Host can Dynamicaly change the Update interval.....
+	// The Host can Dynamicaly change settings
 	if( IsHost && !CurrentMenu )
 	{
+		// changed packet rate
 		if ( OldPPSValue != PacketsSlider.value )
 		{
 			OldPPSValue = PacketsSlider.value;
 			DPlayUpdateInterval	= (60.0F / PacketsSlider.value);
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+			AddColourMessageToQue(SystemMessageColour, "%d %s" , PacketsSlider.value , PACKETS_PER_SECOND_SET );
+		}
+		// changed collision perspective
+		if ( OldColPerspective != ColPerspective )
+		{
+			OldColPerspective = ColPerspective;
+			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+			if(ColPerspective == COLPERS_Forsaken)
+				AddColourMessageToQue( SystemMessageColour, "SHOOTER NOW DECIDES COLLISIONS" );
+			else if(ColPerspective == COLPERS_Descent)
+				AddColourMessageToQue( SystemMessageColour, "TARGET NOW DECIDES COLLISIONS" );
+					
+		}
+		// changed short packets
+		if ( OldUseShortPackets != UseShortPackets )
+		{
+			OldUseShortPackets = UseShortPackets;
+			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+			if(UseShortPackets)
+				AddColourMessageToQue( SystemMessageColour, "SHORT PACKETS ENABLED" );
+			else
+				AddColourMessageToQue( SystemMessageColour, "SHORT PACKETS DISABLED" );
+				
 		}
 	}
 }
@@ -3287,9 +3313,32 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					
 					if( MyGameStatus == STATUS_Normal )
 					{
+						// collision perspective changed by the host
+						if( ColPerspective != lpStatus->CollisionPerspective)
+						{
+							// shooter decides
+							if( lpStatus->CollisionPerspective == COLPERS_Forsaken)
+								AddColourMessageToQue(SystemMessageColour, "SHOOTER NOW DECIDES COLLISIONS");
+							// target decides
+							else
+								AddColourMessageToQue(SystemMessageColour, "TARGET NOW DECIDES COLLISIONS");
+						}
+						// packet rate changed by the host
 						if( DPlayUpdateInterval != lpStatus->PacketsPerSecond )
 							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpStatus->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
+						// short packets changed by the host
+						if( UseShortPackets != lpStatus->ShortPackets)
+						{
+							// short packets enabled
+							if( lpStatus->ShortPackets == TRUE)
+								AddColourMessageToQue(SystemMessageColour, "SHORT PACKETS ENABLED BY HOST");
+							// short packets disabled
+							else
+								AddColourMessageToQue(SystemMessageColour, "SHORT PACKETS DISABLED BY HOST");
+						}
 					}
+					ColPerspective = lpStatus->CollisionPerspective;
+					UseShortPackets = lpStatus->ShortPackets;
 					DPlayUpdateInterval = lpStatus->PacketsPerSecond;
 					PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
 					// its a status change from the Host...
@@ -4303,6 +4352,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpStatus->WhoIAm				= WhoIAm;
         lpStatus->IsHost					= IsHost;
 		lpStatus->PacketsPerSecond = DPlayUpdateInterval;
+		lpStatus->CollisionPerspective = ColPerspective;
+		lpStatus->ShortPackets = UseShortPackets;
 		// telling everyone what I am currently doing....
 		lpStatus->Status			= MyGameStatus;
 		lpStatus->TeamNumber = TeamNumber[WhoIAm];

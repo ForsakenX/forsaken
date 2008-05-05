@@ -887,14 +887,16 @@ typedef struct _STATUSMSG
 	BOOL		IsHost;			// from host ???
 	BYTE		Status;
 	BYTE		TeamNumber;
-	uint16	TeamScore;		// if leaving game, used to propagate my score to another team member
+	uint16	TeamScore;	// if leaving game, used to propagate my score to another team member
 	BOOL		IAmReady;		// used for team game - game cannot start until everyone is ready
-	BYTE		Pickups;		// tells how much of the pickup list I have recieved..
+	BYTE		Pickups;			// tells how much of the pickup list I have recieved..
 	BYTE		RegenSlots;		// tells how much of the pickup regen slots list I have recieved..
 	BYTE		Mines;			// tells how much of the mine list I have recieved..
-	BYTE		Triggers;		// tells how much of the mine list I have recieved..
+	BYTE		Triggers;			// tells how much of the mine list I have recieved..
 	BYTE		TrigVars;		// tells how much of the mine list I have recieved..
 	float		PacketsPerSecond;
+	BOOL		CollisionPerspective;
+	BOOL		ShortPackets;
 } STATUSMSG, *LPSTATUSMSG;
 
 typedef struct _LONGSTATUSMSG

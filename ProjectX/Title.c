@@ -1358,7 +1358,6 @@ MENU	MENU_NEW_ValidPickups = {
 	}
 };
 
-uint32 ColPerspectiveServer;
 
 MENU	MENU_NEW_MoreMultiplayerOptions = {
 	"", InitMoreMultiplayerOptions, ExitMoreMultiplayerOptions, NULL, TITLE_TIMER_PanToLeftVDU,
@@ -3045,11 +3044,12 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , NULL , NULL,	0,
 			{
-					//OLDMENUITEM( 200, 112, LT_MENU_InGame27	/*"collision perspective"		*/,	&ColPerspective,			NULL,							SelectToggle,	DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame10		/*"ping update (secs)"		*/,	&PingFreqSlider,			NULL,							SelectSlider,	DrawSlider),
-					OLDMENUITEM( 200, 144, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,	NULL,							SelectSlider,	DrawSlider),
-					OLDMENUITEM( 200, 160, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,							&MENU_LevelSelect,		MenuChange,	MenuItemDrawName),
-					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,			HostListPlayerSelected,	SelectList,		DrawList ),  
+					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
+					OLDMENUITEM( 200, 144, LT_MENU_InGame10		/*"ping update (secs)"		*/,	&PingFreqSlider,				NULL,								SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
+					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
 
 			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
@@ -8926,17 +8926,11 @@ void DrawColToggle( MENUITEM *Item )
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
-	if ( Item->Variable )
-	{
-		if ( *(BOOL *)(Item->Variable ) )
-		{
-			Print4x5Text( LT_ToggleShooter/*" SHOOTER"*/, -1 , y , 1 );
-		}
-		else
-		{
-			Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
-		}
-	}
+
+	if ( ColPerspective == COLPERS_Forsaken )
+		Print4x5Text( LT_ToggleShooter/*" SHOOTER"*/, -1 , y , 1 );
+	else if ( ColPerspective == COLPERS_Descent )
+		Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
