@@ -1061,125 +1061,114 @@ BOOL ProcessShips()
 					{
 						Object2Object |= Ship2ShipCollide( i , &Move_Off );
 					}
+					
 					// Collide with the enemies....
 					Object2Object |= Ship2EnemyCollide( i , &Move_Off );
+					
 					// do collisions to background
-
-					if( VectorLength( &Move_Off ) <= MoveAccell )
+					if( !no_collision )
 					{
-						Move_Off.x = 0.0F; 
-						Move_Off.y = 0.0F; 
-						Move_Off.z = 0.0F;
-						ImpactPoint = ShipObjPnt->Pos;
-						ImpactGroup = ShipObjPnt->Group;
-						
-					}
-					else
-					{
-						if( !no_collision )
-						{
-							NumCollides = 0;
-							if ( ShipObjPnt->Group != (uint16) -1 )
+						NumCollides = 0;
+						if ( ShipObjPnt->Group != (uint16) -1 )
 #ifdef MULTI_RAY_COLLISION
-							{
+						{
 #ifdef MULTI_RAY_SLIDE
-								VECTOR Target_Off;
+							VECTOR Target_Off;
 
+							BGObject = NULL;
+							while ( ObjectCollideOnly( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &Target_Off, &BGObject ) )
+							{
+								if ( BGObject )
+									ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
 								BGObject = NULL;
-								while ( ObjectCollideOnly( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &Target_Off, &BGObject ) )
-								{
-									if ( BGObject )
-										ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
-									BGObject = NULL;
-									Move_Off = Target_Off;
-									if ( ++NumCollides > MAXCOLLISIONS )
-										break;
-								}
+								Move_Off = Target_Off;
+								if ( ++NumCollides > MAXCOLLISIONS )
+									break;
+							}
 #else
-								BGObject = NULL;
+							BGObject = NULL;
 
-								if( !Object2Object )
+							if( !Object2Object )
+							{
+								ObjectCollide( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
+								if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
+							}
+							else
+							{
+								ObjectCollideNoBounce( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
+								if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
+							}
+#endif
+							outside_map = !PointInsideSkin( &ShipObjPnt->Pos, ShipObjPnt->Group );
+							if ( outside_map )
+							{
+								if ( !DebugInfo )
 								{
-									ObjectCollide( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
-									if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
+									// player has somehow managed to get outside the map
+									// so we "teleport" him back to his last start position
+									// (BiaS strikes again...!)
+									InitShipStartPos( i, 0 );
+									PlaySfx( SFX_Teleport, 1.0F );
 								}
 								else
 								{
-									ObjectCollideNoBounce( &ShipPnt->Object, &Move_Off, SHIP_RADIUS, &BGObject );
-									if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
-								}
-#endif
-								outside_map = !PointInsideSkin( &ShipObjPnt->Pos, ShipObjPnt->Group );
-								if ( outside_map )
-								{
-									if ( !DebugInfo )
+									uint16 g;
+									
+									for ( g = 0; g < Mloadheader.num_groups; g++ )
 									{
-										// player has somehow managed to get outside the map
-										// so we "teleport" him back to his last start position
-										// (BiaS strikes again...!)
-										InitShipStartPos( i, 0 );
-										PlaySfx( SFX_Teleport, 1.0F );
-									}
-									else
-									{
-										uint16 g;
-										
-										for ( g = 0; g < Mloadheader.num_groups; g++ )
+										if ( PointInsideSkin( &ShipObjPnt->Pos, g ) )
 										{
-											if ( PointInsideSkin( &ShipObjPnt->Pos, g ) )
-											{
-												ShipObjPnt->Group = g;
-												AddColourMessageToQue(SystemMessageColour, "You are now in %s", Mloadheader.Group[ g ].name );
-												break;
-											}
+											ShipObjPnt->Group = g;
+											AddColourMessageToQue(SystemMessageColour, "You are now in %s", Mloadheader.Group[ g ].name );
+											break;
 										}
 									}
 								}
 							}
+						}
 #else
+						{
+							while ( BackgroundCollide( &MCloadheader, &Mloadheader,
+														&ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off,
+														&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, TRUE, &BGObject ) )
 							{
-								while ( BackgroundCollide( &MCloadheader, &Mloadheader,
-   															&ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off,
-   															&ImpactPoint , &ImpactGroup, &FaceNormal, &Pos_New, TRUE, &BGObject ) )
-								{
-									if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
-							
-									ShipObjPnt->Pos = ImpactPoint;
-									ShipObjPnt->Group = ImpactGroup;
-									Move_Off.x = Pos_New.x - ShipObjPnt->Pos.x; 
-									Move_Off.y = Pos_New.y - ShipObjPnt->Pos.y; 
-									Move_Off.z = Pos_New.z - ShipObjPnt->Pos.z;
-									
-									if( VectorLength( &Move_Off ) <= MoveAccell )
-									{
-										Move_Off.x = 0.0F; 
-										Move_Off.y = 0.0F; 
-										Move_Off.z = 0.0F;
-										break;								
-									}
-									
-									NumCollides += 1;
-									if( NumCollides	> MAXCOLLISIONS )
-										break;
-								}
-								outside_map = outside_group;
-							}
-							
-	//						if( InBSPGroup( 0, &ImpactPoint )	)
-							{
-								// the end point is actually outside...
+								if( BGObject ) ChangeBGState( BGObject, OWNER_SHIP, WhoIAm, BUMP, 0.0F );
+						
 								ShipObjPnt->Pos = ImpactPoint;
 								ShipObjPnt->Group = ImpactGroup;
+								Move_Off.x = Pos_New.x - ShipObjPnt->Pos.x; 
+								Move_Off.y = Pos_New.y - ShipObjPnt->Pos.y; 
+								Move_Off.z = Pos_New.z - ShipObjPnt->Pos.z;
+								
+								if( VectorLength( &Move_Off ) <= MoveAccell )
+								{
+									Move_Off.x = 0.0F; 
+									Move_Off.y = 0.0F; 
+									Move_Off.z = 0.0F;
+									break;								
+								}
+								
+								NumCollides += 1;
+								if( NumCollides	> MAXCOLLISIONS )
+									break;
 							}
-	#endif
+							outside_map = outside_group;
 						}
-						else
+						
+//						if( InBSPGroup( 0, &ImpactPoint )	)
 						{
-							ShipObjPnt->Group = MoveGroup( &Mloadheader, &ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off );
-							ShipObjPnt->Pos.x += Move_Off.x;
-							ShipObjPnt->Pos.y += Move_Off.y;
-							ShipObjPnt->Pos.z += Move_Off.z;
+							// the end point is actually outside...
+							ShipObjPnt->Pos = ImpactPoint;
+							ShipObjPnt->Group = ImpactGroup;
 						}
+#endif
+					}
+					else
+					{
+						ShipObjPnt->Group = MoveGroup( &Mloadheader, &ShipObjPnt->Pos, ShipObjPnt->Group, &Move_Off );
+						ShipObjPnt->Pos.x += Move_Off.x;
+						ShipObjPnt->Pos.y += Move_Off.y;
+						ShipObjPnt->Pos.z += Move_Off.z;
 					}
 
 					ExtForce.x = 0.0F;
