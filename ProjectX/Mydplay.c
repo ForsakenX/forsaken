@@ -1090,7 +1090,7 @@ void SetupDplayGame()
 	RealPacketSize[MSG_SESSIONDESC						] = sizeof( SESSIONDESCMSG					);	
 #endif
 	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
-	RealPacketSize[MSG_SERVERSCORED					] = sizeof( SERVERSCOREDMSG				);
+	RealPacketSize[MSG_FLAGSCORED					] = sizeof( FLAGSCOREDMSG				);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
 	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
 	
@@ -1843,7 +1843,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float * FloatPnt;
 	uint32	BigOffset = 2;
 	LPTRACKERINFOMSG	lpTrackerInfoMsg;
-	LPSERVERSCOREDMSG	lpServerScoredMsg;
+	LPFLAGSCOREDMSG	lpFlagScoredMsg;
 	VECTOR Int_Point;
 	VECTOR Int_Point2;
 	VECTOR TempVector;
@@ -3731,14 +3731,14 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
 
-	case MSG_SERVERSCORED:
+	case MSG_FLAGSCORED:
 
-		lpServerScoredMsg = (LPSERVERSCOREDMSG)MsgPnt;
-		if ( lpServerScoredMsg->WhoScored == WhoIAm )
+		lpFlagScoredMsg = (LPFLAGSCOREDMSG)MsgPnt;
+		if ( lpFlagScoredMsg->WhoScored == WhoIAm )
 		{
 			int team;
 
-			Ships[WhoIAm].Kills += (int16) lpServerScoredMsg->Score;
+			Ships[WhoIAm].Kills += (int16) lpFlagScoredMsg->Score;
 			if ( CTF )
 			{
 				for ( team = 0; team < MAX_TEAMS; team++ )
@@ -3753,9 +3753,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				PickupsGot[ PICKUP_Flag ] = 0;
 			}
 		}
-		sprintf( (char*) tempstr, THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpServerScoredMsg->WhoScored ] ] );
+		sprintf( (char*) tempstr, THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpFlagScoredMsg->WhoScored ] ] );
 		AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
-		if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpServerScoredMsg->WhoScored ] )
+		if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpFlagScoredMsg->WhoScored ] )
 			PlaySfx( SFX_MyTeamScored, FlagVolume );
 		else
 			PlaySfx( SFX_OtherTeamScored , FlagVolume );
@@ -3810,19 +3810,22 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPACKMSG								lpAckMsg;
 	LPKILLSDEATHSBIKENUMMSG		lpKillsDeathsMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
-    int				nBytes;
-    int				i;
-    DWORD		send_to = 0;
-	DWORD		Flags = 0;
-	int				Count;
-	HRESULT		hr;
+	LPTRACKERINFOMSG					lpTrackerInfoMsg;
+	LPFLAGSCOREDMSG					lpFlagScoredMsg;
 	LPSETTIMEMSG		lpSetTime;
 	LPREQTIMEMSG		lpReqTime;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
 #endif
-	LPTRACKERINFOMSG		lpTrackerInfoMsg;
-	LPSERVERSCOREDMSG	lpServerScoredMsg;
+
+    int				nBytes;
+    int				i;
+    DWORD		send_to = 0;
+	DWORD		Flags = 0;
+	int				Count;
+	int				QueTimeout = 0;	// default is no time out
+	int				TIMEOUT = 100;	// que time out where specified (i.e. ship updates)
+	HRESULT		hr;
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
 	char VersionMessage[30];
@@ -3837,16 +3840,16 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	switch( msg )
     {
 
-	case MSG_SERVERSCORED:
+	case MSG_FLAGSCORED:
 
-		lpServerScoredMsg = (LPSERVERSCOREDMSG)&CommBuff[0];
-        lpServerScoredMsg->MsgCode = msg;
-		lpServerScoredMsg->WhoIAm = WhoIAm;
-		lpServerScoredMsg->WhoScored = ShipNum;
-		lpServerScoredMsg->Score = Type;
-		nBytes = sizeof( SERVERSCOREDMSG );
+		lpFlagScoredMsg = (LPFLAGSCOREDMSG)&CommBuff[0];
+        lpFlagScoredMsg->MsgCode = msg;
+		lpFlagScoredMsg->WhoIAm = WhoIAm;
+		lpFlagScoredMsg->WhoScored = ShipNum;
+		lpFlagScoredMsg->Score = Type;
+		nBytes = sizeof( FLAGSCOREDMSG );
 #ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SERVERSCORED , FALSE , FALSE);
+		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_FLAGSCORED , FALSE , FALSE);
 		return;
 #endif
 		break;
@@ -4075,6 +4078,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpVeryShortUpdate->WhoIAm = WhoIAm;
 		lpVeryShortUpdate->ShortGlobalShip = VeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTUPDATEMSG );
+		QueTimeout = TIMEOUT;
         break;
 
 
@@ -4085,6 +4089,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpUpdate->WhoIAm = WhoIAm;
 		lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
+		QueTimeout = TIMEOUT;
         break;
 
 
@@ -4663,7 +4668,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 								  (LPSTR)&CommBuff[0],
 								  nBytes,
 								  0,		// dwPriority
-								  0,		// dwTimeout
+								  QueTimeout,		// dwTimeout
 								  NULL,		// lpContext
 								  NULL		// lpdwMsgID
 								  );

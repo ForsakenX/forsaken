@@ -583,18 +583,18 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 #define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
 #endif
-#define MSG_SERVERSCORED					0xea		// necessary for ctf (server name is misleading!)
+#define MSG_FLAGSCORED						0xea	
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP		0xed
 
-typedef struct _SERVERSCOREDMSG
+typedef struct _FLAGSCOREDMSG
 {
     BYTE     MsgCode;
     BYTE     WhoIAm;
 	BYTE		WhoScored;
 	BYTE		Score;
-}SERVERSCOREDMSG, *LPSERVERSCOREDMSG;
+}FLAGSCOREDMSG, *LPFLAGSCOREDMSG;
 
 
 typedef struct _SENDKILLSDEATHSBIKENUMMSG

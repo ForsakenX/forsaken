@@ -7172,7 +7172,7 @@ void CheckPickupAllPlayers( void )
 					Host_PickupsGot[ Ship ][ PICKUP_Flag ] = 0;
 					Host_Flags[ Ship ] &= ~SHIP_CarryingFlag;
 					FlagsToGenerate++;
-					SendGameMessage(MSG_SERVERSCORED, 0, (BYTE)Ship, (BYTE)GoalScore, 0);
+					SendGameMessage(MSG_FLAGSCORED, 0, (BYTE)Ship, (BYTE)GoalScore, 0);
 				}
 			}
 
@@ -7206,7 +7206,7 @@ void CheckPickupAllPlayers( void )
 						}
 						if ( score )
 						{
-							SendGameMessage(MSG_SERVERSCORED, 0, (BYTE)Ship, (BYTE)score, 0);
+							SendGameMessage(MSG_FLAGSCORED, 0, (BYTE)Ship, (BYTE)score, 0);
 						}
 						else
 						{
