@@ -558,8 +558,8 @@ char *AxisActionName( SLIDER *s );
 BOOL SetAxisSlider( SLIDER *s );
 BOOL SetAxisActionSlider( SLIDER *s );
 
-void InitServerMenu( MENU *Menu );
-void ServerListPlayerSelected( MENUITEM *Item );
+void InitHostMenu( MENU *Menu );
+void HostListPlayerSelected( MENUITEM *Item );
 
 /**************************
 new text functions
@@ -862,7 +862,7 @@ float CharWidth;
 float Pulse = 0.0F;
 
 BYTE TeamNumber[MAX_PLAYERS];
-BYTE ServerGamePlayersWhoIAm[ MAX_PLAYERS ];
+BYTE HostGamePlayersWhoIAm[ MAX_PLAYERS ];
 
 LIST TeamList[MAX_TEAMS];
 LIST LoadSavedGameList		= { 0 };
@@ -871,7 +871,7 @@ LIST SessionsList					= { 0 };
 LIST MySessionsList				= { 0 };
 LIST PlayersList					= { 0 };
 LIST PilotList						= { 0 };
-LIST ServerGamePlayersList	= { 0 };
+LIST HostPlayersList				= { 0 };
 LIST DemoList						= { 0, 8 };	// list of all demo file in the current dir...
 LIST BikeList						= { MAXBIKETYPES, 8, 0, 1, { "Lokasenna", "Beard", "L.A. Jay", "Ex-Cop", "Rex Hardy", "Foetoid", "Nim Soo Sun", "Nutta", "Sceptre", "Jo", "Cuvel Clark", "HK 5", "Nubia", "Mofisto", "Cerbero", "Slick", "FlyGirl" }, 0, 0 };
 LIST BikeComputerList			= { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "lani-1", "Lepracom", "Roadster" },  0, 0 };
@@ -3043,14 +3043,13 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
 
-MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitServerMenu , NULL , NULL,	0,
+MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , NULL , NULL,	0,
 			{
-					//OLDMENUITEM( 200, 112, LT_MENU_InGame27	/*"collision perspective"		*/,	&ColPerspective,			NULL,						SelectToggle,	DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame10		/*"ping update (secs)"			*/,	&PingFreqSlider,			NULL,						SelectSlider,	DrawSlider),
-					OLDMENUITEM( 200, 144, LT_MENU_Options5		/*"Packets Per Second"			*/,	(void*)&PacketsSlider,		NULL,						SelectSlider,	DrawSlider),
-					OLDMENUITEM( 200, 160, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,						&MENU_LevelSelect,			MenuChange,		MenuItemDrawName),
-					//OLDMENUITEM( 200, 176, LT_MENU_InGame7		/*"End level and show stats"	*/,	NULL,						NULL,						GoToStats,		MenuItemDrawName),
-					OLDMENUITEM( 200, 192, LT_MENU_ServerMenu2	/*"remove player"				*/, &ServerGamePlayersList,		ServerListPlayerSelected,	SelectList,		DrawList ),  
+					//OLDMENUITEM( 200, 112, LT_MENU_InGame27	/*"collision perspective"		*/,	&ColPerspective,			NULL,							SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame10		/*"ping update (secs)"		*/,	&PingFreqSlider,			NULL,							SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 144, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,	NULL,							SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 160, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,							&MENU_LevelSelect,		MenuChange,	MenuItemDrawName),
+					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,			HostListPlayerSelected,	SelectList,		DrawList ),  
 
 			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
@@ -19259,35 +19258,34 @@ void UpdateSessionInfo( LIST *List )
 	
 }
 
-void RefreshServerPlayersList( LIST *List )
+void RefreshHostPlayersList( LIST *List )
 {
 	BYTE i;
 
-	ServerGamePlayersList.items = 0;
+	HostPlayersList.items = 0;
 	
-	//for ( i = 1; i < MAX_PLAYERS; i++ )	// server is player 0
 	for(i = 0; i < MAX_PLAYERS; i++ )
 	{
 		if ( GameStatus[ i ] == STATUS_Normal && i != WhoIAm)
 		{
-			strncpy( ServerGamePlayersList.item[ ServerGamePlayersList.items ], Names[ i ], sizeof( ServerGamePlayersList.item[ 0 ] ) );
-			ServerGamePlayersWhoIAm[ ServerGamePlayersList.items ] = i;
-			ServerGamePlayersList.items++;
+			strncpy( HostPlayersList.item[ HostPlayersList.items ], Names[ i ], sizeof( HostPlayersList.item[ 0 ] ) );
+			HostGamePlayersWhoIAm[ HostPlayersList.items ] = i;
+			HostPlayersList.items++;
 		}
 	}
 }
 
-void InitServerMenu( MENU *Menu )
+void InitHostMenu( MENU *Menu )
 {
-	ServerGamePlayersList.display_items = 16;
-	ServerGamePlayersList.selected_item = -1;
-	ServerGamePlayersList.FuncInfo = RefreshServerPlayersList;
+	HostPlayersList.display_items = 16;
+	HostPlayersList.selected_item = -1;
+	HostPlayersList.FuncInfo = RefreshHostPlayersList;
 }
 
-void ServerListPlayerSelected( MENUITEM *Item )
+void HostListPlayerSelected( MENUITEM *Item )
 {
 	// this is called directly after a player is selected
-	SendGameMessage(MSG_YOUQUIT, 0, (BYTE) ServerGamePlayersWhoIAm[ServerGamePlayersList.selected_item] , 0, 0);
+	SendGameMessage(MSG_YOUQUIT, 0, (BYTE) HostGamePlayersWhoIAm[HostPlayersList.selected_item] , 0, 0);
 
 }
 

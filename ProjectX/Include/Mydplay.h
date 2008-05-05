@@ -25,7 +25,7 @@
 #define DEMO_MODE								3			// this is the mode the camera goes into when Playing back a Demo
 #define GAMEOVER_MODE						4			// this is the mode the player goes into when single player has finished...
 #define WATCH_MODE							5
-#define MAX_PLAYERS							32			//24 //16 //12
+#define MAX_PLAYERS							16			//24 //16 //12
 #define MAX_SHIELD								255.0F
 #define START_SHIELD							128.0F
 #define MAX_HULL								255.0F

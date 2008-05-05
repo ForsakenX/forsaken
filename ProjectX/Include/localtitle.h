@@ -785,7 +785,7 @@
 
 #define LT_MENU_ServerMenu0 "server options"
 #define LT_MENU_ServerMenu1 "server rendering"
-#define LT_MENU_ServerMenu2 "remove player"
+#define LT_MENU_RemovePlayer "remove player"
 
 #define LT_MENU_NEW_ChooseConnectionToStart1 "press 'esc' to quit"
 
