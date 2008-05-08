@@ -1866,9 +1866,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	uint32	BigOffset = 2;
 	LPTRACKERINFOMSG	lpTrackerInfoMsg;
 	LPFLAGSCOREDMSG	lpFlagScoredMsg;
-	VECTOR Int_Point;
-	VECTOR Int_Point2;
-	VECTOR TempVector;
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
 	char VersionMessage[30];

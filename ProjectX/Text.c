@@ -501,7 +501,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void	MessageQuePrint( void )
 {
-	int i,e,j,y,z,MAX;
+	int i,e,y,z,MAX;
 	char MessageBuff[80];
 
 	// scale in-game text according to screenwidth
@@ -564,7 +564,7 @@ void	MessageQuePrint( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void	MessageQuePrintAll( void )
 {
-	int i,j,y,z,MAX;
+	int i,y,z,MAX;
 	char MessageBuff[150];
 
 	// scale in-game text according to screenwidth
@@ -591,8 +591,7 @@ void	MessageQuePrintAll( void )
 					strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
 					//CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
 					Print4x5Text( &MessageBuff[0], FontWidth*25 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
-			
-					
+		
 					y++; // move down to next line on screen
 				}
 				else

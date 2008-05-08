@@ -750,7 +750,6 @@ BOOL ProcessShips()
 #endif
 	VECTOR	Move_Dir;
 	QUAT	StepQuat;	
-	uint16	ImpactGroup;
 	VECTOR	Bob;
 	VECTOR	StartPos;
 	BGOBJECT * BGObject;
