@@ -28,7 +28,6 @@ int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D
 void CheckSBufferList( void );
 
 extern LPDIRECTSOUND lpDS;
-extern BOOL    A3DCapable;
 extern SNDLOOKUP SndLookup[];
 
 BOOL UseSfxHardware = FALSE;
@@ -276,11 +275,6 @@ SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int sfx_flags , DWORD buf_
 			   pSO->CompoundBufferLookup[i] = -1;
 		}else
 		{
-			if ( A3DCapable )
-			{
-				pSO->Dup_Buffer[0] = DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[0], buf_flags );
-			}else
-			{
 				// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
 				if( buf_flags & DSBCAPS_CTRL3D )
 				{
@@ -288,7 +282,6 @@ SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int sfx_flags , DWORD buf_
 				}else{
 					pSO->Dup_Buffer[0] = DSLoadSoundBuffer(pDS, lpName, buf_flags );
 				}
-			}
 
 			if( !pSO->Dup_Buffer[ 0 ] )
 			{

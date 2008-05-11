@@ -47,7 +47,6 @@ char CurrentTauntVariant;
 SFX_HOLDER	SfxHolder[ MAX_ANY_SFX ];
 BOOL		NoSFX = FALSE;
 BOOL		Sound3D = FALSE;
-BOOL		A3DCapable = FALSE;
 float		GlobalSoundAttenuation = 0.8F;
 BOOL CompoundSfxAllocated[MAX_SFX];
 
@@ -3254,8 +3253,7 @@ void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB
     
 	if (pDSB)
     {
-//		if( !Sound3D || !pDSB3D )
-		if( !A3DCapable )
+		if( !Sound3D || !pDSB3D )
 		{
 
 			IDirectSoundBuffer_SetPan(pDSB, Pan );
@@ -3284,7 +3282,7 @@ FUNCTION:   Init_SoundGlobals
 
 PURPOSE:    Initializes the tiErree main global variables. After this is done,
             we should have allocated:
-            a. A DirectSound
+            a. A DirectSound Object
             b. A DirectSound3DListener Object
             c. A Primary Buffer.
 
@@ -3298,31 +3296,32 @@ BOOL Init_SoundGlobals(void)
 	char *from_file = __FILE__;
 	int from_line = __LINE__;
 #endif
-	lpDS = NULL;
 
-	// Attempt to initialize with DirectSound.
-	// First look for DSOUND.DLL using CoCreateInstance.
-	iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
-								 &IID_IDirectSound, (void **) &lpDS);
-	
-	if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
-		iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init DS.
+		lpDS = NULL;
 
-	if (iErr < DS_OK)
-	{
-		DebugPrintf("returning FALSE from Init_SoundGlobals at point 1\n");
-		return(FALSE);	// Failed to get DirectSound, so no sound-system available.
-	}
-	else
-	{
-		// Succeeded in getting DirectSound.
-		// Check to see if there is 3D acceleration.
-		DSCAPS	dsCaps;
-		dsCaps.dwSize = sizeof(DSCAPS);
-		IDirectSound_GetCaps(lpDS, &dsCaps);
-		// Allow 3D sound only if acceleration exists.
-		Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
-	}
+		// Attempt to initialize with DirectSound.
+		// First look for DSOUND.DLL using CoCreateInstance.
+		iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
+									 &IID_IDirectSound, (void **) &lpDS);
+		
+		if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
+			iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init DS.
+
+		if (iErr < DS_OK)
+		{
+			DebugPrintf("returning FALSE from Init_SoundGlobals at point 1\n");
+			return(FALSE);	// Failed to get DirectSound, so no sound-system available.
+		}
+		else
+		{
+			// Succeeded in getting DirectSound.
+			// Check to see if there is 3D acceleration.
+			DSCAPS	dsCaps;
+			dsCaps.dwSize = sizeof(DSCAPS);
+			IDirectSound_GetCaps(lpDS, &dsCaps);
+			// Allow 3D sound only if acceleration exists.
+			Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
+		}
 
 	// TEMP!! no 3D sound for now
 	Sound3D = FALSE;
@@ -3366,6 +3365,10 @@ BOOL Init_SoundGlobals(void)
 			
 			free(lpwaveinfo);
 
+			// If no 3D, we are done.
+			if (!Sound3D)
+				return(TRUE);
+
 			// If 3D, need to get listener interface.
 			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener,
 															  (void **) &lpDS3DListener) >= DS_OK)
@@ -3385,7 +3388,6 @@ BOOL Init_SoundGlobals(void)
 				
 				// Flag all 3D as off.
 				Sound3D = FALSE;
-				A3DCapable = FALSE;
 
 				return(TRUE);	// Still succeed initialization, but with 2D.
 			}
@@ -3428,40 +3430,6 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 	if (DS_OK != IDirectSound3DListener_CommitDeferredSettings(lpDS3DListener))
 		return FALSE;
 	return TRUE;
-}
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Update 3D Sfx
-	Input		:	int16	Sfx Number
-				:	MATRIX * Matrix
-				:	VECTOR * Pos
-	Output		:	Nothing
-	Notes		:	Use to trace 3D moving sound sources. 
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void Update3DSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos , VECTOR * SfxVel )
-{
-#if 0
-	IDirectSound3DBuffer *pDSB3D = NULL;
-	IDirectSoundBuffer   *pDSB   = NULL;
-
-	// Get out if no 3D-effects enabled.
-	if( !Sound3D )
-		return;
-	
-	// Get buffer-pointers (2D & 3D) from id.
- 	pDSB = SndObjGetFreeBuffer(Hsnd_Table[ Sfx ] , &pDSB3D);
-    
-	// Update position and velocity of source.
-	if (pDSB && pDSB3D)
-	{
-		IDirectSound3DBuffer_SetPosition( pDSB3D , SfxPos->x / 128.0F , SfxPos->y / 128.0F,
-										  SfxPos->z / 128.0F, DS3D_DEFERRED );
-		IDirectSound3DBuffer_SetVelocity( pDSB3D , SfxVel->x, SfxVel->y,
-										  SfxVel->z, DS3D_DEFERRED );
-
-	}
-#endif
 }
 
 void SetSoundLevels( int *dummy )

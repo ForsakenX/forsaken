@@ -109,7 +109,6 @@ extern int FlagsToGenerate;
 extern char *TeamName[ MAX_TEAMS ];
 extern BOOL	bSoundEnabled;
 extern	BOOL ShowNode;
-extern BOOL    A3DCapable;
 extern	int16	SelectedBike;
 extern uint16	num_start_positions;
 extern uint16	last_start_position;
@@ -1552,8 +1551,7 @@ BOOL ProcessShips()
 		}
 	}
 
-//	if( Sound3D )
-	if( A3DCapable )
+	if( Sound3D )
 	{
 		SetPosVelDir_Listner( &Ships[WhoIAm].Object.Pos , &Ships[WhoIAm].Move_Off , &Ships[WhoIAm].Object.Mat );
 	}

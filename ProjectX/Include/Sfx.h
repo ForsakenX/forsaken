@@ -519,7 +519,6 @@ uint32	PlaySfx( int16 Sfx, float Dist );
 uint32	PlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 BOOL	SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
-void	Update3DSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos , VECTOR * SfxVel );
 int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex );
 void CheckSBufferList( void );
 void FreeSBufferList( void );
