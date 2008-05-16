@@ -47,7 +47,6 @@ typedef struct
  */
 
 void PrintScoreSort( void );
-void ScoreSort( void );
 void CenterPrint4x5Text( char * Text , int y , int col );
 void CenterPrint4x5Text2( char * Text , int x, int y, int col );
 int	 Print4x5Text( char * Text , int x , int y , int col );

@@ -76,6 +76,9 @@ extern	LONGLONG	LargeTime;
 // custom colour messages (Title.c)
 extern int SystemMessageColour;
 
+// (stats.c)
+extern int GetPlayerRank(int Player);
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Globals ...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -108,8 +111,6 @@ int FontSourceWidth = 4;
 int FontSourceHeight = 5;
 
 int16	NumOfActivePlayers = 0;
-
-int	ScoreSortTab[MAX_PLAYERS + 1];
 
 int	PermX;
 uint16 big[4] = { 10000 , 1000 , 100 , 10 };
@@ -705,130 +706,6 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Sort players according to Score.....
-	Input		:		nothing
-	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ScoreSort( void )
-{
-	int16 i,e;
-	BOOL flag;
-	BOOL	oneswapped;
-	int16	temp;
-	BOOL	KillsReached = FALSE;
-	int16 TeamScore[MAX_TEAMS];
-	BOOL teamOK[MAX_TEAMS];
-	BOOL teamleft[MAX_TEAMS];
-	
-
-	if( MyGameStatus == STATUS_SinglePlayer )
-		return;
-	
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if( (GameStatus[i] == STATUS_GetPlayerNum) || (GameStatus[i] == STATUS_LeftCrashed)  || (GameStatus[i] == STATUS_Null) || (GameStatus[i] == STATUS_StartingMultiplayerSynch) )
-			Ships[i].Kills = -32767;
-		if( GameStatus[i] == STATUS_Joining )
-			Ships[i].Kills = 0;
-	}
-
-		
-	flag = TRUE;
-	while( flag )
-	{
-		oneswapped = FALSE;
-		for( i = 0 , e = 1 ; i < ( MAX_PLAYERS-1 ) ; i++ , e++ )
-		{
-			if( (Ships[ScoreSortTab[i]].Kills < Ships[ScoreSortTab[e]].Kills ) || ( (Ships[ScoreSortTab[i]].Kills == Ships[ScoreSortTab[e]].Kills ) && (Ships[ScoreSortTab[i]].Deaths > Ships[ScoreSortTab[e]].Deaths) ) )
-			{
-				// swap them...
-				temp  = ScoreSortTab[i];
-				ScoreSortTab[i] = ScoreSortTab[e];
-				ScoreSortTab[e] = temp;
-				oneswapped = TRUE;
-			}
-		}
-		if( !oneswapped )
-			flag = FALSE;
-	}
-
-#ifdef SCROLLING_MESSAGES	// stuff below not working!!
-	// only allow valid players...
-	NumOfActivePlayers = 0;
-	for ( i = 0; i < MAX_PLAYERS; i++ )
-	{
-		if(!( ( GameStatus[ScoreSortTab[i]] == STATUS_Left) || ( Ships[ScoreSortTab[i]].enable)  ))
-		{
-			// squeeze out...(if not last player)
-			if (i != MAX_PLAYERS - 1)
-			{
-				for (e = i; e < (MAX_PLAYERS - 1); e++)
-				{
-					ScoreSortTab[e] = ScoreSortTab[e + 1];
-				}
-			}
-		}else
-			NumOfActivePlayers++;
-	}
-#endif
-	if( (MyGameStatus == STATUS_Normal) && IsHost && MaxKills )
-	{
-	
-		if( !TeamGame )
-		{
-			for ( i = 0; i < MAX_PLAYERS; i++ )
-			{
-//				if( (GameStatus[ScoreSortTab[i]] == STATUS_Normal) && (Ships[ScoreSortTab[i]].enable) )
-				if( (GameStatus[ScoreSortTab[i]] == STATUS_Normal) )
-				{
-					if( Ships[ScoreSortTab[i]].Kills >= MaxKills && LevelNum != -1 )
-					{
-						KillsReached = TRUE;
-					}
-
-				}
-			}
-		}else{
-
-			memset(&TeamScore, 0, sizeof(int16) * MAX_TEAMS);
-
-			for (i = 0; i < MAX_TEAMS; i++)
-			{	teamOK[i] = FALSE;
-				teamleft[i] = TRUE;
-			}
-			for (i = 0; i < MAX_PLAYERS; i++)
-			{
-				if ((TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal))
-				{
-					TeamScore[TeamNumber[i]] += Ships[i].Kills;
-					teamOK[TeamNumber[i]] = TRUE;
-					if (GameStatus[i] != STATUS_Left)
-						teamleft[TeamNumber[i]] = FALSE;
-				}
-			}
-
-			for( i = 0 ; i < MAX_TEAMS ; i++ )
-			{
-				if( TeamScore[i] >= MaxKills && !teamleft[i] && teamOK[i])
-				{
-					KillsReached = TRUE;
-				}
-			}
-		}
-
-		if( KillsReached )
-		{
-			//Level Has Been Completed...
-			LevelNum = -1;
-			NewLevelNum++;
-			if( NewLevelNum >= NumLevels ) NewLevelNum = 0;
-			DplayGameUpdate();
-		}
-
-	}
-}
-
 //#define SFX_DEBUG
 	
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -840,12 +717,14 @@ void ScoreSort( void )
 float	FlashSpeed = 0.0F;
 BOOL	FlashToggle = FALSE;
 
+// (stats.c)
+extern int GetScoreStats(int Player);
+
 void PrintScoreSort( void )
 {
 	BOOL teamOK[MAX_TEAMS];
 	BOOL teamleft[MAX_TEAMS];
 	int i,e, pos;
-	int16 TeamScore[MAX_TEAMS];
 	int16 TeamBounty[MAX_TEAMS];
 	int TeamBadConnection[MAX_TEAMS];
 	char buf[256];
@@ -890,24 +769,24 @@ void PrintScoreSort( void )
 		}
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
-			if( ScoreSortTab[i] == WhoIAm)
+			if( GetPlayerRank(i) == WhoIAm)
 					NumOfActivePlayers++;
-			else if( GameStatus[ScoreSortTab[i]] == STATUS_Left )
+			else if( GameStatus[GetPlayerRank(i)] == STATUS_Left )
 			{
 				if ( ShowPing && !TeamGame )
 				{
-					sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[ScoreSortTab[i]] );
+					sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
 					Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
 				}
 				NumOfActivePlayers++;
 			}
 			else
 			{
-				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal )
+				if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
 				{
 					if ( ShowPing && !TeamGame )
 					{
-						sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[ScoreSortTab[i]] );
+						sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
 						Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
 					}
 					NumOfActivePlayers++;
@@ -935,23 +814,23 @@ void PrintScoreSort( void )
 	{
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
-			if( GameStatus[ScoreSortTab[i]] == STATUS_Left )
+			if( GameStatus[GetPlayerRank(i)] == STATUS_Left )
 			{
-				Print4x5Text( &Names[ScoreSortTab[i]][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
+				Print4x5Text( &Names[GetPlayerRank(i)][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
 
-				Printint16( Ships[ScoreSortTab[i]].Kills , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
+				Printint16( GetScoreStats(GetPlayerRank(i)) , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
 				NumOfActivePlayers++;
 			}
 			else
 			{
-				if( GameStatus[ScoreSortTab[i]] == STATUS_Normal )
+				if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
 				{
-					if ( !( Ships[ ScoreSortTab[ i ] ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
+					if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 					{
-						col =  ( WhoIAm == ScoreSortTab[i] ) ? 0 : 1;
-						Print4x5Text( &Names[ScoreSortTab[i]][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , col );
-						Printint16( Ships[ScoreSortTab[i]].Kills , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
-						DisplayConnectionStatus( ReliabilityTab[ScoreSortTab[i]] , 2 , NumOfActivePlayers*(FontHeight+1)+FontHeight );
+						col =  ( WhoIAm == GetPlayerRank(i) ) ? 0 : 1;
+						Print4x5Text( &Names[GetPlayerRank(i)][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , col );
+						Printint16( GetScoreStats(GetPlayerRank(i)) , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
+						DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)] , 2 , NumOfActivePlayers*(FontHeight+1)+FontHeight );
 
 					}
 					NumOfActivePlayers++;
@@ -962,8 +841,6 @@ void PrintScoreSort( void )
 	// teams game
 	else
 	{
-		memset(&TeamScore, 0, sizeof(int16) * MAX_TEAMS);
-
 		for (i = 0; i < MAX_TEAMS; i++)
 		{	teamOK[i] = FALSE;
 			teamleft[i] = TRUE;
@@ -976,10 +853,6 @@ void PrintScoreSort( void )
 		{
 			if ( (TeamNumber[i] < MAX_TEAMS) && (GameStatus[i] == STATUS_Normal ) )
 			{
-				if( Ships[i].Kills != -32767 )
-				{
-					TeamScore[TeamNumber[i]] += Ships[i].Kills;
-				}
 				teamOK[TeamNumber[i]] = TRUE;
 				switch (GameStatus[i] )
 				{
@@ -1028,7 +901,7 @@ void PrintScoreSort( void )
 #else
 					Print4x5Text( TeamName[ i ] , 8 , pos*(FontHeight+1)+FontHeight , col );
 #endif
-					Printint16( TeamScore[i] , 8+(7*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
+					Printint16( GetTeamScoreByTeamNumber(i) , 8+(7*FontWidth) , pos*(FontHeight+1)+FontHeight , col );
 				}
 				pos++;
 			}

@@ -191,7 +191,7 @@ void UpdatePlayerInfo( void )
 		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) || ( GameStatus[ i ] == STATUS_StartingMultiplayer ) )
 		{
 			// never called in multi?
-			PlayerInfo[ i ].CurScore = Ships[ i ].Kills;
+			PlayerInfo[ i ].CurScore = GetScoreStats(i);
 
 			// copy names / pings here ( inside critical section ) in case of simultaneous access by seperate threads
 			strcpy( PlayerInfo[ i ].PlayerName, Names[ i ] );

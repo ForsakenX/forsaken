@@ -24,6 +24,8 @@
 *		Ships.c		- update bonus 2 (stats.c) -- flag chase scored
 *		Ships.c		- update bonus 3 (stats.c) -- CTF scored
 *		Ships.c		- update bonus 4 (stats.c) -- bounty hunt points
+*		Mydplay.c	- update bonus 6 (stats.c) -- someone else scored with flag
+*		Ships.c		- update bonus 7 (stats.c) -- someone else's bounty hunt points -- Notes: there is a lag of 1 point if person has it when u join
 *
 \*******************************************************************/
 
@@ -50,11 +52,11 @@ extern MilestoneMessagesColour;													// colour to display messages (from 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
 int	SecondaryStats[MAX_PLAYERS+1][TOTALSECONDARYWEAPONS];		// SecondaryStats[Killer][SecondaryWeaponType];
-int	KillStats[MAX_PLAYERS+1][MAX_PLAYERS+1];								// KillStats[Killer][Victim];
-int BonusStats[MAX_PLAYERS+1];
+int	KillStats[MAX_PLAYERS+1][MAX_PLAYERS+1];								// each player's KillStats[Killer][Victim];
+int BonusStats[MAX_PLAYERS+1];													// each player's ctf/bounty points
 int KillCounter[MAX_PLAYERS+1];													// number of kills made during this life
 int x, z;																						// index counters
-
+int	ScoreSortTab[MAX_PLAYERS + 1];												// player numbers in order of highest score to lowest 								
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
 	
@@ -406,16 +408,11 @@ int GetTeamScore(int Player)
 {
 	int TeamScore = 0; // total score team achieved
 
-	// for every player
-	for(x = 0; x < MAX_PLAYERS; x++)
+	// add player's team's scores
+	for(z = 0; z < MAX_PLAYERS; z++)
 	{
-		// add my team's scores
-		if(TeamNumber[Player] == TeamNumber[x])
-		{
-			for(z = 0; z < MAX_PLAYERS; z++)
-				TeamScore += GetScoreStats(z);
-		}
-
+		if(TeamNumber[Player] == TeamNumber[z])
+			TeamScore += GetScoreStats(z);
 	}
 
 	return TeamScore;
@@ -457,4 +454,85 @@ int GetTotalDeaths(int Victim)
 		deaths += GetKillStats(x,Victim);
 
 	return deaths;
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Sort players according to Score.....
+	Input		:		nothing
+	Output		:		nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void ScoreSort()
+{
+	int16 i;
+	BOOL flag;
+	BOOL	oneswapped;
+	int16	temp;
+		
+	// sort the player's scores
+	flag = TRUE;
+	while( flag )
+	{
+		oneswapped = FALSE;
+		for( i = 0; i < ( MAX_PLAYERS-1 ); i++ )
+		{
+			if( (GetScoreStats(ScoreSortTab[i]) < GetScoreStats(ScoreSortTab[i+1]) )				// score less than player below me
+				|| ( (GetScoreStats(ScoreSortTab[i]) == GetScoreStats(ScoreSortTab[i+1]) )		// score equal but less kills then player below 
+						&& GetTotalKills(ScoreSortTab[i]) < GetTotalKills(ScoreSortTab[i+1]) )
+				||  ( (GetScoreStats(ScoreSortTab[i]) == GetScoreStats(ScoreSortTab[i+1]) )		// score & kills equal but more deaths than player
+						&& GetTotalKills(ScoreSortTab[i]) == GetTotalKills(ScoreSortTab[i+1]) 
+						&& GetTotalDeaths(ScoreSortTab[i]) > GetTotalDeaths(ScoreSortTab[i+1])) 
+				) 
+			{
+				// swap them...
+				temp						= ScoreSortTab[i];
+				ScoreSortTab[i]		= ScoreSortTab[i+1];
+				ScoreSortTab[i+1]	= temp;
+				oneswapped			= TRUE;
+			}
+		}
+		if( !oneswapped )
+			flag = FALSE;
+	}// end of sorting player's scores
+
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		PlayerRank
+	Input		:		Position e.g. 1st, 2nd, 3rd.. (0 = 1st)
+	Output		:	Player ID
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+int GetPlayerRank(int Player)
+{
+	return ScoreSortTab[Player];
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Procedure	:		Initiate Score Sort Array
+	Input		:		Player ID
+	Output		:	nothing
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+void InitScoreSortTab(int Player)
+{
+	ScoreSortTab[Player] = Player;
+}
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  Procedure :   Get Team Score (includes kills)...
+  Input   :   team number
+  Output    :   total score achieved by all players on the same team (minuses suicides and 'friendly kills')
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/* Get A Team's Total Score */
+int GetTeamScoreByTeamNumber(int Team)
+{
+	int TeamScore = 0;
+
+	// add selected team's scores
+	for(z = 0; z < MAX_PLAYERS; z++)
+	{
+		if(Team == TeamNumber[z])
+			TeamScore += GetScoreStats(z);
+	}
+
+	return TeamScore;
+
 }

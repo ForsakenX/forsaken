@@ -46,6 +46,8 @@ extern BOOL OKToProcessKeys;
 extern SLIDER	MaxServerPlayersSlider;
 extern BOOL	OKToJoinSession;
 extern int OldPPSValue;
+extern int OldColPerspective;
+extern int OldUseShortPackets;
 
 extern char host_ip[];
 
@@ -711,6 +713,8 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	DPlayUpdateInterval	= 60.0F / PacketsSlider.value;
 	OldPPSValue = PacketsSlider.value;
+	OldColPerspective = ColPerspective;
+	OldUseShortPackets = UseShortPackets;
 	
 	SetupDplayGame();
 	
@@ -1775,11 +1779,6 @@ void DistributeTeamsToLists(int *dummy)
 				}
 			}
 		}
-
-		if (TeamNumber[player] < MAX_TEAMS)
-		{
-			TeamScore[TeamNumber[player]] += Ships[player].Kills;
-  		}
 	}
 
 	if ( IsHost && OkayToStart && num_players )

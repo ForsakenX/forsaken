@@ -186,8 +186,6 @@ extern MENU MENU_NEW_WatchTeamSelect;
 
 extern float VDUoffsetX;
 extern float VDUoffsetY;
-extern  int16 NextworkOldKills;
-extern  int16 NextworkOldDeaths;
 extern  int16 NextworkOldBikeNum;
 extern  BOOL  DS;
 
@@ -517,7 +515,6 @@ extern  int   HullHit;
 extern  int   ShieldHit;
 extern  BOOL  TargetComputerOn;
 
-extern  int ScoreSortTab[MAX_PLAYERS];
 extern  int16 NumPickupsPerGroup[ MAXGROUPS ];
 extern  PICKUP  Pickups[ MAXPICKUPS ];
 
@@ -714,6 +711,9 @@ extern  int16 OrbsInLevel;
 extern  int16 OrbsToGenerate;
 extern  int16 OrbsInPlayers;
 
+// if met max kill limit, sets flag to change level
+void CheckMetKillLimit();
+
 // message colours (Title.c)
 extern int KillMessageColour; 
 extern int SystemMessageColour;
@@ -721,10 +721,13 @@ extern int FlagMessageColour;
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
-// (Ships.c)
-extern SwitchedToWatchMode;
-extern GetName(int Player);
 
+// (Ships.c)
+extern int SwitchedToWatchMode;
+extern int GetName(int Player);
+
+// (stats.c)
+extern void ScoreSort();
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
     Weapon Names...
@@ -2048,6 +2051,7 @@ void TestBlt()
       {
         ScoreSort();
         PrintScoreSort();
+		CheckMetKillLimit();
       }
       
 	  // show long message history
@@ -3418,8 +3422,7 @@ BOOL ChangeLevel( void )
 	KillNodeCubeLines();
 	KillBoxLines();
 
-	NextworkOldKills = -1;
-	NextworkOldDeaths = -1;
+	// $$$
 	NextworkOldBikeNum = -1;
 
 	ActiveRemoteCamera = NULL;
@@ -4168,8 +4171,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       InitScene();  // STATSTEST
       InitView();
-      NextworkOldKills = -1;
-      NextworkOldDeaths = -1;
+	  // $$$
       NextworkOldBikeNum = -1;
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
     }
@@ -4189,8 +4191,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
         InitScene();  // STATSTEST
         InitView();
-        NextworkOldKills = -1;
-        NextworkOldDeaths = -1;
+		// $$$
         NextworkOldBikeNum = -1;
         HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
       }
@@ -4443,14 +4444,14 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SyncMines();
       InitShipRandomPos( WhoIAm );
-      if( Rejoining && !TeamGame )
+      // $$$
+	  if( Rejoining && !TeamGame )
       {
-        Ships[WhoIAm].Kills = (int16) Old_Kills;
-        Ships[WhoIAm].Deaths = (int16) Old_Deaths;
+        //Ships[WhoIAm].Kills = (int16) Old_Kills;
+        //Ships[WhoIAm].Deaths = (int16) Old_Deaths;
         TeamNumber[WhoIAm] = (BYTE) Old_TeamNumber;
       }
-      NextworkOldKills = -1;
-      NextworkOldDeaths = -1;
+	  // $$$
       NextworkOldBikeNum = -1;
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
       if( CountDownOn )
@@ -4644,8 +4645,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       ServiceBigPacket(TRUE);
 
-      NextworkOldKills = -1;
-      NextworkOldDeaths = -1;
+	  // $$$
       NextworkOldBikeNum = -1;
       InitFontTransTable( !bPolyText );
 
@@ -4658,8 +4658,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         MyGameStatus = OverallGameStatus;
         GameStatus[WhoIAm] = MyGameStatus;
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-        NextworkOldKills = -1;
-        NextworkOldDeaths = -1;
+        // $$$
         NextworkOldBikeNum = -1;
         InitFontTransTable( !bPolyText );
       }
@@ -4755,12 +4754,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         MyGameStatus = STATUS_Title;
         break;
       }
-
+		// $$$
       if( Rejoining )
       {
-        Ships[WhoIAm].Kills = (int16) Old_Kills;
-        Ships[WhoIAm].Deaths = (int16) Old_Deaths;
-        TeamNumber[WhoIAm] = (BYTE) Old_TeamNumber;
+        //Ships[WhoIAm].Kills = (int16) Old_Kills;
+        //Ships[WhoIAm].Deaths = (int16) Old_Deaths;
       }
       memset(&Names, 0, sizeof(SHORTNAMETYPE) );
         strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
@@ -6340,27 +6338,43 @@ void ShowInGameStats()
 /* Display the Statistics */
 BOOL ScoreDisplay()
 {
-	/*int active_players;	// number of active players currently in the game
+	int NumActivePlayers;	// number of active players currently in the game
 	BOOL DetailedStats; // TRUE = Detailed Stats, FALSE = Basic Stats
 	BOOL KillsBased;		// TRUE = Kills Based game (e.g. FFA), FALSE = Objective Based game (e.g. CTF)
-	 
+	int i;						// index counter
+	int j;						// index counter
+	int scaler = 2;			// used to adjust positioning of stats based on number of active players
+	int col;					// used to flash the colour of your player name and stats
+	int cl;						// used to differentiate colour between kills and suicides in the matrix
+	int YSpaceing = (FontHeight+(FontHeight>>1));
+	int TeamColor;
+	BOOL pulseon;
+	static float pulse = 0.0F;
+	char FirstLetter[1];	// first character of names - used for top row of matrix
+
+	// blit background stuff
+	RECT    src;
+	RECT    dest;
+	HRESULT ddrval;
+	DDBLTFX fx;
+
 	// find how many active players there are
-	active_players = 0;
+	NumActivePlayers = 0;
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
 		if ( ( (GameStatus[ i ] == STATUS_ViewingScore) 
 			|| (GameStatus[ i ] == STATUS_WaitingAfterScore ) 
 			|| (GameStatus[ i ] == STATUS_Left) 
 			|| ( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) )  )
-		 active_players++;
+		 NumActivePlayers++;
 	}
 
 
 	//  do we have enough screen space to show the detailed stats?
-	if(		(d3dapp->Mode[ d3dapp->CurrMode ].w < 800  && active_players > 4)
-		||	(d3dapp->Mode[ d3dapp->CurrMode ].w < 1024 && active_players > 6)
-		||  (d3dapp->Mode[ d3dapp->CurrMode ].w < 1280 && active_players > 8)
-		||  (d3dapp->Mode[ d3dapp->CurrMode ].w > 1280 && active_players > 11)	)
+	if(		(d3dapp->Mode[ d3dapp->CurrMode ].w < 800  && NumActivePlayers > 4)
+		||	(d3dapp->Mode[ d3dapp->CurrMode ].w < 1024 && NumActivePlayers > 6)
+		||  (d3dapp->Mode[ d3dapp->CurrMode ].w < 1280 && NumActivePlayers > 8)
+		||  (d3dapp->Mode[ d3dapp->CurrMode ].w > 1280 && NumActivePlayers > 11)	)
 		DetailedStats = FALSE;
 	else
 		DetailedStats = TRUE;	
@@ -6371,379 +6385,6 @@ BOOL ScoreDisplay()
 	// kills based game
 	else
 		KillsBased = TRUE;
-
-	// display the appropriate stats
-	ShowDetailedStats(active_players, TeamGame, KillsBased, DetailedStats);
-
-	// finished
-	return TRUE;*/
-
-	return ScoreDisplayOrig();
-
-}// end of displaying scores
-
-
-BOOL ScoreDisplayOrig(void)
-{
-    RECT    src;
-	RECT    dest;
-    HRESULT ddrval;
-	DDBLTFX fx;
-	int	x;
-	int	y;
-	int i;
-#ifdef	PHILHASTIME
-	int e;
-	char	TempStr[256];
-#endif
-	int col;
-	int num_teams;
-//	BOOL TeamOK[MAX_TEAMS];
-	int16 TeamScore[MAX_TEAMS];
-	static float pulse = 0.0F;
-	BOOL pulseon;
-	int16 myteam;
-	BOOL TeamOK[MAX_TEAMS];
-	int active_players;
-	int count = 0;
-
-	int	Names1X;
-	int	Kills1X;
-	int	Deaths1X;
-	int	Names2X;
-	int	Kills2X;
-	int	Deaths2X;
-	int YSpaceing = (FontHeight+(FontHeight>>1));
-
-
-	active_players = 0;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if ( ( (GameStatus[ i ] == STATUS_ViewingScore) ||
-			(GameStatus[ i ] == STATUS_WaitingAfterScore ) ||
-			(GameStatus[ i ] == STATUS_Left) ||
-			( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) ) )
-			active_players++;
-	}
-
-//	active_players = MAX_PLAYERS;
-
-	if( active_players <= 16 )
-	{
-
-		Names1X = ( d3dappi.szClient.cx >> 1 ) -  (FontWidth*10);
-		Kills1X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*2);
-		Deaths1X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*10);
-	}else{
-		Names1X = ( d3dappi.szClient.cx >> 1 ) -  (FontWidth*10) - (FontWidth*20);
-		Kills1X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*2) - (FontWidth*20);
-		Deaths1X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*10) - (FontWidth*20);
-		Names2X = ( d3dappi.szClient.cx >> 1 ) -  (FontWidth*10) + (FontWidth*10);
-		Kills2X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*2) + (FontWidth*10);
-		Deaths2X = ( d3dappi.szClient.cx >> 1 ) +  (FontWidth*10) + (FontWidth*10);
-	}
-
-
-
-
-	pulse += framelag/60.0F;
-	if (pulse > 1.0F)
-		pulse -= (float)floor((double)pulse);
-
-	if (pulse <= 0.5F)
-		pulseon = TRUE;
-	else
-		pulseon = FALSE;
-
-	//	Blt Background
-	src.top = 0;
-	src.left = 0;
-	src.right = d3dappi.szClient.cx;
-	src.bottom = d3dappi.szClient.cy;
-	x = 0;
-	y = 0;
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize = sizeof(DDBLTFX);
-	dest.top = 0;
-	dest.bottom = d3dappi.szClient.cy;
-	dest.left = 0;
-	dest.right = d3dappi.szClient.cx;
-			
-	while( 1 )
-	{
-		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, NULL, lpDDSOne, NULL, DDBLT_WAIT, &fx );
-		if( ddrval == DD_OK )
-			break;
-		if( ddrval == DDERR_SURFACELOST )
-		{
-			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-			DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
-			break;
-		}
-		if( ddrval != DDERR_WASSTILLDRAWING )
-			break;
-	}
-
-	num_teams = 0;
-
-	if (TeamGame)
-	{
-		memset(&TeamScore, 0, sizeof(int16) * MAX_TEAMS);
-		memset(&TeamOK, FALSE, sizeof(BOOL) * MAX_TEAMS);
-
-		for (i = 0; i < MAX_PLAYERS; i++)
-		{
-			if ( (TeamNumber[i] < MAX_TEAMS) &&
-				 ( (GameStatus[ i ] == STATUS_ViewingScore) ||
-				 (GameStatus[ i ] == STATUS_WaitingAfterScore ) ||
-				 ( ( GameStatus[ i ] >= STATUS_InitView_0 ) && ( GameStatus[ i ] <= STATUS_InitView_9 ) ) ) &&
-				 (Ships[i].Kills != -32767) )
-			{
-				if ( WhoIAm == ScoreSortTab[i] )
-					myteam = TeamNumber[ i ];
-				TeamScore[TeamNumber[i]] += Ships[i].Kills;
-				if (!TeamOK[TeamNumber[i]])
-				{
-				 	num_teams++;
-					TeamOK[TeamNumber[i]] = TRUE;
-				}
-
-				
-			}
-		}
-	}
-
-#ifdef	PHILHASTIME
-	Print4x5Text( "kills" , ( d3dappi.szClient.cx >> 1 ) +  ( ( (active_players*FontWidth*4) + (2*FontWidth) + (1*FontWidth) ) >> 1 )  ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*5) ) >> 1 ), 1 );
-	Print4x5Text( "deaths" , ( d3dappi.szClient.cx >> 1 ) -  ( ( (active_players*FontWidth*4) + (8*FontWidth) + (4*FontWidth) ) >> 1 )  ,  ( d3dappi.szClient.cy >> 1 ) + ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2) ) >> 1 ), 1 );
-#else
-	if( active_players <= 16 )
-	{
- 
-		if( CTF || CaptureTheFlag || BountyHunt )
-		{
-			Print4x5Text( "Score" , ( d3dappi.szClient.cx >> 1 ) - (2*FontWidth) ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*YSpaceing ) >> 1 ) + FontHeight  ) , 2 );
-		}else{
-			Print4x5Text( "kills" , ( d3dappi.szClient.cx >> 1 ) - (2*FontWidth) ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*YSpaceing ) >> 1 ) + FontHeight  ) , 2 );
-			Print4x5Text( "deaths" , ( d3dappi.szClient.cx >> 1 ) + (5*FontWidth) ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*YSpaceing) >> 1 ) + FontHeight  ) , 1 );
-		}
-	}else{
-		if( CTF || CaptureTheFlag || BountyHunt )
-		{
-			Print4x5Text( "Score" , Kills1X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing ) ) + FontHeight  ) , 2 );
-			Print4x5Text( "Score" , Kills2X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing ) ) + FontHeight  ) , 2 );
-		}else{
-			Print4x5Text( "kills" , Kills1X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing ) ) + FontHeight  ) , 2 );
-			Print4x5Text( "kills" , Kills2X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing ) ) + FontHeight  ) , 2 );
-			Print4x5Text( "deaths" , Deaths1X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing) ) + FontHeight  ) , 1 );
-			Print4x5Text( "deaths" , Deaths2X ,  ( d3dappi.szClient.cy >> 1 ) - ( ( ((active_players >> 2)*YSpaceing) ) + FontHeight  ) , 1 );
-		}
-	}
-
-#endif
-
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if( ( (GameStatus[ ScoreSortTab[i] ] == STATUS_ViewingScore) ||
-			(GameStatus[ ScoreSortTab[i] ] == STATUS_WaitingAfterScore ) ||
-			(GameStatus[ ScoreSortTab[i] ] == STATUS_Left) ||
-			( ( GameStatus[ ScoreSortTab[i] ] >= STATUS_InitView_0 ) && ( GameStatus[ ScoreSortTab[i] ] <= STATUS_InitView_9 ) ) ))
-		{
-			if (TeamGame)
-			{
-				if (WhoIAm == ScoreSortTab[i])
-				{
-					if( ScoreDisplaySfx )
-					{
-						if( i == 0 )
-						{
-							// Gee im top of the table...
-							PlaySfx( SFX_BIKER_VP, 1.0F );
-						}else if( i == active_players-1)
-						{
-							// oow im at the bottom
-							PlaySfx( SFX_BIKER_LP, 1.0F );
-						}
-						ScoreDisplaySfx = FALSE;
-					}
-
-					if (pulseon)
-						col = 0;
-					else
-						col = TeamCol[TeamNumber[WhoIAm]];
-				}else
-					col = TeamCol[TeamNumber[ScoreSortTab[i]]];
-			}else
-			{
-				if (WhoIAm == ScoreSortTab[i])
-				{
-					if( ScoreDisplaySfx )
-					{
-						if( i == 0 )
-						{
-							// Gee im top of the table...
-							PlaySfx( SFX_BIKECOMP_GK, 1.0F );
-						}else if( i == active_players-1)
-						{
-							// oow im at the bottom
-							PlaySfx( SFX_BIKECOMP_PK, 1.0F );
-						}
-						ScoreDisplaySfx = FALSE;
-					}
-					col = 0;
-
-				}
-				else
-					col = 2;
-			}
-#ifdef	PHILHASTIME
-			TempStr[0] = Names[ScoreSortTab[i]][0];
-			TempStr[1] = 0;
-			// print up first letter of name..
-			Print4x5Text( (char*) &TempStr ,  ( ( d3dappi.szClient.cx >> 1 ) -  ( (active_players*FontWidth*4) >> 1 ) )  +  ( i*(4*FontWidth) )  , ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*5) ) >> 1 ), col  );
-			// print up fiorst 5 chars of the name...
-			for( e= 0 ; e < 5 ; e++ )
-			{
-				TempStr[e] = Names[ScoreSortTab[i]][e];
-			}
-			TempStr[5] = 0;
-			Print4x5Text( (char*) &TempStr , ( d3dappi.szClient.cx >> 1 ) -  ( ( (active_players*FontWidth*4) + (8*FontWidth) + (4*FontWidth) ) >> 1 )  ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2)  >> 1 ) ) + (i * (FontHeight+(FontHeight/2))), col);
-			// print kills...
-			Printint16( Ships[ScoreSortTab[i]].Kills , ( d3dappi.szClient.cx >> 1 ) +  ( ( (active_players*FontWidth*4) + (2*FontWidth) + (1*FontWidth) ) >> 1 )  ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2) ) >> 1 ) + (i * (FontHeight+(FontHeight/2))), col);
-			// print deaths...
-			Printuint16( Ships[ScoreSortTab[i]].Deaths ,  ( ( d3dappi.szClient.cx >> 1 ) -  ( (active_players*FontWidth*4) >> 1 ) ) + ( ( i*(4*FontWidth) )  )  ,  ( d3dappi.szClient.cy >> 1 ) + ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2) ) >> 1 ), 1 );
-			
-			for( e = 0 ; e < MAX_PLAYERS ; e++ )
-			{
-				// print stats...
-				if( ( GameStatus[ScoreSortTab[e]] == STATUS_Left) || ( Ships[ScoreSortTab[e]].enable)  )
-				{
-					
-					if( i == e )
-						 Printuint16( Stats[ScoreSortTab[i]][ScoreSortTab[e]] ,  ( ( d3dappi.szClient.cx >> 1 ) -  ( (active_players*FontWidth*4) >> 1 ) ) + ( e*(4*FontWidth) )  ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2) ) >> 1 ) + (i * (FontHeight+(FontHeight/2))), 1 );
-					else Printuint16( Stats[ScoreSortTab[i]][ScoreSortTab[e]] ,  ( ( d3dappi.szClient.cx >> 1 ) -  ( (active_players*FontWidth*4) >> 1 ) ) + ( e*(4*FontWidth) )  ,  ( d3dappi.szClient.cy >> 1 ) - ( ( (active_players*(FontHeight+(FontHeight/2))) + (FontHeight*2) ) >> 1 ) + (i * (FontHeight+(FontHeight/2))), 0 );
-				}
-			}
-#else
-			if( active_players < 16 )
-			{
-				Print4x5Text( (char*) &Names[ScoreSortTab[i]][0] , Names1X ,  ( ( d3dappi.szClient.cy >> 1 ) - (active_players*YSpaceing>>1) ) + (count * YSpaceing) , col);
-				// print kills...
-				Printint16( Ships[ScoreSortTab[i]].Kills , Kills1X  ,  ( ( d3dappi.szClient.cy >> 1 ) - (active_players*YSpaceing>>1) ) + (count * YSpaceing), col);
-				// print deaths...
-				if( !CTF && !CaptureTheFlag && !BountyHunt )
-				{
-					Printuint16( Ships[ScoreSortTab[i]].Deaths , Deaths1X  ,  ( ( d3dappi.szClient.cy >> 1 ) - (active_players*YSpaceing>>1) ) + (count * YSpaceing), 1 );
-				}
-			}else{
-				if( count < (active_players >> 1) )
-				{
-					Print4x5Text( (char*) &Names[ScoreSortTab[i]][0] , Names1X ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing) ) + (count * YSpaceing) , col);
-					// print kills...
-					Printint16( Ships[ScoreSortTab[i]].Kills , Kills1X  ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing) ) + (count * YSpaceing), col);
-					// print deaths...
-					if( !CTF && !CaptureTheFlag && !BountyHunt )
-					{
-						Printuint16( Ships[ScoreSortTab[i]].Deaths , Deaths1X  ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing ) ) + (count * YSpaceing), 1 );
-					}
-				}else{
-					Print4x5Text( (char*) &Names[ScoreSortTab[i]][0] , Names2X ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing) ) + ((count-(active_players>>1)) * YSpaceing) , col);
-					// print kills...
-					Printint16( Ships[ScoreSortTab[i]].Kills , Kills2X  ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing) ) + ((count-(active_players>>1)) * YSpaceing), col);
-					// print deaths...
-					if( !CTF && !CaptureTheFlag && !BountyHunt )
-					{
-						Printuint16( Ships[ScoreSortTab[i]].Deaths , Deaths2X  ,  ( ( d3dappi.szClient.cy >> 1 ) - ((active_players >> 2)*YSpaceing ) ) + ((count-(active_players>>1)) * YSpaceing), 1 );
-					}
-
-				}
-			}
-
-			count++;
-#endif
-		}
-	}
-
-	if ( TeamGame )
-	{
-		char buf[MAX_TEAMS][32];
-		int buf_width[ MAX_TEAMS ];
-		int buf_col[ MAX_TEAMS ];
-		int num_bufs = 0;
-		int total_width = 0;
-		int gap_width = FontWidth * 3;
-		int bufxpos[ MAX_TEAMS ];
-		int total_screen_width = d3dappi.szClient.cx;
-
-		for ( i = 0; i < MAX_TEAMS; i++ )
-		{
-			if ( TeamOK[ i ] )
-			{
-				sprintf( buf[ num_bufs ], "%-8s %d", TeamName[ i ], TeamScore[ i ] );
-				buf_width[ num_bufs ] = strlen( buf[ num_bufs ] ) * FontWidth;
-				total_width += buf_width[ num_bufs ];
-
-				if ( i == TeamNumber[ WhoIAm ] )
-					buf_col[ num_bufs ] = pulseon ? 0 : TeamCol[ i ];
-				else
-					buf_col[ num_bufs ] = TeamCol[ i ];
-
-				num_bufs++;
-
-			}
-		}
-
-		total_width += gap_width * ( num_bufs - 1 );
-
-		for( i = 0; i < num_bufs; i++ )
-		{
-			if ( !i )
-				bufxpos[ i ] = ( total_screen_width / 2 ) - ( total_width / 2 );
-			else
-				bufxpos[ i ] = bufxpos[ i - 1 ] + buf_width[ i - 1 ] + gap_width; 
-
-			Print4x5Text( buf[ i ] ,bufxpos[ i ],  d3dappi.szClient.cy - (FontHeight*4) , 
-				 buf_col[ i ]);
-
-		}
-	}
-
-	return TRUE;
-}
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-  Procedure :   Show Detailed Stats...
-  Output    :   nothing..
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BOOL DetailedStats)
-{
-		RECT    src;
-		RECT    dest;
-		HRESULT ddrval;
-		DDBLTFX fx;
-		int i;				// index counter
-		int j;				// index counter
-		int scaler;		// used to adjust positioning of stats based on number of active players
-		int col;			// used to flash the colour of your player name and stats
-		int cl;				// used to differentiate colour between kills and suicides in the matrix
-		int YSpaceing = (FontHeight+(FontHeight>>1));
-		int TeamColor;
-		BOOL pulseon;
-		static float pulse = 0.0F;
-
-		char FirstLetter[1]; // first character of names - used for top row of matrix
-		
-		pulse += framelag/60.0F;
-
-		if (pulse > 1.0F)
-			pulse -= (float)floor((double)pulse);
-
-		if (pulse <= 0.5F)
-			pulseon = TRUE;
-		else
-			pulseon = FALSE;
 
 		//  Blt Background
 		src.top			= 0;
@@ -6776,76 +6417,83 @@ void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BO
 		// display how to exit stats screen for dorks who don't know how (i.e. Deadly_Methods)
 		CenterPrint4x5Text( "Press Space to continue" , d3dappi.szClient.cy - (FontHeight*2) , 0 );	
 
-		scaler = 6;
+		// fake table for testing
+		//char FakeNames[2][7] = { "XXXXXXX", "AAAAAAA", };
+		//NumActivePlayers = 2;
+		
+
+		// objective based game
+		if( CTF || CaptureTheFlag || BountyHunt )
+			KillsBased = FALSE;
+		// kills based game
+		else
+			KillsBased = TRUE;
+		
+		// set the pulse to flash the name
+		pulse += framelag/60.0F;
+
+		if (pulse > 1.0F)
+			pulse -= (float)floor((double)pulse);
+
+		if (pulse <= 0.5F)
+			pulseon = TRUE;
+		else
+			pulseon = FALSE;
 
 		// headers for kills based games
 		if(KillsBased)
 		{
-
-			//NumActivePlayers;
-
-															// x co-ords, smaller = left, bigger = right										// y co-ords, smaller = top, bigger = bottom
-			// display labels
-			Print4x5Text(	"DEATHS"				,  ( d3dappi.szClient.cx >>1 )											, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
-			Print4x5Text(	"KILLS"					,  ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)					, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 2 ); // green
-			Print4x5Text(	"SCORE"					,  ( d3dappi.szClient.cx >>1 ) + (int) ((FontWidth*10)*1.8)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
+															// x co-ords, smaller = left, bigger = right							// y co-ords, smaller = top, bigger = bottom
+			// display labels					
+			Print4x5Text(	"DEATHS"				,  ( d3dappi.szClient.cx >>1 )	+ (FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
+			Print4x5Text(	"KILLS"					,  ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*1.8)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 2 ); // green
+			Print4x5Text(	"SCORE"					,  ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*2.5)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
 			
-			if(TeamsGame)
-				Print4x5Text(	"TEAM SCORE"		,  ( d3dappi.szClient.cx >>1 ) + (int) ((FontWidth*10)*2.5)	,	( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
+			if(TeamGame)
+				Print4x5Text(	"TEAM SCORE"		,  ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*3.2)		,	( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
 		}
 		// headers for objective based games
 		else
 		{
 			// display labels
-			Print4x5Text(	"SUICIDES"				,  ( d3dappi.szClient.cx >>1 ) - (2*FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
-			Print4x5Text(	"DEATHS"				,  ( d3dappi.szClient.cx >>1 ) - (FontWidth*10)					, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
-			Print4x5Text(	"KILLS"					,  ( d3dappi.szClient.cx >>1 )											, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 2 ); // green
-			Print4x5Text(	"BONUS"					,  ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)					, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 4 ); // yellow
-			Print4x5Text(	"SCORE"					,  ( d3dappi.szClient.cx >>1 ) + (int) (1.8*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
+			Print4x5Text(	"SUICIDES"				,  ( d3dappi.szClient.cx >>1 ) - (2*FontWidth*10)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
+			Print4x5Text(	"DEATHS"				,  ( d3dappi.szClient.cx >>1 ) - (FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 1 ); // red
+			Print4x5Text(	"KILLS"					,  ( d3dappi.szClient.cx >>1 )										, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 2 ); // green
+			Print4x5Text(	"BONUS"					,  ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 4 ); // yellow
+			Print4x5Text(	"SCORE"					,  ( d3dappi.szClient.cx >>1 ) + (1.8*FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
 			
-			if(TeamsGame)
-				Print4x5Text(	"TEAM SCORE"		,  ( d3dappi.szClient.cx >>1 ) + (int) (2.5*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
+			if(TeamGame)
+				Print4x5Text(	"TEAM SCORE"		,  ( d3dappi.szClient.cx >>1 ) + (2.5*FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 	, 5 ); // light blue
 		}
 		
 
-		// display stats for all active players
+		// display stats for all players
 		for (i = 0; i < NumActivePlayers; i++)
 		{
 			TeamColor = TeamCol[TeamNumber[i]]; // team colour
-
+			//TeamColor = 1; // override testing
+			
 			// flash my name baby!
 			if (pulseon && i == WhoIAm)
 				col = 0; // white
 			else
 			{	
-				if(TeamsGame)
+				if(TeamGame)
 					col = TeamColor;
 				else
 					col = 4; // yellow
 			}
 
-			// do we have enough room to show the extra stats?
-			if(DetailedStats)
-			{
-				// extra stats - player names
-		/*		Print4x5Text( (char*) &Names[i]										,  ( d3dappi.szClient.cx >>1 ) -  (FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (2*YSpaceing>>1) ) + (((5*i)+NumActivePlayers+2) * YSpaceing)	, col ); 
-				// extra stats - favourite primary weapon		
-				Print4x5Text( "FAVOURITE PRIMARY WEAPON: "					,  ( d3dappi.szClient.cx >>1 ) -  (FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (2*YSpaceing>>1) ) + (((5*i)+NumActivePlayers+3) * YSpaceing)	, 2 ); // green
-				Print4x5Text( GetFavWeapon(i,WEPTYPE_Primary)				,  ( d3dappi.szClient.cx >>1 ) +  (2*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (2*YSpaceing>>1) ) + (((5*i)+NumActivePlayers+3) * YSpaceing)	, 2 ); // green
-				// extra stats - favourite secondary weapon		
-				Print4x5Text( "FAVOURITE SECONDARY WEAPON: "				,  ( d3dappi.szClient.cx >>1 ) -  (FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (2*YSpaceing>>1) ) + (((5*i)+NumActivePlayers+4) * YSpaceing)	, 1 ); // red
-				Print4x5Text( GetFavWeapon(i,WEPTYPE_Secondary)			,  ( d3dappi.szClient.cx >>1 ) +  (2*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (2*YSpaceing>>1) ) + (((5*i)+NumActivePlayers+4) * YSpaceing)	, 1 ); // red
-		*/	}		
-
 			// kills based games
 			if(KillsBased)
 			{
 				// left column
-				Print4x5Text( (char*) &Names[i]		,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*18) - (NumActivePlayers*FontWidth*2)))			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, col ); 
+				Print4x5Text( (char*) &Names[i]	,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*14) - (NumActivePlayers*FontWidth*2)))			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, col ); 
 								
 				// top row of matrix
+				FirstLetter[0] = 0; // stops weird characters appearing
 				strncpy(FirstLetter,(char*) &Names[i], 1);
-				Print4x5Text( FirstLetter				,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*10) - (NumActivePlayers*FontWidth*2))) + (i*FontWidth*2)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 					, col );
+				Print4x5Text( FirstLetter,  ( ((d3dappi.szClient.cx >>1) - (FontWidth*6) - (NumActivePlayers*FontWidth*2))) + (i*FontWidth*4)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) 					, col );
 			
 				// display kill matrix
 				for (j = 0; j < NumActivePlayers; j++)
@@ -6856,46 +6504,48 @@ void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BO
 						cl = 0; // kills are white
 
 					// display individual kills
-					Printint16( GetKillStats(j,i)		, ( ((d3dappi.szClient.cx >>1) - (FontWidth*10) - (NumActivePlayers*FontWidth*2))) + (i*FontWidth*2)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((j+1) * YSpaceing)			, cl );		
+					Printint16(GetKillStats(j,i)	, ( ((d3dappi.szClient.cx >>1) - (FontWidth*6) - (NumActivePlayers*FontWidth*2))) + (i*FontWidth*4)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((j+1) * YSpaceing)			, cl );		
 								
 				}
 
 				// display total deaths
-				Printint16( GetTotalDeaths(i)		, ( d3dappi.szClient.cx >>1 )											, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 );	// red	
+				Printint16(  GetTotalDeaths(i) 	, ( d3dappi.szClient.cx >>1 )	+ (FontWidth*10)					, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 );	// red	
 				// display total kills
-				Printint16( GetTotalKills(i)			, ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)					, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 2 );	// green
+				Printint16( GetTotalKills(i) 			, ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*1.8)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 2 );	// green
 				// display individual score
-				Printint16( GetScoreStats(i)		, ( d3dappi.szClient.cx >>1 ) + (int) ((FontWidth*10)*1.8)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 5 );	// light blue
+				Printint16( GetScoreStats(i)		, ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*2.5)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 5 );	// light blue
 				
 				// display team score
-				if(TeamsGame)																													  																
-					Printint16( GetTeamScore(i)	, ( d3dappi.szClient.cx >>1 ) + (int) ((FontWidth*10)*2.5)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, TeamColor ); // TeamColor
+				if(TeamGame)																													  																
+					Printint16( GetTeamScore(i)	, ( d3dappi.szClient.cx >>1 ) + ((FontWidth*10)*3.2)		, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, TeamColor ); // TeamColor
 			}
 
 			// objective based games
 			else
 			{
 				// left column
-				Print4x5Text( (char*) &Names[i]			,  (d3dappi.szClient.cx >>1 ) - (3*FontWidth*10)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, col ); 
+				Print4x5Text( (char*) &Names[i]			,  (d3dappi.szClient.cx >>1 ) - (3*FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, col ); 
 				// display suicides
-				Printint16( GetKillStats(i,i)					, ( d3dappi.szClient.cx >>1 ) - (2*FontWidth*10)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 ); // red	
+				Printint16( GetKillStats(i,i)					, ( d3dappi.szClient.cx >>1 ) - (2*FontWidth*10)		, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 ); // red	
 				// display total deaths
-				Printint16( GetTotalDeaths(i)				, ( d3dappi.szClient.cx >>1 ) - (FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 ); // red	
+				Printint16( GetTotalDeaths(i)				, ( d3dappi.szClient.cx >>1 ) - (FontWidth*10)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 1 ); // red	
 				// display total kills
-				Printint16( GetTotalKills(i)					, ( d3dappi.szClient.cx >>1 )										, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 2 );	// green
+				Printint16( GetTotalKills(i)					, ( d3dappi.szClient.cx >>1 )									, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 2 );	// green
 				
 				// display individual bonus points scored
-				Printint16( GetBonusStats(i) 				, ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)				, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 5 ); // light blue
+				Printint16( GetBonusStats(i) 				, ( d3dappi.szClient.cx >>1 ) + (FontWidth*10)			, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 4 ); // yellow
 				// display individual score
-				Printint16( GetScoreStats(i)				, ( d3dappi.szClient.cx >>1 ) + (int) (1.8*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 4 ); // yellow
+				Printint16( GetScoreStats(i)				, ( d3dappi.szClient.cx >>1 ) + (1.8*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, 5 ); // light blue
 			    
 				// display team score
-				if(TeamsGame)
-					Printint16( GetTeamScore(i)			, ( d3dappi.szClient.cx >>1 ) + (int) (2.5*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, TeamColor ); // TeamColor
+				if(TeamGame)
+					Printint16( GetTeamScore(i)			, ( d3dappi.szClient.cx >>1 ) + (2.5*FontWidth*10)	, ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) ) + ((i+1) * YSpaceing)			, TeamColor ); // TeamColor
 			}
 
 		} // end of for all active players
 
+		// finished
+		return TRUE;
 }
 
 
@@ -9648,5 +9298,58 @@ void WierdShit( void )
 }
 #endif
 
+// if we met the max kills limit then set flag to change level
+void CheckMetKillLimit()
+{
+	BOOL	KillsReached = FALSE;
+	BOOL teamOK[MAX_TEAMS];
+	BOOL teamleft[MAX_TEAMS];
 
+	// i'm the host so i should check if we have met the level kill threshold if there is one
+	if(IsHost && MaxKills && (MyGameStatus == STATUS_Normal) )
+	{
+		// not team game
+		if( !TeamGame )
+		{
+			// for every player
+			for ( i = 0; i < MAX_PLAYERS; i++ )
+			{
+				// whose status is normal
+				if( (GameStatus[GetPlayerRank(i)] == STATUS_Normal) )
+				{
+					// if they scored more than the kills threshold then flag we finished it
+					if( GetScoreStats(GetPlayerRank(i)) >= MaxKills && LevelNum != -1 )
+						KillsReached = TRUE;
+				}
+			}
+		}
+		// team game
+		else
+		{
+			// identify which teams are active
+			for (i = 0; i < MAX_TEAMS; i++)
+			{	
+				teamOK[i] = FALSE;
+				teamleft[i] = TRUE;
+			}
+
+			// if any of the active teams scored more than the kills threshold then flag we finished it
+			for( i = 0 ; i < MAX_TEAMS ; i++ )
+			{
+				if( GetTeamScore(i) >= MaxKills && !teamleft[i] && teamOK[i])
+					KillsReached = TRUE;
+			}
+		}
+
+		// kill threshold reached so change level
+		if( KillsReached )
+		{
+			LevelNum = -1;
+			NewLevelNum++;
+			if( NewLevelNum >= NumLevels ) NewLevelNum = 0;
+			DplayGameUpdate();
+		}
+	}
+
+}
 

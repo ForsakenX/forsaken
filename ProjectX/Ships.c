@@ -195,6 +195,7 @@ extern SLIDER WatchPlayerSelect;
 
 // statistics updates (stats.c)
 extern int UpdateBonusStats(int Player, int Points);
+extern int GetTotalKills(int Player);
 
 // message colours (Title.c)
 extern int KillMessageColour; 
@@ -920,8 +921,6 @@ BOOL ProcessShips()
 						{
 							// update bonus 4 (stats.c) -- bounty hunt points
 							UpdateBonusStats(i,(int16) floor( BountyTime / BountyBonusInterval ));
-							// normal update
-							ShipPnt->Kills += (int16) floor( BountyTime / BountyBonusInterval );
 							BountyTime = FMOD( BountyTime, BountyBonusInterval );
 						}
 					}
@@ -1189,8 +1188,6 @@ BOOL ProcessShips()
 							PickupsGot[ PICKUP_Flag ] = 0;
 							Ships[ i ].Object.Flags &= ~SHIP_CarryingFlag;
 							FlagsToGenerate++;
-							// normal update -- remove later...
-							Ships[ i ].Kills += GoalScore;
 							// update bonus 2 (stats.c) -- flag chase scored
 							UpdateBonusStats(i,GoalScore);
 							AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
@@ -1235,8 +1232,6 @@ BOOL ProcessShips()
 									}
 									if ( score )
 									{
-										// normal update
-										Ships[ i ].Kills += score;
 										// update bonus 3 (stats.c) -- CTF scored
 										UpdateBonusStats(i,score);
 										AddColourMessageToQue(FlagMessageColour, TEAM_SCORED,
@@ -1457,6 +1452,18 @@ BOOL ProcessShips()
 						Move_Off.y = ShipObjPnt->Pos.y - StartPos.y;
 						Move_Off.z = ShipObjPnt->Pos.z - StartPos.z;
 						ShipObjPnt->Group = MoveGroup( &Mloadheader, &StartPos, ShipObjPnt->Group, &Move_Off );
+					
+						// update other player's bounty points
+						if ( BountyHunt && ShipObjPnt->Flags & SHIP_CarryingBounty )
+						{
+							BountyTime += framelag / 60.0F;
+							if ( BountyBonusInterval > 0 && BountyTime >= BountyBonusInterval )
+							{
+								// update bonus 7 (stats.c) -- bounty hunt points
+								UpdateBonusStats(i,(int16) floor( BountyTime / BountyBonusInterval ));
+								BountyTime = FMOD( BountyTime, BountyBonusInterval );
+							}
+						}					
 					}
 				}
 				else
@@ -2144,11 +2151,9 @@ int16 DoDamage( BOOL OverrideInvul )
 
 						PlaySfx( SFX_Die, 1.0F );
 						Ships[WhoIAm].Object.Hull = 0.0F;
-//						Ships[WhoIAm].Deaths++;
 						if( Ships[WhoIAm].ShipThatLastHitMe == WhoIAm )
 						{
 							// killed myself....Doh
-							Ships[WhoIAm].Kills--;
 							// stats.c (not sure when this is callled or what weapon caused it??)
 							//UpdateKillStats(WhoIAm, WhoIAm, int WeaponType, int Weapon)
 						}
@@ -2730,7 +2735,6 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			ShipPnt->Object.Mode = NORMAL_MODE;
 			ShipPnt->InvulTimer = RGENINVULTIME;		// approx 1 second of invulnerability...			
 			ShipPnt->Invul = TRUE;
-			ShipPnt->Deaths++;
 			PlaySfx( SFX_PlayerGenerate, 1.0F );
 			
 			// play a general biker phrase on respawning, but only in single player
@@ -3406,10 +3410,10 @@ void MultiSfxHandle( void )
 
 	NewKill = FALSE;
 
-	if( Ships[WhoIAm].Kills > OldKills )
+	if( GetTotalKills(WhoIAm) > OldKills )
 	{
 		NewKill = TRUE;
-		OldKills = Ships[WhoIAm].Kills;
+		OldKills = GetTotalKills(WhoIAm);
 
 	}
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime );
@@ -3477,7 +3481,7 @@ void MultiSfxHandle( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void AddKill( void )
 {
-	KillMemory[CurrentKillPos] = Ships[WhoIAm].Kills;
+	KillMemory[CurrentKillPos] = GetTotalKills(WhoIAm);
 	QueryPerformanceCounter((LARGE_INTEGER *) &KillMemoryTime[CurrentKillPos]  );
 	KillMemoryTime[CurrentKillPos] = KillMemoryTime[CurrentKillPos] * 1000 / Freq;
 	CurrentKillPos++;
@@ -3575,8 +3579,6 @@ FILE * SaveShips( FILE * fp )
 		fwrite( &Ships[ i ].InvulTimer, sizeof( Ships[ i ].InvulTimer ), 1, fp );
 		fwrite( &Ships[ i ].Invul, sizeof( Ships[ i ].Invul ), 1, fp );
 		fwrite( &Ships[ i ].LastAngle, sizeof( Ships[ i ].LastAngle ), 1, fp );
-		fwrite( &Ships[ i ].Kills, sizeof( Ships[ i ].Kills ), 1, fp );
-		fwrite( &Ships[ i ].Deaths, sizeof( Ships[ i ].Deaths ), 1, fp );
 		fwrite( &Ships[ i ].PrimBullIdCount, sizeof( Ships[ i ].PrimBullIdCount ), 1, fp );
 		fwrite( &Ships[ i ].SecBullIdCount, sizeof( Ships[ i ].SecBullIdCount ), 1, fp );
 		fwrite( &Ships[ i ].PickupIdCount, sizeof( Ships[ i ].PickupIdCount ), 1, fp );
@@ -3619,8 +3621,6 @@ FILE * SaveShips( FILE * fp )
 		fwrite( &Ships[ i ].InvulTimer, sizeof( Ships[ i ].InvulTimer ), 1, fp );
 		fwrite( &Ships[ i ].Invul, sizeof( Ships[ i ].Invul ), 1, fp );
 		fwrite( &Ships[ i ].LastAngle, sizeof( Ships[ i ].LastAngle ), 1, fp );
-		fwrite( &Ships[ i ].Kills, sizeof( Ships[ i ].Kills ), 1, fp );
-		fwrite( &Ships[ i ].Deaths, sizeof( Ships[ i ].Deaths ), 1, fp );
 		fwrite( &Ships[ i ].PrimBullIdCount, sizeof( Ships[ i ].PrimBullIdCount ), 1, fp );
 		fwrite( &Ships[ i ].SecBullIdCount, sizeof( Ships[ i ].SecBullIdCount ), 1, fp );
 		fwrite( &Ships[ i ].PickupIdCount, sizeof( Ships[ i ].PickupIdCount ), 1, fp );
@@ -3678,8 +3678,6 @@ FILE * LoadShips( FILE * fp )
 		fread( &Ships[ i ].InvulTimer, sizeof( Ships[ i ].InvulTimer ), 1, fp );
 		fread( &Ships[ i ].Invul, sizeof( Ships[ i ].Invul ), 1, fp );
 		fread( &Ships[ i ].LastAngle, sizeof( Ships[ i ].LastAngle ), 1, fp );
-		fread( &Ships[ i ].Kills, sizeof( Ships[ i ].Kills ), 1, fp );
-		fread( &Ships[ i ].Deaths, sizeof( Ships[ i ].Deaths ), 1, fp );
 		fread( &Ships[ i ].PrimBullIdCount, sizeof( Ships[ i ].PrimBullIdCount ), 1, fp );
 		fread( &Ships[ i ].SecBullIdCount, sizeof( Ships[ i ].SecBullIdCount ), 1, fp );
 		fread( &Ships[ i ].PickupIdCount, sizeof( Ships[ i ].PickupIdCount ), 1, fp );
@@ -3720,8 +3718,6 @@ FILE * LoadShips( FILE * fp )
 		fread( &Ships[ i ].InvulTimer, sizeof( Ships[ i ].InvulTimer ), 1, fp );
 		fread( &Ships[ i ].Invul, sizeof( Ships[ i ].Invul ), 1, fp );
 		fread( &Ships[ i ].LastAngle, sizeof( Ships[ i ].LastAngle ), 1, fp );
-		fread( &Ships[ i ].Kills, sizeof( Ships[ i ].Kills ), 1, fp );
-		fread( &Ships[ i ].Deaths, sizeof( Ships[ i ].Deaths ), 1, fp );
 		fread( &Ships[ i ].PrimBullIdCount, sizeof( Ships[ i ].PrimBullIdCount ), 1, fp );
 		fread( &Ships[ i ].SecBullIdCount, sizeof( Ships[ i ].SecBullIdCount ), 1, fp );
 		fread( &Ships[ i ].PickupIdCount, sizeof( Ships[ i ].PickupIdCount ), 1, fp );

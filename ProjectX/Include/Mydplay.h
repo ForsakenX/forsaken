@@ -322,8 +322,6 @@ typedef struct _GLOBALSHIP
 	float				InvulTimer;					// HowLong am I Invulnerable
 	BOOL				Invul;						// Am I Invulnerable...
 	VECTOR				LastAngle;					// what my last Step Turn Angles Were...
-	int16				Kills;						// number of kills
-	int16				Deaths;						// number of deaths
 	uint16				PrimBullIdCount;			// Id count for every bullet I fire....
 	uint16				SecBullIdCount;				// Id count for every bullet I fire....
 	uint16				PickupIdCount;				// Id count for every pickup I generate.....
@@ -552,6 +550,7 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_SHIPDIED							0x77
 #define MSG_DROPPICKUP						0x88
 #define MSG_KILLPICKUP						0x99
+#define MSG_DPLAYUPDATE					0xaa
 #define MSG_STATUS							0xbb
 #define MSG_SHORTPICKUP					0xee
 #define MSG_SHOCKWAVE						0xff
@@ -571,7 +570,7 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_REQTIME							0xf1
 #define MSG_ACKMSG							0xf2
 #define MSG_GUARANTEEDMSG				0xf3
-#define MSG_KILLSDEATHSBIKENUM			0xf4
+#define MSG_BIKENUM							0xf4
 #define MSG_VERYSHORTUPDATE			0xf5
 #define MSG_VERYSHORTFUPDATE			0xf6
 #define MSG_VERYSHORTINTERPOLATE	0xf8
@@ -583,25 +582,15 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 #define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
 #endif
-#define MSG_FLAGSCORED						0xea	
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP		0xed
 
-typedef struct _FLAGSCOREDMSG
-{
-    BYTE     MsgCode;
-    BYTE     WhoIAm;
-	BYTE		WhoScored;
-	BYTE		Score;
-}FLAGSCOREDMSG, *LPFLAGSCOREDMSG;
-
-
-typedef struct _SENDKILLSDEATHSBIKENUMMSG
+typedef struct _SENDBIKENUMMSG
 {
     BYTE        MsgCode;
     BYTE        WhoIAm;
-}SENDKILLSDEATHSBIKENUMMSG, *LPSENDKILLSDEATHSBIKENUMMSG;
+}SENDBIKENUMMSG, *LPSENDBIKENUMMSG;
 
 
 typedef struct _YOUQUITMSG
@@ -632,14 +621,12 @@ typedef struct _ACKMSG
 	BYTE		AckTo;
 }ACKMSG, *LPACKMSG;
 
-typedef struct _KILLSDEATHSBIKENUMMSG
+typedef struct _BIKENUMMSG
 {
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	int16		Kills;
-	int16		Deaths;
+    BYTE     MsgCode;
+    BYTE     WhoIAm;
 	BYTE		BikeNum;		// which model to display for them...
-}KILLSDEATHSBIKENUMMSG, *LPKILLSDEATHSBIKENUMMSG;
+}BIKENUMMSG, *LPBIKENUMMSG;
 
 typedef struct _PINGMSG
 {
@@ -767,6 +754,11 @@ typedef struct _INITMSG
 	int16		PrimaryPickups;
 	DPID		FromDpid;
 	BYTE		GameStatus[MAX_PLAYERS];
+	// current game stats
+	uint8		KillStats[MAX_PLAYERS][MAX_PLAYERS];
+	uint8		BonusStats[MAX_PLAYERS];
+	uint8		KillCounter[MAX_PLAYERS];
+
 } INITMSG, *LPINITMSG;
 
 typedef struct _SHIPHITMSG
@@ -775,7 +767,6 @@ typedef struct _SHIPHITMSG
 	BYTE		WhoHitYou;
     BYTE     You;
 	SHIPHIT	ShipHit;
-	int16		Deaths;			// number of deaths
 } SHIPHITMSG, *LPSHIPHITMSG;
 
 typedef struct _SHORTSHIPHITMSG
@@ -784,7 +775,6 @@ typedef struct _SHORTSHIPHITMSG
 	BYTE		WhoHitYou;
     BYTE		You;
 	SHORTSHIPHIT	ShipHit;
-	int16		Deaths;			// number of deaths
 } SHORTSHIPHITMSG, *LPSHORTSHIPHITMSG;
 
 
@@ -848,7 +838,6 @@ typedef struct _VERYSHORTDROPPICKUPMSG
 
 } VERYSHORTDROPPICKUPMSG, *LPVERYSHORTDROPPICKUPMSG;
 
-
 typedef struct _PRIMBULLPOSDIRMSG
 {
     BYTE        MsgCode;
@@ -887,17 +876,23 @@ typedef struct _STATUSMSG
 	BOOL		IsHost;			// from host ???
 	BYTE		Status;
 	BYTE		TeamNumber;
-	uint16	TeamScore;	// if leaving game, used to propagate my score to another team member
 	BOOL		IAmReady;		// used for team game - game cannot start until everyone is ready
 	BYTE		Pickups;			// tells how much of the pickup list I have recieved..
 	BYTE		RegenSlots;		// tells how much of the pickup regen slots list I have recieved..
 	BYTE		Mines;			// tells how much of the mine list I have recieved..
 	BYTE		Triggers;			// tells how much of the mine list I have recieved..
 	BYTE		TrigVars;		// tells how much of the mine list I have recieved..
+} STATUSMSG, *LPSTATUSMSG;
+
+typedef struct _DPLAYUPDATEMSG
+{
+	BYTE		MsgCode;
+	BYTE		WhoIAm;
+	BOOL		IsHost;
 	float		PacketsPerSecond;
 	BOOL		CollisionPerspective;
-	BOOL		ShortPackets;
-} STATUSMSG, *LPSTATUSMSG;
+	BOOL		ShortPackets;	
+} DPLAYUPDATEMSG, *LPDPLAYUPDATEMSG;
 
 typedef struct _LONGSTATUSMSG
 {

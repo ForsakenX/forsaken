@@ -7172,7 +7172,6 @@ void CheckPickupAllPlayers( void )
 					Host_PickupsGot[ Ship ][ PICKUP_Flag ] = 0;
 					Host_Flags[ Ship ] &= ~SHIP_CarryingFlag;
 					FlagsToGenerate++;
-					SendGameMessage(MSG_FLAGSCORED, 0, (BYTE)Ship, (BYTE)GoalScore, 0);
 				}
 			}
 
@@ -7204,11 +7203,7 @@ void CheckPickupAllPlayers( void )
 								GenerateFlagAtHome( team );
 							}
 						}
-						if ( score )
-						{
-							SendGameMessage(MSG_FLAGSCORED, 0, (BYTE)Ship, (BYTE)score, 0);
-						}
-						else
+						if ( !score )
 						{
 							sprintf( CTFMessage, THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED, TeamName[ TeamNumber[ Ship ] ] );
 							SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_ReturnedFlag, 0);
