@@ -11,9 +11,9 @@
 *		Mydplay.c	- update stats 1 (stats.c) -- somebody killed me
 *		Mydplay.c	- update stats 2 (stats.c) -- you killed someone 
 *		Mydplay.c	- update stats 3 (stats.c) -- somebody killed someone
-*		models.c		- update stats 4 (stats.c) -- killed yourself with missile splash damage
-*		models.c		- update stats 5 (stats.c) -- i killed myself
-*		models.c		- update stats 6 (stats.c) -- somebody killed me
+*		models.c	- update stats 4 (stats.c) -- killed yourself with missile splash damage
+*		models.c	- update stats 5 (stats.c) -- i killed myself
+*		models.c	- update stats 6 (stats.c) -- somebody killed me
 *		Mydplay.c	- update stats 7 (stats.c) -- you killed someone on your own team
 *		Mydplay.c	- update stats 8 (stats.c) -- you killed someone in a team bounty game
 *		Mydplay.c	- update stats 9 (stats.c) -- you killed someone in a team game
