@@ -142,6 +142,17 @@ typedef struct SHORTKILLPICKUP{
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Bodge Structures
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
+typedef struct _PLAYERINFO
+{
+	char	IP[16];
+	char	Name[8];
+}PLAYERINFO;
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Bodge Structures
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 typedef struct MISSEDPICKUPMSG{
  	int16	Type;
 	void *	Struct;
@@ -456,7 +467,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 	SHORTQUAT			Quat;		// Final Quat...
 	int16				Bank;		// How much Am I banked....
 } GROUPONLY_FVERYSHORTGLOBALSHIP, *LPGROUPONLY_FVERYSHORTGLOBALSHIP;
-
 
 //----------------------------------------------------------
 // Mask Defines for .Flags uint32
@@ -1001,6 +1011,7 @@ typedef struct _TRACKERINFOMSG
 	DWORD	freq;
 	int		type;
 	BOOL	shutdown;
+	PLAYERINFO PlayerInfo[MAX_PLAYERS];
 }TRACKERINFOMSG, *LPTRACKERINFOMSG;
 
 // globals needed in other modules

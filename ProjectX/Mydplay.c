@@ -364,7 +364,7 @@ BOOL	DemoShipInit[MAX_PLAYERS+1];
 LONGLONG	LastPacketTime[MAX_PLAYERS+1];
 BYTE		CommBuff[MAX_BUFFER_SIZE];
 
-BOOL	BigPackets = TRUE;//FALSE;
+BOOL	BigPackets = FALSE;
 uint32	BIGPACKETBUFFERSIZE = 1024;
 BYTE	BigPacketCommBuff[MAXBIGPACKETBUFFERSIZE];
 BYTE	ReceiveCommBuff[MAXBIGPACKETBUFFERSIZE];
@@ -377,6 +377,8 @@ uint32	BigPacketOffsets[MAXPACKETSPERBIGPACKET];
 uint32	BigPacketSizes[MAXPACKETSPERBIGPACKET];
 LONGLONG	BigPacketTime[MAXPACKETSPERBIGPACKET];
 int	BigPacketsSent = 0;
+
+PLAYERINFO PlayerInfo[MAX_PLAYERS];	// used by host to manage player numbers
 
 #ifdef	GUARANTEEDMESSAGES
 typedef struct GUARANTEEDMSGHEADER
@@ -2685,6 +2687,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
 						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
 				}
+				// new player joining the game
 				else
 				{
 					SendGameMessage(MSG_INIT, lpHereIAm->ID, MAX_PLAYERS, 0, 0);
@@ -3728,14 +3731,14 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	case MSG_TRACKERINFO:
 
 		//Msg("tracker msg got through\n");
-
-		lpTrackerInfoMsg = (LPTRACKERINFOMSG)MsgPnt;
-		TrackerOveride	= TRUE;
+		lpTrackerInfoMsg	= (LPTRACKERINFOMSG)MsgPnt;
+		TrackerOveride		= TRUE;
 		tracker_addr		= lpTrackerInfoMsg->addr;
 		tracker_port		= lpTrackerInfoMsg->port;
 		heartbeat_freq		= lpTrackerInfoMsg->freq;
-		heartbeat_type	= lpTrackerInfoMsg->type;
-		SendShutdownPacket = lpTrackerInfoMsg->shutdown;
+		heartbeat_type		= lpTrackerInfoMsg->type;
+		SendShutdownPacket	= lpTrackerInfoMsg->shutdown;
+		memcpy(PlayerInfo, lpTrackerInfoMsg->PlayerInfo, sizeof(lpTrackerInfoMsg->PlayerInfo));
 		return;
 
 	}
@@ -3808,6 +3811,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
 	char VersionMessage[30];
+	BOOL Rejoining = FALSE;
+	char IPAdd[16];
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3922,34 +3927,91 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			{															
 				lpInit->PlayerReady[Count] = PlayerReady[Count];
 				lpInit->GameStatus[Count] = GameStatus[Count];
-			}															
-			if( (mask != 0) && (ShipNum < MAX_PLAYERS) && GameStatus[ShipNum] == STATUS_GetPlayerNum )
+			}	
+			
+			// try to find a brand new slot
+			Rejoining = FALSE;
+			for( i = 0; i < MAX_PLAYERS; i++ )
 			{
-				// this player has requested a number before....just send them the same one again...
-				i = ShipNum;
-//				memset(&Ships[i], 0, sizeof(GLOBALSHIP) );
-				for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
+			    if( i != WhoIAm )
+			    {
+					GetIPFromDP( IPAdd, to );
+					// rejoining
+					if(strcmp(&PlayerInfo[i].IP[0], &IPAdd[0]) == 0)
+					{
+						//AddColourMessageToQue(1,"REJOINING!!!");
+						Rejoining = TRUE;
+						break;
+					}
+					// found a never used before slot
+					else if(PlayerInfo[i].IP == NULL)
+						break;
+				}
+			}
+
+			// couldn't find a new slot so find one from a player who left
+			if( i == MAX_PLAYERS)
+			{
+			    for( i = 0; i < MAX_PLAYERS; i++ )
+			    {
+					if( i != WhoIAm )
+					{
+		    			if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
+		    				break;
+					}
+			    }
+			}
+
+			// rejoining
+			if(Rejoining && i != MAX_PLAYERS)
+				InitShipStructure(i , FALSE);	// don't reset score
+			// new
+			else if(!Rejoining && i != MAX_PLAYERS)
+				InitShipStructure(i , TRUE);	// reset score
+			
+			// got a valid player number
+			if(i != MAX_PLAYERS)
+			{
 				GameStatus[i] = STATUS_GetPlayerNum;
 				lpInit->YouAre = (BYTE) i;
-				DebugPrintf("YouAre set to %d at point 1\n", i);
+				DebugPrintf("YouAre set to %d at point 2\n", i);
 				Names[i][0] = 0;
+				Ships[i].dcoID = to;
+
+				// Host must store info related to all players who join
+				GetIPFromDP( PlayerInfo[i].IP, to );
+
+#if 0
+				// if TCP game, store IP address of player
+				if ( ! memcmp( &ServiceProvidersGuids[ServiceProvidersList.selected_item], &DPSPGUID_TCPIP , sizeof(GUID) ) )
+				{
+					char add[ 16 ];
+
+					memset(&PlayerIP[ i ], 0, sizeof(PlayerIP[ i ]));
+					if ( GetIPFromDP( add, to ) )
+					{
+						PlayerIP[ i ].sin_family = AF_INET;
+						PlayerIP[ i ].sin_port = htons( DEF_PORT );
+						PlayerIP[ i ].sin_addr.s_addr = inet_addr( add );
+					}
+				}
+#endif
 
 				if( Type == (BYTE) -1 )
 					TeamNumber[i] = 0;
 				else
 					TeamNumber[i] = Type;
-
-				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			// Replaced i with Count
-				{															// Replaced i with Count
-					lpInit->TeamNumber[Count] = TeamNumber[Count];			// Replaced i with Count
-				}															// Replaced i with Count
+				
+				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
+					lpInit->TeamNumber[Count] = TeamNumber[Count];						
+				
 				lpInit->Status = MyGameStatus;
+				
 				// getplayer
 				// over the next few frames send the current stats table...
 				if(	MyGameStatus == STATUS_Normal )
 				{
-//					StatsCount = MAX_PLAYERS;
-					// not sure if I should do this again DAVE ???
+					// StatsCount = MAX_PLAYERS;
 					CopyPickups( (uint16) i );
 					CopyRegenSlots( (uint16) i );
 					CopyTriggers( (uint16) i );
@@ -3957,82 +4019,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 					CopyMines( (uint16) i );
 				}
 			}
+			// The game is currently full or nearly so dont let anyone else join...
 			else
-			{
-				// The game is currently ok to join......
-				i = MAX_PLAYERS;
-				if( ShipNum < MAX_PLAYERS )
-				{
-		    		if(  ( GameStatus[ShipNum] == STATUS_Left ) || ( GameStatus[ShipNum] == STATUS_LeftCrashed ) || ( GameStatus[ShipNum] == STATUS_Null ) )
-						i = ShipNum;
-				}
-				if( i == MAX_PLAYERS )
-				{
-				    for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				    {
-				    	if( i != WhoIAm )
-				    	{
-				    		// try and find a slot that hasnt been used at all...
-				    		if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-				    			break;
-				    	}
-				    }
-				}
-		
-				if( i != MAX_PLAYERS )
-				{
-					InitShipStructure(i , TRUE);
-					GameStatus[i] = STATUS_GetPlayerNum;
-					lpInit->YouAre = (BYTE) i;
-					DebugPrintf("YouAre set to %d at point 2\n", i);
-					Names[i][0] = 0;
-					Ships[i].dcoID = to;
-#if 0
-					// if TCP game, store IP address of player
-					if ( ! memcmp( &ServiceProvidersGuids[ServiceProvidersList.selected_item], &DPSPGUID_TCPIP , sizeof(GUID) ) )
-					{
-						char add[ 16 ];
-
-						memset(&PlayerIP[ i ], 0, sizeof(PlayerIP[ i ]));
-						if ( GetIPFromDP( add, to ) )
-						{
-							PlayerIP[ i ].sin_family = AF_INET;
-							PlayerIP[ i ].sin_port = htons( DEF_PORT );
-							PlayerIP[ i ].sin_addr.s_addr = inet_addr( add );
-						}
-					}
-#endif
-
-					if( Type == (BYTE) -1 )
-						TeamNumber[i] = 0;
-					else
-						TeamNumber[i] = Type;
-					
-					for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
-						lpInit->TeamNumber[Count] = TeamNumber[Count];						
-					
-					lpInit->Status = MyGameStatus;
-					
-					// getplayer
-					// over the next few frames send the current stats table...
-					if(	MyGameStatus == STATUS_Normal )
-					{
-//						StatsCount = MAX_PLAYERS;
-						CopyPickups( (uint16) i );
-						CopyRegenSlots( (uint16) i );
-						CopyTriggers( (uint16) i );
-						CopyTrigVars( (uint16) i );
-						CopyMines( (uint16) i );
-					}
-				}
-				// The game is currently full or nearly so dont let anyone else join...
-				else
-					lpInit->YouAre = MAX_PLAYERS+2;
-			}
+				lpInit->YouAre = MAX_PLAYERS+2;
 		}
-		// The game is currently non joinable so dont let anyone else join...
-		else
-			lpInit->YouAre = MAX_PLAYERS;
 
 		DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);
 		nBytes = sizeof( INITMSG );
@@ -4583,6 +4573,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpTrackerInfoMsg->freq = heartbeat_freq;
 		lpTrackerInfoMsg->type = heartbeat_type;
 		lpTrackerInfoMsg->shutdown = SendShutdownPacket;
+		memcpy(lpTrackerInfoMsg->PlayerInfo, PlayerInfo, sizeof(PlayerInfo));
 		nBytes = sizeof( TRACKERINFOMSG );
 		Flags |= DPSEND_GUARANTEED;
 		break;
