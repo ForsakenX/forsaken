@@ -3,7 +3,7 @@
 
 Requirements:
 
-  VISUAL STUDIO 2005 Express C++ Edition (sp1)
+  VISUAL STUDIO 2008 Express C++ Edition
 
   Windows 2003 Platform SDK R2
 
