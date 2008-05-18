@@ -484,6 +484,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	//  Locals
 	//
 
+	LPSTR tmp = "";
     LPSTR option = "";
 	char cmdline[256];
 	char buf[256];
@@ -530,7 +531,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	// extract and process tokens from command line
 	//
 
-	option = strtok(cmdline, " -+");
+	option = strtok(cmdline, " -+'\"");
 
 	// loop over every option
     while(option != NULL )
@@ -554,11 +555,9 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		if (!_stricmp(option,"chdir"))
 		{
 
-			// get the pointer to "chdir" in the command line
-			option = strstr(lpCmdLine,"chdir");
-
-			// move pointer to the space after "-chdir"
-			option = &option[ (strlen("chdir")+1) ];
+			// get option enclosed in quotes
+			// this does not consider space as separator
+			option = strtok(NULL, "\"'");
 
 			if (!option)
 			{
@@ -827,7 +826,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
         }
 
 		// get the next token
-        option = strtok(NULL, " -+");
+        option = strtok(NULL, " -+'\"");
 
     }
 
