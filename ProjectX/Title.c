@@ -8397,9 +8397,9 @@ void	MenuProcess()
 	uint16 i;
 
 	// all version numbers are in these 2 spots
-	strcpy(ProjectXVersion, "1.02.XXX");
+	strcpy(ProjectXVersion, "1.03.XXX");
 	// print text to screen
-	CenterPrint4x5Text( "Open Source Version 1.02.XXX", d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( "Open Source Version 1.03.XXX", d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;
@@ -12373,7 +12373,7 @@ void GetMultiplayerPrefs( void )
 		? temp : 0;
 
 	UseShortPackets = ( RegGet( "ShortPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
+		? temp : TRUE;
 
 	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
@@ -12386,7 +12386,7 @@ void GetMultiplayerPrefs( void )
 		PacketsSlider.value	= DPlayUpdateIntervalCmdLine;
 	}else{
 		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			? temp : 10;
+			? temp : 20;
 	}
 
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
