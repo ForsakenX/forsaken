@@ -1258,8 +1258,7 @@ void DestroyGame( void )
 		ScatterWeapons( &DirVector, MAXPICKUPS );
 		RegeneratePickups();
 
-		//if( TeamGame )
-			ResetIndividualStats(WhoIAm); // stats.c
+		ResetAllStats(); // stats.c
 
 		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
 		ServiceBigPacket(TRUE);
