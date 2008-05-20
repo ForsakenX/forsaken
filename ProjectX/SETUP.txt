@@ -3,7 +3,8 @@
 
 Requirements:
 
-  VISUAL STUDIO 2008 Express C++ Edition
+  VISUAL STUDIO 2005 Express C++ Edition
+  (Note: Visual Studio 2008 Express C++ Edition inflates executable file size by ~300KB and will not run on Windows ME/9X)
 
   Windows 2003 Platform SDK R2
 
