@@ -5151,7 +5151,7 @@ BOOL DisplayTitle(void)
 				StackMode = DISC_MODE_NONE;
 				StackStatus = DISC_NOTHING;
 				
-				MENU_Start = MENU_NEW_ChooseConnectionToStart;
+				MENU_Start = MENU_NEW_CreateGame;
 				
 				MenuRestart( &MENU_Start );
 				StackMode = DISC_MODE_NONE;
