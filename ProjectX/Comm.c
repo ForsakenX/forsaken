@@ -269,9 +269,24 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 
 	ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
+
+	// changed by methdos
+	// sunday july 6th 2008
+	// note:
+	//   we dont need dplay protocol
+	//   and we care about latency these days
+
+	/*
     dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
 		             DPSESSION_KEEPALIVE |
 		             DPSESSION_DIRECTPLAYPROTOCOL; 
+					 */
+
+    dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
+		             DPSESSION_KEEPALIVE |
+		             DPSESSION_NOPRESERVEORDER |
+					 DPSESSION_OPTIMIZELATENCY;
+
 	dpDesc.dwMaxPlayers = MaxPlayersSlider.value;
 
 	StoreSessionUserFields( &dpDesc );
