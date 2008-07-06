@@ -515,7 +515,10 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	else
 	{
 		MaxPlayersSlider.max = MAX_PLAYERS;
-		MaxPlayersSlider.value = PreferedMaxPlayers;
+// Commented out by Methods
+// Sunday July 6th
+// note: why in the world is this done?
+//		MaxPlayersSlider.value = PreferedMaxPlayers;
 	}
 
 	// convert guid to string...
