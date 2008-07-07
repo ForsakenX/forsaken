@@ -284,6 +284,7 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 
     dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
 		             DPSESSION_KEEPALIVE |
+		             DPSESSION_DIRECTPLAYPROTOCOL |
 		             DPSESSION_NOPRESERVEORDER |
 					 DPSESSION_OPTIMIZELATENCY;
 
