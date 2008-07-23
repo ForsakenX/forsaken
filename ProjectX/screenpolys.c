@@ -2460,6 +2460,8 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		NumVerts = ScrPolyTPages[ Count ].NumVerts;
 		NumTris = ScrPolyTPages[ Count ].NumTris;
 
+ DebugPrintf("wine -- Line %d: Textured = %d\n", __LINE__, Textured);
+
 		if( NumVerts )
 		{
 			if( !Textured )
@@ -2475,10 +2477,12 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 			else
 			{
 				OP_STATE_LIGHT( 1, lpPointer );
+ DebugPrintf("wine -- Line %d: Count = %d MatHandle = %d\n", __LINE__, (int)Count, (int)Tloadheader.hMat[ Count ]);
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
 			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
 			   	OP_STATE_RENDER( 1, lpPointer );
+ DebugPrintf("wine -- Line %d: Count = %d Handle = %d\n", __LINE__, (int)Count, (int)Tloadheader.hTex[ Count ]);
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 			}
@@ -3003,6 +3007,8 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		NumVerts = ScrPolyTPages[ Count ].NumVerts;
 		NumTris = ScrPolyTPages[ Count ].NumTris;
 
+ DebugPrintf("wine -- Line %d: Textured = %d\n", __LINE__, Textured);
+
 		if( NumVerts )
 		{
 			if( !Textured )
@@ -3018,10 +3024,12 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 			else
 			{
 				OP_STATE_LIGHT( 1, lpPointer );
+ DebugPrintf("wine -- Line %d: Count = %d MatHandle = %d\n", __LINE__, (int)Count, (int)Tloadheader.hMat[ Count ]);
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
 			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
 			   	OP_STATE_RENDER( 1, lpPointer );
+ DebugPrintf("wine -- Line %d: Count = %d Handle = %d\n", __LINE__, (int)Count, (int)Tloadheader.hTex[ Count ]);
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 			}
