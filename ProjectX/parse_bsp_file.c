@@ -4,20 +4,19 @@
 #define BSP_VERSION_NUMBER      (1)
 #define MAGIC_NUMBER    0x584A5250
 
-// Windows types
-typedef int int16;
-typedef unsigned int uint16;
-typedef long int int32;
-typedef unsigned long int uint32;
+typedef	unsigned char		uint8;			/* Unsigned 8 Bit Integer  */
+typedef	char				int8;			/* Signed 8 Bit Integer    */
+typedef	unsigned short int	uint16;			/* Unsigned 16 Bit Integer */
+typedef	short int			int16;			/* Signed 16 bit Integer   */
+typedef	unsigned long		uint32;			/* Unsigned 32 Bit Integer */
+typedef	long				int32;			/* Signed 32 Bit Integer   */
 
 // Represents a vector
-typedef struct VECTOR
-{
+typedef struct VECTOR {
     float x;
     float y;
     float z;
 }VECTOR;
-
 
 // This represents a single bsp node in binary .BSP file.
 // You can use this to cast the binary data in a .BSP file.
