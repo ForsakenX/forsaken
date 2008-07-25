@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #define BSP_VERSION_NUMBER      (1)
-#define MAGIC_NUMBER    0x584A5250
+#define MAGIC_NUMBER    0x584A5250 //1481265744
 
 typedef	unsigned char		uint8;			/* Unsigned 8 Bit Integer  */
 typedef	char				int8;			/* Signed 8 Bit Integer    */
@@ -49,7 +49,7 @@ int parse_bsp ( char * filename ) {
   // get the magic number
 
   fread( &MagicNumber, sizeof( uint32 ), 1, fp );
-  printf("magic number\t = %i\n",&MagicNumber);
+  printf("magic number\t = %i\n",MagicNumber);
   if( MagicNumber != MAGIC_NUMBER ) {
     printf("Notice: Magic number not correctly set...\n");
   }
@@ -57,7 +57,7 @@ int parse_bsp ( char * filename ) {
   // get the bsp version number
 
   fread( &VersionNumber, sizeof( uint32 ), 1, fp );
-  printf("pic version\t = %i\n",&VersionNumber);
+  printf("pic version\t = %i\n",VersionNumber);
   if( VersionNumber != BSP_VERSION_NUMBER ){
     printf("Notice: Pic Version Number not correctly set...\n");
   }
@@ -80,18 +80,20 @@ int parse_bsp ( char * filename ) {
     // for each node
     
     for( NodeCount = 0; NodeCount < NumNodes; NodeCount++ ){
-      BSP_RAWNODE Raw;
+      BSP_RAWNODE Node;
+      VECTOR vector;
 
       printf("\n");
       printf("Node:\t %i\n",NodeCount);
 
-      fread( &Raw, sizeof( BSP_RAWNODE ), 1, fp );
+      fread( &Node, sizeof( BSP_RAWNODE ), 1, fp );
 
-      printf("x (%i), y (%i), z (%i)\n",
-                    Raw.Normal.x, Raw.Normal.y, Raw.Normal.z);
+      vector = (VECTOR) Node.Normal;
 
-      printf("Front (%i), Back (%i), Colour (%i)\n",
-                    Raw.Front,  Raw.Back,  Raw.Colour);
+      printf("x (%f), y (%f), z (%f)\n", vector.x, vector.y, vector.z);
+
+      printf("Offset (%f), Front (%i), Back (%i), Colour (%i)\n",
+             Node.Offset,  Node.Front,  Node.Back,  Node.Colour);
     }
 
 	}
