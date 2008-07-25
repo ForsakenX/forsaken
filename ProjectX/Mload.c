@@ -533,13 +533,17 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					}
 				}
 
+				// right here you could override texture coloring if you wanted
 				color = RGBA_MAKE( r , g , b , a  );
 				lpD3DLVERTEX->color = color;
 				lpD3DLVERTEX2->color = color;
 
 				lpD3DLVERTEX2->dwReserved |= 0xff000000;
 
-//				lpD3DLVERTEX->specular = lpD3DLVERTEX2->specular;
+				// right here you could set the specular value
+				// they seemed to have turned it off anyway
+				// testing shows that it appears to do nothing
+				//lpD3DLVERTEX->specular = lpD3DLVERTEX2->specular;
 				lpD3DLVERTEX->specular = RGB_MAKE( 0 , 0 , 0 );
 				lpD3DLVERTEX->dwReserved = 0;
 				lpD3DLVERTEX++;
@@ -547,7 +551,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			}
  			lpPointer = (void * )  lpD3DLVERTEX;			
 
-
+			
 			lpInsStart = lpPointer;
 	
 			
@@ -601,8 +605,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					if ( AllWires )
 						FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 					else
+						FacePnt->wFlags = MFacePnt->pad;
 
-					FacePnt->wFlags = MFacePnt->pad;
 					FixUV( FacePnt, lpBufStart, tpage, Mloadheader->Group[group].org_vertpnt[execbuf] );
 					FacePnt++;
 					MFacePnt++;

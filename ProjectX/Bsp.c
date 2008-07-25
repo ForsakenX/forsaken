@@ -96,22 +96,25 @@ static BOOL BSP_Loadtree( BSP_TREE *t, char **Buffer )
 	int16		*	int16pnt;
 	int16		e;
 
+	// get the number of nodes and move to next pointer
 	int16pnt = ( int16 * ) *Buffer;
 	t->NumNodes = *int16pnt++;
 	*Buffer = (char * ) int16pnt;
 	
+	// initialize the root node and set aside enough space
+	// set aside size of N BSP_NODE's
 	t->Root = (BSP_NODE * ) calloc( t->NumNodes , sizeof( BSP_NODE ) );
-
 	if ( !t->Root )
-	{
 		return FALSE;
-	}
 	
+	// cast buffer to BSP_RAWNODE for extracting values
 	Raw = (BSP_RAWNODE *) *Buffer;
+
+	// initialize first node
 	New = t->Root;
-	
 	New->Parent = NULL;
 	
+	// pack on node heirachy
 	for( e = 0 ; e < t->NumNodes ; e++ )
 	{
 		New->Normal = Raw->Normal;
@@ -130,6 +133,8 @@ static BOOL BSP_Loadtree( BSP_TREE *t, char **Buffer )
 		New++;
 		Raw++;
 	}
+
+	// rest of data is garbage
 	*Buffer = (char*) Raw;
 
 	return TRUE;
