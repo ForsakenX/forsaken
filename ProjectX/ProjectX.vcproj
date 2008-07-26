@@ -687,10 +687,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\parse_file_formats.c"
-				>
-			</File>
-			<File
 				RelativePath="Pickups.c"
 				>
 			</File>
