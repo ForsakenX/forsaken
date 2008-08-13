@@ -3660,22 +3660,22 @@ BOOL LoadPickupsPositions( void )
       if(
         /* has a minimum number of pickups that must always exist*/
         /* this is usually ammo */
-        ( MaxPickupType[ i ] != 0 )  &&
+        ( MaxPickupType[ Count ] != 0 )  &&
         /* and the minimum is less than the number of current primary weapons */
-        ( MaxPickupType[ i ] < NumPrimaryPickups )
+        ( MaxPickupType[ Count ] < NumPrimaryPickups )
       )
       {
         /* set the minimum number of this type
            to the number of primary pickups */
 
-        MaxPickupType[ i ] = NumPrimaryPickups;
+        MaxPickupType[ Count ] = NumPrimaryPickups;
 
         /* if we are the game manager */
 		if( IsHost )
 		{
           /* add N number of these pickups to the current regen list */
           /* N = (minimum that must exist) - (currently existing) */
-          NumPrimWeapons[ Count ] += ( MaxPickupType[ i ] - NumPickupType[ i ] );
+          NumPrimWeapons[ Count ] += ( MaxPickupType[ Count ] - NumPickupType[ Count ] );
 		}
       }
     }
