@@ -1746,9 +1746,7 @@ void ShowScreenMultiples( void )
 	float	Center_Y;
 
 // orbital circles in debugging slow shit out of game
-#ifdef DEBUG_ON
-	return;
-#elif NO_ORBITAL_POLYS
+#if defined(DEBUG_ON) || defined(NO_ORBITAL_POLYS)
 	return;
 #endif
 
