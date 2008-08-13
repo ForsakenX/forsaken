@@ -38,6 +38,8 @@
 #pragma optimize( "gty", on )
 #endif
 
+#define NO_GRAVGON_TIMER 0
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -1639,8 +1641,12 @@ void ProcessModels( void )
 				case MODFUNC_SphereZone:
 					break;
 
+				// gravgon field 1
+				// each gravgon is really 2 fields
 				case MODFUNC_Scale:
+#ifndef NO_GRAVGON_TIMER
 					Models[i].LifeCount -= framelag;
+#endif
 					if( Models[i].LifeCount <= 0.0F )
 					{
 						Models[i].LifeCount = 0.0F;
@@ -1659,8 +1665,12 @@ void ProcessModels( void )
 					GravityWave( &Models[i].Pos, ( BALL_RADIUS * Models[i].MaxScale ), Models[i].Owner, 10.0F, Models[i].Group );
 					break;
 
+				// gravgon field 2
+				// each gravgon is really 2 fields
 				case MODFUNC_Scale2:
+#ifndef NO_GRAVGON_TIMER
 					Models[i].LifeCount -= framelag;
+#endif
 					if( Models[i].LifeCount <= 0.0F )
 					{
 						Models[i].LifeCount = 0.0F;
