@@ -1745,6 +1745,13 @@ void ShowScreenMultiples( void )
 	float	Center_X;
 	float	Center_Y;
 
+// orbital circles in debugging slow shit out of game
+#ifdef DEBUG_ON
+	return;
+#elif NO_ORBITAL_POLYS
+	return;
+#endif
+
 	if( Current_Camera_View != WhoIAm ) return;				// Dont show multiples in external view.
 
 	Center_X = ( MainCamera.Viewport.dwX + ( MainCamera.Viewport.dwWidth / 2.0F ) );
