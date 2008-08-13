@@ -3662,7 +3662,11 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
        			ReflectVector( &TempVector, &SecBulls[i].ColPointNormal, &TempVector );
 
 				CreateExplosionDonut( &SecBulls[ i ].Pos, (VECTOR *) &SecBulls[ i ].ColPointNormal, SecBulls[ i ].GroupImIn );
-				if( ( ( SecBulls[i].OwnerType == OWNER_SHIP ) && ( SecBulls[i].Owner == WhoIAm ) ) ||
+				if( ( ( SecBulls[i].OwnerType == OWNER_SHIP )
+#ifdef TITANBITS_SEND	
+						&& ( SecBulls[i].Owner == WhoIAm )
+#endif
+					) ||
 					( ( SecBulls[i].OwnerType == OWNER_ENEMY ) && ( IsHost ) ) ||
 					( ( SecBulls[i].OwnerType == OWNER_NOBODY ) && ( IsHost ) ) )
 				{
@@ -8292,8 +8296,11 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 
 	FirstID = Ships[ SecBulls[i].Owner ].SecBullIdCount + 1;
 
+	// for each baby titan to create
 	while( NumLeft )
 	{
+
+		// send one baby titan after each multi-player player
 		for( Count = 0; Count < MAX_PLAYERS; Count++ )
 		{
 			if( TeamGame ) ShipsTeam = TeamNumber[ Count ];
@@ -8333,9 +8340,8 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 			}
 		}
 
-
+		// send the rest of baby titans towards any enemies
 		Enemy = FirstEnemyUsed;
-	
 		while( ( Enemy != NULL ) && ( NumLeft ) )
 		{
 			NextEnemy = Enemy->NextUsed;
@@ -8380,6 +8386,7 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 
 		ShipTargCount++;
 
+		// send any left over baby titans at random directions
 		if( NumLeft == NUMTITANBITS )
 		{
 			for( Count = 0; Count < NUMTITANBITS; Count++ )
@@ -8402,11 +8409,14 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 		}
 	}
 
+#ifdef TITANBITS_SEND
 	if( ( SecBulls[ i ].OwnerType == OWNER_SHIP ) && ( SecBulls[ i ].Owner == WhoIAm ) )
 	{
 		TitanBitsSend( SecBulls[i].OwnerType, SecBulls[i].Owner, FirstID, Group, Pos,
 							&DropVector, &UpVector, &DropVector, TITANSTARSHRAPNEL, &Directions[ 0 ] );
 	}
+#endif
+
 }
 
 
