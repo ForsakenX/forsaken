@@ -1644,7 +1644,7 @@ void ProcessModels( void )
 				// gravgon field 1
 				// each gravgon is really 2 fields
 				case MODFUNC_Scale:
-#ifndef NO_GRAVGON_TIMER
+#ifdef NO_GRAVGON_TIMER
 					Models[i].LifeCount -= framelag;
 #endif
 					if( Models[i].LifeCount <= 0.0F )
@@ -1668,7 +1668,7 @@ void ProcessModels( void )
 				// gravgon field 2
 				// each gravgon is really 2 fields
 				case MODFUNC_Scale2:
-#ifndef NO_GRAVGON_TIMER
+#ifdef NO_GRAVGON_TIMER
 					Models[i].LifeCount -= framelag;
 #endif
 					if( Models[i].LifeCount <= 0.0F )
