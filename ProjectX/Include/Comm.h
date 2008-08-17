@@ -41,10 +41,6 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 
 HRESULT DPlaySetPlayerName(DPID pid, char * Name, DWORD dwFlags);
 
-HRESULT DPlayCreateSessionServer( LPTSTR lptszSessionName );
-HRESULT DPlayCreatePlayerServer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent, 
-		                        LPVOID lpData, DWORD dwDataSize);
-
 void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc );
 BOOL GetIPFromDP( char *add, DPID dpid );
 void UpdateSessionName( char *name );
