@@ -812,8 +812,6 @@ void SfxThreadProc (void * pParm)
 
 	while (1)
 	{
-		if ( &SfxKey == NULL)
-			continue;
 
 		EnterCriticalSection (&SfxKey);
 		
