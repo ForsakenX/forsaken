@@ -44,7 +44,6 @@ extern SLIDER CTFSlider;
 extern	int16	MaxKills;
 extern	BOOL ResetKillsPerLevel;
 extern DPID	PlayerIDs[ MAX_PLAYERS ];
-extern DPID LobbyPlayerIDs[ MAX_PLAYERS ];
 extern BOOL PseudoHostCanSetMaxPlayers;
 extern SLIDER  PacketsSlider;
 
@@ -57,11 +56,8 @@ LPDPSESSIONDESC2                    glpdpSD = NULL;            // current sessio
 LPDPSESSIONDESC2                    glpdpSD_copy = NULL;            // current session description
 #endif
 LPDIRECTPLAYLOBBY2A					lpDPlayLobby = NULL;		//Lobby stuff...
-//LPDIRECTPLAYLOBBYA					lpDPlayLobby = NULL;		//Lobby stuff...
 LPDPLCONNECTION						glpdplConnection = NULL;	// connection settings
 
-BOOL IsLobbyLaunched = FALSE;
-BOOL LobbyAutoStart = FALSE;
 extern	DPID                    dcoID;
 
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
@@ -141,21 +137,10 @@ HRESULT DPlayCreatePlayer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent,
     HRESULT hr=E_FAIL;
     DPNAME name;
     
-
-	if ( !IsLobbyLaunched )
-		SetupConnection( myglobs.hInstApp );
+	SetupConnection( myglobs.hInstApp );
 	
 	ZeroMemory(&name,sizeof(name));
     name.dwSize = sizeof(DPNAME);
-
-	// if launched by lobby, use players config name ( if not player ) rather than name given by lobby
-	if ( IsLobbyLaunched )
-	{
-		if ( _stricmp( lptszPlayerName, DEFAULT_PLAYER_NAME ) )
-		{
-			strcpy( lptszPlayerName, Names[ WhoIAm ] );
-		}
-	}
 
     name.lpszShortNameA = lptszPlayerName;
 
@@ -653,10 +638,7 @@ HRESULT DPlayCreateLobby( void )
 	// don't need DirectPlayLobby interface anymore
 	lpDPlayLobbyA->lpVtbl->Release(lpDPlayLobbyA);
 	lpDPlayLobbyA = NULL;
-   /*
-	// fill modem combo box with available modems
-//	FillModemComboBox(hWnd, lpDPlayLobby2A);
-*/
+
 	// Fill in the ANSI lobby interface
 	lpDPlayLobby = lpDPlayLobby2A;
 	 
@@ -684,8 +666,6 @@ FAILURE:
 HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLobby, LPVOID *lplpAddress, LPDWORD lpdwAddressSize , char * TCPIPAddress)
 {
 	DPCOMPOUNDADDRESSELEMENT	addressElements[3];
-//	CHAR						szPhoneNumberString[256];
-//	CHAR						szModemString[256];
 	LPVOID						lpAddress = NULL;
 	DWORD						dwAddressSize = 0;
 	DWORD						dwElementCount;
@@ -693,36 +673,8 @@ HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlay
 
 	dwElementCount = 0;
 
-	if (IsEqualGUID(lpGuid, &DPSPGUID_MODEM))
-	{
-		// Modem needs a service provider, a phone number string and a modem string
-
-		// service provider
-		addressElements[dwElementCount].guidDataType = DPAID_ServiceProvider;
-		addressElements[dwElementCount].dwDataSize = sizeof(GUID);
-		addressElements[dwElementCount].lpData = (LPVOID) &DPSPGUID_MODEM;
-		dwElementCount++;
-
-#if 0
-		// add a modem string if available
-		lstrcpy(szModemString, "");
-		// This is where you would fill in the name of the modem...
-		addressElements[dwElementCount].guidDataType = DPAID_Modem;
-		addressElements[dwElementCount].dwDataSize = lstrlen(szModemString) + 1;
-		addressElements[dwElementCount].lpData = szModemString;
-		dwElementCount++;
-
-		// add phone number string
-		lstrcpy(szPhoneNumberString, "");
-		// This is where you would fill in the Phone number.. fill in szPhoneNumberString with the phone number...
-		addressElements[dwElementCount].guidDataType = DPAID_Phone;
-		addressElements[dwElementCount].dwDataSize = lstrlen(szPhoneNumberString) + 1;
-		addressElements[dwElementCount].lpData = szPhoneNumberString;
-		dwElementCount++;
-#endif
-	}
 	// internet TCP/IP service provider
-	else if (IsEqualGUID(lpGuid, &DPSPGUID_TCPIP))
+	if (IsEqualGUID(lpGuid, &DPSPGUID_TCPIP))
 	{
 		// TCP/IP needs a service provider and an IP address
 
@@ -751,20 +703,11 @@ HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlay
 		dwElementCount++;
 	}
 
-	// anything else, let service provider collect settings, if any
-	else
-	{
-		// service provider
-		addressElements[dwElementCount].guidDataType = DPAID_ServiceProvider;
-		addressElements[dwElementCount].dwDataSize = sizeof(GUID);
-		addressElements[dwElementCount].lpData = (LPVOID) lpGuid;
-		dwElementCount++;
-	}
-
 	// see how much room is needed to store this address
 	hr = lpDPlayLobby->lpVtbl->CreateCompoundAddress(lpDPlayLobby,
 						addressElements, dwElementCount,
 						NULL, &dwAddressSize);
+
 	if (hr != DPERR_BUFFERTOOSMALL)
 	{
 		switch( hr )
@@ -928,95 +871,6 @@ HRESULT DPLobbyRelease(void)
 	return hr;
 }
 
-
-/*
- * DPLobbyGetConnectionSettings
- *
- * Wrapper for DirectPlayLobby GetConnectionSettings API
- */
-HRESULT DPLobbyGetConnectionSettings(void)
-{
-	HRESULT hr=E_FAIL;
-	DWORD dwSize = 0;
-
-	if (lpDPlayLobby)
-	{
-		// get size for the connection settings structure
-		hr = IDirectPlayLobby_GetConnectionSettings(lpDPlayLobby, 0, NULL, &dwSize);
-		if (DPERR_BUFFERTOOSMALL == hr)
-		{ 
-			// if we already have one, free it
-			if (glpdplConnection)
-			{
-				free(glpdplConnection);
-				glpdplConnection = NULL;
-			}
-			// allocate memory for the new one
-			glpdplConnection = (LPDPLCONNECTION) malloc(dwSize);
-			// get the connection settings
-			if (glpdplConnection)
-				hr = IDirectPlayLobby_GetConnectionSettings(lpDPlayLobby, 0, glpdplConnection, &dwSize);
-		}
-	}
-
-	return hr;
-}
-/*
- * DPLobbySetConnectionSettings
- *
- * Wrapper for DirectPlayLobby SetConnectionSettings API
- */
-HRESULT DPLobbySetConnectionSettings(void)
-{
-	HRESULT hr=E_FAIL;
-
-    hr = IDirectPlayLobby_SetConnectionSettings(lpDPlayLobby, 0, 0, glpdplConnection);
-
-	switch( hr )
-	{
-	case DP_OK :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_GENERIC");
-		break;
-	case DPERR_GENERIC :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_GENERIC");
-		break;
-	case DPERR_INVALIDINTERFACE :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_INVALIDINTERFACE");
-		break;
-	case DPERR_INVALIDOBJECT :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_INVALIDOBJECT");
-		break;
-	case DPERR_INVALIDPARAMS :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_INVALIDPARAMS");
-		break;
-	case DPERR_OUTOFMEMORY :
-		DebugPrintf("IDirectPlayLobby_SetConnectionSettings DPERR_OUTOFMEMORY");
-		break;
-	}
-
-	return hr;
-}
-
-/*
- * DPLobbyConnect
- *
- * Wrapper for DirectPlayLobby Connect API.
- */
-HRESULT DPLobbyConnect(void)
-{
-	HRESULT hr=E_FAIL;
-	LPDIRECTPLAY2A              glpDP2a;     // directplay object pointer
-
-	hr = IDirectPlayLobby_Connect(lpDPlayLobby, 0, &glpDP2a, NULL) ;
-    if (FAILED(hr))
-
-		return hr;
-
-	hr = IDirectPlay_QueryInterface(glpDP2a,&IID_IDirectPlay4A,(LPVOID *)&glpDP);
-
-	return hr;
-}
-
 /*
  * DPlaySetPlayerName
  *
@@ -1037,235 +891,6 @@ HRESULT DPlaySetPlayerName(DPID pid, char * NamePnt, DWORD dwFlags)
 	}
     return hr;
 }
-
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Were we launched by a lobby ??
-	Input		:	nothing
-	Output		:	BOOL TRUE/FALSE
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL LaunchedByLobby(void)
-{
-	LPDIRECTPLAY2A		lpDirectPlay2A = NULL;
-	LPDIRECTPLAY4A		lpDirectPlay4A = NULL;
-	LPDPLCONNECTION		lpConnectionSettings = NULL;
-	DWORD				dwSize;
-	HRESULT				hr;
-
-
-	// get an ANSI DirectPlay lobby interface
-//	hr = DirectPlayLobbyCreate(NULL, &lpDPlayLobby, NULL, NULL, 0);
-
-
-	hr = DPlayCreateLobby();
-
-	if FAILED(hr)
-		goto FAILURE;
-
-    // get connection settings from the lobby
-	// if this routine returns DPERR_NOTLOBBIED, then a lobby did not
-	// launch this application and the user needs to configure the connection.
-
-	// pass in a NULL pointer to just get the size of the connection setttings
-	hr = lpDPlayLobby->lpVtbl->GetConnectionSettings(lpDPlayLobby, 0, NULL, &dwSize);
-
-	if ( hr == DPERR_NOTLOBBIED )
-	{
-		goto FAILURE;
-	}
-
-	// allocate memory for the connection setttings
-	glpdplConnection = (LPDPLCONNECTION) malloc(dwSize);
-	if (NULL == glpdplConnection)
-	{
-		goto FAILURE;
-	}
-
-	// get the connection settings
-	hr = lpDPlayLobby->lpVtbl->GetConnectionSettings(lpDPlayLobby, 0, glpdplConnection, &dwSize);
-	if FAILED(hr)
-	{
-	 	DebugPrintf("GetConnectionSettings failed\n");
-		goto FAILURE;
-	}
-
-	// return connection info
-	if (glpdplConnection->dwFlags & DPLCONNECTION_CREATESESSION)
-	{
-		// host...
-		IsHost = TRUE;
-		DebugPrintf("I am hosting lobby session\n");
-		
-	}
-	else
-	{
-		// client...
-		DebugPrintf("I am joining lobby session\n");
-		IsHost = FALSE;
-	}
-
-	// before connecting, the game should configure the session description
-	// with any settings it needs
-
-	// set flags and max players used by the game
-    glpdplConnection->lpSessionDesc->dwFlags = DPSESSION_MIGRATEHOST | 
-												   DPSESSION_KEEPALIVE | DPSESSION_DIRECTPLAYPROTOCOL;
-	
-	//if ( !glpdplConnection->lpSessionDesc->dwMaxPlayers )
-	//	glpdplConnection->lpSessionDesc->dwMaxPlayers = MAX_PLAYERS;
-
-    glpdplConnection->lpSessionDesc->dwUser1 = 0;
-    glpdplConnection->lpSessionDesc->dwUser2 = 0;
-    glpdplConnection->lpSessionDesc->dwUser3 = 0;
-    glpdplConnection->lpSessionDesc->dwUser4 = 0;
-
-    // store the updated connection settings
-    hr = lpDPlayLobby->lpVtbl->SetConnectionSettings(lpDPlayLobby, 0, 0, glpdplConnection);
-	if FAILED(hr)
-	{
-	 	DebugPrintf("SetConnectionSettings failed\n");
-		goto FAILURE;
-	}
-
-	// connect to the session - returns an ANSI IDirectPlay2A interface
-	hr = lpDPlayLobby->lpVtbl->Connect(lpDPlayLobby, 0, &lpDirectPlay2A, NULL);
-	if FAILED(hr)
-	{
-	 	DebugPrintf("Connect failed\n");
-		goto FAILURE;
-	}
-
-	// Obtain an IDirectPlayXA interface, the IDirectPlay2A interface will
-	// be released at the end of the function
-	//hr = lpDirectPlay2A->lpVtbl->QueryInterface(lpDirectPlay2A, IID_IDirectPlayXA, (LPVOID *) &glpDP);
-	hr = IDirectPlay_QueryInterface(lpDirectPlay2A,&IID_IDirectPlay4A,(LPVOID *)&glpDP);
-
-	if FAILED(hr)
-	{
-	 	DebugPrintf("QueryInterface failed\n");
-		goto FAILURE;
-	}
-
-
-	if (lpDirectPlay2A)
-	{
-		lpDirectPlay2A->lpVtbl->Release(lpDirectPlay2A);
-		lpDirectPlay2A = NULL;
-	}
-
-	/*
-	if (lpDPlayLobby)
-	{
-		lpDPlayLobby->lpVtbl->Release(lpDPlayLobby);
-		lpDPlayLobby = NULL;
-	}
-	*/
-
-
-    // create our player
-    hr = DPlayCreatePlayer(
-                            &dcoID,
-							glpdplConnection->lpPlayerName->lpszShortNameA,
-							NULL,
-							NULL,
-							0
-                          );
-    if (FAILED(hr))
-    {
-		DebugPrintf("LaunchedByLobby(): could not create player\n");
-        goto FAILURE;
-    }
-
-    DebugPrintf("launched by lobby OK\n");
-	return TRUE;
-
-FAILURE:
-	if (lpDirectPlay2A)
-	{
-		lpDirectPlay2A->lpVtbl->Release(lpDirectPlay2A);
-		lpDirectPlay2A = NULL;
-	}
-
-	if (lpDPlayLobby)
-	{
-		lpDPlayLobby->lpVtbl->Release(lpDPlayLobby);
-		lpDPlayLobby = NULL;
-	}
-
-	return FALSE;
-
-	return (hr);
-}
-
-// We need a MENU here that gives all the usual Starting a game options!! If Im the HOST!
-// And the usual Setup code for starting a session inside BOOL StartAHostSession ( MENUITEM * Item ) But dont
-// do any of the Directplay stuff in there.....	In fact look at the one below this....
-
-void ContinueLobbyLaunch( void )
-{
-	HRESULT hr;
-	//int i;
-
-	if( IsHost )
-	{															   
-		hr = DPlayGetSessionDesc();
-		if ( hr != DP_OK )
-		{
-			DebugPrintf("ContinueLobbyLaunch() DPlayGetSessionDesc NOT DP_OK\n");
-			exit( 1 );	// no way to recover!!
-		}
-		
-		DebugPrintf("ContinueLobbyLaunch() - max players is set to %d\n", glpdpSD->dwMaxPlayers );
-		DebugPrintf("ContinueLobbyLaunch() - num players is set to %d\n", glpdpSD->dwCurrentPlayers );
-		/*
-		// enumerate players
-		
-		DPlayEnumPlayers( NULL, EnumPlayers, (LPVOID) NULL, 0);
-		DebugPrintf("ContinueLobbyLaunch() - enumerated actual players is set to %d\n", PlayersList.items );
-
-		memset( LobbyPlayerIDs, 0, sizeof( LobbyPlayerIDs ) );
-		
-		for ( i = 0; i < PlayersList.items; i++ )
-		{
-			LobbyPlayerIDs[ i ] = PlayerIDs[ i ];
-			
-			DebugPrintf("player %d - %s ( ID %x )\n", i, PlayersList.item[ i ], LobbyPlayerIDs[ i ] );
-		}
-		*/
-
-		StoreSessionUserFields( glpdpSD );
-		
-		Old_Session = *glpdpSD;
-		Old_WhoIAm = 0;
-		Old_Kills = 0;
-		Old_Deaths = 0;
-
-		hr = DPlaySetSessionDesc( 0 );
-		if ( hr != DP_OK )
-		{
-			DebugPrintf("ContinueLobbyLaunch() DPlaySetSessionDesc NOT DP_OK\n");
-		}
-	}
-
-	if ( !IsHost )
-	{
-		MyGameStatus = STATUS_WaitingForLobbyConnect;
-	}
-
-    return;
-
-/*
-
-FAIL:
-	// cleanup and exit
-	DPLobbyRelease();
-	PrintErrorMessage ( "unable to connect to lobby session ( 2 )", 0, NULL, ERROR_QUIT );
-    //return FALSE;
-*/
-}
-
-
-
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	DPlayCreateSessionServer

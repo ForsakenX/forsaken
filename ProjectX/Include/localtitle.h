@@ -104,23 +104,6 @@
 #define LT_MENU_NEW_CreateGame16 "more options"
 #define LT_MENU_NEW_CreateGame17 "quit"
 
-#define LT_MENU_NEW_CreateLobbyGame0 "Create Multiplayer Game"
-#define LT_MENU_NEW_CreateLobbyGame1 "Start game"
-#define LT_MENU_NEW_CreateLobbyGame2 "IP:"
-#define LT_MENU_NEW_CreateLobbyGame3 "session name"
-#define LT_MENU_NEW_CreateLobbyGame4 "level"
-#define LT_MENU_NEW_CreateLobbyGame5 "player limit"
-#define LT_MENU_NEW_CreateLobbyGame6 "score limit"
-#define LT_MENU_NEW_CreateLobbyGame7 "time limit"
-#define LT_MENU_NEW_CreateLobbyGame8 "game type"
-#define LT_MENU_NEW_CreateLobbyGame9 "free for all"
-#define LT_MENU_NEW_CreateLobbyGame10 "team game"
-#define LT_MENU_NEW_CreateLobbyGame11 "capture the flag"
-#define LT_MENU_NEW_CreateLobbyGame12 "bounty hunt"
-#define LT_MENU_NEW_CreateLobbyGame13 "Team bounty hunt"
-#define LT_MENU_NEW_CreateLobbyGame15 "more options"
-#define LT_MENU_NEW_CreateLobbyGame16 "quit"
-
 #define LT_MENU_NEW_ChooseConnectionToStart0 "Choose connection type"
 
 #define LT_MENU_NEW_PrimaryOrder0 "primary weapon selection preferences"
@@ -294,9 +277,6 @@
 #define LT_MENU_NEW_Visuals3 "Select Texture Format"
 #define LT_MENU_NEW_Visuals4 "gamma"
 #define LT_MENU_NEW_Visuals5 "back"
-
-#define LT_MENU_NEW_LobbyWaitingForHost0 "host is choosing game type, please wait"
-#define LT_MENU_NEW_LobbyWaitingForHost1 "quit"
 
 #define LT_MENU_NEW_JoinWaitingToStart0 "waiting for host..."
 #define LT_MENU_NEW_JoinWaitingToStart1 "Num of Players"
@@ -724,7 +704,6 @@
 #define LT_ToggleTarget " TARGET"
 #define LT_Undef "undef"	// short for undefined 
 
-#define LT_QuitToLobby "quit to lobby"   
 #define LT_QuitToMainMenu "Quit to Main Menu"
 
 #define LT_PlayersGame "%s's Game"	// %s is player name   

@@ -83,8 +83,6 @@ extern BOOL OwnFlagTeleportsHome;
 extern BOOL CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
-extern BOOL IsLobbyLaunched;
-
 extern	BOOL	UseShortPackets;
 extern	BOOL	BigPackets;
 
@@ -227,8 +225,6 @@ char					Old_Name[256] = { 0 };
 BOOL					Rejoining = FALSE;
 
 DPID					PlayerIDs[MAX_PLAYERS];
-DPID					LobbyPlayerIDs[MAX_PLAYERS];
-uint16					NumLobbyPlayers;
 
 DPID					TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 int						TeamMembers[MAX_TEAMS];
@@ -687,31 +683,20 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
 
-	if ( !IsLobbyLaunched )
-	{
-			d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
+	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
-		// create session
-		if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
-		{
-			Msg("!DPlayCreateSession");
-			return FALSE;
-		}
-	
-		// create player
-		if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
-		{
-			Msg("!DPlayCreatePlayer");
-		    return FALSE;
-		}
-	}else
+	// create session
+	if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
 	{
-		// ammend session name to include level name...
-		DPlayGetSessionDesc();
-		glpdpSD->dwMaxPlayers = MaxPlayersSlider.value;
-		DPlaySetSessionDesc( 1 );
+		Msg("!DPlayCreateSession");
+		return FALSE;
+	}
 
-		UpdateSessionName( MultiPlayerGameName.text );
+	// create player
+	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
+	{
+		Msg("!DPlayCreatePlayer");
+	    return FALSE;
 	}
 
 	DPlayUpdateInterval	= 60.0F / PacketsSlider.value;
@@ -837,12 +822,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 	
 	BrightShips = MyBrightShips;
-
-	
-	if ( IsLobbyLaunched )
-	{
-		ContinueLobbyLaunch();
-	}
 
 	tracker_addr = 0;
 	DPStartThread();
@@ -1185,25 +1164,21 @@ BOOL JoinASession ( MENUITEM * Item )
 	}
 #endif
 
-	if ( !IsLobbyLaunched )
-	{		
-		// get a pointer to the guid
-		lpGuid = (LPGUID ) &Sessions[SessionsList.selected_item].guidInstance;
+	// get a pointer to the guid
+	lpGuid = (LPGUID ) &Sessions[SessionsList.selected_item].guidInstance;
 
-		// open session
-		if ((hr = DPlayOpenSession( lpGuid)) != DP_OK)
-		{
-			PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
-			return FALSE;
-		}
-		// create player
-		if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
-		{
-			PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
-			return FALSE;
-		}
+	// open session
+	if ((hr = DPlayOpenSession( lpGuid)) != DP_OK)
+	{
+		PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
+		return FALSE;
 	}
-
+	// create player
+	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
+	{
+		PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
+		return FALSE;
+	}
 
 	DPlayGetSessionDesc();
 	GetSessionInfo( glpdpSD );
@@ -1294,17 +1269,6 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 			strcpy( PlayersList.item[PlayersList.items] + sizeof(PlayersList.item[0]) - 4 , "..." );
 		}
 		PlayersList.items++;
-	}
-    return(TRUE);
-}
-
-BOOL WINAPI EnumLobbyPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
-    DWORD dwFlags, LPVOID lpContext)
-{
-
-	if( NumLobbyPlayers < MAX_PLAYERS )
-	{
-		LobbyPlayerIDs[ NumLobbyPlayers++ ] = pidID;
 	}
     return(TRUE);
 }
@@ -1441,10 +1405,6 @@ void BailMultiplayerFrontEnd( MENU *Menu )
 {
 	int selected_item;
 
-	// if launched from lobby, player has option to quit - service provider etc. is all pre chosen
-	if ( IsLobbyLaunched )
-		return;
-	
 	selected_item = ServiceProvidersList.selected_item;
 
 	BailMultiplayer( Menu );
@@ -1464,11 +1424,7 @@ void BailMultiplayerFrontEnd( MENU *Menu )
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void ChangeServiceProvider( MENU * Menu )
-{
-	// cannot change service provider if lobby launched
-	if ( IsLobbyLaunched )
-		return;
-					 
+{	 
 	if( dcoID )
 	{
 		DPlayDestroyPlayer(dcoID);
@@ -1476,7 +1432,6 @@ void ChangeServiceProvider( MENU * Menu )
 	}
 	DPlayRelease();
 	MyGameStatus = STATUS_Title;
-
 	ServiceProvidersList.selected_item = -1;
 }
 
@@ -1506,8 +1461,6 @@ void InitTeamLists( MENU *Menu )
 void InitExistingGameJoin( MENU *Menu )
 {
 	int i;
-
-	AllowQuitForLobby( Menu );
 	
 	InitTeamLists( NULL );
 
@@ -1528,11 +1481,6 @@ void InitTeamSelection( MENU *Menu )
 {
 	int i, j;
 	MENUITEM *item;
-
-	AllowQuitForLobby( Menu );
-
-	if ( IsLobbyLaunched )
-		NoMenuBack = TRUE;
 
 	InitTeamLists( NULL );
 

@@ -44,9 +44,6 @@
 #define STATUS_WaitingToStartDemo						0x35	// waiting to start demo
 #define STATUS_WaitingToStartEndGameSequence	0x36	// waiting to start end of game demo playback sequence
 
-#define STATUS_WaitingForLobbyConnect			0x37	// waiting for host to select game info in lobby launched game
-#define STATUS_QuittingFromInGame					0x38	// quitting completely after stats ( ie. when playing lobby launched game )
-
 #define	STATUS_InitView_0					0x80	// 0 of Preping for a level..
 #define	STATUS_InitView_1					0x81	// 1 of Preping for a level..
 #define	STATUS_InitView_2					0x82	// 2 of Preping for a level..

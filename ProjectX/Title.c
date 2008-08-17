@@ -137,8 +137,6 @@ extern BOOL WaitingToQuit;
 extern BOOL DoHeartbeat;
 extern BOOL ServerHeartbeat;
 extern BOOL PeerPeerHeartbeat;
-extern DPID LobbyPlayerIDs[ MAX_PLAYERS ];
-extern uint16 NumLobbyPlayers;
 extern int16	NumPrimaryPickups;
 extern BOOL ServiceProviderSet;
 
@@ -157,8 +155,6 @@ extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
 extern LPDPLCONNECTION glpdplConnection;
 extern BOOL UseShortPackets;
 extern BOOL ResetKillsPerLevel;
-extern BOOL IsLobbyLaunched;
-extern BOOL LobbyAutoStart;
 extern BOOL	Pal332;
 extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
@@ -474,7 +470,6 @@ void InitStartMenu( MENU *Menu );
 void ExitInGameMenu( MENU *Menu );
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu );
 void ExitMultiplayerHostVDUPeerPeer( MENU *Menu );
-void InitLobbyWaitingForHost( MENU *Menu );
 void InitSinglePlayerGame( MENU *Menu );
 void InitTitleLoad( MENU *Menu );
 void ExitTitleLoad( MENU *Menu );
@@ -1428,36 +1423,6 @@ MENU	MENU_NEW_CreateGame = {
 	}
 };
 
-MENUITEM StartLobbyGameItem = { 10, 20, 90, 28, 0, LT_MENU_NEW_CreateLobbyGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStart, StartAHostSession , DrawFlatMenuItem, NULL, 0 };
-
-MENU	MENU_NEW_CreateLobbyGame = {
-	"", InitMultiplayerHostVDUPeerPeer, ChangeServiceProvider, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_CreateLobbyGame0 /*"Create Multiplayer Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 20, 90, 28, 0, LT_MENU_NEW_CreateLobbyGame1 /*"Start game"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_HostWaitingToStart, StartAHostSession , DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 20, 105, 28, 0, LT_MENU_NEW_CreateLobbyGame2 /*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105, 20, 200, 28, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
-
-		{ 10, 30, 85, 38, 0, LT_MENU_NEW_CreateLobbyGame3 /*"session name"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &MultiPlayerGameName, NULL, NULL, DrawFlatMenuText, NULL, 0 } ,
-		{ 10, 38, 50, 46, 0, LT_MENU_NEW_CreateLobbyGame4 /*"level"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
-		{ 90, 38, 200, 46, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 46, 85, 54, SLIDER_Value, LT_MENU_NEW_CreateLobbyGame5 /*"player limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxPlayersSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 54, 85, 62, SLIDER_Value, LT_MENU_NEW_CreateLobbyGame6 /*"score limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MaxKillsSlider, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-		{ 10, 62, 85, 70, SLIDER_Time, LT_MENU_NEW_CreateLobbyGame7 /*"time limit"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TimeLimit, NULL, SelectSlider, DrawFlatMenuSlider, NULL, 0 } ,
-
-		{ 0, 75, 200, 85, 0, LT_MENU_NEW_CreateLobbyGame8 /*"game type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 90, 100, 98, 0, LT_MENU_NEW_CreateLobbyGame9 /*"free for all"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Normal, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 98, 100, 106, 0, LT_MENU_NEW_CreateLobbyGame10 /*"team game"*/, FONT_Small, TEXTFLAG_CentreY, &GameType, (void *)GAME_Team, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 106, 110, 114, 0, LT_MENU_NEW_CreateLobbyGame11 /*"capture the flag"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_CaptureFlag, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 114, 110, 122, 0, LT_MENU_NEW_CreateLobbyGame12 /*"bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_BountyHunt, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 122, 110, 130, 0, LT_MENU_NEW_CreateLobbyGame13 /*"Team bounty hunt"*/, FONT_Small,TEXTFLAG_CentreY, &GameType, (void *)GAME_TeamBounty, SelectFlatRadioButton, DrawFlatRadioButton, NULL, 0 } ,
-		{ 10, 140, 100, 148, 0, LT_MENU_NEW_CreateLobbyGame15 /*"more options"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_MoreMultiplayerOptions, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-	  //{ 10, 160, 100, 170, 0, LT_MENU_NEW_CreateLobbyGame16 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
 /* connection */
 MENU	MENU_NEW_ChooseConnectionToStart = {
 	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
@@ -1899,17 +1864,6 @@ MENU	MENU_NEW_Visuals = {
 		{ 20, 140, 180, 170, 0, "Çüéâ äàåçê ëèïîì ÄÅÉæÆ ôöòûù ÿÖÜ¢£ ¥Pƒáí óúñÑª º¿_¬½ ¼¡«»", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 #endif				 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-MENU MENU_NEW_LobbyWaitingForHost = {
-	"", InitLobbyWaitingForHost, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 20, 10, 200, 30, 0, LT_MENU_NEW_LobbyWaitingForHost0 /*"host is choosing game type, please wait"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-
-		{ 0, 140, 200, 170, 0, LT_MENU_NEW_LobbyWaitingForHost1 /*"quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-	
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL, NULL , NULL, NULL, 0 },
 	}
 };
 
@@ -5085,47 +5039,11 @@ BOOL DisplayTitle(void)
 
 		InitScreenFonts();
 
-		if ( LaunchedByLobby() )
+		if ( CurrentMenu == &MENU_NEW_Error )
 		{
-			if ( !InitLevels( MULTIPLAYER_LEVELS )  )
-				PrintErrorMessage (LT_NoLevelsInstalled, 0, NULL, ERROR_QUIT );
-
-			GetMultiplayerPrefs();
-			
-			InitStartMenu( NULL );
-			IsLobbyLaunched = TRUE;
 			CameraStatus = CAMERA_AtLeftVDU;
 			StackMode = DISC_MODE_NONE;
 			StackStatus = DISC_NOTHING;
-			if ( IsHost )
-			{
-				MenuRestart( &MENU_NEW_CreateLobbyGame );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-
-				if ( LobbyAutoStart )
-				{
-					StartAHostSession ( &StartLobbyGameItem );
-				}
-			}else
-			{
-				DebugPrintf("about to enter lobby game as client\n");
-				MenuRestart( &MENU_NEW_LobbyWaitingForHost );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				ContinueLobbyLaunch();
-				DebugPrintf("ContinueLobbyLaunch OK\n");
-			}
-		}else
-		{
-			IsLobbyLaunched = FALSE;
-
-			if ( CurrentMenu == &MENU_NEW_Error )
-			{
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-			}
 		}
 	}
 
@@ -5140,79 +5058,76 @@ BOOL DisplayTitle(void)
 		if (UseNewMenus)
 			MENU_Start = MENU_NEW_Start;
 
-		if ( !IsLobbyLaunched )
+		switch ( QuickStart )
 		{
-			switch ( QuickStart )
-			{
-			case QUICKSTART_Start:
+		case QUICKSTART_Start:
 
-				InitStartMenu( NULL );
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				MENU_Start = MENU_NEW_CreateGame;
-				
+			InitStartMenu( NULL );
+			CameraStatus = CAMERA_AtLeftVDU;
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			MENU_Start = MENU_NEW_CreateGame;
+			
+			MenuRestart( &MENU_Start );
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+
+			if ( ServiceProviderSet )
+				SelectConnectionToStart( NULL );
+			break;
+		case QUICKSTART_Join:
+			InitStartMenu( NULL );
+			CameraStatus = CAMERA_AtLeftVDU;
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			MENU_Start = MENU_NEW_ChooseConnectionToJoin;
+			
+			MenuRestart( &MENU_Start );
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			if ( ServiceProviderSet )
+				SelectConnectionToJoin( NULL );
+			break;
+
+		case QUICKSTART_SelectSession:
+			InitStartMenu( NULL );
+			CameraStatus = CAMERA_AtLeftVDU;
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			MENU_Start = MENU_NEW_ChooseConnectionToJoin;
+			
+			MenuRestart( &MENU_Start );
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			if ( ServiceProviderSet )
+				SelectConnectionToJoin( NULL );
+			else
+				PrintErrorMessage( UNABLE_TO_CONNECT_TO_SERVICE_PROVIDER, 0, NULL, ERROR_QUIT );  
+
+			if ( !AutoJoinSession() )
+				PrintErrorMessage( UNABLE_TO_JOIN_SESSION, 0, NULL, ERROR_QUIT );  
+
+			break;
+		case QUICKSTART_Notify:
+			InitStartMenu( NULL );
+			CameraStatus = CAMERA_AtLeftVDU;
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			
+			MENU_Start = MENU_NEW_Notify;
+			
+			MenuRestart( &MENU_Start );
+			StackMode = DISC_MODE_NONE;
+			StackStatus = DISC_NOTHING;
+			break;
+		default:
+			if ( MyGameStatus != STATUS_BetweenLevels )
 				MenuRestart( &MENU_Start );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-
-				if ( ServiceProviderSet )
-					SelectConnectionToStart( NULL );
-				break;
-			case QUICKSTART_Join:
-				InitStartMenu( NULL );
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				MENU_Start = MENU_NEW_ChooseConnectionToJoin;
-				
-				MenuRestart( &MENU_Start );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				if ( ServiceProviderSet )
-					SelectConnectionToJoin( NULL );
-				break;
-
-			case QUICKSTART_SelectSession:
-				InitStartMenu( NULL );
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				MENU_Start = MENU_NEW_ChooseConnectionToJoin;
-				
-				MenuRestart( &MENU_Start );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				if ( ServiceProviderSet )
-					SelectConnectionToJoin( NULL );
-				else
-					PrintErrorMessage( UNABLE_TO_CONNECT_TO_SERVICE_PROVIDER, 0, NULL, ERROR_QUIT );  
-
-				if ( !AutoJoinSession() )
-					PrintErrorMessage( UNABLE_TO_JOIN_SESSION, 0, NULL, ERROR_QUIT );  
-
-				break;
-			case QUICKSTART_Notify:
-   				InitStartMenu( NULL );
-				CameraStatus = CAMERA_AtLeftVDU;
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				
-				MENU_Start = MENU_NEW_Notify;
-				
-				MenuRestart( &MENU_Start );
-				StackMode = DISC_MODE_NONE;
-				StackStatus = DISC_NOTHING;
-				break;
-			default:
-				if ( MyGameStatus != STATUS_BetweenLevels )
-					MenuRestart( &MENU_Start );
-			}
 		}
 	}
 
@@ -7047,8 +6962,7 @@ BOOL ProcessLevelList ( int Key )
 	case DIK_RETURN:
 		if ( MenuState == MENUSTATE_SelectLevelQuick )
 		{
-			if ( ( CurrentMenu != &MENU_NEW_CreateGame ) &&
-				 ( CurrentMenu != &MENU_NEW_CreateLobbyGame ) )
+			if ( CurrentMenu != &MENU_NEW_CreateGame )
 			{
 				MenuState = MENUSTATE_SelectLevelSlow;
 				MenuChange ( &SlowLevelSelectItem );
@@ -10509,19 +10423,11 @@ void InitInGameMenu( MENU *Menu )
 		}
 
 		if ( item->FuncSelect == SelectQuitCurrentGame )
-		{
-			if( IsLobbyLaunched )
-			{
-				item->StrPnt = LT_QuitToLobby/*"quit to lobby"*/;
-			}else
-			{
 				item->StrPnt = LT_QuitToMainMenu/*"Quit to Main Menu"*/;
-			}
-		}
 
 		if ( item->Value == &MENU_LevelSelect )
 		{
-			if (( IsLobbyLaunched ) || ( MyGameStatus == STATUS_SinglePlayer ) && !LevelSelectMode )
+			if ( ( MyGameStatus == STATUS_SinglePlayer ) && !LevelSelectMode )
 			{
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
@@ -10535,15 +10441,8 @@ void InitInGameMenu( MENU *Menu )
 
 		if ( item->FuncSelect == GoToStats )
 		{
-			if ( IsLobbyLaunched && IsHost )
-			{
-				item->FuncSelect = GoToStats;
-				item->FuncDraw = MenuItemDrawName;
-			}else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
+			item->FuncSelect = NULL;
+			item->FuncDraw = NULL;
 		}
 
 		// only display host options if you are the host
@@ -10644,87 +10543,26 @@ void InitMultiplayerHost( MENU *Menu )
 
 }
 
-void InitLobbyWaitingForHost( MENU *Menu )
-{
-	if ( IsLobbyLaunched )
-		NoMenuBack = TRUE;
-}
-
-
 /* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
 
 	MENUITEM *item;
 	uint16 selected_level;
-	char *pCh;
-	
-	// if we were launched from a lobby application
-	if ( IsLobbyLaunched )
-	{
-		// lobby's throws us right into this menu
-		// so there is no menu to go back too...
-		NoMenuBack = TRUE;
 
-		// load direct play session description into global
-		// that was passed to us from the lobby application
-		DPlayGetSessionDesc();
+	// for each menu item
+	for ( item = Menu->Item; item->x >= 0; item++ )
 
-		// if the description was retrieved
-		if ( glpdpSD )
-			// loop over all the menu items
-			for ( item = Menu->Item; item->x >= 0; item++ )
-				// if this item is the max player slider
-				if ( item->Variable == &MaxPlayersSlider )
-					// if the lobby has set the max players
-					if ( glpdpSD->dwMaxPlayers )
-					{
-						// deactivate the max player slider
-						item->FuncSelect = NULL;
-						item->FuncDraw = NULL;
-					}
-					// if the lobby has NOT set the max players
-					else
-					{
-						// set max players to default
-						glpdpSD->dwMaxPlayers = MAX_PLAYERS;
-						MaxPlayersSlider.value = MAX_PLAYERS;
-						// setup the rest of the description
-						DPlaySetSessionDesc( 0 );
-					}
-	
-		// use given session name
-		strncpy( MultiPlayerGameName.text,
-			     glpdplConnection->lpSessionDesc->lpszSessionNameA,
-				 MAXTEXTMSG );
-
-		// search for the first occurence of "~"
-		pCh = strchr( MultiPlayerGameName.text, '~' );
-
-		// if found terminate the c string at that point
-		if ( pCh ) *pCh = 0;
-
-	}
-
-	// if we are NOT launched by a lobby
-	else
-	{
-
-		// for each menu item
-		for ( item = Menu->Item; item->x >= 0; item++ )
-
-			// if the item is the quit button
-			if ( item->FuncSelect == SelectQuit )
-			{
-				// disable it
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-			
-		// set the name of the game
-		sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
-
-	}
+		// if the item is the quit button
+		if ( item->FuncSelect == SelectQuit )
+		{
+			// disable it
+			item->FuncSelect = NULL;
+			item->FuncDraw = NULL;
+		}
+		
+	// set the name of the game
+	sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
 	
 	// back up current selected level
 	selected_level = LevelList.selected_item;
@@ -11020,11 +10858,7 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 		ServiceBigPacket(TRUE);
 	}
 
-	// if lobby launched, we want to quit out completely, back to the lobby launcher
-	if ( IsLobbyLaunched )
-		MyGameStatus = STATUS_QuittingFromInGame;
-	else
-		MyGameStatus = STATUS_QuitCurrentGame;
+	MyGameStatus = STATUS_QuitCurrentGame;
 	
 	//OKToProcessKeys = FALSE;
 }
@@ -11248,8 +11082,6 @@ void ExitBikeComputerSelection( MENUITEM * item )
 
 void ExitMoreMultiplayerOptions( MENU *Menu )
 {
-	if ( IsLobbyLaunched )
-		NoMenuBack = TRUE;
 }
 
 void InitMoreMultiplayerOptions( MENU *Menu )
@@ -17172,73 +17004,14 @@ void SelectConnectionToJoin (MENUITEM *Item)
 
 void UpdateSessions ( int *dummy )
 {
-	/*
-	BOOL found;
-	int i, j;
-	MENUITEM item;
-	static float pause = 30.0F;
-	*/
-	
 	GetPlayersInCurrentSession ( NULL );
-/*
-	// find out whether to start game if lobby launched....
-	if ( IsLobbyLaunched && IsHost )
-	{
-		pause -= framelag;
-		if ( pause < 0.0F )
-		{
-			pause = 30.0F ;
-
-			// enumerate players
-				  
-			NumLobbyPlayers = 0;
-			DPlayEnumPlayers( NULL, EnumLobbyPlayers, (LPVOID) NULL, 0);
-			DebugPrintf("num players found %d\n", NumLobbyPlayers );
-   			
-			found = TRUE;
-			for ( i = 0; i < MAX_PLAYERS; i++ )
-			{
-				if ( !LobbyPlayerIDs[ i ] )
-				{
-					continue;
-				}
-
-				found = FALSE;
-				for ( j = 0; j < NumLobbyPlayers; j++ )
-				{
-					if ( LobbyPlayerIDs[ i ] == Ships[ j ].dcoID )
-					{
-						found = TRUE;
-						DebugPrintf("player %x found\n", LobbyPlayerIDs[ i ] );
-						break;
-					}
-				}
-
-				if ( !found )
-				{
-					return;
-				}
-			}
-			
-			memset( &item, 0, sizeof( MENUITEM ) );
-			item.Value = &MENU_NEW_GeneralLoading;
-
-			HostAboutToStart( &item );
-		}
-
-	}
-*/
 }
 
 void GetInitialSessions ( MENU *menu )
 {
-	if ( IsLobbyLaunched )
-		NoMenuBack = TRUE;
-	
 	NumOfPlayersSlider.oldvalue = -1;
 	PlayersList.display_items = 16;
 	GetPlayersInCurrentSession ( NULL );
-
 	InitTitleMessaging();
 }
 
@@ -17440,7 +17213,7 @@ void PrintErrorMessage (char *ErrorStr, int BackBy, MENU *NewMenu, int type)
 		MENU_NEW_Error.MenuStatus = CurrentMenu->MenuStatus;
 
 	strcpy (ErrorMessage, ErrorStr);
-	if ( !( type & ERROR_OVERIDE_LOBBY_QUIT ) && ( ( QuickStart == QUICKSTART_SelectSession ) || IsLobbyLaunched || ( type & ERROR_QUIT ) ) )
+	if ( ( QuickStart == QUICKSTART_SelectSession )	|| ( type & ERROR_QUIT ) )
 		ErrorMoveBackBy = -1;
 	else
 		ErrorMoveBackBy = BackBy;
@@ -18909,9 +18682,6 @@ void TestMenuFormat( void )
 	DebugPrintf("MENU_NEW_CreateGame\n");
 	GetFormatInfo ( &MENU_NEW_CreateGame );
 
-	DebugPrintf("MENU_NEW_CreateLobbyGame\n");
-	GetFormatInfo ( &MENU_NEW_CreateLobbyGame );
-
 	DebugPrintf("MENU_NEW_ChooseConnectionToStart\n");
 	GetFormatInfo ( &MENU_NEW_ChooseConnectionToStart );
 
@@ -18965,9 +18735,6 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_Visuals\n");  
 	GetFormatInfo ( &MENU_NEW_Visuals );
-
-	DebugPrintf("MENU_NEW_LobbyWaitingForHost\n");  
-	GetFormatInfo ( &MENU_NEW_LobbyWaitingForHost );
 
 	DebugPrintf("MENU_NEW_JoinWaitingToStart\n");  
 	GetFormatInfo ( &MENU_NEW_JoinWaitingToStart );
@@ -19283,51 +19050,9 @@ void HostListPlayerSelected( MENUITEM *Item )
 
 }
 
-void AllowQuitForLobby( MENU *Menu )
-{
-	MENUITEM *item;
-
-	for ( item = Menu->Item; item->x >=0; item++ )
-	{
-		if ( item->FuncSelect == SelectQuit )
-		{
-			if ( IsLobbyLaunched )
-			{
-				item->FuncDraw = DrawFlatMenuItem;
-				item->highlightflags &= ~TEXTFLAG_Unselectable;
-			}else
-			{
-				item->FuncDraw = NULL;
-				item->highlightflags |= TEXTFLAG_Unselectable;
-			}
-		}
-	}
-}
-
 void InitHostWaitingToStart( MENU *Menu )
 {
-	//MENUITEM *item;
-	
-	AllowQuitForLobby( Menu );
-
 	GetInitialSessions( Menu );
-	/*
-	for ( item = Menu->Item; item->x >=0; item++ )
-	{
-	   if ( item->Value == &MENU_NEW_GeneralLoading )
-	   {
-		   if ( IsLobbyLaunched )
-		   {
-			   item->FuncSelect = NULL;
-			   item->FuncDraw = NULL;
-		   }else
-		   {
-			   item->FuncSelect = HostAboutToStart;
-			   item->FuncDraw = DrawFlatMenuItem;
-		   }
-	   }
-	}
-	*/
 } 
 
 extern	DPID					dcoID;    // player id

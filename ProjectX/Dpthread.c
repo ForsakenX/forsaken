@@ -49,7 +49,6 @@ extern uint16 PingTimes[MAX_PLAYERS];
 extern SLIDER	MaxServerPlayersSlider;
 extern BYTE	TeamNumber[];
 
-extern BOOL IsLobbyLaunched;
 extern BOOL NoMenuBack;
 
 // (stats.c)
@@ -972,32 +971,8 @@ BOOL DPStartThread( void ) {
 		
 		if ( !ForceHeartbeat )
 		{
-			if ( IsLobbyLaunched )
-			{
-			   	HRESULT hr;
-				DWORD dwDataSize;
-				LPDPLCONNECTION lpdplconnection;
-
-				hr =  IDirectPlayLobby_GetConnectionSettings( lpDPlayLobby, 0, NULL, &dwDataSize );
-				if ( hr != DPERR_BUFFERTOOSMALL )
-					return TRUE;
-
-				lpdplconnection = ( LPDPLCONNECTION )malloc( dwDataSize );
-				if ( !lpdplconnection )
-					return TRUE;
-
-				hr =  IDirectPlayLobby_GetConnectionSettings( lpDPlayLobby, 0, ( void *)lpdplconnection, &dwDataSize );
-				if ( hr != DP_OK )
-					return TRUE;
-
-				if ( memcmp( &lpdplconnection->guidSP, &DPSPGUID_TCPIP , sizeof(GUID) ) != 0 )
-					return TRUE;
-			}else
-			{
-			  if ( memcmp( &ServiceProvidersGuids[ServiceProvidersList.selected_item], &DPSPGUID_TCPIP , sizeof(GUID) ) != 0 )
-				  return TRUE;
-
-			}
+			if ( memcmp( &ServiceProvidersGuids[ServiceProvidersList.selected_item], &DPSPGUID_TCPIP , sizeof(GUID) ) != 0 )
+				 return TRUE;
 		}
 	}
 

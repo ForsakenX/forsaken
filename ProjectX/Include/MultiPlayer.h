@@ -23,8 +23,6 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
                         LPVOID lpContext);
 BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
     DWORD dwFlags, LPVOID lpContext);
-BOOL WINAPI EnumLobbyPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
-    DWORD dwFlags, LPVOID lpContext);
 
 void GetServiceProviders( MENU * Item );
 BOOL ExitProviderChosen ( MENUITEM * Item );

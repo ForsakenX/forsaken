@@ -126,8 +126,6 @@ extern BOOL OwnFlagTeleportsHome;
 extern BOOL CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
-extern MENU MENU_NEW_CreateLobbyGame;
-
 void SetTeamGoals( uint16 *TeamGoals );
 
 uint32 BuildShipFlags( BYTE Player );
@@ -1647,19 +1645,15 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		{
 		case STATUS_StartingMultiplayer:
 			if ( TeamGame )
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS | ERROR_OVERIDE_LOBBY_QUIT );
+				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
 			else
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS | ERROR_OVERIDE_LOBBY_QUIT );
-			//PrintErrorMessage ( "the host has quit", 3, NULL );
+				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
 			if ( DPlayGetSessionDesc() != DP_OK)
 			{
 				Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
 				exit(1);
 			}
 			DPlayTest = TRUE;
-			break;
-		case STATUS_WaitingForLobbyConnect:
-			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, &MENU_NEW_CreateLobbyGame, ERROR_DONTUSE_MENUFUNCS | ERROR_OVERIDE_LOBBY_QUIT );
 			break;
 		default:
 			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );

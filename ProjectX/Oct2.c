@@ -4,13 +4,6 @@
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
-//#define LOBBY_DEBUG
-
-#ifdef LOBBY_DEBUG
-#include <direct.h>
-#include <stdlib.h>
-#endif
-
 #include <stdio.h>
 #include "main.h"
 #include "typedefs.h"
@@ -145,7 +138,6 @@ extern BOOL IPAddressExists;
 extern uint8 QuickStart;
 
 extern char *TeamName[ MAX_TEAMS ];
-extern BOOL IsLobbyLaunched;
 extern int16 DummyTextureIndex;
 
 extern void Printint16( int16 num , int x , int y , int col );
@@ -3753,7 +3745,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   BYTE    msg;
   int     size;
   LONGLONG  TempTime;
-  HRESULT hr;
   LONGLONG  Time_Freq;
   LONGLONG  Time_Value;
   float   Time_Float;
@@ -3835,27 +3826,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_QuittingFromTitles:
-    quitting = TRUE;
-    if ( IsLobbyLaunched )
-    {
-      if ( IsHost )
-      {
-        free( glpdplConnection );
-        glpdplConnection = NULL;
-        free( glpdpSD );
-        glpdpSD = NULL;
-      }
-    }
-    break;
-
-
-  case STATUS_QuittingFromInGame:
-    StopCompoundSfx();
-    OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
-    MenuAbort();
-    DestroyGame();  // DestroyGame changes MyGameStatus..So Set it back
-    MyGameStatus = STATUS_QuittingFromInGame;
-    ReleaseLevel();
     quitting = TRUE;
     break;
 
@@ -4070,8 +4040,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     LevelTimeTaken += framelag;
 
     // if player is quiting nothing should stop him.....
-    if( ( MyGameStatus != STATUS_QuitCurrentGame ) &&
-		( MyGameStatus != STATUS_QuittingFromInGame ) )
+    if( MyGameStatus != STATUS_QuitCurrentGame )
     {
       if( IsHost )
       {
@@ -4242,11 +4211,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         StoreLevelNameInSessionDesc( full_level_name );
         RegSetA( "LevelName",  (LPBYTE)LevelList.item[ NewLevelNum ] , sizeof( LevelList.item[ NewLevelNum ] ) );
 
-//        if ( IsLobbyLaunched )
-//        {
-//          MyGameStatus = STATUS_QuittingFromInGame;
-//        }else
-        {
           // tell them all I Am waiting
           ReleaseView();
           MyGameStatus = STATUS_WaitingAfterScore;
@@ -4254,23 +4218,17 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
           ServiceBigPacket(TRUE);
-          if( !ChangeLevel() ) return( FALSE );
-        }
+          if( !ChangeLevel() )
+			  return( FALSE );
       }
 	  else
 	  {
-		//          if ( IsLobbyLaunched )
-		//          {
-		//            MyGameStatus = STATUS_QuittingFromInGame;
-		//          }else
-        {
           // tell the host that I am now Waiting for him to finish viewing the score....
           ReleaseView();
           MyGameStatus = STATUS_WaitingAfterScore;
           GameStatus[WhoIAm] = MyGameStatus;
-
-          if( !ChangeLevel() ) return( FALSE );
-        }
+          if( !ChangeLevel() )
+			  return( FALSE );
       }
     }
     break;
@@ -4681,46 +4639,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     InitView();
 
     break;
-
-
-  case STATUS_WaitingForLobbyConnect:
-
-    ReceiveGameMessages();
-
-    Browl -= framelag;
-
-    if( Browl <= 0.0F )
-    {
-      Browl = 30.0F;
-
-      // reget session info..
-      hr = DPlayGetSessionDesc();
-      if ( hr != DP_OK )
-      {
-        DebugPrintf("DPlayGetSessionDesc not OK\n");
-      }
-
-      if ( glpdpSD )
-      {
-        if ( glpdpSD->dwUser4 != 0 )
-        {
-        }
-      }
-	  else
-      {
-        DebugPrintf("no DPlay ptr!\n");
-      }
-    }
-
-    if( DisplayTitle() != TRUE )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-    DebugPrintf("STATUS_WaitingForLobbyConnect 3\n");
-
-    break;
-
 
   case STATUS_GetPlayerNum:
     D3DAppClearScreenOnly();

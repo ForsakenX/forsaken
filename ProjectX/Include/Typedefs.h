@@ -11,12 +11,6 @@
 #define DIRECTDRAW_VERSION  0x0700
 #define DIRECTINPUT_VERSION 0x0700
 
-//	methods:
-//		support direct play lobby
-//		I'm looking to remove support for it
-//		for now just enclose code in this define
-//#define DPLAYLOBBY
-
 #ifndef	TRUE
 #define	TRUE					(1==1)
 #endif

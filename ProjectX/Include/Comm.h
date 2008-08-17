@@ -39,14 +39,7 @@ HRESULT DPlayCreateLobby( void );
 HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLobby, LPVOID *lplpAddress, LPDWORD lpdwAddressSize , char * TCPIPAddress);
 HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLobby, LPDIRECTPLAY4A *lplpDPlay , char * TCPIPAddress);
 
-
-HRESULT DPLobbyGetConnectionSettings(void);
-HRESULT DPLobbyRelease(void);
-HRESULT DPLobbySetConnectionSettings(void);
-HRESULT DPLobbyConnect(void);
 HRESULT DPlaySetPlayerName(DPID pid, char * Name, DWORD dwFlags);
-void ContinueLobbyLaunch( void );
-BOOL LaunchedByLobby(void);
 
 HRESULT DPlayCreateSessionServer( LPTSTR lptszSessionName );
 HRESULT DPlayCreatePlayerServer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent, 

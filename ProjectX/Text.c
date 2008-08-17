@@ -1068,7 +1068,6 @@ void InitPolyText( void )
 	PolyText[STATUS_WaitingToStartTeamGame]				= TRUE;					
 	PolyText[STATUS_WaitingToStartDemo]						= TRUE;
 	PolyText[STATUS_WaitingToStartEndGameSequence]		= TRUE;
-	PolyText[STATUS_WaitingForLobbyConnect]					= TRUE;
 }
 
 
@@ -2042,8 +2041,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_QuittingFromTitles                   ] = "QuittingFromT";
     StatusTab[STATUS_WaitingToStartDemo                   ] = "WaitingToStar";
     StatusTab[STATUS_WaitingToStartEndGameSequence        ] = "WaitingToStar";
-    StatusTab[STATUS_WaitingForLobbyConnect               ] = "WaitingForLob";
-    StatusTab[STATUS_QuittingFromInGame                   ] = "Quiting      ";
     StatusTab[STATUS_InitView_0                           ] = "Loading 1/10 ";
     StatusTab[STATUS_InitView_1                           ] = "Loading 2/10 ";
     StatusTab[STATUS_InitView_2                           ] = "Loading 3/10 ";
@@ -2094,7 +2091,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_QuittingFromTitles                   ] = "QuittingFromTitles         ";
     StatusTab[STATUS_WaitingToStartDemo                   ] = "WaitingToStartDemo         ";
     StatusTab[STATUS_WaitingToStartEndGameSequence        ] = "WaitingToStartEndGameSeq...";
-    StatusTab[STATUS_WaitingForLobbyConnect               ] = "WaitingForLobbyConnect     ";
     StatusTab[STATUS_QuittingFromInGame                   ] = "QuittingFromInGame         ";
     StatusTab[STATUS_InitView_0                           ] = "InitView_0                 ";
     StatusTab[STATUS_InitView_1                           ] = "InitView_1                 ";
