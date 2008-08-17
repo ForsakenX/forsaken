@@ -202,8 +202,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release - Optimisations|Win32"
-			OutputDirectory=".\temp\ProjectX___Win32_Release"
-			IntermediateDirectory=".\temp\ProjectX___Win32_Releas\Xtrash"
+			OutputDirectory=".\temp\ProjectX___Win32_Release_OPT"
+			IntermediateDirectory=".\temp\ProjectX___Win32_Release_OPT\Xtrash"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -227,7 +227,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\temp\ProjectX___Win32_Releas\ProjectX.tlb"
+				TypeLibraryName=".\temp\ProjectX___Win32_Release_OPT\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -237,10 +237,10 @@
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Release\ProjectX.pch"
-				AssemblerListingLocation=".\temp\ProjectX___Win32_Release\Xtrash\"
-				ObjectFile=".\temp\ProjectX___Win32_Release\Xtrash\"
-				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release\Xtrash\"
+				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Release_OPT\ProjectX.pch"
+				AssemblerListingLocation=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
+				ObjectFile=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
+				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				SuppressStartupBanner="true"
 				CallingConvention="1"
 				CompileAs="0"
@@ -265,7 +265,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
-				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
+				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release_OPT\Xrelease.pdb"
 				SubSystem="2"
 			/>
 			<Tool
@@ -295,8 +295,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
+			OutputDirectory=".\temp\ProjectX___Win32_Release"
+			IntermediateDirectory=".\temp\ProjectX___Win32_Release\Xtrash"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -320,7 +320,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\temp\ProjectX___Win32_Releas\ProjectX.tlb"
+				TypeLibraryName=".\temp\ProjectX___Win32_Release\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
