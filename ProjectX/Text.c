@@ -26,6 +26,7 @@
 #include "ddsurfhand.h"
 #include "local.h"
 #include "dpthread.h"
+#include "stats.h"
 
 #define MSG_VERSION_NUMBER 1
 
