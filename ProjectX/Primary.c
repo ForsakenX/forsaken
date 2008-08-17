@@ -55,18 +55,7 @@
 #endif
 
 #include "local.h"
-
-#if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 #include "localtitle.h"
-#elif defined( VERSION_SPANISH )
-#include "sp-localtitle.h"
-#elif defined( VERSION_ITALIAN )
-#include "it-localtitle.h"
-#elif defined( VERSION_GERMAN )
-#include "ge-localtitle.h"
-#elif defined( VERSION_FRENCH )
-#include "fr-localtitle.h"
-#endif
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
