@@ -912,31 +912,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\fr-localtitle.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\FrenchLocal.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\GermanLocal.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\getdxver.h"
 				>
 			</File>
 			<File
 				RelativePath="Include\goal.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\it-localtitle.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\ItalianLocal.h"
 				>
 			</File>
 			<File
@@ -949,14 +929,6 @@
 			</File>
 			<File
 				RelativePath="Include\LoadSave.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Local.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\localtitle.h"
 				>
 			</File>
 			<File
@@ -1065,10 +1037,6 @@
 			</File>
 			<File
 				RelativePath="Include\skin.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\SpanishLocal.h"
 				>
 			</File>
 			<File
