@@ -3,18 +3,7 @@
 #ifndef TITLE_INCLUDED
 #define TITLE_INCLUDED
 
-#if defined( VERSION_SPANISH )
-#include "sp-localtitle.h"
-#elif defined( VERSION_ITALIAN )
-#include "it-localtitle.h"
-#elif defined( VERSION_GERMAN )
-#include "ge-localtitle.h"
-#elif defined( VERSION_FRENCH )
-#include "fr-localtitle.h"
-#else
 #include "localtitle.h"
-#endif
-
 #include	"d3d.h"
 #include	"typedefs.h"
 #include	"new3d.h"
@@ -57,7 +46,6 @@ extern float PseudoHostAck_Timeout;
 #define ERROR_DONTUSE_MENUFUNCS		0
 #define ERROR_USE_MENUFUNCS			1
 #define ERROR_QUIT					2
-#define ERROR_OVERIDE_LOBBY_QUIT	4
 
 #define	DIFF_Easy 0
 #define	DIFF_Norm 1
@@ -599,7 +587,6 @@ void InitTitleMessaging( void );
 void DrawReadyButton( MENUITEM *Item );
 void PlayerConfirm( MENUITEM *Item );
 void SelectTeamList( MENUITEM *Item );
-void AllowQuitForLobby( MENU *Menu );
 BOOL GeneralTimeout( float *timer );
 void GetServerPrefs( void );
 void SetServerPrefs( void );
