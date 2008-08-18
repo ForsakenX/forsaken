@@ -361,33 +361,6 @@ int ToggleLevelSelectMode( char *cheat )
   return 1;
 }
 
-
-int ToggleServer( char *cheat )
-{
-  if ( CurrentMenu == &MENU_NEW_Battle )
-  {
-    if ( AllowServer )
-      FlashMenuText( "Cannot disable Server while in this menu", 120.0F, SFX_Secret );
-    else
-      FlashMenuText( "Cannot enable Server while in this menu", 120.0F, SFX_Secret );
-    return 0;
-  }
-
-  if( !AllowServer )
-  {
-    AllowServer = TRUE;
-    FlashMenuText( "Server enabled", 120.0F, SFX_Secret );
-  }
-  else
-  {
-    FlashMenuText( "Server disabled", 120.0F, SFX_Secret );
-    AllowServer = FALSE;
-  }
-
-  return 1;
-}
-
-
 static struct
 {
 #if CHEATS_AS_PLAINTEXT
@@ -407,7 +380,6 @@ static struct
   { "LUMBERJACK", Lumberjack, FALSE },
   { "IAMZEUS", ToggleGodMode, FALSE },
   { "FULLMONTY", ToggleLevelSelectMode, FALSE },
-  { "SERVER", ToggleServer, TRUE },
 #else
   { { DIK_B, DIK_U, DIK_B, DIK_B, DIK_L, DIK_E, DIK_S, 0 }, EnableCheats, TRUE },
   { { DIK_T, DIK_I, DIK_T, DIK_S, DIK_O, DIK_O, DIK_T, 0 }, NakedGirls, TRUE },
@@ -415,7 +387,6 @@ static struct
   { { DIK_L, DIK_U, DIK_M, DIK_B, DIK_E, DIK_R, DIK_J, DIK_A, DIK_C, DIK_K, 0 }, Lumberjack, FALSE },
   { { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
   { { DIK_F, DIK_U, DIK_L, DIK_L, DIK_M, DIK_O, DIK_N, DIK_T, DIK_Y, 0 }, ToggleLevelSelectMode, FALSE },
-  { { DIK_S, DIK_E, DIK_R, DIK_V, DIK_E, DIK_R, 0 }, ToggleServer, TRUE },
 #endif
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
