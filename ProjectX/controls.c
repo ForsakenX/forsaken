@@ -36,7 +36,6 @@
 extern GLOBALSHIP Ships[];
 
 #endif
-extern BOOL AllowServer;
 extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;
 

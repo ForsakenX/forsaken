@@ -72,7 +72,6 @@ extern "C" {
 	extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 	extern BOOL ZClearsOn;
-	extern BOOL AllowServer;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern BOOL CheckDirectPlayVersion;
 	extern	int DPlayUpdateIntervalCmdLine;

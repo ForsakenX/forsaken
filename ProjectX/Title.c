@@ -90,8 +90,6 @@ extern BOOL SetZCompare();
 
 extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 
-BOOL AllowServer = FALSE;
-
 extern BOOL ShowNamesAnyway;
 extern BOOL ResetKillsPerLevel;
 
@@ -11959,16 +11957,8 @@ void GetGamePrefs( void )
 	{
 		BikeCompSpeechSlider.value = temp;
 	}
-	
-	if ( !AllowServer )
-	{
-		if( RegGet( "AllowServer", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-			AllowServer = TRUE;
-		else
-			AllowServer = temp;
-	}
-
-		// get colours
+		
+	// get colours
 	if ( RegGet( "KillMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		KillMessageColour = temp;
 	else
@@ -12105,9 +12095,6 @@ void SetGamePrefs( void )
 
 	temp = WaterDetailSlider.value;
 	RegSet( "water",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = AllowServer;
-	RegSet( "AllowServer",  (LPBYTE)&temp ,  sizeof(temp) );
 
 #ifdef Z_TRICK
 	temp = ZClearsOn;

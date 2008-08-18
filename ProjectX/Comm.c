@@ -237,7 +237,7 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 	if ( PseudoHostCanSetMaxPlayers )
 		lpDesc->dwUser3 |= EnableMaxPlayersChangeBit;
 
-	lpDesc->dwUser4 |= ( MaxPlayersSlider.value << MaxPlayers_Shift );	// max players must be stored seperately for server game
+	lpDesc->dwUser4 |= ( MaxPlayersSlider.value << MaxPlayers_Shift );
 
 	lpDesc->dwUser4 |= ( PacketsSlider.value << PacketsPerSecond_Shift );
 }
