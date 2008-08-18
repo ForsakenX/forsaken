@@ -43,7 +43,6 @@
  * Externals
  */
 extern BOOL OKToProcessKeys;
-extern SLIDER	MaxServerPlayersSlider;
 extern BOOL	OKToJoinSession;
 extern int OldPPSValue;
 extern int OldColPerspective;

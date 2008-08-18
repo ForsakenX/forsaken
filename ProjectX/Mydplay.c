@@ -74,8 +74,6 @@ extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 extern int FontHeight;
-extern SLIDER ServerTimeoutSlider;
-extern SLIDER	MaxServerPlayersSlider;
 extern LIST	SessionsList;
 
 extern DPID	PlayerIDs[ MAX_PLAYERS ];
@@ -1765,22 +1763,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		break;
 	}
 }
-
-BOOL CheckPlayersActive( void )
-{
-	uint16 i;
-	
-	for ( i = 1; i < MAX_PLAYERS; i++ )
-	{
-		if ( ( LastPacketTime [ i ] + Freq * ( ServerTimeoutSlider.value * 60 ) ) > TempTime )
-		{
-			return TRUE;
-		}
-	}
-
-	return FALSE;
-}
-
 
 void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 {

@@ -1068,7 +1068,6 @@ void SendBigPacket( BOOL SendGuaranteed );
 void ServiceBigPacket( BOOL OverideTime );
 void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
-BOOL CheckPlayersActive( void );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
 

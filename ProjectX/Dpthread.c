@@ -46,7 +46,6 @@ extern	GLOBALSHIP		Ships[];
 extern GUID	ServiceProvidersGuids[];
 extern	LIST	ServiceProvidersList;
 extern uint16 PingTimes[MAX_PLAYERS];
-extern SLIDER	MaxServerPlayersSlider;
 extern BYTE	TeamNumber[];
 
 extern BOOL NoMenuBack;
