@@ -344,22 +344,6 @@ void GetGameSubType( char *buf, LPDPSESSIONDESC2 pSD )
 BOOL IsGameJoinable( LPDPSESSIONDESC2 pSD )
 {
 	return ( ( pSD->dwFlags & DPSESSION_JOINDISABLED ) ? FALSE : TRUE );
-
-#if 0
-	// if server game & host choosing, return FALSE
-	if ( ( pSD->dwUser3 & ServerGameStateBits ) == SERVER_STATE_HostChoosing )
-		return FALSE;
-	
-	switch( MyGameStatus )
-	{
-	case STATUS_StartingMultiplayer:
-	case STATUS_Normal:
-		return TRUE;
-	default:
-		return FALSE;
-	}
-#endif
-
 }
 
 BOOL ProcessForsakenInfo( int type )
