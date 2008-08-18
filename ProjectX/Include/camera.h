@@ -8,7 +8,6 @@
  */
 
 #define	CAMRENDERING_None		0
-#define CAMRENDERING_Server		1
 #define CAMRENDERING_Main		2
 #define CAMRENDERING_Rear		3
 #define CAMRENDERING_Missile	4
