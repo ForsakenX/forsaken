@@ -1916,8 +1916,6 @@ char Session_Info_Game_Type[ 128 ];
 char Session_Info_PacketInfo[ 128 ];
 char Session_Info_PPS[ 128 ];
 char Session_Info_LagTolerance[ 128 ];
-
-char Session_Info_Server[ 128 ];
 char Session_Info_HarmTeamMates[ 128 ];
 char Session_Info_MaxKills[ 128 ];
 char Session_Info_TimeLimit[ 128 ];
@@ -1962,7 +1960,6 @@ MENU	MENU_NEW_ChooseSessionToJoin = {
 		{ 10, 121, 200, 128, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_LagTolerance, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		// extras
 		{ 10, SESSIONJOIN_EXTRAS_TOP_Y, 200, 146, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_PPS, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-	//	{ 10, 146, 200, 154, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Server, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 154, 200, 162, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_HarmTeamMates, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 162, 200, 170, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_MaxKills, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 170, 200, 178, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_TimeLimit, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
@@ -18779,8 +18776,6 @@ void UpdateSessionInfo( LIST *List )
 	Session_Info_PacketInfo[ 0 ] = 0;
 	Session_Info_LagTolerance[ 0 ] = 0;
 	Session_Info_Server_BigMsg[ 0 ] = 0;
-
-    Session_Info_Server[ 0 ] = 0;
 	Session_Info_HarmTeamMates[ 0 ] = 0;
 	Session_Info_MaxKills[ 0 ] = 0;
 	Session_Info_TimeLimit[ 0 ] = 0;
