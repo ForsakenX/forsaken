@@ -85,12 +85,6 @@ BOOL DoHeartbeat = FALSE;
 
 BOOL TrackerOveride = FALSE;
 
-char heartbeat_location[ 32 ];
-char heartbeat_servername[ 32 ];
-char heartbeat_serverspec[ 32 ];
-char heartbeat_serverconnection[ 32 ];
-char heartbeat_serveradmin[ 32 ];
-
 CRITICAL_SECTION PlayerInfoKey;
 
 BOOL WinsockActive = FALSE;
