@@ -88,9 +88,7 @@ extern GUID	ServiceProvidersGuids[];
 extern	LIST	ServiceProvidersList;
 
 extern	BOOL	CountDownOn;
-extern char	ServerLevelNames[MAXLEVELS][ 8 ];
 extern char LevelNames[MAXLEVELS][128];
-extern uint8	ServerLevelsListState;
 
 GUID autojoin_session_guid;
 float FindSessionTimeout;
