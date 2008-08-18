@@ -1922,8 +1922,6 @@ char Session_Info_TimeLimit[ 128 ];
 char Session_Info_BrightShips[ 128 ];
 char Session_Info_BikeExhausts[ 128 ];
 
-char Session_Info_Server_BigMsg[ 128 ];
-
 #define SESSIONJOIN_EXTRAS_TOP_Y 128
 #define SESSIONJOIN_EXTRAS_LINEHEIGHT 7
 
@@ -1965,9 +1963,6 @@ MENU	MENU_NEW_ChooseSessionToJoin = {
 		{ 10, 170, 200, 178, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_TimeLimit, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 178, 200, 186, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_BrightShips, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 10, 186, 200, 194, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_BikeExhausts, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-
-		// server game message...
-		{ 10, 146, 190, 186, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreYBunched | TEXTFLAG_CentreX, (void *)&Session_Info_Server_BigMsg, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -18775,7 +18770,6 @@ void UpdateSessionInfo( LIST *List )
 	Session_Info_Game_Type[ 0 ] = 0;
 	Session_Info_PacketInfo[ 0 ] = 0;
 	Session_Info_LagTolerance[ 0 ] = 0;
-	Session_Info_Server_BigMsg[ 0 ] = 0;
 	Session_Info_HarmTeamMates[ 0 ] = 0;
 	Session_Info_MaxKills[ 0 ] = 0;
 	Session_Info_TimeLimit[ 0 ] = 0;
