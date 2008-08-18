@@ -79,7 +79,6 @@ playerlist_t PlayerInfo[ MAX_PLAYERS ];
 BOOL SendShutdownPacket;
 
 uint16 PlayerPort[ MAX_PLAYERS ];
-BOOL ServerHeartbeat = FALSE;
 BOOL PeerPeerHeartbeat = FALSE;
 BOOL ForceHeartbeat = FALSE;
 BOOL DoHeartbeat = FALSE;

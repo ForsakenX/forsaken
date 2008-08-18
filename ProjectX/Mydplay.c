@@ -92,7 +92,6 @@ extern char LevelNames[MAXLEVELS][128];
 
 GUID autojoin_session_guid;
 float FindSessionTimeout;
-extern int16 NumServerLevels;
 extern	SLIDER	MaxPlayersSlider;
 
 extern	LONGLONG	LargeTime;
@@ -2973,7 +2972,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-					// we're in server mode or tol on??
    					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
    					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );

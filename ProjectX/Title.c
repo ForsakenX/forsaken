@@ -133,7 +133,6 @@ BOOL	Last_SWMonoChrome = FALSE;
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern BOOL WaitingToQuit;
 extern BOOL DoHeartbeat;
-extern BOOL ServerHeartbeat;
 extern BOOL PeerPeerHeartbeat;
 extern int16	NumPrimaryPickups;
 extern BOOL ServiceProviderSet;
@@ -12230,9 +12229,6 @@ void GetMultiplayerPrefs( void )
 		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 	}
 
-	ServerHeartbeat = ( RegGet( "ServerHeartbeat", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
-
 	PeerPeerHeartbeat = ( RegGet( "PeerPeerHeartbeat", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : FALSE;
 
@@ -12298,9 +12294,6 @@ void SetMultiplayerPrefs( void )
 
 	temp = NumPrimaryPickupsSlider.value;
 	RegSet( "primarypickups",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = ServerHeartbeat;
-	RegSet( "ServerHeartbeat",  (LPBYTE)&temp ,  sizeof(temp) );
 
 	temp = PeerPeerHeartbeat;
 	RegSet( "PeerPeerHeartbeat",  (LPBYTE)&temp ,  sizeof(temp) );
