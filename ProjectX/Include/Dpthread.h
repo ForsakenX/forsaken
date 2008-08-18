@@ -34,7 +34,6 @@ extern BOOL WSA_Active;
 void DPStopThread(void);
 BOOL DPStartThread(void);
 BOOL DPStartThreadListenOnly( void );
-BOOL read_heartbeat_info( char *file );
 void UpdatePlayerInfo( void );
 BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz);
 
