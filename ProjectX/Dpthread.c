@@ -513,10 +513,6 @@ BOOL ProcessForsakenInfo( int type )
 		case COLPERS_Descent:
 			pChar = "off";
 			break;
-		case COLPERS_Server:
-			pChar = "server";
-			break;
-
 			srv_info += sprintf(srv_info, "\\lagtolerance\\%s ", pChar );
 		}
 

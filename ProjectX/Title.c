@@ -18921,9 +18921,6 @@ void UpdateSessionInfo( LIST *List )
 	case COLPERS_Descent:
 		pCh = LT_ToggleTarget/*target*/;
 		break;
-	case COLPERS_Server:
-		pCh = LT_Server/*server*/;
-		break;
 	}
 
 	_snprintf( Session_Info_LagTolerance, sizeof( Session_Info_LagTolerance ),LT_Extra8/*"collision perspective: %s"*/, pCh );
