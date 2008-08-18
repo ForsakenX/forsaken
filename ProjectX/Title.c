@@ -622,7 +622,6 @@ void SelectFlatMenutext( MENUITEM *Item );
 void SendTitleMessage(MENUITEM *Item);
 void PrepareNextLevelStart( MENU *Menu );
 void HostAboutToStart( MENUITEM *Item );
-void PseudoHostAboutToStart( MENUITEM *Item );
 void ExitSoundMenu( MENU *Menu );
 void MakeUnselectable( MENUITEM *Item );
 void SendQuickText( MENUITEM *Item );
@@ -2923,7 +2922,6 @@ MENU	MENU_DemoPlaying = {
 		{ 200 , 128 + ( 6*16 ), 0, 0, 0, LT_MENU_DemoPlaying10 /*"Debugging"*/, 0, 0,	&DebugInfo,	DebugModeChanged, SelectToggle,	DrawToggle, NULL, 0 },
 #endif
 		{ 200 , 128 + ( 7*16 ), 0, 0, 0, LT_MENU_DemoPlaying11 /*"Quit to Title Screen"*/ , 0, 0, NULL, NULL, SelectQuitCurrentGame , MenuItemDrawName, NULL, 0 } ,
-//		{ 200 , 128 + ( 8*16 ), 0, 0, 0, LT_MENU_DemoPlaying12 /*"Server Mode"*/, 0, 0, &ServerMode, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -17733,11 +17731,6 @@ void HostAboutToStart( MENUITEM *Item )
 		MyGameStatus = STATUS_WaitingToStartMultiPlayerHost;
 		MenuChange( Item );
 	}
-}
-	
-void PseudoHostAboutToStart( MENUITEM *Item )
-{
-	// server
 }
 
 void ExitSoundMenu( MENU *Menu )
