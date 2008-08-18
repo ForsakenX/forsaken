@@ -588,8 +588,6 @@ void DrawReadyButton( MENUITEM *Item );
 void PlayerConfirm( MENUITEM *Item );
 void SelectTeamList( MENUITEM *Item );
 BOOL GeneralTimeout( float *timer );
-void GetServerPrefs( void );
-void SetServerPrefs( void );
 LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 void TitleReset( MENUITEM *item );
 void SetTitleNotify( char *str );

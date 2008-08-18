@@ -12151,33 +12151,6 @@ void SetGamePrefs( void )
 
 }
 
-void GetServerPrefs( void )
-{
-	DWORD size;
-	DWORD temp;
-
-	size = sizeof(temp);
-
-	MaxServerPlayersSlider.value = ( RegGet( "MaxServerPlayers", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (uint16) temp : MAX_PLAYERS - 1;
-	CLAMP( MaxServerPlayersSlider.value, MaxServerPlayersSlider.max )	
-
-	PseudoHostTimeoutSlider1.value = ( RegGet( "PHTimer1", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (uint16) temp : 2;
-	CLAMP( PseudoHostTimeoutSlider1.value, PseudoHostTimeoutSlider1.max )	
-
-	PseudoHostTimeoutSlider2.value = ( RegGet( "PHTimer2", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (uint16) temp : 5;
-	CLAMP( PseudoHostTimeoutSlider2.value, PseudoHostTimeoutSlider2.max )	
-
-	ServerTimeoutSlider.value = ( RegGet( "ServerTimeout", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (uint16) temp : ServerTimeoutSlider.max;
-	CLAMP( ServerTimeoutSlider.value, ServerTimeoutSlider.max )	
-
-	PseudoHostCanSetMaxPlayers = ( RegGet( "PHCanSetMaxPlayers", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (BOOL) temp : TRUE;
-}
-
 void GetMultiplayerPrefs( void )
 {
 	DWORD size;
@@ -12284,27 +12257,6 @@ void GetMultiplayerPrefs( void )
 		? temp : 1000;
 
 }
-
-void SetServerPrefs( void )
-{
-	DWORD temp;
-
-	temp = (DWORD)MaxServerPlayersSlider.value;
-	RegSet( "MaxServerPlayers", (LPBYTE)&temp, sizeof( temp ) );
-
-	temp = (DWORD)PseudoHostTimeoutSlider1.value;
-	RegSet( "PHTimer1", (LPBYTE)&temp, sizeof( temp ) );
-
-	temp = (DWORD)PseudoHostTimeoutSlider2.value;
-	RegSet( "PHTimer2", (LPBYTE)&temp, sizeof( temp ) );
-
-	temp = (DWORD)ServerTimeoutSlider.value;
-	RegSet( "ServerTimeout", (LPBYTE)&temp, sizeof( temp ) );
-
-	temp = (DWORD)PseudoHostCanSetMaxPlayers;
-	RegSet( "PHCanSetMaxPlayers", (LPBYTE)&temp, sizeof( temp ) );
-}
-
 
 void SetMultiplayerPrefs( void )
 {			  
