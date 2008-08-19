@@ -35,7 +35,6 @@
 #include "screenpolys.h"
 #include "goal.h"
 #include <stdio.h>
-#include "dpthread.h"
 #include "mydplay2.h"
 #include "XMem.h"
 #include "Local.h"
@@ -287,7 +286,6 @@ int16					StatsCount = -1;
 DPID PseudoHostDPID;
 DPID HostDPID;
 
-void RequestPings( void );
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
 
 extern	LPDPSESSIONDESC2                    glpdpSD;            // current session description
@@ -1057,8 +1055,6 @@ void SetupDplayGame()
 {
 	int16 i,Count;
 
-	memset(&PlayerIP, 0, sizeof(PlayerIP));
-
 	BigPacketOffset = 2;
 	BigPacketCommBuff[2] = 0;
 	LastBigPacketSent = 0;
@@ -1656,13 +1652,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 
 		IsHost = TRUE;					// I have Become the host
 
-		// if tracker information recieved, I will carry on sending heartbeats
-		if( TrackerOveride )	
-		{
-			GetIPAdd();
-			DPStartThread();
-		}
-
 		if( !RecordDemoToRam )
 			RecordDemo = FALSE;				// But I cant record a demo cos none of the files are open...
 		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
@@ -1675,9 +1664,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 				FreeAllPlayersAcknowledgeMessageQue( (BYTE)i );
 			}
 		}
-
-		// ensure that IP addresses are obtained in next ping request ( applies to TCP only )
-		memset(&PlayerIP, 0, sizeof(PlayerIP));
 
 		break;
 	case DPSYS_DESTROYPLAYERORGROUP:
@@ -1819,7 +1805,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float	Force;
 	float * FloatPnt;
 	uint32	BigOffset = 2;
-	LPTRACKERINFOMSG	lpTrackerInfoMsg;
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
 	char VersionMessage[30];
@@ -2644,8 +2629,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				{
 					SendGameMessage(MSG_INIT, lpHereIAm->ID, (BYTE) i , lpHereIAm->Old_TeamNumber, 1);
 					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
-						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
 					Done = TRUE;
 				}										  
 			}
@@ -2656,16 +2639,12 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				{
 					SendGameMessage(MSG_INIT, lpHereIAm->ID, lpHereIAm->Old_WhoIAm, lpHereIAm->Old_TeamNumber, 0);
 					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
-						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
 				}
 				// new player joining the game
 				else
 				{
 					SendGameMessage(MSG_INIT, lpHereIAm->ID, MAX_PLAYERS, 0, 0);
 					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-					if ( WSA_Active )	// if winsock active ( we are sending heartbeat info )
-						SendGameMessage(MSG_TRACKERINFO, lpHereIAm->ID, 0, 0, 0);
 				}
 			}
 		}
@@ -3698,20 +3677,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 #endif
-
-	case MSG_TRACKERINFO:
-
-		//Msg("tracker msg got through\n");
-		lpTrackerInfoMsg	= (LPTRACKERINFOMSG)MsgPnt;
-		TrackerOveride		= TRUE;
-		tracker_addr		= lpTrackerInfoMsg->addr;
-		tracker_port		= lpTrackerInfoMsg->port;
-		heartbeat_freq		= lpTrackerInfoMsg->freq;
-		heartbeat_type		= lpTrackerInfoMsg->type;
-		SendShutdownPacket	= lpTrackerInfoMsg->shutdown;
-		memcpy(PlayerInfo, lpTrackerInfoMsg->PlayerInfo, sizeof(lpTrackerInfoMsg->PlayerInfo));
-		return;
-
 	}
 
 	wsprintf(dBuf, "corrupt message: %d\n", *MsgPnt);
@@ -3762,7 +3727,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPACKMSG								lpAckMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
-	LPTRACKERINFOMSG					lpTrackerInfoMsg;
 	LPSETTIMEMSG						lpSetTime;
 	LPREQTIMEMSG						lpReqTime;
 	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
@@ -3951,22 +3915,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 				// Host must store info related to all players who join
 				GetIPFromDP( PlayerInfo[i].IP, to );
-
-#if 0
-				// if TCP game, store IP address of player
-				if ( ! memcmp( &ServiceProvidersGuids[ServiceProvidersList.selected_item], &DPSPGUID_TCPIP , sizeof(GUID) ) )
-				{
-					char add[ 16 ];
-
-					memset(&PlayerIP[ i ], 0, sizeof(PlayerIP[ i ]));
-					if ( GetIPFromDP( add, to ) )
-					{
-						PlayerIP[ i ].sin_family = AF_INET;
-						PlayerIP[ i ].sin_port = htons( DEF_PORT );
-						PlayerIP[ i ].sin_addr.s_addr = inet_addr( add );
-					}
-				}
-#endif
 
 				if( Type == (BYTE) -1 )
 					TeamNumber[i] = 0;
@@ -4465,10 +4413,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 
     case MSG_PINGREQUEST:
-
-#ifdef UDP_PINGS
-		RequestPings();
-#endif
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         lpPingMsg->MsgCode = msg;
         lpPingMsg->WhoIAm = WhoIAm;
@@ -4531,28 +4475,14 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 #endif
 		break;
 #endif
-	
-
-	case MSG_TRACKERINFO:
-
-		lpTrackerInfoMsg = ( LPTRACKERINFOMSG )&CommBuff[ 0 ];
-		lpTrackerInfoMsg->MsgCode = msg;
-		lpTrackerInfoMsg->WhoIAm = WhoIAm;
-        send_to = to;
-		lpTrackerInfoMsg->addr = tracker_addr;
-		lpTrackerInfoMsg->port = tracker_port;
-		lpTrackerInfoMsg->freq = heartbeat_freq;
-		lpTrackerInfoMsg->type = heartbeat_type;
-		lpTrackerInfoMsg->shutdown = SendShutdownPacket;
-		memcpy(lpTrackerInfoMsg->PlayerInfo, PlayerInfo, sizeof(PlayerInfo));
-		nBytes = sizeof( TRACKERINFOMSG );
-		Flags |= DPSEND_GUARANTEED;
-		break;
 	}
+	
 	// only record if message is sent to whole of the group....
 	if( RecordDemo )
 	{
-		if( ( MyGameStatus == STATUS_Normal ) && !send_to
+		if(
+		   ( MyGameStatus == STATUS_Normal )
+		&& ( !send_to )
 		&& ( msg != MSG_ACKMSG )
 		&& ( msg != MSG_INIT ) 
 		&& ( msg != MSG_HEREIAM ) 

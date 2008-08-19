@@ -591,10 +591,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Dpthread.c"
-				>
-			</File>
-			<File
 				RelativePath="Dsutil.c"
 				>
 			</File>
@@ -881,10 +877,6 @@
 			</File>
 			<File
 				RelativePath="Include\Ddutil.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Dpthread.h"
 				>
 			</File>
 			<File

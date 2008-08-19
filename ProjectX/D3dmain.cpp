@@ -125,7 +125,6 @@ extern "C" {
 	extern BOOL CustomCompoundBufferSize;
 
 	extern uint8 QuickStart;
-	extern BOOL ForceHeartbeat;
 
 	extern GUID autojoin_session_guid;
 	extern BOOL	SessionGuidExists;
@@ -712,11 +711,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
 			NoSplash = TRUE;
 			QuickStart = QUICKSTART_Join;
-		}
-
-		else if ( !_stricmp( option, "ForceHeartbeat" ) )
-		{
-			ForceHeartbeat = TRUE;	 
 		}
 
 		else if ( !_stricmp( option, "session" ) )

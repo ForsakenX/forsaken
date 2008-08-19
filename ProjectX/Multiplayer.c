@@ -31,7 +31,6 @@
 #include "primary.h"
 #include "controls.h"
 #include "xmem.h"
-#include "dpthread.h"
 
 // required version of Direct Play is 6.0 (4.6.0.318)
 #define DPLAY_VERSION_HI	(4)
@@ -47,8 +46,6 @@ extern BOOL	OKToJoinSession;
 extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
-
-extern char host_ip[];
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 extern LPDPSESSIONDESC2                    glpdpSD_copy;
@@ -412,6 +409,43 @@ BOOL WINAPI EnumServiceProviders(LPGUID lpGuid, LPTSTR lpSpName, DWORD dwMajorVe
 		ServiceProvidersList.items++;
 	}
     return(TRUE);
+}
+
+////
+// StringFromGUID
+//		only used by next function so leave it here
+//      if we ever need to reuse it then put it somewhere better
+////
+
+static const BYTE GuidMap[] = { 3, 2, 1, 0, '-', 5, 4, '-', 7, 6, '-', 
+                                8, 9, '-', 10, 11, 12, 13, 14, 15 }; 
+
+static const char szDigits[] = "0123456789ABCDEF"; 
+
+BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz) 
+{ 
+    int i; 
+ 
+    const BYTE * pBytes = (const BYTE *) lpguid; 
+ 
+    *lpsz++ = '{'; 
+ 
+    for (i = 0; i < sizeof(GuidMap); i++) 
+    { 
+        if (GuidMap[i] == '-') 
+        { 
+            *lpsz++ = '-'; 
+        } 
+        else 
+        { 
+            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0xF0) >> 4 ]; 
+            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0x0F) ]; 
+        } 
+    } 
+    *lpsz++ = '}'; 
+    *lpsz   = '\0'; 
+ 
+    return TRUE; 
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -821,10 +855,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 	
 	BrightShips = MyBrightShips;
-
-	tracker_addr = 0;
-	DPStartThread();
-
 	return TRUE;
 }
 
@@ -1150,7 +1180,6 @@ BOOL JoinASession ( MENUITEM * Item )
 	DPSESSIONDESC2 temp_sd;
 
 	PlayDemo = FALSE;
-	TrackerOveride = FALSE;
 
 	SetBikeMods( 0 );
 

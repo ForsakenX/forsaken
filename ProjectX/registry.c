@@ -18,7 +18,6 @@
 #include "Object.h"
 #include "mydplay.h"
 #include "Title.h"
-#include "dpthread.h"
 #include <stdio.h>
 #include <shellapi.h>
 

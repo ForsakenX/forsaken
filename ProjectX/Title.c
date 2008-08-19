@@ -43,7 +43,6 @@
 #include "lines.h"
 #include "loadsave.h"
 #include "magic.h"
-#include "dpthread.h"
 #include "XMem.h"
 #include "ddsurfhand.h"
 #include "comm.h"
@@ -132,8 +131,6 @@ BOOL	Last_SWMonoChrome = FALSE;
 		Externals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern BOOL WaitingToQuit;
-extern BOOL DoHeartbeat;
-extern BOOL PeerPeerHeartbeat;
 extern int16	NumPrimaryPickups;
 extern BOOL ServiceProviderSet;
 
@@ -12219,11 +12216,6 @@ void GetMultiplayerPrefs( void )
 		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 	}
 
-	PeerPeerHeartbeat = ( RegGet( "PeerPeerHeartbeat", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
-
-	DoHeartbeat = FALSE;
-
 	ThrottleSlider.value = ( RegGet( "ThrottleSlider", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 1000;
 
@@ -12284,9 +12276,6 @@ void SetMultiplayerPrefs( void )
 
 	temp = NumPrimaryPickupsSlider.value;
 	RegSet( "primarypickups",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = PeerPeerHeartbeat;
-	RegSet( "PeerPeerHeartbeat",  (LPBYTE)&temp ,  sizeof(temp) );
 
 	GoalScore = GoalScoreSlider.value;
 	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;

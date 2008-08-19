@@ -28,7 +28,6 @@
 #include "title.h"
 #include "primary.h"
 #include "XMem.h"
-#include "dpthread.h"
 #include "multiplayer.h"
 
 /*
@@ -564,8 +563,6 @@ HRESULT DPlayOpenSession(LPGUID lpSessionGuid)
 HRESULT DPlayRelease(void)
 {
     HRESULT hr = E_FAIL;
-
-	DPStopThread();
 
 	// flush all waiting guaranteed messages
 	ProcessGuaranteedMessages( TRUE , FALSE , FALSE );

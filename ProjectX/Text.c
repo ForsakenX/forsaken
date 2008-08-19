@@ -25,7 +25,6 @@
 #include "XMem.h"
 #include "ddsurfhand.h"
 #include "local.h"
-#include "dpthread.h"
 #include "stats.h"
 
 #define MSG_VERSION_NUMBER 1
@@ -759,7 +758,7 @@ void PrintScoreSort( void )
 		return;
 	
 	// multiplayer pings
-	if( ShowPing || ( IsHost && WSA_Active ) && !TeamGame )
+	if( ShowPing )
 	{
 		PingRefresh -= framelag;
 		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )

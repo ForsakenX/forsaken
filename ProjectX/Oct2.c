@@ -77,7 +77,6 @@
 #include  "goal.h"
 #include  "LoadSave.h"
 #include  "XMem.h"
-#include "dpthread.h"
 #include "stats.h"
 
 #ifdef SHADOWTEST
@@ -4026,7 +4025,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if ( IsHost )
     {
       UpdateKillsTime();
-      UpdatePlayerInfo();
     }
 
     if ( bSoundEnabled )
@@ -4500,9 +4498,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           PreSynchupStatus = MyGameStatus;
           MyGameStatus = STATUS_WaitingToStartMultiPlayerClient;
         }
-      }else
-      {
-        UpdatePlayerInfo();
       }
     }
     break;
