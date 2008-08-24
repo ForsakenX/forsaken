@@ -813,6 +813,10 @@ void SfxThreadProc (void * pParm)
 	while (1)
 	{
 
+		// some kind of access violation always happens about right here
+		// tests show that SfxKey has been Initialized
+		// I cannot find out what the access violation actually is
+
 		EnterCriticalSection (&SfxKey);
 		
 		for ( i = 0; i < MAX_THREADED_SFX; i++ )
