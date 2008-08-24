@@ -39,9 +39,7 @@
 #include "XMem.h"
 #include "Local.h"
 #include "stats.h"
-
-// stores version number (Title.c)
-extern char ProjectXVersion[9];
+#include "version.h"
 
 extern BOOL Debug;
 
@@ -104,6 +102,8 @@ extern BOOL BountyBonus;
 extern SLIDER	BountyBonusSlider;
 
 extern	BOOL	DS;
+
+#define YourVersion "YOUR VERSION: " ProjectXVersion
 
 #define	ONEOVER32767 (1.0F / 32767.0F)
 #define	ONEOVER256 (1.0F / 256.0F)
@@ -1807,7 +1807,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	uint32	BigOffset = 2;
 	uint16	Pickup;
 	LONGLONG	TimeFrig;
-	char VersionMessage[30];
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
@@ -3471,9 +3470,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
 				{
 					// display my version number
-					strcpy(VersionMessage, "YOUR VERSION:");
-					strcat(VersionMessage, ProjectXVersion);
-					AddColourMessageToQue(SystemMessageColour, VersionMessage );
+					AddColourMessageToQue(SystemMessageColour, YourVersion );
 					// send my version number back
 					strncpy( (char *)&QuickText.text, ProjectXVersion , 9 );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
@@ -4344,9 +4341,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
 				{
 					// display my version number
-					strcpy(VersionMessage, "YOUR VERSION:");
-					strcat(VersionMessage, ProjectXVersion);
-					AddColourMessageToQue(SystemMessageColour, VersionMessage );
+					AddColourMessageToQue(SystemMessageColour, YourVersion );
 					VersionMessage[0] = 0;
 				}
 				break;

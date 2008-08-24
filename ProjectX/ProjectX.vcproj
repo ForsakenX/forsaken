@@ -1080,6 +1080,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\version.h"
+				>
+			</File>
+			<File
 				RelativePath="Include\visi.h"
 				>
 			</File>
