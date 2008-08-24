@@ -2245,9 +2245,8 @@ BOOL InitializeSound( int flags )
 	InitSfxHolders();
 	
 	// create threads & critical sections...
-	SfxThread =
-	CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) SfxThreadProc, NULL, 0, &SfxThreadID);
-	SetThreadPriority( SfxThread, THREAD_PRIORITY_BELOW_NORMAL );
+	SfxThread =	CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) SfxThreadProc, NULL, 0, &SfxThreadID);
+	SetThreadPriority( SfxThread, THREAD_PRIORITY_NORMAL );
 
 	InitializeCriticalSection (&SfxKey);
 	InitializeCriticalSection ( &CompoundSfxKey );
