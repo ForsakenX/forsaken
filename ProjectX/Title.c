@@ -71,12 +71,6 @@ void *mem;
 #endif
 #endif
 
-
-#define HardClear TRUE
-#define ENABLE_DEBUG_MENU
-//#undef ENABLE_DEBUG_MENU
-#define DEMO_MENUS
-
 // registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
