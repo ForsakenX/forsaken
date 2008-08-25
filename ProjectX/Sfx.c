@@ -546,9 +546,6 @@ LEVELSPEC_SFX_FILES LevelSpecificSfxLookup[ 256 ] = {
 	{ "", SFX_End },
 };
 
-
-
-#if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
 	"P3B",	//	-	Phil3B
 	"BRE",	//	-	Brenda
@@ -556,22 +553,6 @@ char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
 	"LEP",	//	-	Lepracom
 	"ROA",	//	-	Roadster
 };
-#elif defined( VERSION_SPANISH ) || defined( VERSION_ITALIAN ) || defined( VERSION_FRENCH )
-char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
-	"P3B",	//	-	Phil3B
-	"BRE",	//	-	Brenda
-	"ROA",	//	-	Roadster
-};
-#elif defined( VERSION_GERMAN )
-char *BikeComputerSpeechNames[MAXBIKECOMPTYPES] = {
-	"LIN",	//	-	Linda-7
-	"LUL",	//	-	L.U.L.U.
-	"RAZ",	//	-	Razor
-	"THO",	//	-	Thor
-};
-#endif
-
-
 
 char *BikeComputerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {
 	"AM",	//  -	assassin missile
@@ -645,11 +626,7 @@ char *BikerSpeechNames[MAXBIKETYPES] = {
 	"MEP",	//	-	Mofisto
 	"CER",	//	-	Cerbero
 	"EAR",	//	-	Slick
-#if !defined( VERSION_SPANISH ) && !defined( VERSION_ITALIAN ) && !defined( VERSION_GERMAN ) && !defined( VERSION_FRENCH )
 	"BEL",	//	-	Flygirl
-#else
-	"FLY",	//	-	Flygirl
-#endif
 };
 
 char *BikerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {

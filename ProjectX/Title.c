@@ -1726,11 +1726,7 @@ MENU	MENU_NEW_Controls = {
 
 
 		{ 10, 60, 200, 70, 0, LT_MENU_NEW_Controls3 /*"configure keys and buttons"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &MENU_NEW_ConfigureKeyboard, MenuChange, DrawFlatMenuItem, NULL, 0  },
-#ifdef VERSION_GERMAN
-		{ 10, 75, 120, 85, 0, LT_MENU_NEW_Controls4 /*"autoleveling"*/, FONT_Small, TEXTFLAG_CentreY,  &Autoleveling, SetAutolevel, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0  },
-#else
 		{ 10, 75, 100, 85, 0, LT_MENU_NEW_Controls4 /*"autoleveling"*/, FONT_Small, TEXTFLAG_CentreY,  &Autoleveling, SetAutolevel, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0  },
-#endif
 		{ 10, 90, 200, 100, 0, LT_MENU_NEW_Controls5 /*"restore defaults"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, RestoreDefaultControlSettings, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 105, 200, 115, 0, LT_MENU_NEW_Controls6 /*"back"*/, FONT_Small, TEXTFLAG_CentreY,  NULL, NULL, MenuItemBack, DrawFlatMenuItem, NULL, 0  },
 
