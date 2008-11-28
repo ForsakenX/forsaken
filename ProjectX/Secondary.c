@@ -2782,15 +2782,9 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						if( Ship != (uint16) -1 )
 						{
 							if( !( SecBulls[ i ].Flags & SECFLAGS_NoIncoming ) )
-							{
 								if( Ship == WhoIAm )
-								{
-									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
-									else
+									if( bSoundEnabled && BikeCompSpeechSlider.value )
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								}
-							}
 
 							SecBulls[ i ].State = MIS_HOMING;
 							SecBulls[ i ].TargetType = OWNER_SHIP;
@@ -2838,15 +2832,9 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						if( Ship != (uint16) -1 )
 						{
 							if( !( SecBulls[ i ].Flags & SECFLAGS_NoIncoming ) )
-							{
 								if( Ship == WhoIAm )
-								{
-									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
-									else
+									if( bSoundEnabled && BikeCompSpeechSlider.value ) 
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								}
-							}
 
 							SecBulls[ i ].State = MIS_HOMING;
 							SecBulls[ i ].TargetType = OWNER_SHIP;
@@ -2882,15 +2870,9 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 						if( Ship != (uint16) -1 )
 						{
 							if( !( SecBulls[ i ].Flags & SECFLAGS_NoIncoming ) )
-							{
 								if( Ship == WhoIAm )
-								{
-									if( !bSoundEnabled || !BikeCompSpeechSlider.value ) 
-										AddColourMessageToQue( PickupMessageColour, INCOMING_MISSILE );
-									else
+									if( bSoundEnabled && BikeCompSpeechSlider.value )
 										PlayPannedSfx( SFX_Incoming, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								}
-							}
 
 							SecBulls[ i ].State = MIS_HOMING;
 							SecBulls[ i ].TargetType = OWNER_SHIP;
@@ -3554,7 +3536,6 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 								NormaliseVector( &TempVector );
 								ScatterWeapons( &TempVector, MAXSCATTERED );
 								PlayPannedSfx( SFX_Scattered, Ships[ HitTarget ].Object.Group , &Ships[ HitTarget ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 						}
 						break;

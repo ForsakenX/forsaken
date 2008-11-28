@@ -3002,7 +3002,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							{
 								ScatterWeapons( &NullVector, MAXSCATTERED );
 								PlayPannedSfx( SFX_Scattered, Ships[ WhoIAm ].Object.Group , &Ships[ WhoIAm ].Object.Pos, 0.0F );
-								if( !bSoundEnabled ) AddColourMessageToQue( PickupMessageColour, YOUVE_BEEN_SCATTERED );
 							}
 							break;
 

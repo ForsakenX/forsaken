@@ -1459,9 +1459,6 @@ BOOL ReadMsgFile( char *Filename )
 	TextMessagesPnt[i] = HAS_LEFT_THE_GAME							   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
-	TextMessagesPnt[i] = YOUVE_BEEN_SCATTERED							   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
 	TextMessagesPnt[i] = FROM_YOUR_OWN_TEAM							   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
@@ -1742,12 +1739,6 @@ BOOL ReadMsgFile( char *Filename )
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = LASER_OVERHEATED								   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
-	TextMessagesPnt[i] = INCOMING_MISSILE								   ;
-	Tmi->ActivatedOrder = i++;
-	Tmi++;
-	TextMessagesPnt[i] = YOUVE_BEEN_SCATTERED							   ;
 	Tmi->ActivatedOrder = i++;
 	Tmi++;
 	TextMessagesPnt[i] = TEAM_SCORED									   ;

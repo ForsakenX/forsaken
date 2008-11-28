@@ -15,7 +15,6 @@
 #define THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT "The Session has been lost please quit"
 #define YOU_HAVE_BECOME_THE_HOST "You Have Become The Host"
 #define HAS_LEFT_THE_GAME "has left the game"
-#define YOUVE_BEEN_SCATTERED "You've been scattered"
 #define FROM_YOUR_OWN_TEAM "from your own team"
 #define WITH_THE_BOUNTY "with the bounty"
 #define NO_POINTS_FOR_KILLING_PLAYER_WITHOUT_THE_BOUNTY "no points for killing %s without the bounty" // %s= Name of Player
@@ -161,10 +160,6 @@
 #define YOU_DONT_HAVE_ANY_AMMO				"You don't have any ammo"
 #define YOU_DONT_HAVE_THAT_WEAPON		"You don't have that weapon"
 #define LASER_OVERHEATED							"Laser Overheated"
-
-// secondary.c
-#define INCOMING_MISSILE				"Incoming missile"
-#define YOUVE_BEEN_SCATTERED			"You've been scattered"
 
 // ships.c
 #define TEAM_SCORED						"the %s team have scored" // %s=<team name>
