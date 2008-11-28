@@ -46,7 +46,7 @@ Debugging:
 
   Visual Studios:
 
-	project -> propeteries -> debuggin -> command line
+	project -> propeteries -> debuggin -> command line arguments
 
   	-NoFullScreen -debug -chdir c:\\path\\to\\your\\skeleton
 
