@@ -4233,8 +4233,15 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
-		if( !SoundInfo[ SecBulls[i].GroupImIn ][ Group ] )
+		if( 
+			// if groups can see each other
+			(!SoundInfo[ SecBulls[i].GroupImIn ][ Group ]) && 
+			// if the secondary is a mine
+			(SecBulls[ i ].SecType == SEC_MINE) 
+		)
 		{
+
+			// calculate distance between objects
    			DistVector.x = ( SecBulls[ i ].Pos.x - Pos->x );
    			DistVector.y = ( SecBulls[ i ].Pos.y - Pos->y );
    			DistVector.z = ( SecBulls[ i ].Pos.z - Pos->z );
