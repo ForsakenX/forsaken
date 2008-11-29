@@ -4233,35 +4233,29 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
-		if( SecBulls[ i ].Owner == WhoIAm )
+		if( !SoundInfo[ SecBulls[i].GroupImIn ][ Group ] )
 		{
-	 		if( SecBulls[ i ].SecType == SEC_MINE )
-			{
-				if( !SoundInfo[ SecBulls[i].GroupImIn ][ Group ] )
-				{
-		   			DistVector.x = ( SecBulls[ i ].Pos.x - Pos->x );
-		   			DistVector.y = ( SecBulls[ i ].Pos.y - Pos->y );
-		   			DistVector.z = ( SecBulls[ i ].Pos.z - Pos->z );
-		   			DistFromCenter = VectorLength( &DistVector );
-		   
-		   			if( DistFromCenter < ( Radius + MINE_RADIUS ) )
-		   			{
-		   				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
-		   							  Group, &DistVector, (VECTOR *) &Int_Point,
-		   							  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
-		   				{
-							Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
+   			DistVector.x = ( SecBulls[ i ].Pos.x - Pos->x );
+   			DistVector.y = ( SecBulls[ i ].Pos.y - Pos->y );
+   			DistVector.z = ( SecBulls[ i ].Pos.z - Pos->z );
+   			DistFromCenter = VectorLength( &DistVector );
+   
+   			if( DistFromCenter < ( Radius + MINE_RADIUS ) )
+   			{
+   				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
+   							  Group, &DistVector, (VECTOR *) &Int_Point,
+   							  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
+   				{
+					Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
 
-							if( OwnerType == OWNER_ENEMY ) Damage *= NmeDamageModifier;
+					if( OwnerType == OWNER_ENEMY ) Damage *= NmeDamageModifier;
 
-							SecBulls[ i ].Shield -= Damage;
-							if( SecBulls[ i ].Shield < 0.0F ) SecBulls[ i ].Shield = 0.0F;
-		
-							if( SecBulls[ i ].Shield == 0.0F )
-							{
-								DestroySecondary( i, &SecBulls[i].Pos );
-							}
-						}
+					SecBulls[ i ].Shield -= Damage;
+					if( SecBulls[ i ].Shield < 0.0F ) SecBulls[ i ].Shield = 0.0F;
+
+					if( SecBulls[ i ].Shield == 0.0F )
+					{
+						DestroySecondary( i, &SecBulls[i].Pos );
 					}
 				}
 			}
