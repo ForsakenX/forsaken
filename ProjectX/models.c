@@ -4233,12 +4233,7 @@ void ShockWave( VECTOR * Pos, float Radius, uint16 OwnerType, uint16 Owner, floa
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
-		if( 
-			// if groups can see each other
-			(!SoundInfo[ SecBulls[i].GroupImIn ][ Group ]) && 
-			// if the secondary is a mine
-			(SecBulls[ i ].SecType == SEC_MINE) 
-		)
+		if( SecBulls[ i ].SecType == SEC_MINE )
 		{
 
 			// calculate distance between objects
@@ -4631,7 +4626,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 	NORMAL		Int_Normal;
 	VECTOR		TempVector;
 	VECTOR		Recoil;
-//	uint16		i, Next;
+	uint16		i, Next;
 	char		methodstr[256];
 	char		tempstr[256];
 	ENEMY	*	Enemy;
@@ -4760,39 +4755,33 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Shockwave hitting any mines?
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#if 0
+
 	i = FirstSecBullUsed;
 
 	while( i != (uint16) -1 )
 	{
 		Next = SecBulls[ i ].Prev;							/* Next Secondary Bullet */
 
-		if( SecBulls[ i ].Owner == WhoIAm )
+ 		if( SecBulls[ i ].SecType == SEC_MINE )
 		{
-	 		if( SecBulls[ i ].SecType == SEC_MINE )
+			DistVector.x = ( SecBulls[ i ].Pos.x - Pos->x );
+			DistVector.y = ( SecBulls[ i ].Pos.y - Pos->y );
+			DistVector.z = ( SecBulls[ i ].Pos.z - Pos->z );
+			DistFromCenter = VectorLength( &DistVector );
+			
+			if( DistFromCenter < ( Radius + MINE_RADIUS ) )
 			{
-				if( !SoundInfo[ SecBulls[ i ].GroupImIn ][ Group ] )
+				if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
+							  Group, &DistVector, (VECTOR *) &Int_Point,
+							  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
 				{
-	   				DistVector.x = ( SecBulls[ i ].Pos.x - Pos->x );
-	   				DistVector.y = ( SecBulls[ i ].Pos.y - Pos->y );
-	   				DistVector.z = ( SecBulls[ i ].Pos.z - Pos->z );
-	   				DistFromCenter = VectorLength( &DistVector );
-					
-	   				if( DistFromCenter < ( Radius + MINE_RADIUS ) )
-	   				{
-	   					if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, Pos,	 	/* Hit Background? */
-	   								  Group, &DistVector, (VECTOR *) &Int_Point,
-	   								  &EndGroup, &Int_Normal, &TempVector, TRUE, NULL ) != TRUE )
-	   					{
-							Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
-							SecBulls[ i ].Shield -= Damage;
-							if( SecBulls[ i ].Shield < 0.0F ) SecBulls[ i ].Shield = 0.0F;
-					
-							if( SecBulls[ i ].Shield == 0.0F )
-							{
-								DestroySecondary( i, &SecBulls[i].Pos );
-							}
-						}
+					Damage = ( ( Center_Damage - ( DistFromCenter / ( ( Radius + MINE_RADIUS ) / Center_Damage ) ) ) * framelag );
+					SecBulls[ i ].Shield -= Damage;
+					if( SecBulls[ i ].Shield < 0.0F ) SecBulls[ i ].Shield = 0.0F;
+			
+					if( SecBulls[ i ].Shield == 0.0F )
+					{
+						DestroySecondary( i, &SecBulls[i].Pos );
 					}
 				}
 			}
@@ -4800,7 +4789,7 @@ void MissileShockWave( VECTOR * Pos, float Radius, uint16 Owner, float Center_Da
 
 		i = Next;
 	}
-#endif
+
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Shockwave hitting any Enemies?
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
