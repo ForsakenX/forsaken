@@ -1536,6 +1536,7 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 		return( (uint16) -1 );
 	}
 
+/*
 	switch( Weapon )
 	{
 		case MUGMISSILE:
@@ -1570,6 +1571,7 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 			Weapon = -1;
 			break;
 	}
+*/
 
 	i = FindFreeSecBull();
 

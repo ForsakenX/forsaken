@@ -3701,10 +3701,13 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 	CreateSpotLight( (uint16) WhoIAm, SHIP_RADIUS, &Mloadheader );
 #endif
 
+/*
 	if( MyGameStatus != STATUS_SinglePlayer )
 	{
-		if( !IsGroupVisible[ Group ] && !VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Group, NULL ) && !outside_map ) return( (uint16) -1 );
+		if( !IsGroupVisible[ Group ] && !VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Group, NULL ) && !outside_map )
+			return( (uint16) -1 );
 	}
+*/
 
 	CrossProduct( Dir, Up, &LeftVector );
 
