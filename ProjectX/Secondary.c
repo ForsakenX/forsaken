@@ -47,7 +47,6 @@
 
 #define	SCATTER_TEST	0
 
-#define	MYEXPLO			0
 #define	MISSILE_SPEED	( MAXMOVESPEED * 1.6F )			// Ship Speed * 1.6
 
 #define TITANBITS_SEND  1
