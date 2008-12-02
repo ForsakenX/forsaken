@@ -2463,18 +2463,22 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				if( !Ships[lpUpdate->WhoIAm].FirstPacketRecieved  )
 				{
-//					if( ((int8)( Ships[lpUpdate->WhoIAm].LastPacketID + 1)) != lpUpdate->ShortGlobalShip.LastPacketID )
-//					{
-//						wsprintf(dBuf, "Missed %d Packets From %s\n", (lpUpdate->ShortGlobalShip.LastPacketID + 1 - Ships[lpUpdate->WhoIAm].LastPacketID) ,
-//													 &Names[lpUpdate->WhoIAm][0] );
-//						OutputDebugString( dBuf );
-//					}
-//					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
+#ifdef DEBUG_ON
+					if( ((int8)( Ships[lpUpdate->WhoIAm].LastPacketID + 1)) != lpUpdate->ShortGlobalShip.LastPacketID )
+					{
+						wsprintf(dBuf, "Missed %d Packets From %s\n", (lpUpdate->ShortGlobalShip.LastPacketID + 1 - Ships[lpUpdate->WhoIAm].LastPacketID) ,
+													 &Names[lpUpdate->WhoIAm][0] );
+						OutputDebugString( dBuf );
+					}
+					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
+#endif
 				}
 				else
 				{
 					Ships[lpUpdate->WhoIAm].FirstPacketRecieved = FALSE;
-//					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
+#ifdef DEBUG_ON
+					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
+#endif
 				}
 
 				if( glpDP )
