@@ -43,7 +43,6 @@ typedef struct tagd3dmainglobals {
     BOOL bClearsOn;              /* clear the back and z-buffer each frame */
     BOOL bShowFrameRate;         /* show the frame rate at the top */
     BOOL bShowInfo;              /* show window information at the bottom */
-    BOOL bShowFog;               /* enable fog */
     BOOL bResizingDisabled;      /* do not allow resizing */
 
     BOOL bResized; /* the window has resized or some other drastic change, the
