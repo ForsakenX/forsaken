@@ -36,6 +36,12 @@ Visual Studio Directories:
 
 
 
+Templates:
+
+  Copy *.template files to their basename's and edit their contents
+
+
+
 Debugging:
 
   Default Debugger:

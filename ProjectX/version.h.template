@@ -1,0 +1,10 @@
+
+// set the variable bellow to a desired string such as "1.04.605"
+// do not attempt to commit this file it's ignored and only used locally
+
+#ifndef VERSION_HEADER
+#define VERSION_HEADER
+
+#define ProjectXVersion "Open Source Edition"
+
+#endif
