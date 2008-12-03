@@ -549,6 +549,7 @@
 #define LT_MENU_Options9 "Show Weapon Kills"
 #define LT_MENU_Options10 "Restore Defaults"
 #define LT_MENU_Options11 "Show Statistics"
+#define LT_MENU_Options12 "Show Fog"
 
 #define LT_MENU_SelfPlayOptions0 "Options"
 #define LT_MENU_SelfPlayOptions1 "Select Screen Mode"

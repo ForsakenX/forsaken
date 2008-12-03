@@ -1230,16 +1230,16 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
 
-#if 0
-			if( (CurrentGroupVisible&3) == 0 )
+			// This just causes certain groups to not appear fogged
+			//if( (CurrentGroupVisible&3) == 0 )
+			if ( d3dapprs.bFogEnabled )
 			{
-				End = DistanceVector2Vector( &cam->Pos , (VECTOR*)&Mloadheader->Group[CurrentGroupVisible].center);
-				Start = End - 256.0F;
-				FogOn( Start , End );
-			}else{
-				FogOff();
-			}
-#endif
+				//End = DistanceVector2Vector( &cam->Pos , (VECTOR*)&Mloadheader->Group[CurrentGroupVisible].center);
+				//Start = End - 256.0F;
+				FogOn( d3dapprs.FogStart, d3dapprs.FogEnd ); //Start , End );
+			}//else{
+			//	FogOff();
+			//}
 
 			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
 				return FALSE;

@@ -702,26 +702,21 @@ BOOL FogOn( float Start , float End )
 
     lpInsStart = debDesc.lpData;
     lpBuffer = lpInsStart;
+
     /*
      * Set render state
      */
     OP_STATE_RENDER(2, lpBuffer);
       STATE_DATA(D3DRENDERSTATE_FOGENABLE, 1, lpBuffer);
       STATE_DATA(D3DRENDERSTATE_FOGCOLOR, d3dapprs.FogColor, lpBuffer);
-//	  STATE_DATA(D3DRENDERSTATE_FOGTABLEMODE , D3DFOG_LINEAR , lpBuffer);
-//	  STATE_DATA(D3DRENDERSTATE_FOGTABLESTART , *(unsigned long*)&lStart , lpBuffer);
-//	  STATE_DATA(D3DRENDERSTATE_FOGTABLEEND , *(unsigned long*)&lEnd , lpBuffer);
-#if 1
+
 	 /*
      * Set light state
      */
     OP_STATE_LIGHT(3, lpBuffer);
       STATE_DATA(D3DLIGHTSTATE_FOGMODE, D3DFOG_LINEAR , lpBuffer);
-      STATE_DATA(D3DLIGHTSTATE_FOGSTART, *(unsigned long*)&lStart,
-                 lpBuffer);
-      STATE_DATA(D3DLIGHTSTATE_FOGEND, *(unsigned long*)&lEnd,
-                 lpBuffer);
-#endif
+      STATE_DATA(D3DLIGHTSTATE_FOGSTART, *(unsigned long*)&lStart,lpBuffer);
+      STATE_DATA(D3DLIGHTSTATE_FOGEND, *(unsigned long*)&lEnd,lpBuffer);
 
     OP_EXIT(lpBuffer);
 
