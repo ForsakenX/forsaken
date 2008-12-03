@@ -576,10 +576,6 @@
 				>
 			</File>
 			<File
-				RelativePath="D3dmain.rc"
-				>
-			</File>
-			<File
 				RelativePath="Ddcalls.c"
 				>
 			</File>
@@ -617,6 +613,10 @@
 			</File>
 			<File
 				RelativePath="goal.c"
+				>
+			</File>
+			<File
+				RelativePath=".\icon.rc"
 				>
 			</File>
 			<File
@@ -866,10 +866,6 @@
 			</File>
 			<File
 				RelativePath="Include\D3dmain.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\D3dres.h"
 				>
 			</File>
 			<File

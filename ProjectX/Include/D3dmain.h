@@ -18,7 +18,6 @@
 #include <ddraw.h>
 #include <d3d.h>
 #include "d3dapp.h"         /* prototypes for D3D helper functions */
-#include "d3dres.h"         /* defines constants used in d3dmain.rc */
 #include "d3ddemo.h"        /* prototypes for functions to communicate with
                                each sample */
 #define START_WIN_SIZE 320  /* initial size of the window */
