@@ -241,7 +241,7 @@ void ProcessMenuFlashText( void )
 {
   if ( FlashTextActive > 0.0F )
   {
-    FlashTextActive -= framelag2;
+    FlashTextActive -= framelag;
     if ( FlashTextActive > 0.0F )
     {
       CenterPrint4x5Text( FlashText , d3dappi.szClient.cy - FontHeight * 2, 2 );
