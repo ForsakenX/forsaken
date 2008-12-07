@@ -768,6 +768,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\timer.c"
+				>
+			</File>
+			<File
 				RelativePath="Title.c"
 				>
 			</File>
@@ -1050,6 +1054,10 @@
 			</File>
 			<File
 				RelativePath="Include\Text.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\timer.h"
 				>
 			</File>
 			<File
