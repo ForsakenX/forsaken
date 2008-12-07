@@ -46,8 +46,7 @@ extern  BOOL  MouseInput;
 extern  BOOL  JoystickInput;
 
 extern  BYTE  MyGameStatus;
-extern  float framelag;  
-extern  float framelag2;  
+extern  float framelag;
 extern  float NitroFuel;
 extern USERCONFIG *player_config;
 extern int  Num_Joysticks;
@@ -860,7 +859,7 @@ void ReadInput( void )
   if ( new_input >= INPUT_BUFFERS )
     new_input = 0;
 
-  framelagfix -= framelag2;
+  framelagfix -= framelag;
   
   /* read mouse input */
   if( framelagfix <= 0.0F )
