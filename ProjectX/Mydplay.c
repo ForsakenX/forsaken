@@ -1611,27 +1611,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
     case DPSYS_HOST:
 		DebugPrintf("DPSYS_HOST recieved\n");
 
-		/*
-		if (MyGameStatus == STATUS_StartingMultiplayer)
-		{
-			if ( TeamGame )
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
-			else
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-			//PrintErrorMessage ( "the host has quit", 3, NULL );
-			if ( DPlayGetSessionDesc() != DP_OK)
-			{
-				Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
-				exit(1);
-			}
-			DPlayTest = TRUE;
-		}
-		else
-		{
-			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
-		}
-		*/
-
 		switch ( MyGameStatus )
 		{
 		case STATUS_StartingMultiplayer:
@@ -2920,16 +2899,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			}
 			if( Ships[ WhoIAm ].Object.Mode == NORMAL_MODE )
 			{
-				if( ( lpShipHit->ShipHit.WeaponType == WEPTYPE_Secondary ) &&
-					( lpShipHit->ShipHit.Weapon == SCATTERMISSILE ) )
-				{
-					switch( ColPerspective )
-					{
-						case COLPERS_Forsaken:
-						case COLPERS_Descent:
-							break;
-					}
-				}
 
    				if( Random_Range( 16 ) )
 					PlayPannedSfx( SFX_ShipHit, Ships[ WhoIAm ].Object.Group , &lpShipHit->ShipHit.Point, 0.0F );
@@ -2937,6 +2906,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    					PlaySfx( SFX_BikerPain , 1.0F );
 
 				Ships[WhoIAm].ShipThatLastHitMe = lpShipHit->WhoHitYou;
+
+				// set damage argument for DoDamage() function
    				Ships[WhoIAm].Damage = lpShipHit->ShipHit.Damage;
 
    				// do the damage...
@@ -3588,6 +3559,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			QueryPerformanceCounter((LARGE_INTEGER *) &TimeFrig);
 			PingRequestTime += LastBigPacketSent - TimeFrig;
 		}
+		// can we send ping reply to just that user ?
 		SendGameMessage(MSG_PINGREPLY, 0, 0 , lpPingMsg->WhoIAm , 0);
 		return;
 
@@ -4981,12 +4953,11 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 	GUARANTEEDMSGHEADER * LastGM;
 	GUARANTEEDMSG * GMm;
 	DWORD send_to = 0;
-	LPYOUQUITMSG			lpYouQuitMsg;
-
-
+	LPYOUQUITMSG lpYouQuitMsg;
 	uint32 Ack;
 	int i;
 
+	// bank if we are playing a demo
 	if( PlayDemo )
 		return TRUE;
 
@@ -5003,100 +4974,153 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 		&& ( MsgType != MSG_TRACKERINFO    )  
 		&& ( MsgType != MSG_SHORTMINE      ) )
 		{
+			// write time since game started to file
 			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 			TempTime = TempTime - GameStartedTime;
-		
 			Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		
+			// write the message length
 			Demo_fwrite( &MessageLength, sizeof(int), 1, DemoFp );
+			// write dplay id of local player to file
 			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+			// write the message packet to file
 			Demo_fwrite( Message, MessageLength, 1, DemoFp );
 		}
 	}
 
+	// replace existing packets in queue with new packets if they are the same type
+	// this would be good for something like our ship location or health etc...
 	if( OverideOlderMessage )
 	{
-		// Try and find a message of the same type that has allready been qued and overide it...
+		// set GM2 to the list of GMs (gaurented messages)
 		GM2 = GMs;
+
+		// loop over the messages
 		while( GM2 )
 		{
+			// if we found a message of the same type
 			if( MsgType == GM2->MsgType )
 			{
+				// save the old messages to GM
+				// later we will overide values in this message instead of recreating a message
 				GM = GM2;
+
+				// stop looping
 				break;
 			}
+			// go to the next message
 			GM2 = GM2->Next;
 		}
 	}
 
+	// if we didn't find an older message
 	if( !GM )
 	{
+		// create a new message
 		GM = (GUARANTEEDMSGHEADER*) malloc( sizeof(GUARANTEEDMSGHEADER) + MessageLength + sizeof( GUARANTEEDMSG ) -1 );
-		if( !GM )
-		{
-			return FALSE;
-		}
+		if( !GM ) return FALSE;
 
+		// increment number of messages
 		GuaranteedMessagesActive++;
+
+		// increment counter of highest number of messages
 		if( GuaranteedMessagesActive > GuaranteedMessagesActiveMax )
 			GuaranteedMessagesActiveMax = GuaranteedMessagesActive;
 
+		// set first default message to last packet assigned
+		// GMs is a dumy global message which points to all other ones based on ->prev ->next
 		LastGM = GMs;
+
+		// if there was a last packet we go behind it in order
 		if( LastGM )
-		{
 			LastGM->Prev = GM;
-		}
+
+		// last packet is in front of us
 		GM->Next = LastGM;
+
+		// nothing behind us yet ;]
 		GM->Prev = NULL;
 
+		// set global to us
 		GMs = GM;
+
+		// if packet was never assigned save it
 		if( !OldestGMs )
 			OldestGMs = GM;
-
-
 	}
 
-
+	// pointer to the message object
 	GMm = (GUARANTEEDMSG*) &GM->Message;
+
+	// copy in the new message data 
 	memcpy( &GMm->StartOfMessage, Message, MessageLength );
 
+	// set the message type
 	GM->MsgType = MsgType;
 
+	// set the times
 	QueryPerformanceCounter((LARGE_INTEGER *) &GM->Time);
 	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime);
 
+	// set id to next id
 	GM->ID = GuaranteedMessagesID++;
+
+	// why is this being saved?
 	GM->OverideOlderMessage = OverideOlderMessage;
+
+	// flag to send to all players
 	GM->AllPlayers = AllPlayers;
+
+	// counting what?
 	GM->Count = 0;
 
-
+	// if the message is a quit message
 	if( MsgType == MSG_YOUQUIT )
 	{
 		lpYouQuitMsg = (LPYOUQUITMSG) Message;
+
+		// 
 		Ack = 1 << lpYouQuitMsg->You;
+
+		// no idea what's going on
 		GM->OverallTime += Freq * 60 * GuaranteedMessagesOverallTime;
+
+	// not a quit message
 	}else{
+
+		// no idea what's going on
 		GM->OverallTime += Freq * GuaranteedMessagesOverallTime;
+
+		// if send to all players
 		if( AllPlayers )
 		{
+			// 
 			Ack = 0xffffffff;
 			Ack &= ~(1<<WhoIAm);
+
+		// to specific player
 		}else{
 			Ack = 0;
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			{
 				if(
-				  ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
-				  (i!=WhoIAm) )
-				{
+					( 
+					  (GameStatus[i]!=STATUS_GetPlayerNum) &&
+					  (GameStatus[i]!=STATUS_LeftCrashed)  &&
+					  (GameStatus[i]!=STATUS_Left)         &&
+					  (GameStatus[i]!=STATUS_Null)
+					 ) &&
+				    (i!=WhoIAm) 
+				  )
 					Ack |= 1<<i;
-				}
-			}
 		}
 	}
+	
+	// set the ack bits
 	GM->Ack = Ack;
+
+	// set message length
 	GM->MessageLength = MessageLength + sizeof( GUARANTEEDMSG ) -1;
+
+	// finished message is in queue
 #endif
 	return TRUE;
 }
@@ -5121,90 +5145,117 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 	DWORD				Flags = 0;
 	int i;
 
+	// update flags
 	if( SendGuaranteed )
-	{
 		Flags |= DPSEND_GUARANTEED;
-	}
 
+	// get start time
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
+
 //	GM = GMs;
-	GM = OldestGMs;
+	GM = OldestGMs; // first real packet
+
+	// while we have a packet
 	while( GM )
 	{
 //		OldGM = GM->Next;
 		OldGM = GM->Prev;
 
+		// 
 		if( !GM->Ack || ( (GM->OverallTime < TempTime) && (GM->Count >= GuaranteedMessagesOverallTime ) ) || !glpDP || PlayDemo || ReleaseMessages )
 		{
+
 			// This message is past it.....
+			// how does this happen if we just checked for ! ?
 			if( GM->Ack )
 			{
 				for( i = 0 ; i < MAX_PLAYERS ; i++ )
 				{
 					if( GM->Ack & ( 1 << i ) )
 					{
+						// set player flag to bad
 						BadConnection[i] = TRUE;
 
+						// don't go here in release mode
 						if( !ReleaseMessages )
-						{
-							if( ( (GameStatus[i]!=STATUS_GetPlayerNum)&& (GameStatus[i]!=STATUS_LeftCrashed) && (GameStatus[i]!=STATUS_Left) && (GameStatus[i]!=STATUS_Null) ) &&
-								(i!=WhoIAm) )
+
+							// if in valid game still and player is not me
+							if(
+								( 
+									(GameStatus[i]!=STATUS_GetPlayerNum) &&
+									(GameStatus[i]!=STATUS_LeftCrashed)  &&
+									(GameStatus[i]!=STATUS_Left)         &&
+									(GameStatus[i]!=STATUS_Null) 
+								) &&
+								(i!=WhoIAm)
+							)
+
+								// bad bad bad
 								DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
-						}
 					}
 				}
 			}
+
+			// pluck us out of the chain and link prev<->next together
 			NextGM = GM->Next;
 			PrevGM = GM->Prev;
-			if( GM == GMs )
-			{
-				GMs = NextGM;
-			}
-			if( NextGM )
-			{
-				NextGM->Prev = PrevGM;
-			}
-			if( PrevGM )
-			{
-				PrevGM->Next = NextGM;
-			}
+			if( NextGM ) NextGM->Prev = PrevGM;
+			if( PrevGM ) PrevGM->Next = NextGM;
+
+			// reset gms to next
+			if( GM == GMs ) GMs = NextGM;
+
+			// reset oldest to next
 			if( GM == OldestGMs )
 				OldestGMs = PrevGM;
 
+			// kill the packet
 			free( GM );
+
+			// lower count
 			GuaranteedMessagesActive--;
+
+		// message is still good to be resent!
 		}else{
+
+			// stupid
 			if( GM->Time < TempTime || IgnoreTime )
 			{
 				//Time to re-send....
 				GM->Time = TempTime + (GuaranteedMessagesTime*Freq);
 
+				// pointer to message object
 				GMm = (GUARANTEEDMSG*) &GM->Message;
+
+				// set settings
 				GMm->MsgCode = MSG_GUARANTEEDMSG;
 				GMm->WhoIAm = WhoIAm;
 				GMm->Ack = GM->Ack;		// Tell Which players this message applies to...
 				GMm->ID = GM->ID;		// Tell Them the ID of the message...
 				GMm->AllPlayers = GM->AllPlayers;
 				GMm->OverideOlderMessage = GM->OverideOlderMessage;
+
+				// up resend count
 				GMm->Count = GM->Count++;
 
-
+				// piggy back big packet
 				if( BigPackets && !SendGuaranteed )
-				{
 					AddToBigPacket( GM->MessageLength , &GM->Message , MSG_GUARANTEEDMSG);
-				}else
+
+				// manually send
+				else
 				{
-
-
+					// send and wait for success/error
 					if( !UseSendAsync || SendGuaranteed )
-					{
-						
+					{	
 						hr = glpDP->lpVtbl->Send( glpDP,
 												  dcoID,   // From
 												  send_to, // send to everybody
 												  Flags ,
 												  &GM->Message,
 												  GM->MessageLength);
+
+					// just send it and return right away so we can continue working
 					}else{
 						Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
 						hr = IDirectPlayX_SendEx( glpDP,
@@ -5220,15 +5271,16 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 												  );
 					}
 
-
+					// failed to send packet
 					if( hr != DP_OK && hr != DPERR_PENDING )
-					{
 						OutputDebugString( "Dplay Send Error" );
-					}
+
 				}
 
 			}
 		}
+
+		// go to next message
 		GM = OldGM;
 	}
 #endif
@@ -5543,6 +5595,7 @@ void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType)
 {
     DWORD       nBytes;
 
+	// add packet data to demo
 	if( RecordDemo && MyGameStatus == STATUS_Normal && MsgType != MSG_GUARANTEEDMSG)
 	{
 		QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
@@ -5553,16 +5606,19 @@ void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType)
 		Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
 		Demo_fwrite( Message, nBytes, 1, DemoFp );
 	}
-	
-	if( ( (BigPacketOffset+MessageLength+sizeof(float) ) >= (BIGPACKETBUFFERSIZE-1) ) ||
-		(NumOfPacketsInBigPacket >= MAXPACKETSPERBIGPACKET-1) )
+
+	// if packet is full !!
+	if( (BigPacketOffset+MessageLength+sizeof(float)) >= (BIGPACKETBUFFERSIZE-1) ||
+		 NumOfPacketsInBigPacket >= MAXPACKETSPERBIGPACKET-1 )
+
+	    // send BLOCKING
 		SendBigPacket(FALSE);
 
+	// pack on the big packet
 	BigPacketOffsets[NumOfPacketsInBigPacket] = BigPacketOffset;
 	BigPacketSizes[NumOfPacketsInBigPacket] = MessageLength;
 	QueryPerformanceCounter((LARGE_INTEGER *) &BigPacketTime[NumOfPacketsInBigPacket]);
 	NumOfPacketsInBigPacket++;
-	
 	memcpy( &BigPacketCommBuff[BigPacketOffset], Message, MessageLength );
 	BigPacketOffset += MessageLength + sizeof(float);
 	BigPacketCommBuff[BigPacketOffset] = 0;
@@ -5602,10 +5658,11 @@ void SendBigPacket( BOOL SendGuaranteed )
 	DWORD dwNumMsgs;
 	BOOL throttle = TRUE;
 
+	// gauranteed flags
 	if( SendGuaranteed )
 		Flags |= DPSEND_GUARANTEED;
 
-
+	
 	BigPacketCommBuff[0] = MSG_BIGPACKET;
 	BigPacketCommBuff[1] = WhoIAm;
 
@@ -5617,9 +5674,8 @@ void SendBigPacket( BOOL SendGuaranteed )
 			FloatPnt = (float*) &BigPacketCommBuff[ BigPacketOffsets[i] + BigPacketSizes[i] ];
 			*FloatPnt = (float) ( ((TempTime - BigPacketTime[i]) * 71) / Freq );
 		}
-
-
 		
+		// send blocking
 		if( !UseSendAsync && !SendGuaranteed )
 		{
 			
@@ -5629,6 +5685,7 @@ void SendBigPacket( BOOL SendGuaranteed )
 									  Flags ,
 									  &BigPacketCommBuff[0],
 									  BigPacketOffset+1);
+		// send asynch
 		}else{
 		
 			while( throttle )
@@ -5636,16 +5693,23 @@ void SendBigPacket( BOOL SendGuaranteed )
 				hr = IDirectPlayX_GetMessageQueue( glpDP, 0, 0, DPMESSAGEQUEUE_SEND , &dwNumMsgs, NULL );
 				switch ( hr )
 				{
+
+				// queue ok
 				case DP_OK:
+
+					// wait until queue is down to two messages
 					if ( dwNumMsgs < 2 )
-					{
 						throttle = FALSE;
-					}
+
 					break;
+
+				// not supporting queue?
 				case DPERR_UNSUPPORTED:
 					CenterPrint4x5Text( UNSUPPORTED_MSG_QUE, d3dapp->szClient.cy - FontHeight * 2, 2 );
 					throttle = FALSE;
 					break;
+
+				// errors
 				case DPERR_INVALIDFLAGS:
 				case DPERR_INVALIDPARAMS:
 				case DPERR_INVALIDPLAYER:
@@ -5654,13 +5718,17 @@ void SendBigPacket( BOOL SendGuaranteed )
 					throttle = FALSE;
 
 				}
-//				if( throttle && MyGameStatus == STATUS_Normal )
-//				{
-//					CenterPrint4x5Text( "Throttle On", d3dapp->szClient.cy - FontHeight * 3, 2 );
-//					D3DAppShowBackBuffer(TRUE);
-//				}
+
+				// print info to screen
+				if( throttle && MyGameStatus == STATUS_Normal )
+				{
+					CenterPrint4x5Text( "Throttle On", d3dapp->szClient.cy - FontHeight * 3, 2 );
+					D3DAppShowBackBuffer(TRUE);
+				}
 
 			}
+
+			// send big packet
 			Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
 			hr = IDirectPlayX_SendEx( glpDP,
 									  dcoID,   // From
@@ -5674,17 +5742,20 @@ void SendBigPacket( BOOL SendGuaranteed )
 									  NULL		// lpdwMsgID
 									  );
 		}
+
+		// catch error
 		if( hr != DP_OK && hr != DPERR_PENDING )
-		{
 			OutputDebugString( "Dplay Send Error" );
-		}
+
 	}
 
-		BigPacketSize = BigPacketOffset+1;
-		if( BigPacketSize > MaxBigPacketSize )
-			MaxBigPacketSize = BigPacketSize;
+	// update packet data
 
-		BytesPerSecSent += BigPacketOffset+1;
+	BigPacketSize = BigPacketOffset+1;
+	if( BigPacketSize > MaxBigPacketSize )
+		MaxBigPacketSize = BigPacketSize;
+
+	BytesPerSecSent += BigPacketOffset+1;
 
 	BigPacketsSent = NumOfPacketsInBigPacket;
 	QueryPerformanceCounter((LARGE_INTEGER *) &LastBigPacketSent);
