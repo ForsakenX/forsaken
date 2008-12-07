@@ -2118,19 +2118,11 @@ BOOL CollectPickup( uint16 i )
 				else
 					PlaySfx( MessageSFX, Sfx_Volume );
 				if( ShowTextAnyway )
-				{
 					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
-				}
 			}
 			else
-			{
 				if( Speech )
-				{
 					PlaySfx( SFX_PickupGeneral, Sfx_Volume );
-				}
-
-				AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
-			}
 
 			PickupsGot[ Pickups[ i ].Type ]++;
 
@@ -2150,13 +2142,7 @@ BOOL CollectPickup( uint16 i )
 						PlaySfx( MessageSFX, Sfx_Volume );
 	 
 					if( ShowTextAnyway )
-					{
 						AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
-					}
-				}
-				else
-				{
-					AddColourMessageToQue( PickupMessageColour, &Message[ 0 ] );
 				}
 				Pickups[ i ].CouldNotPickup = TRUE;
 			}
@@ -2164,9 +2150,7 @@ BOOL CollectPickup( uint16 i )
 		}
 	}
 	else
-	{
 		return FALSE;
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
