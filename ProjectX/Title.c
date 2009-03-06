@@ -2879,7 +2879,7 @@ MENU	MENU_Options = {
 		{ 200 ,192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "			*/, 0, 0, &myglobs.bShowInfo,			NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200 ,208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"		*/, 0, 0, &ShowWeaponKills,				NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
 				
-		{ 200, 128 + ( 10*9 ), 0, 0, 0, LT_MENU_Options12 /*"Show Fog"*/, 0, 0,
+		{ 200, 128 + ( 10*10 ), 0, 0, 0, LT_MENU_Options12 /*"Show Fog"*/, 0, 0,
 		  &d3dapprs.bFogEnabled, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
