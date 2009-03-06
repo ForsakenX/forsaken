@@ -15,8 +15,6 @@
 #include "d3dmain.h"
 #include "typedefs.h"
 #include <time.h>
-#include <dplay.h>
-#include <dplobby.h>
 #include "ddutil.h"
 #include "sfx.h"
 #include "Text.h"

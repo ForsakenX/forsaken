@@ -355,10 +355,9 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 	dpDesc.lpszPasswordA = "";
 
 	// if we have a direct play lobby available
+	// then enumerate the sessions
     if (glpDP)
-
-		// enumerate the sessions
-        hr = IDirectPlayX_EnumSessions(
+		hr = IDirectPlayX_EnumSessions(
 				glpDP,			// pointer to lobby object
 				&dpDesc,		// describes the sessions we want to find
 				dwTimeout,		// interval to ask for sessions
@@ -367,11 +366,14 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 				dwFlags			// flags for the enumeration process
 				);
 
-	// we dont have a dp lobby
+	// we cannot enumerate sessions
 	else
-
-		// tell developers
+	{
 		DebugPrintf("DPlayEnumSessions: !glpDP Could not enumerate sessions...");
+		Msg("%s\n%s",
+			"Cannot enumerate sessions."
+			"DirectPlay Lobby Interface Missing!");
+	}
 
 	// return result
     return hr;

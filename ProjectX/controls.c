@@ -2,7 +2,6 @@
 
 #include <math.h>
 #include <dplay.h>
-#include <dplobby.h>
 #include "windows.h"
 #include "typedefs.h"
 #include "dinput.h"

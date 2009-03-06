@@ -388,6 +388,7 @@
 		</Configuration>
 		<Configuration
 			Name="Barebones|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory=".\temp\Barebones__Win32\Xtrash"
 			ConfigurationType="1"
 			>

@@ -11,6 +11,8 @@
 #define IDIRECTPLAY2_OR_GREATER
 #include "typedefs.h"
 #include <dplay.h>
+
+/* still required to enumerate sessions */
 #include <dplobby.h>
 
 /*
