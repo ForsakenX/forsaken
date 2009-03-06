@@ -7134,9 +7134,9 @@ BOOL Our_CalculateFrameRate(void)
 	if( myglobs.bShowFrameRate )
 	{
 #ifdef DEBUG_ON
-		sprintf(&buf[0], "FPS %d", (int) FPS );
-#else
 		sprintf(&buf[0], "FPS %d - FrameLag %f - TPS (triangles) %d", (int) FPS, framelag, (int) TPS );
+#else
+		sprintf(&buf[0], "FPS %d", (int) FPS );
 #endif
 		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
 	}
