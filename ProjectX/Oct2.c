@@ -78,6 +78,7 @@
 #include  "LoadSave.h"
 #include  "XMem.h"
 #include "stats.h"
+#include "timer.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -434,7 +435,6 @@ extern  CAMERA  MainCamera;     // the main viewing screen...
 
 float FPS = 0.0F;         // Frames Per Second...
 double  TPS = 0.0;          // Textures Per Second...     
-int Our_TrianglesDrawn = 0; // Textures Per Second...     
 
 #define MYTIMER
 #undef MYTIMER
@@ -458,6 +458,11 @@ float DemoAvgFps = 0.0F;
 
 #define VIEWPORT_GROW   (1.1F)
 #define VIEWPORT_SHRINK   (1.0F/1.1F)
+
+extern size_t	SBufferMemUsedSW;
+extern size_t	SBufferMemUsedHW;
+extern size_t	MaxSBufferMemUsedHW;
+extern size_t	MaxSBufferMemUsedSW;
 
 extern  TLOADHEADER Tloadheader;
 extern  int16   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
@@ -551,6 +556,8 @@ float GetPlayerNumCount1 = 0.0F;
 float GetPlayerNumCount2 = 0.0F;
 int   GetPlayerNumCount = 0;
 
+timer framelag_timer;
+
 int i, j; // index counters
 
 int RearCameraActive = 0;
@@ -634,8 +641,7 @@ void SelectQuitCurrentGame( MENUITEM *Item );
 float pixel_aspect_ratio;
 float ticksperframe = 14.0F;  
 float Oldframelag;  
-float framelag = 0.0F;  
-float framelag2 = 0.0F; 
+float framelag = 0.0F; 
 float avgframelag = 0.0F; 
 float Demoframelag = 0.5F;
 
@@ -5747,15 +5753,13 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     GameCurrentTime = GameCurrentTime - GameStartedTime;
   }
 
-
-
-
 #ifdef DEBUG
   if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging
   {
     framelag = 10.0F; // clamp framelag to something reasonable
   }
 #endif // DEBUG
+
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :  Main Routines to be called before Rendering....  
@@ -5781,6 +5785,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :  Now the Rendering can begin...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
   if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
     return FALSE;
 
@@ -6470,6 +6475,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 
 void DebugPrintf( const char * format, ... )
 {
+#ifdef DEBUG_ON
 
   static char buf1[256], buf2[512];
   va_list args;
@@ -6490,6 +6496,7 @@ void DebugPrintf( const char * format, ... )
   // add the comment to the log file
   AddCommentToLog( buf2 );
 
+#endif
 }
 
 
@@ -7074,183 +7081,151 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 extern  int   NumOfVertsConsidered;
 extern  int   NumOfVertsTouched;
 
-int our_count = 0;
-int our_this_frames = 0;
-int our_last_polygons = 0;
-time_t our_last_time = 0;
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :  Our Calculate frame rate...
   Input   :
   Output    : BOOL TRUE/FALSE
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL
-Our_CalculateFrameRate(void)
+
+timer our_timer;
+int our_count = 0;
+
+#ifdef DEBUG_ON
+int our_last_polygons = 0;
+#endif
+
+BOOL Our_CalculateFrameRate(void)
 {
-  double t;
-  int p, f ;
-  D3DSTATS stats;
-  time_t our_this_time;
-  char buf[256];
-    /*
-     * Calculate the frame rate and get other stats.
-     */
+	int polygons;
+	D3DSTATS stats;
+	char buf[256];
 
-    our_count++;
-    our_this_frames++;
-    if (our_count == 25)
-  {
-        our_count = 0;
-        our_this_time = GetTickCount();
-        t = (our_this_time - our_last_time) / (double)CLOCKS_PER_SEC;
-        our_last_time = our_this_time;
-
-        memset(&stats, 0, sizeof(D3DSTATS));
-        stats.dwSize = sizeof(D3DSTATS);
-        d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
-        p = stats.dwTrianglesDrawn - our_last_polygons;
-		Our_TrianglesDrawn = p;
-        our_last_polygons = stats.dwTrianglesDrawn;
-
-
-        f = our_this_frames;
-        our_this_frames = 0;
-
-#if 1
-        FPS = (float)(f / t);
-#else
-        FPS = 60.0F / framelag;
-#endif
-        TPS = (long)(p / t);
-  }
-
-    
-  if( MyGameStatus == STATUS_PlayingDemo )
-  {
-    QueryPerformanceCounter((LARGE_INTEGER *) &DemoEndedTime);
-    TimeDiff = DemoEndedTime - DemoStartedTime;
-    DemoTotalTime = ( (float) TimeDiff / (float) Freq );
-    DemoAvgFps = DemoGameLoops / DemoTotalTime;
-  }
-  
-  if( myglobs.bShowFrameRate )
-  {
-    sprintf(&buf[0], "%4.2f %4d %4d %4d %4d", FPS , BigPacketSize , MaxBigPacketSize ,RecPacketSize , MaxRecPacketSize );
-//      sprintf(&buf[0], "%4.2f", FPS );
-    CenterPrint4x5Text( (char *) &buf[0] , FontHeight+viewport.dwY , 2 );
-  }
-
-  if( myglobs.bShowInfo )
-  {
-#if 0
-    sprintf(&buf[0], "%d Gvis %d tri %d PPBP",
-                        (int) NumGroupsVisible,
-              (int) Our_TrianglesDrawn / 25,
-              BigPacketsSent
-              );
-    
-
-    CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 2) + (FontHeight>>1) + viewport.dwY , 2 );
-#endif
-    
-#if 0
-    sprintf(&buf[0], "%d Mem %d ExecMem %d SoftwareSfx",
-              (int) MemUsed ,
-              (int) ExecMemUsed,
-              (int) SBufferMemUsedSW
-              );
-    
-
-    CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 6) + (FontHeight>>1) + viewport.dwY , 2 );
-#endif
-
-	// show polygon information (when show extra info is turned on)
-    sprintf(&buf[0], "FmPolys %d, Polys %d, ScrPolys %d",
-                        (int) TotalFmPolysInUse,
-                        (int) TotalPolysInUse,
-                        (int) TotalScrPolysInUse
-              );
-    CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 6) + (FontHeight>>1) + viewport.dwY , 2 );
-
-#if 1
-    sprintf( &buf[0] , "In %s framelag%5.2f Clear=%c%c",
-         (GroupImIn == (uint16) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name,
-         framelag,
-         ClearScrOverride ? 'S' : ' ',
-         ClearZOverride ? 'Z' : ' '
-         );
-#ifdef INSIDE_BSP
-         CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 4) + (FontHeight>>1) + viewport.dwY , (!Inside) ? 1 : 2 );
-#else
-         CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 4) + (FontHeight>>1) + viewport.dwY , (outside_group) ? 1 : 2 );
-#endif
-#else
-    sprintf(&buf[0], "%d before %d after",
-              Tloadheader.VidMemBefore ,Tloadheader.VidMemAfter , 
-              NumOfVertsTouched
-              );
-    CenterPrint4x5Text( (char *) &buf[0] , (FontHeight*6) + (FontHeight) + viewport.dwY , 2 );
-
-#endif
-  
-
-    /*
-    sprintf( &buf[0], "NeedFlagAtHome %d", NeedFlagAtHome );
-    Print4x5Text( (char *) &buf[0], 16, 50 + ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 9 + 0 ) * FontHeight ) , 2 );
-      
-    sprintf( &buf[0], "OwnFlagTeleportsHome %d", OwnFlagTeleportsHome );
-    Print4x5Text( (char *) &buf[0], 16, 50 + ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 9 + 1 ) * FontHeight ) , 2 );
-
-    sprintf( &buf[0], "CanCarryOwnFlag %d", CanCarryOwnFlag );
-    Print4x5Text( (char *) &buf[0], 16, 50 + ( ( MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 9 + 2 ) * FontHeight ) , 2 );
-    */
-
-    if( DS )
-    {
-      DisplayStatusMessages();
-    }
-	// show my weapon kill stats
-	else if (ShowWeaponKills)
+	// every 25 frames
+	our_count++;
+	if (our_count >= 120) // every 2 seconds on vsync pc
 	{
-		// show all primary weapon kills
-		for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
-		{
-			// display primary weapon name
-			Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-   			// display primary weapon kills
-			Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(15*FontWidth), (viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-		}
+		// calculate time passed
+		timer_run( &our_timer );
 
-		// show all secondary weapon kills
-		for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
-		{		
-			// display secondary weapon name
-			Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
-   			// display secondary weapon kills
-			Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+		// first time running so bank
+		if ( our_timer.seconds != 0.0F )
+		{
+
+			// ask d3d for stats
+			memset(&stats, 0, sizeof(D3DSTATS));
+			stats.dwSize = sizeof(D3DSTATS);
+			d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
+
+#ifdef DEBUG_ON
+			// calculate average triangels per second
+			polygons = stats.dwTrianglesDrawn - our_last_polygons;
+			our_last_polygons = polygons;
+			TPS = (long)(polygons / our_timer.seconds);
+#endif
+
+			// calculate average frames per second
+			FPS = (float) our_count / (float) our_timer.seconds;
+			our_count = 0;
+
 		}
 	}
-	else
+  
+	// display the framerate
+	if( myglobs.bShowFrameRate )
 	{
-      sprintf( &buf[0], "CurRec %5d CurSent %5d MaxRec %5d MaxSent %5d", CurrentBytesPerSecRec , CurrentBytesPerSecSent , MaxCurrentBytesPerSecRec ,MaxCurrentBytesPerSecSent );
-      CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 8) + (FontHeight>>1) + viewport.dwY , 2 );
-      sprintf(&buf[0], "Rec %5d Sent %5d MaxRec %5d MaxSent %5d", RecPacketSize , BigPacketSize , MaxRecPacketSize , MaxBigPacketSize );
-      CenterPrint4x5Text( (char *) &buf[0] , (FontHeight * 9) + (FontHeight>>1) + viewport.dwY , 2 );
-    }
-
-
-
-#ifdef DEBUG_SFX
-    sprintf( buf, "sbuffer mem used hw %d ( max %d )", SBufferMemUsedHW, MaxSBufferMemUsedHW );
-    CenterPrint4x5Text( buf , (FontHeight*8) + (FontHeight) + viewport.dwY , 2 );
-    sprintf( buf, "sbuffer mem used sw %d ( max %d )", SBufferMemUsedSW, MaxSBufferMemUsedSW );
-    CenterPrint4x5Text( buf , (FontHeight*10) + (FontHeight) + viewport.dwY , 2 );
-    sprintf( buf, "currentbikecomp %d", CurrentBikeCompSpeech );
-    CenterPrint4x5Text( buf , (FontHeight*12) + (FontHeight) + viewport.dwY , 2 );
+#ifdef DEBUG_ON
+		sprintf(&buf[0], "FPS %d", (int) FPS );
+#else
+		sprintf(&buf[0], "FPS %d - FrameLag %f - TPS (triangles) %d", (int) FPS, framelag, (int) TPS );
 #endif
+		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
+	}
 
+	if( myglobs.bShowInfo )
+	{
 
-  }
-  return TRUE;
+		// group information
+		sprintf(&buf[0], "Groups Visible %d - Current Group %s", (int) NumGroupsVisible,
+			(GroupImIn == (uint16) -1) ? "(outside)" : Mloadheader.Group[GroupImIn].name );
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*3, 2 );
+
+		// memory information
+		sprintf(&buf[0], "Mem %d - ExecMem %d - vidBefore %d - vidAfter %d",
+			(int)MemUsed, (int)ExecMemUsed,
+			Tloadheader.VidMemBefore, Tloadheader.VidMemAfter );
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*4, 2 );
+
+		// sound memory info
+		sprintf(&buf[0], "SoundMemUsedHW %d (max %d) - SoundMemUsedSW %d (max %d)",
+			SBufferMemUsedHW, MaxSBufferMemUsedHW,
+			SBufferMemUsedSW, MaxSBufferMemUsedSW );
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*5, 2 );
+
+		// show polygon information
+		sprintf(&buf[0], "FmPolys %d - Polys %d - ScrPolys %d - VertsTouched %d",
+			(int) TotalFmPolysInUse,(int) TotalPolysInUse,(int) TotalScrPolysInUse, NumOfVertsTouched);
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*6, 2 );
+
+		// ???
+/*
+		sprintf( &buf[0] , "Clear=%c%c", ClearScrOverride ? 'S' : ' ', ClearZOverride ? 'Z' : ' ' );
+#ifdef INSIDE_BSP
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, (!Inside) ? 1 : 2 );
+#else
+		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, (outside_group) ? 1 : 2 );
+#endif
+*/
+
+		if ( ! ShowWeaponKills ) //ShowNetworkInfo)
+		{
+
+			// newtork info
+			sprintf( &buf[0], "Network" );
+			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, 2 );
+
+			sprintf( &buf[0], "BPS %5d CurSent %5d MaxRec %5d MaxSent %5d",
+				CurrentBytesPerSecRec , CurrentBytesPerSecSent , MaxCurrentBytesPerSecRec ,MaxCurrentBytesPerSecSent );
+			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*9, 2 );
+
+			sprintf( &buf[0], "BigSent %4.2f Big %4d MaxBigSize %4d ReceiveSize %4d MaxReceiveSize %4d",
+				BigPacketsSent, BigPacketSize, MaxBigPacketSize ,RecPacketSize , MaxRecPacketSize );
+			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*10, 2 );
+
+		}
+
+		if (ShowWeaponKills)
+		{
+			// show all primary weapon kills
+			for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
+			{
+				// display primary weapon name
+				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				// display primary weapon kills
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(15*FontWidth), (viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+			}
+
+			// show all secondary weapon kills
+			for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
+			{		
+				// display secondary weapon name
+				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				// display secondary weapon kills
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+			}
+		}
+
+	}
+
+    // some stupid place for a demo calculation
+	if( MyGameStatus == STATUS_PlayingDemo )
+	{
+		QueryPerformanceCounter((LARGE_INTEGER *) &DemoEndedTime);
+		TimeDiff = DemoEndedTime - DemoStartedTime;
+		DemoTotalTime = ( (float) TimeDiff / (float) Freq );
+		DemoAvgFps = DemoGameLoops / DemoTotalTime;
+	}
+
+	return TRUE;
 }
 
 
@@ -7776,9 +7751,6 @@ void  PlotSimplePanel( void )
 
   ReMakeSimplePanel = FALSE;
 }
-  
-
-
 
 void  FlipToGDISurface()
 {
@@ -8089,27 +8061,81 @@ void SpecialDestroyGame( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void CalculateFramelag( void )
 {
-	framelag = 0.0F;
-	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-	TimeDiff = LargeTime - LastTime;
-	framelag = (float) ( ( TimeDiff * 71.0 ) / Freq );
-	framelag2 = framelag;
 
-  LastTime = LargeTime;
+  // forsaken multiplies seconds * 71.0F
+  // the idea of multiplying by anything here would be a base conversion
+  // such as from seconds into ms or ns to instead of a long fraction
 
-  if( avgframelag == 0.0F )
-  {
-    avgframelag = framelag;
-  }else{
-    avgframelag += framelag;
-    avgframelag *= 0.5F;
-    avgframelag = (float) floor(avgframelag);
-  }
+  // but 71.0F is not a power of 10 so this has really bad affects
+  // you can end up with exponential varying results on diff systems
 
+  // one loop sample on a 2GHZ P4 with 768MB of ram and an nivdia vanta
+  // 0.00744508 * 71  = 0.52860068
+
+  // lets say that computer B taks 50% longer to compute the game loop
+  // 0.00744508 * 1.5 = 0.01116762
+
+  // that means the calculation look like the following for computer B
+  // 0.01116762 * 71  = 0.80406864
+
+  // now our game loop timing is being tweaked differently on both pc's
+  // the problem is where our game loop has a real difference of:
+  // 0.00372254 seconds 1.5% apart
+
+  // they are now this far apart
+  // 0.27546796 seconds 1.5211267605633802816901408450704%
+
+  // resulting in a drift per loop of
+  // 0.27546796 - 0.00372254 = 0.27174542 seconds
+
+  // now to get the number of loops in 1 second on the slower pc
+  // 1 / 0.01116762 = 89.544594103309389108870108402686
+
+  // the slower pc is adding the drift 89.5 times per second
+  // 89.544594103309389108870108402686 * 0.27174542 = 24.333333333333333333333333333332
+
+  // thus  internal clock between the two pc's will be altered by 24.3
+  // with the slower pc being *ahead* of the faster one in game time
+  
+  // not sure on the meaning of the math here but it looks like
+  // this should represent a change of +0.18th of a second
+  // 24.3 * 0.007 = 0.18225
+
+  // on top of all this fact is that this is just a single sample
+  // pc's could perhaps very more than 1.5% at fluctuating rates
+  // until we have some real data from all our pc's we won't really know
+
+  // forsaken uses framelag (fraction) to multiply by other numbers
+  // so the faster pc with a smaller fraction gets smaller results
+  // meaning that a faster pc will evolve the world at smaller steps
+  // and the slower pc you should see the world moving at faster steps
+
+  // now this is only relavant to places that actually use this variable
+  // but it could have impact on various time based world updates such as:
+  // packes per second, pickup rotation, mine movement/shooting,
+  // bikes speed, input reading, lighting etc...
+
+  // thus all of the above would work faster on a slower pc...
+  // or perhaps even that missiles could fly *slower* on faster machines!!!!
+
+  // note that player positions are not affected
+  // since they are constantly updated via networking
+  // and are not time based at all....
+
+  framelag  = timer_run( &framelag_timer ) * 71.0F;
+
+  // average framelag of the last time and this time
+  // probably cheap way to clamp value down if a loop takes a long time
+  avgframelag = (avgframelag + framelag) * 0.5F;
+
+  // debugging
+  //if (TimeWorst == 0.0 || seconds > TimeWorst) TimeWorst = seconds;
+  //if (TimeBest  == 0.0 || seconds < TimeBest)  TimeBest  = seconds;
+  //DebugPrintf("Loop Time: seconds=%5f - worst:%5f - best:%5f\n",seconds,TimeWorst,TimeBest);
+  
+  //  who knows why
   if( CurrentMenu && (MyGameStatus == STATUS_SinglePlayer) )
-  {
     framelag = 0.0F;
-  }
 
 }
 
