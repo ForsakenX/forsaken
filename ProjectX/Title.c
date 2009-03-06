@@ -1267,7 +1267,9 @@ MENU	MENU_NEW_HostWaitingToStart = {
 		{   5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 155,  25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-		{   5, 163,  25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
+
+		// nobody liked this... leave it out...
+		//{   5, 163,  25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
