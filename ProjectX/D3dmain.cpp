@@ -292,6 +292,9 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
                 myglobs.bDrawAFrame = FALSE;
 
         }
+
+		// call the sound proccesses
+		SfxThreadProc( NULL );
     }
 
 FAILURE:

@@ -787,7 +787,7 @@ void SfxThreadProc (void * pParm)
 	int i;
 	char *file;
 
-	while (1)
+//	while (1)
 	{
 
 		// some kind of access violation always happens about right here
@@ -802,7 +802,13 @@ void SfxThreadProc (void * pParm)
 			{
 				// wait until communications pipe is free if looping sfx...
 				if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping ) && ( LoopingSfxPipe.sfx != -1 ) )
+				{
+					DebugPrintf( 
+						"SfxThreadProc Waiting for LoopingSfxPipe to free.\n",
+								(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false")
+					);
 					continue;
+				}
 #if 0
 				// get sfx path & prefix
 				//GetSfxPath( SfxThreadInfo[ i ].SfxNum, file );
@@ -860,6 +866,12 @@ void SfxThreadProc (void * pParm)
 				default:
 					file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
 				}
+
+				DebugPrintf( 
+					"SfxThreadProc SfxTypeLooping: %s, file: %s\n",
+							(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"),
+							file
+				);
 
 				// create temporary sound buffer - will have volume, frequency & pan facilities 
 				// - located in sw ( any hardware will have been used by now )
@@ -934,7 +946,7 @@ void SfxThreadProc (void * pParm)
 		LeaveCriticalSection (&SfxKey);
 		
 		// relinquish remainder of timeslice to main process
-		Sleep(0);
+//		Sleep(0);
 	}
 }
 
@@ -2220,10 +2232,33 @@ BOOL InitializeSound( int flags )
 	}
 
 	InitSfxHolders();
-	
+
+	//
+	// Methods
+	//
+	// Problem:
+		// Most sound calls are ran instantly.
+		//
+		// Only Looping (whatever that is... cd audio?), biker and computer voices are offloaded to SfxThreadProc
+		// They did this probably to not lock up the main proc on older pc's because these sounds are loaded in real time from files...
+	// Solution:
+		//		Removed looping sound thread and moved a call to SfxThreadProc into WinMain.
+		//		This should fix the sound lag issues described above once and for all for everyone.
+	// Future:
+		// Ideally biker/computer sounds should ALL be loaded up when they are selected (just like level sfx files are done)
+		// And have these calls use the normal sound functions...
+	// Notes:
+		// Turning biker/comp volumnes to 0 effectively stops it from loading from files...
+		// You could also run on a ram disk to solve this easily...
+	// Information:
+		// http://msdn.microsoft.com/en-us/library/ms686277(VS.85).aspx
+		//
+		// THREAD_PRIORITY_NORMAL			works for most on xp... breaks for some...
+		// THREAD_PRIORITY_BELOW_NORMAL		was the original... it causes the sound lag issue... compability mode worked as a fix for some...
+		//
 	// create threads & critical sections...
-	SfxThread =	CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) SfxThreadProc, NULL, 0, &SfxThreadID);
-	SetThreadPriority( SfxThread, THREAD_PRIORITY_NORMAL );
+	//SfxThread =	CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) SfxThreadProc, NULL, 0, &SfxThreadID);
+	//SetThreadPriority( SfxThread, THREAD_PRIORITY_NORMAL );
 
 	InitializeCriticalSection (&SfxKey);
 	InitializeCriticalSection ( &CompoundSfxKey );
