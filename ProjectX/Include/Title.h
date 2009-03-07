@@ -581,7 +581,6 @@ void MenuChangeEx( MENU *Menu );
 void LoadLevelText( MENU *Menu );
 BOOL SetGamma( SLIDER *slider );
 void InitInGameMenu( MENU *Menu );
-void AllowLevelSelect( MENU *Menu );
 void InitTitleMessaging( void );
 void DrawReadyButton( MENUITEM *Item );
 void PlayerConfirm( MENUITEM *Item );

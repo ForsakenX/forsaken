@@ -915,7 +915,6 @@ BOOL LensFlare					= TRUE;
 BOOL GoreGuts					= FALSE;
 BOOL DebugInfo					= FALSE;
 BOOL GodMode					= FALSE;
-BOOL LevelSelectMode			= TRUE;
 BOOL TexturesEnabled			= TRUE;
 BOOL DebugVisible				= FALSE;
 BOOL ShowPlaneRGB				= FALSE;
@@ -1213,7 +1212,7 @@ MENU MENU_NEW_NumberOfCrystals = {
 /* select single player level */
 
 MENU	MENU_NEW_StartSinglePlayer = {
-	"Not Implemented Yet", InitSinglePlayerGame, NULL, NULL, TITLE_TIMER_NormalPanToRightVDU,
+	"", InitSinglePlayerGame, NULL, NULL, TITLE_TIMER_NormalPanToRightVDU,
 	{
 
 		{  0,  0, 200, 20, 0,
@@ -10413,15 +10412,8 @@ void InitInGameMenu( MENU *Menu )
 
 		if ( item->Value == &MENU_LevelSelect )
 		{
-			if ( ( MyGameStatus == STATUS_SinglePlayer ) && !LevelSelectMode )
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}else
-			{
-				item->FuncSelect = MenuChange;
-				item->FuncDraw = MenuItemDrawName;
-			}
+			item->FuncSelect = MenuChange;
+			item->FuncDraw = MenuItemDrawName;
 		}
 
 
@@ -10793,27 +10785,6 @@ void ExitTitleLoad( MENU *Menu )
 
 }
 
-void AllowLevelSelect( MENU *Menu )
-{
-	MENUITEM *item;
-
- 	// make level selectable / unselectable in front end
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( item->FuncSelect == InitLevelSelectVDU )
-		{
-			if ( LevelSelectMode )
-			{
-				item->highlightflags &= ~TEXTFLAG_Unselectable;
-			}
-			else
-			{
-				item->highlightflags |= TEXTFLAG_Unselectable;
-			}
-		}
-	}
-}
-
 void InitSinglePlayerGame( MENU *Menu )
 {
 	if ( !InitLevels( SINGLEPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
@@ -10822,11 +10793,7 @@ void InitSinglePlayerGame( MENU *Menu )
 		PrintErrorMessage (LT_NoSinglePlayerLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
 		return;
 	}
-
 	Lives = 5;
-
-	if( Menu )
-		AllowLevelSelect( Menu );
 }
 
 void SelectQuitCurrentGame( MENUITEM *Item )

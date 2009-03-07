@@ -72,7 +72,6 @@ extern  BOOL  PrimaryWeaponCheat;
 extern  int8  SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
 extern  BOOL  SecondaryWeaponCheat;
 extern  BOOL  GodMode;
-extern  BOOL LevelSelectMode;
 
 extern  int FontHeight;
 
@@ -339,25 +338,6 @@ int ToggleGodMode( char *cheat )
   return 1;
 }
 
-int ToggleLevelSelectMode( char *cheat )
-{
-  if( !LevelSelectMode )
-  {
-    LevelSelectMode = TRUE;
-    FlashMenuText( "Level select mode enabled", 120.0F, SFX_Secret );
-  }
-  else
-  {
-    LevelSelectMode = FALSE;
-    FlashMenuText( "Level select mode disabled", 120.0F, SFX_Secret );
-  }
-  
-  InitInGameMenu( &MENU_InGame );
-  AllowLevelSelect( &MENU_NEW_StartSinglePlayer );
-
-  return 1;
-}
-
 static struct
 {
 #if CHEATS_AS_PLAINTEXT
@@ -376,14 +356,12 @@ static struct
   { "JIMBEAM", JimBeam, FALSE },
   { "LUMBERJACK", Lumberjack, FALSE },
   { "IAMZEUS", ToggleGodMode, FALSE },
-  { "FULLMONTY", ToggleLevelSelectMode, FALSE },
 #else
   { { DIK_B, DIK_U, DIK_B, DIK_B, DIK_L, DIK_E, DIK_S, 0 }, EnableCheats, TRUE },
   { { DIK_T, DIK_I, DIK_T, DIK_S, DIK_O, DIK_O, DIK_T, 0 }, NakedGirls, TRUE },
   { { DIK_J, DIK_I, DIK_M, DIK_B, DIK_E, DIK_A, DIK_M, 0 }, JimBeam, FALSE },
   { { DIK_L, DIK_U, DIK_M, DIK_B, DIK_E, DIK_R, DIK_J, DIK_A, DIK_C, DIK_K, 0 }, Lumberjack, FALSE },
   { { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
-  { { DIK_F, DIK_U, DIK_L, DIK_L, DIK_M, DIK_O, DIK_N, DIK_T, DIK_Y, 0 }, ToggleLevelSelectMode, FALSE },
 #endif
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
@@ -649,11 +627,6 @@ void DisableCheats( void )
     Lumberjack( NULL );
   if( GodMode )
     ToggleGodMode( NULL );
-  /*
-  // This feature is now standard...
-  if( LevelSelectMode )
-    ToggleLevelSelectMode( NULL );
-  */
 }
 
 void CheckCheats( VirtualKeycode key )
