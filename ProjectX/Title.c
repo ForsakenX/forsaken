@@ -1281,9 +1281,6 @@ MENU	MENU_NEW_HostWaitingToStart = {
 		{   5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 155,  25, 162, 0, LT_MENU_NEW_HostWaitingToStart4/*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
-		// nobody liked this... leave it out...
-		//{   5, 163,  25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
-						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -1414,7 +1411,6 @@ MENU	MENU_NEW_CreateGame = {
 		{  10, 134, 200, 124, 0,			LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_BountyHunt,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 140, 200, 132, 0,			LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_TeamBounty,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-	  //{  10, 164, 100, 170, 0,			LT_MENU_NEW_CreateGame17 /*"quit"*/,					FONT_Small,		TEXTFLAG_CentreY,													NULL,								NULL,								SelectQuit,				DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1873,8 +1869,6 @@ MENU	MENU_NEW_JoinWaitingToStart = {
 		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 155, 25, 162, 0, LT_MENU_NEW_JoinWaitingToStart2 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-
-		{ 5, 163, 25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL, NULL , NULL, NULL, 0 }
 	}
@@ -2351,8 +2345,6 @@ MENU	MENU_NEW_Team = {
 		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 155, 25, 162, 0, LT_MENU_NEW_Team10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
-		{ 5, 163, 25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
-
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -2380,8 +2372,6 @@ MENU	MENU_NEW_WatchTeamSelect = {
 		{ 5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{ 5, 155, 25, 162, 0, LT_MENU_NEW_WatchTeamSelect10 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-
-		{ 5, 163, 25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -2413,8 +2403,6 @@ MENU  MENU_NEW_ChooseTeamForExistingGame = {
 		{ 5, 147, 200, 154, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[0], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 
 		{ 5, 155, 25, 162, 0, LT_MENU_NEW_ChooseTeamForExistingGame9 /*"msg:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TitlePlayerMessage, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
-
-		{ 5, 163, 25, 170, 0, LT_MENU_NEW_CreateGame17/*"quit"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , SelectQuit, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" ,0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
