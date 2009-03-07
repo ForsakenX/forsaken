@@ -21,9 +21,9 @@
 
 #define LT_MENU_NEW_NumberOfCrystals0 "ok"
 
-#define LT_MENU_NEW_StartSinglePlayer0 "single player Game" 
+#define LT_MENU_NEW_StartSinglePlayer0 "single player game" 
 #define LT_MENU_NEW_StartSinglePlayer1 "start" 
-#define LT_MENU_NEW_StartSinglePlayer2 "level" 
+#define LT_MENU_NEW_StartSinglePlayer2 "select level" 
 
 #define LT_MENU_NEW_Error0 "ok"
 
@@ -290,7 +290,7 @@
 
 #define LT_MENU_NEW_ChooseConnectionToJoin0 "start"
 #define LT_MENU_NEW_ChooseConnectionToJoin1 "Choose connection type:"
-#define LT_MENU_NEW_ChooseConnectionToJoin2 "tcp add:"
+#define LT_MENU_NEW_ChooseConnectionToJoin2 "IP or Name:"
 
 #define LT_MENU_NEW_ChangeBike0 "speed"
 #define LT_MENU_NEW_ChangeBike1 "accel"

@@ -650,7 +650,7 @@ void DisableCheats( void )
   if( GodMode )
     ToggleGodMode( NULL );
   /*
-  no need to disable level select mode
+  // This feature is now standard...
   if( LevelSelectMode )
     ToggleLevelSelectMode( NULL );
   */

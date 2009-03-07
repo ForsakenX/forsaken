@@ -1210,14 +1210,28 @@ MENU MENU_NEW_NumberOfCrystals = {
 	}
 };
 
+/* select single player level */
+
 MENU	MENU_NEW_StartSinglePlayer = {
 	"Not Implemented Yet", InitSinglePlayerGame, NULL, NULL, TITLE_TIMER_NormalPanToRightVDU,
 	{
-		{  0,  0, 200, 20, 0, LT_MENU_NEW_StartSinglePlayer0/*"single player Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{  0, 30, 200, 50, 0, LT_MENU_NEW_StartSinglePlayer1/*"start"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, &MENU_NEW_BetweenLevels, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 60,  70, 80, 0, LT_MENU_NEW_StartSinglePlayer2/*"level"*/, FONT_Medium, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, NULL, NULL, InitLevelSelectVDU, DrawFlatMenuItem, NULL, 0 } ,
 
-		{ 75, 58, 200, 82, 0, "", FONT_Medium, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY | TEXTFLAG_ForceFit, (void *)SelectedLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
+		{  0,  0, 200, 20, 0,
+			LT_MENU_NEW_StartSinglePlayer0/*"single player Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,
+			NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+
+		{ 0, 50, 200, 50, 0,
+			LT_MENU_NEW_StartSinglePlayer2/*"select level"*/, FONT_Medium, TEXTFLAG_CentreY | TEXTFLAG_CentreX,
+			NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
+
+		{ 0, 90, 200, 50, 0,
+			"", /* level name */ FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY |
+											TEXTFLAG_AutoSelect | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,
+			(void *)SelectedLevel, NULL, InitLevelSelectVDU, DrawFlatMenuName, NULL, 0 } ,
+
+		{ 0, 200, 200, 50, 0,
+			LT_MENU_NEW_StartSinglePlayer1/*"start"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,
+			NULL, &MENU_NEW_BetweenLevels, MenuChange, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1965,7 +1979,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 		{ 10, 35, 200, 155, 0, "", FONT_Small,TEXTFLAG_Unselectable | TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,  &ServiceProvidersList, NULL, SelectList, DrawFlatMenuList, NULL, 0  },
 
 		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
-		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"tcp add:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"IP or Name:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		//{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 						 
