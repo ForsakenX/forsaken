@@ -23,11 +23,13 @@
 #include "main.h"
 #include "title.h"
 
+BOOL Wine = FALSE;
+
 extern void SetCursorClip( void );
 extern BOOL cursorclipped;
 extern BOOL	DrawPanel;
 extern BOOL	DrawCrosshair;
-extern	uint16 PanelHeight;
+extern uint16 PanelHeight;
 extern void ProcessTextItems (void);
 
 
@@ -496,9 +498,12 @@ D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
      */
     switch(message) {
 		case WM_WINDOWPOSCHANGED:
-            d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
-            ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
-			SetCursorClip();
+			if( !Wine )
+			{
+				d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
+				ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
+				SetCursorClip();
+			}
 			break;
         case WM_SIZE:
 #if 0
@@ -517,8 +522,11 @@ D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
             /*
              * Update client window position information
              */
-            d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
-            ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
+			if( !Wine )
+			{
+				d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
+				ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
+			}
             break;
 #if 1
         case WM_MOUSEACTIVATE:
@@ -547,7 +555,8 @@ D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			{
 				cursorclipped = !d3dappi.bPaused;
 			}
-			SetCursorClip();
+			if( !Wine )
+				SetCursorClip();
             break;
         case WM_ACTIVATEAPP:
             d3dappi.bAppActive = (BOOL)wParam;
@@ -557,7 +566,7 @@ D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
              * Prevent the cursor from being shown in fullscreen
              */
             if (d3dappi.bFullscreen && !d3dappi.bPaused) {
-//                SetCursor(NULL);
+//				SetCursor(NULL);
                 *lresult = 1;
                 *bStopProcessing = TRUE;
                 return TRUE;

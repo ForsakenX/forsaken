@@ -54,6 +54,7 @@ extern "C" {
 	extern LPDPSESSIONDESC2 glpdpSD_copy;
 #endif
 
+	extern BOOL Wine;
 	extern BOOL TermDInput( void );
 
 	extern LONGLONG  LargeTime;
@@ -215,9 +216,8 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // Monitor the message queue until there are no pressing  messages
 	while (!myglobs.bQuit)
 	{
-
 		//	This will disable windows key and alt-tab and ctrl-alt-del
-		if( LockOutWindows )
+		if( !Wine && LockOutWindows )
 		{
 			param1 = WM_NULL;
 			param2 = WM_KEYFIRST;
@@ -495,25 +495,26 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     //  Set Global Defaults
     //
 	
-	DeviceOnCommandline			= FALSE;
-    bOnlySystemMemory				= FALSE;
-    bOnlyEmulation					= FALSE;
-	PowerVR_Overide					= FALSE;
-	Is3Dfx								= FALSE;
-	Is3Dfx2								= FALSE;
-	TriLinear								= TRUE;
-	NoSFX								= FALSE;
-	TextureMemory					= 0;
-	MipMap								= TRUE;
-	TripleBuffer							= FALSE;
-	NoTextureScaling					= FALSE;
-	DplayRecieveThread				= FALSE;
-	PolygonText						= FALSE;
-	DS										= FALSE;
-	NoSplash							= TRUE;
-	SessionGuidExists					= FALSE;
-	UseSendAsync						= TRUE;
-	bFullscreen							= TRUE;
+	DeviceOnCommandline		= FALSE;
+    bOnlySystemMemory		= FALSE;
+    bOnlyEmulation			= FALSE;
+	PowerVR_Overide			= FALSE;
+	Is3Dfx					= FALSE;
+	Is3Dfx2					= FALSE;
+	TriLinear				= TRUE;
+	NoSFX					= FALSE;
+	TextureMemory			= 0;
+	MipMap					= TRUE;
+	TripleBuffer			= FALSE;
+	NoTextureScaling		= FALSE;
+	DplayRecieveThread		= FALSE;
+	PolygonText				= FALSE;
+	DS						= FALSE;
+	NoSplash				= TRUE;
+	SessionGuidExists		= FALSE;
+	UseSendAsync			= TRUE;
+	bFullscreen				= TRUE;
+	Wine					= FALSE;
 	DPlayUpdateIntervalCmdLine	= 0;
 
 	//
@@ -576,6 +577,11 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// dont loop anymore were done
 			break;
 
+		}
+
+        else if (!_stricmp(option, "wine")) // linux, wine compatability mode
+		{
+            Wine = TRUE;
 		}
 
         else if (!_stricmp(option, "Debug"))
