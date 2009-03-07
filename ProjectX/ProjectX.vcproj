@@ -926,6 +926,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Include\Local.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\localtitle.h"
+				>
+			</File>
+			<File
 				RelativePath="Include\Magic.h"
 				>
 			</File>
@@ -963,6 +971,10 @@
 			</File>
 			<File
 				RelativePath="Include\MyDplay2.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\Myres.h"
 				>
 			</File>
 			<File
