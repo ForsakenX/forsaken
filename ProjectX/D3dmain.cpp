@@ -501,7 +501,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     bOnlyEmulation			= FALSE;
 	PowerVR_Overide			= FALSE;
 	Is3Dfx					= FALSE;
-	Is3Dfx2					= TRUE;
+	Is3Dfx2					= FALSE;
 	TriLinear				= TRUE;
 	NoSFX					= FALSE;
 	TextureMemory			= 0;
@@ -513,7 +513,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DS						= FALSE;
 	SessionGuidExists		= FALSE;
 	UseSendAsync			= TRUE;
-	bFullscreen				= FALSE;//TRUE;
+	bFullscreen				= TRUE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
 	NoDynamicSfx			= FALSE;
