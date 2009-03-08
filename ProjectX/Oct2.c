@@ -7134,11 +7134,14 @@ BOOL Our_CalculateFrameRate(void)
 	if( myglobs.bShowFrameRate )
 	{
 #ifdef DEBUG_ON
-		sprintf(&buf[0], "FPS %d - FrameLag %f - TPS (triangles) %d", (int) FPS, framelag, (int) TPS );
+		sprintf(&buf[0], "FPS %d FrameLag %f", (int) FPS, framelag );
+		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
+		sprintf(&buf[0], "TPS (triangles) %d", (int) TPS );
+		CenterPrint4x5Text( (char *) &buf[0] , (FontHeight+3)*2, 2 );
 #else
 		sprintf(&buf[0], "FPS %d", (int) FPS );
-#endif
 		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
+#endif
 	}
 
 	if( myglobs.bShowInfo )
