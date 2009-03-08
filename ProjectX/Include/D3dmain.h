@@ -20,9 +20,6 @@
 #include "d3dapp.h"         /* prototypes for D3D helper functions */
 #include "d3ddemo.h"        /* prototypes for functions to communicate with
                                each sample */
-#define START_WIN_SIZE 320  /* initial size of the window */
-#define START_WIN_SIZE_X 320+8  /* initial size of the window */
-#define START_WIN_SIZE_Y 200+46  /* initial size of the window */
 
 #include "new3d.h"
 #include "main.h"

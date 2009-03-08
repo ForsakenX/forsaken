@@ -50,7 +50,6 @@ extern int OldUseShortPackets;
 extern LPDPSESSIONDESC2                    glpdpSD_copy;
 #endif
 
-BOOL CheckDirectPlayVersion = TRUE;
 BOOL ResetKillsPerLevel = FALSE;
 BOOL bTCP = FALSE;
 
@@ -468,7 +467,7 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 		Modem2Modem = TRUE;
 
 	// Check for acceptable version of Direct Play
-	if ( CheckDirectPlayVersion && !DirectPlayOK( lpGuid ) )
+	if ( !DirectPlayOK( lpGuid ) )
 	{
 		PrintErrorMessage ( YOU_NEED_TO_INSATLL_THE_DIRECT_PLAY_50A_UPDATE,
 			                2, NULL, ERROR_USE_MENUFUNCS );

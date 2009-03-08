@@ -54,6 +54,8 @@ extern "C" {
 	extern LPDPSESSIONDESC2 glpdpSD_copy;
 #endif
 
+	
+	extern BOOL NoDynamicSfx;
 	extern BOOL Wine;
 	extern BOOL TermDInput( void );
 
@@ -74,7 +76,6 @@ extern "C" {
 
 	extern BOOL ZClearsOn;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
-	extern BOOL CheckDirectPlayVersion;
 	extern	int DPlayUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
 	extern int ScreenWidth;
@@ -118,7 +119,6 @@ extern "C" {
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
-	extern BOOL NoSplash;
 
 	extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
@@ -407,7 +407,8 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
          0, 0, // start position x,y
 
-         START_WIN_SIZE_X, START_WIN_SIZE_Y, // start size
+		 default_width,
+		 default_height,
 
          NULL,       // parent window
          NULL,       // menu handle
@@ -500,7 +501,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     bOnlyEmulation			= FALSE;
 	PowerVR_Overide			= FALSE;
 	Is3Dfx					= FALSE;
-	Is3Dfx2					= FALSE;
+	Is3Dfx2					= TRUE;
 	TriLinear				= TRUE;
 	NoSFX					= FALSE;
 	TextureMemory			= 0;
@@ -510,11 +511,13 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DplayRecieveThread		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	NoSplash				= TRUE;
 	SessionGuidExists		= FALSE;
 	UseSendAsync			= TRUE;
-	bFullscreen				= TRUE;
+	bFullscreen				= FALSE;//TRUE;
 	Wine					= FALSE;
+	DontColourKey			= FALSE;
+	NoDynamicSfx			= FALSE;
+
 	DPlayUpdateIntervalCmdLine	= 0;
 
 	//
@@ -579,149 +582,107 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 
 		}
 
-        else if (!_stricmp(option, "wine")) // linux, wine compatability mode
+		// linux/wine compatability mode
+        else if (!_stricmp(option, "wine"))
 		{
             Wine = TRUE;
 		}
 
+		// debugging information
         else if (!_stricmp(option, "Debug"))
 		{
             Debug = TRUE;
 		}
 
+		// obviously do not go into full screen mode
 		else if (!_stricmp(option,"NoFullScreen"))
 		{
+
 			bFullscreen = FALSE;
+			
+			// default windowed specs
+			// if(!) protects against overwriting other cli options
+			// on nvidia vanta i get decent fps at 5/8 of 640x480
+			if(!default_width)	default_width	= 640.0F * (5.0F/8.0F);
+			if(!default_height)	default_height	= 480.0F * (5.0F/8.0F);
+			if(!default_bpp)	default_bpp		= 16;
+			screen_aspect_ratio = ((float) default_width / (float) default_height);
+
 		}
 
+		// colour key transparency
 		else if (!_stricmp(option,"DontColourKey")) 
 		{
 			DontColourKey = TRUE;
 		}
 
+		// records the demo to the ram
 		else if (!_stricmp(option, "RecordDemoToRam")) 
 		{
 			RecordDemoToRam = TRUE;
 		}
 
+		// all surfaces forced into system memory
 		else if (!_stricmp(option, "systemmemory")) 
 		{
 			bOnlySystemMemory = TRUE;
         }
 
+		// no hardware acceleration only emulation
 		else if (!_stricmp(option, "emulation")) 
 		{
             bOnlyEmulation = TRUE;
         }
 
+		// display status messages and other information
 		else if (!_stricmp(option, "DS"))
 		{
 			DS = TRUE;
-        } 
-
-		else if (!_stricmp(option, "PowerVR"))
-		{
-			PowerVR_Overide = TRUE;
         }
 
-		else if (!_stricmp(option, "3Dfx"))
-		{
-			Is3Dfx = TRUE;
-        }
-
-		else if (!_stricmp(option, "SendAsync"))
-		{
-			UseSendAsync = TRUE;
-        }
-
-		else if (!_stricmp(option, "3Dfx2"))
-		{
-			Is3Dfx2 = TRUE;
-			TriLinear = TRUE;
-        }
-
+		// trilinear filtering
 		else if (!_stricmp(option, "NoTriLinear")) 
 		{
 			TriLinear = FALSE;
         }
 
+		// turn off sound
 		else if (!_stricmp(option, "NoSFX"))
 		{
 			NoSFX = TRUE;
         }
 
+		// use polygon text instead of blitting
 		else if (!_stricmp(option, "PolyText"))
 		{
 			PolygonText = TRUE;
         }
 
+		// send packets in blocking mode
+		else if (!_stricmp(option, "NoSendAsync"))
+		{
+			UseSendAsync = FALSE;
+        }
+
+		// use a receive-thread for directplay
 		else if (!_stricmp(option, "DplayThread"))
 		{
 			DplayRecieveThread = TRUE;
         }
-
-		else if (!_stricmp(option, "NoTextureScaling")) 
-		{
-			NoTextureScaling = TRUE;
-        }
-
-		else if (!_stricmp(option, "NoMipMap"))
-		{
-			MipMap = FALSE;
-        }
-
-		else if (!_stricmp(option, "TripleBuffer")) 
-		{
-			TripleBuffer = TRUE;
-        }
-
-		else if (!_stricmp(option, "AllWires")) 
-		{
-            AllWires = TRUE;
-        }
-
-		else if (!_stricmp(option, "NoDynamicSfx")) 
-		{
-            RemoveDynamicSfx();
-        } 
-
-		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
-		{
-			SpaceOrbSetup = TRUE;
-		} 
-
-		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
-		{
-			CanDoStrechBlt = FALSE;
-		}
-
-		else if ( !_stricmp( option, "NoCompoundSfxBuffer" ) )
-		{
-			NoCompoundSfxBuffer = TRUE;
-		}
-
-		else if ( !_stricmp( option, "AnyDPlayVersion" ) )
-		{
-			CheckDirectPlayVersion = FALSE;
-		}
-
+		
+		// jump to the host screen
 		else if ( !_stricmp( option, "QuickHost" ) ) 
 		{
-			NoSplash = TRUE;
 			QuickStart = QUICKSTART_Start;
 		}
 
-		else if ( !_stricmp( option, "NoSplash" ) ) 
-		{
-			NoSplash = TRUE;
-		}
-
+		// jump to the join game screen
 		else if ( !_stricmp( option, "QuickJoin" ) ) 
 		{
-			NoSplash = TRUE;
 			QuickStart = QUICKSTART_Join;
 		}
 
+		// specify the session id to join on the host
 		else if ( !_stricmp( option, "session" ) )
 		{
 	        option = strtok(NULL, "{}");
@@ -730,6 +691,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				SessionGuidExists = TRUE;
 		}
 
+		// set the ip address for game to join
 		else if ( !_stricmp( option, "TCP" ) )
 		{
 			bTCP = TRUE;
@@ -737,13 +699,63 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			strcpy( (LPSTR)TCPAddress.text, option );
 		}
 
+		// supposed to auto join a session perhaps?
 		else if ( !_stricmp( option, "AutoStart" ) )
 		{
-			NoSplash = TRUE;
 			QuickStart = QUICKSTART_SelectSession;
 		}
 
+		// don't scale textures
+		else if (!_stricmp(option, "NoTextureScaling")) 
+		{
+			NoTextureScaling = TRUE;
+        }
+
+		// turn off texture mip mapping
+		else if (!_stricmp(option, "NoMipMap"))
+		{
+			MipMap = FALSE;
+        }
+
+		// create a middle buffer (2nd backbuffer) (only in fullscreen mode)
+		// don't know what actually uses it yet...
+		else if (!_stricmp(option, "TripleBuffer")) 
+		{
+			TripleBuffer = TRUE;
+        }
+
+		// supposedly to set wire mode for mxv's...
+		else if (!_stricmp(option, "AllWires")) 
+		{
+            AllWires = TRUE;
+        }
+
+		// turn off loading of dynamic sounds (computer/biker)
+		else if (!_stricmp(option, "NoDynamicSfx")) 
+		{
+            RemoveDynamicSfx();
+        } 
+
+		// special override to allow setting up of spaceorb
+		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
+		{
+			SpaceOrbSetup = TRUE;
+		} 
+
+		// don't try to scale blitted text
+		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
+		{
+			CanDoStrechBlt = FALSE;
+		}
+
+		// no compound sound buffer
+		else if ( !_stricmp( option, "NoCompoundSfxBuffer" ) )
+		{
+			NoCompoundSfxBuffer = TRUE;
+		}
+
 #ifdef Z_TRICK
+		// no zbuffer clearing
 		else if ( !_stricmp( option, "NoZClear" ) )
 		{
 			ZClearsOn = FALSE;
@@ -758,38 +770,45 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			float fnum;
 			DWORD mem;
 
+			// selecte your d3d/ddraw device
 			if ( sscanf( option, "dev%d", &num ) == 1 )
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
 			}
 
+			// select the pilot
 			else if ( sscanf( option , "pilot:%s", &config_name ))
 			{
-				//
+				// sccanf writes to the config_name variable
 			}
 
+			// ammount of memory to allocate for sound buffer
 			else if ( sscanf( option, "CompoundSfxBufferMem%d", &mem ) == 1 )
 			{
 				UserTotalCompoundSfxBufferSize = mem;
 				CustomCompoundBufferSize = TRUE;
 			}
 
+			// set the packets per second
 			else if ( sscanf( option, "PPS%d", &num ) == 1 )
 			{
 				DPlayUpdateIntervalCmdLine = num;
 			}
 
+			// window mode x axis width
 			else if ( sscanf( option, "w%d", &num ) == 1 )
 			{
 				default_width = num;
 			}
 
+			// window mode y axis width
 			else if ( sscanf( option, "h%d", &num ) == 1 )
 			{
 				default_height = num;
 			}
 
+			// bits per second
 			else if ( sscanf( option, "bpp%d", &num ) == 1 )
 			{
 				default_bpp = num;
@@ -805,21 +824,31 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				PreferredHeight = num;
 			}
 
+			// set how much memory is allocated for textures
 			else if ( sscanf( option, "TextureMemory%d", &num ) == 1 )
 			{
 				TextureMemory = num;
 			}
 
+			// modifies texture dimentions.. don't now what uv stands for..
 			else if ( sscanf( option, "UVFix%f", &fnum ) == 1 )
 			{
 				UV_Fix = fnum;
 			}
 
+			// set the horizontal frame of view
+			// this is the screen stretching when you go into nitro
+			// default is 90... max is 120...
 			else if ( sscanf( option, "fov%d", &num ) == 1 )
 			{
 				normal_fov = (float) num;
 			}
 
+			// the aspect ratio tells forsaken the ratio between width/height of your monitor
+			// for example on an 12"x/7.5"y widescreen the ratio is 8/5
+			// a shortcut is to simply alter the base 10
+			//		12/7.5*10=120/750
+			//		12.25/7.75*100=1225/775
 			else if ( sscanf( option, "screen%d:%d", &num, &denom ) == 2 )
 			{
 				if ( num && denom )

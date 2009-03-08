@@ -161,8 +161,6 @@ uint32 TitleLoopId[ NUM_TITLE_LOOPS ];
 BOOL MouseInput = TRUE;
 BOOL JoystickInput = TRUE;
 
-BOOL NoSplash = FALSE;
-
 BOOL CTF = FALSE;
 BOOL NeedFlagAtHome = TRUE;
 BOOL CanCarryOwnFlag = FALSE;
