@@ -284,16 +284,17 @@ D3DAppIEnumDisplayModes(void)
 {
     int i;
 	int mode;
-#if 1
 	int wmin, hmin, bppmin, default_mode;
 
+	// upper limits
 	wmin = 1024;
 	hmin = 768;
 	bppmin = 32;
-#endif
+
     /*
      * Get a list of available display modes from DirectDraw
      */
+
     d3dappi.NumModes = 0;
 
     LastError = d3dappi.lpDD->lpVtbl->EnumDisplayModes(d3dappi.lpDD, 0, NULL,
@@ -305,22 +306,29 @@ D3DAppIEnumDisplayModes(void)
         d3dappi.NumModes = 0;
         return FALSE;
     }
+
     /*
      * Sort the list of display modes
      */
+
     qsort((void *)&d3dappi.Mode[0], (size_t)d3dappi.NumModes, sizeof(D3DAppMode),
           CompareModes);
+
     /*
      * Pick a default display mode.  640x480x16 is a very good mode for
      * rendering, so choose it over all others.  Otherwise, just take the
      * first one.  This selection may be overriden later if a driver is
      * created which cannot render in this mode.
      */
-#if 1
+
+	// this is the (default) default mode
 	default_mode = 0;
+
+	// find the lowest 16bit mode hopefully 640x480 (read above)
     for (i = 0; i < d3dappi.NumModes; i++)
 	{
-		if ( d3dappi.Mode[i].bpp >= 32 && bppmin >= d3dappi.Mode[i].bpp && wmin >= d3dappi.Mode[i].w && hmin >= d3dappi.Mode[i].h )
+		if ( d3dappi.Mode[i].bpp == 16 && // added later -- we don't want anything smaller than 16bit today
+			( bppmin >= d3dappi.Mode[i].bpp && wmin >= d3dappi.Mode[i].w && hmin >= d3dappi.Mode[i].h ))
 		{
 			wmin = d3dappi.Mode[i].w;
 			hmin = d3dappi.Mode[i].h;
@@ -328,11 +336,15 @@ D3DAppIEnumDisplayModes(void)
 			default_mode = i;
 		}
 	}
+
+	DebugPrintf("Lowest 16bit display mode detected: %dx%dx%d\n",wmin,hmin,bppmin);
 	wmin = hmin = bppmin = 9999;
-#endif
+
     mode = -1;
     for (i = 0; i < d3dappi.NumModes; i++) {
-#if 1
+		// try to find the closest mode the user wanted
+		// user can set any of the 3 defaults
+		// the missing values will be filled in
 		if ( ( !default_bpp || d3dappi.Mode[i].bpp == default_bpp ) &&
 			 ( !default_width ||d3dappi.Mode[i].w == default_width ) &&
 			 ( !default_height || d3dappi.Mode[i].h == default_height ) )
@@ -355,17 +367,19 @@ D3DAppIEnumDisplayModes(void)
 			else
 				mode = i;
 		}
-#else
-        if (d3dappi.Mode[i].w == default_width && d3dappi.Mode[i].h == default_height &&
-            d3dappi.Mode[i].bpp == default_bpp)
-            d3dappi.CurrMode = i;
-#endif
     }
-#if 1
+
+	// if nothing was picked then pick the default
 	d3dappi.CurrMode = ( mode >= 0 ) ? mode : default_mode;
-#endif
-    memcpy(&d3dappi.ThisMode, &d3dappi.Mode[d3dappi.CurrMode],
-           sizeof(D3DAppMode));
+
+	// copy in the selected mode
+    memcpy(&d3dappi.ThisMode, &d3dappi.Mode[d3dappi.CurrMode], sizeof(D3DAppMode));
+
+	//	
+	DebugPrintf("Display Mode Selected: %dx%dx%d\n",
+		d3dappi.ThisMode.w, d3dappi.ThisMode.h, d3dappi.ThisMode.bpp);
+
+	//
     return TRUE;
 }
 

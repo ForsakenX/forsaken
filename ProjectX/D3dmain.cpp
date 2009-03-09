@@ -601,12 +601,13 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			bFullscreen = FALSE;
 			
 			// default windowed specs
-			// if(!) protects against overwriting other cli options
-			// on nvidia vanta i get decent fps at 5/8 of 640x480
-			if(!default_width)	default_width	= 640.0F * (5.0F/8.0F);
-			if(!default_height)	default_height	= 480.0F * (5.0F/8.0F);
-			if(!default_bpp)	default_bpp		= 16;
-			screen_aspect_ratio = ((float) default_width / (float) default_height);
+			// prefer to find the 640x480x16 mode (no gaurentee)
+			if(!default_width && !default_height) // don't overide other cli options
+			{
+				default_width	= 640.0F;
+				default_height	= 480.0F;
+				screen_aspect_ratio = (float) (default_width / default_height);
+			}
 
 		}
 
@@ -796,19 +797,19 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				DPlayUpdateIntervalCmdLine = num;
 			}
 
-			// window mode x axis width
-			else if ( sscanf( option, "w%d", &num ) == 1 )
-			{
-				default_width = num;
-			}
-
-			// window mode y axis width
-			else if ( sscanf( option, "h%d", &num ) == 1 )
-			{
-				default_height = num;
-			}
+			// window mode, width/height tied to resolution width/height
+			// although you can set this to any value you like and the window *will* be sized as such
+				// the values *should* be a valid resolution that you see in the resolution list
+				// if you pick an unknown value then you will end up with the lowest resolution
+				// this means the window and resolution will be out of synx and doesn't look pretty
+			// we should probably come up with a way to window/resolution separate
+			// then just stretch/scale the resolution on the window... if possible...
+			else if ( sscanf( option, "w%d", &num ) == 1 ){	default_width = num; }
+			else if ( sscanf( option, "h%d", &num ) == 1 ){	default_height = num; }
 
 			// bits per second
+			// by default the game picks 16bbps cause that renders the best
+			// use bbp32 to get 32bbp/sec
 			else if ( sscanf( option, "bpp%d", &num ) == 1 )
 			{
 				default_bpp = num;
