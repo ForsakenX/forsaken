@@ -151,8 +151,6 @@ D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D obj
 
 d3dmainglobals myglobs;     // collection of global variables
 
-static UINT CancelAutoPlayMessage;
-
 BOOL Debug					= FALSE;
 BOOL DeviceOnCommandline	= FALSE;
 BOOL bOnlySystemMemory		= FALSE;
@@ -946,12 +944,7 @@ static BOOL CreateD3DApp(void)
         return FALSE;
     }
 
-
 	SetWindowText(myglobs.hWndMain, defaults.Name);
-
-	CancelAutoPlayMessage = RegisterWindowMessage(TEXT("QueryCancelAutoPlay"));
-
-	DebugPrintf( "CancelAutoPlayMessage=0x%08X\n", CancelAutoPlayMessage );
 
     return TRUE;
 }
@@ -1198,15 +1191,6 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
 		quitting = FALSE;
 		CleanUpAndPostQuit();
-	}
-
-	//
-	if( CancelAutoPlayMessage && (message == CancelAutoPlayMessage) )
-	{
-		// return 1 to cancel AutoPlay
-		// return 0 to allow AutoPlay
-		DebugPrintf( "AutoPlay cancelled\n" );
-		return 1L;
 	}
 
 	// default processing for any messages not processed
