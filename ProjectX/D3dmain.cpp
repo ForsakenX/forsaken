@@ -567,15 +567,18 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			if (!option)
 			{
 				Msg("Error using chdir");
+				return FALSE;
 				break;
 			}
 
 			// change to root directory
 			// the rest of the command line will be used as the path
 			if( _chdir( option ) != 0 )
-
+			{
 				// error
 				Msg("Could not change to directory: %s", option);
+				return FALSE;
+			}
 
 			// dont loop anymore were done
 			break;
