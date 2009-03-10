@@ -4020,7 +4020,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // ??
   case STATUS_BetweenLevels:
-	if(MyGameStatus != STATUS_title)
+	if(MyGameStatus != STATUS_Title)
 		DebugPrintf("STATUS_BetweenLevels\n");
 
     if( DisplayTitle() != TRUE )
