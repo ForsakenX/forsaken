@@ -41,6 +41,7 @@ extern int outside_map;
 extern	BOOL	DoClipping;
 extern	CAMERA	CurrentCamera;
 
+extern void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals...	
@@ -226,7 +227,14 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 	char fname[ 256 ];
 	int j, k;
 
+	if ( strlen(lname) == 0 )
+	{
+		DebugPrintf("Passed empty level name to OutputVisiStats!");
+		return FALSE;
+	}
+
 	Change_Ext( lname, fname, ".vis" );
+
 	f = fopen( fname, "w" );
 	if ( !f )
 		return FALSE;
