@@ -196,6 +196,10 @@ BOOL ExternalForcesLoad( char * Filename )
 			floatpnt = (float * ) Buffer;
 			for( j = 0 ; j < EFpnt->num_sides ; j++ )
 			{
+// crashes here loading subway level
+// appears that the file data stops !
+// but we were told that there was more data...
+// we would need to properly track the location in the stream and not go over the stream size
 				ZonePnt->normal.x = *floatpnt++;
 				ZonePnt->normal.y = *floatpnt++;
 				ZonePnt->normal.z = *floatpnt++;

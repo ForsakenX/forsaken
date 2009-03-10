@@ -254,17 +254,16 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 	ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
 
-	// changed by methdos
-	// sunday july 6th 2008
-	// note:
-	//   we dont need dplay protocol
-	//   and we care about latency these days
-
-	/*
-    dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
-		             DPSESSION_KEEPALIVE |
-		             DPSESSION_DIRECTPLAYPROTOCOL; 
-					 */
+	// cannot be changed once the session has started:
+	// DPSESSION_CLIENTSERVER, DPSESSION_DIRECTPLAYPROTOCOL,
+	// DPSESSION_KEEPALIVE, DPSESSION_MIGRATEHOST,
+	// DPSESSION_MULTICASTSERVER, DPSESSION_NOMESSAGEID,
+	// DPSESSION_OPTIMIZELATENCY, and DPSESSION_SECURESERVER.
+	
+	// The other flags can be changed by the host:
+	// DPSESSION_JOINDISABLED, DPSESSION_NEWPLAYERSDISABLED,
+	// DPSESSION_NODATAMESSAGES, DPSESSION_NOPRESERVEORDER,
+	// DPSESSION_PASSWORDREQUIRED, and DPSESSION_PRIVATE,
 
     dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
 		             DPSESSION_KEEPALIVE |

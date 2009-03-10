@@ -4140,7 +4140,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
       if( i != MAX_PLAYERS )
         break;  // not yet..
-      OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
+
+      // Added the if check to not call OutputVisiStats improperly
+      // The order of code will always result in LevelNum being -1 here
+      // So no point in even leaving this code uncommented...
+      // We'll probably just end up getting rid of visi stats anyway later
+      //if ( LevelNum != -1 )
+      //	OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
 
       // un load all graphics
       ReleaseView();
