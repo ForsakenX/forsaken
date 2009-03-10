@@ -73,13 +73,23 @@ void Change_Ext( uint8 * Src, uint8 * Dest, uint8 * Ext )
 {
 	uint8	*	Char_Ptr;
 
-	Char_Ptr = ( Src + strlen( Src ) ) -1;
+	int length = strlen( Src );
+
+	if ( ! length )
+	{
+		strcpy( Dest, Ext ); // set the extension
+		Msg("Change_Ext called with Src empty!");
+		return;
+	}
+
+	Char_Ptr = ( Src + length ) -1;
 
 	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
 
 	if( *Char_Ptr == '.' )
 	{
-		while( Src != Char_Ptr ) *Dest++ = *Src++;
+		while( Src != Char_Ptr )
+			*Dest++ = *Src++;
 		strcpy( Dest, Ext );
 	}
 	else
