@@ -4066,12 +4066,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         if( NewLevelNum != LevelNum )
         {
-          DPlayGetSessionDesc();
-
-          glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
-		                     DPSESSION_KEEPALIVE;
-          DPlaySetSessionDesc(0);
-
           for( i = 0 ; i < MAX_PLAYERS ; i++ )
             if( (GameStatus[i] != STATUS_LeftCrashed ) &&
 				(GameStatus[i] != STATUS_Left        ) &&
@@ -4486,14 +4480,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-
-      DPlayGetSessionDesc();
-      
-      glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
-		                 DPSESSION_KEEPALIVE;
-
-      DPlaySetSessionDesc(0);
-
       D3DAppIClearBuffers();
       ReleaseView();
       // tell them all to load up a level
