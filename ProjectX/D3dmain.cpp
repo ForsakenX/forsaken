@@ -1112,6 +1112,9 @@ static BOOL RenderLoop()
 	myglobs.bResized = FALSE;
 
 	//
+	DebugPrintf("RenderLoop Finished...\n");
+
+	//
     return TRUE;
 }
 

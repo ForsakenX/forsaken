@@ -3755,6 +3755,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   float   Time_Float;
   float   time_diff;
 
+  DebugPrintf("RenderScene Started\n");
+
   if ( SeriousError )
     return FALSE;
 
@@ -3794,11 +3796,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 #endif
 
-
   switch( MyGameStatus )
   {
 
   case STATUS_TryingToFindSession:
+	DebugPrintf("STATUS_TryingToFindSession\n");
     D3DAppClearScreenOnly();
 
     if ( GeneralTimeout( &FindSessionTimeout ) )
@@ -3831,11 +3833,14 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_QuittingFromTitles:
+	DebugPrintf("STATUS_QuittingFromTitles\n");
     quitting = TRUE;
     break;
 
   case STATUS_WaitingToStartSinglePlayer:
     
+	DebugPrintf("STATUS_WaitingToStartSinglePlayer\n");
+
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -3860,6 +3865,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartDemo:
+	DebugPrintf("STATUS_WaitingToStartDemo\n");
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -3869,6 +3875,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartEndGameSequence:
+	DebugPrintf("STATUS_WaitingToStartEndGameSequence\n");
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -3891,6 +3898,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartMultiPlayerHost:
+	DebugPrintf("STATUS_WaitingToStartMultiPlayerHost\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -3923,6 +3931,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartMultiPlayerClient:
+	DebugPrintf("STATUS_WaitingToStartMultiPlayerClient\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -3964,6 +3973,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartTeamGame:
+	DebugPrintf("STATUS_WaitingToStartTeamGame\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -4004,9 +4014,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     break;
 
-
+  // the main menu screen
   case STATUS_Title:
+	DebugPrintf("STATUS_Title\n");
+
+  // ??
   case STATUS_BetweenLevels:
+	DebugPrintf("STATUS_BetweenLevels\n");
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -4017,6 +4031,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   case STATUS_Normal:
     
+	DebugPrintf("STATUS_Normal\n");
+
     PreventFlips = FALSE;
 
     if ( !CheatsDisabled )
@@ -4051,10 +4067,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         if( NewLevelNum != LevelNum )
         {
           DPlayGetSessionDesc();
-          
+
           glpdpSD->dwFlags = DPSESSION_MIGRATEHOST |
 		                     DPSESSION_KEEPALIVE;
-
           DPlaySetSessionDesc(0);
 
           for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -4096,8 +4111,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_LevelEnd:
+	DebugPrintf("STATUS_LevelEnd\n");
     D3DAppClearScreenOnly();
-
     ReceiveGameMessages();
     Browl -= framelag;
 
@@ -4123,7 +4138,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     if( IsHost )
     {
-
       // have all the enabled players switched over to STATUS_LevelEnd??
       for( i = 0 ; i < MAX_PLAYERS ; i++ )
       {
@@ -4133,13 +4147,16 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       if( i != MAX_PLAYERS )
         break;  // not yet..
       OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
+
       // un load all graphics
       ReleaseView();
       ReleaseLevel();
+	  
       // tell them all they can now look at the scores...
       MyGameStatus = STATUS_ViewingScore;
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
+
       ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
       ServiceBigPacket(TRUE);
 
@@ -4148,11 +4165,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	  // $$$
       NextworkOldBikeNum = -1;
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
+
     }
 	else
 	{
       if( MyGameStatus != OverallGameStatus )
       {
+
         OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
         // un load all graphics
         ReleaseView();
@@ -4174,6 +4193,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ViewingScore:
+	DebugPrintf("STATUS_ViewingScore\n");
 
     ReceiveGameMessages();
 
@@ -4239,6 +4259,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingAfterScore:
+	DebugPrintf("STATUS_WaitingAfterScore\n");
 
     InitFontTransTable( TRUE );
     D3DAppClearScreenOnly();
@@ -4359,6 +4380,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_Joining:
+	DebugPrintf("STATUS_Joining\n");
     PreventFlips = FALSE;
     D3DAppClearScreenOnly();
 
@@ -4426,9 +4448,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
     break;
 
-
+  // in the multiplayer screen waiting for the game to start
   case STATUS_StartingMultiplayer:
 
+	DebugPrintf("STATUS_StartingMultiplayer\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -4510,6 +4533,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_PreStartingMultiplayerSynch:
+	DebugPrintf("STATUS_PreStartingMultiplayerSynch\n");
     PreventFlips = FALSE;
 
     ReceiveGameMessages();
@@ -4534,6 +4558,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_StartingMultiplayerSynch:
+	DebugPrintf("STATUS_StartingMultiplayerSynch\n");
     PreventFlips = FALSE;
     InitFontTransTable( TRUE );
 
@@ -4627,6 +4652,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_QuitCurrentGame:
+	DebugPrintf("STATUS_QuitCurrentGame\n");
     StopCompoundSfx();
     OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
     MenuAbort();
@@ -4642,6 +4668,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     break;
 
   case STATUS_GetPlayerNum:
+	DebugPrintf("STATUS_GetPlayerNum\n");
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
     
@@ -4757,6 +4784,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     break;
 
   case STATUS_PlayingDemo:
+	DebugPrintf("STATUS_PlayingDemo\n");
 
     DemoGameLoops++;
 
@@ -4803,6 +4831,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_InitView_0:
+	DebugPrintf("STATUS_InitView_0\n");
+
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -4848,6 +4878,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_InitView_1:
+	DebugPrintf("STATUS_InitView_1\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -4963,6 +4994,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_InitView_2:
+	DebugPrintf("STATUS_InitView_2\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -5003,6 +5035,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_InitView_3:
+	DebugPrintf("STATUS_InitView_3\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -5031,6 +5064,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_InitView_4:
+	DebugPrintf("STATUS_InitView_4\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -5060,6 +5094,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
 
   case STATUS_InitView_5:
+	DebugPrintf("STATUS_InitView_5\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -5137,6 +5172,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     break;
 
   case STATUS_InitView_6:
+	DebugPrintf("STATUS_InitView_6\n");
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
@@ -5161,6 +5197,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_InitView_7:
+	DebugPrintf("STATUS_InitView_7\n");
     if( IsHost )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 	else
@@ -5178,6 +5215,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_InitView_8:
+	DebugPrintf("STATUS_InitView_8\n");
     if( IsHost )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 	else
@@ -5199,6 +5237,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ChangeLevelPostInitView:
+	DebugPrintf("STATUS_ChangeLevelPostInitView\n");
     Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NodeName[ 0 ], ".NOD" );
 
     if( !Nodeload( NodeName ) )
@@ -5313,6 +5352,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ChangeLevelPostPlayingDemo:
+	DebugPrintf("STATUS_ChangeLevelPostPlayingDemo\n");
     WhoIAm = MAX_PLAYERS;
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
     Ships[WhoIAm].enable = 1;
@@ -5348,6 +5388,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_StartingSinglePlayer:
+	DebugPrintf("STATUS_StartingSinglePlayer\n");
     //D3DAppIClearBuffers();
     MenuAbort();
     ReleaseView();
@@ -5367,6 +5408,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_PostStartingSinglePlayer:
+	DebugPrintf("STATUS_PostStartingSinglePlayer\n");
     smallinitShip( WhoIAm );
 	//    if( CountDownOn )
 	//    {
@@ -5387,6 +5429,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_SinglePlayer:
+	DebugPrintf("STATUS_SinglePlayer\n");
 
     PreventFlips = FALSE;
       
@@ -5435,6 +5478,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ViewingStats:
+	DebugPrintf("STATUS_ViewingStats\n");
     D3DAppIClearBuffers();
 
     ReleaseLevel();
@@ -5451,6 +5495,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_TitleLoadGameStartingSinglePlayer:
+	DebugPrintf("STATUS_TitleLoadGameStartingSinglePlayer\n");
     //D3DAppIClearBuffers();
     MenuAbort();
     ReleaseView();
@@ -5466,6 +5511,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_InGameLoadGameStartingSinglePlayer:
+	DebugPrintf("STATUS_InGameLoadGameStartingSinglePlayer\n");
     //D3DAppIClearBuffers();
 
     NewLevelNum = InGameLoadGameLevelNum;
@@ -5483,6 +5529,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case  STATUS_TitleLoadGamePostStartingSinglePlayer:
+	DebugPrintf("STATUS_TitleLoadGamePostStartingSinglePlayer\n");
 
     smallinitShip( WhoIAm );
     InGameLoad( NULL );
@@ -5498,6 +5545,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	//  ******************** End of Single Player Game Stuff *******************************
 
    case STATUS_WaitingToSendMessages:
+	DebugPrintf("STATUS_WaitingToSendMessages\n");
 #ifdef  GUARANTEEDMESSAGES
     if ( GuaranteedMessagesActive )
     {
@@ -5518,6 +5566,10 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
   }
+
+  
+	DebugPrintf("RenderScene Finished...\n");
+
   return TRUE;
 }
 
@@ -5612,6 +5664,8 @@ void MainRoutines( void )
 #endif
   WaterProcess();
   ProcessRTLights();
+  
+	DebugPrintf("MainRoutines Finished...\n");
 }
 
 void CheckForRogueSfx( void )
