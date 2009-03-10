@@ -265,10 +265,55 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 	// DPSESSION_NODATAMESSAGES, DPSESSION_NOPRESERVEORDER,
 	// DPSESSION_PASSWORDREQUIRED, and DPSESSION_PRIVATE,
 
+	// DPSESSION_MIGRATEHOST cannot be used with:
+	// DPSESSION_CLIENTSERVER, DPSESSION_MULTICASTSERVER,
+	// or DPSESSION_SECURESERVER
+
     dpDesc.dwFlags = DPSESSION_MIGRATEHOST |
+
+	// DPSESSION_KEEPALIVE
+	// Detects if a player abnormally dropped out of the game.
+	// If so they are informed that their connected was lost
+	// when they return.  In the meantime it removes them
+	// from the session.
+
 		             DPSESSION_KEEPALIVE |
+					 
+	// DPSESSION_DIRECTPLAYPROTOCOL 
+	// Specifies that this session should use the,
+	// "DirectPlay guaranteed protocol" instead of the one
+	// implemented by the service provider.
+		// Use this flag if message throttling is desired
+		// (and you want the performance gains it provides),
+		// or if you want to ensure the availability of all
+		// the features of IDirectPlay4::SendEx.
+			// This flag also enables guaranteed sends on
+			// unreliable providers and uses DirectPlay's
+			// reliability code on TCP/IP, which generally
+			// gives better performance both in throughput
+			// and delivery.
+
 		             DPSESSION_DIRECTPLAYPROTOCOL |
+
+	// DPSESSION_NOPRESERVEORDER
+	// Removes uneeded delays in delivery if the order
+	// of packets is not important.  Games mostly send
+	// short updates of player position data.  Late
+	// packets are not normally not desired at all.
+	// This may result in some weapon events happening
+	// out of order but it's worse if you a stream of
+	// events all got affected cause of one late packet.
+
 		             DPSESSION_NOPRESERVEORDER |
+
+	// DPSESSION_OPTIMIZELATENCY
+	// Turns off tcp nagling... Many unix heads know this
+	// as the common NODELAY setting.  Naggling collects
+	// tinygrams into larger packets for sending.  This
+	// is beneficial for bandwidth but bad for time sensi-
+	// tive applications that need to get tiny updates out
+	// as fast as possible and at a steady rate...
+
 					 DPSESSION_OPTIMIZELATENCY;
 
 	dpDesc.dwMaxPlayers = MaxPlayersSlider.value;
