@@ -34,7 +34,7 @@ BOOL File_Exists( char * Filename )
 {
 	if ( !_access( Filename, 00 ) )
 		return TRUE;
-	DebugPrintf("File does not exist: %s\n", Filename);
+	//DebugPrintf("File does not exist: %s\n", Filename);
 	return FALSE;
 }
 
