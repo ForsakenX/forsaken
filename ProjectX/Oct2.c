@@ -4020,7 +4020,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // ??
   case STATUS_BetweenLevels:
-	DebugPrintf("STATUS_BetweenLevels\n");
+	if(MyGameStatus != STATUS_title)
+		DebugPrintf("STATUS_BetweenLevels\n");
+
     if( DisplayTitle() != TRUE )
     {
       SeriousError = TRUE;
@@ -5558,9 +5560,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
   }
-
-  
-	DebugPrintf("RenderScene Finished...\n");
 
   return TRUE;
 }

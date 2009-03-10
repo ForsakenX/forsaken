@@ -1055,7 +1055,7 @@ static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
-    if ( ! d3dapp->bRenderingIsOK)
+    if ( ! d3dapp->bRenderingIsOK )
 		return TRUE;
 
     // Restore any lost surfaces
@@ -1072,6 +1072,7 @@ static BOOL RenderLoop()
     if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
 	{
         Msg("RenderScene failed.\n");
+		DebugPrintf("RenderScene: failed.");
         return FALSE;
     }
 
@@ -1096,6 +1097,7 @@ static BOOL RenderLoop()
 			if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
 			{
 				Msg("!D3DAppShowBackBuffer");
+				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");
 				ReportD3DAppError();
 				return FALSE;
 			}
@@ -1110,9 +1112,6 @@ static BOOL RenderLoop()
 
 	// Reset the resize flag
 	myglobs.bResized = FALSE;
-
-	//
-	DebugPrintf("RenderLoop Finished...\n");
 
 	//
     return TRUE;
