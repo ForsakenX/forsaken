@@ -54,7 +54,6 @@
 #define DEMOFOLDER				"Demos"
 #define DEMOFILE_EXTENSION		".DMO"
 #define DEMOFILE_SEARCHPATH		DEMOFOLDER"\\*"DEMOFILE_EXTENSION
-#define ProjectXVersionTitle    "Open Source Version " ProjectXVersion
 
 //#pragma optimize( "gty", on )
 
