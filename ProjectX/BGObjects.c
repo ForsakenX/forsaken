@@ -2884,7 +2884,7 @@ BOOL AllocateCompFlyGirl( void )
 	VECTOR			TempVector = { 0.0F, 0.0F, 0.0F };
 	VECTOR			DirVector;
 
-	DebugPrintf("Allocating components for flygirl...");
+	DebugPrintf("Allocating components for flygirl...\n");
 
 	if( FlyGirlCompFile.Filename[ 0 ] )
 	{
