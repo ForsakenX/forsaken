@@ -5,6 +5,8 @@
 #ifndef VERSION_HEADER
 #define VERSION_HEADER
 
-#define ProjectXVersion "Open Source Edition"
+#define ProjectXVersion		"x.x.x.x" // version number
+#define ProjectXVersionTitle	"Open Source Version " ProjectXVersion
+#define ProjectXWindowTitle	"ProjectX " ProjectXVersion
 
 #endif

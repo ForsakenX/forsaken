@@ -33,6 +33,7 @@
 #include <direct.h>
 #include "getdxver.h"
 #include "dplay.h"
+#include "version.h"
 
 // load up C externals
 
@@ -214,6 +215,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     // Monitor the message queue until there are no pressing  messages
 	while (!myglobs.bQuit)
 	{
+
 		//	This will disable windows key and alt-tab and ctrl-alt-del
 		if( !Wine && LockOutWindows )
 		{
@@ -345,8 +347,9 @@ FAILURE:
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
-
-    WNDCLASS wc;
+	HICON small_icon;
+	HICON large_icon;
+    WNDCLASSEX wc;
 	DWORD dwPlatform, dwVersion;
 
 	//
@@ -355,6 +358,8 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// check direct x version
 	GetDXVersion( &dwVersion, &dwPlatform );
+	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
+	DebugPrintf("Detected Window platform: %s\n",(!dwPlatform?"Unknown":(dwPlatform>1?"98":"NT")));
 	if ( dwVersion < 0x600 )
 	{
 		DebugPrintf( "DirectX version less than 6\n" );
@@ -374,19 +379,72 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if(!ParseCommandLine(lpCmdLine))
 		return FALSE;
 
-	// Register the window class
-	wc.style			=	CS_HREDRAW |  // redraw window if horizontal width changes
-							CS_VREDRAW;	  // redraw window if vertical width changes
+	//
+	// It's supposed to be able to load an icon file with multiple icons and detect the right size
+	// So I have to do all this extra crap...
+	//
+
+	// load the application icons
+	large_icon = (HICON) LoadImage(
+		NULL,					// hInstance (not needed when load from file)
+		"ProjectX.ico",			// image name / file path
+		IMAGE_ICON,				// used as icon
+		32,32,					// x,y height of the icon (0 == use actual)
+		LR_LOADFROMFILE |		// load the icon from file
+		LR_VGACOLOR				// use true color
+	);
+
+	// if failed to load the icon file then use the embedded icon in the exe
+	// see above for explanation of fields
+	if ( ! large_icon )
+	{
+		DebugPrintf("Failed to load large icon from ProjectX.ico.\n");
+		large_icon = (HICON) LoadImage( hInstance, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
+		if( ! large_icon )
+			DebugPrintf("Failed to load large AppIcon from executable.\n");
+	}
+	
+	// load the application icons
+	small_icon = (HICON) LoadImage(
+		NULL,					// hInstance (not needed when load from file)
+		"ProjectX.ico",			// image name / file path
+		IMAGE_ICON,				// used as icon
+		16,16,					// x,y height of the icon (0 == use actual)
+		LR_LOADFROMFILE |		// load the icon from file
+		LR_VGACOLOR				// use true color
+	);
+
+	// if failed to load the icon file then use the embedded icon in the exe
+	// see above for explanation of fields
+	if ( ! small_icon )
+	{
+		DebugPrintf("Failed to load small icon from ProjectX.ico.\n");
+		small_icon = (HICON) LoadImage( hInstance, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
+		if( ! small_icon )
+			DebugPrintf("Failed to load small AppIcon from executable.\n");
+	}
+
+	if ( ! small_icon && large_icon )
+		small_icon = large_icon;
+	if ( ! large_icon && small_icon )
+		large_icon = small_icon;
+
+	// Setup the window class
+	wc.cbSize			= sizeof(WNDCLASSEX);
+	wc.style			= CS_HREDRAW | CS_VREDRAW |					// redraw window if horizontal width changes
+						CS_DBLCLKS;									// send my window double click messages
     wc.lpfnWndProc		= WindowProc;								// processer for window messages
-    wc.cbClsExtra		= 0;										//
-	wc.cbWndExtra		= 0;										//
+    wc.cbClsExtra		= 0;										// extra bytes to initialize
+	wc.cbWndExtra		= 0;										// extra bytes to initialize
     wc.hInstance		= hInstance;								// window instance
-    wc.hIcon			= LoadIcon( hInstance, "AppIcon");			// window icon
+    wc.hIcon			= large_icon;								// handle to icons
     wc.hCursor			= LoadCursor( NULL, IDC_ARROW );			// the cursor for mouse over window
     wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
-    wc.lpszClassName	= "ProjectX";								// class name
+    wc.lpszClassName	= "MainWindow";								// class name
+	wc.hIconSm			= small_icon;								// the small icon
 
-    if (!RegisterClass(&wc))
+	// Register the window class
+    if (!RegisterClassEx(&wc))
 	{
 		Msg("RegistrClass failed: %d", GetLastError());
 		DebugPrintf("RegistrClass failed: %d", GetLastError());
@@ -396,12 +454,10 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     // Create a window with some default settings that may change
 	myglobs.hWndMain = CreateWindow(
 
-         "ProjectX",  // window class name 
-         "ProjectX",  // window title
+         "MainWindow",			// window class name (registered above)
+         ProjectXWindowTitle,	// window title
 
-	     WS_OVERLAPPED	| // title bar and a border
-		 WS_THICKFRAME	| // add resizing border order window
-		 WS_MINIMIZEBOX,  // add minimize, fullscreen, close widgets
+		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
          0, 0, // start position x,y
 
@@ -411,7 +467,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
          NULL,       // parent window
          NULL,       // menu handle
          hInstance,  // program handle
-         NULL		 // create parms
+         NULL		 // pointer to pass to WM_CREATE event
 
 	);
 	
@@ -452,12 +508,14 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return FALSE;
 
 	// initialize direct input
+	/*
 	if (!InitDInput())
 	{
 		DebugPrintf( "Failed on InitDInput()\n" );
 		Msg("Failed to initialized Direct Input!");
 		return FALSE;
 	}
+	*/
 
 	// and extract game settings
 	GetGamePrefs();
@@ -926,7 +984,6 @@ static BOOL CreateD3DApp(void)
         return FALSE;
     }
 
-    strcpy(defaults.Name, "ProjectX");
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
     defaults.bClearsOn = myglobs.bClearsOn;
@@ -943,8 +1000,6 @@ static BOOL CreateD3DApp(void)
         ReportD3DAppError();
         return FALSE;
     }
-
-	SetWindowText(myglobs.hWndMain, defaults.Name);
 
     return TRUE;
 }
