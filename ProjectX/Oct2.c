@@ -2353,6 +2353,8 @@ InitView( void )
   LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
   DWORD dwItems					= INFINITE;
 
+  DebugPrintf("InitView Starting...");
+
   CheatsDisabled = FALSE;
 
   // flush keyboard buffer...
@@ -3448,6 +3450,7 @@ BOOL ChangeLevel( void )
 	return( TRUE );
 }
 
+// draw the loading bar that fills from left to right
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )
 {
   HRESULT hr;
@@ -3755,7 +3758,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   float   Time_Float;
   float   time_diff;
 
-  DebugPrintf("RenderScene Started\n");
+  //DebugPrintf("RenderScene Started\n");
 
   if ( SeriousError )
     return FALSE;
@@ -3792,7 +3795,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // This is where in game we are getting input data read
   // Why would it be wrapped in this def check ?
-  ReadInput();
+  //ReadInput();
 
 #endif
 
@@ -4016,7 +4019,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // the main menu screen
   case STATUS_Title:
-	DebugPrintf("STATUS_Title\n");
+	//DebugPrintf("STATUS_Title\n");
 
   // ??
   case STATUS_BetweenLevels:

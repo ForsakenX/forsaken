@@ -2884,6 +2884,8 @@ BOOL AllocateCompFlyGirl( void )
 	VECTOR			TempVector = { 0.0F, 0.0F, 0.0F };
 	VECTOR			DirVector;
 
+	DebugPrintf("Allocating components for flygirl...");
+
 	if( FlyGirlCompFile.Filename[ 0 ] )
 	{
 		sprintf( &TempFilename[ 0 ], "data\\bgobjects\\%s", FlyGirlCompFile.Filename );

@@ -1501,12 +1501,12 @@ int LoadSfxToHW( void )
 	{
 		FreeMem = DSCaps.dwMaxContigFreeHwMemBytes;
 		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCHARDWARE | DSBCAPS_CTRLFREQUENCY; 
-		//DebugPrintf("Loading compound sfx buffer in HW\n");
+		DebugPrintf("Loading compound sfx buffer in HW\n");
 	}else
 	{
 		FreeMem = 1;	// so that it equates to TRUE
 		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
-		//DebugPrintf("Loading compound sfx buffer in SW\n");
+		DebugPrintf("Loading compound sfx buffer in SW\n");
 	}
 
 	// if we have hardware mixing channels & hardware mem & not in titles
@@ -1603,7 +1603,7 @@ int LoadSfxToHW( void )
 		}
 	}else
 	{
-		DebugPrintf("not loading compound sfx buffer\n");
+		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
 	}
 
 	return AllocatedCompoundSfx;
@@ -2057,6 +2057,8 @@ void PreProcessSfx( void )
 	char filename[256];
 	char fullpath[256];
 
+	DebugPrintf("Detecting valid sound files.\n");
+
 	memset( SfxFullPath, 0, sizeof( SfxFullPath ) );
 
 	for ( i = 0; i < MAX_SFX; i++ )
@@ -2173,6 +2175,8 @@ BOOL InitializeSound( int flags )
 		DebugPrintf("Tried to init sound before destroying!\n");
 		return FALSE;
 	}
+	
+	DebugPrintf("Initializing sound.\n");
 
 	// check sound is valid
 	if( NoSFX || !Init_SoundGlobals() )
