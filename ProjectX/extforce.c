@@ -78,6 +78,7 @@ BOOL ExternalForcesLoad( char * Filename )
 	int32		*	int32Pnt;
 	char		*	OrgBuffer;
 
+	DebugPrintf("You might crash right here... Let methods know... That external forces is fucked...\n");
 
 	NumOfExternalForces = 0;
 	for( i = 0 ; i < MAXGROUPS ; i++ )
