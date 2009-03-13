@@ -148,6 +148,8 @@ extern SendBikerTaunt();
 
 BOOL flush_input = TRUE;
 
+int ignore_mouse_input = 0;
+
 static uint16 old_input = 0;
 uint16 new_input = 1;
 static DIMOUSESTATE MouseState[ INPUT_BUFFERS ];
@@ -773,40 +775,83 @@ static void ReadMouse( int dup_last )
 	int j;
 	HRESULT hr;
 
-	if ( !MouseInput || !lpdiMouse )
-		goto fail;
+	// ignore input if told to flush
+	if(ignore_mouse_input)
+	{
+		ignore_mouse_input--;
+		//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse Input Being Ignored.\n");
+		return;
+	}
 
+	if ( !MouseInput || !lpdiMouse )
+	{
+		DebugPrintf("Cannot read mouse: !MouseInput or !lpdiMouse in ReadMouse().\n");
+		goto fail;
+	}
+
+	// I'll leave this here for now but it should probably be removed
 	if ( dup_last )
 	{
 		MouseState[ new_input ] = MouseState[ old_input ];
 		if ( MOUSE_WHEEL_UP()   )	MouseState[ new_input ].lZ--;
 		if ( MOUSE_WHEEL_DOWN() )	MouseState[ new_input ].lZ++;
+		//DebugPrintf("Mouse State has been Dupped!.\n");
 		return;
 	}
 
 	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
-
-	switch (hr)
+	if( hr != DI_OK )
 	{
-	case DI_OK:
-#if 1
-		if ( MouseState[ new_input ].lZ > 0 )		MouseState[ new_input ].lZ =  1;
-		else if ( MouseState[ new_input ].lZ < 0 )	MouseState[ new_input ].lZ = -1;
-#else
-		MouseState[ new_input ].lZ /= MOUSE_ZSTEP;
-#endif
-		break;
-	case DIERR_INPUTLOST:
-		// re-aquire mouse
-		hr = IDirectInputDevice_Acquire(lpdiMouse);
-		goto fail;
-	default:
-		goto fail;
+		switch (hr)
+		{
+
+		case DIERR_INPUTLOST:
+			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse input lost - reacuiring mouse...\n");
+			hr = IDirectInputDevice_Acquire(lpdiMouse);
+			goto fail;
+
+		case DIERR_INVALIDPARAM:
+			DebugPrintf("IDirectInputDevice_GetDeviceState INVALID PARAMS.\n");
+			goto fail;
+			break;
+
+		// this is a normal thing to happen...
+		// we are probably in window mode and told to let go of the mouse
+		case DIERR_NOTACQUIRED:
+			//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse not acquired.\n");
+			goto fail;
+			break;
+
+		case DIERR_NOTINITIALIZED:
+			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse not initialized.\n");
+			goto fail;
+			break;
+
+		case E_PENDING:
+			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse E_PENDING.\n");
+			goto fail;
+			break;
+
+		default:
+			DebugPrintf("IDirectInputDevice_GetDeviceState Unknown Errors %d.\n", hr);
+			goto fail;
+		}
 	}
 
-	return;
+	// read the mouse
+	//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse State Read.\n");
+
+	// some kind of mouse wheel rounding ?
+#if 1
+	if ( MouseState[ new_input ].lZ > 0 )		MouseState[ new_input ].lZ =  1;
+	else if ( MouseState[ new_input ].lZ < 0 )	MouseState[ new_input ].lZ = -1;
+#else
+	MouseState[ new_input ].lZ /= MOUSE_ZSTEP;
+#endif
+
 
 // failed to read the mouse
+return; // don't remove this or it will always 0 out changes
 fail:
 
 	MouseState[ new_input ].lX = 0;
@@ -831,12 +876,15 @@ void ReadInput( void )
   if ( new_input >= INPUT_BUFFERS )
     new_input = 0;
 
+  // I'll leave framelag bullshit here for now but it should probably be removed
+
   framelagfix -= framelag;
-  
+
   /* read mouse input */
   if( framelagfix <= 0.0F )
   {
     ReadMouse( 0 );
+	// this is probably saying to ignore mouse input for 2.0F framelag units...
     framelagfix = 2.0F;
   }
   else
