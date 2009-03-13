@@ -4145,13 +4145,13 @@ BOOL RegeneratePickup( uint16 Type )
 	/* the location given is occupied */
 	if ( i == (uint16) -1 )
 	{
-		DebugPrintf("RegeneratePickup (FAILED) location given is occupied.");
+		DebugPrintf("RegeneratePickup (FAILED) location given is occupied.\n");
 		return FALSE;
 	}
 	
 	/* too many of same type */
 	if( i == (uint16) -2 ){
-		DebugPrintf("RegeneratePickup (FAILED) too many of same type");
+		DebugPrintf("RegeneratePickup (FAILED) too many of same type.\n");
 		return TRUE; /* dont complain */
 	}
 
