@@ -172,7 +172,7 @@ HRESULT DPlayCreatePlayer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent,
 		DebugPrintf("DPERR_NOCONNECTION\n");
 		break;
 	case DP_OK:
-		DebugPrintf("DP_OK\n");
+		DebugPrintf("IDirectPlayX_CreatePlayer DP_OK\n");
 		break;
 	}
                                     
