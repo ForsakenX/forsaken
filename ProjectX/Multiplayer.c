@@ -705,8 +705,10 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	BountyHunt = FALSE;
 	CTF = FALSE;
 
+	DebugPrintf("Setting up game type.\n");
 	SetUpGameType( GameType );
 
+	DebugPrintf("Setting up bike modes.\n");
 	SetBikeMods( 0 );
 
 	MaxKills = MaxKillsSlider.value;
@@ -714,9 +716,11 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
 
+	DebugPrintf("d3d FlipToGDISurface.\n");
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// create session
+	DebugPrintf("DPlayCreateSession.\n");
 	if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
 	{
 		Msg("!DPlayCreateSession");
@@ -724,6 +728,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 
 	// create player
+	DebugPrintf("DPlayCreatePlayer.\n");
 	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
 	{
 		Msg("!DPlayCreatePlayer");
@@ -735,8 +740,10 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	OldColPerspective = ColPerspective;
 	OldUseShortPackets = UseShortPackets;
 	
+	DebugPrintf("SetupDplayGame.\n");
 	SetupDplayGame();
 	
+	DebugPrintf("DPlayGetSessionDesc.\n");
 	DPlayGetSessionDesc();
 	
 
@@ -748,10 +755,13 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	WhoIAm = 0;								// I was the first to join...
 	Ships[WhoIAm].dcoID = dcoID;
 
+	DebugPrintf("MenuChange.\n");
 	if ( TeamGame )
 		MenuChange( &NewTeamItem );
 	else
 		MenuChange( Item );
+
+	DebugPrintf("Other Bullshit.\n");
 
 	MyGameStatus = STATUS_StartingMultiplayer;
 	
@@ -853,6 +863,9 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 	
 	BrightShips = MyBrightShips;
+
+	DebugPrintf("Done.\n");
+
 	return TRUE;
 }
 
