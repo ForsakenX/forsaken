@@ -180,6 +180,8 @@ extern "C" BOOL VSync = FALSE;
 
 BOOL ParseCommandLine(LPSTR lpCmdLine);
 
+int cliSleep = 0;
+
 
 /****************************************************************************/
 /*                            WinMain                                       */
@@ -269,6 +271,11 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 		// call the sound proccesses
 		SfxThreadProc( NULL );
+
+		// command line asks us to sleep and free up sys resources a bit...
+		if ( cliSleep )
+			Sleep( cliSleep );
+
     }
 
 FAILURE:
@@ -861,6 +868,12 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
+			}
+
+			// sleep time for every loop
+			else if ( sscanf( option, "sleep:%d", &cliSleep ))
+			{
+				// set directly
 			}
 
 			// select the pilot
