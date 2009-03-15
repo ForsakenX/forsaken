@@ -4504,13 +4504,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       DPlayGetSessionDesc();
 
-      if ( glpdpSD )
-      {
-        // re-enable joining.....
-        glpdpSD->dwFlags &= ~( DPSESSION_NEWPLAYERSDISABLED | DPSESSION_JOINDISABLED );
-        DPlaySetSessionDesc( 1 );
-      }
-
     }else{
       if( OverallGameStatus == STATUS_Normal )
       {
