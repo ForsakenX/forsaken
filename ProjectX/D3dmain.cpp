@@ -176,6 +176,8 @@ extern "C" void SetInputAcquired( BOOL );
 static BOOL RenderLoop(void);
 static BOOL RestoreSurfaces();
 
+extern "C" BOOL VSync = FALSE;
+
 BOOL ParseCommandLine(LPSTR lpCmdLine);
 
 
@@ -597,6 +599,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DontColourKey			= FALSE;
 	NoDynamicSfx			= FALSE;
 	NoCursorClip			= FALSE;
+	VSync					= FALSE;
 
 	DPlayUpdateIntervalCmdLine	= 0;
 
@@ -651,6 +654,12 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// dont loop anymore were done
 			break;
 
+		}
+
+		// off only works in full screen...
+		// turn on vertical syncing
+		else if (!_stricmp(option,"vSync")){
+			VSync = TRUE;
 		}
 
 		// treate mouse like it's window mode regardless of fullscreen

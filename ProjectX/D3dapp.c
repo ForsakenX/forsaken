@@ -1027,71 +1027,95 @@ D3DAppGetRenderState(D3DAppRenderState* lpState)
  * D3DAppShowBackBuffer
  */
 
+extern BOOL VSync;
 BOOL D3DAppShowBackBuffer(DWORD flags)
 {
+
     if (!d3dappi.bRenderingIsOK) {
         D3DAppISetErrorString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");
         return FALSE;
     }
 
-	// if we pass flags==NULL then we are supposed to clear the screen....
-    if ( !flags || d3dappi.bPaused )
+	// requested to clear the screen.
+    if ( ! flags )
+		D3DAppIClearBuffers();
+		
+	// we are paused do not render
+	if ( d3dappi.bPaused )
         return TRUE;
 
-	if (d3dappi.bFullscreen) {  
-		/*
-		 * Flip the back and front buffers
-		 */
-		LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
+	if (d3dappi.bFullscreen) {
+
+		// Flip the back and front buffers
+		LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(
+														d3dappi.lpFrontBuffer,
 														d3dappi.lpBackBuffer,
-														1);
-//        LastError = d3dappi.lpFrontBuffer->lpVtbl->Flip(d3dappi.lpFrontBuffer,
-//                                                        NULL,
-//                                                        DDFLIP_WAIT );
+														//DDFLIP_STEREO |	// flip between the left/right buffers for 3d
+														( VSync ? // command line says?
+															DDFLIP_WAIT : // wait for the buffers to flip before continuing
+															DDFLIP_NOVSYNC ) // starts filling buffer even if last fill not finished...
+														);
+
 		if (LastError == DDERR_SURFACELOST) {
+
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
 			D3DAppIClearBuffers();
+
 		} else if (LastError != DD_OK) {
-			//D3DAppISetErrorString("Flipping complex display surface failed.\n%s", D3DAppErrorToString(LastError));
-			//return FALSE;
-			return TRUE;
+
+			D3DAppISetErrorString("Flipping complex display surface failed.\n%s", D3DAppErrorToString(LastError));
+			return TRUE; //FALSE;
+
 		}
+
 	} else {
 		RECT front;
 		RECT buffer;
-		/*
-		 * Set the rectangle to blt from the back to front bufer ..Set to entire client window
-		 */
+
+		// fullscreen back buffer
 		SetRect(&buffer, 0, 0, d3dappi.szClient.cx,	d3dappi.szClient.cy);
+
+		// new window mode front buffer
 		SetRect(&front,
 				d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y,
 				d3dappi.szClient.cx + d3dappi.pClientOnPrimary.x,
 				d3dappi.szClient.cy + d3dappi.pClientOnPrimary.y);
-		/*
-		 * Blt the list of rectangles from the back to front buffer
-		 */
 
-//DebugPrintf("......................................................................\n");
-//DebugPrintf("Window Size: %d, %d\n",d3dappi.szClient.cx,d3dappi.szClient.cy);
-//DebugPrintf("Window Position: %d, %d\n",d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y);
-//DebugPrintf("%d, %d, %d, %d\n",front.left, front.top, front.right, front.bottom);
-//DebugPrintf("%d, %d, %d, %d\n",buffer.left, buffer.top, buffer.right, buffer.bottom);
+		// Blt the list of rectangles from the back to front buffer
+		LastError =	d3dappi.lpFrontBuffer->lpVtbl->Blt(
+											d3dappi.lpFrontBuffer,
+											&front,
+											d3dappi.lpBackBuffer,
+											&buffer,
+											//DDBLT_ASYNC | // fills fifo's asychrnously
+											//DDBLT_DONOTWAIT, // does not wait but returns DDERR_WASSTILLDRAWING
+											DDBLT_WAIT, // waits for previous blitter to finish drawing
+											NULL
+											);
 
-		LastError =	d3dappi.lpFrontBuffer->lpVtbl->Blt(d3dappi.lpFrontBuffer,
-											 &front,
-											 d3dappi.lpBackBuffer,
-											 &buffer,
-											 DDBLT_WAIT , NULL);
-		if (LastError == DDERR_SURFACELOST) {
+		if ( LastError == DD_OK )
+			return TRUE;
+
+		switch(LastError)
+		{
+
+		case DDERR_SURFACELOST:
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
 			D3DAppIClearBuffers();
-		} else if (LastError != DD_OK) {
+			break;
+
+		case DDERR_WASSTILLDRAWING:
+			break;
+			
+		// we will crash now
+		default:
 			D3DAppISetErrorString("Blt of back buffer to front buffer failed.\n%s", D3DAppErrorToString(LastError));
 			return FALSE;
 		}
 	}
+
     return TRUE;
 }
 
