@@ -769,8 +769,6 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 						SetInputAcquired( ! cursor_clipped );
 						SetCursorClip( ! cursor_clipped );
 					}
-					*lresult = 0; // we are processing the message
-					*bStopProcessing = TRUE;
 				} 
 				// fullscreen toggle
 				else if ( wParam == VK_F12 )
@@ -799,13 +797,97 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
 			break;
 
-/*
+		// something just put us into idle mode
+		// this means that DefWindowProc is blocking the main loop
+		// expecting some kinda context menu or dialog to respond with the user action
+		case WM_ENTERIDLE:
+			switch ( wParam )
+			{
+			case MSGF_DIALOGBOX:
+				DebugPrintf("WM_ENTERIDLE triggered because of: MSGF_DIALOGBOX\n");
+				break;
+			case MSGF_MENU:
+				DebugPrintf("WM_ENTERIDLE triggered because of: MSGF_MENU\n");
+				break;
+			default:
+				DebugPrintf("WM_ENTERIDLE triggered because of: Unknown Reason\n");
+			}
+			break;
+
 		// we might have to stop certain key strokes here like, alt+ctrl+del
 		// or perhaps drop out of screen and loose focus...
 		case WM_SYSCOMMAND: // system key (alt modifier)
 			//DebugPrintf("A command from the window menu or window buttons has been selected.\n");
+			switch( wParam )
+			{
+			// we have no window menu
+			// hitting alt initiates the window menu
+			// DefWindowProc blocks expecting the window menu to return some kinda event
+			// so we block this call here to stop any menu messages to cause the app to enter 
+			case SC_KEYMENU:
+				DebugPrintf("WM_SYSCOMMAND SC_KEYMENU 0x%x\n",lParam);
+				*lresult = 0;
+				*bStopProcessing = TRUE;
+				break;
+/*
+			case SC_CLOSE:
+				DebugPrintf("WM_SYSCOMMAND SC_CLOSE\n");
+				break;
+			case SC_CONTEXTHELP:
+				DebugPrintf("WM_SYSCOMMAND SC_CONTEXTHELP\n");
+				break;
+			case SC_DEFAULT:
+				DebugPrintf("WM_SYSCOMMAND SC_DEFAULT\n");
+				break;
+			case SC_HOTKEY:
+				DebugPrintf("WM_SYSCOMMAND SC_HOTKEY\n");
+				break;
+			case SC_HSCROLL:
+				DebugPrintf("WM_SYSCOMMAND SC_HSCROLL\n");
+				break;
+			case SC_MAXIMIZE:
+				DebugPrintf("WM_SYSCOMMAND SC_MAXIMIZE\n");
+				break;
+			case SC_MINIMIZE:
+				DebugPrintf("WM_SYSCOMMAND SC_MINIMIZE\n");
+				break;
+			case SC_MONITORPOWER:
+				DebugPrintf("WM_SYSCOMMAND SC_MONITORPOWER\n");
+				break;
+			case SC_MOUSEMENU:
+				DebugPrintf("WM_SYSCOMMAND SC_MOUSEMENU\n");
+				break;
+			case SC_MOVE:
+				DebugPrintf("WM_SYSCOMMAND SC_MOVE\n");
+				break;
+			case SC_NEXTWINDOW:
+				DebugPrintf("WM_SYSCOMMAND SC_NEXTWINDOW\n");
+				break;
+			case SC_PREVWINDOW:
+				DebugPrintf("WM_SYSCOMMAND SC_PREVWINDOW\n");
+				break;
+			case SC_RESTORE:
+				DebugPrintf("WM_SYSCOMMAND SC_RESTORE\n");
+				break;
+			case SC_SCREENSAVE:
+				DebugPrintf("WM_SYSCOMMAND SC_SCREENSAVE\n");
+				break;
+			case SC_SIZE:
+				DebugPrintf("WM_SYSCOMMAND SC_SIZE\n");
+				break;
+			case SC_TASKLIST:
+				DebugPrintf("WM_SYSCOMMAND SC_TASKLIST\n");
+				break;
+			case SC_VSCROLL:
+				DebugPrintf("WM_SYSCOMMAND SC_VSCROLL\n");
+				break;
+			default:
+				DebugPrintf("WM_SYSCOMMAND unknown action.\n");
+*/
+			}
 			break;
 
+/*
 		// Can we detect the windows key being hit?
 		// Or perhaps other ctrl modified keystrokes like ctrl+escape
 		// we should definitively drop out of the application on the above keystroke
