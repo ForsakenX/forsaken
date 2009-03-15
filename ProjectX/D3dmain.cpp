@@ -55,11 +55,11 @@ extern "C" {
 	extern LPDPSESSIONDESC2 glpdpSD_copy;
 #endif
 
-	
+	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;
 	extern BOOL Wine;
 	extern BOOL TermDInput( void );
-
+	extern BOOL MouseExclusive;
 	extern LONGLONG  LargeTime;
 	extern LONGLONG  LastTime;
 	extern void InitValidPickups();
@@ -74,7 +74,7 @@ extern "C" {
 	extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 	extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 	extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
-
+	extern BOOL NoCursorClip;
 	extern BOOL ZClearsOn;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int DPlayUpdateIntervalCmdLine;
@@ -109,7 +109,7 @@ extern "C" {
 	extern BOOL CanDoStrechBlt;
 
 	extern BOOL RecordDemoToRam;
-
+	extern BOOL DebugLog;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
@@ -131,8 +131,6 @@ extern "C" {
 	extern GUID autojoin_session_guid;
 	extern BOOL	SessionGuidExists;
 	extern BOOL bTCP;
-	
-	int PreferredWidth, PreferredHeight;
 
 	int DebugMathErrors( void );
 	void OnceOnlyRelease( void );
@@ -142,6 +140,7 @@ extern "C" {
 	void FillStatusTab( void );
 
 	HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
+	BOOL ActLikeWindow = FALSE;
 
 }
 
@@ -170,7 +169,10 @@ void ReportD3DAppError(void);
 void CleanUpAndPostQuit(void);
 
 static void InitGlobals(void);
-static BOOL AppPause(BOOL f);
+//static 
+
+extern "C" BOOL AppPause(BOOL f);
+extern "C" void SetInputAcquired( BOOL );
 static BOOL RenderLoop(void);
 static BOOL RestoreSurfaces();
 
@@ -191,47 +193,18 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
     int failcount = 0; // number of times RenderLoop has failed
     hPrevInstance;
-	UINT param1;
-	UINT param2;
     MSG msg;
-
-#ifdef DEBUG_ON
-
-	XMem_Init();
-	XExec_Init();
-	DDSurf_Init();
-	XSBuffer_Init();
-
-#endif
-
-	// initialize COM library
-	if FAILED( CoInitialize(NULL) )
-		goto FAILURE;
 
     // Create the window and initialize all objects needed to begin rendering
     if(!AppInit(hInstance, lpCmdLine))
 		goto FAILURE;
 
-    // Monitor the message queue until there are no pressing  messages
+    // Main game loop...
 	while (!myglobs.bQuit)
 	{
 
-		//	This will disable windows key and alt-tab and ctrl-alt-del
-		if( !Wine && LockOutWindows )
-		{
-			param1 = WM_NULL;
-			param2 = WM_KEYFIRST;
-		}else{
-			param1 = 0;
-			param2 = 0;
-		}
-
-		// if retval is 1 there is a message
-		// dispatches incoming sent messages
-		// checks the thread message queue for a posted message
-		// and retrieves the message (if any exist).
-		// if there is a message process it.
-		while(PeekMessage(&msg, NULL, param1, param2, PM_REMOVE))
+		// dispatches any messages that are in the queue and removes them
+		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
 			// if the window got the WM_QUIT message
 			if (msg.message == WM_QUIT)
@@ -241,16 +214,15 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 				break;
 			}
 
-			if
-			(
-				! d3dapp->bPaused  ||  // not paused
-				! myglobs.hWndMain		// window handel is not bad
-			)
+			// we have a valid window handle
+			if ( myglobs.hWndMain )
 			{
 
 				// translates virtual-key messages into character messages
 				// posts them to the calling thread's message queue
 				// to be read the next time the thread calls the PeekMessage
+				// this does not modify the original message
+				// it simply creates new translated messages
 				TranslateMessage(&msg);
 
 				// dispatches a message to a window procedure
@@ -343,46 +315,21 @@ FAILURE:
 /*             D3DApp Initialization and callback functions                 */
 /****************************************************************************/
 
-
-static BOOL
-AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
+static BOOL InitWindow( void )
 {
 	HICON small_icon;
 	HICON large_icon;
     WNDCLASSEX wc;
-	DWORD dwPlatform, dwVersion;
 
-	//
-	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-	LastTime = LargeTime;
 
-	// check direct x version
-	GetDXVersion( &dwVersion, &dwPlatform );
-	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
-	DebugPrintf("Detected Window platform: %s\n",(!dwPlatform?"Unknown":(dwPlatform>1?"98":"NT")));
-	if ( dwVersion < 0x600 )
-	{
-		DebugPrintf( "DirectX version less than 6\n" );
-		Msg("You need to install Direct X 6 or later.");
-		return FALSE;
-	}
+//// START UGLY
 
-	// globals
-    memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
-    memset(&myglobs, 0, sizeof(myglobs));
-    myglobs.bClearsOn		= FALSE;
-    myglobs.bShowFrameRate	= TRUE;
-    myglobs.bShowInfo		= FALSE;
-    myglobs.hInstApp		= hInstance;
+// It's supposed to be able to dyanmically load the right an icon
+// from a resource holding multiple sizes
 
-	// parse the command line
-	if(!ParseCommandLine(lpCmdLine))
-		return FALSE;
-
-	//
-	// It's supposed to be able to load an icon file with multiple icons and detect the right size
-	// So I have to do all this extra crap...
-	//
+// For now I just manually
+// Search for local ProjectX.ico and fall back to embedded image in exe
+// 32x32 for large and 16x16 for small but falls back to any one found
 
 	// load the application icons
 	large_icon = (HICON) LoadImage(
@@ -399,7 +346,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if ( ! large_icon )
 	{
 		DebugPrintf("Failed to load large icon from ProjectX.ico.\n");
-		large_icon = (HICON) LoadImage( hInstance, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
+		large_icon = (HICON) LoadImage( myglobs.hInstApp, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
 		if( ! large_icon )
 			DebugPrintf("Failed to load large AppIcon from executable.\n");
 	}
@@ -419,7 +366,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if ( ! small_icon )
 	{
 		DebugPrintf("Failed to load small icon from ProjectX.ico.\n");
-		small_icon = (HICON) LoadImage( hInstance, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
+		small_icon = (HICON) LoadImage( myglobs.hInstApp, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
 		if( ! small_icon )
 			DebugPrintf("Failed to load small AppIcon from executable.\n");
 	}
@@ -429,6 +376,10 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if ( ! large_icon && small_icon )
 		large_icon = small_icon;
 
+
+//////// END UGLY
+
+
 	// Setup the window class
 	wc.cbSize			= sizeof(WNDCLASSEX);
 	wc.style			= CS_HREDRAW | CS_VREDRAW |					// redraw window if horizontal width changes
@@ -436,7 +387,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     wc.lpfnWndProc		= WindowProc;								// processer for window messages
     wc.cbClsExtra		= 0;										// extra bytes to initialize
 	wc.cbWndExtra		= 0;										// extra bytes to initialize
-    wc.hInstance		= hInstance;								// window instance
+    wc.hInstance		= myglobs.hInstApp;							// window instance
     wc.hIcon			= large_icon;								// handle to icons
     wc.hCursor			= LoadCursor( NULL, IDC_ARROW );			// the cursor for mouse over window
     wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
@@ -450,7 +401,20 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		DebugPrintf("RegistrClass failed: %d", GetLastError());
         return FALSE;
 	}
-    
+	
+	// this is just a safety cause if these values are 0
+	// then starting in fullscreen and switching to window crashes
+	// cause the last window state had a window size of 0
+
+	// default windowed specs
+	// prefer to find the 640x480x16 mode (no gaurentee)
+	if(!default_width || !default_height)
+	{
+		if ( ! default_width  ) default_width  = 640;
+		if ( ! default_height ) default_height = 480;
+		if ( ! screen_aspect_ratio ) screen_aspect_ratio = (float) (default_width / default_height);
+	}
+
     // Create a window with some default settings that may change
 	myglobs.hWndMain = CreateWindow(
 
@@ -460,14 +424,13 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
          0, 0, // start position x,y
-
 		 default_width,
 		 default_height,
 
-         NULL,       // parent window
-         NULL,       // menu handle
-         hInstance,  // program handle
-         NULL		 // pointer to pass to WM_CREATE event
+         NULL,				// parent window
+         NULL,			    // menu handle
+         myglobs.hInstApp,	// program handle
+         NULL				// pointer to pass to WM_CREATE event
 
 	);
 	
@@ -479,52 +442,112 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     }
 
     // Display the window
+	// if you never call this the window never shows up
+	// but the process is actually running....
     ShowWindow(myglobs.hWndMain, SW_SHOWNORMAL);
 
-	// force a repaint ( probably just to show it right away )
-	UpdateWindow(myglobs.hWndMain);
-	
 	//
-	InitPolyText();
+	return TRUE;
+}
 
-	// create the valid pickups global
-	InitValidPickups();
+static BOOL
+AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
+{
+	DWORD dwPlatform, dwVersion;
 
-#ifdef SCROLLING_MESSAGES
+	// Appears to be a complete fuckup...
+	// Only used in two other places...
+	// never updated...
+	// wtf is the point...
+	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
+	LastTime = LargeTime;
 
-	// scrolling messages
-	InitStatsMessages();
+#ifdef DEBUG_ON
+
+	// special debuggin routines
+	XMem_Init();
+	XExec_Init();
+	DDSurf_Init();
+	XSBuffer_Init();
 
 #endif
 
-	// connect or setup registry
-	InitRegistry();
+	// initialize COM library
+	if FAILED( CoInitialize(NULL) )
+		return FALSE;
 
-    // starting screen
-	MyGameStatus = STATUS_Title;
+	// check directx version
+	GetDXVersion( &dwVersion, &dwPlatform );
+	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
+	DebugPrintf("Detected Window platform: %s\n",(!dwPlatform?"Unknown":(dwPlatform>1?"98":"NT")));
+	if ( dwVersion < 0x600 )
+	{
+		DebugPrintf( "DirectX version less than 6\n" );
+		Msg("You need to install Direct X 6 or later.");
+		return FALSE;
+	}
+	
+	// setup globals used by application
+    memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
+    memset(&myglobs, 0, sizeof(myglobs));
+    myglobs.bClearsOn		= FALSE;
+    myglobs.bShowFrameRate	= TRUE;
+    myglobs.bShowInfo		= FALSE;
+    myglobs.hInstApp		= hInstance;
 
-	// start the scene
-	if (!InitScene())
+	// parse the command line
+	if(!ParseCommandLine(lpCmdLine))
+		return FALSE;
+
+	// create and show the window
+	if(!InitWindow())
 		return FALSE;
 
 	// initialize direct input
-	/*
+	// This requires an application and window handle
+	// so it most not come earlier than here
 	if (!InitDInput())
 	{
 		DebugPrintf( "Failed on InitDInput()\n" );
 		Msg("Failed to initialized Direct Input!");
 		return FALSE;
 	}
-	*/
 
+	// wtf is this ?
+	// polygon based text.. (Not blitted from what I know) 
+	InitPolyText();
+
+	// create the valid pickups global
+	InitValidPickups();
+
+	// connect or setup registry
 	// and extract game settings
+	InitRegistry();
 	GetGamePrefs();
+
+// this is where it starts to take so long cause it scans directory for dynamic sound files...
+
+	// start the title scene
+	MyGameStatus = STATUS_Title;
+	if (!InitScene())
+		return FALSE;
+
+	// This  must come after everything above
 
     // Call D3DApp to initialize all DD and D3D objects necessary to render.
     // D3DApp will call the device creation callback which will initialize the
     // viewport and the sample's execute buffers.
     if (!CreateD3DApp())
         return FALSE;
+
+	// show the mouse if acting like window
+	if ( ActLikeWindow || ! d3dappi.bFullscreen )
+	{
+		DebugPrintf("AppInit setting mouse clip for fullscreen mode.\n");
+		if ( MouseExclusive )
+			SetInputAcquired( FALSE );
+		SetCursorClip( FALSE );
+	}
 
 	// done
     return TRUE;
@@ -569,10 +592,11 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DS						= FALSE;
 	SessionGuidExists		= FALSE;
 	UseSendAsync			= TRUE;
-	bFullscreen				= TRUE;
+	bFullscreen				= FALSE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
 	NoDynamicSfx			= FALSE;
+	NoCursorClip			= FALSE;
 
 	DPlayUpdateIntervalCmdLine	= 0;
 
@@ -598,21 +622,9 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     while(option != NULL )
 	{
 
-
-		/***************************************************************\
-		|
-		|  Change Directory
-		|  
-		|    Description:  Changes to the given directory.
-		|    Purpose:      When Running the exe outside the root folder
-		|    Synatx:       -chdir <dir>
-		|    Example:      -chdir c:\\Program Files\\ProjectX
-		|    
-		|    WARNING:	   Must be LAST option !!!
-		|
-		\***************************************************************/
-
-
+		// WARNING:	chdir can only be the LAST option !
+		// For running the exe outside the root folder
+		// -chdir c:\\Program Files\\ProjectX
 		if (!_stricmp(option,"chdir"))
 		{
 
@@ -641,10 +653,26 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 
 		}
 
-		// linux/wine compatability mode
-        else if (!_stricmp(option, "wine"))
+		// treate mouse like it's window mode regardless of fullscreen
+		// used for wine desktop emulation mode...
+		else if (!_stricmp(option, "ActLikeWindow")){
+			ActLikeWindow = TRUE;
+		}
+
+		// never clip the cursor...
+		else if (!_stricmp(option, "MouseExclusive")){
+			MouseExclusive = TRUE;
+		}
+
+		// never clip the cursor...
+		else if (!_stricmp(option, "NoCursorClip")){
+			NoCursorClip = TRUE;
+		}
+
+		// debugging information send to Log...
+        else if (!_stricmp(option, "log"))
 		{
-            Wine = TRUE;
+            DebugLog = TRUE;
 		}
 
 		// debugging information
@@ -654,20 +682,9 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		}
 
 		// obviously do not go into full screen mode
-		else if (!_stricmp(option,"NoFullScreen"))
+		else if (!_stricmp(option,"FullScreen"))
 		{
-
-			bFullscreen = FALSE;
-			
-			// default windowed specs
-			// prefer to find the 640x480x16 mode (no gaurentee)
-			if(!default_width && !default_height) // don't overide other cli options
-			{
-				default_width	= 640.0F;
-				default_height	= 480.0F;
-				screen_aspect_ratio = (float) (default_width / default_height);
-			}
-
+			bFullscreen = TRUE;
 		}
 
 		// colour key transparency
@@ -831,7 +848,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			DWORD mem;
 
 			// selecte your d3d/ddraw device
-			if ( sscanf( option, "dev%d", &num ) == 1 )
+			if ( sscanf( option, "dev:%d", &num ) == 1 )
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
@@ -844,54 +861,48 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			}
 
 			// ammount of memory to allocate for sound buffer
-			else if ( sscanf( option, "CompoundSfxBufferMem%d", &mem ) == 1 )
+			else if ( sscanf( option, "CompoundSfxBufferMem:%d", &mem ) == 1 )
 			{
 				UserTotalCompoundSfxBufferSize = mem;
 				CustomCompoundBufferSize = TRUE;
 			}
 
 			// set the packets per second
-			else if ( sscanf( option, "PPS%d", &num ) == 1 )
+			else if ( sscanf( option, "PPS:%d", &num ) == 1 )
 			{
 				DPlayUpdateIntervalCmdLine = num;
 			}
 
-			// window mode, width/height tied to resolution width/height
-			// although you can set this to any value you like and the window *will* be sized as such
-				// the values *should* be a valid resolution that you see in the resolution list
-				// if you pick an unknown value then you will end up with the lowest resolution
-				// this means the window and resolution will be out of synx and doesn't look pretty
-			// we should probably come up with a way to window/resolution separate
-			// then just stretch/scale the resolution on the window... if possible...
-			else if ( sscanf( option, "w%d", &num ) == 1 ){	default_width = num; }
-			else if ( sscanf( option, "h%d", &num ) == 1 ){	default_height = num; }
+			// resolution mode
+			// although you can set this to any value you like
+			// the values *should* (for now) be valid resolutions for your device
+			// other wise you will end up with the default resolution (lowest)
+			// BUT your window size will be set to the value you picked...
+			// this means the window and resolution will be out of sync and doesn't look pretty
+			// we should figure out how to stretch/scale the resolution on the window
+			// just like when you resize the window
+			// or just make the window default to the selected resolution...
+			else if ( sscanf( option, "mode:%d:%d", &default_width, &default_height ) == 1 )
+			{
+				// values set directly by sscanf
+			}
 
 			// bits per second
 			// by default the game picks 16bbps cause that renders the best
 			// use bbp32 to get 32bbp/sec
-			else if ( sscanf( option, "bpp%d", &num ) == 1 )
+			else if ( sscanf( option, "bpp:%d", &num ) == 1 )
 			{
 				default_bpp = num;
 			}
 
-			else if ( sscanf( option, "pw%d", &num ) == 1 )
-			{
-				PreferredWidth = num;
-			}
-
-			else if ( sscanf( option, "ph%d", &num ) == 1 )
-			{
-				PreferredHeight = num;
-			}
-
 			// set how much memory is allocated for textures
-			else if ( sscanf( option, "TextureMemory%d", &num ) == 1 )
+			else if ( sscanf( option, "TextureMemory:%d", &num ) == 1 )
 			{
 				TextureMemory = num;
 			}
 
 			// modifies texture dimentions.. don't now what uv stands for..
-			else if ( sscanf( option, "UVFix%f", &fnum ) == 1 )
+			else if ( sscanf( option, "UVFix:%f", &fnum ) == 1 )
 			{
 				UV_Fix = fnum;
 			}
@@ -899,7 +910,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// set the horizontal frame of view
 			// this is the screen stretching when you go into nitro
 			// default is 90... max is 120...
-			else if ( sscanf( option, "fov%d", &num ) == 1 )
+			else if ( sscanf( option, "fov:%d", &num ) == 1 )
 			{
 				normal_fov = (float) num;
 			}
@@ -909,7 +920,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// a shortcut is to simply alter the base 10
 			//		12/7.5*10=120/750
 			//		12.25/7.75*100=1225/775
-			else if ( sscanf( option, "screen%d:%d", &num, &denom ) == 2 )
+			else if ( sscanf( option, "ratio:%d:%d", &num, &denom ) == 2 )
 			{
 				if ( num && denom )
 					screen_aspect_ratio = (float) num / denom;
@@ -943,11 +954,6 @@ static BOOL CreateD3DApp(void)
 		{
 			default_width = ScreenWidth;
 			default_height = ScreenHeight;
-		}
-		else
-		{
-			default_width = PreferredWidth;
-			default_height = PreferredHeight;
 		}
 		default_bpp = ScreenBPP;
 	}
@@ -1133,16 +1139,10 @@ static BOOL RenderLoop()
     // Blt or flip the back buffer to the front buffer
 	if( !myglobs.bQuit )
 	{
-		if (
-			(
-				! PlayDemo ||
-				( MyGameStatus != STATUS_PlayingDemo ) ||
-				DemoShipInit[ Current_Camera_View ]
-			) &&
-			! PreventFlips
-		)
+		if ((	! PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	) && ! PreventFlips	)
 		{
-			if (!D3DAppShowBackBuffer(myglobs.bResized ? D3DAPP_SHOWALL : NULL))
+			// this is the actual call to render a frame...
+			if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
 			{
 				Msg("!D3DAppShowBackBuffer");
 				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");
@@ -1171,20 +1171,28 @@ static BOOL RenderLoop()
 // Pause and unpause the application
 //
 
-static BOOL
-AppPause(BOOL f)
+//static
+
+extern "C"
+BOOL AppPause(BOOL f)
 {
-    /*
-     * Flip to the GDI surface and halt rendering
-     */
+    // Flip to the GDI surface and halt rendering
     if (!D3DAppPause(f))
         return FALSE;
-	// toggle cursor clipping when pausing/unpausing
-	cursorclipped = (d3dapp) ? !d3dapp->bPaused : 0;
-	SetCursorClip();
-    /*
-     * When returning from a pause, reset the frame rate count
-     */
+
+	if ( (d3dapp) ? !d3dapp->bPaused : 0 ) // if d3d and NOT paused
+	{
+		SetInputAcquired( TRUE );
+		if ( HideCursor )
+			SetCursorClip( TRUE ); // grab the mouse
+	}
+	else // game has been paused
+	{
+		SetInputAcquired( FALSE );
+		SetCursorClip( FALSE );
+	}
+
+    // When returning from a pause, reset the frame rate count
     if (!f) {
 		flush_input = TRUE; // and flush any mouse input that occurred while paused
     }
@@ -1295,10 +1303,8 @@ CleanUpAndPostQuit(void)
     myglobs.bQuit = TRUE;
 
 	// we dont control the cursor anymore
-	cursorclipped = FALSE;
-
-	//
-	SetCursorClip();
+	SetInputAcquired( FALSE );
+	SetCursorClip( FALSE );
 
 	//
     PostQuitMessage( 0 );
@@ -1335,7 +1341,7 @@ Msg( LPSTR fmt, ... )
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
                      SWP_NOSIZE | SWP_NOMOVE);
 
-	AddCommentToLog( buff );
+	DebugPrintf( buff );
 
     AppPause(FALSE);
 }
@@ -1363,7 +1369,7 @@ RetryMsg( LPSTR fmt, ... )
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
                      SWP_NOSIZE | SWP_NOMOVE);
 
-	AddCommentToLog( buff );
+	DebugPrintf( buff );
 
     AppPause(FALSE);
 

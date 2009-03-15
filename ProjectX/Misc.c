@@ -520,19 +520,24 @@ void
 D3DAppIGetClientWin(HWND hwnd)
 {
     RECT rc;
-    if (!d3dappi.bFullscreen) {
-        d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
+    if (!d3dappi.bFullscreen)
+	{
+        d3dappi.pClientOnPrimary.x = 0;
+		d3dappi.pClientOnPrimary.y = 0;
         ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
         GetClientRect(hwnd, &rc);
         d3dappi.szClient.cx = rc.right;
         d3dappi.szClient.cy = rc.bottom;
-    } else {
+    }
+	else
+	{
         /*
          * In the fullscreen case, we must be careful because if the window
          * frame has been drawn, the client size has shrunk and this can
          * cause problems, so it's best to report the entire screen.
          */
-        d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
+        d3dappi.pClientOnPrimary.x = 0;
+		d3dappi.pClientOnPrimary.y = 0;
         d3dappi.szClient.cx = d3dappi.ThisMode.w;
         d3dappi.szClient.cy = d3dappi.ThisMode.h;
     }

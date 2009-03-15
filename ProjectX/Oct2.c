@@ -255,6 +255,8 @@ extern BOOL ShowStatistics; // show in-game statistics
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
 
+BOOL HideCursor = FALSE;
+
 float Old_LevelTime_Float;
 void InitFontTransTable( BOOL BlitText );
 
@@ -608,7 +610,6 @@ void InitValidPickups();
 
 void  PlotSimplePanel( void );
 
-BOOL cursorclipped = FALSE;
 RECT cursorclip;
 
 LPDIRECT3DDEVICE lpD3Ddev = NULL;
@@ -1457,58 +1458,150 @@ void ReallyShowCursor( BOOL show )
 }
 
 void
-SetCursorClip( void )
+SetInputAcquired( BOOL acquire )
 {
     HRESULT         err;
+	DebugPrintf("SetInputAcquired %s\n",acquire?"true":"false");
+	if ( acquire )
+	{
+		/*
+												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
+												err = IDirectInputDevice_SetCooperativeLevel(
+													lpdiMouse,			// mouse handle
+													myglobs.hWndMain,	// window handle
 
-  if ( !d3dapp )
-  {
-    DebugPrintf( "SetCursorClip: d3dapp is NULL\n" );
-    ClipCursor( NULL );
-    ReallyShowCursor( TRUE );
-    return;
-  }
-  cursorclip.left = d3dapp->pClientOnPrimary.x + d3dapp->szClient.cx / 2;
-  cursorclip.top = d3dapp->pClientOnPrimary.y + d3dapp->szClient.cy / 2;
-  cursorclip.right = cursorclip.left + 1;
-  cursorclip.bottom = cursorclip.top + 1;
-  if ( cursorclipped )
-  {
-    if ( lpdiMouse )
-    {
-      err = IDirectInputDevice_Acquire(lpdiMouse);
-    }
-    if ( lpdiKeyboard )
-    {
-      err = IDirectInputDevice_Acquire(lpdiKeyboard);
-    }
-    if ( lpdiBufferedKeyboard )
-    {
-      err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
-    }
-    DebugPrintf( "SetCursorClip: cursor is clipped\n" );
-    ClipCursor( &cursorclip );
-    SetCursorPos( cursorclip.left, cursorclip.top );
-    ReallyShowCursor( FALSE );
-  }
-  else
-  {
-    if ( lpdiMouse )
-    {
-      err = IDirectInputDevice_Unacquire(lpdiMouse);
-    }
-    if ( lpdiKeyboard )
-    {
-      err = IDirectInputDevice_Unacquire(lpdiKeyboard);
-    }
-    if ( lpdiBufferedKeyboard )
-    {
-      err = IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
-    }
-    DebugPrintf( "SetCursorClip: cursor is not clipped\n" );
-    ClipCursor( NULL );
-    ReallyShowCursor( TRUE );
-  }
+													DISCL_EXCLUSIVE |	// application requires exclusive access to device
+																		// this cuases the mouse to disapear
+																		// and be fully controlled by direct input
+
+													DISCL_FOREGROUND);	// Application only wants mouse access when it's in the foreground
+																		// automatically unacquires on window de-activate
+
+												if(err != DI_OK)
+												{
+													switch(err)
+													{
+													case DIERR_INVALIDPARAM:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
+														break;
+													case DIERR_NOTINITIALIZED:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
+														break;
+													case E_HANDLE:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
+														break;
+													case E_NOTIMPL:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
+														break;
+													}
+												}
+												*/
+
+		if ( lpdiMouse )			err = IDirectInputDevice_Acquire(lpdiMouse);
+		if ( lpdiKeyboard )			err = IDirectInputDevice_Acquire(lpdiKeyboard);
+		if ( lpdiBufferedKeyboard ) err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
+		DebugPrintf( "Input has been Acquired.\n" );
+	}
+	else
+	{
+/*
+												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
+												err = IDirectInputDevice_SetCooperativeLevel(
+													lpdiMouse,			// mouse handle
+													myglobs.hWndMain,	// window handle
+													DISCL_NONEXCLUSIVE | // this mode does not lock the mouse down
+																		// the mouse still works but is free to roam to other windows...
+													DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
+
+												if(err != DI_OK)
+												{
+													switch(err)
+													{
+													case DIERR_INVALIDPARAM:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
+														break;
+													case DIERR_NOTINITIALIZED:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
+														break;
+													case E_HANDLE:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
+														break;
+													case E_NOTIMPL:
+														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
+														break;
+													}
+												}
+
+*/
+
+		if ( lpdiMouse )			err = IDirectInputDevice_Unacquire(lpdiMouse);
+		if ( lpdiKeyboard )			err = IDirectInputDevice_Unacquire(lpdiKeyboard);
+		if ( lpdiBufferedKeyboard )	err = IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
+		DebugPrintf( "Input has been UN-Acquired.\n" );
+	}
+}
+
+BOOL cursor_clipped = FALSE;
+BOOL NoCursorClip = FALSE;
+void SetCursorClip( BOOL clip )
+{
+	if ( !d3dapp )
+	{
+		DebugPrintf( "SetCursorClip: d3dapp is NULL\n" );
+		ClipCursor( NULL );
+		ReallyShowCursor( TRUE );
+		return;
+	}
+
+	// we already are in this state...
+// yea but exclusive mouse mode hides it on us without asking...
+// maybe just set cusor_clipped to true when acquiring with exclusive...
+	//if ( cursor_clipped && clip ) return;
+	//if ( !cursor_clipped && !clip ) return;
+
+	// the clipping area
+	cursorclip.left = d3dapp->pClientOnPrimary.x + d3dapp->szClient.cx / 2;
+	cursorclip.top = d3dapp->pClientOnPrimary.y + d3dapp->szClient.cy / 2;
+	cursorclip.right = cursorclip.left + 1;
+	cursorclip.bottom = cursorclip.top + 1;
+
+	// save last state
+	cursor_clipped = clip;
+	//DebugPrintf( "SetCursorClip: cursor is %s\n", ( clip ? "clipped" : "not clipped" ));
+
+	// this shit is just shoved into this function
+	// cause it's pretty tied to the procedure...
+	if ( clip )
+	{
+		SetInputAcquired( TRUE );	// must acquire before clipping
+		ReallyShowCursor( FALSE );
+	}
+	else
+	{
+		//SetInputAcquired( FALSE );
+		ReallyShowCursor( TRUE );
+	}
+
+	// don't do any clipping if cli option says not to
+	// wine already clips the mouse and it causes input to go haywire
+	if ( ! NoCursorClip )
+	{
+		if ( clip ) // clip
+		{
+			ClipCursor( &cursorclip );
+			SetCursorPos( cursorclip.left, cursorclip.top );
+		}
+		else // unclip
+		{
+			ClipCursor( NULL );
+		}
+	}
+	else
+	{
+		// logs
+		if ( NoCursorClip )
+			DebugPrintf("NoCursorClip.\n");
+	}
 }
 
 BOOL InitLevels( char * levels_list )
@@ -2353,7 +2446,7 @@ InitView( void )
   LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
   DWORD dwItems					= INFINITE;
 
-  DebugPrintf("InitView Starting...");
+  DebugPrintf("InitView Starting...\n");
 
   CheatsDisabled = FALSE;
 
@@ -2752,6 +2845,9 @@ char *DI_KeyName( DWORD key )
 /**************************************************************************
   InitDInput
  **************************************************************************/
+BOOL MouseExclusive = FALSE;
+extern BOOL ActLikeWindow;
+extern D3DAppInfo d3dappi;
 BOOL InitDInput(void)
 {
   HRESULT  err;
@@ -2795,15 +2891,63 @@ BOOL InitDInput(void)
             goto fail;
     }
 
-    // set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
-    err = IDirectInputDevice_SetCooperativeLevel(lpdiMouse, myglobs.hWndMain,
-    DISCL_EXCLUSIVE | DISCL_FOREGROUND);
+	DebugPrintf("Setting mouse mode: %s\n",MouseExclusive?"Exclusive":"Non Exclusive");
+
+	if ( MouseExclusive )
+	{
+		err = IDirectInputDevice_SetCooperativeLevel(
+			lpdiMouse,			// mouse handle
+			myglobs.hWndMain,	// window handle
+			DISCL_EXCLUSIVE |	// application requires exclusive access to device
+								// this cuases the mouse to disapear
+								// and be fully controlled by direct input
+			DISCL_FOREGROUND);	// Application only wants mouse access when it's in the foreground
+								// automatically unacquires on window de-activate
+
+		// doesn't work as it should...
+
+		// if acting like a window or not fullscreen
+		if ( ActLikeWindow || !d3dappi.bFullscreen )
+		{
+			SetInputAcquired( FALSE );
+			SetCursorClip( FALSE );
+		}
+
+	}
+	else
+	{
+		err = IDirectInputDevice_SetCooperativeLevel(
+			lpdiMouse,			// mouse handle
+			myglobs.hWndMain,	// window handle
+			DISCL_NONEXCLUSIVE |// this mode does not lock the mouse down
+								// the mouse still works but is free to roam to other windows...
+			DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
+	}
+
     if(err != DI_OK)
     {
-            goto fail;
+		switch(err)
+		{
+		case DIERR_INVALIDPARAM:
+			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
+			break;
+		case DIERR_NOTINITIALIZED:
+			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
+			break;
+		case E_HANDLE:
+			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
+			break;
+		case E_NOTIMPL:
+			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
+			break;
+		}
+        goto fail;
     }
 
-  err = IDirectInputDevice_Acquire(lpdiMouse);
+	// this is the moment the mouse disapears when usnig exclusive access.
+	// we would most likely just want a global state flag defining the type of mouse state we want.
+	// and then make sure the mouse is properly set in the right state.
+	err = IDirectInputDevice_Acquire(lpdiMouse);
 
     // try to create keyboard device
     if(IDirectInput_CreateDevice(lpdi, &guid_keyboard, &lpdiKeyboard, NULL) !=DI_OK)
@@ -2874,7 +3018,7 @@ BOOL InitDInput(void)
 
     if(err != DI_OK)
     {
-//            goto fail;
+ //           goto fail;
     }
 
   // try to create Joystick devices
@@ -3065,8 +3209,9 @@ void ProcessGameKeys( void )
     // if were not in the menu
     // and the above check failed
     // reset variable so 3rd escape takes us back in
-    }else
+	}else{
       JustExitedMenu = FALSE;
+	}
 
 
   // debuggin keys
@@ -3316,6 +3461,26 @@ void ProcessGameKeys( void )
           else if ( CurrentMenu == &MENU_EditMacro3 )
             MenuExit();
 
+#ifndef POLYGONAL_COLLISIONS
+#ifdef REMOTE_CAMERA_ENABLED
+		// Shift + F12
+		if ( IsKeyPressed( DIK_F12 ) )
+			if( !RemoteCameraActive )
+			{
+				RemoteCameraActive = TRUE;
+				Ships[MAX_PLAYERS].Object.Pos = Ships[WhoIAm].Object.Pos;
+				Ships[MAX_PLAYERS].Object.Group = Ships[WhoIAm].Object.Group;
+				Ships[MAX_PLAYERS].Object.Mode = NORMAL_MODE;
+				Ships[MAX_PLAYERS].enable = 1;
+				Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
+			}else{
+				RemoteCameraActive = FALSE;
+				Ships[MAX_PLAYERS].enable = 0;
+				Current_Camera_View = WhoIAm;   // which object is currently using the camera view....
+			}
+#endif
+#endif
+
       } // Shift Modifier
       else // no modifier
       {
@@ -3332,31 +3497,12 @@ void ProcessGameKeys( void )
         if ( IsKeyPressed( DIK_F11 ) )
           SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_Taunt3, 0);
 
+		// F12
+			// don't use f12...
+			// it's caught in WindowProc for global application fullscreen toggle
+
       } // end (not) shift modifier
     } // end not single player
-
-#ifndef POLYGONAL_COLLISIONS
-#ifdef REMOTE_CAMERA_ENABLED
-
-  // F12
-  if ( IsKeyPressed( DIK_F12 ) )
-    if( !RemoteCameraActive )
-    {
-    RemoteCameraActive = TRUE;
-    Ships[MAX_PLAYERS].Object.Pos = Ships[WhoIAm].Object.Pos;
-    Ships[MAX_PLAYERS].Object.Group = Ships[WhoIAm].Object.Group;
-    Ships[MAX_PLAYERS].Object.Mode = NORMAL_MODE;
-    Ships[MAX_PLAYERS].enable = 1;
-    Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
-    }else{
-    RemoteCameraActive = FALSE;
-    Ships[MAX_PLAYERS].enable = 0;
-    Current_Camera_View = WhoIAm;   // which object is currently using the camera view....
-    }
-
-#endif
-#endif
-
   } // end debug/normal keys
 } // ProcessGameKeys
 
@@ -3795,7 +3941,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // This is where in game we are getting input data read
   // Why would it be wrapped in this def check ?
-  //ReadInput();
+  ReadInput();
 
 #endif
 
@@ -3901,7 +4047,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingToStartMultiPlayerHost:
-	DebugPrintf("STATUS_WaitingToStartMultiPlayerHost\n");
+	//DebugPrintf("STATUS_WaitingToStartMultiPlayerHost\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -4023,8 +4169,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   // ??
   case STATUS_BetweenLevels:
-	if(MyGameStatus != STATUS_Title)
-		DebugPrintf("STATUS_BetweenLevels\n");
+	//if(MyGameStatus != STATUS_Title)
+		//DebugPrintf("STATUS_BetweenLevels\n");
 
     if( DisplayTitle() != TRUE )
     {
@@ -4036,7 +4182,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   case STATUS_Normal:
     
-	DebugPrintf("STATUS_Normal\n");
+	//DebugPrintf("STATUS_Normal\n");
 
     PreventFlips = FALSE;
 
@@ -4198,7 +4344,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ViewingScore:
-	DebugPrintf("STATUS_ViewingScore\n");
+	//DebugPrintf("STATUS_ViewingScore\n");
 
     ReceiveGameMessages();
 
@@ -4264,7 +4410,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_WaitingAfterScore:
-	DebugPrintf("STATUS_WaitingAfterScore\n");
+	//DebugPrintf("STATUS_WaitingAfterScore\n");
 
     InitFontTransTable( TRUE );
     D3DAppClearScreenOnly();
@@ -4348,7 +4494,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         StartCountDown( (int16) TimeLimit.value, 0 );
       }
 
-      DebugPrintf("STATUS_WaitingAfterScore setting MyGameStatus to STATUS_Normal\n");
+      //DebugPrintf("STATUS_WaitingAfterScore setting MyGameStatus to STATUS_Normal\n");
       MyGameStatus = STATUS_Normal;
       InitFontTransTable( !bPolyText );
       GameStatus[WhoIAm] = MyGameStatus;
@@ -4385,7 +4531,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_Joining:
-	DebugPrintf("STATUS_Joining\n");
+	//DebugPrintf("STATUS_Joining\n");
     PreventFlips = FALSE;
     D3DAppClearScreenOnly();
 
@@ -4456,7 +4602,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   // in the multiplayer screen waiting for the game to start
   case STATUS_StartingMultiplayer:
 
-	DebugPrintf("STATUS_StartingMultiplayer\n");
+	//DebugPrintf("STATUS_StartingMultiplayer\n");
     Browl -= framelag;
 
     if( Browl <= 0.0F )
@@ -5152,9 +5298,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
   
     SetUpShips();
-  
-    cursorclipped = TRUE;
-    SetCursorClip();
 
     if( !InitSpecialExecBufs() )
     {
@@ -5230,13 +5373,18 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     InitShipSpeeds();
     MyGameStatus = InitView_MyGameStatus;
     Current_Max_Score = 0;  // used by host to store highest score in session desc
+
+	// lets keep this global next to the cursor clip for now
+	// this is a good place to define that we are going into game mode...
+	SetCursorClip( TRUE );
+	HideCursor = TRUE;
+
     break;
 
 
   case STATUS_ChangeLevelPostInitView:
 	DebugPrintf("STATUS_ChangeLevelPostInitView\n");
     Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NodeName[ 0 ], ".NOD" );
-
     if( !Nodeload( NodeName ) )
     {
       SeriousError = TRUE;
@@ -5316,11 +5464,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     // might not be any External Forces...
     ExternalForcesLoad( (char*) &ExternalForceNames[LevelNum][0] );
+
     // might not be any Teleports...
     TeleportsLoad( (char*) &TeleportNames[LevelNum][0] );
+	
     // Can Cope with no Zone file!!!
     TriggerAreaload( (char*) &ZoneNames[LevelNum][0] );
-
 
 
     InitShipsChangeLevel(&Mloadheader);
@@ -5345,6 +5494,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
     MyGameStatus = ChangeLevel_MyGameStatus;
+
     break;
 
 
@@ -5426,7 +5576,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_SinglePlayer:
-	DebugPrintf("STATUS_SinglePlayer\n");
+	//DebugPrintf("STATUS_SinglePlayer\n");
 
     PreventFlips = FALSE;
       
@@ -5475,7 +5625,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
   case STATUS_ViewingStats:
-	DebugPrintf("STATUS_ViewingStats\n");
+	//DebugPrintf("STATUS_ViewingStats\n");
     D3DAppIClearBuffers();
 
     ReleaseLevel();
@@ -5659,7 +5809,7 @@ void MainRoutines( void )
   WaterProcess();
   ProcessRTLights();
   
-	DebugPrintf("MainRoutines Finished...\n");
+	//DebugPrintf("MainRoutines Finished...\n");
 }
 
 void CheckForRogueSfx( void )
@@ -6521,9 +6671,9 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
   Output    :   BOOL TRUE/FALSE
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
+BOOL DebugLog = FALSE;
 void DebugPrintf( const char * format, ... )
 {
-#ifdef DEBUG_ON
 
   static char buf1[256], buf2[512];
   va_list args;
@@ -6542,9 +6692,9 @@ void DebugPrintf( const char * format, ... )
   va_end( args );
 
   // add the comment to the log file
-  AddCommentToLog( buf2 );
+  if( DebugLog )
+	AddCommentToLog( buf2 );
 
-#endif
 }
 
 
@@ -9033,8 +9183,6 @@ BOOL SaveFullScreenSnapShot( int8 * Filename )
   }
   return( TRUE );
 }
-
-#define DebugPrintf if ( 0 ) DebugPrintf
 
 static int CheckFileWriteable( char *fname )
 {

@@ -58,7 +58,6 @@ extern	uint16 NumCollides;
 extern	float ticksperframe;
 extern	DWORD GroupPolyCol_timeMax;
 extern	long debug_long;
-extern	BOOL cursorclipped;
 extern	RECT cursorclip;
 extern	BYTE                    WhoIAm;
 
@@ -73,7 +72,7 @@ extern	BOOL		PickupLightDetail;
 extern	BYTE		MyGameStatus;
 
 void TestBlt();
-void SetCursorClip( void );
+void SetCursorClip( BOOL );
 void ReallyShowCursor( BOOL );
 void EnablePrimaryLights( void );
 void DisablePrimaryLights( void );

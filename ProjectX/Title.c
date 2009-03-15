@@ -76,9 +76,9 @@ extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
 extern BOOL SetZCompare();
-
+extern BOOL HideCursor;
 extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
-
+extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
 extern BOOL ResetKillsPerLevel;
 
@@ -3641,6 +3641,16 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
     D3DMATERIAL bmat;
     D3DMATERIALHANDLE hBmat;
 
+	HideCursor = FALSE;
+
+	// acting like a window show mouse
+	if ( ActLikeWindow )
+		SetCursorClip( FALSE );
+
+	// if we are in fullscreen hide mouse
+	else if ( d3dappi.bFullscreen )
+		SetCursorClip( TRUE );
+
 	framelag = 0;
 
     if (bPrimaryPalettized)
@@ -3678,9 +3688,6 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 	ticksperframe = 14.0F;
     
 	InitModeCase();
-
-	cursorclipped = TRUE;
-	SetCursorClip();
 
     memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
@@ -8283,6 +8290,9 @@ void	MenuProcess()
 	uint16 i;
 
 	// print text to screen
+#ifdef ProjectXVersionTip
+	CenterPrint4x5Text( ProjectXVersionTip, d3dapp->szClient.cy - (FontHeight+3) * 4, 2 ); // +3 padding
+#endif
 	CenterPrint4x5Text( ProjectXVersionTitle, d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
@@ -10341,12 +10351,22 @@ void InitStartMenu( MENU *Menu )
 
 void ExitInGameMenu( MENU *Menu )
 {
+	// reclip the cursor
+	HideCursor = TRUE;
+	SetCursorClip( TRUE );
 }
 
 
 void InitInGameMenu( MENU *Menu )
 {
 	MENUITEM *item;
+
+	// if we are not full screen then unclip the cursor
+	if ( ActLikeWindow || !d3dappi.bFullscreen )
+	{
+		HideCursor = FALSE;
+		SetCursorClip( FALSE );
+	}
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
 	{
@@ -11132,17 +11152,25 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void MenuGoFullScreen( MENUITEM *Item )
 {
-	if (!d3dapp->bFullscreen)
+	if ( !d3dapp->bFullscreen ) // going into fullscreen
 	{
-	    /*
-	     * Enter the current fullscreen mode.  D3DApp may
-	     * resort to another mode if this driver cannot do
-	     * the currently selected mode.
-	     */
 	    D3DAppFullscreen(d3dapp->CurrMode);
-	}else{
-        D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE);
+
+		if( ! ActLikeWindow )
+			SetCursorClip( TRUE );
+
 	}
+	else // going into window mode
+	{
+        D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE);
+
+		// just let the user click to focus
+		HideCursor = FALSE;
+		SetCursorClip( FALSE );
+
+	}
+	// flushes 
+	myglobs.bResized = TRUE;
 }
 	
 

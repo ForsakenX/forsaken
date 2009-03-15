@@ -25,21 +25,26 @@
 
 BOOL Wine = FALSE;
 
-extern void SetCursorClip( void );
-extern BOOL cursorclipped;
+extern void SetInputAcquired( BOOL );
+extern void SetCursorClip( BOOL );
 extern BOOL	DrawPanel;
 extern BOOL	DrawCrosshair;
 extern uint16 PanelHeight;
 extern void ProcessTextItems (void);
-
-
+extern BOOL cursor_clipped;
 extern	int		TexturePalettized;
 extern	int		TextureRedBPP;
 extern	int		TextureGreenBPP;
 extern	int		TextureBlueBPP;
 extern	int		TextureAlphaBPP;
 extern	int		TextureIndexBPP;
+extern int ignore_mouse_input;
 extern BOOL CanRenderWindowed;
+extern void DebugPrintf( char *fmt, ... );
+extern BOOL AppPause(BOOL f);
+extern BOOL flush_input;
+extern BOOL HideCursor;
+extern BOOL ActLikeWindow;
 
 extern d3dmainglobals myglobs;     /* collection of global variables */
 //#define INITGUID
@@ -483,12 +488,15 @@ exit_with_error:
 /*
  * D3DAppWindowProc
  */
-BOOL
-D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
+
+// Returning false causes program to quit...
+
+extern BOOL MouseExclusive;
+BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
                  UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
-    *bStopProcessing = FALSE;
+    *bStopProcessing = FALSE; // when set to true stops processing the message
     if (!bD3DAppInitialized)
         return TRUE;
     /*
@@ -497,139 +505,460 @@ D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
      * provide a return value in lresult.
      */
     switch(message) {
-		case WM_WINDOWPOSCHANGED:
-			if( !Wine )
+
+		// user requested application to close
+		case WM_CLOSE:
+
+			// in case the window isn't in the foreground
+			// we'd end up with a huge black spot from being previously covered
+
+					// render one frame :]
+					BeginPaint(hwnd, &ps);
+					if (d3dappi.bRenderingIsOK && !d3dappi.bFullscreen) {
+						D3DAppShowBackBuffer(D3DAPP_SHOWALL);
+					}
+					EndPaint(hwnd, &ps);
+
+			// release mouse so they can interact with message box
+			SetCursorClip( FALSE );
+
+			// ask them to confirm clossing
+			if( IDYES == MessageBox(
+							myglobs.hWndMain,
+							"Are you sure you want to exit?",
+							"User requested to close application...",
+							MB_YESNO |
+							MB_ICONQUESTION |
+							MB_DEFBUTTON2) // default is no
+
+			// user wants to quit
+			// let our code know we're quitting and not failing
+			// let the message reach DefWindowProc so it calls CloseWindow
+			){
+				myglobs.bQuit = 1;
+			}
+
+			// user says to cancel the close...
+			else
 			{
-				d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
-				ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
-				SetCursorClip();
+
+				// grab the input again
+				if ( ! MouseExclusive ) // will capture if so...
+					SetInputAcquired( TRUE );
+
+				// clip if HideCursor requests so...
+				if ( HideCursor )
+					SetCursorClip( TRUE );
+
+				else if ( MouseExclusive )
+					SetCursorClip( TRUE );
+
+				// don't clip if acting like a window
+				// and clip if fullscreen
+				else if ( ActLikeWindow )
+					SetCursorClip( FALSE );
+				
+				// clip the cursor if we are in fullscreen
+				else if ( d3dappi.bFullscreen )
+					SetCursorClip( TRUE );
+
+
+				// eat the message
+				*lresult = 1;
+				*bStopProcessing = TRUE;
+
 			}
 			break;
-        case WM_SIZE:
-#if 0
-            if (!bIgnoreWM_SIZE) {
-                /*
-                 * Too long to fit here, see ddcalls.c. Updates the buffers
-                 * and re-creates the device.
-                 */
-                ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message,
-                                             wParam, lParam));
-                *bStopProcessing = TRUE;
-            }
-#endif
+			
+		// window has been destroyed
+		//case WM_DESTROY:
+		//	break;
+
+		case WM_MOVING:
+			//DebugPrintf("The window is moving.\n");
             break;
+
         case WM_MOVE:
-            /*
-             * Update client window position information
-             */
-			if( !Wine )
-			{
-				d3dappi.pClientOnPrimary.x = d3dappi.pClientOnPrimary.y = 0;
-				ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
-			}
+			//DebugPrintf("Window has been moved (top left corner moved).\n");
+
+			// get the position of the window
+			// we should save this right here to the registry
+			// then startup at this location next time
+			//GetWindowRect(hwnd, (LPRECT)lParam);
+
+			// these must be set to 0 before changing
+			d3dappi.pClientOnPrimary.x = 0;
+			d3dappi.pClientOnPrimary.y = 0;
+			// get the xy position of the window
+			// save it to d3dappi.pClientOnPrimary
+			ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
             break;
-#if 1
+
+        case WM_SIZE: // happens after WM_WINDOWPOSCHANGED
+			//DebugPrintf("Window size changed.\n");
+			
+			// we should save the size
+			// then startup at this size next time
+
+// bug: resizing window is broken in the menus
+
+			// resize d3d to match the window size..
+            if (!bIgnoreWM_SIZE) // do not resize if user defined this
+                ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
+			myglobs.bResized = TRUE;
+
+            break;
+
+		// We have been clicked so activate the application
+		// the next case statement will catch the activation message
         case WM_MOUSEACTIVATE:
-            if (d3dappi.bFullscreen && !d3dappi.bPaused) {
-				*lresult = MA_ACTIVATEANDEAT;
-                *bStopProcessing = TRUE;
-				return TRUE;
-			}
-			break;
-#endif
-        case WM_ACTIVATE:
-            /*
-             * Set the front buffer's palette
-             */
-            if (bPaletteActivate && bPrimaryPalettized &&
-                d3dappi.lpFrontBuffer) {
-                d3dappi.lpFrontBuffer->lpVtbl->SetPalette(d3dappi.lpFrontBuffer,
-                                                          lpPalette);
-            }
-			// handle cursor clipping
-			if ( LOWORD( wParam ) == WA_INACTIVE )
+			//DebugPrintf("Window is defocused and has been clicked.\n");\
+			// mouse has activated us and clicked on the client area
+			// don't active if a menu is showing
+			// cause we turn that off...
+			if ( LOWORD( lParam ) == HTCLIENT )
 			{
-				cursorclipped = FALSE;
+				// of course with exclusive mode this will also clip the mouse
+				// but not much we can do because we need to get focus...
+				// don't put this under the HideCursor section...
+				SetInputAcquired( TRUE );
+				SetCursorClip( HideCursor );
+				
+				if ( MouseExclusive )
+				{
+					SetCursorClip( TRUE );
+					return TRUE;
+				}
+
+				// activate the application and remove event from queue
+				*lresult = MA_ACTIVATEANDEAT;
+				*bStopProcessing = TRUE;
 			}
 			else
 			{
-				cursorclipped = !d3dappi.bPaused;
+				// hitting title bar in wine causes capture...
+				// we don't want that...
+				if ( MouseExclusive ){
+					SetInputAcquired( FALSE );
+					SetCursorClip( FALSE );
+					*lresult = 0;
+					*bStopProcessing = TRUE;
+				}
 			}
-			if( !Wine )
-				SetCursorClip();
+			// do not eat the input on non client hits...
+			// you want the close button etc.. to still work...
+			break;
+
+		// this seems to be a catch all for click on taskbar entry and title bar...
+		// rather not make this cause cursor to clip
+        case WM_ACTIVATE: // should recieve keyboard focus if being activated
+
+			// release the mouse on deactivation
+			if ( LOWORD( wParam ) == WA_INACTIVE )
+			{
+				//DebugPrintf("Window has been de-activated.\n");
+				// release clip and acquired state
+				SetInputAcquired( FALSE );
+				SetCursorClip( FALSE );
+			}
+			// need to set keyboard and mouse focus
+			// but don't clip the mouse...
+			else
+			{
+				DebugPrintf("Window has been activated.\n");
+				ignore_mouse_input = 15; // for this many reads
+				SetInputAcquired( TRUE );
+
+				if ( MouseExclusive )
+				{
+					SetCursorClip( TRUE );
+					return TRUE;
+				}
+
+				// i don't think we should ever clip cursor unless in game play
+				// this makes it work better in wine emulation mode
+				// plus we could use the cursor for on screen shit sometimes ui updates ?
+
+				// show cursor if we are acting like window
+				if ( ActLikeWindow )
+					SetCursorClip( FALSE );
+
+				// hide cursor in fullscreen
+				else if ( d3dappi.bFullscreen )
+					SetCursorClip( TRUE );
+
+			}
+
+            // Set the front buffer's palette
+			// what does this do ? when should it be ran ?
+            if (bPaletteActivate && bPrimaryPalettized && d3dappi.lpFrontBuffer )
+                d3dappi.lpFrontBuffer->lpVtbl->SetPalette(d3dappi.lpFrontBuffer, lpPalette);
+
             break;
+
+		// this event is same as above but sends TRUE|FALSE
         case WM_ACTIVATEAPP:
+			//DebugPrintf("Window is being %s.\n",(wParam?"activated":"de-activated"));
             d3dappi.bAppActive = (BOOL)wParam;
             break;
-        case WM_SETCURSOR:
-            /*
-             * Prevent the cursor from being shown in fullscreen
-             */
-            if (d3dappi.bFullscreen && !d3dappi.bPaused) {
-//				SetCursor(NULL);
-                *lresult = 1;
-                *bStopProcessing = TRUE;
-                return TRUE;
-            }
-            break;
-        case WM_MOVING:
-            /*
-             * Prevent the window from moving in fullscreen
-             */
-            if (d3dappi.bFullscreen) {
-                GetWindowRect(hwnd, (LPRECT)lParam);
-                *lresult = 1;
-                *bStopProcessing = TRUE;
-                return TRUE;
-            }
-            break;
+
+		// this means the app is about to minimize or maximize
+		// we should probably trap maximize messages and go fullscreen...
         case WM_GETMINMAXINFO:
-            /*
-             * Ensure the window won't resize in fullscreen
-             */
-            if (d3dappi.bFullscreen) {
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.x= d3dappi.ThisMode.w;
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.y= d3dappi.ThisMode.h;
-                ((LPMINMAXINFO)lParam)->ptMinTrackSize.x= d3dappi.ThisMode.w;
-                ((LPMINMAXINFO)lParam)->ptMinTrackSize.y= d3dappi.ThisMode.h;
-                *lresult = 0;
-                *bStopProcessing = TRUE;
-                return TRUE;
-            } else {
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.x =
-                                                    d3dappi.WindowsDisplay.w;
-                ((LPMINMAXINFO)lParam)->ptMaxTrackSize.y =
-                                                    d3dappi.WindowsDisplay.h;
-                *lresult = 0;
-                *bStopProcessing = TRUE;
-                return TRUE;
-            }
+			//DebugPrintf("The size or position of the window is about to change.\n");
             break;
+
         case WM_PAINT:
-            /*
-             * Clear the rectangle and blt the backbuffer image
-             */
+			//DebugPrintf("Something has requested that we update/paint our screen.\n");
+            // Clear the rectangle and blt the backbuffer image
             BeginPaint(hwnd, &ps);
             if (d3dappi.bRenderingIsOK && !d3dappi.bFullscreen) {
                 D3DAppShowBackBuffer(D3DAPP_SHOWALL);
             }
             EndPaint(hwnd, &ps);
-            *lresult = 1;
-            *bStopProcessing = TRUE;
-            return TRUE;
+			//*lresult = 1;
+			//*bStopProcessing = TRUE;
+			break;
+
         case WM_NCPAINT:
-            /*
-             * When in fullscreen mode, don't draw the window frame.
-             */
-            if (d3dappi.bFullscreen && !d3dappi.bPaused) {
-                *lresult = 0;
-                *bStopProcessing = TRUE;
-                return TRUE;
+			//DebugPrintf("We are requested to update the window frame.\n");
+            // When in fullscreen mode, don't draw the window frame.
+            if (d3dappi.bFullscreen) {
+           //     *lresult = 0;
+           //     *bStopProcessing = FALSE;
             }
             break;
+/*
+		// we should have a ShowCursor global
+		// then any other part of the code can turn it on/off
+		// I'd rather leave cursor showing at all times except real game time...
+        case WM_SETCURSOR:
+			//DebugPrintf("SETCURSOR: Mouse is within window but mouse is not captured.\n");
+            //if (d3dappi.bFullscreen) {
+				//SetCursor(NULL);
+                //*lresult = 1;
+                //*bStopProcessing = TRUE;
+            //}
+            break;
+
+		case WM_WINDOWPOSCHANGING: // is changing
+			//DebugPrintf("Window size, position, or place in z order is about to change.\n");
+			break;
+
+		case WM_WINDOWPOSCHANGED:  // about to change
+			//DebugPrintf("Window size, position, or place in z order has changed.\n");
+			break;
+
+		case WM_CHAR:
+			//DebugPrintf("TranslateMessage has generated a CHAR (standard ascii character) out of a WM_KEYDOWN event.\n");
+			break;
+*/
+
+		case WM_KEYDOWN: // non system key (no alt modifier)
+			{
+				// if lParam bit 30 is 1 then key is STILL pressed...
+				int repeating = (lParam & (1<<30));
+				//DebugPrintf("virtual-key %x is %s.\n", wParam, (repeating?"repeating":"pressed") );
+				if ( wParam == VK_PAUSE )
+				{
+					if ( ! repeating ) // only want first event
+					{
+						DebugPrintf("VK_PAUSE.\n");
+						// we need a key to swap in and out of fullscreen
+						// and swap in/out of mouse acquire mode...
+						SetInputAcquired( ! cursor_clipped );
+						SetCursorClip( ! cursor_clipped );
+					}
+					*lresult = 0; // we are processing the message
+					*bStopProcessing = TRUE;
+				} 
+				// fullscreen toggle
+				else if ( wParam == VK_F12 )
+				{
+					MenuGoFullScreen( NULL );	
+					*lresult = 0; // we are processing the message
+					*bStopProcessing = TRUE;
+				}
+			}
+			break;
+
+		// might want to migrate this into ReadInput
+		case WM_LBUTTONDOWN:
+		case WM_RBUTTONDOWN:
+		case WM_MBUTTONDOWN:
+			//DebugPrintf("mouse button event on client area...\n");
+
+			// of course with exclusive mode this will also clip the mouse
+			// but not much we can do because we need to get focus...
+			// don't put this under the HideCursor section...
+			SetInputAcquired( TRUE );
+
+			// only clip if told
+			if ( HideCursor || MouseExclusive )
+				SetCursorClip( TRUE );
+
+			break;
+
+/*
+		// we might have to stop certain key strokes here like, alt+ctrl+del
+		// or perhaps drop out of screen and loose focus...
+		case WM_SYSCOMMAND: // system key (alt modifier)
+			//DebugPrintf("A command from the window menu or window buttons has been selected.\n");
+			break;
+
+		// Can we detect the windows key being hit?
+		// Or perhaps other ctrl modified keystrokes like ctrl+escape
+		// we should definitively drop out of the application on the above keystroke
+
+
+// dinput docs
+//DISCL_EXCLUSIVE
+	// An application that acquires the mouse or keyboard device in exclusive mode
+	// should always unacquire the devices when it receives WM_ENTERSIZEMOVE and WM_ENTERMENULOOP messages.
+	// Otherwise, the user cannot manipulate the menu or move and resize the window.
+
+		case WM_ENTERSIZEMOVE:
+		case WM_ENTERMENULOOP:
+			// need to implement above here...
+			// perhaps not cause it works fine...
+			break;
+
+
+
+// unused events that might be of interest later
+
+		case WM_SIZING:
+			// drag rectangle monitoring
+			break;
+
+		case WM_DEVICECHANGE:
+			DebugPrintf("A device has changed.\n");
+			break;
+
+		case WM_DISPLAYCHANGE:
+			//DebugPrintf("Display resolution has changed.\n");
+			break;
+
+		case WM_SETFOCUS:
+			//DebugPrintf("Keyboard has gained focus.\n");
+			break;
+
+		case WM_KILLFOCUS:
+			//DebugPrintf("About to loose keyboard focus.\n");
+			break;
+
+		case WM_GETICON:
+			switch ( wParam )
+			{
+			case ICON_BIG:
+				//DebugPrintf("Large (alt+tab) icon has been requested.\n"); 
+				break;
+			case ICON_SMALL:
+			//case ICON_SMALL2:
+				//DebugPrintf("Small window icon has been requested.\n");
+				break;
+			}
+			break;
+
+		case WM_SETTEXT:
+			//DebugPrintf("Something has sent us a string: %s\n",lParam);
+			break;
+
+		case WM_GETTEXT:
+			//DebugPrintf("Something has requested a string.\n");
+			break;
+
+		case WM_SYNCPAINT:
+			//DebugPrintf("System has asked us to sync paint.\n");
+			break;
+
+		case WM_ERASEBKGND:
+			//DebugPrintf("Window background must be erased (needs a repaint).\n");
+			break;
+
+		case WM_CAPTURECHANGED:
+			//DebugPrintf("Loosing mouse capture.\n");
+			break;
+
+		case WM_EXITSIZEMOVE:
+			//DebugPrintf("Exiting resize/move.\n");
+			break;
+
+		case WM_CANCELMODE:
+			//DebugPrintf("Mouse capture released via CANCEL MODE.\n");
+			break;
+
+		// non client area hits (titlebar, borders)
+		case WM_NCHITTEST:
+		case WM_NCMOUSEMOVE:
+		case WM_NCACTIVATE:
+		case WM_NCLBUTTONUP:
+		case WM_NCLBUTTONDOWN:
+		case WM_NCRBUTTONDOWN:
+		case WM_NCRBUTTONUP:
+		case WM_NCLBUTTONDBLCLK:
+		case WM_NCRBUTTONDBLCLK:
+		case WM_NCMBUTTONDOWN:
+		case WM_NCMBUTTONUP:
+		case WM_NCMBUTTONDBLCLK:
+			//DebugPrintf("Non client area mouse event.\n");
+			break;
+
+
+// end of d3d specific window events
+
+
+
+
+
+
+
+
+
+
+// client area events that are within the viewport
+
+// keyboard events
+
+		case WM_KEYDOWN:
+		case WM_KEYUP:
+			DebugPrintf("Non system key (not using alt modifier) has been %s.\n",(message==WM_KEYDOWN?"pressed":"released"));
+			break;
+
+		case WM_CHAR:
+			DebugPrintf("TranslateMessage has generated a CHAR out of a WM_KEYDOWN event.\n");
+			break;
+
+		case WM_CONTEXTMENU:
+			DebugPrintf("The right mouse button has been clicked.\n");
+			break;
+
+		case WM_SYSCOMMAND:
+			DebugPrintf("A command from the window menu or window buttons has been selected.\n");
+			break;
+
+// mouse events
+
+		case WM_MOUSEMOVE: // same value as WM_MOUSEFIRST (why?)
+			DebugPrintf("The mouse is moving (over the client area without focus) (anywhere with focus).\n");
+			break;
+
+		case 0x020A: // WM_MOUSEWHEEL (why isn't this defined?)
+			DebugPrintf("mouse wheel event.\n");
+			break;
+
+//
+
+		default:
+			DebugPrintf("Unhandeled windowProc message: %d\n",message);
+*/
+
     }
     return TRUE;
 
+exit_with_error:
+	DebugPrintf("D3DAppWindowProc called exit_with_error.\n");
+	return FALSE;
 }
 
 
@@ -704,7 +1033,9 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
         D3DAppISetErrorString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");
         return FALSE;
     }
-    if (d3dappi.bPaused)
+
+	// if we pass flags==NULL then we are supposed to clear the screen....
+    if ( !flags || d3dappi.bPaused )
         return TRUE;
 
 	if (d3dappi.bFullscreen) {  
@@ -732,8 +1063,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 		/*
 		 * Set the rectangle to blt from the back to front bufer ..Set to entire client window
 		 */
-		SetRect(&buffer, 0, 0, d3dappi.szClient.cx,
-				d3dappi.szClient.cy);
+		SetRect(&buffer, 0, 0, d3dappi.szClient.cx,	d3dappi.szClient.cy);
 		SetRect(&front,
 				d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y,
 				d3dappi.szClient.cx + d3dappi.pClientOnPrimary.x,
@@ -741,9 +1071,18 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 		/*
 		 * Blt the list of rectangles from the back to front buffer
 		 */
+
+//DebugPrintf("......................................................................\n");
+//DebugPrintf("Window Size: %d, %d\n",d3dappi.szClient.cx,d3dappi.szClient.cy);
+//DebugPrintf("Window Position: %d, %d\n",d3dappi.pClientOnPrimary.x, d3dappi.pClientOnPrimary.y);
+//DebugPrintf("%d, %d, %d, %d\n",front.left, front.top, front.right, front.bottom);
+//DebugPrintf("%d, %d, %d, %d\n",buffer.left, buffer.top, buffer.right, buffer.bottom);
+
 		LastError =	d3dappi.lpFrontBuffer->lpVtbl->Blt(d3dappi.lpFrontBuffer,
-											 &front, d3dappi.lpBackBuffer,
-											 &buffer, DDBLT_WAIT , NULL);
+											 &front,
+											 d3dappi.lpBackBuffer,
+											 &buffer,
+											 DDBLT_WAIT , NULL);
 		if (LastError == DDERR_SURFACELOST) {
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
