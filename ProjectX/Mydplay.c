@@ -1121,7 +1121,7 @@ void SetupDplayGame()
 	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
-	AddCommentToLog( "SetupDPlayGame()\n ");
+	DebugPrintf( "SetupDPlayGame()\n ");
 
 	JustGenerated = TRUE;
 	

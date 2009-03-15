@@ -8,5 +8,6 @@
 #define ProjectXVersion		"x.x.x.x" // version number
 #define ProjectXVersionTitle	"Open Source Version " ProjectXVersion
 #define ProjectXWindowTitle	"ProjectX " ProjectXVersion
+//#define ProjectXVersionTip "A tip for this version."
 
 #endif
