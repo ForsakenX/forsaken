@@ -53,17 +53,15 @@ int	PacketSize[256];
 extern LPDPSESSIONDESC2                    glpdpSD_copy;
 #endif
 
-uint32 BigPacketSize						= 0;
-uint32 MaxBigPacketSize				= 0;
-uint32 RecPacketSize					= 0;
+uint32 RecPacketSize				= 0;
 uint32 MaxRecPacketSize				= 0;
-uint32 BytesPerSecRec					= 0;
+uint32 BytesPerSecRec				= 0;
 uint32 BytesPerSecSent				= 0;
 uint32 CurrentBytesPerSecRec		= 0;
 uint32 CurrentBytesPerSecSent		= 0;
-uint32 MaxCurrentBytesPerSecRec	= 0;
-uint32 MaxCurrentBytesPerSecSent = 0;
-float BytesPerSecTimer					= 0.0F;
+uint32 MaxCurrentBytesPerSecRec		= 0;
+uint32 MaxCurrentBytesPerSecSent	= 0;
+float BytesPerSecTimer				= 0.0F;
 
 // registry.c
 extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
@@ -355,19 +353,8 @@ BOOL	DemoShipInit[MAX_PLAYERS+1];
 LONGLONG	LastPacketTime[MAX_PLAYERS+1];
 BYTE		CommBuff[MAX_BUFFER_SIZE];
 
-BOOL	BigPackets = FALSE;
-uint32	BIGPACKETBUFFERSIZE = 1024;
-BYTE	BigPacketCommBuff[MAXBIGPACKETBUFFERSIZE];
 BYTE	ReceiveCommBuff[MAXBIGPACKETBUFFERSIZE];
 int		RealPacketSize[256];
-
-LONGLONG LastBigPacketSent = 0;
-uint32	BigPacketOffset = 2;
-uint32	NumOfPacketsInBigPacket = 0;
-uint32	BigPacketOffsets[MAXPACKETSPERBIGPACKET];
-uint32	BigPacketSizes[MAXPACKETSPERBIGPACKET];
-LONGLONG	BigPacketTime[MAXPACKETSPERBIGPACKET];
-int	BigPacketsSent = 0;
 
 PLAYERINFO PlayerInfo[MAX_PLAYERS];	// used by host to manage player numbers
 
@@ -635,50 +622,30 @@ void DplayGameUpdate()
 			}
 			else
 			{
-				if( !BigPackets )
-				{
-					FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
-					FVeryShortGlobalShip.GroupImIn				= (BYTE) Ships[WhoIAm].Object.Group;    // 
-					FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
-					FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
-					FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
-					Move_Off = Ships[WhoIAm].Move_Off;
-					NormaliseVector( &Move_Off );
-					FVeryShortGlobalShip.Move_Off_Scalar		= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
-					FVeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
-					FVeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
-					FVeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
-					FVeryShortGlobalShip.Quat.w					= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-					FVeryShortGlobalShip.Quat.x					= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-					FVeryShortGlobalShip.Quat.y					= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-					FVeryShortGlobalShip.Quat.z					= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-					FVeryShortGlobalShip.Angle.x					= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Angle.y					= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Angle.z					= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-					FVeryShortGlobalShip.Bank						= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
-					FVeryShortGlobalShip.Primary					= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-					FVeryShortGlobalShip.Secondary				= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-					FVeryShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
-					
-					SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, 0);
-				}
-				else
-				{
-					GroupOnly_FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
-					GroupOnly_FVeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
-					GroupOnly_FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
-					GroupOnly_FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
-					GroupOnly_FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
-					GroupOnly_FVeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-					GroupOnly_FVeryShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
-					GroupOnly_FVeryShortGlobalShip.Primary				= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-					GroupOnly_FVeryShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-					GroupOnly_FVeryShortGlobalShip.PrimPowerLevel	= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
-					SendGameMessage(MSG_GROUPONLY_VERYSHORTFUPDATE, 0, 0, 0, 0);
-				}
+				FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
+				FVeryShortGlobalShip.GroupImIn				= (BYTE) Ships[WhoIAm].Object.Group;    // 
+				FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
+				FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
+				FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
+				Move_Off = Ships[WhoIAm].Move_Off;
+				NormaliseVector( &Move_Off );
+				FVeryShortGlobalShip.Move_Off_Scalar		= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+				FVeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
+				FVeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
+				FVeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
+				FVeryShortGlobalShip.Quat.w					= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+				FVeryShortGlobalShip.Quat.x					= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+				FVeryShortGlobalShip.Quat.y					= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+				FVeryShortGlobalShip.Quat.z					= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+				FVeryShortGlobalShip.Angle.x					= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.y					= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.z					= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Bank						= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+				FVeryShortGlobalShip.Primary					= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+				FVeryShortGlobalShip.Secondary				= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+				FVeryShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
+				
+				SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, 0);
 			}
 			Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
 			Interval = DPlayUpdateInterval;
@@ -686,14 +653,11 @@ void DplayGameUpdate()
 		}
 		else
 		{
-			if( !BigPackets )
+			Interval -= framelag;
+			if( Interval <= 0.0F )
 			{
-				Interval -= framelag;
-				if( Interval <= 0.0F )
-				{
-					Interval = DPlayUpdateInterval;
-					SendANormalUpdate();
-				}
+				Interval = DPlayUpdateInterval;
+				SendANormalUpdate();
 			}
 		}
 
@@ -1055,9 +1019,6 @@ void SetupDplayGame()
 {
 	int16 i,Count;
 
-	BigPacketOffset = 2;
-	BigPacketCommBuff[2] = 0;
-	LastBigPacketSent = 0;
 	for( i = 0 ; i < 256 ; i++ )
 	{
 		RealPacketSize[i] = 0;
@@ -1250,7 +1211,6 @@ void DestroyGame( void )
 		ResetAllStats(); // stats.c
 
 		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
-		ServiceBigPacket(TRUE);
 		
 		DPlayGetSessionDesc();
 		DPlayDestroyPlayer(dcoID);
@@ -1430,11 +1390,10 @@ void ReceiveGameMessages( void )
 		CurrentBytesPerSecSent		= 0;
 		MaxCurrentBytesPerSecRec	= 0;
 		MaxCurrentBytesPerSecSent	= 0;
-		RecPacketSize = BigPacketSize = MaxRecPacketSize = MaxBigPacketSize = 0;
+		RecPacketSize = MaxRecPacketSize = 0;
 		BytesPerSecTimer = 71.0F;
 	}
 
-	ServiceBigPacket(FALSE);
 	ProcessGuaranteedMessages( FALSE , FALSE , FALSE );
 	ProcessAcknowledgeMessageQue();
 	BuildReliabilityTab();
@@ -1456,7 +1415,7 @@ void ReceiveGameMessages( void )
 
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
 				{
-					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG && *BufferPnt != MSG_BIGPACKET )
+					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG )
 						Demo_fwrite( (Buffer2Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
 				}
 				
@@ -1485,7 +1444,7 @@ void ReceiveGameMessages( void )
 
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
 				{
-					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG && *BufferPnt != MSG_BIGPACKET)
+					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG )
 						Demo_fwrite( (Buffer1Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
 				}
 				
@@ -1524,7 +1483,7 @@ void ReceiveGameMessages( void )
 					{
 						TempTime -= GameStartedTime;
 
-						if( ReceiveCommBuff[0] != MSG_GUARANTEEDMSG && ReceiveCommBuff[0] != MSG_ACKMSG && ReceiveCommBuff[0] != MSG_BIGPACKET )
+						if( ReceiveCommBuff[0] != MSG_GUARANTEEDMSG && ReceiveCommBuff[0] != MSG_ACKMSG )
 						{
 							Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 							Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
@@ -1782,10 +1741,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	VECTOR	Recoil;
 	VECTOR	Dir;
 	float	Force;
-	float * FloatPnt;
-	uint32	BigOffset = 2;
 	uint16	Pickup;
-	LONGLONG	TimeFrig;
 
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 	LPSESSIONDESCMSG	lpSessionDescMsg;
@@ -1813,64 +1769,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			PacketSize[*MsgPnt]+=len;
 		}
 
-	}
-
-	if( *MsgPnt == MSG_BIGPACKET )
-	{
-		while( MsgPnt[BigOffset] )
-		{
-			if( MsgPnt[BigOffset] == MSG_GUARANTEEDMSG )
-			{
-				lpGuaranteedMsg = (LPGUARANTEEDMSG)(&MsgPnt[BigOffset]);
-				FloatPnt = (float*) ( &MsgPnt[ BigOffset + sizeof(GUARANTEEDMSG) + RealPacketSize[lpGuaranteedMsg->StartOfMessage] -1 ] );
-				GlobalFramelagAddition = *FloatPnt;
-
-				if( GlobalFramelagAddition < 0.0F || GlobalFramelagAddition > 300.0F  )
-				{
-					DebugPrintf("Got a messed up GlobalFramelagAddition\n");
-					return;
-				}
-
-				ID = lpGuaranteedMsg->ID;
-				AckWhoIAm = lpGuaranteedMsg->WhoIAm;
-				if( AddAcknowledgeMessageQue( AckWhoIAm , ID ) )
-				{
-					Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-					len = RealPacketSize[lpGuaranteedMsg->StartOfMessage];
-					Demo_fwrite( &len, sizeof(len), 1, DemoFp );
-					Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-					Demo_fwrite( &lpGuaranteedMsg->StartOfMessage, len , 1, DemoFp );
-					ItsAGuranteed = TRUE;
-					EvaluateMessage( len , &lpGuaranteedMsg->StartOfMessage );
-					ItsAGuranteed = FALSE;
-				}
-				SendGameMessage( MSG_ACKMSG, ID, AckWhoIAm, 0, 0 );
-				BigOffset += sizeof(GUARANTEEDMSG) + sizeof(float) + RealPacketSize[lpGuaranteedMsg->StartOfMessage] -1;
-			}
-			else
-			{
-				FloatPnt = (float*) ( &MsgPnt[ BigOffset + RealPacketSize[MsgPnt[BigOffset] ] ]  );
-
-				// access viloation
-				// GlobalFramelogAddtion is at 0000000
-				GlobalFramelagAddition = *FloatPnt;
-
-				if( GlobalFramelagAddition < 0.0F || GlobalFramelagAddition > 300.0F )
-				{
-					DebugPrintf("Got a messed up GlobalFramelagAddition\n");
-					return;
-				}
-				Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-				len = RealPacketSize[MsgPnt[BigOffset]];
-				Demo_fwrite( &len, sizeof(len), 1, DemoFp );
-				Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-				Demo_fwrite( &MsgPnt[BigOffset], len , 1, DemoFp );
-				EvaluateMessage( len , &MsgPnt[BigOffset] );
-				BigOffset += RealPacketSize[ MsgPnt[BigOffset] ] + sizeof(float);
-			}
-			GlobalFramelagAddition = 0.0F;
-		}
-		return;
 	}
 
 	if( *MsgPnt == MSG_GUARANTEEDMSG )
@@ -2108,7 +2006,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 		case MSG_SESSIONDESC:
 #endif
-		case MSG_BIGPACKET:
 		case MSG_ACKMSG:
 		case MSG_TRACKERINFO:
 			break;
@@ -3554,11 +3451,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		PingRequestTime = lpPingMsg->Time;
-		if( BigPackets )
-		{
-			QueryPerformanceCounter((LARGE_INTEGER *) &TimeFrig);
-			PingRequestTime += LastBigPacketSent - TimeFrig;
-		}
 		// can we send ping reply to just that user ?
 		SendGameMessage(MSG_PINGREPLY, 0, 0 , lpPingMsg->WhoIAm , 0);
 		return;
@@ -3715,7 +3607,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	int				QueTimeout = 0;	// default is no time out
 	int				TIMEOUT = 100;	// que time out where specified (i.e. ship updates)
 	HRESULT		hr;
-	LONGLONG	TimeFrig;
 	int MessageColour = 2; // default message colour is light green
 	char VersionMessage[30];
 	BOOL Rejoining = FALSE;
@@ -4387,12 +4278,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpPingMsg->MsgCode = msg;
         lpPingMsg->WhoIAm = WhoIAm;
 		QueryPerformanceCounter( (LARGE_INTEGER *) &lpPingMsg->Time);
-
-		if( BigPackets )
-		{
-			QueryPerformanceCounter((LARGE_INTEGER *) &TimeFrig);
-			lpPingMsg->Time += LastBigPacketSent - TimeFrig;
-		}
 		nBytes = sizeof( PINGMSG );
 		break;
 
@@ -4468,15 +4353,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			Demo_fwrite( &nBytes, sizeof(int), 1, DemoFp );
 			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
 			Demo_fwrite( &CommBuff[0], nBytes, 1, DemoFp );
-		}
-	}
-	
-	if( !send_to )
-	{
-		if( BigPackets )
-		{
-			AddToBigPacket( nBytes , &CommBuff[0] , msg );
-			return;
 		}
 	}
 	
@@ -5238,44 +5114,35 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 				// up resend count
 				GMm->Count = GM->Count++;
 
-				// piggy back big packet
-				if( BigPackets && !SendGuaranteed )
-					AddToBigPacket( GM->MessageLength , &GM->Message , MSG_GUARANTEEDMSG);
+				// send and wait for success/error
+				if( !UseSendAsync || SendGuaranteed )
+				{	
+					hr = glpDP->lpVtbl->Send( glpDP,
+											  dcoID,   // From
+											  send_to, // send to everybody
+											  Flags ,
+											  &GM->Message,
+											  GM->MessageLength);
 
-				// manually send
-				else
-				{
-					// send and wait for success/error
-					if( !UseSendAsync || SendGuaranteed )
-					{	
-						hr = glpDP->lpVtbl->Send( glpDP,
-												  dcoID,   // From
-												  send_to, // send to everybody
-												  Flags ,
-												  &GM->Message,
-												  GM->MessageLength);
-
-					// just send it and return right away so we can continue working
-					}else{
-						Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
-						hr = IDirectPlayX_SendEx( glpDP,
-												  dcoID,   // From
-												  send_to, // send to
-												  Flags ,
-												  &GM->Message,
-												  GM->MessageLength,
-												  0,		// dwPriority
-												  0,		// dwTimeout
-												  NULL,		// lpContext
-												  NULL		// lpdwMsgID
-												  );
-					}
-
-					// failed to send packet
-					if( hr != DP_OK && hr != DPERR_PENDING )
-						OutputDebugString( "Dplay Send Error" );
-
+				// just send it and return right away so we can continue working
+				}else{
+					Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
+					hr = IDirectPlayX_SendEx( glpDP,
+											  dcoID,   // From
+											  send_to, // send to
+											  Flags ,
+											  &GM->Message,
+											  GM->MessageLength,
+											  0,		// dwPriority
+											  0,		// dwTimeout
+											  NULL,		// lpContext
+											  NULL		// lpdwMsgID
+											  );
 				}
+
+				// failed to send packet
+				if( hr != DP_OK && hr != DPERR_PENDING )
+					OutputDebugString( "Dplay Send Error" );
 
 			}
 		}
@@ -5585,191 +5452,6 @@ void UnPackShipFlags( BYTE Player , uint32 Flags )
 	Ships[Player].NumMultiples = (BYTE)((Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 }
 
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Add a packet to the Big one...
-	Input		:		BYTE Player
-	Output		:		uint32 Flags
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType)
-{
-    DWORD       nBytes;
-
-	// add packet data to demo
-	if( RecordDemo && MyGameStatus == STATUS_Normal && MsgType != MSG_GUARANTEEDMSG)
-	{
-		QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-		nBytes = MessageLength;
-		TempTime = TempTime - GameStartedTime;
-		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		Demo_fwrite( &nBytes, sizeof(int), 1, DemoFp );
-		Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
-		Demo_fwrite( Message, nBytes, 1, DemoFp );
-	}
-
-	// if packet is full !!
-	if( (BigPacketOffset+MessageLength+sizeof(float)) >= (BIGPACKETBUFFERSIZE-1) ||
-		 NumOfPacketsInBigPacket >= MAXPACKETSPERBIGPACKET-1 )
-
-	    // send BLOCKING
-		SendBigPacket(FALSE);
-
-	// pack on the big packet
-	BigPacketOffsets[NumOfPacketsInBigPacket] = BigPacketOffset;
-	BigPacketSizes[NumOfPacketsInBigPacket] = MessageLength;
-	QueryPerformanceCounter((LARGE_INTEGER *) &BigPacketTime[NumOfPacketsInBigPacket]);
-	NumOfPacketsInBigPacket++;
-	memcpy( &BigPacketCommBuff[BigPacketOffset], Message, MessageLength );
-	BigPacketOffset += MessageLength + sizeof(float);
-	BigPacketCommBuff[BigPacketOffset] = 0;
-}
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Service The Big Packet...
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void ServiceBigPacket( BOOL OverideTime )
-{
-	if( !glpDP || !dcoID || !BigPackets || PlayDemo )
-		return;
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	if( TempTime > LastBigPacketSent || OverideTime )
-	{
-		// the time for Sending The Big packet
-		if( MyGameStatus == STATUS_Normal )
-			SendANormalUpdate();
-		SendBigPacket(OverideTime);
-	}
-}
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Send Big Packet...
-	Input		:		void
-	Output		:		void
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void SendBigPacket( BOOL SendGuaranteed )
-{
-	HRESULT				hr;
-    DWORD				send_to = 0;
-	DWORD				Flags = 0;
-	uint32 i;
-	float * FloatPnt;
-	DWORD dwNumMsgs;
-	BOOL throttle = TRUE;
-
-	// gauranteed flags
-	if( SendGuaranteed )
-		Flags |= DPSEND_GUARANTEED;
-
-	
-	BigPacketCommBuff[0] = MSG_BIGPACKET;
-	BigPacketCommBuff[1] = WhoIAm;
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	if( NumOfPacketsInBigPacket )
-	{
-		for( i = 0 ; i < NumOfPacketsInBigPacket ; i++ )
-		{
-			FloatPnt = (float*) &BigPacketCommBuff[ BigPacketOffsets[i] + BigPacketSizes[i] ];
-			*FloatPnt = (float) ( ((TempTime - BigPacketTime[i]) * 71) / Freq );
-		}
-		
-		// send blocking
-		if( !UseSendAsync && !SendGuaranteed )
-		{
-			
-			hr = glpDP->lpVtbl->Send( glpDP,
-									  dcoID,   // From
-									  send_to, // send to everybody
-									  Flags ,
-									  &BigPacketCommBuff[0],
-									  BigPacketOffset+1);
-		// send asynch
-		}else{
-		
-			while( throttle )
-			{
-				hr = IDirectPlayX_GetMessageQueue( glpDP, 0, 0, DPMESSAGEQUEUE_SEND , &dwNumMsgs, NULL );
-				switch ( hr )
-				{
-
-				// queue ok
-				case DP_OK:
-
-					// wait until queue is down to two messages
-					if ( dwNumMsgs < 2 )
-						throttle = FALSE;
-
-					break;
-
-				// not supporting queue?
-				case DPERR_UNSUPPORTED:
-					CenterPrint4x5Text( UNSUPPORTED_MSG_QUE, d3dapp->szClient.cy - FontHeight * 2, 2 );
-					throttle = FALSE;
-					break;
-
-				// errors
-				case DPERR_INVALIDFLAGS:
-				case DPERR_INVALIDPARAMS:
-				case DPERR_INVALIDPLAYER:
-				default:
-					Msg("serious error with IDirectPlayX_GetMessageQueue ( error = %d )\n", hr );
-					throttle = FALSE;
-
-				}
-
-				// print info to screen
-				if( throttle && MyGameStatus == STATUS_Normal )
-				{
-					CenterPrint4x5Text( "Throttle On", d3dapp->szClient.cy - FontHeight * 3, 2 );
-					D3DAppShowBackBuffer(TRUE);
-				}
-
-			}
-
-			// send big packet
-			Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
-			hr = IDirectPlayX_SendEx( glpDP,
-									  dcoID,   // From
-									  send_to, // send to
-									  Flags ,
-									  &BigPacketCommBuff[0],
-									  BigPacketOffset+1,
-									  0,		// dwPriority
-									  0,		// dwTimeout
-									  NULL,		// lpContext
-									  NULL		// lpdwMsgID
-									  );
-		}
-
-		// catch error
-		if( hr != DP_OK && hr != DPERR_PENDING )
-			OutputDebugString( "Dplay Send Error" );
-
-	}
-
-	// update packet data
-
-	BigPacketSize = BigPacketOffset+1;
-	if( BigPacketSize > MaxBigPacketSize )
-		MaxBigPacketSize = BigPacketSize;
-
-	BytesPerSecSent += BigPacketOffset+1;
-
-	BigPacketsSent = NumOfPacketsInBigPacket;
-	QueryPerformanceCounter((LARGE_INTEGER *) &LastBigPacketSent);
-
-	if( MyGameStatus == STATUS_Normal )
-		LastBigPacketSent += Freq / PacketsSlider.value;
-	else
-		LastBigPacketSent += Freq / 2;
-
-	BigPacketOffset = 2;
-	BigPacketCommBuff[2] = 0;
-	NumOfPacketsInBigPacket = 0;
-}
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Set Ship Bank and Mat..
 	Input		:		OBJECT *
@@ -5783,11 +5465,6 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 	QuatToMatrix( &ShipObjPnt->FinalQuat, &ShipObjPnt->FinalMat );
 	MatrixTranspose( &ShipObjPnt->FinalMat, &ShipObjPnt->FinalInvMat );
 }
-
-
-
-extern SLIDER ThrottleSlider;
-DWORD MaxPacketsInQue = 0;
 
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

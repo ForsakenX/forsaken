@@ -65,8 +65,6 @@ extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
-extern	uint32	BIGPACKETBUFFERSIZE;
-
 extern BOOL NoMenuBack;
 
 extern void DebugLastError( void );
@@ -78,7 +76,6 @@ extern BOOL CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
 extern	BOOL	UseShortPackets;
-extern	BOOL	BigPackets;
 
 extern char *DemoFileName( char *demoname );
 extern char *DemoName( char *demofilename );
@@ -517,16 +514,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 		return FALSE;
 	}
 	SugestedEnumSessionsTimeout = ServiceProviderCaps.dwTimeout * 2;
-
-
-	if( ServiceProviderCaps.dwMaxBufferSize < MAXBIGPACKETBUFFERSIZE )
-	{
-		BIGPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
-	}
-	else
-	{
-		BIGPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
-	}
 	
 //	if (!AutoSelectConnection)
 //		MenuChange ( Item );
@@ -585,14 +572,6 @@ BOOL RefreshDPlay ( void )
 		return FALSE;
 	}
 	SugestedEnumSessionsTimeout = ServiceProviderCaps.dwTimeout * 2;
-
-
-	if( ServiceProviderCaps.dwMaxBufferSize < MAXBIGPACKETBUFFERSIZE )
-	{
-		BIGPACKETBUFFERSIZE = ServiceProviderCaps.dwMaxBufferSize;
-	}else{
-		BIGPACKETBUFFERSIZE = MAXBIGPACKETBUFFERSIZE;
-	}
 
 	return TRUE;
 }
@@ -1166,7 +1145,6 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 
 	BountyHunt = ( sd->dwUser3 & BountyGameBit ) ? TRUE : FALSE;
 	UseShortPackets = ( sd->dwUser3 & ShortPacketsBit ) ? TRUE : FALSE;
-	BigPackets = ( sd->dwUser3 & BigPacketsBit ) ? TRUE : FALSE;
 	MaxKills = (int16)( ( sd->dwUser2 & MaxKillsBits ) >> MaxKills_Shift );
 }
 

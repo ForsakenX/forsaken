@@ -77,7 +77,6 @@ extern	BOOL	BountyHunt;
 extern	uint16	RandomStartPosModify;
 extern	BOOL	DplayRecieveThread;
 extern	BOOL	UseShortPackets;
-extern	BOOL	BigPackets;
 extern	BOOL					IsHost;   // is the user hosting/joining a game
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
@@ -215,8 +214,6 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 		lpDesc->dwUser3 |= BountyGameBit;
 	if ( UseShortPackets )
 		lpDesc->dwUser3 |= ShortPacketsBit;
-	if ( BigPackets )
-		lpDesc->dwUser3 |= BigPacketsBit;
 
 	// new additions ( previously in MSG_INIT )
 	if ( HarmTeamMates )

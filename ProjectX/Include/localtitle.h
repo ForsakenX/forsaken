@@ -65,7 +65,6 @@
 #define LT_MENU_NEW_MoreMultiplayerOptions0 "Multiplayer options"
 #define LT_MENU_NEW_MoreMultiplayerOptions1 "collision perspective"
 #define LT_MENU_NEW_MoreMultiplayerOptions2 "short packets"
-#define LT_MENU_NEW_MoreMultiplayerOptions3 "packet grouping" 
 #define LT_MENU_NEW_MoreMultiplayerOptions4 "packet rate" 
 #define LT_MENU_NEW_MoreMultiplayerOptions5 "show ping" 
 #define LT_MENU_NEW_MoreMultiplayerOptions6 "ping interval" 
@@ -102,7 +101,6 @@
 #define LT_MENU_NEW_CreateGame13 "bounty hunt"
 #define LT_MENU_NEW_CreateGame14 "Team bounty hunt"
 #define LT_MENU_NEW_CreateGame16 "more options"
-#define LT_MENU_NEW_CreateGame17 "quit"
 
 #define LT_MENU_NEW_ChooseConnectionToStart0 "Choose connection type"
 
@@ -751,9 +749,6 @@
 #define LT_CTF_NoReturn "can't pick up"
 #define LT_CTF_Standard "standard"
 
-#define LT_BigPacketsSelected "short packets have been automatically enabled" 
-#define LT_ShortPacketsSelected "packet grouping has been automatically disabled" 
-
 /*********************************************************************
 
   ADDED SINCE FULL RELEASE
@@ -776,7 +771,7 @@
 #define LT_Extra4 "level: %s"
 #define LT_Extra5 "players: %d / %d"
 #define LT_Extra6 "game: %s%s"
-#define LT_Extra7 "packets: short %s, grouped %s"
+#define LT_Extra7 "packets: short %s"
 #define LT_Extra8 "collision perspective: %s"
 #define LT_Extra9 "server based game"
 #define LT_Extra10 "Harm Team Mates %s"

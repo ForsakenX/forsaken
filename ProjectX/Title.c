@@ -128,7 +128,6 @@ extern GUID	ServiceProvidersGuids[];
 extern char SessionNames[ MAXSESSIONS ][ 128 ];
 
 extern DPSESSIONDESC2	Sessions[];
-extern BOOL	BigPackets;
 extern float FlashTextActive;
 extern BOOL NoDynamicSfx;
 extern float GlobalSoundAttenuation;
@@ -419,8 +418,6 @@ void LoadLevelText( MENU *Menu );
 BOOL InitDInput(void);
 BOOL TermDInput( void );
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );
-void BigPacketsSelected( MENUITEM *Item );
-void ShortPacketsSelected( MENUITEM *Item );
 void ToggleBikeEngines( MENUITEM *Item );
 void DrawHelpKey( MENUITEM * Item );
 int GetFontInfo( MENUITEM * Item );
@@ -877,7 +874,6 @@ SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWater
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
 SLIDER TrailDetailSlider					= { 0, 10, 1, 9, 0, 0.0F };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
-SLIDER ThrottleSlider					= { 25, 1000, 25, 1000, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider2	= { 1, 20, 1, 5, 0, 0.0F };
 SLIDER NumOfPlayersSlider				= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
@@ -1351,8 +1347,7 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"	*/, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
-		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			ShortPacketsSelected,	SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10,  51, 100,  58, 0,				LT_MENU_NEW_MoreMultiplayerOptions3  /* "packet grouping"        */, FONT_Small,  TEXTFLAG_CentreY,							&BigPackets,				BigPacketsSelected,		SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10,  65, 100,  72, 0,				LT_MENU_NEW_MoreMultiplayerOptions5  /* "show ping"              */, FONT_Small,  TEXTFLAG_CentreY,							&ShowPing,					NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  72, 100,  79, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions6  /* "ping interval"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PingFreqSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
@@ -1969,6 +1964,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"IP or Name:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
+		// nobody liked this... leave it out...
 		//{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -2860,10 +2856,6 @@ MENU	MENU_Visuals = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
-
-BOOL ThrottleReset = TRUE;
-extern void ResetThrottle( MENUITEM *item );
-void StoreThrottleSettings( MENUITEM *item );
 
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, NULL, NULL, NULL, 0,
@@ -10766,9 +10758,7 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 		 	WaitingToQuit = TRUE;
 			return;
 		}
-
 		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
-		ServiceBigPacket(TRUE);
 	}
 
 	MyGameStatus = STATUS_QuitCurrentGame;
@@ -11088,11 +11078,6 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 		*/
 		
 		else if ( item->Variable == &UseShortPackets )
-		{
-			item->FuncSelect = SelectFlatMenuToggle;
-			item->FuncDraw = DrawFlatMenuToggle;
-		}
-		else if ( item->Variable == &BigPackets )
 		{
 			item->FuncSelect = SelectFlatMenuToggle;
 			item->FuncDraw = DrawFlatMenuToggle;
@@ -12093,9 +12078,6 @@ void GetMultiplayerPrefs( void )
 	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
 
-	BigPackets = ( RegGet( "GroupPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
 	if( DPlayUpdateIntervalCmdLine >= 1 && DPlayUpdateIntervalCmdLine <= 30 )
 	{
 		PacketsSlider.value	= DPlayUpdateIntervalCmdLine;
@@ -12155,9 +12137,6 @@ void GetMultiplayerPrefs( void )
 		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 	}
 
-	ThrottleSlider.value = ( RegGet( "ThrottleSlider", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 1000;
-
 }
 
 void SetMultiplayerPrefs( void )
@@ -12182,9 +12161,6 @@ void SetMultiplayerPrefs( void )
 	RegSet( "ShortPackets", (LPBYTE)&temp , sizeof( temp ) );
 	temp = ResetKillsPerLevel;
 	RegSet( "ResetKillsPerLevel", (LPBYTE)&temp , sizeof( temp ) );
-
-	temp = BigPackets;
-	RegSet( "GroupPackets", (LPBYTE)&temp , sizeof( temp ) );
 	if( !(DPlayUpdateIntervalCmdLine >= 1 && DPlayUpdateIntervalCmdLine <= 30 ))
 	{
 		temp = PacketsSlider.value;
@@ -18440,30 +18416,6 @@ void UnToggleOption( BOOL *toggle )
 	}
 }
 
-void BigPacketsSelected( MENUITEM *Item )
-{
-	if( BigPackets )
-	{
-		if( !UseShortPackets )
-		{
-			FlashMenuText( LT_BigPacketsSelected/*"short packets have been automatically enabled"*/, 60.0F * 3.0F, (uint16) -1 );
-			UnToggleOption( &UseShortPackets );
-		}
-	}
-}
-
-void ShortPacketsSelected( MENUITEM *Item )
-{
-	if( !UseShortPackets )
-	{
-		if( BigPackets )
-		{
-			FlashMenuText( LT_ShortPacketsSelected/*"packet grouping has been automatically disabled"*/, 60.0F * 3.0F, (uint16) -1 );
-			UnToggleOption( &BigPackets );
-		}
-	}
-}
-
 void ToggleBikeEngines( MENUITEM *Item )
 {
 	if ( !BikeEnginesOn )
@@ -18798,9 +18750,8 @@ void UpdateSessionInfo( LIST *List )
 
 	_snprintf( Session_Info_Game_Type, sizeof( Session_Info_Game_Type ), LT_Extra6/*"game: %s%s"*/, pchGameType, buf ); 
 
-	_snprintf( Session_Info_PacketInfo, sizeof( Session_Info_PacketInfo ), LT_Extra7/*"packets: short %s, grouped %s"*/, 
-		( session->dwUser3 & ShortPacketsBit ) ? LT_ToggleOn : LT_ToggleOff,
-		( session->dwUser3 & BigPacketsBit ) ? LT_ToggleOn : LT_ToggleOff );
+	_snprintf( Session_Info_PacketInfo, sizeof( Session_Info_PacketInfo ), LT_Extra7/*"packets: short %s"*/, 
+		( session->dwUser3 & ShortPacketsBit ) ? LT_ToggleOn : LT_ToggleOff );
 	
 
 	switch( ( session->dwUser3 & CollisionTypeBits ) >> Collision_Type_BitShift )
@@ -18964,21 +18915,6 @@ void InitInGameLevelSelect( MENU *menu )
 		if ( item->FuncDraw == DrawToggle )
 				item->Variable = &IsHost;
 	}
-}
-
-extern DWORD MaxPacketsInQue;
-
-void ResetThrottle( MENUITEM *item )
-{
-	MaxPacketsInQue = 0;	
-}
-
-void StoreThrottleSettings( MENUITEM *item )
-{
-	DWORD temp;
-
-	temp = ( DWORD )ThrottleSlider.value;
-	RegSet( "ThrottleSlider",  (LPBYTE)&temp ,  sizeof(temp) );
 }
 
 void InitBattleMenu( MENU *menu )

@@ -117,8 +117,6 @@ extern  float Countdown_Float;
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 extern LPDPSESSIONDESC2                    glpdpSD_copy;
 #endif
-extern  uint32 BigPacketSize;
-extern  uint32 MaxBigPacketSize;
 extern  uint32 RecPacketSize;
 extern  uint32 MaxRecPacketSize;
 
@@ -243,8 +241,7 @@ extern float ReloadSfxPause;
 extern  BOOL  IllegalTime;
 extern  int   SinglePlayerTimeLimit;
 extern  BOOL  BilinearSolidScrPolys;
-extern  uint16  RandomStartPosModify;             
-extern  int BigPacketsSent;
+extern  uint16  RandomStartPosModify;
 extern  LONGLONG  LastPacketTime[MAX_PLAYERS+1];
 extern  char * StatusTab[256];
 
@@ -4207,7 +4204,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           RandomStartPosModify += 1;
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-          ServiceBigPacket(TRUE);
         }
       }
 	  else
@@ -4285,7 +4281,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 
       ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-      ServiceBigPacket(TRUE);
 
       InitScene();  // STATSTEST
       InitView();
@@ -4368,7 +4363,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           GameStatus[WhoIAm] = MyGameStatus;
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
           ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-          ServiceBigPacket(TRUE);
           if( !ChangeLevel() )
 			  return( FALSE );
       }
@@ -4476,7 +4470,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
       ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-      ServiceBigPacket(TRUE);
 
       DPlayGetSessionDesc();
 
@@ -4612,7 +4605,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       MyGameStatus = STATUS_StartingMultiplayerSynch;
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      ServiceBigPacket(TRUE);
 
       LevelNum = -1;
       if( !ChangeLevel() ) return( FALSE );
@@ -4740,7 +4732,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       MyGameStatus = STATUS_Normal;
       GameStatus[WhoIAm] = STATUS_Normal;
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      ServiceBigPacket(TRUE);
 
 	  // $$$
       NextworkOldBikeNum = -1;
@@ -4832,7 +4823,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-      ServiceBigPacket(TRUE);
 
 	  // hack for ramdemo...
       if( RecordDemoToRam )
@@ -4954,7 +4944,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     D3DAppClearScreenOnly();
@@ -5000,7 +4989,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5116,7 +5104,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5157,7 +5144,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5184,7 +5170,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5215,7 +5200,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5291,7 +5275,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5312,7 +5295,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
 #ifdef NO_PRECALCULATED_CELL_COLOURS
@@ -5331,7 +5313,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
     ProcessGuaranteedMessages( FALSE , TRUE , FALSE );
-    ServiceBigPacket(TRUE);
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
     MyGameStatus = STATUS_InitView_9;
@@ -7314,8 +7295,8 @@ BOOL Our_CalculateFrameRate(void)
 				CurrentBytesPerSecRec , CurrentBytesPerSecSent , MaxCurrentBytesPerSecRec ,MaxCurrentBytesPerSecSent );
 			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*9, 2 );
 
-			sprintf( &buf[0], "BigSent %4.2f Big %4d MaxBigSize %4d ReceiveSize %4d MaxReceiveSize %4d",
-				BigPacketsSent, BigPacketSize, MaxBigPacketSize ,RecPacketSize , MaxRecPacketSize );
+			sprintf( &buf[0], "ReceiveSize %4d MaxReceiveSize %4d",
+				RecPacketSize , MaxRecPacketSize );
 			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*10, 2 );
 
 		}

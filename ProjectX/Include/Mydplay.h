@@ -13,7 +13,6 @@
 #define MULTIPLAYER_VERSION				(0x010d)
 #define DEMO_MULTIPLAYER_VERSION		(0x0109)
 #define GUARANTEEDMESSAGES
-#define MAXPACKETSPERBIGPACKET		64
 #define MAXBIGPACKETBUFFERSIZE			1024
 #define SHORTBANK
 #define VERYSHORTPACKETS
@@ -589,7 +588,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_YOUQUIT							0xfa
 #define MSG_SHORTSHIPHIT					0xfc
 #define MSG_TITANBITS						0xfd
-#define MSG_BIGPACKET						0xfe
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
 #define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
 #endif
@@ -1065,9 +1063,6 @@ void FreeAllPlayersAcknowledgeMessageQue( BYTE Player );
 void ProcessAcknowledgeMessageQue( void );
 BOOL CompareAcknowledgeMessageQue( BYTE Player , uint32 ID);
 BOOL AddAcknowledgeMessageQue( BYTE Player , uint32 ID );
-void SendBigPacket( BOOL SendGuaranteed );
-void ServiceBigPacket( BOOL OverideTime );
-void AddToBigPacket( int MessageLength , void * Message , BYTE MsgType );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
