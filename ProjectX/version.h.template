@@ -6,8 +6,8 @@
 #define VERSION_HEADER
 
 #define ProjectXVersion		"x.x.x.x" // version number
-#define ProjectXVersionTitle	"Open Source Version " ProjectXVersion
+#define ProjectXVersionTitle	"Community Edition " ProjectXVersion
 #define ProjectXWindowTitle	"ProjectX " ProjectXVersion
-//#define ProjectXVersionTip "A tip for this version."
+//#define ProjectXVersionTip	"A tip or short message for this build."
 
 #endif
