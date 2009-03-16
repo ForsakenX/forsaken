@@ -1181,18 +1181,21 @@ D3DAppTotalVideoMemory(void)
 DWORD
 D3DAppFreeVideoMemory(void)
 {
-    DDCAPS DriverCaps, HELCaps;
+	// initialize variables
+    DDCAPS DriverCaps, HELCaps;  // hel is the hardware emulation layer (supports features missed by video card)
     memset (&DriverCaps, 0, sizeof(DDCAPS));
     DriverCaps.dwSize = sizeof(DDCAPS);
     memset (&HELCaps, 0, sizeof(DDCAPS));
     HELCaps.dwSize = sizeof(DDCAPS);
-    LastError = d3dappi.lpDD->lpVtbl->GetCaps(d3dappi.lpDD, &DriverCaps,
-                                              &HELCaps);
+
+	// query the capabilities of the directdraw interface
+    LastError = d3dappi.lpDD->lpVtbl->GetCaps(d3dappi.lpDD, &DriverCaps, &HELCaps);
     if (LastError != DD_OK) {
         D3DAppISetErrorString("Getting DD capabilities failed while getting free video memory.\n%s",
                               D3DAppErrorToString(LastError));
         return 0L;
     }
+
     if (DriverCaps.dwVidMemFree)
         return DriverCaps.dwVidMemFree;
     else
