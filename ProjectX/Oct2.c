@@ -4385,8 +4385,13 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 	else
 	{	
+
+		// you must clear player scores if MaxKills limit is set...
+		// other wise the game just keeps on changing levels...
+		// cause at the start of each level they already have max kills...
+
 		// reset all player's stats
-		if(ResetKillsPerLevel)
+		if( MaxKills || ResetKillsPerLevel )
 			ResetAllStats();
 
       for( i = 0 ; i < MAX_PLAYERS ; i++ )
