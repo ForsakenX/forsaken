@@ -1454,8 +1454,8 @@ void
 SetInputAcquired( BOOL acquire )
 {
     HRESULT         err;
-	DebugPrintf("SetInputAcquired %s\n",acquire?"true":"false");
-	if ( acquire )
+	static acquired;
+	if ( !acquired && acquire )
 	{
 		/*
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
@@ -1493,9 +1493,10 @@ SetInputAcquired( BOOL acquire )
 		if ( lpdiMouse )			err = IDirectInputDevice_Acquire(lpdiMouse);
 		if ( lpdiKeyboard )			err = IDirectInputDevice_Acquire(lpdiKeyboard);
 		if ( lpdiBufferedKeyboard ) err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
+		acquired = TRUE;
 		DebugPrintf( "Input has been Acquired.\n" );
 	}
-	else
+	else if ( acquired && !acquire )
 	{
 /*
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
@@ -1530,11 +1531,12 @@ SetInputAcquired( BOOL acquire )
 		if ( lpdiMouse )			err = IDirectInputDevice_Unacquire(lpdiMouse);
 		if ( lpdiKeyboard )			err = IDirectInputDevice_Unacquire(lpdiKeyboard);
 		if ( lpdiBufferedKeyboard )	err = IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
+		acquired = FALSE;
 		DebugPrintf( "Input has been UN-Acquired.\n" );
 	}
 }
 
-BOOL cursor_clipped = FALSE;
+BOOL cursor_clipped;
 BOOL NoCursorClip = FALSE;
 void SetCursorClip( BOOL clip )
 {
@@ -1546,11 +1548,12 @@ void SetCursorClip( BOOL clip )
 		return;
 	}
 
-	// we already are in this state...
 // yea but exclusive mouse mode hides it on us without asking...
 // maybe just set cusor_clipped to true when acquiring with exclusive...
-	//if ( cursor_clipped && clip ) return;
-	//if ( !cursor_clipped && !clip ) return;
+
+	// we already are in this state...
+	if ( cursor_clipped && clip ) return;
+	if ( !cursor_clipped && !clip ) return;
 
 	// the clipping area
 	cursorclip.left = d3dapp->pClientOnPrimary.x + d3dapp->szClient.cx / 2;
