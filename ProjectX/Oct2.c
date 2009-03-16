@@ -3834,7 +3834,6 @@ void StoreLevelNameInSessionDesc( char *str )
 }
 
 float Browl = 0.0F;
-float QuitTime = 0.0F;
 float HostMultiPlayerTimeout;
 
 int colourflash = 0;
@@ -3887,21 +3886,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   CalculateFramelag();
   AnimOncePerFrame++;
-
-#if 0
-  QuitTime -= framelag;
-  if( QuitTime <= 0.0F )
-  {
-    QuitTime = 60.0F * 5.0F;
-    result = _stat( "quit.bat", &stat_buf );
-    if( result == 0 )
-    {
-      // file exists..
-      quitting = TRUE;
-      return FALSE;
-    }
-  }
-#endif
 
   if ( bSoundEnabled )
   {
