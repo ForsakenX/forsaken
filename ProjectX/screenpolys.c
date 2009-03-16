@@ -30,9 +30,6 @@
 #pragma optimize( "gty", on )
 #endif
 
-
-#define POWERVR_SCREEN_Z	(0.0F)
-#define POWERVR_SCREEN_RHW	(99.9F)
 #define THERMAL_STEP		(1.6F)
 #define THERMAL_INC			(0.0092593F)
 #define THERMAL_DEC			(0.25F)
@@ -88,7 +85,6 @@ extern	int16			NumLevels;
 extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;
 extern	int				FontHeight;
-extern	BOOL			PowerVR;
 extern	int16			MakeColourMode;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	SLIDER		TimeLimit;
@@ -1992,215 +1988,6 @@ BOOL IsMMX( void )
 }
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Display All Screen Polygons
-	Input		:	uint16	*	Next Screen Poly to Display ( Updated )
-	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL PVR_ScreenPolysDisp( uint16 * Next )
-{
-	LPD3DTLVERTEX	VertPnt;
-	uint16			i;
-	uint16			TotalVertCount;
-	float			x1, y1, x2, y2, x3, y3, x4, y4;
-	float			Xoff, Yoff, Xsize, Ysize;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
-	BIT_INFO	*	Bit_Ptr;
-	BOX_INFO	*	Box_Ptr;
-	OFF_INFO	*	Off_Ptr;
-	int16			Bitcount;
-	float			u1, v1, u2, v2;
-	D3DTLVERTEX		Verts[ 4 ];
-
-	specular = RGB_MAKE( 128, 128, 128 );
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Copy Verts into execution list
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	i = *Next;
-	TotalVertCount = 0;
-
-	while( i != (uint16) -1 )
-	{
-		if( TotalVertCount > MAXSCREENPOLYVERTS ) break;
-
-		if( !( ScrPolys[ i ].Flags & SCRFLAG_Solid ) )
-		{
-			color = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 128 );
-	
-			if( ( ScrPolys[ i ].Frm_Info != NULL ) && ( *ScrPolys[ i ].Frm_Info != NULL ) )
-			{
-				if( ScrPolys[ i ].Frame >= (*ScrPolys[ i ].Frm_Info)->Num_Frames ) ScrPolys[i].Frame = 0.0F;
-			
-				Bit_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Bit_Info + (int16) ScrPolys[ i ].Frame );
-				Off_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
-			
-				for( Bitcount = 0; Bitcount < Bit_Ptr->numbits; Bitcount++ )
-				{
-
-					VertPnt = &Verts[ 0 ];
-
-					Box_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
-	
-					u1 = Box_Ptr->u1;
-					v1 = Box_Ptr->v1;
-					u2 = Box_Ptr->u2;
-					v2 = Box_Ptr->v2;
-	
-					if( ( ScrPolys[ i ].Flags & SCRFLAG_UseCoords ) )
-					{
-						x1 = ScrPolys[ i ].x1;
-						y1 = ScrPolys[ i ].y1;
-						x2 = ScrPolys[ i ].x2;
-						y2 = ScrPolys[ i ].y2;
-						x3 = ScrPolys[ i ].x3;
-						y3 = ScrPolys[ i ].y3;
-						x4 = ScrPolys[ i ].x4;
-						y4 = ScrPolys[ i ].y4;
-					}
-					else
-					{
-			   			Xoff = ( Off_Ptr->xoff * ScrPolys[ i ].Xscale );
-			   			Yoff = ( Off_Ptr->yoff * ScrPolys[ i ].Yscale );
-			   			Xsize = ( Box_Ptr->xsize * ScrPolys[ i ].Xscale );
-			   			Ysize = ( Box_Ptr->ysize * ScrPolys[ i ].Yscale );
-			
-						if( ( ScrPolys[ i ].Flags & SCRFLAG_Scale ) )
-						{
-				   			Ysize = ( Ysize / Xsize );
-				   			Xsize = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xsize );
-				   			Ysize *= ( ( Xsize ) * pixel_aspect_ratio );
-			
-							if( Xoff != 0.0F ) Yoff = ( Yoff / Xoff );
-							else Yoff = 0.0F;
-				   			Xoff = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xoff );
-				   			Yoff *= ( ( Xoff ) * pixel_aspect_ratio );
-						}
-			
-						switch( Off_Ptr->box & BOX_BOTHFLIP )
-						{
-							case BOX_XFLIP:							// X Flip
-					   			x3 = ( ScrPolys[ i ].Pos.x + Xoff );
-					   			y1 = ( ScrPolys[ i ].Pos.y + Yoff );
-					   			x1 = ( x3 - Xsize );
-					   			y3 = ( y1 + Ysize );
-								u1 = Box_Ptr->u2;
-								v1 = Box_Ptr->v1;
-								u2 = Box_Ptr->u1;
-								v2 = Box_Ptr->v2;
-								break;
-	
-							case BOX_YFLIP:							// Y Flip
-					   			x1 = ( ScrPolys[ i ].Pos.x + Xoff );
-					   			y3 = ( ScrPolys[ i ].Pos.y + Yoff );
-					   			x3 = ( x1 + Xsize );
-					   			y1 = ( y3 - Ysize );
-								u1 = Box_Ptr->u1;
-								v1 = Box_Ptr->v2;
-								u2 = Box_Ptr->u2;
-								v2 = Box_Ptr->v1;
-								break;
-	
-							case BOX_BOTHFLIP:						// X & Y Flip
-					   			x3 = ( ScrPolys[ i ].Pos.x + Xoff );
-					   			y3 = ( ScrPolys[ i ].Pos.y + Yoff );
-					   			x1 = ( x3 - Xsize );
-					   			y1 = ( y3 - Ysize );
-								u1 = Box_Ptr->u2;
-								v1 = Box_Ptr->v2;
-								u2 = Box_Ptr->u1;
-								v2 = Box_Ptr->v1;
-								break;
-	
-							default:								// No Flip
-					   			x1 = ( ScrPolys[ i ].Pos.x + Xoff );
-					   			y1 = ( ScrPolys[ i ].Pos.y + Yoff );
-					   			x3 = ( x1 + Xsize );
-					   			y3 = ( y1 + Ysize );
-								u1 = Box_Ptr->u1;
-								v1 = Box_Ptr->v1;
-								u2 = Box_Ptr->u2;
-								v2 = Box_Ptr->v2;
-								break;
-	
-						}
-					}
-	
-					VertPnt->sx = x1;
-					VertPnt->sy = y1;
-					VertPnt->sz = 1.0F;
-					VertPnt->color = color;
-					VertPnt->specular = specular;
-					VertPnt->rhw = 1.0F;
-					VertPnt->tu = u1;
-					VertPnt->tv = v1;
-					VertPnt++;
-		
-					VertPnt->sz = 1.0F;
-					VertPnt->color = color;
-					VertPnt->specular = specular;
-					VertPnt->rhw = 1.0F;
-					VertPnt++;
-					
-					VertPnt->sx = x3;
-					VertPnt->sy = y3;
-					VertPnt->sz = 1.0F;
-					VertPnt->color = color;
-					VertPnt->specular = specular;
-					VertPnt->rhw = 1.0F;
-					VertPnt->tu = u2;
-					VertPnt->tv = v2;
-					VertPnt++;
-						
-					VertPnt->sz = 1.0F;
-					VertPnt->color = color;
-					VertPnt->specular = specular;
-					VertPnt->rhw = 1.0F;
-					VertPnt++;
-	
-					TotalVertCount += 4;
-	
-					if( ClipBox( VertPnt-4, VertPnt-2 ) )
-					{
-						( VertPnt - 4 )->sx = 0.0F;
-						( VertPnt - 4 )->sy = 0.0F;
-						( VertPnt - 3 )->sx = 0.0F;
-						( VertPnt - 3 )->sy = 0.0F;
-						( VertPnt - 2 )->sx = 0.0F;
-						( VertPnt - 2 )->sy = 0.0F;
-						( VertPnt - 1 )->sx = 0.0F;
-						( VertPnt - 1 )->sy = 0.0F;
-					}
-	
-					( VertPnt - 3 )->sx = ( VertPnt - 2 )->sx;
-					( VertPnt - 3 )->sy = ( VertPnt - 4 )->sy;
-					( VertPnt - 3 )->tu = ( VertPnt - 2 )->tu;
-					( VertPnt - 3 )->tv = ( VertPnt - 4 )->tv;
-					
-					( VertPnt - 1 )->sx = ( VertPnt - 4 )->sx;
-					( VertPnt - 1 )->sy = ( VertPnt - 2 )->sy;
-					( VertPnt - 1 )->tu = ( VertPnt - 4 )->tu;
-					( VertPnt - 1 )->tv = ( VertPnt - 2 )->tv;
-
-//					AddToPolySort( &Verts[ 0 ], &Verts[ 1 ], &Verts[ 2 ], Box_Ptr->tpage );
-//					AddToPolySort( &Verts[ 0 ], &Verts[ 2 ], &Verts[ 3 ], Box_Ptr->tpage );
-	
-					Off_Ptr++;
-				}
-			}
-		}
-		i = ScrPolys[i].Prev;
-	}
-
-	*Next = i;
-
-	if( TotalVertCount == 0 ) return FALSE;
-	
-	return TRUE;
-}
-
-
 TPAGEINFO	ScrPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -2411,16 +2198,8 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 
 	Specular = RGB_MAKE( 0, 0, 0 );
 
-	if( PowerVR )
-	{
-		ZValue = POWERVR_SCREEN_Z;
-		RHWValue = POWERVR_SCREEN_RHW;
-	}
-	else
-	{
-		ZValue = 1.0F;
-		RHWValue = ( 1.0F / ZValue );
-	}
+	ZValue = 1.0F;
+	RHWValue = ( 1.0F / ZValue );
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Lock Exec Buffer and get ready to fill in...
@@ -2438,12 +2217,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	if(d3dappi.ThisDriver.bIsHardware)
 	{
 		OP_STATE_RENDER( 1, lpPointer);
-			if( PowerVR )
-			{
-				STATE_DATA( D3DRENDERSTATE_ZENABLE, TRUE, lpPointer );
-			}else{
-				STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
-			}
+		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
 
 		if( !BilinearSolidScrPolys )
 		{
@@ -2606,10 +2380,6 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
 									break;
 			
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 255 );
-									break;
-			
 								case MCM_Software:
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
 									break;
@@ -2727,10 +2497,6 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 							
 								case MCM_Stipple:
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
-									break;
-							
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 128 );
 									break;
 							
 								case MCM_Software:
@@ -2961,16 +2727,8 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-	if( PowerVR )
-	{
-		ZValue = POWERVR_SCREEN_Z;
-		RHWValue = POWERVR_SCREEN_RHW;
-	}
-	else
-	{
-		ZValue = 1.0F;
-		RHWValue = ( 1.0F / ZValue );
-	}
+	ZValue = 1.0F;
+	RHWValue = ( 1.0F / ZValue );
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Lock Exec Buffer and get ready to fill in...
@@ -2988,12 +2746,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	if(d3dappi.ThisDriver.bIsHardware)
 	{
 		OP_STATE_RENDER( 1, lpPointer);
-			if( PowerVR )
-			{
-				STATE_DATA( D3DRENDERSTATE_ZENABLE, TRUE, lpPointer );
-			}else{
-				STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
-			}
+		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
 	}
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -3149,10 +2902,6 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
 									break;
 			
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 128 );
-									break;
-			
 								case MCM_Software:
 									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
 									break;
@@ -3270,10 +3019,6 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 																							      				        
 								case MCM_Stipple:											      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col1.R, ScrPolys[ i ].Col1.G, ScrPolys[ i ].Col1.B, ScrPolys[ i ].Col1.Trans / 2 );
-									break;													      				        
-																							      				        
-								case MCM_PowerVR:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col1.R, ScrPolys[ i ].Col1.G, ScrPolys[ i ].Col1.B, 128 );
 									break;
 							
 								case MCM_Software:
@@ -3303,10 +3048,6 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 																							      				        
 								case MCM_Stipple:											      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col2.R, ScrPolys[ i ].Col2.G, ScrPolys[ i ].Col2.B, ScrPolys[ i ].Col2.Trans / 2 );
-									break;													      				        
-																							      				        
-								case MCM_PowerVR:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col2.R, ScrPolys[ i ].Col2.G, ScrPolys[ i ].Col2.B, 128 );
 									break;
 							
 								case MCM_Software:
@@ -3332,10 +3073,6 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 																							      				        
 								case MCM_Stipple:											      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col3.R, ScrPolys[ i ].Col3.G, ScrPolys[ i ].Col3.B, ScrPolys[ i ].Col3.Trans / 2 );
-									break;													      				        
-																							      				        
-								case MCM_PowerVR:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col3.R, ScrPolys[ i ].Col3.G, ScrPolys[ i ].Col3.B, 128 );
 									break;
 							
 								case MCM_Software:
@@ -3365,10 +3102,6 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 																							      				        
 								case MCM_Stipple:											      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col4.R, ScrPolys[ i ].Col4.G, ScrPolys[ i ].Col4.B, ScrPolys[ i ].Col4.Trans / 2 );
-									break;													      				        
-																							      				        
-								case MCM_PowerVR:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col4.R, ScrPolys[ i ].Col4.G, ScrPolys[ i ].Col4.B, 128 );
 									break;
 							
 								case MCM_Software:

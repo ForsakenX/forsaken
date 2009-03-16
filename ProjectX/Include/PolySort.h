@@ -27,7 +27,6 @@ typedef struct BUCKETENTRY{
 // fn Prototypes
 BOOL	InitPolySort( void );
 void	ReleasePolySort( void );
-BOOL PolyListExecute( void );
 void	AddToPolySort( D3DLVERTEX * v1 , D3DLVERTEX * v2 , D3DLVERTEX * v3 , uint16 tpage );
 
 

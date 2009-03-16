@@ -45,7 +45,6 @@ extern	int		NumOfVertsConsidered;
 extern	int		NumOfVertsTouched;
 
 extern	float	framelag;
-extern	BOOL	PowerVR;
 extern	float	SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	uint16	GroupWaterInfo[MAXGROUPS];
 extern	float	GroupWaterLevel[MAXGROUPS];
@@ -603,7 +602,7 @@ clear:					mov		eax, [esi]
 						rlf	= XLightPnt->r; 
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
-						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
+						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1061,7 +1060,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
-						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
+						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1304,7 +1303,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
-						if(!d3dapp->CurrDriver || PowerVR ) // is it ramp mode..Or PowerVr Card...
+						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;

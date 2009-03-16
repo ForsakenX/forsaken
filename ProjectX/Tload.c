@@ -31,7 +31,6 @@
 extern	BOOL	TexturesEnabled;
 
 extern	PALETTEENTRY ppe[256];
-extern	BOOL	PowerVR;
 extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
 extern	void DebugPrintf( const char * format, ... );
@@ -209,7 +208,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			{
 				Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
 				Ysize = Tloadheader->Ysize[i] / ( 1 << Tloadheader->CurScale[i] );
-				// Only Square Textures for PowerVR
+
 				if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 				{
 					if( Xsize != Ysize )
@@ -861,7 +860,6 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 	XScale = Scale;
 	YScale = Scale;
 
-	// PowerVR Only Like Square Textures...
 	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly && dwHeight != dwWidth )
 	{
 			if( dwHeight > dwWidth )
@@ -1363,7 +1361,7 @@ TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
 	XScale = Scale;
 	YScale = Scale;
-	// PowerVR Only Like Square Textures...
+
 	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 	{
 		if( dwHeight != dwWidth )

@@ -1006,10 +1006,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Pvrd3d.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\quat.h"
 				>
 			</File>

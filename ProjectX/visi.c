@@ -65,8 +65,6 @@ extern	DWORD			CurrentTextureBlend;
 
 extern	BSP_NODE *	OldCollideNode;
 
-extern	BOOL			PowerVR;
-extern	BOOL			bPolySort;
 extern	uint16			GroupTris[ MAXGROUPS ];
 extern	LINE			Lines[ MAXLINES ];
 extern	char			LevelNames[MAXLEVELS][128];                        

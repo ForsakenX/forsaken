@@ -92,7 +92,6 @@ extern "C" {
 	extern int default_bpp;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
-	extern	BOOL	PowerVR_Overide;
 	extern	BOOL	Is3Dfx;
 	extern	BOOL	Is3Dfx2;
 	extern	BOOL	TriLinear;
@@ -587,7 +586,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	DeviceOnCommandline		= FALSE;
     bOnlySystemMemory		= FALSE;
     bOnlyEmulation			= FALSE;
-	PowerVR_Overide			= FALSE;
 	Is3Dfx					= FALSE;
 	Is3Dfx2					= FALSE;
 	TriLinear				= TRUE;

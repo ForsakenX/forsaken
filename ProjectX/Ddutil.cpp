@@ -637,7 +637,7 @@ IDirectDrawSurface * DDLoadBitmapTexture(IDirectDraw *pdd, LPCSTR szBitmap, LPDD
 	
 	XScale = Scale;
 	YScale = Scale;
-	// PowerVR Only Like Square Textures...
+
 	if( bSquareOnly )
 	{
 		if( dwHeight != dwWidth )
@@ -724,7 +724,7 @@ IDirectDrawSurface * DDLoadBitmapTextureMipMap(IDirectDraw *pdd, LPCSTR szBitmap
 
 	XScale = Scale;
 	YScale = Scale;
-	// PowerVR Only Like Square Textures...
+
 	if( bSquareOnly )
 	{
 		if( dwHeight != dwWidth )

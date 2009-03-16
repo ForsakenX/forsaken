@@ -63,7 +63,6 @@
 #include  <malloc.h>
 #include  <string.h>
 #include  "file.h"
-#include  "pvrd3d.h"
 #include  "PolySort.h"
 #include  "Ai.h"
 #include  "Water.h"
@@ -355,11 +354,6 @@ extern  float LastDistance[MAX_SFX];
 
 BOOL  Is3Dfx;
 BOOL  Is3Dfx2;
-
-BOOL  IsPowerVRD3DDevice(void);
-BOOL  PowerVR = FALSE;
-BOOL  PowerVR_Overide = FALSE;
-BOOL  bPolySort = FALSE;
 
 extern int GameCompleted;
 extern  OFF_FILES OffsetFiles[];
@@ -1911,16 +1905,6 @@ void  GetHardwareCaps( void )
       UsedStippledAlpha = FALSE;
   }
 
-  bPolySort = FALSE;
-//  if( PowerVR_Overide || (PowerVR = IsPowerVRD3DDevice() ) )
-  if( PowerVR_Overide )
-  {
-    PowerVR = TRUE;
-    //PowerVr
-    CurrentTextureBlend = D3DTBLEND_MODULATEALPHA;
-    CurrentDestBlend = D3DBLEND_INVSRCALPHA;
-    CurrentSrcBlend = D3DBLEND_SRCALPHA;
-  }
 }
 
 
@@ -2456,23 +2440,15 @@ InitView( void )
     IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
   }
 
-  if( PowerVR )
+  if(d3dapp->CurrDriver != 0)
   {
-    MakeColourMode = MCM_PowerVR;
+    if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
+    else MakeColourMode = MCM_Stipple;
   }
   else
   {
-    if(d3dapp->CurrDriver != 0)
-    {
-      if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
-      else MakeColourMode = MCM_Stipple;
-    }
-    else
-    {
-      MakeColourMode = MCM_Software;
-    }
+    MakeColourMode = MCM_Software;
   }
-
 
   GetHardwareCaps();
   InitModeCase();
@@ -5958,7 +5934,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
   InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
 
-  if( !PowerVR && ( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) ) )
+  if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
     AddIndirectVisible( (uint16) ( ( ActiveRemoteCamera ) ? ActiveRemoteCamera->Group : SecBulls[ CameraMissile ].GroupImIn ) );
 
   MainRoutines();
@@ -6016,7 +5992,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
 #endif
   
-      if( RearCameraActive && !PowerVR && !RearCameraDisable )
+      if( RearCameraActive && !RearCameraDisable )
       {
         CameraRendering = CAMRENDERING_Rear;
 
@@ -6057,7 +6033,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
             return FALSE;
       }
 
-      if( !PowerVR && ( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) ) )
+      if( ActiveRemoteCamera || (MissileCameraActive && MissileCameraEnable) )
       {
         float main_fov;
 
@@ -6954,11 +6930,9 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   // Ship Model Enable/Disable
   SetShipsVisibleFlag();
 
-  // PowerVr Translucent PolySort....
-  if( !InitPolySort() )
-    return FALSE;
+  // translucent poly sort
+  InitPolySort();
 
-  
   // find visible groups
   FindVisible( &CurrentCamera, &Mloadheader );
 
@@ -7009,8 +6983,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   if( WhiteOut == 0.0F)
         lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
-  if( !bPolySort )
-  {
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Non Group Clipped Non Faceme Transluecent Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -7021,8 +6993,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     if( !DisplaySolidGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
         return FALSE;
 #endif
-  }
-
   
   // display clipped opaque objects
   for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -7061,15 +7031,13 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Group Clipped Non Faceme Transluecent Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-    if( !bPolySort )
-    {
-      if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
-        return FALSE;
+
+  if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
+    return FALSE;
 #ifdef SHADOWTEST
-      if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
-        return FALSE;
+  if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
+    return FALSE;
 #endif
-    }
 
 //    if (Mod_Ship_Exec_Buffer( group, lpDev, lpView ) != TRUE)
 //      return FALSE;
@@ -7136,40 +7104,22 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Group Clipped Non Faceme Transluecent Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-    if( !bPolySort )
-    {
-      if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
-        return FALSE;
+
+  if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
+    return FALSE;
 
 #ifdef SHADOWTEST
-      if( !DisplayGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
-        return FALSE;
+  if( !DisplayGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
+    return FALSE;
 #endif
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Display Group Clipped Faceme Transluecent Polys
+Display Group Clipped Faceme Transluecent Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-      if( !DisplayGroupClippedFmPolys( RenderBufs[ 0 ], group, lpDev, lpView ) )
-          return FALSE;
+  if( !DisplayGroupClippedFmPolys( RenderBufs[ 0 ], group, lpDev, lpView ) )
+      return FALSE;
 
-      ExecuteTransExe( group );
-    }
-    else
-    {
-      i = FirstFmPolyUsed;
-      while( i != (uint16) -1 )
-      {
-        PVR_FmPolyDispGroup( group, &i );
-      }
-
-      i = FirstPolyUsed;
-      while( i != (uint16) -1 )
-      {
-        PVR_PolyDispGroup( group, &i );
-      }
-
-      ExecuteTransExe( group );
-    }
+  ExecuteTransExe( group );
 
   }
 
@@ -7180,8 +7130,7 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Non Group Clipped Faceme Transluecent Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-  if( !bPolySort )
-  {
+
     if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 0 ], lpDev, lpView ) )
         return FALSE;
 
@@ -7194,7 +7143,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
       return FALSE;
 #endif
-  }
   
   // display unclipped translucencies
   for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -7218,12 +7166,6 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       }
     }
   }
-
-  // PowerVR Translucent Poly Sorted Display...
-  if( !PolyListExecute() )
-    return FALSE;
-
-  
   
   DoLensflareEffect();
   DoAllSecBullLensflare();
@@ -7231,18 +7173,9 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Display Transluecent Screen Polys
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-  if( !bPolySort )
-  {
+
     if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
       return FALSE;
-  }
-  else
-  {
-    while( i != (uint16) -1 )
-    {
-      PVR_ScreenPolysDisp( &i );
-    }
-  }
 
   // reset all the normal execute status flags...
   lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
@@ -7988,28 +7921,16 @@ InitSpecialExecBufs( void )
   
   lpInsStart = lpPointer;
 
-
-  //  this is for a normal non translucent buffers....
-  if ( PowerVR )
-  {
-  OP_STATE_RENDER( 9, lpPointer);
-  }
-  else
-  {
-  OP_STATE_RENDER( 8, lpPointer);
-  }
+	//  this is for a normal non translucent buffers....
+	OP_STATE_RENDER( 8, lpPointer);
     STATE_DATA( D3DRENDERSTATE_TEXTUREMAPBLEND, D3DTBLEND_MODULATE, lpPointer );
     STATE_DATA( D3DRENDERSTATE_BLENDENABLE, FALSE, lpPointer );
     STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, TRUE, lpPointer );
     STATE_DATA( D3DRENDERSTATE_STIPPLEDALPHA , FALSE, lpPointer );
     STATE_DATA( D3DRENDERSTATE_SRCBLEND, D3DBLEND_ONE, lpPointer );
     STATE_DATA( D3DRENDERSTATE_DESTBLEND, D3DBLEND_ZERO, lpPointer );
-      STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
-      STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
-    if ( PowerVR )
-    {
-      STATE_DATA( D3DRENDERSTATE_COLORKEYENABLE, TRUE, lpPointer );
-    }
+	STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
+	STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
     OP_EXIT(lpPointer);
   
   /*
@@ -8061,34 +7982,20 @@ InitSpecialExecBufs( void )
   {
     if( UsedStippledAlpha != TRUE )
     {
-      if ( PowerVR )
-      {
-      OP_STATE_RENDER( 6, lpPointer);
-      }
-      else
-      {
+
       OP_STATE_RENDER( 5, lpPointer);
-      }
 
 #if ACTUAL_TRANS
       STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, TRUE, lpPointer );
 #else
-      if( PowerVR )
-      {
-        STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, TRUE, lpPointer );
-      }else{
-        STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, FALSE, lpPointer );
-      }
+      STATE_DATA( D3DRENDERSTATE_ZWRITEENABLE, FALSE, lpPointer );
 #endif
 
       STATE_DATA( D3DRENDERSTATE_BLENDENABLE, TRUE, lpPointer );
       STATE_DATA( D3DRENDERSTATE_SRCBLEND, CurrentSrcBlend, lpPointer );
       STATE_DATA( D3DRENDERSTATE_DESTBLEND, CurrentDestBlend, lpPointer );
       STATE_DATA( D3DRENDERSTATE_TEXTUREMAPBLEND, CurrentTextureBlend, lpPointer );
-      if ( PowerVR )
-      {
-        STATE_DATA( D3DRENDERSTATE_COLORKEYENABLE, TRUE, lpPointer );
-      }
+
     }
     else
     {
@@ -8618,76 +8525,6 @@ void PrintInitViewStatus( BYTE Status )
   {
     CenterPrint4x5Text( InitViewMessages[i], ( d3dappi.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , 2 );
   }
-}
-
-
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure : Detect if Power vr is being used...
-  Input   : Nothing
-  Output    : BOOL  FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL IsPowerVRD3DDevice(void)
-{
-  D3DTEXTUREHANDLE  hTex;
-  DDSURFACEDESC     DDSurfDesc;
-  LPDIRECTDRAWSURFACE lpDDSurface;
-  LPDIRECT3DTEXTURE lpD3DTexture;
-  PPVR_CTL      lpPVRCtl;
-  LPDIRECTDRAW lpDD = d3dapp->lpDD;
-  LPDIRECT3DDEVICE lpD3DDev = d3dapp->lpD3DDevice;
-
-  memset (&DDSurfDesc, 0, sizeof (DDSurfDesc));
-  //  Try creating surface...
-  DDSurfDesc.dwSize = sizeof (DDSURFACEDESC);
-    DDSurfDesc.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-    DDSurfDesc.dwHeight = 2;
-    DDSurfDesc.dwWidth = 2;
-    DDSurfDesc.ddsCaps.dwCaps = DDSCAPS_TEXTURE; 
-    DDSurfDesc.ddpfPixelFormat.dwSize = sizeof (DDPIXELFORMAT); 
-    DDSurfDesc.ddpfPixelFormat.dwFlags = DDPF_FOURCC; 
-  DDSurfDesc.ddpfPixelFormat.dwFourCC = FOURCC_PVR_CTL; 
-  //  If creation failed, PVR isn't present.
-    if (lpDD->lpVtbl->CreateSurface(lpDD,&DDSurfDesc,&lpDDSurface,NULL) != DD_OK)
-  {
-    return FALSE;
-  }
-  //  Lock it to get pointer to our control structure.
-  if (lpDDSurface->lpVtbl->Lock(lpDDSurface,NULL,&DDSurfDesc,DDLOCK_WAIT,NULL) != DD_OK)
-  {
-    RELEASE(lpDDSurface);
-    return FALSE;
-  }
-  lpPVRCtl = (PPVR_CTL) DDSurfDesc.lpSurface;
-  //  Get texturing interface
-  if (lpDDSurface->lpVtbl->QueryInterface(lpDDSurface,&IID_IDirect3DTexture, &lpD3DTexture) !=DD_OK)
-  {
-    //  Have the pointer unlock surface now.
-    lpDDSurface->lpVtbl->Unlock(lpDDSurface,&DDSurfDesc); 
-    RELEASE(lpDDSurface);
-    return FALSE;
-  }
-  //  Get a handle for the texture, if PowerVR is the supplied device we'll 
-  //  see a non zero value in lpPVRCtl->pvReserved.
-  lpD3DTexture->lpVtbl->GetHandle(lpD3DTexture,lpD3DDev,&hTex);
-  //  Zero ? Yes, then its not PVR.
-  if (!lpPVRCtl->pvReserved)
-  {
-    //  Have the pointer unlock surface now.
-    lpDDSurface->lpVtbl->Unlock(lpDDSurface,&DDSurfDesc); 
-    //  Release objects.
-    RELEASE(lpD3DTexture);
-      RELEASE(lpDDSurface);
-    return FALSE;
-  }
-  //  Have the pointer unlock surface now.
-  lpDDSurface->lpVtbl->Unlock(lpDDSurface,&DDSurfDesc); 
-  //  Release objects.
-  RELEASE(lpD3DTexture);
-    RELEASE(lpDDSurface);
-  //  Must be PVR !
-  return TRUE;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ

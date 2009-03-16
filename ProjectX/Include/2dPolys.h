@@ -115,7 +115,6 @@ enum
 {
 	MCM_Normal,					// Actual Colours
 	MCM_Stipple,				// Stipple Card Colours
-	MCM_PowerVR,				// PowerVR Card Colours
 	MCM_Software,				// Software Emulation Colours
 };
 
@@ -177,7 +176,6 @@ void InitFmPoly( void );
 void KillUsedFmPoly( uint16 i );
 uint16 FindFreeFmPoly();
 void FmPolyProcess( void );
-BOOL PVR_FmPolyDispGroup( uint16 Group, uint16 * Next );
 void InitFmPolyTPages( void );
 void AddFmPolyToTPage( uint16 i, int16 TPage );
 void RemoveFmPolyFromTPage( uint16 i, int16 TPage );

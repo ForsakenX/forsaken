@@ -29,7 +29,6 @@
 	extern	TLOADHEADER	Tloadheader;
 	extern	int16	ModeCase;
 	extern	BOOL	Is3Dfx;
-	extern	BOOL	PowerVR;
 	extern	BOOL	bPolyText;
 	extern	BOOL	PolyText[255];
 	extern	TRIGGERVAR	*	DecreaseTemperature;

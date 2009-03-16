@@ -51,8 +51,6 @@ extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;
 extern	DWORD				CurrentTextureBlend;
 extern	BOOL				CanCullFlag;
-extern	BOOL				PowerVR;
-extern	BOOL				bPolySort;
 extern	MLOADHEADER			Mloadheader;
 extern	MCLOADHEADER		MCloadheader;
 extern	MCLOADHEADER		MCloadheadert0;
@@ -1501,236 +1499,6 @@ void FmPolyProcess( void )
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Display All Faceme Polygons in specific group
-	Input		:	uint16						Group
-				:	uint16						Next FmPoly to process (updated)
-	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL PVR_FmPolyDispGroup( uint16 Group, uint16 * Next )
-{
-	LPD3DLVERTEX	Temp_Ptr;
-	LPD3DLVERTEX	FmPolyVertPnt;
-	uint16			i;
-	uint16			TotalVertCount;
-	VECTOR			XVector;
-	VECTOR			YVector;
-	VECTOR			ZVector;
-	VECTOR			Xoff;
-	VECTOR			Yoff;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
-	BIT_INFO	*	Bit_Ptr;
-	BOX_INFO	*	Box_Ptr;
-	OFF_INFO	*	Off_Ptr;
-	VECTOR			Xsize;
-	VECTOR			Ysize;
-	VECTOR			NewVector;
-	VECTOR			NewPos;
-	VECTOR			Rotation;
-	int16			Bitcount;
-	D3DLVERTEX		TempVert;
-	FMPOLY	*		TempPtr;
-	float			Length;
-	MATRIX			MatrixCopy;
-	D3DLVERTEX		Verts[ 8 ];
-
-	if(d3dapp->CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
-	else specular = RGB_MAKE( 128, 128, 128 );
-		
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Copy Verts into execution list
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	i = *Next;
-	TotalVertCount = 0;
-
-	while( i != (uint16) -1 )
-	{
-		if( TotalVertCount > MAXFMPOLYVERTS ) break;
-
-//		if( !( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) )
-		{
-			if( FmPolys[i].Group == Group )
-			{
-				Rotation.x = (float) sin( D2R( FmPolys[ i ].Rot ) );
-				Rotation.y = (float) cos( D2R( FmPolys[ i ].Rot ) );
-				Rotation.z = 0.0F;
-		
-				color = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 128 );
-		
-				if( FmPolys[ i ].Flags & FM_FLAG_DIRCONST )
-				{
-					YVector = FmPolys[ i ].UpVector;					/* Calc Up Vector */
-				   	ZVector = FmPolys[ i ].DirVector;					/* Calc Forward Vector */
-				}
-				else
-				{
-					MatrixCopy = CurrentCamera.Mat;
-					MatrixCopy._41 = 0.0F;
-					MatrixCopy._42 = 0.0F;
-					MatrixCopy._43 = 0.0F;
-					ApplyMatrix( &MatrixCopy, &Rotation, &YVector );	/* Calc Up Vector */
-					ApplyMatrix( &MatrixCopy, &Forward, &ZVector );		/* Calc Forward Vector */
-				}
-				CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
-		
-				if( FmPolys[ i ].Frm_Info != NULL )
-				{
-					TempPtr = &FmPolys[i];
-		
-					if( FmPolys[ i ].Frame >= (*FmPolys[ i ].Frm_Info)->Num_Frames ) FmPolys[i].Frame = 0.0F;
-		
-					Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
-					Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
-		
-					TotalVertCount += 4;
-		
-					for( Bitcount = 0; Bitcount < Bit_Ptr->numbits; Bitcount++ )
-					{
-						FmPolyVertPnt = (LPD3DLVERTEX) &Verts[ 0 ];
-
-						Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
-		
-						Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
-						Xoff.y = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.y );
-						Xoff.z = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.z );
-						Yoff.x = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.x );
-						Yoff.y = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.y );
-						Yoff.z = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.z );
-		
-						Xsize.x = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
-						Xsize.y = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
-						Xsize.z = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.z );
-						Ysize.x = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.x );
-						Ysize.y = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
-						Ysize.z = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
-		
-						if( Off_Ptr->box & 0x2000 )
-						{
-							Xsize.x = -Xsize.x;
-							Xsize.y = -Xsize.y;
-							Xsize.z = -Xsize.z;
-						}
-		
-						if( Off_Ptr->box & 0x8000 )
-						{
-							Ysize.x = -Ysize.x;
-							Ysize.y = -Ysize.y;
-							Ysize.z = -Ysize.z;
-						}
-		
-						Temp_Ptr = FmPolyVertPnt;
-		
-						if( ( FmPolys[ i ].Flags & FM_FLAG_MOVEOUT ) )
-						{
-							NewVector.x = ( FmPolys[ i ].Pos.x - CurrentCamera.Pos.x );
-							NewVector.y = ( FmPolys[ i ].Pos.y - CurrentCamera.Pos.y );
-							NewVector.z = ( FmPolys[ i ].Pos.z - CurrentCamera.Pos.z );
-		
-							Length = VectorLength( &NewVector );
-		
-							NormaliseVector( &NewVector );
-							if( Length >= ( EXPLO_DISTANCE + 110.0F ) )
-							{
-								Length = EXPLO_DISTANCE;
-							}
-							else
-							{
-								Length -= 110.0F;
-								if( Length < 32.0F ) Length = 32.0F;
-							}
-		
-							NewPos.x = ( FmPolys[ i ].Pos.x + ( -Length * NewVector.x ) );
-							NewPos.y = ( FmPolys[ i ].Pos.y + ( -Length * NewVector.y ) );
-							NewPos.z = ( FmPolys[ i ].Pos.z + ( -Length * NewVector.z ) );
-		
-							FmPolyVertPnt->x = ( NewPos.x + Xoff.x + Yoff.x );
-							FmPolyVertPnt->y = ( NewPos.y + Xoff.y + Yoff.y );
-							FmPolyVertPnt->z = ( NewPos.z + Xoff.z + Yoff.z );
-						}
-						else
-						{
-							FmPolyVertPnt->x = ( FmPolys[i].Pos.x + Xoff.x + Yoff.x );
-							FmPolyVertPnt->y = ( FmPolys[i].Pos.y + Xoff.y + Yoff.y );
-							FmPolyVertPnt->z = ( FmPolys[i].Pos.z + Xoff.z + Yoff.z );
-						}
-		
-						FmPolyVertPnt->tu = Box_Ptr->u1;
-						FmPolyVertPnt->tv = Box_Ptr->v1;
-						FmPolyVertPnt->color = color;
-						FmPolyVertPnt->specular = specular;
-						FmPolyVertPnt->dwReserved = 0;
-						FmPolyVertPnt++;
-							
-						FmPolyVertPnt->x = ( Temp_Ptr->x + Xsize.x );
-						FmPolyVertPnt->y = ( Temp_Ptr->y + Xsize.y );
-						FmPolyVertPnt->z = ( Temp_Ptr->z + Xsize.z );
-						FmPolyVertPnt->tu = Box_Ptr->u2;
-						FmPolyVertPnt->tv = Box_Ptr->v1;
-						FmPolyVertPnt->color = color;
-						FmPolyVertPnt->specular = specular;
-						FmPolyVertPnt->dwReserved = 0;
-						FmPolyVertPnt++;
-							
-						FmPolyVertPnt->x = ( Temp_Ptr->x + Xsize.x - Ysize.x );
-						FmPolyVertPnt->y = ( Temp_Ptr->y + Xsize.y - Ysize.y );
-						FmPolyVertPnt->z = ( Temp_Ptr->z + Xsize.z - Ysize.z );
-						FmPolyVertPnt->tu = Box_Ptr->u2;
-						FmPolyVertPnt->tv = Box_Ptr->v2;
-						FmPolyVertPnt->color = color;
-						FmPolyVertPnt->specular = specular;
-						FmPolyVertPnt->dwReserved = 0;
-						FmPolyVertPnt++;
-						
-						FmPolyVertPnt->x = ( Temp_Ptr->x - Ysize.x );
-						FmPolyVertPnt->y = ( Temp_Ptr->y - Ysize.y );
-						FmPolyVertPnt->z = ( Temp_Ptr->z - Ysize.z );
-						FmPolyVertPnt->tu = Box_Ptr->u1;
-						FmPolyVertPnt->tv = Box_Ptr->v2;
-						FmPolyVertPnt->color = color;
-						FmPolyVertPnt->specular = specular;
-						FmPolyVertPnt->dwReserved = 0;
-						FmPolyVertPnt++;
-		
-						if( ( Off_Ptr->box & 0xf000 ) == 0x2000 || ( Off_Ptr->box & 0xf000 ) == 0x8000 )
-						{
-							memcpy( &TempVert, FmPolyVertPnt-4, sizeof( D3DLVERTEX ) );
-							memcpy( FmPolyVertPnt-4, FmPolyVertPnt-2, sizeof( D3DLVERTEX ) );
-							memcpy( FmPolyVertPnt-2, &TempVert, sizeof( D3DLVERTEX ) );
-						}
-
-						AddToPolySort( &Verts[ 0 ], &Verts[ 1 ], &Verts[ 2 ], Box_Ptr->tpage );
-						AddToPolySort( &Verts[ 0 ], &Verts[ 2 ], &Verts[ 3 ], Box_Ptr->tpage );
-						
-						if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
-						{
-							memcpy( ( FmPolyVertPnt + 0 ), ( FmPolyVertPnt - 4 ), sizeof( D3DLVERTEX ) );
-							memcpy( ( FmPolyVertPnt + 1 ), ( FmPolyVertPnt - 1 ), sizeof( D3DLVERTEX ) );
-							memcpy( ( FmPolyVertPnt + 2 ), ( FmPolyVertPnt - 2 ), sizeof( D3DLVERTEX ) );
-							memcpy( ( FmPolyVertPnt + 3 ), ( FmPolyVertPnt - 3 ), sizeof( D3DLVERTEX ) );
-							FmPolyVertPnt += 4;
-							TotalVertCount += 4;
-
-							AddToPolySort( &Verts[ 4 ], &Verts[ 5 ], &Verts[ 6 ], Box_Ptr->tpage );
-							AddToPolySort( &Verts[ 4 ], &Verts[ 6 ], &Verts[ 7 ], Box_Ptr->tpage );
-
-						}
-						Off_Ptr++;
-
-					}
-				}
-			}
-		}
-		i = FmPolys[i].Prev;
-	}
-
-	*Next = i;
-
-	if( TotalVertCount == 0 ) return FALSE;
-
-	return TRUE;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Init FmPoly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2001,10 +1769,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 		
 							case MCM_Stipple:
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans / 2 );
-								break;
-			
-							case MCM_PowerVR:
-								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 128 );
 								break;
 			
 							case MCM_Software:
@@ -2389,10 +2153,6 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 		
 							case MCM_Stipple:
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans / 2 );
-								break;
-			
-							case MCM_PowerVR:
-								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 128 );
 								break;
 			
 							case MCM_Software:

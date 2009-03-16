@@ -86,7 +86,6 @@ extern	SLIDER			TrailDetailSlider;
 extern	BOOL			AutoDetail;
 extern	float			avgframelag;
 extern	MODELNAME		TitleModelNames[MAXMODELHEADERS];
-extern	BOOL			PowerVR;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
 extern	LINE			Lines[ MAXLINES ];
@@ -2828,24 +2827,18 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 	if( B ) Blue = Col;
 	else Blue = 0;
 
-	if( PowerVR )
+
+	if( UsedStippledAlpha != TRUE )
 	{
-		Colour = RGBA_MAKE( Red, Green, Blue, 128 );
+#if ACTUAL_TRANS
+		Colour = RGBA_MAKE( Red, Green, Blue, Col );
+#else
+		Colour = RGBA_MAKE( Red, Green, Blue, 255 );
+#endif
 	}
 	else
 	{
-		if( UsedStippledAlpha != TRUE )
-		{
-#if ACTUAL_TRANS
-			Colour = RGBA_MAKE( Red, Green, Blue, Col );
-#else
-			Colour = RGBA_MAKE( Red, Green, Blue, 255 );
-#endif
-		}
-		else
-		{
-			Colour = RGBA_MAKE( Red, Green, Blue, Col );
-		}
+		Colour = RGBA_MAKE( Red, Green, Blue, Col );
 	}
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
@@ -2991,24 +2984,17 @@ BOOL ProcessModelExec( LPDIRECT3DEXECUTEBUFFER lpExBuf, int16 NumVerts, float Sc
 	if( B ) Blue = Col;
 	else Blue = 0;
 
-	if( PowerVR )
+	if( UsedStippledAlpha != TRUE )
 	{
-		Colour = RGBA_MAKE( Red, Green, Blue, 128 );
+#if ACTUAL_TRANS
+		Colour = RGBA_MAKE( Red, Green, Blue, Col );
+#else
+		Colour = RGBA_MAKE( Red, Green, Blue, 255 );
+#endif
 	}
 	else
 	{
-		if( UsedStippledAlpha != TRUE )
-		{
-#if ACTUAL_TRANS
-			Colour = RGBA_MAKE( Red, Green, Blue, Col );
-#else
-			Colour = RGBA_MAKE( Red, Green, Blue, 255 );
-#endif
-		}
-		else
-		{
-			Colour = RGBA_MAKE( Red, Green, Blue, Col );
-		}
+		Colour = RGBA_MAKE( Red, Green, Blue, Col );
 	}
 
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -3043,24 +3029,17 @@ BOOL ProcessSphereZoneModelExec( LPDIRECT3DEXECUTEBUFFER lpExBuf, int16 NumVerts
 	LPD3DLVERTEX			DstlpD3DLVERTEX;
 	D3DCOLOR				Colour;
 
-	if( PowerVR )
+	if( UsedStippledAlpha != TRUE )
 	{
-		Colour = RGBA_MAKE( R, G, B, 128 );
+#if ACTUAL_TRANS
+		Colour = RGBA_MAKE( R, G, B, 255 );
+#else
+		Colour = RGBA_MAKE( R, G, B, 255 );
+#endif
 	}
 	else
 	{
-		if( UsedStippledAlpha != TRUE )
-		{
-#if ACTUAL_TRANS
-			Colour = RGBA_MAKE( R, G, B, 255 );
-#else
-			Colour = RGBA_MAKE( R, G, B, 255 );
-#endif
-		}
-		else
-		{
-			Colour = RGBA_MAKE( R, G, B, 255 );
-		}
+		Colour = RGBA_MAKE( R, G, B, 255 );
 	}
 
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -5736,7 +5715,7 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 		}
 		LightPnt = LightPnt->NextVisible;
 	}
-	if ( !d3dapp->CurrDriver || PowerVR )
+	if ( !d3dapp->CurrDriver )
 	{
 		RF = ( RF+GF+BF ) * 0.33333F;
 		GF = RF;

@@ -256,8 +256,6 @@ extern	uint16			FirstLineUsed;
 extern	uint16			FirstScrPolyUsed;
 extern USERCONFIG *player_config;
 extern	float framelag;
-extern	BOOL	PowerVR;
-extern	BOOL	bPolySort;
 extern	BYTE	MyGameStatus;
 extern	int		FontWidth;
 extern	int		FontHeight;
@@ -5194,12 +5192,7 @@ BOOL DisplayTitle(void)
 			return FALSE;
 		}
 
-		// Translucent PolySort....
-		if( !InitPolySort() )
-		{
-			Msg( "DisplayTitle() : InitPolySort failed\n" );
-			return FALSE;
-		}
+		InitPolySort();
 
 		// reset all the normal execute status flags...
 		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
@@ -5212,20 +5205,18 @@ BOOL DisplayTitle(void)
 	/*
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
-			if( !bPolySort )
-			{
-				if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
-						return FALSE;
+
+			if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+					return FALSE;
 #if 0
-	/*
-		Display 0 solid Clipped Faceme Transluecent Polys
-	*/
-				if( !DisplaySolidGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
-						return FALSE;
+/*
+	Display 0 solid Clipped Faceme Transluecent Polys
+*/
+			if( !DisplaySolidGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+					return FALSE;
 #endif
 
 //				ExecuteTransExe( 0 );
-			}
 
 		// set all the Translucent execute status flags...
 		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
@@ -5241,74 +5232,38 @@ BOOL DisplayTitle(void)
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display 0 Clipped Non Faceme Transluecent Polys
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			if( !bPolySort )
-			{
-				if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
-						return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Display 0 Clipped Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-				if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
-						return FALSE;
+			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+					return FALSE;
 
-				ExecuteTransExe( 0 );
-				ExecuteTransExeUnclipped( 0 );
-			}
-	
-			
-			
-			else
-			{
-				i = FirstFmPolyUsed;
-				while( i != (uint16) -1 )
-				{
-		 			PVR_FmPolyDispGroup( 0, &i );
-				}
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Display 0 Clipped Faceme Transluecent Polys
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+					return FALSE;
 
-				i = FirstPolyUsed;
-				while( i != (uint16) -1 )
-				{
-					PVR_PolyDispGroup( 0, &i );
-				}
-			}
+			ExecuteTransExe( 0 );
+			ExecuteTransExeUnclipped( 0 );
+
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display Non 0 Clipped Faceme Transluecent Polys
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-		if( !bPolySort )
-		{
-			if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], lpDev, lpView ) )
-					return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Display Non 0 Clipped Non Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
-					return FALSE;
-		}
-		
-		// Translucent Poly Sorted Display...
-		if( !PolyListExecute() )
-		{
-			Msg( "DisplayTitle() : PolyListExecute failed\n" );
-			return FALSE;
-		}
+		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+				return FALSE;
+
+/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	Display Non 0 Clipped Non Faceme Transluecent Polys
+ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+				return FALSE;
 
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Display Transluecent Screen Polys
 	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-		if( !bPolySort )
-		{
+
 			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
 				return FALSE;
-		}
-		else
-		{
-			while( i != (uint16) -1 )
-			{
-				PVR_ScreenPolysDisp( &i );
-			}
-		}
 
 	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Display Opaque Lines

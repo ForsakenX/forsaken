@@ -97,7 +97,6 @@ uint16 FindFreePoly( void );
 void ProcessPolys( void );
 void DoAfterBurnerEffects( void );
 void InitAfterBurners( void );
-BOOL PVR_PolyDispGroup( uint16 Group, uint16 * Next );
 void InitPolyTPages( void );
 void AddPolyToTPage( uint16 i, int16 TPage );
 void RemovePolyFromTPage( uint16 i, int16 TPage );

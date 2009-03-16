@@ -76,7 +76,6 @@ extern	BOOL	DrawPanel;
 extern	BOOL	DrawSimplePanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS];
 extern	float	framelag;
-extern	BOOL	PowerVR;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals...	
@@ -273,12 +272,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				lpD3DLVERTEX->tu = lpD3DLVERTEX2->tu;
 				lpD3DLVERTEX->tv = lpD3DLVERTEX2->tv;
 
-#ifdef NOTYET
-				if ( PowerVR )
-					color = lpD3DLVERTEX2->specular; // PowerVR-compatible flat RGB hacked into specular
-				else
-#endif
-					color = lpD3DLVERTEX2->color;
+				color = lpD3DLVERTEX2->color;
 				a = (color>>24)&255;
 				r = (color>>16)&255;
 				g = (color>>8)&255;
@@ -298,22 +292,15 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						a = 128;
 					}
 				}else{
-					if( PowerVR )
+					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
 					{
-//						r = (r+g+b) / 3;
-//						g = b = r;
 						a = 128;
 					}else{
-						if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
-						{
-							a = 128;
-						}else{
 #if ACTUAL_TRANS
-							a = 128;
+						a = 128;
 #else
-							a = 255;
+						a = 255;
 #endif
-						}
 					}
 				}
 

@@ -54,7 +54,6 @@ extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
 extern	BOOL			CanCullFlag;
-extern	BOOL			PowerVR;
 extern	int16			MakeColourMode;
 extern	BYTE			GameStatus[MAX_PLAYERS];
 
@@ -527,130 +526,6 @@ void DoAfterBurnerEffects( void )
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Display All Faceme Polygons for PowerVR
-	Input		:	uint16					Group
-				:	uint16	*	Next Poly to Display (Updated)
-	Output		:	True/False
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL PVR_PolyDispGroup( uint16 Group, uint16 * Next )
-{
-	LPD3DLVERTEX	PolyVertPnt;
-	uint16			i;
-	uint16			TotalVertCount;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
-	BIT_INFO	*	Bit_Ptr;
-	BOX_INFO	*	Box_Ptr;
-	OFF_INFO	*	Off_Ptr;
-	D3DLVERTEX		Verts[ 8 ];
-
-	specular = RGB_MAKE( 0, 0, 0 );
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-		Copy Verts into execution list
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-	i = *Next;
-	TotalVertCount = 0;
-
-	while( i != (uint16) -1 )
-	{
-		if( TotalVertCount > MAXPOLYVERTS ) break;
-
-		if( !( Polys[ i ].Flags & POLY_FLAG_DONTCLIP ) )
-		{
-			if( ( Polys[ i ].Group == Group ) || ( Polys[i].Frm_Info == &Laser_Header ) )
-			{
-				PolyVertPnt = &Verts[ 0 ];
-
-				if( Polys[ i ].Frm_Info != NULL )
-				{
-					if( Polys[ i ].Frame >= (*Polys[ i ].Frm_Info)->Num_Frames ) Polys[i].Frame = 0.0F;
-			
-					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
-					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
-					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
-
-					color = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 128 );
-			
-					PolyVertPnt->x = Polys[ i ].Pos1.x;
-					PolyVertPnt->y = Polys[ i ].Pos1.y;
-					PolyVertPnt->z = Polys[ i ].Pos1.z;
-					PolyVertPnt->tu = Box_Ptr->u1;
-					PolyVertPnt->tv = Box_Ptr->v1;
-					PolyVertPnt->color = color;
-					PolyVertPnt->specular = specular;
-					PolyVertPnt->dwReserved = 0;
-					PolyVertPnt++;
-							
-					color = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 128 );
-			
-					PolyVertPnt->x = Polys[ i ].Pos2.x;
-					PolyVertPnt->y = Polys[ i ].Pos2.y;
-					PolyVertPnt->z = Polys[ i ].Pos2.z;
-					PolyVertPnt->tu = Box_Ptr->u2;
-					PolyVertPnt->tv = Box_Ptr->v1;
-					PolyVertPnt->color = color;
-					PolyVertPnt->specular = specular;
-					PolyVertPnt->dwReserved = 0;
-					PolyVertPnt++;
-							
-					color = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 128 );
-			
-					PolyVertPnt->x = Polys[ i ].Pos3.x;
-					PolyVertPnt->y = Polys[ i ].Pos3.y;
-					PolyVertPnt->z = Polys[ i ].Pos3.z;
-					PolyVertPnt->tu = Box_Ptr->u2;
-					PolyVertPnt->tv = Box_Ptr->v2;
-					PolyVertPnt->color = color;
-					PolyVertPnt->specular = specular;
-					PolyVertPnt->dwReserved = 0;
-					PolyVertPnt++;
-					
-					color = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 128 );
-			
-					PolyVertPnt->x = Polys[ i ].Pos4.x;
-					PolyVertPnt->y = Polys[ i ].Pos4.y;
-					PolyVertPnt->z = Polys[ i ].Pos4.z;
-					PolyVertPnt->tu = Box_Ptr->u1;
-					PolyVertPnt->tv = Box_Ptr->v2;
-					PolyVertPnt->color = color;
-					PolyVertPnt->specular = specular;
-					PolyVertPnt->dwReserved = 0;
-					PolyVertPnt++;
-
-					AddToPolySort( &Verts[ 0 ], &Verts[ 1 ], &Verts[ 2 ], Box_Ptr->tpage );
-					AddToPolySort( &Verts[ 0 ], &Verts[ 2 ], &Verts[ 3 ], Box_Ptr->tpage );
-			
-					TotalVertCount += 4;
-			
-					if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
-					{
-						memcpy( ( PolyVertPnt + 0 ), ( PolyVertPnt - 4 ), sizeof( D3DLVERTEX ) );
-						memcpy( ( PolyVertPnt + 1 ), ( PolyVertPnt - 1 ), sizeof( D3DLVERTEX ) );
-						memcpy( ( PolyVertPnt + 2 ), ( PolyVertPnt - 2 ), sizeof( D3DLVERTEX ) );
-						memcpy( ( PolyVertPnt + 3 ), ( PolyVertPnt - 3 ), sizeof( D3DLVERTEX ) );
-
-						AddToPolySort( &Verts[ 4 ], &Verts[ 5 ], &Verts[ 6 ], Box_Ptr->tpage );
-						AddToPolySort( &Verts[ 4 ], &Verts[ 6 ], &Verts[ 7 ], Box_Ptr->tpage );
-
-						PolyVertPnt += 4;
-						TotalVertCount += 4;
-					}
-				}
-			}
-		}
-
-		i = Polys[i].Prev;
-	}
-
-	*Next = i;
-
-	if( TotalVertCount == 0 ) return FALSE;
-
-	return TRUE;
-}
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	Init Poly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -915,11 +790,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
 									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 128 );
-									break;
-				
+
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -947,10 +818,6 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -982,10 +849,6 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1013,10 +876,6 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -1243,10 +1102,6 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1274,10 +1129,6 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -1309,10 +1160,6 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1340,10 +1187,6 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -1628,10 +1471,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1659,10 +1498,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -1694,10 +1529,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1725,10 +1556,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -1955,10 +1782,6 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -1986,10 +1809,6 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 128 );
 									break;
 				
 								case MCM_Software:
@@ -2021,10 +1840,6 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
 									break;
 				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 128 );
-									break;
-				
 								case MCM_Software:
 									Colour = RGBA_MAKE( 128, 128, 128, 255 );
 									break;
@@ -2052,10 +1867,6 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 			
 								case MCM_Stipple:
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_PowerVR:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 128 );
 									break;
 				
 								case MCM_Software:

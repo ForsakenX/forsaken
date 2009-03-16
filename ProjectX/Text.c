@@ -58,7 +58,6 @@ extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	BOOL	ShowTeamInfo;
 extern	MLOADHEADER Mloadheader;
 extern	BOOL Is3Dfx;
-extern	BOOL PowerVR;
 extern	BOOL	bPolyText;
 extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern uint16	PingTimes[MAX_PLAYERS];		// How long does it take for a ping???

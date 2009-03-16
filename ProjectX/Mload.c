@@ -118,7 +118,6 @@ extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern D3DMATRIXHANDLE hWorld;
 extern	BOOL	UsedStippledAlpha;
-extern	BOOL	PowerVR;
 extern	MLOADHEADER Mloadheader;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
@@ -243,7 +242,7 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Ver
 
 	Xsize = Tloadheader.Xsize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
 	Ysize = Tloadheader.Ysize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
-	// Only Square Textures for PowerVR
+
 	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 	{
 		if( Xsize != Ysize )
@@ -479,12 +478,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				lpD3DLVERTEX->tu = lpD3DLVERTEX2->tu;
 				lpD3DLVERTEX->tv = lpD3DLVERTEX2->tv;
 
-
-				
-				if ( PowerVR )
-					color = lpD3DLVERTEX2->specular; // PowerVR-compatible flat RGB hacked into specular
-				else
-					color = lpD3DLVERTEX2->color;
+				color = lpD3DLVERTEX2->color;
 				a = (color>>24)&255;
 				r = (color>>16)&255;
 				g = (color>>8)&255;
@@ -505,31 +499,21 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						a = 128;
 					}
 				}else{
-					if( PowerVR )
+					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
 					{
-//						r = (r+g+b) / 3;
 						r = Tab[r];
 						g = Tab[g];
 						b = Tab[b];
-//						g = b = r;
-						a = 128;
+						a = 64;
 					}else{
-						if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
-						{
-							r = Tab[r];
-							g = Tab[g];
-							b = Tab[b];
-							a = 64;
-						}else{
-							r = Tab[r];
-							g = Tab[g];
-							b = Tab[b];
+						r = Tab[r];
+						g = Tab[g];
+						b = Tab[b];
 #if ACTUAL_TRANS
-							a = 128;
+						a = 128;
 #else
-							a = 255;
+						a = 255;
 #endif
-						}
 					}
 				}
 

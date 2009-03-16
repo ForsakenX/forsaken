@@ -97,7 +97,6 @@ extern	MATRIX	MATRIX_Identity;
 extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX  TempWorld;	
 extern	BOOL	CanCullFlag;
-extern	BOOL	PowerVR;
 
 int16		NewLevelNum;
 
@@ -285,10 +284,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				lpD3DLVERTEX->tu = lpD3DLVERTEX2->tu;
 				lpD3DLVERTEX->tv = lpD3DLVERTEX2->tv;
 
-				if ( PowerVR )
-					lpD3DLVERTEX->color = lpD3DLVERTEX2->specular; // PowerVR-compatible flat RGB hacked into specular
-				else
-					lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
+				lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
 #if !ACTUAL_TRANS
 				lpD3DLVERTEX->color |= 0xFF000000;
 #endif
@@ -1028,16 +1024,9 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 					{
 						color = (D3DCOLOR_RGBA *) &lpD3DLVERTEX2->color;
 
-						if ( PowerVR )
-						{
-							from_color = (D3DCOLOR_RGBA *) &FromVert->specular;
-							to_color = (D3DCOLOR_RGBA *) &ToVert->specular;
-						}
-						else
-						{
-							from_color = (D3DCOLOR_RGBA *) &FromVert->color;
-							to_color = (D3DCOLOR_RGBA *) &ToVert->color;
-						}
+
+						from_color = (D3DCOLOR_RGBA *) &FromVert->color;
+						to_color = (D3DCOLOR_RGBA *) &ToVert->color;
 						color->r = from_color->r + (int8) floor( ( to_color->r - from_color->r ) * Interp );
 						color->g = from_color->g + (int8) floor( ( to_color->g - from_color->g ) * Interp );
 						color->b = from_color->b + (int8) floor( ( to_color->b - from_color->b ) * Interp );
