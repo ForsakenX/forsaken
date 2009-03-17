@@ -94,6 +94,7 @@ char * MathErrStrings[] = {
 	"Partial Loss of significance",
 };
 
+#ifdef DEBUG_ON
 int     __cdecl _matherr(struct _exception * except)
 //int _matherr( struct _exception *except )
 {
@@ -167,7 +168,7 @@ int     __cdecl _matherr(struct _exception * except)
 
 	return 0;
 }
-
+#endif
 
 int DebugMathErrors( void )
 {
