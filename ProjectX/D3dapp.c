@@ -574,9 +574,9 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 		//case WM_DESTROY:
 		//	break;
 
-		case WM_MOVING:
+		//case WM_MOVING:
 			//DebugPrintf("The window is moving.\n");
-            break;
+        //    break;
 
         case WM_MOVE:
 			//DebugPrintf("Window has been moved (top left corner moved).\n");

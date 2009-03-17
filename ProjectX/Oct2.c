@@ -1454,8 +1454,7 @@ void
 SetInputAcquired( BOOL acquire )
 {
     HRESULT         err;
-	static acquired;
-	if ( !acquired && acquire )
+	if ( acquire )
 	{
 		/*
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
@@ -1493,10 +1492,9 @@ SetInputAcquired( BOOL acquire )
 		if ( lpdiMouse )			err = IDirectInputDevice_Acquire(lpdiMouse);
 		if ( lpdiKeyboard )			err = IDirectInputDevice_Acquire(lpdiKeyboard);
 		if ( lpdiBufferedKeyboard ) err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
-		acquired = TRUE;
 		DebugPrintf( "Input has been Acquired.\n" );
 	}
-	else if ( acquired && !acquire )
+	else
 	{
 /*
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
@@ -1531,7 +1529,6 @@ SetInputAcquired( BOOL acquire )
 		if ( lpdiMouse )			err = IDirectInputDevice_Unacquire(lpdiMouse);
 		if ( lpdiKeyboard )			err = IDirectInputDevice_Unacquire(lpdiKeyboard);
 		if ( lpdiBufferedKeyboard )	err = IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
-		acquired = FALSE;
 		DebugPrintf( "Input has been UN-Acquired.\n" );
 	}
 }
