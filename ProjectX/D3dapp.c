@@ -574,6 +574,16 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 		//case WM_DESTROY:
 		//	break;
 
+		// mouse is on a non client area of the screen
+		case WM_NCHITTEST:
+			// stop the mouse from performing non client actions in fullscreen...
+			if ( d3dappi.bFullscreen )
+			{
+				*lresult = 1;
+				*bStopProcessing = TRUE;
+			}
+			break;
+
 		//case WM_MOVING:
 			//DebugPrintf("The window is moving.\n");
         //    break;
