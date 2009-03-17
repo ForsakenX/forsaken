@@ -427,7 +427,7 @@ static BOOL InitWindow( void )
 	myglobs.hWndMain = CreateWindow(
 
          "MainWindow",			// window class name (registered above)
-         ProjectXWindowTitle,	// window title
+         ProjectXVersion,	// window title
 
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 

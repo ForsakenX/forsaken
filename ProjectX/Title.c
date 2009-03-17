@@ -8240,7 +8240,7 @@ void	MenuProcess()
 #ifdef ProjectXVersionTip
 	CenterPrint4x5Text( ProjectXVersionTip, d3dapp->szClient.cy - (FontHeight+3) * 4, 2 ); // +3 padding
 #endif
-	CenterPrint4x5Text( ProjectXVersionTitle, d3dapp->szClient.cy - FontHeight * 3, 2 );
+	CenterPrint4x5Text( ProjectXVersion, d3dapp->szClient.cy - FontHeight * 3, 2 );
 
 	// ??
 	Pulse += framelag/60.0F;
