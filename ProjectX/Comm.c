@@ -619,6 +619,9 @@ HRESULT DPlayRelease(void)
 //            glpdpSD = NULL;
 //        }
 
+// WINEBUG
+// game freezes right here...
+
         // release dplay
         hr = IDirectPlayX_Release(glpDP);
         glpDP = NULL;
