@@ -247,6 +247,12 @@ BOOL WaterLoad( void )
 		WO->XVerts = ((int) (WO->XSize / WATER_CELLSIZE))+1;
 		WO->YVerts = ((int) (WO->YSize / WATER_CELLSIZE))+1;
 
+		if ( WO->XVerts < 1 || WO->YVerts < 1 )
+		{
+			DebugPrintf("Not loading water, either xVerts or yVerts was less than 1: %d, %d\n",WO->XSize,WO->YSize);
+			return FALSE;
+		}
+
 		if( ( WO->XVerts * WO->YVerts ) > 1024)
 		{
 			Msg( "Water Load : Water is to big\n" );
