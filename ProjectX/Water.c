@@ -49,6 +49,7 @@ extern	D3DMATRIX identity;
 extern	BOOL	CanCullFlag;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
+extern void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Defines
