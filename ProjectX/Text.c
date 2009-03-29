@@ -72,6 +72,17 @@ extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 extern	LONGLONG	LargeTime;
 
+uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
+						  { 255,64,64 }, // red 
+						  { 64,255,64 }, // green 
+						  { 64,64,255 }, // blue 
+						  { 255,255,64 }, // yellow
+						  { 64,255,255 }, // cyan
+						  { 255,64,255 }, // purple
+						  { 128,255,128 }, // off green
+						  { 64,64,64 } // dark gray
+						  };
+
 // custom colour messages (Title.c)
 extern int SystemMessageColour;
 
@@ -122,17 +133,6 @@ char MessageBank[MAX_MESSAGES][MAXPERLINE];
 char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
 uint8	CharTrans[256];
-uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
-						  { 255,64,64 }, // red 
-						  { 64,255,64 }, // green 
-						  { 64,64,255 }, // blue 
-						  { 255,255,64 }, // yellow
-						  { 64,255,255 }, // cyan
-						  { 255,64,255 }, // purple
-						  { 128,255,128 }, // off green
-						  { 64,64,64 } // dark gray
-						  };
-
 
 void DebugPrintf( const char * format, ... );
 BOOL	PolyText[255];
@@ -153,7 +153,7 @@ STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 	Output		:		nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void Printint16( int16 num , int x , int y , int col )
+int Printint16( int16 num , int x , int y , int color )
 {
 	static char buf[ 128 ];
 
@@ -163,7 +163,8 @@ void Printint16( int16 num , int x , int y , int col )
 	}else{
 		sprintf( buf, "%hd", 0 );
 	}
-	Print4x5Text( buf, x, y, col );
+	Print4x5Text( buf, x, y, color );
+	return strlen(buf);
 }
 
 
@@ -299,7 +300,7 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 	Input		:		char * Text, uint16 x , uint16 y
 	Output		:		last x position
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-int Print4x5Text( char * Text , int x , int y , int col )
+int Print4x5Text( char * Text , int x , int y , int color )
 {
 	uint8 num;
     RECT    src, dest;
@@ -313,9 +314,9 @@ int Print4x5Text( char * Text , int x , int y , int col )
 
 	if( bPolyText && PolyText[MyGameStatus])
 	{
-		r = Colourtrans[col][0];
-		g = Colourtrans[col][1];
-		b = Colourtrans[col][2];
+		r = Colourtrans[color][0];
+		g = Colourtrans[color][1];
+		b = Colourtrans[color][2];
 	}
 
 	if( x != -1 )
@@ -332,8 +333,8 @@ int Print4x5Text( char * Text , int x , int y , int col )
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
 			}else{
 		
-				src.top = TextSrcY[col][num];
-				src.left = TextSrcX[col][num];
+				src.top = TextSrcY[color][num];
+				src.left = TextSrcX[color][num];
 				
 				src.right = src.left+FontSourceWidth;
 				src.bottom = src.top+FontSourceHeight;
@@ -759,47 +760,21 @@ void PrintScoreSort( void )
 	// multiplayer pings
 	if( ShowPing )
 	{
+		// count down to next ping time
 		PingRefresh -= framelag;
 		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
 		{
+			// reset ping counter
 			PingRefresh = 71.0F * PingFreqSlider.value;
-
+			// send next ping
 			PingNonGuarenteed();
 		}
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			if( GetPlayerRank(i) == WhoIAm)
-					NumOfActivePlayers++;
-			else if( GameStatus[GetPlayerRank(i)] == STATUS_Left )
-			{
-				if ( ShowPing && !TeamGame )
-				{
-					sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
-					Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
-				}
-				NumOfActivePlayers++;
-			}
-			else
-			{
-				if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-				{
-					if ( ShowPing && !TeamGame )
-					{
-						sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
-						Print4x5Text( &buf[0] , 8+(12*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
-					}
-					NumOfActivePlayers++;
-				}
-			}
-		}
-		NumOfActivePlayers = 0;
 	}
 	// pings disabled
 	else
 	{
 		PingRefresh = 0.0F;
 	}
-	
 
 	FlashSpeed += framelag;
 	if( FlashSpeed >= FLASH_RATE )
@@ -811,32 +786,47 @@ void PrintScoreSort( void )
 	// not teams game
 	if( !TeamGame )
 	{
+		int top_offset = FontHeight; // Initial gap
+		int line_height = FontHeight+1;
+
+		// print player lines
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
-			if( GameStatus[GetPlayerRank(i)] == STATUS_Left )
-			{
-				Print4x5Text( &Names[GetPlayerRank(i)][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
+			int left_offset = 0; // offset from left
+			int len = 0; // length of string
 
-				Printint16( GetScoreStats(GetPlayerRank(i)) , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 8 );
-				NumOfActivePlayers++;
-			}
-			else
+			// make sure it's a valid player
+			if( GameStatus[GetPlayerRank(i)] != STATUS_Left && GameStatus[GetPlayerRank(i)] != STATUS_Normal )
+				continue;
+
+			// print names and score
+			if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 			{
+				// blue dot for bad ping
 				if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-				{
-					if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-					{
-						col =  ( WhoIAm == GetPlayerRank(i) ) ? 0 : 1;
-						Print4x5Text( &Names[GetPlayerRank(i)][0] , 8 , NumOfActivePlayers*(FontHeight+1)+FontHeight , col );
-						Printint16( GetScoreStats(GetPlayerRank(i)) , 8+(8*FontWidth) , NumOfActivePlayers*(FontHeight+1)+FontHeight , 2 );
-						DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)] , 2 , NumOfActivePlayers*(FontHeight+1)+FontHeight );
+					DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], 2, top_offset );
+				left_offset = 8; // give it this much space
 
-					}
-					NumOfActivePlayers++;
-				}
+				// player name
+				Print4x5Text( &Names[GetPlayerRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerRank(i) ) ? GRAY : RED) );
+				left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
+
+				// player real score
+				len = Printint16( GetRealScore(GetPlayerRank(i)), left_offset, top_offset, 2 );
+				left_offset += ( (len+2) * FontWidth ); // length of number +N padding
 			}
+			
+			// Show pings for everyone except your self
+			if( ShowPing && GetPlayerRank(i) != WhoIAm )
+			{
+				sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
+				Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? 8 : 2) );
+			}
+
+			top_offset += line_height;
 		}
 	}
+
 	// teams game
 	else
 	{

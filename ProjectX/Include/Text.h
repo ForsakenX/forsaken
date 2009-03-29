@@ -82,6 +82,17 @@ void FillStatusTab( void );
 void DisplayStatusMessages( void );
 void BuildReliabilityTab( void );
 void DisplayConnectionStatus( int num , int x , int y);
+enum {
+ GRAY,
+ RED,
+ GREEN,
+ BLUE,
+ YELLOW,
+ CYAN,
+ PURPLE,
+ OFFGREEN,
+ DARKGRAY
+};
 
 #endif	// TEXT_INCLUDED
 

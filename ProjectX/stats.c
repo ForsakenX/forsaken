@@ -329,23 +329,13 @@ int GetKillStats(int Killer, int Victim)
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :   Get a player's score...
   Input   :   player id
-  Output    :   score
+  Output    :   overall score
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 /* Get An Individual Score */
 int GetScoreStats(int Player)
 {
-	int score = 0;
-
-	// search all players
-	for(x = 0; x < MAX_PLAYERS; x++)
-	{
-		// minus suicides and friendly kills
-		if((Player==x) || ((TeamNumber[x] == TeamNumber[Player]) && TeamGame))
-			score -= GetKillStats(Player,x);
-		// add kills
-		else
-			score += GetKillStats(Player,x);
-	}
+	int score = GetKills( Player ); // kills - suacides - friendly
+	int x = 0;
 
 	// add bonus points
 	score += GetBonusStats(Player);
@@ -535,4 +525,70 @@ int GetTeamScoreByTeamNumber(int Team)
 
 	return TeamScore;
 
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////
+// NEW FUNCTIONS
+/////////////////////////////////////////////////////////////////////////////////////////
+
+// + bonus + kills - suacides - friendly - deaths
+int GetRealScore(int Player)
+{
+	return	GetScoreStats(Player) -		// + kills - suacides - friendly + bonus
+			GetTotalDeaths(Player) +	// - deaths - suicides
+			GetSuicides(Player);		// suicides was minused twice
+}
+
+// kills - suacides - friendly
+int GetKills(int Player)
+{
+	int score = 0;
+	int x = 0;
+
+	// search all players
+	for(x = 0; x < MAX_PLAYERS; x++)
+	{
+		// minus suicides and friendly kills
+		if((Player==x) || ((TeamNumber[x] == TeamNumber[Player]) && TeamGame))
+			score -= GetKillStats(Player,x);
+		// add kills
+		else
+			score += GetKillStats(Player,x);
+	}
+
+	return score;
+}
+
+int GetFriendlyKills( int Player )
+{
+	int kills = 0;
+	int x = 0;
+	if(!TeamGame)return 0;
+	for(x = 0; x < MAX_PLAYERS; x++)
+	{
+		if(Player==x) continue; // no suacides
+		if(TeamNumber[x] == TeamNumber[Player])
+			kills += GetKillStats(Player,x);
+	}
+	return kills;
+}
+
+int GetSuicides( int Player )
+{
+	return GetKillStats( Player, Player );
+}
+
+// positives points / negatives points
+int GetEffeciency( int Player )
+{
+	// positive points == + kills - suacides - friendly
+	float positives = (float)GetKills(Player);
+	// negative points == + deaths + suicides + friendly
+	float negatives = (float)(GetTotalDeaths(Player)+GetFriendlyKills(Player));
+	// worst possible case
+	if(!positives) return 0;
+	// perfection
+	if(!negatives) return 100;
+	// calculate percentage
+	return (int)(positives / (positives + negatives) * 100.0F);
 }

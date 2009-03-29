@@ -1,3 +1,7 @@
+
+#ifndef STATS
+#define STATS
+
 /*******************************************************************\
 *																	
 *	stats.h															
@@ -18,6 +22,7 @@ int GetTotalKills(int Killer);																	// Get total number of kills (not
 int GetTotalDeaths(int Victim);															// Get total number of deaths
 int GetKillStats(int Killer, int Victim);													// Get an individual kill statistic
 int GetScoreStats(int Player);																// Get an individual score statistic
+int GetRealScore(int Player);
 int GetBonusStats(int Player);															// Get an individual bonus statistic
 int GetTeamScore(int Player);																// Get a player's team's total score (including kills)
 int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon);			// Get Weapon Kill Stats	
@@ -25,3 +30,15 @@ int GetPlayerRank(int Player);																// Get the id of the player at 1st
 int GetTeamScoreByTeamNumber(int Team);											// Get a player's team's total score (including kills)
 char* GetFavWeapon(int PlayerID, int WeaponType);								// Get name of player's weapon with the most kills of specified type
 char* GetWeaponName(int WeaponType, int Weapon);							// Get weapon name
+
+// new functions
+
+int GetSuicides( int Player );
+int GetDeaths( int Player );
+int GetKills( int Player );
+int GetScore( int Player );
+int GetTeamScore2( int Player );
+int GetEffeciency( int Player );
+
+#endif
+
