@@ -6268,8 +6268,6 @@ void ShowGameStats(BOOL ShowBLTBackground)
 	int TeamColor;
 	BOOL pulseon;
 	static float pulse = 0.0F;
-	BOOL KillsBased;
-	int NumActivePlayers;
 
 	// columns
 	int col = 0; // which column ?
@@ -6279,7 +6277,7 @@ void ShowGameStats(BOOL ShowBLTBackground)
 	// current positions
 	int top_offset = 0;
 	int left_offset = 0;
-	int col_width = (FontWidth*11);
+	int col_width = (FontWidth*9);
 
 	// blit background stuff
 	RECT    src;
@@ -6319,17 +6317,6 @@ void ShowGameStats(BOOL ShowBLTBackground)
 		}
 
 	}
-
-	// find how many active players there are
-	NumActivePlayers = 0;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if ( GameStatus[i] == STATUS_Normal || GameStatus[i] == STATUS_ViewingScore || GetScoreStats(i) > 0) 
-			NumActivePlayers++;
-	}
-
-	// some games are based on points
-	KillsBased = ( CTF || CaptureTheFlag || BountyHunt ) ? FALSE : TRUE ;
 	
 	// calculate flashing name
 	pulse += framelag/60.0F;
@@ -6338,8 +6325,7 @@ void ShowGameStats(BOOL ShowBLTBackground)
 	else				pulseon = FALSE;
 
 	// calculate the number of columns
-	ncols = 6; // names + suicides + deaths + kills + efficiency
-	if(!KillsBased) ncols++; // + bonus points
+	ncols = 6; // name + score + efficiency + suicides + deaths + kills
 	if(TeamGame) ncols++; // + team score
 
 	// center of screen - (1/2 of width of columns)
@@ -6354,19 +6340,21 @@ void ShowGameStats(BOOL ShowBLTBackground)
 
 	// print headers
 	col = 1; // col 0 is for names
+	if(TeamGame)
+	Print4x5Text( "TEAM",		column[col++],	top_offset, GRAY	);
+	Print4x5Text( "SCORE",		column[col++], 	top_offset, GRAY	);
+	Print4x5Text( "RATIO",		column[col++], 	top_offset, CYAN	);
+	Print4x5Text( "KILLS",		column[col++],	top_offset, GREEN	);
 	Print4x5Text( "SUICIDES",	column[col++],	top_offset, RED		);
 	Print4x5Text( "DEATHS",		column[col++],	top_offset, RED		);
-	Print4x5Text( "KILLS",		column[col++],	top_offset, GREEN	);
-	if(!KillsBased)
-	Print4x5Text( "BONUS",		column[col++],	top_offset, YELLOW	);
-	Print4x5Text( "SCORE",		column[col++], 	top_offset, GRAY	);
-	Print4x5Text( "EFFICIENCY",	column[col++], 	top_offset, CYAN	);
-	if(TeamGame)
-	Print4x5Text( "TEAM SCORE",	column[col++],	top_offset, BLUE	);
 
 	// display stats for all players
-	for (i = 0; i < NumActivePlayers; i++)
+	for (i = 0; i < MAX_PLAYERS; i++)
 	{
+		// stop at last player
+		if ( GameStatus[i] != STATUS_Normal && GameStatus[i] != STATUS_ViewingScore && (GetScoreStats(i) < 1) )
+			break;
+
 		// reset positions
 		col = 0;
 		top_offset += YSpaceing; // go to next row
@@ -6377,15 +6365,13 @@ void ShowGameStats(BOOL ShowBLTBackground)
 
 		// print values
 		Print4x5Text( (char*)&Names[i],	column[col++],	top_offset, color );
-		Printint16( GetSuicides(i),		column[col++],	top_offset, RED );			// suacides
-		Printint16( GetTotalDeaths(i),	column[col++],	top_offset,	RED );			// suacides + deaths
-		Printint16( GetKills(i),		column[col++],	top_offset,	GREEN );		// kills - suacides - friendly
-		if(!KillsBased)
-		Printint16( GetBonusStats(i),	column[col++],	top_offset,	YELLOW );		// bonus points
+		if(TeamGame)																													  																
+		Printint16( GetTeamScore(i),	column[col++],	top_offset,	GRAY );			// all players (points + kills - suacides - friendly - deaths)
 		Printint16( GetRealScore(i),	column[col++],	top_offset, GRAY );			// points + kills - suacides - friendly - deaths
 		Printint16( GetEffeciency(i),	column[col++],	top_offset, CYAN );			// positives / (positives - negatives)
-		if(TeamGame)																													  																
-		Printint16( GetTeamScore(i),	column[col++],	top_offset,	TeamColor );	// all players (points + kills - suacides - friendly - deaths)
+		Printint16( GetKills(i),		column[col++],	top_offset,	GREEN );		// kills - suacides - friendly
+		Printint16( GetSuicides(i),		column[col++],	top_offset, RED );			// suacides
+		Printint16( GetTotalDeaths(i),	column[col++],	top_offset,	RED );			// suacides + deaths
 	}
 }
 
