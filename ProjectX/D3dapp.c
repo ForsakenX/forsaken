@@ -574,16 +574,6 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 		//case WM_DESTROY:
 		//	break;
 
-		// mouse is on a non client area of the screen
-		case WM_NCHITTEST:
-			// stop the mouse from performing non client actions in fullscreen...
-			if ( d3dappi.bFullscreen )
-			{
-				*lresult = 1;
-				*bStopProcessing = TRUE;
-			}
-			break;
-
 		//case WM_MOVING:
 			//DebugPrintf("The window is moving.\n");
         //    break;
@@ -839,7 +829,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				*lresult = 0;
 				*bStopProcessing = TRUE;
 				break;
-/*
+				/*
 			case SC_CLOSE:
 				DebugPrintf("WM_SYSCOMMAND SC_CLOSE\n");
 				break;
@@ -893,34 +883,18 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				break;
 			default:
 				DebugPrintf("WM_SYSCOMMAND unknown action.\n");
-*/
+				*/
 			}
 			break;
 
-/*
-		// Can we detect the windows key being hit?
-		// Or perhaps other ctrl modified keystrokes like ctrl+escape
-		// we should definitively drop out of the application on the above keystroke
-
-
-// dinput docs
-//DISCL_EXCLUSIVE
-	// An application that acquires the mouse or keyboard device in exclusive mode
-	// should always unacquire the devices when it receives WM_ENTERSIZEMOVE and WM_ENTERMENULOOP messages.
-	// Otherwise, the user cannot manipulate the menu or move and resize the window.
-
-		case WM_ENTERSIZEMOVE:
-		case WM_ENTERMENULOOP:
-			// need to implement above here...
-			// perhaps not cause it works fine...
-			break;
-
-
-
-// unused events that might be of interest later
-
-		case WM_SIZING:
-			// drag rectangle monitoring
+		// stuff that should be ignored in fullscreen
+		case WM_NCHITTEST:		// mouse on non client area
+		case WM_CONTEXTMENU:	// window context menu
+			if(d3dappi.bFullscreen)
+			{
+				*lresult = 0;
+				*bStopProcessing = TRUE;
+			}
 			break;
 
 		case WM_DEVICECHANGE:
@@ -928,122 +902,9 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			break;
 
 		case WM_DISPLAYCHANGE:
-			//DebugPrintf("Display resolution has changed.\n");
+			DebugPrintf("Display resolution has changed.\n");
 			break;
 
-		case WM_SETFOCUS:
-			//DebugPrintf("Keyboard has gained focus.\n");
-			break;
-
-		case WM_KILLFOCUS:
-			//DebugPrintf("About to loose keyboard focus.\n");
-			break;
-
-		case WM_GETICON:
-			switch ( wParam )
-			{
-			case ICON_BIG:
-				//DebugPrintf("Large (alt+tab) icon has been requested.\n"); 
-				break;
-			case ICON_SMALL:
-			//case ICON_SMALL2:
-				//DebugPrintf("Small window icon has been requested.\n");
-				break;
-			}
-			break;
-
-		case WM_SETTEXT:
-			//DebugPrintf("Something has sent us a string: %s\n",lParam);
-			break;
-
-		case WM_GETTEXT:
-			//DebugPrintf("Something has requested a string.\n");
-			break;
-
-		case WM_SYNCPAINT:
-			//DebugPrintf("System has asked us to sync paint.\n");
-			break;
-
-		case WM_ERASEBKGND:
-			//DebugPrintf("Window background must be erased (needs a repaint).\n");
-			break;
-
-		case WM_CAPTURECHANGED:
-			//DebugPrintf("Loosing mouse capture.\n");
-			break;
-
-		case WM_EXITSIZEMOVE:
-			//DebugPrintf("Exiting resize/move.\n");
-			break;
-
-		case WM_CANCELMODE:
-			//DebugPrintf("Mouse capture released via CANCEL MODE.\n");
-			break;
-
-		// non client area hits (titlebar, borders)
-		case WM_NCHITTEST:
-		case WM_NCMOUSEMOVE:
-		case WM_NCACTIVATE:
-		case WM_NCLBUTTONUP:
-		case WM_NCLBUTTONDOWN:
-		case WM_NCRBUTTONDOWN:
-		case WM_NCRBUTTONUP:
-		case WM_NCLBUTTONDBLCLK:
-		case WM_NCRBUTTONDBLCLK:
-		case WM_NCMBUTTONDOWN:
-		case WM_NCMBUTTONUP:
-		case WM_NCMBUTTONDBLCLK:
-			//DebugPrintf("Non client area mouse event.\n");
-			break;
-
-
-// end of d3d specific window events
-
-
-
-
-
-
-
-
-
-
-// client area events that are within the viewport
-
-// keyboard events
-
-		case WM_KEYDOWN:
-		case WM_KEYUP:
-			DebugPrintf("Non system key (not using alt modifier) has been %s.\n",(message==WM_KEYDOWN?"pressed":"released"));
-			break;
-
-		case WM_CHAR:
-			DebugPrintf("TranslateMessage has generated a CHAR out of a WM_KEYDOWN event.\n");
-			break;
-
-		case WM_CONTEXTMENU:
-			DebugPrintf("The right mouse button has been clicked.\n");
-			break;
-
-		case WM_SYSCOMMAND:
-			DebugPrintf("A command from the window menu or window buttons has been selected.\n");
-			break;
-
-// mouse events
-
-		case WM_MOUSEMOVE: // same value as WM_MOUSEFIRST (why?)
-			DebugPrintf("The mouse is moving (over the client area without focus) (anywhere with focus).\n");
-			break;
-
-		case 0x020A: // WM_MOUSEWHEEL (why isn't this defined?)
-			DebugPrintf("mouse wheel event.\n");
-			break;
-
-//
-
-		default:
-			DebugPrintf("Unhandeled windowProc message: %d\n",message);
-*/
 
     }
     return TRUE;
