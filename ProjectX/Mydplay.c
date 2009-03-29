@@ -3462,7 +3462,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( lpPingMsg->ToYou == WhoIAm )
 		{
 			QueryPerformanceCounter( (LARGE_INTEGER *) &TempLongLong );
-			PingTimes[lpPingMsg->WhoIAm] = (uint16) (((TempLongLong - lpPingMsg->Time) * 1000 ) / Freq);
+			PingTimes[lpPingMsg->WhoIAm] = (uint16) (((TempLongLong - lpPingMsg->Time) / Freq ) * 1000 );
 		}
 		return;
 
