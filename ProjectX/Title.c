@@ -801,7 +801,7 @@ enum
 	BIKE_FEATURE_Ammo,
 };
 
-#define TITLE_TEXT_MSGS_STORED 4
+#define TITLE_TEXT_MSGS_STORED 6
 char TitleMessage[TITLE_TEXT_MSGS_STORED][MAXTEXTMSG];
 char TeamCurrentScore[MAX_TEAMS][64];
 
@@ -1266,6 +1266,8 @@ MENU	MENU_NEW_HostWaitingToStart = {
 		{ 105,  15, 200,  25, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
 		{   5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
 		{   5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
+		{   5, 112, 200, 119, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[5], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
+		{   5, 119, 200, 126, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[4], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 126, 200, 133, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[3], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 133, 200, 140, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[2], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 		{   5, 140, 200, 147, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[1], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
