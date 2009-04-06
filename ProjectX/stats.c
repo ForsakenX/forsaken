@@ -453,36 +453,29 @@ int GetTotalDeaths(int Victim)
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void ScoreSort()
 {
-	int16 i;
-	BOOL flag;
-	BOOL	oneswapped;
-	int16	temp;
-		
-	// sort the player's scores
-	flag = TRUE;
-	while( flag )
+	int i;
+	int temp;
+
+	while( TRUE )
 	{
-		oneswapped = FALSE;
+		int swapped = FALSE;
+		// run through all players
 		for( i = 0; i < ( MAX_PLAYERS-1 ); i++ )
 		{
-			if( (GetScoreStats(ScoreSortTab[i]) < GetScoreStats(ScoreSortTab[i+1]) )				// score less than player below me
-				|| ( (GetScoreStats(ScoreSortTab[i]) == GetScoreStats(ScoreSortTab[i+1]) )		// score equal but less kills then player below 
-						&& GetTotalKills(ScoreSortTab[i]) < GetTotalKills(ScoreSortTab[i+1]) )
-				||  ( (GetScoreStats(ScoreSortTab[i]) == GetScoreStats(ScoreSortTab[i+1]) )		// score & kills equal but more deaths than player
-						&& GetTotalKills(ScoreSortTab[i]) == GetTotalKills(ScoreSortTab[i+1]) 
-						&& GetTotalDeaths(ScoreSortTab[i]) > GetTotalDeaths(ScoreSortTab[i+1])) 
-				) 
+			// if my score is worse than player bellow me
+			if(	GetRealScore(ScoreSortTab[i]) < GetRealScore(ScoreSortTab[i+1])	) 
 			{
-				// swap them...
-				temp						= ScoreSortTab[i];
+				// swap places
+				temp				= ScoreSortTab[i];
 				ScoreSortTab[i]		= ScoreSortTab[i+1];
 				ScoreSortTab[i+1]	= temp;
-				oneswapped			= TRUE;
+				swapped				= TRUE;
 			}
 		}
-		if( !oneswapped )
-			flag = FALSE;
-	}// end of sorting player's scores
+		// no players needed swapping
+		if ( swapped == FALSE )
+			break;
+	}
 
 }
 
