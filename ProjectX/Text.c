@@ -810,10 +810,6 @@ void PrintScoreSort( void )
 				// player name
 				Print4x5Text( &Names[GetPlayerRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerRank(i) ) ? GRAY : RED) );
 				left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
-
-				// player real score
-				len = Printint16( GetRealScore(GetPlayerRank(i)), left_offset, top_offset, 2 );
-				left_offset += ( (len+2) * FontWidth ); // length of number +N padding
 			}
 			
 			// Show pings for everyone except your self
