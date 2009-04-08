@@ -82,7 +82,14 @@ void FillStatusTab( void );
 void DisplayStatusMessages( void );
 void BuildReliabilityTab( void );
 void DisplayConnectionStatus( int num , int x , int y);
-enum {
+
+
+
+// if you add a color then up this count...
+#define	MAXFONTCOLOURS	11
+
+// must align this enum with rgb values in Colourtrans (text.c)
+typedef enum {
  GRAY,
  RED,
  GREEN,
@@ -91,8 +98,11 @@ enum {
  CYAN,
  PURPLE,
  OFFGREEN,
- DARKGRAY
-};
+ DARKGRAY,
+ BLACK
+} colors_t;
+
+
 
 #endif	// TEXT_INCLUDED
 

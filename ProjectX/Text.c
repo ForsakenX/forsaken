@@ -29,8 +29,6 @@
 
 #define MSG_VERSION_NUMBER 1
 
-#define	MAXFONTCOLOURS	9
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
@@ -72,16 +70,20 @@ extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 extern	LONGLONG	LargeTime;
 
-uint8 Colourtrans[9][3] = { { 192,192,192 }, // gray 
-						  { 255,64,64 }, // red 
-						  { 64,255,64 }, // green 
-						  { 64,64,255 }, // blue 
-						  { 255,255,64 }, // yellow
-						  { 64,255,255 }, // cyan
-						  { 255,64,255 }, // purple
-						  { 128,255,128 }, // off green
-						  { 64,64,64 } // dark gray
-						  };
+// color names are defined in text.h colors_t
+uint8 Colourtrans[MAXFONTCOLOURS][3] = {
+	// r, g, b   values...
+	{ 192,192,192 },	// gray 
+	{ 255,64,64 },		// red 
+	{ 64,255,64 },		// green 
+	{ 64,64,255 },		// blue 
+	{ 255,255,64 },		// yellow
+	{ 64,255,255 },		// cyan
+	{ 255,64,255 },		// purple
+	{ 128,255,128 },	// off green
+	{ 64,64,64 },		// dark gray
+	{ 0,0,0 }			// black
+};
 
 // custom colour messages (Title.c)
 extern int SystemMessageColour;

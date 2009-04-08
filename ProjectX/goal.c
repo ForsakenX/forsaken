@@ -51,7 +51,7 @@ extern	int16			NumPickupType[ MAXPICKUPTYPES ];
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	FRAME_INFO	*	GreyFlare_Header;
 extern	float			framelag;
-extern	uint8			Colourtrans[9][3];
+extern	uint8			Colourtrans[MAXFONTCOLOURS][3];
 extern	int				TeamCol[ MAX_TEAMS ];
 extern	BYTE			TeamNumber[MAX_PLAYERS];
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
