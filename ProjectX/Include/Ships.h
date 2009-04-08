@@ -28,6 +28,8 @@
 
 #define DEG2RAD(D)				((D) * PI / 180.0F)
 
+#define RESPAWN_TIMER -250.0F
+
 //#define	SHIP_RADIUS	( 256.0F * GLOBAL_SCALE )
 #define	SHIP_RADIUS	( 300.0F * GLOBAL_SCALE )
 #define MOVE_TOLERANCE ( 2.0F * GLOBAL_SCALE )

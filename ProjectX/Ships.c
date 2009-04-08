@@ -2696,7 +2696,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			ShipPnt->Timer = -251.0F;
 
 		// hit respawn key
-		if( ( ShipPnt->Timer < -250.0F ) && ( AnyKeyReleased() != 0 ) )
+		if( ( ShipPnt->Timer < RESPAWN_TIMER ) && ( AnyKeyReleased() != 0 ) )
 		{
 			// single player
 			if( MyGameStatus == STATUS_SinglePlayer )
