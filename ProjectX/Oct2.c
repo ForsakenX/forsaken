@@ -576,9 +576,16 @@ BOOL FreeStatsDisplay();
 BOOL InitStatsDisplay();
 BOOL ScoreDisplayOrig(void);
 
+typedef enum {
+	NO_BG,
+	FULL_BG,
+	BOX_BG
+} stats_mode_t;
+
 void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BOOL DetailedStats);
 void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
+void ShowDeathModeStats();
 void ShowGameStats(BOOL ShowBLTBackground);
 
 int Secrets = 0;
@@ -2135,8 +2142,15 @@ void TestBlt()
 	  else
 		MessageQuePrint();
 
+	  // if we are dead and waiting for a game
 	  // show statistics
-	  if(ShowStatistics)
+	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE )
+	  {
+		  ShowDeathModeStats();
+
+	  // if we have show stats activated (ex: you pressed the stats button)
+	  // show statistics
+	  } else if ( ShowStatistics )
 		  ShowInGameStats();
 
 	  // watch mode
@@ -6253,19 +6267,27 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   Input   :   nothing...
   Output    :   nothing..
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
+void ShowDeathModeStats()
+{
+	ShowGameStats( BOX_BG );
+	if( Ships[ WhoIAm ].Timer < RESPAWN_TIMER )
+		CenterPrint4x5Text( "Press any key to continue" , d3dappi.szClient.cy - (FontHeight*2) , GREEN );	
+}
+
 /* Display the Statistics in-game when key is pressed */
 void ShowInGameStats()
 {
-	ShowGameStats(FALSE);	// don't use BLT background
+	ShowGameStats( NO_BG );	// don't use BLT background
 }
 
-void ShowGameStats(BOOL ShowBLTBackground)
+void ShowGameStats( stats_mode_t mode )
 {
 	int i;					// index counter
 	int scaler = 2;			// used to adjust positioning of stats based on number of active players
 	int color;				// used to flash the colour of your player name and stats
-	int YSpaceing = (FontHeight+(FontHeight>>1));
 	int TeamColor;
+	int active_players = 0; // number of players
 	BOOL pulseon;
 	static float pulse = 0.0F;
 
@@ -6278,44 +6300,14 @@ void ShowGameStats(BOOL ShowBLTBackground)
 	int top_offset = 0;
 	int left_offset = 0;
 	int col_width = (FontWidth*9);
+	int row_height = (FontHeight+(FontHeight>>1));
 
-	// blit background stuff
-	RECT    src;
-	RECT    dest;
-	HRESULT ddrval;
-	DDBLTFX fx;
-
-	//  Blt Background
-	src.top		= 0;
-	src.left	= 0;
-	dest.top	= 0;
-	dest.left	= 0;
-	src.right	= d3dappi.szClient.cx;
-	src.bottom	= d3dappi.szClient.cy;
-	dest.bottom	= d3dappi.szClient.cy;
-	dest.right	= d3dappi.szClient.cx;
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize	= sizeof(DDBLTFX);
-
-	// this turns the background dark
-	if(ShowBLTBackground)
+	// generate number of active_players
+	for (i = 0; i < MAX_PLAYERS; i++)
 	{
-		while( 1 )
-		{
-			ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, NULL, lpDDSOne, NULL, DDBLT_WAIT, &fx );
-			if( ddrval == DD_OK )
-			  break;
-			if( ddrval == DDERR_SURFACELOST )
-			{
-			  d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-			  d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-			  DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
-			  break;
-			}
-			if( ddrval != DDERR_WASSTILLDRAWING )
-			  break;
-		}
-
+		if ( GameStatus[i] != STATUS_Normal && GameStatus[i] != STATUS_ViewingScore && (GetScoreStats(i) < 1) )
+			break;
+		active_players++;
 	}
 	
 	// calculate flashing name
@@ -6330,34 +6322,74 @@ void ShowGameStats(BOOL ShowBLTBackground)
 
 	// center of screen - (1/2 of width of columns)
 	left_offset = ( d3dappi.szClient.cx >>1 ) - ((col_width*ncols)/2); // center of screen minus half width of columns
-	
+
 	// create the columns offsets
 	for ( col = 0; col < ncols; col++ )
 		column[ col ] = left_offset + (col * col_width);
 
 	// first row
-	top_offset = ( ( d3dappi.szClient.cy / scaler ) - (8*YSpaceing>>1) );
+	top_offset = ( ( d3dappi.szClient.cy / scaler ) - (8*row_height>>1) );
+
+	// this turns the background dark
+	if( mode != NO_BG )
+	{
+		RECT box;
+		int padding = 20;
+		HRESULT ddrval;
+		DDBLTFX fx;
+		memset(&fx, 0, sizeof(DDBLTFX));
+		fx.dwSize = sizeof(DDBLTFX);
+
+		// calculate black box
+		if( mode == BOX_BG )
+		{
+
+			int padding = (int)((float)col_width * 0.25F);
+
+			box.left = left_offset - padding;											// begging of first col
+			box.right = column[ ncols-1 ] + col_width + padding;						// end of last col
+
+			box.top = top_offset - padding;												// begging of first row
+			box.bottom = top_offset + (row_height * (active_players + 1)) + padding;	// bottom of last row
+
+		}
+
+		while( 1 )
+		{
+			ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
+				d3dapp->lpBackBuffer, &box, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &fx 
+			);
+			if( ddrval == DD_OK )
+				break;
+			if( ddrval == DDERR_SURFACELOST )
+			{
+				DebugPrintf("ShowGameStats() Lost surface");
+				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
+				d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
+				DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
+				break;
+			}
+			if( ddrval != DDERR_WASSTILLDRAWING )
+				break;
+		}
+	}
 
 	// print headers
 	col = 1; // col 0 is for names
 	if(TeamGame)
-	Print4x5Text( "TEAM",		column[col++],	top_offset, GRAY	);
-	Print4x5Text( "SCORE",		column[col++], 	top_offset, GRAY	);
-	Print4x5Text( "RATIO",		column[col++], 	top_offset, CYAN	);
-	Print4x5Text( "KILLS",		column[col++],	top_offset, GREEN	);
-	Print4x5Text( "SUICIDES",	column[col++],	top_offset, RED		);
-	Print4x5Text( "DEATHS",		column[col++],	top_offset, RED		);
+	Print4x5Text( "TEAM",		column[col++],	top_offset, YELLOW		);
+	Print4x5Text( "SCORE",		column[col++], 	top_offset, GRAY		);
+	Print4x5Text( "RATIO",		column[col++], 	top_offset, CYAN		);
+	Print4x5Text( "KILLS",		column[col++],	top_offset, GREEN		);
+	Print4x5Text( "SUICIDES",	column[col++],	top_offset, RED			);
+	Print4x5Text( "DEATHS",		column[col++],	top_offset, RED			);
 
 	// display stats for all players
-	for (i = 0; i < MAX_PLAYERS; i++)
+	for (i = 0; i < active_players; i++)
 	{
-		// stop at last player
-		if ( GameStatus[i] != STATUS_Normal && GameStatus[i] != STATUS_ViewingScore && (GetScoreStats(i) < 1) )
-			break;
-
 		// reset positions
 		col = 0;
-		top_offset += YSpaceing; // go to next row
+		top_offset += row_height; // go to next row
 
 		// determine colors
 		TeamColor = TeamCol[TeamNumber[i]];
@@ -6366,12 +6398,12 @@ void ShowGameStats(BOOL ShowBLTBackground)
 		// print values
 		Print4x5Text( (char*)&Names[i],	column[col++],	top_offset, color );
 		if(TeamGame)																													  																
-		Printint16( GetTeamScore(i),	column[col++],	top_offset,	GRAY );			// all players (points + kills - suacides - friendly - deaths)
-		Printint16( GetRealScore(i),	column[col++],	top_offset, GRAY );			// points + kills - suacides - friendly - deaths
-		Printint16( GetEffeciency(i),	column[col++],	top_offset, CYAN );			// positives / (positives - negatives)
-		Printint16( GetKills(i),		column[col++],	top_offset,	GREEN );		// kills - suacides - friendly
-		Printint16( GetSuicides(i),		column[col++],	top_offset, RED );			// suacides
-		Printint16( GetTotalDeaths(i),	column[col++],	top_offset,	RED );			// suacides + deaths
+		Printint16( GetTeamScore(i),	column[col++],	top_offset,	YELLOW		);	// all players (points + kills - suacides - friendly - deaths)
+		Printint16( GetRealScore(i),	column[col++],	top_offset, GRAY		);	// points + kills - suacides - friendly - deaths
+		Printint16( GetEffeciency(i),	column[col++],	top_offset, CYAN		);	// positives / (positives - negatives)
+		Printint16( GetKills(i),		column[col++],	top_offset,	GREEN		);	// kills - suacides - friendly
+		Printint16( GetSuicides(i),		column[col++],	top_offset, RED			);	// suacides
+		Printint16( GetTotalDeaths(i),	column[col++],	top_offset,	RED			);	// suacides + deaths
 	}
 }
 
@@ -6383,7 +6415,7 @@ void ShowGameStats(BOOL ShowBLTBackground)
 /* Display the Statistics */
 BOOL ScoreDisplay()
 {
-	ShowGameStats(TRUE); // use BLT background
+	ShowGameStats( FULL_BG ); // use BLT background
 	CenterPrint4x5Text( "Press Space to continue" , d3dappi.szClient.cy - (FontHeight*2) , 0 );	
 	return TRUE;
 }
