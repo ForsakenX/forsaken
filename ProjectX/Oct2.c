@@ -6281,130 +6281,246 @@ void ShowInGameStats()
 	ShowGameStats( NO_BG );	// don't use BLT background
 }
 
+void PaintBackground( RECT * box ) // pass NULL to black out all of the screen
+{
+	HRESULT ddrval;
+	DDBLTFX fx;
+	memset(&fx, 0, sizeof(DDBLTFX));
+	fx.dwSize = sizeof(DDBLTFX);
+	while( 1 )
+	{
+		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
+			d3dapp->lpBackBuffer, box, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &fx 
+		);
+		if( ddrval == DD_OK )
+			break;
+		if( ddrval == DDERR_SURFACELOST )
+		{
+			DebugPrintf("ShowGameStats() Lost surface");
+			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
+			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
+			DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
+			break;
+		}
+		if( ddrval != DDERR_WASSTILLDRAWING )
+			break;
+	}
+}
+
+BOOL StatsNamePulse( void )
+{
+	static float pulse = 0.0F;
+	pulse += framelag / 60.0F;
+
+	if (pulse > 1.0F)
+		pulse -= (float) floor( (double) pulse );
+
+	if (pulse <= 0.5F)
+		return TRUE;
+
+	return FALSE;
+}
+
+extern BOOL	ShowPing;
+extern uint16 PingTimes[MAX_PLAYERS];
+extern int GetPlayerByRank( int rank );
 void ShowGameStats( stats_mode_t mode )
 {
-	int i;					// index counter
-	int scaler = 2;			// used to adjust positioning of stats based on number of active players
-	int color;				// used to flash the colour of your player name and stats
-	int TeamColor;
-	int active_players = 0; // number of players
-	BOOL pulseon;
-	static float pulse = 0.0F;
-
-	// columns
-	int col = 0; // which column ?
-	int ncols = 0; // number of cols (computed later)
-	int column[10]; // 10 possible columns
-
-	// current positions
+	int active_players = 0;
+	int total_rows = 0;
+	int total_height = 0;
 	int top_offset = 0;
-	int left_offset = 0;
-	int col_width = (FontWidth*9);
-	int row_height = (FontHeight+(FontHeight>>1));
+	int row_height = (FontHeight+(FontHeight/2));
+	int x_center = ( d3dappi.szClient.cx >>1 );
+	int y_center = ( d3dappi.szClient.cy >>1 );
 
-	// generate number of active_players
+	// generate active players
+
 	for (i = 0; i < MAX_PLAYERS; i++)
 	{
 		if ( GameStatus[i] != STATUS_Normal && GameStatus[i] != STATUS_ViewingScore && (GetScoreStats(i) < 1) )
 			break;
 		active_players++;
 	}
-	
-	// calculate flashing name
-	pulse += framelag/60.0F;
-	if (pulse > 1.0F)	pulse -= (float)floor((double)pulse);
-	if (pulse <= 0.5F)	pulseon = TRUE;
-	else				pulseon = FALSE;
 
-	// calculate the number of columns
-	ncols = 6; // name + score + efficiency + suicides + deaths + kills
-	if(TeamGame) ncols++; // + team score
+	// get the total height of everything
 
-	// center of screen - (1/2 of width of columns)
-	left_offset = ( d3dappi.szClient.cx >>1 ) - ((col_width*ncols)/2); // center of screen minus half width of columns
+	total_rows = 9 + (2* active_players); // calculated statically based on the code  SUCKSSSSS
+	total_height = (total_rows * row_height);
+	top_offset = ( y_center - (total_height / 2) ); // center whole thing
 
-	// create the columns offsets
-	for ( col = 0; col < ncols; col++ )
-		column[ col ] = left_offset + (col * col_width);
+// ROWS += 1
 
-	// first row
-	top_offset = ( ( d3dappi.szClient.cy / scaler ) - (8*row_height>>1) );
+	// paint black background or black box
 
-	// this turns the background dark
-	if( mode != NO_BG )
+	if( !bPolyText && mode != NO_BG ) // you can't see anything in polytext mode
 	{
 		RECT box;
-		int padding = 20;
-		HRESULT ddrval;
-		DDBLTFX fx;
-		memset(&fx, 0, sizeof(DDBLTFX));
-		fx.dwSize = sizeof(DDBLTFX);
-
-		// calculate black box
 		if( mode == BOX_BG )
 		{
+			int x_padding = FontWidth*2;
+			int y_padding = FontHeight*2;
 
-			int padding = (int)((float)col_width * 0.25F);
+			// whole width
+			box.left = 0;
+			box.right = d3dappi.szClient.cx;
 
-			box.left = left_offset - padding;											// begging of first col
-			box.right = column[ ncols-1 ] + col_width + padding;						// end of last col
+			//box.left = left_offset - x_padding;						// begging of first col
+			//box.right = column[ ncols-1 ] + col_width + x_padding;	// end of last col
 
-			box.top = top_offset - padding;												// begging of first row
-			box.bottom = top_offset + (row_height * (active_players + 1)) + padding;	// bottom of last row
-
+			box.top = top_offset - y_padding;							// begging of first row
+			box.bottom = top_offset + total_height + y_padding;			// bottom of last row
 		}
-
-		while( 1 )
-		{
-			ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
-				d3dapp->lpBackBuffer, &box, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &fx 
-			);
-			if( ddrval == DD_OK )
-				break;
-			if( ddrval == DDERR_SURFACELOST )
-			{
-				DebugPrintf("ShowGameStats() Lost surface");
-				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-				d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
-				break;
-			}
-			if( ddrval != DDERR_WASSTILLDRAWING )
-				break;
-		}
+		PaintBackground(&box);
 	}
 
-	// print headers
-	col = 1; // col 0 is for names
-	if(TeamGame)
-	Print4x5Text( "TEAM",		column[col++],	top_offset, YELLOW		);
-	Print4x5Text( "SCORE",		column[col++], 	top_offset, GRAY		);
-	Print4x5Text( "RATIO",		column[col++], 	top_offset, CYAN		);
-	Print4x5Text( "KILLS",		column[col++],	top_offset, GREEN		);
-	Print4x5Text( "SUICIDES",	column[col++],	top_offset, RED			);
-	Print4x5Text( "DEATHS",		column[col++],	top_offset, RED			);
+	//
+	// Kill Matrix
+	//
 
-	// display stats for all players
-	for (i = 0; i < active_players; i++)
 	{
-		// reset positions
-		col = 0;
-		top_offset += row_height; // go to next row
-
-		// determine colors
-		TeamColor = TeamCol[TeamNumber[i]];
-		color = (pulseon && i == WhoIAm) ? GRAY : (TeamGame ? TeamColor : YELLOW);
-
-		// print values
-		Print4x5Text( (char*)&Names[i],	column[col++],	top_offset, color );
-		if(TeamGame)																													  																
-		Printint16( GetTeamScore(i),	column[col++],	top_offset,	YELLOW		);	// all players (points + kills - suacides - friendly - deaths)
-		Printint16( GetRealScore(i),	column[col++],	top_offset, GRAY		);	// points + kills - suacides - friendly - deaths
-		Printint16( GetEffeciency(i),	column[col++],	top_offset, CYAN		);	// positives / (positives - negatives)
-		Printint16( GetKills(i),		column[col++],	top_offset,	GREEN		);	// kills - suacides - friendly
-		Printint16( GetSuicides(i),		column[col++],	top_offset, RED			);	// suacides
-		Printint16( GetTotalDeaths(i),	column[col++],	top_offset,	RED			);	// suacides + deaths
+		char* title = "KILL MATRIX";
+		Print4x5Text( title, (x_center-((strlen(title)*FontWidth)/2)), top_offset, WHITE );
+		top_offset += (row_height * 2);
 	}
+
+// ROWS += 2
+
+	{
+		int i;
+
+		int col_width = (FontWidth * 3);
+		int name_width = (FontWidth * MAXSHORTNAME);
+
+		int line_width = name_width + (col_width * active_players);
+		int left_offset = x_center - (line_width / 2); // center
+
+		// print first letter of each name
+
+		for (i = 0; i < active_players; i++)
+		{
+			// x axis
+			int xpos = left_offset + name_width + (i * col_width);
+
+			// create string of first letter of player name
+			char FirstLetter[2];
+			FirstLetter[0] = Names[GetPlayerByRank(i)][0];
+			FirstLetter[1] = 0;
+
+			//
+			Print4x5Text( FirstLetter,  xpos, top_offset, GRAY );
+		}
+
+		top_offset += row_height;
+
+// ROWS += 1
+
+		// display kill matrix
+		for (i = 0; i < active_players; i++)
+		{
+			// reset value
+			int j = 0;
+			int xpos = left_offset;
+
+			// print name
+			Print4x5Text( (char*) &Names[GetPlayerByRank(i)], xpos, top_offset, GRAY );
+			xpos += name_width;
+
+			// print kill matrix line
+			for (j = 0; j < active_players; j++)
+			{
+				Printint16( GetKillStats(GetPlayerByRank(i),GetPlayerByRank(j)), xpos, top_offset, (i==j) ? RED : GRAY ); // suacides are red
+				xpos+=col_width; // next col
+			}
+
+			// next row
+			top_offset += row_height;
+		}
+
+// ROWS += active players
+
+	}
+
+	top_offset += (row_height * 4);
+
+// ROWS += 4
+
+	//
+	// Player Stats
+	//
+
+	{
+		char* title = "Player Stats";
+		Print4x5Text( title, (x_center-((strlen(title)*FontWidth)/2)), top_offset, WHITE );
+		top_offset += (row_height * 2);
+	}
+
+// ROWS += 2
+
+
+	{
+		int i;
+
+		int col_width = (FontWidth * MAXSHORTNAME);
+		int ncols = (TeamGame) ? 7 : 6;
+		int line_width = col_width * ncols;
+		int left_offset = x_center - (line_width / 2); // center
+
+		{
+			int xpos;
+			int col;
+
+			// names and colors
+			int columns = 6;
+			char* names[6] = {"PING", "TEAM", "OVERALL", "RATIO", "KILLS", "DEATHS"};
+			int colors[6]  = {GRAY,   YELLOW, GRAY,      CYAN,    GREEN,   RED};
+
+			// NOT team game
+			if(!TeamGame)
+				names[1] = NULL;
+
+			// start at left
+			xpos = left_offset;
+
+			// print the names
+			for( col = 0; col < columns; col++ )
+				if( names[col] != NULL )
+					Print4x5Text( names[col], (xpos+=col_width), top_offset, colors[col] );
+
+		}
+
+		top_offset += (row_height * 1);
+
+// ROWS += 1
+
+		for (i = 0; i < active_players; i++)
+		{
+			// start of line
+			int xpos = left_offset;
+
+			// calculate team color
+			int TeamColor = TeamCol[TeamNumber[i]];
+			int color = (StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamColor : YELLOW);
+
+			// print line
+			Print4x5Text( (char*)&Names[GetPlayerRank(i)],	xpos,				top_offset, color );
+			xpos += col_width; // so the column shows up no matter what
+					if( ShowPing && GetPlayerRank(i) != WhoIAm )
+			Printint16( PingTimes[GetPlayerRank(i)],		xpos,				top_offset, GRAY		);	// ping
+					if(TeamGame)
+			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	YELLOW		);	// all players (points + kills - suacides - friendly - deaths)
+			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, GRAY		);	// points + kills - suacides - friendly - deaths
+			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, CYAN		);	// positives / (positives - negatives)
+			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	GREEN		);	// kills - suacides - friendly
+			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	RED			);	// suacides + deaths
+
+			// go to next row
+			top_offset += row_height;
+		}
+	}
+
+// ROWS += active players
+
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
