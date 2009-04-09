@@ -156,8 +156,8 @@ typedef struct MISSEDPICKUPMSG{
 	void *	Struct;
 }MISSEDPICKUPMSG;
 
-
-typedef	char		SHORTNAMETYPE[MAX_PLAYERS][8];
+#define MAXSHORTNAME 8
+typedef	char		SHORTNAMETYPE[MAX_PLAYERS][MAXSHORTNAME];
 
 typedef struct _SHIPDIEDINFO
 {
