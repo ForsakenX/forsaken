@@ -331,6 +331,9 @@ char *  InitViewMessages[] = {
                  "" 
 };
 
+extern BOOL ShowPing;
+extern SLIDER  PingFreqSlider;
+
 extern  float MaxMoveSpeed;
 extern  float MoveAccell;
 extern  float MoveDecell;
@@ -5894,6 +5897,33 @@ void CheckLevelEnd ( void )
   Input   :   nothing...
   Output    :   nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+
+void ProcessPings( void )
+{
+	// timer
+	static float PingRefresh = 0.0F;
+
+	// multiplayer pings
+	if( ShowPing )
+	{
+		// count down to next ping time
+		PingRefresh -= framelag;
+		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
+		{
+			// reset ping counter
+			PingRefresh = 71.0F * PingFreqSlider.value;
+			// send next ping
+			PingGuarenteed();
+			// PingNonGuarenteed();
+		}
+	}
+	// pings disabled
+	else
+	{
+		PingRefresh = 0.0F;
+	}
+}
+
 BOOL
 MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 {
@@ -5901,6 +5931,8 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   static float fov_inc = 0.0F;
 
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
+
+  ProcessPings();
 
   if( PlayDemo )
   {
@@ -6251,27 +6283,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif
     }
 
-	
-	// multiplayer pings
-	if( ShowPing )
-	{
-		// count down to next ping time
-		PingRefresh -= framelag;
-		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
-		{
-			// reset ping counter
-			PingRefresh = 71.0F * PingFreqSlider.value;
-			// send next ping
-			PingGuarenteed();
-			// PingNonGuarenteed();
-		}
-	}
-	// pings disabled
-	else
-	{
-		PingRefresh = 0.0F;
-	}
-
   // here is where we process menu keys
   ProcessGameKeys();
 
@@ -6342,7 +6353,6 @@ BOOL StatsNamePulse( void )
 	return FALSE;
 }
 
-extern BOOL	ShowPing;
 extern uint16 PingTimes[MAX_PLAYERS];
 extern int GetPlayerByRank( int rank );
 void ShowGameStats( stats_mode_t mode )

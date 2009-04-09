@@ -116,8 +116,6 @@ BOOL BadConnection[ MAX_PLAYERS+1 ];
 
 BOOL DS = FALSE;
 
-float PingRefresh = 0.0F;
-
 int FontWidth = 4;
 int FontHeight = 5;
 int FontSourceWidth = 4;
