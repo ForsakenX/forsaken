@@ -754,6 +754,7 @@ void PrintScoreSort( void )
 		return;
 	}
 
+	// flash players name
 	FlashSpeed += framelag;
 	if( FlashSpeed >= FLASH_RATE )
 	{
@@ -761,48 +762,8 @@ void PrintScoreSort( void )
 		FlashSpeed = FMOD( FlashSpeed, FLASH_RATE );
 	}
 	
-	// not teams game
-	if( !TeamGame )
-	{
-		int top_offset = FontHeight; // Initial gap
-		int line_height = FontHeight+1;
-
-		// print player lines
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			int left_offset = 0; // offset from left
-			int len = 0; // length of string
-
-			// make sure it's a valid player
-			if( GameStatus[GetPlayerRank(i)] != STATUS_Left && GameStatus[GetPlayerRank(i)] != STATUS_Normal )
-				continue;
-
-			// print names and score
-			if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-			{
-				// blue dot for bad ping
-				if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-					DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], 2, top_offset );
-				left_offset = 8; // give it this much space
-
-				// player name
-				Print4x5Text( &Names[GetPlayerRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerRank(i) ) ? GRAY : RED) );
-				left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
-			}
-			
-			// Show pings for everyone except your self
-			if( ShowPing && GetPlayerRank(i) != WhoIAm )
-			{
-				sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
-				Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? 8 : 2) );
-			}
-
-			top_offset += line_height;
-		}
-	}
-
-	// teams game
-	else
+	// team game
+	if( TeamGame )
 	{
 		for (i = 0; i < MAX_TEAMS; i++)
 		{	teamOK[i] = FALSE;
