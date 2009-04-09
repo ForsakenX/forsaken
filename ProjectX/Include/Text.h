@@ -47,16 +47,16 @@ typedef struct
  */
 
 void PrintScoreSort( void );
-void CenterPrint4x5Text( char * Text , int y , int col );
-void CenterPrint4x5Text2( char * Text , int x, int y, int col );
-int	 Print4x5Text( char * Text , int x , int y , int col );
-void PrintClipped4x5Text( char * Text , int x , int y , int col );
-void Printuint16( uint16 tempnum , int x , int y , int col );
+void CenterPrint4x5Text( char * Text , int y , int color );
+void CenterPrint4x5Text2( char * Text , int x, int y, int color );
+int	 Print4x5Text( char * Text , int x , int y , int color );
+void PrintClipped4x5Text( char * Text , int x , int y , int color );
+void Printuint16( uint16 tempnum , int x , int y , int color );
 void MessageQuePrint( void );
 void AddColourMessageToQue(  int Colour, char * Text, ... );
-void RightJustifyPrint4x5Text( char * Text , int x , int y, int col );
+void RightJustifyPrint4x5Text( char * Text , int x , int y, int color );
 void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y);
-void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface );
+void Printuint16AnySurface( uint16 tempnum , int x , int y , int color , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface );
 void InitTextMessages( void );
 
 void InitFont( BOOL OverridePolytext );
@@ -99,7 +99,8 @@ typedef enum {
  PURPLE,
  OFFGREEN,
  DARKGRAY,
- BLACK
+ BLACK,
+ WHITE
 } colors_t;
 
 

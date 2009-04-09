@@ -82,7 +82,8 @@ uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 	{ 255,64,255 },		// purple
 	{ 128,255,128 },	// off green
 	{ 64,64,64 },		// dark gray
-	{ 0,0,0 }			// black
+	{ 0,0,0 },			// black
+	{ 255,255,255 }		// white
 };
 
 // custom colour messages (Title.c)
