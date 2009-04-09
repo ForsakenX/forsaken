@@ -756,10 +756,6 @@ void PrintScoreSort( void )
 		return;
 	}
 
-	// quit game
-	if ( MyGameStatus == STATUS_QuitCurrentGame )
-		return;
-	
 	// multiplayer pings
 	if( ShowPing )
 	{
