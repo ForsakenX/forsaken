@@ -756,25 +756,6 @@ void PrintScoreSort( void )
 		return;
 	}
 
-	// multiplayer pings
-	if( ShowPing )
-	{
-		// count down to next ping time
-		PingRefresh -= framelag;
-		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
-		{
-			// reset ping counter
-			PingRefresh = 71.0F * PingFreqSlider.value;
-			// send next ping
-			PingNonGuarenteed();
-		}
-	}
-	// pings disabled
-	else
-	{
-		PingRefresh = 0.0F;
-	}
-
 	FlashSpeed += framelag;
 	if( FlashSpeed >= FLASH_RATE )
 	{

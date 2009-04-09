@@ -6251,6 +6251,27 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif
     }
 
+	
+	// multiplayer pings
+	if( ShowPing )
+	{
+		// count down to next ping time
+		PingRefresh -= framelag;
+		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
+		{
+			// reset ping counter
+			PingRefresh = 71.0F * PingFreqSlider.value;
+			// send next ping
+			PingGuarenteed();
+			// PingNonGuarenteed();
+		}
+	}
+	// pings disabled
+	else
+	{
+		PingRefresh = 0.0F;
+	}
+
   // here is where we process menu keys
   ProcessGameKeys();
 
