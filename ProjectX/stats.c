@@ -451,16 +451,24 @@ int GetTotalDeaths(int Victim)
 	Input		:		nothing
 	Output		:		nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+extern BYTE	GameStatus[MAX_PLAYERS + 1];
 void ScoreSort()
 {
 	int i;
 	int temp;
+	int players = 0;
+
+	// we need to know number of players because scores can be negative
+	// meaning that uninitialized scores will be better than a negative score...
+	// so you'll disapear off the player list...
+	for (i = 0; i < MAX_PLAYERS; i++)
+		if ( GameStatus[i] == STATUS_Normal || GameStatus[i] == STATUS_ViewingScore )
+			players++;
 
 	while( TRUE )
 	{
 		int swapped = FALSE;
-		// run through all players
-		for( i = 0; i < ( MAX_PLAYERS-1 ); i++ )
+		for( i = 0; i < (players-1); i++ ) // -1 because we need to compare with next valid player
 		{
 			// if my score is worse than player bellow me
 			if(	GetRealScore(ScoreSortTab[i]) < GetRealScore(ScoreSortTab[i+1])	) 
@@ -487,6 +495,11 @@ void ScoreSort()
 int GetPlayerRank(int Player)
 {
 	return ScoreSortTab[Player];
+}
+
+int GetPlayerByRank( int rank )
+{
+	return ScoreSortTab[ rank ];
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
