@@ -205,7 +205,6 @@ extern	float	Start_Hull;
 
 LONGLONG PingRequestTime;					// used to reply the time it was sent...
 uint16		PingTimes[MAX_PLAYERS];		// How long does it take for a ping???
-extern BOOL		ShowPing;
 
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );

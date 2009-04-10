@@ -59,7 +59,6 @@ extern	BOOL Is3Dfx;
 extern	BOOL	bPolyText;
 extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern uint16	PingTimes[MAX_PLAYERS];		// How long does it take for a ping???
-extern BOOL		ShowPing;
 extern SLIDER  PingFreqSlider;
 extern	int16					Lives;
 extern	int16					MaxKills;

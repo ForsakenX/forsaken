@@ -331,7 +331,6 @@ char *  InitViewMessages[] = {
                  "" 
 };
 
-extern BOOL ShowPing;
 extern SLIDER  PingFreqSlider;
 
 extern  float MaxMoveSpeed;
@@ -5899,23 +5898,14 @@ void ProcessPings( void )
 	// timer
 	static float PingRefresh = 0.0F;
 
-	// multiplayer pings
-	if( ShowPing )
+	// count down to next ping time
+	PingRefresh -= framelag;
+	if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
 	{
-		// count down to next ping time
-		PingRefresh -= framelag;
-		if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
-		{
-			// reset ping counter
-			PingRefresh = 71.0F * PingFreqSlider.value;
-			// send next ping
-			SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
-		}
-	}
-	// pings disabled
-	else
-	{
-		PingRefresh = 0.0F;
+		// reset ping counter
+		PingRefresh = 71.0F * PingFreqSlider.value;
+		// send next ping
+		SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
 	}
 }
 
@@ -6531,7 +6521,7 @@ void ShowGameStats( stats_mode_t mode )
 			// print line
 			Print4x5Text( (char*)&Names[GetPlayerRank(i)],	xpos,				top_offset, color );
 			xpos += col_width; // so the column shows up no matter what
-					if( ShowPing && GetPlayerRank(i) != WhoIAm )
+					if( GetPlayerRank(i) != WhoIAm )
 			Printint16( PingTimes[GetPlayerRank(i)],		xpos,				top_offset, GRAY		);	// ping
 					if(TeamGame)
 			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	YELLOW		);	// all players (points + kills - suacides - friendly - deaths)

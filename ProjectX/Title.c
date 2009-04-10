@@ -928,7 +928,6 @@ BOOL PickupLightDetail			= TRUE;
 BOOL PrimaryLightDetail			= TRUE;
 BOOL SecondaryLightDetail		= TRUE;
 BOOL AutoDetail					= TRUE;
-BOOL ShowPing					= TRUE;
 BOOL BountyBonus				= TRUE;
 BOOL PseudoHostCanSetMaxPlayers = TRUE;
 BOOL BikeEnginesOn				= TRUE;
@@ -1351,7 +1350,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 
 		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10,  65, 100,  72, 0,				LT_MENU_NEW_MoreMultiplayerOptions5  /* "show ping"              */, FONT_Small,  TEXTFLAG_CentreY,							&ShowPing,					NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  72, 100,  79, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions6  /* "ping interval"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PingFreqSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10,  79, 100,  86, 0,				"Reset Kills"                        /* "Reset Kills"            */, FONT_Small,  TEXTFLAG_CentreY,							&ResetKillsPerLevel,		NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
@@ -2980,7 +2978,6 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM( 200, 160, LT_MENU_InGame4  /*"Save Game"					*/,	NULL,						&MENU_SaveGame,			MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 176, LT_MENU_InGame5  /*"Options"					*/,	NULL,						&MENU_Options,			MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 192, LT_MENU_InGame26 /*"Host Options"				*/,	NULL,						&MENU_Host_Options,		MenuChange,				MenuItemDrawName),
-				   	  OLDMENUITEM( 200, 208, LT_MENU_InGame9  /*"show ping"					*/,	&ShowPing,					NULL,					SelectToggle,			DrawToggle),					  
 					  OLDMENUITEM( 200, 224, LT_MENU_InGame8  /*"Quit to Main Menu"			*/,	NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
 					  OLDMENUITEM( 200, 240, LT_MENU_InGame25 /*"Quit to desktop"			*/,	NULL,						NULL,					SelectQuit,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"				*/,	(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),	
@@ -12091,9 +12088,6 @@ void GetMultiplayerPrefs( void )
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : GAME_Normal;
 
-	ShowPing = ( RegGet( "ShowPing", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
 	PingFreqSlider.value = ( RegGet( "PingFreq", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 60;
 
@@ -12170,8 +12164,6 @@ void SetMultiplayerPrefs( void )
 	}
 	temp = GameType;
 	RegSet( "GameType", (LPBYTE)&temp, sizeof( temp ) );
-	temp =ShowPing;
-	RegSet( "ShowPing", (LPBYTE)&temp, sizeof( temp ) );
 	temp = PingFreqSlider.value;
 	RegSet( "PingFreq", (LPBYTE)&temp, sizeof( temp ) );
 	temp = HarmTeamMates;
