@@ -1048,8 +1048,6 @@ void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time );
 void	smallinitShip( uint16 i );
 void DemoPlayingDplayGameUpdate(void);
 void DemoClean( void );
-void PingGuarenteed(void);
-void PingNonGuarenteed(void);
 int FindSameLevel( char * Name );
 void	RequestTime( void  );
 void	SetTime( float Time );

@@ -3379,11 +3379,7 @@ void ProcessGameKeys( void )
 
       // Shift + F6
       if ( IsKeyPressed( DIK_F6 ) )
-        PingNonGuarenteed();
-
-      // Shift + F7
-      if ( IsKeyPressed( DIK_F7 ) )
-        PingGuarenteed();
+		  SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
       
     } // not single player and shift modifier end
     else // single player or shift modifier
@@ -5913,8 +5909,7 @@ void ProcessPings( void )
 			// reset ping counter
 			PingRefresh = 71.0F * PingFreqSlider.value;
 			// send next ping
-			PingGuarenteed();
-			// PingNonGuarenteed();
+			SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
 		}
 	}
 	// pings disabled
