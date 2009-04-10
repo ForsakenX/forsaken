@@ -7328,6 +7328,7 @@ BOOL Our_CalculateFrameRate(void)
 	int polygons;
 	D3DSTATS stats;
 	char buf[256];
+	static int avg_time_per_frame = 0;
 
 	// every 25 frames
 	our_count++;
@@ -7354,6 +7355,10 @@ BOOL Our_CalculateFrameRate(void)
 
 			// calculate average frames per second
 			FPS = (float) our_count / (float) our_timer.seconds;
+
+			// average time per frame in milliseconds
+			avg_time_per_frame = (int)((1.0F / FPS) * 1000.0F);
+
 			our_count = 0;
 
 		}
@@ -7363,14 +7368,11 @@ BOOL Our_CalculateFrameRate(void)
 	if( myglobs.bShowFrameRate )
 	{
 #ifdef DEBUG_ON
-		sprintf(&buf[0], "FPS %d FrameLag %f", (int) FPS, framelag );
-		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
-		sprintf(&buf[0], "TPS (triangles) %d", (int) TPS );
-		CenterPrint4x5Text( (char *) &buf[0] , (FontHeight+3)*2, 2 );
+		sprintf(&buf[0], "FPS %d - AVG FRAME %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
 #else
-		sprintf(&buf[0], "FPS %d", (int) FPS );
-		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
+		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
 #endif
+		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
 	}
 
 	if( myglobs.bShowInfo )
