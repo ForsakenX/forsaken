@@ -1350,7 +1350,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 
 		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10,  72, 100,  79, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions6  /* "ping interval"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PingFreqSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10,  79, 100,  86, 0,				"Reset Kills"                        /* "Reset Kills"            */, FONT_Small,  TEXTFLAG_CentreY,							&ResetKillsPerLevel,		NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
@@ -2860,16 +2859,15 @@ MENU	MENU_Visuals = {
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, NULL, NULL, NULL, 0,
 	{
-		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"						*/, 0, 0, NULL,									&MENU_Visuals,					MenuChange,	MenuItemDrawName,	NULL, 0 },
-		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"		*/, 0, 0, NULL,									&MENU_NEW_InGameSound,	MenuChange,	MenuItemDrawName,	NULL, 0 },
-		{ 200, 160, 0, 0, 0, LT_MENU_Options3	/*"Detail Levels"				*/, 0, 0, NULL,									&MENU_Detail,						MenuChange,	MenuItemDrawName,	NULL, 0 },
-		{ 200 ,176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "		*/, 0, 0, &myglobs.bShowFrameRate,	NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200 ,192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "			*/, 0, 0, &myglobs.bShowInfo,			NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200 ,208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"		*/, 0, 0, &ShowWeaponKills,				NULL,									SelectToggle,	DrawToggle,			NULL, 0 },
-				
-		{ 200, 128 + ( 10*10 ), 0, 0, 0, LT_MENU_Options12 /*"Show Fog"*/, 0, 0,
-		  &d3dapprs.bFogEnabled, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		
+		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"*/,				0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"*/,	0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200, 160, 0, 0, 0, LT_MENU_Options3	/*"Detail Levels"*/,		0, 0, NULL,						&MENU_Detail,			MenuChange,		MenuItemDrawName,	NULL, 0 },
+		{ 200, 176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "*/,		0, 0, &myglobs.bShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 224, 0, 0, 0, LT_MENU_Options12	/*"Show Fog"*/,				0, 0, &d3dapprs.bFogEnabled,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 240, 0, 0, 0, LT_MENU_InGame10	/*"ping update (secs)"*/,	0, 0, &PingFreqSlider,			NULL,					SelectSlider,	DrawSlider,			NULL, 0 },
+
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -2962,7 +2960,6 @@ MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , 
 			{
 					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
 					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
-					OLDMENUITEM( 200, 144, LT_MENU_InGame10		/*"ping update (secs)"		*/,	&PingFreqSlider,				NULL,								SelectSlider,	DrawSlider),
 					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
 					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
 					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
