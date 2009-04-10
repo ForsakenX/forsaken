@@ -3461,8 +3461,27 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		if( lpPingMsg->ToYou == WhoIAm )
 		{
+			float clocks;
+			float seconds;
+			uint16 milliseconds;
+
+			// get current clocks
 			QueryPerformanceCounter( (LARGE_INTEGER *) &TempLongLong );
-			PingTimes[lpPingMsg->WhoIAm] = (uint16) (((TempLongLong - lpPingMsg->Time) / Freq ) * 1000 );
+
+			// number of clocks passed
+			clocks = (float) (TempLongLong - lpPingMsg->Time);
+			
+			// Freq == clocks per second
+
+			// convert clocks to seconds
+			seconds = clocks / (float) Freq;
+
+			// convert seconds to milliseconds
+			milliseconds = (uint16) (seconds * 1000.0F);
+
+			// store value
+			PingTimes[lpPingMsg->WhoIAm] = milliseconds;
+
 		}
 		return;
 
