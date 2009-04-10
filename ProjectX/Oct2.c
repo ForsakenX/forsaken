@@ -645,6 +645,7 @@ float pixel_aspect_ratio;
 float ticksperframe = 14.0F;  
 float Oldframelag;  
 float framelag = 0.0F; 
+float real_framelag = 0.0F; 
 float avgframelag = 0.0F; 
 float Demoframelag = 0.5F;
 
@@ -5893,18 +5894,22 @@ void CheckLevelEnd ( void )
   Output    :   nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void ProcessPings( void )
+void CheckPingTimer( void )
 {
-	// timer
-	static float PingRefresh = 0.0F;
-
 	// count down to next ping time
-	PingRefresh -= framelag;
-	if( PingFreqSlider.value >= 1 && PingRefresh < 0.0 )
+	static float ping_timer = 0.0F;
+
+	// user set ping interval to 0
+	if( PingFreqSlider.value < 1 )
+		return;
+	
+	// calculate time left to send a ping
+	if( (ping_timer -= real_framelag) <= 0.0 )
 	{
 		// reset ping counter
-		PingRefresh = 71.0F * PingFreqSlider.value;
-		// send next ping
+		ping_timer = (float) PingFreqSlider.value;
+
+		// send a ping request
 		SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
 	}
 }
@@ -5917,7 +5922,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
 
-  ProcessPings();
+  CheckPingTimer();
 
   if( PlayDemo )
   {
@@ -8323,7 +8328,9 @@ void CalculateFramelag( void )
   // since they are constantly updated via networking
   // and are not time based at all....
 
-  framelag  = timer_run( &framelag_timer ) * 71.0F;
+  real_framelag  = timer_run( &framelag_timer );
+  
+  framelag = real_framelag * 71.0F;
 
   // average framelag of the last time and this time
   // probably cheap way to clamp value down if a loop takes a long time
