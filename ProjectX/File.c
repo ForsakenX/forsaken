@@ -17,7 +17,7 @@
 #include	"file.h"
 
 // prototypes
-void DebugPrintf( const char * format, ... );
+extern void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	External Variables
@@ -275,5 +275,30 @@ void AddCommentToLog( const char * format, ... )
 		fprintf( fp, "%s", buf2 );
 		va_end( args );
 		fflush(fp);
+	}
+}
+
+// use this for whatever you want
+
+void WriteToFile( char* path, const char * format, ... )
+{
+    static char buf1[256], buf2[512];
+	va_list		args;
+
+	FILE * fp = fopen( path, "a" );
+
+	if( fp )
+	{
+		va_start( args, format );
+		vsprintf( buf1, format, args );
+		wsprintf( buf2, "%hs", buf1 );
+		fprintf( fp, "%s", buf2 );
+		va_end( args );
+		fflush(fp);
+		fclose(fp);
+	}
+	else
+	{
+		DebugPrintf("WriteToFile() Failed to Open File.\n");
 	}
 }
