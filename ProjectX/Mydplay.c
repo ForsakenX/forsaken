@@ -4374,37 +4374,60 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			Demo_fwrite( &CommBuff[0], nBytes, 1, DemoFp );
 		}
 	}
-	
-	// Broadcast it to everyone in the group...
-	
-	if( !UseSendAsync )
-	{
-		hr = glpDP->lpVtbl->Send( glpDP,
-								  dcoID,   // From
-								  send_to, // send to everybody
-								  Flags ,
-								  (LPSTR)&CommBuff[0],
-								  nBytes);
-	}
-	else
-	{
-		Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
-		hr = IDirectPlayX_SendEx( glpDP,
-								  dcoID,   // From
-								  send_to, // send to
-								  Flags ,
-								  (LPSTR)&CommBuff[0],
-								  nBytes,
-								  0,		// dwPriority
-								  100/*QueTimeout*/,		// dwTimeout
-								  NULL,		// lpContext
-								  NULL		// lpdwMsgID
-								  );
-	}
+
 	BytesPerSecSent += nBytes;
-	if( hr != DP_OK && hr != DPERR_PENDING )
+
+	// send the message
+	
+	if( UseSendAsync )
+		Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
+
+	hr = IDirectPlayX_SendEx( glpDP,
+							  dcoID,   // From
+							  send_to, // send to
+							  Flags ,
+							  (LPSTR)&CommBuff[0],
+							  nBytes,
+							  0,		// dwPriority
+							  100/*QueTimeout*/,		// dwTimeout
+							  NULL,		// lpContext
+							  NULL		// lpdwMsgID
+							  );
+
+	switch ( hr )
 	{
-		OutputDebugString( "Dplay Send Error" );
+	case DP_OK:
+	case DPERR_PENDING: // DPSEND_ASYNC so packet went to queue
+		break;
+	case DPERR_BUSY:
+		DebugPrintf( "directplay DPERR_BUSY\n");
+		break;
+	case DPERR_CONNECTIONLOST:
+		DebugPrintf( "directplay DPERR_CONNECTIONLOST\n");
+		break;
+	case DPERR_INVALIDFLAGS:
+		DebugPrintf( "directplay DPERR_INVALIDFLAGS\n");
+		break;
+	case DPERR_INVALIDPARAMS:
+		DebugPrintf( "directplay DPERR_INVALIDPARAMS\n");
+		break;
+	case DPERR_INVALIDPLAYER:
+		DebugPrintf( "directplay DPERR_INVALIDPLAYER\n");
+		break;
+	case DPERR_INVALIDPRIORITY:
+		DebugPrintf( "directplay DPERR_INVALIDPRIORITY\n");
+		break; 
+	case DPERR_NOTLOGGEDIN:
+		DebugPrintf( "directplay DPERR_NOTLOGGEDIN\n");
+		break;
+	case DPERR_SENDTOOBIG:
+		DebugPrintf( "directplay DPERR_SENDTOOBIG\n");
+		break;
+	case DPERR_UNSUPPORTED:
+		DebugPrintf( "directplay DPERR_UNSUPPORTED\n");
+		break;
+	default:
+		DebugPrintf( "directplay unknown send error\n");
 	}
 }
 
