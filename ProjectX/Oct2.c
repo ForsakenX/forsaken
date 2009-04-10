@@ -7368,7 +7368,7 @@ BOOL Our_CalculateFrameRate(void)
 	if( myglobs.bShowFrameRate )
 	{
 #ifdef DEBUG_ON
-		sprintf(&buf[0], "FPS %d - AVG FRAME %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
+		sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
 #else
 		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
 #endif
