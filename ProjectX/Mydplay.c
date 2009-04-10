@@ -4308,6 +4308,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpPingMsg->ToYou = Type;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
+		send_to = (DWORD) Type;
 		break;
 
 
