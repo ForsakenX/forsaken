@@ -455,7 +455,6 @@ void ExitTitleLoad( MENU *Menu );
 void InitBikerName( char *name );
 void InitMultiplayerHost( MENU *Menu );
 void InitMoreMultiplayerOptions( MENU *Menu );
-void ExitMoreMultiplayerOptions( MENU *Menu );
 void SetAutolevel( MENUITEM *item );
 void SelectQuitCurrentGame( MENUITEM *Item );
 void ExitBikeSelection( MENUITEM * menu );
@@ -1334,7 +1333,7 @@ MENU	MENU_NEW_ValidPickups = {
 
 
 MENU	MENU_NEW_MoreMultiplayerOptions = {
-	"", InitMoreMultiplayerOptions, ExitMoreMultiplayerOptions, NULL, TITLE_TIMER_PanToLeftVDU,
+	"", InitMoreMultiplayerOptions, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 		
@@ -10923,10 +10922,6 @@ void ExitBikeComputerSelection( MENUITEM * item )
 
 	if( MyGameStatus == STATUS_Title )
 		MenuBack();
-}
-
-void ExitMoreMultiplayerOptions( MENU *Menu )
-{
 }
 
 void InitMoreMultiplayerOptions( MENU *Menu )
