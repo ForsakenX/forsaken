@@ -1341,8 +1341,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"	*/, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
-		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
@@ -1405,6 +1403,9 @@ MENU	MENU_NEW_CreateGame = {
 
 		{  10,  84,  85, 108, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 		{  90,  84, 200, 108, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+
+		{  10,  92,  85, 116, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,	FONT_Small,		TEXTFLAG_CentreY,													&UseShortPackets,					NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 100,  85, 124, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,	FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&PacketsSlider,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
