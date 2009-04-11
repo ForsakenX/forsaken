@@ -1113,16 +1113,6 @@ MENU	MENU_NotYet = {
 	}
 };
 
-MENU	MENU_NEW_NotAvailable = {
-	"Not Available in Demo", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0,  0, 200, 20, 0, "Not Available in Demo", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 0, 30, 200, 50, 0, "Press ESC to return", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
 MENU MENU_NEW_BetweenLevels = {
 	"", PrepareNextLevelStart, NULL, NULL, 0,
 	{
