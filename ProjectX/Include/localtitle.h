@@ -82,7 +82,7 @@
 #define LT_MENU_NEW_MoreMultiplayerOptions18 "i think your shots hit me"
 #define LT_MENU_NEW_MoreMultiplayerOptions19 "change allowed pickups"
 #define LT_MENU_NEW_MoreMultiplayerOptions20 "randomize pickups"
-#define LT_MENU_NEW_MoreMultiplayerOptions21 "num primary weapons"
+#define LT_MENU_NEW_MoreMultiplayerOptions21 "num primaries"
 #define LT_MENU_NEW_MoreMultiplayerOptions22 "next page of pickups"
 
 #define LT_MENU_NEW_CreateGame0 "Create Multiplayer Game"

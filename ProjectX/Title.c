@@ -1348,11 +1348,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 		{ 10, 114, 120, 121, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10, 121, 120, 128, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10, 128, 120, 135, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10, 135, 100, 142, 0,				LT_MENU_NEW_MoreMultiplayerOptions14 /* "record demo"            */, FONT_Small,  TEXTFLAG_CentreY,							&RecordDemo,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10, 142, 180, 149, 0,				LT_MENU_NEW_MoreMultiplayerOptions19 /* "change allowed pickups" */, FONT_Small,  TEXTFLAG_CentreY,							NULL,						&MENU_NEW_ValidPickups, MenuChange,					DrawFlatMenuItem,		NULL, 0 } ,
-		{ 10, 149, 120, 156, 0,				LT_MENU_NEW_MoreMultiplayerOptions20 /* "randomize pickups"      */, FONT_Small,  TEXTFLAG_CentreY,							&RandomPickups,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-
-		{ 10, 156, 120, 162, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21 /* "num primary weapons"	 */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&NumPrimaryPickupsSlider,	NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1406,6 +1401,13 @@ MENU	MENU_NEW_CreateGame = {
 
 		{  10,  92,  85, 116, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,	FONT_Small,		TEXTFLAG_CentreY,													&UseShortPackets,					NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 100,  85, 124, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,	FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&PacketsSlider,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+
+
+		{  10, 108,  85, 132, 0,			LT_MENU_NEW_MoreMultiplayerOptions14/*"demo"        */, FONT_Small,		TEXTFLAG_CentreY,													&RecordDemo,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 116,  85, 140, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 124,  85, 148, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10, 132, 180, 156, 0,			LT_MENU_NEW_MoreMultiplayerOptions19/*"pickups" */,		FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ValidPickups,				MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+
 
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
