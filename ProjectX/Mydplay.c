@@ -504,6 +504,128 @@ extern uint8	KillStats[MAX_PLAYERS][MAX_PLAYERS];
 extern uint8	BonusStats[MAX_PLAYERS];
 extern uint8	KillCounter[MAX_PLAYERS];	
 
+char* msg_to_str( int msg_type )
+{
+	switch( msg_type )
+	{
+    case MSG_YOUQUIT:
+		return "MSG_YOUQUIT";
+		break;
+    case MSG_BIKENUM:
+		return "MSG_BIKENUM";
+		break;
+    case MSG_NAME:
+		return "MSG_NAME";
+		break;
+	case MSG_HEREIAM:
+		return "MSG_HEREIAM";
+        break;
+    case MSG_INIT:
+		return "MSG_INIT";
+		break;
+    case MSG_VERYSHORTUPDATE:
+		return "MSG_VERYSHORTUPDATE";
+        break;
+    case MSG_UPDATE:
+		return "MSG_UPDATE";
+        break;
+    case MSG_FUPDATE:
+		return "MSG_FUPDATE";
+        break;
+    case MSG_VERYSHORTFUPDATE:
+		return "MSG_VERYSHORTFUPDATE";
+        break;
+    case MSG_GROUPONLY_VERYSHORTFUPDATE:
+		return "MSG_GROUPONLY_VERYSHORTFUPDATE";
+        break;
+    case MSG_DROPPICKUP:
+		return "MSG_DROPPICKUP";
+        break;
+    case MSG_VERYSHORTDROPPICKUP:
+		return "MSG_VERYSHORTDROPPICKUP";
+        break;
+    case MSG_KILLPICKUP:
+		return "MSG_KILLPICKUP";
+        break;
+    case MSG_TEAMGOALS:
+		return "MSG_TEAMGOALS";
+        break;
+    case MSG_SHOCKWAVE:
+		return "MSG_SHOCKWAVE";
+        break;
+    case MSG_BGOUPDATE:
+		return "MSG_BGOUPDATE";
+        break;
+    case MSG_PRIMBULLPOSDIR:
+		return "MSG_PRIMBULLPOSDIR";
+        break;
+    case MSG_SECBULLPOSDIR:
+		return "MSG_SECBULLPOSDIR";
+        break;
+    case MSG_TITANBITS:
+		return "MSG_TITANBITS";
+        break;
+    case MSG_SHIPHIT:
+		return "MSG_SHIPHIT";
+        break;
+    case MSG_SHORTSHIPHIT:
+		return "MSG_SHORTSHIPHIT";
+        break;
+    case MSG_SHIPDIED:
+		return "MSG_SHIPDIED";
+        break;
+    case MSG_REQTIME:
+		return "MSG_REQTIME";
+        break;
+    case MSG_SETTIME:
+		return "MSG_SETTIME";
+        break;
+    case MSG_STATUS:
+		return "MSG_STATUS";
+        break;
+	case MSG_DPLAYUPDATE:
+		return "MSG_DPLAYUPDATE";
+		break;
+    case MSG_LONGSTATUS:
+		return "MSG_LONGSTATUS";
+        break;
+    case MSG_SHORTPICKUP:
+		return "MSG_SHORTPICKUP";
+        break;
+    case MSG_SHORTREGENSLOT:
+		return "MSG_SHORTREGENSLOT";
+        break;
+    case MSG_SHORTTRIGGER:
+		return "MSG_SHORTTRIGGER";
+        break;
+    case MSG_SHORTTRIGVAR:
+		return "MSG_SHORTTRIGVAR";
+        break;
+    case MSG_SHORTMINE:
+		return "MSG_SHORTMINE";
+        break;
+    case MSG_TEXTMSG:
+		return "MSG_TEXTMSG";
+		break;
+    case MSG_PINGREQUEST:
+		return "MSG_PINGREQUEST";
+		break;
+    case MSG_PINGREPLY:
+		return "MSG_PINGREPLY";
+		break;
+    case MSG_ACKMSG:
+		return "MSG_ACKMSG";
+		break;
+#ifdef MANUAL_SESSIONDESC_PROPAGATE
+	case MSG_SESSIONDESC:
+		return "MSG_SESSIONDESC";
+		break;
+#endif
+	}
+	return "UNKNOWN";
+}
+
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -1537,6 +1659,31 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 		return;
     switch( lpMsg->dwType)
     {
+	case DPSYS_SENDCOMPLETE:
+		{
+			char * result = "";
+			LPDPMSG_SENDCOMPLETE msg = (LPDPMSG_SENDCOMPLETE) lpMsg;
+			switch( msg->hr )
+			{
+			case DP_OK:
+				result = "SENT";
+				break;
+			case DPERR_ABORTED:
+				result = "ABORTED";
+				break;
+			case DPERR_CANCELLED:
+				result = "CANCELLED";
+				break;
+			case DPERR_GENERIC:
+				result = "DPERR_GENERIC";
+				break;
+			case DPERR_TIMEOUT:
+				result = "TIMEOUT";
+				break;
+			}
+			DebugPrintf("dplay  %30s   %13s   duration= %3lu ms   timeout= %3lu\n", (char*) msg->lpvContext, result, msg->dwSendTime, msg->dwTimeout);
+		}
+		break;
 	case DPSYS_CREATEPLAYERORGROUP:
 		DebugPrintf("DPSYS_CREATEPLAYERORGROUP recieved\n");
 		if( MyGameStatus == STATUS_Normal && !TeamGame)
@@ -1677,7 +1824,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 	case DPSYS_STARTSESSION:
 		DebugPrintf("DPSYS_STARTSESSION recieved\n");
 		break;
-
 	default:
 		DebugPrintf("unknown DPlay sys message recieved ( %x )\n", *MsgPnt);
 		break;
@@ -3577,58 +3723,58 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
-    LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
+    LPVERYSHORTUPDATEMSG				lpVeryShortUpdate;
     LPUPDATEMSG							lpUpdate;
     LPFUPDATEMSG						lpFUpdate;
-	LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
-	LPGROUPONLY_VERYSHORTFUPDATEMSG			lpGroupOnly_VeryShortFUpdate;
+	LPVERYSHORTFUPDATEMSG				lpVeryShortFUpdate;
+	LPGROUPONLY_VERYSHORTFUPDATEMSG		lpGroupOnly_VeryShortFUpdate;
     LPHEREIAMMSG						lpHereIAm;
-    LPINITMSG								lpInit;
-    LPPRIMBULLPOSDIRMSG				lpPrimBullPosDir;
-    LPSECBULLPOSDIRMSG				lpSecBullPosDir;
+    LPINITMSG							lpInit;
+    LPPRIMBULLPOSDIRMSG					lpPrimBullPosDir;
+    LPSECBULLPOSDIRMSG					lpSecBullPosDir;
     LPTITANBITSMSG						lpTitanBits;
-    LPSHIPHITMSG							lpShipHit;
-    LPSHORTSHIPHITMSG				lpShortShipHit;
+    LPSHIPHITMSG						lpShipHit;
+    LPSHORTSHIPHITMSG					lpShortShipHit;
     LPSHIPDIEDMSG						lpShipDied;
-    LPDROPPICKUPMSG					lpDropPickup;
-    LPVERYSHORTDROPPICKUPMSG	lpVeryShortDropPickup;
+    LPDROPPICKUPMSG						lpDropPickup;
+    LPVERYSHORTDROPPICKUPMSG			lpVeryShortDropPickup;
     LPKILLPICKUPMSG						lpKillPickup;
-    LPTEAMGOALSMSG					lpTeamGoals;
-    LPSHOCKWAVEMSG					lpShockwave;
-    LPBGOUPDATEMSG					lpBGOUpdate;
+    LPTEAMGOALSMSG						lpTeamGoals;
+    LPSHOCKWAVEMSG						lpShockwave;
+    LPBGOUPDATEMSG						lpBGOUpdate;
     LPSTATUSMSG							lpStatus;
-    LPLONGSTATUSMSG					lpLongStatus;
+    LPLONGSTATUSMSG						lpLongStatus;
     LPSHORTPICKUPMSG					lpShortPickup;
-    LPSHORTREGENSLOTMSG			lpShortRegenSlot;
-    LPSHORTTRIGGERMSG				lpShortTrigger;
-    LPSHORTTRIGVARMSG				lpShortTrigVar;
-    LPSHORTMINEMSG					lpShortMine;
-    LPTEXTMSG								lpTextMsg;
-    LPPINGMSG								lpPingMsg;
+    LPSHORTREGENSLOTMSG					lpShortRegenSlot;
+    LPSHORTTRIGGERMSG					lpShortTrigger;
+    LPSHORTTRIGVARMSG					lpShortTrigVar;
+    LPSHORTMINEMSG						lpShortMine;
+    LPTEXTMSG							lpTextMsg;
+    LPPINGMSG							lpPingMsg;
 	LPNAMEMSG							lpName;
-	LPACKMSG								lpAckMsg;
+	LPACKMSG							lpAckMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSETTIMEMSG						lpSetTime;
 	LPREQTIMEMSG						lpReqTime;
 	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
-
 #ifdef MANUAL_SESSIONDESC_PROPAGATE
-	LPSESSIONDESCMSG	lpSessionDescMsg;
+	LPSESSIONDESCMSG					lpSessionDescMsg;
 #endif
 
-    int				nBytes;
-    int				i;
-    DWORD		send_to = 0;
-	DWORD		Flags = 0;
+	DPID			send_to		= 0;
+	DWORD			Flags		= 0;
+	DWORD			nBytes		= 0;
+	DWORD			dwPriority	= 0;
+	DWORD			dwTimeout	= 0;
+
+	HRESULT			hr;
+	int				i;
 	int				Count;
-	int				QueTimeout = 0;	// default is no time out
-	int				TIMEOUT = 100;	// que time out where specified (i.e. ship updates)
-	HRESULT		hr;
-	int MessageColour = 2; // default message colour is light green
-	char VersionMessage[30];
-	BOOL Rejoining = FALSE;
-	char IPAdd[16];
+	int				MessageColour = 2; // default message colour is light green
+	char			VersionMessage[30];
+	BOOL			Rejoining = FALSE;
+	char			IPAdd[16];
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3829,29 +3975,29 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		break;
 
 
-    case MSG_VERYSHORTUPDATE:
+    case MSG_VERYSHORTUPDATE: // short packets on
 
         lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG)&CommBuff[0];
         lpVeryShortUpdate->MsgCode = msg;
         lpVeryShortUpdate->WhoIAm = WhoIAm;
 		lpVeryShortUpdate->ShortGlobalShip = VeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTUPDATEMSG );
-		QueTimeout = TIMEOUT;
+		dwTimeout = 100; //ms
         break;
 
 
-    case MSG_UPDATE:
+    case MSG_UPDATE: // short packets off
 
         lpUpdate = (LPUPDATEMSG)&CommBuff[0];
         lpUpdate->MsgCode = msg;
         lpUpdate->WhoIAm = WhoIAm;
 		lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
-		QueTimeout = TIMEOUT;
+		dwTimeout = 100; //ms
         break;
 
 
-    case MSG_FUPDATE:
+    case MSG_FUPDATE: // short packets off + fire weapon data
 
         lpFUpdate = (LPFUPDATEMSG)&CommBuff[0];
         lpFUpdate->MsgCode = msg;
@@ -3861,7 +4007,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         break;
 
 
-    case MSG_VERYSHORTFUPDATE:
+    case MSG_VERYSHORTFUPDATE: // short packets on + fire weapon data
 
         lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG)&CommBuff[0];
         lpVeryShortFUpdate->MsgCode = msg;
@@ -4378,21 +4524,38 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	BytesPerSecSent += nBytes;
 
 	// send the message
-	
-	if( UseSendAsync )
-		Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
 
-	hr = IDirectPlayX_SendEx( glpDP,
-							  dcoID,   // From
-							  send_to, // send to
-							  Flags ,
-							  (LPSTR)&CommBuff[0],
-							  nBytes,
-							  0,		// dwPriority
-							  100/*QueTimeout*/,		// dwTimeout
-							  NULL,		// lpContext
-							  NULL		// lpdwMsgID
-							  );
+	if( UseSendAsync )
+		Flags |= DPSEND_ASYNC;
+
+#ifdef DEBUG_ON
+	hr = IDirectPlayX_SendEx(
+								glpDP,
+								dcoID,					// From
+								send_to,				// send to
+								Flags,					// send flags
+								(LPSTR)&CommBuff[0],	// data
+								nBytes,					// sizeof data
+								dwPriority,				// dwPriority
+								dwTimeout,				//
+								(LPVOID)msg_to_str(msg),// lpContext = Packet Type
+								NULL					// lpdwMsgID
+								);
+#else
+	Flags |= DPSEND_NOSENDCOMPLETEMSG;
+	hr = IDirectPlayX_SendEx(
+								glpDP,
+								dcoID,					// From
+								send_to,				// send to
+								Flags ,					// send flags
+								(LPSTR)&CommBuff[0],	// data
+								nBytes,					// sizeof data
+								dwPriority,				// dwPriority
+								dwTimeout,				//
+								NULL,					// lpContext
+								NULL					// lpdwMsgID
+								);
+#endif
 
 	switch ( hr )
 	{
