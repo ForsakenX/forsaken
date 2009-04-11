@@ -1113,17 +1113,6 @@ MENU	MENU_NotYet = {
 	}
 };
 
-
-MENU	MENU_NEW_NotYet = {
-	"Not Implemented Yet", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, "Not Implemented", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-
 MENU	MENU_NEW_NotAvailable = {
 	"Not Available in Demo", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
@@ -2200,20 +2189,6 @@ MENU	MENU_NEW_Battle = {
 		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-
-/* coop */
-//*MENU	MENU_NEW_CoOp = {
-//	"", NULL, NULL, NULL, TITLE_TIMER_ChooseDiscPan, 
-//	{
-//		{ 0, TITLE_MODEL_Disc1, 0, 0, 0,LT_MENU_NEW_CoOp0 /*"Co Op"*/, 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc2, 0, 0, 0, LT_MENU_NEW_CoOp1 /*"Join Game"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc3, 0, 0, 0, LT_MENU_NEW_CoOp2 /*"Network Setup"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc4, 0, 0, 0, LT_MENU_NEW_CoOp3 /*"Modem/Serial"*/, 0, 0, NULL, &MENU_NEW_NotYet, MenuChange, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc5, 0, 0, 0, LT_MENU_NEW_CoOp4 /*"Exit"*/, 0, 0, NULL, NULL, MenuItemBack, NULL, NULL, 0 },
-//		{ 0, TITLE_MODEL_Disc6, 0, 0, 0, "Null", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 },
-//	}
-//};
-
 
 /* single */
 MENU	MENU_NEW_MissionMenu = {
