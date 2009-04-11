@@ -1799,15 +1799,6 @@ MENU	MENU_NEW_JoinWaitingToStart = {
 	}
 };
 
-MENU	MENU_NEW_Dummy = {
-	"" , NULL, NULL , NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-
-		{ 0, 0, 200, 10, 0, "test...", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL, NULL , NULL, NULL, 0 }
-	}
-};
-
 MENU	MENU_NEW_GetTeamPlayers = {
 	"" , GetInitialSessions, BailMultiplayer , CheckForMenuChange, 0,
 	{
