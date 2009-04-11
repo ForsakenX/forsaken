@@ -1599,16 +1599,6 @@ MENU	MENU_NEW_ConfigureKeyboard = {
 	}
 };
 
-
-MENU	MENU_NEW_NotYetRight = {
-	"Not Implemented Yet", NULL, NULL, NULL, TITLE_TIMER_PanToRightVDU,
-	{
-		{ 0, 0, 200, 20, 0, "Not Implemented", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-						 
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
 MENU MENU_NEW_ConfigJoyAxis = {
 	"", InitJoystickAxisConfig, SetAxis, CheckJoyAxis, 0,
 	{
