@@ -797,7 +797,7 @@ void PrintScoreSort( void )
 				if( GetPlayerRank(i) != WhoIAm )
 				{
 					sprintf( (char*) &buf[0] ,"Ping %d", PingTimes[GetPlayerRank(i)] );
-					Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? 8 : 2) );
+					Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 				}
 
 				top_offset += line_height;
