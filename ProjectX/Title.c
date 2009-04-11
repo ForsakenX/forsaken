@@ -1343,7 +1343,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 
 		{ 10,  44, 100,  51, 0,				LT_MENU_NEW_MoreMultiplayerOptions2  /* "short packets"          */, FONT_Small,  TEXTFLAG_CentreY,							&UseShortPackets,			NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  58, 100,  65, SLIDER_Value,  LT_MENU_NEW_MoreMultiplayerOptions4  /* "packet rate"            */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&PacketsSlider,				NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10,  79, 100,  86, 0,				"Reset Kills"                        /* "Reset Kills"            */, FONT_Small,  TEXTFLAG_CentreY,							&ResetKillsPerLevel,		NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
@@ -1391,17 +1390,21 @@ MENU	MENU_NEW_CreateGame = {
       //{  90,  20, 120,  28, 0,			LT_MENU_NEW_CreateGame2  /*"IP:"*/,						FONT_Small,		TEXTFLAG_CentreY,													NULL,								&IPAddressExists,					NULL,					DrawConditionalText,	NULL, 0 } ,
 	  //{ 100,  20, 200,  28, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)IPAddressText,				&IPAddressExists,					NULL,					DrawConditionalName,	NULL, 0 } ,
         
-		{  10,  34,  90,  36, 0,			"Protocol",												FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-        {  90,  34, 205,  40, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
-		{  10,  52,  85,  38, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
-		{  10,  60,  50,  46, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
-		{  90,  60, 200,  46, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
-		{  10,  68,  85,  54, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  76,  85,  62, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  84,  85,  70, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  28,  90,  52, 0,			"Protocol",												FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+        {  90,  28, 205,  52, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
 
-		{  10,  92,  85,  78, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-		{  90,  92, 200,  78, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+		{  10,  36,  85,  60, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
+
+		{  10,  44,  50,  68, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  44, 200,  68, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+
+		{  10,  52,  85,  76, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  60,  85,  84, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  68,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  76,  85, 100, 0,			"Reset Kills"            /* "Reset Kills"*/,			FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+
+		{  10,  84,  85, 108, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  84, 200, 108, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
 
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
