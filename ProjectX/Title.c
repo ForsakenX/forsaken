@@ -10418,9 +10418,8 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	MENUITEM *item;
 	uint16 selected_level;
 
-	// for each menu item
 	for ( item = Menu->Item; item->x >= 0; item++ )
-
+	{		
 		// if the item is the quit button
 		if ( item->FuncSelect == SelectQuit )
 		{
@@ -10428,6 +10427,26 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 			item->FuncSelect = NULL;
 			item->FuncDraw = NULL;
 		}
+
+		else if ( item->Variable == &PacketsSlider )
+		{
+			item->FuncSelect = SelectSlider;
+			item->FuncDraw = DrawFlatMenuSlider;
+		}
+		/*
+		else if ( item->Variable == &LagCompensation )
+		{
+			item->FuncSelect = SelectFlatMenuToggle;
+			item->FuncDraw = DrawFlatMenuToggle;
+		}
+		*/
+		
+		else if ( item->Variable == &UseShortPackets )
+		{
+			item->FuncSelect = SelectFlatMenuToggle;
+			item->FuncDraw = DrawFlatMenuToggle;
+		}
+	}
 		
 	// set the name of the game
 	sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
@@ -10958,11 +10977,6 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 				item->FuncDraw = NULL;
 			}
 		}
-		else if ( item->Variable == &PacketsSlider )
-		{
-			item->FuncSelect = SelectSlider;
-			item->FuncDraw = DrawFlatMenuSlider;
-		}
 		else if ( item->Variable == &GoalScoreSlider )
 		{
 			if ( GameType == GAME_CaptureFlag
@@ -11005,19 +11019,6 @@ void InitMoreMultiplayerOptions( MENU *Menu )
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
 			}
-		}
-		/*
-		else if ( item->Variable == &LagCompensation )
-		{
-			item->FuncSelect = SelectFlatMenuToggle;
-			item->FuncDraw = DrawFlatMenuToggle;
-		}
-		*/
-		
-		else if ( item->Variable == &UseShortPackets )
-		{
-			item->FuncSelect = SelectFlatMenuToggle;
-			item->FuncDraw = DrawFlatMenuToggle;
 		}
 	}
 }
