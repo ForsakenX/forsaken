@@ -164,6 +164,8 @@ BOOL NeedFlagAtHome = TRUE;
 BOOL CanCarryOwnFlag = FALSE;
 BOOL OwnFlagTeleportsHome = TRUE;
 
+BOOL ShowPlayersOnHUD = FALSE;
+
 int	DPlayUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
 int BountyBonusInterval = 10;
@@ -2857,7 +2859,7 @@ MENU	MENU_Visuals = {
 };
 
 MENU	MENU_Options = {
-	LT_MENU_Options0/*"Options"*/, NULL, NULL, NULL, 0,
+	LT_MENU_Options0/*"Options"*/, NULL, SetMultiplayerPrefs, NULL, 0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"*/,				0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
 		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"*/,	0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
@@ -2866,7 +2868,8 @@ MENU	MENU_Options = {
 		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options12	/*"Show Fog"*/,				0, 0, &d3dapprs.bFogEnabled,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200, 240, 0, 0, 0, LT_MENU_InGame10	/*"ping update (secs)"*/,	0, 0, &PingFreqSlider,			NULL,					SelectSlider,	DrawSlider,			NULL, 0 },
+		{ 200, 240, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 256, 0, 0, 0, LT_MENU_InGame10	/*"ping update (secs)"*/,	0, 0, &PingFreqSlider,			NULL,					SelectSlider,	DrawSlider,			NULL, 0 },
 
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -12050,6 +12053,9 @@ void GetMultiplayerPrefs( void )
 
 	size = sizeof(temp);
 
+	ShowPlayersOnHUD = ( RegGet( "ShowPlayersOnHUD", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : FALSE;
+
 	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : COLPERS_Descent; // COLPERS_Descent is lag tol off right??
 
@@ -12138,6 +12144,8 @@ void SetMultiplayerPrefs( void )
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 	char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
 
+	temp = ShowPlayersOnHUD;
+	RegSet( "ShowPlayersOnHUD", (LPBYTE)&temp , sizeof(temp));
 	temp = ColPerspective;
 	RegSet( "ColPerspective", (LPBYTE)&temp , sizeof(temp));
 	temp = MyBrightShips;
