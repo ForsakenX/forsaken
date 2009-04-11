@@ -829,6 +829,18 @@ int	DifficultyLevel		= DIFF_Norm;
 int	ControlMethod		= CONTROL_Mouse;
 int	GameType			= GAME_Normal;
 
+// these are really only meant for displaying in create game menu
+// GameTypeName is only updated on entry to create game menu
+char* GameTypeNameTable[7] = {
+	LT_MENU_NEW_CreateGame9,  /*"free for all"*/
+	LT_MENU_NEW_CreateGame12, /*"flag chase"*/
+	LT_MENU_NEW_CreateGame13, /*"bounty hunt"*/
+	LT_MENU_NEW_CreateGame14, /*"Team bounty hunt"*/
+	LT_MENU_NEW_CreateGame10, /*"team game"*/
+	LT_MENU_NEW_CreateGame11  /*"capture the flag"*/
+};
+char GameTypeName[128];
+
 int16 PreferedMaxPlayers = MAX_PLAYERS;
 
 float CharWidth;
@@ -1349,6 +1361,20 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 	}
 };
 
+MENU MENU_NEW_GameType = {
+	"",NULL,NULL,NULL,TITLE_TIMER_PanToLeftVDU,
+	{		
+		{   0,   0, 200,  20, 0,	LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
+		{  10,  10, 200,  92, 0,	LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Normal,		SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  18, 200, 100, 0,	LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Team,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  26, 200, 108, 0,	LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CTF,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  34, 200, 116, 0,	LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CaptureFlag,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  42, 200, 124, 0,	LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_BountyHunt,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  50, 200, 132, 0,	LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_TeamBounty,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+	}
+};
+
 /* create */
 MENU	MENU_NEW_CreateGame = {
 
@@ -1367,19 +1393,16 @@ MENU	MENU_NEW_CreateGame = {
         
 		{  10,  34,  90,  36, 0,			"Protocol",												FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
         {  90,  34, 205,  40, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
-		{  10,  52,  85,  38, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,								&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
-		{  10,  60,  50,  46, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
-		{  90,  60, 200,  46, 0,			"",														FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
-		{  10,  68,  85,  54, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  76,  85,  62, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  84,  85,  70, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{   0,  92, 200,  84, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
-		{  10, 100, 200,  92, 0,			LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Normal,				SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10, 108, 200, 100, 0,			LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_Team,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10, 116, 200, 108, 0,			LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CTF,					SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10, 126, 200, 116, 0,			LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_CaptureFlag,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10, 134, 200, 124, 0,			LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_BountyHunt,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10, 140, 200, 132, 0,			LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,													&GameType,							(void *)GAME_TeamBounty,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  52,  85,  38, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
+		{  10,  60,  50,  46, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  60, 200,  46, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+		{  10,  68,  85,  54, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  76,  85,  62, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  84,  85,  70, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+
+		{  10,  92,  85,  78, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  92, 200,  78, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+
 		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -10432,6 +10455,9 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 
 	// populate global list of service providers selecting last used
 	GetServiceProviders(NULL);
+
+	// set the game type name
+	strncpy( GameTypeName, GameTypeNameTable[ GameType ], sizeof(GameTypeName) );
 
 }
 
