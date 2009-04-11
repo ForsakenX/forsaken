@@ -1713,18 +1713,6 @@ MENU	MENU_NEW_Lights = {
 	}
 };
 
-MENU MENU_NEW_Misc = {
-	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-
-		{ 10, 100, 135, 110, 0, "Back", FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	 
-	}
-};
-
-
 // Out-of-game menu
 MENU	MENU_NEW_DetailLevels = {
 	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
