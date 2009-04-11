@@ -454,7 +454,6 @@ void InitTitleLoad( MENU *Menu );
 void ExitTitleLoad( MENU *Menu );
 void InitBikerName( char *name );
 void InitMultiplayerHost( MENU *Menu );
-void InitMoreMultiplayerOptions( MENU *Menu );
 void SetAutolevel( MENUITEM *item );
 void SelectQuitCurrentGame( MENUITEM *Item );
 void ExitBikeSelection( MENUITEM * menu );
@@ -1333,7 +1332,7 @@ MENU	MENU_NEW_ValidPickups = {
 
 
 MENU	MENU_NEW_MoreMultiplayerOptions = {
-	"", InitMoreMultiplayerOptions, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
+	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 		
@@ -1343,10 +1342,6 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10, 107, 100, 114, 0,				LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small,  TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10, 114, 120, 121, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10, 121, 120, 128, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
-		{ 10, 128, 120, 135, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1355,13 +1350,35 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 MENU MENU_NEW_GameType = {
 	"",NULL,NULL,NULL,TITLE_TIMER_PanToLeftVDU,
 	{		
-		{   0,   0, 200,  20, 0,	LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
-		{  10,  10, 200,  92, 0,	LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Normal,		SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  18, 200, 100, 0,	LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Team,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  26, 200, 108, 0,	LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CTF,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  34, 200, 116, 0,	LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CaptureFlag,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  42, 200, 124, 0,	LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_BountyHunt,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  50, 200, 132, 0,	LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_TeamBounty,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+
+		{   0,   0, 200,   0, 0,	LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
+
+		{  10,   8, 200,  16, 0,	LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Normal,		SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  16, 200,  24, 0,	LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Team,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  24, 200,  32, 0,	LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CTF,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  32, 200,  40, 0,	LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CaptureFlag,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  40, 200,  48, 0,	LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_BountyHunt,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  48, 200,  56, 0,	LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_TeamBounty,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+
+// bounty type game options
+
+		{  10,  64, 200,  82, 0,			"Bounty Game Options",												 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		
+		{  10,  82, 120,  90, 0,			LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small,  TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10,  90, 120,  98, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+
+// any flag based game
+
+		{  10, 106, 200, 114, 0,			"Flag Game Options",												 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+	
+		{  10, 122, 120, 130, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+
+// only ctf game
+
+		{  10, 138, 200, 146, 0,			"CTF Game Options",													 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+	
+		{  10, 154, 120, 162, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -10414,40 +10431,8 @@ void InitMultiplayerHost( MENU *Menu )
 /* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
-
-	MENUITEM *item;
 	uint16 selected_level;
 
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{		
-		// if the item is the quit button
-		if ( item->FuncSelect == SelectQuit )
-		{
-			// disable it
-			item->FuncSelect = NULL;
-			item->FuncDraw = NULL;
-		}
-
-		else if ( item->Variable == &PacketsSlider )
-		{
-			item->FuncSelect = SelectSlider;
-			item->FuncDraw = DrawFlatMenuSlider;
-		}
-		/*
-		else if ( item->Variable == &LagCompensation )
-		{
-			item->FuncSelect = SelectFlatMenuToggle;
-			item->FuncDraw = DrawFlatMenuToggle;
-		}
-		*/
-		
-		else if ( item->Variable == &UseShortPackets )
-		{
-			item->FuncSelect = SelectFlatMenuToggle;
-			item->FuncDraw = DrawFlatMenuToggle;
-		}
-	}
-		
 	// set the name of the game
 	sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
 	
@@ -10941,86 +10926,6 @@ void ExitBikeComputerSelection( MENUITEM * item )
 
 	if( MyGameStatus == STATUS_Title )
 		MenuBack();
-}
-
-void InitMoreMultiplayerOptions( MENU *Menu )
-{
-	MENUITEM *item;
-
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{		
-		if ( item->Variable == &BountyBonus )
-		{
-			if ( GameType == GAME_BountyHunt
-				|| GameType == GAME_TeamBounty )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-		else if ( item->Variable == &BountyBonusSlider )
-		{
-			if ( GameType == GAME_BountyHunt
-				|| GameType == GAME_TeamBounty )
-			{
-				item->FuncSelect = SelectSlider;
-				item->FuncDraw = DrawFlatMenuSlider;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-		else if ( item->Variable == &GoalScoreSlider )
-		{
-			if ( GameType == GAME_CaptureFlag
-				|| GameType == GAME_CTF )
-			{
-				item->FuncSelect = SelectSlider;
-				item->FuncDraw = DrawFlatMenuSlider;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-		else if ( item->Variable == &CTFSlider )
-		{
-			if ( GameType == GAME_CTF )
-			{
-				item->FuncSelect = SelectSlider;
-				item->FuncDraw = DrawFlatMenuSlider;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-		else if ( item->Variable == &HarmTeamMates )
-		{
-			if ( GameType == GAME_Team
-				|| GameType == GAME_CaptureFlag
-				|| GameType == GAME_CTF 
-				|| GameType == GAME_TeamBounty )
-			{
-				item->FuncSelect = SelectFlatMenuToggle;
-				item->FuncDraw = DrawFlatMenuToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
