@@ -1771,35 +1771,12 @@ MENU	MENU_NEW_TextureFormat = {
 MENU	MENU_NEW_Visuals = {
 	"", NULL, NULL, NULL, TITLE_TIMER_Visuals,
 	{
-#if 1
 		{  0,   0, 200,  20, 0,					LT_MENU_NEW_Visuals0 /*"Visuals"*/,					FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  40, 200,  50, 0,					LT_MENU_NEW_Visuals1 /*"Change Detail Levels"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_DetailLevels,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
-		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },
-#else
-  /*
-  128  Ç ( 199 )  144  É ( 201 )  160  á ( 225 )   
-  129  ü ( 252 )  145  æ ( 230 )  161  í ( 237 )  
-  130  é ( 233 )  146  Æ ( 198 )  162  ó ( 243 )  
-  131  â ( 226 )  147  ô ( 244 )  163  ú ( 250 )  
-  132  ä ( 228 )  148  ö ( 246 )  164  ñ ( 241 )  
-  133  à ( 224 )  149  ò ( 242 )  165  Ñ ( 209 )  
-  134  å ( 229 )  150  û ( 251 )  166  ª ( 170 )  
-  135  ç ( 231 )  151  ù ( 249 )  167  º ( 186 )
-  136  ê ( 234 )  152  ÿ ( 255 )  168  ¿ ( 191 )
-  137  ë ( 235 )  153  Ö ( 214 )  169  _ ( 095 )
-  138  è ( 232 )  154  Ü ( 220 )  170  ¬ ( 172 )  
-  139  ï ( 239 )  155  ¢ ( 162 )  171  ½ ( 189 )  
-  140  î ( 238 )  156  £ ( 163 )  172  ¼ ( 188 )  
-  141  ì ( 236 )  157  ¥ ( 165 )  173  ¡ ( 161 )  
-  142  Ä ( 196 )  158  P ( 080 )  174  « ( 171 )  
-  143  Å ( 197 )  159  ƒ ( 131 )  175  » ( 187 )  
-  */
-		
-		{ 20, 140, 180, 170, 0, "Çüéâ äàåçê ëèïîì ÄÅÉæÆ ôöòûù ÿÖÜ¢£ ¥Pƒáí óúñÑª º¿_¬½ ¼¡«»", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-#endif				 
+		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
