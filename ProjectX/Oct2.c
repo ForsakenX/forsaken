@@ -6345,6 +6345,7 @@ BOOL StatsNamePulse( void )
 
 extern uint16 PingTimes[MAX_PLAYERS];
 extern int GetPlayerByRank( int rank );
+extern int ReliabilityTab[MAX_PLAYERS+1];
 void ShowGameStats( stats_mode_t mode )
 {
 	int active_players = 0;
@@ -6359,9 +6360,8 @@ void ShowGameStats( stats_mode_t mode )
 
 	for (i = 0; i < MAX_PLAYERS; i++)
 	{
-		if ( GameStatus[i] != STATUS_Normal && GameStatus[i] != STATUS_ViewingScore && (GetScoreStats(i) < 1) )
-			break;
-		active_players++;
+		if ( scoreable_status(i) )
+			active_players++;
 	}
 
 	// get the total height of everything
@@ -6429,7 +6429,7 @@ void ShowGameStats( stats_mode_t mode )
 			FirstLetter[1] = 0;
 
 			//
-			Print4x5Text( FirstLetter,  xpos, top_offset, GRAY );
+			Print4x5Text( FirstLetter,  xpos, top_offset, player_left(GetPlayerByRank(i)) ? DARKGRAY : GRAY );
 		}
 
 		top_offset += row_height;
@@ -6450,7 +6450,8 @@ void ShowGameStats( stats_mode_t mode )
 			// print kill matrix line
 			for (j = 0; j < active_players; j++)
 			{
-				Printint16( GetKillStats(GetPlayerByRank(i),GetPlayerByRank(j)), xpos, top_offset, (i==j) ? RED : GRAY ); // suacides are red
+				int color = player_left(GetPlayerByRank(i)) ? DARKGRAY : ((i==j) ? RED : GRAY);
+				Printint16( GetKillStats(GetPlayerByRank(i),GetPlayerByRank(j)), xpos, top_offset, color ); // suacides are red
 				xpos+=col_width; // next col
 			}
 
@@ -6493,12 +6494,12 @@ void ShowGameStats( stats_mode_t mode )
 
 			// names and colors
 			int columns = 6;
-			char* names[6] = {"PING", "TEAM", "OVERALL", "RATIO", "KILLS", "DEATHS"};
-			int colors[6]  = {GRAY,   YELLOW, GRAY,      CYAN,    GREEN,   RED};
+			char* names[6] = {"PING", "RATIO", "TEAM", "OVERALL", "KILLS", "DEATHS"};
+			int colors[6]  = {  GRAY,   CYAN,  YELLOW,      GRAY,   GREEN,      RED};
 
 			// NOT team game
 			if(!TeamGame)
-				names[1] = NULL;
+				names[2] = NULL;
 
 			// start at left
 			xpos = left_offset;
@@ -6519,21 +6520,35 @@ void ShowGameStats( stats_mode_t mode )
 			// start of line
 			int xpos = left_offset;
 
-			// calculate team color
-			int TeamColor = TeamCol[TeamNumber[i]];
-			int color = (StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamColor : YELLOW);
+			// if the player left the game
+			int left = (player_left(GetPlayerByRank(i)) ? DARKGRAY : 0 );
 
+			// calculate name color
+			int color = (left) ? left : ((StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamCol[TeamNumber[i]] : YELLOW));
+
+			//
 			// print line
+			//
+			
+			// connection status
+			// print the dot about 2 character space gap from the names
+			if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
+				DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], (xpos-(4*FontWidth)), top_offset );
+
+			// name
 			Print4x5Text( (char*)&Names[GetPlayerRank(i)],	xpos,				top_offset, color );
-			xpos += col_width; // so the column shows up no matter what
-					if( GetPlayerRank(i) != WhoIAm )
-			Printint16( PingTimes[GetPlayerRank(i)],		xpos,				top_offset, GRAY		);	// ping
-					if(TeamGame)
-			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	YELLOW		);	// all players (points + kills - suacides - friendly - deaths)
-			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, GRAY		);	// points + kills - suacides - friendly - deaths
-			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, CYAN		);	// positives / (positives - negatives)
-			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	GREEN		);	// kills - suacides - friendly
-			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	RED			);	// suacides + deaths
+
+			// add width now so the ping column shows up even if a value printed
+			xpos += col_width;
+
+				if( GetPlayerRank(i) != WhoIAm && GameStatus[GetPlayerRank(i)] == STATUS_Normal )
+			Printint16( PingTimes[GetPlayerRank(i)],		xpos,				top_offset, (left) ? left : GRAY	);	// ping
+			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : CYAN	);	// positives / (positives - negatives)
+				if(TeamGame)
+			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
+			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : GRAY	);	// points + kills - suacides - friendly - deaths
+			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? left : GREEN	);	// kills - suacides - friendly
+			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : RED		);	// suacides + deaths
 
 			// go to next row
 			top_offset += row_height;
