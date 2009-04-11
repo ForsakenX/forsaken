@@ -462,7 +462,7 @@ void ScoreSort()
 	// meaning that uninitialized scores will be better than a negative score...
 	// so you'll disapear off the player list...
 	for (i = 0; i < MAX_PLAYERS; i++)
-		if ( GameStatus[i] == STATUS_Normal || GameStatus[i] == STATUS_ViewingScore )
+		if ( scoreable_status(i) )
 			players++;
 
 	while( TRUE )
@@ -597,4 +597,14 @@ int GetEffeciency( int Player )
 	if(!negatives) return 100;
 	// calculate percentage
 	return (int)(positives / (positives + negatives) * 100.0F);
+}
+
+int player_left( int player )
+{
+	return (GameStatus[player] == STATUS_Left || GameStatus[player] ==  STATUS_LeftCrashed);
+}
+
+int scoreable_status( int player )
+{
+	return ( GameStatus[player] == STATUS_Normal || GameStatus[player] == STATUS_ViewingScore || player_left(player) );
 }

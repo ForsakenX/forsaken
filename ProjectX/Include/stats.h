@@ -39,6 +39,8 @@ int GetKills( int Player );
 int GetScore( int Player );
 int GetTeamScore2( int Player );
 int GetEffeciency( int Player );
+int player_left( int player );
+int scoreable_status( int player );
 
 #endif
 
