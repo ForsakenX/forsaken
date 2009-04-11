@@ -2859,7 +2859,7 @@ MENU	MENU_Visuals = {
 };
 
 MENU	MENU_Options = {
-	LT_MENU_Options0/*"Options"*/, NULL, SetMultiplayerPrefs, NULL, 0,
+	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetMultiplayerPrefs, NULL, 0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"*/,				0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
 		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"*/,	0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
