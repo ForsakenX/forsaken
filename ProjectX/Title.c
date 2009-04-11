@@ -1334,14 +1334,13 @@ MENU	MENU_NEW_ValidPickups = {
 MENU	MENU_NEW_MoreMultiplayerOptions = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200,  20, 0,				LT_MENU_NEW_MoreMultiplayerOptions0  /* "Multiplayer options"    */, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
-		
-		{ 10,  22, 120,  29, 0, LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"	 */, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent, SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10,  29, 120,  36, 0, LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"	*/, FONT_Small,  TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,  SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  0,   0, 200,  20, 0,				"Other options",													FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ 10,  86, 100,  93, 0,				LT_MENU_NEW_MoreMultiplayerOptions7  /* "bike exhausts"          */, FONT_Small,  TEXTFLAG_CentreY,							&BikeExhausts,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10,  93, 100, 100, 0,				LT_MENU_NEW_MoreMultiplayerOptions8  /* "bright bikes"           */, FONT_Small,  TEXTFLAG_CentreY,							&MyBrightShips,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 100, 100, 107, 0,				LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+
+		{  10, 116,  85, 116, 0,			LT_MENU_NEW_MoreMultiplayerOptions14/*"demo"        */, FONT_Small,		TEXTFLAG_CentreY,													&RecordDemo,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1362,23 +1361,44 @@ MENU MENU_NEW_GameType = {
 
 // bounty type game options
 
-		{  10,  64, 200,  82, 0,			"Bounty Game Options",												 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{  10,  64, 200,  82, 0,			"Bounty Game Options",												 FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 		
-		{  10,  82, 120,  90, 0,			LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small,  TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
-		{  10,  90, 120,  98, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  82, 120,  90, 0,			LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small, TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10,  90, 120,  98, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
 // any flag based game
 
-		{  10, 106, 200, 114, 0,			"Flag Game Options",												 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 106, 200, 114, 0,			"Flag Game Options",												 FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 	
-		{  10, 122, 120, 130, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10, 122, 120, 130, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
 // only ctf game
 
-		{  10, 138, 200, 146, 0,			"CTF Game Options",													 FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 138, 200, 146, 0,			"CTF Game Options",													 FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 	
-		{  10, 154, 120, 162, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small,  TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10, 154, 120, 162, SLIDER_User,	LT_MENU_NEW_MoreMultiplayerOptions13 /* "own flag rule"          */, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&CTFSlider,					NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 
+		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+	}
+};
+
+MENU MENU_NEW_NetworkOptions = {
+	"",NULL,NULL,NULL,TITLE_TIMER_PanToLeftVDU,
+	{
+		{  0,  0, 200, 0, 0,			"Network Options",															FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
+
+		{ 10, 16,  85, 16, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&UseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 24,  85, 24, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 40, 120, 40, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 48, 120, 48, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+
+	  // taken out cause of lag in wsa startup, leave for later in case new method found
+      //{  90, 20, 120,  20, 0,			LT_MENU_NEW_CreateGame2  /*"IP:"*/,											FONT_Small,		TEXTFLAG_CentreY,													NULL,								&IPAddressExists,					NULL,					DrawConditionalText,	NULL, 0 } ,
+	  //{ 100, 20, 200,  20, 0,			"",																			FONT_Small,		TEXTFLAG_CentreY,													(void *)IPAddressText,				&IPAddressExists,					NULL,					DrawConditionalName,	NULL, 0 } ,
+        
+		{  10, 64,  90,  64, 0,			"Protocol",																	FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+        {  90, 64, 205,  64, 0,			"",																			FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
+		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -1392,40 +1412,28 @@ MENU	MENU_NEW_CreateGame = {
 	NULL, TITLE_TIMER_PanToLeftVDU,
 
 	{
-		{   0,   0, 200,  20, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
-		{  10,  20,  90,  28, 0,			LT_MENU_NEW_CreateGame1  /*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_HostWaitingToStart,		StartAHostSession,		DrawFlatMenuItem,		NULL, 0 } ,
+		{   0,   0, 200,   0, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
+		{  10,  10,  90,  10, 0,			LT_MENU_NEW_CreateGame1  /*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_HostWaitingToStart,		StartAHostSession,		DrawFlatMenuItem,		NULL, 0 } ,
 
-	  // taken out cause of lag in wsa startup, leave for later in case new method found
-      //{  90,  20, 120,  28, 0,			LT_MENU_NEW_CreateGame2  /*"IP:"*/,						FONT_Small,		TEXTFLAG_CentreY,													NULL,								&IPAddressExists,					NULL,					DrawConditionalText,	NULL, 0 } ,
-	  //{ 100,  20, 200,  28, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)IPAddressText,				&IPAddressExists,					NULL,					DrawConditionalName,	NULL, 0 } ,
-        
-		{  10,  28,  90,  52, 0,			"Protocol",												FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-        {  90,  28, 205,  52, 0,			"",														FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
+		{  10,  28,  85,  28, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
 
-		{  10,  36,  85,  60, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
+		{  10,  36,  85,  36, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  36, 200,  36, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
 
-		{  10,  44,  50,  68, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
-		{  90,  44, 200,  68, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+		{  10,  44,  50,  44, 0,			LT_MENU_NEW_CreateGame4  /*"level"*/,					FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								NULL,								NULL,								InitLevelSelectVDU,		DrawFlatMenuItem,		NULL, 0 } ,
+		{  90,  44, 200,  44, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)SelectedLevel,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
 
-		{  10,  52,  85,  76, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  60,  85,  84, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  68,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  76,  85, 100, 0,			"Reset Kills"            /* "Reset Kills"*/,			FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10,  60,  85,  60, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  68,  85,  68, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  76,  85,  76, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{  10,  84,  85, 108, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-		{  90,  84, 200, 108, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
+		{  10,  92,  85,  92, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 100,  85, 100, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10, 108,  85, 108, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
-		{  10,  92,  85, 116, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,	FONT_Small,		TEXTFLAG_CentreY,													&UseShortPackets,					NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		{  10, 100,  85, 124, SLIDER_Value, LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,	FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&PacketsSlider,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-
-
-		{  10, 108,  85, 132, 0,			LT_MENU_NEW_MoreMultiplayerOptions14/*"demo"        */, FONT_Small,		TEXTFLAG_CentreY,													&RecordDemo,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		{  10, 116,  85, 140, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		{  10, 124,  85, 148, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10, 132, 180, 156, 0,			LT_MENU_NEW_MoreMultiplayerOptions19/*"pickups" */,		FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ValidPickups,				MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-
-
-		{  10, 156, 100, 156, 0,			LT_MENU_NEW_CreateGame16 /*"more options"*/,			FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 124, 180, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions19/*"pickups" */,		FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ValidPickups,				MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 132, 100, 132, 0,			"Network Options",										FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_NetworkOptions,			MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
+		{  10, 140, 100, 140, 0,			"Other Options",										FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_MoreMultiplayerOptions,	MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
