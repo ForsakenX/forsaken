@@ -3488,7 +3488,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					// display my version number
 					AddColourMessageToQue(SystemMessageColour, YourVersion );
 					// send my version number back
-					strncpy( (char *)&QuickText.text, ProjectXVersion , 9 );
+					strncpy( (char *)&QuickText.text, ProjectXVersion , sizeof(ProjectXVersion) );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 					QuickText.text[0] = 0; // clean message buffer
 				}
