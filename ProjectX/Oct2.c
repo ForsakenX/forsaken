@@ -3159,7 +3159,7 @@ BOOL TermDInput( void )
   return TRUE;
 }
 
-
+// read KEYS.txt and DEUBG_KEYS.txt before changing.
 void ProcessGameKeys( void )
 {
 
@@ -3304,27 +3304,47 @@ void ProcessGameKeys( void )
     else if ( IsKeyHeld( DIK_LCONTROL ) || IsKeyHeld( DIK_RCONTROL ) )
     {
 
-      // Ctrl + F1
-      if ( IsKeyPressed( DIK_F1 ) )
-        ShowTeleports = !ShowTeleports;
-    
-      // Ctrl + F2
-      if ( IsKeyPressed( DIK_F2 ) )
-        ShowTrigZones = !ShowTrigZones;
+		// Ctrl + F1
+		if ( IsKeyPressed( DIK_F1 ) )
+			ShowTeleports = !ShowTeleports;
+
+		// Ctrl + F2
+		if ( IsKeyPressed( DIK_F2 ) )
+			ShowTrigZones = !ShowTrigZones;
+
+#ifndef POLYGONAL_COLLISIONS
+#ifdef REMOTE_CAMERA_ENABLED
+		// Ctrl + F3
+		if ( IsKeyPressed( DIK_F3 ) )
+			if( !RemoteCameraActive )
+			{
+				RemoteCameraActive = TRUE;
+				Ships[MAX_PLAYERS].Object.Pos = Ships[WhoIAm].Object.Pos;
+				Ships[MAX_PLAYERS].Object.Group = Ships[WhoIAm].Object.Group;
+				Ships[MAX_PLAYERS].Object.Mode = NORMAL_MODE;
+				Ships[MAX_PLAYERS].enable = 1;
+				Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
+			}else{
+				RemoteCameraActive = FALSE;
+				Ships[MAX_PLAYERS].enable = 0;
+				Current_Camera_View = WhoIAm;   // which object is currently using the camera view....
+			}
+#endif
+#endif
 
     } // end ctrl modifier
     else // no modifiers
     {
 
-      // F8
-      if ( IsKeyPressed( DIK_F8 ) )
-        // Awesome !!!
-        // We need to make this a standard feature!!!
-        if( TargetComputerOn )
-          TargetComputerOn = FALSE;
-        else
-          TargetComputerOn = TRUE;
-    
+		// F8
+		if ( IsKeyPressed( DIK_F8 ) )
+			// Awesome !!!
+			// We need to make this a standard feature!!!
+			if( TargetComputerOn )
+				TargetComputerOn = FALSE;
+			else
+				TargetComputerOn = TRUE;
+
     }
 
   } // end debug keys
@@ -3350,8 +3370,7 @@ void ProcessGameKeys( void )
     {
 
       // F3
-      if ( IsKeyPressed( DIK_F3 ) ) 
-        // check for quick load/save only in single player
+      if ( IsKeyPressed( DIK_F3 ) )
         if ( !CurrentMenu )
           MenuRestart( &MENU_LoadSavedGame );
         else if ( CurrentMenu == &MENU_LoadSavedGame )
@@ -3365,36 +3384,35 @@ void ProcessGameKeys( void )
         else if ( CurrentMenu == &MENU_SaveGame )
           MenuExit();
 
-    } // end single player
+    }
+
+	// multiplayer
+	else
+	{
+
+		// F3
+		if ( IsKeyPressed( DIK_F3 ) )
+		{
+			SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
+			AddColourMessageToQue(SystemMessageColour,
+				"A ping request has been sent to all players\n" );
+		}
+
+		// F4 ?
+
+	}
 
     // F5
     if ( IsKeyPressed( DIK_F5 ) )
       MissileCameraEnable ^=1;
 
-    // not single player mode
-    // and Shift Modifier
-    if ( ( MyGameStatus != STATUS_SinglePlayer ) &&
-         ( IsKeyHeld( DIK_LSHIFT ) || IsKeyHeld( DIK_RSHIFT ) ) )
-    {
+	// F6
+	if ( IsKeyPressed( DIK_F6 ) )
+		RearCameraActive ^=1;
 
-      // Shift + F6
-      if ( IsKeyPressed( DIK_F6 ) )
-		  SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
-      
-    } // not single player and shift modifier end
-    else // single player or shift modifier
-    {
-
-      // F6
-      if ( IsKeyPressed( DIK_F6 ) )
-        RearCameraActive ^=1;
-  
-      // F7
-      if ( IsKeyPressed( DIK_F7 ) )
-        // toggle panel text
-        Panel = !Panel;
-
-    } // single player or shift modifier end
+	// F7
+	if ( IsKeyPressed( DIK_F7 ) )
+		Panel = !Panel;
 
 #ifdef SAVESCREEN_3DFX
     // capture a screen shot
@@ -3449,26 +3467,6 @@ void ProcessGameKeys( void )
           else if ( CurrentMenu == &MENU_EditMacro3 )
             MenuExit();
 
-#ifndef POLYGONAL_COLLISIONS
-#ifdef REMOTE_CAMERA_ENABLED
-		// Shift + F12
-		if ( IsKeyPressed( DIK_F12 ) )
-			if( !RemoteCameraActive )
-			{
-				RemoteCameraActive = TRUE;
-				Ships[MAX_PLAYERS].Object.Pos = Ships[WhoIAm].Object.Pos;
-				Ships[MAX_PLAYERS].Object.Group = Ships[WhoIAm].Object.Group;
-				Ships[MAX_PLAYERS].Object.Mode = NORMAL_MODE;
-				Ships[MAX_PLAYERS].enable = 1;
-				Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
-			}else{
-				RemoteCameraActive = FALSE;
-				Ships[MAX_PLAYERS].enable = 0;
-				Current_Camera_View = WhoIAm;   // which object is currently using the camera view....
-			}
-#endif
-#endif
-
       } // Shift Modifier
       else // no modifier
       {
@@ -3485,13 +3483,9 @@ void ProcessGameKeys( void )
         if ( IsKeyPressed( DIK_F11 ) )
           SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_Taunt3, 0);
 
-		// F12
-			// don't use f12...
-			// it's caught in WindowProc for global application fullscreen toggle
-
       } // end (not) shift modifier
-    } // end not single player
-  } // end debug/normal keys
+	} // end not single player
+  } // end normal keys
 } // ProcessGameKeys
 
 
