@@ -756,9 +756,12 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
 		case WM_KEYDOWN: // non system key (no alt modifier)
 			{
-				// if lParam bit 30 is 1 then key is STILL pressed...
+				// if lParam bit 30 is 1 then key is REPEATING
 				int repeating = (lParam & (1<<30));
+
 				//DebugPrintf("virtual-key %x is %s.\n", wParam, (repeating?"repeating":"pressed") );
+
+				// PAUSE
 				if ( wParam == VK_PAUSE )
 				{
 					if ( ! repeating ) // only want first event
@@ -770,8 +773,10 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 						SetCursorClip( ! cursor_clipped );
 					}
 				} 
+
+				// SHIFT + F12
 				// fullscreen toggle
-				else if ( wParam == VK_F12 )
+				else if ( wParam == VK_F12 && HIWORD( GetKeyState( VK_SHIFT ) ) )
 				{
 					MenuGoFullScreen( NULL );	
 					*lresult = 0; // we are processing the message
