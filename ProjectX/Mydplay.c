@@ -4418,6 +4418,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpAckMsg->ID = (uint32) to;
 		lpAckMsg->AckTo = ShipNum;
 		nBytes = sizeof( ACKMSG );
+		to = 0; // to was used to pass in the message id.
 		break;
 	}
 	
