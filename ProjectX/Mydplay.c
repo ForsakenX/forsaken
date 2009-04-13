@@ -3578,7 +3578,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		PingRequestTime = lpPingMsg->Time;
-		SendGameMessage(MSG_PINGREPLY, lpPingMsg->WhoIAm, 0 , 0, 0);
+		SendGameMessage(MSG_PINGREPLY, 0, lpPingMsg->WhoIAm, 0, 0);
 		return;
 
 
@@ -3609,10 +3609,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			// store value
 			PingTimes[lpPingMsg->WhoIAm] = milliseconds;
 
-		}
-		else
-		{
-			DebugPrintf("Got ping reply that wasn't for me.\n");
 		}
 		return;
 
@@ -4412,9 +4408,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpPingMsg = (LPPINGMSG)&CommBuff[0];
         lpPingMsg->MsgCode = msg;
         lpPingMsg->WhoIAm = WhoIAm;
-        lpPingMsg->ToYou = Type;
+        lpPingMsg->ToYou = ShipNum;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
+		to = Ships[ShipNum].dcoID;
 		break;
 
 
