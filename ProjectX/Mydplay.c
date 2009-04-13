@@ -4458,10 +4458,13 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	if( UseSendAsync )
 		Flags |= DPSEND_ASYNC;
 
-#ifdef DEBUG_ON
-	DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
+#ifndef DEBUG_ON
+	Flags |= DPSEND_NOSENDCOMPLETEMSG;
+#endif
+
+	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
 	//Flags |= DPSEND_GUARANTEED;  // uncomment this to test guaranteed packets
-	hr = IDirectPlayX_SendEx(
+	hr = glpDP->lpVtbl->SendEx(
 								glpDP,
 								dcoID,					// From
 								to,						// send to
@@ -4470,24 +4473,14 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 								nBytes,					// sizeof data
 								dwPriority,				// dwPriority
 								dwTimeout,				//
-								(LPVOID)msg_to_str(msg),// lpContext = Packet Type
-								NULL					// lpdwMsgID
-								);
+#ifdef DEBUG_ON
+								(LPVOID)msg_to_str(msg),// lpContext = Packet Type Name
 #else
-	Flags |= DPSEND_NOSENDCOMPLETEMSG;
-	hr = IDirectPlayX_SendEx(
-								glpDP,
-								dcoID,					// From
-								to,						// send to
-								Flags ,					// send flags
-								(LPSTR)&CommBuff[0],	// data
-								nBytes,					// sizeof data
-								dwPriority,				// dwPriority
-								dwTimeout,				//
 								NULL,					// lpContext
+#endif
 								NULL					// lpdwMsgID
 								);
-#endif
+
 
 	switch ( hr )
 	{
@@ -4501,28 +4494,28 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		DebugPrintf( "SendGameMessage() DPERR_CONNECTIONLOST\n");
 		break;
 	case DPERR_INVALIDFLAGS:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDFLAGS\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDFLAGS - msgtype %s\n",msg_to_str(msg));
 		break;
 	case DPERR_INVALIDPARAMS:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPARAMS\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPARAMS - msgtype %s\n",msg_to_str(msg));
 		break;
 	case DPERR_INVALIDPLAYER:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPLAYER\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPLAYER id %lu - msgtype %s\n",to,msg_to_str(msg));
 		break;
 	case DPERR_INVALIDPRIORITY:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPRIORITY\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPRIORITY of %lu - msgtype %s\n",dwPriority,msg_to_str(msg));
 		break; 
 	case DPERR_NOTLOGGEDIN:
 		DebugPrintf( "SendGameMessage() DPERR_NOTLOGGEDIN\n");
 		break;
 	case DPERR_SENDTOOBIG:
-		DebugPrintf( "SendGameMessage() DPERR_SENDTOOBIG\n");
+		DebugPrintf( "SendGameMessage() DPERR_SENDTOOBIG %lu bytes - msgtype %s\n",nBytes,msg_to_str(msg));
 		break;
 	case DPERR_UNSUPPORTED:
-		DebugPrintf( "SendGameMessage() DPERR_UNSUPPORTED\n");
+		DebugPrintf( "SendGameMessage() DPERR_UNSUPPORTED - msgtype %s\n",msg_to_str(msg));
 		break;
 	default:
-		DebugPrintf( "SendGameMessage() unknown send error\n");
+		DebugPrintf( "SendGameMessage() unknown send error - msgtype %s\n",msg_to_str(msg));
 	}
 }
 
@@ -5050,9 +5043,12 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 	// set the message type
 	GM->MsgType = MsgType;
 
-	// set the times
+	// set the next time to resend this packet
 	QueryPerformanceCounter((LARGE_INTEGER *) &GM->Time);
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime); // by default rely on count
+
+	// used to set a time limit on top of packet count
+	// this is changed further down the code
+	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime);
 
 	// set id to next id
 	GM->ID = GuaranteedMessagesID++;
@@ -5212,7 +5208,7 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 
 							// this player never acknowledged a message
 							// yet by now they really should have...
-							DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
+							DebugPrintf( "Legal %x Player didnt ack a Guaranteed %s Message\n" , i, msg_to_str(GM->MsgType) );
 
 						}
 					}
@@ -5262,33 +5258,30 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 				// number of times this message was sent
 				GMm->Count = GM->Count++;
 
-				// send and wait for success/error
-				if( !UseSendAsync || SendGuaranteed )
-				{	
-					hr = glpDP->lpVtbl->Send( glpDP,
-											  dcoID,   // From
-											  send_to, // send to everybody
-											  Flags ,
-											  &GM->Message,
-											  GM->MessageLength);
+				//
+				if( !SendGuaranteed && UseSendAsync )
+					Flags |= DPSEND_ASYNC;
 
-				// just send it and return right away so we can continue working
-				}else{
-					Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
-					hr = IDirectPlayX_SendEx( glpDP,
-											  dcoID,   // From
-											  send_to, // send to everybody
-											  Flags ,
-											  &GM->Message,
-											  GM->MessageLength,
-											  0,		// dwPriority
-											  0,		// dwTimeout
-											  NULL,		// lpContext
-											  NULL		// lpdwMsgID
-											  );
+#ifndef DEBUG_ON
+				Flags |= DPSEND_NOSENDCOMPLETEMSG;
+#endif
 
-				}
-
+				hr = glpDP->lpVtbl->SendEx(
+								glpDP,
+								dcoID,					// From
+								send_to,				// send to
+								Flags,					// send flags
+								&GM->Message,			// data
+								GM->MessageLength,		// sizeof data
+								0,						// dwPriority
+								0,						// dwTimeout
+#ifdef DEBUG_ON
+								(LPVOID)msg_to_str(GM->MsgType),// lpContext = Packet Type Name
+#else
+								NULL,					// lpContext
+#endif
+								NULL					// lpdwMsgID
+								);
 				
 				DebugPrintf("Resent unacknowledged message to everyone.  msgtype=%s, meant-for-all=%s, times-sent=%d\n",msg_to_str(GM->MsgType), (GM->AllPlayers)?"true":"false", GMm->Count);
 
