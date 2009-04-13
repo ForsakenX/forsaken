@@ -2166,8 +2166,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		// I have been asked by the host to quit......
 		lpYouQuitMsg = (LPYOUQUITMSG)MsgPnt;
 		if( lpYouQuitMsg->You == WhoIAm )
+		{
 			IMustQuit = TRUE;
-		SetTitleNotify( KICKED_HOST );
+			SetTitleNotify( KICKED_HOST );
+		}
 		return;
 
 
@@ -3791,6 +3793,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpYouQuitMsg->WhoIAm = WhoIAm;
 		lpYouQuitMsg->You = ShipNum;
 		nBytes = sizeof( YOUQUITMSG );
+		to = Ships[ShipNum].dcoID;
 #ifdef	GUARANTEEDMESSAGES
 		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_YOUQUIT , FALSE , FALSE);
 		return;
