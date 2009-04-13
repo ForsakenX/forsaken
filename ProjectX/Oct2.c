@@ -114,9 +114,6 @@ int folder_exists( char *pathspec, ... );
 extern const char last_compiled[];
 extern  float Countdown_Float;
 
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-extern LPDPSESSIONDESC2                    glpdpSD_copy;
-#endif
 extern  uint32 RecPacketSize;
 extern  uint32 MaxRecPacketSize;
 

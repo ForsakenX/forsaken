@@ -588,9 +588,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_YOUQUIT							0xfa
 #define MSG_SHORTSHIPHIT					0xfc
 #define MSG_TITANBITS						0xfd
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-#define MSG_SESSIONDESC					0xe3		// message to maually propagate session desc
-#endif
 #define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP		0xed
@@ -983,21 +980,6 @@ typedef struct _REQTIMEMSG
     BYTE        WhoIAm;
 
 } REQTIMEMSG, *LPREQTIMEMSG;
-
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-
-typedef struct _SESSIONDESCMSG
-{
-	BYTE		        MsgCode;
-    BYTE				WhoIAm;
-	DWORD				dwUser1;
-	DWORD				dwUser2;
-	DWORD				dwUser3;
-	DWORD				dwUser4;
-} SESSIONDESCMSG, *LPSESSIONDESCMSG;
-
-#endif
 
 #define MAXLEVELSPERBATCH 8
 

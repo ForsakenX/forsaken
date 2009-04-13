@@ -51,9 +51,6 @@ extern SLIDER  PacketsSlider;
  */
 
 LPDPSESSIONDESC2                    glpdpSD = NULL;            // current session description
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-LPDPSESSIONDESC2                    glpdpSD_copy = NULL;            // current session description
-#endif
 LPDIRECTPLAYLOBBY2A					lpDPlayLobby = NULL;		//Lobby stuff...
 LPDPLCONNECTION						glpdplConnection = NULL;	// connection settings
 
@@ -455,20 +452,6 @@ HRESULT DPlayGetSessionDesc(void)
 
 	if (glpDP)
     {
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-		if ( glpdpSD_copy )
-		{
-			glpdpSD = (LPDPSESSIONDESC2) malloc( sizeof( *glpdpSD_copy ) );
-			if ( glpdpSD )
-			{
-				*glpdpSD = *glpdpSD_copy;
-				return DP_OK;
-			}else
-			{
-				return E_OUTOFMEMORY; 
-			}
-		}
-#endif
 		// first get the size for the session desc
         if ((hr = IDirectPlayX_GetSessionDesc(glpDP, NULL, &dwSize)) == DPERR_BUFFERTOOSMALL)
         {
@@ -516,27 +499,10 @@ HRESULT DPlaySetSessionDesc(DWORD flags)
     HRESULT hr=E_FAIL;
 
     if (glpDP && glpdpSD)
-    {
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-		if ( glpdpSD_copy )
-		{
-			free ( glpdpSD_copy );
-			glpdpSD_copy = NULL;
-		}
-#endif
-		
+    {	
 		// now set the session desc
 		hr = IDirectPlayX_SetSessionDesc(glpDP, glpdpSD, /*flags*/0 );
     }
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-
-	if ( hr == DP_OK )
-	   	if ( !flags )	// lazy way of preventing messages, since no flags are currently defined
-						// for IDirectPlayX::SetSessionDesc !!
-			SendGameMessage( MSG_SESSIONDESC, 0, 0, 0, 0 );	
-
-#endif
 
 	if ( hr != DP_OK )
 		switch ( hr )

@@ -49,10 +49,6 @@ BOOL	SessionGuidExists		= FALSE;
 int	PacketGot[256];
 int	PacketSize[256];
 
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-extern LPDPSESSIONDESC2                    glpdpSD_copy;
-#endif
-
 uint32 RecPacketSize				= 0;
 uint32 MaxRecPacketSize				= 0;
 uint32 BytesPerSecRec				= 0;
@@ -616,11 +612,6 @@ char* msg_to_str( int msg_type )
     case MSG_ACKMSG:
 		return "MSG_ACKMSG";
 		break;
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	case MSG_SESSIONDESC:
-		return "MSG_SESSIONDESC";
-		break;
-#endif
 	}
 	return "UNKNOWN";
 }
@@ -1182,9 +1173,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_YOUQUIT							] = sizeof( YOUQUITMSG						);	
 	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG				);	 
 	RealPacketSize[MSG_TITANBITS							] = sizeof( TITANBITSMSG						);	
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	RealPacketSize[MSG_SESSIONDESC						] = sizeof( SESSIONDESCMSG					);	
-#endif
 	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
 	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
@@ -1887,10 +1875,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	float	Force;
 	uint16	Pickup;
 
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	LPSESSIONDESCMSG	lpSessionDescMsg;
-#endif
-
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
 
@@ -2147,9 +2131,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case MSG_YOUQUIT:
 		case MSG_NAME:
  		case MSG_BIKENUM:
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-		case MSG_SESSIONDESC:
-#endif
 		case MSG_ACKMSG:
 		case MSG_TRACKERINFO:
 			break;
@@ -3683,33 +3664,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			Ships[lpBikeNumMsg->WhoIAm].BikeNum = (int16) lpBikeNumMsg->BikeNum;
 
 		return;
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	case MSG_SESSIONDESC:
-		DebugPrintf("about to evaluate session desc packet\n");
-		lpSessionDescMsg = ( LPSESSIONDESCMSG )MsgPnt;
-		if ( !IsHost )
-		{
-            if ( glpdpSD_copy )
-			{
-				free ( glpdpSD_copy );
-				glpdpSD_copy = NULL;
-			}
-			
-			DPlayGetSessionDesc();
-
-			glpdpSD_copy = (LPDPSESSIONDESC2) malloc( sizeof( *glpdpSD_copy ) );
-			if ( glpdpSD_copy )
-			{
-				*glpdpSD_copy = *glpdpSD;
-				glpdpSD_copy->dwUser1 = lpSessionDescMsg->dwUser1;
-				glpdpSD_copy->dwUser2 = lpSessionDescMsg->dwUser2;
-				glpdpSD_copy->dwUser3 = lpSessionDescMsg->dwUser3;
-				glpdpSD_copy->dwUser4 = lpSessionDescMsg->dwUser4;
-			}
-		}
-		return;
-#endif
 	}
 
 	wsprintf(dBuf, "corrupt message: %d\n", *MsgPnt);
@@ -3763,9 +3717,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPSETTIMEMSG						lpSetTime;
 	LPREQTIMEMSG						lpReqTime;
 	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	LPSESSIONDESCMSG					lpSessionDescMsg;
-#endif
 
 	DWORD			Flags		= 0;
 	DWORD			nBytes		= 0;
@@ -4468,34 +4419,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpAckMsg->AckTo = ShipNum;
 		nBytes = sizeof( ACKMSG );
 		break;
-
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	case MSG_SESSIONDESC:
-
-		DebugPrintf("about to manually send session desc\n");
-		lpSessionDescMsg = ( LPSESSIONDESCMSG )&CommBuff[ 0 ];
-        lpSessionDescMsg->MsgCode = msg;
-        lpSessionDescMsg->WhoIAm = WhoIAm;
-		DPlayGetSessionDesc();
-
-		if ( glpdpSD )
-		{
-			lpSessionDescMsg->dwUser1 = glpdpSD->dwUser1;
-			lpSessionDescMsg->dwUser2 = glpdpSD->dwUser2;
-			lpSessionDescMsg->dwUser3 = glpdpSD->dwUser3;
-			lpSessionDescMsg->dwUser4 = glpdpSD->dwUser4;
-		}
-		else
-			return;	// no SD to send!!
-
-		nBytes = sizeof( SESSIONDESCMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_SESSIONDESC , FALSE , TRUE);
-		return;
-#endif
-		break;
-#endif
 	}
 	
 	// only record if message is sent to whole of the group....

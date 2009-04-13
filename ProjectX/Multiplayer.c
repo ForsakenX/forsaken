@@ -46,10 +46,6 @@ extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
 
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-extern LPDPSESSIONDESC2                    glpdpSD_copy;
-#endif
-
 BOOL ResetKillsPerLevel = FALSE;
 BOOL bTCP = FALSE;
 
@@ -1171,15 +1167,6 @@ BOOL JoinASession ( MENUITEM * Item )
 	PlayDemo = FALSE;
 
 	SetBikeMods( 0 );
-
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	// ensure any SD copy is cleared, so that the first SD we get is the actual one ( not a manually propagated version )
-	if ( glpdpSD_copy )
-	{
-		free( glpdpSD_copy );
-		glpdpSD_copy = NULL;
-	}
-#endif
 
 	// get a pointer to the guid
 	lpGuid = (LPGUID ) &Sessions[SessionsList.selected_item].guidInstance;

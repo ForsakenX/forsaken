@@ -51,10 +51,6 @@ extern "C" {
 #include	"d3dapp.h"
 #include	"Sfx.h"
 
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-	extern LPDPSESSIONDESC2 glpdpSD_copy;
-#endif
-
 	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;
 	extern BOOL Wine;
@@ -1303,12 +1299,6 @@ CleanUpAndPostQuit(void)
 	// tell d3d to stop and report any errors
     if (!D3DAppDestroy())
         ReportD3DAppError();
-
-	// release direct play copy
-#ifdef MANUAL_SESSIONDESC_PROPAGATE
-    if ( glpdpSD_copy )
-    free ( glpdpSD_copy );
-#endif
   
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
