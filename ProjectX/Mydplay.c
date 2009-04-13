@@ -3761,7 +3761,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPSESSIONDESCMSG					lpSessionDescMsg;
 #endif
 
-	DPID			send_to		= 0;
 	DWORD			Flags		= 0;
 	DWORD			nBytes		= 0;
 	DWORD			dwPriority	= 0;
@@ -3857,7 +3856,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpInit->WhoIAm = WhoIAm;
 		DPlayGetSessionDesc();
 		lpInit->dwUser3 = glpdpSD->dwUser3;
-        send_to = to;
 		lpInit->RandomPickups = RandomPickups;
 		lpInit->Seed1 = CopyOfSeed1;
 		lpInit->Seed2 = CopyOfSeed2;
@@ -4088,7 +4086,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShockwave->MsgCode = msg;
         lpShockwave->WhoIAm = WhoIAm;
         lpShockwave->ShockwaveInfo = TempShockwave;
-		send_to = to;
         nBytes = sizeof( SHOCKWAVEMSG );
         break;
 
@@ -4267,7 +4264,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortPickup->Pickups = Ships[ShipNum].Pickups;
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
 		nBytes = sizeof( SHORTPICKUPMSG );
-		send_to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].dcoID;
         break;
 
 
@@ -4279,7 +4276,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortRegenSlot->RegenSlots	= Ships[ShipNum].RegenSlots;
 		GenRegenSlotList( ShipNum, &lpShortRegenSlot->ShortRegenSlot[0] , &lpShortRegenSlot->HowManyRegenSlots , Ships[ShipNum].RegenSlots );
 		nBytes	= sizeof( SHORTREGENSLOTMSG );
-		send_to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].dcoID;
         break;
 
 
@@ -4291,7 +4288,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortTrigger->Triggers	= Ships[ShipNum].Triggers;
 		GenTriggerList( ShipNum, &lpShortTrigger->ShortTrigger[0] , &lpShortTrigger->HowManyTriggers, Ships[ShipNum].Triggers );
 		nBytes	= sizeof( SHORTTRIGGERMSG );
-		send_to	= Ships[ShipNum].dcoID;
+		to	= Ships[ShipNum].dcoID;
         break;
 
 
@@ -4303,7 +4300,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortTrigVar->TrigVars	= Ships[ShipNum].TrigVars;
 		GenTrigVarList( ShipNum, &lpShortTrigVar->ShortTrigVar[0] , &lpShortTrigVar->HowManyTrigVars, Ships[ShipNum].TrigVars );
         nBytes = sizeof( SHORTTRIGVARMSG );
-		send_to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].dcoID;
         break;
 
 
@@ -4315,7 +4312,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpShortMine->Mines		= Ships[ShipNum].Mines;
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
 		nBytes	= sizeof( SHORTMINEMSG );
-		send_to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].dcoID;
         break;
 
     case MSG_TEXTMSG:
@@ -4421,7 +4418,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				lpTextMsg->TextMsgType = Type;
 				lpTextMsg->Text[0] = CurrentTauntVariant;
 				MessageColour = PlayerMessageColour;
-				send_to = to;
 				break;
 			default:
 				lpTextMsg->TextMsgType = TEXTMSGTYPE_Taunt1;
@@ -4453,7 +4449,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpPingMsg->ToYou = Type;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
-		send_to = to;
 		break;
 
 
@@ -4501,7 +4496,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	{
 		if(
 		   ( MyGameStatus == STATUS_Normal )
-		&& ( !send_to )
+		&& ( !to )
 		&& ( msg != MSG_ACKMSG )
 		&& ( msg != MSG_INIT ) 
 		&& ( msg != MSG_HEREIAM ) 
@@ -4528,10 +4523,12 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		Flags |= DPSEND_ASYNC;
 
 #ifdef DEBUG_ON
+	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
+	Flags |= DPSEND_GUARANTEED;  // uncomment this to test guaranteed packets
 	hr = IDirectPlayX_SendEx(
 								glpDP,
 								dcoID,					// From
-								send_to,				// send to
+								to,						// send to
 								Flags,					// send flags
 								(LPSTR)&CommBuff[0],	// data
 								nBytes,					// sizeof data
@@ -4545,7 +4542,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	hr = IDirectPlayX_SendEx(
 								glpDP,
 								dcoID,					// From
-								send_to,				// send to
+								to,						// send to
 								Flags ,					// send flags
 								(LPSTR)&CommBuff[0],	// data
 								nBytes,					// sizeof data
