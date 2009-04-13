@@ -3937,7 +3937,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpVeryShortUpdate->WhoIAm = WhoIAm;
 		lpVeryShortUpdate->ShortGlobalShip = VeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTUPDATEMSG );
-		dwTimeout = 100; //ms
+		dwTimeout = 10; //ms
         break;
 
 
@@ -3948,7 +3948,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpUpdate->WhoIAm = WhoIAm;
 		lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
-		dwTimeout = 100; //ms
+		dwTimeout = 10; //ms
         break;
 
 
