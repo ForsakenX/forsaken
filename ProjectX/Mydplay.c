@@ -4467,8 +4467,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		Flags |= DPSEND_ASYNC;
 
 #ifdef DEBUG_ON
-	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
-	Flags |= DPSEND_GUARANTEED;  // uncomment this to test guaranteed packets
+	DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
+	//Flags |= DPSEND_GUARANTEED;  // uncomment this to test guaranteed packets
 	hr = IDirectPlayX_SendEx(
 								glpDP,
 								dcoID,					// From
@@ -4503,34 +4503,34 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	case DPERR_PENDING: // DPSEND_ASYNC so packet went to queue
 		break;
 	case DPERR_BUSY:
-		DebugPrintf( "directplay DPERR_BUSY\n");
+		DebugPrintf( "SendGameMessage() DPERR_BUSY\n");
 		break;
 	case DPERR_CONNECTIONLOST:
-		DebugPrintf( "directplay DPERR_CONNECTIONLOST\n");
+		DebugPrintf( "SendGameMessage() DPERR_CONNECTIONLOST\n");
 		break;
 	case DPERR_INVALIDFLAGS:
-		DebugPrintf( "directplay DPERR_INVALIDFLAGS\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDFLAGS\n");
 		break;
 	case DPERR_INVALIDPARAMS:
-		DebugPrintf( "directplay DPERR_INVALIDPARAMS\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPARAMS\n");
 		break;
 	case DPERR_INVALIDPLAYER:
-		DebugPrintf( "directplay DPERR_INVALIDPLAYER\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPLAYER\n");
 		break;
 	case DPERR_INVALIDPRIORITY:
-		DebugPrintf( "directplay DPERR_INVALIDPRIORITY\n");
+		DebugPrintf( "SendGameMessage() DPERR_INVALIDPRIORITY\n");
 		break; 
 	case DPERR_NOTLOGGEDIN:
-		DebugPrintf( "directplay DPERR_NOTLOGGEDIN\n");
+		DebugPrintf( "SendGameMessage() DPERR_NOTLOGGEDIN\n");
 		break;
 	case DPERR_SENDTOOBIG:
-		DebugPrintf( "directplay DPERR_SENDTOOBIG\n");
+		DebugPrintf( "SendGameMessage() DPERR_SENDTOOBIG\n");
 		break;
 	case DPERR_UNSUPPORTED:
-		DebugPrintf( "directplay DPERR_UNSUPPORTED\n");
+		DebugPrintf( "SendGameMessage() DPERR_UNSUPPORTED\n");
 		break;
 	default:
-		DebugPrintf( "directplay unknown send error\n");
+		DebugPrintf( "SendGameMessage() unknown send error\n");
 	}
 }
 
