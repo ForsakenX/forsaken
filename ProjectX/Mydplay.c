@@ -4275,6 +4275,14 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
     case MSG_TEXTMSG:
 
+		dwTimeout = 10; //ms
+
+		// tied to stats on reciever
+		if ( Type != TEXTMSGTYPE_ScoredWithFlag )
+		{
+			dwTimeout = 0;
+		}
+
 		lpTextMsg = (LPTEXTMSG)&CommBuff[0];
         lpTextMsg->MsgCode	= msg;
         lpTextMsg->WhoIAm		= WhoIAm;
@@ -4418,7 +4426,12 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpAckMsg->ID = (uint32) to;
 		lpAckMsg->AckTo = ShipNum;
 		nBytes = sizeof( ACKMSG );
-		to = 0; // to was used to pass in the message id.
+		to = ShipNum;
+						// to was used to pass in the message id.
+						// and ShipNum was used to pass in the player id
+						// this is safe i guess 
+						// as long as we don't have a higher group/player id
+						// than can be represented with a BYTE
 		break;
 	}
 	
@@ -5047,18 +5060,18 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 
 	// set the times
 	QueryPerformanceCounter((LARGE_INTEGER *) &GM->Time);
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime);
+	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime); // by default rely on count
 
 	// set id to next id
 	GM->ID = GuaranteedMessagesID++;
 
-	// why is this being saved?
+	//
 	GM->OverideOlderMessage = OverideOlderMessage;
 
 	// flag to send to all players
 	GM->AllPlayers = AllPlayers;
 
-	// counting what?
+	// number of times to be resent >= GuaranteedMessagesOverallTime
 	GM->Count = 0;
 
 	// if the message is a quit message
@@ -5069,26 +5082,37 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 		// 
 		Ack = 1 << lpYouQuitMsg->You;
 
-		// no idea what's going on
+		// the time right now + the desired time to hold this message
+		// seems to be N minutes in the future where N is GuaranteedMessagesOverallTime
 		GM->OverallTime += Freq * 60 * GuaranteedMessagesOverallTime;
 
 	// not a quit message
 	}else{
 
-		// no idea what's going on
+		// the time right now + the desired time to hold this message
+		// seems to be N seconds in the future where N is GuaranteedMessagesOverallTime
 		GM->OverallTime += Freq * GuaranteedMessagesOverallTime;
 
 		// if send to all players
 		if( AllPlayers )
 		{
-			// 
+			// set all player id bits on
 			Ack = 0xffffffff;
+
+			// remove my player id bit
 			Ack &= ~(1<<WhoIAm);
 
 		// to specific player
 		}else{
+
+			// turn off all player id bits
 			Ack = 0;
+
+			// for all players
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
+
+				// if the player is a valid player
+				// and they aren't me 
 				if(
 					( 
 					  (GameStatus[i]!=STATUS_GetPlayerNum) &&
@@ -5098,11 +5122,13 @@ BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BO
 					 ) &&
 				    (i!=WhoIAm) 
 				  )
+
+					// add their player id to the list
 					Ack |= 1<<i;
 		}
 	}
 	
-	// set the ack bits
+	// set the player id bits
 	GM->Ack = Ack;
 
 	// set message length
@@ -5149,42 +5175,59 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 //		OldGM = GM->Next;
 		OldGM = GM->Prev;
 
-		// 
+		// if player id list has reached 0 (aka no players left to acknowledge)
+		// or
+		//		if GM->OverallTime has ran out
+		//		and GM-Count is past the resent limit
+		// or told to release
+		// or playing a demo
+		// or dplay pointer is lost
 		if( !GM->Ack || ( (GM->OverallTime < TempTime) && (GM->Count >= GuaranteedMessagesOverallTime ) ) || !glpDP || PlayDemo || ReleaseMessages )
 		{
 
-			// This message is past it.....
-			// how does this happen if we just checked for ! ?
+			// This message hasn't been acked by everyone
+			// but the timers have ran out and are killing it
+			// or ReleaseMessages etc.. has been set
 			if( GM->Ack )
 			{
+				// for all players
 				for( i = 0 ; i < MAX_PLAYERS ; i++ )
 				{
+					// if this player never acknowledged
 					if( GM->Ack & ( 1 << i ) )
 					{
-						// set player flag to bad
-						BadConnection[i] = TRUE;
 
-						// don't go here in release mode
-						if( !ReleaseMessages )
+						// we have been told to release all messages
+						// so the player never had all the time to acknowledge
+						if( ReleaseMessages )
+							continue;
 
-							// if in valid game still and player is not me
-							if(
-								( 
-									(GameStatus[i]!=STATUS_GetPlayerNum) &&
-									(GameStatus[i]!=STATUS_LeftCrashed)  &&
-									(GameStatus[i]!=STATUS_Left)         &&
-									(GameStatus[i]!=STATUS_Null) 
-								) &&
-								(i!=WhoIAm)
-							)
+						// if the player is a valid player
+						// and the player isn't me
+						if(
+							( 
+								(GameStatus[i]!=STATUS_GetPlayerNum) &&
+								(GameStatus[i]!=STATUS_LeftCrashed)  &&
+								(GameStatus[i]!=STATUS_Left)         &&
+								(GameStatus[i]!=STATUS_Null) 
+							) &&
+							(i!=WhoIAm)
+						)
+						{
 
-								// bad bad bad
-								DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
+							// set player connection flag to bad connection state
+							BadConnection[i] = TRUE;
+
+							// this player never acknowledged a message
+							// yet by now they really should have...
+							DebugPrintf( "Legal %x Player didnt ack a Guaranteed %x Message\n" , i, GM->MsgType );
+
+						}
 					}
 				}
 			}
 
-			// pluck us out of the chain and link prev<->next together
+			// pluck this message out of the linked list
 			NextGM = GM->Next;
 			PrevGM = GM->Prev;
 			if( NextGM ) NextGM->Prev = PrevGM;
@@ -5206,10 +5249,11 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 		// message is still good to be resent!
 		}else{
 
-			// stupid
+			// if it's time to resend this packet again...
 			if( GM->Time < TempTime || IgnoreTime )
 			{
-				//Time to re-send....
+				// set the next time to resend this packet
+				// seems to be time now + N seconds whre N is GuaranteedMessagesTime
 				GM->Time = TempTime + (GuaranteedMessagesTime*Freq);
 
 				// pointer to message object
@@ -5223,7 +5267,7 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 				GMm->AllPlayers = GM->AllPlayers;
 				GMm->OverideOlderMessage = GM->OverideOlderMessage;
 
-				// up resend count
+				// number of times this message was sent
 				GMm->Count = GM->Count++;
 
 				// send and wait for success/error
@@ -5241,7 +5285,7 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 					Flags |= DPSEND_ASYNC | DPSEND_NOSENDCOMPLETEMSG;
 					hr = IDirectPlayX_SendEx( glpDP,
 											  dcoID,   // From
-											  send_to, // send to
+											  send_to, // send to everybody
 											  Flags ,
 											  &GM->Message,
 											  GM->MessageLength,
@@ -5250,7 +5294,11 @@ void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL Se
 											  NULL,		// lpContext
 											  NULL		// lpdwMsgID
 											  );
+
 				}
+
+				
+				DebugPrintf("Resent unacknowledged message to everyone.  msgtype=%s, meant-for-all=%s, times-sent=%d\n",msg_to_str(GM->MsgType), (GM->AllPlayers)?"true":"false", GMm->Count);
 
 				// failed to send packet
 				if( hr != DP_OK && hr != DPERR_PENDING )
