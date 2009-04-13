@@ -3596,8 +3596,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		PingRequestTime = lpPingMsg->Time;
-		// can we send ping reply to just that user ?
-		SendGameMessage(MSG_PINGREPLY, 0, 0 , lpPingMsg->WhoIAm , 0);
+		SendGameMessage(MSG_PINGREPLY, lpPingMsg->WhoIAm, 0 , 0, 0);
 		return;
 
 
@@ -4454,7 +4453,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpPingMsg->ToYou = Type;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
-		send_to = (DWORD) Type;
+		send_to = to;
 		break;
 
 
