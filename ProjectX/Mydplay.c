@@ -4423,12 +4423,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpAckMsg->ID = (uint32) to;
 		lpAckMsg->AckTo = ShipNum;
 		nBytes = sizeof( ACKMSG );
-		to = ShipNum;
-						// to was used to pass in the message id.
-						// and ShipNum was used to pass in the player id
-						// this is safe i guess 
-						// as long as we don't have a higher group/player id
-						// than can be represented with a BYTE
+		to = Ships[ShipNum].dcoID;
 		break;
 	}
 	
