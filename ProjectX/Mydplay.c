@@ -1877,7 +1877,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	char				teamstr[256];
 	int					size;				// special for demo recording
 	BYTE				msg;				// special for demo recording
-	LONGLONG			TempLongLong;
     LPSETTIMEMSG	lpSetTime;
     LPREQTIMEMSG	lpReqTime;
 	uint32	ID;
@@ -3607,15 +3606,16 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		lpPingMsg = (LPPINGMSG)MsgPnt;
 		if( lpPingMsg->ToYou == WhoIAm )
 		{
+			LONGLONG now;
 			float clocks;
 			float seconds;
 			uint16 milliseconds;
 
 			// get current clocks
-			QueryPerformanceCounter( (LARGE_INTEGER *) &TempLongLong );
+			QueryPerformanceCounter( (LARGE_INTEGER *) &now );
 
 			// number of clocks passed
-			clocks = (float) (TempLongLong - lpPingMsg->Time);
+			clocks = (float) (now - lpPingMsg->Time);
 			
 			// Freq == clocks per second
 
@@ -3628,6 +3628,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			// store value
 			PingTimes[lpPingMsg->WhoIAm] = milliseconds;
 
+		}
+		else
+		{
+			DebugPrintf("Got ping reply that wasn't for me.\n");
 		}
 		return;
 
