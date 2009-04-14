@@ -1,11 +1,17 @@
-
-// set the variable bellow to a desired string such as "1.04.605"
-// do not attempt to commit this file it's ignored and only used locally
-
 #ifndef VERSION_HEADER
 #define VERSION_HEADER
 
-#define ProjectXVersion			"ProjectX x.x.x" // version number
-#define ProjectXVersionTip		"F12 Fullscreen - Pause/Break to toggle mouse"
+#define PXV	"1"	// base version
+#define PXMPV	"05"	// multi player version
+#define PXRV	"786"	// revision
+#define PXBV	"1"	// build flag (official releases should NOT use this flag)
+
+#ifdef PXBV
+#define ProjectXVersion			"ProjectX " PXV "." PXMPV "." PXRV
+#else
+#define ProjectXVersion			"ProjectX " PXV "." PXMPV "." PXRV "-" PXBV
+#endif
+
+#define ProjectXVersionTip		"SHIFT + F12 Fullscreen - Pause/Break to toggle mouse"
 
 #endif
