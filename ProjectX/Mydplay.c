@@ -1669,7 +1669,7 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 				result = "TIMEOUT";
 				break;
 			}
-			DebugPrintf("dplay  %30s   %13s   duration= %3lu ms   timeout= %3lu\n", (char*) msg->lpvContext, result, msg->dwSendTime, msg->dwTimeout);
+			DebugPrintf("dplay  %30s   %13s   duration= %3lu ms\n", (char*) msg->lpvContext, result, msg->dwSendTime);
 		}
 		break;
 	case DPSYS_CREATEPLAYERORGROUP:
@@ -3717,7 +3717,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	DWORD			Flags		= 0;
 	DWORD			nBytes		= 0;
 	DWORD			dwPriority	= 0;
-	DWORD			dwTimeout	= 0;
 
 	HRESULT			hr;
 	int				i;
@@ -3933,7 +3932,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpVeryShortUpdate->WhoIAm = WhoIAm;
 		lpVeryShortUpdate->ShortGlobalShip = VeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTUPDATEMSG );
-		dwTimeout = 10; //ms
         break;
 
 
@@ -3944,7 +3942,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpUpdate->WhoIAm = WhoIAm;
 		lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
-		dwTimeout = 10; //ms
         break;
 
 
@@ -4271,14 +4268,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
     case MSG_TEXTMSG:
 
-		dwTimeout = 10; //ms
-
-		// tied to stats on reciever
-		if ( Type != TEXTMSGTYPE_ScoredWithFlag )
-		{
-			dwTimeout = 0;
-		}
-
 		lpTextMsg = (LPTEXTMSG)&CommBuff[0];
         lpTextMsg->MsgCode	= msg;
         lpTextMsg->WhoIAm		= WhoIAm;
@@ -4472,7 +4461,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 								(LPSTR)&CommBuff[0],	// data
 								nBytes,					// sizeof data
 								dwPriority,				// dwPriority
-								dwTimeout,				//
+								0,						//
 #ifdef DEBUG_ON
 								(LPVOID)msg_to_str(msg),// lpContext = Packet Type Name
 #else
