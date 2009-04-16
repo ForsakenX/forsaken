@@ -397,6 +397,7 @@ static BOOL InitWindow( void )
     wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
     wc.lpszClassName	= "MainWindow";								// class name
 	wc.hIconSm			= small_icon;								// the small icon
+	wc.lpszMenuName		= NULL;
 
 	// Register the window class
     if (!RegisterClassEx(&wc))
