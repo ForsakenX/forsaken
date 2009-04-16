@@ -611,10 +611,7 @@ typedef struct GUARANTEEDMSG
 {
     BYTE        MsgCode;
     BYTE        WhoIAm;
-	uint32		Ack;
-	uint32		ID;
-	BOOL		OverideOlderMessage;
-	BOOL		AllPlayers;
+	BYTE		ID;
 	BYTE		Count;
 	BYTE		StartOfMessage;
 }GUARANTEEDMSG, *LPGUARANTEEDMSG;
@@ -623,7 +620,7 @@ typedef struct _ACKMSG
 {
     BYTE        MsgCode;
     BYTE        WhoIAm;
-	uint32		ID;
+	BYTE		ID;
 	BYTE		AckTo;
 }ACKMSG, *LPACKMSG;
 
@@ -1035,14 +1032,14 @@ void	RequestTime( void  );
 void	SetTime( float Time );
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
-BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BOOL OverideOlderMessage, BOOL AllPlayers );
-void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime , BOOL SendGuaranteed );
-void AcknowledgeMessage( uint32 ID , uint32 Player , BYTE PlayerNum );
+BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BOOL OverideOlderMessage, BYTE ShipNum );
+void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime );
+void AcknowledgeMessage( BYTE ID, uint32 Player , BYTE PlayerNum );
 void InitAcknowledgeMessageQue( void );
 void FreeAllPlayersAcknowledgeMessageQue( BYTE Player );
 void ProcessAcknowledgeMessageQue( void );
-BOOL CompareAcknowledgeMessageQue( BYTE Player , uint32 ID);
-BOOL AddAcknowledgeMessageQue( BYTE Player , uint32 ID );
+BOOL CompareAcknowledgeMessageQue( BYTE Player , BYTE ID);
+BOOL AddAcknowledgeMessageQue( BYTE Player , BYTE ID );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );

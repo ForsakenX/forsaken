@@ -482,7 +482,7 @@ void UpdateSessionName( char *name )
 	{
 		tempsd = *glpdpSD;
 		glpdpSD->lpszSessionNameA = name;
-		DPlaySetSessionDesc( 1 );	// 1 ensures new session desc is sent to all players via guaranteed msg
+		DPlaySetSessionDesc( 1 );
 
 		*glpdpSD = tempsd;	// restore old SD so that it is freed properly.
 		DPlayGetSessionDesc(); // getting new SD will free up old one
@@ -574,7 +574,7 @@ HRESULT DPlayRelease(void)
     HRESULT hr = E_FAIL;
 
 	// flush all waiting guaranteed messages
-	ProcessGuaranteedMessages( TRUE , FALSE , FALSE );
+	ProcessGuaranteedMessages( TRUE, FALSE );
 
     if (glpDP != NULL)
     {

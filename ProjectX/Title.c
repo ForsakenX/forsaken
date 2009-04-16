@@ -10699,7 +10699,7 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 		 	WaitingToQuit = TRUE;
 			return;
 		}
-		ProcessGuaranteedMessages( FALSE , TRUE , TRUE );
+		ProcessGuaranteedMessages( FALSE, TRUE );
 	}
 
 	MyGameStatus = STATUS_QuitCurrentGame;
