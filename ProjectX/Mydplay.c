@@ -117,7 +117,6 @@ void SetTeamGoals( uint16 *TeamGoals );
 
 uint32 BuildShipFlags( BYTE Player );
 void UnPackShipFlags( BYTE Player , uint32 Flags );
-BOOL	CheckIfPlayerCheats( BYTE player );
 
 extern int FlagsToGenerate;
 extern  uint32  Host_Flags[ MAX_PLAYERS ];
@@ -5675,23 +5674,4 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 	return( TRUE );
 }
 
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Check If A Player Is cheating...If he is Dont let him hurt anyone..
-	Input		:		BYTE Player
-	Output		:		BOOL TRUE/FALSE
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
-BOOL	CheckIfPlayerCheats( BYTE player )
-{
-	if( ( ( Ships[player].Object.Flags & SHIP_SuperNashram ) && !Ships[player].SuperNashramTimer ) ||
-		( ( Ships[player].Object.Flags & SHIP_Invul ) && !Ships[player].InvulTimer ) ||
-		( ( Ships[player].Object.Flags & SHIP_Stealth ) && !Ships[player].StealthTime ) )
-		return TRUE;
-	return FALSE;
-}
-
-#ifdef OPT_ON
-#pragma optimize( "", off )
-#endif
 
