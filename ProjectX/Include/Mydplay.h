@@ -12,7 +12,6 @@
 #define FIND_SESSION_TIMEOUT			3600.0F
 #define MULTIPLAYER_VERSION				(0x010d)
 #define DEMO_MULTIPLAYER_VERSION		(0x0109)
-#define GUARANTEEDMESSAGES
 #define MAXBIGPACKETBUFFERSIZE			1024
 #define SHORTBANK
 #define VERYSHORTPACKETS
@@ -578,8 +577,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_LONGSTATUS					0xdf
 #define MSG_SETTIME							0xef
 #define MSG_REQTIME							0xf1
-#define MSG_ACKMSG							0xf2
-#define MSG_GUARANTEEDMSG				0xf3
 #define MSG_BIKENUM							0xf4
 #define MSG_VERYSHORTUPDATE			0xf5
 #define MSG_VERYSHORTFUPDATE			0xf6
@@ -605,24 +602,6 @@ typedef struct _YOUQUITMSG
     BYTE        WhoIAm;
 	BYTE		You;
 }YOUQUITMSG, *LPYOUQUITMSG;
-
-
-typedef struct GUARANTEEDMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		ID;
-	BYTE		Count;
-	BYTE		StartOfMessage;
-}GUARANTEEDMSG, *LPGUARANTEEDMSG;
-
-typedef struct _ACKMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		ID;
-	BYTE		AckTo;
-}ACKMSG, *LPACKMSG;
 
 typedef struct _BIKENUMMSG
 {
@@ -994,7 +973,6 @@ typedef struct _TRACKERINFOMSG
 
 // globals needed in other modules
 extern BOOL	IsPseudoHost;
-extern int GuaranteedMessagesActive;
 extern GUID autojoin_session_guid;
 extern float FindSessionTimeout;
 
@@ -1032,14 +1010,6 @@ void	RequestTime( void  );
 void	SetTime( float Time );
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
-BOOL AddGuaranteedMessage( int MessageLength , void * Message , BYTE MsgType, BOOL OverideOlderMessage, BYTE ShipNum );
-void ProcessGuaranteedMessages( BOOL ReleaseMessages , BOOL IgnoreTime );
-void AcknowledgeMessage( BYTE ID, uint32 Player , BYTE PlayerNum );
-void InitAcknowledgeMessageQue( void );
-void FreeAllPlayersAcknowledgeMessageQue( BYTE Player );
-void ProcessAcknowledgeMessageQue( void );
-BOOL CompareAcknowledgeMessageQue( BYTE Player , BYTE ID);
-BOOL AddAcknowledgeMessageQue( BYTE Player , BYTE ID );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );

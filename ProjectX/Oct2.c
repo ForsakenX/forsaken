@@ -2225,7 +2225,6 @@ void ReleaseLevel(void)
     ReleaseAllEnemies();
     ReleaseAllRestartPoints();
     DestroySound( DESTROYSOUND_All );
-    ProcessGuaranteedMessages( TRUE, FALSE );
     break;
   }
 
@@ -4191,7 +4190,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           GameStatus[WhoIAm] = MyGameStatus;
           RandomStartPosModify += 1;
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-          ProcessGuaranteedMessages( FALSE, TRUE );
         }
       }
 	  else
@@ -4267,8 +4265,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       MyGameStatus = STATUS_ViewingScore;
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-
-      ProcessGuaranteedMessages( FALSE, TRUE );
 
       InitScene();  // STATSTEST
       InitView();
@@ -4350,7 +4346,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
           MyGameStatus = STATUS_WaitingAfterScore;
           GameStatus[WhoIAm] = MyGameStatus;
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-          ProcessGuaranteedMessages( FALSE, TRUE );
           if( !ChangeLevel() )
 			  return( FALSE );
       }
@@ -4462,7 +4457,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       InitFontTransTable( !bPolyText );
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-      ProcessGuaranteedMessages( FALSE, TRUE );
 
       DPlayGetSessionDesc();
 
@@ -4940,7 +4934,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     D3DAppClearScreenOnly();
@@ -4985,7 +4978,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5101,7 +5093,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
@@ -5142,7 +5133,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5169,7 +5159,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }else{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5200,7 +5189,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	else{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5276,7 +5264,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    ProcessGuaranteedMessages( FALSE, TRUE );
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
@@ -5297,7 +5284,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-    ProcessGuaranteedMessages( FALSE, TRUE );
+
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
 #ifdef NO_PRECALCULATED_CELL_COLOURS
@@ -5316,7 +5303,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    ProcessGuaranteedMessages( FALSE, TRUE );
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
     MyGameStatus = STATUS_InitView_9;
@@ -5651,28 +5637,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
 
 	//  ******************** End of Single Player Game Stuff *******************************
-
-   case STATUS_WaitingToSendMessages:
-	DebugState("STATUS_WaitingToSendMessages\n");
-
-#ifdef  GUARANTEEDMESSAGES
-    if ( GuaranteedMessagesActive )
-    {
-      D3DAppClearScreenOnly();
-      CenterPrint4x5Text( "please wait...", (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
-      ReceiveGameMessages();  // this also ensures that guaranteed messages are sent
-    }
-    else
-#endif
-    {
-      if ( !RefreshDPlay() )
-        MyGameStatus = STATUS_Title;  // because we will have been thrown back a menu
-
-      InitMySessionsList();
-      GetCurrentSessions( NULL );
-
-      MyGameStatus = PreWaitingToSendMessagesStatus;
-    }
 
   }
 
@@ -7329,9 +7293,6 @@ int our_count = 0;
 int our_last_polygons = 0;
 #endif
 
-extern int GuaranteedMessagesActiveMax;
-extern BYTE GuaranteedMessagesID;
-extern int GuaranteedMessagesActive;
 BOOL Our_CalculateFrameRate(void)
 {
 	int polygons;
@@ -7377,8 +7338,7 @@ BOOL Our_CalculateFrameRate(void)
 	if( myglobs.bShowFrameRate )
 	{
 #ifdef DEBUG_ON
-		//sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
-		sprintf(&buf[0], "GM %d Max %d ID %d", GuaranteedMessagesActive, GuaranteedMessagesActiveMax, GuaranteedMessagesID );
+		sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
 #else
 		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
 #endif

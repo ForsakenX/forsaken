@@ -190,8 +190,6 @@ extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
 extern	char	ShortLevelNames[MAXLEVELS][32];
 extern BOOL	bSoundEnabled;
 
-extern	BOOL BadConnection[ MAX_PLAYERS+1 ];
-
 extern	DPSESSIONDESC2	Sessions[MAXSESSIONS];
 
 extern float framelag;
@@ -352,34 +350,6 @@ BYTE	ReceiveCommBuff[MAXBIGPACKETBUFFERSIZE];
 int		RealPacketSize[256];
 
 PLAYERINFO PlayerInfo[MAX_PLAYERS];	// used by host to manage player numbers
-
-#ifdef	GUARANTEEDMESSAGES
-typedef struct GUARANTEEDMSGHEADER
-{
-	uint32		Ack;
-	BYTE		ID;
-	LONGLONG	OverallTime;
-	LONGLONG	Time;
-	BYTE		MsgType;
-	int			MessageLength;
-	BYTE		Count;
-struct GUARANTEEDMSGHEADER * Next;
-struct GUARANTEEDMSGHEADER * Prev;
-	BYTE		Message;
-}GUARANTEEDMSGHEADER, *LPGUARANTEEDMSGHEADER;
-
-GUARANTEEDMSGHEADER * GMs = NULL;
-GUARANTEEDMSGHEADER * OldestGMs = NULL;
-int GuaranteedMessagesActive = 0;
-int GuaranteedMessagesActiveMax = 0;
-BYTE GuaranteedMessagesID = 0;
-int GuaranteedMessagesTime = 1;					// How many seconds before sending the message again...
-int GuaranteedMessagesOverallTime = 10;			// How long to keep the message around for...
-#endif
-
-
-BOOL	ItsAGuranteed = FALSE;
-
 
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -607,9 +577,6 @@ char* msg_to_str( int msg_type )
     case MSG_PINGREPLY:
 		return "MSG_PINGREPLY";
 		break;
-    case MSG_ACKMSG:
-		return "MSG_ACKMSG";
-		break;
 	}
 	return "UNKNOWN";
 }
@@ -818,22 +785,6 @@ void DplayGameUpdate()
 					}
 				}
 			}
-		}
-	}
-	if( IsHost )
-	{
-		if( GMs )
-		{
-			// as the host you must wait for guarenteed message to finish....
-			HostDuties = TRUE;
-		}
-	}else{
-		if( GMs )
-		{
-			// Even if im not the host I should not quit if guarenteed messages have been qued...
-			HostDuties = TRUE;
-		}else{
-			HostDuties = FALSE;
 		}
 	}
 
@@ -1160,9 +1111,7 @@ void SetupDplayGame()
 	RealPacketSize[MSG_PINGREPLY							] = sizeof( PINGMSG								);	
 	RealPacketSize[MSG_LONGSTATUS						] = sizeof( LONGSTATUSMSG					);	
 	RealPacketSize[MSG_SETTIME							] = sizeof( SETTIMEMSG						);	
-	RealPacketSize[MSG_REQTIME							] = sizeof( REQTIMEMSG						);	
-	RealPacketSize[MSG_ACKMSG								] = sizeof( ACKMSG								);	
-	RealPacketSize[MSG_GUARANTEEDMSG					] = sizeof( GUARANTEEDMSG   				);	
+	RealPacketSize[MSG_REQTIME							] = sizeof( REQTIMEMSG						);
 	RealPacketSize[MSG_BIKENUM							] = sizeof( BIKENUMMSG		);	
 	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG			);	
 	RealPacketSize[MSG_VERYSHORTFUPDATE			] = sizeof( VERYSHORTFUPDATEMSG		);	 
@@ -1184,8 +1133,6 @@ void SetupDplayGame()
 
 		}
 
-	InitAcknowledgeMessageQue();
-
 	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
@@ -1197,7 +1144,6 @@ void SetupDplayGame()
 	{
 		// everyone starts off normal....
 		GameStatus[i] = STATUS_Null;
-		BadConnection[ i ] = FALSE;
 		CanDoDamage[i] = TRUE;
 		Ships[i].BikeNum = ( i % MAXBIKETYPES );
 		Ships[i].ModelNum = (uint16) -1;
@@ -1245,7 +1191,6 @@ void InitShipStructure( int i , BOOL ResetScore )
 //	memset(&Ships[i], 0, sizeof(GLOBALSHIP) );
 
 	CanDoDamage[i] = TRUE;
-	BadConnection[ i ] = FALSE;
 
 	Ships[i].BikeNum = ( i % MAXBIKETYPES );
 	Ships[i].ShieldHullCount = 0;
@@ -1316,8 +1261,6 @@ void DestroyGame( void )
 		RegeneratePickups();
 
 		ResetAllStats(); // stats.c
-
-		ProcessGuaranteedMessages( FALSE, TRUE );
 		
 		DPlayGetSessionDesc();
 		DPlayDestroyPlayer(dcoID);
@@ -1501,8 +1444,6 @@ void ReceiveGameMessages( void )
 		BytesPerSecTimer = 71.0F;
 	}
 
-	ProcessGuaranteedMessages( FALSE, FALSE );
-	ProcessAcknowledgeMessageQue();
 	BuildReliabilityTab();
 
 	if( DplayRecieveThread )
@@ -1521,10 +1462,7 @@ void ReceiveGameMessages( void )
 				BufferPnt = (BYTE*) dwordpnt;
 
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-				{
-					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG )
-						Demo_fwrite( (Buffer2Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-				}
+					Demo_fwrite( (Buffer2Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
 				
 				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
 				if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , BufferPnt );
@@ -1550,10 +1488,7 @@ void ReceiveGameMessages( void )
 				BufferPnt = (BYTE*) dwordpnt;
 
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-				{
-					if( *BufferPnt != MSG_GUARANTEEDMSG && *BufferPnt != MSG_ACKMSG )
-						Demo_fwrite( (Buffer1Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-				}
+					Demo_fwrite( (Buffer1Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
 				
 				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
 
@@ -1589,14 +1524,10 @@ void ReceiveGameMessages( void )
 					if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
 					{
 						TempTime -= GameStartedTime;
-
-						if( ReceiveCommBuff[0] != MSG_GUARANTEEDMSG && ReceiveCommBuff[0] != MSG_ACKMSG )
-						{
-							Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-							Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
-							Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-							Demo_fwrite( &ReceiveCommBuff[0], nBytes , 1, DemoFp );
-						}
+						Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
+						Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
+						Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
+						Demo_fwrite( &ReceiveCommBuff[0], nBytes , 1, DemoFp );
 					}
 					RecPacketSize = nBytes;
 					if ( RecPacketSize > MaxRecPacketSize )
@@ -1731,7 +1662,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 			{
 				Ships[i].enable = 0;
 				GameStatus[i] = STATUS_Left;
-				FreeAllPlayersAcknowledgeMessageQue( (BYTE)i );
 			}
 		}
 
@@ -1759,7 +1689,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 					}
 //						KillOwnersSecBulls( (uint16) i );
 					Ships[i].enable = 0;
-					FreeAllPlayersAcknowledgeMessageQue( (BYTE)i );
 
 					if ( GameStatus[ i ] == STATUS_StartingMultiplayer )
 					{
@@ -1849,7 +1778,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
 	LPPINGMSG								lpPingMsg;
-	LPACKMSG								lpAckMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
@@ -1892,29 +1820,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			PacketSize[*MsgPnt]+=len;
 		}
 
-	}
-
-	if( *MsgPnt == MSG_GUARANTEEDMSG )
-	{
-		LPGUARANTEEDMSG	lpGuaranteedMsg	= (LPGUARANTEEDMSG)MsgPnt;
-		DebugPrintf("EvaluateMessage() == MSG_GUARANTEEDMSG\n");
-		if( AddAcknowledgeMessageQue( lpGuaranteedMsg->WhoIAm , lpGuaranteedMsg->ID ) )
-		{
-			if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
-			{
-				Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-				len = RealPacketSize[lpGuaranteedMsg->StartOfMessage];
-				Demo_fwrite( &len, sizeof(len), 1, DemoFp );
-				Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-				Demo_fwrite( &lpGuaranteedMsg->StartOfMessage, len , 1, DemoFp );
-			}
-			ItsAGuranteed = TRUE;
-			EvaluateMessage( len , &lpGuaranteedMsg->StartOfMessage );
-			ItsAGuranteed = FALSE;
-
-		}
-		SendGameMessage( MSG_ACKMSG, 0, lpGuaranteedMsg->WhoIAm, 0, lpGuaranteedMsg->ID );
-		return;
 	}
 		
 	if( MyGameStatus == STATUS_GetPlayerNum )
@@ -2067,7 +1972,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case MSG_SHORTPICKUP:
 			case MSG_YOUQUIT:
 			case MSG_NAME:
-			case MSG_ACKMSG:
 			case MSG_BIKENUM:
 			case MSG_STATUS:
 			case MSG_LONGSTATUS:
@@ -2120,7 +2024,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case MSG_YOUQUIT:
 		case MSG_NAME:
  		case MSG_BIKENUM:
-		case MSG_ACKMSG:
 		case MSG_TRACKERINFO:
 			break;
 		default:
@@ -3187,7 +3090,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			Ships[lpStatus->WhoIAm].Mines			= 0;
 			Ships[lpStatus->WhoIAm].Triggers		= 0;
 			Ships[lpStatus->WhoIAm].TrigVars		= 0;
-			FreeAllPlayersAcknowledgeMessageQue( lpStatus->WhoIAm );
 		}
 		else
 		{
@@ -3619,24 +3521,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( IsHost ) SetTime( Countdown_Float );
 		return;
 
-
-    case MSG_ACKMSG:
-
-		lpAckMsg = (LPACKMSG)MsgPnt;
-		if( lpAckMsg->AckTo == WhoIAm )
-		{		
-			AcknowledgeMessage( lpAckMsg->ID , 1 << lpAckMsg->WhoIAm , lpAckMsg->WhoIAm );
-			DebugPrintf("Received ack for msg %d from player %d\n",
-						lpAckMsg->ID, lpAckMsg->WhoIAm );
-		}
-		else
-		{
-			DebugPrintf("Received ack for msg %d from player %d but this ack was ment for %d\n",
-						lpAckMsg->ID, lpAckMsg->WhoIAm, lpAckMsg->AckTo );
-		}
-		return;
-
-
     case MSG_BIKENUM:
 
 		lpBikeNumMsg = (LPBIKENUMMSG)MsgPnt;
@@ -3705,7 +3589,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPTEXTMSG							lpTextMsg;
     LPPINGMSG							lpPingMsg;
 	LPNAMEMSG							lpName;
-	LPACKMSG							lpAckMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSETTIMEMSG						lpSetTime;
@@ -3715,6 +3598,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	DWORD			Flags		= 0;
 	DWORD			nBytes		= 0;
 	DWORD			dwPriority	= 0;
+	int				guaranteed	= 0;
 
 	HRESULT			hr;
 	int				i;
@@ -3744,10 +3628,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpYouQuitMsg->You = ShipNum;
 		nBytes = sizeof( YOUQUITMSG );
 		to = Ships[ShipNum].dcoID;
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_YOUQUIT, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
 		break;
 
 
@@ -3758,10 +3639,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpBikeNumMsg->WhoIAm = WhoIAm;
 		lpBikeNumMsg->BikeNum = (BYTE) Ships[WhoIAm].BikeNum;
 		nBytes = sizeof( BIKENUMMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_BIKENUM, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
 		break;
 
 
@@ -3779,10 +3657,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpName->Name[7] = 0;
 		Names[WhoIAm][7] = 0;
 		nBytes = sizeof( NAMEMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_NAME, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
 		break;
 	
 
@@ -3982,10 +3857,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpDropPickup->WhoIAm = WhoIAm;
         lpDropPickup->PickupInfo = TempPickup;
         nBytes = sizeof( DROPPICKUPMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_DROPPICKUP, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -3996,10 +3868,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpVeryShortDropPickup->WhoIAm = WhoIAm;
         lpVeryShortDropPickup->PickupInfo = VeryShortTempPickup;
         nBytes = sizeof( VERYSHORTDROPPICKUPMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_VERYSHORTDROPPICKUP, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4010,10 +3879,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpKillPickup->WhoIAm = WhoIAm;
         lpKillPickup->KillPickupInfo = TempKillPickup;
         nBytes = sizeof( KILLPICKUPMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_KILLPICKUP, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4024,10 +3890,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpTeamGoals->WhoIAm = WhoIAm;
         lpTeamGoals->TeamGoalsInfo = TempTeamGoals;
         nBytes = sizeof( TEAMGOALSMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_TEAMGOALS, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4068,10 +3931,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpSecBullPosDir->WhoIAm = WhoIAm;
         lpSecBullPosDir->SecBullPosDir = TempSecBullPosDir;
         nBytes = sizeof( SECBULLPOSDIRMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes , (void*) &CommBuff[0], MSG_SECBULLPOSDIR, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4082,10 +3942,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpTitanBits->WhoIAm = WhoIAm;
         lpTitanBits->TitanBits = TempTitanBits;
         nBytes = sizeof( TITANBITSMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_TITANBITS, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4122,10 +3979,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpShipDied->WeaponType = TempDied.WeaponType;
 		lpShipDied->Weapon = TempDied.Weapon;
 		nBytes = sizeof( SHIPDIEDMSG );
-#ifdef	GUARANTEEDMESSAGES
-		AddGuaranteedMessage( nBytes, (void*) &CommBuff[0], MSG_SHIPDIED, FALSE, ShipNum );
-		return;
-#endif
+		guaranteed = 1;
         break;
 
 
@@ -4161,14 +4015,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpStatus->Triggers					= Ships[WhoIAm].Triggers;	 
 		lpStatus->TrigVars					= Ships[WhoIAm].TrigVars;	 
 		nBytes = sizeof( STATUSMSG );
-
-#ifdef	GUARANTEEDMESSAGES
 		if ( MyGameStatus == STATUS_Left )	// send last status msg guaranteed
-		{
-			AddGuaranteedMessage( nBytes , (void*) &CommBuff[0] , MSG_STATUS , TRUE, ShipNum );
-			return;
-		}
-#endif
+			guaranteed = 1;
         break;
 
 	case MSG_DPLAYUPDATE:
@@ -4402,18 +4250,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes = sizeof( PINGMSG );
 		to = Ships[ShipNum].dcoID;
 		break;
-
-
-    case MSG_ACKMSG:
-		lpAckMsg = (LPACKMSG)&CommBuff[0];
-        lpAckMsg->MsgCode = msg;
-        lpAckMsg->WhoIAm = WhoIAm;
-        lpAckMsg->ID = mask;
-		lpAckMsg->AckTo = ShipNum;
-		nBytes = sizeof( ACKMSG );
-		to = Ships[ShipNum].dcoID;
-		DebugPrintf("Sent ack to player %d for recieving msg %d\n", ShipNum, lpAckMsg->ID );
-		break;
 	}
 	
 	// only record if message is sent to whole of the group....
@@ -4422,7 +4258,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		if(
 		   ( MyGameStatus == STATUS_Normal )
 		&& ( !to )
-		&& ( msg != MSG_ACKMSG )
 		&& ( msg != MSG_INIT ) 
 		&& ( msg != MSG_HEREIAM ) 
 		&& ( msg != MSG_SHORTPICKUP    ) 
@@ -4447,12 +4282,14 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	if( UseSendAsync )
 		Flags |= DPSEND_ASYNC;
 
+	if( guaranteed )
+		Flags |= DPSEND_GUARANTEED;
+
 #ifndef DEBUG_ON
 	Flags |= DPSEND_NOSENDCOMPLETEMSG;
 #endif
 
 	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
-	//Flags |= DPSEND_GUARANTEED;  // uncomment this to test guaranteed packets
 	hr = glpDP->lpVtbl->SendEx(
 								glpDP,
 								dcoID,					// From
@@ -4916,630 +4753,6 @@ void StopDemoRecording( void )
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add Guaranteed Message...
-	Input		:		int MessageLength, void * Message
-	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL AddGuaranteedMessage( int MessageLength, void * Message, BYTE MsgType, BOOL OverideOlderMessage, BYTE ShipNum )
-{
-#ifdef	GUARANTEEDMESSAGES
-	GUARANTEEDMSGHEADER * GM = NULL;
-	GUARANTEEDMSGHEADER * GM2 = NULL;
-	GUARANTEEDMSGHEADER * LastGM;
-	GUARANTEEDMSG		* GMm;
-	uint32 Ack = 0;
-	int i;
-
-	DebugPrintf("AddGuaranteedMessage() type: %d, shipnum: %d\n",MsgType,ShipNum);
-
-	// bank if we are playing a demo
-	if( PlayDemo )
-		return TRUE;
-
-	// only record if message is sent to whole of the group....
-	if( RecordDemo )
-	{
-		if( ( MyGameStatus == STATUS_Normal )
-		&& ( MsgType != MSG_INIT ) 
-		&& ( MsgType != MSG_HEREIAM ) 
-		&& ( MsgType != MSG_SHORTPICKUP    ) 
-		&& ( MsgType != MSG_SHORTREGENSLOT ) 
-		&& ( MsgType != MSG_SHORTTRIGGER   ) 
-		&& ( MsgType != MSG_SHORTTRIGVAR   )  
-		&& ( MsgType != MSG_TRACKERINFO    )  
-		&& ( MsgType != MSG_SHORTMINE      ) )
-		{
-			// write time since game started to file
-			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-			TempTime = TempTime - GameStartedTime;
-			Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-			// write the message length
-			Demo_fwrite( &MessageLength, sizeof(int), 1, DemoFp );
-			// write dplay id of local player to file
-			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
-			// write the message packet to file
-			Demo_fwrite( Message, MessageLength, 1, DemoFp );
-		}
-	}
-
-	// replace existing packets in queue with new packets if they are the same type
-	// this would be good for something like our ship location or health etc...
-	if( OverideOlderMessage )
-	{
-		// set GM2 to the list of GMs (gaurented messages)
-		GM2 = GMs;
-
-		// loop over the messages
-		while( GM2 )
-		{
-			// if we found a message of the same type
-			if( MsgType == GM2->MsgType )
-			{
-				// save the old messages to GM
-				// later we will overide values in this message instead of recreating a message
-				GM = GM2;
-
-				// stop looping
-				break;
-			}
-			// go to the next message
-			GM2 = GM2->Next;
-		}
-	}
-
-	// if we didn't find an older message
-	if( !GM )
-	{
-		// create a new message
-		GM = (GUARANTEEDMSGHEADER*) malloc( sizeof(GUARANTEEDMSGHEADER) + MessageLength + sizeof( GUARANTEEDMSG ) -1 );
-		if( !GM ) return FALSE;
-
-		// increment number of messages
-		GuaranteedMessagesActive++;
-
-		// increment counter of highest number of messages
-		if( GuaranteedMessagesActive > GuaranteedMessagesActiveMax )
-			GuaranteedMessagesActiveMax = GuaranteedMessagesActive;
-
-		// set first default message to last packet assigned
-		// GMs is a dumy global message which points to all other ones based on ->prev ->next
-		LastGM = GMs;
-
-		// if there was a last packet we go behind it in order
-		if( LastGM )
-			LastGM->Prev = GM;
-
-		// last packet is in front of us
-		GM->Next = LastGM;
-
-		// nothing behind us yet ;]
-		GM->Prev = NULL;
-
-		// set global to us
-		GMs = GM;
-
-		// if packet was never assigned save it
-		if( !OldestGMs )
-			OldestGMs = GM;
-	}
-
-	// pointer to the message object
-	GMm = (GUARANTEEDMSG*) &GM->Message;
-
-	// copy in the new message data 
-	memcpy( &GMm->StartOfMessage, Message, MessageLength );
-
-	// set the message type
-	GM->MsgType = MsgType;
-
-	// set the next time to resend this packet
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->Time);
-
-	// used to set a time limit on top of packet count
-	// this is changed further down the code
-	QueryPerformanceCounter((LARGE_INTEGER *) &GM->OverallTime);
-
-	// set id and increment id tracker
-	GM->ID = GuaranteedMessagesID++;
-
-	// number of times to be resent >= GuaranteedMessagesOverallTime
-	GM->Count = 0;
-
-	// the time right now + the desired time to hold this message
-	// seems to be N seconds in the future where N is GuaranteedMessagesOverallTime
-	GM->OverallTime += Freq * GuaranteedMessagesOverallTime;
-
-	// set only that ship id
-	if( ShipNum )
-	{
-		Ack |= 1<<ShipNum;
-		//DebugPrintf("Added player %d to the ack list for unicast message %d\n",ShipNum,GM->ID);
-	}
-
-	// set all players
-	else
-	{
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			// if the player is a valid player and they aren't me 
-			if(((GameStatus[i]!=STATUS_GetPlayerNum) && (GameStatus[i]!=STATUS_LeftCrashed)  &&
-				(GameStatus[i]!=STATUS_Left)         && (GameStatus[i]!=STATUS_Null)) &&
-				(i!=WhoIAm))
-			{
-				//DebugPrintf("Adding player %d to the ack list for message %d\n",i,GM->ID);
-				// add their player id to the list
-				Ack |= 1<<i;
-			}
-		}
-	}
-	
-	// set the player id bits
-	GM->Ack = Ack;
-
-	// set message length
-	GM->MessageLength = MessageLength + sizeof( GUARANTEEDMSG ) -1;
-
-	// run the queue now
-	// this flushes the new packet
-	// and any new ones needed to run
-	ProcessGuaranteedMessages( FALSE, FALSE );
-
-#endif
-	// finished
-	return TRUE;
-}
-
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Process Qued Guaranteed Messages...
-	Input		:		BOOL True == Flush all of them.....
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ProcessGuaranteedMessages( BOOL ReleaseMessages, BOOL IgnoreTime )
-{
-#ifdef	GUARANTEEDMESSAGES
-	GUARANTEEDMSGHEADER * GM;
-	GUARANTEEDMSGHEADER * OldGM;
-	GUARANTEEDMSGHEADER * NextGM;
-	GUARANTEEDMSGHEADER * PrevGM;
-	GUARANTEEDMSG		* GMm;
-	HRESULT				hr;
-    DWORD				send_to = 0;
-	DWORD				Flags = 0;
-	int i;
-
-	DebugPrintf("ProcessGuaranteedMessages() release: %d, ignore: %d\n",ReleaseMessages,IgnoreTime);
-
-	// get start time
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-
-	// first message
-	GM = OldestGMs;
-
-	// while we have a packet
-	while( GM )
-	{
-		OldGM = GM->Prev;
-
-		// if player id list has reached 0 (aka no players left to acknowledge)
-		// or
-		//		if GM->OverallTime has ran out
-		//		and GM-Count is past the resent limit
-		// or told to release
-		// or playing a demo
-		// or dplay pointer is lost
-		if( !GM->Ack || ( (GM->OverallTime < TempTime) && (GM->Count >= GuaranteedMessagesOverallTime ) ) || !glpDP || PlayDemo || ReleaseMessages )
-		{
-
-			// This message hasn't been acked by everyone
-			// but the timers have ran out and are killing it
-			// or ReleaseMessages etc.. has been set
-			if( GM->Ack )
-			{
-				// for all players
-				for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				{
-					// if this player never acknowledged
-					if( GM->Ack & ( 1 << i ) )
-					{
-
-						// we have been told to release all messages
-						// so the player never had all the time to acknowledge
-						if( ReleaseMessages )
-							continue;
-
-						// if the player is a valid player
-						// and the player isn't me
-						if(
-							( 
-								(GameStatus[i]!=STATUS_GetPlayerNum) &&
-								(GameStatus[i]!=STATUS_LeftCrashed)  &&
-								(GameStatus[i]!=STATUS_Left)         &&
-								(GameStatus[i]!=STATUS_Null) 
-							) &&
-							(i!=WhoIAm)
-						)
-						{
-
-							// set player connection flag to bad connection state
-							BadConnection[i] = TRUE;
-
-							// this player never acknowledged a message
-							// yet by now they really should have...
-							DebugPrintf( "Player %d didnt ack msg %d, %s\n",
-											i, GM->ID, msg_to_str(GM->MsgType) );
-
-						}
-					}
-				}
-			}
-
-			// pluck this message out of the linked list
-			NextGM = GM->Next;
-			PrevGM = GM->Prev;
-			if( NextGM ) NextGM->Prev = PrevGM;
-			if( PrevGM ) PrevGM->Next = NextGM;
-
-			// reset gms to next
-			if( GM == GMs ) GMs = NextGM;
-
-			// reset oldest to next
-			if( GM == OldestGMs )
-				OldestGMs = PrevGM;
-
-			// kill the packet
-			free( GM );
-
-			// lower count
-			GuaranteedMessagesActive--;
-
-		}
-		
-		// message is still good to be resent!
-		else
-		{
-
-			// if it's time to resend this packet again...
-			if( GM->Time < TempTime || IgnoreTime )
-			{
-				// the new ack list
-				uint32 Ack = 0;
-
-				// set the next time to resend this packet
-				// seems to be time now + N seconds where N is GuaranteedMessagesTime
-				GM->Time = TempTime + (GuaranteedMessagesTime*Freq);
-
-				// pointer to message object
-				GMm = (GUARANTEEDMSG*) &GM->Message;
-
-				// copy in updated values
-				GMm->MsgCode = MSG_GUARANTEEDMSG;
-				GMm->WhoIAm = WhoIAm;
-				GMm->ID = GM->ID;
-
-				// number of times this message was sent
-				GMm->Count = GM->Count++;
-
-				// asynch sending
-				if ( UseSendAsync )
-					Flags |= DPSEND_ASYNC;
-
-#ifndef DEBUG_ON
-				Flags |= DPSEND_NOSENDCOMPLETEMSG;
-#endif
-
-				// for each player
-				for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				{
-					// if this player never acknowledged
-					if( GM->Ack & ( 1 << i ) )
-					{
-						// if the player is a valid player
-						// and the player isn't me
-						if(
-							(	(GameStatus[i]!=STATUS_GetPlayerNum) &&
-								(GameStatus[i]!=STATUS_LeftCrashed)  &&
-								(GameStatus[i]!=STATUS_Left)         &&
-								(GameStatus[i]!=STATUS_Null) 
-							) &&
-							(i!=WhoIAm)
-						)
-						{
-							// player DPID
-							DPID to = Ships[i].dcoID;
-
-							// add the player to the list
-							Ack |= 1<<i;
-
-							// send the packet
-							hr = glpDP->lpVtbl->SendEx(
-											glpDP,
-											dcoID,					// From
-											to,						// send to
-											Flags,					// send flags
-											&GM->Message,			// data
-											GM->MessageLength,		// sizeof data
-											0,						// dwPriority
-											0,						// dwTimeout
-#ifdef DEBUG_ON
-											(LPVOID)msg_to_str(GM->MsgType),// lpContext = Packet Type Name
-#else
-											NULL,					// lpContext
-#endif
-											NULL					// lpdwMsgID
-											);
-							
-							DebugPrintf("Sending guaranteed msg %d (%s) to player %d attempt %d\n", 
-										GM->ID, msg_to_str(GM->MsgType), i, GMm->Count+1);
-
-							// failed to send packet
-							if( hr != DP_OK && hr != DPERR_PENDING )
-								DebugPrintf( "ProcessGuaranteedMessages() Send Error: %x\n", hr);
-						}
-					}
-				}
-				// update the ack list
-				GM->Ack = Ack;
-			}
-		}
-
-		// go to next message
-		GM = OldGM;
-	}
-#endif
-}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Remove 1 player from a qued Guaranteed message...
-	Input		:		BYTE ID, uint32 Player
-	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void AcknowledgeMessage( BYTE ID , uint32 Player , BYTE PlayerNum )
-{
-#ifdef	GUARANTEEDMESSAGES
-	GUARANTEEDMSGHEADER * GM;
-	DebugPrintf("AcknowledgeMessage()\n");
-	GM = GMs;
-	while( GM )
-	{
-		if( ID == GM->ID )
-		{
-			GM->Ack &= ~Player;
-			BadConnection[PlayerNum] = FALSE;
-			return;
-		}
-		GM = GM->Next;
-	}
-#endif
-}
-
-
-#ifdef	GUARANTEEDMESSAGES
-#define	MAXACKGUARANTEEDMSGS 4096
-typedef struct ACKGUARANTEEDMSGHEADER
-{
-	BYTE		ID;
-struct ACKGUARANTEEDMSGHEADER * Next;
-	LONGLONG	Time;
-}ACKGUARANTEEDMSGHEADER, *LPACKGUARANTEEDMSGHEADER;
-
-ACKGUARANTEEDMSGHEADER AckMsgs[MAXACKGUARANTEEDMSGS];
-ACKGUARANTEEDMSGHEADER * FirstFreeAckMsg = NULL;
-ACKGUARANTEEDMSGHEADER * FirstUsedAckMsg[MAX_PLAYERS];
-int AckMsgsActive = 0;
-int AckMsgsActiveMax = 0;
-#endif
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		InitAckMsgQue
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void InitAcknowledgeMessageQue( void )
-{
-#ifdef	GUARANTEEDMESSAGES
-	int i;
-	DebugPrintf("InitAcknowledgeMessageQue()\n");
-	for( i = 0 ; i < MAXACKGUARANTEEDMSGS ; i++ )
-	{
-		AckMsgs[i].Time = 0;
-		AckMsgs[i].ID = 0;
-		if( i < MAXACKGUARANTEEDMSGS-1 )
-		{
-			AckMsgs[i].Next = &AckMsgs[i+1];
-		}else{
-			AckMsgs[i].Next = NULL;
-		}
-	}
-	FirstFreeAckMsg = &AckMsgs[0];
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		FirstUsedAckMsg[i] = NULL;
-	}
-	AckMsgsActive = 0;
-	AckMsgsActiveMax = 0;
-
-#endif
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Free All players AckMsgQue
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void FreeAllPlayersAcknowledgeMessageQue( BYTE Player )
-{
-#ifdef	GUARANTEEDMESSAGES
-	ACKGUARANTEEDMSGHEADER * AckMsg;
-	ACKGUARANTEEDMSGHEADER * NextAckMsg;
-	DebugPrintf("FreeAllPlayersAcknowledgeMessageQue()\n");
-	AckMsg = FirstUsedAckMsg[Player];
-	while( AckMsg )
-	{
-		AckMsgsActive--;
-
-		NextAckMsg = AckMsg->Next;
-		AckMsg->Next = FirstFreeAckMsg;
-		FirstFreeAckMsg = AckMsg;
-		AckMsg = NextAckMsg;
-	}
-	FirstUsedAckMsg[Player] = NULL;
-#endif
-}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Free All players AckMsgQue Based on time..
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void FreeTimedOutAllPlayersAcknowledgeMessageQue( BYTE Player , LONGLONG Time )
-{
-#ifdef	GUARANTEEDMESSAGES
-	ACKGUARANTEEDMSGHEADER * AckMsg;
-	ACKGUARANTEEDMSGHEADER * NextAckMsg;
-	ACKGUARANTEEDMSGHEADER * LastAckMsg = NULL;
-	AckMsg = FirstUsedAckMsg[Player];
-	while( AckMsg )
-	{
-		NextAckMsg = AckMsg->Next;
-		if( Time > AckMsg->Time )
-		{
-			// We found 1 that is out of time all the remaining will be out of time...
-			break;
-		}
-		LastAckMsg = AckMsg;
-		AckMsg = NextAckMsg;
-	}
-
-	if( AckMsg && LastAckMsg )
-		// the last legal one doesnt have any more to follow...
-		LastAckMsg->Next = NULL;
-	
-	while( AckMsg )
-	{
-		NextAckMsg = AckMsg->Next;
-		AckMsgsActive--;
-		AckMsg->Next = FirstFreeAckMsg;
-		FirstFreeAckMsg = AckMsg;
-		if( AckMsg == FirstUsedAckMsg[Player] )
-		{
-			FirstUsedAckMsg[Player] = NextAckMsg;
-		}
-		AckMsg = NextAckMsg;
-	}
-
-
-#endif
-}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		ProcessAckMsgQue
-	Input		:		void
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ProcessAcknowledgeMessageQue( void )
-{
-#ifdef	GUARANTEEDMESSAGES
-	BYTE i;
-	//DebugPrintf("ProcessAcknowledgeMessageQue()\n");
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if( PlayDemo )
-		{
-			FreeTimedOutAllPlayersAcknowledgeMessageQue( i , GameElapsedTime );
-		}else{
-			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-			FreeTimedOutAllPlayersAcknowledgeMessageQue( i , TempTime );
-		}
-	}
-#endif
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Find Free players AckMsgQue
-	Input		:		BYTE Player
-	Output		:		ACKGUARANTEEDMSGHEADER *
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-ACKGUARANTEEDMSGHEADER * FindFreeAcknowledgeMessageQue( BYTE Player )
-{
-#ifdef	GUARANTEEDMESSAGES
-	ACKGUARANTEEDMSGHEADER * AckMsg;
-	AckMsg = FirstFreeAckMsg;
-	if( AckMsg )
-	{
-		FirstFreeAckMsg = AckMsg->Next;
-		AckMsg->Next = FirstUsedAckMsg[Player];
-		FirstUsedAckMsg[Player] = AckMsg;
-		AckMsgsActive++;
-	}
-	return AckMsg;
-#endif
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Compare AckMsgQue
-	Input		:		BYTE Player , BYTE ID
-	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL CompareAcknowledgeMessageQue( BYTE Player, BYTE ID )
-{
-#ifdef	GUARANTEEDMESSAGES
-	ACKGUARANTEEDMSGHEADER * AckMsg;
-	AckMsg = FirstUsedAckMsg[Player];
-	while( AckMsg )
-	{
-		if( AckMsg->ID == ID )
-			return TRUE;
-		AckMsg = AckMsg->Next;
-	}
-#endif
-	return FALSE;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Add a Message To players AckMsgQue
-	Input		:		BYTE Player
-	Output		:		BOOL FALSE if we have got this message before or the Que is full...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL AddAcknowledgeMessageQue( BYTE Player, BYTE ID )
-{
-#ifdef	GUARANTEEDMESSAGES
-	ACKGUARANTEEDMSGHEADER * AckMsg;
-
-	DebugPrintf("AddAcknowledgeMessageQue()\n");
-
-	// find out if we have already ack'd this message before
-	if( CompareAcknowledgeMessageQue( Player , ID ) )
-		return FALSE;
-
-	// find a free ack msg object
-	AckMsg = FindFreeAcknowledgeMessageQue( Player );
-
-	if( AckMsg )
-	{
-		AckMsg->ID = ID;
-		if( PlayDemo )
-		{
-			AckMsg->Time = GameElapsedTime + ( ((LONGLONG)(GuaranteedMessagesOverallTime) * 2) * Freq );
-		}else{
-			QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-			AckMsg->Time = TempTime + ( ((LONGLONG)(GuaranteedMessagesOverallTime) * 2) * Freq );
-		}
-		if( AckMsgsActive > AckMsgsActiveMax )
-		{
-			AckMsgsActiveMax = AckMsgsActive;
-			if( AckMsgsActiveMax >= (MAXACKGUARANTEEDMSGS *0.95F) )
-			{
-	   			AddColourMessageToQue(SystemMessageColour, "Ninety Five Percent of the AckMsgQue is full!" );
-			}
-		}
-		return TRUE;
-	}
-#endif
-	return FALSE;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
 	Output		:		uint32 Flags
@@ -5630,7 +4843,6 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
     LPGROUPONLY_VERYSHORTFUPDATEMSG	lpGroupOnly_VeryShortFUpdate;
     LPPRIMBULLPOSDIRMSG		lpPrimBullPosDir;
     LPSECBULLPOSDIRMSG		lpSecBullPosDir;
-	LPGUARANTEEDMSG			lpGuaranteedMsg;
 	int16					PowerLevel;
 	float					Ammo;
 	int16					Count, Count2;
@@ -6340,14 +5552,6 @@ BOOL UpdateAmmoAndValidateMessage( void * Message )
 				}
 			}
 			break;
-
-		case MSG_GUARANTEEDMSG:
-			lpGuaranteedMsg = (LPGUARANTEEDMSG)MsgPnt;
-			DebugPrintf("UpdateAmmoAndValidateMessage()\n");
-			MsgPnt = &lpGuaranteedMsg->StartOfMessage;
-			return( UpdateAmmoAndValidateMessage( MsgPnt ) );
-			break;
-
 
 		case MSG_PRIMBULLPOSDIR:
 		    lpPrimBullPosDir = (LPPRIMBULLPOSDIRMSG)MsgPnt;

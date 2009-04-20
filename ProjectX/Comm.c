@@ -573,9 +573,6 @@ HRESULT DPlayRelease(void)
 {
     HRESULT hr = E_FAIL;
 
-	// flush all waiting guaranteed messages
-	ProcessGuaranteedMessages( TRUE, FALSE );
-
     if (glpDP != NULL)
     {
         // free session desc, if any

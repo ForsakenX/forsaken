@@ -109,7 +109,6 @@ char *TeamName[ MAX_TEAMS ] = // team colour names should match TeamCol[] colour
 	LT_TEAM_3, // blue
 	LT_TEAM_4  // yellow
 };
-BOOL BadConnection[ MAX_PLAYERS+1 ];
 
 BOOL DS = FALSE;
 
@@ -2104,10 +2103,6 @@ void BuildReliabilityTab( void )
 
 		if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && (i != WhoIAm) )
 		{
-			if( BadConnection[i] )
-			{
-				ReliabilityTab[i]++;
-			}
 			Temp = (int32) (((LargeTime - LastPacketTime[i]) * 1000 ) / Freq);
 
 			if( Temp >= 10000 )
