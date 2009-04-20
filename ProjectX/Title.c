@@ -924,7 +924,6 @@ BOOL ShowPlaneRGB				= FALSE;
 BOOL PlayDemo					= FALSE;
 BOOL PauseDemo					= FALSE;
 BOOL RecordDemo				= FALSE;
-BOOL RecordDemoToRam		= FALSE;
 BOOL BrightShips					= FALSE;
 BOOL MyBrightShips				= FALSE;
 BOOL BikeExhausts				= TRUE;

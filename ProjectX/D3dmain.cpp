@@ -102,8 +102,6 @@ extern "C" {
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
 	extern BOOL CanDoStrechBlt;
-
-	extern BOOL RecordDemoToRam;
 	extern BOOL DebugLog;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
@@ -701,12 +699,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option,"DontColourKey")) 
 		{
 			DontColourKey = TRUE;
-		}
-
-		// records the demo to the ram
-		else if (!_stricmp(option, "RecordDemoToRam")) 
-		{
-			RecordDemoToRam = TRUE;
 		}
 
 		// all surfaces forced into system memory

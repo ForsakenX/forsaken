@@ -180,7 +180,6 @@ extern	BOOL	DplayRecieveThread;
 
 extern	BOOL	RecordDemo;
 extern	BOOL	PlayDemo;
-extern	BOOL	RecordDemoToRam;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
 extern	LIST	DemoList;
@@ -1651,8 +1650,6 @@ void EvalSysMessage( DWORD len , BYTE * MsgPnt)
 
 		IsHost = TRUE;					// I have Become the host
 
-		if( !RecordDemoToRam )
-			RecordDemo = FALSE;				// But I cant record a demo cos none of the files are open...
 		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		{
@@ -4670,18 +4667,6 @@ int FindSameLevel( char * Name )
 	return -1;
 }
 
-
-
-#define DEMORAMBUFFERSIZE ( 1024 * 1024 * 6 )
-char * DemoRamBuffer = NULL;
-int		DemoRamBufferCurrentSize = 0;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		X_fwrite....Writes out some info to a predetermined place
-				:		either to a file or ram.....
-	Input		:		const void *buffer, size_t size, size_t count
-	Output		:		int -1 no level....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 {
 	char * charpnt;
@@ -4691,35 +4676,7 @@ void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 	if( !RecordDemo || !DemoFp )
 		return;
 
-	if( RecordDemoToRam )
-	{
-		if( !DemoRamBuffer )
-		{
-			DemoRamBuffer = (char*) malloc(DEMORAMBUFFERSIZE);
-			if( !DemoRamBuffer )
-			{
-				Msg( "Couldnt Malloc Demo Ram Buffer.\n" );
-				RecordDemo = FALSE;
-				return;
-			}
-			DemoRamBufferCurrentSize = 0;
-		}
-		if( (DemoRamBufferCurrentSize + (size * count) ) > DEMORAMBUFFERSIZE )
-			return;
-		charpnt = DemoRamBuffer + DemoRamBufferCurrentSize;
-		charpnt2 = (char*) buffer;
-
-		for( e = 0 ; e < count ; e++ )
-		{
-			for( i = 0 ; i < size ; i++ )
-			{
-				*charpnt++ = *charpnt2++;
-			}
-		}
-		DemoRamBufferCurrentSize += (size * count);
-	}else{
-		fwrite( buffer, size , count , stream );
-	}
+	fwrite( buffer, size , count , stream );
 }
 
 
@@ -4730,23 +4687,12 @@ void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void StopDemoRecording( void )
 {
-
-	if( DemoFp && RecordDemoToRam && DemoRamBuffer )
-	{
-		fwrite( DemoRamBuffer, DemoRamBufferCurrentSize, 1, DemoFp );
-		RecordDemoToRam = FALSE;
-	}
 	if( DemoFp )	// make sure that changing level stop any demo from recording!!!!
 	{
 		fclose( DemoFp );
 		DemoFp = NULL;
 		RecordDemo = FALSE;
 		PlayDemo = FALSE;
-	}
-	if( DemoRamBuffer )
-	{
-		free(DemoRamBuffer);
-		DemoRamBuffer = NULL;
 	}
 }
 

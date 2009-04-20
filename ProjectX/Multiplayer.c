@@ -79,7 +79,6 @@ extern void SetMultiplayerPrefs( void );
 
 extern LIST	MySessionsList;
 extern BOOL	Panel;
-extern	BOOL	RecordDemoToRam;
 
 extern MENUITEM TeamGameHostMenuItem;
 extern BYTE	PreSynchupStatus;
@@ -765,7 +764,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 
 
-	if( RecordDemo || RecordDemoToRam )
+	if( RecordDemo )
 	{
 		uint32 mp_version = MULTIPLAYER_VERSION;
 		uint32 flags;

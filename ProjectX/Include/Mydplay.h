@@ -1007,7 +1007,6 @@ void DemoClean( void );
 int FindSameLevel( char * Name );
 void	RequestTime( void  );
 void	SetTime( float Time );
-void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream );
 void StopDemoRecording( void );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );

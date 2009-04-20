@@ -152,7 +152,6 @@ extern CRITICAL_SECTION CompoundSfxKey;
 extern CRITICAL_SECTION SfxHolderKey; 
 extern int NumDupCompoundBuffers;
 extern COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
-extern  BOOL  RecordDemoToRam;
 extern  TEXT  DemoGameName;
 
 extern  BOOL FullRearView;
@@ -4781,10 +4780,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SendGameMessage(MSG_NAME, 0, 0, 0, 0);
-
-	  // hack for ramdemo...
-      if( RecordDemoToRam )
-        RecordDemo = TRUE;
 
       if( RecordDemo )
       {
