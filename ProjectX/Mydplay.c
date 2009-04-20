@@ -81,7 +81,6 @@ extern	LIST	ServiceProvidersList;
 extern	BOOL	CountDownOn;
 extern char LevelNames[MAXLEVELS][128];
 
-GUID autojoin_session_guid;
 float FindSessionTimeout;
 extern	SLIDER	MaxPlayersSlider;
 
@@ -5690,32 +5689,6 @@ BOOL	CheckIfPlayerCheats( BYTE player )
 		( ( Ships[player].Object.Flags & SHIP_Stealth ) && !Ships[player].StealthTime ) )
 		return TRUE;
 	return FALSE;
-}
-
-BOOL AutoJoinSession( void )
-{
-	DWORD size;
-	char session_guidtext[ 256 ];
-
-	if ( !SessionGuidExists )
-	{
-		size = sizeof( session_guidtext );
-		if ( RegGet( "SessionGuid", (LPBYTE)&session_guidtext, &size ) != ERROR_SUCCESS)
-		{
-			DebugPrintf("unable to open reg key 'SessionGuid' ");
-			return FALSE;
-		}
-		if ( GUIDFromString( session_guidtext, &autojoin_session_guid ) != S_OK )
-		{
-			DebugPrintf("unable to convert session guid from string\n");
-			return FALSE;
-		}
-	}
-
-	MyGameStatus = STATUS_TryingToFindSession;
-	FindSessionTimeout = FIND_SESSION_TIMEOUT;
-
-	return TRUE;
 }
 
 #ifdef OPT_ON

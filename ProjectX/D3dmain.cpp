@@ -123,7 +123,6 @@ extern "C" {
 
 	extern uint8 QuickStart;
 
-	extern GUID autojoin_session_guid;
 	extern BOOL	SessionGuidExists;
 	extern BOOL bTCP;
 
@@ -770,27 +769,12 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			QuickStart = QUICKSTART_Join;
 		}
 
-		// specify the session id to join on the host
-		else if ( !_stricmp( option, "session" ) )
-		{
-	        option = strtok(NULL, "{}");
-			sprintf( buf, "{%s}", option );
-			if ( GUIDFromString( buf, &autojoin_session_guid ) == S_OK )
-				SessionGuidExists = TRUE;
-		}
-
 		// set the ip address for game to join
 		else if ( !_stricmp( option, "TCP" ) )
 		{
 			bTCP = TRUE;
 	        option = strtok(NULL, " ");
 			strcpy( (LPSTR)TCPAddress.text, option );
-		}
-
-		// supposed to auto join a session perhaps?
-		else if ( !_stricmp( option, "AutoStart" ) )
-		{
-			QuickStart = QUICKSTART_SelectSession;
 		}
 
 		// don't scale textures

@@ -5012,27 +5012,6 @@ BOOL DisplayTitle(void)
 				SelectConnectionToJoin( NULL );
 			break;
 
-		case QUICKSTART_SelectSession:
-			InitStartMenu( NULL );
-			CameraStatus = CAMERA_AtLeftVDU;
-			StackMode = DISC_MODE_NONE;
-			StackStatus = DISC_NOTHING;
-			
-			MENU_Start = MENU_NEW_ChooseConnectionToJoin;
-			
-			MenuRestart( &MENU_Start );
-			StackMode = DISC_MODE_NONE;
-			StackStatus = DISC_NOTHING;
-			
-			if ( ServiceProviderSet )
-				SelectConnectionToJoin( NULL );
-			else
-				PrintErrorMessage( UNABLE_TO_CONNECT_TO_SERVICE_PROVIDER, 0, NULL, ERROR_QUIT );  
-
-			if ( !AutoJoinSession() )
-				PrintErrorMessage( UNABLE_TO_JOIN_SESSION, 0, NULL, ERROR_QUIT );  
-
-			break;
 		case QUICKSTART_Notify:
 			InitStartMenu( NULL );
 			CameraStatus = CAMERA_AtLeftVDU;
@@ -16875,7 +16854,7 @@ void PrintErrorMessage (char *ErrorStr, int BackBy, MENU *NewMenu, int type)
 		MENU_NEW_Error.MenuStatus = CurrentMenu->MenuStatus;
 
 	strcpy (ErrorMessage, ErrorStr);
-	if ( ( QuickStart == QUICKSTART_SelectSession )	|| ( type & ERROR_QUIT ) )
+	if ( type & ERROR_QUIT )
 		ErrorMoveBackBy = -1;
 	else
 		ErrorMoveBackBy = BackBy;

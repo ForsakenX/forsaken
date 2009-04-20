@@ -3910,39 +3910,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   switch( MyGameStatus )
   {
 
-  case STATUS_TryingToFindSession:
-	DebugState("STATUS_TryingToFindSession\n");
-    D3DAppClearScreenOnly();
-
-    if ( GeneralTimeout( &FindSessionTimeout ) )
-    {
-      PrintErrorMessage( CANNOT_FIND_SESSION, 0, NULL, ERROR_QUIT );
-      MyGameStatus = STATUS_Title;
-      break;
-    }
-
-    // search for matching session
-    SessionsList.selected_item = -1;
-    for ( i = 0; i < SessionsList.items; i++ )
-    {
-      if ( IsEqualGuid( &Sessions[ i ].guidInstance, &autojoin_session_guid ) )
-      {
-        SessionsList.selected_item = i;
-        break;
-      }
-    }
-    if( (SessionsList.selected_item != -1) && SessionsRefresh[SessionsList.selected_item] )
-    {
-      SelectSession( NULL );
-    }
-    else
-    {
-      CenterPrint4x5Text( SEARCHING_FOR_GAME , (d3dappi.szClient.cy>>1) , 2 );
-      GetCurrentSessions_ReScan( NULL );
-    }
-    break;
-
-
   case STATUS_QuittingFromTitles:
 	DebugState("STATUS_QuittingFromTitles\n");
     quitting = TRUE;

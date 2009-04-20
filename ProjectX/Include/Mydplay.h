@@ -973,7 +973,6 @@ typedef struct _TRACKERINFOMSG
 
 // globals needed in other modules
 extern BOOL	IsPseudoHost;
-extern GUID autojoin_session_guid;
 extern float FindSessionTimeout;
 
 /*
