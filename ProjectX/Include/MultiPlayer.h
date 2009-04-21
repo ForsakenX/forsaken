@@ -30,7 +30,6 @@ BOOL StartAHostSession ( MENUITEM * Item );
 void GetCurrentSessions( MENU *Menu );
 void GetCurrentSessions_ReScan( MENUITEM *Item );
 BOOL JoinASession ( MENUITEM * Item );
-BOOL JoinASessionEx ( MENU *Menu );
 void SelectSession( MENUITEM *Item );
 void GetPlayersInCurrentSession( MENUITEM *Item );
 void GoToSynchup ( MENUITEM * Item );

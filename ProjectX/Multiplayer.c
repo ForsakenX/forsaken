@@ -1088,15 +1088,6 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 	MaxKills = (int16)( ( sd->dwUser2 & MaxKillsBits ) >> MaxKills_Shift );
 }
 
-BOOL JoinASessionEx ( MENU *Menu )
-{
-	MENUITEM item;
-
-	memset( &item, 0, sizeof( MENUITEM ) );
-	item.Value = Menu;
-	return JoinASession( &item );
-}
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	Join a Session...
 	Input		:	nothing
