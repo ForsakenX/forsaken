@@ -17430,45 +17430,6 @@ void GoToNextLevel( MENUITEM *Item )
 	StartASinglePlayerGame( NULL );
 }
 
-extern BYTE Current_Camera_View; // which object is currently using the camera view....
-extern uint16 RandomStartPosModify;
-BOOL LoadASinglePlayerGame( MENUITEM * Item )
-{
-	int i;
-	LONGLONG	TempTime;
-	PlayDemo = FALSE;
-	IsHost = TRUE;
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	RandomStartPosModify = 0;
-	SetBikeMods( (uint16) (SelectedBike+2) );
-	SetupDplayGame();
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		GameStatus[i] = STATUS_Null;
-	}
-	WhoIAm = 0;								// I was the first to join...
-	Ships[WhoIAm].dcoID = 0;
-	Current_Camera_View = 0;				// set camera to that view
-	Ships[WhoIAm].enable = 1;
-	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-	Names[WhoIAm][7] = 0;																
-	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
-	
-
-	NewLevelNum = -1;
-	PreInGameLoad( Item );
-
-	if( NewLevelNum == -1 )
-		return FALSE;
-
-	CountDownOn = FALSE;
-
-	MyGameStatus = STATUS_TitleLoadGameStartingSinglePlayer;
-
-	return TRUE;
-}
-
 void TitleLoadGame( MENUITEM *Item )
 {
 	LoadASinglePlayerGame( NULL );

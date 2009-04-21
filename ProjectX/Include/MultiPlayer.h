@@ -55,8 +55,6 @@ void StartDemoPlayback( MENUITEM * Item );
 void StartDemoCleaning( MENUITEM * Item );
 void DistributeTeamsToLists(int *dummy);
 
-BOOL StartASinglePlayerGame( MENUITEM * Item );
-
 BOOL SplashDemoOK( char *demofile );
 void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 

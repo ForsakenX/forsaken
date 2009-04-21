@@ -733,6 +733,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\singleplayer.c"
+				>
+			</File>
+			<File
 				RelativePath="skin.c"
 				>
 			</File>
@@ -1031,6 +1035,10 @@
 			</File>
 			<File
 				RelativePath="Include\Ships.h"
+				>
+			</File>
+			<File
+				RelativePath=".\singleplayer.h"
 				>
 			</File>
 			<File
