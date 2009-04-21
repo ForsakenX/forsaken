@@ -196,12 +196,10 @@ extern	int16 actual_volume;
 extern	int	RearCameraActive;
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
-extern BOOL IPAddressExists;
 extern char *ShipAxisText[];
 extern int ShipAxisLookup[];
 extern uint16 new_input;
 extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
-extern char  IPAddressText[];
 extern char  ServiceProviderShortName[];
 extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
@@ -1244,8 +1242,6 @@ MENU	MENU_NEW_HostWaitingToStart = {
 	{
 		{   0,   0, 200,  10, 0, LT_MENU_NEW_HostWaitingToStart0/*"waiting to start..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{   5,  15,  90,  25, 0, LT_MENU_NEW_HostWaitingToStart1/*"start"*/, FONT_Medium, TEXTFLAG_CentreY,  NULL, &MENU_NEW_GeneralLoading, HostAboutToStart/*GoToSynchup*/, DrawFlatMenuItem, NULL, 0  },
-		{  90,  15, 105,  25, 0, LT_MENU_NEW_HostWaitingToStart2/*"IP:"*/, FONT_Small, TEXTFLAG_CentreY, NULL, &IPAddressExists, NULL , DrawConditionalText, NULL, 0 } ,
-		{ 105,  15, 200,  25, 0, "", FONT_Small, TEXTFLAG_CentreY, (void *)IPAddressText, &IPAddressExists, NULL , DrawConditionalName, NULL, 0 } ,
 		{   5,  27, 100,  37, SLIDER_Value, LT_MENU_NEW_HostWaitingToStart3/*"Num of Players"*/, FONT_Small, TEXTFLAG_CentreY, &NumOfPlayersSlider, NULL, NULL, DrawFlatMenuSlider, NULL, 0 },
 		{   5,  40, 100, 125, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PlayersList, NULL , NULL , DrawFlatMenuList, NULL, 0 } ,
 		{   5, 112, 200, 119, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)TitleMessage[5], NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
@@ -1372,10 +1368,6 @@ MENU MENU_NEW_NetworkOptions = {
 		{ 10, 24,  85, 24, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10, 40, 120, 40, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10, 48, 120, 48, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-
-	  // taken out cause of lag in wsa startup, leave for later in case new method found
-      //{  90, 20, 120,  20, 0,			LT_MENU_NEW_CreateGame2  /*"IP:"*/,											FONT_Small,		TEXTFLAG_CentreY,													NULL,								&IPAddressExists,					NULL,					DrawConditionalText,	NULL, 0 } ,
-	  //{ 100, 20, 200,  20, 0,			"",																			FONT_Small,		TEXTFLAG_CentreY,													(void *)IPAddressText,				&IPAddressExists,					NULL,					DrawConditionalName,	NULL, 0 } ,
         
 		{  10, 64,  90,  64, 0,			"Protocol",																	FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
         {  90, 64, 205,  64, 0,			"",																			FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
@@ -2956,7 +2948,6 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"			*/,	&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
 					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"					*/,	NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"				*/,	NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 352, LT_MENU_InGame16 /*"IP"						*/,	(void *)&IPAddressText[0],	NULL,					NULL,					DrawNameVar),
 					
 					  
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 

@@ -192,10 +192,6 @@ extern	BOOL	NoSFX;
 
 BOOL ServiceProviderSet = FALSE;
 
-BOOL IPAddressExists = FALSE;
-
-uint32	IPAddress = 0;
-char    IPAddressText[16];
 char    ServiceProviderShortName[16];
 
 DPSESSIONDESC2			Old_Session;
@@ -336,18 +332,6 @@ void GetServiceProviders( MENU * Item )
 	// and select ptr as the default
 	DirectPlayEnumerate( EnumServiceProviders, ptr );
 
-	// reset the ip address exists flag
-	IPAddressExists = FALSE;
-
-	// taken out cause of laggy wsa startup
-	// leave for later in case new way to get ip found
-
-	// if were using tcpip
-	// then setup the IPAddress global
-	//if (IsEqualGUID( &last_service_provider, &DPSPGUID_TCPIP ))
-		// get the ip address
-		//if (GetIPAdd())	IPAddressExists = TRUE;
-
 	// release created direct play object
 	DPlayRelease();
 
@@ -445,8 +429,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	// remember the selection
 	gSPGuid = *lpGuid;
 
-	IPAddressExists = FALSE;
-
 	if (
 		OnceServiceProviderChosen(
 		  &ServiceProvidersGuids[ServiceProvidersList.selected_item],
@@ -460,19 +442,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 		PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
 	}
-
-	if (IsEqualGUID( lpGuid, &DPSPGUID_TCPIP) )
-	{
-		if (GetIPAdd())
-			IPAddressExists = TRUE;
-	}
-
-//	if ( !CheckLegalIP() )
-//	{
-//		DPlayRelease();
-//		MenuBack();
-//		return FALSE;
-//	}
 
 	ZeroMemory(&ServiceProviderCaps,sizeof(ServiceProviderCaps));
     ServiceProviderCaps.dwSize = sizeof(DPCAPS);
@@ -1720,95 +1689,4 @@ void DistributeTeamsToLists(int *dummy)
 	{
 		sprintf(TeamCurrentScore[team], ": %d",TeamScore[team]);
 	}
-}
-
-#define WSA_DEBUG
-int GetIPAdd( void )
-{
-	int result;
-	WSADATA wsaData;
-	struct hostent *hp;
-	static char hostname[1024];
-	uint32 LoBytes = 0x000000FF;
-
-	// initialize wsa
-	result = WSAStartup( 0x0101, &wsaData );
-	if ( result != 0 && Debug )
-	{
-		switch( result )
-		{
-		case WSASYSNOTREADY:
-			DebugPrintf("Underlying network subsystem is not ready for network communication.");
-			break;
-		case WSAVERNOTSUPPORTED:
-			DebugPrintf("Version of Windows Sockets requested is not provided by this implementation.");
-			break;
-		case WSAEINPROGRESS:
-			DebugPrintf("A blocking Windows Sockets 1.1 operation is in progress.");
-			break;
-		case WSAEPROCLIM:
-			DebugPrintf("Limit on the number of tasks supported has been reached.");
-			break;
-		case WSAEFAULT:
-			DebugPrintf("The lpWSAData parameter is not a valid pointer.");
-			break;
-		default:
-			DebugPrintf("WSAStartup failed\n");
-		}
-		return 0;
-	}
-
-	// get the hostname of the current machine
-	result = gethostname( hostname, sizeof(hostname) );
-	if( result == SOCKET_ERROR && Debug )
-	{
-		result = WSAGetLastError();
-		switch( result )
-		{
-		case WSAEFAULT:
-			DebugPrintf("%s %s",
-				"name is a NULL pointer or is not a valid part of the user address space.\n",
-				"Or the buffer size specified is too small to hold the complete host name.\n");
-			break;
-		case WSANOTINITIALISED:
-			DebugPrintf("A successful WSAStartup call must occur before using this function.\n");
-			break;
-		case WSAENETDOWN:
-			DebugPrintf("The network subsystem has failed.\n");
-			break;
-		case WSAEINPROGRESS:
-			DebugPrintf("%s %s",
-				"A blocking Windows Sockets 1.1 call is in progress,\n",
-				"or the service provider is still processing a callback function.\n");
-			break;
-		default:
-			DebugPrintf("gethostname failed\n");
-			break;
-		}
-		return 0;
-	}
-	
-	// get the host by the name
-	hp = gethostbyname ( hostname );	
-	if ( !hp )
-	{
-#ifdef WSA_DEBUG
-		Msg("gethostbyname failed");
-#endif
-		return 0;
-	}
-
-	// convert the data into standard decimal format
-	IPAddress = *(uint32 *) *hp->h_addr_list;
-	sprintf( IPAddressText, "%d.%d.%d.%d",
-		                     IPAddress			& LoBytes,
-							(IPAddress >> 8)	& LoBytes,
-							(IPAddress >> 16)	& LoBytes,
-							(IPAddress >> 24)	& LoBytes);
-
-	// cleanup the wsa
-	WSACleanup();
-
-	// success
-	return 1;
 }

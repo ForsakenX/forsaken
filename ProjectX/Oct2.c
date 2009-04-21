@@ -128,7 +128,6 @@ extern VECTOR BikePos;
 
 extern BOOL CTF;
 
-extern BOOL IPAddressExists;
 extern uint8 QuickStart;
 
 extern char *TeamName[ MAX_TEAMS ];
