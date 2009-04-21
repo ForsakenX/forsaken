@@ -78,6 +78,8 @@
 #include  "XMem.h"
 #include "stats.h"
 #include "timer.h"
+#include "demo.h"
+#include "file.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -108,8 +110,6 @@ BOOL WaitingToQuit;
 
 void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
-
-int folder_exists( char *pathspec, ... );
 
 extern const char last_compiled[];
 extern  float Countdown_Float;
@@ -6655,55 +6655,6 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 #if 0
         ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSThree, &src, DDBLT_KEYSRC | DDBLT_WAIT | DDBLT_ALPHASRCCONSTOVERRIDE | DDBLT_ALPHADESTCONSTOVERRIDE | DDBLT_ALPHADEST | DDBLT_ALPHASRC , &fx );
 #endif
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Check for a valid Crc in a Dplay Message..
-  Input   :   int8  * String
-  Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-BOOL DebugLog = FALSE;
-void DebugPrintf( const char * format, ... )
-{
-
-  static char buf1[256], buf2[512];
-  va_list args;
-
-  // command line switch
-  if ( ! Debug )
-    return;
-
-  va_start( args, format );
-  vsprintf( buf1, format, args );
-  wsprintf( buf2, "%hs", buf1 );
-
-  // send string to debugger
-  OutputDebugString( buf2 );
-
-  va_end( args );
-
-  // add the comment to the log file
-  if( DebugLog )
-	AddCommentToLog( buf2 );
-
-}
-
-// prints a message only if it wasn't the last one to be printed...
-// this way you can debug game state without getting a message every single loop
-// for instance in the title screen if you print "in title screen" it will only print once
-// instead of every single loop....
-void DebugState( const char * str )
-{
-	static const char * last;
-	if ( !Debug ) 
-		return;
-	if ( last && strcmp( str, last ) == 0 )
-		return;
-	last = str;
-	DebugPrintf( str );
-}
-
-
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
   Procedure :   General blit fast...

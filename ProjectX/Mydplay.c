@@ -255,9 +255,6 @@ int16	BikeModels[ MAXBIKETYPES ] = {
 
 };
 
-FILE	*	DemoFp = NULL;
-FILE	*	DemoFpClean = NULL;
-
 char					MyName[ 32 ] = "Default game";
 char					NickName[ 32 ] = "Default game";
 char					tempstr[256];

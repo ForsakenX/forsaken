@@ -31,6 +31,7 @@
 #include "controls.h"
 #include "xmem.h"
 #include "util.h"
+#include "demo.h"
 
 // required version of Direct Play is 6.0 (4.6.0.318)
 #define DPLAY_VERSION_HI	(4)
@@ -74,8 +75,6 @@ extern SLIDER CTFSlider;
 
 extern	BOOL	UseShortPackets;
 
-extern char *DemoFileName( char *demoname );
-extern char *DemoName( char *demofilename );
 extern void SetMultiplayerPrefs( void );
 
 extern LIST	MySessionsList;
@@ -1931,130 +1930,4 @@ void StartDemoPlayback( MENUITEM * Item )
 	SetupDplayGame();
 
 	ChangeLevel();
-}
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Clean up A demo File...
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void StartDemoCleaning( MENUITEM * Item )
-{
-	char buf[256];
-	int i;
-	uint32 mp_version;
-	uint32 flags;
-	char *clean_name;
-	uint16	TempSeed1, TempSeed2;
-	BOOL	TempRandomPickups;
-	uint32	TempPackedInfo[ MAX_PICKUPFLAGS ];
-
-	NewLevelNum = -1;
-
-	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
-	DemoFp = fopen( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
-	if ( !DemoFp )
-	{
-		// can't open file
-		return;
-	}
-
-	setvbuf( DemoFp, NULL, _IONBF , 0 );		// size of stream buffer...
-	
-	fread( &mp_version, sizeof( mp_version ), 1, DemoFp );
-	if ( (mp_version > MULTIPLAYER_VERSION) || (mp_version < DEMO_MULTIPLAYER_VERSION) )
-	{
-		// incompatible multiplayer version
-		fclose( DemoFp );
-		return;
-	}
-
-	fread( &TempSeed1, sizeof( TempSeed1 ), 1, DemoFp );
-	fread( &TempSeed2, sizeof( TempSeed2 ), 1, DemoFp );
-	fread( &TempRandomPickups, sizeof( TempRandomPickups ), 1, DemoFp );
-	fread( &TempPackedInfo[ 0 ], sizeof( TempPackedInfo ), 1, DemoFp );
-
-	fread( &flags, sizeof( flags ), 1, DemoFp );
-	TeamGame = ( flags & TeamGameBit ) ? TRUE : FALSE;
-	CTF = ( flags & CTFGameBit ) ? TRUE : FALSE;
-	CaptureTheFlag = ( flags & FlagGameBit ) ? TRUE : FALSE;
-	BountyHunt = ( flags & BountyGameBit ) ? TRUE : FALSE;
-
-	fread( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFp );
-
-	for( i = 0 ; i < 256 ; i++ )
-	{
-		fread( &buf[i], sizeof(char), 1, DemoFp );
-		if( buf[i] == 0 )
-		{
-			break;
-		}
-	}
-	
-    for (i = 0; i < NumLevels; i++)
-	{
-
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 )
-		{
-			NewLevelNum = i;
-			break;
-		}
-    }
-	
-	if( ( NewLevelNum == -1 ) || ( i == 256 ) )
-	{
-		fclose( DemoFp );
-		return;
-	}
-
-	clean_name = _tempnam( ".", "dmo" );
-	if ( !clean_name )
-	{
-		// unable to create unique temporary filename
-		return;
-	}
-	DebugPrintf( "temp demo clean name = %s\n", clean_name );
-//	DemoFpClean = fopen( DemoFileName( DemoGameName.text ) , "wbc" );
-	DemoFpClean = fopen( clean_name , "wbc" );
-	setvbuf( DemoFpClean, NULL, _IONBF , 0 );		// size of stream buffer...
-
-	fwrite( &mp_version, sizeof( mp_version ), 1, DemoFpClean );
-
-	fwrite( &TempSeed1, sizeof( TempSeed1 ), 1, DemoFpClean );
-	fwrite( &TempSeed2, sizeof( TempSeed2 ), 1, DemoFpClean );
-	fwrite( &TempRandomPickups, sizeof( TempRandomPickups ), 1, DemoFpClean );
-	fwrite( &TempPackedInfo[ 0 ], sizeof( TempPackedInfo ), 1, DemoFpClean );
-
-	fwrite( &flags, sizeof( flags ), 1, DemoFpClean );
-	fwrite( &RandomStartPosModify, sizeof( RandomStartPosModify ), 1, DemoFpClean );
-	for( i = 0 ; i < 256 ; i++ )
-	{
-		fwrite( &buf[i], sizeof(char), 1, DemoFpClean );
-		if( buf[i] == 0 )
-		{
-			break;
-		}
-	}
-
-	DemoClean();
-	
-	fclose( DemoFp );
-	fclose( DemoFpClean );
-	if ( !DeleteFile( DemoFileName( DemoList.item[DemoList.selected_item] ) ) )
-	{
-		DebugPrintf( "DeleteFile( %s ) failed\n", DemoFileName( DemoList.item[DemoList.selected_item] ) );
-		DebugLastError();
-	}
-	if ( !MoveFile( clean_name, DemoFileName( DemoList.item[DemoList.selected_item] ) ) )
-	{
-		DebugPrintf( "MoveFile( %s, %s ) failed\n",
-			clean_name, DemoFileName( DemoList.item[DemoList.selected_item] ) );
-		DebugLastError();
-	}
-	free( clean_name );
-
-	if (CameraStatus != CAMERA_AtStart)
-		MenuBack();
-	else
-		MenuExit();
 }

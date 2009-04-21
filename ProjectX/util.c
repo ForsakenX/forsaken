@@ -1,5 +1,51 @@
 
 #include "windows.h"
+#include <stdio.h>
+#include "typedefs.h"
+#include "file.h"
+
+extern BOOL Debug;
+extern BOOL DebugLog;
+void DebugPrintf( const char * format, ... )
+{
+
+  static char buf1[256], buf2[512];
+  va_list args;
+
+  // command line switch
+  if ( ! Debug )
+    return;
+
+  va_start( args, format );
+  vsprintf( buf1, format, args );
+  wsprintf( buf2, "%hs", buf1 );
+
+  // send string to debugger
+  OutputDebugString( buf2 );
+
+  va_end( args );
+
+  // add the comment to the log file
+  if( DebugLog )
+	AddCommentToLog( buf2 );
+
+}
+
+// prints a message only if it wasn't the last one to be printed...
+// this way you can debug game state without getting a message every single loop
+// for instance in the title screen if you print "in title screen" it will only print once
+// instead of every single loop....
+void DebugState( const char * str )
+{
+	static const char * last;
+	if ( !Debug ) 
+		return;
+	if ( last && strcmp( str, last ) == 0 )
+		return;
+	last = str;
+	DebugPrintf( str );
+}
+
 
 /*
  * IsEqualGuid

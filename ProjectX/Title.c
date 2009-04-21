@@ -46,14 +46,10 @@
 #include "comm.h"
 #include "restart.h"
 #include "version.h"
+#include "demo.h"
 
 #define MAX_SAVEGAME_SLOTS		16
-#define MAX_DEMONAME_LENGTH		(60)
-#define MAX_DEMOFILENAME_LENGTH	(80) // must be at least MAX_DEMONAME_LENGTH + strlen( DEMOFOLDER ) + strlen( DEMOFILE_EXTENSION ) + 1
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
-#define DEMOFOLDER				"Demos"
-#define DEMOFILE_EXTENSION		".DMO"
-#define DEMOFILE_SEARCHPATH		DEMOFOLDER"\\*"DEMOFILE_EXTENSION
 
 //#pragma optimize( "gty", on )
 
@@ -410,11 +406,8 @@ void CheckCheats( VirtualKeycode key );
 char *CTF_Type( SLIDER *s );
 
 void InGameSaveASinglePlayerGame( MENUITEM *item );
-int folder_exists( char *pathspec, ... );
 
 char TypeFileName( TEXT *t, char c );
-char *DemoFileName( char *demoname );
-char *DemoName( char *demofilename );
 
 void LoadLevelText( MENU *Menu );
 BOOL InitDInput(void);
@@ -17632,44 +17625,6 @@ void NextLevelOrGameComplete( MENUITEM *Item )
 	
 	 MenuChangeEx( &MENU_NEW_SpecialMessage );
 }
-
-
-char *DemoFileName( char *demoname )
-{
-	static char filename[ MAX_DEMOFILENAME_LENGTH  ];
-	char *dmo;
-
-	folder_exists( DEMOFOLDER );
-	strcpy( filename, DEMOFOLDER );
-	strncat( filename, "\\", MAX_DEMONAME_LENGTH );
-	strncat( filename, demoname, MAX_DEMONAME_LENGTH );
-	filename[ strlen( DEMOFOLDER ) + 1 + MAX_DEMONAME_LENGTH ] = 0;
-	_strupr( filename );
-	dmo = strstr( filename, DEMOFILE_EXTENSION );
-	if ( !dmo )
-		strcat( filename, DEMOFILE_EXTENSION );
-
-	return filename;
-}
-
-
-char *DemoName( char *demofilename )
-{
-	static char demoname[ MAX_DEMONAME_LENGTH + 4 ];
-	char *dmo;
-	int offset;
-
-	offset = strstr( demofilename, DEMOFOLDER ) ? strlen( DEMOFOLDER ) + 1 : 0;
-	strncpy( demoname, demofilename + offset, sizeof( demoname ) - 1 );
-	demoname[ sizeof( demoname ) - 1 ] = 0;
-	_strupr( demoname );
-	dmo = strstr( demoname, DEMOFILE_EXTENSION );
-	if ( dmo )
-		*dmo = 0;
-
-	return demoname;
-}
-
 
 char TypeFileName( TEXT *t, char c )
 {

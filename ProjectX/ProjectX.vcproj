@@ -589,6 +589,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\demo.c"
+				>
+			</File>
+			<File
 				RelativePath="Dsutil.c"
 				>
 			</File>
@@ -883,6 +887,10 @@
 			</File>
 			<File
 				RelativePath="Include\Ddutil.h"
+				>
+			</File>
+			<File
+				RelativePath=".\demo.h"
 				>
 			</File>
 			<File

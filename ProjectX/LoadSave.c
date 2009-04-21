@@ -41,6 +41,7 @@
 #include "sfx.h"
 #include "text.h"
 #include "XMem.h"
+#include "file.h"
 
 /*			Stuff that needs to be saved/loaded.....
 
@@ -107,31 +108,6 @@ void DebugPrintf( const char * format, ... );
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-int folder_exists( char *pathspec, ... )
-{
-	static char pathname[ 256 ];
-	static struct _stat stat;
-	va_list args;
-
-	va_start( args, pathspec );
-	vsprintf( pathname, pathspec, args );
-	va_end( args );
-	if ( _stat( pathname, &stat ) )
-	{
-		// no such path exists...attempt to create a directory with that name
-		return !_mkdir( pathname );
-	}
-	else if ( stat.st_mode & _S_IFDIR )
-	{
-		// path exists and is a directory
-		return 1;
-	}
-	else
-	{
-		// path exists but is not a directory
-		return 0;
-	}
-}
 
 
 char *SaveGameFileName( int slot )

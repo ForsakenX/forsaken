@@ -1,10 +1,7 @@
 #ifndef FILE_H
 #define FILE_H
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Define Prototypes for file.c
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
+int folder_exists( char *pathspec, ... );
 long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 long Write_File( char * Filename, char * File_Buffer, long Write_Size );
@@ -16,7 +13,6 @@ long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 void AddCommentToLog( const char * format, ... );
 BOOL File_Exists( char * Filename );
-
 void WriteToFile( char* path, const char * format, ... );
 
 #endif // FILE_H

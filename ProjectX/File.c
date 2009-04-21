@@ -6,6 +6,7 @@
 #include	<fcntl.h>
 #include	<sys/types.h>
 #include	<sys/stat.h>
+#include	<direct.h>
 #include	<io.h>
 #include	<stdio.h>
 #include	<stdlib.h>
@@ -24,6 +25,34 @@ extern void DebugPrintf( const char * format, ... );
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
 extern BOOL Debug;
+
+
+int folder_exists( char *pathspec, ... )
+{
+	static char pathname[ 256 ];
+	static struct _stat stat;
+	va_list args;
+
+	va_start( args, pathspec );
+	vsprintf( pathname, pathspec, args );
+	va_end( args );
+	if ( _stat( pathname, &stat ) )
+	{
+		// no such path exists...attempt to create a directory with that name
+		return !_mkdir( pathname );
+	}
+	else if ( stat.st_mode & _S_IFDIR )
+	{
+		// path exists and is a directory
+		return 1;
+	}
+	else
+	{
+		// path exists but is not a directory
+		return 0;
+	}
+}
+
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		See if file exists
