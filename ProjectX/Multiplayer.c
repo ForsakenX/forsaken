@@ -238,7 +238,6 @@ uint16	RandomStartPosModify = 0;
 void DebugPrintf( const char * format, ... );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void InitMySessionsList(void);
-static int DirectPlayOK( LPGUID lpServiceProvider_guid );
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
 
@@ -457,14 +456,6 @@ BOOL ExitProviderChosen ( MENUITEM * Item )
 	Modem2Modem = FALSE;
 	if (IsEqualGUID( lpGuid, &DPSPGUID_MODEM) )
 		Modem2Modem = TRUE;
-
-	// Check for acceptable version of Direct Play
-	if ( !DirectPlayOK( lpGuid ) )
-	{
-		PrintErrorMessage ( YOU_NEED_TO_INSATLL_THE_DIRECT_PLAY_50A_UPDATE,
-			                2, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
 
 	// remember the selection
 	gSPGuid = *lpGuid;
@@ -2338,121 +2329,3 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid)
 
 	return S_OK;
 }// GUIDFromString
-
-
-#define REGISTRY_DIRECTPLAY_SERVICEPROVIDERS_KEY	(TEXT("Software\\Microsoft\\DirectPlay\\Service Providers"))
-
-#define	GUID_NAME				(TEXT( "Guid" ))
-#define	PATH_NAME				(TEXT( "Path" ))
-
-#define MAX_SERVICEPROVIDER_NAME	(256)
-#define MAX_GUIDTEXT				(256)
-
-
-static int DirectPlayOK( LPGUID lpServiceProvider_guid )
-{
-	HKEY DP_ServiceProviders, DP_ServiceProvider;
-	int errs = 0;
-	int service_providers;
-	FILETIME filetime;
-	static char sp_name[ MAX_SERVICEPROVIDER_NAME ];
-	static char sp_fname[ MAX_SERVICEPROVIDER_NAME ];
-	static char sp_guidtext[ MAX_GUIDTEXT ];
-	DWORD sp_len;
-	GUID sp_guid;
-	DWORD len;
-	int old = 0;
-	union {
-		uint16 ver[ 4 ];
-		LONGLONG version;
-	} current, required = { DPLAY_REVISION_LO, DPLAY_REVISION_HI, DPLAY_VERSION_LO, DPLAY_VERSION_HI }, comp;
-
-	if (   !IsEqualGUID( &DPSPGUID_MODEM,	lpServiceProvider_guid )
-		&& !IsEqualGUID( &DPSPGUID_SERIAL,	lpServiceProvider_guid )
-		&& !IsEqualGUID( &DPSPGUID_TCPIP,	lpServiceProvider_guid )
-		&& !IsEqualGUID( &DPSPGUID_IPX,		lpServiceProvider_guid ) )
-	{
-		// not a recognised standard DirectPlay serviceprovider -- have to assume it's OK...
-		return 1;
-	}
-
-	if ( RegOpenKeyEx( HKEY_LOCAL_MACHINE, REGISTRY_DIRECTPLAY_SERVICEPROVIDERS_KEY,
-			0, KEY_ENUMERATE_SUB_KEYS, &DP_ServiceProviders )
-		== ERROR_SUCCESS )
-	{
-		service_providers = 0;
-		sp_len = sizeof( sp_name );
-		while ( RegEnumKeyEx( DP_ServiceProviders, service_providers, sp_name, &sp_len, NULL, NULL, NULL, &filetime ) 
-			== ERROR_SUCCESS )
-		{
-			if ( RegOpenKeyEx( DP_ServiceProviders, sp_name,
-				0, KEY_QUERY_VALUE, &DP_ServiceProvider )
-				== ERROR_SUCCESS )
-			{
-				len = sizeof( sp_guidtext );
-				if ( RegQueryValueEx( DP_ServiceProvider, GUID_NAME,
-					NULL, NULL, sp_guidtext, &len )
-					== ERROR_SUCCESS )
-				{
-					if ( GUIDFromString( sp_guidtext, &sp_guid ) == S_OK )
-					{
-						if ( IsEqualGuid( &sp_guid, lpServiceProvider_guid ) )
-						{
-							len = sizeof( sp_fname );
-							if ( RegQueryValueEx( DP_ServiceProvider, PATH_NAME,
-								NULL, NULL, sp_fname, &len )
-								== ERROR_SUCCESS )
-							{
-								if ( current.version = FileGetVersion( sp_fname ) )
-								{
-									comp.version = current.version - required.version;
-									DebugPrintf( "%s (%s) version is %hd.%hd.%hd.%hd %s\n",
-										sp_name, sp_fname,
-										current.ver[ 3 ], current.ver[ 2 ], current.ver[ 1 ], current.ver[ 0 ],
-										( comp.version >= 0 ) ? "OK" : "out of date" );
-									if ( comp.version < 0 )
-										old++;
-								}
-								else
-								{
-									DebugPrintf( "FileGetVersion( %s ) failed\n", sp_fname );
-									errs++;
-								}
-							}
-							else
-							{
-								DebugPrintf( "RegQueryValueEx( %s\\%s ) failed\n", sp_name, PATH_NAME );
-								errs++;
-							}
-						}
-					}
-					else
-					{
-						DebugPrintf( "GUIDFromString( %s ) failed for %s\n", sp_guidtext, sp_name);
-						errs++;
-					}
-				}
-				else
-				{
-					DebugPrintf( "RegQueryValueEx( %s\\%s ) failed\n", sp_name, GUID_NAME );
-					errs++;
-				}
-				RegCloseKey( DP_ServiceProvider );
-			}
-			else
-			{
-					DebugPrintf( "RegOpenKeyEx( %s ) failed\n", sp_name );
-				errs++;
-			}
-			sp_len = sizeof( sp_name );
-			service_providers++;
-		}
-		RegCloseKey( DP_ServiceProviders );
-	}
-	else
-	{
-		errs++;
-	}
-
-	return !old;
-}
