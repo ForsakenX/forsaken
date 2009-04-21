@@ -35,7 +35,6 @@
 #include "screenpolys.h"
 #include "goal.h"
 #include <stdio.h>
-#include "mydplay2.h"
 #include "XMem.h"
 #include "Local.h"
 #include "stats.h"
@@ -176,7 +175,6 @@ extern	BOOL	Buffer2InUse;
 extern	int		Buffer2Count;
 extern	DWORD	Buffer2Offset;
 extern	BYTE *	Buffer2Pnt;
-extern	BOOL	DplayRecieveThread;
 
 extern	BOOL	RecordDemo;
 extern	BOOL	PlayDemo;
@@ -256,6 +254,9 @@ int16	BikeModels[ MAXBIKETYPES ] = {
 	MODEL_Borg,
 
 };
+
+FILE	*	DemoFp = NULL;
+FILE	*	DemoFpClean = NULL;
 
 char					MyName[ 32 ] = "Default game";
 char					NickName[ 32 ] = "Default game";
@@ -1443,107 +1444,46 @@ void ReceiveGameMessages( void )
 
 	BuildReliabilityTab();
 
-	if( DplayRecieveThread )
+	if ( glpDP )
 	{
-		if( Buffer2Count && !Buffer2InUse )
+		// read all messages in queue
+		while(1)
 		{
-			Buffer2InUse = TRUE;
+			nBytes = MAXBIGPACKETBUFFERSIZE;
+			status = glpDP->lpVtbl->Receive( glpDP,
+						&from_dcoID,
+						&dcoReceiveID,
+						DPRECEIVE_ALL,
+						&ReceiveCommBuff[0],
 
-			while( Buffer2Count )
+						&nBytes);
+			if( status == DP_OK )
 			{
-				longpnt = (LONGLONG*) (Buffer2Pnt+offset);
-				TempTime = *longpnt++;
-				dwordpnt = (DWORD*) longpnt;
-				nBytes = *dwordpnt++;
-				from_dcoID = *dwordpnt++;
-				BufferPnt = (BYTE*) dwordpnt;
-
+				QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-					Demo_fwrite( (Buffer2Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-				
-				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
-				if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , BufferPnt );
-				else EvaluateMessage( nBytes , BufferPnt );
-				Buffer2Count-=1;
-
-			}
-			Buffer2Offset = 0;
-			Buffer2InUse = FALSE;
-		}
-		offset = 0;
-		if( Buffer1Count && !Buffer1InUse)
-		{
-			Buffer1InUse = TRUE;
-
-			while( Buffer1Count )
-			{
-				longpnt = (LONGLONG*) (Buffer1Pnt+offset);
-				TempTime = *longpnt++;
-				dwordpnt = (DWORD*) longpnt;
-				nBytes = *dwordpnt++;
-				from_dcoID = *dwordpnt++;
-				BufferPnt = (BYTE*) dwordpnt;
-
-				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-					Demo_fwrite( (Buffer1Pnt+offset), nBytes + (sizeof(DWORD)*2) + sizeof(LONGLONG), 1, DemoFp );
-				
-				offset += sizeof(DWORD) + (sizeof(DPID)*1) + nBytes + sizeof(LONGLONG);
-
-				if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , BufferPnt );
-				else EvaluateMessage( nBytes , BufferPnt );
-
-				Buffer1Count-=1;
-			}
-			Buffer1Offset = 0;
-			Buffer1InUse = FALSE;
-		}
-	}
-	else
-	{
-
-		// The old non Thread method......
-		if ( glpDP )
-		{
-			// read all messages in queue
-			while(1)
-			{
-				nBytes = MAXBIGPACKETBUFFERSIZE;
-				status = glpDP->lpVtbl->Receive( glpDP,
-							&from_dcoID,
-							&dcoReceiveID,
-							DPRECEIVE_ALL,
-							&ReceiveCommBuff[0],
-
-							&nBytes);
-				if( status == DP_OK )
 				{
-					QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-					if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-					{
-						TempTime -= GameStartedTime;
-						Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-						Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
-						Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-						Demo_fwrite( &ReceiveCommBuff[0], nBytes , 1, DemoFp );
-					}
-					RecPacketSize = nBytes;
-					if ( RecPacketSize > MaxRecPacketSize )
-						MaxRecPacketSize = RecPacketSize;
-
-					BytesPerSecRec += nBytes;
-
-					if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , &ReceiveCommBuff[0] );
-					else EvaluateMessage( nBytes , &ReceiveCommBuff[0]);
+					TempTime -= GameStartedTime;
+					Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
+					Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
+					Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
+					Demo_fwrite( &ReceiveCommBuff[0], nBytes , 1, DemoFp );
 				}
-				else
-				{
-					// Error condition of some kind - we just stop
-					// checking for now
-					return;
-				}
+				RecPacketSize = nBytes;
+				if ( RecPacketSize > MaxRecPacketSize )
+					MaxRecPacketSize = RecPacketSize;
+
+				BytesPerSecRec += nBytes;
+
+				if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , &ReceiveCommBuff[0] );
+				else EvaluateMessage( nBytes , &ReceiveCommBuff[0]);
+			}
+			else
+			{
+				// Error condition of some kind - we just stop
+				// checking for now
+				return;
 			}
 		}
-
 	}
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )

@@ -106,7 +106,6 @@ extern "C" {
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
-	extern	BOOL	DplayRecieveThread;
 	extern BOOL PreventFlips;
 	extern	BOOL DS;
 	extern	BOOL Debug;
@@ -588,7 +587,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	MipMap					= TRUE;
 	TripleBuffer			= FALSE;
 	NoTextureScaling		= FALSE;
-	DplayRecieveThread		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
 	SessionGuidExists		= FALSE;
@@ -741,12 +739,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option, "NoSendAsync"))
 		{
 			UseSendAsync = FALSE;
-        }
-
-		// use a receive-thread for directplay
-		else if (!_stricmp(option, "DplayThread"))
-		{
-			DplayRecieveThread = TRUE;
         }
 		
 		// jump to the host screen

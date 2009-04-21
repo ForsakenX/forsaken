@@ -24,7 +24,6 @@
 #include "mydplay.h"
 #include "d3dappi.h"
 #include "main.h"
-#include "mydplay2.h"
 #include "title.h"
 #include "primary.h"
 #include "XMem.h"
@@ -72,7 +71,6 @@ extern	BOOL	CaptureTheFlag;
 extern	BOOL	CTF;
 extern	BOOL	BountyHunt;
 extern	uint16	RandomStartPosModify;
-extern	BOOL	DplayRecieveThread;
 extern	BOOL	UseShortPackets;
 extern	BOOL					IsHost;   // is the user hosting/joining a game
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
@@ -131,24 +129,14 @@ HRESULT DPlayCreatePlayer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent,
 {
     HRESULT hr=E_FAIL;
     DPNAME name;
-    
-	SetupConnection( myglobs.hInstApp );
 	
 	ZeroMemory(&name,sizeof(name));
     name.dwSize = sizeof(DPNAME);
 
     name.lpszShortNameA = lptszPlayerName;
 
-	if( DplayRecieveThread )
-	{
-		if (glpDP)
-			hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, hPlayerEvent, lpData, 
-										  dwDataSize, 0);
-	}else{
-		if (glpDP)
-			hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, NULL, lpData, 
-										  dwDataSize, 0);
-	}
+	if (glpDP)
+		hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, NULL, lpData, dwDataSize, 0);
 
 	switch( hr )
 	{
@@ -343,8 +331,6 @@ HRESULT DPlayDestroyPlayer(DPID pid)
     
     if (glpDP)
         hr = IDirectPlayX_DestroyPlayer(glpDP, pid);
-
-	ShutdownConnection();
 
     return hr;
 }

@@ -669,10 +669,6 @@
 				>
 			</File>
 			<File
-				RelativePath="MyDplay2.c"
-				>
-			</File>
-			<File
 				RelativePath="New3d.c"
 				>
 			</File>
@@ -967,10 +963,6 @@
 			</File>
 			<File
 				RelativePath="Include\Mydplay.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\MyDplay2.h"
 				>
 			</File>
 			<File
