@@ -789,6 +789,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\util.c"
+				>
+			</File>
+			<File
 				RelativePath="visi.c"
 				>
 			</File>
@@ -1083,6 +1087,10 @@
 			</File>
 			<File
 				RelativePath="Include\Typedefs.h"
+				>
+			</File>
+			<File
+				RelativePath=".\util.h"
 				>
 			</File>
 			<File

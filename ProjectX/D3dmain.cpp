@@ -50,6 +50,7 @@ extern "C" {
 #include	"XMem.h" 
 #include	"d3dapp.h"
 #include	"Sfx.h"
+#include	"util.h"
 
 	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;
@@ -130,7 +131,6 @@ extern "C" {
 	void RemoveDynamicSfx( void );
 	void FillStatusTab( void );
 
-	HRESULT GUIDFromString( char *lpStr, GUID * pGuid);
 	BOOL ActLikeWindow = FALSE;
 
 }
