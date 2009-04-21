@@ -6,7 +6,7 @@
 #include "typedefs.h"
 #include "main.h"
 #include <dplay.h>
-#include "comm.h"
+#include "net_dplay.h"
 #include "d3dappi.h"
 #include "title.h"
 #include "typedefs.h"

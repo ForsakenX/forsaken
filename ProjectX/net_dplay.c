@@ -1,20 +1,8 @@
 
-
-
-/*==========================================================================
- *
- *  Copyright (C) 1995-1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File:       comm.c
- *  Content:    DirectPlay related code
- *
- *
- ***************************************************************************/
-
 #include "stdwin.h"
 #include <dplay.h>
 #include <stdio.h>
-#include "comm.h"
+#include "net_dplay.h"
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"

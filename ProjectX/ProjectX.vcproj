@@ -549,10 +549,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Comm.c"
-				>
-			</File>
-			<File
 				RelativePath="CompObjects.c"
 				>
 			</File>
@@ -670,6 +666,10 @@
 			</File>
 			<File
 				RelativePath="Mydplay.c"
+				>
+			</File>
+			<File
+				RelativePath=".\net_dplay.c"
 				>
 			</File>
 			<File
@@ -846,10 +846,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Comm.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\CompObjects.h"
 				>
 			</File>
@@ -983,6 +979,10 @@
 			</File>
 			<File
 				RelativePath=".\Include\Myres.h"
+				>
+			</File>
+			<File
+				RelativePath="net_dplay.h"
 				>
 			</File>
 			<File

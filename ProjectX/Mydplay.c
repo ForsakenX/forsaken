@@ -27,7 +27,7 @@
 #include "models.h"
 #include "d3dmain.h"
 #include "d3dappi.h"
-#include "comm.h"
+#include "net_dplay.h"
 #include "Lights.h"
 #include "title.h"
 #include "multiplayer.h"

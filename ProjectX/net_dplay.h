@@ -1,13 +1,4 @@
 
-/*==========================================================================
- *
- *  Copyright (C) 1995-1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File:       comm.h
- *  Content:    communication routines include file
- *
- *
- ***************************************************************************/
 #define IDIRECTPLAY2_OR_GREATER
 #include "typedefs.h"
 #include <dplay.h>
