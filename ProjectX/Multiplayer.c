@@ -34,12 +34,6 @@
 #include "demo.h"
 #include "string.h"
 
-// required version of Direct Play is 6.0 (4.6.0.318)
-#define DPLAY_VERSION_HI	(4)
-#define DPLAY_VERSION_LO	(6)
-#define DPLAY_REVISION_HI	(0)
-#define DPLAY_REVISION_LO	(318)
-
 /*
  * Externals
  */
