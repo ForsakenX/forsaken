@@ -51,11 +51,8 @@ BOOL Mymemcmp( BYTE * buf1 , BYTE * buf2 , int size );
 int CheckLegalIP( void );
 int GetIPAdd( void );
 void BailMultiplayerFrontEnd( MENU * Menu );
-void StartDemoPlayback( MENUITEM * Item );
-void StartDemoCleaning( MENUITEM * Item );
 void DistributeTeamsToLists(int *dummy);
 
-BOOL SplashDemoOK( char *demofile );
 void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 
 void SetUpGameType( int type );

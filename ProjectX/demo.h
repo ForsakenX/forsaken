@@ -12,5 +12,6 @@ char *DemoFileName( char *demoname );
 char *DemoName( char *demofilename );
 
 void StartDemoCleaning( MENUITEM * Item );
+void StartDemoPlayback( MENUITEM * Item );
 
 #endif
