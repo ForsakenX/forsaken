@@ -32,6 +32,7 @@
 #include "xmem.h"
 #include "util.h"
 #include "demo.h"
+#include "string.h"
 
 // required version of Direct Play is 6.0 (4.6.0.318)
 #define DPLAY_VERSION_HI	(4)
@@ -1186,7 +1187,7 @@ BOOL JoinASession ( MENUITEM * Item )
 	temp_sd.dwUser3						= 0;
 	Old_Session.dwUser3				= 0;
 
-	if( ( Mymemcmp( (BYTE*) &Old_Session , (BYTE*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == TRUE ) &&
+	if( ( memcmp( (void*) &Old_Session , (void*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == 0 ) &&
 		( _stricmp( (char*) &biker_name[0], (char*) &Old_Name[0] ) == 0 ) )
 	{
 	   	Rejoining = TRUE;
@@ -1720,24 +1721,6 @@ void DistributeTeamsToLists(int *dummy)
 		sprintf(TeamCurrentScore[team], ": %d",TeamScore[team]);
 	}
 }
-
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	My Memory Compare...
-	Input		:	nothing
-	Output		:	nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-BOOL Mymemcmp( BYTE * buf1 , BYTE * buf2 , int size )
-{
-	while( size--)
-	{
-		if( *buf1++ != *buf2++ )
-		{
-			return FALSE;
-		}
-	}
-	return TRUE;
-}
-
 
 #define WSA_DEBUG
 int GetIPAdd( void )

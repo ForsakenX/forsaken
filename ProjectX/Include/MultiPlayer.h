@@ -46,8 +46,6 @@ void InitExistingGameJoin( MENU *Menu );
 void SwapTeamIDs( LIST * Source , LIST * Dest );
 void ReAssembleTeamNumbers(int *dummy);
 void CheckForMenuChange(int *dummy);
-
-BOOL Mymemcmp( BYTE * buf1 , BYTE * buf2 , int size );
 int CheckLegalIP( void );
 int GetIPAdd( void );
 void BailMultiplayerFrontEnd( MENU * Menu );
