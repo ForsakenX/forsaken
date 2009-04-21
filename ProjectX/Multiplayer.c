@@ -282,22 +282,6 @@ void GetServiceProviderShortName( void )
 
 }
 
-
-
-/*
- * IsEqualGuid
- *
- * Determines if two guids are equal
- */
-BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
-{
-   return (
-      ((PLONG) lpguid1)[0] == ((PLONG) lpguid2)[0] &&
-      ((PLONG) lpguid1)[1] == ((PLONG) lpguid2)[1] &&
-      ((PLONG) lpguid1)[2] == ((PLONG) lpguid2)[2] &&
-      ((PLONG) lpguid1)[3] == ((PLONG) lpguid2)[3]);
-}
-
 void InitDemoList( MENU * Menu );
 void RestoreDemoSettings( void );
 void GetMultiplayerPrefs( void );

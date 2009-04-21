@@ -60,8 +60,6 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 
 void SetUpGameType( int type );
 BOOL RefreshDPlay ( void );
-BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
-
 
 char * CurrentServiceProviderShortName( void );
 
