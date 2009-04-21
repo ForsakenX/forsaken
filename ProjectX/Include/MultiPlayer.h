@@ -58,7 +58,6 @@ void DistributeTeamsToLists(int *dummy);
 BOOL StartASinglePlayerGame( MENUITEM * Item );
 
 BOOL LoadASinglePlayerGame( MENUITEM * Item );
-BOOL InGameLoadASinglePlayerGame( MENUITEM * Item );
 BOOL SplashDemoOK( char *demofile );
 void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 

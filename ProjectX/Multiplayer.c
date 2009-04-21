@@ -2166,25 +2166,3 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 }
 
 
-int16 InGameLoadGameLevelNum;
-
-BOOL InGameLoadASinglePlayerGame( MENUITEM * Item )
-{
-	int16 OldNewLevelNum;
-	OldNewLevelNum = NewLevelNum;
-	WhoIAm = 0;								// I was the first to join...
-	NewLevelNum = -1;
-	PreInGameLoad( Item );
-
-	if( NewLevelNum == -1 )
-	{
-		NewLevelNum = OldNewLevelNum;
-		return FALSE;
-	}
-	InGameLoadGameLevelNum = NewLevelNum;
-	NewLevelNum = OldNewLevelNum;
-
-	CountDownOn = FALSE;
-	MyGameStatus = STATUS_InGameLoadGameStartingSinglePlayer;
-	return TRUE;
-}
