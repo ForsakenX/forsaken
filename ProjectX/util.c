@@ -62,6 +62,33 @@ BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
       ((PLONG) lpguid1)[3] == ((PLONG) lpguid2)[3]);
 }
 
+BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz) 
+{ 
+    int i;
+    const BYTE * pBytes = (const BYTE *) lpguid; 
+	static const char szDigits[] = "0123456789ABCDEF";
+	static const BYTE GuidMap[] = { 3, 2, 1, 0, '-', 5, 4, '-', 7, 6, '-', 
+									8, 9, '-', 10, 11, 12, 13, 14, 15 }; 
+ 
+    *lpsz++ = '{'; 
+ 
+    for (i = 0; i < sizeof(GuidMap); i++) 
+    { 
+        if (GuidMap[i] == '-') 
+        { 
+            *lpsz++ = '-'; 
+        } 
+        else 
+        { 
+            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0xF0) >> 4 ]; 
+            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0x0F) ]; 
+        } 
+    } 
+    *lpsz++ = '}'; 
+    *lpsz   = '\0'; 
+ 
+    return TRUE; 
+}
 
 //////////////////////////////////////////////////////////////////////
 // GetDigit(), ConvertField(), and GUIDFromString()

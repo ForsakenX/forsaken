@@ -369,43 +369,6 @@ BOOL WINAPI EnumServiceProviders(LPGUID lpGuid, LPTSTR lpSpName, DWORD dwMajorVe
     return(TRUE);
 }
 
-////
-// StringFromGUID
-//		only used by next function so leave it here
-//      if we ever need to reuse it then put it somewhere better
-////
-
-static const BYTE GuidMap[] = { 3, 2, 1, 0, '-', 5, 4, '-', 7, 6, '-', 
-                                8, 9, '-', 10, 11, 12, 13, 14, 15 }; 
-
-static const char szDigits[] = "0123456789ABCDEF"; 
-
-BOOL StringFromGUID(LPCGUID lpguid, LPSTR lpsz) 
-{ 
-    int i; 
- 
-    const BYTE * pBytes = (const BYTE *) lpguid; 
- 
-    *lpsz++ = '{'; 
- 
-    for (i = 0; i < sizeof(GuidMap); i++) 
-    { 
-        if (GuidMap[i] == '-') 
-        { 
-            *lpsz++ = '-'; 
-        } 
-        else 
-        { 
-            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0xF0) >> 4 ]; 
-            *lpsz++ = szDigits[ (pBytes[GuidMap[i]] & 0x0F) ]; 
-        } 
-    } 
-    *lpsz++ = '}'; 
-    *lpsz   = '\0'; 
- 
-    return TRUE; 
-}
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	A Provider has been chosen create a directplay object
 	Input		:	nothing
