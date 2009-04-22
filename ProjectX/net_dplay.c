@@ -71,41 +71,16 @@ BOOL JoinASession ( MENUITEM * Item );
  *
  * Wrapper for DirectPlay Close API
  */
-HRESULT DPlayClose(void)
+HRESULT DPlayClose( LPDIRECTPLAY4A dp )
 {
     HRESULT hr=E_FAIL;
 
-    if (glpDP) 
-        hr = IDirectPlayX_Close(glpDP);
+    if ( dp ) 
+        hr = IDirectPlayX_Close( dp );
     
     return hr;
 }
 
-/*
- * DPlayCreate
- *
- * Wrapper for DirectPlay Create API.
- * 
- */
-HRESULT DPlayCreate(LPGUID lpGuid)
-{
-    HRESULT hr=E_FAIL;
-    LPDIRECTPLAY lpDP=NULL;
-
-    // create a DirectPlay1 interface
-    if ((hr = DirectPlayCreate(lpGuid, &lpDP, NULL)) == DP_OK)
-    {
-        if (lpDP)
-        {
-            // query for a DirectPlay interface
-            hr = IDirectPlay_QueryInterface(lpDP,&IID_IDirectPlay4A,(LPVOID *)&glpDP);
-            // no longer need the DirectPlay1 interface
-            IDirectPlay_Release(lpDP);
-        }
-    }
-
-    return hr;
-}
 /*
  * DPlayCreatePlayer
  *
@@ -300,10 +275,39 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
     // set the application guid
 	dpDesc.guidApplication = PROJX_GUID;
 
-    if (glpDP)
-        hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_CREATE);
-	else
+    if (!glpDP)
 		DebugPrintf("DPlayCreateSession: !glpDP Could not create direct play session.");
+
+    hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_CREATE);
+
+	switch(hr)
+	{
+	case DP_OK:
+		break;
+	case DPERR_ALREADYINITIALIZED:
+		DebugPrintf("DPlayCreateSession: DPERR_ALREADYINITIALIZED\n",hr);
+		break;
+	case DPERR_INVALIDFLAGS:
+		DebugPrintf("DPlayCreateSession: DPERR_INVALIDFLAGS\n",hr);
+		break;
+	case DPERR_INVALIDPARAMS:
+		DebugPrintf("DPlayCreateSession: DPERR_INVALIDPARAMS\n",hr);
+		break;
+	case DPERR_NOCONNECTION:
+		DebugPrintf("DPlayCreateSession: DPERR_NOCONNECTION\n",hr);
+		break;
+	case DPERR_TIMEOUT:
+		DebugPrintf("DPlayCreateSession: DPERR_TIMEOUT\n",hr);
+		break;
+	case DPERR_UNINITIALIZED:
+		DebugPrintf("DPlayCreateSession: DPERR_UNINITIALIZED\n",hr);
+		break;
+	case DPERR_USERCANCEL:
+		DebugPrintf("DPlayCreateSession: DPERR_USERCANCEL\n",hr);
+		break;
+	default:
+		DebugPrintf("DPlayCreateSession: failed %x\n",hr);
+	}
 
     return hr;
 }
@@ -382,9 +386,7 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 	else
 	{
 		DebugPrintf("DPlayEnumSessions: !glpDP Could not enumerate sessions...");
-		Msg("%s\n%s",
-			"Cannot enumerate sessions."
-			"DirectPlay Lobby Interface Missing!");
+		Msg("Cannot enumerate sessions.\n DirectPlay Interface Missing!");
 	}
 
 	// return result
@@ -498,16 +500,6 @@ HRESULT DPlaySetSessionDesc(DWORD flags)
 }
 
 /*
- * IsDPlay
- *
- * Returns TRUE if a DirectPlay interface exists, otherwise FALSE.
- */
-BOOL IsDPlay(void)
-{
-    return (glpDP ? TRUE:FALSE);
-}
-
-/*
  * DPlayOpenSession
  *
  * Wrapper for DirectPlay OpenSession API. 
@@ -549,26 +541,9 @@ HRESULT DPlayRelease(void)
 
     if (glpDP != NULL)
     {
-        // free session desc, if any
-//        if (glpdpSD) 
-//        {
-//            free(glpdpSD);
-//            glpdpSD = NULL;
-//        }
-
-// WINEBUG
-// game freezes right here...
-
-        // release dplay
         hr = IDirectPlayX_Release(glpDP);
         glpDP = NULL;
     }
-
-//	if( lpDPlayLobby )
-//	{
-//		lpDPlayLobby->lpVtbl->Release(lpDPlayLobby);
-//		lpDPlayLobby = NULL;
-//	}
 
     return hr;
 }
@@ -638,32 +613,27 @@ FAILURE:
 
 
 /*
- * DPlay Create a sevice provider address...
- *
- * Wrapper for DirectPlay CreateCompoundAddress API
+ * Create a tcp address structure
  */
 
-HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLobby, LPVOID *lplpAddress, LPDWORD lpdwAddressSize , char * TCPIPAddress)
+static HRESULT CreateAddress( LPVOID *lplpAddress, char * TCPIPAddress )
 {
-	DPCOMPOUNDADDRESSELEMENT	addressElements[3];
 	LPVOID						lpAddress = NULL;
 	DWORD						dwAddressSize = 0;
-	DWORD						dwElementCount;
 	HRESULT						hr;
+	DWORD dwElementCount = 0;
 
-	dwElementCount = 0;
+	// TCP/IP needs a service provider and an IP address
+	DPCOMPOUNDADDRESSELEMENT addressElements[2];
 
-	// internet TCP/IP service provider
-	if (IsEqualGUID(lpGuid, &DPSPGUID_TCPIP))
+	// service provider
+	addressElements[dwElementCount].guidDataType = DPAID_ServiceProvider;
+	addressElements[dwElementCount].dwDataSize = sizeof(GUID);
+	addressElements[dwElementCount].lpData = (LPVOID) &DPSPGUID_TCPIP;
+	dwElementCount++;
+
+	if ( TCPIPAddress != NULL )
 	{
-		// TCP/IP needs a service provider and an IP address
-
-		// service provider
-		addressElements[dwElementCount].guidDataType = DPAID_ServiceProvider;
-		addressElements[dwElementCount].dwDataSize = sizeof(GUID);
-		addressElements[dwElementCount].lpData = (LPVOID) &DPSPGUID_TCPIP;
-		dwElementCount++;
-
 		// This is where you would fill in the IP Address..
 		addressElements[dwElementCount].guidDataType = DPAID_INet;
 		addressElements[dwElementCount].dwDataSize = lstrlen(TCPIPAddress) + 1;
@@ -671,22 +641,9 @@ HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlay
 		dwElementCount++;
 	}
 
-	// IPX service provider
-	else if (IsEqualGUID(lpGuid, &DPSPGUID_IPX))
-	{
-		// IPX just needs a service provider
-
-		// service provider
-		addressElements[dwElementCount].guidDataType = DPAID_ServiceProvider;
-		addressElements[dwElementCount].dwDataSize = sizeof(GUID);
-		addressElements[dwElementCount].lpData = (LPVOID) &DPSPGUID_IPX;
-		dwElementCount++;
-	}
-
 	// see how much room is needed to store this address
-	hr = lpDPlayLobby->lpVtbl->CreateCompoundAddress(lpDPlayLobby,
-						addressElements, dwElementCount,
-						NULL, &dwAddressSize);
+	hr = lpDPlayLobby->lpVtbl->CreateCompoundAddress(
+		lpDPlayLobby, addressElements, dwElementCount, NULL, &dwAddressSize );
 
 	if (hr != DPERR_BUFFERTOOSMALL)
 	{
@@ -729,7 +686,6 @@ HRESULT	CreateServiceProviderAddress( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlay
 
 	// return the address info
 	*lplpAddress = lpAddress;
-	*lpdwAddressSize = dwAddressSize;
 
 	return (DP_OK);
 
@@ -742,50 +698,19 @@ FAILURE:
 	return (hr);
 }
 
-
-/*
- * DPlay Once a Sevice Provider is chosen then create the DirectPlay Interfence
- *
- * Wrapper for DirectPlay CreateCompoundAddress API
- */
-HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLobby, LPDIRECTPLAY4A *lplpDPlay , char * TCPIPAddress)
+// &TCPAddress.text[0]
+// PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
+BOOL InitializeDPlay( char * TCPIPAddress )
 {
-	LPDIRECTPLAY4A	lpDPlay = NULL;
 	LPVOID			lpAddress = NULL;
-	DWORD			dwAddressSize = 0;
 	HRESULT			hr;
 
-	// bail if we don't have a lobby interface
-	if (lpDPlayLobby == NULL)
-		return (DPERR_INVALIDOBJECT);
-
 	// get service provider address from information in dialog
-	if (FAILED(
-		  CreateServiceProviderAddress( lpGuid, lpDPlayLobby, &lpAddress,
-		                                &dwAddressSize, TCPIPAddress )))
-		goto FAILURE;
-
-	// if direct play interface exists
-	if (*lplpDPlay)
-	{
-		// release it
-		(*lplpDPlay)->lpVtbl->Release(*lplpDPlay);
-		*lplpDPlay = NULL;
-	}
-
-	// create a DirectPlay ANSI interface
-	if FAILED(
-		CoCreateInstance(
-			&CLSID_DirectPlay,
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			&IID_IDirectPlay4A,
-			(LPVOID*)&lpDPlay
-			))
+	if ( FAILED( CreateAddress( &lpAddress, TCPIPAddress ) ) )
 		goto FAILURE;
 
 	// initialize the connection using the address
-	hr = lpDPlay->lpVtbl->InitializeConnection(lpDPlay, lpAddress, 0);
+	hr = glpDP->lpVtbl->InitializeConnection(glpDP, lpAddress, 0);
 	if FAILED(hr)
 	{
 		switch ( hr )
@@ -807,23 +732,54 @@ HRESULT	OnceServiceProviderChosen( LPGUID lpGuid ,LPDIRECTPLAYLOBBY2A lpDPlayLob
 		goto FAILURE;
 	}
 
-	// return the connected interface
-	*lplpDPlay = lpDPlay;
-
-	// set to NULL so we don't release it below
-	lpDPlay = NULL;
+	return TRUE;
 
 FAILURE:
-	if (lpDPlay)
-	{
-		lpDPlay->lpVtbl->Close(lpDPlay);
-		lpDPlay->lpVtbl->Release(lpDPlay);
-	}
 	if( lpAddress )
-	{
 		free(lpAddress);
+	return FALSE;
+}
+
+BOOL SetupDPlay( char * TCPIPAddress )
+{
+	// cleanup any previous dplay interface
+	DPlayRelease();
+
+	// create dplay lobby interface
+	if (!lpDPlayLobby)
+		DPlayCreateLobby();
+
+	// if direct play interface exists
+	if ( glpDP )
+	{
+		// release it
+		(glpDP)->lpVtbl->Release(glpDP);
+		glpDP = NULL;
 	}
-	return (hr);
+
+	// create a DirectPlay ANSI interface
+	if FAILED(
+		CoCreateInstance(
+			&CLSID_DirectPlay,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IDirectPlay4A,
+			(LPVOID*)&glpDP
+			))
+		goto FAILURE;
+
+	// must be initialized
+	InitializeDPlay( TCPIPAddress );
+
+	return TRUE;
+
+FAILURE:
+	if (glpDP)
+	{
+		glpDP->lpVtbl->Close(glpDP);
+		glpDP->lpVtbl->Release(glpDP);
+	}
+	return FALSE;
 }
 
 /*

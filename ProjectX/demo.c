@@ -47,7 +47,8 @@ extern uint16 CopyOfSeed1;
 extern uint16 CopyOfSeed2;
 extern BOOL RandomPickups;
 extern BOOL PlayDemo;
-
+extern void DebugLastError( void );
+extern BOOL ChangeLevel( void );
 
 FILE	*	DemoFp = NULL;
 FILE	*	DemoFpClean = NULL;

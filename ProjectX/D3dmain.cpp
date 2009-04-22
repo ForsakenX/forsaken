@@ -51,6 +51,7 @@ extern "C" {
 #include	"d3dapp.h"
 #include	"Sfx.h"
 #include	"util.h"
+#include	"net_dplay.h"
 
 	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;
@@ -569,7 +570,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	LPSTR tmp = "";
     LPSTR option = "";
 	char cmdline[256];
-	char buf[256];
 	int size;
 
     //

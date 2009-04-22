@@ -47,6 +47,7 @@
 #include "restart.h"
 #include "version.h"
 #include "demo.h"
+#include "singleplayer.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -118,9 +119,7 @@ BOOL	Last_SWMonoChrome = FALSE;
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern BOOL WaitingToQuit;
 extern int16	NumPrimaryPickups;
-extern BOOL ServiceProviderSet;
 
-extern GUID	ServiceProvidersGuids[];
 extern char SessionNames[ MAXSESSIONS ][ 128 ];
 
 extern DPSESSIONDESC2	Sessions[];
@@ -200,7 +199,6 @@ extern char *ShipAxisText[];
 extern int ShipAxisLookup[];
 extern uint16 new_input;
 extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
-extern char  ServiceProviderShortName[];
 extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
 extern int	Num_Joysticks;
@@ -753,7 +751,6 @@ BOOL SetNumPrimaryPickups( SLIDER *slider );
 void UpdateSessionInfo( LIST *List );
 void InitHostWaitingToStart( MENU *Menu );
 void BackToJoinSession( MENUITEM *Item );
-void MenuReleaseDPlay( MENU *Menu );
 
 /***********************************
 Highlight box functions
@@ -840,7 +837,6 @@ BYTE HostGamePlayersWhoIAm[ MAX_PLAYERS ];
 
 LIST TeamList[MAX_TEAMS];
 LIST LoadSavedGameList		= { 0 };
-LIST ServiceProvidersList		= { 0 };
 LIST SessionsList					= { 0 };
 LIST MySessionsList				= { 0 };
 LIST PlayersList					= { 0 };
@@ -1368,9 +1364,6 @@ MENU MENU_NEW_NetworkOptions = {
 		{ 10, 24,  85, 24, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{ 10, 40, 120, 40, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{ 10, 48, 120, 48, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-        
-		{  10, 64,  90,  64, 0,			"Protocol",																	FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ChooseConnectionToStart,  MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
-        {  90, 64, 205,  64, 0,			"",																			FONT_Small,		TEXTFLAG_CentreY,													(void *)ServiceProviderShortName,	&ServiceProviderSet,				NULL,					DrawConditionalName,	NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1408,16 +1401,6 @@ MENU	MENU_NEW_CreateGame = {
 		{  10, 132, 100, 132, 0,			"Network Options",										FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_NetworkOptions,			MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	}
-};
-
-/* connection */
-MENU	MENU_NEW_ChooseConnectionToStart = {
-	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToStart0 /*"Choose connection type"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 30, 195, 160, 0, "", FONT_Small,TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &ServiceProvidersList, SelectConnectionToStart, SelectList, DrawFlatMenuList, NULL, 0  },
-		{ -1, -1, 0, 0, 0, "", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
 
@@ -1860,7 +1843,7 @@ char Session_Info_BikeExhausts[ 128 ];
 
 MENU	MENU_NEW_ChooseSessionToJoin = {
 
-		"" , GetMyCurrentSessions , MenuReleaseDPlay , CopySessionsList, TITLE_TIMER_PanToLeftVDU,
+		"" , GetMyCurrentSessions , NULL, CopySessionsList, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseSessionToJoin0 /*"Choose session to join"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 
@@ -1906,18 +1889,13 @@ MENUITEM MENU_ITEM_JoinMultiplayer =
 
 
 MENU	MENU_NEW_ChooseConnectionToJoin = {
-	"", GetServiceProviders, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
+	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToJoin0/*"start"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConnectionToJoin, DrawFlatMenuItem, NULL, 0  },
-		{ 5, 20, 200, 30, 0, LT_MENU_NEW_ChooseConnectionToJoin1/*"Choose connection type:"*/, FONT_Small, TEXTFLAG_CentreY, &ServiceProvidersList, NULL, SelectVDUList, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 35, 200, 155, 0, "", FONT_Small,TEXTFLAG_Unselectable | TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY,  &ServiceProvidersList, NULL, SelectList, DrawFlatMenuList, NULL, 0  },
 
 		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"IP or Name:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
-		// nobody liked this... leave it out...
-		//{ 0, 160, 200, 170, 0, LT_MENU_NEW_ChooseConnectionToStart1 /*"press 'q' to quit"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX,  NULL, NULL, SelectQuit, DrawFlatMenuItem, NULL, 0  },
-						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -2422,21 +2400,10 @@ MENU	MENU_ChooseSessionToJoin = {
 };
 
 MENU	MENU_HostOrJoin = {
-	"MultiPlayer" , NULL , ChangeServiceProvider , NULL, 0,
+	"MultiPlayer" , NULL , NULL, NULL, 0,
 	{
 		{ 200, 112, 0, 0, 0, "Start a Game", 0, 0,	NULL,	&MENU_Host,	MenuChange,		MenuItemDrawName, NULL, 0 },
 		{ 200, 128, 0, 0, 0, "Join a Network Game", 0, 0,	NULL,	&MENU_ChooseSessionToJoin,	MenuChange,		MenuItemDrawName, NULL, 0 },
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
-
-MENU	MENU_MultiPlayer = {
-	"Choose Provider" ,
-	NULL, //GetServiceProviders ,
-	NULL , NULL, 0,
-	{
-		{ 200, 112, 0, 0, 0, "Next", 0, 0,	NULL,	&MENU_HostOrJoin,	ExitProviderChosen,		MenuItemDrawName, NULL, 0 },
-		{ 200, 128, 0, 0, 0, "Choose From...", 0, 0, &ServiceProvidersList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -2907,7 +2874,7 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 					{ OLDMENUITEM( 200 , 112,  "Set Up Biker  ", (void *)biker_name, &MENU_SetUpBiker, MenuChange, DrawNameVar ),
 					  OLDMENUITEM( 200 , 128, "Toggle Full Screen", NULL, NULL , MenuGoFullScreen , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 144, "Single Player", NULL, &MENU_SinglePlayer , MenuChange , MenuItemDrawName ),
-					  OLDMENUITEM( 200 , 160, "Multi Player", NULL, &MENU_MultiPlayer , MenuChange , MenuItemDrawName ),
+					  OLDMENUITEM( 200 , 160, "Multi Player", NULL, &MENU_HostOrJoin , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 176, "Load Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 192, "Save Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 208, "Play Demo", NULL, &MENU_DemoPlayBack , MenuChange , MenuItemDrawName ),
@@ -4999,8 +4966,8 @@ BOOL DisplayTitle(void)
 			StackMode = DISC_MODE_NONE;
 			StackStatus = DISC_NOTHING;
 
-			if ( ServiceProviderSet )
-				SelectConnectionToStart( NULL );
+			SelectConnectionToStart( NULL );
+
 			break;
 		case QUICKSTART_Join:
 			InitStartMenu( NULL );
@@ -5014,8 +4981,7 @@ BOOL DisplayTitle(void)
 			StackMode = DISC_MODE_NONE;
 			StackStatus = DISC_NOTHING;
 			
-			if ( ServiceProviderSet )
-				SelectConnectionToJoin( NULL );
+			SelectConnectionToJoin( NULL );
 			break;
 
 		case QUICKSTART_Notify:
@@ -5289,8 +5255,6 @@ Event handling
 	//MorphHoloLight();
 	
 	ProcessTextItems();
-
-	//Our_CalculateFrameRate();
 
 	if( CurrentMenu && CurrentMenuItem )
 	{
@@ -10442,9 +10406,6 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 
 	// load level names to be displayed in the list
 	LoadLevelText( NULL );
-
-	// populate global list of service providers selecting last used
-	GetServiceProviders(NULL);
 
 	// set the game type name
 	strncpy( GameTypeName, GameTypeNameTable[ GameType ], sizeof(GameTypeName) );
@@ -16632,30 +16593,24 @@ uint16 PlotHighlightPoly (float xmin, float ymin, float xmax, float ymax, uint8 
 
 void SelectConnectionToStart (MENUITEM *Item)
 {
-	/* if fail to set service provider dont exit */
-	if( !ExitProviderChosen( Item ) )
-		return;
-/* hack */
 	MenuState = MENUSTATE_Select;
-//	MenuChange ( &MENU_ITEM_StartMultiplayer );
-/* end hack */
 }
 
 void SelectConnectionToJoin (MENUITEM *Item)
 {
-	if( !ExitProviderChosen( Item ) )
-		return;
 	MenuChange ( &MENU_ITEM_JoinMultiplayer );
 }
 
 
 void UpdateSessions ( int *dummy )
 {
+	DebugPrintf("UpdateSessions\n");
 	GetPlayersInCurrentSession ( NULL );
 }
 
 void GetInitialSessions ( MENU *menu )
 {
+	DebugPrintf("GetInitialSessions\n");
 	NumOfPlayersSlider.oldvalue = -1;
 	PlayersList.display_items = 16;
 	GetPlayersInCurrentSession ( NULL );
@@ -16670,6 +16625,7 @@ void SetSessionJoinFlag( MENUITEM *Item )
 void InitMySessionsList(void)
 {									
 	
+	DebugPrintf("InitMySessionsList\n");
 	// how many items displayed
 	MySessionsList.display_items		= 8;
 
@@ -18262,9 +18218,6 @@ void TestMenuFormat( void )
 	DebugPrintf("MENU_NEW_CreateGame\n");
 	GetFormatInfo ( &MENU_NEW_CreateGame );
 
-	DebugPrintf("MENU_NEW_ChooseConnectionToStart\n");
-	GetFormatInfo ( &MENU_NEW_ChooseConnectionToStart );
-
 	DebugPrintf("MENU_NEW_PrimaryOrder\n");
 	GetFormatInfo ( &MENU_NEW_PrimaryOrder );
 
@@ -18415,9 +18368,6 @@ void UpdateSessionInfo( LIST *List )
 
 	if ( IsKeyPressed( DIK_F1 ) )
 	{
-		if ( !RefreshDPlay() )
-			MyGameStatus = STATUS_Title;	// because we will have been thrown back a menu
-
 		InitMySessionsList();
 		GetCurrentSessions( NULL );
 	}
@@ -18630,27 +18580,6 @@ void InitHostWaitingToStart( MENU *Menu )
 
 extern	DPID					dcoID;    // player id
 
-void BackToJoinSession( MENUITEM *Item )
-{
-
-	MenuBackSpecific( &MENU_NEW_ChooseSessionToJoin, FALSE );	// ignore exit menu funcs
-	
-	if( dcoID )
-	{
-		DPlayDestroyPlayer(dcoID);
-		dcoID = 0;
-	}
-  
-	DPlayRelease();
-	
-	MyGameStatus = STATUS_Title;
-
-	RefreshDPlay();
-
-	OKToJoinSession = FALSE;
-}
-
-
 BOOL GeneralTimeout( float *timer )
 {
 	char buf[ 64 ];
@@ -18667,12 +18596,6 @@ BOOL GeneralTimeout( float *timer )
 	}
 
 	return FALSE;
-}
-
-
-void MenuReleaseDPlay( MENU *Menu )
-{
-	DPlayRelease();
 }
 
 void TitleReset( MENUITEM *item )

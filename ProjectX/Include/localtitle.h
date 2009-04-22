@@ -102,8 +102,6 @@
 #define LT_MENU_NEW_CreateGame14 "Team bounty hunt"
 #define LT_MENU_NEW_CreateGame16 "more options"
 
-#define LT_MENU_NEW_ChooseConnectionToStart0 "Choose connection type"
-
 #define LT_MENU_NEW_PrimaryOrder0 "primary weapon selection preferences"
 #define LT_MENU_NEW_PrimaryOrder1 "auto"
 #define LT_MENU_NEW_PrimaryOrder2 "manual"
@@ -287,7 +285,6 @@
 #define LT_MENU_NEW_ChooseSessionToJoin0 "Choose session to join"
 
 #define LT_MENU_NEW_ChooseConnectionToJoin0 "start"
-#define LT_MENU_NEW_ChooseConnectionToJoin1 "Choose connection type:"
 #define LT_MENU_NEW_ChooseConnectionToJoin2 "IP or Name:"
 
 #define LT_MENU_NEW_ChangeBike0 "speed"

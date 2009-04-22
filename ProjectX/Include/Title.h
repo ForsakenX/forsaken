@@ -484,7 +484,6 @@ extern MENU MENU_NEW_ChooseTeamForExistingGame;
 extern MENU MENU_NEW_PseudoHostWaitingForAck;
 extern MENU MENU_NEW_ChooseSessionToJoin;
 extern MENU MENU_NEW_PseudoHostWaitingToStart;
-extern MENU MENU_NEW_ChooseConnectionToStart;
 extern MENU MENU_NEW_ChooseConnectionToJoin;
 extern MENU MENU_NEW_GeneralLoading;
 

@@ -74,9 +74,6 @@ extern	int8	TeamFlagPickup[ MAX_TEAMS ];
 
 extern int16	NumPrimaryPickups;
 
-extern GUID	ServiceProvidersGuids[];
-extern	LIST	ServiceProvidersList;
-
 extern	BOOL	CountDownOn;
 extern char LevelNames[MAXLEVELS][128];
 
@@ -1262,7 +1259,9 @@ void DestroyGame( void )
 		DPlayRelease();
 		dcoID = 0;
 
-		Old_Session = *glpdpSD;
+		if( glpdpSD != NULL )
+			Old_Session = *glpdpSD;
+
 		Old_WhoIAm = WhoIAm;
 
 		if( TeamGame || CTF || CaptureTheFlag || BountyHunt || MaxKills )
@@ -1393,10 +1392,7 @@ void ReceiveGameMessages( void )
 {
 	DPID			dcoReceiveID;
     DWORD		nBytes;
-	BYTE			* BufferPnt;
-	DWORD		* dwordpnt;
 	DWORD		offset = 0;
-	LONGLONG	* longpnt;
 	HRESULT		status;
 	int i;
 
@@ -4606,13 +4602,8 @@ int FindSameLevel( char * Name )
 
 void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 {
-	char * charpnt;
-	char * charpnt2;
-	size_t i,e;
-
 	if( !RecordDemo || !DemoFp )
 		return;
-
 	fwrite( buffer, size , count , stream );
 }
 

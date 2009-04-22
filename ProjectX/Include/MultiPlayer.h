@@ -5,7 +5,6 @@
 /*
  * Defines....
  */
-#define MAXSERVICEPROVIDERS 8
 #define MAXSESSIONS 32
 
 
@@ -17,15 +16,11 @@ extern BOOL	SessionsRefresh[];
  * Application messages
  */
 
-BOOL WINAPI EnumServiceProviders(LPGUID lpGuid, LPTSTR lpSpName, DWORD dwMajorVersion,
-		                         DWORD dwMinorVersion, LPVOID lpv);
 BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, 
                         LPVOID lpContext);
 BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
     DWORD dwFlags, LPVOID lpContext);
 
-void GetServiceProviders( MENU * Item );
-BOOL ExitProviderChosen ( MENUITEM * Item );
 BOOL StartAHostSession ( MENUITEM * Item );
 void GetCurrentSessions( MENU *Menu );
 void GetCurrentSessions_ReScan( MENUITEM *Item );
@@ -35,8 +30,6 @@ void GetPlayersInCurrentSession( MENUITEM *Item );
 void GoToSynchup ( MENUITEM * Item );
 
 void BailMultiplayer( MENU * Menu );
-void ChangeServiceProvider( MENU * Menu );
-void ChangeServiceProviderPseudoHost( MENU * Menu );
 void SwapListItem( LIST * Source , LIST * Dest );
 void TeamGoToSynchup ( MENUITEM * Item );
 void InitTeamSelection( MENU *Menu );
@@ -52,7 +45,5 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd );
 
 void SetUpGameType( int type );
 BOOL RefreshDPlay ( void );
-
-char * CurrentServiceProviderShortName( void );
 
 #endif	// MULTIPLAYER_INCLUDED

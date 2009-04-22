@@ -95,7 +95,6 @@ extern	BOOL	CaptureTheFlag;
 extern	BOOL	CTF;
 extern	TEXT	DemoGameName;
 extern	BOOL	RecordDemo;
-extern	LIST	ServiceProvidersList;
 extern	LIST	PlayersList;
 extern	LIST	LevelList;
 extern	LIST	TeamList[MAX_TEAMS];
@@ -184,15 +183,7 @@ extern	BOOL	NoSFX;
  * Globals to this module
  */
 
-BOOL ServiceProviderSet = FALSE;
-
-char    ServiceProviderShortName[16];
-
 DPSESSIONDESC2			Old_Session;
- 
-DPCAPS					ServiceProviderCaps;
-DWORD					SugestedEnumSessionsTimeout = 0;
-
 
 DWORD                   Old_WhoIAm = (DWORD) -1;
 DWORD					Old_Kills = 0;
@@ -209,8 +200,6 @@ int						TeamMembers[MAX_TEAMS];
 MENU  *				GetPlayerNumMenu;
 float	Bodge	= 1.0F;
 
-GUID	ServiceProvidersGuids[MAXSERVICEPROVIDERS];
-
 DPSESSIONDESC2	Sessions[MAXSESSIONS];
 char SessionNames[ MAXSESSIONS ][ 128 ];
 
@@ -220,7 +209,6 @@ LIST	SessionsListCopy;
 
 BOOL	SessionsRefresh[MAXSESSIONS];
 BOOL	SessionsRefreshActive = FALSE;
-GUID	gSPGuid;            // currently selected service provider guid
 
 BOOL	Modem2Modem = FALSE;
 
@@ -231,247 +219,9 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
 void InitMySessionsList(void);
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
-
-
-/********************************************\
-|
-|  CurrentServiceProviderNameShort
-|
-\********************************************/
-
-void GetServiceProviderShortName( void )
-{
-
-	int size = 16;
-    LPGUID  lpGuid;
-
-	lpGuid = (LPGUID)&ServiceProvidersGuids[ServiceProvidersList.selected_item];
-
-	if ( ! ServiceProviderSet )
-		return;
-
-	memset( &ServiceProviderShortName, 0, size );
-
-	if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_TCPIP  ) )
-
-		_snprintf ( ServiceProviderShortName, size, "TCPIP" );
-		
-	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_IPX    ) )
-
-		_snprintf ( ServiceProviderShortName, size, "IPX" );
-
-	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_SERIAL ) )
-		
-		_snprintf ( ServiceProviderShortName, size, "SERIAL" );
-
-	else if ( IsEqualGuid( lpGuid, (GUID*)&DPSPGUID_MODEM  ) )
-		
-		_snprintf ( ServiceProviderShortName, size, "MODEM" );
-
-	//Msg("Set %s",&ServiceProviderShortName);
-
-}
-
 void InitDemoList( MENU * Menu );
 void RestoreDemoSettings( void );
 void GetMultiplayerPrefs( void );
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Get a List of Service Providers
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-void GetServiceProviders( MENU * Item )
-{
-
-	DWORD size;
-	static GUID last_service_provider;
-	LPVOID *ptr;
-	char temp[256];
-	LPVOID lpAddress = NULL;
-	DWORD  dwAddressSize = 0;
-
-	/* default not set */
-	ServiceProviderSet = FALSE;
-
-	/* default settings */
-	ServiceProvidersList.items			= 0;
-	ServiceProvidersList.top_item		= 0;
-	ServiceProvidersList.display_items	= 8;
-	ServiceProvidersList.selected_item	= 0;
-	ServiceProvidersList.FuncInfo		= NULL;
-
-	/* default use tcpip */
-	ptr = (LPVOID) &DPSPGUID_TCPIP;
-
-	// try to get last provider used
-	size = sizeof( temp );
-	if ( RegGet( "ServiceProvider", (LPBYTE)temp, &size ) == ERROR_SUCCESS )
-	{
-		// convert the guid string from the registry into a GUID object
-		if ( GUIDFromString( temp, &last_service_provider ) == S_OK )
-		{
-			// set to last used provider
-			ptr = (LPVOID) &last_service_provider;
-		}
-		else
-			Msg("Unable to convert Session GUID from string\n");
-	}
-
-	/* create a direct play lobby object to query for service providers */	
-	DPlayCreateLobby();
-
-	// get a list of the supported providers
-	// and select ptr as the default
-	DirectPlayEnumerate( EnumServiceProviders, ptr );
-
-	// release created direct play object
-	DPlayRelease();
-
-	// set ServiceProviderShortName global to the selected provider: tcpip, modem, serial, ipx
-	GetServiceProviderShortName();
-
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	DirectPlayEnumerate callback. Stores the service provider information.
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL WINAPI EnumServiceProviders(LPGUID lpGuid, LPTSTR lpSpName, DWORD dwMajorVersion,
-						         DWORD dwMinorVersion, LPVOID lpv)
-{
-	
-	if( ServiceProvidersList.items < MAXSERVICEPROVIDERS )
-	{
-		strncpy( ServiceProvidersList.item[ServiceProvidersList.items] , lpSpName , sizeof(ServiceProvidersList.item[0])  );
-		ServiceProvidersGuids[ServiceProvidersList.items] = *lpGuid;
-		if ( lpv && IsEqualGUID( lpGuid, (LPGUID) lpv ) )
-		{
-			ServiceProvidersList.selected_item = ServiceProvidersList.items;
-			ServiceProviderSet = TRUE;
-		}
-
-		if( strlen(lpSpName ) >= sizeof(ServiceProvidersList.item[0]) && (CameraStatus == CAMERA_AtStart))
-		{
-			strcpy( ServiceProvidersList.item[ServiceProvidersList.items] + sizeof(ServiceProvidersList.item[0]) - 4 , "..." );
-		}
-		ServiceProvidersList.items++;
-	}
-    return(TRUE);
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	A Provider has been chosen create a directplay object
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-BOOL ExitProviderChosen ( MENUITEM * Item )
-{
-	HRESULT hr;
-    LPGUID  lpGuid;
-	char sp_guidtext[ 256 ];
-
-	// get a pointer to the guid
-	lpGuid = (LPGUID ) &ServiceProvidersGuids[ServiceProvidersList.selected_item];
-
-	// Check for modem
-	Modem2Modem = FALSE;
-	if (IsEqualGUID( lpGuid, &DPSPGUID_MODEM) )
-		Modem2Modem = TRUE;
-
-	// remember the selection
-	gSPGuid = *lpGuid;
-
-	if (
-		OnceServiceProviderChosen(
-		  &ServiceProvidersGuids[ServiceProvidersList.selected_item],
-		  lpDPlayLobby,
-		  &glpDP,
-		  &TCPAddress.text[0]
-		)
-		!= DP_OK
-	)
-	{
-		PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-
-	ZeroMemory(&ServiceProviderCaps,sizeof(ServiceProviderCaps));
-    ServiceProviderCaps.dwSize = sizeof(DPCAPS);
-
-	hr = IDirectPlayX_GetCaps( glpDP , &ServiceProviderCaps , 0);
-	if( hr != DP_OK )
-	{
-		PrintErrorMessage ( COULDNT_GET_SERVICE_PROVIDER_CAPS, 2, NULL,
-			                ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-	SugestedEnumSessionsTimeout = ServiceProviderCaps.dwTimeout * 2;
-	
-//	if (!AutoSelectConnection)
-//		MenuChange ( Item );
-
-	if ( (CameraStatus == CAMERA_AtStart) && Item )
-		MenuChange ( Item );
-
-	if( Modem2Modem )
-	{
-		MaxPlayersSlider.value = 2;
-		MaxPlayersSlider.max = 2;
-	}
-	else
-	{
-		MaxPlayersSlider.max = MAX_PLAYERS;
-// Commented out by Methods
-// Sunday July 6th
-// note: why in the world is this done?
-//		MaxPlayersSlider.value = PreferedMaxPlayers;
-	}
-
-	// convert guid to string...
-	if ( StringFromGUID( &gSPGuid, sp_guidtext ) )
-	{
-		RegSetA( "ServiceProvider",  (LPBYTE)&sp_guidtext,  sizeof( sp_guidtext ) );
-	}
-
-	return TRUE;
-}
-
-BOOL RefreshDPlay ( void )
-{
-	HRESULT hr;
-    LPGUID  lpGuid;
-
-	// release any previously created Dplay Objects...
-	DPlayRelease();
-
-	// get a pointer to the guid
-	lpGuid = (LPGUID ) &ServiceProvidersGuids[ServiceProvidersList.selected_item];
-
-
-	if ((hr = OnceServiceProviderChosen( &ServiceProvidersGuids[ServiceProvidersList.selected_item] , lpDPlayLobby, &glpDP , &TCPAddress.text[0])) != DP_OK)
-	{
-		PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-
-	ZeroMemory(&ServiceProviderCaps,sizeof(ServiceProviderCaps));
-    ServiceProviderCaps.dwSize = sizeof(DPCAPS);
-
-	hr = IDirectPlayX_GetCaps( glpDP , &ServiceProviderCaps , 0);
-	if( hr != DP_OK )
-	{
-		PrintErrorMessage ( COULDNT_GET_SERVICE_PROVIDER_CAPS, 2, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-	SugestedEnumSessionsTimeout = ServiceProviderCaps.dwTimeout * 2;
-
-	return TRUE;
-}
 
 void SetUpGameSubType( int type )
 {
@@ -560,8 +310,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	uint32		Seed;
 	uint32		PackedInfo[ MAX_PICKUPFLAGS ];
 
-	// setup the chose directplay object
-	ExitProviderChosen(NULL);
+	SetupDPlay( NULL );
 
 	if ( MaxPlayersSlider.max != 2 )
 		PreferedMaxPlayers = MaxPlayersSlider.value;
@@ -599,7 +348,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("DPlayCreateSession.\n");
 	if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
 	{
-		Msg("!DPlayCreateSession");
+		Msg("Failed to create Direct Play Session!");
 		return FALSE;
 	}
 
@@ -607,7 +356,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("DPlayCreatePlayer.\n");
 	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
 	{
-		Msg("!DPlayCreatePlayer");
+		Msg("Failed to create Direct Play Player!");
 	    return FALSE;
 	}
 
@@ -771,6 +520,9 @@ void GetCurrentSessions( MENU *Menu )
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
+	// setup directplay
+	SetupDPlay( TCPAddress.text );
+
 	// look bellow
 	GetCurrentSessions_ReScan(NULL);
 
@@ -799,11 +551,14 @@ void GetCurrentSessions_ReScan( MENUITEM *Item )
 	for( i = 0 ; i < MAXSESSIONS ; i++ )
 		SessionsRefresh[i] = FALSE;
 
+	//
+	DebugPrintf("Enumeration Sessions: STARTING\n");
+
 	// Enumerate Sessions
 	// and we will decide the timeout
 	DPlayEnumSessions(
 
-		SugestedEnumSessionsTimeout,	// interval which dplay broadcasts for games
+		10000,							// interval which dplay broadcasts for games
 
 		EnumSessions,					// callback called with each found session
 
@@ -824,6 +579,8 @@ void GetCurrentSessions_ReScan( MENUITEM *Item )
 										// Starts asynchronous process if not started.
 										// Updates continue until canceled
 		);
+
+	DebugPrintf("Enumeration Sessions: FINISHED\n");
 
 }
 
@@ -1181,6 +938,8 @@ void GetPlayersInCurrentSession( MENUITEM *Item )
 	char buf[ 128 ];
 #endif
 	
+	DebugPrintf("GetPlayersInCurrentSession\n");
+
 	//Bodge -= framelag;
 	//if( Bodge <= 0.0F )
 	{
@@ -1290,45 +1049,16 @@ void BailMultiplayer( MENU * Menu )
 {
 	MyGameStatus = STATUS_Left;
     if ( ( glpDP != NULL ) && ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
-    {
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-	}
-
-	ChangeServiceProvider( Menu );
+	MenuRestart( &MENU_Start );
+	MyGameStatus = STATUS_Title;
 }
 
 void BailMultiplayerFrontEnd( MENU *Menu )
 {
-	int selected_item;
-
-	selected_item = ServiceProvidersList.selected_item;
-
 	BailMultiplayer( Menu );
-
-	GetServiceProviders( NULL );
-	ServiceProvidersList.selected_item = selected_item;
-
-	ExitProviderChosen( NULL );
-
 	SessionsList.selected_item = -1;
 	InitMySessionsList();
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Changeing Service Provider...
-	Input		:	MENU * Menu
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ChangeServiceProvider( MENU * Menu )
-{	 
-	if( dcoID )
-	{
-		DPlayDestroyPlayer(dcoID);
-		dcoID = 0;
-	}
-	DPlayRelease();
-	MyGameStatus = STATUS_Title;
-	ServiceProvidersList.selected_item = -1;
 }
 
 void InitTeamLists( MENU *Menu )

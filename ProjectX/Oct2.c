@@ -80,6 +80,7 @@
 #include "timer.h"
 #include "demo.h"
 #include "file.h"
+#include "singleplayer.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -4820,9 +4821,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       PrintErrorMessage ( "Couldnt Get a Player Number", 3, NULL, ERROR_USE_MENUFUNCS );
       MyGameStatus = STATUS_Title;
       break;
-		//      BailMultiplayer( (MENU*) NULL );
-		//      MenuRestart( &MENU_Start );
-		//      MyGameStatus = STATUS_Title;
     }
 
     if( GetPlayerNumCount1 <= 0.0F )
@@ -5596,6 +5594,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GameStatus[WhoIAm] = MyGameStatus;
     break;
 
+  default:
+	DebugPrintf("MyGameStatus has a bad setting!!!!\n");
+	break;
 
 	//  ******************** End of Single Player Game Stuff *******************************
 
