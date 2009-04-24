@@ -568,7 +568,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_SHORTREGENSLOT				0x4f
 #define MSG_SHORTTRIGGER					0x5f
 #define MSG_SHORTTRIGVAR					0x6f
-#define MSG_NAME								0x7f
 #define MSG_INTERPOLATE					0x8f
 #define MSG_BGOUPDATE						0xaf
 #define MSG_PINGREQUEST					0xbf
@@ -912,13 +911,6 @@ typedef struct _TEXTMSG
 	BYTE		TextMsgType;
 } TEXTMSG, *LPTEXTMSG;
 
-typedef struct _NAMEMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	char		Name[8];
-} NAMEMSG, *LPNAMEMSG;
-
 typedef struct _INTERPOLATEMSG
 {
     BYTE        MsgCode;
@@ -1008,10 +1000,14 @@ BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
 
+
+void set_player_name( void );
+
 void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes );
-void network_event_new_player( char * player_name );
+void network_event_new_player( DPID pid, char * player_name );
 void network_event_i_am_host( void );
 void network_event_destroy_player( DPID id );
+void network_event_player_name(DPID pid, char* name );
 
 #endif
 

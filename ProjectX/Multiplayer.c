@@ -287,12 +287,8 @@ BOOL StartAHostSession ( MENUITEM * Item )
 {
 	HRESULT hr;
 	int i;
-	DWORD		Temp;
-	BYTE		msg;
-	int			size;
 	LONGLONG	TempTime;
 	uint32		Seed;
-	uint32		PackedInfo[ MAX_PICKUPFLAGS ];
 
 	SetupDPlay( NULL );
 
@@ -337,8 +333,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 
 	// create player
-	DebugPrintf("DPlayCreatePlayer.\n");
-	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
+	if ((hr = network_create_player(&dcoID, &biker_name[0])) != DP_OK)
 	{
 		Msg("Failed to create Direct Play Player!");
 	    return FALSE;
@@ -399,6 +394,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 
 
+#ifdef DEMO_SUPPORT
 	if( RecordDemo )
 	{
 		uint32 mp_version = MULTIPLAYER_VERSION;
@@ -469,7 +465,9 @@ BOOL StartAHostSession ( MENUITEM * Item )
 		Demo_fwrite( &biker_name[0], 7, 1, DemoFp );
 		msg = 0;
 		Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );				// terminator for name..
+
 	}
+#endif
 	
 	BrightShips = MyBrightShips;
 
@@ -542,25 +540,20 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL JoinASession ( MENUITEM * Item )
 {
-	HRESULT hr;
-    LPGUID  lpGuid;
 	DPSESSIONDESC2 temp_sd;
 
 	PlayDemo = FALSE;
 
 	SetBikeMods( 0 );
 
-	// get a pointer to the guid
-	lpGuid = (LPGUID ) &lpDPlaySession->guidInstance;
-
 	// open session
-	if ((hr = DPlayOpenSession( lpGuid)) != DP_OK)
+	if (network_open_session() != DP_OK)
 	{
 		PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
 	}
 	// create player
-	if ((hr = DPlayCreatePlayer(&dcoID, &biker_name[0], NULL, NULL, 0)) != DP_OK)
+	if (network_create_player(&dcoID, &biker_name[0]) != DP_OK)
 	{
 		PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;

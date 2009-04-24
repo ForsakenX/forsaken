@@ -39,6 +39,7 @@
 #include "Local.h"
 #include "stats.h"
 #include "version.h"
+#include "net_dplay.h"
 
 extern BOOL Debug;
 
@@ -462,9 +463,6 @@ char* msg_to_str( int msg_type )
     case MSG_BIKENUM:
 		return "MSG_BIKENUM";
 		break;
-    case MSG_NAME:
-		return "MSG_NAME";
-		break;
 	case MSG_HEREIAM:
 		return "MSG_HEREIAM";
         break;
@@ -566,6 +564,15 @@ char* msg_to_str( int msg_type )
 }
 
 
+void set_player_name( void )
+{
+	int i;
+	for( i = 0 ; i < 8 ; i++ )
+		Names[WhoIAm][i] = biker_name[i];
+	Names[WhoIAm][7] = 0;
+	network_set_player_name(dcoID, &biker_name[0]);
+}
+
 BOOL CheckForName( BYTE Player )
 {
 	char	*			NamePnt;
@@ -573,7 +580,6 @@ BOOL CheckForName( BYTE Player )
     HRESULT				hr;
 	int					i;
 	LPDPNAME			lpDpName;
-
 	if( Names[Player][0] == 0 )
 	{
 		tempsize = 256;
@@ -590,9 +596,10 @@ BOOL CheckForName( BYTE Player )
 				*NamePnt++ = *NamePnt2++;
 			}
 			Names[Player][7] = 0;
+			DebugPrintf("CheckForName Got Name: %s\n",Names[Player]);
 		}
 		return TRUE;
-	}
+	} 
 	return FALSE;
 }
 
@@ -1088,7 +1095,6 @@ void SetupDplayGame()
 	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG			);	
 	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG				);	 
 	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG				);	 
-	RealPacketSize[MSG_NAME									] = sizeof( NAMEMSG							);	 
 	RealPacketSize[MSG_INTERPOLATE						] = sizeof( INTERPOLATEMSG					);	
 	RealPacketSize[MSG_BGOUPDATE						] = sizeof( BGOUPDATEMSG					);	
 	RealPacketSize[MSG_PINGREQUEST						] = sizeof( PINGMSG								);	
@@ -1379,6 +1385,32 @@ void smallinitShip( uint16 i )
 	}
 }
 
+void network_event_player_name(DPID pid, char* name)
+{
+	int i, x;
+	if( pid == dcoID )
+		return;
+	DebugPrintf("network_event_player_name\n");
+	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+	{
+		if( ( i != WhoIAm ) && (pid == Ships[i].dcoID) )
+		{
+			for( x = 0 ; x < 8 ; x++ )
+			{
+				Names[i][x] = name[x];
+				if( WhoIAm < MAX_PLAYERS )
+					Names[WhoIAm][x] = biker_name[x];
+			}
+			Names[i][7] = 0;
+			Names[WhoIAm][7] = 0;
+			DebugPrintf("Recieved name %s from player %d\n", &Names[i][0], i);
+			NextworkOldBikeNum = -1;
+			return;
+		}
+	}
+	return;
+}
+
 void network_event_destroy_player( DPID id )
 {
 	int i;
@@ -1445,10 +1477,12 @@ void network_event_i_am_host( void )
 	}
 }
 
-void network_event_new_player( char * player_name )
+void network_event_new_player( DPID pid, char * player_name )
 {
-	int i;
+	int i, x;
 	DebugPrintf("network_event_new_player\n");
+	if( pid == dcoID )
+		return;
 	if( MyGameStatus == STATUS_Normal && !TeamGame )
 	{
 		sprintf( (char*) &tempstr[0] ,"%s %s", player_name, IS_JOINING_THE_GAME );
@@ -1461,10 +1495,21 @@ void network_event_new_player( char * player_name )
 			Names[i][0] = 0;
 		}
 	}
+	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+		if( ( i != WhoIAm ) && (pid == Ships[i].dcoID) )
+			if( Names[i][0] == 0 )
+			{
+				char* NamePnt = (char*) &Names[i][0];			
+				char* NamePnt2 = (char*) &player_name[0];
+				for( x = 0 ; x < 7 ; x++ )
+					*NamePnt++ = *NamePnt2++;
+				Names[i][7] = 0;
+			}
 }
 
 void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes )
 {
+	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
 	from_dcoID = from;
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
@@ -1569,7 +1614,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     LPSHORTTRIGVARMSG				lpShortTrigVar;
     LPSHORTMINEMSG					lpShortMine;
     LPTEXTMSG								lpTextMsg;
-	LPNAMEMSG							lpName;
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
 	LPPINGMSG								lpPingMsg;
@@ -1583,8 +1627,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	int16				Count;
     char				methodstr[256];
 	char				teamstr[256];
-	int					size;				// special for demo recording
-	BYTE				msg;				// special for demo recording
     LPSETTIMEMSG	lpSetTime;
     LPREQTIMEMSG	lpReqTime;
 	VECTOR	Point;
@@ -1766,7 +1808,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case MSG_SHORTMINE:
 			case MSG_SHORTPICKUP:
 			case MSG_YOUQUIT:
-			case MSG_NAME:
 			case MSG_BIKENUM:
 			case MSG_STATUS:
 			case MSG_LONGSTATUS:
@@ -1817,7 +1858,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case MSG_HEREIAM:
 		case MSG_TEXTMSG:
 		case MSG_YOUQUIT:
-		case MSG_NAME:
  		case MSG_BIKENUM:
 		case MSG_TRACKERINFO:
 			break;
@@ -2048,6 +2088,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				
 				Ships[lpVeryShortUpdate->WhoIAm].dcoID = from_dcoID;
 				
+#ifdef DEMO_SUPPORT
 				if( glpDP )
 				{
 					if( CheckForName( lpVeryShortUpdate->WhoIAm ) )
@@ -2067,6 +2108,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						}
 					}
 				}
+#endif
 
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
@@ -2171,6 +2213,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 #endif
 				}
 
+#ifdef DEMO_SUPPORT
 				if( glpDP )
 				{
 					if( CheckForName( lpUpdate->WhoIAm ) )
@@ -2190,6 +2233,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						}
 					}
 				}
+#endif
 
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
@@ -2215,26 +2259,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				return;
 			}
 		}
-
-
-    case MSG_NAME:
-
-		lpName = (LPNAMEMSG)MsgPnt;
-		if( lpName->WhoIAm == WhoIAm )
-			return;
-
-		for( i = 0 ; i < 8 ; i++ )
-		{
-			Names[lpName->WhoIAm][i] = lpName->Name[i];
-			if( WhoIAm < MAX_PLAYERS )
-				Names[WhoIAm][i] = biker_name[i];
-		}
-		Names[lpName->WhoIAm][7] = 0;
-		Names[WhoIAm][7] = 0;
-		DebugPrintf("Recieved name %s from player %d\n" , &Names[lpName->WhoIAm][0] , lpName->WhoIAm );
-		NextworkOldBikeNum = -1;
-		return;
-
 
     case MSG_FUPDATE:
 
@@ -2913,6 +2937,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			TeamNumber[lpStatus->WhoIAm]	= lpStatus->TeamNumber;
 			PlayerReady[lpStatus->WhoIAm]		= lpStatus->IAmReady;
 
+		// make sure name field gets filled in...
+		CheckForName( lpStatus->WhoIAm );
+
+#ifdef DEMO_SUPPORT
 			if( !PlayDemo )
 			{
 				if( CheckForName( lpStatus->WhoIAm ) )
@@ -2932,7 +2960,9 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					}
 				}
 			}
+#endif
 		}
+
 		return;
 
 
@@ -3019,6 +3049,10 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		TeamNumber[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.TeamNumber;
 		PlayerReady[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.IAmReady;
 
+		// make sure name field gets filled in...
+		CheckForName( lpLongStatus->Status.WhoIAm );
+
+#ifdef DEMO_SUPPORT
 		if( !PlayDemo )
 		{
 			if( CheckForName( lpLongStatus->Status.WhoIAm ) )
@@ -3038,6 +3072,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 			}
 		}
+#endif
+
 		return;
 
 
@@ -3383,7 +3419,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     LPSHORTMINEMSG						lpShortMine;
     LPTEXTMSG							lpTextMsg;
     LPPINGMSG							lpPingMsg;
-	LPNAMEMSG							lpName;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSETTIMEMSG						lpSetTime;
@@ -3436,25 +3471,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		nBytes = sizeof( BIKENUMMSG );
 		guaranteed = 1;
 		break;
-
-
-    case MSG_NAME:
-
-		DPlaySetPlayerName(dcoID, &biker_name[0], 0);
-		lpName = (LPNAMEMSG)&CommBuff[0];
-        lpName->MsgCode = msg;
-		lpName->WhoIAm = WhoIAm;
-		for( i = 0 ; i < 8 ; i++ )
-		{
-			lpName->Name[i] = biker_name[i];
-			Names[WhoIAm][i] = biker_name[i];
-		}
-		lpName->Name[7] = 0;
-		Names[WhoIAm][7] = 0;
-		nBytes = sizeof( NAMEMSG );
-		guaranteed = 1;
-		break;
-	
 
 	case MSG_HEREIAM:
 

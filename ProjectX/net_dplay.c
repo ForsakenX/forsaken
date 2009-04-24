@@ -86,45 +86,39 @@ HRESULT DPlayClose( LPDIRECTPLAY4A dp )
     return hr;
 }
 
-/*
- * DPlayCreatePlayer
- *
- * Wrapper for DirectPlay CreatePlayer API. 
- */
-
-HRESULT DPlayCreatePlayer(LPDPID lppidID, LPTSTR lptszPlayerName, HANDLE hEvent, 
-                          LPVOID lpData, DWORD dwDataSize)
+HRESULT network_create_player( LPDPID lppidID, LPTSTR lptszPlayerName )
 {
     HRESULT hr=E_FAIL;
     DPNAME name;
 	
+	if (!glpDP)
+		return hr;
+
+	// name structure
 	ZeroMemory(&name,sizeof(name));
     name.dwSize = sizeof(DPNAME);
-
     name.lpszShortNameA = lptszPlayerName;
 
-	if (glpDP)
-		hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, NULL, lpData, dwDataSize, 0);
+	hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, NULL, NULL, 0, 0);
 
 	switch( hr )
 	{
-	case DPERR_CANTADDPLAYER :
+	case DPERR_CANTADDPLAYER:
 		DebugPrintf("DPERR_CANTADDPLAYER\n");
 		break;
-	case DPERR_CANTCREATEPLAYER :
+	case DPERR_CANTCREATEPLAYER:
 		DebugPrintf("DPERR_CANTCREATEPLAYER\n");
 		break;
-	case DPERR_INVALIDFLAGS :
+	case DPERR_INVALIDFLAGS:
 		DebugPrintf("DPERR_INVALIDFLAGS\n");
 		break;
-	case DPERR_INVALIDPARAMS :
+	case DPERR_INVALIDPARAMS:
 		DebugPrintf("DPERR_INVALIDPARAMS\n");
 		break;
-	case DPERR_NOCONNECTION :
+	case DPERR_NOCONNECTION:
 		DebugPrintf("DPERR_NOCONNECTION\n");
 		break;
 	case DP_OK:
-		DebugPrintf("IDirectPlayX_CreatePlayer DP_OK\n");
 		break;
 	}
                                     
@@ -473,31 +467,24 @@ HRESULT DPlaySetSessionDesc(DWORD flags)
     return hr;
 }
 
-/*
- * DPlayOpenSession
- *
- * Wrapper for DirectPlay OpenSession API. 
- */
-HRESULT DPlayOpenSession(LPGUID lpSessionGuid)
+HRESULT network_open_session( void )
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
+    if (!lpDPlaySession)
+		return hr;
+
     ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
-
-    // set the session guid
-    if (lpSessionGuid)
-        dpDesc.guidInstance = *lpSessionGuid;
-
-    // set the application guid
+    dpDesc.guidInstance = lpDPlaySession->guidInstance;
     dpDesc.guidApplication = PROJX_GUID;
 
     // open it
     if (glpDP)
         hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
 	else
-		DebugPrintf("DPlayOpenSession: could not join !glpDP\n");
+		DebugPrintf("network_open_session: could not join !glpDP\n");
 
     return hr;
 }
@@ -765,25 +752,16 @@ HRESULT DPLobbyRelease(void)
 	return hr;
 }
 
-/*
- * DPlaySetPlayerName
- *
- * Wrapper for DirectPlay SetPlayerName API
- */
-HRESULT DPlaySetPlayerName(DPID pid, char * NamePnt, DWORD dwFlags)
+void network_set_player_name(DPID pid, char * NamePnt)
 {
-    HRESULT hr=E_FAIL;
 	DPNAME	Name;
-
-    if (glpDP)
-	{
-		memset(&Name, 0, sizeof(DPNAME));
-		Name.dwSize = sizeof(DPNAME);
-		Name.lpszShortNameA = NamePnt;
-        Name.lpszLongNameA = NamePnt;
-        hr = IDirectPlayX_SetPlayerName(glpDP, pid, &Name, dwFlags);
-	}
-    return hr;
+    if (!glpDP)
+		return;
+	memset(&Name, 0, sizeof(DPNAME));
+	Name.dwSize = sizeof(DPNAME);
+	Name.lpszShortNameA = NamePnt;
+    Name.lpszLongNameA = NamePnt;
+    IDirectPlayX_SetPlayerName(glpDP, pid, &Name, DPSET_GUARANTEED);
 }
 
 BOOL GetIPFromDP( char *add, DPID dpid )
@@ -937,27 +915,33 @@ void EvalSysMessage( DWORD len , LPDPMSG_GENERIC lpMsg )
     {
 
 	case DPSYS_CREATEPLAYERORGROUP:
-		DebugPrintf("DPSYS_CREATEPLAYERORGROUP recieved\n");
 		{
 			LPDPMSG_CREATEPLAYERORGROUP lpAddMsg = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
-			network_event_new_player( lpAddMsg->dpnName.lpszShortNameA );
+			network_event_new_player( lpAddMsg->dpId, lpAddMsg->dpnName.lpszShortNameA );
 		}
 		break;
 
     case DPSYS_HOST:
-		DebugPrintf("DPSYS_HOST recieved\n");
 		{
 			network_event_i_am_host();
 		}
 		break;
 
 	case DPSYS_DESTROYPLAYERORGROUP:
-		DebugPrintf("DPSYS_DESTROYPLAYERORGROUP recieved\n");
 		{
 			LPDPMSG_DESTROYPLAYERORGROUP lpDestroyMsg = ( LPDPMSG_DESTROYPLAYERORGROUP ) lpMsg;
 			if( lpDestroyMsg->dwPlayerType != DPPLAYERTYPE_PLAYER )
 				return;
 			network_event_destroy_player( lpDestroyMsg->dpId );
+		}
+		break;
+
+	case DPSYS_SETPLAYERORGROUPNAME:
+		{
+			LPDPMSG_SETPLAYERORGROUPNAME lpNameMsg = (LPDPMSG_SETPLAYERORGROUPNAME) lpMsg;
+			if( lpNameMsg->dwPlayerType != DPPLAYERTYPE_PLAYER )
+				return;
+			network_event_player_name( lpNameMsg->dpId, lpNameMsg->dpnName.lpszShortNameA );
 		}
 		break;
 	}

@@ -10070,7 +10070,7 @@ void InitBikerName( char *name )
     RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
 
 	// tell everyone else in multiplayer
-	SendGameMessage(MSG_NAME, 0, 0, 0, 0);
+	set_player_name();
 
 }
 

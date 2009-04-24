@@ -3868,10 +3868,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   //int result;
   static int WaitFrames = 2;
   BOOL done;
-  DWORD   Temp;
-  BYTE    msg;
-  int     size;
-  LONGLONG  TempTime;
   LONGLONG  Time_Freq;
   LONGLONG  Time_Value;
   float   Time_Float;
@@ -4501,7 +4497,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       }
 	  // $$$
       NextworkOldBikeNum = -1;
-      SendGameMessage(MSG_NAME, 0, 0, 0, 0);
+      set_player_name();
       if( CountDownOn )
       {
         CreateCountdownDigits();
@@ -4776,8 +4772,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       MenuState = MENUSTATE_Select;
 
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      SendGameMessage(MSG_NAME, 0, 0, 0, 0);
+      set_player_name();
 
+#ifdef DEMO_SUPPORT
       if( RecordDemo )
       {
         DemoFp = fopen( "Test.dmo" , "wb" );
@@ -4805,6 +4802,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         msg = 0;
         Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );       // terminator for name..
       }
+#endif
 
       // menu change is done when session description is changed for lobby session
        MenuChangeEx( GetPlayerNumMenu );
