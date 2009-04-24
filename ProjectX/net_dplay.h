@@ -1,22 +1,21 @@
 #ifndef NET_DPLAY_INCLUDED
 #define NET_DPLAY_INCLUDED
 
-HRESULT DPlayCreateSession(LPTSTR lptszSessionName);
-HRESULT DPlayGetSessionDesc(void);
-HRESULT DPlaySetSessionDesc(DWORD flags);
+LPDPSESSIONDESC2 network_session;
 
-LPDPSESSIONDESC2 lpDPlaySession;
-void GetCurrentSessions( void );
+void network_get_ip( char *add, DPID dpid );
 
-BOOL SetupDPlay( char * TCPAddress );
-
-BOOL GetIPFromDP( char *add, DPID dpid );
-void UpdateSessionName( char *name );
-
+void network_session_name( char *name );
+void network_get_session( void );
+void network_initialize( char * TCPAddress );
 void network_pump( void );
-HRESULT network_open_session(void);
-HRESULT network_create_player( LPDPID lppidID, LPTSTR lpPlayerName );
 void network_set_player_name(DPID pid, char * NamePnt);
 void network_cleanup( DPID dcoID );
+
+HRESULT network_host( char* name );
+HRESULT network_open_session(void);
+HRESULT network_create_player( LPDPID lppidID, LPTSTR lpPlayerName );
+HRESULT network_get_description(void);
+HRESULT network_set_description(void);
 
 #endif // NET_DPLAY_INCLUDED

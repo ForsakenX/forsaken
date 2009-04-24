@@ -1833,10 +1833,10 @@ void EnterJoin(MENU *Menu)
 	PlayersList.selected_item = -1;
 
 	// initialize connection
-	SetupDPlay( TCPAddress.text );
+	network_initialize( TCPAddress.text );
 
 	// enumerate sessions
-	GetCurrentSessions();
+	network_get_session();
 
 }
 
@@ -1844,7 +1844,7 @@ void EnterJoin(MENU *Menu)
 void CheckJoinStatus( int * i )
 {
 	// join game
-	if ( lpDPlaySession != NULL )
+	if ( network_session != NULL )
 	{
 		DebugPrintf("Found Session\n");
 		SelectSession( NULL );
@@ -1854,14 +1854,14 @@ void CheckJoinStatus( int * i )
 	else if ( IsKeyPressed( DIK_F1 ) )
 	{
 		DebugPrintf("F1 Pressed\n");
-		SetupDPlay( TCPAddress.text );
-		GetCurrentSessions();
+		network_initialize( TCPAddress.text );
+		network_get_session();
 	}
 
 	// check the list of sessions for updates
 	else
 	{
-		GetCurrentSessions();
+		network_get_session();
 	}
 }
 

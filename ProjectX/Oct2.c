@@ -3549,7 +3549,7 @@ BOOL ChangeLevel( void )
 	MissileCameraActive = 0;
 	CameraMissile = (uint16) -1;
 
-	DPlayGetSessionDesc();
+	network_get_description();
 
 	InitScene();
 	InitTextMessages();
@@ -3691,7 +3691,7 @@ static void UpdateKillsTime( void )
   // update session description with current leading kills & elapsed time...
   if ( !glpdpSD )
   {
-    DPlayGetSessionDesc();
+    network_get_description();
   }
 
   if ( glpdpSD )
@@ -3710,7 +3710,7 @@ static void UpdateKillsTime( void )
       glpdpSD->dwUser3 &= ~CurrentGameTimeBits;
       glpdpSD->dwUser3 |=  ( minutes_left << CurrentGameTime_Shift );
 
-      if ( DPlaySetSessionDesc( 1 ) != DP_OK )
+      if ( network_set_description() != DP_OK )
       {
         DebugPrintf("RenderScene(): Unable to set session desc!!\n");
       }
@@ -3762,7 +3762,7 @@ static void UpdateKillsTime( void )
       glpdpSD->dwUser2 &= ~CurrentMaxKillsBits;
       glpdpSD->dwUser2 |= ( highest_score << CurrentMaxKills_Shift );
 
-      if ( DPlaySetSessionDesc( 1 ) != DP_OK )
+      if ( network_set_description() != DP_OK )
       {
         DebugPrintf("RenderScene(): Unable to set session desc!!\n");
       }
@@ -3810,7 +3810,7 @@ void StoreLevelNameInSessionDesc( char *str )
   char buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH + 1 ];  // extra 1 for '~' char
   char *pCh;
   
-  DPlayGetSessionDesc();
+  network_get_description();
   if ( glpdpSD )
   {
     strncpy( buf, glpdpSD->lpszSessionNameA, MAX_SESSION_DESC_LENGTH );
@@ -3830,7 +3830,7 @@ void StoreLevelNameInSessionDesc( char *str )
 
     buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH ] = 0; // ensure null terminated 
 
-    UpdateSessionName( buf );
+    network_session_name( buf );
   }
 }
 
@@ -4417,7 +4417,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 
-      DPlayGetSessionDesc();
+      network_get_description();
 
     }else{
       if( OverallGameStatus == STATUS_Normal )

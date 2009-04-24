@@ -290,7 +290,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	LONGLONG	TempTime;
 	uint32		Seed;
 
-	SetupDPlay( NULL );
+	network_initialize( NULL );
 
 	if ( MaxPlayersSlider.max != 2 )
 		PreferedMaxPlayers = MaxPlayersSlider.value;
@@ -325,8 +325,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// create session
-	DebugPrintf("DPlayCreateSession.\n");
-	if ((hr = DPlayCreateSession( &MultiPlayerGameName.text[0])) != DP_OK)
+	if ((hr = network_host( &MultiPlayerGameName.text[0])) != DP_OK)
 	{
 		Msg("Failed to create Direct Play Session!");
 		return FALSE;
@@ -343,12 +342,9 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	OldPPSValue = PacketsSlider.value;
 	OldColPerspective = ColPerspective;
 	OldUseShortPackets = UseShortPackets;
-	
-	DebugPrintf("SetupDplayGame.\n");
+
 	SetupDplayGame();
-	
-	DebugPrintf("DPlayGetSessionDesc.\n");
-	DPlayGetSessionDesc();
+	network_get_description();
 	
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -559,11 +555,11 @@ BOOL JoinASession ( MENUITEM * Item )
 		return FALSE;
 	}
 
-	DPlayGetSessionDesc();
+	network_get_description();
 	GetSessionInfo( glpdpSD );
 	SetupDplayGame();
 	Rejoining = FALSE;
-	temp_sd = *lpDPlaySession;
+	temp_sd = *network_session;
 
 	// zero Some stuff cos they might have changed..or they might be pointers...
 	temp_sd.dwCurrentPlayers			= 0;

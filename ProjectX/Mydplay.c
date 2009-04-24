@@ -1252,7 +1252,7 @@ void DestroyGame( void )
 
 		ResetAllStats(); // stats.c
 		
-		DPlayGetSessionDesc();
+		network_get_description();
 		network_cleanup( dcoID );
 		dcoID = 0;
 
@@ -1452,7 +1452,7 @@ void network_event_i_am_host( void )
 			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
 		else
 			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-		if ( DPlayGetSessionDesc() != DP_OK)
+		if ( network_get_description() != DP_OK)
 		{
 			Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
 			exit(1);
@@ -2335,7 +2335,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		{
 			BOOL Done = FALSE;
 			lpHereIAm = (LPHEREIAMMSG)MsgPnt;
-			DPlayGetSessionDesc();
+			network_get_description();
 
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
@@ -3491,7 +3491,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpInit->FromDpid = dcoID;
         lpInit->MsgCode = msg;
         lpInit->WhoIAm = WhoIAm;
-		DPlayGetSessionDesc();
+		network_get_description();
 		lpInit->dwUser3 = glpdpSD->dwUser3;
 		lpInit->RandomPickups = RandomPickups;
 		lpInit->Seed1 = CopyOfSeed1;
@@ -3531,7 +3531,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			{
 			    if( i != WhoIAm )
 			    {
-					GetIPFromDP( IPAdd, to );
+					network_get_ip( IPAdd, to );
 					// rejoining
 					if(strcmp(&PlayerInfo[i].IP[0], &IPAdd[0]) == 0)
 					{
@@ -3575,7 +3575,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 				Ships[i].dcoID = to;
 
 				// Host must store info related to all players who join
-				GetIPFromDP( PlayerInfo[i].IP, to );
+				network_get_ip( PlayerInfo[i].IP, to );
 
 				if( Type == (BYTE) -1 )
 					TeamNumber[i] = 0;

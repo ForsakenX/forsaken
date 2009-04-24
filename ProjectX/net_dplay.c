@@ -185,12 +185,7 @@ void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
 	lpDesc->dwUser4 |= ( PacketsSlider.value << PacketsPerSecond_Shift );
 }
 
-/*
- * DPlayCreateSession
- *
- * Wrapper for DirectPlay CreateSession API.Uses the global application guid (PROJX_GUID).
- */
-HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
+HRESULT network_host(LPTSTR lptszSessionName)
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
@@ -275,7 +270,7 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 	dpDesc.guidApplication = PROJX_GUID;
 
     if (!glpDP)
-		DebugPrintf("DPlayCreateSession: !glpDP Could not create direct play session.");
+		DebugPrintf("network_host: !glpDP Could not create direct play session.");
 
     hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_CREATE);
 
@@ -284,28 +279,28 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
 	case DP_OK:
 		break;
 	case DPERR_ALREADYINITIALIZED:
-		DebugPrintf("DPlayCreateSession: DPERR_ALREADYINITIALIZED\n",hr);
+		DebugPrintf("network_host: DPERR_ALREADYINITIALIZED\n",hr);
 		break;
 	case DPERR_INVALIDFLAGS:
-		DebugPrintf("DPlayCreateSession: DPERR_INVALIDFLAGS\n",hr);
+		DebugPrintf("network_host: DPERR_INVALIDFLAGS\n",hr);
 		break;
 	case DPERR_INVALIDPARAMS:
-		DebugPrintf("DPlayCreateSession: DPERR_INVALIDPARAMS\n",hr);
+		DebugPrintf("network_host: DPERR_INVALIDPARAMS\n",hr);
 		break;
 	case DPERR_NOCONNECTION:
-		DebugPrintf("DPlayCreateSession: DPERR_NOCONNECTION\n",hr);
+		DebugPrintf("network_host: DPERR_NOCONNECTION\n",hr);
 		break;
 	case DPERR_TIMEOUT:
-		DebugPrintf("DPlayCreateSession: DPERR_TIMEOUT\n",hr);
+		DebugPrintf("network_host: DPERR_TIMEOUT\n",hr);
 		break;
 	case DPERR_UNINITIALIZED:
-		DebugPrintf("DPlayCreateSession: DPERR_UNINITIALIZED\n",hr);
+		DebugPrintf("network_host: DPERR_UNINITIALIZED\n",hr);
 		break;
 	case DPERR_USERCANCEL:
-		DebugPrintf("DPlayCreateSession: DPERR_USERCANCEL\n",hr);
+		DebugPrintf("network_host: DPERR_USERCANCEL\n",hr);
 		break;
 	default:
-		DebugPrintf("DPlayCreateSession: failed %x\n",hr);
+		DebugPrintf("network_host: failed %x\n",hr);
 	}
 
     return hr;
@@ -355,12 +350,7 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
     return hr;
 }
 
-/*
- * DPlayGetSessionDesc
- *
- * Wrapper for DirectPlay GetSessionDesc API. 
- */
-HRESULT DPlayGetSessionDesc(void)
+HRESULT network_get_description(void)
 {
     HRESULT hr=E_FAIL;
     DWORD dwSize;
@@ -395,52 +385,47 @@ HRESULT DPlayGetSessionDesc(void)
     return hr;
 }
 
-void UpdateSessionName( char *name )
+void network_session_name( char *name )
 {
 	DPSESSIONDESC2 tempsd;
 
-	DPlayGetSessionDesc();
+	network_get_description();
 
 	if ( glpdpSD )
 	{
 		tempsd = *glpdpSD;
 		glpdpSD->lpszSessionNameA = name;
-		DPlaySetSessionDesc( 1 );
+		network_set_description();
 
 		*glpdpSD = tempsd;	// restore old SD so that it is freed properly.
-		DPlayGetSessionDesc(); // getting new SD will free up old one
+		network_get_description(); // getting new SD will free up old one
 	}
 }
 
-/*
- * DPlaySetSessionDesc
- *
- * Wrapper for DirectPlay SetSessionDesc API. 
- */
-HRESULT DPlaySetSessionDesc(DWORD flags)
+HRESULT network_set_description( void )
 {
     HRESULT hr=E_FAIL;
 
     if (glpDP && glpdpSD)
     {	
 		// now set the session desc
-		hr = IDirectPlayX_SetSessionDesc(glpDP, glpdpSD, /*flags*/0 );
+		hr = IDirectPlayX_SetSessionDesc(glpDP, glpdpSD, 0 );
     }
 
 	if ( hr != DP_OK )
 		switch ( hr )
 		{
 		case DPERR_ACCESSDENIED:
-			DebugPrintf("DPlaySetSessionDesc() error - DPERR_ACCESSDENIED\n");
+			DebugPrintf("network_set_description() error - DPERR_ACCESSDENIED\n");
 			break;
 		case DPERR_INVALIDPARAMS:
-			DebugPrintf("DPlaySetSessionDesc() error - DPERR_INVALIDPARAMS\n");
+			DebugPrintf("network_set_description() error - DPERR_INVALIDPARAMS\n");
 			break;
 		case DPERR_NOSESSIONS:
-			DebugPrintf("DPlaySetSessionDesc() error - DPERR_NOSESSIONS\n");
+			DebugPrintf("network_set_description() error - DPERR_NOSESSIONS\n");
 			break;
 		default:
-			DebugPrintf("DPlaySetSessionDesc() error - unknown\n");
+			DebugPrintf("network_set_description() error - unknown\n");
 		}
 
     return hr;
@@ -451,12 +436,12 @@ HRESULT network_open_session( void )
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
-    if (!lpDPlaySession)
+    if (!network_session)
 		return hr;
 
     ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
-    dpDesc.guidInstance = lpDPlaySession->guidInstance;
+    dpDesc.guidInstance = network_session->guidInstance;
     dpDesc.guidApplication = PROJX_GUID;
 
     // open it
@@ -656,7 +641,7 @@ FAILURE:
 	return FALSE;
 }
 
-BOOL SetupDPlay( char * TCPIPAddress )
+void network_initialize( char * TCPIPAddress )
 {
 	// cleanup any previous connection
 	DPlayRelease();
@@ -688,7 +673,7 @@ BOOL SetupDPlay( char * TCPIPAddress )
 	if(!InitializeDPlay( TCPIPAddress ))
 		goto FAILURE;
 
-	return TRUE;
+	return;
 
 FAILURE:
 	if (glpDP)
@@ -696,7 +681,6 @@ FAILURE:
 		glpDP->lpVtbl->Close(glpDP);
 		glpDP->lpVtbl->Release(glpDP);
 	}
-	return FALSE;
 }
 
 /*
@@ -736,7 +720,7 @@ void network_set_player_name(DPID pid, char * NamePnt)
     IDirectPlayX_SetPlayerName(glpDP, pid, &Name, DPSET_GUARANTEED);
 }
 
-BOOL GetIPFromDP( char *add, DPID dpid )
+void network_get_ip( char *add, DPID dpid )
 {
     char* pTrueAddress;
     DWORD   dwTempSize;
@@ -768,23 +752,23 @@ BOOL GetIPFromDP( char *add, DPID dpid )
 			strcpy( buf, "unknown error" );
 			break;
 		}
-		DebugPrintf("GetIPFromDP() IDirectPlayXA_GetPlayerAddress cannot get address size ( %s )\n", buf );
-		return FALSE;
+		DebugPrintf("network_get_ip() IDirectPlayXA_GetPlayerAddress cannot get address size ( %s )\n", buf );
+		return;
 	}
 
 	// malloc space for address buffer
 	abyTemp = ( char * )malloc( dwTempSize );
 	if ( !abyTemp )
 	{
-	 	DebugPrintf("GetIPFromDP() malloc failed\n");
-		return FALSE;
+	 	DebugPrintf("network_get_ip() malloc failed\n");
+		return;
 	}
 
     hr = IDirectPlayX_GetPlayerAddress( glpDP, dpid, (void *)abyTemp, &dwTempSize );
 	if ( hr != DP_OK )
 	{
 	 	DebugPrintf("IDirectPlayXA_GetPlayerAddress failed\n");
-		return FALSE;
+		return;
 	}
 
     else
@@ -798,12 +782,12 @@ BOOL GetIPFromDP( char *add, DPID dpid )
 
 		        if ( '\0' == *pTrueAddress )
 				{
-				    DebugPrintf("GetIPFromDP() Can't get true address.\n");
-					return FALSE;
+				    DebugPrintf("network_get_ip() Can't get true address.\n");
+					return;
 				}
 		        else
 				{
-				    DebugPrintf( "GetIPFromDP() True address %s\n", pTrueAddress );
+				    DebugPrintf( "network_get_ip() True address %s\n", pTrueAddress );
 				}
 			    break;
             }
@@ -816,8 +800,6 @@ BOOL GetIPFromDP( char *add, DPID dpid )
     }
 	
 	strncpy( add, pTrueAddress, 16 );
-
-	return TRUE;
 }
 
 // if we are enumerating
@@ -837,13 +819,13 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 	}
 
 	// keep enumerating till we finish
-	if ( lpDPlaySession != NULL )
+	if ( network_session != NULL )
 		return TRUE;
 
 	// store away pointer to session description
-	if( lpDPlaySession != NULL ) free( lpDPlaySession );
-	lpDPlaySession = malloc( sizeof( DPSESSIONDESC2 ) );
-	*lpDPlaySession = *lpDPSessionDesc;
+	if( network_session != NULL ) free( network_session );
+	network_session = malloc( sizeof( DPSESSIONDESC2 ) );
+	*network_session = *lpDPSessionDesc;
 
 	// were done tell enum sessions to keep enumerating
     return TRUE;
@@ -851,7 +833,7 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 }
 
 // enumerate sessions
-void GetCurrentSessions( void )
+void network_get_session( void )
 {
 	// if we are currently refreshing
 	// then dont start again
@@ -862,10 +844,10 @@ void GetCurrentSessions( void )
 	SessionsRefreshActive = TRUE;
 
 	// whipe the last session
-	if( lpDPlaySession != NULL )
+	if( network_session != NULL )
 	{
-		free( lpDPlaySession );
-		lpDPlaySession = NULL;
+		free( network_session );
+		network_session = NULL;
 	}
 
 	// Enumerate Sessions
