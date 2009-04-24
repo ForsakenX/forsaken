@@ -383,21 +383,6 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 }
 
 /*
- * DPlayGetPlayerData
- * 
- * Wrapper for DirectPlay GetPlayerData API.
- */
-HRESULT DPlayGetPlayerData(DPID pid, LPVOID lpData, LPDWORD lpdwDataSize, DWORD dwFlags)
-{
-    HRESULT hr=E_FAIL;
-
-    if (glpDP) 
-        hr = IDirectPlayX_GetPlayerData(glpDP, pid, lpData, lpdwDataSize, dwFlags);
-
-    return hr;
-}
-
-/*
  * DPlayGetSessionDesc
  *
  * Wrapper for DirectPlay GetSessionDesc API. 
@@ -534,21 +519,6 @@ HRESULT DPlayRelease(void)
         glpDP = NULL;
     }
 
-    return hr;
-}
-
-/*
- * DPlaySetPlayerData
- *
- * Wrapper for DirectPlay SetPlayerData API
- */
-HRESULT DPlaySetPlayerData(DPID pid, LPVOID lpData, DWORD dwSize, DWORD dwFlags)
-{
-    HRESULT hr=E_FAIL;
-
-    if (glpDP)
-        hr = IDirectPlayX_SetPlayerData(glpDP, pid, lpData, dwSize, dwFlags);
-    
     return hr;
 }
 
