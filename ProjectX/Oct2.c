@@ -8127,9 +8127,8 @@ void SpecialDestroyGame( void )
   case STATUS_WaitingToStartTeamGame:
   case STATUS_StartingMultiplayer:
   case STATUS_GetPlayerNum:
-    DPlayDestroyPlayer(dcoID);
+	network_cleanup( dcoID );
     dcoID = 0;
-    DPlayRelease();
     MyGameStatus = STATUS_Title;
     MenuRestart( &MENU_ForceAbort );
     break;

@@ -311,27 +311,6 @@ HRESULT DPlayCreateSession(LPTSTR lptszSessionName)
     return hr;
 }
 
-/*
- * DPlayDestroyPlayer
- * 
- * Wrapper for DirectPlay DestroyPlayer API. 
- */
-HRESULT DPlayDestroyPlayer(DPID pid)
-{
-    HRESULT hr=E_FAIL;
-    
-    if (glpDP)
-        hr = IDirectPlayX_DestroyPlayer(glpDP, pid);
-
-    return hr;
-}
-
-/*
- * DPlayEnumSessions
- *
- * Wrapper for DirectPlay EnumSessions API.
- */
-
 HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags)
 {
 
@@ -489,13 +468,6 @@ HRESULT network_open_session( void )
     return hr;
 }
 
-
-
-/*
- * DPlayRelease
- *
- * Wrapper for DirectPlay Release API.
- */
 HRESULT DPlayRelease(void)
 {
     HRESULT hr = E_FAIL;
@@ -995,4 +967,11 @@ void network_pump( void )
 			break;  
 		}
 	}
+}
+
+void network_cleanup( DPID dcoID )
+{
+	if(!glpDP)return;
+	IDirectPlayX_DestroyPlayer(glpDP, dcoID);
+	DPlayRelease();
 }

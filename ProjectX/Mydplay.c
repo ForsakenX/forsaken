@@ -1253,8 +1253,7 @@ void DestroyGame( void )
 		ResetAllStats(); // stats.c
 		
 		DPlayGetSessionDesc();
-		DPlayDestroyPlayer(dcoID);
-		DPlayRelease();
+		network_cleanup( dcoID );
 		dcoID = 0;
 
 		if( glpdpSD != NULL )
@@ -1295,8 +1294,7 @@ void DestroyGame( void )
 		if( dcoID )
 		{
 			DebugPrintf("Destroy game pos b\n");
-			DPlayDestroyPlayer(dcoID);
-			DPlayRelease();
+			network_cleanup( dcoID );
 			dcoID = 0;
 		}
 
