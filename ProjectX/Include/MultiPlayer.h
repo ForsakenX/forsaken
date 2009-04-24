@@ -3,27 +3,13 @@
 #define MULTIPLAYER_INCLUDED
 
 /*
- * Defines....
- */
-#define MAXSESSIONS 32
-
-
-extern DPSESSIONDESC2 Sessions[];
-extern BOOL	SessionsRefresh[];
-
-
-/*
  * Application messages
  */
 
 BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, 
                         LPVOID lpContext);
-BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
-    DWORD dwFlags, LPVOID lpContext);
 
 BOOL StartAHostSession ( MENUITEM * Item );
-void GetCurrentSessions( MENU *Menu );
-void GetCurrentSessions_ReScan( MENUITEM *Item );
 BOOL JoinASession ( MENUITEM * Item );
 void SelectSession( MENUITEM *Item );
 void GetPlayersInCurrentSession( MENUITEM *Item );

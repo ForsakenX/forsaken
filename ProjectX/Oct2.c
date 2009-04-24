@@ -92,8 +92,6 @@ extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
 
-
-extern BOOL OKToJoinSession;
 extern DPID PseudoHostDPID;
 
 extern int    BountyInLevel;
@@ -696,7 +694,6 @@ void UpdateBGObjectsClipGroup( CAMERA * Camera );
 void UpdateEnemiesClipGroup( CAMERA * Camera  );
 void SpecialDestroyGame( void );
 BOOL SaveFullScreenSnapShot( int8 * Filename );
-void InitMySessionsList(void);
 
 extern  int16 PrimaryInLevel[ MAXPRIMARYWEAPONS ];
 extern  int16 SecondaryInLevel[ MAXSECONDARYWEAPONS ];

@@ -119,10 +119,6 @@ BOOL	Last_SWMonoChrome = FALSE;
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern BOOL WaitingToQuit;
 extern int16	NumPrimaryPickups;
-
-extern char SessionNames[ MAXSESSIONS ][ 128 ];
-
-extern DPSESSIONDESC2	Sessions[];
 extern float FlashTextActive;
 extern BOOL NoDynamicSfx;
 extern float GlobalSoundAttenuation;
@@ -715,11 +711,7 @@ void NewMenuSelectMode( MENUITEM *Item );
 BOOL ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
-void GetInitialSessions ( MENU *menu );
-
-void InitMySessionsList(void);
-void CopySessionsList(int *dummy);
-void GetMyCurrentSessions(MENU *Menu);
+void GetInitialPlayers ( MENU *menu );
 BOOL ProcessPlaceTeamMember( int Key );
 void DrawReadyStatus( MENUITEM *Item );
 void InitJoystickList ( MENU *Menu );
@@ -739,7 +731,6 @@ void SetAxisSensitivity( MENUITEM *Item );
 void UpdateAxisPtr( float pos );
 void InitModeCase(void);
 void SetSoundLevels( int *dummy );
-void SetSessionJoinFlag( MENUITEM *Item );
 void ExitMouseSetup( MENU *Menu );
 void InitAvgFrameRateGlobals( MENU *Menu );
 void GoToNextLevel( MENUITEM *Item );
@@ -748,7 +739,6 @@ void StartTimer( int timer );
 void SaveMacros( MENUITEM *Item );
 BOOL SetWaterDetail( SLIDER *slider );
 BOOL SetNumPrimaryPickups( SLIDER *slider );
-void UpdateSessionInfo( LIST *List );
 void InitHostWaitingToStart( MENU *Menu );
 void BackToJoinSession( MENUITEM *Item );
 
@@ -770,7 +760,6 @@ void GetTitleMessage(void);
 	MultiPlayer Stuff...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-extern BOOL	SessionsRefresh[MAXSESSIONS];
 extern BOOL	SessionsRefreshActive;
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
@@ -837,8 +826,6 @@ BYTE HostGamePlayersWhoIAm[ MAX_PLAYERS ];
 
 LIST TeamList[MAX_TEAMS];
 LIST LoadSavedGameList		= { 0 };
-LIST SessionsList					= { 0 };
-LIST MySessionsList				= { 0 };
 LIST PlayersList					= { 0 };
 LIST PilotList						= { 0 };
 LIST HostPlayersList				= { 0 };
@@ -890,7 +877,6 @@ SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
-BOOL OKToJoinSession			= FALSE;
 BOOL ShowTeamInfo				= TRUE;
 BOOL OKToProcessKeys			= FALSE;
 BOOL MenuFrozen					= FALSE;
@@ -1808,7 +1794,7 @@ MENU	MENU_NEW_JoinWaitingToStart = {
 };
 
 MENU	MENU_NEW_GetTeamPlayers = {
-	"" , GetInitialSessions, BailMultiplayer , CheckForMenuChange, 0,
+	"" , GetInitialPlayers, BailMultiplayer , CheckForMenuChange, 0,
 	{
 
 		{ 0, 0, 200, 10, 0, LT_MENU_NEW_GetTeamPlayers0 /*"waiting for host..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
@@ -1825,67 +1811,78 @@ MENU	MENU_NEW_GetTeamPlayers = {
 	}
 };
 
-char Session_Info_Created[ 128 ];
-char Session_Info_Level_Name[ 128 ];
-char Session_Info_Num_Players[ 128 ];
-char Session_Info_Game_Type[ 128 ];
-char Session_Info_PacketInfo[ 128 ];
-char Session_Info_PPS[ 128 ];
-char Session_Info_LagTolerance[ 128 ];
-char Session_Info_HarmTeamMates[ 128 ];
-char Session_Info_MaxKills[ 128 ];
-char Session_Info_TimeLimit[ 128 ];
-char Session_Info_BrightShips[ 128 ];
-char Session_Info_BikeExhausts[ 128 ];
+void EnterJoin(MENU *Menu)
+{
+	DebugPrintf("EnterJoin\n");
 
-#define SESSIONJOIN_EXTRAS_TOP_Y 128
-#define SESSIONJOIN_EXTRAS_LINEHEIGHT 7
-
-MENU	MENU_NEW_ChooseSessionToJoin = {
-
-		"" , GetMyCurrentSessions , NULL, CopySessionsList, TITLE_TIMER_PanToLeftVDU,
+	// initialize levels
+	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseSessionToJoin0 /*"Choose session to join"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
+		Msg( "No multiplayer levels" );
+		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
+		return;
+	}
 
-			// session list
-		//{ 10, 22, 100, 30, 0, "name", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 10, 30, 200, 85, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &MySessionsList, SetSessionJoinFlag , SelectList , DrawFlatMenuList, NULL, 0 } ,
+	// we are a joiner
+	IsHost = FALSE;
+
+	// reset player list
+	PlayersList.items = 0;
+	PlayersList.top_item = 0;
+	PlayersList.display_items = 16;
+	PlayersList.selected_item = -1;
+
+	// initialize connection
+	SetupDPlay( TCPAddress.text );
+
+	// enumerate sessions
+	GetCurrentSessions();
+
+}
+
+
+void CheckJoinStatus( int * i )
+{
+	// join game
+	if ( lpDPlaySession != NULL )
+	{
+		DebugPrintf("Found Session\n");
+		SelectSession( NULL );
+	}
+
+	// perform a new enumeration if not already enumerating 
+	else if ( IsKeyPressed( DIK_F1 ) )
+	{
+		DebugPrintf("F1 Pressed\n");
+		SetupDPlay( TCPAddress.text );
+		GetCurrentSessions();
+	}
+
+	// check the list of sessions for updates
+	else
+	{
+		GetCurrentSessions();
+	}
+}
+
+
+MENU	MENU_NEW_Joining = {
+
+		"" , EnterJoin , NULL, CheckJoinStatus, TITLE_TIMER_PanToLeftVDU,
+	{
+		{ 0, 0, 200, 20, 0, "Connecting to game please wait...", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 
 		// join in watch mode (add 'if host allows' later)
 //		{ 10, 30, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CentreY, "YOOYYO TEST", NULL , SelectList , DrawFlatMenuName, NULL, 0 } ,
 
-		// ping list
-//		{ 100, 22, 200, 30, 0, "ping", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-//		{ 100, 30, 200, 85, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_Unselectable | TEXTFLAG_CentreY, &SessionPingList, SetSessionJoinFlag , SelectList , DrawFlatMenuList, NULL, 0 } ,
-
-		{ 0, 15, 200, 30, 0, "( press F1 to refresh session info )", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-
-		// session created
-		{ 10, 86, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Created, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// level
-		{ 10, 93, 200, 100, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Level_Name, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// players
-		{ 10, 100, 200, 107, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Num_Players, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// game type 
-		{ 10, 107, 200, 114, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_Game_Type, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// packet info
-		{ 10, 114, 200, 121, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_PacketInfo, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// lag tolerence
-		{ 10, 121, 200, 128, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_LagTolerance, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		// extras
-		{ 10, SESSIONJOIN_EXTRAS_TOP_Y, 200, 146, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_PPS, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 154, 200, 162, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_HarmTeamMates, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 162, 200, 170, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_MaxKills, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 170, 200, 178, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_TimeLimit, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 178, 200, 186, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_BrightShips, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
-		{ 10, 186, 200, 194, 0, NULL, FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)&Session_Info_BikeExhausts, NULL ,NULL , DrawFlatMenuName, NULL, 0 } ,
+		{ 0, 15, 200, 30, 0, "( press F1 to force a retry )", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
 
 MENUITEM MENU_ITEM_JoinMultiplayer = 
-		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL, &MENU_NEW_ChooseSessionToJoin, MenuChange, NULL, NULL, 0  };
+		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL, &MENU_NEW_Joining, MenuChange, NULL, NULL, 0  };
 
 
 MENU	MENU_NEW_ChooseConnectionToJoin = {
@@ -2390,11 +2387,8 @@ MENUITEM	WatchTeamSelectionItem = { 0, 0, 0, 0, 0, "GoingToJoinASession", 0, 0,	
 
 						
 MENU	MENU_ChooseSessionToJoin = {
-	"Joining a MultiPlayer Game" , GetCurrentSessions , NULL , NULL, 0,
+	"" , NULL , NULL, NULL, 0,
 	{
-//		{ 200, 112, 0, 0, 0, "Join", 0, 0, NULL, &MENU_JoinWaitingToStart, JoinASession , MenuItemDrawName } ,
-//		{ 200, 128, 0, 0, 0, "Re Scan", 0, 0,	NULL,	NULL, GetCurrentSessions_ReScan, MenuItemDrawName },
-		{ 200, 112, 0, 0, 0, "Choose From...", 0, 0, &SessionsList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5258,18 +5252,6 @@ Event handling
 
 	if( CurrentMenu && CurrentMenuItem )
 	{
-		if(( CurrentMenu == &MENU_ChooseSessionToJoin ) || (CurrentMenu == &MENU_NEW_ChooseSessionToJoin))
-		{
-			if( (SessionsList.selected_item != -1) && SessionsRefresh[SessionsList.selected_item] && OKToJoinSession)
-			{
-				SelectSession( NULL );
-			}
-			else
-			{
-				GetCurrentSessions_ReScan( NULL );
-			}
-		}
-
 		MenuDraw( CurrentMenu );
 
 		if (!WasteAFrame)
@@ -16604,94 +16586,15 @@ void SelectConnectionToJoin (MENUITEM *Item)
 
 void UpdateSessions ( int *dummy )
 {
-	DebugPrintf("UpdateSessions\n");
 	GetPlayersInCurrentSession ( NULL );
 }
 
-void GetInitialSessions ( MENU *menu )
+void GetInitialPlayers ( MENU *menu )
 {
-	DebugPrintf("GetInitialSessions\n");
 	NumOfPlayersSlider.oldvalue = -1;
 	PlayersList.display_items = 16;
 	GetPlayersInCurrentSession ( NULL );
 	InitTitleMessaging();
-}
-
-void SetSessionJoinFlag( MENUITEM *Item )
-{
-	OKToJoinSession = TRUE;
-}
-
-void InitMySessionsList(void)
-{									
-	
-	DebugPrintf("InitMySessionsList\n");
-	// how many items displayed
-	MySessionsList.display_items		= 8;
-
-	// default top item
-	MySessionsList.top_item				= 0;
-	MySessionsList.old_top_item			= 0;
-
-	// none currently selected
-	MySessionsList.selected_item		= -1;
-	MySessionsList.old_selected_item	= -1;
-
-	//
-	MySessionsList.FuncInfo = UpdateSessionInfo;
-	
-	//
-	OKToJoinSession = FALSE;
-
-	// init ping list...
-	//SessionPingList = MySessionsList;
-	//SessionPingList.FuncInfo = NULL;
-
-}
-
-void CopySessionsList(int *dummy)
-{									
-	int i;
-	char *pchLevelNameSeperator;
-
-	for (i = 0; i < SessionsList.items; i++)
-	{
-		strncpy( MySessionsList.item[ i ] , SessionsList.item[ i ] , sizeof( MySessionsList.item[ i ] )  );
-
-		// truncate at '~' ( rest is level name )
-		pchLevelNameSeperator = strchr( MySessionsList.item[ i ], '~' );
-		if ( pchLevelNameSeperator )
-		{
-			*pchLevelNameSeperator = 0;
-		}
-	}
-
-	MySessionsList.items = SessionsList.items;
-//	SessionPingList.items = SessionsList.items;
-
-	if ( MySessionsList.selected_item >= SessionsList.items )
-		MySessionsList.selected_item = SessionsList.items - 1;
-
-	SessionsList.selected_item = MySessionsList.selected_item;
-}
-
-void GetMyCurrentSessions(MENU *Menu)
-{
-
-	// initialize levels
-	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
-	{
-		Msg( "No multiplayer levels" );
-		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
-		return;
-	}
-
-	// Initialize the displayed list
-	InitMySessionsList();
-
-	// get the list of sessions
-	GetCurrentSessions( Menu );
-
 }
 
 void SendTitleMessage(MENUITEM *Item)
@@ -18275,8 +18178,8 @@ void TestMenuFormat( void )
 	DebugPrintf("MENU_NEW_GetTeamPlayers\n");  
 	GetFormatInfo ( &MENU_NEW_GetTeamPlayers );
 
-	DebugPrintf("MENU_NEW_ChooseSessionToJoin\n");  
-	GetFormatInfo ( &MENU_NEW_ChooseSessionToJoin );
+	DebugPrintf("MENU_NEW_Joining\n");  
+	GetFormatInfo ( &MENU_NEW_Joining );
 
 	DebugPrintf("MENU_NEW_ChooseConnectionToJoin\n");  
 	GetFormatInfo ( &MENU_NEW_ChooseConnectionToJoin );
@@ -18332,216 +18235,6 @@ void TestMenuFormat( void )
 
 #endif
 
-void Shuffle_Y ( MENU *Menu, void *ptr, int *y )
-{
-	MENUITEM *item;
-
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( ptr == item->Variable )
-		{
-			if ( item->TextInfo[ 0 ] )
-			{
-				item->TextInfo[ 0 ]->ymin = *y;
-				*y += SESSIONJOIN_EXTRAS_LINEHEIGHT;
-				item->TextInfo[ 0 ]->ymax = *y;
-			}
-			return;
-		}
-	}
-}
-
-
-// get game info for highlighted session
-void UpdateSessionInfo( LIST *List )
-{
-	LPDPSESSIONDESC2 session;
-	FILETIME FileTime;
-	FILETIME LocalFileTime;
-	SYSTEMTIME SystemTime;
-	char *pchLevelNameSeperator;
-	char *pchGameType;
-	char *pchCTFSubType;
-	char buf[ 128 ];
-	int current_y;
-	char *pCh;
-
-	if ( IsKeyPressed( DIK_F1 ) )
-	{
-		InitMySessionsList();
-		GetCurrentSessions( NULL );
-	}
-
-	Session_Info_Created[ 0 ] = 0;
-	Session_Info_Level_Name[ 0 ] = 0;
-	Session_Info_Num_Players[ 0 ] = 0;
-	Session_Info_Game_Type[ 0 ] = 0;
-	Session_Info_PacketInfo[ 0 ] = 0;
-	Session_Info_LagTolerance[ 0 ] = 0;
-	Session_Info_HarmTeamMates[ 0 ] = 0;
-	Session_Info_MaxKills[ 0 ] = 0;
-	Session_Info_TimeLimit[ 0 ] = 0;
-	Session_Info_BrightShips[ 0 ] = 0;
-	Session_Info_BikeExhausts[ 0 ] = 0;
-	Session_Info_PPS[ 0 ] = 0;
-
-	if ( SessionsList.selected_item < 0 )
-	{
-		return;
-	}
-
-	session = &Sessions[ SessionsList.selected_item ];
-
-	// creation date:time
-	if ( DosDateTimeToFileTime( ( WORD )( session->dwUser1 & 0xffff ), ( WORD )( ( session->dwUser1 >> 16 ) & 0xffff ), &FileTime ) )
-	{
-		// convert to local time...
-		if ( FileTimeToLocalFileTime( &FileTime, &LocalFileTime ) )
-		{
-			if ( FileTimeToSystemTime( &LocalFileTime, &SystemTime ) )
-			{
-				sprintf( Session_Info_Created, LT_Extra3/*"session created %d-%d-%d at %02d:%02d"*/,
-					SystemTime.wMonth,
-					SystemTime.wDay,
-					SystemTime.wYear,
-					SystemTime.wHour,
-					SystemTime.wMinute
-					);
-			}
-		}
-	}
-
-	// copy level name ( only if stored )
-	pchLevelNameSeperator = strchr( SessionNames[ SessionsList.selected_item ], '~' );
-	if ( pchLevelNameSeperator )
-	{
-		_snprintf( Session_Info_Level_Name, sizeof( Session_Info_Level_Name ), LT_Extra4/*"level: %s"*/, ++pchLevelNameSeperator );
-	}
-
-	// number of players
-	_snprintf( Session_Info_Num_Players, sizeof( Session_Info_Num_Players ), LT_Extra5/*"players: %d / %d"*/, session->dwCurrentPlayers, session->dwMaxPlayers ); 
-
-	// game type
-	if ( session->dwUser3 & CTFGameBit )
-	{
-		pchGameType = LT_MENU_NEW_CreateGame11 /*"capture the flag"*/;
-    }
-	else if ( session->dwUser3 & FlagGameBit ) 
-	{
-		pchGameType = LT_MENU_NEW_CreateGame12 /*"flag chase"*/;
-    } 
-	else if ( session->dwUser3 & BountyGameBit ) 
-	{
-		if ( session->dwUser3 & TeamGameBit )
-		{
-			pchGameType = LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/;
-		}
-		else
-		{
-			pchGameType = LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/;
-		}
-	} 
-	else 
-	{
-		if ( session->dwUser3 & TeamGameBit )
-		{
-			pchGameType = LT_MENU_NEW_CreateGame10 /*"team game"*/;
-		}
-		else
-		{
-			pchGameType = LT_MENU_NEW_CreateGame9 /*"free for all"*/;
-		}
-	}
-
-	// CTF sub type
-	if ( session->dwUser3 & CTFGameBit )
-	{
-		switch ( CTF_Type_Decode( session->dwUser3 ) )
-		{
-		case CTF_STANDARD:
-			pchCTFSubType = LT_CTF_Normal/*"normal"*/;
-			break;
-		case CTF_MUST_CARRY:
-			pchCTFSubType = LT_CTF_MustCarry/*"carry it back"*/;
-			break;
-		case CTF_CAN_CARRY:
-			pchCTFSubType = LT_CTF_CanCarry/*"can pick up"*/;
-			break;
-		case CTF_ONE_TOUCH:
-			pchCTFSubType = LT_CTF_OneTouch/*"1 touch return"*/;
-			break;
-		case CTF_NO_RETURN:
-			pchCTFSubType = LT_CTF_NoReturn/*"can't pick up"*/;
-			break;
-		default:
-			pchCTFSubType = LT_CTF_Standard/*"standard"*/;
-		}
-	   
-		_snprintf( buf, sizeof( buf ), " ( %s )", pchCTFSubType ); 
-	}else
-	{
-		buf[ 0 ] = 0;
-	}
-
-	_snprintf( Session_Info_Game_Type, sizeof( Session_Info_Game_Type ), LT_Extra6/*"game: %s%s"*/, pchGameType, buf ); 
-
-	_snprintf( Session_Info_PacketInfo, sizeof( Session_Info_PacketInfo ), LT_Extra7/*"packets: short %s"*/, 
-		( session->dwUser3 & ShortPacketsBit ) ? LT_ToggleOn : LT_ToggleOff );
-	
-
-	switch( ( session->dwUser3 & CollisionTypeBits ) >> Collision_Type_BitShift )
-	{
-	case COLPERS_Forsaken:
-		pCh = LT_ToggleShooter/*shooter*/;
-		break;
-	case COLPERS_Descent:
-		pCh = LT_ToggleTarget/*target*/;
-		break;
-	}
-
-	_snprintf( Session_Info_LagTolerance, sizeof( Session_Info_LagTolerance ),LT_Extra8/*"collision perspective: %s"*/, pCh );
-
-	// shuffle up extra values...
-	current_y = SESSIONJOIN_EXTRAS_TOP_Y;
-	
-	_snprintf( Session_Info_PPS, sizeof( Session_Info_PPS ), LT_Extra1b/*"%d packets per second"*/, ( session->dwUser4 & PacketsPerSecondBits ) >> PacketsPerSecond_Shift );
-	Shuffle_Y ( CurrentMenu, Session_Info_PPS, &current_y );
-		
-	// harm team mates?
-	if ( session->dwUser3 & TeamGameBit )
-	{
-		_snprintf( Session_Info_HarmTeamMates, sizeof( Session_Info_HarmTeamMates ), LT_Extra10/*"Harm Team Mates %s"*/, ( session->dwUser3 & HarmTeamMatesBit ) ? LT_ToggleOn : LT_ToggleOff );
-		Shuffle_Y ( CurrentMenu, Session_Info_HarmTeamMates, &current_y );
-	}
-									  
-	// max kills
-	if ( ( session->dwUser2 & MaxKillsBits ) >> MaxKills_Shift )
-	{
-		_snprintf( Session_Info_MaxKills, sizeof( Session_Info_MaxKills ), LT_Extra11/*"kills limit %d ( current top %d )"*/, ( ( session->dwUser2 & MaxKillsBits ) >> MaxKills_Shift ), ( ( session->dwUser2 & CurrentMaxKillsBits ) >> CurrentMaxKills_Shift ) );
-		Shuffle_Y ( CurrentMenu, Session_Info_MaxKills, &current_y );
-	}
-
-	// time limit
-	if ( ( session->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift ) 
-	{
-		_snprintf( Session_Info_TimeLimit, sizeof( Session_Info_TimeLimit ), LT_Extra12/*"time limit %d mins ( %d left )"*/, 
-			( session->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift ,
-			( ( session->dwUser3 & CurrentGameTimeBits ) >> CurrentGameTime_Shift ) +
-			( ( ( session->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift == ( session->dwUser3 & CurrentGameTimeBits ) >> CurrentGameTime_Shift ) ? 0 : 1 ) );
-			
-		Shuffle_Y ( CurrentMenu, Session_Info_TimeLimit, &current_y );
-	}
-
-	// bright ships?
-//	_snprintf( Session_Info_BrightShips, sizeof( Session_Info_BrightShips ),LT_Extra13/*"bright bikes: %s"*/, ( session->dwUser3 & BrightShipsBit ) ? LT_ToggleOn : LT_ToggleOff );
-//	Shuffle_Y ( CurrentMenu, Session_Info_BrightShips, &current_y );
-
-	// bike exhausts
-	_snprintf( Session_Info_BikeExhausts, sizeof( Session_Info_BikeExhausts ),LT_Extra14/*"bike exhausts: %s"*/, ( session->dwUser3 & BikeExhaustBit ) ? LT_ToggleOn : LT_ToggleOff );
-	Shuffle_Y ( CurrentMenu, Session_Info_BikeExhausts, &current_y );
-	
-}
-
 void RefreshHostPlayersList( LIST *List )
 {
 	BYTE i;
@@ -18575,7 +18268,7 @@ void HostListPlayerSelected( MENUITEM *Item )
 
 void InitHostWaitingToStart( MENU *Menu )
 {
-	GetInitialSessions( Menu );
+	GetInitialPlayers( Menu );
 } 
 
 extern	DPID					dcoID;    // player id

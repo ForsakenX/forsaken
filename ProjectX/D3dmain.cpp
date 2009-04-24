@@ -121,8 +121,6 @@ extern "C" {
 	extern BOOL CustomCompoundBufferSize;
 
 	extern uint8 QuickStart;
-
-	extern BOOL	SessionGuidExists;
 	extern BOOL bTCP;
 
 	int DebugMathErrors( void );
@@ -589,7 +587,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoTextureScaling		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	SessionGuidExists		= FALSE;
 	UseSendAsync			= TRUE;
 	bFullscreen				= FALSE;
 	Wine					= FALSE;

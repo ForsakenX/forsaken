@@ -43,7 +43,6 @@
 extern BOOL Debug;
 
 BOOL	UseSendAsync			= TRUE;
-BOOL	SessionGuidExists		= FALSE;
 
 int	PacketGot[256];
 int	PacketSize[256];
@@ -64,7 +63,6 @@ extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 extern int FontHeight;
-extern LIST	SessionsList;
 
 extern DPID	PlayerIDs[ MAX_PLAYERS ];
 
@@ -77,7 +75,6 @@ extern int16	NumPrimaryPickups;
 extern	BOOL	CountDownOn;
 extern char LevelNames[MAXLEVELS][128];
 
-float FindSessionTimeout;
 extern	SLIDER	MaxPlayersSlider;
 
 extern	LONGLONG	LargeTime;
@@ -182,8 +179,6 @@ extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
 extern	char	ShortLevelNames[MAXLEVELS][32];
 extern BOOL	bSoundEnabled;
 
-extern	DPSESSIONDESC2	Sessions[MAXSESSIONS];
-
 extern float framelag;
 
 extern	float	Start_Shield;
@@ -285,7 +280,6 @@ DPID						dcoID=0;        // our DirectPlay ID
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
 BOOL						IsHost = TRUE;
-BOOL						IsPseudoHost = FALSE;
 BYTE						WhoIAm = 0;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
@@ -326,7 +320,6 @@ SHORTKILLMINE				MissedKillMines[ MAXMISSEDMINES ];
 int16								NumMissedMines = 0;
 int16								NumMissedInitMines = 0;
 int16								NumMissedKillMines = 0;
-BOOL								DPlayTest	= FALSE;
 
 LONGLONG	DemoTimeSoFar = 0;
 
@@ -338,7 +331,6 @@ BOOL	DemoShipInit[MAX_PLAYERS+1];
 LONGLONG	LastPacketTime[MAX_PLAYERS+1];
 BYTE		CommBuff[MAX_BUFFER_SIZE];
 
-BYTE	ReceiveCommBuff[MAXBIGPACKETBUFFERSIZE];
 int		RealPacketSize[256];
 
 PLAYERINFO PlayerInfo[MAX_PLAYERS];	// used by host to manage player numbers
@@ -394,7 +386,7 @@ extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-DPID	from_dcoID;
+DPID from_dcoID;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
 extern	int16	NumOrbs;
@@ -1387,13 +1379,112 @@ void smallinitShip( uint16 i )
 	}
 }
 
+void network_event_destroy_player( DPID id )
+{
+	int i;
+	DebugPrintf("network_event_destroy_player\n");
+	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+		if( ( i != WhoIAm ) && (id == Ships[i].dcoID) )
+		{	
+			if( MyGameStatus == STATUS_Normal )
+			{
+				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
+	   			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+			}
+
+			if( Ships[i].Object.light != (uint16) -1  )
+			{
+				//KillUsedXLight(Ships[i].Object.light);
+				Ships[i].Object.light = (uint16) -1;
+			}
+
+			//KillOwnersSecBulls( (uint16) i );
+			Ships[i].enable = 0;
+
+			if ( GameStatus[i] == STATUS_StartingMultiplayer )
+				GameStatus[i] = STATUS_Null;	// ensure slot is freed up if player has quit from titles
+
+			else if( GameStatus[i] != STATUS_Left )
+				GameStatus[i] = STATUS_LeftCrashed;
+
+			InitShipStructure(i , FALSE );
+		}
+}
+
+void network_event_i_am_host( void )
+{
+	int i;
+	DebugPrintf("network_event_i_am_host\n");
+	switch ( MyGameStatus )
+	{
+	case STATUS_StartingMultiplayer:
+		if ( TeamGame )
+			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
+		else
+			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
+		if ( DPlayGetSessionDesc() != DP_OK)
+		{
+			Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
+			exit(1);
+		}
+		break;
+	default:
+		AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
+	}
+
+	IsHost = TRUE;					// I have Become the host
+
+	PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
+	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+	{
+		if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
+		{
+			Ships[i].enable = 0;
+			GameStatus[i] = STATUS_Left;
+		}
+	}
+}
+
+void network_event_new_player( char * player_name )
+{
+	int i;
+	DebugPrintf("network_event_new_player\n");
+	if( MyGameStatus == STATUS_Normal && !TeamGame )
+	{
+		sprintf( (char*) &tempstr[0] ,"%s %s", player_name, IS_JOINING_THE_GAME );
+		AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+	}
+	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+	{
+		if( ( i != WhoIAm ) && ( GameStatus[i] != MyGameStatus ) )
+		{
+			Names[i][0] = 0;
+		}
+	}
+}
+
+void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes )
+{
+	from_dcoID = from;
+	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
+	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
+	{
+		TempTime -= GameStartedTime;
+		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
+		Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
+		Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
+		Demo_fwrite( MsgPnt, nBytes , 1, DemoFp );
+	}
+	RecPacketSize = nBytes;
+	if ( RecPacketSize > MaxRecPacketSize )
+		MaxRecPacketSize = RecPacketSize;
+	BytesPerSecRec += nBytes;
+    EvaluateMessage( nBytes, MsgPnt );
+}
 
 void ReceiveGameMessages( void )
 {
-	DPID			dcoReceiveID;
-    DWORD		nBytes;
 	DWORD		offset = 0;
-	HRESULT		status;
 	int i;
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -1437,47 +1528,7 @@ void ReceiveGameMessages( void )
 
 	BuildReliabilityTab();
 
-	if ( glpDP )
-	{
-		// read all messages in queue
-		while(1)
-		{
-			nBytes = MAXBIGPACKETBUFFERSIZE;
-			status = glpDP->lpVtbl->Receive( glpDP,
-						&from_dcoID,
-						&dcoReceiveID,
-						DPRECEIVE_ALL,
-						&ReceiveCommBuff[0],
-
-						&nBytes);
-			if( status == DP_OK )
-			{
-				QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-				if( RecordDemo && ( MyGameStatus == STATUS_Normal ) && ( from_dcoID != DPID_SYSMSG ) )
-				{
-					TempTime -= GameStartedTime;
-					Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-					Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
-					Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
-					Demo_fwrite( &ReceiveCommBuff[0], nBytes , 1, DemoFp );
-				}
-				RecPacketSize = nBytes;
-				if ( RecPacketSize > MaxRecPacketSize )
-					MaxRecPacketSize = RecPacketSize;
-
-				BytesPerSecRec += nBytes;
-
-				if ( from_dcoID == DPID_SYSMSG )    EvalSysMessage( nBytes , &ReceiveCommBuff[0] );
-				else EvaluateMessage( nBytes , &ReceiveCommBuff[0]);
-			}
-			else
-			{
-				// Error condition of some kind - we just stop
-				// checking for now
-				return;
-			}
-		}
-	}
+	network_pump();
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
@@ -1486,190 +1537,6 @@ void ReceiveGameMessages( void )
 			// $$$
 			NextworkOldBikeNum = -1;
 		}
-	}
-}
-
-/*
- * EvalSysMessage
- *
- * Evaluates system messages and performs appropriate actions
- */
-void EvalSysMessage( DWORD len , BYTE * MsgPnt)
-{
-	int i;
-	LPDPMSG_GENERIC lpMsg = (LPDPMSG_GENERIC) MsgPnt;
-	LPDPMSG_DESTROYPLAYERORGROUP lpDestroyMsg;
-	LPDPMSG_CREATEPLAYERORGROUP lpAddMsg;
-//	LPDPMSG_SETSESSIONDESC lpSetSessionMsg;
-    
-	if (!lpMsg)
-		return;
-    switch( lpMsg->dwType)
-    {
-	case DPSYS_SENDCOMPLETE:
-		{
-			char * result = "";
-			LPDPMSG_SENDCOMPLETE msg = (LPDPMSG_SENDCOMPLETE) lpMsg;
-			switch( msg->hr )
-			{
-			case DP_OK:
-				result = "SENT";
-				break;
-			case DPERR_ABORTED:
-				result = "ABORTED";
-				break;
-			case DPERR_CANCELLED:
-				result = "CANCELLED";
-				break;
-			case DPERR_GENERIC:
-				result = "DPERR_GENERIC";
-				break;
-			case DPERR_TIMEOUT:
-				result = "TIMEOUT";
-				break;
-			}
-			DebugPrintf("dplay  %30s   %13s   duration= %3lu ms\n", (char*) msg->lpvContext, result, msg->dwSendTime);
-		}
-		break;
-	case DPSYS_CREATEPLAYERORGROUP:
-		DebugPrintf("DPSYS_CREATEPLAYERORGROUP recieved\n");
-		if( MyGameStatus == STATUS_Normal && !TeamGame)
-		{
-			lpAddMsg = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
-			sprintf( (char*) &tempstr[0] ,"%s %s", lpAddMsg->dpnName.lpszShortNameA , IS_JOINING_THE_GAME );
-   			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-		}
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			if( ( i != WhoIAm ) && ( GameStatus[i] != MyGameStatus ) )
-			{
-				Names[i][0] = 0;
-			}
-		}
-
-//			if( IsHost)
-//			{
-//			        SendGameMessage(MSG_INIT, lpAddMsg->dpId, 0, 0, 0);
-//			}
-		break;
-	case DPSYS_SESSIONLOST:
-		DebugPrintf("DPSYS_SESSIONLOST recieved\n");
-		// The Whole Game has been Lost....Oops...
-		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-		AddColourMessageToQue( SystemMessageColour, THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT );
-		break;
-
-    case DPSYS_HOST:
-		DebugPrintf("DPSYS_HOST recieved\n");
-
-		switch ( MyGameStatus )
-		{
-		case STATUS_StartingMultiplayer:
-			if ( TeamGame )
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
-			else
-				PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-			if ( DPlayGetSessionDesc() != DP_OK)
-			{
-				Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
-				exit(1);
-			}
-			DPlayTest = TRUE;
-			break;
-		default:
-			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
-		}
-
-		IsHost = TRUE;					// I have Become the host
-
-		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		{
-			if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
-			{
-				Ships[i].enable = 0;
-				GameStatus[i] = STATUS_Left;
-			}
-		}
-
-		break;
-	case DPSYS_DESTROYPLAYERORGROUP:
-		DebugPrintf("DPSYS_DESTROYPLAYERORGROUP recieved\n");
-		lpDestroyMsg = ( LPDPMSG_DESTROYPLAYERORGROUP ) lpMsg;
-		if( lpDestroyMsg->dwPlayerType == DPPLAYERTYPE_PLAYER )
-		{			
-			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			{
-				if( ( i != WhoIAm ) && (lpDestroyMsg->dpId == Ships[i].dcoID) )
-				{
-					
-					if( MyGameStatus == STATUS_Normal )
-					{
-						sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
-				   		AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-					}
-
-					if( Ships[i].Object.light != (uint16) -1  )
-					{
-//						KillUsedXLight(Ships[i].Object.light);
-						Ships[i].Object.light = (uint16) -1;
-					}
-//						KillOwnersSecBulls( (uint16) i );
-					Ships[i].enable = 0;
-
-					if ( GameStatus[ i ] == STATUS_StartingMultiplayer )
-					{
-						GameStatus[ i ] = STATUS_Null;	// ensure slot is freed up if player has quit from titles
-					}else
-					{
-						if( GameStatus[i] != STATUS_Left )
-						{
-							GameStatus[i] = STATUS_LeftCrashed;
-						}
-					}
-
-					InitShipStructure(i , FALSE );
-					break;
-				}
-			}
-		}
-		break;
-#if 1
-	case DPSYS_SETSESSIONDESC:
-		DebugPrintf("DPSYS_SETSESSIONDESC recieved\n");
-		break;
-#endif
-	case DPSYS_ADDGROUPTOGROUP:
-		DebugPrintf("DPSYS_ADDGROUPTOGROUP recieved\n");
-		break;
-	case DPSYS_ADDPLAYERTOGROUP:
-		DebugPrintf("DPSYS_ADDPLAYERTOGROUP recieved\n");
-		break;
-	case DPSYS_CHAT:
-		DebugPrintf("DPSYS_CHAT recieved\n");
-		break;
-	case DPSYS_DELETEGROUPFROMGROUP:
-		DebugPrintf("DPSYS_DELETEGROUPFROMGROUP recieved\n");
-		break;
-	case DPSYS_DELETEPLAYERFROMGROUP:
-		DebugPrintf("DPSYS_DELETEPLAYERFROMGROUP recieved\n");
-		break;
-	case DPSYS_SECUREMESSAGE:
-		DebugPrintf("DPSYS_SECUREMESSAGE recieved\n");
-		break;
-	case DPSYS_SETPLAYERORGROUPDATA:
-		DebugPrintf("DPSYS_SETPLAYERORGROUPDATA recieved\n");
-		break;
-	case DPSYS_SETPLAYERORGROUPNAME:
-		DebugPrintf("DPSYS_SETPLAYERORGROUPNAME recieved\n");
-		break;
-	case DPSYS_STARTSESSION:
-		DebugPrintf("DPSYS_STARTSESSION recieved\n");
-		break;
-	default:
-		DebugPrintf("unknown DPlay sys message recieved ( %x )\n", *MsgPnt);
-		break;
 	}
 }
 
@@ -4281,6 +4148,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 void DemoPlayingDplayGameUpdate()
 {
+#ifdef DEMO_SUPPORT
     DWORD               nBytes;
 	int i;
 	size_t	size;
@@ -4343,6 +4211,7 @@ void DemoPlayingDplayGameUpdate()
 
   
 	}
+#endif
 }
 
 

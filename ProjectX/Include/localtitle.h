@@ -282,8 +282,6 @@
 #define LT_MENU_NEW_GetTeamPlayers1 "Num of Players"
 #define LT_MENU_NEW_GetTeamPlayers2 "msg:"
 
-#define LT_MENU_NEW_ChooseSessionToJoin0 "Choose session to join"
-
 #define LT_MENU_NEW_ChooseConnectionToJoin0 "start"
 #define LT_MENU_NEW_ChooseConnectionToJoin2 "IP or Name:"
 
@@ -789,10 +787,6 @@
 #define LT_MENU_NEW_CreateGameServer4 "global server timeout"
 
 #define LT_Extra1b "%d packets per second"
-#define UNABLE_TO_CONNECT_TO_SERVICE_PROVIDER "unable to connect to service provider"
-#define UNABLE_TO_JOIN_SESSION "unable to join session"
-#define SEARCHING_FOR_GAME "searching for game"
-#define CANNOT_FIND_SESSION "cannot find session"
 #define LT_MENU_Detail1a "Tri Linear Filtering"
 #define LT_MENU_NEW_CreateGameServer5 "Create a Server"
 #define LT_MENU_NEW_ServerHasQuit1 "the server has quit"

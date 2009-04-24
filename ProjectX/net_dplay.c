@@ -1,7 +1,10 @@
 
+#define IDIRECTPLAY2_OR_GREATER
+
 #include "stdwin.h"
 #include <dplay.h>
 #include <stdio.h>
+#include <dplobby.h>
 #include "net_dplay.h"
 #include "typedefs.h"
 #include "new3d.h"
@@ -16,6 +19,8 @@
 #include "primary.h"
 #include "XMem.h"
 #include "multiplayer.h"
+#include "typedefs.h"
+
 
 /*
  * Externals
@@ -323,22 +328,6 @@ HRESULT DPlayDestroyPlayer(DPID pid)
     
     if (glpDP)
         hr = IDirectPlayX_DestroyPlayer(glpDP, pid);
-
-    return hr;
-}
-
-/*
- * DPlayEnumPlayers
- *
- * Wrapper for DirectPlay API EnumPlayers
- */
-HRESULT DPlayEnumPlayers(LPGUID lpSessionGuid, LPDPENUMPLAYERSCALLBACK2 lpEnumCallback, 
-                         LPVOID lpContext, DWORD dwFlags)
-{
-    HRESULT hr=E_FAIL;
-
-    if (glpDP)
-        hr = IDirectPlayX_EnumPlayers(glpDP, lpSessionGuid, lpEnumCallback, lpContext, dwFlags);
 
     return hr;
 }
@@ -698,8 +687,6 @@ FAILURE:
 	return (hr);
 }
 
-// &TCPAddress.text[0]
-// PrintErrorMessage ( CONNECTION_INITIALIZATION_ERROR, 2, NULL, ERROR_USE_MENUFUNCS );
 BOOL InitializeDPlay( char * TCPIPAddress )
 {
 	LPVOID			lpAddress = NULL;
@@ -742,7 +729,7 @@ FAILURE:
 
 BOOL SetupDPlay( char * TCPIPAddress )
 {
-	// cleanup any previous dplay interface
+	// cleanup any previous connection
 	DPlayRelease();
 
 	// create dplay lobby interface
@@ -769,7 +756,8 @@ BOOL SetupDPlay( char * TCPIPAddress )
 		goto FAILURE;
 
 	// must be initialized
-	InitializeDPlay( TCPIPAddress );
+	if(!InitializeDPlay( TCPIPAddress ))
+		goto FAILURE;
 
 	return TRUE;
 
@@ -912,3 +900,145 @@ BOOL GetIPFromDP( char *add, DPID dpid )
 	return TRUE;
 }
 
+// if we are enumerating
+BOOL SessionsRefreshActive = FALSE;
+
+// EnumSessions callback
+BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID lpContext)
+{
+	// sessions have been enumerated
+    if(dwFlags & DPESC_TIMEDOUT)
+	{
+		// we are done refreshing the list
+		SessionsRefreshActive = FALSE;
+
+		// were done so tell enumerate sessions to stop calling us
+		return FALSE;
+	}
+
+	// keep enumerating till we finish
+	if ( lpDPlaySession != NULL )
+		return TRUE;
+
+	// store away pointer to session description
+	if( lpDPlaySession != NULL ) free( lpDPlaySession );
+	lpDPlaySession = malloc( sizeof( DPSESSIONDESC2 ) );
+	*lpDPlaySession = *lpDPSessionDesc;
+
+	// were done tell enum sessions to keep enumerating
+    return TRUE;
+
+}
+
+// enumerate sessions
+void GetCurrentSessions( void )
+{
+	// if we are currently refreshing
+	// then dont start again
+	if( SessionsRefreshActive )
+		return;
+
+	// set refreshing flag on
+	SessionsRefreshActive = TRUE;
+
+	// whipe the last session
+	if( lpDPlaySession != NULL )
+	{
+		free( lpDPlaySession );
+		lpDPlaySession = NULL;
+	}
+
+	// Enumerate Sessions
+	// and we will decide the timeout
+	DPlayEnumSessions(
+		10000, // interval
+		EnumSessions,	// callback
+		(LPVOID) NULL,	// user pointer
+		DPENUMSESSIONS_ASYNC // do not block
+		);
+}
+
+void EvalSysMessage( DWORD len , LPDPMSG_GENERIC lpMsg )
+{
+	if (!lpMsg)
+		return;
+
+    switch( lpMsg->dwType)
+    {
+
+	case DPSYS_CREATEPLAYERORGROUP:
+		DebugPrintf("DPSYS_CREATEPLAYERORGROUP recieved\n");
+		{
+			LPDPMSG_CREATEPLAYERORGROUP lpAddMsg = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
+			network_event_new_player( lpAddMsg->dpnName.lpszShortNameA );
+		}
+		break;
+
+    case DPSYS_HOST:
+		DebugPrintf("DPSYS_HOST recieved\n");
+		{
+			network_event_i_am_host();
+		}
+		break;
+
+	case DPSYS_DESTROYPLAYERORGROUP:
+		DebugPrintf("DPSYS_DESTROYPLAYERORGROUP recieved\n");
+		{
+			LPDPMSG_DESTROYPLAYERORGROUP lpDestroyMsg = ( LPDPMSG_DESTROYPLAYERORGROUP ) lpMsg;
+			if( lpDestroyMsg->dwPlayerType != DPPLAYERTYPE_PLAYER )
+				return;
+			network_event_destroy_player( lpDestroyMsg->dpId );
+		}
+		break;
+	}
+}
+
+void network_pump( void )
+{
+	DPID dcoReceiveID;
+    HRESULT hr;
+
+	if( ! glpDP )
+		return;
+
+	while(1)
+	{
+		DPID from_dcoID;
+		BYTE ReceiveCommBuff[1024];
+		DWORD nBytes = 1024;
+		hr = glpDP->lpVtbl->Receive(
+								glpDP, &from_dcoID, &dcoReceiveID,
+								DPRECEIVE_ALL, &ReceiveCommBuff[0], &nBytes );
+
+		switch( hr )
+		{
+		case DP_OK:
+
+			if ( from_dcoID == DPID_SYSMSG )
+				EvalSysMessage( nBytes, (LPDPMSG_GENERIC) &ReceiveCommBuff[0] );
+
+			else
+				network_event_new_message( from_dcoID, &ReceiveCommBuff[0], nBytes );
+
+			break;
+		case DPERR_BUFFERTOOSMALL:
+			DebugPrintf("DPERR_BUFFERTOOSMALL\n");
+			break;  
+		case DPERR_GENERIC:
+			DebugPrintf("DPERR_GENERIC\n");
+			break;  
+		case DPERR_INVALIDOBJECT:
+			DebugPrintf("DPERR_INVALIDOBJECT\n");
+			break;  
+		case DPERR_INVALIDPARAMS:
+			DebugPrintf("DPERR_INVALIDPARAMS\n");
+			break;  
+		case DPERR_INVALIDPLAYER:
+			DebugPrintf("DPERR_INVALIDPLAYER\n");
+			break;  
+		case DPERR_NOMESSAGES:
+			return; // finished
+			break;  
+		}
+	}
+}

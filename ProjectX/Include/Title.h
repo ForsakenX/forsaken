@@ -482,7 +482,7 @@ extern MENU MENU_NEW_HostWaitingToStart;
 extern MENU MENU_NEW_WatchTeamSelect;
 extern MENU MENU_NEW_ChooseTeamForExistingGame;
 extern MENU MENU_NEW_PseudoHostWaitingForAck;
-extern MENU MENU_NEW_ChooseSessionToJoin;
+extern MENU MENU_NEW_Joining;
 extern MENU MENU_NEW_PseudoHostWaitingToStart;
 extern MENU MENU_NEW_ChooseConnectionToJoin;
 extern MENU MENU_NEW_GeneralLoading;
@@ -490,8 +490,6 @@ extern MENU MENU_NEW_GeneralLoading;
 extern MENU	MENU_STATS_Start;
 
 extern BOOL quitting;
-extern LIST	SessionsList;
-extern LIST	MySessionsList;
 
 MENU *LastMenu;
 

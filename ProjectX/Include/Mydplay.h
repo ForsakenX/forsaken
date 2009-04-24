@@ -9,10 +9,9 @@
  /*
  * defines
  */
-#define FIND_SESSION_TIMEOUT			3600.0F
+
 #define MULTIPLAYER_VERSION				(0x010d)
 #define DEMO_MULTIPLAYER_VERSION		(0x0109)
-#define MAXBIGPACKETBUFFERSIZE			1024
 #define SHORTBANK
 #define VERYSHORTPACKETS
 #define NOISEFALLOFFFACTOR				( 1.0F / 120.0F )	// approx 2 seconds....
@@ -971,9 +970,6 @@ typedef struct _TRACKERINFOMSG
 	PLAYERINFO PlayerInfo[MAX_PLAYERS];
 }TRACKERINFOMSG, *LPTRACKERINFOMSG;
 
-// globals needed in other modules
-extern BOOL	IsPseudoHost;
-extern float FindSessionTimeout;
 
 /*
  * fn prototypes
@@ -998,7 +994,6 @@ void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int1
 void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style );
 void	CreateShockwaveSend( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon );
 void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil );
-void	EvalSysMessage( DWORD len , BYTE * MsgPnt );
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon );
 void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time );
 void	smallinitShip( uint16 i );
@@ -1012,6 +1007,11 @@ void StopDemoRecording( void );
 BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
+
+void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes );
+void network_event_new_player( char * player_name );
+void network_event_i_am_host( void );
+void network_event_destroy_player( DPID id );
 
 #endif
 

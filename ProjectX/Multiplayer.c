@@ -33,12 +33,12 @@
 #include "util.h"
 #include "demo.h"
 #include "string.h"
+#include "net_dplay.h"
 
 /*
  * Externals
  */
 extern BOOL OKToProcessKeys;
-extern BOOL	OKToJoinSession;
 extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
@@ -71,8 +71,6 @@ extern SLIDER CTFSlider;
 extern	BOOL	UseShortPackets;
 
 extern void SetMultiplayerPrefs( void );
-
-extern LIST	MySessionsList;
 extern BOOL	Panel;
 
 extern MENUITEM TeamGameHostMenuItem;
@@ -128,7 +126,6 @@ extern	SLIDER  PacketsSlider;
 extern	LPDPSESSIONDESC2                    glpdpSD;
 
 extern	LPDIRECTPLAY4A                       glpDP;				// directplay object pointer
-extern	LPDIRECTPLAYLOBBY2A					lpDPlayLobby;		//Lobby stuff...
 extern	LPDPLCONNECTION						glpdplConnection;	// connection settings
 extern	TEXT TCPAddress;
 extern	DPID	dcoID;
@@ -158,8 +155,6 @@ extern int CameraStatus;
 extern	BYTE					OverallGameStatus;
 extern char *CurrentLevelsList;
 extern	int16	PreferedMaxPlayers;
-
-extern	LIST	SessionsList;
 extern	BOOL AutoSelectConnection;
 extern	LONGLONG	Freq;
 extern  MENUSTATE MenuState;
@@ -200,23 +195,12 @@ int						TeamMembers[MAX_TEAMS];
 MENU  *				GetPlayerNumMenu;
 float	Bodge	= 1.0F;
 
-DPSESSIONDESC2	Sessions[MAXSESSIONS];
-char SessionNames[ MAXSESSIONS ][ 128 ];
-
-DPSESSIONDESC2	SessionsCopy[MAXSESSIONS];
-LIST	SessionsListCopy;
-
-
-BOOL	SessionsRefresh[MAXSESSIONS];
-BOOL	SessionsRefreshActive = FALSE;
-
 BOOL	Modem2Modem = FALSE;
 
 uint16	RandomStartPosModify = 0;							
 
 void DebugPrintf( const char * format, ... );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
-void InitMySessionsList(void);
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
 void InitDemoList( MENU * Menu );
@@ -494,257 +478,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	return TRUE;
 }
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Get a List of Current Sessions
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-void GetCurrentSessions( MENU *Menu )
-{
-
-	// we are a joiner
-	IsHost = FALSE;
-	IsPseudoHost = FALSE;
-
-	// reset session list
-	SessionsList.items = 0;
-	SessionsList.top_item = 0;
-	SessionsList.display_items = 8;
-	SessionsList.selected_item = -1;
-
-	// reset player list
-	PlayersList.items = 0;
-	PlayersList.top_item = 0;
-	PlayersList.display_items = 16;
-	PlayersList.selected_item = -1;
-
-	// setup directplay
-	SetupDPlay( TCPAddress.text );
-
-	// look bellow
-	GetCurrentSessions_ReScan(NULL);
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Get a List of Current Sessions
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-void GetCurrentSessions_ReScan( MENUITEM *Item )
-{
-	int i;
-
-	// if we are currently refreshing
-	if( SessionsRefreshActive )
-
-		// then dont start again
-		return;
-
-	// set refreshing flag on
-	SessionsRefreshActive = TRUE;
-	
-	// set the refreshed flag to false for all sessions in list
-	for( i = 0 ; i < MAXSESSIONS ; i++ )
-		SessionsRefresh[i] = FALSE;
-
-	//
-	DebugPrintf("Enumeration Sessions: STARTING\n");
-
-	// Enumerate Sessions
-	// and we will decide the timeout
-	DPlayEnumSessions(
-
-		10000,							// interval which dplay broadcasts for games
-
-		EnumSessions,					// callback called with each found session
-
-		(LPVOID) NULL,					// pointer for user to pass in data
-		
-		// dwFlags
-
-			DPENUMSESSIONS_ALL			// Enumerate all active sessions even if:
-										// not accepting new players
-										// player limit has been reached
-										// new players have been disabled
-										// joining has been disabled
-
-		|	DPENUMSESSIONS_PASSWORDREQUIRED // also retrieve passworded sessions
-
-		|	DPENUMSESSIONS_ASYNC		// Enumerate current sessions in the cache.
-										// Does not block returns immediately.
-										// Starts asynchronous process if not started.
-										// Updates continue until canceled
-		);
-
-	DebugPrintf("Enumeration Sessions: FINISHED\n");
-
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	EnumSessions callback. Inserts session description information in the Sessions List
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-
-BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID lpContext)
-{
-	int i;
-
-	//
-	// DPESC_TIMEOUT
-	// Means all sessions have been enumerated
-	// And we have been called one more time to let us know
-	//
-
-    if(dwFlags & DPESC_TIMEDOUT)
-	{
-
-		// we are done refreshing the list
-		SessionsRefreshActive = FALSE;
-
-		// set defaults
-		SessionsListCopy.items			= 0;	//
-		SessionsListCopy.top_item		= 0;	//
-		SessionsListCopy.display_items	= 8;	//
-		SessionsListCopy.selected_item	= -1;	// nothing selected
-
-		// for each session
-		for( i = 0 ; i < SessionsList.items ; i ++ )
-		{
-
-			// if the session was not refreshed
-			if( ! SessionsRefresh[i] )
-
-				// don't copy it to the list
-				break;
-
-			// copy the memory of the session pointer previously stored into SessionsCopy
-			memcpy(
-				&SessionsCopy[SessionsListCopy.items],
-				&Sessions[i],
-				sizeof(DPSESSIONDESC2)
-				);
-
-			// copy the memory of the session name previously stored into SessionsListCopy
-			memcpy(
-				&SessionsListCopy.item[SessionsListCopy.items],
-				&SessionsList.item[i],
-				sizeof(SessionsList.item[i])
-				);
-
-			// if this is the selected item
-			if( i == SessionsList.selected_item )
-
-				// set the selected_item in the SessionsListCopy
-				SessionsListCopy.selected_item = SessionsListCopy.items;
-
-			// up count of items coppied
-			SessionsListCopy.items++;
-
-		}
-
-		// copy SessionsCopy into Sessions
-		memcpy(&Sessions ,&SessionsCopy , sizeof(Sessions) );
-
-		// copy SessionsListCopy into SessionsList
-		memcpy(&SessionsList ,&SessionsListCopy , sizeof(SessionsList) );
-
-		// for each SessionsList
-		for( i = 0 ; i < SessionsList.items ; i ++ )
-
-			// we have refreshed this item
-			SessionsRefresh[i] = TRUE;
-
-		// were done so tell enumerate sessions to stop calling us
-		return FALSE;
-
-	}
-
-	//
-	//  We are being called with a new session
-	//
-
-	// for each session in our existing list
-	for( i = 0 ; i < SessionsList.items ; i++ )
-
-		// if the current session guid equals an existing guid
-		if(	IsEqualGuid(
-				(const LPGUID)&(lpDPSessionDesc->guidInstance),
-				(const LPGUID)&Sessions[i].guidInstance)
-				)
-		{
-
-			// we have refreshed this entry
-			SessionsRefresh[ i ] = TRUE;
-
-			// we allready have this entry in the list
-			// tell enum sessions to keep enumerating
-			return TRUE;
-
-		}
-
-	// have we reached the limit of storable sessions ?
-	if( SessionsList.items > MAXSESSIONS )
-	{
-		// tell developers
-		DebugPrintf("EnumSessions: has reached MAXSESSIONS\n");
-
-		// we can't save anymore sessions
-		// tell enumsessions to keep refreshing
-		// since we need to hit the primary block above
-		// to copy any new sessions into the displayed list
-		return TRUE;
-	}
-
-	//
-	//  add this session to the globals
-	//
-
-	// store away pointer to session description
-	Sessions[SessionsList.items] = *lpDPSessionDesc;
-
-	// copy name of session into SessionNames
-	strncpy(
-		SessionNames[ SessionsList.items ],				// reciever
-		lpDPSessionDesc->lpszSessionNameA,				// giver
-		sizeof( SessionNames[ SessionsList.items ] )	// size to give
-		);
-
-	// copy name of session into SessionsList
-	strncpy(
-		SessionsList.item[SessionsList.items],			// reciever
-		lpDPSessionDesc->lpszSessionNameA,				// giver
-		sizeof(SessionsList.item[0])					// size to give
-		);
-
-	// if
-	if(
-		// the size of the given name
-		strlen(
-			lpDPSessionDesc->lpszSessionNameA
-		// is bigger than our holder
-		) >= sizeof(SessionsList.item[0])
-	)
-		// append "..." to the end of the name
-		strcpy( SessionsList.item[SessionsList.items] + sizeof(SessionsList.item[0]) - 4 , "..." );
-
-	// we have refreshed this session
-	SessionsRefresh[SessionsList.items] = TRUE;
-
-	// up the count of items
-	SessionsList.items++;
-
-	// were done tell enum sessions to keep enumerating
-    return TRUE;
-
-}
-
 void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 {
 	int32	Time;
@@ -818,7 +551,7 @@ BOOL JoinASession ( MENUITEM * Item )
 	SetBikeMods( 0 );
 
 	// get a pointer to the guid
-	lpGuid = (LPGUID ) &Sessions[SessionsList.selected_item].guidInstance;
+	lpGuid = (LPGUID ) &lpDPlaySession->guidInstance;
 
 	// open session
 	if ((hr = DPlayOpenSession( lpGuid)) != DP_OK)
@@ -837,7 +570,7 @@ BOOL JoinASession ( MENUITEM * Item )
 	GetSessionInfo( glpdpSD );
 	SetupDplayGame();
 	Rejoining = FALSE;
-	temp_sd = Sessions[SessionsList.selected_item];
+	temp_sd = *lpDPlaySession;
 
 	// zero Some stuff cos they might have changed..or they might be pointers...
 	temp_sd.dwCurrentPlayers			= 0;
@@ -903,29 +636,6 @@ void SelectSession( MENUITEM *Item )
 	}
 }
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	EnumeratePlayer callback. Inserts player information into the PlayersList
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
-    DWORD dwFlags, LPVOID lpContext)
-{
-
-	if( PlayersList.items < MAX_PLAYERS )
-	{
-		PlayerIDs[PlayersList.items] = pidID;
-		strncpy( PlayersList.item[PlayersList.items] , lpName->lpszShortNameA , sizeof(PlayersList.item[0])  );
-		if( strlen(lpName->lpszShortNameA ) >= sizeof(PlayersList.item[0]) )
-		{
-			strcpy( PlayersList.item[PlayersList.items] + sizeof(PlayersList.item[0]) - 4 , "..." );
-		}
-		PlayersList.items++;
-	}
-    return(TRUE);
-}
-
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Procedure	:	Get The Players In the Current Session...
 	Input		:	MENUITEM * Item
@@ -934,57 +644,22 @@ BOOL WINAPI EnumPlayers(DPID pidID, DWORD dwPlayerType, LPCDPNAME lpName,
 void GetPlayersInCurrentSession( MENUITEM *Item )
 {
 	int i;
-#ifdef DEBUG_ENUM_PLAYERS
-	char buf[ 128 ];
-#endif
+
+	PlayersList.items = 0;
+	PlayersList.top_item = 0;
+	PlayersList.selected_item = -1;
 	
-	DebugPrintf("GetPlayersInCurrentSession\n");
+	NumOfPlayersSlider.value = 0;
 
-	//Bodge -= framelag;
-	//if( Bodge <= 0.0F )
-	{
-#ifdef ENUM_PLAYERS_ON_TITLES
-		DPlayGetSessionDesc();
-
-		NumOfPlayersSlider.value = (int) glpdpSD->dwCurrentPlayers;
-
-		if (NumOfPlayersSlider.value != NumOfPlayersSlider.oldvalue)
-		{	
-//		 	NumOfPlayersSlider.oldvalue = NumOfPlayersSlider.value;
-			NumOfPlayersSlider.redraw_req = TRUE;
-		}
-		
-		PlayersList.items = 0;
-		PlayersList.top_item = 0;
-		PlayersList.selected_item = -1;
-		DPlayEnumPlayers( NULL, EnumPlayers, (LPVOID) NULL, 0);
-#else
-		PlayersList.items = 0;
-		PlayersList.top_item = 0;
-		PlayersList.selected_item = -1;
-		
-		NumOfPlayersSlider.value = 0;
-
-		for ( i = 0; i < MAX_PLAYERS; i++ )
+	for ( i = 0; i < MAX_PLAYERS; i++ )
+		if( ( GameStatus[ i ] == MyGameStatus ) || ( i == WhoIAm ) )
 		{
-#ifdef DEBUG_ENUM_PLAYERS
-			sprintf( buf, "player %d status %x", i, GameStatus[ i ] );
-			Print4x5Text( buf, 10, 10 * i + 50, 2 );
-#endif			
-			if( ( GameStatus[ i ] == MyGameStatus ) || ( i == WhoIAm ) )
-			{
-				NumOfPlayersSlider.value++;
-				strcpy( PlayersList.item[ PlayersList.items++ ], Names[ i ] );
-			}
+			NumOfPlayersSlider.value++;
+			strcpy( PlayersList.item[ PlayersList.items++ ], Names[ i ] );
 		}
 
-		if (NumOfPlayersSlider.value != NumOfPlayersSlider.oldvalue)
-		{	
-			NumOfPlayersSlider.redraw_req = TRUE;
-		}
-#endif
-		Bodge = 30.0F;
-	}
+	if (NumOfPlayersSlider.value != NumOfPlayersSlider.oldvalue)
+		NumOfPlayersSlider.redraw_req = TRUE;
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
@@ -1057,8 +732,6 @@ void BailMultiplayer( MENU * Menu )
 void BailMultiplayerFrontEnd( MENU *Menu )
 {
 	BailMultiplayer( Menu );
-	SessionsList.selected_item = -1;
-	InitMySessionsList();
 }
 
 void InitTeamLists( MENU *Menu )
