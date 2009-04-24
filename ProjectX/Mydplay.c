@@ -3423,12 +3423,8 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPREQTIMEMSG						lpReqTime;
 	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
 
-	DWORD			Flags		= 0;
 	DWORD			nBytes		= 0;
-	DWORD			dwPriority	= 0;
 	int				guaranteed	= 0;
-
-	HRESULT			hr;
 	int				i;
 	int				Count;
 	int				MessageColour = 2; // default message colour is light green
@@ -4086,72 +4082,9 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 	BytesPerSecSent += nBytes;
 
-	// send the message
-
-	if( UseSendAsync )
-		Flags |= DPSEND_ASYNC;
-
-	if( guaranteed )
-		Flags |= DPSEND_GUARANTEED;
-
-#ifndef DEBUG_ON
-	Flags |= DPSEND_NOSENDCOMPLETEMSG;
-#endif
-
 	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
-	hr = glpDP->lpVtbl->SendEx(
-								glpDP,
-								dcoID,					// From
-								to,						// send to
-								Flags,					// send flags
-								(LPSTR)&CommBuff[0],	// data
-								nBytes,					// sizeof data
-								dwPriority,				// dwPriority
-								0,						//
-#ifdef DEBUG_ON
-								(LPVOID)msg_to_str(msg),// lpContext = Packet Type Name
-#else
-								NULL,					// lpContext
-#endif
-								NULL					// lpdwMsgID
-								);
+	network_send( to, (void*) &CommBuff[0], nBytes, guaranteed );
 
-
-	switch ( hr )
-	{
-	case DP_OK:
-	case DPERR_PENDING: // DPSEND_ASYNC so packet went to queue
-		break;
-	case DPERR_BUSY:
-		DebugPrintf( "SendGameMessage() DPERR_BUSY\n");
-		break;
-	case DPERR_CONNECTIONLOST:
-		DebugPrintf( "SendGameMessage() DPERR_CONNECTIONLOST\n");
-		break;
-	case DPERR_INVALIDFLAGS:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDFLAGS - msgtype %s\n",msg_to_str(msg));
-		break;
-	case DPERR_INVALIDPARAMS:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPARAMS - msgtype %s\n",msg_to_str(msg));
-		break;
-	case DPERR_INVALIDPLAYER:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPLAYER id %lu - msgtype %s\n",to,msg_to_str(msg));
-		break;
-	case DPERR_INVALIDPRIORITY:
-		DebugPrintf( "SendGameMessage() DPERR_INVALIDPRIORITY of %lu - msgtype %s\n",dwPriority,msg_to_str(msg));
-		break; 
-	case DPERR_NOTLOGGEDIN:
-		DebugPrintf( "SendGameMessage() DPERR_NOTLOGGEDIN\n");
-		break;
-	case DPERR_SENDTOOBIG:
-		DebugPrintf( "SendGameMessage() DPERR_SENDTOOBIG %lu bytes - msgtype %s\n",nBytes,msg_to_str(msg));
-		break;
-	case DPERR_UNSUPPORTED:
-		DebugPrintf( "SendGameMessage() DPERR_UNSUPPORTED - msgtype %s\n",msg_to_str(msg));
-		break;
-	default:
-		DebugPrintf( "SendGameMessage() unknown send error - msgtype %s\n",msg_to_str(msg));
-	}
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

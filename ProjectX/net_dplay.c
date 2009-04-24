@@ -957,3 +957,44 @@ void network_cleanup( DPID dcoID )
 	IDirectPlayX_DestroyPlayer(glpDP, dcoID);
 	DPlayRelease();
 }
+
+void network_send( DPID to, void* data, DWORD size, int guaranteed )
+{
+	HRESULT hr;
+	DWORD flags = DPSEND_ASYNC;
+
+	if( guaranteed )
+		flags |= DPSEND_GUARANTEED;
+
+	hr = glpDP->lpVtbl->SendEx(	glpDP, dcoID, to, flags, data, size, 0, 0, 0, 0 );
+
+	switch ( hr )
+	{
+	case DP_OK:
+	case DPERR_PENDING: // DPSEND_ASYNC so packet went to queue
+		break;
+	case DPERR_BUSY:
+		DebugPrintf( "network_send DPERR_BUSY\n");
+		break;
+	case DPERR_CONNECTIONLOST:
+		DebugPrintf( "network_send DPERR_CONNECTIONLOST\n");
+		break;
+	case DPERR_INVALIDPARAMS:
+		DebugPrintf( "network_send DPERR_INVALIDPARAMS\n");
+		break;
+	case DPERR_INVALIDPLAYER:
+		DebugPrintf( "network_send DPERR_INVALIDPLAYER id %d\n",to);
+		break; 
+	case DPERR_NOTLOGGEDIN:
+		DebugPrintf( "network_send DPERR_NOTLOGGEDIN\n");
+		break;
+	case DPERR_SENDTOOBIG:
+		DebugPrintf( "network_send DPERR_SENDTOOBIG %d bytes\n",size);
+		break;
+	case DPERR_UNSUPPORTED:
+		DebugPrintf( "network_send DPERR_UNSUPPORTED\n");
+		break;
+	default:
+		DebugPrintf( "network_send unknown send error\n");
+	}
+}
