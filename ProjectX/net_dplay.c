@@ -350,39 +350,26 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
     return hr;
 }
 
-HRESULT network_get_description(void)
+void network_get_description(void)
 {
     HRESULT hr=E_FAIL;
     DWORD dwSize;
 
+	if(!glpDP)
+		return;
 
-    // free old session desc, if any
     if (glpdpSD)
     {
         free(glpdpSD);
         glpdpSD = NULL;
     }
 
-	if (glpDP)
+    if ((hr = IDirectPlayX_GetSessionDesc(glpDP, NULL, &dwSize)) == DPERR_BUFFERTOOSMALL)
     {
-		// first get the size for the session desc
-        if ((hr = IDirectPlayX_GetSessionDesc(glpDP, NULL, &dwSize)) == DPERR_BUFFERTOOSMALL)
-        {
-			// allocate memory for it
-            glpdpSD = (LPDPSESSIONDESC2) malloc(dwSize);
-            if (glpdpSD)
-            {
-                // now get the session desc
-                hr = IDirectPlayX_GetSessionDesc(glpDP, glpdpSD, &dwSize);
-            }
-            else
-            {
-                hr = E_OUTOFMEMORY;
-            }
-        }
+        glpdpSD = (LPDPSESSIONDESC2) malloc(dwSize);
+        if (glpdpSD)
+            hr = IDirectPlayX_GetSessionDesc(glpDP, glpdpSD, &dwSize);
     }
-
-    return hr;
 }
 
 void network_session_name( char *name )

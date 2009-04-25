@@ -1452,11 +1452,7 @@ void network_event_i_am_host( void )
 			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
 		else
 			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-		if ( network_get_description() != DP_OK)
-		{
-			Msg("Mydplay.c: EvalSysMessage() unable to get new session description\n");
-			exit(1);
-		}
+		network_get_description();
 		break;
 	default:
 		AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );

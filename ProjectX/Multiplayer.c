@@ -294,6 +294,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	if ( MaxPlayersSlider.max != 2 )
 		PreferedMaxPlayers = MaxPlayersSlider.value;
+
 	SetMultiplayerPrefs();
 
 	Seed = timeGetTime();
