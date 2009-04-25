@@ -260,13 +260,6 @@ extern	int16	ModesX[8];
 extern	int16	ModesY[8];
 extern	float	ModeScaleX[8];
 extern	float	ModeScaleY[8];
-extern	DWORD                   Old_WhoIAm;
-extern	DPSESSIONDESC2			Old_Session;
-extern	DWORD					Old_Kills;
-extern	DWORD					Old_Deaths;
-extern	DWORD					Old_TeamNumber;
-extern	char					Old_Name[256];
-extern	BOOL					Rejoining;
 extern	BOOL					HostDuties;
 extern	int16	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
@@ -10377,9 +10370,6 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	// reset the selected level
 	LevelList.selected_item = selected_level;
 
-	// get the info of last game: player, score, level etc...
-	GetLastGameInfo();
-
 	// load multiplayer settings: lagtol, weapons, bright bikes, packets etc..
 	GetMultiplayerPrefs();
 
@@ -10633,100 +10623,6 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 	
 	//OKToProcessKeys = FALSE;
 }
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Get last game played info from the registry..
-	Input		:		Nothing
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void GetLastGameInfo( void )
-{
-	DWORD size;
-	int i;
-
-	char templevelname[ 64 ];
-
-	Rejoining = FALSE;
-
-    // open/create Condemned registry key 
-	size = sizeof(Old_WhoIAm);
-	if( RegGet( "OldWhoIAm", (LPBYTE)&Old_WhoIAm , &size ) != ERROR_SUCCESS)
-	{
-		Old_WhoIAm = (BYTE) -1;
-	}
-	size = sizeof(DPSESSIONDESC2);
-	if( RegGet( "OldSession", (LPBYTE)&Old_Session , &size ) != ERROR_SUCCESS)
-	{
-		Old_Session.dwUser1 = 0;
-	}
-
-	size = sizeof(Old_Kills);
-	if( RegGet( "OldKills", (LPBYTE)&Old_Kills , &size ) != ERROR_SUCCESS)
-	{
-		Old_Kills = 0;
-	}
-	size = sizeof(Old_Deaths);
-	if( RegGet( "OldDeaths", (LPBYTE)&Old_Deaths , &size ) != ERROR_SUCCESS)
-	{
-		Old_Deaths = 0;
-	}
-	size = sizeof(Old_TeamNumber);
-	if( RegGet( "OldTeamNumber", (LPBYTE)&Old_TeamNumber , &size ) != ERROR_SUCCESS)
-	{
-		Old_TeamNumber = 0;
-	}
-	size = sizeof(Old_Name);
-	if( RegGet( "OldName", (LPBYTE)&Old_Name[0] , &size ) != ERROR_SUCCESS)
-	{
-		Old_Name[0] = 0;
-	}
-
-	LevelList.selected_item = 0;
-	size = sizeof ( templevelname );
-	if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
-	{
-		templevelname[ 7 ] = 0;
-		for ( i = 0; i < LevelList.items; i++ )
-			if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
-			{
-				LevelList.selected_item = i;
-				break;
-			}
-	}
-}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Set last game played info from the registry..
-	Input		:		Nothing
-	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void SetLastGameInfo( void )
-{
-	if( RegSet( "OldWhoIAm",  (LPBYTE)&Old_WhoIAm ,  sizeof(Old_WhoIAm) ) != ERROR_SUCCESS )
-	{
-		return;
-	}
-	if( RegSet( "OldSession", (LPBYTE)&Old_Session , sizeof(DPSESSIONDESC2) ) != ERROR_SUCCESS )
-	{
-		return;
-	}
-	if( RegSet( "OldKills",   (LPBYTE)&Old_Kills ,   sizeof(Old_Kills) ) != ERROR_SUCCESS )
-	{
-		return;
-	}					
-	if( RegSet( "OldDeaths",  (LPBYTE)&Old_Deaths ,  sizeof(Old_Deaths) ) != ERROR_SUCCESS )
-	{
-		return;
-	}
-	if( RegSet( "OldTeamNumber",  (LPBYTE)&Old_TeamNumber ,  sizeof(Old_TeamNumber) ) != ERROR_SUCCESS )
-	{
-		return;
-	}
-	if( RegSetA( "OldName",  (LPBYTE)&Old_Name ,  sizeof(Old_Name) ) != ERROR_SUCCESS )
-	{
-		return;
-	}
-}
-
 
 void AddBikeArrow( char *name, int num )
 {
@@ -11903,6 +11799,22 @@ void GetMultiplayerPrefs( void )
 		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 	}
 
+	{
+		int i;
+		char templevelname[ 64 ];
+		LevelList.selected_item = 0;
+		size = sizeof ( templevelname );
+		if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
+		{
+			templevelname[ 7 ] = 0;
+			for ( i = 0; i < LevelList.items; i++ )
+				if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
+				{
+					LevelList.selected_item = i;
+					break;
+				}
+		}
+	}
 }
 
 void SetMultiplayerPrefs( void )

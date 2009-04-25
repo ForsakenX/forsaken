@@ -334,8 +334,6 @@ BYTE		CommBuff[MAX_BUFFER_SIZE];
 
 int		RealPacketSize[256];
 
-PLAYERINFO PlayerInfo[MAX_PLAYERS];	// used by host to manage player numbers
-
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;
@@ -373,13 +371,6 @@ char	tempadd[1024];
 DWORD	tempsize;
 
 extern	char biker_name[256];
-extern	DWORD                   Old_WhoIAm;
-extern	DPSESSIONDESC2			Old_Session;
-extern	DWORD					Old_Kills;
-extern	DWORD					Old_Deaths;
-extern	DWORD					Old_TeamNumber;
-extern	char					Old_Name[256];
-extern	BOOL					Rejoining;
 
 extern	LONGLONG		Time_LastValue;
 extern	BOOL			GoreGuts;
@@ -1109,8 +1100,7 @@ void SetupDplayGame()
 	RealPacketSize[MSG_TEAMGOALS						] = sizeof( TEAMGOALSMSG					);	
 	RealPacketSize[MSG_YOUQUIT							] = sizeof( YOUQUITMSG						);	
 	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG				);	 
-	RealPacketSize[MSG_TITANBITS							] = sizeof( TITANBITSMSG						);	
-	RealPacketSize[MSG_TRACKERINFO						] = sizeof( TRACKERINFOMSG					);	
+	RealPacketSize[MSG_TITANBITS							] = sizeof( TITANBITSMSG						);
 	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
 	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
 	
@@ -1251,58 +1241,17 @@ void DestroyGame( void )
 		RegeneratePickups();
 
 		ResetAllStats(); // stats.c
-		
-		network_get_description();
+
 		network_cleanup( dcoID );
 		dcoID = 0;
-
-		if( glpdpSD != NULL )
-			Old_Session = *glpdpSD;
-
-		Old_WhoIAm = WhoIAm;
-
-		if( TeamGame || CTF || CaptureTheFlag || BountyHunt || MaxKills )
-		{
-			Old_Kills = 0;
-			Old_TeamNumber = 0;
-		}
-		else
-		{
-			Old_Kills = GetScoreStats(WhoIAm);
-			Old_TeamNumber = TeamNumber[WhoIAm];
-		}
-		for( i = 0 ; i < 256 ; i++ )
-		{
-			Old_Name[i] = biker_name[i];
-		}
-		// Stores all the info needed in the registry...
-		SetLastGameInfo();
-
-		if (glpdpSD) 
-		{
-			DebugPrintf("Destroy game pos 2\n");
-			free(glpdpSD);
-			glpdpSD = NULL;
-		}
-
 
 	}
 	else
 	{
-
-		DebugPrintf("Destroy game pos a\n");
 		if( dcoID )
 		{
-			DebugPrintf("Destroy game pos b\n");
 			network_cleanup( dcoID );
 			dcoID = 0;
-		}
-
-		if (glpdpSD) 
-		{
-			DebugPrintf("Destroy game pos c\n");
-			free(glpdpSD);
-			glpdpSD = NULL;
 		}
 	}
 
@@ -1586,7 +1535,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     LPFUPDATEMSG						lpFUpdate;
     LPVERYSHORTFUPDATEMSG		lpVeryShortFUpdate;
     LPGROUPONLY_VERYSHORTFUPDATEMSG		lpGroupOnly_VeryShortFUpdate;
-    LPHEREIAMMSG						lpHereIAm;
     LPINITMSG								lpInit;
     LPSHIPHITMSG							lpShipHit;
     LPSHORTSHIPHITMSG				lpShortShipHit;
@@ -1631,15 +1579,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
-
-
-	/*
-	if ( *MsgPnt == 0xe0 )
-	{
-		Msg("tracker msg recieved ( gamestatus = %x)\n", MyGameStatus);
-		Msg("test");
-	}
-	*/
 	
 	if( *(MsgPnt+1) < MAX_PLAYERS )
 	{
@@ -1654,10 +1593,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	}
 		
 	if( MyGameStatus == STATUS_GetPlayerNum )
-	{
- 		if ( ( *MsgPnt != MSG_INIT ) && ( *MsgPnt != MSG_TRACKERINFO ) )
+ 		if ( *MsgPnt != MSG_INIT )
 			return;
-	}
 
 	if  ( ( ( ( MyGameStatus >= STATUS_InitView_0 ) && ( MyGameStatus <= STATUS_InitView_9 ) ) ||
 		( MyGameStatus == STATUS_Joining ) ||
@@ -1805,7 +1742,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			case MSG_BIKENUM:
 			case MSG_STATUS:
 			case MSG_LONGSTATUS:
-			case MSG_TRACKERINFO:
 			case MSG_TEAMGOALS:
 				break;
 
@@ -1853,7 +1789,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		case MSG_TEXTMSG:
 		case MSG_YOUQUIT:
  		case MSG_BIKENUM:
-		case MSG_TRACKERINFO:
 			break;
 		default:
 			return;
@@ -2329,35 +2264,11 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		if( IsHost && !PlayDemo )
 		{
-			BOOL Done = FALSE;
-			lpHereIAm = (LPHEREIAMMSG)MsgPnt;
 			network_get_description();
+			SendGameMessage(MSG_INIT, from_dcoID, 0, 0, 0);
 
-			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			{
-				// if we have allready heard from them then we have to send back a special message..
-				if( ( Ships[i].dcoID == from_dcoID ) && ( GameStatus[i] == STATUS_GetPlayerNum ) )
-				{
-					SendGameMessage(MSG_INIT, lpHereIAm->ID, (BYTE) i , lpHereIAm->Old_TeamNumber, 1);
-					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-					Done = TRUE;
-				}										  
-			}
-
-			if ( !Done )		    
-			{
-				if( lpHereIAm->Rejoining )
-				{
-					SendGameMessage(MSG_INIT, lpHereIAm->ID, lpHereIAm->Old_WhoIAm, lpHereIAm->Old_TeamNumber, 0);
-					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-				}
-				// new player joining the game
-				else
-				{
-					SendGameMessage(MSG_INIT, lpHereIAm->ID, MAX_PLAYERS, 0, 0);
-					SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-				}
-			}
+			// BUG: why is this sent to everyone ?
+			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 		}
 		return;
 
@@ -3425,8 +3336,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	int				Count;
 	int				MessageColour = 2; // default message colour is light green
 	char			VersionMessage[30];
-	BOOL			Rejoining = FALSE;
-	char			IPAdd[16];
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3467,10 +3376,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpHereIAm = (LPHEREIAMMSG)&CommBuff[0];
         lpHereIAm->MsgCode = msg;
         lpHereIAm->WhoIAm = WhoIAm;
-        lpHereIAm->ID = (DWORD)dcoID;
-        lpHereIAm->Rejoining = Rejoining;
-        lpHereIAm->Old_WhoIAm = (BYTE) Old_WhoIAm;
-        lpHereIAm->Old_TeamNumber = (BYTE) Old_TeamNumber;
 		nBytes = sizeof( HEREIAMMSG );
         break;
 
@@ -3515,65 +3420,29 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			{															
 				lpInit->PlayerReady[Count] = PlayerReady[Count];
 				lpInit->GameStatus[Count] = GameStatus[Count];
-			}	
-			
-			// try to find a brand new slot
-			Rejoining = FALSE;
-			for( i = 0; i < MAX_PLAYERS; i++ )
-			{
-			    if( i != WhoIAm )
-			    {
-					network_get_ip( IPAdd, to );
-					// rejoining
-					if(strcmp(&PlayerInfo[i].IP[0], &IPAdd[0]) == 0)
-					{
-						//AddColourMessageToQue(1,"REJOINING!!!");
-						Rejoining = TRUE;
-						break;
-					}
-					// found a never used before slot
-					else if(PlayerInfo[i].IP == NULL)
-						break;
-				}
 			}
 
-			// couldn't find a new slot so find one from a player who left
+			// find a free player slot
+		    for( i = 0; i < MAX_PLAYERS; i++ )
+				if( i != WhoIAm )
+	    			if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
+	    				break;
+
+			// The game is currently full or nearly so dont let anyone else join...
 			if( i == MAX_PLAYERS)
-			{
-			    for( i = 0; i < MAX_PLAYERS; i++ )
-			    {
-					if( i != WhoIAm )
-					{
-		    			if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-		    				break;
-					}
-			    }
-			}
-
-			// rejoining
-			if(Rejoining && i != MAX_PLAYERS)
-				InitShipStructure(i , FALSE);	// don't reset score
-			// new
-			else if(!Rejoining && i != MAX_PLAYERS)
-				InitShipStructure(i , TRUE);	// reset score
+				lpInit->YouAre = MAX_PLAYERS+2;
 			
 			// got a valid player number
-			if(i != MAX_PLAYERS)
+			else
 			{
+				InitShipStructure(i , TRUE); // reset the player structure
 				GameStatus[i] = STATUS_GetPlayerNum;
 				lpInit->YouAre = (BYTE) i;
 				DebugPrintf("YouAre set to %d at point 2\n", i);
 				Names[i][0] = 0;
 				Ships[i].dcoID = to;
+				TeamNumber[i] = 0;
 
-				// Host must store info related to all players who join
-				network_get_ip( PlayerInfo[i].IP, to );
-
-				if( Type == (BYTE) -1 )
-					TeamNumber[i] = 0;
-				else
-					TeamNumber[i] = Type;
-				
 				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
 					lpInit->TeamNumber[Count] = TeamNumber[Count];						
 				
@@ -3591,9 +3460,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 					CopyMines( (uint16) i );
 				}
 			}
-			// The game is currently full or nearly so dont let anyone else join...
-			else
-				lpInit->YouAre = MAX_PLAYERS+2;
 		}
 
 		DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);

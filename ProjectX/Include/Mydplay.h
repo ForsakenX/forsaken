@@ -583,7 +583,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_YOUQUIT							0xfa
 #define MSG_SHORTSHIPHIT					0xfc
 #define MSG_TITANBITS						0xfd
-#define MSG_TRACKERINFO					0xe0		// tracker info for if host migrates in peer-peer game
 #define MSG_GROUPONLY_VERYSHORTFUPDATE		0xec
 #define MSG_VERYSHORTDROPPICKUP		0xed
 
@@ -702,10 +701,6 @@ typedef struct _HEREIAMMSG
 {
     BYTE		MsgCode;
     BYTE		WhoIAm;
-	BYTE     Old_WhoIAm;
-	BYTE     Old_TeamNumber;
-	DPID		ID;
-	BOOL		Rejoining;
 } HEREIAMMSG, *LPHEREIAMMSG;
 
 typedef struct _INITMSG
@@ -949,19 +944,6 @@ typedef struct _REQTIMEMSG
 } REQTIMEMSG, *LPREQTIMEMSG;
 
 #define MAXLEVELSPERBATCH 8
-
-typedef struct _TRACKERINFOMSG
-{
-    BYTE    MsgCode;
-    BYTE    WhoIAm;
-	uint32	addr;
-	u_short	port;
-	DWORD	freq;
-	int		type;
-	BOOL	shutdown;
-	PLAYERINFO PlayerInfo[MAX_PLAYERS];
-}TRACKERINFOMSG, *LPTRACKERINFOMSG;
-
 
 /*
  * fn prototypes

@@ -50,12 +50,6 @@ extern	DPID                    dcoID;
 
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
 
-extern	DPSESSIONDESC2			Old_Session;
-extern	DWORD                   Old_WhoIAm;
-extern	DWORD					Old_Kills;
-extern	DWORD					Old_Deaths;
-extern	char					Old_Name[256];
-extern	BOOL					Rejoining;
 extern	BOOL					TeamGame;
 extern	HANDLE					hPlayerEvent;					// player event to use
 extern	SLIDER	MaxPlayersSlider;
@@ -258,11 +252,6 @@ HRESULT network_host(LPTSTR lptszSessionName)
 	dpDesc.dwMaxPlayers = MaxPlayersSlider.value;
 
 	StoreSessionUserFields( &dpDesc );
-
-	Old_Session = dpDesc;
-	Old_WhoIAm = 0;
-	Old_Kills = 0;
-	Old_Deaths = 0;
 
     dpDesc.lpszSessionNameA = lptszSessionName;
 
@@ -705,88 +694,6 @@ void network_set_player_name(DPID pid, char * NamePnt)
 	Name.lpszShortNameA = NamePnt;
     Name.lpszLongNameA = NamePnt;
     IDirectPlayX_SetPlayerName(glpDP, pid, &Name, DPSET_GUARANTEED);
-}
-
-void network_get_ip( char *add, DPID dpid )
-{
-    char* pTrueAddress;
-    DWORD   dwTempSize;
-    DWORD   dwIndex;
-    DWORD   dwInetSize;
-	char *abyTemp;
-	HRESULT hr;
-	char buf[ 128 ];
-
-    dwIndex = 0;
-    pTrueAddress = NULL;
-
-    // get size required for address
-	hr = IDirectPlayX_GetPlayerAddress( glpDP, dpid, NULL, &dwTempSize );
-	if ( ( hr != DP_OK ) && ( hr != DPERR_BUFFERTOOSMALL ) )
-	{
-		switch ( hr )
-		{
-		case DPERR_INVALIDOBJECT :
-			strcpy( buf, "DPERR_INVALIDOBJECT" );
-			break;
-		case DPERR_INVALIDPARAMS :
-			strcpy( buf, "DPERR_INVALIDPARAMS" );
-			break;
-		case DPERR_INVALIDPLAYER :
-			strcpy( buf, "DPERR_INVALIDPLAYER" );
-			break;
-		default:
-			strcpy( buf, "unknown error" );
-			break;
-		}
-		DebugPrintf("network_get_ip() IDirectPlayXA_GetPlayerAddress cannot get address size ( %s )\n", buf );
-		return;
-	}
-
-	// malloc space for address buffer
-	abyTemp = ( char * )malloc( dwTempSize );
-	if ( !abyTemp )
-	{
-	 	DebugPrintf("network_get_ip() malloc failed\n");
-		return;
-	}
-
-    hr = IDirectPlayX_GetPlayerAddress( glpDP, dpid, (void *)abyTemp, &dwTempSize );
-	if ( hr != DP_OK )
-	{
-	 	DebugPrintf("IDirectPlayXA_GetPlayerAddress failed\n");
-		return;
-	}
-
-    else
-    {    
-	    while ( dwIndex < dwTempSize )
-        {        
-			if ( ! memcmp( abyTemp+dwIndex , &DPAID_INet , sizeof(GUID) ) )
-            {
-				dwInetSize   = * (  (DWORD*) (abyTemp + dwIndex + sizeof(GUID))  );
-	            pTrueAddress = abyTemp + dwIndex + sizeof(GUID) + sizeof(DWORD);
-
-		        if ( '\0' == *pTrueAddress )
-				{
-				    DebugPrintf("network_get_ip() Can't get true address.\n");
-					return;
-				}
-		        else
-				{
-				    DebugPrintf( "network_get_ip() True address %s\n", pTrueAddress );
-				}
-			    break;
-            }
-	        else
-            {
-		        //NOTE: This is a hack, should truly move along on a chunk by chunk basis...
-			    dwIndex++;    
-			}
-        }
-    }
-	
-	strncpy( add, pTrueAddress, 16 );
 }
 
 // if we are enumerating

@@ -561,9 +561,6 @@ BOOL	ProcessList( int Key );
 BOOL	ProcessSlider( int Key );
 void	ProcessSelect( int Key );
 
-void GetLastGameInfo( void );
-void SetLastGameInfo( void );
-
 void MenuGoFullScreen( MENUITEM *Item );
 void MenuSelectMode( MENU *Menu );
 void MakeModeList( MENU *Menu );

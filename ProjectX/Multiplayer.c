@@ -178,17 +178,7 @@ extern	BOOL	NoSFX;
  * Globals to this module
  */
 
-DPSESSIONDESC2			Old_Session;
-
-DWORD                   Old_WhoIAm = (DWORD) -1;
-DWORD					Old_Kills = 0;
-DWORD					Old_Deaths = 0;
-DWORD					Old_TeamNumber = 0;
-char					Old_Name[256] = { 0 };
-BOOL					Rejoining = FALSE;
-
 DPID					PlayerIDs[MAX_PLAYERS];
-
 DPID					TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 int						TeamMembers[MAX_TEAMS];
 
@@ -537,8 +527,6 @@ void GetSessionInfo ( LPDPSESSIONDESC2 sd )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL JoinASession ( MENUITEM * Item )
 {
-	DPSESSIONDESC2 temp_sd;
-
 	PlayDemo = FALSE;
 
 	SetBikeMods( 0 );
@@ -559,36 +547,6 @@ BOOL JoinASession ( MENUITEM * Item )
 	network_get_description();
 	GetSessionInfo( glpdpSD );
 	SetupDplayGame();
-	Rejoining = FALSE;
-	temp_sd = *network_session;
-
-	// zero Some stuff cos they might have changed..or they might be pointers...
-	temp_sd.dwCurrentPlayers			= 0;
-	Old_Session.dwCurrentPlayers		= 0;
-	temp_sd.lpszSessionNameA		= 0;
-	Old_Session.lpszSessionNameA	= 0;
-	temp_sd.lpszPasswordA				= 0;
-	Old_Session.lpszPasswordA		= 0;
-	temp_sd.dwFlags						= 0;
-	Old_Session.dwFlags					= 0;
-	temp_sd.dwSize						= 0;
-	Old_Session.dwSize					= 0;
-	temp_sd.dwMaxPlayers				= 0;
-	Old_Session.dwMaxPlayers			= 0;
-	temp_sd.dwReserved1				= 0;
-	Old_Session.dwReserved1			= 0;
-	temp_sd.dwReserved2				= 0;
-	Old_Session.dwReserved2			= 0;
-	temp_sd.dwUser2						= 0;
-	Old_Session.dwUser2				= 0;
-	temp_sd.dwUser3						= 0;
-	Old_Session.dwUser3				= 0;
-
-	if( ( memcmp( (void*) &Old_Session , (void*) &temp_sd , sizeof(DPSESSIONDESC2 ) ) == 0 ) &&
-		( _stricmp( (char*) &biker_name[0], (char*) &Old_Name[0] ) == 0 ) )
-	{
-	   	Rejoining = TRUE;
-	}
 	
 	WhoIAm = 0xff;
 	MyGameStatus = STATUS_GetPlayerNum;

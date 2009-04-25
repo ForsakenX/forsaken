@@ -483,15 +483,8 @@ extern  float NitroFuel;
 extern  SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern  ENEMY * TestEnemy;
 
-extern  DWORD                   Old_WhoIAm;
-extern  DWORD         Old_Kills;
-extern  DWORD         Old_Deaths;
-extern  DWORD         Old_TeamNumber;
-extern  char          Old_Name[256];
-extern  BOOL          Rejoining;
 extern  char  biker_name[256];
 extern  int16 SelectedBike;
-extern  DPSESSIONDESC2      Old_Session;
 extern  LPDPSESSIONDESC2                    glpdpSD;
 extern  LPDIRECTPLAY4A                       glpDP;     // directplay object pointer
 extern  BOOL  AutoDetail;
@@ -4488,14 +4481,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SyncMines();
       InitShipRandomPos( WhoIAm );
-      // $$$
-	  if( Rejoining && !TeamGame )
-      {
-        //Ships[WhoIAm].Kills = (int16) Old_Kills;
-        //Ships[WhoIAm].Deaths = (int16) Old_Deaths;
-        TeamNumber[WhoIAm] = (BYTE) Old_TeamNumber;
-      }
-	  // $$$
       NextworkOldBikeNum = -1;
       set_player_name();
       if( CountDownOn )
@@ -4754,19 +4739,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         MyGameStatus = STATUS_Title;
         break;
       }
-		// $$$
-      if( Rejoining )
-      {
-        //Ships[WhoIAm].Kills = (int16) Old_Kills;
-        //Ships[WhoIAm].Deaths = (int16) Old_Deaths;
-      }
+
       memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-        strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
+      strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
       Names[WhoIAm][7] = 0;
       Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
-          
-      Old_Session = *glpdpSD;
-      strcpy( (char*) &Old_Name[0] , (char*) &biker_name[0] );
     
       MyGameStatus = STATUS_StartingMultiplayer;
       MenuState = MENUSTATE_Select;

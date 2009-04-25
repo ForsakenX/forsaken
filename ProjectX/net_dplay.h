@@ -3,8 +3,6 @@
 
 LPDPSESSIONDESC2 network_session;
 
-void network_get_ip( char *add, DPID dpid );
-
 void network_session_name( char *name );
 void network_get_session( void );
 void network_initialize( char * TCPAddress );

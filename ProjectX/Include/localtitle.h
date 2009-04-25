@@ -797,30 +797,9 @@
 
 #define LT_MENU_NEW_MoreMultiplayerOptions1a "target collision perspective"
 #define LT_MENU_NEW_MoreMultiplayerOptions2a "shooter collision perspective"
-
-/*********************************************************************
-
-  ADDED SINCE 20/8/98
-
-*********************************************************************/
-#define HOST_IS_SETTING_UP_GAME "please wait - host is setting up game"
-#define LT_MENU_NEW_CreateGame18 "setup tracker"
-#define LT_MENU_NEW_SetUpTracker1 "send tracker info"
-#define LT_MENU_NEW_SetUpTracker2 "Choose tracker config"
-#define NO_TRACKER_FILES "you have no tracker files installed on this machine"
-#define KICKED_SERVER "you have been kicked out by the server"
 #define KICKED_HOST "you have been kicked out by the host"
 #define DID_NOT_HAVE_LEVEL "you did not have the level chosen by the host ( %s )"
 #define PLEASE_WAIT "please wait..."
-
-#define LT_MENU_NEW_ChooseServerGameType0 "Choose server type"
-#define LT_MENU_NEW_ChooseServerGameType1 "manual"
-#define LT_MENU_NEW_ChooseServerGameType2 "auto"
-#define FORSAKEN_SERVER "Forsaken server - press 'Esc' for menu"
-#define UNSUPPORTED_MSG_QUE "unable to auto-throttle messages - unsupported by service provider"
-#define THROTTLE "auto-throttle kicking in"
-
-#define LT_Server "server"
 
 #endif // LOCALTITLE_INCLUDED
 
