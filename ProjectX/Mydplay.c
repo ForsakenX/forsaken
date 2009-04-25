@@ -190,7 +190,6 @@ uint16		PingTimes[MAX_PLAYERS];		// How long does it take for a ping???
 
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );
-void StoreLevelNameInSessionDesc( char *str );
 
 BOOL	CanDoDamage[MAX_PLAYERS+1];
 
@@ -267,15 +266,11 @@ DPID HostDPID;
 
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
 
-extern	LPDPSESSIONDESC2                    glpdpSD;            // current session description
-
 void CreateReGen( uint16 ship );
 BOOL InitLevels( char *levels_list );
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 BOOL	HostDuties = FALSE;
-
-LPDIRECTPLAY4A		glpDP=NULL;     // directplay object pointer
 
 DPID						dcoID=0;        // our DirectPlay ID
 LPGUID					g_lpGuid = NULL;
@@ -365,10 +360,6 @@ MATRIX	TempMatrix = {
 				0.0F, 1.0F, 0.0F, 0.0F,
 				0.0F, 0.0F, 1.0F, 0.0F,
 				0.0F, 0.0F, 0.0F, 1.0F };
-
-char	namebuf[256];
-char	tempadd[1024];
-DWORD	tempsize;
 
 extern	char biker_name[256];
 
@@ -571,11 +562,10 @@ BOOL CheckForName( BYTE Player )
     HRESULT				hr;
 	int					i;
 	LPDPNAME			lpDpName;
+	char				namebuf[256];
 	if( Names[Player][0] == 0 )
 	{
-		tempsize = 256;
-		hr = IDirectPlayX_GetPlayerName( glpDP , from_dcoID , (LPVOID) &namebuf[0] , (LPDWORD) &tempsize );
-	
+		hr = network_get_player_name( from_dcoID, &namebuf[0] );
 		if( hr == DP_OK )
 		{
 			lpDpName = (LPDPNAME) &namebuf[0];
@@ -1229,7 +1219,7 @@ void DestroyGame( void )
 	MyGameStatus = STATUS_Left;
 	IsHost = FALSE;
 
-    if ( ( glpDP != NULL ) && ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
     {
 		DebugPrintf("Destroy game pos 1\n");
 
@@ -1242,7 +1232,7 @@ void DestroyGame( void )
 
 		ResetAllStats(); // stats.c
 
-		network_cleanup( dcoID );
+		network_cleanup();
 		dcoID = 0;
 
 	}
@@ -1250,7 +1240,7 @@ void DestroyGame( void )
 	{
 		if( dcoID )
 		{
-			network_cleanup( dcoID );
+			network_cleanup();
 			dcoID = 0;
 		}
 	}
@@ -1397,11 +1387,8 @@ void network_event_i_am_host( void )
 	switch ( MyGameStatus )
 	{
 	case STATUS_StartingMultiplayer:
-		if ( TeamGame )
-			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
-		else
-			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-		network_get_description();
+		if ( TeamGame )	PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
+		else			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
 		break;
 	default:
 		AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
@@ -2018,8 +2005,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				Ships[lpVeryShortUpdate->WhoIAm].dcoID = from_dcoID;
 				
 #ifdef DEMO_SUPPORT
-				if( glpDP )
-				{
 					if( CheckForName( lpVeryShortUpdate->WhoIAm ) )
 					{
 						if( RecordDemo )
@@ -2036,7 +2021,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Demo_fwrite( &Names[lpVeryShortUpdate->WhoIAm][0], 8, 1, DemoFp );
 						}
 					}
-				}
 #endif
 
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
@@ -2143,8 +2127,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				}
 
 #ifdef DEMO_SUPPORT
-				if( glpDP )
-				{
 					if( CheckForName( lpUpdate->WhoIAm ) )
 					{
 						if( RecordDemo )
@@ -2161,7 +2143,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Demo_fwrite( &Names[lpUpdate->WhoIAm][0], 8, 1, DemoFp );
 						}
 					}
-				}
 #endif
 
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
@@ -2264,7 +2245,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		if( IsHost && !PlayDemo )
 		{
-			network_get_description();
 			SendGameMessage(MSG_INIT, from_dcoID, 0, 0, 0);
 
 			// BUG: why is this sent to everyone ?
@@ -3340,7 +3320,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
 
-	if( PlayDemo || !glpDP )
+	if( PlayDemo )
 		return;
 	
 	//DebugPrintf("SendGameMessage() msg type: %s\n",msg_to_str(msg));
@@ -3384,86 +3364,88 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 		if( !IsHost )
 			return;
-		lpInit = (LPINITMSG)&CommBuff[0];
-		lpInit->FromDpid = dcoID;
-        lpInit->MsgCode = msg;
-        lpInit->WhoIAm = WhoIAm;
-		network_get_description();
-		lpInit->dwUser3 = glpdpSD->dwUser3;
-		lpInit->RandomPickups = RandomPickups;
-		lpInit->Seed1 = CopyOfSeed1;
-		lpInit->Seed2 = CopyOfSeed2;
-		lpInit->HarmTeamMates = HarmTeamMates;
-		lpInit->BrightShips = BrightShips;
-		lpInit->BikeExhausts = BikeExhausts;
-		lpInit->Collisions = ColPerspective;
-		lpInit->MaxKills = MaxKills;
-		lpInit->PacketsPerSecond = DPlayUpdateInterval;
-		PackPickupInfo( lpInit->PickupFlags );
-		lpInit->GoalScore = GoalScore;
-		lpInit->BountyBonusInterval = BountyBonusInterval;
-		lpInit->CTF_Type = CTFSlider.value;
-		lpInit->PrimaryPickups = NumPrimaryPickups;
 
-		// current game stats
-		memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));
-		memcpy( lpInit->KillCounter, KillCounter, sizeof(lpInit->KillCounter));
-		memcpy( lpInit->BonusStats, BonusStats, sizeof(lpInit->KillCounter));
-
-		for( Count = 0 ; Count < 32 ; Count++ )
-			lpInit->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
-
-		if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
 		{
-			// tell the player who is host thinks is ready.
-			for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
-			{															
-				lpInit->PlayerReady[Count] = PlayerReady[Count];
-				lpInit->GameStatus[Count] = GameStatus[Count];
-			}
+			lpInit = (LPINITMSG)&CommBuff[0];
+			lpInit->FromDpid = dcoID;
+			lpInit->MsgCode = msg;
+			lpInit->WhoIAm = WhoIAm;
+			lpInit->dwUser3 = ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F ); // coppied from UpdateKillsTime()
+			lpInit->RandomPickups = RandomPickups;
+			lpInit->Seed1 = CopyOfSeed1;
+			lpInit->Seed2 = CopyOfSeed2;
+			lpInit->HarmTeamMates = HarmTeamMates;
+			lpInit->BrightShips = BrightShips;
+			lpInit->BikeExhausts = BikeExhausts;
+			lpInit->Collisions = ColPerspective;
+			lpInit->MaxKills = MaxKills;
+			lpInit->PacketsPerSecond = DPlayUpdateInterval;
+			PackPickupInfo( lpInit->PickupFlags );
+			lpInit->GoalScore = GoalScore;
+			lpInit->BountyBonusInterval = BountyBonusInterval;
+			lpInit->CTF_Type = CTFSlider.value;
+			lpInit->PrimaryPickups = NumPrimaryPickups;
 
-			// find a free player slot
-		    for( i = 0; i < MAX_PLAYERS; i++ )
-				if( i != WhoIAm )
-	    			if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-	    				break;
+			// current game stats
+			memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));
+			memcpy( lpInit->KillCounter, KillCounter, sizeof(lpInit->KillCounter));
+			memcpy( lpInit->BonusStats, BonusStats, sizeof(lpInit->KillCounter));
 
-			// The game is currently full or nearly so dont let anyone else join...
-			if( i == MAX_PLAYERS)
-				lpInit->YouAre = MAX_PLAYERS+2;
-			
-			// got a valid player number
-			else
+			for( Count = 0 ; Count < 32 ; Count++ )
+				lpInit->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
+
+			if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
 			{
-				InitShipStructure(i , TRUE); // reset the player structure
-				GameStatus[i] = STATUS_GetPlayerNum;
-				lpInit->YouAre = (BYTE) i;
-				DebugPrintf("YouAre set to %d at point 2\n", i);
-				Names[i][0] = 0;
-				Ships[i].dcoID = to;
-				TeamNumber[i] = 0;
+				// tell the player who is host thinks is ready.
+				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
+				{															
+					lpInit->PlayerReady[Count] = PlayerReady[Count];
+					lpInit->GameStatus[Count] = GameStatus[Count];
+				}
 
-				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
-					lpInit->TeamNumber[Count] = TeamNumber[Count];						
+				// find a free player slot
+				for( i = 0; i < MAX_PLAYERS; i++ )
+					if( i != WhoIAm )
+	    				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
+	    					break;
+
+				// The game is currently full or nearly so dont let anyone else join...
+				if( i == MAX_PLAYERS)
+					lpInit->YouAre = MAX_PLAYERS+2;
 				
-				lpInit->Status = MyGameStatus;
-				
-				// getplayer
-				// over the next few frames send the current stats table...
-				if(	MyGameStatus == STATUS_Normal )
+				// got a valid player number
+				else
 				{
-					// StatsCount = MAX_PLAYERS;
-					CopyPickups( (uint16) i );
-					CopyRegenSlots( (uint16) i );
-					CopyTriggers( (uint16) i );
-					CopyTrigVars( (uint16) i );
-					CopyMines( (uint16) i );
+					InitShipStructure(i , TRUE); // reset the player structure
+					GameStatus[i] = STATUS_GetPlayerNum;
+					lpInit->YouAre = (BYTE) i;
+					DebugPrintf("YouAre set to %d at point 2\n", i);
+					Names[i][0] = 0;
+					Ships[i].dcoID = to;
+					TeamNumber[i] = 0;
+
+					for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
+						lpInit->TeamNumber[Count] = TeamNumber[Count];						
+					
+					lpInit->Status = MyGameStatus;
+					
+					// getplayer
+					// over the next few frames send the current stats table...
+					if(	MyGameStatus == STATUS_Normal )
+					{
+						// StatsCount = MAX_PLAYERS;
+						CopyPickups( (uint16) i );
+						CopyRegenSlots( (uint16) i );
+						CopyTriggers( (uint16) i );
+						CopyTrigVars( (uint16) i );
+						CopyMines( (uint16) i );
+					}
 				}
 			}
-		}
 
-		DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);
-		nBytes = sizeof( INITMSG );
+			DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);
+			nBytes = sizeof( INITMSG );
+		}
 		break;
 
 

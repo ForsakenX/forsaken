@@ -122,11 +122,6 @@ extern	SLIDER	NumOfPlayersSlider;
 extern	int MenuStackLevel;
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern	SLIDER  PacketsSlider;
-
-extern	LPDPSESSIONDESC2                    glpdpSD;
-
-extern	LPDIRECTPLAY4A                       glpDP;				// directplay object pointer
-extern	LPDPLCONNECTION						glpdplConnection;	// connection settings
 extern	TEXT TCPAddress;
 extern	DPID	dcoID;
 extern	BOOL	CountDownOn;
@@ -154,7 +149,6 @@ extern  MENUITEM	WatchTeamSelectionItem;
 extern int CameraStatus;
 extern	BYTE					OverallGameStatus;
 extern char *CurrentLevelsList;
-extern	int16	PreferedMaxPlayers;
 extern	BOOL AutoSelectConnection;
 extern	LONGLONG	Freq;
 extern  MENUSTATE MenuState;
@@ -282,9 +276,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	network_initialize( NULL );
 
-	if ( MaxPlayersSlider.max != 2 )
-		PreferedMaxPlayers = MaxPlayersSlider.value;
-
 	SetMultiplayerPrefs();
 
 	Seed = timeGetTime();
@@ -335,8 +326,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	OldUseShortPackets = UseShortPackets;
 
 	SetupDplayGame();
-	network_get_description();
-	
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
@@ -463,9 +452,11 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	return TRUE;
 }
 
-void GetSessionInfo ( LPDPSESSIONDESC2 sd )
+void GetSessionInfo ( void )
 {
 	int32	Time;
+	LPDPSESSIONDESC2 sd = network_get_description();
+	if( ! sd ) return;
 
 	// new additions ( previously in MSG_INIT )
 	if( sd->dwUser3 & HarmTeamMatesBit )
@@ -544,8 +535,7 @@ BOOL JoinASession ( MENUITEM * Item )
 		return FALSE;
 	}
 
-	network_get_description();
-	GetSessionInfo( glpdpSD );
+	GetSessionInfo();
 	SetupDplayGame();
 	
 	WhoIAm = 0xff;
@@ -573,7 +563,6 @@ BOOL JoinASession ( MENUITEM * Item )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SelectSession( MENUITEM *Item )
 {
-	
 	if ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU))
 	{
 		JoinASession (&NewJoinItem);
@@ -671,7 +660,7 @@ void TeamGoToSynchup ( MENUITEM * Item )
 void BailMultiplayer( MENU * Menu )
 {
 	MyGameStatus = STATUS_Left;
-    if ( ( glpDP != NULL ) && ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 	MenuRestart( &MENU_Start );
 	MyGameStatus = STATUS_Title;

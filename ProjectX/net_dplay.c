@@ -37,19 +37,8 @@ extern	BOOL ResetKillsPerLevel;
 extern DPID	PlayerIDs[ MAX_PLAYERS ];
 extern BOOL PseudoHostCanSetMaxPlayers;
 extern SLIDER  PacketsSlider;
-
-/*
- * Globals
- */
-
-LPDPSESSIONDESC2                    glpdpSD = NULL;            // current session description
-LPDIRECTPLAYLOBBY2A					lpDPlayLobby = NULL;		//Lobby stuff...
-LPDPLCONNECTION						glpdplConnection = NULL;	// connection settings
-
 extern	DPID                    dcoID;
-
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
-
 extern	BOOL					TeamGame;
 extern	HANDLE					hPlayerEvent;					// player event to use
 extern	SLIDER	MaxPlayersSlider;
@@ -64,6 +53,17 @@ extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
 void DebugPrintf( const char * format, ... );
 BOOL JoinASession ( MENUITEM * Item );
+
+
+/*
+ * Globals
+ */
+
+LPDPSESSIONDESC2					network_session=NULL;
+LPDIRECTPLAY4A						glpDP=NULL;     // directplay object pointer
+LPDPSESSIONDESC2                    glpdpSD = NULL;            // current session description
+LPDIRECTPLAYLOBBY2A					lpDPlayLobby = NULL;		//Lobby stuff...
+
 													   
 /*
  * DPlayClose
@@ -339,13 +339,13 @@ HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
     return hr;
 }
 
-void network_get_description(void)
+LPDPSESSIONDESC2 network_get_description(void)
 {
     HRESULT hr=E_FAIL;
     DWORD dwSize;
 
 	if(!glpDP)
-		return;
+		return NULL;
 
     if (glpdpSD)
     {
@@ -359,34 +359,18 @@ void network_get_description(void)
         if (glpdpSD)
             hr = IDirectPlayX_GetSessionDesc(glpDP, glpdpSD, &dwSize);
     }
+
+	return glpdpSD;
 }
 
-void network_session_name( char *name )
-{
-	DPSESSIONDESC2 tempsd;
-
-	network_get_description();
-
-	if ( glpdpSD )
-	{
-		tempsd = *glpdpSD;
-		glpdpSD->lpszSessionNameA = name;
-		network_set_description();
-
-		*glpdpSD = tempsd;	// restore old SD so that it is freed properly.
-		network_get_description(); // getting new SD will free up old one
-	}
-}
-
-HRESULT network_set_description( void )
+void network_set_description( void )
 {
     HRESULT hr=E_FAIL;
 
-    if (glpDP && glpdpSD)
-    {	
-		// now set the session desc
-		hr = IDirectPlayX_SetSessionDesc(glpDP, glpdpSD, 0 );
-    }
+    if ( ! glpDP || ! glpdpSD)
+		return;
+
+	hr = IDirectPlayX_SetSessionDesc(glpDP, glpdpSD, 0 );
 
 	if ( hr != DP_OK )
 		switch ( hr )
@@ -403,8 +387,6 @@ HRESULT network_set_description( void )
 		default:
 			DebugPrintf("network_set_description() error - unknown\n");
 		}
-
-    return hr;
 }
 
 HRESULT network_open_session( void )
@@ -412,7 +394,7 @@ HRESULT network_open_session( void )
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
-    if (!network_session)
+    if (!glpDP || !network_session)
 		return hr;
 
     ZeroMemory(&dpDesc, sizeof(dpDesc));
@@ -420,13 +402,7 @@ HRESULT network_open_session( void )
     dpDesc.guidInstance = network_session->guidInstance;
     dpDesc.guidApplication = PROJX_GUID;
 
-    // open it
-    if (glpDP)
-        hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
-	else
-		DebugPrintf("network_open_session: could not join !glpDP\n");
-
-    return hr;
+	return IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
 }
 
 HRESULT DPlayRelease(void)
@@ -584,7 +560,7 @@ BOOL InitializeDPlay( char * TCPIPAddress )
 
 	// get service provider address from information in dialog
 	if ( FAILED( CreateAddress( &lpAddress, TCPIPAddress ) ) )
-		goto FAILURE;
+		return FALSE;
 
 	// initialize the connection using the address
 	hr = glpDP->lpVtbl->InitializeConnection(glpDP, lpAddress, 0);
@@ -605,34 +581,19 @@ BOOL InitializeDPlay( char * TCPIPAddress )
 			DebugPrintf("DPERR_UNAVAILABLE\n");
 			break;
 		}
-
-		goto FAILURE;
+		return FALSE;
 	}
-
 	return TRUE;
-
-FAILURE:
-	if( lpAddress )
-		free(lpAddress);
-	return FALSE;
 }
 
 void network_initialize( char * TCPIPAddress )
 {
-	// cleanup any previous connection
-	DPlayRelease();
+	// close everything up
+	network_cleanup();
 
 	// create dplay lobby interface
 	if (!lpDPlayLobby)
 		DPlayCreateLobby();
-
-	// if direct play interface exists
-	if ( glpDP )
-	{
-		// release it
-		(glpDP)->lpVtbl->Release(glpDP);
-		glpDP = NULL;
-	}
 
 	// create a DirectPlay ANSI interface
 	if FAILED(
@@ -652,28 +613,12 @@ void network_initialize( char * TCPIPAddress )
 	return;
 
 FAILURE:
-	if (glpDP)
-	{
-		glpDP->lpVtbl->Close(glpDP);
-		glpDP->lpVtbl->Release(glpDP);
-	}
+	network_cleanup();
 }
 
-/*
- * DPLobbyRelease
- *
- * Wrapper for DirectPlayLobby Release API
- */
 HRESULT DPLobbyRelease(void)
 {
 	HRESULT hr=E_FAIL;
-
-	// free our connection settings
-	if (glpdplConnection)
-	{
-		free(glpdplConnection);
-		glpdplConnection = NULL;
-	}
 
 	// release the lobby object
 	if (lpDPlayLobby)
@@ -681,6 +626,14 @@ HRESULT DPLobbyRelease(void)
 		hr = IDirectPlayLobby_Release(lpDPlayLobby);
 		lpDPlayLobby = NULL;
 	}
+	return hr;
+}
+
+HRESULT network_get_player_name( DPID id, char* name )
+{
+	int size = 255;
+	HRESULT hr = IDirectPlayX_GetPlayerName( glpDP, id, (void*) name, &size );
+	DebugPrintf("network_get_player_name: %s\n", name);
 	return hr;
 }
 
@@ -712,37 +665,29 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 		return FALSE;
 	}
 
-	// keep enumerating till we finish
-	if ( network_session != NULL )
-		return TRUE;
-
 	// store away pointer to session description
 	if( network_session != NULL ) free( network_session );
 	network_session = malloc( sizeof( DPSESSIONDESC2 ) );
 	*network_session = *lpDPSessionDesc;
 
-	// were done tell enum sessions to keep enumerating
-    return TRUE;
-
+	// tell enum sessions to keep enumerating
+    return FALSE;
 }
 
 // enumerate sessions
-void network_get_session( void )
+int network_ready( void )
 {
+	// ready
+	if( network_session )
+		return 1;
+
 	// if we are currently refreshing
 	// then dont start again
 	if( SessionsRefreshActive )
-		return;
+		return 0;
 
 	// set refreshing flag on
 	SessionsRefreshActive = TRUE;
-
-	// whipe the last session
-	if( network_session != NULL )
-	{
-		free( network_session );
-		network_session = NULL;
-	}
 
 	// Enumerate Sessions
 	// and we will decide the timeout
@@ -752,6 +697,9 @@ void network_get_session( void )
 		(LPVOID) NULL,	// user pointer
 		DPENUMSESSIONS_ASYNC // do not block
 		);
+
+	// not ready
+	return 0;
 }
 
 void EvalSysMessage( DWORD len , LPDPMSG_GENERIC lpMsg )
@@ -845,9 +793,11 @@ void network_pump( void )
 	}
 }
 
-void network_cleanup( DPID dcoID )
+void network_cleanup()
 {
 	if(!glpDP)return;
+	if(network_session)
+		free(network_session);
 	IDirectPlayX_DestroyPlayer(glpDP, dcoID);
 	DPlayRelease();
 }
@@ -856,6 +806,9 @@ void network_send( DPID to, void* data, DWORD size, int guaranteed )
 {
 	HRESULT hr;
 	DWORD flags = DPSEND_ASYNC;
+
+	if(!glpDP)
+		return;
 
 	if( guaranteed )
 		flags |= DPSEND_GUARANTEED;

@@ -485,8 +485,6 @@ extern  ENEMY * TestEnemy;
 
 extern  char  biker_name[256];
 extern  int16 SelectedBike;
-extern  LPDPSESSIONDESC2                    glpdpSD;
-extern  LPDIRECTPLAY4A                       glpDP;     // directplay object pointer
 extern  BOOL  AutoDetail;
 extern  LONGLONG  DemoTimeSoFar;
 
@@ -3542,8 +3540,6 @@ BOOL ChangeLevel( void )
 	MissileCameraActive = 0;
 	CameraMissile = (uint16) -1;
 
-	network_get_description();
-
 	InitScene();
 	InitTextMessages();
 	InitMultiSfxHandle();
@@ -3677,90 +3673,79 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
 }
 
+// update session description with current leading kills & elapsed time...
 static void UpdateKillsTime( void )
 { 
-  int i;
+	int i;
+	int updated = 0;
+	uint16 highest_score = 0;
+	uint16 minutes_left, old_minutes_left, old_highest_score;
+	LPDPSESSIONDESC2 sd = network_get_description();
+	if ( !sd ) return;
 
-  // update session description with current leading kills & elapsed time...
-  if ( !glpdpSD )
-  {
-    network_get_description();
-  }
+	// if current level elapsed time is more than 1 min than stored elapsed time, store in SD
+	minutes_left = ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F );
+	if ( minutes_left > 30 )
+	  minutes_left = 30;
+	old_minutes_left = ( uint16 ) ( ( sd->dwUser3 & CurrentGameTimeBits ) >> CurrentGameTime_Shift );
 
-  if ( glpdpSD )
-  {
-    uint16 highest_score = 0;
-    uint16 minutes_left, old_minutes_left, old_highest_score;
-    
-    // if current level elapsed time is more than 1 min than stored elapsed time, store in SD
-    minutes_left = ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F );
-    if ( minutes_left > 30 )
-      minutes_left = 30;
-    old_minutes_left = ( uint16 ) ( ( glpdpSD->dwUser3 & CurrentGameTimeBits ) >> CurrentGameTime_Shift );
+	if ( minutes_left != old_minutes_left )
+	{
+	  sd->dwUser3 &= ~CurrentGameTimeBits;
+	  sd->dwUser3 |=  ( minutes_left << CurrentGameTime_Shift );
+	  updated = 1;
+	}
 
-    if ( minutes_left != old_minutes_left )
-    {
-      glpdpSD->dwUser3 &= ~CurrentGameTimeBits;
-      glpdpSD->dwUser3 |=  ( minutes_left << CurrentGameTime_Shift );
-
-      if ( network_set_description() != DP_OK )
-      {
-        DebugPrintf("RenderScene(): Unable to set session desc!!\n");
-      }
-    }
-
-    // find highest score in a non-team game
-    if ( !TeamGame )
-    {
-      for( i = 0 ; i < MAX_PLAYERS ; i++ )
-      {
-        if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
-        {
+	// find highest score in a non-team game
+	if ( !TeamGame )
+	{
+	  for( i = 0 ; i < MAX_PLAYERS ; i++ )
+	  {
+		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
+		{
 			if(GetScoreStats(i) > highest_score)
 				highest_score = GetScoreStats(i);
-        }
-      }
-    }
+		}
+	  }
+	}
 	// find highest score in a team game
 	else
-    {
-      uint16 current_team_score[ MAX_TEAMS ];
+	{
+	  uint16 current_team_score[ MAX_TEAMS ];
 
-      memset( current_team_score, 0, sizeof( uint16 ) * MAX_TEAMS );
+	  memset( current_team_score, 0, sizeof( uint16 ) * MAX_TEAMS );
 
-      for ( i = 0; i < MAX_PLAYERS; i++ )
-      {
-        if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
-        {
+	  for ( i = 0; i < MAX_PLAYERS; i++ )
+	  {
+		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
+		{
 			current_team_score[ TeamNumber[ i ] ] += GetScoreStats(i);
 		}
-      }
+	  }
 
-      for ( i = 0; i < MAX_TEAMS; i++ )
-      {
-        if ( current_team_score[ i ] > highest_score )
-        {
-          highest_score = current_team_score[ i ];
-        }
-      }
-    }
+	  for ( i = 0; i < MAX_TEAMS; i++ )
+	  {
+		if ( current_team_score[ i ] > highest_score )
+		{
+		  highest_score = current_team_score[ i ];
+		}
+	  }
+	}
 
-    if ( highest_score > 255 )
-      highest_score = 255;
+	if ( highest_score > 255 )
+		highest_score = 255;
 
-    old_highest_score = ( uint16 ) ( ( glpdpSD->dwUser2 & CurrentMaxKillsBits ) >> CurrentMaxKills_Shift );
+	old_highest_score = ( uint16 ) ( ( sd->dwUser2 & CurrentMaxKillsBits ) >> CurrentMaxKills_Shift );
 
-    if ( old_highest_score != highest_score )
-    {
-      glpdpSD->dwUser2 &= ~CurrentMaxKillsBits;
-      glpdpSD->dwUser2 |= ( highest_score << CurrentMaxKills_Shift );
-
-      if ( network_set_description() != DP_OK )
-      {
-        DebugPrintf("RenderScene(): Unable to set session desc!!\n");
-      }
-    }
-  }
+	if ( old_highest_score != highest_score )
+	{
+		sd->dwUser2 &= ~CurrentMaxKillsBits;
+		sd->dwUser2 |= ( highest_score << CurrentMaxKills_Shift );
+		updated = 1;
+	}
+  
+	if( updated )
+      network_set_description();
 }
 
 void GetLevelName( char *buf, int bufsize, int level )
@@ -3800,31 +3785,40 @@ void GetLevelName( char *buf, int bufsize, int level )
 
 void StoreLevelNameInSessionDesc( char *str )
 {
-  char buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH + 1 ];  // extra 1 for '~' char
-  char *pCh;
-  
-  network_get_description();
-  if ( glpdpSD )
-  {
-    strncpy( buf, glpdpSD->lpszSessionNameA, MAX_SESSION_DESC_LENGTH );
-    buf[ MAX_SESSION_DESC_LENGTH - 1 ] = 0; // ensure null terminated 
+	char buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH + 1 ];  // extra 1 for '~' char
+	char *pCh;
 
-    pCh = strchr( buf, '~' );
-    if ( pCh )
-    {
-      pCh++;
-    }else
-    {
-      pCh = buf + strlen( buf );
-      *pCh++ = '~';
-    }
+	// get the current session description
+	LPDPSESSIONDESC2 sd = network_get_description();
+	if ( !sd ) return;
 
-    strncpy( pCh, str, MAX_LEVEL_NAME_LENGTH );
+	// yank out the session description name
+	strncpy( buf, sd->lpszSessionNameA, MAX_SESSION_DESC_LENGTH );
+	buf[ MAX_SESSION_DESC_LENGTH - 1 ] = 0;
 
-    buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH ] = 0; // ensure null terminated 
+	// find the name / level name separater
+	pCh = strchr( buf, '~' );
+	if ( pCh )
+	{
+		pCh++;
+	}
 
-    network_session_name( buf );
-  }
+	// if can't find the separator then add it
+	else
+	{
+		pCh = buf + strlen( buf );
+		*pCh++ = '~';
+	}
+
+	// copy in the the new level name
+	strncpy( pCh, str, MAX_LEVEL_NAME_LENGTH );
+	buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH ] = 0;
+
+	// copy back in the altered name
+	strncpy( sd->lpszSessionNameA, buf, strlen( buf )+1 );
+
+	// broadcast it to others
+	network_set_description();
 }
 
 float Browl = 0.0F;
@@ -3833,7 +3827,6 @@ float HostMultiPlayerTimeout;
 int colourflash = 0;
 char NodeName[256];
 
-extern LPDPLCONNECTION glpdplConnection;
 BOOL SetZCompare( void );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -4409,8 +4402,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       InitFontTransTable( !bPolyText );
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-
-      network_get_description();
 
     }else{
       if( OverallGameStatus == STATUS_Normal )
@@ -5377,7 +5368,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
     Ships[WhoIAm].enable = 1;
     dcoID = 0;
-    glpDP = NULL;
     IsHost = TRUE;
     Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
     AutoDetail = FALSE;
@@ -8104,7 +8094,7 @@ void SpecialDestroyGame( void )
   case STATUS_WaitingToStartTeamGame:
   case STATUS_StartingMultiplayer:
   case STATUS_GetPlayerNum:
-	network_cleanup( dcoID );
+	network_cleanup();
     dcoID = 0;
     MyGameStatus = STATUS_Title;
     MenuRestart( &MENU_ForceAbort );

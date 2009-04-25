@@ -27,8 +27,6 @@ void CheckForMenuChange(int *dummy);
 void BailMultiplayerFrontEnd( MENU * Menu );
 void DistributeTeamsToLists(int *dummy);
 
-void GetSessionInfo ( LPDPSESSIONDESC2 sd );
-
 void SetUpGameType( int type );
 BOOL RefreshDPlay ( void );
 

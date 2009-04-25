@@ -126,7 +126,6 @@ extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
-extern LPDPLCONNECTION glpdplConnection;
 extern BOOL UseShortPackets;
 extern BOOL ResetKillsPerLevel;
 extern BOOL	Pal332;
@@ -808,8 +807,6 @@ char* GameTypeNameTable[7] = {
 	LT_MENU_NEW_CreateGame11  /*"capture the flag"*/
 };
 char GameTypeName[128];
-
-int16 PreferedMaxPlayers = MAX_PLAYERS;
 
 float CharWidth;
 float Pulse = 0.0F;
@@ -1827,34 +1824,20 @@ void EnterJoin(MENU *Menu)
 
 	// initialize connection
 	network_initialize( TCPAddress.text );
-
-	// enumerate sessions
-	network_get_session();
-
 }
 
 
 void CheckJoinStatus( int * i )
 {
-	// join game
-	if ( network_session != NULL )
+	// disconnect and reconnect if f1 is pressed
+	if ( IsKeyPressed( DIK_F1 ) )
+		network_initialize( TCPAddress.text );
+
+	//
+	if( network_ready() )
 	{
 		DebugPrintf("Found Session\n");
 		SelectSession( NULL );
-	}
-
-	// perform a new enumeration if not already enumerating 
-	else if ( IsKeyPressed( DIK_F1 ) )
-	{
-		DebugPrintf("F1 Pressed\n");
-		network_initialize( TCPAddress.text );
-		network_get_session();
-	}
-
-	// check the list of sessions for updates
-	else
-	{
-		network_get_session();
 	}
 }
 
@@ -4856,10 +4839,6 @@ void PulsateVDU(void)
 	}
 
 }
-
-extern LPDPLCONNECTION glpdplConnection;
-extern LPDPSESSIONDESC2 glpdpSD;            // current session description
-
 
 void InitHoloPad( void );
 void KillHoloModel( void );
@@ -11731,9 +11710,6 @@ void GetMultiplayerPrefs( void )
 	TimeLimit.value = ( RegGet( "TimeLimit", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 0;
 
-	PreferedMaxPlayers = ( RegGet( "MaxPlayers", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? (uint16) temp : MAX_PLAYERS;
-
 	MaxKillsSlider.value = ( RegGet( "MaxKills", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 0;
 
@@ -11833,8 +11809,6 @@ void SetMultiplayerPrefs( void )
 	RegSet( "BikeExhausts",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = TimeLimit.value;
 	RegSet( "TimeLimit", (LPBYTE)&temp, sizeof( temp ) );
-	temp = PreferedMaxPlayers;
-	RegSet( "MaxPlayers", (LPBYTE)&temp, sizeof( temp ) );
 	temp = MaxKillsSlider.value;
 	RegSet( "MaxKills", (LPBYTE)&temp, sizeof( temp ) );
 	temp = UseShortPackets;
