@@ -2255,7 +2255,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
-		HostDPID = lpInit->FromDpid;
+		HostDPID = from_dcoID;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		DPlayUpdateInterval = lpInit->PacketsPerSecond;
@@ -3367,7 +3367,6 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		{
 			lpInit = (LPINITMSG)&CommBuff[0];
 
-			lpInit->FromDpid			= dcoID;
 			lpInit->MsgCode				= msg;
 			lpInit->WhoIAm				= WhoIAm;
 			lpInit->dwUser3				= ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F ); // coppied from UpdateKillsTime()

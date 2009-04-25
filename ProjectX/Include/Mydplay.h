@@ -727,7 +727,6 @@ typedef struct _INITMSG
 	uint16	Seed2;
 	DWORD	dwUser3;	// user field 3 of session desc
 	int16		PrimaryPickups;
-	DPID		FromDpid;
 	BYTE		GameStatus[MAX_PLAYERS];
 	// current game stats
 	uint8		KillStats[MAX_PLAYERS][MAX_PLAYERS];
