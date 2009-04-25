@@ -3367,24 +3367,26 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 		{
 			lpInit = (LPINITMSG)&CommBuff[0];
-			lpInit->FromDpid = dcoID;
-			lpInit->MsgCode = msg;
-			lpInit->WhoIAm = WhoIAm;
-			lpInit->dwUser3 = ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F ); // coppied from UpdateKillsTime()
-			lpInit->RandomPickups = RandomPickups;
-			lpInit->Seed1 = CopyOfSeed1;
-			lpInit->Seed2 = CopyOfSeed2;
-			lpInit->HarmTeamMates = HarmTeamMates;
-			lpInit->BrightShips = BrightShips;
-			lpInit->BikeExhausts = BikeExhausts;
-			lpInit->Collisions = ColPerspective;
-			lpInit->MaxKills = MaxKills;
-			lpInit->PacketsPerSecond = DPlayUpdateInterval;
-			PackPickupInfo( lpInit->PickupFlags );
-			lpInit->GoalScore = GoalScore;
+
+			lpInit->FromDpid			= dcoID;
+			lpInit->MsgCode				= msg;
+			lpInit->WhoIAm				= WhoIAm;
+			lpInit->dwUser3				= ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F ); // coppied from UpdateKillsTime()
+			lpInit->RandomPickups		= RandomPickups;
+			lpInit->Seed1				= CopyOfSeed1;
+			lpInit->Seed2				= CopyOfSeed2;
+			lpInit->HarmTeamMates		= HarmTeamMates;
+			lpInit->BrightShips			= BrightShips;
+			lpInit->BikeExhausts		= BikeExhausts;
+			lpInit->Collisions			= ColPerspective;
+			lpInit->MaxKills			= MaxKills;
+			lpInit->PacketsPerSecond	= DPlayUpdateInterval;
+			lpInit->GoalScore			= GoalScore;
 			lpInit->BountyBonusInterval = BountyBonusInterval;
-			lpInit->CTF_Type = CTFSlider.value;
-			lpInit->PrimaryPickups = NumPrimaryPickups;
+			lpInit->CTF_Type			= CTFSlider.value;
+			lpInit->PrimaryPickups		= NumPrimaryPickups;
+
+			PackPickupInfo( lpInit->PickupFlags );
 
 			// current game stats
 			memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));

@@ -458,26 +458,10 @@ void GetSessionInfo ( void )
 	LPDPSESSIONDESC2 sd = network_get_description();
 	if( ! sd ) return;
 
-	// new additions ( previously in MSG_INIT )
-	if( sd->dwUser3 & HarmTeamMatesBit )
-		HarmTeamMates = TRUE;
-	else
-		HarmTeamMates = FALSE;
-
-	if( sd->dwUser3 & BrightShipsBit )
-		BrightShips = TRUE;
-	else
-		BrightShips = FALSE;
-
 	if( sd->dwUser3 & ResetKillsPerLevelBit )
 		ResetKillsPerLevel = TRUE;
 	else
 		ResetKillsPerLevel = FALSE;
-	
-	if( sd->dwUser3 & BikeExhaustBit )
-		BikeExhausts = TRUE;
-	else
-		BikeExhausts = FALSE;
 	   
 	Time = ( ( sd->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift );
 
