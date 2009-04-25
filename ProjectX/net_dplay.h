@@ -13,7 +13,7 @@ void network_set_description(void);
 LPDPSESSIONDESC2 network_get_description(void);
 
 HRESULT network_host( char* name );
-HRESULT network_open_session(void);
+HRESULT network_join(void);
 HRESULT network_create_player( LPDPID lppidID, LPTSTR lpPlayerName );
 HRESULT network_get_player_name( DPID id, char* name );
 

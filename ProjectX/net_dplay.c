@@ -389,7 +389,7 @@ void network_set_description( void )
 		}
 }
 
-HRESULT network_open_session( void )
+HRESULT network_join( void )
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
@@ -411,31 +411,31 @@ HRESULT network_open_session( void )
 		return DP_OK;
 		break;
 	case DPERR_CANTCREATEPLAYER:
-		DebugPrintf("network_open_session: to many players\n");
+		DebugPrintf("network_join: to many players\n");
 		break;
 	case DPERR_INVALIDFLAGS:
-		DebugPrintf("network_open_session: DPERR_INVALIDFLAGS\n",hr);
+		DebugPrintf("network_join: DPERR_INVALIDFLAGS\n",hr);
 		break;
 	case DPERR_INVALIDPARAMS:
-		DebugPrintf("network_open_session: DPERR_INVALIDPARAMS\n",hr);
+		DebugPrintf("network_join: DPERR_INVALIDPARAMS\n",hr);
 		break;
 	case DPERR_NOCONNECTION:
-		DebugPrintf("network_open_session: DPERR_NOCONNECTION\n",hr);
+		DebugPrintf("network_join: DPERR_NOCONNECTION\n",hr);
 		break;
 	case DPERR_TIMEOUT:
-		DebugPrintf("network_open_session: DPERR_TIMEOUT\n",hr);
+		DebugPrintf("network_join: DPERR_TIMEOUT\n",hr);
 		break;
 	case DPERR_UNINITIALIZED:
-		DebugPrintf("network_open_session: DPERR_UNINITIALIZED\n",hr);
+		DebugPrintf("network_join: DPERR_UNINITIALIZED\n",hr);
 		break;
 	case DPERR_USERCANCEL:
-		DebugPrintf("network_open_session: DPERR_USERCANCEL\n",hr);
+		DebugPrintf("network_join: DPERR_USERCANCEL\n",hr);
 		break;
 	case DPERR_NOSESSIONS:
-		DebugPrintf("network_open_session: DPERR_NOSESSIONS\n",hr);
+		DebugPrintf("network_join: DPERR_NOSESSIONS\n",hr);
 		break;
 	default:
-		DebugPrintf("network_open_session: failed %x\n",hr);
+		DebugPrintf("network_join: failed %x\n",hr);
 	}
 
 	return hr;

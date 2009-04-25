@@ -523,7 +523,7 @@ BOOL JoinASession ( MENUITEM * Item )
 	SetBikeMods( 0 );
 
 	// open session
-	if (network_open_session() != DP_OK)
+	if (network_join() != DP_OK)
 	{
 		PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
