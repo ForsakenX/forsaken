@@ -402,7 +402,43 @@ HRESULT network_open_session( void )
     dpDesc.guidInstance = network_session->guidInstance;
     dpDesc.guidApplication = PROJX_GUID;
 
-	return IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
+	hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_JOIN);
+
+	switch(hr)
+	{
+	case DP_OK:
+	case DPERR_ALREADYINITIALIZED:
+		return DP_OK;
+		break;
+	case DPERR_CANTCREATEPLAYER:
+		DebugPrintf("network_open_session: to many players\n");
+		break;
+	case DPERR_INVALIDFLAGS:
+		DebugPrintf("network_open_session: DPERR_INVALIDFLAGS\n",hr);
+		break;
+	case DPERR_INVALIDPARAMS:
+		DebugPrintf("network_open_session: DPERR_INVALIDPARAMS\n",hr);
+		break;
+	case DPERR_NOCONNECTION:
+		DebugPrintf("network_open_session: DPERR_NOCONNECTION\n",hr);
+		break;
+	case DPERR_TIMEOUT:
+		DebugPrintf("network_open_session: DPERR_TIMEOUT\n",hr);
+		break;
+	case DPERR_UNINITIALIZED:
+		DebugPrintf("network_open_session: DPERR_UNINITIALIZED\n",hr);
+		break;
+	case DPERR_USERCANCEL:
+		DebugPrintf("network_open_session: DPERR_USERCANCEL\n",hr);
+		break;
+	case DPERR_NOSESSIONS:
+		DebugPrintf("network_open_session: DPERR_NOSESSIONS\n",hr);
+		break;
+	default:
+		DebugPrintf("network_open_session: failed %x\n",hr);
+	}
+
+	return hr;
 }
 
 HRESULT DPlayRelease(void)
