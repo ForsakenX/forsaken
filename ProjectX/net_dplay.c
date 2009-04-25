@@ -814,8 +814,11 @@ void network_pump( void )
 void network_cleanup()
 {
 	if(!glpDP)return;
-	if(network_session)
+	if(network_session != NULL)
+	{
 		free(network_session);
+		network_session = NULL;
+	}
 	IDirectPlayX_DestroyPlayer(glpDP, dcoID);
 	DPlayRelease();
 }

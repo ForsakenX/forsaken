@@ -662,6 +662,7 @@ void BailMultiplayer( MENU * Menu )
 	MyGameStatus = STATUS_Left;
     if ( ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+	network_cleanup();
 	MenuRestart( &MENU_Start );
 	MyGameStatus = STATUS_Title;
 }
