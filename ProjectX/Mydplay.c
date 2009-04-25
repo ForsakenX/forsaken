@@ -261,7 +261,6 @@ BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
 int16					StatsCount = -1;
 
-DPID PseudoHostDPID;
 DPID HostDPID;
 
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
