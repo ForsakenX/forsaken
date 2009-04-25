@@ -752,7 +752,6 @@ void GetTitleMessage(void);
 	MultiPlayer Stuff...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-extern BOOL	SessionsRefreshActive;
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
 extern BOOL	TriLinear;

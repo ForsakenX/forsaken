@@ -1,13 +1,5 @@
-
 #ifndef MULTIPLAYER_INCLUDED
 #define MULTIPLAYER_INCLUDED
-
-/*
- * Application messages
- */
-
-BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, 
-                        LPVOID lpContext);
 
 BOOL StartAHostSession ( MENUITEM * Item );
 BOOL JoinASession ( MENUITEM * Item );

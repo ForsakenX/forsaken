@@ -418,11 +418,6 @@ HRESULT DPlayRelease(void)
     return hr;
 }
 
-/*
- * DPlay Create Lobby interface...
- *
- * Wrapper for DirectPlay Lobby Create API
- */
 HRESULT DPlayCreateLobby( void )
 {
 	LPDIRECTPLAYLOBBYA	lpDPlayLobbyA = NULL;
@@ -464,12 +459,6 @@ FAILURE:
 
 	return (hr);
 }
-
-
-
-/*
- * Create a tcp address structure
- */
 
 static HRESULT CreateAddress( LPVOID *lplpAddress, char * TCPIPAddress )
 {
@@ -633,7 +622,6 @@ HRESULT network_get_player_name( DPID id, char* name )
 {
 	int size = 255;
 	HRESULT hr = IDirectPlayX_GetPlayerName( glpDP, id, (void*) name, &size );
-	DebugPrintf("network_get_player_name: %s\n", name);
 	return hr;
 }
 
@@ -649,19 +637,15 @@ void network_set_player_name(DPID pid, char * NamePnt)
     IDirectPlayX_SetPlayerName(glpDP, pid, &Name, DPSET_GUARANTEED);
 }
 
-// if we are enumerating
-BOOL SessionsRefreshActive = FALSE;
-
-// EnumSessions callback
-BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID lpContext)
+BOOL WINAPI EnumSessionsCallback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID refreshing )
 {
 	// sessions have been enumerated
     if(dwFlags & DPESC_TIMEDOUT)
 	{
 		// we are done refreshing the list
-		SessionsRefreshActive = FALSE;
+		*((int*)refreshing) = 0;
 
-		// were done so tell enumerate sessions to stop calling us
+		// stop enumeration
 		return FALSE;
 	}
 
@@ -670,31 +654,29 @@ BOOL WINAPI EnumSessions(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut,
 	network_session = malloc( sizeof( DPSESSIONDESC2 ) );
 	*network_session = *lpDPSessionDesc;
 
-	// tell enum sessions to keep enumerating
+	// stop enumeration
     return FALSE;
 }
 
 // enumerate sessions
 int network_ready( void )
 {
+	static int refreshing = 0;
+
 	// ready
 	if( network_session )
 		return 1;
 
-	// if we are currently refreshing
-	// then dont start again
-	if( SessionsRefreshActive )
-		return 0;
-
-	// set refreshing flag on
-	SessionsRefreshActive = TRUE;
+	// 
+	if( refreshing ) return 0;
+	refreshing = 1;
 
 	// Enumerate Sessions
 	// and we will decide the timeout
 	DPlayEnumSessions(
 		10000, // interval
-		EnumSessions,	// callback
-		(LPVOID) NULL,	// user pointer
+		EnumSessionsCallback,	// callback
+		(void *) &refreshing,	// user pointer
 		DPENUMSESSIONS_ASYNC // do not block
 		);
 
