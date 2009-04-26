@@ -1,6 +1,10 @@
 #ifndef MULTIPLAYER_INCLUDED
 #define MULTIPLAYER_INCLUDED
 
+//
+// Networking functions mainly used by title.c
+//
+
 BOOL StartAHostSession ( MENUITEM * Item );
 BOOL JoinASession ( MENUITEM * Item );
 void SelectSession( MENUITEM *Item );

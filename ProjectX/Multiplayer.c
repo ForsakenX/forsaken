@@ -1,4 +1,8 @@
 
+//
+// Networking functions mainly used by title.c
+//
+
 #include <stdio.h>
 #include "windows.h"
 #include "typedefs.h"

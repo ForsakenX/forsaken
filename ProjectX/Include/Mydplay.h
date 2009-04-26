@@ -1,6 +1,9 @@
-
 #ifndef MYDPLAY_INCLUDED
 #define MYDPLAY_INCLUDED
+
+//
+// General Networking
+//
 
 #define WIN32_EXTRA_LEAN
 
