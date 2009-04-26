@@ -14,7 +14,7 @@
 #include "compobjects.h"
 #include "quat.h"
 #include "object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "primary.h"
 #include "secondary.h"
 #include "sfx.h"
@@ -27,7 +27,7 @@
 #include "compobjects.h"
 #include "quat.h"
 #include "object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "ships.h"
 
 extern GLOBALSHIP Ships[];

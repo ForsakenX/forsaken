@@ -12,7 +12,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "ships.h"
 #include "2dpolys.h"
 #include "lights.h"

@@ -53,7 +53,7 @@ num_frames : uint16 // number of animation frames
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "triggers.h"
 #include "pickups.h"
 #include "mxload.h"

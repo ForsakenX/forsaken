@@ -10,7 +10,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "d3dmain.h"
 #include "typedefs.h"
 #include <time.h>

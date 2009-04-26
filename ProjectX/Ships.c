@@ -11,7 +11,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 
 #include "config.h"
 #include "controls.h"

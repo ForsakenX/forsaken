@@ -9,7 +9,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "triggers.h"
 #include "d3dmain.h"
 #include "d3ddemo.h"

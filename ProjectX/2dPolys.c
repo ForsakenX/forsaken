@@ -10,7 +10,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 
 #include "2dpolys.h"
 #include "camera.h"

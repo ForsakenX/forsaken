@@ -13,7 +13,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "file.h"
 #include "Triggers.h"
 #include "pickups.h"

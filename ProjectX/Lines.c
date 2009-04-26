@@ -9,7 +9,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 
 #include "lines.h"
 #include "camera.h"

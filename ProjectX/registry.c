@@ -15,7 +15,7 @@
 #include "quat.h"
 #include "CompObjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "Title.h"
 #include <stdio.h>
 #include <shellapi.h>

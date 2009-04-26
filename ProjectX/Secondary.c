@@ -12,7 +12,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 
 #include "screenpolys.h"
 #include "polys.h"

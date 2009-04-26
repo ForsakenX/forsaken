@@ -13,7 +13,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "ddsurfhand.h"
 #include "getdxver.h"
 #include <stdarg.h>

@@ -665,11 +665,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Mydplay.c"
+				RelativePath=".\net_dplay.c"
 				>
 			</File>
 			<File
-				RelativePath=".\net_dplay.c"
+				RelativePath=".\networking.c"
 				>
 			</File>
 			<File
@@ -974,15 +974,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Mydplay.h"
-				>
-			</File>
-			<File
 				RelativePath=".\Include\Myres.h"
 				>
 			</File>
 			<File
 				RelativePath="net_dplay.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\networking.h"
 				>
 			</File>
 			<File

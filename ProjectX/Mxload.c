@@ -42,7 +42,7 @@ mxtype : uint16 // always 0 for mx format
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "mxload.h"
 #include "models.h"
 #include "magic.h"

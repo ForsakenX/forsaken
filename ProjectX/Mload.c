@@ -100,7 +100,7 @@ num_start_points : uint16
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "mload.h"
 #include "lights.h"
 #include "triggers.h"

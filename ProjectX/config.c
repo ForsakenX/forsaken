@@ -5,7 +5,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "controls.h"
 
 #define WIN32_EXTRA_LEAN

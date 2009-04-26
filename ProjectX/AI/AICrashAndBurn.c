@@ -11,7 +11,7 @@
 #include "compobjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "ships.h"
 #include "text.h"
 #include "triggers.h"

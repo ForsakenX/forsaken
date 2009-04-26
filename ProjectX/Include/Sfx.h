@@ -12,7 +12,7 @@
 #include "quat.h"
 #include "CompObjects.h"
 #include "object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "triggers.h"
 #include "enemies.h"
 

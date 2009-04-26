@@ -10,7 +10,7 @@
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 
 #include "Lights.h"
 #include "water.h"

@@ -8,7 +8,7 @@
 #include "mload.h"
 #include "CompObjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "triggers.h"
 #include "pickups.h"
 

@@ -10,7 +10,7 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "mload.h"
-#include "Mydplay.h"
+#include "networking.h"
 #include <objbase.h>
 #include <cguid.h>
 #include "title.h"

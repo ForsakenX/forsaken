@@ -35,7 +35,7 @@
 #include "quat.h"
 #include "CompObjects.h"
 #include "Object.h"
-#include "mydplay.h"
+#include "networking.h"
 #include "2dtextures.h"
 #include "primary.h"
 #include "secondary.h"
