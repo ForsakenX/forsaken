@@ -7,7 +7,7 @@
 
 #define WIN32_EXTRA_LEAN
 
-//#include "net_dplay.h"
+//#include "net.h"
 #ifndef network_id_t
 typedef DWORD network_id_t;
 #endif

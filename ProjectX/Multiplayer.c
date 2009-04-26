@@ -7,7 +7,7 @@
 #include "windows.h"
 #include "typedefs.h"
 #include "main.h"
-#include "net_dplay.h"
+#include "net.h"
 #include "d3dappi.h"
 #include "title.h"
 #include "typedefs.h"

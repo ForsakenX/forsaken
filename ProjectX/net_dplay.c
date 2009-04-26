@@ -5,7 +5,7 @@
 #include <dplay.h>
 #include <dplobby.h>
 #include <stdio.h>
-#include "net_dplay.h"
+#include "net.h"
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"

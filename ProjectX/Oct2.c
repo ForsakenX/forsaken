@@ -47,7 +47,7 @@
 #include "title.h"
 #include "screenpolys.h"
 #include "controls.h"
-#include "net_dplay.h"
+#include "net.h"
 #include "triggers.h"
 #include "enemies.h"
 #include "bsp.h"

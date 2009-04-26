@@ -42,7 +42,7 @@
 #include "magic.h"
 #include "XMem.h"
 #include "ddsurfhand.h"
-#include "net_dplay.h"
+#include "net.h"
 #include "restart.h"
 #include "version.h"
 #include "demo.h"

@@ -50,7 +50,7 @@ extern "C" {
 #include	"d3dapp.h"
 #include	"Sfx.h"
 #include	"util.h"
-#include	"net_dplay.h"
+#include	"net.h"
 
 	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;

@@ -978,7 +978,7 @@
 				>
 			</File>
 			<File
-				RelativePath="net_dplay.h"
+				RelativePath=".\net.h"
 				>
 			</File>
 			<File
