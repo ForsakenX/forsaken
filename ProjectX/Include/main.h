@@ -1,12 +1,10 @@
-
 #ifndef MAIN_INCLUDED
 #define MAIN_INCLUDED
-
-
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Game Status Defines...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #define	STATUS_Title									0x02	// On the Title Screen...
 #define	STATUS_StartingMultiplayer				0x04	// On the Multiplayer Starting Screen...
 #define	STATUS_PreStartingMultiplayerSynch	0x05	// Waiting for everyone to have loaded the right level and be ready
@@ -58,63 +56,11 @@
 #define STATUS_LeftCrashed					0xfe	// I have left and crashed...
 #define STATUS_Null							0xff	// Im not doing anything yet...
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	MultiPlayer Bit Defines...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-/*
-dwUser3
-*/
-
-#define TeamGameBit					0x0001	// bit 0: used in session description to denote a team game...
-#define GameTimeBit						0x01fe	// bits 1 - 8: Timed game uses bits 1-8 for time 0-30
-#define FlagGameBit						0x0400	// bit 10: used in session description to denote a Capture the Flag Game...
-#define BountyGameBit					0x0800	// bit 11: used in session description to denote a Bounty Hunt Game...
-#define ShortPacketsBit				0x1000	// bit 12: used in session description to denote Use Short Packets...
-#define CTFGameBit						0x2000	// bit 13: used in session description to denote a "traditional" CTF (Capture the Flag) Game...
-#define HarmTeamMatesBit			0x20000	// bit 17
-#define BrightShipsBit					0x40000 // bit 18
-#define BikeExhaustBit					0x80000 // bit 19
-#define EnableMaxPlayersChangeBit	0x100000 // bit 20
-#define CTF_TypeMask					0xe00000 // bits 21-23
-#define CurrentGameTimeBits			0x1f000000 // bits 24-28 ( 0 to 30 mins )
-#define CurrentGameTime_Shift		0x18
-#define ResetKillsPerLevelBit			0x20000000 // bit 29
-#define CollisionTypeBits				0xC0000000 // bits 30 & 31
-#define Collision_Type_BitShift		0x1e		
-
-#define CTF_Type_BitShift			0x15
-#define CTF_Type_Decode( DW ) ( ( DW & CTF_TypeMask ) >> CTF_Type_BitShift )
-#define CTF_Type_Encode( DW ) ( DW << CTF_Type_BitShift )
-
-#define	GameTimeBit_Shift			0x0001	// Timed game starts at bit 1
-
-/*
-dwUser2
-*/
-
-// low word used for RandomStartPosModify
-#define MaxKillsBits 					0x00ff0000 // bits 16 - 23
-#define CurrentMaxKillsBits			0xff000000 // bits 24 - 31
-
-#define MaxKills_Shift				0x10
-#define CurrentMaxKills_Shift		0x18
-
-/*
-dwUser4
-*/
-
-#define VersionNoBits		0x0000ffff	// bits 0 - 15
-#define MaxPlayerBits		0x00ff0000 // bits 16 - 23
-#define MaxPlayers_Shift	0x10
-
-#define PacketsPerSecondBits	0xff000000	// bits 24-31
-#define PacketsPerSecond_Shift	0x18
-
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Screen Mode Defines...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #define Mode320X200 0
 #define Mode320X240 1
 #define Mode320X400 2
@@ -127,6 +73,7 @@ dwUser4
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 	Some Global Defines...
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+
 #define START_FOV			(90.0F) // initial horizontal field-of-view (in degrees)
 #define MAX_FOV				(120.0F) // max horizontal field-of-view (in degrees)
 

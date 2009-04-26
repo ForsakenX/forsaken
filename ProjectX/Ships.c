@@ -183,7 +183,6 @@ extern	int16	BikeModels[ MAXBIKETYPES ];
 
 extern	BOOL	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
-extern	BOOL	HarmTeamMates;
 extern	int		CrystalsFound;
 extern	int16	NumGoldBars;
 extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
@@ -2083,17 +2082,6 @@ int16 DoDamage( BOOL OverrideInvul )
 			
 	if( GodMode ) return 0;
 	if( Ships[ WhoIAm ].Invul && !OverrideInvul ) return 0;
-	if( TeamGame && !HarmTeamMates )
-	{
-		if( Ships[ WhoIAm ].ShipThatLastHitMe != MAX_PLAYERS )
-		{
-			if( ( TeamNumber[ WhoIAm ] == TeamNumber[ Ships[ WhoIAm ].ShipThatLastHitMe ] ) &&
-				( WhoIAm != Ships[ WhoIAm ].ShipThatLastHitMe ) )
-			{
-				return 0;
-			}
-		}
-	}
 
 	if( Ships[WhoIAm].Object.Mode == NORMAL_MODE )
 	{

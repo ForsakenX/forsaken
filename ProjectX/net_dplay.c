@@ -26,7 +26,6 @@
  * Externals
  */
 extern	LIST	PlayersList;
-extern	BOOL	HarmTeamMates;
 extern BOOL	BrightShips;
 extern	BOOL	MyBrightShips;
 extern BOOL	BikeExhausts;
@@ -35,7 +34,6 @@ extern SLIDER CTFSlider;
 extern	int16	MaxKills;
 extern	BOOL ResetKillsPerLevel;
 extern DPID	PlayerIDs[ MAX_PLAYERS ];
-extern BOOL PseudoHostCanSetMaxPlayers;
 extern SLIDER  PacketsSlider;
 extern	DPID                    dcoID;
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
@@ -119,66 +117,6 @@ HRESULT network_create_player( LPDPID lppidID, LPTSTR lptszPlayerName )
     return hr;
 }
 
-void StoreSessionUserFields( LPDPSESSIONDESC2 lpDesc )
-{
-	SYSTEMTIME	SystemTime;
-	FILETIME FileTime;
-	WORD	date;
-	WORD	time;
-
-	// store the creation time for this session
-	GetSystemTime( &SystemTime );
-	SystemTimeToFileTime( &SystemTime , &FileTime );
-	FileTimeToDosDateTime( &FileTime , &date , &time );
-	lpDesc->dwUser1 = date + (time << 16);
-	lpDesc->dwUser2 = RandomStartPosModify;	// only lower word is used...
-
-	if ( MaxKills > 255 )	// ensure 8 bit
-		MaxKills = 255;
-
-	lpDesc->dwUser2 |= ( MaxKills << MaxKills_Shift );
-	
-	if ( TimeLimit.value > 30 )
-		TimeLimit.value = 30;
-	
-	lpDesc->dwUser3 = 0;
-	lpDesc->dwUser3 |= ( TimeLimit.value << GameTimeBit_Shift );
-	lpDesc->dwUser3 |= ( TimeLimit.value << CurrentGameTime_Shift );
-
-	if( TeamGame )
-		lpDesc->dwUser3 |= TeamGameBit;
-	if( CTF )
-		lpDesc->dwUser3 |= CTFGameBit;
-	if( CaptureTheFlag )
-		lpDesc->dwUser3 |= FlagGameBit;
-	if ( BountyHunt )
-		lpDesc->dwUser3 |= BountyGameBit;
-	if ( UseShortPackets )
-		lpDesc->dwUser3 |= ShortPacketsBit;
-
-	// new additions ( previously in MSG_INIT )
-	if ( HarmTeamMates )
-		lpDesc->dwUser3 |= HarmTeamMatesBit;
-	if ( MyBrightShips )
-		lpDesc->dwUser3 |= BrightShipsBit;
-	if(ResetKillsPerLevel )
-		lpDesc->dwUser3 |= ResetKillsPerLevelBit;
-
-	if ( BikeExhausts )
-		lpDesc->dwUser3 |= BikeExhaustBit;
-
-	lpDesc->dwUser3 |= ( ColPerspective << Collision_Type_BitShift );
-
-	lpDesc->dwUser3 |= CTF_Type_Encode( ( DWORD )CTFSlider.value );
-
-	if ( PseudoHostCanSetMaxPlayers )
-		lpDesc->dwUser3 |= EnableMaxPlayersChangeBit;
-
-	lpDesc->dwUser4 |= ( MaxPlayersSlider.value << MaxPlayers_Shift );
-
-	lpDesc->dwUser4 |= ( PacketsSlider.value << PacketsPerSecond_Shift );
-}
-
 HRESULT network_host(LPTSTR lptszSessionName)
 {
     HRESULT hr = E_FAIL;
@@ -250,9 +188,6 @@ HRESULT network_host(LPTSTR lptszSessionName)
 					 DPSESSION_OPTIMIZELATENCY;
 
 	dpDesc.dwMaxPlayers = MaxPlayersSlider.value;
-
-	StoreSessionUserFields( &dpDesc );
-
     dpDesc.lpszSessionNameA = lptszSessionName;
 
     // set the application guid

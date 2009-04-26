@@ -222,7 +222,6 @@ extern	uint16		Seed2;
 extern	uint16		CopyOfSeed1;
 extern	uint16		CopyOfSeed2;
 extern	BOOL		RandomPickups;
-extern	BOOL		HarmTeamMates;
 
 
 int16	BikeModels[ MAXBIKETYPES ] = {
@@ -2251,14 +2250,13 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		}
 		return;
 
-
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
 		HostDPID = from_dcoID;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
-		DPlayUpdateInterval = lpInit->PacketsPerSecond;
+		DPlayUpdateInterval = lpInit->DPlayUpdateInterval;
 		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
 
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )			
@@ -2270,16 +2268,16 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if ( WhoIAm == 0xff )
 		{
 			// no need to do any of this if pseudo host
+			// BUG: I don't think the host will ever receive this message
+					// is this a hold over from pseud host ???
 			if( !IsHost )
 			{
 				WhoIAm = lpInit->YouAre;
 				Current_Camera_View = WhoIAm;
 				WatchPlayerSelect.value = WhoIAm;
 
-				HarmTeamMates = lpInit->HarmTeamMates;
-				BrightShips = lpInit->BrightShips;
-				BikeExhausts = lpInit->BikeExhausts;
-				ColPerspective = lpInit->Collisions;
+				ColPerspective = lpInit->ColPerspective;
+				UseShortPackets = lpInit->UseShortPackets;
 
 				UnpackPickupInfo( lpInit->PickupFlags );
 				DebugPrintf("host says level is %s\n", lpInit->LevelName );
@@ -2305,12 +2303,26 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			TeamNumber[WhoIAm] = 0;
 		}
 
+		RandomStartPosModify	= lpInit->RandomStartPosModify;
+		BountyBonusInterval		= lpInit->BountyBonusInterval;
+		TeamGame				= lpInit->TeamGame;
+		CaptureTheFlag			= lpInit->CaptureTheFlag;
+		CTF						= lpInit->CTF;
+		BountyHunt				= lpInit->BountyHunt;
+		ResetKillsPerLevel		= lpInit->ResetKillsPerLevel;
+		TimeLimit.value			= lpInit->TimeLimit;
+
+		if( TimeLimit.value )
+			CountDownOn = TRUE;
+		else
+			CountDownOn	= FALSE;
+
 		if ( BountyHunt )
 			BountyBonusInterval = lpInit->BountyBonusInterval;
 		if ( CaptureTheFlag || CTF )
 			GoalScore = lpInit->GoalScore;
 
-		NumPrimaryPickups = lpInit->PrimaryPickups;
+		NumPrimaryPickups = lpInit->NumPrimaryPickups;
 
 		if ( CTF )
 		{					
@@ -3262,7 +3274,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	wsprintf(dBuf, "corrupt message: %d\n", *MsgPnt);
 	OutputDebugString( dBuf );
 }
- 
+
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:		Send a message to all or just one..
 	Input		:		BYTE msg ,
@@ -3321,10 +3333,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 	if( PlayDemo )
 		return;
-	
-	//DebugPrintf("SendGameMessage() msg type: %s\n",msg_to_str(msg));
 
-	//DebugPrintf("about to send msg %x\n",msg);	
 	switch( msg )
     {
 
@@ -3359,93 +3368,101 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         break;
 
 
+	// should probably break this up into small MSG_INIT_(N) steps...
+	// instead of MSG_HEREIAM have a MSG_REQUEST_INIT which specifies the INIT (N) to reply with
+	// the host can keep track of where the player is for security
+	// this would reduce the need for one giant paacket instead having smaller ones
+	// and the first thing that should be done is negotiate valid player number and version numbers
+	// other wise whats the point of sending all this extra stuff...
+
     case MSG_INIT:
 
-		if( !IsHost )
-			return;
+		if( !IsHost )return;
+		nBytes = sizeof( INITMSG );
+		lpInit = (LPINITMSG)&CommBuff[0];
+		lpInit->MsgCode	= msg;
 
+		lpInit->WhoIAm					= WhoIAm;
+		lpInit->Seed1					= CopyOfSeed1;
+		lpInit->Seed2					= CopyOfSeed2;
+		lpInit->ColPerspective			= (BYTE)ColPerspective;
+		lpInit->DPlayUpdateInterval		= DPlayUpdateInterval;
+		lpInit->RandomPickups			= RandomPickups;
+		lpInit->NumPrimaryPickups		= (BYTE)NumPrimaryPickups;
+		lpInit->MaxKills				= (BYTE)MaxKills;
+		lpInit->GoalScore				= GoalScore;
+		lpInit->BountyBonusInterval		= BountyBonusInterval;
+		lpInit->RandomStartPosModify	= RandomStartPosModify;
+		lpInit->TeamGame				= TeamGame;
+		lpInit->CTF						= CTF;
+		lpInit->CaptureTheFlag			= CaptureTheFlag;
+		lpInit->BountyHunt				= BountyHunt;
+		lpInit->ResetKillsPerLevel		= ResetKillsPerLevel;
+		lpInit->UseShortPackets			= UseShortPackets;
+		lpInit->CTF_Type				= CTFSlider.value;
+		lpInit->TimeLimit				= TimeLimit.value;
+
+		PackPickupInfo( lpInit->PickupFlags );
+
+		memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));
+		memcpy( lpInit->KillCounter, KillCounter, sizeof(lpInit->KillCounter));
+		memcpy( lpInit->BonusStats, BonusStats, sizeof(lpInit->KillCounter));
+
+		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );
+
+		// BUG: this is probably not needed and the reason you can't join when viewing score etc...
+		if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
 		{
-			lpInit = (LPINITMSG)&CommBuff[0];
 
-			lpInit->MsgCode				= msg;
-			lpInit->WhoIAm				= WhoIAm;
-			lpInit->dwUser3				= ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F ); // coppied from UpdateKillsTime()
-			lpInit->RandomPickups		= RandomPickups;
-			lpInit->Seed1				= CopyOfSeed1;
-			lpInit->Seed2				= CopyOfSeed2;
-			lpInit->HarmTeamMates		= HarmTeamMates;
-			lpInit->BrightShips			= BrightShips;
-			lpInit->BikeExhausts		= BikeExhausts;
-			lpInit->Collisions			= ColPerspective;
-			lpInit->MaxKills			= MaxKills;
-			lpInit->PacketsPerSecond	= DPlayUpdateInterval;
-			lpInit->GoalScore			= GoalScore;
-			lpInit->BountyBonusInterval = BountyBonusInterval;
-			lpInit->CTF_Type			= CTFSlider.value;
-			lpInit->PrimaryPickups		= NumPrimaryPickups;
-
-			PackPickupInfo( lpInit->PickupFlags );
-
-			// current game stats
-			memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));
-			memcpy( lpInit->KillCounter, KillCounter, sizeof(lpInit->KillCounter));
-			memcpy( lpInit->BonusStats, BonusStats, sizeof(lpInit->KillCounter));
-
-			for( Count = 0 ; Count < 32 ; Count++ )
-				lpInit->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
-
-			if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
-			{
-				// tell the player who is host thinks is ready.
-				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
-				{															
-					lpInit->PlayerReady[Count] = PlayerReady[Count];
-					lpInit->GameStatus[Count] = GameStatus[Count];
-				}
-
-				// find a free player slot
-				for( i = 0; i < MAX_PLAYERS; i++ )
-					if( i != WhoIAm )
-	    				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-	    					break;
-
-				// The game is currently full or nearly so dont let anyone else join...
-				if( i == MAX_PLAYERS)
-					lpInit->YouAre = MAX_PLAYERS+2;
-				
-				// got a valid player number
-				else
-				{
-					InitShipStructure(i , TRUE); // reset the player structure
-					GameStatus[i] = STATUS_GetPlayerNum;
-					lpInit->YouAre = (BYTE) i;
-					DebugPrintf("YouAre set to %d at point 2\n", i);
-					Names[i][0] = 0;
-					Ships[i].dcoID = to;
-					TeamNumber[i] = 0;
-
-					for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )											
-						lpInit->TeamNumber[Count] = TeamNumber[Count];						
-					
-					lpInit->Status = MyGameStatus;
-					
-					// getplayer
-					// over the next few frames send the current stats table...
-					if(	MyGameStatus == STATUS_Normal )
-					{
-						// StatsCount = MAX_PLAYERS;
-						CopyPickups( (uint16) i );
-						CopyRegenSlots( (uint16) i );
-						CopyTriggers( (uint16) i );
-						CopyTrigVars( (uint16) i );
-						CopyMines( (uint16) i );
-					}
-				}
+			// tell the player who is host thinks is ready.
+			for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
+			{															
+				lpInit->PlayerReady[Count] = PlayerReady[Count];
+				lpInit->GameStatus[Count] = GameStatus[Count];
 			}
 
-			DebugPrintf("MSG_INIT being sent: lpInit->YouAre = %d\n", lpInit->YouAre);
-			nBytes = sizeof( INITMSG );
+			// find a free player slot
+			for( i = 0; i < MAX_PLAYERS; i++ )
+				if( i != WhoIAm )
+    				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
+    					break;
+
+			if( i == MAX_PLAYERS)
+			{
+				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_dcoID);
+				lpInit->YouAre = MAX_PLAYERS+2;
+			}
+			
+			// got a valid player number
+			else
+			{
+				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_dcoID, i);
+
+				// setup player
+				InitShipStructure(i , TRUE);
+				GameStatus[i]	= STATUS_GetPlayerNum;
+				Names[i][0]		= 0;
+				TeamNumber[i]	= 0;
+				Ships[i].dcoID	= to;
+				
+				// finish packing on stuff
+				lpInit->YouAre = (BYTE) i;
+				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )					
+					lpInit->TeamNumber[Count] = TeamNumber[Count];
+				lpInit->Status = MyGameStatus;
+				if(	MyGameStatus == STATUS_Normal )
+				{
+					// StatsCount = MAX_PLAYERS;
+					CopyPickups( (uint16) i );
+					CopyRegenSlots( (uint16) i );
+					CopyTriggers( (uint16) i );
+					CopyTrigVars( (uint16) i );
+					CopyMines( (uint16) i );
+				}
+
+			}
 		}
+
 		break;
 
 
@@ -3670,10 +3687,10 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 
 	case MSG_DPLAYUPDATE:
 
-		lpDplayUpdateMsg					= (LPDPLAYUPDATEMSG)&CommBuff[0];
-        lpDplayUpdateMsg->MsgCode					= msg;
-        lpDplayUpdateMsg->WhoIAm					= WhoIAm;
-        lpDplayUpdateMsg->IsHost						= IsHost;
+		lpDplayUpdateMsg						= (LPDPLAYUPDATEMSG)&CommBuff[0];
+        lpDplayUpdateMsg->MsgCode				= msg;
+        lpDplayUpdateMsg->WhoIAm				= WhoIAm;
+        lpDplayUpdateMsg->IsHost				= IsHost;
 		lpDplayUpdateMsg->PacketsPerSecond		= DPlayUpdateInterval;
 		lpDplayUpdateMsg->CollisionPerspective	= ColPerspective;
 		lpDplayUpdateMsg->ShortPackets			= UseShortPackets;
@@ -3682,21 +3699,20 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
     case MSG_LONGSTATUS:
 
 		lpLongStatus = (LPLONGSTATUSMSG)&CommBuff[0];
-        lpLongStatus->MsgCode			= msg;
+        lpLongStatus->MsgCode				= msg;
         lpLongStatus->WhoIAm				= WhoIAm;
-        lpLongStatus->Status.MsgCode	= msg;
-        lpLongStatus->Status.WhoIAm	= WhoIAm;
-        lpLongStatus->Status.IsHost		= IsHost;
+        lpLongStatus->Status.MsgCode		= msg;
+        lpLongStatus->Status.WhoIAm			= WhoIAm;
+        lpLongStatus->Status.IsHost			= IsHost;
 		// telling everyone what I am currently doing....
 		lpLongStatus->Status.Status			= MyGameStatus;
-		lpLongStatus->Status.TeamNumber = TeamNumber[WhoIAm];
+		lpLongStatus->Status.TeamNumber		= TeamNumber[WhoIAm];
 		lpLongStatus->Status.IAmReady		= PlayerReady[WhoIAm];
 		lpLongStatus->Status.Pickups		= Ships[WhoIAm].Pickups;	 
-		lpLongStatus->Status.RegenSlots	= Ships[WhoIAm].RegenSlots;
+		lpLongStatus->Status.RegenSlots		= Ships[WhoIAm].RegenSlots;
 		lpLongStatus->Status.Mines			= Ships[WhoIAm].Mines;		 
 		lpLongStatus->Status.Triggers		= Ships[WhoIAm].Triggers;	 
-		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;	 
-
+		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;
 		for( Count = 0 ; Count < 32 ; Count++ )
 			lpLongStatus->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
 		lpLongStatus->RandomStartPosModify = RandomStartPosModify;
@@ -3902,6 +3918,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	}
 	
 	// only record if message is sent to whole of the group....
+#ifdef DEMO_SUPPORT
 	if( RecordDemo )
 	{
 		if(
@@ -3923,6 +3940,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			Demo_fwrite( &CommBuff[0], nBytes, 1, DemoFp );
 		}
 	}
+#endif
 
 	BytesPerSecSent += nBytes;
 

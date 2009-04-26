@@ -8,9 +8,6 @@ void network_pump( void );
 void network_set_player_name(DPID pid, char * NamePnt);
 void network_cleanup();
 void network_send( DPID to, void* data, DWORD size, int guaranteed );
-void network_set_description(void);
-
-LPDPSESSIONDESC2 network_get_description(void);
 
 HRESULT network_host( char* name );
 HRESULT network_join(void);

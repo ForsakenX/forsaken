@@ -3671,81 +3671,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
 }
 
-// update session description with current leading kills & elapsed time...
-static void UpdateKillsTime( void )
-{ 
-	int i;
-	int updated = 0;
-	uint16 highest_score = 0;
-	uint16 minutes_left, old_minutes_left, old_highest_score;
-	LPDPSESSIONDESC2 sd = network_get_description();
-	if ( !sd ) return;
-
-	// if current level elapsed time is more than 1 min than stored elapsed time, store in SD
-	minutes_left = ( uint16 ) ( ( Countdown_Float / 100.0F ) / 60.0F );
-	if ( minutes_left > 30 )
-	  minutes_left = 30;
-	old_minutes_left = ( uint16 ) ( ( sd->dwUser3 & CurrentGameTimeBits ) >> CurrentGameTime_Shift );
-
-	if ( minutes_left != old_minutes_left )
-	{
-	  sd->dwUser3 &= ~CurrentGameTimeBits;
-	  sd->dwUser3 |=  ( minutes_left << CurrentGameTime_Shift );
-	  updated = 1;
-	}
-
-	// find highest score in a non-team game
-	if ( !TeamGame )
-	{
-	  for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	  {
-		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
-		{
-			if(GetScoreStats(i) > highest_score)
-				highest_score = GetScoreStats(i);
-		}
-	  }
-	}
-	// find highest score in a team game
-	else
-	{
-	  uint16 current_team_score[ MAX_TEAMS ];
-
-	  memset( current_team_score, 0, sizeof( uint16 ) * MAX_TEAMS );
-
-	  for ( i = 0; i < MAX_PLAYERS; i++ )
-	  {
-		if ( ( i == WhoIAm ) || ( GameStatus[ i ] == STATUS_Normal ) )
-		{
-			current_team_score[ TeamNumber[ i ] ] += GetScoreStats(i);
-		}
-	  }
-
-	  for ( i = 0; i < MAX_TEAMS; i++ )
-	  {
-		if ( current_team_score[ i ] > highest_score )
-		{
-		  highest_score = current_team_score[ i ];
-		}
-	  }
-	}
-
-	if ( highest_score > 255 )
-		highest_score = 255;
-
-	old_highest_score = ( uint16 ) ( ( sd->dwUser2 & CurrentMaxKillsBits ) >> CurrentMaxKills_Shift );
-
-	if ( old_highest_score != highest_score )
-	{
-		sd->dwUser2 &= ~CurrentMaxKillsBits;
-		sd->dwUser2 |= ( highest_score << CurrentMaxKills_Shift );
-		updated = 1;
-	}
-  
-	if( updated )
-      network_set_description();
-}
-
 void GetLevelName( char *buf, int bufsize, int level )
 {
   FILE *f;
@@ -3781,44 +3706,6 @@ void GetLevelName( char *buf, int bufsize, int level )
   buf[ bufsize - 1 ] = 0; // ensure null terminated 
 }
 
-void StoreLevelNameInSessionDesc( char *str )
-{
-	char buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH + 1 ];  // extra 1 for '~' char
-	char *pCh;
-
-	// get the current session description
-	LPDPSESSIONDESC2 sd = network_get_description();
-	if ( !sd ) return;
-
-	// yank out the session description name
-	strncpy( buf, sd->lpszSessionNameA, MAX_SESSION_DESC_LENGTH );
-	buf[ MAX_SESSION_DESC_LENGTH - 1 ] = 0;
-
-	// find the name / level name separater
-	pCh = strchr( buf, '~' );
-	if ( pCh )
-	{
-		pCh++;
-	}
-
-	// if can't find the separator then add it
-	else
-	{
-		pCh = buf + strlen( buf );
-		*pCh++ = '~';
-	}
-
-	// copy in the the new level name
-	strncpy( pCh, str, MAX_LEVEL_NAME_LENGTH );
-	buf[ MAX_LEVEL_NAME_LENGTH + MAX_SESSION_DESC_LENGTH ] = 0;
-
-	// copy back in the altered name
-	strncpy( sd->lpszSessionNameA, buf, strlen( buf )+1 );
-
-	// broadcast it to others
-	network_set_description();
-}
-
 float Browl = 0.0F;
 float HostMultiPlayerTimeout;
 
@@ -3842,7 +3729,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 {
   uint16  i,e;
   char  buf[256];
-  char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
   LPDIRECTDRAWPALETTE ddpal;
   LPDIRECTDRAW lpDD = d3dapp->lpDD;
   LPDIRECT3D lpD3D = d3dapp->lpD3D;
@@ -4098,11 +3984,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( MainGame( lpDev , lpView ) != TRUE )
       return FALSE;
 
-    if ( IsHost )
-    {
-      UpdateKillsTime();
-    }
-
     if ( bSoundEnabled )
     {
       ProcessLoopingSfx();
@@ -4279,11 +4160,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       if( IsHost )
       {
-        // store full level name in session desc
-        GetLevelName( full_level_name, MAX_LEVEL_NAME_LENGTH, NewLevelNum );
-        StoreLevelNameInSessionDesc( full_level_name );
-        RegSetA( "LevelName",  (LPBYTE)LevelList.item[ NewLevelNum ] , sizeof( LevelList.item[ NewLevelNum ] ) );
-
           // tell them all I Am waiting
           ReleaseView();
           MyGameStatus = STATUS_WaitingAfterScore;

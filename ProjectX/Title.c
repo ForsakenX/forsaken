@@ -535,7 +535,6 @@ void RedrawFlatMenuList( MENUITEM *Item );
 void DrawFlatMenuText( MENUITEM *Item );
 void DrawFlatTextStatus( MENUITEM *Item );
 void DrawFlatMenuItem( MENUITEM *Item );
-void DrawSessionNameText( MENUITEM *Item );
 void DrawConditionalText( MENUITEM *Item );
 void DrawConditionalName( MENUITEM *Item );
 TEXTINFO * DrawFlatToggleStatus( MENUITEM *Item );
@@ -871,10 +870,10 @@ BOOL OKToProcessKeys			= FALSE;
 BOOL MenuFrozen					= FALSE;
 BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
-BOOL GameRestricted			= FALSE;
+BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
 BOOL BiLinearFiltering			= TRUE;
-BOOL PerspectiveCorrect		= TRUE;
+BOOL PerspectiveCorrect			= TRUE;
 BOOL EnhancedXHair				= FALSE;
 BOOL LensFlare					= TRUE;
 BOOL GoreGuts					= FALSE;
@@ -885,24 +884,22 @@ BOOL DebugVisible				= FALSE;
 BOOL ShowPlaneRGB				= FALSE;
 BOOL PlayDemo					= FALSE;
 BOOL PauseDemo					= FALSE;
-BOOL RecordDemo				= FALSE;
-BOOL BrightShips					= FALSE;
+BOOL RecordDemo					= FALSE;
+BOOL BrightShips				= FALSE;
 BOOL MyBrightShips				= FALSE;
 BOOL BikeExhausts				= TRUE;
-BOOL DemoScreenGrab			= FALSE;
+BOOL DemoScreenGrab				= FALSE;
 BOOL ScreenSaving				= TRUE;
 BOOL ShowNode					= FALSE;
 BOOL NodeCube					= FALSE;
 BOOL OldNodeCube				= FALSE;
 BOOL NodeCubeType				= FALSE;
 BOOL TeamGame					= FALSE;
-BOOL HarmTeamMates			= TRUE;
 BOOL PickupLightDetail			= TRUE;
 BOOL PrimaryLightDetail			= TRUE;
 BOOL SecondaryLightDetail		= TRUE;
 BOOL AutoDetail					= TRUE;
 BOOL BountyBonus				= TRUE;
-BOOL PseudoHostCanSetMaxPlayers = TRUE;
 BOOL BikeEnginesOn				= TRUE;
 BOOL ToggleTest;
 
@@ -1320,7 +1317,6 @@ MENU MENU_NEW_GameType = {
 
 		{  10,  68, 200,  68, 0,			"Game Type Options",												FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 
-		{  10,  84, 120,  84, 0,			LT_MENU_NEW_MoreMultiplayerOptions9  /* "harm teammates"         */, FONT_Small,  TEXTFLAG_CentreY,							&HarmTeamMates,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10,  92, 120,  92, 0,			LT_MENU_NEW_MoreMultiplayerOptions10 /* "Bounty bonus"           */, FONT_Small, TEXTFLAG_CentreY,							&BountyBonus,				NULL,					SelectFlatMenuToggle,		DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 100, 120, 100, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions12 /* "bounty bonus interval"  */, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&BountyBonusSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
 		{  10, 108, 120, 108, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions11 /* "flag capture score"     */, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&GoalScoreSlider,			NULL,					SelectSlider,				DrawFlatMenuSlider,		NULL, 0 } ,
@@ -1356,7 +1352,7 @@ MENU	MENU_NEW_CreateGame = {
 		{   0,   0, 200,   0, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
 		{  10,  15,  90,  15, 0,			LT_MENU_NEW_CreateGame1  /*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_HostWaitingToStart,		StartAHostSession,		DrawFlatMenuItem,		NULL, 0 } ,
 
-		{  10,  28,  85,  28, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawSessionNameText,	NULL, 0 } ,
+		{  10,  28,  85,  28, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawFlatMenuText,		NULL, 0 } ,
 
 		{  10,  36,  85,  36, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 		{  90,  36, 200,  36, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
@@ -11732,9 +11728,6 @@ void GetMultiplayerPrefs( void )
 	PingFreqSlider.value = ( RegGet( "PingFreq", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : 60;
 
-	HarmTeamMates = ( RegGet( "HarmTeamMates", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
 	CTFSlider.value = ( RegGet( "CTFrules", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : CTF_STANDARD;
 
@@ -11796,7 +11789,6 @@ void SetMultiplayerPrefs( void )
 {			  
 	DWORD temp;
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-	char full_level_name[ MAX_LEVEL_NAME_LENGTH ];
 
 	temp = ShowPlayersOnHUD;
 	RegSet( "ShowPlayersOnHUD", (LPBYTE)&temp , sizeof(temp));
@@ -11823,8 +11815,6 @@ void SetMultiplayerPrefs( void )
 	RegSet( "GameType", (LPBYTE)&temp, sizeof( temp ) );
 	temp = PingFreqSlider.value;
 	RegSet( "PingFreq", (LPBYTE)&temp, sizeof( temp ) );
-	temp = HarmTeamMates;
-	RegSet( "HarmTeamMates", (LPBYTE)&temp, sizeof( temp ) );
 	temp = BountyBonus;
 	RegSet( "BountyBonus", (LPBYTE)&temp, sizeof( temp ) );
 	temp = GoalScoreSlider.value;
@@ -11845,20 +11835,6 @@ void SetMultiplayerPrefs( void )
 
 	GoalScore = GoalScoreSlider.value;
 	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
-
-	// store chosen level name as part of session description
-	GetLevelName( full_level_name, MAX_LEVEL_NAME_LENGTH, LevelList.selected_item );
-	
-	if ( strlen( MultiPlayerGameName.text ) > MAX_SESSION_DESC_LENGTH )
-		MultiPlayerGameName.text[ MAX_SESSION_DESC_LENGTH - 1 ] = 0;
-
-	// append '~' char to indicate end of session name ( if not already there )
-	if ( !strchr( MultiPlayerGameName.text, '~' ) )
-	{
-		strcat( MultiPlayerGameName.text, "~" );
-		// append level name...
-		strncat( MultiPlayerGameName.text, full_level_name, MAX_LEVEL_NAME_LENGTH );
-	}
 
 	RegSetA( "LevelName",  (LPBYTE)LevelList.item[ LevelList.selected_item ] , sizeof( LevelList.item[ LevelList.selected_item ] ) );
 }
@@ -12732,19 +12708,6 @@ void DrawFlatMenuItem( MENUITEM *Item )
 	//format text item...
 	PrintTextItem(TextInfo);
 	
-}
-
-void DrawSessionNameText( MENUITEM *Item )
-{
-	char *pchLevelSeperator;
-	
-	// session name could contain level name info if we have just aborted a new game - this must be discarded
-	// so it is not displayed
-	pchLevelSeperator = strchr( MultiPlayerGameName.text, '~' );
-	if ( pchLevelSeperator )
-		*pchLevelSeperator = 0;
-
-	DrawFlatMenuText( Item );	
 }
 
 void DrawConditionalText( MENUITEM *Item )

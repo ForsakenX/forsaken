@@ -1,6 +1,4 @@
 
-#define IDIRECTPLAY2_OR_GREATER
-
 #include <stdio.h>
 #include "windows.h"
 #include "typedefs.h"
@@ -47,8 +45,6 @@ BOOL ResetKillsPerLevel = FALSE;
 BOOL bTCP = FALSE;
 
 extern uint8 QuickStart;
-
-extern BOOL HarmTeamMates;
 extern BOOL BrightShips;
 extern BOOL BikeExhausts;
 extern int32 ColPerspective;
@@ -452,49 +448,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	return TRUE;
 }
 
-void GetSessionInfo ( void )
-{
-	int32	Time;
-	LPDPSESSIONDESC2 sd = network_get_description();
-	if( ! sd ) return;
-
-	if( sd->dwUser3 & ResetKillsPerLevelBit )
-		ResetKillsPerLevel = TRUE;
-	else
-		ResetKillsPerLevel = FALSE;
-	   
-	Time = ( ( sd->dwUser3 & GameTimeBit ) >> GameTimeBit_Shift );
-
-	if( Time )
-	{
-		TimeLimit.value = Time;
-		CountDownOn = TRUE;
-	}
-	else
-		CountDownOn = FALSE;
-
-	RandomStartPosModify = (WORD) (sd->dwUser2 & 0xffff);
-	
-	if( sd->dwUser3 & TeamGameBit )
-		TeamGame = TRUE;
-	else
-		TeamGame = FALSE;
-	if( sd->dwUser3 & FlagGameBit )
-		CaptureTheFlag = TRUE;
-	else
-		CaptureTheFlag = FALSE;
-
-	CTF = ( sd->dwUser3 & CTFGameBit ) ? TRUE : FALSE;
-	
-	// new addition ( previously in MSG_INIT )
-	if ( CTF )
-		SetUpGameSubType( CTF_Type_Decode( sd->dwUser3 ) );
-
-	BountyHunt = ( sd->dwUser3 & BountyGameBit ) ? TRUE : FALSE;
-	UseShortPackets = ( sd->dwUser3 & ShortPacketsBit ) ? TRUE : FALSE;
-	MaxKills = (int16)( ( sd->dwUser2 & MaxKillsBits ) >> MaxKills_Shift );
-}
-
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	Join a Session...
 	Input		:	nothing
@@ -519,7 +472,6 @@ BOOL JoinASession ( MENUITEM * Item )
 		return FALSE;
 	}
 
-	GetSessionInfo();
 	SetupDplayGame();
 	
 	WhoIAm = 0xff;

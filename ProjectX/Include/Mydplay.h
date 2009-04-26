@@ -703,35 +703,55 @@ typedef struct _HEREIAMMSG
     BYTE		WhoIAm;
 } HEREIAMMSG, *LPHEREIAMMSG;
 
+// later we should probably shove these all into a bit stream
+// all the code is hidden away in the repo in the session description functions (search: dwUser)
+// for now this is much simplar and this message is only sent once to new players
+// converting all the BOOL's to BYTE's (even with all the new added fields) saved 72 bits...
+
 typedef struct _INITMSG
 {
-    BYTE     MsgCode;
-    BYTE     WhoIAm;
-    BYTE     YouAre;
-	BYTE		Status;
-	BOOL		PlayerReady[MAX_PLAYERS];
-	BYTE		TeamNumber[MAX_PLAYERS];
-	int16		MaxKills;
-	float		PacketsPerSecond;
-	char		LevelName[32];
-	BOOL		HarmTeamMates;
-	BOOL		BrightShips;
-	BOOL		BikeExhausts;
-	int32		Collisions;
-	uint32	PickupFlags[ MAX_PICKUPFLAGS ];
-	int16		GoalScore;
-	int16		CTF_Type;
-	int16		BountyBonusInterval;
-	BOOL		RandomPickups;
+    BYTE	MsgCode;
+
+	// BOOLEANS
+
+	BYTE	PlayerReady[MAX_PLAYERS];
+	BYTE	RandomPickups;
+	BYTE	TeamGame;
+	BYTE	CaptureTheFlag;
+	BYTE	CTF;
+	BYTE	BountyHunt;
+	BYTE	ResetKillsPerLevel;
+	BYTE	UseShortPackets;
+
+	// others
+
+    BYTE	WhoIAm;
+    BYTE	YouAre;
+	BYTE	Status;
+	BYTE	NumPrimaryPickups;
+	BYTE	MaxKills;
+	BYTE	TeamNumber[MAX_PLAYERS];
+	BYTE	GameStatus[MAX_PLAYERS];
+	BYTE	ColPerspective;
+	BYTE	CTF_Type;
+	BYTE	TimeLimit;
+	BYTE	KillStats[MAX_PLAYERS][MAX_PLAYERS];
+	BYTE	BonusStats[MAX_PLAYERS];
+	BYTE	KillCounter[MAX_PLAYERS];
+
+	uint16	RandomStartPosModify;
 	uint16	Seed1;
 	uint16	Seed2;
-	DWORD	dwUser3;	// user field 3 of session desc
-	int16		PrimaryPickups;
-	BYTE		GameStatus[MAX_PLAYERS];
-	// current game stats
-	uint8		KillStats[MAX_PLAYERS][MAX_PLAYERS];
-	uint8		BonusStats[MAX_PLAYERS];
-	uint8		KillCounter[MAX_PLAYERS];
+
+	int16	GoalScore;
+	int16	BountyBonusInterval;
+
+	uint32	PickupFlags[MAX_PICKUPFLAGS];
+
+	float	DPlayUpdateInterval;
+
+	char	LevelName[32];
+
 
 } INITMSG, *LPINITMSG;
 

@@ -90,6 +90,7 @@ char *DemoName( char *demofilename )
 
 void StartDemoCleaning( MENUITEM * Item )
 {
+#ifdef DEMO_SUPPORT
 	char buf[256];
 	int i;
 	uint32 mp_version;
@@ -207,10 +208,12 @@ void StartDemoCleaning( MENUITEM * Item )
 		MenuBack();
 	else
 		MenuExit();
+#endif
 }
 
 void StartDemoPlayback( MENUITEM * Item )
 {
+#ifdef DEMO_SUPPORT
 	char buf[256];
 	int i;
 	uint32 mp_version;
@@ -303,4 +306,5 @@ void StartDemoPlayback( MENUITEM * Item )
 	SetupDplayGame();
 
 	ChangeLevel();
+#endif
 }
