@@ -12,6 +12,7 @@
 #include "file.h"
 #include "magic.h"
 #include "XMem.h"
+#include "util.h"
 
 
 #define BSP_VERSION_NUMBER	(1)
@@ -37,7 +38,6 @@ extern BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup )
 		Globals ...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
-void DebugPrintf( const char * format, ... );
 
 BSP_HEADER Bsp_Header[ 2 ];
 float ColRad;

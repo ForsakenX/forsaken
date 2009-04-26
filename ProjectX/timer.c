@@ -1,5 +1,6 @@
 
 #include "timer.h"
+#include "util.h"
 
 // frequency time does not change
 __int64 timer_freq = 0;

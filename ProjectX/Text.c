@@ -25,6 +25,7 @@
 #include "ddsurfhand.h"
 #include "local.h"
 #include "stats.h"
+#include "util.h"
 
 #define MSG_VERSION_NUMBER 1
 
@@ -130,7 +131,6 @@ char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
 uint8	CharTrans[256];
 
-void DebugPrintf( const char * format, ... );
 BOOL	PolyText[255];
 
 uint16 NumOfTextMessages = 0;

@@ -14,6 +14,7 @@
 #include "mipmap.h"
 #include "ddutil.h"
 #include "xmem.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -33,7 +34,6 @@ extern	BOOL	TexturesEnabled;
 extern	PALETTEENTRY ppe[256];
 extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
-extern	void DebugPrintf( const char * format, ... );
 BOOL FreeTextureMemory( int * TMem);
 
 extern void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );

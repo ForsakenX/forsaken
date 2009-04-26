@@ -13,16 +13,12 @@
 #include "sbufferhand.h"
 #include "dsutil.h"
 #include "sfx.h"
+#include "util.h"
 
 size_t	SBufferMemUsedSW = 0;
 size_t	SBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedSW = 0;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		externs...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-//Msg( LPSTR fmt, ... );
-void DebugPrintf( const char * format, ... );
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Defines...	

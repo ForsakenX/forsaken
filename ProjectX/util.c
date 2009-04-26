@@ -3,9 +3,10 @@
 #include <stdio.h>
 #include "typedefs.h"
 #include "file.h"
+#include "util.h"
 
 extern BOOL Debug;
-extern BOOL DebugLog;
+BOOL DebugLog = FALSE;
 void DebugPrintf( const char * format, ... )
 {
 

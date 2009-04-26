@@ -23,9 +23,11 @@
 #define	MIPMAPMIN 16
 
 
-extern "C" void DebugPrintf( const char * format, ... );
-extern "C" BOOL bPrimaryPalettized;
-extern "C" double	Gamma;
+extern "C" {
+	#include "util.h"
+	extern BOOL bPrimaryPalettized;
+	extern double Gamma;
+}
 
 /*
  *  DDLoadBitmap

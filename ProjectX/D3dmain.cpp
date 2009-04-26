@@ -52,6 +52,8 @@ extern "C" {
 #include	"util.h"
 #include	"net.h"
 
+	extern BOOL Debug;
+	extern BOOL DebugLog;
 	extern BOOL HideCursor;
 	extern BOOL NoDynamicSfx;
 	extern BOOL Wine;
@@ -103,13 +105,11 @@ extern "C" {
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
 	extern BOOL CanDoStrechBlt;
-	extern BOOL DebugLog;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
 	extern BOOL PreventFlips;
 	extern	BOOL DS;
-	extern	BOOL Debug;
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
@@ -124,7 +124,6 @@ extern "C" {
 
 	int DebugMathErrors( void );
 	void OnceOnlyRelease( void );
-	void DebugPrintf( const char * format, ... );
 
 	void RemoveDynamicSfx( void );
 	void FillStatusTab( void );

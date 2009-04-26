@@ -19,6 +19,7 @@
 #include "secondary.h"
 #include "sfx.h"
 #include "d3dappi.h"
+#include "util.h"
 
 #if 1
 
@@ -386,7 +387,6 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue);
 
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
-void DebugPrintf( const char * format, ... );
 #ifdef USEINLINE
 _inline
 #endif

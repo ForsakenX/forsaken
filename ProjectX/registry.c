@@ -19,6 +19,7 @@
 #include "Title.h"
 #include <stdio.h>
 #include <shellapi.h>
+#include "util.h"
 
 
 
@@ -29,7 +30,6 @@
 \*******************/
 
 extern BOOL Debug;
-extern void DebugPrintf( const char * format, ... );
 
 
 /*******************\

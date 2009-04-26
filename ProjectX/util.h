@@ -1,7 +1,6 @@
 #ifndef UTIL_INCLUDED
 #define UTIL_INCLUDED
 
-BOOL DebugLog;
 void DebugPrintf( const char * format, ... );
 void DebugState( const char * str );
 

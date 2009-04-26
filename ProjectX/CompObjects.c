@@ -31,6 +31,7 @@
 #include "magic.h"
 #include "SpotFX.h"
 #include "XMem.h"
+#include "util.h"
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Defines
@@ -64,8 +65,6 @@ extern	MXLOADHEADER	ModelHeaders[MAXMODELHEADERS];
 extern	MXALOADHEADER	MxaModelHeaders[MAXMODELHEADERS];
 extern	LINE			Lines[ MAXLINES ];
 extern	MLOADHEADER		Mloadheader;
-
-void DebugPrintf( const char * format, ... );
 
 BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft,
 					   VECTOR * BottomRight );

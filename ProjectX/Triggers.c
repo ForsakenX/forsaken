@@ -30,6 +30,7 @@
 #include "teleport.h"
 #include "screenpolys.h"
 #include "XMem.h"
+#include "util.h"
 
 #undef DEBUG_TRIGGERS
 
@@ -46,7 +47,6 @@
 extern	BYTE			WhoIAm;
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
 extern	float framelag;
-void DebugPrintf( const char * format, ... );
 extern	BYTE	ChangeLevel_MyGameStatus;
 extern	BOOL	CountDownOn;
 extern	BOOL	KilledPlayer;

@@ -11,12 +11,12 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "Lights.h"
 #include "water.h"
 #include "visi.h"
 #include "text.h"
 #include "main.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -54,7 +54,6 @@ extern BOOL	BrightShips;
 
 extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
-void DebugPrintf( const char * format, ... );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

@@ -31,6 +31,7 @@
 #include "controls.h"
 #include "local.h"
 #include "xmem.h"
+#include "util.h"
 
 
 #ifdef OPT_ON
@@ -115,7 +116,6 @@ extern	BOOL			BikeEnginesOn;
 
 extern int KillMessageColour;
 
-void DebugPrintf( const char * format, ... );
 void RefreshModel( uint16 model );
 
 #define BALL_RADIUS	( 256 * GLOBAL_SCALE )

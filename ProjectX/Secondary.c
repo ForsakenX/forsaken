@@ -13,10 +13,8 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "screenpolys.h"
 #include "polys.h"
-
 #include "d3dmain.h"
 #include "Ships.h"
 #include "exechand.h"
@@ -32,17 +30,15 @@
 #include "triggers.h"
 #include "pickups.h"
 #include "enemies.h"
-
 #include "secondary.h"
 #include "primary.h"
-
 #include "title.h"
 #include "text.h"
 #include "spotfx.h"
 #include "AI.h"
 #include "water.h"
-
 #include "local.h"
+#include "util.h"
 
 #define	SCATTER_TEST	0
 
@@ -196,8 +192,6 @@ extern int PickupMessageColour;
 extern SLIDER WatchPlayerSelect;
 // player selected in demo mode - used to display their missile camera (Title.c)
 extern SLIDER DemoEyesSelect;
-
-void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals

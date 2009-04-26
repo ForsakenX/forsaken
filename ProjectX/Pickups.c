@@ -45,6 +45,7 @@
 #include "goal.h"
 #include "local.h"
 #include "XMem.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -171,8 +172,6 @@ extern BOOL	NeedFlagAtHome;
 extern int GoalScore;
 
 extern	char PrimaryNames[7][16];
-
-void DebugPrintf( const char * format, ... );
 
 // message colours (Title.c)
 extern int KillMessageColour; 

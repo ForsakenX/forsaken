@@ -35,6 +35,7 @@
 #include "sfx.h"
 #include "title.h"
 #include "XMem.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -101,7 +102,6 @@ extern	SLIDER	TrailDetailSlider;
 extern	VECTOR	FleshmorphPos;
 extern	MODELNAME	*	ModNames;
 
-void DebugPrintf( const char * format, ... );
 BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGObject );
 BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup );
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );

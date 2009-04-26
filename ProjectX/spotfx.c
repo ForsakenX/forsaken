@@ -31,6 +31,7 @@
 #include "spotfx.h"
 #include "magic.h"
 #include "sfx.h"
+#include "util.h"
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	External Variables
@@ -68,8 +69,6 @@ extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;
 extern	MCLOADHEADER	MCloadheadert0;
 extern	ENEMY			Enemies[ MAXENEMIES ];
-
-void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Defines

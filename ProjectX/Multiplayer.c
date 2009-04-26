@@ -33,6 +33,7 @@
 #include "util.h"
 #include "demo.h"
 #include "string.h"
+#include "util.h"
 
 /*
  * Externals
@@ -179,7 +180,6 @@ BOOL	Modem2Modem = FALSE;
 
 uint16	RandomStartPosModify = 0;							
 
-void DebugPrintf( const char * format, ... );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
@@ -302,7 +302,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// create session
-	if( ! network_host( &MultiPlayerGameName.text[0]) )
+	if( ! network_host( &MultiPlayerGameName.text[0], MaxPlayersSlider.value ) )
 	{
 		Msg("Failed to create Direct Play Session!");
 		return FALSE;

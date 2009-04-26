@@ -5,9 +5,9 @@ typedef DWORD network_id_t;
 
 int network_ready( void );
 int network_get_player_name( network_id_t id, char* name );
-int network_host( char* name );
+int network_host( char* game_name, int max_players );
 int network_join(void);
-int network_create_player( network_id_t * id, LPTSTR lpPlayerName );
+int network_create_player( network_id_t * id, char* lpPlayerName );
 
 void network_initialize( char * TCPAddress );
 void network_pump( void );

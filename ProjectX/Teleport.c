@@ -26,6 +26,7 @@
 #include "sfx.h"
 #include "Ships.h"
 #include "XMem.h"
+#include "util.h"
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Defines
@@ -40,7 +41,6 @@ extern	VECTOR Forward;
 extern	VECTOR SlideUp;
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
 extern	float framelag;
-void DebugPrintf( const char * format, ... );
 extern	BOOL	Entry;
 extern	BOOL	Exit;
 extern	BOOL	In;

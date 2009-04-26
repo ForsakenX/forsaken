@@ -10,6 +10,7 @@
 #include <malloc.h>
 #include "typedefs.h"
 #include "d3ddemo.h"
+#include "util.h"
 
 size_t	ExecMemUsed = 0;
 #ifdef DEBUG_ON
@@ -17,7 +18,6 @@ size_t	ExecMemUsed = 0;
 		externs...	
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 Msg( LPSTR fmt, ... );
-void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Defines...	

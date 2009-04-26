@@ -47,6 +47,7 @@
 #include "version.h"
 #include "demo.h"
 #include "singleplayer.h"
+#include "util.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -494,8 +495,6 @@ void PulsateVDU(void);
 void MorphHoloLight(void);
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy);
 BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
-
-void DebugPrintf( const char * format, ... );
 
 BOOL DeleteSavedGame( LIST *l, int item );
 BOOL DeleteDemo( LIST *l, int item );

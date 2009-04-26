@@ -18,6 +18,7 @@
 #include "secondary.h"
 #include "polysort.h"
 #include "main.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -56,7 +57,6 @@ extern	BOOL			CanCullFlag;
 extern	int16			MakeColourMode;
 extern	BYTE			GameStatus[MAX_PLAYERS];
 
-void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals

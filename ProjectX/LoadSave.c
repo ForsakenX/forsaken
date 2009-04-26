@@ -41,6 +41,7 @@
 #include "text.h"
 #include "XMem.h"
 #include "file.h"
+#include "util.h"
 
 /*			Stuff that needs to be saved/loaded.....
 
@@ -101,8 +102,6 @@ extern	LIST		LoadSavedGameList;
 extern float Old_LevelTime_Float;
 extern float Old_Time_Float;
 
-
-void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals ...

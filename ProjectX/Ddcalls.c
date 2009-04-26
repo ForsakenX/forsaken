@@ -19,8 +19,7 @@
 
 #include "d3dappi.h"
 #include "ddutil.h"
-
-extern void DebugPrintf( const char * format, ... );
+#include "util.h"
 
 extern int default_width;
 extern int default_height;

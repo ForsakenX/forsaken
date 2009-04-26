@@ -27,6 +27,7 @@
 #include "visi.h"
 #include "text.h"
 #include "XMem.h"
+#include "util.h"
 
 #define GOAL_VERSION_NUMBER		(1)
 
@@ -59,7 +60,6 @@ extern	int16			PickupsGot[ MAXPICKUPTYPES ];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	uint32			Host_Flags[ MAX_PLAYERS ];
 
-void DebugPrintf( const char * format, ... );
 BOOL ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16 NumSides, int16 Side );
 BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
 void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans );

@@ -86,7 +86,6 @@
 #include "shadows.h"
 #endif
 
-extern BOOL Debug;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;

@@ -11,7 +11,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "mload.h"
 #include "camera.h"
 #include "visi.h"
@@ -26,7 +25,7 @@
 #include "title.h"
 #include "restart.h"
 #include "XMem.h"
-
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -39,8 +38,6 @@ extern float screen_aspect_ratio;
 extern int outside_map;
 extern	BOOL	DoClipping;
 extern	CAMERA	CurrentCamera;
-
-extern void DebugPrintf( const char * format, ... );
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Externals...	

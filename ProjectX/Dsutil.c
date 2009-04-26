@@ -20,10 +20,10 @@
 #include "dsutil.h"
 #include "sfx.h"
 #include "XMem.h"
+#include "util.h"
 
 static const char c_szWAV[] = "WAV";
 
-void DebugPrintf( const char * format, ... );
 int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex );
 void CheckSBufferList( void );
 

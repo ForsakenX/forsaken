@@ -15,9 +15,7 @@
 #include	"typedefs.h"
 #include	"d3dmain.h"
 #include	"file.h"
-
-// prototypes
-extern void DebugPrintf( const char * format, ... );
+#include	"util.h"
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	External Variables

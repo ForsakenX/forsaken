@@ -32,6 +32,7 @@
 #include "node.h"
 #include "controls.h"
 #include "XMem.h"
+#include "util.h"
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	External Variables
@@ -72,8 +73,6 @@ extern	int16			BikeModels[ MAXBIKETYPES ];
 extern	MODELNAME	*	ModNames;
 extern	TLOADHEADER		Tloadheader;
 extern	SECONDARYWEAPONBULLET *	SecBullGroups[ MAXGROUPS ];
-
-void DebugPrintf( const char * format, ... );
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

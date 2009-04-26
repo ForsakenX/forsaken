@@ -3,7 +3,7 @@
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-#include	<stdio.h>
+#include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
@@ -11,14 +11,13 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "2dpolys.h"
 #include "camera.h"
-
 #include "Primary.h"
 #include "polysort.h"
 #include "spotfx.h"
 #include "water.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -64,7 +63,6 @@ uint32		TotalFmPolysInUse = 0;
 int16		MakeColourMode = MCM_Normal;
 TPAGEINFO	FmPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
-void DebugPrintf( const char * format, ... );
 void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
 
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))

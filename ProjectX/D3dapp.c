@@ -47,7 +47,6 @@ extern BOOL HideCursor;
 extern BOOL ActLikeWindow;
 
 extern d3dmainglobals myglobs;     /* collection of global variables */
-//#define INITGUID
 
 /***************************************************************************/
 /*                           GLOBAL VARIABLES                              */

@@ -23,6 +23,7 @@
 #include "config.h"
 #include "XMem.h"
 #include "SBufferHand.h"
+#include "util.h"
 
 #ifdef DEBUG_ON
 #define DSLoadSoundBuffer(A, B, C) DSLoadSoundBuffer(A, B, C, __FILE__, __LINE__)
@@ -160,7 +161,6 @@ Fn Prototypes
 *****************************************/
 BOOL Init_SoundGlobals(void);
 void PlayThreadedSfx( int16 Sfx, float Dist );
-void DebugPrintf( const char * format, ... );
 void FreeSBufferList( void );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void InitSfxHolders( void );

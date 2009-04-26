@@ -6,7 +6,6 @@
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 #include <stdio.h>
 #include "main.h"
-
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
@@ -14,8 +13,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
-
 #include "d3dmain.h"
 #include "typedefs.h"
 #include "New3D.h"
@@ -32,22 +29,18 @@
 #include "visi.h"
 #include "2dtextures.h"
 #include "sfx.h"
-
 #include "triggers.h"
 #include "trigarea.h"
 #include "pickups.h"
-
 #include "enemies.h"
-
 #include "Primary.h"
 #include "Secondary.h"
-
 #include "spotfx.h"
 #include "title.h"
 #include "text.h"
-
 #include "AI.h"
 #include "Water.h"
+#include "util.h"
 
 #ifdef SHADOWTEST
 #include "shadows.h"
@@ -189,8 +182,6 @@ extern int PickupMessageColour;
 #ifdef SINT_PEACEFROG_CHEAT
 extern	int16	TargetingWeaponCheat;
 #endif
-
-void DebugPrintf( const char * format, ... );
 														
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Globals

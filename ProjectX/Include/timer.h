@@ -4,9 +4,6 @@
 // pukes
 #include <Windows.h>
 
-// pukes again
-extern void DebugPrintf( const char * format, ... );
-
 // holds all our counters
 // non global/static declartions are dirty so run timer_clear on them...
 typedef struct timer {

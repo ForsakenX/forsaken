@@ -12,6 +12,7 @@
 #include "lines.h"
 #include "primary.h"
 #include "skin.h"
+#include "util.h"
 
 #define USE_BSP_COLOURS
 
@@ -44,8 +45,6 @@ extern	BOOL		ShowColZones;
 
 extern	MODEL		Models[MAXNUMOFMODELS];
 extern	MATRIX		MATRIX_Identity;
-
-void DebugPrintf( const char * format, ... );
 
 #define	BOXSIZE		96.0F
 #define	NODECUBE_Branch	FALSE

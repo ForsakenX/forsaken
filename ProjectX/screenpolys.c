@@ -11,10 +11,8 @@
 #include "Object.h"
 #include "networking.h"
 #include "models.h"
-
 #include "2dpolys.h"
 #include "screenpolys.h"
-
 #include "controls.h"
 #include "secondary.h"
 #include "camera.h"
@@ -24,6 +22,7 @@
 #include "text.h"
 #include "triggers.h"
 #include "local.h"
+#include "util.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -108,8 +107,6 @@ extern int KillMessageColour;
 extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PlayerMessageColour;
-
-void DebugPrintf( const char * format, ... );
 
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 #define	CUTOFF				( 5.0F * 1024.0F * GLOBAL_SCALE )

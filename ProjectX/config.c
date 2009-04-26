@@ -1,3 +1,6 @@
+
+#define WIN32_EXTRA_LEAN
+
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -7,8 +10,6 @@
 #include "Object.h"
 #include "networking.h"
 #include "controls.h"
-
-#define WIN32_EXTRA_LEAN
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -19,6 +20,7 @@
 #include "mxaload.h"
 #include "config.h"
 #include "XMem.h"
+#include "util.h"
 
 extern int	Num_Joysticks;
 extern LIST BikeList;
@@ -29,7 +31,6 @@ extern TEXT	MacroText2;
 extern TEXT	MacroText3;
 extern LIST BikeComputerList;
 
-void DebugPrintf( const char * format, ... );
 #if 1
 extern int total_malloced;
 extern void *mem;

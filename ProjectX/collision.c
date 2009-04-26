@@ -26,6 +26,7 @@
 #include "secondary.h"
 #include "Restart.h"
 #include "XMem.h"
+#include "util.h"
 
 //#undef COLLISION_FUDGE
 //#define COLLISION_FUDGE	(0.065F)
@@ -50,7 +51,6 @@
 
 extern BOOL PISDistRecursive( VECTOR *Pos, BSP_NODE *node);
 extern void ObjForceExternalOneOff( OBJECT *Obj, VECTOR *force );
-extern void DebugPrintf( const char * format, ... );
 
 extern	float	MaxMoveSpeed;
 extern	float	MoveAccell;

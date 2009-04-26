@@ -12,25 +12,18 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "config.h"
 #include "controls.h"
-
 #include "Ships.h"
-
 #include "triggers.h"
 #include "pickups.h"
 #include "primary.h"
 #include "secondary.h"
-
 #include "Mxaload.h"
 #include "lights.h"
-
 #include "sphere.h"
-
 #include "title.h"
 #include "TrigArea.h"
-
 #include "Node.h"
 #include "Models.h"
 #include "Enemies.h"
@@ -40,13 +33,12 @@
 #include "spotfx.h"
 #include "screenpolys.h"
 #include "restart.h"
-
 #include "goal.h"
 #include "visi.h"
 #include "text.h"
 #include "xmem.h"
-
 #include "local.h"
+#include "util.h"
 
 
 //#undef MULTI_RAY_COLLISION
@@ -76,7 +68,6 @@ BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off );
 BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i);
 
 BOOL	IsStartPosVacant( int16 i , uint16 startpos );
-extern void DebugPrintf( const char * format, ... );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 

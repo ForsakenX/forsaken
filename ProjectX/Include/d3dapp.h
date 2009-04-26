@@ -21,8 +21,6 @@
 #ifndef __D3DAPP_H__
 #define __D3DAPP_H__
 
-//#define INITGUID
-
 #include <ddraw.h>
 #include "d3d.h"
 
