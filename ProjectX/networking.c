@@ -507,8 +507,8 @@ char* msg_to_str( int msg_type )
     case MSG_STATUS:
 		return "MSG_STATUS";
         break;
-	case MSG_DPLAYUPDATE:
-		return "MSG_DPLAYUPDATE";
+	case MSG_NETSETTINGS:
+		return "MSG_NETSETTINGS";
 		break;
     case MSG_LONGSTATUS:
 		return "MSG_LONGSTATUS";
@@ -751,14 +751,14 @@ void DplayGameUpdate()
 		{
 			OldPPSValue = PacketsSlider.value;
 			DPlayUpdateInterval	= (60.0F / PacketsSlider.value);
-			SendGameMessage(MSG_DPLAYUPDATE, 0, 0, 0, 0);
+			SendGameMessage(MSG_NETSETTINGS, 0, 0, 0, 0);
 			AddColourMessageToQue(SystemMessageColour, "%d %s" , PacketsSlider.value , PACKETS_PER_SECOND_SET );
 		}
 		// changed collision perspective
 		if ( OldColPerspective != ColPerspective )
 		{
 			OldColPerspective = ColPerspective;
-			SendGameMessage(MSG_DPLAYUPDATE, 0, 0, 0, 0);
+			SendGameMessage(MSG_NETSETTINGS, 0, 0, 0, 0);
 			if(ColPerspective == COLPERS_Forsaken)
 				AddColourMessageToQue( SystemMessageColour, "SHOOTER NOW DECIDES COLLISIONS" );
 			else if(ColPerspective == COLPERS_Descent)
@@ -769,7 +769,7 @@ void DplayGameUpdate()
 		if ( OldUseShortPackets != UseShortPackets )
 		{
 			OldUseShortPackets = UseShortPackets;
-			SendGameMessage(MSG_DPLAYUPDATE, 0, 0, 0, 0);
+			SendGameMessage(MSG_NETSETTINGS, 0, 0, 0, 0);
 			if(UseShortPackets)
 				AddColourMessageToQue( SystemMessageColour, "SHORT PACKETS ENABLED" );
 			else
@@ -1050,7 +1050,7 @@ void SetupDplayGame()
 	RealPacketSize[MSG_DROPPICKUP						] = sizeof( DROPPICKUPMSG					);	
 	RealPacketSize[MSG_KILLPICKUP							] = sizeof( KILLPICKUPMSG						);	
 	RealPacketSize[MSG_STATUS								] = sizeof( STATUSMSG							);	
-	RealPacketSize[MSG_DPLAYUPDATE						] = sizeof( DPLAYUPDATEMSG					);
+	RealPacketSize[MSG_NETSETTINGS						] = sizeof( NETSETTINGSMSG					);
 	RealPacketSize[MSG_SHORTPICKUP						] = sizeof( SHORTPICKUPMSG					);	
 	RealPacketSize[MSG_SHOCKWAVE						] = sizeof( SHOCKWAVEMSG					);	
 	RealPacketSize[MSG_FUPDATE							] = sizeof( FUPDATEMSG						);	
@@ -1531,7 +1531,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	LPPINGMSG								lpPingMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
-	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
+	LPNETSETTINGSMSG					lpNetSettingsMsg;
     char				dBuf[256];
 	int					i;
 	BYTE				OldMode;
@@ -2847,46 +2847,46 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		return;
 
 
-	case MSG_DPLAYUPDATE:
+	case MSG_NETSETTINGS:
 
-			lpDplayUpdateMsg = (LPDPLAYUPDATEMSG)MsgPnt;
+			lpNetSettingsMsg = (LPNETSETTINGSMSG)MsgPnt;
 
 			// clients must update their dplay settings
 			if(!IsHost)
 			{
 				// only the host can change the settings
-				if(lpDplayUpdateMsg->IsHost)
+				if(lpNetSettingsMsg->IsHost)
 				{
 					// if in normal mode display text message of changes
 					if( MyGameStatus == STATUS_Normal )
 					{
 						// collision perspective changed by the host
-						if( ColPerspective != lpDplayUpdateMsg->CollisionPerspective)
+						if( ColPerspective != lpNetSettingsMsg->CollisionPerspective)
 						{
 							// shooter decides
-							if( lpDplayUpdateMsg->CollisionPerspective == COLPERS_Forsaken)
+							if( lpNetSettingsMsg->CollisionPerspective == COLPERS_Forsaken)
 								AddColourMessageToQue(SystemMessageColour, "SHOOTER NOW DECIDES COLLISIONS");
 							// target decides
 							else
 								AddColourMessageToQue(SystemMessageColour, "TARGET NOW DECIDES COLLISIONS");
 						}
 						// packet rate changed by the host
-						if( DPlayUpdateInterval != lpDplayUpdateMsg->PacketsPerSecond )
-							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpDplayUpdateMsg->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
+						if( DPlayUpdateInterval != lpNetSettingsMsg->PacketsPerSecond )
+							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpNetSettingsMsg->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
 						// short packets changed by the host
-						if( UseShortPackets != lpDplayUpdateMsg->ShortPackets)
+						if( UseShortPackets != lpNetSettingsMsg->ShortPackets)
 						{
 							// short packets enabled
-							if( lpDplayUpdateMsg->ShortPackets == TRUE)
+							if( lpNetSettingsMsg->ShortPackets == TRUE)
 								AddColourMessageToQue(SystemMessageColour, "SHORT PACKETS ENABLED BY HOST");
 							// short packets disabled
 							else
 								AddColourMessageToQue(SystemMessageColour, "SHORT PACKETS DISABLED BY HOST");
 						}
 					}
-					ColPerspective = lpDplayUpdateMsg->CollisionPerspective;
-					UseShortPackets = lpDplayUpdateMsg->ShortPackets;
-					DPlayUpdateInterval = lpDplayUpdateMsg->PacketsPerSecond;
+					ColPerspective = lpNetSettingsMsg->CollisionPerspective;
+					UseShortPackets = lpNetSettingsMsg->ShortPackets;
+					DPlayUpdateInterval = lpNetSettingsMsg->PacketsPerSecond;
 					PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
 				}
 			}
@@ -3304,7 +3304,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSETTIMEMSG						lpSetTime;
 	LPREQTIMEMSG						lpReqTime;
-	LPDPLAYUPDATEMSG					lpDplayUpdateMsg;
+	LPNETSETTINGSMSG					lpNetSettingsMsg;
 
 	DWORD			nBytes		= 0;
 	int				guaranteed	= 0;
@@ -3670,15 +3670,15 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 			guaranteed = 1;
         break;
 
-	case MSG_DPLAYUPDATE:
+	case MSG_NETSETTINGS:
 
-		lpDplayUpdateMsg						= (LPDPLAYUPDATEMSG)&CommBuff[0];
-        lpDplayUpdateMsg->MsgCode				= msg;
-        lpDplayUpdateMsg->WhoIAm				= WhoIAm;
-        lpDplayUpdateMsg->IsHost				= IsHost;
-		lpDplayUpdateMsg->PacketsPerSecond		= DPlayUpdateInterval;
-		lpDplayUpdateMsg->CollisionPerspective	= ColPerspective;
-		lpDplayUpdateMsg->ShortPackets			= UseShortPackets;
+		lpNetSettingsMsg						= (LPNETSETTINGSMSG)&CommBuff[0];
+        lpNetSettingsMsg->MsgCode				= msg;
+        lpNetSettingsMsg->WhoIAm				= WhoIAm;
+        lpNetSettingsMsg->IsHost				= IsHost;
+		lpNetSettingsMsg->PacketsPerSecond		= DPlayUpdateInterval;
+		lpNetSettingsMsg->CollisionPerspective	= ColPerspective;
+		lpNetSettingsMsg->ShortPackets			= UseShortPackets;
 		break;
 
     case MSG_LONGSTATUS:

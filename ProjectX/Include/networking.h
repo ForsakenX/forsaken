@@ -564,7 +564,7 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_SHIPDIED							0x77
 #define MSG_DROPPICKUP						0x88
 #define MSG_KILLPICKUP						0x99
-#define MSG_DPLAYUPDATE					0xaa
+#define MSG_NETSETTINGS					0xaa
 #define MSG_STATUS							0xbb
 #define MSG_SHORTPICKUP					0xee
 #define MSG_SHOCKWAVE						0xff
@@ -884,7 +884,7 @@ typedef struct _STATUSMSG
 	BYTE		TrigVars;		// tells how much of the mine list I have recieved..
 } STATUSMSG, *LPSTATUSMSG;
 
-typedef struct _DPLAYUPDATEMSG
+typedef struct _NETSETTINGSMSG
 {
 	BYTE		MsgCode;
 	BYTE		WhoIAm;
@@ -892,7 +892,7 @@ typedef struct _DPLAYUPDATEMSG
 	float		PacketsPerSecond;
 	BOOL		CollisionPerspective;
 	BOOL		ShortPackets;	
-} DPLAYUPDATEMSG, *LPDPLAYUPDATEMSG;
+} NETSETTINGSMSG, *LPNETSETTINGSMSG;
 
 typedef struct _LONGSTATUSMSG
 {
