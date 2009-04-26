@@ -1,5 +1,5 @@
-#ifndef MYDPLAY_INCLUDED
-#define MYDPLAY_INCLUDED
+#ifndef NETWORKING_INCLUDED
+#define NETWORKING_INCLUDED
 
 //
 // General Networking

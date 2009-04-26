@@ -10,7 +10,7 @@
 #define LIVES			"Lives"
 #define TEAM			"Team"
 
-// Mydplay.c
+// networking
 #define IS_JOINING_THE_GAME "is joining the game"		// player is joining the games
 #define THE_SESSION_HAS_BEEN_LOST_PLEASE_QUIT "The Session has been lost please quit"
 #define YOU_HAVE_BECOME_THE_HOST "You Have Become The Host"
