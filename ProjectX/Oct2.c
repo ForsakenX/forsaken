@@ -5484,7 +5484,7 @@ void MainRoutines( void )
 {
   if( PlayDemo )
   {
-    DemoPlayingDplayGameUpdate();
+    DemoPlayingNetworkGameUpdate();
   }
 
   ProcessShips();
@@ -5980,7 +5980,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 /* Secondary routines called after rendering */
     
   if( !PlayDemo )
-    DplayGameUpdate();
+    NetworkGameUpdate();
 
   if( (Ships[WhoIAm].Object.Speed.z) > (MaxMoveSpeed) )
   {
@@ -8975,7 +8975,7 @@ void CheckMetKillLimit()
 			LevelNum = -1;
 			NewLevelNum++;
 			if( NewLevelNum >= NumLevels ) NewLevelNum = 0;
-			DplayGameUpdate();
+			NetworkGameUpdate();
 		}
 	}
 

@@ -301,7 +301,7 @@ void StartDemoPlayback( MENUITEM * Item )
 	WhoIAm = MAX_PLAYERS;
 
 //	RandomStartPosModify = 0;
-	SetupDplayGame();
+	SetupNetworkGame();
 
 	ChangeLevel();
 #endif

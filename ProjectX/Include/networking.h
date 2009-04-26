@@ -754,7 +754,7 @@ typedef struct _INITMSG
 
 	uint32	PickupFlags[MAX_PICKUPFLAGS];
 
-	float	DPlayUpdateInterval;
+	float	NetUpdateInterval;
 
 	char	LevelName[32];
 
@@ -974,12 +974,12 @@ typedef struct _REQTIMEMSG
  * fn prototypes
  */
 void	DestroyGame( void );
-void	SendGameMessage( BYTE msg, DWORD to, BYTE row, BYTE col, BYTE mask );
+void	SendGameMessage( BYTE msg, network_id_t to, BYTE row, BYTE col, BYTE mask );
 void	EvaluateMessage( DWORD len , BYTE * MsgPnt );
 void	ReceiveGameMessages( void );
 void	initShip( uint16 i );
-void	DplayGameUpdate();
-void	SetupDplayGame();
+void	NetworkGameUpdate();
+void	SetupNetworkGame();
 void	PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
 						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
 						int16 PowerLevel, float PLevel );
@@ -996,7 +996,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon );
 void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time );
 void	smallinitShip( uint16 i );
-void DemoPlayingDplayGameUpdate(void);
+void DemoPlayingNetworkGameUpdate(void);
 void DemoClean( void );
 int FindSameLevel( char * Name );
 void	RequestTime( void  );

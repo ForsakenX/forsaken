@@ -1498,7 +1498,7 @@ void CleanUpSecBull( uint16 i )
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Init 1 Secondary Bullet..Mainly for Dplay...
+	Procedure	:	Init 1 Secondary Bullet..Mainly for networking...
 	Input		:	uint16		OwnerType
 				:	uint16		Owner
 				:	uint16		Bullet ID

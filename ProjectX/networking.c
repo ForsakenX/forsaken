@@ -37,7 +37,6 @@
 #include "Local.h"
 #include "stats.h"
 #include "version.h"
-#include "net_dplay.h"
 
 extern BOOL Debug;
 
@@ -136,13 +135,13 @@ extern	SLIDER  PacketsSlider;
 
 extern char CurrentTauntVariant;
 
-float DPlayUpdateInterval = 4.0F;
+float NetUpdateInterval = 4.0F;
 int OldPPSValue;
 int OldUseShortPackets;
 int OldColPerspective;
 float PacketDelay = 4.0F;					// How long before I start to Declerate him.....
 float HostDutyTimer = 0.0F;
-float DPlayUpdateIntervalHostDuties = 30.0F;
+float NetUpdateIntervalHostDuties = 30.0F;
 void SetShipBankAndMat( OBJECT * ShipObjPnt );
 
 #ifdef OPT_ON
@@ -615,7 +614,7 @@ void SendANormalUpdate( void )
 }
 
  
-void DplayGameUpdate()
+void NetworkGameUpdate()
 {
 	int i;
 	VECTOR	Move_Off;
@@ -680,7 +679,7 @@ void DplayGameUpdate()
 				SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, 0);
 			}
 			Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
-			Interval = DPlayUpdateInterval;
+			Interval = NetUpdateInterval;
 		
 		}
 		else
@@ -688,7 +687,7 @@ void DplayGameUpdate()
 			Interval -= framelag;
 			if( Interval <= 0.0F )
 			{
-				Interval = DPlayUpdateInterval;
+				Interval = NetUpdateInterval;
 				SendANormalUpdate();
 			}
 		}
@@ -697,7 +696,7 @@ void DplayGameUpdate()
 
 		if( HostDutyTimer <= 0.0F )
 		{
-			HostDutyTimer = DPlayUpdateIntervalHostDuties;
+			HostDutyTimer = NetUpdateIntervalHostDuties;
 			HostDuties = FALSE;
 			// If someone has joined or somebody requests it then send everyone a stats update
 			if( IsHost == TRUE )
@@ -750,7 +749,7 @@ void DplayGameUpdate()
 		if ( OldPPSValue != PacketsSlider.value )
 		{
 			OldPPSValue = PacketsSlider.value;
-			DPlayUpdateInterval	= (60.0F / PacketsSlider.value);
+			NetUpdateInterval	= (60.0F / PacketsSlider.value);
 			SendGameMessage(MSG_NETSETTINGS, 0, 0, 0, 0);
 			AddColourMessageToQue(SystemMessageColour, "%d %s" , PacketsSlider.value , PACKETS_PER_SECOND_SET );
 		}
@@ -1031,7 +1030,7 @@ void	SetTime( float Time )
 // (stats.c)
 extern void InitScoreSortTab(int Player); 
 
-void SetupDplayGame()
+void SetupNetworkGame()
 {
 	int16 i,Count;
 
@@ -1088,8 +1087,6 @@ void SetupDplayGame()
 
 	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-
-	DebugPrintf( "SetupDPlayGame()\n ");
 
 	JustGenerated = TRUE;
 	
@@ -1379,7 +1376,7 @@ void network_event_i_am_host( void )
 
 	IsHost = TRUE;					// I have Become the host
 
-	PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
+	PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
 		if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
@@ -2241,8 +2238,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		HostNetID = from_dcoID;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
-		DPlayUpdateInterval = lpInit->DPlayUpdateInterval;
-		PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
+		NetUpdateInterval = lpInit->NetUpdateInterval;
+		PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
 
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )			
 		{															
@@ -2851,7 +2848,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 			lpNetSettingsMsg = (LPNETSETTINGSMSG)MsgPnt;
 
-			// clients must update their dplay settings
+			// clients must update their settings
 			if(!IsHost)
 			{
 				// only the host can change the settings
@@ -2871,7 +2868,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 								AddColourMessageToQue(SystemMessageColour, "TARGET NOW DECIDES COLLISIONS");
 						}
 						// packet rate changed by the host
-						if( DPlayUpdateInterval != lpNetSettingsMsg->PacketsPerSecond )
+						if( NetUpdateInterval != lpNetSettingsMsg->PacketsPerSecond )
 							AddColourMessageToQue(SystemMessageColour, "%2.2f %s" , ( 60.0F / lpNetSettingsMsg->PacketsPerSecond ) , PACKETS_PER_SECOND_SET );
 						// short packets changed by the host
 						if( UseShortPackets != lpNetSettingsMsg->ShortPackets)
@@ -2886,8 +2883,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					}
 					ColPerspective = lpNetSettingsMsg->CollisionPerspective;
 					UseShortPackets = lpNetSettingsMsg->ShortPackets;
-					DPlayUpdateInterval = lpNetSettingsMsg->PacketsPerSecond;
-					PacketsSlider.value = (int) (60.0F / DPlayUpdateInterval);
+					NetUpdateInterval = lpNetSettingsMsg->PacketsPerSecond;
+					PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
 				}
 			}
 			return;
@@ -3260,17 +3257,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	OutputDebugString( dBuf );
 }
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:		Send a message to all or just one..
-	Input		:		BYTE msg ,
-						DWORD to (DplayID) ,
-						BYTE ShipNum ,
-						BYTE Type,
-						BYTE MASK
-	Output		:		nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-
-void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
+void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
     LPVERYSHORTUPDATEMSG				lpVeryShortUpdate;
     LPUPDATEMSG							lpUpdate;
@@ -3371,7 +3358,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 		lpInit->Seed1					= CopyOfSeed1;
 		lpInit->Seed2					= CopyOfSeed2;
 		lpInit->ColPerspective			= (BYTE)ColPerspective;
-		lpInit->DPlayUpdateInterval		= DPlayUpdateInterval;
+		lpInit->NetUpdateInterval		= NetUpdateInterval;
 		lpInit->RandomPickups			= RandomPickups;
 		lpInit->NumPrimaryPickups		= (BYTE)NumPrimaryPickups;
 		lpInit->MaxKills				= (BYTE)MaxKills;
@@ -3676,7 +3663,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
         lpNetSettingsMsg->MsgCode				= msg;
         lpNetSettingsMsg->WhoIAm				= WhoIAm;
         lpNetSettingsMsg->IsHost				= IsHost;
-		lpNetSettingsMsg->PacketsPerSecond		= DPlayUpdateInterval;
+		lpNetSettingsMsg->PacketsPerSecond		= NetUpdateInterval;
 		lpNetSettingsMsg->CollisionPerspective	= ColPerspective;
 		lpNetSettingsMsg->ShortPackets			= UseShortPackets;
 		break;
@@ -3940,7 +3927,7 @@ void SendGameMessage( BYTE msg, DWORD to, BYTE ShipNum, BYTE Type, BYTE mask )
 	Output		:		nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void DemoPlayingDplayGameUpdate()
+void DemoPlayingNetworkGameUpdate()
 {
 #ifdef DEMO_SUPPORT
     DWORD               nBytes;

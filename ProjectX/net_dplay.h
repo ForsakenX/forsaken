@@ -1,5 +1,5 @@
-#ifndef NET_DPLAY_INCLUDED
-#define NET_DPLAY_INCLUDED
+#ifndef NETWORK_INCLUDED
+#define NETWORK_INCLUDED
 
 typedef DWORD network_id_t;
 
@@ -21,4 +21,4 @@ extern void network_event_i_am_host( void );
 extern void network_event_destroy_player( network_id_t id );
 extern void network_event_player_name( network_id_t id, char* name );
 
-#endif // NET_DPLAY_INCLUDED
+#endif // NETWORK_INCLUDED

@@ -3668,7 +3668,7 @@ void CleanUpPrimBull( uint16 i, BOOL LightFlag  )
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
-	Procedure	:	Init 1 Primary Bullet..Mainly for Dplay...
+	Procedure	:	Init 1 Primary Bullet..Mainly for networking...
 	Input		:	uint16		OwnerType
 				:	uint16		OwnerID
 				:	uint16		BulletID

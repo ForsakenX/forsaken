@@ -33,7 +33,6 @@
 #include "util.h"
 #include "demo.h"
 #include "string.h"
-#include "net_dplay.h"
 
 /*
  * Externals
@@ -75,7 +74,7 @@ extern MENUITEM TeamGameHostMenuItem;
 extern BYTE	PreSynchupStatus;
 extern int CurrentLoadingStep;
 extern BOOL DemoShipInit[];
-extern	float DPlayUpdateInterval;
+extern	float NetUpdateInterval;
 extern	BOOL	BrightShips;
 extern	BOOL	MyBrightShips;
 
@@ -316,12 +315,12 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	    return FALSE;
 	}
 
-	DPlayUpdateInterval	= 60.0F / PacketsSlider.value;
+	NetUpdateInterval	= 60.0F / PacketsSlider.value;
 	OldPPSValue = PacketsSlider.value;
 	OldColPerspective = ColPerspective;
 	OldUseShortPackets = UseShortPackets;
 
-	SetupDplayGame();
+	SetupNetworkGame();
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
@@ -472,7 +471,7 @@ BOOL JoinASession ( MENUITEM * Item )
 		return FALSE;
 	}
 
-	SetupDplayGame();
+	SetupNetworkGame();
 	
 	WhoIAm = 0xff;
 	MyGameStatus = STATUS_GetPlayerNum;

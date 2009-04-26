@@ -8,23 +8,23 @@
 *
 *	List of places where UpdateKillStats() is called:
 *		
-*		Mydplay.c	- update stats 1 (stats.c) -- somebody killed me
-*		Mydplay.c	- update stats 2 (stats.c) -- you killed someone 
-*		Mydplay.c	- update stats 3 (stats.c) -- somebody killed someone
+*		networking.c	- update stats 1 (stats.c) -- somebody killed me
+*		networking.c	- update stats 2 (stats.c) -- you killed someone 
+*		networking.c	- update stats 3 (stats.c) -- somebody killed someone
 *		models.c	- update stats 4 (stats.c) -- killed yourself with missile splash damage
 *		models.c	- update stats 5 (stats.c) -- i killed myself
 *		models.c	- update stats 6 (stats.c) -- somebody killed me
-*		Mydplay.c	- update stats 7 (stats.c) -- you killed someone on your own team
-*		Mydplay.c	- update stats 8 (stats.c) -- you killed someone in a team bounty game
-*		Mydplay.c	- update stats 9 (stats.c) -- you killed someone in a team game
-*		Mydplay.c	- update stats 10 (stats.c) -- you killed someone in a bounty game
+*		networking.c	- update stats 7 (stats.c) -- you killed someone on your own team
+*		networking.c	- update stats 8 (stats.c) -- you killed someone in a team bounty game
+*		networking.c	- update stats 9 (stats.c) -- you killed someone in a team game
+*		networking.c	- update stats 10 (stats.c) -- you killed someone in a bounty game
 *
 *	List of places where UpdateBonusStats() is called:
 *
 *		Ships.c		- update bonus 2 (stats.c) -- flag chase scored
 *		Ships.c		- update bonus 3 (stats.c) -- CTF scored
 *		Ships.c		- update bonus 4 (stats.c) -- bounty hunt points
-*		Mydplay.c	- update bonus 6 (stats.c) -- someone else scored with flag
+*		networking.c	- update bonus 6 (stats.c) -- someone else scored with flag
 *		Ships.c		- update bonus 7 (stats.c) -- someone else's bounty hunt points -- Notes: there is a lag of 1 point if person has it when u join
 *
 \*******************************************************************/

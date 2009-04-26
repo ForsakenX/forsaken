@@ -53,7 +53,7 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = 0;
 	SetBikeMods( (uint16) (SelectedBike+2) );
-	SetupDplayGame();
+	SetupNetworkGame();
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
 		GameStatus[i] = STATUS_Null;
@@ -99,7 +99,7 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 
 	SetBikeMods( (uint16) (SelectedBike+2) );
 
-	SetupDplayGame();
+	SetupNetworkGame();
 	
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		GameStatus[i] = STATUS_Null;
