@@ -155,7 +155,7 @@ BOOL OwnFlagTeleportsHome = TRUE;
 
 BOOL ShowPlayersOnHUD = FALSE;
 
-int	DPlayUpdateIntervalCmdLine = 0;
+int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
 int BountyBonusInterval = 10;
 
@@ -11713,9 +11713,9 @@ void GetMultiplayerPrefs( void )
 	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
 		? temp : FALSE;
 
-	if( DPlayUpdateIntervalCmdLine >= 1 && DPlayUpdateIntervalCmdLine <= 30 )
+	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
 	{
-		PacketsSlider.value	= DPlayUpdateIntervalCmdLine;
+		PacketsSlider.value	= NetUpdateIntervalCmdLine;
 	}else{
 		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 			? temp : 20;
@@ -11805,7 +11805,7 @@ void SetMultiplayerPrefs( void )
 	RegSet( "ShortPackets", (LPBYTE)&temp , sizeof( temp ) );
 	temp = ResetKillsPerLevel;
 	RegSet( "ResetKillsPerLevel", (LPBYTE)&temp , sizeof( temp ) );
-	if( !(DPlayUpdateIntervalCmdLine >= 1 && DPlayUpdateIntervalCmdLine <= 30 ))
+	if( !(NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 ))
 	{
 		temp = PacketsSlider.value;
 		RegSet( "Packets", (LPBYTE)&temp, sizeof( temp ) );

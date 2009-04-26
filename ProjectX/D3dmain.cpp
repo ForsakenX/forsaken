@@ -74,7 +74,7 @@ extern "C" {
 	extern BOOL NoCursorClip;
 	extern BOOL ZClearsOn;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
-	extern	int DPlayUpdateIntervalCmdLine;
+	extern	int NetUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
 	extern int ScreenWidth;
 	extern int ScreenHeight;
@@ -594,7 +594,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoCursorClip			= FALSE;
 	VSync					= FALSE;
 
-	DPlayUpdateIntervalCmdLine	= 0;
+	NetUpdateIntervalCmdLine	= 0;
 
 	//
 	// Get the command line string
@@ -851,7 +851,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// set the packets per second
 			else if ( sscanf( option, "PPS:%d", &num ) == 1 )
 			{
-				DPlayUpdateIntervalCmdLine = num;
+				NetUpdateIntervalCmdLine = num;
 			}
 
 			// resolution mode
