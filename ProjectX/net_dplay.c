@@ -35,7 +35,7 @@ extern	int16	MaxKills;
 extern	BOOL ResetKillsPerLevel;
 extern network_id_t	PlayerIDs[ MAX_PLAYERS ];
 extern SLIDER  PacketsSlider;
-extern	network_id_t                    dcoID;
+extern	network_id_t                    my_network_id;
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
 extern	BOOL					TeamGame;
 extern	HANDLE					hPlayerEvent;					// player event to use
@@ -719,22 +719,22 @@ void network_pump( void )
 
 	while(1)
 	{
-		network_id_t from_dcoID;
+		network_id_t from_network_id;
 		BYTE ReceiveCommBuff[1024];
 		DWORD nBytes = 1024;
 		hr = glpDP->lpVtbl->Receive(
-								glpDP, &from_dcoID, &dcoReceiveID,
+								glpDP, &from_network_id, &dcoReceiveID,
 								DPRECEIVE_ALL, &ReceiveCommBuff[0], &nBytes );
 
 		switch( hr )
 		{
 		case DP_OK:
 
-			if ( from_dcoID == DPID_SYSMSG )
+			if ( from_network_id == DPID_SYSMSG )
 				EvalSysMessage( nBytes, (LPDPMSG_GENERIC) &ReceiveCommBuff[0] );
 
 			else
-				network_event_new_message( from_dcoID, &ReceiveCommBuff[0], nBytes );
+				network_event_new_message( from_network_id, &ReceiveCommBuff[0], nBytes );
 
 			break;
 		case DPERR_BUFFERTOOSMALL:
@@ -767,7 +767,7 @@ void network_cleanup()
 		free(network_session);
 		network_session = NULL;
 	}
-	IDirectPlayX_DestroyPlayer(glpDP, dcoID);
+	IDirectPlayX_DestroyPlayer(glpDP, my_network_id);
 	DPlayRelease();
 }
 
@@ -782,7 +782,7 @@ void network_send( network_id_t to, void* data, DWORD size, int guaranteed )
 	if( guaranteed )
 		flags |= DPSEND_GUARANTEED;
 
-	hr = glpDP->lpVtbl->SendEx(	glpDP, dcoID, to, flags, data, size, 0, 0, 0, 0 );
+	hr = glpDP->lpVtbl->SendEx(	glpDP, my_network_id, to, flags, data, size, 0, 0, 0, 0 );
 
 	switch ( hr )
 	{

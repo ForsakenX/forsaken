@@ -389,7 +389,7 @@ MENU  MENU_EditMacro1;
 MENU  MENU_EditMacro2;
 MENU  MENU_EditMacro3;
 
-extern  network_id_t                    dcoID;
+extern  network_id_t                    my_network_id;
 extern  FILE  * DemoFp;
 extern  FILE  * DemoFpClean;
 extern  BOOL  PlayDemo;
@@ -3842,7 +3842,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( Browl <= 0.0F )
     {
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       }
@@ -3875,7 +3875,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( Browl <= 0.0F )
     {
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       }
@@ -3917,7 +3917,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( Browl <= 0.0F )
     {
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       }
@@ -4048,14 +4048,14 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     {
       if( IsHost )
       {
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
         }
       }
 	  else
 	  {
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
         }
@@ -4131,12 +4131,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     {
       if( IsHost )
       {
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
         }
       }else{
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
         }
@@ -4236,12 +4236,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       colourflash++;
       if( IsHost )
       {
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
         }
       }else{
-        if( dcoID )
+        if( my_network_id )
         {
           SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
         }
@@ -4310,7 +4310,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( Browl <= 0.0F )
     {
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       }
@@ -4365,7 +4365,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( Browl <= 0.0F )
     {
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         if( TeamGame &&  (OverallGameStatus == STATUS_Normal) )
         {
@@ -4494,7 +4494,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     {
       colourflash++;
       Browl = 30.0F;
-      if( dcoID )
+      if( my_network_id )
       {
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       }
@@ -5240,7 +5240,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     WhoIAm = MAX_PLAYERS;
     Ships[WhoIAm].Object.Mode = DEMO_MODE;
     Ships[WhoIAm].enable = 1;
-    dcoID = 0;
+    my_network_id = 0;
     IsHost = TRUE;
     Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
     AutoDetail = FALSE;
@@ -7968,7 +7968,7 @@ void SpecialDestroyGame( void )
   case STATUS_StartingMultiplayer:
   case STATUS_GetPlayerNum:
 	network_cleanup();
-    dcoID = 0;
+    my_network_id = 0;
     MyGameStatus = STATUS_Title;
     MenuRestart( &MENU_ForceAbort );
     break;

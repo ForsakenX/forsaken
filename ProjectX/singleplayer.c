@@ -59,7 +59,7 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 		GameStatus[i] = STATUS_Null;
 	}
 	WhoIAm = 0;								// I was the first to join...
-	Ships[WhoIAm].dcoID = 0;
+	Ships[WhoIAm].network_id = 0;
 	Current_Camera_View = 0;				// set camera to that view
 	Ships[WhoIAm].enable = 1;
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
@@ -106,7 +106,7 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	
 	WhoIAm = 0;								// I was the first to join...
 
-	Ships[WhoIAm].dcoID = 0;
+	Ships[WhoIAm].network_id = 0;
 	Current_Camera_View = 0;				// set camera to that view
 	Ships[WhoIAm].enable = 1;
 	

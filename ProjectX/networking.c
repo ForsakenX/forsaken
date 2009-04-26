@@ -257,7 +257,7 @@ BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
 int16					StatsCount = -1;
 
-network_id_t HostNetID;
+network_id_t host_network_id;
 
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
 
@@ -267,7 +267,7 @@ extern	MODEL	Models[MAXNUMOFMODELS];
 
 BOOL	HostDuties = FALSE;
 
-network_id_t						dcoID=0;        // our DirectPlay ID
+network_id_t						my_network_id=0;        // our network ID
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
 BOOL						IsHost = TRUE;
@@ -364,7 +364,7 @@ extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-network_id_t from_dcoID;
+network_id_t from_network_id;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
 extern	int16	NumOrbs;
@@ -547,7 +547,7 @@ void set_player_name( void )
 	for( i = 0 ; i < 8 ; i++ )
 		Names[WhoIAm][i] = biker_name[i];
 	Names[WhoIAm][7] = 0;
-	network_set_player_name(dcoID, &biker_name[0]);
+	network_set_player_name(my_network_id, &biker_name[0]);
 }
 
 BOOL CheckForName( BYTE Player )
@@ -555,7 +555,7 @@ BOOL CheckForName( BYTE Player )
 	if( Names[Player][0] == 0 )
 	{
 		char name[255];
-		if( network_get_player_name( from_dcoID, &name[0] ) )
+		if( network_get_player_name( from_network_id, &name[0] ) )
 		{
 			strncpy( Names[Player], name, MAXSHORTNAME );
 			name[MAXSHORTNAME] = 0;
@@ -622,7 +622,7 @@ void NetworkGameUpdate()
 	if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		Ships[WhoIAm].Object.Noise = 1.0F;
 
-	if( dcoID == 0 )
+	if( my_network_id == 0 )
 	{
 		// Has to be done to stop missiles getting stuck in walls....!!!!!!!!!!!!!
 		Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
@@ -783,7 +783,7 @@ void PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8
 						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
 						int16 PowerLevel, float PLevel )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 
 		TempPrimBullPosDir.OwnerType = OwnerType;
@@ -805,7 +805,7 @@ void SecBullPosDirSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
 						VECTOR * DropDir, int8 Weapon )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempSecBullPosDir.OwnerType = OwnerType;
 		TempSecBullPosDir.Owner = Owner;
@@ -827,7 +827,7 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 {
 	int16	Count;
 
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempTitanBits.OwnerType = OwnerType;
 		TempTitanBits.Owner		= Owner;
@@ -850,7 +850,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 	VECTOR	Recoil_Off;		
 	if( Ships[ you ].Object.Mode != LIMBO_MODE )
 	{
-		if( dcoID != 0 )
+		if( my_network_id != 0 )
 		{
 			if( !UseShortPackets )
 			{
@@ -866,7 +866,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 				TempShipHit.Force = Force;
 				TempShipHit.WeaponType = WeaponType;
 				TempShipHit.Weapon = Weapon;
-				SendGameMessage( MSG_SHIPHIT , Ships[you].dcoID , you , 0 , 0 );
+				SendGameMessage( MSG_SHIPHIT , Ships[you].network_id , you , 0 , 0 );
 			}
 			else
 			{
@@ -889,7 +889,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 				ShortTempShipHit.Force = Force;
 				ShortTempShipHit.WeaponType = WeaponType;
 				ShortTempShipHit.Weapon = Weapon;
-				SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].dcoID , you , 0 , 0 );
+				SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].network_id , you , 0 , 0 );
 
 			}
 		}
@@ -899,7 +899,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 
 void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 IDCount, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		if( !UseShortPackets )
 		{
@@ -936,7 +936,7 @@ void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int1
 
 void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempKillPickup.Owner = Owner;
 		TempKillPickup.IDCount = IDCount;
@@ -947,7 +947,7 @@ void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 
 void	TeamGoalsSend( uint16 * TeamGoals )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		int i;
 
@@ -962,7 +962,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 	int i;
 	//char mess[30];
 
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempShockwave.Owner = Owner;
 		TempShockwave.Pos = *Pos;
@@ -982,7 +982,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 				if( (dist >= 0.0F) && ( dist <= 500.0F ))
 				{
 					// send them shockwave
-					SendGameMessage(MSG_SHOCKWAVE, Ships[i].dcoID, 0, 0, 0 );
+					SendGameMessage(MSG_SHOCKWAVE, Ships[i].network_id, 0, 0, 0 );
 				}
 			}
 		}
@@ -991,7 +991,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 
 void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempBGOUpdate.BGObject = BGObject;
 		TempBGOUpdate.State = State;
@@ -1002,7 +1002,7 @@ void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time )
 
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempDied.WeaponType = WeaponType;
 		TempDied.Weapon = Weapon;
@@ -1012,7 +1012,7 @@ void	ShipDiedSend( BYTE WeaponType, BYTE Weapon )
 
 void	RequestTime( void  )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		SendGameMessage( MSG_REQTIME, 0, 0, 0, 0 );
 	}
@@ -1020,7 +1020,7 @@ void	RequestTime( void  )
 
 void	SetTime( float Time )
 {
-	if( dcoID != 0 )
+	if( my_network_id != 0 )
 	{
 		TempTimeSet.Time = Time;
 		SendGameMessage( MSG_SETTIME, 0, 0, 0, 0 );
@@ -1199,7 +1199,7 @@ void DestroyGame( void )
 	MyGameStatus = STATUS_Left;
 	IsHost = FALSE;
 
-    if ( ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( ( my_network_id != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
     {
 		DebugPrintf("Destroy game pos 1\n");
 
@@ -1213,15 +1213,15 @@ void DestroyGame( void )
 		ResetAllStats(); // stats.c
 
 		network_cleanup();
-		dcoID = 0;
+		my_network_id = 0;
 
 	}
 	else
 	{
-		if( dcoID )
+		if( my_network_id )
 		{
 			network_cleanup();
-			dcoID = 0;
+			my_network_id = 0;
 		}
 	}
 
@@ -1305,12 +1305,12 @@ void smallinitShip( uint16 i )
 void network_event_player_name( network_id_t pid, char* name )
 {
 	int i, x;
-	if( pid == dcoID )
+	if( pid == my_network_id )
 		return;
 	DebugPrintf("network_event_player_name\n");
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
-		if( ( i != WhoIAm ) && (pid == Ships[i].dcoID) )
+		if( ( i != WhoIAm ) && (pid == Ships[i].network_id) )
 		{
 			for( x = 0 ; x < 8 ; x++ )
 			{
@@ -1333,7 +1333,7 @@ void network_event_destroy_player( network_id_t id )
 	int i;
 	DebugPrintf("network_event_destroy_player\n");
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		if( ( i != WhoIAm ) && (id == Ships[i].dcoID) )
+		if( ( i != WhoIAm ) && (id == Ships[i].network_id) )
 		{	
 			if( MyGameStatus == STATUS_Normal )
 			{
@@ -1391,7 +1391,7 @@ void network_event_new_player( network_id_t pid, char * player_name )
 {
 	int i, x;
 	DebugPrintf("network_event_new_player\n");
-	if( pid == dcoID )
+	if( pid == my_network_id )
 		return;
 	if( MyGameStatus == STATUS_Normal && !TeamGame )
 	{
@@ -1406,7 +1406,7 @@ void network_event_new_player( network_id_t pid, char * player_name )
 		}
 	}
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		if( ( i != WhoIAm ) && (pid == Ships[i].dcoID) )
+		if( ( i != WhoIAm ) && (pid == Ships[i].network_id) )
 			if( Names[i][0] == 0 )
 			{
 				char* NamePnt = (char*) &Names[i][0];			
@@ -1420,14 +1420,14 @@ void network_event_new_player( network_id_t pid, char * player_name )
 void network_event_new_message( network_id_t from, BYTE * MsgPnt, DWORD nBytes )
 {
 	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
-	from_dcoID = from;
+	from_network_id = from;
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
 	{
 		TempTime -= GameStartedTime;
 		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 		Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
-		Demo_fwrite( &from_dcoID, sizeof(from_dcoID), 1, DemoFp );
+		Demo_fwrite( &from_network_id, sizeof(from_network_id), 1, DemoFp );
 		Demo_fwrite( MsgPnt, nBytes , 1, DemoFp );
 	}
 	RecPacketSize = nBytes;
@@ -1982,7 +1982,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
 				
-				Ships[lpVeryShortUpdate->WhoIAm].dcoID = from_dcoID;
+				Ships[lpVeryShortUpdate->WhoIAm].network_id = from_network_id;
 				
 #ifdef DEMO_SUPPORT
 					if( CheckForName( lpVeryShortUpdate->WhoIAm ) )
@@ -1994,7 +1994,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 							size = sizeof( NAMEMSG );
 							Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-							Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+							Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 							msg = MSG_NAME;
 							Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
 							Demo_fwrite( &lpVeryShortUpdate->WhoIAm, sizeof(BYTE), 1, DemoFp );
@@ -2084,7 +2084,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
 				
-				Ships[lpUpdate->WhoIAm].dcoID	= from_dcoID;
+				Ships[lpUpdate->WhoIAm].network_id	= from_network_id;
 
 				if( !Ships[lpUpdate->WhoIAm].FirstPacketRecieved  )
 				{
@@ -2116,7 +2116,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 							Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 							size = sizeof( NAMEMSG );
 							Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-							Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+							Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 							msg = MSG_NAME;
 							Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
 							Demo_fwrite( &lpUpdate->WhoIAm, sizeof(BYTE), 1, DemoFp );
@@ -2225,7 +2225,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		if( IsHost && !PlayDemo )
 		{
-			SendGameMessage(MSG_INIT, from_dcoID, 0, 0, 0);
+			SendGameMessage(MSG_INIT, from_network_id, 0, 0, 0);
 
 			// BUG: why is this sent to everyone ?
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -2235,7 +2235,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
-		HostNetID = from_dcoID;
+		host_network_id = from_network_id;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		NetUpdateInterval = lpInit->NetUpdateInterval;
@@ -2830,7 +2830,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 						Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 						size = sizeof( NAMEMSG );
 						Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-						Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+						Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 						msg = MSG_NAME;
 						Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
 						Demo_fwrite( &lpStatus->WhoIAm, sizeof(BYTE), 1, DemoFp );
@@ -2942,7 +2942,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 					Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 					size = sizeof( NAMEMSG );
 					Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-					Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+					Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 					msg = MSG_NAME;
 					Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
 					Demo_fwrite( &lpLongStatus->Status.WhoIAm, sizeof(BYTE), 1, DemoFp );
@@ -3316,7 +3316,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpYouQuitMsg->WhoIAm = WhoIAm;
 		lpYouQuitMsg->You = ShipNum;
 		nBytes = sizeof( YOUQUITMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
 		guaranteed = 1;
 		break;
 
@@ -3401,21 +3401,21 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 
 			if( i == MAX_PLAYERS)
 			{
-				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_dcoID);
+				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_network_id);
 				lpInit->YouAre = MAX_PLAYERS+2;
 			}
 			
 			// got a valid player number
 			else
 			{
-				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_dcoID, i);
+				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_network_id, i);
 
 				// setup player
 				InitShipStructure(i , TRUE);
 				GameStatus[i]	= STATUS_GetPlayerNum;
 				Names[i][0]		= 0;
 				TeamNumber[i]	= 0;
-				Ships[i].dcoID	= to;
+				Ships[i].network_id	= to;
 				
 				// finish packing on stuff
 				lpInit->YouAre = (BYTE) i;
@@ -3700,7 +3700,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortPickup->Pickups = Ships[ShipNum].Pickups;
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
 		nBytes = sizeof( SHORTPICKUPMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
         break;
 
 
@@ -3712,7 +3712,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortRegenSlot->RegenSlots	= Ships[ShipNum].RegenSlots;
 		GenRegenSlotList( ShipNum, &lpShortRegenSlot->ShortRegenSlot[0] , &lpShortRegenSlot->HowManyRegenSlots , Ships[ShipNum].RegenSlots );
 		nBytes	= sizeof( SHORTREGENSLOTMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
         break;
 
 
@@ -3724,7 +3724,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortTrigger->Triggers	= Ships[ShipNum].Triggers;
 		GenTriggerList( ShipNum, &lpShortTrigger->ShortTrigger[0] , &lpShortTrigger->HowManyTriggers, Ships[ShipNum].Triggers );
 		nBytes	= sizeof( SHORTTRIGGERMSG );
-		to	= Ships[ShipNum].dcoID;
+		to	= Ships[ShipNum].network_id;
         break;
 
 
@@ -3736,7 +3736,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortTrigVar->TrigVars	= Ships[ShipNum].TrigVars;
 		GenTrigVarList( ShipNum, &lpShortTrigVar->ShortTrigVar[0] , &lpShortTrigVar->HowManyTrigVars, Ships[ShipNum].TrigVars );
         nBytes = sizeof( SHORTTRIGVARMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
         break;
 
 
@@ -3748,7 +3748,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortMine->Mines		= Ships[ShipNum].Mines;
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
 		nBytes	= sizeof( SHORTMINEMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
         break;
 
     case MSG_TEXTMSG:
@@ -3885,7 +3885,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpPingMsg->ToYou = ShipNum;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
-		to = Ships[ShipNum].dcoID;
+		to = Ships[ShipNum].network_id;
 		break;
 	}
 	
@@ -3908,7 +3908,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 			TempTime = TempTime - GameStartedTime;
 			Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
 			Demo_fwrite( &nBytes, sizeof(int), 1, DemoFp );
-			Demo_fwrite( &dcoID, sizeof(DPID), 1, DemoFp );
+			Demo_fwrite( &my_network_id, sizeof(DPID), 1, DemoFp );
 			Demo_fwrite( &CommBuff[0], nBytes, 1, DemoFp );
 		}
 	}
@@ -3983,11 +3983,11 @@ void DemoPlayingNetworkGameUpdate()
 		}
 		
 		fread( &nBytes , sizeof(DWORD), 1, DemoFp );
-		fread( &from_dcoID , sizeof(DPID), 1, DemoFp );
+		fread( &from_network_id , sizeof(DPID), 1, DemoFp );
 		fread( &ReceiveCommBuff[0] , nBytes , 1, DemoFp );
 		
 		// During Demo Playback we dont want to interperate any System messages....
-		if ( from_dcoID != DPID_SYSMSG ) EvaluateMessage( nBytes , &ReceiveCommBuff[0] );
+		if ( from_network_id != DPID_SYSMSG ) EvaluateMessage( nBytes , &ReceiveCommBuff[0] );
 		DemoTimeSoFar = 0;
 
   
@@ -4027,7 +4027,7 @@ void DemoClean( void )
    		// check for end of file...
 		if( !size )	return;
 		fread( &nBytes , sizeof(DWORD), 1, DemoFp );
-		fread( &from_dcoID , sizeof(DPID), 1, DemoFp );
+		fread( &from_network_id , sizeof(DPID), 1, DemoFp );
 		fread( &CommBuff[0] , nBytes , 1, DemoFp );
 
 #if 0
@@ -4045,17 +4045,17 @@ void DemoClean( void )
 		// write out the message..
 		fwrite( &DemoTimeSoFar, sizeof(LONGLONG), 1, DemoFpClean );
 		fwrite( &nBytes, sizeof(int), 1, DemoFpClean );
-		fwrite( &from_dcoID, sizeof(DPID), 1, DemoFpClean );
+		fwrite( &from_network_id, sizeof(DPID), 1, DemoFpClean );
 		fwrite( &CommBuff[0], nBytes, 1, DemoFpClean );
 
-		if ( ( from_dcoID != DPID_SYSMSG ) && ( CommBuff[0] == MSG_INTERPOLATE ) )
+		if ( ( from_network_id != DPID_SYSMSG ) && ( CommBuff[0] == MSG_INTERPOLATE ) )
 		{
 			// Has allready been cleaned...
 			return;
 		}
 
 		// check if its an update message....
-		if ( ( from_dcoID != DPID_SYSMSG ) && ( ( CommBuff[0] == MSG_UPDATE ) ||
+		if ( ( from_network_id != DPID_SYSMSG ) && ( ( CommBuff[0] == MSG_UPDATE ) ||
 												( CommBuff[0] == MSG_FUPDATE ) ||
 												( CommBuff[0] == MSG_VERYSHORTUPDATE ) ||
 												( CommBuff[0] == MSG_VERYSHORTFUPDATE ) ) )
@@ -4175,13 +4175,13 @@ void DemoClean( void )
 					fwrite( &DemoTimeSoFar, sizeof(LONGLONG), 1, DemoFpClean );
 					nBytes = sizeof( INTERPOLATEMSG );
 					fwrite( &nBytes, sizeof(int), 1, DemoFpClean );
-					fwrite( &from_dcoID, sizeof(DPID), 1, DemoFpClean );
+					fwrite( &from_network_id, sizeof(DPID), 1, DemoFpClean );
 					fwrite( &Interpolate, nBytes, 1, DemoFpClean );
 				}else{
 					fwrite( &DemoTimeSoFar, sizeof(LONGLONG), 1, DemoFpClean );
 					nBytes = sizeof( VERYSHORTINTERPOLATEMSG );
 					fwrite( &nBytes, sizeof(int), 1, DemoFpClean );
-					fwrite( &from_dcoID, sizeof(DPID), 1, DemoFpClean );
+					fwrite( &from_network_id, sizeof(DPID), 1, DemoFpClean );
 					fwrite( &VeryShortInterpolate, nBytes, 1, DemoFpClean );
 				}
 			}

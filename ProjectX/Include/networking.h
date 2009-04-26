@@ -351,7 +351,7 @@ typedef struct _GLOBALSHIP
 	BOOL				JustRecievedPacket;			//
 	VECTOR				LastMove;					// last movement vector (framelagged)
 	VECTOR				Move_Off;					// Last MoveMent...x , y , z
-	network_id_t        dcoID;
+	network_id_t        network_id;
 	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
 	int8				LastPacketID;

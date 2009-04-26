@@ -18118,7 +18118,7 @@ void InitHostWaitingToStart( MENU *Menu )
 	GetInitialPlayers( Menu );
 } 
 
-extern	network_id_t					dcoID;    // player id
+extern	network_id_t					my_network_id;    // player id
 
 BOOL GeneralTimeout( float *timer )
 {

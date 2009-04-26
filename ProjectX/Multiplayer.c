@@ -82,7 +82,7 @@ extern float Pulse;
 extern char *EmptyString;
 
 extern	BOOL					IsHost;   // is the user hosting/joining a game
-extern	network_id_t				dcoID;    // player id
+extern	network_id_t			my_network_id;    // player id
 extern	int16					Lives;
 
 extern	BOOL	BountyHunt;
@@ -309,7 +309,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 
 	// create player
-	if( ! network_create_player( &dcoID, &biker_name[0] ) )
+	if( ! network_create_player( &my_network_id, &biker_name[0] ) )
 	{
 		Msg("Failed to create Direct Play Player!");
 	    return FALSE;
@@ -328,7 +328,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 	
 	WhoIAm = 0;								// I was the first to join...
-	Ships[WhoIAm].dcoID = dcoID;
+	Ships[WhoIAm].network_id = my_network_id;
 
 	DebugPrintf("MenuChange.\n");
 	if ( TeamGame )
@@ -465,7 +465,7 @@ BOOL JoinASession ( MENUITEM * Item )
 		return FALSE;
 	}
 	// create player
-	if( ! network_create_player(&dcoID, &biker_name[0]) )
+	if( ! network_create_player(&my_network_id, &biker_name[0]) )
 	{
 		PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
@@ -595,7 +595,7 @@ void TeamGoToSynchup ( MENUITEM * Item )
 void BailMultiplayer( MENU * Menu )
 {
 	MyGameStatus = STATUS_Left;
-    if ( ( dcoID != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( ( my_network_id != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 	network_cleanup();
 	MenuRestart( &MENU_Start );
