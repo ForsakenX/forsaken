@@ -2,10 +2,13 @@
 #ifndef MYDPLAY_INCLUDED
 #define MYDPLAY_INCLUDED
 
-#define IDIRECTPLAY2_OR_GREATER
 #define WIN32_EXTRA_LEAN
 
- 
+//#include "net_dplay.h"
+#ifndef network_id_t
+typedef DWORD network_id_t;
+#endif
+
  /*
  * defines
  */
@@ -345,7 +348,7 @@ typedef struct _GLOBALSHIP
 	BOOL				JustRecievedPacket;			//
 	VECTOR				LastMove;					// last movement vector (framelagged)
 	VECTOR				Move_Off;					// Last MoveMent...x , y , z
-	DPID                dcoID;
+	network_id_t        dcoID;
 	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
 	int8				LastPacketID;
@@ -1001,14 +1004,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
 
-
 void set_player_name( void );
-
-void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes );
-void network_event_new_player( DPID pid, char * player_name );
-void network_event_i_am_host( void );
-void network_event_destroy_player( DPID id );
-void network_event_player_name(DPID pid, char* name );
 
 #endif
 

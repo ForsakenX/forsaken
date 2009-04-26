@@ -7,7 +7,6 @@
 #include <stdio.h>
 #include "main.h"
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "Node.h"
@@ -390,7 +389,7 @@ MENU  MENU_EditMacro1;
 MENU  MENU_EditMacro2;
 MENU  MENU_EditMacro3;
 
-extern  DPID                    dcoID;
+extern  network_id_t                    dcoID;
 extern  FILE  * DemoFp;
 extern  FILE  * DemoFpClean;
 extern  BOOL  PlayDemo;

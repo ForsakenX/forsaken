@@ -3,12 +3,10 @@
 #include "windows.h"
 #include "typedefs.h"
 #include "main.h"
-#include <dplay.h>
 #include "net_dplay.h"
 #include "d3dappi.h"
 #include "title.h"
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"
@@ -81,7 +79,7 @@ extern float Pulse;
 extern char *EmptyString;
 
 extern	BOOL					IsHost;   // is the user hosting/joining a game
-extern	DPID					dcoID;    // player id
+extern	network_id_t				dcoID;    // player id
 extern	int16					Lives;
 
 extern	BOOL	BountyHunt;
@@ -119,7 +117,6 @@ extern	int MenuStackLevel;
 extern	BYTE	GameStatus[];	// Game Status for every Ship...
 extern	SLIDER  PacketsSlider;
 extern	TEXT TCPAddress;
-extern	DPID	dcoID;
 extern	BOOL	CountDownOn;
 extern	float	GetPlayerNumCount1;
 extern	float	GetPlayerNumCount2;
@@ -168,8 +165,8 @@ extern	BOOL	NoSFX;
  * Globals to this module
  */
 
-DPID					PlayerIDs[MAX_PLAYERS];
-DPID					TeamIDs[MAX_TEAMS][MAX_PLAYERS];
+network_id_t					PlayerIDs[MAX_PLAYERS];
+network_id_t					TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 int						TeamMembers[MAX_TEAMS];
 
 MENU  *				GetPlayerNumMenu;
@@ -265,7 +262,6 @@ void SetUpGameType( int type )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL StartAHostSession ( MENUITEM * Item )
 {
-	HRESULT hr;
 	int i;
 	LONGLONG	TempTime;
 	uint32		Seed;
@@ -303,14 +299,14 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// create session
-	if ((hr = network_host( &MultiPlayerGameName.text[0])) != DP_OK)
+	if( ! network_host( &MultiPlayerGameName.text[0]) )
 	{
 		Msg("Failed to create Direct Play Session!");
 		return FALSE;
 	}
 
 	// create player
-	if ((hr = network_create_player(&dcoID, &biker_name[0])) != DP_OK)
+	if( ! network_create_player( &dcoID, &biker_name[0] ) )
 	{
 		Msg("Failed to create Direct Play Player!");
 	    return FALSE;
@@ -460,13 +456,13 @@ BOOL JoinASession ( MENUITEM * Item )
 	SetBikeMods( 0 );
 
 	// open session
-	if (network_join() != DP_OK)
+	if( ! network_join() )
 	{
 		PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
 	}
 	// create player
-	if (network_create_player(&dcoID, &biker_name[0]) != DP_OK)
+	if( ! network_create_player(&dcoID, &biker_name[0]) )
 	{
 		PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
 		return FALSE;
@@ -762,10 +758,10 @@ void SwapListItem( LIST * Source , LIST * Dest )
 void SwapTeamIDs( LIST * Source , LIST * Dest )
 {
 	int i,e, sourceteam, destteam;
-	DPID	TempID;
-	DPID	TempIDs[MAX_PLAYERS];
-	DPID	*SourceIDs;
-	DPID	*DestIDs;
+	network_id_t	TempID;
+	network_id_t	TempIDs[MAX_PLAYERS];
+	network_id_t	*SourceIDs;
+	network_id_t	*DestIDs;
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{

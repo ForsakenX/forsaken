@@ -94,7 +94,6 @@ num_start_points : uint16
 #include "main.h"
 #include <stdio.h>
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "Local.h"

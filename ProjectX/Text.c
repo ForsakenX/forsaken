@@ -9,7 +9,6 @@
 #include "typedefs.h"
 #include "New3D.h"
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"

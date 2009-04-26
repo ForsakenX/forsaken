@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
-#include <dplay.h>
 #include "typedefs.h"
 #include "main.h"
 #include "new3d.h"

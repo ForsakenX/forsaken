@@ -3,12 +3,10 @@
 #include "windows.h"
 #include "typedefs.h"
 #include "main.h"
-#include <dplay.h>
 #include "net_dplay.h"
 #include "d3dappi.h"
 #include "title.h"
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"

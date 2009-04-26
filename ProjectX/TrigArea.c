@@ -39,7 +39,6 @@ num_zones : uint16
 #include "new3d.h"
 #include "quat.h"
 #include "main.h"
-#include <dplay.h>
 #include "CompObjects.h"
 #include "bgobjects.h"
 #include "Object.h"

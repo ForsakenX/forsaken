@@ -3,8 +3,8 @@
 
 #include "stdwin.h"
 #include <dplay.h>
-#include <stdio.h>
 #include <dplobby.h>
+#include <stdio.h>
 #include "net_dplay.h"
 #include "typedefs.h"
 #include "new3d.h"
@@ -33,9 +33,9 @@ extern int32 ColPerspective;
 extern SLIDER CTFSlider;
 extern	int16	MaxKills;
 extern	BOOL ResetKillsPerLevel;
-extern DPID	PlayerIDs[ MAX_PLAYERS ];
+extern network_id_t	PlayerIDs[ MAX_PLAYERS ];
 extern SLIDER  PacketsSlider;
-extern	DPID                    dcoID;
+extern	network_id_t                    dcoID;
 extern	LPDIRECTPLAY4A              glpDP;     // directplay object pointer
 extern	BOOL					TeamGame;
 extern	HANDLE					hPlayerEvent;					// player event to use
@@ -78,9 +78,9 @@ HRESULT DPlayClose( LPDIRECTPLAY4A dp )
     return hr;
 }
 
-HRESULT network_create_player( LPDPID lppidID, LPTSTR lptszPlayerName )
+int network_create_player( network_id_t * id, LPTSTR lptszPlayerName )
 {
-    HRESULT hr=E_FAIL;
+    HRESULT hr = E_FAIL;
     DPNAME name;
 	
 	if (!glpDP)
@@ -91,7 +91,7 @@ HRESULT network_create_player( LPDPID lppidID, LPTSTR lptszPlayerName )
     name.dwSize = sizeof(DPNAME);
     name.lpszShortNameA = lptszPlayerName;
 
-	hr = IDirectPlayX_CreatePlayer(glpDP, lppidID, &name, NULL, NULL, 0, 0);
+	hr = IDirectPlayX_CreatePlayer(glpDP, id, &name, NULL, NULL, 0, 0);
 
 	switch( hr )
 	{
@@ -110,14 +110,15 @@ HRESULT network_create_player( LPDPID lppidID, LPTSTR lptszPlayerName )
 	case DPERR_NOCONNECTION:
 		DebugPrintf("DPERR_NOCONNECTION\n");
 		break;
-	case DP_OK:
-		break;
 	}
-                                    
-    return hr;
+
+	if(FAILED(hr))
+		return 0;
+
+    return 1;
 }
 
-HRESULT network_host(LPTSTR lptszSessionName)
+int network_host(LPTSTR lptszSessionName)
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
@@ -227,7 +228,10 @@ HRESULT network_host(LPTSTR lptszSessionName)
 		DebugPrintf("network_host: failed %x\n",hr);
 	}
 
-    return hr;
+	if(FAILED(hr))
+		return 0;
+
+    return 1;
 }
 
 HRESULT DPlayEnumSessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags)
@@ -324,13 +328,13 @@ void network_set_description( void )
 		}
 }
 
-HRESULT network_join( void )
+int network_join( void )
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
 
-    if (!glpDP || !network_session)
-		return hr;
+    if( !glpDP || !network_session )
+		return 0;
 
     ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
@@ -343,7 +347,7 @@ HRESULT network_join( void )
 	{
 	case DP_OK:
 	case DPERR_ALREADYINITIALIZED:
-		return DP_OK;
+		return 1;
 		break;
 	case DPERR_CANTCREATEPLAYER:
 		DebugPrintf("network_join: to many players\n");
@@ -373,7 +377,7 @@ HRESULT network_join( void )
 		DebugPrintf("network_join: failed %x\n",hr);
 	}
 
-	return hr;
+    return 0;
 }
 
 HRESULT DPlayRelease(void)
@@ -589,14 +593,23 @@ HRESULT DPLobbyRelease(void)
 	return hr;
 }
 
-HRESULT network_get_player_name( DPID id, char* name )
+int network_get_player_name( network_id_t id, char* name )
 {
-	int size = 255;
-	HRESULT hr = IDirectPlayX_GetPlayerName( glpDP, id, (void*) name, &size );
-	return hr;
+	HRESULT hr;
+	int size = 256;
+	char dp_name[256];
+	LPDPNAME lp_name;
+	if(!glpDP)return 0;
+	hr = IDirectPlayX_GetPlayerName( glpDP, id, (void*) &dp_name, &size );
+	if(FAILED(hr)) return 0;
+	lp_name = (LPDPNAME) &dp_name[0];
+	lp_name->dwSize = sizeof(DPNAME);
+	strncpy(name,lp_name->lpszShortNameA,8);
+	name[7] = 0;
+	return 1;
 }
 
-void network_set_player_name(DPID pid, char * NamePnt)
+void network_set_player_name( network_id_t pid, char * NamePnt )
 {
 	DPNAME	Name;
     if (!glpDP)
@@ -698,7 +711,7 @@ void EvalSysMessage( DWORD len , LPDPMSG_GENERIC lpMsg )
 
 void network_pump( void )
 {
-	DPID dcoReceiveID;
+	network_id_t dcoReceiveID;
     HRESULT hr;
 
 	if( ! glpDP )
@@ -706,7 +719,7 @@ void network_pump( void )
 
 	while(1)
 	{
-		DPID from_dcoID;
+		network_id_t from_dcoID;
 		BYTE ReceiveCommBuff[1024];
 		DWORD nBytes = 1024;
 		hr = glpDP->lpVtbl->Receive(
@@ -758,7 +771,7 @@ void network_cleanup()
 	DPlayRelease();
 }
 
-void network_send( DPID to, void* data, DWORD size, int guaranteed )
+void network_send( network_id_t to, void* data, DWORD size, int guaranteed )
 {
 	HRESULT hr;
 	DWORD flags = DPSEND_ASYNC;

@@ -12,7 +12,6 @@
 #include	<stdlib.h>
 #include	<malloc.h>
 #include	<string.h>
-#include	<dplay.h>
 #include	"typedefs.h"
 #include	"d3dmain.h"
 #include	"file.h"

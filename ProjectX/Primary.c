@@ -8,7 +8,6 @@
 #include "main.h"
 
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"

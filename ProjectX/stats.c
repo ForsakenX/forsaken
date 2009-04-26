@@ -31,7 +31,6 @@
 
 #include "stats.h"
 #include <stdio.h>
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"

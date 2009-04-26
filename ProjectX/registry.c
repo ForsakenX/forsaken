@@ -12,7 +12,6 @@
 #include "direct.h"
 #include "stdwin.h"
 #include <windows.h>
-#include <dplay.h>
 #include "quat.h"
 #include "CompObjects.h"
 #include "Object.h"

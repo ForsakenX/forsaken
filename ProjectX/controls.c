@@ -1,7 +1,6 @@
 /* handle keyboard and mouse control */
 
 #include <math.h>
-#include <dplay.h>
 #include "windows.h"
 #include "typedefs.h"
 #include "dinput.h"
@@ -25,7 +24,6 @@
 
 // TEMP!! - for testing looping SFX
 #include "sfx.h"
-#include "dplay.h"
 #include "compobjects.h"
 #include "quat.h"
 #include "object.h"

@@ -1,17 +1,24 @@
 #ifndef NET_DPLAY_INCLUDED
 #define NET_DPLAY_INCLUDED
 
+typedef DWORD network_id_t;
+
 int network_ready( void );
+int network_get_player_name( network_id_t id, char* name );
+int network_host( char* name );
+int network_join(void);
+int network_create_player( network_id_t * id, LPTSTR lpPlayerName );
 
 void network_initialize( char * TCPAddress );
 void network_pump( void );
-void network_set_player_name(DPID pid, char * NamePnt);
+void network_set_player_name( network_id_t id, char * NamePnt );
 void network_cleanup();
-void network_send( DPID to, void* data, DWORD size, int guaranteed );
+void network_send( network_id_t to, void* data, DWORD size, int guaranteed );
 
-HRESULT network_host( char* name );
-HRESULT network_join(void);
-HRESULT network_create_player( LPDPID lppidID, LPTSTR lpPlayerName );
-HRESULT network_get_player_name( DPID id, char* name );
+extern void network_event_new_message( network_id_t from, BYTE * MsgPnt, DWORD nBytes );
+extern void network_event_new_player( network_id_t id, char * player_name );
+extern void network_event_i_am_host( void );
+extern void network_event_destroy_player( network_id_t id );
+extern void network_event_player_name( network_id_t id, char* name );
 
 #endif // NET_DPLAY_INCLUDED

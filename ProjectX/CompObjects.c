@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
-#include <dplay.h>
 #include "typedefs.h"
 #include "main.h"
 #include "new3d.h"
@@ -228,7 +227,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 		{
 			fclose( fp );
 			Msg( "LoadCompObj() Incompatible Componented Object (.COB) file %s", Filename );
-			return( FALSE );
+			return( NULL );
 		}
 
   		CompsPtr = malloc( sizeof( COMP_OBJ ) );

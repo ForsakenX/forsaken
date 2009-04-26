@@ -32,7 +32,6 @@
 #include "dbt.h"
 #include <direct.h>
 #include "getdxver.h"
-#include "dplay.h"
 #include "version.h"
 
 // load up C externals

@@ -5,7 +5,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"
@@ -201,7 +200,7 @@ extern TLOADHEADER	Tloadheader;
 extern DIDEVICEOBJECTDATA rgod[DINPUT_BUFFERSIZE]; /* Receives buffered data */
 extern DWORD BufferedKey[];
 extern int16 NumKeysToProcess;
-extern DPID	TeamIDs[MAX_TEAMS][MAX_PLAYERS];
+extern network_id_t	TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
 extern BOOL	Is3Dfx;
@@ -18119,7 +18118,7 @@ void InitHostWaitingToStart( MENU *Menu )
 	GetInitialPlayers( Menu );
 } 
 
-extern	DPID					dcoID;    // player id
+extern	network_id_t					dcoID;    // player id
 
 BOOL GeneralTimeout( float *timer )
 {

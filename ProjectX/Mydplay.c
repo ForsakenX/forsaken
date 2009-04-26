@@ -9,7 +9,6 @@
 #include "main.h"
 #include <stdio.h>
 #include "typedefs.h"
-#include <dplay.h>
 #include "new3d.h"
 #include "quat.h"
 #include "CompObjects.h"
@@ -65,7 +64,7 @@ extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 extern int FontHeight;
 
-extern DPID	PlayerIDs[ MAX_PLAYERS ];
+extern network_id_t	PlayerIDs[ MAX_PLAYERS ];
 
 extern	int16	PickupsGot[ MAXPICKUPTYPES ];
 extern	uint32	TeamFlagMask[ MAX_TEAMS ];
@@ -260,7 +259,7 @@ BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
 int16					StatsCount = -1;
 
-DPID HostDPID;
+network_id_t HostNetID;
 
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
 
@@ -270,7 +269,7 @@ extern	MODEL	Models[MAXNUMOFMODELS];
 
 BOOL	HostDuties = FALSE;
 
-DPID						dcoID=0;        // our DirectPlay ID
+network_id_t						dcoID=0;        // our DirectPlay ID
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
 BOOL						IsHost = TRUE;
@@ -367,7 +366,7 @@ extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-DPID from_dcoID;
+network_id_t from_dcoID;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
 extern	int16	NumOrbs;
@@ -555,27 +554,14 @@ void set_player_name( void )
 
 BOOL CheckForName( BYTE Player )
 {
-	char	*			NamePnt;
-	char	*			NamePnt2;
-    HRESULT				hr;
-	int					i;
-	LPDPNAME			lpDpName;
-	char				namebuf[256];
 	if( Names[Player][0] == 0 )
 	{
-		hr = network_get_player_name( from_dcoID, &namebuf[0] );
-		if( hr == DP_OK )
+		char name[255];
+		if( network_get_player_name( from_dcoID, &name[0] ) )
 		{
-			lpDpName = (LPDPNAME) &namebuf[0];
-			lpDpName->dwSize = sizeof(DPNAME);
-			NamePnt = (char*) &Names[Player][0];			
-			NamePnt2 = (char*) lpDpName->lpszShortNameA;
-			for( i = 0 ; i < 7 ; i++ )
-			{
-				*NamePnt++ = *NamePnt2++;
-			}
-			Names[Player][7] = 0;
-			DebugPrintf("CheckForName Got Name: %s\n",Names[Player]);
+			strncpy( Names[Player], name, MAXSHORTNAME );
+			name[MAXSHORTNAME] = 0;
+			DebugPrintf("CheckForName Got Name: %s\n",name);
 		}
 		return TRUE;
 	} 
@@ -1320,7 +1306,7 @@ void smallinitShip( uint16 i )
 	}
 }
 
-void network_event_player_name(DPID pid, char* name)
+void network_event_player_name( network_id_t pid, char* name )
 {
 	int i, x;
 	if( pid == dcoID )
@@ -1346,7 +1332,7 @@ void network_event_player_name(DPID pid, char* name)
 	return;
 }
 
-void network_event_destroy_player( DPID id )
+void network_event_destroy_player( network_id_t id )
 {
 	int i;
 	DebugPrintf("network_event_destroy_player\n");
@@ -1405,7 +1391,7 @@ void network_event_i_am_host( void )
 	}
 }
 
-void network_event_new_player( DPID pid, char * player_name )
+void network_event_new_player( network_id_t pid, char * player_name )
 {
 	int i, x;
 	DebugPrintf("network_event_new_player\n");
@@ -1435,7 +1421,7 @@ void network_event_new_player( DPID pid, char * player_name )
 			}
 }
 
-void network_event_new_message( DPID from, BYTE * MsgPnt, DWORD nBytes )
+void network_event_new_message( network_id_t from, BYTE * MsgPnt, DWORD nBytes )
 {
 	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
 	from_dcoID = from;
@@ -2253,7 +2239,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
-		HostDPID = from_dcoID;
+		HostNetID = from_dcoID;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		DPlayUpdateInterval = lpInit->DPlayUpdateInterval;
@@ -4033,6 +4019,7 @@ void DemoPlayingDplayGameUpdate()
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void DemoClean( void )
 {
+#ifdef DEMO_SUPPORT
     DWORD       nBytes;
 	size_t		size;
 	fpos_t		Currentpos; 
@@ -4216,7 +4203,7 @@ void DemoClean( void )
 			fsetpos( DemoFp , &Currentpos );
 		}
 	}
-	
+#endif
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
