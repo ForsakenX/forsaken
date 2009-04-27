@@ -267,8 +267,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	LONGLONG	TempTime;
 	uint32		Seed;
 
-	network_initialize( NULL );
-
 	SetMultiplayerPrefs();
 
 	Seed = timeGetTime();
@@ -299,18 +297,16 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("d3d FlipToGDISurface.\n");
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
-	// create session
-	if( ! network_host() )
+	if( ! network_setup( &biker_name[0], 2300 ) )
 	{
-		Msg("Failed to create Direct Play Session!");
+		Msg("Failed to setup network!");
 		return FALSE;
 	}
 
-	// create player
-	if( ! network_create_player( &my_network_id, &biker_name[0] ) )
+	if( ! network_host() )
 	{
-		Msg("Failed to create Direct Play Player!");
-	    return FALSE;
+		Msg("Failed to host game!");
+		return FALSE;
 	}
 
 	NetUpdateInterval	= 60.0F / PacketsSlider.value;
@@ -443,67 +439,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("Done.\n");
 
 	return TRUE;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Join a Session...
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL JoinASession ( MENUITEM * Item )
-{
-	PlayDemo = FALSE;
-
-	SetBikeMods( 0 );
-
-	// open session
-	if( ! network_join() )
-	{
-		PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-	// create player
-	if( ! network_create_player(&my_network_id, &biker_name[0]) )
-	{
-		PrintErrorMessage ( COULDNT_CREATE_PLAYER, 1, NULL, ERROR_USE_MENUFUNCS );
-		return FALSE;
-	}
-
-	SetupNetworkGame();
-	
-	WhoIAm = 0xff;
-	MyGameStatus = STATUS_GetPlayerNum;
-	GetPlayerNumCount1 = 0.0F;
-	GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
-	GetPlayerNumCount = 0;
-
-	if ( TeamGame )
-		GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
-	else
-		GetPlayerNumMenu = (MENU*) Item->Value;
-
-	// Stops us going straight in to the game....
-	OverallGameStatus = STATUS_Null;
-
-	return TRUE;
-}
-
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Select a Session and show players in it..
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void SelectSession( MENUITEM *Item )
-{
-	if ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU))
-	{
-		JoinASession (&NewJoinItem);
-	}
-	else
-	{
-		JoinASession ( &JoinItem );
-	}
 }
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ

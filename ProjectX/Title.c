@@ -1811,8 +1811,14 @@ void EnterJoin(MENU *Menu)
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
-	// initialize connection
-	network_initialize( TCPAddress.text );
+	// setup
+	if( ! network_setup( &biker_name[0], 2300 ) )
+	{
+		Msg("Failed to setup network!");
+		return;
+	}
+
+	network_join( TCPAddress.text, 2300 );
 }
 
 
@@ -1820,14 +1826,9 @@ void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
 	if ( IsKeyPressed( DIK_F1 ) )
-		network_initialize( TCPAddress.text );
+		network_join( TCPAddress.text, 2300 );
 
-	//
-	if( network_ready() )
-	{
-		DebugPrintf("Found Session\n");
-		SelectSession( NULL );
-	}
+	network_retry();
 }
 
 

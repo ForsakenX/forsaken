@@ -6,8 +6,6 @@
 //
 
 BOOL StartAHostSession ( MENUITEM * Item );
-BOOL JoinASession ( MENUITEM * Item );
-void SelectSession( MENUITEM *Item );
 void GetPlayersInCurrentSession( MENUITEM *Item );
 void GoToSynchup ( MENUITEM * Item );
 void BailMultiplayer( MENU * Menu );

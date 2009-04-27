@@ -60,6 +60,8 @@ extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
 extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
+extern MENU  * GetPlayerNumMenu;
+
 extern int FontHeight;
 
 extern network_id_t	PlayerIDs[ MAX_PLAYERS ];
@@ -84,6 +86,11 @@ extern	int		GameType;
 extern	BOOL	MyBrightShips;
 extern BOOL BountyBonus;
 extern SLIDER	BountyBonusSlider;
+
+
+extern float GetPlayerNumCount1;
+extern float GetPlayerNumCount2;
+extern int   GetPlayerNumCount;
 
 extern	BOOL	DS;
 
@@ -156,7 +163,7 @@ extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
 extern	float	DemoAvgFps;
 extern	LONGLONG	TimeDiff;
-
+extern	MENUITEM	NewJoinItem;
 extern	LONGLONG	Freq;
 extern	BOOL	Buffer1InUse;
 extern	int		Buffer1Count;
@@ -547,7 +554,7 @@ void set_player_name( void )
 	for( i = 0 ; i < 8 ; i++ )
 		Names[WhoIAm][i] = biker_name[i];
 	Names[WhoIAm][7] = 0;
-	network_set_player_name(my_network_id, &biker_name[0]);
+	network_set_player_name(&biker_name[0]);
 }
 
 BOOL CheckForName( BYTE Player )
@@ -1328,10 +1335,9 @@ void network_event_player_name( network_id_t pid, char* name )
 	return;
 }
 
-void network_event_destroy_player( network_id_t id )
+void network_event_player_left( network_id_t id )
 {
 	int i;
-	DebugPrintf("network_event_destroy_player\n");
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 		if( ( i != WhoIAm ) && (id == Ships[i].network_id) )
 		{	
@@ -1360,10 +1366,12 @@ void network_event_destroy_player( network_id_t id )
 		}
 }
 
-void network_event_i_am_host( void )
+void network_event_new_host( network_id_t id )
 {
 	int i;
-	DebugPrintf("network_event_i_am_host\n");
+	DebugPrintf("network_event_new_host\n");
+	if(id!=my_network_id)
+		return;
 	switch ( MyGameStatus )
 	{
 	case STATUS_StartingMultiplayer:
@@ -1387,34 +1395,68 @@ void network_event_i_am_host( void )
 	}
 }
 
-void network_event_new_player( network_id_t pid, char * player_name )
+void network_event_player_joined( network_id_t id, char * player_name )
 {
 	int i, x;
-	DebugPrintf("network_event_new_player\n");
-	if( pid == my_network_id )
-		return;
-	if( MyGameStatus == STATUS_Normal && !TeamGame )
+	DebugPrintf("network_event_player_joined\n");
+	
+	// we have joined the game
+	if( id == my_network_id )
 	{
-		sprintf( (char*) &tempstr[0] ,"%s %s", player_name, IS_JOINING_THE_GAME );
-		AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
-	}
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		if( ( i != WhoIAm ) && ( GameStatus[i] != MyGameStatus ) )
+		DebugPrintf("We have joined the game...\n");
+		PlayDemo = FALSE;
+		
+		SetBikeMods( 0 );
+		
+		if( ! network_open() )
 		{
-			Names[i][0] = 0;
+			PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
+			return;
 		}
+		
+		SetupNetworkGame();
+		
+		WhoIAm = 0xff;
+		MyGameStatus = STATUS_GetPlayerNum;
+		GetPlayerNumCount1 = 0.0F;
+		GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
+		GetPlayerNumCount = 0;
+		
+		if ( TeamGame )
+			GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
+		else
+			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
+
+		// Stops us going straight in to the game....
+		OverallGameStatus = STATUS_Null;
 	}
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		if( ( i != WhoIAm ) && (pid == Ships[i].network_id) )
-			if( Names[i][0] == 0 )
-			{
-				char* NamePnt = (char*) &Names[i][0];			
-				char* NamePnt2 = (char*) &player_name[0];
-				for( x = 0 ; x < 7 ; x++ )
-					*NamePnt++ = *NamePnt2++;
-				Names[i][7] = 0;
-			}
+
+	// someone else joined the game
+	else
+	{
+		if( MyGameStatus == STATUS_Normal && !TeamGame )
+		{
+			sprintf( (char*) &tempstr[0] ,"%s %s", player_name, IS_JOINING_THE_GAME );
+			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+		}
+
+		// cleanup any names that aren't in my state
+		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+			if( ( i != WhoIAm ) && ( GameStatus[i] != MyGameStatus ) )
+				Names[i][0] = 0;
+
+		// set the players name in globals
+		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+			if( ( i != WhoIAm ) && (id == Ships[i].network_id) )
+				if( Names[i][0] == 0 )
+				{
+					char* NamePnt = (char*) &Names[i][0];			
+					char* NamePnt2 = (char*) &player_name[0];
+					for( x = 0 ; x < 7 ; x++ )
+						*NamePnt++ = *NamePnt2++;
+					Names[i][7] = 0;
+				}
+	}
 }
 
 void network_event_new_message( network_id_t from, BYTE * MsgPnt, int size )
@@ -2227,7 +2269,8 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 		if( IsHost && !PlayDemo )
 		{
-			SendGameMessage(MSG_INIT, from_network_id, 0, 0, 0);
+			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
+			SendGameMessage(MSG_INIT, from_network_id, msg->WhoIAm, 0, 0);
 
 			// BUG: why is this sent to everyone ?
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -2248,35 +2291,30 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			PlayerReady[i] = lpInit->PlayerReady[i];
 			if( i != WhoIAm && i != lpInit->YouAre )
 				GameStatus[i] = lpInit->GameStatus[i];
-		}															
+		}
+						
 		if ( WhoIAm == 0xff )
 		{
-			// no need to do any of this if pseudo host
-			// BUG: I don't think the host will ever receive this message
-					// is this a hold over from pseud host ???
-			if( !IsHost )
+			WhoIAm = lpInit->YouAre;
+			Current_Camera_View = WhoIAm;
+			WatchPlayerSelect.value = WhoIAm;
+
+			ColPerspective = lpInit->ColPerspective;
+			UseShortPackets = lpInit->UseShortPackets;
+
+			UnpackPickupInfo( lpInit->PickupFlags );
+			DebugPrintf("host says level is %s\n", lpInit->LevelName );
+
+			NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
+			if( NewLevelNum == -1 )
 			{
-				WhoIAm = lpInit->YouAre;
-				Current_Camera_View = WhoIAm;
-				WatchPlayerSelect.value = WhoIAm;
-
-				ColPerspective = lpInit->ColPerspective;
-				UseShortPackets = lpInit->UseShortPackets;
-
-				UnpackPickupInfo( lpInit->PickupFlags );
-				DebugPrintf("host says level is %s\n", lpInit->LevelName );
-
-				NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
-				if( NewLevelNum == -1 )
-				{
-					DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
-					WhoIAm = MAX_PLAYERS+1;
-					return;
-				}
-
-				for( i = 0 ; i < MAX_PLAYERS ; i++ )
-					TeamNumber[i] = lpInit->TeamNumber[i];
+				DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
+				WhoIAm = MAX_PLAYERS+1;
+				return;
 			}
+
+			for( i = 0 ; i < MAX_PLAYERS ; i++ )
+				TeamNumber[i] = lpInit->TeamNumber[i];
 		}
 		else
 		{
@@ -3296,7 +3334,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
 
 	DWORD			nBytes		= 0;
-	int				guaranteed	= 0;
+	int				flags = 0;
 	int				i;
 	int				Count;
 	int				MessageColour = 2; // default message colour is light green
@@ -3319,7 +3357,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpYouQuitMsg->You = ShipNum;
 		nBytes = sizeof( YOUQUITMSG );
 		to = Ships[ShipNum].network_id;
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
 		break;
 
 
@@ -3330,7 +3368,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpBikeNumMsg->WhoIAm = WhoIAm;
 		lpBikeNumMsg->BikeNum = (BYTE) Ships[WhoIAm].BikeNum;
 		nBytes = sizeof( BIKENUMMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
 		break;
 
 	case MSG_HEREIAM:
@@ -3384,47 +3422,49 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 
 		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );
 
-		// BUG: this is probably not needed and the reason you can't join when viewing score etc...
-		if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
+		for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
+		{															
+			lpInit->PlayerReady[Count] = PlayerReady[Count];
+			lpInit->GameStatus[Count] = GameStatus[Count];
+		}
+
+		// if we haven't given him a ship number yet
+		if( ShipNum == 0xff ) // default value
 		{
-			// the id that will be given to the new player
-			int new_player_id = 0;
-
-			// number of players in the game
-			int player_count = 0;
-
-			// tell the player who is host thinks is ready.
-			for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
-			{															
-				lpInit->PlayerReady[Count] = PlayerReady[Count];
-				lpInit->GameStatus[Count] = GameStatus[Count];
-			}
+			int new_player_id = -1;
+			int player_count  = 1; // count myself
 
 			// find a free player slot
 			for( i = 0; i < MAX_PLAYERS; i++ )
 			{
 				// if slot is free
 				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-					if(!new_player_id)
+				{
+					if( (i != WhoIAm) && (new_player_id == -1) ) // our game status is not maintained in GameStatus[]
+					{
 						new_player_id = i;
+						DebugPrintf("MSG_INIT: new_player_id set to %d\n", new_player_id);
+					}
+				}
 
 				// valid player
 				else
+				{
 					player_count++;
+				}
 			}
+			DebugPrintf("MSG_INIT: current player_count %d\n",player_count);
 					
 			// game is full
 			if( player_count >= MaxPlayersSlider.value )
 			{
 				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_network_id);
 				lpInit->YouAre = MAX_PLAYERS+2;
-			}
-			
+			}	
+
 			// got a valid player number
 			else
 			{
-				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_network_id, new_player_id );
-
 				// setup player
 				InitShipStructure( new_player_id, TRUE );
 				GameStatus[new_player_id]			= STATUS_GetPlayerNum;
@@ -3514,7 +3554,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpDropPickup->WhoIAm = WhoIAm;
         lpDropPickup->PickupInfo = TempPickup;
         nBytes = sizeof( DROPPICKUPMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3525,7 +3565,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpVeryShortDropPickup->WhoIAm = WhoIAm;
         lpVeryShortDropPickup->PickupInfo = VeryShortTempPickup;
         nBytes = sizeof( VERYSHORTDROPPICKUPMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3536,7 +3576,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpKillPickup->WhoIAm = WhoIAm;
         lpKillPickup->KillPickupInfo = TempKillPickup;
         nBytes = sizeof( KILLPICKUPMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3547,7 +3587,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpTeamGoals->WhoIAm = WhoIAm;
         lpTeamGoals->TeamGoalsInfo = TempTeamGoals;
         nBytes = sizeof( TEAMGOALSMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3588,7 +3628,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpSecBullPosDir->WhoIAm = WhoIAm;
         lpSecBullPosDir->SecBullPosDir = TempSecBullPosDir;
         nBytes = sizeof( SECBULLPOSDIRMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3599,7 +3639,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpTitanBits->WhoIAm = WhoIAm;
         lpTitanBits->TitanBits = TempTitanBits;
         nBytes = sizeof( TITANBITSMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3636,7 +3676,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpShipDied->WeaponType = TempDied.WeaponType;
 		lpShipDied->Weapon = TempDied.Weapon;
 		nBytes = sizeof( SHIPDIEDMSG );
-		guaranteed = 1;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3673,7 +3713,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpStatus->TrigVars					= Ships[WhoIAm].TrigVars;	 
 		nBytes = sizeof( STATUSMSG );
 		if ( MyGameStatus == STATUS_Left )	// send last status msg guaranteed
-			guaranteed = 1;
+			flags |= NETWORK_RELIABLE;
         break;
 
 	case MSG_NETSETTINGS:
@@ -3936,7 +3976,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 	BytesPerSecSent += nBytes;
 
 	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
-	network_send( to, (void*) &CommBuff[0], nBytes, guaranteed );
+	network_send( to, (void*) &CommBuff[0], nBytes, flags, 1 );
 
 }
 

@@ -24,6 +24,7 @@ extern	network_id_t	my_network_id;
 static LPDPSESSIONDESC2			session	= NULL;
 static LPDIRECTPLAY4A			glpDP	= NULL;
 static LPDIRECTPLAYLOBBY2A		lobby	= NULL;
+static char*					my_player_name = NULL;
 
 DEFINE_GUID( PROJX_GUID, 0xb1a00cdf, 0x4660, 0x44b6, 0xb7, 0x03, 0x6f, 0xe5, 0x93, 0xd9, 0x72, 0x5a );
 
@@ -34,6 +35,8 @@ DEFINE_GUID( PROJX_GUID, 0xb1a00cdf, 0x4660, 0x44b6, 0xb7, 0x03, 0x6f, 0xe5, 0x9
 static int create_lobby( void );
 static int create_address( LPVOID *lplpAddress, char * address );
 static int initialize( char * address );
+static int network_create_player( void );
+static void network_initialize( char * address );
 static void enum_sessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags);
 static void handle_system_message( DWORD len , LPDPMSG_GENERIC lpMsg );
 BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID refreshing );
@@ -46,50 +49,25 @@ BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lp
  */
 
 
-int network_create_player( network_id_t * id, char* name )
+int network_setup( char* player_name, int local_port )
 {
-    HRESULT hr = E_FAIL;
-    DPNAME dp_name;
-	
-	if (!glpDP)
-		return hr;
+	my_player_name = player_name;
+	return 1;
+}
 
-	// name structure
-	ZeroMemory(&name,sizeof(name));
-    dp_name.dwSize = sizeof(DPNAME);
-    dp_name.lpszShortNameA = name;
-
-	hr = IDirectPlayX_CreatePlayer(glpDP, id, &dp_name, NULL, NULL, 0, 0);
-
-	switch( hr )
-	{
-	case DPERR_CANTADDPLAYER:
-		DebugPrintf("DPERR_CANTADDPLAYER\n");
-		break;
-	case DPERR_CANTCREATEPLAYER:
-		DebugPrintf("DPERR_CANTCREATEPLAYER\n");
-		break;
-	case DPERR_INVALIDFLAGS:
-		DebugPrintf("DPERR_INVALIDFLAGS\n");
-		break;
-	case DPERR_INVALIDPARAMS:
-		DebugPrintf("DPERR_INVALIDPARAMS\n");
-		break;
-	case DPERR_NOCONNECTION:
-		DebugPrintf("DPERR_NOCONNECTION\n");
-		break;
-	}
-
-	if(FAILED(hr))
-		return 0;
-
-    return 1;
+int network_join( char * address, int remote_port )
+{
+	network_initialize( address );
+	return 1;
 }
 
 int network_host( void )
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
+
+	network_initialize( NULL );
+    if (!glpDP)	return 0;
 
 	ZeroMemory(&dpDesc, sizeof(dpDesc));
     dpDesc.dwSize = sizeof(dpDesc);
@@ -162,9 +140,6 @@ int network_host( void )
     // set the application guid
 	dpDesc.guidApplication = PROJX_GUID;
 
-    if (!glpDP)
-		DebugPrintf("network_host: !glpDP Could not create direct play session.");
-
     hr = IDirectPlayX_Open(glpDP, &dpDesc, DPOPEN_CREATE);
 
 	switch(hr)
@@ -199,10 +174,13 @@ int network_host( void )
 	if(FAILED(hr))
 		return 0;
 
+	if(!network_create_player())
+		return 0;
+
     return 1;
 }
 
-int network_join( void )
+int network_open()
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
@@ -221,7 +199,6 @@ int network_join( void )
 	{
 	case DP_OK:
 	case DPERR_ALREADYINITIALIZED:
-		return 1;
 		break;
 	case DPERR_CANTCREATEPLAYER:
 		DebugPrintf("network_join: to many players\n");
@@ -251,38 +228,13 @@ int network_join( void )
 		DebugPrintf("network_join: failed %x\n",hr);
 	}
 
-    return 0;
-}
+	if(FAILED(hr))
+		return 0;
 
-void network_initialize( char * address )
-{
-	// close everything up
-	network_cleanup();
+	if(!network_create_player())
+		return 0;
 
-	// create dplay lobby interface
-	if (!lobby)
-		if(!create_lobby())
-			goto FAILURE;
-
-	// create a DirectPlay ANSI interface
-	if FAILED(
-		CoCreateInstance(
-			&CLSID_DirectPlay,
-			NULL,
-			CLSCTX_INPROC_SERVER,
-			&IID_IDirectPlay4A,
-			(LPVOID*)&glpDP
-			))
-		goto FAILURE;
-
-	// must be initialized
-	if(!initialize( address ))
-		goto FAILURE;
-
-	return;
-
-FAILURE:
-	network_cleanup();
+	return 1;
 }
 
 int network_get_player_name( network_id_t id, char* name )
@@ -296,24 +248,29 @@ int network_get_player_name( network_id_t id, char* name )
 	if(FAILED(hr)) return 0;
 	lp_name = (LPDPNAME) &dp_name[0];
 	lp_name->dwSize = sizeof(DPNAME);
+	if( ! lp_name->lpszShortNameA )
+	{
+		DebugPrintf("network_get_player_name: player %d name was empty.\n",id);
+		strncpy(name,"no_name",8);
+		return 1;
+	}
 	strncpy(name,lp_name->lpszShortNameA,8);
 	name[7] = 0;
 	return 1;
 }
 
-void network_set_player_name( network_id_t pid, char * name )
+void network_set_player_name( char * name )
 {
 	DPNAME dp_name;
-    if (!glpDP)
-		return;
+    if (!glpDP) return;
 	memset(&dp_name, 0, sizeof(DPNAME));
 	dp_name.dwSize = sizeof(DPNAME);
 	dp_name.lpszShortNameA = name;
     dp_name.lpszLongNameA = name;
-    IDirectPlayX_SetPlayerName(glpDP, pid, &dp_name, DPSET_GUARANTEED);
+    IDirectPlayX_SetPlayerName(glpDP, my_network_id, &dp_name, DPSET_GUARANTEED);
 }
 
-int network_ready( void )
+int network_retry( void )
 {
 	static int refreshing = 0;
 
@@ -401,18 +358,18 @@ void network_cleanup()
     glpDP = NULL;
 }
 
-void network_send( network_id_t to, void* data, int size, int guaranteed )
+void network_send( network_id_t to, void* data, int size, network_flags_t flags, int channel )
 {
 	HRESULT hr;
-	DWORD flags = DPSEND_ASYNC;
+	DWORD dp_flags = DPSEND_ASYNC;
 
 	if(!glpDP)
 		return;
 
-	if( guaranteed )
-		flags |= DPSEND_GUARANTEED;
+	if( flags & NETWORK_RELIABLE )
+		dp_flags |= DPSEND_GUARANTEED;
 
-	hr = glpDP->lpVtbl->SendEx(	glpDP, my_network_id, to, flags, data, size, 0, 0, 0, 0 );
+	hr = glpDP->lpVtbl->SendEx(	glpDP, my_network_id, to, dp_flags, data, size, 0, 0, 0, 0 );
 
 	switch ( hr )
 	{
@@ -453,6 +410,76 @@ void network_send( network_id_t to, void* data, int size, int guaranteed )
  */
 
 
+static void network_initialize( char * address )
+{
+	// close everything up
+	network_cleanup();
+
+	// create dplay lobby interface
+	if (!lobby)
+		if(!create_lobby())
+			goto FAILURE;
+
+	// create a DirectPlay ANSI interface
+	if FAILED(
+		CoCreateInstance(
+			&CLSID_DirectPlay,
+			NULL,
+			CLSCTX_INPROC_SERVER,
+			&IID_IDirectPlay4A,
+			(LPVOID*)&glpDP
+			))
+		goto FAILURE;
+
+	// must be initialized
+	if(!initialize( address ))
+		goto FAILURE;
+
+	return;
+
+FAILURE:
+	network_cleanup();
+}
+
+static int network_create_player( void )
+{
+    HRESULT hr = E_FAIL;
+    DPNAME dp_name;
+	
+	if (!glpDP)	return hr;
+
+	// name structure
+	ZeroMemory(&dp_name,sizeof(dp_name));
+    dp_name.dwSize = sizeof(DPNAME);
+    dp_name.lpszShortNameA = my_player_name;
+
+	hr = IDirectPlayX_CreatePlayer(glpDP, &my_network_id, &dp_name, NULL, NULL, 0, 0);
+
+	switch( hr )
+	{
+	case DPERR_CANTADDPLAYER:
+		DebugPrintf("DPERR_CANTADDPLAYER\n");
+		break;
+	case DPERR_CANTCREATEPLAYER:
+		DebugPrintf("DPERR_CANTCREATEPLAYER\n");
+		break;
+	case DPERR_INVALIDFLAGS:
+		DebugPrintf("DPERR_INVALIDFLAGS\n");
+		break;
+	case DPERR_INVALIDPARAMS:
+		DebugPrintf("DPERR_INVALIDPARAMS\n");
+		break;
+	case DPERR_NOCONNECTION:
+		DebugPrintf("DPERR_NOCONNECTION\n");
+		break;
+	}
+
+	if(FAILED(hr))
+		return 0;
+
+    return 1;
+}
+
 BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID refreshing )
 {
 	// sessions have been enumerated
@@ -466,9 +493,13 @@ BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lp
 	}
 
 	// store away pointer to session description
+	DebugPrintf("Found Session\n");
 	if( session != NULL ) free( session );
 	session = malloc( sizeof( DPSESSIONDESC2 ) );
 	*session = *lpDPSessionDesc;
+
+	// call the new player event with our id set
+	network_event_player_joined( my_network_id, NULL );
 
 	// stop enumeration
     return FALSE;
@@ -485,13 +516,13 @@ static void handle_system_message( DWORD len , LPDPMSG_GENERIC lpMsg )
 	case DPSYS_CREATEPLAYERORGROUP:
 		{
 			LPDPMSG_CREATEPLAYERORGROUP lpAddMsg = (LPDPMSG_CREATEPLAYERORGROUP) lpMsg;
-			network_event_new_player( lpAddMsg->dpId, lpAddMsg->dpnName.lpszShortNameA );
+			network_event_player_joined( lpAddMsg->dpId, lpAddMsg->dpnName.lpszShortNameA );
 		}
 		break;
 
     case DPSYS_HOST:
 		{
-			network_event_i_am_host();
+			network_event_new_host( my_network_id );
 		}
 		break;
 
@@ -500,7 +531,7 @@ static void handle_system_message( DWORD len , LPDPMSG_GENERIC lpMsg )
 			LPDPMSG_DESTROYPLAYERORGROUP lpDestroyMsg = ( LPDPMSG_DESTROYPLAYERORGROUP ) lpMsg;
 			if( lpDestroyMsg->dwPlayerType != DPPLAYERTYPE_PLAYER )
 				return;
-			network_event_destroy_player( lpDestroyMsg->dpId );
+			network_event_player_left( lpDestroyMsg->dpId );
 		}
 		break;
 
