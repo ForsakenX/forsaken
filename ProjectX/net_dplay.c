@@ -32,8 +32,8 @@ DEFINE_GUID( PROJX_GUID, 0xb1a00cdf, 0x4660, 0x44b6, 0xb7, 0x03, 0x6f, 0xe5, 0x9
 //
 
 static int create_lobby( void );
-static int create_address( LPVOID *lplpAddress, char * TCPIPAddress );
-static int initialize( char * TCPIPAddress );
+static int create_address( LPVOID *lplpAddress, char * address );
+static int initialize( char * address );
 static void enum_sessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallback, LPVOID lpContext, DWORD dwFlags);
 static void handle_system_message( DWORD len , LPDPMSG_GENERIC lpMsg );
 BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lpdwTimeOut, DWORD dwFlags, LPVOID refreshing );
@@ -46,20 +46,20 @@ BOOL WINAPI enum_sessions_callback(LPCDPSESSIONDESC2 lpDPSessionDesc, LPDWORD lp
  */
 
 
-int network_create_player( network_id_t * id, LPTSTR lptszPlayerName )
+int network_create_player( network_id_t * id, char* name )
 {
     HRESULT hr = E_FAIL;
-    DPNAME name;
+    DPNAME dp_name;
 	
 	if (!glpDP)
 		return hr;
 
 	// name structure
 	ZeroMemory(&name,sizeof(name));
-    name.dwSize = sizeof(DPNAME);
-    name.lpszShortNameA = lptszPlayerName;
+    dp_name.dwSize = sizeof(DPNAME);
+    dp_name.lpszShortNameA = name;
 
-	hr = IDirectPlayX_CreatePlayer(glpDP, id, &name, NULL, NULL, 0, 0);
+	hr = IDirectPlayX_CreatePlayer(glpDP, id, &dp_name, NULL, NULL, 0, 0);
 
 	switch( hr )
 	{
@@ -254,7 +254,7 @@ int network_join( void )
     return 0;
 }
 
-void network_initialize( char * TCPIPAddress )
+void network_initialize( char * address )
 {
 	// close everything up
 	network_cleanup();
@@ -276,7 +276,7 @@ void network_initialize( char * TCPIPAddress )
 		goto FAILURE;
 
 	// must be initialized
-	if(!initialize( TCPIPAddress ))
+	if(!initialize( address ))
 		goto FAILURE;
 
 	return;
@@ -301,16 +301,16 @@ int network_get_player_name( network_id_t id, char* name )
 	return 1;
 }
 
-void network_set_player_name( network_id_t pid, char * NamePnt )
+void network_set_player_name( network_id_t pid, char * name )
 {
-	DPNAME	Name;
+	DPNAME dp_name;
     if (!glpDP)
 		return;
-	memset(&Name, 0, sizeof(DPNAME));
-	Name.dwSize = sizeof(DPNAME);
-	Name.lpszShortNameA = NamePnt;
-    Name.lpszLongNameA = NamePnt;
-    IDirectPlayX_SetPlayerName(glpDP, pid, &Name, DPSET_GUARANTEED);
+	memset(&dp_name, 0, sizeof(DPNAME));
+	dp_name.dwSize = sizeof(DPNAME);
+	dp_name.lpszShortNameA = name;
+    dp_name.lpszLongNameA = name;
+    IDirectPlayX_SetPlayerName(glpDP, pid, &dp_name, DPSET_GUARANTEED);
 }
 
 int network_ready( void )
@@ -350,7 +350,7 @@ void network_pump( void )
 	{
 		network_id_t from_network_id;
 		BYTE ReceiveCommBuff[1024];
-		DWORD nBytes = 1024;
+		int nBytes = 1024;
 		hr = glpDP->lpVtbl->Receive(
 								glpDP, &from_network_id, &dcoReceiveID,
 								DPRECEIVE_ALL, &ReceiveCommBuff[0], &nBytes );
@@ -401,7 +401,7 @@ void network_cleanup()
     glpDP = NULL;
 }
 
-void network_send( network_id_t to, void* data, DWORD size, int guaranteed )
+void network_send( network_id_t to, void* data, int size, int guaranteed )
 {
 	HRESULT hr;
 	DWORD flags = DPSEND_ASYNC;
@@ -544,7 +544,7 @@ static void enum_sessions(DWORD dwTimeout, LPDPENUMSESSIONSCALLBACK2 lpEnumCallb
 			);
 }
 
-static int create_address( LPVOID *lplpAddress, char * TCPIPAddress )
+static int create_address( LPVOID *lplpAddress, char * address )
 {
 	LPVOID						lpAddress = NULL;
 	DWORD						dwAddressSize = 0;
@@ -560,12 +560,12 @@ static int create_address( LPVOID *lplpAddress, char * TCPIPAddress )
 	addressElements[dwElementCount].lpData = (LPVOID) &DPSPGUID_TCPIP;
 	dwElementCount++;
 
-	if ( TCPIPAddress != NULL )
+	if ( address != NULL )
 	{
 		// This is where you would fill in the IP Address..
 		addressElements[dwElementCount].guidDataType = DPAID_INet;
-		addressElements[dwElementCount].dwDataSize = lstrlen(TCPIPAddress) + 1;
-		addressElements[dwElementCount].lpData = (LPVOID) TCPIPAddress;
+		addressElements[dwElementCount].dwDataSize = lstrlen(address) + 1;
+		addressElements[dwElementCount].lpData = (LPVOID) address;
 		dwElementCount++;
 	}
 
@@ -626,12 +626,12 @@ FAILURE:
 	return 0;
 }
 
-static int initialize( char * TCPIPAddress )
+static int initialize( char * address )
 {
 	LPVOID			lpAddress = NULL;
 	HRESULT			hr;
 
-	if ( ! create_address( &lpAddress, TCPIPAddress ) )
+	if ( ! create_address( &lpAddress, address ) )
 		return FALSE;
 
 	hr = glpDP->lpVtbl->InitializeConnection(glpDP, lpAddress, 0);
