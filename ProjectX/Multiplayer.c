@@ -103,8 +103,6 @@ extern	SLIDER	DemoSpeed;
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	MaxKillsSlider;
 extern	int16	MaxKills;
-
-extern	TEXT	MultiPlayerGameName;
 extern	char	biker_name[256];
 extern	float	framelag;
 extern char MyName[];
@@ -302,7 +300,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	// create session
-	if( ! network_host( &MultiPlayerGameName.text[0], MaxPlayersSlider.value ) )
+	if( ! network_host() )
 	{
 		Msg("Failed to create Direct Play Session!");
 		return FALSE;

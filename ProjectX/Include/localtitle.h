@@ -696,9 +696,6 @@
 
 #define LT_QuitToMainMenu "Quit to Main Menu"
 
-#define LT_PlayersGame "%s's Game"	// %s is player name   
-#define LT_PlayersGame2 "%s's Game"	// %s is player name
-
 #define LT_SavedGameName "saved %d-%d-%d at %2d:%02d"	// %d-%d-%d is day-month-year %2d:%02d is time
 #define LT_LevelName "level name: %s"	// %s is name of level
 #define LT_LevelPlayedFor1 "%s played for %hd mins %hd secs"	// %s = player name, %hd = num mins, %hd = num secs  

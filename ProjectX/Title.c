@@ -821,8 +821,6 @@ LIST BikeComputerList			= { MAXBIKECOMPTYPES, 8, 0, 1, { "phil 3b", "brenda", "l
 LIST TestList						= { 2, 12, 0, 0, { "test1", "test2" }, 0, 0 };
 LIST RoomList						= { 0, 10 };
 LIST *CurrentList					= NULL;
-
-TEXT MultiPlayerGameName	= { 0, 0, "Default", NULL };
 TEXT DemoGameName			= { 0, 0, "yourdemo", NULL, MAX_DEMONAME_LENGTH, TypeFileName };
 TEXT TitlePlayerMessage		= { 0, 0, "", SendTitleMessage, MAXTEXTMSG, NULL };
 TEXT PilotNameInGame			= { 0, 0, DEFAULT_PLAYER_NAME, SetPilotNameInGame, MAX_PILOTNAME_LENGTH, TypeFileName };
@@ -1349,8 +1347,6 @@ MENU	MENU_NEW_CreateGame = {
 	{
 		{   0,   0, 200,   0, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
 		{  10,  15,  90,  15, 0,			LT_MENU_NEW_CreateGame1  /*"Start game"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_HostWaitingToStart,		StartAHostSession,		DrawFlatMenuItem,		NULL, 0 } ,
-
-		{  10,  28,  85,  28, 0,			LT_MENU_NEW_CreateGame3  /*"session name"*/,			FONT_Small,		TEXTFLAG_CentreY |                            TEXTFLAG_ForceFit,	&MultiPlayerGameName,				NULL,								SelectFlatMenutext,		DrawFlatMenuText,		NULL, 0 } ,
 
 		{  10,  36,  85,  36, 0,			LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_GameType,					MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 		{  90,  36, 200,  36, 0,			"",														FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit,	(void *)GameTypeName,				NULL,								NULL,					DrawFlatMenuName,		NULL, 0 } ,
@@ -2334,7 +2330,6 @@ MENU	MENU_Host = {
 		{ 200, 160, 0, 0, 0, "Demo Name  ", 0, 0, &DemoGameName, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
 		{ 200, 176, 0, 0, 0, "Time Limit ", 0, 0, &TimeLimit, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 192, 0, 0, 0, "Max Players ", 0, 0, &MaxPlayersSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
-		{ 200, 208, 0, 0, 0, "Session Name  ", 0, 0, &MultiPlayerGameName, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
 		{ 200, 224, 0, 0, 0, "Level...", 0, 0, &LevelList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -10304,7 +10299,6 @@ void SelectQuit( MENUITEM *Item )
 void InitMultiplayerHost( MENU *Menu )
 {
 	int i;
-	sprintf( MultiPlayerGameName.text, LT_PlayersGame/*"%s's Game"*/, biker_name );
 
 	LevelList.items = 0;
 	LevelList.top_item = 0;
@@ -10325,9 +10319,6 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
 	uint16 selected_level;
 
-	// set the name of the game
-	sprintf( MultiPlayerGameName.text, LT_PlayersGame2, biker_name );
-	
 	// back up current selected level
 	selected_level = LevelList.selected_item;
 

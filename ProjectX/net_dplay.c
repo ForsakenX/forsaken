@@ -86,7 +86,7 @@ int network_create_player( network_id_t * id, char* name )
     return 1;
 }
 
-int network_host( char * game_name, int max_players )
+int network_host( void )
 {
     HRESULT hr = E_FAIL;
     DPSESSIONDESC2 dpDesc;
@@ -156,8 +156,8 @@ int network_host( char * game_name, int max_players )
 
 					 DPSESSION_OPTIMIZELATENCY;
 
-	dpDesc.dwMaxPlayers = max_players;
-    dpDesc.lpszSessionNameA = game_name;
+	dpDesc.dwMaxPlayers = 50;
+    dpDesc.lpszSessionNameA = "ProjectX Game";
 
     // set the application guid
 	dpDesc.guidApplication = PROJX_GUID;

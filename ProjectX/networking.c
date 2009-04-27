@@ -1417,24 +1417,26 @@ void network_event_new_player( network_id_t pid, char * player_name )
 			}
 }
 
-void network_event_new_message( network_id_t from, BYTE * MsgPnt, DWORD nBytes )
+void network_event_new_message( network_id_t from, BYTE * MsgPnt, int size )
 {
 	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
 	from_network_id = from;
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
+#ifdef DEMO_SUPPORT
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
 	{
 		TempTime -= GameStartedTime;
 		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-		Demo_fwrite( &nBytes, sizeof(nBytes), 1, DemoFp );
+		Demo_fwrite( &size, sizeof(size), 1, DemoFp );
 		Demo_fwrite( &from_network_id, sizeof(from_network_id), 1, DemoFp );
 		Demo_fwrite( MsgPnt, nBytes , 1, DemoFp );
 	}
-	RecPacketSize = nBytes;
+#endif
+	RecPacketSize = size;
 	if ( RecPacketSize > MaxRecPacketSize )
 		MaxRecPacketSize = RecPacketSize;
-	BytesPerSecRec += nBytes;
-    EvaluateMessage( nBytes, MsgPnt );
+	BytesPerSecRec += size;
+    EvaluateMessage( size, MsgPnt );
 }
 
 void ReceiveGameMessages( void )
@@ -3385,6 +3387,11 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		// BUG: this is probably not needed and the reason you can't join when viewing score etc...
 		if( ( MyGameStatus == STATUS_StartingMultiplayer ) || ( MyGameStatus == STATUS_Normal ) )
 		{
+			// the id that will be given to the new player
+			int new_player_id = 0;
+
+			// number of players in the game
+			int player_count = 0;
 
 			// tell the player who is host thinks is ready.
 			for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
@@ -3395,11 +3402,19 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 
 			// find a free player slot
 			for( i = 0; i < MAX_PLAYERS; i++ )
-				if( i != WhoIAm )
-    				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-    					break;
+			{
+				// if slot is free
+				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
+					if(!new_player_id)
+						new_player_id = i;
 
-			if( i == MAX_PLAYERS)
+				// valid player
+				else
+					player_count++;
+			}
+					
+			// game is full
+			if( player_count >= MaxPlayersSlider.value )
 			{
 				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_network_id);
 				lpInit->YouAre = MAX_PLAYERS+2;
@@ -3408,28 +3423,32 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 			// got a valid player number
 			else
 			{
-				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_network_id, i);
+				DebugPrintf("MSG_INIT: connection %d set to player %d\n", from_network_id, new_player_id );
 
 				// setup player
-				InitShipStructure(i , TRUE);
-				GameStatus[i]	= STATUS_GetPlayerNum;
-				Names[i][0]		= 0;
-				TeamNumber[i]	= 0;
-				Ships[i].network_id	= to;
+				InitShipStructure( new_player_id, TRUE );
+				GameStatus[new_player_id]			= STATUS_GetPlayerNum;
+				Names[new_player_id][0]				= 0;
+				TeamNumber[new_player_id]			= 0;
+				Ships[new_player_id].network_id		= to;
 				
-				// finish packing on stuff
-				lpInit->YouAre = (BYTE) i;
+				// set rest of values
+
+				lpInit->YouAre = (BYTE) new_player_id;
+
 				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )					
 					lpInit->TeamNumber[Count] = TeamNumber[Count];
+
 				lpInit->Status = MyGameStatus;
+
 				if(	MyGameStatus == STATUS_Normal )
 				{
 					// StatsCount = MAX_PLAYERS;
-					CopyPickups( (uint16) i );
-					CopyRegenSlots( (uint16) i );
-					CopyTriggers( (uint16) i );
-					CopyTrigVars( (uint16) i );
-					CopyMines( (uint16) i );
+					CopyPickups(	(uint16) new_player_id );
+					CopyRegenSlots( (uint16) new_player_id );
+					CopyTriggers(	(uint16) new_player_id );
+					CopyTrigVars(	(uint16) new_player_id );
+					CopyMines(		(uint16) new_player_id );
 				}
 
 			}
