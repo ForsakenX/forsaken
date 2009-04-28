@@ -239,14 +239,14 @@ void SetUpGameType( int type )
 		SetUpGameSubType( CTFSlider.value );
 
 		break;
-	case GAME_CaptureFlag:
+	case GAME_FlagChase:
 		CaptureTheFlag = TRUE;
 		TeamGame = TRUE;
 		break;
 	case GAME_BountyHunt:
 		BountyHunt = TRUE;
 		break;
-	case GAME_TeamBounty:
+	case GAME_TeamBountyHunt:
 		BountyHunt = TRUE;
 		TeamGame = TRUE;
 		break;

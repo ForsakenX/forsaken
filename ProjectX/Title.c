@@ -425,6 +425,7 @@ void InitStartMenu( MENU *Menu );
 void ExitInGameMenu( MENU *Menu );
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu );
 void ExitMultiplayerHostVDUPeerPeer( MENU *Menu );
+void RedrawMultiplayerHostVDUPeerPeer( int * i );
 void InitSinglePlayerGame( MENU *Menu );
 void InitTitleLoad( MENU *Menu );
 void ExitTitleLoad( MENU *Menu );
@@ -791,7 +792,7 @@ int	ControlMethod		= CONTROL_Mouse;
 int	GameType			= GAME_Normal;
 
 // these are really only meant for displaying in create game menu
-// GameTypeName is only updated on entry to create game menu
+// the order of this list must match the order of game_t
 char* GameTypeNameTable[7] = {
 	LT_MENU_NEW_CreateGame9,  /*"free for all"*/
 	LT_MENU_NEW_CreateGame12, /*"flag chase"*/
@@ -800,7 +801,7 @@ char* GameTypeNameTable[7] = {
 	LT_MENU_NEW_CreateGame10, /*"team game"*/
 	LT_MENU_NEW_CreateGame11  /*"capture the flag"*/
 };
-char GameTypeName[128];
+char GameTypeName[128] = "";
 
 float CharWidth;
 float Pulse = 0.0F;
@@ -1305,9 +1306,9 @@ MENU MENU_NEW_GameType = {
 		{  10,   8, 200,  16, 0,	LT_MENU_NEW_CreateGame9	 /*"free for all"*/,			FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Normal,		SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10,  16, 200,  24, 0,	LT_MENU_NEW_CreateGame10 /*"team game"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_Team,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10,  24, 200,  32, 0,	LT_MENU_NEW_CreateGame11 /*"capture the flag"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CTF,			SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  32, 200,  40, 0,	LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_CaptureFlag,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  32, 200,  40, 0,	LT_MENU_NEW_CreateGame12 /*"flag chase"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_FlagChase,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 		{  10,  40, 200,  48, 0,	LT_MENU_NEW_CreateGame13 /*"bounty hunt"*/,				FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_BountyHunt,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{  10,  48, 200,  56, 0,	LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_TeamBounty,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{  10,  48, 200,  56, 0,	LT_MENU_NEW_CreateGame14 /*"Team bounty hunt"*/,		FONT_Small,		TEXTFLAG_CentreY,	&GameType,	(void *)GAME_TeamBountyHunt,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
 		{  10,  68, 200,  68, 0,			"Game Type Options",												FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,						NULL,					NULL,						DrawFlatMenuItem,		NULL, 0 } ,
 
@@ -1340,7 +1341,8 @@ MENU	MENU_NEW_CreateGame = {
 	"",
 	InitMultiplayerHostVDUPeerPeer,
 	ExitMultiplayerHostVDUPeerPeer,
-	NULL, TITLE_TIMER_PanToLeftVDU,
+	RedrawMultiplayerHostVDUPeerPeer,
+	TITLE_TIMER_PanToLeftVDU,
 
 	{
 		{   0,   0, 200,   0, 0,			LT_MENU_NEW_CreateGame0  /*"Create Multiplayer Game"*/, FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,								NULL,								NULL,								NULL,					DrawFlatMenuItem,		NULL, 0 } ,
@@ -10263,9 +10265,6 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	// load level names to be displayed in the list
 	LoadLevelText( NULL );
 
-	// set the game type name
-	strncpy( GameTypeName, GameTypeNameTable[ GameType ], sizeof(GameTypeName) );
-
 }
 
 /* exit */
@@ -10277,6 +10276,11 @@ void ExitMultiplayerHostVDUPeerPeer ( MENU *Menu )
 
 }
 
+void RedrawMultiplayerHostVDUPeerPeer( int * i )
+{
+	// set the game type name
+	strncpy( GameTypeName, GameTypeNameTable[ GameType ], sizeof(GameTypeName) );
+}
 
 void LoadLevelText( MENU *Menu )
 {

@@ -55,14 +55,16 @@ extern float PseudoHostAck_Timeout;
 #define CONTROL_Joystick	2
 #define CONTROL_Gamepad		3
 
-// WARNING!! if extending above 7 types, number of bits for game type in GAMEPARAMETERSMSG->GameInfo must be extended
-#define GAME_Normal			0
-#define GAME_Tag			1
-#define GAME_CaptureFlag	2
-#define GAME_BountyHunt		3
-#define GAME_TeamBounty		4
-#define GAME_Team			5
-#define GAME_CTF			6
+// order of this list must match GameTypeNameTable
+typedef enum
+{
+GAME_Normal,			// 0 free for all
+GAME_FlagChase,			// 1
+GAME_BountyHunt,		// 2
+GAME_TeamBountyHunt,	// 3
+GAME_Team,				// 4
+GAME_CTF,				// 5
+} game_t;
 
 #define GAMECOMPLETE_NotComplete				0
 #define GAMECOMPLETE_WithoutAllCrystals			1	// never got to secret level because not all crystals were found ( standard end game sequence )
