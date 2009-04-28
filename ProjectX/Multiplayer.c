@@ -528,7 +528,7 @@ void TeamGoToSynchup ( MENUITEM * Item )
 void BailMultiplayer( MENU * Menu )
 {
 	MyGameStatus = STATUS_Left;
-    if ( ( my_network_id != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( WhoIAm < MAX_PLAYERS )
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 	network_cleanup();
 	MenuRestart( &MENU_Start );

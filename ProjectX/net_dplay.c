@@ -356,6 +356,7 @@ void network_cleanup()
 	IDirectPlayX_DestroyPlayer(glpDP, my_network_id);
     IDirectPlayX_Release(glpDP);
     glpDP = NULL;
+    my_network_id = 0;
 }
 
 void network_send( network_id_t to, void* data, int size, network_flags_t flags, int channel )
