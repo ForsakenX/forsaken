@@ -505,13 +505,6 @@ void GoToSynchup ( MENUITEM * Item )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void TeamGoToSynchup ( MENUITEM * Item )
 {
-	/*
-	// put there team numbers backin..
-	//ReAssembleTeamNumbers();
-	LastMenu = CurrentMenu;
-	VduClear();
-	MenuAbort();
-	*/
 	PreSynchupStatus = MyGameStatus;
 	MyGameStatus = STATUS_WaitingToStartTeamGame;
 	MenuChangeEx( &MENU_NEW_GeneralLoading );
@@ -743,37 +736,6 @@ void SwapTeamIDs( LIST * Source , LIST * Dest )
 	TeamMembers[sourceteam]--;
 	TeamMembers[destteam]++;
 
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Re Assemble Team Numbers...
-	Input		:	nothing
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ReAssembleTeamNumbers(int *dummy)
-{
-	int i,e, team;
-
-	UpdateSessions( NULL );
-
-	for (team = 0; team < MAX_TEAMS; team++)
-	{
- 		for( i = 0 ; i < TeamMembers[team] ; i++ )
-		{
-			for( e = 0 ; e < MAX_PLAYERS ; e ++ )
-			{
-				if (e != WhoIAm)
-				{
-					if( PlayerIDs[e] == TeamIDs[team][i] )
-					{
-						TeamNumber[e] = team;
-					}
-				}
-			}
-		}
-	}
-
-	DistributeTeamsToLists( NULL );
 }
 
 void CheckForMenuChange(int *dummy)

@@ -15,7 +15,6 @@ void InitTeamSelection( MENU *Menu );
 void InitTeamLists( MENU *Menu );
 void InitExistingGameJoin( MENU *Menu );
 void SwapTeamIDs( LIST * Source , LIST * Dest );
-void ReAssembleTeamNumbers(int *dummy);
 void CheckForMenuChange(int *dummy);
 void BailMultiplayerFrontEnd( MENU * Menu );
 void DistributeTeamsToLists(int *dummy);
