@@ -201,7 +201,6 @@ extern TLOADHEADER	Tloadheader;
 extern DIDEVICEOBJECTDATA rgod[DINPUT_BUFFERSIZE]; /* Receives buffered data */
 extern DWORD BufferedKey[];
 extern int16 NumKeysToProcess;
-extern network_id_t	TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
 extern BOOL	Is3Dfx;
@@ -701,7 +700,6 @@ BOOL ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
 void GetInitialPlayers ( MENU *menu );
-BOOL ProcessPlaceTeamMember( int Key );
 void DrawReadyStatus( MENUITEM *Item );
 void InitJoystickList ( MENU *Menu );
 void SelectConfigureAxisMenu ( MENUITEM *Item );
@@ -7321,60 +7319,6 @@ BOOL ProcessWeaponOrder ( int Key )
 	return !done;
 }
 
-BOOL ProcessPlaceTeamMember( int Key )
-{
-	BOOL done;
-	MENUITEM *NextTeamItem;
-	LIST *DestTeamList;
-	int i;
-
-	DestTeamList = (LIST *)(CurrentMenuItem->Variable);
-
-	done = FALSE;
-
-	NextTeamItem = CurrentMenuItem;
-
-	switch( Key )
-	{
-	case DIK_LEFT:
-		NextTeamItem--;
-		if (NextTeamItem->FuncSelect == SelectTeamList)
-		{
-			CurrentMenuItem = NextTeamItem;
-			PlayCursorSfx();
-		}
-		break;
-	case DIK_RIGHT:
-		NextTeamItem++;
-		if (NextTeamItem->FuncSelect == SelectTeamList)
-		{
-			CurrentMenuItem = NextTeamItem;
-			PlayCursorSfx();
-		}
-		break;
-	case DIK_RETURN:
-		if (SourceTeamList != DestTeamList)
-		{
-			SwapTeamIDs( SourceTeamList , DestTeamList );
-//			SwapListItem( SourceTeamList , DestTeamList );
-		}
-		for (i = 0; i < TextStackLevel; i++)
-		{
-			TextStack[i]->highlight =  FALSE;
-			TextStack[i]->highlighttype = HIGHLIGHT_Pulsing;
-		}
-		SourceTeamList->selected_item = -1;
-		DestTeamList->selected_item = -1;
-		done = TRUE;
-		break;
-	case DIK_ESCAPE:
-		break;
-	}
-	
-	return !done;
-
-}
-
 void DeleteJoyButton( void )
 {
 	int joystick_num, num_buttons, i, j, num_povs;
@@ -8312,13 +8256,6 @@ void	MenuProcess()
 				if ( !ProcessLevelList ( Key ) )
 					MenuState = MENUSTATE_Select;
 				break;
-
-
-			case MENUSTATE_PlaceTeamMember:
-				if ( !ProcessPlaceTeamMember ( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
 
 			case MENUSTATE_DifficultySet:
 				if ( !ProcessDifficultySet ( Key ) )

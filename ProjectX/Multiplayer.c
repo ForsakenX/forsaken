@@ -167,8 +167,6 @@ extern	BOOL	NoSFX;
  * Globals to this module
  */
 
-network_id_t					PlayerIDs[MAX_PLAYERS];
-network_id_t					TeamIDs[MAX_TEAMS][MAX_PLAYERS];
 int						TeamMembers[MAX_TEAMS];
 
 MENU  *				GetPlayerNumMenu;
@@ -577,7 +575,7 @@ void InitExistingGameJoin( MENU *Menu )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void InitTeamSelection( MENU *Menu )
 {
-	int i, j;
+	int i;
 	MENUITEM *item;
 
 	InitTeamLists( NULL );
@@ -597,16 +595,8 @@ void InitTeamSelection( MENU *Menu )
 	}
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		TeamIDs[0][i] = PlayerIDs[i];
-
-		for (j = 1; j < MAX_TEAMS; j++) 
-		{
-			TeamIDs[j][i] = 0;
-		}
 		if( IsHost )
 			TeamNumber[i] = 255;
-	}
 
 //	for (i = 0; i < TeamList[0].items; i++)
 //		TeamNumber[i] = 0;
@@ -618,124 +608,6 @@ void InitTeamSelection( MENU *Menu )
 	MenuState = MENUSTATE_Select;
 
 	InitTitleMessaging();
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Swap a list item from 1 list to another....
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void SwapListItem( LIST * Source , LIST * Dest )
-{
-	int i;
-	char TempItem[32];
-	LIST	TempList;
-
-	if( ( Source->selected_item != -1) && ( Source->items != 0 ) )
-	{
-		TempList.items = 0;
-		TempList.top_item = 0;
-		TempList.display_items = MAX_PLAYERS;
-		TempList.selected_item = -1;
-	
-
-		strcpy( &TempItem[0] , Source->item[Source->selected_item] );
-		
-		for( i = 0 ; i < Source->items ; i++ )
-		{
-			if( i != Source->selected_item )
-			{
-				strcpy( &TempList.item[TempList.items][0] , Source->item[i]);
-				TempList.items++;
-			}
-		}
-		for( i = 0 ; i < TempList.items ; i++ )
-		{
-			strcpy( Source->item[i] , &TempList.item[i][0]);
-		}
-		Source->items = TempList.items;
-		Source->top_item = 0;
-		Source->display_items = MAX_PLAYERS;
-		Source->selected_item = -1;
-
-		//strcpy( Dest->item[Dest->items] , &TempItem[0]);
-		//Dest->items++;
-
-		// *** changed to put new item at top of list, so it is always visible ***
-
-		TempList = *Dest;
-
-		Dest->items = 0;
-		Dest->top_item = 0;
-		Dest->selected_item = 0;
-
-		strcpy( Dest->item[Dest->items++], &TempItem[0]);
-
-		for (i = 0; i < TempList.items; i++ )
-		{
-			strcpy( Dest->item[Dest->items++], TempList.item[i]);
-		}
-	}
-
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:	Swap a Teasm id from 1 list to another..
-	Input		:	MENUITEM * Item
-	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void SwapTeamIDs( LIST * Source , LIST * Dest )
-{
-	int i,e, sourceteam, destteam;
-	network_id_t	TempID;
-	network_id_t	TempIDs[MAX_PLAYERS];
-	network_id_t	*SourceIDs;
-	network_id_t	*DestIDs;
-
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-		TempIDs[i] = 0;
-	}
-
-	sourceteam = 0;
-	destteam = 0;
-	
-	for (i = 0; i < MAX_TEAMS; i++)
-	{
-		if (Source == &TeamList[i])
-		{
-			SourceIDs = TeamIDs[i];
-			sourceteam = i;
-		}
-		if (Dest == &TeamList[i])
-		{
-			DestIDs = TeamIDs[i];
-			destteam = i;
-		}
-	}
-
-	TempID = SourceIDs[Source->selected_item];
-
-	e = 0;
-	for( i = 0 ; i < TeamMembers[sourceteam]; i++ )
-	{
-		if( i != Source->selected_item )
-		{
-			TempIDs[e] = SourceIDs[i];
-			e++;
-		}
-	}
-	for( i = 0 ; i < e ; i++ )
-	{
-		SourceIDs[i] = TempIDs[i];
-	}
-
-	e = 0;
-	DestIDs[TeamMembers[destteam]] = TempID;
-
-	TeamMembers[sourceteam]--;
-	TeamMembers[destteam]++;
-
 }
 
 void CheckForMenuChange(int *dummy)

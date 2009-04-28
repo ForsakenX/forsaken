@@ -89,7 +89,6 @@ typedef enum
 	MENUSTATE_WeaponOrder,
 	MENUSTATE_SelectLevelQuick,
 	MENUSTATE_SelectLevelSlow,
-	MENUSTATE_PlaceTeamMember,
 	MENUSTATE_DifficultySet,
 	MENUSTATE_SelectSavedGame,
 	MENUSTATE_SelectKeydef,
