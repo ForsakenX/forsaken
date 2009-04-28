@@ -540,7 +540,6 @@ void	SelectListPrevPage( LIST *l );
 void	SelectListHome( LIST *l );
 void	SelectListEnd( LIST *l );
 void	SelectListSearch( LIST *l, char *keyword );
-void	SelectListItem( LIST *l );
 void	CancelListSelection( LIST *l );
 void	SelectText( MENUITEM *Item );
 void	DrawTextItem( MENUITEM *Item );

@@ -7497,7 +7497,6 @@ BOOL ProcessList( int Key )
 	
 	case DIK_LBUTTON:
 	case DIK_RETURN:
-			//SelectListItem( CurrentList );
 			FuncSet = (MenuItemFunc) CurrentMenuItem->Value;
 			if ( FuncSet )
 			{
@@ -9797,22 +9796,6 @@ void SelectListSearch( LIST *l, char *keyword )
 			l->top_item = l->selected_item;
 		else
 			l->top_item = l->items - l->display_items + 1;
-	}
-}
-
-
-void SelectListItem( LIST *l )
-{
-	// fill this in if selection function needs to be called...
-	if( l == &TeamList[0] )
-	{
-		SwapTeamIDs( &TeamList[0] , &TeamList[1] );
-		SwapListItem( &TeamList[0] , &TeamList[1] );
-	}
-	if( l == &TeamList[1] )
-	{
-		SwapTeamIDs( &TeamList[1] , &TeamList[0] );
-		SwapListItem( &TeamList[1] , &TeamList[0] );
 	}
 }
 
@@ -18107,9 +18090,7 @@ void HostListPlayerSelected( MENUITEM *Item )
 void InitHostWaitingToStart( MENU *Menu )
 {
 	GetInitialPlayers( Menu );
-} 
-
-extern	network_id_t					my_network_id;    // player id
+}
 
 BOOL GeneralTimeout( float *timer )
 {
