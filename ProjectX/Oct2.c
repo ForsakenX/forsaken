@@ -4326,7 +4326,9 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     {
       Browl = 30.0F;
       if( TeamGame &&  (OverallGameStatus == STATUS_Normal) )
+	  {
 		  //SendGameMessage(MSG_SENDKILLSDEATHSBIKENUM, 0, 0, 0, 0);
+	  }
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
