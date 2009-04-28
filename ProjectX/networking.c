@@ -64,8 +64,6 @@ extern MENU  * GetPlayerNumMenu;
 
 extern int FontHeight;
 
-extern network_id_t	PlayerIDs[ MAX_PLAYERS ];
-
 extern	int16	PickupsGot[ MAXPICKUPTYPES ];
 extern	uint32	TeamFlagMask[ MAX_TEAMS ];
 extern	int8	TeamFlagPickup[ MAX_TEAMS ];
@@ -790,42 +788,35 @@ void PrimBullPosDirSend( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8
 						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
 						int16 PowerLevel, float PLevel )
 {
-	if( my_network_id != 0 )
-	{
-
-		TempPrimBullPosDir.OwnerType = OwnerType;
-		TempPrimBullPosDir.OwnerID = OwnerID;
-		TempPrimBullPosDir.BulletID = BulletID;
-		TempPrimBullPosDir.Weapon = Weapon;
-		TempPrimBullPosDir.Group = Group;
-		TempPrimBullPosDir.Pos = *Pos;
-		TempPrimBullPosDir.Offset = *Offset;
-		TempPrimBullPosDir.Dir = *Dir;
-		TempPrimBullPosDir.Up = *Up;
-		TempPrimBullPosDir.PowerLevel = PowerLevel;
-		TempPrimBullPosDir.PLevel = PLevel;
-		SendGameMessage(MSG_PRIMBULLPOSDIR, 0, 0, 0, 0);
-	}
+	TempPrimBullPosDir.OwnerType = OwnerType;
+	TempPrimBullPosDir.OwnerID = OwnerID;
+	TempPrimBullPosDir.BulletID = BulletID;
+	TempPrimBullPosDir.Weapon = Weapon;
+	TempPrimBullPosDir.Group = Group;
+	TempPrimBullPosDir.Pos = *Pos;
+	TempPrimBullPosDir.Offset = *Offset;
+	TempPrimBullPosDir.Dir = *Dir;
+	TempPrimBullPosDir.Up = *Up;
+	TempPrimBullPosDir.PowerLevel = PowerLevel;
+	TempPrimBullPosDir.PLevel = PLevel;
+	SendGameMessage(MSG_PRIMBULLPOSDIR, 0, 0, 0, 0);
 }
 
 void SecBullPosDirSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
 					    VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * UpVector,
 						VECTOR * DropDir, int8 Weapon )
 {
-	if( my_network_id != 0 )
-	{
-		TempSecBullPosDir.OwnerType = OwnerType;
-		TempSecBullPosDir.Owner = Owner;
-		TempSecBullPosDir.BulletID = BulletID;
-		TempSecBullPosDir.Group = Group;
-    	TempSecBullPosDir.Pos = *Pos;
-		TempSecBullPosDir.Offset = *Offset;
-		TempSecBullPosDir.Dir = *Dir;
-		TempSecBullPosDir.UpVector = *UpVector;
-		TempSecBullPosDir.DropDir = *DropDir;
-		TempSecBullPosDir.Weapon = Weapon;
-		SendGameMessage(MSG_SECBULLPOSDIR, 0, 0, 0, 0);
-	}
+	TempSecBullPosDir.OwnerType = OwnerType;
+	TempSecBullPosDir.Owner = Owner;
+	TempSecBullPosDir.BulletID = BulletID;
+	TempSecBullPosDir.Group = Group;
+	TempSecBullPosDir.Pos = *Pos;
+	TempSecBullPosDir.Offset = *Offset;
+	TempSecBullPosDir.Dir = *Dir;
+	TempSecBullPosDir.UpVector = *UpVector;
+	TempSecBullPosDir.DropDir = *DropDir;
+	TempSecBullPosDir.Weapon = Weapon;
+	SendGameMessage(MSG_SECBULLPOSDIR, 0, 0, 0, 0);
 }
 
 void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Group,
@@ -834,22 +825,19 @@ void TitanBitsSend( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 Grou
 {
 	int16	Count;
 
-	if( my_network_id != 0 )
-	{
-		TempTitanBits.OwnerType = OwnerType;
-		TempTitanBits.Owner		= Owner;
-		TempTitanBits.BulletID		= BulletID;
-		TempTitanBits.Group			= Group;
-    	TempTitanBits.Pos			= *Pos;
-		TempTitanBits.Offset		= *Offset;
-		TempTitanBits.UpVector	= *UpVector;
-		TempTitanBits.DropDir		= *DropDir;
-		TempTitanBits.Weapon		= Weapon;
-		for( Count = 0; Count < NUMTITANBITS; Count++ )
-			TempTitanBits.Directions[ Count ] = Directions[ Count ];
+	TempTitanBits.OwnerType = OwnerType;
+	TempTitanBits.Owner		= Owner;
+	TempTitanBits.BulletID		= BulletID;
+	TempTitanBits.Group			= Group;
+	TempTitanBits.Pos			= *Pos;
+	TempTitanBits.Offset		= *Offset;
+	TempTitanBits.UpVector	= *UpVector;
+	TempTitanBits.DropDir		= *DropDir;
+	TempTitanBits.Weapon		= Weapon;
+	for( Count = 0; Count < NUMTITANBITS; Count++ )
+		TempTitanBits.Directions[ Count ] = Directions[ Count ];
 
-		SendGameMessage(MSG_TITANBITS, 0, 0, 0, 0);
-	}
+	SendGameMessage(MSG_TITANBITS, 0, 0, 0, 0);
 }
 
 void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * Dir, float Force, BYTE WeaponType, BYTE Weapon, BOOL FramelagRecoil )
@@ -857,48 +845,45 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 	VECTOR	Recoil_Off;		
 	if( Ships[ you ].Object.Mode != LIMBO_MODE )
 	{
-		if( my_network_id != 0 )
+		if( !UseShortPackets )
 		{
-			if( !UseShortPackets )
-			{
-				if( FramelagRecoil ) TempShipHit.OneOffExternalForce = TRUE;
-				else TempShipHit.OneOffExternalForce = FALSE;
-				TempShipHit.Damage = Damage;
-				TempShipHit.Recoil = *Recoil;
-				TempShipHit.Point = *Point;
-				TempShipHit.Point.x -= Ships[ you ].Object.Pos.x;
-				TempShipHit.Point.y -= Ships[ you ].Object.Pos.y;
-				TempShipHit.Point.z -= Ships[ you ].Object.Pos.z;
-				TempShipHit.Dir = *Dir;
-				TempShipHit.Force = Force;
-				TempShipHit.WeaponType = WeaponType;
-				TempShipHit.Weapon = Weapon;
-				SendGameMessage( MSG_SHIPHIT , Ships[you].network_id , you , 0 , 0 );
-			}
-			else
-			{
-				if( FramelagRecoil ) ShortTempShipHit.OneOffExternalForce = 1;
-				else ShortTempShipHit.OneOffExternalForce = 0;
-				ShortTempShipHit.Damage = Damage;
+			if( FramelagRecoil ) TempShipHit.OneOffExternalForce = TRUE;
+			else TempShipHit.OneOffExternalForce = FALSE;
+			TempShipHit.Damage = Damage;
+			TempShipHit.Recoil = *Recoil;
+			TempShipHit.Point = *Point;
+			TempShipHit.Point.x -= Ships[ you ].Object.Pos.x;
+			TempShipHit.Point.y -= Ships[ you ].Object.Pos.y;
+			TempShipHit.Point.z -= Ships[ you ].Object.Pos.z;
+			TempShipHit.Dir = *Dir;
+			TempShipHit.Force = Force;
+			TempShipHit.WeaponType = WeaponType;
+			TempShipHit.Weapon = Weapon;
+			SendGameMessage( MSG_SHIPHIT , Ships[you].network_id , you , 0 , 0 );
+		}
+		else
+		{
+			if( FramelagRecoil ) ShortTempShipHit.OneOffExternalForce = 1;
+			else ShortTempShipHit.OneOffExternalForce = 0;
+			ShortTempShipHit.Damage = Damage;
 
-				Recoil_Off = *Recoil;
-				NormaliseVector( &Recoil_Off );
-				ShortTempShipHit.Recoil_Scalar = (uint16) ( 256.0F * VectorLength( Recoil ) );
-				ShortTempShipHit.Recoil.x = (int16) (Recoil_Off.x * 32767.0F);
-				ShortTempShipHit.Recoil.y = (int16) (Recoil_Off.y * 32767.0F);
-				ShortTempShipHit.Recoil.z = (int16) (Recoil_Off.z * 32767.0F);
-				ShortTempShipHit.Point.x = (int16)(Point->x - Ships[ you ].Object.Pos.x);
-				ShortTempShipHit.Point.y = (int16)(Point->y - Ships[ you ].Object.Pos.y);
-				ShortTempShipHit.Point.z = (int16)(Point->z - Ships[ you ].Object.Pos.z);
-				ShortTempShipHit.Dir.x = (int16) (Dir->x * 32767.0F);
-				ShortTempShipHit.Dir.y = (int16) (Dir->y * 32767.0F);
-				ShortTempShipHit.Dir.z = (int16) (Dir->z * 32767.0F);
-				ShortTempShipHit.Force = Force;
-				ShortTempShipHit.WeaponType = WeaponType;
-				ShortTempShipHit.Weapon = Weapon;
-				SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].network_id , you , 0 , 0 );
+			Recoil_Off = *Recoil;
+			NormaliseVector( &Recoil_Off );
+			ShortTempShipHit.Recoil_Scalar = (uint16) ( 256.0F * VectorLength( Recoil ) );
+			ShortTempShipHit.Recoil.x = (int16) (Recoil_Off.x * 32767.0F);
+			ShortTempShipHit.Recoil.y = (int16) (Recoil_Off.y * 32767.0F);
+			ShortTempShipHit.Recoil.z = (int16) (Recoil_Off.z * 32767.0F);
+			ShortTempShipHit.Point.x = (int16)(Point->x - Ships[ you ].Object.Pos.x);
+			ShortTempShipHit.Point.y = (int16)(Point->y - Ships[ you ].Object.Pos.y);
+			ShortTempShipHit.Point.z = (int16)(Point->z - Ships[ you ].Object.Pos.z);
+			ShortTempShipHit.Dir.x = (int16) (Dir->x * 32767.0F);
+			ShortTempShipHit.Dir.y = (int16) (Dir->y * 32767.0F);
+			ShortTempShipHit.Dir.z = (int16) (Dir->z * 32767.0F);
+			ShortTempShipHit.Force = Force;
+			ShortTempShipHit.WeaponType = WeaponType;
+			ShortTempShipHit.Weapon = Weapon;
+			SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].network_id , you , 0 , 0 );
 
-			}
 		}
 	}
 }
@@ -906,91 +891,77 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 
 void	DropPickupSend( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 IDCount, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
 {
-	if( my_network_id != 0 )
+	if( !UseShortPackets )
 	{
-		if( !UseShortPackets )
-		{
-			TempPickup.IDCount = IDCount;
-			TempPickup.Type = Type;
-			TempPickup.Group = Group;
-			TempPickup.Pos = *Pos;
-			TempPickup.Dir = *Dir;
-			TempPickup.Speed = Speed;
-			TempPickup.RegenSlot = RegenSlot;
-			TempPickup.Sparkle = Sparkle;
-			TempPickup.LifeCount = LifeCount;
-			TempPickup.TriggerMod = TriggerMod;
-			SendGameMessage( MSG_DROPPICKUP, 0, 0, 0, 0 );
-		}else{
-			VeryShortTempPickup.IDCount = IDCount;
-			VeryShortTempPickup.Type = (BYTE)Type;
-			VeryShortTempPickup.Group = (BYTE) Group;
-			VeryShortTempPickup.Pos.x = (int16) Pos->x;
-			VeryShortTempPickup.Pos.y = (int16) Pos->y;
-			VeryShortTempPickup.Pos.z = (int16) Pos->z;
-			VeryShortTempPickup.Dir.x = (int16) (Dir->x * 32767.0F);
-			VeryShortTempPickup.Dir.y = (int16) (Dir->y * 32767.0F);
-			VeryShortTempPickup.Dir.z = (int16) (Dir->z * 32767.0F);
-			VeryShortTempPickup.Speed = Speed;
-			VeryShortTempPickup.RegenSlot = (BYTE) RegenSlot;
-			VeryShortTempPickup.Sparkle = Sparkle;
-			VeryShortTempPickup.LifeCount = LifeCount;
-			VeryShortTempPickup.TriggerMod = TriggerMod;
-			SendGameMessage( MSG_VERYSHORTDROPPICKUP, 0, 0, 0, 0 );
-		}
+		TempPickup.IDCount = IDCount;
+		TempPickup.Type = Type;
+		TempPickup.Group = Group;
+		TempPickup.Pos = *Pos;
+		TempPickup.Dir = *Dir;
+		TempPickup.Speed = Speed;
+		TempPickup.RegenSlot = RegenSlot;
+		TempPickup.Sparkle = Sparkle;
+		TempPickup.LifeCount = LifeCount;
+		TempPickup.TriggerMod = TriggerMod;
+		SendGameMessage( MSG_DROPPICKUP, 0, 0, 0, 0 );
+	}else{
+		VeryShortTempPickup.IDCount = IDCount;
+		VeryShortTempPickup.Type = (BYTE)Type;
+		VeryShortTempPickup.Group = (BYTE) Group;
+		VeryShortTempPickup.Pos.x = (int16) Pos->x;
+		VeryShortTempPickup.Pos.y = (int16) Pos->y;
+		VeryShortTempPickup.Pos.z = (int16) Pos->z;
+		VeryShortTempPickup.Dir.x = (int16) (Dir->x * 32767.0F);
+		VeryShortTempPickup.Dir.y = (int16) (Dir->y * 32767.0F);
+		VeryShortTempPickup.Dir.z = (int16) (Dir->z * 32767.0F);
+		VeryShortTempPickup.Speed = Speed;
+		VeryShortTempPickup.RegenSlot = (BYTE) RegenSlot;
+		VeryShortTempPickup.Sparkle = Sparkle;
+		VeryShortTempPickup.LifeCount = LifeCount;
+		VeryShortTempPickup.TriggerMod = TriggerMod;
+		SendGameMessage( MSG_VERYSHORTDROPPICKUP, 0, 0, 0, 0 );
 	}
 }
 
 void	KillPickupSend( uint16 Owner, uint16 IDCount, int16 Style )
 {
-	if( my_network_id != 0 )
-	{
-		TempKillPickup.Owner = Owner;
-		TempKillPickup.IDCount = IDCount;
-		TempKillPickup.Style = Style;
-		SendGameMessage( MSG_KILLPICKUP, 0, 0, 0, 0 );
-	}
+	TempKillPickup.Owner = Owner;
+	TempKillPickup.IDCount = IDCount;
+	TempKillPickup.Style = Style;
+	SendGameMessage( MSG_KILLPICKUP, 0, 0, 0, 0 );
 }
 
 void	TeamGoalsSend( uint16 * TeamGoals )
 {
-	if( my_network_id != 0 )
-	{
-		int i;
-
-		for( i = 0; i < MAX_TEAMS; i++ ) TempTeamGoals.TeamGoals[ i ] = TeamGoals[ i ];
-		SendGameMessage( MSG_TEAMGOALS, 0, 0, 0, 0 );
-	}
+	int i;
+	for( i = 0; i < MAX_TEAMS; i++ ) TempTeamGoals.TeamGoals[ i ] = TeamGoals[ i ];
+	SendGameMessage( MSG_TEAMGOALS, 0, 0, 0, 0 );
 }
 
 void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 Group, float ShockwaveSize, BYTE Weapon )
 {
 	float dist;
 	int i;
-	//char mess[30];
 
-	if( my_network_id != 0 )
+	TempShockwave.Owner = Owner;
+	TempShockwave.Pos = *Pos;
+	TempShockwave.Group = Group;
+	TempShockwave.Weapon = Weapon;
+	TempShockwave.ShockwaveSize = ShockwaveSize;
+
+
+	// for every player in the game
+	for(i = 0; i < MAX_PLAYERS; i++)
 	{
-		TempShockwave.Owner = Owner;
-		TempShockwave.Pos = *Pos;
-		TempShockwave.Group = Group;
-		TempShockwave.Weapon = Weapon;
-		TempShockwave.ShockwaveSize = ShockwaveSize;
-
-
-		// for every player in the game
-		for(i = 0; i < MAX_PLAYERS; i++)
+		// excluding myself and those who aren't in normal mode
+		if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
 		{
-			// excluding myself and those who aren't in normal mode
-			if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
+			// if they are close to me
+			dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
+			if( (dist >= 0.0F) && ( dist <= 500.0F ))
 			{
-				// if they are close to me
-				dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
-				if( (dist >= 0.0F) && ( dist <= 500.0F ))
-				{
-					// send them shockwave
-					SendGameMessage(MSG_SHOCKWAVE, Ships[i].network_id, 0, 0, 0 );
-				}
+				// send them shockwave
+				SendGameMessage(MSG_SHOCKWAVE, Ships[i].network_id, 0, 0, 0 );
 			}
 		}
 	}
@@ -998,40 +969,28 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 
 void	UpdateBGObjectSend( uint16 BGObject, int16 State, float Time )
 {
-	if( my_network_id != 0 )
-	{
-		TempBGOUpdate.BGObject = BGObject;
-		TempBGOUpdate.State = State;
-		TempBGOUpdate.Time = Time;
-		SendGameMessage( MSG_BGOUPDATE, 0, 0, 0, 0 );
-	}
+	TempBGOUpdate.BGObject = BGObject;
+	TempBGOUpdate.State = State;
+	TempBGOUpdate.Time = Time;
+	SendGameMessage( MSG_BGOUPDATE, 0, 0, 0, 0 );
 }
 
 void	ShipDiedSend( BYTE WeaponType, BYTE Weapon )
 {
-	if( my_network_id != 0 )
-	{
-		TempDied.WeaponType = WeaponType;
-		TempDied.Weapon = Weapon;
-		SendGameMessage( MSG_SHIPDIED, 0, 0, 0, 0 );
-	}
+	TempDied.WeaponType = WeaponType;
+	TempDied.Weapon = Weapon;
+	SendGameMessage( MSG_SHIPDIED, 0, 0, 0, 0 );
 }
 
 void	RequestTime( void  )
 {
-	if( my_network_id != 0 )
-	{
-		SendGameMessage( MSG_REQTIME, 0, 0, 0, 0 );
-	}
+	SendGameMessage( MSG_REQTIME, 0, 0, 0, 0 );
 }
 
 void	SetTime( float Time )
 {
-	if( my_network_id != 0 )
-	{
-		TempTimeSet.Time = Time;
-		SendGameMessage( MSG_SETTIME, 0, 0, 0, 0 );
-	}
+	TempTimeSet.Time = Time;
+	SendGameMessage( MSG_SETTIME, 0, 0, 0, 0 );
 }
 
 // (stats.c)
@@ -1206,7 +1165,7 @@ void DestroyGame( void )
 	MyGameStatus = STATUS_Left;
 	IsHost = FALSE;
 
-    if ( ( my_network_id != 0 ) && ( WhoIAm < MAX_PLAYERS ) )
+    if ( WhoIAm < MAX_PLAYERS )
     {
 		DebugPrintf("Destroy game pos 1\n");
 
@@ -1220,16 +1179,11 @@ void DestroyGame( void )
 		ResetAllStats(); // stats.c
 
 		network_cleanup();
-		my_network_id = 0;
 
 	}
 	else
 	{
-		if( my_network_id )
-		{
-			network_cleanup();
-			my_network_id = 0;
-		}
+		network_cleanup();
 	}
 
 	if( Debug && DS )
@@ -1401,7 +1355,7 @@ void network_event_player_joined( network_id_t id, char * player_name )
 	DebugPrintf("network_event_player_joined\n");
 	
 	// we have joined the game
-	if( id == my_network_id )
+	if( player_name == NULL )
 	{
 		DebugPrintf("We have joined the game...\n");
 		PlayDemo = FALSE;
