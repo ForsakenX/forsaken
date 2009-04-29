@@ -2,8 +2,7 @@
 #ifndef AI_H
 #define AI_H
 
-//#include "util.h"
-extern void DebugPrintf( const char * format, ... );
+#include "util.h"
 
 //--------------------------------------------------------------------------
 // Define AI modes
