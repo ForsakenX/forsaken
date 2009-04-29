@@ -1,3 +1,5 @@
+#ifdef NET_DPLAY
+
 #define INITGUID
 #define WIN32_EXTRA_LEAN
 #define IDIRECTPLAY2_OR_GREATER
@@ -716,3 +718,5 @@ FAILURE:
 
 	return 0;
 }
+
+#endif
