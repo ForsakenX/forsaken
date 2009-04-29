@@ -1377,7 +1377,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 	int			num_faces;
 #endif
 	MCFACE	*	CollFace;
-	float		Distance;
+	float		Distance = 0;
 	float		D;
 	VECTOR		Dn;
 	float		C;
