@@ -231,6 +231,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				Optimization="2"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories=".\;enet\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
@@ -242,7 +243,7 @@
 				ObjectFile=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				SuppressStartupBanner="true"
-				CallingConvention="1"
+				CallingConvention="0"
 				CompileAs="0"
 			/>
 			<Tool
