@@ -354,6 +354,7 @@ static void new_packet( ENetEvent * event )
 	if ( event->channelID == system_channel )
 	{
 		p2p_packet_t * packet = ((p2p_packet_t *) event->packet->data);
+		//DebugPrintf("new_packet: system message\n");
 		switch( packet->type )
 		{
 		case NAME:
@@ -415,6 +416,7 @@ static void new_packet( ENetEvent * event )
 	else if( event->peer->data != NULL ) // network_player_t
 	{
 		network_packet_t packet;
+		//DebugPrintf("new_packet: application message\n");
 		packet.size = (int) event->packet->dataLength;
 		packet.data = (void*) event->packet->data;
 		packet.from = (network_player_t*) event->peer->data;
@@ -492,7 +494,8 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 	}
 	for( x = 0; x < enet_socket->peerCount; x++ )
 		if( enet_socket->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_socket->peers[x], packet, channel, FLUSH );
+			enet_send_packet( &enet_socket->peers[x], packet, channel, NO_FLUSH );
+	enet_host_flush( enet_socket );
 }
 
 void network_pump()
@@ -534,7 +537,8 @@ void network_set_player_name( char* name )
 	}
 	for( x = 0; x < enet_socket->peerCount; x++ )
 		if( enet_socket->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_socket->peers[x], packet, system_channel, FLUSH );
+			enet_send_packet( &enet_socket->peers[x], packet, system_channel, NO_FLUSH );
+	enet_host_flush( enet_socket );
 }
 
 #endif
