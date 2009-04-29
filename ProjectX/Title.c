@@ -1835,7 +1835,7 @@ void CheckJoinStatus( int * i )
 		network_join( TCPAddress.text, 2300 );
 
 	// process network routines
-	network_pump();
+	ReceiveGameMessages();
 
 	switch( network_state )
 	{
