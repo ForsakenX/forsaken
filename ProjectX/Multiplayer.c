@@ -334,10 +334,8 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	Ships[WhoIAm].Mines = 0;
 	Ships[WhoIAm].Triggers = 0;
 	Ships[WhoIAm].TrigVars = 0;
-	
-	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-	Names[WhoIAm][7] = 0;
+
+    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , MAXSHORTNAME );
 	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	
 	NewLevelNum = LevelList.selected_item;	// I Select Which Level We Start on...

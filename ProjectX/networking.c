@@ -368,7 +368,6 @@ extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-network_player_t * from_network_player = NULL;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
 extern	int16	NumOrbs;
@@ -552,17 +551,6 @@ void set_player_name( void )
 		Names[WhoIAm][i] = biker_name[i];
 	Names[WhoIAm][7] = 0;
 	network_set_player_name(&biker_name[0]);
-}
-
-BOOL CheckForName( BYTE Player )
-{
-	if( Names[Player][0] == 0 )
-	{
-		strncpy( Names[Player], from_network_player->name, MAXSHORTNAME );
-		Names[Player][MAXSHORTNAME-1] = 0;
-		return TRUE;
-	} 
-	return FALSE;
 }
 
 void SendANormalUpdate( void )
@@ -1364,7 +1352,6 @@ void network_event_new_host( network_player_t * player )
 
 void network_event_player_joined( network_player_t * player )
 {
-	int i;
 	DebugPrintf("network_event_player_joined\n");
 	
 	// we have joined the game
@@ -1395,32 +1382,18 @@ void network_event_player_joined( network_player_t * player )
 	// someone else joined the game
 	else
 	{
+		DebugPrintf("network_event_player_joined: player '%s' joined the game.\n", player->name);
 		if( MyGameStatus == STATUS_Normal && !TeamGame )
 		{
 			sprintf( (char*) &tempstr[0] ,"%s %s", player->name, IS_JOINING_THE_GAME );
 			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 		}
-
-		// cleanup any names that aren't in my state
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			if( ( i != WhoIAm ) && ( GameStatus[i] != MyGameStatus ) )
-				Names[i][0] = 0;
-
-		// set the players name in globals
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
-				if( Names[i][0] == 0 )
-				{
-					strncpy( &Names[i][0], &player->name[0], MAXSHORTNAME );
-					Names[i][MAXSHORTNAME-1] = 0;
-				}
 	}
 }
 
 void network_event_new_message( network_player_t * from, BYTE * data, int size )
 {
-	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
-	from_network_player = from;
+	//DebugPrintf("network_event_new_message: type = %s\n",msg_to_str(*data));
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 #ifdef DEMO_SUPPORT
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
@@ -1436,7 +1409,7 @@ void network_event_new_message( network_player_t * from, BYTE * data, int size )
 	if ( RecPacketSize > MaxRecPacketSize )
 		MaxRecPacketSize = RecPacketSize;
 	BytesPerSecRec += size;
-    EvaluateMessage( size, data );
+    EvaluateMessage( from, size, data );
 }
 
 void network_event( network_event_type_t type, void* data )
@@ -1525,7 +1498,7 @@ void ReceiveGameMessages( void )
 	}
 }
 
-void EvaluateMessage( DWORD len , BYTE * MsgPnt )
+void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 {
     LPUPDATEMSG							lpUpdate;
     LPVERYSHORTUPDATEMSG			lpVeryShortUpdate;
@@ -1960,8 +1933,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			// ...and need to get host game status...
 			if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
-			// ...and need to get names...
-			CheckForName( lpVeryShortUpdate->WhoIAm );
 			// ...and fill out GameStatus
 			GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
 			return;
@@ -2011,8 +1982,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
-				
-				Ships[lpVeryShortUpdate->WhoIAm].network_player = from_network_player;
 				
 #ifdef DEMO_SUPPORT
 					if( CheckForName( lpVeryShortUpdate->WhoIAm ) )
@@ -2068,8 +2037,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			// ...and need to get host game status...
 			if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-			// ...and need to get names...
-			CheckForName( lpUpdate->WhoIAm );
 			return;
 		}
 		else
@@ -2113,8 +2080,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-				
-				Ships[lpUpdate->WhoIAm].network_player = from_network_player;
 
 				if( !Ships[lpUpdate->WhoIAm].FirstPacketRecieved  )
 				{
@@ -2256,7 +2221,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( IsHost && !PlayDemo )
 		{
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
-			SendGameMessage(MSG_INIT, from_network_player, msg->WhoIAm, 0, 0);
+			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, 0);
 
 			// BUG: why is this sent to everyone ?
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -2266,7 +2231,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
-		host_network_player = from_network_player;
+		host_network_player = from;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		NetUpdateInterval = lpInit->NetUpdateInterval;
@@ -2841,9 +2806,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 			TeamNumber[lpStatus->WhoIAm]	= lpStatus->TeamNumber;
 			PlayerReady[lpStatus->WhoIAm]		= lpStatus->IAmReady;
 
-		// make sure name field gets filled in...
-		CheckForName( lpStatus->WhoIAm );
-
 #ifdef DEMO_SUPPORT
 			if( !PlayDemo )
 			{
@@ -2952,9 +2914,6 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
    		}
 		TeamNumber[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.TeamNumber;
 		PlayerReady[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.IAmReady;
-
-		// make sure name field gets filled in...
-		CheckForName( lpLongStatus->Status.WhoIAm );
 
 #ifdef DEMO_SUPPORT
 		if( !PlayDemo )
@@ -3454,9 +3413,9 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				// setup player
 				InitShipStructure( new_player_id, TRUE );
 				GameStatus[new_player_id]			= STATUS_GetPlayerNum;
-				Names[new_player_id][0]				= 0;
 				TeamNumber[new_player_id]			= 0;
 				Ships[new_player_id].network_player	= to;
+				strncpy( &Names[new_player_id][0], &to->name[0], MAXSHORTNAME );
 				
 				// set rest of values
 

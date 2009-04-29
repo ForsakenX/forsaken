@@ -972,7 +972,7 @@ typedef struct _REQTIMEMSG
  */
 void	DestroyGame( void );
 void	SendGameMessage( BYTE msg, network_player_t * to, BYTE row, BYTE col, BYTE mask );
-void	EvaluateMessage( DWORD len , BYTE * MsgPnt );
+void	EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt );
 void	ReceiveGameMessages( void );
 void	initShip( uint16 i );
 void	NetworkGameUpdate();
