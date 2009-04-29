@@ -1,15 +1,17 @@
 #ifndef VERSION_HEADER
 #define VERSION_HEADER
 
-#define PXV	"1"	// base version
-#define PXMPV	"05"	// multi player version
-#define PXRV	"786"	// revision
-#define PXBV	"1"	// build flag (official releases should NOT use this flag)
+#define PXV		"1"		// base version
+#define PXMPV	"9"		// multi player version
+#define PXRV	"860"	// revision
+#define PXBV	"enet-1"		// build flag (official releases should NOT use this flag)
+
+#define PXMPVINT 19  // PXV and PXMPV this is sent over network to verify multiplayer compatability
 
 #ifdef PXBV
-#define ProjectXVersion			"ProjectX " PXV "." PXMPV "." PXRV
-#else
 #define ProjectXVersion			"ProjectX " PXV "." PXMPV "." PXRV "-" PXBV
+#else
+#define ProjectXVersion			"ProjectX " PXV "." PXMPV "." PXRV
 #endif
 
 #define ProjectXVersionTip		"SHIFT + F12 Fullscreen - Pause/Break to toggle mouse"
