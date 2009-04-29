@@ -1254,7 +1254,6 @@ void network_event_player_name( network_player_t * player )
 		if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 		{
 			strncpy( &Names[i][0], &player->name[0], MAXSHORTNAME );
-			Names[i][MAXSHORTNAME-1] = 0;
 			DebugPrintf("Recieved name %s from player %d\n", &Names[i][0], i);
 			NextworkOldBikeNum = -1;
 			return;
@@ -2221,7 +2220,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		if( IsHost && !PlayDemo )
 		{
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
-			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, 0);
+			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, msg->MPVersion);
 
 			// BUG: why is this sent to everyone ?
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -2231,6 +2230,13 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
+
+		if( WhoIAm == 0xff && lpInit->YouAre > MAX_PLAYERS)
+		{
+			WhoIAm = lpInit->YouAre;
+			return;
+		}
+
 		host_network_player = from;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
@@ -3321,6 +3327,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpHereIAm = (LPHEREIAMMSG)&CommBuff[0];
         lpHereIAm->MsgCode = msg;
         lpHereIAm->WhoIAm = WhoIAm;
+		lpHereIAm->MPVersion = PXMPVINT;
 		nBytes = sizeof( HEREIAMMSG );
         break;
 
@@ -3338,6 +3345,12 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		nBytes = sizeof( INITMSG );
 		lpInit = (LPINITMSG)&CommBuff[0];
 		lpInit->MsgCode	= msg;
+
+		if( PXMPVINT != mask )
+		{
+			lpInit->YouAre = MAX_PLAYERS+3; // bad version
+			goto send;
+		}
 
 		lpInit->WhoIAm					= WhoIAm;
 		lpInit->Seed1					= CopyOfSeed1;
@@ -3892,6 +3905,9 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		to = Ships[ShipNum].network_player;
 		break;
 	}
+
+// goto send if you want to break out of the switch
+send:
 	
 	// only record if message is sent to whole of the group....
 #ifdef DEMO_SUPPORT

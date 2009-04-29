@@ -4539,6 +4539,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( WhoIAm != 0xff )
     {
+		DebugPrintf("WhoIAm: %d\n",WhoIAm);
       if( WhoIAm == MAX_PLAYERS )
       {
         PrintErrorMessage ( "The Game is Currently Un-Joinable", 3, NULL, ERROR_USE_MENUFUNCS );
@@ -4554,6 +4555,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       if( WhoIAm == MAX_PLAYERS+2 )
       {
         PrintErrorMessage ( "The Game is Full", 3, NULL, ERROR_USE_MENUFUNCS );
+        MyGameStatus = STATUS_Title;
+        break;
+      }
+	  if( WhoIAm == MAX_PLAYERS+3 )
+      {
+		PrintErrorMessage ( "You do have the right version.", 3, NULL, ERROR_USE_MENUFUNCS );
         MyGameStatus = STATUS_Title;
         break;
       }

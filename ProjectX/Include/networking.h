@@ -704,6 +704,7 @@ typedef struct _HEREIAMMSG
 {
     BYTE		MsgCode;
     BYTE		WhoIAm;
+	BYTE		MPVersion;
 } HEREIAMMSG, *LPHEREIAMMSG;
 
 // later we should probably shove these all into a bit stream
