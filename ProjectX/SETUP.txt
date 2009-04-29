@@ -14,8 +14,6 @@ Environment Variables:
 
   MSSDK_DIR = C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
 
-  ENET_DIR = (the path to enet source: read bellow)
-
   NOTE: Restart Visual Studio
 
 Visual Studio Directories:
@@ -25,21 +23,9 @@ Visual Studio Directories:
     $(MSSDK_DIR)\include
     $(MSSDK_DIR)\include\mfc
 
-    $(ENET_DIR)\include
-
-  Library Files:
-
-    $(ENET_DIR)\include
-
 Templates:
 
   Copy *.template files to their basename's and edit their contents
-
-Enet
-
-  You must provide an enet directory that includes the header files and enet.lib
-
-  The enet source provides a visual studio's project file that can be easilly converted and used to build enet.lib
 
 Debugging:
 
