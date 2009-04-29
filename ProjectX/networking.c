@@ -1130,6 +1130,8 @@ void InitShipStructure( int i , BOOL ResetScore )
 		ResetIndividualStats(i); // (stats.c)
 
 	for( Count = 0; Count < 12; Count++ ) Ships[i].TempLines[ Count ] = (uint16) -1;
+
+	Ships[i].network_player = NULL;
 }
 
 
@@ -1243,6 +1245,14 @@ void smallinitShip( uint16 i )
 	{
 		InitShipStartPos( i, 0 );
 	}
+}
+
+void UpdatePlayer( network_player_t * from, BYTE player )
+{
+	if( ! Ships[player].network_player )
+		Ships[player].network_player = from;
+	if( Names[player][0] == 0 )
+		strncpy( Names[player], from->name, MAXSHORTNAME );
 }
 
 void network_event_player_name( network_player_t * player )
@@ -1932,6 +1942,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			// ...and need to get host game status...
 			if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
+			// update network pointer and name
+			UpdatePlayer( from, lpVeryShortUpdate->WhoIAm );
 			// ...and fill out GameStatus
 			GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
 			return;
@@ -2036,6 +2048,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			// ...and need to get host game status...
 			if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
+			// update network pointer and name
+			UpdatePlayer( from, lpUpdate->WhoIAm );
 			return;
 		}
 		else
@@ -2812,6 +2826,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			TeamNumber[lpStatus->WhoIAm]	= lpStatus->TeamNumber;
 			PlayerReady[lpStatus->WhoIAm]		= lpStatus->IAmReady;
 
+			// update network pointer and name
+			UpdatePlayer( from, lpStatus->WhoIAm );
+
 #ifdef DEMO_SUPPORT
 			if( !PlayDemo )
 			{
@@ -2920,6 +2937,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
    		}
 		TeamNumber[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.TeamNumber;
 		PlayerReady[lpLongStatus->Status.WhoIAm] = lpLongStatus->Status.IAmReady;
+
+		// update network pointer and name
+		UpdatePlayer( from, lpLongStatus->Status.WhoIAm );
 
 #ifdef DEMO_SUPPORT
 		if( !PlayDemo )
