@@ -83,7 +83,6 @@ extern float Pulse;
 extern char *EmptyString;
 
 extern	BOOL					IsHost;   // is the user hosting/joining a game
-extern	network_id_t			my_network_id;    // player id
 extern	int16					Lives;
 
 extern	BOOL	BountyHunt;
@@ -301,11 +300,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 		return FALSE;
 	}
 
-	if( ! network_host() )
-	{
-		Msg("Failed to host game!");
-		return FALSE;
-	}
+	network_host();
 
 	NetUpdateInterval	= 60.0F / PacketsSlider.value;
 	OldPPSValue = PacketsSlider.value;
@@ -320,7 +315,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	}
 	
 	WhoIAm = 0;								// I was the first to join...
-	Ships[WhoIAm].network_id = my_network_id;
+	Ships[WhoIAm].network_player = NULL;
 
 	DebugPrintf("MenuChange.\n");
 	if ( TeamGame )

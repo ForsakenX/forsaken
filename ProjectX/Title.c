@@ -1812,15 +1812,21 @@ void EnterJoin(MENU *Menu)
 	PlayersList.selected_item = -1;
 
 	// setup
-	if( ! network_setup( &biker_name[0], 2300 ) )
+	if( ! network_setup( &biker_name[0], 0 ) )
 	{
 		Msg("Failed to setup network!");
 		return;
 	}
 
-	network_join( TCPAddress.text, 2300 );
+	network_join( TCPAddress.text, 0 );
 }
 
+char join_status_msg[255] = "";
+void update_join_status( char* str )
+{
+	strncpy( join_status_msg, str, 254 );
+	join_status_msg[254] = 0;
+}
 
 void CheckJoinStatus( int * i )
 {
@@ -1828,7 +1834,21 @@ void CheckJoinStatus( int * i )
 	if ( IsKeyPressed( DIK_F1 ) )
 		network_join( TCPAddress.text, 2300 );
 
-	network_retry();
+	// process network routines
+	network_pump();
+
+	switch( network_state )
+	{
+	case NETWORK_CONNECTED:
+		update_join_status("Connected...");
+		break;
+	case NETWORK_CONNECTING:
+		update_join_status("Connecting to game please wait...");
+		break;
+	case NETWORK_DISCONNECTED:
+		update_join_status("Connection failed...");
+		break;
+	}
 }
 
 
@@ -1836,7 +1856,7 @@ MENU	MENU_NEW_Joining = {
 
 		"" , EnterJoin , NULL, CheckJoinStatus, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 20, 0, "Connecting to game please wait...", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
+		{ 0, 0, 200, 20, 0, "", FONT_Medium, TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreX | TEXTFLAG_CentreY, join_status_msg, NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 
 		// join in watch mode (add 'if host allows' later)
 //		{ 10, 30, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CentreY, "YOOYYO TEST", NULL , SelectList , DrawFlatMenuName, NULL, 0 } ,

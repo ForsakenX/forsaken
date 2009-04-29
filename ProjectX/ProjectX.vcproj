@@ -36,7 +36,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
+				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug_OPT_ON\"
@@ -62,7 +62,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -129,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -140,7 +140,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_SPOTFX_SOUND,BSP,DEBUG_VIEWPORT,DPTEST"
+				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_SPOTFX_SOUND,BSP,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug\trash\"
@@ -156,7 +156,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -165,7 +165,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -223,7 +223,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -233,7 +233,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
+				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -250,7 +250,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -259,7 +259,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -316,7 +316,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="NDEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -326,7 +326,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories="$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
+				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -343,7 +343,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG"
+				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -352,7 +352,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dplayx.lib dsound.lib dinput.lib comctl32.lib wsock32.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -409,7 +409,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP"
+				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -422,6 +422,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalDependencies=" .\enet\enet.lib"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -665,7 +666,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\net_dplay.c"
+				RelativePath=".\net_enet.c"
 				>
 			</File>
 			<File

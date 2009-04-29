@@ -4421,7 +4421,7 @@ void SendBikerTaunt()
 			dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
 			if( (dist >= 0.0F) && ( dist <= MAX_TAUNT_DISTANCE ))
 				// send them speech taunt
-				SendGameMessage(MSG_TEXTMSG, Ships[i].network_id, WhoIAm, TEXTMSGTYPE_SpeechTaunt, 0);
+				SendGameMessage(MSG_TEXTMSG, Ships[i].network_player, WhoIAm, TEXTMSGTYPE_SpeechTaunt, 0);
 		}
 	}
 }

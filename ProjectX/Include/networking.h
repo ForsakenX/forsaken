@@ -5,12 +5,9 @@
 // General Networking
 //
 
-#define WIN32_EXTRA_LEAN
+#include "net.h"
 
-//#include "net.h"
-#ifndef network_id_t
-typedef DWORD network_id_t;
-#endif
+#define WIN32_EXTRA_LEAN
 
  /*
  * defines
@@ -351,7 +348,7 @@ typedef struct _GLOBALSHIP
 	BOOL				JustRecievedPacket;			//
 	VECTOR				LastMove;					// last movement vector (framelagged)
 	VECTOR				Move_Off;					// Last MoveMent...x , y , z
-	network_id_t        network_id;
+	network_player_t *  network_player;
 	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
 	int8				LastPacketID;
@@ -974,7 +971,7 @@ typedef struct _REQTIMEMSG
  * fn prototypes
  */
 void	DestroyGame( void );
-void	SendGameMessage( BYTE msg, network_id_t to, BYTE row, BYTE col, BYTE mask );
+void	SendGameMessage( BYTE msg, network_player_t * to, BYTE row, BYTE col, BYTE mask );
 void	EvaluateMessage( DWORD len , BYTE * MsgPnt );
 void	ReceiveGameMessages( void );
 void	initShip( uint16 i );

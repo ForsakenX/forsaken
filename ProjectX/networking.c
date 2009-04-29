@@ -262,7 +262,7 @@ BYTE					OldGameStatus[MAX_PLAYERS + 1];	// Game Status for every Ship...
 int16					Lives = 3;
 int16					StatsCount = -1;
 
-network_id_t host_network_id;
+network_player_t * host_network_player = NULL;
 
 void SfxForCollectPickup( uint16 Owner, uint16 ID );
 
@@ -272,7 +272,6 @@ extern	MODEL	Models[MAXNUMOFMODELS];
 
 BOOL	HostDuties = FALSE;
 
-network_id_t						my_network_id=0;        // our network ID
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
 BOOL						IsHost = TRUE;
@@ -369,7 +368,7 @@ extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
-network_id_t from_network_id;
+network_player_t * from_network_player = NULL;
 BOOL	UseShortPackets = TRUE;//FALSE;
 
 extern	int16	NumOrbs;
@@ -559,13 +558,8 @@ BOOL CheckForName( BYTE Player )
 {
 	if( Names[Player][0] == 0 )
 	{
-		char name[255];
-		if( network_get_player_name( from_network_id, &name[0] ) )
-		{
-			strncpy( Names[Player], name, MAXSHORTNAME );
-			name[MAXSHORTNAME] = 0;
-			DebugPrintf("CheckForName Got Name: %s\n",name);
-		}
+		strncpy( Names[Player], from_network_player->name, MAXSHORTNAME );
+		Names[Player][MAXSHORTNAME-1] = 0;
 		return TRUE;
 	} 
 	return FALSE;
@@ -627,7 +621,7 @@ void NetworkGameUpdate()
 	if( ( Ships[WhoIAm].Object.Flags & ( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire ) ) )
 		Ships[WhoIAm].Object.Noise = 1.0F;
 
-	if( my_network_id == 0 )
+	if( network_state != NETWORK_CONNECTED )
 	{
 		// Has to be done to stop missiles getting stuck in walls....!!!!!!!!!!!!!
 		Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
@@ -859,7 +853,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 			TempShipHit.Force = Force;
 			TempShipHit.WeaponType = WeaponType;
 			TempShipHit.Weapon = Weapon;
-			SendGameMessage( MSG_SHIPHIT , Ships[you].network_id , you , 0 , 0 );
+			SendGameMessage( MSG_SHIPHIT, Ships[you].network_player, you, 0, 0 );
 		}
 		else
 		{
@@ -882,7 +876,7 @@ void	IHitYou( BYTE you, float Damage, VECTOR * Recoil, VECTOR * Point, VECTOR * 
 			ShortTempShipHit.Force = Force;
 			ShortTempShipHit.WeaponType = WeaponType;
 			ShortTempShipHit.Weapon = Weapon;
-			SendGameMessage( MSG_SHORTSHIPHIT , Ships[you].network_id , you , 0 , 0 );
+			SendGameMessage( MSG_SHORTSHIPHIT, Ships[you].network_player, you, 0, 0 );
 
 		}
 	}
@@ -961,7 +955,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 			if( (dist >= 0.0F) && ( dist <= 500.0F ))
 			{
 				// send them shockwave
-				SendGameMessage(MSG_SHOCKWAVE, Ships[i].network_id, 0, 0, 0 );
+				SendGameMessage(MSG_SHOCKWAVE, Ships[i].network_player, 0, 0, 0 );
 			}
 		}
 	}
@@ -1263,24 +1257,16 @@ void smallinitShip( uint16 i )
 	}
 }
 
-void network_event_player_name( network_id_t pid, char* name )
+void network_event_player_name( network_player_t * player )
 {
-	int i, x;
-	if( pid == my_network_id )
-		return;
+	int i;
 	DebugPrintf("network_event_player_name\n");
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
 	{
-		if( ( i != WhoIAm ) && (pid == Ships[i].network_id) )
+		if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 		{
-			for( x = 0 ; x < 8 ; x++ )
-			{
-				Names[i][x] = name[x];
-				if( WhoIAm < MAX_PLAYERS )
-					Names[WhoIAm][x] = biker_name[x];
-			}
-			Names[i][7] = 0;
-			Names[WhoIAm][7] = 0;
+			strncpy( &Names[i][0], &player->name[0], MAXSHORTNAME );
+			Names[i][MAXSHORTNAME-1] = 0;
 			DebugPrintf("Recieved name %s from player %d\n", &Names[i][0], i);
 			NextworkOldBikeNum = -1;
 			return;
@@ -1289,84 +1275,105 @@ void network_event_player_name( network_id_t pid, char* name )
 	return;
 }
 
-void network_event_player_left( network_id_t id )
+void network_event_player_left( network_player_t * player )
 {
 	int i;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-		if( ( i != WhoIAm ) && (id == Ships[i].network_id) )
-		{	
-			if( MyGameStatus == STATUS_Normal )
-			{
-				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
-	   			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+
+	// we have left the game
+	if( player == NULL )
+	{
+		if( MyGameStatus == STATUS_Normal )
+			AddColourMessageToQue(SystemMessageColour, "You have left the game!" );
+	}
+
+	// someone left the game
+	else
+	{
+		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+			if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
+			{	
+				if( MyGameStatus == STATUS_Normal )
+				{
+					sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
+	   				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				}
+
+				if( Ships[i].Object.light != (uint16) -1  )
+				{
+					//KillUsedXLight(Ships[i].Object.light);
+					Ships[i].Object.light = (uint16) -1;
+				}
+
+				//KillOwnersSecBulls( (uint16) i );
+				Ships[i].enable = 0;
+
+				if ( GameStatus[i] == STATUS_StartingMultiplayer )
+					GameStatus[i] = STATUS_Null;	// ensure slot is freed up if player has quit from titles
+
+				else if( GameStatus[i] != STATUS_Left )
+					GameStatus[i] = STATUS_LeftCrashed;
+
+				InitShipStructure(i , FALSE );
 			}
-
-			if( Ships[i].Object.light != (uint16) -1  )
-			{
-				//KillUsedXLight(Ships[i].Object.light);
-				Ships[i].Object.light = (uint16) -1;
-			}
-
-			//KillOwnersSecBulls( (uint16) i );
-			Ships[i].enable = 0;
-
-			if ( GameStatus[i] == STATUS_StartingMultiplayer )
-				GameStatus[i] = STATUS_Null;	// ensure slot is freed up if player has quit from titles
-
-			else if( GameStatus[i] != STATUS_Left )
-				GameStatus[i] = STATUS_LeftCrashed;
-
-			InitShipStructure(i , FALSE );
-		}
+	}
 }
 
-void network_event_new_host( network_id_t id )
+void network_event_new_host( network_player_t * player )
 {
 	int i;
 	DebugPrintf("network_event_new_host\n");
-	if(id!=my_network_id)
-		return;
-	switch ( MyGameStatus )
+
+	// we have become the host
+	if( player == NULL)
 	{
-	case STATUS_StartingMultiplayer:
-		if ( TeamGame )	PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
-		else			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
-		break;
-	default:
-		AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
+		switch ( MyGameStatus )
+		{
+		case STATUS_StartingMultiplayer:
+			if ( TeamGame )	PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 0, NULL, ERROR_DONTUSE_MENUFUNCS );
+			else			PrintErrorMessage ( YOU_HAVE_BECOME_THE_HOST , 1, &MENU_NEW_HostWaitingToStart, ERROR_DONTUSE_MENUFUNCS );
+			break;
+		default:
+			AddColourMessageToQue( SystemMessageColour, YOU_HAVE_BECOME_THE_HOST );
+		}
+
+		IsHost = TRUE;					// I have Become the host
+
+		PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
+		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+		{
+			if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
+			{
+				Ships[i].enable = 0;
+				GameStatus[i] = STATUS_Left;
+			}
+		}
 	}
 
-	IsHost = TRUE;					// I have Become the host
-
-	PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
+	// someone else has become the host
+	else
 	{
-		if( ( i != WhoIAm ) && ( Ships[i].Object.Flags & SHIP_IsHost ) )
-		{
-			Ships[i].enable = 0;
-			GameStatus[i] = STATUS_Left;
-		}
+		for( i = 0 ; i < MAX_PLAYERS ; i++ )
+			if( player == Ships[i].network_player )
+			{
+				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , "has become the host." );
+				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
+				break;
+			}
 	}
 }
 
-void network_event_player_joined( network_id_t id, char * player_name )
+void network_event_player_joined( network_player_t * player )
 {
-	int i, x;
+	int i;
 	DebugPrintf("network_event_player_joined\n");
 	
 	// we have joined the game
-	if( player_name == NULL )
+	if( player == NULL )
 	{
 		DebugPrintf("We have joined the game...\n");
 		PlayDemo = FALSE;
 		
 		SetBikeMods( 0 );
-		
-		if( ! network_open() )
-		{
-			PrintErrorMessage ( COULDNT_OPEN_SESSION, 1, NULL, ERROR_USE_MENUFUNCS );
-			return;
-		}
 		
 		SetupNetworkGame();
 		
@@ -1390,7 +1397,7 @@ void network_event_player_joined( network_id_t id, char * player_name )
 	{
 		if( MyGameStatus == STATUS_Normal && !TeamGame )
 		{
-			sprintf( (char*) &tempstr[0] ,"%s %s", player_name, IS_JOINING_THE_GAME );
+			sprintf( (char*) &tempstr[0] ,"%s %s", player->name, IS_JOINING_THE_GAME );
 			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 		}
 
@@ -1401,22 +1408,19 @@ void network_event_player_joined( network_id_t id, char * player_name )
 
 		// set the players name in globals
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
-			if( ( i != WhoIAm ) && (id == Ships[i].network_id) )
+			if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 				if( Names[i][0] == 0 )
 				{
-					char* NamePnt = (char*) &Names[i][0];			
-					char* NamePnt2 = (char*) &player_name[0];
-					for( x = 0 ; x < 7 ; x++ )
-						*NamePnt++ = *NamePnt2++;
-					Names[i][7] = 0;
+					strncpy( &Names[i][0], &player->name[0], MAXSHORTNAME );
+					Names[i][MAXSHORTNAME-1] = 0;
 				}
 	}
 }
 
-void network_event_new_message( network_id_t from, BYTE * MsgPnt, int size )
+void network_event_new_message( network_player_t * from, BYTE * data, int size )
 {
 	//DebugPrintf("Got Message: %s\n",msg_to_str(*MsgPnt));
-	from_network_id = from;
+	from_network_player = from;
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 #ifdef DEMO_SUPPORT
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
@@ -1432,7 +1436,35 @@ void network_event_new_message( network_id_t from, BYTE * MsgPnt, int size )
 	if ( RecPacketSize > MaxRecPacketSize )
 		MaxRecPacketSize = RecPacketSize;
 	BytesPerSecRec += size;
-    EvaluateMessage( size, MsgPnt );
+    EvaluateMessage( size, data );
+}
+
+void network_event( network_event_type_t type, void* data )
+{
+        network_player_t * player = (network_player_t *) data;  // used by most events
+        switch( type )
+        {
+        case NETWORK_JOIN:
+                network_event_player_joined( player );
+                break;
+        case NETWORK_LEFT:
+                network_event_player_left( player );
+                break;
+        case NETWORK_HOST:
+                network_event_new_host( player );
+                break;
+		case NETWORK_NAME:
+                network_event_player_name( player );
+                break;
+        case NETWORK_DATA:
+                {
+                        network_packet_t * packet = (network_packet_t*) data;
+						network_event_new_message( packet->from, packet->data, packet->size );
+                }
+                break;
+        default:
+			DebugPrintf("network_event: unknown network event type %d\n", type);
+        }
 }
 
 void ReceiveGameMessages( void )
@@ -1980,7 +2012,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
 				
-				Ships[lpVeryShortUpdate->WhoIAm].network_id = from_network_id;
+				Ships[lpVeryShortUpdate->WhoIAm].network_player = from_network_player;
 				
 #ifdef DEMO_SUPPORT
 					if( CheckForName( lpVeryShortUpdate->WhoIAm ) )
@@ -2082,7 +2114,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
 				
-				Ships[lpUpdate->WhoIAm].network_id	= from_network_id;
+				Ships[lpUpdate->WhoIAm].network_player = from_network_player;
 
 				if( !Ships[lpUpdate->WhoIAm].FirstPacketRecieved  )
 				{
@@ -2224,7 +2256,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 		if( IsHost && !PlayDemo )
 		{
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
-			SendGameMessage(MSG_INIT, from_network_id, msg->WhoIAm, 0, 0);
+			SendGameMessage(MSG_INIT, from_network_player, msg->WhoIAm, 0, 0);
 
 			// BUG: why is this sent to everyone ?
 			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -2234,7 +2266,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
-		host_network_id = from_network_id;
+		host_network_player = from_network_player;
 		MaxKills = lpInit->MaxKills;
 		OverallGameStatus = lpInit->Status;
 		NetUpdateInterval = lpInit->NetUpdateInterval;
@@ -3251,7 +3283,7 @@ void EvaluateMessage( DWORD len , BYTE * MsgPnt )
 	OutputDebugString( dBuf );
 }
 
-void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE mask )
+void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
     LPVERYSHORTUPDATEMSG				lpVeryShortUpdate;
     LPUPDATEMSG							lpUpdate;
@@ -3310,7 +3342,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 		lpYouQuitMsg->WhoIAm = WhoIAm;
 		lpYouQuitMsg->You = ShipNum;
 		nBytes = sizeof( YOUQUITMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
 		flags |= NETWORK_RELIABLE;
 		break;
 
@@ -3412,7 +3444,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 			// game is full
 			if( player_count >= MaxPlayersSlider.value )
 			{
-				DebugPrintf("MSG_INIT: game is full... denying connection %d\n", from_network_id);
+				DebugPrintf("MSG_INIT: game is full... denying connection...\n");
 				lpInit->YouAre = MAX_PLAYERS+2;
 			}	
 
@@ -3424,7 +3456,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 				GameStatus[new_player_id]			= STATUS_GetPlayerNum;
 				Names[new_player_id][0]				= 0;
 				TeamNumber[new_player_id]			= 0;
-				Ships[new_player_id].network_id		= to;
+				Ships[new_player_id].network_player	= to;
 				
 				// set rest of values
 
@@ -3713,7 +3745,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortPickup->Pickups = Ships[ShipNum].Pickups;
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
 		nBytes = sizeof( SHORTPICKUPMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
         break;
 
 
@@ -3725,7 +3757,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortRegenSlot->RegenSlots	= Ships[ShipNum].RegenSlots;
 		GenRegenSlotList( ShipNum, &lpShortRegenSlot->ShortRegenSlot[0] , &lpShortRegenSlot->HowManyRegenSlots , Ships[ShipNum].RegenSlots );
 		nBytes	= sizeof( SHORTREGENSLOTMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
         break;
 
 
@@ -3737,7 +3769,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortTrigger->Triggers	= Ships[ShipNum].Triggers;
 		GenTriggerList( ShipNum, &lpShortTrigger->ShortTrigger[0] , &lpShortTrigger->HowManyTriggers, Ships[ShipNum].Triggers );
 		nBytes	= sizeof( SHORTTRIGGERMSG );
-		to	= Ships[ShipNum].network_id;
+		to	= Ships[ShipNum].network_player;
         break;
 
 
@@ -3749,7 +3781,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortTrigVar->TrigVars	= Ships[ShipNum].TrigVars;
 		GenTrigVarList( ShipNum, &lpShortTrigVar->ShortTrigVar[0] , &lpShortTrigVar->HowManyTrigVars, Ships[ShipNum].TrigVars );
         nBytes = sizeof( SHORTTRIGVARMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
         break;
 
 
@@ -3761,14 +3793,14 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpShortMine->Mines		= Ships[ShipNum].Mines;
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
 		nBytes	= sizeof( SHORTMINEMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
         break;
 
     case MSG_TEXTMSG:
 
 		lpTextMsg = (LPTEXTMSG)&CommBuff[0];
         lpTextMsg->MsgCode	= msg;
-        lpTextMsg->WhoIAm		= WhoIAm;
+        lpTextMsg->WhoIAm	= WhoIAm;
         
 		switch( Type )
 		{
@@ -3898,7 +3930,7 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
         lpPingMsg->ToYou = ShipNum;
         lpPingMsg->Time = PingRequestTime;
 		nBytes = sizeof( PINGMSG );
-		to = Ships[ShipNum].network_id;
+		to = Ships[ShipNum].network_player;
 		break;
 	}
 	
@@ -3930,7 +3962,11 @@ void SendGameMessage( BYTE msg, network_id_t to, BYTE ShipNum, BYTE Type, BYTE m
 	BytesPerSecSent += nBytes;
 
 	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
-	network_send( to, (void*) &CommBuff[0], nBytes, flags, 1 );
+
+	if(!to)
+		network_broadcast( (void*) &CommBuff[0], nBytes, flags, 1 );
+	else
+		network_send( to, (void*) &CommBuff[0], nBytes, flags, 1 );
 
 }
 
