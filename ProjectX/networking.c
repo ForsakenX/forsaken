@@ -3467,8 +3467,12 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	// so they must be sent on the player position channel
 	
 	// BUG: we should really break apart fire updates and position updates
+	// InitOnePrimBull() and InitOneSecBull() support sending over network
+	// probably just use those and turn off the f updates...
 
     case MSG_FUPDATE: // short packets off + fire weapon data
+
+		//DebugPrintf("F UPDATE\n");
 
         lpFUpdate = (LPFUPDATEMSG)&CommBuff[0];
         lpFUpdate->MsgCode = msg;
@@ -3485,6 +3489,8 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
     case MSG_VERYSHORTFUPDATE: // short packets on + fire weapon data
 
+		//DebugPrintf("F UPDATE\n");
+
         lpVeryShortFUpdate = (LPVERYSHORTFUPDATEMSG)&CommBuff[0];
         lpVeryShortFUpdate->MsgCode = msg;
         lpVeryShortFUpdate->WhoIAm = WhoIAm;
@@ -3499,6 +3505,8 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_GROUPONLY_VERYSHORTFUPDATE:
+
+		//DebugPrintf("F UPDATE GROUP ONLY\n");
 
         lpGroupOnly_VeryShortFUpdate = (LPGROUPONLY_VERYSHORTFUPDATEMSG)&CommBuff[0];
         lpGroupOnly_VeryShortFUpdate->MsgCode = msg;
@@ -3579,7 +3587,6 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_PRIMBULLPOSDIR:
-
         lpPrimBullPosDir = (LPPRIMBULLPOSDIRMSG)&CommBuff[0];
         lpPrimBullPosDir->MsgCode = msg;
         lpPrimBullPosDir->WhoIAm = WhoIAm;
@@ -3587,9 +3594,9 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         nBytes = sizeof( PRIMBULLPOSDIRMSG );
         break;
 
+	// appears to be mines..
 
     case MSG_SECBULLPOSDIR:
-
         lpSecBullPosDir = (LPSECBULLPOSDIRMSG)&CommBuff[0];
         lpSecBullPosDir->MsgCode = msg;
         lpSecBullPosDir->WhoIAm = WhoIAm;
