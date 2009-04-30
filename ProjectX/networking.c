@@ -1380,11 +1380,6 @@ void network_event_player_joined( network_player_t * player )
 		GetPlayerNumCount1 = 0.0F;
 		GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
 		GetPlayerNumCount = 0;
-		
-		if ( TeamGame )
-			GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
-		else
-			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
 
 		// Stops us going straight in to the game....
 		OverallGameStatus = STATUS_Null;
@@ -2305,6 +2300,11 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		BountyHunt				= lpInit->BountyHunt;
 		ResetKillsPerLevel		= lpInit->ResetKillsPerLevel;
 		TimeLimit.value			= lpInit->TimeLimit;
+
+		if ( TeamGame )
+			GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
+		else
+			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
 
 		if( TimeLimit.value )
 			CountDownOn = TRUE;
