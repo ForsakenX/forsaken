@@ -61,9 +61,28 @@ void network_set_player_name( char* name );
  *  Sending Data
  */
 
-typedef enum { // default is unsequenced and unreliable
-	NETWORK_RELIABLE	= 2, // note: enet reliable is also sequenced
-	NETWORK_SEQUENCED	= 4,
+// unsequenced	| unreliable	- is the default
+// reliable		| unsequenced	- is not supported
+// reliable						- is always sequenced
+// sequenced	| unreliable	- will drop late pkts & instantly deliver arrived pkts (position updates)
+// sequenced	| reliable		- will wait for late pkts to arive
+
+// multiple types of pkts can all be sent on the same channel
+// reliable | sequenced will take part in the same sequencing order on a channel
+// unreliable | sequenced pkts will get dropped if they are late...
+
+// 1 pkt is handled at a time and normally you want to process all pkts that are in queue
+// thus regardless of pkt order you will process the arrived pkt within that frame...
+// there is no point in over channelizing everything...
+
+// channels are mainly good for separating sequenced streams...
+// for instance if you have a stream of position updates and another stream for voice pkts
+// you don't want your position pkt dropped cause a newer voice pkt came in first...
+// thus you would create channels to seperate those streams...
+
+typedef enum {
+	NETWORK_RELIABLE	= 2, // note: reliable is also sequenced
+	NETWORK_SEQUENCED	= 4, //
 	NETWORK_FLUSH		= 6, // flushes the current packet
 } network_flags_t;
 
@@ -90,6 +109,7 @@ typedef struct {
 	network_player_t* from;
 } network_packet_t;
 
-void network_event( network_event_type_t, void* data ); // implemented by application, see network_event for explanation of (void*)data
+// this function will be most likely converted to an argument to network_setup
+void network_event( network_event_type_t, void* data );
 
 #endif // NET_INCLUDED
