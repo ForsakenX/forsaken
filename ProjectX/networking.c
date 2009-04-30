@@ -188,7 +188,6 @@ extern	float	Start_Shield;
 extern	float	Start_Hull;
 
 LONGLONG PingRequestTime;					// used to reply the time it was sent...
-uint16		PingTimes[MAX_PLAYERS];		// How long does it take for a ping???
 
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );
@@ -532,12 +531,6 @@ char* msg_to_str( int msg_type )
         break;
     case MSG_TEXTMSG:
 		return "MSG_TEXTMSG";
-		break;
-    case MSG_PINGREQUEST:
-		return "MSG_PINGREQUEST";
-		break;
-    case MSG_PINGREPLY:
-		return "MSG_PINGREPLY";
 		break;
 	}
 	return "UNKNOWN";
@@ -987,43 +980,46 @@ void SetupNetworkGame()
 		RealPacketSize[i] = 0;
 	}
 
-	RealPacketSize[MSG_UPDATE								] = sizeof( UPDATEMSG							);	
-	RealPacketSize[MSG_HEREIAM							] = sizeof( HEREIAMMSG						);	
-	RealPacketSize[MSG_INIT									] = sizeof( INITMSG								);	 
-	RealPacketSize[MSG_SHIPHIT								] = sizeof( SHIPHITMSG							);	
-	RealPacketSize[MSG_PRIMBULLPOSDIR					] = sizeof( PRIMBULLPOSDIRMSG				);	
-	RealPacketSize[MSG_SECBULLPOSDIR					] = sizeof( SECBULLPOSDIRMSG				);	
-	RealPacketSize[MSG_SHIPDIED							] = sizeof( SHIPDIEDMSG						);	 
-	RealPacketSize[MSG_DROPPICKUP						] = sizeof( DROPPICKUPMSG					);	
-	RealPacketSize[MSG_KILLPICKUP							] = sizeof( KILLPICKUPMSG						);	
-	RealPacketSize[MSG_STATUS								] = sizeof( STATUSMSG							);	
-	RealPacketSize[MSG_NETSETTINGS						] = sizeof( NETSETTINGSMSG					);
-	RealPacketSize[MSG_SHORTPICKUP						] = sizeof( SHORTPICKUPMSG					);	
-	RealPacketSize[MSG_SHOCKWAVE						] = sizeof( SHOCKWAVEMSG					);	
-	RealPacketSize[MSG_FUPDATE							] = sizeof( FUPDATEMSG						);	
-	RealPacketSize[MSG_SHORTMINE						] = sizeof( SHORTMINEMSG					);	
-	RealPacketSize[MSG_TEXTMSG							] = sizeof( TEXTMSG								);	
-	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG			);	
-	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG				);	 
-	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG				);	 
-	RealPacketSize[MSG_INTERPOLATE						] = sizeof( INTERPOLATEMSG					);	
-	RealPacketSize[MSG_BGOUPDATE						] = sizeof( BGOUPDATEMSG					);	
-	RealPacketSize[MSG_PINGREQUEST						] = sizeof( PINGMSG								);	
-	RealPacketSize[MSG_PINGREPLY							] = sizeof( PINGMSG								);	
-	RealPacketSize[MSG_LONGSTATUS						] = sizeof( LONGSTATUSMSG					);	
-	RealPacketSize[MSG_SETTIME							] = sizeof( SETTIMEMSG						);	
-	RealPacketSize[MSG_REQTIME							] = sizeof( REQTIMEMSG						);
-	RealPacketSize[MSG_BIKENUM							] = sizeof( BIKENUMMSG		);	
-	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG			);	
-	RealPacketSize[MSG_VERYSHORTFUPDATE			] = sizeof( VERYSHORTFUPDATEMSG		);	 
-	RealPacketSize[MSG_VERYSHORTINTERPOLATE		] = sizeof( VERYSHORTINTERPOLATEMSG  );	 
-	RealPacketSize[MSG_TEAMGOALS						] = sizeof( TEAMGOALSMSG					);	
-	RealPacketSize[MSG_YOUQUIT							] = sizeof( YOUQUITMSG						);	
-	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG				);	 
-	RealPacketSize[MSG_TITANBITS							] = sizeof( TITANBITSMSG						);
-	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE		 ] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );	 
-	RealPacketSize[MSG_VERYSHORTDROPPICKUP		] = sizeof( VERYSHORTDROPPICKUPMSG	);	
+	RealPacketSize[MSG_UPDATE						] = sizeof( UPDATEMSG							);	
+	RealPacketSize[MSG_HEREIAM						] = sizeof( HEREIAMMSG							);	
+	RealPacketSize[MSG_INIT							] = sizeof( INITMSG								);	 
+	RealPacketSize[MSG_SHIPHIT						] = sizeof( SHIPHITMSG							);	
+	RealPacketSize[MSG_PRIMBULLPOSDIR				] = sizeof( PRIMBULLPOSDIRMSG					);	
+	RealPacketSize[MSG_SECBULLPOSDIR				] = sizeof( SECBULLPOSDIRMSG					);	
+	RealPacketSize[MSG_SHIPDIED						] = sizeof( SHIPDIEDMSG							);	 
+	RealPacketSize[MSG_DROPPICKUP					] = sizeof( DROPPICKUPMSG						);	
+	RealPacketSize[MSG_KILLPICKUP					] = sizeof( KILLPICKUPMSG						);	
+	RealPacketSize[MSG_STATUS						] = sizeof( STATUSMSG							);	
+	RealPacketSize[MSG_NETSETTINGS					] = sizeof( NETSETTINGSMSG						);
+	RealPacketSize[MSG_SHORTPICKUP					] = sizeof( SHORTPICKUPMSG						);	
+	RealPacketSize[MSG_SHOCKWAVE					] = sizeof( SHOCKWAVEMSG						);	
+	RealPacketSize[MSG_FUPDATE						] = sizeof( FUPDATEMSG							);	
+	RealPacketSize[MSG_SHORTMINE					] = sizeof( SHORTMINEMSG						);	
+	RealPacketSize[MSG_TEXTMSG						] = sizeof( TEXTMSG								);	
+	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG					);	
+	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG						);	 
+	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG						);	 
+	RealPacketSize[MSG_INTERPOLATE					] = sizeof( INTERPOLATEMSG						);	
+	RealPacketSize[MSG_BGOUPDATE					] = sizeof( BGOUPDATEMSG						);	
+	RealPacketSize[MSG_LONGSTATUS					] = sizeof( LONGSTATUSMSG						);	
+	RealPacketSize[MSG_SETTIME						] = sizeof( SETTIMEMSG							);	
+	RealPacketSize[MSG_REQTIME						] = sizeof( REQTIMEMSG							);
+	RealPacketSize[MSG_BIKENUM						] = sizeof( BIKENUMMSG							);	
+	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG					);	
+	RealPacketSize[MSG_VERYSHORTFUPDATE				] = sizeof( VERYSHORTFUPDATEMSG					);	 
+	RealPacketSize[MSG_VERYSHORTINTERPOLATE			] = sizeof( VERYSHORTINTERPOLATEMSG				);	 
+	RealPacketSize[MSG_TEAMGOALS					] = sizeof( TEAMGOALSMSG						);	
+	RealPacketSize[MSG_YOUQUIT						] = sizeof( YOUQUITMSG							);	
+	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG						);	 
+	RealPacketSize[MSG_TITANBITS					] = sizeof( TITANBITSMSG						);
+	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE	] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG		);	 
+	RealPacketSize[MSG_VERYSHORTDROPPICKUP			] = sizeof( VERYSHORTDROPPICKUPMSG				);	
 	
+	for( i = 0; i < 256; i++ )
+	{
+		if( RealPacketSize[i] < 1 ) continue;
+		DebugPrintf("Packet Size: %s \t\t= %d\n",msg_to_str(i),RealPacketSize[i]);
+	}
 
 	if ( Debug )
 		for( i = 0 ; i < 256 ; i++ )
@@ -1537,7 +1533,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
     LPTEXTMSG								lpTextMsg;
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
-	LPPINGMSG								lpPingMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
@@ -3185,45 +3180,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		Ships[lpVeryShortInterpolate->WhoIAm].OldTime		= DemoTimeSoFar;
 		return;
 
-    case MSG_PINGREQUEST:
-
-		lpPingMsg = (LPPINGMSG)MsgPnt;
-		PingRequestTime = lpPingMsg->Time;
-		SendGameMessage(MSG_PINGREPLY, 0, lpPingMsg->WhoIAm, 0, 0);
-		return;
-
-
-    case MSG_PINGREPLY:
-
-		lpPingMsg = (LPPINGMSG)MsgPnt;
-		if( lpPingMsg->ToYou == WhoIAm )
-		{
-			LONGLONG now;
-			float clocks;
-			float seconds;
-			uint16 milliseconds;
-
-			// get current clocks
-			QueryPerformanceCounter( (LARGE_INTEGER *) &now );
-
-			// number of clocks passed
-			clocks = (float) (now - lpPingMsg->Time);
-			
-			// Freq == clocks per second
-
-			// convert clocks to seconds
-			seconds = clocks / (float) Freq;
-
-			// convert seconds to milliseconds
-			milliseconds = (uint16) (seconds * 1000.0F);
-
-			// store value
-			PingTimes[lpPingMsg->WhoIAm] = milliseconds;
-
-		}
-		return;
-
-
     case MSG_SETTIME:
 
 		lpSetTime = (LPSETTIMEMSG)MsgPnt;
@@ -3303,7 +3259,6 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
     LPSHORTTRIGVARMSG					lpShortTrigVar;
     LPSHORTMINEMSG						lpShortMine;
     LPTEXTMSG							lpTextMsg;
-    LPPINGMSG							lpPingMsg;
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPSETTIMEMSG						lpSetTime;
@@ -3929,26 +3884,6 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 		break;
 
-
-    case MSG_PINGREQUEST:
-		lpPingMsg = (LPPINGMSG)&CommBuff[0];
-        lpPingMsg->MsgCode = msg;
-        lpPingMsg->WhoIAm = WhoIAm;
-		QueryPerformanceCounter( (LARGE_INTEGER *) &lpPingMsg->Time);
-		nBytes = sizeof( PINGMSG );
-		break;
-
-
-    case MSG_PINGREPLY:
-
-		lpPingMsg = (LPPINGMSG)&CommBuff[0];
-        lpPingMsg->MsgCode = msg;
-        lpPingMsg->WhoIAm = WhoIAm;
-        lpPingMsg->ToYou = ShipNum;
-        lpPingMsg->Time = PingRequestTime;
-		nBytes = sizeof( PINGMSG );
-		to = Ships[ShipNum].network_player;
-		break;
 	}
 
 // goto send if you want to break out of the switch

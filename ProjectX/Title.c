@@ -837,7 +837,6 @@ TEXT OriginalText;
 
 SLIDER SensitivityXSlider				= { 1, 16, 1, 5, 0, 0.0F };
 SLIDER SensitivityYSlider				= { 1, 16, 1, 5, 0, 0.0F };
-SLIDER PingFreqSlider					= { 0, 60, 5, 60, 0, 0.0F }; 
 SLIDER BikeDetailSlider					= { 0, 5, 1, 5, 0, 0.0F };
 SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
@@ -2774,7 +2773,6 @@ MENU	MENU_Options = {
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options12	/*"Show Fog"*/,				0, 0, &d3dapprs.bFogEnabled,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 240, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200, 256, 0, 0, 0, LT_MENU_InGame10	/*"ping update (secs)"*/,	0, 0, &PingFreqSlider,			NULL,					SelectSlider,	DrawSlider,			NULL, 0 },
 
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -11659,9 +11657,6 @@ void GetMultiplayerPrefs( void )
 	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : GAME_Normal;
 
-	PingFreqSlider.value = ( RegGet( "PingFreq", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 60;
-
 	CTFSlider.value = ( RegGet( "CTFrules", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 		? temp : CTF_STANDARD;
 
@@ -11747,8 +11742,6 @@ void SetMultiplayerPrefs( void )
 	}
 	temp = GameType;
 	RegSet( "GameType", (LPBYTE)&temp, sizeof( temp ) );
-	temp = PingFreqSlider.value;
-	RegSet( "PingFreq", (LPBYTE)&temp, sizeof( temp ) );
 	temp = BountyBonus;
 	RegSet( "BountyBonus", (LPBYTE)&temp, sizeof( temp ) );
 	temp = GoalScoreSlider.value;

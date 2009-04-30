@@ -573,8 +573,6 @@ typedef struct _GROUPONLY_FVERYSHORTGLOBALSHIP
 #define MSG_SHORTTRIGVAR					0x6f
 #define MSG_INTERPOLATE					0x8f
 #define MSG_BGOUPDATE						0xaf
-#define MSG_PINGREQUEST					0xbf
-#define MSG_PINGREPLY						0xcf
 #define MSG_LONGSTATUS					0xdf
 #define MSG_SETTIME							0xef
 #define MSG_REQTIME							0xf1
@@ -609,15 +607,6 @@ typedef struct _BIKENUMMSG
     BYTE     WhoIAm;
 	BYTE		BikeNum;		// which model to display for them...
 }BIKENUMMSG, *LPBIKENUMMSG;
-
-typedef struct _PINGMSG
-{
-    BYTE        MsgCode;
-    BYTE        WhoIAm;
-	BYTE		ToYou;		// 0 non-guarenteed...1 guarenteed..
-	BYTE		Pad;
-	LONGLONG	Time;
-}PINGMSG, *LPPINGMSG;
 
 typedef struct _SHORTPICKUPMSG
 {

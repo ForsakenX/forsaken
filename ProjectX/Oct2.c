@@ -321,8 +321,6 @@ char *  InitViewMessages[] = {
                  "" 
 };
 
-extern SLIDER  PingFreqSlider;
-
 extern  float MaxMoveSpeed;
 extern  float MoveAccell;
 extern  float MoveDecell;
@@ -3367,17 +3365,8 @@ void ProcessGameKeys( void )
 	// multiplayer
 	else
 	{
-
 		// F3
-		if ( IsKeyPressed( DIK_F3 ) )
-		{
-			SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
-			AddColourMessageToQue(SystemMessageColour,
-				"A ping request has been sent to all players\n" );
-		}
-
-		// F4 ?
-
+		// F4
 	}
 
     // F5
@@ -5606,26 +5595,6 @@ void CheckLevelEnd ( void )
   Output    :   nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 
-void CheckPingTimer( void )
-{
-	// count down to next ping time
-	static float ping_timer = 0.0F;
-
-	// user set ping interval to 0
-	if( PingFreqSlider.value < 1 )
-		return;
-	
-	// calculate time left to send a ping
-	if( (ping_timer -= real_framelag) <= 0.0 )
-	{
-		// reset ping counter
-		ping_timer = (float) PingFreqSlider.value;
-
-		// send a ping request
-		SendGameMessage( MSG_PINGREQUEST , 0, 0, 0, 0 );
-	}
-}
-
 BOOL
 MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 {
@@ -5633,8 +5602,6 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   static float fov_inc = 0.0F;
 
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
-
-  CheckPingTimer();
 
   if( PlayDemo )
   {
@@ -6055,7 +6022,6 @@ BOOL StatsNamePulse( void )
 	return FALSE;
 }
 
-extern uint16 PingTimes[MAX_PLAYERS];
 extern int GetPlayerByRank( int rank );
 extern int ReliabilityTab[MAX_PLAYERS+1];
 void ShowGameStats( stats_mode_t mode )
@@ -6229,6 +6195,9 @@ void ShowGameStats( stats_mode_t mode )
 
 		for (i = 0; i < active_players; i++)
 		{
+			// ping
+			uint16 ping = 0;
+
 			// start of line
 			int xpos = left_offset;
 
@@ -6237,6 +6206,10 @@ void ShowGameStats( stats_mode_t mode )
 
 			// calculate name color
 			int color = (left) ? left : ((StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamCol[TeamNumber[i]] : YELLOW));
+
+			// get the ping
+			if( Ships[GetPlayerRank(i)].network_player )
+				ping = (uint16) Ships[GetPlayerRank(i)].network_player->ping;
 
 			//
 			// print line
@@ -6254,7 +6227,7 @@ void ShowGameStats( stats_mode_t mode )
 			xpos += col_width;
 
 				if( GetPlayerRank(i) != WhoIAm && GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-			Printint16( PingTimes[GetPlayerRank(i)],		xpos,				top_offset, (left) ? left : GRAY	);	// ping
+			Printint16( ping,								xpos,				top_offset, (left) ? left : GRAY	);	// ping
 			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : CYAN	);	// positives / (positives - negatives)
 				if(TeamGame)
 			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
