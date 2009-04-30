@@ -1827,6 +1827,7 @@ void update_join_status( char* str )
 	join_status_msg[254] = 0;
 }
 
+char show_f1[100] = "( press F1 to retry )";
 void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
@@ -1843,9 +1844,11 @@ void CheckJoinStatus( int * i )
 		break;
 	case NETWORK_CONNECTING:
 		update_join_status("Connecting to game please wait...");
+		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_DISCONNECTED:
 		update_join_status("Connection failed...");
+		strncpy( &show_f1[0], "( press F1 to retry )", 100 );
 		break;
 	}
 }
@@ -1860,7 +1863,7 @@ MENU	MENU_NEW_Joining = {
 		// join in watch mode (add 'if host allows' later)
 //		{ 10, 30, 200, 93, 0, NULL, FONT_Small, TEXTFLAG_CentreY, "YOOYYO TEST", NULL , SelectList , DrawFlatMenuName, NULL, 0 } ,
 
-		{ 0, 15, 200, 30, 0, "( press F1 to force a retry )", FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
+		{ 0, 15, 200, 30, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreX | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &show_f1, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
 
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
