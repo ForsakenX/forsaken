@@ -3883,6 +3883,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				lpTextMsg->Text[0] = 0;
 				PlaySfx( SFX_MyTeamScored, FlagVolume );
 				MessageColour = FlagMessageColour;
+				flags |= NETWORK_RELIABLE;
 				break;
 			case TEXTMSGTYPE_ReturningFlag:
 				lpTextMsg->TextMsgType = Type;
