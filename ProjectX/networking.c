@@ -3268,6 +3268,11 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	OutputDebugString( dBuf );
 }
 
+typedef enum {
+	CHANNEL_MAIN,				// default channel send pkts reliable or unreliabe, sequenced or unsequenced
+	CHANNEL_BIKE_POSITIONS,		// position updates are unreliable|sequenced... late pkts will get dropped...
+} channel_t;
+
 void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, BYTE mask )
 {
     LPVERYSHORTUPDATEMSG				lpVeryShortUpdate;
@@ -3310,6 +3315,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	int				Count;
 	int				MessageColour = 2; // default message colour is light green
 	char			VersionMessage[30];
+	channel_t		channel = CHANNEL_MAIN;
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3484,6 +3490,8 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpVeryShortUpdate->WhoIAm = WhoIAm;
 		lpVeryShortUpdate->ShortGlobalShip = VeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTUPDATEMSG );
+		channel = CHANNEL_BIKE_POSITIONS;
+		flags = NETWORK_SEQUENCED;
         break;
 
 
@@ -3494,6 +3502,8 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpUpdate->WhoIAm = WhoIAm;
 		lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
+		channel = CHANNEL_BIKE_POSITIONS;
+		flags = NETWORK_SEQUENCED;
         break;
 
 
@@ -3971,9 +3981,9 @@ send:
 	//DebugPrintf("Sending message type, %s  bytes %lu\n", msg_to_str(msg), nBytes);
 
 	if(!to)
-		network_broadcast( (void*) &CommBuff[0], nBytes, flags, 1 );
+		network_broadcast( (void*) &CommBuff[0], nBytes, flags, channel );
 	else
-		network_send( to, (void*) &CommBuff[0], nBytes, flags, 1 );
+		network_send( to, (void*) &CommBuff[0], nBytes, flags, channel );
 
 }
 
