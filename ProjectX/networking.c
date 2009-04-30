@@ -616,47 +616,47 @@ void NetworkGameUpdate()
 			if( !UseShortPackets )
 			{
 				FShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
-				FShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
+				FShortGlobalShip.GroupImIn				= (BYTE) Ships[WhoIAm].Object.Group;    // 
 				FShortGlobalShip.Primary				= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-				FShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
-				FShortGlobalShip.Pos						= Ships[WhoIAm].Object.Pos		;	  // x , y , z position
+				FShortGlobalShip.Secondary				= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+				FShortGlobalShip.Pos					= Ships[WhoIAm].Object.Pos		;	  // x , y , z position
 				FShortGlobalShip.Move_Off				= Ships[WhoIAm].Move_Off;	  // Last Movement..x , y , z
 				FShortGlobalShip.Quat					= Ships[WhoIAm].Object.Quat;// Final inverse view Quat.......after banking.. 
-				FShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
+				FShortGlobalShip.PrimPowerLevel			= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
 				FShortGlobalShip.Angle					= Ships[ WhoIAm ].Object.Angle;
 #ifdef	SHORTBANK
 				FShortGlobalShip.Bank					= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
 #else
 				FShortGlobalShip.Bank					= Ships[ WhoIAm ].Object.Bank;
 #endif
-				SendGameMessage(MSG_FUPDATE, 0, 0, 0, 0);
+				SendGameMessage(MSG_FUPDATE, 0, 0, 0, (BYTE)(Ships[WhoIAm].Object.Flags & SHIP_SecFire | SHIP_MulFire));
 			}
 			else
 			{
-				FVeryShortGlobalShip.Flags					= BuildShipFlags(WhoIAm);
-				FVeryShortGlobalShip.GroupImIn				= (BYTE) Ships[WhoIAm].Object.Group;    // 
-				FVeryShortGlobalShip.Pos.x					= (int16) Ships[WhoIAm].Object.Pos.x;
-				FVeryShortGlobalShip.Pos.y					= (int16) Ships[WhoIAm].Object.Pos.y;
-				FVeryShortGlobalShip.Pos.z					= (int16) Ships[WhoIAm].Object.Pos.z;
+				FVeryShortGlobalShip.Flags				= BuildShipFlags(WhoIAm);
+				FVeryShortGlobalShip.GroupImIn			= (BYTE) Ships[WhoIAm].Object.Group;    // 
+				FVeryShortGlobalShip.Pos.x				= (int16) Ships[WhoIAm].Object.Pos.x;
+				FVeryShortGlobalShip.Pos.y				= (int16) Ships[WhoIAm].Object.Pos.y;
+				FVeryShortGlobalShip.Pos.z				= (int16) Ships[WhoIAm].Object.Pos.z;
 				Move_Off = Ships[WhoIAm].Move_Off;
 				NormaliseVector( &Move_Off );
-				FVeryShortGlobalShip.Move_Off_Scalar		= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
+				FVeryShortGlobalShip.Move_Off_Scalar	= (uint16) ( 256.0F * VectorLength( &Ships[WhoIAm].Move_Off ) );
 				FVeryShortGlobalShip.Move_Off.x			= (int16) (Move_Off.x * 32767.0F);
 				FVeryShortGlobalShip.Move_Off.y			= (int16) (Move_Off.y * 32767.0F);
 				FVeryShortGlobalShip.Move_Off.z			= (int16) (Move_Off.z * 32767.0F);
-				FVeryShortGlobalShip.Quat.w					= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
-				FVeryShortGlobalShip.Quat.x					= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
-				FVeryShortGlobalShip.Quat.y					= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
-				FVeryShortGlobalShip.Quat.z					= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
-				FVeryShortGlobalShip.Angle.x					= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Angle.y					= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Angle.z					= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
-				FVeryShortGlobalShip.Bank						= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
-				FVeryShortGlobalShip.Primary					= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
-				FVeryShortGlobalShip.Secondary				= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
+				FVeryShortGlobalShip.Quat.w				= (int16) (Ships[WhoIAm].Object.Quat.w * 32767.0F);
+				FVeryShortGlobalShip.Quat.x				= (int16) (Ships[WhoIAm].Object.Quat.x * 32767.0F);
+				FVeryShortGlobalShip.Quat.y				= (int16) (Ships[WhoIAm].Object.Quat.y * 32767.0F);
+				FVeryShortGlobalShip.Quat.z				= (int16) (Ships[WhoIAm].Object.Quat.z * 32767.0F);
+				FVeryShortGlobalShip.Angle.x			= (int16) (Ships[WhoIAm].Object.Angle.x * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.y			= (int16) (Ships[WhoIAm].Object.Angle.y * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Angle.z			= (int16) (Ships[WhoIAm].Object.Angle.z * SHORTANGLEMODIFIERPACK );
+				FVeryShortGlobalShip.Bank				= (int16) (Ships[ WhoIAm ].Object.Bank * SHORTBANKMODIFIER);
+				FVeryShortGlobalShip.Primary			= PrimaryToFireLookup[ Ships[WhoIAm].Primary ];
+				FVeryShortGlobalShip.Secondary			= SecondaryToFireLookup[ Ships[WhoIAm].Secondary ];
 				FVeryShortGlobalShip.PrimPowerLevel		= (BYTE) Ships[ WhoIAm ].PrimPowerLevel;
 				
-				SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, 0);
+				SendGameMessage(MSG_VERYSHORTFUPDATE, 0, 0, 0, (BYTE)(Ships[WhoIAm].Object.Flags & SHIP_SecFire | SHIP_MulFire));
 			}
 			Ships[ WhoIAm ].Object.Flags &=  ~( SHIP_PrimFire | SHIP_SecFire | SHIP_MulFire );
 			Interval = NetUpdateInterval;
@@ -3462,6 +3462,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		flags = NETWORK_SEQUENCED;
         break;
 
+	// following 3 pkts are bullet pkts
+	// they also contain the player position information
+	// so they must be sent on the player position channel
+	
+	// BUG: we should really break apart fire updates and position updates
 
     case MSG_FUPDATE: // short packets off + fire weapon data
 
@@ -3470,6 +3475,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpFUpdate->WhoIAm = WhoIAm;
 		lpFUpdate->ShortGlobalShip = FShortGlobalShip;
         nBytes = sizeof( FUPDATEMSG );
+		channel = CHANNEL_BIKE_POSITIONS;
+		flags = NETWORK_SEQUENCED;
+		// uncomment to make secondaries reliable
+		//if(mask)
+		//	flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3480,6 +3490,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpVeryShortFUpdate->WhoIAm = WhoIAm;
 		lpVeryShortFUpdate->ShortGlobalShip = FVeryShortGlobalShip;
         nBytes = sizeof( VERYSHORTFUPDATEMSG );
+		channel = CHANNEL_BIKE_POSITIONS;
+		flags = NETWORK_SEQUENCED;
+		// uncomment to make secondaries reliable
+		//if(mask)
+		//	flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3490,6 +3505,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpGroupOnly_VeryShortFUpdate->WhoIAm = WhoIAm;
 		lpGroupOnly_VeryShortFUpdate->ShortGlobalShip = GroupOnly_FVeryShortGlobalShip;
         nBytes = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG );
+		channel = CHANNEL_BIKE_POSITIONS;
+		flags = NETWORK_SEQUENCED;
+		// uncomment to make secondaries reliable
+		//if(mask)
+		//	flags |= NETWORK_RELIABLE;
         break;
 
 
