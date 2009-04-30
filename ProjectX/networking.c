@@ -3750,9 +3750,9 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
     case MSG_SHORTPICKUP:
 
 		lpShortPickup = (LPSHORTPICKUPMSG)&CommBuff[0];
-        lpShortPickup->MsgCode = msg;
-        lpShortPickup->WhoIAm = WhoIAm;
-        lpShortPickup->Pickups = Ships[ShipNum].Pickups;
+        lpShortPickup->MsgCode	= msg;
+        lpShortPickup->WhoIAm	= WhoIAm;
+        lpShortPickup->Pickups	= Ships[ShipNum].Pickups;
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
 		nBytes = sizeof( SHORTPICKUPMSG );
 		to = Ships[ShipNum].network_player;
@@ -3776,32 +3776,34 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
     case MSG_SHORTTRIGGER:
 
 		lpShortTrigger = (LPSHORTTRIGGERMSG)&CommBuff[0];
-        lpShortTrigger->MsgCode	= msg;
-        lpShortTrigger->WhoIAm	= WhoIAm;
+        lpShortTrigger->MsgCode		= msg;
+        lpShortTrigger->WhoIAm		= WhoIAm;
         lpShortTrigger->Triggers	= Ships[ShipNum].Triggers;
 		GenTriggerList( ShipNum, &lpShortTrigger->ShortTrigger[0] , &lpShortTrigger->HowManyTriggers, Ships[ShipNum].Triggers );
 		nBytes	= sizeof( SHORTTRIGGERMSG );
 		to	= Ships[ShipNum].network_player;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
     case MSG_SHORTTRIGVAR:
 
 		lpShortTrigVar = (LPSHORTTRIGVARMSG)&CommBuff[0];
-        lpShortTrigVar->MsgCode	= msg;
-        lpShortTrigVar->WhoIAm	= WhoIAm;
+        lpShortTrigVar->MsgCode		= msg;
+        lpShortTrigVar->WhoIAm		= WhoIAm;
         lpShortTrigVar->TrigVars	= Ships[ShipNum].TrigVars;
 		GenTrigVarList( ShipNum, &lpShortTrigVar->ShortTrigVar[0] , &lpShortTrigVar->HowManyTrigVars, Ships[ShipNum].TrigVars );
         nBytes = sizeof( SHORTTRIGVARMSG );
 		to = Ships[ShipNum].network_player;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
     case MSG_SHORTMINE:
 
-		lpShortMine					= (LPSHORTMINEMSG)&CommBuff[0];
+		lpShortMine				= (LPSHORTMINEMSG)&CommBuff[0];
         lpShortMine->MsgCode	= msg;
-        lpShortMine->WhoIAm	= WhoIAm;
+        lpShortMine->WhoIAm		= WhoIAm;
         lpShortMine->Mines		= Ships[ShipNum].Mines;
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
 		nBytes	= sizeof( SHORTMINEMSG );
