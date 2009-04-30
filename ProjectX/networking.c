@@ -537,7 +537,7 @@ char* msg_to_str( int msg_type )
 		break;
 	case MSG_INTERPOLATE:
 		return "MSG_INTERPOLATE";
-		break;p
+		break;
 	}
 	return "UNKNOWN";
 }
