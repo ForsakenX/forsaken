@@ -3269,6 +3269,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 }
 
 typedef enum {
+	CHANNEL_RESERVED,			// cannot use channel 0 !!!
 	CHANNEL_MAIN,				// default channel send pkts reliable or unreliabe, sequenced or unsequenced
 	CHANNEL_BIKE_POSITIONS,		// position updates are unreliable|sequenced... late pkts will get dropped...
 } channel_t;
