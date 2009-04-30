@@ -3349,6 +3349,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpHereIAm->WhoIAm = WhoIAm;
 		lpHereIAm->MPVersion = PXMPVINT;
 		nBytes = sizeof( HEREIAMMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3365,6 +3366,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		nBytes = sizeof( INITMSG );
 		lpInit = (LPINITMSG)&CommBuff[0];
 		lpInit->MsgCode	= msg;
+		flags |= NETWORK_RELIABLE;
 
 		if( PXMPVINT != mask )
 		{
@@ -3586,6 +3588,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpBGOUpdate->WhoIAm = WhoIAm;
         lpBGOUpdate->BGOUpdateInfo = TempBGOUpdate;
         nBytes = sizeof( BGOUPDATEMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3629,6 +3632,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	    lpShipHit->WhoHitYou = WhoIAm;
         lpShipHit->ShipHit = TempShipHit;
         nBytes = sizeof( SHIPHITMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3640,6 +3644,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpShortShipHit->WhoHitYou = WhoIAm;
         lpShortShipHit->ShipHit = ShortTempShipHit;
         nBytes = sizeof( SHORTSHIPHITMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3663,6 +3668,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpReqTime->MsgCode = msg;
         lpReqTime->WhoIAm = WhoIAm;
 		nBytes = sizeof( REQTIMEMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3673,6 +3679,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpSetTime->WhoIAm = WhoIAm;
 		lpSetTime->TimeInfo = TempTimeSet;
 		nBytes = sizeof( SETTIMEMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
     case MSG_STATUS:
@@ -3703,6 +3710,8 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpNetSettingsMsg->PacketsPerSecond		= NetUpdateInterval;
 		lpNetSettingsMsg->CollisionPerspective	= ColPerspective;
 		lpNetSettingsMsg->ShortPackets			= UseShortPackets;
+		nBytes = sizeof( NETSETTINGSMSG );
+		flags |= NETWORK_RELIABLE;
 		break;
 
     case MSG_LONGSTATUS:
@@ -3738,6 +3747,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		GenPickupList( ShipNum, &lpShortPickup->ShortPickup[0] , &lpShortPickup->HowManyPickups , Ships[ShipNum].Pickups );
 		nBytes = sizeof( SHORTPICKUPMSG );
 		to = Ships[ShipNum].network_player;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3750,6 +3760,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		GenRegenSlotList( ShipNum, &lpShortRegenSlot->ShortRegenSlot[0] , &lpShortRegenSlot->HowManyRegenSlots , Ships[ShipNum].RegenSlots );
 		nBytes	= sizeof( SHORTREGENSLOTMSG );
 		to = Ships[ShipNum].network_player;
+		flags |= NETWORK_RELIABLE;
         break;
 
 
@@ -3786,6 +3797,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		GenMineList( ShipNum, &lpShortMine->ShortMine[0] , &lpShortMine->HowManyMines, Ships[ShipNum].Mines );
 		nBytes	= sizeof( SHORTMINEMSG );
 		to = Ships[ShipNum].network_player;
+		flags |= NETWORK_RELIABLE;
         break;
 
     case MSG_TEXTMSG:
