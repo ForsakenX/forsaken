@@ -15,7 +15,7 @@
 
 // state flags
 static int initialized;
-static int connections = 0;
+static unsigned int connections = 0;
 static ENetHost* enet_socket;
 
 // the host player
@@ -302,16 +302,11 @@ static void new_connection( ENetPeer * peer )
 static void lost_connection( ENetPeer * peer )
 {
 	size_t x;
-	connections--;
 
-	if ( peer->data == NULL )
-		return;
+	if(connections != 0)
+		connections--;
 
-	network_event( NETWORK_LEFT, (network_player_t*) peer->data );
-
-	if ( host && host == peer )
-		host = NULL;
-
+	// print debug info
 	{
 		char name[NETWORK_MAX_NAME_LENGTH+1] = "NULL";
 		char ip[INET_ADDRSTRLEN] = "";
@@ -326,8 +321,16 @@ static void lost_connection( ENetPeer * peer )
 					name, ip, peer->address.port, connections );
 	}
 
-	destroy_player( (network_player_t*) peer->data );
-	peer->data = NULL;
+	if(peer->data)
+	{
+		network_event( NETWORK_LEFT, (network_player_t*) peer->data );
+
+		if ( host && host == peer )
+			host = NULL;
+
+		destroy_player( (network_player_t*) peer->data );
+		peer->data = NULL;
+	}
 
 	if(!i_am_host)
 	{
@@ -456,7 +459,11 @@ int network_join( char* address, int port )
 		return 0;
 	DebugPrintf("network_join: address '%s', local port %d\n",address,port);
 	i_am_host = 0;
-	if( network_state == NETWORK_CONNECTING ) return 1;
+	if( network_state == NETWORK_CONNECTING )
+	{
+		DebugPrintf("network_join: already connecting...\n");
+		return 1;
+	}
 	network_state = NETWORK_CONNECTING;
 	return enet_connect( address, port );
 }
@@ -466,6 +473,7 @@ void network_host( void )
 	if( enet_socket == NULL ) return;
 	DebugPrintf("network_host\n");
 	i_am_host = 1;
+	host = NULL;
 	network_state = NETWORK_CONNECTED;
 }
 
