@@ -16,14 +16,15 @@
 // state flags
 static int initialized;
 static unsigned int connections = 0;
-static ENetHost* enet_socket;
+static ENetHost* enet_socket = NULL;
+static ENetAddress* my_external_address = NULL;
 
 // the host player
 static ENetPeer* host;
 
 // my settings
 static int i_am_host = 0;
-static char* my_player_name;
+static char* my_player_name = NULL;
 
 // settings
 static int max_players		= 25;
@@ -100,11 +101,14 @@ static int enet_connect( char* str_address, int port )
 	}
 
 	peer = enet_host_connect( enet_socket, &address, max_channels );
-	
+
 	if (peer == NULL)
 	{
 		return -1;
 	}
+	
+	if( network_state == NETWORK_CONNECTING )
+		host = peer;
 
 	DebugPrintf("enet_connect: waiting for connection.\n", str_address);
 
@@ -134,6 +138,55 @@ static void enet_send( ENetPeer* peer, void* data, int size, enet_uint32 type, i
 	enet_send_packet( peer, packet, channel, flush );
 }
 
+static int lowest_address( ENetAddress * address1, ENetAddress * address2 )
+{
+	if(!address1)return 1;
+	if(!address2)return -1;
+	// if they come from the same ip
+	if( address1->host == address2->host )
+		// then test for lowest port
+		return ( address1->port < address2->port ) ?  -1: 1;
+	// other wise test for lowest ip
+	return ( address1->host < address2->host ) ? -1: 1;
+}
+
+static ENetPeer * get_player_with_lowest_address( void )
+{
+    size_t x;
+	ENetPeer* lowest = NULL;
+	ENetPeer* peers = enet_socket->peers;
+	for( x = 0; x < enet_socket->peerCount; x++ )
+	{
+		if( peers[x].data == NULL ) continue; // network_player_t
+		if( !lowest )
+		{
+			lowest = &peers[x];
+			continue;
+		}
+		DebugPrintf("lowest_address: %d, %d vs %d, %d\n",
+					&lowest->address.host, &lowest->address.port,
+					&peers[x].address.host, &peers[x].address.port );
+		if( lowest_address( &lowest->address, &peers[x].address ) )
+			lowest = &peers[x];
+		DebugPrintf("winner: %d, %d\n", &lowest->address.host, &lowest->address.port );
+	}
+	return lowest;
+}
+
+// BUG: this needs to first detect for a mixture of lan and internet addresses
+//      if a mixture is found then only internet addressses should be viable hosts...
+
+static void migrate_host( void )
+{
+	host = get_player_with_lowest_address();
+	// if my_external_address is not set your not even in the cloud anyway
+	if( host == NULL || lowest_address( &host->address, my_external_address ) )
+	{
+		i_am_host = 1;
+		host = NULL;
+	}
+	network_event( NETWORK_HOST, host );
+}
 
 /*
  *
@@ -253,6 +306,8 @@ void disconnect_all( void )
 typedef enum {
 	NAME		= 2, // player tells us his name
 	CONNECT		= 4, // host tells us to connect to another player
+	IP_REQUEST	= 6, // someone asked for their external ip address
+	IP_RESPONSE	= 8,
 } p2p_event_t;
 
 typedef struct {
@@ -297,12 +352,17 @@ static void new_connection( ENetPeer * peer )
 		enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
 		DebugPrintf("new_connection: Sent my name to new player\n");
 	}
+	
+    // request my internet address
+    if ( !my_external_address ){
+        p2p_packet_t packet;
+        packet.type = IP_REQUEST;
+        enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+    }
 }
 
 static void lost_connection( ENetPeer * peer )
 {
-	size_t x;
-
 	if(connections != 0)
 		connections--;
 
@@ -321,37 +381,23 @@ static void lost_connection( ENetPeer * peer )
 					name, ip, peer->address.port, connections );
 	}
 
+	if( network_state == NETWORK_CONNECTING )
+		if( host == peer )
+		{
+			network_state = NETWORK_DISCONNECTED;
+			return;
+		}
+
 	if(peer->data)
 	{
 		network_event( NETWORK_LEFT, (network_player_t*) peer->data );
-
-		if ( host && host == peer )
+		if ( host == peer )
+		{
 			host = NULL;
-
+			migrate_host();
+		}
 		destroy_player( (network_player_t*) peer->data );
 		peer->data = NULL;
-	}
-
-	if(!i_am_host)
-	{
-		if(!connections)
-		{
-			network_state = NETWORK_DISCONNECTED;
-		}
-		else
-		{
-			int found = 0;
-			for( x = 0; x < enet_socket->peerCount; x++ )
-			{
-				if( enet_socket->peers[x].data != NULL ) // network_player_t
-				{
-					found = 1;
-					break;
-				}
-			}
-			if( ! found )
-				network_state = NETWORK_DISCONNECTED;
-		}
 	}
 }
 
@@ -415,6 +461,25 @@ static void new_packet( ENetEvent * event )
 							ip, peer->address.port );
 			}
 			break;
+		case IP_REQUEST:
+			{
+				network_player_t * player = (network_player_t*)event->peer->data;
+				p2p_address_packet_t packet;
+				packet.type = IP_RESPONSE;
+				packet.address = event->peer->address;
+				network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+			}
+			break;
+		case IP_RESPONSE:
+			{
+				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
+				ENetAddress * my_external_address = malloc( sizeof( ENetAddress ) );
+				my_external_address->host = packet->address.host;
+				my_external_address->port = packet->address.port;
+				//DebugPrintf("*** external address set to: %s:%d\n",(char*)ip_to_str(my_external_address->host),my_external_address->port);
+			}
+			break;
+
 		default:
 			DebugPrintf("new_packet: recieved unknown packet type: %d\n",packet->type);
 		}
