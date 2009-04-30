@@ -294,7 +294,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("d3d FlipToGDISurface.\n");
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
-	if( ! network_setup( &biker_name[0], 47624 ) )
+	if( ! network_setup( &biker_name[0], 0 ) )
 	{
 		Msg("Failed to setup network!");
 		return FALSE;

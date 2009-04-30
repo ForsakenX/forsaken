@@ -1811,13 +1811,13 @@ void EnterJoin(MENU *Menu)
 	PlayersList.selected_item = -1;
 
 	// setup
-	if( ! network_setup( &biker_name[0], 2300 ) )
+	if( ! network_setup( &biker_name[0], 0 ) )
 	{
 		Msg("Failed to setup network!");
 		return;
 	}
 
-	network_join( TCPAddress.text, 47624 );
+	network_join( TCPAddress.text, 0 );
 }
 
 char join_status_msg[255] = "";
@@ -1832,7 +1832,7 @@ void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
 	if ( IsKeyPressed( DIK_F1 ) )
-		network_join( TCPAddress.text, 47624 );
+		network_join( TCPAddress.text, 0 );
 
 	// process network routines
 	ReceiveGameMessages();
