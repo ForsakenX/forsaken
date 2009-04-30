@@ -1811,13 +1811,13 @@ void EnterJoin(MENU *Menu)
 	PlayersList.selected_item = -1;
 
 	// setup
-	if( ! network_setup( &biker_name[0], 0 ) )
+	if( ! network_setup( &biker_name[0], 2300 ) )
 	{
 		Msg("Failed to setup network!");
 		return;
 	}
 
-	network_join( TCPAddress.text, 0 );
+	network_join( TCPAddress.text, 47624 );
 }
 
 char join_status_msg[255] = "";
@@ -1832,7 +1832,7 @@ void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
 	if ( IsKeyPressed( DIK_F1 ) )
-		network_join( TCPAddress.text, 2300 );
+		network_join( TCPAddress.text, 47624 );
 
 	// process network routines
 	ReceiveGameMessages();
@@ -1878,7 +1878,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToJoin0/*"start"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConnectionToJoin, DrawFlatMenuItem, NULL, 0  },
 
-		{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
+		//{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"IP or Name:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
