@@ -329,23 +329,26 @@ static void lost_connection( ENetPeer * peer )
 	destroy_player( (network_player_t*) peer->data );
 	peer->data = NULL;
 
-	if(!connections)
+	if(!i_am_host)
 	{
-		network_state = NETWORK_DISCONNECTED;
-	}
-	else
-	{
-		int found = 0;
-		for( x = 0; x < enet_socket->peerCount; x++ )
+		if(!connections)
 		{
-			if( enet_socket->peers[x].data != NULL ) // network_player_t
-			{
-				found = 1;
-				break;
-			}
-		}
-		if( ! found )
 			network_state = NETWORK_DISCONNECTED;
+		}
+		else
+		{
+			int found = 0;
+			for( x = 0; x < enet_socket->peerCount; x++ )
+			{
+				if( enet_socket->peers[x].data != NULL ) // network_player_t
+				{
+					found = 1;
+					break;
+				}
+			}
+			if( ! found )
+				network_state = NETWORK_DISCONNECTED;
+		}
 	}
 }
 
