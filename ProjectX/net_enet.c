@@ -400,6 +400,7 @@ static void new_packet( ENetEvent * event )
 					{
 						network_event( NETWORK_JOIN, player );  // new player joined
 					}
+					network_event( NETWORK_NAME, player ); // fire player name to update
 				}
 			}
 			break;
