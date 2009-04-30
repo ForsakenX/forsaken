@@ -3707,8 +3707,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpStatus->Triggers					= Ships[WhoIAm].Triggers;	 
 		lpStatus->TrigVars					= Ships[WhoIAm].TrigVars;	 
 		nBytes = sizeof( STATUSMSG );
-		if ( MyGameStatus == STATUS_Left )	// send last status msg guaranteed
-			flags |= NETWORK_RELIABLE;
+		flags |= NETWORK_RELIABLE;
         break;
 
 	case MSG_NETSETTINGS:
@@ -3741,10 +3740,10 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpLongStatus->Status.Mines			= Ships[WhoIAm].Mines;		 
 		lpLongStatus->Status.Triggers		= Ships[WhoIAm].Triggers;	 
 		lpLongStatus->Status.TrigVars		= Ships[WhoIAm].TrigVars;
-		for( Count = 0 ; Count < 32 ; Count++ )
-			lpLongStatus->LevelName[Count] = ShortLevelNames[NewLevelNum][Count];
+		strncpy( &lpLongStatus->LevelName[0], &ShortLevelNames[NewLevelNum][0], 32 );
 		lpLongStatus->RandomStartPosModify = RandomStartPosModify;
 		nBytes = sizeof( LONGSTATUSMSG );
+		flags |= NETWORK_RELIABLE;
         break;
 
 
