@@ -532,6 +532,12 @@ char* msg_to_str( int msg_type )
     case MSG_TEXTMSG:
 		return "MSG_TEXTMSG";
 		break;
+	case MSG_VERYSHORTINTERPOLATE:
+		return "MSG_VERYSHORTINTERPOLATE";
+		break;
+	case MSG_INTERPOLATE:
+		return "MSG_INTERPOLATE";
+		break;p
 	}
 	return "UNKNOWN";
 }
