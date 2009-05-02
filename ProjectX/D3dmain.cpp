@@ -51,6 +51,7 @@ extern "C" {
 #include	"Sfx.h"
 #include	"util.h"
 #include	"net.h"
+#include	"lua_common.h"
 
 	extern BOOL Debug;
 	extern BOOL DebugLog;
@@ -280,6 +281,9 @@ FAILURE:
 	// close up the registry 
 	CloseRegistry();
 
+	// close up lua
+	lua_shutdown();
+
 #ifdef DEBUG_ON
 
 	//
@@ -495,6 +499,13 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// parse the command line
 	if(!ParseCommandLine(lpCmdLine))
+		return FALSE;
+
+	// we have now been changed to the skeleton directory
+	// where the lua files are...
+
+	// startup lua
+	if( lua_init() != 0 )
 		return FALSE;
 
 	// create and show the window

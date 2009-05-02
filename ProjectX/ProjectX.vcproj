@@ -71,7 +71,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -150,6 +150,7 @@
 				SuppressStartupBanner="true"
 				DebugInformationFormat="3"
 				CompileAs="0"
+				OmitDefaultLibName="false"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -165,7 +166,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -260,7 +261,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -353,7 +354,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -573,6 +574,14 @@
 			</File>
 			<File
 				RelativePath="LoadSave.c"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_common.c"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_config.c"
 				>
 			</File>
 			<File
@@ -878,6 +887,14 @@
 			</File>
 			<File
 				RelativePath=".\Include\localtitle.h"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_common.h"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_config.h"
 				>
 			</File>
 			<File

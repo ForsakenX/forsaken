@@ -23,6 +23,10 @@ Visual Studio Directories:
     $(MSSDK_DIR)\include
     $(MSSDK_DIR)\include\mfc
 
+  Libraries:
+
+   $(MSSDK_DIR)\Lib
+
 Templates:
 
   Copy *.template files to their basename's and edit their contents
