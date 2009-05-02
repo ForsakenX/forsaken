@@ -23,6 +23,13 @@
 
 extern BOOL Debug;
 
+// creates the file if not found
+void touch_file( char* path )
+{
+	if(!File_Exists(path))
+		Write_File(path, "", 0);
+}
+
 BOOL is_folder( char* path )
 {
 	static struct _stat stat;

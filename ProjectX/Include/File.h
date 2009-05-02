@@ -3,6 +3,7 @@
 
 #include "Typedefs.h"
 
+void touch_file( char* path );
 BOOL is_folder( char* path );
 int folder_exists( char *pathspec, ... );
 long Get_File_Size( char * Filename );
