@@ -32,6 +32,32 @@
 
 #include "lua_common.h"
 
+int config_save( void )
+{
+	int err = 0;
+	lua_settop(L1, 0);
+	lua_getglobal(L1, "config_save");    /* [bottom] init [top] */
+#ifdef DEBUG_ON
+	lua_pushstring(L1, "debug");
+#else
+	lua_pushstring(L1, "main");
+#endif
+	err = lua_pcall(L1, 1, 0, 0);
+	if (err)
+		Msg("error lua init: %s\n", lua_tostring(L1, -1));
+	return err;
+}
+
+int config_get_bool(const char *opt)
+{
+	int i;
+	lua_getglobal(L1, "config");
+	lua_getfield(L1, -1, opt);
+	i = lua_toboolean(L1, -1);
+	lua_pop(L1, 2);
+	return i;
+}
+
 int config_get_int(const char *opt)
 {
 	int i;
@@ -67,4 +93,44 @@ char *config_get_str(const char *opt)
 	lua_pop(L1, 2);
 	rot = (rot + 1) % 8;
 	return str;
+}
+
+void config_set_int(const char *opt, int i)
+{
+	lua_getglobal(L1, "config");
+	lua_pushstring(L1, opt);
+	lua_pushinteger(L1, i);
+	lua_settable(L1,-3);
+}
+
+void config_set_float(const char *opt, float f)
+{
+	lua_getglobal(L1, "config");
+	lua_pushstring(L1, opt);
+	lua_pushnumber(L1, f);
+	lua_settable(L1,-3);
+}
+
+void config_set_bool(const char *opt, int i)
+{
+	lua_getglobal(L1, "config");
+	lua_pushstring(L1, opt);
+	lua_pushboolean(L1, i);
+	lua_settable(L1,-3);
+}
+
+void config_set_str(const char *opt, char* str)
+{
+	lua_getglobal(L1, "config");
+	lua_pushstring(L1, opt);
+	lua_pushstring(L1, str);
+	lua_settable(L1,-3);
+}
+
+void config_set_strn(const char *opt, char* str, size_t size)
+{
+	lua_getglobal(L1, "config");
+	lua_pushstring(L1, opt);
+	lua_pushlstring(L1, str, size);
+	lua_settable(L1,-3);
 }

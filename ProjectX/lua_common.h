@@ -43,6 +43,7 @@
 
 #include "lua_config.h"
 #include "util.h"
+#include "file.h"
 
 // return rv if function does not return 0
 #define ASSERT(rv) if (rv) return rv;
@@ -51,6 +52,7 @@
 
 extern lua_State *L1;
 
+int lua_dofile(char* name);
 int lua_init(void);
 void lua_shutdown(void);
 

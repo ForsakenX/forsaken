@@ -33,10 +33,19 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-/* These functions return configuration parameter values. */
+int config_save( void );
 
 int config_get_int(const char *opt);
+void config_set_int(const char *opt, int i);
+
 float config_get_float(const char *opt);
+void config_set_float(const char *opt, float f);
+
 char *config_get_str(const char *opt);
+void config_set_str(const char *opt, char* str);
+void config_set_strn(const char *opt, char* str, size_t size);
+
+int config_get_bool(const char *opt);
+void config_set_bool(const char *opt, int i);
 
 #endif /* CONFIG_H */

@@ -34,6 +34,53 @@
 
 lua_State *L1;
 
+int lua_dofile(char* name)
+{
+	char path[100] = "";
+	sprintf(path,"Scripts/%s",name);
+	return luaL_dofile(L1,path);
+}
+
+static int lua_touch_file(lua_State *state)
+{
+	char* path = (char*) lua_tostring(state,1); // get argument
+	touch_file( path );
+	return 0; // number of results
+}
+
+static int lua_push_funcs(void)
+{
+	lua_pushcfunction(L1,lua_touch_file);
+	lua_setglobal(L1,"touch_file");
+	return 0;
+}
+
+static int load_init_file( void )
+{
+	if(lua_dofile("init.lua"))
+	{
+		Msg("error failed to load init.lua");
+		return 1;
+	}
+	return 0;
+}
+
+static int run_init_func( void )
+{
+	int err = 0;
+	lua_settop(L1, 0);
+	lua_getglobal(L1, "init");    /* [bottom] init [top] */
+#ifdef DEBUG_ON
+	lua_pushboolean(L1, 1);
+#else
+	lua_pushboolean(L1, 0);
+#endif
+	err = lua_pcall(L1, 1, 0, 0);
+	if (err)
+		Msg("error lua init: %s\n", lua_tostring(L1, -1));
+	return err;
+}
+
 static int lua_create(void)
 {
 	/* luaL_Reg x[] = { { NULL, NULL } }; */
@@ -47,36 +94,10 @@ static int lua_create(void)
 	return 0;
 }
 
-static int load_init_file( void )
-{
-	if(luaL_dofile(L1,"Scripts/init.lua"))
-	{
-		Msg("error failed to load init.lua");
-		return 1;
-	}
-	return 0;
-}
-
-static int run_init_func( void )
-{
-	lua_settop(L1, 0);
-	lua_getglobal(L1, "init");    /* [bottom] init [top] */
-#ifdef DEBUG_ON
-	lua_pushinteger(L1, 1);
-#else
-	lua_pushinteger(L1, 0);
-#endif
-	err = lua_pcall(L1, 1, 0, 0);
-	if (err)
-	{
-		Msg("error lua init: %s\n", lua_tostring(L1, -1));
-		return err;
-	}
-}
-
 int lua_init()
 {
 	ASSERT(lua_create());
+	ASSERT(lua_push_funcs());
 	ASSERT(load_init_file());
 	ASSERT(run_init_func());
 	return 0;
