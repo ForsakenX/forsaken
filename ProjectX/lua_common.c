@@ -41,22 +41,24 @@ static int lua_create(void)
 	if (!L1)
 	{
 		Msg("error: while initializing Lua!\n");
-		return -1;
+		return 1;
 	}
 	luaL_openlibs(L1);
 	return 0;
 }
 
-int lua_init()
+static int load_init_file( void )
 {
-	int err = 0;
-	lua_create();
-	err = luaL_dofile(L1,"lua_files/init.lua");
-	if(err)
+	if(luaL_dofile(L1,"Scripts/init.lua"))
 	{
-		Msg("Failed to load init.lua");
-		return err;
+		Msg("error failed to load init.lua");
+		return 1;
 	}
+	return 0;
+}
+
+static int run_init_func( void )
+{
 	lua_settop(L1, 0);
 	lua_getglobal(L1, "init");    /* [bottom] init [top] */
 #ifdef DEBUG_ON
@@ -68,12 +70,20 @@ int lua_init()
 	if (err)
 	{
 		Msg("error lua init: %s\n", lua_tostring(L1, -1));
+		return err;
 	}
-	Msg("a = %d",config_get_int("a"));
-	return err;
+}
+
+int lua_init()
+{
+	ASSERT(lua_create());
+	ASSERT(load_init_file());
+	ASSERT(run_init_func());
+	return 0;
 }
 
 void lua_shutdown(void)
 {
-        lua_close(L1);
+	if(L1)
+		lua_close(L1);
 }
