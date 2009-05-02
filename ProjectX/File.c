@@ -23,6 +23,13 @@
 
 extern BOOL Debug;
 
+BOOL is_folder( char* path )
+{
+	static struct _stat stat;
+	if ( _stat( path, &stat ) == 0 && stat.st_mode & _S_IFDIR )
+		return TRUE;
+	return FALSE;
+}
 
 int folder_exists( char *pathspec, ... )
 {

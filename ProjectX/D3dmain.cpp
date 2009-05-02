@@ -452,6 +452,21 @@ static BOOL InitWindow( void )
 	return TRUE;
 }
 
+#define CRITICAL_FOLDERS 4
+static BOOL missing_folders( void )
+{
+	int x = 0;
+	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Scripts","Pilots"};
+	for( x = 0; x < CRITICAL_FOLDERS; x++ )
+		if( ! is_folder(folders[x]) )
+		{
+			Msg("Could not locate the '%s' folder...\n%s", folders[x],
+				"exe is most likely in the wrong directory.");
+			return TRUE;
+		}
+	return FALSE;
+}
+
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
@@ -502,6 +517,8 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return FALSE;
 
 	// we are now in the skeleton folder
+	if(missing_folders())
+		return FALSE;
 
 	// startup lua
 	if( lua_init() != 0 )
