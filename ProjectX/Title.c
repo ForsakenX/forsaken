@@ -48,6 +48,7 @@
 #include "demo.h"
 #include "singleplayer.h"
 #include "util.h"
+#include "lua_config.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -450,8 +451,6 @@ void SetLightStates( MENUITEM *item );
 void InitDemoList( MENU * Menu );
 void GetGamePrefs( void );
 void SetGamePrefs( void );
-void GetMultiplayerPrefs( void );
-void SetMultiplayerPrefs( void );
 void InitLoadSavedGameList( MENU * Menu );
 
 char *SearchKey( char c );
@@ -2766,7 +2765,7 @@ MENU	MENU_Visuals = {
 };
 
 MENU	MENU_Options = {
-	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetMultiplayerPrefs, NULL, 0,
+	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetGamePrefs, NULL, 0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"*/,				0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
 		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"*/,	0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
@@ -8896,7 +8895,6 @@ void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
 	SetGamePrefs();
-	SetMultiplayerPrefs();
 	if ( SWMonoChrome != Last_SWMonoChrome )
 	{
 		ReleaseView();
@@ -10278,7 +10276,7 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	LevelList.selected_item = selected_level;
 
 	// load multiplayer settings: lagtol, weapons, bright bikes, packets etc..
-	GetMultiplayerPrefs();
+	GetGamePrefs();
 
 	// set the selected level to the last level played
 	NewLevelNum = LevelList.selected_item;
@@ -10291,10 +10289,8 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 /* exit */
 void ExitMultiplayerHostVDUPeerPeer ( MENU *Menu )
 {
-
 	// save any changes to multi player prefrences
-	SetMultiplayerPrefs();
-
+	SetGamePrefs();
 }
 
 void RedrawMultiplayerHostVDUPeerPeer( int * i )
@@ -11279,10 +11275,9 @@ void ExitLevelSelect( MENU * Menu )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void GetGamePrefs( void )
 {
-	DWORD size;
 	DWORD temp;
-
-	size = sizeof(temp);
+	DWORD size = sizeof(temp);
+	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 
 	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
 		ResetKillsPerLevel = FALSE;
@@ -11495,6 +11490,97 @@ void GetGamePrefs( void )
 		BikeCompSpeechSlider.value = 0;
 	}
 
+	ShowPlayersOnHUD = ( RegGet( "ShowPlayersOnHUD", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : FALSE;
+
+	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : COLPERS_Descent; // COLPERS_Descent is lag tol off right??
+
+	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : TRUE;
+
+	BikeExhausts = ( RegGet( "BikeExhausts", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : TRUE;
+
+	TimeLimit.value = ( RegGet( "TimeLimit", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 0;
+
+	MaxKillsSlider.value = ( RegGet( "MaxKills", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 0;
+
+	UseShortPackets = ( RegGet( "ShortPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : TRUE;
+
+	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
+		? temp : FALSE;
+
+	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
+	{
+		PacketsSlider.value	= NetUpdateIntervalCmdLine;
+	}else{
+		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+			? temp : 20;
+	}
+
+	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : GAME_Normal;
+
+	CTFSlider.value = ( RegGet( "CTFrules", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : CTF_STANDARD;
+
+	BountyBonus = ( RegGet( "BountyBonus", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : TRUE;
+
+	GoalScoreSlider.value = ( RegGet( "FlagScore", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 5;
+
+	BountyBonusSlider.value = ( RegGet( "BountyInterval", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : 10;
+
+	ShowTeamInfo = ( RegGet( "TeamInfo", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : TRUE;
+
+	RandomPickups = ( RegGet( "RandomPickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+		? temp : FALSE;
+
+	size = sizeof( pickupflags );
+	if ( RegGet( "PickupFlags", (LPBYTE)&pickupflags, &size ) == ERROR_SUCCESS )
+		UnpackPickupInfo( pickupflags );
+	else
+	{
+		// default these to false
+		PickupValid[2]	= FALSE; // transpulse
+		PickupValid[9]	= FALSE; // thief missile
+		PickupValid[17]	= FALSE; // spider mines
+		PickupValid[25]	= FALSE; // chaos shield
+		PickupValid[15]	= FALSE; // pine mines
+		PickupValid[32]	= FALSE; // stealth mantle
+	
+	}
+	if ( RegGet( "primarypickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
+	{
+		NumPrimaryPickupsSlider.value = temp;
+		CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
+		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
+	}
+
+	{
+		int i;
+		char templevelname[ 64 ];
+		LevelList.selected_item = 0;
+		size = sizeof ( templevelname );
+		if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
+		{
+			templevelname[ 7 ] = 0;
+			for ( i = 0; i < LevelList.items; i++ )
+				if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
+				{
+					LevelList.selected_item = i;
+					break;
+				}
+		}
+	}
+
 	// get the last used Pilot
 	// or use first cfg found
 	GetDefaultPilot();
@@ -11511,6 +11597,7 @@ void GetGamePrefs( void )
 void SetGamePrefs( void )
 {
 	DWORD temp;
+	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 	temp = ResetKillsPerLevel;
 	RegSet( "ResetKills",  (LPBYTE)&temp ,  sizeof(temp) );
 	temp = MissileCameraEnable;
@@ -11615,113 +11702,6 @@ void SetGamePrefs( void )
 	temp = MyMessageColour;
 	RegSet( "MyMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
 
-}
-
-void GetMultiplayerPrefs( void )
-{
-	DWORD size;
-	DWORD temp;
-	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-
-	size = sizeof(temp);
-
-	ShowPlayersOnHUD = ( RegGet( "ShowPlayersOnHUD", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
-	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : COLPERS_Descent; // COLPERS_Descent is lag tol off right??
-
-	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	BikeExhausts = ( RegGet( "BikeExhausts", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	TimeLimit.value = ( RegGet( "TimeLimit", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 0;
-
-	MaxKillsSlider.value = ( RegGet( "MaxKills", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 0;
-
-	UseShortPackets = ( RegGet( "ShortPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
-	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
-	{
-		PacketsSlider.value	= NetUpdateIntervalCmdLine;
-	}else{
-		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			? temp : 20;
-	}
-
-	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : GAME_Normal;
-
-	CTFSlider.value = ( RegGet( "CTFrules", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : CTF_STANDARD;
-
-	BountyBonus = ( RegGet( "BountyBonus", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
-	GoalScoreSlider.value = ( RegGet( "FlagScore", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 5;
-
-	BountyBonusSlider.value = ( RegGet( "BountyInterval", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 10;
-
-	ShowTeamInfo = ( RegGet( "TeamInfo", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
-	RandomPickups = ( RegGet( "RandomPickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
-
-	size = sizeof( pickupflags );
-	if ( RegGet( "PickupFlags", (LPBYTE)&pickupflags, &size ) == ERROR_SUCCESS )
-		UnpackPickupInfo( pickupflags );
-	else
-	{
-		// default these to false
-		PickupValid[2]	= FALSE; // transpulse
-		PickupValid[9]	= FALSE; // thief missile
-		PickupValid[17]	= FALSE; // spider mines
-		PickupValid[25]	= FALSE; // chaos shield
-		PickupValid[15]	= FALSE; // pine mines
-		PickupValid[32]	= FALSE; // stealth mantle
-	
-	}
-	if ( RegGet( "primarypickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-	{
-		NumPrimaryPickupsSlider.value = temp;
-		CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
-		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
-	}
-
-	{
-		int i;
-		char templevelname[ 64 ];
-		LevelList.selected_item = 0;
-		size = sizeof ( templevelname );
-		if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
-		{
-			templevelname[ 7 ] = 0;
-			for ( i = 0; i < LevelList.items; i++ )
-				if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
-				{
-					LevelList.selected_item = i;
-					break;
-				}
-		}
-	}
-}
-
-void SetMultiplayerPrefs( void )
-{			  
-	DWORD temp;
-	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-
 	temp = ShowPlayersOnHUD;
 	RegSet( "ShowPlayersOnHUD", (LPBYTE)&temp , sizeof(temp));
 	temp = ColPerspective;
@@ -11767,8 +11747,9 @@ void SetMultiplayerPrefs( void )
 	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
 
 	RegSetA( "LevelName",  (LPBYTE)LevelList.item[ LevelList.selected_item ] , sizeof( LevelList.item[ LevelList.selected_item ] ) );
-}
 
+	config_save();
+}
 
 BOOL CompareVectors(VECTOR vector1, VECTOR vector2)
 {

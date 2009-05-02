@@ -67,8 +67,6 @@ extern BOOL CanCarryOwnFlag;
 extern SLIDER CTFSlider;
 
 extern	BOOL	UseShortPackets;
-
-extern void SetMultiplayerPrefs( void );
 extern BOOL	Panel;
 
 extern MENUITEM TeamGameHostMenuItem;
@@ -180,7 +178,6 @@ void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
 void InitDemoList( MENU * Menu );
 void RestoreDemoSettings( void );
-void GetMultiplayerPrefs( void );
 
 void SetUpGameSubType( int type )
 {
@@ -264,7 +261,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	LONGLONG	TempTime;
 	uint32		Seed;
 
-	SetMultiplayerPrefs();
+	SetGamePrefs();
 
 	Seed = timeGetTime();
 	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
