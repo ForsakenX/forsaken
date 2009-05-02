@@ -51,7 +51,12 @@ int lua_init()
 {
 	int err = 0;
 	lua_create();
-	luaL_dofile(L1, "scripts/init.lua");
+	err = luaL_dofile(L1,"lua_files/init.lua");
+	if(err)
+	{
+		Msg("Failed to load init.lua");
+		return err;
+	}
 	lua_settop(L1, 0);
 	lua_getglobal(L1, "init");    /* [bottom] init [top] */
 #ifdef DEBUG_ON
