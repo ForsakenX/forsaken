@@ -44,9 +44,13 @@ function load_raw(name)
 	setfenv(load_file(name), rawcfg)()
 end
 
+function config_path(name)
+	return "Configs/"..name..".txt"
+end
+
 function load_config(name)
 	local cfg = {}
-	setfenv(load_file(name), cfg)()
+	setfenv(load_file(config_path(name)), cfg)()
 	for key, value in pairs(cfg) do
 		config[key] = value
 	end

@@ -2,17 +2,12 @@
 config = {}
 
 function init( debug_on )
-        dofile("lua_files/config.lua")
-	load_raw('configs/defaults.txt')
+        dofile("Scripts/config.lua")
+	load_raw('Configs/defaults.txt')
 	if debug_on == 1 then
-		load_config('configs/debug.txt')
+		load_config('debug')
 	else
-		load_config('configs/main.txt')
+		load_config('main')
 	end
 end
 
---[[
-2
-3
-4
---]]
