@@ -1,6 +1,8 @@
 #ifndef FILE_H
 #define FILE_H
 
+#include "Typedefs.h"
+
 int folder_exists( char *pathspec, ... );
 long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
