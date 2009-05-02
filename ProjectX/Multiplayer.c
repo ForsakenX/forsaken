@@ -255,6 +255,7 @@ void SetUpGameType( int type )
 	Input		:	nothing
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+void SetGamePrefs( void );
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;

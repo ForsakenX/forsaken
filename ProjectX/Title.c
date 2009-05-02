@@ -10275,9 +10275,6 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	// reset the selected level
 	LevelList.selected_item = selected_level;
 
-	// load multiplayer settings: lagtol, weapons, bright bikes, packets etc..
-	GetGamePrefs();
-
 	// set the selected level to the last level played
 	NewLevelNum = LevelList.selected_item;
 

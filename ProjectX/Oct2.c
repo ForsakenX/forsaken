@@ -380,7 +380,6 @@ BOOL  Inside;
 int   Depth;
 
 void CalculateFramelag( void );
-void SetGamePrefs( void );
 
 MENU  MENU_EditMacro1;
 MENU  MENU_EditMacro2;
