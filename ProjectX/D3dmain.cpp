@@ -474,6 +474,10 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 #endif
 
+	// startup lua
+	if( lua_init() != 0 )
+		return FALSE;
+
 	// initialize COM library
 	if FAILED( CoInitialize(NULL) )
 		return FALSE;
@@ -499,13 +503,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// parse the command line
 	if(!ParseCommandLine(lpCmdLine))
-		return FALSE;
-
-	// we have now been changed to the skeleton directory
-	// where the lua files are...
-
-	// startup lua
-	if( lua_init() != 0 )
 		return FALSE;
 
 	// create and show the window
