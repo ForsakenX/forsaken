@@ -29,37 +29,36 @@
 -- IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 -- POSSIBILITY OF SUCH DAMAGE.
 
-function load_file(name)
-	f,m = loadfile(name)
-	if f then
-		return f
-	else
-		error(m)
-	end
-end
-
-function load_raw(name)
-	local rawcfg = {}
-	rawset(config, '_config', rawcfg)
-	setfenv(load_file(name), rawcfg)()
-end
-
 function config_path(name)
 	return "Configs/"..name..".txt"
 end
 
-function load_config(name)
+function config_load_raw(name)
+	local rawcfg = {}
+	rawset(config, '_config', rawcfg)
+	setfenv(load_file(config_path(name)), rawcfg)()
+end
+
+function config_load(name)
 	local cfg = {}
-	setfenv(load_file(config_path(name)), cfg)()
+	local path = config_path(name)
+	touch_file(path)
+	setfenv(load_file(path), cfg)()
 	for key, value in pairs(cfg) do
 		config[key] = value
 	end
 end
 
-function write_config(name)
-	local f = file.open(name, 'wb')
+function config_save(name)
+	local f = io.open(config_path(name), 'wb')
 	for key, value in pairs(config._config) do
-		f:write(key.." = "..tostring(value).."\n")
+		if type(value) == "string" then
+			value = value:gsub('\\','\\\\'); -- escape escape characters
+			value = value:gsub('"','\\"'); -- escape quote characters
+			f:write(key.." = \""..value.."\"\n")
+		else
+			f:write(key.." = "..tostring(value).."\n")
+		end
 	end
 	f:close()
 end
