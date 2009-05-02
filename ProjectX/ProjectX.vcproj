@@ -930,10 +930,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\Myres.h"
-				>
-			</File>
-			<File
 				RelativePath=".\net.h"
 				>
 			</File>
