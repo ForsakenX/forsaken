@@ -16,7 +16,6 @@ end
 
 function init( debug )
         do_file("config.lua")
-	config_load_raw('defaults')
 	if debug then
 		config_load("debug")
 	else

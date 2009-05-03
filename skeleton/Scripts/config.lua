@@ -33,12 +33,6 @@ function config_path(name)
 	return "Configs/"..name..".txt"
 end
 
-function config_load_raw(name)
-	local rawcfg = {}
-	rawset(config, '_config', rawcfg)
-	setfenv(load_file(config_path(name)), rawcfg)()
-end
-
 function config_load(name)
 	local cfg = {}
 	local path = config_path(name)
@@ -51,29 +45,15 @@ end
 
 function config_save(name)
 	local f = io.open(config_path(name), 'wb')
-	for key, value in pairs(config._config) do
+	for key, value in pairs(config) do
 		if type(value) == "string" then
 			value = value:gsub('\\','\\\\'); -- escape escape characters
 			value = value:gsub('"','\\"'); -- escape quote characters
-			f:write(key.." = \""..value.."\"\n")
+			f:write(key.." = \""..value.."\"\r\n")
 		else
-			f:write(key.." = "..tostring(value).."\n")
+			f:write(key.." = "..tostring(value).."\r\n")
 		end
 	end
 	f:close()
 end
-
-setmetatable(config, {
-	__index = function(t, key)
-		local value = rawget(t, '_config')[key]
-		if value ~= nil then
-			return value
-		end
-	end,
-	__newindex = function(t, key, value)
-		if rawget(t, '_config')[key] ~= nil then
-			rawset(rawget(t, '_config'), key, value)
-		end
-	end
-})
 
