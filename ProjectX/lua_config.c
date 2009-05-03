@@ -99,7 +99,6 @@ float config_get_float(const char *opt, float _default)
 void config_get_strncpy(char* dest, size_t size, const char *opt, char* _default)
 {
 	char * str;
-	DebugPrintf("stack = %d\n",lua_gettop(L1));
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
 	if(lua_isnil(L1, -1))
@@ -108,7 +107,6 @@ void config_get_strncpy(char* dest, size_t size, const char *opt, char* _default
 		str = (char*)luaL_checkstring(L1, -1);
 	strncpy( dest, str, size );
 	lua_pop(L1, 2);
-	DebugPrintf("stack = %d\n",lua_gettop(L1));
 }
 
 void config_set_int(const char *opt, int i)
