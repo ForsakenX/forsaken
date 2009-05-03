@@ -134,7 +134,12 @@ D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D obj
 
 d3dmainglobals myglobs;     // collection of global variables
 
+#ifdef DEBUG_ON
+BOOL Debug					= TRUE;
+#else
 BOOL Debug					= FALSE;
+#endif
+
 BOOL DeviceOnCommandline	= FALSE;
 BOOL bOnlySystemMemory		= FALSE;
 BOOL bOnlyEmulation			= FALSE;
@@ -458,6 +463,60 @@ static BOOL missing_folders( void )
 	return FALSE;
 }
 
+BOOL parse_chdir( char *cli )
+{
+	LPSTR tmp = "";
+    LPSTR option = "";
+	char cmdline[256];
+	int size;
+
+	size = sizeof(strlen(cli)+1);
+	if ( size > sizeof(cmdline) )
+	{
+		Msg("Command line to long!");
+		return FALSE;
+	}
+	strcpy(cmdline,cli);
+
+	option = strtok(cmdline, " -+'\"");
+
+    while(option != NULL )
+	{
+		// WARNING:	chdir can only be the LAST option !
+		// For running the exe outside the root folder
+		// -chdir c:\\Program Files\\ProjectX
+		if (!_stricmp(option,"chdir"))
+		{
+			// get option enclosed in quotes
+			// this does not consider space as separator
+			option = strtok(NULL, "\"'");
+
+			if (!option)
+			{
+				Msg("Error using chdir");
+				return FALSE;
+				break;
+			}
+
+			// change to root directory
+			// the rest of the command line will be used as the path
+			if( _chdir( option ) != 0 )
+			{
+				// error
+				Msg("Could not change to directory: %s", option);
+				return FALSE;
+			}
+
+			// dont loop anymore were done
+			break;
+		}
+		// get the next token
+        option = strtok(NULL, " -+'\"");
+	}
+
+	return TRUE;
+}
+
 static BOOL
 AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
@@ -503,16 +562,29 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
 
-	// parse the command line
-	if(!ParseCommandLine(lpCmdLine))
+	// parse chdir from command line first
+	if(!parse_chdir(lpCmdLine))
 		return FALSE;
 
 	// we are now in the skeleton folder
+	// now we need to see if we are in right place
+
+	// check for missing folders
 	if(missing_folders())
 		return FALSE;
 
 	// startup lua
 	if( lua_init() != 0 )
+		return FALSE;
+
+	// copy game settings from config
+	GetGamePrefs();
+
+	// our configs are now loaded
+	// now we can check the command line for overrides
+
+	// parse the command line
+	if(!ParseCommandLine(lpCmdLine))
 		return FALSE;
 
 	// create and show the window
@@ -535,9 +607,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// create the valid pickups global
 	InitValidPickups();
-
-	// copy game settings from config
-	GetGamePrefs();
 
 // this is where it starts to take so long cause it scans directory for dynamic sound files...
 
@@ -631,35 +700,11 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     while(option != NULL )
 	{
 
-		// WARNING:	chdir can only be the LAST option !
-		// For running the exe outside the root folder
-		// -chdir c:\\Program Files\\ProjectX
+		// last option
 		if (!_stricmp(option,"chdir"))
 		{
-
-			// get option enclosed in quotes
-			// this does not consider space as separator
-			option = strtok(NULL, "\"'");
-
-			if (!option)
-			{
-				Msg("Error using chdir");
-				return FALSE;
-				break;
-			}
-
-			// change to root directory
-			// the rest of the command line will be used as the path
-			if( _chdir( option ) != 0 )
-			{
-				// error
-				Msg("Could not change to directory: %s", option);
-				return FALSE;
-			}
-
 			// dont loop anymore were done
 			break;
-
 		}
 
 		// off only works in full screen...
