@@ -534,10 +534,10 @@ timer framelag_timer;
 
 int i, j; // index counters
 
-int RearCameraActive = 0;
+BOOL RearCameraActive;
 int MissileCameraActive = 0;
 uint16  CameraMissile = (uint16) -1;
-extern int MissileCameraEnable;
+extern BOOL MissileCameraEnable;
 BYTE  TempMissileCam;
 
 extern  REMOTECAMERA * ActiveRemoteCamera;
@@ -1111,7 +1111,7 @@ D3DMATRIX world = {
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
 };
 
-BOOL ZClearsOn = TRUE;
+BOOL ZClearsOn;
 BOOL g_OddFrame = FALSE;
 
 
@@ -3370,11 +3370,11 @@ void ProcessGameKeys( void )
 
     // F5
     if ( IsKeyPressed( DIK_F5 ) )
-      MissileCameraEnable ^=1;
+      MissileCameraEnable = !MissileCameraEnable;
 
 	// F6
 	if ( IsKeyPressed( DIK_F6 ) )
-		RearCameraActive ^=1;
+		RearCameraActive = !RearCameraActive;
 
 	// F7
 	if ( IsKeyPressed( DIK_F7 ) )

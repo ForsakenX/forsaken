@@ -48,21 +48,31 @@ int config_save( void )
 	return err;
 }
 
-int config_get_bool(const char *opt)
+int config_get_bool(const char *opt, int _default)
 {
 	int i;
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
+	if(lua_isnil(L1, -1))
+	{
+		lua_pop(L1, 2);
+		return _default;
+	}
 	i = lua_toboolean(L1, -1);
 	lua_pop(L1, 2);
 	return i;
 }
 
-int config_get_int(const char *opt)
+int config_get_int(const char *opt, int _default)
 {
 	int i;
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
+	if(lua_isnil(L1, -1))
+	{
+		lua_pop(L1, 2);
+		return _default;
+	}
 	if (lua_isboolean(L1, -1))
 		i = lua_toboolean(L1, -1);
 	else
@@ -71,23 +81,33 @@ int config_get_int(const char *opt)
 	return i;
 }
 
-float config_get_float(const char *opt)
+float config_get_float(const char *opt, float _default)
 {
 	float f;
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
+	if(lua_isnil(L1, -1))
+	{
+		lua_pop(L1, 2);
+		return _default;
+	}
 	f = (float) luaL_checknumber(L1, -1);
 	lua_pop(L1, 2);
 	return f;
 }
 
 /* NOTE: static storage of at most 8 option values. */
-char *config_get_str(const char *opt)
+char *config_get_str(const char *opt, char* _default)
 {
 	static char str[256*8];
 	static int rot = 0;
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
+	if(lua_isnil(L1, -1))
+	{
+		lua_pop(L1, 2);
+		return _default;
+	}
 	strncpy(&str[256*rot], luaL_checkstring(L1, -1), 256);
 	str[256*rot+255] = '\0';
 	lua_pop(L1, 2);
@@ -95,42 +115,57 @@ char *config_get_str(const char *opt)
 	return str;
 }
 
+// in lua strings are arrays of bytes
+// use this for binary type data storage
+void config_get_raw(char* dest, size_t size, const char *opt, char* _default)
+{
+	lua_getglobal(L1, "config");
+	lua_getfield(L1, -1, opt);
+	if(lua_isnil(L1, -1))
+	{
+		lua_pop(L1, 2);
+		return _default;
+	}
+	strncpy( dest, luaL_checkstring(L1, -1), size );
+	lua_pop(L1, 2);
+}
+
 void config_set_int(const char *opt, int i)
 {
 	lua_getglobal(L1, "config");
-	lua_pushstring(L1, opt);
 	lua_pushinteger(L1, i);
-	lua_settable(L1,-3);
+	lua_setfield(L1, -2, opt);
+	lua_pop(L1, 1);
 }
 
 void config_set_float(const char *opt, float f)
 {
 	lua_getglobal(L1, "config");
-	lua_pushstring(L1, opt);
 	lua_pushnumber(L1, f);
-	lua_settable(L1,-3);
+	lua_setfield(L1, -2, opt);
+	lua_pop(L1, 1);
 }
 
 void config_set_bool(const char *opt, int i)
 {
 	lua_getglobal(L1, "config");
-	lua_pushstring(L1, opt);
 	lua_pushboolean(L1, i);
-	lua_settable(L1,-3);
+	lua_setfield(L1, -2, opt);
+	lua_pop(L1, 1);
 }
 
 void config_set_str(const char *opt, char* str)
 {
 	lua_getglobal(L1, "config");
-	lua_pushstring(L1, opt);
 	lua_pushstring(L1, str);
-	lua_settable(L1,-3);
+	lua_setfield(L1, -2, opt);
+	lua_pop(L1, 1);
 }
 
 void config_set_strn(const char *opt, char* str, size_t size)
 {
 	lua_getglobal(L1, "config");
-	lua_pushstring(L1, opt);
 	lua_pushlstring(L1, str, size);
-	lua_settable(L1,-3);
+	lua_setfield(L1, -2, opt);
+	lua_pop(L1, 1);
 }

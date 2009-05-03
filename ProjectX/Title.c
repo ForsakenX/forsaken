@@ -66,10 +66,6 @@ void *mem;
 #endif
 #endif
 
-// registry.c
-extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
-extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
-extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
@@ -87,7 +83,7 @@ void ReInitJoysticks( void );
 #define MAX_KEYDEF_PAGES	(4)
 int CurrentPage = 0;
 int MaxPage = 0;
-int MissileCameraEnable = 0;
+BOOL MissileCameraEnable;
 void GetLevelName( char *buf, int bufsize, int level );
 void MenuItemDrawPageName( MENUITEM *Item );
 void InitKeyDef( MENU *Menu );
@@ -112,7 +108,7 @@ extern void ShowNodeNetwork( uint32 NetMask );
 void ProcessTextItems (void);
 
 
-BOOL	SWMonoChrome = FALSE;
+BOOL	SWMonoChrome;
 BOOL	Last_SWMonoChrome = FALSE;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -155,7 +151,7 @@ BOOL NeedFlagAtHome = TRUE;
 BOOL CanCarryOwnFlag = FALSE;
 BOOL OwnFlagTeleportsHome = TRUE;
 
-BOOL ShowPlayersOnHUD = FALSE;
+BOOL ShowPlayersOnHUD;
 
 int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
@@ -188,7 +184,7 @@ extern float DemoAvgFps;
 extern float DemoTotalTime;
 extern int32 DemoGameLoops;
 extern	int16 actual_volume;
-extern	int	RearCameraActive;
+extern	BOOL RearCameraActive;
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
 extern char *ShipAxisText[];
@@ -296,19 +292,19 @@ extern	BOOL	RandomPickups;
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-int		ScreenWidth = 0;
-int		ScreenHeight = 0;
-int		ScreenBPP = 0;
+int		ScreenWidth;
+int		ScreenHeight;
+int		ScreenBPP;
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Texture Format changing stuff..
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 LIST	TextureList = { 0 };
-int		TexturePalettized = -1;
-int		TextureRedBPP = 0;
-int		TextureGreenBPP = 0;
-int		TextureBlueBPP = 0;
-int		TextureAlphaBPP = 0;
-int		TextureIndexBPP = 0;
+int		TexturePalettized;
+int		TextureRedBPP;
+int		TextureGreenBPP;
+int		TextureBlueBPP;
+int		TextureAlphaBPP;
+int		TextureIndexBPP;
 
 SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
@@ -858,18 +854,18 @@ SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
-BOOL ShowTeamInfo				= TRUE;
+BOOL ShowTeamInfo;
 BOOL OKToProcessKeys			= FALSE;
 BOOL MenuFrozen					= FALSE;
 BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
 BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
-BOOL BiLinearFiltering			= TRUE;
-BOOL PerspectiveCorrect			= TRUE;
-BOOL EnhancedXHair				= FALSE;
-BOOL LensFlare					= TRUE;
-BOOL GoreGuts					= FALSE;
+BOOL BiLinearFiltering;
+BOOL PerspectiveCorrect;
+BOOL EnhancedXHair;
+BOOL LensFlare;
+BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
 BOOL GodMode					= FALSE;
 BOOL TexturesEnabled			= TRUE;
@@ -878,9 +874,9 @@ BOOL ShowPlaneRGB				= FALSE;
 BOOL PlayDemo					= FALSE;
 BOOL PauseDemo					= FALSE;
 BOOL RecordDemo					= FALSE;
-BOOL BrightShips				= FALSE;
-BOOL MyBrightShips				= FALSE;
-BOOL BikeExhausts				= TRUE;
+BOOL BrightShips;
+BOOL MyBrightShips;
+BOOL BikeExhausts;
 BOOL DemoScreenGrab				= FALSE;
 BOOL ScreenSaving				= TRUE;
 BOOL ShowNode					= FALSE;
@@ -888,12 +884,12 @@ BOOL NodeCube					= FALSE;
 BOOL OldNodeCube				= FALSE;
 BOOL NodeCubeType				= FALSE;
 BOOL TeamGame					= FALSE;
-BOOL PickupLightDetail			= TRUE;
-BOOL PrimaryLightDetail			= TRUE;
-BOOL SecondaryLightDetail		= TRUE;
-BOOL AutoDetail					= TRUE;
-BOOL BountyBonus				= TRUE;
-BOOL BikeEnginesOn				= TRUE;
+BOOL PickupLightDetail;
+BOOL PrimaryLightDetail;
+BOOL SecondaryLightDetail;
+BOOL AutoDetail;
+BOOL BountyBonus;
+BOOL BikeEnginesOn;
 BOOL ToggleTest;
 
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
@@ -9969,7 +9965,7 @@ void InitBikerName( char *name )
 	sprintf( biker_config, "pilots\\%s.txt", name );
 
 	// set the player name in registry
-    RegSetA("PlayerName", (LPBYTE)biker_name, sizeof(biker_name));
+	config_set_str("PlayerName",&biker_name[0]);
 
 	// tell everyone else in multiplayer
 	set_player_name();
@@ -9993,7 +9989,7 @@ void GetDefaultPilot(void)
 	char * strptr;
 
 	// holds the pilot name
-	char pilot_name[256];
+	char pilot_name[256] = "";
 
 	// size
 	int size = sizeof( pilot_name );
@@ -10001,8 +9997,10 @@ void GetDefaultPilot(void)
 	// did we find a player name ?
 	BOOL found = FALSE;
 
+	strncpy( &pilot_name[0], config_get_str("PlayerName", ""), size );
+
 	// get the PlayerName from registry
-	if ( RegGet("PlayerName", (LPBYTE)pilot_name, &size ) == ERROR_SUCCESS )
+	if ( strlen(pilot_name) )
 
 		// found
 		found = TRUE;
@@ -11272,276 +11270,110 @@ void ExitLevelSelect( MENU * Menu )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void GetGamePrefs( void )
 {
-	DWORD temp;
-	DWORD size = sizeof(temp);
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
 
-	if( RegGet( "ResetKills", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		ResetKillsPerLevel = FALSE;
-	else
-		ResetKillsPerLevel = temp;
+	// strings
 
-	if( RegGet( "MissileCameraEnable", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		MissileCameraEnable = TRUE;
-	else
-		MissileCameraEnable = temp;
-
-	if( RegGet( "RearCameraActive", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		RearCameraActive = TRUE;
-	else
-		RearCameraActive = temp;
-
-	if( RegGet( "AutoDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		AutoDetail = TRUE;
-	else
-		AutoDetail = temp;
-
-	if( RegGet( "BikeDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		BikeDetailSlider.value = BikeDetailSlider.max;
-	else
-		BikeDetailSlider.value = temp;
-
-	if( RegGet( "TrailDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		TrailDetailSlider.value = TrailDetailSlider.max;
-	else
-		TrailDetailSlider.value = temp;
-
-	if( RegGet( "BiLinear", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		BiLinearFiltering = TRUE;
-	else
-		BiLinearFiltering = temp;
-
-	if( RegGet( "TriLinear", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		TriLinear = TRUE;
-	else
-		TriLinear = temp;
-
-	if( RegGet( "PerspectiveCorrect", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		PerspectiveCorrect = TRUE;
-	else
-		PerspectiveCorrect = temp;
-
-	if( RegGet( "EnhancedXHair", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		EnhancedXHair = FALSE;
-	else
-		EnhancedXHair = temp;
-
-	if( RegGet( "LensFlare", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		LensFlare = TRUE;
-	else
-		LensFlare = temp;
-
-	if( RegGet( "PickupLightDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		PickupLightDetail = TRUE;
-	else
-		PickupLightDetail = temp;
-
-	if( RegGet( "PrimaryLightDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		PrimaryLightDetail = TRUE;
-	else
-		PrimaryLightDetail = temp;
-
-	if( RegGet( "SecondaryLightDetail", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		SecondaryLightDetail = TRUE;
-	else
-		SecondaryLightDetail = temp;
-
-	if( RegGet( "GoreGuts", (LPBYTE)&temp , &size ) != ERROR_SUCCESS)
-		GoreGuts = FALSE;
-	else
-		GoreGuts = temp;
-
-	SWMonoChrome = ( RegGet( "SWMonoChrome", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
-
-	if ( RegGet( "ScreenWidth", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenWidth = temp;
-	else
-		ScreenWidth = 0;
-
-	if ( RegGet( "ScreenHeight", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenHeight = temp;
-	else
-		ScreenHeight = 0;
-
-	if ( RegGet( "ScreenBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		ScreenBPP = temp;
-	else
-		ScreenBPP = 0;
-
-	if ( RegGet( "TexturePalettized", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TexturePalettized = temp;
-	else
-		TexturePalettized = -1;
-
-	if ( RegGet( "TextureRedBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TextureRedBPP = temp;
-	else
-		TextureRedBPP = 0;
-
-	if ( RegGet( "TextureGreenBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TextureGreenBPP = temp;
-	else
-		TextureGreenBPP = 0;
-
-	if ( RegGet( "TextureBlueBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TextureBlueBPP = temp;
-	else
-		TextureBlueBPP = 0;
-
-	if ( RegGet( "TextureAlphaBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TextureAlphaBPP = temp;
-	else
-		TextureAlphaBPP = 0;
-
-	if ( RegGet( "TextureIndexBPP", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TextureIndexBPP = temp;
-	else
-		TextureIndexBPP = 0;
-
-	if ( RegGet( "SfxVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		SfxSlider.value = temp;
-
-	if ( RegGet( "BikeEngines", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		BikeEnginesOn = (BOOL)temp;
-
-	if ( RegGet( "FlagSfxVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		FlagSfxSlider.value = temp;
-
-	if ( RegGet( "Gamma", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
 	{
-		GammaSlider.value = temp;
-		Gamma = ( (double)GammaSlider.value ) / 100.0F;
+		int i;
+		char* level_name = config_get_str( "LevelName", "ship" );
+		for ( i = 0; i < LevelList.items; i++ )
+			if ( !_strnicmp( LevelList.item[ i ], level_name, 7 ) )
+			{
+				LevelList.selected_item = i;
+				break;
+			}
 	}
 
-	if ( RegGet( "water", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-	{
-		WaterDetailSlider.value = temp;
-		CLAMP( WaterDetailSlider.value, WaterDetailSlider.max )	
-		SetWaterDetail( &WaterDetailSlider );
-	}
-
-	if ( RegGet( "BikerSpeechVolume", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-	{
-		BikerSpeechSlider.value = temp;
-	}
-	if ( RegGet( "BikeCompSpeechVol", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-	{
-		BikeCompSpeechSlider.value = temp;
-	}
-		
-	// get colours
-	if ( RegGet( "KillMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		KillMessageColour = temp;
-	else
-		KillMessageColour = 2;
-
-	if ( RegGet( "MilestoneMessagesColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		MilestoneMessagesColour = temp;
-	else
-		MilestoneMessagesColour = 1;
-
-	if ( RegGet( "SystemMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		SystemMessageColour = temp;
-	else
-		SystemMessageColour = 2;
-
-	if ( RegGet( "FlagMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		FlagMessageColour = temp;
-	else
-		FlagMessageColour = 2;
-
-	if ( RegGet( "PlayerMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		PlayerMessageColour = temp;
-	else
-		PlayerMessageColour = 2;
-
-	if ( RegGet( "PickupMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		PickupMessageColour = temp;
-	else
-		PickupMessageColour = 2;
-
-	if ( RegGet( "TauntMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		TauntMessageColour = temp;
-	else
-		TauntMessageColour = 2;
-
-	if ( RegGet( "MyMessageColour", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		MyMessageColour = temp;
-	else
-		MyMessageColour = 2;
+	// booleans
 
 #ifdef Z_TRICK
-	if ( ZClearsOn )
-	{
-		if ( RegGet( "ZClear", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			ZClearsOn = (BOOL)temp;
-	}
+    ZClearsOn                        = config_get_bool( "ZClearsOn",				TRUE );
 #endif
 
-	// setting sliders to zero ensures text messages instead of speech
+    ResetKillsPerLevel               = config_get_bool( "ResetKillsPerLevel",		FALSE );
+    MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
+    MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
+    RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
+    AutoDetail                       = config_get_bool( "AutoDetail",				TRUE );
+    BiLinearFiltering                = config_get_bool( "BiLinearFiltering",		TRUE );
+    TriLinear                        = config_get_bool( "TriLinear",				TRUE );
+    PerspectiveCorrect               = config_get_bool( "PerspectiveCorrect",		TRUE );
+    EnhancedXHair                    = config_get_bool( "EnhancedXHair",			FALSE );
+    LensFlare                        = config_get_bool( "LensFlare",				TRUE );
+    PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
+    PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
+    SecondaryLightDetail             = config_get_bool( "SecondaryLightDetail",		TRUE );
+    GoreGuts                         = config_get_bool( "GoreGuts",					TRUE );
+    SWMonoChrome                     = config_get_bool( "SWMonoChrome",				FALSE );
+    BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
+    ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			FALSE );
+    BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
+    BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
+    RandomPickups                    = config_get_bool( "RandomPickups",			FALSE );
+    UseShortPackets                  = config_get_bool( "UseShortPackets",			TRUE );
+    ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
+
+    // integers
+
+    WaterDetailSlider.value          = config_get_int( "water",						WaterDetailSlider.max );
+    BikeDetailSlider.value           = config_get_int( "BikeDetail",				BikeDetailSlider.max );
+    TrailDetailSlider.value          = config_get_int( "TrailDetail",				TrailDetailSlider.max );
+
+    SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
+    BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
+    BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
+    FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
+
+    GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
+    MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
+    TimeLimit.value                  = config_get_int( "TimeLimit",					0);
+    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
+    NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
+    CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
+    GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
+    BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
+
+    ScreenWidth                      = config_get_int( "ScreenWidth",				0 );
+    ScreenHeight                     = config_get_int( "ScreenHeight",				0 );
+    ScreenBPP                        = config_get_int( "ScreenBPP",					0 );
+    TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
+    TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
+    TextureGreenBPP                  = config_get_int( "TextureGreenBPP",			0 );
+    TextureBlueBPP                   = config_get_int( "TextureBlueBPP",			0 );
+    TextureAlphaBPP                  = config_get_int( "TextureAlphaBPP",			0 );
+    TextureIndexBPP                  = config_get_int( "TextureIndexBPP",			0 );
+    KillMessageColour                = config_get_int( "KillMessageColour",			12 );
+    MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	1 );
+    SystemMessageColour              = config_get_int( "SystemMessageColour",		2 );
+    FlagMessageColour                = config_get_int( "FlagMessageColour",			2 );
+    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		2 );
+    PickupMessageColour              = config_get_int( "PickupMessageColour",		2 );
+    TauntMessageColour               = config_get_int( "TauntMessageColour",		2 );
+    MyMessageColour                  = config_get_int( "MyMessageColour",			2 );
+    ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
+    GameType                         = config_get_int( "GameType",					GAME_Normal );
+
+	config_get_raw( (char*) &pickupflags, sizeof(uint32)*2, "PickupFlags", "" );
+
+	//
+
+	Gamma = ( (double)GammaSlider.value ) / 100.0F;
+
+	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max )	
+	SetWaterDetail( &WaterDetailSlider );
+
 	if ( NoDynamicSfx )
 	{
+		// ensures text messages instead of speech
 		BikerSpeechSlider.value = 0;
 		BikeCompSpeechSlider.value = 0;
 	}
 
-	ShowPlayersOnHUD = ( RegGet( "ShowPlayersOnHUD", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
-	ColPerspective = ( RegGet( "ColPerspective", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : COLPERS_Descent; // COLPERS_Descent is lag tol off right??
-
-	MyBrightShips = ( RegGet( "BrightShips", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	BikeExhausts = ( RegGet( "BikeExhausts", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	TimeLimit.value = ( RegGet( "TimeLimit", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 0;
-
-	MaxKillsSlider.value = ( RegGet( "MaxKills", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 0;
-
-	UseShortPackets = ( RegGet( "ShortPackets", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : TRUE;
-
-	ResetKillsPerLevel = ( RegGet( "ResetKillsPerLevel", (LPBYTE)&temp , &size ) == ERROR_SUCCESS)
-		? temp : FALSE;
-
 	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
-	{
 		PacketsSlider.value	= NetUpdateIntervalCmdLine;
-	}else{
-		PacketsSlider.value = ( RegGet( "Packets", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-			? temp : 20;
-	}
 
-	GameType = ( RegGet( "GameType", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : GAME_Normal;
-
-	CTFSlider.value = ( RegGet( "CTFrules", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : CTF_STANDARD;
-
-	BountyBonus = ( RegGet( "BountyBonus", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
-	GoalScoreSlider.value = ( RegGet( "FlagScore", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 5;
-
-	BountyBonusSlider.value = ( RegGet( "BountyInterval", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : 10;
-
-	ShowTeamInfo = ( RegGet( "TeamInfo", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : TRUE;
-
-	RandomPickups = ( RegGet( "RandomPickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-		? temp : FALSE;
-
-	size = sizeof( pickupflags );
-	if ( RegGet( "PickupFlags", (LPBYTE)&pickupflags, &size ) == ERROR_SUCCESS )
+	if ( pickupflags )
 		UnpackPickupInfo( pickupflags );
 	else
 	{
@@ -11552,31 +11384,10 @@ void GetGamePrefs( void )
 		PickupValid[25]	= FALSE; // chaos shield
 		PickupValid[15]	= FALSE; // pine mines
 		PickupValid[32]	= FALSE; // stealth mantle
-	
-	}
-	if ( RegGet( "primarypickups", (LPBYTE)&temp, &size ) == ERROR_SUCCESS )
-	{
-		NumPrimaryPickupsSlider.value = temp;
-		CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
-		NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 	}
 
-	{
-		int i;
-		char templevelname[ 64 ];
-		LevelList.selected_item = 0;
-		size = sizeof ( templevelname );
-		if( RegGet( "LevelName", (LPBYTE)&templevelname[0], &size ) == ERROR_SUCCESS )
-		{
-			templevelname[ 7 ] = 0;
-			for ( i = 0; i < LevelList.items; i++ )
-				if ( !_strnicmp( LevelList.item[ i ], templevelname, 7 ) )
-				{
-					LevelList.selected_item = i;
-					break;
-				}
-		}
-	}
+	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
+	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
 	// get the last used Pilot
 	// or use first cfg found
@@ -11593,157 +11404,90 @@ void GetGamePrefs( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SetGamePrefs( void )
 {
-	DWORD temp;
 	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-	temp = ResetKillsPerLevel;
-	RegSet( "ResetKills",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = MissileCameraEnable;
-	RegSet( "MissileCameraEnable",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = RearCameraActive;
-	RegSet( "RearCameraActive",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = AutoDetail;
-	RegSet( "AutoDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = BikeDetailSlider.value;
-	RegSet( "BikeDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = TrailDetailSlider.value;
-	RegSet( "TrailDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = BiLinearFiltering;
-	RegSet( "BiLinear",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = TriLinear;
-	RegSet( "TriLinear",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = PerspectiveCorrect;
-	RegSet( "PerspectiveCorrect",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = EnhancedXHair;
-	RegSet( "EnhancedXHair",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = LensFlare;
-	RegSet( "LensFlare",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = PickupLightDetail;
-	RegSet( "PickupLightDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = PrimaryLightDetail;
-	RegSet( "PrimaryLightDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = SecondaryLightDetail;
-	RegSet( "SecondaryLightDetail",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = GoreGuts;
-	RegSet( "GoreGuts",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = SWMonoChrome;
-	RegSet( "SWMonoChrome", (LPBYTE)&temp , sizeof( temp ) );
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].w;
-	RegSet( "ScreenWidth",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].h;
-	RegSet( "ScreenHeight",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->Mode[ d3dapp->CurrMode ].bpp;
-	RegSet( "ScreenBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized;
-	RegSet( "TexturePalettized",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP;
-	RegSet( "TextureRedBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP;
-	RegSet( "TextureGreenBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP;
-	RegSet( "TextureBlueBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP;
-	RegSet( "TextureAlphaBPP",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP;
-	RegSet( "TextureIndexBPP",  (LPBYTE)&temp ,  sizeof(temp) );
+	PackPickupInfo( pickupflags );  // pickup selection
+
+	// strings
+
+	config_set_str( "LevelName", LevelList.item[ LevelList.selected_item ] );
 	
-	temp = SfxSlider.value;
-	RegSet( "SfxVolume",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = FlagSfxSlider.value;
-	RegSet( "FlagSfxVolume",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = (DWORD)BikeEnginesOn;
-	RegSet( "BikeEngines",  (LPBYTE)&temp ,  sizeof(temp) );
-	
-	temp = GammaSlider.value;
-	RegSet( "Gamma",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = WaterDetailSlider.value;
-	RegSet( "water",  (LPBYTE)&temp ,  sizeof(temp) );
+	// booleans
 
 #ifdef Z_TRICK
-	temp = ZClearsOn;
-	RegSet( "ZClear",  (LPBYTE)&temp ,  sizeof(temp) );
+	config_set_bool( "ZClearsOn",				ZClearsOn );
 #endif
+
+	config_set_bool( "ResetKillsPerLevel",		ResetKillsPerLevel );
+	config_set_bool( "BrightShips",				MyBrightShips );
+    config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
+    config_set_bool( "RearCameraActive",		RearCameraActive );
+    config_set_bool( "AutoDetail",				AutoDetail );
+    config_set_bool( "BiLinearFiltering",		BiLinearFiltering );
+    config_set_bool( "TriLinear",				TriLinear );
+    config_set_bool( "PerspectiveCorrect",		PerspectiveCorrect );
+    config_set_bool( "EnhancedXHair",			EnhancedXHair );
+    config_set_bool( "LensFlare",				LensFlare );
+    config_set_bool( "PickupLightDetail",		PickupLightDetail );
+    config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );
+    config_set_bool( "SecondaryLightDetail",	SecondaryLightDetail );
+    config_set_bool( "GoreGuts",				GoreGuts );
+    config_set_bool( "SWMonoChrome",			SWMonoChrome );
+    config_set_bool( "BikeEnginesOn",			BikeEnginesOn );
+    config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
+    config_set_bool( "BikeExhausts",			BikeExhausts );
+    config_set_bool( "BountyBonus",				BountyBonus );
+    config_set_bool( "RandomPickups",			RandomPickups );
+    config_set_bool( "UseShortPackets",			UseShortPackets );
+    config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
+
+	// integers
+
+	config_set_int( "BikeDetail",				BikeDetailSlider.value );
+	config_set_int( "TrailDetail",				TrailDetailSlider.value );
+	config_set_int( "ScreenWidth",				d3dapp->Mode[ d3dapp->CurrMode ].w );
+	config_set_int( "ScreenHeight",				d3dapp->Mode[ d3dapp->CurrMode ].h );
+	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
+	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
+	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
+	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
+	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
+	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
+	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
+	config_set_int( "SfxVolume",				SfxSlider.value );
+	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
+	config_set_int( "Gamma",					GammaSlider.value );
+	config_set_int( "water",					WaterDetailSlider.value );
+	config_set_int( "TimeLimit",				TimeLimit.value );
+	config_set_int( "KillMessageColour",		KillMessageColour );
+	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
+	config_set_int( "SystemMessageColour",		SystemMessageColour );
+	config_set_int( "FlagMessageColour",		FlagMessageColour );
+	config_set_int( "PlayerMessageColour",		PlayerMessageColour );
+	config_set_int( "PickupMessageColour",		PickupMessageColour );
+	config_set_int( "TauntMessageColour",		TauntMessageColour );
+	config_set_int( "MyMessageColour",			MyMessageColour );
+	config_set_int( "ColPerspective",			ColPerspective );
+	config_set_int( "MaxKills",					MaxKillsSlider.value );
+	config_set_int( "GameType",					GameType );
+	config_set_int( "FlagScore",				GoalScoreSlider.value );
+	config_set_int( "CTFrules",					CTFSlider.value );
+	config_set_int( "BountyInterval",			BountyBonusSlider.value );
+	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
+	config_set_int( "PacketsPerSecond",			PacketsSlider.value );
+
+	config_set_strn( "PickupFlags",				(char*)&pickupflags, sizeof(pickupflags) );
 
 	if ( !NoDynamicSfx )
 	{
-		temp = BikerSpeechSlider.value;
-		RegSet( "BikerSpeechVolume",  (LPBYTE)&temp ,  sizeof(temp) );
-		temp = BikeCompSpeechSlider.value;
-		RegSet( "BikeCompSpeechVol",  (LPBYTE)&temp ,  sizeof(temp) );
+		config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
+		config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
 	}
 
-	// save colours
-	temp = KillMessageColour;
-	RegSet( "KillMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
+	// these were here but not being set...
+	// probably should save them...
 
-	temp = MilestoneMessagesColour;
-	RegSet( "MilestoneMessagesColour",  (LPBYTE)&temp ,  sizeof(temp) );
-	
-	temp = SystemMessageColour;
-	RegSet( "SystemMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-	
-	temp = FlagMessageColour;
-	RegSet( "FlagMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-	
-	temp = PlayerMessageColour;
-	RegSet( "PlayerMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = PickupMessageColour;
-	RegSet( "PickupMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = TauntMessageColour;
-	RegSet( "TauntMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = MyMessageColour;
-	RegSet( "MyMessageColour",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	temp = ShowPlayersOnHUD;
-	RegSet( "ShowPlayersOnHUD", (LPBYTE)&temp , sizeof(temp));
-	temp = ColPerspective;
-	RegSet( "ColPerspective", (LPBYTE)&temp , sizeof(temp));
-	temp = MyBrightShips;
-	RegSet( "BrightShips",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = BikeExhausts;
-	RegSet( "BikeExhausts",  (LPBYTE)&temp ,  sizeof(temp) );
-	temp = TimeLimit.value;
-	RegSet( "TimeLimit", (LPBYTE)&temp, sizeof( temp ) );
-	temp = MaxKillsSlider.value;
-	RegSet( "MaxKills", (LPBYTE)&temp, sizeof( temp ) );
-	temp = UseShortPackets;
-	RegSet( "ShortPackets", (LPBYTE)&temp , sizeof( temp ) );
-	temp = ResetKillsPerLevel;
-	RegSet( "ResetKillsPerLevel", (LPBYTE)&temp , sizeof( temp ) );
-	if( !(NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 ))
-	{
-		temp = PacketsSlider.value;
-		RegSet( "Packets", (LPBYTE)&temp, sizeof( temp ) );
-	}
-	temp = GameType;
-	RegSet( "GameType", (LPBYTE)&temp, sizeof( temp ) );
-	temp = BountyBonus;
-	RegSet( "BountyBonus", (LPBYTE)&temp, sizeof( temp ) );
-	temp = GoalScoreSlider.value;
-	RegSet( "FlagScore", (LPBYTE)&temp, sizeof( temp ) );
-	temp = CTFSlider.value;
-	RegSet( "CTFrules", (LPBYTE)&temp, sizeof( temp ) );
-	temp = BountyBonusSlider.value;
-	RegSet( "BountyInterval", (LPBYTE)&temp, sizeof( temp ) );
-	temp = ShowTeamInfo;
-	RegSet( "TeamInfo", (LPBYTE)&temp, sizeof ( temp ) );
-	temp = RandomPickups;
-	RegSet( "RandomPickups", (LPBYTE)&temp, sizeof ( temp ) );
-	PackPickupInfo( pickupflags );
-	RegSet( "PickupFlags", (LPBYTE)&pickupflags, sizeof( pickupflags ) );
-
-	temp = NumPrimaryPickupsSlider.value;
-	RegSet( "primarypickups",  (LPBYTE)&temp ,  sizeof(temp) );
-
-	GoalScore = GoalScoreSlider.value;
-	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
-
-	RegSetA( "LevelName",  (LPBYTE)LevelList.item[ LevelList.selected_item ] , sizeof( LevelList.item[ LevelList.selected_item ] ) );
+	//GoalScore = GoalScoreSlider.value;
+	//BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
 
 	config_save();
 }

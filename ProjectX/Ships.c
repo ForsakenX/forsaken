@@ -675,7 +675,6 @@ BOOL SwitchedToWatchMode =FALSE;
 
 extern	BOOL Headlights;
 
-extern	int	RearCameraActive;
 BOOL	RearCameraDisable = FALSE;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

@@ -30,22 +30,24 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef LUA_CONFIG_H
+#define LUA_CONFIG_H
 
 int config_save( void );
 
-int config_get_int(const char *opt);
+int config_get_int(const char *opt, int _default);
 void config_set_int(const char *opt, int i);
 
-float config_get_float(const char *opt);
+float config_get_float(const char *opt, float _default);
 void config_set_float(const char *opt, float f);
 
-char *config_get_str(const char *opt);
+char *config_get_str(const char *opt, char* _default);
 void config_set_str(const char *opt, char* str);
 void config_set_strn(const char *opt, char* str, size_t size);
 
-int config_get_bool(const char *opt);
+int config_get_bool(const char *opt, int _default);
 void config_set_bool(const char *opt, int i);
 
-#endif /* CONFIG_H */
+void config_get_raw(char* dest, size_t size, const char *opt, char* _default);
+
+#endif /* LUA_CONFIG_H */

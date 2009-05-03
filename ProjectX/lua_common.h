@@ -46,7 +46,11 @@
 #include "file.h"
 
 // return rv if function does not return 0
-#define ASSERT(rv) if (rv) return rv;
+#define ASSERT(x) \
+        { \
+                int _err = x; \
+                if (_err) return _err; \
+        }
 
 // luaL_dofile(L1, file);
 

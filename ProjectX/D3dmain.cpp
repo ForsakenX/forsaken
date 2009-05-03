@@ -69,11 +69,6 @@ extern "C" {
 	extern BOOL bFullscreen;
 	extern char *config_name;
 	extern D3DAppInfo d3dappi;
-	extern BOOL InitRegistry();
-	extern BOOL CloseRegistry();
-	extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
-	extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
-	extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 	extern BOOL NoCursorClip;
 	extern BOOL ZClearsOn;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
@@ -102,7 +97,6 @@ extern "C" {
 	extern  BOOL	DontColourKey;
 	extern	BOOL	TripleBuffer;
 	extern	BOOL	PolygonText;
-	extern	BOOL	UseSendAsync;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
 	extern BOOL CanDoStrechBlt;
@@ -277,9 +271,6 @@ FAILURE:
 
 	// Uninitialize the COM library
 	CoUninitialize();
-
-	// close up the registry 
-	CloseRegistry();
 
 	// close up lua
 	lua_shutdown();
@@ -545,9 +536,7 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// create the valid pickups global
 	InitValidPickups();
 
-	// connect or setup registry
-	// and extract game settings
-	InitRegistry();
+	// copy game settings from config
 	GetGamePrefs();
 
 // this is where it starts to take so long cause it scans directory for dynamic sound files...
@@ -604,15 +593,13 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     bOnlyEmulation			= FALSE;
 	Is3Dfx					= FALSE;
 	Is3Dfx2					= FALSE;
-	TriLinear				= TRUE;
-	NoSFX					= FALSE;
+	NoSFX					= FALSE; // turns off sound
 	TextureMemory			= 0;
 	MipMap					= TRUE;
 	TripleBuffer			= FALSE;
 	NoTextureScaling		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	UseSendAsync			= TRUE;
 	bFullscreen				= FALSE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
@@ -755,12 +742,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option, "PolyText"))
 		{
 			PolygonText = TRUE;
-        }
-
-		// send packets in blocking mode
-		else if (!_stricmp(option, "NoSendAsync"))
-		{
-			UseSendAsync = FALSE;
         }
 		
 		// jump to the host screen

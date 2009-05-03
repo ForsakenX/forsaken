@@ -43,18 +43,13 @@ extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;
 
-BOOL ResetKillsPerLevel = FALSE;
+BOOL ResetKillsPerLevel;
 BOOL bTCP = FALSE;
 
 extern uint8 QuickStart;
 extern BOOL BrightShips;
 extern BOOL BikeExhausts;
 extern int32 ColPerspective;
-
-// registry.c
-extern LONG RegGet(LPCTSTR lptszName, LPBYTE lpData, LPDWORD lpdwDataSize);
-extern LONG RegSet(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
-extern LONG RegSetA(LPCTSTR lptszName, CONST BYTE * lpData, DWORD dwSize);
 
 extern BOOL NoMenuBack;
 
