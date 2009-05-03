@@ -49,6 +49,7 @@
 #include "singleplayer.h"
 #include "util.h"
 #include "lua_config.h"
+#include "net_tracker.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -10229,7 +10230,9 @@ char *SearchKey( char c )
 
 
 void SelectQuit( MENUITEM *Item )
-{
+{	
+	if(IsHost)
+		send_tracker_finished( tracker_server, tracker_port );
 	SetGamePrefs();
 	MyGameStatus = STATUS_QuittingFromTitles;
 	MenuAbort();
@@ -10518,9 +10521,9 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 			return;
 		}
 	}
-
+	if(IsHost)
+		send_tracker_finished( tracker_server, tracker_port );
 	MyGameStatus = STATUS_QuitCurrentGame;
-	
 	//OKToProcessKeys = FALSE;
 }
 

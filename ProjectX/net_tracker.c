@@ -44,13 +44,14 @@ void send_tracker_update( char* host, int port )
 
 void send_tracker_finished( char* host, int port )
 {
-	send_tracker_message( host, port, "finished" );
+	send_tracker_message( host, port, "finished\n" );
 }
 
 /*
  *  Sender
  */
 
+// protocol is line oriented so you must send a new line to end message
 static void send_tracker_message( char* host, int port, char* message )
 {
 	int sent = 0;

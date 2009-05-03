@@ -37,6 +37,7 @@
 #include "Local.h"
 #include "stats.h"
 #include "version.h"
+#include "net_tracker.h"
 
 extern BOOL Debug;
 
@@ -1439,6 +1440,18 @@ void network_event( network_event_type_t type, void* data )
         }
 }
 
+extern float real_framelag;
+void handle_tracker( void )
+{
+	static float timer = 0;
+	if( timer <= 0 )
+	{
+		timer = 20; // 3 times a minute, timeout is 1 minute
+		send_tracker_update( tracker_server, tracker_port );
+	}
+	timer -= real_framelag; // minus elapsed time
+}
+
 void ReceiveGameMessages( void )
 {
 	DWORD		offset = 0;
@@ -1484,6 +1497,9 @@ void ReceiveGameMessages( void )
 	}
 
 	BuildReliabilityTab();
+
+	if(IsHost)
+		handle_tracker();
 
 	network_pump();
 

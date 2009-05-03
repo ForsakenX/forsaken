@@ -34,6 +34,7 @@
 #include "demo.h"
 #include "string.h"
 #include "util.h"
+#include "net_tracker.h"
 
 /*
  * Externals
@@ -507,6 +508,8 @@ void BailMultiplayer( MENU * Menu )
 	MyGameStatus = STATUS_Left;
     if ( WhoIAm < MAX_PLAYERS )
 		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+	if(IsHost)
+		send_tracker_finished( tracker_server, tracker_port );
 	network_cleanup();
 	MenuRestart( &MENU_Start );
 	MyGameStatus = STATUS_Title;

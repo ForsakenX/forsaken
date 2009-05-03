@@ -567,6 +567,7 @@ void network_cleanup( void )
 {
 	if( enet_host == NULL ) return;
 	DebugPrintf("network_cleanup\n");
+	enet_host_flush(enet_host); // send any pending packets
 	disconnect_all();
 	destroy_players();
 	enet_cleanup();
