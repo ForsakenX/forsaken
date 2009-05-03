@@ -29,20 +29,35 @@
 extern ENetHost* enet_host;
 extern char * my_player_name;
 
-// example
-// send_tracker_update("fly.thruhere.net",47624);
+static void send_tracker_message( char* host, int port, char* message );
+
+/*
+ *  Wrappers
+ */
 
 void send_tracker_update( char* host, int port )
 {
-	int sent, size;
+	char message[256] = "";
+	sprintf(message,"hosting %s %s\n",my_player_name,PXVersion);
+	send_tracker_message( host, port, message );
+}
+
+void send_tracker_finished( char* host, int port )
+{
+	send_tracker_message( host, port, "finished" );
+}
+
+/*
+ *  Sender
+ */
+
+static void send_tracker_message( char* host, int port, char* message )
+{
+	int sent = 0;
+	int size = strlen(message);
 	//ENetSocket socket;
 	ENetAddress address;
 	ENetBuffer send_buffer;
-
-	// tracker message
-	char data[256] = "";
-	sprintf(data,"hosting %s %s\n",my_player_name,PXVersion);
-	size = strlen(data);
 
 	/*
 	if(enet_initialize())
@@ -69,7 +84,7 @@ void send_tracker_update( char* host, int port )
 	enet_socket_set_option (socket, ENET_SOCKOPT_SNDBUF, size );// ENET_HOST_SEND_BUFFER_SIZE); // we send very little data
 	*/
 
-	send_buffer.data = data;
+	send_buffer.data = message;
 	send_buffer.dataLength = size;
 
 	if(enet_host)
