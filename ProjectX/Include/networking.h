@@ -9,6 +9,7 @@
 
 char tracker_server[256];
 int tracker_port;
+BOOL tracker_enabled;
 
 #define WIN32_EXTRA_LEAN
 

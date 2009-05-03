@@ -1498,7 +1498,7 @@ void ReceiveGameMessages( void )
 
 	BuildReliabilityTab();
 
-	if(IsHost)
+	if(IsHost && tracker_enabled)
 		handle_tracker();
 
 	network_pump();
