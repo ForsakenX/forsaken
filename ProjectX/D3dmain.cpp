@@ -257,7 +257,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         }
 
 		// call the sound proccesses
-		SfxThreadProc( NULL );
+		ProcessSoundRoutines( NULL );
 
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )
@@ -627,6 +627,8 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 			SetInputAcquired( FALSE );
 		SetCursorClip( FALSE );
 	}
+
+	DebugPrintf("AppInit finished...");
 
 	// done
     return TRUE;

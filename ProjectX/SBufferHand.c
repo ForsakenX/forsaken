@@ -39,7 +39,6 @@ char *	SBufferBlockFromFile[MAXSBUFFERBLOCKS];
 int		SBufferBlockFromLine[MAXSBUFFERBLOCKS];
 int		SBufferNumInstances[MAXSBUFFERBLOCKS];
 int SBufferBlocksUsed = 0;
-CRITICAL_SECTION SBufferHandKey;
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Procedure	:	S Buffer Init...
 	Input		:	void
@@ -58,8 +57,6 @@ void XSBuffer_Init( void )
 		SBufferBlockSize[i] = 0;
 		SBufferNumInstances[i] = 0;
 	}
-
-	InitializeCriticalSection ( &SBufferHandKey );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -142,20 +139,16 @@ BOOL XMakeSoundBuffer( LPDIRECTSOUND pds, LPCDSBUFFERDESC lpcDSBufferDesc , LPLP
 	int i;
 	DSBCAPS caps;
 
-	EnterCriticalSection( &SBufferHandKey );
-
 	i = SBuffer_FindFree();
 	if( i == -1 )
 	{
 		Msg( "Ran out of free SBuffer Blocks");
-		LeaveCriticalSection( &SBufferHandKey );
 		return FALSE;
 	}
  
 	// create sound buffer here
 	if ( IDirectSound_CreateSoundBuffer(pds, lpcDSBufferDesc, lplpDirectSoundBuffer, pUnkOuter) != DS_OK )
 	{
-		LeaveCriticalSection( &SBufferHandKey );
 		return FALSE;
 	}
 
@@ -189,8 +182,6 @@ BOOL XMakeSoundBuffer( LPDIRECTSOUND pds, LPCDSBUFFERDESC lpcDSBufferDesc , LPLP
 	SBufferBlockFromFile[i] = from_file;
 	SBufferBlockFromLine[i] = from_line;
 	SBufferNumInstances[i] = 1;
-	
-	LeaveCriticalSection( &SBufferHandKey );
 
 	return TRUE;
 }
@@ -198,14 +189,11 @@ BOOL XMakeSoundBuffer( LPDIRECTSOUND pds, LPCDSBUFFERDESC lpcDSBufferDesc , LPLP
 BOOL XSoundBufferDuplicate( LPDIRECTSOUND pds, LPDIRECTSOUNDBUFFER lpDsbOriginal,  LPLPDIRECTSOUNDBUFFER lplpDsbDuplicate, char *in_file, int in_line )
 {
 	int block, dup, i;
-	
-	EnterCriticalSection( &SBufferHandKey );
-   
+
 	SBuffer_FindSame( lpDsbOriginal, &block, &dup );
 	if ( ( block == -1 ) && ( dup == -1 ) )
 	{
 		Msg(" Tried to duplicate un-allocated SBuffer block in %s line %d", in_file, in_line );
-		LeaveCriticalSection( &SBufferHandKey );
 		return FALSE;
 	}
 
@@ -222,7 +210,6 @@ BOOL XSoundBufferDuplicate( LPDIRECTSOUND pds, LPDIRECTSOUNDBUFFER lpDsbOriginal
 	if ( dup < 0 )
 	{
 		Msg("Tried to duplicate more than MAXPTRSPERBUFFER buffers in %s line %d", in_file, in_line );
-		LeaveCriticalSection( &SBufferHandKey );
 		return FALSE;
 	}
 
@@ -230,10 +217,8 @@ BOOL XSoundBufferDuplicate( LPDIRECTSOUND pds, LPDIRECTSOUNDBUFFER lpDsbOriginal
 	{
 			SBufferBlockPnts[ block ][ dup ] = *lplpDsbDuplicate;
 			SBufferNumInstances[ block ]++;
-			LeaveCriticalSection( &SBufferHandKey );
 			return TRUE;
 	}else
-		LeaveCriticalSection( &SBufferHandKey );
 		return FALSE;
 }
 
@@ -248,15 +233,12 @@ void XSoundBufferRelease( LPDIRECTSOUNDBUFFER *Pnt, char *in_file, int in_line )
 	static char *last_file = NULL;
 	static int last_line = -1;
 
-	EnterCriticalSection( &SBufferHandKey );
-
 	if ( !(*Pnt) )
 	{
 		if ( in_file != last_file || in_line != last_line )
 			Msg( "Tried to free NULL Exec block in %s line %d", in_file, in_line );
 		last_file = in_file;
 		last_line = in_line;
-		LeaveCriticalSection( &SBufferHandKey );
 		return;
 	}
 	SBuffer_FindSame( *Pnt, &block, &dup );
@@ -266,7 +248,6 @@ void XSoundBufferRelease( LPDIRECTSOUNDBUFFER *Pnt, char *in_file, int in_line )
 	 		Msg( "Tried to free un-allocated SBuffer block in %s line %d", in_file, in_line );
 		last_file = in_file;
 		last_line = in_line;
-		LeaveCriticalSection( &SBufferHandKey );
 		return;
 	}
 
@@ -295,8 +276,6 @@ void XSoundBufferRelease( LPDIRECTSOUNDBUFFER *Pnt, char *in_file, int in_line )
 		SBufferBlockSize[ block ] = 0;
 		SBufferBlocksUsed--;
 	}
-
-	LeaveCriticalSection( &SBufferHandKey );
 }
 
 int UnMallocedSBufferBlocks( void )

@@ -142,8 +142,6 @@ extern MODELNAME *TitleModelSet;
 extern float LevelTimeTaken;
 
 extern BYTE PreDemoEndMyGameStatus;
-extern CRITICAL_SECTION CompoundSfxKey;
-extern CRITICAL_SECTION SfxHolderKey; 
 extern int NumDupCompoundBuffers;
 extern COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
 extern  TEXT  DemoGameName;
@@ -224,8 +222,6 @@ extern BOOL MenuFrozen;
 extern  int16 MaxKills;
 extern SPOT_SFX_LIST LoopingSfxListStart[];
 extern  int16 NumGoldBars;
-
-extern CRITICAL_SECTION SfxKey;
 extern BOOL ReloadSfx;
 extern float ReloadSfxPause;
 extern  BOOL  IllegalTime;
@@ -3740,9 +3736,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   if ( bSoundEnabled )
   {
-    EnterCriticalSection (&SfxKey);
     CheckSBufferList();
-    LeaveCriticalSection (&SfxKey);
   }
 
 #ifndef MULTIPLE_READINPUTS
@@ -5490,8 +5484,6 @@ void CheckForRogueSfx( void )
   // Dirty hack to kill off any rogue sfx!! 
   if ( bSoundEnabled && NumDupCompoundBuffers )
   {
-    EnterCriticalSection( &CompoundSfxKey );
-    
     current_time = GetTickCount();
 
     for ( i = 0; i < NumDupCompoundBuffers; i++ )
@@ -5507,9 +5499,7 @@ void CheckForRogueSfx( void )
           CompoundSfxBuffer[ i ].current_sfx, CompoundSfxBuffer[ i ].compound_buffer_lookup_index, CompoundSfxBuffer[ i ].start_time,
           CompoundSfxBuffer[ i ].finish_time, current_time, CompoundSfxBuffer[ i ].timerID);
 
-          EnterCriticalSection( &SfxHolderKey );
           KillCompoundSfxBuffer( i );
-          LeaveCriticalSection( &SfxHolderKey );
 
           //SfxHolder[ CompoundSfxBuffer[ i ].SfxHolderIndex ].Used = FALSE;
           FreeSfxHolder( CompoundSfxBuffer[ i ].SfxHolderIndex );
@@ -5518,8 +5508,6 @@ void CheckForRogueSfx( void )
         }
       }
     }
-
-    LeaveCriticalSection( &CompoundSfxKey );
   }
 }
 

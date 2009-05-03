@@ -81,7 +81,6 @@ SNDOBJ *SndObjList_Static_Start;
 // thread stuff...
 DWORD	SfxThreadID;
 HANDLE	SfxThread;
-CRITICAL_SECTION	SfxKey;
 
 SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
 
@@ -97,8 +96,6 @@ char TauntPath[ 128 ];
 
 DWORD CompoundSfxTimeStamp[64];
 DWORD CompoundSfxMaxLag = 0;
-CRITICAL_SECTION CompoundSfxKey;
-CRITICAL_SECTION SfxHolderKey; 
 
 BOOL BikerSpeechPlaying = FALSE;
 BOOL FreeHWBuffers;
@@ -695,16 +692,12 @@ void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2
 	{
 		if ( CompoundSfxBuffer )
 		{
-			EnterCriticalSection( &CompoundSfxKey );
-
 			if ( CompoundSfxBuffer[dwUser].buffer )
 			{
 				// current_sfx could have been set to -1 in KillCompoundSfx ( inside critical section )
 				// safe to ignore, since timer was killed off
 				if ( CompoundSfxBuffer[dwUser].current_sfx != -1 )																
 				{
-					EnterCriticalSection ( &SfxHolderKey );
-							
 					IDirectSoundBuffer_Stop( CompoundSfxBuffer[dwUser].buffer );
 					if ( IDirectSoundBuffer_SetFrequency( CompoundSfxBuffer[dwUser].buffer, DSBFREQUENCY_ORIGINAL ) != DS_OK )
 					{
@@ -712,14 +705,9 @@ void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2
 					}
 					SndObjs[ SndLookup[ CompoundSfxBuffer[ dwUser ].current_sfx ].SndObjIndex + CompoundSfxBuffer[ dwUser ].current_variant ]->CompoundBufferLookup[ CompoundSfxBuffer[dwUser].compound_buffer_lookup_index ] = -1;
 					CompoundSfxBuffer[dwUser].current_sfx = -1;
-					FreeSfxHolder( CompoundSfxBuffer[ dwUser ].SfxHolderIndex ); 
-
-					LeaveCriticalSection ( &SfxHolderKey );
-
+					FreeSfxHolder( CompoundSfxBuffer[ dwUser ].SfxHolderIndex );
 				}
 			}
-
-			LeaveCriticalSection( &CompoundSfxKey );
 		}
 	}
 }
@@ -775,177 +763,162 @@ void GetSfxNumStr( uint16 variants, char *str )
 }
 
 /****************************************
-	Procedure	: SfxThreadProc		
+	Procedure	: ProcessSoundRoutines		
 	description	: runs continuously while sfx are active - loads sound buffers when SfxThreadInfo contains valid information
 	Input		: void *pParm - not used
 	Output		: none
 *****************************************/
-void SfxThreadProc (void * pParm)
+void ProcessSoundRoutines (void * pParm)
 {
 	IDirectSoundBuffer* TempSndBuf;
 	int i;
 	char *file;
 
-//	while (1)
+	for ( i = 0; i < MAX_THREADED_SFX; i++ )
 	{
-
-		// some kind of access violation always happens about right here
-		// tests show that SfxKey has been Initialized
-		// I cannot find out what the access violation actually is
-
-		EnterCriticalSection (&SfxKey);
-		
-		for ( i = 0; i < MAX_THREADED_SFX; i++ )
+		if (SfxThreadInfo[ i ].SfxToPlay)
 		{
-			if (SfxThreadInfo[ i ].SfxToPlay)
+			// wait until communications pipe is free if looping sfx...
+			if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping ) && ( LoopingSfxPipe.sfx != -1 ) )
 			{
-				// wait until communications pipe is free if looping sfx...
-				if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping ) && ( LoopingSfxPipe.sfx != -1 ) )
-				{
-					DebugPrintf( 
-						"SfxThreadProc Waiting for LoopingSfxPipe to free.\n",
-								(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false")
-					);
-					continue;
-				}
+				DebugPrintf( 
+					"ProcessSoundRoutines Waiting for LoopingSfxPipe to free.\n",
+							(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false")
+				);
+				continue;
+			}
 #if 0
-				// get sfx path & prefix
-				//GetSfxPath( SfxThreadInfo[ i ].SfxNum, file );
+			// get sfx path & prefix
+			//GetSfxPath( SfxThreadInfo[ i ].SfxNum, file );
 
-				//GetSfxFileNamePrefix( SfxThreadInfo[ i ].SfxNum, &file[ strlen( file ) ] );
+			//GetSfxFileNamePrefix( SfxThreadInfo[ i ].SfxNum, &file[ strlen( file ) ] );
 
 
-				if (  SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
-				{
-					/*
-					// if looping sfx, we want to ensure that variant used is always the same, since sfx is loaded / unloaded
-					// as it goes in / out of range
-					if ( SfxThreadInfo[ i ].Variant > 1 )
-					{
-						if ( SfxThreadInfo[ i ].Variant < 10 )
-							sprintf( &file[ strlen( file ) ], "0%d", SfxThreadInfo[ i ].Variant );
-						else
-							sprintf( &file[ strlen( file ) ], "%d", SfxThreadInfo[ i ].Variant );
-					}
-					*/
-					file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
-				}else
-				{
-					/*
-					// if non looping, ad variant suffix if neccesary
-					switch ( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )
-					{
-					case 0:
-						// should never get here!!!
-						DebugPrintf("Sfx.c: SfxThreadProc() - sfx #%d does not exist!\n", SfxThreadInfo[ i ].SfxNum);
-						continue;
-					case 1:
-						break;
-					default:
-						GetSfxNumStr( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants, &file[ strlen( file ) ] );
-						break;
-					}
-					*/
-					file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
-					
-				}
+			if (  SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
+			{
 				/*
-				// append file ext.
-				strcat( file, ".wav" );
-				*/
-#endif
-				switch( SfxThreadInfo[ i ].SfxType )
+				// if looping sfx, we want to ensure that variant used is always the same, since sfx is loaded / unloaded
+				// as it goes in / out of range
+				if ( SfxThreadInfo[ i ].Variant > 1 )
 				{
-				case SFX_TYPE_Looping:
-					file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
-					break;
-				case SFX_TYPE_Taunt:
-					file = TauntPath;
+					if ( SfxThreadInfo[ i ].Variant < 10 )
+						sprintf( &file[ strlen( file ) ], "0%d", SfxThreadInfo[ i ].Variant );
+					else
+						sprintf( &file[ strlen( file ) ], "%d", SfxThreadInfo[ i ].Variant );
+				}
+				*/
+				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
+			}else
+			{
+				/*
+				// if non looping, ad variant suffix if neccesary
+				switch ( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )
+				{
+				case 0:
+					// should never get here!!!
+					DebugPrintf("Sfx.c: ProcessSoundRoutines() - sfx #%d does not exist!\n", SfxThreadInfo[ i ].SfxNum);
+					continue;
+				case 1:
 					break;
 				default:
-					file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
+					GetSfxNumStr( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants, &file[ strlen( file ) ] );
+					break;
 				}
+				*/
+				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
+				
+			}
+			/*
+			// append file ext.
+			strcat( file, ".wav" );
+			*/
+#endif
+			switch( SfxThreadInfo[ i ].SfxType )
+			{
+			case SFX_TYPE_Looping:
+				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
+				break;
+			case SFX_TYPE_Taunt:
+				file = TauntPath;
+				break;
+			default:
+				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
+			}
 
-				DebugPrintf( 
-					"SfxThreadProc SfxTypeLooping: %s, file: %s\n",
-							(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"),
-							file
-				);
+			DebugPrintf( 
+				"ProcessSoundRoutines SfxTypeLooping: %s, file: %s\n",
+						(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"),
+						file
+			);
 
-				// create temporary sound buffer - will have volume, frequency & pan facilities 
-				// - located in sw ( any hardware will have been used by now )
-				// - static ( not streamed )
-				TempSndBuf = DSLoadSoundBuffer(lpDS, file, DSBCAPS_CTRLFREQUENCY | DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE);
-				if ( !TempSndBuf )
-				{
-					DebugPrintf( "Sfx Load failed...in %s \n", file );
-					SfxThreadInfo[ i ].SfxToPlay = FALSE;
-					SfxThreadInfo[ i ].SfxType = 0;
-					continue;
-				}
-
-				if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Normal )
-				{
-					// set buffer parameters & play
-					IDirectSoundBuffer_SetVolume( TempSndBuf, ( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol );
-					IDirectSoundBuffer_Play(TempSndBuf, 0, 0, 0);
-
-					// add to list of dynamic buffers
-					SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
-
-					// if unable to store buffer, free up sfx holder
-					if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
-					{
-						FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
-						DebugPrintf("Unable to store buffer(1)!\n");
-					}
-				}
-
-				if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Panned ) || ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Taunt ) )
-				{
-					// set buffer parameters & play
-					SetPannedBufferParams( TempSndBuf, NULL, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
-					IDirectSoundBuffer_Play( TempSndBuf, 0, 0, 0 );
-
-					// add to list of dynamic buffers
-					SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
-					
-					if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
-					{
-						// if unable to store buffer, free up sfx holder
-						FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
-						DebugPrintf("Unable to store buffer(2)!\n");
-					}
-				}
-
-				if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
-				{
-					DSBCAPS dsbcaps; 
-
-					// get caps of buffer...
-					dsbcaps.dwSize = sizeof( DSBCAPS );
-					IDirectSoundBuffer_GetCaps( TempSndBuf, &dsbcaps );
-					
-					// store buffer info in looping sfx communications pipe ready to store in looping sfx structure
-					LoopingSfxPipe.sfx = SfxThreadInfo[ i ].SfxNum;
-					LoopingSfxPipe.buffer = TempSndBuf;
-					LoopingSfxPipe.buffersize = dsbcaps.dwBufferBytes;
-					LoopingSfxPipe.SpotSfxListIndex = SfxThreadInfo[ i ].SpotSfxListIndex;
-
-					// indicate that thread info index is no longer valid
-					SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].SfxThreadInfoIndex = -1;
-				}
-
-				// mark current thread info as free
+			// create temporary sound buffer - will have volume, frequency & pan facilities 
+			// - located in sw ( any hardware will have been used by now )
+			// - static ( not streamed )
+			TempSndBuf = DSLoadSoundBuffer(lpDS, file, DSBCAPS_CTRLFREQUENCY | DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE);
+			if ( !TempSndBuf )
+			{
+				DebugPrintf( "Sfx Load failed...in %s \n", file );
 				SfxThreadInfo[ i ].SfxToPlay = FALSE;
 				SfxThreadInfo[ i ].SfxType = 0;
+				continue;
 			}
+
+			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Normal )
+			{
+				// set buffer parameters & play
+				IDirectSoundBuffer_SetVolume( TempSndBuf, ( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol );
+				IDirectSoundBuffer_Play(TempSndBuf, 0, 0, 0);
+
+				// add to list of dynamic buffers
+				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
+
+				// if unable to store buffer, free up sfx holder
+				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
+				{
+					FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
+					DebugPrintf("Unable to store buffer(1)!\n");
+				}
+			}
+
+			if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Panned ) || ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Taunt ) )
+			{
+				// set buffer parameters & play
+				SetPannedBufferParams( TempSndBuf, NULL, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
+				IDirectSoundBuffer_Play( TempSndBuf, 0, 0, 0 );
+
+				// add to list of dynamic buffers
+				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
+				
+				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
+				{
+					// if unable to store buffer, free up sfx holder
+					FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
+					DebugPrintf("Unable to store buffer(2)!\n");
+				}
+			}
+
+			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
+			{
+				DSBCAPS dsbcaps; 
+
+				// get caps of buffer...
+				dsbcaps.dwSize = sizeof( DSBCAPS );
+				IDirectSoundBuffer_GetCaps( TempSndBuf, &dsbcaps );
+				
+				// store buffer info in looping sfx communications pipe ready to store in looping sfx structure
+				LoopingSfxPipe.sfx = SfxThreadInfo[ i ].SfxNum;
+				LoopingSfxPipe.buffer = TempSndBuf;
+				LoopingSfxPipe.buffersize = dsbcaps.dwBufferBytes;
+				LoopingSfxPipe.SpotSfxListIndex = SfxThreadInfo[ i ].SpotSfxListIndex;
+
+				// indicate that thread info index is no longer valid
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].SfxThreadInfoIndex = -1;
+			}
+
+			// mark current thread info as free
+			SfxThreadInfo[ i ].SfxToPlay = FALSE;
+			SfxThreadInfo[ i ].SfxType = 0;
 		}
-		
-		LeaveCriticalSection (&SfxKey);
-		
-		// relinquish remainder of timeslice to main process
-//		Sleep(0);
 	}
 }
 
@@ -2236,37 +2209,6 @@ BOOL InitializeSound( int flags )
 
 	InitSfxHolders();
 
-	//
-	// Methods
-	//
-	// Problem:
-		// Most sound calls are ran instantly.
-		//
-		// Only Looping (whatever that is... cd audio?), biker and computer voices are offloaded to SfxThreadProc
-		// They did this probably to not lock up the main proc on older pc's because these sounds are loaded in real time from files...
-	// Solution:
-		//		Removed looping sound thread and moved a call to SfxThreadProc into WinMain.
-		//		This should fix the sound lag issues described above once and for all for everyone.
-	// Future:
-		// Ideally biker/computer sounds should ALL be loaded up when they are selected (just like level sfx files are done)
-		// And have these calls use the normal sound functions...
-	// Notes:
-		// Turning biker/comp volumnes to 0 effectively stops it from loading from files...
-		// You could also run on a ram disk to solve this easily...
-	// Information:
-		// http://msdn.microsoft.com/en-us/library/ms686277(VS.85).aspx
-		//
-		// THREAD_PRIORITY_NORMAL			works for most on xp... breaks for some...
-		// THREAD_PRIORITY_BELOW_NORMAL		was the original... it causes the sound lag issue... compability mode worked as a fix for some...
-		//
-	// create threads & critical sections...
-	//SfxThread =	CreateThread (NULL, 0, (LPTHREAD_START_ROUTINE) SfxThreadProc, NULL, 0, &SfxThreadID);
-	//SetThreadPriority( SfxThread, THREAD_PRIORITY_NORMAL );
-
-	InitializeCriticalSection (&SfxKey);
-	InitializeCriticalSection ( &CompoundSfxKey );
-	InitializeCriticalSection ( &SfxHolderKey );
-
 	// re-initialise looping sfx list ( if already in level, we need to restart all existing looping sfx )
 	if ( flags & DESTROYSOUND_KeepLevelSpecTable)
 	{
@@ -2315,9 +2257,6 @@ void StopCompoundSfx( void )
 	if ( !lpDS || !bSoundEnabled || !NumDupCompoundBuffers )
 		return;
 
-	// stop all compound sfx buffers...
-	EnterCriticalSection( &CompoundSfxKey );
-
 	for ( i = 0; i < NumDupCompoundBuffers; i++ )
 	{
 		if ( CompoundSfxBuffer[ i ].current_sfx != -1 )
@@ -2326,7 +2265,6 @@ void StopCompoundSfx( void )
 			CompoundSfxBuffer[ i ].current_sfx = -1;
 		}
 	}
-	LeaveCriticalSection( &CompoundSfxKey );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -2353,7 +2291,6 @@ void DestroySound( int flags )
 
 	// kill off compound buffers ( HW & SW ) - only if no flags specified
 	// kill all sfx timers...
-	EnterCriticalSection( &CompoundSfxKey );
 
 	for ( i = 0; i < NumDupCompoundBuffers; i++ )
 	{
@@ -2367,8 +2304,6 @@ void DestroySound( int flags )
 		CompoundSfxBuffer[ i ].buffer = NULL;
 	}
 	NumDupCompoundBuffers = 0;
-
-	LeaveCriticalSection( &CompoundSfxKey );
 		
 	// free all original buffers...
 	for (i = 0; i < Num_SndObjs; i++)
@@ -2453,8 +2388,6 @@ int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance )
 	if (Distance > oldest)
 		return -1;			// sound is too far away to overwrite any existing sounds...
 
-	EnterCriticalSection ( &SfxHolderKey );
-
 	// stop buffer...
 	IDirectSoundBuffer_Stop(SndObj->Dup_Buffer[free_buffer]);
 	// reset current position to start of buffer
@@ -2466,8 +2399,6 @@ int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance )
 	}
 
 	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
-
-	LeaveCriticalSection ( &SfxHolderKey );
 
 	return free_buffer;
 }
@@ -2639,8 +2570,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			DWORD current_time;
 			int buffer, lastkilledbuffer;
 
-			EnterCriticalSection( &CompoundSfxKey );
-
 			current_time = GetTickCount();
 			age = 0;
 
@@ -2672,13 +2601,10 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				if( oldest == -1 )
 				{
 					// all soundfx are same age and just started,also same distance...so dont kill any...
-					LeaveCriticalSection( &CompoundSfxKey );
 					return FALSE;
 				}else{
-					EnterCriticalSection ( &SfxHolderKey );
 					lastkilledbuffer = SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ];
 					KillCompoundSfxBuffer( SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ] );
-					LeaveCriticalSection ( &SfxHolderKey );
 					SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ] = -1;
 					buffer_lookup = oldest;
 				}
@@ -2712,9 +2638,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			if (buffer < 0)
 			{
 				// or if all same age kill the first.......oldest = 0....
-				EnterCriticalSection ( &SfxHolderKey );
 				KillCompoundSfxBuffer( oldest );
-				LeaveCriticalSection ( &SfxHolderKey );
 				buffer = oldest;
 			}
 
@@ -2796,8 +2720,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 
 
 			}
-			
-			LeaveCriticalSection( &CompoundSfxKey );
 
 			return TRUE;
 		}
@@ -2853,9 +2775,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
 	SfxHolder[ HolderIndex ].SfxBufferIndex = -1;
 
-
-	EnterCriticalSection (&SfxKey);
-
 	for ( i = 0; i < MAX_THREADED_SFX; i++ )
 	{
 		if ( !SfxThreadInfo[ i ].SfxToPlay )
@@ -2891,8 +2810,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		}
 	}
 
-	LeaveCriticalSection (&SfxKey);
-
 	return TRUE;
 
 }
@@ -2912,8 +2829,6 @@ int FindFreeSfxHolder( void )
 {
 	int i;
 
-	EnterCriticalSection ( &SfxHolderKey );
-
 	for( i = 0; i < MAX_ANY_SFX; i++ )
 	{
 		if ( !SfxHolder[ i ].Used )
@@ -2930,13 +2845,9 @@ int FindFreeSfxHolder( void )
 			SfxHolder[ i ].CompoundSfxTimerID = 0;
 			SfxHolder[ i ].TriggerSfx = -1;
 			SfxHolder[ i ].PauseValue = 0.0F;
-
-			LeaveCriticalSection ( &SfxHolderKey );
 			return i;
 		}
 	}
-
-	LeaveCriticalSection ( &SfxHolderKey );
 	return -1;
 }
 
@@ -3137,8 +3048,6 @@ BOOL StopSfx( uint32 uid )
 	if ( !bSoundEnabled )
 		return FALSE;
 
-	EnterCriticalSection( &SfxHolderKey );
-
 	i = GetSfxHolderIndex( uid );
 	if ( i != -1 )
 	{
@@ -3155,15 +3064,12 @@ BOOL StopSfx( uint32 uid )
 		if ( ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt ) )
 
 		{
-			EnterCriticalSection (&SfxKey);
-
 			if ( SfxHolder[ i ].SfxBufferIndex < 0)
 				SfxThreadInfo[ SfxHolder[ i ].ThreadIndex ].SfxToPlay = FALSE;
 			else
 			{
 				SoundBufferRelease( &SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
 			}
-			LeaveCriticalSection (&SfxKey);
 		}
 
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
@@ -3173,11 +3079,8 @@ BOOL StopSfx( uint32 uid )
 		}
 
 		FreeSfxHolder( i );
-		LeaveCriticalSection( &SfxHolderKey );
 		return TRUE;
 	}
-	
-	LeaveCriticalSection( &SfxHolderKey );
 	
 	//DebugPrintf("Unable to stop sfx!!!\n");
 	return FALSE;
@@ -3505,8 +3408,6 @@ void CheckSBufferList( void )
 	if ( !bSoundEnabled )
 		return;
 
-	EnterCriticalSection ( &SfxHolderKey );
-
 	for( i = 0; i < MAX_ANY_SFX; i++ )
 	{
 		if ( SfxHolder[ i ].Used )
@@ -3578,16 +3479,11 @@ void CheckSBufferList( void )
 			}
 		}
 	}
-
-	LeaveCriticalSection ( &SfxHolderKey );
 }
 
 void FreeSBufferList( void )
 {
 	int i;
-
-	EnterCriticalSection ( &SfxHolderKey );
-	
 	for ( i = 0; i < MAX_SYNCHRONOUS_DYNAMIC_SFX; i++ )
 	{
 		if ( SBufferList[ i ].used )
@@ -3597,8 +3493,6 @@ void FreeSBufferList( void )
 			SBufferList[ i ].used = FALSE;
 		}
 	}
-
-	LeaveCriticalSection ( &SfxHolderKey );
 }
 
 
@@ -3683,14 +3577,10 @@ void StopLoopingSfx( int index )
 
 	if ( flags & SFX_Dynamic )
 	{
-		EnterCriticalSection (&SfxKey);
-
 		if ( SpotSfxList[ index ].SfxThreadInfoIndex != -1 )
 		{
 			SfxThreadInfo[ SpotSfxList[ index ].SfxThreadInfoIndex ].SfxToPlay = FALSE;
 		}
-
-		LeaveCriticalSection (&SfxKey);
 
 		if ( SpotSfxList[ index ].buffer )
 		{
@@ -3916,7 +3806,6 @@ void ProcessLoopingSfx( void )
 	VECTOR Pos;
 
 	// get any info from pipe...
-	EnterCriticalSection (&SfxKey);
 
 	if ( LoopingSfxPipe.SpotSfxListIndex != -1 )
 	{
@@ -3931,8 +3820,6 @@ void ProcessLoopingSfx( void )
 		LoopingSfxPipe.buffer3D = NULL;
 		LoopingSfxPipe.SpotSfxListIndex = -1;
 	}
-
-	LeaveCriticalSection ( &SfxKey );
 
 	FrameSkip += framelag;
 
@@ -4040,7 +3927,6 @@ void ProcessLoopingSfx( void )
 				//DebugPrintf("Loading looping sfx %d\n", SpotSfxList[ i ].sfxindex);
 
 				// load buffer(s) in sfx thread
-				EnterCriticalSection (&SfxKey);
 
 				for ( j = 0; j < MAX_THREADED_SFX; j++ )
 				{
@@ -4059,8 +3945,6 @@ void ProcessLoopingSfx( void )
 						break;
 					}
 				}
-			
-				LeaveCriticalSection (&SfxKey);
 
 
 			}else
@@ -4309,11 +4193,9 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 	if ( !bSoundEnabled )
 		return FALSE;
 
-	EnterCriticalSection( &SfxHolderKey );
 	i = GetSfxHolderIndex( uid );
 	if( i == -1 )
 	{
-		LeaveCriticalSection( &SfxHolderKey );
 		return FALSE;
 	}
 
@@ -4322,7 +4204,6 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 
 	if( Distance < 0.0F ) 
 	{
-		LeaveCriticalSection( &SfxHolderKey );
 	 	StopSfx( uid );
 		return FALSE;
 	}
@@ -4349,8 +4230,6 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 	{
 		DebugPrintf("Holder type not SFX_HOLDERTYPE_Taunt\n");
 	}
-
-	LeaveCriticalSection( &SfxHolderKey );
 
 	return TRUE;
 }

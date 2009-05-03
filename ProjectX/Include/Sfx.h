@@ -508,7 +508,7 @@ typedef struct{
 #define	MAXCHANNELS	4
 
 // functions
-void SfxThreadProc (void * pParm);
+void ProcessSoundRoutines (void * pParm);
 BOOL InitializeSound( int flags );
 void    DestroySound( int flags );
 uint32	PlaySfx( int16 Sfx, float Dist );
