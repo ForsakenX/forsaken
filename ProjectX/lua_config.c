@@ -96,38 +96,19 @@ float config_get_float(const char *opt, float _default)
 	return f;
 }
 
-/* NOTE: static storage of at most 8 option values. */
-char *config_get_str(const char *opt, char* _default)
+void config_get_strncpy(char* dest, size_t size, const char *opt, char* _default)
 {
-	static char str[256*8];
-	static int rot = 0;
+	char * str;
+	DebugPrintf("stack = %d\n",lua_gettop(L1));
 	lua_getglobal(L1, "config");
 	lua_getfield(L1, -1, opt);
 	if(lua_isnil(L1, -1))
-	{
-		lua_pop(L1, 2);
-		return _default;
-	}
-	strncpy(&str[256*rot], luaL_checkstring(L1, -1), 256);
-	str[256*rot+255] = '\0';
+		str = _default;
+	else
+		str = (char*)luaL_checkstring(L1, -1);
+	strncpy( dest, str, size );
 	lua_pop(L1, 2);
-	rot = (rot + 1) % 8;
-	return str;
-}
-
-// in lua strings are arrays of bytes
-// use this for binary type data storage
-void config_get_raw(char* dest, size_t size, const char *opt, char* _default)
-{
-	lua_getglobal(L1, "config");
-	lua_getfield(L1, -1, opt);
-	if(lua_isnil(L1, -1))
-	{
-		lua_pop(L1, 2);
-		return _default;
-	}
-	strncpy( dest, luaL_checkstring(L1, -1), size );
-	lua_pop(L1, 2);
+	DebugPrintf("stack = %d\n",lua_gettop(L1));
 }
 
 void config_set_int(const char *opt, int i)

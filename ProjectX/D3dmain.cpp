@@ -62,7 +62,6 @@ extern "C" {
 	extern BOOL MouseExclusive;
 	extern LONGLONG  LargeTime;
 	extern LONGLONG  LastTime;
-	extern void InitValidPickups();
 	extern void InitPolyText( void );
 	extern BOOL InitDInput(void);
 	extern char * LogFilename;
@@ -604,9 +603,6 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// wtf is this ?
 	// polygon based text.. (Not blitted from what I know) 
 	InitPolyText();
-
-	// create the valid pickups global
-	InitValidPickups();
 
 // this is where it starts to take so long cause it scans directory for dynamic sound files...
 

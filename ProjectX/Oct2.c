@@ -585,7 +585,6 @@ BOOL  ClearZBuffer();
 BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void FreeSfxHolder( int index ) ;
-void InitValidPickups();
 
 void  PlotSimplePanel( void );
 

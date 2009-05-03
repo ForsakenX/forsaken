@@ -9997,7 +9997,7 @@ void GetDefaultPilot(void)
 	// did we find a player name ?
 	BOOL found = FALSE;
 
-	strncpy( &pilot_name[0], config_get_str("PlayerName", ""), size );
+	config_get_strncpy( &pilot_name[0], size, "PlayerName", "" );
 
 	// get the PlayerName from registry
 	if ( strlen(pilot_name) )
@@ -11268,15 +11268,18 @@ void ExitLevelSelect( MENU * Menu )
 	Input		:		Nothing
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+void InitValidPickups();
 void GetGamePrefs( void )
 {
-	uint32 pickupflags[ MAX_PICKUPFLAGS ];
+	// default allow all pickups
+	InitValidPickups();
 
 	// strings
 
 	{
 		int i;
-		char* level_name = config_get_str( "LevelName", "ship" );
+		char level_name[64];
+		config_get_strncpy( &level_name[0], 64, "LevelName", "ship" );
 		for ( i = 0; i < LevelList.items; i++ )
 			if ( !_strnicmp( LevelList.item[ i ], level_name, 7 ) )
 			{
@@ -11313,6 +11316,29 @@ void GetGamePrefs( void )
     RandomPickups                    = config_get_bool( "RandomPickups",			FALSE );
     UseShortPackets                  = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
+
+	PickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
+	PickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
+	PickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
+	PickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
+	PickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
+	PickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
+	PickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
+	PickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
+	PickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
+	PickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
+	PickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
+	PickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
+	PickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
+	PickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
+	PickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+
+	PickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
+	PickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
+	PickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
+	PickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
+	PickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
+	PickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
 
     // integers
 
@@ -11354,8 +11380,6 @@ void GetGamePrefs( void )
     ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
     GameType                         = config_get_int( "GameType",					GAME_Normal );
 
-	config_get_raw( (char*) &pickupflags, sizeof(uint32)*2, "PickupFlags", "" );
-
 	//
 
 	Gamma = ( (double)GammaSlider.value ) / 100.0F;
@@ -11372,19 +11396,6 @@ void GetGamePrefs( void )
 
 	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
 		PacketsSlider.value	= NetUpdateIntervalCmdLine;
-
-	if ( pickupflags )
-		UnpackPickupInfo( pickupflags );
-	else
-	{
-		// default these to false
-		PickupValid[2]	= FALSE; // transpulse
-		PickupValid[9]	= FALSE; // thief missile
-		PickupValid[17]	= FALSE; // spider mines
-		PickupValid[25]	= FALSE; // chaos shield
-		PickupValid[15]	= FALSE; // pine mines
-		PickupValid[32]	= FALSE; // stealth mantle
-	}
 
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
@@ -11404,9 +11415,6 @@ void GetGamePrefs( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SetGamePrefs( void )
 {
-	uint32 pickupflags[ MAX_PICKUPFLAGS ];
-	PackPickupInfo( pickupflags );  // pickup selection
-
 	// strings
 
 	config_set_str( "LevelName", LevelList.item[ LevelList.selected_item ] );
@@ -11439,6 +11447,28 @@ void SetGamePrefs( void )
     config_set_bool( "RandomPickups",			RandomPickups );
     config_set_bool( "UseShortPackets",			UseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
+
+	config_set_bool( "AllowMugs",               PickupValid[ PICKUP_Mugs ] );
+	config_set_bool( "AllowHeatseaker",         PickupValid[ PICKUP_Heatseaker ] );
+	config_set_bool( "AllowScatter",            PickupValid[ PICKUP_Scatter ] );
+	config_set_bool( "AllowGravgon",            PickupValid[ PICKUP_Gravgon ] );
+	config_set_bool( "AllowLauncher",           PickupValid[ PICKUP_Launcher ] );
+	config_set_bool( "AllowTitanStar",          PickupValid[ PICKUP_TitanStar ] );
+	config_set_bool( "AllowPurgePickup",        PickupValid[ PICKUP_PurgePickup ] );
+	config_set_bool( "AllowQuantumPickup",      PickupValid[ PICKUP_QuantumPickup ] );
+	config_set_bool( "AllowTrojax",             PickupValid[ PICKUP_Trojax ] );
+	config_set_bool( "AllowPyrolite",           PickupValid[ PICKUP_Pyrolite ] );
+	config_set_bool( "AllowSussGun",            PickupValid[ PICKUP_SussGun ] );
+	config_set_bool( "AllowLaser",              PickupValid[ PICKUP_Laser ] );
+	config_set_bool( "AllowNitro",              PickupValid[ PICKUP_Nitro ] );
+	config_set_bool( "AllowOrb",                PickupValid[ PICKUP_Orb ] );
+	config_set_bool( "AllowGoldenPowerPod",     PickupValid[ PICKUP_GoldenPowerPod ] );
+	config_set_bool( "AllowSpiderPod",          PickupValid[ PICKUP_SpiderPod ] );
+	config_set_bool( "AllowPinePickup",         PickupValid[ PICKUP_PinePickup ] );
+	config_set_bool( "AllowThief",              PickupValid[ PICKUP_Thief ] );
+	config_set_bool( "AllowTranspulse",         PickupValid[ PICKUP_Transpulse ] );
+	config_set_bool( "AllowMantle",             PickupValid[ PICKUP_Mantle ] );
+	config_set_bool( "AllowInv",                PickupValid[ PICKUP_Inv ] );
 
 	// integers
 
@@ -11474,8 +11504,6 @@ void SetGamePrefs( void )
 	config_set_int( "BountyInterval",			BountyBonusSlider.value );
 	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
 	config_set_int( "PacketsPerSecond",			PacketsSlider.value );
-
-	config_set_strn( "PickupFlags",				(char*)&pickupflags, sizeof(pickupflags) );
 
 	if ( !NoDynamicSfx )
 	{
