@@ -7,6 +7,9 @@
 
 #include "net.h"
 
+char tracker_server[256];
+int tracker_port;
+
 #define WIN32_EXTRA_LEAN
 
  /*

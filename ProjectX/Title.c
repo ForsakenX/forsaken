@@ -11274,6 +11274,11 @@ void GetGamePrefs( void )
 	// default allow all pickups
 	InitValidPickups();
 
+	// tracker
+
+	config_get_strncpy( tracker_server, sizeof(tracker_server), "TrackerServer", "fly.thruhere.net" );
+	tracker_port = config_get_int( "TrackerPort", 47624 );
+
 	// strings
 
 	{
@@ -11415,6 +11420,11 @@ void GetGamePrefs( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SetGamePrefs( void )
 {
+	// tracker
+	
+	config_set_str( "TrackerServer", tracker_server );
+	config_set_int( "TrackerPort", tracker_port );
+
 	// strings
 
 	config_set_str( "LevelName", LevelList.item[ LevelList.selected_item ] );
