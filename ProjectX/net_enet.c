@@ -37,7 +37,7 @@
 static int initialized;
 static unsigned int connections = 0;
 static ENetAddress* my_external_address = NULL;
-ENetHost* enet_socket = NULL; // used in net_tracker.c
+ENetHost* enet_host = NULL; // used in net_tracker.c
 
 // the host player
 static ENetPeer* host;
@@ -61,8 +61,8 @@ static int default_port		= 2300;
 static void enet_cleanup( void )
 {
 	initialized = 0;
-	enet_host_destroy( enet_socket );
-	enet_socket = NULL;
+	enet_host_destroy( enet_host );
+	enet_host = NULL;
 	enet_deinitialize();
 	DebugPrintf("enet_cleanup: finished\n");
 }
@@ -92,9 +92,9 @@ static int enet_setup( char* str_address, int port )
 		DebugPrintf("enet_setup: address %s port %d\n",ip,address.port);
 	}
 
-	enet_socket = enet_host_create( &address, max_players, 0, 0 );
+	enet_host = enet_host_create( &address, max_players, 0, 0 );
 
-	if ( enet_socket == NULL )
+	if ( enet_host == NULL )
 	{
 		return -2;
 	}
@@ -120,7 +120,7 @@ static int enet_connect( char* str_address, int port )
 		DebugPrintf("enet_connect: connecting to address %s port %d\n",ip,address.port);
 	}
 
-	peer = enet_host_connect( enet_socket, &address, max_channels );
+	peer = enet_host_connect( enet_host, &address, max_channels );
 
 	if (peer == NULL)
 	{
@@ -149,7 +149,7 @@ static void enet_send_packet( ENetPeer* peer, ENetPacket* packet, int channel, f
 	}
 	enet_peer_send( peer, channel, packet );
 	if ( flush )
-		enet_host_flush( enet_socket );
+		enet_host_flush( enet_host );
 }
 
 static void enet_send( ENetPeer* peer, void* data, int size, enet_uint32 type, int channel, flush_t flush )
@@ -174,8 +174,8 @@ static ENetPeer * get_player_with_lowest_address( void )
 {
     size_t x;
 	ENetPeer* lowest = NULL;
-	ENetPeer* peers = enet_socket->peers;
-	for( x = 0; x < enet_socket->peerCount; x++ )
+	ENetPeer* peers = enet_host->peers;
+	for( x = 0; x < enet_host->peerCount; x++ )
 	{
 		if( peers[x].data == NULL ) continue; // network_player_t
 		if( !lowest )
@@ -235,10 +235,10 @@ static void update_player( network_player_t* player )
 static void update_players( void )
 {
 	size_t x;
-	if( enet_socket == NULL ) return;
-	for( x = 0; x < enet_socket->peerCount; x++ )
-		if( enet_socket->peers[x].data != NULL ) // network_player_t
-			update_player( (network_player_t *) enet_socket->peers[x].data );
+	if( enet_host == NULL ) return;
+	for( x = 0; x < enet_host->peerCount; x++ )
+		if( enet_host->peers[x].data != NULL ) // network_player_t
+			update_player( (network_player_t *) enet_host->peers[x].data );
 }
 
 static void update_player_name( network_player_t * player, char * name )
@@ -296,12 +296,12 @@ static void destroy_player( network_player_t * player )
 static void destroy_players( void )
 {
 	size_t x;
-	for ( x = 0; x < enet_socket->peerCount; x++ )
+	for ( x = 0; x < enet_host->peerCount; x++ )
 	{
-		if ( enet_socket->peers[x].data != NULL )
+		if ( enet_host->peers[x].data != NULL )
 		{
-			destroy_player( enet_socket->peers[x].data );
-			enet_socket->peers[x].data = NULL;
+			destroy_player( enet_host->peers[x].data );
+			enet_host->peers[x].data = NULL;
 		}
 	}
 	network_players.length = 0;
@@ -312,9 +312,9 @@ static void destroy_players( void )
 void disconnect_all( void )
 {
 	size_t x;
-	for( x = 0; x < enet_socket->peerCount; x++ )
-		if ( enet_socket->peers[x].data != NULL ) // network_player_t
-			enet_peer_disconnect_now( &enet_socket->peers[x], 0 );
+	for( x = 0; x < enet_host->peerCount; x++ )
+		if ( enet_host->peers[x].data != NULL ) // network_player_t
+			enet_peer_disconnect_now( &enet_host->peers[x], 0 );
 }
 
 /*
@@ -356,7 +356,7 @@ static void new_connection( ENetPeer * peer )
 	}
 
 	// tell everyone to connect to new player
-	if ( i_am_host && enet_socket->peerCount > 1 ){
+	if ( i_am_host && enet_host->peerCount > 1 ){
 		p2p_address_packet_t packet;
 		packet.type = CONNECT;
 		packet.address = peer->address;
@@ -474,7 +474,7 @@ static void new_packet( ENetEvent * event )
 			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 				ENetAddress address = packet->address;
-				ENetPeer* peer = enet_host_connect( enet_socket, &address, max_channels );
+				ENetPeer* peer = enet_host_connect( enet_host, &address, max_channels );
 				char ip[INET_ADDRSTRLEN] = "";
 				enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
 				DebugPrintf("new_packet: host told us to connect to address %s port %d.\n",
@@ -541,7 +541,7 @@ int network_setup( char* player_name, int local_port )
 
 int network_join( char* address, int port )
 {
-	if( enet_socket == NULL )
+	if( enet_host == NULL )
 		return 0;
 	DebugPrintf("network_join: address '%s', local port %d\n",address,port);
 	i_am_host = 0;
@@ -556,7 +556,7 @@ int network_join( char* address, int port )
 
 void network_host( void )
 {
-	if( enet_socket == NULL ) return;
+	if( enet_host == NULL ) return;
 	DebugPrintf("network_host\n");
 	i_am_host = 1;
 	host = NULL;
@@ -565,7 +565,7 @@ void network_host( void )
 
 void network_cleanup( void )
 {
-	if( enet_socket == NULL ) return;
+	if( enet_host == NULL ) return;
 	DebugPrintf("network_cleanup\n");
 	disconnect_all();
 	destroy_players();
@@ -575,7 +575,7 @@ void network_cleanup( void )
 
 void network_send( network_player_t* player, void* data, int size, network_flags_t flags, int channel )
 {
-	if( enet_socket == NULL ) return;
+	if( enet_host == NULL ) return;
 	enet_send( (ENetPeer*) player->data, data, size, convert_flags(flags), channel, (flags & NETWORK_FLUSH) );
 }
 
@@ -583,23 +583,23 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 {
 	size_t x;
 	ENetPacket * packet = enet_packet_create( data, size, convert_flags(flags) );
-	if( enet_socket == NULL ) return;
+	if( enet_host == NULL ) return;
 	if( packet == NULL )
 	{
 		DebugPrintf("network_broadcast: failed to create packet");
 		return;
 	}
-	for( x = 0; x < enet_socket->peerCount; x++ )
-		if( enet_socket->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_socket->peers[x], packet, channel, NO_FLUSH );
-	enet_host_flush( enet_socket );
+	for( x = 0; x < enet_host->peerCount; x++ )
+		if( enet_host->peers[x].data != NULL ) // network_player_t
+			enet_send_packet( &enet_host->peers[x], packet, channel, NO_FLUSH );
+	enet_host_flush( enet_host );
 }
 
 void network_pump()
 {
 	ENetEvent event;
-	if( enet_socket == NULL ) return;
-	while( enet_host_service( enet_socket, &event, 0 ) > 0 )
+	if( enet_host == NULL ) return;
+	while( enet_host_service( enet_host, &event, 0 ) > 0 )
 	{
 	        switch (event.type)
 	        {
@@ -622,7 +622,7 @@ void network_set_player_name( char* name )
 	size_t x;
 	ENetPacket * packet;
 	p2p_name_packet_t name_packet;
-	if( enet_socket == NULL ) return;
+	if( enet_host == NULL ) return;
 	DebugPrintf("network_set_player_name: set to '%s'\n",name);
 	name_packet.type = NAME;
 	strncpy( name_packet.name, name, NETWORK_MAX_NAME_LENGTH-1 );
@@ -632,10 +632,10 @@ void network_set_player_name( char* name )
 		DebugPrintf("network_set_player_name: failed to create packet");
 		return;
 	}
-	for( x = 0; x < enet_socket->peerCount; x++ )
-		if( enet_socket->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_socket->peers[x], packet, system_channel, NO_FLUSH );
-	enet_host_flush( enet_socket );
+	for( x = 0; x < enet_host->peerCount; x++ )
+		if( enet_host->peers[x].data != NULL ) // network_player_t
+			enet_send_packet( &enet_host->peers[x], packet, system_channel, NO_FLUSH );
+	enet_host_flush( enet_host );
 }
 
 #endif

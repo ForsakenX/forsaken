@@ -26,7 +26,7 @@
 #include "net.h"
 
 // created in net_enet.c
-extern ENetHost* enet_socket;
+extern ENetHost* enet_host;
 extern char * my_player_name;
 
 // example
@@ -72,8 +72,8 @@ void send_tracker_update( char* host, int port )
 	send_buffer.data = data;
 	send_buffer.dataLength = size;
 
-	if(enet_socket)
-		sent = enet_socket_send( enet_socket->socket, &address, &send_buffer, 1 );
+	if(enet_host)
+		sent = enet_socket_send( enet_host->socket, &address, &send_buffer, 1 );
 
 	DebugPrintf("tracker sent %d bytes\n",sent);
 
