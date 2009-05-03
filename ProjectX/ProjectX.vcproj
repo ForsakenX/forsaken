@@ -617,6 +617,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\net_tracker.c"
+				>
+			</File>
+			<File
 				RelativePath=".\networking.c"
 				>
 			</File>
@@ -927,6 +931,10 @@
 			</File>
 			<File
 				RelativePath=".\net.h"
+				>
+			</File>
+			<File
+				RelativePath=".\net_tracker.h"
 				>
 			</File>
 			<File

@@ -36,15 +36,15 @@
 // state flags
 static int initialized;
 static unsigned int connections = 0;
-static ENetHost* enet_socket = NULL;
 static ENetAddress* my_external_address = NULL;
+ENetHost* enet_socket = NULL; // used in net_tracker.c
 
 // the host player
 static ENetPeer* host;
 
 // my settings
 static int i_am_host = 0;
-static char* my_player_name = NULL;
+char* my_player_name = NULL; // used in net_tracker.c
 
 // settings
 static int max_players		= 25;
