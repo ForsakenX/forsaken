@@ -45,7 +45,7 @@ end
 
 function config_save(name)
 	local f = io.open(config_path(name), 'wb')
-	for key, value in pairs(config) do
+	for key, value in pairsByKeys(config) do
 		if type(value) == "string" then
 			value = value:gsub('\\','\\\\'); -- escape escape characters
 			value = value:gsub('"','\\"'); -- escape quote characters
