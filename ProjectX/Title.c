@@ -118,7 +118,6 @@ BOOL	Last_SWMonoChrome = FALSE;
 extern BOOL WaitingToQuit;
 extern int16	NumPrimaryPickups;
 extern float FlashTextActive;
-extern BOOL NoDynamicSfx;
 extern float GlobalSoundAttenuation;
 extern float WATER_CELLSIZE;
 extern BOOL flush_input;
@@ -1292,8 +1291,13 @@ MENU	MENU_NEW_MoreMultiplayerOptions = {
 };
 */
 
+void GameTypeRefresh( int * i )
+{
+	BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
+}
+
 MENU MENU_NEW_GameType = {
-	"",NULL,NULL,NULL,TITLE_TIMER_PanToLeftVDU,
+	"",NULL,NULL,GameTypeRefresh,TITLE_TIMER_PanToLeftVDU,
 	{		
 
 		{   0,   0, 200,   0, 0,	LT_MENU_NEW_CreateGame8  /*"game type"*/,				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
@@ -11436,9 +11440,9 @@ void SetGamePrefs( void )
 {
 	// tracker
 	
-	config_set_str( "TrackerServer", tracker_server );
-	config_set_int( "TrackerPort", tracker_port );
-	config_set_bool( "TrackerEnabled", tracker_enabled );
+	config_set_str( "TrackerServer",			tracker_server );
+	config_set_int( "TrackerPort",				tracker_port );
+	config_set_bool( "TrackerEnabled",			tracker_enabled );
 	
 	// booleans
 
@@ -11520,23 +11524,16 @@ void SetGamePrefs( void )
 	config_set_int( "ColPerspective",			ColPerspective );
 	config_set_int( "MaxKills",					MaxKillsSlider.value );
 	config_set_int( "GameType",					GameType );
-	config_set_int( "FlagScore",				GoalScoreSlider.value );
 	config_set_int( "CTFrules",					CTFSlider.value );
-	config_set_int( "BountyInterval",			BountyBonusSlider.value );
 	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
 	config_set_int( "PacketsPerSecond",			PacketsSlider.value );
+	config_set_int( "BountyInterval",			BountyBonusSlider.value );
+	config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
+	config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
 
-	if ( !NoDynamicSfx )
-	{
-		config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
-		config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
-	}
+	config_set_int( "FlagScore",				GoalScoreSlider.value );
+	GoalScore = GoalScoreSlider.value;
 
-	// these were here but not being set...
-	// probably should save them...
-
-	//GoalScore = GoalScoreSlider.value;
-	//BountyBonusInterval = ( BountyBonus ) ? BountyBonusSlider.value : 0;
 
 	config_save();
 }

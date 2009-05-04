@@ -53,7 +53,6 @@ BOOL CompoundSfxAllocated[MAX_SFX];
 int NumDupCompoundBuffers;
 
 BOOL bSoundEnabled = FALSE;
-BOOL NoDynamicSfx = FALSE;
 
 LPDIRECTSOUND           lpDS = NULL;
 LPDIRECTSOUND3DLISTENER	lpDS3DListener;
@@ -1278,48 +1277,6 @@ int16 EssentialSfx[ NUM_ESSENTIAL_SFX ] = {
 	SFX_Select_Trojax,				//	-	trojax
 };
 
-/****************************************
-	Procedure	: RemoveDynamicSfx 
-	description	: removes SFX_Dynamic flag 
-				  Sets NoDynamicSfx flag to TRUE - this will ensure that dynamic sfx are ignored later.				
-	Input		: none
-	Output		: none
-*****************************************/
-void RemoveDynamicSfx( void )
-{
-#ifdef NO_LONGER_VIABLE_BECAUSE_THERE_ARE_NOW_5_BIKE_COMPUTERS
-
-	int i = 0;
-	int j;
-	BOOL Essential;
-
-	//while(!( Sfx_Filenames[ i ].Flags & SFX_End ))
-	for ( i = 0; i < MAX_SFX; i++ )
-	{
-		if ( Sfx_Filenames[ i ].Flags & SFX_Dynamic )
-		{
-		  	j = 0;
-			Essential = FALSE;
-			for ( j = 0; j < NUM_ESSENTIAL_SFX; j++ )
-			{
-				if ( i == EssentialSfx[ j ] )
-				{
-					Essential = TRUE;
-					break;
-				}
-			}
-
-			if ( Essential )
-			{
-				Sfx_Filenames[ i ].Flags &= ~SFX_Dynamic; 
-			}
-		}
-//		i++;
-	}
-#endif
-	NoDynamicSfx = TRUE;
-}
-
 void InitLoopingSfxPipe( void )
 {
 	LoopingSfxPipe.sfx = -1;
@@ -2447,8 +2404,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	if ( flags & SFX_LevelSpec )
 		flags = LevelSpecificEffects[ Sfx_Filenames[ Sfx ].SfxLookup ].flags;
 */
-	if ( NoDynamicSfx && ( flags & SFX_Dynamic ) )
-		return FALSE;
 
 	if( flags & SFX_Biker )
     	VolModify *= ( (float)BikerSpeechSlider.value / (float)BikerSpeechSlider.max ) * SPEECH_AMPLIFY;	// when multiplied with max value for GlobalSoundAttenuation, gives 1.0F;

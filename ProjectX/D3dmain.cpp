@@ -56,7 +56,6 @@ extern "C" {
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
-	extern BOOL NoDynamicSfx;
 	extern BOOL Wine;
 	extern BOOL TermDInput( void );
 	extern BOOL MouseExclusive;
@@ -681,7 +680,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	bFullscreen				= FALSE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
-	NoDynamicSfx			= FALSE;
 	NoCursorClip			= FALSE;
 	VSync					= FALSE;
 
@@ -842,12 +840,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
             AllWires = TRUE;
         }
-
-		// turn off loading of dynamic sounds (computer/biker)
-		else if (!_stricmp(option, "NoDynamicSfx")) 
-		{
-            RemoveDynamicSfx();
-        } 
 
 		// special override to allow setting up of spaceorb
 		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
