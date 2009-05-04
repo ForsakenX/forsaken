@@ -11355,50 +11355,23 @@ void GetGamePrefs( void )
     // integers
 
     WaterDetailSlider.value          = config_get_int( "water",						WaterDetailSlider.max );
-    BikeDetailSlider.value           = config_get_int( "BikeDetail",				BikeDetailSlider.max );
-    TrailDetailSlider.value          = config_get_int( "TrailDetail",				TrailDetailSlider.max );
-
-    SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
-    BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
-    BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
-    FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
-
-    GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
-    MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
-    TimeLimit.value                  = config_get_int( "TimeLimit",					0);
-    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
-    NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
-    CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
-    GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
-    BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
-
-    ScreenWidth                      = config_get_int( "ScreenWidth",				0 );
-    ScreenHeight                     = config_get_int( "ScreenHeight",				0 );
-    ScreenBPP                        = config_get_int( "ScreenBPP",					0 );
-    TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
-    TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
-    TextureGreenBPP                  = config_get_int( "TextureGreenBPP",			0 );
-    TextureBlueBPP                   = config_get_int( "TextureBlueBPP",			0 );
-    TextureAlphaBPP                  = config_get_int( "TextureAlphaBPP",			0 );
-    TextureIndexBPP                  = config_get_int( "TextureIndexBPP",			0 );
-    KillMessageColour                = config_get_int( "KillMessageColour",			12 );
-    MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	1 );
-    SystemMessageColour              = config_get_int( "SystemMessageColour",		2 );
-    FlagMessageColour                = config_get_int( "FlagMessageColour",			2 );
-    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		2 );
-    PickupMessageColour              = config_get_int( "PickupMessageColour",		2 );
-    TauntMessageColour               = config_get_int( "TauntMessageColour",		2 );
-    MyMessageColour                  = config_get_int( "MyMessageColour",			2 );
-    ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
-    GameType                         = config_get_int( "GameType",					GAME_Normal );
-
-	//
-
-	Gamma = ( (double)GammaSlider.value ) / 100.0F;
-
 	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max )	
 	SetWaterDetail( &WaterDetailSlider );
 
+    BikeDetailSlider.value           = config_get_int( "BikeDetail",				BikeDetailSlider.max );
+    TrailDetailSlider.value          = config_get_int( "TrailDetail",				TrailDetailSlider.max );
+    SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
+    FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
+
+	CLAMP( BikeDetailSlider.value,		BikeDetailSlider.max );
+	CLAMP( TrailDetailSlider.value,		TrailDetailSlider.max );
+	CLAMP( SfxSlider.value,				SfxSlider.max );
+	CLAMP( FlagSfxSlider.value,			FlagSfxSlider.max );
+
+	BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
+    BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
+	CLAMP( BikerSpeechSlider.value, BikerSpeechSlider.max );
+	CLAMP( BikeCompSpeechSlider.value, BikeCompSpeechSlider.max );
 	if ( NoDynamicSfx )
 	{
 		// ensures text messages instead of speech
@@ -11406,16 +11379,72 @@ void GetGamePrefs( void )
 		BikeCompSpeechSlider.value = 0;
 	}
 
+    GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
+	CLAMP( GammaSlider.value, GammaSlider.max );
+	Gamma = ( (double)GammaSlider.value ) / 100.0F;
+
+    MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
+    TimeLimit.value                  = config_get_int( "TimeLimit",					0);
+    CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
+    GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
+    BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
+
+	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
+	CLAMP( TimeLimit.value,				TimeLimit.max );
+	CLAMP( CTFSlider.value,				CTFSlider.max );
+	CLAMP( GoalScoreSlider.value,		GoalScoreSlider.max );
+	CLAMP( BountyBonusSlider.value,		BountyBonusSlider.max );
+
+
+    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
 	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
 		PacketsSlider.value	= NetUpdateIntervalCmdLine;
 
+    NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-	// get the last used Pilot
-	// or use first cfg found
-	GetDefaultPilot();
+    ScreenWidth                      = config_get_int( "ScreenWidth",				0 );
+    ScreenHeight                     = config_get_int( "ScreenHeight",				0 );
 
+    ScreenBPP                        = config_get_int( "ScreenBPP",					16 );
+	if( ScreenBPP != 16 && ScreenBPP != 32 )
+		ScreenBPP = 16;
+
+    TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
+    TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
+    TextureGreenBPP                  = config_get_int( "TextureGreenBPP",			0 );
+    TextureBlueBPP                   = config_get_int( "TextureBlueBPP",			0 );
+    TextureAlphaBPP                  = config_get_int( "TextureAlphaBPP",			0 );
+    TextureIndexBPP                  = config_get_int( "TextureIndexBPP",			0 );
+
+    MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
+    KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
+    SystemMessageColour              = config_get_int( "SystemMessageColour",		GREEN );
+    FlagMessageColour                = config_get_int( "FlagMessageColour",			GREEN );
+    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		GREEN );
+    PickupMessageColour              = config_get_int( "PickupMessageColour",		GREEN );
+    TauntMessageColour               = config_get_int( "TauntMessageColour",		GREEN );
+    MyMessageColour                  = config_get_int( "MyMessageColour",			GREEN );
+
+	CLAMP( MilestoneMessagesColour,	MAXFONTCOLOURS );
+	CLAMP( KillMessageColour,		MAXFONTCOLOURS );
+	CLAMP( SystemMessageColour,		MAXFONTCOLOURS );
+	CLAMP( FlagMessageColour,		MAXFONTCOLOURS );
+	CLAMP( PlayerMessageColour,		MAXFONTCOLOURS );
+	CLAMP( PickupMessageColour,		MAXFONTCOLOURS );
+	CLAMP( TauntMessageColour,		MAXFONTCOLOURS );
+	CLAMP( MyMessageColour,			MAXFONTCOLOURS );
+
+    ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
+	CLAMP( ColPerspective, 1 );
+
+    GameType                         = config_get_int( "GameType",					GAME_Normal );
+	CLAMP( ColPerspective, MAX_GAMETYPE );
+
+	// other stuff
+
+	GetDefaultPilot();
 	SetOurRenderStates( (MENUITEM *)NULL );
 	SetSoundLevels( NULL );
 }

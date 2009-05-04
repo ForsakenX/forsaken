@@ -56,6 +56,7 @@ extern float PseudoHostAck_Timeout;
 #define CONTROL_Gamepad		3
 
 // order of this list must match GameTypeNameTable
+#define MAX_GAMETYPE		5
 typedef enum
 {
 GAME_Normal,			// 0 free for all
