@@ -7874,28 +7874,28 @@ void ReleaseSpecialExecBufs( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SpecialDestroyGame( void )
 {
-  IMustQuit = FALSE;
-  
-  if ( PlayDemo )
-  {
-    PlayDemo = FALSE;
-  }
+	IMustQuit = FALSE;
 
-  switch( MyGameStatus )
-  {
-  case STATUS_WaitingToStartTeamGame:
-  case STATUS_StartingMultiplayer:
-  case STATUS_GetPlayerNum:
+	DebugPrintf("SpecialDestroyGame()\n");
+
+	if ( PlayDemo )
+		PlayDemo = FALSE;
+
+	switch( MyGameStatus )
+	{
+	case STATUS_WaitingToStartTeamGame:
+	case STATUS_StartingMultiplayer:
+	case STATUS_GetPlayerNum:
+		MyGameStatus = STATUS_Title;
+		MenuRestart( &MENU_ForceAbort );
+		break;
+	default:
+		PreventFlips = FALSE;
+		MyGameStatus = STATUS_QuitCurrentGame;
+		break;
+	}
+
 	network_cleanup();
-    MyGameStatus = STATUS_Title;
-    MenuRestart( &MENU_ForceAbort );
-    break;
-  default:
-    PreventFlips = FALSE;
-    MyGameStatus = STATUS_QuitCurrentGame;
-    break;
-  }
-
 }
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
   Procedure :   Calculate the framelag..

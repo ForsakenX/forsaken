@@ -1136,6 +1136,8 @@ void DestroyGame( void )
 	int	i;
 	VECTOR	DirVector = { 0.0F, 0.0F, 0.0F };
 
+	DebugPrintf("DestroyGame()\n");
+
 	if( PlayDemo )
 		return;
 	
@@ -1155,14 +1157,9 @@ void DestroyGame( void )
 		RegeneratePickups();
 
 		ResetAllStats(); // stats.c
-
-		network_cleanup();
-
 	}
-	else
-	{
-		network_cleanup();
-	}
+
+	network_cleanup();
 
 	if( Debug && DS )
 		for( i = 0 ; i < 256 ; i++ )
