@@ -4287,7 +4287,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SyncMines();
       InitShipRandomPos( WhoIAm );
       NextworkOldBikeNum = -1;
-      set_player_name();
+      set_my_player_name();
       if( CountDownOn )
       {
         CreateCountdownDigits();
@@ -4514,84 +4514,50 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     sprintf( &buf[0] , "Attempt %d\n" , GetPlayerNumCount );
     CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
 
-    
     GetPlayerNumCount1 -= framelag;
     GetPlayerNumCount2 -= framelag;
 
     if( WhoIAm != 0xff )
-    {
-		DebugPrintf("WhoIAm: %d\n",WhoIAm);
-      if( WhoIAm == MAX_PLAYERS )
-      {
-        PrintErrorMessage ( "The Game is Currently Un-Joinable", 3, NULL, ERROR_USE_MENUFUNCS );
-        MyGameStatus = STATUS_Title;
-        break;
-      }
-      if( WhoIAm == MAX_PLAYERS+1 )
-      {
-        PrintErrorMessage ( "You Dont have the level they are playing", 3, NULL, ERROR_USE_MENUFUNCS );
-        MyGameStatus = STATUS_Title;
-        break;
-      }
-      if( WhoIAm == MAX_PLAYERS+2 )
-      {
-        PrintErrorMessage ( "The Game is Full", 3, NULL, ERROR_USE_MENUFUNCS );
-        MyGameStatus = STATUS_Title;
-        break;
-      }
-	  if( WhoIAm == MAX_PLAYERS+3 )
-      {
-		PrintErrorMessage ( "You do have the right version.", 3, NULL, ERROR_USE_MENUFUNCS );
-        MyGameStatus = STATUS_Title;
-        break;
-      }
+	{
+		if(WhoIAm >= MAX_PLAYERS)
+		{
+			switch(WhoIAm)
+			{
+			case MAX_PLAYERS:
+				PrintErrorMessage ( "The Game is Currently Un-Joinable", 3, NULL, ERROR_USE_MENUFUNCS );
+				MyGameStatus = STATUS_Title;
+				break;
+			case MAX_PLAYERS+1:
+				PrintErrorMessage ( "You Dont have the level they are playing", 3, NULL, ERROR_USE_MENUFUNCS );
+				MyGameStatus = STATUS_Title;
+				break;
+			case MAX_PLAYERS+2:
+				PrintErrorMessage ( "The Game is Full", 3, NULL, ERROR_USE_MENUFUNCS );
+				MyGameStatus = STATUS_Title;
+				break;
+			case MAX_PLAYERS+3:
+				PrintErrorMessage ( "You do have the right version", 3, NULL, ERROR_USE_MENUFUNCS );
+				MyGameStatus = STATUS_Title;
+				break;
+			default:
+				PrintErrorMessage ( "Could not join game host gave no reason why", 3, NULL, ERROR_USE_MENUFUNCS );
+				MyGameStatus = STATUS_Title;
+			}
+			break; // we are done
+		}
 
-      memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-      strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-      Names[WhoIAm][7] = 0;
-      Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
-    
-      MyGameStatus = STATUS_StartingMultiplayer;
-      MenuState = MENUSTATE_Select;
+		// update status
+		MyGameStatus = STATUS_StartingMultiplayer;
 
-      SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-      set_player_name();
+		// tell everyone my new status
+		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-#ifdef DEMO_SUPPORT
-      if( RecordDemo )
-      {
-        DemoFp = fopen( "Test.dmo" , "wb" );
-        setvbuf( DemoFp, NULL, _IONBF , 0 );    // size of stream buffer...
-        for( i = 0 ; i < 256 ; i++ )
-        {
-          Demo_fwrite( &ShortLevelNames[NewLevelNum][i], sizeof(char), 1, DemoFp );
-          if( ShortLevelNames[NewLevelNum][i] == 0 )
-          {
-            break;
-          }
-        }
-        // Best way I can Think of to send the Host Name to the demo file...
-        Temp = 1;
-        TempTime = 1;
-        Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
-        size = sizeof( NAMEMSG );
-        Demo_fwrite( &size, sizeof(int), 1, DemoFp );
-        Demo_fwrite( &Temp, sizeof(DWORD), 1, DemoFp );
-        msg = MSG_NAME;
-        Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );
-        msg = WhoIAm;
-        Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );       // Whos Name it is..
-        Demo_fwrite( &biker_name[0], 7, 1, DemoFp );
-        msg = 0;
-        Demo_fwrite( &msg, sizeof(BYTE), 1, DemoFp );       // terminator for name..
-      }
-#endif
+		// update menu
+		MenuState = MENUSTATE_Select;
+		MenuChangeEx( GetPlayerNumMenu );
 
-      // menu change is done when session description is changed for lobby session
-       MenuChangeEx( GetPlayerNumMenu );
-
-      break;
-    }
+		break;
+	}
 
     if( GetPlayerNumCount2 <= 0.0F )
     {

@@ -62,8 +62,7 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	Current_Camera_View = 0;				// set camera to that view
 	Ships[WhoIAm].enable = 1;
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-	Names[WhoIAm][7] = 0;																
+	set_my_player_name();
 	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	
 
@@ -108,8 +107,7 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	Ships[WhoIAm].enable = 1;
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-    strncpy( (char*) &Names[WhoIAm][0] , &biker_name[0] , 7 );
-	Names[WhoIAm][7] = 0;																
+	set_my_player_name();
 	Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	
 	CountDownOn = FALSE;

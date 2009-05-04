@@ -9977,7 +9977,7 @@ void InitBikerName( char *name )
 	config_set_str("PlayerName",&biker_name[0]);
 
 	// tell everyone else in multiplayer
-	set_player_name();
+	set_my_player_name();
 
 }
 

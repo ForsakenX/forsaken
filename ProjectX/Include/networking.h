@@ -998,7 +998,7 @@ BOOL UpdateAmmoAndValidateMessage( void * Message );
 BOOL AutoJoinSession( void );
 void AllocatePseudoHost( void );
 
-void set_player_name( void );
+void set_my_player_name( void );
 
 #endif
 

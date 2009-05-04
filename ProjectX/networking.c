@@ -534,13 +534,16 @@ char* msg_to_str( int msg_type )
 	return "UNKNOWN";
 }
 
-
-void set_player_name( void )
+void set_player_name( int BikeNum, char* name )
 {
-	int i;
-	for( i = 0 ; i < 8 ; i++ )
-		Names[WhoIAm][i] = biker_name[i];
-	Names[WhoIAm][7] = 0;
+	if( BikeNum < 0 || BikeNum >= MAX_PLAYERS ) return;
+	strncpy( &Names[BikeNum][0], name, MAXSHORTNAME );
+	Names[BikeNum][MAXSHORTNAME-1] = 0;
+}
+
+void set_my_player_name( void )
+{
+	set_player_name( WhoIAm, &biker_name[0] );
 	network_set_player_name(&biker_name[0]);
 }
 
@@ -1238,12 +1241,12 @@ void smallinitShip( uint16 i )
 	}
 }
 
-void UpdatePlayer( network_player_t * from, BYTE player )
+void UpdatePlayer( network_player_t * from, BYTE ShipNum )
 {
-	if( ! Ships[player].network_player )
-		Ships[player].network_player = from;
-	if( Names[player][0] == 0 )
-		strncpy( Names[player], from->name, MAXSHORTNAME );
+	if( ! Ships[ShipNum].network_player )
+		Ships[ShipNum].network_player = from;
+	if( Names[ShipNum][0] == 0 )
+		set_player_name( ShipNum, from->name );
 }
 
 void network_event_player_name( network_player_t * player )
@@ -1254,8 +1257,8 @@ void network_event_player_name( network_player_t * player )
 	{
 		if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 		{
-			strncpy( &Names[i][0], &player->name[0], MAXSHORTNAME );
-			DebugPrintf("Recieved name %s from player %d\n", &Names[i][0], i);
+			set_player_name( i, player->name );
+			DebugPrintf("Recieved name %s from player %d\n", player->name, i);
 			NextworkOldBikeNum = -1;
 			return;
 		}
@@ -2248,18 +2251,18 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		lpInit = (LPINITMSG) MsgPnt;
 
-		// incase we want to send directly to host later
-		host_network_player = from;
-
 		//
-		// Check if we are allowed into the game
+		// Check if we are allowed in game
 		//
+		
+		WhoIAm	= lpInit->YouAre;
+		DebugPrintf("MSG_INIT: WhoIAm = %d\n",WhoIAm);
 
-		// if host tells us larger than possible player number
-		// that's a special message that we aren't allowed into the game
-		if( lpInit->YouAre > MAX_PLAYERS )
-			return; // not allowed in game
-
+		// if it's max players or over then it's a special message
+		// tells us we are not allowed in game and reason
+		if( WhoIAm >= MAX_PLAYERS )
+			return;
+		
 		//
 		// Check if we have the level
 		//
@@ -2279,7 +2282,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		//  Coppy everything the host told us
 		//
 
-		WhoIAm						= lpInit->YouAre;
 		MaxKills					= lpInit->MaxKills;
 		OverallGameStatus			= lpInit->OverallGameStatus;
 		NetUpdateInterval			= lpInit->NetUpdateInterval;
@@ -2355,6 +2357,16 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				break;
 			}
 		}
+
+		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
+
+		// setup names
+		memset( &Names, 0, sizeof(SHORTNAMETYPE) );		// reset names
+		set_my_player_name();							// set my name
+		set_player_name( lpInit->WhoIAm, from->name );	// set host name
+
+		// save player network pointer
+		host_network_player = from;
 
 		return;
 
@@ -3418,7 +3430,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			GameStatus[new_player_id]			= STATUS_GetPlayerNum;			// player now goes into "get player number" stage
 			TeamNumber[new_player_id]			= 0;							// starts off on team zero
 			Ships[new_player_id].network_player	= to;							// save network pointer
-			strncpy( &Names[new_player_id][0], &to->name[0], MAXSHORTNAME );	// copy in their name
+			set_player_name( new_player_id, to->name );							// copy in their name
 			
 			//
 			// the current game state is saved and propagated to the player over the next few frames
