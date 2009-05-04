@@ -572,6 +572,7 @@ void network_cleanup( void )
 	disconnect_all();
 	destroy_players();
 	enet_cleanup();
+	connections = 0; // no disconnect messages had a chance to fire
 	network_state = NETWORK_DISCONNECTED;
 }
 
