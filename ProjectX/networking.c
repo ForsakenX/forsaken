@@ -77,8 +77,6 @@ extern	SLIDER	TimeLimit;
 extern	int		GameType;
 extern	BOOL	MyBrightShips;
 extern BOOL BountyBonus;
-extern SLIDER	BountyBonusSlider;
-
 
 extern float GetPlayerNumCount1;
 extern float GetPlayerNumCount2;
@@ -2320,8 +2318,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		else
 			CountDownOn	= FALSE;
 
-		if ( BountyHunt )
-			BountyBonusInterval = lpInit->BountyBonusInterval;
 		if ( CaptureTheFlag || CTF )
 			GoalScore = lpInit->GoalScore;
 
