@@ -532,6 +532,7 @@ static void new_packet( ENetEvent * event )
 
 int network_setup( char* player_name, int local_port )
 {
+	network_cleanup();
 	DebugPrintf("network_setup: player name set to '%s'\n",
 				player_name, local_port);
 	my_player_name = player_name;
