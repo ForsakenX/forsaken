@@ -11356,22 +11356,15 @@ void GetGamePrefs( void )
     TrailDetailSlider.value          = config_get_int( "TrailDetail",				TrailDetailSlider.max );
     SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
     FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
+	BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
+    BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
 
 	CLAMP( BikeDetailSlider.value,		BikeDetailSlider.max );
 	CLAMP( TrailDetailSlider.value,		TrailDetailSlider.max );
 	CLAMP( SfxSlider.value,				SfxSlider.max );
 	CLAMP( FlagSfxSlider.value,			FlagSfxSlider.max );
-
-	BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
-    BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
-	CLAMP( BikerSpeechSlider.value, BikerSpeechSlider.max );
-	CLAMP( BikeCompSpeechSlider.value, BikeCompSpeechSlider.max );
-	if ( NoDynamicSfx )
-	{
-		// ensures text messages instead of speech
-		BikerSpeechSlider.value = 0;
-		BikeCompSpeechSlider.value = 0;
-	}
+	CLAMP( BikerSpeechSlider.value,		BikerSpeechSlider.max );
+	CLAMP( BikeCompSpeechSlider.value,	BikeCompSpeechSlider.max );
 
     GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
 	CLAMP( GammaSlider.value, GammaSlider.max );
@@ -11382,17 +11375,14 @@ void GetGamePrefs( void )
     CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
     GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
     BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
+    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
 
 	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
 	CLAMP( TimeLimit.value,				TimeLimit.max );
 	CLAMP( CTFSlider.value,				CTFSlider.max );
 	CLAMP( GoalScoreSlider.value,		GoalScoreSlider.max );
 	CLAMP( BountyBonusSlider.value,		BountyBonusSlider.max );
-
-
-    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
-	if( NetUpdateIntervalCmdLine >= 1 && NetUpdateIntervalCmdLine <= 30 )
-		PacketsSlider.value	= NetUpdateIntervalCmdLine;
+	CLAMP( PacketsSlider.value,			PacketsSlider.max );
 
     NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
