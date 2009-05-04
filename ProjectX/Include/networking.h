@@ -724,7 +724,7 @@ typedef struct _INITMSG
 
     BYTE	WhoIAm;
     BYTE	YouAre;
-	BYTE	Status;
+	BYTE	OverallGameStatus;
 	BYTE	NumPrimaryPickups;
 	BYTE	MaxKills;
 	BYTE	TeamNumber[MAX_PLAYERS];

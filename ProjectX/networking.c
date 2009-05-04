@@ -1311,6 +1311,9 @@ void network_event_new_host( network_player_t * player )
 	int i;
 	DebugPrintf("network_event_new_host\n");
 
+	// if we need to send to host later
+	host_network_player = player;
+
 	// we have become the host
 	if( player == NULL)
 	{
@@ -2245,80 +2248,81 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		lpInit = (LPINITMSG) MsgPnt;
 
-		if( WhoIAm == 0xff && lpInit->YouAre > MAX_PLAYERS)
+		// incase we want to send directly to host later
+		host_network_player = from;
+
+		//
+		// Check if we are allowed into the game
+		//
+
+		// if host tells us larger than possible player number
+		// that's a special message that we aren't allowed into the game
+		if( lpInit->YouAre > MAX_PLAYERS )
+			return; // not allowed in game
+
+		//
+		// Check if we have the level
+		//
+
+		DebugPrintf("host says level is %s\n", lpInit->LevelName );
+
+		NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
+
+		if( NewLevelNum == -1 )
 		{
-			WhoIAm = lpInit->YouAre;
+			DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
+			WhoIAm = MAX_PLAYERS+1;
 			return;
 		}
 
-		host_network_player = from;
-		MaxKills = lpInit->MaxKills;
-		OverallGameStatus = lpInit->Status;
-		NetUpdateInterval = lpInit->NetUpdateInterval;
-		PacketsSlider.value = (int) (60.0F / NetUpdateInterval);
+		//
+		//  Coppy everything the host told us
+		//
 
-		for( i = 0 ; i < MAX_PLAYERS ; i++ )			
-		{															
-			PlayerReady[i] = lpInit->PlayerReady[i];
-			if( i != WhoIAm && i != lpInit->YouAre )
-				GameStatus[i] = lpInit->GameStatus[i];
-		}
-						
-		if ( WhoIAm == 0xff )
-		{
-			WhoIAm = lpInit->YouAre;
-			Current_Camera_View = WhoIAm;
-			WatchPlayerSelect.value = WhoIAm;
+		WhoIAm						= lpInit->YouAre;
+		MaxKills					= lpInit->MaxKills;
+		OverallGameStatus			= lpInit->OverallGameStatus;
+		NetUpdateInterval			= lpInit->NetUpdateInterval;
+		PacketsSlider.value			= (int) (60.0F / NetUpdateInterval);
+		ColPerspective				= lpInit->ColPerspective;
+		UseShortPackets				= lpInit->UseShortPackets;
+		RandomStartPosModify		= lpInit->RandomStartPosModify;
+		BountyBonusInterval			= lpInit->BountyBonusInterval;
+		TeamGame					= lpInit->TeamGame;
+		CaptureTheFlag				= lpInit->CaptureTheFlag;
+		CTF							= lpInit->CTF;
+		BountyHunt					= lpInit->BountyHunt;
+		ResetKillsPerLevel			= lpInit->ResetKillsPerLevel;
+		TimeLimit.value				= lpInit->TimeLimit;
+		RandomPickups				= lpInit->RandomPickups;
+		CopyOfSeed1					= lpInit->Seed1;
+		CopyOfSeed2					= lpInit->Seed2;
+		NumPrimaryPickups			= lpInit->NumPrimaryPickups;
 
-			ColPerspective = lpInit->ColPerspective;
-			UseShortPackets = lpInit->UseShortPackets;
+		memcpy( PlayerReady,	lpInit->PlayerReady,	sizeof(PlayerReady));
+		memcpy( GameStatus,		lpInit->GameStatus,		sizeof(GameStatus));
+		memcpy( TeamNumber,		lpInit->TeamNumber,		sizeof(TeamNumber));
+		memcpy( KillStats,		lpInit->KillStats,		sizeof(KillStats));
+		memcpy( KillCounter,	lpInit->KillCounter,	sizeof(KillCounter));
+		memcpy( BonusStats,		lpInit->BonusStats,		sizeof(BonusStats));
 
-			UnpackPickupInfo( lpInit->PickupFlags );
-			DebugPrintf("host says level is %s\n", lpInit->LevelName );
+		UnpackPickupInfo( lpInit->PickupFlags );	// which weapons are enabled
 
-			NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
-			if( NewLevelNum == -1 )
-			{
-				DebugPrintf("client cannot find level %s\n", lpInit->LevelName );
-				WhoIAm = MAX_PLAYERS+1;
-				return;
-			}
+		//
+		//  post processing
+		//
 
-			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				TeamNumber[i] = lpInit->TeamNumber[i];
-		}
-		else
-		{
-			// team selection order from the host..copies it for every one...
-			memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
-			for( i = 0 ; i < MAX_PLAYERS ; i++ )
-				TeamNumber[i] = lpInit->TeamNumber[i];
-			TeamNumber[WhoIAm] = 0;
-		}
+		Current_Camera_View = WhoIAm;
+		WatchPlayerSelect.value = WhoIAm;
 
-		RandomStartPosModify	= lpInit->RandomStartPosModify;
-		BountyBonusInterval		= lpInit->BountyBonusInterval;
-		TeamGame				= lpInit->TeamGame;
-		CaptureTheFlag			= lpInit->CaptureTheFlag;
-		CTF						= lpInit->CTF;
-		BountyHunt				= lpInit->BountyHunt;
-		ResetKillsPerLevel		= lpInit->ResetKillsPerLevel;
-		TimeLimit.value			= lpInit->TimeLimit;
+		if ( TeamGame )	GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
+		else			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
 
-		if ( TeamGame )
-			GetPlayerNumMenu = &MENU_NEW_WatchTeamSelect;
-		else
-			GetPlayerNumMenu = (MENU*) NewJoinItem.Value;
-
-		if( TimeLimit.value )
-			CountDownOn = TRUE;
-		else
-			CountDownOn	= FALSE;
+		if( TimeLimit.value )	CountDownOn = TRUE;
+		else					CountDownOn	= FALSE;
 
 		if ( CaptureTheFlag || CTF )
 			GoalScore = lpInit->GoalScore;
-
-		NumPrimaryPickups = lpInit->NumPrimaryPickups;
 
 		if ( CTF )
 		{					
@@ -2351,15 +2355,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				break;
 			}
 		}
-	
-		RandomPickups = lpInit->RandomPickups;
-		CopyOfSeed1 = lpInit->Seed1;
-		CopyOfSeed2 = lpInit->Seed2;
-
-		// copy the stats
-		memcpy( KillStats, lpInit->KillStats, sizeof(KillStats));
-		memcpy( KillCounter, lpInit->KillCounter, sizeof(KillCounter));
-		memcpy( BonusStats, lpInit->BonusStats, sizeof(BonusStats));
 
 		return;
 
@@ -3273,13 +3268,17 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	LPREQTIMEMSG						lpReqTime;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
 
-	DWORD			nBytes		= 0;
-	int				flags = 0;
-	int				i;
-	int				Count;
-	int				MessageColour = 2; // default message colour is light green
-	char			VersionMessage[30];
+	// network variables
+	DWORD			nBytes = 0;
+	int				flags  = 0;
 	channel_t		channel = CHANNEL_MAIN;
+
+	// temp variables
+	int				i;
+
+	// text variables
+	int				MessageColour = GREEN;
+	char			VersionMessage[30];
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3332,11 +3331,24 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
     case MSG_INIT:
 
-		if( !IsHost )return;
+		// only host is allowed to send a MSG_INIT
+		if( !IsHost )
+			return;
+
+		// MSG_INIT only needs to be sent once
+		if( ShipNum != 0xff )
+			return;
+
+		// setup the basic message flags
+		flags |= NETWORK_RELIABLE;
 		nBytes = sizeof( INITMSG );
 		lpInit = (LPINITMSG)&CommBuff[0];
 		lpInit->MsgCode	= msg;
-		flags |= NETWORK_RELIABLE;
+		lpInit->WhoIAm  = WhoIAm;
+
+		//
+		// Check player has right version to join the game
+		//
 
 		if( PXMPVINT != mask )
 		{
@@ -3344,7 +3356,91 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			goto send;
 		}
 
-		lpInit->WhoIAm					= WhoIAm;
+		//
+		//  Assign the player a slot (aka unique player number across all computers)
+		//
+
+		{
+			int new_player_id = -1;
+
+			//
+			// check to see if max players reached
+			//
+
+			int player_count  = 1; // count myself
+			for( i = 0; i < MAX_PLAYERS; i++ )
+				if(	! (GameStatus[i] == STATUS_Left || GameStatus[i] == STATUS_LeftCrashed || GameStatus[i] == STATUS_Null) )
+					player_count++;
+			
+			DebugPrintf("MSG_INIT: current player_count %d\n",player_count);
+
+			if( player_count >= MaxPlayersSlider.value )
+			{
+				DebugPrintf("MSG_INIT: game is full... denying connection...\n");
+				lpInit->YouAre = MAX_PLAYERS+2;
+				goto send;
+			}
+
+			//
+			// find a player slot for new player
+			//
+
+			// first look for null slots so we can preserve scores of players who left
+			for( i = 0; i < MAX_PLAYERS; i++ )
+				if(	i != WhoIAm ) // host slot is maintained in MyGameStatus not GameStatus[WhoIAm]
+					if( GameStatus[i] == STATUS_Null )
+					{
+						new_player_id = i; // found an unused slot
+						DebugPrintf("MSG_INIT: player assigned to unused slot\n");
+						break;
+					}
+
+			// if we didn't find a never used slot then assign a slot from a player who left
+			if( new_player_id == -1 )
+				for( i = 0; i < MAX_PLAYERS; i++ )
+					if(	i != WhoIAm ) // host slot is maintained in MyGameStatus not GameStatus[WhoIAm]
+						if(	GameStatus[i] == STATUS_Left || GameStatus[i] == STATUS_LeftCrashed )
+						{
+							new_player_id = i; // found an old slot
+							DebugPrintf("MSG_INIT: player assigned to reused slot\n");
+							break;
+						}
+
+			DebugPrintf("MSG_INIT: new_player_id set to %d\n", new_player_id);
+
+			lpInit->YouAre = (BYTE) new_player_id;	// tell new player who he is
+
+			//
+			// setup the new player
+			//
+
+			InitShipStructure( new_player_id, TRUE );							// zero out player and the old score
+			GameStatus[new_player_id]			= STATUS_GetPlayerNum;			// player now goes into "get player number" stage
+			TeamNumber[new_player_id]			= 0;							// starts off on team zero
+			Ships[new_player_id].network_player	= to;							// save network pointer
+			strncpy( &Names[new_player_id][0], &to->name[0], MAXSHORTNAME );	// copy in their name
+			
+			//
+			// the current game state is saved and propagated to the player over the next few frames
+			// this is why you see the screen that says, "mines left, pickups left, etc..."
+			//
+
+			if(	MyGameStatus == STATUS_Normal ) // should this be here? maybe this info isn't ready unless in game already?
+			{
+				CopyPickups(	(uint16) new_player_id );					
+				CopyRegenSlots( (uint16) new_player_id );
+				CopyTriggers(	(uint16) new_player_id );
+				CopyTrigVars(	(uint16) new_player_id );
+				CopyMines(		(uint16) new_player_id );
+			}
+		}
+
+		//
+		//  If they got this far they are allowed into the game
+		//  so tell them everything they need to know about game
+		//
+
+		lpInit->OverallGameStatus		= MyGameStatus;					// games overall status is equal to host status
 		lpInit->Seed1					= CopyOfSeed1;
 		lpInit->Seed2					= CopyOfSeed2;
 		lpInit->ColPerspective			= (BYTE)ColPerspective;
@@ -3364,85 +3460,16 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		lpInit->CTF_Type				= CTFSlider.value;
 		lpInit->TimeLimit				= TimeLimit.value;
 
-		PackPickupInfo( lpInit->PickupFlags );
+		PackPickupInfo( lpInit->PickupFlags );												// currently enabled pickups
 
-		memcpy( lpInit->KillStats, KillStats, sizeof(lpInit->KillStats));
-		memcpy( lpInit->KillCounter, KillCounter, sizeof(lpInit->KillCounter));
-		memcpy( lpInit->BonusStats, BonusStats, sizeof(lpInit->KillCounter));
+		memcpy( lpInit->KillStats,		KillStats,		sizeof(lpInit->KillStats));			// other players stats stats
+		memcpy( lpInit->KillCounter,	KillCounter,	sizeof(lpInit->KillCounter));		// other players kills counts
+		memcpy( lpInit->BonusStats,		BonusStats,		sizeof(lpInit->KillCounter));		// other players bonus stats
+		memcpy( lpInit->PlayerReady,	PlayerReady,	sizeof(lpInit->PlayerReady));		// other players ready status
+		memcpy( lpInit->GameStatus,		GameStatus,		sizeof(lpInit->GameStatus));		// other players game status
+		memcpy( lpInit->TeamNumber,		TeamNumber,		sizeof(lpInit->TeamNumber));		// what team everyone is on
 
-		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );
-
-		for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )			
-		{															
-			lpInit->PlayerReady[Count] = PlayerReady[Count];
-			lpInit->GameStatus[Count] = GameStatus[Count];
-		}
-
-		// if we haven't given him a ship number yet
-		if( ShipNum == 0xff ) // default value
-		{
-			int new_player_id = -1;
-			int player_count  = 1; // count myself
-
-			// find a free player slot
-			for( i = 0; i < MAX_PLAYERS; i++ )
-			{
-				// if slot is free
-				if(	( GameStatus[i] == STATUS_Left ) || ( GameStatus[i] == STATUS_LeftCrashed ) || ( GameStatus[i] == STATUS_Null ) )
-				{
-					if( (i != WhoIAm) && (new_player_id == -1) ) // our game status is not maintained in GameStatus[]
-					{
-						new_player_id = i;
-						DebugPrintf("MSG_INIT: new_player_id set to %d\n", new_player_id);
-					}
-				}
-
-				// valid player
-				else
-				{
-					player_count++;
-				}
-			}
-			DebugPrintf("MSG_INIT: current player_count %d\n",player_count);
-					
-			// game is full
-			if( player_count >= MaxPlayersSlider.value )
-			{
-				DebugPrintf("MSG_INIT: game is full... denying connection...\n");
-				lpInit->YouAre = MAX_PLAYERS+2;
-			}	
-
-			// got a valid player number
-			else
-			{
-				// setup player
-				InitShipStructure( new_player_id, TRUE );
-				GameStatus[new_player_id]			= STATUS_GetPlayerNum;
-				TeamNumber[new_player_id]			= 0;
-				Ships[new_player_id].network_player	= to;
-				strncpy( &Names[new_player_id][0], &to->name[0], MAXSHORTNAME );
-				
-				// set rest of values
-
-				lpInit->YouAre = (BYTE) new_player_id;
-
-				for( Count = 0 ; Count < MAX_PLAYERS ; Count++ )					
-					lpInit->TeamNumber[Count] = TeamNumber[Count];
-
-				lpInit->Status = MyGameStatus;
-
-				if(	MyGameStatus == STATUS_Normal )
-				{
-					// StatsCount = MAX_PLAYERS;
-					CopyPickups(	(uint16) new_player_id );
-					CopyRegenSlots( (uint16) new_player_id );
-					CopyTriggers(	(uint16) new_player_id );
-					CopyTrigVars(	(uint16) new_player_id );
-					CopyMines(		(uint16) new_player_id );
-				}
-
-			}
-		}
+		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );						// level we are on
 
 		break;
 
