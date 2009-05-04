@@ -11441,12 +11441,6 @@ void GetGamePrefs( void )
 
     GameType                         = config_get_int( "GameType",					GAME_Normal );
 	CLAMP( ColPerspective, MAX_GAMETYPE );
-
-	// other stuff
-
-	GetDefaultPilot();
-	SetOurRenderStates( (MENUITEM *)NULL );
-	SetSoundLevels( NULL );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�

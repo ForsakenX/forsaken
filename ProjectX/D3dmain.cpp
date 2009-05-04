@@ -124,6 +124,9 @@ extern "C" {
 
 	BOOL ActLikeWindow = FALSE;
 
+	void GetDefaultPilot(void);
+	void SetSoundLevels( int *dummy );
+	void SetOurRenderStates( MENUITEM *item );
 }
 
 
@@ -516,8 +519,7 @@ BOOL parse_chdir( char *cli )
 	return TRUE;
 }
 
-static BOOL
-AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
+static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 	DWORD dwPlatform, dwVersion;
 
@@ -590,15 +592,20 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if(!InitWindow())
 		return FALSE;
 
+	// appears dinput has to be after init window
+
 	// initialize direct input
 	// This requires an application and window handle
 	// so it most not come earlier than here
 	if (!InitDInput())
 	{
-		DebugPrintf( "Failed on InitDInput()\n" );
 		Msg("Failed to initialized Direct Input!");
 		return FALSE;
 	}
+	
+	// this needs to come after InitDInput
+	// because InitDInput will wipe the joystick settings
+	GetDefaultPilot();
 
 	// wtf is this ?
 	// polygon based text.. (Not blitted from what I know) 
@@ -627,6 +634,10 @@ AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 			SetInputAcquired( FALSE );
 		SetCursorClip( FALSE );
 	}
+
+	SetOurRenderStates( (MENUITEM *)NULL );
+
+	SetSoundLevels( NULL );
 
 	DebugPrintf("AppInit finished...");
 
