@@ -10264,9 +10264,17 @@ void InitMultiplayerHost( MENU *Menu )
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
 	uint16 selected_level;
+	int i;
+	char level_name[64];
 
-	// back up current selected level
-	selected_level = LevelList.selected_item;
+	config_get_strncpy( &level_name[0], 64, "LevelName", "ship" );
+
+	for ( i = 0; i < LevelList.items; i++ )
+		if ( !_strnicmp( LevelList.item[ i ], level_name, 7 ) )
+		{
+			selected_level = i;
+			break;
+		}
 
 	// load the multiplayer levels into the global
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) )
@@ -10296,8 +10304,8 @@ void ExitMultiplayerHostVDUPeerPeer ( MENU *Menu )
 
 void RedrawMultiplayerHostVDUPeerPeer( int * i )
 {
-	// set the game type name
 	strncpy( GameTypeName, GameTypeNameTable[ GameType ], sizeof(GameTypeName) );
+	config_set_str( "LevelName", LevelList.item[ LevelList.selected_item ] );
 }
 
 void LoadLevelText( MENU *Menu )
@@ -11274,7 +11282,7 @@ void ExitLevelSelect( MENU * Menu )
 	Input		:		Nothing
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void InitValidPickups();
+extern void InitValidPickups();
 void GetGamePrefs( void )
 {
 	// default allow all pickups
@@ -11285,20 +11293,6 @@ void GetGamePrefs( void )
 	config_get_strncpy( tracker_server, sizeof(tracker_server), "TrackerServer", "fly.thruhere.net" );
 	tracker_port = config_get_int( "TrackerPort", 47624 );
 	tracker_enabled = config_get_bool( "TrackerEnabled", TRUE );
-
-	// strings
-
-	{
-		int i;
-		char level_name[64];
-		config_get_strncpy( &level_name[0], 64, "LevelName", "ship" );
-		for ( i = 0; i < LevelList.items; i++ )
-			if ( !_strnicmp( LevelList.item[ i ], level_name, 7 ) )
-			{
-				LevelList.selected_item = i;
-				break;
-			}
-	}
 
 	// booleans
 
@@ -11455,10 +11449,6 @@ void SetGamePrefs( void )
 	config_set_str( "TrackerServer", tracker_server );
 	config_set_int( "TrackerPort", tracker_port );
 	config_set_bool( "TrackerEnabled", tracker_enabled );
-
-	// strings
-
-	config_set_str( "LevelName", LevelList.item[ LevelList.selected_item ] );
 	
 	// booleans
 
