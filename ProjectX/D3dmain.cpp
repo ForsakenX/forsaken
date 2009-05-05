@@ -113,7 +113,7 @@ extern "C" {
 	extern BOOL CustomCompoundBufferSize;
 
 	extern uint8 QuickStart;
-	extern BOOL bTCP;
+	extern BOOL IpOnCLI;
 
 	int DebugMathErrors( void );
 	void OnceOnlyRelease( void );
@@ -806,7 +806,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// set the ip address for game to join
 		else if ( !_stricmp( option, "TCP" ) )
 		{
-			bTCP = TRUE;
+			IpOnCLI = TRUE;
 	        option = strtok(NULL, " ");
 			strcpy( (LPSTR)TCPAddress.text, option );
 		}

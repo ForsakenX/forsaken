@@ -45,7 +45,7 @@ extern int OldColPerspective;
 extern int OldUseShortPackets;
 
 BOOL ResetKillsPerLevel;
-BOOL bTCP = FALSE;
+BOOL IpOnCLI = FALSE;
 
 extern uint8 QuickStart;
 extern BOOL BrightShips;
@@ -251,7 +251,9 @@ void SetUpGameType( int type )
 	Input		:	nothing
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-void SetGamePrefs( void );
+extern void SetGamePrefs( void );
+extern void config_save( void );
+extern TEXT local_port_str;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
@@ -288,7 +290,10 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	DebugPrintf("d3d FlipToGDISurface.\n");
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
-	if( ! network_setup( &biker_name[0], 0 ) )
+	local_port = atoi(local_port_str.text);
+	config_save();
+
+	if( ! network_setup( &biker_name[0], local_port ) )
 	{
 		Msg("Failed to setup network!");
 		return FALSE;

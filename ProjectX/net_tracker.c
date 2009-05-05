@@ -28,6 +28,7 @@
 // created in net_enet.c
 extern ENetHost* enet_host;
 extern char * my_player_name;
+extern int my_local_port;
 
 static void send_tracker_message( char* host, int port, char* message );
 
@@ -38,13 +39,15 @@ static void send_tracker_message( char* host, int port, char* message );
 void send_tracker_update( char* host, int port )
 {
 	char message[256] = "";
-	sprintf(message,"hosting %s %s\n",my_player_name,PXVersion);
+	sprintf(message,"hosting %d %s %s\n",my_local_port,PXVersion,my_player_name);
 	send_tracker_message( host, port, message );
 }
 
 void send_tracker_finished( char* host, int port )
 {
-	send_tracker_message( host, port, "finished\n" );
+	char message[256] = "";
+	sprintf(message,"finished %d\n",my_local_port);
+	send_tracker_message( host, port, message );
 }
 
 /*

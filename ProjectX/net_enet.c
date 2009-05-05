@@ -38,6 +38,7 @@ static int initialized;
 static unsigned int connections = 0;
 static ENetAddress* my_external_address = NULL;
 ENetHost* enet_host = NULL; // used in net_tracker.c
+int my_local_port = 0; // used in net_tracker.c
 
 // the host player
 static ENetPeer* host;
@@ -535,6 +536,7 @@ int network_setup( char* player_name, int local_port )
 	network_cleanup();
 	DebugPrintf("network_setup: player name set to '%s'\n",
 				player_name, local_port);
+	my_local_port = local_port;
 	my_player_name = player_name;
 	network_state = NETWORK_DISCONNECTED;
 	return enet_setup( NULL, local_port );

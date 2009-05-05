@@ -827,6 +827,7 @@ TEXT MacroText3					= { 0, 0, LT_MacroText3/*"I will tear your soul apart..."*/,
 TEXT MacroText4					= { 0, 0, "", NULL };
 TEXT QuickText					= { 0, 0, "", SendQuickText };
 TEXT QuickTextWhisper			= { 0, 0, "", SendQuickTextWhisper };
+TEXT local_port_str				= { 0, 0, "", NULL };
 TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
@@ -1322,18 +1323,20 @@ MENU MENU_NEW_GameType = {
 };
 
 MENU MENU_NEW_NetworkOptions = {
-	"",NULL,NULL,NULL,TITLE_TIMER_PanToLeftVDU,
+	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{  0, 16, 200, 16, 0,			"Network Options",															FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
 
 		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&UseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{ 10, 56, 120, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10, 62, 120, 62, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
 		{ 10, 78,  85, 78, 0,			"enable tracker",															FONT_Small, TEXTFLAG_CentreY,							&tracker_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		
+
+		{ 10, 88,  85, 88, 0,			"local port",																FONT_Small,	TEXTFLAG_ForceFit | TEXTFLAG_CentreY,		&local_port_str,			NULL,						SelectFlatMenutext,		DrawFlatMenuText,		NULL, 0 } ,
+
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -1793,8 +1796,15 @@ MENU	MENU_NEW_GetTeamPlayers = {
 	}
 };
 
-void EnterJoin(MENU *Menu)
+void JoiningExit(MENU *Menu)
 {
+	network_cleanup();
+}
+
+void JoiningEnter(MENU *Menu)
+{
+	char * port;
+
 	DebugPrintf("EnterJoin\n");
 
 	// initialize levels
@@ -1814,14 +1824,32 @@ void EnterJoin(MENU *Menu)
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
+	// convert local port
+	local_port = atoi(local_port_str.text);
+
 	// setup
-	if( ! network_setup( &biker_name[0], 0 ) )
+	if( ! network_setup( &biker_name[0], local_port ) )
 	{
 		Msg("Failed to setup network!");
 		return;
 	}
 
-	network_join( TCPAddress.text, 0 );
+	// convert host
+	strncpy( host_address, TCPAddress.text, sizeof(host_address) );
+
+	// try to find port in host line
+	port = strchr(host_address,';'); // forsaken prints : as ;
+	if(!port)	port = strchr(host_address,':'); // from command line
+	if(!port)	host_port = 0;		// default port
+	else							// we found a port
+	{
+		*port = 0; // separate hostname from port
+		host_port = atoi(++port);
+	}
+
+	config_save(); // save the last TCPAddress set
+
+	network_join( host_address, host_port );
 }
 
 char join_status_msg[255] = "";
@@ -1836,7 +1864,7 @@ void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
 	if ( IsKeyPressed( DIK_F1 ) )
-		network_join( TCPAddress.text, 0 );
+		network_join( host_address, host_port );
 
 	// process network routines
 	ReceiveGameMessages();
@@ -1860,7 +1888,7 @@ void CheckJoinStatus( int * i )
 
 MENU	MENU_NEW_Joining = {
 
-		"" , EnterJoin , NULL, CheckJoinStatus, TITLE_TIMER_PanToLeftVDU,
+		"" , JoiningEnter, JoiningExit, CheckJoinStatus, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, "", FONT_Medium, TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreX | TEXTFLAG_CentreY, join_status_msg, NULL , NULL , DrawFlatMenuName, NULL, 0 } ,
 
@@ -1880,10 +1908,14 @@ MENUITEM MENU_ITEM_JoinMultiplayer =
 MENU	MENU_NEW_ChooseConnectionToJoin = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ChooseConnectionToJoin0/*"start"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, SelectConnectionToJoin, DrawFlatMenuItem, NULL, 0  },
+		{ 0, 0, 200, 10, 0, "Join Multiplayer Game",	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0  },
+
+		{ 5, 20, 60, 20, 0, "connect",					FONT_Medium,	TEXTFLAG_CentreY,						NULL,				NULL,	SelectConnectionToJoin,		DrawFlatMenuItem,	NULL, 0  },
+
+		{ 5, 40, 60, 40, 0, "address:",					FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 50, 60, 50, 0,	"local port",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
 		//{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
-		{ 5, 150, 60, 160, 0, LT_MENU_NEW_ChooseConnectionToJoin2/*"IP or Name:"*/, FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,SelectFlatMenutext , DrawFlatMenuText, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -4869,6 +4901,7 @@ uint8 QuickStart = QUICKSTART_None;
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+BOOL IpOnCLI;
 BOOL DisplayTitle(void)
 {
 	uint16 i;
@@ -4961,7 +4994,8 @@ BOOL DisplayTitle(void)
 			StackMode = DISC_MODE_NONE;
 			StackStatus = DISC_NOTHING;
 			
-			SelectConnectionToJoin( NULL );
+			if(IpOnCLI)
+				SelectConnectionToJoin( NULL );
 			break;
 
 		case QUICKSTART_Notify:
@@ -11293,6 +11327,11 @@ void GetGamePrefs( void )
 	// default allow all pickups
 	InitValidPickups();
 
+	// ip / port
+
+	config_get_strncpy( TCPAddress.text,		sizeof(TCPAddress.text),		"HostAddress",	"" );		// remote
+	config_get_strncpy( local_port_str.text,	sizeof(local_port_str.text),	"LocalPort",	"2300" );	// local
+
 	// tracker
 
 	config_get_strncpy( tracker_server, sizeof(tracker_server), "TrackerServer", "fly.thruhere.net" );
@@ -11439,6 +11478,11 @@ void GetGamePrefs( void )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void SetGamePrefs( void )
 {
+	// ip / port
+	
+	config_set_str( "HostAddress",	TCPAddress.text );		// remote
+	config_set_str( "LocalPort",	local_port_str.text );	// local
+
 	// tracker
 	
 	config_set_str( "TrackerServer",			tracker_server );

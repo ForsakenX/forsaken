@@ -11,6 +11,14 @@ char tracker_server[256];
 int tracker_port;
 BOOL tracker_enabled;
 
+// don't change these directly...
+// instead use local_port_str.text = "2300"
+// and TCPAddress.text = "ip:port"
+// the values are parsed before calling network_join and network_setup
+int local_port;
+int host_port;
+char host_address[256];
+
 #define WIN32_EXTRA_LEAN
 
  /*

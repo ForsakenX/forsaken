@@ -277,9 +277,6 @@
 #define LT_MENU_NEW_GetTeamPlayers1 "Num of Players"
 #define LT_MENU_NEW_GetTeamPlayers2 "msg:"
 
-#define LT_MENU_NEW_ChooseConnectionToJoin0 "start"
-#define LT_MENU_NEW_ChooseConnectionToJoin2 "IP or Name:"
-
 #define LT_MENU_NEW_ChangeBike0 "speed"
 #define LT_MENU_NEW_ChangeBike1 "accel"
 #define LT_MENU_NEW_ChangeBike2 "handling"
