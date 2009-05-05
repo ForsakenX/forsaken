@@ -3046,18 +3046,18 @@ void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq )
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, OrigFreq;
 
+	// BUG:  Appears Buffer pointer goes bad or is passed in as NULL
+	if(!Buffer)
+	{
+		DebugPrintf("BUG: SetBufferFreq() Buffer passed in was null\n");
+		return;
+	}
+
 	if ( !Freq || ( Freq == 1.0F ) )
 	{
 		OrigFreq = DSBFREQUENCY_ORIGINAL; 
 	}else
 	{
-		// BUG:  Appears Buffer pointer goes bad or is passed in as NULL
-		if(!Buffer)
-		{
-			DebugPrintf("BUG: SetBufferFreq() Buffer passed in was null\n");
-			return;
-		}
-
 		// get original frequency of buffer
 		IDirectSoundBuffer_GetFormat( Buffer, NULL, 0, &dwSizeWritten );
 		lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );

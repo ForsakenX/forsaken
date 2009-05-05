@@ -135,12 +135,7 @@ D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D obj
 
 d3dmainglobals myglobs;     // collection of global variables
 
-#ifdef DEBUG_ON
-BOOL Debug					= TRUE;
-#else
 BOOL Debug					= FALSE;
-#endif
-
 BOOL DeviceOnCommandline	= FALSE;
 BOOL bOnlySystemMemory		= FALSE;
 BOOL bOnlyEmulation			= FALSE;
