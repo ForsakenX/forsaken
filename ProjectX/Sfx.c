@@ -108,16 +108,6 @@ uint32 SfxUniqueID = 1;
 char *CompoundSfxFilename = "sfx\\Compound.wav";
 LOOPING_SFX_PIPE LoopingSfxPipe; 
 
-typedef struct
-{
-	IDirectSoundBuffer *buffer;
-	IDirectSound3DBuffer *buffer3d;
-} LOOPINGSFXBUFFER;
-
-#define MIN_LOOPING_SFX_BUFFERS 8
-
-LOOPINGSFXBUFFER LoopingSfxBuffer[ MIN_LOOPING_SFX_BUFFERS ];
-
 #define MAX_SFX_VARIANTS 16
 char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
 
