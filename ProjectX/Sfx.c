@@ -782,52 +782,7 @@ void ProcessSoundRoutines (void * pParm)
 				);
 				continue;
 			}
-#if 0
-			// get sfx path & prefix
-			//GetSfxPath( SfxThreadInfo[ i ].SfxNum, file );
 
-			//GetSfxFileNamePrefix( SfxThreadInfo[ i ].SfxNum, &file[ strlen( file ) ] );
-
-
-			if (  SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
-			{
-				/*
-				// if looping sfx, we want to ensure that variant used is always the same, since sfx is loaded / unloaded
-				// as it goes in / out of range
-				if ( SfxThreadInfo[ i ].Variant > 1 )
-				{
-					if ( SfxThreadInfo[ i ].Variant < 10 )
-						sprintf( &file[ strlen( file ) ], "0%d", SfxThreadInfo[ i ].Variant );
-					else
-						sprintf( &file[ strlen( file ) ], "%d", SfxThreadInfo[ i ].Variant );
-				}
-				*/
-				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
-			}else
-			{
-				/*
-				// if non looping, ad variant suffix if neccesary
-				switch ( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )
-				{
-				case 0:
-					// should never get here!!!
-					DebugPrintf("Sfx.c: ProcessSoundRoutines() - sfx #%d does not exist!\n", SfxThreadInfo[ i ].SfxNum);
-					continue;
-				case 1:
-					break;
-				default:
-					GetSfxNumStr( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants, &file[ strlen( file ) ] );
-					break;
-				}
-				*/
-				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
-				
-			}
-			/*
-			// append file ext.
-			strcat( file, ".wav" );
-			*/
-#endif
 			switch( SfxThreadInfo[ i ].SfxType )
 			{
 			case SFX_TYPE_Looping:
@@ -1283,108 +1238,6 @@ void InitLoopingSfxPipe( void )
 	LoopingSfxPipe.SpotSfxListIndex = -1;
 }
 
-#if 0
-void ReserveLoopingBuffers( void )
-{
-	DSCAPS DSCaps;
-	DSBUFFERDESC dsBD;
-	DSBCAPS DSBCaps;
-	int i;
-	BOOL error;
-	WAVEFORMATEX waveformat;
-#ifdef DEBUG_ON
-	char *from_file = __FILE__;
-	int from_line = __LINE__;
-#endif
-	
-	memset( &dsBD, 0, sizeof( DSBUFFERDESC ) );
-    dsBD.dwSize = sizeof(dsBD);
-
-	// TEMP!! should get this info from actual .wav file
-	// at present does not allow flexibility for low res sfx!
-	waveformat.wFormatTag = 1;
-	waveformat.nChannels = 1;
-	waveformat.nSamplesPerSec = 22050;
-	waveformat.nAvgBytesPerSec = 44100;
-	waveformat.nBlockAlign = 2;
-	waveformat.wBitsPerSample = 16;
-	waveformat.cbSize = 0;
-
-	dsBD.dwBufferBytes = 16;	// dummy buffer, therefore minimum size possible
-	dsBD.lpwfxFormat = &waveformat;
-	
-	// is streaming 3d hw available?
-	if ( DSCaps.dwFreeHw3DStreamingBuffers > MIN_LOOPING_SFX_BUFFERS )
-	{
-		dsBD.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_CTRL3D | DSBCAPS_LOCHARDWARE;
-	}
-
-	if ( !dsBD.dwFlags && ( DSCaps.dwFreeHwMixingStreamingBuffers > MIN_LOOPING_SFX_BUFFERS ) )
-	{
-		dsBD.dwFlags = DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_LOCHARDWARE;
-	}
-
-	// if no streaming hw available
-	if ( !dsBD.dwFlags )
-		return;
-
-   	// reserve buffers
-	error = FALSE;
-   	for ( i = 0; i < MIN_LOOPING_SFX_BUFFERS; i++ )
-   	{
-        if ( MakeSoundBuffer( lpDS, &dsBD, &LoopingSfxBuffer[ i ].buffer, NULL ) )
-        {
-			// check buffer was created in hardware
-			memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
-			DSBCaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( LoopingSfxBuffer[ i ].buffer, &DSBCaps );
-
-			if ( !( DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE ) )
-			{
-				error = TRUE;
-				break;
-			}
-			
-			// create 3d interface if required
-			if ( dsBD.dwFlags & DSBCAPS_CTRL3D )
-			{
-				if ( IDirectSoundBuffer_QueryInterface(LoopingSfxBuffer[ i ].buffer, &IID_IDirectSound3DBuffer, (void **)&LoopingSfxBuffer[ i ].buffer3d ) != DS_OK )        
-				{
-					// buffer interface could not be created
-					error = TRUE;
-					break;
-				}
-			}
-        }
-        else
-        {
-			// buffer could not be created
-			error = TRUE;
-			break;
-        }
-	}
-
-	if ( error )
-	{
-		// release all interfaces & buffers
-	   	for ( i = 0; i < MIN_LOOPING_SFX_BUFFERS; i++ )
-		{
-			if ( LoopingSfxBuffer[ i ].buffer3d )
-			{
-				IDirectSound3DBuffer_Release( LoopingSfxBuffer[ i ].buffer3d );
-				LoopingSfxBuffer[ i ].buffer3d = NULL;
-			}
-
-			if ( LoopingSfxBuffer[ i ].buffer )
-			{
-				SoundBufferRelease( &LoopingSfxBuffer[ i ].buffer );
-			}
-		}
-	}
-}
-
-#endif
-
 int LoadSfxToHW( void )
 {
 	DSCAPS DSCaps;
@@ -1409,8 +1262,6 @@ int LoadSfxToHW( void )
 		return 0;
 	}
 	*/
-	
-	//ReserveLoopingBuffers();
 
 	AllocatedCompoundSfx = 0;
 	
@@ -3782,7 +3633,7 @@ void ProcessLoopingSfx( void )
 
 	if (FrameSkip < LOOPING_SFX_FRAME_SKIP)
 	{
-//		PrintLoopingSfxDebug();
+		//PrintLoopingSfxDebug();
 		return;
 	}
 	else
@@ -3985,7 +3836,7 @@ void ProcessLoopingSfx( void )
 		}
 	}
 
-//	PrintLoopingSfxDebug();
+	//PrintLoopingSfxDebug();
 
 }
 
