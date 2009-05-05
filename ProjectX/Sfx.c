@@ -80,10 +80,6 @@ SNDOBJ *SndObjList_Static_Start;
 SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
 
 SFX_THREAD_INFO SfxThreadInfo[MAX_THREADED_SFX];
- 
-DWORD CompoundSfxThreadID;
-HANDLE CompoundSfxThread;
-HANDLE CompoundSfxWaitObject;
 
 int sfxref = 0;
 int dupbufref = 0;
