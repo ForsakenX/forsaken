@@ -76,9 +76,6 @@ SBUFFER_LIST *SBufferList_Start = NULL;
 SBUFFER_LIST *SBufferList_Current = NULL;
 
 SNDOBJ *SndObjList_Static_Start;
-								   
-// thread stuff...
-DWORD	SfxThreadID;
 
 SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
 
