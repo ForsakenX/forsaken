@@ -79,7 +79,6 @@ SNDOBJ *SndObjList_Static_Start;
 								   
 // thread stuff...
 DWORD	SfxThreadID;
-HANDLE	SfxThread;
 
 SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
 
@@ -2272,9 +2271,6 @@ void DestroySound( int flags )
 		}
 	}
 
-   	// terminate thread...
-	TerminateThread (SfxThread, 0);
-
 	// clear all sfx holders...
 	for( i = 0; i < MAX_ANY_SFX; i++ )
 	{
@@ -3875,11 +3871,13 @@ void ProcessLoopingSfx( void )
 			else
 			{
 				//DebugPrintf("Stopping looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-				if(!SpotSfxList[ i ].buffer)
+				if(SpotSfxList[ i ].buffer == NULL)
 				{
 					DebugPrintf("ProcessLoopSFX() Attempt to call IDirectSoundBuffer_Stop() on bad pointer....\n");
 				}
+				else
 				{
+					DebugPrintf("ProcessLoopSFX() IDirectSoundBuffer_Stop() buffer is not NULL ...\n");
 					IDirectSoundBuffer_Stop( SpotSfxList[ i ].buffer );
 				}
 				SpotSfxList[ i ].buffer = NULL;

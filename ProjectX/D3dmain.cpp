@@ -207,8 +207,8 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			{
 
 				// translates virtual-key messages into character messages
-				// posts them to the calling thread's message queue
-				// to be read the next time the thread calls the PeekMessage
+				// posts them to the message queue
+				// to be read the next time PeekMessage is called
 				// this does not modify the original message
 				// it simply creates new translated messages
 				TranslateMessage(&msg);

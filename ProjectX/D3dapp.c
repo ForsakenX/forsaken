@@ -1582,7 +1582,7 @@ D3DAppErrorToString(HRESULT error)
 	    // P
 
         case DDERR_PALETTEBUSY:
-            return "Access to this palette is being refused because the palette is already locked by another thread.\0";
+            return "Access to this palette is being refused because the palette is already locked.\0";
         case DDERR_PRIMARYSURFACEALREADYEXISTS:
             return "This process already has created a primary surface.\0";
 
@@ -1610,7 +1610,7 @@ D3DAppErrorToString(HRESULT error)
         case DDERR_SURFACEALREADYDEPENDENT:
             return "This surface is already a dependency of the surface it is being made a dependency of.\0";
         case DDERR_SURFACEBUSY:
-            return "Access to this surface is being refused because the surface is already locked by another thread.\0";
+            return "Access to this surface is being refused because the surface is already locked.\0";
         case DDERR_SURFACEISOBSCURED:
             return "Access to surface refused because the surface is obscured.\0";
         case DDERR_SURFACELOST:
