@@ -138,7 +138,6 @@ extern LIST BikeComputerList;
 Fn Prototypes
 *****************************************/
 BOOL Init_SoundGlobals(void);
-void PlayThreadedSfx( int16 Sfx, float Dist );
 void FreeSBufferList( void );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void InitSfxHolders( void );
