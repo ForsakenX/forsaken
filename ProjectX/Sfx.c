@@ -734,19 +734,6 @@ void GetSfxFileNamePrefix( int sfxnum, char *file )
 	strcpy( file, Sfx_Filenames[ sfxnum ].Name);
 }
 
-void GetSfxNumStr( uint16 variants, char *str )
-{
-	uint16 num;
-
-	num = Random_Range( variants );
-	num += 1;					
-
-	if ( num < 10 )
-		sprintf(str, "0%d", num);
-	else
-		sprintf(str, "%d", num);
-}
-
 /****************************************
 	Procedure	: ProcessSoundRoutines		
 	description	: runs continuously while sfx are active - loads sound buffers when SfxThreadInfo contains valid information
