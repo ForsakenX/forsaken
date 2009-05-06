@@ -8,7 +8,12 @@
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 	Defines
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
-//#define DEBUG_PICKUPS			0
+
+#ifdef DEBUG_ON
+#define DEBUG_PICKUPS			1
+#else
+#define DEBUG_PICKUPS			0
+#endif
 
 #define	PIC_VERSION_NUMBER	1
 								
