@@ -7,9 +7,14 @@
 
 #include "net.h"
 
+// game tracker
 char tracker_server[256];
 int tracker_port;
 BOOL tracker_enabled;
+
+// my ship number
+#define	UNASSIGNED_SHIP 0xff // WhoIAm before host gives me number
+BYTE	WhoIAm;  // which ship number i am
 
 // don't change these directly...
 // instead use local_port_str.text = "2300"

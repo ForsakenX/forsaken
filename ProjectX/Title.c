@@ -1814,9 +1814,17 @@ void JoiningEnter(MENU *Menu)
 		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
 		return;
 	}
+	
+	PlayDemo = FALSE;
+	
+	// this means I need a ship number
+	WhoIAm = UNASSIGNED_SHIP;
 
 	// cleanup everything
 	SetupNetworkGame();
+
+	// set bike mode to normal
+	SetBikeMods( 0 );
 
 	// we are a joiner
 	IsHost = FALSE;
@@ -10015,6 +10023,9 @@ void InitBikerName( char *name )
 
 	// tell everyone else in multiplayer
 	set_my_player_name();
+
+	// tell everyone in the game that my player name has changed
+	network_set_player_name(&biker_name[0]);
 
 }
 

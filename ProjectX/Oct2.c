@@ -4287,7 +4287,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SyncMines();
       InitShipRandomPos( WhoIAm );
       NextworkOldBikeNum = -1;
-      set_my_player_name();
       if( CountDownOn )
       {
         CreateCountdownDigits();
@@ -4517,7 +4516,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GetPlayerNumCount1 -= framelag;
     GetPlayerNumCount2 -= framelag;
 
-    if( WhoIAm != 0xff )
+    if( WhoIAm != UNASSIGNED_SHIP )
 	{
 		if(WhoIAm >= MAX_PLAYERS)
 		{
@@ -4546,13 +4545,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 			break; // we are done
 		}
 
-		// update status
-		MyGameStatus = STATUS_StartingMultiplayer;
-
-		// tell everyone my new status
-		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-
-		// update menu
+		// go to next menu
 		MenuState = MENUSTATE_Select;
 		MenuChangeEx( GetPlayerNumMenu );
 

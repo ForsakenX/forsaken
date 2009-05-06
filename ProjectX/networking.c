@@ -265,8 +265,7 @@ BOOL	HostDuties = FALSE;
 
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
-BOOL						IsHost = TRUE;
-BYTE						WhoIAm = 0;
+BOOL					IsHost = TRUE;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
 BOOL					RemoteCameraActive = FALSE;
@@ -544,7 +543,6 @@ void set_player_name( int BikeNum, char* name )
 void set_my_player_name( void )
 {
 	set_player_name( WhoIAm, &biker_name[0] );
-	network_set_player_name(&biker_name[0]);
 }
 
 void SendANormalUpdate( void )
@@ -930,7 +928,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 	for(i = 0; i < MAX_PLAYERS; i++)
 	{
 		// excluding myself and those who aren't in normal mode
-		if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
+		if((GameStatus[ i ] ==  STATUS_Normal) && (i != WhoIAm))
 		{
 			// if they are close to me
 			dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
@@ -1365,13 +1363,7 @@ void network_event_player_joined( network_player_t * player )
 	if( player == NULL )
 	{
 		DebugPrintf("We have joined the game...\n");
-		PlayDemo = FALSE;
-		
-		SetBikeMods( 0 );
-		
-		SetupNetworkGame();
-		
-		WhoIAm = 0xff;
+
 		MyGameStatus = STATUS_GetPlayerNum;
 		GetPlayerNumCount1 = 0.0F;
 		GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
@@ -1942,22 +1934,21 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
     case MSG_VERYSHORTUPDATE:
 
+		lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
+
+		UpdatePlayer( from, lpVeryShortUpdate->WhoIAm );
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
-			// only need ship scores...
-			lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
-			// ...and need to get host game status...
+			//  need to get host game status...
 			if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
-			// update network pointer and name
-			UpdatePlayer( from, lpVeryShortUpdate->WhoIAm );
-			// ...and fill out GameStatus
+			// and fill out GameStatus
 			GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
 			return;
 		}
 		else
 		{
-			lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
 			if( lpVeryShortUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpVeryShortUpdate->WhoIAm].PacketDelay = PacketDelay;
@@ -2048,20 +2039,19 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
     case MSG_UPDATE:
 
+		lpUpdate = (LPUPDATEMSG) MsgPnt;
+
+		UpdatePlayer( from, lpUpdate->WhoIAm );
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
-			// only need ship scores...
-			lpUpdate = (LPUPDATEMSG) MsgPnt;
 			// ...and need to get host game status...
 			if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-			// update network pointer and name
-			UpdatePlayer( from, lpUpdate->WhoIAm );
 			return;
 		}
 		else
 		{
-			lpUpdate = (LPUPDATEMSG) MsgPnt;
 			if( lpUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpUpdate->WhoIAm].PacketDelay = PacketDelay;
@@ -2242,15 +2232,16 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		{
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
 			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, msg->MPVersion);
-
-			// BUG: why is this sent to everyone ?
-			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+			SendGameMessage(MSG_STATUS, from, 0, 0, 0);
 		}
 		return;
 
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
+
+		// save host network pointer
+		host_network_player = from;
 
 		//
 		// Check if we are allowed in game
@@ -2361,13 +2352,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 
-		// setup names
-		memset( &Names, 0, sizeof(SHORTNAMETYPE) );		// reset names
-		set_my_player_name();							// set my name
-		set_player_name( lpInit->WhoIAm, from->name );	// set host name
+		// now that i know my ship number i can set my name
+		set_my_player_name();
 
-		// save player network pointer
-		host_network_player = from;
+		// update status
+		MyGameStatus = STATUS_StartingMultiplayer;
+
+		// tell everyone my status (includes my ship number and from->name)
+		// they can now use this message to relate my name to my ship number
+		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
 		return;
 
@@ -3349,7 +3342,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			return;
 
 		// MSG_INIT only needs to be sent once
-		if( ShipNum != 0xff )
+		if( ShipNum != UNASSIGNED_SHIP )
 			return;
 
 		// setup the basic message flags
