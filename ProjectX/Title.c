@@ -1805,7 +1805,7 @@ void JoiningEnter(MENU *Menu)
 {
 	char * port;
 
-	DebugPrintf("EnterJoin\n");
+	DebugPrintf("JoiningEnter\n");
 
 	// initialize levels
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
@@ -1814,6 +1814,9 @@ void JoiningEnter(MENU *Menu)
 		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
 		return;
 	}
+
+	// cleanup everything
+	SetupNetworkGame();
 
 	// we are a joiner
 	IsHost = FALSE;

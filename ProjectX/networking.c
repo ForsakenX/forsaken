@@ -1030,8 +1030,9 @@ void SetupNetworkGame()
 
 		}
 
-	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
-	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
+	memset(&Ships,			0,				sizeof(Ships) );
+	memset(&Names,			0,				sizeof(SHORTNAMETYPE) );
+	memset(&GameStatus,		STATUS_Null,	sizeof(GameStatus) );
 
 	JustGenerated = TRUE;
 	
