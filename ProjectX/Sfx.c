@@ -2959,7 +2959,6 @@ void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB
 				DebugPrintf("unable to set volume\n" );
 			}
 
-			DebugPrintf("SetPannedBufferParams\n");
 			SetBufferFreq( pDSB, Freq );
 
 		}else{
@@ -3592,8 +3591,11 @@ void ProcessLoopingSfx( void )
 		SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer3D = LoopingSfxPipe.buffer3D;
 		SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffersize = LoopingSfxPipe.buffersize;
 
-		DebugPrintf("ProcessLoopingSfx point 1\n");
-		SetBufferFreq( SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer, SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].freq );
+		// BUG : buffer sometimes is NULL
+		if(SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer)
+			SetBufferFreq( 
+							SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer,
+							SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].freq );
 		
 		LoopingSfxPipe.sfx = -1;
 		LoopingSfxPipe.buffer = NULL;
@@ -3744,7 +3746,6 @@ void ProcessLoopingSfx( void )
 				if ( SpotSfxList[ i ].buffer )
 				{
 					// wait until next loop before playing - then buffer parameters will be set
-					DebugPrintf("ProcessLoopingSfx point 2\n");
 					SetBufferFreq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
 					SpotSfxList[ i ].bufferloaded = TRUE;
 				}
