@@ -6154,18 +6154,14 @@ void ShowGameStats( stats_mode_t mode )
 			int xpos = left_offset;
 
 			// if the player left the game
-			int left = player_left(GetPlayerByRank(i));
+			int left = (player_left(GetPlayerByRank(i)) ? DARKGRAY : 0 );
 
 			// calculate name color
-			int color = YELLOW;													// default name color is yellow
-			if (StatsNamePulse() && GetPlayerByRank(i) == WhoIAm)					// flash player name
-				color = GRAY;
-			else if (TeamGame)													// set color to team color
-				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
+			int color = (left) ? left : ((StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamCol[TeamNumber[i]] : YELLOW));
 
 			// get the ping
-			if( Ships[GetPlayerByRank(i)].network_player )
-				ping = (uint16) Ships[GetPlayerByRank(i)].network_player->ping;
+			if( Ships[GetPlayerRank(i)].network_player )
+				ping = (uint16) Ships[GetPlayerRank(i)].network_player->ping;
 
 			//
 			// print line
@@ -6173,23 +6169,23 @@ void ShowGameStats( stats_mode_t mode )
 			
 			// connection status
 			// print the dot about 2 character space gap from the names
-			if( ! left )
-				DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], (xpos-(4*FontWidth)), top_offset );
+			if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
+				DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], (xpos-(4*FontWidth)), top_offset );
 
 			// name
-			Print4x5Text( (char*)&Names[GetPlayerByRank(i)],	xpos,			top_offset, (left) ? DARKGRAY : color );
+			Print4x5Text( (char*)&Names[GetPlayerRank(i)],	xpos,				top_offset, color );
 
 			// add width now so the ping column shows up even if a value printed
 			xpos += col_width;
 
-				if( GetPlayerByRank(i) != WhoIAm && GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-			Printint16( ping,								xpos,				top_offset, (left) ? DARKGRAY : GRAY	);	// ping
-			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : CYAN	);	// positives / (positives - negatives)
+				if( GetPlayerRank(i) != WhoIAm && GameStatus[GetPlayerRank(i)] == STATUS_Normal )
+			Printint16( ping,								xpos,				top_offset, (left) ? left : GRAY	);	// ping
+			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : CYAN	);	// positives / (positives - negatives)
 				if(TeamGame)
-			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
-			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : GRAY	);	// points + kills - suacides - friendly - deaths
-			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : GREEN	);	// kills - suacides - friendly
-			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : RED		);	// suacides + deaths
+			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
+			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : GRAY	);	// points + kills - suacides - friendly - deaths
+			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? left : GREEN	);	// kills - suacides - friendly
+			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : RED		);	// suacides + deaths
 
 			// go to next row
 			top_offset += row_height;
@@ -8831,10 +8827,10 @@ void CheckMetKillLimit()
 			for ( i = 0; i < MAX_PLAYERS; i++ )
 			{
 				// whose status is normal
-				if( (GameStatus[GetPlayerByRank(i)] == STATUS_Normal) )
+				if( (GameStatus[GetPlayerRank(i)] == STATUS_Normal) )
 				{
 					// if they scored more than the kills threshold then flag we finished it
-					if( GetScoreStats(GetPlayerByRank(i)) >= MaxKills && LevelNum != -1 )
+					if( GetScoreStats(GetPlayerRank(i)) >= MaxKills && LevelNum != -1 )
 						KillsReached = TRUE;
 				}
 			}

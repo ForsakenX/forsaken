@@ -86,7 +86,7 @@ uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 extern int SystemMessageColour;
 
 // (stats.c)
-extern int GetPlayerByRank(int Player);
+extern int GetPlayerRank(int Player);
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Globals ...
@@ -772,28 +772,28 @@ void PrintScoreSort( void )
 				int len = 0; // length of string
 
 				// make sure it's a valid player
-				if( GameStatus[GetPlayerByRank(i)] != STATUS_Left && GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
+				if( GameStatus[GetPlayerRank(i)] != STATUS_Left && GameStatus[GetPlayerRank(i)] != STATUS_Normal )
 					continue;
 
 				// print names and score
-				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
+				if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 				{
 					// blue dot for bad ping
-					if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-						DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], 2, top_offset );
+					if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
+						DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], 2, top_offset );
 
 					// give blue dot space
 					left_offset = 8;
 
 					// player name
-					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerByRank(i) ) ? GRAY : RED) );
+					Print4x5Text( &Names[GetPlayerRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerRank(i) ) ? GRAY : RED) );
 					left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
 				}
 				
 				// Show pings for everyone except your self
-				if( GetPlayerByRank(i) != WhoIAm )
+				if( GetPlayerRank(i) != WhoIAm )
 				{
-					sprintf( (char*) &buf[0] ,"Ping %d", Ships[GetPlayerByRank(i)].network_player->ping );
+					sprintf( (char*) &buf[0] ,"Ping %d", Ships[GetPlayerRank(i)].network_player->ping );
 					Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 				}
 

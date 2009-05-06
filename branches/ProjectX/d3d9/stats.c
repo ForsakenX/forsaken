@@ -491,6 +491,10 @@ void ScoreSort()
 	Input		:		Position e.g. 1st, 2nd, 3rd.. (0 = 1st)
 	Output		:	Player ID
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+int GetPlayerRank(int Player)
+{
+	return ScoreSortTab[Player];
+}
 
 int GetPlayerByRank( int rank )
 {
