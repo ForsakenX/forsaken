@@ -1847,7 +1847,7 @@ void JoiningEnter(MENU *Menu)
 		host_port = atoi(++port);
 	}
 
-	config_save(); // save the last TCPAddress set
+	SetGamePrefs(); // save the last TCPAddress set
 
 	network_join( host_address, host_port );
 }

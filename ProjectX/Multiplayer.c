@@ -252,7 +252,6 @@ void SetUpGameType( int type )
 	Output		:	nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern void SetGamePrefs( void );
-extern void config_save( void );
 extern TEXT local_port_str;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
@@ -291,7 +290,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	local_port = atoi(local_port_str.text);
-	config_save();
+	SetGamePrefs();
 
 	if( ! network_setup( &biker_name[0], local_port ) )
 	{
