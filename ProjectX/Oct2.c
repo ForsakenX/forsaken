@@ -2118,7 +2118,7 @@ void TestBlt()
 
 	  // if we are dead and waiting for a game
 	  // show statistics
-	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE )
+	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
 	  {
 		  ShowDeathModeStats();
 
