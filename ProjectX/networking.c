@@ -2823,7 +2823,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					tempstatus = OverallGameStatus;
    					OverallGameStatus = lpStatus->Status;
 					if ( tempstatus != OverallGameStatus )
-						DebugPrintf("Setting overall game status to %x\n", lpStatus->Status );
+						DebugPrintf("Setting overall game status to %d\n", lpStatus->Status );
 				}
    			}
 
