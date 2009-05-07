@@ -587,11 +587,17 @@ void network_send( network_player_t* player, void* data, int size, network_flags
 void network_broadcast( void* data, int size, network_flags_t flags, int channel )
 {
 	size_t x;
-	ENetPacket * packet = enet_packet_create( data, size, convert_flags(flags) );
+	ENetPacket * packet;
+	if(!data)
+	{
+		DebugPrintf("network_broadcast: received bad pointer.\n");
+		return;
+	}
+	packet = enet_packet_create( data, size, convert_flags( flags ) );
 	if( enet_host == NULL ) return;
 	if( packet == NULL )
 	{
-		DebugPrintf("network_broadcast: failed to create packet");
+		DebugPrintf("network_broadcast: failed to create packet.\n");
 		return;
 	}
 	for( x = 0; x < enet_host->peerCount; x++ )
@@ -634,7 +640,7 @@ void network_set_player_name( char* name )
 	packet = enet_packet_create( &name_packet, sizeof(name_packet), convert_flags(NETWORK_RELIABLE|NETWORK_FLUSH) );
 	if( packet == NULL )
 	{
-		DebugPrintf("network_set_player_name: failed to create packet");
+		DebugPrintf("network_set_player_name: failed to create packet\n");
 		return;
 	}
 	for( x = 0; x < enet_host->peerCount; x++ )
