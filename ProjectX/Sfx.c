@@ -25,6 +25,8 @@
 #include "SBufferHand.h"
 #include "util.h"
 
+void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
+
 #ifdef DEBUG_ON
 #define DSLoadSoundBuffer(A, B, C) DSLoadSoundBuffer(A, B, C, __FILE__, __LINE__)
 #define DSLoadCompoundSoundBuffer(A, B, C) DSLoadCompoundSoundBuffer(A, B, C, __FILE__, __LINE__)
@@ -102,7 +104,6 @@ SNDLOOKUP SndLookup[ MAX_SFX ];
 uint32 SfxUniqueID = 1;
 
 char *CompoundSfxFilename = "sfx\\Compound.wav";
-LOOPING_SFX_PIPE LoopingSfxPipe; 
 
 #define MAX_SFX_VARIANTS 16
 char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
@@ -745,13 +746,6 @@ void ProcessSoundRoutines (void * pParm)
 	{
 		if (SfxThreadInfo[ i ].SfxToPlay)
 		{
-			// wait until communications pipe is free if looping sfx...
-			if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping ) && ( LoopingSfxPipe.sfx != -1 ) )
-			{
-				//DebugPrintf( "ProcessSoundRoutines Waiting for LoopingSfxPipe to free.\n",
-				//			(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"));
-				continue;
-			}
 
 			switch( SfxThreadInfo[ i ].SfxType )
 			{
@@ -818,19 +812,21 @@ void ProcessSoundRoutines (void * pParm)
 			{
 				DSBCAPS dsbcaps; 
 
-				DebugPrintf( "-- adding SpotSfx %d onto LoopingSfxPipe, buffer is %s\n",
+				DebugPrintf( "-- adding SpotSfx %d onto SpotSfxList, buffer is %s\n",
 								SfxThreadInfo[ i ].SpotSfxListIndex,
 								(TempSndBuf)?"GOOD":"BAD");
 
 				// get caps of buffer...
 				dsbcaps.dwSize = sizeof( DSBCAPS );
 				IDirectSoundBuffer_GetCaps( TempSndBuf, &dsbcaps );
-				
-				// store buffer info in looping sfx communications pipe ready to store in looping sfx structure
-				LoopingSfxPipe.sfx = SfxThreadInfo[ i ].SfxNum;
-				LoopingSfxPipe.buffer = TempSndBuf;
-				LoopingSfxPipe.buffersize = dsbcaps.dwBufferBytes;
-				LoopingSfxPipe.SpotSfxListIndex = SfxThreadInfo[ i ].SpotSfxListIndex;
+
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = TempSndBuf;
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer3D = NULL;
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = dsbcaps.dwBufferBytes;
+
+				SetBufferFreq( 
+							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
+							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].freq );
 
 				// indicate that thread info index is no longer valid
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].SfxThreadInfoIndex = -1;
@@ -1198,16 +1194,6 @@ int16 EssentialSfx[ NUM_ESSENTIAL_SFX ] = {
 	SFX_Select_Transpulse,			//	-	transpulse
 	SFX_Select_Trojax,				//	-	trojax
 };
-
-void InitLoopingSfxPipe( void )
-{
-	LoopingSfxPipe.sfx = -1;
-	LoopingSfxPipe.buffer = NULL;
-	LoopingSfxPipe.buffer3D = NULL;
-	LoopingSfxPipe.SampleLength = 0;
-	LoopingSfxPipe.buffersize = 0;
-	LoopingSfxPipe.SpotSfxListIndex = -1;
-}
 
 int LoadSfxToHW( void )
 {
@@ -1942,8 +1928,6 @@ BOOL InitializeSound( int flags )
 	Num_Sfx = 0;
 
 	PreProcessSfx();
-	
-	InitLoopingSfxPipe();
 	
 	// initialise SndObjs
 	Num_SndObjs = 0;
@@ -3588,31 +3572,6 @@ void ProcessLoopingSfx( void )
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD datarate, safezone;
 	VECTOR Pos;
-
-	// get any info from pipe...
-	if ( LoopingSfxPipe.SpotSfxListIndex != -1 )
-	{
-		// BUG : buffer sometimes is NULL
-		if(!LoopingSfxPipe.buffer)
-		{
-			DebugPrintf("ERROR: LoopingSfxPipe recieved NULL buffer for SpotSfx %d\n",
-				SpotSfxList[LoopingSfxPipe.SpotSfxListIndex].sfxindex);
-		}
-		else
-		{
-			SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer = LoopingSfxPipe.buffer;
-			SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer3D = LoopingSfxPipe.buffer3D;
-			SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffersize = LoopingSfxPipe.buffersize;
-			SetBufferFreq( 
-							SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].buffer,
-							SpotSfxList[ LoopingSfxPipe.SpotSfxListIndex ].freq );
-		}
-		// free pipe
-		LoopingSfxPipe.sfx = -1;
-		LoopingSfxPipe.buffer = NULL;
-		LoopingSfxPipe.buffer3D = NULL;
-		LoopingSfxPipe.SpotSfxListIndex = -1;
-	}
 
 	// print debug info
 	// only looping sound i know of is the bike engines
