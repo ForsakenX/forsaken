@@ -244,6 +244,7 @@
 				ObjectFile=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CallingConvention="0"
 				CompileAs="0"
 			/>
@@ -267,6 +268,7 @@
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release_OPT\Xrelease.pdb"
 				SubSystem="2"
 			/>
