@@ -3709,7 +3709,7 @@ void ProcessLoopingSfx( void )
 
 			if ( flags & SFX_Dynamic )
 			{
-				//DebugPrintf("Loading dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
+				DebugPrintf("Loading dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
 
 				// load buffer(s) in sfx thread
 
@@ -3740,7 +3740,6 @@ void ProcessLoopingSfx( void )
 
 				if ( SpotSfxList[ i ].buffer )
 				{
-					// wait until next loop before playing - then buffer parameters will be set
 					SetBufferFreq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
 					SpotSfxList[ i ].bufferloaded = TRUE;
 				}
