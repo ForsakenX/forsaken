@@ -23,13 +23,15 @@ dirname=`dirname $0`
 if [ "." = "`echo $dirname | cut -b 1`" ]; then
 	dirname=$PWD/$dirname
 fi
+cd $dirname
+
 debug=false
 prompt=true
 
 [ -z "$PREFIXDIR" ]	&& export PREFIXDIR=$dirname/prefixes
 [ -z "$WINEPREFIX" ]	&& export WINEPREFIX=$PREFIXDIR/default
 [ -z "$WINE" ]		&& export WINE=wine
-export OPTIONS="`cat options 2> /dev/null` $OPTIONS"
+export OPTIONS="`cat Configs/linux.options 2> /dev/null` $OPTIONS"
 
 while [ ! -z "$1" ]; do
 	arg="$1"; shift
@@ -90,7 +92,7 @@ while true; do
 		echo OPTIONS:		$OPTIONS
 	fi
 	echo
-	echo Edit the options file to permanantly change options
+	echo Edit Configs/linux.options to permanantly change options
 
 	if ! $prompt; then
 		break;
@@ -133,8 +135,6 @@ while true; do
 	;; 
 	esac
 done
-
-cd $dirname
 
 echo "launching..."
 $WINE $WINEOPTIONS $VERSION $OPTIONS
