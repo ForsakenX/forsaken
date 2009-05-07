@@ -2999,7 +2999,9 @@ void ProcessPickups( void )
 						{
 //							if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 							{
+#if DEBUG_PICKUPS
 								DebugPrintf( "Tell %s to dissapear\n", Messages[ Pickups[ i ].Type ] );
+#endif
 							}
 
 							KillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Disappear );
@@ -3022,7 +3024,9 @@ void ProcessPickups( void )
 					{
 //						if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 						{
+#if DEBUG_PICKUPS
 							DebugPrintf( "Kill %s immediatly\n", Messages[ Pickups[ i ].Type ] );
+#endif
 						}
 
 						AddPickupToRegen( Pickups[ i ].Type );
@@ -5927,7 +5931,9 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 		{
 //			if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 			{
+#if DEBUG_PICKUPS
 				DebugPrintf( "Tell %s to collect %s\n", &Names[ Player ][ 0 ], Messages[ Pickups[ i ].Type ] );
+#endif
 			}
 
 			Host_PickupsGot[ Player ][ Pickups[ i ].Type ]++;
