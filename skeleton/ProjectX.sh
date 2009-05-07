@@ -28,8 +28,6 @@ cd $dirname
 debug=false
 prompt=true
 
-[ -z "$PREFIXDIR" ]	&& export PREFIXDIR=$dirname/prefixes
-[ -z "$WINEPREFIX" ]	&& export WINEPREFIX=$PREFIXDIR/default
 [ -z "$WINE" ]		&& export WINE=wine
 export OPTIONS="`cat Configs/linux.options 2> /dev/null` $OPTIONS"
 
@@ -64,10 +62,6 @@ while [ ! -z "$1" ]; do
 	"--")
 		export OPTIONS="$OPTIONS $@"
 		break 
-	;;
-	# define the prefix
-	*) 
-		export WINEPREFIX=$PREFIXDIR/$arg 
 	;;
 	esac
 done
