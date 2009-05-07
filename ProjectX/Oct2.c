@@ -5887,6 +5887,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 // Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
       JustExitedMenu = TRUE;
       
+	  // menu keys are processed here
       MenuProcess();
     }
     else
@@ -5897,7 +5898,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif
     }
 
-  // here is where we process menu keys
+  // here is where we process F keys
   ProcessGameKeys();
 
   CheckForRogueSfx();
