@@ -33,6 +33,7 @@
 #include <direct.h>
 #include "getdxver.h"
 #include "version.h"
+#include "client/windows/handler/exception_handler.h"
 
 // load up C externals
 
@@ -513,6 +514,19 @@ BOOL parse_chdir( char *cli )
 	return TRUE;
 }
 
+static BOOL init_breakpad( void )
+{
+	using namespace google_breakpad;
+	static ExceptionHandler * e;
+	wstring path(L"./Dumps");
+	e = new ExceptionHandler( path, NULL, NULL, NULL, ExceptionHandler::HANDLER_ALL );//, MiniDumpNormal, pipe_name, custom_info );
+	// TODO: 
+	//	 1: out of process dumps ?
+	//   2: use callback function to launch crash reporter application
+	DebugPrintf("initialized breakpad\n");
+	return TRUE;
+}
+
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 	DWORD dwPlatform, dwVersion;
@@ -523,6 +537,13 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// wtf is the point...
 	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
 	LastTime = LargeTime;
+
+	// initialize google breakpad crash reporting
+	if(!init_breakpad())
+		return FALSE;
+
+	// test breakpad by uncommenting this
+	//{ *(int*)0=0; }
 
 #ifdef DEBUG_ON
 
