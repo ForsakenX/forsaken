@@ -4340,7 +4340,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       LevelNum = -1;
       if( !ChangeLevel() ) return( FALSE );
-      HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
+      HostMultiPlayerTimeout = 60.0F * 15.0F;
     }
     else
     {
