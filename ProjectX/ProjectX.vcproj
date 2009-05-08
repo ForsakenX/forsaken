@@ -269,7 +269,7 @@
 				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release_OPT\Xrelease.pdb"
+				ProgramDatabaseFile="Xrelease.pdb"
 				SubSystem="2"
 			/>
 			<Tool
@@ -295,6 +295,8 @@
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Generate breakpad symbols."
+				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 		<Configuration
