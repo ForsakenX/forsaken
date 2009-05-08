@@ -3345,6 +3345,11 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		if( ShipNum != UNASSIGNED_SHIP )
 			return;
 
+		// MSG_INIT only needs to be sent once
+		for( i = 0; i < MAX_PLAYERS; i++ )
+			if( Ships[i].network_player == to ) // we have already assigned this user
+				return;
+
 		// setup the basic message flags
 		flags |= NETWORK_RELIABLE;
 		nBytes = sizeof( INITMSG );
