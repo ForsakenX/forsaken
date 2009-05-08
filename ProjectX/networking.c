@@ -3348,7 +3348,16 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		// MSG_INIT only needs to be sent once
 		for( i = 0; i < MAX_PLAYERS; i++ )
 			if( Ships[i].network_player == to ) // we have already assigned this user
+			{
+				// at this point enet reliability will assure that the last sent message
+				// does reach there...  If it doesn't... Well then the player has some
+				// really bad connection... and the connection will most likely shutdown...
+				// none the less probably better not to let such a problem player in...
+				DebugPrintf("Ignoring MSG_INIT request from player %s (%d) %s\n",
+							Ships[i].network_player->name, i,
+							"because I already replied to him...");
 				return;
+			}
 
 		// setup the basic message flags
 		flags |= NETWORK_RELIABLE;
