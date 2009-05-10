@@ -453,8 +453,9 @@ static BOOL missing_folders( void )
 	for( x = 0; x < CRITICAL_FOLDERS; x++ )
 		if( ! is_folder(folders[x]) )
 		{
-			Msg("Could not locate the '%s' folder...\n%s", folders[x],
-				"exe is most likely in the wrong directory.");
+			Msg("Could not locate the '%s' folder...\n%s\n%s", folders[x],
+				"exe is most likely in the wrong directory.",
+				"or you just need to create the folder.");
 			return TRUE;
 		}
 	return FALSE;
