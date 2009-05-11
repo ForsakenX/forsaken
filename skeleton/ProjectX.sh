@@ -1,5 +1,7 @@
 #!/bin/bash
 
+optfile="Configs/linux.options"
+
 function usage {
 	echo
 	echo "Forsaken help"
@@ -12,7 +14,7 @@ function usage {
 	echo "debug:	debugging without console"
 	echo "noprompt: run right away"
 	echo
-	echo "Put permanant options into, 'options' file"
+	echo "Put permanant options into, '$optfile' file"
 	echo
 	exit 1
 }
@@ -29,7 +31,7 @@ debug=false
 prompt=true
 
 [ -z "$WINE" ]		&& export WINE=wine
-export OPTIONS="`cat Configs/linux.options 2> /dev/null` $OPTIONS"
+export OPTIONS="`cat $optfile 2> /dev/null` $OPTIONS"
 
 while [ ! -z "$1" ]; do
 	arg="$1"; shift
