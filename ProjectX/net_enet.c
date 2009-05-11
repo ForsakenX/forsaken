@@ -474,12 +474,14 @@ static void new_packet( ENetEvent * event )
 		case CONNECT:
 			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
-				ENetAddress address = packet->address;
-				ENetPeer* peer = enet_host_connect( enet_host, &address, max_channels );
+				ENetAddress * address = &packet->address;
+				ENetPeer* peer = enet_host_connect( enet_host, address, max_channels );
 				char ip[INET_ADDRSTRLEN] = "";
-				enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
+				enet_address_get_host_ip( address, &ip[0], INET_ADDRSTRLEN );
 				DebugPrintf("new_packet: host told us to connect to address %s port %d.\n",
 							ip, peer->address.port );
+				if(!peer)
+					DebugPrintf("- enet_host_connect returned NULL.\n");
 			}
 			break;
 		case IP_REQUEST:
