@@ -80,6 +80,9 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -175,6 +178,9 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug\ProjectX.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -271,6 +277,9 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -366,6 +375,9 @@
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				OptimizeForWindows98="1"
 			/>
 			<Tool
 				Name="VCALinkTool"
