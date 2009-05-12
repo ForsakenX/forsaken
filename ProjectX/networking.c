@@ -2399,8 +2399,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		TempPickup.LifeCount = lpVeryShortDropPickup->PickupInfo.LifeCount;
 		TempPickup.TriggerMod = lpVeryShortDropPickup->PickupInfo.TriggerMod;
 #if DEBUG_PICKUPS
-		if( lpDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
-		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
+		if( lpVeryShortDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
+		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
 #endif
 	 	Pickup = InitOnePickup( &TempPickup.Pos, TempPickup.Group,
 		 				   &TempPickup.Dir, TempPickup.Speed,
