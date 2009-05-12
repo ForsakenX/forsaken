@@ -1758,6 +1758,9 @@ MENU	MENU_NEW_Visuals = {
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
+		
+		{ 20, 120, 200, 120, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
+
 		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -11360,6 +11363,7 @@ void ExitLevelSelect( MENU * Menu )
 	Output		:		Nothing
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern void InitValidPickups();
+extern BOOL bFullscreen;
 void GetGamePrefs( void )
 {
 	// default allow all pickups
@@ -11404,6 +11408,7 @@ void GetGamePrefs( void )
     RandomPickups                    = config_get_bool( "RandomPickups",			FALSE );
     UseShortPackets                  = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
+	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );
 
 	PickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
 	PickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
@@ -11558,6 +11563,7 @@ void SetGamePrefs( void )
     config_set_bool( "RandomPickups",			RandomPickups );
     config_set_bool( "UseShortPackets",			UseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
+	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
 
 	config_set_bool( "AllowMugs",               PickupValid[ PICKUP_Mugs ] );
 	config_set_bool( "AllowHeatseaker",         PickupValid[ PICKUP_Heatseaker ] );

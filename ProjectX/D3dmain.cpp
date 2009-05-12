@@ -740,7 +740,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoTextureScaling		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	bFullscreen				= TRUE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
 	NoCursorClip			= FALSE;
