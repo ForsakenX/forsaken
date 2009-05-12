@@ -10724,8 +10724,13 @@ void ExitBikeComputerSelection( MENUITEM * item )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 void MenuGoFullScreen( MENUITEM *Item )
 {
-	LastMenu = CurrentMenu;	
-	VduClear();
+	if( MyGameStatus == STATUS_Title )
+	{
+		LastMenu = CurrentMenu;	
+		VduClear();
+	}
+
+	bIgnoreWM_SIZE = TRUE;
 
 	if ( !d3dapp->bFullscreen ) // going into fullscreen
 	{
@@ -10733,25 +10738,28 @@ void MenuGoFullScreen( MENUITEM *Item )
 
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
-
 	}
 	else // going into window mode
 	{
-		bIgnoreWM_SIZE = TRUE;
         D3DAppWindowMode( d3dapp->CurrMode );
-		bIgnoreWM_SIZE = FALSE;
 
 		// just let the user click to focus
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
-
 	}
 
-	FadeHoloLight(HoloLightBrightness);
-	DarkenRoom2(RoomDarkness);
-	ProcessVduItems( CurrentMenu );
+	bIgnoreWM_SIZE = FALSE;
 
-   	InitialTexturesSet = FALSE;
+	if( MyGameStatus == STATUS_Title )
+	{
+		FadeHoloLight(HoloLightBrightness);
+		DarkenRoom2(RoomDarkness);
+		ProcessVduItems( CurrentMenu );
+   		InitialTexturesSet = FALSE;
+	}
+
+    // flushes
+    myglobs.bResized = TRUE;
 }
 	
 

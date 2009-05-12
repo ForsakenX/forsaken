@@ -626,17 +626,22 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				// we should save the size
 				// then startup at this size next time
 
-				LastMenu = CurrentMenu;	
-				VduClear();
+				if( MyGameStatus == STATUS_Title )
+				{
+					LastMenu = CurrentMenu;	
+					VduClear();
+				}
 
 				// resize d3d to match the window size..
 				ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
 
-				FadeHoloLight(HoloLightBrightness);
-				DarkenRoom2(RoomDarkness);
-				ProcessVduItems( CurrentMenu );
-
-   				InitialTexturesSet = FALSE;
+				if( MyGameStatus == STATUS_Title )
+				{
+					FadeHoloLight(HoloLightBrightness);
+					DarkenRoom2(RoomDarkness);
+					ProcessVduItems( CurrentMenu );
+   					InitialTexturesSet = FALSE;
+				}
 
 				myglobs.bResized = TRUE;
 			}
