@@ -1763,11 +1763,17 @@ void SetUpJoystickAxis(int joystick)
       joystick,
       JoystickInfo[ joystick ].Name );
     diprg.diph.dwObj        = DIJOFS_X;
-    if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
+    if( !lpdiJoystick[joystick] )
+	{
+      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis because lpdiJoystick[joystick] is NULL\n" );
+	}
+	else if ( lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
       JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis\n" );
-    }else
+    }
+	else
     {
       // set  dead zone
       // Units are ten thousandths, so multiply %age by 100.
