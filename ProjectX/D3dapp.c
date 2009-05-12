@@ -333,6 +333,7 @@ exit_with_error:
 BOOL D3DAppWindowMode( int mode )
 {
     d3dappi.CurrMode = mode;
+	d3dappi.ThisMode = d3dappi.Mode[mode];
 	return D3DAppWindow(
 		d3dappi.Mode[mode].w,
 		d3dappi.Mode[mode].h,
