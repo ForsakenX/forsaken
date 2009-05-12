@@ -185,11 +185,11 @@ static ENetPeer * get_player_with_lowest_address( void )
 			continue;
 		}
 		DebugPrintf("lowest_address: %d, %d vs %d, %d\n",
-					&lowest->address.host, &lowest->address.port,
-					&peers[x].address.host, &peers[x].address.port );
-		if( lowest_address( &lowest->address, &peers[x].address ) )
+					lowest->address.host, lowest->address.port,
+					peers[x].address.host, peers[x].address.port );
+		if( lowest_address( &lowest->address, &peers[x].address ) == 1 )
 			lowest = &peers[x];
-		DebugPrintf("winner: %d, %d\n", &lowest->address.host, &lowest->address.port );
+		DebugPrintf("winner: %d, %d\n", lowest->address.host, lowest->address.port );
 	}
 	return lowest;
 }
@@ -201,7 +201,7 @@ static void migrate_host( void )
 {
 	host = get_player_with_lowest_address();
 	// if my_external_address is not set your not even in the cloud anyway
-	if( host == NULL || lowest_address( &host->address, my_external_address ) )
+	if( host == NULL || lowest_address( &host->address, my_external_address ) == 1 )
 	{
 		i_am_host = 1;
 		host = NULL;
@@ -375,7 +375,8 @@ static void new_connection( ENetPeer * peer )
 	}
 	
     // request my internet address
-    if ( !my_external_address ){
+    if ( !my_external_address )
+	{
         p2p_packet_t packet;
         packet.type = IP_REQUEST;
         enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
@@ -398,8 +399,8 @@ static void lost_connection( ENetPeer * peer )
 			if( player->name )
 				strncpy( name, player->name, NETWORK_MAX_NAME_LENGTH+1 );
 		}
-		DebugPrintf("lost_connection: from player '%s' address %s port %d connection count now %d.\n",
-					name, ip, peer->address.port, connections );
+		DebugPrintf("lost_connection: from %s '%s' @ %s:%d, connections count %d.\n",
+			( host==peer ) ? "host" : "player", name, ip, peer->address.port, connections );
 	}
 
 	if( network_state == NETWORK_CONNECTING )
@@ -412,13 +413,13 @@ static void lost_connection( ENetPeer * peer )
 	if(peer->data)
 	{
 		network_event( NETWORK_LEFT, (network_player_t*) peer->data );
+		destroy_player( (network_player_t*) peer->data );
+		peer->data = NULL;
 		if ( host == peer )
 		{
 			host = NULL;
 			migrate_host();
 		}
-		destroy_player( (network_player_t*) peer->data );
-		peer->data = NULL;
 	}
 }
 
@@ -494,12 +495,15 @@ static void new_packet( ENetEvent * event )
 			}
 			break;
 		case IP_RESPONSE:
-			{
+			if( ! my_external_address ){
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
-				ENetAddress * my_external_address = malloc( sizeof( ENetAddress ) );
-				my_external_address->host = packet->address.host;
-				my_external_address->port = packet->address.port;
-				//DebugPrintf("*** external address set to: %s:%d\n",(char*)ip_to_str(my_external_address->host),my_external_address->port);
+				my_external_address = malloc( sizeof( ENetAddress ) );
+				*my_external_address = packet->address;
+				{				
+					char ip[INET_ADDRSTRLEN] = "";
+					enet_address_get_host_ip( my_external_address, &ip[0], INET_ADDRSTRLEN );
+					DebugPrintf("*** external address set to: %s:%d.\n", ip, my_external_address->port );
+				}
 			}
 			break;
 
