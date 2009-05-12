@@ -13606,8 +13606,9 @@ void VduClear ( void )
 	TextStackLevel = 0;
 	CurrentTeletype = 0;
 
-	for( Item = LastMenu->Item ; Item->x >= 0 ; Item++ )
-		Item->numtextitems = 0;
+	if(LastMenu)
+		for( Item = LastMenu->Item ; Item->x >= 0 ; Item++ )
+			Item->numtextitems = 0;
 
 		
 	// kill all polys used for boxes...
