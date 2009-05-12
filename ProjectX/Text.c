@@ -762,7 +762,7 @@ void PrintScoreSort( void )
 	{
 		if( ShowPlayersOnHUD )
  		{
-			int top_offset = FontHeight; // Initial gap
+			int top_offset = FontHeight; // initial gap
 			int line_height = FontHeight+1;
 
 			// print player lines
@@ -775,7 +775,7 @@ void PrintScoreSort( void )
 				if( GameStatus[GetPlayerByRank(i)] != STATUS_Left && GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
 					continue;
 
-				// print names and score
+				// print name
 				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 				{
 					// blue dot for bad ping
@@ -790,6 +790,17 @@ void PrintScoreSort( void )
 					left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
 				}
 				
+				left_offset += ( 1 * FontWidth ); // give a padding space
+				
+				// print real score
+				{
+					int width = 0;
+					width = Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
+					left_offset += (width * FontWidth);
+				}
+
+				left_offset += ( 1 * FontWidth ); // give a padding space
+
 				// Show pings for everyone except your self
 				if( GetPlayerByRank(i) != WhoIAm )
 				{
