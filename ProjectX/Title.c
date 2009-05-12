@@ -67,6 +67,10 @@ void *mem;
 #endif
 #endif
 
+extern int default_width;
+extern int default_height;
+extern int default_bpp;
+
 extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
@@ -292,9 +296,6 @@ extern	BOOL	RandomPickups;
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-int		ScreenWidth;
-int		ScreenHeight;
-int		ScreenBPP;
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
 		Texture Format changing stuff..
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -10721,6 +10722,9 @@ void ExitBikeComputerSelection( MENUITEM * item )
 ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 void MenuGoFullScreen( MENUITEM *Item )
 {
+	LastMenu = CurrentMenu;	
+	VduClear();
+
 	if ( !d3dapp->bFullscreen ) // going into fullscreen
 	{
 	    D3DAppFullscreen(d3dapp->CurrMode);
@@ -10731,15 +10735,21 @@ void MenuGoFullScreen( MENUITEM *Item )
 	}
 	else // going into window mode
 	{
-        D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE);
+		bIgnoreWM_SIZE = TRUE;
+        D3DAppWindowMode( d3dapp->CurrMode );
+		bIgnoreWM_SIZE = FALSE;
 
 		// just let the user click to focus
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
 
 	}
-	// flushes 
-	myglobs.bResized = TRUE;
+
+	FadeHoloLight(HoloLightBrightness);
+	DarkenRoom2(RoomDarkness);
+	ProcessVduItems( CurrentMenu );
+
+   	InitialTexturesSet = FALSE;
 }
 	
 
@@ -10804,26 +10814,30 @@ void MenuSelectMode( MENU *Menu )
 
 void NewMenuSelectMode( MENUITEM *Item )
 {
-
-   	/*
-	if (!WasteAFrame)
-	{
-		LastMenu = CurrentMenu;
-   		VduClear();
-		WasteAFrame = TRUE;
-		return;
-	}
-	*/
+	int mode = WhichMode[ModeList.selected_item];
 
 	LastMenu = CurrentMenu;	
 	VduClear();
 
-     /*
-	 * Enter the current fullscreen mode.  D3DApp may
-	 * resort to another mode if this driver cannot do
-	 * the currently selected mode.
-	 */
-	D3DAppFullscreen(WhichMode[ModeList.selected_item]);
+	if ( d3dapp->bFullscreen )
+	{
+	    D3DAppFullscreen(mode);
+
+		if( ! ActLikeWindow )
+			SetCursorClip( TRUE );
+
+	}
+	else
+	{
+		bIgnoreWM_SIZE = TRUE;
+        D3DAppWindowMode( mode );
+		bIgnoreWM_SIZE = FALSE;
+
+		// just let the user click to focus
+		HideCursor = FALSE;
+		SetCursorClip( FALSE );
+
+	}
 
 	FadeHoloLight(HoloLightBrightness);
 	DarkenRoom2(RoomDarkness);
@@ -11446,12 +11460,12 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    ScreenWidth                      = config_get_int( "ScreenWidth",				0 );
-    ScreenHeight                     = config_get_int( "ScreenHeight",				0 );
+    default_width                     = config_get_int( "ScreenWidth",				640 );
+    default_height                    = config_get_int( "ScreenHeight",				480 );
 
-    ScreenBPP                        = config_get_int( "ScreenBPP",					16 );
-	if( ScreenBPP != 16 && ScreenBPP != 32 )
-		ScreenBPP = 16;
+    default_bpp                       = config_get_int( "ScreenBPP",				16 );
+	if( default_bpp != 16 && default_bpp != 32 )
+		default_bpp = 16;
 
     TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
     TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );

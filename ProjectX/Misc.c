@@ -20,9 +20,9 @@
 #include "typedefs.h"
 #include "d3dappi.h"
 
-int default_width	= 0;
-int default_height	= 0;
-int default_bpp		= 0;
+int default_width;
+int default_height;
+int default_bpp;
 
 
 /***************************************************************************/

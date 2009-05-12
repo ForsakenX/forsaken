@@ -73,9 +73,6 @@ extern "C" {
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int NetUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
-	extern int ScreenWidth;
-	extern int ScreenHeight;
-	extern int ScreenBPP;
 	extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 	extern BOOL PlayDemo;
 	extern BOOL DemoShipInit[];
@@ -400,15 +397,9 @@ static BOOL InitWindow( void )
 	// this is just a safety cause if these values are 0
 	// then starting in fullscreen and switching to window crashes
 	// cause the last window state had a window size of 0
-
-	// default windowed specs
-	// prefer to find the 640x480x16 mode (no gaurentee)
-	if(!default_width || !default_height)
-	{
-		if ( ! default_width  ) default_width  = 640;
-		if ( ! default_height ) default_height = 480;
-		if ( ! screen_aspect_ratio ) screen_aspect_ratio = (float) (default_width / default_height);
-	}
+	
+	if ( ! screen_aspect_ratio )
+		screen_aspect_ratio = (float) (default_width / default_height);
 
     // Create a window with some default settings that may change
 	myglobs.hWndMain = CreateWindow(
@@ -747,7 +738,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoTextureScaling		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	bFullscreen				= FALSE;
+	bFullscreen				= TRUE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
 	NoCursorClip			= FALSE;
@@ -796,9 +787,9 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			ActLikeWindow = TRUE;
 		}
 
-		// never clip the cursor...
-		else if (!_stricmp(option, "MouseExclusive")){
-			MouseExclusive = TRUE;
+		// don't exclusivly grab the mouse
+		else if (!_stricmp(option, "MouseNonExclusive")){
+			MouseExclusive = FALSE;
 		}
 
 		// never clip the cursor...
@@ -818,10 +809,10 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
             Debug = TRUE;
 		}
 
-		// obviously do not go into full screen mode
-		else if (!_stricmp(option,"FullScreen"))
+		// start in window mode
+		else if (!_stricmp(option,"Window"))
 		{
-			bFullscreen = TRUE;
+			bFullscreen = FALSE;
 		}
 
 		// colour key transparency
@@ -1050,23 +1041,6 @@ static BOOL CreateD3DApp(void)
 
     DWORD flags;
     Defaults defaults;
-
-	// setup the width and height
-	if ( !default_width && !default_height && !default_bpp )
-	{
-		if ( ScreenWidth || ScreenHeight )
-		{
-			default_width = ScreenWidth;
-			default_height = ScreenHeight;
-		}
-		default_bpp = ScreenBPP;
-	}
-
-
-	// setup default bits per pixel
-	if ( !default_bpp )
-		default_bpp = 16;
-
 
 	// Set the flags to pass to the D3DApp creation based on command line
     flags = ( (bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0 ) | 

@@ -2807,7 +2807,7 @@ char *DI_KeyName( DWORD key )
 /**************************************************************************
   InitDInput
  **************************************************************************/
-BOOL MouseExclusive = FALSE;
+BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
 extern D3DAppInfo d3dappi;
 BOOL InitDInput(void)

@@ -270,7 +270,8 @@ BOOL D3DAppFullscreen(int mode);
  * hooked window to the size it was before a call to D3DAppFullscreen or to
  * the size specified.
  */
-BOOL D3DAppWindow(int w, int h);
+BOOL D3DAppWindowMode( int mode );
+BOOL D3DAppWindow(int w, int h, int bpp);
 
 /*
  * D3DAppChangeDriver 

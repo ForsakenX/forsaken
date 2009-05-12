@@ -329,8 +329,18 @@ exit_with_error:
 /*
  * D3DAppWindow
  */
+
+BOOL D3DAppWindowMode( int mode )
+{
+    d3dappi.CurrMode = mode;
+	return D3DAppWindow(
+		d3dappi.Mode[mode].w,
+		d3dappi.Mode[mode].h,
+		d3dappi.Mode[mode].bpp);
+}
+
 BOOL
-D3DAppWindow(int w, int h)
+D3DAppWindow(int w, int h, int bpp)
 {
     BOOL b; /* changing from a fullscreen mode? */
 
@@ -357,6 +367,7 @@ D3DAppWindow(int w, int h)
     if (h == D3DAPP_YOUDECIDE) {
         h = b ? szLastClient.cy : D3DAPP_DEFAULTWINDOWDIM;
     }
+
     /*
      * Release everything
      */
@@ -382,7 +393,7 @@ D3DAppWindow(int w, int h)
      */
     D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
     D3DAppISetClientSize(d3dappi.hwnd, w, h, b);
-    ATTEMPT(D3DAppICreateBuffers(d3dappi.hwnd, w, h, D3DAPP_BOGUS, FALSE));
+    ATTEMPT(D3DAppICreateBuffers(d3dappi.hwnd, w, h, bpp, FALSE));
     /*
      * If the front buffer is palettized, initialize its palette
      */
@@ -400,6 +411,12 @@ D3DAppWindow(int w, int h)
     ATTEMPT(D3DAppICallDeviceCreateCallback(szBuffers.cx, szBuffers.cy));
     ATTEMPT(D3DAppISetRenderState());
     d3dappi.bRenderingIsOK = TRUE;
+
+	// resize window
+	// BUG: need to have title bar automatically calculated for
+	// for now adding 20 pixels works on my computer...
+	SetWindowPos(d3dappi.hwnd, 0, 0, 0, w, h+20, SWP_NOMOVE|SWP_NOZORDER);
+
     return TRUE;
 
 exit_with_error:
@@ -447,13 +464,13 @@ D3DAppChangeDriver(int driver, DWORD flags)
              * We need to switch to a window.  D3DApp will either use the
              * size of the last window it saw or use a default size.
              */
-            ATTEMPT(D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE));
+            ATTEMPT(D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE, d3dappi.Mode[d3dappi.CurrMode].bpp));
         } else {
             /*
              * We need to recreate the current window.  Don't let D3DApp
              * decide on the size.
              */
-            ATTEMPT(D3DAppWindow(d3dappi.szClient.cx, d3dappi.szClient.cy));
+            ATTEMPT(D3DAppWindow(d3dappi.szClient.cx, d3dappi.szClient.cy, d3dappi.Mode[d3dappi.CurrMode].bpp));
         }
         /*
          * Change the currently selected mode if it's not compatible with
@@ -490,7 +507,14 @@ exit_with_error:
 
 // Returning false causes program to quit...
 
+extern float HoloLightBrightness;
+extern void FadeHoloLight(float Brightness );
 extern BOOL MouseExclusive;
+extern void DarkenRoom2(float darkness);
+extern float RoomDarkness;
+extern void ProcessVduItems( MENU *Menu );
+extern InitialTexturesSet;
+extern void SetGamePrefs( void );
 BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
                  UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -596,15 +620,27 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
         case WM_SIZE: // happens after WM_WINDOWPOSCHANGED
 			//DebugPrintf("Window size changed.\n");
 			
-			// we should save the size
-			// then startup at this size next time
+            if (!bIgnoreWM_SIZE)
+			{
+				// we should save the size
+				// then startup at this size next time
 
-// bug: resizing window is broken in the menus
+				LastMenu = CurrentMenu;	
+				VduClear();
 
-			// resize d3d to match the window size..
-            if (!bIgnoreWM_SIZE) // do not resize if user defined this
-                ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
-			myglobs.bResized = TRUE;
+				// resize d3d to match the window size..
+				ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
+
+				FadeHoloLight(HoloLightBrightness);
+				DarkenRoom2(RoomDarkness);
+				ProcessVduItems( CurrentMenu );
+
+   				InitialTexturesSet = FALSE;
+
+				myglobs.bResized = TRUE;
+			}
+
+			SetGamePrefs();
 
             break;
 
@@ -655,7 +691,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			// release the mouse on deactivation
 			if ( LOWORD( wParam ) == WA_INACTIVE )
 			{
-				//DebugPrintf("Window has been de-activated.\n");
+				DebugPrintf("Window has been de-activated.\n");
 				// release clip and acquired state
 				SetInputAcquired( FALSE );
 				SetCursorClip( FALSE );
@@ -742,10 +778,6 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
 		case WM_WINDOWPOSCHANGING: // is changing
 			//DebugPrintf("Window size, position, or place in z order is about to change.\n");
-			break;
-
-		case WM_WINDOWPOSCHANGED:  // about to change
-			//DebugPrintf("Window size, position, or place in z order has changed.\n");
 			break;
 
 		case WM_CHAR:
