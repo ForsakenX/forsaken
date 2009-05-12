@@ -180,8 +180,6 @@ extern uint32 CurrentBikeCompSpeech;
 BOOL PreventFlips = FALSE;
 BOOL Cheated = FALSE;
 
-uint16 Current_Max_Score;
-
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 void InitShipSpeeds( void );
 
@@ -2553,7 +2551,12 @@ InitView( void )
     break;
   
   default:
-    InitView_MyGameStatus = MyGameStatus;
+    
+    // this will cause a lovely game loop and crash the game
+	// so don't remove this !!!!!!!!!
+    if( MyGameStatus != STATUS_InitView_0 )
+		InitView_MyGameStatus = MyGameStatus;
+
     MyGameStatus = STATUS_InitView_0;
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     D3DAppClearScreenOnly();
@@ -5001,14 +5004,18 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     D3DAppClearScreenOnly();
     ReceiveGameMessages();
+	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
     // dummy call to timer ensures no pauses later...
     timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
     InitShipSpeeds();
-    MyGameStatus = InitView_MyGameStatus;
-    Current_Max_Score = 0;  // used by host to store highest score in session desc
+
+    // this will cause a lovely game loop and crash the game
+	// so don't remove this !!!!!!!!!
+    if( InitView_MyGameStatus != STATUS_InitView_0 )
+		MyGameStatus = InitView_MyGameStatus;
 
 	// lets keep this global next to the cursor clip for now
 	// this is a good place to define that we are going into game mode...

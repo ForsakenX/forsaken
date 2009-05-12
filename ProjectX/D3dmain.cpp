@@ -1153,6 +1153,8 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
     // Return the viewport to D3DApp so it can use it
     *lplpViewport = lpD3DViewport;
 
+	DebugPrintf("AfterDeviceCreated\n");
+
 	// load the view
 	if (!InitView() )
 	{
