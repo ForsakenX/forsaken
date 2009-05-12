@@ -78,6 +78,8 @@ extern "C" {
 	extern BOOL DemoShipInit[];
 	extern BOOL flush_input;
 	extern int ddchosen3d;
+	extern int default_x;
+	extern int default_y;
 	extern int default_width;
 	extern int default_height;
 	extern int default_bpp;
@@ -409,7 +411,7 @@ static BOOL InitWindow( void )
 
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
-         0, 0, // start position x,y
+         default_x, default_y, // start position x,y
 		 default_width,
 		 default_height,
 

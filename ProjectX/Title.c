@@ -67,6 +67,8 @@ void *mem;
 #endif
 #endif
 
+extern int default_x;
+extern int default_y;
 extern int default_width;
 extern int default_height;
 extern int default_bpp;
@@ -11467,6 +11469,9 @@ void GetGamePrefs( void )
 	if( default_bpp != 16 && default_bpp != 32 )
 		default_bpp = 16;
 
+	default_x						  =	config_get_int( "ScreenPosX",				0 );
+	default_y						  =	config_get_int( "ScreenPosY",				0 );
+
     TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
     TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
     TextureGreenBPP                  = config_get_int( "TextureGreenBPP",			0 );
@@ -11575,6 +11580,8 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenWidth",				d3dapp->Mode[ d3dapp->CurrMode ].w );
 	config_set_int( "ScreenHeight",				d3dapp->Mode[ d3dapp->CurrMode ].h );
 	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
+	config_set_int( "ScreenPosX",				d3dapp->pClientOnPrimary.x );
+	config_set_int( "ScreenPosY",				d3dapp->pClientOnPrimary.x );
 	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
 	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
 	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );

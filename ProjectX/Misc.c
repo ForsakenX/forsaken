@@ -23,7 +23,8 @@
 int default_width;
 int default_height;
 int default_bpp;
-
+int default_x;
+int default_y;
 
 /***************************************************************************/
 /*                          Setting Defaults                               */
