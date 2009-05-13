@@ -11604,7 +11604,7 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenHeight",				d3dapp->Mode[ d3dapp->CurrMode ].h );
 	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
 	config_set_int( "ScreenPosX",				d3dapp->pClientOnPrimary.x );
-	config_set_int( "ScreenPosY",				d3dapp->pClientOnPrimary.x );
+	config_set_int( "ScreenPosY",				d3dapp->pClientOnPrimary.y );
 	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
 	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
 	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
