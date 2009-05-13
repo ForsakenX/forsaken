@@ -884,7 +884,6 @@ REGENPICKUPINFO	RegenPickupInfo[ MAXPICKUPTYPES ] = {
 	{ 1,	0 },				// 2  PICKUP_Transpulse
 	{ 1,	0 },				// 3  PICKUP_SussGun
 	{ 1,	0 },				// 4  PICKUP_Laser
-	{ 1,	0 },				// 5  PICKUP_Mug
 	{ 3,	0 },				// 6  PICKUP_Mugs
 	{ 3,	0 },				// 8  PICKUP_HeatseakerPickup
 	{ 1,	0 },				// 9  PICKUP_Thief
@@ -1366,10 +1365,6 @@ BOOL CollectPickup( uint16 i )
 					PickupEnable = FALSE;
 				}
 
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Mug:
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -4646,8 +4641,6 @@ void SfxForCollectPickup( uint16 Owner, uint16 ID )
 			case PICKUP_Laser:
 				PlaySfx( SFX_Select_BeamLaser, Sfx_Volume );
 				return;
-			case PICKUP_Mug:
-				return;
 			case PICKUP_Mugs:
 				PlaySfx( SFX_Select_MugMissile, Sfx_Volume );
 				return;
@@ -5446,10 +5439,6 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Mug:
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Mugs:
 				if( Host_SecondaryAmmo[ Player ][ MUGMISSILE ] < 10 )
 				{
@@ -6034,10 +6023,6 @@ BOOL ActuallyCollectPickup( uint16 i )
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Mug:
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_Mugs:
 				SecondaryAmmo[ MUGMISSILE ] += 3;
 
@@ -6619,10 +6604,6 @@ BOOL PretendCollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Mug:
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -7305,7 +7286,6 @@ void CorrectForExtraOrMissingPickups( void )
 				}
 				break;
 
-			case PICKUP_Mug:
 			case PICKUP_Parasite:
 				break;
 
