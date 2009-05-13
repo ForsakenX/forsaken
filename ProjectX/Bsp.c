@@ -445,7 +445,49 @@ BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_
 	BOOL	side;
 
 	Depth++;
+
 start:
+
+	// BUG: some reason bully got a null pointer here on either start_point_ptr or node_ptr
+	// was a recursive call from the very last line of this function
+
+/*
+	Thread 0 (crashed)
+ 0  ProjectX_1.13.1000.exe!FindCollision [bsp.c : 449 + 0x8]
+    eip = 0x0041d5db   esp = 0x0012f704   ebp = 0x0012f74c   ebx = 0x00000001
+    esi = 0x00000002   edi = 0x00000a28   eax = 0x00120124   ecx = 0x0012f79c
+    edx = 0x2dbd85a5   efl = 0x00210206
+ 1  ProjectX_1.13.1000.exe!FindCollision [bsp.c : 567 + 0x10]
+    eip = 0x0041da5c   esp = 0x0012f754   ebp = 0x0012f7a8
+ 2  ProjectX_1.13.1000.exe!RayCollide [bsp.c : 401 + 0x1f]
+    eip = 0x0041d50f   esp = 0x0012f7b0   ebp = 0x0012f7cc
+ 3  ProjectX_1.13.1000.exe!OneGroupPolyCol [collision.c : 1408 + 0x24]
+    eip = 0x0041e9c8   esp = 0x0012f7d4   ebp = 0x0012f86c
+ 4  ProjectX_1.13.1000.exe!BackgroundCollide [collision.c : 697 + 0x30]
+    eip = 0x0041e213   esp = 0x0012f874   ebp = 0x0012f950
+ 5  ProjectX_1.13.1000.exe!ObjectCollide [collision.c : 3204 + 0x50]
+    eip = 0x00420896   esp = 0x0012f958   ebp = 0x0012fae4
+ 6  ProjectX_1.13.1000.exe!ProcessShips [ships.c : 1078 + 0x1a]
+    eip = 0x004dc5c8   esp = 0x0012faec   ebp = 0x0012fcc4
+ 7  ProjectX_1.13.1000.exe!MainRoutines [oct2.c : 5397 + 0x4]
+    eip = 0x0047a326   esp = 0x0012fccc   ebp = 0x0012fccc
+ 8  ProjectX_1.13.1000.exe!MainGame [oct2.c : 5596 + 0x4]
+    eip = 0x0047a7c7   esp = 0x0012fcd4   ebp = 0x0012fd40
+ 9  ProjectX_1.13.1000.exe!RenderScene [oct2.c : 3956 + 0xc]
+    eip = 0x004778be   esp = 0x0012fd48   ebp = 0x0012fef0
+10  ProjectX_1.13.1000.exe!RenderLoop [d3dmain.cpp : 1207 + 0x17]
+    eip = 0x00431a86   esp = 0x0012fef8   ebp = 0x0012ff00
+11  ProjectX_1.13.1000.exe!WinMain [d3dmain.cpp : 232 + 0x4]
+    eip = 0x0043077a   esp = 0x0012ff08   ebp = 0x0012ff28
+12  ProjectX_1.13.1000.exe!__tmainCRTStartup [crt0.c : 324 + 0x1b]
+    eip = 0x005417e5   esp = 0x0012ff30   ebp = 0x0012ffc0
+13  kernel32.dll + 0x16fe6
+    eip = 0x7c816fe7   esp = 0x0012ffc8   ebp = 0x0012fff0
+
+*/
+
+	if( !start_point_ptr || !node_ptr || !end_point_ptr ) return FALSE;
+
 	d1 = POINT_TO_PLANE( start_point_ptr, node_ptr ) - CollisionRadius;
 	d2 = POINT_TO_PLANE(   end_point_ptr, node_ptr ) - CollisionRadius;
 
