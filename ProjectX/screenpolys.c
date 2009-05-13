@@ -85,7 +85,6 @@ extern	int				FontWidth;
 extern	int				FontHeight;
 extern	int16			MakeColourMode;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
-extern	SLIDER		TimeLimit;
 extern	BOOL			CountDownOn;
 extern	int16			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];

@@ -846,6 +846,7 @@ SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider2	= { 1, 20, 1, 5, 0, 0.0F };
 SLIDER NumOfPlayersSlider				= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
 SLIDER TimeLimit							= { 0, 30, 1, 0, 0, 0.0F };
+SLIDER MyTimeLimit							= { 0, 30, 1, 0, 0, 0.0F };
 SLIDER MaxPlayersSlider				= { 1, MAX_PLAYERS, 1, 6, 0, 0.0F };
 SLIDER MaxKillsSlider						= { 0, 255, 1, 0, 0, 0.0F };
 SLIDER GoalScoreSlider					= { 1, 10, 1, 5, 0, 0.0F };
@@ -1366,7 +1367,7 @@ MENU	MENU_NEW_CreateGame = {
 
 		{  10,  75,  85,  75, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{  10,  83,  85,  83, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  91,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  91,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MyTimeLimit,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
 		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 115,  85, 115, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
@@ -2405,7 +2406,7 @@ MENU	MENU_Host = {
 		{ 200, 128, 0, 0, 0, "Team Game", 0, 0, &TeamGame, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 144, 0, 0, 0, "Record Demo", 0, 0, &RecordDemo, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 160, 0, 0, 0, "Demo Name  ", 0, 0, &DemoGameName, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
-		{ 200, 176, 0, 0, 0, "Time Limit ", 0, 0, &TimeLimit, NULL, SelectSlider, DrawSlider, NULL, 0 },
+		{ 200, 176, 0, 0, 0, "Time Limit ", 0, 0, &MyTimeLimit, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 192, 0, 0, 0, "Max Players ", 0, 0, &MaxPlayersSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 224, 0, 0, 0, "Level...", 0, 0, &LevelList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -11467,14 +11468,14 @@ void GetGamePrefs( void )
 	Gamma = ( (double)GammaSlider.value ) / 100.0F;
 
     MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
-    TimeLimit.value                  = config_get_int( "TimeLimit",					0);
+    MyTimeLimit.value                = config_get_int( "TimeLimit",					0);
     CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
     GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
     BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
     PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
 
 	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
-	CLAMP( TimeLimit.value,				TimeLimit.max );
+	CLAMP( MyTimeLimit.value,			MyTimeLimit.max );
 	CLAMP( CTFSlider.value,				CTFSlider.max );
 	CLAMP( GoalScoreSlider.value,		GoalScoreSlider.max );
 	CLAMP( BountyBonusSlider.value,		BountyBonusSlider.max );
@@ -11615,7 +11616,7 @@ void SetGamePrefs( void )
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );
 	config_set_int( "water",					WaterDetailSlider.value );
-	config_set_int( "TimeLimit",				TimeLimit.value );
+	config_set_int( "TimeLimit",				MyTimeLimit.value );
 	config_set_int( "KillMessageColour",		KillMessageColour );
 	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
 	config_set_int( "SystemMessageColour",		SystemMessageColour );

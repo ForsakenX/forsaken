@@ -92,6 +92,7 @@ extern	MENUITEM	NewTeamItem;
 extern	BOOL	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	SLIDER	TimeLimit;
+extern	SLIDER	MyTimeLimit;
 extern	SLIDER	DemoSpeed;
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	MaxKillsSlider;
@@ -255,6 +256,18 @@ extern void SetGamePrefs( void );
 extern TEXT local_port_str;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
 extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
+
+// these settings get over ridden when you join a game
+// so we need a separate copy of them to backup our settings
+void copy_in_my_settings( void )
+{
+
+	memset( PickupValid, 0, sizeof(PickupValid) );
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+
+	TimeLimit.value = MyTimeLimit.value;
+}
+
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
@@ -263,9 +276,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	SetGamePrefs();
 
-	// copy in my valid pickups
-	memset( PickupValid, 0, sizeof(PickupValid) );
-	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+	copy_in_my_settings();
 
 	Seed = timeGetTime();
 	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
