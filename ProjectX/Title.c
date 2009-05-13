@@ -1237,22 +1237,24 @@ MENUITEM SlowLevelSelectItem = { 0, 0, 0, 0, 0, "", 0, 0, NULL, &MENU_NEW_Select
 MENU	MENU_NEW_ValidPickups_Second_Page = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 },
+		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 },
 		
-		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mug ],					&MyPickupValid[ PICKUP_Mugs ],		SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_HeatseakerPickup ],	&MyPickupValid[ PICKUP_Heatseaker ],	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Scatter ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Gravgon ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Launcher ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_TitanStar ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Thief ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mugs ],				NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_HeatseakerPickup ],	NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Scatter ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Gravgon ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Launcher ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_TitanStar ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Thief ],				NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
-		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PurgePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PinePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_QuantumPickup ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SpiderPod ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PurgePickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PinePickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_QuantumPickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SpiderPod ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
