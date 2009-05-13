@@ -361,6 +361,7 @@ extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
 BOOL	UseShortPackets;
+BOOL	MyUseShortPackets;
 
 extern	int16	NumOrbs;
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];

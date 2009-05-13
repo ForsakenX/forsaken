@@ -183,6 +183,7 @@ extern int PickupMessageColour;
 	Globals
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 BOOL			RandomPickups;
+BOOL			MyRandomPickups;
 REGENPOINT	*	RegenPoints = NULL;
 int16			NumRegenPoints = 0;
 int16			NumPickupsPerGroup[ MAXGROUPS ];

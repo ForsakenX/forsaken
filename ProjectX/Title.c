@@ -128,7 +128,7 @@ extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
-extern BOOL UseShortPackets;
+extern BOOL MyUseShortPackets;
 extern BOOL MyResetKillsPerLevel;
 extern BOOL	Pal332;
 extern SNDLOOKUP SndLookup[];
@@ -172,6 +172,7 @@ extern FRAME_INFO	*	Title_TVFrame_Header;
 extern char MissionTextNames[MAXLEVELS][128];
 extern char MissionTextPics[MAXLEVELS][128];
 extern int32 ColPerspective;
+extern int32 MyColPerspective;
 extern BOOL	JustExitedMenu;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
 extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
@@ -291,7 +292,7 @@ extern	char *PrimaryDescription[];
 extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
-extern	BOOL	RandomPickups;
+extern	BOOL	MyRandomPickups;
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
 		Mode changing stuff..
@@ -841,6 +842,7 @@ SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWater
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
 SLIDER TrailDetailSlider					= { 0, 10, 1, 9, 0, 0.0F };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
+SLIDER MyPacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider2	= { 1, 20, 1, 5, 0, 0.0F };
 SLIDER NumOfPlayersSlider				= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
@@ -1331,11 +1333,11 @@ MENU MENU_NEW_NetworkOptions = {
 	{
 		{  0, 16, 200, 16, 0,			"Network Options",															FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
 
-		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&UseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&MyUseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&MyPacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
 		{ 10, 78,  85, 78, 0,			"enable tracker",															FONT_Small, TEXTFLAG_CentreY,							&tracker_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
@@ -1370,7 +1372,7 @@ MENU	MENU_NEW_CreateGame = {
 
 		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&MyResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 115,  85, 115, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10, 124,  85, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 124,  85, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&MyRandomPickups,					NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
 		{  10, 139, 180, 139, 0,			LT_MENU_NEW_MoreMultiplayerOptions19/*"pickups" */,		FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ValidPickups,				MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 		{  10, 147, 100, 147, 0,			"Network Options",										FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_NetworkOptions,			MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
@@ -2921,9 +2923,9 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , NULL , NULL,	0,
 			{
-					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
-					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&MyColPerspective,				NULL,								SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&MyUseShortPackets,			NULL,								SelectToggle,	DrawToggle),
+					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&MyPacketsSlider,		NULL,								SelectSlider,	DrawSlider),
 					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
 					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
 
@@ -11410,8 +11412,8 @@ void GetGamePrefs( void )
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			FALSE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
-    RandomPickups                    = config_get_bool( "RandomPickups",			FALSE );
-    UseShortPackets                  = config_get_bool( "UseShortPackets",			TRUE );
+    MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
+    MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
 	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );
 
@@ -11471,14 +11473,14 @@ void GetGamePrefs( void )
     CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
     GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
     BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
-    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
+    MyPacketsSlider.value            = config_get_int( "PacketsPerSecond",			30 );
 
 	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
 	CLAMP( MyTimeLimit.value,			MyTimeLimit.max );
 	CLAMP( CTFSlider.value,				CTFSlider.max );
 	CLAMP( GoalScoreSlider.value,		GoalScoreSlider.max );
 	CLAMP( BountyBonusSlider.value,		BountyBonusSlider.max );
-	CLAMP( PacketsSlider.value,			PacketsSlider.max );
+	CLAMP( MyPacketsSlider.value,		MyPacketsSlider.max );
 
     NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
@@ -11519,11 +11521,11 @@ void GetGamePrefs( void )
 	CLAMP( TauntMessageColour,		MAXFONTCOLOURS );
 	CLAMP( MyMessageColour,			MAXFONTCOLOURS );
 
-    ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
-	CLAMP( ColPerspective, 1 );
+    MyColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
+	CLAMP( MyColPerspective, 1 );
 
     GameType                         = config_get_int( "GameType",					GAME_Normal );
-	CLAMP( ColPerspective, MAX_GAMETYPE );
+	CLAMP( GameType, MAX_GAMETYPE );
 }
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
@@ -11569,8 +11571,8 @@ void SetGamePrefs( void )
     config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
     config_set_bool( "BikeExhausts",			BikeExhausts );
     config_set_bool( "BountyBonus",				BountyBonus );
-    config_set_bool( "RandomPickups",			RandomPickups );
-    config_set_bool( "UseShortPackets",			UseShortPackets );
+    config_set_bool( "RandomPickups",			MyRandomPickups );
+    config_set_bool( "UseShortPackets",			MyUseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
 	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
 
@@ -11624,12 +11626,12 @@ void SetGamePrefs( void )
 	config_set_int( "PickupMessageColour",		PickupMessageColour );
 	config_set_int( "TauntMessageColour",		TauntMessageColour );
 	config_set_int( "MyMessageColour",			MyMessageColour );
-	config_set_int( "ColPerspective",			ColPerspective );
+	config_set_int( "ColPerspective",			MyColPerspective );
 	config_set_int( "MaxKills",					MaxKillsSlider.value );
 	config_set_int( "GameType",					GameType );
 	config_set_int( "CTFrules",					CTFSlider.value );
 	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
-	config_set_int( "PacketsPerSecond",			PacketsSlider.value );
+	config_set_int( "PacketsPerSecond",			MyPacketsSlider.value );
 	config_set_int( "BountyInterval",			BountyBonusSlider.value );
 	config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
 	config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );

@@ -257,6 +257,10 @@ extern void SetGamePrefs( void );
 extern TEXT local_port_str;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
 extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
+extern SLIDER MyPacketsSlider;
+extern int32 MyColPerspective;
+extern BOOL MyRandomPickups;
+extern BOOL MyUseShortPackets;
 
 // these settings get over ridden when you join a game
 // so we need a separate copy of them to backup our settings
@@ -265,9 +269,13 @@ void copy_in_my_settings( void )
 	memset( PickupValid, 0, sizeof(PickupValid) );
 	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
 
-	TimeLimit.value = MyTimeLimit.value;
+	TimeLimit.value		= MyTimeLimit.value;
+	PacketsSlider.value	= MyPacketsSlider.value;
 
-	ResetKillsPerLevel = MyResetKillsPerLevel;
+	ColPerspective		= MyColPerspective;
+	ResetKillsPerLevel	= MyResetKillsPerLevel;
+	RandomPickups		= MyRandomPickups;
+	UseShortPackets		= MyUseShortPackets;
 }
 
 BOOL StartAHostSession ( MENUITEM * Item )
