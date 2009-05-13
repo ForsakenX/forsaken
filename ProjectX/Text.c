@@ -772,7 +772,7 @@ void PrintScoreSort( void )
 				int len = 0; // length of string
 
 				// make sure it's a valid player
-				if( GameStatus[GetPlayerByRank(i)] != STATUS_Left && GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
+				if( GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
 					continue;
 
 				// print name
