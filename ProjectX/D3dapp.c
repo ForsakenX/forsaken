@@ -605,17 +605,16 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
         case WM_MOVE:
 			//DebugPrintf("Window has been moved (top left corner moved).\n");
 
-			// get the position of the window
-			// we should save this right here to the registry
-			// then startup at this location next time
-			//GetWindowRect(hwnd, (LPRECT)lParam);
-
 			// these must be set to 0 before changing
 			d3dappi.pClientOnPrimary.x = 0;
 			d3dappi.pClientOnPrimary.y = 0;
-			// get the xy position of the window
-			// save it to d3dappi.pClientOnPrimary
-			ClientToScreen(hwnd, &d3dappi.pClientOnPrimary);
+
+			d3dappi.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
+			d3dappi.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
+
+			// save the settings
+			SetGamePrefs();
+
             break;
 
         case WM_SIZE: // happens after WM_WINDOWPOSCHANGED
