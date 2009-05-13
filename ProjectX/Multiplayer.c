@@ -253,6 +253,8 @@ void SetUpGameType( int type )
 컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
 extern void SetGamePrefs( void );
 extern TEXT local_port_str;
+extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
@@ -260,6 +262,10 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	uint32		Seed;
 
 	SetGamePrefs();
+
+	// copy in my valid pickups
+	memset( PickupValid, 0, sizeof(PickupValid) );
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
 
 	Seed = timeGetTime();
 	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );

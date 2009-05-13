@@ -175,6 +175,7 @@ extern char MissionTextPics[MAXLEVELS][128];
 extern int32 ColPerspective;
 extern BOOL	JustExitedMenu;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
 extern BOOL LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16 Lives;
@@ -1237,19 +1238,19 @@ MENU	MENU_NEW_ValidPickups_Second_Page = {
 		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 },
 		
 		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mug ],					&PickupValid[ PICKUP_Mugs ],		SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_HeatseakerPickup ],	&PickupValid[ PICKUP_Heatseaker ],	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Scatter ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Gravgon ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Launcher ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_TitanStar ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Thief ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mug ],					&MyPickupValid[ PICKUP_Mugs ],		SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_HeatseakerPickup ],	&MyPickupValid[ PICKUP_Heatseaker ],	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Scatter ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Gravgon ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Launcher ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_TitanStar ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Thief ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PurgePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PinePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_QuantumPickup ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SpiderPod ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PurgePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PinePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_QuantumPickup ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SpiderPod ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1261,18 +1262,18 @@ MENU	MENU_NEW_ValidPickups = {
 		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0				/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
 		
 		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups22				/*"primary weapons"*/,	FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups1				/*"trojax"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Trojax ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups2				/*"pyrolite"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Pyrolite ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups3				/*"transpulse"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Transpulse ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups4				/*"suss gun"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SussGun ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups5				/*laser*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Laser ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups1				/*"trojax"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Trojax ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups2				/*"pyrolite"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Pyrolite ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups3				/*"transpulse"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Transpulse ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups4				/*"suss gun"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SussGun ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups5				/*laser*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Laser ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ 10,  92, 200, 100, 0, LT_MENU_NEW_ValidPickups23				/*"power-ups"*/,		FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups15				/*"invulnerability"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Inv ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups16				/*"nitro"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Nitro ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups17				/*"stealth mantle"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mantle ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups18				/*"orbit pulsar"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Orb ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups19				/*"golden power pod"*/, FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_GoldenPowerPod ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups15				/*"invulnerability"*/,	FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Inv ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups16				/*"nitro"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Nitro ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups17				/*"stealth mantle"*/,	FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mantle ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups18				/*"orbit pulsar"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Orb ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups19				/*"golden power pod"*/, FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_GoldenPowerPod ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ 10, 156, 120, 164, 0, LT_MENU_NEW_MoreMultiplayerOptions22	/*"next page"*/,		FONT_Small,		TEXTFLAG_CentreY,						NULL,										&MENU_NEW_ValidPickups_Second_Page, MenuChange,			DrawFlatMenuItem,	NULL, 0 } ,
 		
@@ -10352,6 +10353,10 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	// load level names to be displayed in the list
 	LoadLevelText( NULL );
 
+	// copy in my valid pickups
+	memset( PickupValid, 0, sizeof(PickupValid) );
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+
 }
 
 /* exit */
@@ -11410,28 +11415,32 @@ void GetGamePrefs( void )
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
 	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );
 
-	PickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
-	PickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
-	PickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
-	PickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
-	PickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
-	PickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
-	PickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
-	PickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
-	PickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
-	PickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
-	PickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
-	PickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
-	PickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
-	PickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
-	PickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
-	PickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
-	PickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
-	PickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
-	PickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
-	PickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
-	PickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
+	MyPickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
+	MyPickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
+	MyPickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
+	MyPickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
+	MyPickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
+	MyPickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
+	MyPickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
+	MyPickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
+	MyPickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
+	MyPickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
+	MyPickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
+	MyPickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
+	MyPickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
+	MyPickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
+	MyPickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+
+	MyPickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
+	MyPickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
+	MyPickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
+	MyPickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
+	MyPickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
+	MyPickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
+
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
 
     // integers
 
@@ -11565,27 +11574,27 @@ void SetGamePrefs( void )
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
 	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
 
-	config_set_bool( "AllowMugs",               PickupValid[ PICKUP_Mugs ] );
-	config_set_bool( "AllowHeatseaker",         PickupValid[ PICKUP_Heatseaker ] );
-	config_set_bool( "AllowScatter",            PickupValid[ PICKUP_Scatter ] );
-	config_set_bool( "AllowGravgon",            PickupValid[ PICKUP_Gravgon ] );
-	config_set_bool( "AllowLauncher",           PickupValid[ PICKUP_Launcher ] );
-	config_set_bool( "AllowTitanStar",          PickupValid[ PICKUP_TitanStar ] );
-	config_set_bool( "AllowPurgePickup",        PickupValid[ PICKUP_PurgePickup ] );
-	config_set_bool( "AllowQuantumPickup",      PickupValid[ PICKUP_QuantumPickup ] );
-	config_set_bool( "AllowTrojax",             PickupValid[ PICKUP_Trojax ] );
-	config_set_bool( "AllowPyrolite",           PickupValid[ PICKUP_Pyrolite ] );
-	config_set_bool( "AllowSussGun",            PickupValid[ PICKUP_SussGun ] );
-	config_set_bool( "AllowLaser",              PickupValid[ PICKUP_Laser ] );
-	config_set_bool( "AllowNitro",              PickupValid[ PICKUP_Nitro ] );
-	config_set_bool( "AllowOrb",                PickupValid[ PICKUP_Orb ] );
-	config_set_bool( "AllowGoldenPowerPod",     PickupValid[ PICKUP_GoldenPowerPod ] );
-	config_set_bool( "AllowSpiderPod",          PickupValid[ PICKUP_SpiderPod ] );
-	config_set_bool( "AllowPinePickup",         PickupValid[ PICKUP_PinePickup ] );
-	config_set_bool( "AllowThief",              PickupValid[ PICKUP_Thief ] );
-	config_set_bool( "AllowTranspulse",         PickupValid[ PICKUP_Transpulse ] );
-	config_set_bool( "AllowMantle",             PickupValid[ PICKUP_Mantle ] );
-	config_set_bool( "AllowInv",                PickupValid[ PICKUP_Inv ] );
+	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
+	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_Heatseaker ] );
+	config_set_bool( "AllowScatter",            MyPickupValid[ PICKUP_Scatter ] );
+	config_set_bool( "AllowGravgon",            MyPickupValid[ PICKUP_Gravgon ] );
+	config_set_bool( "AllowLauncher",           MyPickupValid[ PICKUP_Launcher ] );
+	config_set_bool( "AllowTitanStar",          MyPickupValid[ PICKUP_TitanStar ] );
+	config_set_bool( "AllowPurgePickup",        MyPickupValid[ PICKUP_PurgePickup ] );
+	config_set_bool( "AllowQuantumPickup",      MyPickupValid[ PICKUP_QuantumPickup ] );
+	config_set_bool( "AllowTrojax",             MyPickupValid[ PICKUP_Trojax ] );
+	config_set_bool( "AllowPyrolite",           MyPickupValid[ PICKUP_Pyrolite ] );
+	config_set_bool( "AllowSussGun",            MyPickupValid[ PICKUP_SussGun ] );
+	config_set_bool( "AllowLaser",              MyPickupValid[ PICKUP_Laser ] );
+	config_set_bool( "AllowNitro",              MyPickupValid[ PICKUP_Nitro ] );
+	config_set_bool( "AllowOrb",                MyPickupValid[ PICKUP_Orb ] );
+	config_set_bool( "AllowGoldenPowerPod",     MyPickupValid[ PICKUP_GoldenPowerPod ] );
+	config_set_bool( "AllowSpiderPod",          MyPickupValid[ PICKUP_SpiderPod ] );
+	config_set_bool( "AllowPinePickup",         MyPickupValid[ PICKUP_PinePickup ] );
+	config_set_bool( "AllowThief",              MyPickupValid[ PICKUP_Thief ] );
+	config_set_bool( "AllowTranspulse",         MyPickupValid[ PICKUP_Transpulse ] );
+	config_set_bool( "AllowMantle",             MyPickupValid[ PICKUP_Mantle ] );
+	config_set_bool( "AllowInv",                MyPickupValid[ PICKUP_Inv ] );
 
 	// integers
 

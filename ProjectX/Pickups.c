@@ -204,6 +204,7 @@ int16			NumPrimWeapons[ MAXPRIMARYWEAPONS ] = { 0, 0, 0, 0, 0, 0 };
 BOOL			PickupInvulnerability = FALSE;
 int16			NumGoldBars = 0;
 int16			PickupsGot[ MAXPICKUPTYPES ];
+BOOL			MyPickupValid[ MAXPICKUPTYPES ];
 BOOL			PickupValid[ MAXPICKUPTYPES ];
 int				FlagsToGenerate = 0;
 int				BountyToGenerate = 0;

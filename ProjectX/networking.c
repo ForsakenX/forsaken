@@ -82,6 +82,8 @@ extern float GetPlayerNumCount1;
 extern float GetPlayerNumCount2;
 extern int   GetPlayerNumCount;
 
+extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+
 extern	BOOL	DS;
 
 #define YourVersion "YOUR VERSION: " ProjectXVersion
@@ -2300,6 +2302,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		memcpy( KillCounter,	lpInit->KillCounter,	sizeof(KillCounter));
 		memcpy( BonusStats,		lpInit->BonusStats,		sizeof(BonusStats));
 
+		memset( PickupValid, 0, sizeof(PickupValid) );  // turn off all weapons
 		UnpackPickupInfo( lpInit->PickupFlags );	// which weapons are enabled
 
 		//
