@@ -81,7 +81,6 @@ extern BOOL HideCursor;
 extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
-extern BOOL ResetKillsPerLevel;
 
 BOOL SpaceOrbSetup = FALSE;
 void DefaultJoystickSettings( USERCONFIG *u );
@@ -130,7 +129,7 @@ extern BOOL flush_input;
 extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
 extern BOOL UseShortPackets;
-extern BOOL ResetKillsPerLevel;
+extern BOOL MyResetKillsPerLevel;
 extern BOOL	Pal332;
 extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
@@ -1369,7 +1368,7 @@ MENU	MENU_NEW_CreateGame = {
 		{  10,  83,  85,  83, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{  10,  91,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MyTimeLimit,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&MyResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 115,  85, 115, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{  10, 124,  85, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
@@ -11392,7 +11391,7 @@ void GetGamePrefs( void )
     ZClearsOn                        = config_get_bool( "ZClearsOn",				TRUE );
 #endif
 
-    ResetKillsPerLevel               = config_get_bool( "ResetKillsPerLevel",		FALSE );
+    MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
@@ -11551,7 +11550,7 @@ void SetGamePrefs( void )
 	config_set_bool( "ZClearsOn",				ZClearsOn );
 #endif
 
-	config_set_bool( "ResetKillsPerLevel",		ResetKillsPerLevel );
+	config_set_bool( "ResetKillsPerLevel",		MyResetKillsPerLevel );
 	config_set_bool( "BrightShips",				MyBrightShips );
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );

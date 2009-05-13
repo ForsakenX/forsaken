@@ -45,6 +45,7 @@ extern int OldColPerspective;
 extern int OldUseShortPackets;
 
 BOOL ResetKillsPerLevel;
+BOOL MyResetKillsPerLevel;
 BOOL IpOnCLI = FALSE;
 
 extern uint8 QuickStart;
@@ -261,11 +262,12 @@ extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
 // so we need a separate copy of them to backup our settings
 void copy_in_my_settings( void )
 {
-
 	memset( PickupValid, 0, sizeof(PickupValid) );
 	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
 
 	TimeLimit.value = MyTimeLimit.value;
+
+	ResetKillsPerLevel = MyResetKillsPerLevel;
 }
 
 BOOL StartAHostSession ( MENUITEM * Item )
