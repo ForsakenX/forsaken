@@ -2577,7 +2577,17 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	{
 		if( RegenSlot != -1 )
 		{
-			if( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used ) RegenSlot = -1;	// if trying to use used slot then use no slot.
+			if( RegenSlot < 0 || RegenSlot >= NumRegenPoints )
+			{
+				// last time this happened it came from EvaluateMessage() MSG_VERYSHORTDROPPICKUP
+				DebugPrintf("ERROR: InitOnePickup was given invalid RegenSlot %d, NumRegenPoints is %s\n",
+							RegenSlot, NumRegenPoints);
+				RegenSlot = -1;	// if trying to use bad slot then use no slot.
+			}
+			else if ( RegenPoints[ RegenSlot ].Status == PU_REGENSTAT_Used )
+			{
+				RegenSlot = -1;	// if trying to use used slot then use no slot.
+			}
 		}
 
 		AddPickupToGroup( i, Group );
