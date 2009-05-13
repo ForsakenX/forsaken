@@ -57,7 +57,6 @@ enum {
 	PICKUP_Laser,				// 4
 	PICKUP_Mug,					// 5 Secondary weapons
 	PICKUP_Mugs,				// 6
-	PICKUP_Heatseaker,			// 7
 	PICKUP_HeatseakerPickup,	// 8
 	PICKUP_Thief,				// 9
 	PICKUP_Scatter,				// 10

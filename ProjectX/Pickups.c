@@ -886,7 +886,6 @@ REGENPICKUPINFO	RegenPickupInfo[ MAXPICKUPTYPES ] = {
 	{ 1,	0 },				// 4  PICKUP_Laser
 	{ 1,	0 },				// 5  PICKUP_Mug
 	{ 3,	0 },				// 6  PICKUP_Mugs
-	{ 1,	0 },				// 7  PICKUP_Heatseaker
 	{ 3,	0 },				// 8  PICKUP_HeatseakerPickup
 	{ 1,	0 },				// 9  PICKUP_Thief
 	{ 1,	0 },				// 10 PICKUP_Scatter
@@ -1393,10 +1392,6 @@ BOOL CollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Heatseaker:
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -4656,8 +4651,6 @@ void SfxForCollectPickup( uint16 Owner, uint16 ID )
 			case PICKUP_Mugs:
 				PlaySfx( SFX_Select_MugMissile, Sfx_Volume );
 				return;
-			case PICKUP_Heatseaker:
-				return;
 			case PICKUP_HeatseakerPickup:
 				PlaySfx( SFX_Select_SolarisMissile, Sfx_Volume );
 				return;
@@ -5475,10 +5468,6 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Heatseaker:
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_HeatseakerPickup:
 				if( Host_SecondaryAmmo[ Player ][ SOLARISMISSILE ] < 10 )
 				{
@@ -6064,10 +6053,6 @@ BOOL ActuallyCollectPickup( uint16 i )
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Heatseaker:
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 			case PICKUP_HeatseakerPickup:
 				SecondaryAmmo[ SOLARISMISSILE ] += 3;
 
@@ -6648,10 +6633,6 @@ BOOL PretendCollectPickup( uint16 i )
 					MessageSFX = SFX_BIKECOMP_AP;
 					PickupEnable = FALSE;
 				}
-				break;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			case PICKUP_Heatseaker:
 				break;
 
 /*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
@@ -7325,7 +7306,6 @@ void CorrectForExtraOrMissingPickups( void )
 				break;
 
 			case PICKUP_Mug:
-			case PICKUP_Heatseaker:
 			case PICKUP_Parasite:
 				break;
 

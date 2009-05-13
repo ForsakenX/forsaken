@@ -11422,7 +11422,7 @@ void GetGamePrefs( void )
 	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
 	MyPickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
-	MyPickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
+	MyPickupValid[ PICKUP_HeatseakerPickup ]  = config_get_bool( "AllowHeatseaker",       TRUE );
 	MyPickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
 	MyPickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
 	MyPickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
@@ -11579,7 +11579,7 @@ void SetGamePrefs( void )
 	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
 
 	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
-	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_Heatseaker ] );
+	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_HeatseakerPickup ] );
 	config_set_bool( "AllowScatter",            MyPickupValid[ PICKUP_Scatter ] );
 	config_set_bool( "AllowGravgon",            MyPickupValid[ PICKUP_Gravgon ] );
 	config_set_bool( "AllowLauncher",           MyPickupValid[ PICKUP_Launcher ] );
