@@ -55,45 +55,47 @@ enum {
 	PICKUP_Transpulse,			// 2
 	PICKUP_SussGun,				// 3
 	PICKUP_Laser,				// 4
-	PICKUP_Mugs,				// 5
-	PICKUP_HeatseakerPickup,	// 6
-	PICKUP_Thief,				// 7
-	PICKUP_Scatter,				// 8
-	PICKUP_Gravgon,				// 9
-	PICKUP_Launcher,			// 10
-	PICKUP_TitanStar,			// 11
-	PICKUP_PurgePickup,			// 12
-	PICKUP_PinePickup,			// 13
-	PICKUP_QuantumPickup,		// 14
-	PICKUP_SpiderPod,			// 15
-	PICKUP_Parasite,			// 16
-	PICKUP_Flare,				// 17
-	PICKUP_GeneralAmmo,			// 18 Ammo
-	PICKUP_PyroliteAmmo,		// 19
-	PICKUP_SussGunAmmo,			// 20
-	PICKUP_PowerPod,			// 21 Extras
-	PICKUP_Shield,				// 22
-	PICKUP_Inv,					// 23
-	PICKUP_ExtraLife,			// 24
-	PICKUP_Computer,			// 25
-	PICKUP_Smoke,				// 26
-	PICKUP_Nitro,				// 27
-	PICKUP_Goggles,				// 28
-	PICKUP_Gold,				// 29
-	PICKUP_Mantle,				// 30
-	PICKUP_Crystal,				// 31
-	PICKUP_Orb,					// 32
-	PICKUP_GoldenPowerPod,		// 33
-	PICKUP_DNA,					// 34
-	PICKUP_SkeletonKey,			// 35
-	PICKUP_Bomb,				// 36
-	PICKUP_GoldFigure,			// 37
-	PICKUP_Flag,				// 38
-	PICKUP_Bounty,				// 39
-	PICKUP_Flag1,				// 40
-	PICKUP_Flag2,				// 41
-	PICKUP_Flag3,				// 42
-	PICKUP_Flag4,				// 43
+	PICKUP_Mug,					// 5 Secondary weapons
+	PICKUP_Mugs,				// 6
+	PICKUP_Heatseaker,			// 7
+	PICKUP_HeatseakerPickup,	// 8
+	PICKUP_Thief,				// 9
+	PICKUP_Scatter,				// 10
+	PICKUP_Gravgon,				// 11
+	PICKUP_Launcher,			// 12
+	PICKUP_TitanStar,			// 13
+	PICKUP_PurgePickup,			// 14
+	PICKUP_PinePickup,			// 15
+	PICKUP_QuantumPickup,		// 16
+	PICKUP_SpiderPod,			// 17
+	PICKUP_Parasite,			// 18
+	PICKUP_Flare,				// 19
+	PICKUP_GeneralAmmo,			// 20 Ammo
+	PICKUP_PyroliteAmmo,		// 21
+	PICKUP_SussGunAmmo,			// 22
+	PICKUP_PowerPod,			// 23 Extras
+	PICKUP_Shield,				// 24
+	PICKUP_Inv,					// 25
+	PICKUP_ExtraLife,			// 26
+	PICKUP_Computer,			// 27
+	PICKUP_Smoke,				// 28
+	PICKUP_Nitro,				// 29
+	PICKUP_Goggles,				// 30
+	PICKUP_Gold,				// 31
+	PICKUP_Mantle,				// 32
+	PICKUP_Crystal,				// 33
+	PICKUP_Orb,					// 34
+	PICKUP_GoldenPowerPod,		// 35
+	PICKUP_DNA,					// 36
+	PICKUP_SkeletonKey,			// 37
+	PICKUP_Bomb,				// 38
+	PICKUP_GoldFigure,			// 39
+	PICKUP_Flag,				// 40
+	PICKUP_Bounty,				// 41
+	PICKUP_Flag1,				// 42
+	PICKUP_Flag2,				// 43
+	PICKUP_Flag3,				// 44
+	PICKUP_Flag4,				// 45
 };
 
 /*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
