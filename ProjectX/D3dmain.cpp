@@ -701,7 +701,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	SetSoundLevels( NULL );
 
-	DebugPrintf("AppInit finished...");
+	DebugPrintf("AppInit finished...\n");
 
 	// done
     return TRUE;
