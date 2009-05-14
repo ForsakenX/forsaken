@@ -48,10 +48,72 @@ static int i_am_host = 0;
 char* my_player_name = NULL; // used in net_tracker.c
 
 // settings
-static int max_players		= 25;
+static int max_peers		= 25;
 static int max_channels		= 50;
 static int system_channel	= 0;
 static int default_port		= 2300;
+
+/*
+ *
+ *  peer helpers
+ *
+ */
+
+typedef enum {
+	PLAYING,	// peer is valid player in game
+	UNUSED,
+	CONNECTING, // host told us to connect
+	CONNECTED,
+	SYNCHING,   // host telling everyone to synch
+} network_peer_state_t;
+
+// peer->data = 
+typedef struct {
+	network_peer_state_t state;
+	network_player_t * player;
+	ENetPeer * connected_peers; // used by host to keep track of connections
+} network_peer_data_t;
+
+static void init_peer( ENetPeer * peer )
+{
+	network_peer_data_t * data = peer->data;
+	if( data == NULL ) // first init
+	{
+		peer->data = malloc( sizeof(network_peer_data_t) );
+		data = peer->data;
+		data->connected_peers = malloc( sizeof(void*) * max_peers );
+		memset( data->connected_peers, 0, sizeof(data->connected_peers) );
+	}
+	data->state = UNUSED;
+	data->player = NULL;
+}
+
+static void init_peers( void )
+{
+	size_t x;
+	for( x = 0; x < enet_host->peerCount; x++ )
+		init_peer( &enet_host->peers[x] );
+}
+
+static void cleanup_peer( ENetPeer * peer )
+{
+	network_peer_data_t * data = peer->data;
+	if( ! data ) return;
+	if( data->connected_peers )
+	{
+		free( data->connected_peers );
+		data->connected_peers = NULL;
+	}
+	free( data );
+	peer->data = NULL;
+}
+
+static void cleanup_peers( void )
+{
+	size_t x;
+	for( x = 0; x < enet_host->peerCount; x++ )
+		cleanup_peer( &enet_host->peers[x] );
+}
 
 /*
  *
@@ -93,12 +155,16 @@ static int enet_setup( char* str_address, int port )
 		DebugPrintf("enet_setup: address %s port %d\n",ip,address.port);
 	}
 
-	enet_host = enet_host_create( &address, max_players, 0, 0 );
+	enet_host = enet_host_create( &address, max_peers, 0, 0 );
 
 	if ( enet_host == NULL )
 	{
 		return -2;
 	}
+
+	DebugPrintf("enet_setup: initializing peers\n");
+
+	init_peers();
 
 	DebugPrintf("enet_setup: finished\n");
 
@@ -109,6 +175,7 @@ static int enet_connect( char* str_address, int port )
 {
 	ENetAddress address;
 	ENetPeer* peer;
+	network_peer_data_t * peer_data;
 
 	if ( ! str_address )	address.host = ENET_HOST_ANY;
 	else					enet_address_set_host( &address, str_address ); 
@@ -127,6 +194,10 @@ static int enet_connect( char* str_address, int port )
 	{
 		return -1;
 	}
+
+	init_peer( peer );
+	peer_data = peer->data;
+	peer_data->state = CONNECTING;
 	
 	if( network_state == NETWORK_CONNECTING )
 		host = peer;
@@ -261,10 +332,11 @@ static void update_player_name( network_player_t * player, char * name )
 
 static network_player_t * create_player( char * name, ENetPeer * peer )
 {
+	network_peer_data_t * peer_data = peer->data;
 	network_player_t * player = malloc( sizeof( network_player_t ) );
 
 	// name
-	strncpy( player->name, name, NETWORK_MAX_NAME_LENGTH-1 );
+	update_player_name( player, name );
 
 	// dotted decimal ip
 	enet_address_get_host_ip( &peer->address, player->ip, sizeof(player->ip) );
@@ -285,8 +357,11 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 	network_players.length++;
 
 	// this is how we maintain relationship between peer and player
-	player->data   = peer;
-	peer->data     = player;
+	player->data		= peer;
+	peer_data->player	= player;
+
+	// player state
+	peer_data->state	= CONNECTED;
 
 	// update dynamic data (ping etc..)
 	update_player( player );
@@ -297,6 +372,7 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 static void destroy_player( network_player_t * player )
 {
 	ENetPeer * peer = player->data;
+	network_peer_data_t * peer_data = peer->data;
 
 	// join previous and next players together
 	if( player->prev != NULL )	player->prev->next = player->next;
@@ -309,9 +385,12 @@ static void destroy_player( network_player_t * player )
 	// drop the count
 	network_players.length--;
 
-	// remove peer association
+	// remove peer/player associations
 	player->data = NULL;
-	peer->data = NULL;
+	peer_data->player = NULL;
+
+	// cleanup peer data
+	init_peer( peer );
 
 	// destroy the player
 	free( player );
@@ -320,10 +399,12 @@ static void destroy_player( network_player_t * player )
 static void destroy_players( void )
 {
 	network_player_t * player = network_players.first;
-	while(player)
+	while( player )
 	{
+		// destroy_player frees player hence player->next will be invalid
+		network_player_t * next_player = player->next;
 		destroy_player( player );
-		player = player->next;
+		player = next_player;
 	}
 	network_players.length = 0;
 	network_players.first  = NULL;
@@ -334,8 +415,11 @@ void disconnect_all( void )
 {
 	size_t x;
 	for( x = 0; x < enet_host->peerCount; x++ )
+	{
 		if ( enet_host->peers[x].state != ENET_PEER_STATE_DISCONNECTED )
 			enet_peer_disconnect_now( &enet_host->peers[x], 0 );
+	}
+	init_peers();
 }
 
 /*
@@ -367,8 +451,12 @@ typedef struct {
 
 static void new_connection( ENetPeer * peer )
 {
+	network_peer_data_t * peer_data = peer->data;
+
+	// up the connection count
 	connections++;
 
+	// print debug info
 	{
 		char ip[INET_ADDRSTRLEN] = "";
 		enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
@@ -377,12 +465,37 @@ static void new_connection( ENetPeer * peer )
 	}
 
 	// tell everyone to connect to new player
-	if ( i_am_host && enet_host->peerCount > 1 ){
+	if ( i_am_host )
+	{
 		p2p_address_packet_t packet;
 		packet.type = CONNECT;
 		packet.address = peer->address;
 		network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-		DebugPrintf("new_connection: Told everyone to connect to new player.\n");
+		peer_data->state = SYNCHING;
+		DebugPrintf("-- telling everyone to connect to new connection.\n");
+	}
+
+	// i am not host
+	else
+	{
+		// we requested this connection
+		if( peer_data->state == CONNECTING )
+		{
+			// we connected to the host
+			if( peer == host )
+			{
+				DebugPrintf("-- we have connected to the host...\n");
+			}
+			// we connected to a new player
+			else
+			{
+				DebugPrintf("-- STUB: need to tell the host I successfully connected with player...\n");
+			}
+		}
+		peer_data->state = CONNECTED;
+
+		// once we know if we are already synched into the cloud
+		// then we can drop un-invited connections
 	}
 
 	// Send my player name to the new connection
@@ -391,7 +504,7 @@ static void new_connection( ENetPeer * peer )
 		packet.type = NAME;
 		strncpy( packet.name, my_player_name, NETWORK_MAX_NAME_LENGTH-1 );
 		enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("new_connection: Sent my name to new player\n");
+		DebugPrintf("-- sent my name to new connection\n");
 	}
 	
     // request my internet address
@@ -400,11 +513,15 @@ static void new_connection( ENetPeer * peer )
         p2p_packet_t packet;
         packet.type = IP_REQUEST;
         enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+		DebugPrintf("-- requesting my external address\n");
     }
 }
 
 static void lost_connection( ENetPeer * peer )
 {
+	network_peer_data_t * peer_data = peer->data;
+
+	// lower connection count
 	if(connections != 0)
 		connections--;
 
@@ -413,9 +530,9 @@ static void lost_connection( ENetPeer * peer )
 		char name[NETWORK_MAX_NAME_LENGTH+1] = "NULL";
 		char ip[INET_ADDRSTRLEN] = "";
 		enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
-		if( peer->data )
+		if( peer_data->state == PLAYING )
 		{
-			network_player_t * player = peer->data;
+			network_player_t * player = peer_data->player;
 			if( player->name )
 				strncpy( name, player->name, NETWORK_MAX_NAME_LENGTH+1 );
 		}
@@ -423,28 +540,32 @@ static void lost_connection( ENetPeer * peer )
 			( host==peer ) ? "host" : "player", name, ip, peer->address.port, connections );
 	}
 
-	if( network_state == NETWORK_CONNECTING )
-		if( host == peer )
-		{
-			network_state = NETWORK_DISCONNECTED;
-			return;
-		}
-
-	if(peer->data)
+	// connecting to game failed
+	if( network_state == NETWORK_CONNECTING && host == peer )
 	{
-		network_event( NETWORK_LEFT, (network_player_t*) peer->data );
-		destroy_player( (network_player_t*) peer->data );
-		peer->data = NULL;
+		network_state = NETWORK_DISCONNECTED;
+	}
+
+	// player left the game
+	else if(peer_data->state == PLAYING)
+	{
+		network_event( NETWORK_LEFT,  peer_data->player );
+		destroy_player( peer_data->player );
+		peer_data->player = NULL;
 		if ( host == peer )
 		{
 			host = NULL;
 			migrate_host();
 		}
 	}
+
+	init_peer( peer ); // cleanup the peer
 }
 
 static void new_packet( ENetEvent * event )
 {
+	ENetPeer * peer = event->peer;
+	network_peer_data_t * peer_data = peer->data;
 	if ( event->channelID == system_channel )
 	{
 		p2p_packet_t * packet = ((p2p_packet_t *) event->packet->data);
@@ -457,15 +578,14 @@ static void new_packet( ENetEvent * event )
 				char* name = packet->name;
 
 				// name update message
-				if ( event->peer->data != NULL )
+				if ( peer_data->state == PLAYING )
 				{
-					network_player_t * player = event->peer->data;
-					if ( player->name )
+					if ( peer_data->player )
 					{
 						DebugPrintf("new_packet: '%s' has updated their name to '%s'.\n",
-									player->name,name);
-						update_player_name( player, name );
-						network_event( NETWORK_NAME, player ); // new name
+									peer_data->player->name, name);
+						update_player_name( peer_data->player, name );
+						network_event( NETWORK_NAME, peer_data->player ); // new name
 						return;
 					}
 				}
@@ -473,22 +593,25 @@ static void new_packet( ENetEvent * event )
 				// initial name message
 				else
 				{
-					network_player_t * player = create_player( name, event->peer );
+					network_player_t * player = create_player( name, peer );
+					peer_data->state = PLAYING;
 					DebugPrintf("new_packet: player '%s' joined the game.\n",player->name);
-					if ( !i_am_host && connections == 1 )
+					if ( network_state == NETWORK_CONNECTING )
 					{
-						DebugPrintf("new_packet: we have joined the game.\n");
+						DebugPrintf("-- we have joined the game.\n");
 						network_state = NETWORK_CONNECTED;
-						host = event->peer;
-						network_event( NETWORK_JOIN, NULL );    // we joined the game
+						host = peer;
+						network_event( NETWORK_JOIN, NULL   );  // we joined the game
 						network_event( NETWORK_JOIN, player );  // new player joined
-						network_event( NETWORK_HOST, player );  // host has been set
+						network_event( NETWORK_HOST, host   );  // host has been set
 					}
 					else
 					{
 						network_event( NETWORK_JOIN, player );  // new player joined
 					}
-					network_event( NETWORK_NAME, player ); // fire player name to update
+					// sure they could just use the new player event
+					// but for simplicity they may desire to rely on one event for names
+					network_event( NETWORK_NAME, player );
 				}
 			}
 			break;
@@ -496,22 +619,21 @@ static void new_packet( ENetEvent * event )
 			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 				ENetAddress * address = &packet->address;
-				ENetPeer* peer = enet_host_connect( enet_host, address, max_channels );
+				ENetPeer* new_peer = enet_host_connect( enet_host, address, max_channels );
 				char ip[INET_ADDRSTRLEN] = "";
 				enet_address_get_host_ip( address, &ip[0], INET_ADDRSTRLEN );
 				DebugPrintf("new_packet: host told us to connect to address %s port %d.\n",
 							ip, peer->address.port );
-				if(!peer)
-					DebugPrintf("- enet_host_connect returned NULL.\n");
+				if(!new_peer)
+					DebugPrintf("-- enet_host_connect returned NULL.\n");
 			}
 			break;
 		case IP_REQUEST:
 			{
-				network_player_t * player = (network_player_t*)event->peer->data;
 				p2p_address_packet_t packet;
 				packet.type = IP_RESPONSE;
-				packet.address = event->peer->address;
-				network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+				packet.address = peer->address;
+				network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 			}
 			break;
 		case IP_RESPONSE:
@@ -533,21 +655,29 @@ static void new_packet( ENetEvent * event )
 		}
 
 	}
-	else if( event->peer->data != NULL ) // network_player_t
-	{
-		network_packet_t packet;
-		//DebugPrintf("new_packet: application message\n");
-		packet.size = (int) event->packet->dataLength;
-		packet.data = (void*) event->packet->data;
-		packet.from = (network_player_t*) event->peer->data;
-		network_event( NETWORK_DATA, &packet );
-	}
+
+	// application packet
 	else
 	{
-		char ip[INET_ADDRSTRLEN] = "";
-		enet_address_get_host_ip( &event->peer->address, &ip[0], INET_ADDRSTRLEN );
-		DebugPrintf("new_packet: got application packet from non player, address %s port %d.\n",
-					ip, event->peer->address.port );	
+		// valid player
+		if( peer_data->state == PLAYING )
+		{
+			network_packet_t packet;
+			//DebugPrintf("new_packet: application message\n");
+			packet.size = (int) event->packet->dataLength;
+			packet.data = (void*) event->packet->data;
+			packet.from = peer_data->player;
+			network_event( NETWORK_DATA, &packet );
+		}
+
+		// not a valid player
+		else
+		{
+			char ip[INET_ADDRSTRLEN] = "";
+			enet_address_get_host_ip( &event->peer->address, &ip[0], INET_ADDRSTRLEN );
+			DebugPrintf("new_packet: got application packet from non player, address %s port %d.\n",
+						ip, event->peer->address.port );	
+		}
 	}
 	enet_packet_destroy( event->packet );
 }
@@ -600,6 +730,7 @@ void network_cleanup( void )
 	enet_host_flush(enet_host); // send any pending packets
 	disconnect_all();
 	destroy_players();
+	cleanup_peers();
 	enet_cleanup();
 	connections = 0; // no disconnect messages had a chance to fire
 	network_state = NETWORK_DISCONNECTED;
