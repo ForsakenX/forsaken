@@ -609,11 +609,16 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			d3dappi.pClientOnPrimary.x = 0;
 			d3dappi.pClientOnPrimary.y = 0;
 
-			d3dappi.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
-			d3dappi.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
+			{
+				RECT rect;
+				GetWindowRect( d3dappi.hwnd, &rect );
 
-			// save the settings
-			SetGamePrefs();
+				d3dappi.pClientOnPrimary.x = rect.left;
+				d3dappi.pClientOnPrimary.y = rect.top;
+
+				// save the settings
+				SetGamePrefs();
+			}
 
             break;
 
