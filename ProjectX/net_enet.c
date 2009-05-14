@@ -332,7 +332,7 @@ void disconnect_all( void )
 {
 	size_t x;
 	for( x = 0; x < enet_host->peerCount; x++ )
-		if ( enet_host->peers[x].data != NULL ) // network_player_t
+		if ( enet_host->peers[x].state != ENET_PEER_STATE_DISCONNECTED )
 			enet_peer_disconnect_now( &enet_host->peers[x], 0 );
 }
 
