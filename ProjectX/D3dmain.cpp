@@ -411,7 +411,7 @@ static BOOL InitWindow( void )
 
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
-         default_x, default_y, // start position x,y
+         0, 0, // start position x,y
 		 default_width,
 		 default_height,
 
@@ -429,10 +429,17 @@ static BOOL InitWindow( void )
         return FALSE;
     }
 
-    // Display the window
-	// if you never call this the window never shows up
-	// but the process is actually running....
-    ShowWindow(myglobs.hWndMain, SW_SHOWNORMAL);
+	// restore window position
+	{
+		WINDOWPLACEMENT placement;
+		placement.length  = sizeof(WINDOWPLACEMENT);
+		placement.showCmd = SW_SHOWNORMAL;
+		placement.rcNormalPosition.left		= default_x;
+		placement.rcNormalPosition.top		= default_y;
+		placement.rcNormalPosition.right	= default_x + default_width;
+		placement.rcNormalPosition.bottom	= default_y + default_height;
+		SetWindowPlacement( myglobs.hWndMain, &placement );
+	}
 
 	//
 	return TRUE;

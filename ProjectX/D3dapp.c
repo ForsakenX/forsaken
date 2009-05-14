@@ -610,14 +610,17 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			d3dappi.pClientOnPrimary.y = 0;
 
 			{
-				RECT rect;
-				GetWindowRect( d3dappi.hwnd, &rect );
-
-				d3dappi.pClientOnPrimary.x = rect.left;
-				d3dappi.pClientOnPrimary.y = rect.top;
-
-				// save the settings
-				SetGamePrefs();
+				WINDOWPLACEMENT placement;
+				placement.length = sizeof(WINDOWPLACEMENT);
+				if(GetWindowPlacement( d3dappi.hwnd, &placement ))
+				{
+					if( placement.showCmd == SW_SHOWNORMAL )
+					{
+						d3dappi.pClientOnPrimary.x = placement.rcNormalPosition.left;
+						d3dappi.pClientOnPrimary.y = placement.rcNormalPosition.top;
+						SetGamePrefs();
+					}
+				}
 			}
 
             break;
