@@ -610,7 +610,7 @@ void network_send( network_player_t* player, void* data, int size, network_flags
 
 void network_broadcast( void* data, int size, network_flags_t flags, int channel )
 {
-	size_t x;
+	network_player_t * player = network_players.first;
 	ENetPacket * packet;
 	if(!data)
 	{
@@ -624,9 +624,11 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 		DebugPrintf("network_broadcast: failed to create packet.\n");
 		return;
 	}
-	for( x = 0; x < enet_host->peerCount; x++ )
-		if( enet_host->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_host->peers[x], packet, channel, NO_FLUSH );
+	while(player)
+	{
+		enet_send_packet( (ENetPeer*) &player->data, packet, channel, NO_FLUSH );
+		player = player->next;
+	}
 	enet_host_flush( enet_host );
 }
 
@@ -654,7 +656,7 @@ void network_pump()
 
 void network_set_player_name( char* name )
 {
-	size_t x;
+	network_player_t * player = network_players.first;
 	ENetPacket * packet;
 	p2p_name_packet_t name_packet;
 	if( enet_host == NULL ) return;
@@ -667,9 +669,11 @@ void network_set_player_name( char* name )
 		DebugPrintf("network_set_player_name: failed to create packet\n");
 		return;
 	}
-	for( x = 0; x < enet_host->peerCount; x++ )
-		if( enet_host->peers[x].data != NULL ) // network_player_t
-			enet_send_packet( &enet_host->peers[x], packet, system_channel, NO_FLUSH );
+	while(player)
+	{
+		enet_send_packet( (ENetPeer*) &player->data, packet, system_channel, NO_FLUSH );
+		player = player->next;
+	}
 	enet_host_flush( enet_host );
 }
 
