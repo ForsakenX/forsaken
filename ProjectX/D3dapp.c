@@ -609,19 +609,22 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			d3dappi.pClientOnPrimary.x = 0;
 			d3dappi.pClientOnPrimary.y = 0;
 
+			// this sets the CLIENT AREA POSITION
+			d3dappi.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
+			d3dappi.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
+
+			// save the WINDOW POSITION
 			{
 				WINDOWPLACEMENT placement;
 				placement.length = sizeof(WINDOWPLACEMENT);
 				if(GetWindowPlacement( d3dappi.hwnd, &placement ))
 				{
-					if( placement.showCmd == SW_SHOWNORMAL )
-					{
-						d3dappi.pClientOnPrimary.x = placement.rcNormalPosition.left;
-						d3dappi.pClientOnPrimary.y = placement.rcNormalPosition.top;
-						SetGamePrefs();
-					}
+					d3dappi.pWindow.x = placement.rcNormalPosition.left;
+					d3dappi.pWindow.y = placement.rcNormalPosition.top;
 				}
 			}
+			
+			SetGamePrefs();
 
             break;
 

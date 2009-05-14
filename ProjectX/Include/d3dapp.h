@@ -147,7 +147,8 @@ typedef struct tagD3DAppInfo {
     D3DAppMode              WindowsDisplay; /* current Windows disply mode */
 
     SIZE                    szClient;         /* dimensions of client win */
-    POINT                   pClientOnPrimary; /* position of client win */
+    POINT                   pClientOnPrimary; /* position of client area */
+    POINT                   pWindow;		  /* position of win */
 
     BOOL                    bPaused;           /* the app is paused */
     BOOL                    bAppActive;        /* the app is active */
