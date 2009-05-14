@@ -171,26 +171,32 @@ static int lowest_address( ENetAddress * address1, ENetAddress * address2 )
 	return ( address1->host < address2->host ) ? -1: 1;
 }
 
-static ENetPeer * get_player_with_lowest_address( void )
+static network_player_t * get_player_with_lowest_address( void )
 {
-    size_t x;
-	ENetPeer* lowest = NULL;
-	ENetPeer* peers = enet_host->peers;
-	for( x = 0; x < enet_host->peerCount; x++ )
+	network_player_t * lowest = network_players.first;
+	network_player_t * current = NULL;
+
+	if(!lowest) return  NULL;
+	current = lowest->next;
+
+	while( current )
 	{
-		if( peers[x].data == NULL ) continue; // network_player_t
-		if( !lowest )
-		{
-			lowest = &peers[x];
-			continue;
-		}
+		ENetPeer * lowest_peer = lowest->data;
+		ENetPeer * current_peer = current->data;
+
 		DebugPrintf("lowest_address: %d, %d vs %d, %d\n",
-					lowest->address.host, lowest->address.port,
-					peers[x].address.host, peers[x].address.port );
-		if( lowest_address( &lowest->address, &peers[x].address ) == 1 )
-			lowest = &peers[x];
-		DebugPrintf("winner: %d, %d\n", lowest->address.host, lowest->address.port );
+					lowest_peer->address.host, lowest_peer->address.port,
+					current_peer->address.host,	current_peer->address.port );
+
+		if( lowest_address( &lowest_peer->address, &current_peer->address ) == 1 )
+			lowest = current;
+
+		DebugPrintf("winner: %d, %d\n",
+					lowest_peer->address.host, lowest_peer->address.port );
+
+		current = current->next;
 	}
+
 	return lowest;
 }
 
@@ -199,14 +205,18 @@ static ENetPeer * get_player_with_lowest_address( void )
 
 static void migrate_host( void )
 {
-	host = get_player_with_lowest_address();
-	// if my_external_address is not set your not even in the cloud anyway
+	network_player_t * player;
+	host = NULL;
+	player = get_player_with_lowest_address();
+	if( player )
+		host = player->data;
 	if( host == NULL || lowest_address( &host->address, my_external_address ) == 1 )
 	{
 		i_am_host = 1;
 		host = NULL;
+		player = NULL;
 	}
-	network_event( NETWORK_HOST, host );
+	network_event( NETWORK_HOST, player );
 }
 
 /*
@@ -264,6 +274,8 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 
 	// append to players list
 	player->prev   = network_players.last;
+	if(player->prev)
+		player->prev->next = player;
 	player->next   = NULL;
 	network_players.last = player;
 	if( network_players.first == NULL )
@@ -282,9 +294,15 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 
 static void destroy_player( network_player_t * player )
 {
-	// remove from players list
+	// join previous and next players together
 	if( player->prev != NULL )	player->prev->next = player->next;
 	if( player->next != NULL ) 	player->next->prev = player->prev;
+
+	// reset first and last player
+	if( player == network_players.first ) network_players.first = player->next;
+	if( player == network_players.last  ) network_players.last  = player->prev;
+
+	// drop the count
 	network_players.length--;
 
 	// remove peer association
