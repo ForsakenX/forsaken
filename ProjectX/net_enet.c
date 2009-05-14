@@ -245,11 +245,13 @@ static void update_player( network_player_t* player )
 
 static void update_players( void )
 {
-	size_t x;
+	network_player_t * player = network_players.first;
 	if( enet_host == NULL ) return;
-	for( x = 0; x < enet_host->peerCount; x++ )
-		if( enet_host->peers[x].data != NULL ) // network_player_t
-			update_player( (network_player_t *) enet_host->peers[x].data );
+	while( player )
+	{
+		update_player( player );
+		player = player->next;
+	}
 }
 
 static void update_player_name( network_player_t * player, char * name )
@@ -294,6 +296,8 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 
 static void destroy_player( network_player_t * player )
 {
+	ENetPeer * peer = player->data;
+
 	// join previous and next players together
 	if( player->prev != NULL )	player->prev->next = player->next;
 	if( player->next != NULL ) 	player->next->prev = player->prev;
@@ -307,6 +311,7 @@ static void destroy_player( network_player_t * player )
 
 	// remove peer association
 	player->data = NULL;
+	peer->data = NULL;
 
 	// destroy the player
 	free( player );
@@ -314,14 +319,11 @@ static void destroy_player( network_player_t * player )
 
 static void destroy_players( void )
 {
-	size_t x;
-	for ( x = 0; x < enet_host->peerCount; x++ )
+	network_player_t * player = network_players.first;
+	while(player)
 	{
-		if ( enet_host->peers[x].data != NULL )
-		{
-			destroy_player( enet_host->peers[x].data );
-			enet_host->peers[x].data = NULL;
-		}
+		destroy_player( player );
+		player = player->next;
 	}
 	network_players.length = 0;
 	network_players.first  = NULL;
@@ -513,7 +515,8 @@ static void new_packet( ENetEvent * event )
 			}
 			break;
 		case IP_RESPONSE:
-			if( ! my_external_address ){
+			if( ! my_external_address )
+			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 				my_external_address = malloc( sizeof( ENetAddress ) );
 				*my_external_address = packet->address;
