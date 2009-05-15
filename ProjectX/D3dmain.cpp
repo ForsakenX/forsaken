@@ -106,6 +106,7 @@ extern "C" {
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
+	extern TEXT local_port_str;
 
 	extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
@@ -944,8 +945,14 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			float fnum;
 			DWORD mem;
 
+			// override local port
+			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) == 1 )
+			{
+				DebugPrintf("Command Line: local port set to %s\n", local_port_str.text);
+			}
+
 			// selecte your d3d/ddraw device
-			if ( sscanf( option, "dev:%d", &num ) == 1 )
+			else if ( sscanf( option, "dev:%d", &num ) == 1 )
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
