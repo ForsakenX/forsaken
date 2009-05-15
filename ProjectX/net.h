@@ -26,9 +26,10 @@
  */
 
 typedef enum {
-	NETWORK_CONNECTED,
-	NETWORK_CONNECTING,
-	NETWORK_DISCONNECTED,
+	NETWORK_CONNECTED,		// in the game
+	NETWORK_CONNECTING,		// connecting to host
+	NETWORK_DISCONNECTED,	// not connect yet
+	NETWORK_SYNCHING,		// connecting to all players
 } network_state_t;
 
 network_state_t network_state;

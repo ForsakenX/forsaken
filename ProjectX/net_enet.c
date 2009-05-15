@@ -352,13 +352,13 @@ static void update_player_name( network_player_t * player, char * name )
 	strncpy( player->name, name, NETWORK_MAX_NAME_LENGTH-1 );
 }
 
-static network_player_t * create_player( char * name, ENetPeer * peer )
+static network_player_t * create_player( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
 	network_player_t * player = malloc( sizeof( network_player_t ) );
 
 	// name
-	update_player_name( player, name );
+	update_player_name( player, "NULL" );
 
 	// dotted decimal ip
 	enet_address_get_host_ip( &peer->address, player->ip, sizeof(player->ip) );
@@ -368,7 +368,18 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 	player->bw_in  = peer->incomingBandwidth;
 	player->bw_out = peer->outgoingBandwidth;
 
-	// append to players list
+	// this is how we maintain relationship between peer and player
+	player->data		= peer;
+	peer_data->player	= player;
+
+	// update dynamic data (ping etc..)
+	update_player( player );
+
+	return player;
+}
+
+static void append_player( network_player_t * player )
+{
 	player->prev   = network_players.last;
 	if(player->prev)
 		player->prev->next = player;
@@ -377,18 +388,6 @@ static network_player_t * create_player( char * name, ENetPeer * peer )
 	if( network_players.first == NULL )
 		network_players.first = player;
 	network_players.length++;
-
-	// this is how we maintain relationship between peer and player
-	player->data		= peer;
-	peer_data->player	= player;
-
-	// player state
-	peer_data->state	= CONNECTED;
-
-	// update dynamic data (ping etc..)
-	update_player( player );
-
-	return player;
 }
 
 static void destroy_player( network_player_t * player )
@@ -528,6 +527,7 @@ typedef struct {
 static void new_connection( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
+	peer_data->player = create_player( peer );
 
 	// up the connection count
 	connections++;
@@ -567,6 +567,7 @@ static void new_connection( ENetPeer * peer )
 			if( peer == host )
 			{
 				DebugPrintf("-- we have connected to the host...\n");
+				network_state = NETWORK_SYNCHING;
 			}
 			// we connected to a new player
 			else
@@ -577,7 +578,7 @@ static void new_connection( ENetPeer * peer )
 				packet.type = CONNECT;
 				packet.address = peer->address;
 				network_send( host_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-				DebugPrintf("-- telling host that we have successfully connect to new player...\n");
+				DebugPrintf("-- telling host that we have successfully connected to new player...\n");
 			}
 		}
 		peer_data->state = CONNECTED;
@@ -681,9 +682,12 @@ static void lost_connection( ENetPeer * peer )
 	init_peer( peer ); // cleanup the peer data
 }
 
+// other wise multiple players joining at once would block each other
 static void tell_peer_to_connect_to_synchers( network_player_t * player )
 {
 	size_t x;
+	ENetPeer * player_peer = player->data;
+	DebugPrintf("-- telling new player %s to connect to synchers\n", address_to_str(&player_peer->address));
 	for( x = 0; x < enet_host->peerCount; x++ )
 	{
 		ENetPeer * peer = &enet_host->peers[x];
@@ -694,9 +698,79 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 			packet.type = CONNECT;
 			packet.address = peer->address;
 			network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-			DebugPrintf("-- telling %s to drop new connection ", address_to_str(&peer->address));
+			DebugPrintf("-- sending new player event for syncher at address %s\n", address_to_str(&peer->address));
 		}
 	}
+}
+
+static void send_new_player_event( ENetAddress * address )
+{
+	p2p_address_packet_t packet;
+	packet.type = NEW_PLAYER;
+	packet.address = *address;
+	network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+	DebugPrintf("-- sent new player event to everyone\n");
+}
+
+static void send_new_player_event_for_existing_players( network_player_t * joiner )
+{
+	ENetPeer * joiner_peer = joiner->data;
+	network_player_t * player = network_players.first;
+	DebugPrintf("-- telling new player %s to connect to existing players\n", address_to_str(&joiner_peer->address));
+	while( player )
+	{
+		ENetPeer * peer = player->data;
+		p2p_address_packet_t packet;
+		packet.type = NEW_PLAYER;
+		packet.address = peer->address;
+		network_send( joiner, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+		DebugPrintf("-- sent new player event for existing player %s\n", address_to_str(&peer->address));
+		player = player->next;
+	}
+	// still need to send a new player event for me
+	{
+		p2p_address_packet_t packet;
+		packet.type = NEW_PLAYER;
+		// dummy address cause we might not know our external_address yet...
+		packet.address.host = 0;
+		packet.address.port = 0;
+		network_send( joiner, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+		DebugPrintf("-- sent new player event for HOST\n");
+	}
+}
+
+static void new_player( ENetPeer * peer )
+{
+	network_peer_data_t * peer_data = peer->data;
+
+	DebugPrintf("-- player '%s' joined the game.\n", peer_data->player->name);
+
+	if( i_am_host )
+	{
+		send_new_player_event( &peer->address ); // player never receives his own new player event
+		send_new_player_event_for_existing_players( peer_data->player );
+		tell_peer_to_connect_to_synchers( peer_data->player );
+	}
+
+	// once host starts sending me new player events then I'm in the game
+	if( network_state != NETWORK_CONNECTED )
+	{
+		DebugPrintf("-- we have joined the game.\n");
+		network_state = NETWORK_CONNECTED;
+		network_event( NETWORK_JOIN, NULL   );  // we joined the game
+		// host will now send us new player events for all new players
+	}
+
+	append_player( peer_data->player );
+	peer_data->state = PLAYING;
+	network_event( NETWORK_JOIN, peer_data->player );  // new player joined
+
+	if( peer == host )
+		network_event( NETWORK_HOST, peer_data->player );  // host has been set
+
+	// sure they could just use the new player event
+	// but for simplicity they may desire to rely on one event for names
+	network_event( NETWORK_NAME, peer_data->player );
 }
 
 static void peer_connected_to( ENetPeer * peer, ENetAddress * address )
@@ -713,17 +787,7 @@ static void peer_connected_to( ENetPeer * peer, ENetAddress * address )
 	if( all_players_on_connected_list( joiner_data->connected_peers, joiner ) )
 	{
 		DebugPrintf("-- all players have connected to %s\n", address_to_str(address));
-		DebugPrintf("-- sending new player event to everyone\n");
-		{
-			p2p_address_packet_t packet;
-			packet.type = NEW_PLAYER;
-			packet.address = peer->address;
-			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-		}
-		DebugPrintf("-- STUB need to tell new player to connect to synchers\n");
-		// other wise multiple players joining at once would block each other
-		//DebugPrintf("-- telling new player to connect to synching connections\n");
-		//tell_peer_to_connect_to_synchers( joiner );
+		new_player( joiner );
 	}
 }
 
@@ -750,26 +814,18 @@ static void new_packet( ENetEvent * event )
 				{
 					p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 					ENetAddress * address = &packet->address;
-					DebugPrintf("-- host sent us new player event for connection %s\n", address_to_str(address));
-					DebugPrintf("-- STUB: need to handle new player event\n");
-					// check if we are the new player
-					if( my_external_address->host == address->host && my_external_address->port == address->port )
+					// special message from host to fire his new player event
+					if( address->host == 0 && address->port == 0 )
 					{
-						DebugPrintf("-- we are the new player\n");
+						new_player( host );
 					}
-					// we are not the new player
+					// new player event for another player
 					else
 					{
 						ENetPeer * new_peer = find_peer_by_address( address );
-						if(new_peer)
-						{
-							DebugPrintf("-- someone else is the new player\n");
-						}
-						else
-						{
-							DebugPrintf("-- could not find peer by address...\n");
-							break;
-						}
+						DebugPrintf("-- host sent us new player event for connection %s\n", address_to_str(address));
+						if(new_peer)	new_player( new_peer );
+						else			DebugPrintf("-- could not find new player by address...\n");
 					}
 				}
 				// peer is not the host
@@ -785,42 +841,17 @@ static void new_packet( ENetEvent * event )
 				p2p_name_packet_t* packet = (p2p_name_packet_t*) event->packet->data;
 				char* name = packet->name;
 
-				// name update message
-				if ( peer_data->state == PLAYING )
-				{
-					if ( peer_data->player )
-					{
-						DebugPrintf("-- '%s' has updated their name to '%s'.\n",
-									peer_data->player->name, name);
-						update_player_name( peer_data->player, name );
-						network_event( NETWORK_NAME, peer_data->player ); // new name
-						return;
-					}
-				}
+				DebugPrintf("-- '%s' @ %s has updated their name to '%s'.\n",
+							peer_data->player->name, address_to_str(&peer->address), name);
 
-				// initial name message
-				else
-				{
-					network_player_t * player = create_player( name, peer );
-					peer_data->state = PLAYING;
-					DebugPrintf("-- player '%s' joined the game.\n",player->name);
-					if ( network_state == NETWORK_CONNECTING )
-					{
-						DebugPrintf("-- we have joined the game.\n");
-						network_state = NETWORK_CONNECTED;
-						host = peer;
-						network_event( NETWORK_JOIN, NULL   );  // we joined the game
-						network_event( NETWORK_JOIN, player );  // new player joined
-						network_event( NETWORK_HOST, host   );  // host has been set
-					}
-					else
-					{
-						network_event( NETWORK_JOIN, player );  // new player joined
-					}
-					// sure they could just use the new player event
-					// but for simplicity they may desire to rely on one event for names
-					network_event( NETWORK_NAME, player );
-				}
+				update_player_name( peer_data->player, name );
+
+				if( peer_data->state == PLAYING )
+					network_event( NETWORK_NAME, peer_data->player );
+
+				// special case for first player in game
+				if( i_am_host && network_players.length == 0 )
+					new_player( peer );
 			}
 			break;
 		case DISCONNECT:

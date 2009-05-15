@@ -1893,11 +1893,17 @@ void CheckJoinStatus( int * i )
 
 	switch( network_state )
 	{
+	// at this point network_event will take over and change the screen
 	case NETWORK_CONNECTED:
 		update_join_status("Connected...");
+		strncpy( &show_f1[0], "", 100 );
+		break;
+	case NETWORK_SYNCHING:
+		update_join_status("Synching with other players please wait...");
+		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_CONNECTING:
-		update_join_status("Connecting to game please wait...");
+		update_join_status("Connecting to host please wait...");
 		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_DISCONNECTED:
