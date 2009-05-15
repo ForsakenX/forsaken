@@ -55,6 +55,14 @@ static int default_port		= 2300;
 
 /*
  *
+ * Prototypes
+ *
+ */
+
+static char* address_to_str( ENetAddress * address );
+
+/*
+ *
  *  peer helpers
  *
  */
@@ -82,8 +90,8 @@ static void init_peer( ENetPeer * peer )
 		peer->data = malloc( sizeof(network_peer_data_t) );
 		data = peer->data;
 		data->connected_peers = malloc( sizeof(void*) * max_peers );
-		memset( data->connected_peers, 0, sizeof(data->connected_peers) );
 	}
+	memset( data->connected_peers, 0, sizeof(data->connected_peers) );
 	data->state = UNUSED;
 	data->player = NULL;
 }
@@ -149,11 +157,7 @@ static int enet_setup( char* str_address, int port )
 
 	address.port = (port) ? port : default_port;
 
-	{
-		char ip[INET_ADDRSTRLEN] = "";
-		enet_address_get_host_ip( &address, &ip[0], INET_ADDRSTRLEN );
-		DebugPrintf("enet_setup: address %s port %d\n",ip,address.port);
-	}
+	DebugPrintf("enet_setup: address %s\n", address_to_str(&address));
 
 	enet_host = enet_host_create( &address, max_peers, 0, 0 );
 
@@ -182,11 +186,7 @@ static int enet_connect( char* str_address, int port )
 
 	address.port = (port) ? port : default_port;
 	
-	{
-		char ip[INET_ADDRSTRLEN] = "";
-		enet_address_get_host_ip( &address, &ip[0], INET_ADDRSTRLEN );
-		DebugPrintf("enet_connect: connecting to address %s port %d\n",ip,address.port);
-	}
+	DebugPrintf("enet_connect: connecting to address %s\n", address_to_str(&address));
 
 	peer = enet_host_connect( enet_host, &address, max_channels );
 
@@ -295,6 +295,15 @@ static void migrate_host( void )
  *  internal helpers
  *
  */
+
+// returns host:port syntax copy data right away as ip is overwritten next call
+static char* address_to_str( ENetAddress * address )
+{
+	static char ip[INET_ADDRSTRLEN+10] = "";
+	enet_address_get_host_ip( address, &ip[0], INET_ADDRSTRLEN );
+	sprintf( &ip[0], "%s:%d", &ip, address->port );
+	return &ip[0];
+}
 
 static enet_uint32 convert_flags( network_flags_t flags )
 {
@@ -457,12 +466,8 @@ static void new_connection( ENetPeer * peer )
 	connections++;
 
 	// print debug info
-	{
-		char ip[INET_ADDRSTRLEN] = "";
-		enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
-		DebugPrintf("new_connection: from address %s port %d connection count now %d.\n",
-					ip, peer->address.port, connections);
-	}
+	DebugPrintf("new_connection: from address %s connection count now %d.\n", 
+				address_to_str(&peer->address), connections);
 
 	// tell everyone to connect to new player
 	if ( i_am_host )
@@ -527,17 +532,11 @@ static void lost_connection( ENetPeer * peer )
 
 	// print debug info
 	{
-		char name[NETWORK_MAX_NAME_LENGTH+1] = "NULL";
-		char ip[INET_ADDRSTRLEN] = "";
-		enet_address_get_host_ip( &peer->address, &ip[0], INET_ADDRSTRLEN );
+		char * name = "NULL";
 		if( peer_data->state == PLAYING )
-		{
-			network_player_t * player = peer_data->player;
-			if( player->name )
-				strncpy( name, player->name, NETWORK_MAX_NAME_LENGTH+1 );
-		}
-		DebugPrintf("lost_connection: from %s '%s' @ %s:%d, connections count %d.\n",
-			( host==peer ) ? "host" : "player", name, ip, peer->address.port, connections );
+			name = peer_data->player->name;
+		DebugPrintf("lost_connection: from %s '%s' @ %s:%d, connection count now %d.\n",
+			( host==peer ) ? "host" : "player",	name, address_to_str(&peer->address), connections );
 	}
 
 	// connecting to game failed
@@ -619,13 +618,21 @@ static void new_packet( ENetEvent * event )
 			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 				ENetAddress * address = &packet->address;
-				ENetPeer* new_peer = enet_host_connect( enet_host, address, max_channels );
-				char ip[INET_ADDRSTRLEN] = "";
-				enet_address_get_host_ip( address, &ip[0], INET_ADDRSTRLEN );
-				DebugPrintf("new_packet: host told us to connect to address %s port %d.\n",
-							ip, peer->address.port );
-				if(!new_peer)
-					DebugPrintf("-- enet_host_connect returned NULL.\n");
+				// player tells host that he successfully connected to new connection
+				if( i_am_host )
+				{
+					DebugPrintf("new_packet: player %s", address_to_str( &peer->address ));
+					DebugPrintf("successfully connected with %s\n",	address_to_str( address ));
+				}
+				// host tells player to connect to a new connection
+				else
+				{
+					ENetPeer* new_peer;
+					DebugPrintf("new_packet: host told us to connect to address %s\n", address_to_str( address ));
+					new_peer = enet_host_connect( enet_host, address, max_channels );
+					if(!new_peer)
+						DebugPrintf("-- enet_host_connect returned NULL.\n");
+				}
 			}
 			break;
 		case IP_REQUEST:
@@ -642,11 +649,7 @@ static void new_packet( ENetEvent * event )
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
 				my_external_address = malloc( sizeof( ENetAddress ) );
 				*my_external_address = packet->address;
-				{				
-					char ip[INET_ADDRSTRLEN] = "";
-					enet_address_get_host_ip( my_external_address, &ip[0], INET_ADDRSTRLEN );
-					DebugPrintf("*** external address set to: %s:%d.\n", ip, my_external_address->port );
-				}
+				DebugPrintf("*** external address set to: %s\n", address_to_str(my_external_address) );
 			}
 			break;
 
@@ -673,10 +676,8 @@ static void new_packet( ENetEvent * event )
 		// not a valid player
 		else
 		{
-			char ip[INET_ADDRSTRLEN] = "";
-			enet_address_get_host_ip( &event->peer->address, &ip[0], INET_ADDRSTRLEN );
-			DebugPrintf("new_packet: got application packet from non player, address %s port %d.\n",
-						ip, event->peer->address.port );	
+			DebugPrintf("new_packet: got application packet from non player at address %s\n",
+						address_to_str(&peer->address) );	
 		}
 	}
 	enet_packet_destroy( event->packet );
