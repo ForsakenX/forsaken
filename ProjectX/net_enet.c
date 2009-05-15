@@ -123,6 +123,21 @@ static void cleanup_peers( void )
 		cleanup_peer( &enet_host->peers[x] );
 }
 
+static ENetPeer * find_peer_by_address( ENetAddress * address )
+{
+	size_t x;
+	for( x = 0; x < enet_host->peerCount; x++ )
+	{
+		ENetPeer * peer = &enet_host->peers[x];
+		network_peer_data_t * peer_data = peer->data;
+		if( peer_data->state != UNUSED )
+			if( peer->address.host == address->host &&
+				peer->address.port == address->port )
+					return peer;
+	}
+	return NULL;
+}
+
 /*
  *
  *  enet helpers
@@ -437,23 +452,6 @@ static void disconnect_all( void )
  *
  */
 
-static ENetPeer * find_joiner_by_address( ENetAddress * address )
-{
-	size_t x;
-	DebugPrintf("find_joiner_by_address: STUB need joiners to have SYNCHING state\n");
-	for( x = 0; x < enet_host->peerCount; x++ )
-	{
-		ENetPeer * peer = &enet_host->peers[x];
-		network_peer_data_t * peer_data = peer->data;
-		//if( peer_data->state == SYNCHING )
-		if( peer_data->state != UNUSED )
-			if( peer->address.host == address->host &&
-				peer->address.port == address->port )
-					return peer;
-	}
-	return NULL;
-}
-
 static void add_peer_to_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
 {
 	int x;
@@ -504,7 +502,7 @@ static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer *
 static void peer_connected_to( ENetPeer * peer, ENetAddress * address )
 {
 	network_peer_data_t * joiner_data;
-	ENetPeer * joiner = find_joiner_by_address( address );
+	ENetPeer * joiner = find_peer_by_address( address );
 	if( ! joiner )
 	{
 		DebugPrintf("-- ERROR: failed to find joiner by address\n");
@@ -526,10 +524,11 @@ static void peer_connected_to( ENetPeer * peer, ENetAddress * address )
  */
 
 typedef enum {
-	NAME		= 2, // player tells us his name
-	CONNECT		= 4, // host tells us to connect to another player
-	IP_REQUEST	= 6, // someone asked for their external ip address
-	IP_RESPONSE	= 8,
+	NAME		= 2,  // player tells us his name
+	CONNECT		= 4,  // host tells player to connect to another player
+	DISCONNECT	= 6,  // tell host connection broken, or tell players to break
+	IP_REQUEST	= 8,  // someone asked for their external ip address
+	IP_RESPONSE	= 10,
 } p2p_event_t;
 
 typedef struct {
@@ -643,26 +642,62 @@ static void lost_connection( ENetPeer * peer )
 			( host==peer ) ? "host" : "player",	name, address_to_str(&peer->address), connections );
 	}
 
-	// connecting to game failed
-	if( network_state == NETWORK_CONNECTING && host == peer )
+	// I'm still trying to connect to host
+	if( network_state == NETWORK_CONNECTING )
 	{
-		network_state = NETWORK_DISCONNECTED;
+		// if failed connection is host
+		if ( host == peer )
+
+			// we failed to connect
+			network_state = NETWORK_DISCONNECTED;
 	}
 
-	// player left the game
-	else if(peer_data->state == PLAYING)
+	// we are in the game
+	else if ( network_state == NETWORK_CONNECTED ) 
 	{
-		network_event( NETWORK_LEFT,  peer_data->player );
-		destroy_player( peer_data->player );
-		peer_data->player = NULL;
-		if ( host == peer )
+		// backup the address so we can kill peer before we broadcast
+		ENetAddress address = peer->address;
+
+		// if player was in the game
+		if( peer_data->state == PLAYING )
 		{
-			host = NULL;
-			migrate_host();
+			// we lost a player
+			network_event( NETWORK_LEFT,  peer_data->player );
+			destroy_player( peer_data->player );
+			peer_data->player = NULL;
+
+			// host left the game
+			if ( host == peer )
+			{
+				host = NULL;
+				migrate_host();
+			}
+		}
+
+		// if i am host
+		if( i_am_host )
+		{
+			// tell everyone to drop the connection
+			p2p_address_packet_t packet;
+			packet.type = DISCONNECT;
+			packet.address = address;
+			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+			DebugPrintf("-- telling everyone to drop connection\n");
+		}
+
+		// I am not the host
+		else
+		{
+			network_peer_data_t * host_data = host->data;
+			p2p_address_packet_t packet;
+			packet.type = DISCONNECT;
+			packet.address = address;
+			network_send( host_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+			DebugPrintf("-- telling host that we lost connection\n");
 		}
 	}
 
-	init_peer( peer ); // cleanup the peer
+	init_peer( peer ); // cleanup the peer data
 }
 
 static void new_packet( ENetEvent * event )
@@ -685,7 +720,7 @@ static void new_packet( ENetEvent * event )
 				{
 					if ( peer_data->player )
 					{
-						DebugPrintf("new_packet: '%s' has updated their name to '%s'.\n",
+						DebugPrintf("-- '%s' has updated their name to '%s'.\n",
 									peer_data->player->name, name);
 						update_player_name( peer_data->player, name );
 						network_event( NETWORK_NAME, peer_data->player ); // new name
@@ -698,7 +733,7 @@ static void new_packet( ENetEvent * event )
 				{
 					network_player_t * player = create_player( name, peer );
 					peer_data->state = PLAYING;
-					DebugPrintf("new_packet: player '%s' joined the game.\n",player->name);
+					DebugPrintf("-- player '%s' joined the game.\n",player->name);
 					if ( network_state == NETWORK_CONNECTING )
 					{
 						DebugPrintf("-- we have joined the game.\n");
@@ -718,6 +753,54 @@ static void new_packet( ENetEvent * event )
 				}
 			}
 			break;
+		case DISCONNECT:
+			{
+				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
+				ENetAddress * address = &packet->address;
+				ENetPeer * bad_peer = find_peer_by_address( address );
+				if(!bad_peer) break; // finished
+				// i am the host
+				if( i_am_host )
+				{
+					// player telling host that they failed to connect to new connection
+					if( bad_peer->state == SYNCHING )
+					{			
+						// tell everyone to drop the connect
+						p2p_address_packet_t packet;
+						packet.type = DISCONNECT;
+						packet.address = *address;
+						network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+						DebugPrintf("-- telling everyone to drop new connection %s ", address_to_str(address) );
+						DebugPrintf("cause %s failed to connect to them...\n", address_to_str(&peer->address));
+						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
+					}
+					else
+					{
+						// tell them to reconnect cause bad_peer is valid
+						p2p_address_packet_t packet;
+						packet.type = CONNECT;
+						packet.address = *address;
+						network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+						DebugPrintf("-- telling %s to reconnect to ", address_to_str(&peer->address));
+						DebugPrintf("valid player %s cause they lost connection...\n", address_to_str(address));
+					}
+				}
+				// if not the host
+				else
+				{
+					// host is telling us to disconnect from a player
+					if( peer == host )
+					{
+						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
+					}
+					else
+					{
+						DebugPrintf("-- %s told us to disconnect from a connection but they are not the host...\n",
+									address_to_str(&peer->address));
+					}
+				}
+			}
+			break;
 		case CONNECT:
 			{
 				p2p_address_packet_t * packet = (p2p_address_packet_t*) event->packet->data;
@@ -725,16 +808,32 @@ static void new_packet( ENetEvent * event )
 				// player tells host that he successfully connected to new connection
 				if( i_am_host )
 				{
-					DebugPrintf("new_packet: player '%s' %s ", peer_data->player->name, address_to_str( &peer->address ));
-					DebugPrintf("successfully connected with %s\n",	address_to_str( address ));
-					peer_connected_to( peer, address );
+					ENetPeer * connector = find_peer_by_address( address );
+					// if we are connected to this connection
+					if( connector )
+					{
+						peer_connected_to( peer, address );
+						DebugPrintf("-- player '%s' %s ", peer_data->player->name, address_to_str( &peer->address ));
+						DebugPrintf("successfully connected with %s\n",	address_to_str( address ));
+					}
+					// if we are not connected to this connection
+					else
+					{
+						// tell the player to drop the connection
+						p2p_address_packet_t packet;
+						packet.type = DISCONNECT;
+						packet.address = *address;
+						network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+						DebugPrintf("-- telling %s to drop new connection ", address_to_str(&peer->address));
+						DebugPrintf("%s because we are not connected to them...\n", address_to_str(address) );
+					}
 				}
 				// host tells player to connect to a new connection
 				else
 				{
 					ENetPeer* new_peer;
 					network_peer_data_t * new_peer_data;
-					DebugPrintf("new_packet: host told us to connect to address %s\n", address_to_str( address ));
+					DebugPrintf("-- host told us to connect to address %s\n", address_to_str( address ));
 					new_peer = enet_host_connect( enet_host, address, max_channels );
 					if(!new_peer)
 						DebugPrintf("-- enet_host_connect returned NULL.\n");
@@ -762,7 +861,7 @@ static void new_packet( ENetEvent * event )
 			break;
 
 		default:
-			DebugPrintf("new_packet: recieved unknown packet type: %d\n",packet->type);
+			DebugPrintf("-- recieved unknown packet type: %d\n",packet->type);
 		}
 
 	}
@@ -784,7 +883,7 @@ static void new_packet( ENetEvent * event )
 		// not a valid player
 		else
 		{
-			DebugPrintf("new_packet: got application packet from non player at address %s\n",
+			DebugPrintf("-- got application packet from non player at address %s\n",
 						address_to_str(&peer->address) );	
 		}
 	}
