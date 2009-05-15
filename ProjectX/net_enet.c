@@ -79,7 +79,7 @@ typedef enum {
 typedef struct {
 	network_peer_state_t state;
 	network_player_t * player;
-	ENetPeer * connected_peers; // used by host to keep track of connections
+	ENetPeer ** connected_peers; // used by host to keep track of connections
 } network_peer_data_t;
 
 static void init_peer( ENetPeer * peer )
@@ -420,7 +420,7 @@ static void destroy_players( void )
 	network_players.last   = NULL;
 }
 
-void disconnect_all( void )
+static void disconnect_all( void )
 {
 	size_t x;
 	for( x = 0; x < enet_host->peerCount; x++ )
@@ -429,6 +429,94 @@ void disconnect_all( void )
 			enet_peer_disconnect_now( &enet_host->peers[x], 0 );
 	}
 	init_peers();
+}
+
+/*
+ *
+ *  hand shaking helpers
+ *
+ */
+
+static ENetPeer * find_joiner_by_address( ENetAddress * address )
+{
+	size_t x;
+	DebugPrintf("find_joiner_by_address: STUB need joiners to have SYNCHING state\n");
+	for( x = 0; x < enet_host->peerCount; x++ )
+	{
+		ENetPeer * peer = &enet_host->peers[x];
+		network_peer_data_t * peer_data = peer->data;
+		//if( peer_data->state == SYNCHING )
+		if( peer_data->state != UNUSED )
+			if( peer->address.host == address->host &&
+				peer->address.port == address->port )
+					return peer;
+	}
+	return NULL;
+}
+
+static void add_peer_to_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
+{
+	int x;
+	for( x = 0; x < max_peers; x++ )
+	{
+		ENetPeer * connected = connected_list[x];
+		if( connected == peer )
+		{
+			DebugPrintf("-- peer already on connected list...\n");
+			return; // already added
+		}
+		if( connected == NULL )
+		{
+			DebugPrintf("-- added peer to connected list...\n");
+			connected_list[x] = peer;
+			return; // added
+		}
+	}
+	DebugPrintf("-- connected list is already full...\n");
+}
+
+static int peer_on_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
+{
+	int x;
+	for( x = 0; x < max_peers; x++ )
+		if( peer == connected_list[x] )
+			return 1;
+	return 0;
+}
+
+static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer * joiner )
+{
+	size_t x;
+	DebugPrintf("all_players_on_connected_list: STUB need joiners to have SYNCHING state\n");
+	for( x = 0; x < enet_host->peerCount; x++ )
+	{
+		ENetPeer * peer = &enet_host->peers[x];
+		network_peer_data_t * peer_data = peer->data;
+		if( peer_data->state != PLAYING ) continue;
+		if( peer == joiner ) continue;
+		if( ! peer_on_connected_list( connected_list, peer ) )
+			return 0;
+	}
+	return 1;
+}
+
+// peer has connected with address
+static void peer_connected_to( ENetPeer * peer, ENetAddress * address )
+{
+	network_peer_data_t * joiner_data;
+	ENetPeer * joiner = find_joiner_by_address( address );
+	if( ! joiner )
+	{
+		DebugPrintf("-- ERROR: failed to find joiner by address\n");
+		return;
+	}
+	joiner_data = joiner->data;
+	add_peer_to_connected_list( joiner_data->connected_peers, peer );
+	if( all_players_on_connected_list( joiner_data->connected_peers, joiner ) )
+	{
+		DebugPrintf("-- all players have connected to %s\n", address_to_str(address));
+		DebugPrintf("-- STUB: need to send new player event\n");
+	}
 }
 
 /*
@@ -469,21 +557,31 @@ static void new_connection( ENetPeer * peer )
 	DebugPrintf("new_connection: from address %s connection count now %d.\n", 
 				address_to_str(&peer->address), connections);
 
-	// tell everyone to connect to new player
+	// i am the host
 	if ( i_am_host )
 	{
-		p2p_address_packet_t packet;
-		packet.type = CONNECT;
-		packet.address = peer->address;
-		network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-		peer_data->state = SYNCHING;
-		DebugPrintf("-- telling everyone to connect to new connection.\n");
+		// tell everyone to connect to new player
+		if( network_players.length > 0 )
+		{
+			p2p_address_packet_t packet;
+			packet.type = CONNECT;
+			packet.address = peer->address;
+			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+			peer_data->state = SYNCHING;
+			DebugPrintf("-- telling everyone to connect to new connection.\n");
+		}
+
+		// no players exist yet
+		else
+		{
+			peer_data->state = CONNECTED;
+		}
 	}
 
 	// i am not host
 	else
 	{
-		// we requested this connection
+		// if we started this connection
 		if( peer_data->state == CONNECTING )
 		{
 			// we connected to the host
@@ -494,7 +592,13 @@ static void new_connection( ENetPeer * peer )
 			// we connected to a new player
 			else
 			{
-				DebugPrintf("-- STUB: need to tell the host I successfully connected with player...\n");
+				// tell the host that we connected successfully
+				network_peer_data_t * host_data = host->data;
+				p2p_address_packet_t packet;
+				packet.type = CONNECT;
+				packet.address = peer->address;
+				network_send( host_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+				DebugPrintf("-- telling host that we have successfully connect to new player...\n");
 			}
 		}
 		peer_data->state = CONNECTED;
@@ -535,7 +639,7 @@ static void lost_connection( ENetPeer * peer )
 		char * name = "NULL";
 		if( peer_data->state == PLAYING )
 			name = peer_data->player->name;
-		DebugPrintf("lost_connection: from %s '%s' @ %s:%d, connection count now %d.\n",
+		DebugPrintf("lost_connection: from %s '%s' @ %s, connection count now %d.\n",
 			( host==peer ) ? "host" : "player",	name, address_to_str(&peer->address), connections );
 	}
 
@@ -621,17 +725,21 @@ static void new_packet( ENetEvent * event )
 				// player tells host that he successfully connected to new connection
 				if( i_am_host )
 				{
-					DebugPrintf("new_packet: player %s", address_to_str( &peer->address ));
+					DebugPrintf("new_packet: player '%s' %s ", peer_data->player->name, address_to_str( &peer->address ));
 					DebugPrintf("successfully connected with %s\n",	address_to_str( address ));
+					peer_connected_to( peer, address );
 				}
 				// host tells player to connect to a new connection
 				else
 				{
 					ENetPeer* new_peer;
+					network_peer_data_t * new_peer_data;
 					DebugPrintf("new_packet: host told us to connect to address %s\n", address_to_str( address ));
 					new_peer = enet_host_connect( enet_host, address, max_channels );
 					if(!new_peer)
 						DebugPrintf("-- enet_host_connect returned NULL.\n");
+					new_peer_data = new_peer->data;
+					new_peer_data->state = CONNECTING;
 				}
 			}
 			break;
