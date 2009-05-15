@@ -582,10 +582,6 @@ static void new_connection( ENetPeer * peer )
 			}
 		}
 		peer_data->state = CONNECTED;
-
-		// once we know if we are already synched into the cloud
-		// then we can drop un-invited connections
-		DebugPrintf("-- STUB: need to deny un-invited connections\n");
 	}
 
 	// Send my player name to the new connection
