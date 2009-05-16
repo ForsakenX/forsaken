@@ -1907,7 +1907,11 @@ void CheckJoinStatus( int * i )
 		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_DISCONNECTED:
-		update_join_status("Connection failed...");
+		update_join_status("Failed to connect to host...");
+		strncpy( &show_f1[0], "( press F1 to retry )", 100 );
+		break;
+	case NETWORK_SYNCH_FAILED:
+		update_join_status("Failed to synch with other players...");
 		strncpy( &show_f1[0], "( press F1 to retry )", 100 );
 		break;
 	}

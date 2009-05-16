@@ -30,6 +30,7 @@ typedef enum {
 	NETWORK_CONNECTING,		// connecting to host
 	NETWORK_DISCONNECTED,	// not connect yet
 	NETWORK_SYNCHING,		// connecting to all players
+	NETWORK_SYNCH_FAILED,	// failed to synch with other players
 } network_state_t;
 
 network_state_t network_state;

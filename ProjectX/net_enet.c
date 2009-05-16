@@ -623,15 +623,21 @@ static void lost_connection( ENetPeer * peer )
 	// I'm still trying to connect to host
 	if( network_state == NETWORK_CONNECTING )
 	{
-		// if failed connection is host
+		// we failed to connect to host
 		if ( host == peer )
-
-			// we failed to connect
 			network_state = NETWORK_DISCONNECTED;
 	}
 
+	// I'm trying to synch with everyone
+	if( network_state == NETWORK_SYNCHING )
+	{
+		// we failed to connect to host
+		if ( host == peer )
+			network_state = NETWORK_SYNCH_FAILED;
+	}
+
 	// we are in the game
-	else if ( network_state == NETWORK_CONNECTED ) 
+	if ( network_state == NETWORK_CONNECTED ) 
 	{
 		// backup the address so we can kill peer before we broadcast
 		ENetAddress address = peer->address;
@@ -859,19 +865,19 @@ static void new_packet( ENetEvent * event )
 				// i am the host
 				if( i_am_host )
 				{
+					network_peer_data_t * bad_peer_data = bad_peer->data;
 					// player telling host that they failed to connect to new connection
-					if( bad_peer->state == SYNCHING )
+					if( bad_peer_data->state == SYNCHING )
 					{			
-						// tell everyone to drop the connect
-						p2p_address_packet_t packet;
-						packet.type = DISCONNECT;
-						packet.address = *address;
-						network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-						DebugPrintf("-- telling everyone to drop new connection %s ", address_to_str(address) );
+						// tell everyone to drop the connection
+						DebugPrintf("-- disconnecting %s ", address_to_str(address) );
 						DebugPrintf("cause %s failed to connect to them...\n", address_to_str(&peer->address));
-						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
+						// lost connection event will fire
+						// this will send a DISCONNECT message for us to everyone
+						// and will cleanup the peer and everything else
+						enet_peer_disconnect(bad_peer,0);
 					}
-					else
+					if( bad_peer_data->state == PLAYING )
 					{
 						// tell them to reconnect cause bad_peer is valid
 						p2p_address_packet_t packet;
