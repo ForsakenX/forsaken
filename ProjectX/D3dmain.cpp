@@ -176,7 +176,7 @@ int cliSleep = 0;
  * RenderScene until a quit message is received.
  */
 
-
+extern "C" void network_cleanup( void );
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 
@@ -264,6 +264,9 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
 FAILURE:
+
+	// cleanup networking
+	network_cleanup();
 
 	// free the cursor to move outside the window
 	ClipCursor( NULL );
