@@ -86,6 +86,7 @@ typedef enum {
 typedef struct {
 	network_peer_state_t state;
 	network_player_t * player;
+	int connect_port;
 	ENetPeer ** connected_peers; // used by host to keep track of connections
 } network_peer_data_t;
 
@@ -101,6 +102,7 @@ static void init_peer( ENetPeer * peer )
 	memset( data->connected_peers, 0, sizeof(data->connected_peers) );
 	data->state = UNUSED;
 	data->player = NULL;
+	data->connect_port = default_port;
 }
 
 static void init_peers( void )
@@ -138,8 +140,9 @@ static ENetPeer * find_peer_by_address( ENetAddress * address )
 		ENetPeer * peer = &enet_host->peers[x];
 		network_peer_data_t * peer_data = peer->data;
 		if( peer_data->state != UNUSED )
-			if( peer->address.host == address->host &&
-				peer->address.port == address->port )
+			if( peer->address.host == address->host )
+				if ( peer->address.port == address->port ||
+					 peer_data->connect_port == address->port )
 					return peer;
 	}
 	return NULL;
@@ -502,12 +505,13 @@ static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer *
  */
 
 typedef enum {
-	NAME		= 2,  // player tells us his name
-	CONNECT		= 4,  // host tells player to connect to another player
-	DISCONNECT	= 6,  // tell host connection broken, or tell players to break
-	IP_REQUEST	= 8,  // someone asked for their external ip address
-	IP_RESPONSE	= 10,
-	NEW_PLAYER	= 12, // host tells others that player is now synched
+	NAME,			// player tells us his name
+	CONNECT,		// host tells player to connect to another player
+	DISCONNECT,		// tell host connection broken, or tell players to break
+	IP_REQUEST,		// someone asked for their external ip address
+	IP_RESPONSE,
+	NEW_PLAYER,		// host tells others that player is now synched
+	CONNECT_PORT,	// player telling host which port people should connect to
 } p2p_event_t;
 
 typedef struct {
@@ -524,6 +528,11 @@ typedef struct {
 	ENetAddress address;
 } p2p_address_packet_t;
 
+typedef struct {
+	p2p_event_t type;
+	int number;
+} p2p_number_packet_t;
+
 static void new_connection( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
@@ -536,29 +545,8 @@ static void new_connection( ENetPeer * peer )
 	DebugPrintf("new_connection: from address %s connection count now %d.\n", 
 				address_to_str(&peer->address), connections);
 
-	// i am the host
-	if ( i_am_host )
-	{
-		// tell everyone to connect to new player
-		if( network_players.length > 0 )
-		{
-			p2p_address_packet_t packet;
-			packet.type = CONNECT;
-			packet.address = peer->address;
-			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-			peer_data->state = SYNCHING;
-			DebugPrintf("-- telling everyone to connect to new connection.\n");
-		}
-
-		// no players exist yet
-		else
-		{
-			peer_data->state = CONNECTED;
-		}
-	}
-
-	// i am not host
-	else
+	// I'm not the host
+	if ( ! i_am_host )
 	{
 		// if we started this connection
 		if( peer_data->state == CONNECTING )
@@ -566,8 +554,15 @@ static void new_connection( ENetPeer * peer )
 			// we connected to the host
 			if( peer == host )
 			{
-				DebugPrintf("-- we have connected to the host...\n");
+				// tell the host my external port people should connect to
+				network_peer_data_t * host_data = host->data;
+				p2p_number_packet_t packet;
 				network_state = NETWORK_SYNCHING;
+				packet.type = CONNECT_PORT;
+				packet.number = my_local_port;
+				network_send( host_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+				DebugPrintf("-- we have connected to the host...\n");
+				DebugPrintf("-- sent my local port to the host...\n");
 			}
 			// we connected to a new player
 			else
@@ -581,8 +576,10 @@ static void new_connection( ENetPeer * peer )
 				DebugPrintf("-- telling host that we have successfully connected to new player...\n");
 			}
 		}
-		peer_data->state = CONNECTED;
 	}
+
+	// set the state of the peer
+	peer_data->state = CONNECTED;
 
 	// Send my player name to the new connection
 	{
@@ -665,6 +662,7 @@ static void lost_connection( ENetPeer * peer )
 			p2p_address_packet_t packet;
 			packet.type = DISCONNECT;
 			packet.address = address;
+			packet.address.port = peer_data->connect_port;
 			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 			DebugPrintf("-- telling everyone to drop connection\n");
 		}
@@ -699,17 +697,20 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 			p2p_address_packet_t packet;
 			packet.type = CONNECT;
 			packet.address = peer->address;
+			packet.address.port = data->connect_port;
 			network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 			DebugPrintf("-- sending new player event for syncher at address %s\n", address_to_str(&peer->address));
 		}
 	}
 }
 
-static void send_new_player_event( ENetAddress * address )
+static void send_new_player_event( ENetPeer * peer )
 {
+	network_peer_data_t * peer_data = peer->data;
 	p2p_address_packet_t packet;
 	packet.type = NEW_PLAYER;
-	packet.address = *address;
+	packet.address = peer->address;
+	packet.address.port = peer_data->connect_port;
 	network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 	DebugPrintf("-- sent new player event to everyone\n");
 }
@@ -718,13 +719,15 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 {
 	ENetPeer * joiner_peer = joiner->data;
 	network_player_t * player = network_players.first;
-	DebugPrintf("-- telling new player %s to connect to existing players\n", address_to_str(&joiner_peer->address));
+	DebugPrintf("-- sending new player events to new player %s for existing players\n", address_to_str(&joiner_peer->address));
 	while( player )
 	{
 		ENetPeer * peer = player->data;
+		network_peer_data_t * peer_data = peer->data;
 		p2p_address_packet_t packet;
 		packet.type = NEW_PLAYER;
 		packet.address = peer->address;
+		packet.address.port = peer_data->connect_port;
 		network_send( joiner, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 		DebugPrintf("-- sent new player event for existing player %s\n", address_to_str(&peer->address));
 		player = player->next;
@@ -749,7 +752,7 @@ static void new_player( ENetPeer * peer )
 
 	if( i_am_host )
 	{
-		send_new_player_event( &peer->address ); // player never receives his own new player event
+		send_new_player_event( peer ); // player never receives his own new player event
 		send_new_player_event_for_existing_players( peer_data->player );
 		tell_peer_to_connect_to_synchers( peer_data->player );
 	}
@@ -803,6 +806,36 @@ static void new_packet( ENetEvent * event )
 		//DebugPrintf("new_packet: system message\n");
 		switch( packet->type )
 		{
+		case CONNECT_PORT:
+				if( i_am_host )
+				{
+					p2p_number_packet_t * packet = (p2p_number_packet_t*) event->packet->data;
+					peer_data->connect_port = packet->number;
+					DebugPrintf("-- connection %s says their connect port is %d\n",
+								address_to_str(&peer->address), peer_data->connect_port );
+					// tell everyone to connect to new player
+					if( network_players.length > 0 )
+					{
+						p2p_address_packet_t packet;
+						packet.type = CONNECT;
+						packet.address = peer->address;
+						packet.address.port = peer_data->connect_port;
+						network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+						peer_data->state = SYNCHING;
+						DebugPrintf("-- telling everyone to connect to new connection.\n");
+					}
+					// no players exist yet
+					else
+					{
+						peer_data->state = CONNECTED;
+					}
+				}
+				else
+				{
+					DebugPrintf("-- connection %s tried to send us a CONNECT_PORT msg but we are not the host...\n",
+								address_to_str(&peer->address));
+				}
+			break;
 		case NEW_PLAYER:
 			if( i_am_host )
 			{
@@ -883,6 +916,7 @@ static void new_packet( ENetEvent * event )
 						p2p_address_packet_t packet;
 						packet.type = CONNECT;
 						packet.address = *address;
+						packet.address.port = peer_data->connect_port;
 						network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 						DebugPrintf("-- telling %s to reconnect to ", address_to_str(&peer->address));
 						DebugPrintf("valid player %s cause they lost connection...\n", address_to_str(address));
