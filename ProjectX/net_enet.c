@@ -335,6 +335,7 @@ static enet_uint32 convert_flags( network_flags_t flags )
 static void update_player( network_player_t* player )
 {
 	ENetPeer * peer = (ENetPeer*) player->data;
+	if(!peer) return;
 	player->ping = peer->roundTripTime;
 	player->packet_loss = peer->packetLoss;
 }

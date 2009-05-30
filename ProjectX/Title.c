@@ -14527,7 +14527,8 @@ void PrintTextItem (TEXTINFO *TextInfo)
 	int i;
 	BOOL newline;
 
-	str = TextInfo->text;
+	if(TextInfo && TextInfo->text)
+		str = TextInfo->text;
 
 	if (!str)
 		str = EmptyString;
