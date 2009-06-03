@@ -693,14 +693,14 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 	{
 		ENetPeer * peer = &enet_host->peers[x];
 		network_peer_data_t * data = peer->data;
-		if( data->state == SYNCHING )
+		if( data->state == SYNCHING && player_peer != peer )
 		{
 			p2p_address_packet_t packet;
 			packet.type = CONNECT;
 			packet.address = peer->address;
 			packet.address.port = data->connect_port;
 			network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-			DebugPrintf("-- sending new player event for syncher at address %s\n", address_to_str(&peer->address));
+			DebugPrintf("-- sending connect for syncher at address %s\n", address_to_str(&peer->address));
 		}
 	}
 }
@@ -1106,7 +1106,9 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 	}
 	while(player)
 	{
-		enet_send_packet( (ENetPeer*) player->data, packet, channel, NO_FLUSH );
+		ENetPeer * peer = (ENetPeer*) player->data;
+		if( ! peer ) return;
+		enet_send_packet( peer, packet, channel, NO_FLUSH );
 		player = player->next;
 	}
 	enet_host_flush( enet_host );
