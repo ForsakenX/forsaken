@@ -90,6 +90,13 @@ typedef struct {
 	ENetPeer ** connected_peers; // used by host to keep track of connections
 } network_peer_data_t;
 
+static void init_connected_list( network_peer_data_t * peer_data )
+{
+	int x;
+	for( x = 0; x < max_peers; x++ )
+		peer_data->connected_peers[x] = NULL;
+}
+
 static void init_peer( ENetPeer * peer )
 {
 	network_peer_data_t * data = peer->data;
@@ -99,7 +106,7 @@ static void init_peer( ENetPeer * peer )
 		data = peer->data;
 		data->connected_peers = malloc( sizeof(void*) * max_peers );
 	}
-	memset( data->connected_peers, 0, sizeof(data->connected_peers) );
+	init_connected_list( data );
 	data->state = UNUSED;
 	data->player = NULL;
 	data->connect_port = default_port;
@@ -456,6 +463,7 @@ static void disconnect_all( void )
 static void add_peer_to_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
 {
 	int x;
+	DebugPrintf("-- adding peer to connected list.\n");
 	for( x = 0; x < max_peers; x++ )
 	{
 		ENetPeer * connected = connected_list[x];
@@ -466,8 +474,8 @@ static void add_peer_to_connected_list( ENetPeer ** connected_list, ENetPeer * p
 		}
 		if( connected == NULL )
 		{
-			DebugPrintf("-- added peer to connected list...\n");
 			connected_list[x] = peer;
+			DebugPrintf("-- added peer to connected list...\n");
 			return; // added
 		}
 	}
@@ -486,7 +494,6 @@ static int peer_on_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
 static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer * joiner )
 {
 	size_t x;
-	DebugPrintf("all_players_on_connected_list: STUB need joiners to have SYNCHING state\n");
 	for( x = 0; x < enet_host->peerCount; x++ )
 	{
 		ENetPeer * peer = &enet_host->peers[x];
@@ -537,6 +544,9 @@ typedef struct {
 static void new_connection( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
+	// some reason connection list was getting dirty
+	// this makes sure it's clean before we commence
+	init_connected_list( peer_data );
 	peer_data->player = create_player( peer );
 
 	// up the connection count
@@ -612,7 +622,7 @@ static void lost_connection( ENetPeer * peer )
 	// print debug info
 	{
 		char * name = "NULL";
-		if( peer_data->state == PLAYING )
+		if( peer_data->player && peer_data->player->name )
 			name = peer_data->player->name;
 		DebugPrintf("lost_connection: from %s '%s' @ %s, connection count now %d.\n",
 			( host==peer ) ? "host" : "player",	name, address_to_str(&peer->address), connections );
