@@ -404,7 +404,9 @@ static void append_player( network_player_t * player )
 static void destroy_player( network_player_t * player )
 {
 	ENetPeer * peer = player->data;
-	network_peer_data_t * peer_data = peer->data;
+	network_peer_data_t * peer_data = NULL;
+	if( peer )
+		peer_data = peer->data;
 
 	// join previous and next players together
 	if( player->prev != NULL )	player->prev->next = player->next;
@@ -419,10 +421,12 @@ static void destroy_player( network_player_t * player )
 
 	// remove peer/player associations
 	player->data = NULL;
-	peer_data->player = NULL;
+	if( peer_data )
+		peer_data->player = NULL;
 
 	// cleanup peer data
-	init_peer( peer );
+	if( peer )
+		init_peer( peer );
 
 	// destroy the player
 	free( player );
