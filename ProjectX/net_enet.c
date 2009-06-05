@@ -650,8 +650,9 @@ static void lost_connection( ENetPeer * peer )
 	// we are in the game
 	if ( network_state == NETWORK_CONNECTED ) 
 	{
-		// backup the address so we can kill peer before we broadcast
+		// backup data so we can kill peer before we broadcast
 		ENetAddress address = peer->address;
+		int connect_port = peer_data->connect_port;
 
 		// if player was in the game
 		if( peer_data->state == PLAYING )
@@ -676,7 +677,7 @@ static void lost_connection( ENetPeer * peer )
 			p2p_address_packet_t packet;
 			packet.type = DISCONNECT;
 			packet.address = address;
-			packet.address.port = peer_data->connect_port;
+			packet.address.port = connect_port;
 			network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 			DebugPrintf("-- telling everyone to drop connection\n");
 		}
@@ -942,6 +943,8 @@ static void new_packet( ENetEvent * event )
 					// host is telling us to disconnect from a player
 					if( peer == host )
 					{
+						DebugPrintf("-- host told us to disconnect from %s\n",
+									address_to_str(&bad_peer->address));
 						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
 					}
 					else
