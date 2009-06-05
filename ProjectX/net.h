@@ -21,6 +21,8 @@
 #ifndef NET_INCLUDED
 #define NET_INCLUDED
 
+#define NETWORK_DEFAULT_PORT 2300
+
 /*
  *  Network State
  */

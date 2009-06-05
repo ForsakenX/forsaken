@@ -51,7 +51,6 @@ char* my_player_name = NULL; // used in net_tracker.c
 static int max_peers		= 25;
 static int max_channels		= 50;
 static int system_channel	= 0;
-static int default_port		= 2300;
 
 /*
  *
@@ -109,7 +108,7 @@ static void init_peer( ENetPeer * peer )
 	init_connected_list( data );
 	data->state = UNUSED;
 	data->player = NULL;
-	data->connect_port = default_port;
+	data->connect_port = NETWORK_DEFAULT_PORT;
 }
 
 static void init_peers( void )
@@ -187,7 +186,7 @@ static int enet_setup( char* str_address, int port )
 	if ( ! str_address )	address.host = ENET_HOST_ANY;
 	else					enet_address_set_host( &address, str_address ); 
 
-	address.port = (port) ? port : default_port;
+	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 
 	DebugPrintf("enet_setup: address %s\n", address_to_str(&address));
 
@@ -216,7 +215,7 @@ static int enet_connect( char* str_address, int port )
 	if ( ! str_address )	address.host = ENET_HOST_ANY;
 	else					enet_address_set_host( &address, str_address ); 
 
-	address.port = (port) ? port : default_port;
+	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 	
 	DebugPrintf("enet_connect: connecting to address %s\n", address_to_str(&address));
 
