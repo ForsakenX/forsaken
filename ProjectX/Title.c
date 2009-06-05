@@ -832,6 +832,7 @@ TEXT MacroText4					= { 0, 0, "", NULL };
 TEXT QuickText					= { 0, 0, "", SendQuickText };
 TEXT QuickTextWhisper			= { 0, 0, "", SendQuickTextWhisper };
 TEXT local_port_str				= { 0, 0, "", NULL };
+TEXT host_port_str				= { 0, 0, "", NULL };
 TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
@@ -1814,8 +1815,6 @@ void JoiningExit(MENU *Menu)
 
 void JoiningEnter(MENU *Menu)
 {
-	char * port;
-
 	DebugPrintf("JoiningEnter\n");
 
 	// initialize levels
@@ -1846,8 +1845,9 @@ void JoiningEnter(MENU *Menu)
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
-	// convert local port
+	// convert ports
 	local_port = atoi(local_port_str.text);
+	host_port = atoi(host_port_str.text);
 
 	// setup
 	if( ! network_setup( &biker_name[0], local_port ) )
@@ -1858,16 +1858,6 @@ void JoiningEnter(MENU *Menu)
 
 	// convert host
 	strncpy( host_address, TCPAddress.text, sizeof(host_address) );
-
-	// try to find port in host line
-	port = strchr(host_address,';'); // forsaken prints : as ;
-	if(!port)	port = strchr(host_address,':'); // from command line
-	if(!port)	host_port = 0;		// default port
-	else							// we found a port
-	{
-		*port = 0; // separate hostname from port
-		host_port = atoi(++port);
-	}
 
 	SetGamePrefs(); // save the last TCPAddress set
 
@@ -1944,8 +1934,10 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 
 		{ 5, 20, 60, 20, 0, "connect",					FONT_Medium,	TEXTFLAG_CentreY,						NULL,				NULL,	SelectConnectionToJoin,		DrawFlatMenuItem,	NULL, 0  },
 
-		{ 5, 40, 60, 40, 0, "address:",					FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
-		{ 5, 50, 60, 50, 0,	"local port",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 40, 60, 40, 0,	"local port",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+
+		{ 5, 55, 60, 55, 0, "host address:",			FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 62, 60, 62, 0,	"host port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&host_port_str,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
 		//{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 
@@ -11390,8 +11382,9 @@ void GetGamePrefs( void )
 
 	// ip / port
 
-	config_get_strncpy( TCPAddress.text,		sizeof(TCPAddress.text),		"HostAddress",	"" );		// remote
-	config_get_strncpy( local_port_str.text,	sizeof(local_port_str.text),	"LocalPort",	"2300" );	// local
+	config_get_strncpy( TCPAddress.text,		sizeof(TCPAddress.text),		"HostAddress",	"" );		// remote address
+	config_get_strncpy( host_port_str.text,		sizeof(host_port_str.text),		"HostPort",		"2300" );	// remote port
+	config_get_strncpy( local_port_str.text,	sizeof(local_port_str.text),	"LocalPort",	"2300" );	// local port
 
 	// tracker
 
@@ -11549,7 +11542,8 @@ void SetGamePrefs( void )
 {
 	// ip / port
 	
-	config_set_str( "HostAddress",	TCPAddress.text );		// remote
+	config_set_str( "HostAddress",	TCPAddress.text );		// remote address
+	config_set_str( "HostPort",		host_port_str.text );	// remote port
 	config_set_str( "LocalPort",	local_port_str.text );	// local
 
 	// tracker

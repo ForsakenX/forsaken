@@ -17,8 +17,10 @@ BOOL tracker_enabled;
 BYTE	WhoIAm;  // which ship number i am
 
 // don't change these directly...
-// instead use local_port_str.text = "2300"
-// and TCPAddress.text = "ip:port"
+// instead use:
+//   local_port_str.text = "2300"
+//   host_port_str.text = "2300"
+//   TCPAddress.text = "192.168.0.30"
 // the values are parsed before calling network_join and network_setup
 int local_port;
 int host_port;

@@ -107,6 +107,7 @@ extern "C" {
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
 	extern TEXT local_port_str;
+	extern TEXT host_port_str;
 
 	extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
@@ -884,9 +885,32 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// set the ip address for game to join
 		else if ( !_stricmp( option, "TCP" ) )
 		{
+			char * port;
+			char address[255];
+
 			IpOnCLI = TRUE;
+
+			// extract the address
 	        option = strtok(NULL, " ");
-			strcpy( (LPSTR)TCPAddress.text, option );
+			strcpy( address, option );
+
+			// try to find a port in the address
+			port = strchr(address,':');
+
+			// if port found assign it
+			if( port )
+			{
+				*port = 0; // separate hostname from port
+				strcpy( (char*) host_port_str.text, ++port );
+			}
+			// other wise set default port
+			else
+			{
+				sprintf( (char*) host_port_str.text, "%d", NETWORK_DEFAULT_PORT );
+			}
+
+			// copy in the hostname
+			strcpy( (LPSTR)TCPAddress.text, address );
 		}
 
 		// don't scale textures
