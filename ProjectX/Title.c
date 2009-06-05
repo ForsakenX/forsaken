@@ -1937,7 +1937,7 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 		{ 5, 40, 60, 40, 0, "host address:",			FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 		{ 5, 48, 60, 48, 0,	"host port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&host_port_str,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
-		{ 5, 60, 60, 60, 0,	"local port",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 60, 60, 60, 0,	"local port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
 		//{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
 
