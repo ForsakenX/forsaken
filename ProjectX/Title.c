@@ -1815,7 +1815,11 @@ void JoiningExit(MENU *Menu)
 
 void JoiningEnter(MENU *Menu)
 {
+	network_return_t rv;
+
 	DebugPrintf("JoiningEnter\n");
+
+	SetGamePrefs(); // save the last TCPAddress set
 
 	// initialize levels
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
@@ -1850,16 +1854,34 @@ void JoiningEnter(MENU *Menu)
 	host_port = atoi(host_port_str.text);
 
 	// setup
-	if( ! network_setup( &biker_name[0], local_port ) )
+	rv = network_setup( &biker_name[0], local_port );
+
+	if( rv != NETWORK_OK )
 	{
-		Msg("Failed to setup network!");
+		char error_str[600] = "Failed to setup network!";
+		switch( rv )
+		{
+		case NETWORK_ERROR_INIT:
+			break;
+		case NETWORK_ERROR_BIND:
+			{
+				char * str = "";
+				if( local_port < 1024 )
+					str = "Ports bellow 1024 are normally restricted.";
+				sprintf(error_str, "%s %s %s %s",
+						"The selected port is in use or invalid.", 
+						str,
+						"Disable the program using the port or",
+						"select a different local port." );
+			}
+			break;
+		}
+		PrintErrorMessage(error_str, 2, &MENU_NEW_ChooseConnectionToJoin, 0);
 		return;
 	}
 
 	// convert host
 	strncpy( host_address, TCPAddress.text, sizeof(host_address) );
-
-	SetGamePrefs(); // save the last TCPAddress set
 
 	network_join( host_address, host_port );
 }

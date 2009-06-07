@@ -169,14 +169,15 @@ static void enet_cleanup( void )
 	DebugPrintf("enet_cleanup: finished\n");
 }
 
-static int enet_setup( char* str_address, int port )
+static network_return_t enet_setup( char* str_address, int port )
 {
 	ENetAddress address;
 
-	if ( ! initialized ){	
+	if ( ! initialized )
+	{
 		if (enet_initialize() != 0)
 		{
-			return -1;
+			return NETWORK_ERROR_INIT;
 		}
 		initialized = 1;
 	}
@@ -194,7 +195,7 @@ static int enet_setup( char* str_address, int port )
 
 	if ( enet_host == NULL )
 	{
-		return -2;
+		return NETWORK_ERROR_BIND;
 	}
 
 	DebugPrintf("enet_setup: initializing peers\n");
@@ -203,7 +204,7 @@ static int enet_setup( char* str_address, int port )
 
 	DebugPrintf("enet_setup: finished\n");
 
-	return 1;
+	return NETWORK_OK;
 }
 
 static int enet_connect( char* str_address, int port )
@@ -1050,7 +1051,7 @@ static void new_packet( ENetEvent * event )
  *
  */
 
-int network_setup( char* player_name, int local_port )
+network_return_t network_setup( char* player_name, int local_port )
 {
 	network_cleanup();
 	DebugPrintf("network_setup: player name set to '%s'\n",

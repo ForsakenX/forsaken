@@ -278,11 +278,13 @@ void copy_in_my_settings( void )
 	UseShortPackets		= MyUseShortPackets;
 }
 
+extern MENU MENU_NEW_CreateGame;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
 	LONGLONG	TempTime;
 	uint32		Seed;
+	network_return_t rv;
 
 	SetGamePrefs();
 
@@ -317,10 +319,30 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	local_port = atoi(local_port_str.text);
 	SetGamePrefs();
 
-	if( ! network_setup( &biker_name[0], local_port ) )
+	rv = network_setup( &biker_name[0], local_port );
+
+	if( rv != NETWORK_OK )
 	{
-		Msg("Failed to setup network!");
-		return FALSE;
+		char error_str[600] = "Failed to setup network!";
+		switch( rv )
+		{
+		case NETWORK_ERROR_INIT:
+			break;
+		case NETWORK_ERROR_BIND:
+			{
+				char * str = "";
+				if( local_port < 1024 )
+					str = "Ports bellow 1024 are normally restricted.";
+				sprintf(error_str, "%s %s %s %s",
+						"The selected port is in use or invalid.", 
+						str,
+						"Disable the program using the port or",
+						"select a different local port under network options." );
+			}
+			break;
+		}
+		PrintErrorMessage(error_str, 2, &MENU_NEW_CreateGame, 0);
+		return TRUE;
 	}
 
 	network_host();
