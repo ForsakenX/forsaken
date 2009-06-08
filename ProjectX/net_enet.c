@@ -108,7 +108,7 @@ static void init_peer( ENetPeer * peer )
 	init_connected_list( data );
 	data->state = UNUSED;
 	data->player = NULL;
-	data->connect_port = NETWORK_DEFAULT_PORT;
+	data->connect_port = 0;
 }
 
 static void init_peers( void )
@@ -147,9 +147,12 @@ static ENetPeer * find_peer_by_address( ENetAddress * address )
 		network_peer_data_t * peer_data = peer->data;
 		if( peer_data->state != UNUSED )
 			if( peer->address.host == address->host )
-				if ( peer->address.port == address->port ||
-					 peer_data->connect_port == address->port )
+			{
+				if( peer->address.port == address->port )
 					return peer;
+				if( i_am_host && peer_data->connect_port == address->port )
+					return peer;
+			}
 	}
 	return NULL;
 }
