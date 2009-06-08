@@ -572,15 +572,8 @@ static void new_connection( ENetPeer * peer )
 			// we connected to the host
 			if( peer == host )
 			{
-				// tell the host my external port people should connect to
-				network_peer_data_t * host_data = host->data;
-				p2p_number_packet_t packet;
 				network_state = NETWORK_SYNCHING;
-				packet.type = CONNECT_PORT;
-				packet.number = my_local_port;
-				network_send( host_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
 				DebugPrintf("-- we have connected to the host...\n");
-				DebugPrintf("-- sent my local port to the host...\n");
 			}
 			// we connected to a new player
 			else
@@ -598,6 +591,16 @@ static void new_connection( ENetPeer * peer )
 
 	// set the state of the peer
 	peer_data->state = CONNECTED;
+
+	// tell the player my external port people should connect to
+	// we need to send this to everyone in case they become host later
+	{
+		p2p_number_packet_t packet;
+		packet.type = CONNECT_PORT;
+		packet.number = my_local_port;
+		enet_send( peer, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+		DebugPrintf("-- sent my local port to the host...\n");
+	}
 
 	// Send my player name to the new connection
 	{
@@ -826,12 +829,13 @@ static void new_packet( ENetEvent * event )
 		switch( packet->type )
 		{
 		case CONNECT_PORT:
+			{
+				p2p_number_packet_t * packet = (p2p_number_packet_t*) event->packet->data;
+				peer_data->connect_port = packet->number;
+				DebugPrintf("-- connection %s says their connect port is %d\n",
+							address_to_str(&peer->address), peer_data->connect_port );
 				if( i_am_host )
 				{
-					p2p_number_packet_t * packet = (p2p_number_packet_t*) event->packet->data;
-					peer_data->connect_port = packet->number;
-					DebugPrintf("-- connection %s says their connect port is %d\n",
-								address_to_str(&peer->address), peer_data->connect_port );
 					// tell everyone to connect to new player
 					if( network_players.length > 0 )
 					{
@@ -844,16 +848,13 @@ static void new_packet( ENetEvent * event )
 						DebugPrintf("-- telling everyone to connect to new connection.\n");
 					}
 					// no players exist yet
+					// so just let the player in
 					else
 					{
 						peer_data->state = CONNECTED;
 					}
 				}
-				else
-				{
-					DebugPrintf("-- connection %s tried to send us a CONNECT_PORT msg but we are not the host...\n",
-								address_to_str(&peer->address));
-				}
+			}
 			break;
 		case NEW_PLAYER:
 			if( i_am_host )
