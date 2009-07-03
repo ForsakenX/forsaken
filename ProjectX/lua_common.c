@@ -31,6 +31,8 @@
  */
 
 #include "lua_common.h"
+#include "luasocket.h"
+#include "mime.h"
 
 lua_State *L1;
 
@@ -41,6 +43,21 @@ int lua_dofile(char* name)
 	return luaL_dofile(L1,path);
 }
 
+static int lua_debug_str(lua_State *state)
+{
+	char * str = (char*) lua_tostring(state,1); // get argument
+	OutputDebugString( str );
+	return 0; // number of results
+}
+
+extern void __cdecl Msg( LPSTR fmt, ... );
+static int lua_alert(lua_State *state)
+{
+	char * str = (char*) lua_tostring(state,1); // get argument
+	Msg( str );
+	return 0; // number of results
+}
+
 static int lua_touch_file(lua_State *state)
 {
 	char* path = (char*) lua_tostring(state,1); // get argument
@@ -48,10 +65,11 @@ static int lua_touch_file(lua_State *state)
 	return 0; // number of results
 }
 
-static int lua_push_funcs(void)
+static int lua_register_funcs(void)
 {
-	lua_pushcfunction(L1,lua_touch_file);
-	lua_setglobal(L1,"touch_file");
+	lua_register(L1,"touch_file",lua_touch_file);
+	lua_register(L1,"debug",lua_debug_str);
+	lua_register(L1,"alert",lua_alert);
 	return 0;
 }
 
@@ -77,8 +95,30 @@ static int run_init_func( void )
 #endif
 	err = lua_pcall(L1, 1, 0, 0);
 	if (err)
-		Msg("error lua init: %s\n", lua_tostring(L1, -1));
+	{
+		const char * ptr = lua_tostring(L1, -1);
+		if(!ptr)
+			ptr = "Unknown Error";
+		Write_File( "Logs/lua_init_error.txt", (char*) ptr, (long)strlen(ptr) );
+		Msg("error lua init: %s\n", (char*) ptr );
+	}
 	return err;
+}
+
+static void assign_loader( char * name, lua_CFunction loader )
+{
+	// package.preload[ name ] = loader
+	lua_getglobal(L1, "package");
+	lua_getfield(L1, -1, "preload");
+	lua_pushcfunction(L1, loader);
+	lua_setfield(L1, -2, name);
+	lua_pop(L1, 2);
+}
+
+static void assign_loaders( void )
+{
+	assign_loader( "socket.core", luaopen_socket_core );
+	assign_loader( "mime.core", luaopen_mime_core );
 }
 
 static int lua_create(void)
@@ -91,13 +131,14 @@ static int lua_create(void)
 		return 1;
 	}
 	luaL_openlibs(L1);
+	assign_loaders();
 	return 0;
 }
 
 int lua_init()
 {
 	ASSERT(lua_create());
-	ASSERT(lua_push_funcs());
+	ASSERT(lua_register_funcs());
 	ASSERT(load_init_file());
 	ASSERT(run_init_func());
 	return 0;
