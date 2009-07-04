@@ -602,6 +602,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lua_games.c"
+				>
+			</File>
+			<File
 				RelativePath="MipMap.c"
 				>
 			</File>
@@ -912,6 +916,10 @@
 			</File>
 			<File
 				RelativePath=".\lua_config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_games.h"
 				>
 			</File>
 			<File
