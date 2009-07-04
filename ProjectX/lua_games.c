@@ -31,6 +31,15 @@
  */
 
 #include "lua_common.h"
+#include "lua_games.h"
+
+void games_update( void )
+{
+	lua_getglobal(L1, "games");
+	lua_getfield(L1, -1, "update");
+	lua_call(L1, 0, 0);
+	lua_pop(L1, 1);
+}
 
 int games_length( void )
 {
@@ -43,14 +52,23 @@ int games_length( void )
 	return length;
 }
 
-int games_port_at( int index )
+int games_index_at( char * name )
 {
-	int port = 0;
+	int i = 0;
+	for( i = 1; i <= games_length(); i++ )
+		if( strcmp(name, games_name_at(i)) == 0 )
+			return i;
+	return 0; // 0 means no game found
+}
+
+const char * games_port_at( int index )
+{
+	const char * port = "";
 	lua_getglobal(L1, "games");
 	lua_getfield(L1, -1, "port_at");
 	lua_pushinteger(L1, index);
 	lua_call(L1, 1, 1);
-	port = (int) lua_tonumber(L1, -1);
+	port = lua_tostring(L1, -1);
 	lua_pop(L1, 2);
 	return port;
 }
@@ -78,3 +96,4 @@ const char * games_ip_at( int index )
 	lua_pop(L1, 2);
 	return ip;
 }
+
