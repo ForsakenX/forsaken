@@ -1,6 +1,5 @@
 
 local base 	= _G
-local os 	= require("os")
 local table 	= require("table")
 local http 	= require("socket.http")
 local assert	= assert
@@ -31,10 +30,7 @@ local last_time = 0
 local refresh_time = 1 -- seconds
 
 function update()
-	now = os.time()
-	if ( now - last_time >= refresh_time ) then
-		list = get( url )
-	end
+	list = get( url )
 end
 
 function length()
