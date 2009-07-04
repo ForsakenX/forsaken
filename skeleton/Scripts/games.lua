@@ -38,22 +38,18 @@ function update()
 end
 
 function length()
-	update()
 	return table.maxn(list)
 end
 
 function name_at( index )
-	update()
 	return list[index].nick
 end
 
 function ip_at( index )
-	update()
 	return list[index].ip
 end
 
 function port_at( index )
-	update()
 	return list[index].port
 end
 
