@@ -51,6 +51,7 @@
 #include "lua_config.h"
 #include "net_tracker.h"
 #include "lua_games.h"
+#include "timer.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -834,6 +835,7 @@ TEXT QuickText					= { 0, 0, "", SendQuickText };
 TEXT QuickTextWhisper			= { 0, 0, "", SendQuickTextWhisper };
 TEXT local_port_str				= { 0, 0, "", NULL };
 TEXT host_port_str				= { 0, 0, "", NULL };
+TEXT GamesLength				= { 0, 0, "", NULL };
 TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
@@ -1949,39 +1951,60 @@ MENU	MENU_NEW_Joining = {
 MENUITEM MENU_ITEM_JoinMultiplayer = 
 		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL, &MENU_NEW_Joining, MenuChange, NULL, NULL, 0  };
 
-#define MAX_GAME_LIST 6
+#define MAX_GAME_LIST 7
 #define MAX_GAME_LENGTH 100
 
 char GameName[MAX_GAME_LIST][MAX_GAME_LENGTH];
 char GameList[MAX_GAME_LIST][MAX_GAME_LENGTH];
 
-void Enter_ChooseConnectionToJoin( MENU *Menu )
-{
-	// wipe out the old list
-	memset(GameList, 0, sizeof(GameList));
-	memset(GameName, 0, sizeof(GameName));
-}
-
-void Update_ChooseConnectionToJoin( int * z )
-{
+void UpdateGameList( void )
+{	
 	int i;
-	int length = games_length();
-	games_update(); // pulls a new list every 1 seconds
+	int length;
+
+	games_update();
+
+	length = games_length();
+	_snprintf(GamesLength.text, sizeof(GamesLength.text), "%d", length);
+
 	for( i = 0; i < MAX_GAME_LIST; i++ )
 	{
+		// the game list starts at 1
+		int x = i+1;
+
 		// valid game
 		if( i < length )
 		{
+			// set the game line
+			_snprintf(GameList[i], sizeof(GameList[i]),
+						"%d. %s %s:%s", x, games_name_at(x), games_ip_at(x), games_port_at(x));
+
+			// set the game name so we can find the index later
 			strncpy(GameName[i], games_name_at(i+1), sizeof(GameName[i]));
-			strncpy(GameList[i], games_name_at(i+1), sizeof(GameList[i]));
 		}
 		// empty out the game
 		else
 		{
+			_snprintf(GameList[i], sizeof(GameList[i]), "%d.", x);
 			memset(GameName[i],0,sizeof(GameName[i]));
-			memset(GameList[i],0,sizeof(GameList[i]));
 		}
 	}
+}
+
+timer game_list_timer;
+
+void Enter_ChooseConnectionToJoin( MENU *Menu )
+{
+	timer_clear( &game_list_timer );
+	UpdateGameList();
+}
+
+void Update_ChooseConnectionToJoin( int * z )
+{
+	// check time passed
+	if ( timer_peek( &game_list_timer ) < 2 ) return;
+	timer_run( &game_list_timer );
+	UpdateGameList();
 }
 
 MENU	MENU_NEW_ChooseConnectionToJoin = {
@@ -1996,18 +2019,22 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 
 		{ 5, 60, 60, 60, 0,	"local port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
-		// list of live games
+		//
 
-		{ 0, 75, 200, 75, 0, "Game List",				FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 },
-		{ 0, 83, 200, 83, 0, "Select a game bellow to join.",
-														FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 } ,
+		{ 0, 75, 200, 75, 0, "Public Game List",		FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 },
+		{ 0, 83, 200, 83, 0, "Select a game bellow to join", FONT_Small,TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 } ,
 
-		{ 5,  95, 200,  95, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[0], (void *)GameName[0], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 103, 200, 103, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[1], (void *)GameName[1], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 111, 200, 111, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[2], (void *)GameName[2], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 119, 200, 119, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[3], (void *)GameName[3], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 127, 200, 127, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[4], (void *)GameName[4], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 135, 200, 135, 0, "", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[5], (void *)GameName[5], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		// number of games
+		{ 5, 97, 60, 97, 0, "Games Found:",			FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreY,	&GamesLength,	NULL,	NULL,						DrawFlatMenuText,	NULL, 0 } ,
+
+		// list of games
+		{ 5, 111, 200, 111, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[0], (void *)GameName[0], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 119, 200, 119, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[1], (void *)GameName[1], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 127, 200, 127, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[2], (void *)GameName[2], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 135, 200, 135, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[3], (void *)GameName[3], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 143, 200, 143, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[4], (void *)GameName[4], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 151, 200, 151, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[5], (void *)GameName[5], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 159, 200, 159, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[6], (void *)GameName[6], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
