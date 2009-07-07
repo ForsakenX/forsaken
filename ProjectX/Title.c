@@ -701,6 +701,7 @@ void NewMenuSelectMode( MENUITEM *Item );
 BOOL ProcessSlider2( int Key );
 void SelectConnectionToStart (MENUITEM *Item);
 void SelectConnectionToJoin (MENUITEM *Item);
+void SelectConnectionToJoinInGameList (MENUITEM *Item);
 void GetInitialPlayers ( MENU *menu );
 void DrawReadyStatus( MENUITEM *Item );
 void InitJoystickList ( MENU *Menu );
@@ -2028,13 +2029,13 @@ MENU	MENU_NEW_ChooseConnectionToJoin = {
 		{ 5, 97, 60, 97, 0, "Games Found:",			FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreY,	&GamesLength,	NULL,	NULL,						DrawFlatMenuText,	NULL, 0 } ,
 
 		// list of games
-		{ 5, 111, 200, 111, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[0], (void *)GameName[0], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 119, 200, 119, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[1], (void *)GameName[1], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 127, 200, 127, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[2], (void *)GameName[2], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 135, 200, 135, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[3], (void *)GameName[3], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 143, 200, 143, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[4], (void *)GameName[4], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 151, 200, 151, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[5], (void *)GameName[5], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
-		{ 5, 159, 200, 159, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[6], (void *)GameName[6], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 111, 200, 111, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[0], (void *)GameName[0], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 119, 200, 119, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[1], (void *)GameName[1], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 127, 200, 127, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[2], (void *)GameName[2], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 135, 200, 135, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[3], (void *)GameName[3], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 143, 200, 143, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[4], (void *)GameName[4], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 151, 200, 151, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[5], (void *)GameName[5], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 159, 200, 159, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[6], (void *)GameName[6], SelectConnectionToJoinInGameList, DrawFlatMenuName, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -16334,6 +16335,11 @@ void SelectConnectionToStart (MENUITEM *Item)
 
 void SelectConnectionToJoin (MENUITEM *Item)
 {
+	MenuChange ( &MENU_ITEM_JoinMultiplayer );
+}
+
+void SelectConnectionToJoinInGameList (MENUITEM *Item)
+{
 	// a game in the list has been selected
 	if( Item && Item->Value )
 	{
@@ -16352,11 +16358,10 @@ void SelectConnectionToJoin (MENUITEM *Item)
 		{
 			return;
 		}
+		// go to the join screen
+		MenuChange ( &MENU_ITEM_JoinMultiplayer );
 	}
-	// go to the join screen
-	MenuChange ( &MENU_ITEM_JoinMultiplayer );
 }
-
 
 void UpdateSessions ( int *dummy )
 {
