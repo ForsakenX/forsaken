@@ -5,9 +5,9 @@
  *  File: exechand.c
 ***************************************************************************/
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <malloc.h>
 #include "typedefs.h"
 #include "sbufferhand.h"
@@ -20,14 +20,14 @@ size_t	SBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedSW = 0;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Defines...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MAXSBUFFERBLOCKS 512
 #define MAXPTRSPERBUFFER ( ( MAX_COMPOUND_BUFFERS > MAX_DUP_BUFFERS ) ? MAX_COMPOUND_BUFFERS : MAX_DUP_BUFFERS )
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL	SBufferBlockUsed[MAXSBUFFERBLOCKS];
 BOOL	SBufferBlockHW[MAXSBUFFERBLOCKS];
@@ -39,11 +39,11 @@ char *	SBufferBlockFromFile[MAXSBUFFERBLOCKS];
 int		SBufferBlockFromLine[MAXSBUFFERBLOCKS];
 int		SBufferNumInstances[MAXSBUFFERBLOCKS];
 int SBufferBlocksUsed = 0;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	S Buffer Init...
 	Input		:	void
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void XSBuffer_Init( void )
 {
 	int i, j;
@@ -59,11 +59,11 @@ void XSBuffer_Init( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	SBuffer_FindFree...
 	Input		:	void
 	Output		:	int Free memblock -1 if none
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int SBuffer_FindFree( void )
 {
 	int i;
@@ -77,11 +77,11 @@ int SBuffer_FindFree( void )
 	}
 	return -1;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	SBuffer_FindSame...
 	Input		:	void * Pnt
 	Output		:	int Same memblock -1 if none
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SBuffer_FindSame( LPDIRECTSOUNDBUFFER Pnt, int *block, int *dup )
 {
 	int i, j;
@@ -130,9 +130,9 @@ BOOL CheckSBufferValid( LPDIRECTSOUNDBUFFER lpDirectSoundBuffer )
 
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Make Sound Buffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL XMakeSoundBuffer( LPDIRECTSOUND pds, LPCDSBUFFERDESC lpcDSBufferDesc , LPLPDIRECTSOUNDBUFFER lplpDirectSoundBuffer , IUnknown FAR * pUnkOuter, char *in_file, int in_line, char *from_file, int from_line )
 {
@@ -222,11 +222,11 @@ BOOL XSoundBufferDuplicate( LPDIRECTSOUND pds, LPDIRECTSOUNDBUFFER lpDsbOriginal
 		return FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Release sound buffer...
 	Input		:	void * Pnt
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void XSoundBufferRelease( LPDIRECTSOUNDBUFFER *Pnt, char *in_file, int in_line )
 {
 	int block, dup, i;

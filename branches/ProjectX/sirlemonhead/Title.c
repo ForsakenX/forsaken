@@ -1,6 +1,6 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Include Files...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -119,9 +119,9 @@ void ProcessTextItems (void);
 BOOL	SWMonoChrome;
 BOOL	Last_SWMonoChrome = FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Externals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern BOOL WaitingToQuit;
 extern int16	NumPrimaryPickups;
 extern float FlashTextActive;
@@ -296,14 +296,14 @@ extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	MyRandomPickups;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Mode changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Texture Format changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	TextureList = { 0 };
 int		TexturePalettized;
 int		TextureRedBPP;
@@ -314,16 +314,16 @@ int		TextureIndexBPP;
 
 SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Level changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	LevelList = { 0 };
 char SelectedLevel[128];
 char SelectedLevelText[MAX_LEVEL_TEXT_LENGTH];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Joystick stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char	NoBtnText[] = "not currently assigned";
 char	MultiBtnText[] = "multiple buttons assigned";
 char	NoPOVText[] = "No POV selected";
@@ -371,18 +371,18 @@ BOOL InTitleRoom;
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Error message stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char ErrorMessage[256];
 char NotifyMessage[ 256 ];
 int	ErrorMoveBackBy;
 MENU * ErrorNewMenu;
 BOOL IgnoreMenuFuncs = FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Fucntions without a header..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBattleMenu( MENU *Menu );
 void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
@@ -745,9 +745,9 @@ text messaging
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
 void GetTitleMessage(void);
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	MultiPlayer Stuff...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
@@ -984,9 +984,9 @@ MENUITEM *TextItem			= NULL;
 MENUITEM *PreListItem;
 MENU *PreListMenu;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Menus...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 DEFKEY KDleft						= { &Config.left, 0 };
 DEFKEY KDright					= { &Config.right, 0 };
@@ -3200,9 +3200,9 @@ char *BikerText[MAXBIKETYPES] =
 };
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define MAXHIGHLIGHTITEMS 8
 #define HIGHLIGHT_Pulsing	0
@@ -3676,12 +3676,12 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 };
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Input		:		LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
 						LPDIRECT3DVIEWPORT lpView
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
 InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
            LPDIRECT3DVIEWPORT lpView )
@@ -3851,11 +3851,11 @@ void ReInitTitleFont (void)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Release Tile Screen Graphics etc...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void
 ReleaseTitle(void)
 {
@@ -3879,11 +3879,11 @@ ReleaseTitle(void)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Set up initail parameters for title room...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetInitialTitleParams()
 {
 	int i;
@@ -4035,11 +4035,11 @@ void SetInitialTitleParams()
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		LoadTitleModels
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL LoadTitleModels(void)
 {
 	int i;
@@ -4519,11 +4519,11 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Place title room objects into their correct positions
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PlaceObjects(void)
 {
 
@@ -4603,11 +4603,11 @@ void PlaceObjects(void)
 	RotateDiscStack(MaxStackTheta);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Expand / Contract discs, according to DiscExpandOut 
 	Input		:		nothing...
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExpandDiscs(void)
 {
 
@@ -4648,11 +4648,11 @@ void ExpandDiscs(void)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Wiggle all discs along the y axis after expanding...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void WiggleDiscs(void)
 {
 	int i;
@@ -4682,11 +4682,11 @@ void WiggleDiscs(void)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Get a random speed for a disc
 	Input		:		disc number...
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetUpRotate(int disc)
 {
 	float rnd;
@@ -4703,11 +4703,11 @@ void SetUpRotate(int disc)
 	
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Get next "judder" amount for a disc (after disc has rotated)
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DiscJudder(int disc)
 {
 	float angle;
@@ -4737,13 +4737,13 @@ void DiscJudder(int disc)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		RotateDiscs
 	Input		:		disc number, OneOnly: ROTATE_DISC_All ( all discs )
 											  ROTATE_DISC_DifficultyForward
 											  ROTATE_DISC_DifficultyBack
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateDiscs(int disc, int OneOnly)
 {
 	float angleoffset, viewangle, x, y;
@@ -4797,11 +4797,11 @@ void RotateDiscs(int disc, int OneOnly)
 		 	DiscJudder(disc);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for all discs...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateAllDiscs(void)
 {
 
@@ -4854,11 +4854,11 @@ void RotateAllDiscs(void)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for one disc...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateOneDisc(int disc)
 {
 
@@ -4938,8 +4938,11 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+		return FALSE;
 
 	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
@@ -5014,20 +5017,23 @@ void ProcessHoloModel( void );
 
 uint8 QuickStart = QUICKSTART_None; 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Title Display...
 
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IpOnCLI;
 BOOL DisplayTitle(void)
 {
 	uint16 i;
+/*
 	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
 	LPDIRECT3D lpD3D		  = d3dapp->lpD3D;
 	LPDIRECT3DDEVICE lpDev	  = d3dapp->lpD3DDevice;
+*/
     LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+
 	uint16	group;
 	MENUITEM *Item;
 	LIST *l;
@@ -5191,13 +5197,15 @@ BOOL DisplayTitle(void)
 		Build_View();
 		CurrentCamera.View = view;
 
-		if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
+//		if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
+		if (FSBeginScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : BeginScene failed\n" );
 			return FALSE;
 		}
 
-		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+//		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+		if (FSSetMatrix(hView, &view) != D3D_OK)
 		{
 			Msg( "DisplayTitle() : SetMatrix failed\n" );
 			return FALSE;
@@ -5222,9 +5230,10 @@ BOOL DisplayTitle(void)
 		InitPolySort();
 
 		// reset all the normal execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		FSExecuteBuffer(lpD3DNormCmdBuf, /*lpView*/d3dapp->lpD3DViewport , D3DEXECUTE_CLIPPED);
 
-		if( !ModelDisp( 0, lpDev, TitleModelSet ) )
+		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 		{
 			return FALSE;
 		}
@@ -5233,7 +5242,7 @@ BOOL DisplayTitle(void)
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
 
-			if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
 					return FALSE;
 #if 0
 /*
@@ -5246,55 +5255,57 @@ BOOL DisplayTitle(void)
 //				ExecuteTransExe( 0 );
 
 		// set all the Translucent execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 //		ExecuteTransExe( 0 );
 //		ExecuteTransExeUnclipped( 0 );
 		
 
 		// set all the Translucent execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 		// display clipped translucencies
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 		Display 0 Clipped Non Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 
-			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
 					return FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Display 0 Clipped Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+===================================================================*/
+			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
 					return FALSE;
 
 			ExecuteTransExe( 0 );
 			ExecuteTransExeUnclipped( 0 );
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 		Display Non 0 Clipped Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 
-		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+===================================================================*/
+		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 		Display Transluecent Screen Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 
-			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 	Display Opaque Lines
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 			group = (uint16)-1;
 
 #ifndef FINAL_RELEASE
@@ -5303,26 +5314,28 @@ BOOL DisplayTitle(void)
 			{
 				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
 				{
-					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 						return FALSE;
 				}
 			}
 #endif
 
 		// reset all the normal execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 		Display Solid Screen Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 		BilinearSolidScrPolys = TRUE;
 
-		if( !DisplaySolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+		if( !DisplaySolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) )
 			return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*/*===================================================================
 	Display Solid Lines
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 			group = (uint16)-1;
 
 #ifndef FINAL_RELEASE
@@ -5331,13 +5344,15 @@ BOOL DisplayTitle(void)
 			{
 				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
 				{
-					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 						return FALSE;
 				}
 			}
 #endif
 
-		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+//		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+		if (FSEndScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : EndScene failed\n" );
 			return FALSE;
@@ -5439,11 +5454,11 @@ static int SelectionColour( void )
 	return colour_table[ ( GetTickCount() / ( 14 * 4 ) ) & 15 ];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu restart...
 	Input		:		MENU * ...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuRestart( MENU * Menu )
 {
 	if ( MyGameStatus == STATUS_SinglePlayer )
@@ -5488,11 +5503,11 @@ void MenuRestart( MENU * Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu exit (backing out nicely)...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuExit( void )
 {
 	while ( MenuStackLevel >= 0 && CurrentMenu )
@@ -5502,11 +5517,11 @@ void MenuExit( void )
 	MenuState = MENUSTATE_Select;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu abort (immediately)...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuAbort( void )
 {
 	if ( (CameraStatus == CAMERA_AtLeftVDU || CameraStatus == CAMERA_AtRightVDU) && CurrentMenu )
@@ -5522,11 +5537,11 @@ void MenuAbort( void )
 	OldMenuStatus = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawName( MENUITEM * Item )
 {
 	int	x;
@@ -5543,11 +5558,11 @@ void	MenuItemDrawName( MENUITEM * Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the Name in a paged menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawPageName( MENUITEM * Item )
 {
 	int	x;
@@ -5776,11 +5791,11 @@ void DrawKeyDefHelp3( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the Name and string variable in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawNameVar( MENUITEM * Item )
 {
 	int	x;
@@ -5811,11 +5826,11 @@ void DrawCenteredNameVar( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the help key and description in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	DrawHelpKey( MENUITEM * Item )
 {
 	int	x;
@@ -5834,11 +5849,11 @@ void	DrawHelpKey( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Draw..draws the title and all other text..
 	Input		:		MENU * Menu...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuDraw( MENU * Menu )
 {
 	MENUITEM * Item;
@@ -5879,12 +5894,12 @@ void MenuChangeEx( MENU *Menu )
 	MenuChange( &Item );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Change...
 	Input		:		MENUI
 	TEM * ITEM...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuChange( MENUITEM * Item )
 {
 	
@@ -5938,11 +5953,11 @@ void MenuChange( MENUITEM * Item )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuBack()
 {
 	if ( MyGameStatus == STATUS_BetweenLevels )
@@ -6044,33 +6059,33 @@ void MenuBackSpecific( MENU *Menu, BOOL UseExitFuncs )
 	IgnoreMenuFuncs = FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu item for Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuItemBack( MENUITEM *item )
 {
 	MenuBack();
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	SetDifficulty( MENUITEM * Item )
 {
 }
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawCursor( MENUITEM * Item )
 {
 	int	x;
@@ -6101,11 +6116,11 @@ void	MenuItemDrawCursor( MENUITEM * Item )
 		
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Cursor Movement Functions...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PlayCursorSfx( void )
 {
 	if ( InTitleRoom )
@@ -6999,11 +7014,11 @@ int ValidBikeSelected( int bike)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
 	Input		:		key pressed
 	Output		:		BOOL - indicates when biker list is no longer being used
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ProcessBikerList ( int Key )
 {
 	BOOL done, redraw;
@@ -7121,12 +7136,12 @@ BOOL ProcessSavedGameList( int Key )
 	return !done;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Processes the player list - auto selects highlighted item, 
 						and draws corresponding biker character.
 	Input		:		key pressed...
 	Output		:		BOOL - indicates when player list is no longer being used.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ProcessPlayerList ( int Key )
 {
 	BOOL done, redraw;
@@ -8472,11 +8487,11 @@ void	MenuProcess()
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select/operate a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8493,11 +8508,11 @@ void SelectSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Decrement a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DecrementSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8509,11 +8524,11 @@ void DecrementSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Increment a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void IncrementSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8526,11 +8541,11 @@ void IncrementSlider( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Minimise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderHome( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8540,11 +8555,11 @@ void SliderHome( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Maximise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderEnd( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8554,11 +8569,11 @@ void SliderEnd( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderSet( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8571,11 +8586,11 @@ void SliderSet( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderCancel( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8586,11 +8601,11 @@ void SliderCancel( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawSlider( MENUITEM *Item )
 {
 	int	x;
@@ -8618,11 +8633,11 @@ void DrawSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectRadioButton( MENUITEM *Item )
 {
 	if ( Item->Variable )
@@ -8633,11 +8648,11 @@ void SelectRadioButton( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draws a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawRadioButton( MENUITEM *Item )
 {
 	int	x;
@@ -8662,11 +8677,11 @@ void DrawRadioButton( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectToggle( MENUITEM *Item )
 {
 
@@ -8685,11 +8700,11 @@ void SelectToggle( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8712,11 +8727,11 @@ void DrawToggle( MENUITEM *Item )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a collision perspective toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawColToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8733,11 +8748,11 @@ void DrawColToggle( MENUITEM *Item )
 		Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectColourToggle( MENUITEM *Item )
 {
 		if(*(int *) Item->Variable > 7)
@@ -8746,11 +8761,11 @@ void SelectColourToggle( MENUITEM *Item )
 			*(int *) Item->Variable =*(int *)Item->Variable + 1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw message display customisation toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawMessagesToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8800,11 +8815,11 @@ void DrawMessagesToggle( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectKey( MENUITEM *Item )
 {	
 	MenuState = MENUSTATE_Keydef;
@@ -8814,11 +8829,11 @@ void SelectKey( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawKey( MENUITEM *Item )
 {
 	VirtualKeycode keycode;
@@ -8862,11 +8877,11 @@ void DrawKey( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Select a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectKeyDef( MENUITEM *Item )
 {	
 	MenuState = MENUSTATE_Keydef;
@@ -8876,11 +8891,11 @@ void SelectKeyDef( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawKeyDef( MENUITEM *Item )
 {
 	DEFKEY *keydef;
@@ -8934,11 +8949,11 @@ void DrawKeyDef( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetOurRenderStates( MENUITEM *item )
 {
 	// Perspective Correct
@@ -8979,11 +8994,11 @@ void SetOurRenderStates( MENUITEM *item )
 
 	D3DAppSetRenderState(&myglobs.rstate);
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetOurRenderStates( MENUITEM *item )
 {
 	// Perspective Correct
@@ -9000,11 +9015,11 @@ void GetOurRenderStates( MENUITEM *item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitDetailLevels( MENU *Menu )
 {
 	MENUITEM *item;
@@ -9044,11 +9059,11 @@ void InitDetailLevels( MENU *Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
@@ -9064,11 +9079,11 @@ void ExitDetailLevels( MENU *Menu )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetLightStates( MENUITEM *item )
 {
 	if( PrimaryLightDetail ) EnablePrimaryLights();
@@ -9080,11 +9095,11 @@ void SetLightStates( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBikerMenu( MENU *Menu )
 {
 	Config = *player_config;
@@ -9115,11 +9130,11 @@ void NewInitBikeMenu ( MENU *Menu)
 	SelectedBikeScale = BikeModelScale[ BikeList.selected_item ];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitBikerMenu( MENU *Menu )
 {
 //	if ( ( memcmp( &Config, player_config, sizeof( Config ) ) ) || ForceConfigSave )
@@ -9154,11 +9169,11 @@ void MoveConfigFile( MENU *Menu )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the bike list menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBikeList( MENU *Menu )
 {
 	BikeList.selected_item = ValidBikeSelected( SelectedBike );
@@ -9185,11 +9200,11 @@ void InitLevelSelectVDU( MENUITEM *Item )
 {
 	MenuState = MENUSTATE_SelectLevelQuick;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the control menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitControls( MENU *Menu )
 {
 	float sensi;
@@ -9223,11 +9238,11 @@ void SetAutolevel( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the controls menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitControls( MENU *Menu )
 {
 	float sensiX, sensiY;
@@ -9248,11 +9263,11 @@ void ExitControls( MENU *Menu )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		compare string function for sorting pilot list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 static int
 _cdecl compare( const void *arg1, const void *arg2 )
 {
@@ -9321,11 +9336,11 @@ _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 	return 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the pilot list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotList( void )
 {
 	HANDLE h;
@@ -9404,11 +9419,11 @@ void InitPilotList( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotName( MENU *menu )
 {
 
@@ -9430,11 +9445,11 @@ void InitPilotName( MENU *menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void SetPilotName( MENUITEM *item )
 {
@@ -9524,11 +9539,11 @@ void SetPilotName( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetPilotNameInGame( MENUITEM *item )
 {
 	FILE *f;
@@ -9563,11 +9578,11 @@ void SetPilotNameInGame( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotReName( MENU *menu )
 {
 	strcpy( old_config, biker_config );
@@ -9579,11 +9594,11 @@ void InitPilotReName( MENU *menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RenamePilotName( MENUITEM *item )
 {
 	FILE *f;
@@ -9625,11 +9640,11 @@ void RenamePilotName( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotMenu( MENU *Menu )
 {
 	InitPilotName(NULL);
@@ -9664,11 +9679,11 @@ void GetBikeDetails(int Bike, MENUITEM *item)
 		Ships[ WhoIAm ].BikeNum = Bike;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Save values from the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectPilot( MENUITEM *item )
 {
 	if ( PilotList.selected_item >= 0 && PilotList.selected_item < PilotList.items )
@@ -9709,11 +9724,11 @@ void SelectTeamList( MENUITEM *Item )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Selects a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectList( MENUITEM *Item )
 {
 	PreListItem = Item;
@@ -9746,11 +9761,11 @@ void SelectList( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawList( MENUITEM *Item )
 {
 	int x;
@@ -9789,11 +9804,11 @@ void DrawList( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		List navigation/selection routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectListPrev( LIST *l )
 {
 	if ( l->selected_item > 0 )
@@ -9944,11 +9959,11 @@ void CancelListSelection( LIST *l )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Selects a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectText( MENUITEM *Item )
 {
 	TEXT *t;
@@ -9974,11 +9989,11 @@ void SelectFlatMenutext( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Draw a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawTextItem( MENUITEM *Item )
 {
 	int x;
@@ -10008,11 +10023,11 @@ void DrawTextItem( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Text editing routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetVduTextFormattingInfo (TEXT *t)
 {
 	t->VDU_insert_pos = 0;
@@ -10826,11 +10841,11 @@ void ExitBikeComputerSelection( MENUITEM * item )
 		MenuBack();
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Go full Screen....or window....
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuGoFullScreen( MENUITEM *Item )
 {
 	if( MyGameStatus == STATUS_Title )
@@ -10873,9 +10888,9 @@ void MenuGoFullScreen( MENUITEM *Item )
 	
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Mode changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MakeModeList( MENU *Menu )
 {
 	int i;
@@ -10914,11 +10929,11 @@ void MakeModeList( MENU *Menu )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Select a Mode...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuSelectMode( MENU *Menu )
 {
      /*
@@ -10964,9 +10979,9 @@ void NewMenuSelectMode( MENUITEM *Item )
 
    	InitialTexturesSet = FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Texture Format changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MakeTextureList( MENU *Menu )
 {
 	int i;
@@ -10999,11 +11014,11 @@ void MakeTextureList( MENU *Menu )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Menu Select Texture Format..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuTextureMode( MENU *Menu )
 {
 	if( d3dapp->CurrTextureFormat != TextureList.selected_item )
@@ -11207,11 +11222,11 @@ void RestoreDemoSettings( void )
 	ShowNamesAnyway = FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise Demo Name list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitDemoList( MENU * Menu )
 {
 	HANDLE h;
@@ -11321,11 +11336,11 @@ void InitDemoList( MENU * Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise Load Game Name list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitLoadSavedGameList( MENU * Menu )
 {
 #ifndef SAVEGAME_SLOTS
@@ -11408,22 +11423,22 @@ void InitLoadSavedGameList( MENU * Menu )
 //	LoadSavedGameList.FuncDelete = ( LoadSavedGameList.items > 0 ) ? DeleteSavedGame : NULL;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Demo Pause Compensate
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void PauseDemoToggle( MENUITEM *Item )
 {
 	SelectToggle( Item );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Init the level select menu...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void InitLevelSelect( MENU *Menu )
 {
@@ -11448,11 +11463,11 @@ void GoToStats( MENUITEM *Item )
 	LevelNum = -1;			// Force Level change
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Level has been Changed...
 	Input		:	MENU * Menu
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitLevelSelect( MENU * Menu )
 {
 	CurrentMenu = NULL;
@@ -11463,11 +11478,11 @@ void ExitLevelSelect( MENU * Menu )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Get Game Prefs..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern void InitValidPickups();
 extern BOOL bFullscreen;
 void GetGamePrefs( void )
@@ -11628,11 +11643,11 @@ void GetGamePrefs( void )
 	CLAMP( GameType, MAX_GAMETYPE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Set last game played info from the registry..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetGamePrefs( void )
 {
 	// ip / port
@@ -11771,14 +11786,14 @@ void SetDiscStatus(MENU *menu)
 	DiscStatus = menu->MenuStatus;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		sets each vertex intensity of a model to a given fraction of the original
 	Input		:		Model num, fraction of orig, intensity, ptr to Exclude - list of vertices
 						that are to be left unchanged.
 	Output		:		nothing
 
 	Note		:		Only allows vertices to be excluded from one group & exec buffer at present.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
 	D3DEXECUTEBUFFERDESC	DstDebDesc;
@@ -11816,8 +11831,11 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 		
 			memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+
+//			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+				return FALSE;
 
 			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
@@ -11967,8 +11985,11 @@ BOOL MakeTranslucent( uint16 Model )
 			{   
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+
+//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+					return FALSE;
 
 				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
@@ -12019,8 +12040,11 @@ BOOL MakeTranslucent( uint16 Model )
 			
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+
+//				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+					return FALSE;
 
 				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
@@ -12076,8 +12100,11 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+		return FALSE;
 
 	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
@@ -12113,11 +12140,11 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		increases the texture frame no. of a disc by one
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void HighlightDisc(int disc)
 {
 	if( PolyAnim[disc] )
@@ -12125,21 +12152,21 @@ void HighlightDisc(int disc)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		restores original texture frame of disc
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ResetDisc(int disc)
 {
 	PolyAnim[disc]->newframe = CurrentTextures[disc];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		initialises rotation sequence for difficulty level disc
 	Input		:		menu item (not used)
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void DifficultySet (MENUITEM *item)
 {
@@ -13666,11 +13693,11 @@ void DrawGeneralWeapons( MENUITEM *Item )
 	MenuState = MENUSTATE_WeaponOrder;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Processes menu items for VDU menus
 	Input		:		ptr to menu
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessVduItems( MENU *Menu )
 {
 	MENUITEM *Item;
@@ -13707,11 +13734,11 @@ void KillTextInfo ( TEXTINFO *TextInfo )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		clears everything from the VDU
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void VduClear ( void )
 {
 	int i, tempstacklevel, slidertype;

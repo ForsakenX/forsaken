@@ -4,9 +4,9 @@
  *  File: exechand.c
 ***************************************************************************/
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <malloc.h>
 #include "typedefs.h"
 #include "d3ddemo.h"
@@ -15,14 +15,14 @@
 size_t	ExecMemUsed = 0;
 #ifdef DEBUG_ON
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Defines...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MAXEXECBLOCKS 2048
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL	ExecBlockUsed[MAXEXECBLOCKS];
 LPDIRECT3DEXECUTEBUFFER	ExecBlockPnts[MAXEXECBLOCKS];
@@ -30,11 +30,11 @@ size_t	ExecBlockSize[MAXEXECBLOCKS];
 char *	ExecBlockInFile[MAXEXECBLOCKS];
 int		ExecBlockInLine[MAXEXECBLOCKS];
 int ExecBlocksUsed = 0;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	X Exec Init...
 	Input		:	void
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void XExec_Init( void )
 {
 	int i;
@@ -47,11 +47,11 @@ void XExec_Init( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	X Exec Find Free...
 	Input		:	void
 	Output		:	int Free memblock -1 if none
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int XExec_FindFree( void )
 {
 	int i;
@@ -65,11 +65,11 @@ int XExec_FindFree( void )
 	}
 	return -1;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	X Exec Find Same Block...
 	Input		:	void * Pnt
 	Output		:	int Same memblock -1 if none
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int XExec_FindSame( LPDIRECT3DEXECUTEBUFFER Pnt )
 {
 	int i;
@@ -81,11 +81,11 @@ int XExec_FindSame( LPDIRECT3DEXECUTEBUFFER Pnt )
 	return -1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Make Execute Buffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-BOOL XMakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , LPDIRECT3DDEVICE lpDev , LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size , char *in_file, int in_line )
+BOOL XMakeExecuteBuffer( LPD3DEXECUTEBUFFERDESC debDesc, /*LPDIRECT3DDEVICE lpDev,*/ LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size , char *in_file, int in_line ) // bjd
 {
 	int i;
 	i = XExec_FindFree();
@@ -99,7 +99,8 @@ BOOL XMakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , LPDIRECT3DDEVICE lpDe
     debDesc->dwSize = sizeof(D3DEXECUTEBUFFERDESC);
     debDesc->dwFlags = D3DDEB_BUFSIZE;
     debDesc->dwBufferSize = size;
-    if (lpDev->lpVtbl->CreateExecuteBuffer(lpDev, debDesc, lpBuf, NULL) != D3D_OK)
+//    if (lpDev->lpVtbl->CreateExecuteBuffer(lpDev, debDesc, lpBuf, NULL) != D3D_OK) // bjd
+	if (FSCreateExecuteBuffer(debDesc, lpBuf, NULL) != D3D_OK)
 		return FALSE;
 
 	ExecBlockUsed[i] = TRUE;
@@ -111,11 +112,11 @@ BOOL XMakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , LPDIRECT3DDEVICE lpDe
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	XRELEASE free some memory from an execute buffer...
 	Input		:	void * Pnt
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EXECRELEASE( LPDIRECT3DEXECUTEBUFFER Pnt, char *in_file, int in_line )
 {
 	int i;
@@ -174,9 +175,9 @@ int UnMallocedExecBlocks( void )
 
 
 #else // DEBUG_ON
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Make Execute Buffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL MakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , LPDIRECT3DDEVICE lpDev , LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size )
 {

@@ -1,6 +1,6 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Includes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include	<stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -22,9 +22,9 @@
 #include	"restart.h"
 #include	"XMem.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	External variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	extern	TLOADHEADER	Tloadheader;
 	extern	int16	ModeCase;
 	extern	BOOL	Is3Dfx;
@@ -38,9 +38,9 @@
 	extern	BOOL	CanDoStrechBlt;
 	extern	float	UV_Fix;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	DO_SCALE		TRUE
 #define	DONT_SCALE		FALSE
 
@@ -188,14 +188,14 @@ typedef struct
 	BIT_INFO bit_info;
 } OFF_BUFFER;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Load Texture Pages, Offsets and Sizes
 				:	for 2D Faceme polygons
 	Input		:	int8		*	Filename of offset file
 				:	BOOL			Scale
 				:	BOOL			LoadTPages
 	Output		:	FRAME_INFO	*	Structure for offset file
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *last_tpage, int16 xsize, int16 ysize, BOOL placeholder )
 {
 	int16			Name_Index[ MAX_NAMES ];
@@ -374,11 +374,11 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 	return( Frm_Info );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Load All Offset Files
 	Input		:	Nothing
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 {
 	int8			TempFilename[ 256 ];
@@ -496,11 +496,11 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Free All Offset Files
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void Free_All_Off_Files( OFF_FILES * FileInfo )
 {
 	if( !FileInfo ) return;
@@ -517,12 +517,12 @@ void Free_All_Off_Files( OFF_FILES * FileInfo )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Get TPage
 	Input		:	FRAME_INFO	*	FrameInfo
 				:	int16			Frame
 	Output		:	int16			TPage (-1 is non specified)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame )
 {
 	BIT_INFO	*	Bit_Ptr;
@@ -539,11 +539,11 @@ int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame )
 	return( (uint16) -1 );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Load All Offset Files
 	Input		:	Nothing
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL FixTextureUVs( OFF_FILES * FileInfo )
 {
 	return TRUE;
@@ -603,11 +603,11 @@ BOOL FixTextureUVs( OFF_FILES * FileInfo )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Calc FrameInfo Ptr Index
 	Input		:	FRM_INFO	**	FrameInfoPtr Address
 	Output		:	int16			Index
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info )
 {
 	OFF_FILES * FileInfo;
@@ -630,11 +630,11 @@ int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info )
 	return( -1 );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Calc FrameInfo Ptr Index
 	Input		:	int16			Index
 	Output		:	FRM_INFO	**	FraneInfoPtr Address
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FRAME_INFO ** Get_Frm_Info_Address( int16 Index )
 {
 	if( Index == -1 ) return( NULL );
@@ -642,12 +642,12 @@ FRAME_INFO ** Get_Frm_Info_Address( int16 Index )
 	return( OffsetFiles[ Index ].InfoPtrAddr );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enable all relevant off files for
 				:	level / game type
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 {
 	if( !FileInfo ) return;
@@ -681,12 +681,12 @@ void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enable Specific off files for loading
 	Input		:	OFF_FILES	*	Ptr to first Offset filename
 				:	int8		*	File to enable
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 {
 	while( FileInfo->InfoPtrAddr != NULL )
@@ -701,12 +701,12 @@ void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Disable Specific off files for loading
 	Input		:	OFF_FILES	*	Ptr to first Offset filename
 				:	int8		*	File to disable
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 {		
 	while( FileInfo->InfoPtrAddr != NULL )

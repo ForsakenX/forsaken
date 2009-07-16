@@ -578,7 +578,7 @@ int DisplayGoal( uint16 group )
 	return shown;
 }
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*/*===================================================================
 	Procedure	:	Show Goal
 	Input		:	GOAL	*	Goal
 				:	uint8		Red
@@ -586,7 +586,7 @@ int DisplayGoal( uint16 group )
 				:	uint8		Blue
 				:	uint8		Trans
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 float	SparkleTime = 0.1F;
 
 void ShowGoal( GOAL * Goal, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )

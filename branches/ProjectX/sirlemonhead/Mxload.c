@@ -32,9 +32,9 @@ num_groups : uint16
 }[num_groups]
 mxtype : uint16 // always 0 for mx format
 */
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -50,14 +50,14 @@ mxtype : uint16 // always 0 for mx format
 #include "spotfx.h"
 #include "XMem.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MX_VERSION_NUMBER	2
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DebugPrintf( char *fmt, ... );
 extern	BOOL SWMonoChrome;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
@@ -76,9 +76,9 @@ extern	BOOL	DrawSimplePanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS];
 extern	float	framelag;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define	NUMOFPOLYSPER3DPANELITEM 2
 POLYANIM * Panel3DPolyAnims_Primary[NUMOFPOLYSPER3DPANELITEM];
@@ -91,20 +91,20 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim );
 extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert );
 extern void FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Function from title.c not #included due to dependences...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void TintDisc(uint16 Model);
 
 //uint8 Red = 128;
 //uint8 Green = 192;
 //uint8 Blue = 192+64;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Load .Mx File
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL StoreTriangles )
 {
 	D3DEXECUTEDATA			d3dExData;
@@ -239,7 +239,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			
 			/*	create an execution buffer	*/
 	
-			if (MakeExecuteBuffer( &debDesc, d3dapp->lpD3DDevice , &Mxloadheader->Group[group].lpExBuf[execbuf] , ExecSize ) != TRUE )
+			if (MakeExecuteBuffer( &debDesc, /*d3dapp->lpD3DDevice,*/ &Mxloadheader->Group[group].lpExBuf[execbuf] , ExecSize ) != TRUE ) // bjd
 			{
 				Msg( "Mxload() MakeExecuteBuffer failed in %s\n", Filename );
 				return FALSE;
@@ -249,7 +249,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
 			/*	lock the execute buffer	*/
-			if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+			if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
 				return FALSE;
@@ -503,8 +504,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 					memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 					debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-					if( Mxloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
-						Mxloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
+//					if( Mxloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
+//						Mxloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK ) // bjd
+					if (FSLockExecuteBuffer(Mxloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
 					{
 						Msg( "Mxload : Lock ExecBuffer failed\n" );
 						return FALSE;
@@ -598,9 +600,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		Buffer = (char *) Uint16Pnt;
 	}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Point Direction Data
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	Uint16Pnt = (uint16 *) Buffer;
 
 	if( *Uint16Pnt++ )
@@ -748,12 +750,12 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	Mxloadheader->state = TRUE;
 	return( TRUE );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
 				:		uint16		Models[] Index
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 {
@@ -795,8 +797,9 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 			 					memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 								debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 								// lock the execute buffer
-								if ( Mxloadheader->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[i], &debDesc ) != D3D_OK)
-									return FALSE ;
+//								if ( Mxloadheader->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[i], &debDesc ) != D3D_OK) // bjd
+								if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[i], &debDesc ) != D3D_OK)
+									return FALSE;
 								lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 								ExecUnLocked = TRUE;
 							}
@@ -914,11 +917,11 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Execute one group for an Mxloadheader
 	Input		;		MXLOADHEADER *
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #if 0
 BOOL ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 group  )
 {
@@ -1040,11 +1043,11 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Pre - Load .Mx File
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL LevelSpecific )
 {
 	long			File_Size;
@@ -1161,12 +1164,12 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
 				:		uint16		Models[] Index
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 {
 	int			i;
@@ -1188,11 +1191,11 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Handle All Animation For an Mloadheader
 	Input		:		MLOADHEADER *
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 {
 	uint16		*	Uint16Pnt;
@@ -1242,11 +1245,11 @@ void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Restore the coolours for a Mxloadheader..
 	Input		;		MXLOADHEADER *
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 {
@@ -1266,8 +1269,10 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 			memset(&debDesc1, 0, sizeof(D3DEXECUTEBUFFERDESC));
 			debDesc1.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			// lock the execute buffer
-			if ( Mxloadheader1->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader1->Group[group].lpExBuf[i], &debDesc1 ) != D3D_OK)
+//			if ( Mxloadheader1->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader1->Group[group].lpExBuf[i], &debDesc1 ) != D3D_OK) // bjd
+			if (FSLockExecuteBuffer(Mxloadheader1->Group[group].lpExBuf[i], &debDesc1 ) != D3D_OK)
 				return FALSE;
+
 			lpD3DLVERTEX1 = (LPD3DLVERTEX) debDesc1.lpData;
 
 			//ColourPnt = Mxloadheader1->Group[group].org_colors[i];
@@ -1287,11 +1292,11 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		CheckFor 3d Panel PolyAnims..
 	Input		;		POLYANIM * PolyAnim
 	Output		:		NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void Check3DPanelPolyAnim(POLYANIM * PolyAnim )
 {
 	int j;

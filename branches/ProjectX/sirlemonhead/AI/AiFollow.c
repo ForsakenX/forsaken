@@ -32,11 +32,11 @@ extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	VECTOR	SlideUp;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AIR Follow Path
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 {
 	OBJECT * SObject;
@@ -181,11 +181,11 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 		Enemy->TNode = Enemy->Object.NearestNode;
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	CRAWL Follow Path
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_CRAWL_FOLLOWPATH( register ENEMY * Enemy )
 {
 	OBJECT * SObject;

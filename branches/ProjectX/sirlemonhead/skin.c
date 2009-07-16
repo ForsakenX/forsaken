@@ -1,6 +1,6 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Debugging display routines collision skin
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -16,9 +16,9 @@
 
 #define USE_BSP_COLOURS
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Externals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern	BOOL		DebugInfo;
 extern	MLOADHEADER Mloadheader;
 extern	uint16		NumGroupsVisible;
@@ -50,9 +50,9 @@ extern	MATRIX		MATRIX_Identity;
 #define	NODECUBE_Branch	FALSE
 #define	NODECUBE_Array	TRUE
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Globals variables and structures
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	static	D3DLVERTEX		PortalVerts[ 310 * 3 ];
 	static	D3DTRIANGLE		PortalTris[ 310 ];
 	static	int16			PortalVertCount;
@@ -84,11 +84,11 @@ extern	MATRIX		MATRIX_Identity;
 	int16					NumSphereZones = 0;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise Skin ExecList Table
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitSkinExecs( void )
 {
 	int16	Count;
@@ -101,12 +101,12 @@ void InitSkinExecs( void )
 	Num_Skin_Execs = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Modify Collision Skin Execution Buffer
 	Input		:		MLOADHEADER	*	Mloadheader
 				:		int16			Number of Groups Visible
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 {
 	D3DCOLOR		color;
@@ -338,11 +338,11 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
 	Output		:		BOOL		True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayBSPNode( BSP_NODE * Node )
 {
 #ifdef BSP
@@ -522,11 +522,11 @@ void DisplayBSPNode( BSP_NODE * Node )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display Node Volume
 	Input		:		BSP_NODE	*	Node
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayNewBSPNode( BSP_NODE * Node )
 {
 #ifdef BSP
@@ -626,11 +626,11 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Kill all Sphere Zones
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillAllSphereZones( void )
 {
 	int16	Count;
@@ -647,7 +647,7 @@ void KillAllSphereZones( void )
 	NumSphereZones = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display sphere zone
 	Input		:		VECTOR		*	Pos
 				:		float			Radius
@@ -657,7 +657,7 @@ void KillAllSphereZones( void )
 				:		uint8			Blue
 				:		uint8			Trans
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplaySphereZone( VECTOR * Pos, float Radius, uint16 Group,
 					   uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
 {
@@ -693,13 +693,13 @@ void DisplaySphereZone( VECTOR * Pos, float Radius, uint16 Group,
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display Zone Direction
 	Input		:		VECTOR		*	Pos
 				:		VECTOR		*	Dir
 				:		uint16			Group
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 {
 	uint16	Model;
@@ -735,14 +735,14 @@ void DisplayZoneDirection( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display Direction and Up
 	Input		:		VECTOR		*	Pos
 				:		VECTOR		*	Dir
 				:		VECTOR		*	Up
 				:		uint16			Group
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group )
 {
 	uint16	Model;
@@ -778,13 +778,13 @@ void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display Trigger Zone Volume
 	Input		:		TRIGGER_ZONE *	Zone Sides
 				:		int16			NumSides
 				:		uint16			Group
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 						 uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
 {
@@ -878,14 +878,14 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Display ColZone Volume
 	Input		:		ZONESIDE	*	Zone Sides
 				:		int16			NumSides
 				:		uint16			Group
 				:		int16			Sensitive
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensitive )
 {
 	int16			Count;
@@ -989,11 +989,11 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Kill Node Cube Lines
 	Input		:		BSP_NODE	*	Node
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillNodeCubeLines( void )
 {
 	int16	Count;
@@ -1010,11 +1010,11 @@ void KillNodeCubeLines( void )
 	NumNodeCubeLines = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Create New Execute Buffer
 	Input		:		Nothing
 	Output		:		BOOL		True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, int16 NumTris )
 {
     LPVOID	lpBufStart, lpInsStart, lpPointer;
@@ -1025,12 +1025,15 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 		return FALSE;
 	}
 
-	if( MakeExecuteBuffer( &Skin_debdesc, d3dappi.lpD3DDevice, &Skin_Execs[ Num_Skin_Execs ], 32767 ) != TRUE ) return FALSE;
+	if( MakeExecuteBuffer( &Skin_debdesc, /*d3dappi.lpD3DDevice,*/ &Skin_Execs[ Num_Skin_Execs ], 32767 ) != TRUE ) // bjd
+		return FALSE;
 
    	memset( &Skin_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
    	Skin_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
    		
-   	if( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Lock( Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK) return FALSE;
+//   	if( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Lock( Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK) return FALSE; // bjd
+	if (FSLockExecuteBuffer(Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK)
+		return FALSE;
    		
    	lpBufStart = Skin_debdesc.lpData;
    	lpPointer = lpBufStart;
@@ -1099,11 +1102,11 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Release Skin Execs
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleaseSkinExecs( void )
 {
 	int16	Count;
@@ -1121,12 +1124,12 @@ void ReleaseSkinExecs( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Modify Collision Portal Execution Buffer
 	Input		:		MLOADHEADER	*	Mloadheader
 				:		int16			Number of Groups Visible
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 {
 	D3DCOLOR		color;
@@ -1253,11 +1256,11 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Create New Execute Buffer for portal polys
 	Input		:		Nothing
 	Output		:		BOOL		True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, int16 NumTris )
 {
     LPVOID	lpBufStart, lpInsStart, lpPointer;
@@ -1268,12 +1271,15 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 		return FALSE;
 	}
 
-	if( MakeExecuteBuffer( &Portal_debdesc, d3dappi.lpD3DDevice, &Portal_Execs[ Num_Portal_Execs ], 32767 ) != TRUE ) return FALSE;
+	if( MakeExecuteBuffer( &Portal_debdesc, /*d3dappi.lpD3DDevice,*/ &Portal_Execs[ Num_Portal_Execs ], 32767 ) != TRUE ) // bjd
+		return FALSE;
 
    	memset( &Portal_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
    	Portal_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
    		
-   	if( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->Lock( Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK) return FALSE;
+//   	if( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->Lock( Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK) return FALSE;
+	if (FSLockExecuteBuffer(Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK)
+		return FALSE;
    		
    	lpBufStart = Portal_debdesc.lpData;
    	lpPointer = lpBufStart;
@@ -1327,11 +1333,11 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise Portal ExecList Table
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPortalExecs( void )
 {
 	int16	Count;
@@ -1344,11 +1350,11 @@ void InitPortalExecs( void )
 	Num_Portal_Execs = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Release Portal Execs
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleasePortalExecs( void )
 {
 	int16	Count;
@@ -2057,7 +2063,7 @@ int GimmeNodeVertices( BSP_NODE * plane_ptr, BSP_NODE * space_ptr, int side, VEC
 /*---------------------------------------------------------------------------------------------------------------------------*\
 \*---------------------------------------------------------------------------------------------------------------------------*/
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Get Plane Intersected with Zone Vertices
 	Input		:		TRIGGER_ZONE *	Plane to intersect
 				:		TRIGGER_ZONE *	Space Ptr
@@ -2065,7 +2071,7 @@ int GimmeNodeVertices( BSP_NODE * plane_ptr, BSP_NODE * space_ptr, int side, VEC
 				:		int16			Side
 				:		VECTOR		*	Vertices to output
 	Output		:		BOOL			True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {
 	Pin		* first_free_pin_ptr;
@@ -2353,7 +2359,7 @@ int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr
 	return count;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Get Plane Intersected with Zone Vertices
 	Input		:		ZONESIDE	*	Plane to intersect
 				:		ZONESIDE	*	Space Ptr
@@ -2361,7 +2367,7 @@ int GimmeTriggerZoneVertices( TRIGGER_ZONE * plane_ptr, TRIGGER_ZONE * space_ptr
 				:		int16			Side
 				:		VECTOR		*	Vertices to output
 	Output		:		BOOL			True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int GimmeColZoneVertices( ZONESIDE * plane_ptr, ZONESIDE * space_ptr, int NumSides, int side, VECTOR * out_ptr )
 {
 	Pin		* first_free_pin_ptr;

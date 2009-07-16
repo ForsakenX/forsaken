@@ -164,11 +164,11 @@ PRIMARYWEAPONKNOWLEDGE PrimaryKnowledge[] = {
 	},
 };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AIR AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_AIR( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -176,11 +176,11 @@ void AI_AIR( register ENEMY * Enemy )
 		( * AI_AIR_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	TURRET AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_TURRET( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -188,11 +188,11 @@ void AI_TURRET( register ENEMY * Enemy )
 		( * AI_TURRET_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	SPLINE AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SPLINE( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -200,11 +200,11 @@ void AI_SPLINE( register ENEMY * Enemy )
 		( * AI_SPLINE_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	CRAWL AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_CRAWL( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -213,11 +213,11 @@ void AI_CRAWL( register ENEMY * Enemy )
 		( * AI_CRAWL_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	EXOGENON AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_EXOGENON( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -225,11 +225,11 @@ void AI_EXOGENON( register ENEMY * Enemy )
 		( * AI_EXOGENON_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	LITTLEGEEK AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_LITTLEGEEK( register ENEMY * Enemy )
 {
 	// Process current AI mode ...
@@ -237,11 +237,11 @@ void AI_LITTLEGEEK( register ENEMY * Enemy )
 		( * AI_LITTLEGEEK_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	FLESHMORPH AI
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_FLESHMORPH( register ENEMY * Enemy )
 {
 	if(FleshMorphTimer > 0.0F)
@@ -255,11 +255,11 @@ void AI_FLESHMORPH( register ENEMY * Enemy )
 		( * AI_FLESHMORPH_Mode[ Enemy->Object.AI_Mode ] )(Enemy);		//go off and do his thing...
 	
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enemy to Enemy Check Friendly Fire...
 	Input		:	ENEMY * SEnemy
 	Output		:	BOOL TRUE/FALSE...Yes you will hit an enemy if you fire..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 {
 	ENEMY * TEnemy;
@@ -293,11 +293,11 @@ BOOL Enemy2EnemyFriendlyFireCheck( ENEMY * SEnemy )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AI Do a think and update how I perceive the world..
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_THINK( register ENEMY * Enemy , BOOL OverideThinkTime , BOOL JustCheckPlayerRange )
 {
 	OBJECT * TObject;
@@ -482,11 +482,11 @@ void AI_THINK( register ENEMY * Enemy , BOOL OverideThinkTime , BOOL JustCheckPl
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Check if a target is firing at me... And suggest something to do to avoid it....
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_AVOIDCHECK( register ENEMY * Enemy )
 {
 	OBJECT * TObject;

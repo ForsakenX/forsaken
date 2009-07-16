@@ -10,9 +10,9 @@
 #ifndef SCREENPOLYS_INCLUDED
 #define SCREENPOLYS_INCLUDED
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Includes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <math.h>
 #include "d3dmain.h"
 #include "typedefs.h"
@@ -27,9 +27,9 @@
 #include "2dtextures.h"
 #include "tload.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define MAXNUMOFSCRPOLYS	1000
 #define	MAXSCREENPOLYVERTS	800
 #define	TIMERSTARTSCREENX	( 320.0F - 64.0F )
@@ -39,15 +39,15 @@
 #define	TIMERENDSCREENY		( 120.0F )
 #define	TIMERENDSCALE		( 1.0F )
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Types
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	SCRTYPE_Normal		0
 #define	SCRTYPE_LastAFrame	1
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Flags
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	SCRFLAG_Nothing		0
 #define	SCRFLAG_Scale		1
 #define	SCRFLAG_UseCoords	2
@@ -55,9 +55,9 @@
 #define	SCRFLAG_Solid		8
 #define	SCRFLAG_Rot90		16
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Process Sequences
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	SCRSEQ_Nothing		0
 #define	SCRSEQ_Anim			1
 #define	SCRSEQ_Fade			2
@@ -65,9 +65,9 @@
 #define	SCRSEQ_Logo			4
 #define	SCRSEQ_FadeUp 		5
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Structures
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef	struct SCRPOLY_RGB {
 
 	uint8	R;
@@ -118,9 +118,9 @@ typedef struct SCRPOLY {
 
 } SCRPOLY;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Protptypes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitScrPolys( void );
 void KillUsedScrPoly( uint16 i );
 uint16 FindFreeScrPoly( void );
@@ -152,8 +152,8 @@ void ResetCountDownBombTag( float Amount );
 void InitScrPolyTPages( void );
 void AddScrPolyToTPage( uint16 i, int16 TPage );
 void RemoveScrPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, LPDIRECT3DDEVICE D3D_Device, LPDIRECT3DVIEWPORT D3D_ViewPort );
-BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, LPDIRECT3DDEVICE D3D_Device, LPDIRECT3DVIEWPORT D3D_ViewPort );
+BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort ); // bjd
+BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort );
 BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly );
 BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly );
 void FreeAllLastAFrameScrPolys( void );

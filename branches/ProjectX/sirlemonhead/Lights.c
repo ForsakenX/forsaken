@@ -1,8 +1,8 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 *	l i g h t s . c
 *	All routines to do with Lights...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -29,9 +29,9 @@
 #define	USE_SPECULAR
 #undef USE_SPECULAR
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern int CurrentLoadingStep;
 extern	BOOL	ShowPlaneRGB;
 extern	float	WhiteOut;
@@ -56,9 +56,9 @@ extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 D3DCOLOR	GroupColours[ 8 ] = {
 
 	RGBA_MAKE( 0,128,0,255 ),
@@ -95,9 +95,9 @@ void FLOAT2INT( int * I, float F )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Floating Point Cull Mode
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEASM
 _inline
 void	start_chop(void)
@@ -122,11 +122,11 @@ __asm
 }
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Does this light fall in a group...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEINLINE
 _inline
 #endif
@@ -149,11 +149,11 @@ BOOL	DoIEffectThisGroup1( MLOADHEADER * Mloadheader , VECTOR * Pos , float size 
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set up And Init all XLights
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	InitXLights()
 {
 	uint16	i;
@@ -169,12 +169,12 @@ void	InitXLights()
 
 	XLights[MAXXLIGHTS-1].Next = (uint16) -1;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find a free light and move it from the free list to
 					the used list
 	Input		:	nothing
 	Output		:	uint16 number of light free....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16	FindFreeXLight()
 {
 	uint16 i;
@@ -196,12 +196,12 @@ uint16	FindFreeXLight()
 
 	return i ;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill a used light and move it from the used list to
 					the free list
 	Input		:	uint16 number of light free....
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	KillUsedXLight( uint16 light )
 {
 	uint16	its_prev;
@@ -225,11 +225,11 @@ void	KillUsedXLight( uint16 light )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Process all XLights
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 {
 	uint16	light;
@@ -264,9 +264,9 @@ BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 *		cause a light to go red and get smaller then die...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void SetLightDie ( uint16 light )
 {				
@@ -276,11 +276,11 @@ void SetLightDie ( uint16 light )
 	XLights[light].g = 0.0F;
 	XLights[light].b = 0.0F;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Xlight 1 Group Only...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	cral = 0.0F;
 
 
@@ -359,8 +359,11 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 		memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 		debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		/*	lock the execute buffer	*/
-		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-			return FALSE ;
+
+//		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
+		if (FSLockExecuteBuffer(Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+			return FALSE;
+
 		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 
 		VertexCellPnt = Mloadheader->Group[group].vertex_cell_pnt[execbuf];
@@ -964,11 +967,11 @@ __asm
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
@@ -1012,8 +1015,10 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+				return FALSE;
+
 			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
@@ -1207,11 +1212,11 @@ PLOP:
 	
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
@@ -1255,8 +1260,10 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
+			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+				return FALSE;
+
 			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
@@ -1453,12 +1460,12 @@ PLOP2:
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Xlight Mxloadheader...
 					Set all the ->color valus to be the same....
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 {
     LPD3DLVERTEX	lpPointer;
@@ -1476,8 +1483,10 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
-			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
+//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+				return FALSE;
+
 			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
@@ -1496,11 +1505,11 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 }
 
 extern	int FontHeight;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	CreateCellColours( MLOADHEADER * Mloadheader )
 {
 	uint16	group, total_groups;
@@ -1553,11 +1562,11 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	DebugPrintf( "There are %d Lightcells in this level\n",num_of_cells );
 	CurrentLoadingStep++;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf )
 {
@@ -1622,11 +1631,11 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Nearest Cell Colour..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	D3DCOLOR
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
 {
 	D3DCOLOR Col;
@@ -1705,11 +1714,11 @@ D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 g
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Build a list of the lights that are currently potentially visible...
 	Input		:	Group the Current camera is in..
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void BuildVisibleLightList( uint16 Group )
 {
 	int		light;
@@ -1731,11 +1740,11 @@ void BuildVisibleLightList( uint16 Group )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Save XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveXLights( FILE * fp )
 {
 	int		i;
@@ -1771,11 +1780,11 @@ FILE * SaveXLights( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Load XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadXLights( FILE * fp )
 {
 	int		i;

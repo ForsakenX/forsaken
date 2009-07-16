@@ -1,7 +1,7 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 *	l i n e s . c
 *	All routines to do with lines...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -18,18 +18,18 @@ extern	CAMERA	CurrentCamera;
 extern	BOOL	UsedStippledAlpha;
 extern	BOOL	DebugInfo;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LINE	Lines[ MAXLINES ];
 uint16	FirstLineUsed;
 uint16	FirstLineFree;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Init Line Structures and Execute buffer
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitLines( void )
 {
 	int i;
@@ -57,12 +57,12 @@ void InitLines( void )
 	Lines[ MAXLINES-1 ].Next = (uint16) -1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find a free Line and move it from the free list to
 					the used list
 	Input		:	Nothing
 	Output		:	uint16	Number of the free Line
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindFreeLine( void )
 {
 	uint16 i;
@@ -83,12 +83,12 @@ uint16 FindFreeLine( void )
 	return i ;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill a used Line and move it from the used list
 				:	to the free list
 	Input		:	uint16		Number of Line to free....
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillUsedLine( uint16 i )
 {
 	uint16	its_prev;
@@ -106,13 +106,13 @@ void KillUsedLine( uint16 i )
 	FirstLineFree	= i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16	Group
 				:	LPDIRECT3DEXECUTEBUFFER ExecBuffer
 				:	uint16	* StartLine
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * StartLine )
 {
 	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
@@ -140,7 +140,9 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 		memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 		ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
-		if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK) return FALSE;
+//		if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK) return FALSE; // bjd
+		if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK)
+			return FALSE;
 		
 		lpBufStart = ExecBuffer_debdesc.lpData;
 		lpPointer = lpBufStart;
@@ -219,9 +221,9 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 			i = Lines[ i ].Prev;
 		}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Create Execution buffer instructions
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 		lpPointer = (LPVOID ) Vert_Ptr;
 		lpInsStart = lpPointer;
 
@@ -252,9 +254,9 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 			OP_EXIT( lpPointer );
 		}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Finish off execution list
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 		ExecBuffer->lpVtbl->Unlock( ExecBuffer );
 
 		*StartLine = i;

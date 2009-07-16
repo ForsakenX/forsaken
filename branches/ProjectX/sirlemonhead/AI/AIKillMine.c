@@ -34,11 +34,11 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*/*===================================================================
 	Procedure	:	AIR KillMine
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_KILLMINE( register ENEMY * Enemy )
 {
 	OBJECT * SObject;

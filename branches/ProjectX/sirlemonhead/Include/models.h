@@ -551,9 +551,9 @@ typedef struct MODELNAME{
  */
 
 void OnceOnlyInitModel( void );
-BOOL PreInitModel( LPDIRECT3DDEVICE lpDev, MODELNAME * ModelNames );
-BOOL InitModel( LPDIRECT3DDEVICE lpDev , MODELNAME * ModelNames);
-BOOL ModelDisp( uint16 group, LPDIRECT3DDEVICE lpDev, MODELNAME * NamePnt  );
+BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames ); // bjd
+BOOL InitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * ModelNames); // bjd
+BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ); // bjd
 void ProcessModels( void );
 
 

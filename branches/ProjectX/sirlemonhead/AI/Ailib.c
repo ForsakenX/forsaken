@@ -58,11 +58,11 @@ TARGETDATA *		Tinfo = & TargetInfo;
 
 
 AIMDATA			AimData;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Closest Mine
 	Input		:	void
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_GetNearestMINETarget( void )
 {
 	uint16	i;
@@ -92,11 +92,11 @@ void AI_GetNearestMINETarget( void )
 		i = SecBulls[ i ].Prev;											/* Next SecBull */
 	}																				
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Nearest Ship in any group...
 	Input		:	void
 	Output		:	void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_GetNearestSHIPTargetInAnyGROUP( void )
 {
 #ifdef COOPERATIVE
@@ -130,11 +130,11 @@ void AI_GetNearestSHIPTargetInAnyGROUP( void )
 	}
 #endif
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AI Look Ahead and try and predict where someone will be...
 	Output		:	float amount , VECTOR * Pos, OBJECT	* TargetObject , VECTOR * NewPos , float BulletSpeed
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_LookAhead( float Accuracy, VECTOR * SPos ,OBJECT * TObject , VECTOR * NewPos , float SpeedOfBullet )
 {
 	VECTOR	Move_Off;
@@ -183,11 +183,11 @@ void AI_LookAhead( float Accuracy, VECTOR * SPos ,OBJECT * TObject , VECTOR * Ne
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AI Find the best least hassle free Next Node...
 	Input		:	OBJECT	*	Object 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_GetNearestNODETarget( OBJECT * Object )
 {
 	float Angle;
@@ -223,13 +223,13 @@ void AI_GetNearestNODETarget( OBJECT * Object )
 
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	AI Aim At a target...
 	Input		:	MATRIX * InvMat	Inv mat of the thing thats aiming..
 				:	VECTOR * Spos   Position of the thing thats aiming...
 				:	VECTOR * Tpos   Position of the thing thats being aimed at...
 	Output		:	void ..But Fills in the AimData Struct....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 {
 	VECTOR WantedDir;
@@ -287,14 +287,14 @@ void AI_AimAtTarget( MATRIX * InvMat , VECTOR * SPos, VECTOR * TPos )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Is a Vector Pos in a ViewCone
 	Input		:	VECTOR *	Pos
 				:	MATRIX *	Mat
 				:	VECTOR *	TargetPos
 				:	float		View Cone Cosine
 	Output		:	BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCos )
 {
 	float	Cos;
@@ -320,13 +320,13 @@ BOOL AI_InViewCone( VECTOR * Pos, MATRIX * Mat , VECTOR * TPos, float ViewConeCo
 	}
 	return FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS
 	Input		:	VECTOR * Pos
 				:	uint16 Group
 				:	VECTOR * TargetPos
 	Output		:	BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos )
 {
 	VECTOR	Dir;
@@ -347,14 +347,14 @@ BOOL AI_ClearLOS( VECTOR * SPos, uint16 Group , VECTOR * Pos )
 	
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS And will the SPos
 				:	Be able to get to the TargetPos
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
 	Output		:	BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
@@ -370,14 +370,14 @@ BOOL AI_ClearLOSNonZero( OBJECT * SObject, VECTOR * Pos , float radius )
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Is a VECTOR * Pos in Clear LOS And will the SPos
 				:	Be able to get to the TargetPos
 	Input		:	OBJECT * SObject
 				:	VECTOR * TargetPos
 				:	float radius
 	Output		:	BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AI_ClearLOSNonZeroNonObject( VECTOR * SPos, uint16 Group , VECTOR * Pos , float radius )
 {
 	VECTOR	Dir;
@@ -390,11 +390,11 @@ BOOL AI_ClearLOSNonZeroNonObject( VECTOR * SPos, uint16 Group , VECTOR * Pos , f
 	Dir.z = ( Pos->z - SPos->z );
 	return !QCollide( SPos , Group , &Dir, radius , &Impact_Point, &Impact_Group, &Impact_Normal );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find a Target...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing..But Tinfo struct is filled in...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_GetDistToNearestTarget( register ENEMY * Enemy )
 {
 	register uint16	group = Enemy->Object.Group;
@@ -449,107 +449,107 @@ void AI_GetDistToNearestTarget( register ENEMY * Enemy )
 		}
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetRETREAT( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_RETREAT;
 	Enemy->TNode = NULL;
 	Enemy->Timer = EnemyTypes[Enemy->Type].Behave.RetreatTime;	// How long I Run for
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetMOVETOTARGET( ENEMY * Enemy )
 {
 	Enemy->AIFlags &= ~AI_IHAVESEENPLAYER;
 	Enemy->Object.AI_Mode = AIMODE_MOVETOTARGET;
 	Enemy->TNode = NULL;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetMOVEFOLLOWPATH( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FOLLOWPATH;
 	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetDOGFIGHT( ENEMY * Enemy )
 {
 	Enemy->TNode = NULL;
 	Enemy->Object.AI_Mode = AIMODE_DOGFIGHT;
 	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetFORMATION( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FORMATION;
 	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetKILLMINE( ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_KILLMINE;
 	Enemy->Timer  = RESET_VALIDATE_TIME + (float) Random_Range( (uint16) RESET_VALIDATE_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetIDLE( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_IDLE;
 	Enemy->Timer  = EnemyTypes[Enemy->Type].Behave.IdleTime + (float) Random_Range( (uint16) EnemyTypes[Enemy->Type].Behave.IdleTime);
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetSCAN( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_SCAN;
 	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetFOLLOWPATH( register ENEMY * Enemy )
 {
 	Enemy->TShip = NULL;
 	Enemy->Object.AI_Mode = AIMODE_FOLLOWPATH;
 	Enemy->Timer  = RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set Enemy AI Mode to...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AI_SetFIREATTARGET( register ENEMY * Enemy )
 {
 	Enemy->Object.AI_Mode = AIMODE_FIRE;

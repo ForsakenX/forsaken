@@ -1,7 +1,7 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 *	All routines to do with Visipolys...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #include <stdio.h>
 #include "typedefs.h"
@@ -39,9 +39,9 @@ extern int outside_map;
 extern	BOOL	DoClipping;
 extern	CAMERA	CurrentCamera;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 extern	BOOL			CTF;
 extern	BOOL			CaptureTheFlag;
@@ -66,9 +66,9 @@ extern	LINE			Lines[ MAXLINES ];
 extern	char			LevelNames[MAXLEVELS][128];                        
 extern	MLOADHEADER		Mloadheader;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define MAXPORTVERTS (MAXPORTALSPERGROUP * MAXVERTSPERPORTAL)
 
@@ -1167,12 +1167,22 @@ ClipGroup( CAMERA *cam, uint16 group )
 		return 0;
 
 	if( !DoClipping ) g = &cam->visible.group[ cam->visible.first_visible->group ];
+
+/* bjd
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hProj, &g->projection) != D3D_OK)
 		return FALSE;
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hView, &cam->View) != D3D_OK)
 		return FALSE;
+*/
 
-	rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &g->viewport );
+	if (FSSetMatrix(hProj, &g->projection) != D3D_OK)
+		return FALSE;
+	if (FSSetMatrix(hView, &cam->View) != D3D_OK)
+		return FALSE;
+
+//	rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &g->viewport );
+	rval = FSSetViewPort(&g->viewport);
+
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );
@@ -1188,9 +1198,9 @@ ClipGroup( CAMERA *cam, uint16 group )
 BOOL FogOff( void );
 BOOL FogOn( float Start , float End );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 		Disp Visipoly Model
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
@@ -1209,7 +1219,12 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 
 	OldViewPort.dwSize = sizeof(D3DVIEWPORT);
+
+	FSGetViewport(&OldViewPort);
+/*
 	d3dapp->lpD3DViewport->lpVtbl->GetViewport( d3dapp->lpD3DViewport , &OldViewPort );
+*/
+
 	PresentViewPort = OldViewPort;
 
 	GroupImIn = CurrentCamera.GroupImIn;
@@ -1267,12 +1282,23 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			return FALSE;
 	}
 
+	FSSetViewPort(&OldViewPort);
+/* bjd
 	d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &OldViewPort );
+*/
+
 	proj = Tempproj;
 	view = Tempview;
+
+/* bjd
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hProj, &proj) != D3D_OK)
 		return FALSE;
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hView, &view) != D3D_OK)
+		return FALSE;
+*/
+	if (FSSetMatrix(hProj, &proj) != D3D_OK)
+		return FALSE;
+	if (FSSetMatrix(hView, &view) != D3D_OK)
 		return FALSE;
 	
 	return TRUE;
@@ -1371,13 +1397,13 @@ uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, V
 	return in_groups;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Is point inside bounding box of group
 	Input		:	MLOADHEADER	*	Mloadheader
 				:	VECTOR		*	Pos
 				:	uint16			Group
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PointInGroupBoundingBox( MLOADHEADER * Mloadheader, VECTOR * Pos, uint16 group )
 {
 	VECTOR	Temp;

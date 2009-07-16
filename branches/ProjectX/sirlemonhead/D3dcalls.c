@@ -873,5 +873,66 @@ exit_with_error:
     return FALSE;
 }
 
+char buf[100];
+void FSGetViewport(D3DVIEWPORT *returnViewPort)
+{
+	d3dapp->lpD3DViewport->lpVtbl->GetViewport( d3dapp->lpD3DViewport, returnViewPort );
+}
 
+HRESULT FSSetViewPort(D3DVIEWPORT *newViewPort)
+{
+	return d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , newViewPort );
+}
 
+HRESULT FSSetMatrix(D3DMATRIXHANDLE matrixHandle, D3DMATRIX *matrix)
+{
+	return d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, matrixHandle, matrix);
+}
+
+HRESULT FSBeginScene()
+{
+	return d3dappi.lpD3DDevice->lpVtbl->BeginScene(d3dappi.lpD3DDevice);
+}
+
+HRESULT FSEndScene()
+{
+	return d3dappi.lpD3DDevice->lpVtbl->EndScene(d3dappi.lpD3DDevice);
+}
+
+HRESULT FSExecuteBuffer(LPDIRECT3DEXECUTEBUFFER execBuffer, LPDIRECT3DVIEWPORT viewport, DWORD flags)
+{
+	return D3D_OK;
+	if (d3dapp->lpD3DViewport != viewport)
+	{
+		OutputDebugString("different matrix! can't assume\n");
+	}
+	return d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, execBuffer, viewport, flags); 
+//	lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+}
+
+static int lockCount = 0;
+HRESULT FSLockExecuteBuffer(LPDIRECT3DEXECUTEBUFFER execBuffer, LPD3DEXECUTEBUFFERDESC execBufferDesc)
+{
+/*
+	lockCount++;
+	sprintf(buf, "locked %d buffers\n", lockCount);
+	OutputDebugString(buf);
+*/
+	return execBuffer->lpVtbl->Lock(execBuffer, execBufferDesc);
+}
+
+static int execBuffCount = 0;
+
+HRESULT FSCreateExecuteBuffer(LPD3DEXECUTEBUFFERDESC execBufferDesc, LPDIRECT3DEXECUTEBUFFER *execBuffer, IUnknown *pUnkOuter )
+{
+	execBuffCount++;
+	sprintf(buf, "created buffer num: %d\n", execBuffCount);
+	OutputDebugString(buf);
+	//lpDev->lpVtbl->CreateExecuteBuffer(lpDev, debDesc, lpBuf, NULL) != D3D_OK)
+	return d3dappi.lpD3DDevice->lpVtbl->CreateExecuteBuffer(d3dappi.lpD3DDevice, execBufferDesc, execBuffer, NULL);
+}
+
+HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
+{
+	return d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport, count, rect, flags);
+}

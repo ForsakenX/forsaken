@@ -34,11 +34,11 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	MLOADHEADER Mloadheader;
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*/*===================================================================
 	Procedure	:	AIR Ping Off...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_DEATH_PINGOFF( register ENEMY * Enemy )
 {
 	OBJECT * SObject;

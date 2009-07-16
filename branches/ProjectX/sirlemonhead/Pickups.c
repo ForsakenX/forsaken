@@ -1,7 +1,7 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 *	P i c k u p s . c
 *	All routines to do with pickup objects.....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "main.h"
@@ -51,18 +51,18 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define	PIC_VERSION_NUMBER	1
 #define HOST_BOUNTY_TIME	( 10 * ANIM_SECOND )
 #define HOST_FLAG_TIME		( 10 * ANIM_SECOND )
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Externs
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
 extern BOOL CTF;
 extern BOOL CanCarryOwnFlag;
@@ -179,9 +179,9 @@ extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PickupMessageColour;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL			RandomPickups;
 BOOL			MyRandomPickups;
 REGENPOINT	*	RegenPoints = NULL;
@@ -309,9 +309,9 @@ QUEDPICKUP	*	FirstQuedPickupToProcess = NULL;
 
 PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	0 Trojax
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Trojax,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;	   	// do I produce Light
@@ -320,9 +320,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	1 Pyrolite
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Pyrolite,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -331,9 +331,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	2 Transpulse
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Transpulse,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -342,9 +342,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	3 Sussgun
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_SussGun,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -353,9 +353,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	4 Beam Laser
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Laser,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -365,9 +365,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	5 Mug Missile
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Mug,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -376,9 +376,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 128.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	6 Mug Missiles
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Mugs,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -387,9 +387,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	7 Solaris Heatseaker
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Heatseaker,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -398,9 +398,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	8 Heatseaker Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_HeatseakerPickup,		// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -409,9 +409,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	9 Thief Missile
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_Thief,				// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -421,9 +421,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	10 Scatter Missile
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Scatter,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -432,9 +432,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	11 Gravgon Missile
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Gravgon,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -443,9 +443,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	12 Rocket Launcher
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Launcher,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -454,9 +454,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	13 TitanStar Missile
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_TitanStar,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -465,9 +465,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	14 Purge Mine Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_PurgePickup,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -476,9 +476,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	15 Pine Mine Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_PinePickup,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -487,9 +487,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	16 Quantum Mine Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_QuantumPickup,		// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -498,9 +498,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	17 Spider Pod New
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_SpiderPod,			// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -510,9 +510,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	18 Parasite Mine
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_Parasite,				// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -522,9 +522,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	19 Flare
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_Flare,				// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -535,9 +535,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	20 General Ammo
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_GeneralAmmo,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -546,9 +546,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	21 Pyrolite Fuel
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_PyroliteAmmo,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -557,9 +557,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	22 SussGun Ammo
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_SussGunAmmo,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -570,9 +570,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 	},
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	23 Power Pod
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_PowerPod,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -581,9 +581,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 	    COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	24 Shield
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Shield,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -592,9 +592,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	25 Invulnerability
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Inv,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -603,9 +603,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	26 Extra Life
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_ExtraLife,			// uint16	ModelType;	// if 3D model which one....
 		0, //1,							// uint16	light;		// do I produce Light
@@ -614,9 +614,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	27 Targeting Computer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Computer,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -625,9 +625,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	28 Smoke Streamer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_Smoke,				// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -637,9 +637,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	29 Nitro
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Nitro,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -648,9 +648,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	30 Goggles
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 //		MODEL_Goggles,				// uint16	ModelType;	// if 3D model which one....
 		MODEL_Eyeball,				// uint16	ModelType;	// if 3D model which one....
@@ -660,9 +660,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	31 Gold Bars
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Gold,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -671,9 +671,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	32 Mantle ( Cloaking Device )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Mantle,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -682,9 +682,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	33 Crystal
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Crystal,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -693,9 +693,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	34 Orb
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Orb,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -705,9 +705,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	35 Golden Power Pod
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_GoldenPowerPod,		// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -716,9 +716,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 0.0F			// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	36 DNA Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_DNA,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -727,9 +727,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 255.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	37 Skeleton Key Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_SkeletonKey,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -738,9 +738,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 0.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 128.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	38 Bomb Pickup
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Bomb,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -749,9 +749,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 64.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	39 Gold Figure
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_GoldFigure,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -760,9 +760,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	40 Flag
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Flag,					// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -771,9 +771,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 128.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	41 Bounty
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_Gold	,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -782,9 +782,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 192.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	42 Flag1 (red)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_RedFlag,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -793,9 +793,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 64.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	43 Flag2 (green)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_GreenFlag,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -804,9 +804,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 192.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 64.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	44 Flag3 (blue)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_BlueFlag,				// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -815,9 +815,9 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 		COLOUR_SCALE * 64.0F,		// float	g;			// what color does it emit....
 		COLOUR_SCALE * 192.0F		// float	b;			// what color does it emit....
 	},
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	45 Flag4 (yellow)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	{
 		MODEL_YellowFlag,			// uint16	ModelType;	// if 3D model which one....
 		1,							// uint16	light;		// do I produce Light
@@ -828,11 +828,11 @@ PICKUPATTRIB PickupAttribs[ MAXPICKUPTYPES ] = {
 	},
 };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Set up And Init all Pickups
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPickups( void )
 {
 	uint16		i;
@@ -874,9 +874,9 @@ void InitPickups( void )
 }
 
 #if 0
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Table info for new pickup code
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 REGENPICKUPINFO	RegenPickupInfo[ MAXPICKUPTYPES ] = {
 
 	{ 1,	0 },				// 0  PICKUP_Trojax
@@ -952,11 +952,11 @@ int16 SecWeaponPickups[ MAXSECONDARYWEAPONS ] = {
 	PICKUP_SpiderPod,			// Spider Mine
 };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Initialise Pickup Regeneration Que
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitQuedPickups( void )
 {
 	uint16	i;
@@ -983,7 +983,7 @@ void InitQuedPickups( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Get free Slots
 	Input		:	int16			Pickup Type
 				:	int16			*	Num Random Slots ( TBFI )
@@ -991,7 +991,7 @@ void InitQuedPickups( void )
 				:	int16			*	Num Constant Slots ( TBFI )
 				:	FREESLOTINFO	*	Constant Slots Ptr ( TBFI )
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetFreeSlots( int16 Type, int16 * NumRandomSlots, FREESLOTINFO * RandomSlots,
 				   int16 * NumConstantSlots, FREESLOTINFO * ConstantSlots )
 {
@@ -1031,31 +1031,31 @@ void GetFreeSlots( int16 Type, int16 * NumRandomSlots, FREESLOTINFO * RandomSlot
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add Primary Weapon To Regeneration Que
 	Input		:	int16	Primary Weapon
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AddPrimaryToRegenQue( int8 Weapon )
 {
 	return( AddPickupToRegenQue( PrimWeaponPickups[ Weapon ] ) );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add Secondary Weapon To Regeneration Que
 	Input		:	int16	Primary Weapon
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AddSecondaryToRegenQue( int8 Weapon )
 {
 	return( AddPickupToRegenQue( SecWeaponPickups[ Weapon ] ) );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add Pickup to end of regeneration que
 	Input		:	int16	Type
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AddPickupToRegenQue( int16 Type )
 {
 	QUEDPICKUP	*	QuedPickup;
@@ -1105,11 +1105,11 @@ BOOL AddPickupToRegenQue( int16 Type )
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Remove Pickup from Regeneration Que
 	Input		:	QUEDPICKUP	*	QuedPickup Ptr
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void FreeQuedPickup( QUEDPICKUP * QuedPickup )
 {
 	QUEDPICKUP	*	PrevQuedPickup;
@@ -1160,11 +1160,11 @@ void FreeQuedPickup( QUEDPICKUP * QuedPickup )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find free Background Object
 	Input		:	nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessQuedPickups( void )
 {
 	int16			Slot;
@@ -1213,11 +1213,11 @@ void ProcessQuedPickups( void )
 
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Clear Pickups Got
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ClearPickupsGot( void )
 {
 	int16	Count;
@@ -1239,11 +1239,11 @@ void ClearPickupsGot( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	uint16	Pickup to get
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL CollectPickup( uint16 i )
 {
 	int16	PickupEnable = TRUE;
@@ -2152,11 +2152,11 @@ BOOL CollectPickup( uint16 i )
 		return FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	New Secondary Weapon ( AutoSelect )
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void NewSecondaryWeapon( int16 Weapon )
 {
 	uint16	Current_Type;
@@ -2175,11 +2175,11 @@ void NewSecondaryWeapon( int16 Weapon )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	New Primary Weapon ( AutoSelect )
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void NewPrimaryWeapon( int16 Weapon )
 {
 	if( player_config->primary_priority[ Weapon ] < player_config->primary_priority[ Ships[ WhoIAm ].Primary ] )
@@ -2189,11 +2189,11 @@ void NewPrimaryWeapon( int16 Weapon )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Procedure	:	Ship to Pickups collision
 	Input		:	Nothing
 	Output		:	All registers reserved
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void CheckPickup( void )
 {
 	float		Length;
@@ -2247,13 +2247,13 @@ void CheckPickup( void )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill a specific Pickup
 	Input		:	uint16	Owner
 				:	uint16	ID
 				:	int16	Style to kill
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 {
 	uint16	i;
@@ -2358,12 +2358,12 @@ void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find a free Pickup and move it from the free
 				:	list to	the used list
 	Input		:	nothing
 	Output		:	uint16 number of Pickup free....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindFreePickup( void )
 {
 	uint16 i;
@@ -2385,12 +2385,12 @@ uint16 FindFreePickup( void )
 	return i ;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill a used Pickup and move it from the used
 				:	list to the free list
 	Input		:	uint16 number of Pickup to kill.... 
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillUsedPickup( uint16 i )
 {
 	uint16	its_prev;
@@ -2470,11 +2470,11 @@ void KillUsedPickup( uint16 i )
 	RemovePickupFromGroup( i, Pickups[ i ].Group );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Clean up and kill a Pickup
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CleanUpPickup( uint16 i )
 {
 
@@ -2517,7 +2517,7 @@ void CleanUpPickup( uint16 i )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Init Pickup
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -2532,7 +2532,7 @@ void CleanUpPickup( uint16 i )
 				:	uint16		TriggerMod Index
 	Output		:	uint16		-1 if none free
 				:				-2 if too many of same type
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 Owner, uint16 ID, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
 {
 	uint16	i;
@@ -2779,7 +2779,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	return i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Init Joining Pickup
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -2794,7 +2794,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 				:	uint16		TriggerMod Index
 	Output		:	uint16		-1 if none free
 				:				-2 if too many of same type
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 Owner, uint16 ID, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
 {
 	uint16	i;
@@ -2933,11 +2933,11 @@ uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, in
 	return i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Process Secondary Bullets
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessPickups( void )
 {
 	uint16		i;
@@ -3075,9 +3075,9 @@ void ProcessPickups( void )
 	
 				OldGroup = Pickups[ i ].Group;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Do first collision, when initialised or changed direction
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 				NewPos.x = ( Pickups[ i ].Pos.x + NewDir.x );
 				NewPos.y = ( Pickups[ i ].Pos.y + NewDir.y );
 				NewPos.z = ( Pickups[ i ].Pos.z + NewDir.z );
@@ -3237,11 +3237,11 @@ void ProcessPickups( void )
 #pragma optimize( "", off )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Save Pickup Positions
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	char		NewFilename[ 128 ];
 
 void SavePickupsPositions( void )
@@ -3303,11 +3303,11 @@ void SavePickupsPositions( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Randomize Pickup Regen Slots
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16	CopyOfSeed1;
 uint16	CopyOfSeed2;
 
@@ -3345,11 +3345,11 @@ void RandomizePickups( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Check and correct valid regen slots
 	Input		:		int16	Slot
 	Output		:		BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL CheckValidRegenSlot( int16 Slot )
 {
 	/* if the position is inside the group */
@@ -3376,11 +3376,11 @@ BOOL CheckValidRegenSlot( int16 Slot )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Save Pickup Positions
 	Input		:	Nothing
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL LoadPickupsPositions( void )
 {
 
@@ -3711,11 +3711,11 @@ BOOL LoadPickupsPositions( void )
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:		Initialise a pickup given only regen slot
 	Input		:		uint16		Slot Number
 	Output		:		uint16		Pickup Index (-1 or -2 error)
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 InitSlotPickup( uint16 Slot )
 {
 	uint16		i = (uint16) -1;
@@ -3744,11 +3744,11 @@ uint16 InitSlotPickup( uint16 Slot )
 	return( i );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Regenerate required pickups
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	RegenDelay = 0.0F;
 
 void RegeneratePickups( void )
@@ -3956,11 +3956,11 @@ void RegeneratePickups( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Process Regen Slots
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessRegenSlots( void )
 {
 	int16	Count;
@@ -4010,11 +4010,11 @@ void ProcessRegenSlots( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Regenerate qued pickups
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RegenerateQuedPickups( void )
 {
 	int16						Count;
@@ -4060,11 +4060,11 @@ void RegenerateQuedPickups( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Regenerate required pickups
 	Input		:	uint16		Pickup Type
 	Output		:	BOOL		True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL RegeneratePickup( uint16 Type )
 {
@@ -4177,14 +4177,14 @@ BOOL RegeneratePickup( uint16 Type )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Generate pickup list for new player
 	Input		:	uint16			Ship
 				:	SHORTPICKUP	*	Pickup Array to be filled in
 				:	BYTE		*	Pickup Number to be filled in
 				:	BYTE			Section of pickups
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GenPickupList( uint16 Ship, SHORTPICKUP * PickupSlots, BYTE * NumPickups, BYTE Section )
 {
 	int16	Count;
@@ -4220,12 +4220,12 @@ void GenPickupList( uint16 Ship, SHORTPICKUP * PickupSlots, BYTE * NumPickups, B
 	*NumPickups = (BYTE) NumUsed;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Generate pickups from list for new player
 	Input		:	SHORTPICKUP	*	Pickup Array
 				:	BYTE			Number of Pickups
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RegenPickupList( SHORTPICKUP * Slots, BYTE Num )
 {
 	int16	Count;
@@ -4238,14 +4238,14 @@ void RegenPickupList( SHORTPICKUP * Slots, BYTE Num )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Generate RegenSlot list for new player
 	Input		:	uint16			Ship
 				:	SHORTREGENSLOT*	RegenSlot Array to be filled in
 				:	BYTE		*	RegenSlot Number to be filled in
 				:	BYTE			Section of RegenSlot
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegenSlots, BYTE Section )
 {
 	int16	Count;
@@ -4275,12 +4275,12 @@ void GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegen
 	*NumRegenSlots = (BYTE) NumUsed;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Regeneralte RegenSlots from list for new player
 	Input		:	SHORTREGENSLOT*	RegenSlot Array
 				:	BYTE			Number of RegenSlots
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 {
 	REGENPOINT	*	Ptr;
@@ -4300,11 +4300,11 @@ void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill All Pickups
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void KillAllPickups( void )
 {
@@ -4336,11 +4336,11 @@ void KillAllPickups( void )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Copy Pickups into copy of pickups
 	Input		:	uint16		Player
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CopyPickups( uint16 Player )
 {
 	uint16	i;
@@ -4362,11 +4362,11 @@ void CopyPickups( uint16 Player )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Copy RegenSlots into copy of regenslots
 	Input		:	uint16		Player
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CopyRegenSlots( uint16 Player )
 {
 	REGENPOINT	*	Ptr;
@@ -4385,11 +4385,11 @@ void CopyRegenSlots( uint16 Player )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enable All Pickup Lights
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnablePickupLights( void )
 {
 	uint16	i;
@@ -4407,11 +4407,11 @@ void EnablePickupLights( void )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enable All Pickup Lights
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisablePickupLights( void )
 {
 	uint16	i;
@@ -4429,11 +4429,11 @@ void DisablePickupLights( void )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add Pickup to regeneration que
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddPickupToRegen( uint16 Type )
 {
 	switch( Type )
@@ -4524,11 +4524,11 @@ void AddPickupToRegen( uint16 Type )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Enable All Pickup Lights
 	Input		:	Nothing
 	Output		:	uint16	Pickup Index ( -1 = None )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindClosestPickup( void )
 {
 	uint16	i;
@@ -4566,11 +4566,11 @@ uint16 FindClosestPickup( void )
 	return( ClosestPickup );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Closest Ship
 	Input		:	Nothing
 	Output		:	uint16		Ship Index ( -1 If none hit )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindClosestShip( void )
 {
 	uint16		Count;
@@ -4612,11 +4612,11 @@ uint16 FindClosestShip( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Play Sfx for Collect Pickup from scene
 	Input		:	uint16	pickup to get
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SfxForCollectPickup( uint16 Owner, uint16 ID )
 {
 	uint16	i;
@@ -4746,11 +4746,11 @@ void SfxForCollectPickup( uint16 Owner, uint16 ID )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Setup Pickup group link list
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetupPickupGroups( void )
 {
 	int16	Count;
@@ -4762,12 +4762,12 @@ void SetupPickupGroups( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add Pickup to group link list
 	Input		:	uint16		Pickup Index
 				:	uint16		Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddPickupToGroup( uint16 i, uint16 Group )
 {
 	Pickups[ i ].PrevInGroup = NULL;
@@ -4777,12 +4777,12 @@ void AddPickupToGroup( uint16 i, uint16 Group )
 	NumPickupsPerGroup[ Group ]++;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Remove Pickup from group link list
 	Input		:	uint16		Pickup Index
 				:	uint16		Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RemovePickupFromGroup( uint16 i, uint16 Group )
 {
 	if( Pickups[ i ].PrevInGroup ) Pickups[ i ].PrevInGroup->NextInGroup = Pickups[ i ].NextInGroup;
@@ -4793,13 +4793,13 @@ void RemovePickupFromGroup( uint16 i, uint16 Group )
 	NumPickupsPerGroup[ Group ]--;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Move Pickup from 1 group to another
 	Input		:	uint16		Pickup Index
 				:	uint16		OldGroup
 				:	uint16		NewGroup
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MovePickupToGroup( uint16 i, uint16 OldGroup, uint16 NewGroup )
 {
 	RemovePickupFromGroup( i, OldGroup );
@@ -4816,11 +4816,11 @@ void InitValidPickups()
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Filter Pickup
 	Input		:	uint16		Pickup Type
 	Output		:	BOOL		( True/False ( Allowed/Not )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL FilterPickup( uint16 PickupType )
 {
 	// if in these modes
@@ -4880,11 +4880,11 @@ void UnpackPickupInfo( uint32 *packed )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Save Pickups Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveAllPickups( FILE * fp )
 {
 	uint16	i;
@@ -5003,11 +5003,11 @@ FILE * SaveAllPickups( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Load Pickups Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadAllPickups( FILE * fp )
 {
 	uint16	i;
@@ -5151,12 +5151,12 @@ FILE * LoadAllPickups( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill all pickups of a specific type
 	Input		:	uint16	Type
 				:	int16	Style to kill
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillAllPickupsOfType( uint16 Type, int16 Style )
 {
 	uint16	i;
@@ -5241,13 +5241,13 @@ void KillAllPickupsOfType( uint16 Type, int16 Style )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Kill all pickups of a specific type and send to
 				:	all players
 	Input		:	uint16	Type
 				:	int16	Style to kill
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillAllPickupsOfTypeAndSend( uint16 Type, int16 Style )
 {
 	uint16	i;
@@ -5336,11 +5336,11 @@ void KillAllPickupsOfTypeAndSend( uint16 Type, int16 Style )
 	}																				
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Check if model for pickup is valid
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PickupModelValid( void )
 {
 	uint16	i;
@@ -5369,11 +5369,11 @@ void PickupModelValid( void )
 
 #if 1
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	uint16	Pickup to get
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 {
 	int16	PickupEnable = FALSE;
@@ -5962,11 +5962,11 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	uint16	Pickup to get
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ActuallyCollectPickup( uint16 i )
 {
 	int16	PickupEnable = TRUE;
@@ -6563,11 +6563,11 @@ BOOL ActuallyCollectPickup( uint16 i )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Collect Pickup from scene
 	Input		:	uint16	Pickup to get
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PretendCollectPickup( uint16 i )
 {
 	int16	PickupEnable = TRUE;
@@ -7038,11 +7038,11 @@ BOOL PretendCollectPickup( uint16 i )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Procedure	:	Ships to Pickups collision
 	Input		:	Nothing
 	Output		:	All registers reserved
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void CheckPickupAllPlayers( void )
 {
 	float		Length;
@@ -7212,11 +7212,11 @@ void CheckPickupAllPlayers( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Procedure	:	Correct for Extra or Missing Pickups
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 int16 SecondaryFromPickupTab[ MAXSECONDARYWEAPONS * 2 ] = {
 
 	PICKUP_Mugs,				3,
@@ -7471,9 +7471,9 @@ void CorrectForExtraOrMissingPickups( void )
 	}
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Correct for fucked up secondary weapons
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 	for( Weapon = 1; Weapon < MAXSECONDARYWEAPONS; Weapon++ )
 	{
 		Pickup = SecondaryFromPickupTab[ ( Weapon * 2 ) ];
@@ -7505,9 +7505,9 @@ void CorrectForExtraOrMissingPickups( void )
 		}
 	}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Correct for fucked up orbitals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 	NumWeapons = ( OrbsInLevel + OrbsInPlayers + OrbsToGenerate );
 
 	if( NumWeapons > MaxPickupType[ PICKUP_Orb ] )
@@ -7533,9 +7533,9 @@ void CorrectForExtraOrMissingPickups( void )
 	}
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Correct for fucked up stealths
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 	NumWeapons = ( StealthsInLevel + StealthsInPlayers + StealthsToGenerate );
 
 	if( NumWeapons > MaxPickupType[ PICKUP_Mantle] )
@@ -7560,9 +7560,9 @@ void CorrectForExtraOrMissingPickups( void )
 		}
 	}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Correct for fucked up Invulnerabilities
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 	NumWeapons = ( InvulsInLevel + InvulsInPlayers + InvulsToGenerate );
 
 	if( NumWeapons > MaxPickupType[ PICKUP_Inv ] )
@@ -7587,9 +7587,9 @@ void CorrectForExtraOrMissingPickups( void )
 		}
 	}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================ÄÄÄÄ
 	Correct for fucked up supernashrams
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 	NumWeapons = ( SuperNashramsInLevel + SuperNashramsInPlayers + SuperNashramsToGenerate );
 
 	if( NumWeapons > MaxPickupType[ PICKUP_GoldenPowerPod ] )
@@ -7774,11 +7774,11 @@ void CorrectForExtraOrMissingPickups( void )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Count Mines currently active in level
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CountMinesInLevel( void )
 {
 	uint16	i;
@@ -7807,11 +7807,11 @@ int16		FirstFailedKillUsed = -1;
 int16		FirstFailedKillFree = -1;
 FAILEDKILL	FailedKill[ MAXFAILEDKILLS ];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Init FailedKill Slots
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitFailedKillSlots( void )
 {
 	int16	i;
@@ -7828,14 +7828,14 @@ void InitFailedKillSlots( void )
 	FailedKill[ MAXFAILEDKILLS-1 ].Next = -1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Add FailedKill to que
 	Input		:	uint16	Owner
 				:	uint16	ID
 				:	int16	Style
 				:	uint16	NewOwner
 	Output		:	BOOL	TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner )
 {
 	int16	i;
@@ -7856,11 +7856,11 @@ BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner )
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Free failed kill slot
 	Input		:	Nothing
 	Output		:	int16	Failed pickup index
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int16 FindFreeFailedKillSlot( void )
 {
 	int16 i;
@@ -7885,11 +7885,11 @@ int16 FindFreeFailedKillSlot( void )
 	return( i );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	release a failed kill slot
 	Input		:	int16	Slot number
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleaseFailedKillSlot( int16 i )
 {
 	int16	its_prev, its_next;
@@ -7906,11 +7906,11 @@ void ReleaseFailedKillSlot( int16 i )
 	FirstFailedKillFree	= i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Process Failed Kill Pickups
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessFailedKills( void )
 {
 	uint16		Pickup;
@@ -7945,12 +7945,12 @@ void ProcessFailedKills( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*/*===================================================================
 	Procedure	:	Find Pickup from owner and id
 	Input		:	uint16		Owner
 				:	uint16		ID
 	Output		:	uint16		Index
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindPickup( uint16 Owner, uint16 ID )
 {
 	uint16	i;
