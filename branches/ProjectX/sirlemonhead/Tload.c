@@ -6,7 +6,7 @@
  *  rescaling if nescessary...
 ***************************************************************************/
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include "typedefs.h"
@@ -25,7 +25,7 @@
 #define BLANK_GREEN		(255)
 #define BLANK_BLUE		(255)
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 
@@ -39,7 +39,7 @@ BOOL FreeTextureMemory( int * TMem);
 extern void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
 extern char* D3DAppErrorToString(HRESULT error);
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 #define	MAXSCALE 3
@@ -53,7 +53,7 @@ BOOL	DontColourKey = FALSE;
 BOOL	NoTextureScaling = FALSE;
 int Print4x5Text( char * Text , int x , int y , int col );
 double	Gamma = 1.0;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Build a Gamma Correction table 
 	Input		:		double GammaValue
 	Output		:		Nothing
@@ -82,7 +82,7 @@ void BuildGammaTab( double GammaValue )
 	}
 };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init a Tloadheader
 	Input		:		TLOADHEADER *
 	Output		:		BOOL FALSE/TRUE
@@ -115,7 +115,7 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load All textures associated with a level
 	Input		:		TLOADHEADER *
 	Output		:		BOOL FALSE/TRUE
@@ -308,7 +308,7 @@ BOOL SysTload( SYSTEMMEMTPAGES *SysTextures, int num_tpages )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Make a material for all textures associated with Tloadheader
 	Input		;		TLOADHEADER *
 	Output		:		FLASE/TRUE
@@ -359,7 +359,7 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 	}
     return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		
 	Input		;		TLOADHEADER * , int n 
 	Output		:		FLASE/TRUE
@@ -1677,7 +1677,7 @@ TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get the width and height for a PPM
 	Input		:		TLOADHEADER * , int , lpname, uint16 * , uint16 * 
 	Output		:		BOOL FALSE/TRUE
@@ -1738,7 +1738,7 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Find a texture from a tloadheader Ignores the Path
 	Input		:		TLOADHEADER * , char * Name
 	Output		:		-1 if no match found otherwise number of texture
@@ -1779,7 +1779,7 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	}
 	return -1;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add a texture to a tloadheader
 	Input		:		TLOADHEADER * , char * Name , ColourKey
 	Output		:		-1 if too many tpages

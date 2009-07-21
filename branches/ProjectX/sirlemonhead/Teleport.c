@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 		Include Files...	
 ===================================================================*/
 #include <stdio.h>
@@ -28,13 +28,13 @@
 #include "XMem.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	TELEPORTS_VERSION_NUMBER	2
 
 																   
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern	VECTOR Forward;
@@ -48,7 +48,7 @@ extern	BOOL	ShowTeleports;
 BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
 void DisplayDirAndUp( VECTOR * Pos, VECTOR * Dir, VECTOR *Up, uint16 Group );
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 int16	NumOfTeleports = 0;
@@ -57,7 +57,7 @@ TELEPORT * TeleportsGroupLink[MAXGROUPS];
 
 TELEPORT * Teleports = NULL;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Teleports load...
 	Input		:	char * filename....
 	Output		:	BOOL
@@ -222,7 +222,7 @@ BOOL TeleportsLoad( char * Filename )
 
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release Forces load...
 	Input		:	void
 	Output		:	void
@@ -251,7 +251,7 @@ void ReleaseTeleports( void )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if im in an Active Teleport....
 	Input		:	void
 	Output		:	TRUE/FALSE
@@ -293,7 +293,7 @@ BOOL TeleportsAreaCheck( VECTOR * NewPos , VECTOR * OldPos ,uint16 Group, OBJECT
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display Teleports in group
 	Input		:	uint16	Group
 	Output		:	Nothing
@@ -337,7 +337,7 @@ void DisplayTeleportsInGroup( uint16 Group )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if im in a Teleport Zone....
 	Input		:	void
 	Output		:	void
@@ -366,7 +366,7 @@ void TeleportsZoneCheck( VECTOR * OldPos , VECTOR * NewPos , TELEPORT * TPpnt )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start a Teleport..
 	Input		:	void
 	Output		:	void
@@ -380,7 +380,7 @@ void StartTeleport( uint16 * Data )
 	TPpnt += *Data;
 	TPpnt->Status = TELEPORTACTIVE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Stop a Teleport..
 	Input		:	void
 	Output		:	void
@@ -396,7 +396,7 @@ void StopTeleport( uint16 * Data )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save Teleports arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -422,7 +422,7 @@ FILE * SaveTeleports( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Teleports Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

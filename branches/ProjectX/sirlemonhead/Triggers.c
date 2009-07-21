@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 		Include Files...	
 ===================================================================*/
 #define WIN32_EXTRA_LEAN
@@ -34,14 +34,14 @@
 
 #undef DEBUG_TRIGGERS
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	TRG_VERSION_NUMBER	1
 
 #define FLAG_MASK( N )	( 1 << ( (N) - 1 ) )
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern	BYTE			WhoIAm;
@@ -50,7 +50,7 @@ extern	float framelag;
 extern	BYTE	ChangeLevel_MyGameStatus;
 extern	BOOL	CountDownOn;
 extern	BOOL	KilledPlayer;
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 TRIGGERVAR * AvatarActivated = NULL;
@@ -80,7 +80,7 @@ int NumOfTrigModQues = 0;
 TRIGGERMODQUE *TrigModQue = NULL;
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add a trigger mod to the que..
 	Input		:		TRIGGERMOD	* TrigMod
 	Output		:		nothing
@@ -102,7 +102,7 @@ void AddTriggerModQue( TRIGGERMOD * TrigMod )
 	else
 		DebugPrintf( "Couldn't find slot in Trigger Que\n" );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add a trigger mod to the que..
 	Input		:		TRIGGERMOD	* TrigMod
 	Output		:		nothing
@@ -127,7 +127,7 @@ void ProcessTriggerModQue( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Update a trigger var..and then checks to see if 
 						all the triggers associated with any condition that this
 						trigger is used in is complete if it is Set the events off...
@@ -152,7 +152,7 @@ void ApplyTriggerMod( TRIGGERMOD * TrigMod )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Update a trigger var..and then checks to see if 
 						all the triggers associated with any condition that this
 						trigger is used in is complete if it is Set the events off...
@@ -286,7 +286,7 @@ void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Test all Conditions..
 	Input		:		TRIGGER * Trig
 	Output		:		nothing
@@ -319,7 +319,7 @@ void TestAllConditions( TRIGGER * Trig )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add Condition to the list of conditions that
 						have been proved TRUE and will therefor have 
 						there event list processed...
@@ -352,7 +352,7 @@ void AddCondition( CONDITION * Con )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Process active conditions..
 	Input		:		nothing
 	Output		:		nothing
@@ -378,7 +378,7 @@ void ProcessActiveConditions( void )
 	ProcessTriggerModQue();
 }
 	  
-/*/*===================================================================
+/*===================================================================
 	Function	:	Event List Procs..
 ===================================================================*/
 void (* EventList[ ])( uint8 * Data ) = {
@@ -422,7 +422,7 @@ void (* EventList[ ])( uint8 * Data ) = {
 		NULL,
 };
  
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Process Event...
 	Input		:		EVENT * Event
 	Output		:		nothing
@@ -438,7 +438,7 @@ void ProcessEvent( EVENT * Event )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Generate a Pickup Event..
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -448,7 +448,7 @@ void EVENT_PickupGenerate( uint8 * Data )
 	InitSlotPickup( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Generate an Enemy Event..
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -458,7 +458,7 @@ void EVENT_EnemyGenerate( uint8 * Data )
 	EnableEnemy( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start SpotFX
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -472,7 +472,7 @@ void EVENT_StartSpotFX( uint8 * Data )
 	EnableSpotFX( *Data2 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Stop SpotFX
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -486,7 +486,7 @@ void EVENT_StopSpotFX( uint8 * Data )
 	DisableSpotFX( *Data2 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Open BGObject Door
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -496,7 +496,7 @@ void EVENT_OpenDoor( uint8 * Data )
 	OpenDoor( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Close BGObject Door
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -506,7 +506,7 @@ void EVENT_CloseDoor( uint8 * Data )
 	CloseDoor( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Lock BGObject Door
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -516,7 +516,7 @@ void EVENT_LockDoor( uint8 * Data )
 	LockDoor( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Unlock BGObject Door
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -526,7 +526,7 @@ void EVENT_UnlockDoor( uint8 * Data )
 	UnlockDoor( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start BGObject Anim
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -536,7 +536,7 @@ void EVENT_StartBGOAnim( uint8 * Data )
 	StartBGOAnim( (uint16) *Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start BGObject Anim
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -545,7 +545,7 @@ void EVENT_StopBGOAnim( uint8 * Data )
 {
 	StopBGOAnim( (uint16) *Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start Texture Anim
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -555,7 +555,7 @@ void EVENT_StartTexAnim( uint8 * Data )
 	TriggerBackgroundAnimationGo( (uint16 *) Data );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start Texture Anim
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -564,7 +564,7 @@ void EVENT_StopTexAnim( uint8 * Data )
 {
 	TriggerBackgroundAnimationStop( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start Water Fill
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -573,7 +573,7 @@ void EVENT_WaterFill( uint8 * Data )
 {
 	TriggerWaterFill( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start Water Drain
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -582,7 +582,7 @@ void EVENT_WaterDrain( uint8 * Data )
 {
 	TriggerWaterDrain( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start Water Drain
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -591,7 +591,7 @@ void EVENT_ShowMessages( uint8 * Data )
 {
 	TriggerTextMessage( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Start External Force
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -600,7 +600,7 @@ void EVENT_StartExternalForce( uint8 * Data )
 {
 	StartExternalForce( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Stop External Force
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -609,7 +609,7 @@ void EVENT_StopExternalForce( uint8 * Data )
 {
 	StopExternalForce( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enable real-time light
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -618,7 +618,7 @@ void EVENT_EnableLight( uint8 * Data )
 {
 	EnableRTLight( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Disable real-time light
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -627,7 +627,7 @@ void EVENT_DisableLight( uint8 * Data )
 {
 	DisableRTLight( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enable trigger area
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -636,7 +636,7 @@ void EVENT_TriggerAreaEnable( uint8 * Data )
 {
 	EnableTriggerArea( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Disable trigger area
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -645,7 +645,7 @@ void EVENT_TriggerAreaDisable( uint8 * Data )
 {
 	DisableTriggerArea( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enable Camera
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -654,7 +654,7 @@ void EVENT_CameraEnable( uint8 * Data )
 {
 	EnableRemoteCamera( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Disable Camera
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -663,7 +663,7 @@ void EVENT_CameraDisable( uint8 * Data )
 {
 	DisableRemoteCamera( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enable Teleport
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -672,7 +672,7 @@ void EVENT_TeleportEnable( uint8 * Data )
 {
 	StartTeleport( (uint16 *) Data );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Disable Teleport
 	Input		:		uint8 * Data
 	Output		:		nothing
@@ -683,7 +683,7 @@ void EVENT_TeleportDisable( uint8 * Data )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Trg File
 	Input		:		char	*	Filename
 	Output		:		BOOL	TRUE/FALSE
@@ -1090,7 +1090,7 @@ BOOL Triggerload( char * Filename )
 		}
 	}
 
-/*/*===================================================================
+/*===================================================================
 	Search for Temperature Variable
 ===================================================================*/
 	TVpnt =	TrigVars;
@@ -1117,7 +1117,7 @@ BOOL Triggerload( char * Filename )
 			TVpnt++;
 		}
 	}
-/*/*===================================================================
+/*===================================================================
 	Search for Temperature Variable
 ===================================================================*/
 	TVpnt =	TrigVars;
@@ -1147,7 +1147,7 @@ BOOL Triggerload( char * Filename )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		release triggers
 	Input		:		none
 	Output		:		none
@@ -1228,7 +1228,7 @@ void ReleaseTriggers( void )
 	TrigModQue = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Generate Trigger list for new player
 	Input		:	uint16			Ship
 				:	SHORTTRIGGER *	Trigger Array to be filled in
@@ -1261,7 +1261,7 @@ void GenTriggerList( uint16 Ship, SHORTTRIGGER * TriggerSlots, BYTE * NumTrigger
 	*NumTriggerSlots = (BYTE) NumUsed;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Regeneralte Trigger Info from list for new player
 	Input		:	SHORTTRIGGER *	Trigger Array
 				:	BYTE			Number of Trigger Slots
@@ -1285,7 +1285,7 @@ void RegenTriggerList( SHORTTRIGGER * Slots, BYTE Num )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Copy Triggers into copy for player
 	Input		:	uint16		Player
 	Output		:	Nothing
@@ -1300,7 +1300,7 @@ void CopyTriggers( uint16 Player )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Generate TrigVar list for new player
 	Input		:	uint16			Ship
 				:	SHORTTRIGVAR *	TrigVar Array to be filled in
@@ -1333,7 +1333,7 @@ void GenTrigVarList( uint16 Ship, SHORTTRIGVAR * TrigVarSlots, BYTE * NumTrigVar
 	*NumTrigVarSlots = (BYTE) NumUsed;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Regeneralte TrigVar Info from list for new player
 	Input		:	SHORTTRIGVAR *	TrigVar Array
 				:	BYTE			Number of TrigVar Slots
@@ -1357,7 +1357,7 @@ void RegenTrigVarList( SHORTTRIGVAR * Slots, BYTE Num )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Copy TrigVars into copy for player
 	Input		:	uint16		Player
 	Output		:	Nothing
@@ -1375,7 +1375,7 @@ void CopyTrigVars( uint16 Player )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Count how may secrest there are and how many have been found..
 	Input		:	int * NumOfSecrets , int * SecretsFound
 	Output		:	Nothing
@@ -1404,7 +1404,7 @@ void HowManySecrets( int * NumOfSecrets , int * SecretsFound )
 		TVpnt++;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Has the level ended
 	Input		:	Nothing
 	Output		:	BOOL yes/no
@@ -1427,7 +1427,7 @@ BOOL HasLevelEnded( void )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Am i in cool pool
 	Input		:	Nothing
 	Output		:	BOOL yes/no
@@ -1457,7 +1457,7 @@ BOOL CheckDecreaseTemperature( void )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if timer enabled
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1483,7 +1483,7 @@ void CheckTimeLimit( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Has the Avatar Boss been activated...
 	Input		:	Nothing
 	Output		:	BOOL yes/no
@@ -1506,7 +1506,7 @@ BOOL IsAvatarActive( void )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save Trigger arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -1558,7 +1558,7 @@ FILE * SaveAllTriggers( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Trigger Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -1576,7 +1576,7 @@ FILE * LoadAllTriggers( FILE * fp )
 
 	if( fp )
 	{
-/*/*===================================================================
+/*===================================================================
 		TrigVars
 ===================================================================*/
 		fread( &NumTrigVars, sizeof( int ), 1, fp );
@@ -1594,7 +1594,7 @@ FILE * LoadAllTriggers( FILE * fp )
 			TrigVar++;
 		}
 
-/*/*===================================================================
+/*===================================================================
 		Triggers
 ===================================================================*/
 		fread( &NumTrigs, sizeof( int ), 1, fp );
@@ -1613,7 +1613,7 @@ FILE * LoadAllTriggers( FILE * fp )
 			Trig++;
 		}
 
-/*/*===================================================================
+/*===================================================================
 		TrigMods ( Qued )
 ===================================================================*/
 		fread( &NumTrigMods, sizeof( int ), 1, fp );

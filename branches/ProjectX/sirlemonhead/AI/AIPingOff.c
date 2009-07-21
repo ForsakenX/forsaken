@@ -34,7 +34,7 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	MLOADHEADER Mloadheader;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Ping Off...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

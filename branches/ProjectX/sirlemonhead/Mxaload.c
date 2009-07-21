@@ -43,7 +43,7 @@ num_frames : uint16 // number of animation frames
 	}[num_groups]
 }[num_frames]
 */
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -63,7 +63,7 @@ num_frames : uint16 // number of animation frames
 #include "spotfx.h"
 #include "XMem.h"
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	MXA_VERSION_NUMBER	2
@@ -71,7 +71,7 @@ num_frames : uint16 // number of animation frames
 //#define FIX_MXA_UV
 #undef FIX_MXA_UV
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 
@@ -99,7 +99,7 @@ extern	BOOL	CanCullFlag;
 
 int16		NewLevelNum;
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 MXALOADHEADER MxaModelHeaders[MAXMXAMODELHEADERS];
@@ -139,7 +139,7 @@ FixUV_MXA( uint16 vertices, MXAVERT *MXA_Vert, LPD3DLVERTEX Vert, LPD3DLVERTEX O
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Mx File
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
@@ -422,7 +422,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	// is there any vispoly info.....
 	if ( *Uint16Pnt++ == 2)				// 2 means .mxa format
 	{
-/*/*===================================================================
+/*===================================================================
  *		Particular Stuff Related Anims	
 ===================================================================*/
 		Mxaloadheader->num_frames = *Uint16Pnt++;
@@ -494,7 +494,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 		}
 	}
 	
-/*/*===================================================================
+/*===================================================================
 	Point Direction Data
 ===================================================================*/
 	Uint16Pnt = (uint16 *) Buffer;
@@ -700,7 +700,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxaloadheader
 	Input		;		MXALOADHEADER *
 	Output		:		FLASE/TRUE
@@ -732,7 +732,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute one group for an Mxaloadheader
 	Input		;		MXALOADHEADER *
 	Output		:		FLASE/TRUE
@@ -829,7 +829,7 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Pre - Load .Mxa File
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
@@ -964,7 +964,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Interp between frames for MXA Anim...
 	Input		:		MXALOADHEADER * Mxaloadheader 
 				:		int FrameFrom, int FrameTo , float Interp
@@ -1060,12 +1060,12 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 
 
 #if 0
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Do the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Do the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -1201,7 +1201,7 @@ void WaterMesh()
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Release the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -1211,7 +1211,7 @@ void ReleaseWaterMesh()
 	if( WaterExecbuf )
 		XRELEASE(WaterExecbuf);
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Display the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -1250,7 +1250,7 @@ void DisplayWaterMesh()
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 		return;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -1372,7 +1372,7 @@ void InitWaterMesh()
 		return;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Collide the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -1399,7 +1399,7 @@ BOOL WaterCollide( VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , uint16 D
 	
 	WaterOffset = -DotProduct( &WaterNormal, &WaterPos );
 
-/*/*===================================================================
+/*===================================================================
 	Calculate T
 ===================================================================*/
 	Div = ( Offset->x * WaterNormal.x) + 
@@ -1421,7 +1421,7 @@ BOOL WaterCollide( VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , uint16 D
 	
 	t = -( Num / Div );
 
-/*/*===================================================================
+/*===================================================================
 	Do Polygon collision
 ===================================================================*/
 

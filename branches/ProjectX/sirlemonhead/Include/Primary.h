@@ -12,7 +12,7 @@
 #ifndef PRIMARY_INCLUDED
 #define PRIMARY_INCLUDED
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 #define	MAXPRIMARYWEAPONBULLETS	256
@@ -157,7 +157,7 @@
 #define	COLPERS_Forsaken	0					// Forsaken Collision ( shooter Perspective )
 #define	COLPERS_Descent	1					// Descent Collision ( target Perspective )
 
-/*/*===================================================================
+/*===================================================================
 	Structures
 ===================================================================*/
 typedef struct PRIMARYWEAPONATTRIB {
@@ -227,7 +227,7 @@ typedef struct PRIMARYWEAPONBULLET {
 } PRIMARYWEAPONBULLET;							// sizes and colours of 2d polys and Lights are set up depoending on type...
 
 
-/*/*===================================================================
+/*===================================================================
 	Prototypes
 ===================================================================*/
 void	InitPrimBulls(void);

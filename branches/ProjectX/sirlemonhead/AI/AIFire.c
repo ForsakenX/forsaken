@@ -37,7 +37,7 @@ extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	PRIMARYWEAPONBULLET	PrimBulls[MAXPRIMARYWEAPONBULLETS];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	TURRET Fire At Target..
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -97,7 +97,7 @@ void AI_TURRET_FIREATTARGET( register ENEMY * Enemy )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update an Enemies Guns...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

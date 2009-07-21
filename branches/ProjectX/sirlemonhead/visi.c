@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 *	All routines to do with Visipolys...
 ===================================================================*/
 
@@ -39,7 +39,7 @@ extern int outside_map;
 extern	BOOL	DoClipping;
 extern	CAMERA	CurrentCamera;
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 
@@ -66,7 +66,7 @@ extern	LINE			Lines[ MAXLINES ];
 extern	char			LevelNames[MAXLEVELS][128];                        
 extern	MLOADHEADER		Mloadheader;
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 
@@ -1198,7 +1198,7 @@ ClipGroup( CAMERA *cam, uint16 group )
 BOOL FogOff( void );
 BOOL FogOn( float Start , float End );
 
-/*/*===================================================================
+/*===================================================================
 		Disp Visipoly Model
 ===================================================================*/
 BOOL
@@ -1248,18 +1248,14 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			GroupInVisibleList = i;
 
 			// This just causes certain groups to not appear fogged
-			//if( (CurrentGroupVisible&3) == 0 )
 			if ( d3dapprs.bFogEnabled )
 			{
-				//End = DistanceVector2Vector( &cam->Pos , (VECTOR*)&Mloadheader->Group[CurrentGroupVisible].center);
-				//Start = End - 256.0F;
 				FogOn( d3dapprs.FogStart, d3dapprs.FogEnd ); //Start , End );
-			}//else{
-			//	FogOff();
-			//}
+			}
 
 			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
 				return FALSE;
+
    			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
 					return FALSE;
 
@@ -1277,7 +1273,9 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 		if ( VisiStats[ GroupImIn ].tmin > t )
 			VisiStats[ GroupImIn ].tmin = t;
 		VisiStats[ GroupImIn ].visits++;
-	}else{
+	}
+	else
+	{
 		if ( ExecuteMloadHeader ( Mloadheader ) != TRUE)
 			return FALSE;
 	}
@@ -1397,7 +1395,7 @@ uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, V
 	return in_groups;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Is point inside bounding box of group
 	Input		:	MLOADHEADER	*	Mloadheader
 				:	VECTOR		*	Pos

@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Includes
 ===================================================================*/
 #include <stdio.h>
@@ -33,7 +33,7 @@
 #include "sfx.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 extern	int16			LevelNum;
@@ -70,12 +70,12 @@ extern	MCLOADHEADER	MCloadheader;
 extern	MCLOADHEADER	MCloadheadert0;
 extern	ENEMY			Enemies[ MAXENEMIES ];
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 #define	FX_VERSION_NUMBER	4
 
-/*/*===================================================================
+/*===================================================================
 	Global Variables
 ===================================================================*/
 	int32		NumSpotFX;
@@ -85,7 +85,7 @@ extern	ENEMY			Enemies[ MAXENEMIES ];
 	SPOTFX	*	FirstSpotFXUsed = NULL;
 	SPOTFX	*	FirstSpotFXFree = NULL;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load all SpotFX
 	Input		:	nothing
 	Output		:	BOOL	True/False
@@ -200,7 +200,7 @@ BOOL LoadSpotFX( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process all SpotFX
 	Input		:	nothing
 	Output		:	nothing
@@ -582,7 +582,7 @@ void ProcessSpotFX( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup all SpotFX
 	Input		:	nothing
 	Output		:	nothing
@@ -613,7 +613,7 @@ void SetupSpotFX( void )
 	SpotFX[ MAXSPOTFX - 1 ].NextFree = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init One SpotFX
 	Input		:	uint16		GenType
 				:	float		GenDelay
@@ -716,7 +716,7 @@ SPOTFX * InitOneSpotFX( uint16 GenType, float GenDelay, uint16 Type, uint16 Grou
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enable SpotFX
 	Input		:	uint16	SpotFXIndex
 	Output		:	Nothing
@@ -737,7 +737,7 @@ void EnableSpotFX( uint16 SpotFXIndex )
 	SpotFX[ SpotFXIndex ].Flags &= ~SPOTFX_FLAGS_DoneOnce;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Disable SpotFX
 	Input		:	uint16	SpotFXIndex
 	Output		:	Nothing
@@ -754,7 +754,7 @@ void DisableSpotFX( uint16 SpotFXIndex )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find free SpotFX
 	Input		:	Nothing
 	Output		:	SPOTFX	*	SpotFX ( NULL if not available )
@@ -790,7 +790,7 @@ SPOTFX * FindFreeSpotFX( void )
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill an SpotFX
 	Input		:	SPOTFX	*	Object
 	Output		:	nothing
@@ -842,7 +842,7 @@ void KillUsedSpotFX( SPOTFX * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Steam
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -889,7 +889,7 @@ void CreateSpotFXSteam( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uin
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Flame
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -932,7 +932,7 @@ void CreateSpotFXFlame( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Flame Smoke
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -980,7 +980,7 @@ void CreateSpotFXFlameSmoke( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Smoke
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1031,7 +1031,7 @@ void CreateSpotFXSmoke( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uin
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Sparks
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1139,7 +1139,7 @@ void CreateSpotFXSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, ui
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1222,7 +1222,7 @@ void CreateSpotFXExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
    	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Fire Secondary
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1248,7 +1248,7 @@ void CreateSpotFXFireSecondary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Fire Primary
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1270,7 +1270,7 @@ void CreateSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Electric Beams
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1298,7 +1298,7 @@ void CreateSpotFXElectricBeams( VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Smoke Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1346,7 +1346,7 @@ void CreateSpotFXGravgonTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create NME Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1384,7 +1384,7 @@ void CreateSpotFXNmeTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create NME Glow
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1420,7 +1420,7 @@ void CreateSpotFXNmeGlow( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, u
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create NME Vapour Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1461,7 +1461,7 @@ void CreateSpotFXNmeVapourTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Real Sparks ( Gravity )
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1571,7 +1571,7 @@ void CreateSpotFXRealSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Rock Shrapnel Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1602,7 +1602,7 @@ void CreateSpotFXRockShrapnel( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Shrapnel Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1640,7 +1640,7 @@ void CreateSpotFXShrapnel( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Shrapnel Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1666,7 +1666,7 @@ void CreateSpotFXSmallShrapnel( VECTOR * Pos, VECTOR * Dir, float Speed, uint16 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Bubbles
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1729,7 +1729,7 @@ void CreateSpotFXBubbles( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, u
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Bubble Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1779,7 +1779,7 @@ void CreateBubbleTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uin
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Drip
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1826,7 +1826,7 @@ void CreateSpotFXDrip( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Drip Splash
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -1886,7 +1886,7 @@ void CreateSpotFXDripSplash( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Large Shrapnel Bit
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -1931,7 +1931,7 @@ void CreateLargeShrapnelBit( VECTOR * Pos, VECTOR * Dir, float Speed, int16 Grou
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Small Shrapnel Bit
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -1976,7 +1976,7 @@ void CreateSmallShrapnelBit( VECTOR * Pos, VECTOR * Dir, float Speed, int16 Grou
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Shrapnel Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2020,7 +2020,7 @@ void CreateShrapnelTrail( VECTOR * Pos, VECTOR * Dir, float Size, uint16 Group, 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Enemy Generation Effect
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -2094,7 +2094,7 @@ void CreateNmeGenEffect( VECTOR * Pos, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Burning
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2176,7 +2176,7 @@ void CreateSpotFXBurning( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Beard Afterburner
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2226,7 +2226,7 @@ void CreateSpotFXBeardAfterburner( VECTOR * Pos, VECTOR * Dir, uint16 Group, flo
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Borg Afterburner
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2266,7 +2266,7 @@ void CreateSpotFXBorgAfterburner( VECTOR * Pos, VECTOR * Dir, uint16 Group, floa
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX Small Afterburner
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2306,7 +2306,7 @@ void CreateSpotFXSmallAfterburner( VECTOR * Pos, VECTOR * Dir, uint16 Group, flo
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create HK5 Afterburner
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2352,7 +2352,7 @@ void CreateSpotFXHk5Afterburner( VECTOR * Pos, VECTOR * Dir, uint16 Group, float
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create SpotFX FireWall
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -2367,7 +2367,7 @@ void CreateSpotFXFireWall( VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 Group
 	InitOnePrimBull( OWNER_NOBODY, 0, 0, FLAMES, Group, Pos, &TempVector, Dir, Up, 2, 0.0F, FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup SpotFX group link list
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2383,7 +2383,7 @@ void SetupSpotFXGroups( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add SpotFX to group link list
 	Input		:	SPOTFX	*	SpotFX
 				:	uint16		Group
@@ -2398,7 +2398,7 @@ void AddSpotFXToGroup( SPOTFX * SpotFX, uint16 Group )
 	NumSpotFXPerGroup[ Group ]++;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove SpotFX from group link list
 	Input		:	SPOTFX	*	SpotFX
 				:	uint16		Group
@@ -2414,7 +2414,7 @@ void RemoveSpotFXFromGroup( SPOTFX * SpotFX, uint16 Group )
 	NumSpotFXPerGroup[ Group ]--;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Move SpotFX from 1 group to another
 	Input		:	SpotFX	*	SpotFX
 				:	uint16		OldGroup
@@ -2427,7 +2427,7 @@ void MoveSpotFXToGroup( SPOTFX * SpotFX, uint16 OldGroup, uint16 NewGroup )
 	AddSpotFXToGroup( SpotFX, NewGroup );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save SpotFX Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -2499,7 +2499,7 @@ FILE * SaveAllSpotFX( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load SpotFX Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

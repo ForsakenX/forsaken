@@ -706,7 +706,7 @@ void DisableRTLight( uint16 *data )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save RTLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -737,7 +737,7 @@ FILE * SaveRealTimeLights( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load RTLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

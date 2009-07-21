@@ -26,7 +26,7 @@
 
 // Externals
 extern	float framelag;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Scan for a Target
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -72,7 +72,7 @@ void AI_AIR_SCAN( register ENEMY * Enemy )
    
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AI for a turret while its SCANNING..
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -126,7 +126,7 @@ void AI_TURRET_SCAN( register ENEMY * Enemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AI for a Crawling Enemy while its SCANNING..
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -159,7 +159,7 @@ void AI_CRAWL_SCAN( register ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AI Do a Sacn and find a target...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

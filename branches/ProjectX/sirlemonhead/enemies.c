@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Includes
 ===================================================================*/
 #include <stdio.h>
@@ -41,7 +41,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 extern	MLOADHEADER		Mloadheader;
@@ -106,14 +106,14 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup );
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 #define	ENEMY_SHIELD	128
 #define	NME_VERSION_NUMBER	3
 #define	SPECIALENEMYNODENUM	16384
 
-/*/*===================================================================
+/*===================================================================
 	Global Variables
 ===================================================================*/
 int		EnemiesActive = 0;
@@ -3763,7 +3763,7 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 
 ENEMY * TestEnemy = NULL;
 	
-/*/*===================================================================
+/*===================================================================
 	Enemy Control Routines...
 ===================================================================*/
 ENEMY * PutEnemiesAtNodes(void);
@@ -3907,7 +3907,7 @@ float ObjectAutoLevelRot( OBJECT * Object, float autolevel_rate )
 }
 
 	
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Initialise all Enemies
 	Input		:	nothing
 	Output		:	nothing
@@ -3941,7 +3941,7 @@ void InitEnemies( void )
 	Enemies[ MAXENEMIES - 1 ].NextFree = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find free Enemy
 	Input		:	nothing
 	Output		:	ENEMY	*	Object ( NULL if not available )
@@ -3986,7 +3986,7 @@ ENEMY * FindFreeEnemy( void )
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill an Enemy
 	Input		:	ENEMY	*	Object
 	Output		:	nothing
@@ -4137,7 +4137,7 @@ void KillUsedEnemy( ENEMY * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release all enemies
 	Input		:	Nothing
 	Output		:	Nothing
@@ -4219,7 +4219,7 @@ void ReleaseAllEnemies( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad Enemies
 	Input		:	Nothing
 	Output		:	BOOL	True/False
@@ -4428,7 +4428,7 @@ BOOL PreLoadEnemies( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Enemies
 	Input		:	Nothing
 	Output		:	BOOL	True/False
@@ -5138,7 +5138,7 @@ BOOL LoadEnemies( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init Enemy
 	Input		:	uint16		GenType
 				:	VECTOR	*	Pos
@@ -5357,7 +5357,7 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 	return( NULL );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process all Enemies
 	Input		:	nothing
 	Output		:	nothing
@@ -5585,7 +5585,7 @@ KilledInAI:
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display Untriggered NME's
 	Input		:	Nothing
 	Output		:	Nothing
@@ -5620,7 +5620,7 @@ void DispUntriggeredNMEs( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set Current Anim Seq
 	Input		:	int16	Seq Number
 				:	OBJECT * Object
@@ -5637,7 +5637,7 @@ void SetCurAnimSeq( int16 Seq, OBJECT * Object )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enable Enemy
 	Input		:	uint16	EnemyIndex
 	Output		:	Nothing
@@ -5703,7 +5703,7 @@ void EnableEnemy( uint16 EnemyIndex )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Disable Enemy
 	Input		:	ENEMY	*	Enemy
 	Output		:	Nothing
@@ -5718,7 +5718,7 @@ void DisableEnemy( ENEMY * Enemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if hit Enemy
 	Input		:	uint16		OwnerType
 				:	uint16		Owner of weapon
@@ -5798,7 +5798,7 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 						break;
 				}
 
-/*/*===================================================================
+/*===================================================================
 	Does Ray hit target directly?
 ===================================================================*/
 				if( RaytoSphere2( (VECTOR *) &Enemy->Object.Pos, EnemyTypes[Enemy->Type].Radius, Pos, Dir,
@@ -5820,7 +5820,7 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 				}
 				else
 				{
-/*/*===================================================================
+/*===================================================================
 	Is Starting pos inside sphere already?
 ===================================================================*/
 					if( PointToSphere( (VERT *) &Enemy->Object.Pos, EnemyTypes[Enemy->Type].Radius, (VERT *) Pos ) )
@@ -5834,7 +5834,7 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
    					{
    						if( ColRadius > EnemyTypes[Enemy->Type].Radius )
    						{
-/*/*===================================================================
+/*===================================================================
 	Do i graze sphere?
 ===================================================================*/
    							if( RaytoSphere2( (VECTOR *) &Enemy->Object.Pos, ColRadius, Pos, Dir,
@@ -5880,7 +5880,7 @@ SkipIt:
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Flying Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -5898,7 +5898,7 @@ void EnemyFlyUnderPlayerControl( ENEMY * Enemy )
 	Enemy->Object.Speed.z += control.forward;
 	AutoMovement( &Enemy->Object , Enemy , TRUE);
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Flying Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -5933,7 +5933,7 @@ void EnemyFlyUnderAiControl( ENEMY * Enemy )
 	}
 				
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Crawling Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -5957,7 +5957,7 @@ void EnemyCrawlUnderPlayerControl( ENEMY * Enemy )
 
 	AutoMovementCrawl( &Enemy->Object , Enemy );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Crawling Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -5999,7 +5999,7 @@ void EnemyCrawlUnderAiControl( ENEMY * Enemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Turret Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6007,7 +6007,7 @@ void EnemyCrawlUnderAiControl( ENEMY * Enemy )
 void EnemyTurretUnderPlayerControl( ENEMY * Enemy )
 {
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Turret Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6020,7 +6020,7 @@ void EnemyTurretUnderAiControl( ENEMY * Enemy )
 	AutoDisplay( &Enemy->Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enemy Under Spline Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6055,7 +6055,7 @@ void EnemyUnderSplineControl( ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6091,7 +6091,7 @@ void EnemyUnderExogenonControl( ENEMY * Enemy )
 	}
 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	FleshMorph Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6114,7 +6114,7 @@ void EnemyUnderFleshMorphControl( ENEMY * Enemy )
 		AutoMovementFleshmorph( &Enemy->Object , Enemy );
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	LittleGeek Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6140,7 +6140,7 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -6317,7 +6317,7 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 			Enemy->TShip = NULL;
 		}
 	}
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 			Set the Banking Matrix
 /*===================================================================컴컴*/
 	MakeQuat( 0.0F , 0.0F , Object->Bank, &StepQuat );
@@ -6331,7 +6331,7 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 		Object->Angle.y = 0.0F;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning for a Crawling Enemy...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -6557,7 +6557,7 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning for a Exogenon Enemy...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -6577,7 +6577,7 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set a wheel position..checks if group changes...
 	Output		:	VECTOR * DestPos
 				:	VECTOR * SourcePos
@@ -6603,7 +6603,7 @@ void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zof
 	*DestGroup = MoveGroup( &Mloadheader, SourcePos, Group, &MoveOffset );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all updating of quats/mats..
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -6617,7 +6617,7 @@ void AutoDisplay( OBJECT * Object )
 	Object->FinalMat = Object->Mat;
 	Object->FinalInvMat = Object->InvMat;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all updating of quats/mats..
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -6634,7 +6634,7 @@ void AutoDisplayMatrix( OBJECT * Object )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6707,7 +6707,7 @@ void CarryOutAIMovementCommands( ENEMY * Enemy )
 		Enemy->Object.Speed.z -= Move;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
@@ -6785,7 +6785,7 @@ void CarryOutPreciseAIMovementCommands( ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....For A GUN
 	Output		:	GUNOBJECT * GObject..
 	Output		:	Nothing
@@ -6828,7 +6828,7 @@ void CarryOutGUN_AIMovementCommands( GUNOBJECT * GObject )
 	}
 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....For A GUN
 	Output		:	GUNOBJECT * GObject..
 	Output		:	Nothing
@@ -6877,7 +6877,7 @@ void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all turning for component gunturret...
 				:	Uses Mats instead of Quats....
 	Output		:	GUNOBJECT * Object
@@ -6952,7 +6952,7 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 		Object->Angle.x	= 0.0F;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Display Matrix of last
 				:	user controlled componented object.
 	Input		:	OBJECT	*	Object;
@@ -6991,7 +6991,7 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set turret Vector
 	Input		:	OBJECT	*	Object;
 				:	VECTOR	*	Vector ( Local )
@@ -7013,7 +7013,7 @@ void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init a gun..
 	Input		:	uint16 GunType
 				:	OBJECT	*	Object;
@@ -7061,7 +7061,7 @@ void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Restrict Movement....
 	Input		:	ENEMY * Enemy
 				:	VECTOR * Move offset....
@@ -7105,7 +7105,7 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enemy to Enemy Collide...
 	Input		:	ENEMY * Enemy
 				:	VECTOR * Move offset....
@@ -7160,7 +7160,7 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	return FALSE;
 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enemy to Enemy Collide Special for crawling enemies only..
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -7201,7 +7201,7 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ship 2 Ship collide...
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
@@ -7281,7 +7281,7 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 	return HasBeen;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup Enemy group link list
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7297,7 +7297,7 @@ void SetupEnemyGroups( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Enemy to group link list
 	Input		:	ENEMY	*	Enemy
 				:	uint16		Group
@@ -7312,7 +7312,7 @@ void AddEnemyToGroup( ENEMY * Enemy, uint16 Group )
 	NumEnemiesPerGroup[ Group ]++;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove Enemy from group link list
 	Input		:	uint16		Enemy Index
 				:	uint16		Group
@@ -7328,7 +7328,7 @@ void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group )
 	NumEnemiesPerGroup[ Group ]--;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Move Enemy from 1 group to another
 	Input		:	ENEMY	*	Enemy
 				:	uint16		OldGroup
@@ -7341,7 +7341,7 @@ void MoveEnemyToGroup( ENEMY * Enemy, uint16 OldGroup, uint16 NewGroup )
 	AddEnemyToGroup( Enemy, NewGroup );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update Enemies ClipGroup
 	Input		:	CAMERA	*	Camera
 	Output		:	nothing
@@ -7405,7 +7405,7 @@ void UpdateEnemiesClipGroup( CAMERA * Camera  )
 
 
 #if 1
-/*/*===================================================================
+/*===================================================================
 	Stuff to do with reading in the Enemies.txt!!!!
 ===================================================================*/
 
@@ -8075,7 +8075,7 @@ static int read_Gun_WeaponType( FILE *f, char *last_token )
 		return 0;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Read in the enemy txt file..
 	Input		:	char * Filename
 	Output		:	BOOL TRUE/FALSE
@@ -8181,7 +8181,7 @@ void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force )
 	Object->ExternalForce.z += force->z;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
@@ -8251,7 +8251,7 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 	Object->Group = MoveGroup( &Mloadheader, &StartPos, Object->Group, &Move_Off );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Carry out all External force modifiers for Spline Following enemies..
 	Output		:	OBJECt * Object
 	Output		:	BOOL TURE/FALSE....Wether there was any 
@@ -8395,7 +8395,7 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Crappy Bodge to fix mappers fuckup
 	Input		:	BYTE	Primary Weapon
 				:	uint16	PickupHeld
@@ -8410,7 +8410,7 @@ BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup )
 	return( Weapon );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Duplicate Model ( If exists )
 	Input		:	int8	*	Filename of Model
 				:	int16		NumModels so far
@@ -8430,7 +8430,7 @@ uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
 	return( (uint16) -1 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Perform Damage on an Enemy....If its not in a death
 				:	MODE then put it in one or Destroy it....
 	Input		:	ENEMY * Enemy
@@ -8590,7 +8590,7 @@ void ObjectRotateExternal( OBJECT * Object, VECTOR * Pos , VECTOR *point, VECTOR
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Find Point 75.0F above the ground...
 	Input		:		VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup
 	Output		:		BOOL FALSE/TRUE
@@ -8647,7 +8647,7 @@ BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint1
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Do Enemy Damage Effects
 	Input		:		ENEMY	*	Enemy
 	Output		:		Nothing
@@ -8794,7 +8794,7 @@ typedef struct _FSHORTGLOBALSHIP
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enemy Save...
 	Input		:		FILE * fp
 	Output		:		BOOL TRUE/FALSE
@@ -8999,7 +8999,7 @@ BOOL Enemy_Save( FILE * fp )
 
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Enemy Load...
 	Input		:		FILE * fp
 	Output		:		BOOL TRUE/FALSE
@@ -9247,7 +9247,7 @@ BOOL Enemy_Load( FILE * fp )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Object Save...
 	Input		:		FILE * fp , OBJECT * Obj
 	Output		:		BOOL TRUE/FALSE
@@ -9369,7 +9369,7 @@ BOOL Object_Save( FILE * fp , OBJECT * Obj )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Gun Save...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
 	Output		:		BOOL TRUE/FALSE
@@ -9397,7 +9397,7 @@ BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Object Load...
 	Input		:		FILE * fp , OBJECT * Obj
 	Output		:		BOOL TRUE/FALSE
@@ -9516,7 +9516,7 @@ BOOL Object_Load( FILE * fp , OBJECT * Obj )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Gun Load...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
 	Output		:		BOOL TRUE/FALSE

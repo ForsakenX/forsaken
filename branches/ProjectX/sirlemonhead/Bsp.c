@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 		Include Files...	
 ===================================================================*/
 #include "typedefs.h"
@@ -26,7 +26,7 @@
 
 
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern	int	Depth;
@@ -34,7 +34,7 @@ extern MLOADHEADER Mloadheader;
 
 extern BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup );
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 BOOL FindCollision( BSP_NODE * node_ptr, VECTOR * start_point_ptr, VECTOR * end_point_ptr );
@@ -243,7 +243,7 @@ static BOOL BSP_LoadPortals( char *fname )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Bsp File
 	Input		:		char	*	Filename
 	Output		:		BOOL	TRUE/FALSE
@@ -315,7 +315,7 @@ BOOL Bspload( char * Filename, BSP_HEADER *Bsp_Header )
 
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Free up the memory calloced by bspload..
 	Input		:		Nothing
 	Output		:		BOOL	TRUE/FALSE
@@ -427,7 +427,7 @@ BOOL RayCollide( BSP_HEADER *Bsp_Header, VECTOR *StartPos, VECTOR *Dir, VECTOR *
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Define if a ray hits a solid..
 	Input		:		BSP_NODE * Start node
 						VECTOR * Start Position
@@ -613,7 +613,7 @@ start:
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Define if a point is inside or outside
 	Input		:		VECTOR * Pos , Node *node
 	Output		:		BOOL

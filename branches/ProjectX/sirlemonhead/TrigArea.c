@@ -28,7 +28,7 @@ num_zones : uint16
 */
  
  
-/*/*===================================================================
+/*===================================================================
 		Include Files...	
 ===================================================================*/
 #define WIN32_EXTRA_LEAN
@@ -58,7 +58,7 @@ num_zones : uint16
 #include "util.h"
 
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern	BOOL			ShowTrigZones;
@@ -69,7 +69,7 @@ BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos ,
 extern TRIGGERMOD	*	TrigMods;
 void TriggerAreaProcess( VECTOR * OldPos , VECTOR * NewPos , TRIGGER_AREA * Area );
 extern	float framelag;
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 uint16	NumZones;
@@ -80,12 +80,12 @@ TRIGGER_AREA * GroupTriggerArea_player_shoots[MAXGROUPS];
 TRIGGER_AREA * GroupTriggerArea_enemy[MAXGROUPS];
 TRIGGER_AREA * GroupTriggerArea_enemy_shoots[MAXGROUPS];
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	ZON_VERSION_NUMBER	2
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .zon File
 	Input		:		char	*	Filename
 	Output		:		BOOL	TRUE/FALSE
@@ -321,7 +321,7 @@ BOOL TriggerAreaload( char * Filename )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Free any memory taken up with zone loading..
 	Input		:		void
 	Output		:		void
@@ -352,7 +352,7 @@ void ReleaseTriggerArea( void )
 BOOL	Entry;
 BOOL	Exit;
 BOOL	In;
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Player...
 	Input		:		void
 	Output		:		void
@@ -390,7 +390,7 @@ BOOL	TriggerAreaPlayerCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Player's shot hits trigger area...
 	Input		:		VECTOR	*	Old Position 
 				:		VECTOR	*	New Position 
@@ -452,7 +452,7 @@ BOOL	TriggerAreaPlayerShootsCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Gr
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Enemy...
 	Input		:		void
 	Output		:		void
@@ -490,7 +490,7 @@ BOOL	TriggerAreaEnemyCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Enemy's shot hits trigger area...
 	Input		:		VECTOR	*	Old Position 
 				:		VECTOR	*	New Position 
@@ -554,7 +554,7 @@ BOOL	TriggerAreaEnemyShootsCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Gro
 }
 
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Ray to Col Zone
 	Input		:		VECTOR	*	StartPos
 				:		VECTOR	*	EndPos
@@ -625,7 +625,7 @@ BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos ,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Is point inside convex shape?
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
@@ -649,7 +649,7 @@ BOOL ClassifyPointInHull( VECTOR * Pos, TRIGGER_ZONE * Sides, int16 NumSides, in
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Process and clasify 2 positions with an area..
 	Input		:		void
 	Output		:		void
@@ -693,7 +693,7 @@ void TriggerAreaProcess( VECTOR * OldPos , VECTOR * NewPos , TRIGGER_AREA * Area
 
 */
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Display all trigger areas in group
 	Input		:		uint16	Group
 	Output		:		Nothing
@@ -819,7 +819,7 @@ void DispGroupTriggerAreas( uint16 Group )
 
 
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Enable trigger area
 	Input		:		uint16	* Data
 	Output		:		Nothing
@@ -835,7 +835,7 @@ void EnableTriggerArea( uint16 * Data )
 }
 
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Disable trigger area
 	Input		:		uint16	* Data
 	Output		:		Nothing
@@ -849,7 +849,7 @@ void DisableTriggerArea( uint16 * Data )
 	AreaPnt += *Data;
 	AreaPnt->state = TRIGGER_AREA_STATE_Off;
 }
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Enemy...
 	Input		:		void
 	Output		:		void
@@ -876,7 +876,7 @@ void ProcessTriggerAreas( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save TriggerAreas arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -902,7 +902,7 @@ FILE * SaveTriggerAreas( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load TriggerAreas Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

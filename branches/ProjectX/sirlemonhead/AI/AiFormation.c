@@ -33,7 +33,7 @@ extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Formation Flying
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -218,7 +218,7 @@ void AI_AIR_FORMATION( register ENEMY * Enemy )
 		}
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Formation Flying
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

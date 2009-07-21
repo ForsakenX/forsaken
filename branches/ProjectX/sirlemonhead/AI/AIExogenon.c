@@ -47,7 +47,7 @@ VECTOR	ExogenonSweepAngle;
 uint32	ExogenonSweepDir;
 void	ExogenonFireLeftRight( ENEMY * Enemy );
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Idle
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -97,7 +97,7 @@ void AI_EXOGENON_IDLE( register ENEMY * Enemy )
 	SetCurAnimSeq( EXOGENONSEQ_Move_Down, &Enemy->Object );
 	Enemy->Object.AI_Mode = AIMODE_EXOGENON_MOVEDOWN;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Move Down
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -138,7 +138,7 @@ void AI_EXOGENON_MOVEDOWN( register ENEMY * Enemy )
 		SetCurAnimSeq( EXOGENONSEQ_Idle, &Enemy->Object );
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Scan
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -166,7 +166,7 @@ void AI_EXOGENON_SCAN( register ENEMY * Enemy )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Fire
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -216,7 +216,7 @@ void AI_EXOGENON_FIRE( register ENEMY * Enemy )
 		}
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Move Up
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -234,7 +234,7 @@ void AI_EXOGENON_MOVEUP( register ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Aim
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -246,7 +246,7 @@ void ExogenonAim( ENEMY * Enemy )
 	Enemy->AI_Angle = AimData.Angle;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Sweep
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -276,7 +276,7 @@ void AI_EXOGENON_SWEEP( register ENEMY * Enemy )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Exogenon Sweep
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

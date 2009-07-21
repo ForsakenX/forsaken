@@ -5,7 +5,7 @@
  *  File: exechand.c
 ***************************************************************************/
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <malloc.h>
@@ -20,12 +20,12 @@ size_t	SBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedHW = 0;
 size_t	MaxSBufferMemUsedSW = 0;
 
-/*/*===================================================================
+/*===================================================================
 		Defines...	
 ===================================================================*/
 #define	MAXSBUFFERBLOCKS 512
 #define MAXPTRSPERBUFFER ( ( MAX_COMPOUND_BUFFERS > MAX_DUP_BUFFERS ) ? MAX_COMPOUND_BUFFERS : MAX_DUP_BUFFERS )
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 
@@ -39,7 +39,7 @@ char *	SBufferBlockFromFile[MAXSBUFFERBLOCKS];
 int		SBufferBlockFromLine[MAXSBUFFERBLOCKS];
 int		SBufferNumInstances[MAXSBUFFERBLOCKS];
 int SBufferBlocksUsed = 0;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	S Buffer Init...
 	Input		:	void
 	Output		:	void
@@ -59,7 +59,7 @@ void XSBuffer_Init( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	SBuffer_FindFree...
 	Input		:	void
 	Output		:	int Free memblock -1 if none
@@ -77,7 +77,7 @@ int SBuffer_FindFree( void )
 	}
 	return -1;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	SBuffer_FindSame...
 	Input		:	void * Pnt
 	Output		:	int Same memblock -1 if none
@@ -130,7 +130,7 @@ BOOL CheckSBufferValid( LPDIRECTSOUNDBUFFER lpDirectSoundBuffer )
 
 #endif
 
-/*/*===================================================================
+/*===================================================================
 		Make Sound Buffer
 ===================================================================*/
 
@@ -222,7 +222,7 @@ BOOL XSoundBufferDuplicate( LPDIRECTSOUND pds, LPDIRECTSOUNDBUFFER lpDsbOriginal
 		return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release sound buffer...
 	Input		:	void * Pnt
 	Output		:	void

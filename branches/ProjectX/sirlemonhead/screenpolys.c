@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
 ===================================================================*/
@@ -32,7 +32,7 @@
 #define THERMAL_INC			(0.0092593F)
 #define THERMAL_DEC			(0.25F)
 
-/*/*===================================================================
+/*===================================================================
 	Externs
 ===================================================================*/
 extern	BOOL			MipMap;
@@ -110,7 +110,7 @@ extern int PlayerMessageColour;
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 #define	CUTOFF				( 5.0F * 1024.0F * GLOBAL_SCALE )
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 		BOOL		CountDownOn = FALSE;
@@ -177,7 +177,7 @@ uint16	Bit1Digit[ 1 ] = { 0xffff };
 uint16	Hun1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 uint16	Hun0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init screen poly structures
 	Input		:	Nothing
 	Output		:	Nothing
@@ -234,7 +234,7 @@ void InitScrPolys( void )
 	if( CountDownOn ) CreateCountdownDigits();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free ScrPoly and move it from the free
 				:	list to	the used list
 	Input		:	Nothing
@@ -262,7 +262,7 @@ uint16 FindFreeScrPoly( void )
 	return i ;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used ScrPoly and move it from the used
 				:	list to the free list
 	Input		:	uint16		Number of ScrPoly to free....
@@ -298,7 +298,7 @@ void KillUsedScrPoly( uint16 i )
 	FirstScrPolyFree = i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill all lastaframe Screen Polys
 	Input		:	Nothing
 	Output		:	Nothing
@@ -323,7 +323,7 @@ void FreeAllLastAFrameScrPolys( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process Screen Polys
 	Input		:	Nothing
 	Output		:	Nothing
@@ -518,7 +518,7 @@ void ScreenPolyProcess( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lensflare Effect
 	Input		:	Nothing
 	Output		:	Nothing
@@ -758,7 +758,7 @@ void DoLensflareEffect( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	3D World to 2D Screen
 	Input		:	VECTOR	*	Vertex
 				:	VECTOR	*	2D Vertex
@@ -775,7 +775,7 @@ void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	DstVert->z = TempVert.z;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	3D World to 2D Screen and clip
 	Input		:	VECTOR	*	Vertex
 				:	VECTOR	*	2D Vertex
@@ -834,7 +834,7 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clip box to viewport
 	Input		:	LPD3DTLVERTEX	Vert1
 				:	LPD3DTLVERTEX	Vert3
@@ -904,7 +904,7 @@ BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Lensflare effect on missiles
 	Input		:	Nothing
 	Output		:	Nothing
@@ -925,7 +925,7 @@ void DoAllSecBullLensflare( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Lensflare effect on missiles
 	Input		:	uint16	Secondary bullet index
 	Output		:	Nothing
@@ -1151,7 +1151,7 @@ void SecBullLensflare( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update Position and digits of counter
 	Input		:	float		XPos
 				:	float		YPos
@@ -1322,7 +1322,7 @@ void UpdateCountdownDigits( void )
 	UpdateDigit( &Hun0Digit[ 0 ], XPos, YPos, (int16) ( DigitNumber % 10 ), Scale, CountDown_Col, Graphics );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update Digit Position and Number
 	Input		:	uint16	*	Digit Segmnent Array
 				:	float		X Pos
@@ -1384,7 +1384,7 @@ void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, flo
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lensflare Effect
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1403,7 +1403,7 @@ void CreateCountdownDigits( void )
 	CreateDigit( &Hun0Digit[ 0 ], 160.0F, 120.0F );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lensflare Effect
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1420,7 +1420,7 @@ void DeleteCountdownDigits( void )
 	DeleteDigit( &Hun0Digit[ 0 ] );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clear Countdown ScrPolys index tables
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1443,7 +1443,7 @@ void ClearCountdownBuffers( void )
 	Bit1Digit[ 0 ] = (uint16) -1;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Digit
 	Input		:	uint16	*	Digit Array ( 7 )
 				:	float		X Position
@@ -1483,7 +1483,7 @@ void CreateDigit( uint16 * DigitArray, float XPos, float YPos )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create ":" Seperator Digit
 	Input		:	uint16	*	Digit Array ( 7 )
 				:	float		X Position
@@ -1519,7 +1519,7 @@ void CreateSeperatorDigit( uint16 * DigitArray, float XPos, float YPos )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Delete Digit
 	Input		:	uint16	*	Digit Array[ 7 ]
 	Output		:	Nothing
@@ -1538,7 +1538,7 @@ void DeleteDigit( uint16 * DigitArray )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Delete ":" Seperator Digit
 	Input		:	uint16	*	Digit Array[ 1 ]
 	Output		:	Nothing
@@ -1552,7 +1552,7 @@ void DeleteSeperatorDigit( uint16 * DigitArray )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start CountDown Timer
 	Input		:	int16	Minutes
 				:	int16	Seconds
@@ -1584,7 +1584,7 @@ void StartCountDown( int16 Minutes, int16 Seconds )
 	CountDown_Col = 1.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Solid ScreenPoly Text
 	Input		:	uint16	BoxNumber
 				:	float	XPos
@@ -1622,7 +1622,7 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start CountDown Timer
 	Input		:	int16	Minutes
 				:	int16	Seconds
@@ -1682,7 +1682,7 @@ void ResetCountDownBombTag( float Amount )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Solid ScreenPoly Text
 	Input		:	uint16	BoxNumber
 				:	float	XPos
@@ -1722,7 +1722,7 @@ void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale,
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Allocate Screen Multiples
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1781,7 +1781,7 @@ void ShowScreenMultiples( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Make Screen Flash
 				:	uint8	Red
 				:	uint8	Green
@@ -1879,7 +1879,7 @@ void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *S
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup Thermo Screenpolys
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1939,7 +1939,7 @@ void InitThermo( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove Thermo Screenpolys
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1954,7 +1954,7 @@ void KillThermo( void )
 }
 	
 #if 0
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if MMX present
 	Input		:	Nothing
 	Output		:	BOOL	TRUE/FALSE
@@ -1985,7 +1985,7 @@ BOOL IsMMX( void )
 
 TPAGEINFO	ScrPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init ScreenPoly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2000,7 +2000,7 @@ void InitScrPolyTPages( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add ScreenPoly To TPage Link List
 	Input		:	uint16		ScreenPoly Index
 				:	uint16		TPage to add to
@@ -2021,7 +2021,7 @@ void AddScrPolyToTPage( uint16 i, int16 TPage )
 	ScrPolyTPages[ TPage ].FirstPoly = i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove ScreenPoly From TPage Link List
 	Input		:	uint16		ScreenPoly Index
 				:	uint16		TPage to add to
@@ -2049,7 +2049,7 @@ void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
 	ScrPolys[ i ].NextInTPage = (uint16) -1;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all solid screen Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
@@ -2078,7 +2078,7 @@ BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE 
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all solid screen Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
@@ -2106,7 +2106,7 @@ BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVI
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Solid Screen Polygons
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
@@ -2140,7 +2140,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -2198,7 +2198,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -2226,7 +2226,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		}
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count <= MAXTPAGESPERTLOAD; Count++ )
@@ -2362,7 +2362,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
       							}
 							}
 
-/*/*===================================================================
+/*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
 							switch( MakeColourMode )
@@ -2621,7 +2621,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -2639,7 +2639,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All NonSolid Screen Polygons
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
@@ -2673,7 +2673,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -2729,7 +2729,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -2750,7 +2750,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count <= MAXTPAGESPERTLOAD; Count++ )
@@ -2886,7 +2886,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
       							}
 							}
 
-/*/*===================================================================
+/*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
 							switch( MakeColourMode )
@@ -3185,7 +3185,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -3203,7 +3203,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Time for level
 	Input		:	Nothing
 	Output		:	Nothing
@@ -3251,7 +3251,7 @@ void LoadTimeForLevel( void )
 #endif
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save ScreenPolys arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -3270,7 +3270,7 @@ FILE * SaveScreenPolys( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load ScreenPolys Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -3300,7 +3300,7 @@ FILE * LoadScreenPolys( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Flag Above Players Head
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -3386,7 +3386,7 @@ void ShowFlagOnShip( uint16 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Bounty Above Players Head
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -3472,7 +3472,7 @@ void ShowBountyOnShip( uint16 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Flag(s) Above Players Head
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -3611,7 +3611,7 @@ void ShowCTFFlagsOnShip( uint16 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Show Flag on screen for player who has flag
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -3644,7 +3644,7 @@ void ShowFlag( uint16 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Show Bounty on screen for player who has flag
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -3677,7 +3677,7 @@ void ShowBounty( uint16 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Show Flag(s) on screen for player who has flag
 	Input		:	uint16		Ship
 	Output		:	Nothing

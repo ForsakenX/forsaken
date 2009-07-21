@@ -43,7 +43,7 @@ void AI_FLESHMORPH_RANDOMFIREBALL( register ENEMY * Enemy );
 
 VECTOR	FleshmorphPos;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph Idle
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -92,7 +92,7 @@ void AI_FLESHMORPH_IDLE( register ENEMY * Enemy )
 	Enemy->Timer  =	RESET_IDLE_TIME;
 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph MoveForward
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -121,7 +121,7 @@ void AI_FLESHMORPH_MOVEFORWARDS( register ENEMY * Enemy )
 	Enemy->Object.AI_Mode = AIMODE_FLESHMORPH_STOPFORWARD;
 	Enemy->Timer  =	ONE_SECOND * 15.0F;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph StopForward
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -213,7 +213,7 @@ void AI_FLESHMORPH_STOPFORWARD( register ENEMY * Enemy )
 
 	
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph MoveBackwards
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -244,7 +244,7 @@ void AI_FLESHMORPH_MOVEBACKWARDS( register ENEMY * Enemy )
 	Enemy->Object.AI_Mode = AIMODE_FLESHMORPH_STOPBACKWARD;
 	Enemy->Timer  =	ONE_SECOND * 5.0F;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph StopBackward
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -280,7 +280,7 @@ void AI_FLESHMORPH_STOPBACKWARD( register ENEMY * Enemy )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fleshmorph Random Fireball move...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

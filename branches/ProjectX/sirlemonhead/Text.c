@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 
@@ -29,7 +29,7 @@
 
 #define MSG_VERSION_NUMBER 1
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 
@@ -88,7 +88,7 @@ extern int SystemMessageColour;
 // (stats.c)
 extern int GetPlayerByRank(int Player);
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 
@@ -142,7 +142,7 @@ char StatsMessageFile[] = "data\\txt\\statsmessages.txt";
 STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print a int16 number in small 4x4 chars..
 	Input		:		int16 num, uint16 x , uint16 y
 	Output		:		nothing
@@ -163,7 +163,7 @@ int Printint16( int16 num , int x , int y , int color )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print a uint16 number in small 4x4 chars..
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
@@ -233,7 +233,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
 	Input		:		char * Text, uint16 y
 	Output		:		nothing
@@ -253,7 +253,7 @@ void CenterPrint4x5Text( char * Text , int y, int col )
 	Print4x5Text( Text , x , y , col );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
 	Input		:		char * Text, uint16 y
 	Output		:		nothing
@@ -272,7 +272,7 @@ void CenterPrint4x5Text2( char * Text , int x, int y, int col )
 	Print4x5Text( Text , x , y , col );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print some Right Justified text at a specified Y
 	Input		:		char * Text, int x , int y , int col
 	Output		:		nothing
@@ -290,7 +290,7 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
 	Input		:		char * Text, uint16 x , uint16 y
 	Output		:		last x position
@@ -391,7 +391,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
 	Input		:		char * Text, uint16 x , uint16 y
 	Output		:		last x position
@@ -490,7 +490,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 
 }
 				
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print All Message in the normal Que (last 3 messages)...
 	Input		:		nothing
 	Output		:		nothing
@@ -553,7 +553,7 @@ void	MessageQuePrint( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print All Message in the long Que (last 50 messages)...
 	Input		:		nothing
 	Output		:		nothing
@@ -603,7 +603,7 @@ float MessageSize;
 float ThisMessageTime;
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add Colour Message to the Que Short...
 	Input		:		char * Text
 	Output		:		nothing
@@ -703,7 +703,7 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 
 //#define SFX_DEBUG
 	
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print the Scores....
 	Input		:		nothing
 	Output		:		nothing
@@ -913,7 +913,7 @@ void PrintScoreSort( void )
 }
 		
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Print a uint16 number to any surface..
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
@@ -968,7 +968,7 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD fla
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Re-Init the font surface...
 	Input		:		nothing
 	Output		:		nothing
@@ -1018,7 +1018,7 @@ void ReInitFont(void)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init PolyText allowed Array..
 	Input		:		nothing
 	Output		:		nothing
@@ -1048,7 +1048,7 @@ void InitPolyText( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Read in the level specific text messages.......
 	Input		:		char *Filename
 	Output		:		BOOL TRUE/FALSE
@@ -1101,7 +1101,7 @@ BOOL ReadTxtFile( char *Filename )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Free level specific text messages.......
 	Input		:		void
 	Output		:		void
@@ -1115,7 +1115,7 @@ void FreeTxtFile( void )
 	}
 	NumOfTextMessages = 0;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Trigger text message.......
 	Input		:		uint16 * Data
 	Output		:		void
@@ -1148,7 +1148,7 @@ void TriggerTextMessage( uint16 * Data )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init the text messages......
 	Input		:		void
 	Output		:		void
@@ -1316,7 +1316,7 @@ typedef struct
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Read in the level specific text message Info.......
 	Input		:		char *Filename
 	Output		:		BOOL TRUE/FALSE
@@ -1825,7 +1825,7 @@ BOOL ReadMsgFile( char *Filename )
 	free( OrgBuffer );
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Free level specific text message info.......
 	Input		:		void
 	Output		:		void
@@ -1840,7 +1840,7 @@ void FreeMsgFile( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Trigger text message.......
 	Input		:		uint16 * Data
 	Output		:		void
@@ -1866,7 +1866,7 @@ void DisplayOldTextMessage( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Show next previously Triggerd text message.......
 	Input		:		void
 	Output		:		void
@@ -1883,7 +1883,7 @@ void NextTextMessage( void )
 		DisplayOldTextMessage();
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Show Last previously Triggerd text message.......
 	Input		:		void
 	Output		:		void
@@ -1903,7 +1903,7 @@ void LastTextMessage( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
 	Output		:		BOOL
@@ -1930,7 +1930,7 @@ FILE * SaveAllText( FILE * fp )
 	return fp;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
 	Output		:		BOOL
@@ -1964,7 +1964,7 @@ FILE *	LoadAllText( FILE * fp )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Fill Status messages..
 	Input		:		void
 	Output		:		void
@@ -2075,7 +2075,7 @@ void FillStatusTab( void )
     StatusTab[STATUS_Null                                 ] = "Null                       ";
 #endif
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Display Status messages..
 	Input		:		void
 	Output		:		void
@@ -2100,7 +2100,7 @@ void DisplayStatusMessages( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Build Reliability Tab...
 	Input		:		void
 	Output		:		void
@@ -2127,7 +2127,7 @@ void BuildReliabilityTab( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Display a connection setting...
 	Input		:		void
 	Output		:		void
@@ -2181,7 +2181,7 @@ void DisplayConnectionStatus( int num , int x , int y)
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init the font surface...
 	Input		:		nothing
 	Output		:		nothing
@@ -2475,7 +2475,7 @@ void InitFont( BOOL OverridePolytext )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init the font surface...
 	Input		:		nothing
 	Output		:		nothing

@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 *	p o l y s . c
 *	All routines to do with 3d user defined polygons...
 ===================================================================*/
@@ -24,7 +24,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Externs
 ===================================================================*/
 extern	CAMERA			CurrentCamera;
@@ -58,7 +58,7 @@ extern	int16			MakeColourMode;
 extern	BYTE			GameStatus[MAX_PLAYERS];
 
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 POLY		Polys[ MAXPOLYS ];
@@ -67,7 +67,7 @@ uint16		FirstPolyFree;
 uint32		TotalPolysInUse = 0;
 TPAGEINFO	PolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init poly structures
 	Input		:	Nothing
 	Output		:	Nothing
@@ -95,7 +95,7 @@ void InitPolys( void )
 	InitPolyTPages();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free Poly and move it from the free list
 				:	to the used list
 	Input		:	Nothing
@@ -119,7 +119,7 @@ uint16 FindFreePoly( void )
 
 	return i ;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used Poly and move it from the used list
 				:	to the free list
 	Input		:	uint16		Number of Poly to free....
@@ -147,7 +147,7 @@ void KillUsedPoly( uint16 i )
 	FirstPolyFree = i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process Poly's
 	Input		:	Nothing
 	Output		:	Nothing
@@ -374,7 +374,7 @@ void ProcessPolys( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Afterburner Effect
 	Input		:	Nothing
 	Output		:	Nothing
@@ -524,7 +524,7 @@ void DoAfterBurnerEffects( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init Poly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -539,7 +539,7 @@ void InitPolyTPages( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Poly To TPage Link List
 	Input		:	uint16		Poly Index
 				:	uint16		TPage to add to
@@ -560,7 +560,7 @@ void AddPolyToTPage( uint16 i, int16 TPage )
 	PolyTPages[ TPage ].FirstPoly = i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove Poly From TPage Link List
 	Input		:	uint16		Poly Index
 				:	uint16		TPage to add to
@@ -589,7 +589,7 @@ void RemovePolyFromTPage( uint16 i, int16 TPage )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all group clipped Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	uint16						Group
@@ -619,7 +619,7 @@ BOOL DisplayGroupClippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all non group clipped Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
@@ -648,7 +648,7 @@ BOOL DisplayGroupUnclippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16						Group
 				:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
@@ -675,7 +675,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 	LPD3DTRIANGLE	PolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -723,7 +723,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -744,7 +744,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -944,7 +944,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -962,7 +962,7 @@ BOOL PolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
@@ -988,7 +988,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 	LPD3DTRIANGLE	PolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -1036,7 +1036,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -1057,7 +1057,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -1257,7 +1257,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -1275,7 +1275,7 @@ BOOL PolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, 
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all solid group clipped Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	uint16						Group
@@ -1305,7 +1305,7 @@ BOOL DisplaySolidGroupClippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Gro
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all solid non group clipped Polys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
@@ -1334,7 +1334,7 @@ BOOL DisplaySolidGroupUnclippedPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16						Group
 				:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
@@ -1361,7 +1361,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 	LPD3DTRIANGLE	PolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -1409,7 +1409,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -1430,7 +1430,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -1630,7 +1630,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -1648,7 +1648,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
@@ -1674,7 +1674,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 	LPD3DTRIANGLE	PolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -1722,7 +1722,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -1743,7 +1743,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -1942,7 +1942,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -1960,7 +1960,7 @@ BOOL SolidPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TP
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save Polys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -2028,7 +2028,7 @@ FILE * SavePolys( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Polys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

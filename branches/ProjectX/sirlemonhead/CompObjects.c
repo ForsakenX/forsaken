@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Includes
 ===================================================================*/
 #include <stdio.h>
@@ -33,13 +33,13 @@
 #include "XMem.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 //#define	DEBUG_COMP			1
 #define	COB_VERSION_NUMBER	2
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 extern	VECTOR			Forward;
@@ -75,13 +75,13 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 //#pragma optimize( "gty", on )
 //#endif
 
-/*/*===================================================================
+/*===================================================================
 	Global Variables
 ===================================================================*/
 int8 * CompObjPath = "data\\bgobjects\\";
 MODELNAME	*	ModNames = &ModelNames[ 0 ];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad Componented Object Data
 	Input		:	int8		*	Filename of .COB data
 				:	uint16		*	BaseModel
@@ -186,7 +186,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Componented Object Data
 	Input		:	int8		*	Filename of .COB data ( Including Path )
 				:	VECTOR		*	Pos
@@ -276,7 +276,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	return( CompsPtr );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load and allocate background object children
 	Input		:	FILE		*	File Ptr
 				:	COMP_OBJ	*	Components Address
@@ -824,7 +824,7 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Free components of object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -918,7 +918,7 @@ void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1160,7 +1160,7 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Undo Anim of CompObject and children
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1193,7 +1193,7 @@ void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Component Address
 	Input		:	int16			ID
 				:	int16			Number of Children
@@ -1223,7 +1223,7 @@ COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children )
 	return( NULL );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Component
 	Output		:	BOOL			True/False
@@ -1262,7 +1262,7 @@ BOOL GetCompObjAxis( COMP_OBJ * Comp )
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enable Component Object models
 	Input		:	COMP_OBJ	*	Start of Componented Object
 				:	int16			Number of Children
@@ -1292,7 +1292,7 @@ void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display components collision zones
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1397,7 +1397,7 @@ void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Check Ray to Col Zone
 	Input		:		VECTOR	*	StartPos
 				:		VECTOR	*	EndPos
@@ -1446,7 +1446,7 @@ BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Is point inside convex shape?
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
@@ -1470,7 +1470,7 @@ BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, 
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Componented Object Bounding Box
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
@@ -1511,7 +1511,7 @@ void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 								   BottomRight );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1663,7 +1663,7 @@ void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATR
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update components model colours
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1698,7 +1698,7 @@ void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update components model Flags
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1729,7 +1729,7 @@ void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update components model clip groups
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1768,7 +1768,7 @@ void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 Clip
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1799,7 +1799,7 @@ void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radiu
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1828,7 +1828,7 @@ void ClearCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Maximize Bounding box
 	Input		:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
@@ -1851,7 +1851,7 @@ void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 	BottomRight->z = GreatestDistance;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1938,7 +1938,7 @@ BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
@@ -1994,7 +1994,7 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
@@ -2050,7 +2050,7 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Componented Object Collision Bounding Box
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
@@ -2091,7 +2091,7 @@ void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 								   BottomRight );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -2230,7 +2230,7 @@ void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, M
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	MATRIX		*	Display Matrix
@@ -2278,7 +2278,7 @@ void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	VECTOR		*	Center Offset
 				:	VECTOR		*	HalfSize
@@ -2334,7 +2334,7 @@ void GetZoneBoundingBox( VECTOR * Center, VECTOR * HalfSize, MATRIX * Matrix, VE
 	AddVertToBoundingBox( &TempVert, Matrix, Pos, TopLeft, BottomRight );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Vertex to bounding Box
 	Input		:	VECTOR		*	Vertex
 				:	MATRIX		*	Display Matrix
@@ -2375,7 +2375,7 @@ void AddVertToBoundingBox( VECTOR * Vert, MATRIX * Matrix, VECTOR * Pos, VECTOR 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -2406,7 +2406,7 @@ void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -2436,7 +2436,7 @@ void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren

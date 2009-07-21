@@ -14,7 +14,7 @@
 	}
  */
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -43,13 +43,13 @@
 #include "collision.h"
 #include "XMem.h"
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	MAXNODES	768
 #define	NOD_VERSION_NUMBER	1
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 extern	LINE			Lines[ MAXLINES ];
@@ -57,7 +57,7 @@ extern	ENEMY	*	FirstEnemyUsed;
 
 extern	int __cdecl MsgBox( int type, char *msg, ... );
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 
@@ -195,7 +195,7 @@ int DebugMathErrors( void )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Nod File
 	Input		:		char	*	Filename 
 	Output		:		Nothing
@@ -445,7 +445,7 @@ BOOL Nodeload( char * Filename )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Release NodeHeader..
 	Input		:		NOTHING
 	Output		:		Nothing
@@ -465,7 +465,7 @@ void NodeRelease( void)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Put Enmies At Node....And draw lines for a Network
 	Input		:		NOTHING
 	Output		:		Nothing
@@ -567,7 +567,7 @@ ENEMY * PutEnemiesAtNodes(void)
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		draw lines for a Network
 	Input		:		NOTHING
 	Output		:		Nothing
@@ -660,7 +660,7 @@ void ShowNodeNetwork( uint32 NetMask )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Recursive Node Dsistance Find.....
 	Input		:		NODE * Node
 				:		int32	Network
@@ -693,7 +693,7 @@ void NodeRecurse( NODE * NodeFrom , NODE * NodeTo , float Distance )
 		NodeRecurse( NodeTo , NodeTo->NodeLink[i] ,  Distance );
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set Network weight form 1 Node...
 	Input		:		NODE * Node
 				:		int32	Network
@@ -754,7 +754,7 @@ void SetNetworkDistance( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Find the nearest node for an object using its network number..
 	Input		:		OBJECT * Object
 	Output		:		Nothing
@@ -787,7 +787,7 @@ void FindNearestNode( OBJECT * Object )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Update the nearest node for an object using its network number..
 	Input		:		OBJECT * Object
 	Output		:		Nothing
@@ -836,7 +836,7 @@ void UpdateNearestNode( OBJECT * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Which Node to aim for to get to my target Node....
 	Input		:		int16 Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
@@ -887,7 +887,7 @@ NODE * WhichNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
 	}
 	return NodeReturn;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Which Node to aim for to get to get away from my target....
 	Input		:		int16 Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
@@ -940,7 +940,7 @@ NODE * WhichRetreatNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		An Alternate root is needed so find a different node if possible..
 	Input		:		int16 Network..Which Network...
 				:		NODE * NodeFrom ...Which node im close to..
@@ -1043,7 +1043,7 @@ NODE * FindSuitableSplineNodeRandom( uint32 Network, NODE * NodeFrom , NODE *Nod
 	return NodeFrom;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Special Update the nearest node for an object using its network number..
 	Input		:		OBJECT * Object
 	Output		:		Nothing
@@ -1100,7 +1100,7 @@ void UpdateNearestNodeSpecial( OBJECT * Object )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Return Pos of nearest node to a point
 	Input		:		VECTOR	*	Pos
 				:		uint16	*	Group

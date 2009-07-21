@@ -87,7 +87,7 @@ num_start_points : uint16
 
 
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include "typedefs.h"
@@ -107,7 +107,7 @@ num_start_points : uint16
 #include "magic.h"
 #include "Xmem.h"
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 extern	BOOL SWMonoChrome;
@@ -115,14 +115,14 @@ extern	TRIGGERMOD	*	TrigMods;
 extern	PALETTEENTRY ppe[256];
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
-extern D3DMATRIXHANDLE hWorld;
+extern  D3DMATRIXHANDLE hWorld;
 extern	BOOL	UsedStippledAlpha;
 extern	MLOADHEADER Mloadheader;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	float framelag;
-extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+extern	uint32	AnimOncePerFrame;	// used for stuff that is displayed more than once in a single frame..
 
 void DebugPrintf( char *fmt, ... );
 BOOL FindGroupConnections( MLOADHEADER *m );
@@ -130,7 +130,7 @@ BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf );
 void FreeGroupConnections( void );
 void ReadSoundInfo( MLOADHEADER *m, char **pbuf );
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	MXV_VERSION_NUMBER	3
@@ -138,7 +138,7 @@ void ReadSoundInfo( MLOADHEADER *m, char **pbuf );
 #define UV_FUDGE	(0.5F)
 #define SAME_UV		(2.0F)
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 float	UV_Fix = UV_FUDGE;
@@ -155,7 +155,7 @@ BOOL	TempGroups[MAXGROUPS];
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 uint16	GroupTris[ MAXGROUPS ];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Dont Know....
 	Input		:		Who can tell...
 	Output		:		int93???
@@ -204,7 +204,7 @@ read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, uint16 **Uint
 	*Uint16PntPtr = ptr;
 	return ok;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Build a Gamma Correction table 
 	Input		:		double GammaValue
 	Output		:		Nothing
@@ -320,7 +320,7 @@ FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Mxv File
 	Input		:		char	*	Filename , MLOADHEADER *
 	Output		:		Nothing
@@ -381,7 +381,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
-	
 
 	BuildGammaCorrect( 1.0 );
 	
@@ -391,7 +390,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		Msg( "Mload : Error Allocating Buffer\n" );
 		return FALSE;
 	}
-	
 
 	/*	get the number of groups	*/
 	Uint16Pnt = (uint16 *) Buffer;
@@ -404,7 +402,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		return FALSE;
 	}
 
-	for( group=0 ; group<Mloadheader->num_groups; group++)
+	for( group = 0; group < Mloadheader->num_groups; group++)
 	{
 		GroupTris[ group ] = 0;
 		/*	get the number of execbufs in this group	*/
@@ -418,9 +416,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			return FALSE;
 		}
 		
-		for( execbuf=0 ; execbuf<Mloadheader->Group[group].num_execbufs; execbuf++)
+		for( execbuf = 0; execbuf < Mloadheader->Group[group].num_execbufs; execbuf++)
 		{
-
 			Mloadheader->Group[group].num_animating_polys[execbuf] = 0;
 			
 			int16Pnt = (int16 *) Buffer;
@@ -444,7 +441,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 
 			/*	create an execution buffer	*/
-	
 			if (MakeExecuteBuffer( &debDesc, /*d3dappi.lpD3DDevice,*/ &Mloadheader->Group[group].lpExBuf[execbuf] , ExecSize ) != TRUE ) // bjd
 			{
 				Msg( "Mload : MakeExecBuffer Failed\n" );
@@ -461,7 +457,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				Msg( "Mload : Lock ExecBuffer failed\n" );
 				return FALSE ;
 			}
-		
+
 			lpBufStart = debDesc.lpData;
 			lpPointer = lpBufStart;
 	
@@ -643,7 +639,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		}
 
 		Uint16Pnt++;
-/*/*===================================================================
+/*===================================================================
  *		Particular Stuff Related To Visiploys	
 ===================================================================*/
 		Buffer = ( char * ) Uint16Pnt;
@@ -775,7 +771,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		}
 		Buffer = (char *) Uint16Pnt;		
 	
-/*/*===================================================================
+/*===================================================================
  *		End Of Visiploy Stuff	
 ===================================================================*/
 
@@ -785,7 +781,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		ReadSoundInfo( Mloadheader, &Buffer );
 #endif
 
-/*/*===================================================================
+/*===================================================================
  *		Start of Cell Index Stuff	
 ===================================================================*/
 		Uint16Pnt = (uint16 *) Buffer;
@@ -863,7 +859,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			}
 		
 		}
-/*/*===================================================================
+/*===================================================================
  *		Start of Start Pos Stuff
 ===================================================================*/
 		Uint16Pnt = (uint16 *) Buffer;
@@ -901,7 +897,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 		}
 		Buffer = (char *) StartPosPnt;		
 
-/*/*===================================================================
+/*===================================================================
  *		Start of group up vector Stuff
 ===================================================================*/
 		Uint16Pnt = (uint16 *) Buffer;
@@ -1134,7 +1130,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 	return( TRUE );
 }
-/*/*===================================================================
+
+/*===================================================================
 	Procedure	:		Execute all group buffers for a Mloadheader
 	Input		;		MLOADHEADER *
 	Output		:		FLASE/TRUE
@@ -1168,11 +1165,13 @@ BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute one group for an Mloadheader
 	Input		;		MLOADHEADER *
 	Output		:		FLASE/TRUE
 ===================================================================*/
+
+// bjd - this function seems to draw static geometry?
 
 BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 {
@@ -1190,7 +1189,9 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 				if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
 				AddTransExe( &Matrix , Mloadheader->Group[group].lpExBuf[i] , 0, (uint16) -1, group, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
 
-			}else{
+			}
+			else
+			{
 				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 					return FALSE;
 			}
@@ -1345,7 +1346,7 @@ static void Unscramble( char *buf, long size, char *fname )
 #endif // UNSCRAMBLE
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Pre - Load .Mx File
 	Input		:		char	*	Filename , MLOADHEADER *
 	Output		:		Nothing
@@ -1454,7 +1455,7 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Handle All Animation For an Mloadheader
 	Input		:		MLOADHEADER *
 	Output		:		Nothing
@@ -1510,7 +1511,7 @@ void BackGroundTextureAnimation( MLOADHEADER * Mloadheader , uint16 group )
 		}
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Handle All Animation Commands
 	Input		:		MLOADHEADER *
 	Output		:		Nothing
@@ -1559,7 +1560,7 @@ uint16 * HandleAnimCommands( POLYANIM * PolyAnim , uint16 * AnimData , uint16 * 
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Is GroupVisible recursive...
 	Input		:		VISTREE * vistree , group to..
 	Output		:		Nothing
@@ -1586,7 +1587,7 @@ float IsGroupVisibleSoundInfoRecursive( MLOADHEADER * Mloadheader ,VISTREE * vis
 	return -1.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Is GroupVisible...
 	Input		:		MLOADHEADER * , group in , group to..
 	Output		:		Nothing
@@ -1628,7 +1629,7 @@ float IsGroupVisibleSoundInfo( MLOADHEADER * Mloadheader , uint16 group , uint16
 	}
 	return -1.0F;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Is GroupVisible...
 	Input		:		MLOADHEADER * , group in , group to..
 	Output		:		Nothing
@@ -1667,7 +1668,7 @@ float IsGroupVisibleSoundInfo2( MLOADHEADER * Mloadheader , uint16 group , uint1
 	return -1.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Is GroupVisible...
 	Input		:		MLOADHEADER * , group in , group to..
 	Output		:		Nothing
@@ -1712,7 +1713,7 @@ float IsGroupVisibleSoundInfo3( MLOADHEADER * Mloadheader , uint16 group , uint1
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set up Sound Info...
 	Input		:		MLOADHEADER *
 	Output		:		Nothing
@@ -1773,7 +1774,7 @@ void ReadSoundInfo( MLOADHEADER *m, char **pbuf )
 	*pbuf = (char *) buf;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Trigger Background Animation to change state...
 	Input		:		uint16 * Data
 				:		first uint16 is the Polyanim index number...
@@ -1793,7 +1794,7 @@ void TriggerBackgroundAnimationGo( uint16 * Data )
 	PolyAnim += TAnimInfoIndexPnt->PolyAnim;
 	PolyAnim->State = TEXTUREANIM_Go;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Trigger Background Animation to change state...
 	Input		:		uint16 * Data
 				:		first uint16 is the Polyanim index number...

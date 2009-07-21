@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 *	l i n e s . c
 *	All routines to do with lines...
 ===================================================================*/
@@ -18,14 +18,14 @@ extern	CAMERA	CurrentCamera;
 extern	BOOL	UsedStippledAlpha;
 extern	BOOL	DebugInfo;
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 LINE	Lines[ MAXLINES ];
 uint16	FirstLineUsed;
 uint16	FirstLineFree;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init Line Structures and Execute buffer
 	Input		:	Nothing
 	Output		:	Nothing
@@ -57,7 +57,7 @@ void InitLines( void )
 	Lines[ MAXLINES-1 ].Next = (uint16) -1;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free Line and move it from the free list to
 					the used list
 	Input		:	Nothing
@@ -83,7 +83,7 @@ uint16 FindFreeLine( void )
 	return i ;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used Line and move it from the used list
 				:	to the free list
 	Input		:	uint16		Number of Line to free....
@@ -106,7 +106,7 @@ void KillUsedLine( uint16 i )
 	FirstLineFree	= i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16	Group
 				:	LPDIRECT3DEXECUTEBUFFER ExecBuffer
@@ -221,7 +221,7 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 			i = Lines[ i ].Prev;
 		}
 
-/*/*===================================================================
+/*===================================================================
 		Create Execution buffer instructions
 ===================================================================*/
 		lpPointer = (LPVOID ) Vert_Ptr;
@@ -254,7 +254,7 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 			OP_EXIT( lpPointer );
 		}
 
-/*/*===================================================================
+/*===================================================================
 		Finish off execution list
 ===================================================================*/
 		ExecBuffer->lpVtbl->Unlock( ExecBuffer );

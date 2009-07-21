@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 	Header files
 ===================================================================*/
 
@@ -17,7 +17,7 @@
 #include	"file.h"
 #include	"util.h"
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 
@@ -65,7 +65,7 @@ int folder_exists( char *pathspec, ... )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		See if file exists
 	Input		:		char	*	Filename
 	Output		:		BOOL		TRUE if exists
@@ -80,7 +80,7 @@ BOOL File_Exists( char * Filename )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Write File ( Creating file if non exists )
 	Input		:		char	*	Filename
 				:		char	*	Buffer to Write
@@ -102,7 +102,7 @@ long Write_File( char * Filename, char * File_Buffer, long Write_Size )
 	return ( Bytes_Written );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Change Extension of Filename
 	Input		:		uint8	*	Src Filename
 				:		uint8	*	Dest Filename
@@ -140,7 +140,7 @@ void Change_Ext( uint8 * Src, uint8 * Dest, uint8 * Ext )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get Filename from path\filename
 	Input		:		uint8	*	Src path\Filename
 				:		uint8	*	Dest Filename
@@ -171,7 +171,7 @@ void GetFilename( uint8 * Src, uint8 * Dest )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Change Extension of Filename
 	Input		:		uint8	*	Src Filename
 				:		uint8	*	Dest to put ext
@@ -197,7 +197,7 @@ void Get_Ext( uint8 * Src, uint8 * Dest )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add path to filename
 	Input		:		uint8	*	Path\
 				:		uint8	*	Src Filename
@@ -211,7 +211,7 @@ void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
 	strcpy( Dest, Src );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Return Size of File given Filename
 	Input		:		char	*	Filename
 	Output		:		long		Size of File
@@ -241,7 +241,7 @@ long Get_File_Size( char * Filename )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Read Part or All of File Into Memory
 				:		data\ as base directory
 				:		read from override dir first, then normal
@@ -282,7 +282,7 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add Comment to log
 	Input		:		const char * format, .....
 	Output		:		Nothing

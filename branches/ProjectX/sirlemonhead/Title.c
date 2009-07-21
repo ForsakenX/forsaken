@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Include Files...	
 ===================================================================*/
 #include <stdio.h>
@@ -119,7 +119,7 @@ void ProcessTextItems (void);
 BOOL	SWMonoChrome;
 BOOL	Last_SWMonoChrome = FALSE;
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern BOOL WaitingToQuit;
@@ -296,12 +296,12 @@ extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	MyRandomPickups;
 
-/*/*===================================================================
+/*===================================================================
 		Mode changing stuff..
 ===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-/*/*===================================================================
+/*===================================================================
 		Texture Format changing stuff..
 ===================================================================*/
 LIST	TextureList = { 0 };
@@ -314,14 +314,14 @@ int		TextureIndexBPP;
 
 SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
-/*/*===================================================================
+/*===================================================================
 		Level changing stuff..
 ===================================================================*/
 LIST	LevelList = { 0 };
 char SelectedLevel[128];
 char SelectedLevelText[MAX_LEVEL_TEXT_LENGTH];
 
-/*/*===================================================================
+/*===================================================================
 		Joystick stuff..
 ===================================================================*/
 char	NoBtnText[] = "not currently assigned";
@@ -371,7 +371,7 @@ BOOL InTitleRoom;
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
 
-/*/*===================================================================
+/*===================================================================
 		Error message stuff..
 ===================================================================*/
 char ErrorMessage[256];
@@ -380,7 +380,7 @@ int	ErrorMoveBackBy;
 MENU * ErrorNewMenu;
 BOOL IgnoreMenuFuncs = FALSE;
 
-/*/*===================================================================
+/*===================================================================
 		Fucntions without a header..
 ===================================================================*/
 void InitBattleMenu( MENU *Menu );
@@ -745,7 +745,7 @@ text messaging
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
 void GetTitleMessage(void);
 
-/*/*===================================================================
+/*===================================================================
 	MultiPlayer Stuff...
 ===================================================================*/
 
@@ -984,7 +984,7 @@ MENUITEM *TextItem			= NULL;
 MENUITEM *PreListItem;
 MENU *PreListMenu;
 
-/*/*===================================================================
+/*===================================================================
 		Menus...
 ===================================================================*/
 
@@ -3200,7 +3200,7 @@ char *BikerText[MAXBIKETYPES] =
 };
 
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 
@@ -3676,7 +3676,7 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 };
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Input		:		LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
 						LPDIRECT3DVIEWPORT lpView
@@ -3851,7 +3851,7 @@ void ReInitTitleFont (void)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Release Tile Screen Graphics etc...
 	Input		:		nothing
 	Output		:		nothing
@@ -3879,7 +3879,7 @@ ReleaseTitle(void)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set up initail parameters for title room...
 	Input		:		nothing
 	Output		:		nothing
@@ -4035,7 +4035,7 @@ void SetInitialTitleParams()
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		LoadTitleModels
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
@@ -4519,7 +4519,7 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Place title room objects into their correct positions
 	Input		:		nothing
 	Output		:		nothing
@@ -4603,7 +4603,7 @@ void PlaceObjects(void)
 	RotateDiscStack(MaxStackTheta);
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Expand / Contract discs, according to DiscExpandOut 
 	Input		:		nothing...
 	Output		:		nothing...
@@ -4648,7 +4648,7 @@ void ExpandDiscs(void)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Wiggle all discs along the y axis after expanding...
 	Input		:		nothing
 	Output		:		nothing
@@ -4682,7 +4682,7 @@ void WiggleDiscs(void)
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get a random speed for a disc
 	Input		:		disc number...
 	Output		:		nothing...
@@ -4703,7 +4703,7 @@ void SetUpRotate(int disc)
 	
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get next "judder" amount for a disc (after disc has rotated)
 	Input		:		disc number
 	Output		:		nothing
@@ -4737,7 +4737,7 @@ void DiscJudder(int disc)
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		RotateDiscs
 	Input		:		disc number, OneOnly: ROTATE_DISC_All ( all discs )
 											  ROTATE_DISC_DifficultyForward
@@ -4797,7 +4797,7 @@ void RotateDiscs(int disc, int OneOnly)
 		 	DiscJudder(disc);
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for all discs...
 	Input		:		nothing
 	Output		:		nothing
@@ -4854,7 +4854,7 @@ void RotateAllDiscs(void)
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for one disc...
 	Input		:		nothing
 	Output		:		nothing
@@ -5017,7 +5017,7 @@ void ProcessHoloModel( void );
 
 uint8 QuickStart = QUICKSTART_None; 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Title Display...
 
 	Input		:		nothing...
@@ -5267,14 +5267,14 @@ BOOL DisplayTitle(void)
 		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 		// display clipped translucencies
-	/*/*===================================================================
+	/*===================================================================
 		Display 0 Clipped Non Faceme Transluecent Polys
 	===================================================================*/
 
 			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
 					return FALSE;
 
-/*/*===================================================================
+/*===================================================================
 	Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
 			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
@@ -5283,27 +5283,27 @@ BOOL DisplayTitle(void)
 			ExecuteTransExe( 0 );
 			ExecuteTransExeUnclipped( 0 );
 
-	/*/*===================================================================
+	/*===================================================================
 		Display Non 0 Clipped Faceme Transluecent Polys
 	===================================================================*/
 
 		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-/*/*===================================================================
+/*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-	/*/*===================================================================
+	/*===================================================================
 		Display Transluecent Screen Polys
 	===================================================================*/
 
 			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
 				return FALSE;
 
-	/*/*===================================================================
+	/*===================================================================
 	Display Opaque Lines
 	===================================================================*/
 			group = (uint16)-1;
@@ -5325,7 +5325,7 @@ BOOL DisplayTitle(void)
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
-	/*/*===================================================================
+	/*===================================================================
 		Display Solid Screen Polys
 	===================================================================*/
 		BilinearSolidScrPolys = TRUE;
@@ -5333,7 +5333,7 @@ BOOL DisplayTitle(void)
 		if( !DisplaySolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) )
 			return FALSE;
 
-	/*/*===================================================================
+	/*===================================================================
 	Display Solid Lines
 	===================================================================*/
 			group = (uint16)-1;
@@ -5454,7 +5454,7 @@ static int SelectionColour( void )
 	return colour_table[ ( GetTickCount() / ( 14 * 4 ) ) & 15 ];
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu restart...
 	Input		:		MENU * ...
 	Output		:		Nothing
@@ -5503,7 +5503,7 @@ void MenuRestart( MENU * Menu )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu exit (backing out nicely)...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -5517,7 +5517,7 @@ void MenuExit( void )
 	MenuState = MENUSTATE_Select;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu abort (immediately)...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -5537,7 +5537,7 @@ void MenuAbort( void )
 	OldMenuStatus = 0;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -5558,7 +5558,7 @@ void	MenuItemDrawName( MENUITEM * Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the Name in a paged menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -5791,7 +5791,7 @@ void DrawKeyDefHelp3( MENUITEM * Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the Name and string variable in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -5826,7 +5826,7 @@ void DrawCenteredNameVar( MENUITEM * Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the help key and description in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -5849,7 +5849,7 @@ void	DrawHelpKey( MENUITEM * Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Draw..draws the title and all other text..
 	Input		:		MENU * Menu...
 	Output		:		Nothing
@@ -5894,7 +5894,7 @@ void MenuChangeEx( MENU *Menu )
 	MenuChange( &Item );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Change...
 	Input		:		MENUI
 	TEM * ITEM...
@@ -5953,7 +5953,7 @@ void MenuChange( MENUITEM * Item )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -6059,7 +6059,7 @@ void MenuBackSpecific( MENU *Menu, BOOL UseExitFuncs )
 	IgnoreMenuFuncs = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu item for Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -6070,7 +6070,7 @@ void MenuItemBack( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -6081,7 +6081,7 @@ void	SetDifficulty( MENUITEM * Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -6116,7 +6116,7 @@ void	MenuItemDrawCursor( MENUITEM * Item )
 		
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Cursor Movement Functions...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -7014,7 +7014,7 @@ int ValidBikeSelected( int bike)
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
 	Input		:		key pressed
 	Output		:		BOOL - indicates when biker list is no longer being used
@@ -7136,7 +7136,7 @@ BOOL ProcessSavedGameList( int Key )
 	return !done;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Processes the player list - auto selects highlighted item, 
 						and draws corresponding biker character.
 	Input		:		key pressed...
@@ -8487,7 +8487,7 @@ void	MenuProcess()
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select/operate a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8508,7 +8508,7 @@ void SelectSlider( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Decrement a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8524,7 +8524,7 @@ void DecrementSlider( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Increment a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8541,7 +8541,7 @@ void IncrementSlider( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Minimise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8555,7 +8555,7 @@ void SliderHome( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Maximise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8569,7 +8569,7 @@ void SliderEnd( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8586,7 +8586,7 @@ void SliderSet( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8601,7 +8601,7 @@ void SliderCancel( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8633,7 +8633,7 @@ void DrawSlider( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8648,7 +8648,7 @@ void SelectRadioButton( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draws a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8677,7 +8677,7 @@ void DrawRadioButton( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8700,7 +8700,7 @@ void SelectToggle( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8727,7 +8727,7 @@ void DrawToggle( MENUITEM *Item )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a collision perspective toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8748,7 +8748,7 @@ void DrawColToggle( MENUITEM *Item )
 		Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8761,7 +8761,7 @@ void SelectColourToggle( MENUITEM *Item )
 			*(int *) Item->Variable =*(int *)Item->Variable + 1;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw message display customisation toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8815,7 +8815,7 @@ void DrawMessagesToggle( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8829,7 +8829,7 @@ void SelectKey( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8877,7 +8877,7 @@ void DrawKey( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Select a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8891,7 +8891,7 @@ void SelectKeyDef( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -8949,7 +8949,7 @@ void DrawKeyDef( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
@@ -8994,7 +8994,7 @@ void SetOurRenderStates( MENUITEM *item )
 
 	D3DAppSetRenderState(&myglobs.rstate);
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
@@ -9015,7 +9015,7 @@ void GetOurRenderStates( MENUITEM *item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9059,7 +9059,7 @@ void InitDetailLevels( MENU *Menu )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9079,7 +9079,7 @@ void ExitDetailLevels( MENU *Menu )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9095,7 +9095,7 @@ void SetLightStates( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9130,7 +9130,7 @@ void NewInitBikeMenu ( MENU *Menu)
 	SelectedBikeScale = BikeModelScale[ BikeList.selected_item ];
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9169,7 +9169,7 @@ void MoveConfigFile( MENU *Menu )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the bike list menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9200,7 +9200,7 @@ void InitLevelSelectVDU( MENUITEM *Item )
 {
 	MenuState = MENUSTATE_SelectLevelQuick;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the control menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9238,7 +9238,7 @@ void SetAutolevel( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the controls menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9263,7 +9263,7 @@ void ExitControls( MENU *Menu )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		compare string function for sorting pilot list
 	Input		:		Nothing
 	Output		:		Nothing
@@ -9336,7 +9336,7 @@ _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 	return 0;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the pilot list
 	Input		:		Nothing
 	Output		:		Nothing
@@ -9419,7 +9419,7 @@ void InitPilotList( void )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
@@ -9445,7 +9445,7 @@ void InitPilotName( MENU *menu )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
@@ -9539,7 +9539,7 @@ void SetPilotName( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
@@ -9578,7 +9578,7 @@ void SetPilotNameInGame( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
@@ -9594,7 +9594,7 @@ void InitPilotReName( MENU *menu )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
@@ -9640,7 +9640,7 @@ void RenamePilotName( MENUITEM *item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9679,7 +9679,7 @@ void GetBikeDetails(int Bike, MENUITEM *item)
 		Ships[ WhoIAm ].BikeNum = Bike;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Save values from the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -9724,7 +9724,7 @@ void SelectTeamList( MENUITEM *Item )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Selects a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -9761,7 +9761,7 @@ void SelectList( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -9804,7 +9804,7 @@ void DrawList( MENUITEM *Item )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		List navigation/selection routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -9959,7 +9959,7 @@ void CancelListSelection( LIST *l )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Selects a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -9989,7 +9989,7 @@ void SelectFlatMenutext( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Draw a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -10023,7 +10023,7 @@ void DrawTextItem( MENUITEM *Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Text editing routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -10841,7 +10841,7 @@ void ExitBikeComputerSelection( MENUITEM * item )
 		MenuBack();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Go full Screen....or window....
 	Input		:		Nothing
 	Output		:		Nothing
@@ -10888,7 +10888,7 @@ void MenuGoFullScreen( MENUITEM *Item )
 	
 
 
-/*/*===================================================================
+/*===================================================================
 		Mode changing stuff..
 ===================================================================*/
 void MakeModeList( MENU *Menu )
@@ -10929,7 +10929,7 @@ void MakeModeList( MENU *Menu )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Select a Mode...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -10979,7 +10979,7 @@ void NewMenuSelectMode( MENUITEM *Item )
 
    	InitialTexturesSet = FALSE;
 }
-/*/*===================================================================
+/*===================================================================
 		Texture Format changing stuff..
 ===================================================================*/
 void MakeTextureList( MENU *Menu )
@@ -11014,7 +11014,7 @@ void MakeTextureList( MENU *Menu )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Menu Select Texture Format..
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11222,7 +11222,7 @@ void RestoreDemoSettings( void )
 	ShowNamesAnyway = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise Demo Name list
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11336,7 +11336,7 @@ void InitDemoList( MENU * Menu )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initialise Load Game Name list
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11423,7 +11423,7 @@ void InitLoadSavedGameList( MENU * Menu )
 //	LoadSavedGameList.FuncDelete = ( LoadSavedGameList.items > 0 ) ? DeleteSavedGame : NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Demo Pause Compensate
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11434,7 +11434,7 @@ void PauseDemoToggle( MENUITEM *Item )
 	SelectToggle( Item );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init the level select menu...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11463,7 +11463,7 @@ void GoToStats( MENUITEM *Item )
 	LevelNum = -1;			// Force Level change
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Level has been Changed...
 	Input		:	MENU * Menu
 	Output		:	nothing
@@ -11478,7 +11478,7 @@ void ExitLevelSelect( MENU * Menu )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get Game Prefs..
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11643,7 +11643,7 @@ void GetGamePrefs( void )
 	CLAMP( GameType, MAX_GAMETYPE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set last game played info from the registry..
 	Input		:		Nothing
 	Output		:		Nothing
@@ -11786,7 +11786,7 @@ void SetDiscStatus(MENU *menu)
 	DiscStatus = menu->MenuStatus;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		sets each vertex intensity of a model to a given fraction of the original
 	Input		:		Model num, fraction of orig, intensity, ptr to Exclude - list of vertices
 						that are to be left unchanged.
@@ -12140,7 +12140,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		increases the texture frame no. of a disc by one
 	Input		:		disc number
 	Output		:		nothing
@@ -12152,7 +12152,7 @@ void HighlightDisc(int disc)
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		restores original texture frame of disc
 	Input		:		disc number
 	Output		:		nothing
@@ -12162,7 +12162,7 @@ void ResetDisc(int disc)
 	PolyAnim[disc]->newframe = CurrentTextures[disc];
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		initialises rotation sequence for difficulty level disc
 	Input		:		menu item (not used)
 	Output		:		nothing
@@ -13693,7 +13693,7 @@ void DrawGeneralWeapons( MENUITEM *Item )
 	MenuState = MENUSTATE_WeaponOrder;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Processes menu items for VDU menus
 	Input		:		ptr to menu
 	Output		:		nothing
@@ -13734,7 +13734,7 @@ void KillTextInfo ( TEXTINFO *TextInfo )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		clears everything from the VDU
 	Input		:		nothing
 	Output		:		nothing

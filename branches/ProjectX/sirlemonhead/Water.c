@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -26,7 +26,7 @@
 #include "XMem.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 		Externs...	
 ===================================================================*/
 extern	MATRIX ProjMatrix;
@@ -50,12 +50,12 @@ extern	BOOL	CanCullFlag;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	WAT_VERSION_NUMBER	1
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 float WATER_CELLSIZE = 64.0F;
@@ -86,7 +86,7 @@ VECTOR	WaterNormal = { 0.0F, 1.0F, 0.0F };
 WATEROBJECT	* WaterObjectLink[MAXGROUPS];
 
 float WaterFade = 1.0F;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Pre Water Load..
 	Input		:	char * filename....
 	Output		:	BOOL
@@ -164,7 +164,7 @@ BOOL PreWaterLoad( char * Filename )
 	WaterBuffer = Buffer;
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Water Load..
 	Input		:	char * filename....
 	Output		:	BOOL
@@ -297,7 +297,7 @@ BOOL WaterLoad( void )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Water Release..
 	Input		:	NOTHING
 	Output		:	NOTHING
@@ -329,7 +329,7 @@ void WaterRelease( void )
 	}
 	NumOfWaterObjects = 0;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Add a Water to the group link list..
 	Input		:		WATEROBJECT * WO
 	Output		:		Nothing
@@ -346,7 +346,7 @@ void AddWaterLink(WATEROBJECT * WO)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Init Everything to do with a Water Mesh...
 	Input		:		Nothing
 	Output		:		BOOL TRUE/FALSE
@@ -472,7 +472,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
 #endif
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process Water Based on Group..
 	Input		:	uint16 group
 	Output		:	NOTHING
@@ -512,7 +512,7 @@ void GroupWaterProcessDisplay( uint16 group )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update a Water Mesh...
 	Input		:	WATEROBJECT * WO
 	Output		:	NOTHING
@@ -624,7 +624,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 		return;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Display the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -652,7 +652,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Loop around and see if there are any object in this group...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -674,7 +674,7 @@ BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *
 	}
 	return FALSE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Am I In The Water..
 	Input		:		Nothing
 	Output		:		Nothing
@@ -708,7 +708,7 @@ BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Collide the Water Object Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
@@ -738,7 +738,7 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 
 	
 	WaterOffset = -DotProduct( &WaterNormal, &Pos );
-/*/*===================================================================
+/*===================================================================
 	Calculate T
 ===================================================================*/
 	Div = ( Offset->x * WaterNormal.x) + 
@@ -750,7 +750,7 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 		    ( Origin->z * WaterNormal.z ) ) + WaterOffset ; 
 	t = -( Num / Div );
 
-/*/*===================================================================
+/*===================================================================
 	Do Polygon collision
 ===================================================================*/
 
@@ -874,7 +874,7 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Water Process...
 	Input		:	NOTHING
 	Output		:	NOTHING
@@ -918,7 +918,7 @@ void WaterProcess( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Trigger water to drain...
 	Input		:	NOTHING
 	Output		:	NOTHING
@@ -933,7 +933,7 @@ void TriggerWaterDrain( uint16 * Data )
 	WO += *Data;
 	WO->Status = WATERSTATUS_DRAINING;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Trigger water to fill...
 	Input		:	NOTHING
 	Output		:	NOTHING
@@ -950,7 +950,7 @@ void TriggerWaterFill( uint16 * Data )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Water Colour in group
 	Input		:	uint16		Group
 				:	uint8	*	Red;

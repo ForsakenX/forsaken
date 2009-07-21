@@ -29,7 +29,7 @@
 // Externals
 extern	float	framelag;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Idle
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -49,7 +49,7 @@ void AI_AIR_IDLE( register ENEMY * Enemy )
 	Enemy->Object.AI_Mode = AIMODE_SCAN;
 	Enemy->Timer  =	RESET_SCAN_TIME + (float) Random_Range( (uint16) RESET_SCAN_TIME );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	TURRET Idle
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -86,7 +86,7 @@ void AI_TURRET_IDLE( register ENEMY * Enemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	CRAWL Idle
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

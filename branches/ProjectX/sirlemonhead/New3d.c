@@ -6,7 +6,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 uint16	Seed1 = 0x1234;
@@ -18,7 +18,7 @@ MATRIX	MATRIX_Identity = {
 			0.0F, 0.0F, 1.0F, 0.0F,
 			0.0F, 0.0F, 0.0F, 1.0F };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Build Rotation Matrix
 	Input		:	float		X Rotations ( Degrees )
 				:	float		Y Rotations ( Degrees )
@@ -63,7 +63,7 @@ void BuildRotMatrix( float xa, float ya, float za, MATRIX * m )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Matrix Multiplication
 	Input		:	MATRIX	*	Matrix 1
 				:	MATRIX	*	Matrix 2
@@ -117,7 +117,7 @@ void MatrixMultiply( MATRIX * m0, MATRIX * m1, MATRIX * m0m1 )
 	m0m1->_44 = ( j * N + k * O + l * P + m * M );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Apply Matrix to a Vector
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Vert
@@ -198,7 +198,7 @@ __declspec(naked) void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Apply Matrix to a Vector
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Vert
@@ -218,7 +218,7 @@ void VisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add XYZ Translation to Matrix
 	Input		:	float		X Translation
 				:	float		Y Translation
@@ -233,7 +233,7 @@ void AddMatrixTrans( float xt, float yt, float zt, MATRIX * m )
 	m->_43 = zt;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Cross product of 2 Vectors
 	Input		:	VECTOR	*	Vector1
 				:	VECTOR	*	Vector2
@@ -359,7 +359,7 @@ __declspec(naked) void CrossProduct(VECTOR * v, VECTOR * v1, VECTOR * v2)
 	}
 }
 #endif
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Dod product of 2 VECTORS
 	Input		:	VECTOR * a
 				:	VECTOR * b
@@ -394,7 +394,7 @@ __declspec(naked) float DotProduct( VECTOR * a, VECTOR * b)
 }
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Reflect Vector off a surface normal
 	Input		:	VECTOR	*	Vector
 				:	NORMAL	*	Normal
@@ -424,7 +424,7 @@ void ReflectVector( VECTOR * old, NORMAL * normal, VECTOR * new1 )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Normalises Vector V
 	Input		:	VECTOR	*	Vector
 	Output		:	Nothing
@@ -444,7 +444,7 @@ void NormaliseVector( VECTOR *  v )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VERT	*	VERTEX1
 				:	VECTOR	*  VECTOR
@@ -455,7 +455,7 @@ float VectorLength( VECTOR * v )
 	return( (float) sqrt( ( v->x * v->x ) + ( v->y * v->y ) + ( v->z * v->z ) ) ); 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VERT	*	VERTEX1
 				:	VECTOR	*  VECTOR
@@ -473,7 +473,7 @@ float DistanceVert2Vector( VERT *  a , VECTOR * b )
 
 	return( (float) sqrt( (double)((x*x) + (y*y) + (z*z)) ) ); 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VECTOR	*  VECTOR
 				:	VECTOR	*  VECTOR
@@ -492,7 +492,7 @@ float DistanceVector2Vector( VECTOR *  a , VECTOR * b )
 	return( (float) sqrt( (double)((x*x) + (y*y) + (z*z)) ) ); 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Matrix Transpose
 	Input		:	MATRIX	*	Matrix 1
 				:	MATRIX	*	Matrix 2
@@ -518,7 +518,7 @@ void MatrixTranspose( MATRIX * m1, MATRIX * m2 )
 	m2->_41 = T._14;	m2->_42 = T._24;	m2->_43 = T._34;	m2->_44 = T._44;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Calculate Random Number within range
 	Input		:	uint16		Max
 	Output		:	Nothing
@@ -554,7 +554,7 @@ float Random_Range_Float( float Max )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Quick Distancecalc... 8 % error...
 	Input		:	VECTOR * 
 	Output		:	float
@@ -588,7 +588,7 @@ float	QuickDistance( VECTOR * V )
 	}
 	return( Max + ( Med * 0.34375F ) + ( Min * 0.25F ) ) ;
 }
-/*/*===================================================================
+/*===================================================================
 	Function	:	Quick Distancecalc... 8 % error...
 	Input		:	float , float
 	Output		:	float
@@ -637,7 +637,7 @@ void MakeViewMatrix(VECTOR *viewpos, VECTOR *lookpos, VECTOR *up, MATRIX *view)
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate View Axes
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction Vector
@@ -671,7 +671,7 @@ void CalcViewAxes( VECTOR * viewpos, VECTOR * lookpos, VECTOR * up,
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Scale a matrix
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Scale Vector
@@ -700,7 +700,7 @@ void ScaleMatrix( MATRIX * m, VECTOR * v )
 
 */
 
-/*/*===================================================================
+/*===================================================================
 	Function	:	Create matrix to rotate around arbitary axis
 	Input		:	float		Angle
 				:	VECTOR		Axis

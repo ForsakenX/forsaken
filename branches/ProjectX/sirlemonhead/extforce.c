@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 		Include Files...	
 ===================================================================*/
 #include <stdio.h>
@@ -28,13 +28,13 @@
 #include "XMem.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	EXTERNALFORCES_VERSION_NUMBER	2
 
 																   
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
@@ -47,7 +47,7 @@ extern	BOOL	DebugInfo;
 extern	BOOL	GodMode;
 BOOL RayToHull( TRIGGER_ZONE * StartSide , VECTOR * StartPos , VECTOR * EndPos , uint16 StartNumSides );
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 int32	NumOfExternalForces = 0;
@@ -56,7 +56,7 @@ EXTERNALFORCE * ExternalForcesGroupLink[MAXGROUPS];
 
 EXTERNALFORCE * ExternalForces = NULL;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	External Forces load...
 	Input		:	char * filename....
 	Output		:	BOOL
@@ -215,7 +215,7 @@ BOOL ExternalForcesLoad( char * Filename )
 
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release Forces load...
 	Input		:	void
 	Output		:	void
@@ -242,7 +242,7 @@ void ReleaseExternalForces( void )
 	NumOfExternalForces = 0;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if im in an Active External Force....
 	Input		:	void
 	Output		:	TRUE/FALSE
@@ -300,7 +300,7 @@ BOOL ExternalForcesAreaCheck( VECTOR * OldPos , VECTOR * NewPos , uint16 Group ,
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display External Forces
 	Input		:	uint16	Group
 	Output		:	Nothing
@@ -352,7 +352,7 @@ void DisplayExternalForcesInGroup( uint16 Group )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if im in a External Force Zone....
 	Input		:	void
 	Output		:	void
@@ -383,7 +383,7 @@ void ExternalForcesZoneCheck( VECTOR * OldPos , VECTOR * NewPos , EXTERNALFORCE 
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start an external force..
 	Input		:	void
 	Output		:	void
@@ -397,7 +397,7 @@ void StartExternalForce( uint16 * Data )
 	EFpnt += *Data;
 	EFpnt->Status = EXTERNALFORCEACTIVE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Stop an external force..
 	Input		:	void
 	Output		:	void
@@ -412,7 +412,7 @@ void StopExternalForce( uint16 * Data )
 	EFpnt->Status = EXTERNALFORCEINACTIVE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save ExtForses arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -438,7 +438,7 @@ FILE * SaveExternalForces( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load ExtForces Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

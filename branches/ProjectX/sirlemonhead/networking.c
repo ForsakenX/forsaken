@@ -2785,7 +2785,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		return;
 
 
-/*/*===================================================================
+/*===================================================================
 	This is where the host gets told what state he thinks we are in
 ===================================================================*/
     case MSG_STATUS:
@@ -4011,7 +4011,7 @@ send:
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Read packet stuff from a file and pass it on..
 	Input		:		nothing
 	Output		:		nothing
@@ -4086,7 +4086,7 @@ void DemoPlayingNetworkGameUpdate()
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Read packet stuff from a file if its a ship update..
 						scan ahead to find the next one and write in a
 						interpolate msg..
@@ -4282,7 +4282,7 @@ void DemoClean( void )
 #endif
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Create a regen effect...
 	Input		:		uint16 ship....
 	Output		:		nothing
@@ -4323,7 +4323,7 @@ void CreateReGen( uint16 ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		FindSameLevel....
 	Input		:		char * Name
 	Output		:		int -1 no level....
@@ -4349,7 +4349,7 @@ void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		StopDemoRecording
 	Input		:		char * Name
 	Output		:		int -1 no level....
@@ -4365,7 +4365,7 @@ void StopDemoRecording( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
 	Output		:		uint32 Flags
@@ -4399,7 +4399,7 @@ uint32 BuildShipFlags( BYTE Player )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
 	Output		:		uint32 Flags
@@ -4422,7 +4422,7 @@ void UnPackShipFlags( BYTE Player , uint32 Flags )
 	Ships[Player].NumMultiples = (BYTE)((Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Set Ship Bank and Mat..
 	Input		:		OBJECT *
 	Output		:		void
@@ -4437,7 +4437,7 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Update Ammo And Validate Message...
 	Input		:		void	*	Message
 	Output		:		BOOL		True/False ( Valid Message )

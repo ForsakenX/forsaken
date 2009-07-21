@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
 ===================================================================*/
@@ -25,7 +25,7 @@
 
 #define	FMPOLYSCALE	32.0F
 
-/*/*===================================================================
+/*===================================================================
 	Externs
 ===================================================================*/
 extern	CAMERA	CurrentCamera;
@@ -53,7 +53,7 @@ extern	MLOADHEADER			Mloadheader;
 extern	MCLOADHEADER		MCloadheader;
 extern	MCLOADHEADER		MCloadheadert0;
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 FMPOLY		FmPolys[ MAXNUMOF2DPOLYS ];
@@ -67,7 +67,7 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
 
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init Faceme poly structures
 	Input		:	Nothing
 	Output		:	Nothing
@@ -111,7 +111,7 @@ void InitFmPoly( void )
 	InitFmPolyTPages();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free FmPoly and move it from the free list to
 					the used list
 	Input		:	Nothing
@@ -138,7 +138,7 @@ uint16 FindFreeFmPoly( void )
 
 	return i ;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used FmPoly and move it from the used list to
 					the free list
 	Input		:	uint16		Number of FmPoly to free....
@@ -193,7 +193,7 @@ void KillUsedFmPoly( uint16 i )
 	FirstFmPolyFree	= i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process FmPoly's
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1495,7 +1495,7 @@ void FmPolyProcess( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init FmPoly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -1510,7 +1510,7 @@ void InitFmPolyTPages( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add FmPoly To TPage Link List
 	Input		:	uint16		FmPoly Index
 				:	uint16		TPage to add to
@@ -1531,7 +1531,7 @@ void AddFmPolyToTPage( uint16 i, int16 TPage )
 	FmPolyTPages[ TPage ].FirstPoly = i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove FmPoly From TPage Link List
 	Input		:	uint16		FmPoly Index
 				:	uint16		TPage to add to
@@ -1559,7 +1559,7 @@ void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 	FmPolys[ i ].NextInTPage = (uint16) -1;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all group clipped FmPolys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	uint16						Group
@@ -1589,7 +1589,7 @@ BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display all non group clipped FmPolys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
@@ -1618,7 +1618,7 @@ BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16						Group
 				:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
@@ -1659,7 +1659,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -1704,7 +1704,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -1724,7 +1724,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -1754,7 +1754,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 				{
 					if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 					{
-/*/*===================================================================
+/*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
 						switch( MakeColourMode )
@@ -1776,7 +1776,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 								break;
 						}
 			
-/*/*===================================================================
+/*===================================================================
 		Set Dir and Up Vectors
 ===================================================================*/
 						if( FmPolys[ i ].Flags & FM_FLAG_DIRCONST )
@@ -1809,7 +1809,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 			
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
 			
-/*/*===================================================================
+/*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
@@ -1986,7 +1986,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -2004,7 +2004,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
@@ -2044,7 +2044,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 
-/*/*===================================================================
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
 ===================================================================*/
 	TotalVerts = 0;
@@ -2089,7 +2089,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-/*/*===================================================================
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -2108,7 +2108,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
 	}
 
-/*/*===================================================================
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -2138,7 +2138,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 				{
 					if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 					{
-/*/*===================================================================
+/*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
 						switch( MakeColourMode )
@@ -2160,7 +2160,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 								break;
 						}
 			
-/*/*===================================================================
+/*===================================================================
 		Set Dir and Up Vectors
 ===================================================================*/
 						if( FmPolys[ i ].Flags & FM_FLAG_DIRCONST )
@@ -2193,7 +2193,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 			
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
 			
-/*/*===================================================================
+/*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
@@ -2370,7 +2370,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 
 	OP_EXIT( lpPointer );
 
-/*/*===================================================================
+/*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
@@ -2388,7 +2388,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fade Colour to wanted colour
 	Input		:	uint8	*	Colour
 				:	uint8		Wanted Colour
@@ -2416,7 +2416,7 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
 	*Colour = (uint8) CurCol;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save FmPolys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -2488,7 +2488,7 @@ FILE * SaveFmPolys( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load FmPolys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

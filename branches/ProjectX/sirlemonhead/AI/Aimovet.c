@@ -33,7 +33,7 @@ extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
 void CreateSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
 extern	BOOL ShowNode;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Move to a Target
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

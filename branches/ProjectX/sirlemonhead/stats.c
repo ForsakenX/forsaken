@@ -60,7 +60,7 @@ char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
 	
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get name of player's weapon with most kills...
   Input   :   int Player ID, int: Weapon Type
   Output    :   char*: name of weapon
@@ -124,7 +124,7 @@ char* GetFavWeapon(int PlayerID, int WeaponType)
 		return "GetFavWeapon():: INVALID WEAPON TYPE";
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Weapon Name...
   Input   :   int: Weapon Type, int: Weapon ID
   Output    :   char*: name of weapon
@@ -140,7 +140,7 @@ char* GetWeaponName(int WeaponType, int Weapon)
 		return "GetWeaponName():: INVALID WEAPON TYPE";
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Weapon Kill Stats...
   Input   :   int: Player ID, int: Weapon Type, int Weapon ID
   Output    :   int: number of kills
@@ -156,7 +156,7 @@ int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon)
 		return -1;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Reset all statistics...
   Input   :   nothing
   Output    :   nothing
@@ -188,7 +188,7 @@ void ResetAllStats()
 }
 
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Reset one player's statistics...
   Input   :   player id
   Output    :   nothing
@@ -214,7 +214,7 @@ void ResetIndividualStats(int Player)
 	// reset player's sequential kill counter
 	KillCounter[Player] = 0;
 }
-/*/*===================================================================
+/*===================================================================
   Procedure :   Update Kill Statistics...
   Input   :   killer id, victim id, weapon type, weapon used
   Output    :   nothing
@@ -240,7 +240,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	KillCounter[Victim] = 0;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Update Sequential Kill Count and displays messages as appropriate...
   Input   :   killer id
   Output    :   nothing
@@ -303,7 +303,7 @@ void UpdateKillCount(int Killer)
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Update Individual bonus statistics...
   Input   :   player id, points scored
   Output    :   nothing
@@ -313,7 +313,7 @@ void UpdateBonusStats(int Player, int Points)
 {
 	BonusStats[Player] += Points;
 }
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Individual Kill Statistics...
   Input   :   killer id, victim id
   Output    :   amount of kills
@@ -325,7 +325,7 @@ int GetKillStats(int Killer, int Victim)
 	return KillStats[Killer][Victim];	
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get a player's score...
   Input   :   player id
   Output    :   overall score
@@ -343,7 +343,7 @@ int GetScoreStats(int Player)
 	return score;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get an individual's bonus statistics (e.g. flag or bounty points)...
   Input   :   player id
   Output    :   bonus points
@@ -355,7 +355,7 @@ int GetBonusStats(int Player)
 	return BonusStats[Player];	
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Team Kills...
   Input   :   killer id
   Output    :   total kills achieved by all players on the same team (minuses suicides and 'friendly kills')
@@ -387,7 +387,7 @@ int GetTeamKills(int Killer)
 	return TeamKills;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Team Score (includes kills)...
   Input   :   killer id
   Output    :   total score achieved by all players on the same team (minuses suicides and 'friendly kills')
@@ -407,7 +407,7 @@ int GetTeamScore(int Player)
 	return TeamScore;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Total Kills...
   Input   :   killer id
   Output    :   total kills on all players (excludes suicides)
@@ -428,7 +428,7 @@ int GetTotalKills(int Killer)
 	return kills;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Total Deaths...
   Input   :   victim id
   Output    :   total deaths (include suicides)
@@ -445,7 +445,7 @@ int GetTotalDeaths(int Victim)
 	return deaths;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Sort players according to Score.....
 	Input		:		nothing
 	Output		:		nothing
@@ -486,7 +486,7 @@ void ScoreSort()
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		PlayerRank
 	Input		:		Position e.g. 1st, 2nd, 3rd.. (0 = 1st)
 	Output		:	Player ID
@@ -497,7 +497,7 @@ int GetPlayerByRank( int rank )
 	return ScoreSortTab[ rank ];
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Initiate Score Sort Array
 	Input		:		Player ID
 	Output		:	nothing
@@ -507,7 +507,7 @@ void InitScoreSortTab(int Player)
 	ScoreSortTab[Player] = Player;
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure :   Get Team Score (includes kills)...
   Input   :   team number
   Output    :   total score achieved by all players on the same team (minuses suicides and 'friendly kills')

@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -71,7 +71,7 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
@@ -192,7 +192,7 @@ extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PlayerMessageColour;
 
-/*/*===================================================================
+/*===================================================================
 		Bike Modifiers.....
 ===================================================================*/
 float	MaxMoveSpeed	=	MAXMOVESPEED;
@@ -625,7 +625,7 @@ BIKEMOD	BikeMods[MAXBIKETYPES+3] = {
 };
 
 
-/*/*===================================================================
+/*===================================================================
 		Detail Level Globals ...
 ===================================================================*/
 #define	MAXBIKEDETAIL	4.0F
@@ -638,7 +638,7 @@ int		outside_map = 0;
 int		BikeDetail	= 0;
 int		HullHit = 0;
 int		ShieldHit = 0;
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 uint32 UnderwaterSfxID;
@@ -677,7 +677,7 @@ extern	BOOL Headlights;
 
 BOOL	RearCameraDisable = FALSE;
 
-/*/*===================================================================
+/*===================================================================
 	Function		:			Ship Control Mode Jump Table
 ===================================================================*/
 void (* ModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
@@ -688,7 +688,7 @@ void (* ModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		ShipMode4,
 		WatchMode5,
 };
-/*/*===================================================================
+/*===================================================================
 	Function		:			RemoteCamera Control Mode Jump Table
 ===================================================================*/
 void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
@@ -705,7 +705,7 @@ void AccellDecell(  float *  value ,  float  Decell )
 //	*value *= 1.0F - ( Decell * framelag );
 }
 
-/*/*===================================================================
+/*===================================================================
 		Init All Ships ...
 ===================================================================*/
 
@@ -1460,7 +1460,7 @@ BOOL ProcessShips()
 				}
 			}
 // End of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 			Set the Banking Matrix
 /*===================================================================컴컴*/
 			MakeQuat( 0.0F , 0.0F , ShipObjPnt->Bank, &StepQuat );
@@ -1722,7 +1722,7 @@ void BobShip( uint16 ship, VECTOR *bob )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 		Display All Ships ...
 ===================================================================*/
 BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
@@ -2007,7 +2007,7 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 
 
 
-/*/*===================================================================
+/*===================================================================
 		True EnviroMent Mapping for an Mloadheader...
 ===================================================================*/
 BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
@@ -2060,7 +2060,7 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 
 
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 			Work Out How Much Damage Ive Taken
 			Input : Nothing....Ships[WhoIAm].Damage must be set
 			Output: 0 no kill...1 last hit killed me...
@@ -2163,7 +2163,7 @@ int16 DoDamage( BOOL OverrideInvul )
 	return 0;
 }
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	InitShipRandomStartPos
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2274,7 +2274,7 @@ void InitShipRandomPos( int16 i )
 }
 
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	InitShipStartPos
 	Input		:	int16 which Ship
 					int16 which pos
@@ -2393,7 +2393,7 @@ void InitShipStartPos( int16 i, int16 pos )
 
 
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	GotoRoom
 	Input		:	int16	which ship
 					char *	roomname
@@ -2488,7 +2488,7 @@ BOOL GotoRoom( int16 i, char *roomname )
 
 
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Ship Mode 0	Normal Ship...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2551,7 +2551,7 @@ void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	ShipPnt->Object.Speed.y += control.up;
 }
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Ship Mode 1	Death Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2651,7 +2651,7 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 		}
 	}
 }
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Ship Mode 2	Limbo Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2736,7 +2736,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		}
 	}
 }
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Ship Mode 4	Game over mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2760,7 +2760,7 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 	}
 }
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Watch Mode 5	enables watching other players...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2794,7 +2794,7 @@ void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 
 }
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	What the Remote Camera Does...
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2804,7 +2804,7 @@ void Process_Remote_Camera( void )
  	( * RemoteCameraModeControl[ Ships[MAX_PLAYERS].Object.Mode ] )( &Ships[MAX_PLAYERS] , MAX_PLAYERS );		//go off and do his thing...
 }
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Remote Camera Mode 0	Normal Ship...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2907,7 +2907,7 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	MakeViewMatrix( &ShipPnt->Object.Pos, &Ships[WhoIAm].Object.Pos, &Move_Dir, &ShipPnt->Object.FinalMat);
 	MatrixTranspose( &ShipPnt->Object.FinalMat, &ShipPnt->Object.FinalInvMat );
 }
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Remote Camera Mode 1	Death Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -2944,7 +2944,7 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Is there a Bike near this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
@@ -2972,7 +2972,7 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos )
 	}
 	return FALSE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Is there a Bike in a Mutually visible Group from this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
@@ -3000,7 +3000,7 @@ BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
 	}
 	return FALSE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Is there a Bike in a visible group from this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
@@ -3030,7 +3030,7 @@ BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos )
 }
 
 
-/*/*===================================================================컴컴
+/*===================================================================컴컴
 	Procedure	:	Remote Camera Mode 3	Demo Playback...
 	Input		:	int16 which Ship
 	Output		:	Nothing
@@ -3073,7 +3073,7 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 	ShipMode0( ShipPnt , i );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update Nearest StartPos visited...
 	Input		:	nothing
 	Output		:	nothing
@@ -3123,7 +3123,7 @@ void	UpdateStartPos( void )
 		last_start_position = 0;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start Screen Shake...
 	Input		:	float Time;
 	Output		:	nothing
@@ -3133,7 +3133,7 @@ void StartShipScreenShake( float Force )
 	Ships[WhoIAm].ShakeTimer = 2.0F * 60.0F;
 	Ships[WhoIAm].ShakeForce = Force;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Stop Screen Shake...
 	Input		:	float Time;
 	Output		:	nothing
@@ -3144,7 +3144,7 @@ void StopShipScreenShake( void )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set Bike Mods...
 	Input		:	BikeNumber..
 	Output		:	nothing
@@ -3173,7 +3173,7 @@ void SetBikeMods( uint16 Bike )
 	AutoLevel		=	BikeMods[Bike].AutoLevel;	
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ship 2 Ship collide...
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
@@ -3355,7 +3355,7 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Multiplayer Sfx handler...
 	Input		:	Nothing..
 	Output		:	Nothing..
@@ -3455,7 +3455,7 @@ void MultiSfxHandle( void )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Makes a note of when the last kill was made..
 	Input		:	Nothing..
 	Output		:	Nothing..
@@ -3485,7 +3485,7 @@ void InitMultiSfxHandle( void )
 	CampingPos1Off = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release All Componeted Ships
 	Input		:	Nothing..
 	Output		:	Nothing..
@@ -3510,7 +3510,7 @@ void ReleaseComponentedShips( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save Ship Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -3631,7 +3631,7 @@ FILE * SaveShips( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Ship Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

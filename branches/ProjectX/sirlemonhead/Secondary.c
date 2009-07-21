@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 *	s e c o n d . c
 *	All routines to do with Secondary weapons...
 ===================================================================*/
@@ -52,7 +52,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Externs
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
@@ -193,7 +193,7 @@ extern SLIDER WatchPlayerSelect;
 // player selected in demo mode - used to display their missile camera (Title.c)
 extern SLIDER DemoEyesSelect;
 
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 /*
@@ -336,7 +336,7 @@ int16	TargetingWeaponCheat = -1;
 
 SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 
-/*/*===================================================================
+/*===================================================================
 	0 Mug Missile
 ===================================================================*/
 	{
@@ -362,7 +362,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	1 Solaris Heatseeker Missile
 ===================================================================*/
 	{
@@ -388,7 +388,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	2 Thief Missile
 ===================================================================*/
 	{
@@ -415,7 +415,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	3 Scatter Missile
 ===================================================================*/
 	{
@@ -449,7 +449,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	4 Gravgon Missile
 ===================================================================*/
 	{
@@ -475,7 +475,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	5 Multiple Missile Launcher
 ===================================================================*/
 	{
@@ -501,7 +501,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	6 TitanStar Missile
 ===================================================================*/
 	{
@@ -539,7 +539,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	7 Purge Mine
 ===================================================================*/
 	{
@@ -565,7 +565,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	8 Pine Mine
 ===================================================================*/
 	{
@@ -590,7 +590,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	9 Quantum Mine
 ===================================================================*/
 	{
@@ -615,7 +615,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	10 Spider Mine
 ===================================================================*/
 	{
@@ -641,7 +641,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot | SECFLAGS_CanTarget, 		// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	11 Pine Mine Missile
 ===================================================================*/
 	{
@@ -666,7 +666,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	12 Titan Star Shapnel Missile
 ===================================================================*/
 	{
@@ -704,7 +704,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
 
-/*/*===================================================================
+/*===================================================================
 	13 Enemy Spiraling Missile
 ===================================================================*/
 	{
@@ -729,7 +729,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot,						 		// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	14 Enemy Homing Missile
 ===================================================================*/
 	{
@@ -754,7 +754,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot, // uint16 Flags				// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	15 Enemy Blue Homing Missile
 ===================================================================*/
 	{
@@ -779,7 +779,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_CanShoot, // uint16 Flags				// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	16 Enemy FireBall
 ===================================================================*/
 	{
@@ -804,7 +804,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_Nothing, // uint16 Flags				// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	17 Enemy Tentacle
 ===================================================================*/
 	{
@@ -829,7 +829,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 		0.0F,			// float	ColRadius			// Collision Radius
 		SECFLAGS_NoIncoming, // uint16 Flags				// Initial Flags
 	},
-/*/*===================================================================
+/*===================================================================
 	18 DepthCharge
 ===================================================================*/
 	{
@@ -856,7 +856,7 @@ SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[ TOTALSECONDARYWEAPONS ] = {
 	},
 };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set up And Init all SecBulls
 	Input		:	nothing
 	Output		:	nothing
@@ -911,7 +911,7 @@ void	InitSecBulls(void)
 	}
 	SecBulls[MAXSECONDARYWEAPONBULLETS-1].Next = (uint16) -1;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free SecBull and move it from the free list to
 					the used list
 	Input		:	nothing
@@ -944,7 +944,7 @@ uint16	FindFreeSecBull(void)
 	return i ;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used SecBull and move it from the used list to
 					the free list
 	Input		:	uint16 number of SecBull free....
@@ -981,7 +981,7 @@ void	KillUsedSecBull( uint16 i )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if a new bullet is due....if it is init it
 	Input		:	nothing
 	Output		:	nothing
@@ -1122,7 +1122,7 @@ static int16	OnceOnlyFlag = 0;
 
 					switch( SecondaryToFireLookup[ Ships[ WhoIAm ].Secondary ] )
 					{
-/*/*===================================================================
+/*===================================================================
 				Fire bottom Left, then Right, then Left, then...
 ===================================================================*/
 						case MUGMISSILE:
@@ -1150,7 +1150,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, FALSE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire bottom Left and Right together
 ===================================================================*/
 						case SOLARISMISSILE:
@@ -1178,7 +1178,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, FALSE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from bottom center at random trajectories
 ===================================================================*/
 						case MULTIPLEMISSILE:
@@ -1196,7 +1196,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, FALSE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 						case THIEFMISSILE:
@@ -1213,7 +1213,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, FALSE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 						case SCATTERMISSILE:
@@ -1248,7 +1248,7 @@ static int16	OnceOnlyFlag = 0;
 #endif
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 						case GRAVGONMISSILE:
@@ -1265,7 +1265,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, FALSE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 						case TITANSTARMISSILE:
@@ -1286,7 +1286,7 @@ static int16	OnceOnlyFlag = 0;
 							ForceInternalOneOff( WhoIAm, &recoil );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 						case PURGEMINE:
@@ -1303,7 +1303,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, TRUE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 						case PINEMINE:
@@ -1320,7 +1320,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, TRUE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 						case QUANTUMMINE:
@@ -1337,7 +1337,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, TRUE );
 							break;
 	
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 						case SPIDERMINE:
@@ -1354,7 +1354,7 @@ static int16	OnceOnlyFlag = 0;
 											&Pos, &Dir, &UpVector, &DropVector, Ships[ WhoIAm ].Secondary, TRUE );
 							break;
 
-/*/*===================================================================
+/*===================================================================
 				Spiral Missile
 ===================================================================*/
 						case ENEMYSPIRALMISSILE:
@@ -1370,7 +1370,7 @@ static int16	OnceOnlyFlag = 0;
 											Ships[WhoIAm].Object.Group, &Ships[ WhoIAm ].Object.Pos,
 											&Pos, &Dir, &UpVector, &DropVector, SecondaryToFireLookup[ Ships[ WhoIAm ].Secondary ], FALSE );
 							break;
-/*/*===================================================================
+/*===================================================================
 				Photon Missile
 ===================================================================*/
 						case ENEMYHOMINGMISSILE:
@@ -1386,7 +1386,7 @@ static int16	OnceOnlyFlag = 0;
 											Ships[WhoIAm].Object.Group, &Ships[ WhoIAm ].Object.Pos,
 											&Pos, &Dir, &UpVector, &DropVector, SecondaryToFireLookup[ Ships[ WhoIAm ].Secondary ], FALSE );
 							break;
-/*/*===================================================================
+/*===================================================================
 				Blue Photon Missile
 ===================================================================*/
 						case ENEMYBLUEHOMINGMISSILE:
@@ -1402,7 +1402,7 @@ static int16	OnceOnlyFlag = 0;
 											Ships[WhoIAm].Object.Group, &Ships[ WhoIAm ].Object.Pos,
 											&Pos, &Dir, &UpVector, &DropVector, SecondaryToFireLookup[ Ships[ WhoIAm ].Secondary ], FALSE );
 							break;
-/*/*===================================================================
+/*===================================================================
 				Blue Photon Missile
 ===================================================================*/
 						case ENEMYFIREBALL:
@@ -1433,7 +1433,7 @@ static int16	OnceOnlyFlag = 0;
    }
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clean up and kill a Sec Bull
 	Input		:	nothing
 	Output		:	nothing
@@ -1491,7 +1491,7 @@ void CleanUpSecBull( uint16 i )
 	KillUsedSecBull( i );								// Kill Bullet
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init 1 Secondary Bullet..Mainly for networking...
 	Input		:	uint16		OwnerType
 				:	uint16		Owner
@@ -2026,7 +2026,7 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 	return i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Point to Sphere collision
 	Input		:	VERT	*	Target Position
 				:	float		Target Radius
@@ -2048,7 +2048,7 @@ BOOL PointToSphere(	VERT * TargPos, float TargRadius, VERT * BulPos )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process Secondary Bullets
 	Input		:	nothing
 	Output		:	nothing
@@ -2118,7 +2118,7 @@ void ProcessSecondaryBullets( void )
 				break;
 		}
 
-/*/*===================================================================
+/*===================================================================
 			Update Attached Objects
 ===================================================================*/
 		if( i != (uint16) -1 )
@@ -2172,7 +2172,7 @@ void ProcessSecondaryBullets( void )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process All Mines
 	Input		:	uint16		Secondary Weapon Bullet Index
 	Output		:	BOOL		True/False
@@ -2213,7 +2213,7 @@ BOOL ProcessMines( uint16 i )
 
 	switch( SecBulls[ i ].Type )
 	{
-/*/*===================================================================
+/*===================================================================
 		PURGE MINE, proximity detonation
 ===================================================================*/
 		case PURGEMINE:
@@ -2263,7 +2263,7 @@ BOOL ProcessMines( uint16 i )
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		PINE MINE, Aim at nearest target and fire 1 missile per sec
 ===================================================================*/
 		case PINEMINE:
@@ -2429,7 +2429,7 @@ BOOL ProcessMines( uint16 i )
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		QUANTUM MINE, proximity detonation
 ===================================================================*/
 		case QUANTUMMINE:
@@ -2479,7 +2479,7 @@ BOOL ProcessMines( uint16 i )
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		SPIDER MINE, proximity detonation, Moving
 ===================================================================*/
 		case SPIDERMINE:
@@ -2525,7 +2525,7 @@ BOOL ProcessMines( uint16 i )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process All Missiles
 	Input		:	uint16		Secondary Weapon Bullet Index
 	Output		:	BOOL		NotDestroyed/Destroyed?  ( TRUE/FALSE )
@@ -2691,7 +2691,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 
    	switch( SecBulls[ i ].State )
    	{
-/*/*===================================================================
+/*===================================================================
 		Missile Dropping ( MFRL )
 ===================================================================*/
    		case MIS_DROP:														/* Dropping */
@@ -2725,7 +2725,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
    			}
    			break;
 
-/*/*===================================================================
+/*===================================================================
 		Missile Accelerating ( MFRL )
 ===================================================================*/
    		case MIS_ACCELERATE:												/* Accelerating */
@@ -2740,7 +2740,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
    			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		Missile Flying Staight ( All )
 ===================================================================*/
    		case MIS_STRAIGHT:													/* Straight ( possibly homing missile looking for target ) */
@@ -2889,7 +2889,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			}
    			break;
 
-/*/*===================================================================
+/*===================================================================
 		Missile Homing ( Heatseaker/Scatter/Thief )
 ===================================================================*/
    		case MIS_HOMING:													/* Homing toward target ( could lose target ) */
@@ -2963,7 +2963,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			}
    			break;
 
-/*/*===================================================================
+/*===================================================================
 		Missile gravity
 ===================================================================*/
 		case MIS_GRAVITY:
@@ -2985,7 +2985,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			ApplyMatrix( &InvUpMatrix, &DirVector, &SecBulls[i].DirVector );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		Should never be in here
 ===================================================================*/
    		case MIS_SPIRALING:												/* Spiraling missile */
@@ -3022,7 +3022,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			ApplyMatrix( &SecBulls[ i ].Mat, &SlideUp, &SecBulls[ i ].UpVector );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 		Retract Tentacle 
 ===================================================================*/
 		case MIS_RETRACTTENTACLE:
@@ -3065,14 +3065,14 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			}
    			break;
 
-/*/*===================================================================
+/*===================================================================
 		Should never be in here
 ===================================================================*/
    		default:															/* Unknown/Undefined Missile */
    			break;
    	}
 
-/*/*===================================================================
+/*===================================================================
 			Do Collision Routines
 ===================================================================*/
 	Speed = ( SecBulls[ i ].Speed * NewFramelag ); //framelag );
@@ -3219,7 +3219,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		}
 	}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Secondary
 ===================================================================*/
 	if( HitSecondary != (uint16) -1 )							/* Hit Secondary? */
@@ -3357,7 +3357,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		return( FALSE );
 	}
 	
-/*/*===================================================================
+/*===================================================================
 			Hit Ship
 ===================================================================*/
 	if( HitTarget != (uint16) -1 )												/* Hit Target? */
@@ -3540,7 +3540,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		}
 	}
 	
-/*/*===================================================================
+/*===================================================================
 			Hit Wall
 ===================================================================*/
 	if( HitWall != (uint16) -1 )
@@ -3649,7 +3649,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		}
 	}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Enemy
 ===================================================================*/
 	if( HitEnemy != NULL )
@@ -3787,7 +3787,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 		MoveSecBullToGroup( i, OldGroup, SecBulls[ i ].GroupImIn );
 	}
 
-/*/*===================================================================
+/*===================================================================
 			Do Trails
 ===================================================================*/
 	if( IsGroupVisible[ SecBulls[i].GroupImIn ] )
@@ -3938,7 +3938,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -4006,7 +4006,7 @@ void CreateExplosion( VECTOR * Pos, uint16 Group )
 	PlayPannedSfx( SFX_BangBang, Group , Pos, 0.0F );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Small Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -4056,7 +4056,7 @@ void CreateSmallExplosion( VECTOR * Pos, uint16 Group )
 	PlayPannedSfx( SFX_BangBang, Group , Pos, 0.0F );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Big Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -4111,7 +4111,7 @@ void CreateBigExplosion( VECTOR * Pos, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Single Random sized Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -4159,7 +4159,7 @@ void CreateSingleExplosion( VECTOR * Pos, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -4205,7 +4205,7 @@ void CreateShipExplosion( VECTOR * Pos, uint16 Group )
 	PlayPannedSfx( SFX_BangBang, Group , Pos, 0.0F );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4246,7 +4246,7 @@ void CreateTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4289,7 +4289,7 @@ void CreateBloodTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Blood splat
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4362,7 +4362,7 @@ void CreateBloodSplat( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Smoke Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4403,7 +4403,7 @@ void CreateGravgonTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Smoke Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4444,7 +4444,7 @@ void CreateSolarisTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create New Smoke Trail
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -4485,7 +4485,7 @@ void CreateNewTrail( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init Link List
 	Input		:	Nothing
 	Output		:	Nothing
@@ -4507,7 +4507,7 @@ void InitLinkList( void )
 	EntryList[ ( MAX_ENTRYS - 1 ) ].Next = NULL;									/* End of List */
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Free Entry
 	Input		:	nothing
 	Output		:	ENTRY	*	Entry Address
@@ -4530,7 +4530,7 @@ ENTRY * FindFreeLink( void )
 	return( FirstUsed );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Free Entry
 	Input		:	ENTRY	*	Entry Address
 	Output		:	Nothing
@@ -4553,7 +4553,7 @@ void FreeLink( ENTRY * Entry )
 	FirstFree = Entry;																/* First Free = Entry */
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display Sec Ammo Level
 	Input		:	Nothing
 	Output		:	Nothing
@@ -4572,7 +4572,7 @@ void DispSecAmmoLevels( void )
 	else RightJustifyPrint4x5Text( "NO AMMO", x, y, 2 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Gravgon Missile Effect
 	Input		:	uint16	SecBull Index
 	Output		:	Nothing
@@ -4624,7 +4624,7 @@ void CreateGravgonField( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion Dome
 	Input		:	uint16	OwnerType
 				:	uint16	Owner
@@ -4664,7 +4664,7 @@ void CreateShockwave( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group
 	CreateExplosion( Pos, Group );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Explode Secondary Weapon
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -4709,7 +4709,7 @@ void ExplodeSecondary( VECTOR * Pos, uint16 Group, uint16 OwnerType, uint16 Owne
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill all mines/missiles owned by specific person
 	Input		:	uint16		Owner
 	Output		:	Nothing
@@ -4735,7 +4735,7 @@ void KillOwnersSecBulls( uint16 Owner )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Scatter all weapons and powerups
 	Input		:	VECTOR	*	Genereal Direction to scatter
 				:				weapons ( Normalised )
@@ -5110,7 +5110,7 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 	Ships[ WhoIAm ].Secondary = MUGMISSILE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Scatter all weapons and powerups
 	Input		:	Nothing
 	Output		:	Nothing
@@ -5149,7 +5149,7 @@ void ShortScatterWeapons( void )
 	Ships[ WhoIAm ].Secondary = MUGMISSILE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Scatter all weapons and powerups for specific
 				:	Ship
 	Input		:	VECTOR	*	Genereal Direction to scatter
@@ -5460,7 +5460,7 @@ void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed )
 	HostRestoreAmmo( Ship );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create List of Pickups from secondary weapons
 	Input		:	Nothing
 	Output		:	int16		Number of generated pickups
@@ -5658,7 +5658,7 @@ int16 GenerateSecondaryPickups( int16 NumAllowed )
 	return NumSecWeapons;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create List of Pickups from secondary weapons
 				:	for specific ship
 	Input		:	Nothing
@@ -5858,7 +5858,7 @@ int16 HostGenerateSecondaryPickups( uint16 Ship, int16 NumAllowed )
 	return NumSecWeapons;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Current Secondary Ammo Level
 	Input		:	Nothing
 	Output		:	int16	Ammo Number
@@ -5868,7 +5868,7 @@ int16 GetCurSecAmmo( void )
 	return( SecondaryAmmo[ Ships[ WhoIAm ].Secondary ] );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ammo level control
 	Input		:	Check ammo levels and do appropriate changed
 	Output		:	void
@@ -5906,7 +5906,7 @@ void SecondarySelectControl( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop best mine you have
 	Input		:	Nothing
 	Output		:	uint16	Mine ( -1 None )
@@ -5949,7 +5949,7 @@ uint16 GetBestMine( void )
 	return( Mine );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop best mine you have
 	Input		:	Nothing
 	Output		:	Nothing
@@ -5972,7 +5972,7 @@ void DropMine( void )
 	switch( Mine )
 	{
 
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 		case PURGEMINE:
@@ -5989,7 +5989,7 @@ void DropMine( void )
 							&Pos, &Dir, &UpVector, &DropVector, (BYTE) Mine, TRUE );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 		case PINEMINE:
@@ -6006,7 +6006,7 @@ void DropMine( void )
 							&Pos, &Dir, &UpVector, &DropVector, (BYTE) Mine, TRUE );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 		case QUANTUMMINE:
@@ -6023,7 +6023,7 @@ void DropMine( void )
 							&Pos, &Dir, &UpVector, &DropVector, (BYTE) Mine, TRUE );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 				Drop Behind
 ===================================================================*/
 		case SPIDERMINE:
@@ -6042,7 +6042,7 @@ void DropMine( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enable All Secondary Lights
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6064,7 +6064,7 @@ void EnableSecondaryLights( void )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Disable All Secondary Lights
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6104,7 +6104,7 @@ uint16		HitBox = (uint16) -1;
 uint16		HudScrPoly = (uint16) -1;
 int			TeamColours[ 4 ] = { 1, 2, 3 ,4 };		
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Final Matrix
 	Input		:	MATRIX	*	Final Matrix
 	Output		:	Nothing
@@ -6128,7 +6128,7 @@ void GetFinalMatrix( MATRIX * FinalMatrix )
 	MatrixMultiply( &TempMatrix, &ProjMatrix, FinalMatrix );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Targeting Computer
 	Input		:	uint16	ClosestShip
 				:	uint16	ClosestEnemy
@@ -6256,7 +6256,7 @@ void TargetingComputer( uint16 ClosestShip, uint16 ClosestEnemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display Enhanced Crosshair
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6307,7 +6307,7 @@ void DispEnhancedCrosshair( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Heatseaker Target
 	Input		:	uint16	ClosestShip
 				:	uint16	ClosestEnemy
@@ -6524,7 +6524,7 @@ void HeatseakerTarget( uint16 ClosestShip, uint16 ClosestEnemy )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Targeting Computer
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6721,7 +6721,7 @@ void HUDNames( void )
 	HeatseakerTarget( ClosestShip, ClosestEnemy );			// Homimg missile target box;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display OnScreenText
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6762,7 +6762,7 @@ void DispInGameText( VECTOR * Pos, int8 * Text )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display HUD names and info for ships
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6828,7 +6828,7 @@ void DispHUDNames( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Ship closest to center of target
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -6920,7 +6920,7 @@ uint16 TargetClosestShip( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeTyp
 	return( ClosestShip );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if target ship still visible
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -7025,7 +7025,7 @@ BOOL StillGotTarget( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 TargetType
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Scatter Trail ( Secondary Weapons Only )
 	Input		:	uint16		SecBull Index
 	Output		:	Nothing
@@ -7167,7 +7167,7 @@ void CreateScatterTrail( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Tentacle
 	Input		:	uint16		SecBull Index
 	Output		:	Nothing
@@ -7302,7 +7302,7 @@ void CreateTentacle( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Big Flash
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -7343,7 +7343,7 @@ void CreateBigFlash( VECTOR * Pos, uint16 Group, float Size )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Muzzle Flash
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -7385,7 +7385,7 @@ void CreateMuzzleFlash( VECTOR * Pos, uint16 Group, float Size )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fire Secondary weapons of other players
 	Input		:	uint16		Ship Number
 	Output		:	Nothing
@@ -7412,7 +7412,7 @@ void FireSecondaryWeapons( uint8 Ship )
 	
 	switch( Ships[Ship].Secondary )
 	{
-/*/*===================================================================
+/*===================================================================
 				Fire bottom Left, then Right, then Left, then...
 ===================================================================*/
 		case MUGMISSILE:
@@ -7440,7 +7440,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 		
-/*/*===================================================================
+/*===================================================================
 				Fire bottom Left and Right together
 ===================================================================*/
 		case SOLARISMISSILE:
@@ -7468,7 +7468,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from bottom center at random trajectories
 ===================================================================*/
 		case MULTIPLEMISSILE:
@@ -7486,7 +7486,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 		case THIEFMISSILE:
@@ -7503,7 +7503,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 		case SCATTERMISSILE:
@@ -7520,7 +7520,7 @@ void FireSecondaryWeapons( uint8 Ship )
 							&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 		case GRAVGONMISSILE:
@@ -7537,7 +7537,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 	
-/*/*===================================================================
+/*===================================================================
 				Fire from center below view
 ===================================================================*/
 		case TITANSTARMISSILE:
@@ -7554,7 +7554,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 				Spiral Missile
 ===================================================================*/
 		case ENEMYSPIRALMISSILE:
@@ -7571,7 +7571,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
 
-/*/*===================================================================
+/*===================================================================
 				Photon Missile
 ===================================================================*/
 		case ENEMYHOMINGMISSILE:
@@ -7587,7 +7587,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&Ships[ Ship ].Object.Pos, &Pos, &Dir, &UpVector,
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
-/*/*===================================================================
+/*===================================================================
 				Blue Photon Missile
 ===================================================================*/
 		case ENEMYBLUEHOMINGMISSILE:
@@ -7603,7 +7603,7 @@ void FireSecondaryWeapons( uint8 Ship )
 								&Ships[ Ship ].Object.Pos, &Pos, &Dir, &UpVector,
 								&DropVector, Ships[ Ship ].Secondary, FALSE );
 			break;
-/*/*===================================================================
+/*===================================================================
 				Fireball Missile
 ===================================================================*/
 		case ENEMYFIREBALL:
@@ -7627,7 +7627,7 @@ void FireSecondaryWeapons( uint8 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Destroy secondary missile/mine and clean up.
 	Input		:	uint16		Secondary weapon index
 				:	VECTOR	*	Detonation point
@@ -7752,7 +7752,7 @@ void DestroySecondary( uint16 i, VECTOR * Int_Point )
    	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Generate Mine list for new player
 	Input		:	uint16			Ship
 				:	SHORTMINE	*	Mine Array to be filled in
@@ -7804,7 +7804,7 @@ void GenMineList( uint16 Ship, SHORTMINE * MineSlots, BYTE * NumMines, BYTE Sect
 	*NumMines = (BYTE) NumUsed;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Generate Mines from list for new player
 	Input		:	SHORTMINE	*	Mine Array
 				:	BYTE			Number of Mines
@@ -7828,7 +7828,7 @@ void RegenMineList( SHORTMINE * Slots, BYTE Num )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Copy Mines into copy of mines
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7862,7 +7862,7 @@ void SyncMines( void )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Regenerate qued Mines
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7902,7 +7902,7 @@ void RegenerateQuedMines( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Copy Mines into copy of mines
 	Input		:	uint16		Player
 	Output		:	Nothing
@@ -7945,7 +7945,7 @@ void CopyMines( uint16 Player )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill mine/missiles by owner/id
 	Input		:	uint16		OwnerType
 				:	uint16		Owner
@@ -7973,7 +7973,7 @@ void KillOwnerIDSecBulls( uint16 OwnerType, uint16 Owner, uint16 ID )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if within range of mine
 	Input		:	VECTOR	*	Pos
 	Output		:	BOOL		True/False ( True if collision )
@@ -8010,7 +8010,7 @@ BOOL CheckForMines( VECTOR * Pos )
 	return FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	uint16		Ship
 	Output		:	Nothing
@@ -8112,7 +8112,7 @@ void DoDamagedEffects( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop Currently selected secondary weapon
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8231,7 +8231,7 @@ void DropSecondary( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create TitanStar Shrapnel
 	Input		:	uint16		SecBull Index
 				:	VECTOR	*	Pos
@@ -8387,7 +8387,7 @@ void CreateTitanStarShrapnel( uint16 i, VECTOR * Pos, VECTOR * Dir, uint16 Group
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create New Smoke Ring
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	DirVector
@@ -8444,7 +8444,7 @@ void CreateSmokeRing( VECTOR * Pos, VECTOR * DirVector, VECTOR * UpVector, uint1
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create New Smoke Ring
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	DirVector
@@ -8518,7 +8518,7 @@ void CreateSplash( VECTOR * Pos, VECTOR * DirVector, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Enemy closest to center of target
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -8588,7 +8588,7 @@ uint16 TargetClosestEnemy( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeTy
 	return( ClosestEnemy );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Secondary closest to center of target
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -8671,7 +8671,7 @@ uint16 TargetClosestSecondary( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 
 	return( ClosestSecondary );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Test proximity to ships
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -8720,7 +8720,7 @@ BOOL CheckProximityToShips( VECTOR * Pos, uint16 Group, float Radius, uint16 Own
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Test proximity to Enemies
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -8786,7 +8786,7 @@ BOOL CheckProximityToEnemies( VECTOR * Pos, uint16 Group, float Radius, uint16 O
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Test proximity to Enemies
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -8855,7 +8855,7 @@ uint16 GetClosestEnemy( VECTOR * Pos, uint16 Group, float * Radius, uint16 Owner
 	return( Closest );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create FireBall
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -8953,7 +8953,7 @@ void CreateFireBall( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup Group link lists for secondary weapoons
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8969,7 +8969,7 @@ void SetupSecBullGroups( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add Secondary bullet to group link list
 	Input		:	uint16		SecBull Index
 				:	uint16		Group
@@ -8985,7 +8985,7 @@ void AddSecBullToGroup( uint16 i, uint16 Group )
 	NumSecBullsPerGroup[ Group ]++;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove Secondary bullet from group link list
 	Input		:	uint16		SecBull Index
 				:	uint16		Group
@@ -9002,7 +9002,7 @@ void RemoveSecBullFromGroup( uint16 i, uint16 Group )
 	NumSecBullsPerGroup[ Group ]--;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Move Secondary bullet from 1 group to another
 	Input		:	uint16		SecBull Index
 				:	uint16		OldGroup
@@ -9017,7 +9017,7 @@ void MoveSecBullToGroup( uint16 i, uint16 OldGroup, uint16 NewGroup )
 	AddSecBullToGroup( i, NewGroup );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Secondary Bullet ID
 	Input		:	uint16		OwnerType
 				:	uint16		Owner
@@ -9048,7 +9048,7 @@ uint16 GetSecondaryBulletID( uint16 OwnerType, uint16 Owner )
 	return( BulletID );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save SecBulls Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -9176,7 +9176,7 @@ FILE * SaveSecBulls( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load SecBulls Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -9345,7 +9345,7 @@ FILE * LoadSecBulls( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Next Valid Secondary Weapon
 	Input		:	Nothing
 	Output		:	uint8	Primary Weapon
@@ -9368,7 +9368,7 @@ uint8 GetNextValidSeconadaryWeapon( void )
 	return( TempWeapon );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Prev Valid Secondary Weapon
 	Input		:	Nothing
 	Output		:	uint8	Primary Weapon
@@ -9391,7 +9391,7 @@ uint8 GetPrevValidSecondaryWeapon( void )
 	return( TempWeapon );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Conv Secondary Weapon number from cheat to norm
 	Input		:	int8	Secondary Weapon
 	Output		:	uint8	Secondary Weapon ( Valid One )
@@ -9424,7 +9424,7 @@ int8 ConvSecToNormWeapon( int8 Secondary )
 	return( NewSecondary );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Toggle Secondary Weapon Type
 	Input		:	int8	Secondary Weapon
 	Output		:	Nothing

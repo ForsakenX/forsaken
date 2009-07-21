@@ -2026,7 +2026,7 @@ void StopCompoundSfx( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Destroy all sound fx...
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2886,7 +2886,7 @@ void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Play Panned Sfx
 	Input		:	int16	Sfx Number
 				:	MATRIX * Matrix
@@ -3084,7 +3084,7 @@ BOOL Init_SoundGlobals(void)
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set the position velocity and direction of the Listner..
 	Input		:	VECTOR * Pos
 				:	VECTOR * Velocity

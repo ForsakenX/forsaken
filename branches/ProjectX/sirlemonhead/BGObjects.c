@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Includes
 ===================================================================*/
 #include <stdio.h>
@@ -34,7 +34,7 @@
 #include "XMem.h"
 #include "util.h"
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 extern	VECTOR			Forward;
@@ -78,7 +78,7 @@ extern	SECONDARYWEAPONBULLET *	SecBullGroups[ MAXGROUPS ];
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Global Variables
 ===================================================================*/
 BGO_FILE	*	BGOFilesPtr = NULL;
@@ -101,14 +101,14 @@ DOORTYPESFX DoorTypeSFX[] = {
 
 };
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 #define	BGO_VERSION_NUMBER	3
 #define	BGOPush				1
 #define	DUPLICATE_BGOBJECTS	1
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Initialise all Background Objects
 	Input		:	nothing
 	Output		:	nothing
@@ -137,7 +137,7 @@ void InitBGObjects( void )
 	BGObjects[ MAXBGOBJECTS - 1 ].NextFree = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find free Background Object
 	Input		:	nothing
 	Output		:	BGObject	*	Object ( NULL if not available )
@@ -173,7 +173,7 @@ BGOBJECT * FindFreeBGObject( void )
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a Background Object
 	Input		:	BGObject	*	Object
 	Output		:	nothing
@@ -237,7 +237,7 @@ void KillUsedBGObject( BGOBJECT * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process all Background Objects
 	Input		:	BOOL	Collide with objects?
 	Output		:	nothing
@@ -258,14 +258,14 @@ void ProcessBGObjects( BOOL Collide )
 
 		switch( Object->Type )
 		{
-/*/*===================================================================
+/*===================================================================
 			STATIC
 ===================================================================*/
 			case BGOTYPE_Static:
 				UpdateCompObjChildren( Object->Children, Object->NumChildren, &Object->Matrix, &Object->Pos, Object->Time, Object->Group, &Object->Center );
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			DOOR
 ===================================================================*/
 			case BGOTYPE_Door:
@@ -432,7 +432,7 @@ void ProcessBGObjects( BOOL Collide )
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			LOOPING
 ===================================================================*/
 			case BGOTYPE_Looping_Anim:
@@ -518,7 +518,7 @@ void ProcessBGObjects( BOOL Collide )
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			ANIMATE AND STOP AT END
 ===================================================================*/
 			case BGOTYPE_OneOff_Anim:
@@ -621,7 +621,7 @@ void ProcessBGObjects( BOOL Collide )
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			STEPPED ANIM CAUSED BY EXTERNAL CONDITIONS
 ===================================================================*/
 			case BGOTYPE_MultipleStep_Anim:
@@ -710,7 +710,7 @@ void ProcessBGObjects( BOOL Collide )
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			SEQUENCE ANIM
 ===================================================================*/
 			case BGOTYPE_Sequences:
@@ -721,7 +721,7 @@ void ProcessBGObjects( BOOL Collide )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill All Background Objects
 	Input		:	Nothing
 	Output		:	Nothing
@@ -741,7 +741,7 @@ void KillAllBGObjects( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change BGObject State
 	Input		:	BGOBJECT	*	Object
 				:	uint16			Owner Type
@@ -756,13 +756,13 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 
 	switch( Object->Type )
 	{
-/*/*===================================================================
+/*===================================================================
 			STATIC
 ===================================================================*/
 		case BGOTYPE_Static:
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			DOOR
 ===================================================================*/
 		case BGOTYPE_Door:
@@ -871,7 +871,7 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			LOOPING ANIM
 ===================================================================*/
 		case BGOTYPE_Looping_Anim:
@@ -897,7 +897,7 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			ONEOFF ANIM
 ===================================================================*/
 		case BGOTYPE_OneOff_Anim:
@@ -929,7 +929,7 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			MULTI-STEP ANIM
 ===================================================================*/
 		case BGOTYPE_MultipleStep_Anim:
@@ -983,13 +983,13 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 			}
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			SEQUENCE ANIM
 ===================================================================*/
 		case BGOTYPE_Sequences:
 			break;
 
-/*/*===================================================================
+/*===================================================================
 			UNKNOWN ANIM
 ===================================================================*/
 		default:
@@ -1002,7 +1002,7 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 #pragma optimize( "", off )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad All Background Animating Objects
 	Input		:	int8	*	Filename
 	Output		:	BOOL		TRUE/FALSE
@@ -1219,7 +1219,7 @@ BOOL PreLoadBGOFiles( void )
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load All Background Animating Objects
 	Input		:	Nothing
 	Output		:	BOOL		TRUE/FALSE
@@ -1285,7 +1285,7 @@ BOOL LoadBGOFiles( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load Background Object Data
 	Input		:	int8		*	Filename of .BGO data
 				:	int16			Type
@@ -1551,7 +1551,7 @@ BGOBJECT * LoadBGObjectData( int8 * Filename, int16 Type, VECTOR * Pos, VECTOR *
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Update BGObject State
 	Input		:		uint16		BGObjbect
 				:		int16		State
@@ -1581,7 +1581,7 @@ void UpdateBGObject( uint16 BGObject, int16 State, float Time )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Resort Back to last anim pos
 	Input		:	BGOBJECT	*	BGObject to process
 	Output		:	Nothing
@@ -1597,7 +1597,7 @@ void UndoBGObjectAnim( BGOBJECT * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lock Door
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1610,7 +1610,7 @@ void LockDoor( uint16 Index )
 	Object->Locked = TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Unlock Door
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1623,7 +1623,7 @@ void UnlockDoor( uint16 Index )
 	Object->Locked = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start Anim
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1721,7 +1721,7 @@ void StartBGOAnim( uint16 Index )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Stop Anim
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1773,7 +1773,7 @@ void StopBGOAnim( uint16 Index )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Open Door
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1807,7 +1807,7 @@ void OpenDoor( uint16 Index )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Open Door
 	Input		:	uint16			Index
 	Output		:	Nothing
@@ -1839,7 +1839,7 @@ void CloseDoor( uint16 Index )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display All Collision Zones
 	Input		:	nothing
 	Output		:	nothing
@@ -1889,7 +1889,7 @@ void ShowAllColZones( uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Bounding Box ( Lines )
 	Input		:	VECTOR	*	x1
 				:	VECTOR	*	x2
@@ -1914,7 +1914,7 @@ void CreateBoundingBox( VECTOR * x1, VECTOR * x2, uint16 Group )
 	CreateLine( x1->x, x2->y, x1->z, x1->x, x2->y, x2->z, Group );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Update BGObjects Clip Group
 	Input		:	CAMERA	*	Camera
 	Output		:	nothing
@@ -1944,7 +1944,7 @@ void UpdateBGObjectsClipGroup( CAMERA * Camera )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calc Largest Radius of Bounding Box
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	TopLeft of bounding Box
@@ -2000,7 +2000,7 @@ float CalcObjectRadius( VECTOR * Pos, VECTOR * TopLeft, VECTOR * BottomRight )
 	return( Distance );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if Background object hit enemy
 	Input		:	BGOBJECT	*	Object
 	Output		:	BOOL			True/False
@@ -2076,7 +2076,7 @@ BOOL CheckBGObjectToEnemies( BGOBJECT * Object )
 	return( HitFlag );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if Background object hit pickup
 	Input		:	BGOBJECT	*	Object
 	Output		:	BOOL			True/False
@@ -2156,7 +2156,7 @@ BOOL CheckBGObjectToPickups( BGOBJECT * Object )
 	return( HitFlag );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if Background object hit Mine
 	Input		:	BGOBJECT	*	Object
 	Output		:	BOOL			True/False
@@ -2209,7 +2209,7 @@ BOOL CheckBGObjectToMines( BGOBJECT * Object )
 	return( HitFlag );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Explode Childern
 	Input		:	COMP_OBJ	*	Children
 				:	int16			Number of Children
@@ -2319,7 +2319,7 @@ void ExplodeChildren( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save BGObjects Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -2420,7 +2420,7 @@ FILE * SaveBGObjects( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load BGObjects Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -2549,7 +2549,7 @@ FILE * LoadBGObjects( FILE * fp )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	BIKE INFO
 ===================================================================*/
 BIKEINFO BikeCompFiles[ MAXBIKETYPES ] = {
@@ -2573,7 +2573,7 @@ BIKEINFO BikeCompFiles[ MAXBIKETYPES ] = {
 	{ "FlyGirl.cob", 0, 0, 0.0F },	//"FlyGirl"
 };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad All Components for Ships
 	Input		:	Nothing
 	Output		:	BOOL		TRUE/FALSE
@@ -2620,7 +2620,7 @@ BOOL PreLoadShips( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Allocate all Components for Ship
 	Input		:	uint16	Ship
 	Output		:	BOOL	TRUE/FALSE
@@ -2672,7 +2672,7 @@ BOOL AllocateCompShip( uint16 Ship )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Reload Textures for Nubia and Flygirl
 	Input		:	char	*	Cheat Code entered
 	Output		:	int			1
@@ -2753,7 +2753,7 @@ int NakedGirls( char *cheat )
 	return( 1 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Request Door SFX
 	Input		:	int16	Type
 	Output		:	Nothing
@@ -2770,7 +2770,7 @@ void RequestDoorTypeSFX( int16 Type )
 	DoorTypeSFX[ Type ].ClosedSoundFX		= ReturnSFXIndex( DoorTypeSFX[ Type ].ClosedName );			// Closed
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Start Or Change Door SFX
 	Input		:	BGOBJECt	*	Door
 	Output		:	Nothing
@@ -2838,7 +2838,7 @@ BIKEINFO FlyGirlCompFile = { "FlyGirl.cob", 0, 0, 0.0F };
 COMP_OBJ * FlyGirlComps = NULL;
 float FlyGirlAnim;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad All Components for FlyGirl
 	Input		:	Nothing
 	Output		:	BOOL		TRUE/FALSE
@@ -2868,7 +2868,7 @@ BOOL PreLoadFlyGirl( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Allocate all Components for Ship
 	Input		:	Nothing
 	Output		:	BOOL	TRUE/FALSE
@@ -2913,7 +2913,7 @@ BOOL AllocateCompFlyGirl( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release Flygirl components and models
 	Input		:	Nothing
 	Output		:	Nothing
@@ -2932,7 +2932,7 @@ void ReleaseFlyGirl( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Animate And Update Components
 	Input		:	VECTOR	*	Pos
 				:	MATRIX	*	Matrix

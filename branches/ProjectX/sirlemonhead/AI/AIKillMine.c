@@ -34,7 +34,7 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR KillMine
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 *	l i g h t s . c
 *	All routines to do with Lights...
 ===================================================================*/
@@ -29,7 +29,7 @@
 #define	USE_SPECULAR
 #undef USE_SPECULAR
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 extern int CurrentLoadingStep;
@@ -56,7 +56,7 @@ extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 D3DCOLOR	GroupColours[ 8 ] = {
@@ -95,7 +95,7 @@ void FLOAT2INT( int * I, float F )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Floating Point Cull Mode
 ===================================================================*/
 #ifdef USEASM
@@ -122,7 +122,7 @@ __asm
 }
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Does this light fall in a group...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
@@ -149,7 +149,7 @@ BOOL	DoIEffectThisGroup1( MLOADHEADER * Mloadheader , VECTOR * Pos , float size 
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set up And Init all XLights
 	Input		:	nothing
 	Output		:	nothing
@@ -169,7 +169,7 @@ void	InitXLights()
 
 	XLights[MAXXLIGHTS-1].Next = (uint16) -1;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free light and move it from the free list to
 					the used list
 	Input		:	nothing
@@ -196,7 +196,7 @@ uint16	FindFreeXLight()
 
 	return i ;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used light and move it from the used list to
 					the free list
 	Input		:	uint16 number of light free....
@@ -225,7 +225,7 @@ void	KillUsedXLight( uint16 light )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process all XLights
 	Input		:	nothing
 	Output		:	nothing
@@ -264,7 +264,7 @@ BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 
 
 
-/*/*===================================================================
+/*===================================================================
 *		cause a light to go red and get smaller then die...
 ===================================================================*/
 
@@ -276,7 +276,7 @@ void SetLightDie ( uint16 light )
 	XLights[light].g = 0.0F;
 	XLights[light].b = 0.0F;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Xlight 1 Group Only...
 	Input		:	nothing
 	Output		:	nothing
@@ -967,7 +967,7 @@ __asm
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
@@ -1212,7 +1212,7 @@ PLOP:
 	
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
@@ -1460,7 +1460,7 @@ PLOP2:
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set Xlight Mxloadheader...
 					Set all the ->color valus to be the same....
 	Input		:	nothing
@@ -1505,7 +1505,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 }
 
 extern	int FontHeight;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
@@ -1562,7 +1562,7 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	DebugPrintf( "There are %d Lightcells in this level\n",num_of_cells );
 	CurrentLoadingStep++;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
@@ -1631,7 +1631,7 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Nearest Cell Colour..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	D3DCOLOR
@@ -1714,7 +1714,7 @@ D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 g
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Build a list of the lights that are currently potentially visible...
 	Input		:	Group the Current camera is in..
 	Output		:	nothing
@@ -1740,7 +1740,7 @@ void BuildVisibleLightList( uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -1780,7 +1780,7 @@ FILE * SaveXLights( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

@@ -50,6 +50,13 @@ typedef struct tagd3dmainglobals {
     LPDIRECTDRAWSURFACE lpInfoBuffer;      /* window info surface */
 } d3dmainglobals;
 
+
+/* bjd - pass this to a function rather than an execute buffer itself */
+typedef struct RENDERBUFFER
+{
+	LPDIRECT3DEXECUTEBUFFER lpExBuf;
+} RENDERBUFFER;
+
 extern	d3dmainglobals	myglobs;
 extern	VECTOR Camera_Pos;
 extern	uint16 NumGroupsVisible;

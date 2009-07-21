@@ -901,7 +901,6 @@ HRESULT FSEndScene()
 
 HRESULT FSExecuteBuffer(LPDIRECT3DEXECUTEBUFFER execBuffer, LPDIRECT3DVIEWPORT viewport, DWORD flags)
 {
-	return D3D_OK;
 	if (d3dapp->lpD3DViewport != viewport)
 	{
 		OutputDebugString("different matrix! can't assume\n");
@@ -925,6 +924,17 @@ static int execBuffCount = 0;
 
 HRESULT FSCreateExecuteBuffer(LPD3DEXECUTEBUFFERDESC execBufferDesc, LPDIRECT3DEXECUTEBUFFER *execBuffer, IUnknown *pUnkOuter )
 {
+
+	execBuffCount++;
+	sprintf(buf, "created buffer num: %d\n", execBuffCount);
+	OutputDebugString(buf);
+	//lpDev->lpVtbl->CreateExecuteBuffer(lpDev, debDesc, lpBuf, NULL) != D3D_OK)
+	return d3dappi.lpD3DDevice->lpVtbl->CreateExecuteBuffer(d3dappi.lpD3DDevice, execBufferDesc, execBuffer, NULL);
+}
+
+HRESULT FSCreateExecuteBuffer2(LPD3DEXECUTEBUFFERDESC execBufferDesc, LPDIRECT3DEXECUTEBUFFER *execBuffer, IUnknown *pUnkOuter )
+{
+
 	execBuffCount++;
 	sprintf(buf, "created buffer num: %d\n", execBuffCount);
 	OutputDebugString(buf);

@@ -76,7 +76,7 @@ extern  int FontHeight;
 
 int NakedGirls( char *cheat );
 
-/*/*===================================================================
+/*===================================================================
     Some Keyboard and Mouse Globals
 ===================================================================*/
 
@@ -2117,7 +2117,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
   }
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure : Check if any buttons of a specific joystick are
         : pressed
   Input   : int     Joystick Number
@@ -2140,7 +2140,7 @@ BOOL IsJoystickButtonPressed( int joysticknum )
   return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure : Check if any buttons of a specific joystick are
         : released
   Input   : int     Joystick Number
@@ -2163,7 +2163,7 @@ BOOL IsJoystickButtonReleased( int joysticknum )
   return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are pressed
   Input   : Nothing
@@ -2183,7 +2183,7 @@ BOOL IsAnyJoystickButtonPressed( void )
   return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are released
   Input   : Nothing

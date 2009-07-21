@@ -32,7 +32,7 @@ extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	VECTOR	SlideUp;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Follow Path
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
@@ -181,7 +181,7 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 		Enemy->TNode = Enemy->Object.NearestNode;
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	CRAWL Follow Path
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

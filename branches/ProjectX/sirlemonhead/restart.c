@@ -1,4 +1,4 @@
-/*/*===================================================================
+/*===================================================================
 	Includes
 ===================================================================*/
 #include "main.h"
@@ -22,12 +22,12 @@
 #include "spotfx.h"
 #include "xmem.h"
 
-/*/*===================================================================
+/*===================================================================
 	Defines
 ===================================================================*/
 #define	RESTART_VERSION_NUMBER	1
 
-/*/*===================================================================
+/*===================================================================
 	External Variables
 ===================================================================*/
 extern	int16			NextNewModel;
@@ -55,7 +55,7 @@ extern	MODELNAME	*	ModNames;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];
 extern	uint16	FirstStartPositionInGroup[MAXGROUPS];
 
-/*/*===================================================================
+/*===================================================================
 	Global Variables
 ===================================================================*/
 int16		RestartType = RESTARTTYPE_FACEME;
@@ -75,7 +75,7 @@ ANIM_SEQ	RestartSeqs[] = {
 	{ 2.1F * ANIM_SECOND, 0.0F * ANIM_SECOND },	// Deactivating
 };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Initialise RestartPoints
 	Input		:	nothing
 	Output		:	nothing
@@ -109,7 +109,7 @@ void InitRestartPoints( void )
 	RestartPoints[ MAXRESTARTPOINTS - 1 ].NextFree = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find Free RestartPoint
 	Input		:	Nothing
 	Output		:	RESTART	*	RestartPoint ( NULL if none )
@@ -145,7 +145,7 @@ RESTART * FindFreeRestartPoint( void )
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a RestartPoint
 	Input		:	RESTART	*	Object
 	Output		:	nothing
@@ -217,7 +217,7 @@ void KillUsedRestartPoint( RESTART * Object )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Release all RestartPoints
 	Input		:	Nothing
 	Output		:	Nothing
@@ -239,7 +239,7 @@ void ReleaseAllRestartPoints( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load StartPoints
 	Input		:	Nothing
 	Output		:	BOOL	True/False
@@ -311,7 +311,7 @@ BOOL LoadStartPoints( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	PreLoad Restart Points
 	Input		:	Nothing
 	Output		:	BOOL	True/False
@@ -352,7 +352,7 @@ BOOL PreLoadRestartPoints( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load RestartPoints
 	Input		:	Nothing
 	Output		:	BOOL	True/False
@@ -527,7 +527,7 @@ BOOL LoadRestartPoints( void )
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup FaceMe RestartPoint
 	Input		:	uint16		Group
 				:	VECTOR	*	Pos
@@ -586,7 +586,7 @@ RESTART * InitOneFaceMeRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVec
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup RestartPoint
 	Input		:	uint16		Group
 				:	VECTOR	*	Pos
@@ -619,7 +619,7 @@ RESTART * InitOneRestartPoint( uint16 Group, VECTOR * Pos, VECTOR * DirVector, V
 	return( Object );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process RestartPoints
 	Input		:	nothing
 	Output		:	nothing
@@ -720,7 +720,7 @@ void ProcessRestartPoints( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup RestartPoint group link list
 	Input		:	uint16		New RestartPoint
 				:	uint16		Old RestartPoint
@@ -750,7 +750,7 @@ void ActivateRestartPoint( uint16 NewStartPos, uint16 OldStartPos )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Setup RestartPoint group link list
 	Input		:	Nothing
 	Output		:	Nothing
@@ -766,7 +766,7 @@ void SetupRestartPointGroups( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Add RestartPoint to group link list
 	Input		:	RESTART	*	RestartPoint
 				:	uint16		Group
@@ -781,7 +781,7 @@ void AddRestartPointToGroup( RESTART * Object, uint16 Group )
 	NumRestartPointsPerGroup[ Group ]++;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Remove RestartPoint from group link list
 	Input		:	RESTART	*	RestartPoint
 				:	uint16		Group
@@ -797,7 +797,7 @@ void RemoveRestartPointFromGroup( RESTART * Object, uint16 Group )
 	NumRestartPointsPerGroup[ Group ]--;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Move RestartPoint from 1 group to another
 	Input		:	RESTART	*	Retart Point
 				:	uint16		OldGroup
@@ -810,7 +810,7 @@ void MoveRestartPointToGroup( RESTART * Object, uint16 OldGroup, uint16 NewGroup
     AddRestartPointToGroup( Object, NewGroup );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save RestartPoint arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -825,7 +825,7 @@ FILE * SaveStartRestartPoints( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load RestartPoint Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -840,7 +840,7 @@ FILE * LoadStartRestartPoints( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display StartPoints
 	Input		:	uint16 Group
 	Output		:	Nothing

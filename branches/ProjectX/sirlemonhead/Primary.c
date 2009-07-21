@@ -1,6 +1,6 @@
  
 
-/*/*===================================================================
+/*===================================================================
 *	p r i m a r y . c
 *	All routines to do with Primary weapons...
 ===================================================================*/
@@ -55,7 +55,7 @@
 
 #define MAX_TROJAX_POWER_LEVEL	(100.0F)
 
-/*/*===================================================================
+/*===================================================================
 	Externs
 ===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
@@ -183,7 +183,7 @@ extern int PickupMessageColour;
 extern	int16	TargetingWeaponCheat;
 #endif
 														
-/*/*===================================================================
+/*===================================================================
 	Globals
 ===================================================================*/
 
@@ -301,7 +301,7 @@ BOOL	PrimaryWeaponCheat = FALSE;
 
 PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 0, Pulsar
 ===================================================================*/
 	{	
@@ -324,7 +324,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Pulsar_Header										// FRAME_INFO ** FmFrmInfo
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 1, Trojax
 ===================================================================*/
 	{
@@ -347,7 +347,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Trojax1_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 2, Pyrolite Rifle
 ===================================================================*/
 	{
@@ -370,7 +370,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Exp2_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 3, Transpulse Cannon
 ===================================================================*/
 	{
@@ -393,7 +393,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Arc_Header											// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 4, Suss Gun
 ===================================================================*/
 	{
@@ -416,7 +416,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Flare_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 5, Laser
 ===================================================================*/
 	{	
@@ -439,7 +439,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Laser_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 6, Orbit Pulsar
 ===================================================================*/
 	{	
@@ -462,7 +462,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Multiple_Header									// FRAME_INFO ** FmFrmInfo
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 7, Nme Bullet
 ===================================================================*/
 	{	
@@ -485,7 +485,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&NMEBullet_Header									// FRAME_INFO ** FmFrmInfo
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 8, Nme Pulsar
 ===================================================================*/
 	{	
@@ -507,7 +507,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		FM_PULSAR,											// int16	FmSeq;
 		&Pulsar_Header										// FRAME_INFO ** FmFrmInfo
 	},
-/*/*===================================================================
+/*===================================================================
 	Weapon 9, Nme Trojax
 ===================================================================*/
 	{
@@ -530,7 +530,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Trojax1_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 10, Nme Pyrolite Rifle
 ===================================================================*/
 	{
@@ -553,7 +553,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Exp2_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 11, Nme Transpulse Cannon
 ===================================================================*/
 	{
@@ -576,7 +576,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Arc_Header											// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 12, Nme Suss Gun
 ===================================================================*/
 	{
@@ -599,7 +599,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		&Flare_Header										// FRAME_INFO ** FmFrmInfo    
 	},
 
-/*/*===================================================================
+/*===================================================================
 	Weapon 13, Nme Laser
 ===================================================================*/
 	{	
@@ -621,7 +621,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		FM_ARC2,											// int16	FmSeq;            
 		&Laser_Header										// FRAME_INFO ** FmFrmInfo    
 	},
-/*/*===================================================================
+/*===================================================================
 	Weapon 14, Nme Lightning
 ===================================================================*/
 	{	
@@ -643,7 +643,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		FM_ARC2,											// int16	FmSeq;            
 		&Laser_Header										// FRAME_INFO ** FmFrmInfo    
 	},
-/*/*===================================================================
+/*===================================================================
 	Weapon 15, Flames
 ===================================================================*/
 	{
@@ -665,7 +665,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 		FM_FLAME,											// int16	FmSeq;            
 		&Exp2_Header										// FRAME_INFO ** FmFrmInfo    
 	},
-/*/*===================================================================
+/*===================================================================
 	Weapon 16, Nme Power Laser
 ===================================================================*/
 	{	
@@ -689,7 +689,7 @@ PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ] = {
 	},
 };
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set up And Init all PrimBulls
 	Input		:	nothing
 	Output		:	nothing
@@ -723,7 +723,7 @@ void	InitPrimBulls(void)
 	RestoreAmmo();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Restore ammo to starting amount
 	Input		:	Nothing
 	Output		:	Nothing
@@ -741,7 +741,7 @@ void RestoreWeapons( void )
 	Ships[ WhoIAm ].Secondary = MUGMISSILE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Restore ammo to starting amount
 	Input		:	Nothing
 	Output		:	Nothing
@@ -765,7 +765,7 @@ void RestoreAmmo( void )
 	SecondaryAmmo[ MUGMISSILE ] = 5;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Restore ammo to starting amount
 	Input		:	Nothing
 	Output		:	Nothing
@@ -789,7 +789,7 @@ void HostRestoreWeapons( int16 Player )
 	Ships[ Player ].StealthTime = 0.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Restore ammo to starting amount
 	Input		:	Nothing
 	Output		:	Nothing
@@ -819,7 +819,7 @@ void HostRestoreAmmo( int16 Player )
 	Host_SecondaryAmmo[ Player ][ MUGMISSILE ] = 5;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init ammo used to zero
 	Input		:	Nothing
 	Output		:	Nothing
@@ -839,7 +839,7 @@ void InitAmmoUsed( void )
 	NitroFuelUsed = 0.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Find a free PrimBull and move it from the free list to
 					the used list
 	Input		:	nothing
@@ -880,7 +880,7 @@ uint16	FindFreePrimBull(void)
 	return i ;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill a used PrimBull and move it from the used list to
 					the free list
 	Input		:	uint16 number of PrimBull free....
@@ -915,7 +915,7 @@ void	KillUsedPrimBull( uint16 i )
 	PrimBulls[i].Used = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if a new bullet is due....if it is init it
 	Input		:	nothing
 	Output		:	nothing
@@ -1603,7 +1603,7 @@ static int16	OnceOnlyFlag = 0;
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process Primary Bullets
 	Input		:	nothing
 	Output		:	nothing
@@ -1820,7 +1820,7 @@ void ProcessPrimaryBullets( void )
 
 			NormaliseVector( &DirVector );
 
-/*/*===================================================================
+/*===================================================================
 	Do Collision with background when initialised
 ===================================================================*/
 			if( !PrimBulls[i].ColFlag )
@@ -1958,7 +1958,7 @@ void ProcessPrimaryBullets( void )
 					break;
 			}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Secondary Weapon
 ===================================================================*/
 			if( HitSecondary != (uint16) -1 )
@@ -2189,7 +2189,7 @@ void ProcessPrimaryBullets( void )
 				}
 			}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Background or Background Object
 ===================================================================*/
 			if( HitWall != (uint16) -1 )
@@ -2336,7 +2336,7 @@ void ProcessPrimaryBullets( void )
 				if( Killed ) goto loop;
 			}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Ship
 ===================================================================*/
 			if( HitTarget != (uint16) -1 )							/* Hit Target? */
@@ -2767,7 +2767,7 @@ void ProcessPrimaryBullets( void )
 				}
 			}
 
-/*/*===================================================================
+/*===================================================================
 			Hit Enemy
 ===================================================================*/
 			if( HitEnemy != NULL )
@@ -2929,7 +2929,7 @@ void ProcessPrimaryBullets( void )
 				}
 			}
 
-/*/*===================================================================
+/*===================================================================
 			Done all collision checks
 ===================================================================*/
 			PrimBulls[i].GroupImIn = MoveGroup( &Mloadheader, &PrimBulls[i].Pos, PrimBulls[i].GroupImIn, &MoveOffsetVector );
@@ -3034,7 +3034,7 @@ loop:;
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Trojax Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3165,7 +3165,7 @@ void CreateTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, uint16 FmPoly, int16 Typ
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Trojax Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3296,7 +3296,7 @@ void CreateNmeTrojaxExplosion( VECTOR * Pos, VECTOR * Dir, uint16 FmPoly, int16 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Pulsar Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3340,7 +3340,7 @@ void CreatePulsarExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Pulsar Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3384,7 +3384,7 @@ void CreateNmePulsarExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Mushroom Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3434,7 +3434,7 @@ void CreateMushroomExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	CreateSmokeRing( Pos, Dir, &TempUpVector, Group );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create New Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3507,7 +3507,7 @@ void CreateNewExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Shrapnel Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3551,7 +3551,7 @@ void CreateShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Shrapnel Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -3595,7 +3595,7 @@ void CreateNmeShrapnelExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Clean up and kill a Prim Bull
 	Input		:	uint16	Prim Bullet Number
 				:	BOOL	Kill Light ( TRUE/FALSE )
@@ -3659,7 +3659,7 @@ void CleanUpPrimBull( uint16 i, BOOL LightFlag  )
 	KillUsedPrimBull( i );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Init 1 Primary Bullet..Mainly for networking...
 	Input		:	uint16		OwnerType
 				:	uint16		OwnerID
@@ -3751,7 +3751,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 
 		switch( Weapon )
 		{
-/*/*===================================================================
+/*===================================================================
 			PULSAR
 ===================================================================*/
 		   	case PULSAR:
@@ -3930,7 +3930,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			TROJAX
 ===================================================================*/
 			case TROJAX:
@@ -3996,7 +3996,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			PYROLITE RIFLE
 ===================================================================*/
 			case PYROLITE_RIFLE:
@@ -4063,7 +4063,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 		   		break;
 
-/*/*===================================================================
+/*===================================================================
 			TRANSPULSE CANNON
 ===================================================================*/
 		   	case TRANSPULSE_CANNON:
@@ -4159,7 +4159,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			SUSS_GUN
 ===================================================================*/
 			case SUSS_GUN:
@@ -4224,7 +4224,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			LASER
 ===================================================================*/
 			case LASER:
@@ -4376,7 +4376,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			ORBIT PULSAR
 ===================================================================*/
 		   	case ORBITPULSAR:
@@ -4431,7 +4431,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
    				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME BULLET1
 ===================================================================*/
 			case NME_BULLET1:
@@ -4488,7 +4488,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
    				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME PULSAR
 ===================================================================*/
 		   	case NME_PULSAR:
@@ -4650,7 +4650,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME TROJAX
 ===================================================================*/
 			case NME_TROJAX:
@@ -4716,7 +4716,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME PYROLITE RIFLE
 ===================================================================*/
 			case NME_PYROLITE:
@@ -4777,7 +4777,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 		   		break;
 
-/*/*===================================================================
+/*===================================================================
 			NME TRANSPULSE CANNON
 ===================================================================*/
 		   	case NME_TRANSPULSE:
@@ -4865,7 +4865,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME SUSS_GUN
 ===================================================================*/
 			case NME_SUSS_GUN:
@@ -4930,7 +4930,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME_LASER
 ===================================================================*/
 			case NME_LASER:
@@ -5082,7 +5082,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME_POWERLASER
 ===================================================================*/
 			case NME_POWERLASER:
@@ -5236,7 +5236,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			NME_LIGHTNING
 ===================================================================*/
 			case NME_LIGHTNING:
@@ -5303,7 +5303,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				}
 				break;
 
-/*/*===================================================================
+/*===================================================================
 			FLAMES
 ===================================================================*/
 			case FLAMES:
@@ -5374,7 +5374,7 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 	return i;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -5418,7 +5418,7 @@ void CreateFireExplosion( VECTOR * Pos, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -5544,7 +5544,7 @@ void CreateArcExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Arc Explosion
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -5670,7 +5670,7 @@ void CreateNmeArcExplosion( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Sparks
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -5722,7 +5722,7 @@ void CreateSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 		}
 	}
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Steam
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -5776,7 +5776,7 @@ void CreateSteam( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Laser Pulse
 	Input		:	uint16		Primary weapon number
 				:	float		Length of laser
@@ -5958,7 +5958,7 @@ void CreateLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, uin
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Laser Pulse
 	Input		:	uint16		Primary weapon number
 				:	float		Length of laser
@@ -6140,7 +6140,7 @@ void CreateNmeLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Group, 
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Power Laser Pulse
 	Input		:	uint16		Primary weapon number
 				:	float		Length of laser
@@ -6272,7 +6272,7 @@ void CreateNmePowerLaserPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Gr
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Nme Lightning Pulse
 	Input		:	uint16		Primary weapon number
 				:	float		Length of laser
@@ -6380,7 +6380,7 @@ void CreateNmeLightningPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Gro
    		XLights[ light ].Pos.z = ( PrimBulls[i].Pos.z + ( PrimBulls[ i ].Dir.z * Distance ) );
 	}
 
-/*/*===================================================================
+/*===================================================================
 	Kill all existing polys
 ===================================================================*/
    	poly = PrimBulls[ i ].poly;
@@ -6395,7 +6395,7 @@ void CreateNmeLightningPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Gro
 	PrimBulls[i].numpolys = 0;
 	PrimBulls[i].poly = (uint16) -1;
 
-/*/*===================================================================
+/*===================================================================
 	Create new polys
 ===================================================================*/
 	NumSegments = (int16) ceil( Distance / SubDivision );
@@ -6593,7 +6593,7 @@ void CreateNmeLightningPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Gro
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Transpulse Trail
 	Input		:	uint16		PrimBull Index
 	Output		:	Nothing
@@ -6643,7 +6643,7 @@ void CreateTransTrail( uint16 i )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Display Power Level
 	Input		:	Nothing
 	Output		:	Nothing
@@ -6728,7 +6728,7 @@ void DispPowerLevel( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Shield Effect when hit
 	Input		:	VECTOR	*	Center of Shield
 				:	VECTOR	*	Intersection Point ( Front of shield )
@@ -6845,7 +6845,7 @@ void CreateShieldEffect( VECTOR * Pos, VECTOR * IntPos, VECTOR * IntPos2, uint16
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if hit ship
 	Input		:	uint16		OwnerType
 				:	uint16		Owner
@@ -7014,7 +7014,7 @@ uint16 CheckHitShip( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group,
 	return( ClosestShip );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if hit secondary mine/missile
 	Input		:	VECTOR	*	Pos
 				:	uint16		Group
@@ -7132,7 +7132,7 @@ uint16 CheckHitSecondary( VECTOR * Pos, uint16 Group, VECTOR * Dir, VECTOR * UpD
 	return( ClosestSecBull );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check valid group ray collision
 	Input		:	VECTOR	*	StartPos
 				:	uint16		StartGroup
@@ -7163,7 +7163,7 @@ BOOL ValidGroupCollision( VECTOR * StartPos, uint16 StartGroup, VECTOR * IntPoin
 	return( TRUE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ammo level control
 	Input		:	Check ammo levels and do appropriate changed
 	Output		:	void
@@ -7196,7 +7196,7 @@ void PrimarySelectControl( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create non intersection Line for debugging
 	Input		:	VECTOR	*	Pos
 				:	VECTOR	*	Dir
@@ -7232,7 +7232,7 @@ void CreateDebugLine( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint8
    	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Enable All Primary Lights
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7254,7 +7254,7 @@ void EnablePrimaryLights( void )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Disable All Primary Lights
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7276,7 +7276,7 @@ void DisablePrimaryLights( void )
 	}																				
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fire primary weapons of other players
 	Input		:	uint16		Ship Number
 	Output		:	Nothing
@@ -7554,7 +7554,7 @@ void FirePrimaryWeapons( uint8 Ship )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Collision Sparks
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -7640,7 +7640,7 @@ void CreateColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Collision Sparks
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -7728,7 +7728,7 @@ void CreateSmallColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if any other ships charging
 	Input		:	uint16		Ship
 				:	uint16		Old Flags
@@ -7772,7 +7772,7 @@ float	GodModeCopyOfNitroFuel = 0.0F;
 BYTE	GodModeCopyOfOrbitals = 0;
 float	GodModeCopyOfOrbAmmo[ MAXMULTIPLES ];
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Give me all weapons
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7827,7 +7827,7 @@ void GivemeAllWeapons( void )
 	GivemeSuperNashram();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lose all weapons
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7860,7 +7860,7 @@ void LoseAllWeapons( void )
 	PickupInvulnerability = FALSE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop Currently selected primary weapon
 	Input		:	Nothing
 	Output		:	Nothing
@@ -7904,7 +7904,7 @@ void DropPrimary( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Return method of death string
 	Input		:	BYTE		Weapon Type
 				:	BYTE		Weapon
@@ -8054,7 +8054,7 @@ void GetDeathString( BYTE WeaponType, BYTE Weapon, char * DstString )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop Shield pickup
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8085,7 +8085,7 @@ void DropShield( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Drop Ammo pickup
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8181,7 +8181,7 @@ void DropAmmo( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of Transpulse
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	NewPos
@@ -8306,7 +8306,7 @@ BOOL ChangeTranspulseDir( uint16 i, VECTOR * Pos, VECTOR * MoveOffset, VECTOR * 
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of Pulsar
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	New Direction
@@ -8370,7 +8370,7 @@ void ChangePulsarDir( uint16 i, VECTOR * Dir )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of Pulsar
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	New Direction
@@ -8396,7 +8396,7 @@ void ChangeTrojaxDir( uint16 i, VECTOR * Dir )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of Pulsar
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	New Direction
@@ -8408,7 +8408,7 @@ void ChangeSussgunDir( uint16 i, VECTOR * Dir )
 	PrimBulls[i].Dir = *Dir;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of OrbitPulsar
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	New Direction
@@ -8420,7 +8420,7 @@ void ChangeOrbitPulsarDir( uint16 i, VECTOR * Dir )
 	PrimBulls[i].Dir = *Dir;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Change Direction of Laser
 	Input		:	uint16		Primary Bullet Index
 				:	VECTOR	*	New Direction
@@ -8430,7 +8430,7 @@ void ReflectLaser( uint16 i, VECTOR * Dir )
 {
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Give me Super Nashram weapon
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8468,7 +8468,7 @@ void GivemeSuperNashram( void )
 	NitroFuel = 100.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lose Super Nashram weapon
 	Input		:	Nothing
 	Output		:	Nothing
@@ -8499,7 +8499,7 @@ void LoseSuperNashram( void )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Give me Super Nashram weapon
 	Input		:	uint16 Player
 	Output		:	Nothing
@@ -8543,7 +8543,7 @@ void HostGivemeSuperNashram( uint16 Player )
 	Host_NitroFuel[ Player ] = 100.0F;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Lose Super Nashram weapon
 	Input		:	uint16	Player
 	Output		:	Nothing
@@ -8572,7 +8572,7 @@ void HostLoseSuperNashram( uint16 Player )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Shield Effect when Invulnerable
 	Input		:	VECTOR	*	Center of Shield
 				:	VECTOR	*	Intersection Point ( Front of shield )
@@ -8689,7 +8689,7 @@ void CreateInvEffect( uint16 ShipHit, int16 Num, uint8 RVal, uint8 GVal, uint8 B
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Fire Primary Bullet used for enemies/others
 	Input		:	uint16		OwnerType
 				:	uint16		OwnerID
@@ -8752,7 +8752,7 @@ uint16 EnemyFirePrimary( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8
 	return( i );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create PowerLaser Sparks
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction
@@ -8852,7 +8852,7 @@ void CreatePowerLaserSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Local Vector for laser
 	Input		:	uint16		Primary bullet index
 				:	VECTOR	*	Local Vector (TBFI)
@@ -8916,7 +8916,7 @@ void GetLaserLocalVector( uint16 i, VECTOR * LocalVector )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Create Explosion
 	Input		:	VECTOR	*	Position
 				:	uint16		Group
@@ -8985,7 +8985,7 @@ void CreateScaleExplosion( VECTOR * Pos, uint16 Group, float GlobalScale )
 	PlayPannedSfx( SFX_BangBang, Group , Pos, 0.0F );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check if Ammo Pickup needed, if so which one
 	Input		:	Nothing
 	Output		:	int16	Ammo Pickup to Generate ( -1 None )
@@ -9019,7 +9019,7 @@ int16 GetAmmoPickupToGen( void )
 	return( -1 );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save PrimBulls Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -9124,7 +9124,7 @@ FILE * SavePrimBulls( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load PrimBulls Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -9240,7 +9240,7 @@ FILE * LoadPrimBulls( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Next Valid Primary Weapon
 	Input		:	Nothing
 	Output		:	uint8	Primary Weapon
@@ -9274,7 +9274,7 @@ uint8 GetNextValidPrimaryWeapon( void )
 	return( TempWeapon );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Prev Valid Primary Weapon
 	Input		:	Nothing
 	Output		:	uint8	Primary Weapon
@@ -9308,7 +9308,7 @@ uint8 GetPrevValidPrimaryWeapon( void )
 	return( TempWeapon );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Conv Primary Weapon number from cheat to norm
 	Input		:	int8	Primary Weapon
 	Output		:	uint8	Primary Weapon ( Valid One )
@@ -9333,7 +9333,7 @@ int8 ConvPrimToNormWeapon( int8 Primary )
 	return( NewPrimary );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Toggle Primary Weapon Type
 	Input		:	int8	Primary Weapon
 	Output		:	Nothing
@@ -9356,7 +9356,7 @@ void TogglePrimaryWeapons( int8 Primary )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Kill Primary bullets assight to
 				:	OwnerType and Owner
 	Input		:	uint16	OwnerType
@@ -9382,7 +9382,7 @@ void KillPrimBullsByOwner(  uint16 OwnerType, uint16 Owner )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get Ammo Usage for primary weapons
 	Input		:	int16		Ship
 				:	int8		Weapon

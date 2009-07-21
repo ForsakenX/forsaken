@@ -32,7 +32,7 @@ num_groups : uint16
 }[num_groups]
 mxtype : uint16 // always 0 for mx format
 */
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -50,12 +50,12 @@ mxtype : uint16 // always 0 for mx format
 #include "spotfx.h"
 #include "XMem.h"
 
-/*/*===================================================================
+/*===================================================================
 		Defines
 ===================================================================*/
 #define	MX_VERSION_NUMBER	2
 
-/*/*===================================================================
+/*===================================================================
 		Externals...	
 ===================================================================*/
 void DebugPrintf( char *fmt, ... );
@@ -76,7 +76,7 @@ extern	BOOL	DrawSimplePanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS];
 extern	float	framelag;
 
-/*/*===================================================================
+/*===================================================================
 		Globals...	
 ===================================================================*/
 
@@ -91,7 +91,7 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim );
 extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert );
 extern void FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert );
 
-/*/*===================================================================
+/*===================================================================
 		Function from title.c not #included due to dependences...	
 ===================================================================*/
 void TintDisc(uint16 Model);
@@ -100,7 +100,7 @@ void TintDisc(uint16 Model);
 //uint8 Green = 192;
 //uint8 Blue = 192+64;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Mx File
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
@@ -600,7 +600,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		Buffer = (char *) Uint16Pnt;
 	}
 
-/*/*===================================================================
+/*===================================================================
 	Point Direction Data
 ===================================================================*/
 	Uint16Pnt = (uint16 *) Buffer;
@@ -750,7 +750,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	Mxloadheader->state = TRUE;
 	return( TRUE );
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
 				:		uint16		Models[] Index
@@ -917,7 +917,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute one group for an Mxloadheader
 	Input		;		MXLOADHEADER *
 	Output		:		FLASE/TRUE
@@ -1043,7 +1043,7 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Pre - Load .Mx File
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
@@ -1164,7 +1164,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxloadheader
 	Input		;		MXLOADHEADER *
 				:		uint16		Models[] Index
@@ -1191,7 +1191,7 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Handle All Animation For an Mloadheader
 	Input		:		MLOADHEADER *
 	Output		:		Nothing
@@ -1245,7 +1245,7 @@ void ModelTextureAnimation( MXLOADHEADER * Mxloadheader  )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Restore the coolours for a Mxloadheader..
 	Input		;		MXLOADHEADER *
 	Output		:		FLASE/TRUE
@@ -1292,7 +1292,7 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 	}
 	return TRUE;
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		CheckFor 3d Panel PolyAnims..
 	Input		;		POLYANIM * PolyAnim
 	Output		:		NOTHING

@@ -248,7 +248,7 @@ void SetUpGameType( int type )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Hosting a session...
 	Input		:	nothing
 	Output		:	nothing
@@ -473,7 +473,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Get The Players In the Current Session...
 	Input		:	MENUITEM * Item
 	Output		:	nothing
@@ -499,7 +499,7 @@ void GetPlayersInCurrentSession( MENUITEM *Item )
 		NumOfPlayersSlider.redraw_req = TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	The host has waited for everyone now the game will init and start..
 	Input		:	MENUITEM * Item
 	Output		:	nothing
@@ -530,7 +530,7 @@ void GoToSynchup ( MENUITEM * Item )
 	}
 
 }
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	The host has waited for everyone now the game will init and start..
 	Input		:	MENUITEM * Item
 	Output		:	nothing
@@ -545,7 +545,7 @@ void TeamGoToSynchup ( MENUITEM * Item )
 }
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Bail out of a multiplayer game before it starts...
 	Input		:	MENU * Menu
 	Output		:	nothing
@@ -604,7 +604,7 @@ void InitExistingGameJoin( MENU *Menu )
 	InitTitleMessaging();
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Set the Team player lists..
 	Input		:	MENU * Menu
 	Output		:	nothing

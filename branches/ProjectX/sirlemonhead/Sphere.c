@@ -1,5 +1,5 @@
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include "typedefs.h"
@@ -138,7 +138,7 @@ float	x_min;
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Perform ray to sphere intersection
 	Input		:	VECTOR * sphere_pos
 				:	float radius
@@ -236,7 +236,7 @@ BOOL RaytoSphere2( VECTOR * sorigin, float radius, VECTOR * rorigin, VECTOR * rd
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ray To Sphere Collision
 	Input		:	VECTOR *	SphereCenter
 				:	float		Radius
@@ -287,7 +287,7 @@ int16 RaytoSphere3( VECTOR * SphereCenter, float Radius, VECTOR * RayStart,
 	return( R2S_COLLISION );								// Collided!
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Ray To Sphere Short
 	Input		:	VECTOR *	SphereCenter
 				:	float		Radius

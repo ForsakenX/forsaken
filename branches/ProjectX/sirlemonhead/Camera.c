@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
@@ -22,11 +22,11 @@
 
 #define	CAM_VERSION_NUMBER 1
 
-/*/*===================================================================
+/*===================================================================
 		Externals ...
 ===================================================================*/
 
-/*/*===================================================================
+/*===================================================================
 		Globals ...
 ===================================================================*/
 
@@ -41,7 +41,7 @@ REMOTECAMERA * ActiveRemoteCamera = NULL;
 REMOTECAMERA * RemoteCameras = NULL;
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .Cam File
 	Input		:		char	*	Filename 
 	Output		:		Nothing
@@ -138,7 +138,7 @@ BOOL Cameraload( char * Filename )
 	return TRUE;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Release NodeHeader..
 	Input		:		NOTHING
 	Output		:		Nothing
@@ -154,7 +154,7 @@ void CameraRelease( void)
 	NumOfCams = 0;
 }
 
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Enable Remote Camera
 	Input		:		uint16	* Data
 	Output		:		Nothing
@@ -170,7 +170,7 @@ void EnableRemoteCamera( uint16 * Data )
 	CamPnt->enable = TRUE;
 	ActiveRemoteCamera = CamPnt;
 }
-/*/*===================================================================
+/*===================================================================
  	Procedure	:		Disable Remote Camera
 	Input		:		uint16	* Data
 	Output		:		Nothing
@@ -188,7 +188,7 @@ void DisableRemoteCamera( uint16 * Data )
 		ActiveRemoteCamera = NULL;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Save RemoteCameras arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
@@ -207,7 +207,7 @@ FILE * SaveRemoteCameras( FILE * fp )
 	return( fp );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Load RemoteCameras Arrays & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer

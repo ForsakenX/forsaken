@@ -35,7 +35,7 @@ extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	FIREPOS	BigGeekFirePos2;
 extern	FIREPOS	BigGeekFirePos3;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Dogfighting...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing

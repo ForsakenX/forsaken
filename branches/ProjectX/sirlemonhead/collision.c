@@ -1,6 +1,6 @@
 
 
-/*/*===================================================================
+/*===================================================================
 *	c o l l i s o n . c
 *	All routines needed to load in a .mc file....
 *	and do collision to any polygon in a specified group..
@@ -132,7 +132,7 @@ BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 BOOL CheckEnemyPolyCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 					  int collided, VECTOR * New_Pos, NORMAL * FaceNormal, BGOBJECT ** BGObject );
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Load .mc File Collision file..
 	Input		:		char	*	Filename , MCLOADHEADER * MCloadheader
 	Output		:		BOOL
@@ -201,7 +201,7 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 #pragma optimize( "gty", on )
 #endif
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Ray to Polygon intersection
 	Input		:	D3DVECTOR	*	Point 0
 				:	D3DVECTOR	*	Point 1
@@ -238,7 +238,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Calculate D
 ===================================================================*/
 //	D =	( ( P0->x * FaceNormal->nx ) +
@@ -247,7 +247,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 
 //	D = -ColDotProduct( P0 , FaceNormal  );
 
-/*/*===================================================================
+/*===================================================================
 	Calculate T
 ===================================================================*/
 	Div = ( ODir.x * FaceNormal->nx) + 
@@ -273,7 +273,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 
 	*TempDistance = t;
 
-/*/*===================================================================
+/*===================================================================
 	Do Polygon collision
 ===================================================================*/
 	Point->x = ( Origin.x + ( ODir.x * t ) );
@@ -281,7 +281,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	Point->z = ( Origin.z + ( ODir.z * t ) );
 
 
-/*/*===================================================================
+/*===================================================================
 	Work out best axis to cast polygon onto
 ===================================================================*/
 	if( fabs( FaceNormal->nx ) >= fabs( FaceNormal->ny ) &&
@@ -301,7 +301,7 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	}
 
 
-/*/*===================================================================
+/*===================================================================
 	Check if point within triangles
 ===================================================================*/
 	AntiCount = 0;
@@ -419,7 +419,7 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 
 	if ( !DebugInfo && ( face->type & 0x800000L ) )
 		return FALSE; // ignore backfacing patch collision polys unless debugging
-/*/*===================================================================
+/*===================================================================
 	Calculate T
 ===================================================================*/
 	Div = ( ODir.x * face->nx) + 
@@ -440,7 +440,7 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	
 	t = -( Num / Div );
 
-/*/*===================================================================
+/*===================================================================
 	Do Polygon collision
 ===================================================================*/
 
@@ -451,7 +451,7 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	IPoint.y = ( Origin.y + ( ODir.y * t ) );
 	IPoint.z = ( Origin.z + ( ODir.z * t ) );
 
-/*/*===================================================================
+/*===================================================================
 	Find projected 2D coords of vertices and intersection point
 ===================================================================*/
 
@@ -466,7 +466,7 @@ BOOL ColRayPolyIntersect( MCFACE *face )
 	iy = IPointp[ ( face->type & 4 ) ? Y_Axis : Z_Axis ];
 
 
-/*/*===================================================================
+/*===================================================================
 	Check if point within triangle
 ===================================================================*/
 
@@ -550,7 +550,7 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 	float		t;
 	float		Div, Num;
 
-/*/*===================================================================
+/*===================================================================
 	Calculate T
 ===================================================================*/
 	Div = ( ODir.x * normal->x) + 
@@ -571,7 +571,7 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 	
 	t = -( Num / Div );
 
-/*/*===================================================================
+/*===================================================================
 	Do plane collision
 ===================================================================*/
 
@@ -589,7 +589,7 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Calculate the Dot product of a Vert and Normal
 	Input		:	VERT	*	a
 				:	NORMAL	*	b
@@ -1354,7 +1354,7 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 #endif !BSP_ONLY
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Does the collision between a specified group
 	Input		:	MCLOADHEADER *
 				:	MLOADHEADER *
@@ -1789,7 +1789,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 #endif // !BSP_ONLY
 
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Does the collision between the portals in a specified group
 	Input		:	MLOADHEADER *
 				:	uint16 group
@@ -2023,7 +2023,7 @@ BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup )
 
 static BGOBJECT	*	CurParent = NULL;
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Ship to Background Objects Collision
 	Input		:	uint16	Group
 	Output		:	Nothing
@@ -2124,7 +2124,7 @@ BOOL CheckBGObjectsCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Ship to RestartPoints Collision
 	Input		:	uint16		Group
 				:	float		Distance to intersection
@@ -2202,7 +2202,7 @@ BOOL CheckRestartPointCol( uint16 Group, float Distance, VECTOR * ImpactPoint,
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Ray to Enemy Polygonal Collision
 	Input		:	uint16		Group
 				:	float		Distance to intersection
@@ -2308,7 +2308,7 @@ SkipIt:
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of Background Object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -2448,7 +2448,7 @@ void CollideBGOChildren( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Does the collision between a specified group
 	Input		:	float		Distance to int
 				:	int16		Collided
@@ -2505,7 +2505,7 @@ BOOL OneGroupBGObjectCol( float Distance, int16 Collided, uint16 Group, VECTOR *
 	return(TRUE);
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Background Objects To Object Collision
 	Input		:	VECTOR	*	Pos
 				:	BGOBJECT *	Object
@@ -2565,7 +2565,7 @@ BOOL CheckBGObjectCollision( VECTOR * Pos, BGOBJECT * Object, VECTOR * PushVecto
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Check Background Objects To Enemy Collision
 	Input		:	VECTOR	*	Pos
 				:	COMP_OBJ *	CompObjects
@@ -2622,7 +2622,7 @@ BOOL CheckCompObjectCollision( VECTOR * Pos, COMP_OBJ * Comps, VECTOR * PushVect
 	return( FALSE );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	Process components of Background Object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -3626,7 +3626,7 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 	return hit;
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Get CompEnemyHit Info
 	Input		:		VECTOR	*	Collision Point (TBFI)
 				:		NORMAL	*	Collision Normal (TBFI)
@@ -3651,7 +3651,7 @@ uint16 GetComEnemyHitInfo( VECTOR * IntPoint, NORMAL * IntNormal, float * IntDis
 	return( CompEnemyHit );
 }
 
-/*/*===================================================================
+/*===================================================================
 	Procedure	:		Check if hit any enemy
 	Input		:		Nothing
 	Output		:		uint16		EnemyHit (0xffff) None

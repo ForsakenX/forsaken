@@ -31,7 +31,7 @@ extern	float framelag;
 extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
-/*/*===================================================================
+/*===================================================================
 	Procedure	:	AIR Retreat And run away
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
