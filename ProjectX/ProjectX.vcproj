@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="ProjectX"
 	ProjectGUID="{89BBCE52-A93E-4A93-A1E3-44FB23777195}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -45,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
@@ -75,7 +76,7 @@
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
@@ -83,6 +84,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -101,9 +104,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -142,7 +142,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_SPOTFX_SOUND,BSP,DEBUG_VIEWPORT,DPTEST,LUA_USE_APICHECK"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
@@ -174,7 +174,7 @@
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug\ProjectX.pdb"
@@ -182,6 +182,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -200,9 +202,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -241,7 +240,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -273,7 +272,7 @@
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
@@ -281,6 +280,8 @@
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -299,9 +300,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -341,7 +339,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -372,13 +370,15 @@
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
 				OptimizeForWindows98="1"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -397,9 +397,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"

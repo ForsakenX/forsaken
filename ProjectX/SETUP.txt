@@ -1,31 +1,7 @@
 
 Requirements:
 
-  VISUAL STUDIO 2005 Express C++ Edition
-  (Note: Visual Studio 2008 Express C++ Edition inflates executable file size by ~300KB and will not run on Windows ME/9X)
-
-  Windows 2003 Platform SDK R2
-
-  Enet
-
-Environment Variables:
-
-  NOTE: Right click "My Computer" -> Advanced -> "Environment Variables"
-
-  MSSDK_DIR = C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
-
-  NOTE: Restart Visual Studio
-
-Visual Studio Directories:
-
-  Includes:
-
-    $(MSSDK_DIR)\include
-    $(MSSDK_DIR)\include\mfc
-
-  Libraries:
-
-   $(MSSDK_DIR)\Lib
+  VISUAL STUDIO 2008 Express C++ Edition
 
 Templates:
 
