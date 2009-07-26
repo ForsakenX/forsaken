@@ -56,7 +56,7 @@ typedef struct LINE {
 	Protptypes
 ===================================================================*/
 void InitLines( void );
-BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * StartLine );
+BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine );
 void KillUsedLine( uint16 i );
 uint16 FindFreeLine( void );
 

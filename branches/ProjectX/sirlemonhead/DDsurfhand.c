@@ -1,3 +1,4 @@
+#if 0 // bjd
 /*==========================================================================
  *
  *  File: DDSurfhand.c
@@ -215,3 +216,4 @@ BOOL MakeDDSurf(  IDirectDraw *pdd , LPDDSURFACEDESC lpDDSurfaceDesc , LPDIRECTD
 }
 
 #endif // DEBUG_ON
+#endif

@@ -4,10 +4,10 @@
 #define TITLE_INCLUDED
 
 #include "localtitle.h"
-#include	"d3d.h"
-#include	"typedefs.h"
-#include	"new3d.h"
-#include	"2dtextures.h"
+#include "d3d9.h"
+#include "typedefs.h"
+#include "new3d.h"
+#include "2dtextures.h"
 
 //	Defines
 
@@ -498,8 +498,8 @@ MENU *LastMenu;
 //	Function Prototypes
 
 BOOL
-InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView );
+InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
+           LPDIRECT3DVIEWPORT lpView*/ ); // bjd
 void InitTitleFont(void);
 void ReleaseTitle(void);
 BOOL DisplayTitle(void);

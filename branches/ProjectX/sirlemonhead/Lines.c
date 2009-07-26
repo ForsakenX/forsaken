@@ -113,10 +113,12 @@ void KillUsedLine( uint16 i )
 				:	uint16	* StartLine
 	Output		:	Nothing
 ===================================================================*/
-BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * StartLine )
+BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
 {
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+	return TRUE;
+#if 0 // bjd - CHECK
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	Vert_Ptr;
 	LPD3DLINE		Line_Ptr;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
@@ -137,18 +139,23 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 		
 	if( *StartLine != (uint16) -1 )
 	{
+/*
 		memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 		ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
+*/		
 //		if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK) return FALSE; // bjd
-		if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK)
+//		if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK)
+//			return FALSE;
+		if (FAILED(FSLockVertexBuffer(renderObject, Vert_Ptr)))
+		{
 			return FALSE;
-		
+		}
+/*
 		lpBufStart = ExecBuffer_debdesc.lpData;
 		lpPointer = lpBufStart;
 		
 		Vert_Ptr = (LPD3DLVERTEX) lpPointer;
-
+*/
 		Num_Lines = 0;
 
 		i = *StartLine;
@@ -182,7 +189,7 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 				Vert_Ptr->tv = 0.0F;
 				Vert_Ptr->color = color;
 				Vert_Ptr->specular = specular;
-				Vert_Ptr->dwReserved = 0;
+//				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 	
 				if(d3dapp->CurrDriver != 0)
@@ -210,7 +217,7 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 				Vert_Ptr->tv = 0.0F;
 				Vert_Ptr->color = color;
 				Vert_Ptr->specular = specular;
-				Vert_Ptr->dwReserved = 0;
+//				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 	
 				Num_Lines++;
@@ -224,6 +231,7 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 /*===================================================================
 		Create Execution buffer instructions
 ===================================================================*/
+/* bjd TODO
 		lpPointer = (LPVOID ) Vert_Ptr;
 		lpInsStart = lpPointer;
 
@@ -253,22 +261,27 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 
 			OP_EXIT( lpPointer );
 		}
-
+*/
 /*===================================================================
 		Finish off execution list
 ===================================================================*/
-		ExecBuffer->lpVtbl->Unlock( ExecBuffer );
+
+//		ExecBuffer->lpVtbl->Unlock( ExecBuffer );
+		FSUnlockVertexBuffer(renderObject);
 
 		*StartLine = i;
 		
-		if( Num_Lines == 0 ) return FALSE;
-
+		if( Num_Lines == 0 ) 
+			return FALSE;
+/*
 		memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
 		ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
 		ExecBuffer_d3dexdata.dwVertexCount = ( Num_Lines * 2 );
 		ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 		ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 		if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return FALSE;
+*/		renderObject->numVerts = ( Num_Lines * 2 );
+		renderObject->texture = 0;
 	}
 	else
 	{
@@ -276,4 +289,5 @@ BOOL LinesDispGroup( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, uint16 * 
 	}
 
 	return TRUE;
+#endif
 }

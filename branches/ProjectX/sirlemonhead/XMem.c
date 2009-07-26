@@ -4,7 +4,7 @@
 		Include Files...	
 ===================================================================*/
 #include <malloc.h>
-#include <ddraw.h>
+//#include <ddraw.h>
 #include "util.h"
 size_t	MemUsed =0;
 #ifdef DEBUG_ON

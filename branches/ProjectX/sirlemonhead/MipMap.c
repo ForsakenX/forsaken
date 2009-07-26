@@ -79,6 +79,7 @@ BOOL InitMipMap(LPCSTR lpName , int16 Scale , MIPMAPDESC * MipMapDesc )
 	YScale = Scale;
 
 	// Some cards Only Like Square Textures...
+/* bjd - TODO
 	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 	{
 		if( dwHeight != dwWidth )
@@ -89,6 +90,7 @@ BOOL InitMipMap(LPCSTR lpName , int16 Scale , MIPMAPDESC * MipMapDesc )
 				XScale++;
 		}
 	}
+*/
 	for( i = 0 ; i < MAXMIPMAP ; i++ )
 	{
 		MipMapDesc->Data[i] = NULL;
@@ -189,9 +191,7 @@ int BuildMipMaps( int Width , int Height , MIPMAPDESC * MipMapDesc , int Count )
 	return BuildMipMaps( Width , Height , MipMapDesc , Count+1 );
 }
 
-
-
-
+#if 0 // bjd - CHECK
 /*Load and create a mipmapped texture surface*/
 LPDIRECTDRAWSURFACE LoadMipMap(LPDIRECTDRAW lpDD, LPCSTR lpName, 
                    LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale )
@@ -250,11 +250,11 @@ LPDIRECTDRAWSURFACE LoadMipMap(LPDIRECTDRAW lpDD, LPCSTR lpName,
 
 		uint8pnt = MipMapDesc.Data[LOD];
 		
-		
+#if 0 // bjd - CHECK		
 		/*Pack and copy the texture to its surface location*/
 		if( !PackAndCopy( ddsd.lpSurface, uint8pnt , lpFormat, ddsd.lPitch , dwWidth , dwHeight ) )
 			return NULL;
-
+#endif
 	
 		lpDDS->lpVtbl->Unlock(lpDDS, NULL);
 		
@@ -279,10 +279,10 @@ LPDIRECTDRAWSURFACE LoadMipMap(LPDIRECTDRAW lpDD, LPCSTR lpName,
 	}
 	return (lpDDS_top);
 }
+#endif
 
 
-
-
+#if 0 // bjd - CHECK
 BOOL PackAndCopy(void *dest, uint8 * uint8pnt, LPDDSURFACEDESC lpFormat, int pitch , DWORD dwWidth , DWORD dwHeight )
 {
 
@@ -430,8 +430,9 @@ BOOL PackAndCopy(void *dest, uint8 * uint8pnt, LPDDSURFACEDESC lpFormat, int pit
 		return FALSE;
 	}
 	return TRUE;
-
 }
+#endif
+
 #ifdef OPT_ON
 #pragma optimize( "", off )
 #endif

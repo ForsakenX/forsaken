@@ -10,6 +10,7 @@
 #include <malloc.h>
 #include "typedefs.h"
 #include "d3ddemo.h"
+#include "d3dappi.h"
 #include "util.h"
 
 size_t	ExecMemUsed = 0;
@@ -25,7 +26,8 @@ size_t	ExecMemUsed = 0;
 ===================================================================*/
 
 BOOL	ExecBlockUsed[MAXEXECBLOCKS];
-LPDIRECT3DEXECUTEBUFFER	ExecBlockPnts[MAXEXECBLOCKS];
+//LPDIRECT3DEXECUTEBUFFER	ExecBlockPnts[MAXEXECBLOCKS];
+RENDEROBJECT ExecBlockPnts[MAXEXECBLOCKS];
 size_t	ExecBlockSize[MAXEXECBLOCKS];
 char *	ExecBlockInFile[MAXEXECBLOCKS];
 int		ExecBlockInLine[MAXEXECBLOCKS];
@@ -42,7 +44,7 @@ void XExec_Init( void )
 	for( i = 0 ; i < MAXEXECBLOCKS ; i++ )
 	{
 		ExecBlockUsed[i] = FALSE;
-		ExecBlockPnts[i] = NULL;
+//		ExecBlockPnts[i] = NULL;
 		ExecBlockSize[i] = 0;
 	}
 }
@@ -70,6 +72,7 @@ int XExec_FindFree( void )
 	Input		:	void * Pnt
 	Output		:	int Same memblock -1 if none
 ===================================================================*/
+#if 0 // bjd
 int XExec_FindSame( LPDIRECT3DEXECUTEBUFFER Pnt )
 {
 	int i;
@@ -80,11 +83,13 @@ int XExec_FindSame( LPDIRECT3DEXECUTEBUFFER Pnt )
 	}
 	return -1;
 }
+#endif
 
 /*===================================================================
 		Make Execute Buffer
 ===================================================================*/
 
+#if 0 // bjd
 BOOL XMakeExecuteBuffer( LPD3DEXECUTEBUFFERDESC debDesc, /*LPDIRECT3DDEVICE lpDev,*/ LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size , char *in_file, int in_line ) // bjd
 {
 	int i;
@@ -111,12 +116,14 @@ BOOL XMakeExecuteBuffer( LPD3DEXECUTEBUFFERDESC debDesc, /*LPDIRECT3DDEVICE lpDe
 	ExecMemUsed += size;
 	return TRUE;
 }
+#endif
 
 /*===================================================================
 	Procedure	:	XRELEASE free some memory from an execute buffer...
 	Input		:	void * Pnt
 	Output		:	void
 ===================================================================*/
+#if 0 // bjd
 void EXECRELEASE( LPDIRECT3DEXECUTEBUFFER Pnt, char *in_file, int in_line )
 {
 	int i;
@@ -152,6 +159,7 @@ void EXECRELEASE( LPDIRECT3DEXECUTEBUFFER Pnt, char *in_file, int in_line )
 	ExecBlockSize[i] = 0;
 	ExecBlocksUsed--;
 }
+#endif
 
 int UnMallocedExecBlocks( void )
 {

@@ -8,9 +8,10 @@
 /*===================================================================
 	Defines
 ===================================================================*/
-#define	X					0
-#define	Y					1
-#define	Z					2
+/* bjd - 3 defines below changed as they cause compilation errors with D3DVIEWPORT9 - only used in collision.c */
+#define	ourX					0
+#define	ourY					1
+#define	ourZ					2
 #define	EPS					1e-7
 #define PI					3.14159265358979323846F
 #define M_PI				3.14159265358979323846F
@@ -27,6 +28,113 @@
 /*===================================================================
 	Structures
 ===================================================================*/
+
+// bjd - taken from d3dtypes.h
+#define RGBA_MAKE(r, g, b, a)   ((D3DCOLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
+#define	RGB_MAKE(r, g, b)    ((D3DCOLOR) (((r) << 16) | ((g) << 8) | (b)))
+#define RGBA_GETALPHA(rgb)    ((rgb) >> 24) 
+
+#define RGBA_GETRED(rgb)    (((rgb) >> 16) & 0xff)
+#define RGBA_GETGREEN(rgb)    (((rgb) >> 8) & 0xff)
+#define RGBA_GETBLUE(rgb)    ((rgb) & 0xff)
+
+#define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
+
+#define D3DVAL(val)    ((float)val) 
+
+typedef struct _D3DLVERTEX {
+    union {
+       float x;
+       float dvX;
+    };
+    union {
+       float y;
+        float dvY;
+    };
+    union {
+        float z;
+        float dvZ;
+    };
+    union {
+        D3DCOLOR color;
+        D3DCOLOR dcColor;
+    };
+    union {
+        D3DCOLOR specular;
+		D3DCOLOR dcSpecular;
+    };
+    union {
+        float tu;
+        float dvTU;
+    };
+    union {
+        float tv;
+        float dvTV;
+	};
+/*
+    _D3DLVERTEX() { }
+    _D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
+        { x = v.x; y = v.y; z = v.z; 
+          color = col; specular = spec;
+          tu = _tu; tv = _tv;
+    }
+*/
+} D3DLVERTEX, *LPD3DLVERTEX;
+
+typedef struct _D3DTLVERTEX {
+    union {
+        float sx;
+        float dvSX;
+    };
+    union {
+        float sy;
+        float dvSY;
+    };
+    union {
+        float sz;
+        float dvSZ;
+    };
+    union {
+        float rhw;
+        float dvRHW;
+    };
+    union {
+        D3DCOLOR color;
+        D3DCOLOR dcColor;
+    };
+    union {
+        D3DCOLOR specular;
+        D3DCOLOR dcSpecular;
+    };
+    union {
+        float tu;
+        float dvTU;
+    };
+    union {
+        float tv;
+        float dvTV;
+    };
+
+} D3DTLVERTEX, *LPD3DTLVERTEX;
+
+#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW|/*D3DFVF_RESERVED0|*/D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
+
+typedef struct _D3DTRIANGLE { 
+    union { 
+        WORD v1; 
+        WORD wV1; 
+    }; 
+    union { 
+        WORD v2; 
+        WORD wV2; 
+    }; 
+    union { 
+        WORD v3; 
+        WORD wV3; 
+    }; 
+    WORD     wFlags; 
+} D3DTRIANGLE, *LPD3DTRIANGLE; 
+
 
 /*===================================================================
 	2D Vertices

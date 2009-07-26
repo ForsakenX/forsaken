@@ -129,7 +129,7 @@ void DoLensflareEffect( void );
 void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 void KillScrOneFramers( void );
-BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright );
+//bjd - CHECK BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright );
 void DoAllSecBullLensflare( void );
 void SecBullLensflare( uint16 i );
 void CreateCountdownDigits( void );
@@ -152,10 +152,10 @@ void ResetCountDownBombTag( float Amount );
 void InitScrPolyTPages( void );
 void AddScrPolyToTPage( uint16 i, int16 TPage );
 void RemoveScrPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort ); // bjd
-BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort );
-BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly );
-BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly );
+BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
+BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ );
+BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
+BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
 void FreeAllLastAFrameScrPolys( void );
 void LoadTimeForLevel( void );
 FILE * SaveScreenPolys( FILE * fp );

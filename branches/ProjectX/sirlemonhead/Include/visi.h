@@ -10,7 +10,7 @@
 #include "ships.h"
 #include "lights.h"
 #include "skin.h"
-#include "d3d.h"
+#include "d3d9.h"
 #include "camera.h"
 
 typedef struct _GROUPLIST
@@ -34,7 +34,7 @@ uint16 WhichGroupImIn( MLOADHEADER	* Mloadheader , VECTOR * Pos );
 BOOL PortalTestTransformClip( MLOADHEADER * Mloadheader , uint16 group );
 void FindVisiblePortals( MLOADHEADER * Mloadheader , uint16 group );
 void BuildGroupList ( MLOADHEADER * Mloadheader , uint16 group );
-void  OurVispolyTransformVertices( DWORD VertexCount, D3DTRANSFORMDATA * Data );
+//void OurVispolyTransformVertices( DWORD VertexCount, D3DTRANSFORMDATA * Data );
 void FindVisible( CAMERA *cam, MLOADHEADER	* Mloadheader );
 int ClipGroup( CAMERA *cam, uint16 group );
 BOOL DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam );

@@ -128,7 +128,7 @@ extern	D3DMATRIX view;
 extern	D3DMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	D3DMATRIXHANDLE hWorld;
-extern	LPDIRECT3DDEVICE lpDev;
+//extern	LPDIRECT3DDEVICE lpDev;
 extern	VECTOR	SlideRight;
 extern	VECTOR	SlideUp;
 extern	VECTOR	Forward;
@@ -1725,6 +1725,7 @@ void BobShip( uint16 ship, VECTOR *bob )
 /*===================================================================
 		Display All Ships ...
 ===================================================================*/
+#if 0 // bjd - never called
 BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 {
 	uint16	i;
@@ -1737,13 +1738,11 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 
 	for( i=0;i<MAX_PLAYERS;i++)
 	{
-
-		
 		if( Current_Camera_View != i)
 		{
 			if ( (Ships[i].enable != 0) && (Ships[i].Object.Mode != GAMEOVER_MODE) && (Ships[i].Object.Mode != LIMBO_MODE) && ((GameStatus[i] == STATUS_Normal )||(GameStatus[i] == STATUS_SinglePlayer ) ) )
 			{
-#if 1
+
 			Col = FindNearestCellColour( &Mloadheader, &Ships[i].Object.Pos, Ships[i].Object.Group );
 			Red = (float)RGBA_GETRED(Col);
 			Green = (float)RGBA_GETGREEN(Col);
@@ -1816,7 +1815,6 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 				Ships[i].Object.Blue = 255.0F;
 			}
 
-#endif
 				// If the group the ship is in is visible then the ship probably is to...
 				if( Ships[i].Object.Group == group )
 				{
@@ -1903,12 +1901,6 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 						}
 						else
 						{
-#if 0
-							AmbientLightMxaModel( &MxaModelHeaders[ BikeModel + ModelNum ],
-											(int)Ships[i].Object.Red,
-											(int)Ships[i].Object.Green,
-											(int)Ships[i].Object.Blue, 0 );
-#endif
 
 #ifndef FINAL_RELEASE
 							CreateMXABoundingBox( &MxaModelHeaders[ BikeModel + ModelNum ],
@@ -1927,12 +1919,9 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK) return FALSE;
 	return TRUE;
 }
+#endif
 
-
-
-
-
-void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
+void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 {
 	uint16	i;
 	uint16	spos;
@@ -1973,6 +1962,7 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		Ships[i].Object.Shield	= Start_Shield;
 		Ships[i].Object.Hull	= Start_Hull;
 		Ships[i].Object.light = (uint16) -1;
+
 		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
 		Ships[i].NumMultiples = 0;
 		
@@ -2013,11 +2003,11 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	uint16 group;
 	uint16 vert;
 	uint16 execbuf;
-	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	float	u,v;
 
 	for( group = 0 ; group < Mxloadheader->num_groups ; group ++ )
@@ -2027,15 +2017,19 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 			if( (Mxloadheader->Group[group].exec_type[execbuf]&HASENVIROMENTMAP) != 0 )
 			{
 				/*	lock the execute buffer	*/
-				memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//				memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //					return FALSE ; // bjd
-				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//					return FALSE;
+				if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], lpD3DLVERTEX)))
+				{
 					return FALSE;
+				}
 
-				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
+//				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
 				for( vert = 0 ; vert < 	Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] ; vert ++ )
 				{
 					ApplyMatrix( Mat , (VECTOR *) lpD3DLVERTEX,  &Temp);
@@ -2049,9 +2043,14 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 					lpD3DLVERTEX->tv = v;//+(Pos->y*0.001F);
 					lpD3DLVERTEX++;
 				}
+
 				/*	unlock the execute buffer	*/
-				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-					return FALSE ;
+//				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//					return FALSE ;
+				if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 	}

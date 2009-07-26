@@ -573,8 +573,8 @@ void DoLensflareEffect( void )
 
 	MatrixMultiply( &TempMatrix, &ProjMatrix, &FinalMatrix );
 
-	Center_X = ( CurrentCamera.Viewport.dwX + ( CurrentCamera.Viewport.dwWidth / 2.0F ) );
-	Center_Y = ( CurrentCamera.Viewport.dwY + ( CurrentCamera.Viewport.dwHeight / 2.0F ) );
+	Center_X = ( CurrentCamera.Viewport.X + ( CurrentCamera.Viewport.Width / 2.0F ) );
+	Center_Y = ( CurrentCamera.Viewport.Y + ( CurrentCamera.Viewport.Height / 2.0F ) );
 
 	for( Count = 0; Count < MAX_PLAYERS; Count++ )
 	{
@@ -770,9 +770,11 @@ void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	VECTOR	TempVert;
 
 	VisPolyApplyMatrix( FinalMat, SrcVert, &TempVert );
-	DstVert->x = CurrentCamera.Viewport.dwX + ( ( CurrentCamera.Viewport.dwWidth / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
-	DstVert->y = CurrentCamera.Viewport.dwY + ( ( CurrentCamera.Viewport.dwHeight / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
+/* bjd - CHECK
+	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
+	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
 	DstVert->z = TempVert.z;
+*/
 }
 
 /*===================================================================
@@ -825,11 +827,11 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 			TempVert.y = 1.0F;
 		}
 	}
-
-	DstVert->x = CurrentCamera.Viewport.dwX + ( ( CurrentCamera.Viewport.dwWidth / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
-	DstVert->y = CurrentCamera.Viewport.dwY + ( ( CurrentCamera.Viewport.dwHeight / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
+/* bjd - CHECK
+	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
+	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
 	DstVert->z = TempVert.z;
-
+*/
 	if( Flags ) return( TRUE );
 	return( FALSE );
 }
@@ -840,6 +842,7 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 				:	LPD3DTLVERTEX	Vert3
 	Output		:	FALSE if box is inside viewport, TRUE if outside
 ===================================================================*/
+#if 0 // bjd - CHECK
 BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 {
 	D3DVALUE xmin, ymin, xmax, ymax;
@@ -903,6 +906,7 @@ BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 
 	return FALSE;
 }
+#endif
 
 /*===================================================================
 	Procedure	:	Create Lensflare effect on missiles
@@ -978,8 +982,8 @@ void SecBullLensflare( uint16 i )
 
 	MatrixMultiply( &TempMatrix, &ProjMatrix, &FinalMatrix );
 
-	Center_X = ( CurrentCamera.Viewport.dwX + ( CurrentCamera.Viewport.dwWidth / 2.0F ) );
-	Center_Y = ( CurrentCamera.Viewport.dwY + ( CurrentCamera.Viewport.dwHeight / 2.0F ) );
+	Center_X = ( CurrentCamera.Viewport.X + ( CurrentCamera.Viewport.Width / 2.0F ) );
+	Center_Y = ( CurrentCamera.Viewport.Y + ( CurrentCamera.Viewport.Height / 2.0F ) );
 
 	ApplyMatrix( &SecBulls[ i ].Mat, &Forward, &DirVector );
 	ApplyMatrix( &SecBulls[ i ].Mat, &SlideLeft, &LeftVector );
@@ -1339,8 +1343,8 @@ void UpdateDigit( uint16 * DigitArray, float XPos, float YPos, int16 Number, flo
 	uint8	Red, Green, Blue, Trans;
 	int16	NumSegments;
 
-	XPos = ( XPos * ( MainCamera.Viewport.dwWidth / 320.0F ) );
-	YPos = ( YPos * ( MainCamera.Viewport.dwHeight / 240.0F ) );
+	XPos = ( XPos * ( MainCamera.Viewport.Width / 320.0F ) );
+	YPos = ( YPos * ( MainCamera.Viewport.Height / 240.0F ) );
 
 	Green = 0;
 	Blue = 0;
@@ -1743,8 +1747,8 @@ void ShowScreenMultiples( void )
 
 	if( Current_Camera_View != WhoIAm ) return;				// Dont show multiples in external view.
 
-	Center_X = ( MainCamera.Viewport.dwX + ( MainCamera.Viewport.dwWidth / 2.0F ) );
-	Center_Y = ( MainCamera.Viewport.dwY + ( MainCamera.Viewport.dwHeight / 2.0F ) );
+	Center_X = ( MainCamera.Viewport.X + ( MainCamera.Viewport.Width / 2.0F ) );
+	Center_Y = ( MainCamera.Viewport.Y + ( MainCamera.Viewport.Height / 2.0F ) );
 
 	for( Count = 0; Count < Ships[ WhoIAm ].NumMultiples; Count++ )
 	{
@@ -1858,12 +1862,12 @@ void MakeScreenFlash( uint8 Red, uint8 Green, uint8 Blue, uint8 Trans, uint16 *S
 			ScrPolys[ i ].Pos.y = 0.0F;
 			ScrPolys[ i ].x1 = 0.0F;
 			ScrPolys[ i ].y1 = 0.0F;
-			ScrPolys[ i ].x2 = (float) MainCamera.Viewport.dwWidth;
+			ScrPolys[ i ].x2 = (float) MainCamera.Viewport.Width;
 			ScrPolys[ i ].y2 = 0.0F;
-			ScrPolys[ i ].x3 = (float) MainCamera.Viewport.dwWidth;
-			ScrPolys[ i ].y3 = (float) MainCamera.Viewport.dwHeight;
+			ScrPolys[ i ].x3 = (float) MainCamera.Viewport.Width;
+			ScrPolys[ i ].y3 = (float) MainCamera.Viewport.Height;
 			ScrPolys[ i ].x4 = 0.0F;
-			ScrPolys[ i ].y4 = (float) MainCamera.Viewport.dwHeight;
+			ScrPolys[ i ].y4 = (float) MainCamera.Viewport.Height;
 			ScrPolys[ i ].FadeRed = (float) Red;
 			ScrPolys[ i ].FadeGreen = (float) Green;
 			ScrPolys[ i ].FadeBlue = (float) Blue;
@@ -1904,8 +1908,8 @@ void InitThermo( void )
 		{
 			ThermoScrPoly = i;
 
-			Center_X = ( CurrentCamera.Viewport.dwX + CurrentCamera.Viewport.dwWidth - ( CurrentCamera.Viewport.dwWidth / 6.0F ) );
-			Center_Y = ( CurrentCamera.Viewport.dwY + CurrentCamera.Viewport.dwHeight - ( CurrentCamera.Viewport.dwHeight / 5.0F ) );
+			Center_X = ( CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width - ( CurrentCamera.Viewport.Width / 6.0F ) );
+			Center_Y = ( CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height - ( CurrentCamera.Viewport.Height / 5.0F ) );
 			
 			ScrPolys[ i ].Flags = SCRFLAG_Scale;
 			ScrPolys[ i ].Type = SCRTYPE_Normal;
@@ -2056,23 +2060,26 @@ void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort ) // bjd
+BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
 {
 	int16	TPage;
 	uint16	i;
-
 
 	TPage = 0;
 	i = ScrPolyTPages[ 0 ].FirstPoly;
 
 	while( 1 )
 	{
- 		if( !ScrPolyDispSolid( ExecBuff, &TPage, &i ) )
+ 		if( !ScrPolyDispSolid( /*ExecBuff*/renderObject, &TPage, &i ) )
 			return( TRUE );
 
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-				return FALSE;
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
+//				return FALSE;
+		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		{
+			return FALSE;
+		}
 	}
 
 	return( FALSE );
@@ -2085,7 +2092,7 @@ BOOL DisplaySolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE 
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort )
+BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
 {
 	int16	TPage;
 	uint16	i;
@@ -2095,12 +2102,16 @@ BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVI
 
 	while( 1 )
 	{
- 		if( !ScrPolyDispNonSolid( ExecBuff, &TPage, &i ) )
+ 		if( !ScrPolyDispNonSolid( /*ExecBuff*/renderObject, &TPage, &i ) )
 			return( TRUE );
 
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-				return FALSE;
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
+//				return FALSE;
+		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		{
+			return FALSE;
+		}
 	}
 
 	return( FALSE );
@@ -2113,7 +2124,7 @@ BOOL DisplayNonSolidScrPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, /*LPDIRECT3DDEVI
 				:	uint16	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly )
+BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2131,8 +2142,8 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DTLVERTEX	ScrPolyVertPnt;
 	LPD3DTRIANGLE	ScrPolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
@@ -2201,18 +2212,24 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
+//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
+//		return FALSE;
+
+	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	{
 		return FALSE;
+	}	
 		
-	lpBufStart = ExecBuffer_debdesc.lpData;
+//	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
 	lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 	lpInsStart = lpPointer;
 
+/* bjd - TODO
 	if(d3dappi.ThisDriver.bIsHardware)
 	{
 		OP_STATE_RENDER( 1, lpPointer);
@@ -2225,6 +2242,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 				STATE_DATA(D3DRENDERSTATE_TEXTUREMIN, D3DFILTER_NEAREST, lpPointer );
 		}
 	}
+*/
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -2242,6 +2260,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		{
 			if( !Textured )
 			{
+/* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2249,9 +2268,11 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 			   	OP_STATE_RENDER( 1, lpPointer );
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, 0, lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
+*/
 			}
 			else
 			{
+/* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2259,6 +2280,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 			   	OP_STATE_RENDER( 1, lpPointer );
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
+*/
 			}
 
 	   		ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
@@ -2304,12 +2326,12 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
       							if( ( ScrPolys[ i ].Flags & SCRFLAG_Scale ) )
       							{
       			   					Ysize = ( Ysize / Xsize );
-      			   					Xsize = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xsize );
+      			   					Xsize = ( ( CurrentCamera.Viewport.Width / 320.0F ) * Xsize );
       			   					Ysize *= ( ( Xsize ) * pixel_aspect_ratio );
       							
       								if( Xoff != 0.0F ) Yoff = ( Yoff / Xoff );
       								else Yoff = 0.0F;
-      			   					Xoff = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xoff );
+      			   					Xoff = ( ( CurrentCamera.Viewport.Width / 320.0F ) * Xoff );
       			   					Yoff *= ( ( Xoff ) * pixel_aspect_ratio );
       							}
       							
@@ -2415,7 +2437,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-		      					
+/* bjd - CHECK		      					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -2427,7 +2449,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-		      					
+*/		      					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -2455,12 +2477,12 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
       		
 	      					StartVert += 4;
@@ -2534,7 +2556,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-		      					
+/* bjd - CHECK		      					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -2546,7 +2568,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-		      					
+*/		      					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -2574,12 +2596,12 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 							ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
       						
 	      					StartVert += 4;
@@ -2595,7 +2617,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
 	}
-
+/* bjd - TODO
 	if(d3dappi.ThisDriver.bIsHardware)
 	{
 		OP_STATE_RENDER( 1, lpPointer);
@@ -2618,12 +2640,14 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 			}
 		}
 	}
+*/
 
-	OP_EXIT( lpPointer );
+//	OP_EXIT( lpPointer );
 
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -2632,6 +2656,11 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
+*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	{
+		return FALSE;
+	}
 
 	*TPage = Count;
 	*NextScrPoly = i;
@@ -2646,7 +2675,7 @@ BOOL ScrPolyDispSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16
 				:	uint16	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextScrPoly )
+BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2664,8 +2693,8 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DTLVERTEX	ScrPolyVertPnt;
 	LPD3DTRIANGLE	ScrPolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
@@ -2732,22 +2761,28 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
+//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
+//		return FALSE;
+	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	{
 		return FALSE;
+	}
 		
-	lpBufStart = ExecBuffer_debdesc.lpData;
+//	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
 	lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 	lpInsStart = lpPointer;
 
-	if(d3dappi.ThisDriver.bIsHardware)
+//	if(d3dappi.ThisDriver.bIsHardware)
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
+*/
 	}
 
 /*===================================================================
@@ -2766,6 +2801,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		{
 			if( !Textured )
 			{
+/* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2773,9 +2809,11 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 			   	OP_STATE_RENDER( 1, lpPointer );
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, 0, lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
+*/
 			}
 			else
 			{
+/* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2783,6 +2821,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 			   	OP_STATE_RENDER( 1, lpPointer );
 			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer);
 			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
+*/
 			}
 
 	   		ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
@@ -2828,12 +2867,12 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
       							if( ( ScrPolys[ i ].Flags & SCRFLAG_Scale ) )
       							{
       			   					Ysize = ( Ysize / Xsize );
-      			   					Xsize = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xsize );
+      			   					Xsize = ( ( CurrentCamera.Viewport.Width / 320.0F ) * Xsize );
       			   					Ysize *= ( ( Xsize ) * pixel_aspect_ratio );
       							
       								if( Xoff != 0.0F ) Yoff = ( Yoff / Xoff );
       								else Yoff = 0.0F;
-      			   					Xoff = ( ( CurrentCamera.Viewport.dwWidth / 320.0F ) * Xoff );
+      			   					Xoff = ( ( CurrentCamera.Viewport.Width / 320.0F ) * Xoff );
       			   					Yoff *= ( ( Xoff ) * pixel_aspect_ratio );
       							}
       							
@@ -2939,7 +2978,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-		      					
+/* bjd - CHECK		      					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -2951,7 +2990,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-		      					
+*/		      					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -2979,12 +3018,12 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 							ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
       		
 	      					StartVert += 4;
@@ -3115,7 +3154,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-		      					
+/* bjd - CHECK		      					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -3127,7 +3166,7 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-		      					
+*/		      					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -3155,12 +3194,12 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 							ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
-		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
       						
 	      					StartVert += 4;
@@ -3177,17 +3216,20 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
 	}
 
-	if(d3dappi.ThisDriver.bIsHardware)
+//	if(d3dappi.ThisDriver.bIsHardware)
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 			STATE_DATA( D3DRENDERSTATE_ZENABLE, TRUE, lpPointer );
+*/
 	}
 
-	OP_EXIT( lpPointer );
+//	OP_EXIT( lpPointer );
 
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -3196,7 +3238,11 @@ BOOL ScrPolyDispNonSolid( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uin
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-
+*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	{
+		return FALSE;
+	}
 	*TPage = Count;
 	*NextScrPoly = i;
 
@@ -3628,8 +3674,8 @@ void ShowFlag( uint16 Ship )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
-		ScrPolys[ i ].Pos.x = ( CurrentCamera.Viewport.dwWidth / 2.0F );
-		ScrPolys[ i ].Pos.y = ( CurrentCamera.Viewport.dwHeight - 30.0F );
+		ScrPolys[ i ].Pos.x = ( CurrentCamera.Viewport.Width / 2.0F );
+		ScrPolys[ i ].Pos.y = ( CurrentCamera.Viewport.Height - 30.0F );
 		ScrPolys[ i ].R = 255;
 		ScrPolys[ i ].G = 255;
 		ScrPolys[ i ].B = 255;
@@ -3661,8 +3707,8 @@ void ShowBounty( uint16 Ship )
 	{
 		ScrPolys[ i ].Flags = SCRFLAG_Nothing;
 		ScrPolys[ i ].Type = SCRTYPE_LastAFrame;
-		ScrPolys[ i ].Pos.x = ( CurrentCamera.Viewport.dwWidth / 2.0F );
-		ScrPolys[ i ].Pos.y = ( CurrentCamera.Viewport.dwHeight - 30.0F );
+		ScrPolys[ i ].Pos.x = ( CurrentCamera.Viewport.Width / 2.0F );
+		ScrPolys[ i ].Pos.y = ( CurrentCamera.Viewport.Height - 30.0F );
 		ScrPolys[ i ].R = 255;
 		ScrPolys[ i ].G = 255;
 		ScrPolys[ i ].B = 255;
@@ -3703,8 +3749,8 @@ void ShowCTFFlags( uint16 Ship )
 
 	if( NumFlags )
 	{
-		CenterPos.x = ( CurrentCamera.Viewport.dwWidth / 2.0F );
-		CenterPos.y = ( CurrentCamera.Viewport.dwHeight - 30.0F );
+		CenterPos.x = ( CurrentCamera.Viewport.Width / 2.0F );
+		CenterPos.y = ( CurrentCamera.Viewport.Height - 30.0F );
 
 		Team = 0;
 

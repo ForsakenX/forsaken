@@ -287,16 +287,16 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	if( fabs( FaceNormal->nx ) >= fabs( FaceNormal->ny ) &&
 		fabs( FaceNormal->nx ) >= fabs( FaceNormal->nz ) )
 	{
-		i1 = Y;						/* Y Axis		*/
-		i2 = Z;						/* and Z axis	*/
+		i1 = ourY;						/* Y Axis		*/
+		i2 = ourZ;						/* and Z axis	*/
 	}else{
- 		i1 = X;					/* X Axis		*/
+ 		i1 = ourX;					/* X Axis		*/
 		if( fabs( FaceNormal->ny ) >= fabs( FaceNormal->nx ) &&
 		    fabs( FaceNormal->ny ) >= fabs( FaceNormal->nz ) )
 		{
-			i2 = Z;					/* and Z axis	*/
+			i2 = ourZ;					/* and Z axis	*/
 		}else{
-			i2 = Y;					/* and Y axis	*/
+			i2 = ourY;					/* and Y axis	*/
 		}
 	}
 

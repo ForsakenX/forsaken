@@ -1,22 +1,5 @@
-#if 0 
-/*
- *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dcalls.c
- *
- *  Calls to Direct3D objects needed for rendering.  Part of D3DApp.
- *
- *  D3DApp is a collection of helper functions for Direct3D applications.
- *  D3DApp consists of the following files:
- *      d3dapp.h    Main D3DApp header to be included by application
- *      d3dappi.h   Internal header
- *      d3dapp.c    D3DApp functions seen by application.
- *      ddcalls.c   All calls to DirectDraw objects except textures
- *      d3dcalls.c  All calls to Direct3D objects except textures
- *      texture.c   Texture loading and managing texture list
- *      misc.c      Miscellaneous calls
- */
 
+extern "C" {
 #include "typedefs.h"
 #include "d3dappi.h"
 #include "tload.h"
@@ -38,10 +21,10 @@ BOOL	TriLinear;
 /*                            Creation of D3D                              */
 /***************************************************************************/
 
-//LPDIRECT3D lpD3D2;
-BOOL
-D3DAppICreateD3D(void)
+BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 {
+	HRESULT LastError;
+
 	/* Set up Direct3D interface object */
 	d3dappi.lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -51,23 +34,61 @@ D3DAppICreateD3D(void)
 		return FALSE;
 	}
 
-	return TRUE;
+	D3DDISPLAYMODE d3ddm;
+	LastError = d3dappi.lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 
-#if 0
-//	LastError = d3dappi.lpDD->lpVtbl->QueryInterface(d3dappi.lpDD,
-//                                    &IID_IDirect3D2, (LPVOID*)&lpD3D2);
-    
-	LastError = d3dappi.lpDD->lpVtbl->QueryInterface(d3dappi.lpDD,
-                                    &IID_IDirect3D, (LPVOID*)&d3dappi.lpD3D);
-    if (LastError != DD_OK) {
-        D3DAppISetErrorString("Creation of IDirect3D failed.\n%s",
-                              D3DAppErrorToString(LastError));
-        goto exit_with_error;
-    }
-    return TRUE;
-exit_with_error:
-    return FALSE;
-#endif
+	/* create d3d device */
+	D3DPRESENT_PARAMETERS d3dpp;
+	ZeroMemory (&d3dpp, sizeof(d3dpp));
+	d3dpp.hDeviceWindow = hwnd;
+    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
+
+	if (/*windowed*/1) 
+	{
+		d3dpp.Windowed = TRUE;
+		d3dpp.BackBufferWidth = 800;
+		d3dpp.BackBufferHeight = 600;
+		d3dpp.PresentationInterval = 0;
+		SetWindowPos( d3dappi.hwnd, HWND_TOP, 0, 0, /*d3dpp.BackBufferWidth, d3dpp.BackBufferHeight*/800, 600, SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW );
+	}
+
+	d3dpp.BackBufferCount = 1;
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8; // 32 bit
+	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+
+	d3dpp.EnableAutoDepthStencil = true;
+	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+
+	LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE, &d3dpp, &d3dappi.lpD3DDevice);
+
+	if(FAILED(LastError)) 
+	{
+		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
+	}
+	if(FAILED(LastError)) 
+	{
+		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+			D3DCREATE_MIXED_VERTEXPROCESSING , &d3dpp, &d3dappi.lpD3DDevice);
+	}
+	if(FAILED(LastError)) 
+	{
+		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+			D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
+	}
+
+	*D3DApp = &d3dappi;
+
+	bD3DAppInitialized = TRUE;
+	d3dappi.bRenderingIsOK = TRUE;
+
+	return TRUE;
+}
+
+HRESULT FlipBuffers()
+{
+	return d3dappi.lpD3DDevice->Present(NULL, NULL, NULL, NULL);
 }
 
 /***************************************************************************/
@@ -373,7 +394,7 @@ D3DAppICreateDevice(int driver)
 	D3DPRESENT_PARAMETERS d3dpp;
 
 	ZeroMemory (&d3dpp, sizeof(d3dpp));
-	d3dpp.hDeviceWindow = d3dappi.;
+	d3dpp.hDeviceWindow = d3dappi.hwnd;
     d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
 	return TRUE;
@@ -924,12 +945,12 @@ exit_with_error:
 char buf[100];
 HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort)
 {
-	return d3dapp->lpD3DDevice->lpVtbl->GetViewport( d3dapp->lpD3DDevice, returnViewPort );
+	return d3dapp->lpD3DDevice->GetViewport( returnViewPort );
 }
 
 HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort)
 {
-	return d3dapp->lpD3DDevice->lpVtbl->SetViewport( d3dapp->lpD3DDevice, newViewPort );
+	return d3dapp->lpD3DDevice->SetViewport( newViewPort );
 }
 /*
 HRESULT FSSetMatrix(D3DMATRIXHANDLE matrixHandle, D3DMATRIX *matrix)
@@ -940,22 +961,22 @@ HRESULT FSSetMatrix(D3DMATRIXHANDLE matrixHandle, D3DMATRIX *matrix)
 
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)
 {
-	return d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, type, matrix);
+	return d3dappi.lpD3DDevice->SetTransform(type, matrix);
 }
 
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 {
-	return d3dappi.lpD3DDevice->lpVtbl->GetTransform(d3dappi.lpD3DDevice, type, matrix);
+	return d3dappi.lpD3DDevice->GetTransform(type, matrix);
 }
 
 HRESULT FSBeginScene()
 {
-	return d3dappi.lpD3DDevice->lpVtbl->BeginScene(d3dappi.lpD3DDevice);
+	return d3dappi.lpD3DDevice->BeginScene();
 }
 
 HRESULT FSEndScene()
 {
-	return d3dappi.lpD3DDevice->lpVtbl->EndScene(d3dappi.lpD3DDevice);
+	return d3dappi.lpD3DDevice->EndScene();
 }
 /*
 HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
@@ -965,31 +986,19 @@ HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
 */
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int size)
 {
-	/*
-	HRESULT CreateVertexBuffer(
-	  UINT Length,
-	  DWORD Usage,
-	  DWORD FVF,
-	  D3DPOOL Pool,
-	  IDirect3DVertexBuffer9** ppVertexBuffer,
-	  HANDLE* pSharedHandle
-	);
-*/
-	//LastError = d3d.lpD3DDevice->CreateVertexBuffer(MAX_VERTEXES * sizeof(D3DTLVERTEX),D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &d3d.lpD3DVertexBuffer, NULL);
-//	return d3dappi.lpD3DDevice->CreateVertexBuffer(size * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
-	return d3dappi.lpD3DDevice->lpVtbl->CreateVertexBuffer(d3dappi.lpD3DDevice, (size * sizeof(D3DLVERTEX)), (D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY), D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	return d3dappi.lpD3DDevice->CreateVertexBuffer(size * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 }
 
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LPD3DLVERTEX verts)
 {
 	//return vertexBufer->Lock(0, 0, verts, D3DLOCK_DISCARD);
-	return renderObject->lpD3DVertexBuffer->lpVtbl->Lock(&renderObject->lpD3DVertexBuffer, 0, 0, verts, D3DLOCK_DISCARD);
+	return renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
 }
 
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
 //	return vertexBufer->Unlock();
-	return renderObject->lpD3DVertexBuffer->lpVtbl->Unlock(renderObject->lpD3DVertexBuffer);
+	return renderObject->lpD3DVertexBuffer->Unlock();
 }
 
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
@@ -997,27 +1006,27 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 	HRESULT LastError;
 
 	/* set source */
-	LastError = d3dappi.lpD3DDevice->lpVtbl->SetStreamSource(d3dappi.lpD3DDevice, 0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
+	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
 	if (FAILED(LastError))
 	{
 		return LastError;
 	}
 
-	LastError = d3dappi.lpD3DDevice->lpVtbl->SetFVF(d3dappi.lpD3DDevice, D3DFVF_LVERTEX);
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
 	if (FAILED(LastError))
 	{
 		return LastError;
 	}
 
 	/* set texture */
-	LastError = d3dappi.lpD3DDevice->lpVtbl->SetTexture(d3dappi.lpD3DDevice, 0, &renderObject->texture);
+	LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->texture);
 	if (FAILED(LastError))
 	{
 		return LastError;
 	}
 
 	/* draw it */
-	LastError = d3dappi.lpD3DDevice->lpVtbl->DrawPrimitive(d3dappi.lpD3DDevice, D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts * 3); // primite count, so multiply by 3
+	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts * 3); // primite count, so multiply by 3
 	if (FAILED(LastError))
 	{
 		return LastError;
@@ -1029,7 +1038,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
 	if (renderObject->lpD3DVertexBuffer)
 	{
-		renderObject->lpD3DVertexBuffer->lpVtbl->Release(renderObject->lpD3DVertexBuffer);
+		renderObject->lpD3DVertexBuffer->Release();
 		renderObject->lpD3DVertexBuffer = NULL;
 	}
 	
@@ -1039,4 +1048,5 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	/* don't do this - we need a texture manager and handles to textures */
 	renderObject->texture = NULL;
 }
-#endif
+
+};

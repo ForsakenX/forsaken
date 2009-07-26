@@ -59,7 +59,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
 /*===================================================================
 		Globals...	
 ===================================================================*/
-D3DCOLOR	GroupColours[ 8 ] = {
+D3DCOLOR GroupColours[ 8 ] = {
 
 	RGBA_MAKE( 0,128,0,255 ),
 	RGBA_MAKE( 0,0,128,255 ),
@@ -290,15 +290,15 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	blf;
 	float	glf;
 	float	rlf;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	VECTOR	CellIndex;
 	float	distance;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+    LPD3DLVERTEX	lpPointer = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	VERTEXCELL * VertexCellPnt;
 	uint16 * VertexIndexPnt;
@@ -356,15 +356,20 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	execbuf = Mloadheader->Group[group].num_execbufs;
 	while( execbuf--)
 	{
-		memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-		debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//		memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//		debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		/*	lock the execute buffer	*/
 
 //		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-		if (FSLockExecuteBuffer(Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-			return FALSE;
+//		if (FSLockExecuteBuffer(Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			return FALSE;
 
-		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], lpPointer)))
+		{
+			return FALSE;
+		}	
+
+//		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 
 		VertexCellPnt = Mloadheader->Group[group].vertex_cell_pnt[execbuf];
 		OrgVertexIndexPnt = Mloadheader->Group[group].vertex_index_pnt[execbuf];
@@ -451,7 +456,7 @@ clear:					mov		eax, [esi]
 					{
 						while( vert --)
 						{
-							lpD3DLVERTEX->color = (D3DCOLOR) lpD3DLVERTEX2->dwReserved;
+//							lpD3DLVERTEX->color = (D3DCOLOR) lpD3DLVERTEX2->dwReserved;
 							lpD3DLVERTEX++;		
 							lpD3DLVERTEX2++;		
 						}
@@ -958,8 +963,12 @@ __asm
 			}
 		}
 		/*	unlock the execute buffer	*/
-		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			return FALSE;
+		if (FAILED(FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf])));
+		{
 			return FALSE;
+		}
 	}
 	
 	return TRUE;
@@ -975,16 +984,16 @@ __asm
 BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
+    LPD3DLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1012,14 +1021,18 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			{
 				return FALSE;
+			}
 
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1205,8 +1218,12 @@ PLOP:
 				XLightPnt = XLightPnt->NextVisible;
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	
@@ -1220,16 +1237,16 @@ PLOP:
 BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
+    LPD3DLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1257,14 +1274,18 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			{
 				return FALSE;
+			}
 
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1450,8 +1471,12 @@ PLOP2:
 				XLightPnt = XLightPnt->NextVisible;
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	
@@ -1468,9 +1493,9 @@ PLOP2:
 ===================================================================*/
 BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 {
-    LPD3DLVERTEX	lpPointer;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	D3DEXECUTEBUFFERDESC	debDesc;
+    LPD3DLVERTEX	lpPointer = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	int		group;
 	int		execbuf;
 	int		vert;
@@ -1480,14 +1505,18 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 		execbuf = MXAloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			{
 				return FALSE;
+			}
 
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1497,8 +1526,12 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 				lpD3DLVERTEX++;		
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	return TRUE;

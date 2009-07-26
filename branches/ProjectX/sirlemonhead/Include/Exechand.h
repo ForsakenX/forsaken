@@ -20,8 +20,8 @@
  * fn prototypes
  */
 void XExec_Init( void );
-BOOL XMakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , /*LPDIRECT3DDEVICE lpDev ,*/ LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size , char *in_file, int in_line ); // bjd
-void EXECRELEASE( LPDIRECT3DEXECUTEBUFFER Pnt, char *in_file, int in_line );
+//BOOL XMakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , /*LPDIRECT3DDEVICE lpDev ,*/ LPDIRECT3DEXECUTEBUFFER  * lpBuf , size_t size , char *in_file, int in_line ); // bjd
+//void EXECRELEASE( LPDIRECT3DEXECUTEBUFFER Pnt, char *in_file, int in_line );
 int UnMallocedExecBlocks( void );
 
 #else // DEBUG_ON

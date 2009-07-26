@@ -315,10 +315,20 @@ void WaterRelease( void )
 		free(WO->Verts);
 		free(WO->Vels);
 
+/*
 		if( WO->lpExBuf )
 		{
 			XRELEASE(WO->lpExBuf);
 		}
+*/
+		// abstract out
+		FSReleaseRenderObject(&WO->renderObject);
+/*
+		if (WO->renderObject.lpD3DVertexBuffer)
+		{
+			XRELEASE(WO->lpD3DVertexBuffer);
+		}
+*/
 		WO++;
 	}
 
@@ -354,32 +364,50 @@ void AddWaterLink(WATEROBJECT * WO)
 BOOL InitWaterObject(WATEROBJECT * WO)
 {
 	int x,y;
-	D3DEXECUTEDATA			d3dExData;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEDATA			d3dExData;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	LPD3DTRIANGLE	FacePnt;
 	LPD3DLVERTEX	lpD3DLVERTEX;
 	int			i;
     LPVOID lpBufStart, lpInsStart, lpPointer;
 
+	int vertsCount = 0;
+
 	WO->num_of_verts = WO->XVerts * WO->YVerts;
 	WO->Verts = (float*) calloc(  WO->num_of_verts , sizeof(float) );
 	WO->Vels = (float*) calloc( WO->num_of_verts , sizeof(float) );
 
+#if 0 
 	if (MakeExecuteBuffer( &debDesc, /*d3dappi.lpD3DDevice,*/ &WO->lpExBuf , 512 + ( WO->num_of_verts * sizeof(D3DLVERTEX) ) + ( ( (WO->XVerts-1)*(WO->YVerts-1)*2 ) * sizeof(D3DTRIANGLE) )  ) != TRUE ) // bjd
 		return FALSE;
+#endif
+	if (FAILED(FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts)))
+	{
+		return FALSE;
+	}
 
+/*
 	memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 	debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	
+*/
+
 	/*	lock the execute buffer	*/
 //	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
 // 		return FALSE; // bjd
+
+/*
 	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 		return FALSE;
-
+*/
+	if(FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, lpD3DLVERTEX)))
+	{
+		return FALSE;
+	}
+/*
 	lpBufStart = debDesc.lpData;
 	lpPointer = lpBufStart;
 	lpD3DLVERTEX = (LPD3DLVERTEX ) lpPointer;
+*/
 
 	for( x = 0 ; x < WO->XVerts ; x++ )
 	{
@@ -392,12 +420,14 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			lpD3DLVERTEX->tv = 0.0F;
 			lpD3DLVERTEX->color = RGBA_MAKE(128,128,128,128);
 			lpD3DLVERTEX->specular = RGBA_MAKE(128,128,128,128);
-			lpD3DLVERTEX->dwReserved = 0;
+//			lpD3DLVERTEX->dwReserved = 0;
 			
 			lpD3DLVERTEX++;
+
+			vertsCount++;
 		}
 	}
-	
+/*	
 	lpPointer = (void * )  lpD3DLVERTEX;			
 	lpInsStart = lpPointer;
 	OP_STATE_LIGHT(1, lpPointer);
@@ -422,6 +452,8 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 				
 
 	FacePnt = (LPD3DTRIANGLE ) lpPointer;
+*/
+
 	/*	copy the faces data into the execute buffer	*/
 
 	for( x = 0 ; x < WO->XVerts-1 ; x++ )
@@ -432,15 +464,16 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			FacePnt->v1 = i+WO->YVerts+1;
 			FacePnt->v2 = i+WO->YVerts;
 			FacePnt->v3 = i;
-			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 			FacePnt++;
 			FacePnt->v1 = i+1;
 			FacePnt->v2 = i+WO->YVerts+1;
 			FacePnt->v3 = i;
-			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 			FacePnt++;
 		}
 	}
+/*
 	lpPointer = (LPVOID) FacePnt;
 	if( CanCullFlag )
 	{
@@ -451,12 +484,22 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 //	    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
 //	    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
 	OP_EXIT(lpPointer);
-			
+*/			
 	/*	unlock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//		return FALSE;
+
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	{
 		return FALSE;
+	}
 
 	/*	set the data for the execute buffer	*/
+	WO->renderObject.startVert = 0;
+	WO->renderObject.numVerts = WO->num_of_verts;
+	WO->renderObject.texture = NULL;
+
+/*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
 	d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
 	d3dExData.dwVertexCount = (WO->XVerts*WO->YVerts);
@@ -464,9 +507,9 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
 	if ( WO->lpExBuf->lpVtbl->SetExecuteData(WO->lpExBuf, &d3dExData) != D3D_OK)
 		return FALSE;
+*/
+
 	return TRUE;
-
-
 }
 
 #ifdef OPT_ON
@@ -520,9 +563,9 @@ void GroupWaterProcessDisplay( uint16 group )
 void UpdateWaterMesh( WATEROBJECT * WO )
 {
 	int x,y;
- 	D3DEXECUTEBUFFERDESC	debDesc;
+// 	D3DEXECUTEBUFFERDESC	debDesc;
 	LPD3DLVERTEX	lpD3DLVERTEX;
-    LPVOID lpBufStart;
+//  LPVOID lpBufStart;
 	int col;
 	float dx, dy;
 	float u, v;
@@ -576,18 +619,26 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 		VertPnt += 2;
 	}
 
-
+/*
 	memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 	debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	
+*/
+
 	/*	lock the execute buffer	*/
 //	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
 //		return; // bjd
-	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
-		return FALSE;
+//	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
+//		return FALSE;
 
+	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, lpD3DLVERTEX)))
+	{
+		return;
+	}
+
+/*
 	lpBufStart = debDesc.lpData;
 	lpD3DLVERTEX = ( LPD3DLVERTEX )lpBufStart;
+*/
 	VertPnt = WO->Verts;
 	
 	for( x = 0 ; x < WO->XVerts ; x++ )
@@ -620,8 +671,12 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 		}
 	}
 	/*	unlock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//		return;
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	{
 		return;
+	}
 }
 
 /*===================================================================
@@ -638,16 +693,33 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 	TempWorld._43 = Wo->Pos.z;
 
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
-	if (FSSetMatrix(hWorld, &TempWorld) != D3D_OK)
+//	if (FSSetMatrix(hWorld, &TempWorld) != D3D_OK)
+//		return;
+
+	if (FAILED(FSSetMatrix(D3DTS_WORLD, &TempWorld)))
+	{
 		return;
+	}
+
 	/*	Execute it	*/
 //	if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-			return;
+
+//	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+//			return;
+
+	if (FAILED(FSDrawVertexBuffer(&Wo->renderObject)))
+	{
+		return;
+	}
 
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
-	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
+//	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
+//		return;
+
+	if (FAILED(FSSetMatrix(D3DTS_WORLD, &identity)))
+	{
 		return;
+	}
 }
 
 

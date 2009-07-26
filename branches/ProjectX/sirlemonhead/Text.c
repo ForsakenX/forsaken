@@ -43,8 +43,10 @@ extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
 
+/* bjd
 extern LPDIRECTDRAWSURFACE     lpDDSTwo;       // Font Bitmap
 extern LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
+*/
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
@@ -197,12 +199,10 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 			Zeros = 1;
 			if( bPolyText && PolyText[MyGameStatus])
 			{
-
 				AddScreenPolyText( (uint16) (num+1), (float) x , (float) y, r, g, b, 255 );
-
-			
-			}else{
-				
+			}
+			else
+			{	
 				src.top = TextSrcY[col][num+1];
 				src.left = TextSrcX[col][num+1];
 				
@@ -210,6 +210,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 				src.bottom = src.top+FontSourceHeight;
 				while( 1 )
 				{
+/* bjd - CHECK
 					ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
 				    if( ddrval == DD_OK )
 				        break;
@@ -222,6 +223,8 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 					}
 				    if( ddrval != DDERR_WASSTILLDRAWING )
 				        break;
+*/
+					break;
 				}
 			}
 			x += FontWidth;
@@ -301,7 +304,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
     RECT    src, dest;
     HRESULT ddrval;
 	uint8 r , g , b;
-    DDBLTFX fx;
+//    DDBLTFX fx;
 	BOOL ignore;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
@@ -337,8 +340,8 @@ int Print4x5Text( char * Text , int x , int y , int color )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-				memset(&fx, 0, sizeof(DDBLTFX));
-				fx.dwSize = sizeof(DDBLTFX);
+//				memset(&fx, 0, sizeof(DDBLTFX));
+//				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -366,6 +369,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 				
 				while( !ignore )
 				{
+/* bjd - CHECK
 					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
 					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC | DDBLT_WAIT, &fx );
 					if( ddrval == DD_OK )
@@ -379,6 +383,8 @@ int Print4x5Text( char * Text , int x , int y , int color )
 						break;
 					}
 					if( ddrval != DDERR_WASSTILLDRAWING )
+						break;
+*/					
 						break;
 				}
 			}
@@ -402,7 +408,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
     RECT    src, dest;
     HRESULT ddrval;
 	uint8 r , g , b;
-    DDBLTFX fx;
+//    DDBLTFX fx;
 	BOOL ignore;
 	int dummy;
 
@@ -440,8 +446,8 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-				memset(&fx, 0, sizeof(DDBLTFX));
-				fx.dwSize = sizeof(DDBLTFX);
+//				memset(&fx, 0, sizeof(DDBLTFX));
+//				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -467,6 +473,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
  				
 				while( !ignore )
 				{
+/* bjd - CHECK
 					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
 					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
 				    if( ddrval == DD_OK )
@@ -481,6 +488,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 					}
 				    if( ddrval != DDERR_WASSTILLDRAWING )
 				        break;
+*/						break;
 				}
 			}
 		}
@@ -918,6 +926,7 @@ void PrintScoreSort( void )
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
 ===================================================================*/
+#if 0 // bjd
 void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface )
 {
 	int i;
@@ -967,6 +976,7 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD fla
 		x += FontWidth;
 	}
 }
+#endif
 
 /*===================================================================
 	Procedure	:		Re-Init the font surface...
@@ -1003,18 +1013,22 @@ void ReInitFont(void)
 
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
+/* bjd - CHECK
 		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font512.bmp" );
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
 		FontSourceHeight = 8;
+*/
 	}else
 	{
+/* bjd - CHECK
 		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font.bmp" );
 		FontWidth = 4;
 		FontHeight = 5;
 		FontSourceWidth = 4;
 		FontSourceHeight = 5;
+*/
 	}
 }
 
@@ -2163,6 +2177,7 @@ void DisplayConnectionStatus( int num , int x , int y)
 		src.right = src.left + 4;
 		while( 1 )
 		{
+/* bjd - CHECK
 			ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y+offset, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
 			if( ddrval == DD_OK )
 				break;
@@ -2175,8 +2190,9 @@ void DisplayConnectionStatus( int num , int x , int y)
 			}
 			if( ddrval != DDERR_WASSTILLDRAWING )
 				break;
+*/
+			break;
 		}
-
 	}
 }
 
@@ -2188,7 +2204,8 @@ void DisplayConnectionStatus( int num , int x , int y)
 ===================================================================*/
 void InitFont( BOOL OverridePolytext )
 {
-	LPDIRECTDRAWPALETTE ddpal;
+#if 0 // bjd
+//	LPDIRECTDRAWPALETTE ddpal;
 	uint16 i;
 	uint8 e;
 	int x,y;
@@ -2472,6 +2489,7 @@ void InitFont( BOOL OverridePolytext )
 		TextSrcY[col][(uint8)'ñ'] = (7*(FontSourceHeight*3))+FontSourceHeight;
 		TextSrcX[col][(uint8)'ñ'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
 	}
+#endif
 }
 
 

@@ -93,11 +93,11 @@ extern "C" {
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
 	extern  BOOL	DontColourKey;
-	extern	BOOL	TripleBuffer;
+	BOOL	TripleBuffer;
 	extern	BOOL	PolygonText;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
-	extern BOOL CanDoStrechBlt;
+//	extern BOOL CanDoStrechBlt;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
@@ -147,7 +147,7 @@ BOOL bOnlyEmulation			= FALSE;
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(void);
 static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
-static BOOL AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lpViewport, LPVOID lpContext);
+static BOOL AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
@@ -295,8 +295,8 @@ FAILURE:
 	if ( UnMallocedExecBlocks() )
 		DebugPrintf( "Un-malloced Exec blocks found!" );
 
-	if ( UnMallocedDDSurfBlocks() )
-		DebugPrintf( "Un-malloced DDSurf blocks found!" );
+//	if ( UnMallocedDDSurfBlocks() )
+//		DebugPrintf( "Un-malloced DDSurf blocks found!" );
 
 	if ( UnMallocedSBufferBlocks() )
 		DebugPrintf( "Un-malloced SBuffer blocks found!" );
@@ -588,7 +588,7 @@ static BOOL breakpad_init( void )
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
-	DWORD dwPlatform, dwVersion;
+//	DWORD dwPlatform, dwVersion;
 
 	// Appears to be a complete fuckup...
 	// Only used in two other places...
@@ -609,7 +609,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// special debuggin routines
 	XMem_Init();
 	XExec_Init();
-	DDSurf_Init();
+//	DDSurf_Init();
 	XSBuffer_Init();
 
 #endif
@@ -618,6 +618,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if FAILED( CoInitialize(NULL) )
 		return FALSE;
 
+/* bjd
 	// check directx version
 	GetDXVersion( &dwVersion, &dwPlatform );
 	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
@@ -628,7 +629,8 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		Msg("You need to install Direct X 6 or later.");
 		return FALSE;
 	}
-	
+*/
+
 	// setup globals used by application
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
@@ -947,7 +949,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// don't try to scale blitted text
 		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
 		{
-			CanDoStrechBlt = FALSE;
+//			CanDoStrechBlt = FALSE;
 		}
 
 		// no compound sound buffer
@@ -978,13 +980,14 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				DebugPrintf("Command Line: local port set to %s\n", local_port_str.text);
 			}
 
+/*
 			// selecte your d3d/ddraw device
 			else if ( sscanf( option, "dev:%d", &num ) == 1 )
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
 			}
-
+*/
 			// sleep time for every loop
 			else if ( sscanf( option, "sleep:%d", &cliSleep ))
 			{
@@ -1094,11 +1097,18 @@ static BOOL CreateD3DApp(void)
      * viewport and the example's execute buffers.
      */
 
-    if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, AfterDeviceCreated,
-                              NULL, BeforeDeviceDestroyed, NULL, &d3dapp)) {
+#if 0
+    if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, /*AfterDeviceCreated,
+                              NULL, BeforeDeviceDestroyed, NULL,*/ &d3dapp)) {
         ReportD3DAppError();
         return FALSE;
     }
+#endif
+
+	if (!Init3DRenderer(myglobs.hWndMain, &d3dapp))
+	{
+		return FALSE;
+	}
 
 	/*
      * Allow the sample to override the default render state and other
@@ -1141,9 +1151,10 @@ static BOOL CreateD3DApp(void)
 BOOL SplashOnceOnly = TRUE;
 
 static BOOL
-AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpContext)
+AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
 {
-
+	return TRUE;
+#if 0 // bjd
 	LPDIRECT3DVIEWPORT lpD3DViewport;
     HRESULT rval;
 
@@ -1204,6 +1215,7 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
 	}
 
     return TRUE;
+#endif
 }
 
 /*
@@ -1220,7 +1232,7 @@ BeforeDeviceDestroyed(LPVOID lpContext)
     ReleaseView();
 
     // Since we created the viewport it is our responsibility to release it
-    d3dapp->lpD3DViewport->Release();
+//bjd    d3dapp->lpD3DViewport->Release();
 
 	//
     return TRUE;
@@ -1245,7 +1257,7 @@ static BOOL RenderLoop()
     }
 
     // Call the sample's RenderScene to render this frame
-    if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
+    if (!RenderScene(/*d3dapp->lpD3DDevice, d3dapp->lpD3DViewport*/))
 	{
         Msg("RenderScene failed.\n");
 		DebugPrintf("RenderScene: failed.");
@@ -1264,7 +1276,8 @@ static BOOL RenderLoop()
 		if ((	! PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	) && ! PreventFlips	)
 		{
 			// this is the actual call to render a frame...
-			if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
+			//if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
+			if (FAILED(FlipBuffers()))
 			{
 				Msg("!D3DAppShowBackBuffer");
 				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");

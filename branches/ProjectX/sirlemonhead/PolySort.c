@@ -35,8 +35,8 @@ MATRIX	PolySortMatrix;
 
 int	CurrentPolySortPrim = 0;
 
-D3DEXECUTEBUFFERDESC debDesc;
-LPDIRECT3DEXECUTEBUFFER PolySortExec = NULL;
+//D3DEXECUTEBUFFERDESC debDesc;
+//LPDIRECT3DEXECUTEBUFFER PolySortExec = NULL;
 
 /*===================================================================
 	Function	:	Apply Matrix to a Vector
@@ -93,12 +93,13 @@ void	ReleasePolySort( void )
 		free( PolySortPrims);
 		PolySortPrims = NULL;
 	}
+/* bjd - unused?
 	if( PolySortExec )
 	{
 		XRELEASE(PolySortExec );
 		PolySortExec = NULL;
 	}
-
+*/
 }
 
 /*===================================================================

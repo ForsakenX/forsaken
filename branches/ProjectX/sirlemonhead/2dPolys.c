@@ -36,8 +36,8 @@ extern	VECTOR				Camera_Dir;
 extern	VECTOR				Forward;
 extern	VECTOR				SlideUp;
 extern	VECTOR				SlideLeft;
-extern	D3DMATERIALHANDLE	hMat2;
-extern	D3DTEXTUREHANDLE	bTex;
+//extern	D3DMATERIALHANDLE	hMat2;
+//extern	D3DTEXTUREHANDLE	bTex;
 extern	BYTE				WhoIAm;
 extern	TLOADHEADER			Tloadheader;
 extern	FRAME_INFO	*		Troj_Exp_Header;
@@ -1567,8 +1567,8 @@ void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
-								 /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort ) // bjd
+BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group
+								 /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
 {
 	int16	TPage;
 	uint16	i;
@@ -1578,12 +1578,16 @@ BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
 
 	while( 1 )
 	{
- 		if( !FmPolyDispGroupClipped( Group, ExecBuff, &TPage, &i ) )
+ 		if( !FmPolyDispGroupClipped( Group, renderObject, &TPage, &i ) )
 			return( TRUE );
 
 //			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-				return FALSE;
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//				return FALSE;
+		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		{
+			return FALSE;
+		}
 	}
 
 	return( FALSE );
@@ -1596,8 +1600,7 @@ BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
-								   /*LPDIRECT3DDEVICE D3D_Device,*/ LPDIRECT3DVIEWPORT D3D_ViewPort )
+BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
 {
 	int16	TPage;
 	uint16	i;
@@ -1607,12 +1610,16 @@ BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 
 	while( 1 )
 	{
- 		if( !FmPolyDispGroupUnclipped( ExecBuff, &TPage, &i ) )
+ 		if( !FmPolyDispGroupUnclipped( renderObject, &TPage, &i ) )
 			return( TRUE );
 
 //			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-				return FALSE;
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//				return FALSE;
+		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		{
+			return FALSE;
+		}
 	}
 
 	return( FALSE );
@@ -1626,7 +1633,7 @@ BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 				:	uint16	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextFmPoly )
+BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -1651,8 +1658,8 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	MATRIX			MatrixCopy;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
@@ -1707,21 +1714,27 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE ); // bjd
-	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	{
+		return FALSE;
+	}
 		
-	lpBufStart = ExecBuffer_debdesc.lpData;
+//	lpBufStart = ExecBuffer_debdesc.lpData;
 	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
 	lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
+*/
 	}
 
 /*===================================================================
@@ -1735,6 +1748,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 
 		if( NumVerts )
 		{
+/* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -1742,7 +1756,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 		   	OP_STATE_RENDER( 1, lpPointer );
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-	 
+*/
 	   		FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextFmPoly;
@@ -1905,7 +1919,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
@@ -1915,7 +1929,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
@@ -1925,7 +1939,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 							
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
@@ -1935,18 +1949,18 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 	  
 				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
 				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+//				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			FmPolyFacePnt++;
 				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 				   			FmPolyFacePnt->v2 = ( StartVert + 2 );
 				   			FmPolyFacePnt->v3 = ( StartVert + 3 );
-				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+//				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			FmPolyFacePnt++;
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
@@ -1954,12 +1968,12 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 								FmPolyFacePnt->v2 = ( StartVert + 3 );
 					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+//					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			FmPolyFacePnt++;
 					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
 					   			FmPolyFacePnt->v3 = ( StartVert + 1 );
-					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+//					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
 							}
 			
@@ -1980,15 +1994,22 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 
 	if( CanCullFlag )
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
+*/
 	}
 
-	OP_EXIT( lpPointer );
+//	OP_EXIT( lpPointer );
 
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	{
+		return FALSE;
+	}
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -1997,7 +2018,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-
+*/
 	*TPage = Count;
 	*NextFmPoly = i;
 
@@ -2011,7 +2032,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 				:	uint16	*					Current FmPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextFmPoly )
+BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2036,8 +2057,8 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	MATRIX			MatrixCopy;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
@@ -2092,20 +2113,26 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
-	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	{
+		return FALSE;
+	}
 		
-	lpBufStart = ExecBuffer_debdesc.lpData;
+//	lpBufStart = ExecBuffer_debdesc.lpData;
 	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
 	lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
+*/
 	}
 
 /*===================================================================
@@ -2119,6 +2146,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 
 		if( NumVerts )
 		{
+/* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2126,7 +2154,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 		   	OP_STATE_RENDER( 1, lpPointer );
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-	 
+*/	 
 	   		FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextFmPoly;
@@ -2289,7 +2317,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
@@ -2299,7 +2327,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
@@ -2309,7 +2337,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 							
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
@@ -2319,18 +2347,18 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 			
 					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
 					   		FmPolyFacePnt->v2 = ( StartVert + 1 );
 					   		FmPolyFacePnt->v3 = ( StartVert + 2 );
-					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+//					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   		FmPolyFacePnt++;
 					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
 					   		FmPolyFacePnt->v2 = ( StartVert + 2 );
 					   		FmPolyFacePnt->v3 = ( StartVert + 3 );
-					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+//					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   		FmPolyFacePnt++;
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
@@ -2338,12 +2366,12 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
 								FmPolyFacePnt->v2 = ( StartVert + 3 );
 						   		FmPolyFacePnt->v3 = ( StartVert + 2 );
-						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+//						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 						   		FmPolyFacePnt++;
 						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
 						   		FmPolyFacePnt->v2 = ( StartVert + 2 );
 						   		FmPolyFacePnt->v3 = ( StartVert + 1 );
-						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+//						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 						   		FmPolyFacePnt++;
 							}
 			
@@ -2364,15 +2392,18 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 
 	if( CanCullFlag )
 	{
+/* bjd - CHECK
 		OP_STATE_RENDER( 1, lpPointer);
 		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
+*/
 	}
 
-	OP_EXIT( lpPointer );
+//	OP_EXIT( lpPointer );
 
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -2381,7 +2412,11 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-
+*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	{
+		return FALSE;
+	}
 	*TPage = Count;
 	*NextFmPoly = i;
 

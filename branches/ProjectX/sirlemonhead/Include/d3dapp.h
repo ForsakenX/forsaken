@@ -21,12 +21,14 @@
 #ifndef __D3DAPP_H__
 #define __D3DAPP_H__
 
-#include <ddraw.h>
-#include "d3d.h"
+//#include <ddraw.h>
+#include <d3d9.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+typedef float D3DVALUE, *LPD3DVALUE;
 
 /*
  * DEFINES
@@ -57,10 +59,12 @@ extern "C" {
  * D3DAppD3DDriver structure
  * Describes a D3D driver
  */
+
+#if 0 // bjd
 typedef struct tagD3DAppD3DDriver {
     char Name[30];      /* short name of the driver */
     char About[50];     /* short string about the driver */
-    D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
+	D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
     GUID Guid;          /* it's GUID */
     BOOL bIsHardware;   /* does this driver represent a hardware device? */
     BOOL bDoesTextures; /* does this driver do texture mapping? */
@@ -69,11 +73,30 @@ typedef struct tagD3DAppD3DDriver {
     BOOL bCanDoWindow;  /* can it render to Window's display depth? */
 	BOOL bTransparency; // Does this Driver do Colour Key Transparency on Textures?
 } D3DAppD3DDriver;
+#endif
+
+typedef int D3DMATRIXHANDLE;
+
+typedef struct _D3DVIEWPORT { 
+    DWORD    dwSize; 
+    DWORD    dwX; 
+    DWORD    dwY; 
+    DWORD    dwWidth; 
+    DWORD    dwHeight; 
+    D3DVALUE dvScaleX; 
+    D3DVALUE dvScaleY; 
+    D3DVALUE dvMaxX; 
+    D3DVALUE dvMaxY; 
+    D3DVALUE dvMinZ; 
+    D3DVALUE dvMaxZ; 
+} D3DVIEWPORT, *LPD3DVIEWPORT; 
 
 /*
  * D3DAppTextureFormat stucture
  * Describes a texture format
  */
+
+#if 0 //bjd
 typedef struct tagD3DAppTextureFormat {
     DDSURFACEDESC ddsd; /* DDSURFACEDESC for complete information */
     BOOL bPalettized;   /* is this format palettized */
@@ -83,6 +106,7 @@ typedef struct tagD3DAppTextureFormat {
     int AlphaBPP;       /*                      and green bits per pixel */
     int IndexBPP;       /* number of bits in palette index */
 } D3DAppTextureFormat;
+#endif
 
 /*
  * D3DAppMode structure
@@ -103,39 +127,40 @@ typedef struct tagD3DAppMode {
  */
 typedef struct tagD3DAppInfo {
     HWND                    hwnd;          /*handle of window being managed*/
-    /*
-     * Direct3D objects and information
-     */
-    LPDIRECT3D              lpD3D;         /* D3D object */
-    LPDIRECT3DDEVICE        lpD3DDevice;   /* D3D device */
-    LPDIRECT3DVIEWPORT      lpD3DViewport; /* D3D viewport, created by
-                                              application */
+
+	/*
+	* Direct3D objects and information
+	*/
+    LPDIRECT3D9              lpD3D;         /* D3D object */
+    LPDIRECT3DDEVICE9        lpD3DDevice;   /* D3D device */
+	D3DVIEWPORT9			 D3DViewport; /* D3D viewport, created by application */
     int                     NumDrivers;    /* number of D3D drivers avail. */
     int                     CurrDriver;    /* number of curr. D3D driver */
-    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/
-    D3DAppD3DDriver         ThisDriver;    /* description of this driver,
-                                           identical to Driver[CurrDriver] */
+//    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/
+//    D3DAppD3DDriver         ThisDriver;    /* description of this driver, identical to Driver[CurrDriver] */
 
     int                     NumTextureFormats; /* num texture formats avail*/
     int                     CurrTextureFormat; /* current texture format
                   will only change if driver changes or when app changes it*/
-    D3DAppTextureFormat     TextureFormat[D3DAPP_MAXTEXTUREFORMATS];
+//    D3DAppTextureFormat     TextureFormat[D3DAPP_MAXTEXTUREFORMATS];
                                       /* description of all avail. formats */
-    D3DAppTextureFormat     ThisTextureFormat; /* description of this format,
-                             identical to TextureFormat[CurrTextureFormat] */
+//    D3DAppTextureFormat     ThisTextureFormat; /* description of this format, identical to TextureFormat[CurrTextureFormat] */
 
     /*
      * DirectDraw objects and information
      */
-    LPDIRECTDRAW            lpDD;          /* DirectDraw object */
+//    LPDIRECTDRAW            lpDD;          /* DirectDraw object */
     BOOL                    bIsPrimary;    /* Is this the primary DD device?
                If FALSE, we're using a hardware DD device that cannot
                display a window and so only fullscreen modes are available */
+
+#if 0 // dont need
     LPDIRECTDRAWSURFACE     lpFrontBuffer; /* front buffer surface */
     LPDIRECTDRAWSURFACE     lpBackBuffer;  /* back buffer surface */
     LPDIRECTDRAWSURFACE     lpZBuffer;     /* z-buffer surface */
     BOOL                    bBackBufferInVideo; /* back buf in video mem? */
     BOOL                    bZBufferInVideo;    /* is Z-buf in video mem? */
+#endif
 
     int                     NumModes; /* number of available display modes */
     int                     CurrMode; /* number of current display mode (only
@@ -173,8 +198,9 @@ typedef struct tagD3DAppRenderState {
     BOOL             bZBufferOn;    /* Z buffer is on */
     BOOL             bPerspCorrect; /* perspective correction is on */
     D3DSHADEMODE     ShadeMode;     /* flat, gouraud, phong? */
-    D3DTEXTUREFILTER TextureFilter; /* linear or bi-linear texture filter */
-    D3DTEXTUREBLEND  TextureBlend;  /* Use shade mode or copy mode? */
+//    D3DTEXTUREFILTER TextureFilter; /* linear or bi-linear texture filter */
+	D3DTEXTUREFILTERTYPE TextureFilter;
+//?    D3DTEXTUREBLEND  TextureBlend;  /* Use shade mode or copy mode? */
     D3DFILLMODE      FillMode;      /* solid, lines or points? */
     BOOL             bDithering;    /* dithering is on */
     BOOL             bSpecular;     /* specular highlights are on */
@@ -237,13 +263,15 @@ typedef struct tagD3DAppRenderState {
 #define D3DAPP_ONLYSYSTEMMEMORY 0x00000001
 #define D3DAPP_ONLYD3DEMULATION 0x00000002
 #define D3DAPP_ONLYDDEMULATION  0x00000004
+
+
 BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
-                          BOOL(*DeviceCreateCallback)(int, int,
+                          /*BOOL(*DeviceCreateCallback)(int, int,
                                                       LPDIRECT3DVIEWPORT*,
                                                       LPVOID),
                           LPVOID lpCreateContext,
                           BOOL(*DeviceDestroyCallback)(LPVOID),
-                          LPVOID lpDestroyContext,
+                          LPVOID lpDestroyContext,*/
                           D3DAppInfo** D3DApp);
 
 /*
@@ -345,7 +373,7 @@ char* D3DAppErrorToString(HRESULT error);
  * Creates a surface described by ddsd.  Will force the surface into
  * systemmemory if D3DApp was initialized with D3DAPP_ONLYSYSTEMMEMORY.
  */
-BOOL D3DAppCreateSurface(DDSURFACEDESC *ddsd, LPDIRECTDRAWSURFACE *lplpSurf);
+//bjd BOOL D3DAppCreateSurface(DDSURFACEDESC *ddsd, LPDIRECTDRAWSURFACE *lplpSurf);
 
 /*
  * D3DAppLastError

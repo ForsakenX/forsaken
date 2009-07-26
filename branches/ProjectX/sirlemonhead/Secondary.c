@@ -75,8 +75,8 @@ extern	VECTOR			SlideUp;
 extern	VECTOR			SlideDown;
 extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
-extern	D3DMATERIALHANDLE hMat2;
-extern	D3DTEXTUREHANDLE bTex;
+//extern	D3DMATERIALHANDLE hMat2;
+//extern	D3DTEXTUREHANDLE bTex;
 extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;
 extern	MCLOADHEADER	MCloadheadert0;
@@ -6267,8 +6267,8 @@ void DispEnhancedCrosshair( void )
 
 	if( EnhancedXHair )
 	{
-		Center_X = ( CurrentCamera.Viewport.dwX + ( CurrentCamera.Viewport.dwWidth / 2.0F ) );
-		Center_Y = ( CurrentCamera.Viewport.dwY + ( CurrentCamera.Viewport.dwHeight / 2.0F ) );
+		Center_X = ( CurrentCamera.Viewport.X + ( CurrentCamera.Viewport.Width / 2.0F ) );
+		Center_Y = ( CurrentCamera.Viewport.Y + ( CurrentCamera.Viewport.Height / 2.0F ) );
 	
 		if( HudScrPoly == (uint16) -1 )
 		{

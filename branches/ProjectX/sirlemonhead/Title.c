@@ -223,7 +223,8 @@ extern	FRAME_INFO	*	Title_Chars2_Header;
 extern	OFF_FILES Title_OffsetFiles[];
 extern	CAMERA	CurrentCamera;
 void Build_View();
-extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
+//extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
+extern	RENDEROBJECT RenderBufs[2];
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
@@ -255,10 +256,10 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-extern	LPDIRECTDRAWSURFACE     lpDDSTwo;
-extern	DDCOLORKEY				ddcolorkey;
-LPDIRECTDRAWSURFACE		lpDDSTitleFont;
-extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
+//bjd extern	LPDIRECTDRAWSURFACE     lpDDSTwo;
+//bjd extern	DDCOLORKEY				ddcolorkey;
+//bjd LPDIRECTDRAWSURFACE		lpDDSTitleFont;
+//bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
 extern	int16	ModeCase;
 extern	int16	ModesX[8];
 extern	int16	ModesY[8];
@@ -277,9 +278,11 @@ extern	D3DMATRIXHANDLE hView;
 extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
 BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
+/* bjd
 extern	LPDIRECT3DEXECUTEBUFFER lpD3DNormCmdBuf;
 extern	LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
 extern	LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
+*/
 extern	MATRIX	MATRIX_Identity;
 extern	D3DVIEWPORT viewport;
 extern	MODEL	Models[];
@@ -495,7 +498,7 @@ void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy);
-BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
+//bjd BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
 
 BOOL DeleteSavedGame( LIST *l, int item );
 BOOL DeleteDemo( LIST *l, int item );
@@ -3683,9 +3686,10 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 BOOL
-InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView )
+InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
+           LPDIRECT3DVIEWPORT lpView*/ )
 {
+#if 0
     LPDIRECTDRAWPALETTE ddpal;
     D3DMATERIAL bmat;
     D3DMATERIALHANDLE hBmat;
@@ -3745,12 +3749,13 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 	// init vdu font for blitting if used...
 	if(!bPolyText)
 		InitTitleFont();
-
+#endif
 	return TRUE;
 }
 
 void InitTitleFont(void)
 {
+#if 0 // bjd
     LPDIRECTDRAWPALETTE ddpal;
 #if 0
 	//init the title font for blitting...
@@ -3807,7 +3812,7 @@ void InitTitleFont(void)
 	  LastError = lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
    	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
 	}
-
+#endif
 }
 
 void ReInitTitleFont (void)
@@ -3844,10 +3849,10 @@ void ReInitTitleFont (void)
 
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
+//bjd		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
 	}else
 	{
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
+//bjd		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
 	}
 }
 
@@ -3862,15 +3867,15 @@ ReleaseTitle(void)
    	int i;
 	
 	// only release font if not showing loading bar...
-	if ( !PreventFlips )
-		if ( lpDDSTwo )
-		{
-		 ReleaseDDSurf(lpDDSTwo);
-		 lpDDSTwo = NULL;
-		}
+//	if ( !PreventFlips )
+//		if ( lpDDSTwo )
+//		{
+//		 ReleaseDDSurf(lpDDSTwo);
+//		 lpDDSTwo = NULL;
+//		}
 
-	if(!bPolyText && lpDDSTitleFont)
-		ReleaseDDSurf(lpDDSTitleFont);
+//	if(!bPolyText && lpDDSTitleFont)
+//		ReleaseDDSurf(lpDDSTitleFont);
 
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
 	{
@@ -4929,30 +4934,38 @@ void MorphHoloLight(void)
 
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy)
 {
-
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	D3DLVERTEX		    *		VertPtr;
 	DstMloadheader = &ModelHeaders[ Model ];
-
+/*
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-
+*/
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-		return FALSE;
+//	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//		return FALSE;
 
-	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+	{
+		return FALSE;
+	}
+
+//	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
 	
 	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
 	
 	DstlpD3DLVERTEX->y = VertPtr->y + IncreaseBy;
 	
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	{
+		return FALSE;
+	}
    	
 	return TRUE;
 
@@ -5026,13 +5039,15 @@ uint8 QuickStart = QUICKSTART_None;
 BOOL IpOnCLI;
 BOOL DisplayTitle(void)
 {
+	return TRUE;
+#if 0 // bjd - CHECK IMPORTANT
 	uint16 i;
 /*
 	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
 	LPDIRECT3D lpD3D		  = d3dapp->lpD3D;
 	LPDIRECT3DDEVICE lpDev	  = d3dapp->lpD3DDevice;
 */
-    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+//    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
 
 	uint16	group;
 	MENUITEM *Item;
@@ -5211,6 +5226,7 @@ BOOL DisplayTitle(void)
 			return FALSE;
 		}
 
+/* bjd - check
 		if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport) != D3D_OK )
 		{
 #ifdef DEBUG_VIEWPORT
@@ -5220,7 +5236,7 @@ BOOL DisplayTitle(void)
 #endif
 			return FALSE;
 		}
-
+*/
 		if (ClearBuffers( TRUE, FALSE ) != TRUE )
 		{
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
@@ -5231,7 +5247,9 @@ BOOL DisplayTitle(void)
 
 		// reset all the normal execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
-		FSExecuteBuffer(lpD3DNormCmdBuf, /*lpView*/d3dapp->lpD3DViewport , D3DEXECUTE_CLIPPED);
+//		FSExecuteBuffer(lpD3DNormCmdBuf, /*lpView*/d3dapp->lpD3DViewport , D3DEXECUTE_CLIPPED);
+
+//		if (FAILED(FSDrawVertexBuffer(
 
 		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 		{
@@ -5443,6 +5461,7 @@ Event handling
 	}
 
 	return TRUE;
+#endif
 }
 
 static int SelectionColour( void )
@@ -8967,22 +8986,22 @@ void SetOurRenderStates( MENUITEM *item )
 	{
 		if ( !TriLinear && !BiLinearFiltering ) // mip map, no filter
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_MIPNEAREST;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPNEAREST;
 		}else if ( TriLinear )	// mip map, tri-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_LINEARMIPLINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEARMIPLINEAR;
 		}else if ( BiLinearFiltering )	// mip map, bi-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_MIPLINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPLINEAR;
 		}
 	}else
 	{
 		if ( BiLinearFiltering )	// bi-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
 		}else	// no filter
 		{
-		   myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
+//bjd		   myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
 		}	
 	}
 #else
@@ -10998,6 +11017,7 @@ void MakeTextureList( MENU *Menu )
 	TextureList.items = d3dapp->NumTextureFormats;
     for (i = 0; i < d3dapp->NumTextureFormats; i++)
 	{
+/* bjd - CHECK
         if (d3dapp->TextureFormat[i].bPalettized) {
 				sprintf( &TextureList.item[i][0] , "%d-bit Palettized" , d3dapp->TextureFormat[i].IndexBPP );
         } else {
@@ -11011,6 +11031,7 @@ void MakeTextureList( MENU *Menu )
 
 		if( i == d3dapp->CurrTextureFormat )
 			TextureList.selected_item = i;
+*/
 	}
 }
 
@@ -11723,12 +11744,12 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
 	config_set_int( "ScreenPosX",				d3dapp->pWindow.x );
 	config_set_int( "ScreenPosY",				d3dapp->pWindow.y );
-	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
-	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
-	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
-	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
-	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
-	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
+//bjd	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
+//bjd	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
+//bjd	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
+//bjd	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
+//bjd	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
+//bjd	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );
@@ -11796,8 +11817,8 @@ void SetDiscStatus(MENU *menu)
 ===================================================================*/
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -11828,16 +11849,20 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			}
 			if (NumberToExclude == EXCLUDE_ALL)
 				continue;
-		
+/*		
 			memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-
+*/
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-				return FALSE;
+//			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//				return FALSE;
 
-			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+			{
+				return FALSE;
+			}
+//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -11857,11 +11882,12 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			  			CurrentExclude = NULL;
 			  		else
 			  			CurrentExclude++;
-			  	}else
+			  	}
+				else
 			  	{
-			  	red = (uint8)((float)red * percent);
-			  	green = (uint8)((float)green * percent);
-			  	blue = (uint8)((float)blue * percent);
+			  		red = (uint8)((float)red * percent);
+			  		green = (uint8)((float)green * percent);
+			  		blue = (uint8)((float)blue * percent);
 			  	}
 			  
 				Colour = RGBA_MAKE( red, green, blue, alpha );
@@ -11874,9 +11900,12 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				VertPtr++;
 			}
 
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			
+//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			{
+				return FALSE;
+			}
 		}
 	}
 	return TRUE;
@@ -11963,8 +11992,8 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 
 BOOL MakeTranslucent( uint16 Model )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -11983,15 +12012,20 @@ BOOL MakeTranslucent( uint16 Model )
 		{
 			for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
+/*
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-
+*/
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//					return FALSE;
+				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+				{
 					return FALSE;
+				}
 
-				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -12023,9 +12057,12 @@ BOOL MakeTranslucent( uint16 Model )
 				}
 
 
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				
+//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+				if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 		return TRUE;
@@ -12037,16 +12074,21 @@ BOOL MakeTranslucent( uint16 Model )
 		{
 			for( ExecBuf = 0; ExecBuf < DstMxloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
-			
+/*			
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-
+*/
 //				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
 //								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-					return FALSE;
+//				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//					return FALSE;
 
-				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+				if (FAILED(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+				{
+					return FALSE;
+				}
+
+				//DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMxloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -12076,9 +12118,12 @@ BOOL MakeTranslucent( uint16 Model )
 				}
 
 
-				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				
+//				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+				if (FAILED(FSUnlockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 		return TRUE;
@@ -12088,8 +12133,8 @@ BOOL MakeTranslucent( uint16 Model )
 
 BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	LPD3DLVERTEX			VertPtr;
 	D3DCOLOR				Colour;
@@ -12098,15 +12143,19 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
-	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//		return FALSE;
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+	{
 		return FALSE;
+	}
 
-	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
+//	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
 	
 	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
@@ -12132,8 +12181,12 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 			
 	DstlpD3DLVERTEX->color = Colour;
 	
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	{
+		return FALSE;
+	}
    	
 	return TRUE;
 }
@@ -14162,7 +14215,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
     RECT    src, dest;
 	HRESULT ddrval;
 	BOOL	OKtoProcess;
-	DDBLTFX fx;
+//	DDBLTFX fx;
 	uint16 TempPoly;
 
 	currentx = TextInfo->currentx[line];
@@ -14284,8 +14337,8 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-			memset(&fx, 0, sizeof(DDBLTFX));
-			fx.dwSize = sizeof(DDBLTFX);
+//			memset(&fx, 0, sizeof(DDBLTFX));
+//			fx.dwSize = sizeof(DDBLTFX);
 
 			dest.top = (long)ypos - (long)((float)Box_Ptr->ysize * VduScaleY);
 			dest.bottom = (long)ypos;
@@ -14294,6 +14347,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 
 			while( 1 )
 			{
+/* bjd - CHECK
 				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
 				if( ddrval == DD_OK )
 					break;
@@ -14366,6 +14420,8 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 					}
 					break;
 				}
+*/
+				break; // bjd
 			}
 		}
 	}
@@ -14382,7 +14438,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
 	HRESULT ddrval;
-	DDBLTFX fx;
+//	DDBLTFX fx;
 	uint16 TempPoly;
 	
 	font = GetScreenFont(TextInfo->font);
@@ -14434,8 +14490,8 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-			memset(&fx, 0, sizeof(DDBLTFX));
-			fx.dwSize = sizeof(DDBLTFX);
+//			memset(&fx, 0, sizeof(DDBLTFX));
+//			fx.dwSize = sizeof(DDBLTFX);
 			dest.top = (unsigned long)ypos - Box_Ptr->ysize * (long)VduScaleY;
 			dest.bottom = (unsigned long)ypos;
 			dest.left = (unsigned long)xpos;
@@ -14443,6 +14499,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 
 			while( 1 )
 			{
+/* bjd - CHECK
 				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
 				if( ddrval == DD_OK )
 					break;
@@ -14457,6 +14514,8 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 				}
 				if( ddrval != DDERR_WASSTILLDRAWING )
 					break;
+*/
+				break; // bjd
 			}
 		}
 		xpos += width + TEXTINFO_TextSpace;
@@ -15257,7 +15316,7 @@ void LoadBikeChar(MENUITEM *Item)
 	}
 
 	systpageindex = (*header)->sys_tpage_index;
-	MovePPMToVideoMemory( &Tloadheader, (*header)->vid_tpage_index, SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
+//bjd - CHECK	MovePPMToVideoMemory( &Tloadheader, (*header)->vid_tpage_index, SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
 	
 	if (!LoadGeneralPic(0, 0, 0, 0, header, &Biker, &BikerScrPoly, &BikerDisplayed))
 	{
@@ -15327,6 +15386,7 @@ void KillBikeCharPic( MENU *Menu )
 
 void LoadLevelPic(MENUITEM *Item)
 {
+#if 0 // bjd - CHECK
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	float xmin, xmax, ymin, ymax;
@@ -15349,7 +15409,7 @@ void LoadLevelPic(MENUITEM *Item)
 		Msg("Title.c LoadLevelPic() unable to allocate screen poly\n");
 		exit(1);
 	}
-
+#endif
 }
 
 uint16 SavedGamePicPoly;
@@ -15359,6 +15419,7 @@ BOOL TVFrameDisplayed = FALSE;
 
 void LoadSavedGamePic( char *file )
 {
+#if 0 // bjd - CHECK
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	int frame = 0;
@@ -15378,7 +15439,7 @@ void LoadSavedGamePic( char *file )
 	// display dummy tv
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 1;
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTV ] ].Visible = 0;
-
+#endif
 }
 
 
@@ -17616,7 +17677,7 @@ void LoadHoloModel( uint16 model )
 		if ( TitleModelSet[ model ].DoIMorph )
 		{
 			systpageindex = MxaModelHeaders[ model ].SysTloadIndex[0];
-			MovePPMToVideoMemory( &Tloadheader, MxaModelHeaders[ model ].TloadIndex[0], SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
+//bjd - CHECK			MovePPMToVideoMemory( &Tloadheader, MxaModelHeaders[ model ].TloadIndex[0], SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
 		}
 
 		HoloModelScale = 1.0F;

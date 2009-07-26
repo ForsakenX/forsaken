@@ -25,7 +25,7 @@
  */
 //#define	CELLSIZE ( 2048.0F * GLOBAL_SCALE )
 #define	CELLSIZE ( 256.0F )
-#define	BLOCKSIZE	( 1024.0F * GLOBAL_SCALE )
+#define	BLOCKSIZE		( 1024.0F * GLOBAL_SCALE )
 
 #define MAXTPAGESPERMLOAD 8
 #define MAXGROUPS			128
@@ -171,10 +171,9 @@ typedef struct GROUP{
 	uint16	num_execbufs;
 	uint16	exec_type[MAXEXECBUFSPERGROUP];
 	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
-
-	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
-
-	RENDERBUFFER renderBuffer[MAXEXECBUFSPERGROUP];
+//	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
+	RENDEROBJECT			renderObject[MAXEXECBUFSPERGROUP];
+//	D3DVERTEXBUFFERDESC		vbdesc[MAXEXECBUFSPERGROUP];
 	LPD3DLVERTEX org_vertpnt[MAXEXECBUFSPERGROUP];
 	char	name[32];
 	VERT	center;
@@ -201,7 +200,7 @@ typedef struct GROUP{
 
 	POLYANIM *polyanim[MAXEXECBUFSPERGROUP];
 	uint16	StartPosInThisGroup;
-	uint32	AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 }GROUP;
 
 

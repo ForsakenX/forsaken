@@ -31,7 +31,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
+extern void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval );
 
 extern float hfov;
 extern float screen_aspect_ratio;
@@ -104,7 +104,9 @@ int		NumOfVertsConsidered= 0;
 int		NumOfVertsTouched= 0;
 
 uint16	GroupImIn;
+/* bjd - CHECK
 D3DTRANSFORMDATA Data;
+*/
 DWORD VertexCount = 0;
 DWORD Offscreen = 0;
 VERT TestVerts[MAXPORTVERTS];
@@ -117,8 +119,8 @@ D3DRECT	GroupVisibleExtents[MAXGROUPS];
 uint16	NumPortalsVisible;
 uint16	PortalsVisible[MAXPORTALSPERGROUP];
 D3DRECT	PortalExtents[MAXGROUPS];
-D3DVIEWPORT	OldViewPort;
-D3DVIEWPORT	PresentViewPort;
+D3DVIEWPORT9	OldViewPort;
+D3DVIEWPORT9	PresentViewPort;
 MATRIX	VisPolyMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
 				0.0F, 1.0F, 0.0F, 0.0F,
@@ -846,31 +848,31 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 	if ( vpos->x < -1.0F )
 	{
 		clip |= D3DCLIP_LEFT;
-		vpos->x = (float) v->viewport->dwX;
+		vpos->x = (float) v->viewport->X;
 	}
 	else if ( vpos->x > 1.0F )
 	{
 		clip |= D3DCLIP_RIGHT;
-		vpos->x = (float) ( v->viewport->dwX + v->viewport->dwWidth );
+		vpos->x = (float) ( v->viewport->X + v->viewport->Width );
 	}
 	else
 	{
-		vpos->x = v->viewport->dwX + ( v->viewport->dwWidth * 0.5F ) + (v->viewport->dvScaleX * vpos->x);
+//bjd - CHECK		vpos->x = v->viewport->X + ( v->viewport->Width * 0.5F ) + (v->viewport->dvScaleX * vpos->x);
 	}
 
    	if ( vpos->y < -1.0F )
 	{
 		clip |= D3DCLIP_BOTTOM;
-		vpos->y = (float) ( v->viewport->dwY + v->viewport->dwHeight );
+		vpos->y = (float) ( v->viewport->Y + v->viewport->Height );
 	}
 	else if ( vpos->y > 1.0F )
 	{
 		clip |= D3DCLIP_TOP;
-		vpos->y = (float) v->viewport->dwY;
+		vpos->y = (float) v->viewport->Y;
 	}
 	else
 	{
-		vpos->y = v->viewport->dwY + ( v->viewport->dwHeight * 0.5F ) - (v->viewport->dvScaleY * vpos->y);
+//bjd - CHECK		vpos->y = v->viewport->Y + ( v->viewport->Height * 0.5F ) - (v->viewport->dvScaleY * vpos->y);
 	}
 
 	return clip;
@@ -986,7 +988,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	VISLIST *v;
 	VISGROUP *g;
 	D3DRECT clip;
-	D3DVIEWPORT *vp;
+	D3DVIEWPORT9 *vp;
 	VISGROUP *gsort, *gprev, *gnext;
 	int j;
 	float w, h;
@@ -1039,11 +1041,11 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	MatrixMultiply( (MATRIX *) &cam->View, (MATRIX *) &cam->Proj, (MATRIX *) &v->viewproj );
 	g->next_visible = NULL;
 	g->visible = 1;
-	g->extent.min.x = (float) v->viewport->dwX;
-	g->extent.min.y = (float) v->viewport->dwY;
+	g->extent.min.x = (float) v->viewport->X;
+	g->extent.min.y = (float) v->viewport->Y;
 	g->extent.min.z = -HUGE_VALUE;
-	g->extent.max.x = (float) ( v->viewport->dwX + v->viewport->dwWidth );
-	g->extent.max.y = (float) ( v->viewport->dwY + v->viewport->dwHeight );
+	g->extent.max.x = (float) ( v->viewport->X + v->viewport->Width );
+	g->extent.max.y = (float) ( v->viewport->Y + v->viewport->Height );
 	g->extent.max.z = HUGE_VALUE;
 
 	// process visible portals
@@ -1093,37 +1095,39 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 			clip.y1 = 0;
 		vp = &g->viewport;
 		*vp = *v->viewport;
-		vp->dwX = clip.x1;
-		vp->dwY = clip.y1;
-		vp->dwWidth = clip.x2 - clip.x1;
-		vp->dwHeight = clip.y2 - clip.y1;
-		vp->dwWidth += vp->dwWidth & 1;
-		vp->dwHeight += vp->dwHeight & 1;
-		if ( vp->dwX + vp->dwWidth > v->viewport->dwX + v->viewport->dwWidth )
+		vp->X = clip.x1;
+		vp->Y = clip.y1;
+		vp->Width = clip.x2 - clip.x1;
+		vp->Height = clip.y2 - clip.y1;
+		vp->Width += vp->Width & 1;
+		vp->Height += vp->Height & 1;
+		if ( vp->X + vp->Width > v->viewport->X + v->viewport->Width )
 		{
-			if ( vp->dwX > 0 )
-				vp->dwX--;
+			if ( vp->X > 0 )
+				vp->X--;
 			else
-				vp->dwWidth--;
+				vp->Width--;
 		}
-		if ( vp->dwY + vp->dwHeight > v->viewport->dwY + v->viewport->dwHeight )
+		if ( vp->Y + vp->Height > v->viewport->Y + v->viewport->Height )
 		{
-			if ( vp->dwY > 0 )
-				vp->dwY--;
+			if ( vp->Y > 0 )
+				vp->Y--;
 			else
-				vp->dwHeight--;
+				vp->Height--;
 		}
-		vp->dvScaleX = vp->dwWidth * 0.5F;
-		vp->dvScaleY = vp->dwHeight * 0.5F;
+/* bjd - CHECK
+		vp->dvScaleX = vp->Width * 0.5F;
+		vp->dvScaleY = vp->Height * 0.5F;
+*/
 		g->projection = cam->Proj;
-		g->projection._11 = ( cam->Proj._11 * v->viewport->dwWidth ) / vp->dwWidth;
-		g->projection._22 = ( cam->Proj._22 * v->viewport->dwHeight ) / vp->dwHeight;
-		g->projection._31 = 2.0F * ( ( v->viewport->dwX + v->viewport->dwWidth * 0.5F )
-									- ( vp->dwX + vp->dwWidth * 0.5F ) )
-							/ vp->dwWidth;
-		g->projection._32 = -2.0F * ( ( v->viewport->dwY + v->viewport->dwHeight * 0.5F )
-									- ( vp->dwY + vp->dwHeight * 0.5F ) )
-							/ vp->dwHeight;
+		g->projection._11 = ( cam->Proj._11 * v->viewport->Width ) / vp->Width;
+		g->projection._22 = ( cam->Proj._22 * v->viewport->Height ) / vp->Height;
+		g->projection._31 = 2.0F * ( ( v->viewport->X + v->viewport->Width * 0.5F )
+									- ( vp->X + vp->Width * 0.5F ) )
+							/ vp->Width;
+		g->projection._32 = -2.0F * ( ( v->viewport->Y + v->viewport->Height * 0.5F )
+									- ( vp->Y + vp->Height * 0.5F ) )
+							/ vp->Height;
 	}
 
 	// sort visible groups in depth order
@@ -1175,9 +1179,9 @@ ClipGroup( CAMERA *cam, uint16 group )
 		return FALSE;
 */
 
-	if (FSSetMatrix(hProj, &g->projection) != D3D_OK)
+	if (FSSetMatrix(D3DTS_PROJECTION, &g->projection) != D3D_OK)
 		return FALSE;
-	if (FSSetMatrix(hView, &cam->View) != D3D_OK)
+	if (FSSetMatrix(D3DTS_VIEW, &cam->View) != D3D_OK)
 		return FALSE;
 
 //	rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &g->viewport );
@@ -1218,9 +1222,9 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	NumOfVertsTouched= 0;
 
 
-	OldViewPort.dwSize = sizeof(D3DVIEWPORT);
+//	OldViewPort.dwSize = sizeof(D3DVIEWPORT);
 
-	FSGetViewport(&OldViewPort);
+	FSGetViewPort(&OldViewPort);
 /*
 	d3dapp->lpD3DViewport->lpVtbl->GetViewport( d3dapp->lpD3DViewport , &OldViewPort );
 */
@@ -1294,9 +1298,9 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hView, &view) != D3D_OK)
 		return FALSE;
 */
-	if (FSSetMatrix(hProj, &proj) != D3D_OK)
+	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
 		return FALSE;
-	if (FSSetMatrix(hView, &view) != D3D_OK)
+	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		return FALSE;
 	
 	return TRUE;

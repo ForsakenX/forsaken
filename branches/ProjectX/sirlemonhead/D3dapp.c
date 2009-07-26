@@ -63,10 +63,13 @@ D3DAppRenderState d3dapprs;
 /* 
  * Callback functions for D3D device creation and destruction
  */
+
+/*
 BOOL(*D3DDeviceDestroyCallback)(LPVOID);
 LPVOID D3DDeviceDestroyCallbackContext;
 BOOL(*D3DDeviceCreateCallback)(int, int, LPDIRECT3DVIEWPORT*, LPVOID);
 LPVOID D3DDeviceCreateCallbackContext;
+*/
 /*
  * The last error code and string
  */
@@ -79,10 +82,10 @@ char LastErrorString[256];
 
 void InitModeCase(void);
 
-LPDIRECTDRAWCLIPPER lpClipper; /* Clipper in windowed case */
-LPDIRECTDRAWPALETTE lpPalette; /* Front buffer's palette */
-PALETTEENTRY ppe[256];         /* Current palette entries */
-PALETTEENTRY Originalppe[256]; /* Windows palette entries at startup */
+//LPDIRECTDRAWCLIPPER lpClipper; /* Clipper in windowed case */
+//LPDIRECTDRAWPALETTE lpPalette; /* Front buffer's palette */
+//PALETTEENTRY ppe[256];         /* Current palette entries */
+//PALETTEENTRY Originalppe[256]; /* Windows palette entries at startup */
 BOOL bD3DAppInitialized;       /* Is D3DApp initialized? */
 BOOL bPrimaryPalettized;       /* Is the front buffer palettized? */
 BOOL bPaletteActivate;         /* Is the front buffer's palette valid? */
@@ -100,13 +103,15 @@ int CallbackRefCount;          /* How many times DeviceCreateCallback has
 /*
  * D3DAppCreateFromHWND
  */
+
+#if 0 // bjd
 BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
-                          BOOL(*DeviceCreateCallback)(int, int,
+                          /*BOOL(*DeviceCreateCallback)(int, int,
                                                       LPDIRECT3DVIEWPORT*,
                                                       LPVOID),
                           LPVOID lpCreateContext,
                           BOOL(*DeviceDestroyCallback)(LPVOID),
-                          LPVOID lpDestroyContext,
+                          LPVOID lpDestroyContext,*/
                           D3DAppInfo** D3DApp)
 {
     int driver, mode, w, h;
@@ -131,25 +136,25 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
      * display modes
      */
 
-    ATTEMPT(D3DAppICreateDD(d3dappi.bOnlyEmulation ? D3DAPP_ONLYDDEMULATION : 0L));
-    ATTEMPT(D3DAppIRememberWindowsMode());
-    ATTEMPT(D3DAppIEnumDisplayModes());
+ //   ATTEMPT(D3DAppICreateDD(d3dappi.bOnlyEmulation ? D3DAPP_ONLYDDEMULATION : 0L));
+//    ATTEMPT(D3DAppIRememberWindowsMode());
+//    ATTEMPT(D3DAppIEnumDisplayModes());
 
     /*
      * Create Direct3D and enumerate the D3D drivers
      */
 
     ATTEMPT(D3DAppICreateD3D());
-    ATTEMPT(D3DAppIEnumDrivers());
+//    ATTEMPT(D3DAppIEnumDrivers());
 
     /*
      * Set the device creation and destroy callback functions
      */
 
-    D3DDeviceDestroyCallback		= DeviceDestroyCallback;
-    D3DDeviceDestroyCallbackContext = lpDestroyContext;
-    D3DDeviceCreateCallback			= DeviceCreateCallback;
-    D3DDeviceCreateCallbackContext	= lpCreateContext;
+//    D3DDeviceDestroyCallback		= DeviceDestroyCallback;
+//    D3DDeviceDestroyCallbackContext = lpDestroyContext;
+//    D3DDeviceCreateCallback			= DeviceCreateCallback;
+//    D3DDeviceCreateCallbackContext	= lpCreateContext;
 
     *D3DApp = &d3dappi;
 
@@ -168,10 +173,11 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
 	// other wise let the rest of the code decide
 	mode = (bFullscreen) ? D3DAPP_YOUDECIDE : D3DAPP_USEWINDOW;
 
-    ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
+//    ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
 
     D3DAppIGetClientWin(hwnd);
 
+/*
     if (mode == D3DAPP_USEWINDOW) {
         w = d3dappi.szClient.cx;
         h = d3dappi.szClient.cy;
@@ -187,18 +193,18 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
         d3dappi.CurrMode = mode;
         ATTEMPT(D3DAppICreateBuffers(hwnd, w, h, d3dappi.Mode[mode].bpp, TRUE));
     }
-
+*/
     /*
      * If the front buffer is palettized, initialize its palette
      */
 
-    ATTEMPT(D3DAppICheckForPalettized());
+//    ATTEMPT(D3DAppICheckForPalettized());
 
     /*
      * Create the Z-buffer
      */
 
-    ATTEMPT(D3DAppICreateZBuffer(w, h, driver));
+//    ATTEMPT(D3DAppICreateZBuffer(w, h, driver));
 
     /*
      * Create the D3D device, load the textures, call the device create
@@ -220,27 +226,30 @@ BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
     return TRUE;
 
 exit_with_error:
-    D3DAppICallDeviceDestroyCallback();
-    RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    RELEASE(lpPalette);
-    RELEASE(lpClipper);
-    RELEASE(d3dappi.lpBackBuffer);
-    RELEASE(d3dappi.lpFrontBuffer);
+//    D3DAppICallDeviceDestroyCallback();
+//    RELEASE(d3dappi.lpD3DDevice);
+//    RELEASE(d3dappi.lpZBuffer);
+//    RELEASE(lpPalette);
+ //   RELEASE(lpClipper);
+  //  RELEASE(d3dappi.lpBackBuffer);
+//    RELEASE(d3dappi.lpFrontBuffer);
     if (d3dappi.bFullscreen) {
         D3DAppIRestoreDispMode();
-        D3DAppISetCoopLevel(hwnd, FALSE);
+//        D3DAppISetCoopLevel(hwnd, FALSE);
     }
     RELEASE(d3dappi.lpD3D);
-    RELEASE(d3dappi.lpDD);
+//    RELEASE(d3dappi.lpDD);
     return FALSE;
 }   
+#endif
 
 /*
  * D3DAppFullscreen
  */
 BOOL D3DAppFullscreen(int mode)
 {
+	return TRUE;
+#if 0 //bjd
     int w, h, bpp;
     BOOL b; /* was already in a fullscreen mode? */
 
@@ -324,6 +333,7 @@ exit_with_error:
         D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
     }
     return FALSE;
+#endif
 }
 
 /*
@@ -343,6 +353,8 @@ BOOL D3DAppWindowMode( int mode )
 BOOL
 D3DAppWindow(int w, int h, int bpp)
 {
+	return TRUE;
+#if 0 // bjd
     BOOL b; /* changing from a fullscreen mode? */
 
     /*
@@ -379,7 +391,7 @@ D3DAppWindow(int w, int h, int bpp)
     }
     RELEASE(d3dappi.lpD3DDevice);
     RELEASE(d3dappi.lpZBuffer);
-    RELEASE(lpPalette);
+//    RELEASE(lpPalette);
     RELEASE(lpClipper);
     RELEASE(d3dappi.lpBackBuffer);
     RELEASE(d3dappi.lpFrontBuffer);
@@ -428,7 +440,8 @@ exit_with_error:
     RELEASE(lpClipper);
     RELEASE(d3dappi.lpBackBuffer);
     RELEASE(d3dappi.lpFrontBuffer);
-    return FALSE;  
+    return FALSE;
+#endif
 }
 
 
@@ -478,12 +491,15 @@ D3DAppChangeDriver(int driver, DWORD flags)
          * this driver.  Just to make sure that CurrMode is always a mode the
          * current driver can do.
          */
+
+#if 0 // bjd
         if (!(d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth &
               D3DAppIBPPToDDBD(d3dappi.Mode[d3dappi.CurrMode].bpp))){
             ATTEMPT(D3DAppIPickDisplayMode(&d3dappi.CurrMode,
                         d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth));
         }
         return TRUE;
+#endif
     } else {
         /*
          * We need to switch to fullscreen or switch fullscreen modes or stay
@@ -493,7 +509,6 @@ D3DAppChangeDriver(int driver, DWORD flags)
         ATTEMPT(D3DAppFullscreen(mode));
         return TRUE;
     }
-
 exit_with_error:
     /*
      * The failed mode setting call would have released everything
@@ -516,6 +531,7 @@ extern float RoomDarkness;
 extern void ProcessVduItems( MENU *Menu );
 extern InitialTexturesSet;
 extern void SetGamePrefs( void );
+
 BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
                  UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -643,7 +659,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				}
 
 				// resize d3d to match the window size..
-				ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
+//bjd				ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
 
 				if( MyGameStatus == STATUS_Title )
 				{
@@ -742,9 +758,10 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
             // Set the front buffer's palette
 			// what does this do ? when should it be ran ?
+/* bjd
             if (bPaletteActivate && bPrimaryPalettized && d3dappi.lpFrontBuffer )
                 d3dappi.lpFrontBuffer->lpVtbl->SetPalette(d3dappi.lpFrontBuffer, lpPalette);
-
+*/
             break;
 
 		// this event is same as above but sends TRUE|FALSE
@@ -973,6 +990,8 @@ exit_with_error:
 BOOL
 D3DAppChangeTextureFormat(int format)
 {
+	return TRUE;
+#if 0 //bjd
     /*
      * Release all the textures, change the format and load them again
      */
@@ -988,7 +1007,7 @@ D3DAppChangeTextureFormat(int format)
 	TextureIndexBPP = d3dappi.ThisTextureFormat.IndexBPP;
     d3dappi.bRenderingIsOK = TRUE;
     return TRUE;
-
+#endif
 }
 
 
@@ -1035,7 +1054,8 @@ D3DAppGetRenderState(D3DAppRenderState* lpState)
 extern BOOL VSync;
 BOOL D3DAppShowBackBuffer(DWORD flags)
 {
-
+	return TRUE;
+#if 0 // bjd
     if (!d3dappi.bRenderingIsOK) {
         D3DAppISetErrorString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");
         return FALSE;
@@ -1122,6 +1142,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 	}
 
     return TRUE;
+#endif
 }
 
 
@@ -1131,6 +1152,8 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 BOOL
 D3DAppClearScreenOnly()
 {
+	return TRUE;
+#if 0 // bjd
     int clearflags;
     D3DRECT dummy;
 
@@ -1160,6 +1183,7 @@ D3DAppClearScreenOnly()
 		}
 	}
     return TRUE;
+#endif
 }
 
 
@@ -1176,6 +1200,8 @@ D3DAppClearScreenOnly()
 BOOL
 D3DAppCheckForLostSurfaces(void)
 {
+	return TRUE;
+#if 0 // bjd
     BOOL b = FALSE;
     /*
      * Check all the surfaces D3DApp owns and restore them if lost.
@@ -1196,6 +1222,7 @@ exit_with_error:
     D3DAppISetErrorString("Restoring of a lost surface failed.\n%s",
                           D3DAppErrorToString(LastError));
     return FALSE;
+#endif
 }
 
 /*
@@ -1204,6 +1231,8 @@ exit_with_error:
 BOOL
 D3DAppPause(BOOL flag)
 {
+	return TRUE;
+#if 0 // bjd
     static int pausecount;
 
     /*
@@ -1226,6 +1255,7 @@ D3DAppPause(BOOL flag)
         /*
          * Returning from a pause
          */
+#if 0 // bjd
         if (d3dappi.bFullscreen && bPrimaryPalettized && lpPalette) {
             /*
              * Set front buffer's palette back to what it was before pause
@@ -1236,12 +1266,14 @@ D3DAppPause(BOOL flag)
                 D3DAppISetErrorString("Setting palette entries during unpause failed.\n%s", D3DAppErrorToString(LastError));
                 goto exit_with_error;
             }
-        }
+		}
+#endif
     }
     if (flag && d3dappi.bFullscreen) {
         /*
          * Pausing in a fullscreen mode
          */
+#if 0 // bjd
         if (bPrimaryPalettized && lpPalette) {
             /*
              * Save the front buffer's current palette and restore the
@@ -1262,37 +1294,47 @@ D3DAppPause(BOOL flag)
                 D3DAppISetErrorString("Returning palette entries to defaults failed.\n%s", D3DAppErrorToString(LastError));
                 goto exit_with_error;
             }
+#endif
         }
         /*
          * Flip to GDI surface (either front or back buffer)
          */
-        if (d3dappi.lpDD) {
-//        if (d3dappi.bIsPrimary && d3dappi.lpDD) {
+#if 0 // bjd
+        if (d3dappi.lpDD) 
+		{
+//        if (d3dappi.bIsPrimary && d3dappi.lpDD) 
+		  {
             LastError = d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-            if (LastError != DD_OK) {
+            if (LastError != DD_OK) 
+			{
                 D3DAppISetErrorString("Flipping to GDI surface failed.\n%s", D3DAppErrorToString(LastError));
                 goto exit_with_error;
             }
-        }
+          }
         /*
          * Draw the menu and frame
          */
         DrawMenuBar(d3dappi.hwnd);
         RedrawWindow(d3dappi.hwnd, NULL, NULL, RDW_FRAME);
-    }
+        }
+#endif
     return TRUE;
 exit_with_error:
     return FALSE;
+#endif
 }
 
 /*
  * D3DAppCreateSurface
  */
+
+#if 0 //bjd
 BOOL
 D3DAppCreateSurface(DDSURFACEDESC *ddsd, LPDIRECTDRAWSURFACE *lplpSurf)
 {
     return D3DAppICreateSurface(ddsd, lplpSurf);
 }
+#endif
 
 /*
  * D3DAppLastError
@@ -1326,18 +1368,17 @@ D3DAppDestroy(void)
     d3dappi.hwnd = NULL;
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    RELEASE(lpPalette);
-    RELEASE(lpClipper);
-    RELEASE(d3dappi.lpBackBuffer);
-    RELEASE(d3dappi.lpFrontBuffer);
+//    RELEASE(d3dappi.lpZBuffer);
+//    RELEASE(lpPalette);
+//    RELEASE(lpClipper);
+//    RELEASE(d3dappi.lpBackBuffer);
+//    RELEASE(d3dappi.lpFrontBuffer);
     if (d3dappi.bFullscreen) {
-        D3DAppIRestoreDispMode();
-        D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
+//        D3DAppIRestoreDispMode();
+ //       D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
     }
     D3DAppIReleasePathList();
-    RELEASE(d3dappi.lpD3D);
-    RELEASE(d3dappi.lpDD);
+//    RELEASE(d3dappi.lpDD);
     return TRUE;
 exit_with_error:
     return FALSE;
@@ -1350,7 +1391,10 @@ exit_with_error:
 char*
 D3DAppErrorToString(HRESULT error)
 {
-    switch(error) {
+	return "Errors not defined yet.\0";
+#if 0 // bjd
+    switch(error) 
+	{
 
 	    //
 
@@ -1769,4 +1813,5 @@ D3DAppErrorToString(HRESULT error)
         default:
             return "Unrecognized error value.\0";
     }
+#endif
 }

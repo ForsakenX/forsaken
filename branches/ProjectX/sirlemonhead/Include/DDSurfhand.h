@@ -27,9 +27,9 @@ extern "C" {
 #endif
 
 void DDSurf_Init( void );
-BOOL XMakeDDSurf(  IDirectDraw *pdd , LPDDSURFACEDESC lpDDSurfaceDesc , LPDIRECTDRAWSURFACE FAR *lplpDDSurface , IUnknown FAR *pUnkOuter, char *prev_in_file, int prev_in_line, char *in_file, int in_line );
+//bjd BOOL XMakeDDSurf(  IDirectDraw *pdd , LPDDSURFACEDESC lpDDSurfaceDesc , LPDIRECTDRAWSURFACE FAR *lplpDDSurface , IUnknown FAR *pUnkOuter, char *prev_in_file, int prev_in_line, char *in_file, int in_line );
 
-void XReleaseDDSurf( LPDIRECTDRAWSURFACE Pnt, char *in_file, int in_line );
+//bjd void XReleaseDDSurf( LPDIRECTDRAWSURFACE Pnt, char *in_file, int in_line );
 int UnMallocedDDSurfBlocks( void );
 
 #ifdef __cplusplus

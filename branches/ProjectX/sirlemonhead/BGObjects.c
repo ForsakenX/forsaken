@@ -2700,7 +2700,7 @@ int NakedGirls( char *cheat )
 
 			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NBUTGRID.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
-			TloadReloadPlaceHolder( &Tloadheader, i );
+//bjd - CHECK			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 
 		i = FindTexture( &Tloadheader, "data\\textures\\NGRID8BT.BMP" );
@@ -2714,7 +2714,7 @@ int NakedGirls( char *cheat )
 
 			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NNGRID8BT.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
-			TloadReloadPlaceHolder( &Tloadheader, i );
+//bjd - CHECK			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 	}
 	else
@@ -2733,7 +2733,7 @@ int NakedGirls( char *cheat )
 			}
 			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\BUTGRID.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
-			TloadReloadPlaceHolder( &Tloadheader, i );
+//bjd - CHECK			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 
 		i = FindTexture( &Tloadheader, "data\\textures\\NGRID8BT.BMP" );
@@ -2746,7 +2746,7 @@ int NakedGirls( char *cheat )
 			}
 			strcpy( Tloadheader.PlaceHolderFile[ i ], "data\\textures\\NGRID8BT.BMP" );
 			Tloadheader.PlaceHolder[ i ] = TRUE;
-			TloadReloadPlaceHolder( &Tloadheader, i );
+//bjd - CHECK			TloadReloadPlaceHolder( &Tloadheader, i );
 		}
 
 	}

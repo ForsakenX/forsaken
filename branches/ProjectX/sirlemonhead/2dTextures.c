@@ -329,7 +329,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 		{
 			Frm_Info->sys_tpage_index = CurrentSysTexture;
 			SystemMemTPages[ CurrentSysTexture ].VidTPageIndex = Name_Index[ 0 ];
-			SystemMemTPages[ CurrentSysTexture ].lpSrcTextureSurf = NULL;
+//bjd			SystemMemTPages[ CurrentSysTexture ].lpSrcTextureSurf = NULL;
 			CurrentSysTexture++;
 
 			if (CurrentSysTexture == MAXSYSTEMMEMTPAGES)
@@ -413,11 +413,13 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 
 	VduScaleX = (float)floor((double)VduScaleX);
 	VduScaleY = (float)floor((double)VduScaleY);
-	
+
+/* bjd - CHECK
 	if (!CanDoStrechBlt)
 	{
 		VduScaleX = 1.0F; VduScaleY = 1.0F;
 	}
+*/
 
 /*
 	VduScaleX = 1.0F; VduScaleY = 1.0F;
