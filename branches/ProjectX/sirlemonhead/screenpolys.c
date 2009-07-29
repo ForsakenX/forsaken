@@ -2146,7 +2146,7 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DTLVERTEX	ScrPolyVertPnt;
 	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2219,7 +2219,7 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}	
@@ -2697,7 +2697,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DTLVERTEX	ScrPolyVertPnt;
 	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2767,7 +2767,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}

@@ -2482,6 +2482,7 @@ InitView( void )
 	DWORD dwItems					= INFINITE;
 
 	DebugPrintf("InitView Starting...\n");
+	OutputDebugString("InitView Starting...\n");
 
 	CheatsDisabled = FALSE;
 
@@ -2881,10 +2882,9 @@ char *DI_KeyName( DWORD key )
 BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
 extern D3DAppInfo d3dappi;
+
 BOOL InitDInput(void)
 {
-	return TRUE;
-#if 0 // bjd
   HRESULT  err;
   GUID     guid_mouse		= GUID_SysMouse;
   GUID     guid_keyboard	= GUID_SysKeyboard;
@@ -2904,7 +2904,7 @@ BOOL InitDInput(void)
 	BOOL failjoystick;
 
  //   err = DirectInputCreateA(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
-	/*if (FAILED(*/DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, IID_IDirectInput8, (void**)&lpdi, NULL);/*))*/
+	if (FAILED(DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
 		return FALSE;
     }
@@ -3156,7 +3156,6 @@ fail:
   }
     if (lpdi)   IDirectInputDevice_Release(lpdi), lpdi     = NULL;
     return FALSE;    
-#endif
 }
 
 BOOL TermDInput( void )
@@ -3798,6 +3797,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   float   time_diff;
 
   //DebugPrintf("RenderScene Started\n");
+  OutputDebugString("RenderScene Started\n");
 
   if ( SeriousError )
     return FALSE;
@@ -5420,6 +5420,8 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   }
 
+  OutputDebugString("RenderScene Ended\n");
+
   return TRUE;
 }
 
@@ -6812,7 +6814,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
+    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 
 #ifdef SHADOWTEST
@@ -6863,7 +6865,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 1 ], group, /*lpDev,*/ lpView ) ) // bjd
+  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 1 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 #ifdef SHADOWTEST
   if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
@@ -6942,7 +6944,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplayGroupClippedPolys( &RenderBufs[ 1 ], group, /*lpDev,*/ lpView ) ) // bjd
+  if( !DisplayGroupClippedPolys( &RenderBufs[ 1 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
 #ifdef SHADOWTEST
@@ -6953,7 +6955,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 /*===================================================================
 Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
-  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group, /*lpDev,*/ lpView ) ) // bjd
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
   ExecuteTransExe( group );
@@ -6968,13 +6970,13 @@ Display Group Clipped Faceme Transluecent Polys
   Display Non Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
-    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
+    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 #ifdef SHADOWTEST
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
@@ -7016,7 +7018,7 @@ Display Group Clipped Faceme Transluecent Polys
   Display Transluecent Screen Polys
 ===================================================================*/
 
-    if( !DisplayNonSolidScrPolys( &RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
+    if( !DisplayNonSolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
   // reset all the normal execute status flags...
@@ -7028,7 +7030,7 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
   BilinearSolidScrPolys = FALSE;
 
-  if( !DisplaySolidScrPolys( &RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
+  if( !DisplaySolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
 //  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);

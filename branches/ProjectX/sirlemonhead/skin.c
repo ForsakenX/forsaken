@@ -1041,7 +1041,7 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 //   	if( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Lock( Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK) return FALSE; // bjd
 //	if (FSLockExecuteBuffer(Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK)
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], &lpBufStart)))
 	{
 		return FALSE;
 	}
@@ -1309,7 +1309,7 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 //   	if( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->Lock( Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK) return FALSE;
 //	if (FSLockExecuteBuffer(Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK)
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], &lpBufStart)))
 	{
 		return FALSE;
 	}

@@ -319,6 +319,10 @@ static BOOL InitWindow( void )
 	HICON large_icon;
     WNDCLASSEX wc;
 
+	/* bjd - FIXME hardcoded */
+	default_width = 800;
+    default_height = 600;
+
 
 //// START UGLY
 
@@ -608,7 +612,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// special debuggin routines
 	XMem_Init();
-	XExec_Init();
+//	XExec_Init();
 //	DDSurf_Init();
 	XSBuffer_Init();
 
@@ -691,6 +695,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// start the title scene
 	MyGameStatus = STATUS_Title;
+
 	if (!InitScene())
 		return FALSE;
 
@@ -1277,7 +1282,7 @@ static BOOL RenderLoop()
 		{
 			// this is the actual call to render a frame...
 			//if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
-			if (FAILED(FlipBuffers()))
+			if (!FlipBuffers())
 			{
 				Msg("!D3DAppShowBackBuffer");
 				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");

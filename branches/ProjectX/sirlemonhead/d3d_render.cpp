@@ -25,6 +25,9 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 {
 	HRESULT LastError;
 
+	D3DAppISetDefaults();
+	
+
 	/* Set up Direct3D interface object */
 	d3dappi.lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
 
@@ -62,33 +65,68 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 	LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 		D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE, &d3dpp, &d3dappi.lpD3DDevice);
 
-	if(FAILED(LastError)) 
+	if (FAILED(LastError)) 
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
 	}
-	if(FAILED(LastError)) 
+	if (FAILED(LastError)) 
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_MIXED_VERTEXPROCESSING , &d3dpp, &d3dappi.lpD3DDevice);
 	}
-	if(FAILED(LastError)) 
+	if (FAILED(LastError)) 
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
 	}
 
+	d3dappi.hwnd = hwnd;
 	*D3DApp = &d3dappi;
 
 	bD3DAppInitialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;
 
+	d3dappi.szClient.cx = d3dpp.BackBufferWidth; 
+	d3dappi.szClient.cy = d3dpp.BackBufferHeight;
+
+	/* do "after device created" stuff */
+	ZeroMemory( &d3dappi.D3DViewport, sizeof(d3dappi.D3DViewport) );
+	d3dappi.D3DViewport.X = 0;
+	d3dappi.D3DViewport.Y = 0;
+	d3dappi.D3DViewport.Width = 800;
+	d3dappi.D3DViewport.Height = 600;
+	d3dappi.D3DViewport.MinZ = 0.0f;
+	d3dappi.D3DViewport.MaxZ = 1.0f;
+
+	LastError = d3dappi.lpD3DDevice->SetViewport(&d3dappi.D3DViewport);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("couldn't set viewport\n");
+	}
+
+	// load the view
+	if (!InitView() )
+	{
+	    Msg("InitView failed.\n");
+//		CleanUpAndPostQuit();
+        return FALSE;
+	}
+
 	return TRUE;
 }
 
-HRESULT FlipBuffers()
+BOOL FlipBuffers()
 {
-	return d3dappi.lpD3DDevice->Present(NULL, NULL, NULL, NULL);
+	if (!d3dappi.bRenderingIsOK) 
+	{
+		OutputDebugString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");
+		return FALSE;
+	}
+
+	d3dappi.lpD3DDevice->Present(NULL, NULL, NULL, NULL);
+
+	return TRUE;
 }
 
 /***************************************************************************/
@@ -943,6 +981,8 @@ exit_with_error:
 }
 
 char buf[100];
+HRESULT LastError;
+
 HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort)
 {
 	return d3dapp->lpD3DDevice->GetViewport( returnViewPort );
@@ -986,18 +1026,24 @@ HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
 */
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int size)
 {
+	OutputDebugString("created vertex buffer\n");
 	return d3dappi.lpD3DDevice->CreateVertexBuffer(size * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 }
 
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LPD3DLVERTEX verts)
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
 {
-	//return vertexBufer->Lock(0, 0, verts, D3DLOCK_DISCARD);
-	return renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+	OutputDebugString("locked vertex buffer\n");
+	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't lock vertex buffer!\n");
+	}
+
+	return LastError;
 }
 
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
-//	return vertexBufer->Unlock();
 	return renderObject->lpD3DVertexBuffer->Unlock();
 }
 

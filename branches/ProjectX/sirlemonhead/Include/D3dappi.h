@@ -152,8 +152,10 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
+HRESULT FSBeginScene();
+HRESULT FSEndScene();
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int size);
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LPD3DLVERTEX verts);
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject);
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
@@ -162,6 +164,38 @@ HRESULT FSGetViewport(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
+
+typedef struct _OLDD3DLVERTEX {
+    union {
+    D3DVALUE     x;             /* Homogeneous coordinates */
+    D3DVALUE     dvX;
+    };
+    union {
+    D3DVALUE     y;
+    D3DVALUE     dvY;
+    };
+    union {
+    D3DVALUE     z;
+    D3DVALUE     dvZ;
+    };
+    DWORD            dwReserved;
+    union {
+    D3DCOLOR     color;         /* Vertex color */
+    D3DCOLOR     dcColor;
+    };
+    union {
+    D3DCOLOR     specular;      /* Specular component of vertex */
+    D3DCOLOR     dcSpecular;
+    };
+    union {
+    D3DVALUE     tu;            /* Texture coordinates */
+    D3DVALUE     dvTU;
+    };
+    union {
+    D3DVALUE     tv;
+    D3DVALUE     dvTV;
+    };
+} OLDD3DLVERTEX, *LPOLDD3DLVERTEX;
 
 /* bjd - remove when done. taken from SDK */
 #define D3DCLIP_LEFT                0x00000001L

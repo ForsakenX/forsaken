@@ -274,8 +274,8 @@ extern int16		NewLevelNum;
 extern int16		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
 extern	BOOL                    IsHost;
-extern	D3DMATRIXHANDLE hView;
-extern	D3DMATRIXHANDLE hWorld;
+//extern	D3DMATRIXHANDLE hView;
+//extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
 BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
 /* bjd
@@ -284,7 +284,7 @@ extern	LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
 extern	LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
 */
 extern	MATRIX	MATRIX_Identity;
-extern	D3DVIEWPORT viewport;
+extern	D3DVIEWPORT9 viewport;
 extern	MODEL	Models[];
 uint16	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
@@ -4948,7 +4948,7 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -5039,8 +5039,7 @@ uint8 QuickStart = QUICKSTART_None;
 BOOL IpOnCLI;
 BOOL DisplayTitle(void)
 {
-	return TRUE;
-#if 0 // bjd - CHECK IMPORTANT
+#if 1 // bjd - CHECK IMPORTANT
 	uint16 i;
 /*
 	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
@@ -5052,7 +5051,7 @@ BOOL DisplayTitle(void)
 	uint16	group;
 	MENUITEM *Item;
 	LIST *l;
-	
+
 	if (!InitialTexturesSet && CameraStatus != CAMERA_AtStart)
 	{
 		InitialTexturesSet = TRUE;
@@ -5193,17 +5192,19 @@ BOOL DisplayTitle(void)
 		CurrentCamera.Pos = View;
 		CurrentCamera.GroupImIn = -1;
 		CurrentCamera.Viewport = viewport;	
-		CurrentCamera.Viewport.dwX = 0;
-		CurrentCamera.Viewport.dwY = 0;
-		CurrentCamera.Viewport.dwWidth = d3dapp->szClient.cx;
-		CurrentCamera.Viewport.dwHeight = d3dapp->szClient.cy;
+		CurrentCamera.Viewport.X = 0;
+		CurrentCamera.Viewport.Y = 0;
+		CurrentCamera.Viewport.Width = d3dapp->szClient.cx;
+		CurrentCamera.Viewport.Height = d3dapp->szClient.cy;
+
+/* bjd
 		CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
 		CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
 		CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
 										  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
 		CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
 										   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-
+*/
 		
 		
 		TloadCheckForLostSurfaces(&Tloadheader);
@@ -5220,7 +5221,7 @@ BOOL DisplayTitle(void)
 		}
 
 //		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
-		if (FSSetMatrix(hView, &view) != D3D_OK)
+		if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		{
 			Msg( "DisplayTitle() : SetMatrix failed\n" );
 			return FALSE;
@@ -5260,13 +5261,13 @@ BOOL DisplayTitle(void)
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
 
-			if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
+			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 1 ], 0 /*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 #if 0
 /*
 	Display 0 solid Clipped Faceme Transluecent Polys
 */
-			if( !DisplaySolidGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
 					return FALSE;
 #endif
 
@@ -5274,7 +5275,7 @@ BOOL DisplayTitle(void)
 
 		// set all the Translucent execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//bjd		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 //		ExecuteTransExe( 0 );
 //		ExecuteTransExeUnclipped( 0 );
@@ -5282,20 +5283,20 @@ BOOL DisplayTitle(void)
 
 		// set all the Translucent execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//bjd		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 		// display clipped translucencies
 	/*===================================================================
 		Display 0 Clipped Non Faceme Transluecent Polys
 	===================================================================*/
 
-			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
+			if( !DisplayGroupClippedPolys( &RenderBufs[ 1 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 
 /*===================================================================
 	Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
-			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, /*lpDev,*/ lpView ) ) // bjd
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 1 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 
 			ExecuteTransExe( 0 );
@@ -5305,20 +5306,20 @@ BOOL DisplayTitle(void)
 		Display Non 0 Clipped Faceme Transluecent Polys
 	===================================================================*/
 
-		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 1 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 /*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], /*lpDev,*/ lpView ) ) // bjd
+		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 	/*===================================================================
 		Display Transluecent Screen Polys
 	===================================================================*/
 
-			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) ) // bjd
+			if( !DisplayNonSolidScrPolys( &RenderBufs[ 1 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 	/*===================================================================
@@ -5330,25 +5331,28 @@ BOOL DisplayTitle(void)
 			i = FirstLineUsed;
 			while( i != (uint16) -1 )
 			{
-				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
+				if( LinesDispGroup( group, &RenderBufs[ 0 ], &i ) )
 				{
 //					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+					if (FAILED(FSDrawVertexBuffer(&RenderBufs[ 0 ])))
+					{
 						return FALSE;
+					}
 				}
 			}
 #endif
 
 		// reset all the normal execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//bjd		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 
 	/*===================================================================
 		Display Solid Screen Polys
 	===================================================================*/
 		BilinearSolidScrPolys = TRUE;
 
-		if( !DisplaySolidScrPolys( RenderBufs[ 1 ], /*lpDev,*/ lpView ) )
+		if( !DisplaySolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) )
 			return FALSE;
 
 	/*===================================================================
@@ -5360,11 +5364,15 @@ BOOL DisplayTitle(void)
 			i = FirstLineUsed;
 			while( i != (uint16) -1 )
 			{
-				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
+				if( LinesDispGroup( group, &RenderBufs[ 0 ], &i ) )
 				{
 //					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//						return FALSE;
+					if (FAILED(FSDrawVertexBuffer(&RenderBufs[ 0 ])))
+					{
 						return FALSE;
+					}
 				}
 			}
 #endif
@@ -5378,7 +5386,7 @@ BOOL DisplayTitle(void)
 
 		ScreenPolyProcess();
 
-		PulsateVDU();
+//bjd - FIXME		PulsateVDU();
 		RotateHoloLight();
 
 	}
@@ -11858,7 +11866,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
 
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -12020,7 +12028,7 @@ BOOL MakeTranslucent( uint16 Model )
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
-				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -12083,7 +12091,7 @@ BOOL MakeTranslucent( uint16 Model )
 //				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
 
-				if (FAILED(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+				if (FAILED(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -12150,7 +12158,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], DstlpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -12212,7 +12220,7 @@ void HighlightDisc(int disc)
 ===================================================================*/
 void ResetDisc(int disc)
 {
-	PolyAnim[disc]->newframe = CurrentTextures[disc];
+	 PolyAnim[disc]->newframe = CurrentTextures[disc];
 }
 
 /*===================================================================

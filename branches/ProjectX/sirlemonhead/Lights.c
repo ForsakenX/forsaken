@@ -364,7 +364,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 //		if (FSLockExecuteBuffer(Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //			return FALSE;
 
-		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], lpPointer)))
+		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 		{
 			return FALSE;
 		}	
@@ -1027,7 +1027,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -1280,7 +1280,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
 //			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -1511,7 +1511,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], lpPointer)))
+			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}

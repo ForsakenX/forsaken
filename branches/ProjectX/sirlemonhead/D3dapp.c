@@ -665,7 +665,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				{
 					FadeHoloLight(HoloLightBrightness);
 					DarkenRoom2(RoomDarkness);
-					ProcessVduItems( CurrentMenu );
+//bjd - FIXME					ProcessVduItems( CurrentMenu );
    					InitialTexturesSet = FALSE;
 				}
 

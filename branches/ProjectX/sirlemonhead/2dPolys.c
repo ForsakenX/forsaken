@@ -1662,7 +1662,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 
@@ -1719,7 +1719,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE ); // bjd
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
@@ -2061,7 +2061,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 
@@ -2117,7 +2117,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 //	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-	if (FAILED(FSLockVertexBuffer(renderObject, lpBufStart)))
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}

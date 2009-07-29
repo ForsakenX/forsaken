@@ -370,7 +370,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16	num_animations;
 	uint16	maxloops;
 	uint16	animsize;
-	LPVOID lpBufStart, lpInsStart, lpPointer;
+	LPD3DLVERTEX lpBufStart, lpInsStart, lpPointer;
 	uint16	NumColours;
 	uint32	TempColour;
 	uint32	*	Uint32Pnt;
@@ -458,6 +458,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			//
 			if (FAILED(FSCreateVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], num_vertices)))
 			{
+				Msg( "Mload : MakeExecBuffer Failed\n" );
 				return FALSE;
 			}
 
@@ -470,7 +471,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				return FALSE ;
 			}
 #endif
-			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], lpBufStart)))
+			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
 			{
 				return FALSE;
 			}
@@ -1005,7 +1006,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						return FALSE;
 					}
 */
-					if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[ group ].renderObject[execbuf], lpD3DLVERTEX)))
+					if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[ group ].renderObject[execbuf], &lpD3DLVERTEX)))
 					{
 						Msg( "Mload : Lock VertexBuffer failed\n" );
 						return FALSE;

@@ -332,6 +332,8 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
 {
 	*lpdriver = 1;
 	*lpmode = 1;
+
+	return TRUE;
 #if 0 // bjd
     DWORD depths;
     int driver, mode, i;
