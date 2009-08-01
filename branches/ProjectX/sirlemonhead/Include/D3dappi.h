@@ -136,10 +136,14 @@ BOOL D3DAppIHandleWM_SIZE(LRESULT* lresult, HWND hwnd, UINT message,
                           WPARAM wParam, LPARAM lParam);
 */
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /* bjd - move this stuff somewhere more appropriate */
 typedef struct RENDEROBJECT
 {
 	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
+	/*BOOL*/int					vbLocked;
 	int startVert;
 	int numVerts;
 	LPDIRECT3DTEXTURE9 texture;
@@ -154,7 +158,7 @@ typedef struct RENDERSTATE
 
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int size);
+HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject);
@@ -164,6 +168,9 @@ HRESULT FSGetViewport(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
+#ifdef __cplusplus
+};
+#endif
 
 typedef struct _OLDD3DLVERTEX {
     union {

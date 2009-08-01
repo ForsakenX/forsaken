@@ -5015,10 +5015,9 @@ void PulsateVDU(void)
 
 	for (i=0; i<4; i++)
 	{
-	tintamount = 1.0F - (((float)SIND(theta + i * 90.0F) + 1.0F)/2.0F * 0.6F); 
-	TintOneVertex( BackgroundModel[TITLE_MODEL_VDU], 0, 1, UseThese[i], tintamount,tintamount,tintamount, 1.0F );
+		tintamount = 1.0F - (((float)SIND(theta + i * 90.0F) + 1.0F)/2.0F * 0.6F); 
+		TintOneVertex( BackgroundModel[TITLE_MODEL_VDU], 0, 1, UseThese[i], tintamount,tintamount,tintamount, 1.0F );
 	}
-
 }
 
 void InitHoloPad( void );
@@ -5386,7 +5385,7 @@ BOOL DisplayTitle(void)
 
 		ScreenPolyProcess();
 
-//bjd - FIXME		PulsateVDU();
+		PulsateVDU();
 		RotateHoloLight();
 
 	}
@@ -11839,6 +11838,8 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 	int NumberToExclude;
 	int ExcludedSoFar;
 
+	return TRUE; // bjd - FIX
+
 	DstMloadheader = &ModelHeaders[ Model ];
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
@@ -11857,20 +11858,12 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			}
 			if (NumberToExclude == EXCLUDE_ALL)
 				continue;
-/*		
-			memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/
-//			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-//			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
+
 
 			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -11908,8 +11901,6 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				VertPtr++;
 			}
 
-//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
 			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
@@ -12148,6 +12139,8 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 	D3DCOLOR				Colour;
 	uint8 red, green, blue, alpha;
 	uint8 vred, vgreen, vblue, valpha;
+
+	return TRUE; // bjd - FIX
 
 	DstMloadheader = &ModelHeaders[ Model ];
 

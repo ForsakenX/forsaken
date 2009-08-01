@@ -132,7 +132,7 @@ typedef struct _D3DTRIANGLE {
         WORD v3; 
         WORD wV3; 
     }; 
-    WORD     wFlags; 
+//    WORD     wFlags; 
 } D3DTRIANGLE, *LPD3DTRIANGLE; 
 
 

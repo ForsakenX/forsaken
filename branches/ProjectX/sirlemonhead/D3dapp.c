@@ -665,7 +665,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				{
 					FadeHoloLight(HoloLightBrightness);
 					DarkenRoom2(RoomDarkness);
-//bjd - FIXME					ProcessVduItems( CurrentMenu );
+					ProcessVduItems( CurrentMenu );
    					InitialTexturesSet = FALSE;
 				}
 
@@ -1152,6 +1152,8 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 BOOL
 D3DAppClearScreenOnly()
 {
+	d3dappi.lpD3DDevice->lpVtbl->Clear( d3dappi.lpD3DDevice, 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(128,128,128), 1.0f, 0 );
+
 	return TRUE;
 #if 0 // bjd
     int clearflags;

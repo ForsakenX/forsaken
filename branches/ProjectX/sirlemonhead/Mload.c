@@ -229,7 +229,7 @@ void BuildGammaCorrect( double GammaValue )
 
 
 void
-FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
+FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert )
 {
 	static LPD3DLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
 	static float u[ 3 ], v[ 3 ];
@@ -303,7 +303,7 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Ver
 
 
 void
-FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert )
+FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPOLDD3DLVERTEX Orig_Vert )
 {
 	int vnum, frame, vi;
 	TANIMUV *UV;
@@ -383,6 +383,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 	lpBufStart = lpInsStart = lpPointer = NULL;
 
+	OutputDebugString("Mload - ");
+	OutputDebugString(Filename);
+	OutputDebugString("\n");
 
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
@@ -602,7 +605,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					}
 //bjd - CHECK						FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 					else
-						FacePnt->wFlags = MFacePnt->pad;
+//						FacePnt->wFlags = MFacePnt->pad;
 
 					FixUV( FacePnt, lpBufStart, tpage, Mloadheader->Group[group].org_vertpnt[execbuf] );
 					FacePnt++;

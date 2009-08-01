@@ -6606,39 +6606,48 @@ void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 ===================================================================*/
 BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
 {
-    int clearflags;
-    D3DRECT dummy;
-    if (!d3dappi.bRenderingIsOK)
-  {
-        return FALSE;
-    }
-    /*
-     * Decided wether to clear just back buffer or also z-buffer
-     */
+	int clearflags;
+	D3DRECT dummy;
 
-  clearflags = 0;
+	if (!d3dappi.bRenderingIsOK)
+	{
+		return FALSE;
+	}
+	/*
+	 * Decided wether to clear just back buffer or also z-buffer
+	 */
+	
+	clearflags = 0;
 
 
-  if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
-  {
-    clearflags |= D3DCLEAR_TARGET;
-  }
+	if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
+	{
+		clearflags |= D3DCLEAR_TARGET;
+	}
 
 #ifdef Z_TRICK
-  if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
+	if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
 #else
-  if (d3dapprs.bZBufferOn || ClearZBuffer ) // If a ZBuffer is enabled then always clear it..
+	if (d3dapprs.bZBufferOn || ClearZBuffer ) // If a ZBuffer is enabled then always clear it..
 #endif
-  {
-    clearflags |= D3DCLEAR_ZBUFFER;
-    }
+	{
+		clearflags |= D3DCLEAR_ZBUFFER;
+	}
 
+	
   if( clearflags != 0 )
   {
       dummy.x1 = CurrentCamera.Viewport.X;
       dummy.y1 = CurrentCamera.Viewport.Y;
       dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
       dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
+
+	  LastError = d3dappi.lpD3DDevice->lpVtbl->Clear(d3dappi.lpD3DDevice, 1, &dummy, clearflags, D3DCOLOR_XRGB(128,128,128), 1.0f, 0);
+
+	if (LastError != D3D_OK)
+	{
+		return FALSE;
+	}
 /* bjd - CHECK   
     LastError =
               d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,

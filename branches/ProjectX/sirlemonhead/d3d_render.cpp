@@ -4,6 +4,7 @@ extern "C" {
 #include "d3dappi.h"
 #include "tload.h"
 #include "new3d.h"
+#include <assert.h>
 
 extern  BOOL DontColourKey;
 extern	BOOL MipMap;
@@ -89,6 +90,9 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 
 	d3dappi.szClient.cx = d3dpp.BackBufferWidth; 
 	d3dappi.szClient.cy = d3dpp.BackBufferHeight;
+
+	d3dapp->WindowsDisplay.w = d3dpp.BackBufferWidth;
+	d3dapp->WindowsDisplay.h = d3dpp.BackBufferHeight;
 
 	/* do "after device created" stuff */
 	ZeroMemory( &d3dappi.D3DViewport, sizeof(d3dappi.D3DViewport) );
@@ -593,6 +597,13 @@ BOOL SetZCompare( void )
 BOOL
 D3DAppISetRenderState()
 {
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SHADEMODE, d3dapprs.ShadeMode);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, d3dapprs.bSpecular);
+
+
 	return TRUE;
 #if 0 // bjd
     D3DEXECUTEBUFFERDESC debDesc;
@@ -992,12 +1003,6 @@ HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort)
 {
 	return d3dapp->lpD3DDevice->SetViewport( newViewPort );
 }
-/*
-HRESULT FSSetMatrix(D3DMATRIXHANDLE matrixHandle, D3DMATRIX *matrix)
-{
-	return d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, matrixHandle, matrix);
-}
-*/
 
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)
 {
@@ -1024,32 +1029,66 @@ HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
 	return d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport, count, rect, flags);
 }
 */
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int size)
+HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
+	assert (numVertices < 10000);
+
+	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't create vertex buffer\n");
+	}
+
 	OutputDebugString("created vertex buffer\n");
-	return d3dappi.lpD3DDevice->CreateVertexBuffer(size * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+
+	return LastError;
 }
+
+int lockTest = 0;
 
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
 {
-	OutputDebugString("locked vertex buffer\n");
-	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+	assert(renderObject->vbLocked == 0);
+
+	/* TODO - check the Lock type flag. Do we ever need to discard? read only? */
+	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, 0);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't lock vertex buffer!\n");
 	}
+
+	renderObject->vbLocked = TRUE;
+	lockTest++;
+
+//	OutputDebugString("locked vertex buffer\n");
 
 	return LastError;
 }
 
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
-	return renderObject->lpD3DVertexBuffer->Unlock();
+	assert(renderObject->vbLocked == 1);
+
+//	OutputDebugString("unlocking vertex buffer\n");
+	LastError = renderObject->lpD3DVertexBuffer->Unlock();
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't unlock vertex buffer!\n");
+	}
+
+	renderObject->vbLocked = FALSE;
+	lockTest--;
+
+//	OutputDebugString("unlocked vertex buffer\n");
+
+	return LastError;
 }
 
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 {
 	HRESULT LastError;
+
+	assert(renderObject->vbLocked == 0);
 
 	/* set source */
 	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
@@ -1072,7 +1111,7 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 	}
 
 	/* draw it */
-	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts * 3); // primite count, so multiply by 3
+	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts / 3); // primite count, so divide by 3
 	if (FAILED(LastError))
 	{
 		return LastError;

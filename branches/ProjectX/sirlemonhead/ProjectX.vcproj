@@ -141,9 +141,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				InlineFunctionExpansion="2"
+				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;Z_TRICK;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
+				SmallerTypeCheck="false"
+				DefaultCharIsUnsigned="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug\trash\"
@@ -178,9 +180,10 @@
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug\ProjectX.pdb"
+				GenerateMapFile="false"
 				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
 				OptimizeForWindows98="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
@@ -631,7 +634,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Mxload.c"
+				RelativePath=".\Mxload.c"
 				>
 			</File>
 			<File
