@@ -1173,7 +1173,8 @@ SetFOV( float fov )
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
 //    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
-	if (FAILED(FSGetViewPort(&viewport)))
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
 	{
 		Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
 		return FALSE;
@@ -1289,7 +1290,8 @@ ResizeViewport( float scale )
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
 //    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
-	if (FAILED(FSGetViewPort(&viewport)))
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
 	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;
@@ -1406,7 +1408,8 @@ FullScreenViewport()
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
 //    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
-	if (FAILED(FSGetViewPort(&viewport)))
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
 	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;
@@ -1702,7 +1705,6 @@ BOOL InitLevels( char * levels_list )
 
 BOOL SetMatrixViewPort( void )
 {
-	size_t size;
 //	LPVOID lpBufStart, lpInsStart, lpPointer;
 //	LPDIRECT3DEXECUTEBUFFER lpD3DExCmdBuf;
 	D3DMATERIAL9 bmat;
@@ -3797,7 +3799,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   float   time_diff;
 
   //DebugPrintf("RenderScene Started\n");
-  OutputDebugString("RenderScene Started\n");
+  //OutputDebugString("RenderScene Started\n");
 
   if ( SeriousError )
     return FALSE;
@@ -5420,7 +5422,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   }
 
-  OutputDebugString("RenderScene Ended\n");
+ // OutputDebugString("RenderScene Ended\n");
 
   return TRUE;
 }
@@ -7523,7 +7525,8 @@ InitViewport( float scale )
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
 //    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
-	if (FAILED(FSGetViewPort(&viewport)))
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
 	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;

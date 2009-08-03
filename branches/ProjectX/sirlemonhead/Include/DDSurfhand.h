@@ -1,4 +1,4 @@
-
+#if 0 // bjd
 /*==========================================================================
  *
  *
@@ -54,5 +54,7 @@ BOOL MakeDDSurf(  IDirectDraw *pdd , LPDDSURFACEDESC lpDDSurfaceDesc , LPDIRECTD
 #endif
 
 #endif // DEBUG_ON
+
+#endif
 
 #endif

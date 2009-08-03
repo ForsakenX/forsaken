@@ -143,10 +143,13 @@ extern "C" {
 typedef struct RENDEROBJECT
 {
 	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
-	/*BOOL*/int					vbLocked;
+	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
+	/*BOOL*/int				vbLocked;
 	int startVert;
 	int numVerts;
+	int numTriangles;
 	LPDIRECT3DTEXTURE9 texture;
+	D3DMATERIAL9 material;
 
 	/* add whatever else needed.. */
 } RENDEROBJECT;
@@ -162,12 +165,17 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject);
+HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
+HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
 HRESULT FSGetViewport(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
+HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips);
 #ifdef __cplusplus
 };
 #endif

@@ -326,13 +326,11 @@ BOOL SysTload( SYSTEMMEMTPAGES *SysTextures, int num_tpages )
 ===================================================================*/
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 {
-//	D3DMATERIAL mat;
 	D3DMATERIAL9 mat;
 
     int i;
 	/*	create a default material for each texture */
 	memset(&mat, 0, sizeof(D3DMATERIAL9));
-//	mat.dwSize = sizeof(D3DMATERIAL);
 	mat.Diffuse.r = (D3DVALUE)1.0;
 	mat.Diffuse.g = (D3DVALUE)1.0;
 	mat.Diffuse.b = (D3DVALUE)1.0;
@@ -345,17 +343,15 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 	mat.Specular.b = (D3DVALUE)0.0;
 	mat.Power = (float)0.0;
 
-/* bjd
-	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware )
-		mat.dwRampSize = 1;
-	else
-		mat.dwRampSize = 16;
-*/
-
-
 	for (i = 0; i<Tloadheader->num_texture_files; i++)
 	{
 		Tloadheader->lpMat[i] = mat;
+
+		if (FAILED(FSSetMaterial(&mat)))
+		{
+			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
+			return FALSE;
+		}
 #if 0 // bjd - CHECK
 		/* create the material and header */	
 	    mat.hTexture = Tloadheader->hTex[i];
@@ -387,27 +383,54 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 BOOL
 TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
-	return TRUE;
-#if 0 // bjd
-    DDSURFACEDESC ddsd;
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
-    LPDIRECTDRAWPALETTE lpDstPalette = NULL;
-    PALETTEENTRY ppe[256];
-    DWORD pcaps;
+    LPDIRECT3DTEXTURE9 lpSrcTexture = NULL;
+
 	char NewName2[256];
 
     /*
      * Release the surface if it is hanging around
      */
 
-    RELEASE(Tloadheader->lpTextureSurf[n]);
+	//LPDIRECT3DTEXTURE9  lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
+
+    RELEASE(Tloadheader->lpTexture[n]);
 
     /*
      * Create a surface in system memory and load the PPM file into it.
      * Query for the texture interface.
      */
+	if ( !Tloadheader->PlaceHolder[ n ] )
+	{
+		// change extension of file name
+		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
 
+		// if file exists
+		if( File_Exists( &NewName2[ 0 ] ) )
+		{
+			//if( !HasBmpGotRealBlack( &NewName2[0] ) )
+			{
+				// override colourkey if bmp doesnt have a real black as its first colour....
+			//	Tloadheader->ColourKey[n] = FALSE;
+			}
+			if( MipMap && Tloadheader->MipMap[n] )
+			{
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0);
+				//lpSrcTexture = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+			}
+			else
+			{
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 1);
+				//lpSrcTexture = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+			}
+		}
+	}
+
+	Tloadheader->lpTexture[n] = lpSrcTexture;
+	lpSrcTexture = NULL;
+
+	return TRUE;
+
+#if 0 // bjd
 	// only load source texture if not a placeholder
 	if ( !Tloadheader->PlaceHolder[ n ] )
 	{
@@ -424,9 +447,11 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 			}
 			if( MipMap && Tloadheader->MipMap[n] )
 			{
-				lpSrcTextureSurf = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-			}else{
-				lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+				lpSrcTexture = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+			}
+			else
+			{
+				lpSrcTexture = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 			}
 		}
 

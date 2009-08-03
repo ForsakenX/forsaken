@@ -227,9 +227,8 @@ void BuildGammaCorrect( double GammaValue )
 	}
 };
 
-
 void
-FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert )
+FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
 {
 	static LPD3DLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
 	static float u[ 3 ], v[ 3 ];
@@ -282,9 +281,11 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_
 	TriVert[ 0 ] = &Vert[ Tri->v1 ];
 	TriVert[ 1 ] = &Vert[ Tri->v2 ];
 	TriVert[ 2 ] = &Vert[ Tri->v3 ];
+
 	Orig_TriVert[ 0 ] = &Orig_Vert[ Tri->v1 ];
 	Orig_TriVert[ 1 ] = &Orig_Vert[ Tri->v2 ];
 	Orig_TriVert[ 2 ] = &Orig_Vert[ Tri->v3 ];
+
 	du = ( UV_Fix / Xsize );
 	dv = ( UV_Fix / Ysize );
 	su = du * ( ( TriVert[ ( uz + 2 ) % 3 ]->tu > TriVert[ uz ]->tu ) ? 1 : -1 );
@@ -303,7 +304,7 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_
 
 
 void
-FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPOLDD3DLVERTEX Orig_Vert )
+FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert )
 {
 	int vnum, frame, vi;
 	TANIMUV *UV;
@@ -329,10 +330,6 @@ FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPOLDD3DLVERTEX Orig_Vert )
 ===================================================================*/
 BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 {
-/*
-	D3DEXECUTEDATA			d3dExData;
-	D3DEXECUTEBUFFERDESC	debDesc;
-*/
 	char		*	FileNamePnt;
 	char		*	Buffer;
 	uint16		*	Uint16Pnt;

@@ -1,4 +1,4 @@
-
+#if 0 // bjd
 /*==========================================================================
  *
  *
@@ -30,6 +30,8 @@ BOOL MakeExecuteBuffer(  LPD3DEXECUTEBUFFERDESC	debDesc , /*LPDIRECT3DDEVICE lpD
 #define XRELEASE(x) x->lpVtbl->Release(x)
 
 #endif // DEBUG_ON
+
+#endif
 
 #endif
 

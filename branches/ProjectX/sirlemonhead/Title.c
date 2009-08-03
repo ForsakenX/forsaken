@@ -4352,7 +4352,8 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
   
 				num_polys = mxheader->Group[Group].num_polys_per_execbuf[ExecBuf];
 				poly_ptr = mxheader->Group[Group].poly_ptr[ExecBuf];
-				vertex_ptr = mxheader->Group[Group].org_vertpnt[ExecBuf];
+				//bjd vertex_ptr = mxheader->Group[Group].org_vertpnt[ExecBuf];
+				vertex_ptr = mxheader->Group[Group].originalVerts[ExecBuf];
 
 				intersection_points = 0;
 				scanlinenum = 0;
@@ -4956,7 +4957,10 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 //	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
 	
-	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
+
+	
 	
 	DstlpD3DLVERTEX->y = VertPtr->y + IncreaseBy;
 	
@@ -11824,7 +11828,6 @@ void SetDiscStatus(MENU *menu)
 ===================================================================*/
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
-//	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
@@ -11837,8 +11840,6 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 	int *CurrentExclude;
 	int NumberToExclude;
 	int ExcludedSoFar;
-
-	return TRUE; // bjd - FIX
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
@@ -11867,7 +11868,8 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
-			VertPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
+			//bjd VertPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
+			VertPtr = DstMloadheader->Group[Group].originalVerts[ExecBuf];
 		
 			for (i=0; i<Vert; i++)
 			{
@@ -11965,7 +11967,8 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 			for( ExecBuf = 0; ExecBuf < MxModelHeaderPtr->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
 				TotalVerts = MxModelHeaderPtr->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
-				VertPtr = MxModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
+				//bjd VertPtr = MxModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
+				VertPtr = MxModelHeaderPtr->Group[Group].originalVerts[ExecBuf];
 
 				for (i=8; i<TotalVerts; i++)	//ignore bounding box, so start at 8...
 				{
@@ -12093,8 +12096,8 @@ BOOL MakeTranslucent( uint16 Model )
 
 				DstMxloadheader->Group[ Group ].exec_type[ ExecBuf ] = 0;
 
-				ColourPtr = DstMxloadheader->Group[Group].org_vertpnt[ExecBuf];
-
+				//bjd ColourPtr = DstMxloadheader->Group[Group].org_vertpnt[ExecBuf];
+				ColourPtr = DstMxloadheader->Group[Group].originalVerts[ExecBuf];
 
 				for (i=0; i<Vert; i++)
 				{
@@ -12132,7 +12135,6 @@ BOOL MakeTranslucent( uint16 Model )
 
 BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
-//	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	LPD3DLVERTEX			VertPtr;
@@ -12140,26 +12142,15 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 	uint8 red, green, blue, alpha;
 	uint8 vred, vgreen, vblue, valpha;
 
-	return TRUE; // bjd - FIX
-
 	DstMloadheader = &ModelHeaders[ Model ];
 
-//	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-//	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-
-//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-//	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
 	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
-
-	
-	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 	  
 	vred = (uint8)RGBA_GETRED(VertPtr->color);
 	vgreen = (uint8)RGBA_GETGREEN(VertPtr->color);
@@ -12181,9 +12172,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 		return FALSE;
 			
 	DstlpD3DLVERTEX->color = Colour;
-	
-//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+
 	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
@@ -14214,7 +14203,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-	HRESULT ddrval;
+//	HRESULT ddrval;
 	BOOL	OKtoProcess;
 //	DDBLTFX fx;
 	uint16 TempPoly;
@@ -14438,7 +14427,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-	HRESULT ddrval;
+//	HRESULT ddrval;
 //	DDBLTFX fx;
 	uint16 TempPoly;
 	
@@ -15466,7 +15455,8 @@ void GetTVCoords( POLY *poly, float zoffset )
 			{
 				for ( vert = 0; vert < ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vertices; vert++ )
 				{
-					VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].org_vertpnt[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
+					//bjd VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].org_vertpnt[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
+					VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].originalVerts[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
 					
 					switch( vert )
 					{

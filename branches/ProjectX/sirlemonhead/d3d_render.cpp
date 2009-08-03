@@ -1,4 +1,6 @@
 
+#include <d3dx9.h>
+
 extern "C" {
 #include "typedefs.h"
 #include "d3dappi.h"
@@ -602,6 +604,8 @@ D3DAppISetRenderState()
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, d3dapprs.bSpecular);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_CULLMODE,	D3DCULL_NONE);
 
 
 	return TRUE;
@@ -1014,6 +1018,11 @@ HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 	return d3dappi.lpD3DDevice->GetTransform(type, matrix);
 }
 
+HRESULT FSSetMaterial(const D3DMATERIAL9 *material)
+{
+	return d3dappi.lpD3DDevice->SetMaterial(material);
+}
+
 HRESULT FSBeginScene()
 {
 	return d3dappi.lpD3DDevice->BeginScene();
@@ -1023,12 +1032,45 @@ HRESULT FSEndScene()
 {
 	return d3dappi.lpD3DDevice->EndScene();
 }
-/*
-HRESULT FSClear(DWORD count, LPD3DRECT rect, DWORD flags)
+
+char saveFile[MAX_PATH];
+
+int imageCount = 0;
+
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips)
 {
-	return d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport, count, rect, flags);
-}
+	D3DXIMAGE_INFO imageInfo;
+
+	HRESULT LastError = D3DXCreateTextureFromFileEx(d3dappi.lpD3DDevice, 
+				fileName, 
+				width, 
+				height, 
+				numMips, 
+				0,
+				D3DFMT_A8R8G8B8,
+				D3DPOOL_MANAGED,
+				D3DX_DEFAULT,
+				D3DX_DEFAULT,
+				0, // colour key
+				&imageInfo,
+				NULL,
+				texture);
+
+	if (FAILED(LastError))
+	{
+		OutputDebugString("couldn't create texture\n");
+	}
+
+/*
+	sprintf(buf, "D://Games//ProjectX//image_%d.png", imageCount);
+
+	D3DXSaveTextureToFile(buf, D3DXIFF_PNG, (*texture), 0);
+
+	imageCount++;
 */
+	return LastError;
+}
+
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	assert (numVertices < 10000);
@@ -1084,6 +1126,42 @@ HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 	return LastError;
 }
 
+HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+{
+
+	LastError = d3dappi.lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't create vertex buffer\n");
+	}
+
+	OutputDebugString("created vertex buffer\n");
+
+	return LastError;
+}
+
+HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+{
+	LastError = renderObject->lpD3DIndexBuffer->Lock(0, 0, (void**)indices, 0);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't lock index buffer!\n");
+	}
+
+	return LastError;
+}
+
+HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
+{
+	LastError = renderObject->lpD3DIndexBuffer->Unlock();
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't lock index buffer!\n");
+	}
+
+	return LastError;
+}
+
 HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 {
 	HRESULT LastError;
@@ -1097,7 +1175,20 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 		return LastError;
 	}
 
+	LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
+	if(FAILED(LastError)) 
+	{
+		return LastError;
+	}
+
 	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	if (FAILED(LastError))
+	{
+		return LastError;
+	}
+
+	/* set material */
+	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
 	if (FAILED(LastError))
 	{
 		return LastError;
@@ -1111,7 +1202,16 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 	}
 
 	/* draw it */
+/*
 	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts / 3); // primite count, so divide by 3
+*/
+	LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+															0, 
+															0, 
+															renderObject->numVerts,
+															0,
+															renderObject->numTriangles);
+										
 	if (FAILED(LastError))
 	{
 		return LastError;

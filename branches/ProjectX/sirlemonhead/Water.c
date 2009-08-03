@@ -369,7 +369,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	LPD3DTRIANGLE	FacePnt = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	int			i;
-    LPVOID lpBufStart, lpInsStart, lpPointer;
+//    LPVOID lpBufStart, lpInsStart, lpPointer;
 
 	int vertsCount = 0;
 

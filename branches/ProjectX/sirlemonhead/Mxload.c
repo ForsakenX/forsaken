@@ -88,8 +88,8 @@ POLYANIM * Panel3DPolyAnims_MineNum[NUMOFPOLYSPER3DPANELITEM];
 
 void Check3DPanelPolyAnim(POLYANIM * PolyAnim );
 
-extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert );
-extern void FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPOLDD3DLVERTEX Orig_Vert );
+extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert );
+extern void FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert );
 
 /*===================================================================
 		Function from title.c not #included due to dependences...	
@@ -130,6 +130,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	LPOLDD3DLVERTEX lpD3DLVERTEX2 = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	LPD3DLVERTEX	lpBufStart = NULL;
+	WORD			*lpIndices = NULL;
+	int				ibIndex = 0;
 	int				i,e,o;
 	uint16			tpage;
 	int				execbuf;
@@ -242,21 +244,39 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
 			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
-			Mxloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
+			//bjd - Mxloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
 
 			/* store the vertexes in a temp memory buffer first, as we load them according to the face information */
-			vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
+//			vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
+
+			/*	create a vertex buffer	*/
+			if (FAILED(FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], num_vertices)))
+			{
+				return FALSE;
+			}
+
+			sprintf(buf, "created buffer to hold :%d verts\n", num_vertices);
+			OutputDebugString(buf);
+
+			/*	lock the vertex buffer	*/
+			if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
+			{
+				Msg( "Mxload() lock failed in %s\n", Filename );
+				return FALSE;
+			}
+
+			lpBufStart = lpD3DLVERTEX;
 
 			/*	copy the vertex data into the execute buffer	*/
 			for ( i=0 ; i<num_vertices; i++)
 			{
 				OLDD3DLVERTEX *old = lpD3DLVERTEX2;
 
-				vertexArray[i].x = old->x;
-				vertexArray[i].y = old->y;
-				vertexArray[i].z = old->z;
-				vertexArray[i].tu = old->tu;
-				vertexArray[i].tv = old->tv;
+				lpD3DLVERTEX[i].x = old->x;
+				lpD3DLVERTEX[i].y = old->y;
+				lpD3DLVERTEX[i].z = old->z;
+				lpD3DLVERTEX[i].tu = old->tu;
+				lpD3DLVERTEX[i].tv = old->tv;
 				color = old->color;
 
 				a = (color>>24)&255;
@@ -291,13 +311,18 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				}
 
 				color = RGBA_MAKE( r , g , b , a  );
-				vertexArray[i].color = color;
+				lpD3DLVERTEX[i].color = color;
 
-				vertexArray[i].specular = RGB_MAKE( 0 , 0 , 0 );
+				lpD3DLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
 				lpD3DLVERTEX2->color = color;
 
 				lpD3DLVERTEX2++;
 			}
+
+			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
+			Mxloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(D3DLVERTEX) * num_vertices);
+			memcpy(Mxloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(D3DLVERTEX) * num_vertices);
+
 			//	Stuff to clip if bounding box is off screen
 /* bjd - CHECK
 			OP_SET_STATUS( D3DSETSTATUS_STATUS,  D3DSTATUS_CLIPINTERSECTIONFRONT |
@@ -328,7 +353,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			Buffer = (char *) Uint16Pnt;		
 			Mxloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;
 
-			
+
 			triangleCount = 0;
 			tempInt = 0;
 			tempBuffer = Buffer;
@@ -336,15 +361,10 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			/* find out how many vertexes we'll need to load into our vertex buffer */
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
-				int crap = 0;
-
 				uint16 *temp = (uint16 *) tempBuffer;
 
 				temp += 4;
-				//crap = *temp++;
-				//crap = *temp++;
-				//crap = *temp++;
-				//crap = *temp++;
+
 				numTriangles = *temp++;
 
 				tempBuffer = (char*) temp;
@@ -355,24 +375,21 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				triangleCount += numTriangles;
 			}
 
-			/*	create a vertex buffer	*/
-			if (FAILED(FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], triangleCount * 3)))
+			/*	create an index buffer	*/
+			if (FAILED(FSCreateIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], triangleCount * 3)))
 			{
 				return FALSE;
 			}
 
-			sprintf(buf, "created buffer to hold :%d verts\n", triangleCount * 3);
+			sprintf(buf, "created index buffer to hold :%d incidices\n", triangleCount * 3);
 			OutputDebugString(buf);
 
-			/*	lock the vertex buffer	*/
-			//OutputDebugString("==locking VB after create\n");
-			if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
+			/*	lock the index buffer	*/
+			if (FAILED(FSLockIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpIndices)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
 				return FALSE;
 			}
-
-			lpD3DLVERTEX = lpBufStart;
 
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
@@ -381,8 +398,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				group_vertex_start = *Uint16Pnt++;
 				group_vertex_num = *Uint16Pnt++;
 				tpage = *Uint16Pnt++;
-				num_triangles = *Uint16Pnt++;    
-				Buffer = (char *) Uint16Pnt;		
+				num_triangles = *Uint16Pnt++;
+				Buffer = (char *) Uint16Pnt;	
 	
 				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
 /* bjd - CHECK
@@ -404,7 +421,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				OP_TRIANGLE_LIST( (short) num_triangles, lpPointer);
 */
 				MFacePnt = (MFACE *) Buffer;
-				TempFacePnt = (LPD3DTRIANGLE ) lpD3DLVERTEX;
+				TempFacePnt = (LPD3DTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
+
+				ibIndex = 0;
 					
 				/*	copy the faces data into the execute buffer	*/
 				for( e=0; e<num_triangles; e++)
@@ -413,9 +432,16 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 					FacePnt.v2 = MFacePnt->v2;
 					FacePnt.v3 = MFacePnt->v3;
 
-					memcpy(&lpD3DLVERTEX[0], &vertexArray[MFacePnt->v1], sizeof(D3DLVERTEX));
-					memcpy(&lpD3DLVERTEX[1], &vertexArray[MFacePnt->v2], sizeof(D3DLVERTEX));
-					memcpy(&lpD3DLVERTEX[2], &vertexArray[MFacePnt->v3], sizeof(D3DLVERTEX));
+					lpIndices[ibIndex] = FacePnt.v1;
+					ibIndex++;
+					lpIndices[ibIndex] = FacePnt.v2;
+					ibIndex++;
+					lpIndices[ibIndex] = FacePnt.v3;
+					ibIndex++;
+
+//					memcpy(&lpD3DLVERTEX[0], &vertexArray[MFacePnt->v1], sizeof(D3DLVERTEX));
+//					memcpy(&lpD3DLVERTEX[1], &vertexArray[MFacePnt->v2], sizeof(D3DLVERTEX));
+//					memcpy(&lpD3DLVERTEX[2], &vertexArray[MFacePnt->v3], sizeof(D3DLVERTEX));
 
 					if ( MFacePnt->pad & 1 )
 					{
@@ -424,16 +450,16 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
-//bjd - FIXME					FixUV( &FacePnt, lpBufStart, tpage, Mxloadheader->Group[group].org_vertpnt[execbuf] );
+					FixUV( &FacePnt, lpBufStart, tpage, /*Mxloadheader->Group[group].org_vertpnt[execbuf]*/ Mxloadheader->Group[group].originalVerts[execbuf]);
 //					FacePnt++;
-					lpD3DLVERTEX+=3;
+					//lpD3DLVERTEX+=3;
 					MFacePnt++;
 					tempInt+=3;
 				}
 				Buffer = (char *) MFacePnt;
 			}
 
-			sprintf(buf, "put %d verts into VB\n", tempInt);
+			sprintf(buf, "put %d indices into IB\n", tempInt);
 			OutputDebugString(buf);
 			
 			if( Panel )
@@ -461,20 +487,48 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 //				STATE_DATA(D3DRENDERSTATE_FOGENABLE, FALSE, lpPointer );
 //			OP_EXIT(lpPointer);
 
-			free(vertexArray);
-			vertexArray = NULL;
+			//free(vertexArray);
+			//vertexArray = NULL;
 
 			/*	unlock the vertex buffer	*/
 			if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 			{
-				Msg( "Mxload() unlock failed in %s\n", Filename );
+				Msg( "Mxload() vb unlock failed in %s\n", Filename );
+				return FALSE ;
+			}
+
+			/*	unlock the index buffer	*/
+			if (FAILED(FSUnlockIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
+			{
+				Msg( "Mxload() ib unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
 
 			/* update the renderObject */
-			Mxloadheader->Group[ group ].renderObject[execbuf].numVerts = triangleCount * 3;
-			Mxloadheader->Group[ group ].renderObject[execbuf].startVert = 0;
-			Mxloadheader->Group[ group ].renderObject[execbuf].texture = NULL;
+			Mxloadheader->Group[ group ].renderObject[execbuf].numVerts = num_vertices;
+			Mxloadheader->Group[ group ].renderObject[execbuf].numTriangles = num_triangles;
+
+			if( Mxloadheader->num_texture_files == 0 ) 
+			{	
+				// ?
+				//STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
+			}
+			else
+			{
+				OutputDebugString("setting a material\n");
+				Mxloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxloadheader->TloadIndex[tpage]];
+				//STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxloadheader->TloadIndex[tpage]], lpPointer);
+			}
+
+			if( Mxloadheader->num_texture_files == 0 ) 
+			{
+				Mxloadheader->Group[ group ].renderObject[execbuf].texture = NULL;
+			}
+			else
+			{
+				Mxloadheader->Group[ group ].renderObject[execbuf].texture = Tloadheader.lpTexture[Mxloadheader->TloadIndex[tpage]];
+				//STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[Mxloadheader->TloadIndex[tpage]], lpPointer);
+			}
 		}
 	}
 
@@ -520,19 +574,11 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						return FALSE;
 					}
 
-//					memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//					debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-//					if( Mxloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
-//						Mxloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK ) // bjd
-//					if (FSLockExecuteBuffer(Mxloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
-					//OutputDebugString("locking VB for PolyAnim update...\n");
 					if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[ group ].renderObject[execbuf], &lpD3DLVERTEX)))
 					{
 						Msg( "Mxload : Lock ExecBuffer failed\n" );
 						return FALSE;
 					}
-
-//					lpD3DLVERTEX = (LPD3DLVERTEX ) debDesc.lpData;
 
 					for( i = 0 ; i < Mxloadheader->Group[group].num_animating_polys[execbuf] ; i++ )
 					{
@@ -597,7 +643,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						}
 						Buffer = ( char * ) FloatPnt;
 
-						FixUV_Anim( PolyAnim, lpD3DLVERTEX, Mxloadheader->Group[group].org_vertpnt[execbuf] );
+						FixUV_Anim( PolyAnim, lpD3DLVERTEX, /*Mxloadheader->Group[group].org_vertpnt[execbuf]*/Mxloadheader->Group[group].originalVerts[execbuf] );
 
 						if( Panel )
 						{
@@ -606,7 +652,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 						PolyAnim++;
 					}
-//					if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+
 					if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 					{
 						Msg( "Mxload : Unlock ExecBuffer failed\n" );
@@ -784,7 +830,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 	int		group;
 	D3DMATRIX Matrix;
 	BOOL	Display;
-//	D3DEXECUTEBUFFERDESC	debDesc;
     LPD3DLVERTEX	lpPointer = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	POLYANIM * PolyAnim;
@@ -815,17 +860,11 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 							// something has changed....
 							if( !VertBufferLocked )
 							{
-//			 					memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//								debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-								// lock the execute buffer
-//								if ( Mxloadheader->Group[group].lpExBuf[i]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[i], &debDesc ) != D3D_OK) // bjd
-//								if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[i], &debDesc ) != D3D_OK)
-//									return FALSE;
 								if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[i], &lpPointer)))
 								{
 									return FALSE;
 								}
-//								lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+
 								VertBufferLocked = TRUE;
 							}
 
@@ -847,8 +886,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 				if( VertBufferLocked )
 				{
 					// unlock it..
-					//if ( Mxloadheader->Group[group].lpExBuf[i]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[i] ) != D3D_OK)
-					//	return FALSE;
 					if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
@@ -879,7 +916,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 #endif
 					}
 
-//					if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
 					if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))
 					{
 						return FALSE;
@@ -942,8 +978,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Display )
 					{
-						//if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-						//	return FALSE;
 						if (FAILED(FSDrawVertexBuffer(&Mxloadheader->Group[group].renderObject[i])))
 						{
 							return FALSE;
@@ -1321,7 +1355,8 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 //			lpD3DLVERTEX1 = (LPD3DLVERTEX) debDesc1.lpData;
 
 			//ColourPnt = Mxloadheader1->Group[group].org_colors[i];
-			VertPtr = Mxloadheader1->Group[group].org_vertpnt[i];
+			//bjd VertPtr = Mxloadheader1->Group[group].org_vertpnt[i];
+			VertPtr = Mxloadheader1->Group[group].originalVerts[i];
 
 			for( e = 0 ; e < Mxloadheader1->Group[group].num_verts_per_execbuf[i] ; e++ )
 			{

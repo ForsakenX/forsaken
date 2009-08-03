@@ -1014,6 +1014,8 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	float	glf;
 	float	rlf;
 
+	OutputDebugString("XLightMxloadHeader\n");
+
 	group = MXloadheader->num_groups;
 	while( group--)
 	{
@@ -1036,7 +1038,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			//bjd lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
+
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR

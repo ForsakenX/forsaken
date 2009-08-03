@@ -1370,6 +1370,7 @@ D3DAppDestroy(void)
     d3dappi.hwnd = NULL;
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     RELEASE(d3dappi.lpD3DDevice);
+	RELEASE(d3dappi.lpD3D);
 //    RELEASE(d3dappi.lpZBuffer);
 //    RELEASE(lpPalette);
 //    RELEASE(lpClipper);

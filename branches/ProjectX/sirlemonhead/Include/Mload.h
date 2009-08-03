@@ -208,6 +208,7 @@ typedef struct MLOADHEADER{
 	int					state;								// FALSE if not loaded properly...
 	char		*		OrgAddr;
 	char		*		Buffer;
+	char		*		testBuffer;
 	uint16				num_texture_files;
 	uint16				num_groups;
 	GROUP				Group[MAXGROUPS];

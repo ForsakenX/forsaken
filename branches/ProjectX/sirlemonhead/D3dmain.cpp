@@ -292,8 +292,8 @@ FAILURE:
 	if ( UnMallocedBlocks() )
 		DebugPrintf( "Un-malloced blocks found!" );
 
-	if ( UnMallocedExecBlocks() )
-		DebugPrintf( "Un-malloced Exec blocks found!" );
+//	if ( UnMallocedExecBlocks() )
+//		DebugPrintf( "Un-malloced Exec blocks found!" );
 
 //	if ( UnMallocedDDSurfBlocks() )
 //		DebugPrintf( "Un-malloced DDSurf blocks found!" );

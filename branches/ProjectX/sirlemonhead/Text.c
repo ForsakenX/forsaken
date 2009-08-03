@@ -176,7 +176,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 	int i;
 	int num;
     RECT    src;
-    HRESULT ddrval;
+//    HRESULT ddrval;
 	int		Zeros= 0 ;
 	uint8 r , g , b;
 
@@ -302,7 +302,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 {
 	uint8 num;
     RECT    src, dest;
-    HRESULT ddrval;
+//    HRESULT ddrval;
 	uint8 r , g , b;
 //    DDBLTFX fx;
 	BOOL ignore;
@@ -406,7 +406,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 {
 	uint8 num;
     RECT    src, dest;
-    HRESULT ddrval;
+//    HRESULT ddrval;
 	uint8 r , g , b;
 //    DDBLTFX fx;
 	BOOL ignore;
@@ -2150,7 +2150,7 @@ __inline
 void DisplayConnectionStatus( int num , int x , int y)
 {
     RECT    src;
-    HRESULT ddrval;
+//    HRESULT ddrval;
 	int offset;
 
 	if( !num )
