@@ -205,12 +205,6 @@ typedef struct tagD3DAppRenderState {
     BOOL             bDithering;    /* dithering is on */
     BOOL             bSpecular;     /* specular highlights are on */
     BOOL             bAntialiasing; /* anti-aliasing is on */
-
-    BOOL             bFogEnabled;   /* fog is on */
-    D3DCOLOR         FogColor;      /* fog color */
-    D3DFOGMODE       FogMode;       /* linear, exp. etc. */
-    D3DVALUE         FogStart;      /* begining depth */
-    D3DVALUE         FogEnd;        /* ending depth */
 } D3DAppRenderState;
 
 /*

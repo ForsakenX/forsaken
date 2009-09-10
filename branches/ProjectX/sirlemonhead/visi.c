@@ -1199,9 +1199,6 @@ ClipGroup( CAMERA *cam, uint16 group )
 	return 1;
 }
 
-BOOL FogOff( void );
-BOOL FogOn( float Start , float End );
-
 /*===================================================================
 		Disp Visipoly Model
 ===================================================================*/
@@ -1250,12 +1247,6 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 		 	ClipGroup( &CurrentCamera, (uint16) g->group );
 			CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
-
-			// This just causes certain groups to not appear fogged
-			if ( d3dapprs.bFogEnabled )
-			{
-				FogOn( d3dapprs.FogStart, d3dapprs.FogEnd ); //Start , End );
-			}
 
 			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
 				return FALSE;

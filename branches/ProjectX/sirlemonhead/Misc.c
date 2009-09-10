@@ -48,12 +48,6 @@ D3DAppISetDefaults(void)
     d3dapprs.bDithering = TRUE;
     d3dapprs.bSpecular = FALSE;
     d3dapprs.bAntialiasing = FALSE;
-    d3dapprs.bFogEnabled = FALSE;
-    d3dapprs.FogColor = RGB_MAKE(255, 255, 255);
-    d3dapprs.FogMode = D3DFOG_LINEAR;
-    d3dapprs.FogStart = D3DVAL(1);
-    d3dapprs.FogEnd = D3DVAL(3000);
-
 //    lpClipper = NULL;
 //    lpPalette = NULL;
     bPrimaryPalettized = FALSE;

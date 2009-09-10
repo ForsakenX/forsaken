@@ -489,10 +489,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				Mxloadheader->Group[group].poly_ptr[execbuf] = NULL;			
 			}
 
-//			OP_STATE_RENDER( 1, lpPointer);
-//				STATE_DATA(D3DRENDERSTATE_FOGENABLE, FALSE, lpPointer );
-//			OP_EXIT(lpPointer);
-
 			//free(vertexArray);
 			//vertexArray = NULL;
 
