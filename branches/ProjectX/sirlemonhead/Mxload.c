@@ -226,6 +226,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		
 		for( execbuf=0 ; execbuf<Mxloadheader->Group[group].num_execbufs; execbuf++)
 		{
+			num_texture_groups = 0;
 			Uint16Pnt = (uint16 *) Buffer;
 
 			ExecSize = 	*Uint16Pnt++;
@@ -233,6 +234,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			/*	get the type of execution buffer	*/
 			exec_type = *Uint16Pnt++;
+
 			/*	get the number of verts in execution buffer	*/
 			num_vertices =	*Uint16Pnt++;     
 			Buffer = (char *) Uint16Pnt;		
@@ -349,7 +351,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			Buffer = (char *) lpD3DLVERTEX2;
 
 			Uint16Pnt = (uint16 *) Buffer;
-			num_texture_groups = *Uint16Pnt++;    
+			num_texture_groups = *Uint16Pnt++;
+			sprintf(buf, "texture groups: %d\n", num_texture_groups);
+			OutputDebugString(buf);
 			Buffer = (char *) Uint16Pnt;		
 			Mxloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;
 
@@ -391,6 +395,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				return FALSE;
 			}
 
+			ibIndex = 0;
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
 				Uint16Pnt = (uint16 *) Buffer;
@@ -399,6 +404,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				group_vertex_num = *Uint16Pnt++;
 				tpage = *Uint16Pnt++;
 				num_triangles = *Uint16Pnt++;
+				sprintf(buf, "trinagles %d\n", num_triangles);
+				OutputDebugString(buf);
 				Buffer = (char *) Uint16Pnt;	
 	
 				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
@@ -423,7 +430,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				MFacePnt = (MFACE *) Buffer;
 				TempFacePnt = (LPD3DTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
 
-				ibIndex = 0;
 					
 				/*	copy the faces data into the execute buffer	*/
 				for( e=0; e<num_triangles; e++)
@@ -506,7 +512,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			/* update the renderObject */
 			Mxloadheader->Group[ group ].renderObject[execbuf].numVerts = num_vertices;
-			Mxloadheader->Group[ group ].renderObject[execbuf].numTriangles = num_triangles;
+			Mxloadheader->Group[ group ].renderObject[execbuf].numTriangles = triangleCount; //num_triangles;
 
 			if( Mxloadheader->num_texture_files == 0 ) 
 			{	

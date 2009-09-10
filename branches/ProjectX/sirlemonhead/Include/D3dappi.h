@@ -159,6 +159,8 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
+
+HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
