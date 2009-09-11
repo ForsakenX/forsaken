@@ -607,6 +607,9 @@ D3DAppISetRenderState()
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_CULLMODE,	D3DCULL_NONE);
 
+	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
+	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
+	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 
 	return TRUE;
 #if 0 // bjd
