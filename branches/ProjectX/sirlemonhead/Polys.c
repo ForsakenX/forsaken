@@ -971,8 +971,8 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		return FALSE;
 	}
 
-	renderObject->numVerts = TotalVerts;
-	renderObject->texture = 0;
+//	renderObject->numVerts = TotalVerts;
+//	renderObject->texture = 0;
 /*
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
 	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
@@ -1308,8 +1308,8 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-	renderObject->numVerts = TotalVerts;
-	renderObject->texture = 0;
+//FIXME	renderObject->numVerts = TotalVerts;
+//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;
@@ -1707,8 +1707,8 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
 
-	renderObject->numVerts = TotalVerts;
-	renderObject->texture = 0;
+//FIXME	renderObject->numVerts = TotalVerts;
+//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;
@@ -2036,8 +2036,8 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-	renderObject->numVerts = TotalVerts;
-	renderObject->texture = 0;
+//FIXME	renderObject->numVerts = TotalVerts;
+//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;

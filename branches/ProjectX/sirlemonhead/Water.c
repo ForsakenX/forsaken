@@ -399,10 +399,13 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 		return FALSE;
 */
-	if(FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
+
+	WO->renderObject.numTextureGroups = 1;
+
 /*
 	lpBufStart = debDesc.lpData;
 	lpPointer = lpBufStart;
@@ -495,9 +498,9 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	}
 
 	/*	set the data for the execute buffer	*/
-	WO->renderObject.startVert = 0;
-	WO->renderObject.numVerts = WO->num_of_verts;
-	WO->renderObject.texture = NULL;
+	WO->renderObject.textureGroups[0].startVert = 0;
+	WO->renderObject.textureGroups[0].numVerts = WO->num_of_verts;
+	WO->renderObject.textureGroups[0].texture = NULL;
 
 /*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));

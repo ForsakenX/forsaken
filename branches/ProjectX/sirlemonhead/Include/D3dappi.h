@@ -139,17 +139,28 @@ BOOL D3DAppIHandleWM_SIZE(LRESULT* lresult, HWND hwnd, UINT message,
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define MAX_TEXTURE_GROUPS 8
+
+typedef struct TEXTUREGROUP
+{
+	int startVert;
+	int startIndex;
+	int numVerts;
+	int numTriangles;
+	LPDIRECT3DTEXTURE9 texture;
+} TEXTUREGROUP;
+
 /* bjd - move this stuff somewhere more appropriate */
 typedef struct RENDEROBJECT
 {
 	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
 	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
-	/*BOOL*/int				vbLocked;
-	int startVert;
-	int numVerts;
-	int numTriangles;
-	LPDIRECT3DTEXTURE9 texture;
 	D3DMATERIAL9 material;
+	/*BOOL*/int				vbLocked;
+	int numTextureGroups;
+
+	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
 
 	/* add whatever else needed.. */
 } RENDEROBJECT;

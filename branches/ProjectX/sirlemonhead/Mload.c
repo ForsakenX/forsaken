@@ -640,9 +640,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				return FALSE;
 			}
 
-			Mloadheader->Group[group].renderObject[execbuf].startVert = 0;
-			Mloadheader->Group[group].renderObject[execbuf].numVerts = num_vertices;
-			Mloadheader->Group[group].renderObject[execbuf].texture = NULL;
+			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].startVert = 0;
+			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
+			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = NULL;
 
 			Mloadheader->Group[group].polyanim[execbuf] = NULL;
 			Mloadheader->Group[group].num_animating_polys[execbuf] = 0;

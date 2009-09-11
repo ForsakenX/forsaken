@@ -940,29 +940,30 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 	{
 		return LastError;
 	}
-
-	/* set texture */
-	LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->texture);
-	if (FAILED(LastError))
+	
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{
-		return LastError;
+		/* set texture */
+		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		if (FAILED(LastError))
+		{
+			return LastError;
+		}
+
+		/* draw it */
+		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+																0, 
+																0, 
+																renderObject->textureGroups[i].numVerts,
+																renderObject->textureGroups[i].startIndex,
+																renderObject->textureGroups[i].numTriangles);
+
+		if (FAILED(LastError))
+		{
+			return LastError;
+		}
 	}
 
-	/* draw it */
-/*
-	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, renderObject->startVert, renderObject->numVerts / 3); // primite count, so divide by 3
-*/
-	LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-															0, 
-															0, 
-															renderObject->numVerts,
-															0,
-															renderObject->numTriangles);
-										
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
 	return LastError;
 }
 
@@ -974,11 +975,17 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		renderObject->lpD3DVertexBuffer = NULL;
 	}
 	
-	renderObject->numVerts = 0;
-	renderObject->startVert = 0;
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		renderObject->textureGroups[i].numVerts = 0;
+		renderObject->textureGroups[i].startVert = 0;
 
-	/* don't do this - we need a texture manager and handles to textures */
-	renderObject->texture = NULL;
+		if (renderObject->textureGroups[i].texture)
+		{
+			renderObject->textureGroups[i].texture->Release();
+			renderObject->textureGroups[i].texture = NULL;
+		}
+	}
 }
 
 };

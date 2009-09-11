@@ -62,7 +62,6 @@ typedef struct D3DCOLOR_RGBA {
 	uint8 a;
 } D3DCOLOR_RGBA;
 
-
 typedef struct MXAGROUP{
 	uint16	num_execbufs;
 	uint16	exec_type[MAXEXECBUFSPERGROUP];

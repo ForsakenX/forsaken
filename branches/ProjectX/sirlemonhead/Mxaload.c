@@ -192,6 +192,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	LPD3DLVERTEX vertexArray;
 	int numTriangles = 0;
 	int triangleCount = 0;
+	int indexOffset = 0;
 	int tempInt;
 	char buf[100];
 
@@ -370,6 +371,9 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				return FALSE;
 			}
 
+			ibIndex = 0;
+			indexOffset = 0;
+
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
 				Uint16Pnt = (uint16 *) Buffer;
@@ -399,8 +403,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				/* bjd - CHECK - might need to be start of buffer */
 				TempFacePnt = (LPD3DTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
 
-				ibIndex = 0;
-
 				/*	copy the faces data into the execute buffer	*/
 				for( e=0; e<num_triangles; e++)
 				{
@@ -415,14 +417,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					lpIndices[ibIndex] = FacePnt.v3;
 					ibIndex++;
 
-//					memcpy(&lpD3DLVERTEX[0], &vertexArray[MFacePnt->v1], sizeof(D3DLVERTEX));
-//					memcpy(&lpD3DLVERTEX[1], &vertexArray[MFacePnt->v2], sizeof(D3DLVERTEX));
-//					memcpy(&lpD3DLVERTEX[2], &vertexArray[MFacePnt->v3], sizeof(D3DLVERTEX));
-/*
-					FacePnt->v1 = MFacePnt->v1;
-					FacePnt->v2 = MFacePnt->v2;
-					FacePnt->v3 = MFacePnt->v3;
-*/
 					if ( MFacePnt->pad & 1 )
 					{
 						// colourkey triangle found
@@ -445,6 +439,16 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 
 				Buffer = (char *) MFacePnt;
 
+				// BJD - check this. correct value to place here?
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;//num_triangles * 3;
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
+
+				/* keep track of our offset into our index buffer */
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startIndex = indexOffset;
+				indexOffset += num_triangles * 3;
+
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+/*
 				if (StoreTriangles)
 				{	Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = num_triangles;			
 					Mxaloadheader->Group[group].poly_ptr[execbuf] = (LPD3DTRIANGLE)malloc( sizeof (D3DTRIANGLE) * num_triangles);			
@@ -456,6 +460,19 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = 0;
 					Mxaloadheader->Group[group].poly_ptr[execbuf] = NULL;			
 				}
+*/
+			}
+
+			if (StoreTriangles)
+			{	Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = /*num_triangles*/triangleCount;
+				Mxaloadheader->Group[group].poly_ptr[execbuf] = (LPD3DTRIANGLE)malloc( sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);			
+			
+				memcpy(Mxaloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);
+			}
+			else
+			{
+				Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = 0;
+				Mxaloadheader->Group[group].poly_ptr[execbuf] = NULL;			
 			}
 
 			if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
@@ -470,12 +487,15 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
-
-			Mxaloadheader->Group[ group ].renderObject[execbuf].numVerts = num_vertices;
-			Mxaloadheader->Group[ group ].renderObject[execbuf].numTriangles = num_triangles;
-			Mxaloadheader->Group[ group ].renderObject[execbuf].startVert = 0;
-			Mxaloadheader->Group[ group ].renderObject[execbuf].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+/*
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startVert = 0;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+*/
 			Mxaloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxaloadheader->TloadIndex[tpage]];
+
+			Mxaloadheader->Group[group].renderObject[execbuf].numTextureGroups = num_texture_groups;
 
 			//free(vertexArray);
 			//vertexArray = NULL;
