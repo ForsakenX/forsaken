@@ -2759,6 +2759,18 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 	RHWValue = ( 1.0F / ZValue );
 
 /*===================================================================
+		create the vertex buffer
+===================================================================*/
+
+
+			if (FAILED(FSCreateVertexBuffer(renderObject, TotalVerts)))
+			{
+				return FALSE;
+			}
+
+			DebugPrintf("created buffer to hold :%d verts\n", TotalVerts);
+
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 //	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
