@@ -7910,6 +7910,7 @@ static int read_EnemyType( FILE *f, char *last_token )
 		{"ENEMY_LEADER_Max",	  	 ENEMY_LEADER_Max } ,	
 		{"ENEMY_LEADER_AirMoble", 	 ENEMY_LEADER_AirMoble } ,
 		{"ENEMY_Fodder1", 			 ENEMY_Fodder1 } ,
+		{"ENEMY_Boss_LittleGeek",	ENEMY_Boss_LittleGeek },
 		{"ENEMY_Bike_FlyGirl",      ENEMY_Bike_FlyGirl } ,  		 	
 	};
 
