@@ -6644,7 +6644,7 @@ BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
       dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
       dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
 
-	  LastError = d3dappi.lpD3DDevice->lpVtbl->Clear(d3dappi.lpD3DDevice, 1, &dummy, clearflags, D3DCOLOR_XRGB(128,128,128), 1.0f, 0);
+	  LastError = d3dappi.lpD3DDevice->lpVtbl->Clear(d3dappi.lpD3DDevice, 1, &dummy, clearflags, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
 
 	if (LastError != D3D_OK)
 	{

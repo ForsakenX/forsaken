@@ -1152,7 +1152,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 BOOL
 D3DAppClearScreenOnly()
 {
-	d3dappi.lpD3DDevice->lpVtbl->Clear( d3dappi.lpD3DDevice, 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(128,128,128), 1.0f, 0 );
+	d3dappi.lpD3DDevice->lpVtbl->Clear( d3dappi.lpD3DDevice, 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
 
 	return TRUE;
 #if 0 // bjd
