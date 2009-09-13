@@ -498,8 +498,8 @@ D3DAppChangeDriver(int driver, DWORD flags)
             ATTEMPT(D3DAppIPickDisplayMode(&d3dappi.CurrMode,
                         d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth));
         }
-        return TRUE;
 #endif
+        return TRUE;
     } else {
         /*
          * We need to switch to fullscreen or switch fullscreen modes or stay
