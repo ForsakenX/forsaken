@@ -599,10 +599,12 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					}
 					if ( AllWires )
 					{
-					}
 //bjd - CHECK						FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+					}
 					else
+					{
 //						FacePnt->wFlags = MFacePnt->pad;
+					}
 
 					FixUV( FacePnt, lpBufStart, tpage, Mloadheader->Group[group].org_vertpnt[execbuf] );
 					FacePnt++;
