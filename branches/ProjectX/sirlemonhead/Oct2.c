@@ -6357,8 +6357,10 @@ BOOL  FreeScoreDisplay()
 {
 /* bjd
   ReleaseDDSurf(lpDDSOne);  
+  */
   ReleaseDDSurf(lpFontSurface);
   lpFontSurface = NULL;
+/*
   lpDDSOne = NULL;
 */
   return TRUE;
@@ -6573,35 +6575,23 @@ void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int
   Input   :   int sx , int sy , int sw , int sh , int x ,int y
   Output    :   nothing
 ===================================================================*/
+void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
 #ifdef  USEINLINE
 _inline
 #endif
 void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 {
-#if 0 // bjd
-    RECT    src;
-    HRESULT ddrval;
-  src.left = sx;
-  src.top = sy;
-  src.right = sx+sw;
-  src.bottom = sy+sh;
-  while( 1 )
-  {
-    ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpFontSurface, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      ReInitFont();
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
-#endif
+	RECT    src;
+	POINT	destp;
+	src.left = sx;
+	src.top = sy;
+	src.right = sx+sw;
+	src.bottom = sy+sh;
+	
+	destp.x = x;
+	destp.y = y;
+
+	FSBlit( lpFontSurface, &src, &destp );
 }
 
 
