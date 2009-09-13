@@ -2124,7 +2124,7 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 				:	uint16	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
+BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2142,9 +2142,7 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
-	LPD3DTLVERTEX	ScrPolyVertPnt;
+	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPD3DTRIANGLE	ScrPolyFacePnt;
     LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
@@ -2219,7 +2217,7 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}	
@@ -2657,7 +2655,7 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (FAILED(FSUnlockPretransformedVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
@@ -2670,12 +2668,12 @@ BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *rende
 
 /*===================================================================
 	Procedure	:	Display All NonSolid Screen Polygons
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
+	Input		:	RENDEROBJECT  *				RenderObject struct pointer
 				:	int16	*					Current TPage List
 				:	uint16	*					Current ScrPoly
 	Output		:	True/False
 ===================================================================*/
-BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
+BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2693,9 +2691,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
-	LPD3DTLVERTEX	ScrPolyVertPnt;
+	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
 	LPD3DTRIANGLE	ScrPolyFacePnt;
     LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
@@ -2762,14 +2758,14 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 		create the vertex buffer
 ===================================================================*/
 
-
-			if (FAILED(FSCreateVertexBuffer(renderObject, TotalVerts)))
+/*
+			if (FAILED(FSCreatePretransformedVertexBuffer(renderObject, TotalVerts)))
 			{
 				return FALSE;
 			}
 
 			DebugPrintf("created buffer to hold :%d verts\n", TotalVerts);
-
+*/
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
@@ -2779,7 +2775,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
@@ -2787,7 +2783,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
 	lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+//	lpInsStart = lpPointer;
 
 //	if(d3dappi.ThisDriver.bIsHardware)
 	{
@@ -3251,7 +3247,7 @@ BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *re
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (FAILED(FSUnlockPretransformedVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}

@@ -823,9 +823,31 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
-	assert (numVertices < 10000);
+//	assert (numVertices < 10000);
+
+	memset(renderObject, 0, sizeof(RENDEROBJECT));
+
 
 	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't create vertex buffer\n");
+	}
+
+	OutputDebugString("created vertex buffer\n");
+
+	return LastError;
+}
+
+HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{
+//	assert (numVertices < 10000);
+
+	assert (renderObject->lpD3DVertexBuffer == NULL);
+
+	memset(renderObject, 0, sizeof(RENDEROBJECT));
+
+	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -839,6 +861,25 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 int lockTest = 0;
 
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
+{
+	assert(renderObject->vbLocked == 0);
+
+	/* TODO - check the Lock type flag. Do we ever need to discard? read only? */
+	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, 0);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't lock vertex buffer!\n");
+	}
+
+	renderObject->vbLocked = TRUE;
+	lockTest++;
+
+//	OutputDebugString("locked vertex buffer\n");
+
+	return LastError;
+}
+
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -876,9 +917,28 @@ HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 	return LastError;
 }
 
+// can just use the above if we want...
+HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
+{
+	assert(renderObject->vbLocked == 1);
+
+//	OutputDebugString("unlocking vertex buffer\n");
+	LastError = renderObject->lpD3DVertexBuffer->Unlock();
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't unlock vertex buffer!\n");
+	}
+
+	renderObject->vbLocked = FALSE;
+	lockTest--;
+
+//	OutputDebugString("unlocked vertex buffer\n");
+
+	return LastError;
+}
+
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-
 	LastError = d3dappi.lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
 	if (FAILED(LastError))
 	{
@@ -920,6 +980,64 @@ HRESULT FSDrawVertexBuffer(RENDEROBJECT *renderObject)
 
 	/* set source */
 	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
+	if (FAILED(LastError))
+	{
+		return LastError;
+	}
+
+	LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
+	if(FAILED(LastError)) 
+	{
+		return LastError;
+	}
+
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	if (FAILED(LastError))
+	{
+		return LastError;
+	}
+
+	/* set material */
+	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
+	if (FAILED(LastError))
+	{
+		return LastError;
+	}
+	
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		/* set texture */
+		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		if (FAILED(LastError))
+		{
+			return LastError;
+		}
+
+		/* draw it */
+		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
+																0, 
+																0, 
+																renderObject->textureGroups[i].numVerts,
+																renderObject->textureGroups[i].startIndex,
+																renderObject->textureGroups[i].numTriangles);
+
+		if (FAILED(LastError))
+		{
+			return LastError;
+		}
+	}
+
+	return LastError;
+}
+
+HRESULT FSDrawPretransformedVertexBuffer(RENDEROBJECT *renderObject)
+{
+	HRESULT LastError;
+
+	assert(renderObject->vbLocked == 0);
+
+	/* set source */
+	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
 	if (FAILED(LastError))
 	{
 		return LastError;

@@ -6693,20 +6693,28 @@ BOOL ClearZBuffer()
 
 void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 {
-#if 0 //bjd - CHECK
 	int Count;
-	D3DEXECUTEBUFFERDESC debdesc;
+//	D3DEXECUTEBUFFERDESC debdesc;
 
 	for( Count = 0; Count < 2; Count++ )
 	{
+/*
 		if( RenderBufs[ Count ] != NULL )
 		{
 			XRELEASE( RenderBufs[ Count ] );
 			RenderBufs[ Count ] = NULL;
 		}
-		MakeExecuteBuffer( &debdesc, /*lpDev,*/ &RenderBufs[ Count ], 32767 ); // bjd
+*/		
+		if (Count == 1)
+		{
+			FSCreatePretransformedVertexBuffer(&RenderBufs[ Count ], 32767);
+		}
+		else
+		{
+			FSCreateVertexBuffer(&RenderBufs[ Count ], 32767);
+		}
+			//MakeExecuteBuffer( &debdesc, /*lpDev,*/ &RenderBufs[ Count ], 32767 ); // bjd
 	}
-#endif
 }
 
 

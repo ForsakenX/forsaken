@@ -42,6 +42,11 @@
 
 #define D3DVAL(val)    ((float)val) 
 
+/* 
+	Pre-DX8 vertex formats
+	taken from http://www.mvps.org/directx/articles/definitions_for_dx7_vertex_types.htm
+*/
+
 typedef struct _D3DLVERTEX {
     union {
        float x;
@@ -117,7 +122,7 @@ typedef struct _D3DTLVERTEX {
 
 } D3DTLVERTEX, *LPD3DTLVERTEX;
 
-#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW|/*D3DFVF_RESERVED0|*/D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
+#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 
 typedef struct _D3DTRIANGLE { 
     union { 
