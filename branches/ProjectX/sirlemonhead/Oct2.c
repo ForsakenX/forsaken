@@ -984,9 +984,9 @@ void FillInPanelPositions()
 /*===================================================================
     Off Screen Sufaces...Used to Blit to screen...
 ===================================================================*/
+LPDIRECT3DSURFACE9      lpFontSurface = NULL;       // Font Bitmap
 /* bjd
 LPDIRECTDRAWSURFACE     lpDDSOne;       // crosshair
-LPDIRECTDRAWSURFACE     lpDDSTwo = NULL;       // Font Bitmap
 LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
 LPDIRECTDRAWSURFACE     lpDDSFour;     // Panel Contents
 */
@@ -2391,19 +2391,19 @@ ReleaseView(void)
       lpDDSOne = NULL;
     }
  
-    if( lpDDSTwo != NULL ) {
-      ReleaseDDSurf(lpDDSTwo);
-      lpDDSTwo = NULL;
+    if( lpFontSurface != NULL ) {
+      ReleaseDDSurf(lpFontSurface);
+      lpFontSurface = NULL;
     }
 
     if( !DrawPanel && DrawSimplePanel ) {
       if( lpDDSThree != NULL ) {
         ReleaseDDSurf(lpDDSThree);
-        lpDDSTwo = NULL;
+        lpFontSurface = NULL;
       }
       if( lpDDSFour != NULL ) {
         ReleaseDDSurf(lpDDSFour);
-        lpDDSTwo = NULL;
+        lpFontSurface = NULL;
       }
     }
 */
@@ -2522,6 +2522,9 @@ InitView( void )
 			return FALSE;
 		}
 */
+			// bjd
+			InitFont(FALSE);	
+
 		if ( !bSoundEnabled )
 		{
 			if (! InitializeSound( DESTROYSOUND_All ))
@@ -3692,7 +3695,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
 
   //DebugPrintf("blitted to l:%d r:%d t:%d b:%d\n", dest.left, dest.right, dest.top, dest.bottom );
   
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &darkgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &darkgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
   if ( hr != DD_OK )
   {
     DebugPrintf("%s", D3DAppErrorToString(hr));
@@ -3703,26 +3706,26 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMin + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
   // bottom...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMax + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
   
   // left...
   dest.left = (LONG) ( (BarXMin - BorderX + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
   // right...
   dest.left = (LONG) ( (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + BorderX + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
 #endif
 }
 
@@ -4831,7 +4834,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
         SeriousError = TRUE;
         return FALSE;
       }
-
       if( !PreLoadEnemies() )
       {
         SeriousError = TRUE;
@@ -6355,8 +6357,8 @@ BOOL  FreeScoreDisplay()
 {
 /* bjd
   ReleaseDDSurf(lpDDSOne);  
-  ReleaseDDSurf(lpDDSTwo);
-  lpDDSTwo = NULL;
+  ReleaseDDSurf(lpFontSurface);
+  lpFontSurface = NULL;
   lpDDSOne = NULL;
 */
   return TRUE;
@@ -6585,7 +6587,7 @@ void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
   src.bottom = sy+sh;
   while( 1 )
   {
-    ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
+    ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpFontSurface, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
       if( ddrval == DD_OK )
           break;
       if( ddrval == DDERR_SURFACELOST )
@@ -7635,7 +7637,7 @@ void  PlotSimplePanel( void )
           lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
 
     GeneralBltFast( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary  , FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
-              PrimaryWeaponTextX , PrimaryWeaponTextY , lpDDSTwo ,
+              PrimaryWeaponTextX , PrimaryWeaponTextY , lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
              DDBLTFAST_WAIT, lpDDSThree);
   }
@@ -7652,7 +7654,7 @@ void  PlotSimplePanel( void )
           WeaponSizeX , WeaponSizeY ,
           lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
     GeneralBltFast( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
-              SecondaryWeaponTextX , SecondaryWeaponTextY , lpDDSTwo ,
+              SecondaryWeaponTextX , SecondaryWeaponTextY , lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
             DDBLTFAST_WAIT, lpDDSThree);
   }
@@ -7662,7 +7664,7 @@ void  PlotSimplePanel( void )
   if( ReMakeSimplePanel == TRUE )
   {
     GeneralBltFast( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
-            lpDDSTwo ,
+            lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
             DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
   }
@@ -7687,7 +7689,7 @@ void  PlotSimplePanel( void )
   if( ReMakeSimplePanel == TRUE )
   {
     GeneralBltFast( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
-            lpDDSTwo , 
+            lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
             DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
   }
@@ -7713,7 +7715,7 @@ void  PlotSimplePanel( void )
   if( ( PowerChanged != Ships[WhoIAm].Object.PowerLevel ) || ( ReMakeSimplePanel == TRUE ) )
   {
     GeneralBltFast( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
-            lpDDSTwo , 
+            lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
             DDBLTFAST_WAIT, lpDDSThree);
 
@@ -8470,8 +8472,8 @@ BOOL  FreeStatsDisplay()
 {
 #if 0 // bjd - CHECHK
 //  ReleaseDDSurf(lpDDSOne);
-  ReleaseDDSurf(lpDDSTwo);
-  lpDDSTwo = NULL;
+  ReleaseDDSurf(lpFontSurface);
+  lpFontSurface = NULL;
 #endif
   return TRUE;
 }

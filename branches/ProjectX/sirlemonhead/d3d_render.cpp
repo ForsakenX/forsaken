@@ -7,6 +7,7 @@ extern "C" {
 #include "tload.h"
 #include "new3d.h"
 #include <assert.h>
+#include "util.h"
 
 extern  BOOL DontColourKey;
 extern	BOOL MipMap;
@@ -1107,6 +1108,106 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
+}
+
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname)
+{
+    HBITMAP             hbm;
+    HRESULT             hr;
+	D3DCOLOR			m_ColourKey = 0xFF000000; // set black transparent
+	BITMAP				Bitmap;
+	LPDIRECT3DSURFACE9	pdds = NULL;
+    hbm = (HBITMAP)LoadImage(NULL, pathname, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
+    if (hbm == NULL)
+    {
+		DebugPrintf("FSLoadBitmap: Handle is null\n");
+        return NULL;
+    }
+	GetObject(hbm, sizeof(BITMAP), &Bitmap);
+    DeleteObject(hbm);
+	hr=d3dappi.lpD3DDevice->CreateOffscreenPlainSurface(
+		Bitmap.bmWidth, Bitmap.bmHeight,
+		//D3DFMT_A8R8G8B8			// alpha
+		D3DFMT_X8R8G8B8		// non-alpha
+		,
+		D3DPOOL_SYSTEMMEM,
+		&pdds,
+		NULL
+	);
+	if(FAILED(hr))
+	{
+        DebugPrintf("FSLoadBitmap: CreateOffscreenPlainSurface failed\n");
+	}
+	hr=D3DXLoadSurfaceFromFile(pdds, NULL, NULL, pathname, NULL, D3DX_FILTER_NONE, m_ColourKey, NULL);
+	if(FAILED(hr))
+	{
+        DebugPrintf("FSLoadBitmap: D3DXLoadSurfaceFromFile failed\n");
+	}
+    return pdds;
+}
+
+void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest )
+{
+	// old d3d6 method
+	/*
+    DDBLTFX fx;
+	memset(&fx, 0, sizeof(DDBLTFX));
+	fx.dwSize = sizeof(DDBLTFX);
+	while(TRUE)
+	{
+		//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpFontSurface, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
+		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
+			d3dapp->lpBackBuffer,
+			dest,
+			pdds,
+			src,
+			DDBLT_KEYSRC | DDBLT_WAIT,
+			&fx 
+		);
+		switch(ddrval)
+		{
+		case DD_OK:
+			return;
+			break;
+		case DDERR_SURFACELOST:
+			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
+			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
+			ReInitFont();
+			return;
+			break;
+		case DDERR_WASSTILLDRAWING:
+			return;
+			break;
+		}
+	}
+	*/
+
+	HRESULT hr;
+	LPDIRECT3DSURFACE9 pRenderSurface;
+
+	hr=d3dappi.lpD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pRenderSurface);
+
+	if(FAILED(hr))
+	{
+		DebugPrintf("FSBlit: GetBackBuffer failed\n");
+		return;
+	}
+
+	if(!pRenderSurface)
+	{
+		DebugPrintf("FSBlit: !pRenderSurface\n");
+		return;
+	}
+
+	if(!pdds)
+	{
+		DebugPrintf("FSBlit: !pdds\n");
+		return;
+	}
+
+	d3dappi.lpD3DDevice->UpdateSurface(pdds, src, pRenderSurface, dest);
+
+	pRenderSurface->Release();
 }
 
 };

@@ -29,6 +29,9 @@
 
 #define MSG_VERSION_NUMBER 1
 
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
+void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
+
 /*===================================================================
 		Externals ...
 ===================================================================*/
@@ -43,10 +46,7 @@ extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
 
-/* bjd
-extern LPDIRECTDRAWSURFACE     lpDDSTwo;       // Font Bitmap
-extern LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
-*/
+extern LPDIRECT3DSURFACE9      lpFontSurface;       // Font Bitmap
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
@@ -175,8 +175,8 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;
 	int num;
-    RECT    src;
-//    HRESULT ddrval;
+    RECT  src;
+	POINT dest;
 	int		Zeros= 0 ;
 	uint8 r , g , b;
 
@@ -208,24 +208,11 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 				
 				src.right = src.left+FontSourceWidth;
 				src.bottom = src.top+FontSourceHeight;
-				while( 1 )
-				{
-/* bjd - CHECK
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-				    if( ddrval == DD_OK )
-				        break;
-				    if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-						ReInitFont();
-						break;
-					}
-				    if( ddrval != DDERR_WASSTILLDRAWING )
-				        break;
-*/
-					break;
-				}
+
+				dest.x = x;
+				dest.y = y;
+
+				FSBlit( lpFontSurface, &src, &dest );
 			}
 			x += FontWidth;
 		}
@@ -302,9 +289,8 @@ int Print4x5Text( char * Text , int x , int y , int color )
 {
 	uint8 num;
     RECT    src, dest;
-//    HRESULT ddrval;
+	POINT	destp;
 	uint8 r , g , b;
-//    DDBLTFX fx;
 	BOOL ignore;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
@@ -329,7 +315,9 @@ int Print4x5Text( char * Text , int x , int y , int color )
 			if( bPolyText && PolyText[MyGameStatus] )
 			{
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}else{
+			}
+			else
+			{
 		
 				src.top = TextSrcY[color][num];
 				src.left = TextSrcX[color][num];
@@ -340,8 +328,6 @@ int Print4x5Text( char * Text , int x , int y , int color )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-//				memset(&fx, 0, sizeof(DDBLTFX));
-//				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -352,13 +338,13 @@ int Print4x5Text( char * Text , int x , int y , int color )
 						ignore = FALSE;
 					else
 					{
-						
 						// partial clipping required...
 						if (dest.left < 0)
 						{
 							src.left -= dest.left;
 							dest.left = 0;
-						}else
+						}
+						else
 						{
 							src.right -= (dest.right - d3dapp->szClient.cx);
 							dest.right = d3dapp->szClient.cx;
@@ -367,26 +353,11 @@ int Print4x5Text( char * Text , int x , int y , int color )
 					}
 				}
 				
-				while( !ignore )
-				{
-/* bjd - CHECK
-					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC | DDBLT_WAIT, &fx );
-					if( ddrval == DD_OK )
-						break;
-					if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-						ReInitFont();
-						break;
-					}
-					if( ddrval != DDERR_WASSTILLDRAWING )
-						break;
-*/					
-						break;
-				}
+				destp.x = dest.left;
+				destp.y = dest.top;
+
+				if( !ignore )
+					FSBlit( lpFontSurface, &src, &destp );
 			}
 		}
 	
@@ -406,9 +377,8 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 {
 	uint8 num;
     RECT    src, dest;
-//    HRESULT ddrval;
+	POINT	destp;
 	uint8 r , g , b;
-//    DDBLTFX fx;
 	BOOL ignore;
 	int dummy;
 
@@ -435,7 +405,9 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 			if( bPolyText && PolyText[MyGameStatus] )
 			{
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}else{
+			}
+			else
+			{
 		
 				src.top = TextSrcY[col][num];
 				src.left = TextSrcX[col][num];
@@ -446,8 +418,6 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-//				memset(&fx, 0, sizeof(DDBLTFX));
-//				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -471,25 +441,12 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 	 				}
 				}
  				
-				while( !ignore )
-				{
-/* bjd - CHECK
-					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
-				    if( ddrval == DD_OK )
-				        break;
-				    if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-						ReInitFont();
-				        break;
-					}
-				    if( ddrval != DDERR_WASSTILLDRAWING )
-				        break;
-*/						break;
-				}
+				destp.x = dest.left;
+				destp.y = dest.top;
+
+				if( !ignore )
+					FSBlit( lpFontSurface, &src, &destp );
+
 			}
 		}
 	
@@ -926,13 +883,13 @@ void PrintScoreSort( void )
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
 ===================================================================*/
-#if 0 // bjd
-void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface )
+
+void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags, LPDIRECT3DSURFACE9 DestSurface )
 {
 	int i;
 	int num;
     RECT    src;
-    HRESULT ddrval;
+	POINT	dest;
 	int		Zeros= 0 ;
 	for( i = 0 ; i < 4 ; i++ )
 	{
@@ -958,37 +915,25 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD fla
 			src.right = FontSourceWidth;
 			src.bottom = FontSourceHeight;
 		}
-		while( 1 )
-		{
-			ddrval = DestSurface->lpVtbl->BltFast( DestSurface, x , y, lpDDSTwo, &src, flags );
-		    if( ddrval == DD_OK )
-		        break;
-		    if( ddrval == DDERR_SURFACELOST )
-			{
-				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-				DestSurface->lpVtbl->Restore( DestSurface );
-				ReInitFont();
-		        break;
-			}
-		    if( ddrval != DDERR_WASSTILLDRAWING )
-		        break;
-		}
+		dest.x = x;
+		dest.y = y;
+		FSBlit( DestSurface, &src, &dest );
 		x += FontWidth;
 	}
 }
-#endif
 
 /*===================================================================
 	Procedure	:		Re-Init the font surface...
 	Input		:		nothing
 	Output		:		nothing
 ===================================================================*/
+
 void ReInitFont(void)
 {
 #if 0
 	if( ModeCase < Mode512X384 )
 	{
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font.bmp" );
+		DDReLoadBitmap( lpFontSurface , "data\\pictures\\font.bmp" );
 		FontWidth = 4;
 		FontHeight = 5;
 		FontSourceWidth = 4;
@@ -996,13 +941,13 @@ void ReInitFont(void)
 	}else{
 //		if( ModeCase < Mode640X480 )
 //		{
-			DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font512.bmp" );
+			DDReLoadBitmap( lpFontSurface , "data\\pictures\\font512.bmp" );
 			FontWidth = 8;
 			FontHeight = 8;
 			FontSourceWidth = 8;
 			FontSourceHeight = 8;
 //		}else{
-//			DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font800.bmp" );
+//			DDReLoadBitmap( lpFontSurface , "data\\pictures\\font800.bmp" );
 //			FontWidth = 9;
 //			FontHeight = 16;
 //			FontSourceWidth = 9;
@@ -1013,22 +958,18 @@ void ReInitFont(void)
 
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-/* bjd - CHECK
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font512.bmp" );
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font512.bmp" );
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
 		FontSourceHeight = 8;
-*/
 	}else
 	{
-/* bjd - CHECK
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font.bmp" );
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font.bmp" );
 		FontWidth = 4;
 		FontHeight = 5;
 		FontSourceWidth = 4;
 		FontSourceHeight = 5;
-*/
 	}
 }
 
@@ -2149,8 +2090,8 @@ void BuildReliabilityTab( void )
 __inline
 void DisplayConnectionStatus( int num , int x , int y)
 {
-    RECT    src;
-//    HRESULT ddrval;
+    RECT src;
+	POINT dest;
 	int offset;
 
 	if( !num )
@@ -2160,7 +2101,9 @@ void DisplayConnectionStatus( int num , int x , int y)
 	if( bPolyText && PolyText[MyGameStatus])
 	{
 		AddScreenPolyText( (uint16) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
-	}else{
+	}
+	else
+	{
 
 		if( ModeCase < Mode512X384 )
 		{
@@ -2175,24 +2118,11 @@ void DisplayConnectionStatus( int num , int x , int y)
 		}
 		src.bottom = src.top + 4;
 		src.right = src.left + 4;
-		while( 1 )
-		{
-/* bjd - CHECK
-			ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y+offset, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-			if( ddrval == DD_OK )
-				break;
-			if( ddrval == DDERR_SURFACELOST )
-			{
-				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-				d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				ReInitFont();
-				break;
-			}
-			if( ddrval != DDERR_WASSTILLDRAWING )
-				break;
-*/
-			break;
-		}
+
+		dest.x = x;
+		dest.y = y+offset;
+
+		FSBlit( lpFontSurface, &src, &dest );
 	}
 }
 
@@ -2204,7 +2134,6 @@ void DisplayConnectionStatus( int num , int x , int y)
 ===================================================================*/
 void InitFont( BOOL OverridePolytext )
 {
-#if 0 // bjd
 //	LPDIRECTDRAWPALETTE ddpal;
 	uint16 i;
 	uint8 e;
@@ -2212,21 +2141,23 @@ void InitFont( BOOL OverridePolytext )
 	int col;
 
 	// if font already initialised...
-	if (lpDDSTwo && !OverridePolytext )
+	/*
+	if (lpFontSurface && !OverridePolytext )
 		return;
-	if( lpDDSTwo )
+	if( lpFontSurface )
 	{
-		ReleaseDDSurf(lpDDSTwo);
-		lpDDSTwo = NULL;
+		ReleaseDDSurf(lpFontSurface);
+		lpFontSurface = NULL;
 	}
+	*/
 
 #if 0
 	if( ModeCase < Mode512X384 )
    	{
-   		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
+   		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   		DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+		lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
+   		DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
    		FontWidth = 4;
    		FontHeight = 5;
    		FontSourceWidth = 4;
@@ -2237,20 +2168,20 @@ void InitFont( BOOL OverridePolytext )
 //   			if( ModeCase < Mode640X480 )
 //   			{
    		
-   			lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
+   			lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
 
 			ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+			lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
+   			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
    			FontWidth = 8;
    			FontHeight = 8;
    			FontSourceWidth = 8;
    			FontSourceHeight = 8;
 //   			}else{
-//   				lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font800.bmp", 0, 0 );
+//   				lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font800.bmp", 0, 0 );
 //   				ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font800.bmp");
-//   				lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-//   				DDSetColorKey( lpDDSTwo, RGB_MAKE( 255 , 0 , 255 ) );
+//   				lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
+//   				DDSetColorKey( lpFontSurface, RGB_MAKE( 255 , 0 , 255 ) );
 //   				FontWidth = 9;
 //   				FontHeight = 16;
 //   				FontSourceWidth = 9;
@@ -2258,16 +2189,16 @@ void InitFont( BOOL OverridePolytext )
 //   			}
    	}
 #endif
-	
+	/*
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
+		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
 
 		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-		if (lpDDSTwo && ddpal)
+		if (lpFontSurface && ddpal)
 		{
-			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+			LastError = lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
+			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
 		}
 		FontWidth = 8;
 		FontHeight = 8;
@@ -2275,18 +2206,20 @@ void InitFont( BOOL OverridePolytext )
 		FontSourceHeight = 8;
 	}else
 	{
-   		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
+   		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
    		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		if (lpDDSTwo && ddpal)
+		if (lpFontSurface && ddpal)
 		{
-			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
+			LastError = lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
+   			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
 		}
    		FontWidth = 4;
    		FontHeight = 5;
    		FontSourceWidth = 4;
    		FontSourceHeight = 5;
 	}
+	*/
+	ReInitFont();
 
 	for( i = 0; i < 0x100 ; i++ )
 	{
@@ -2385,7 +2318,9 @@ void InitFont( BOOL OverridePolytext )
 		CharTrans[(uint8)'Û'] = e++;
 		CharTrans[(uint8)'ñ'] = e;
 		CharTrans[(uint8)'Ñ'] = e++;
-	}else{
+	}
+	else
+	{
 		CharTrans[(uint8)'à'] = 'à';
 		CharTrans[(uint8)'À'] = 'à';
 		CharTrans[(uint8)'á'] = 'á';
@@ -2489,7 +2424,6 @@ void InitFont( BOOL OverridePolytext )
 		TextSrcY[col][(uint8)'ñ'] = (7*(FontSourceHeight*3))+FontSourceHeight;
 		TextSrcX[col][(uint8)'ñ'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
 	}
-#endif
 }
 
 

@@ -256,7 +256,7 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-//bjd extern	LPDIRECTDRAWSURFACE     lpDDSTwo;
+//bjd extern	LPDIRECTDRAWSURFACE     lpFontSurface;
 //bjd extern	DDCOLORKEY				ddcolorkey;
 //bjd LPDIRECTDRAWSURFACE		lpDDSTitleFont;
 //bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
@@ -3867,10 +3867,10 @@ ReleaseTitle(void)
 	
 	// only release font if not showing loading bar...
 //	if ( !PreventFlips )
-//		if ( lpDDSTwo )
+//		if ( lpFontSurface )
 //		{
-//		 ReleaseDDSurf(lpDDSTwo);
-//		 lpDDSTwo = NULL;
+//		 ReleaseDDSurf(lpFontSurface);
+//		 lpFontSurface = NULL;
 //		}
 
 //	if(!bPolyText && lpDDSTitleFont)
