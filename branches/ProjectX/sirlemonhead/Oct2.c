@@ -2515,15 +2515,12 @@ InitView( void )
 		case  STATUS_TitleLoadGameStartingSinglePlayer:
 		case  STATUS_StartingMultiplayer:
 		case  STATUS_GetPlayerNum:
-/* bjd - CHECK IMPORTANT
-		if( InitTitle( lpDD, lpD3D, lpDev, lpView ) != TRUE )
+
+		if( InitTitle(/*lpDD, lpD3D, lpDev, lpView*/) != TRUE ) // bjd
 		{
 			SeriousError = TRUE;
 			return FALSE;
 		}
-*/
-			// bjd
-			InitFont(FALSE);	
 
 		if ( !bSoundEnabled )
 		{

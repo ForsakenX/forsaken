@@ -56,6 +56,9 @@
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
 
+void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
+
 //#pragma optimize( "gty", on )
 
 #if 1
@@ -258,7 +261,7 @@ extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
 //bjd extern	LPDIRECTDRAWSURFACE     lpFontSurface;
 //bjd extern	DDCOLORKEY				ddcolorkey;
-//bjd LPDIRECTDRAWSURFACE		lpDDSTitleFont;
+LPDIRECT3DSURFACE9	lpDDSTitleFont;
 //bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
 extern	int16	ModeCase;
 extern	int16	ModesX[8];
@@ -3686,7 +3689,7 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 ===================================================================*/
 BOOL
 InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView*/ )
+           LPDIRECT3DVIEWPORT lpView*/ )  // bjd
 {
 #if 0
     LPDIRECTDRAWPALETTE ddpal;
@@ -3743,19 +3746,20 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
     memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
+#endif
+
 	InitFont(FALSE);
 
 	// init vdu font for blitting if used...
 	if(!bPolyText)
 		InitTitleFont();
-#endif
+
 	return TRUE;
 }
 
 void InitTitleFont(void)
 {
-#if 0 // bjd
-    LPDIRECTDRAWPALETTE ddpal;
+//    LPDIRECTDRAWPALETTE ddpal;
 #if 0
 	//init the title font for blitting...
 	switch (ModeCase)
@@ -3797,21 +3801,24 @@ void InitTitleFont(void)
 
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-	}else
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp" );
+		// bjd
+   		//ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
+	}
+	else
 	{
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp" );
+		// bjd
+   		//ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
 	}
 
-
+	/* bjd
 	if ( lpDDSTitleFont && ddpal)
 	{
 	  LastError = lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
    	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
 	}
-#endif
+	*/
 }
 
 void ReInitTitleFont (void)
@@ -14202,9 +14209,8 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-//	HRESULT ddrval;
+	POINT destp;
 	BOOL	OKtoProcess;
-//	DDBLTFX fx;
 	uint16 TempPoly;
 
 	currentx = TextInfo->currentx[line];
@@ -14326,92 +14332,16 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-//			memset(&fx, 0, sizeof(DDBLTFX));
-//			fx.dwSize = sizeof(DDBLTFX);
 
 			dest.top = (long)ypos - (long)((float)Box_Ptr->ysize * VduScaleY);
 			dest.bottom = (long)ypos;
 			dest.left = (long)xpos;
 			dest.right = (long)xpos + (long)((float)Box_Ptr->xsize * VduScaleX);
 
-			while( 1 )
-			{
-/* bjd - CHECK
-				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
-				if( ddrval == DD_OK )
-					break;
-			    if( ddrval == DDERR_SURFACELOST )
-				{
-					d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-					d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-					ReInitTitleFont();
-	
-			        break;
-				}
-				if( ddrval != DDERR_WASSTILLDRAWING )
-				{
-					int dummy;
-
-					switch( ddrval )
-					{
-					case DDERR_GENERIC :
-						dummy = 1;
-						break;
-					case DDERR_INVALIDCLIPLIST :
-						dummy = 2;
-						break;
-					case DDERR_INVALIDOBJECT :
-						dummy = 3;
-						break;
-					case DDERR_INVALIDPARAMS :
-						dummy = 4;
-						break;
-					case DDERR_INVALIDRECT :
-						dummy = 5;
-						break;
-					case DDERR_NOALPHAHW :
-						dummy = 6;
-						break;
-					case DDERR_NOBLTHW :
-						dummy = 7;
-						break;
-					case DDERR_NOCLIPLIST :
-						dummy = 8;
-						break;
-					case DDERR_NODDROPSHW :
-						dummy = 9;
-						break;
-					case DDERR_NOMIRRORHW :
-						dummy = 10;
-						break;
-					case DDERR_NORASTEROPHW :
-						dummy = 11;
-						break;
-					case DDERR_NOROTATIONHW :
-						dummy = 12;
-						break;
-					case DDERR_NOSTRETCHHW :
-						dummy = 13;
-						break;
-					case DDERR_NOZBUFFERHW :
-						dummy = 14;
-						break;
-					case DDERR_SURFACEBUSY :
-						dummy = 15;
-						break;
-					case DDERR_SURFACELOST :
-						dummy = 16;
-						break;
-					case DDERR_UNSUPPORTED :
-						dummy = 17;
-						break;
-					}
-					break;
-				}
-*/
-				break; // bjd
-			}
+			destp.x = dest.left;
+			destp.y = dest.top;
+			
+			FSBlit( lpDDSTitleFont, &src, &destp );
 		}
 	}
 
@@ -14426,8 +14356,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-//	HRESULT ddrval;
-//	DDBLTFX fx;
+	POINT	destp;
 	uint16 TempPoly;
 	
 	font = GetScreenFont(TextInfo->font);
@@ -14479,33 +14408,16 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-//			memset(&fx, 0, sizeof(DDBLTFX));
-//			fx.dwSize = sizeof(DDBLTFX);
 			dest.top = (unsigned long)ypos - Box_Ptr->ysize * (long)VduScaleY;
 			dest.bottom = (unsigned long)ypos;
 			dest.left = (unsigned long)xpos;
 			dest.right = (unsigned long)xpos + Box_Ptr->xsize * (long)VduScaleX;
 
-			while( 1 )
-			{
-/* bjd - CHECK
-				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
-				if( ddrval == DD_OK )
-					break;
-				if( ddrval == DDERR_SURFACELOST )
-				{
-					d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-					d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-					ReInitTitleFont();
+			destp.x = dest.left;
+			destp.y = dest.top;
+			
+			FSBlit( lpDDSTitleFont, &src, &destp );
 
-					break;
-				}
-				if( ddrval != DDERR_WASSTILLDRAWING )
-					break;
-*/
-				break; // bjd
-			}
 		}
 		xpos += width + TEXTINFO_TextSpace;
 	}
