@@ -4435,8 +4435,11 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
             //VduClear();
             MenuChangeEx( &MENU_NEW_GeneralLoading );
             MenuDraw( CurrentMenu );  // because menu processing will not be done when MyGameStatus changes
-          }else
+          }
+		  else
+		  {
  //bjd           D3DAppIClearBuffers();
+		  }
 
 
           PreSynchupStatus = MyGameStatus;
