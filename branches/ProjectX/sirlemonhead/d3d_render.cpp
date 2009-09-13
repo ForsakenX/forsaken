@@ -60,7 +60,7 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 	}
 
 	d3dpp.BackBufferCount = 1;
-	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8; // 32 bit
+	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8; // 32 bit alpha channel
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 	d3dpp.EnableAutoDepthStencil = true;
@@ -608,6 +608,13 @@ D3DAppISetRenderState()
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
 	d3dappi.lpD3DDevice->SetRenderState(D3DRS_CULLMODE,	D3DCULL_NONE);
 
+	/*
+	// turn on transparency for rendering
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE );
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCCOLOR);
+	d3dappi.lpD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
+	*/
+
 	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
 	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
 	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
@@ -1127,9 +1134,7 @@ LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname)
     DeleteObject(hbm);
 	hr=d3dappi.lpD3DDevice->CreateOffscreenPlainSurface(
 		Bitmap.bmWidth, Bitmap.bmHeight,
-		//D3DFMT_A8R8G8B8			// alpha
-		D3DFMT_X8R8G8B8		// non-alpha
-		,
+		D3DFMT_A8R8G8B8, // 32 bit alpha channel
 		D3DPOOL_SYSTEMMEM,
 		&pdds,
 		NULL
