@@ -81,6 +81,8 @@
 #include "file.h"
 #include "singleplayer.h"
 
+void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
+
 #ifdef SHADOWTEST
 #include "triangles.h"
 #include "shadows.h"
@@ -3613,9 +3615,7 @@ BOOL ChangeLevel( void )
 // draw the loading bar that fills from left to right
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )
 {
-#if 0 // bjd - CHECK
-  HRESULT hr;
-//  DDBLTFX fx;
+  POINT destp;
   RECT    dest, darkgreen, lightgreen;
   float xmin, xmax, ymin, ymax, loaded, one_step;
   int total_loading_steps = 11;
@@ -3661,14 +3661,10 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
     lightgreen.bottom = 123;
   }
 
-
   if ( !BorderX)
     BorderX = 1.0F;
   if ( !BorderY)
     BorderY = 1.0F;
-
-//  memset( &fx, 0, sizeof( DDBLTFX ) );
-//  fx.dwSize = sizeof( DDBLTFX );
 
   xmin = (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase];
   xmax = (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase];
@@ -3691,39 +3687,59 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   dest.bottom = (LONG)ymax;
 
   //DebugPrintf("blitted to l:%d r:%d t:%d b:%d\n", dest.left, dest.right, dest.top, dest.bottom );
-  
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &darkgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
-  if ( hr != DD_OK )
-  {
-    DebugPrintf("%s", D3DAppErrorToString(hr));
-  }
+
+  destp.x = dest.left;
+  destp.y = dest.top;
+
+  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
+  FSBlit( lpFontSurface, &dest, &destp );
 
   // top...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMin + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
+  FSBlit( lpFontSurface, &dest, &destp );
+
   // bottom...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMax + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
+  FSBlit( lpFontSurface, &dest, &destp );
   
   // left...
   dest.left = (LONG) ( (BarXMin - BorderX + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
+  FSBlit( lpFontSurface, &dest, &destp );
+
   // right...
   dest.left = (LONG) ( (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + BorderX + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpFontSurface, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
-#endif
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
+  FSBlit( lpFontSurface, &dest, &destp );
+
+  // bjd - this use to write to the front buffer... flipping the buffer was not needed...
+  FlipBuffers();
 }
 
 void GetLevelName( char *buf, int bufsize, int level )
@@ -6357,10 +6373,8 @@ BOOL  FreeScoreDisplay()
 {
 /* bjd
   ReleaseDDSurf(lpDDSOne);  
-  */
   ReleaseDDSurf(lpFontSurface);
   lpFontSurface = NULL;
-/*
   lpDDSOne = NULL;
 */
   return TRUE;
@@ -6575,7 +6589,6 @@ void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int
   Input   :   int sx , int sy , int sw , int sh , int x ,int y
   Output    :   nothing
 ===================================================================*/
-void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
 #ifdef  USEINLINE
 _inline
 #endif
