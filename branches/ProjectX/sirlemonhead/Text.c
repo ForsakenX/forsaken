@@ -26,11 +26,10 @@
 #include "local.h"
 #include "stats.h"
 #include "util.h"
+#include "d3dappi.h"
 
 #define MSG_VERSION_NUMBER 1
 
-LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
-void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
 
 /*===================================================================
 		Externals ...
@@ -212,7 +211,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 				dest.x = x;
 				dest.y = y;
 
-				FSBlit( lpFontSurface, &src, &dest );
+				FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
 			}
 			x += FontWidth;
 		}
@@ -357,7 +356,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 				destp.y = dest.top;
 
 				if( !ignore )
-					FSBlit( lpFontSurface, &src, &destp );
+					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 			}
 		}
 	
@@ -445,7 +444,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 				destp.y = dest.top;
 
 				if( !ignore )
-					FSBlit( lpFontSurface, &src, &destp );
+					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 
 			}
 		}
@@ -917,7 +916,7 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD fla
 		}
 		dest.x = x;
 		dest.y = y;
-		FSBlit( DestSurface, &src, &dest );
+		FSBlit( lpFontSurface, DestSurface, &src, &dest );
 		x += FontWidth;
 	}
 }
@@ -2122,7 +2121,7 @@ void DisplayConnectionStatus( int num , int x , int y)
 		dest.x = x;
 		dest.y = y+offset;
 
-		FSBlit( lpFontSurface, &src, &dest );
+		FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
 	}
 }
 

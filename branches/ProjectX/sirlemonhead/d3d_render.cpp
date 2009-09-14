@@ -1151,68 +1151,35 @@ LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname)
     return pdds;
 }
 
-void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest )
+// pass FSBackBuffer or NULL for "to" argument to point to back buffer
+void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest )
 {
-	// old d3d6 method
-	/*
-    DDBLTFX fx;
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize = sizeof(DDBLTFX);
-	while(TRUE)
-	{
-		//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpFontSurface, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
-			d3dapp->lpBackBuffer,
-			dest,
-			pdds,
-			src,
-			DDBLT_KEYSRC | DDBLT_WAIT,
-			&fx 
-		);
-		switch(ddrval)
-		{
-		case DD_OK:
-			return;
-			break;
-		case DDERR_SURFACELOST:
-			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-			ReInitFont();
-			return;
-			break;
-		case DDERR_WASSTILLDRAWING:
-			return;
-			break;
-		}
-	}
-	*/
-
 	HRESULT hr;
-	LPDIRECT3DSURFACE9 pRenderSurface;
-
-	hr=d3dappi.lpD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &pRenderSurface);
-
-	if(FAILED(hr))
-	{
-		DebugPrintf("FSBlit: GetBackBuffer failed\n");
-		return;
-	}
-
-	if(!pRenderSurface)
-	{
-		DebugPrintf("FSBlit: !pRenderSurface\n");
-		return;
-	}
-
-	if(!pdds)
+	if(!from)
 	{
 		DebugPrintf("FSBlit: !pdds\n");
 		return;
 	}
-
-	d3dappi.lpD3DDevice->UpdateSurface(pdds, src, pRenderSurface, dest);
-
-	pRenderSurface->Release();
+	if(to)
+	{
+		d3dappi.lpD3DDevice->UpdateSurface(from, src, to, dest);
+	}
+	else
+	{
+		hr=d3dappi.lpD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &to);
+		if(FAILED(hr))
+		{
+			DebugPrintf("FSBlit: GetBackBuffer failed\n");
+			return;
+		}
+		if(!to)
+		{
+			DebugPrintf("FSBlit: !pRenderSurface\n");
+			return;
+		}
+		d3dappi.lpD3DDevice->UpdateSurface(from, src, to, dest);
+		to->Release();
+	}
 }
 
 };

@@ -52,12 +52,10 @@
 #include "net_tracker.h"
 #include "lua_games.h"
 #include "timer.h"
+#include "d3dappi.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
-
-void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
-LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
 
 //#pragma optimize( "gty", on )
 
@@ -14341,7 +14339,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 			destp.x = dest.left;
 			destp.y = dest.top;
 			
-			FSBlit( lpDDSTitleFont, &src, &destp );
+			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
 		}
 	}
 
@@ -14416,7 +14414,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 			destp.x = dest.left;
 			destp.y = dest.top;
 			
-			FSBlit( lpDDSTitleFont, &src, &destp );
+			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
 
 		}
 		xpos += width + TEXTINFO_TextSpace;

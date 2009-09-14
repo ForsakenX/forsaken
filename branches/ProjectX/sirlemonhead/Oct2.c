@@ -80,8 +80,7 @@
 #include "demo.h"
 #include "file.h"
 #include "singleplayer.h"
-
-void FSBlit(LPDIRECT3DSURFACE9 pdds, RECT * src, POINT * dest );
+#include "d3dappi.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -3692,7 +3691,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   destp.y = dest.top;
 
   // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
-  FSBlit( lpFontSurface, &dest, &destp );
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // top...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
@@ -3703,7 +3702,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   destp.x = dest.left;
   destp.y = dest.top;
   // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
-  FSBlit( lpFontSurface, &dest, &destp );
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // bottom...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
@@ -3714,7 +3713,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   destp.x = dest.left;
   destp.y = dest.top;
   // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
-  FSBlit( lpFontSurface, &dest, &destp );
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
   
   // left...
   dest.left = (LONG) ( (BarXMin - BorderX + VDUoffsetX) * ModeScaleX[ModeCase]) ;
@@ -3725,7 +3724,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   destp.x = dest.left;
   destp.y = dest.top;
   // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
-  FSBlit( lpFontSurface, &dest, &destp );
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // right...
   dest.left = (LONG) ( (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]) ;
@@ -3736,7 +3735,7 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   destp.x = dest.left;
   destp.y = dest.top;
   // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
-  FSBlit( lpFontSurface, &dest, &destp );
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // bjd - this use to write to the front buffer... flipping the buffer was not needed...
   FlipBuffers();
@@ -6604,7 +6603,7 @@ void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 	destp.x = x;
 	destp.y = y;
 
-	FSBlit( lpFontSurface, &src, &destp );
+	FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 }
 
 

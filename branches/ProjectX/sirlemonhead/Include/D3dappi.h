@@ -205,6 +205,9 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
 HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 
+#define FSBackBuffer 0 // pass this to FSBlit for "to" to point to back buffer
+void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest );
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
 
 #ifdef __cplusplus
 };
