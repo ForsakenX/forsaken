@@ -883,7 +883,7 @@ void PrintScoreSort( void )
 	Output		:		nothing
 ===================================================================*/
 
-void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags, LPDIRECT3DSURFACE9 DestSurface )
+void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , LPDIRECT3DSURFACE9 DestSurface )
 {
 	int i;
 	int num;

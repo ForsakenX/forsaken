@@ -637,8 +637,7 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
 
-//bjd - CHECK void GeneralBltFast( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECTDRAWSURFACE Surface ,  char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface);
-//bjd - CHECK void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int dstw , int dsth , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface);
+void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 Surface ,  char * FileName , LPDIRECT3DSURFACE9 DestSurface);
 
 void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
@@ -986,12 +985,10 @@ void FillInPanelPositions()
     Off Screen Sufaces...Used to Blit to screen...
 ===================================================================*/
 LPDIRECT3DSURFACE9      lpFontSurface = NULL;       // Font Bitmap
-/* bjd
-LPDIRECTDRAWSURFACE     lpDDSOne;       // crosshair
-LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
-LPDIRECTDRAWSURFACE     lpDDSFour;     // Panel Contents
-*/
-//LPDIRECTDRAWSURFACE     lpDDSOverlay;     // Panel
+LPDIRECT3DSURFACE9     lpDDSOne;					// crosshair
+LPDIRECT3DSURFACE9     lpDDSThree;					// Panel
+LPDIRECT3DSURFACE9     lpDDSFour;					// Panel Contents
+LPDIRECT3DSURFACE9     lpDDSOverlay;				// Panel
 //DDCOLORKEY ddcolorkey;
 
 D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
@@ -1991,19 +1988,15 @@ void TestBlt()
         //  Blt Crosshair
         if( !EnhancedXHair )
         {
-/* bjd - CHECK
-          GeneralBltFast( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+          GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
         //  Blt Nitro...
         if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
         {
-/* bjd - CHECK
           Printuint16( (uint16) NitroFuel , (d3dappi.szClient.cx>>1)-(1*FontWidth), (viewport.Y + (viewport.Height>>1))+8 , 2 );
-          GeneralBltFast( 0 , 24 , (int)NitroFuel , 3  , (d3dappi.szClient.cx>>1)-(int)(NitroFuel*0.5F) , (viewport.Y + (viewport.Height>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+          GeneralBlt( 0 , 24 , (int)NitroFuel , 3  , (d3dappi.szClient.cx>>1)-(int)(NitroFuel*0.5F) , (viewport.Y + (viewport.Height>>1))-8 ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
         // Blt trojax PowerLevel / LaserTemperature
         energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
@@ -2014,10 +2007,8 @@ void TestBlt()
         }
         if( energy )
         {
-/* bjd - CHECK
-          GeneralBltFast( 0 , 24-energy , 4 , energy  , (viewport.X + (viewport.Width>>1))-16 , (viewport.Y + (viewport.Height>>1))+4-energy ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+          GeneralBlt( 0 , 24-energy , 4 , energy  , (viewport.X + (viewport.Width>>1))-16 , (viewport.Y + (viewport.Height>>1))+4-energy ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
       }
 
@@ -2111,35 +2102,27 @@ void TestBlt()
             // blt shld bar
             if( ShieldHit == 0 )
             {
-/* bjd - CHECK
-              GeneralBltFast( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, d3dapp->lpBackBuffer);
-*/
+              GeneralBlt( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
 			else
 			{
-/* bjd - CHECK
               ShieldHit -=1;
-              GeneralBltFast( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+              GeneralBlt( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
             Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
             // blt hull bar
             if( HullHit == 0 )
             {
-/* bjd - CHECK
-              GeneralBltFast( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+              GeneralBlt( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
 			else
 			{
-/* bjd - CHECK
               HullHit -=1;
-              GeneralBltFast( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-*/
+              GeneralBlt( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
           }
 
@@ -2196,12 +2179,11 @@ void TestBlt()
 	  // watch mode
 	  if(SwitchedToWatchMode)
 	  {
-/* bjd - CHECK
 			// show who i am watching
 			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 4 );
 			// display cross-hair
-			GeneralBltFast( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
-				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+			GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
+				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
 				Print4x5Text( "Invulnerable" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
@@ -2210,8 +2192,7 @@ void TestBlt()
 				Print4x5Text( "Golden Power Pod" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );	  
-*/
+				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
 	  }
     }
 	else
@@ -3611,6 +3592,10 @@ BOOL ChangeLevel( void )
 	return( TRUE );
 }
 
+// bjd - doesn't actually render anymore
+//     - this use to blit to the front buffer
+//     - flipping in d3d9 doesn't appear to support color value anymore either
+//     - this does although cause the loading status messages to appear so it's good to leave this enable for now
 // draw the loading bar that fills from left to right
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )
 {
@@ -3689,8 +3674,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
 
   destp.x = dest.left;
   destp.y = dest.top;
-
-  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
   FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // top...
@@ -3701,7 +3684,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   
   destp.x = dest.left;
   destp.y = dest.top;
-  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
   FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // bottom...
@@ -3712,7 +3694,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   
   destp.x = dest.left;
   destp.y = dest.top;
-  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
   FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
   
   // left...
@@ -3723,7 +3704,6 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   
   destp.x = dest.left;
   destp.y = dest.top;
-  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
   FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // right...
@@ -3734,10 +3714,8 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   
   destp.x = dest.left;
   destp.y = dest.top;
-  // bjd - this use to write to the front buffer... and FSBlit needs to support colourKey argument....
   FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
-  // bjd - this use to write to the front buffer... flipping the buffer was not needed...
   FlipBuffers();
 }
 
@@ -6042,30 +6020,7 @@ void ShowInGameStats()
 
 void PaintBackground( RECT * box ) // pass NULL to black out all of the screen
 {
-#if 0 // bjd - CHECK
-	HRESULT ddrval;
-	DDBLTFX fx;
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize = sizeof(DDBLTFX);
-	while( 1 )
-	{
-		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
-			d3dapp->lpBackBuffer, box, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &fx 
-		);
-		if( ddrval == DD_OK )
-			break;
-		if( ddrval == DDERR_SURFACELOST )
-		{
-			DebugPrintf("ShowGameStats() Lost surface");
-			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-			DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
-			break;
-		}
-		if( ddrval != DDERR_WASSTILLDRAWING )
-			break;
-	}
-#endif
+	/* would simply blit the area defined by box on the backbuffer to black */
 }
 
 BOOL StatsNamePulse( void )
@@ -6478,8 +6433,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 #endif
 
 #if 0
-      memset(&fx, 0, sizeof(DDBLTFX));
-      fx.dwSize = sizeof(DDBLTFX);
+	POINT destp;
       fx.dwAlphaSrcConstBitDepth = 8;
       fx.dwAlphaSrcConst = 128;
       fx.dwAlphaDestConstBitDepth = 8;
@@ -6488,100 +6442,27 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
       dest.bottom = d3dappi.szClient.cy;
       dest.left = 0;
       dest.right = d3dappi.szClient.cx;
-#endif
-#if 0
-        ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSThree, &src, DDBLT_KEYSRC | DDBLT_WAIT | DDBLT_ALPHASRCCONSTOVERRIDE | DDBLT_ALPHADESTCONSTOVERRIDE | DDBLT_ALPHADEST | DDBLT_ALPHASRC , &fx );
+	  destp.x = dest.left;
+	  destp.y = dest.top;
+	  FSBlit( lpDDSThree, FSBackBuffer, &src, &destp );
 #endif
 
-/*===================================================================
-  Procedure :   General blit fast...
-  Input   :   int   srcx,srcy , width , height , dstx , dsty
-        :   LPDIRECTDRAWSURFACE Surface
-        :   char * FileName , LPDIRECTDRAWSURFACE DestSurface
-  Output    :   BOOL TRUE/FALSE
-===================================================================*/
 #ifdef  USEINLINE
 _inline
 #endif
-
-#if 0 // bjd - CHECK
-void GeneralBltFast( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface)
+// pass FSBackBuffer or NULL for "DestSurface" argument to point to back buffer
+void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 SrcSurface ,   char * FileName , LPDIRECT3DSURFACE9 DestSurface)
 {
-    RECT    src;
-    HRESULT ddrval;
-  src.top = srcy;
-  src.left = srcx;
-  src.right = src.left+w;
-  src.bottom = src.top+h;
-  while( 1 )
-  {
-    ddrval = DestSurface->lpVtbl->BltFast( DestSurface, dstx, dsty, SrcSurface, &src, flags );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-  
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DestSurface->lpVtbl->Restore(DestSurface);
-      DDReLoadBitmap( SrcSurface, FileName );
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
+	RECT    src;
+	POINT	destp;
+	src.top = srcy;
+	src.left = srcx;
+	src.right = src.left+w;
+	src.bottom = src.top+h;
+	destp.x = dstx;
+	destp.y = dsty;
+	FSBlit( SrcSurface, DestSurface, &src, &destp );
 }
-#endif
-
-/*===================================================================
-  Procedure :   General blit fast...
-  Input   :   int   srcx,srcy , width , height , dstx , dsty ,dstw , dsth ,
-        :   LPDIRECTDRAWSURFACE Surface
-        :   char * FileName , LPDIRECTDRAWSURFACE DestSurface
-  Output    :   BOOL TRUE/FALSE
-===================================================================*/
-#ifdef  USEINLINE
-//_inline
-#endif
-#if 0 // bjd - CHECK
-void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int dstw , int dsth , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface)
-{
-  RECT  dst;
-    RECT    src;
-  DDBLTFX fx;
-    HRESULT ddrval;
-  src.top = srcy;
-  src.left = srcx;
-  src.right = src.left+w;
-  src.bottom = src.top+h;
-
-  dst.top = dsty;
-  dst.left = dstx;
-  dst.right = dst.left+dstw;
-  dst.bottom = dst.top+dsth;
-
-    memset(&fx, 0, sizeof(DDBLTFX));
-    fx.dwSize = sizeof(DDBLTFX);
-
-  
-  while( 1 )
-  {
-    ddrval = DestSurface->lpVtbl->Blt( DestSurface, &dst, SrcSurface, &src, DDBLT_WAIT | DDBLT_ASYNC , &fx );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DestSurface->lpVtbl->Restore(DestSurface);
-      DDReLoadBitmap( SrcSurface, FileName );
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
-}
-#endif
 
 /*===================================================================
   Procedure :   Do font blt..
@@ -7401,12 +7282,14 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
 #if 0
         if( ModeCase != -1 )
         {
+			POINT destp;
+
           //  Blt Panel
-          GeneralBltFast( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-                  lpDDSThree , (char*) &PanelNames[ModeCase] , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
+                  lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
           //  Primary one
-          GeneralBltFast( PrimaryX[Ships[WhoIAm].Primary] , PrimaryY[Ships[WhoIAm].Primary] , 48 , 32  , PrimaryWeaponShowX , PrimaryWeaponShowY ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( PrimaryX[Ships[WhoIAm].Primary] , PrimaryY[Ships[WhoIAm].Primary] , 48 , 32  , PrimaryWeaponShowX , PrimaryWeaponShowY ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
           
           HealthCount+=  framelag;
           //  Health one
@@ -7422,21 +7305,9 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
           dest.left = (d3dappi.szClient.cx >> 1) - 16 - 4;
           dest.right = (d3dappi.szClient.cx >> 1) - 4;
           
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_KEYSRC | DDBLT_WAIT , &fx );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
+		  destp.x = dest.left;
+		  destp.y = dest.top;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
       
           //  Hull one
           src.top = ( ( (int) ( (HealthCount * 0.25F) + 8 ) ^ 15 ) & 15 ) * 8;
@@ -7451,21 +7322,10 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
           dest.left = (d3dappi.szClient.cx >> 1) + 4;
           dest.right = (d3dappi.szClient.cx >> 1) + 4 + 16;
           
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_KEYSRC | DDBLT_WAIT , &fx );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
+		  destp.x = dest.left;
+		  destp.y = dest.top;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
+
           //  Powerpods
           src.top = 0;
           src.left = 32+64;
@@ -7474,22 +7334,9 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
           y =  d3dappi.szClient.cy-74;
           x =  ( d3dappi.szClient.cx >> 1 ) - 28;
       
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpDDSOne, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
-        }
+		  destp.x = x;
+		  destp.y = y;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
         
         //  Blt Score
         Printuint16( Ships[WhoIAm].Shield , PanelShieldPosX, PanelShieldPosY , 2 );
@@ -7625,23 +7472,29 @@ InitViewport( float scale )
 ===================================================================*/
 void  PlotSimplePanel( void )
 {
-#if 0 // bjd
   int energy;
 
   // Blt Primary
   if( ( Ships[WhoIAm].Primary != PrimaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     PrimaryChanged = Ships[WhoIAm].Primary;
-    GeneralBlt( ( Ships[WhoIAm].Primary & 3 ) * 64 ,
-            ( ( Ships[WhoIAm].Primary >> 2 )& 3 ) * 64 ,
-          64 , 64 , PrimaryWeaponShowX , PrimaryWeaponShowY ,
-          WeaponSizeX , WeaponSizeY ,
-          lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
+    GeneralBlt(
+		( Ships[WhoIAm].Primary & 3 ) * 64 ,
+        ( ( Ships[WhoIAm].Primary >> 2 )& 3 ) * 64 ,
+        64, 64,
+		PrimaryWeaponShowX, PrimaryWeaponShowY,
+        //WeaponSizeX , WeaponSizeY ,
+        lpDDSFour,
+		"data\\pictures\\pcontent.bmp",
+		FSBackBuffer
+	);
 
-    GeneralBltFast( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary  , FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
-              PrimaryWeaponTextX , PrimaryWeaponTextY , lpFontSurface ,
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-             DDBLTFAST_WAIT, lpDDSThree);
+    GeneralBlt( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary,
+				FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
+				PrimaryWeaponTextX , PrimaryWeaponTextY , 
+				lpFontSurface ,
+				/*&FontNames[ModeCase][0]*/DynamicFontNames,
+				FSBackBuffer);
   }
   
   
@@ -7650,64 +7503,66 @@ void  PlotSimplePanel( void )
   if( ( Ships[WhoIAm].Secondary != SecondaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     SecondaryChanged = Ships[WhoIAm].Secondary;
-    GeneralBlt( ( (Ships[WhoIAm].Secondary+6) & 3 ) * 64 ,
+    GeneralBlt(
+			( (Ships[WhoIAm].Secondary+6) & 3 ) * 64 ,
             ( ( (Ships[WhoIAm].Secondary+6) >> 2 )& 3 ) * 64 ,
-          64 , 64 , SecondaryWeaponShowX , SecondaryWeaponShowY ,
-          WeaponSizeX , WeaponSizeY ,
-          lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
-    GeneralBltFast( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
+			64 , 64 ,
+			SecondaryWeaponShowX , SecondaryWeaponShowY ,
+			//WeaponSizeX , WeaponSizeY ,
+			lpDDSFour , "data\\pictures\\pcontent.bmp" , FSBackBuffer);
+    GeneralBlt( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
               SecondaryWeaponTextX , SecondaryWeaponTextY , lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
   }
 
 
   // blt shld
   if( ReMakeSimplePanel == TRUE )
   {
-    GeneralBltFast( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
+    GeneralBlt( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
             lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
+           FSBackBuffer);
   }
   if( ( Ships[WhoIAm].Object.Shield != ShieldChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     ShieldChanged = (uint16) Ships[WhoIAm].Object.Shield;
 
-//bjd    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Shield , PanelShieldPosX, PanelShieldPosY , 2 , DDBLTFAST_WAIT, lpDDSThree );
+    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Shield , PanelShieldPosX, PanelShieldPosY , 2 , lpDDSThree );
     
     if( ShieldHit == 0 )
     {
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 , 56 , 3 , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT, lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 , 56 , 3 , PanelShieldBarPosX , PanelShieldBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
     }else{
       ShieldHit -=1;
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 + ((ShieldHit>>2)*8) , 56 , 3  , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT , lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 + ((ShieldHit>>2)*8) , 56 , 3  , PanelShieldBarPosX , PanelShieldBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
       ShieldChanged = (uint16)-1;
     }
   }
   // blt Hull
   if( ReMakeSimplePanel == TRUE )
   {
-    GeneralBltFast( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
+    GeneralBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
             lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
   }
 
   if( ( Ships[WhoIAm].Object.Hull != HullChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     HullChanged = (uint16)Ships[WhoIAm].Object.Hull;
-//bjd    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Hull , PanelHullPosX, PanelHullPosY , 2 , DDBLTFAST_WAIT, lpDDSThree);
+    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Hull , PanelHullPosX, PanelHullPosY , 2 , lpDDSThree);
     if( HullHit == 0 )
     {
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT, lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
     }else{
       HullHit -=1;
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 + ((HullHit>>2)*8) , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT , lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 + ((HullHit>>2)*8) , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
       HullChanged = (uint16)-1;
     }
   }
@@ -7716,10 +7571,10 @@ void  PlotSimplePanel( void )
   // Blt Power Pods
   if( ( PowerChanged != Ships[WhoIAm].Object.PowerLevel ) || ( ReMakeSimplePanel == TRUE ) )
   {
-    GeneralBltFast( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
+    GeneralBlt( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
             lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
 
     PowerChanged = Ships[WhoIAm].Object.PowerLevel;
   }
@@ -7739,22 +7594,19 @@ void  PlotSimplePanel( void )
   if( ( energy != PrimaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     PrimaryNumChanged = energy;
-//bjd    Printuint16AnySurface( (uint16) energy , PrimaryWeaponNumX , PrimaryWeaponNumY , 2 , DDBLTFAST_WAIT, lpDDSThree);
+    Printuint16AnySurface( (uint16) energy , PrimaryWeaponNumX , PrimaryWeaponNumY , 2 , lpDDSThree);
   }
 
   // Blt Secondary ammo
   if( ( (uint16) GetCurSecAmmo() != SecondaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     SecondaryNumChanged = (uint16) GetCurSecAmmo();
-//bjd      Printuint16AnySurface( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX , SecondaryWeaponNumY , 2 , DDBLTFAST_WAIT, lpDDSThree );
+      Printuint16AnySurface( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX , SecondaryWeaponNumY , 2 , lpDDSThree );
   }
   
   //  Blt Panel
-  GeneralBltFast( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-          lpDDSThree , (char*) &PanelNames[ModeCase] , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-
-
-  
+  GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
+          lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
 
   energy = (int) GetBestMine();
   // Blt Mine..
@@ -7765,7 +7617,6 @@ void  PlotSimplePanel( void )
   }
 
   ReMakeSimplePanel = FALSE;
-#endif
 }
 
 void  FlipToGDISurface()
@@ -8486,16 +8337,13 @@ BOOL  FreeStatsDisplay()
 ===================================================================*/
 BOOL StatsDisplay()
 {
-#if 0
-    HRESULT ddrval;
-    RECT    src;
+  RECT    src;
   RECT    dest;
-  DDBLTFX fx;
+  POINT destp;
   int x,y;
-#endif
+
   char buf[256];
 
-#if 0
   //  Blt Background
   src.top = 0;
   src.left = 0;
@@ -8503,29 +8351,16 @@ BOOL StatsDisplay()
   src.bottom = d3dappi.szClient.cy;
   x = 0;
   y = 0;
-  memset(&fx, 0, sizeof(DDBLTFX));
-  fx.dwSize = sizeof(DDBLTFX);
+
   dest.top = 0;
   dest.bottom = d3dappi.szClient.cy;
   dest.left = 0;
   dest.right = d3dappi.szClient.cx;
       
-  while( 1 )
-  {
-    ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_WAIT , &fx );
-    if( ddrval == DD_OK )
-      break;
-    if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DDReLoadBitmap( lpDDSOne, (char*) &StatsNames[ModeCase] );
-      break;
-    }
-    if( ddrval != DDERR_WASSTILLDRAWING )
-      break;
-  }
-#endif
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
+
   if( !GameCompleted )
   {
     if( Secrets == 1 )
