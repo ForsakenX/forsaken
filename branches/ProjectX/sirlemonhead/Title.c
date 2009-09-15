@@ -17613,7 +17613,7 @@ void ProcessHoloModel( void )
 	case HOLOMODEL_Done:
 		if( !FlyGirlActive )
 		{
-			//PlotHoloScanLine();
+			PlotHoloScanLine();
 		}
 		if ( !HoloSpeechDone )
 		{
@@ -17682,7 +17682,7 @@ void ProcessHoloModel( void )
 
 	if( ( HoloModelMode == HOLOMODEL_Done ) && ( !FlyGirlActive ) )
 	{
-		//InitHoloScanLine();
+		InitHoloScanLine();
 	}
 }
 
