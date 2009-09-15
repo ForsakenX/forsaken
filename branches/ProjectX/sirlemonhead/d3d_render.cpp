@@ -1117,11 +1117,10 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	}
 }
 
-LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname)
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname, D3DCOLOR m_ColourKey )
 {
     HBITMAP             hbm;
     HRESULT             hr;
-	D3DCOLOR			m_ColourKey = 0xFF000000; // set black transparent
 	BITMAP				Bitmap;
 	LPDIRECT3DSURFACE9	pdds = NULL;
     hbm = (HBITMAP)LoadImage(NULL, pathname, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE|LR_CREATEDIBSECTION);
@@ -1143,6 +1142,7 @@ LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname)
 	{
         DebugPrintf("FSLoadBitmap: CreateOffscreenPlainSurface failed\n");
 	}
+	// set colour key black by default
 	hr=D3DXLoadSurfaceFromFile(pdds, NULL, NULL, pathname, NULL, D3DX_FILTER_NONE, m_ColourKey, NULL);
 	if(FAILED(hr))
 	{

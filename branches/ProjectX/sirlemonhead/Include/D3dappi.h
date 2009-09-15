@@ -207,7 +207,9 @@ HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVe
 
 #define FSBackBuffer 0 // pass this to FSBlit for "to" to point to back buffer
 void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest );
-LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname);
+
+#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
+LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname, D3DCOLOR m_ColourKey );
 
 #ifdef __cplusplus
 };

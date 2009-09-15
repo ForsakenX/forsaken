@@ -922,57 +922,6 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , LPDIRECT3
 }
 
 /*===================================================================
-	Procedure	:		Re-Init the font surface...
-	Input		:		nothing
-	Output		:		nothing
-===================================================================*/
-
-void ReInitFont(void)
-{
-#if 0
-	if( ModeCase < Mode512X384 )
-	{
-		DDReLoadBitmap( lpFontSurface , "data\\pictures\\font.bmp" );
-		FontWidth = 4;
-		FontHeight = 5;
-		FontSourceWidth = 4;
-		FontSourceHeight = 5;
-	}else{
-//		if( ModeCase < Mode640X480 )
-//		{
-			DDReLoadBitmap( lpFontSurface , "data\\pictures\\font512.bmp" );
-			FontWidth = 8;
-			FontHeight = 8;
-			FontSourceWidth = 8;
-			FontSourceHeight = 8;
-//		}else{
-//			DDReLoadBitmap( lpFontSurface , "data\\pictures\\font800.bmp" );
-//			FontWidth = 9;
-//			FontHeight = 16;
-//			FontSourceWidth = 9;
-//			FontSourceHeight = 16;
-//		}
-	}
-#endif
-
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-		lpFontSurface = FSLoadBitmap( "data\\pictures\\font512.bmp" );
-		FontWidth = 8;
-		FontHeight = 8;
-		FontSourceWidth = 8;
-		FontSourceHeight = 8;
-	}else
-	{
-		lpFontSurface = FSLoadBitmap( "data\\pictures\\font.bmp" );
-		FontWidth = 4;
-		FontHeight = 5;
-		FontSourceWidth = 4;
-		FontSourceHeight = 5;
-	}
-}
-
-/*===================================================================
 	Procedure	:		Init PolyText allowed Array..
 	Input		:		nothing
 	Output		:		nothing
@@ -2133,92 +2082,38 @@ void DisplayConnectionStatus( int num , int x , int y)
 ===================================================================*/
 void InitFont( BOOL OverridePolytext )
 {
-//	LPDIRECTDRAWPALETTE ddpal;
 	uint16 i;
 	uint8 e;
 	int x,y;
 	int col;
 
 	// if font already initialised...
-	/*
 	if (lpFontSurface && !OverridePolytext )
 		return;
+
 	if( lpFontSurface )
 	{
-		ReleaseDDSurf(lpFontSurface);
+		// bjd - how to release in d3d9 ?
+		//ReleaseDDSurf(lpFontSurface);
 		lpFontSurface = NULL;
 	}
-	*/
 
-#if 0
-	if( ModeCase < Mode512X384 )
-   	{
-   		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
-   		DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
-   		FontWidth = 4;
-   		FontHeight = 5;
-   		FontSourceWidth = 4;
-   		FontSourceHeight = 5;
-
-   	}
-	else{
-//   			if( ModeCase < Mode640X480 )
-//   			{
-   		
-   			lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
-
-			ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-			lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
-   			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
-   			FontWidth = 8;
-   			FontHeight = 8;
-   			FontSourceWidth = 8;
-   			FontSourceHeight = 8;
-//   			}else{
-//   				lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font800.bmp", 0, 0 );
-//   				ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font800.bmp");
-//   				lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
-//   				DDSetColorKey( lpFontSurface, RGB_MAKE( 255 , 0 , 255 ) );
-//   				FontWidth = 9;
-//   				FontHeight = 16;
-//   				FontSourceWidth = 9;
-//   				FontSourceHeight = 16;
-//   			}
-   	}
-#endif
-	/*
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
-
-		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-		if (lpFontSurface && ddpal)
-		{
-			LastError = lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
-			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
-		}
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font512.bmp", FSColourKeyBlack );
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
 		FontSourceHeight = 8;
-	}else
-	{
-   		lpFontSurface = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		if (lpFontSurface && ddpal)
-		{
-			LastError = lpFontSurface->lpVtbl->SetPalette( lpFontSurface , ddpal );
-   			DDSetColorKey( lpFontSurface, RGB_MAKE( 0 , 0 , 0 ) );
-		}
-   		FontWidth = 4;
-   		FontHeight = 5;
-   		FontSourceWidth = 4;
-   		FontSourceHeight = 5;
 	}
-	*/
-	ReInitFont();
+	else
+	{
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font.bmp", FSColourKeyBlack );
+		FontWidth = 4;
+		FontHeight = 5;
+		FontSourceWidth = 4;
+		FontSourceHeight = 5;
+	}
 
 	for( i = 0; i < 0x100 ; i++ )
 	{

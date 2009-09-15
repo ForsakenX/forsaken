@@ -257,7 +257,7 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-//bjd extern	LPDIRECTDRAWSURFACE     lpFontSurface;
+extern	LPDIRECT3DSURFACE9     lpFontSurface;
 //bjd extern	DDCOLORKEY				ddcolorkey;
 LPDIRECT3DSURFACE9	lpDDSTitleFont;
 //bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
@@ -3758,9 +3758,9 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 void InitTitleFont(void)
 {
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp" );
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp", FSColourKeyBlack );
 	else
-		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp" );
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp", FSColourKeyBlack );
 }
 
 /*===================================================================
@@ -3774,15 +3774,17 @@ ReleaseTitle(void)
    	int i;
 	
 	// only release font if not showing loading bar...
-//	if ( !PreventFlips )
-//		if ( lpFontSurface )
-//		{
-//		 ReleaseDDSurf(lpFontSurface);
-//		 lpFontSurface = NULL;
-//		}
+	if ( !PreventFlips )
+		if ( lpFontSurface )
+		{
+		 //ReleaseDDSurf(lpFontSurface);
+		 lpFontSurface = NULL;
+		}
 
-//	if(!bPolyText && lpDDSTitleFont)
-//		ReleaseDDSurf(lpDDSTitleFont);
+	if(!bPolyText && lpDDSTitleFont)
+	{
+		//ReleaseDDSurf(lpDDSTitleFont);
+	}
 
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
 	{

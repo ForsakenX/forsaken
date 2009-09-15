@@ -4757,26 +4757,15 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     ReceiveGameMessages();
 
     // Create the offscreen surface, by loading our bitmap
+	lpDDSOne = FSLoadBitmap( "data\\pictures\\panel.bmp", FSColourKeyBlack );
 
-#if 0 // bjd - CHECK
-      lpDDSOne = DDLoadBitmap( lpDD, "data\\pictures\\panel.bmp" , 0, 0 );
-    ddpal =  DDLoadPalette( lpDD , "data\\pictures\\panel.bmp");
-    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
-    DDSetColorKey( lpDDSOne, RGB_MAKE( 0 , 0 , 0 ) );
     // Create the offscreen surface, by loading our bitmap.
     if( ( ModeCase != -1 ) && ( DrawPanel == FALSE ) && DrawSimplePanel )
     {
-      lpDDSThree = DDLoadBitmap( lpDD, (char*) &PanelNames[ModeCase] , 0, 0 );
-      ddpal =  DDLoadPalette( lpDD , (char*) &PanelNames[ModeCase]);
-      LastError = lpDDSThree->lpVtbl->SetPalette( lpDDSThree , ddpal );
-      DDSetColorKey( lpDDSThree, RGB_MAKE( 255 , 0 , 255 ) );
-      PanelHeight = PanelVisibleY[ModeCase];
-
-      lpDDSFour = DDLoadBitmap( lpDD, "data\\pictures\\pcontent.bmp" , 0, 0 );
-      ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pcontent.bmp" );
-      LastError = lpDDSFour->lpVtbl->SetPalette( lpDDSFour , ddpal );
+		lpDDSThree = FSLoadBitmap( &PanelNames[ModeCase][0], RGB_MAKE( 255 , 0 , 255 ) );
+		PanelHeight = PanelVisibleY[ModeCase];
+		lpDDSFour = FSLoadBitmap( "data\\pictures\\pcontent.bmp" , RGB_MAKE( 255 , 0 , 255 ) );
     }
-#endif
 
     FillInPanelPositions();
     ReMakeSimplePanel = TRUE;
@@ -6284,8 +6273,6 @@ BOOL ScoreDisplay()
 ===================================================================*/
 BOOL  InitScoreDisplay()
 {
-	return TRUE;
-#if 0 // bjd - CHECK
 #ifdef SCROLLING_MESSAGES
   int i;
 #endif
@@ -6293,9 +6280,7 @@ BOOL  InitScoreDisplay()
 
   if( ModeCase != -1 )
   {
-    lpDDSOne = DDLoadBitmap( d3dapp->lpDD,/* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames , 0, 0 );
-    ddpal =  DDLoadPalette( d3dapp->lpDD , /*(char*) &ScoreNames[ModeCase]*/DynamicScoreNames);
-    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+	lpDDSOne = FSLoadBitmap( /* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames, 0 );
   }
 
   InitFont(TRUE);
@@ -6316,7 +6301,6 @@ BOOL  InitScoreDisplay()
   PreventFlips = FALSE;
 
   return TRUE;
-#endif
 }
 /*===================================================================
   Procedure :   Free Score Display Stuff...
@@ -8305,9 +8289,7 @@ BOOL  InitStatsDisplay()
 
 //  if( ModeCase != -1 )
 //  {
-//    lpDDSOne = DDLoadBitmap( d3dapp->lpDD, (char*) &StatsNames[ModeCase] , 0, 0 );
-//    ddpal =  DDLoadPalette( d3dapp->lpDD , (char*) &StatsNames[ModeCase]);
-//    lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+//		lpDDSOne = FSLoadBitmap( (char*) &StatsNames[ModeCase], 0 );
 //  }
   InitFont(FALSE);
   ChangeBackgroundColour( 0, 0, 0 );
