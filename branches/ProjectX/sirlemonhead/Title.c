@@ -3757,107 +3757,10 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
 void InitTitleFont(void)
 {
-//    LPDIRECTDRAWPALETTE ddpal;
-#if 0
-	//init the title font for blitting...
-	switch (ModeCase)
-	{
-	case Mode320X200:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode320X240:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode320X400:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode512X384:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode640X400:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode640X480:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode800X600:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	default:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	}
-#endif
-
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
 		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp" );
-		// bjd
-   		//ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-	}
 	else
-	{
 		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp" );
-		// bjd
-   		//ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-	}
-
-	/* bjd
-	if ( lpDDSTitleFont && ddpal)
-	{
-	  LastError = lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
-   	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
-	}
-	*/
-}
-
-void ReInitTitleFont (void)
-{
-#if 0
-	switch (ModeCase)
-	{
-	case Mode320X200:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	case Mode320X240:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	case Mode512X384:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode640X400:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode640X480:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode800X600:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode1024X768:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	default:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	}
-#endif
-
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-//bjd		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-	}else
-	{
-//bjd		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-	}
 }
 
 /*===================================================================
@@ -17564,7 +17467,8 @@ void LoadHoloModel( uint16 model )
 			}
 		}
 		return;
-	}else
+	}
+	else
 	{
 		FlyGirlActive = FALSE;
 	}
@@ -17709,7 +17613,7 @@ void ProcessHoloModel( void )
 	case HOLOMODEL_Done:
 		if( !FlyGirlActive )
 		{
-			PlotHoloScanLine();
+			//PlotHoloScanLine();
 		}
 		if ( !HoloSpeechDone )
 		{
@@ -17760,7 +17664,8 @@ void ProcessHoloModel( void )
 			}
 			HoloModelMode = HOLOMODEL_Done;
 			return;
-		}else
+		}
+		else
 		{
 			LoadHoloModel( NextHoloModel );
 		}
@@ -17777,7 +17682,7 @@ void ProcessHoloModel( void )
 
 	if( ( HoloModelMode == HOLOMODEL_Done ) && ( !FlyGirlActive ) )
 	{
-		InitHoloScanLine();
+		//InitHoloScanLine();
 	}
 }
 
