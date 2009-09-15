@@ -249,12 +249,10 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
 			//bjd - Mxloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
 
-			/* store the vertexes in a temp memory buffer first, as we load them according to the face information */
-//			vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
-
 			/*	create a vertex buffer	*/
 			if (FAILED(FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], num_vertices)))
 			{
+				Msg( "Mxload : MakeExecBuffer Failed\n" );
 				return FALSE;
 			}
 
@@ -280,8 +278,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				lpD3DLVERTEX[i].z = old->z;
 				lpD3DLVERTEX[i].tu = old->tu;
 				lpD3DLVERTEX[i].tv = old->tv;
-				color = old->color;
 
+				color = old->color;
 				a = (color>>24)&255;
 				r = (color>>16)&255;
 				g = (color>>8)&255;

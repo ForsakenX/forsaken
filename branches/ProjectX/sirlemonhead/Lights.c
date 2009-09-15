@@ -419,7 +419,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 				lpD3DLVERTEX++;
 			}
 		}else{
-			lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 			
 			vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 			
@@ -498,7 +498,7 @@ clear:					mov		eax, [esi]
 			}else if( GroupWaterInfo[group] == WATERSTATE_ALLWATER )
 			{
 				// ****************** Full Water Effect ********************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+				lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 				lpD3DLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
@@ -532,7 +532,7 @@ clear:					mov		eax, [esi]
 				// ****************** End of Water Effect ******************************
 			}else{
 				// ****************** Partial Water Effect ******************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+				lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 				lpD3DLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
@@ -1241,7 +1241,6 @@ PLOP:
 BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
@@ -1278,22 +1277,14 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			/*	lock the execute buffer	*/
-//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-//			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//				return FALSE;
 			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
-
-//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = MXloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR
@@ -1625,7 +1616,7 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 
 	for ( execbuf = 0; execbuf < Mloadheader->Group[group].num_execbufs; execbuf++ )
 	{
-		lpD3DLVERTEX = Mloadheader->Group[group].org_vertpnt[execbuf];
+		lpD3DLVERTEX = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 		
 		for( i = 0 ; i < Mloadheader->Group[group].num_verts_per_execbuf[execbuf] ; i++ )
 		{

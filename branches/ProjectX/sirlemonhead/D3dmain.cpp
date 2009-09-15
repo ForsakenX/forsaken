@@ -146,7 +146,7 @@ BOOL bOnlyEmulation			= FALSE;
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(void);
-static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
+static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/);
 static BOOL AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
@@ -1231,7 +1231,7 @@ AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
  */
 
 static BOOL
-BeforeDeviceDestroyed(LPVOID lpContext)
+BeforeDeviceDestroyed(/*LPVOID lpContext*/)
 {
     // Release all objects (ie execute buffers) created by InitView
     ReleaseView();
@@ -1419,6 +1419,8 @@ CleanUpAndPostQuit(void)
 	// check if this function was ran allready
     if (myglobs.bQuit)
 		return;
+
+	BeforeDeviceDestroyed();
 
 	// tell d3d to stop and report any errors
     if (!D3DAppDestroy())

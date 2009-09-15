@@ -895,7 +895,7 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 //			XRELEASE(Mxaloadheader->Group[group].lpExBuf[i]);
 			FSReleaseRenderObject(&Mxaloadheader->Group[group].renderObject[i]);
 
-//			free(Mxaloadheader->Group[group].org_vertpnt[i]);
+			free(Mxaloadheader->Group[group].org_vertpnt[i]);
 	
 			if (Mxaloadheader->Group[group].poly_ptr[i])
 			{
@@ -1085,7 +1085,6 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 ===================================================================*/
 BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
 {
-//	D3DEXECUTEBUFFERDESC	debDesc;
     LPD3DLVERTEX	lpBufStart = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX;
 	LPD3DLVERTEX	lpD3DLVERTEX2;
@@ -1105,27 +1104,17 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 	{
 		for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 		{
-/*
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/		
-			/*	lock the execute buffer	*/
-//			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxaloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-//			if (FSLockExecuteBuffer(Mxaloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//				return FALSE ;
 			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
 			{
 				return FALSE;
 			}
-		
-//			lpBufStart = debDesc.lpData;
 		
 			for( texgroup=0; texgroup < Mxaloadheader->Group[group].num_texture_groups[execbuf] ; texgroup++)
 			{
 				lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( (char*) lpBufStart+( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX += 8;
 
-				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX2 += 8;
 				
 				FromVert = ( MXAVERT * ) Mxaloadheader->frame_pnts[FromFrame][group][execbuf][texgroup];

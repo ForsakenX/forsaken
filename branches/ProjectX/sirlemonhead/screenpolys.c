@@ -2076,7 +2076,7 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
-		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		if (FAILED(FSDrawPretransformedVertexBuffer(renderObject)))
 		{
 			return FALSE;
 		}
@@ -2108,7 +2108,7 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
-		if (FAILED(FSDrawVertexBuffer(renderObject)))
+		if (FAILED(FSDrawPretransformedVertexBuffer(renderObject)))
 		{
 			return FALSE;
 		}
@@ -2929,7 +2929,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
       									u2 = Box_Ptr->u2;
       									v2 = Box_Ptr->v2;
       									break;
-      							
       							}
 							}
 

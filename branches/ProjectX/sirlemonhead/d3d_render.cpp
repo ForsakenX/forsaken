@@ -1111,8 +1111,8 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 		if (renderObject->textureGroups[i].texture)
 		{
-			renderObject->textureGroups[i].texture->Release();
-			renderObject->textureGroups[i].texture = NULL;
+//	FIXME		renderObject->textureGroups[i].texture->Release();
+//			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
 }
