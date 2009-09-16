@@ -343,6 +343,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	uint32 * uint32Pnt;
 	TANIMUV * TanimUV;
 	float	intensity;
+	HRESULT hr;
 
 	intWhiteOut = (int)WhiteOut;
 	if( intWhiteOut >= 256 )
@@ -954,10 +955,9 @@ __asm
 			}
 		}
 		/*	unlock the execute buffer	*/
-		if (FAILED(FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf])));
-		{
+		hr = FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf]);
+		if(FAILED(hr))
 			return FALSE;
-		}
 	}
 	
 	return TRUE;
