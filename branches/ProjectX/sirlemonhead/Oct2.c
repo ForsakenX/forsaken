@@ -5674,14 +5674,18 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
 ===================================================================*/
 
 //  if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
-  if (FSBeginScene() != D3D_OK)
-    return FALSE;
+	if (FSBeginScene() != D3D_OK)
+		return FALSE;
 
+	// show the stats screen
    if(ShowStats)
+   {
 	  ScoreDisplay();
+   }
 
-    else if( !FullRearView )
-    {
+   // show regular view
+   else if( !FullRearView )
+   {
       CameraRendering = CAMRENDERING_Main;
       MainCamera.enable = 1;
       MainCamera.GroupImIn = Ships[Current_Camera_View].Object.Group; 
@@ -5809,9 +5813,10 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
 
       }
     }
+	
+    // Full Screen Rear View....
 	else
 	{
-      // Full Screen Rear View....
       CameraRendering = CAMRENDERING_Rear;
       CurrentCamera.enable = 1;
       CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;  
@@ -6695,9 +6700,11 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 
   // reset all the normal execute status flags...
 	if( WhiteOut == 0.0F)
+	{
  //       lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 //		FSDrawVertexBuffer(lpD3DNormCmdBuf);
+	}
 #endif
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
