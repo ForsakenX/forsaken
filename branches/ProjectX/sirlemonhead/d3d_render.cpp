@@ -756,6 +756,15 @@ exit_with_error:
 char buf[100];
 HRESULT LastError;
 
+BOOL D3DAppIClearBuffers(void)
+{
+	if (FAILED(d3dappi.lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 )))
+	{
+		return FALSE;
+	}
+	else return TRUE;
+}
+
 HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort)
 {
 	return d3dapp->lpD3DDevice->GetViewport( returnViewPort );

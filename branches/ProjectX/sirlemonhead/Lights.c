@@ -290,7 +290,6 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	blf;
 	float	glf;
 	float	rlf;
-//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	VECTOR	CellIndex;
 	float	distance;
@@ -356,14 +355,6 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	execbuf = Mloadheader->Group[group].num_execbufs;
 	while( execbuf--)
 	{
-//		memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//		debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		/*	lock the execute buffer	*/
-
-//		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK) // bjd
-//		if (FSLockExecuteBuffer(Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//			return FALSE;
-
 		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 		{
 			return FALSE;
@@ -963,8 +954,6 @@ __asm
 			}
 		}
 		/*	unlock the execute buffer	*/
-//		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//			return FALSE;
 		if (FAILED(FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf])));
 		{
 			return FALSE;

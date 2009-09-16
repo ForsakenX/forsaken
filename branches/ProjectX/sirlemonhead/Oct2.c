@@ -1387,7 +1387,7 @@ ResizeViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-//bjd  D3DAppIClearBuffers();
+	D3DAppIClearBuffers();
 
   return TRUE;
 }
@@ -1444,7 +1444,7 @@ FullScreenViewport()
     }
 	SetFOV( hfov );
 	// clear viewport
-//bjd	D3DAppIClearBuffers();
+	D3DAppIClearBuffers();
 //	D3DAppIClearBuffers();
 	return TRUE;
 }
@@ -2357,8 +2357,8 @@ ReleaseView(void)
       free( MCloadheadert0.Buffer );
       MCloadheadert0.Buffer = NULL;
     }
-  
-    Free_All_Off_Files( &OffsetFiles[ 0 ] );
+	
+	Free_All_Off_Files( &OffsetFiles[ 0 ] );
     ReleaseSkinExecs();
     ReleasePortalExecs();
     ReleaseRenderBufs();
@@ -4175,7 +4175,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if( IsKeyPressed( DIK_SPACE ) ||
       ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
-//bjd      D3DAppIClearBuffers();
+		D3DAppIClearBuffers();
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
@@ -4400,7 +4400,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-//bjd      D3DAppIClearBuffers();
+		D3DAppIClearBuffers();
       ReleaseView();
       // tell them all to load up a level
       MyGameStatus = STATUS_StartingMultiplayerSynch;
@@ -4428,7 +4428,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
           }
 		  else
 		  {
- //bjd           D3DAppIClearBuffers();
+				D3DAppIClearBuffers();
 		  }
 
 
@@ -5319,7 +5319,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       {
         if( NewLevelNum != LevelNum )
         {
-//bjd          D3DAppIClearBuffers();
+			D3DAppIClearBuffers();
           ReleaseView();
           // the level has ended or changed...
           MyGameStatus = STATUS_ViewingStats;
@@ -5334,7 +5334,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-//bjd    D3DAppIClearBuffers();
+	D3DAppIClearBuffers();
 
     ReleaseLevel();
 
@@ -6674,18 +6674,18 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 
   if (ClearBuffers( ClearScrOverride, ClearZOverride ) != TRUE )
     return FALSE;
-#if 0 // bjd - CHECK
+#if 1 // bjd - CHECK
   // reset all the normal execute status flags...
 //  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 //	FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-	FSDrawVertexBuffer(lpD3DNormCmdBuf);
+//	FSDrawVertexBuffer(lpD3DNormCmdBuf);
 
   // set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
 		//lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSDrawVertexBuffer(lpD3DSpcFxTransCmdBuf);
+//		FSDrawVertexBuffer(lpD3DSpcFxTransCmdBuf);
 	}
 
 
@@ -6697,7 +6697,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 	if( WhiteOut == 0.0F)
  //       lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSDrawVertexBuffer(lpD3DNormCmdBuf);
+//		FSDrawVertexBuffer(lpD3DNormCmdBuf);
 #endif
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
@@ -7443,7 +7443,7 @@ InitViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-//bjd  D3DAppIClearBuffers();
+	D3DAppIClearBuffers();
 
   return TRUE;
 }

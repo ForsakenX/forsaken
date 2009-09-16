@@ -3431,7 +3431,6 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 ===================================================================*/
 BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
-//	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	LPD3DLVERTEX			SrclpD3DLVERTEX = NULL;
 	uint16					Group;
@@ -3473,22 +3472,12 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 	{
 		for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 		{
-/*
-			memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/
-//			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-//			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//				return FALSE;
-
 			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
-			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].org_vertpnt[ExecBuf];
+			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ]./*org_vertpnt*/originalVerts[ExecBuf];
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
 			while( Vert-- )

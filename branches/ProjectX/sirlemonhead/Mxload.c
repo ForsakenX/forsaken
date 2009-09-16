@@ -159,7 +159,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	int8			SFXFilename[ 128 ];
 #endif
 
-	LPD3DLVERTEX vertexArray;
 	int numTriangles = 0;
 	int triangleCount = 0;
 	int indexOffset = 0;

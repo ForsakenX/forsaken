@@ -671,6 +671,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			Mloadheader->Group[group].polyanim[execbuf] = NULL;
 			Mloadheader->Group[group].num_animating_polys[execbuf] = 0;
+			
+			Mloadheader->Group[group].renderObject[execbuf].numTextureGroups++;
+
 
 			// this go here?
 			/*	unlock the vertex buffer	*/
@@ -1273,15 +1276,11 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 				{
 					return FALSE;
 				}
-				AddTransExe( &Matrix , /*Mloadheader->Group[group].lpExBuf[i]*/&Mloadheader->Group[group].renderObject[i], 0, (uint16) -1, group, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
+				AddTransExe( &Matrix , &Mloadheader->Group[group].renderObject[i], 0, (uint16) -1, group, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
 
 			}
 			else
 			{
-/*
-				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-					return FALSE;
-*/
 				if (FAILED(FSDrawVertexBuffer(&Mloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;

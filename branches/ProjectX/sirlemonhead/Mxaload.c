@@ -189,7 +189,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	int8			SFXFilename[ 128 ];
 #endif
 
-	LPD3DLVERTEX vertexArray;
 	int numTriangles = 0;
 	int triangleCount = 0;
 	int indexOffset = 0;
