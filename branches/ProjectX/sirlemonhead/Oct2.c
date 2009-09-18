@@ -7149,10 +7149,8 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
 		dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
 		dummy.y2 = dummy.y1+( newviewport.Height >> 1);
 
-/* bjd - CHECK
-		if( d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport, 1, &dummy, clearflags) != D3D_OK )
+		if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
 			return FALSE;
-*/
 	}
 
 	Trans.x = 0.0F;
