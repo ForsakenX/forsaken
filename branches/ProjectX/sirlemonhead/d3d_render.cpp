@@ -756,9 +756,18 @@ exit_with_error:
 char buf[100];
 HRESULT LastError;
 
-BOOL FSClear(void)
+BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil)
 {
-	if (FAILED(d3dappi.lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 )))
+	if (FAILED(d3dappi.lpD3DDevice->Clear( Count, pRects, Flags, Color, Z, Stencil )))
+	{
+		return FALSE;
+	}
+	else return TRUE;
+}
+
+BOOL FSClearBlack(void)
+{
+	if (FAILED(d3dappi.lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
 	{
 		return FALSE;
 	}

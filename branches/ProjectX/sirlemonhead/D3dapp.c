@@ -264,7 +264,7 @@ BOOL D3DAppFullscreen(int mode)
      */
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     if (d3dappi.bFullscreen) {
-        ATTEMPT(FSClear());
+        ATTEMPT(FSClearBlack());
     }
     RELEASE(d3dappi.lpD3DDevice);
     RELEASE(d3dappi.lpZBuffer);
@@ -387,7 +387,7 @@ D3DAppWindow(int w, int h, int bpp)
     d3dappi.bRenderingIsOK = FALSE;
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     if (b) {
-        ATTEMPT(FSClear());
+        ATTEMPT(FSClearBlack());
     }
     RELEASE(d3dappi.lpD3DDevice);
     RELEASE(d3dappi.lpZBuffer);
@@ -1063,7 +1063,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 
 	// requested to clear the screen.
     if ( ! flags )
-		FSClear();
+		FSClearBlack();
 		
 	// we are paused do not render
 	if ( d3dappi.bPaused )
@@ -1085,7 +1085,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-			FSClear();
+			FSClearBlack();
 
 		} else if (LastError != DD_OK) {
 
@@ -1128,7 +1128,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 		case DDERR_SURFACELOST:
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-			FSClear();
+			FSClearBlack();
 			break;
 
 		case DDERR_WASSTILLDRAWING:
@@ -1144,50 +1144,6 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
     return TRUE;
 #endif
 }
-
-
-/*
- * D3DAppClearScreenOnly
- */
-BOOL
-D3DAppClearScreenOnly()
-{
-	d3dappi.lpD3DDevice->lpVtbl->Clear( d3dappi.lpD3DDevice, 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
-
-	return TRUE;
-#if 0 // bjd
-    int clearflags;
-    D3DRECT dummy;
-
-    if (!d3dappi.bRenderingIsOK)
-	{
-        D3DAppISetErrorString("Cannot call D3DAppClearBackBuffer while bRenderingIsOK is FALSE.\n");
-        return FALSE;
-    }
-    /*
-     * clear just back buffer
-     */
-	clearflags = D3DCLEAR_TARGET;
-
-	if( clearflags != 0 )
-	{
-		dummy.x1 = dummy.y1 = 0;
-		dummy.x2 = d3dappi.szClient.cx;
-		dummy.y2 = d3dappi.szClient.cy;
-		LastError =d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
-														1, &dummy,
-		                                                clearflags);
-		if (LastError != D3D_OK)
-		{
-		    D3DAppISetErrorString("Viewport clear failed.\n%s",
-		                          D3DAppErrorToString(LastError));
-		    return FALSE;
-		}
-	}
-    return TRUE;
-#endif
-}
-
 
 /*
  * D3DAppCheckForLostSurfaces
@@ -1216,7 +1172,7 @@ D3DAppCheckForLostSurfaces(void)
          * If any of the surfaces were lost and restored, clear all the buffers.
          * If this fails, that's fine, just move on.
          */
-        FSClear();
+        FSClearBlack();
     }
     return TRUE;
 

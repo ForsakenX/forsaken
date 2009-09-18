@@ -334,12 +334,6 @@ BOOL D3DAppGetRenderState(D3DAppRenderState* lpState);
 BOOL D3DAppShowBackBuffer(DWORD flags);
 
 /*
- * D3DAppClearScreenOnly
- * Clears the back buffer.
- */
-BOOL
-D3DAppClearScreenOnly();
-/*
  * D3DAppCheckForLostSurfaces
  * Checks all surfaces D3DApp has allocated and restores them if necessary.
  * An error is returned on any type of failure, but it may be best to ignore

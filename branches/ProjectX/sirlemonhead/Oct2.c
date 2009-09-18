@@ -1387,7 +1387,7 @@ ResizeViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-	FSClear();
+	FSClearBlack();
 
   return TRUE;
 }
@@ -1444,7 +1444,7 @@ FullScreenViewport()
     }
 	SetFOV( hfov );
 	// clear viewport
-	FSClear();
+	FSClearBlack();
 	return TRUE;
 }
 
@@ -2611,7 +2611,7 @@ InitView( void )
 
     MyGameStatus = STATUS_InitView_0;
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     CameraStatus = CAMERA_AtStart;  //prevents on screen menus from being suppressed
     break;
   }
@@ -4067,7 +4067,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     if ( WaitingToQuit )
     {
-      D3DAppClearScreenOnly();
+      FSClearBlack();
       CenterPrint4x5Text( PLEASE_WAIT, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
       SelectQuitCurrentGame( NULL );
     }
@@ -4076,7 +4076,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   case STATUS_LevelEnd:
 	DebugState("STATUS_LevelEnd\n");
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
     Browl -= framelag;
 
@@ -4174,7 +4174,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if( IsKeyPressed( DIK_SPACE ) ||
       ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
-		FSClear();
+		FSClearBlack();
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
@@ -4204,7 +4204,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 	DebugState("STATUS_WaitingAfterScore\n");
 
     InitFontTransTable( TRUE );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     e = 0;
 
     if( IsHost )
@@ -4310,7 +4310,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_Joining:
 	DebugState("STATUS_Joining\n");
     PreventFlips = FALSE;
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
     if( IMustQuit || IsHost || ( OverallGameStatus != STATUS_Normal ) )
@@ -4399,7 +4399,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-		FSClear();
+		FSClearBlack();
       ReleaseView();
       // tell them all to load up a level
       MyGameStatus = STATUS_StartingMultiplayerSynch;
@@ -4427,7 +4427,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
           }
 		  else
 		  {
-				FSClear();
+				FSClearBlack();
 		  }
 
 
@@ -4479,7 +4479,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       break;
     }
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     e = 0;
 
     if( DS )
@@ -4576,7 +4576,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_GetPlayerNum:
 	DebugState("STATUS_GetPlayerNum\n");
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
     
     CenterPrint4x5Text( "Requesting Player Number" , (d3dappi.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
@@ -4703,7 +4703,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     }
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     MenuFrozen = FALSE; // ensure that menus are OK to use once in game
     JustExitedMenu = FALSE; 
@@ -4751,7 +4751,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
     SetOurRenderStates( NULL );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4855,7 +4855,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4896,7 +4896,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4922,7 +4922,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4952,7 +4952,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 
     // Can Cope with no Bsp file!!!
@@ -5027,7 +5027,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 
     InitSoundInfo( &Mloadheader );
@@ -5045,7 +5045,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 #ifdef NO_PRECALCULATED_CELL_COLOURS
     CreateCellColours( &Mloadheader );
@@ -5063,7 +5063,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
@@ -5241,7 +5241,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_StartingSinglePlayer:
 	DebugState("STATUS_StartingSinglePlayer\n");
 
-    //FSClear();
+    //FSClearBlack();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5318,7 +5318,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       {
         if( NewLevelNum != LevelNum )
         {
-			FSClear();
+			FSClearBlack();
           ReleaseView();
           // the level has ended or changed...
           MyGameStatus = STATUS_ViewingStats;
@@ -5333,7 +5333,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-	FSClear();
+	FSClearBlack();
 
     ReleaseLevel();
 
@@ -5351,7 +5351,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_TitleLoadGameStartingSinglePlayer:
 	DebugState("STATUS_TitleLoadGameStartingSinglePlayer\n");
 
-    //FSClear();
+    //FSClearBlack();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5368,7 +5368,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_InGameLoadGameStartingSinglePlayer:
 	DebugState("STATUS_InGameLoadGameStartingSinglePlayer\n");
 
-    //FSClear();
+    //FSClearBlack();
 
     NewLevelNum = InGameLoadGameLevelNum;
     MenuAbort();
@@ -6481,24 +6481,14 @@ void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 ===================================================================*/
 BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
 {
-	int clearflags;
+	int clearflags = 0;
 	D3DRECT dummy;
 
 	if (!d3dappi.bRenderingIsOK)
-	{
 		return FALSE;
-	}
-	/*
-	 * Decided wether to clear just back buffer or also z-buffer
-	 */
-	
-	clearflags = 0;
-
 
 	if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
-	{
 		clearflags |= D3DCLEAR_TARGET;
-	}
 
 #ifdef Z_TRICK
 	if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
@@ -6509,32 +6499,18 @@ BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
 		clearflags |= D3DCLEAR_ZBUFFER;
 	}
 
-	
-  if( clearflags != 0 )
-  {
-      dummy.x1 = CurrentCamera.Viewport.X;
-      dummy.y1 = CurrentCamera.Viewport.Y;
-      dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
-      dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
-
-	  LastError = d3dappi.lpD3DDevice->lpVtbl->Clear(d3dappi.lpD3DDevice, 1, &dummy, clearflags, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
-
-	if (LastError != D3D_OK)
+	if( clearflags != 0 )
 	{
-		return FALSE;
+		dummy.x1 = CurrentCamera.Viewport.X;
+		dummy.y1 = CurrentCamera.Viewport.Y;
+		dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
+		dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
+
+		if(!FSClear(1, &dummy, clearflags, D3DCOLOR_XRGB(0,0,0), 1.0f, 0))
+			return FALSE;
 	}
-/* bjd - CHECK   
-    LastError =
-              d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
-                                                   1, &dummy,
-                                                   clearflags);
-    if (LastError != D3D_OK)
-    {
-        return FALSE;
-    }
-*/
-  }
-    return TRUE;
+
+	return TRUE;
 }
 
 /*===================================================================
@@ -6542,25 +6518,23 @@ BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
 ===================================================================*/
 BOOL ClearZBuffer()
 {
+	int clearflags;
+	D3DRECT dummy;
+
+	if (!d3dappi.bRenderingIsOK)
+		return FALSE;
+
+	clearflags = D3DCLEAR_ZBUFFER;
+
+	dummy.x1 = CurrentCamera.Viewport.X;
+	dummy.y1 = CurrentCamera.Viewport.Y;
+	dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
+	dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
+
+	if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0F, 0 ))
+		return FALSE;
+
 	return TRUE;
-#if 0 // bjd - CHECK
-    int clearflags;
-    D3DRECT dummy;
-
-    if (!d3dappi.bRenderingIsOK) return FALSE;
-
-  clearflags = D3DCLEAR_ZBUFFER;
-
-  dummy.x1 = CurrentCamera.Viewport.X;
-  dummy.y1 = CurrentCamera.Viewport.Y;
-  dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
-  dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
-/* bjd - CHECK
-  LastError = d3dappi.lpD3DViewport->lpVtbl->Clear( d3dappi.lpD3DViewport, 1, &dummy, clearflags );
-  if (LastError != D3D_OK) return FALSE;
-*/
-    return TRUE;
-#endif
 }
 
 
@@ -6784,7 +6758,8 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 ===================================================================*/
   if( ShowSkin || OldNodeCube || NodeCube || ShowTrigZones || ShowColZones || ShowEFZones || ShowTeleports )
   {
-	if( OldNodeCube || NodeCube ) ClearZBuffer();
+	if( OldNodeCube || NodeCube )
+		ClearZBuffer();
 
 	for( Count = 0; Count < MAXGROUPS; Count++ )
 	{
@@ -7449,7 +7424,7 @@ InitViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-	FSClear();
+	FSClearBlack();
 
   return TRUE;
 }
@@ -8060,12 +8035,8 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ) // bjd
 		dummy.y1 = newviewport.Y;
 		dummy.y2 = newviewport.Y + newviewport.Height;
 
-//		if( d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport, 1, &dummy, clearflags) != D3D_OK )
-
-/* bjd - CHECK
-		if (FSClear(1, &dummy, clearflags) != D3D_OK )
+		if (FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
 			return FALSE;
-*/
 	}
 
 	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );

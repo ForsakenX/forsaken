@@ -1545,7 +1545,7 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	{
 		DrawLoadingBox( CurrentLoadingStep, total_groups - group, total_groups );
 		//D3DAppShowBackBuffer(TRUE);
-		//D3DAppClearScreenOnly();
+		//FSClearBlack();
 		PrintInitViewStatus( MyGameStatus );
 		Printuint16( group, 0,0,1);
 		execbuf = 0;//Mloadheader->Group[group].num_execbufs;
