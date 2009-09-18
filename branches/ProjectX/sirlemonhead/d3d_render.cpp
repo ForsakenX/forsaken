@@ -756,7 +756,7 @@ exit_with_error:
 char buf[100];
 HRESULT LastError;
 
-BOOL D3DAppIClearBuffers(void)
+BOOL FSClear(void)
 {
 	if (FAILED(d3dappi.lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 )))
 	{

@@ -1387,7 +1387,7 @@ ResizeViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-	D3DAppIClearBuffers();
+	FSClear();
 
   return TRUE;
 }
@@ -1444,8 +1444,7 @@ FullScreenViewport()
     }
 	SetFOV( hfov );
 	// clear viewport
-	D3DAppIClearBuffers();
-//	D3DAppIClearBuffers();
+	FSClear();
 	return TRUE;
 }
 
@@ -4175,7 +4174,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if( IsKeyPressed( DIK_SPACE ) ||
       ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
-		D3DAppIClearBuffers();
+		FSClear();
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
@@ -4400,7 +4399,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-		D3DAppIClearBuffers();
+		FSClear();
       ReleaseView();
       // tell them all to load up a level
       MyGameStatus = STATUS_StartingMultiplayerSynch;
@@ -4428,7 +4427,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
           }
 		  else
 		  {
-				D3DAppIClearBuffers();
+				FSClear();
 		  }
 
 
@@ -5242,7 +5241,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_StartingSinglePlayer:
 	DebugState("STATUS_StartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClear();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5319,7 +5318,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       {
         if( NewLevelNum != LevelNum )
         {
-			D3DAppIClearBuffers();
+			FSClear();
           ReleaseView();
           // the level has ended or changed...
           MyGameStatus = STATUS_ViewingStats;
@@ -5334,7 +5333,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-	D3DAppIClearBuffers();
+	FSClear();
 
     ReleaseLevel();
 
@@ -5352,7 +5351,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_TitleLoadGameStartingSinglePlayer:
 	DebugState("STATUS_TitleLoadGameStartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClear();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5369,7 +5368,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_InGameLoadGameStartingSinglePlayer:
 	DebugState("STATUS_InGameLoadGameStartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClear();
 
     NewLevelNum = InGameLoadGameLevelNum;
     MenuAbort();
@@ -7450,7 +7449,7 @@ InitViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-	D3DAppIClearBuffers();
+	FSClear();
 
   return TRUE;
 }

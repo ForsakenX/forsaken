@@ -117,7 +117,7 @@ HRESULT D3DAppIGetSurfDesc(LPDDSURFACEDESC lpDDSurfDesc,
 */
 BOOL D3DAppICreateBuffers(HWND hwnd, int w, int h, int bpp,BOOL bFullscreen);
 //BOOL D3DAppIRememberWindowsMode(void);
-BOOL D3DAppIClearBuffers(void);
+BOOL FSClear(void);
 DWORD D3DAppIBPPToDDBD(int bpp);
 void D3DAppIReleasePathList(void);
 void D3DAppISetClientSize(HWND hwnd, int w,int h,BOOL bReturnFromFullscreen);

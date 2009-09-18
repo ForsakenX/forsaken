@@ -264,7 +264,7 @@ BOOL D3DAppFullscreen(int mode)
      */
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     if (d3dappi.bFullscreen) {
-        ATTEMPT(D3DAppIClearBuffers());
+        ATTEMPT(FSClear());
     }
     RELEASE(d3dappi.lpD3DDevice);
     RELEASE(d3dappi.lpZBuffer);
@@ -387,7 +387,7 @@ D3DAppWindow(int w, int h, int bpp)
     d3dappi.bRenderingIsOK = FALSE;
     ATTEMPT(D3DAppICallDeviceDestroyCallback());
     if (b) {
-        ATTEMPT(D3DAppIClearBuffers());
+        ATTEMPT(FSClear());
     }
     RELEASE(d3dappi.lpD3DDevice);
     RELEASE(d3dappi.lpZBuffer);
@@ -1063,7 +1063,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 
 	// requested to clear the screen.
     if ( ! flags )
-		D3DAppIClearBuffers();
+		FSClear();
 		
 	// we are paused do not render
 	if ( d3dappi.bPaused )
@@ -1085,7 +1085,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-			D3DAppIClearBuffers();
+			FSClear();
 
 		} else if (LastError != DD_OK) {
 
@@ -1128,7 +1128,7 @@ BOOL D3DAppShowBackBuffer(DWORD flags)
 		case DDERR_SURFACELOST:
 			d3dappi.lpFrontBuffer->lpVtbl->Restore(d3dappi.lpFrontBuffer);
 			d3dappi.lpBackBuffer->lpVtbl->Restore(d3dappi.lpBackBuffer);
-			D3DAppIClearBuffers();
+			FSClear();
 			break;
 
 		case DDERR_WASSTILLDRAWING:
@@ -1216,7 +1216,7 @@ D3DAppCheckForLostSurfaces(void)
          * If any of the surfaces were lost and restored, clear all the buffers.
          * If this fails, that's fine, just move on.
          */
-        D3DAppIClearBuffers();
+        FSClear();
     }
     return TRUE;
 
