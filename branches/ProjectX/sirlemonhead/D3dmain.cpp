@@ -638,7 +638,8 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// setup globals used by application
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
-    myglobs.bClearsOn		= FALSE;
+	// bjd - set temporarly on till texture rendering works...
+    myglobs.bClearsOn		= TRUE; //FALSE;
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
@@ -1128,8 +1129,6 @@ static BOOL CreateD3DApp(void)
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
     defaults.bClearsOn = myglobs.bClearsOn;
-
-    myglobs.bClearsOn = defaults.bClearsOn;
     myglobs.bResizingDisabled = defaults.bResizingDisabled;
 
     /*
