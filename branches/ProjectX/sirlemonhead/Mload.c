@@ -658,22 +658,21 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				}
 				//lpPointer = (LPVOID) FacePnt;
 				Buffer = (char *) MFacePnt;
+
+				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
+				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
+
+				/* keep track of our offset into our index buffer */
+				Mloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startIndex = indexOffset;
+				indexOffset += num_triangles * 3;
+
+				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = NULL;
+				
+				Mloadheader->Group[group].renderObject[execbuf].numTextureGroups++;
 			}
-
-			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
-			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
-
-			/* keep track of our offset into our index buffer */
-			Mloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startIndex = indexOffset;
-			indexOffset += num_triangles * 3;
-
-			Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = NULL;
 
 			Mloadheader->Group[group].polyanim[execbuf] = NULL;
 			Mloadheader->Group[group].num_animating_polys[execbuf] = 0;
-			
-			Mloadheader->Group[group].renderObject[execbuf].numTextureGroups++;
-
 
 			// this go here?
 			/*	unlock the vertex buffer	*/
@@ -1456,6 +1455,8 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint32			VersionNumber;
 	int8			TempFilename[ 256 ];
 
+	DebugPrintf("Loading Level: %s\n",Filename);
+
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
 	Mloadheader->Buffer = NULL;
@@ -1531,6 +1532,8 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 			if( !_stricmp( "pkups.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "pkupsa.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "titana.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
+
+			DebugPrintf("Adding Texture: %s\n",&TempFilename[0]);
 
 			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , FALSE , TRUE, 0, 0 );		// do colourkey	dont scale do MipMap
 
