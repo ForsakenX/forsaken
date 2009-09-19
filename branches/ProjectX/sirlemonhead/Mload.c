@@ -666,7 +666,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				Mloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startIndex = indexOffset;
 				indexOffset += num_triangles * 3;
 
-				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = NULL;
+				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mloadheader->TloadIndex[tpage]];
 				
 				Mloadheader->Group[group].renderObject[execbuf].numTextureGroups++;
 			}
