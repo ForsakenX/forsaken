@@ -894,11 +894,13 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 //			XRELEASE(Mxaloadheader->Group[group].lpExBuf[i]);
 			FSReleaseRenderObject(&Mxaloadheader->Group[group].renderObject[i]);
 
+			/* This is not allocated...
 			if(Mxaloadheader->Group[group].org_vertpnt[i])
 			{
 				free(Mxaloadheader->Group[group].org_vertpnt[i]);
 				Mxaloadheader->Group[group].org_vertpnt[i] = NULL;
 			}
+			*/
 	
 			if (Mxaloadheader->Group[group].poly_ptr[i])
 			{
