@@ -257,7 +257,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			Mxaloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
 			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
-			//Mxaloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
+			Mxaloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
 
 			//vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
 
