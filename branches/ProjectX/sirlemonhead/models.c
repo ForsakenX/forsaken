@@ -804,6 +804,7 @@ BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 	{
 		if( NamePnt->Name[0] )
 		{
+			DebugPrintf("Loading %s\n",NamePnt->Name);
 			if( NamePnt->LoadEnable )
 			{
 				if( NamePnt->LevelSpecific )
