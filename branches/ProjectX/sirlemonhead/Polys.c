@@ -727,6 +727,14 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 	if( !TotalVerts ) return( FALSE );
 
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 1;
+	renderObject->textureGroups[0].numVerts = TotalVerts;
+	renderObject->textureGroups[0].numTriangles = 0;
+	renderObject->textureGroups[0].startIndex = 0;
+	renderObject->textureGroups[0].startVert = 0;
+	renderObject->textureGroups[0].texture = NULL;
+
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
@@ -1464,6 +1472,14 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 	if( !TotalVerts ) return( FALSE );
 
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 1;
+	renderObject->textureGroups[0].numVerts = TotalVerts;
+	renderObject->textureGroups[0].numTriangles = 0;
+	renderObject->textureGroups[0].startIndex = 0;
+	renderObject->textureGroups[0].startVert = 0;
+	renderObject->textureGroups[0].texture = NULL;
+
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
@@ -1794,6 +1810,14 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	}
 
 	if( !TotalVerts ) return( FALSE );
+
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 1;
+	renderObject->textureGroups[0].numVerts = TotalVerts;
+	renderObject->textureGroups[0].numTriangles = 0;
+	renderObject->textureGroups[0].startIndex = 0;
+	renderObject->textureGroups[0].startVert = 0;
+	renderObject->textureGroups[0].texture = NULL;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
