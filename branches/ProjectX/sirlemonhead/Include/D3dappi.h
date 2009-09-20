@@ -201,7 +201,7 @@ HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
 HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips);
 
-HRESULT FSDrawPretransformedVertexBuffer(RENDEROBJECT *renderObject);
+HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
 HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices);

@@ -2076,7 +2076,7 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
-		if (FAILED(FSDrawPretransformedVertexBuffer(renderObject)))
+		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
@@ -2108,7 +2108,7 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
-		if (FAILED(FSDrawPretransformedVertexBuffer(renderObject)))
+		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
@@ -2198,6 +2198,14 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	}
 
 	if( !TotalVerts ) return( FALSE );
+
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 1;
+	renderObject->textureGroups[0].numVerts = TotalVerts;
+	renderObject->textureGroups[0].numTriangles = 0;
+	renderObject->textureGroups[0].startIndex = 0;
+	renderObject->textureGroups[0].startVert = 0;
+	renderObject->textureGroups[0].texture = NULL;
 
 //	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 //	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -2747,6 +2755,14 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	}
 
 	if( !TotalVerts ) return( FALSE );
+
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 1;
+	renderObject->textureGroups[0].numVerts = TotalVerts;
+	renderObject->textureGroups[0].numTriangles = 0;
+	renderObject->textureGroups[0].startIndex = 0;
+	renderObject->textureGroups[0].startVert = 0;
+	renderObject->textureGroups[0].texture = NULL;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );

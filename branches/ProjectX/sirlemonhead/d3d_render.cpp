@@ -1093,7 +1093,7 @@ HRESULT draw_object(RENDEROBJECT *renderObject)
 			return draw_indexed_buffer(renderObject);
 }
 
-HRESULT FSDrawPretransformedVertexBuffer(RENDEROBJECT *renderObject)
+HRESULT draw_2d_indexed_buffer(RENDEROBJECT *renderObject)
 {
 	HRESULT LastError;
 
@@ -1149,6 +1149,42 @@ HRESULT FSDrawPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 	}
 
 	return LastError;
+}
+
+HRESULT draw_2d_vertex_buffer(RENDEROBJECT *renderObject)
+{
+	HRESULT LastError;
+
+	assert(renderObject->vbLocked == 0);
+
+	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[0].texture);
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, renderObject->textureGroups[0].numVerts);
+
+	if (FAILED(LastError))
+		return LastError;
+}
+
+HRESULT draw_2d_object(RENDEROBJECT *renderObject)
+{
+		if(!renderObject->lpD3DIndexBuffer)
+			return draw_2d_vertex_buffer(renderObject);
+		else
+			return draw_2d_indexed_buffer(renderObject);
 }
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
