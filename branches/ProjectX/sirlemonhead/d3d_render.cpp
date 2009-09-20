@@ -1018,13 +1018,23 @@ HRESULT draw_vertex_buffer(RENDEROBJECT *renderObject)
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[0].texture);
-	if (FAILED(LastError))
-		return LastError;
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		if (FAILED(LastError))
+			return LastError;
 
-	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, renderObject->textureGroups[0].numVerts);
+		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
+			D3DPT_TRIANGLELIST,
+			renderObject->textureGroups[i].startVert,
+			renderObject->textureGroups[i].numVerts
+		);
+		
+		if(FAILED(LastError))
+			return LastError;
+	}
 
-	return LastError;
+	return S_OK;
 }
 
 HRESULT draw_indexed_buffer(RENDEROBJECT *renderObject)
@@ -1169,14 +1179,23 @@ HRESULT draw_2d_vertex_buffer(RENDEROBJECT *renderObject)
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[0].texture);
-	if (FAILED(LastError))
-		return LastError;
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		if (FAILED(LastError))
+			return LastError;
 
-	LastError = d3dappi.lpD3DDevice->DrawPrimitive(D3DPT_TRIANGLELIST, 0, renderObject->textureGroups[0].numVerts);
+		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
+			D3DPT_TRIANGLELIST,
+			renderObject->textureGroups[i].startVert,
+			renderObject->textureGroups[i].numVerts
+		);
 
-	if (FAILED(LastError))
-		return LastError;
+		if (FAILED(LastError))
+			return LastError;
+	}
+
+	return S_OK;
 }
 
 HRESULT draw_2d_object(RENDEROBJECT *renderObject)
