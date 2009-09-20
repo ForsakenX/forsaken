@@ -10,7 +10,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
 #include "lines.h"
 #include "camera.h"
 
@@ -115,12 +114,10 @@ void KillUsedLine( uint16 i )
 ===================================================================*/
 BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
 {
-	return TRUE;
-#if 0 // bjd - CHECK
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	Vert_Ptr;
-	LPD3DLINE		Line_Ptr;
+	LPD3DXLINE		Line_Ptr;
     LPVOID			lpBufStart, lpInsStart, lpPointer;
 	D3DCOLOR		color;
 	D3DCOLOR		specular;
@@ -136,7 +133,10 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 
 	if(d3dapp->CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
 	else specular = RGB_MAKE( 128, 128, 128 );
-		
+	
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 0;
+
 	if( *StartLine != (uint16) -1 )
 	{
 /*
@@ -146,7 +146,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 //		if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK) return FALSE; // bjd
 //		if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK)
 //			return FALSE;
-		if (FAILED(FSLockVertexBuffer(renderObject, Vert_Ptr)))
+		if (FAILED(FSLockVertexBuffer(renderObject, &Vert_Ptr)))
 		{
 			return FALSE;
 		}
@@ -280,8 +280,17 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 		ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 		if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return FALSE;
-*/		renderObject->numVerts = ( Num_Lines * 2 );
-		renderObject->texture = 0;
+*/
+//		renderObject->numVerts = ( Num_Lines * 2 );
+//		renderObject->texture = 0;
+		
+		renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 2;
+		renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+		renderObject->textureGroups[renderObject->numTextureGroups].startVert = 0;
+		renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+		renderObject->numTextureGroups = 1;
+
 	}
 	else
 	{
@@ -289,5 +298,4 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 	}
 
 	return TRUE;
-#endif
 }

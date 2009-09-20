@@ -20,6 +20,7 @@
 #include "lights.h"
 #include "2dtextures.h"
 #include "tload.h"
+#include "d3dx9core.h"
 
 /*===================================================================
 	Defines
