@@ -646,7 +646,10 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
-		if (FAILED(draw_object(renderObject)))
+		if(renderObject->lpD3DIndexBuffer)
+		{
+			return draw_vertex_buffer(renderObject);
+		}else if (FAILED(draw_object(renderObject)))
 		{
 			return FALSE;
 		}
@@ -728,12 +731,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	if( !TotalVerts ) return( FALSE );
 
 	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
+	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -778,6 +776,13 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - TODO
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1066,16 +1071,11 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
-
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 0;
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
@@ -1116,6 +1116,13 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - TODO
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1138,6 +1145,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 					{
 						if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 						{
+
 		   					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
@@ -1170,7 +1178,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   							
+
 							switch( MakeColourMode )
 							{
 								case MCM_Normal:
@@ -1315,7 +1323,8 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
-	}
+	}	
+
 /*
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
 	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
@@ -1324,8 +1333,6 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-//FIXME	renderObject->numVerts = TotalVerts;
-//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;
@@ -1473,12 +1480,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	if( !TotalVerts ) return( FALSE );
 
 	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
+	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -1522,6 +1524,13 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - TODO?
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1812,12 +1821,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	if( !TotalVerts ) return( FALSE );
 
 	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
+	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -1861,6 +1865,13 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - TODO?
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );

@@ -1711,6 +1711,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 0;
+
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
@@ -1748,6 +1751,13 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -2110,6 +2120,9 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
+	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->numTextureGroups = 0;
+
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
@@ -2146,6 +2159,13 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+			renderObject->numTextureGroups++;
+
 /* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
