@@ -2200,12 +2200,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	if( !TotalVerts ) return( FALSE );
 
 	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
+	renderObject->numTextureGroups = 0;
 
 //	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 //	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -2264,6 +2259,13 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+			renderObject->numTextureGroups++;
+
 			if( !Textured )
 			{
 /* bjd - TODO
@@ -2277,7 +2279,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 */
 			}
 			else
-			{
+			{	
+				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 /* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
@@ -2757,12 +2760,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	if( !TotalVerts ) return( FALSE );
 
 	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 1;
-	renderObject->textureGroups[0].numVerts = TotalVerts;
-	renderObject->textureGroups[0].numTriangles = 0;
-	renderObject->textureGroups[0].startIndex = 0;
-	renderObject->textureGroups[0].startVert = 0;
-	renderObject->textureGroups[0].texture = NULL;
+	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
@@ -2823,6 +2821,13 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 		if( NumVerts )
 		{
+			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+			renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+			renderObject->numTextureGroups++;
+
 			if( !Textured )
 			{
 /* bjd - CHECK
@@ -2837,6 +2842,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			}
 			else
 			{
+				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 /* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
