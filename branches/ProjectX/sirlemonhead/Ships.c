@@ -3397,7 +3397,7 @@ void MultiSfxHandle( void )
 
 	}
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime );
-	TempTime = TempTime * 1000 / Freq;
+	TempTime = TempTime * 1000 / (Freq||1);
 
 	KillIndex = (CurrentKillPos - KILLSOVERTIME) & ( MAXKILLMEMORY -1 );
 	if( (KillMemory[KillIndex] != -1)  && NewKill )
