@@ -1239,7 +1239,7 @@ BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 						return FALSE;
 */
-					if (FAILED(FSDrawVertexBuffer(&Mloadheader->Group[group].renderObject[i])))
+					if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
 					}
@@ -1280,7 +1280,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 			}
 			else
 			{
-				if (FAILED(FSDrawVertexBuffer(&Mloadheader->Group[group].renderObject[i])))
+				if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;
 				}

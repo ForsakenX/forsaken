@@ -710,7 +710,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 //	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //			return;
 
-	if (FAILED(FSDrawVertexBuffer(&Wo->renderObject)))
+	if (FAILED(draw_object(&Wo->renderObject)))
 	{
 		return;
 	}

@@ -832,7 +832,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 /*
 					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 						return FALSE;
-*/					if (FAILED(FSDrawVertexBuffer(&Mxaloadheader->Group[group].renderObject[i])))
+*/					if (FAILED(draw_object(&Mxaloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
 					}

@@ -1004,7 +1004,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Display )
 					{
-						if (FAILED(FSDrawVertexBuffer(&Mxloadheader->Group[group].renderObject[i])))
+						if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
 						{
 							return FALSE;
 						}
@@ -1280,7 +1280,7 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 			{
 //				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //					return FALSE;
-				if (FAILED(FSDrawVertexBuffer(&Mxloadheader->Group[group].renderObject[i])))
+				if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;
 				}

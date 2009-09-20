@@ -6656,14 +6656,14 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   // reset all the normal execute status flags...
 //  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 //	FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//	FSDrawVertexBuffer(lpD3DNormCmdBuf);
+//	draw_object(lpD3DNormCmdBuf);
 
   // set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
 		//lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//		FSDrawVertexBuffer(lpD3DSpcFxTransCmdBuf);
+//		draw_object(lpD3DSpcFxTransCmdBuf);
 	}
 
 
@@ -6676,7 +6676,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 	{
  //       lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//		FSDrawVertexBuffer(lpD3DNormCmdBuf);
+//		draw_object(lpD3DNormCmdBuf);
 	}
 #endif
 /*===================================================================
@@ -6715,7 +6715,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 //          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSDrawVertexBuffer(&RenderBufs[0])))
+			if (FAILED(draw_object(&RenderBufs[0])))
 			{
 				return FALSE;
 			}
@@ -6767,7 +6767,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 		{
 		//          if (lpDev->lpVtbl->Execute(lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
 //			if (FSExecuteBuffer(&Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-			if (FAILED(FSDrawVertexBuffer(&Skin_Execs[ Count ])))
+			if (FAILED(draw_object(&Skin_Execs[ Count ])))
 			{
 				return FALSE;
 			}
@@ -6872,7 +6872,7 @@ Display Group Clipped Faceme Transluecent Polys
 		//          if (lpDev->lpVtbl->Execute(lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
 //			if (FSExecuteBuffer(Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSDrawVertexBuffer(&Portal_Execs[ Count ])))
+			if (FAILED(draw_object(&Portal_Execs[ Count ])))
 			{
 				return FALSE;
 			}

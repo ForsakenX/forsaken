@@ -129,7 +129,7 @@ void ExecuteTransExe( uint16 group )
 
 			if( Display )
 					//d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
-					FSDrawVertexBuffer(&TransExe[i].renderObject);
+					draw_object(&TransExe[i].renderObject);
 		}
 	}
 //	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
@@ -210,7 +210,7 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 			if( Display )
 //					d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
-					FSDrawVertexBuffer(&TransExe[i].renderObject);
+					draw_object(&TransExe[i].renderObject);
 		}
 	}
 //	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);

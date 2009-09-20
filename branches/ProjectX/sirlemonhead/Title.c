@@ -5162,7 +5162,7 @@ BOOL DisplayTitle(void)
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 //		FSExecuteBuffer(lpD3DNormCmdBuf, /*lpView*/d3dapp->lpD3DViewport , D3DEXECUTE_CLIPPED);
 
-//		if (FAILED(FSDrawVertexBuffer(
+//		if (FAILED(draw_object(
 
 		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 		{
@@ -5247,7 +5247,7 @@ BOOL DisplayTitle(void)
 				{
 //					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-					if (FAILED(FSDrawVertexBuffer(&RenderBufs[ 0 ])))
+					if (FAILED(draw_object(&RenderBufs[ 0 ])))
 					{
 						return FALSE;
 					}
@@ -5281,7 +5281,7 @@ BOOL DisplayTitle(void)
 //					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //						return FALSE;
-					if (FAILED(FSDrawVertexBuffer(&RenderBufs[ 0 ])))
+					if (FAILED(draw_object(&RenderBufs[ 0 ])))
 					{
 						return FALSE;
 					}
