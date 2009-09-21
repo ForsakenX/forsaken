@@ -646,10 +646,7 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
-		if(renderObject->lpD3DIndexBuffer)
-		{
-			return draw_vertex_buffer(renderObject);
-		}else if (FAILED(draw_object(renderObject)))
+		if (FAILED(draw_object(renderObject)))
 		{
 			return FALSE;
 		}
