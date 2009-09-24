@@ -1232,7 +1232,6 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		renderObject->lpD3DVertexBuffer->Release();
 		renderObject->lpD3DVertexBuffer = NULL;
 	}
-	
 	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{
 		renderObject->textureGroups[i].numVerts = 0;
@@ -1240,8 +1239,8 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 		if (renderObject->textureGroups[i].texture)
 		{
-//	FIXME		renderObject->textureGroups[i].texture->Release();
-//			renderObject->textureGroups[i].texture = NULL;
+			renderObject->textureGroups[i].texture->Release();
+			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
 }
