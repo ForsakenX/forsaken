@@ -6541,8 +6541,10 @@ BOOL ClearZBuffer()
 void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 {
 	ReleaseRenderBufs();
+	// just vertex data
 	FSCreateDynamicVertexBuffer(&RenderBufs[0], 32767);
-	FSCreatePretransformedVertexBuffer(&RenderBufs[1], 32767);
+	FSCreateDynamicVertexBuffer(&RenderBufs[1], 32767);
+	// index data as well
 	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
 	FSCreateIndexBuffer(&RenderBufs[2], 32767*3);
 }
