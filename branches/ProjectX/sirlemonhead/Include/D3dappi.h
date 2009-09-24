@@ -186,6 +186,7 @@ HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
+HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);

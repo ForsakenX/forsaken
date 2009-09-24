@@ -865,6 +865,25 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	return LastError;
 }
 
+HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{
+//	assert (numVertices < 10000);
+
+	memset(renderObject, 0, sizeof(RENDEROBJECT));
+
+
+	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_DIFFUSE|D3DFMT_A8R8G8B8|D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't create vertex buffer\n");
+	}
+
+	OutputDebugString("created vertex buffer\n");
+
+	return LastError;
+}
+
+
 HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
