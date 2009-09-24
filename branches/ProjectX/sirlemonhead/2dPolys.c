@@ -1751,13 +1751,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-			renderObject->numTextureGroups++;
-
 /* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1921,47 +1914,185 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							NewPos.x += ( Xoff.x + Yoff.x );
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
-			
-							FmPolyVertPnt->x = NewPos.x;						// v1
-							FmPolyVertPnt->y = NewPos.y;
-							FmPolyVertPnt->z = NewPos.z;
-							FmPolyVertPnt->tu = Box_Ptr->u1;
-							FmPolyVertPnt->tv = Box_Ptr->v1;
-							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
-//							FmPolyVertPnt->dwReserved = 0;
-							FmPolyVertPnt++;
+
+{
+	D3DLVERTEX verts[4];
+	int blah = 0;
+	int nverts = 0;
+
+							verts[blah].x = NewPos.x;						// v1
+							verts[blah].y = NewPos.y;
+							verts[blah].z = NewPos.z;
+							verts[blah].tu = Box_Ptr->u1;
+							verts[blah].tv = Box_Ptr->v1;
+							verts[blah].color = Colour;
+							verts[blah].specular = Specular;
+//							verts[blah].dwReserved = 0;
+							blah++;
 								
-							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
-							FmPolyVertPnt->y = ( NewPos.y + Xsize.y );
-							FmPolyVertPnt->z = ( NewPos.z + Xsize.z );
-							FmPolyVertPnt->tu = Box_Ptr->u2;
-							FmPolyVertPnt->tv = Box_Ptr->v1;
-							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
-//							FmPolyVertPnt->dwReserved = 0;
-							FmPolyVertPnt++;
+							verts[blah].x = ( NewPos.x + Xsize.x );			// v2
+							verts[blah].y = ( NewPos.y + Xsize.y );
+							verts[blah].z = ( NewPos.z + Xsize.z );
+							verts[blah].tu = Box_Ptr->u2;
+							verts[blah].tv = Box_Ptr->v1;
+							verts[blah].color = Colour;
+							verts[blah].specular = Specular;
+//							verts[blah].dwReserved = 0;
+							blah++;
 								
-							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
-							FmPolyVertPnt->y = ( NewPos.y + Xsize.y - Ysize.y );
-							FmPolyVertPnt->z = ( NewPos.z + Xsize.z - Ysize.z );
-							FmPolyVertPnt->tu = Box_Ptr->u2;
-							FmPolyVertPnt->tv = Box_Ptr->v2;
-							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
-//							FmPolyVertPnt->dwReserved = 0;
-							FmPolyVertPnt++;
+							verts[blah].x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
+							verts[blah].y = ( NewPos.y + Xsize.y - Ysize.y );
+							verts[blah].z = ( NewPos.z + Xsize.z - Ysize.z );
+							verts[blah].tu = Box_Ptr->u2;
+							verts[blah].tv = Box_Ptr->v2;
+							verts[blah].color = Colour;
+							verts[blah].specular = Specular;
+//							verts[blah].dwReserved = 0;
+							blah++;
 							
-							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
-							FmPolyVertPnt->y = ( NewPos.y - Ysize.y );
-							FmPolyVertPnt->z = ( NewPos.z - Ysize.z );
-							FmPolyVertPnt->tu = Box_Ptr->u1;
-							FmPolyVertPnt->tv = Box_Ptr->v2;
-							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
-//							FmPolyVertPnt->dwReserved = 0;
+							verts[blah].x = ( NewPos.x - Ysize.x );			// v4
+							verts[blah].y = ( NewPos.y - Ysize.y );
+							verts[blah].z = ( NewPos.z - Ysize.z );
+							verts[blah].tu = Box_Ptr->u1;
+							verts[blah].tv = Box_Ptr->v2;
+							verts[blah].color = Colour;
+							verts[blah].specular = Specular;
+//							verts[blah].dwReserved = 0;
+							blah++;
+
+		// convert faces to vertexes
+
+			// tri 1
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
 							FmPolyVertPnt++;
-	  
+							nverts++;
+
+							FmPolyVertPnt->x = verts[1].x;
+							FmPolyVertPnt->y = verts[1].y;
+							FmPolyVertPnt->z = verts[1].z;
+							FmPolyVertPnt->tu = verts[1].tu;
+							FmPolyVertPnt->tv = verts[1].tv;
+							FmPolyVertPnt->color = verts[1].color;
+							FmPolyVertPnt->specular = verts[1].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+			// tri 2
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[3].x;
+							FmPolyVertPnt->y = verts[3].y;
+							FmPolyVertPnt->z = verts[3].z;
+							FmPolyVertPnt->tu = verts[3].tu;
+							FmPolyVertPnt->tv = verts[3].tv;
+							FmPolyVertPnt->color = verts[3].color;
+							FmPolyVertPnt->specular = verts[3].specular;
+							FmPolyVertPnt++;
+							nverts++;
+										
+							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
+							{
+
+			// tri 3
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[3].x;
+								FmPolyVertPnt->y = verts[3].y;
+								FmPolyVertPnt->z = verts[3].z;
+								FmPolyVertPnt->tu = verts[3].tu;
+								FmPolyVertPnt->tv = verts[3].tv;
+								FmPolyVertPnt->color = verts[3].color;
+								FmPolyVertPnt->specular = verts[3].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+			// tri 4
+
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[1].x;
+								FmPolyVertPnt->y = verts[1].y;
+								FmPolyVertPnt->z = verts[1].z;
+								FmPolyVertPnt->tu = verts[1].tu;
+								FmPolyVertPnt->tv = verts[1].tv;
+								FmPolyVertPnt->color = verts[1].color;
+								FmPolyVertPnt->specular = verts[1].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+							}
+
+
+				/*
 				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
 				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
@@ -1986,9 +2117,19 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 //					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
 							}
-			
-							StartVert += 4;
+			*/
+							
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = nverts;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+
+							StartVert += nverts;
 							Off_Ptr++;
+}
 						}
 					}
 				}
