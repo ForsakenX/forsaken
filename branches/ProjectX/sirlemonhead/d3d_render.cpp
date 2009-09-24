@@ -872,7 +872,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	memset(renderObject, 0, sizeof(RENDEROBJECT));
 
 
-	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_DIFFUSE|D3DFMT_A8R8G8B8|D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -1237,11 +1237,11 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		renderObject->textureGroups[i].numVerts = 0;
 		renderObject->textureGroups[i].startVert = 0;
 
-		if (renderObject->textureGroups[i].texture)
-		{
-			renderObject->textureGroups[i].texture->Release();
-			renderObject->textureGroups[i].texture = NULL;
-		}
+		//if (renderObject->textureGroups[i].texture)
+		//{
+			//renderObject->textureGroups[i].texture->Release();
+			//renderObject->textureGroups[i].texture = NULL;
+		//}
 	}
 }
 

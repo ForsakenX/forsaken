@@ -6544,7 +6544,7 @@ void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 	FSCreateDynamicVertexBuffer(&RenderBufs[0], 32767);
 	FSCreatePretransformedVertexBuffer(&RenderBufs[1], 32767);
 	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
-	FSCreateIndexBuffer(&RenderBufs[2], 32767*3)
+	FSCreateIndexBuffer(&RenderBufs[2], 32767*3);
 }
 
 void ReleaseRenderBufs( void )
