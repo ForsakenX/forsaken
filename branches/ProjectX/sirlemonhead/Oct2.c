@@ -668,7 +668,7 @@ BOOL DoClipping = TRUE;
 BOOL OnceOnlyChangeLevel = FALSE;
 
 //bjdLPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
-RENDEROBJECT RenderBufs[2];
+RENDEROBJECT RenderBufs[3];
 
 void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
@@ -6541,14 +6541,17 @@ BOOL ClearZBuffer()
 void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 {
 	ReleaseRenderBufs();
-	FSCreatePretransformedVertexBuffer(&RenderBufs[1], 32767);
 	FSCreateDynamicVertexBuffer(&RenderBufs[0], 32767);
+	FSCreatePretransformedVertexBuffer(&RenderBufs[1], 32767);
+	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
+	FSCreateIndexBuffer(&RenderBufs[2], 32767*3)
 }
 
 void ReleaseRenderBufs( void )
 {
 	FSReleaseRenderObject(&RenderBufs[0]);
 	FSReleaseRenderObject(&RenderBufs[1]);
+	FSReleaseRenderObject(&RenderBufs[2]);
 }
 
 
