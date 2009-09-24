@@ -526,23 +526,7 @@
 				>
 			</File>
 			<File
-				RelativePath="D3dcalls.c"
-				>
-			</File>
-			<File
 				RelativePath="D3dmain.cpp"
-				>
-			</File>
-			<File
-				RelativePath="Ddcalls.c"
-				>
-			</File>
-			<File
-				RelativePath="DDsurfhand.c"
-				>
-			</File>
-			<File
-				RelativePath="Ddutil.cpp"
 				>
 			</File>
 			<File
@@ -848,14 +832,6 @@
 			</File>
 			<File
 				RelativePath="Include\D3dmain.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\DDSurfhand.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Ddutil.h"
 				>
 			</File>
 			<File
