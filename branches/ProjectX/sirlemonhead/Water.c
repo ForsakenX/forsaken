@@ -366,7 +366,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	int x,y;
 //	D3DEXECUTEDATA			d3dExData;
 //	D3DEXECUTEBUFFERDESC	debDesc;
-	LPD3DTRIANGLE	FacePnt = NULL;
+	//LPD3DTRIANGLE	FacePnt = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	int			i;
 //    LPVOID lpBufStart, lpInsStart, lpPointer;
@@ -403,8 +403,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	{
 		return FALSE;
 	}
-
-	WO->renderObject.numTextureGroups = 1;
 
 /*
 	lpBufStart = debDesc.lpData;
@@ -459,6 +457,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 
 	/*	copy the faces data into the execute buffer	*/
 
+	/*
 	for( x = 0 ; x < WO->XVerts-1 ; x++ )
 	{
 		for( y = 0 ; y < WO->YVerts-1 ; y++ )
@@ -476,6 +475,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			FacePnt++;
 		}
 	}
+	*/
 /*
 	lpPointer = (LPVOID) FacePnt;
 	if( CanCullFlag )
@@ -498,9 +498,11 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	}
 
 	/*	set the data for the execute buffer	*/
+	WO->renderObject.numTextureGroups = 1;
 	WO->renderObject.textureGroups[0].startVert = 0;
 	WO->renderObject.textureGroups[0].numVerts = WO->num_of_verts;
 	WO->renderObject.textureGroups[0].texture = NULL;
+	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
 
 /*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
