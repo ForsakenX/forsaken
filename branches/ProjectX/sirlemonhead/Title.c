@@ -224,8 +224,7 @@ extern	FRAME_INFO	*	Title_Chars2_Header;
 extern	OFF_FILES Title_OffsetFiles[];
 extern	CAMERA	CurrentCamera;
 void Build_View();
-//extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
-extern	RENDEROBJECT RenderBufs[2];
+extern	RENDEROBJECT RenderBufs[3];
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
@@ -5208,7 +5207,7 @@ BOOL DisplayTitle(void)
 /*===================================================================
 	Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
-			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 1 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 
 			ExecuteTransExe( 0 );

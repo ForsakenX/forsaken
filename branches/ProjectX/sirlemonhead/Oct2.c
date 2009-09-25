@@ -6800,7 +6800,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 /*===================================================================
 Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
-  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
   ExecuteTransExe( group );

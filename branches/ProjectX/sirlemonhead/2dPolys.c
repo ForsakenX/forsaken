@@ -1662,9 +1662,11 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -1711,7 +1713,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-	renderObject->lpD3DIndexBuffer = NULL;
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -1726,11 +1727,18 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	{
 		return FALSE;
 	}
-		
+	
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	FmPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
@@ -1760,7 +1768,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
@@ -1834,6 +1842,8 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 						{
+							int ntris = 0;
+
 							Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 			
 							Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
@@ -1915,194 +1925,59 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
 
-{
-	D3DLVERTEX verts[4];
-	int blah = 0;
-	int nverts = 0;
-
-							verts[blah].x = NewPos.x;						// v1
-							verts[blah].y = NewPos.y;
-							verts[blah].z = NewPos.z;
-							verts[blah].tu = Box_Ptr->u1;
-							verts[blah].tv = Box_Ptr->v1;
-							verts[blah].color = Colour;
-							verts[blah].specular = Specular;
-//							verts[blah].dwReserved = 0;
-							blah++;
-								
-							verts[blah].x = ( NewPos.x + Xsize.x );			// v2
-							verts[blah].y = ( NewPos.y + Xsize.y );
-							verts[blah].z = ( NewPos.z + Xsize.z );
-							verts[blah].tu = Box_Ptr->u2;
-							verts[blah].tv = Box_Ptr->v1;
-							verts[blah].color = Colour;
-							verts[blah].specular = Specular;
-//							verts[blah].dwReserved = 0;
-							blah++;
-								
-							verts[blah].x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
-							verts[blah].y = ( NewPos.y + Xsize.y - Ysize.y );
-							verts[blah].z = ( NewPos.z + Xsize.z - Ysize.z );
-							verts[blah].tu = Box_Ptr->u2;
-							verts[blah].tv = Box_Ptr->v2;
-							verts[blah].color = Colour;
-							verts[blah].specular = Specular;
-//							verts[blah].dwReserved = 0;
-							blah++;
-							
-							verts[blah].x = ( NewPos.x - Ysize.x );			// v4
-							verts[blah].y = ( NewPos.y - Ysize.y );
-							verts[blah].z = ( NewPos.z - Ysize.z );
-							verts[blah].tu = Box_Ptr->u1;
-							verts[blah].tv = Box_Ptr->v2;
-							verts[blah].color = Colour;
-							verts[blah].specular = Specular;
-//							verts[blah].dwReserved = 0;
-							blah++;
-
-		// convert faces to vertexes
-
-			// tri 1
-							FmPolyVertPnt->x = verts[0].x;
-							FmPolyVertPnt->y = verts[0].y;
-							FmPolyVertPnt->z = verts[0].z;
-							FmPolyVertPnt->tu = verts[0].tu;
-							FmPolyVertPnt->tv = verts[0].tv;
-							FmPolyVertPnt->color = verts[0].color;
-							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt->x = NewPos.x;						// v1
+							FmPolyVertPnt->y = NewPos.y;
+							FmPolyVertPnt->z = NewPos.z;
+							FmPolyVertPnt->tu = Box_Ptr->u1;
+							FmPolyVertPnt->tv = Box_Ptr->v1;
+							FmPolyVertPnt->color = Colour;
+							FmPolyVertPnt->specular = Specular;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-							nverts++;
 
-							FmPolyVertPnt->x = verts[1].x;
-							FmPolyVertPnt->y = verts[1].y;
-							FmPolyVertPnt->z = verts[1].z;
-							FmPolyVertPnt->tu = verts[1].tu;
-							FmPolyVertPnt->tv = verts[1].tv;
-							FmPolyVertPnt->color = verts[1].color;
-							FmPolyVertPnt->specular = verts[1].specular;
+							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
+							FmPolyVertPnt->y = ( NewPos.y + Xsize.y );
+							FmPolyVertPnt->z = ( NewPos.z + Xsize.z );
+							FmPolyVertPnt->tu = Box_Ptr->u2;
+							FmPolyVertPnt->tv = Box_Ptr->v1;
+							FmPolyVertPnt->color = Colour;
+							FmPolyVertPnt->specular = Specular;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-							nverts++;
-
-							FmPolyVertPnt->x = verts[2].x;
-							FmPolyVertPnt->y = verts[2].y;
-							FmPolyVertPnt->z = verts[2].z;
-							FmPolyVertPnt->tu = verts[2].tu;
-							FmPolyVertPnt->tv = verts[2].tv;
-							FmPolyVertPnt->color = verts[2].color;
-							FmPolyVertPnt->specular = verts[2].specular;
+ 								
+							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
+							FmPolyVertPnt->y = ( NewPos.y + Xsize.y - Ysize.y );
+							FmPolyVertPnt->z = ( NewPos.z + Xsize.z - Ysize.z );
+							FmPolyVertPnt->tu = Box_Ptr->u2;
+							FmPolyVertPnt->tv = Box_Ptr->v2;
+							FmPolyVertPnt->color = Colour;
+							FmPolyVertPnt->specular = Specular;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-							nverts++;
+ 							
+							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
+							FmPolyVertPnt->y = ( NewPos.y - Ysize.y );
+							FmPolyVertPnt->z = ( NewPos.z - Ysize.z );
+							FmPolyVertPnt->tu = Box_Ptr->u1;
+							FmPolyVertPnt->tv = Box_Ptr->v2;
+							FmPolyVertPnt->color = Colour;
+							FmPolyVertPnt->specular = Specular;
+//							FmPolyVertPnt->dwReserved = 0;
 
-			// tri 2
-							FmPolyVertPnt->x = verts[0].x;
-							FmPolyVertPnt->y = verts[0].y;
-							FmPolyVertPnt->z = verts[0].z;
-							FmPolyVertPnt->tu = verts[0].tu;
-							FmPolyVertPnt->tv = verts[0].tv;
-							FmPolyVertPnt->color = verts[0].color;
-							FmPolyVertPnt->specular = verts[0].specular;
-							FmPolyVertPnt++;
-							nverts++;
-
-							FmPolyVertPnt->x = verts[2].x;
-							FmPolyVertPnt->y = verts[2].y;
-							FmPolyVertPnt->z = verts[2].z;
-							FmPolyVertPnt->tu = verts[2].tu;
-							FmPolyVertPnt->tv = verts[2].tv;
-							FmPolyVertPnt->color = verts[2].color;
-							FmPolyVertPnt->specular = verts[2].specular;
-							FmPolyVertPnt++;
-							nverts++;
-
-							FmPolyVertPnt->x = verts[3].x;
-							FmPolyVertPnt->y = verts[3].y;
-							FmPolyVertPnt->z = verts[3].z;
-							FmPolyVertPnt->tu = verts[3].tu;
-							FmPolyVertPnt->tv = verts[3].tv;
-							FmPolyVertPnt->color = verts[3].color;
-							FmPolyVertPnt->specular = verts[3].specular;
-							FmPolyVertPnt++;
-							nverts++;
-										
-							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
-							{
-
-			// tri 3
-								FmPolyVertPnt->x = verts[0].x;
-								FmPolyVertPnt->y = verts[0].y;
-								FmPolyVertPnt->z = verts[0].z;
-								FmPolyVertPnt->tu = verts[0].tu;
-								FmPolyVertPnt->tv = verts[0].tv;
-								FmPolyVertPnt->color = verts[0].color;
-								FmPolyVertPnt->specular = verts[0].specular;
-								FmPolyVertPnt++;
-								nverts++;
-
-								FmPolyVertPnt->x = verts[3].x;
-								FmPolyVertPnt->y = verts[3].y;
-								FmPolyVertPnt->z = verts[3].z;
-								FmPolyVertPnt->tu = verts[3].tu;
-								FmPolyVertPnt->tv = verts[3].tv;
-								FmPolyVertPnt->color = verts[3].color;
-								FmPolyVertPnt->specular = verts[3].specular;
-								FmPolyVertPnt++;
-								nverts++;
-
-								FmPolyVertPnt->x = verts[2].x;
-								FmPolyVertPnt->y = verts[2].y;
-								FmPolyVertPnt->z = verts[2].z;
-								FmPolyVertPnt->tu = verts[2].tu;
-								FmPolyVertPnt->tv = verts[2].tv;
-								FmPolyVertPnt->color = verts[2].color;
-								FmPolyVertPnt->specular = verts[2].specular;
-								FmPolyVertPnt++;
-								nverts++;
-			// tri 4
-
-								FmPolyVertPnt->x = verts[0].x;
-								FmPolyVertPnt->y = verts[0].y;
-								FmPolyVertPnt->z = verts[0].z;
-								FmPolyVertPnt->tu = verts[0].tu;
-								FmPolyVertPnt->tv = verts[0].tv;
-								FmPolyVertPnt->color = verts[0].color;
-								FmPolyVertPnt->specular = verts[0].specular;
-								FmPolyVertPnt++;
-								nverts++;
-
-								FmPolyVertPnt->x = verts[2].x;
-								FmPolyVertPnt->y = verts[2].y;
-								FmPolyVertPnt->z = verts[2].z;
-								FmPolyVertPnt->tu = verts[2].tu;
-								FmPolyVertPnt->tv = verts[2].tv;
-								FmPolyVertPnt->color = verts[2].color;
-								FmPolyVertPnt->specular = verts[2].specular;
-								FmPolyVertPnt++;
-								nverts++;
-
-								FmPolyVertPnt->x = verts[1].x;
-								FmPolyVertPnt->y = verts[1].y;
-								FmPolyVertPnt->z = verts[1].z;
-								FmPolyVertPnt->tu = verts[1].tu;
-								FmPolyVertPnt->tv = verts[1].tv;
-								FmPolyVertPnt->color = verts[1].color;
-								FmPolyVertPnt->specular = verts[1].specular;
-								FmPolyVertPnt++;
-								nverts++;
-
-							}
-
-
-				/*
 				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
 				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			FmPolyFacePnt++;
+							ntris++;
+
 				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 				   			FmPolyFacePnt->v2 = ( StartVert + 2 );
 				   			FmPolyFacePnt->v3 = ( StartVert + 3 );
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			FmPolyFacePnt++;
+							ntris++;
+
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
@@ -2111,25 +1986,26 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
 //					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			FmPolyFacePnt++;
+								ntris++;
+
 					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
 					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
 					   			FmPolyFacePnt->v3 = ( StartVert + 1 );
 //					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
+								ntris++;
 							}
-			*/
 							
-							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = nverts;
-							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 							renderObject->numTextureGroups++;
 
-
-							StartVert += nverts;
+							start_index += ntris;
+							StartVert += 4;
 							Off_Ptr++;
-}
 						}
 					}
 				}
@@ -2137,7 +2013,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 				i = FmPolys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) FmPolyFacePnt;
+	   		//lpPointer = ( LPVOID ) FmPolyFacePnt;
 		}
 
 		if( StartVert >= MAXFMPOLYVERTS ) break;
@@ -2160,6 +2036,13 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	{
 		return FALSE;
 	}
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+
 /*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
