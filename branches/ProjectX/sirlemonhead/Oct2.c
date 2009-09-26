@@ -6800,8 +6800,14 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 /*===================================================================
 Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
+
+#ifdef RENDER_USING_FACES
   if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
+#else
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+      return FALSE;
+#endif
 
   ExecuteTransExe( group );
 
@@ -6815,8 +6821,13 @@ Display Group Clipped Faceme Transluecent Polys
   Display Non Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
+#ifdef RENDER_USING_FACES
     if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
+#else
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+        return FALSE;
+#endif
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
