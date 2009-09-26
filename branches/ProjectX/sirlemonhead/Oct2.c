@@ -6815,7 +6815,7 @@ Display Group Clipped Faceme Transluecent Polys
   Display Non Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
-    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 
 /*===================================================================

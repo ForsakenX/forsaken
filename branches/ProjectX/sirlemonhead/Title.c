@@ -5217,7 +5217,7 @@ BOOL DisplayTitle(void)
 		Display Non 0 Clipped Faceme Transluecent Polys
 	===================================================================*/
 
-		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 1 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 /*===================================================================
