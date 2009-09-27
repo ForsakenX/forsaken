@@ -1230,7 +1230,8 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	GroupImIn = CurrentCamera.GroupImIn;
 
-	if ( GroupImIn != (uint16) -1 )
+	// bjd - need to revert this and figure out why blackness is drawn at the portals
+	if ( 0 ) //GroupImIn != (uint16) -1 )
 	{
 		DisplayBSPNode( OldCollideNode );
 
