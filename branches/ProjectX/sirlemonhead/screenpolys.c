@@ -2506,7 +2506,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
@@ -2638,7 +2638,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
@@ -3090,7 +3090,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
@@ -3279,7 +3279,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;

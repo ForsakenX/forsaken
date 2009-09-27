@@ -37,6 +37,7 @@
 #include "d3dmacs.h"
 #include "d3dmain.h"
 #include "lclib.h"  /* lclib is a override for standard string lib */
+#include <assert.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -141,7 +142,11 @@ BOOL D3DAppIHandleWM_SIZE(LRESULT* lresult, HWND hwnd, UINT message,
 extern "C" {
 #endif
 
-#define MAX_TEXTURE_GROUPS 8
+#define MAX_TEXTURE_GROUPS 43
+
+#define INCREASE_TEXTURE_GROUPS( group ) \
+	assert( group->numTextureGroups < MAX_TEXTURE_GROUPS ); \
+	group->numTextureGroups++;
 
 /*
 enum VERTEXFORMAT

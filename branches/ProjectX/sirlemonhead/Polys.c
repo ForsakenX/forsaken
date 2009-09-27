@@ -964,7 +964,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris;
 							StartVert += 4;
@@ -1328,7 +1328,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris;
 							StartVert += 4;
@@ -1759,7 +1759,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
@@ -2125,7 +2125,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-							renderObject->numTextureGroups++;
+							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
