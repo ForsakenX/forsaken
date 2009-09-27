@@ -2487,16 +2487,16 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 								( ScrPolyVertPnt - 1 )->tv = v1;
 							}
 
-		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
+		      		   		ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 1;
+		      		   		ScrPolyFacePnt->v3 = 2;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
 
-		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
+		      		   		ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 2;
+		      		   		ScrPolyFacePnt->v3 = 3;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
@@ -2619,16 +2619,16 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 								( ScrPolyVertPnt - 1 )->tv = v1;
 							}
 
-							ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
+							ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 1;
+		      		   		ScrPolyFacePnt->v3 = 2;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
 
-		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
+		      		   		ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 2;
+		      		   		ScrPolyFacePnt->v3 = 3;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
@@ -3071,16 +3071,16 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 								( ScrPolyVertPnt - 1 )->tv = v1;
 							}
 
-							ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
+							ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 1;
+		      		   		ScrPolyFacePnt->v3 = 2;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
 
-		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
+		      		   		ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 2;
+		      		   		ScrPolyFacePnt->v3 = 3;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
@@ -3260,16 +3260,16 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 								( ScrPolyVertPnt - 1 )->tv = v1;
 							}
 
-							ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 1 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
+							ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 1;
+		      		   		ScrPolyFacePnt->v3 = 2;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
 
-		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
-		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
-		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
+		      		   		ScrPolyFacePnt->v1 = 0;
+		      		   		ScrPolyFacePnt->v2 = 2;
+		      		   		ScrPolyFacePnt->v3 = 3;
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
 							ntris++;
