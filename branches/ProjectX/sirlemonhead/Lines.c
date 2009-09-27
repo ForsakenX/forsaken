@@ -232,6 +232,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		Create Execution buffer instructions
 ===================================================================*/
 /* bjd TODO
+NOTE: this appears to be pointers to the vertexes above. Some kind of line indexes...
+
 		lpPointer = (LPVOID ) Vert_Ptr;
 		lpInsStart = lpPointer;
 
