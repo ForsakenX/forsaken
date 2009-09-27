@@ -1973,7 +1973,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt++;
 
 				   			FmPolyFacePnt->v1 = 0;
-				   			FmPolyFacePnt->v2 = 0;
+				   			FmPolyFacePnt->v2 = 1;
 				   			FmPolyFacePnt->v3 = 2;
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			FmPolyFacePnt++;
