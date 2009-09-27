@@ -1158,6 +1158,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 	float r , g , b;
 	BOOL	InTitle;
 	BOOL	DoDisplay;
+	int count = 0;
 
 	if( NamePnt == &ModelNames[0] ) InTitle = FALSE;
 	else InTitle = TRUE;
@@ -1171,8 +1172,10 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 		{
 			if( InTitle || ( IsGroupVisible[ Models[ i ].Group ] || VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[ i ].Group, NULL ) ) )
 			{
-				if( Models[ i ].Flags & MODFLAG_UseClipGroup ) ClipGroup = Models[i].ClipGroup;
-				else ClipGroup = Models[i].Group;
+				if( Models[ i ].Flags & MODFLAG_UseClipGroup ) 
+					ClipGroup = Models[i].ClipGroup;
+				else 
+					ClipGroup = Models[i].Group;
 				
 				if( ClipGroup == group )
 				{
@@ -1290,38 +1293,80 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 						return FALSE;
 					}
 					
+					// TODO - BEEF UP LOD LEVEL HANDLING (read notes bellow)
+
+					// set ModelNum = 0 bellow for best lod level
+					// set ModelNum = ModelHeaders[Models[i].ModelNum].LOD bellow for worst lod level
+					
+					// should probably add a switch to completely disable this...
+
 					/*	Execute it	*/
 					temp = DistanceVector2Vector( &Models[i].Pos, &CurrentCamera.Pos ); 
 		
-	 				if( ModelHeaders[Models[i].ModelNum].LOD != 0 )
+					// this is for objects that dont' support diff lod values like in title room
+	 				if( ModelHeaders[Models[i].ModelNum].LOD == 0 )
 					{
-						if( CurrentCamera.UseLowestLOD )
+						ModelNum = 0;
+					}
+
+					// objects that support lod
+					else
+					{
+						// this is used for rear view and such
+						// going to leave it distabled and lets see if distance gets involved
+
+						//if( CurrentCamera.UseLowestLOD )
+						//{
+						//	ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
+						//}
+
+						// regular front view camera
+						//else
 						{
-							ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
-						}
-						else
-						{
-							if( AutoDetail && ( avgframelag >= 2.0F ) )
+							// AutoDetail 
+							// this method is pretty ugly as the frame lag fluctuates
+							// causing the textures to constantly jitter back and forth between diff lod values
+							// on todays cards this is probably just best to enable the best lod for everything
+							// i say we just get rid of this altogether and support the next method bellow
+
+							if( AutoDetail && ( avgframelag >= 2.0F ) ) // should probably increase this allot
 							{
 								// auto detail level....
 								ModelNum = (uint16) (avgframelag - 1.0F);
 
+								// make sure we don't select a value larger than acceptable
 								if( ModelNum > ModelHeaders[Models[i].ModelNum].LOD )
 								{
 									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 								}
 							}
+
+							// this method appears to use the distance to the object as the factor in lod level
+							// we probably want to tweak this to be farther away to the point where it's not noticeable
 							else
 							{
+								// appears the larger you make this number 
+								// the farther away we can see the object with better lod's
+								// we should probably make this a global so people can control it on it's own
+								int distance = CurrentCamera.UseLowestLOD ? 
+												6144.0F	:	// down grade for smaller cams
+												12288.0F;	// larger value for full screen
+
+								// appears to be based on how many many pickups need to be rendered
 								temp2 = ( temp + ( ( (float) NumPickupsPerGroup[ group ] ) * ( 128.0F * GLOBAL_SCALE ) ) );
 									
-								if( temp2 >= ( ( 3072.0F * GLOBAL_SCALE )  * ( (float) ModelHeaders[Models[i].ModelNum].LOD ) )  )
+								// wtf is this?
+								if( temp2 >= ( ( distance * GLOBAL_SCALE )  * ( (float) ModelHeaders[Models[i].ModelNum].LOD ) )  )
 								{
+									// sets it to the lowest value
 									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 								}
 								else
 								{
-									ModelNum = (uint16) ( temp2 / (3072.0F*GLOBAL_SCALE )  );
+									// wtf is this ?
+									ModelNum = (uint16) ( temp2 / (distance*GLOBAL_SCALE )  );
+
+									// make sure we don't select a value larger than acceptable
 									if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
 									{
 										ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
@@ -1329,10 +1374,15 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								}
 							}
 
-							if( ModelHeaders[ Models[i].ModelNum ].LOD == NUMBIKEDETAILS )		// Hack for bike detail
+							// some kind of hack to for bike detail settings
+							if( ModelHeaders[ Models[i].ModelNum ].LOD == NUMBIKEDETAILS )
 							{
-								if( ModelNum < BikeDetail )	ModelNum = BikeDetail;
+								// this sets it to the bike detail slider
+								// shouldn't this be reversed ? detail 4 should be best detail which is 0 right ?
+								if( ModelNum < BikeDetail )
+									ModelNum = BikeDetail;
 
+								// this just caps it to the lowest possible value just in case
 								if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
 								{
 									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
@@ -1340,10 +1390,8 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							}
 						}
 					}
-					else
-					{
-						ModelNum = 0;
-					}
+
+					// END OF TODO
 
 					ModelNum += Models[i].ModelNum;
 		
@@ -1425,14 +1473,19 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								UpdateMxaModel( &MxaModelHeaders[ ModelNum ] );
 							}
 
+							//DebugPrintf("display = '%d', mip number = '%d', name = '%s'\n",
+							//	DoDisplay, ModelNum, (char*)&ModelNames[ Models[i].ModelNum ].Name[ 0 ]);
+
 							if( DoDisplay )
 							{
+								//count++;
 								if( ExecuteMxaloadHeader( &MxaModelHeaders[ModelNum], ClipGroup ) != TRUE)
 								{
 									Msg( "ModelDisp() ExecuteMxaloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
 									return FALSE;
 								}
 							}
+
 						}
 						else
 						{
@@ -1476,11 +1529,15 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								}
 							}
 
+							//DebugPrintf("display = '%d', mip number = '%d', name = '%s'\n",
+							//	DoDisplay, ModelNum, (char*)&ModelNames[ Models[i].ModelNum ].Name[ 0 ]);
+
 							if( DoDisplay )
 							{
+								//count++;
 								if( ExecuteMxloadHeader( &ModelHeaders[ ModelNum ], i ) != TRUE)
 								{
-									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum + ModelNum ].Name[ 0 ] );
+									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
 									return FALSE;
 								}
 							}
@@ -1493,6 +1550,9 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 		/*	go on to the next	*/
 		i = nextmodel;
 	}
+
+	//DebugPrintf("drew %d objects\n", count);
+
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK) // bjd
 	if (FSSetMatrix(D3DTS_WORLD, &identity) != D3D_OK)
 	{
