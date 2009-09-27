@@ -1099,7 +1099,7 @@ HRESULT draw_indexed_buffer(RENDEROBJECT *renderObject)
 
 		/* draw it */
 		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-																0, 
+																renderObject->textureGroups[i].startVert, 
 																0, 
 																renderObject->textureGroups[i].numVerts,
 																renderObject->textureGroups[i].startIndex,
@@ -1165,7 +1165,7 @@ HRESULT draw_2d_indexed_buffer(RENDEROBJECT *renderObject)
 
 		/* draw it */
 		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-																0, 
+																renderObject->textureGroups[i].startVert,
 																0, 
 																renderObject->textureGroups[i].numVerts,
 																renderObject->textureGroups[i].startIndex,
