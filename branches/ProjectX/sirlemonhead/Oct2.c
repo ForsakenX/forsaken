@@ -670,7 +670,7 @@ BOOL DoClipping = TRUE;
 BOOL OnceOnlyChangeLevel = FALSE;
 
 //bjdLPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
-RENDEROBJECT RenderBufs[3];
+RENDEROBJECT RenderBufs[4];
 
 void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
@@ -6549,6 +6549,9 @@ void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 	// index data as well
 	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
 	FSCreateIndexBuffer(&RenderBufs[2], 32767*3);
+	// indexed pre-transformed (2d)
+	FSCreatePretransformedVertexBuffer(&RenderBufs[3], 32767);
+	FSCreateIndexBuffer(&RenderBufs[3], 32767*3);
 }
 
 void ReleaseRenderBufs( void )
@@ -6556,6 +6559,7 @@ void ReleaseRenderBufs( void )
 	FSReleaseRenderObject(&RenderBufs[0]);
 	FSReleaseRenderObject(&RenderBufs[1]);
 	FSReleaseRenderObject(&RenderBufs[2]);
+	FSReleaseRenderObject(&RenderBufs[3]);
 }
 
 
@@ -6876,7 +6880,7 @@ Display Group Clipped Faceme Transluecent Polys
   Display Transluecent Screen Polys
 ===================================================================*/
 
-    if( !DisplayNonSolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
   // reset all the normal execute status flags...
@@ -6888,7 +6892,7 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
   BilinearSolidScrPolys = FALSE;
 
-  if( !DisplaySolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
 //  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);

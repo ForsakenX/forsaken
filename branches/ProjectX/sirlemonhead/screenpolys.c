@@ -842,7 +842,7 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 				:	LPD3DTLVERTEX	Vert3
 	Output		:	FALSE if box is inside viewport, TRUE if outside
 ===================================================================*/
-#if 0 // bjd - CHECK
+
 BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 {
 	D3DVALUE xmin, ymin, xmax, ymax;
@@ -850,10 +850,10 @@ BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 	D3DVALUE dx, dy;
 	D3DVALUE du, dv;
 
-	xmin = (D3DVALUE) CurrentCamera.Viewport.dwX;
-	ymin = (D3DVALUE) CurrentCamera.Viewport.dwY;
-	xmax = (D3DVALUE) ( CurrentCamera.Viewport.dwX + CurrentCamera.Viewport.dwWidth );
-	ymax = (D3DVALUE) ( CurrentCamera.Viewport.dwY + CurrentCamera.Viewport.dwHeight );
+	xmin = (D3DVALUE) CurrentCamera.Viewport.X;
+	ymin = (D3DVALUE) CurrentCamera.Viewport.Y;
+	xmax = (D3DVALUE) ( CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width );
+	ymax = (D3DVALUE) ( CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height );
 
 	if ( topleft->sx < xmin )
 		clip_topleft = D3DCLIP_LEFT;
@@ -906,7 +906,6 @@ BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 
 	return FALSE;
 }
-#endif
 
 /*===================================================================
 	Procedure	:	Create Lensflare effect on missiles
@@ -2144,10 +2143,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	D3DCOLOR		Specular;
 	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -2199,7 +2200,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 //	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
@@ -2224,11 +2225,18 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	{
 		return FALSE;
 	}	
-		
+
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	ScrPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 /* bjd - TODO
 	if(d3dappi.ThisDriver.bIsHardware)
@@ -2259,15 +2267,9 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-			renderObject->numTextureGroups++;
-
 			if( !Textured )
 			{
+				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
 /* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
@@ -2292,7 +2294,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 */
 			}
 
-	   		ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
@@ -2308,6 +2310,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
       		
 		  				for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 	      				{
+							int ntris = 0;
+
    	   						Box_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
    
 	      					if( ( ScrPolys[ i ].Flags & SCRFLAG_UseCoords ) )
@@ -2488,13 +2492,24 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
+
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
       		
-	      					StartVert += 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
+							StartVert += 4;
 	      					Off_Ptr++;
 						}
 					}
@@ -2502,6 +2517,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 					{
 						if( !Textured )
 						{
+							int ntris = 0;
+
    							u1 = 0.0F;
 							v1 = 0.0F;
 							u2 = 1.0F;
@@ -2607,13 +2624,24 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
+
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
-      						
-	      					StartVert += 4;
+							ntris++;
+
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
+							StartVert += 4;
 						}
 					}
 				}
@@ -2621,7 +2649,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 				i = ScrPolys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) ScrPolyFacePnt;
+	   		//lpPointer = ( LPVOID ) ScrPolyFacePnt;
 		}
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
@@ -2671,6 +2699,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		return FALSE;
 	}
 
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+
 	*TPage = Count;
 	*NextScrPoly = i;
 
@@ -2704,10 +2738,12 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	D3DCOLOR		Specular;
 	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
 	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPD3DTLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -2759,7 +2795,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
@@ -2768,18 +2804,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );
 
-/*===================================================================
-		create the vertex buffer
-===================================================================*/
-
-/*
-			if (FAILED(FSCreatePretransformedVertexBuffer(renderObject, TotalVerts)))
-			{
-				return FALSE;
-			}
-
-			DebugPrintf("created buffer to hold :%d verts\n", TotalVerts);
-*/
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
@@ -2793,10 +2817,17 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	{
 		return FALSE;
 	}
+
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	ScrPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
 		
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
+	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 //	lpInsStart = lpPointer;
 
 //	if(d3dappi.ThisDriver.bIsHardware)
@@ -2821,15 +2852,9 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
-			renderObject->numTextureGroups++;
-
 			if( !Textured )
 			{
+				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
 /* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
@@ -2854,7 +2879,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 */
 			}
 
-	   		ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
@@ -2870,6 +2895,8 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
       		
 		  				for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 	      				{
+							int ntris = 0;
+
    	   						Box_Ptr = ( (*ScrPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
    
 	      					if( ( ScrPolys[ i ].Flags & SCRFLAG_UseCoords ) )
@@ -3007,7 +3034,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-/* bjd - CHECK		      					
+      					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -3019,7 +3046,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-*/		      					
+
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -3049,13 +3076,24 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
+
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
-      		
-	      					StartVert += 4;
+							ntris++;
+							
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
+							StartVert += 4;
 	      					Off_Ptr++;
 						}
 					}
@@ -3063,6 +3101,8 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 					{
 						if( !Textured )
 						{
+							int ntris = 0;
+
    							u1 = 0.0F;
 							v1 = 0.0F;
 							u2 = 1.0F;
@@ -3183,7 +3223,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-/* bjd - CHECK		      					
+  					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -3195,7 +3235,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-*/		      					
+ 					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -3225,13 +3265,24 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 2 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
+
 		      		   		ScrPolyFacePnt->v1 = ( StartVert + 0 );
 		      		   		ScrPolyFacePnt->v2 = ( StartVert + 2 );
 		      		   		ScrPolyFacePnt->v3 = ( StartVert + 3 );
 //		      		   		ScrPolyFacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 		      		   		ScrPolyFacePnt++;
+							ntris++;
       						
-	      					StartVert += 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
+							StartVert += 4;
 						}
 					}
 				}
@@ -3239,7 +3290,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 				i = ScrPolys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) ScrPolyFacePnt;
+	   		//lpPointer = ( LPVOID ) ScrPolyFacePnt;
 		}
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
@@ -3272,6 +3323,13 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	{
 		return FALSE;
 	}
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+
 	*TPage = Count;
 	*NextScrPoly = i;
 

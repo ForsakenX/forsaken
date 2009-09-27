@@ -224,7 +224,7 @@ extern	FRAME_INFO	*	Title_Chars2_Header;
 extern	OFF_FILES Title_OffsetFiles[];
 extern	CAMERA	CurrentCamera;
 void Build_View();
-extern	RENDEROBJECT RenderBufs[3];
+extern	RENDEROBJECT RenderBufs[4];
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
@@ -5241,7 +5241,7 @@ BOOL DisplayTitle(void)
 		Display Transluecent Screen Polys
 	===================================================================*/
 
-			if( !DisplayNonSolidScrPolys( &RenderBufs[ 1 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 	/*===================================================================
@@ -5274,7 +5274,7 @@ BOOL DisplayTitle(void)
 	===================================================================*/
 		BilinearSolidScrPolys = TRUE;
 
-		if( !DisplaySolidScrPolys( &RenderBufs[ 1 ]/*, lpDev,*/ /*lpView*/ ) )
+		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) )
 			return FALSE;
 
 	/*===================================================================
