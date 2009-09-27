@@ -142,7 +142,9 @@ BOOL D3DAppIHandleWM_SIZE(LRESULT* lresult, HWND hwnd, UINT message,
 extern "C" {
 #endif
 
-#define MAX_TEXTURE_GROUPS 43
+#define MAX_LEVEL_TEXTURE_GROUPS 8
+
+#define MAX_TEXTURE_GROUPS 600
 
 #define INCREASE_TEXTURE_GROUPS( group ) \
 	assert( group->numTextureGroups < MAX_TEXTURE_GROUPS ); \
@@ -180,6 +182,22 @@ typedef struct RENDEROBJECT
 
 	/* add whatever else needed.. */
 } RENDEROBJECT;
+
+/* bjd - move this stuff somewhere more appropriate */
+typedef struct LEVELRENDEROBJECT
+{
+	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
+	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
+	D3DMATERIAL9 material;
+	/*BOOL*/int				vbLocked;
+	int numTextureGroups;
+
+//	enum VERTEXFORMAT vertexFormat;
+
+	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
+
+	/* add whatever else needed.. */
+} LEVELRENDEROBJECT;
 
 typedef struct RENDERSTATE
 {
