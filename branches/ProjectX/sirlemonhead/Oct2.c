@@ -6660,7 +6660,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 
 #ifdef SHADOWTEST
@@ -6711,7 +6711,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 1 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 #ifdef SHADOWTEST
   if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
@@ -6791,7 +6791,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplayGroupClippedPolys( &RenderBufs[ 1 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
 #ifdef SHADOWTEST
@@ -6834,7 +6834,7 @@ Display Group Clipped Faceme Transluecent Polys
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 #ifdef SHADOWTEST
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )

@@ -680,7 +680,9 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -727,11 +729,11 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
-	renderObject->numTextureGroups = 0;
-
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
+	renderObject->numTextureGroups = 0;
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
@@ -749,10 +751,18 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		return FALSE;
 	}
 		
+	
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
@@ -773,13 +783,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-			renderObject->numTextureGroups++;
-
 /* bjd - TODO
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -789,7 +792,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */	 
-	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
@@ -802,6 +805,8 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 					{
 						if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 						{
+							int ntris = 0;
+
 		   					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
@@ -927,11 +932,14 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 				   			PolyFacePnt->v3 = ( StartVert + 2 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
+							ntris++;
+
 				   			PolyFacePnt->v1 = ( StartVert + 0 );
 				   			PolyFacePnt->v2 = ( StartVert + 2 );
 				   			PolyFacePnt->v3 = ( StartVert + 3 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
+							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
@@ -940,13 +948,25 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 					   			PolyFacePnt->v3 = ( StartVert + 2 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
+								ntris++;
+
 					   			PolyFacePnt->v1 = ( StartVert + 0 );
 					   			PolyFacePnt->v2 = ( StartVert + 2 );
 					   			PolyFacePnt->v3 = ( StartVert + 1 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
+								ntris++;
+
 							}
-				
+					
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris;
 							StartVert += 4;
 							Off_Ptr++;
 						}
@@ -956,7 +976,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 				i = Polys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) PolyFacePnt;
+//	   		lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
@@ -979,6 +999,12 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
+	}
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
 	}
 
 //	renderObject->numVerts = TotalVerts;
@@ -1021,7 +1047,9 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -1071,7 +1099,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 
-	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -1088,11 +1116,18 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	{
 		return FALSE;
 	}
+	
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
 		
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
@@ -1113,13 +1148,6 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-			renderObject->numTextureGroups++;
-
 /* bjd - TODO
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1129,7 +1157,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+//	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
@@ -1142,6 +1170,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 					{
 						if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 						{
+							int ntris = 0;
 
 		   					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
@@ -1268,11 +1297,14 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 				   			PolyFacePnt->v3 = ( StartVert + 2 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
+							ntris++;
+
 				   			PolyFacePnt->v1 = ( StartVert + 0 );
 				   			PolyFacePnt->v2 = ( StartVert + 2 );
 				   			PolyFacePnt->v3 = ( StartVert + 3 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
+							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
@@ -1281,13 +1313,24 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 					   			PolyFacePnt->v3 = ( StartVert + 2 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
+								ntris++;
+
 					   			PolyFacePnt->v1 = ( StartVert + 0 );
 					   			PolyFacePnt->v2 = ( StartVert + 2 );
 					   			PolyFacePnt->v3 = ( StartVert + 1 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
+								ntris++;
 							}
 				
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris;
 							StartVert += 4;
 							Off_Ptr++;
 						}
@@ -1297,7 +1340,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 				i = Polys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) PolyFacePnt;
+//	   		lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
@@ -1321,6 +1364,12 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	{
 		return FALSE;
 	}	
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
 
 /*
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -1429,7 +1478,9 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -1476,7 +1527,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
@@ -1496,11 +1547,18 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	{
 		return FALSE;
 	}
-		
+			
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
@@ -1521,13 +1579,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-			renderObject->numTextureGroups++;
-
 /* bjd - TODO?
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1537,7 +1588,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+//	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
@@ -1550,6 +1601,8 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 					{
 						if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 						{
+							int ntris = 0;
+
 		   					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
@@ -1675,11 +1728,14 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 				   			PolyFacePnt->v3 = ( StartVert + 2 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
+							ntris++;
+
 				   			PolyFacePnt->v1 = ( StartVert + 0 );
 				   			PolyFacePnt->v2 = ( StartVert + 2 );
 				   			PolyFacePnt->v3 = ( StartVert + 3 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
+							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
@@ -1688,13 +1744,24 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 					   			PolyFacePnt->v3 = ( StartVert + 2 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
+								ntris++;
+
 					   			PolyFacePnt->v1 = ( StartVert + 0 );
 					   			PolyFacePnt->v2 = ( StartVert + 2 );
 					   			PolyFacePnt->v3 = ( StartVert + 1 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
+								ntris++;
 							}
 				
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
 							Off_Ptr++;
 						}
@@ -1704,7 +1771,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 				i = Polys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) PolyFacePnt;
+	   		//lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
@@ -1728,6 +1795,13 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	{
 		return FALSE;
 	}
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+
 /*
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
 	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
@@ -1770,7 +1844,9 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
 /*===================================================================
 		Find out how may verts involved in Exec Buffer
@@ -1817,7 +1893,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->lpD3DIndexBuffer = NULL;
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
@@ -1838,10 +1914,17 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		return FALSE;
 	}
 		
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+	
+	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
 //	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
+	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
 
 	if( CanCullFlag )
 	{
@@ -1862,13 +1945,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 
 		if( NumVerts )
 		{
-			renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
-			renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
-			renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
-			renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
-			renderObject->numTextureGroups++;
-
 /* bjd - TODO?
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
@@ -1878,7 +1954,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+//	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
@@ -1891,6 +1967,8 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 					{
 						if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 						{
+							int ntris = 0;
+
 		   					Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
@@ -2016,11 +2094,14 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 				   			PolyFacePnt->v3 = ( StartVert + 2 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
+							ntris++;
+
 				   			PolyFacePnt->v1 = ( StartVert + 0 );
 				   			PolyFacePnt->v2 = ( StartVert + 2 );
 				   			PolyFacePnt->v3 = ( StartVert + 3 );
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
+							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
@@ -2029,13 +2110,24 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 					   			PolyFacePnt->v3 = ( StartVert + 2 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
+								ntris++;
+
 					   			PolyFacePnt->v1 = ( StartVert + 0 );
 					   			PolyFacePnt->v2 = ( StartVert + 2 );
 					   			PolyFacePnt->v3 = ( StartVert + 1 );
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
+								ntris++;
 							}
-				
+
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->numTextureGroups++;
+
+							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
 							Off_Ptr++;
 						}
@@ -2044,7 +2136,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 				i = Polys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) PolyFacePnt;
+	   		//lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
@@ -2067,6 +2159,12 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
+	}
+
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
 	}
 /*
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );

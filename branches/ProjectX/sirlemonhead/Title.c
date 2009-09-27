@@ -5172,7 +5172,7 @@ BOOL DisplayTitle(void)
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
 
-			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 1 ], 0 /*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 /*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 #if 0
 /*
@@ -5201,7 +5201,7 @@ BOOL DisplayTitle(void)
 		Display 0 Clipped Non Faceme Transluecent Polys
 	===================================================================*/
 
-			if( !DisplayGroupClippedPolys( &RenderBufs[ 1 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 
 /*===================================================================
@@ -5234,7 +5234,7 @@ BOOL DisplayTitle(void)
 /*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
 
 	/*===================================================================
