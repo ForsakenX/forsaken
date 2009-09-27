@@ -927,32 +927,32 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 1 );
-				   			PolyFacePnt->v3 = ( StartVert + 2 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 1;
+				   			PolyFacePnt->v3 = 2;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
 							ntris++;
 
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 2 );
-				   			PolyFacePnt->v3 = ( StartVert + 3 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 2;
+				   			PolyFacePnt->v3 = 3;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-								PolyFacePnt->v2 = ( StartVert + 3 );
-					   			PolyFacePnt->v3 = ( StartVert + 2 );
+					   			PolyFacePnt->v1 = 0;
+								PolyFacePnt->v2 = 3;
+					   			PolyFacePnt->v3 = 2;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
 								ntris++;
 
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-					   			PolyFacePnt->v2 = ( StartVert + 2 );
-					   			PolyFacePnt->v3 = ( StartVert + 1 );
+					   			PolyFacePnt->v1 = 0;
+					   			PolyFacePnt->v2 = 2;
+					   			PolyFacePnt->v3 = 1;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
 								ntris++;
@@ -1292,32 +1292,32 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 1 );
-				   			PolyFacePnt->v3 = ( StartVert + 2 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 1;
+				   			PolyFacePnt->v3 = 2;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
 							ntris++;
 
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 2 );
-				   			PolyFacePnt->v3 = ( StartVert + 3 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 2;
+				   			PolyFacePnt->v3 = 3;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-								PolyFacePnt->v2 = ( StartVert + 3 );
-					   			PolyFacePnt->v3 = ( StartVert + 2 );
+					   			PolyFacePnt->v1 = 0;
+								PolyFacePnt->v2 = 3;
+					   			PolyFacePnt->v3 = 2;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
 								ntris++;
 
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-					   			PolyFacePnt->v2 = ( StartVert + 2 );
-					   			PolyFacePnt->v3 = ( StartVert + 1 );
+					   			PolyFacePnt->v1 = 0;
+					   			PolyFacePnt->v2 = 2;
+					   			PolyFacePnt->v3 = 1;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
 								ntris++;
@@ -1723,32 +1723,32 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 1 );
-				   			PolyFacePnt->v3 = ( StartVert + 2 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 1;
+				   			PolyFacePnt->v3 = 2;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
 							ntris++;
 
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 2 );
-				   			PolyFacePnt->v3 = ( StartVert + 3 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 2;
+				   			PolyFacePnt->v3 = 3;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-								PolyFacePnt->v2 = ( StartVert + 3 );
-					   			PolyFacePnt->v3 = ( StartVert + 2 );
+					   			PolyFacePnt->v1 = 0;
+								PolyFacePnt->v2 = 3;
+					   			PolyFacePnt->v3 = 2;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
 								ntris++;
 
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-					   			PolyFacePnt->v2 = ( StartVert + 2 );
-					   			PolyFacePnt->v3 = ( StartVert + 1 );
+					   			PolyFacePnt->v1 = 0;
+					   			PolyFacePnt->v2 = 2;
+					   			PolyFacePnt->v3 = 1;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
 								ntris++;
@@ -2089,32 +2089,32 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 1 );
-				   			PolyFacePnt->v3 = ( StartVert + 2 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 1;
+				   			PolyFacePnt->v3 = 2;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			PolyFacePnt++;
 							ntris++;
 
-				   			PolyFacePnt->v1 = ( StartVert + 0 );
-				   			PolyFacePnt->v2 = ( StartVert + 2 );
-				   			PolyFacePnt->v3 = ( StartVert + 3 );
+				   			PolyFacePnt->v1 = 0;
+				   			PolyFacePnt->v2 = 2;
+				   			PolyFacePnt->v3 = 3;
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
 				
 							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-								PolyFacePnt->v2 = ( StartVert + 3 );
-					   			PolyFacePnt->v3 = ( StartVert + 2 );
+					   			PolyFacePnt->v1 = 0;
+								PolyFacePnt->v2 = 3;
+					   			PolyFacePnt->v3 = 2;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			PolyFacePnt++;
 								ntris++;
 
-					   			PolyFacePnt->v1 = ( StartVert + 0 );
-					   			PolyFacePnt->v2 = ( StartVert + 2 );
-					   			PolyFacePnt->v3 = ( StartVert + 1 );
+					   			PolyFacePnt->v1 = 0;
+					   			PolyFacePnt->v2 = 2;
+					   			PolyFacePnt->v3 = 1;
 //					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			PolyFacePnt++;
 								ntris++;
