@@ -1,4 +1,6 @@
 
+#define RENDER_USING_FACES
+
 /*===================================================================
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
@@ -1584,6 +1586,7 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 //			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
+
 		if (FAILED(draw_object(renderObject)))
 		{
 			return FALSE;
@@ -1967,17 +1970,18 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
+							FmPolyVertPnt++;
 
-				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
-				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
+				   			FmPolyFacePnt->v1 = 0;
+				   			FmPolyFacePnt->v2 = 0;
+				   			FmPolyFacePnt->v3 = 2;
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			FmPolyFacePnt++;
 							ntris++;
 
-				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-				   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-				   			FmPolyFacePnt->v3 = ( StartVert + 3 );
+				   			FmPolyFacePnt->v1 = 0;
+				   			FmPolyFacePnt->v2 = 2;
+				   			FmPolyFacePnt->v3 = 3;
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			FmPolyFacePnt++;
 							ntris++;
@@ -1985,16 +1989,16 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-								FmPolyFacePnt->v2 = ( StartVert + 3 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
+					   			FmPolyFacePnt->v1 = 0;
+								FmPolyFacePnt->v2 = 3;
+					   			FmPolyFacePnt->v3 = 2;
 //					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			FmPolyFacePnt++;
 								ntris++;
 
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 1 );
+					   			FmPolyFacePnt->v1 = 0;
+					   			FmPolyFacePnt->v2 = 2;
+					   			FmPolyFacePnt->v3 = 1;
 //					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
 								ntris++;
@@ -2590,32 +2594,32 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
-					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   		FmPolyFacePnt->v2 = ( StartVert + 1 );
-					   		FmPolyFacePnt->v3 = ( StartVert + 2 );
+					   		FmPolyFacePnt->v1 = 0;
+					   		FmPolyFacePnt->v2 = 1;
+					   		FmPolyFacePnt->v3 = 2;
 //					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   		FmPolyFacePnt++;
 							ntris++;
 
-					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   		FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   		FmPolyFacePnt->v3 = ( StartVert + 3 );
+					   		FmPolyFacePnt->v1 = 0;
+					   		FmPolyFacePnt->v2 = 2;
+					   		FmPolyFacePnt->v3 = 3;
 //					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   		FmPolyFacePnt++;
 							ntris++;
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-								FmPolyFacePnt->v2 = ( StartVert + 3 );
-						   		FmPolyFacePnt->v3 = ( StartVert + 2 );
+						   		FmPolyFacePnt->v1 = 0;
+								FmPolyFacePnt->v2 = 3;
+						   		FmPolyFacePnt->v3 = 2;
 //						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 						   		FmPolyFacePnt++;
 								ntris++;
 
-						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-						   		FmPolyFacePnt->v2 = ( StartVert + 2 );
-						   		FmPolyFacePnt->v3 = ( StartVert + 1 );
+						   		FmPolyFacePnt->v1 = 0;
+						   		FmPolyFacePnt->v2 = 2;
+						   		FmPolyFacePnt->v3 = 1;
 //						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 						   		FmPolyFacePnt++;
 								ntris++;

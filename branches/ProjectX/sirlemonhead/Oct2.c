@@ -1,4 +1,6 @@
 
+#define RENDER_USING_FACES
+
 //#define REFLECTION
 
 #define INSIDE_BSP // disable to use bounding box inside check instead
