@@ -966,7 +966,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
-							start_index += ntris;
+							start_index += ntris*3;
 							StartVert += 4;
 							Off_Ptr++;
 						}
@@ -1330,7 +1330,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
-							start_index += ntris;
+							start_index += ntris*3;
 							StartVert += 4;
 							Off_Ptr++;
 						}
