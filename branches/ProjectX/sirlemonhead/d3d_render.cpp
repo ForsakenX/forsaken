@@ -1232,16 +1232,23 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		renderObject->lpD3DVertexBuffer->Release();
 		renderObject->lpD3DVertexBuffer = NULL;
 	}
+	if (renderObject->lpD3DIndexBuffer)
+	{
+		renderObject->lpD3DIndexBuffer->Release();
+		renderObject->lpD3DIndexBuffer = NULL;
+	}
 	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{
 		renderObject->textureGroups[i].numVerts = 0;
 		renderObject->textureGroups[i].startVert = 0;
 
-		//if (renderObject->textureGroups[i].texture)
-		//{
+		if (renderObject->textureGroups[i].texture)
+		{
+			// the texture code probably already deals with this.
+			// but we need to figure out why this is crashing for sure.
 			//renderObject->textureGroups[i].texture->Release();
-			//renderObject->textureGroups[i].texture = NULL;
-		//}
+			renderObject->textureGroups[i].texture = NULL;
+		}
 	}
 }
 
