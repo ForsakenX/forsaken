@@ -2079,10 +2079,18 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
+
+		disable_zbuff();
+		screenpoly_filtering();
+
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
+
+		reset_filtering();
+		reset_zbuff();
+
 	}
 
 	return( FALSE );
@@ -2111,10 +2119,18 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
 //				return FALSE;
+
+		disable_zbuff();
+		screenpoly_filtering();
+
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
+
+		reset_filtering();
+		reset_zbuff();
+
 	}
 
 	return( FALSE );
