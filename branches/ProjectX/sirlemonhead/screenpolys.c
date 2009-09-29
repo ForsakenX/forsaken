@@ -2258,21 +2258,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
 
-/* bjd - TODO
-	if(d3dappi.ThisDriver.bIsHardware)
-	{
-		OP_STATE_RENDER( 1, lpPointer);
-		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
-
-		if( !BilinearSolidScrPolys )
-		{
-			OP_STATE_RENDER( 2, lpPointer);
-				STATE_DATA(D3DRENDERSTATE_TEXTUREMAG, D3DFILTER_NEAREST, lpPointer );
-				STATE_DATA(D3DRENDERSTATE_TEXTUREMIN, D3DFILTER_NEAREST, lpPointer );
-		}
-	}
-*/
-
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
@@ -2674,30 +2659,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
 	}
-/* bjd - TODO
-	if(d3dappi.ThisDriver.bIsHardware)
-	{
-		OP_STATE_RENDER( 1, lpPointer);
-			STATE_DATA( D3DRENDERSTATE_ZENABLE, TRUE, lpPointer );
-
-		if( BiLinearFiltering )
-		{
-			OP_STATE_RENDER( 2, lpPointer);
-			if( !MipMap )
-			{
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMAG, d3dapprs.TextureFilter,lpPointer);
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMIN, d3dapprs.TextureFilter,lpPointer);
-			}else if( !Is3Dfx2 && !TriLinear )
-			{
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMAG, D3DFILTER_MIPLINEAR,lpPointer);
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMIN, D3DFILTER_MIPLINEAR,lpPointer);
-			}else{
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMAG, D3DFILTER_LINEARMIPLINEAR,lpPointer);
-			  STATE_DATA(D3DRENDERSTATE_TEXTUREMIN, D3DFILTER_LINEARMIPLINEAR,lpPointer);
-			}
-		}
-	}
-*/
 
 //	OP_EXIT( lpPointer );
 
@@ -2852,14 +2813,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 //	lpInsStart = lpPointer;
-
-//	if(d3dappi.ThisDriver.bIsHardware)
-	{
-/* bjd - CHECK
-		OP_STATE_RENDER( 1, lpPointer);
-		STATE_DATA( D3DRENDERSTATE_ZENABLE, FALSE, lpPointer );
-*/
-	}
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -3317,14 +3270,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		}
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
-	}
-
-//	if(d3dappi.ThisDriver.bIsHardware)
-	{
-/* bjd - CHECK
-		OP_STATE_RENDER( 1, lpPointer);
-			STATE_DATA( D3DRENDERSTATE_ZENABLE, TRUE, lpPointer );
-*/
 	}
 
 //	OP_EXIT( lpPointer );
