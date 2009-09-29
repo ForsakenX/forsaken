@@ -486,12 +486,10 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			sprintf(buf, "put %d indices into IB\n", tempInt);
 			OutputDebugString(buf);
 
+			// bjd - probably should be part of the render object.
 			if( Panel )
 			{
-/* bjd - CHECK
-				OP_STATE_RENDER( 1, lpPointer);
-			    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-*/
+				cull_ccw();
 			}
 
 			if (StoreTriangles)

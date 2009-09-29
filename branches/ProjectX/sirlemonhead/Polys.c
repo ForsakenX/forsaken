@@ -614,10 +614,16 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 //		if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //		if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
 		if (FAILED(draw_object(renderObject)))
-		{
 			return FALSE;
-		}
+
+		if( CanCullFlag )
+			cull_ccw();
+
 	}
 	return( FALSE );
 }
@@ -646,10 +652,16 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
 		if (FAILED(draw_object(renderObject)))
-		{
 			return FALSE;
-		}
+
+		if( CanCullFlag )
+			cull_ccw();
+
 	}
 
 	return( FALSE );
@@ -766,14 +778,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
-
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
-*/
-	}
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -985,14 +989,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-*/
-	}
-
 //	OP_EXIT( lpPointer );
 
 /*===================================================================
@@ -1134,14 +1130,6 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
-
-	if( CanCullFlag )
-	{
-/* bjd - todo
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
-*/
-	}
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -1352,14 +1340,6 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-*/
-	}
-
 //	OP_EXIT( lpPointer );
 
 /*===================================================================
@@ -1417,10 +1397,16 @@ BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/ RENDERO
 //			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
 		if (FAILED(draw_object(renderObject)))
-		{
 			return FALSE;
-		}
+
+		if( CanCullFlag )
+			cull_ccw();
+
 	}
 
 	return( FALSE );
@@ -1450,10 +1436,16 @@ BOOL DisplaySolidGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDER
 //			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //		if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
 		if (FAILED(draw_object(renderObject)))
-		{
 			return FALSE;
-		}
+
+		if( CanCullFlag )
+			cull_ccw();
+
 	}
 
 	return( FALSE );
@@ -1568,14 +1560,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
-
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
-*/
-	}
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -1786,14 +1770,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-*/
-	}
-
 //	OP_EXIT( lpPointer );
 
 /*===================================================================
@@ -1937,14 +1913,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
-
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
-*/
-	}
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -2152,14 +2120,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
-	}
-
-	if( CanCullFlag )
-	{
-/* bjd - TODO
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-*/
 	}
 
 //	OP_EXIT( lpPointer );
