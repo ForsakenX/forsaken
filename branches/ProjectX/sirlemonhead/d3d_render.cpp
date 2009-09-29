@@ -714,7 +714,7 @@ void render_state_trans( void )
 
 	// try the next state
 	count++;
-	if( count > 10 )	
+	if( count > 100 )	
 	{
 		count = 0;
 		state++;
@@ -1305,7 +1305,7 @@ HRESULT draw_2d_indexed_buffer(RENDEROBJECT *renderObject)
 		return LastError;
 	}
 
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
 	if (FAILED(LastError))
 	{
 		return LastError;
@@ -1354,7 +1354,7 @@ HRESULT draw_2d_vertex_buffer(RENDEROBJECT *renderObject)
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
 	if (FAILED(LastError))
 		return LastError;
 
