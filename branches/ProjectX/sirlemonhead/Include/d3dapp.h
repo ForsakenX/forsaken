@@ -303,7 +303,7 @@ BOOL D3DAppWindow(int w, int h, int bpp);
  * selected and textures are reloaded, hence their handles may change.  By
  * default, paletted formats are prefered.
  */
-BOOL D3DAppChangeDriver(int driver, DWORD flags);
+//BOOL D3DAppChangeDriver(int driver, DWORD flags);
 
 
 /*
