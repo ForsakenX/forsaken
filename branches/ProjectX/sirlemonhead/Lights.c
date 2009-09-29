@@ -1007,7 +1007,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	float	glf;
 	float	rlf;
 
-	OutputDebugString("XLightMxloadHeader\n");
+	//OutputDebugString("XLightMxloadHeader\n");
 
 	group = MXloadheader->num_groups;
 	while( group--)

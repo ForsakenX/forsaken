@@ -1170,7 +1170,8 @@ ClipGroup( CAMERA *cam, uint16 group )
 	if ( !g->visible )
 		return 0;
 
-	if( !DoClipping ) g = &cam->visible.group[ cam->visible.first_visible->group ];
+	if( !DoClipping )
+		g = &cam->visible.group[ cam->visible.first_visible->group ];
 
 /* bjd
 	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hProj, &g->projection) != D3D_OK)
