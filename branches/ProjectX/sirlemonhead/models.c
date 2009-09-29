@@ -5997,12 +5997,14 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 		}
 		LightPnt = LightPnt->NextVisible;
 	}
+	/* bjd curr driver = 0 use to be software mode
 	if ( !d3dapp->CurrDriver )
 	{
 		RF = ( RF+GF+BF ) * 0.33333F;
 		GF = RF;
 		BF = RF;
 	}
+	*/
 	if( RF > 255.0F ) RF = 255.0F;
 	if( GF > 255.0F ) GF = 255.0F;
 	if( BF > 255.0F ) BF = 255.0F;

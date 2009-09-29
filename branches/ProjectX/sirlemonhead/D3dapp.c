@@ -444,7 +444,7 @@ exit_with_error:
 #endif
 }
 
-
+#if 0
 /*
  * D3DAppChangeDriver 
  */
@@ -515,7 +515,7 @@ exit_with_error:
      */
     return FALSE;
 }
-
+#endif
 
 /*
  * D3DAppWindowProc

@@ -136,6 +136,7 @@ BOOL FlipBuffers()
 	return TRUE;
 }
 
+#if 0
 /***************************************************************************/
 /*                           D3D Device Enumeration                        */
 /***************************************************************************/
@@ -145,7 +146,6 @@ BOOL FlipBuffers()
  * reported by D3D.
  */
 
-#if 0
 static HRESULT
 WINAPI enumDeviceFunc(LPGUID lpGuid, LPSTR lpDeviceDescription,
                       LPSTR lpDeviceName, LPD3DDEVICEDESC lpHWDesc,
@@ -217,6 +217,7 @@ WINAPI enumDeviceFunc(LPGUID lpGuid, LPSTR lpDeviceDescription,
 }
 #endif
 
+#if 0 // bjd
 /*
  * D3DAppIEnumDrivers
  * Get the available drivers from Direct3D by enumeration.
@@ -225,7 +226,6 @@ BOOL
 D3DAppIEnumDrivers(void)
 {
 	return TRUE;
-#if 0 // bjd
     d3dappi.NumDrivers = 0;
     LastError = d3dappi.lpD3D->lpVtbl->EnumDevices(d3dappi.lpD3D,
                                                    enumDeviceFunc, NULL);
@@ -236,8 +236,8 @@ D3DAppIEnumDrivers(void)
     }
     d3dappi.CurrDriver = 0;
     return TRUE;
-#endif
 }
+#endif
 
 #if 0 
 static BOOL TextureFormatMatch( D3DAppTextureFormat *t )
@@ -261,6 +261,7 @@ static BOOL TextureFormatMatch( D3DAppTextureFormat *t )
 }
 #endif
 
+#if 0
 int	LowestTexFormat;		// used to  select the lowest bit depth for  textures;
 /***************************************************************************/
 /*                    Enumeration of texure format                         */
@@ -272,7 +273,6 @@ int	LowestTexFormat;		// used to  select the lowest bit depth for  textures;
  * and return it through lpContext.
  */
 
-#if 0
 static HRESULT
 CALLBACK EnumTextureFormatsCallback(LPDDSURFACEDESC lpDDSD, LPVOID lpContext)
 {
@@ -387,6 +387,7 @@ CALLBACK EnumTextureFormatsCallback(LPDDSURFACEDESC lpDDSD, LPVOID lpContext)
 }
 #endif
 
+#if 0
 /*
  * D3DAppIEnumTextureFormats
  * Get a list of available texture map formats from the Direct3D driver by
@@ -425,7 +426,9 @@ D3DAppIEnumTextureFormats(void)
     return TRUE;
 #endif
 }
+#endif
 
+#if 0
 /***************************************************************************/
 /*                               Device creation                           */
 /***************************************************************************/
@@ -476,6 +479,7 @@ exit_with_error:
     return FALSE;
 #endif
 }
+#endif
 
 /***************************************************************************/
 /*                      Setting the render state                           */
@@ -597,27 +601,187 @@ BOOL SetZCompare( void )
     return TRUE;
 }
 
+#define STATE( K, V ) \
+	d3dappi.lpD3DDevice->SetRenderState( K, V );
+
+#define TSTATE( N, K, V ) \
+	d3dappi.lpD3DDevice->SetTextureStageState( N, K, V );
+
+#define SSTATE( N, K, V ) \
+	d3dappi.lpD3DDevice->SetSamplerState( N, K, V );
+
+// c helper
+void render_state( D3DRENDERSTATETYPE type, int val )
+{
+	d3dappi.lpD3DDevice->SetRenderState( type, val );
+}
+
+//
+void set_trans_state_3( void )
+{
+	STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+	STATE(D3DRS_DESTBLEND,	D3DBLEND_SRCALPHA);
+}
+
+//
+void set_trans_state_2( void )
+{
+	STATE(D3DRS_SRCBLEND,	D3DBLEND_ONE);
+	STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
+}
+
+void set_trans_state_9( void )
+{
+	STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+	STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
+}
+
+
+// transparency tester
+void render_state_trans( void )
+{
+	static int state = 0;
+	static int count = 0;
+
+	/*
+    D3DBLEND_ZERO               = 1,
+    D3DBLEND_ONE                = 2,
+    D3DBLEND_SRCCOLOR           = 3,
+    D3DBLEND_INVSRCCOLOR        = 4,
+    D3DBLEND_SRCALPHA           = 5,
+    D3DBLEND_INVSRCALPHA        = 6,
+    D3DBLEND_DESTALPHA          = 7,
+    D3DBLEND_INVDESTALPHA       = 8,
+    D3DBLEND_DESTCOLOR          = 9,
+    D3DBLEND_INVDESTCOLOR       = 10,
+    D3DBLEND_SRCALPHASAT        = 11,
+    D3DBLEND_BOTHSRCALPHA       = 12,
+    D3DBLEND_BOTHINVSRCALPHA    = 13,
+	*/
+
+	// set the state
+	switch( state )
+	{
+	case 0:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_ZERO);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
+		break;
+	case 1:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCCOLOR);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_INVDESTCOLOR);
+		break;
+	case 2:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_ONE);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
+		break;
+	case 3:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_SRCALPHA);
+		break;
+	case 4:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_INVSRCALPHA);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_SRCALPHA);
+		break;
+	case 5: // normal trans
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_INVSRCALPHA);
+		break;
+	// new modes
+	case 6:
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_ONE);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_ZERO);
+		break;
+	case 7: // color trans
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_ZERO);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_SRCCOLOR);
+		break;
+	case 8: // inv color trans
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_ZERO);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_INVSRCCOLOR);
+		break;
+	case 9: // glowing
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
+		break;
+	case 10: // darkening color
+		STATE(D3DRS_SRCBLEND,	D3DBLEND_INVDESTCOLOR);
+		STATE(D3DRS_DESTBLEND,	D3DBLEND_ZERO);
+		break;
+	}
+	DebugPrintf("trans state = %d ...... count %d\n",state,count);
+
+	//FlipBuffers();
+
+	// try the next state
+	count++;
+	if( count > 10 )	
+	{
+		count = 0;
+		state++;
+		if( state > 10 )
+			state = 0;
+	}
+}
+
+// set transparency off
+void reset_trans( void )
+{
+	STATE(	D3DRS_ALPHABLENDENABLE,		TRUE );
+	STATE(	D3DRS_SRCBLEND,				D3DBLEND_ONE);
+	STATE(	D3DRS_DESTBLEND,			D3DBLEND_ZERO);
+}
+
+void reset_zbuff( void )
+{
+	STATE(	D3DRS_ZENABLE,			D3DZB_TRUE);
+	STATE(	D3DRS_ZWRITEENABLE,		TRUE);
+	STATE(	D3DRS_ZFUNC,			D3DCMP_LESS);
+}
+
+void disable_zbuff( void )
+{
+	STATE(	D3DRS_ZENABLE,			D3DZB_FALSE);
+}
+
+void reset_filtering( void )
+{
+	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
+	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
+	SSTATE(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+}
+
+void screenpoly_filtering( void )
+{
+	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT );
+	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_POINT );
+}
+
+void cull_none( void )
+{
+	STATE(	D3DRS_CULLMODE,	D3DCULL_NONE);
+}
+
+void cull_cw( void )
+{
+	STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
+}
+
+void cull_ccw( void )
+{
+	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
+}
+
 BOOL
 D3DAppISetRenderState()
 {
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SHADEMODE, d3dapprs.ShadeMode);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZENABLE, D3DZB_TRUE);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZWRITEENABLE, TRUE);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ZFUNC, D3DCMP_LESS);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SPECULARENABLE, d3dapprs.bSpecular);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_LIGHTING, FALSE);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_CULLMODE,	D3DCULL_NONE);
+	STATE(	D3DRS_SHADEMODE,		d3dapprs.ShadeMode);
+	STATE(	D3DRS_SPECULARENABLE,	d3dapprs.bSpecular);
+	STATE(	D3DRS_LIGHTING,			FALSE);
 
-	/*
-	// turn on transparency for rendering
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE );
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_SRCBLEND, D3DBLEND_SRCCOLOR);
-	d3dappi.lpD3DDevice->SetRenderState(D3DRS_DESTBLEND, D3DBLEND_INVDESTCOLOR);
-	*/
-
-	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
-	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
-	d3dappi.lpD3DDevice->SetSamplerState(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
+	cull_none();
+	reset_zbuff();
+	reset_trans();
+	reset_filtering();
 
 	return TRUE;
 #if 0 // bjd

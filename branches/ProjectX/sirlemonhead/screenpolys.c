@@ -550,9 +550,11 @@ void DoLensflareEffect( void )
 	uint8		Int;
 	uint16		i;
 
+	/* bjd curr driver = 0 use to be software mode
 	if( d3dapp->CurrDriver == 0 )
 	{	}
 	else
+	*/
 	{
 		if( UsedStippledAlpha == TRUE ) return;
 	}
@@ -958,9 +960,11 @@ void SecBullLensflare( uint16 i )
 	float		DistFactor;
 	uint8		Int;
 
+	/* bjd curre driver = 0 use to be software mode
 	if( d3dapp->CurrDriver == 0 )
 	{	}
 	else
+	*/
 	{
 		if( UsedStippledAlpha == TRUE ) return;
 	}
@@ -2798,8 +2802,11 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
+	/* bjd curre driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
+	Specular = RGB_MAKE( 255, 255, 255 );
 
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );

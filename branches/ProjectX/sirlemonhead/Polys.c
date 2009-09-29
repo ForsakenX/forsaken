@@ -729,8 +729,11 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 	if( !TotalVerts ) return( FALSE );
 
+	Specular = RGB_MAKE( 255, 255, 255 );
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -1096,8 +1099,11 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 
 	if( !TotalVerts ) return( FALSE );
 
+	Specular = RGB_MAKE( 255, 255, 255 );
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -1530,8 +1536,11 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
+	Specular = RGB_MAKE( 255, 255, 255 );
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
@@ -1896,8 +1905,11 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
+	Specular = RGB_MAKE( 255, 255, 255 );
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...

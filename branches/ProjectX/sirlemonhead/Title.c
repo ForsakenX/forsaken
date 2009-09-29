@@ -8980,12 +8980,14 @@ void InitDetailLevels( MENU *Menu )
 	{
 		if ( item->Variable == &SWMonoChrome )
 		{
+			/* bjd curre driver = 0 use to be software mode
 			if ( !d3dapp->CurrDriver )
 			{
 				item->FuncSelect = SelectToggle;
 				item->FuncDraw = DrawToggle;
 			}
 			else
+			*/
 			{
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;

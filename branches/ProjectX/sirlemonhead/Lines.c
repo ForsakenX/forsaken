@@ -131,8 +131,11 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		return FALSE; // don't display lines if not debugging
 	}
 
+	specular = RGB_MAKE( 255, 255, 255 );
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
 	else specular = RGB_MAKE( 128, 128, 128 );
+	*/
 	
 	renderObject->lpD3DIndexBuffer = NULL;
 	renderObject->numTextureGroups = 0;
@@ -164,7 +167,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		{
 			if( Lines[ i ].Group == Group )
 			{
-				if(d3dapp->CurrDriver != 0)
+				/* bjd curr driver = 0 use to be software mode */
+				//if(d3dapp->CurrDriver != 0)
 				{
 					if( UsedStippledAlpha != TRUE )
 					{
@@ -177,10 +181,12 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 										   Lines[ i ].StartCol.B, Lines[ i ].StartTrans / 2 );
 					}
 				}
+				/*
 				else
 				{
 					color = RGBA_MAKE( 128, 128, 128, 255 );
 				}
+				*/
 	
 				Vert_Ptr->x = Lines[ i ].StartPos.x;
 				Vert_Ptr->y = Lines[ i ].StartPos.y;
@@ -192,7 +198,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 //				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 	
-				if(d3dapp->CurrDriver != 0)
+				/* bjd curr driver = 0 use to be software mode */
+				//if(d3dapp->CurrDriver != 0)
 				{
 					if( UsedStippledAlpha != TRUE )
 					{
@@ -205,10 +212,12 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 										   Lines[ i ].EndCol.B, Lines[ i ].EndTrans / 2 );
 					}
 				}
+				/*
 				else
 				{
 					color = RGBA_MAKE( 128, 128, 128, 255 );
 				}
+				*/
 	
 				Vert_Ptr->x = Lines[ i ].EndPos.x;
 				Vert_Ptr->y = Lines[ i ].EndPos.y;

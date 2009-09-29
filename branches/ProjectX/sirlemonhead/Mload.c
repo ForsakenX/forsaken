@@ -493,6 +493,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				g = (color>>8)&255;
 				b = color&255;
 
+				/* bjd curr driver = 0 use to be software mode
 				if(d3dapp->CurrDriver == 0) // is it or ramp mode..
 				{
 					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha ) )	// if transparencies and alpha stipple
@@ -507,7 +508,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						}
 						a = 128;
 					}
-				}else{
+				}else
+				*/
+				{
 					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
 					{
 						r = Tab[r];

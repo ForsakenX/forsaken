@@ -135,7 +135,7 @@ typedef struct tagD3DAppInfo {
     LPDIRECT3DDEVICE9        lpD3DDevice;   /* D3D device */
 	D3DVIEWPORT9			 D3DViewport; /* D3D viewport, created by application */
     int                     NumDrivers;    /* number of D3D drivers avail. */
-    int                     CurrDriver;    /* number of curr. D3D driver */
+//    int                     CurrDriver;    /* number of curr. D3D driver */
 //    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/
 //    D3DAppD3DDriver         ThisDriver;    /* description of this driver, identical to Driver[CurrDriver] */
 

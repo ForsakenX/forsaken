@@ -91,12 +91,12 @@ extern int CallbackRefCount;
  * INTERNAL FUNCTION PROTOTYPES
  */
 BOOL D3DAppISetRenderState(void);
-BOOL D3DAppIEnumDrivers(void);
+//BOOL D3DAppIEnumDrivers(void);
 BOOL D3DAppIPickDriver(int* driver, DWORD depths);
 BOOL D3DAppICreateD3D(void);
 BOOL D3DAppIEnumTextureFormats(void);
 BOOL D3DAppICreateZBuffer(int w, int h, int driver);
-BOOL D3DAppICreateDevice(int driver);
+//BOOL D3DAppICreateDevice(int driver);
 BOOL D3DAppISetCoopLevel(HWND hwnd, BOOL bFullscreen);
 BOOL D3DAppISetDisplayMode(int w, int h, int bpp);
 //BOOL D3DAppICheckForPalettized(void);

@@ -600,12 +600,16 @@ clear:					mov		eax, [esi]
 						rlf	= XLightPnt->r; 
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
+
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;
@@ -1069,12 +1073,15 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;
@@ -1313,12 +1320,15 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;

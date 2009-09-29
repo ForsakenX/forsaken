@@ -2477,15 +2477,18 @@ InitView( void )
 		IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
 	}
 
-	if (d3dapp->CurrDriver != 0)
+	/* bjd curr driver = 0 use to be software mode */
+	//if (d3dapp->CurrDriver != 0)
 	{
 		if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
 		else MakeColourMode = MCM_Stipple;
 	}
+	/*
 	else
 	{
 		MakeColourMode = MCM_Software;
 	}
+	*/
 
 	GetHardwareCaps();
 	InitModeCase();
