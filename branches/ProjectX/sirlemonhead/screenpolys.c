@@ -2082,12 +2082,14 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 
 		disable_zbuff();
 		screenpoly_filtering();
+		set_trans_state_9();
 
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
 
+		reset_trans();
 		reset_filtering();
 		reset_zbuff();
 
@@ -2122,12 +2124,14 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 
 		disable_zbuff();
 		screenpoly_filtering();
+		set_trans_state_9();
 
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
 
+		reset_trans();
 		reset_filtering();
 		reset_zbuff();
 
