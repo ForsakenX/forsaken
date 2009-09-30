@@ -991,7 +991,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 				D3DPOOL_MANAGED,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
-				0, // colour key
+				FSColourKeyBlack, // colour key
 				&imageInfo,
 				NULL,
 				texture);
@@ -1001,13 +1001,15 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 		OutputDebugString("couldn't create texture\n");
 	}
 
-/*
-	sprintf(buf, "D://Games//ProjectX//image_%d.png", imageCount);
+	DebugPrintf("FSCreateTexture: %s\n",fileName);
 
-	D3DXSaveTextureToFile(buf, D3DXIFF_PNG, (*texture), 0);
+	{
+		static int count = 0;
+		sprintf(buf, ".\\Dumps\\%s.png", fileName);
+		D3DXSaveTextureToFile(buf, D3DXIFF_PNG, (*texture), 0);
+		count++;
+	}
 
-	imageCount++;
-*/
 	return LastError;
 }
 
