@@ -4,7 +4,7 @@
 /*
  * Defines
  */
-#define SAVEGAME_SLOTS
+//#define SAVEGAME_SLOTS
 
 #define SAVEGAME_FOLDER			"Savegame"
 #define SNAPSHOT_FOLDER			"ScreenShots"

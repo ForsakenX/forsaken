@@ -120,7 +120,7 @@ BOOL TloadBlankTextureSurf(TLOADHEADER * Tloadheader , int16 n);
 //BOOL InitCopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
 //BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
 //BOOL CopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
-//TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
+BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
 
 #endif	//TLOAD_INCLUDED
 

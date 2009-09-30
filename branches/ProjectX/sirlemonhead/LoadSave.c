@@ -155,6 +155,8 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -164,6 +166,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 #endif
 			return( FALSE );
 		}
+*/
 
 		i = 0;
 		do
@@ -223,6 +226,8 @@ void InGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -232,6 +237,7 @@ void InGameLoad( MENUITEM * MenuItem )
 #endif
 			return;
 		}
+*/
 
 		i = 0;
 		do
@@ -586,11 +592,14 @@ char *SavedGameInfo( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 			sprintf( info, "unused slot %d", slot + 1 );
 			return info;
 		}
+		*/
 
 		i = 0;
 		do
@@ -648,10 +657,13 @@ BOOL SaveGameSlotUsed( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 			return FALSE;
 		}
+		*/
 
 		fclose( fp );
 		return TRUE;

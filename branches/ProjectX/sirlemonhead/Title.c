@@ -10555,6 +10555,8 @@ void GetSavedGameData( void )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -10567,6 +10569,7 @@ void GetSavedGameData( void )
 			return;
 #endif
 		}
+		*/
 
 		i = 0;
 		do
@@ -15202,12 +15205,34 @@ void KillBikeCharPic( MENU *Menu )
 	}
 }
 
+// bjd - shouldn't this check for a loaded surface and first remove it?
+// also seems to be a pure rewrite of TloadTextureSurf()
+BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
+{
+	LPDIRECT3DSURFACE9 lpSrcTextureSurf;
+	char NewName2[256];
+
+	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
+		return FALSE;
+
+	Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
+
+	if( File_Exists( &NewName2[0] ) )
+	{
+			if( MipMap && Tloadheader->MipMap[n] )
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0);
+			else
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1);
+	}
+	
+	Tloadheader->lpTexture[n] = lpSrcTextureSurf;
+	lpSrcTextureSurf = NULL;
+
+	return TRUE;
+}
 
 void LoadLevelPic(MENUITEM *Item)
 {
-#if 0 // bjd - CHECK
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	float xmin, xmax, ymin, ymax;
 	FRAME_INFO **header;
 	int frame = 0;
@@ -15228,7 +15253,6 @@ void LoadLevelPic(MENUITEM *Item)
 		Msg("Title.c LoadLevelPic() unable to allocate screen poly\n");
 		exit(1);
 	}
-#endif
 }
 
 uint16 SavedGamePicPoly;
@@ -15238,9 +15262,6 @@ BOOL TVFrameDisplayed = FALSE;
 
 void LoadSavedGamePic( char *file )
 {
-#if 0 // bjd - CHECK
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	int frame = 0;
 
 	if ( DummyTextureIndex == -1 )
@@ -15258,7 +15279,6 @@ void LoadSavedGamePic( char *file )
 	// display dummy tv
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 1;
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTV ] ].Visible = 0;
-#endif
 }
 
 
