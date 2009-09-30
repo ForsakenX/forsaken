@@ -363,14 +363,16 @@ void AddWaterLink(WATEROBJECT * WO)
 ===================================================================*/
 BOOL InitWaterObject(WATEROBJECT * WO)
 {
-	int x,y;
 //	D3DEXECUTEDATA			d3dExData;
 //	D3DEXECUTEBUFFERDESC	debDesc;
-	//LPD3DTRIANGLE	FacePnt = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
-	int			i;
 //    LPVOID lpBufStart, lpInsStart, lpPointer;
-
+	int x,y;
+	LPD3DTRIANGLE	FacePnt = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
+	int			i;
+	int ntris = 0;
 	int vertsCount = 0;
 
 	WO->num_of_verts = WO->XVerts * WO->YVerts;
@@ -382,6 +384,17 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		return FALSE;
 #endif
 	if (FAILED(FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts)))
+	{
+		return FALSE;
+	}
+
+	// pre-count the number of tris so we know how big to make the index buffer
+	// this loop structure was coppied from the way the triangles are assigned further bellow
+	for( x = 0 ; x < WO->XVerts-1 ; x++ )
+		for( y = 0 ; y < WO->YVerts-1 ; y++ )
+			ntris += 2;
+
+	if (FAILED(FSCreateIndexBuffer(&WO->renderObject, ntris*3 ))) // 3 vertexes in a triangle
 	{
 		return FALSE;
 	}
@@ -403,6 +416,13 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	{
 		return FALSE;
 	}
+
+	if (FAILED(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	FacePnt =  (LPD3DTRIANGLE) lpIndices;
 
 /*
 	lpBufStart = debDesc.lpData;
@@ -457,7 +477,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 
 	/*	copy the faces data into the execute buffer	*/
 
-	/*
 	for( x = 0 ; x < WO->XVerts-1 ; x++ )
 	{
 		for( y = 0 ; y < WO->YVerts-1 ; y++ )
@@ -475,7 +494,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			FacePnt++;
 		}
 	}
-	*/
+
 /*
 	lpPointer = (LPVOID) FacePnt;
 	if( CanCullFlag )
@@ -496,12 +515,19 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	{
 		return FALSE;
 	}
+	
+	if (FAILED(FSUnlockIndexBuffer(&WO->renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
 
 	/*	set the data for the execute buffer	*/
 	WO->renderObject.numTextureGroups = 1;
-	WO->renderObject.textureGroups[0].startVert = 0;
+	WO->renderObject.textureGroups[0].numTriangles = ntris;
 	WO->renderObject.textureGroups[0].numVerts = WO->num_of_verts;
-	WO->renderObject.textureGroups[0].texture = NULL;
+	WO->renderObject.textureGroups[0].startIndex = 0;
+	WO->renderObject.textureGroups[0].startVert = 0;
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
 
 /*
