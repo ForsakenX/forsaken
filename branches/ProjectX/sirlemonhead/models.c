@@ -1348,7 +1348,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								// appears the larger you make this number 
 								// the farther away we can see the object with better lod's
 								// we should probably make this a global so people can control it on it's own
-								int distance = CurrentCamera.UseLowestLOD ? 
+								float distance = CurrentCamera.UseLowestLOD ? 
 												6144.0F	:	// down grade for smaller cams
 												12288.0F;	// larger value for full screen
 
