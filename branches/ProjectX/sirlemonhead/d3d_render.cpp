@@ -1222,6 +1222,45 @@ HRESULT draw_vertex_buffer(RENDEROBJECT *renderObject)
 	return S_OK;
 }
 
+HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject)
+{
+	HRESULT LastError;
+
+	assert(renderObject->vbLocked == 0);
+
+	DebugPrintf("draw_line_vertex_buffer\n");
+
+	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	if (FAILED(LastError))
+		return LastError;
+
+	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
+	if (FAILED(LastError))
+		return LastError;
+
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		if (FAILED(LastError))
+			return LastError;
+
+		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
+			D3DPT_LINELIST,
+			renderObject->textureGroups[i].startVert,
+			renderObject->textureGroups[i].numVerts
+		);
+		
+		if(FAILED(LastError))
+			return LastError;
+	}
+
+	return S_OK;
+}
+
 HRESULT draw_indexed_buffer(RENDEROBJECT *renderObject)
 {
 	HRESULT LastError;
