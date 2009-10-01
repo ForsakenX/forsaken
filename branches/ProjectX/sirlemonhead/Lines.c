@@ -116,14 +116,14 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 {
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//  LPVOID			lpBufStart, lpInsStart, lpPointer;
+//	int16			Count;
 	LPD3DLVERTEX	Vert_Ptr;
-	LPD3DXLINE		Line_Ptr;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
 	D3DCOLOR		color;
 	D3DCOLOR		specular;
 	int16			Num_Lines;
+	LPD3DXLINE		Line_Ptr;
 	uint16			i;
-	int16			Count;
 
 	if ( !DebugInfo )
 	{
@@ -137,7 +137,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 	else specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	
-	renderObject->lpD3DIndexBuffer = NULL;
 	renderObject->numTextureGroups = 0;
 
 	if( *StartLine != (uint16) -1 )
@@ -229,6 +228,17 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 //				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 	
+				// this is a complete hack to render as a triangle for now.
+				Vert_Ptr->x = Lines[ i ].EndPos.x+1.0F;
+				Vert_Ptr->y = Lines[ i ].EndPos.y;
+				Vert_Ptr->z = Lines[ i ].EndPos.z;
+				Vert_Ptr->tu = 0.0F;
+				Vert_Ptr->tv = 0.0F;
+				Vert_Ptr->color = color;
+				Vert_Ptr->specular = specular;
+//				Vert_Ptr->dwReserved = 0;
+				Vert_Ptr++;
+	
 				Num_Lines++;
 
 				if( Num_Lines >= 400 ) break;
@@ -292,12 +302,9 @@ NOTE: this appears to be pointers to the vertexes above. Some kind of line index
 		ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 		if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return FALSE;
 */
-//		renderObject->numVerts = ( Num_Lines * 2 );
-//		renderObject->texture = 0;
 		
-		renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
-		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 2;
-		renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
+		renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = Num_Lines; // each line is a triangle
+		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 3; // 3 verts in a triangle
 		renderObject->textureGroups[renderObject->numTextureGroups].startVert = 0;
 		renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
 		renderObject->numTextureGroups = 1;
@@ -310,3 +317,26 @@ NOTE: this appears to be pointers to the vertexes above. Some kind of line index
 
 	return TRUE;
 }
+
+
+BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject ) 
+{
+	uint16  i = 0;
+
+	//  if( !d3dapp->bIsPrimary )
+	//		return TRUE;
+
+	i = FirstLineUsed;
+	while( i != (uint16) -1 )
+	{
+		if( LinesDispGroup( group, renderObject, &i ) )
+		{
+					//          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
+					//			if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED) != D3D_OK)
+					//				return FALSE;
+			if (FAILED(draw_object(renderObject)))
+				return FALSE;
+		}
+	}
+}
+

@@ -5252,21 +5252,7 @@ BOOL DisplayTitle(void)
 	===================================================================*/
 			group = (uint16)-1;
 
-#ifndef FINAL_RELEASE
-			i = FirstLineUsed;
-			while( i != (uint16) -1 )
-			{
-				if( LinesDispGroup( group, &RenderBufs[ 0 ], &i ) )
-				{
-//					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-					if (FAILED(draw_object(&RenderBufs[ 0 ])))
-					{
-						return FALSE;
-					}
-				}
-			}
-#endif
+			ExecuteLines( group, &RenderBufs[ 0 ] );
 
 		// reset all the normal execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
@@ -5285,22 +5271,7 @@ BOOL DisplayTitle(void)
 	===================================================================*/
 			group = (uint16)-1;
 
-#ifndef FINAL_RELEASE
-			i = FirstLineUsed;
-			while( i != (uint16) -1 )
-			{
-				if( LinesDispGroup( group, &RenderBufs[ 0 ], &i ) )
-				{
-//					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//					if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//						return FALSE;
-					if (FAILED(draw_object(&RenderBufs[ 0 ])))
-					{
-						return FALSE;
-					}
-				}
-			}
-#endif
+			ExecuteLines( group, &RenderBufs[ 0 ] );
 
 //		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
 		if (FSEndScene() != D3D_OK)

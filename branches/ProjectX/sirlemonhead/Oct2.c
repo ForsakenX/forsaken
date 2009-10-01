@@ -6577,7 +6577,6 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 	int16 Count;
 	VISGROUP  *g;
 	uint16  group;
-	uint16  i;
 	float R, G, B;
 	NumOfTransExe = 0;
 
@@ -6689,25 +6688,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
     ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
 #endif
 
-#ifndef FINAL_RELEASE
-//    if( d3dapp->bIsPrimary )
-    {
-      i = FirstLineUsed;
-      while( i != (uint16) -1 )
-      {
-        if( LinesDispGroup( group, &RenderBufs[ 0 ], &i ) )
-        {
-//          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//			if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED) != D3D_OK)
-//				return FALSE;
-			if (FAILED(draw_object(&RenderBufs[0])))
-			{
-				return FALSE;
-			}
-        }
-      }
-    }
-#endif
+	ExecuteLines( group, &RenderBufs[ 0 ] );
 
     ClipGroup( &CurrentCamera, group );
 
@@ -6762,21 +6743,9 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 #if 0
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
     {
-      group = g->group;
-      ClipGroup( &CurrentCamera, group );
-  
-//      if( d3dapp->bIsPrimary )
-      {
-        i = FirstLineUsed;
-        while( i != (uint16) -1 )
-        {
-          if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
-          {
-            if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-              return FALSE;
-          }
-        }
-      }
+		group = g->group;
+		ClipGroup( &CurrentCamera, group );
+		ExecuteLines( group, &RenderBufs[ 0 ] );
     }
 #endif
 
