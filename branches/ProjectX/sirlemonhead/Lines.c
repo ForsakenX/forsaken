@@ -114,15 +114,10 @@ void KillUsedLine( uint16 i )
 ===================================================================*/
 BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
 {
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
-//  LPVOID			lpBufStart, lpInsStart, lpPointer;
-//	int16			Count;
 	LPD3DLVERTEX	Vert_Ptr;
 	D3DCOLOR		color;
 	D3DCOLOR		specular;
 	int16			Num_Lines;
-	LPD3DXLINE		Line_Ptr;
 	uint16			i;
 
 	if ( !DebugInfo )
@@ -152,12 +147,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		{
 			return FALSE;
 		}
-/*
-		lpBufStart = ExecBuffer_debdesc.lpData;
-		lpPointer = lpBufStart;
-		
-		Vert_Ptr = (LPD3DLVERTEX) lpPointer;
-*/
+
 		Num_Lines = 0;
 
 		i = *StartLine;
@@ -236,17 +226,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 			i = Lines[ i ].Prev;
 		}
 
-/*===================================================================
-		Create Execution buffer instructions
-===================================================================*/
-/* bjd TODO
-NOTE: this appears to be pointers to the vertexes above. Some kind of line indexes...
+/*	old render states passed to d3dline , might be needed later for reference
 
-		lpPointer = (LPVOID ) Vert_Ptr;
-		lpInsStart = lpPointer;
-
-		if( Num_Lines != 0 )
-		{
 			OP_STATE_RENDER( 2, lpPointer );
 			    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
 			    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
@@ -257,26 +238,9 @@ NOTE: this appears to be pointers to the vertexes above. Some kind of line index
 	   		OP_STATE_RENDER( 1, lpPointer );
 	   		    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, 0, lpPointer );
 			OP_LINE_LIST( Num_Lines, lpPointer );
-			
-	   		Line_Ptr = (LPD3DLINE) lpPointer;
-			
-	   		for( Count = 0; Count < Num_Lines; Count++ )
-	   		{
-   				Line_Ptr->v1 = ( ( Count * 2 ) + 0 );
-   				Line_Ptr->v2 = ( ( Count * 2 ) + 1 );
-				Line_Ptr++;
-			}
-			
-			lpPointer = ( LPVOID ) Line_Ptr;
 
-			OP_EXIT( lpPointer );
-		}
 */
-/*===================================================================
-		Finish off execution list
-===================================================================*/
 
-//		ExecBuffer->lpVtbl->Unlock( ExecBuffer );
 		FSUnlockVertexBuffer(renderObject);
 
 		*StartLine = i;
