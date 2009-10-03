@@ -291,5 +291,7 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 				return FALSE;
 		}
 	}
+
+	return TRUE;
 }
 
