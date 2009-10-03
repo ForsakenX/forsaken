@@ -501,7 +501,6 @@ void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy);
-//bjd BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
 
 BOOL DeleteSavedGame( LIST *l, int item );
 BOOL DeleteDemo( LIST *l, int item );
@@ -15074,7 +15073,6 @@ void LoadBikeChar(MENUITEM *Item)
 //	MENUITEM *Item;
 	float BikeCharScale = 0.7F;
 	FRAME_INFO **header;
-	int systpageindex;
 	
 	xmin = (Item->x + VDUoffsetX) * ModeScaleX[ModeCase];
 	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
@@ -15107,9 +15105,6 @@ void LoadBikeChar(MENUITEM *Item)
 			exit(1);
 		}
 	}
-
-	systpageindex = (*header)->sys_tpage_index;
-//bjd - CHECK	MovePPMToVideoMemory( &Tloadheader, (*header)->vid_tpage_index, SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
 	
 	if (!LoadGeneralPic(0, 0, 0, 0, header, &Biker, &BikerScrPoly, &BikerDisplayed))
 	{
@@ -17455,7 +17450,7 @@ BOOL FlyGirlActive = FALSE;
 
 void LoadHoloModel( uint16 model )
 {
-	int16 systpageindex, i;
+	int i;
 
 	if ( CurrentHoloModel != ( uint16 ) -1 )
 	{
@@ -17485,13 +17480,6 @@ void LoadHoloModel( uint16 model )
 
 	if (CurrentHoloModel != (uint16) -1)
 	{
-		
-		if ( TitleModelSet[ model ].DoIMorph )
-		{
-			systpageindex = MxaModelHeaders[ model ].SysTloadIndex[0];
-//bjd - CHECK			MovePPMToVideoMemory( &Tloadheader, MxaModelHeaders[ model ].TloadIndex[0], SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
-		}
-
 		HoloModelScale = 1.0F;
 		for( i = 0; i < MAXBIKETYPES; i++ )
 		{

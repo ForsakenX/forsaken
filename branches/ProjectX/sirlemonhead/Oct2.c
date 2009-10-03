@@ -2313,7 +2313,6 @@ ReleaseView(void)
     ReleaseTitle();
     ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
-//bjd    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     ReleaseTitleModels();
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
@@ -2324,7 +2323,6 @@ ReleaseView(void)
 #if 0 // used to release solid scr poly stuff
     ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
-    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
     ReleasePolySort();
@@ -2345,7 +2343,6 @@ ReleaseView(void)
     FreeAllLastAFrameScrPolys();
     ReleaseMloadheader(&Mloadheader);
     ReleaseTloadheader( &Tloadheader );
-//bjd    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     ReleaseModels();
     
     if ( MCloadheader.Buffer )
@@ -2517,8 +2514,6 @@ InitView( void )
 				exit(1);
 			}
 		}
-
-    CurrentSysTexture = 0;
         
     InitPolySort();
 
@@ -2560,14 +2555,7 @@ InitView( void )
       SeriousError = TRUE;
       return FALSE;
     }
-/* bjd - CHECK
-    // Load all system memory textures...
-    if( !SysTload( SystemMemTPages, CurrentSysTexture ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-*/
+
     if( !InitModel( /*lpDev,*/ TitleModelSet ) ) // bjd
     {
       SeriousError = TRUE;
@@ -4874,14 +4862,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   
     FixTextureUVs( &OffsetFiles[ 0 ] );
 
-    // Load all system memory textures...
-/* bjd - CHECK
-    if( !SysTload( SystemMemTPages, CurrentSysTexture ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-*/
     MyGameStatus = STATUS_InitView_3;
     PrintInitViewStatus( MyGameStatus );
     break;

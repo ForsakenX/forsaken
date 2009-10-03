@@ -26,8 +26,7 @@
 #define SCALEMAX 2
 
 #define	DONTLOAD_TPAGES				0
-#define	LOAD_TPAGES_VIDMEM			1
-#define	LOAD_TPAGES_SYSMEM			2
+#define	LOAD_TPAGES					1
 #define	LOAD_TPAGES_PLACEHOLDER		4
 #define	LOAD_TPAGES_FINISH			8
 
@@ -72,28 +71,15 @@ typedef struct TLOADHEADER{
 	int					LOD[MAXTPAGESPERTLOAD];
 }TLOADHEADER;
 
-#define MAXSYSTEMMEMTPAGES 32	// 16 levels, 16 bikers
-
-typedef struct SYSTEMMEMTPAGES{
-//	LPDIRECTDRAWSURFACE	lpSrcTextureSurf;		// pointer to vid mem surface
-	int					VidTPageIndex;			// index of corresponding surface in vid mem
-	char				FileName[256];			// t-page file name
-}SYSTEMMEMTPAGES;
-
-SYSTEMMEMTPAGES SystemMemTPages[MAXSYSTEMMEMTPAGES];
-
-int CurrentSysTexture;
 /*
  * fn prototypes
  */
 BOOL InitTload( TLOADHEADER * Tloadheader  );
 BOOL Tload( TLOADHEADER * Tloadheader );
-//bjd BOOL SysTload( SYSTEMMEMTPAGES *SysTextures, int num_tpages );
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader );
 BOOL TloadGetTextureHandle(TLOADHEADER * Tloadheader , int n);
 void TloadReleaseTexture(TLOADHEADER * Tloadheader, int n);
 void ReleaseTloadheader( TLOADHEADER * Tloadheader );
-//bjd void ReleaseSysTload( SYSTEMMEMTPAGES * SysTextures, int *num_tpages );
 
 BOOL TloadAllTextures(TLOADHEADER * Tloadheader);
 //LPDIRECTDRAWSURFACE TloadSurface(LPDIRECTDRAW lpDD, LPCSTR lpName,
@@ -116,9 +102,7 @@ BOOL TloadBlankTextureSurf(TLOADHEADER * Tloadheader , int16 n);
 
 //LPDIRECTDRAWSURFACE TloadSurfaceScale8BitPrimary( LPDIRECTDRAW lpDD, LPCSTR lpName,
 //                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
-//LPDIRECTDRAWSURFACE LoadPPMToSystemMemory( char *ImageFile, int ScaleBy );
 //BOOL InitCopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
-//BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
 //BOOL CopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
 

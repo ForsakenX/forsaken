@@ -1045,27 +1045,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 			if( !_stricmp( "pkupsa.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
-			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES_SYSMEM)
-			{
-					if ( header_num > 0 )
-					{
-						Mxaloadheader->TloadIndex[i] = Mxaloadheaders[header_num - 1].TloadIndex[i];	// use same tpage as last model
-						strcpy (SystemMemTPages[ CurrentSysTexture ].FileName, &TempFilename[0]);	// store name of tpage
-					
-						Mxaloadheader->SysTloadIndex[i] = CurrentSysTexture;
-						SystemMemTPages[ CurrentSysTexture ].VidTPageIndex = Mxaloadheader->TloadIndex[i];
-//bjd						SystemMemTPages[ CurrentSysTexture ].lpSrcTextureSurf = NULL;
-						CurrentSysTexture++;
-
-						if (CurrentSysTexture == MAXSYSTEMMEMTPAGES)
-						{
-							Msg("2dTextures.c: Load_Off_File() Max system mem t-pages exceeded\n");
-							exit(1);
-						}
-					}
-			}
-
-			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES_VIDMEM)
+			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
 				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );		// dont colourkey
 			
 			if( Mxaloadheader->TloadIndex[i] == -1 )
@@ -1074,7 +1054,6 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 				return FALSE;
 			}
 		}
-	
 	}
 
 	Mxaloadheader->Buffer = Buffer;

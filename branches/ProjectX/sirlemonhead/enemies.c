@@ -4321,7 +4321,7 @@ BOOL PreLoadEnemies( void )
 							ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
 							ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 							ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-							ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+							ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 							ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 							ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 							EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
@@ -4336,7 +4336,7 @@ BOOL PreLoadEnemies( void )
 								ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 								NextEnemyModel++;
@@ -4365,7 +4365,7 @@ BOOL PreLoadEnemies( void )
 								ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 								EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
@@ -4380,7 +4380,7 @@ BOOL PreLoadEnemies( void )
 									ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
 									ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 									ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-									ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+									ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 									ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 									ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 									NextEnemyModel++;

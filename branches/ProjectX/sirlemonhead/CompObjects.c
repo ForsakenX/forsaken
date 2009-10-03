@@ -151,7 +151,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 				ModNames[ (*BaseModel) + Count ].DoIMorph = FALSE;
 				ModNames[ (*BaseModel) + Count ].ModelIndex = (*BaseModel) + Count;
 				ModNames[ (*BaseModel) + Count ].StoreTriangles = FALSE;
-				ModNames[ (*BaseModel) + Count ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+				ModNames[ (*BaseModel) + Count ].AllocateTpage = LOAD_TPAGES;
 				ModNames[ (*BaseModel) + Count ].LevelSpecific = LevelSpecific;
 				ModNames[ (*BaseModel) + Count ].LoadEnable = DO_LOAD;
 			}
@@ -162,7 +162,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 			ModNames[ (*BaseModel) + NumModels ].DoIMorph = FALSE;
 			ModNames[ (*BaseModel) + NumModels ].ModelIndex = (*BaseModel) + NumModels;
 			ModNames[ (*BaseModel) + NumModels ].StoreTriangles = FALSE;
-			ModNames[ (*BaseModel) + NumModels ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+			ModNames[ (*BaseModel) + NumModels ].AllocateTpage = LOAD_TPAGES;
 			ModNames[ (*BaseModel) + NumModels ].LevelSpecific = LevelSpecific;
 			ModNames[ (*BaseModel) + NumModels ].LoadEnable = DO_LOAD;
 
