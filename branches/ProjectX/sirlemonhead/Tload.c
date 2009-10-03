@@ -398,25 +398,6 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	}
 
 	Tloadheader->lpTexture[n] = lpSrcTexture;
-
-	/*
-	 * Try out adding color key to surface
-	 */
-
-	/*
-	if( Tloadheader->ColourKey[n] )// && d3dappi.Driver[d3dappi.CurrDriver].bTransparency && !DontColourKey )
-	{
-		DDCOLORKEY ddcolorkey;
-		ddcolorkey.dwColorSpaceLowValue = RGB_MAKE( 0, 0, 0 ); //RGB_MAKE( 255 , 0 , 255 );
-		ddcolorkey.dwColorSpaceHighValue = ddcolorkey.dwColorSpaceLowValue;
-		LastError = lpSrcTexture->lpVtbl->SetColorKey( lpSrcTexture, DDCKEY_SRCBLT, &ddcolorkey );
-		if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! lpSrcTexture->lpVtbl->SetColorKey  \n" );
-			goto exit_with_error;
-		}
-	}
-	*/
-
 	lpSrcTexture = NULL;
 
 	return TRUE;
