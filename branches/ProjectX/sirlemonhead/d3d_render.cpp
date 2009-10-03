@@ -432,6 +432,8 @@ void reset_cull( void )
 BOOL
 D3DAppISetRenderState()
 {
+	//STATE( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
+
 	STATE(	D3DRS_SHADEMODE,		d3dapprs.ShadeMode);
 	STATE(	D3DRS_SPECULARENABLE,	d3dapprs.bSpecular);
 	STATE(	D3DRS_LIGHTING,			FALSE);
