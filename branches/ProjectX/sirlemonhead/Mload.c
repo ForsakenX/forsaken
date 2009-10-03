@@ -384,7 +384,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16	initstate;
 	int16	whenstoppedtriggermod;
 	D3DCOLOR *ambient;
-	int colourkey = 0;
 	char buf[100];
 
 
@@ -640,8 +639,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 */
 					if ( MFacePnt->pad & 1 )
 					{
-						// colourkey triangle found
-						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 					if ( AllWires )
@@ -1199,7 +1196,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	}
 	Buffer = (char *) Uint16Pnt;
 
-	DebugPrintf( "Mload: %d colourkey triangles found\n", colourkey );
 	// Mloadheader is valid and can be executed...
 	Mloadheader->state = TRUE;
 
@@ -1541,7 +1537,8 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			DebugPrintf("Adding Texture: %s\n",&TempFilename[0]);
 
-			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , FALSE , TRUE, 0, 0 );		// do colourkey	dont scale do MipMap
+			// use to color key
+			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], FALSE , TRUE, 0, 0 );
 
 			if( Mloadheader->TloadIndex[i] == -1 )
 			{

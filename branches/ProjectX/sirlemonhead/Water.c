@@ -160,7 +160,8 @@ BOOL PreWaterLoad( char * Filename )
 	if( !_stricmp( "default.ppm", (char *) &buf[0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\%s", (char *) &buf[0] );
 	else sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], (char *) &buf[0] );
 
-	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE , TRUE, 0, 0 );		// dont colourkey
+	// use to color key
+	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE, 0, 0 );
 	WaterBuffer = Buffer;
 	return TRUE;
 }

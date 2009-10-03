@@ -182,7 +182,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	uint16			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
 	uint32			Colour;
-	int				colourkey = 0;
 #if	MXA_VERSION_NUMBER == 2
 	int16			c;
 	int8		*	Int8Pnt;
@@ -418,8 +417,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 
 					if ( MFacePnt->pad & 1 )
 					{
-						// colourkey triangle found
-						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
@@ -789,8 +786,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	}
 #endif
 
-	if ( colourkey )
-		DebugPrintf( "Mxaload: %d colourkey triangles found\n", colourkey );
 	// Mxaloadheader is valid and can be executed...
 	Mxaloadheader->state = TRUE;
 	return( TRUE );
@@ -1049,7 +1044,8 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
 			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
-				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );		// dont colourkey
+				// use to color key
+				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE ,FALSE, 0, 0 );
 			
 			if( Mxaloadheader->TloadIndex[i] == -1 )
 			{

@@ -43,7 +43,6 @@ extern char* D3DAppErrorToString(HRESULT error);
 		Globals...	
 ===================================================================*/
 #define	MAXSCALE 3
-TLOADNAME	TloadNames[MAXTPAGESPERTLOAD];
 
 TLOADHEADER	Tloadheader;
 BOOL	Pal332 = FALSE;
@@ -401,251 +400,6 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	lpSrcTexture = NULL;
 
 	return TRUE;
-
-#if 0 // bjd
-	// only load source texture if not a placeholder
-	if ( !Tloadheader->PlaceHolder[ n ] )
-	{
-		// change extension of file name
-		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
-
-		// if file exists
-		if( File_Exists( &NewName2[ 0 ] ) )
-		{
-			if( !HasBmpGotRealBlack( &NewName2[0] ) )
-			{
-				// override colourkey if bmp doesnt have a real black as its first colour....
-				Tloadheader->ColourKey[n] = FALSE;
-			}
-			if( MipMap && Tloadheader->MipMap[n] )
-			{
-				lpSrcTexture = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-			}
-			else
-			{
-				lpSrcTexture = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-			}
-		}
-
-		if ( !lpSrcTextureSurf )
-		{
-			DebugPrintf( "You should have a .bmp version of this ppm, %s\n", Tloadheader->ImageFile[n][0] );
-
-			if (bPrimaryPalettized)
-			{
-				lpSrcTextureSurf = TloadSurfaceScale8BitPrimary(d3dappi.lpDD, Tloadheader->ImageFile[n],
-													  &d3dappi.ThisTextureFormat.ddsd,
-													  DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-			}else{
-
-				if( MipMap && Tloadheader->MipMap[n] )
-				{
-					lpSrcTextureSurf = LoadMipMap(d3dappi.lpDD, Tloadheader->ImageFile[n],
-						&d3dappi.ThisTextureFormat.ddsd,
-						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-				}else{
-					lpSrcTextureSurf = TloadSurfaceScale(d3dappi.lpDD, Tloadheader->ImageFile[n],
-						&d3dappi.ThisTextureFormat.ddsd,
-						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-				}
-
-			}
-		}
-
-		if (!lpSrcTextureSurf){
-			Msg( "TloadTextureSurf() !lpSrcTextureSurf\n" );
-			goto exit_with_error;
-		}
-
-		LastError = lpSrcTextureSurf->lpVtbl->QueryInterface(lpSrcTextureSurf,
-												 &IID_IDirect3DTexture,
-												 (LPVOID*)&lpSrcTexture);
-		if (LastError != DD_OK){
-			Msg( "TloadTextureSurf() !lpSrcTextureSurf->lpVtbl->QueryInterface\n" );
-			goto exit_with_error;
-		}
-
-		LastError = D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);
-
-		if (LastError != DD_OK){
-			Msg( "TloadTextureSurf() !D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);\n" );
-		    goto exit_with_error;
-		}
-
-	}else
-	{
-		// do not allow mip map placeholders
-		if( MipMap && Tloadheader->MipMap[n] ){
-			Msg( "TloadTextureSurf() MipMap && Tloadheader->MipMap[n]  \n" );
-			return FALSE;
-		}
-		
-		// we still need surface description for placeholder...
-		memcpy(&ddsd, &d3dappi.ThisTextureFormat.ddsd, sizeof(DDSURFACEDESC));
-
-		ddsd.dwSize = sizeof(DDSURFACEDESC);
-		ddsd.dwWidth = Tloadheader->Xsize[ n ];
-		ddsd.dwHeight = Tloadheader->Ysize[ n ];
-
-		// if using square Textures, ensure placeholder is square
-		if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
-		{
-			if( ddsd.dwHeight != ddsd.dwWidth )
-			{
-				if( ddsd.dwHeight > ddsd.dwWidth )
-				{
-					ddsd.dwHeight >>= 1;
-				}
-				else
-				{
-					ddsd.dwWidth >>= 1;
-				}
-			}
-		}
-	}
-
-
-
-    /*
-     * Create an empty texture surface to load the source texture into.
-     * The DDSCAPS_ALLOCONLOAD flag allows the DD driver to wait until the
-     * load call to allocate the texture in memory because at this point,
-     * we may not know how much memory the texture will take up (e.g. it
-     * could be compressed to an unknown size in video memory).
-     */
-    
-	if( MipMap && Tloadheader->MipMap[n] )
-	{
-		ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | 
-			DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-		ddsd.ddsCaps.dwCaps =   DDSCAPS_VIDEOMEMORY | DDSCAPS_COMPLEX | 
-			DDSCAPS_TEXTURE | DDSCAPS_MIPMAP | DDSCAPS_ALLOCONLOAD;
-	}else{
-		ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-		ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_ALLOCONLOAD; // | DDSCAPS_3DDEVICE;
-//	    ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_3DDEVICE;
-	}
-
-	LastError = D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n])  \n" );
-        goto exit_with_error;
-    }
-    if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) {
-        pcaps = DDPCAPS_8BIT | DDPCAPS_ALLOW256;
-    } else if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED4) {
-        pcaps = DDPCAPS_4BIT;
-    } else {
-        pcaps = 0;
-    }
-
-	//Msg("pcaps = %d", pcaps);
-	//Msg("ddsd.ddpfPixelFormat.dwFlags = %d", ddsd.ddpfPixelFormat.dwFlags);
-
-    if (pcaps) {
-        memset(ppe, 0, sizeof(PALETTEENTRY) * 256);
-        LastError = d3dappi.lpDD->lpVtbl->CreatePalette(d3dappi.lpDD, pcaps,
-                                                 ppe, &lpDstPalette, NULL);
-        if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! d3dappi.lpDD->lpVtbl->CreatePalette  \n" );
-            goto exit_with_error;
-        }
-        LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette(Tloadheader->lpTextureSurf[n],
-                                lpDstPalette);
-        if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette  \n" );
-            goto exit_with_error;
-        }
-    }
-
-	/*
-	 * Try out adding color key to surface
-	 */
-	if( Tloadheader->ColourKey[n] && d3dappi.Driver[d3dappi.CurrDriver].bTransparency && !DontColourKey )
-	{
-		DDCOLORKEY ddcolorkey;
-		ddcolorkey.dwColorSpaceLowValue = RGB_MAKE( 0, 0, 0 ); //RGB_MAKE( 255 , 0 , 255 );
-		ddcolorkey.dwColorSpaceHighValue = ddcolorkey.dwColorSpaceLowValue;
-		LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey( Tloadheader->lpTextureSurf[n],
-			DDCKEY_SRCBLT, &ddcolorkey);
-		if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey  \n" );
-			goto exit_with_error;
-		}
-	}
-
-    /*
-     * Query our destination surface for a texture interface
-     */
-    LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->QueryInterface(Tloadheader->lpTextureSurf[n],
-                                             &IID_IDirect3DTexture,
-                                             (LPVOID*)&Tloadheader->lpTexture[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->QueryInterface  \n" );
-        goto exit_with_error;
-    }
-    /*
-     * Load the source texture into the destination.  During this call, a
-     * driver could compress or reformat the texture surface and put it in
-     * video memory.
-     */
-
-    
- 	if ( !Tloadheader->PlaceHolder[ n ] )
-	{
-
-		// test
-		//IDirectDrawPalette *pal = NULL;
-		//lpSrcTextureSurf->lpVtbl->GetPalette(lpSrcTextureSurf, &pal);
-		//Msg("%p\n", pal);
-
-		LastError = Tloadheader->lpTexture[n]->lpVtbl->Load(Tloadheader->lpTexture[n], lpSrcTexture);
-
-	//	LastError =	Tloadheader->lpTextureSurf[n]->lpVtbl->Blt(Tloadheader->lpTextureSurf[n],
-	//													   NULL,lpSrcTextureSurf,
-	//													   NULL, DDBLT_WAIT, NULL);
-		
-		if (LastError != DD_OK) {
-			D3DAppISetErrorString(
-				"TloadTextureSurf() ! Tloadheader->lpTexture[n]->lpVtbl->Load: %s %d \n",
-				D3DAppErrorToString(LastError),
-				Tloadheader->MipMap[n]
-			);
-			Msg("%s",LastErrorString);
-		    //goto exit_with_error;
-	    }
-		/* 
-	     * Now we are done with the source texture
-	     */
-		RELEASE(lpSrcTexture);
-	    RELEASE(lpSrcTextureSurf);
-	}
-
-    /*
-     * Did the texture end up in video memory?
-     */
-    LastError = D3DAppIGetSurfDesc(&ddsd, Tloadheader->lpTextureSurf[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! D3DAppIGetSurfDesc  \n" );
-        goto exit_with_error;
-    }
-    if (!(ddsd.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY))
-	{
-        Tloadheader->bTexturesInVideo[n] = FALSE;
-	}else{
-		Tloadheader->bTexturesInVideo[n] = TRUE;
-	}
-    
-    return TRUE;
-
-exit_with_error:
-    RELEASE(lpSrcTexture);
-    RELEASE(lpSrcTextureSurf);
-    RELEASE(lpDstPalette);
-    RELEASE(Tloadheader->lpTexture[n]);
-    RELEASE(Tloadheader->lpTextureSurf[n]);
-    return FALSE;     
-#endif
 }
 
 /*
@@ -1797,11 +1551,11 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 }
 /*===================================================================
 	Procedure	:		Add a texture to a tloadheader
-	Input		:		TLOADHEADER * , char * Name , ColourKey
+	Input		:		TLOADHEADER * , char * Name
 	Output		:		-1 if too many tpages
 ===================================================================*/
 
-int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize )
+int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize )
 {
 	int16 i;
 	char * NamePnt;
@@ -1810,7 +1564,6 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , B
 	if ( !Name[ 0 ] )
 	{
 	 	i = Tloadheader->num_texture_files;
-		Tloadheader->ColourKey[i] = ColourKey;
 		Tloadheader->Scale[i] = FALSE;		// cannot allow scaling of placeholder!
 		Tloadheader->MipMap[i] = MipMap;
 		Tloadheader->ImageFile[i][0] = 0;
@@ -1833,7 +1586,6 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , B
 	}
 
 	i = Tloadheader->num_texture_files;
-	Tloadheader->ColourKey[i] = ColourKey;
 	Tloadheader->Scale[i] = Scale;
 	Tloadheader->MipMap[i] = MipMap;
 	NamePnt = (char *) &Tloadheader->ImageFile[i];

@@ -151,7 +151,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
 	uint32			Colour;
-	int				colourkey = 0;
 
 #if	MX_VERSION_NUMBER == 2
 	int16			c;
@@ -451,8 +450,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 					if ( MFacePnt->pad & 1 )
 					{
-						// colourkey triangle found
-						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
@@ -839,8 +836,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		Buffer = (char *) ( Uint16Pnt + 1 );
 	}
 
-	if ( colourkey )
-		DebugPrintf( "Mxload: %d colourkey triangles found\n", colourkey );
 	// Mxloadheader is valid and can be executed...
 	Mxloadheader->state = TRUE;
 	return( TRUE );
@@ -1247,7 +1242,8 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 			if( !_stricmp( "pkupsa.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "titana.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
-			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );		// colourkey , can scale
+			// color key was (uint16) (Panel ^ TRUE)
+			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], Panel ^ TRUE, FALSE, 0, 0 );	
 			if( Mxloadheader->TloadIndex[i] == -1 )
 			{
 				Msg( "PreMxload() Too many TPages\n" );
