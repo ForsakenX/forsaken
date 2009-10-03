@@ -829,6 +829,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 				}
 				else
 				{
+					set_trans_state_5();
 /*
 					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 						return FALSE;
@@ -836,6 +837,8 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 					{
 						return FALSE;
 					}
+
+					reset_trans();
 				}
 			}
 		}

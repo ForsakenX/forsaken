@@ -616,14 +616,12 @@ void render_state( D3DRENDERSTATETYPE type, int val )
 	d3dappi.lpD3DDevice->SetRenderState( type, val );
 }
 
-//
 void set_trans_state_3( void )
 {
 	STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
 	STATE(D3DRS_DESTBLEND,	D3DBLEND_SRCALPHA);
 }
 
-//
 void set_trans_state_2( void )
 {
 	STATE(D3DRS_SRCBLEND,	D3DBLEND_ONE);
@@ -636,6 +634,11 @@ void set_trans_state_9( void )
 	STATE(D3DRS_DESTBLEND,	D3DBLEND_ONE);
 }
 
+void set_trans_state_5( void )
+{
+	STATE(D3DRS_SRCBLEND,	D3DBLEND_SRCALPHA);
+	STATE(D3DRS_DESTBLEND,	D3DBLEND_INVSRCALPHA);
+}
 
 // transparency tester
 void render_state_trans( void )
@@ -766,7 +769,7 @@ void cull_cw( void )
 	STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
 }
 
-void cull_ccw( void )
+void reset_cull( void )
 {
 	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
 }
@@ -778,7 +781,7 @@ D3DAppISetRenderState()
 	STATE(	D3DRS_SPECULARENABLE,	d3dapprs.bSpecular);
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
-	cull_none();
+	reset_cull();
 	reset_zbuff();
 	reset_trans();
 	reset_filtering();
@@ -987,6 +990,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 				height, 
 				numMips, 
 				0,
+				// most likely will end up as the format the file is in
 				D3DFMT_A8R8G8B8,
 				D3DPOOL_MANAGED,
 				D3DX_DEFAULT,

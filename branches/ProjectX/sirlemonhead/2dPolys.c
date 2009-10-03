@@ -1596,7 +1596,7 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
+			reset_cull();
 		
 		reset_trans();
 
@@ -1638,7 +1638,7 @@ BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJ
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
+			reset_cull();
 
 		
 		reset_trans();

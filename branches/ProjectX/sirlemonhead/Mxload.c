@@ -489,7 +489,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			// bjd - probably should be part of the render object.
 			if( Panel )
 			{
-				cull_ccw();
+				reset_cull();
 			}
 
 			if (StoreTriangles)

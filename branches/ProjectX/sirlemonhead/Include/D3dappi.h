@@ -93,7 +93,7 @@ extern int CallbackRefCount;
 
 void cull_none( void );
 void cull_cw( void );
-void cull_ccw( void );
+void reset_cull( void );
 BOOL D3DAppISetRenderState(void);
 //BOOL D3DAppIEnumDrivers(void);
 BOOL D3DAppIPickDriver(int* driver, DWORD depths);

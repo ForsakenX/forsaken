@@ -624,7 +624,7 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
+			reset_cull();
 
 		reset_trans();
 
@@ -666,7 +666,7 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
+			reset_cull();
 
 		reset_trans();
 
@@ -1415,7 +1415,7 @@ BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/ RENDERO
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
+			reset_cull();
 
 		reset_trans();
 
@@ -1458,8 +1458,7 @@ BOOL DisplaySolidGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDER
 			return FALSE;
 
 		if( CanCullFlag )
-			cull_ccw();
-
+			reset_cull();
 
 		reset_trans();
 
