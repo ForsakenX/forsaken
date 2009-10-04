@@ -615,6 +615,7 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 //		if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			return FALSE;
 
+		disable_zbuff_write();
 		set_trans_state_3();
 
 		if(	CanCullFlag )
@@ -627,6 +628,7 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 			reset_cull();
 
 		reset_trans();
+		reset_zbuff();
 
 	}
 	return( FALSE );
