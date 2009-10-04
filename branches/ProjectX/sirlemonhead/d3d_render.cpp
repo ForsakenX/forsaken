@@ -520,6 +520,11 @@ HRESULT FSEndScene()
 	return d3dappi.lpD3DDevice->EndScene();
 }
 
+void save_texture( char * path, LPDIRECT3DTEXTURE9 texture )
+{
+	D3DXSaveTextureToFile(path, D3DXIFF_PNG, texture, 0);
+}
+
 char saveFile[MAX_PATH];
 
 int imageCount = 0;
