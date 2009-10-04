@@ -739,10 +739,12 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 //	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //			return;
 
+	set_trans_state_5();
+
 	if (FAILED(draw_object(&Wo->renderObject)))
-	{
 		return;
-	}
+
+	reset_trans();
 
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 //	if (FSSetMatrix(hWorld, &identity) != D3D_OK)

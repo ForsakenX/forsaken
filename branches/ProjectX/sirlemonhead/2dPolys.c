@@ -1587,6 +1587,7 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
 
+		disable_zbuff_write();
 		set_trans_state_2();
 
 		if(	CanCullFlag )
@@ -1599,6 +1600,7 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 			reset_cull();
 		
 		reset_trans();
+		reset_zbuff();
 
 	}
 
@@ -1629,6 +1631,7 @@ BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJ
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
 
+		disable_zbuff_write();
 		render_state_trans();
 
 		if(	CanCullFlag )
@@ -1640,8 +1643,8 @@ BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJ
 		if( CanCullFlag )
 			reset_cull();
 
-		
 		reset_trans();
+		reset_zbuff();
 
 	}
 

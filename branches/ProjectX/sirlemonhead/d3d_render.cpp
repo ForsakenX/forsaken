@@ -396,6 +396,11 @@ void reset_zbuff( void )
 	STATE(	D3DRS_ZFUNC,			D3DCMP_LESS);
 }
 
+void disable_zbuff_write( void )
+{
+	STATE(	D3DRS_ZWRITEENABLE,		FALSE);
+}
+
 void disable_zbuff( void )
 {
 	STATE(	D3DRS_ZENABLE,			D3DZB_FALSE);
@@ -429,6 +434,18 @@ void reset_cull( void )
 	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
 }
 
+void reset_alpha_ignore( void )
+{
+	STATE( D3DRS_ALPHATESTENABLE,	TRUE); 
+	STATE( D3DRS_ALPHAREF,			0x000000FF );
+	STATE( D3DRS_ALPHAFUNC,			D3DCMP_EQUAL);
+}
+
+void disable_alpha_ignore( void )
+{
+	STATE( D3DRS_ALPHATESTENABLE,	FALSE); 
+}
+
 BOOL
 D3DAppISetRenderState()
 {
@@ -442,6 +459,7 @@ D3DAppISetRenderState()
 	reset_zbuff();
 	reset_trans();
 	reset_filtering();
+	reset_alpha_ignore();
 
 	return TRUE;
 }
