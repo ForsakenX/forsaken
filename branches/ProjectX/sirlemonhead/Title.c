@@ -5236,10 +5236,6 @@ BOOL DisplayTitle(void)
 
 			ExecuteLines( group, &RenderBufs[ 0 ] );
 
-		// reset all the normal execute status flags...
-//		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		set_normal_states();
-
 	/*===================================================================
 		Display Solid Screen Polys
 	===================================================================*/
@@ -5247,6 +5243,9 @@ BOOL DisplayTitle(void)
 
 		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) )
 			return FALSE;
+
+  // reset mode
+		set_normal_states();
 
 	/*===================================================================
 	Display Solid Lines
@@ -15169,9 +15168,9 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 	if( File_Exists( &NewName2[0] ) )
 	{
 			if( MipMap && Tloadheader->MipMap[n] )
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0);
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0, Tloadheader->ColourKey[n]);
 			else
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1);
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1, Tloadheader->ColourKey[n]);
 	}
 	
 	Tloadheader->lpTexture[n] = lpSrcTextureSurf;

@@ -45,6 +45,7 @@ typedef struct TLOADHEADER{
 	uint16				Ysize[MAXTPAGESPERTLOAD];		// the Ysize now
 	BOOL				Scale[MAXTPAGESPERTLOAD];		// Can I Be Scaled....???
 	uint16				CurScale[MAXTPAGESPERTLOAD];	// 0 normal...1 X half 2 X and Y half..
+	uint16				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
 	DWORD				SizeInVidMem[MAXTPAGESPERTLOAD]; // Calculated size in video memory....
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
 //    LPDIRECTDRAWSURFACE lpTextureSurf[MAXTPAGESPERTLOAD]; /* surfaces */
@@ -85,7 +86,7 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 //LPDIRECTDRAWSURFACE TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
  //                  LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
 
-int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
+int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 BOOL
 TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader);

@@ -229,8 +229,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 			return( NULL );
 		}
 
-		// use to colorkey
-		Frm_Info->vid_tpage_index = AddTexture( &Tloadheader, "", Scale , FALSE, xsize, ysize );	// add dummy texture
+		Frm_Info->vid_tpage_index = AddTexture( &Tloadheader, "", TRUE , Scale , FALSE, xsize, ysize );	// add dummy texture
 		if( Frm_Info->vid_tpage_index == -1 )
 		{
 			free( Frm_Info );
@@ -305,8 +304,7 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 
 			if( LoadTPages & LOAD_TPAGES)
 			{
-				// use to color key
-				Name_Index[ Count ] = AddTexture( &Tloadheader, &TempFilename[ 0 ], Scale , FALSE, 0, 0 );
+				Name_Index[ Count ] = AddTexture( &Tloadheader, &TempFilename[ 0 ], TRUE , Scale , FALSE, 0, 0 );
 				strcpy ( tpagename, Char_Ptr );
 				*last_tpage = Name_Index[ Count ];
 				if( Name_Index[ Count ] == -1 )

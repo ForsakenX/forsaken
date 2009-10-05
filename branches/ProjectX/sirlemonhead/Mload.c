@@ -384,6 +384,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16	initstate;
 	int16	whenstoppedtriggermod;
 	D3DCOLOR *ambient;
+	int colourkey = 0;
 	char buf[100];
 
 
@@ -639,6 +640,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 */
 					if ( MFacePnt->pad & 1 )
 					{
+						// colourkey triangle found
+						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 					if ( AllWires )
@@ -667,6 +670,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				indexOffset += num_triangles * 3;
 
 				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mloadheader->TloadIndex[tpage]];
+				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mloadheader->TloadIndex[tpage]];
 
 				{
 					RENDEROBJECT * obj = &(Mloadheader->Group[group].renderObject[execbuf]);
@@ -1196,6 +1200,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	}
 	Buffer = (char *) Uint16Pnt;
 
+	DebugPrintf( "Mload: %d colourkey triangles found\n", colourkey );
 	// Mloadheader is valid and can be executed...
 	Mloadheader->state = TRUE;
 
@@ -1241,13 +1246,10 @@ BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 						return FALSE;
 */
-					
-					set_trans_state_5();
 					if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
 					}
-					reset_trans();
 				}
 			}
 		}
@@ -1285,12 +1287,10 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 			}
 			else
 			{
-				set_trans_state_5();
 				if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;
 				}
-				reset_trans();
 			}
 		}
 	}
@@ -1542,8 +1542,7 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			DebugPrintf("Adding Texture: %s\n",&TempFilename[0]);
 
-			// use to color key
-			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], FALSE , TRUE, 0, 0 );
+			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , FALSE , TRUE, 0, 0 );		// do colourkey	dont scale do MipMap
 
 			if( Mloadheader->TloadIndex[i] == -1 )
 			{

@@ -2082,14 +2082,12 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 
 		disable_zbuff();
 		screenpoly_filtering();
-		set_trans_state_9();
 
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
 
-		reset_trans();
 		reset_filtering();
 		reset_zbuff();
 
@@ -2124,14 +2122,12 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 
 		disable_zbuff();
 		screenpoly_filtering();
-		set_trans_state_9();
 
 		if (FAILED(draw_2d_object(renderObject)))
 		{
 			return FALSE;
 		}
 
-		reset_trans();
 		reset_filtering();
 		reset_zbuff();
 
@@ -2279,6 +2275,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 			if( !Textured )
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 /* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
@@ -2292,6 +2289,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 			else
 			{	
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
 /* bjd - TODO
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
@@ -2515,6 +2513,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
@@ -2647,6 +2646,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
@@ -2835,6 +2835,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			if( !Textured )
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 /* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
@@ -2848,6 +2849,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			else
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
 /* bjd - CHECK
 				OP_STATE_LIGHT( 1, lpPointer );
 			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
@@ -3070,6 +3072,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...
@@ -3259,6 +3262,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
 							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
 							renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 							INCREASE_TEXTURE_GROUPS(renderObject);
 
 							start_index += ntris*3; // each triangle has three indexes...

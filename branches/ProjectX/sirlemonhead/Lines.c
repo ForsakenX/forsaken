@@ -260,6 +260,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 2; // 3 verts in a triangle
 		renderObject->textureGroups[renderObject->numTextureGroups].startVert = 0;
 		renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
+		renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 		renderObject->numTextureGroups = 1;
 
 	}
@@ -287,7 +288,7 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 					//          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
 					//			if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED) != D3D_OK)
 					//				return FALSE;
-			if (FAILED(draw_line_vertex_buffer(renderObject)))
+			if (FAILED(draw_line_object(renderObject)))
 				return FALSE;
 		}
 	}

@@ -168,6 +168,7 @@ typedef struct TEXTUREGROUP
 	int startIndex;
 	int numVerts;
 	int numTriangles;
+	BOOL colourkey;
 	LPDIRECT3DTEXTURE9 texture;
 } TEXTUREGROUP;
 
@@ -208,8 +209,6 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
-
-HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
@@ -227,9 +226,8 @@ HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips);
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL colourkey);
 HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
-HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
 HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices);

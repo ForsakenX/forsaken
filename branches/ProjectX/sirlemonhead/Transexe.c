@@ -127,14 +127,9 @@ void ExecuteTransExe( uint16 group )
 				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
 			}
 
-			set_trans_state_9();
-
 			if( Display )
 					//d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
 					draw_object(&TransExe[i].renderObject);
-
-			reset_trans();
-
 		}
 	}
 //	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
@@ -213,14 +208,9 @@ void ExecuteTransExeUnclipped( uint16 group )
 				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
 			}
 
-			set_trans_state_9();
-
 			if( Display )
 //					d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
 					draw_object(&TransExe[i].renderObject);
-			
-			reset_trans();
-
 		}
 	}
 //	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);

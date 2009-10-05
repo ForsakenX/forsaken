@@ -182,6 +182,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	uint16			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
 	uint32			Colour;
+	int				colourkey = 0;
 #if	MXA_VERSION_NUMBER == 2
 	int16			c;
 	int8		*	Int8Pnt;
@@ -417,6 +418,8 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 
 					if ( MFacePnt->pad & 1 )
 					{
+						// colourkey triangle found
+						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
@@ -444,6 +447,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				indexOffset += num_triangles * 3;
 
 				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxaloadheader->TloadIndex[tpage]];
 /*
 				if (StoreTriangles)
 				{	Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = num_triangles;			
@@ -488,6 +492,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startVert = 0;
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxaloadheader->TloadIndex[tpage]];
 */
 			Mxaloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxaloadheader->TloadIndex[tpage]];
 
@@ -786,6 +791,8 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	}
 #endif
 
+	if ( colourkey )
+		DebugPrintf( "Mxaload: %d colourkey triangles found\n", colourkey );
 	// Mxaloadheader is valid and can be executed...
 	Mxaloadheader->state = TRUE;
 	return( TRUE );
@@ -828,12 +835,10 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 						return FALSE;
 */					
-					set_trans_state_5();
 					if (FAILED(draw_object(&Mxaloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
 					}
-					reset_trans();
 				}
 			}
 		}
@@ -1044,8 +1049,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
 			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
-				// use to color key
-				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE ,FALSE, 0, 0 );
+				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );		// dont colourkey
 			
 			if( Mxaloadheader->TloadIndex[i] == -1 )
 			{

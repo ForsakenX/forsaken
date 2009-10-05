@@ -384,7 +384,7 @@ void render_state_trans( void )
 // set transparency off
 void reset_trans( void )
 {
-	STATE(	D3DRS_ALPHABLENDENABLE,		TRUE );
+	STATE(	D3DRS_ALPHABLENDENABLE,		FALSE );
 	STATE(	D3DRS_SRCBLEND,				D3DBLEND_ONE);
 	STATE(	D3DRS_DESTBLEND,			D3DBLEND_ZERO);
 }
@@ -413,6 +413,7 @@ void reset_filtering( void )
 	SSTATE(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 }
 
+// i think this should be bileaner based on BilinearSolidScrPolys
 void screenpoly_filtering( void )
 {
 	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT );
@@ -434,14 +435,14 @@ void reset_cull( void )
 	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
 }
 
-void reset_alpha_ignore( void )
+void set_alpha_ignore( void )
 {
 	STATE( D3DRS_ALPHATESTENABLE,	TRUE); 
 	STATE( D3DRS_ALPHAREF,			0x000000FF );
 	STATE( D3DRS_ALPHAFUNC,			D3DCMP_EQUAL);
 }
 
-void disable_alpha_ignore( void )
+void unset_alpha_ignore( void )
 {
 	STATE( D3DRS_ALPHATESTENABLE,	FALSE); 
 }
@@ -468,12 +469,16 @@ void set_alpha_states( void )
 //#if ACTUAL_TRANS
 //      STATE( D3DRS_ZWRITEENABLE, TRUE );
 //#else
-      disable_zbuff();
+      disable_zbuff_write();
 //#endif
       STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-	  set_trans_state_5();
+	  // 9 seems to be perfect !
+	  set_trans_state_9();
 //      STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
 //      STATE( D3DRS_DESTBLEND, CurrentDestBlend );
+
+	  // how to convert this ?
+
 //      STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
 //	}
 }
@@ -502,10 +507,8 @@ D3DAppISetRenderState()
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
 	reset_cull();
-	reset_zbuff();
 	reset_trans();
 	reset_filtering();
-	reset_alpha_ignore();
 
 	set_normal_states();
 
@@ -577,7 +580,7 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips)
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL colourkey)
 {
 	D3DXIMAGE_INFO imageInfo;
 
@@ -592,7 +595,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 				D3DPOOL_MANAGED,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
-				FSColourKeyBlack, // colour key
+				colourkey ? FSColourKeyBlack : 0, // colour key
 				&imageInfo,
 				NULL,
 				texture);
@@ -784,19 +787,32 @@ HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 	return LastError;
 }
 
-HRESULT draw_vertex_buffer(RENDEROBJECT *renderObject)
+HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
 {
 	HRESULT LastError;
 
 	assert(renderObject->vbLocked == 0);
 
-	DebugPrintf("draw_vertex_buffer\n");
+	if( transformed )
+		LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
+	else
+		LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
 
-	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	if(renderObject->lpD3DIndexBuffer)
+	{
+		LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
+		if(FAILED(LastError)) 
+			return LastError;
+	}
+
+	if( transformed )
+		LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
+	else
+		LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+
 	if (FAILED(LastError))
 		return LastError;
 
@@ -806,229 +822,55 @@ HRESULT draw_vertex_buffer(RENDEROBJECT *renderObject)
 
 	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{
+		if(renderObject->textureGroups[i].colourkey)
+			set_alpha_ignore();
+
 		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
 		if (FAILED(LastError))
 			return LastError;
 
-		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
-			D3DPT_TRIANGLELIST,
-			renderObject->textureGroups[i].startVert,
-			renderObject->textureGroups[i].numVerts
-		);
-		
-		if(FAILED(LastError))
+		if(renderObject->lpD3DIndexBuffer)
+		{
+			LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(
+				primitive_type,
+				renderObject->textureGroups[i].startVert,
+				0, 
+				renderObject->textureGroups[i].numVerts,
+				renderObject->textureGroups[i].startIndex,
+				renderObject->textureGroups[i].numTriangles
+			);
+		}
+		else
+		{
+			LastError = d3dappi.lpD3DDevice->DrawPrimitive(
+				primitive_type,
+				renderObject->textureGroups[i].startVert,
+				renderObject->textureGroups[i].numVerts
+			);
+		}
+
+		unset_alpha_ignore();
+
+		if (FAILED(LastError))
 			return LastError;
 	}
 
 	return S_OK;
 }
 
-HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject)
+HRESULT draw_line_object(RENDEROBJECT *renderObject)
 {
-	HRESULT LastError;
-
-	assert(renderObject->vbLocked == 0);
-
-	DebugPrintf("draw_line_vertex_buffer\n");
-
-	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
-	if (FAILED(LastError))
-		return LastError;
-
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
-	if (FAILED(LastError))
-		return LastError;
-
-	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
-	if (FAILED(LastError))
-		return LastError;
-
-	for (int i = 0; i < renderObject->numTextureGroups; i++)
-	{
-		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
-		if (FAILED(LastError))
-			return LastError;
-
-		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
-			D3DPT_LINELIST,
-			renderObject->textureGroups[i].startVert,
-			renderObject->textureGroups[i].numVerts
-		);
-		
-		if(FAILED(LastError))
-			return LastError;
-	}
-
-	return S_OK;
-}
-
-HRESULT draw_indexed_buffer(RENDEROBJECT *renderObject)
-{
-	HRESULT LastError;
-
-	assert(renderObject->vbLocked == 0);
-
-	/* set source */
-	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-
-	LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
-	if(FAILED(LastError)) 
-	{
-		return LastError;
-	}
-
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-
-	/* set material */
-	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-	
-	for (int i = 0; i < renderObject->numTextureGroups; i++)
-	{
-		/* set texture */
-		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
-		if (FAILED(LastError))
-		{
-			return LastError;
-		}
-
-		/* draw it */
-		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-																renderObject->textureGroups[i].startVert, 
-																0, 
-																renderObject->textureGroups[i].numVerts,
-																renderObject->textureGroups[i].startIndex,
-																renderObject->textureGroups[i].numTriangles);
-
-		if (FAILED(LastError))
-		{
-			return LastError;
-		}
-	}
-
-	return LastError;
+	return draw_render_object( renderObject, FALSE, D3DPT_LINELIST );
 }
 
 HRESULT draw_object(RENDEROBJECT *renderObject)
 {
-		if(!renderObject->lpD3DIndexBuffer)
-			return draw_vertex_buffer(renderObject);
-		else
-			return draw_indexed_buffer(renderObject);
-}
-
-HRESULT draw_2d_indexed_buffer(RENDEROBJECT *renderObject)
-{
-	HRESULT LastError;
-
-	assert(renderObject->vbLocked == 0);
-
-	/* set source */
-	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-
-	LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
-	if(FAILED(LastError)) 
-	{
-		return LastError;
-	}
-
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-
-	/* set material */
-	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
-	if (FAILED(LastError))
-	{
-		return LastError;
-	}
-	
-	for (int i = 0; i < renderObject->numTextureGroups; i++)
-	{
-		/* set texture */
-		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
-		if (FAILED(LastError))
-		{
-			return LastError;
-		}
-
-		/* draw it */
-		LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(D3DPT_TRIANGLELIST,
-																renderObject->textureGroups[i].startVert,
-																0, 
-																renderObject->textureGroups[i].numVerts,
-																renderObject->textureGroups[i].startIndex,
-																renderObject->textureGroups[i].numTriangles);
-
-		if (FAILED(LastError))
-		{
-			return LastError;
-		}
-	}
-
-	return LastError;
-}
-
-HRESULT draw_2d_vertex_buffer(RENDEROBJECT *renderObject)
-{
-	HRESULT LastError;
-
-	assert(renderObject->vbLocked == 0);
-
-	LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
-	if (FAILED(LastError))
-		return LastError;
-
-	LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
-	if (FAILED(LastError))
-		return LastError;
-
-	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
-	if (FAILED(LastError))
-		return LastError;
-
-	for (int i = 0; i < renderObject->numTextureGroups; i++)
-	{
-		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
-		if (FAILED(LastError))
-			return LastError;
-
-		LastError = d3dappi.lpD3DDevice->DrawPrimitive(
-			D3DPT_TRIANGLELIST,
-			renderObject->textureGroups[i].startVert,
-			renderObject->textureGroups[i].numVerts
-		);
-
-		if (FAILED(LastError))
-			return LastError;
-	}
-
-	return S_OK;
+	return draw_render_object( renderObject, FALSE, D3DPT_TRIANGLELIST );
 }
 
 HRESULT draw_2d_object(RENDEROBJECT *renderObject)
 {
-		if(!renderObject->lpD3DIndexBuffer)
-			return draw_2d_vertex_buffer(renderObject);
-		else
-			return draw_2d_indexed_buffer(renderObject);
+	return draw_render_object( renderObject, TRUE, D3DPT_TRIANGLELIST );
 }
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)

@@ -6807,10 +6807,6 @@ Display Group Clipped Faceme Transluecent Polys
     if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
-	// reset all the normal execute status flags...
-	//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-	set_normal_states();
-
 /*===================================================================
   Display Solid Screen Polys
 ===================================================================*/
@@ -6818,6 +6814,9 @@ Display Group Clipped Faceme Transluecent Polys
 
   if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
+
+  // reset mode
+	set_normal_states();
 
 //  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
 	rval = FSSetViewPort(&viewport);

@@ -151,6 +151,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16			NumFirePoints;
 	PVFIREPOINT *	FirePointPtr;
 	uint32			Colour;
+	int				colourkey = 0;
 
 #if	MX_VERSION_NUMBER == 2
 	int16			c;
@@ -450,6 +451,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 					if ( MFacePnt->pad & 1 )
 					{
+						// colourkey triangle found
+						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
@@ -472,11 +475,12 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				if( Mxloadheader->num_texture_files == 0 )
 				{
 					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = NULL;
-
+					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = FALSE;
 				}
 				else
 				{
 					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxloadheader->TloadIndex[tpage]];
+					Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxloadheader->TloadIndex[tpage]];
 				}
 			}
 
@@ -546,11 +550,12 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			{
 				//Mxloadheader->Group[ group ].renderObject[execbuf].texture = NULL;
 				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = NULL;
-
+				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = FALSE;
 			}
 			else
 			{
 				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxloadheader->TloadIndex[tpage]];
+				Mxloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxloadheader->TloadIndex[tpage]];
 				//STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[Mxloadheader->TloadIndex[tpage]], lpPointer);
 			}
 */
@@ -836,6 +841,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 		Buffer = (char *) ( Uint16Pnt + 1 );
 	}
 
+	if ( colourkey )
+		DebugPrintf( "Mxload: %d colourkey triangles found\n", colourkey );
 	// Mxloadheader is valid and can be executed...
 	Mxloadheader->state = TRUE;
 	return( TRUE );
@@ -1001,13 +1008,10 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Display )
 					{
-						
-						set_trans_state_5();
 						if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
 						{
 							return FALSE;
 						}
-						reset_trans();
 					}
 				}
 			}
@@ -1245,8 +1249,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 			if( !_stricmp( "pkupsa.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "titana.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
-			// color key was (uint16) (Panel ^ TRUE)
-			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], Panel ^ TRUE, FALSE, 0, 0 );	
+			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );		// colourkey , can scale
 			if( Mxloadheader->TloadIndex[i] == -1 )
 			{
 				Msg( "PreMxload() Too many TPages\n" );
@@ -1281,12 +1284,10 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 			{
 //				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //					return FALSE;
-				set_trans_state_5();
 				if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;
 				}
-				reset_trans();
 			}
 		}
 	}

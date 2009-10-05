@@ -160,8 +160,7 @@ BOOL PreWaterLoad( char * Filename )
 	if( !_stricmp( "default.ppm", (char *) &buf[0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\%s", (char *) &buf[0] );
 	else sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], (char *) &buf[0] );
 
-	// use to color key
-	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE, 0, 0 );
+	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE , TRUE, 0, 0 );		// dont colourkey
 	WaterBuffer = Buffer;
 	return TRUE;
 }
@@ -530,6 +529,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].startIndex = 0;
 	WO->renderObject.textureGroups[0].startVert = 0;
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
+	WO->renderObject.textureGroups[0].texture = Tloadheader.ColourKey[WaterTPage];
 
 /*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
@@ -739,12 +739,8 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 //	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //			return;
 
-	set_trans_state_5();
-
 	if (FAILED(draw_object(&Wo->renderObject)))
 		return;
-
-	reset_trans();
 
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 //	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
