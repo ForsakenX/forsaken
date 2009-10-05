@@ -396,16 +396,6 @@ extern  BOOL  DemoScreenGrab;
 extern  BOOL  ShowWeaponKills;
 extern  BOOL ShowStats; 
 
-//LPDIRECT3DEXECUTEBUFFER lpD3DNormCmdBuf;
-//LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
-//LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
-RENDERSTATE *lpD3DNormCmdBuf;
-RENDERSTATE *lpD3DTransCmdBuf;
-RENDERSTATE *lpD3DSpcFxTransCmdBuf;
-
-BOOL InitSpecialExecBufs( void );
-void ReleaseSpecialExecBufs( void );
-
 extern  BOOL  flush_input; // tells control routines to ignore next player input
 
 extern  uint16  IsGroupVisible[MAXGROUPS];
@@ -2311,7 +2301,6 @@ ReleaseView(void)
 
     FreeAllLastAFrameScrPolys();
     ReleaseTitle();
-    ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
     ReleaseTitleModels();
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
@@ -2321,7 +2310,6 @@ ReleaseView(void)
 
   case STATUS_ViewingScore:
 #if 0 // used to release solid scr poly stuff
-    ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
@@ -2335,7 +2323,6 @@ ReleaseView(void)
     break;
 
   default:
-    ReleaseSpecialExecBufs();
 
     Bspfree();
 
@@ -2518,8 +2505,6 @@ InitView( void )
     InitPolySort();
 
     InitRenderBufs(/*lpDev */); // bjd
-
-    InitSpecialExecBufs();
     
     if( !SetMatrixViewPort() )
     {
@@ -4986,13 +4971,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   
     SetUpShips();
 
-    if( !InitSpecialExecBufs() )
-    {
-      SeriousError = TRUE;
-      Msg( "InitSpecialExecBufs() failed\n" );
-      return FALSE;
-    }
-
     MyGameStatus = STATUS_InitView_6;
     PrintInitViewStatus( MyGameStatus );
 
@@ -5847,11 +5825,9 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
-#if 0 // bjd - CHECK
 		//lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 		DispTracker( /*lpDev,*/ lpView ); // bjd
-#endif
   }
 
 #ifdef REFLECTION
@@ -6616,18 +6592,16 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 
   if (ClearBuffers( ClearScrOverride, ClearZOverride ) != TRUE )
     return FALSE;
-#if 1 // bjd - CHECK
-  // reset all the normal execute status flags...
-//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//	FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//	draw_object(lpD3DNormCmdBuf);
 
-  // set all the Translucent execute status flags...
+	// reset all the normal execute status flags...
+	//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	set_normal_states();
+
+	// set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
-		//lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
-//		FSExecuteBuffer(lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//		draw_object(lpD3DSpcFxTransCmdBuf);
+		//		lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		set_alpha_fx_states();
 	}
 
 
@@ -6635,14 +6609,13 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 	if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
 		return FALSE;
 
-  // reset all the normal execute status flags...
+	// reset all the normal execute status flags...
 	if( WhiteOut == 0.0F)
 	{
- //       lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
-//		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//		draw_object(lpD3DNormCmdBuf);
+		//      lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		set_normal_states();
 	}
-#endif
+
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
@@ -6693,10 +6666,9 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
 //  DisplayWaterMesh();
 
-  // set all the Translucent execute status flags...
-//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd - CHECK	FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-
+	// set all the Translucent execute status flags...
+	//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+  	set_alpha_states();
 
 
 /*===================================================================
@@ -6732,7 +6704,7 @@ BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
   }
 
 //  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd - CHECK  FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 
   // display clipped translucencies
   for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -6835,9 +6807,9 @@ Display Group Clipped Faceme Transluecent Polys
     if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
-  // reset all the normal execute status flags...
-//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd - CHECK	FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	// reset all the normal execute status flags...
+	//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	set_normal_states();
 
 /*===================================================================
   Display Solid Screen Polys
@@ -7756,33 +7728,6 @@ InitSpecialExecBufs( void )
   
   return TRUE;
 #endif
-}
-
-/*===================================================================
-  Procedure :   Release Specific Cmd Buffers...
-  Input   :   nothing..
-  Output    :   BOOL TRUE/FLASE
-===================================================================*/
-
-void ReleaseSpecialExecBufs( void )
-{
-/* bjd - wont need these
-	if( lpD3DNormCmdBuf )
-	{
-		XRELEASE(lpD3DNormCmdBuf);
-		lpD3DNormCmdBuf = NULL;
-	}
-	if( lpD3DTransCmdBuf )
-	{
-		XRELEASE(lpD3DTransCmdBuf);
-		lpD3DTransCmdBuf = NULL;
-	}
-	if( lpD3DSpcFxTransCmdBuf )
-	{
-		XRELEASE(lpD3DSpcFxTransCmdBuf);
-		lpD3DSpcFxTransCmdBuf = NULL;
-	}
-*/
 }
 
 /*===================================================================

@@ -446,6 +446,53 @@ void disable_alpha_ignore( void )
 	STATE( D3DRS_ALPHATESTENABLE,	FALSE); 
 }
 
+// old lpD3DNormCmdBuf
+void set_normal_states( void )
+{
+    STATE( D3DRS_ALPHABLENDENABLE, 	FALSE				);
+	STATE( D3DRS_ZWRITEENABLE, 		TRUE				);
+	STATE( D3DRS_SRCBLEND, 			D3DBLEND_ONE		);
+	STATE( D3DRS_DESTBLEND, 			D3DBLEND_ZERO		);
+	// need to find equivalants
+	//STATE( D3DRS_WRAPU, 				FALSE				);
+	//STATE( D3DRS_WRAPV, 				FALSE				);
+	//STATE( D3DRS_STIPPLEDALPHA,		FALSE				);
+	//STATE( D3DRS_TEXTUREMAPBLEND, 	D3DTBLEND_MODULATE	);
+}
+
+// old lpD3DTransCmdBuf
+void set_alpha_states( void )
+{	   
+//	if( UsedStippledAlpha == TRUE )
+//  {
+//      STATE( D3DRS_STIPPLEDALPHA , TRUE );
+//	}else{
+//#if ACTUAL_TRANS
+//      STATE( D3DRS_ZWRITEENABLE, TRUE );
+//#else
+      STATE( D3DRS_ZWRITEENABLE, FALSE );
+//#endif
+//      STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+//      STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
+//      STATE( D3DRS_DESTBLEND, CurrentDestBlend );
+//      STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
+//	}
+}
+
+// old lpD3DSpcFxTransCmdBuf
+void set_alpha_fx_states( void )
+{  
+//    if( UsedStippledAlpha == TRUE )
+//      STATE( D3DRS_STIPPLEDALPHA , TRUE );
+//	else
+//    {
+    STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+//    STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
+//    STATE( D3DRS_DESTBLEND, CurrentDestBlend );
+//	  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
+//    }
+}
+
 BOOL
 D3DAppISetRenderState()
 {
@@ -460,6 +507,8 @@ D3DAppISetRenderState()
 	reset_trans();
 	reset_filtering();
 	reset_alpha_ignore();
+
+	set_normal_states();
 
 	return TRUE;
 }

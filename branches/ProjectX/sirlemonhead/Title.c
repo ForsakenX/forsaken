@@ -281,11 +281,6 @@ extern	BOOL                    IsHost;
 //extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
 BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
-/* bjd
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DNormCmdBuf;
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
-*/
 extern	MATRIX	MATRIX_Identity;
 extern	D3DVIEWPORT9 viewport;
 extern	MODEL	Models[];
@@ -5161,9 +5156,7 @@ BOOL DisplayTitle(void)
 
 		// reset all the normal execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
-//		FSExecuteBuffer(lpD3DNormCmdBuf, /*lpView*/d3dapp->lpD3DViewport , D3DEXECUTE_CLIPPED);
-
-//		if (FAILED(draw_object(
+		set_normal_states();
 
 		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 		{
@@ -5188,7 +5181,7 @@ BOOL DisplayTitle(void)
 
 		// set all the Translucent execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 
 //		ExecuteTransExe( 0 );
 //		ExecuteTransExeUnclipped( 0 );
@@ -5196,7 +5189,7 @@ BOOL DisplayTitle(void)
 
 		// set all the Translucent execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd		FSExecuteBuffer(lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 
 		// display clipped translucencies
 	/*===================================================================
@@ -5255,7 +5248,7 @@ BOOL DisplayTitle(void)
 
 		// reset all the normal execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-//bjd		FSExecuteBuffer(lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_normal_states();
 
 	/*===================================================================
 		Display Solid Screen Polys
