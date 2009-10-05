@@ -435,7 +435,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 			{
 				// override colourkey if bmp doesnt have a real black as its first colour....
 				DebugPrintf("First pixel not black, disabling transparency/color-key for: %s\n", &NewName2[0] );
-				Tloadheader->ColourKey[n] = FALSE;
+				//Tloadheader->ColourKey[n] = FALSE;
 			}
 			if( MipMap && Tloadheader->MipMap[n] )
 			{
@@ -1618,6 +1618,7 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 	if ( !Name[ 0 ] )
 	{
 	 	i = Tloadheader->num_texture_files;
+		Tloadheader->ColourKey[i] = ColourKey;
 		Tloadheader->Scale[i] = FALSE;		// cannot allow scaling of placeholder!
 		Tloadheader->MipMap[i] = MipMap;
 		Tloadheader->ImageFile[i][0] = 0;
@@ -1640,6 +1641,7 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 	}
 
 	i = Tloadheader->num_texture_files;
+	Tloadheader->ColourKey[i] = ColourKey;
 	Tloadheader->Scale[i] = Scale;
 	Tloadheader->MipMap[i] = MipMap;
 	NamePnt = (char *) &Tloadheader->ImageFile[i];
