@@ -45,7 +45,7 @@ typedef struct TLOADHEADER{
 	uint16				Ysize[MAXTPAGESPERTLOAD];		// the Ysize now
 	BOOL				Scale[MAXTPAGESPERTLOAD];		// Can I Be Scaled....???
 	uint16				CurScale[MAXTPAGESPERTLOAD];	// 0 normal...1 X half 2 X and Y half..
-	uint16				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
+	BOOL				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
 	DWORD				SizeInVidMem[MAXTPAGESPERTLOAD]; // Calculated size in video memory....
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
 //    LPDIRECTDRAWSURFACE lpTextureSurf[MAXTPAGESPERTLOAD]; /* surfaces */
