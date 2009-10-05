@@ -15168,9 +15168,9 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 	if( File_Exists( &NewName2[0] ) )
 	{
 			if( MipMap && Tloadheader->MipMap[n] )
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0, Tloadheader->ColourKey[n]);
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
 			else
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1, Tloadheader->ColourKey[n]);
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
 	}
 	
 	Tloadheader->lpTexture[n] = lpSrcTextureSurf;

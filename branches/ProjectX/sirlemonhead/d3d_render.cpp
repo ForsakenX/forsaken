@@ -580,7 +580,7 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL colourkey)
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
 {
 	D3DXIMAGE_INFO imageInfo;
 
@@ -595,7 +595,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 				D3DPOOL_MANAGED,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
-				colourkey ? FSColourKeyBlack : 0, // colour key
+				(*colourkey) ? FSColourKeyBlack : 0, // colour key
 				&imageInfo,
 				NULL,
 				texture);
@@ -604,6 +604,10 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 	{
 		OutputDebugString("couldn't create texture\n");
 	}
+
+	// image has no alpha layer
+	if( imageInfo.Format != D3DFMT_A8R8G8B8 )
+		(*colourkey) = FALSE;
 
 	DebugPrintf("FSCreateTexture: %s\n",fileName);
 

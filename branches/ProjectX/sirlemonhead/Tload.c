@@ -350,54 +350,6 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
     return TRUE;
 }
 
-
-// detects if the texture has black as the first pixel
-BOOL HasBmpGotRealBlack( LPCSTR szBitmap )
-{
-    int                 i;
-    int                 n = 0;
-    int                 fh;
-    PALETTEENTRY        ape[256];
-	BOOL RealBlack = FALSE;
-    // get a pointer to the bitmap resource.
-	if (szBitmap && (fh = _lopen(szBitmap, OF_READ)) != -1)
-    {
-        BITMAPFILEHEADER bf;
-        BITMAPINFOHEADER bi;
-
-        _lread(fh, &bf, sizeof(bf));
-        _lread(fh, &bi, sizeof(bi));
-        _lread(fh, ape, sizeof(ape));
-        _lclose(fh);
-
-        if (bi.biSize != sizeof(BITMAPINFOHEADER))
-            n = 0;
-        else if (bi.biBitCount > 8)
-            n = 0;
-        else if (bi.biClrUsed == 0)
-            n = 1 << bi.biBitCount;
-        else
-            n = bi.biClrUsed;
-
-        //  a DIB color table has its colors stored BGR not RGB so flip them around.
-        for(i=0; i<n; i++ )
-        {
-            BYTE r = ape[i].peRed;
-            ape[i].peRed  = ape[i].peBlue;
-            ape[i].peBlue = r;
-		}
-    }
-	// Only check the first colour...
-	if( n )
-		n = 1;
-    for(i=0; i<n; i++ )
-	{
-		if( ape[i].peRed == 0 && ape[i].peGreen == 0 && ape[i].peBlue == 0 )
-			return TRUE;
-	}
-    return FALSE;
-}
-
 /*===================================================================
 	Procedure	:		
 	Input		;		TLOADHEADER * , int n 
@@ -431,20 +383,14 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 		// if file exists
 		if( File_Exists( &NewName2[ 0 ] ) )
 		{
-			if( !HasBmpGotRealBlack( &NewName2[0] ) )
-			{
-				// override colourkey if bmp doesnt have a real black as its first colour....
-				DebugPrintf("First pixel not black, disabling transparency/color-key for: %s\n", &NewName2[0] );
-				//Tloadheader->ColourKey[n] = FALSE;
-			}
 			if( MipMap && Tloadheader->MipMap[n] )
 			{
-				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0, Tloadheader->ColourKey[n]);
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
 				//lpSrcTexture = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 			}
 			else
 			{
-				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 1, Tloadheader->ColourKey[n]);
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
 				//lpSrcTexture = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 			}
 		}
