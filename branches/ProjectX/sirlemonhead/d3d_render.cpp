@@ -449,10 +449,8 @@ void disable_alpha_ignore( void )
 // old lpD3DNormCmdBuf
 void set_normal_states( void )
 {
-    STATE( D3DRS_ALPHABLENDENABLE, 	FALSE				);
-	STATE( D3DRS_ZWRITEENABLE, 		TRUE				);
-	STATE( D3DRS_SRCBLEND, 			D3DBLEND_ONE		);
-	STATE( D3DRS_DESTBLEND, 			D3DBLEND_ZERO		);
+	reset_zbuff();
+	reset_trans();
 	// need to find equivalants
 	//STATE( D3DRS_WRAPU, 				FALSE				);
 	//STATE( D3DRS_WRAPV, 				FALSE				);
@@ -470,9 +468,10 @@ void set_alpha_states( void )
 //#if ACTUAL_TRANS
 //      STATE( D3DRS_ZWRITEENABLE, TRUE );
 //#else
-      STATE( D3DRS_ZWRITEENABLE, FALSE );
+      disable_zbuff();
 //#endif
-//      STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+      STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+	  set_trans_state_5();
 //      STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
 //      STATE( D3DRS_DESTBLEND, CurrentDestBlend );
 //      STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );

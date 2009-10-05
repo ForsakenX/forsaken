@@ -5177,16 +5177,6 @@ BOOL DisplayTitle(void)
 					return FALSE;
 #endif
 
-//				ExecuteTransExe( 0 );
-
-		// set all the Translucent execute status flags...
-//		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		set_alpha_states();
-
-//		ExecuteTransExe( 0 );
-//		ExecuteTransExeUnclipped( 0 );
-		
-
 		// set all the Translucent execute status flags...
 //		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 		set_alpha_states();
