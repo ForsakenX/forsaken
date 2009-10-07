@@ -1,8 +1,10 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+#define RENDER_USING_FACES
+
+/*===================================================================
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -25,9 +27,9 @@
 
 #define	FMPOLYSCALE	32.0F
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Externs
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern	CAMERA	CurrentCamera;
 extern	D3DMATRIX			view;
 extern	MATRIX				Identity;
@@ -36,8 +38,8 @@ extern	VECTOR				Camera_Dir;
 extern	VECTOR				Forward;
 extern	VECTOR				SlideUp;
 extern	VECTOR				SlideLeft;
-extern	D3DMATERIALHANDLE	hMat2;
-extern	D3DTEXTUREHANDLE	bTex;
+//extern	D3DMATERIALHANDLE	hMat2;
+//extern	D3DTEXTUREHANDLE	bTex;
 extern	BYTE				WhoIAm;
 extern	TLOADHEADER			Tloadheader;
 extern	FRAME_INFO	*		Troj_Exp_Header;
@@ -53,9 +55,9 @@ extern	MLOADHEADER			Mloadheader;
 extern	MCLOADHEADER		MCloadheader;
 extern	MCLOADHEADER		MCloadheadert0;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FMPOLY		FmPolys[ MAXNUMOF2DPOLYS ];
 uint16		FirstFmPolyUsed;
 uint16		FirstFmPolyFree;
@@ -67,11 +69,11 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
 
 #define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Init Faceme poly structures
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitFmPoly( void )
 {
 	int i;
@@ -111,12 +113,12 @@ void InitFmPoly( void )
 	InitFmPolyTPages();
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Find a free FmPoly and move it from the free list to
 					the used list
 	Input		:	Nothing
 	Output		:	uint16	Number of the free FmPoly
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindFreeFmPoly( void )
 {
 	uint16 i;
@@ -138,12 +140,12 @@ uint16 FindFreeFmPoly( void )
 
 	return i ;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Kill a used FmPoly and move it from the used list to
 					the free list
 	Input		:	uint16		Number of FmPoly to free....
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void KillUsedFmPoly( uint16 i )
 {
 	uint16	its_prev;
@@ -193,11 +195,11 @@ void KillUsedFmPoly( uint16 i )
 	FirstFmPolyFree	= i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process FmPoly's
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #if 0
 
 #define	NMEGEN_START		( 5.0F * ANIM_SECOND )
@@ -1495,11 +1497,11 @@ void FmPolyProcess( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Init FmPoly TPage Groups
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitFmPolyTPages( void )
 {
 	uint16	i;
@@ -1510,12 +1512,12 @@ void InitFmPolyTPages( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Add FmPoly To TPage Link List
 	Input		:	uint16		FmPoly Index
 				:	uint16		TPage to add to
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddFmPolyToTPage( uint16 i, int16 TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
@@ -1531,12 +1533,12 @@ void AddFmPolyToTPage( uint16 i, int16 TPage )
 	FmPolyTPages[ TPage ].FirstPoly = i;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Remove FmPoly From TPage Link List
 	Input		:	uint16		FmPoly Index
 				:	uint16		TPage to add to
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 {
 	if( TPage == -1 ) TPage = MAXTPAGESPERTLOAD;
@@ -1559,16 +1561,16 @@ void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 	FmPolys[ i ].NextInTPage = (uint16) -1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display all group clipped FmPolys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	uint16						Group
 				:	LPDIRECT3DDEVICE			D3D Device
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
-								 LPDIRECT3DDEVICE D3D_Device, LPDIRECT3DVIEWPORT D3D_ViewPort )
+===================================================================*/
+BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group
+								 /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
 {
 	int16	TPage;
 	uint16	i;
@@ -1578,25 +1580,34 @@ BOOL DisplayGroupClippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff, uint16 Group,
 
 	while( 1 )
 	{
- 		if( !FmPolyDispGroupClipped( Group, ExecBuff, &TPage, &i ) )
+ 		if( !FmPolyDispGroupClipped( Group, renderObject, &TPage, &i ) )
 			return( TRUE );
 
-			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-				return FALSE;
+//			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//				return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
+		if (FAILED(draw_object(renderObject)))
+			return FALSE;
+
+		if( CanCullFlag )
+			reset_cull();
 	}
 
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display all non group clipped FmPolys
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	LPDIRECT3DDEVICE			D3D Device
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
-								   LPDIRECT3DDEVICE D3D_Device, LPDIRECT3DVIEWPORT D3D_ViewPort )
+===================================================================*/
+BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
 {
 	int16	TPage;
 	uint16	i;
@@ -1606,25 +1617,35 @@ BOOL DisplayGroupUnclippedFmPolys( LPDIRECT3DEXECUTEBUFFER ExecBuff,
 
 	while( 1 )
 	{
- 		if( !FmPolyDispGroupUnclipped( ExecBuff, &TPage, &i ) )
+ 		if( !FmPolyDispGroupUnclipped( renderObject, &TPage, &i ) )
 			return( TRUE );
 
-			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-				return FALSE;
+//			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
+//				return FALSE;
+
+		if(	CanCullFlag )
+			cull_none();
+
+		if (FAILED(draw_object(renderObject)))
+			return FALSE;
+
+		if( CanCullFlag )
+			reset_cull();
 	}
 
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	uint16						Group
 				:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
 				:	uint16	*					Current FmPoly
 	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextFmPoly )
+===================================================================*/
+BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -1649,17 +1670,19 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	MATRIX			MatrixCopy;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	TotalVerts = 0;
 
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -1699,31 +1722,45 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 
 	if( !TotalVerts ) return( FALSE );
 
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
+	Specular = RGB_MAKE( 255, 255, 255 );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
+	renderObject->numTextureGroups = 0;
+
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+===================================================================*/
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
-	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-		
-	lpBufStart = ExecBuffer_debdesc.lpData;
-	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
-
-	if( CanCullFlag )
+//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE ); // bjd
+//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
+		return FALSE;
 	}
+	
+#ifdef RENDER_USING_FACES
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+#endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	FmPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
+//	lpBufStart = ExecBuffer_debdesc.lpData;
+	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	//lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
+
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
 	{
 		StartVert = FmPolyTPages[ Count ].StartVert;
@@ -1732,6 +1769,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 
 		if( NumVerts )
 		{
+/* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -1739,8 +1777,8 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 		   	OP_STATE_RENDER( 1, lpPointer );
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-	 
-	   		FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+*/
+	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
@@ -1751,9 +1789,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 				{
 					if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 					{
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Create Colour Value for polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						switch( MakeColourMode )
 						{
 							case MCM_Normal:
@@ -1773,9 +1811,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 								break;
 						}
 			
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Set Dir and Up Vectors
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						if( FmPolys[ i ].Flags & FM_FLAG_DIRCONST )
 						{
 							YVector = FmPolys[ i ].UpVector;					/* Calc Up Vector */
@@ -1806,14 +1844,16 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 			
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
 			
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Setup FrameInfo description pointers
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 			
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 						{
+							int ntris = 0;
+
 							Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 			
 							Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
@@ -1894,7 +1934,8 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							NewPos.x += ( Xoff.x + Yoff.x );
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
-			
+
+#ifdef RENDER_USING_FACES
 							FmPolyVertPnt->x = NewPos.x;						// v1
 							FmPolyVertPnt->y = NewPos.y;
 							FmPolyVertPnt->z = NewPos.z;
@@ -1902,9 +1943,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-								
+
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
 							FmPolyVertPnt->y = ( NewPos.y + Xsize.y );
 							FmPolyVertPnt->z = ( NewPos.z + Xsize.z );
@@ -1912,9 +1953,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-								
+ 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
 							FmPolyVertPnt->y = ( NewPos.y + Xsize.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z + Xsize.z - Ysize.z );
@@ -1922,9 +1963,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-							
+ 							
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
 							FmPolyVertPnt->y = ( NewPos.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z - Ysize.z );
@@ -1932,35 +1973,234 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-	  
-				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-				   			FmPolyFacePnt->v2 = ( StartVert + 1 );
-				   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+
+				   			FmPolyFacePnt->v1 = 0;
+				   			FmPolyFacePnt->v2 = 1;
+				   			FmPolyFacePnt->v3 = 2;
+//				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 				   			FmPolyFacePnt++;
-				   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-				   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-				   			FmPolyFacePnt->v3 = ( StartVert + 3 );
-				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+							ntris++;
+
+				   			FmPolyFacePnt->v1 = 0;
+				   			FmPolyFacePnt->v2 = 2;
+				   			FmPolyFacePnt->v3 = 3;
+//				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			FmPolyFacePnt++;
+							ntris++;
+
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-								FmPolyFacePnt->v2 = ( StartVert + 3 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 2 );
-					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+					   			FmPolyFacePnt->v1 = 0;
+								FmPolyFacePnt->v2 = 3;
+					   			FmPolyFacePnt->v3 = 2;
+//					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   			FmPolyFacePnt++;
-					   			FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   			FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   			FmPolyFacePnt->v3 = ( StartVert + 1 );
-					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+								ntris++;
+
+					   			FmPolyFacePnt->v1 = 0;
+					   			FmPolyFacePnt->v2 = 2;
+					   			FmPolyFacePnt->v3 = 1;
+//					   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   			FmPolyFacePnt++;
+								ntris++;
 							}
-			
+							
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
+							INCREASE_TEXTURE_GROUPS(renderObject);
+
+							start_index += ntris*3; // each triangle has three indexes...
 							StartVert += 4;
+#else
+// this method will generate a vertex list using the hard coded face info above
+{
+	D3DLVERTEX verts[4];  // holds a list of unique vertexes
+	int nverts = 0;		  // counts number of generated vertexes
+
+							verts[0].x = NewPos.x;						// v1
+							verts[0].y = NewPos.y;
+							verts[0].z = NewPos.z;
+							verts[0].tu = Box_Ptr->u1;
+							verts[0].tv = Box_Ptr->v1;
+							verts[0].color = Colour;
+							verts[0].specular = Specular;
+
+							verts[1].x = ( NewPos.x + Xsize.x );			// v2
+							verts[1].y = ( NewPos.y + Xsize.y );
+							verts[1].z = ( NewPos.z + Xsize.z );
+							verts[1].tu = Box_Ptr->u2;
+							verts[1].tv = Box_Ptr->v1;
+							verts[1].color = Colour;
+							verts[1].specular = Specular;
+								
+							verts[2].x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
+							verts[2].y = ( NewPos.y + Xsize.y - Ysize.y );
+							verts[2].z = ( NewPos.z + Xsize.z - Ysize.z );
+							verts[2].tu = Box_Ptr->u2;
+							verts[2].tv = Box_Ptr->v2;
+							verts[2].color = Colour;
+							verts[2].specular = Specular;
+							
+							verts[3].x = ( NewPos.x - Ysize.x );			// v4
+							verts[3].y = ( NewPos.y - Ysize.y );
+							verts[3].z = ( NewPos.z - Ysize.z );
+							verts[3].tu = Box_Ptr->u1;
+							verts[3].tv = Box_Ptr->v2;
+							verts[3].color = Colour;
+							verts[3].specular = Specular;
+
+		// convert faces to vertexes
+
+			// face 1 - indexes 0, 1, 2
+
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[1].x;
+							FmPolyVertPnt->y = verts[1].y;
+							FmPolyVertPnt->z = verts[1].z;
+							FmPolyVertPnt->tu = verts[1].tu;
+							FmPolyVertPnt->tv = verts[1].tv;
+							FmPolyVertPnt->color = verts[1].color;
+							FmPolyVertPnt->specular = verts[1].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+	
+			// face 2 - indexes 0, 2, 3
+
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[3].x;
+							FmPolyVertPnt->y = verts[3].y;
+							FmPolyVertPnt->z = verts[3].z;
+							FmPolyVertPnt->tu = verts[3].tu;
+							FmPolyVertPnt->tv = verts[3].tv;
+							FmPolyVertPnt->color = verts[3].color;
+							FmPolyVertPnt->specular = verts[3].specular;
+							FmPolyVertPnt++;
+							nverts++;
+							
+							// this handles double sided polygons
+							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
+							{
+
+			// face 3 - indexes 0, 3, 2
+
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[3].x;
+								FmPolyVertPnt->y = verts[3].y;
+								FmPolyVertPnt->z = verts[3].z;
+								FmPolyVertPnt->tu = verts[3].tu;
+								FmPolyVertPnt->tv = verts[3].tv;
+								FmPolyVertPnt->color = verts[3].color;
+								FmPolyVertPnt->specular = verts[3].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+			// face 4 - indexes 0, 2, 1
+
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[1].x;
+								FmPolyVertPnt->y = verts[1].y;
+								FmPolyVertPnt->z = verts[1].z;
+								FmPolyVertPnt->tu = verts[1].tu;
+								FmPolyVertPnt->tv = verts[1].tv;
+								FmPolyVertPnt->color = verts[1].color;
+								FmPolyVertPnt->specular = verts[1].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+							}
+
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = nverts;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
+							INCREASE_TEXTURE_GROUPS(renderObject);
+
+							StartVert += nverts;
+}
+#endif
 							Off_Ptr++;
 						}
 					}
@@ -1969,23 +2209,31 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 				i = FmPolys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) FmPolyFacePnt;
+	   		//lpPointer = ( LPVOID ) FmPolyFacePnt;
 		}
 
 		if( StartVert >= MAXFMPOLYVERTS ) break;
 	}
 
-	if( CanCullFlag )
+//	OP_EXIT( lpPointer );
+
+/*===================================================================
+		UnLock Exec Buffer and set data description
+===================================================================*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
+		return FALSE;
 	}
 
-	OP_EXIT( lpPointer );
+#ifdef RENDER_USING_FACES
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+#endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		UnLock Exec Buffer and set data description
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -1994,21 +2242,21 @@ BOOL FmPolyDispGroupClipped( uint16 Group, LPDIRECT3DEXECUTEBUFFER ExecBuffer, i
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-
+*/
 	*TPage = Count;
 	*NextFmPoly = i;
 
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display All Faceme Polygons in specific group
 	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
 				:	int16	*					Current TPage List
 				:	uint16	*					Current FmPoly
 	Output		:	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage, uint16 * NextFmPoly )
+===================================================================*/
+BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -2033,17 +2281,19 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	MATRIX			MatrixCopy;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
+//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
+//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	FmPolyVertPnt;
 	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPVOID			lpBufStart, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Find out how may verts involved in Exec Buffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	TotalVerts = 0;
 
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
@@ -2083,31 +2333,44 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 
 	if( !TotalVerts ) return( FALSE );
 
+	/* bjd curr driver = 0 use to be software mode
 	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
+	*/
+	Specular = RGB_MAKE( 255, 255, 255 );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	renderObject->material = Tloadheader.lpMat[ *TPage ];
+	renderObject->numTextureGroups = 0;
+
+/*===================================================================
 		Lock Exec Buffer and get ready to fill in...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+===================================================================*/
+//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
+//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 		
-	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-		
-	lpBufStart = ExecBuffer_debdesc.lpData;
-	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
-	lpInsStart = lpPointer;
-
-	if( CanCullFlag )
+//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
+	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
+		return FALSE;
 	}
+		
+#ifdef RENDER_USING_FACES
+	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+#endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	FmPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+
+//	lpBufStart = ExecBuffer_debdesc.lpData;
+	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	//lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
+	//lpInsStart = lpPointer;
+
+/*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
 	{
 		StartVert = FmPolyTPages[ Count ].StartVert;
@@ -2116,6 +2379,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 
 		if( NumVerts )
 		{
+/* bjd - CHECK
 		   	OP_STATE_LIGHT( 1, lpPointer );
 		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
@@ -2123,8 +2387,8 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 		   	OP_STATE_RENDER( 1, lpPointer );
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-	 
-	   		FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+*/	 
+	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
@@ -2135,9 +2399,9 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 				{
 					if( FmPolys[i].Frm_Info && (*FmPolys[i].Frm_Info ) )
 					{
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Create Colour Value for polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						switch( MakeColourMode )
 						{
 							case MCM_Normal:
@@ -2157,9 +2421,9 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 								break;
 						}
 			
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Set Dir and Up Vectors
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						if( FmPolys[ i ].Flags & FM_FLAG_DIRCONST )
 						{
 							YVector = FmPolys[ i ].UpVector;					/* Calc Up Vector */
@@ -2190,14 +2454,16 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 			
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
 			
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Setup FrameInfo description pointers
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 			
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 						{
+							int ntris = 0;
+
 							Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 			
 							Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
@@ -2278,7 +2544,9 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							NewPos.x += ( Xoff.x + Yoff.x );
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
-			
+
+#ifdef RENDER_USING_FACES
+
 							FmPolyVertPnt->x = NewPos.x;						// v1
 							FmPolyVertPnt->y = NewPos.y;
 							FmPolyVertPnt->z = NewPos.z;
@@ -2286,7 +2554,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
@@ -2296,7 +2564,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 								
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
@@ -2306,7 +2574,7 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 							
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
@@ -2316,35 +2584,233 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
 							FmPolyVertPnt->specular = Specular;
-							FmPolyVertPnt->dwReserved = 0;
+//							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-			
-					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   		FmPolyFacePnt->v2 = ( StartVert + 1 );
-					   		FmPolyFacePnt->v3 = ( StartVert + 2 );
-					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+
+					   		FmPolyFacePnt->v1 = 0;
+					   		FmPolyFacePnt->v2 = 1;
+					   		FmPolyFacePnt->v3 = 2;
+//					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 					   		FmPolyFacePnt++;
-					   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-					   		FmPolyFacePnt->v2 = ( StartVert + 2 );
-					   		FmPolyFacePnt->v3 = ( StartVert + 3 );
-					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+							ntris++;
+
+					   		FmPolyFacePnt->v1 = 0;
+					   		FmPolyFacePnt->v2 = 2;
+					   		FmPolyFacePnt->v3 = 3;
+//					   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 					   		FmPolyFacePnt++;
+							ntris++;
 			
 							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
 							{
-						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-								FmPolyFacePnt->v2 = ( StartVert + 3 );
-						   		FmPolyFacePnt->v3 = ( StartVert + 2 );
-						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
+						   		FmPolyFacePnt->v1 = 0;
+								FmPolyFacePnt->v2 = 3;
+						   		FmPolyFacePnt->v3 = 2;
+//						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
 						   		FmPolyFacePnt++;
-						   		FmPolyFacePnt->v1 = ( StartVert + 0 );
-						   		FmPolyFacePnt->v2 = ( StartVert + 2 );
-						   		FmPolyFacePnt->v3 = ( StartVert + 1 );
-						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
+								ntris++;
+
+						   		FmPolyFacePnt->v1 = 0;
+						   		FmPolyFacePnt->v2 = 2;
+						   		FmPolyFacePnt->v3 = 1;
+//						   		FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 						   		FmPolyFacePnt++;
+								ntris++;
 							}
 			
+							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
+							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
+							INCREASE_TEXTURE_GROUPS(renderObject);
+
+							start_index += ntris*3; // 3 indexes in a triangle
 							StartVert += 4;
+#else
+// this method will generate a vertex list using the hard coded face info above
+{
+	D3DLVERTEX verts[4];  // holds a list of unique vertexes
+	int nverts = 0;		  // counts number of generated vertexes
+
+							verts[0].x = NewPos.x;						// v1
+							verts[0].y = NewPos.y;
+							verts[0].z = NewPos.z;
+							verts[0].tu = Box_Ptr->u1;
+							verts[0].tv = Box_Ptr->v1;
+							verts[0].color = Colour;
+							verts[0].specular = Specular;
+
+							verts[1].x = ( NewPos.x + Xsize.x );			// v2
+							verts[1].y = ( NewPos.y + Xsize.y );
+							verts[1].z = ( NewPos.z + Xsize.z );
+							verts[1].tu = Box_Ptr->u2;
+							verts[1].tv = Box_Ptr->v1;
+							verts[1].color = Colour;
+							verts[1].specular = Specular;
+								
+							verts[2].x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
+							verts[2].y = ( NewPos.y + Xsize.y - Ysize.y );
+							verts[2].z = ( NewPos.z + Xsize.z - Ysize.z );
+							verts[2].tu = Box_Ptr->u2;
+							verts[2].tv = Box_Ptr->v2;
+							verts[2].color = Colour;
+							verts[2].specular = Specular;
+							
+							verts[3].x = ( NewPos.x - Ysize.x );			// v4
+							verts[3].y = ( NewPos.y - Ysize.y );
+							verts[3].z = ( NewPos.z - Ysize.z );
+							verts[3].tu = Box_Ptr->u1;
+							verts[3].tv = Box_Ptr->v2;
+							verts[3].color = Colour;
+							verts[3].specular = Specular;
+
+		// convert faces to vertexes
+
+			// face 1 - indexes 0, 1, 2
+
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[1].x;
+							FmPolyVertPnt->y = verts[1].y;
+							FmPolyVertPnt->z = verts[1].z;
+							FmPolyVertPnt->tu = verts[1].tu;
+							FmPolyVertPnt->tv = verts[1].tv;
+							FmPolyVertPnt->color = verts[1].color;
+							FmPolyVertPnt->specular = verts[1].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+	
+			// face 2 - indexes 0, 2, 3
+
+							FmPolyVertPnt->x = verts[0].x;
+							FmPolyVertPnt->y = verts[0].y;
+							FmPolyVertPnt->z = verts[0].z;
+							FmPolyVertPnt->tu = verts[0].tu;
+							FmPolyVertPnt->tv = verts[0].tv;
+							FmPolyVertPnt->color = verts[0].color;
+							FmPolyVertPnt->specular = verts[0].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[2].x;
+							FmPolyVertPnt->y = verts[2].y;
+							FmPolyVertPnt->z = verts[2].z;
+							FmPolyVertPnt->tu = verts[2].tu;
+							FmPolyVertPnt->tv = verts[2].tv;
+							FmPolyVertPnt->color = verts[2].color;
+							FmPolyVertPnt->specular = verts[2].specular;
+							FmPolyVertPnt++;
+							nverts++;
+
+							FmPolyVertPnt->x = verts[3].x;
+							FmPolyVertPnt->y = verts[3].y;
+							FmPolyVertPnt->z = verts[3].z;
+							FmPolyVertPnt->tu = verts[3].tu;
+							FmPolyVertPnt->tv = verts[3].tv;
+							FmPolyVertPnt->color = verts[3].color;
+							FmPolyVertPnt->specular = verts[3].specular;
+							FmPolyVertPnt++;
+							nverts++;
+							
+							// this handles double sided polygons
+							if( ( FmPolys[i].Flags & FM_FLAG_TWOSIDED ) && !CanCullFlag )
+							{
+
+			// face 3 - indexes 0, 3, 2
+
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[3].x;
+								FmPolyVertPnt->y = verts[3].y;
+								FmPolyVertPnt->z = verts[3].z;
+								FmPolyVertPnt->tu = verts[3].tu;
+								FmPolyVertPnt->tv = verts[3].tv;
+								FmPolyVertPnt->color = verts[3].color;
+								FmPolyVertPnt->specular = verts[3].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+			// face 4 - indexes 0, 2, 1
+
+								FmPolyVertPnt->x = verts[0].x;
+								FmPolyVertPnt->y = verts[0].y;
+								FmPolyVertPnt->z = verts[0].z;
+								FmPolyVertPnt->tu = verts[0].tu;
+								FmPolyVertPnt->tv = verts[0].tv;
+								FmPolyVertPnt->color = verts[0].color;
+								FmPolyVertPnt->specular = verts[0].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[2].x;
+								FmPolyVertPnt->y = verts[2].y;
+								FmPolyVertPnt->z = verts[2].z;
+								FmPolyVertPnt->tu = verts[2].tu;
+								FmPolyVertPnt->tv = verts[2].tv;
+								FmPolyVertPnt->color = verts[2].color;
+								FmPolyVertPnt->specular = verts[2].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+								FmPolyVertPnt->x = verts[1].x;
+								FmPolyVertPnt->y = verts[1].y;
+								FmPolyVertPnt->z = verts[1].z;
+								FmPolyVertPnt->tu = verts[1].tu;
+								FmPolyVertPnt->tv = verts[1].tv;
+								FmPolyVertPnt->color = verts[1].color;
+								FmPolyVertPnt->specular = verts[1].specular;
+								FmPolyVertPnt++;
+								nverts++;
+
+							}
+
+							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = nverts;
+							renderObject->textureGroups[renderObject->numTextureGroups].startVert = StartVert;
+							renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
+							renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
+							INCREASE_TEXTURE_GROUPS(renderObject);
+
+							StartVert += nverts;
+}
+#endif
 							Off_Ptr++;
 						}
 					}
@@ -2353,23 +2819,18 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 				i = FmPolys[ i ].NextInTPage;
 			}
 
-	   		lpPointer = ( LPVOID ) FmPolyFacePnt;
+	   		//lpPointer = ( LPVOID ) FmPolyFacePnt;
 		}
 
 		if( StartVert >= MAXFMPOLYVERTS ) break;
 	}
 
-	if( CanCullFlag )
-	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-	}
+//	OP_EXIT( lpPointer );
 
-	OP_EXIT( lpPointer );
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		UnLock Exec Buffer and set data description
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
+/*
 	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
 	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
@@ -2378,6 +2839,19 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
+*/
+	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	{
+		return FALSE;
+	}
+
+#ifdef RENDER_USING_FACES
+	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
+#endif
 
 	*TPage = Count;
 	*NextFmPoly = i;
@@ -2385,12 +2859,12 @@ BOOL FmPolyDispGroupUnclipped( LPDIRECT3DEXECUTEBUFFER ExecBuffer, int16 * TPage
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Fade Colour to wanted colour
 	Input		:	uint8	*	Colour
 				:	uint8		Wanted Colour
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
 {
 	float	WanCol, CurCol;
@@ -2413,11 +2887,11 @@ void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed )
 	*Colour = (uint8) CurCol;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Save FmPolys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveFmPolys( FILE * fp )
 {
 	uint16 i;
@@ -2485,11 +2959,11 @@ FILE * SaveFmPolys( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load FmPolys Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadFmPolys( FILE * fp )
 {
 	uint16 i;

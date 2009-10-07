@@ -1,7 +1,7 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -26,9 +26,9 @@
 #include "XMem.h"
 #include "util.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externs...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern	D3DMATRIXHANDLE hWorld;
@@ -50,14 +50,14 @@ extern	BOOL	CanCullFlag;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	WAT_VERSION_NUMBER	1
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float WATER_CELLSIZE = 64.0F;
 
 uint16	NumOfWaterObjects = 0;
@@ -86,11 +86,11 @@ VECTOR	WaterNormal = { 0.0F, 1.0F, 0.0F };
 WATEROBJECT	* WaterObjectLink[MAXGROUPS];
 
 float WaterFade = 1.0F;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Pre Water Load..
 	Input		:	char * filename....
 	Output		:	BOOL
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreWaterLoad( char * Filename )
 {
 	long			File_Size;
@@ -164,11 +164,11 @@ BOOL PreWaterLoad( char * Filename )
 	WaterBuffer = Buffer;
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Water Load..
 	Input		:	char * filename....
 	Output		:	BOOL
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL WaterLoad( void )
 {
 	char		*	Buffer;
@@ -297,11 +297,11 @@ BOOL WaterLoad( void )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Water Release..
 	Input		:	NOTHING
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void WaterRelease( void )
 {
 	int			i;
@@ -315,10 +315,20 @@ void WaterRelease( void )
 		free(WO->Verts);
 		free(WO->Vels);
 
+/*
 		if( WO->lpExBuf )
 		{
 			XRELEASE(WO->lpExBuf);
 		}
+*/
+		// abstract out
+		FSReleaseRenderObject(&WO->renderObject);
+/*
+		if (WO->renderObject.lpD3DVertexBuffer)
+		{
+			XRELEASE(WO->lpD3DVertexBuffer);
+		}
+*/
 		WO++;
 	}
 
@@ -329,11 +339,11 @@ void WaterRelease( void )
 	}
 	NumOfWaterObjects = 0;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Add a Water to the group link list..
 	Input		:		WATEROBJECT * WO
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddWaterLink(WATEROBJECT * WO)
 {
 	if( !WaterObjectLink[WO->Group] )
@@ -346,36 +356,79 @@ void AddWaterLink(WATEROBJECT * WO)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init Everything to do with a Water Mesh...
 	Input		:		Nothing
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL InitWaterObject(WATEROBJECT * WO)
 {
+//	D3DEXECUTEDATA			d3dExData;
+//	D3DEXECUTEBUFFERDESC	debDesc;
+//    LPVOID lpBufStart, lpInsStart, lpPointer;
 	int x,y;
-	D3DEXECUTEDATA			d3dExData;
-	D3DEXECUTEBUFFERDESC	debDesc;
-	LPD3DTRIANGLE	FacePnt;
-	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPD3DTRIANGLE	FacePnt = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	WORD			*lpIndices = NULL;
+	int				start_index = 0;
 	int			i;
-    LPVOID lpBufStart, lpInsStart, lpPointer;
+	int ntris = 0;
+	int vertsCount = 0;
 
 	WO->num_of_verts = WO->XVerts * WO->YVerts;
 	WO->Verts = (float*) calloc(  WO->num_of_verts , sizeof(float) );
 	WO->Vels = (float*) calloc( WO->num_of_verts , sizeof(float) );
 
-	if (MakeExecuteBuffer( &debDesc, d3dappi.lpD3DDevice , &WO->lpExBuf , 512 + ( WO->num_of_verts * sizeof(D3DLVERTEX) ) + ( ( (WO->XVerts-1)*(WO->YVerts-1)*2 ) * sizeof(D3DTRIANGLE) )  ) != TRUE )
+#if 0 
+	if (MakeExecuteBuffer( &debDesc, /*d3dappi.lpD3DDevice,*/ &WO->lpExBuf , 512 + ( WO->num_of_verts * sizeof(D3DLVERTEX) ) + ( ( (WO->XVerts-1)*(WO->YVerts-1)*2 ) * sizeof(D3DTRIANGLE) )  ) != TRUE ) // bjd
 		return FALSE;
+#endif
+	if (FAILED(FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts)))
+	{
+		return FALSE;
+	}
+
+	// pre-count the number of tris so we know how big to make the index buffer
+	// this loop structure was coppied from the way the triangles are assigned further bellow
+	for( x = 0 ; x < WO->XVerts-1 ; x++ )
+		for( y = 0 ; y < WO->YVerts-1 ; y++ )
+			ntris += 2;
+
+	if (FAILED(FSCreateIndexBuffer(&WO->renderObject, ntris*3 ))) // 3 vertexes in a triangle
+	{
+		return FALSE;
+	}
+
+/*
 	memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 	debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	
+*/
+
 	/*	lock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
+// 		return FALSE; // bjd
+
+/*
+	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 		return FALSE;
+*/
+	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	{
+		return FALSE;
+	}
+
+	if (FAILED(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
+	{
+		return FALSE;
+	}
+
+	FacePnt =  (LPD3DTRIANGLE) lpIndices;
+
+/*
 	lpBufStart = debDesc.lpData;
 	lpPointer = lpBufStart;
 	lpD3DLVERTEX = (LPD3DLVERTEX ) lpPointer;
+*/
 
 	for( x = 0 ; x < WO->XVerts ; x++ )
 	{
@@ -388,12 +441,14 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			lpD3DLVERTEX->tv = 0.0F;
 			lpD3DLVERTEX->color = RGBA_MAKE(128,128,128,128);
 			lpD3DLVERTEX->specular = RGBA_MAKE(128,128,128,128);
-			lpD3DLVERTEX->dwReserved = 0;
+//			lpD3DLVERTEX->dwReserved = 0;
 			
 			lpD3DLVERTEX++;
+
+			vertsCount++;
 		}
 	}
-	
+/*	
 	lpPointer = (void * )  lpD3DLVERTEX;			
 	lpInsStart = lpPointer;
 	OP_STATE_LIGHT(1, lpPointer);
@@ -418,6 +473,8 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 				
 
 	FacePnt = (LPD3DTRIANGLE ) lpPointer;
+*/
+
 	/*	copy the faces data into the execute buffer	*/
 
 	for( x = 0 ; x < WO->XVerts-1 ; x++ )
@@ -428,15 +485,17 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			FacePnt->v1 = i+WO->YVerts+1;
 			FacePnt->v2 = i+WO->YVerts;
 			FacePnt->v3 = i;
-			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 			FacePnt++;
 			FacePnt->v1 = i+1;
 			FacePnt->v2 = i+WO->YVerts+1;
 			FacePnt->v3 = i;
-			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+//			FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 			FacePnt++;
 		}
 	}
+
+/*
 	lpPointer = (LPVOID) FacePnt;
 	if( CanCullFlag )
 	{
@@ -447,12 +506,33 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 //	    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
 //	    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
 	OP_EXIT(lpPointer);
-			
+*/			
 	/*	unlock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//		return FALSE;
+
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	{
 		return FALSE;
+	}
+	
+	if (FAILED(FSUnlockIndexBuffer(&WO->renderObject)))
+	{
+		Msg( "FSUnlockIndexBuffer failed");
+		return FALSE ;
+	}
 
 	/*	set the data for the execute buffer	*/
+	WO->renderObject.numTextureGroups = 1;
+	WO->renderObject.textureGroups[0].numTriangles = ntris;
+	WO->renderObject.textureGroups[0].numVerts = WO->num_of_verts;
+	WO->renderObject.textureGroups[0].startIndex = 0;
+	WO->renderObject.textureGroups[0].startVert = 0;
+	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
+	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
+	WO->renderObject.material = Tloadheader.lpMat[WaterTPage];
+
+/*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
 	d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
 	d3dExData.dwVertexCount = (WO->XVerts*WO->YVerts);
@@ -460,19 +540,19 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
 	if ( WO->lpExBuf->lpVtbl->SetExecuteData(WO->lpExBuf, &d3dExData) != D3D_OK)
 		return FALSE;
+*/
+
 	return TRUE;
-
-
 }
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
 #endif
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process Water Based on Group..
 	Input		:	uint16 group
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GroupWaterProcessDisplay( uint16 group )
 {
 	WATEROBJECT	* WO;
@@ -508,17 +588,17 @@ void GroupWaterProcessDisplay( uint16 group )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update a Water Mesh...
 	Input		:	WATEROBJECT * WO
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateWaterMesh( WATEROBJECT * WO )
 {
 	int x,y;
- 	D3DEXECUTEBUFFERDESC	debDesc;
+// 	D3DEXECUTEBUFFERDESC	debDesc;
 	LPD3DLVERTEX	lpD3DLVERTEX;
-    LPVOID lpBufStart;
+//  LPVOID lpBufStart;
 	int col;
 	float dx, dy;
 	float u, v;
@@ -572,15 +652,26 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 		VertPnt += 2;
 	}
 
-
+/*
 	memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 	debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	
+*/
+
 	/*	lock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
+//		return; // bjd
+//	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
+//		return FALSE;
+
+	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	{
 		return;
+	}
+
+/*
 	lpBufStart = debDesc.lpData;
 	lpD3DLVERTEX = ( LPD3DLVERTEX )lpBufStart;
+*/
 	VertPnt = WO->Verts;
 	
 	for( x = 0 ; x < WO->XVerts ; x++ )
@@ -613,39 +704,66 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 		}
 	}
 	/*	unlock the execute buffer	*/
-	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
+//		return;
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	{
 		return;
+	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Display the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayWaterObject(WATEROBJECT * Wo)
 {										 
-	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+//	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
 	TempWorld = identity;
 	TempWorld._41 = Wo->Pos.x;
 	TempWorld._42 = Wo->Pos.y + Wo->offset;
 	TempWorld._43 = Wo->Pos.z;
-	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
-		return;
-	/*	Execute it	*/
-		if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-			return;
 
-	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
+//	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
+//	if (FSSetMatrix(hWorld, &TempWorld) != D3D_OK)
+//		return;
+
+	if (FAILED(FSSetMatrix(D3DTS_WORLD, &TempWorld)))
+	{
 		return;
+	}
+
+	/*	Execute it	*/
+//	if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+
+//	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+//			return;
+
+	cull_none();
+
+	if (FAILED(draw_object(&Wo->renderObject)))
+		return;
+
+	reset_cull();
+
+//	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
+//	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
+//		return;
+
+	if (FAILED(FSSetMatrix(D3DTS_WORLD, &identity)))
+	{
+		return;
+	}
 }
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Loop around and see if there are any object in this group...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage )
 {
@@ -663,11 +781,11 @@ BOOL WaterObjectCollide( uint16 group , VECTOR *Origin, VECTOR *Offset, VECTOR *
 	}
 	return FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Am I In The Water..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
 {
@@ -697,11 +815,11 @@ BOOL InWater( uint16 group , VECTOR *OrgPos , float * Damage)
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Collide the Water Object Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , float Damage)
 {
 	float	WaterOffset;
@@ -727,9 +845,9 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 
 	
 	WaterOffset = -DotProduct( &WaterNormal, &Pos );
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Calculate T
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	Div = ( Offset->x * WaterNormal.x) + 
 		  ( Offset->y * WaterNormal.y) + 
 		  ( Offset->z * WaterNormal.z);
@@ -739,9 +857,9 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 		    ( Origin->z * WaterNormal.z ) ) + WaterOffset ; 
 	t = -( Num / Div );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Do Polygon collision
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
 	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */
@@ -863,11 +981,11 @@ BOOL SingleWaterObjectCollide( WATEROBJECT * Wo, VECTOR *Origin, VECTOR *Offset,
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Water Process...
 	Input		:	NOTHING
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void WaterProcess( void )
 {
 	int			i;
@@ -907,11 +1025,11 @@ void WaterProcess( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Trigger water to drain...
 	Input		:	NOTHING
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void TriggerWaterDrain( uint16 * Data )
 {
 	WATEROBJECT	* WO;
@@ -922,11 +1040,11 @@ void TriggerWaterDrain( uint16 * Data )
 	WO += *Data;
 	WO->Status = WATERSTATUS_DRAINING;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Trigger water to fill...
 	Input		:	NOTHING
 	Output		:	NOTHING
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void TriggerWaterFill( uint16 * Data )
 {
 	WATEROBJECT	* WO;
@@ -939,14 +1057,14 @@ void TriggerWaterFill( uint16 * Data )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get Water Colour in group
 	Input		:	uint16		Group
 				:	uint8	*	Red;
 				:	uint8	*	Green;
 				:	uint8	*	Blue;
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetWaterColour( uint16 Group, uint8 * Red, uint8 * Green, uint8 * Blue )
 {
 	*Red	= (uint8) ( GroupWaterIntensity_Red[ Group ] * 255.0F );

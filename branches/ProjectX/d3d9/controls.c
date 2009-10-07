@@ -76,9 +76,9 @@ extern  int FontHeight;
 
 int NakedGirls( char *cheat );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
     Some Keyboard and Mouse Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define MAX_KEYS      (256)
 
@@ -1763,11 +1763,17 @@ void SetUpJoystickAxis(int joystick)
       joystick,
       JoystickInfo[ joystick ].Name );
     diprg.diph.dwObj        = DIJOFS_X;
-    if(lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
+    if( !lpdiJoystick[joystick] )
+	{
+      JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
+      DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis because lpdiJoystick[joystick] is NULL\n" );
+	}
+	else if ( lpdiJoystick[joystick]->lpVtbl->SetProperty(lpdiJoystick[joystick], DIPROP_RANGE, &diprg.diph) != DI_OK)
     {
       JoystickInfo[joystick].Axis[AXIS_XAxis].exists = FALSE; // cannot set range, therefore do not allow axis
       DebugPrintf( "SetUpJoystickAxis: failed to set range for X axis\n" );
-    }else
+    }
+	else
     {
       // set  dead zone
       // Units are ten thousandths, so multiply %age by 100.
@@ -2111,12 +2117,12 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
   }
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Check if any buttons of a specific joystick are
         : pressed
   Input   : int     Joystick Number
   Output    : BOOL    TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IsJoystickButtonPressed( int joysticknum )
 {
   int i;
@@ -2134,12 +2140,12 @@ BOOL IsJoystickButtonPressed( int joysticknum )
   return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Check if any buttons of a specific joystick are
         : released
   Input   : int     Joystick Number
   Output    : BOOL    TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IsJoystickButtonReleased( int joysticknum )
 {
   int i;
@@ -2157,12 +2163,12 @@ BOOL IsJoystickButtonReleased( int joysticknum )
   return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are pressed
   Input   : Nothing
   Output    : BOOL    TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IsAnyJoystickButtonPressed( void )
 {
   int joystick;
@@ -2177,12 +2183,12 @@ BOOL IsAnyJoystickButtonPressed( void )
   return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Check if any buttons of a any connected joystick
         : are released
   Input   : Nothing
   Output    : BOOL    TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IsAnyJoystickButtonReleased( void )
 {
   int joystick;

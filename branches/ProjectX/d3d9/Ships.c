@@ -1,8 +1,8 @@
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "main.h"
 #include "typedefs.h"
@@ -71,9 +71,9 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos );
 void SpecialDestroyGame( void );
 void MultiSfxHandle( void );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern SLIDER BikeCompSpeechSlider;
 extern BOOL SeriousError;
 
@@ -128,7 +128,7 @@ extern	D3DMATRIX view;
 extern	D3DMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	D3DMATRIXHANDLE hWorld;
-extern	LPDIRECT3DDEVICE lpDev;
+//extern	LPDIRECT3DDEVICE lpDev;
 extern	VECTOR	SlideRight;
 extern	VECTOR	SlideUp;
 extern	VECTOR	Forward;
@@ -192,9 +192,9 @@ extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PlayerMessageColour;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Bike Modifiers.....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	MaxMoveSpeed	=	MAXMOVESPEED;
 float	MoveAccell		=	MOVEACCELL;		
 float	MoveDecell		=	MOVEDECELL;		
@@ -625,9 +625,9 @@ BIKEMOD	BikeMods[MAXBIKETYPES+3] = {
 };
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Detail Level Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MAXBIKEDETAIL	4.0F
 #define	MAXCOLLISIONS	3
 
@@ -638,9 +638,9 @@ int		outside_map = 0;
 int		BikeDetail	= 0;
 int		HullHit = 0;
 int		ShieldHit = 0;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint32 UnderwaterSfxID;
 float BountyTime = 0.0F;
 extern int BountyBonusInterval;
@@ -677,9 +677,9 @@ extern	BOOL Headlights;
 
 BOOL	RearCameraDisable = FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function		:			Ship Control Mode Jump Table
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void (* ModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		ShipMode0,
 		ShipMode1,
@@ -688,9 +688,9 @@ void (* ModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		ShipMode4,
 		WatchMode5,
 };
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function		:			RemoteCamera Control Mode Jump Table
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		RemoteCameraMode0,
 		RemoteCameraMode1,
@@ -705,9 +705,9 @@ void AccellDecell(  float *  value ,  float  Decell )
 //	*value *= 1.0F - ( Decell * framelag );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Init All Ships ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL SetUpShips()
 {
@@ -1460,9 +1460,9 @@ BOOL ProcessShips()
 				}
 			}
 // End of Special Stuff for other players Ship Movement..Carries on even if no new packet arrives..
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 			Set the Banking Matrix
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄÄ*/
 			MakeQuat( 0.0F , 0.0F , ShipObjPnt->Bank, &StepQuat );
 			QuatMultiply(  &ShipObjPnt->Quat , &StepQuat , &ShipObjPnt->FinalQuat );
 			QuatToMatrix( &ShipObjPnt->FinalQuat, &ShipObjPnt->FinalMat );
@@ -1722,9 +1722,10 @@ void BobShip( uint16 ship, VECTOR *bob )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Display All Ships ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
+#if 0 // bjd - never called
 BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 {
 	uint16	i;
@@ -1737,13 +1738,11 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 
 	for( i=0;i<MAX_PLAYERS;i++)
 	{
-
-		
 		if( Current_Camera_View != i)
 		{
 			if ( (Ships[i].enable != 0) && (Ships[i].Object.Mode != GAMEOVER_MODE) && (Ships[i].Object.Mode != LIMBO_MODE) && ((GameStatus[i] == STATUS_Normal )||(GameStatus[i] == STATUS_SinglePlayer ) ) )
 			{
-#if 1
+
 			Col = FindNearestCellColour( &Mloadheader, &Ships[i].Object.Pos, Ships[i].Object.Group );
 			Red = (float)RGBA_GETRED(Col);
 			Green = (float)RGBA_GETGREEN(Col);
@@ -1816,7 +1815,6 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 				Ships[i].Object.Blue = 255.0F;
 			}
 
-#endif
 				// If the group the ship is in is visible then the ship probably is to...
 				if( Ships[i].Object.Group == group )
 				{
@@ -1903,12 +1901,6 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 						}
 						else
 						{
-#if 0
-							AmbientLightMxaModel( &MxaModelHeaders[ BikeModel + ModelNum ],
-											(int)Ships[i].Object.Red,
-											(int)Ships[i].Object.Green,
-											(int)Ships[i].Object.Blue, 0 );
-#endif
 
 #ifndef FINAL_RELEASE
 							CreateMXABoundingBox( &MxaModelHeaders[ BikeModel + ModelNum ],
@@ -1927,12 +1919,9 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK) return FALSE;
 	return TRUE;
 }
+#endif
 
-
-
-
-
-void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
+void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 {
 	uint16	i;
 	uint16	spos;
@@ -1973,6 +1962,7 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		Ships[i].Object.Shield	= Start_Shield;
 		Ships[i].Object.Hull	= Start_Hull;
 		Ships[i].Object.light = (uint16) -1;
+
 		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
 		Ships[i].NumMultiples = 0;
 		
@@ -2007,17 +1997,17 @@ void	InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		True EnviroMent Mapping for an Mloadheader...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 {
 	VECTOR Temp;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	uint16 group;
 	uint16 vert;
 	uint16 execbuf;
-	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	float	u,v;
 
 	for( group = 0 ; group < Mxloadheader->num_groups ; group ++ )
@@ -2027,11 +2017,19 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 			if( (Mxloadheader->Group[group].exec_type[execbuf]&HASENVIROMENTMAP) != 0 )
 			{
 				/*	lock the execute buffer	*/
-				memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-					return FALSE ;
-				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
+//				memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//				debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+
+//				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//					return FALSE ; // bjd
+//				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//					return FALSE;
+				if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
+				{
+					return FALSE;
+				}
+
+//				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
 				for( vert = 0 ; vert < 	Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] ; vert ++ )
 				{
 					ApplyMatrix( Mat , (VECTOR *) lpD3DLVERTEX,  &Temp);
@@ -2045,9 +2043,14 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 					lpD3DLVERTEX->tv = v;//+(Pos->y*0.001F);
 					lpD3DLVERTEX++;
 				}
+
 				/*	unlock the execute buffer	*/
-				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-					return FALSE ;
+//				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//					return FALSE ;
+				if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 	}
@@ -2056,11 +2059,11 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 			Work Out How Much Damage Ive Taken
 			Input : Nothing....Ships[WhoIAm].Damage must be set
 			Output: 0 no kill...1 last hit killed me...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 int16 DoDamage( BOOL OverrideInvul )
 {
 	uint8	Message[ 128 ];
@@ -2159,11 +2162,11 @@ int16 DoDamage( BOOL OverrideInvul )
 	return 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	InitShipRandomStartPos
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void InitShipRandomPos( int16 i )
 {
 	int16	e;
@@ -2270,12 +2273,12 @@ void InitShipRandomPos( int16 i )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	InitShipStartPos
 	Input		:	int16 which Ship
 					int16 which pos
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void InitShipStartPos( int16 i, int16 pos )
 {
 	uint16 startpos;
@@ -2389,12 +2392,12 @@ void InitShipStartPos( int16 i, int16 pos )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	GotoRoom
 	Input		:	int16	which ship
 					char *	roomname
 	Output		:	TRUE if room found, FALSE otherwise
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 BOOL GotoRoom( int16 i, char *roomname )
 {
 	uint16 startpos;
@@ -2484,11 +2487,11 @@ BOOL GotoRoom( int16 i, char *roomname )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 0	Normal Ship...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
 {
 
@@ -2547,11 +2550,11 @@ void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	ShipPnt->Object.Speed.y += control.up;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 1	Death Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	Move_Dir;
@@ -2647,11 +2650,11 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 		}
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 2	Limbo Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	if( GodMode )
@@ -2732,11 +2735,11 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		}
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Ship Mode 4	Game over mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
@@ -2756,11 +2759,11 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Watch Mode 5	enables watching other players...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	ScatterDir;
@@ -2790,21 +2793,21 @@ void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	What the Remote Camera Does...
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void Process_Remote_Camera( void )
 {
  	( * RemoteCameraModeControl[ Ships[MAX_PLAYERS].Object.Mode ] )( &Ships[MAX_PLAYERS] , MAX_PLAYERS );		//go off and do his thing...
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 0	Normal Ship...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	Move_Dir;
@@ -2903,11 +2906,11 @@ void RemoteCameraMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	MakeViewMatrix( &ShipPnt->Object.Pos, &Ships[WhoIAm].Object.Pos, &Move_Dir, &ShipPnt->Object.FinalMat);
 	MatrixTranspose( &ShipPnt->Object.FinalMat, &ShipPnt->Object.FinalInvMat );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 1	Death Mode...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	Bob;
@@ -2940,11 +2943,11 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Is there a Bike near this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 _inline
@@ -2968,11 +2971,11 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos )
 	}
 	return FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Is there a Bike in a Mutually visible Group from this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 _inline
@@ -2996,11 +2999,11 @@ BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
 	}
 	return FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Is there a Bike in a visible group from this restart point...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
 _inline
@@ -3026,11 +3029,11 @@ BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 	Procedure	:	Remote Camera Mode 3	Demo Playback...
 	Input		:	int16 which Ship
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄ*/
 void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	framelag = Oldframelag;
@@ -3069,11 +3072,11 @@ void RemoteCameraMode3( GLOBALSHIP * ShipPnt , BYTE i )
 	ShipMode0( ShipPnt , i );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update Nearest StartPos visited...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	UpdateStartPos( void )
 {
 	VECTOR	Temp;
@@ -3119,32 +3122,32 @@ void	UpdateStartPos( void )
 		last_start_position = 0;
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Start Screen Shake...
 	Input		:	float Time;
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void StartShipScreenShake( float Force )
 {
 	Ships[WhoIAm].ShakeTimer = 2.0F * 60.0F;
 	Ships[WhoIAm].ShakeForce = Force;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Stop Screen Shake...
 	Input		:	float Time;
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void StopShipScreenShake( void )
 {
 	Ships[WhoIAm].ShakeTimer = 0.0F;
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set Bike Mods...
 	Input		:	BikeNumber..
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetBikeMods( uint16 Bike )
 {
 	if( Bike >= MAXBIKETYPES+3 )
@@ -3169,11 +3172,11 @@ void SetBikeMods( uint16 Bike )
 	AutoLevel		=	BikeMods[Bike].AutoLevel;	
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Ship 2 Ship collide...
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Ship2ShipCollide( uint16 i , VECTOR * Move_Off )
 {
 	uint16 Count;
@@ -3351,11 +3354,11 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Multiplayer Sfx handler...
 	Input		:	Nothing..
 	Output		:	Nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define MAXKILLMEMORY 8
 #define KILLSOVERTIME 5			// Number of kills to get....
 #define TIMEKILLSOVER 60		// Length of time on seconds over which the kills have to have been made...
@@ -3394,7 +3397,7 @@ void MultiSfxHandle( void )
 
 	}
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime );
-	TempTime = TempTime * 1000 / Freq;
+	TempTime = TempTime * 1000 / (Freq||1);
 
 	KillIndex = (CurrentKillPos - KILLSOVERTIME) & ( MAXKILLMEMORY -1 );
 	if( (KillMemory[KillIndex] != -1)  && NewKill )
@@ -3451,11 +3454,11 @@ void MultiSfxHandle( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Makes a note of when the last kill was made..
 	Input		:	Nothing..
 	Output		:	Nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddKill( void )
 {
 	KillMemory[CurrentKillPos] = GetTotalKills(WhoIAm);
@@ -3481,11 +3484,11 @@ void InitMultiSfxHandle( void )
 	CampingPos1Off = FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Release All Componeted Ships
 	Input		:	Nothing..
 	Output		:	Nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleaseComponentedShips( void )
 {
 	int16	Count;
@@ -3506,11 +3509,11 @@ void ReleaseComponentedShips( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Save Ship Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveShips( FILE * fp )
 {
 	uint16			i;
@@ -3627,11 +3630,11 @@ FILE * SaveShips( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load Ship Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadShips( FILE * fp )
 {
 	uint16	i;

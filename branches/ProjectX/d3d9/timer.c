@@ -5,6 +5,16 @@
 // frequency time does not change
 __int64 timer_freq = 0;
 
+// run timer and compute seconds without modifying stats
+float timer_peek( timer* stats )
+{
+	float seconds;
+	timer old = *stats;
+	seconds = timer_run( stats );
+	*stats = old; // restore it
+	return seconds;
+}
+
 // run timer and compute calculations
 float timer_run( timer* stats )
 {

@@ -1,7 +1,7 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -26,12 +26,14 @@
 #include "local.h"
 #include "stats.h"
 #include "util.h"
+#include "d3dappi.h"
 
 #define MSG_VERSION_NUMBER 1
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+/*===================================================================
 		Externals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 //#define SFX_DEBUG
 extern BOOL Debug;
@@ -43,8 +45,7 @@ extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
 
-extern LPDIRECTDRAWSURFACE     lpDDSTwo;       // Font Bitmap
-extern LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
+extern LPDIRECT3DSURFACE9      lpFontSurface;       // Font Bitmap
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
@@ -86,11 +87,11 @@ uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 extern int SystemMessageColour;
 
 // (stats.c)
-extern int GetPlayerRank(int Player);
+extern int GetPlayerByRank(int Player);
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 int TextSrcX[MAXFONTCOLOURS][256];
 int	TextSrcY[MAXFONTCOLOURS][256];
@@ -142,11 +143,11 @@ char StatsMessageFile[] = "data\\txt\\statsmessages.txt";
 STATSMESSAGE StatsMessages[MAX_STATS_MESSAGES];
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print a int16 number in small 4x4 chars..
 	Input		:		int16 num, uint16 x , uint16 y
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 int Printint16( int16 num , int x , int y , int color )
 {
@@ -163,18 +164,18 @@ int Printint16( int16 num , int x , int y , int color )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print a uint16 number in small 4x4 chars..
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;
 	int num;
-    RECT    src;
-    HRESULT ddrval;
+    RECT  src;
+	POINT dest;
 	int		Zeros= 0 ;
 	uint8 r , g , b;
 
@@ -197,32 +198,20 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 			Zeros = 1;
 			if( bPolyText && PolyText[MyGameStatus])
 			{
-
 				AddScreenPolyText( (uint16) (num+1), (float) x , (float) y, r, g, b, 255 );
-
-			
-			}else{
-				
+			}
+			else
+			{	
 				src.top = TextSrcY[col][num+1];
 				src.left = TextSrcX[col][num+1];
 				
 				src.right = src.left+FontSourceWidth;
 				src.bottom = src.top+FontSourceHeight;
-				while( 1 )
-				{
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-				    if( ddrval == DD_OK )
-				        break;
-				    if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-						ReInitFont();
-						break;
-					}
-				    if( ddrval != DDERR_WASSTILLDRAWING )
-				        break;
-				}
+
+				dest.x = x;
+				dest.y = y;
+
+				FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
 			}
 			x += FontWidth;
 		}
@@ -233,11 +222,11 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
 	Input		:		char * Text, uint16 y
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CenterPrint4x5Text( char * Text , int y, int col )
 {
 	char * Text2;
@@ -253,11 +242,11 @@ void CenterPrint4x5Text( char * Text , int y, int col )
 	Print4x5Text( Text , x , y , col );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
 	Input		:		char * Text, uint16 y
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CenterPrint4x5Text2( char * Text , int x, int y, int col )
 {
 	char * Text2;
@@ -272,11 +261,11 @@ void CenterPrint4x5Text2( char * Text , int x, int y, int col )
 	Print4x5Text( Text , x , y , col );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print some Right Justified text at a specified Y
 	Input		:		char * Text, int x , int y , int col
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 {
 	char * Text2;
@@ -290,18 +279,17 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
 	Input		:		char * Text, uint16 x , uint16 y
 	Output		:		last x position
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int Print4x5Text( char * Text , int x , int y , int color )
 {
 	uint8 num;
     RECT    src, dest;
-    HRESULT ddrval;
+	POINT	destp;
 	uint8 r , g , b;
-    DDBLTFX fx;
 	BOOL ignore;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
@@ -326,7 +314,9 @@ int Print4x5Text( char * Text , int x , int y , int color )
 			if( bPolyText && PolyText[MyGameStatus] )
 			{
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}else{
+			}
+			else
+			{
 		
 				src.top = TextSrcY[color][num];
 				src.left = TextSrcX[color][num];
@@ -337,8 +327,6 @@ int Print4x5Text( char * Text , int x , int y , int color )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-				memset(&fx, 0, sizeof(DDBLTFX));
-				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -349,13 +337,13 @@ int Print4x5Text( char * Text , int x , int y , int color )
 						ignore = FALSE;
 					else
 					{
-						
 						// partial clipping required...
 						if (dest.left < 0)
 						{
 							src.left -= dest.left;
 							dest.left = 0;
-						}else
+						}
+						else
 						{
 							src.right -= (dest.right - d3dapp->szClient.cx);
 							dest.right = d3dapp->szClient.cx;
@@ -364,23 +352,11 @@ int Print4x5Text( char * Text , int x , int y , int color )
 					}
 				}
 				
-				while( !ignore )
-				{
-					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC | DDBLT_WAIT, &fx );
-					if( ddrval == DD_OK )
-						break;
-					if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-						ReInitFont();
-						break;
-					}
-					if( ddrval != DDERR_WASSTILLDRAWING )
-						break;
-				}
+				destp.x = dest.left;
+				destp.y = dest.top;
+
+				if( !ignore )
+					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 			}
 		}
 	
@@ -391,18 +367,17 @@ int Print4x5Text( char * Text , int x , int y , int color )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
 	Input		:		char * Text, uint16 x , uint16 y
 	Output		:		last x position
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PrintClipped4x5Text( char * Text , int x , int y , int col )
 {
 	uint8 num;
     RECT    src, dest;
-    HRESULT ddrval;
+	POINT	destp;
 	uint8 r , g , b;
-    DDBLTFX fx;
 	BOOL ignore;
 	int dummy;
 
@@ -429,7 +404,9 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 			if( bPolyText && PolyText[MyGameStatus] )
 			{
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}else{
+			}
+			else
+			{
 		
 				src.top = TextSrcY[col][num];
 				src.left = TextSrcX[col][num];
@@ -440,8 +417,6 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 				dest.top = y;
 				dest.left = PermX;
 				dest.right = PermX + FontWidth;
-				memset(&fx, 0, sizeof(DDBLTFX));
-				fx.dwSize = sizeof(DDBLTFX);
 
 				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
 					ignore = TRUE;
@@ -465,23 +440,12 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 	 				}
 				}
  				
-				while( !ignore )
-				{
-					//ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, PermX , y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-					ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTwo, &src, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
-				    if( ddrval == DD_OK )
-				        break;
-				    if( ddrval == DDERR_SURFACELOST )
-					{
-						d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-						d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-						ReInitFont();
-				        break;
-					}
-				    if( ddrval != DDERR_WASSTILLDRAWING )
-				        break;
-				}
+				destp.x = dest.left;
+				destp.y = dest.top;
+
+				if( !ignore )
+					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
+
 			}
 		}
 	
@@ -490,11 +454,11 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 
 }
 				
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print All Message in the normal Que (last 3 messages)...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MessageQuePrint( void )
 {
 	int i,e,y,z,MAX;
@@ -553,11 +517,11 @@ void	MessageQuePrint( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print All Message in the long Que (last 50 messages)...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MessageQuePrintAll( void )
 {
 	int i,y,z,MAX;
@@ -603,11 +567,11 @@ float MessageSize;
 float ThisMessageTime;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Add Colour Message to the Que Short...
 	Input		:		char * Text
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddColourMessageToQueShort( char ** Text, int Colour )
 {
 	char * Pnt;
@@ -703,11 +667,11 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 
 //#define SFX_DEBUG
 	
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print the Scores....
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	FLASH_RATE	( 15.0F )
 float	FlashSpeed = 0.0F;
 BOOL	FlashToggle = FALSE;
@@ -762,7 +726,7 @@ void PrintScoreSort( void )
 	{
 		if( ShowPlayersOnHUD )
  		{
-			int top_offset = FontHeight; // Initial gap
+			int top_offset = FontHeight; // initial gap
 			int line_height = FontHeight+1;
 
 			// print player lines
@@ -772,29 +736,43 @@ void PrintScoreSort( void )
 				int len = 0; // length of string
 
 				// make sure it's a valid player
-				if( GameStatus[GetPlayerRank(i)] != STATUS_Left && GameStatus[GetPlayerRank(i)] != STATUS_Normal )
+				if( GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
 					continue;
 
-				// print names and score
-				if ( !( Ships[ GetPlayerRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
+				// print name
+				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
 				{
 					// blue dot for bad ping
-					if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-						DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], 2, top_offset );
+					if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
+						DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], 2, top_offset );
 
 					// give blue dot space
 					left_offset = 8;
 
 					// player name
-					Print4x5Text( &Names[GetPlayerRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerRank(i) ) ? GRAY : RED) );
+					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerByRank(i) ) ? GRAY : RED) );
 					left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
 				}
 				
-				// Show pings for everyone except your self
-				if( GetPlayerRank(i) != WhoIAm )
+				left_offset += ( 1 * FontWidth ); // give a padding space
+				
+				// print real score
 				{
-					sprintf( (char*) &buf[0] ,"Ping %d", Ships[GetPlayerRank(i)].network_player->ping );
-					Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+					int width = 0;
+					width = Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
+					left_offset += (width * FontWidth);
+				}
+
+				left_offset += ( 1 * FontWidth ); // give a padding space
+
+				// Show pings for everyone except your self
+				if( GetPlayerByRank(i) != WhoIAm )
+				{
+					if( Ships[GetPlayerByRank(i)].network_player != NULL )
+					{
+						sprintf( (char*) &buf[0] ,"Ping %d", Ships[GetPlayerByRank(i)].network_player->ping );
+						Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+					}
 				}
 
 				top_offset += line_height;
@@ -899,17 +877,18 @@ void PrintScoreSort( void )
 }
 		
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Print a uint16 number to any surface..
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD flags ,LPDIRECTDRAWSURFACE DestSurface )
+===================================================================*/
+
+void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , LPDIRECT3DSURFACE9 DestSurface )
 {
 	int i;
 	int num;
     RECT    src;
-    HRESULT ddrval;
+	POINT	dest;
 	int		Zeros= 0 ;
 	for( i = 0 ; i < 4 ; i++ )
 	{
@@ -935,80 +914,18 @@ void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , DWORD fla
 			src.right = FontSourceWidth;
 			src.bottom = FontSourceHeight;
 		}
-		while( 1 )
-		{
-			ddrval = DestSurface->lpVtbl->BltFast( DestSurface, x , y, lpDDSTwo, &src, flags );
-		    if( ddrval == DD_OK )
-		        break;
-		    if( ddrval == DDERR_SURFACELOST )
-			{
-				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-				DestSurface->lpVtbl->Restore( DestSurface );
-				ReInitFont();
-		        break;
-			}
-		    if( ddrval != DDERR_WASSTILLDRAWING )
-		        break;
-		}
+		dest.x = x;
+		dest.y = y;
+		FSBlit( lpFontSurface, DestSurface, &src, &dest );
 		x += FontWidth;
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Procedure	:		Re-Init the font surface...
-	Input		:		nothing
-	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-void ReInitFont(void)
-{
-#if 0
-	if( ModeCase < Mode512X384 )
-	{
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font.bmp" );
-		FontWidth = 4;
-		FontHeight = 5;
-		FontSourceWidth = 4;
-		FontSourceHeight = 5;
-	}else{
-//		if( ModeCase < Mode640X480 )
-//		{
-			DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font512.bmp" );
-			FontWidth = 8;
-			FontHeight = 8;
-			FontSourceWidth = 8;
-			FontSourceHeight = 8;
-//		}else{
-//			DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font800.bmp" );
-//			FontWidth = 9;
-//			FontHeight = 16;
-//			FontSourceWidth = 9;
-//			FontSourceHeight = 16;
-//		}
-	}
-#endif
-
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font512.bmp" );
-		FontWidth = 8;
-		FontHeight = 8;
-		FontSourceWidth = 8;
-		FontSourceHeight = 8;
-	}else
-	{
-		DDReLoadBitmap( lpDDSTwo , "data\\pictures\\font.bmp" );
-		FontWidth = 4;
-		FontHeight = 5;
-		FontSourceWidth = 4;
-		FontSourceHeight = 5;
-	}
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init PolyText allowed Array..
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPolyText( void )
 {
 	int i;
@@ -1034,11 +951,11 @@ void InitPolyText( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Read in the level specific text messages.......
 	Input		:		char *Filename
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ReadTxtFile( char *Filename )
 {
 	long			File_Size;
@@ -1087,11 +1004,11 @@ BOOL ReadTxtFile( char *Filename )
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Free level specific text messages.......
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void FreeTxtFile( void )
 {
 	if( TextMessages )
@@ -1101,11 +1018,11 @@ void FreeTxtFile( void )
 	}
 	NumOfTextMessages = 0;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Trigger text message.......
 	Input		:		uint16 * Data
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void TriggerTextMessage( uint16 * Data )
 {
 	TEXTMSGINFO * Tmi;
@@ -1134,11 +1051,11 @@ void TriggerTextMessage( uint16 * Data )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init the text messages......
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitTextMessages( void )
 {
 	int i;
@@ -1302,11 +1219,11 @@ typedef struct
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Read in the level specific text message Info.......
 	Input		:		char *Filename
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ReadMsgFile( char *Filename )
 {
 	long			File_Size;
@@ -1811,11 +1728,11 @@ BOOL ReadMsgFile( char *Filename )
 	free( OrgBuffer );
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Free level specific text message info.......
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void FreeMsgFile( void )
 {
 	if( TextMsgInfo )
@@ -1826,11 +1743,11 @@ void FreeMsgFile( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Trigger text message.......
 	Input		:		uint16 * Data
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayOldTextMessage( void )
 {
 	TEXTMSGINFO * Tmi;
@@ -1852,11 +1769,11 @@ void DisplayOldTextMessage( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Show next previously Triggerd text message.......
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void NextTextMessage( void )
 {
 	CurrentTextActivated++;
@@ -1869,11 +1786,11 @@ void NextTextMessage( void )
 		DisplayOldTextMessage();
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Show Last previously Triggerd text message.......
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void LastTextMessage( void )
 {
 	CurrentTextActivated--;
@@ -1889,11 +1806,11 @@ void LastTextMessage( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
 	Output		:		BOOL
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveAllText( FILE * fp )
 {
 	TEXTMSGINFO * Tmi;
@@ -1916,11 +1833,11 @@ FILE * SaveAllText( FILE * fp )
 	return fp;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save all text...
 	Input		:		FILE * fp
 	Output		:		BOOL
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE *	LoadAllText( FILE * fp )
 {
 	TEXTMSGINFO * Tmi;
@@ -1950,11 +1867,11 @@ FILE *	LoadAllText( FILE * fp )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Fill Status messages..
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char * StatusTab[256];
 void FillStatusTab( void )
 {
@@ -2061,11 +1978,11 @@ void FillStatusTab( void )
     StatusTab[STATUS_Null                                 ] = "Null                       ";
 #endif
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Display Status messages..
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayStatusMessages( void )
 {
 	int i;
@@ -2086,11 +2003,11 @@ void DisplayStatusMessages( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Build Reliability Tab...
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void BuildReliabilityTab( void )
 {
 	int i;
@@ -2113,16 +2030,16 @@ void BuildReliabilityTab( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Display a connection setting...
 	Input		:		void
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 __inline
 void DisplayConnectionStatus( int num , int x , int y)
 {
-    RECT    src;
-    HRESULT ddrval;
+    RECT src;
+	POINT dest;
 	int offset;
 
 	if( !num )
@@ -2132,7 +2049,9 @@ void DisplayConnectionStatus( int num , int x , int y)
 	if( bPolyText && PolyText[MyGameStatus])
 	{
 		AddScreenPolyText( (uint16) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
-	}else{
+	}
+	else
+	{
 
 		if( ModeCase < Mode512X384 )
 		{
@@ -2147,114 +2066,53 @@ void DisplayConnectionStatus( int num , int x , int y)
 		}
 		src.bottom = src.top + 4;
 		src.right = src.left + 4;
-		while( 1 )
-		{
-			ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x , y+offset, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-			if( ddrval == DD_OK )
-				break;
-			if( ddrval == DDERR_SURFACELOST )
-			{
-				d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-				d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				ReInitFont();
-				break;
-			}
-			if( ddrval != DDERR_WASSTILLDRAWING )
-				break;
-		}
 
+		dest.x = x;
+		dest.y = y+offset;
+
+		FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
 	}
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init the font surface...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitFont( BOOL OverridePolytext )
 {
-	LPDIRECTDRAWPALETTE ddpal;
 	uint16 i;
 	uint8 e;
 	int x,y;
 	int col;
 
 	// if font already initialised...
-	if (lpDDSTwo && !OverridePolytext )
+	if (lpFontSurface && !OverridePolytext )
 		return;
-	if( lpDDSTwo )
+
+	if( lpFontSurface )
 	{
-		ReleaseDDSurf(lpDDSTwo);
-		lpDDSTwo = NULL;
+		// bjd - how to release in d3d9 ?
+		//ReleaseDDSurf(lpFontSurface);
+		lpFontSurface = NULL;
 	}
 
-#if 0
-	if( ModeCase < Mode512X384 )
-   	{
-   		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   		DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
-   		FontWidth = 4;
-   		FontHeight = 5;
-   		FontSourceWidth = 4;
-   		FontSourceHeight = 5;
-
-   	}
-	else{
-//   			if( ModeCase < Mode640X480 )
-//   			{
-   		
-   			lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
-
-			ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-			lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
-   			FontWidth = 8;
-   			FontHeight = 8;
-   			FontSourceWidth = 8;
-   			FontSourceHeight = 8;
-//   			}else{
-//   				lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font800.bmp", 0, 0 );
-//   				ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font800.bmp");
-//   				lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-//   				DDSetColorKey( lpDDSTwo, RGB_MAKE( 255 , 0 , 255 ) );
-//   				FontWidth = 9;
-//   				FontHeight = 16;
-//   				FontSourceWidth = 9;
-//   				FontSourceHeight = 16;
-//   			}
-   	}
-#endif
-	
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font512.bmp", 0, 0 );
-
-		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font512.bmp");
-		if (lpDDSTwo && ddpal)
-		{
-			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
-		}
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font512.bmp", FSColourKeyBlack );
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
 		FontSourceHeight = 8;
-	}else
+	}
+	else
 	{
-   		lpDDSTwo = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\font.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\font.bmp");
-		if (lpDDSTwo && ddpal)
-		{
-			LastError = lpDDSTwo->lpVtbl->SetPalette( lpDDSTwo , ddpal );
-   			DDSetColorKey( lpDDSTwo, RGB_MAKE( 0 , 0 , 0 ) );
-		}
-   		FontWidth = 4;
-   		FontHeight = 5;
-   		FontSourceWidth = 4;
-   		FontSourceHeight = 5;
+		lpFontSurface = FSLoadBitmap( "data\\pictures\\font.bmp", FSColourKeyBlack );
+		FontWidth = 4;
+		FontHeight = 5;
+		FontSourceWidth = 4;
+		FontSourceHeight = 5;
 	}
 
 	for( i = 0; i < 0x100 ; i++ )
@@ -2354,7 +2212,9 @@ void InitFont( BOOL OverridePolytext )
 		CharTrans[(uint8)'Û'] = e++;
 		CharTrans[(uint8)'ñ'] = e;
 		CharTrans[(uint8)'Ñ'] = e++;
-	}else{
+	}
+	else
+	{
 		CharTrans[(uint8)'à'] = 'à';
 		CharTrans[(uint8)'À'] = 'à';
 		CharTrans[(uint8)'á'] = 'á';
@@ -2461,11 +2321,11 @@ void InitFont( BOOL OverridePolytext )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init the font surface...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitFontTransTable( BOOL BlitText )
 {
 	uint16 i;

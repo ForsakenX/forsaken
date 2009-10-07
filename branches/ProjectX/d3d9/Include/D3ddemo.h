@@ -10,8 +10,8 @@
 #ifndef __D3DDEMO_H__
 #define __D3DDEMO_H__
 
-#include <ddraw.h>
-#include <d3d.h>
+//#include <ddraw.h>
+#include <d3d9.h>
 #include "d3dapp.h"
 #include "d3dmacs.h"
 
@@ -26,7 +26,7 @@ extern "C" {
      * RenderScene
      * Clears the viewport and viewport Z-buffer and render the scene.
      */
-    BOOL RenderScene(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
+    BOOL RenderScene(/*LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView */);
     /*
      * InitScene
      * Builds the model which will be rendered.

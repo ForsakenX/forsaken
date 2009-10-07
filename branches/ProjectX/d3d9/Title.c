@@ -1,6 +1,9 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+#define RENDER_USING_FACES
+
+/*===================================================================
 	Include Files...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -50,6 +53,9 @@
 #include "util.h"
 #include "lua_config.h"
 #include "net_tracker.h"
+#include "lua_games.h"
+#include "timer.h"
+#include "d3dappi.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -67,6 +73,12 @@ void *mem;
 #endif
 #endif
 
+extern int default_x;
+extern int default_y;
+extern int default_width;
+extern int default_height;
+extern int default_bpp;
+
 extern BOOL g_OddFrame;
 extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
@@ -75,7 +87,6 @@ extern BOOL HideCursor;
 extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
-extern BOOL ResetKillsPerLevel;
 
 BOOL SpaceOrbSetup = FALSE;
 void DefaultJoystickSettings( USERCONFIG *u );
@@ -112,9 +123,9 @@ void ProcessTextItems (void);
 BOOL	SWMonoChrome;
 BOOL	Last_SWMonoChrome = FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern BOOL WaitingToQuit;
 extern int16	NumPrimaryPickups;
 extern float FlashTextActive;
@@ -123,8 +134,8 @@ extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
-extern BOOL UseShortPackets;
-extern BOOL ResetKillsPerLevel;
+extern BOOL MyUseShortPackets;
+extern BOOL MyResetKillsPerLevel;
 extern BOOL	Pal332;
 extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
@@ -167,8 +178,10 @@ extern FRAME_INFO	*	Title_TVFrame_Header;
 extern char MissionTextNames[MAXLEVELS][128];
 extern char MissionTextPics[MAXLEVELS][128];
 extern int32 ColPerspective;
+extern int32 MyColPerspective;
 extern BOOL	JustExitedMenu;
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
 extern BOOL LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16 Lives;
@@ -214,7 +227,7 @@ extern	FRAME_INFO	*	Title_Chars2_Header;
 extern	OFF_FILES Title_OffsetFiles[];
 extern	CAMERA	CurrentCamera;
 void Build_View();
-extern	LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ];
+extern	RENDEROBJECT RenderBufs[4];
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
@@ -246,10 +259,10 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-extern	LPDIRECTDRAWSURFACE     lpDDSTwo;
-extern	DDCOLORKEY				ddcolorkey;
-LPDIRECTDRAWSURFACE		lpDDSTitleFont;
-extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
+extern	LPDIRECT3DSURFACE9     lpFontSurface;
+//bjd extern	DDCOLORKEY				ddcolorkey;
+LPDIRECT3DSURFACE9	lpDDSTitleFont;
+//bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
 extern	int16	ModeCase;
 extern	int16	ModesX[8];
 extern	int16	ModesY[8];
@@ -264,15 +277,12 @@ extern int16		NewLevelNum;
 extern int16		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
 extern	BOOL                    IsHost;
-extern	D3DMATRIXHANDLE hView;
-extern	D3DMATRIXHANDLE hWorld;
+//extern	D3DMATRIXHANDLE hView;
+//extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
 BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DNormCmdBuf;
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
-extern	LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
 extern	MATRIX	MATRIX_Identity;
-extern	D3DVIEWPORT viewport;
+extern	D3DVIEWPORT9 viewport;
 extern	MODEL	Models[];
 uint16	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
@@ -285,19 +295,16 @@ extern	char *PrimaryDescription[];
 extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
-extern	BOOL	RandomPickups;
+extern	BOOL	MyRandomPickups;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Mode changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-int		ScreenWidth;
-int		ScreenHeight;
-int		ScreenBPP;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Texture Format changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	TextureList = { 0 };
 int		TexturePalettized;
 int		TextureRedBPP;
@@ -308,16 +315,16 @@ int		TextureIndexBPP;
 
 SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Level changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 LIST	LevelList = { 0 };
 char SelectedLevel[128];
 char SelectedLevelText[MAX_LEVEL_TEXT_LENGTH];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Joystick stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char	NoBtnText[] = "not currently assigned";
 char	MultiBtnText[] = "multiple buttons assigned";
 char	NoPOVText[] = "No POV selected";
@@ -365,18 +372,18 @@ BOOL InTitleRoom;
 char DemoAvgFpsText[128];
 char DemoTotalFramesText[128];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Error message stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char ErrorMessage[256];
 char NotifyMessage[ 256 ];
 int	ErrorMoveBackBy;
 MENU * ErrorNewMenu;
 BOOL IgnoreMenuFuncs = FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Fucntions without a header..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBattleMenu( MENU *Menu );
 void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
@@ -489,7 +496,6 @@ void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy);
-BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf );
 
 BOOL DeleteSavedGame( LIST *l, int item );
 BOOL DeleteDemo( LIST *l, int item );
@@ -739,9 +745,9 @@ text messaging
 void AddTitleMessage(LPTEXTMSG LpTextMsg);
 void GetTitleMessage(void);
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	MultiPlayer Stuff...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
@@ -828,6 +834,8 @@ TEXT MacroText4					= { 0, 0, "", NULL };
 TEXT QuickText					= { 0, 0, "", SendQuickText };
 TEXT QuickTextWhisper			= { 0, 0, "", SendQuickTextWhisper };
 TEXT local_port_str				= { 0, 0, "", NULL };
+TEXT host_port_str				= { 0, 0, "", NULL };
+TEXT GamesLength				= { 0, 0, "", NULL };
 TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
@@ -838,10 +846,12 @@ SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWater
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
 SLIDER TrailDetailSlider					= { 0, 10, 1, 9, 0, 0.0F };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
+SLIDER MyPacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider1	= { 1, 10, 1, 2, 0, 0.0F };
 SLIDER PseudoHostTimeoutSlider2	= { 1, 20, 1, 5, 0, 0.0F };
 SLIDER NumOfPlayersSlider				= { 1, MAX_PLAYERS, 1, 1, 0, 0.0F };
 SLIDER TimeLimit							= { 0, 30, 1, 0, 0, 0.0F };
+SLIDER MyTimeLimit							= { 0, 30, 1, 0, 0, 0.0F };
 SLIDER MaxPlayersSlider				= { 1, MAX_PLAYERS, 1, 6, 0, 0.0F };
 SLIDER MaxKillsSlider						= { 0, 255, 1, 0, 0, 0.0F };
 SLIDER GoalScoreSlider					= { 1, 10, 1, 5, 0, 0.0F };
@@ -974,9 +984,9 @@ MENUITEM *TextItem			= NULL;
 MENUITEM *PreListItem;
 MENU *PreListMenu;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Menus...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 DEFKEY KDleft						= { &Config.left, 0 };
 DEFKEY KDright					= { &Config.right, 0 };
@@ -1231,22 +1241,24 @@ MENUITEM SlowLevelSelectItem = { 0, 0, 0, 0, 0, "", 0, 0, NULL, &MENU_NEW_Select
 MENU	MENU_NEW_ValidPickups_Second_Page = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
-		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 },
+		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0	/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 },
 		
-		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mug ],					&PickupValid[ PICKUP_Mugs ],		SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_HeatseakerPickup ],	&PickupValid[ PICKUP_Heatseaker ],	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Scatter ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Gravgon ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Launcher ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_TitanStar ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Thief ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups24	/*"missiles"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups6	/*mug*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mugs ],				NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups7	/*"solaris"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_HeatseakerPickup ],	NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups8	/*"scatter"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Scatter ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups9	/*"gravgon"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Gravgon ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups10	/*"mfrl"*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Launcher ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  84, 120,  92, 0, LT_MENU_NEW_ValidPickups11	/*"titan"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_TitanStar ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  92, 120, 100, 0, LT_MENU_NEW_ValidPickups20	/*"thief missle"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Thief ],				NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
-		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,		NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PurgePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_PinePickup ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_QuantumPickup ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SpiderPod ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 108, 200, 116, 0, LT_MENU_NEW_ValidPickups25	/*"mines"*/,			FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,	NULL,				DrawFlatMenuItem,	NULL, 0 } ,
+
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups12	/*"purge mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PurgePickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups13	/*"pine mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_PinePickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups14	/*"quantum mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_QuantumPickup ],		NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 148, 120, 156, 0, LT_MENU_NEW_ValidPickups21	/*"spider mine"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SpiderPod ],			NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1258,18 +1270,18 @@ MENU	MENU_NEW_ValidPickups = {
 		{  0,   0, 200,  20, 0, LT_MENU_NEW_ValidPickups0				/*"allowed pickups"*/,	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
 		
 		{ 10,  28, 200,  36, 0, LT_MENU_NEW_ValidPickups22				/*"primary weapons"*/,	FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups1				/*"trojax"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Trojax ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups2				/*"pyrolite"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Pyrolite ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups3				/*"transpulse"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Transpulse ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups4				/*"suss gun"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_SussGun ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups5				/*laser*/,				FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Laser ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  44, 120,  52, 0, LT_MENU_NEW_ValidPickups1				/*"trojax"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Trojax ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  52, 120,  60, 0, LT_MENU_NEW_ValidPickups2				/*"pyrolite"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Pyrolite ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  60, 120,  68, 0, LT_MENU_NEW_ValidPickups3				/*"transpulse"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Transpulse ],			NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  68, 120,  76, 0, LT_MENU_NEW_ValidPickups4				/*"suss gun"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_SussGun ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10,  76, 120,  84, 0, LT_MENU_NEW_ValidPickups5				/*laser*/,				FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Laser ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ 10,  92, 200, 100, 0, LT_MENU_NEW_ValidPickups23				/*"power-ups"*/,		FONT_Small,		TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,										NULL,								NULL,				DrawFlatMenuItem,	NULL, 0 } ,
-		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups15				/*"invulnerability"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Inv ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups16				/*"nitro"*/,			FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Nitro ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups17				/*"stealth mantle"*/,	FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Mantle ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups18				/*"orbit pulsar"*/,		FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_Orb ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
-		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups19				/*"golden power pod"*/, FONT_Small,		TEXTFLAG_CentreY,						&PickupValid[ PICKUP_GoldenPowerPod ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 108, 120, 116, 0, LT_MENU_NEW_ValidPickups15				/*"invulnerability"*/,	FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Inv ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 116, 120, 124, 0, LT_MENU_NEW_ValidPickups16				/*"nitro"*/,			FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Nitro ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 124, 120, 132, 0, LT_MENU_NEW_ValidPickups17				/*"stealth mantle"*/,	FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Mantle ],				NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 132, 120, 140, 0, LT_MENU_NEW_ValidPickups18				/*"orbit pulsar"*/,		FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_Orb ],					NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
+		{ 10, 140, 120, 148, 0, LT_MENU_NEW_ValidPickups19				/*"golden power pod"*/, FONT_Small,		TEXTFLAG_CentreY,						&MyPickupValid[ PICKUP_GoldenPowerPod ],		NULL,								SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 } ,
 		
 		{ 10, 156, 120, 164, 0, LT_MENU_NEW_MoreMultiplayerOptions22	/*"next page"*/,		FONT_Small,		TEXTFLAG_CentreY,						NULL,										&MENU_NEW_ValidPickups_Second_Page, MenuChange,			DrawFlatMenuItem,	NULL, 0 } ,
 		
@@ -1327,11 +1339,11 @@ MENU MENU_NEW_NetworkOptions = {
 	{
 		{  0, 16, 200, 16, 0,			"Network Options",															FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0 } ,
 
-		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&UseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
-		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&PacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{ 10, 32,  85, 32, 0,			LT_MENU_NEW_MoreMultiplayerOptions2/*"short packets"*/,						FONT_Small,	TEXTFLAG_CentreY,							&MyUseShortPackets,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{ 10, 40,  85, 40, SLIDER_Value,LT_MENU_NEW_MoreMultiplayerOptions4/*"packet rate"*/,						FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&MyPacketsSlider,				NULL,						SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
-		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&ColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 56,  85, 56, 0,			LT_MENU_NEW_MoreMultiplayerOptions1a /*target collision perspective"*/,		FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Descent,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
+		{ 10, 64,  85, 64, 0,			LT_MENU_NEW_MoreMultiplayerOptions2a /*"shooter collision perspective"*/,	FONT_Small, TEXTFLAG_CentreY,							&MyColPerspective,			(void *)COLPERS_Forsaken,	SelectFlatRadioButton,	DrawFlatRadioButton,	NULL, 0 } ,
 
 		{ 10, 78,  85, 78, 0,			"enable tracker",															FONT_Small, TEXTFLAG_CentreY,							&tracker_enabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
@@ -1362,11 +1374,11 @@ MENU	MENU_NEW_CreateGame = {
 
 		{  10,  75,  85,  75, SLIDER_Value, LT_MENU_NEW_CreateGame5  /*"player limit"*/,			FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxPlayersSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 		{  10,  83,  85,  83, SLIDER_Value, LT_MENU_NEW_CreateGame6  /*"score limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MaxKillsSlider,					NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10,  91,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&TimeLimit,							NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
+		{  10,  91,  85,  91, SLIDER_Time,	LT_MENU_NEW_CreateGame7  /*"time limit"*/,				FONT_Small,		TEXTFLAG_CentreY | TEXTFLAG_AutoSelect,								&MyTimeLimit,						NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
 
-		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&ResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 107,  85, 107, 0,			"Reset Kills"            /*"Reset Kills"*/,				FONT_Small,		TEXTFLAG_CentreY,													&MyResetKillsPerLevel,				NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 		{  10, 115,  85, 115, SLIDER_Value,	LT_MENU_NEW_MoreMultiplayerOptions21/*"num weapons"	*/, FONT_Small,		TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,								&NumPrimaryPickupsSlider,			NULL,								SelectSlider,			DrawFlatMenuSlider,		NULL, 0 } ,
-		{  10, 124,  85, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&RandomPickups,						NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
+		{  10, 124,  85, 124, 0,			LT_MENU_NEW_MoreMultiplayerOptions20/*"randomize"   */, FONT_Small,		TEXTFLAG_CentreY,													&MyRandomPickups,					NULL,								SelectFlatMenuToggle,	DrawFlatMenuToggle,		NULL, 0 } ,
 
 		{  10, 139, 180, 139, 0,			LT_MENU_NEW_MoreMultiplayerOptions19/*"pickups" */,		FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_ValidPickups,				MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
 		{  10, 147, 100, 147, 0,			"Network Options",										FONT_Small,		TEXTFLAG_CentreY,													NULL,								&MENU_NEW_NetworkOptions,			MenuChange,				DrawFlatMenuItem,		NULL, 0 } ,
@@ -1755,6 +1767,9 @@ MENU	MENU_NEW_Visuals = {
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
+		
+		{ 20, 120, 200, 120, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
+
 		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -1803,9 +1818,11 @@ void JoiningExit(MENU *Menu)
 
 void JoiningEnter(MENU *Menu)
 {
-	char * port;
+	network_return_t rv;
 
-	DebugPrintf("EnterJoin\n");
+	DebugPrintf("JoiningEnter\n");
+
+	SetGamePrefs(); // save the last TCPAddress set
 
 	// initialize levels
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) && !InitLevels( DEFAULT_LEVELS ) )
@@ -1814,6 +1831,17 @@ void JoiningEnter(MENU *Menu)
 		PrintErrorMessage (LT_NoLevelsInstalled, 1, NULL, ERROR_USE_MENUFUNCS );
 		return;
 	}
+	
+	PlayDemo = FALSE;
+	
+	// this means I need a ship number
+	WhoIAm = UNASSIGNED_SHIP;
+
+	// cleanup everything
+	SetupNetworkGame();
+
+	// set bike mode to normal
+	SetBikeMods( 0 );
 
 	// we are a joiner
 	IsHost = FALSE;
@@ -1824,30 +1852,39 @@ void JoiningEnter(MENU *Menu)
 	PlayersList.display_items = 16;
 	PlayersList.selected_item = -1;
 
-	// convert local port
+	// convert ports
 	local_port = atoi(local_port_str.text);
+	host_port = atoi(host_port_str.text);
 
 	// setup
-	if( ! network_setup( &biker_name[0], local_port ) )
+	rv = network_setup( &biker_name[0], local_port );
+
+	if( rv != NETWORK_OK )
 	{
-		Msg("Failed to setup network!");
+		char error_str[600] = "Failed to setup network!";
+		switch( rv )
+		{
+		case NETWORK_ERROR_INIT:
+			break;
+		case NETWORK_ERROR_BIND:
+			{
+				char * str = "";
+				if( local_port < 1024 )
+					str = "Ports bellow 1024 are normally restricted.";
+				sprintf(error_str, "%s %s %s %s",
+						"The selected port is in use or invalid.", 
+						str,
+						"Disable the program using the port or",
+						"select a different local port." );
+			}
+			break;
+		}
+		PrintErrorMessage(error_str, 2, &MENU_NEW_ChooseConnectionToJoin, 0);
 		return;
 	}
 
 	// convert host
 	strncpy( host_address, TCPAddress.text, sizeof(host_address) );
-
-	// try to find port in host line
-	port = strchr(host_address,';'); // forsaken prints : as ;
-	if(!port)	port = strchr(host_address,':'); // from command line
-	if(!port)	host_port = 0;		// default port
-	else							// we found a port
-	{
-		*port = 0; // separate hostname from port
-		host_port = atoi(++port);
-	}
-
-	config_save(); // save the last TCPAddress set
 
 	network_join( host_address, host_port );
 }
@@ -1871,15 +1908,25 @@ void CheckJoinStatus( int * i )
 
 	switch( network_state )
 	{
+	// at this point network_event will take over and change the screen
 	case NETWORK_CONNECTED:
 		update_join_status("Connected...");
+		strncpy( &show_f1[0], "", 100 );
+		break;
+	case NETWORK_SYNCHING:
+		update_join_status("Synching with other players please wait...");
+		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_CONNECTING:
-		update_join_status("Connecting to game please wait...");
+		update_join_status("Connecting to host please wait...");
 		strncpy( &show_f1[0], "", 100 );
 		break;
 	case NETWORK_DISCONNECTED:
-		update_join_status("Connection failed...");
+		update_join_status("Failed to connect to host...");
+		strncpy( &show_f1[0], "( press F1 to retry )", 100 );
+		break;
+	case NETWORK_SYNCH_FAILED:
+		update_join_status("Failed to synch with other players...");
 		strncpy( &show_f1[0], "( press F1 to retry )", 100 );
 		break;
 	}
@@ -1904,18 +1951,90 @@ MENU	MENU_NEW_Joining = {
 MENUITEM MENU_ITEM_JoinMultiplayer = 
 		{ 0, 0, 0, 0, 0, "", 0, 0,  NULL, &MENU_NEW_Joining, MenuChange, NULL, NULL, 0  };
 
+#define MAX_GAME_LIST 7
+#define MAX_GAME_LENGTH 100
+
+char GameName[MAX_GAME_LIST][MAX_GAME_LENGTH];
+char GameList[MAX_GAME_LIST][MAX_GAME_LENGTH];
+
+void UpdateGameList( void )
+{	
+	int i;
+	int length;
+
+	games_update();
+
+	length = games_length();
+	_snprintf(GamesLength.text, sizeof(GamesLength.text), "%d", length);
+
+	for( i = 0; i < MAX_GAME_LIST; i++ )
+	{
+		// the game list starts at 1
+		int x = i+1;
+
+		// valid game
+		if( i < length )
+		{
+			// set the game line
+			_snprintf(GameList[i], sizeof(GameList[i]),
+						"%d. %s %s:%s", x, games_name_at(x), games_ip_at(x), games_port_at(x));
+
+			// set the game name so we can find the index later
+			strncpy(GameName[i], games_name_at(i+1), sizeof(GameName[i]));
+		}
+		// empty out the game
+		else
+		{
+			_snprintf(GameList[i], sizeof(GameList[i]), "%d.", x);
+			memset(GameName[i],0,sizeof(GameName[i]));
+		}
+	}
+}
+
+timer game_list_timer;
+
+void Enter_ChooseConnectionToJoin( MENU *Menu )
+{
+	timer_clear( &game_list_timer );
+	UpdateGameList();
+}
+
+void Update_ChooseConnectionToJoin( int * z )
+{
+	// check time passed
+	if ( timer_peek( &game_list_timer ) < 2 ) return;
+	timer_run( &game_list_timer );
+	UpdateGameList();
+}
 
 MENU	MENU_NEW_ChooseConnectionToJoin = {
-	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
+	"", Enter_ChooseConnectionToJoin, NULL, Update_ChooseConnectionToJoin, TITLE_TIMER_PanToLeftVDU,
 	{
-		{ 0, 0, 200, 10, 0, "Join Multiplayer Game",	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0  },
+		{ 0, 10, 200, 10, 0, "Join Multiplayer Game",	FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0  },
 
-		{ 5, 20, 60, 20, 0, "connect",					FONT_Medium,	TEXTFLAG_CentreY,						NULL,				NULL,	SelectConnectionToJoin,		DrawFlatMenuItem,	NULL, 0  },
+		{ 5, 25, 60, 25, 0, "connect",					FONT_Medium,	TEXTFLAG_CentreY,						NULL,				NULL,	SelectConnectionToJoin,		DrawFlatMenuItem,	NULL, 0  },
 
-		{ 5, 40, 60, 40, 0, "address:",					FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
-		{ 5, 50, 60, 50, 0,	"local port",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 40, 60, 40, 0, "host address:",			FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&TCPAddress,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+		{ 5, 48, 60, 48, 0,	"host port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&host_port_str,		NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
 
-		//{ 5, 135, 200, 145, 0, "Leave blank to scan for lan games...", FONT_Small, TEXTFLAG_ForceFit | TEXTFLAG_CentreY, &TCPAddress, NULL ,NULL , DrawFlatMenuText, NULL, 0 } ,
+		{ 5, 60, 60, 60, 0,	"local port:",				FONT_Small,		TEXTFLAG_ForceFit | TEXTFLAG_CentreY,	&local_port_str,	NULL,	SelectFlatMenutext,			DrawFlatMenuText,	NULL, 0 } ,
+
+		//
+
+		{ 0, 75, 200, 75, 0, "Public Game List",		FONT_Medium,	TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 },
+		{ 0, 83, 200, 83, 0, "Select a game bellow to join", FONT_Small,TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,				NULL,	NULL,						DrawFlatMenuItem,	NULL, 0 } ,
+
+		// number of games
+		{ 5, 97, 60, 97, 0, "Games Found:",			FONT_Small,		TEXTFLAG_CheckForRefresh | TEXTFLAG_CentreY,	&GamesLength,	NULL,	NULL,						DrawFlatMenuText,	NULL, 0 } ,
+
+		// list of games
+		{ 5, 111, 200, 111, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[0], (void *)GameName[0], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 119, 200, 119, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[1], (void *)GameName[1], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 127, 200, 127, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[2], (void *)GameName[2], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 135, 200, 135, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[3], (void *)GameName[3], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 143, 200, 143, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[4], (void *)GameName[4], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 151, 200, 151, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[5], (void *)GameName[5], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
+		{ 5, 159, 200, 159, 0, "", FONT_Small, TEXTFLAG_CheckForRefresh | TEXTFLAG_ForceFit | TEXTFLAG_CentreY, (void *)GameList[6], (void *)GameName[6], SelectConnectionToJoin, DrawFlatMenuName, NULL, 0 } ,
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -2387,7 +2506,7 @@ MENU	MENU_Host = {
 		{ 200, 128, 0, 0, 0, "Team Game", 0, 0, &TeamGame, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 144, 0, 0, 0, "Record Demo", 0, 0, &RecordDemo, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 160, 0, 0, 0, "Demo Name  ", 0, 0, &DemoGameName, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
-		{ 200, 176, 0, 0, 0, "Time Limit ", 0, 0, &TimeLimit, NULL, SelectSlider, DrawSlider, NULL, 0 },
+		{ 200, 176, 0, 0, 0, "Time Limit ", 0, 0, &MyTimeLimit, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 192, 0, 0, 0, "Max Players ", 0, 0, &MaxPlayersSlider, NULL, SelectSlider, DrawSlider, NULL, 0 },
 		{ 200, 224, 0, 0, 0, "Level...", 0, 0, &LevelList, NULL , SelectList , DrawList, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -2810,8 +2929,7 @@ MENU	MENU_Options = {
 		{ 200, 176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "*/,		0, 0, &myglobs.bShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200, 224, 0, 0, 0, LT_MENU_Options12	/*"Show Fog"*/,				0, 0, &d3dapprs.bFogEnabled,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200, 240, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 224, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -2903,9 +3021,9 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , NULL , NULL,	0,
 			{
-					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
-					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
+					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&MyColPerspective,				NULL,								SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&MyUseShortPackets,			NULL,								SelectToggle,	DrawToggle),
+					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&MyPacketsSlider,		NULL,								SelectSlider,	DrawSlider),
 					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
 					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
 
@@ -3081,9 +3199,9 @@ char *BikerText[MAXBIKETYPES] =
 };
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #define MAXHIGHLIGHTITEMS 8
 #define HIGHLIGHT_Pulsing	0
@@ -3557,16 +3675,17 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 };
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Input		:		LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
 						LPDIRECT3DVIEWPORT lpView
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
-InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView )
+InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
+           LPDIRECT3DVIEWPORT lpView*/ )  // bjd
 {
+#if 0
     LPDIRECTDRAWPALETTE ddpal;
     D3DMATERIAL bmat;
     D3DMATERIALHANDLE hBmat;
@@ -3621,6 +3740,8 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
     memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 
+#endif
+
 	InitFont(FALSE);
 
 	// init vdu font for blitting if used...
@@ -3632,111 +3753,17 @@ InitTitle(LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
 void InitTitleFont(void)
 {
-    LPDIRECTDRAWPALETTE ddpal;
-#if 0
-	//init the title font for blitting...
-	switch (ModeCase)
-	{
-	case Mode320X200:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode320X240:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode320X400:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	case Mode512X384:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode640X400:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode640X480:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	case Mode800X600:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-		break;
-	default:
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-		break;
-	}
-#endif
-
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f512X384.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f512X384.bmp");
-	}else
-	{
-		lpDDSTitleFont = DDLoadBitmap( d3dapp->lpDD, "data\\pictures\\f320X200.bmp", 0, 0 );
-   		ddpal =  DDLoadPalette( d3dapp->lpDD , "data\\pictures\\f320X200.bmp");
-	}
-
-
-	if ( lpDDSTitleFont && ddpal)
-	{
-	  LastError = lpDDSTitleFont->lpVtbl->SetPalette( lpDDSTitleFont , ddpal );
-   	  DDSetColorKey( lpDDSTitleFont, RGB_MAKE( 0 , 0 , 0 ) );
-	}
-
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp", FSColourKeyBlack );
+	else
+		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp", FSColourKeyBlack );
 }
 
-void ReInitTitleFont (void)
-{
-#if 0
-	switch (ModeCase)
-	{
-	case Mode320X200:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	case Mode320X240:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	case Mode512X384:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode640X400:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode640X480:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode800X600:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	case Mode1024X768:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-		break;
-	default:
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-		break;
-	}
-#endif
-
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f512X384.bmp" );
-	}else
-	{
-		DDReLoadBitmap( lpDDSTitleFont , "data\\pictures\\f320X200.bmp" );
-	}
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Release Tile Screen Graphics etc...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void
 ReleaseTitle(void)
 {
@@ -3744,14 +3771,16 @@ ReleaseTitle(void)
 	
 	// only release font if not showing loading bar...
 	if ( !PreventFlips )
-		if ( lpDDSTwo )
+		if ( lpFontSurface )
 		{
-		 ReleaseDDSurf(lpDDSTwo);
-		 lpDDSTwo = NULL;
+		 //ReleaseDDSurf(lpFontSurface);
+		 lpFontSurface = NULL;
 		}
 
 	if(!bPolyText && lpDDSTitleFont)
-		ReleaseDDSurf(lpDDSTitleFont);
+	{
+		//ReleaseDDSurf(lpDDSTitleFont);
+	}
 
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
 	{
@@ -3760,11 +3789,11 @@ ReleaseTitle(void)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Set up initail parameters for title room...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetInitialTitleParams()
 {
 	int i;
@@ -3916,11 +3945,11 @@ void SetInitialTitleParams()
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		LoadTitleModels
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL LoadTitleModels(void)
 {
 	int i;
@@ -4228,7 +4257,8 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
   
 				num_polys = mxheader->Group[Group].num_polys_per_execbuf[ExecBuf];
 				poly_ptr = mxheader->Group[Group].poly_ptr[ExecBuf];
-				vertex_ptr = mxheader->Group[Group].org_vertpnt[ExecBuf];
+				//bjd vertex_ptr = mxheader->Group[Group].org_vertpnt[ExecBuf];
+				vertex_ptr = mxheader->Group[Group].originalVerts[ExecBuf];
 
 				intersection_points = 0;
 				scanlinenum = 0;
@@ -4400,11 +4430,11 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Place title room objects into their correct positions
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PlaceObjects(void)
 {
 
@@ -4484,11 +4514,11 @@ void PlaceObjects(void)
 	RotateDiscStack(MaxStackTheta);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Expand / Contract discs, according to DiscExpandOut 
 	Input		:		nothing...
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExpandDiscs(void)
 {
 
@@ -4529,11 +4559,11 @@ void ExpandDiscs(void)
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Wiggle all discs along the y axis after expanding...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void WiggleDiscs(void)
 {
 	int i;
@@ -4563,11 +4593,11 @@ void WiggleDiscs(void)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Get a random speed for a disc
 	Input		:		disc number...
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetUpRotate(int disc)
 {
 	float rnd;
@@ -4584,11 +4614,11 @@ void SetUpRotate(int disc)
 	
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Get next "judder" amount for a disc (after disc has rotated)
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DiscJudder(int disc)
 {
 	float angle;
@@ -4618,13 +4648,13 @@ void DiscJudder(int disc)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		RotateDiscs
 	Input		:		disc number, OneOnly: ROTATE_DISC_All ( all discs )
 											  ROTATE_DISC_DifficultyForward
 											  ROTATE_DISC_DifficultyBack
 	Output		:		nothing...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateDiscs(int disc, int OneOnly)
 {
 	float angleoffset, viewangle, x, y;
@@ -4678,11 +4708,11 @@ void RotateDiscs(int disc, int OneOnly)
 		 	DiscJudder(disc);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for all discs...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateAllDiscs(void)
 {
 
@@ -4735,11 +4765,11 @@ void RotateAllDiscs(void)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		step through complete disc rotation sequence for one disc...
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RotateOneDisc(int disc)
 {
 
@@ -4810,27 +4840,41 @@ void MorphHoloLight(void)
 
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy)
 {
-
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	D3DLVERTEX		    *		VertPtr;
 	DstMloadheader = &ModelHeaders[ Model ];
-
+/*
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+*/
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//		return FALSE;
 
-	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	{
+		return FALSE;
+	}
+
+//	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
 	
-	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
+
+	
 	
 	DstlpD3DLVERTEX->y = VertPtr->y + IncreaseBy;
 	
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	{
+		return FALSE;
+	}
    	
 	return TRUE;
 
@@ -4880,10 +4924,9 @@ void PulsateVDU(void)
 
 	for (i=0; i<4; i++)
 	{
-	tintamount = 1.0F - (((float)SIND(theta + i * 90.0F) + 1.0F)/2.0F * 0.6F); 
-	TintOneVertex( BackgroundModel[TITLE_MODEL_VDU], 0, 1, UseThese[i], tintamount,tintamount,tintamount, 1.0F );
+		tintamount = 1.0F - (((float)SIND(theta + i * 90.0F) + 1.0F)/2.0F * 0.6F); 
+		TintOneVertex( BackgroundModel[TITLE_MODEL_VDU], 0, 1, UseThese[i], tintamount,tintamount,tintamount, 1.0F );
 	}
-
 }
 
 void InitHoloPad( void );
@@ -4895,24 +4938,28 @@ void ProcessHoloModel( void );
 
 uint8 QuickStart = QUICKSTART_None; 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Title Display...
 
 	Input		:		nothing...
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL IpOnCLI;
 BOOL DisplayTitle(void)
 {
+#if 1 // bjd - CHECK IMPORTANT
 	uint16 i;
+/*
 	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
 	LPDIRECT3D lpD3D		  = d3dapp->lpD3D;
 	LPDIRECT3DDEVICE lpDev	  = d3dapp->lpD3DDevice;
-    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+*/
+//    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+
 	uint16	group;
 	MENUITEM *Item;
 	LIST *l;
-	
+
 	if (!InitialTexturesSet && CameraStatus != CAMERA_AtStart)
 	{
 		InitialTexturesSet = TRUE;
@@ -5053,17 +5100,19 @@ BOOL DisplayTitle(void)
 		CurrentCamera.Pos = View;
 		CurrentCamera.GroupImIn = -1;
 		CurrentCamera.Viewport = viewport;	
-		CurrentCamera.Viewport.dwX = 0;
-		CurrentCamera.Viewport.dwY = 0;
-		CurrentCamera.Viewport.dwWidth = d3dapp->szClient.cx;
-		CurrentCamera.Viewport.dwHeight = d3dapp->szClient.cy;
+		CurrentCamera.Viewport.X = 0;
+		CurrentCamera.Viewport.Y = 0;
+		CurrentCamera.Viewport.Width = d3dapp->szClient.cx;
+		CurrentCamera.Viewport.Height = d3dapp->szClient.cy;
+
+/* bjd
 		CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
 		CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
 		CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
 										  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
 		CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
 										   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-
+*/
 		
 		
 		TloadCheckForLostSurfaces(&Tloadheader);
@@ -5072,18 +5121,21 @@ BOOL DisplayTitle(void)
 		Build_View();
 		CurrentCamera.View = view;
 
-		if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
+//		if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
+		if (FSBeginScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : BeginScene failed\n" );
 			return FALSE;
 		}
 
-		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+//		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+		if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		{
 			Msg( "DisplayTitle() : SetMatrix failed\n" );
 			return FALSE;
 		}
 
+/* bjd - check
 		if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport) != D3D_OK )
 		{
 #ifdef DEBUG_VIEWPORT
@@ -5093,7 +5145,7 @@ BOOL DisplayTitle(void)
 #endif
 			return FALSE;
 		}
-
+*/
 		if (ClearBuffers( TRUE, FALSE ) != TRUE )
 		{
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
@@ -5103,9 +5155,10 @@ BOOL DisplayTitle(void)
 		InitPolySort();
 
 		// reset all the normal execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		set_normal_states();
 
-		if( !ModelDisp( 0, lpDev, TitleModelSet ) )
+		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
 		{
 			return FALSE;
 		}
@@ -5114,111 +5167,95 @@ BOOL DisplayTitle(void)
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
 
-			if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 /*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 #if 0
 /*
 	Display 0 solid Clipped Faceme Transluecent Polys
 */
-			if( !DisplaySolidGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
 					return FALSE;
 #endif
 
-//				ExecuteTransExe( 0 );
-
 		// set all the Translucent execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-
-//		ExecuteTransExe( 0 );
-//		ExecuteTransExeUnclipped( 0 );
-		
-
-		// set all the Translucent execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 
 		// display clipped translucencies
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*===================================================================
 		Display 0 Clipped Non Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 
-			if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+			if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Display 0 Clipped Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			if( !DisplayGroupClippedFmPolys( RenderBufs[ 1 ], 0, lpDev, lpView ) )
+===================================================================*/
+			
+#ifdef RENDER_USING_FACES
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
 					return FALSE;
+#else
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+					return FALSE;
+#endif
 
 			ExecuteTransExe( 0 );
 			ExecuteTransExeUnclipped( 0 );
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*===================================================================
 		Display Non 0 Clipped Faceme Transluecent Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 
-		if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+#ifdef RENDER_USING_FACES
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Display Non 0 Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-		if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+#else
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
 				return FALSE;
-
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-		Display Transluecent Screen Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-			if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
-				return FALSE;
-
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-	Display Opaque Lines
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-			group = (uint16)-1;
-
-#ifndef FINAL_RELEASE
-			i = FirstLineUsed;
-			while( i != (uint16) -1 )
-			{
-				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
-				{
-					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-						return FALSE;
-				}
-			}
 #endif
 
-		// reset all the normal execute status flags...
-		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+/*===================================================================
+	Display Non 0 Clipped Non Faceme Transluecent Polys
+===================================================================*/
+		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+				return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+	/*===================================================================
+		Display Transluecent Screen Polys
+	===================================================================*/
+
+			if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+				return FALSE;
+
+	/*===================================================================
+	Display Opaque Lines
+	===================================================================*/
+			group = (uint16)-1;
+
+			ExecuteLines( group, &RenderBufs[ 0 ] );
+
+	/*===================================================================
 		Display Solid Screen Polys
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 		BilinearSolidScrPolys = TRUE;
 
-		if( !DisplaySolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) )
 			return FALSE;
 
-	/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+  // reset mode
+		set_normal_states();
+
+	/*===================================================================
 	Display Solid Lines
-	ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+	===================================================================*/
 			group = (uint16)-1;
 
-#ifndef FINAL_RELEASE
-			i = FirstLineUsed;
-			while( i != (uint16) -1 )
-			{
-				if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
-				{
-					if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-						return FALSE;
-				}
-			}
-#endif
+			ExecuteLines( group, &RenderBufs[ 0 ] );
 
-		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+//		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+		if (FSEndScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : EndScene failed\n" );
 			return FALSE;
@@ -5309,6 +5346,7 @@ Event handling
 	}
 
 	return TRUE;
+#endif
 }
 
 static int SelectionColour( void )
@@ -5320,11 +5358,11 @@ static int SelectionColour( void )
 	return colour_table[ ( GetTickCount() / ( 14 * 4 ) ) & 15 ];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu restart...
 	Input		:		MENU * ...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuRestart( MENU * Menu )
 {
 	if ( MyGameStatus == STATUS_SinglePlayer )
@@ -5369,11 +5407,11 @@ void MenuRestart( MENU * Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu exit (backing out nicely)...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuExit( void )
 {
 	while ( MenuStackLevel >= 0 && CurrentMenu )
@@ -5383,11 +5421,11 @@ void MenuExit( void )
 	MenuState = MENUSTATE_Select;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu abort (immediately)...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuAbort( void )
 {
 	if ( (CameraStatus == CAMERA_AtLeftVDU || CameraStatus == CAMERA_AtRightVDU) && CurrentMenu )
@@ -5403,11 +5441,11 @@ void MenuAbort( void )
 	OldMenuStatus = 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawName( MENUITEM * Item )
 {
 	int	x;
@@ -5424,11 +5462,11 @@ void	MenuItemDrawName( MENUITEM * Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the Name in a paged menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawPageName( MENUITEM * Item )
 {
 	int	x;
@@ -5657,11 +5695,11 @@ void DrawKeyDefHelp3( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the Name and string variable in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawNameVar( MENUITEM * Item )
 {
 	int	x;
@@ -5692,11 +5730,11 @@ void DrawCenteredNameVar( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the help key and description in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	DrawHelpKey( MENUITEM * Item )
 {
 	int	x;
@@ -5715,11 +5753,11 @@ void	DrawHelpKey( MENUITEM * Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Draw..draws the title and all other text..
 	Input		:		MENU * Menu...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuDraw( MENU * Menu )
 {
 	MENUITEM * Item;
@@ -5760,12 +5798,12 @@ void MenuChangeEx( MENU *Menu )
 	MenuChange( &Item );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Change...
 	Input		:		MENUI
 	TEM * ITEM...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuChange( MENUITEM * Item )
 {
 	
@@ -5819,11 +5857,11 @@ void MenuChange( MENUITEM * Item )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuBack()
 {
 	if ( MyGameStatus == STATUS_BetweenLevels )
@@ -5925,33 +5963,33 @@ void MenuBackSpecific( MENU *Menu, BOOL UseExitFuncs )
 	IgnoreMenuFuncs = FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu item for Change back a level...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuItemBack( MENUITEM *item )
 {
 	MenuBack();
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	SetDifficulty( MENUITEM * Item )
 {
 }
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw the Name in a menu item...
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	MenuItemDrawCursor( MENUITEM * Item )
 {
 	int	x;
@@ -5982,11 +6020,11 @@ void	MenuItemDrawCursor( MENUITEM * Item )
 		
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Cursor Movement Functions...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PlayCursorSfx( void )
 {
 	if ( InTitleRoom )
@@ -6880,11 +6918,11 @@ int ValidBikeSelected( int bike)
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
 	Input		:		key pressed
 	Output		:		BOOL - indicates when biker list is no longer being used
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ProcessBikerList ( int Key )
 {
 	BOOL done, redraw;
@@ -7002,12 +7040,12 @@ BOOL ProcessSavedGameList( int Key )
 	return !done;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Processes the player list - auto selects highlighted item, 
 						and draws corresponding biker character.
 	Input		:		key pressed...
 	Output		:		BOOL - indicates when player list is no longer being used.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ProcessPlayerList ( int Key )
 {
 	BOOL done, redraw;
@@ -8353,11 +8391,11 @@ void	MenuProcess()
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select/operate a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8374,11 +8412,11 @@ void SelectSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Decrement a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DecrementSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8390,11 +8428,11 @@ void DecrementSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Increment a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void IncrementSlider( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8407,11 +8445,11 @@ void IncrementSlider( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Minimise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderHome( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8421,11 +8459,11 @@ void SliderHome( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Maximise a slider value
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderEnd( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8435,11 +8473,11 @@ void SliderEnd( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderSet( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8452,11 +8490,11 @@ void SliderSet( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Cancel a slider selection
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SliderCancel( MENUITEM *Item )
 {
 	SLIDER *s;
@@ -8467,11 +8505,11 @@ void SliderCancel( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a slider menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawSlider( MENUITEM *Item )
 {
 	int	x;
@@ -8499,11 +8537,11 @@ void DrawSlider( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectRadioButton( MENUITEM *Item )
 {
 	if ( Item->Variable )
@@ -8514,11 +8552,11 @@ void SelectRadioButton( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draws a radio button item
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawRadioButton( MENUITEM *Item )
 {
 	int	x;
@@ -8543,11 +8581,11 @@ void DrawRadioButton( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectToggle( MENUITEM *Item )
 {
 
@@ -8566,11 +8604,11 @@ void SelectToggle( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8593,11 +8631,11 @@ void DrawToggle( MENUITEM *Item )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a collision perspective toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawColToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8614,11 +8652,11 @@ void DrawColToggle( MENUITEM *Item )
 		Print4x5Text( LT_ToggleTarget/*" TARGET"*/, -1 , y , 1 );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectColourToggle( MENUITEM *Item )
 {
 		if(*(int *) Item->Variable > 7)
@@ -8627,11 +8665,11 @@ void SelectColourToggle( MENUITEM *Item )
 			*(int *) Item->Variable =*(int *)Item->Variable + 1;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw message display customisation toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawMessagesToggle( MENUITEM *Item )
 {
 	int	x;
@@ -8681,11 +8719,11 @@ void DrawMessagesToggle( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectKey( MENUITEM *Item )
 {	
 	MenuState = MENUSTATE_Keydef;
@@ -8695,11 +8733,11 @@ void SelectKey( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a key menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawKey( MENUITEM *Item )
 {
 	VirtualKeycode keycode;
@@ -8743,11 +8781,11 @@ void DrawKey( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Select a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectKeyDef( MENUITEM *Item )
 {	
 	MenuState = MENUSTATE_Keydef;
@@ -8757,11 +8795,11 @@ void SelectKeyDef( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a keydef menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawKeyDef( MENUITEM *Item )
 {
 	DEFKEY *keydef;
@@ -8815,11 +8853,11 @@ void DrawKeyDef( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetOurRenderStates( MENUITEM *item )
 {
 	// Perspective Correct
@@ -8833,22 +8871,22 @@ void SetOurRenderStates( MENUITEM *item )
 	{
 		if ( !TriLinear && !BiLinearFiltering ) // mip map, no filter
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_MIPNEAREST;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPNEAREST;
 		}else if ( TriLinear )	// mip map, tri-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_LINEARMIPLINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEARMIPLINEAR;
 		}else if ( BiLinearFiltering )	// mip map, bi-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_MIPLINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPLINEAR;
 		}
 	}else
 	{
 		if ( BiLinearFiltering )	// bi-linear
 		{
-			myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
+//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
 		}else	// no filter
 		{
-		   myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
+//bjd		   myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
 		}	
 	}
 #else
@@ -8860,11 +8898,11 @@ void SetOurRenderStates( MENUITEM *item )
 
 	D3DAppSetRenderState(&myglobs.rstate);
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Set the Rendering States...
 	Input		:		Nothing...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetOurRenderStates( MENUITEM *item )
 {
 	// Perspective Correct
@@ -8881,11 +8919,11 @@ void GetOurRenderStates( MENUITEM *item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitDetailLevels( MENU *Menu )
 {
 	MENUITEM *item;
@@ -8894,12 +8932,14 @@ void InitDetailLevels( MENU *Menu )
 	{
 		if ( item->Variable == &SWMonoChrome )
 		{
+			/* bjd curre driver = 0 use to be software mode
 			if ( !d3dapp->CurrDriver )
 			{
 				item->FuncSelect = SelectToggle;
 				item->FuncDraw = DrawToggle;
 			}
 			else
+			*/
 			{
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
@@ -8925,11 +8965,11 @@ void InitDetailLevels( MENU *Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
@@ -8945,11 +8985,11 @@ void ExitDetailLevels( MENU *Menu )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetLightStates( MENUITEM *item )
 {
 	if( PrimaryLightDetail ) EnablePrimaryLights();
@@ -8961,11 +9001,11 @@ void SetLightStates( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBikerMenu( MENU *Menu )
 {
 	Config = *player_config;
@@ -8996,11 +9036,11 @@ void NewInitBikeMenu ( MENU *Menu)
 	SelectedBikeScale = BikeModelScale[ BikeList.selected_item ];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the biker menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitBikerMenu( MENU *Menu )
 {
 //	if ( ( memcmp( &Config, player_config, sizeof( Config ) ) ) || ForceConfigSave )
@@ -9035,11 +9075,11 @@ void MoveConfigFile( MENU *Menu )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the bike list menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitBikeList( MENU *Menu )
 {
 	BikeList.selected_item = ValidBikeSelected( SelectedBike );
@@ -9066,11 +9106,11 @@ void InitLevelSelectVDU( MENUITEM *Item )
 {
 	MenuState = MENUSTATE_SelectLevelQuick;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the control menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitControls( MENU *Menu )
 {
 	float sensi;
@@ -9104,11 +9144,11 @@ void SetAutolevel( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the controls menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitControls( MENU *Menu )
 {
 	float sensiX, sensiY;
@@ -9129,11 +9169,11 @@ void ExitControls( MENU *Menu )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		compare string function for sorting pilot list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 static int
 _cdecl compare( const void *arg1, const void *arg2 )
 {
@@ -9202,11 +9242,11 @@ _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 	return 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the pilot list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotList( void )
 {
 	HANDLE h;
@@ -9285,11 +9325,11 @@ void InitPilotList( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotName( MENU *menu )
 {
 
@@ -9311,11 +9351,11 @@ void InitPilotName( MENU *menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void SetPilotName( MENUITEM *item )
 {
@@ -9405,11 +9445,11 @@ void SetPilotName( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetPilotNameInGame( MENUITEM *item )
 {
 	FILE *f;
@@ -9444,11 +9484,11 @@ void SetPilotNameInGame( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the pilot name
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotReName( MENU *menu )
 {
 	strcpy( old_config, biker_config );
@@ -9460,11 +9500,11 @@ void InitPilotReName( MENU *menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the pilot name
 	Input		:		pointer to pilot name menu item
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RenamePilotName( MENUITEM *item )
 {
 	FILE *f;
@@ -9506,11 +9546,11 @@ void RenamePilotName( MENUITEM *item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitPilotMenu( MENU *Menu )
 {
 	InitPilotName(NULL);
@@ -9545,11 +9585,11 @@ void GetBikeDetails(int Bike, MENUITEM *item)
 		Ships[ WhoIAm ].BikeNum = Bike;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Save values from the pilot menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectPilot( MENUITEM *item )
 {
 	if ( PilotList.selected_item >= 0 && PilotList.selected_item < PilotList.items )
@@ -9590,11 +9630,11 @@ void SelectTeamList( MENUITEM *Item )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Selects a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectList( MENUITEM *Item )
 {
 	PreListItem = Item;
@@ -9627,11 +9667,11 @@ void SelectList( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a list menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawList( MENUITEM *Item )
 {
 	int x;
@@ -9670,11 +9710,11 @@ void DrawList( MENUITEM *Item )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		List navigation/selection routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectListPrev( LIST *l )
 {
 	if ( l->selected_item > 0 )
@@ -9825,11 +9865,11 @@ void CancelListSelection( LIST *l )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Selects a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SelectText( MENUITEM *Item )
 {
 	TEXT *t;
@@ -9855,11 +9895,11 @@ void SelectFlatMenutext( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Draw a text menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DrawTextItem( MENUITEM *Item )
 {
 	int x;
@@ -9889,11 +9929,11 @@ void DrawTextItem( MENUITEM *Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Text editing routines
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetVduTextFormattingInfo (TEXT *t)
 {
 	t->VDU_insert_pos = 0;
@@ -10012,6 +10052,9 @@ void InitBikerName( char *name )
 
 	// tell everyone else in multiplayer
 	set_my_player_name();
+
+	// tell everyone in the game that my player name has changed
+	network_set_player_name(&biker_name[0]);
 
 }
 
@@ -10332,6 +10375,10 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	// load level names to be displayed in the list
 	LoadLevelText( NULL );
 
+	// copy in my valid pickups
+	memset( PickupValid, 0, sizeof(PickupValid) );
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+
 }
 
 /* exit */
@@ -10460,6 +10507,8 @@ void GetSavedGameData( void )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -10472,6 +10521,7 @@ void GetSavedGameData( void )
 			return;
 #endif
 		}
+		*/
 
 		i = 0;
 		do
@@ -10700,39 +10750,56 @@ void ExitBikeComputerSelection( MENUITEM * item )
 		MenuBack();
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Go full Screen....or window....
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuGoFullScreen( MENUITEM *Item )
 {
+	if( MyGameStatus == STATUS_Title )
+	{
+		LastMenu = CurrentMenu;	
+		VduClear();
+	}
+
+	bIgnoreWM_SIZE = TRUE;
+
 	if ( !d3dapp->bFullscreen ) // going into fullscreen
 	{
 	    D3DAppFullscreen(d3dapp->CurrMode);
 
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
-
 	}
 	else // going into window mode
 	{
-        D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE);
+        D3DAppWindowMode( d3dapp->CurrMode );
 
 		// just let the user click to focus
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
-
 	}
-	// flushes 
-	myglobs.bResized = TRUE;
+
+	bIgnoreWM_SIZE = FALSE;
+
+	if( MyGameStatus == STATUS_Title )
+	{
+		FadeHoloLight(HoloLightBrightness);
+		DarkenRoom2(RoomDarkness);
+		ProcessVduItems( CurrentMenu );
+   		InitialTexturesSet = FALSE;
+	}
+
+    // flushes
+    myglobs.bResized = TRUE;
 }
 	
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Mode changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MakeModeList( MENU *Menu )
 {
 	int i;
@@ -10771,11 +10838,11 @@ void MakeModeList( MENU *Menu )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Select a Mode...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuSelectMode( MENU *Menu )
 {
      /*
@@ -10790,26 +10857,30 @@ void MenuSelectMode( MENU *Menu )
 
 void NewMenuSelectMode( MENUITEM *Item )
 {
-
-   	/*
-	if (!WasteAFrame)
-	{
-		LastMenu = CurrentMenu;
-   		VduClear();
-		WasteAFrame = TRUE;
-		return;
-	}
-	*/
+	int mode = WhichMode[ModeList.selected_item];
 
 	LastMenu = CurrentMenu;	
 	VduClear();
 
-     /*
-	 * Enter the current fullscreen mode.  D3DApp may
-	 * resort to another mode if this driver cannot do
-	 * the currently selected mode.
-	 */
-	D3DAppFullscreen(WhichMode[ModeList.selected_item]);
+	if ( d3dapp->bFullscreen )
+	{
+	    D3DAppFullscreen(mode);
+
+		if( ! ActLikeWindow )
+			SetCursorClip( TRUE );
+
+	}
+	else
+	{
+		bIgnoreWM_SIZE = TRUE;
+        D3DAppWindowMode( mode );
+		bIgnoreWM_SIZE = FALSE;
+
+		// just let the user click to focus
+		HideCursor = FALSE;
+		SetCursorClip( FALSE );
+
+	}
 
 	FadeHoloLight(HoloLightBrightness);
 	DarkenRoom2(RoomDarkness);
@@ -10817,9 +10888,9 @@ void NewMenuSelectMode( MENUITEM *Item )
 
    	InitialTexturesSet = FALSE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Texture Format changing stuff..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MakeTextureList( MENU *Menu )
 {
 	int i;
@@ -10836,6 +10907,7 @@ void MakeTextureList( MENU *Menu )
 	TextureList.items = d3dapp->NumTextureFormats;
     for (i = 0; i < d3dapp->NumTextureFormats; i++)
 	{
+/* bjd - CHECK
         if (d3dapp->TextureFormat[i].bPalettized) {
 				sprintf( &TextureList.item[i][0] , "%d-bit Palettized" , d3dapp->TextureFormat[i].IndexBPP );
         } else {
@@ -10849,14 +10921,15 @@ void MakeTextureList( MENU *Menu )
 
 		if( i == d3dapp->CurrTextureFormat )
 			TextureList.selected_item = i;
+*/
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Menu Select Texture Format..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MenuTextureMode( MENU *Menu )
 {
 	if( d3dapp->CurrTextureFormat != TextureList.selected_item )
@@ -11060,11 +11133,11 @@ void RestoreDemoSettings( void )
 	ShowNamesAnyway = FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise Demo Name list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitDemoList( MENU * Menu )
 {
 	HANDLE h;
@@ -11174,11 +11247,11 @@ void InitDemoList( MENU * Menu )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Initialise Load Game Name list
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitLoadSavedGameList( MENU * Menu )
 {
 #ifndef SAVEGAME_SLOTS
@@ -11261,22 +11334,22 @@ void InitLoadSavedGameList( MENU * Menu )
 //	LoadSavedGameList.FuncDelete = ( LoadSavedGameList.items > 0 ) ? DeleteSavedGame : NULL;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Demo Pause Compensate
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void PauseDemoToggle( MENUITEM *Item )
 {
 	SelectToggle( Item );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init the level select menu...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void InitLevelSelect( MENU *Menu )
 {
@@ -11301,11 +11374,11 @@ void GoToStats( MENUITEM *Item )
 	LevelNum = -1;			// Force Level change
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Level has been Changed...
 	Input		:	MENU * Menu
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ExitLevelSelect( MENU * Menu )
 {
 	CurrentMenu = NULL;
@@ -11316,12 +11389,13 @@ void ExitLevelSelect( MENU * Menu )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Get Game Prefs..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern void InitValidPickups();
+extern BOOL bFullscreen;
 void GetGamePrefs( void )
 {
 	// default allow all pickups
@@ -11329,8 +11403,9 @@ void GetGamePrefs( void )
 
 	// ip / port
 
-	config_get_strncpy( TCPAddress.text,		sizeof(TCPAddress.text),		"HostAddress",	"" );		// remote
-	config_get_strncpy( local_port_str.text,	sizeof(local_port_str.text),	"LocalPort",	"2300" );	// local
+	config_get_strncpy( TCPAddress.text,		sizeof(TCPAddress.text),		"HostAddress",	"" );		// remote address
+	config_get_strncpy( host_port_str.text,		sizeof(host_port_str.text),		"HostPort",		"2300" );	// remote port
+	config_get_strncpy( local_port_str.text,	sizeof(local_port_str.text),	"LocalPort",	"2300" );	// local port
 
 	// tracker
 
@@ -11344,7 +11419,7 @@ void GetGamePrefs( void )
     ZClearsOn                        = config_get_bool( "ZClearsOn",				TRUE );
 #endif
 
-    ResetKillsPerLevel               = config_get_bool( "ResetKillsPerLevel",		FALSE );
+    MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
@@ -11363,32 +11438,37 @@ void GetGamePrefs( void )
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			FALSE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
-    RandomPickups                    = config_get_bool( "RandomPickups",			FALSE );
-    UseShortPackets                  = config_get_bool( "UseShortPackets",			TRUE );
+    MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
+    MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
+	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );
 
-	PickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
-	PickupValid[ PICKUP_Heatseaker ]        = config_get_bool( "AllowHeatseaker",       TRUE );
-	PickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
-	PickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
-	PickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
-	PickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
-	PickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
-	PickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
-	PickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
-	PickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
-	PickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
-	PickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
-	PickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
-	PickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
-	PickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
-	PickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
-	PickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
-	PickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
-	PickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
-	PickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
-	PickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
+	MyPickupValid[ PICKUP_Mugs ]              = config_get_bool( "AllowMugs",             TRUE );
+	MyPickupValid[ PICKUP_HeatseakerPickup ]  = config_get_bool( "AllowHeatseaker",       TRUE );
+	MyPickupValid[ PICKUP_Scatter ]           = config_get_bool( "AllowScatter",          TRUE );
+	MyPickupValid[ PICKUP_Gravgon ]           = config_get_bool( "AllowGravgon",          TRUE );
+	MyPickupValid[ PICKUP_Launcher ]          = config_get_bool( "AllowLauncher",         TRUE );
+	MyPickupValid[ PICKUP_TitanStar ]         = config_get_bool( "AllowTitanStar",        TRUE );
+	MyPickupValid[ PICKUP_PurgePickup ]       = config_get_bool( "AllowPurgePickup",      TRUE );
+	MyPickupValid[ PICKUP_QuantumPickup ]     = config_get_bool( "AllowQuantumPickup",    TRUE );
+	MyPickupValid[ PICKUP_Trojax ]            = config_get_bool( "AllowTrojax",           TRUE );
+	MyPickupValid[ PICKUP_Pyrolite ]          = config_get_bool( "AllowPyrolite",         TRUE );
+	MyPickupValid[ PICKUP_SussGun ]           = config_get_bool( "AllowSussGun",          TRUE );
+	MyPickupValid[ PICKUP_Laser ]             = config_get_bool( "AllowLaser",            TRUE );
+	MyPickupValid[ PICKUP_Nitro ]             = config_get_bool( "AllowNitro",            TRUE );
+	MyPickupValid[ PICKUP_Orb ]               = config_get_bool( "AllowOrb",              TRUE );
+	MyPickupValid[ PICKUP_GoldenPowerPod ]    = config_get_bool( "AllowGoldenPowerPod",   TRUE );
+
+	MyPickupValid[ PICKUP_SpiderPod ]         = config_get_bool( "AllowSpiderPod",        FALSE );
+	MyPickupValid[ PICKUP_PinePickup ]        = config_get_bool( "AllowPinePickup",       FALSE );
+	MyPickupValid[ PICKUP_Thief ]             = config_get_bool( "AllowThief",            FALSE );
+	MyPickupValid[ PICKUP_Transpulse ]        = config_get_bool( "AllowTranspulse",       FALSE );
+	MyPickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
+	MyPickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
+
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
 
     // integers
 
@@ -11415,29 +11495,32 @@ void GetGamePrefs( void )
 	Gamma = ( (double)GammaSlider.value ) / 100.0F;
 
     MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
-    TimeLimit.value                  = config_get_int( "TimeLimit",					0);
+    MyTimeLimit.value                = config_get_int( "TimeLimit",					0);
     CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
     GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
     BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
-    PacketsSlider.value              = config_get_int( "PacketsPerSecond",			30 );
+    MyPacketsSlider.value            = config_get_int( "PacketsPerSecond",			30 );
 
 	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
-	CLAMP( TimeLimit.value,				TimeLimit.max );
+	CLAMP( MyTimeLimit.value,			MyTimeLimit.max );
 	CLAMP( CTFSlider.value,				CTFSlider.max );
 	CLAMP( GoalScoreSlider.value,		GoalScoreSlider.max );
 	CLAMP( BountyBonusSlider.value,		BountyBonusSlider.max );
-	CLAMP( PacketsSlider.value,			PacketsSlider.max );
+	CLAMP( MyPacketsSlider.value,		MyPacketsSlider.max );
 
     NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    ScreenWidth                      = config_get_int( "ScreenWidth",				0 );
-    ScreenHeight                     = config_get_int( "ScreenHeight",				0 );
+    default_width                     = config_get_int( "ScreenWidth",				640 );
+    default_height                    = config_get_int( "ScreenHeight",				480 );
 
-    ScreenBPP                        = config_get_int( "ScreenBPP",					16 );
-	if( ScreenBPP != 16 && ScreenBPP != 32 )
-		ScreenBPP = 16;
+    default_bpp                       = config_get_int( "ScreenBPP",				16 );
+	if( default_bpp != 16 && default_bpp != 32 )
+		default_bpp = 16;
+
+	default_x						  =	config_get_int( "ScreenPosX",				0 );
+	default_y						  =	config_get_int( "ScreenPosY",				0 );
 
     TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
     TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
@@ -11464,23 +11547,24 @@ void GetGamePrefs( void )
 	CLAMP( TauntMessageColour,		MAXFONTCOLOURS );
 	CLAMP( MyMessageColour,			MAXFONTCOLOURS );
 
-    ColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
-	CLAMP( ColPerspective, 1 );
+    MyColPerspective                   = config_get_int( "ColPerspective",			COLPERS_Descent );
+	CLAMP( MyColPerspective, 1 );
 
     GameType                         = config_get_int( "GameType",					GAME_Normal );
-	CLAMP( ColPerspective, MAX_GAMETYPE );
+	CLAMP( GameType, MAX_GAMETYPE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Set last game played info from the registry..
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetGamePrefs( void )
 {
 	// ip / port
 	
-	config_set_str( "HostAddress",	TCPAddress.text );		// remote
+	config_set_str( "HostAddress",	TCPAddress.text );		// remote address
+	config_set_str( "HostPort",		host_port_str.text );	// remote port
 	config_set_str( "LocalPort",	local_port_str.text );	// local
 
 	// tracker
@@ -11495,7 +11579,7 @@ void SetGamePrefs( void )
 	config_set_bool( "ZClearsOn",				ZClearsOn );
 #endif
 
-	config_set_bool( "ResetKillsPerLevel",		ResetKillsPerLevel );
+	config_set_bool( "ResetKillsPerLevel",		MyResetKillsPerLevel );
 	config_set_bool( "BrightShips",				MyBrightShips );
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );
@@ -11514,31 +11598,32 @@ void SetGamePrefs( void )
     config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
     config_set_bool( "BikeExhausts",			BikeExhausts );
     config_set_bool( "BountyBonus",				BountyBonus );
-    config_set_bool( "RandomPickups",			RandomPickups );
-    config_set_bool( "UseShortPackets",			UseShortPackets );
+    config_set_bool( "RandomPickups",			MyRandomPickups );
+    config_set_bool( "UseShortPackets",			MyUseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
+	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
 
-	config_set_bool( "AllowMugs",               PickupValid[ PICKUP_Mugs ] );
-	config_set_bool( "AllowHeatseaker",         PickupValid[ PICKUP_Heatseaker ] );
-	config_set_bool( "AllowScatter",            PickupValid[ PICKUP_Scatter ] );
-	config_set_bool( "AllowGravgon",            PickupValid[ PICKUP_Gravgon ] );
-	config_set_bool( "AllowLauncher",           PickupValid[ PICKUP_Launcher ] );
-	config_set_bool( "AllowTitanStar",          PickupValid[ PICKUP_TitanStar ] );
-	config_set_bool( "AllowPurgePickup",        PickupValid[ PICKUP_PurgePickup ] );
-	config_set_bool( "AllowQuantumPickup",      PickupValid[ PICKUP_QuantumPickup ] );
-	config_set_bool( "AllowTrojax",             PickupValid[ PICKUP_Trojax ] );
-	config_set_bool( "AllowPyrolite",           PickupValid[ PICKUP_Pyrolite ] );
-	config_set_bool( "AllowSussGun",            PickupValid[ PICKUP_SussGun ] );
-	config_set_bool( "AllowLaser",              PickupValid[ PICKUP_Laser ] );
-	config_set_bool( "AllowNitro",              PickupValid[ PICKUP_Nitro ] );
-	config_set_bool( "AllowOrb",                PickupValid[ PICKUP_Orb ] );
-	config_set_bool( "AllowGoldenPowerPod",     PickupValid[ PICKUP_GoldenPowerPod ] );
-	config_set_bool( "AllowSpiderPod",          PickupValid[ PICKUP_SpiderPod ] );
-	config_set_bool( "AllowPinePickup",         PickupValid[ PICKUP_PinePickup ] );
-	config_set_bool( "AllowThief",              PickupValid[ PICKUP_Thief ] );
-	config_set_bool( "AllowTranspulse",         PickupValid[ PICKUP_Transpulse ] );
-	config_set_bool( "AllowMantle",             PickupValid[ PICKUP_Mantle ] );
-	config_set_bool( "AllowInv",                PickupValid[ PICKUP_Inv ] );
+	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
+	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_HeatseakerPickup ] );
+	config_set_bool( "AllowScatter",            MyPickupValid[ PICKUP_Scatter ] );
+	config_set_bool( "AllowGravgon",            MyPickupValid[ PICKUP_Gravgon ] );
+	config_set_bool( "AllowLauncher",           MyPickupValid[ PICKUP_Launcher ] );
+	config_set_bool( "AllowTitanStar",          MyPickupValid[ PICKUP_TitanStar ] );
+	config_set_bool( "AllowPurgePickup",        MyPickupValid[ PICKUP_PurgePickup ] );
+	config_set_bool( "AllowQuantumPickup",      MyPickupValid[ PICKUP_QuantumPickup ] );
+	config_set_bool( "AllowTrojax",             MyPickupValid[ PICKUP_Trojax ] );
+	config_set_bool( "AllowPyrolite",           MyPickupValid[ PICKUP_Pyrolite ] );
+	config_set_bool( "AllowSussGun",            MyPickupValid[ PICKUP_SussGun ] );
+	config_set_bool( "AllowLaser",              MyPickupValid[ PICKUP_Laser ] );
+	config_set_bool( "AllowNitro",              MyPickupValid[ PICKUP_Nitro ] );
+	config_set_bool( "AllowOrb",                MyPickupValid[ PICKUP_Orb ] );
+	config_set_bool( "AllowGoldenPowerPod",     MyPickupValid[ PICKUP_GoldenPowerPod ] );
+	config_set_bool( "AllowSpiderPod",          MyPickupValid[ PICKUP_SpiderPod ] );
+	config_set_bool( "AllowPinePickup",         MyPickupValid[ PICKUP_PinePickup ] );
+	config_set_bool( "AllowThief",              MyPickupValid[ PICKUP_Thief ] );
+	config_set_bool( "AllowTranspulse",         MyPickupValid[ PICKUP_Transpulse ] );
+	config_set_bool( "AllowMantle",             MyPickupValid[ PICKUP_Mantle ] );
+	config_set_bool( "AllowInv",                MyPickupValid[ PICKUP_Inv ] );
 
 	// integers
 
@@ -11547,17 +11632,19 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenWidth",				d3dapp->Mode[ d3dapp->CurrMode ].w );
 	config_set_int( "ScreenHeight",				d3dapp->Mode[ d3dapp->CurrMode ].h );
 	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
-	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
-	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
-	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
-	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
-	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
-	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
+	config_set_int( "ScreenPosX",				d3dapp->pWindow.x );
+	config_set_int( "ScreenPosY",				d3dapp->pWindow.y );
+//bjd	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
+//bjd	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
+//bjd	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
+//bjd	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
+//bjd	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
+//bjd	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );
 	config_set_int( "water",					WaterDetailSlider.value );
-	config_set_int( "TimeLimit",				TimeLimit.value );
+	config_set_int( "TimeLimit",				MyTimeLimit.value );
 	config_set_int( "KillMessageColour",		KillMessageColour );
 	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
 	config_set_int( "SystemMessageColour",		SystemMessageColour );
@@ -11566,12 +11653,12 @@ void SetGamePrefs( void )
 	config_set_int( "PickupMessageColour",		PickupMessageColour );
 	config_set_int( "TauntMessageColour",		TauntMessageColour );
 	config_set_int( "MyMessageColour",			MyMessageColour );
-	config_set_int( "ColPerspective",			ColPerspective );
+	config_set_int( "ColPerspective",			MyColPerspective );
 	config_set_int( "MaxKills",					MaxKillsSlider.value );
 	config_set_int( "GameType",					GameType );
 	config_set_int( "CTFrules",					CTFSlider.value );
 	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
-	config_set_int( "PacketsPerSecond",			PacketsSlider.value );
+	config_set_int( "PacketsPerSecond",			MyPacketsSlider.value );
 	config_set_int( "BountyInterval",			BountyBonusSlider.value );
 	config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
 	config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
@@ -11610,18 +11697,17 @@ void SetDiscStatus(MENU *menu)
 	DiscStatus = menu->MenuStatus;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		sets each vertex intensity of a model to a given fraction of the original
 	Input		:		Model num, fraction of orig, intensity, ptr to Exclude - list of vertices
 						that are to be left unchanged.
 	Output		:		nothing
 
 	Note		:		Only allows vertices to be excluded from one group & exec buffer at present.
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -11652,17 +11738,17 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			}
 			if (NumberToExclude == EXCLUDE_ALL)
 				continue;
-		
-			memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-			DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
 
-			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+
+			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			{
+				return FALSE;
+			}
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
-			VertPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
+			//bjd VertPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
+			VertPtr = DstMloadheader->Group[Group].originalVerts[ExecBuf];
 		
 			for (i=0; i<Vert; i++)
 			{
@@ -11678,11 +11764,12 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			  			CurrentExclude = NULL;
 			  		else
 			  			CurrentExclude++;
-			  	}else
+			  	}
+				else
 			  	{
-			  	red = (uint8)((float)red * percent);
-			  	green = (uint8)((float)green * percent);
-			  	blue = (uint8)((float)blue * percent);
+			  		red = (uint8)((float)red * percent);
+			  		green = (uint8)((float)green * percent);
+			  		blue = (uint8)((float)blue * percent);
 			  	}
 			  
 				Colour = RGBA_MAKE( red, green, blue, alpha );
@@ -11695,9 +11782,10 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				VertPtr++;
 			}
 
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			
+			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			{
+				return FALSE;
+			}
 		}
 	}
 	return TRUE;
@@ -11758,7 +11846,8 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 			for( ExecBuf = 0; ExecBuf < MxModelHeaderPtr->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
 				TotalVerts = MxModelHeaderPtr->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
-				VertPtr = MxModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
+				//bjd VertPtr = MxModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
+				VertPtr = MxModelHeaderPtr->Group[Group].originalVerts[ExecBuf];
 
 				for (i=8; i<TotalVerts; i++)	//ignore bounding box, so start at 8...
 				{
@@ -11784,8 +11873,8 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 
 BOOL MakeTranslucent( uint16 Model )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+//	D3DEXECUTEBUFFERDESC	DstDebDesc;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -11804,12 +11893,20 @@ BOOL MakeTranslucent( uint16 Model )
 		{
 			for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
+/*
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+*/
+//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//					return FALSE;
+				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				{
+					return FALSE;
+				}
 
-				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -11841,9 +11938,12 @@ BOOL MakeTranslucent( uint16 Model )
 				}
 
 
-				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				
+//				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+				if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 		return TRUE;
@@ -11855,20 +11955,28 @@ BOOL MakeTranslucent( uint16 Model )
 		{
 			for( ExecBuf = 0; ExecBuf < DstMxloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
-			
+/*			
 				memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 				DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+*/
+//				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
+//								DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
+//				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
+//					return FALSE;
 
-				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+				if (FAILED(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				{
+					return FALSE;
+				}
+
+				//DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMxloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
 				DstMxloadheader->Group[ Group ].exec_type[ ExecBuf ] = 0;
 
-				ColourPtr = DstMxloadheader->Group[Group].org_vertpnt[ExecBuf];
-
+				//bjd ColourPtr = DstMxloadheader->Group[Group].org_vertpnt[ExecBuf];
+				ColourPtr = DstMxloadheader->Group[Group].originalVerts[ExecBuf];
 
 				for (i=0; i<Vert; i++)
 				{
@@ -11891,9 +11999,12 @@ BOOL MakeTranslucent( uint16 Model )
 				}
 
 
-				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				
+//				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
+//				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+				if (FAILED(FSUnlockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf])))
+				{
+					return FALSE;
+				}
 			}
 		}
 		return TRUE;
@@ -11903,8 +12014,7 @@ BOOL MakeTranslucent( uint16 Model )
 
 BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
-	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX;
+	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	LPD3DLVERTEX			VertPtr;
 	D3DCOLOR				Colour;
@@ -11913,15 +12023,13 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
-	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
+	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	{
+		return FALSE;
+	}
 
-	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
-
-	
-	VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
+	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 	  
 	vred = (uint8)RGBA_GETRED(VertPtr->color);
 	vgreen = (uint8)RGBA_GETGREEN(VertPtr->color);
@@ -11943,20 +12051,22 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 		return FALSE;
 			
 	DstlpD3DLVERTEX->color = Colour;
-	
-	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
+
+	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	{
+		return FALSE;
+	}
    	
 	return TRUE;
 }
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		increases the texture frame no. of a disc by one
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void HighlightDisc(int disc)
 {
 	if( PolyAnim[disc] )
@@ -11964,21 +12074,21 @@ void HighlightDisc(int disc)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		restores original texture frame of disc
 	Input		:		disc number
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ResetDisc(int disc)
 {
-	PolyAnim[disc]->newframe = CurrentTextures[disc];
+	 PolyAnim[disc]->newframe = CurrentTextures[disc];
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		initialises rotation sequence for difficulty level disc
 	Input		:		menu item (not used)
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void DifficultySet (MENUITEM *item)
 {
@@ -13505,11 +13615,11 @@ void DrawGeneralWeapons( MENUITEM *Item )
 	MenuState = MENUSTATE_WeaponOrder;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Processes menu items for VDU menus
 	Input		:		ptr to menu
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessVduItems( MENU *Menu )
 {
 	MENUITEM *Item;
@@ -13546,11 +13656,11 @@ void KillTextInfo ( TEXTINFO *TextInfo )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		clears everything from the VDU
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void VduClear ( void )
 {
 	int i, tempstacklevel, slidertype;
@@ -13571,8 +13681,9 @@ void VduClear ( void )
 	TextStackLevel = 0;
 	CurrentTeletype = 0;
 
-	for( Item = LastMenu->Item ; Item->x >= 0 ; Item++ )
-		Item->numtextitems = 0;
+	if(LastMenu)
+		for( Item = LastMenu->Item ; Item->x >= 0 ; Item++ )
+			Item->numtextitems = 0;
 
 		
 	// kill all polys used for boxes...
@@ -13971,9 +14082,8 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-	HRESULT ddrval;
+	POINT destp;
 	BOOL	OKtoProcess;
-	DDBLTFX fx;
 	uint16 TempPoly;
 
 	currentx = TextInfo->currentx[line];
@@ -14095,89 +14205,16 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-			memset(&fx, 0, sizeof(DDBLTFX));
-			fx.dwSize = sizeof(DDBLTFX);
 
 			dest.top = (long)ypos - (long)((float)Box_Ptr->ysize * VduScaleY);
 			dest.bottom = (long)ypos;
 			dest.left = (long)xpos;
 			dest.right = (long)xpos + (long)((float)Box_Ptr->xsize * VduScaleX);
 
-			while( 1 )
-			{
-				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
-				if( ddrval == DD_OK )
-					break;
-			    if( ddrval == DDERR_SURFACELOST )
-				{
-					d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-					d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-					ReInitTitleFont();
-	
-			        break;
-				}
-				if( ddrval != DDERR_WASSTILLDRAWING )
-				{
-					int dummy;
-
-					switch( ddrval )
-					{
-					case DDERR_GENERIC :
-						dummy = 1;
-						break;
-					case DDERR_INVALIDCLIPLIST :
-						dummy = 2;
-						break;
-					case DDERR_INVALIDOBJECT :
-						dummy = 3;
-						break;
-					case DDERR_INVALIDPARAMS :
-						dummy = 4;
-						break;
-					case DDERR_INVALIDRECT :
-						dummy = 5;
-						break;
-					case DDERR_NOALPHAHW :
-						dummy = 6;
-						break;
-					case DDERR_NOBLTHW :
-						dummy = 7;
-						break;
-					case DDERR_NOCLIPLIST :
-						dummy = 8;
-						break;
-					case DDERR_NODDROPSHW :
-						dummy = 9;
-						break;
-					case DDERR_NOMIRRORHW :
-						dummy = 10;
-						break;
-					case DDERR_NORASTEROPHW :
-						dummy = 11;
-						break;
-					case DDERR_NOROTATIONHW :
-						dummy = 12;
-						break;
-					case DDERR_NOSTRETCHHW :
-						dummy = 13;
-						break;
-					case DDERR_NOZBUFFERHW :
-						dummy = 14;
-						break;
-					case DDERR_SURFACEBUSY :
-						dummy = 15;
-						break;
-					case DDERR_SURFACELOST :
-						dummy = 16;
-						break;
-					case DDERR_UNSUPPORTED :
-						dummy = 17;
-						break;
-					}
-					break;
-				}
-			}
+			destp.x = dest.left;
+			destp.y = dest.top;
+			
+			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
 		}
 	}
 
@@ -14192,8 +14229,7 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
     RECT    src, dest;
-	HRESULT ddrval;
-	DDBLTFX fx;
+	POINT	destp;
 	uint16 TempPoly;
 	
 	font = GetScreenFont(TextInfo->font);
@@ -14245,30 +14281,16 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
 			src.left = (long)(Box_Ptr->u1 * 256.0F);
 			src.right = (long)(Box_Ptr->u2 * 256.0F);
-			memset(&fx, 0, sizeof(DDBLTFX));
-			fx.dwSize = sizeof(DDBLTFX);
 			dest.top = (unsigned long)ypos - Box_Ptr->ysize * (long)VduScaleY;
 			dest.bottom = (unsigned long)ypos;
 			dest.left = (unsigned long)xpos;
 			dest.right = (unsigned long)xpos + Box_Ptr->xsize * (long)VduScaleX;
 
-			while( 1 )
-			{
-				ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSTitleFont, &src, DDBLT_WAIT | DDBLT_KEYSRC, &fx );
-				if( ddrval == DD_OK )
-					break;
-				if( ddrval == DDERR_SURFACELOST )
-				{
-					d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-					d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-				
-					ReInitTitleFont();
+			destp.x = dest.left;
+			destp.y = dest.top;
+			
+			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
 
-					break;
-				}
-				if( ddrval != DDERR_WASSTILLDRAWING )
-					break;
-			}
 		}
 		xpos += width + TEXTINFO_TextSpace;
 	}
@@ -14454,7 +14476,8 @@ void PrintTextItem (TEXTINFO *TextInfo)
 	int i;
 	BOOL newline;
 
-	str = TextInfo->text;
+	if(TextInfo && TextInfo->text)
+		str = TextInfo->text;
 
 	if (!str)
 		str = EmptyString;
@@ -15032,7 +15055,6 @@ void LoadBikeChar(MENUITEM *Item)
 //	MENUITEM *Item;
 	float BikeCharScale = 0.7F;
 	FRAME_INFO **header;
-	int systpageindex;
 	
 	xmin = (Item->x + VDUoffsetX) * ModeScaleX[ModeCase];
 	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
@@ -15065,9 +15087,6 @@ void LoadBikeChar(MENUITEM *Item)
 			exit(1);
 		}
 	}
-
-	systpageindex = (*header)->sys_tpage_index;
-	MovePPMToVideoMemory( &Tloadheader, (*header)->vid_tpage_index, SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
 	
 	if (!LoadGeneralPic(0, 0, 0, 0, header, &Biker, &BikerScrPoly, &BikerDisplayed))
 	{
@@ -15134,11 +15153,34 @@ void KillBikeCharPic( MENU *Menu )
 	}
 }
 
+// bjd - shouldn't this check for a loaded surface and first remove it?
+// also seems to be a pure rewrite of TloadTextureSurf()
+BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
+{
+	LPDIRECT3DSURFACE9 lpSrcTextureSurf;
+	char NewName2[256];
+
+	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
+		return FALSE;
+
+	Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
+
+	if( File_Exists( &NewName2[0] ) )
+	{
+			if( MipMap && Tloadheader->MipMap[n] )
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
+			else
+				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
+	}
+	
+	Tloadheader->lpTexture[n] = lpSrcTextureSurf;
+	lpSrcTextureSurf = NULL;
+
+	return TRUE;
+}
 
 void LoadLevelPic(MENUITEM *Item)
 {
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	float xmin, xmax, ymin, ymax;
 	FRAME_INFO **header;
 	int frame = 0;
@@ -15159,7 +15201,6 @@ void LoadLevelPic(MENUITEM *Item)
 		Msg("Title.c LoadLevelPic() unable to allocate screen poly\n");
 		exit(1);
 	}
-
 }
 
 uint16 SavedGamePicPoly;
@@ -15169,8 +15210,6 @@ BOOL TVFrameDisplayed = FALSE;
 
 void LoadSavedGamePic( char *file )
 {
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	int frame = 0;
 
 	if ( DummyTextureIndex == -1 )
@@ -15188,7 +15227,6 @@ void LoadSavedGamePic( char *file )
 	// display dummy tv
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 1;
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTV ] ].Visible = 0;
-
 }
 
 
@@ -15214,7 +15252,8 @@ void GetTVCoords( POLY *poly, float zoffset )
 			{
 				for ( vert = 0; vert < ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vertices; vert++ )
 				{
-					VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].org_vertpnt[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
+					//bjd VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].org_vertpnt[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
+					VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].originalVerts[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
 					
 					switch( vert )
 					{
@@ -16171,6 +16210,26 @@ void SelectConnectionToStart (MENUITEM *Item)
 
 void SelectConnectionToJoin (MENUITEM *Item)
 {
+	// a game in the list has been selected
+	if( Item->Value )
+	{
+		int index = 0;
+		// find the selected game
+		char * game_name = Item->Value;
+		index = games_index_at( game_name );
+		if( index )
+		{
+			// update the host settings
+			strncpy(TCPAddress.text, games_ip_at(index), sizeof(TCPAddress));
+			strncpy(host_port_str.text, games_port_at(index), sizeof(host_port_str));
+		}
+		// game was not found
+		else
+		{
+			return;
+		}
+	}
+	// go to the join screen
 	MenuChange ( &MENU_ITEM_JoinMultiplayer );
 }
 
@@ -17373,7 +17432,7 @@ BOOL FlyGirlActive = FALSE;
 
 void LoadHoloModel( uint16 model )
 {
-	int16 systpageindex, i;
+	int i;
 
 	if ( CurrentHoloModel != ( uint16 ) -1 )
 	{
@@ -17393,7 +17452,8 @@ void LoadHoloModel( uint16 model )
 			}
 		}
 		return;
-	}else
+	}
+	else
 	{
 		FlyGirlActive = FALSE;
 	}
@@ -17402,13 +17462,6 @@ void LoadHoloModel( uint16 model )
 
 	if (CurrentHoloModel != (uint16) -1)
 	{
-		
-		if ( TitleModelSet[ model ].DoIMorph )
-		{
-			systpageindex = MxaModelHeaders[ model ].SysTloadIndex[0];
-			MovePPMToVideoMemory( &Tloadheader, MxaModelHeaders[ model ].TloadIndex[0], SystemMemTPages[ systpageindex ].lpSrcTextureSurf );
-		}
-
 		HoloModelScale = 1.0F;
 		for( i = 0; i < MAXBIKETYPES; i++ )
 		{
@@ -17589,7 +17642,8 @@ void ProcessHoloModel( void )
 			}
 			HoloModelMode = HOLOMODEL_Done;
 			return;
-		}else
+		}
+		else
 		{
 			LoadHoloModel( NextHoloModel );
 		}

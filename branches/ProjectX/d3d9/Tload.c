@@ -1,4 +1,4 @@
-			    
+#if 1 // bjd		    
 /*==========================================================================
  *
  *  File: Tload.c
@@ -6,9 +6,9 @@
  *  rescaling if nescessary...
 ***************************************************************************/
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include "typedefs.h"
 #include "tload.h"
 #include "mipmap.h"
@@ -25,9 +25,9 @@
 #define BLANK_GREEN		(255)
 #define BLANK_BLUE		(255)
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 extern	BOOL	TexturesEnabled;
 
@@ -39,11 +39,10 @@ BOOL FreeTextureMemory( int * TMem);
 extern void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
 extern char* D3DAppErrorToString(HRESULT error);
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MAXSCALE 3
-TLOADNAME	TloadNames[MAXTPAGESPERTLOAD];
 
 TLOADHEADER	Tloadheader;
 BOOL	Pal332 = FALSE;
@@ -53,11 +52,11 @@ BOOL	DontColourKey = FALSE;
 BOOL	NoTextureScaling = FALSE;
 int Print4x5Text( char * Text , int x , int y , int col );
 double	Gamma = 1.0;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Build a Gamma Correction table 
 	Input		:		double GammaValue
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BYTE  GammaTab[256];
 void BuildGammaTab( double GammaValue )
 {
@@ -78,15 +77,14 @@ void BuildGammaTab( double GammaValue )
 			if( !GammaTab[i] )
 				GammaTab[i] = 1;
 		}
-
 	}
 };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init a Tloadheader
 	Input		:		TLOADHEADER *
 	Output		:		BOOL FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL InitTload( TLOADHEADER * Tloadheader  )
 {
 	int i;
@@ -94,11 +92,12 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	Tloadheader->num_texture_files = 0;
 	for( i = 0 ; i < MAXTPAGESPERTLOAD ; i++ )
 	{
-		Tloadheader->lpTextureSurf[i] = NULL; // surfaces
+//		Tloadheader->lpTextureSurf[i] = NULL; // surfaces
 		Tloadheader->lpTexture[i]     = NULL; // texture
-		Tloadheader->hTex[i]          = 0;	  // texture handle
-		Tloadheader->lpMat[i]         = NULL; // material
-		Tloadheader->hMat[i]          = 0;	  // material handle
+//		Tloadheader->hTex[i]          = 0;	  // texture handle
+		//Tloadheader->lpMat[i]         = NULL; // material
+		memset(&Tloadheader->lpMat[i], 0, sizeof(D3DMATERIAL9));
+//		Tloadheader->hMat[i]          = 0;	  // material handle
 		Tloadheader->CurScale[i]      = 0;	  // handle
 		Tloadheader->Scale[i]		  = FALSE;// Should it scale??
 
@@ -115,11 +114,11 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Load All textures associated with a level
 	Input		:		TLOADHEADER *
 	Output		:		BOOL FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Tload( TLOADHEADER * Tloadheader  )
 {
 	DWORD	Estimate;
@@ -133,12 +132,16 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	BuildGammaTab( Gamma );
 
 	// work out the current Bytes per pixel...min of 8...
+/* bjd - CHECK
 	if( d3dappi.ThisTextureFormat.bPalettized != 0 )
 	{
 		temp = d3dappi.ThisTextureFormat.IndexBPP;
 	}else{
 		temp = d3dappi.ThisTextureFormat.RedBPP + d3dappi.ThisTextureFormat.GreenBPP + d3dappi.ThisTextureFormat.BlueBPP;
 	}
+*/
+	temp = 32; // bjd
+
 	bpp = 0;
 	while( temp > 0 )
 	{
@@ -149,6 +152,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	// Tloadheader is not valid until everything has been done..
 	Tloadheader->state = FALSE;
 
+/* bjd
 	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware )
 	{
 		// Find out how much video memory there is before...
@@ -164,7 +168,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			Tloadheader->VidMemBefore = TextureMemory * 1024;
 		}
 	}
-
+*/
 
 	// allocate space for placeholder file names
 	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
@@ -177,7 +181,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	}
 	
 
-	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 && d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures != 0)
+//bjd CHECK	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 && d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures != 0)
 	{
 		// store the current Bytes per pixel...min of 8...
 		Tloadheader->CurrentBPP = bpp;
@@ -208,7 +212,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			{
 				Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
 				Ysize = Tloadheader->Ysize[i] / ( 1 << Tloadheader->CurScale[i] );
-
+/* bjd - TODO?
 				if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
 				{
 					if( Xsize != Ysize )
@@ -219,6 +223,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 							Ysize = Xsize;
 					}
 				}
+*/
 				if( MipMap && Tloadheader->MipMap[i] )
 				{
 					Xsize = (int) (Xsize * 1.4F);
@@ -232,9 +237,11 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			Tloadheader->VidMemEstimate = Estimate;
 			// if it fits then break out and load them....
 			// Take this out if you want to show off the Riva 128...
+
+/* bjd - CHECK
 			if(	(Tloadheader->VidMemEstimate <= Tloadheader->VidMemBefore) || NoTextureScaling )
 				break;
-			
+*/			
 			LeastScaledThatCanbe = -1;
 			LeastScaledThatCanbeScale = MAXSCALE;
 
@@ -273,72 +280,54 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		}
 	}
 	
-	
+/*	bjd
 	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 )
 	{
 		// Find out how much video memory there is after...
 		Tloadheader->VidMemAfter = D3DAppFreeVideoMemory();
 	}
-	
+*/
+
 	// Tloadheader is valid
 	Tloadheader->state = TRUE;
 
 	return( TRUE );
 }
 
-BOOL SysTload( SYSTEMMEMTPAGES *SysTextures, int num_tpages )
-{
-	int i;
-
-	for (i = 0; i < num_tpages; i++)
-	{
-		SysTextures[i].lpSrcTextureSurf = NULL;
-
-		SysTextures[i].lpSrcTextureSurf = LoadPPMToSystemMemory(
-												SysTextures[i].FileName, 
-												Tloadheader.CurScale[ SysTextures[i].VidTPageIndex ] );
-
-		if (SysTextures[i].lpSrcTextureSurf == NULL)
-		{
-			DebugPrintf( "SysTLoad() Failed on %s\n", SysTextures[i].FileName );
-			return FALSE;
-		}
-	}
-
-	return TRUE;
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Make a material for all textures associated with Tloadheader
 	Input		;		TLOADHEADER *
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 {
-	D3DMATERIAL mat;
+	D3DMATERIAL9 mat;
+
     int i;
 	/*	create a default material for each texture */
-	memset(&mat, 0, sizeof(D3DMATERIAL));
-	mat.dwSize = sizeof(D3DMATERIAL);
-	mat.diffuse.r = (D3DVALUE)1.0;
-	mat.diffuse.g = (D3DVALUE)1.0;
-	mat.diffuse.b = (D3DVALUE)1.0;
-	mat.diffuse.a = (D3DVALUE)1.0;
-	mat.ambient.r = (D3DVALUE)1.0;
-	mat.ambient.g = (D3DVALUE)1.0;
-	mat.ambient.b = (D3DVALUE)1.0;
-	mat.specular.r = (D3DVALUE)0.0;
-	mat.specular.g = (D3DVALUE)0.0;
-	mat.specular.b = (D3DVALUE)0.0;
-	mat.power = (float)0.0;
-
-	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware )
-		mat.dwRampSize = 1;
-	else
-		mat.dwRampSize = 16;
+	memset(&mat, 0, sizeof(D3DMATERIAL9));
+	mat.Diffuse.r = (D3DVALUE)1.0;
+	mat.Diffuse.g = (D3DVALUE)1.0;
+	mat.Diffuse.b = (D3DVALUE)1.0;
+	mat.Diffuse.a = (D3DVALUE)1.0;
+	mat.Ambient.r = (D3DVALUE)1.0;
+	mat.Ambient.g = (D3DVALUE)1.0;
+	mat.Ambient.b = (D3DVALUE)1.0;
+	mat.Specular.r = (D3DVALUE)0.0;
+	mat.Specular.g = (D3DVALUE)0.0;
+	mat.Specular.b = (D3DVALUE)0.0;
+	mat.Power = (float)0.0;
 
 	for (i = 0; i<Tloadheader->num_texture_files; i++)
 	{
+		Tloadheader->lpMat[i] = mat;
+
+		if (FAILED(FSSetMaterial(&mat)))
+		{
+			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
+			return FALSE;
+		}
+#if 0 // bjd - CHECK
 		/* create the material and header */	
 	    mat.hTexture = Tloadheader->hTex[i];
 	    if (d3dappi.lpD3D->lpVtbl->CreateMaterial(d3dappi.lpD3D, &Tloadheader->lpMat[i], NULL) != D3D_OK)
@@ -356,38 +345,36 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 			Msg( "Couldnt Get Handle for %s\n", &Tloadheader->ImageFile[i] );
 			return FALSE;
 		}
+#endif
 	}
     return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+
+/*===================================================================
 	Procedure	:		
 	Input		;		TLOADHEADER * , int n 
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL
 TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
-    DDSURFACEDESC ddsd;
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
-    LPDIRECTDRAWPALETTE lpDstPalette = NULL;
-    PALETTEENTRY ppe[256];
-    DWORD pcaps;
+    LPDIRECT3DTEXTURE9 lpSrcTexture = NULL;
+
 	char NewName2[256];
 
     /*
      * Release the surface if it is hanging around
      */
 
-    RELEASE(Tloadheader->lpTextureSurf[n]);
+	//LPDIRECT3DTEXTURE9  lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
+
+    RELEASE(Tloadheader->lpTexture[n]);
 
     /*
      * Create a surface in system memory and load the PPM file into it.
      * Query for the texture interface.
      */
-
-	// only load source texture if not a placeholder
 	if ( !Tloadheader->PlaceHolder[ n ] )
 	{
 		// change extension of file name
@@ -396,237 +383,23 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 		// if file exists
 		if( File_Exists( &NewName2[ 0 ] ) )
 		{
-			if( !HasBmpGotRealBlack( &NewName2[0] ) )
-			{
-				// override colourkey if bmp doesnt have a real black as its first colour....
-				Tloadheader->ColourKey[n] = FALSE;
-			}
 			if( MipMap && Tloadheader->MipMap[n] )
 			{
-				lpSrcTextureSurf = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-			}else{
-				lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
+				//lpSrcTexture = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 			}
-		}
-
-		if ( !lpSrcTextureSurf )
-		{
-			DebugPrintf( "You should have a .bmp version of this ppm, %s\n", Tloadheader->ImageFile[n][0] );
-
-			if (bPrimaryPalettized)
+			else
 			{
-				lpSrcTextureSurf = TloadSurfaceScale8BitPrimary(d3dappi.lpDD, Tloadheader->ImageFile[n],
-													  &d3dappi.ThisTextureFormat.ddsd,
-													  DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-			}else{
-
-				if( MipMap && Tloadheader->MipMap[n] )
-				{
-					lpSrcTextureSurf = LoadMipMap(d3dappi.lpDD, Tloadheader->ImageFile[n],
-						&d3dappi.ThisTextureFormat.ddsd,
-						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-				}else{
-					lpSrcTextureSurf = TloadSurfaceScale(d3dappi.lpDD, Tloadheader->ImageFile[n],
-						&d3dappi.ThisTextureFormat.ddsd,
-						DDSCAPS_SYSTEMMEMORY, Tloadheader->CurScale[n]);
-				}
-
-			}
-		}
-
-		if (!lpSrcTextureSurf){
-			Msg( "TloadTextureSurf() !lpSrcTextureSurf\n" );
-			goto exit_with_error;
-		}
-
-		LastError = lpSrcTextureSurf->lpVtbl->QueryInterface(lpSrcTextureSurf,
-												 &IID_IDirect3DTexture,
-												 (LPVOID*)&lpSrcTexture);
-		if (LastError != DD_OK){
-			Msg( "TloadTextureSurf() !lpSrcTextureSurf->lpVtbl->QueryInterface\n" );
-			goto exit_with_error;
-		}
-
-		LastError = D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);
-
-		if (LastError != DD_OK){
-			Msg( "TloadTextureSurf() !D3DAppIGetSurfDesc(&ddsd, lpSrcTextureSurf);\n" );
-		    goto exit_with_error;
-		}
-
-	}else
-	{
-		// do not allow mip map placeholders
-		if( MipMap && Tloadheader->MipMap[n] ){
-			Msg( "TloadTextureSurf() MipMap && Tloadheader->MipMap[n]  \n" );
-			return FALSE;
-		}
-		
-		// we still need surface description for placeholder...
-		memcpy(&ddsd, &d3dappi.ThisTextureFormat.ddsd, sizeof(DDSURFACEDESC));
-
-		ddsd.dwSize = sizeof(DDSURFACEDESC);
-		ddsd.dwWidth = Tloadheader->Xsize[ n ];
-		ddsd.dwHeight = Tloadheader->Ysize[ n ];
-
-		// if using square Textures, ensure placeholder is square
-		if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
-		{
-			if( ddsd.dwHeight != ddsd.dwWidth )
-			{
-				if( ddsd.dwHeight > ddsd.dwWidth )
-				{
-					ddsd.dwHeight >>= 1;
-				}
-				else
-				{
-					ddsd.dwWidth >>= 1;
-				}
+				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
+				//lpSrcTexture = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 			}
 		}
 	}
 
+	Tloadheader->lpTexture[n] = lpSrcTexture;
+	lpSrcTexture = NULL;
 
-
-    /*
-     * Create an empty texture surface to load the source texture into.
-     * The DDSCAPS_ALLOCONLOAD flag allows the DD driver to wait until the
-     * load call to allocate the texture in memory because at this point,
-     * we may not know how much memory the texture will take up (e.g. it
-     * could be compressed to an unknown size in video memory).
-     */
-    
-	if( MipMap && Tloadheader->MipMap[n] )
-	{
-		ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | 
-			DDSD_PIXELFORMAT | DDSD_MIPMAPCOUNT;
-		ddsd.ddsCaps.dwCaps =   DDSCAPS_VIDEOMEMORY | DDSCAPS_COMPLEX | 
-			DDSCAPS_TEXTURE | DDSCAPS_MIPMAP | DDSCAPS_ALLOCONLOAD;
-	}else{
-		ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-		ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_ALLOCONLOAD; // | DDSCAPS_3DDEVICE;
-//	    ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_3DDEVICE;
-	}
-
-	LastError = D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! D3DAppICreateSurface(&ddsd, &Tloadheader->lpTextureSurf[n])  \n" );
-        goto exit_with_error;
-    }
-    if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED8) {
-        pcaps = DDPCAPS_8BIT | DDPCAPS_ALLOW256;
-    } else if (ddsd.ddpfPixelFormat.dwFlags & DDPF_PALETTEINDEXED4) {
-        pcaps = DDPCAPS_4BIT;
-    } else {
-        pcaps = 0;
-    }
-
-	//Msg("pcaps = %d", pcaps);
-	//Msg("ddsd.ddpfPixelFormat.dwFlags = %d", ddsd.ddpfPixelFormat.dwFlags);
-
-    if (pcaps) {
-        memset(ppe, 0, sizeof(PALETTEENTRY) * 256);
-        LastError = d3dappi.lpDD->lpVtbl->CreatePalette(d3dappi.lpDD, pcaps,
-                                                 ppe, &lpDstPalette, NULL);
-        if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! d3dappi.lpDD->lpVtbl->CreatePalette  \n" );
-            goto exit_with_error;
-        }
-        LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette(Tloadheader->lpTextureSurf[n],
-                                lpDstPalette);
-        if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetPalette  \n" );
-            goto exit_with_error;
-        }
-    }
-
-	/*
-	 * Try out adding color key to surface
-	 */
-	if( Tloadheader->ColourKey[n] && d3dappi.Driver[d3dappi.CurrDriver].bTransparency && !DontColourKey )
-	{
-		DDCOLORKEY ddcolorkey;
-		ddcolorkey.dwColorSpaceLowValue = RGB_MAKE( 0, 0, 0 ); //RGB_MAKE( 255 , 0 , 255 );
-		ddcolorkey.dwColorSpaceHighValue = ddcolorkey.dwColorSpaceLowValue;
-		LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey( Tloadheader->lpTextureSurf[n],
-			DDCKEY_SRCBLT, &ddcolorkey);
-		if (LastError != DD_OK) {
-			Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->SetColorKey  \n" );
-			goto exit_with_error;
-		}
-	}
-
-    /*
-     * Query our destination surface for a texture interface
-     */
-    LastError = Tloadheader->lpTextureSurf[n]->lpVtbl->QueryInterface(Tloadheader->lpTextureSurf[n],
-                                             &IID_IDirect3DTexture,
-                                             (LPVOID*)&Tloadheader->lpTexture[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! Tloadheader->lpTextureSurf[n]->lpVtbl->QueryInterface  \n" );
-        goto exit_with_error;
-    }
-    /*
-     * Load the source texture into the destination.  During this call, a
-     * driver could compress or reformat the texture surface and put it in
-     * video memory.
-     */
-
-    
- 	if ( !Tloadheader->PlaceHolder[ n ] )
-	{
-
-		// test
-		//IDirectDrawPalette *pal = NULL;
-		//lpSrcTextureSurf->lpVtbl->GetPalette(lpSrcTextureSurf, &pal);
-		//Msg("%p\n", pal);
-
-		LastError = Tloadheader->lpTexture[n]->lpVtbl->Load(Tloadheader->lpTexture[n], lpSrcTexture);
-
-	//	LastError =	Tloadheader->lpTextureSurf[n]->lpVtbl->Blt(Tloadheader->lpTextureSurf[n],
-	//													   NULL,lpSrcTextureSurf,
-	//													   NULL, DDBLT_WAIT, NULL);
-		
-		if (LastError != DD_OK) {
-			D3DAppISetErrorString(
-				"TloadTextureSurf() ! Tloadheader->lpTexture[n]->lpVtbl->Load: %s %d \n",
-				D3DAppErrorToString(LastError),
-				Tloadheader->MipMap[n]
-			);
-			Msg("%s",LastErrorString);
-		    //goto exit_with_error;
-	    }
-		/* 
-	     * Now we are done with the source texture
-	     */
-		RELEASE(lpSrcTexture);
-	    RELEASE(lpSrcTextureSurf);
-	}
-
-    /*
-     * Did the texture end up in video memory?
-     */
-    LastError = D3DAppIGetSurfDesc(&ddsd, Tloadheader->lpTextureSurf[n]);
-    if (LastError != DD_OK) {
-		Msg( "TloadTextureSurf() ! D3DAppIGetSurfDesc  \n" );
-        goto exit_with_error;
-    }
-    if (!(ddsd.ddsCaps.dwCaps & DDSCAPS_VIDEOMEMORY))
-	{
-        Tloadheader->bTexturesInVideo[n] = FALSE;
-	}else{
-		Tloadheader->bTexturesInVideo[n] = TRUE;
-	}
-    
-    return TRUE;
-
-exit_with_error:
-    RELEASE(lpSrcTexture);
-    RELEASE(lpSrcTextureSurf);
-    RELEASE(lpDstPalette);
-    RELEASE(Tloadheader->lpTexture[n]);
-    RELEASE(Tloadheader->lpTextureSurf[n]);
-    return FALSE;       
+	return TRUE;
 }
 
 /*
@@ -637,11 +410,11 @@ exit_with_error:
 BOOL
 TloadGethTex(TLOADHEADER * Tloadheader , int n)
 {
+#if 0 // bjd
     if (d3dappi.ThisDriver.bIsHardware && !Tloadheader->bTexturesInVideo[n]) {
         goto exit_with_error;
     }
 
-    
 	LastError = Tloadheader->lpTexture[n]->lpVtbl->GetHandle(Tloadheader->lpTexture[n],
                                d3dappi.lpD3DDevice, &Tloadheader->hTex[n]);
     if (LastError != DD_OK) {
@@ -650,8 +423,8 @@ TloadGethTex(TLOADHEADER * Tloadheader , int n)
     return TRUE;
 exit_with_error:
     Tloadheader->hTex[n] = 0;
-    return TRUE;
-//    return FALSE;       
+#endif
+    return TRUE;       
 }
 
 /*
@@ -665,7 +438,7 @@ void
 TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 {
     RELEASE(Tloadheader->lpTexture[n]);
-    RELEASE(Tloadheader->lpTextureSurf[n]);
+//    RELEASE(Tloadheader->lpTextureSurf[n]);
 
 	if ( Tloadheader->PlaceHolder[ n ] )
 	{
@@ -673,7 +446,7 @@ TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 		Tloadheader->PlaceHolderFile[ n ] = NULL;
 	}
 
-    Tloadheader->hTex[n] = 0;
+//    Tloadheader->hTex[n] = 0;
 }
 
 /*
@@ -688,23 +461,11 @@ ReleaseTloadheader( TLOADHEADER * Tloadheader )
     for (i = 0; i < Tloadheader->num_texture_files; i++)
 	{
         TloadReleaseTexture( Tloadheader , i);
-		RELEASE(Tloadheader->lpMat[i]);
+//		RELEASE(Tloadheader->lpMat[i]);
     }
 
 	InitTload( Tloadheader  );
   
-}
-
-void ReleaseSysTload( SYSTEMMEMTPAGES * SysTextures, int *num_tpages )
-{
-	int i;
-
-	for (i = 0; i < *num_tpages; i++)
-	{
-		RELEASE(SysTextures[i].lpSrcTextureSurf);
-	}
-
-	*num_tpages = 0;
 }
 
 /*
@@ -716,14 +477,16 @@ BOOL
 TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
-    if (d3dappi.ThisDriver.bDoesTextures) {
+//bjd    if (d3dappi.ThisDriver.bDoesTextures) 
+	{
 
         for (i = 0; i < Tloadheader->num_texture_files; i++) {
             ATTEMPT(TloadTextureSurf( Tloadheader , i));
             ATTEMPT(TloadGethTex( Tloadheader , i));
         }
-    } else {
-    }
+    } 
+//	else {
+  //  }
     return TRUE;
 
 exit_with_error:
@@ -733,6 +496,7 @@ exit_with_error:
     return FALSE;
 }
 
+#if 0 // bjd
 LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpFormat, DWORD memoryflag, DWORD dwWidth, DWORD dwHeight)
 {
     DDSURFACEDESC ddsd;
@@ -763,6 +527,7 @@ LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpForma
 
 	return lpDDS;
 }
+#endif
 
 /***************************************************************************/
 /*                    Loading a PPM file into a surface                    */
@@ -773,6 +538,7 @@ LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpForma
  * memory flag specifies DDSCAPS_SYSTEMMEMORY or DDSCAPS_VIDEOMEMORY.
  * Scale...divide X and Y by Scale..
  */
+#if 0 // bjd
 LPDIRECTDRAWSURFACE
 TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
                    LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale )
@@ -1302,7 +1068,7 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
     return lpDDS;
 }
-
+#endif
 
 
 /***************************************************************************/
@@ -1314,6 +1080,8 @@ TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
  * memory flag specifies DDSCAPS_SYSTEMMEMORY or DDSCAPS_VIDEOMEMORY.
  * Scale...divide X and Y by Scale..
  */
+
+#if 0 // bjd
 LPDIRECTDRAWSURFACE
 TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
                    LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale , TLOADHEADER * Tloadheader , int16 n)
@@ -1673,15 +1441,15 @@ TloadSurfaceBlank( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
     return lpDDS;
 }
+#endif
 
 
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Get the width and height for a PPM
 	Input		:		TLOADHEADER * , int , lpname, uint16 * , uint16 * 
 	Output		:		BOOL FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
 TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width , uint16 * Height )
 {
@@ -1738,11 +1506,11 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Find a texture from a tloadheader Ignores the Path
 	Input		:		TLOADHEADER * , char * Name
 	Output		:		-1 if no match found otherwise number of texture
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 {
@@ -1750,9 +1518,11 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	char * pnt1;
 	char * pnt2;
 
+/* bjd
 	if( !d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures )
 		return 0;
-	
+*/
+
 	pnt1 = strrchr( Name, '\\' );
 	if( pnt1 )
 	{
@@ -1779,13 +1549,13 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	}
 	return -1;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Add a texture to a tloadheader
 	Input		:		TLOADHEADER * , char * Name , ColourKey
 	Output		:		-1 if too many tpages
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize )
+int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize )
 {
 	int16 i;
 	char * NamePnt;
@@ -1827,195 +1597,6 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , B
 	return i;
 }
 
-
-// Image file - name of PPM file to load
-// Scale by - scaling required (0 = no scaling)
-LPDIRECTDRAWSURFACE LoadPPMToSystemMemory( char *ImageFile, int ScaleBy )
-{
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-	char NewName2[256];
-
-	Change_Ext( ImageFile, &NewName2[ 0 ], ".BMP" );
-
-	if( File_Exists( &NewName2[ 0 ] ) )
-		lpSrcTextureSurf = DDLoadBitmapTexture(
-								d3dappi.lpDD,
-								&NewName2[0],
-								&d3dappi.ThisTextureFormat.ddsd,
-								(int) ScaleBy,
-								d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-
-	/*
-	 * Create a surface in system memory and load the PPM file into it.
-	 * Query for the texture interface.
-	 */
-
-	if( !lpSrcTextureSurf )
-		lpSrcTextureSurf = TloadSurfaceScale(
-								d3dappi.lpDD,
-								ImageFile,
-								&d3dappi.ThisTextureFormat.ddsd,
-								DDSCAPS_SYSTEMMEMORY,
-								(int16)ScaleBy); // dont use data dir
-
-    if (!lpSrcTextureSurf)
-        goto exit_with_error;
-
-	return lpSrcTextureSurf;
-
-
-exit_with_error:
-
-    RELEASE(lpSrcTextureSurf);
-
-    return NULL;       
-
-}
-
-BOOL BlitTextureToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf )
-{
-    LPDIRECTDRAWSURFACE lpdds = NULL;
-    DDBLTFX fx;
-
-	LastError = Tloadheader->lpTexture[n]->lpVtbl->QueryInterface(Tloadheader->lpTexture[n],
-																	&IID_IDirectDrawSurface, 
-																	(LPVOID*)&lpdds);
-    if (LastError != DD_OK)
-	{
-		DebugPrintf("BlitTextureToVideoMemory() unable to query for DD surface\n");
-		return FALSE;
-	}
-
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize = sizeof(DDBLTFX);
-
-	LastError = lpdds->lpVtbl->Blt( lpdds, NULL, lpSrcTextureSurf, NULL, DDBLT_WAIT , &fx );
-	if( LastError != DD_OK )
-	{
-		DebugPrintf("BlitTextureToVideoMemory() Direct Draw Blit error (%s)\n", D3DAppErrorToString(LastError));
-		return FALSE;
-	} 
-
-	RELEASE (lpdds);
-	return TRUE;
-}
-
-
-// Tloadheader - array of all textures currently in video memory
-// n - index num of texture to replace (must be same size as new texture!!!)
-// Surface  - system memory surface to replace video memory surface
-BOOL MovePPMToVideoMemory( TLOADHEADER *Tloadheader, int16 n, LPDIRECTDRAWSURFACE lpSrcTextureSurf )
-{
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
-
-    LastError = lpSrcTextureSurf->lpVtbl->QueryInterface(lpSrcTextureSurf,
-                                             &IID_IDirect3DTexture,
-                                             (LPVOID*)&lpSrcTexture);
-
-    if (LastError != DD_OK) goto exit_with_error;
-
-
-    /*
-     * Load the source texture into the destination.  During this call, a
-     * driver could compress or reformat the texture surface and put it in
-     * video memory.
-     */
-    LastError = Tloadheader->lpTexture[n]->lpVtbl->Load(Tloadheader->lpTexture[n], lpSrcTexture);
-
-    if (LastError != DD_OK)
-	{
-		Msg( "Load Texture falied for %s", &Tloadheader->ImageFile[n] );
-		goto exit_with_error;
-	}
-
-    /* 
-     * Now we are done with the source texture, but we keep surface in system mem for subsequent reloads
-     */
-    RELEASE(lpSrcTexture);
-    return TRUE;
-exit_with_error:
-    RELEASE(lpSrcTexture);
-    RELEASE(lpSrcTextureSurf);
-    return FALSE;   
-}
-
-BOOL
-TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
-{
-    LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
-    LPDIRECT3DTEXTURE lpSrcTexture = NULL;
-	//HRESULT	result;
-	char NewName2[256];
-
-	/*
-		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
-		GoodFileName = File_Exists( &NewName2[ 0 ] );
-	*/
-
-	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
-		return FALSE;
-
-	Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
-
-	if( File_Exists( &NewName2[0] ) )
-	{
-		if( MipMap && Tloadheader->MipMap[n] )
-		{
-			
-			lpSrcTextureSurf = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-		}else{
-			lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
-		}
-	}
-
-	if( !lpSrcTextureSurf )
-	{
-		if ( !Tloadheader->PlaceHolderFile[ n ][0] )
-			return FALSE;
-		if ( !File_Exists( Tloadheader->PlaceHolderFile[ n ] ) )
-			return FALSE;
-		lpSrcTextureSurf = LoadPPMToSystemMemory( Tloadheader->PlaceHolderFile[ n ], Tloadheader->CurScale[ n ] );
-	}
-
-	if ( !lpSrcTextureSurf )
-	{
-		Msg( "TloadReloadPlaceHolder() Failed on %s\n", Tloadheader->PlaceHolderFile[ n ] );
-		return FALSE;
-	}
-
-	if (!( MovePPMToVideoMemory( Tloadheader, n, lpSrcTextureSurf ) ))
-	{
-		Msg( "Load Texture falied for %s", Tloadheader->PlaceHolderFile[ n ] );
-		return FALSE;
-	}
-
-	/*
-	// copy to vid mem
-	if ( lpSrcTextureSurf->lpVtbl->QueryInterface(lpSrcTextureSurf, &IID_IDirect3DTexture, (LPVOID*)&lpSrcTexture) != DD_OK )
-	{
-	    RELEASE(lpSrcTexture);
-	    RELEASE(lpSrcTextureSurf);
-		return FALSE;
-	}
-
-	
-//    if ( Tloadheader->lpTexture[ n ]->lpVtbl->Load(Tloadheader->lpTexture[ n ], lpSrcTexture) != DD_OK )
-	result = Tloadheader->lpTexture[ n ]->lpVtbl->Load(Tloadheader->lpTexture[ n ], lpSrcTexture);
-	
-	if( result != DD_OK )
-	{
-		Msg( "Load Texture falied for %s", Tloadheader->PlaceHolderFile[ n ] );
-	    RELEASE(lpSrcTexture);
-	    RELEASE(lpSrcTextureSurf);
-		return FALSE;
-	}
-
-    RELEASE(lpSrcTexture);
-*/
-
-	return TRUE;
-}
-
 /*
  * TloadReloadTextureSurf
  * Reloads a lost and restored texture surface
@@ -2023,6 +1604,8 @@ TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 BOOL
 TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 {
+	return TRUE;
+#if 0 // bjd
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 	char NewName2[256];
@@ -2039,9 +1622,9 @@ TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 		if( MipMap && Tloadheader->MipMap[n] )
 		{
 			
-			lpSrcTextureSurf = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+//bjd			lpSrcTextureSurf = DDLoadBitmapTextureMipMap( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 		}else{
-			lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
+//bjd			lpSrcTextureSurf = DDLoadBitmapTexture( d3dappi.lpDD , &NewName2[0], &d3dappi.ThisTextureFormat.ddsd , (int) Tloadheader->CurScale[n] , d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly );
 		}
 	}
 	if( !lpSrcTextureSurf )
@@ -2085,7 +1668,8 @@ TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 exit_with_error:
     RELEASE(lpSrcTexture);
     RELEASE(lpSrcTextureSurf);
-    return FALSE;       
+    return FALSE;
+#endif
 }
 
 
@@ -2096,6 +1680,8 @@ exit_with_error:
 BOOL
 TloadBlankTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 {
+	return TRUE;
+#if 0 // bjd
     LPDIRECTDRAWSURFACE lpSrcTextureSurf = NULL;
     LPDIRECT3DTEXTURE lpSrcTexture = NULL;
 
@@ -2134,7 +1720,8 @@ TloadBlankTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 exit_with_error:
     RELEASE(lpSrcTexture);
     RELEASE(lpSrcTextureSurf);
-    return FALSE;       
+    return FALSE;
+#endif
 }
 
 
@@ -2153,6 +1740,8 @@ exit_with_error:
 BOOL
 TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader)
 {
+	return TRUE;
+#if 0 // bjd
 	BOOL b;
     int16 i;
     for (i = 0; i < Tloadheader->num_texture_files; i++)
@@ -2175,7 +1764,8 @@ TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader)
     }
     return TRUE;
 exit_with_error:
-    return FALSE;       
+    return FALSE;   
+#endif
 }
 
 
@@ -2193,6 +1783,8 @@ exit_with_error:
  * memory flag specifies DDSCAPS_SYSTEMMEMORY or DDSCAPS_VIDEOMEMORY.
  * Scale...0 = No Scale...1 = Half X....2 = Half X and Y
  */
+
+#if 0 // bjd
 LPDIRECTDRAWSURFACE
 TloadSurfaceScale8BitPrimary( LPDIRECTDRAW lpDD, LPCSTR lpName,
                    LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale )
@@ -2396,9 +1988,12 @@ TloadSurfaceScale8BitPrimary( LPDIRECTDRAW lpDD, LPCSTR lpName,
 
     return lpDDS;
 }
+#endif
 
 BOOL FreeTextureMemory( int * TMem)
 {
+	return TRUE;
+#if 0 // bjd
     HRESULT ddrval;
     DWORD dwTotalMem;
     DWORD dwFreeMem;
@@ -2444,11 +2039,14 @@ BOOL FreeTextureMemory( int * TMem)
 
 	RELEASE(lpDD2);
 
-    return TRUE; 
+    return TRUE;
+#endif
 };
 
 
 
 #ifdef OPT_ON
 #pragma optimize( "", off )
+#endif
+
 #endif

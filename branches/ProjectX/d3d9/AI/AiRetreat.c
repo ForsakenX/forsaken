@@ -31,11 +31,11 @@ extern	float framelag;
 extern	AIMDATA AimData;
 extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*===================================================================
 	Procedure	:	AIR Retreat And run away
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_RETREAT( register ENEMY * Enemy )
 {
 	OBJECT * TObject;

@@ -26,10 +26,9 @@ typedef struct _MIPMAPDESC
  */
 int BuildMipMaps( int Width , int Height , MIPMAPDESC * MipMapDesc , int Count );
 BOOL InitMipMap(LPCSTR lpName , int16 Scale , MIPMAPDESC * MipMapDesc );
-BOOL PackAndCopy(void *dest, uint8 * uint8pnt, LPDDSURFACEDESC lpFormat, int pitch , DWORD dwWidth , DWORD dwHeight );
+// bjd - CHECK BOOL PackAndCopy(void *dest, uint8 * uint8pnt, LPDDSURFACEDESC lpFormat, int pitch , DWORD dwWidth , DWORD dwHeight );
 /*Load and create a mipmapped texture surface*/
-LPDIRECTDRAWSURFACE LoadMipMap(LPDIRECTDRAW lpDD, LPCSTR lpName, 
-                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
+//bjd LPDIRECTDRAWSURFACE LoadMipMap(LPDIRECTDRAW lpDD, LPCSTR lpName, LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
 #endif // MIPMAP_INCLUDED
 
 

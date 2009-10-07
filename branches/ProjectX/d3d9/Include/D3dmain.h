@@ -15,8 +15,8 @@
 #include <string.h>
 #include <time.h>
 #include <search.h>
-#include <ddraw.h>
-#include <d3d.h>
+//#include <ddraw.h>
+#include <d3d9.h>
 #include "d3dapp.h"         /* prototypes for D3D helper functions */
 #include "d3ddemo.h"        /* prototypes for functions to communicate with
                                each sample */
@@ -45,9 +45,10 @@ typedef struct tagd3dmainglobals {
     BOOL bResized; /* the window has resized or some other drastic change, the
                       entire client area should be cleared */
     BOOL bQuit;    /* program is about to terminate */
-
+#if 0 // bjd
     LPDIRECTDRAWSURFACE lpFrameRateBuffer; /* frame rate surface */
     LPDIRECTDRAWSURFACE lpInfoBuffer;      /* window info surface */
+#endif
 } d3dmainglobals;
 
 extern	d3dmainglobals	myglobs;
@@ -80,6 +81,9 @@ void EnableSecondaryLights( void );
 void DisableSecondaryLights( void );
 void EnablePickupLights( void );
 void DisablePickupLights( void );
+
+BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp);
+BOOL FlipBuffers();
 
 extern	int		BikeDetail;
 

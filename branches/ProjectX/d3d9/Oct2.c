@@ -1,4 +1,6 @@
 
+#define RENDER_USING_FACES
+
 //#define REFLECTION
 
 #define INSIDE_BSP // disable to use bounding box inside check instead
@@ -80,6 +82,7 @@
 #include "demo.h"
 #include "file.h"
 #include "singleplayer.h"
+#include "d3dappi.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
@@ -102,6 +105,9 @@ extern BOOL CanCarryOwnFlag;
 BOOL OriginalLevels = FALSE;
 BOOL CheatsDisabled = FALSE;
 BOOL WaitingToQuit;
+
+BOOL  ClearScrOverride = FALSE;
+BOOL  ClearZOverride = FALSE;
 
 void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
@@ -180,8 +186,6 @@ extern uint32 CurrentBikeCompSpeech;
 BOOL PreventFlips = FALSE;
 BOOL Cheated = FALSE;
 
-uint16 Current_Max_Score;
-
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 void InitShipSpeeds( void );
 
@@ -194,7 +198,7 @@ int CurrentLoadingStep = 0;
 
 extern BOOL bSoundEnabled;
 
-extern LPDIRECTDRAWSURFACE    Lp_AVI_DDSurface;
+//extern LPDIRECTDRAWSURFACE    Lp_AVI_DDSurface;
 
 extern TeamCol[];
 extern int Num_StatsMessage_Parts;
@@ -392,12 +396,6 @@ extern  BOOL  DemoScreenGrab;
 extern  BOOL  ShowWeaponKills;
 extern  BOOL ShowStats; 
 
-LPDIRECT3DEXECUTEBUFFER lpD3DNormCmdBuf;
-LPDIRECT3DEXECUTEBUFFER lpD3DTransCmdBuf;
-LPDIRECT3DEXECUTEBUFFER lpD3DSpcFxTransCmdBuf;
-BOOL InitSpecialExecBufs( void );
-void ReleaseSpecialExecBufs( void );
-
 extern  BOOL  flush_input; // tells control routines to ignore next player input
 
 extern  uint16  IsGroupVisible[MAXGROUPS];
@@ -457,8 +455,10 @@ extern  BYTE          MyGameStatus;
 BYTE PreWaitingToSendMessagesStatus;
 extern  BYTE          GameStatus[]; // Game Status for every Ship...
 extern  BYTE          OverallGameStatus;      // what the host says he is doing...
-extern  LPDIRECT3DEXECUTEBUFFER Skin_Execs[ MAXGROUPS ];
-extern  LPDIRECT3DEXECUTEBUFFER Portal_Execs[ MAXGROUPS ];
+//extern  LPDIRECT3DEXECUTEBUFFER Skin_Execs[ MAXGROUPS ];
+//extern  LPDIRECT3DEXECUTEBUFFER Portal_Execs[ MAXGROUPS ];
+extern RENDEROBJECT Skin_Execs[ MAXGROUPS ];
+extern RENDEROBJECT	Portal_Execs[ MAXGROUPS ];
 extern  float PyroliteAmmo;
 extern  float SussGunAmmo;
 extern  float GeneralAmmo;
@@ -517,7 +517,7 @@ BOOL InitViewport( float scale );
 BYTE  InitView_MyGameStatus;
 BYTE  ChangeLevel_MyGameStatus;
 
-LPDIRECTDRAWPALETTE ddpal;
+//LPDIRECTDRAWPALETTE ddpal;
 
 void ProcessGameKeys( void );
 
@@ -578,7 +578,7 @@ BOOL TermDInput( void );
 BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
 BOOL  ClearZBuffer();
 
-BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
+BOOL RenderCurrentCamera( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void FreeSfxHolder( int index ) ;
 
@@ -586,9 +586,9 @@ void  PlotSimplePanel( void );
 
 RECT cursorclip;
 
-LPDIRECT3DDEVICE lpD3Ddev = NULL;
-D3DVIEWPORT viewport;
-D3DVIEWPORT oldviewport;
+//LPDIRECT3DDEVICE lpD3Ddev = NULL;
+D3DVIEWPORT9 viewport;
+D3DVIEWPORT9 oldviewport;
 HRESULT hresult;
 int initfov = 0;
 float viewplane_distance;
@@ -629,8 +629,7 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
 
-void GeneralBltFast( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECTDRAWSURFACE Surface ,  char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface);
-void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int dstw , int dsth , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface);
+void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 Surface ,  char * FileName , LPDIRECT3DSURFACE9 DestSurface);
 
 void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
@@ -660,8 +659,10 @@ BOOL SeriousError = FALSE;
 BOOL DoClipping = TRUE;
 BOOL OnceOnlyChangeLevel = FALSE;
 
-LPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
-void InitRenderBufs( LPDIRECT3DDEVICE lpDev );
+//bjdLPDIRECT3DEXECUTEBUFFER RenderBufs[ 2 ] = { NULL, NULL };
+RENDEROBJECT RenderBufs[4];
+
+void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
 BOOL ChangeBackgroundColour( float R, float G, float B );
 BOOL SetMatrixViewPort( void );
@@ -702,9 +703,9 @@ extern int GetName(int Player);
 // (stats.c)
 extern void ScoreSort();
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
     Weapon Names...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char PrimaryNames[7][16] = {
             { "Pulsar" } ,
             { "Trojax" } ,
@@ -771,9 +772,9 @@ int SecondaryLengths[12] = {
 #endif
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
     Panel Description Stuff...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 char  PanelNames[8][32] ={  
                { "data\\pictures\\p320X50.bmp" } ,
                { "data\\pictures\\p320X60.bmp" } ,
@@ -880,9 +881,9 @@ char  StatsNames[8][64] ={
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
     Positions of stuff to go on the panel....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int16 ModeCase = 0;
 uint16  PrimaryChanged;
 uint16  SecondaryChanged;
@@ -972,26 +973,25 @@ void FillInPanelPositions()
   }
 }
   
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
     Off Screen Sufaces...Used to Blit to screen...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-LPDIRECTDRAWSURFACE     lpDDSOne;       // crosshair
-LPDIRECTDRAWSURFACE     lpDDSTwo = NULL;       // Font Bitmap
-LPDIRECTDRAWSURFACE     lpDDSThree;     // Panel
-LPDIRECTDRAWSURFACE     lpDDSFour;     // Panel Contents
+===================================================================*/
+LPDIRECT3DSURFACE9      lpFontSurface = NULL;       // Font Bitmap
+LPDIRECT3DSURFACE9     lpDDSOne;					// crosshair
+LPDIRECT3DSURFACE9     lpDDSThree;					// Panel
+LPDIRECT3DSURFACE9     lpDDSFour;					// Panel Contents
+LPDIRECT3DSURFACE9     lpDDSOverlay;				// Panel
+//DDCOLORKEY ddcolorkey;
 
-//LPDIRECTDRAWSURFACE     lpDDSOverlay;     // Panel
-DDCOLORKEY ddcolorkey;
-
-LPDIRECT3DMATERIAL lpBmat;    // a Material for the Background clearing
+D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
 
 MLOADHEADER Mloadheader;
-BOOL TestTransformClip(LPDIRECT3DVIEWPORT lpView);
+BOOL TestTransformClip(D3DVIEWPORT9 *lpView);
 
 MCLOADHEADER MCloadheader;          //  inner skin collision map...
 MCLOADHEADER MCloadheadert0;        //  0 thickness collision map...
 
-extern  LPDIRECT3DEXECUTEBUFFER Portal_lpD3DExBuf;
+//extern  LPDIRECT3DEXECUTEBUFFER Portal_lpD3DExBuf;
 
 extern  uint16      FirstFmPolyUsed;
 extern  uint16      FirstPolyUsed;
@@ -1007,28 +1007,28 @@ extern  int16     ShowSkin;
 extern  int16         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
 
-BOOL MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
+BOOL MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
 
 void Build_View();
-BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
-BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
+BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
+BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
 
 /**************************************************************************
   DirectInput Globals
  **************************************************************************/
-LPDIRECTINPUT                   lpdi = NULL;
-LPDIRECTINPUTDEVICE             lpdiMouse = NULL;
-LPDIRECTINPUTDEVICE       lpdiKeyboard = NULL;
-LPDIRECTINPUTDEVICE       lpdiBufferedKeyboard = NULL;
+LPDIRECTINPUT8                   lpdi = NULL;
+LPDIRECTINPUTDEVICE8             lpdiMouse = NULL;
+LPDIRECTINPUTDEVICE8       lpdiKeyboard = NULL;
+LPDIRECTINPUTDEVICE8       lpdiBufferedKeyboard = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 int               Num_Joysticks;
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Global Variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/   
+===================================================================*/   
 #define Near  ( 100.0F * GLOBAL_SCALE )
 //#define Far   ( 65535.0F * GLOBAL_SCALE )
 #define Far   ( 49152.0F * GLOBAL_SCALE )
@@ -1070,20 +1070,21 @@ MATRIX  ProjMatrix = {
   VECTOR  Camera_Dir = { 0.0F, 0.0F,0.0F };
 
 
-  D3DLIGHT light;
+  D3DLIGHT9 light;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-static D3DEXECUTEDATA d3dExData;
-static D3DEXECUTEBUFFERDESC debDesc;
+/*===================================================================
+===================================================================*/
+//static D3DEXECUTEDATA d3dExData;
+//static D3DEXECUTEBUFFERDESC debDesc;
 
 /*
  * Global projection, view, world and identity matricies
  */
-D3DMATRIXHANDLE hProj;
-D3DMATRIXHANDLE hView;
-D3DMATRIXHANDLE hWorld;
+//D3DMATRIXHANDLE hProj;
+//D3DMATRIXHANDLE hView;
+//D3DMATRIXHANDLE hWorld;
+
 D3DMATRIX view;
 D3DMATRIX identity = {
     D3DVAL(1.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
@@ -1128,106 +1129,114 @@ BOOL SetZProj( void )
   }
 
 #ifdef Z_TRICK
-  if( g_OddFrame )
-  {
-    proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
-    proj._43 *= -0.5f;
-  }else
-  {
-    proj._33 *= 0.5f;
-    proj._43 *= 0.5f;
-  }
-  ProjMatrix._33 = proj._33;
-  ProjMatrix._43 = proj._43;
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-  {
-    return FALSE;
-  }
+	if( g_OddFrame )
+	{
+		proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
+		proj._43 *= -0.5f;
+	}
+	else
+	{
+		proj._33 *= 0.5f;
+		proj._43 *= 0.5f;
+		}
+	ProjMatrix._33 = proj._33;
+	ProjMatrix._43 = proj._43;
+//  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
+	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
+	{
+		return FALSE;
+	}
 #endif
-  return TRUE;
+	return TRUE;
 }
 
 
 SetFOV( float fov )
 {
-    HRESULT rval;
-  float screen_width, screen_height;
-  float Scale, NewNear;
+	HRESULT rval;
+	float screen_width, screen_height;
+	float Scale, NewNear;
 
-  if ( fov <= 1.0F || fov >= 150.0F )
-    fov = hfov;
-    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-    viewport.dwSize = sizeof(D3DVIEWPORT);
-    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
-        Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
-        return FALSE;
-    }
-  if ( d3dapp->bFullscreen )
-  {
-    screen_width = (float) d3dapp->ThisMode.w;
-    screen_height = (float) d3dapp->ThisMode.h;
-  }
-  else
-  {
-    screen_width = (float) d3dapp->WindowsDisplay.w;
-    screen_height = (float) d3dapp->WindowsDisplay.h;
-  }
-  pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
-  viewplane_distance = (float) ( viewport.dwWidth / ( 2 * tan( DEG2RAD( fov ) * 0.5 ) ) );
-  proj._11 = 2 * viewplane_distance / viewport.dwWidth;
-  proj._22 = 2 * viewplane_distance / ( viewport.dwHeight / pixel_aspect_ratio );
+	if ( fov <= 1.0F || fov >= 150.0F )
+		fov = hfov;
+//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
+//    viewport.dwSize = sizeof(D3DVIEWPORT);
+//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
+//    if (rval != D3D_OK) {
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
+	{
+		Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+		return FALSE;
+	}
+	if ( d3dapp->bFullscreen )
+	{
+		screen_width = (float) d3dapp->ThisMode.w;
+		screen_height = (float) d3dapp->ThisMode.h;
+	}
+	else
+	{
+		screen_width = (float) d3dapp->WindowsDisplay.w;
+		screen_height = (float) d3dapp->WindowsDisplay.h;
+	}
+	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+	viewplane_distance = (float) ( viewport.Width / ( 2 * tan( DEG2RAD( fov ) * 0.5 ) ) );
+	proj._11 = 2 * viewplane_distance / viewport.Width;
+	proj._22 = 2 * viewplane_distance / ( viewport.Height / pixel_aspect_ratio );
 
-  if( fov > START_FOV )
-  {
-    Scale = ( ( MAX_FOV - fov ) / ( MAX_FOV - START_FOV ) );
-    NewNear = ( MinNear + ( ( Near - MinNear ) * Scale ) );
-    proj._33 = D3DVAL(Far/(Far-NewNear));
-    proj._34 = D3DVAL( 1.0 );
-    proj._43 = D3DVAL(-Far*NewNear/(Far-NewNear));
-    proj._44 = D3DVAL( 0.0 );
-  }
-  else
-  {
-    proj._33 = D3DVAL(Far/(Far-Near));
-    proj._34 = D3DVAL( 1.0 );
-    proj._43 = D3DVAL(-Far*Near/(Far-Near));
-    proj._44 = D3DVAL( 0.0 );
-  }
+	if( fov > START_FOV )
+	{
+		Scale = ( ( MAX_FOV - fov ) / ( MAX_FOV - START_FOV ) );
+		NewNear = ( MinNear + ( ( Near - MinNear ) * Scale ) );
+		proj._33 = D3DVAL(Far/(Far-NewNear));
+		proj._34 = D3DVAL( 1.0 );
+		proj._43 = D3DVAL(-Far*NewNear/(Far-NewNear));
+		proj._44 = D3DVAL( 0.0 );
+	}
+	else
+	{
+		proj._33 = D3DVAL(Far/(Far-Near));
+		proj._34 = D3DVAL( 1.0 );
+		proj._43 = D3DVAL(-Far*Near/(Far-Near));
+		proj._44 = D3DVAL( 0.0 );
+	}
 
 #ifdef Z_TRICK
-  if ( !ZClearsOn )
-  {
-    if( g_OddFrame )
-    {
-      proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
-      proj._43 *= -0.5f;
-    }else
-    {
-      proj._33 *= 0.5f;
-      proj._43 *= 0.5f;
-    }
-  }
+	if ( !ZClearsOn )
+	{
+		if( g_OddFrame )
+		{
+			proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
+			proj._43 *= -0.5f;
+		}
+		else
+		{
+			proj._33 *= 0.5f;
+			proj._43 *= 0.5f;
+		}
+	}
 #endif
 
-  ProjMatrix._11 = proj._11;
-  ProjMatrix._22 = proj._22;
-  ProjMatrix._33 = proj._33;
-  ProjMatrix._34 = proj._34;
-  ProjMatrix._43 = proj._43;
-  ProjMatrix._44 = proj._44;
+	ProjMatrix._11 = proj._11;
+	ProjMatrix._22 = proj._22;
+	ProjMatrix._33 = proj._33;
+	ProjMatrix._34 = proj._34;
+	ProjMatrix._43 = proj._43;
+	ProjMatrix._44 = proj._44;
 
-  hfov = fov;
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-  {
-      return FALSE;
-  }
-  return TRUE;
+	hfov = fov;
+//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
+	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
+	{
+		return FALSE;
+	}
+	return TRUE;
 }
 
 
-void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval )
+void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval )
 {
+/* bjd
   static char msg[1024];
 
   sprintf( msg, "SetViewport failed in %s.\n"
@@ -1247,81 +1256,87 @@ void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval )
     vp->dvMaxX, vp->dvMaxY,
     vp->dvMinZ, vp->dvMaxZ );
   Msg( msg );
+*/
 }
 
 BOOL
 ResizeViewport( float scale )
 {
-    HRESULT rval;
-  int left, top;
-  int width, height;
-  int maxwidth, maxheight;
-  BOOL  NewDrawPanel;
-  BOOL  NewDrawSimplePanel;
+	HRESULT rval;
+	int left, top;
+	int width, height;
+	int maxwidth, maxheight;
+	BOOL  NewDrawPanel;
+	BOOL  NewDrawSimplePanel;
   
-  InsideResizeViewport = TRUE;
+	InsideResizeViewport = TRUE;
 
-  scale = 1.0F;
+	scale = 1.0F;
 
   /*
      * Setup the viewport for specified viewing area
      */
-    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-    viewport.dwSize = sizeof(D3DVIEWPORT);
-    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+//   memset(&viewport, 0, sizeof(D3DVIEWPORT));
+//    viewport.dwSize = sizeof(D3DVIEWPORT);
+//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
+//    if (rval != D3D_OK) {
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
+	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;
     }
-  maxwidth = d3dapp->szClient.cx;
+	maxwidth = d3dapp->szClient.cx;
 
 
 //  DrawSimplePanel = FALSE;
-  if( scale < 1.0F )
-  {
-    NewDrawSimplePanel = TRUE;
-  }
-  if( scale >= 1.0F )
-  {
-    NewDrawSimplePanel = FALSE;
-  }
+	if( scale < 1.0F )
+	{
+		NewDrawSimplePanel = TRUE;
+	}
+	if( scale >= 1.0F )
+	{
+		NewDrawSimplePanel = FALSE;
+	}
   
-  if( NewDrawSimplePanel )
-  {
-    maxheight = d3dapp->szClient.cy - PanelVisibleY[ModeCase];
-  }else{
-    maxheight = d3dapp->szClient.cy;
-  }
-  if ( scale < 1.01F )
-  {
-    width = (int) floor( maxwidth * scale );
-    if ( width < MIN_VIEWPORT_WIDTH )
-    {
-      width = MIN_VIEWPORT_WIDTH;
-      scale = (float) width / maxwidth;
-    }
-    height = (int) floor( maxheight * scale );
+	if( NewDrawSimplePanel )
+	{
+		maxheight = d3dapp->szClient.cy - PanelVisibleY[ModeCase];
+	}
+	else
+	{
+		maxheight = d3dapp->szClient.cy;
+	}
+	if ( scale < 1.01F )
+	{
+		width = (int) floor( maxwidth * scale );
+		if ( width < MIN_VIEWPORT_WIDTH )
+		{
+			width = MIN_VIEWPORT_WIDTH;
+			scale = (float) width / maxwidth;
+		}
+		height = (int) floor( maxheight * scale );
 
-    NewDrawPanel = FALSE;
+		NewDrawPanel = FALSE;
 
-    left = ( ( maxwidth - width ) >> 1 ) & ~1;
-    top = ( ( maxheight - height ) >> 1 ) & ~1;
-  }
+		left = ( ( maxwidth - width ) >> 1 ) & ~1;
+		top = ( ( maxheight - height ) >> 1 ) & ~1;
+	}
   else
   {
-    width = maxwidth;
-    height = maxheight;
-    if ( scale > 1.11F )
-    {
-      NewDrawPanel = TRUE;
-      scale = 1.2F;
-    }
-    else
-    {
-      NewDrawPanel = FALSE;
-    }
-    left = 0;
-    top = 0;
+	width = maxwidth;
+	height = maxheight;
+	if ( scale > 1.11F )
+	{
+		NewDrawPanel = TRUE;
+		scale = 1.2F;
+	}
+	else
+	{
+		NewDrawPanel = FALSE;
+	}
+	left = 0;
+	top = 0;
   }
   CurrentViewportScale = scale;
 
@@ -1338,18 +1353,22 @@ ResizeViewport( float scale )
   }
   
   
-  viewport.dwX = left;
-  viewport.dwY = top;
-    viewport.dwWidth = width;
-    viewport.dwHeight = height;
+	viewport.X = left;
+	viewport.Y = top;
+    viewport.Width = width;
+    viewport.Height = height;
+/*  bjd
     viewport.dvScaleX = viewport.dwWidth / (float)2.0;
     viewport.dvScaleY = viewport.dwHeight / (float)2.0;
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
-    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+*/
+//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+//    if (rval != D3D_OK) {
+	if (FAILED(FSSetViewPort(&viewport)))
+	{
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "ResizeViewport", &viewport, rval );
 #else
@@ -1360,47 +1379,54 @@ ResizeViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-  D3DAppIClearBuffers();
+	FSClearBlack();
 
   return TRUE;
 }
 BOOL
 FullScreenViewport()
 {
-    HRESULT rval;
-  int left, top;
-  int width, height;
-  int maxwidth, maxheight;
+	HRESULT rval;
+	int left, top;
+	int width, height;
+	int maxwidth, maxheight;
 
     /*
      * Setup the viewport for specified viewing area
      */
-    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-    viewport.dwSize = sizeof(D3DVIEWPORT);
-    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
+//    viewport.dwSize = sizeof(D3DVIEWPORT);
+//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
+//    if (rval != D3D_OK) {
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
+	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;
     }
-  maxwidth = d3dapp->szClient.cx;
-  maxheight = d3dapp->szClient.cy;
-  width = maxwidth;
-  height = maxheight;
-  left = 0;
-  top = 0;
+	maxwidth = d3dapp->szClient.cx;
+	maxheight = d3dapp->szClient.cy;
+	width = maxwidth;
+	height = maxheight;
+	left = 0;
+	top = 0;
 
-    viewport.dwX = left;
-  viewport.dwY = top;
-    viewport.dwWidth = width;
-    viewport.dwHeight = height;
-    viewport.dvScaleX = viewport.dwWidth / (float)2.0;
-    viewport.dvScaleY = viewport.dwHeight / (float)2.0;
+	viewport.X = left;
+	viewport.Y = top;
+    viewport.Width = width;
+    viewport.Height = height;
+//    viewport.dvScaleX = viewport.dwWidth / (float)2.0;
+//    viewport.dvScaleY = viewport.dwHeight / (float)2.0;
+/* bjd 
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
-    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+*/
+//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+ //   if (rval != D3D_OK) {
+	if (FAILED(FSSetViewPort(&viewport)))
+	{
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "FullScreenViewport", &viewport, rval );
 #else
@@ -1408,11 +1434,10 @@ FullScreenViewport()
 #endif
         return FALSE;
     }
-  SetFOV( hfov );
-  // clear viewport
-  D3DAppIClearBuffers();
-  D3DAppIClearBuffers();
-  return TRUE;
+	SetFOV( hfov );
+	// clear viewport
+	FSClearBlack();
+	return TRUE;
 }
 
 // show or hide the cursor
@@ -1669,59 +1694,68 @@ BOOL InitLevels( char * levels_list )
 
 BOOL SetMatrixViewPort( void )
 {
-    size_t size;
-    LPVOID lpBufStart, lpInsStart, lpPointer;
-    LPDIRECT3DEXECUTEBUFFER lpD3DExCmdBuf;
-    D3DMATERIAL bmat;
-    D3DMATERIALHANDLE hBmat;
-  LPDIRECTDRAW lpDD = d3dapp->lpDD;
-  LPDIRECT3D lpD3D = d3dapp->lpD3D;
-  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+//	LPVOID lpBufStart, lpInsStart, lpPointer;
+//	LPDIRECT3DEXECUTEBUFFER lpD3DExCmdBuf;
+	D3DMATERIAL9 bmat;
+//	D3DMATERIALHANDLE hBmat;
+//	LPDIRECTDRAW lpDD = d3dapp->lpDD;
+//	LPDIRECT3D lpD3D = d3dapp->lpD3D;
+//	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+//	LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
 
-    memset(&bmat, 0, sizeof(D3DMATERIAL));
-  bmat.dwSize = sizeof(D3DMATERIAL);
-  bmat.dwRampSize = 1;
-  if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) {
-      return FALSE;
-  }
-  if (lpBmat->lpVtbl->SetMaterial(lpBmat, &bmat) != D3D_OK) {
-      return FALSE;
-  }
-  if (lpBmat->lpVtbl->GetHandle(lpBmat, lpDev, &hBmat) != D3D_OK) {
-      return FALSE;
-  }
-  if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
-      return FALSE;
-  }
-  
-   
+	memset(&bmat, 0, sizeof(D3DMATERIAL9));
+//	bmat.dwSize = sizeof(D3DMATERIAL);
+//	bmat.dwRampSize = 1;
+
+/* bjd
+	if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) {
+		return FALSE;
+	}
+	if (lpBmat->lpVtbl->SetMaterial(lpBmat, &bmat) != D3D_OK) {
+		return FALSE;
+	}
+	if (lpBmat->lpVtbl->GetHandle(lpBmat, lpDev, &hBmat) != D3D_OK) {
+		return FALSE;
+	}
+	if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
+		return FALSE;
+	}
+*/ 
     ticksperframe = 14.0F;
        
-  /*
-   * Set the view, world and projection matrices
-   * Create a buffer for matrix set commands etc.
-   */
-  MAKE_MATRIX(lpDev, hView, identity);
-  MAKE_MATRIX(lpDev, hProj, proj);
-  MAKE_MATRIX(lpDev, hWorld, world);
-  world = identity;
-  size = 0;
-  size += sizeof(D3DINSTRUCTION) * 3;
-  size += sizeof(D3DSTATE) * 5;
+	/*
+	* Set the view, world and projection matrices
+	* Create a buffer for matrix set commands etc.
+	*/
+//	MAKE_MATRIX(lpDev, hView, identity);
+//	MAKE_MATRIX(lpDev, hProj, proj);
+//	MAKE_MATRIX(lpDev, hWorld, world);
+
+	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_VIEW, &identity);
+	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_PROJECTION, &proj);
+	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_WORLD, &world);
+
+	world = identity;
+//	size = 0;
+//	size += sizeof(D3DINSTRUCTION) * 3;
+//	size += sizeof(D3DSTATE) * 5;
    
-       
-    if (MakeExecuteBuffer( &debDesc, lpDev , &lpD3DExCmdBuf , size ) != TRUE ) return FALSE;
+//	if (MakeExecuteBuffer( &debDesc, /*lpDev,*/ &lpD3DExCmdBuf , size ) != TRUE ) // bjd
+//		return FALSE; 
    
    
   /*
    * lock it so it can be filled
    */
-  if (lpD3DExCmdBuf->lpVtbl->Lock(lpD3DExCmdBuf, &debDesc) != D3D_OK) return FALSE;
+//  if (lpD3DExCmdBuf->lpVtbl->Lock(lpD3DExCmdBuf, &debDesc) != D3D_OK) return FALSE; // bjd
+
+#if 0 // bjd - CHECK
+	if (FSLockExecuteBuffer(lpD3DExCmdBuf, &debDesc) != D3D_OK)
+		return FALSE;
   
-  lpBufStart = debDesc.lpData;
-  memset(lpBufStart, 0, size);
-  lpPointer = lpBufStart;
+	lpBufStart = debDesc.lpData;
+	memset(lpBufStart, 0, size);
+	lpPointer = lpBufStart;
   
   lpInsStart = lpPointer;
   OP_STATE_TRANSFORM(3, lpPointer);
@@ -1731,30 +1765,33 @@ BOOL SetMatrixViewPort( void )
   OP_STATE_LIGHT(1, lpPointer);
       STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
   OP_EXIT(lpPointer);
-  /*
-   * Setup the execute data describing the buffer
-   */
-  lpD3DExCmdBuf->lpVtbl->Unlock(lpD3DExCmdBuf);
-  memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
-  d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
-  d3dExData.dwInstructionOffset = (ULONG) 0;
-  d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
-  lpD3DExCmdBuf->lpVtbl->SetExecuteData(lpD3DExCmdBuf, &d3dExData);
-  lpDev->lpVtbl->BeginScene(lpDev);
-  lpDev->lpVtbl->Execute(lpDev, lpD3DExCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  lpDev->lpVtbl->EndScene(lpDev);
-  /*
-   * We are done with the command buffer.
-   */
-  XRELEASE(lpD3DExCmdBuf);
-   
-    viewport.dwSize = sizeof(D3DVIEWPORT);
-    if ((hresult = lpView->lpVtbl->GetViewport(lpView, (LPD3DVIEWPORT)&viewport)) != D3D_OK)
+
+	/*
+	* Setup the execute data describing the buffer
+	*/
+	lpD3DExCmdBuf->lpVtbl->Unlock(lpD3DExCmdBuf);
+	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
+	d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
+	d3dExData.dwInstructionOffset = (ULONG) 0;
+	d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
+	lpD3DExCmdBuf->lpVtbl->SetExecuteData(lpD3DExCmdBuf, &d3dExData);
+	lpDev->lpVtbl->BeginScene(lpDev);
+	lpDev->lpVtbl->Execute(lpDev, lpD3DExCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	lpDev->lpVtbl->EndScene(lpDev);
+
+	/*
+	* We are done with the command buffer.
+	*/
+	XRELEASE(lpD3DExCmdBuf);
+#endif
+//    viewport.dwSize = sizeof(D3DVIEWPORT);
+//    if ((hresult = lpView->lpVtbl->GetViewport(lpView, (LPD3DVIEWPORT)&viewport)) != D3D_OK)
+	if (FAILED(FSGetViewPort(&viewport)))
     {
-      viewport.dwWidth = 320;
-      viewport.dwHeight = 200;
+      viewport.Width = 320;
+      viewport.Height = 200;
     }
-    lpD3Ddev = lpDev;
+//    lpD3Ddev = lpDev;
     if ( !initfov )
     {
       SetFOV( chosen_fov = normal_fov );
@@ -1763,14 +1800,16 @@ BOOL SetMatrixViewPort( void )
 
     if( InsideResizeViewport == FALSE )
     {
-      InitViewport( 1.1F );
-    }else{
-    InsideResizeViewport = FALSE;
-  }
+		InitViewport( 1.1F );
+    }
+	else
+	{
+		InsideResizeViewport = FALSE;
+	}
 
   return TRUE;
 }
-
+/* bjd - CHECK
 struct {
 
   DWORD ModeMask;
@@ -1819,24 +1858,26 @@ struct {
   { D3DPTBLENDCAPS_MODULATEALPHA, D3DPBLENDCAPS_SRCALPHA, D3DPBLENDCAPS_INVSRCALPHA,  // Mask
     D3DTBLEND_MODULATEALPHA,      D3DBLEND_SRCALPHA,      D3DBLEND_INVSRCALPHA },   // Value
 };
+*/
 
 void  GetHardwareCaps( void )
 {   
+#if 0 //bjd - CHECK
   int16         Count;
   int16         NumPreferredCaps;
   struct  _D3DPrimCaps *  TriCapsPtr;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Check for Culling Caps
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
   CanCullFlag = FALSE;
   if( ( d3dappi.ThisDriver.Desc.dpcTriCaps.dwMiscCaps & D3DPMISCCAPS_CULLCCW ) &&
     ( d3dappi.ThisDriver.Desc.dpcTriCaps.dwMiscCaps & D3DPMISCCAPS_CULLNONE ) )
     CanCullFlag = TRUE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Check for Translucency Caps
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
   UsedStippledAlpha = FALSE;
 
   if( !Is3Dfx && !Is3Dfx2 )
@@ -1884,7 +1925,7 @@ void  GetHardwareCaps( void )
     if( d3dappi.ThisDriver.Desc.dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAGOURAUDBLEND )
       UsedStippledAlpha = FALSE;
   }
-
+#endif
 }
 
 
@@ -1910,7 +1951,7 @@ void TestBlt()
       if( bPolyText && PolyText[MyGameStatus])
       {
         // Add Crosshair Polygon..
-        AddScreenPolyText( (uint16) 63 , (float) (viewport.dwX + (viewport.dwWidth>>1)) , (float) (viewport.dwY + (viewport.dwHeight>>1)) , 64, 255, 64, 255 );
+        AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
 
         // Blt trojax PowerLevel / LaserTemperature
         energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
@@ -1921,12 +1962,12 @@ void TestBlt()
         }
         if( energy )
         {
-          AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.dwX + (viewport.dwWidth>>1))-16 , (float) (viewport.dwY + (viewport.dwHeight>>1))+4 , 64, 255, 64, 255 );
+          AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
         }
 
         if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
         {
-          AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.dwY + (viewport.dwHeight>>1)-7 ) ,
+          AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
                       (float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
                       64, 255, 64, 255 );
         }
@@ -1938,15 +1979,15 @@ void TestBlt()
         //  Blt Crosshair
         if( !EnhancedXHair )
         {
-          GeneralBltFast( 0 , 0 , 16 , 16  , (viewport.dwX + (viewport.dwWidth>>1))-8 , (viewport.dwY + (viewport.dwHeight>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
         //  Blt Nitro...
         if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
         {
-          Printuint16( (uint16) NitroFuel , (d3dappi.szClient.cx>>1)-(1*FontWidth), (viewport.dwY + (viewport.dwHeight>>1))+8 , 2 );
-          GeneralBltFast( 0 , 24 , (int)NitroFuel , 3  , (d3dappi.szClient.cx>>1)-(int)(NitroFuel*0.5F) , (viewport.dwY + (viewport.dwHeight>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          Printuint16( (uint16) NitroFuel , (d3dappi.szClient.cx>>1)-(1*FontWidth), (viewport.Y + (viewport.Height>>1))+8 , 2 );
+          GeneralBlt( 0 , 24 , (int)NitroFuel , 3  , (d3dappi.szClient.cx>>1)-(int)(NitroFuel*0.5F) , (viewport.Y + (viewport.Height>>1))-8 ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
         // Blt trojax PowerLevel / LaserTemperature
         energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
@@ -1957,8 +1998,8 @@ void TestBlt()
         }
         if( energy )
         {
-          GeneralBltFast( 0 , 24-energy , 4 , energy  , (viewport.dwX + (viewport.dwWidth>>1))-16 , (viewport.dwY + (viewport.dwHeight>>1))+4-energy ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( 0 , 24-energy , 4 , energy  , (viewport.X + (viewport.Width>>1))-16 , (viewport.Y + (viewport.Height>>1))+4-energy ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
         }
       }
 
@@ -2052,29 +2093,28 @@ void TestBlt()
             // blt shld bar
             if( ShieldHit == 0 )
             {
-              GeneralBltFast( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, d3dapp->lpBackBuffer);
+              GeneralBlt( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
 			else
 			{
               ShieldHit -=1;
-              GeneralBltFast( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+              GeneralBlt( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
             Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
             // blt hull bar
             if( HullHit == 0 )
             {
-              GeneralBltFast( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+              GeneralBlt( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
 			else
 			{
               HullHit -=1;
-              GeneralBltFast( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+              GeneralBlt( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
+                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
             }
-
           }
 
           // blt shield num
@@ -2118,7 +2158,7 @@ void TestBlt()
 
 	  // if we are dead and waiting for a game
 	  // show statistics
-	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE )
+	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
 	  {
 		  ShowDeathModeStats();
 
@@ -2133,8 +2173,8 @@ void TestBlt()
 			// show who i am watching
 			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 4 );
 			// display cross-hair
-			GeneralBltFast( 0 , 0 , 16 , 16  , (viewport.dwX + (viewport.dwWidth>>1))-8 , (viewport.dwY + (viewport.dwHeight>>1))-8 ,
-				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+			GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
+				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
 				Print4x5Text( "Invulnerable" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
@@ -2143,7 +2183,7 @@ void TestBlt()
 				Print4x5Text( "Golden Power Pod" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );	  
+				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
 	  }
     }
 	else
@@ -2261,9 +2301,7 @@ ReleaseView(void)
 
     FreeAllLastAFrameScrPolys();
     ReleaseTitle();
-    ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
-    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     ReleaseTitleModels();
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
@@ -2272,9 +2310,7 @@ ReleaseView(void)
 
   case STATUS_ViewingScore:
 #if 0 // used to release solid scr poly stuff
-    ReleaseSpecialExecBufs();
     ReleaseTloadheader( &Tloadheader );
-    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
     ReleasePolySort();
@@ -2287,7 +2323,6 @@ ReleaseView(void)
     break;
 
   default:
-    ReleaseSpecialExecBufs();
 
     Bspfree();
 
@@ -2295,7 +2330,6 @@ ReleaseView(void)
     FreeAllLastAFrameScrPolys();
     ReleaseMloadheader(&Mloadheader);
     ReleaseTloadheader( &Tloadheader );
-    ReleaseSysTload( SystemMemTPages, &CurrentSysTexture );
     ReleaseModels();
     
     if ( MCloadheader.Buffer )
@@ -2308,8 +2342,8 @@ ReleaseView(void)
       free( MCloadheadert0.Buffer );
       MCloadheadert0.Buffer = NULL;
     }
-  
-    Free_All_Off_Files( &OffsetFiles[ 0 ] );
+	
+	Free_All_Off_Files( &OffsetFiles[ 0 ] );
     ReleaseSkinExecs();
     ReleasePortalExecs();
     ReleaseRenderBufs();
@@ -2318,29 +2352,29 @@ ReleaseView(void)
     
     FreeTxtFile();
     FreeMsgFile();
-
+/* bjd
     if( lpDDSOne != NULL ) {
       ReleaseDDSurf(lpDDSOne);
       lpDDSOne = NULL;
     }
  
-    if( lpDDSTwo != NULL ) {
-      ReleaseDDSurf(lpDDSTwo);
-      lpDDSTwo = NULL;
+    if( lpFontSurface != NULL ) {
+      ReleaseDDSurf(lpFontSurface);
+      lpFontSurface = NULL;
     }
 
     if( !DrawPanel && DrawSimplePanel ) {
       if( lpDDSThree != NULL ) {
         ReleaseDDSurf(lpDDSThree);
-        lpDDSTwo = NULL;
+        lpFontSurface = NULL;
       }
       if( lpDDSFour != NULL ) {
         ReleaseDDSurf(lpDDSFour);
-        lpDDSTwo = NULL;
+        lpFontSurface = NULL;
       }
     }
-
-    RELEASE(lpBmat);
+*/
+//    RELEASE(lpBmat);
 
   }
 }
@@ -2399,77 +2433,78 @@ InitScene(void)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Init the view...This might be title or score
             or main game....
   Input   :   LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
             LPDIRECT3DVIEWPORT lpView
   Output    :   BOOL TRUE/FLASE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL
 InitView( void )
 {
-  LPDIRECTDRAW lpDD				= d3dapp->lpDD;
-  LPDIRECT3D lpD3D				= d3dapp->lpD3D;
-  LPDIRECT3DDEVICE lpDev		= d3dapp->lpD3DDevice;
-  LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
-  DWORD dwItems					= INFINITE;
+//	LPDIRECTDRAW lpDD				= d3dapp->lpDD;
+//	LPDIRECT3D lpD3D				= d3dapp->lpD3D;
+//	LPDIRECT3DDEVICE lpDev		= d3dapp->lpD3DDevice;
+//	LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
+	DWORD dwItems					= INFINITE;
 
-  DebugPrintf("InitView Starting...\n");
+	DebugPrintf("InitView Starting...\n");
+	OutputDebugString("InitView Starting...\n");
 
-  CheatsDisabled = FALSE;
+	CheatsDisabled = FALSE;
 
-  // flush keyboard buffer...
-  if (lpdiBufferedKeyboard)
-  {
-    IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
-  }
+	// flush keyboard buffer...
+	if (lpdiBufferedKeyboard)
+	{
+		IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
+	}
 
-  if(d3dapp->CurrDriver != 0)
-  {
-    if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
-    else MakeColourMode = MCM_Stipple;
-  }
-  else
-  {
-    MakeColourMode = MCM_Software;
-  }
+	/* bjd curr driver = 0 use to be software mode */
+	//if (d3dapp->CurrDriver != 0)
+	{
+		if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
+		else MakeColourMode = MCM_Stipple;
+	}
+	/*
+	else
+	{
+		MakeColourMode = MCM_Software;
+	}
+	*/
 
-  GetHardwareCaps();
-  InitModeCase();
+	GetHardwareCaps();
+	InitModeCase();
 
-  switch( MyGameStatus )
-  {
-  case  STATUS_BetweenLevels:
-  case  STATUS_Title:
-  case  STATUS_StartingSinglePlayer:
-  case  STATUS_TitleLoadGameStartingSinglePlayer:
-  case  STATUS_StartingMultiplayer:
-  case  STATUS_GetPlayerNum:
-    if( InitTitle( lpDD, lpD3D, lpDev, lpView ) != TRUE )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
+	switch( MyGameStatus )
+	{
+		case  STATUS_BetweenLevels:
+		case  STATUS_Title:
+		case  STATUS_StartingSinglePlayer:
+		case  STATUS_TitleLoadGameStartingSinglePlayer:
+		case  STATUS_StartingMultiplayer:
+		case  STATUS_GetPlayerNum:
 
-    if ( !bSoundEnabled )
-    {
-      if (! InitializeSound( DESTROYSOUND_All ))
-      {
-        DebugPrintf("unable to initialise sound in initview\n");
-        Msg("unable to initialise sound in initview\n");
-        exit(1);
-      }
-    }
+		if( InitTitle(/*lpDD, lpD3D, lpDev, lpView*/) != TRUE ) // bjd
+		{
+			SeriousError = TRUE;
+			return FALSE;
+		}
 
-    CurrentSysTexture = 0;
+		if ( !bSoundEnabled )
+		{
+			if (! InitializeSound( DESTROYSOUND_All ))
+			{
+				DebugPrintf("unable to initialise sound in initview\n");
+				Msg("unable to initialise sound in initview\n");
+				exit(1);
+			}
+		}
         
     InitPolySort();
 
-    InitRenderBufs(lpDev );
-
-    InitSpecialExecBufs();
+    InitRenderBufs(/*lpDev */); // bjd
     
     if( !SetMatrixViewPort() )
     {
@@ -2493,7 +2528,7 @@ InitView( void )
     }
     
 
-    if( !PreInitModel( lpDev , TitleModelSet ) )
+    if( !PreInitModel( /*lpDev,*/ TitleModelSet ) ) // bjd
     {
       SeriousError = TRUE;
       return FALSE;
@@ -2506,14 +2541,7 @@ InitView( void )
       return FALSE;
     }
 
-    // Load all system memory textures...
-    if( !SysTload( SystemMemTPages, CurrentSysTexture ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-
-    if( !InitModel( lpDev , TitleModelSet ) )
+    if( !InitModel( /*lpDev,*/ TitleModelSet ) ) // bjd
     {
       SeriousError = TRUE;
       return FALSE;
@@ -2553,10 +2581,15 @@ InitView( void )
     break;
   
   default:
-    InitView_MyGameStatus = MyGameStatus;
+    
+    // this will cause a lovely game loop and crash the game
+	// so don't remove this !!!!!!!!!
+    if( MyGameStatus != STATUS_InitView_0 )
+		InitView_MyGameStatus = MyGameStatus;
+
     MyGameStatus = STATUS_InitView_0;
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     CameraStatus = CAMERA_AtStart;  //prevents on screen menus from being suppressed
     break;
   }
@@ -2807,9 +2840,10 @@ char *DI_KeyName( DWORD key )
 /**************************************************************************
   InitDInput
  **************************************************************************/
-BOOL MouseExclusive = FALSE;
+BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
 extern D3DAppInfo d3dappi;
+
 BOOL InitDInput(void)
 {
   HRESULT  err;
@@ -2825,32 +2859,30 @@ BOOL InitDInput(void)
             },
             DINPUT_BUFFERSIZE,              // dwData
         };
-  LPDIRECTINPUTDEVICE     tempJoystick = NULL;
-  LPVOID joysticknumptr;
-  int i, j, k;
-  BOOL failjoystick;
+	LPDIRECTINPUTDEVICE     tempJoystick = NULL;
+	LPVOID joysticknumptr;
+	int i, j, k;
+	BOOL failjoystick;
 
-    err = DirectInputCreateA(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
-
-    if(err != DI_OK)
+ //   err = DirectInputCreateA(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
+	if (FAILED(DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
-            return FALSE;
+		return FALSE;
     }
 
-
     // Create a mouse.
-    err = IDirectInput_CreateDevice(lpdi, &guid_mouse, &lpdiMouse, NULL);
-  if ( err != DI_OK )
-  {
-    goto fail;
-  }
+	err = IDirectInput_CreateDevice(lpdi, &guid_mouse, &lpdiMouse, NULL);
+	if ( err != DI_OK )
+	{
+		goto fail;
+	}
 
     // Tell DirectInput that we want to receive data in mouse format
     err = IDirectInputDevice_SetDataFormat(lpdiMouse, &c_dfDIMouse);
 
     if(err != DI_OK)
     {
-            goto fail;
+		goto fail;
     }
 
 	DebugPrintf("Setting mouse mode: %s\n",MouseExclusive?"Exclusive":"Non Exclusive");
@@ -2988,7 +3020,7 @@ BOOL InitDInput(void)
     lpdiJoystick[i] = NULL;
   Num_Joysticks = 0;
 
-  lpdi->lpVtbl->EnumDevices(lpdi, DIDEVTYPE_JOYSTICK, 
+  lpdi->lpVtbl->EnumDevices(lpdi, /*DIDEVTYPE_JOYSTICK*/DI8DEVCLASS_GAMECTRL, 
                          InitJoystickInput, lpdi, DIEDFL_ATTACHEDONLY); 
 
   failjoystick = FALSE;
@@ -3084,7 +3116,7 @@ fail:
     }
   }
     if (lpdi)   IDirectInputDevice_Release(lpdi), lpdi     = NULL;
-    return FALSE;               
+    return FALSE;    
 }
 
 BOOL TermDInput( void )
@@ -3450,12 +3482,12 @@ void ProcessGameKeys( void )
 } // ProcessGameKeys
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Set the View Matrix
   Input   :   nothing...  Current_Camera_View must be set
                   to a legal ship number...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void Build_View()
 {
@@ -3493,11 +3525,11 @@ void Build_View()
 
 char TriggerName[256];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Inits And Loads New Level..
   Input   :   nothing...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ChangeLevel( void )
 {
 	//if( NewLevelNum != LevelNum )
@@ -3537,11 +3569,14 @@ BOOL ChangeLevel( void )
 	return( TRUE );
 }
 
+// bjd - doesn't actually render anymore
+//     - this use to blit to the front buffer
+//     - flipping in d3d9 doesn't appear to support color value anymore either
+//     - this does although cause the loading status messages to appear so it's good to leave this enable for now
 // draw the loading bar that fills from left to right
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )
 {
-  HRESULT hr;
-  DDBLTFX fx;
+  POINT destp;
   RECT    dest, darkgreen, lightgreen;
   float xmin, xmax, ymin, ymax, loaded, one_step;
   int total_loading_steps = 11;
@@ -3587,14 +3622,10 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
     lightgreen.bottom = 123;
   }
 
-
   if ( !BorderX)
     BorderX = 1.0F;
   if ( !BorderY)
     BorderY = 1.0F;
-
-  memset( &fx, 0, sizeof( DDBLTFX ) );
-  fx.dwSize = sizeof( DDBLTFX );
 
   xmin = (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase];
   xmax = (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase];
@@ -3617,38 +3648,52 @@ void DrawLoadingBox( int current_loading_step, int current_substep, int total_su
   dest.bottom = (LONG)ymax;
 
   //DebugPrintf("blitted to l:%d r:%d t:%d b:%d\n", dest.left, dest.right, dest.top, dest.bottom );
-  
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &darkgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
-  if ( hr != DD_OK )
-  {
-    DebugPrintf("%s", D3DAppErrorToString(hr));
-  }
+
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
 
   // top...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMin + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
+
   // bottom...
   dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMax + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
   
   // left...
   dest.left = (LONG) ( (BarXMin - BorderX + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
+
   // right...
   dest.left = (LONG) ( (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]) ;
   dest.right = (LONG)((BarXMax + BorderX + VDUoffsetX) * ModeScaleX[ModeCase]);
   dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
   dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Blt( d3dapp->lpFrontBuffer, &dest, lpDDSTwo, &lightgreen, DDBLT_KEYSRC  | DDBLT_WAIT, &fx );
+  
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
+
+  FlipBuffers();
 }
 
 void GetLevelName( char *buf, int bufsize, int level )
@@ -3694,26 +3739,26 @@ char NodeName[256];
 
 BOOL SetZCompare( void );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Game Status Control...
   Input   :   nothing...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+===================================================================*/
+/*===================================================================
   Procedure :   Game Status Control...
   Input   :   nothing...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
-RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
+RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 {
   uint16  i,e;
   char  buf[256];
-  LPDIRECTDRAWPALETTE ddpal;
-  LPDIRECTDRAW lpDD = d3dapp->lpDD;
-  LPDIRECT3D lpD3D = d3dapp->lpD3D;
-  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-  LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+//  LPDIRECTDRAWPALETTE ddpal;
+ // LPDIRECTDRAW lpDD = d3dapp->lpDD;
+ // LPDIRECT3D lpD3D = d3dapp->lpD3D;
+//  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+  D3DVIEWPORT9 *lpView = &d3dapp->D3DViewport;
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
@@ -3724,6 +3769,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   float   time_diff;
 
   //DebugPrintf("RenderScene Started\n");
+  //OutputDebugString("RenderScene Started\n");
 
   if ( SeriousError )
     return FALSE;
@@ -3950,7 +3996,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IMustQuit )
       SpecialDestroyGame();
 
-    if( MainGame( lpDev , lpView ) != TRUE )
+    if( MainGame( /*lpDev , */lpView ) != TRUE ) // bjd
       return FALSE;
 
     if ( bSoundEnabled )
@@ -3999,7 +4045,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if ( WaitingToQuit )
     {
-      D3DAppClearScreenOnly();
+      FSClearBlack();
       CenterPrint4x5Text( PLEASE_WAIT, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
       SelectQuitCurrentGame( NULL );
     }
@@ -4008,7 +4054,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
   case STATUS_LevelEnd:
 	DebugState("STATUS_LevelEnd\n");
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
     Browl -= framelag;
 
@@ -4106,7 +4152,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     if( IsKeyPressed( DIK_SPACE ) ||
       ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
-      D3DAppIClearBuffers();
+		FSClearBlack();
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
@@ -4136,7 +4182,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	DebugState("STATUS_WaitingAfterScore\n");
 
     InitFontTransTable( TRUE );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     e = 0;
 
     if( IsHost )
@@ -4242,7 +4288,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case STATUS_Joining:
 	DebugState("STATUS_Joining\n");
     PreventFlips = FALSE;
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
     if( IMustQuit || IsHost || ( OverallGameStatus != STATUS_Normal ) )
@@ -4287,7 +4333,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       SyncMines();
       InitShipRandomPos( WhoIAm );
       NextworkOldBikeNum = -1;
-      set_my_player_name();
       if( CountDownOn )
       {
         CreateCountdownDigits();
@@ -4332,7 +4377,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-      D3DAppIClearBuffers();
+		FSClearBlack();
       ReleaseView();
       // tell them all to load up a level
       MyGameStatus = STATUS_StartingMultiplayerSynch;
@@ -4341,7 +4386,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
       LevelNum = -1;
       if( !ChangeLevel() ) return( FALSE );
-      HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
+      HostMultiPlayerTimeout = 60.0F * 15.0F;
     }
     else
     {
@@ -4357,8 +4402,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
             //VduClear();
             MenuChangeEx( &MENU_NEW_GeneralLoading );
             MenuDraw( CurrentMenu );  // because menu processing will not be done when MyGameStatus changes
-          }else
-            D3DAppIClearBuffers();
+          }
+		  else
+		  {
+				FSClearBlack();
+		  }
 
 
           PreSynchupStatus = MyGameStatus;
@@ -4409,7 +4457,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       break;
     }
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     e = 0;
 
     if( DS )
@@ -4506,7 +4554,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case STATUS_GetPlayerNum:
 	DebugState("STATUS_GetPlayerNum\n");
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
     
     CenterPrint4x5Text( "Requesting Player Number" , (d3dappi.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
@@ -4517,7 +4565,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     GetPlayerNumCount1 -= framelag;
     GetPlayerNumCount2 -= framelag;
 
-    if( WhoIAm != 0xff )
+    if( WhoIAm != UNASSIGNED_SHIP )
 	{
 		if(WhoIAm >= MAX_PLAYERS)
 		{
@@ -4546,13 +4594,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 			break; // we are done
 		}
 
-		// update status
-		MyGameStatus = STATUS_StartingMultiplayer;
-
-		// tell everyone my new status
-		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
-
-		// update menu
+		// go to next menu
 		MenuState = MENUSTATE_Select;
 		MenuChangeEx( GetPlayerNumMenu );
 
@@ -4620,7 +4662,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         DemoScreenGrab = FALSE;
     }
 
-    if( MainGame( lpDev , lpView ) != TRUE )
+    if( MainGame( /* lpDev ,*/ lpView ) != TRUE ) // bjd
       return FALSE;
 
     break;
@@ -4639,7 +4681,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     MenuFrozen = FALSE; // ensure that menus are OK to use once in game
     JustExitedMenu = FALSE; 
@@ -4651,10 +4693,12 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     if (bPrimaryPalettized )
     {
+/* bjd - CHECK
       lpPalette = DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
       ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
       LastError = d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
       LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
+*/
     }
   
     if( !SetMatrixViewPort() )
@@ -4685,29 +4729,20 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
     SetOurRenderStates( NULL );
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
     // Create the offscreen surface, by loading our bitmap
-      lpDDSOne = DDLoadBitmap( lpDD, "data\\pictures\\panel.bmp" , 0, 0 );
-    ddpal =  DDLoadPalette( lpDD , "data\\pictures\\panel.bmp");
-    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
-    DDSetColorKey( lpDDSOne, RGB_MAKE( 0 , 0 , 0 ) );
+	lpDDSOne = FSLoadBitmap( "data\\pictures\\panel.bmp", FSColourKeyBlack );
+
     // Create the offscreen surface, by loading our bitmap.
     if( ( ModeCase != -1 ) && ( DrawPanel == FALSE ) && DrawSimplePanel )
     {
-      lpDDSThree = DDLoadBitmap( lpDD, (char*) &PanelNames[ModeCase] , 0, 0 );
-      ddpal =  DDLoadPalette( lpDD , (char*) &PanelNames[ModeCase]);
-      LastError = lpDDSThree->lpVtbl->SetPalette( lpDDSThree , ddpal );
-      DDSetColorKey( lpDDSThree, RGB_MAKE( 255 , 0 , 255 ) );
-      PanelHeight = PanelVisibleY[ModeCase];
-
-      lpDDSFour = DDLoadBitmap( lpDD, "data\\pictures\\pcontent.bmp" , 0, 0 );
-      ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pcontent.bmp" );
-      LastError = lpDDSFour->lpVtbl->SetPalette( lpDDSFour , ddpal );
+		lpDDSThree = FSLoadBitmap( &PanelNames[ModeCase][0], RGB_MAKE( 255 , 0 , 255 ) );
+		PanelHeight = PanelVisibleY[ModeCase];
+		lpDDSFour = FSLoadBitmap( "data\\pictures\\pcontent.bmp" , RGB_MAKE( 255 , 0 , 255 ) );
     }
-  
 
     FillInPanelPositions();
     ReMakeSimplePanel = TRUE;
@@ -4715,7 +4750,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	//    InitVisiExecList( lpDev );
     InitSkinExecs();
     InitPortalExecs();
-    InitRenderBufs( lpDev );
+    InitRenderBufs(/* lpDev */); // bjd
 
     // Init the Texture Handler
     if( !InitTload( &Tloadheader ) )
@@ -4758,7 +4793,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
         SeriousError = TRUE;
         return FALSE;
       }
-
       if( !PreLoadEnemies() )
       {
         SeriousError = TRUE;
@@ -4768,7 +4802,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     EnableRelavantModels( &ModelNames[0] );
 
-	if( !PreInitModel( lpDev , &ModelNames[0] ) )
+	if( !PreInitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
 	{
 		SeriousError = TRUE;
 		return FALSE;
@@ -4799,7 +4833,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4812,13 +4846,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
     }
   
     FixTextureUVs( &OffsetFiles[ 0 ] );
-
-    // Load all system memory textures...
-    if( !SysTload( SystemMemTPages, CurrentSysTexture ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
 
     MyGameStatus = STATUS_InitView_3;
     PrintInitViewStatus( MyGameStatus );
@@ -4839,11 +4866,11 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
-      if( !InitModel( lpDev , &ModelNames[0] ) )
+      if( !InitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
         {
         SeriousError = TRUE;
         return FALSE;               // all 3d models....
@@ -4865,7 +4892,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
 
     ReceiveGameMessages();
 
@@ -4895,7 +4922,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 
     // Can Cope with no Bsp file!!!
@@ -4944,13 +4971,6 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   
     SetUpShips();
 
-    if( !InitSpecialExecBufs() )
-    {
-      SeriousError = TRUE;
-      Msg( "InitSpecialExecBufs() failed\n" );
-      return FALSE;
-    }
-
     MyGameStatus = STATUS_InitView_6;
     PrintInitViewStatus( MyGameStatus );
 
@@ -4970,7 +4990,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 
     InitSoundInfo( &Mloadheader );
@@ -4988,7 +5008,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
 #ifdef NO_PRECALCULATED_CELL_COLOURS
     CreateCellColours( &Mloadheader );
@@ -5006,16 +5026,20 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    D3DAppClearScreenOnly();
+    FSClearBlack();
     ReceiveGameMessages();
+	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
     // dummy call to timer ensures no pauses later...
     timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
     InitShipSpeeds();
-    MyGameStatus = InitView_MyGameStatus;
-    Current_Max_Score = 0;  // used by host to store highest score in session desc
+
+    // this will cause a lovely game loop and crash the game
+	// so don't remove this !!!!!!!!!
+    if( InitView_MyGameStatus != STATUS_InitView_0 )
+		MyGameStatus = InitView_MyGameStatus;
 
 	// lets keep this global next to the cursor clip for now
 	// this is a good place to define that we are going into game mode...
@@ -5180,7 +5204,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case  STATUS_StartingSinglePlayer:
 	DebugState("STATUS_StartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClearBlack();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5225,7 +5249,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 
     PreventFlips = FALSE;
       
-    if( MainGame( lpDev , lpView ) != TRUE )
+    if( MainGame(/* lpDev , */lpView ) != TRUE ) // bjd
       return FALSE;
 
     if ( bSoundEnabled && !CurrentMenu )
@@ -5257,7 +5281,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
       {
         if( NewLevelNum != LevelNum )
         {
-          D3DAppIClearBuffers();
+			FSClearBlack();
           ReleaseView();
           // the level has ended or changed...
           MyGameStatus = STATUS_ViewingStats;
@@ -5272,7 +5296,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-    D3DAppIClearBuffers();
+	FSClearBlack();
 
     ReleaseLevel();
 
@@ -5290,7 +5314,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case  STATUS_TitleLoadGameStartingSinglePlayer:
 	DebugState("STATUS_TitleLoadGameStartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClearBlack();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -5307,7 +5331,7 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
   case  STATUS_InGameLoadGameStartingSinglePlayer:
 	DebugState("STATUS_InGameLoadGameStartingSinglePlayer\n");
 
-    //D3DAppIClearBuffers();
+    //FSClearBlack();
 
     NewLevelNum = InGameLoadGameLevelNum;
     MenuAbort();
@@ -5343,6 +5367,8 @@ RenderScene(LPDIRECT3DDEVICE Null1, LPDIRECT3DVIEWPORT Null2 )
 	//  ******************** End of Single Player Game Stuff *******************************
 
   }
+
+ // OutputDebugString("RenderScene Ended\n");
 
   return TRUE;
 }
@@ -5382,11 +5408,11 @@ float Vpos[MAX_PLAYERS][MAX_PLAYERS] = { { 0.0F } ,
                        { 0.0F , 0.0F , 1.0F , 1.0F , 2.0F , 2.0F , 3.0F , 3.0F } };
                        
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Main Routines...
   Input   :   nothing...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MainRoutines( void )
 {
   if( PlayDemo )
@@ -5541,14 +5567,14 @@ void CheckLevelEnd ( void )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Main Render Loop...
   Input   :   nothing...
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL
-MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
+MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
@@ -5584,9 +5610,9 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif // DEBUG
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Main Routines to be called before Rendering....  
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
   InitIndirectVisible( Ships[Current_Camera_View].Object.Group );
 
@@ -5605,18 +5631,23 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   for( i = 0 ; i < MAX_SFX ; i++ )
     LastDistance[i] = 100000.0F;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Now the Rendering can begin...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-  if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
-    return FALSE;
+//  if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
+	if (FSBeginScene() != D3D_OK)
+		return FALSE;
 
+	// show the stats screen
    if(ShowStats)
+   {
 	  ScoreDisplay();
+   }
 
-    else if( !FullRearView )
-    {
+   // show regular view
+   else if( !FullRearView )
+   {
       CameraRendering = CAMRENDERING_Main;
       MainCamera.enable = 1;
       MainCamera.GroupImIn = Ships[Current_Camera_View].Object.Group; 
@@ -5632,7 +5663,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       DispEnhancedCrosshair();
 
       CurrentCamera.UseLowestLOD = FALSE;
-      if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
+      if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
         return FALSE;
 
 #ifdef Z_TRICK
@@ -5672,20 +5703,22 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         CurrentCamera.Mat._11 *= -1.0F;
         CurrentCamera.Mat._21 *= -1.0F;
         CurrentCamera.Mat._31 *= -1.0F;
-        CurrentCamera.Viewport.dwX = ( viewport.dwX + viewport.dwWidth ) - ( (viewport.dwWidth >>4) + ( viewport.dwWidth >>2 ) );
-        CurrentCamera.Viewport.dwY = viewport.dwY + (viewport.dwHeight >>4);
-        CurrentCamera.Viewport.dwWidth = viewport.dwWidth >>2;
-        CurrentCamera.Viewport.dwHeight = viewport.dwHeight >>2;
+        CurrentCamera.Viewport.X = ( viewport.X + viewport.Width ) - ( (viewport.Width >>4) + ( viewport.Width >>2 ) );
+        CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height >>4);
+        CurrentCamera.Viewport.Width = viewport.Width >>2;
+        CurrentCamera.Viewport.Height = viewport.Height >>2;
+
+/* bjd
         CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
         CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
         CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
         CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-        
+*/        
         CurrentCamera.UseLowestLOD = TRUE;
 
-        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
+        if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
             return FALSE;
       }
 
@@ -5719,21 +5752,22 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         SetFOV( normal_fov ); // was SetFOV( START_FOV ), but this doesn't work for wide angle fov
         CurrentCamera.Proj = proj;  
         
-        CurrentCamera.Viewport.dwX = viewport.dwX + (viewport.dwWidth >>4);
-        CurrentCamera.Viewport.dwY = viewport.dwY + (viewport.dwHeight >>4);
-        CurrentCamera.Viewport.dwWidth = viewport.dwWidth >>2;
-        CurrentCamera.Viewport.dwHeight = viewport.dwHeight >>2;
+        CurrentCamera.Viewport.X = viewport.X + (viewport.Width >>4);
+        CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height >>4);
+        CurrentCamera.Viewport.Width = viewport.Width >>2;
+        CurrentCamera.Viewport.Height = viewport.Height >>2;
+/* bjd 
         CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
         CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
-        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
+        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.wWidth),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
+        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.Height),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-        
+*/        
         
         CurrentCamera.UseLowestLOD = TRUE;
 
-        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
+        if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
             return FALSE;
        
         Current_Camera_View=TempMissileCam;
@@ -5741,9 +5775,10 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
       }
     }
+	
+    // Full Screen Rear View....
 	else
 	{
-      // Full Screen Rear View....
       CameraRendering = CAMRENDERING_Rear;
       CurrentCamera.enable = 1;
       CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;  
@@ -5766,7 +5801,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
       CurrentCamera.Mat._31 *= -1.0F;
       CurrentCamera.UseLowestLOD = FALSE;
 
-      if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
+      if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
           return FALSE;
 
 #ifdef Z_TRICK
@@ -5785,13 +5820,14 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
  /* done with rendering camera stuff */
 
   if( DrawPanel && (WhoIAm == Current_Camera_View ))
-    Disp3dPanel( lpDev, lpView );
+    Disp3dPanel( /*lpDev,*/ lpView );
   
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
-		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-		DispTracker( lpDev, lpView );
+		//lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
+		DispTracker( /*lpDev,*/ lpView ); // bjd
   }
 
 #ifdef REFLECTION
@@ -5838,7 +5874,8 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   }
 #endif
 
-  if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+//bjd  if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
+	if (FSEndScene() != D3D_OK)
         return FALSE;
 
 #ifdef REFLECTION
@@ -5894,6 +5931,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 // Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
       JustExitedMenu = TRUE;
       
+	  // menu keys are processed here
       MenuProcess();
     }
     else
@@ -5904,7 +5942,7 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #endif
     }
 
-  // here is where we process menu keys
+  // here is where we process F keys
   ProcessGameKeys();
 
   CheckForRogueSfx();
@@ -5915,11 +5953,11 @@ MainGame(LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Show In Game Stats...
   Input   :   nothing...
   Output    :   nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void ShowDeathModeStats()
 {
@@ -5936,28 +5974,7 @@ void ShowInGameStats()
 
 void PaintBackground( RECT * box ) // pass NULL to black out all of the screen
 {
-	HRESULT ddrval;
-	DDBLTFX fx;
-	memset(&fx, 0, sizeof(DDBLTFX));
-	fx.dwSize = sizeof(DDBLTFX);
-	while( 1 )
-	{
-		ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt(
-			d3dapp->lpBackBuffer, box, NULL, NULL, DDBLT_COLORFILL | DDBLT_WAIT, &fx 
-		);
-		if( ddrval == DD_OK )
-			break;
-		if( ddrval == DDERR_SURFACELOST )
-		{
-			DebugPrintf("ShowGameStats() Lost surface");
-			d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-			d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-			DDReLoadBitmap( lpDDSOne,/* (char*) &ScoreNames[ModeCase] */DynamicScoreNames );
-			break;
-		}
-		if( ddrval != DDERR_WASSTILLDRAWING )
-			break;
-	}
+	/* would simply blit the area defined by box on the backbuffer to black */
 }
 
 BOOL StatsNamePulse( void )
@@ -6154,14 +6171,18 @@ void ShowGameStats( stats_mode_t mode )
 			int xpos = left_offset;
 
 			// if the player left the game
-			int left = (player_left(GetPlayerByRank(i)) ? DARKGRAY : 0 );
+			int left = player_left(GetPlayerByRank(i));
 
 			// calculate name color
-			int color = (left) ? left : ((StatsNamePulse() && i == WhoIAm) ? GRAY : (TeamGame ? TeamCol[TeamNumber[i]] : YELLOW));
+			int color = YELLOW;													// default name color is yellow
+			if (StatsNamePulse() && GetPlayerByRank(i) == WhoIAm)					// flash player name
+				color = GRAY;
+			else if (TeamGame)													// set color to team color
+				color = TeamCol[TeamNumber[GetPlayerByRank(i)]];
 
 			// get the ping
-			if( Ships[GetPlayerRank(i)].network_player )
-				ping = (uint16) Ships[GetPlayerRank(i)].network_player->ping;
+			if( Ships[GetPlayerByRank(i)].network_player )
+				ping = (uint16) Ships[GetPlayerByRank(i)].network_player->ping;
 
 			//
 			// print line
@@ -6169,23 +6190,23 @@ void ShowGameStats( stats_mode_t mode )
 			
 			// connection status
 			// print the dot about 2 character space gap from the names
-			if( GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-				DisplayConnectionStatus( ReliabilityTab[GetPlayerRank(i)], (xpos-(4*FontWidth)), top_offset );
+			if( ! left )
+				DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], (xpos-(4*FontWidth)), top_offset );
 
 			// name
-			Print4x5Text( (char*)&Names[GetPlayerRank(i)],	xpos,				top_offset, color );
+			Print4x5Text( (char*)&Names[GetPlayerByRank(i)],	xpos,			top_offset, (left) ? DARKGRAY : color );
 
 			// add width now so the ping column shows up even if a value printed
 			xpos += col_width;
 
-				if( GetPlayerRank(i) != WhoIAm && GameStatus[GetPlayerRank(i)] == STATUS_Normal )
-			Printint16( ping,								xpos,				top_offset, (left) ? left : GRAY	);	// ping
-			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : CYAN	);	// positives / (positives - negatives)
+				if( GetPlayerByRank(i) != WhoIAm && GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
+			Printint16( ping,								xpos,				top_offset, (left) ? DARKGRAY : GRAY	);	// ping
+			Printint16( GetEffeciency(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : CYAN	);	// positives / (positives - negatives)
 				if(TeamGame)
-			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
-			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? left : GRAY	);	// points + kills - suacides - friendly - deaths
-			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? left : GREEN	);	// kills - suacides - friendly
-			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? left : RED		);	// suacides + deaths
+			Printint16( GetTeamScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : YELLOW	);	// all players (points + kills - suacides - friendly - deaths)
+			Printint16( GetRealScore(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset, (left) ? DARKGRAY : GRAY	);	// points + kills - suacides - friendly - deaths
+			Printint16( GetKills(GetPlayerByRank(i)),		(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : GREEN	);	// kills - suacides - friendly
+			Printint16( GetTotalDeaths(GetPlayerByRank(i)),	(xpos+=col_width),	top_offset,	(left) ? DARKGRAY : RED		);	// suacides + deaths
 
 			// go to next row
 			top_offset += row_height;
@@ -6196,11 +6217,11 @@ void ShowGameStats( stats_mode_t mode )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Score Display...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 /* Display the Statistics */
 BOOL ScoreDisplay()
 {
@@ -6210,11 +6231,11 @@ BOOL ScoreDisplay()
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Init Score Display Stuff...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL  InitScoreDisplay()
 {
 #ifdef SCROLLING_MESSAGES
@@ -6224,9 +6245,7 @@ BOOL  InitScoreDisplay()
 
   if( ModeCase != -1 )
   {
-    lpDDSOne = DDLoadBitmap( d3dapp->lpDD,/* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames , 0, 0 );
-    ddpal =  DDLoadPalette( d3dapp->lpDD , /*(char*) &ScoreNames[ModeCase]*/DynamicScoreNames);
-    LastError = lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+	lpDDSOne = FSLoadBitmap( /* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames, 0 );
   }
 
   InitFont(TRUE);
@@ -6248,17 +6267,19 @@ BOOL  InitScoreDisplay()
 
   return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Free Score Display Stuff...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL  FreeScoreDisplay()
 {
+/* bjd
   ReleaseDDSurf(lpDDSOne);  
-  ReleaseDDSurf(lpDDSTwo);
-  lpDDSTwo = NULL;
+  ReleaseDDSurf(lpFontSurface);
+  lpFontSurface = NULL;
   lpDDSOne = NULL;
+*/
   return TRUE;
 }
 
@@ -6361,8 +6382,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 #endif
 
 #if 0
-      memset(&fx, 0, sizeof(DDBLTFX));
-      fx.dwSize = sizeof(DDBLTFX);
+	POINT destp;
       fx.dwAlphaSrcConstBitDepth = 8;
       fx.dwAlphaSrcConst = 128;
       fx.dwAlphaDestConstBitDepth = 8;
@@ -6371,260 +6391,160 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
       dest.bottom = d3dappi.szClient.cy;
       dest.left = 0;
       dest.right = d3dappi.szClient.cx;
-#endif
-#if 0
-        ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSThree, &src, DDBLT_KEYSRC | DDBLT_WAIT | DDBLT_ALPHASRCCONSTOVERRIDE | DDBLT_ALPHADESTCONSTOVERRIDE | DDBLT_ALPHADEST | DDBLT_ALPHASRC , &fx );
+	  destp.x = dest.left;
+	  destp.y = dest.top;
+	  FSBlit( lpDDSThree, FSBackBuffer, &src, &destp );
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   General blit fast...
-  Input   :   int   srcx,srcy , width , height , dstx , dsty
-        :   LPDIRECTDRAWSURFACE Surface
-        :   char * FileName , LPDIRECTDRAWSURFACE DestSurface
-  Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 #ifdef  USEINLINE
 _inline
 #endif
-void GeneralBltFast( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface)
+// pass FSBackBuffer or NULL for "DestSurface" argument to point to back buffer
+void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 SrcSurface ,   char * FileName , LPDIRECT3DSURFACE9 DestSurface)
 {
-    RECT    src;
-    HRESULT ddrval;
-  src.top = srcy;
-  src.left = srcx;
-  src.right = src.left+w;
-  src.bottom = src.top+h;
-  while( 1 )
-  {
-    ddrval = DestSurface->lpVtbl->BltFast( DestSurface, dstx, dsty, SrcSurface, &src, flags );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-  
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DestSurface->lpVtbl->Restore(DestSurface);
-      DDReLoadBitmap( SrcSurface, FileName );
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
-}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   General blit fast...
-  Input   :   int   srcx,srcy , width , height , dstx , dsty ,dstw , dsth ,
-        :   LPDIRECTDRAWSURFACE Surface
-        :   char * FileName , LPDIRECTDRAWSURFACE DestSurface
-  Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#ifdef  USEINLINE
-//_inline
-#endif
-void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , int dstw , int dsth , LPDIRECTDRAWSURFACE SrcSurface ,   char * FileName , DWORD flags , LPDIRECTDRAWSURFACE DestSurface)
-{
-  RECT  dst;
-    RECT    src;
-  DDBLTFX fx;
-    HRESULT ddrval;
-  src.top = srcy;
-  src.left = srcx;
-  src.right = src.left+w;
-  src.bottom = src.top+h;
-
-  dst.top = dsty;
-  dst.left = dstx;
-  dst.right = dst.left+dstw;
-  dst.bottom = dst.top+dsth;
-
-    memset(&fx, 0, sizeof(DDBLTFX));
-    fx.dwSize = sizeof(DDBLTFX);
-
-  
-  while( 1 )
-  {
-    ddrval = DestSurface->lpVtbl->Blt( DestSurface, &dst, SrcSurface, &src, DDBLT_WAIT | DDBLT_ASYNC , &fx );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DestSurface->lpVtbl->Restore(DestSurface);
-      DDReLoadBitmap( SrcSurface, FileName );
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
+	RECT    src;
+	POINT	destp;
+	src.top = srcy;
+	src.left = srcx;
+	src.right = src.left+w;
+	src.bottom = src.top+h;
+	destp.x = dstx;
+	destp.y = dsty;
+	FSBlit( SrcSurface, DestSurface, &src, &destp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Do font blt..
   Input   :   int sx , int sy , int sw , int sh , int x ,int y
   Output    :   nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef  USEINLINE
 _inline
 #endif
 void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 {
-    RECT    src;
-    HRESULT ddrval;
-  src.left = sx;
-  src.top = sy;
-  src.right = sx+sw;
-  src.bottom = sy+sh;
-  while( 1 )
-  {
-    ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpDDSTwo, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-      if( ddrval == DD_OK )
-          break;
-      if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      ReInitFont();
-          break;
-    }
-      if( ddrval != DDERR_WASSTILLDRAWING )
-          break;
-  }
+	RECT    src;
+	POINT	destp;
+	src.left = sx;
+	src.top = sy;
+	src.right = sx+sw;
+	src.bottom = sy+sh;
+	
+	destp.x = x;
+	destp.y = y;
+
+	FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Clear the Zbuffer / screen 
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
 {
-    int clearflags;
-    D3DRECT dummy;
-    if (!d3dappi.bRenderingIsOK)
-  {
-        return FALSE;
-    }
-    /*
-     * Decided wether to clear just back buffer or also z-buffer
-     */
+	int clearflags = 0;
+	D3DRECT dummy;
 
-  clearflags = 0;
+	if (!d3dappi.bRenderingIsOK)
+		return FALSE;
 
-
-  if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
-  {
-    clearflags |= D3DCLEAR_TARGET;
-  }
+	if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
+		clearflags |= D3DCLEAR_TARGET;
 
 #ifdef Z_TRICK
-  if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
+	if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
 #else
-  if (d3dapprs.bZBufferOn || ClearZBuffer ) // If a ZBuffer is enabled then always clear it..
+	if (d3dapprs.bZBufferOn || ClearZBuffer ) // If a ZBuffer is enabled then always clear it..
 #endif
-  {
-    clearflags |= D3DCLEAR_ZBUFFER;
-    }
+	{
+		clearflags |= D3DCLEAR_ZBUFFER;
+	}
 
-  if( clearflags != 0 )
-  {
-      dummy.x1 = CurrentCamera.Viewport.dwX;
-      dummy.y1 = CurrentCamera.Viewport.dwY;
-      dummy.x2 = CurrentCamera.Viewport.dwX+CurrentCamera.Viewport.dwWidth;
-      dummy.y2 = CurrentCamera.Viewport.dwY+CurrentCamera.Viewport.dwHeight;
-   
-    LastError =
-              d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
-                                                   1, &dummy,
-                                                   clearflags);
-    if (LastError != D3D_OK)
-    {
-        return FALSE;
-    }
-  }
-    return TRUE;
+	if( clearflags != 0 )
+	{
+		dummy.x1 = CurrentCamera.Viewport.X;
+		dummy.y1 = CurrentCamera.Viewport.Y;
+		dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
+		dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
+
+		if(!FSClear(1, &dummy, clearflags, D3DCOLOR_XRGB(0,0,0), 1.0f, 0))
+			return FALSE;
+	}
+
+	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Clear the Zbuffer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL  ClearZBuffer()
+===================================================================*/
+BOOL ClearZBuffer()
 {
-    int clearflags;
-    D3DRECT dummy;
+	int clearflags;
+	D3DRECT dummy;
 
-    if (!d3dappi.bRenderingIsOK) return FALSE;
+	if (!d3dappi.bRenderingIsOK)
+		return FALSE;
 
-  clearflags = D3DCLEAR_ZBUFFER;
+	clearflags = D3DCLEAR_ZBUFFER;
 
-  dummy.x1 = CurrentCamera.Viewport.dwX;
-  dummy.y1 = CurrentCamera.Viewport.dwY;
-  dummy.x2 = CurrentCamera.Viewport.dwX+CurrentCamera.Viewport.dwWidth;
-  dummy.y2 = CurrentCamera.Viewport.dwY+CurrentCamera.Viewport.dwHeight;
+	dummy.x1 = CurrentCamera.Viewport.X;
+	dummy.y1 = CurrentCamera.Viewport.Y;
+	dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
+	dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
 
-  LastError = d3dappi.lpD3DViewport->lpVtbl->Clear( d3dappi.lpD3DViewport, 1, &dummy, clearflags );
-  if (LastError != D3D_OK) return FALSE;
-    return TRUE;
+	if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0F, 0 ))
+		return FALSE;
+
+	return TRUE;
 }
 
 
-void InitRenderBufs( LPDIRECT3DDEVICE lpDev )
+void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 {
-  int Count;
-  D3DEXECUTEBUFFERDESC debdesc;
-
-  for( Count = 0; Count < 2; Count++ )
-  {
-    if( RenderBufs[ Count ] != NULL )
-    {
-      XRELEASE( RenderBufs[ Count ] );
-      RenderBufs[ Count ] = NULL;
-    }
-    MakeExecuteBuffer( &debdesc, lpDev, &RenderBufs[ Count ], 32767 );
-  }
+	ReleaseRenderBufs();
+	// just vertex data
+	FSCreateDynamicVertexBuffer(&RenderBufs[0], 32767);
+	FSCreateDynamicVertexBuffer(&RenderBufs[1], 32767);
+	// index data as well
+	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
+	FSCreateIndexBuffer(&RenderBufs[2], 32767*3);
+	// indexed pre-transformed (2d)
+	FSCreatePretransformedVertexBuffer(&RenderBufs[3], 32767);
+	FSCreateIndexBuffer(&RenderBufs[3], 32767*3);
 }
-
 
 void ReleaseRenderBufs( void )
 {
-  int Count;
-
-  for( Count = 0; Count < 2; Count++ )
-  {
-    if( RenderBufs[ Count ] != NULL )
-    {
-      XRELEASE( RenderBufs[ Count ] );
-      RenderBufs[ Count ] = NULL;
-    }
-  }
+	FSReleaseRenderObject(&RenderBufs[0]);
+	FSReleaseRenderObject(&RenderBufs[1]);
+	FSReleaseRenderObject(&RenderBufs[2]);
+	FSReleaseRenderObject(&RenderBufs[3]);
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Render 1 Frame Using CurrentCamera...
   Input   :
   Output    : BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-  BOOL  ClearScrOverride;
-  BOOL  ClearZOverride;
-
-BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
+===================================================================*/
+BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
 {
-    HRESULT rval;
-  int16 Count;
-  VISGROUP  *g;
-  uint16  group;
-  uint16  i;
-  float R, G, B;
-  NumOfTransExe = 0;
+	HRESULT rval;
+	int16 Count;
+	VISGROUP  *g;
+	uint16  group;
+	float R, G, B;
+	NumOfTransExe = 0;
 
-  Build_View();
-  CurrentCamera.View = view;
-  if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
-    return FALSE;
+	Build_View();
+	CurrentCamera.View = view;
 
-    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport);
+//	if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK) // bjd
+	if (FSSetMatrix(/*hView*/D3DTS_VIEW, &view) != D3D_OK)
+		return FALSE;
+
+ //   rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport); // bjd
+	rval = FSSetViewPort(&CurrentCamera.Viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport, rval );
@@ -6673,28 +6593,33 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   if (ClearBuffers( ClearScrOverride, ClearZOverride ) != TRUE )
     return FALSE;
 
-  // reset all the normal execute status flags...
-  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	// reset all the normal execute status flags...
+	//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	set_normal_states();
 
-  // set all the Translucent execute status flags...
-  if( WhiteOut != 0.0F)
-  {
-      lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-  }
+	// set all the Translucent execute status flags...
+	if( WhiteOut != 0.0F)
+	{
+		//		lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		set_alpha_fx_states();
+	}
 
 
-  // display background
-  if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
-    return FALSE;
+	// display background
+	if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )
+		return FALSE;
 
-  // reset all the normal execute status flags...
-  if( WhiteOut == 0.0F)
-        lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	// reset all the normal execute status flags...
+	if( WhiteOut == 0.0F)
+	{
+		//      lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
+		set_normal_states();
+	}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-    if( !DisplaySolidGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+===================================================================*/
+    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 
 #ifdef SHADOWTEST
@@ -6716,31 +6641,18 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
 #endif
 
-#ifndef FINAL_RELEASE
-//    if( d3dapp->bIsPrimary )
-    {
-      i = FirstLineUsed;
-      while( i != (uint16) -1 )
-      {
-        if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
-        {
-          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-            return FALSE;
-        }
-      }
-    }
-#endif
+	ExecuteLines( group, &RenderBufs[ 0 ] );
 
     ClipGroup( &CurrentCamera, group );
 
-      if( !ModelDisp( group, lpDev, &ModelNames[0] ) )
+      if( !ModelDisp( group, /*lpDev,*/ &ModelNames[0] ) ) // bjd
         return FALSE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Group Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-  if( !DisplaySolidGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
+  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 #ifdef SHADOWTEST
   if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
@@ -6754,51 +6666,45 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
   ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
 //  DisplayWaterMesh();
 
-  // set all the Translucent execute status flags...
-  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+	// set all the Translucent execute status flags...
+	//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+  	set_alpha_states();
 
 
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Skin & BSP Node Info
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
   if( ShowSkin || OldNodeCube || NodeCube || ShowTrigZones || ShowColZones || ShowEFZones || ShowTeleports )
   {
-    if( OldNodeCube || NodeCube ) ClearZBuffer();
+	if( OldNodeCube || NodeCube )
+		ClearZBuffer();
 
-    for( Count = 0; Count < MAXGROUPS; Count++ )
-    {
-      if( Skin_Execs[ Count ] != NULL )
-      {
-          if (lpDev->lpVtbl->Execute(lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-            return FALSE;
-      }
-    }
+	for( Count = 0; Count < MAXGROUPS; Count++ )
+	{
+//		if( Skin_Execs[ Count ] != NULL )
+		{
+		//          if (lpDev->lpVtbl->Execute(lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
+//			if (FSExecuteBuffer(&Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
+			if (FAILED(draw_object(&Skin_Execs[ Count ])))
+			{
+				return FALSE;
+			}
+		}
+	}
 
 #if 0
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
     {
-      group = g->group;
-      ClipGroup( &CurrentCamera, group );
-  
-//      if( d3dapp->bIsPrimary )
-      {
-        i = FirstLineUsed;
-        while( i != (uint16) -1 )
-        {
-          if( LinesDispGroup( group, RenderBufs[ 0 ], &i ) )
-          {
-            if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-              return FALSE;
-          }
-        }
-      }
+		group = g->group;
+		ClipGroup( &CurrentCamera, group );
+		ExecuteLines( group, &RenderBufs[ 0 ] );
     }
 #endif
 
   }
 
-  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
+		set_alpha_states();
 
   // display clipped translucencies
   for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -6809,11 +6715,11 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Group Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-  if( !DisplayGroupClippedPolys( RenderBufs[ 1 ], group, lpDev, lpView ) )
+  if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
 #ifdef SHADOWTEST
@@ -6821,11 +6727,17 @@ BOOL  RenderCurrentCamera( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     return FALSE;
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 Display Group Clipped Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-  if( !DisplayGroupClippedFmPolys( RenderBufs[ 0 ], group, lpDev, lpView ) )
+===================================================================*/
+
+#ifdef RENDER_USING_FACES
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
+#else
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+      return FALSE;
+#endif
 
   ExecuteTransExe( group );
 
@@ -6835,17 +6747,22 @@ Display Group Clipped Faceme Transluecent Polys
   ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Non Group Clipped Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-    if( !DisplayGroupUnclippedFmPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+#ifdef RENDER_USING_FACES
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
+#else
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+        return FALSE;
+#endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-    if( !DisplayGroupUnclippedPolys( RenderBufs[ 0 ], lpDev, lpView ) )
+===================================================================*/
+    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
         return FALSE;
 #ifdef SHADOWTEST
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
@@ -6860,43 +6777,49 @@ Display Group Clipped Faceme Transluecent Polys
   }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Portals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
   if( ShowPortal )
   {
-    for( Count = 0; Count < MAXGROUPS; Count++ )
-    {
-      if( Portal_Execs[ Count ] != NULL )
-      {
-          if (lpDev->lpVtbl->Execute(lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-            return FALSE;
-      }
-    }
+	for( Count = 0; Count < MAXGROUPS; Count++ )
+	{
+//		if( Portal_Execs[ Count ] != NULL )
+		{
+		//          if (lpDev->lpVtbl->Execute(lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
+//			if (FSExecuteBuffer(Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
+//				return FALSE;
+			if (FAILED(draw_object(&Portal_Execs[ Count ])))
+			{
+				return FALSE;
+			}
+		}
+	}
   }
   
   DoLensflareEffect();
   DoAllSecBullLensflare();
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Transluecent Screen Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-    if( !DisplayNonSolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+    if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
       return FALSE;
 
-  // reset all the normal execute status flags...
-  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Display Solid Screen Polys
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
   BilinearSolidScrPolys = FALSE;
 
-  if( !DisplaySolidScrPolys( RenderBufs[ 1 ], lpDev, lpView ) )
+  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
     return FALSE;
 
-  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+  // reset mode
+	set_normal_states();
+
+//  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+	rval = FSSetViewPort(&viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera2", &viewport, rval );
@@ -6913,11 +6836,11 @@ Display Group Clipped Faceme Transluecent Polys
 extern  int   NumOfVertsConsidered;
 extern  int   NumOfVertsTouched;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Our Calculate frame rate...
   Input   :
   Output    : BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 timer our_timer;
 int our_count = 0;
@@ -6928,8 +6851,10 @@ int our_last_polygons = 0;
 
 BOOL Our_CalculateFrameRate(void)
 {
+	return TRUE;
+#if 0 // bjd
 	int polygons;
-	D3DSTATS stats;
+	D3DSTATS9 stats;
 	char buf[256];
 	static int avg_time_per_frame = 0;
 
@@ -7063,165 +6988,170 @@ BOOL Our_CalculateFrameRate(void)
 	}
 
 	return TRUE;
+#endif
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :  Disp3d Panel..
   Input   :
   Output    : BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
+===================================================================*/
+BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
 {
-  VECTOR  Trans;
-  MATRIX  Matrix;
-  MATRIX  rotMatrix;
-  MATRIX  finalMatrix;
-  VECTOR  Pos;
-  VECTOR  Temp;
-  VECTOR  Scale;
-    int clearflags;
-    D3DRECT dummy;
-  D3DVIEWPORT newviewport;
-  float screen_width, screen_height;
+	VECTOR  Trans;
+	MATRIX  Matrix;
+	MATRIX  rotMatrix;
+	MATRIX  finalMatrix;
+	VECTOR  Pos;
+	VECTOR  Temp;
+	VECTOR  Scale;
+	int clearflags;
+	D3DRECT dummy;
+	D3DVIEWPORT9 newviewport;
+	float screen_width, screen_height;
 
+ //   newviewport.dwSize = sizeof(D3DVIEWPORT);
+    newviewport.X = 0;
+	newviewport.Y = 0;
+    newviewport.Width = d3dapp->szClient.cx;
+    newviewport.Height = d3dapp->szClient.cy;
 
-//  return TRUE;
-
-    newviewport.dwSize = sizeof(D3DVIEWPORT);
-    newviewport.dwX = 0;
-  newviewport.dwY = 0;
-    newviewport.dwWidth = d3dapp->szClient.cx;
-    newviewport.dwHeight = d3dapp->szClient.cy;
+/*
     newviewport.dvScaleX = newviewport.dwWidth / (float)2.0;
     newviewport.dvScaleY = newviewport.dwHeight / (float)2.0;
     newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
                                        D3DVAL(2 * newviewport.dvScaleX));
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
+*/  
+//    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
+	if (FSSetViewPort(&newviewport) != D3D_OK )
+		return FALSE;
+
+	if ( d3dapp->bFullscreen )
+	{
+		screen_width = (float) d3dapp->ThisMode.w;
+		screen_height = (float) d3dapp->ThisMode.h;
+	}
+	else
+	{
+		screen_width = (float) d3dapp->WindowsDisplay.w;
+		screen_height = (float) d3dapp->WindowsDisplay.h;
+	}
+
+	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
+	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
+	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
+
+//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
+	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
+	{
+		return FALSE;
+	}
+
+	clearflags = 0;
+
+	if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
+	{
+		clearflags |= D3DCLEAR_ZBUFFER;
+	}
+	if( clearflags != 0 )
+	{
+		dummy.x1 = newviewport.X;
+		dummy.x2 = newviewport.X+newviewport.Width;
+
+		dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
+		dummy.y2 = dummy.y1+( newviewport.Height >> 1);
+
+		if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
+			return FALSE;
+	}
+
+	Trans.x = 0.0F;
+	Trans.y = -180.0F;
+	Trans.z = 280.0F;
+
+	Trans.x -= ( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
+	Trans.y -= ( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
+	Trans.z += ( Ships[WhoIAm].Object.Speed.z * 4.0F );
   
-    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
-    return FALSE;
+	Pos.x = -( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
+	Pos.y = -( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
+	Pos.z = +( Ships[WhoIAm].Object.Speed.z * 4.0F );
 
-  if ( d3dapp->bFullscreen )
-  {
-    screen_width = (float) d3dapp->ThisMode.w;
-    screen_height = (float) d3dapp->ThisMode.h;
-  }
-  else
-  {
-    screen_width = (float) d3dapp->WindowsDisplay.w;
-    screen_height = (float) d3dapp->WindowsDisplay.h;
-  }
-  pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
-  viewplane_distance = (float) ( newviewport.dwWidth / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
-  panelproj._11 = 2 * viewplane_distance / newviewport.dwWidth;
-  panelproj._22 = 2 * viewplane_distance / ( newviewport.dwHeight / pixel_aspect_ratio );
+	ApplyMatrix( &MainCamera.Mat, &Pos, &Temp );
 
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
-  {
-      return FALSE;
-  }
+	Temp.x += MainCamera.Pos.x;
+	Temp.y += MainCamera.Pos.y;
+	Temp.z += MainCamera.Pos.z;
 
+	Matrix = MainCamera.Mat;
+	Matrix._41 = Temp.x;
+	Matrix._42 = Temp.y;
+	Matrix._43 = Temp.z;
+
+	Scale.x = 0.5F;
+	Scale.y = 0.5F;
+	Scale.z = 0.5F;
+	ScaleMatrix( &Matrix, &Scale );
   
-  
-  clearflags = 0;
-  if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
-  {
-    clearflags |= D3DCLEAR_ZBUFFER;
-    }
-  if( clearflags != 0 )
-  {
-    dummy.x1 = newviewport.dwX;
-    dummy.x2 = newviewport.dwX+newviewport.dwWidth;
+	BuildRotMatrix( Ships[WhoIAm].Object.Angle.x, Ships[WhoIAm].Object.Angle.y, Ships[WhoIAm].Object.Angle.y+Ships[WhoIAm].Object.Angle.z, &rotMatrix);
 
-    dummy.y1 = newviewport.dwY + ( newviewport.dwHeight >> 1 );
-    dummy.y2 = dummy.y1+( newviewport.dwHeight >> 1);
-
-    if( d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
-                                             1, &dummy,
-                                             clearflags) != D3D_OK )
-                         return FALSE;
-  }
-
-  Trans.x = 0.0F;
-    Trans.y = -180.0F;
-  Trans.z = 280.0F;
-
-  Trans.x -= ( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
-  Trans.y -= ( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
-  Trans.z += ( Ships[WhoIAm].Object.Speed.z * 4.0F );
-  
-
-  Pos.x = -( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
-  Pos.y = -( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
-  Pos.z = +( Ships[WhoIAm].Object.Speed.z * 4.0F );
-
-  ApplyMatrix( &MainCamera.Mat, &Pos, &Temp );
-
-  Temp.x += MainCamera.Pos.x;
-  Temp.y += MainCamera.Pos.y;
-  Temp.z += MainCamera.Pos.z;
-
-  Matrix = MainCamera.Mat;
-  Matrix._41 = Temp.x;
-  Matrix._42 = Temp.y;
-  Matrix._43 = Temp.z;
-
-  Scale.x = 0.5F;
-  Scale.y = 0.5F;
-  Scale.z = 0.5F;
-  ScaleMatrix( &Matrix, &Scale );
-  
-
-  BuildRotMatrix( Ships[WhoIAm].Object.Angle.x, Ships[WhoIAm].Object.Angle.y, Ships[WhoIAm].Object.Angle.y+Ships[WhoIAm].Object.Angle.z, &rotMatrix);
-
-
-  MatrixMultiply( &Matrix, &rotMatrix, &finalMatrix );
+	MatrixMultiply( &Matrix, &rotMatrix, &finalMatrix );
 
 //  XLightMxloadHeader( &ModelHeaders[MODEL_Panel] , &Temp , SHIP_RADIUS*4.0F , &finalMatrix );
-  XLightMxloadHeader( &ModelHeaders[MODEL_Eyeball] , &Temp , SHIP_RADIUS*4.0F , &finalMatrix );
-  
-  
+	XLightMxloadHeader( &ModelHeaders[MODEL_Eyeball] , &Temp , SHIP_RADIUS*4.0F , &finalMatrix );
   
 //  view = identity;
-  view._41 = Trans.x;
-  view._42 = Trans.y;
-  view._43 = Trans.z;
-  view._11 = rotMatrix._11; 
-  view._12 = rotMatrix._12;
-  view._13 = rotMatrix._13;
-  view._14 = rotMatrix._14;
-             
-  view._21 = rotMatrix._21;
-  view._22 = rotMatrix._22;
-  view._23 = rotMatrix._23;
-  view._24 = rotMatrix._24;
-             
-  view._31 = rotMatrix._31;
-  view._32 = rotMatrix._32;
-  view._33 = rotMatrix._33;
-  view._34 = rotMatrix._34;
-                                        
-  view._44 = rotMatrix._44;
+	view._41 = Trans.x;
+	view._42 = Trans.y;
+	view._43 = Trans.z;
+	view._11 = rotMatrix._11; 
+	view._12 = rotMatrix._12;
+	view._13 = rotMatrix._13;
+	view._14 = rotMatrix._14;
+	         
+	view._21 = rotMatrix._21;
+	view._22 = rotMatrix._22;
+	view._23 = rotMatrix._23;
+	view._24 = rotMatrix._24;
+	         
+	view._31 = rotMatrix._31;
+	view._32 = rotMatrix._32;
+	view._33 = rotMatrix._33;
+	view._34 = rotMatrix._34;
+	                                    
+	view._44 = rotMatrix._44;
 
-  if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
-    return FALSE;
+//	if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+	if (FAILED(FSSetMatrix(D3DTS_VIEW, &view)))
+		return FALSE;
 
 //  if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Panel], (uint16) -1 ) != TRUE )
-  if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
-    return FALSE;
+	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
+		return FALSE;
 
-    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
-    return FALSE;
+//	if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
+//		return FALSE;
 
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-  {
-      return FALSE;
-  }
+	if (FAILED(FSSetViewPort(&viewport)))
+	{
+		return FALSE;
+	}
 
-
-  return TRUE;
+/*
+	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
+	{
+		return FALSE;
+	}
+*/
+	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
+	{
+		return FALSE;
+	}
+	return TRUE;
 }
 
 
@@ -7231,12 +7161,14 @@ BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
 #if 0
         if( ModeCase != -1 )
         {
+			POINT destp;
+
           //  Blt Panel
-          GeneralBltFast( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-                  lpDDSThree , (char*) &PanelNames[ModeCase] , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
+                  lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
           //  Primary one
-          GeneralBltFast( PrimaryX[Ships[WhoIAm].Primary] , PrimaryY[Ships[WhoIAm].Primary] , 48 , 32  , PrimaryWeaponShowX , PrimaryWeaponShowY ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
+          GeneralBlt( PrimaryX[Ships[WhoIAm].Primary] , PrimaryY[Ships[WhoIAm].Primary] , 48 , 32  , PrimaryWeaponShowX , PrimaryWeaponShowY ,
+                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
           
           HealthCount+=  framelag;
           //  Health one
@@ -7252,21 +7184,9 @@ BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
           dest.left = (d3dappi.szClient.cx >> 1) - 16 - 4;
           dest.right = (d3dappi.szClient.cx >> 1) - 4;
           
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_KEYSRC | DDBLT_WAIT , &fx );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
+		  destp.x = dest.left;
+		  destp.y = dest.top;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
       
           //  Hull one
           src.top = ( ( (int) ( (HealthCount * 0.25F) + 8 ) ^ 15 ) & 15 ) * 8;
@@ -7281,21 +7201,10 @@ BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
           dest.left = (d3dappi.szClient.cx >> 1) + 4;
           dest.right = (d3dappi.szClient.cx >> 1) + 4 + 16;
           
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_KEYSRC | DDBLT_WAIT , &fx );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
+		  destp.x = dest.left;
+		  destp.y = dest.top;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
+
           //  Powerpods
           src.top = 0;
           src.left = 32+64;
@@ -7304,22 +7213,9 @@ BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
           y =  d3dappi.szClient.cy-74;
           x =  ( d3dappi.szClient.cx >> 1 ) - 28;
       
-          while( 1 )
-          {
-            ddrval = d3dapp->lpBackBuffer->lpVtbl->BltFast( d3dapp->lpBackBuffer, x, y, lpDDSOne, &src, DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT );
-            if( ddrval == DD_OK )
-              break;
-            if( ddrval == DDERR_SURFACELOST )
-            {
-              d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-              d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-              DDReLoadBitmap( lpDDSOne, "data\\pictures\\panel.bmp" );
-              break;
-            }
-            if( ddrval != DDERR_WASSTILLDRAWING )
-              break;
-          }
-        }
+		  destp.x = x;
+		  destp.y = y;
+		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
         
         //  Blt Score
         Printuint16( Ships[WhoIAm].Shield , PanelShieldPosX, PanelShieldPosY , 2 );
@@ -7347,11 +7243,11 @@ BOOL  Disp3dPanel( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
         // blt hull
         DoFontBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight , PanelHullTextPosX , PanelHullTextPosY );
 #endif
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Init View port without calling initview..
   Input   : Nothing
   Output    : Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
 InitViewport( float scale )
 {
@@ -7363,10 +7259,13 @@ InitViewport( float scale )
     /*
      * Setup the viewport for specified viewing area
      */
-    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-    viewport.dwSize = sizeof(D3DVIEWPORT);
-    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
+//    viewport.dwSize = sizeof(D3DVIEWPORT);
+//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
+//    if (rval != D3D_OK) {
+	rval = FSGetViewPort(&viewport);
+	if (FAILED(rval))
+	{
         Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
         return FALSE;
     }
@@ -7413,18 +7312,22 @@ InitViewport( float scale )
   }
   CurrentViewportScale = scale;
 
-    viewport.dwX = left;
-  viewport.dwY = top;
-    viewport.dwWidth = width;
-    viewport.dwHeight = height;
+    viewport.X = left;
+	viewport.Y = top;
+    viewport.Width = width;
+    viewport.Height = height;
+/* bjd - CHECK
     viewport.dvScaleX = viewport.dwWidth / (float)2.0;
     viewport.dvScaleY = viewport.dwHeight / (float)2.0;
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
-    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
-    if (rval != D3D_OK) {
+*/
+//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+ //   if (rval != D3D_OK) {
+	if (FAILED(FSSetViewPort(&viewport)))
+	{
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "InitViewport", &viewport, rval );
 #else
@@ -7435,17 +7338,17 @@ InitViewport( float scale )
   SetFOV( hfov );
 
   // clear viewport
-  D3DAppIClearBuffers();
+	FSClearBlack();
 
   return TRUE;
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Plot Simple Panel...
   Input   : Nothing
   Output    : Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void  PlotSimplePanel( void )
 {
   int energy;
@@ -7454,16 +7357,23 @@ void  PlotSimplePanel( void )
   if( ( Ships[WhoIAm].Primary != PrimaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     PrimaryChanged = Ships[WhoIAm].Primary;
-    GeneralBlt( ( Ships[WhoIAm].Primary & 3 ) * 64 ,
-            ( ( Ships[WhoIAm].Primary >> 2 )& 3 ) * 64 ,
-          64 , 64 , PrimaryWeaponShowX , PrimaryWeaponShowY ,
-          WeaponSizeX , WeaponSizeY ,
-          lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
+    GeneralBlt(
+		( Ships[WhoIAm].Primary & 3 ) * 64 ,
+        ( ( Ships[WhoIAm].Primary >> 2 )& 3 ) * 64 ,
+        64, 64,
+		PrimaryWeaponShowX, PrimaryWeaponShowY,
+        //WeaponSizeX , WeaponSizeY ,
+        lpDDSFour,
+		"data\\pictures\\pcontent.bmp",
+		FSBackBuffer
+	);
 
-    GeneralBltFast( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary  , FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
-              PrimaryWeaponTextX , PrimaryWeaponTextY , lpDDSTwo ,
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-             DDBLTFAST_WAIT, lpDDSThree);
+    GeneralBlt( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary,
+				FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
+				PrimaryWeaponTextX , PrimaryWeaponTextY , 
+				lpFontSurface ,
+				/*&FontNames[ModeCase][0]*/DynamicFontNames,
+				FSBackBuffer);
   }
   
   
@@ -7472,64 +7382,66 @@ void  PlotSimplePanel( void )
   if( ( Ships[WhoIAm].Secondary != SecondaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     SecondaryChanged = Ships[WhoIAm].Secondary;
-    GeneralBlt( ( (Ships[WhoIAm].Secondary+6) & 3 ) * 64 ,
+    GeneralBlt(
+			( (Ships[WhoIAm].Secondary+6) & 3 ) * 64 ,
             ( ( (Ships[WhoIAm].Secondary+6) >> 2 )& 3 ) * 64 ,
-          64 , 64 , SecondaryWeaponShowX , SecondaryWeaponShowY ,
-          WeaponSizeX , WeaponSizeY ,
-          lpDDSFour , "data\\pictures\\pcontent.bmp" , 0 , lpDDSThree);
-    GeneralBltFast( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
-              SecondaryWeaponTextX , SecondaryWeaponTextY , lpDDSTwo ,
+			64 , 64 ,
+			SecondaryWeaponShowX , SecondaryWeaponShowY ,
+			//WeaponSizeX , WeaponSizeY ,
+			lpDDSFour , "data\\pictures\\pcontent.bmp" , FSBackBuffer);
+    GeneralBlt( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
+              SecondaryWeaponTextX , SecondaryWeaponTextY , lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
   }
 
 
   // blt shld
   if( ReMakeSimplePanel == TRUE )
   {
-    GeneralBltFast( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
-            lpDDSTwo ,
+    GeneralBlt( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
+            lpFontSurface ,
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
+           FSBackBuffer);
   }
   if( ( Ships[WhoIAm].Object.Shield != ShieldChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     ShieldChanged = (uint16) Ships[WhoIAm].Object.Shield;
 
-    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Shield , PanelShieldPosX, PanelShieldPosY , 2 , DDBLTFAST_WAIT, lpDDSThree );
+    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Shield , PanelShieldPosX, PanelShieldPosY , 2 , lpDDSThree );
     
     if( ShieldHit == 0 )
     {
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 , 56 , 3 , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT, lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 , 56 , 3 , PanelShieldBarPosX , PanelShieldBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
     }else{
       ShieldHit -=1;
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 + ((ShieldHit>>2)*8) , 56 , 3  , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT , lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 + ((ShieldHit>>2)*8) , 56 , 3  , PanelShieldBarPosX , PanelShieldBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
       ShieldChanged = (uint16)-1;
     }
   }
   // blt Hull
   if( ReMakeSimplePanel == TRUE )
   {
-    GeneralBltFast( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
-            lpDDSTwo , 
+    GeneralBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
+            lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
   }
 
   if( ( Ships[WhoIAm].Object.Hull != HullChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     HullChanged = (uint16)Ships[WhoIAm].Object.Hull;
-    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Hull , PanelHullPosX, PanelHullPosY , 2 , DDBLTFAST_WAIT, lpDDSThree);
+    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Hull , PanelHullPosX, PanelHullPosY , 2 , lpDDSThree);
     if( HullHit == 0 )
     {
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT, lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
     }else{
       HullHit -=1;
-      GeneralBltFast( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 + ((HullHit>>2)*8) , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , DDBLTFAST_WAIT , lpDDSThree);
+      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 + ((HullHit>>2)*8) , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
+              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
       HullChanged = (uint16)-1;
     }
   }
@@ -7538,10 +7450,10 @@ void  PlotSimplePanel( void )
   // Blt Power Pods
   if( ( PowerChanged != Ships[WhoIAm].Object.PowerLevel ) || ( ReMakeSimplePanel == TRUE ) )
   {
-    GeneralBltFast( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
-            lpDDSTwo , 
+    GeneralBlt( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
+            lpFontSurface , 
             /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            DDBLTFAST_WAIT, lpDDSThree);
+            FSBackBuffer);
 
     PowerChanged = Ships[WhoIAm].Object.PowerLevel;
   }
@@ -7561,22 +7473,19 @@ void  PlotSimplePanel( void )
   if( ( energy != PrimaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     PrimaryNumChanged = energy;
-    Printuint16AnySurface( (uint16) energy , PrimaryWeaponNumX , PrimaryWeaponNumY , 2 , DDBLTFAST_WAIT, lpDDSThree);
+    Printuint16AnySurface( (uint16) energy , PrimaryWeaponNumX , PrimaryWeaponNumY , 2 , lpDDSThree);
   }
 
   // Blt Secondary ammo
   if( ( (uint16) GetCurSecAmmo() != SecondaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
   {
     SecondaryNumChanged = (uint16) GetCurSecAmmo();
-      Printuint16AnySurface( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX , SecondaryWeaponNumY , 2 , DDBLTFAST_WAIT, lpDDSThree );
+      Printuint16AnySurface( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX , SecondaryWeaponNumY , 2 , lpDDSThree );
   }
   
   //  Blt Panel
-  GeneralBltFast( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-          lpDDSThree , (char*) &PanelNames[ModeCase] , DDBLTFAST_SRCCOLORKEY  | DDBLTFAST_WAIT , d3dapp->lpBackBuffer);
-
-
-  
+  GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
+          lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
 
   energy = (int) GetBestMine();
   // Blt Mine..
@@ -7591,20 +7500,22 @@ void  PlotSimplePanel( void )
 
 void  FlipToGDISurface()
 {
-  d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
+//bjd - CHECK  d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 }
 
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Make Specific Cmd Buffers...
   Input   :   nothing..
   Output    :   BOOL TRUE/FLASE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL
 InitSpecialExecBufs( void )
 {
+	return TRUE;
+#if 0 // bjd
     LPVOID lpBufStart, lpInsStart, lpPointer;
     size_t size;
 
@@ -7618,12 +7529,15 @@ InitSpecialExecBufs( void )
   size += sizeof(D3DSTATE) * 9;
     size += sizeof(D3DINSTRUCTION) * 2;
   
-  if (MakeExecuteBuffer( &debDesc, lpDev , &lpD3DNormCmdBuf , size ) != TRUE ) return FALSE;
+  if (MakeExecuteBuffer( &debDesc, /*lpDev,*/ &lpD3DNormCmdBuf , size ) != TRUE ) // bjd
+	  return FALSE;
   
   /*
    * lock it so it can be filled
    */
-  if (lpD3DNormCmdBuf->lpVtbl->Lock(lpD3DNormCmdBuf, &debDesc) != D3D_OK) return FALSE;
+//  if (lpD3DNormCmdBuf->lpVtbl->Lock(lpD3DNormCmdBuf, &debDesc) != D3D_OK) return FALSE;
+	if (FSLockExecuteBuffer(lpD3DNormCmdBuf, &debDesc) != D3D_OK)
+		return FALSE;
   
   lpBufStart = debDesc.lpData;
   memset(lpBufStart, 0, size);
@@ -7673,13 +7587,16 @@ InitSpecialExecBufs( void )
     size += sizeof(D3DINSTRUCTION) * 2;
 
   
-  if (MakeExecuteBuffer( &debDesc, lpDev , &lpD3DTransCmdBuf , size ) != TRUE ) return FALSE;
+	if (MakeExecuteBuffer( &debDesc, /*lpDev,*/ &lpD3DTransCmdBuf , size ) != TRUE ) // bjd
+		return FALSE;
   
   
   /*
    * lock it so it can be filled
    */
-  if (lpD3DTransCmdBuf->lpVtbl->Lock(lpD3DTransCmdBuf, &debDesc) != D3D_OK) return FALSE;
+ // if (lpD3DTransCmdBuf->lpVtbl->Lock(lpD3DTransCmdBuf, &debDesc) != D3D_OK) return FALSE;
+	if (FSLockExecuteBuffer(lpD3DTransCmdBuf, &debDesc) != D3D_OK)
+		return FALSE;
   
   lpBufStart = debDesc.lpData;
   memset(lpBufStart, 0, size);
@@ -7753,12 +7670,15 @@ InitSpecialExecBufs( void )
 
     size += sizeof(D3DINSTRUCTION) * 2;
   
-  if (MakeExecuteBuffer( &debDesc, lpDev , &lpD3DSpcFxTransCmdBuf , size ) != TRUE ) return FALSE;
+	if (MakeExecuteBuffer( &debDesc, /*lpDev,*/ &lpD3DSpcFxTransCmdBuf , size ) != TRUE ) // bjd
+		return FALSE;
   
   /*
    * lock it so it can be filled
    */
-  if (lpD3DSpcFxTransCmdBuf->lpVtbl->Lock(lpD3DSpcFxTransCmdBuf, &debDesc) != D3D_OK) return FALSE;
+ // if (lpD3DSpcFxTransCmdBuf->lpVtbl->Lock(lpD3DSpcFxTransCmdBuf, &debDesc) != D3D_OK) return FALSE; // bjd
+	if (FSLockExecuteBuffer(lpD3DSpcFxTransCmdBuf, &debDesc) != D3D_OK)
+		return FALSE;
   
   lpBufStart = debDesc.lpData;
   memset(lpBufStart, 0, size);
@@ -7806,38 +7726,14 @@ InitSpecialExecBufs( void )
 
   
   return TRUE;
+#endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
-  Procedure :   Release Specific Cmd Buffers...
-  Input   :   nothing..
-  Output    :   BOOL TRUE/FLASE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-
-void ReleaseSpecialExecBufs( void )
-{
-  if( lpD3DNormCmdBuf )
-  {
-    XRELEASE(lpD3DNormCmdBuf);
-    lpD3DNormCmdBuf = NULL;
-  }
-  if( lpD3DTransCmdBuf )
-  {
-    XRELEASE(lpD3DTransCmdBuf);
-    lpD3DTransCmdBuf = NULL;
-  }
-  if( lpD3DSpcFxTransCmdBuf )
-  {
-    XRELEASE(lpD3DSpcFxTransCmdBuf);
-    lpD3DSpcFxTransCmdBuf = NULL;
-  }
-}
-
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Special Destroy game for dplay fuck up..
   Input   :   nothing..
   Output    :   nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SpecialDestroyGame( void )
 {
 	IMustQuit = FALSE;
@@ -7863,11 +7759,11 @@ void SpecialDestroyGame( void )
 
 	network_cleanup();
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Calculate the framelag..
   Input   :   nothing..
   Output    :   nothing..
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CalculateFramelag( void )
 {
 
@@ -7951,115 +7847,120 @@ void CalculateFramelag( void )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Disp Tracker
   Input   : LPDIRECT3DDEVICE  lpDev
         : LPDIRECT3DVIEWPORT  lpView
   Output    : BOOL        TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
+===================================================================*/
+BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ) // bjd
 {
-  uint16    i;
-    int     clearflags;
-    D3DRECT   dummy;
-  D3DVIEWPORT newviewport;
-  float   screen_width, screen_height;
-  VECTOR    TempVector;
-  MATRIX    TempMatrix;
-  float   TargetDistance;
-  float   Red, Green, Blue, Trans;
-  VECTOR    ShipDir, TargetDir;
-  float   Cos;
+	uint16      i;
+	int         clearflags;
+	D3DRECT     dummy;
+	D3DVIEWPORT9 newviewport;
+	float       screen_width, screen_height;
+	VECTOR      TempVector;
+	MATRIX      TempMatrix;
+	float       TargetDistance;
+	float       Red, Green, Blue, Trans;
+	VECTOR      ShipDir, TargetDir;
+	float       Cos;
 
-  if ( d3dapp->bFullscreen )
-  {
-    screen_width = (float) d3dapp->ThisMode.w;
-    screen_height = (float) d3dapp->ThisMode.h;
-  }
-  else
-  {
-    screen_width = (float) d3dapp->WindowsDisplay.w;
-    screen_height = (float) d3dapp->WindowsDisplay.h;
-  }
-  pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+	if ( d3dapp->bFullscreen )
+	{
+		screen_width = (float) d3dapp->ThisMode.w;
+		screen_height = (float) d3dapp->ThisMode.h;
+	}
+	else
+	{
+		screen_width = (float) d3dapp->WindowsDisplay.w;
+		screen_height = (float) d3dapp->WindowsDisplay.h;
+	}
 
-    newviewport.dwSize = sizeof(D3DVIEWPORT);
-    newviewport.dwX = 0;
-  newviewport.dwY = 0;
-    newviewport.dwWidth = ( d3dapp->szClient.cx / 3 ) & -2;
-    newviewport.dwHeight = (uint32) ( (float) newviewport.dwWidth * pixel_aspect_ratio );
+	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+
+//    newviewport.dwSize = sizeof(D3DVIEWPORT);
+    newviewport.X = 0;	
+	newviewport.Y = 0;
+    newviewport.Width = ( d3dapp->szClient.cx / 3 ) & -2;
+    newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
+
+/* bjd
     newviewport.dvScaleX = newviewport.dwWidth / (float)2.0;
     newviewport.dvScaleY = newviewport.dwHeight / (float)2.0;
     newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
                                        D3DVAL(2 * newviewport.dvScaleX));
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
-  
-    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
-    return FALSE;
+*/
+//	if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
+	if (FSSetViewPort(&newviewport) != D3D_OK )
+		return FALSE;
 
-  viewplane_distance = (float) ( newviewport.dwWidth / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
-  panelproj._11 = 2 * viewplane_distance / newviewport.dwWidth;
-  panelproj._22 = 2 * viewplane_distance / ( newviewport.dwHeight / pixel_aspect_ratio );
+	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
+	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
+	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
-  {
-      return FALSE;
-  }
+//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
+	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
+	{
+		return FALSE;
+	}
 
-  clearflags = 0;
-  if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
-  {
-    clearflags |= D3DCLEAR_ZBUFFER;
-    }
-  if( clearflags != 0 )
-  {
-    dummy.x1 = newviewport.dwX;
-    dummy.x2 = newviewport.dwX + newviewport.dwWidth;
+	clearflags = 0;
 
-    dummy.y1 = newviewport.dwY;
-    dummy.y2 = newviewport.dwY + newviewport.dwHeight;
+	if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
+	{
+		clearflags |= D3DCLEAR_ZBUFFER;
+	}
+	if( clearflags != 0 )
+	{
+		dummy.x1 = newviewport.X;
+		dummy.x2 = newviewport.X + newviewport.Width;
 
-    if( d3dappi.lpD3DViewport->lpVtbl->Clear(d3dappi.lpD3DViewport,
-                                             1, &dummy,
-                                             clearflags) != D3D_OK )
-                         return FALSE;
-  }
+		dummy.y1 = newviewport.Y;
+		dummy.y2 = newviewport.Y + newviewport.Height;
 
-  MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
-  ShadeModel( MODEL_Tracker, &TempMatrix, ( 40.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ) );
+		if (FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
+			return FALSE;
+	}
 
-  TempMatrix = MATRIX_Identity;
-  TempMatrix._11 = 1.25F;
-  TempMatrix._22 = 1.25F;
-  TempMatrix._33 = 1.25F;
-  MatrixMultiply( &TempMatrix, &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
+	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
+	ShadeModel( MODEL_Tracker, &TempMatrix, ( 40.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ) );
 
-  view._11 = TempMatrix._11; 
-  view._12 = TempMatrix._12;
-  view._13 = TempMatrix._13;
-  view._14 = TempMatrix._14;
-             
-  view._21 = TempMatrix._21;
-  view._22 = TempMatrix._22;
-  view._23 = TempMatrix._23;
-  view._24 = TempMatrix._24;
-             
-  view._31 = TempMatrix._31;
-  view._32 = TempMatrix._32;
-  view._33 = TempMatrix._33;
-  view._34 = TempMatrix._34;
+	TempMatrix = MATRIX_Identity;
+	TempMatrix._11 = 1.25F;
+	TempMatrix._22 = 1.25F;
+	TempMatrix._33 = 1.25F;
+	MatrixMultiply( &TempMatrix, &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
 
-  view._41 = 0.0F;
-  view._42 = 0.0F;
-  view._43 = ( 280.0F * GLOBAL_SCALE );
-  view._44 = 1.0F;
+	view._11 = TempMatrix._11; 
+	view._12 = TempMatrix._12;
+	view._13 = TempMatrix._13;
+	view._14 = TempMatrix._14;
+	         
+	view._21 = TempMatrix._21;
+	view._22 = TempMatrix._22;
+	view._23 = TempMatrix._23;
+	view._24 = TempMatrix._24;
+	         
+	view._31 = TempMatrix._31;
+	view._32 = TempMatrix._32;
+	view._33 = TempMatrix._33;
+	view._34 = TempMatrix._34;
 
-  if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
-    return FALSE;
+	view._41 = 0.0F;
+	view._42 = 0.0F;
+	view._43 = ( 280.0F * GLOBAL_SCALE );
+	view._44 = 1.0F;
 
-  if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (uint16) -1 ) != TRUE )
-    return FALSE;
+//  if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK) // bjd
+	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+		return FALSE;
+
+	if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (uint16) -1 ) != TRUE )
+		return FALSE;
 
 #if 0
   i = FindClosestPickup();
@@ -8121,20 +8022,23 @@ BOOL DispTracker( LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView )
     view._43 = TempVector.z + ( 280.0F * GLOBAL_SCALE );
     view._44 = 1.0F;
 
-    if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
-      return FALSE;
+//    if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
+	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+		return FALSE;
 
     if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Ping], (uint16) -1 ) != TRUE )
       return FALSE;
   }
 
-    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
-    return FALSE;
+//    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
+	if (FSSetViewPort(&viewport) != D3D_OK )
+		return FALSE;
 
-  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-  {
-      return FALSE;
-  }
+// if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
+	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
+	{
+		return FALSE;
+	}
 
   return TRUE;
 }
@@ -8179,54 +8083,55 @@ void  ReleaseJoysticks( void )
   }
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Change Background Colour
   Input   : float R ( 0.0F - 1.0F )
         : float G ( 0.0F - 1.0F )
         : float B ( 0.0F - 1.0F )
   Output    : BOOL  TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL ChangeBackgroundColour( float R, float G, float B )
 {
-    D3DMATERIAL bmat;
-    D3DMATERIALHANDLE hBmat;
-  LPDIRECT3D lpD3D = d3dapp->lpD3D;
+    D3DMATERIAL9 bmat;
+//    D3DMATERIALHANDLE hBmat;
+//  LPDIRECT3D lpD3D = d3dapp->lpD3D;
 
   BOOL  HadtoCreate = FALSE;
 
 
-  memset(&bmat, 0, sizeof(D3DMATERIAL));
-  bmat.diffuse.r = R;
-  bmat.diffuse.g = G;
-  bmat.diffuse.b = B;
-    bmat.dwSize = sizeof(D3DMATERIAL);
-    bmat.dwRampSize = 1;
+  memset(&bmat, 0, sizeof(D3DMATERIAL9));
+  bmat.Diffuse.r = R;
+  bmat.Diffuse.g = G;
+  bmat.Diffuse.b = B;
+//    bmat.dwSize = sizeof(D3DMATERIAL);
+//    bmat.dwRampSize = 1;
 
-
+/*
   if( !lpBmat )
   {
     if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) return FALSE;
     HadtoCreate = TRUE;
 
   }
+*/
+//bjd - CHECK  if( lpBmat->lpVtbl->SetMaterial( lpBmat, &bmat ) != D3D_OK) return FALSE;
+//    if( lpBmat->lpVtbl->GetHandle(lpBmat, d3dapp->lpD3DDevice, &hBmat) != D3D_OK) return FALSE;
+//    if( d3dapp->lpD3DViewport->lpVtbl->SetBackground( d3dapp->lpD3DViewport, hBmat ) != D3D_OK) return FALSE;
 
-  if( lpBmat->lpVtbl->SetMaterial( lpBmat, &bmat ) != D3D_OK) return FALSE;
-    if( lpBmat->lpVtbl->GetHandle(lpBmat, d3dapp->lpD3DDevice, &hBmat) != D3D_OK) return FALSE;
-    if( d3dapp->lpD3DViewport->lpVtbl->SetBackground( d3dapp->lpD3DViewport, hBmat ) != D3D_OK) return FALSE;
-
+/*
   if( HadtoCreate )
   {
     RELEASE(lpBmat);
   }
-
+*/
   return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure : Print up how far the init view has to go...
   Input   : BYTE GameStatus
   Output    : void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void PrintInitViewStatus( BYTE Status )
 {
   int i;
@@ -8237,20 +8142,18 @@ void PrintInitViewStatus( BYTE Status )
   }
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Init Stats Display Stuff...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL  InitStatsDisplay()
 {
   // Create the offscreen surface, by loading our bitmap.
 
 //  if( ModeCase != -1 )
 //  {
-//    lpDDSOne = DDLoadBitmap( d3dapp->lpDD, (char*) &StatsNames[ModeCase] , 0, 0 );
-//    ddpal =  DDLoadPalette( d3dapp->lpDD , (char*) &StatsNames[ModeCase]);
-//    lpDDSOne->lpVtbl->SetPalette( lpDDSOne , ddpal );
+//		lpDDSOne = FSLoadBitmap( (char*) &StatsNames[ModeCase], 0 );
 //  }
   InitFont(FALSE);
   ChangeBackgroundColour( 0, 0, 0 );
@@ -8259,35 +8162,34 @@ BOOL  InitStatsDisplay()
 
   return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Free Stats Display Stuff...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL  FreeStatsDisplay()
 {
+#if 0 // bjd - CHECHK
 //  ReleaseDDSurf(lpDDSOne);
-  ReleaseDDSurf(lpDDSTwo);
-  lpDDSTwo = NULL;
+  ReleaseDDSurf(lpFontSurface);
+  lpFontSurface = NULL;
+#endif
   return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Stats Display...
   Input   :   nothing...
   Output    :   BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL StatsDisplay()
 {
-#if 0
-    HRESULT ddrval;
-    RECT    src;
+  RECT    src;
   RECT    dest;
-  DDBLTFX fx;
+  POINT destp;
   int x,y;
-#endif
+
   char buf[256];
 
-#if 0
   //  Blt Background
   src.top = 0;
   src.left = 0;
@@ -8295,29 +8197,16 @@ BOOL StatsDisplay()
   src.bottom = d3dappi.szClient.cy;
   x = 0;
   y = 0;
-  memset(&fx, 0, sizeof(DDBLTFX));
-  fx.dwSize = sizeof(DDBLTFX);
+
   dest.top = 0;
   dest.bottom = d3dappi.szClient.cy;
   dest.left = 0;
   dest.right = d3dappi.szClient.cx;
       
-  while( 1 )
-  {
-    ddrval = d3dapp->lpBackBuffer->lpVtbl->Blt( d3dapp->lpBackBuffer, &dest, lpDDSOne, &src, DDBLT_WAIT , &fx );
-    if( ddrval == DD_OK )
-      break;
-    if( ddrval == DDERR_SURFACELOST )
-    {
-      d3dapp->lpFrontBuffer->lpVtbl->Restore(d3dapp->lpFrontBuffer);
-      d3dapp->lpBackBuffer->lpVtbl->Restore(d3dapp->lpBackBuffer);
-      DDReLoadBitmap( lpDDSOne, (char*) &StatsNames[ModeCase] );
-      break;
-    }
-    if( ddrval != DDERR_WASSTILLDRAWING )
-      break;
-  }
-#endif
+  destp.x = dest.left;
+  destp.y = dest.top;
+  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
+
   if( !GameCompleted )
   {
     if( Secrets == 1 )
@@ -8415,12 +8304,12 @@ void InitModeCase(void)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Get Bit Shift required to make first bit of
         :   mask bit 0
   Input   :   int32 Mask
   Output    :   int16 Shift Value
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int16 GetBitShift( int32 Mask )
 {
   int16 Count;
@@ -8442,17 +8331,18 @@ int16 GetBitShift( int32 Mask )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Render Snapshot
   Input   :   Nothing
   Output    :   Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RenderSnapshot( void )
 {
-  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+#if 0 // bjd - CHECK
+//  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+    D3DVIEWPORT9 View = d3dapp->D3DViewport;
 
-  lpDev->lpVtbl->BeginScene(lpDev);
+//bjd  lpDev->lpVtbl->BeginScene(lpDev);
 
   CurrentCamera.enable = 1;
   CurrentCamera.UseLowestLOD = TRUE;
@@ -8463,25 +8353,28 @@ void RenderSnapshot( void )
   CurrentCamera.Viewport = viewport;  
   CurrentCamera.Proj = proj;  
   
-  CurrentCamera.Viewport.dwX = 0;
-  CurrentCamera.Viewport.dwY = 0;
-  CurrentCamera.Viewport.dwWidth = 128;
-  CurrentCamera.Viewport.dwHeight = 128;
+  CurrentCamera.Viewport.X = 0;
+  CurrentCamera.Viewport.Y = 0;
+  CurrentCamera.Viewport.Width = 128;
+  CurrentCamera.Viewport.Height = 128;
+
+/* bjd
   CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
   CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
   CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
                      D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
   CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
                      D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-  
-  CurrentCamera.UseLowestLOD = TRUE;
-  if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-    return;
+*/
 
-  lpDev->lpVtbl->EndScene(lpDev);
+  CurrentCamera.UseLowestLOD = TRUE;
+  if( RenderCurrentCamera( /*lpDev,*/ &View ) != TRUE ) // bjd
+    return;
+#endif
+//bjd  lpDev->lpVtbl->EndScene(lpDev);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Save PPM Bitmap
   Input   :   int8  * Filename
         :   int8  * Screen Pointer
@@ -8494,7 +8387,7 @@ void RenderSnapshot( void )
         :   uint32    BlueMask
         :   uint32    x1, y1, x2 ,y2 ( Portion of Screen )
   Output    :   BOOL    True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, uint32 BytesPerPixel,
         uint32 LineSize, uint32 RedMask, uint32 GreenMask, uint32 BlueMask,
         uint32 x1, uint32 y1, uint32 x2, uint32 y2 )
@@ -8595,13 +8488,15 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
   return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Save SnapShot screen for saved game
   Input   :   int8  * Filename
   Output    :   BOOL    True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL SaveSnapShot( int8 * Filename )
 {
+	return TRUE;
+#if 0 // bjd
   HRESULT     hr;
   DDSURFACEDESC SurfaceDesc;
 
@@ -8658,20 +8553,23 @@ BOOL SaveSnapShot( int8 * Filename )
   }
 
   if( CurrentMenu ) MenuDraw( CurrentMenu );
-  MainGame( d3dapp->lpD3DDevice, d3dapp->lpD3DViewport );
+  MainGame( /*d3dapp->lpD3DDevice,*/ d3dapp->lpD3DViewport ); // bjd
 
   return( TRUE );
+#endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
   Procedure :   Save SnapShot screen
   Input   :   int8  * Filename
   Output    :   BOOL    True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL SaveFullScreenSnapShot( int8 * Filename )
 {
+	return TRUE;
+#if 0 // bjd
   HRESULT     hr;
-  DDSURFACEDESC SurfaceDesc;
+//  DDSURFACEDESC SurfaceDesc;
 
   memset( &SurfaceDesc, 0, sizeof( SurfaceDesc ) );
   SurfaceDesc.dwSize = sizeof( SurfaceDesc );
@@ -8722,6 +8620,7 @@ BOOL SaveFullScreenSnapShot( int8 * Filename )
     return( FALSE );
   }
   return( TRUE );
+#endif
 }
 
 static int CheckFileWriteable( char *fname )
@@ -8827,10 +8726,10 @@ void CheckMetKillLimit()
 			for ( i = 0; i < MAX_PLAYERS; i++ )
 			{
 				// whose status is normal
-				if( (GameStatus[GetPlayerRank(i)] == STATUS_Normal) )
+				if( (GameStatus[GetPlayerByRank(i)] == STATUS_Normal) )
 				{
 					// if they scored more than the kills threshold then flag we finished it
-					if( GetScoreStats(GetPlayerRank(i)) >= MaxKills && LevelNum != -1 )
+					if( GetScoreStats(GetPlayerByRank(i)) >= MaxKills && LevelNum != -1 )
 						KillsReached = TRUE;
 				}
 			}

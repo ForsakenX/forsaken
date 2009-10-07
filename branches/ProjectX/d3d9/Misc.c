@@ -20,10 +20,11 @@
 #include "typedefs.h"
 #include "d3dappi.h"
 
-int default_width	= 0;
-int default_height	= 0;
-int default_bpp		= 0;
-
+int default_width;
+int default_height;
+int default_bpp;
+int default_x;
+int default_y;
 
 /***************************************************************************/
 /*                          Setting Defaults                               */
@@ -41,31 +42,25 @@ D3DAppISetDefaults(void)
     d3dapprs.bZBufferOn = TRUE;
     d3dapprs.bPerspCorrect = TRUE;
     d3dapprs.ShadeMode = D3DSHADE_GOURAUD;
-    d3dapprs.TextureFilter = D3DFILTER_LINEAR;
-    d3dapprs.TextureBlend = D3DTBLEND_MODULATE;
+//bjd - CHECK    d3dapprs.TextureFilter = D3DFILTER_LINEAR;
+//    d3dapprs.TextureBlend = D3DTBLEND_MODULATE;
     d3dapprs.FillMode = D3DFILL_SOLID;
     d3dapprs.bDithering = TRUE;
     d3dapprs.bSpecular = FALSE;
     d3dapprs.bAntialiasing = FALSE;
-    d3dapprs.bFogEnabled = FALSE;
-    d3dapprs.FogColor = RGB_MAKE(255, 255, 255);
-    d3dapprs.FogMode = D3DFOG_LINEAR;
-    d3dapprs.FogStart = D3DVAL(1);
-    d3dapprs.FogEnd = D3DVAL(3000);
-
-    lpClipper = NULL;
-    lpPalette = NULL;
+//    lpClipper = NULL;
+//    lpPalette = NULL;
     bPrimaryPalettized = FALSE;
     bPaletteActivate = FALSE;
     bIgnoreWM_SIZE = FALSE;
-    ZEROMEM(ppe);
-    ZEROMEM(Originalppe);
-    LastError = DD_OK;
+//    ZEROMEM(ppe);
+//    ZEROMEM(Originalppe);
+//    LastError = DD_OK;
     ZEROMEM(LastErrorString);
-    D3DDeviceDestroyCallback = NULL;
-    D3DDeviceDestroyCallbackContext = NULL;
-    D3DDeviceCreateCallback = NULL;
-    D3DDeviceCreateCallbackContext = NULL;
+//    D3DDeviceDestroyCallback = NULL;
+//    D3DDeviceDestroyCallbackContext = NULL;
+//    D3DDeviceCreateCallback = NULL;
+//    D3DDeviceCreateCallbackContext = NULL;
 }
 
 /***************************************************************************/
@@ -74,6 +69,8 @@ D3DAppISetDefaults(void)
 BOOL
 D3DAppICallDeviceDestroyCallback(void)
 {
+	return TRUE;
+/* bjd
     if (D3DDeviceDestroyCallback) {
         if (CallbackRefCount) {
             --CallbackRefCount;
@@ -81,8 +78,10 @@ D3DAppICallDeviceDestroyCallback(void)
         }
     }
     return TRUE;
+*/
 }
 
+#if 0 // bjd
 BOOL
 D3DAppICallDeviceCreateCallback(int w, int h)
 {
@@ -93,6 +92,7 @@ D3DAppICallDeviceCreateCallback(int w, int h)
     }
     return TRUE;
 }
+#endif
 
 /***************************************************************************/
 /*            Choosing and verifying the driver and display mode           */
@@ -106,6 +106,9 @@ D3DAppICallDeviceCreateCallback(int w, int h)
 BOOL
 D3DAppIPickDriver(int* driver, DWORD depths)
 {
+	*driver = 0; // ?
+	return TRUE;
+#if 0 // bjd
     int i, j;
     j = 0;
 
@@ -168,6 +171,7 @@ D3DAppIPickDriver(int* driver, DWORD depths)
 
 	/* done */
     return TRUE;
+#endif
 }
 
 /*
@@ -181,6 +185,8 @@ D3DAppIPickDriver(int* driver, DWORD depths)
 BOOL
 D3DAppIFilterDisplayModes(int driver)
 {
+	return TRUE;
+#if 0 // bjd
     int i;
 
 	/* supported depths */
@@ -215,7 +221,7 @@ D3DAppIFilterDisplayModes(int driver)
 
 	/* done */
     return TRUE;
-
+#endif
 }
 
 /*
@@ -225,6 +231,8 @@ D3DAppIFilterDisplayModes(int driver)
 BOOL
 D3DAppIPickDisplayMode(int *mode, DWORD depths)
 {
+	return TRUE;
+#if 0 // bjd
     int i, j;
 #if 1
 	int wmin, hmin, bppmin, default_mode;
@@ -301,6 +309,7 @@ D3DAppIPickDisplayMode(int *mode, DWORD depths)
     else
         *mode = j;
     return TRUE;
+#endif
 }
 
 BOOL	FirstTime = TRUE;
@@ -315,6 +324,11 @@ BOOL	FirstTime = TRUE;
 BOOL
 D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
 {
+	*lpdriver = 1;
+	*lpmode = 1;
+
+	return TRUE;
+#if 0 // bjd
     DWORD depths;
     int driver, mode, i;
     driver = *lpdriver; mode = *lpmode;
@@ -464,6 +478,7 @@ ret_ok:
     return TRUE;
 exit_with_error:
     return FALSE;
+#endif
 }
 
 

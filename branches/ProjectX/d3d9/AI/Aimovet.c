@@ -33,11 +33,11 @@ extern	VECTOR	Forward;
 extern	VECTOR	SlideUp;
 void CreateSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
 extern	BOOL ShowNode;
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*===================================================================
 	Procedure	:	AIR Move to a Target
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_MOVETOTARGET( register ENEMY * Enemy )
 {
 	OBJECT * TObject;

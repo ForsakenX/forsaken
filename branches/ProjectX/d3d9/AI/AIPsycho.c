@@ -30,11 +30,11 @@ extern	VECTOR	SlideUp;
 extern	PRIMARYWEAPONATTRIB	PrimaryWeaponAttribs[];
 extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	MLOADHEADER Mloadheader;
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*===================================================================
 	Procedure	:	AIR Crash and burn...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_DEATH_PSYCHO( register ENEMY * Enemy )
 {
 	OBJECT * SObject;

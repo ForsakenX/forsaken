@@ -6,9 +6,9 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Globals
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16	Seed1 = 0x1234;
 uint16	Seed2 = 0x4321;
 
@@ -18,14 +18,14 @@ MATRIX	MATRIX_Identity = {
 			0.0F, 0.0F, 1.0F, 0.0F,
 			0.0F, 0.0F, 0.0F, 1.0F };
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Build Rotation Matrix
 	Input		:	float		X Rotations ( Degrees )
 				:	float		Y Rotations ( Degrees )
 				:	float		Z Rotations ( Degrees )
 				:	MATRIX	*	New Matrix
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void BuildRotMatrix( float xa, float ya, float za, MATRIX * m )
 {
 	float	c0, c1, c2, s0, s1, s2, c0s1, s0s1;
@@ -63,13 +63,13 @@ void BuildRotMatrix( float xa, float ya, float za, MATRIX * m )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Matrix Multiplication
 	Input		:	MATRIX	*	Matrix 1
 				:	MATRIX	*	Matrix 2
 				:	MATRIX	*	Result Matrix
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MatrixMultiply( MATRIX * m0, MATRIX * m1, MATRIX * m0m1 )
 {
 	float	a, b, c, d, e, f, g, h, i;
@@ -117,13 +117,13 @@ void MatrixMultiply( MATRIX * m0, MATRIX * m1, MATRIX * m0m1 )
 	m0m1->_44 = ( j * N + k * O + l * P + m * M );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Apply Matrix to a Vector
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Vert
 				:	VECTOR	*	New Vert
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 //#ifndef USEASM
 #if 1
 void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
@@ -198,13 +198,13 @@ __declspec(naked) void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Apply Matrix to a Vector
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Vert
 				:	VECTOR	*	New Vert
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void VisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 {
 	float w;
@@ -218,14 +218,14 @@ void VisPolyApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Add XYZ Translation to Matrix
 	Input		:	float		X Translation
 				:	float		Y Translation
 				:	float		Z Translation
 				:	MATRIX	*	Matrix to add translation
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddMatrixTrans( float xt, float yt, float zt, MATRIX * m )
 {
 	m->_41 = xt;
@@ -233,13 +233,13 @@ void AddMatrixTrans( float xt, float yt, float zt, MATRIX * m )
 	m->_43 = zt;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate the Cross product of 2 Vectors
 	Input		:	VECTOR	*	Vector1
 				:	VECTOR	*	Vector2
 				:	VECTOR	*	New Vector
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifndef USEASM
 void CrossProduct( VECTOR * a, VECTOR * b, VECTOR * ab )
 {
@@ -359,12 +359,12 @@ __declspec(naked) void CrossProduct(VECTOR * v, VECTOR * v1, VECTOR * v2)
 	}
 }
 #endif
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate the Dod product of 2 VECTORS
 	Input		:	VECTOR * a
 				:	VECTOR * b
 	Output		:	float		Dot Product
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifndef USEASM
 float DotProduct( VECTOR * a , VECTOR * b ) 
 {
@@ -394,13 +394,13 @@ __declspec(naked) float DotProduct( VECTOR * a, VECTOR * b)
 }
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Reflect Vector off a surface normal
 	Input		:	VECTOR	*	Vector
 				:	NORMAL	*	Normal
 				:	VECTOR	*	New Vector
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReflectVector( VECTOR * old, NORMAL * normal, VECTOR * new1 )
 {
    float        lambda;
@@ -424,11 +424,11 @@ void ReflectVector( VECTOR * old, NORMAL * normal, VECTOR * new1 )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Normalises Vector V
 	Input		:	VECTOR	*	Vector
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void NormaliseVector( VECTOR *  v )
 {
     float	inv_mod;
@@ -444,23 +444,23 @@ void NormaliseVector( VECTOR *  v )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VERT	*	VERTEX1
 				:	VECTOR	*  VECTOR
 	Output		:	float		Dot Product
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float VectorLength( VECTOR * v ) 
 {
 	return( (float) sqrt( ( v->x * v->x ) + ( v->y * v->y ) + ( v->z * v->z ) ) ); 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VERT	*	VERTEX1
 				:	VECTOR	*  VECTOR
 	Output		:	float		Dot Product
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float DistanceVert2Vector( VERT *  a , VECTOR * b ) 
 {
 	float x;
@@ -473,12 +473,12 @@ float DistanceVert2Vector( VERT *  a , VECTOR * b )
 
 	return( (float) sqrt( (double)((x*x) + (y*y) + (z*z)) ) ); 
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate the Distance between a VERT and a VECTOR
 	Input		:	VECTOR	*  VECTOR
 				:	VECTOR	*  VECTOR
 	Output		:	float		Dot Product
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float DistanceVector2Vector( VECTOR *  a , VECTOR * b ) 
 {
 	float x;
@@ -492,12 +492,12 @@ float DistanceVector2Vector( VECTOR *  a , VECTOR * b )
 	return( (float) sqrt( (double)((x*x) + (y*y) + (z*z)) ) ); 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Matrix Transpose
 	Input		:	MATRIX	*	Matrix 1
 				:	MATRIX	*	Matrix 2
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MatrixTranspose( MATRIX * m1, MATRIX * m2 )
 {
 	MATRIX	T;
@@ -518,11 +518,11 @@ void MatrixTranspose( MATRIX * m1, MATRIX * m2 )
 	m2->_41 = T._14;	m2->_42 = T._24;	m2->_43 = T._34;	m2->_44 = T._44;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Calculate Random Number within range
 	Input		:	uint16		Max
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16	Random_Range( uint16 Max )
 {
 	uint16	bit1, bit2;
@@ -554,11 +554,11 @@ float Random_Range_Float( float Max )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Quick Distancecalc... 8 % error...
 	Input		:	VECTOR * 
 	Output		:	float
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	QuickDistance( VECTOR * V )
 {
 	float	Max,Med,Min;
@@ -588,11 +588,11 @@ float	QuickDistance( VECTOR * V )
 	}
 	return( Max + ( Med * 0.34375F ) + ( Min * 0.25F ) ) ;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Quick Distancecalc... 8 % error...
 	Input		:	float , float
 	Output		:	float
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	QuickDistance2d( float x , float y )
 {
 	float Min;
@@ -637,7 +637,7 @@ void MakeViewMatrix(VECTOR *viewpos, VECTOR *lookpos, VECTOR *up, MATRIX *view)
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Calculate View Axes
 	Input		:	VECTOR	*	Position
 				:	VECTOR	*	Direction Vector
@@ -646,7 +646,7 @@ void MakeViewMatrix(VECTOR *viewpos, VECTOR *lookpos, VECTOR *up, MATRIX *view)
 				:	VECTOR	*	New Y Axis Vector
 				:	VECTOR	*	New Z Axis Vector
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CalcViewAxes( VECTOR * viewpos, VECTOR * lookpos, VECTOR * up,
 				   VECTOR * vx, VECTOR * vy, VECTOR * vz )
 {
@@ -671,12 +671,12 @@ void CalcViewAxes( VECTOR * viewpos, VECTOR * lookpos, VECTOR * up,
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Scale a matrix
 	Input		:	MATRIX	*	Matrix
 				:	VECTOR	*	Scale Vector
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ScaleMatrix( MATRIX * m, VECTOR * v )
 {
 	m->_11 = ( m->_11 * v->x );
@@ -700,13 +700,13 @@ void ScaleMatrix( MATRIX * m, VECTOR * v )
 
 */
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Function	:	Create matrix to rotate around arbitary axis
 	Input		:	float		Angle
 				:	VECTOR		Axis
 				:	MATRIX	*	Matrix
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MatrixFromAxisAndAngle( float angle, VECTOR * axis, MATRIX * rot )
 {
 

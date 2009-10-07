@@ -171,8 +171,11 @@ typedef struct GROUP{
 	uint16	num_execbufs;
 	uint16	exec_type[MAXEXECBUFSPERGROUP];
 	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
-	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
-	LPD3DLVERTEX org_vertpnt[MAXEXECBUFSPERGROUP];
+//	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
+	LEVELRENDEROBJECT			renderObject[MAXEXECBUFSPERGROUP];
+//	D3DVERTEXBUFFERDESC		vbdesc[MAXEXECBUFSPERGROUP];
+//	LPD3DLVERTEX org_vertpnt[MAXEXECBUFSPERGROUP];
+	LPD3DLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	char	name[32];
 	VERT	center;
 	VERT	half_size;
@@ -206,6 +209,7 @@ typedef struct MLOADHEADER{
 	int					state;								// FALSE if not loaded properly...
 	char		*		OrgAddr;
 	char		*		Buffer;
+	char		*		testBuffer;
 	uint16				num_texture_files;
 	uint16				num_groups;
 	GROUP				Group[MAXGROUPS];

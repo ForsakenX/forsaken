@@ -43,9 +43,9 @@ num_frames : uint16 // number of animation frames
 	}[num_groups]
 }[num_frames]
 */
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include File...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -63,20 +63,20 @@ num_frames : uint16 // number of animation frames
 #include "spotfx.h"
 #include "XMem.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	MXA_VERSION_NUMBER	2
 
 //#define FIX_MXA_UV
 #undef FIX_MXA_UV
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void DebugPrintf( char *fmt, ... );
-extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert );
+extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert );
 
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
@@ -99,9 +99,9 @@ extern	BOOL	CanCullFlag;
 
 int16		NewLevelNum;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 MXALOADHEADER MxaModelHeaders[MAXMXAMODELHEADERS];
 #if 0
 BOOL	WaterEnable = FALSE;
@@ -139,23 +139,22 @@ FixUV_MXA( uint16 vertices, MXAVERT *MXA_Vert, LPD3DLVERTEX Vert, LPD3DLVERTEX O
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Load .Mx File
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangles  )
 {
-	D3DEXECUTEDATA			d3dExData;
-	D3DEXECUTEBUFFERDESC	debDesc;
 
 	char		*	Buffer;
+	char		*	tempBuffer;
 	int16		*	Int16Pnt;
 	uint32		*	Uint32Pnt;
 	uint16		*	Uint16Pnt;
 	float		*	FloatPnt;
 	MFACE		*	MFacePnt;
-	LPD3DTRIANGLE	FacePnt;
+	D3DTRIANGLE		FacePnt; // was a pointer
 	LPD3DTRIANGLE	TempFacePnt;
 	uint16			exec_type;			// the type of execute buffer
 	uint16			texture_type;		// the type of texture...0 normal  1 env
@@ -164,8 +163,11 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	uint16			num_triangles;		// number of triangles in group
 	uint16			group_vertex_start; // where in the vert list to start processing
 	uint16			group_vertex_num;	// and how many to do...
-	LPD3DLVERTEX   	lpD3DLVERTEX2;
+	LPOLDD3DLVERTEX lpD3DLVERTEX2;
 	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPD3DLVERTEX	lpBufStart = NULL;
+	WORD			*lpIndices = NULL;
+	int				ibIndex = 0;
 	uint16			frame;
 	uint16			texgroup;
 	uint16			num_anim_vertices;
@@ -187,7 +189,11 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	int8			SFXFilename[ 128 ];
 #endif
 
-    LPVOID lpBufStart, lpInsStart, lpPointer;
+	int numTriangles = 0;
+	int triangleCount = 0;
+	int indexOffset = 0;
+	int tempInt;
+	char buf[100];
 
 	// Mxaloadheader is not valid until everything has been done..
 	Mxaloadheader->state = FALSE;
@@ -195,6 +201,8 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	Mxaloadheader->CurrentFrame = 0;
 	Mxaloadheader->Interp = 0.0F;
 	Mxaloadheader->Time = 0.0F;
+
+	OutputDebugString("MxaLoad\n");
 	
 	Buffer = Mxaloadheader->Buffer;
 	if( Buffer == NULL)
@@ -248,58 +256,59 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			/*	record how many verts there are in the exec buffer	*/
 			Mxaloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
+			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
+			Mxaloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
 
-			/*	create an execution buffer	*/
-	
-			if (MakeExecuteBuffer( &debDesc, d3dappi.lpD3DDevice , &Mxaloadheader->Group[group].lpExBuf[execbuf] , ExecSize ) != TRUE )
-			{	
-				Msg( "Mxaload() MakeExecuteBuffer failed in %s\n", Filename );
+			//vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
+
+			/*	create a vertex buffer	*/
+			if (FAILED(FSCreateVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], num_vertices)))
+			{
 				return FALSE;
 			}
-	
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
-			/*	lock the execute buffer	*/
-			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxaloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+
+			sprintf(buf, "created buffer to hold :%d verts\n", num_vertices);
+			OutputDebugString(buf);
+
+			/*	lock the vertex buffer	*/
+			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
 			{
-				Msg( "Mxaload() lock failed in %s\n", Filename );
-				return FALSE ;
+				Msg( "Mxload() lock failed in %s\n", Filename );
+				return FALSE;
 			}
-		
-			lpBufStart = debDesc.lpData;
-			lpPointer = lpBufStart;
-	
-			lpD3DLVERTEX2 = (LPD3DLVERTEX ) Buffer;
-			lpD3DLVERTEX = (LPD3DLVERTEX ) lpPointer;
-			Mxaloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
+
+			lpBufStart = lpD3DLVERTEX;
 
 			/*	copy the vertex data into the execute buffer	*/
 			for ( i=0 ; i<num_vertices; i++)
 			{
-				lpD3DLVERTEX->x = lpD3DLVERTEX2->x;
-				lpD3DLVERTEX->y = lpD3DLVERTEX2->y;
-				lpD3DLVERTEX->z = lpD3DLVERTEX2->z;
-				lpD3DLVERTEX->tu = lpD3DLVERTEX2->tu;
-				lpD3DLVERTEX->tv = lpD3DLVERTEX2->tv;
 
-				lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
+				OLDD3DLVERTEX *old = lpD3DLVERTEX2;
+
+				lpD3DLVERTEX[i].x = old->x;
+				lpD3DLVERTEX[i].y = old->y;
+				lpD3DLVERTEX[i].z = old->z;
+				lpD3DLVERTEX[i].tu = old->tu;
+				lpD3DLVERTEX[i].tv = old->tv;
+				lpD3DLVERTEX[i].color = old->color;
+
 #if !ACTUAL_TRANS
-				lpD3DLVERTEX->color |= 0xFF000000;
+				//lpD3DLVERTEX->color |= 0xFF000000;
+				lpD3DLVERTEX[i].color |= 0xFF000000;
 #endif
 //				lpD3DLVERTEX->specular = lpD3DLVERTEX2->specular;
-				lpD3DLVERTEX->specular = RGB_MAKE( 0 , 0 , 0 );
-				lpD3DLVERTEX->dwReserved = 0;
-				lpD3DLVERTEX++;
+				//lpD3DLVERTEX->specular = RGB_MAKE( 0 , 0 , 0 );
+				lpD3DLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
+//				lpD3DLVERTEX->dwReserved = 0;
+				//lpD3DLVERTEX++;
 				lpD3DLVERTEX2++;
 			}
 
- 			lpPointer = (void * )  lpD3DLVERTEX;			
-
-
-			lpInsStart = lpPointer;
+			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
+			Mxaloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(D3DLVERTEX) * num_vertices);
+			memcpy(Mxaloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(D3DLVERTEX) * num_vertices);
 	
- 
+/* bjd - TODO
 			//	Stuff to clip if bounding box is off screen
 			OP_SET_STATUS( D3DSETSTATUS_STATUS,  D3DSTATUS_CLIPINTERSECTIONFRONT |
 							   D3DSTATUS_CLIPINTERSECTIONTOP |
@@ -314,14 +323,55 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 							   D3DSTATUS_CLIPINTERSECTIONLEFT |
 							   D3DSTATUS_CLIPINTERSECTIONRIGHT
 							   , 0, TRUE , 0, lpPointer);
-
+*/
 			
 			Buffer = (char *) lpD3DLVERTEX2;
 			
 			Uint16Pnt = (uint16 *) Buffer;
 			num_texture_groups = *Uint16Pnt++;    
 			Buffer = (char *) Uint16Pnt;		
-			Mxaloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;			
+			Mxaloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;
+
+			/* find out how many vertexes we'll need to load into our vertex buffer */
+			triangleCount = 0;
+			tempInt = 0;
+			tempBuffer = Buffer;
+
+			for ( i=0 ; i<num_texture_groups; i++)
+			{
+				uint16 *temp = (uint16 *) tempBuffer;
+				
+				/* skip over unwated stuff */
+				temp += 4;
+
+				numTriangles = *temp++;
+
+				tempBuffer = (char*) temp;
+				MFacePnt = (MFACE *) tempBuffer;
+
+				MFacePnt += numTriangles;
+				tempBuffer = (char *) MFacePnt; 
+				triangleCount += numTriangles;
+			}
+
+			/*	create an index buffer	*/
+			if (FAILED(FSCreateIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount * 3)))
+			{
+				return FALSE;
+			}
+
+			sprintf(buf, "created index buffer to hold :%d incidices\n", triangleCount * 3);
+			OutputDebugString(buf);
+
+			/*	lock the index buffer	*/
+			if (FAILED(FSLockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpIndices)))
+			{
+				Msg( "Mxload() lock failed in %s\n", Filename );
+				return FALSE;
+			}
+
+			ibIndex = 0;
+			indexOffset = 0;
 
 			for ( i=0 ; i<num_texture_groups; i++)
 			{
@@ -334,7 +384,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				Buffer = (char *) Uint16Pnt;		
 	
 				Mxaloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
-
+/* bjd - TODO
 				OP_STATE_LIGHT(1, lpPointer);
 				    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxaloadheader->TloadIndex[tpage]], lpPointer);
 				OP_PROCESS_VERTICES(1, lpPointer);
@@ -345,18 +395,27 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					OP_NOP(lpPointer);
 
 				OP_TRIANGLE_LIST( (short) num_triangles, lpPointer);
-				
+*/
 
 				MFacePnt = (MFACE *) Buffer;
-				FacePnt = (LPD3DTRIANGLE ) lpPointer;
-				TempFacePnt = FacePnt;
+
+				/* bjd - CHECK - might need to be start of buffer */
+				TempFacePnt = (LPD3DTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
 
 				/*	copy the faces data into the execute buffer	*/
 				for( e=0; e<num_triangles; e++)
 				{
-					FacePnt->v1 = MFacePnt->v1;
-					FacePnt->v2 = MFacePnt->v2;
-					FacePnt->v3 = MFacePnt->v3;
+					FacePnt.v1 = MFacePnt->v1;
+					FacePnt.v2 = MFacePnt->v2;
+					FacePnt.v3 = MFacePnt->v3;
+
+					lpIndices[ibIndex] = FacePnt.v1;
+					ibIndex++;
+					lpIndices[ibIndex] = FacePnt.v2;
+					ibIndex++;
+					lpIndices[ibIndex] = FacePnt.v3;
+					ibIndex++;
+
 					if ( MFacePnt->pad & 1 )
 					{
 						// colourkey triangle found
@@ -364,55 +423,83 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
-					FacePnt->wFlags = MFacePnt->pad;
+//					FacePnt->wFlags = MFacePnt->pad;
 #ifdef FIX_MXA_UV
-					FixUV( FacePnt, lpBufStart, tpage, Mxaloadheader->Group[group].org_vertpnt[execbuf] );
+					FixUV( &FacePnt, lpBufStart, tpage, Mxaloadheader->Group[group].org_vertpnt[execbuf] );
 #endif
-					FacePnt++;
+					//lpD3DLVERTEX+=3;
+					//FacePnt++;
 					MFacePnt++;
+					tempInt+=3;
 				}
-				lpPointer = (LPVOID) FacePnt;
+
+				sprintf(buf, "put %d verts into VB\n", tempInt);
+				OutputDebugString(buf);
+
 				Buffer = (char *) MFacePnt;
 
+				// BJD - check this. correct value to place here?
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;//num_triangles * 3;
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
+
+				/* keep track of our offset into our index buffer */
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startIndex = indexOffset;
+				indexOffset += num_triangles * 3;
+
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+				Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxaloadheader->TloadIndex[tpage]];
+/*
 				if (StoreTriangles)
 				{	Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = num_triangles;			
 					Mxaloadheader->Group[group].poly_ptr[execbuf] = (LPD3DTRIANGLE)malloc( sizeof (D3DTRIANGLE) * num_triangles);			
 				
-					memcpy(Mxaloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (D3DTRIANGLE) * num_triangles);				
-
+					memcpy(Mxaloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (D3DTRIANGLE) * num_triangles);
 				}
 				else
 				{
 					Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = 0;
 					Mxaloadheader->Group[group].poly_ptr[execbuf] = NULL;			
 				}
-
-
+*/
 			}
 
+			if (StoreTriangles)
+			{	Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = /*num_triangles*/triangleCount;
+				Mxaloadheader->Group[group].poly_ptr[execbuf] = (LPD3DTRIANGLE)malloc( sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);			
 			
-			OP_EXIT(lpPointer);
-			
-			/*	unlock the execute buffer	*/
-			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+				memcpy(Mxaloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);
+			}
+			else
+			{
+				Mxaloadheader->Group[group].num_polys_per_execbuf[execbuf] = 0;
+				Mxaloadheader->Group[group].poly_ptr[execbuf] = NULL;			
+			}
+
+			if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxaload() unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
-			
 
-			/*	set the data for the execute buffer	*/
-			memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
-			d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
-			d3dExData.dwVertexCount = (num_vertices);
-			d3dExData.dwInstructionOffset = (ULONG) ((char *)lpInsStart - (char *)lpBufStart);
-			d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
-			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->SetExecuteData(Mxaloadheader->Group[group].lpExBuf[execbuf], &d3dExData) != D3D_OK)
+			/*	unlock the index buffer	*/
+			if (FAILED(FSUnlockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
-				Msg( "Mxaload() SetExecuteDate failed in %s\n", Filename );
-				return FALSE;
+				Msg( "Mxload() ib unlock failed in %s\n", Filename );
+				return FALSE ;
 			}
+/*
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numVerts = num_vertices;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].numTriangles = num_triangles;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].startVert = 0;
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
+			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxaloadheader->TloadIndex[tpage]];
+*/
+			Mxaloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxaloadheader->TloadIndex[tpage]];
 
+			Mxaloadheader->Group[group].renderObject[execbuf].numTextureGroups = num_texture_groups;
+
+			//free(vertexArray);
+			//vertexArray = NULL;
 		}
 	}
 				
@@ -421,9 +508,9 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	// is there any vispoly info.....
 	if ( *Uint16Pnt++ == 2)				// 2 means .mxa format
 	{
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
  *		Particular Stuff Related Anims	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 		Mxaloadheader->num_frames = *Uint16Pnt++;
 
 		Buffer = (char * ) Uint16Pnt;
@@ -447,15 +534,25 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				{
 					for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 					{
+/*
 						memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
 						debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-						if( Mxaloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
-							Mxaloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
+*/
+//						if( Mxaloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
+//							Mxaloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK ) // bjd
+/*
+						if (FSLockExecuteBuffer(Mxaloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
 						{
 							Msg( "Mxaload : Lock ExecBuffer failed\n" );
 							return FALSE;
 						}
-						
+*/
+						if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[ group ].renderObject[execbuf], &lpD3DLVERTEX)))
+						{
+							Msg( "Mxaload : Lock VertexBuffer failed\n" );
+							return FALSE;
+						}
+
 						for( texgroup=0; texgroup < Mxaloadheader->Group[group].num_texture_groups[execbuf] ; texgroup++)
 						{
 							Uint16Pnt = (uint16 *) Buffer;
@@ -463,9 +560,9 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 							Buffer = (char * ) Uint16Pnt;
 							Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup] = num_anim_vertices;
 							Mxaloadheader->frame_pnts[frame][group][execbuf][texgroup] = (MXAVERT*) Buffer;
-							lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( (char*) debDesc.lpData +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( /*(char*) debDesc.lpData*/lpD3DLVERTEX +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 							lpD3DLVERTEX += 8;
-							lpD3DLVERTEX2 =	( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							lpD3DLVERTEX2 =	( LPOLDD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 							lpD3DLVERTEX2 += 8;
 #ifdef FIX_MXA_UV
 							FixUV_MXA( Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup],
@@ -474,10 +571,16 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 #endif
 							Buffer += ( num_anim_vertices * sizeof( MXAVERT ) );
 						}
-
+/*
 						if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 						{
 							Msg( "Mxaload : Unlock ExecBuffer failed\n" );
+							return FALSE ;
+						}
+*/						
+						if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+						{
+							Msg( "Mxaload : Unlock VertexBuffer failed\n" );
 							return FALSE ;
 						}
 					}
@@ -492,9 +595,9 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 		}
 	}
 	
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Point Direction Data
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	Uint16Pnt = (uint16 *) Buffer;
 #if 0
 	if( *Uint16Pnt++ )
@@ -698,11 +801,11 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Execute all group buffers for a Mxaloadheader
 	Input		;		MXALOADHEADER *
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 {
@@ -719,22 +822,34 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 //				if( ((Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 				if( Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
-					if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
-					AddTransExe( &Matrix , Mxaloadheader->Group[group].lpExBuf[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
-				}else{
-						if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-							return FALSE;
+//					if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
+					if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))
+					{
+						return FALSE;
+					}
+					AddTransExe( &Matrix , /*Mxaloadheader->Group[group].lpExBuf[i]*/&Mxaloadheader->Group[group].renderObject[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
+				}
+				else
+				{
+/*
+					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
+						return FALSE;
+*/					
+					if (FAILED(draw_object(&Mxaloadheader->Group[group].renderObject[i])))
+					{
+						return FALSE;
+					}
 				}
 			}
 		}
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Execute one group for an Mxaloadheader
 	Input		;		MXALOADHEADER *
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 #if 0
 BOOL ExecuteSingleGroupMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 group  )
@@ -779,8 +894,16 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	{
 	    for (i = 0; i < Mxaloadheader->Group[group].num_execbufs; i++)
 		{
-			XRELEASE(Mxaloadheader->Group[group].lpExBuf[i]);
-//			free(Mxaloadheader->Group[group].org_vertpnt[i]);
+//			XRELEASE(Mxaloadheader->Group[group].lpExBuf[i]);
+			FSReleaseRenderObject(&Mxaloadheader->Group[group].renderObject[i]);
+
+			/* This is not allocated...
+			if(Mxaloadheader->Group[group].org_vertpnt[i])
+			{
+				free(Mxaloadheader->Group[group].org_vertpnt[i]);
+				Mxaloadheader->Group[group].org_vertpnt[i] = NULL;
+			}
+			*/
 	
 			if (Mxaloadheader->Group[group].poly_ptr[i])
 			{
@@ -827,11 +950,11 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Pre - Load .Mxa File
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, BOOL LevelSpecific )
 {
 	long			File_Size;
@@ -925,27 +1048,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 			if( !_stricmp( "pkupsa.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 			if( !_stricmp( "titana.bmp", &Mxaloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
 
-			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES_SYSMEM)
-			{
-					if ( header_num > 0 )
-					{
-						Mxaloadheader->TloadIndex[i] = Mxaloadheaders[header_num - 1].TloadIndex[i];	// use same tpage as last model
-						strcpy (SystemMemTPages[ CurrentSysTexture ].FileName, &TempFilename[0]);	// store name of tpage
-					
-						Mxaloadheader->SysTloadIndex[i] = CurrentSysTexture;
-						SystemMemTPages[ CurrentSysTexture ].VidTPageIndex = Mxaloadheader->TloadIndex[i];
-						SystemMemTPages[ CurrentSysTexture ].lpSrcTextureSurf = NULL;
-						CurrentSysTexture++;
-
-						if (CurrentSysTexture == MAXSYSTEMMEMTPAGES)
-						{
-							Msg("2dTextures.c: Load_Off_File() Max system mem t-pages exceeded\n");
-							exit(1);
-						}
-					}
-			}
-
-			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES_VIDMEM)
+			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
 				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );		// dont colourkey
 			
 			if( Mxaloadheader->TloadIndex[i] == -1 )
@@ -954,7 +1057,6 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 				return FALSE;
 			}
 		}
-	
 	}
 
 	Mxaloadheader->Buffer = Buffer;
@@ -962,16 +1064,15 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Interp between frames for MXA Anim...
 	Input		:		MXALOADHEADER * Mxaloadheader 
 				:		int FrameFrom, int FrameTo , float Interp
 	Output		:		FLASE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , float Interp )
 {
-	D3DEXECUTEBUFFERDESC	debDesc;
-    LPVOID lpBufStart;
+    LPD3DLVERTEX	lpBufStart = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX;
 	LPD3DLVERTEX	lpD3DLVERTEX2;
 	MXAVERT *		FromVert;
@@ -990,22 +1091,17 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 	{
 		for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 		{
-
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
-			/*	lock the execute buffer	*/
-			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mxaloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
-		
-			lpBufStart = debDesc.lpData;
+			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
+			{
+				return FALSE;
+			}
 		
 			for( texgroup=0; texgroup < Mxaloadheader->Group[group].num_texture_groups[execbuf] ; texgroup++)
 			{
 				lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( (char*) lpBufStart+( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX += 8;
 
-				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX2 += 8;
 				
 				FromVert = ( MXAVERT * ) Mxaloadheader->frame_pnts[FromFrame][group][execbuf][texgroup];
@@ -1045,10 +1141,15 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 					ToVert++;
 				}
 			}
-
+#if 0
 			/*	unlock the execute buffer	*/
 			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 				return FALSE ;
+#endif
+			if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+			{
+				return FALSE;
+			}
 		}
 	}
 	
@@ -1057,16 +1158,16 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 
 
 #if 0
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Do the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+===================================================================*/
+/*===================================================================
 	Procedure	:		Do the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	WaterTime = 0.0F;
 void WaterMesh()
 {
@@ -1198,21 +1299,21 @@ void WaterMesh()
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Release the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleaseWaterMesh()
 {
 	if( WaterExecbuf )
 		XRELEASE(WaterExecbuf);
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Display the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisplayWaterMesh()
 {
 	LPDIRECTDRAW lpDD = d3dapp->lpDD;
@@ -1247,11 +1348,11 @@ void DisplayWaterMesh()
 	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 		return;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Init the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitWaterMesh()
 {
 	int x,y;
@@ -1369,11 +1470,11 @@ void InitWaterMesh()
 		return;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Collide the Water Stuff...
 	Input		:		Nothing
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL WaterCollide( VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , uint16 Damage)
 {
 	float	WaterOffset;
@@ -1396,9 +1497,9 @@ BOOL WaterCollide( VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , uint16 D
 	
 	WaterOffset = -DotProduct( &WaterNormal, &WaterPos );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Calculate T
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 	Div = ( Offset->x * WaterNormal.x) + 
 		  ( Offset->y * WaterNormal.y) + 
 		  ( Offset->z * WaterNormal.z);
@@ -1418,9 +1519,9 @@ BOOL WaterCollide( VECTOR *Origin, VECTOR *Offset, VECTOR *CollidePos , uint16 D
 	
 	t = -( Num / Div );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Do Polygon collision
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 	if( t < 0.0F ) return FALSE;		/* Intersection behind origin */
 	if( t > 1.0F ) return FALSE;		/* Intersection Greater then ray length */

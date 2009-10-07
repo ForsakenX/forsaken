@@ -1,8 +1,8 @@
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 *	l i g h t s . c
 *	All routines to do with Lights...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
@@ -29,9 +29,9 @@
 #define	USE_SPECULAR
 #undef USE_SPECULAR
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern int CurrentLoadingStep;
 extern	BOOL	ShowPlaneRGB;
 extern	float	WhiteOut;
@@ -56,10 +56,10 @@ extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-D3DCOLOR	GroupColours[ 8 ] = {
+===================================================================*/
+D3DCOLOR GroupColours[ 8 ] = {
 
 	RGBA_MAKE( 0,128,0,255 ),
 	RGBA_MAKE( 0,0,128,255 ),
@@ -95,9 +95,9 @@ void FLOAT2INT( int * I, float F )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Floating Point Cull Mode
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEASM
 _inline
 void	start_chop(void)
@@ -122,11 +122,11 @@ __asm
 }
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Does this light fall in a group...
 	Input		:	nothing
 	Output		:	FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef USEINLINE
 _inline
 #endif
@@ -149,11 +149,11 @@ BOOL	DoIEffectThisGroup1( MLOADHEADER * Mloadheader , VECTOR * Pos , float size 
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set up And Init all XLights
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	InitXLights()
 {
 	uint16	i;
@@ -169,12 +169,12 @@ void	InitXLights()
 
 	XLights[MAXXLIGHTS-1].Next = (uint16) -1;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Find a free light and move it from the free list to
 					the used list
 	Input		:	nothing
 	Output		:	uint16 number of light free....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16	FindFreeXLight()
 {
 	uint16 i;
@@ -196,12 +196,12 @@ uint16	FindFreeXLight()
 
 	return i ;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Kill a used light and move it from the used list to
 					the free list
 	Input		:	uint16 number of light free....
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	KillUsedXLight( uint16 light )
 {
 	uint16	its_prev;
@@ -225,11 +225,11 @@ void	KillUsedXLight( uint16 light )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process all XLights
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 {
 	uint16	light;
@@ -264,9 +264,9 @@ BOOL	ProcessXLights( MLOADHEADER * Mloadheader )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 *		cause a light to go red and get smaller then die...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void SetLightDie ( uint16 light )
 {				
@@ -276,11 +276,11 @@ void SetLightDie ( uint16 light )
 	XLights[light].g = 0.0F;
 	XLights[light].b = 0.0F;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Xlight 1 Group Only...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float	cral = 0.0F;
 
 
@@ -290,15 +290,14 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	blf;
 	float	glf;
 	float	rlf;
-	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	VECTOR	CellIndex;
 	float	distance;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+    LPD3DLVERTEX	lpPointer = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	VERTEXCELL * VertexCellPnt;
 	uint16 * VertexIndexPnt;
@@ -344,6 +343,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	uint32 * uint32Pnt;
 	TANIMUV * TanimUV;
 	float	intensity;
+	HRESULT hr;
 
 	intWhiteOut = (int)WhiteOut;
 	if( intWhiteOut >= 256 )
@@ -356,12 +356,12 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	execbuf = Mloadheader->Group[group].num_execbufs;
 	while( execbuf--)
 	{
-		memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-		debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		/*	lock the execute buffer	*/
-		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( Mloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-			return FALSE ;
-		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+		{
+			return FALSE;
+		}	
+
+//		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 
 		VertexCellPnt = Mloadheader->Group[group].vertex_cell_pnt[execbuf];
 		OrgVertexIndexPnt = Mloadheader->Group[group].vertex_index_pnt[execbuf];
@@ -411,7 +411,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 				lpD3DLVERTEX++;
 			}
 		}else{
-			lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 			
 			vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 			
@@ -448,7 +448,7 @@ clear:					mov		eax, [esi]
 					{
 						while( vert --)
 						{
-							lpD3DLVERTEX->color = (D3DCOLOR) lpD3DLVERTEX2->dwReserved;
+//							lpD3DLVERTEX->color = (D3DCOLOR) lpD3DLVERTEX2->dwReserved;
 							lpD3DLVERTEX++;		
 							lpD3DLVERTEX2++;		
 						}
@@ -490,7 +490,7 @@ clear:					mov		eax, [esi]
 			}else if( GroupWaterInfo[group] == WATERSTATE_ALLWATER )
 			{
 				// ****************** Full Water Effect ********************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+				lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 				lpD3DLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
@@ -524,7 +524,7 @@ clear:					mov		eax, [esi]
 				// ****************** End of Water Effect ******************************
 			}else{
 				// ****************** Partial Water Effect ******************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].org_vertpnt[execbuf];
+				lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 				lpD3DLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
@@ -600,12 +600,16 @@ clear:					mov		eax, [esi]
 						rlf	= XLightPnt->r; 
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
+
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;
@@ -955,7 +959,8 @@ __asm
 			}
 		}
 		/*	unlock the execute buffer	*/
-		if ( Mloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+		hr = FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf]);
+		if(FAILED(hr))
 			return FALSE;
 	}
 	
@@ -964,24 +969,24 @@ __asm
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-	D3DEXECUTEBUFFERDESC	debDesc;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
+    LPD3DLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1002,6 +1007,8 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	float	glf;
 	float	rlf;
 
+	//OutputDebugString("XLightMxloadHeader\n");
+
 	group = MXloadheader->num_groups;
 	while( group--)
 	{
@@ -1009,16 +1016,24 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			{
+				return FALSE;
+			}
+
+//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			//bjd lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
+
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR
@@ -1058,12 +1073,15 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;
@@ -1200,31 +1218,34 @@ PLOP:
 				XLightPnt = XLightPnt->NextVisible;
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Xlight Mxloadheader...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer;
+    LPD3DLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpD3DLVERTEX2;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1252,16 +1273,14 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			/*	lock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			{
+				return FALSE;
+			}
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = MXloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR
@@ -1301,12 +1320,15 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 						glf	= XLightPnt->g; 
 						blf	= XLightPnt->b;
 
+						/* bjd curr driver = 0 use to be software mode
 						if(!d3dapp->CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
 							blf = glf;
 						}
+						*/
+
 						if( XLightPnt->Type == SPOT_LIGHT )
 						{
 							Dirx = XLightPnt->Dir.x;
@@ -1443,8 +1465,12 @@ PLOP2:
 				XLightPnt = XLightPnt->NextVisible;
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	
@@ -1453,17 +1479,17 @@ PLOP2:
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set Xlight Mxloadheader...
 					Set all the ->color valus to be the same....
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 {
-    LPD3DLVERTEX	lpPointer;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	D3DEXECUTEBUFFERDESC	debDesc;
+    LPD3DLVERTEX	lpPointer = NULL;
+	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+//	D3DEXECUTEBUFFERDESC	debDesc;
 	int		group;
 	int		execbuf;
 	int		vert;
@@ -1473,12 +1499,18 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 		execbuf = MXAloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
+//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
+//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 			/*	lock the execute buffer	*/
-			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-				return FALSE ;
-			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			{
+				return FALSE;
+			}
+
+//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1488,19 +1520,23 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 				lpD3DLVERTEX++;		
 			}
 			/*	unlock the execute buffer	*/
-			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
+//				return FALSE;
+			if (FAILED(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
+			{
 				return FALSE;
+			}
 		}
 	}
 	return TRUE;
 }
 
 extern	int FontHeight;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void	CreateCellColours( MLOADHEADER * Mloadheader )
 {
 	uint16	group, total_groups;
@@ -1519,7 +1555,7 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	{
 		DrawLoadingBox( CurrentLoadingStep, total_groups - group, total_groups );
 		//D3DAppShowBackBuffer(TRUE);
-		//D3DAppClearScreenOnly();
+		//FSClearBlack();
 		PrintInitViewStatus( MyGameStatus );
 		Printuint16( group, 0,0,1);
 		execbuf = 0;//Mloadheader->Group[group].num_execbufs;
@@ -1553,11 +1589,11 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	DebugPrintf( "There are %d Lightcells in this level\n",num_of_cells );
 	CurrentLoadingStep++;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf )
 {
@@ -1579,7 +1615,7 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 
 	for ( execbuf = 0; execbuf < Mloadheader->Group[group].num_execbufs; execbuf++ )
 	{
-		lpD3DLVERTEX = Mloadheader->Group[group].org_vertpnt[execbuf];
+		lpD3DLVERTEX = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 		
 		for( i = 0 ; i < Mloadheader->Group[group].num_verts_per_execbuf[execbuf] ; i++ )
 		{
@@ -1622,11 +1658,11 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Find Nearest Cell Colour..
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	D3DCOLOR
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
 {
 	D3DCOLOR Col;
@@ -1705,11 +1741,11 @@ D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 g
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Build a list of the lights that are currently potentially visible...
 	Input		:	Group the Current camera is in..
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void BuildVisibleLightList( uint16 Group )
 {
 	int		light;
@@ -1731,11 +1767,11 @@ void BuildVisibleLightList( uint16 Group )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Save XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveXLights( FILE * fp )
 {
 	int		i;
@@ -1771,11 +1807,11 @@ FILE * SaveXLights( FILE * fp )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load XLights Array & Connected Global Variables
 	Input		:	FILE	*	File Pointer
 	Output		:	FILE	*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadXLights( FILE * fp )
 {
 	int		i;

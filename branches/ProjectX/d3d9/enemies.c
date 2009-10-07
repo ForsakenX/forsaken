@@ -1,6 +1,6 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Includes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
@@ -41,9 +41,9 @@
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	External Variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;
 extern	MCLOADHEADER	MCloadheadert0;
@@ -106,16 +106,16 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup );
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy );
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define	ENEMY_SHIELD	128
 #define	NME_VERSION_NUMBER	3
 #define	SPECIALENEMYNODENUM	16384
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Global Variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int		EnemiesActive = 0;
 BOOL	ShowUntriggeredNMEs = FALSE;
 int		Exogenon_Num_StartPos = 0;
@@ -3763,9 +3763,9 @@ ENEMY_TYPES	EnemyTypes[ MAX_ENEMY_TYPES ]
 
 ENEMY * TestEnemy = NULL;
 	
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Enemy Control Routines...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 ENEMY * PutEnemiesAtNodes(void);
 void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore );
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy );
@@ -3907,11 +3907,11 @@ float ObjectAutoLevelRot( OBJECT * Object, float autolevel_rate )
 }
 
 	
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Initialise all Enemies
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitEnemies( void )
 {
 	uint16	i;
@@ -3941,11 +3941,11 @@ void InitEnemies( void )
 	Enemies[ MAXENEMIES - 1 ].NextFree = NULL;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Find free Enemy
 	Input		:	nothing
 	Output		:	ENEMY	*	Object ( NULL if not available )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 ENEMY * FindFreeEnemy( void )
 {
 	ENEMY * Object;
@@ -3986,11 +3986,11 @@ ENEMY * FindFreeEnemy( void )
 	return( Object );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Kill an Enemy
 	Input		:	ENEMY	*	Object
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #ifdef DEBUG_ON
 void KillUsedEnemyDebugOn( ENEMY * Object, char *in_file, int in_line )
 #else
@@ -4137,11 +4137,11 @@ void KillUsedEnemy( ENEMY * Object )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Release all enemies
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ReleaseAllEnemies( void )
 {
 	ENEMY	*	Object;
@@ -4219,11 +4219,11 @@ void ReleaseAllEnemies( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	PreLoad Enemies
 	Input		:	Nothing
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreLoadEnemies( void )
 {
 	FILE	*	fp;
@@ -4321,7 +4321,7 @@ BOOL PreLoadEnemies( void )
 							ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
 							ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 							ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-							ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+							ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 							ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 							ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 							EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
@@ -4336,7 +4336,7 @@ BOOL PreLoadEnemies( void )
 								ModelNames[ NextEnemyModel ].DoIMorph = TRUE;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 								NextEnemyModel++;
@@ -4365,7 +4365,7 @@ BOOL PreLoadEnemies( void )
 								ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
 								ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 								ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+								ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 								ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 								ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 								EnemyTypes[ ModelNum ].ModelNumber = NextEnemyModel;
@@ -4380,7 +4380,7 @@ BOOL PreLoadEnemies( void )
 									ModelNames[ NextEnemyModel ].DoIMorph = FALSE;
 									ModelNames[ NextEnemyModel ].ModelIndex = NextEnemyModel;
 									ModelNames[ NextEnemyModel ].StoreTriangles = FALSE;
-									ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+									ModelNames[ NextEnemyModel ].AllocateTpage = LOAD_TPAGES;
 									ModelNames[ NextEnemyModel ].LevelSpecific = EnemyTypes[ ModelNum ].LevelSpecific;
 									ModelNames[ NextEnemyModel ].LoadEnable = TRUE;
 									NextEnemyModel++;
@@ -4428,11 +4428,11 @@ BOOL PreLoadEnemies( void )
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load Enemies
 	Input		:	Nothing
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL LoadEnemies( void )
 {
 	FILE	*	fp;
@@ -5138,7 +5138,7 @@ BOOL LoadEnemies( void )
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Init Enemy
 	Input		:	uint16		GenType
 				:	VECTOR	*	Pos
@@ -5152,7 +5152,7 @@ BOOL LoadEnemies( void )
 				:	int32		PickupHeld
 				:	uint16		FormationLink
 	Output		:	ENEMY	*	Enemy
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, uint16 Group, uint16 ModelNum, uint16 TriggerMod , uint16 EnemyType , uint32 Network , int32 PickupHeld , uint16 FormationLink , float GenerationDelay)
 {
 	int16		Count;
@@ -5357,11 +5357,11 @@ ENEMY * InitOneEnemy( uint16 GenType, VECTOR * Pos, VECTOR * Dir, VECTOR * Up, u
 	return( NULL );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process all Enemies
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ProcessEnemies( void )
 {
 	GUNOBJECT	*	GunObject;
@@ -5585,11 +5585,11 @@ KilledInAI:
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display Untriggered NME's
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DispUntriggeredNMEs( void )
 {
 	ENEMY		*	Enemy;
@@ -5620,12 +5620,12 @@ void DispUntriggeredNMEs( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set Current Anim Seq
 	Input		:	int16	Seq Number
 				:	OBJECT * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetCurAnimSeq( int16 Seq, OBJECT * Object )
 {
 	if( Seq != -1 && Object->AnimSeqs )
@@ -5637,11 +5637,11 @@ void SetCurAnimSeq( int16 Seq, OBJECT * Object )
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Enable Enemy
 	Input		:	uint16	EnemyIndex
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnableEnemy( uint16 EnemyIndex )
 {
 	ENEMY	*	Enemy;
@@ -5703,11 +5703,11 @@ void EnableEnemy( uint16 EnemyIndex )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Disable Enemy
 	Input		:	ENEMY	*	Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DisableEnemy( ENEMY * Enemy )
 {
 	Enemy->Status &= ~ENEMY_STATUS_Enable;
@@ -5718,7 +5718,7 @@ void DisableEnemy( ENEMY * Enemy )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Check if hit Enemy
 	Input		:	uint16		OwnerType
 				:	uint16		Owner of weapon
@@ -5732,7 +5732,7 @@ void DisableEnemy( ENEMY * Enemy )
 				:	float		Weapon Radius;
 				:	uint16		Colision Type
 	Output		:	ENEMY	*	Enemy Address ( NULL If none hit )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point,
 						VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType )
 {
@@ -5798,9 +5798,9 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 						break;
 				}
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Does Ray hit target directly?
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 				if( RaytoSphere2( (VECTOR *) &Enemy->Object.Pos, EnemyTypes[Enemy->Type].Radius, Pos, Dir,
 									&Int_Temp, &Int_Temp2 ) )
 				{
@@ -5820,9 +5820,9 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 				}
 				else
 				{
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Is Starting pos inside sphere already?
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 					if( PointToSphere( (VERT *) &Enemy->Object.Pos, EnemyTypes[Enemy->Type].Radius, (VERT *) Pos ) )
 					{
 						ClosestLength = 0.0F;
@@ -5834,9 +5834,9 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
    					{
    						if( ColRadius > EnemyTypes[Enemy->Type].Radius )
    						{
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Do i graze sphere?
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
    							if( RaytoSphere2( (VECTOR *) &Enemy->Object.Pos, ColRadius, Pos, Dir,
    											  &Int_Temp, &Int_Temp2 ) )
    							{
@@ -5880,11 +5880,11 @@ SkipIt:
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Flying Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyFlyUnderPlayerControl( ENEMY * Enemy )
 {
 	Enemy->Object.Angle.x += control.pitch;
@@ -5898,11 +5898,11 @@ void EnemyFlyUnderPlayerControl( ENEMY * Enemy )
 	Enemy->Object.Speed.z += control.forward;
 	AutoMovement( &Enemy->Object , Enemy , TRUE);
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Flying Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyFlyUnderAiControl( ENEMY * Enemy )
 {
 	Enemy->AIMoveFlags &= (AI_CONTROL_NO_FORWARD +AI_CONTROL_NO_BACK +AI_CONTROL_NO_LEFT +AI_CONTROL_NO_RIGHT +AI_CONTROL_NO_UP +AI_CONTROL_NO_DOWN+AI_CONTROL_COLLISION );
@@ -5933,11 +5933,11 @@ void EnemyFlyUnderAiControl( ENEMY * Enemy )
 	}
 				
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Crawling Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyCrawlUnderPlayerControl( ENEMY * Enemy )
 {
 	SHIPCONTROL ctrl;
@@ -5957,11 +5957,11 @@ void EnemyCrawlUnderPlayerControl( ENEMY * Enemy )
 
 	AutoMovementCrawl( &Enemy->Object , Enemy );
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Crawling Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyCrawlUnderAiControl( ENEMY * Enemy )
 {
 	float Turn;
@@ -5999,19 +5999,19 @@ void EnemyCrawlUnderAiControl( ENEMY * Enemy )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Turret Enemy Under Player Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyTurretUnderPlayerControl( ENEMY * Enemy )
 {
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Turret Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyTurretUnderAiControl( ENEMY * Enemy )
 {
 	Enemy->AIMoveFlags = 0;
@@ -6020,11 +6020,11 @@ void EnemyTurretUnderAiControl( ENEMY * Enemy )
 	AutoDisplay( &Enemy->Object );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Enemy Under Spline Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyUnderSplineControl( ENEMY * Enemy )
 {
 	OBJECT * Object;
@@ -6055,11 +6055,11 @@ void EnemyUnderSplineControl( ENEMY * Enemy )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Exogenon Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyUnderExogenonControl( ENEMY * Enemy )
 {
 	float Turn;
@@ -6091,11 +6091,11 @@ void EnemyUnderExogenonControl( ENEMY * Enemy )
 	}
 
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	FleshMorph Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyUnderFleshMorphControl( ENEMY * Enemy )
 {
 	float Move;
@@ -6114,11 +6114,11 @@ void EnemyUnderFleshMorphControl( ENEMY * Enemy )
 		AutoMovementFleshmorph( &Enemy->Object , Enemy );
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	LittleGeek Enemy Under Ai Control...
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 {
 	Enemy->AIMoveFlags &= (AI_CONTROL_NO_FORWARD +AI_CONTROL_NO_BACK +AI_CONTROL_NO_LEFT +AI_CONTROL_NO_RIGHT +AI_CONTROL_NO_UP +AI_CONTROL_NO_DOWN+AI_CONTROL_COLLISION );
@@ -6140,11 +6140,11 @@ void EnemyUnderLittleGeekControl( ENEMY * Enemy )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 {
 	VECTOR	ImpactPoint;
@@ -6317,9 +6317,9 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 			Enemy->TShip = NULL;
 		}
 	}
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================ÄÄÄÄ
 			Set the Banking Matrix
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+/*===================================================================ÄÄÄÄ*/
 	MakeQuat( 0.0F , 0.0F , Object->Bank, &StepQuat );
 	QuatMultiply(  &Object->Quat , &StepQuat , &Object->FinalQuat );
 	QuatToMatrix( &Object->FinalQuat, &Object->FinalMat );
@@ -6331,11 +6331,11 @@ void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore )
 		Object->Angle.y = 0.0F;
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning for a Crawling Enemy...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 {
 	VECTOR	Move_Off = { 0.0F , 0.0F , 0.0F };	
@@ -6557,11 +6557,11 @@ void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning for a Exogenon Enemy...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 {
 	MATRIX	StepMat;	
@@ -6577,7 +6577,7 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set a wheel position..checks if group changes...
 	Output		:	VECTOR * DestPos
 				:	VECTOR * SourcePos
@@ -6588,7 +6588,7 @@ void AutoMovementExogenon( OBJECT * Object , ENEMY * Enemy )
 				:	uint16	startgroup
 				:	uint16 * DestGroup
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 __inline
 void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zoff , VECTOR * Right, VECTOR * Forward, uint16 Group , uint16 * DestGroup )
 {
@@ -6603,11 +6603,11 @@ void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zof
 	*DestGroup = MoveGroup( &Mloadheader, SourcePos, Group, &MoveOffset );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all updating of quats/mats..
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 __inline
 void AutoDisplay( OBJECT * Object )
 {
@@ -6617,11 +6617,11 @@ void AutoDisplay( OBJECT * Object )
 	Object->FinalMat = Object->Mat;
 	Object->FinalInvMat = Object->InvMat;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all updating of quats/mats..
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 __inline
 void AutoDisplayMatrix( OBJECT * Object )
 {
@@ -6634,11 +6634,11 @@ void AutoDisplayMatrix( OBJECT * Object )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CarryOutAIMovementCommands( ENEMY * Enemy )
 {
 	float Turn;
@@ -6707,11 +6707,11 @@ void CarryOutAIMovementCommands( ENEMY * Enemy )
 		Enemy->Object.Speed.z -= Move;
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....
 	Output		:	ENEMY	*	Enemy 
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy )
 {
 	float Move;
@@ -6785,11 +6785,11 @@ void CarryOutPreciseAIMovementCommands( ENEMY * Enemy )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....For A GUN
 	Output		:	GUNOBJECT * GObject..
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * GObject )
 {
 	float Turn;
@@ -6828,11 +6828,11 @@ void CarryOutGUN_AIMovementCommands( GUNOBJECT * GObject )
 	}
 
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out the movement required by AI....For A GUN
 	Output		:	GUNOBJECT * GObject..
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject )
 {
 	float Turn;
@@ -6877,12 +6877,12 @@ void CarryOutGUN_PreciseAIMovementCommands( GUNOBJECT * GObject )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all turning for component gunturret...
 				:	Uses Mats instead of Quats....
 	Output		:	GUNOBJECT * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 {
 	GUNTYPE	* GunType;
@@ -6952,7 +6952,7 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 		Object->Angle.x	= 0.0F;
 	}
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get Display Matrix of last
 				:	user controlled componented object.
 	Input		:	OBJECT	*	Object;
@@ -6961,7 +6961,7 @@ void GunRotation( GUNOBJECT * Object, BOOL AngleDecellBefore  )
 				:	VECTOR	*	FirePos
 				:	int16		BaseIndex
 	Output		:	BOOL		TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, VECTOR * FirePos, int16 BaseIndex )
 {
 	int16	Last = -1;
@@ -6991,13 +6991,13 @@ BOOL GetLastCompDispMatrix( OBJECT * Object, MATRIX * Matrix, MATRIX * TMatrix, 
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set turret Vector
 	Input		:	OBJECT	*	Object;
 				:	VECTOR	*	Vector ( Local )
 				:	int16		BaseIndex
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 {
 	if( Object->UserContComps[ BaseIndex ] )
@@ -7013,12 +7013,12 @@ void SetTurretVector( OBJECT * Object, VECTOR * Vector, int16 BaseIndex )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Init a gun..
 	Input		:	uint16 GunType
 				:	OBJECT	*	Object;
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 {
 	GUNOBJECT * GunObject;
@@ -7061,12 +7061,12 @@ void InitGuns( BYTE how_many_guns , uint16 * GunType , OBJECT * Object )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Restrict Movement....
 	Input		:	ENEMY * Enemy
 				:	VECTOR * Move offset....
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 {
 	VECTOR v;
@@ -7105,12 +7105,12 @@ void RestrictMovement( ENEMY * Enemy , VECTOR * Move )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Enemy to Enemy Collide...
 	Input		:	ENEMY * Enemy
 				:	VECTOR * Move offset....
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 {
 	ENEMY * TEnemy;
@@ -7160,11 +7160,11 @@ BOOL Enemy2EnemyCollide( ENEMY * SEnemy , VECTOR * Move )
 	return FALSE;
 
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Enemy to Enemy Collide Special for crawling enemies only..
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 {
 	ENEMY * TEnemy;
@@ -7201,11 +7201,11 @@ BOOL Enemy2EnemyCollideSpecial( ENEMY * SEnemy , VECTOR * StartPos)
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Ship 2 Ship collide...
 	Input		:	BikeNumber..
 	Output		:	Move_Off filled in...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 {
 	float Move_Length;
@@ -7281,11 +7281,11 @@ BOOL Ship2EnemyCollide( uint16 i , VECTOR * Move_Off )
 	return HasBeen;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Setup Enemy group link list
 	Input		:	Nothing
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetupEnemyGroups( void )
 {
 	int16	Count;
@@ -7297,12 +7297,12 @@ void SetupEnemyGroups( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Add Enemy to group link list
 	Input		:	ENEMY	*	Enemy
 				:	uint16		Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddEnemyToGroup( ENEMY * Enemy, uint16 Group )
 {
 	Enemy->PrevInGroup = NULL;
@@ -7312,12 +7312,12 @@ void AddEnemyToGroup( ENEMY * Enemy, uint16 Group )
 	NumEnemiesPerGroup[ Group ]++;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Remove Enemy from group link list
 	Input		:	uint16		Enemy Index
 				:	uint16		Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group )
 {
 	if( Enemy->PrevInGroup ) Enemy->PrevInGroup->NextInGroup = Enemy->NextInGroup;
@@ -7328,24 +7328,24 @@ void RemoveEnemyFromGroup( ENEMY * Enemy, uint16 Group )
 	NumEnemiesPerGroup[ Group ]--;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Move Enemy from 1 group to another
 	Input		:	ENEMY	*	Enemy
 				:	uint16		OldGroup
 				:	uint16		NewGroup
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MoveEnemyToGroup( ENEMY * Enemy, uint16 OldGroup, uint16 NewGroup )
 {
 	RemoveEnemyFromGroup( Enemy, OldGroup );
 	AddEnemyToGroup( Enemy, NewGroup );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update Enemies ClipGroup
 	Input		:	CAMERA	*	Camera
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateEnemiesClipGroup( CAMERA * Camera  )
 {
 	ENEMY		*	Enemy;
@@ -7405,9 +7405,9 @@ void UpdateEnemiesClipGroup( CAMERA * Camera  )
 
 
 #if 1
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Stuff to do with reading in the Enemies.txt!!!!
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 uint16	CurrentEnemy = 0;
 uint16	CurrentGun = 0;
@@ -7910,6 +7910,7 @@ static int read_EnemyType( FILE *f, char *last_token )
 		{"ENEMY_LEADER_Max",	  	 ENEMY_LEADER_Max } ,	
 		{"ENEMY_LEADER_AirMoble", 	 ENEMY_LEADER_AirMoble } ,
 		{"ENEMY_Fodder1", 			 ENEMY_Fodder1 } ,
+		{"ENEMY_Boss_LittleGeek",	ENEMY_Boss_LittleGeek },
 		{"ENEMY_Bike_FlyGirl",      ENEMY_Bike_FlyGirl } ,  		 	
 	};
 
@@ -8075,11 +8076,11 @@ static int read_Gun_WeaponType( FILE *f, char *last_token )
 		return 0;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Read in the enemy txt file..
 	Input		:	char * Filename
 	Output		:	BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef int (*ReadEnemy)( FILE *, char * );
 typedef struct {
 	char *keyword;
@@ -8181,11 +8182,11 @@ void ObjectForceExternalOneOff( OBJECT * Object, VECTOR *force )
 	Object->ExternalForce.z += force->z;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all movement / collision/ turning...
 	Output		:	OBJECt * Object
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 {
 	float	Speed;
@@ -8251,11 +8252,11 @@ void AutoMovementFleshmorph( OBJECT * Object , ENEMY * Enemy )
 	Object->Group = MoveGroup( &Mloadheader, &StartPos, Object->Group, &Move_Off );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Carry out all External force modifiers for Spline Following enemies..
 	Output		:	OBJECt * Object
 	Output		:	BOOL TURE/FALSE....Wether there was any 
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 {
 	VECTOR	ImpactPoint;
@@ -8395,12 +8396,12 @@ BOOL SplineAutoMovement( OBJECT * Object , ENEMY * Enemy )
 
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Crappy Bodge to fix mappers fuckup
 	Input		:	BYTE	Primary Weapon
 				:	uint16	PickupHeld
 	Output		:	BYTE	Primary Weapon to Fire
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup )
 {
 	if( Pickup <= PICKUP_Laser )
@@ -8410,12 +8411,12 @@ BYTE BodgePrimaryWeapon( BYTE Weapon, uint16 Pickup )
 	return( Weapon );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Find Duplicate Model ( If exists )
 	Input		:	int8	*	Filename of Model
 				:	int16		NumModels so far
 	Output		:	uint16		Model Number ( -1 if not found )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
 {
 	int16	Count;
@@ -8430,12 +8431,12 @@ uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
 	return( (uint16) -1 );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Perform Damage on an Enemy....If its not in a death
 				:	MODE then put it in one or Destroy it....
 	Input		:	ENEMY * Enemy
 	Output		:	BOOL Destroyed 
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL DamageEnemy( ENEMY * Enemy , float Damage , VECTOR * ImpactPoint , VECTOR * Dir, float Speed , uint16 Owner , uint16 OwnerType )
 {
 	uint16 Random;
@@ -8590,11 +8591,11 @@ void ObjectRotateExternal( OBJECT * Object, VECTOR * Pos , VECTOR *point, VECTOR
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Find Point 75.0F above the ground...
 	Input		:		VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup
 	Output		:		BOOL FALSE/TRUE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint16 * NewGroup )
 {
 	int			i;
@@ -8647,11 +8648,11 @@ BOOL FindPointAboveGround( VECTOR * Pos , uint16 Group , VECTOR * NewPos , uint1
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Do Enemy Damage Effects
 	Input		:		ENEMY	*	Enemy
 	Output		:		Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DoNmeDamagedEffects( ENEMY * Enemy )
 {
 	uint16	fmpoly;
@@ -8794,11 +8795,11 @@ typedef struct _FSHORTGLOBALSHIP
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Enemy Save...
 	Input		:		FILE * fp
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Enemy_Save( FILE * fp )
 {
 	int i;
@@ -8999,11 +9000,11 @@ BOOL Enemy_Save( FILE * fp )
 
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Enemy Load...
 	Input		:		FILE * fp
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Enemy_Load( FILE * fp )
 {
 	int i;
@@ -9247,11 +9248,11 @@ BOOL Enemy_Load( FILE * fp )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Object Save...
 	Input		:		FILE * fp , OBJECT * Obj
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Object_Save( FILE * fp , OBJECT * Obj )
 {
 	int i;
@@ -9369,11 +9370,11 @@ BOOL Object_Save( FILE * fp , OBJECT * Obj )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Gun Save...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;
@@ -9397,11 +9398,11 @@ BOOL Gun_Save( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 	}
 	return TRUE;
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Object Load...
 	Input		:		FILE * fp , OBJECT * Obj
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Object_Load( FILE * fp , OBJECT * Obj )
 {
 	int e;
@@ -9516,11 +9517,11 @@ BOOL Object_Load( FILE * fp , OBJECT * Obj )
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Gun Load...
 	Input		:		BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp
 	Output		:		BOOL TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL Gun_Load( BYTE HowManyGuns , GUNOBJECT * GO , FILE * fp )
 {
 	int i;

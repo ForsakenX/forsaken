@@ -33,6 +33,7 @@
 #include <direct.h>
 #include "getdxver.h"
 #include "version.h"
+#include "client/windows/handler/exception_handler.h"
 
 // load up C externals
 
@@ -72,14 +73,13 @@ extern "C" {
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int NetUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
-	extern int ScreenWidth;
-	extern int ScreenHeight;
-	extern int ScreenBPP;
 	extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 	extern BOOL PlayDemo;
 	extern BOOL DemoShipInit[];
 	extern BOOL flush_input;
 	extern int ddchosen3d;
+	extern int default_x;
+	extern int default_y;
 	extern int default_width;
 	extern int default_height;
 	extern int default_bpp;
@@ -93,11 +93,11 @@ extern "C" {
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
 	extern  BOOL	DontColourKey;
-	extern	BOOL	TripleBuffer;
+	BOOL	TripleBuffer;
 	extern	BOOL	PolygonText;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
-	extern BOOL CanDoStrechBlt;
+//	extern BOOL CanDoStrechBlt;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
@@ -106,6 +106,8 @@ extern "C" {
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
 	extern long UseDDrawFlip;
+	extern TEXT local_port_str;
+	extern TEXT host_port_str;
 
 	extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
@@ -144,8 +146,8 @@ BOOL bOnlyEmulation			= FALSE;
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(void);
-static BOOL BeforeDeviceDestroyed(LPVOID lpContext);
-static BOOL AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lpViewport, LPVOID lpContext);
+static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/);
+static BOOL AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
@@ -175,7 +177,7 @@ int cliSleep = 0;
  * RenderScene until a quit message is received.
  */
 
-
+extern "C" void network_cleanup( void );
 int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
 {
 
@@ -264,6 +266,9 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 FAILURE:
 
+	// cleanup networking
+	network_cleanup();
+
 	// free the cursor to move outside the window
 	ClipCursor( NULL );
 
@@ -287,11 +292,11 @@ FAILURE:
 	if ( UnMallocedBlocks() )
 		DebugPrintf( "Un-malloced blocks found!" );
 
-	if ( UnMallocedExecBlocks() )
-		DebugPrintf( "Un-malloced Exec blocks found!" );
+//	if ( UnMallocedExecBlocks() )
+//		DebugPrintf( "Un-malloced Exec blocks found!" );
 
-	if ( UnMallocedDDSurfBlocks() )
-		DebugPrintf( "Un-malloced DDSurf blocks found!" );
+//	if ( UnMallocedDDSurfBlocks() )
+//		DebugPrintf( "Un-malloced DDSurf blocks found!" );
 
 	if ( UnMallocedSBufferBlocks() )
 		DebugPrintf( "Un-malloced SBuffer blocks found!" );
@@ -313,6 +318,10 @@ static BOOL InitWindow( void )
 	HICON small_icon;
 	HICON large_icon;
     WNDCLASSEX wc;
+
+	/* bjd - FIXME hardcoded */
+	default_width = 800;
+    default_height = 600;
 
 
 //// START UGLY
@@ -399,15 +408,9 @@ static BOOL InitWindow( void )
 	// this is just a safety cause if these values are 0
 	// then starting in fullscreen and switching to window crashes
 	// cause the last window state had a window size of 0
-
-	// default windowed specs
-	// prefer to find the 640x480x16 mode (no gaurentee)
-	if(!default_width || !default_height)
-	{
-		if ( ! default_width  ) default_width  = 640;
-		if ( ! default_height ) default_height = 480;
-		if ( ! screen_aspect_ratio ) screen_aspect_ratio = (float) (default_width / default_height);
-	}
+	
+	if ( ! screen_aspect_ratio )
+		screen_aspect_ratio = (float) (default_width / default_height);
 
     // Create a window with some default settings that may change
 	myglobs.hWndMain = CreateWindow(
@@ -435,25 +438,33 @@ static BOOL InitWindow( void )
         return FALSE;
     }
 
-    // Display the window
-	// if you never call this the window never shows up
-	// but the process is actually running....
-    ShowWindow(myglobs.hWndMain, SW_SHOWNORMAL);
+	// restore window position
+	{
+		WINDOWPLACEMENT placement;
+		placement.length  = sizeof(WINDOWPLACEMENT);
+		placement.showCmd = SW_SHOWNORMAL;
+		placement.rcNormalPosition.left		= default_x;
+		placement.rcNormalPosition.top		= default_y;
+		placement.rcNormalPosition.right	= default_x + default_width;
+		placement.rcNormalPosition.bottom	= default_y + default_height;
+		SetWindowPlacement( myglobs.hWndMain, &placement );
+	}
 
 	//
 	return TRUE;
 }
 
-#define CRITICAL_FOLDERS 4
+#define CRITICAL_FOLDERS 6
 static BOOL missing_folders( void )
 {
 	int x = 0;
-	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Scripts","Pilots"};
+	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Dumps","Pilots","Scripts","Utils"};
 	for( x = 0; x < CRITICAL_FOLDERS; x++ )
 		if( ! is_folder(folders[x]) )
 		{
-			Msg("Could not locate the '%s' folder...\n%s", folders[x],
-				"exe is most likely in the wrong directory.");
+			Msg("Could not locate the '%s' folder...\n%s\n%s", folders[x],
+				"exe is most likely in the wrong directory.",
+				"or you just need to create the folder.");
 			return TRUE;
 		}
 	return FALSE;
@@ -513,9 +524,75 @@ BOOL parse_chdir( char *cli )
 	return TRUE;
 }
 
+static void wchar_to_char( char * dst_ptr, const wchar_t * src_ptr )
+{
+	while( *src_ptr != 0 ) // while not end of source
+		*dst_ptr++ = (char) *src_ptr++; // conver to char
+	*dst_ptr = 0; // finish string
+}
+
+static bool breakpad_callback(
+	const wchar_t* dump_path,
+	const wchar_t* minidump_id,
+	void* context,
+	EXCEPTION_POINTERS* exinfo,
+	MDRawAssertionInfo* assertion,
+	bool succeeded 
+)
+{
+	// if writing to dump file succeeded
+	if(succeeded)
+	{    
+		STARTUPINFO si;
+		PROCESS_INFORMATION pi;
+
+		char path[256];
+		char dir[256];
+		char id[256];
+
+		wchar_to_char( &dir[0], &dump_path[0] );
+		wchar_to_char( &id[0],  &minidump_id[0] );
+
+		sprintf(path, "%s\\%s.dmp", dir, id);
+		
+		ZeroMemory( &si, sizeof(si) );
+		ZeroMemory( &pi, sizeof(pi) );
+		si.cb = sizeof(si);
+
+		if(!CreateProcess( "Utils/crash_reporter.exe", path,
+							NULL, NULL, FALSE, 0, NULL, NULL, &si, &pi ))
+		{
+			Msg("%s\n%s\n%s\n%s",
+				"Error launching crash reporting tool!",
+				"Crash report saved to: ", path,
+				"Please email it to fskn.methods@gmail.com");
+		}
+	}
+
+	// if we succeeded creating a dump
+	// then stop any other handlers from running
+	return succeeded;
+}
+
+static BOOL breakpad_init( void )
+{
+	using namespace google_breakpad;
+	static ExceptionHandler * e;
+	wstring path(L"Dumps");
+	e = new ExceptionHandler(
+		path, 
+		NULL, 
+		(google_breakpad::ExceptionHandler::MinidumpCallback) &breakpad_callback, 
+		NULL, 
+		ExceptionHandler::HANDLER_ALL 
+	);//, MiniDumpNormal, pipe_name, custom_info );
+	DebugPrintf("initialized breakpad\n");
+	return TRUE;
+}
+
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
-	DWORD dwPlatform, dwVersion;
+//	DWORD dwPlatform, dwVersion;
 
 	// Appears to be a complete fuckup...
 	// Only used in two other places...
@@ -524,12 +601,19 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
 	LastTime = LargeTime;
 
+	// initialize google breakpad crash reporting
+	if(!breakpad_init())
+		return FALSE;
+
+	// test breakpad by uncommenting this
+	//{ *(int*)0=0; }
+
 #ifdef DEBUG_ON
 
 	// special debuggin routines
 	XMem_Init();
-	XExec_Init();
-	DDSurf_Init();
+//	XExec_Init();
+//	DDSurf_Init();
 	XSBuffer_Init();
 
 #endif
@@ -538,6 +622,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	if FAILED( CoInitialize(NULL) )
 		return FALSE;
 
+/* bjd
 	// check directx version
 	GetDXVersion( &dwVersion, &dwPlatform );
 	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
@@ -548,11 +633,13 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		Msg("You need to install Direct X 6 or later.");
 		return FALSE;
 	}
-	
+*/
+
 	// setup globals used by application
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
-    myglobs.bClearsOn		= FALSE;
+	// bjd - set temporarly on till texture rendering works...
+    myglobs.bClearsOn		= TRUE; //FALSE;
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
@@ -609,6 +696,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// start the title scene
 	MyGameStatus = STATUS_Title;
+
 	if (!InitScene())
 		return FALSE;
 
@@ -633,7 +721,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	SetSoundLevels( NULL );
 
-	DebugPrintf("AppInit finished...");
+	DebugPrintf("AppInit finished...\n");
 
 	// done
     return TRUE;
@@ -672,7 +760,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoTextureScaling		= FALSE;
 	PolygonText				= FALSE;
 	DS						= FALSE;
-	bFullscreen				= FALSE;
 	Wine					= FALSE;
 	DontColourKey			= FALSE;
 	NoCursorClip			= FALSE;
@@ -721,9 +808,9 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			ActLikeWindow = TRUE;
 		}
 
-		// never clip the cursor...
-		else if (!_stricmp(option, "MouseExclusive")){
-			MouseExclusive = TRUE;
+		// don't exclusivly grab the mouse
+		else if (!_stricmp(option, "MouseNonExclusive")){
+			MouseExclusive = FALSE;
 		}
 
 		// never clip the cursor...
@@ -743,10 +830,10 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
             Debug = TRUE;
 		}
 
-		// obviously do not go into full screen mode
-		else if (!_stricmp(option,"FullScreen"))
+		// start in window mode
+		else if (!_stricmp(option,"Window"))
 		{
-			bFullscreen = TRUE;
+			bFullscreen = FALSE;
 		}
 
 		// colour key transparency
@@ -806,9 +893,32 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// set the ip address for game to join
 		else if ( !_stricmp( option, "TCP" ) )
 		{
+			char * port;
+			char address[255];
+
 			IpOnCLI = TRUE;
+
+			// extract the address
 	        option = strtok(NULL, " ");
-			strcpy( (LPSTR)TCPAddress.text, option );
+			strcpy( address, option );
+
+			// try to find a port in the address
+			port = strchr(address,':');
+
+			// if port found assign it
+			if( port )
+			{
+				*port = 0; // separate hostname from port
+				strcpy( (char*) host_port_str.text, ++port );
+			}
+			// other wise set default port
+			else
+			{
+				sprintf( (char*) host_port_str.text, "%d", NETWORK_DEFAULT_PORT );
+			}
+
+			// copy in the hostname
+			strcpy( (LPSTR)TCPAddress.text, address );
 		}
 
 		// don't scale textures
@@ -845,7 +955,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// don't try to scale blitted text
 		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
 		{
-			CanDoStrechBlt = FALSE;
+//			CanDoStrechBlt = FALSE;
 		}
 
 		// no compound sound buffer
@@ -870,13 +980,20 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			float fnum;
 			DWORD mem;
 
+			// override local port
+			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) == 1 )
+			{
+				DebugPrintf("Command Line: local port set to %s\n", local_port_str.text);
+			}
+
+/*
 			// selecte your d3d/ddraw device
-			if ( sscanf( option, "dev:%d", &num ) == 1 )
+			else if ( sscanf( option, "dev:%d", &num ) == 1 )
 			{
 				ddchosen3d = num;
 				DeviceOnCommandline = TRUE;
 			}
-
+*/
 			// sleep time for every loop
 			else if ( sscanf( option, "sleep:%d", &cliSleep ))
 			{
@@ -976,23 +1093,6 @@ static BOOL CreateD3DApp(void)
     DWORD flags;
     Defaults defaults;
 
-	// setup the width and height
-	if ( !default_width && !default_height && !default_bpp )
-	{
-		if ( ScreenWidth || ScreenHeight )
-		{
-			default_width = ScreenWidth;
-			default_height = ScreenHeight;
-		}
-		default_bpp = ScreenBPP;
-	}
-
-
-	// setup default bits per pixel
-	if ( !default_bpp )
-		default_bpp = 16;
-
-
 	// Set the flags to pass to the D3DApp creation based on command line
     flags = ( (bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0 ) | 
             ( (bOnlyEmulation)    ? (D3DAPP_ONLYD3DEMULATION |	D3DAPP_ONLYDDEMULATION) : 0 );
@@ -1003,11 +1103,18 @@ static BOOL CreateD3DApp(void)
      * viewport and the example's execute buffers.
      */
 
-    if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, AfterDeviceCreated,
-                              NULL, BeforeDeviceDestroyed, NULL, &d3dapp)) {
+#if 0
+    if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, /*AfterDeviceCreated,
+                              NULL, BeforeDeviceDestroyed, NULL,*/ &d3dapp)) {
         ReportD3DAppError();
         return FALSE;
     }
+#endif
+
+	if (!Init3DRenderer(myglobs.hWndMain, &d3dapp))
+	{
+		return FALSE;
+	}
 
 	/*
      * Allow the sample to override the default render state and other
@@ -1022,8 +1129,6 @@ static BOOL CreateD3DApp(void)
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
     defaults.bClearsOn = myglobs.bClearsOn;
-
-    myglobs.bClearsOn = defaults.bClearsOn;
     myglobs.bResizingDisabled = defaults.bResizingDisabled;
 
     /*
@@ -1050,9 +1155,10 @@ static BOOL CreateD3DApp(void)
 BOOL SplashOnceOnly = TRUE;
 
 static BOOL
-AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpContext)
+AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
 {
-
+	return TRUE;
+#if 0 // bjd
 	LPDIRECT3DVIEWPORT lpD3DViewport;
     HRESULT rval;
 
@@ -1102,6 +1208,8 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
     // Return the viewport to D3DApp so it can use it
     *lplpViewport = lpD3DViewport;
 
+	DebugPrintf("AfterDeviceCreated\n");
+
 	// load the view
 	if (!InitView() )
 	{
@@ -1111,6 +1219,7 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
 	}
 
     return TRUE;
+#endif
 }
 
 /*
@@ -1121,13 +1230,13 @@ AfterDeviceCreated(int w, int h, LPDIRECT3DVIEWPORT* lplpViewport, LPVOID lpCont
  */
 
 static BOOL
-BeforeDeviceDestroyed(LPVOID lpContext)
+BeforeDeviceDestroyed(/*LPVOID lpContext*/)
 {
     // Release all objects (ie execute buffers) created by InitView
     ReleaseView();
 
     // Since we created the viewport it is our responsibility to release it
-    d3dapp->lpD3DViewport->Release();
+//bjd    d3dapp->lpD3DViewport->Release();
 
 	//
     return TRUE;
@@ -1152,7 +1261,7 @@ static BOOL RenderLoop()
     }
 
     // Call the sample's RenderScene to render this frame
-    if (!RenderScene(d3dapp->lpD3DDevice, d3dapp->lpD3DViewport))
+    if (!RenderScene(/*d3dapp->lpD3DDevice, d3dapp->lpD3DViewport*/))
 	{
         Msg("RenderScene failed.\n");
 		DebugPrintf("RenderScene: failed.");
@@ -1171,7 +1280,8 @@ static BOOL RenderLoop()
 		if ((	! PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	) && ! PreventFlips	)
 		{
 			// this is the actual call to render a frame...
-			if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
+			//if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
+			if (!FlipBuffers())
 			{
 				Msg("!D3DAppShowBackBuffer");
 				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");
@@ -1309,6 +1419,8 @@ CleanUpAndPostQuit(void)
     if (myglobs.bQuit)
 		return;
 
+	BeforeDeviceDestroyed();
+
 	// tell d3d to stop and report any errors
     if (!D3DAppDestroy())
         ReportD3DAppError();
@@ -1359,7 +1471,7 @@ Msg( LPSTR fmt, ... )
     if (d3dapp && d3dapp->bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0,
                      SWP_NOSIZE | SWP_NOMOVE);
-    MessageBox( NULL, buff, "Forsaken", MB_OK );
+    MessageBox( NULL, buff, "ProjectX", MB_OK );
     if (d3dapp && d3dapp->bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
                      SWP_NOSIZE | SWP_NOMOVE);

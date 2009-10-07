@@ -94,7 +94,7 @@ static void send_tracker_message( char* host, int port, char* message )
 	if(enet_host)
 		sent = enet_socket_send( enet_host->socket, &address, &send_buffer, 1 );
 
-	DebugPrintf("tracker sent %d bytes\n",sent);
+	//DebugPrintf("tracker sent %d bytes\n",sent);
 
 	//enet_socket_destroy(socket);
 }

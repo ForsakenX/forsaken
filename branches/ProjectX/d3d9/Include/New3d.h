@@ -5,12 +5,13 @@
 #include "d3ddemo.h"
 #include "typedefs.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
-#define	X					0
-#define	Y					1
-#define	Z					2
+===================================================================*/
+/* bjd - 3 defines below changed as they cause compilation errors with D3DVIEWPORT9 - only used in collision.c */
+#define	ourX					0
+#define	ourY					1
+#define	ourZ					2
 #define	EPS					1e-7
 #define PI					3.14159265358979323846F
 #define M_PI				3.14159265358979323846F
@@ -24,38 +25,150 @@
 #define FMOD( NUM, DIV )	( (NUM) - (DIV) * ( (float) floor( (NUM) / (DIV) ) ) )
 #define FDIV( NUM, DIV )	( (DIV) * ( (float) floor( (NUM) / (DIV) ) ) )
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Structures
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+// bjd - taken from d3dtypes.h
+#define RGBA_MAKE(r, g, b, a)   ((D3DCOLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
+#define	RGB_MAKE(r, g, b)    ((D3DCOLOR) (((r) << 16) | ((g) << 8) | (b)))
+#define RGBA_GETALPHA(rgb)    ((rgb) >> 24) 
+
+#define RGBA_GETRED(rgb)    (((rgb) >> 16) & 0xff)
+#define RGBA_GETGREEN(rgb)    (((rgb) >> 8) & 0xff)
+#define RGBA_GETBLUE(rgb)    ((rgb) & 0xff)
+
+#define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
+
+#define D3DVAL(val)    ((float)val) 
+
+/* 
+	Pre-DX8 vertex formats
+	taken from http://www.mvps.org/directx/articles/definitions_for_dx7_vertex_types.htm
+*/
+
+typedef struct _D3DLVERTEX {
+    union {
+       float x;
+       float dvX;
+    };
+    union {
+       float y;
+        float dvY;
+    };
+    union {
+        float z;
+        float dvZ;
+    };
+    union {
+        D3DCOLOR color;
+        D3DCOLOR dcColor;
+    };
+    union {
+        D3DCOLOR specular;
+		D3DCOLOR dcSpecular;
+    };
+    union {
+        float tu;
+        float dvTU;
+    };
+    union {
+        float tv;
+        float dvTV;
+	};
+/*
+    _D3DLVERTEX() { }
+    _D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
+        { x = v.x; y = v.y; z = v.z; 
+          color = col; specular = spec;
+          tu = _tu; tv = _tv;
+    }
+*/
+} D3DLVERTEX, *LPD3DLVERTEX;
+
+typedef struct _D3DTLVERTEX {
+    union {
+        float sx;
+        float dvSX;
+    };
+    union {
+        float sy;
+        float dvSY;
+    };
+    union {
+        float sz;
+        float dvSZ;
+    };
+    union {
+        float rhw;
+        float dvRHW;
+    };
+    union {
+        D3DCOLOR color;
+        D3DCOLOR dcColor;
+    };
+    union {
+        D3DCOLOR specular;
+        D3DCOLOR dcSpecular;
+    };
+    union {
+        float tu;
+        float dvTU;
+    };
+    union {
+        float tv;
+        float dvTV;
+    };
+
+} D3DTLVERTEX, *LPD3DTLVERTEX;
+
+#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
+
+typedef struct _D3DTRIANGLE { 
+    union { 
+        WORD v1; 
+        WORD wV1; 
+    }; 
+    union { 
+        WORD v2; 
+        WORD wV2; 
+    }; 
+    union { 
+        WORD v3; 
+        WORD wV3; 
+    }; 
+//    WORD     wFlags; 
+} D3DTRIANGLE, *LPD3DTRIANGLE; 
+
+
+/*===================================================================
 	2D Vertices
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct VERT2D {
 	float	x;
 	float	y;
 } VERT2D;
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	3D Vertices
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct VERT {
 	float	x;
 	float	y;
 	float	z;
 } VERT;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	3D Normal
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct NORMAL {
 	float	nx;
 	float	ny;
 	float	nz;
 } NORMAL;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	4 X 4 Matrix
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct MATRIX {
 	float	_11, _12, _13, _14;
 	float	_21, _22, _23, _24;
@@ -63,9 +176,9 @@ typedef struct MATRIX {
 	float	_41, _42, _43, _44;
 } MATRIX;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	3 X 3 Matrix
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct MATRIX3X3 {
 	float	_11, _12, _13;
 	float	_21, _22, _23;
@@ -73,18 +186,18 @@ typedef struct MATRIX3X3 {
 } MATRIX3X3;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Vector
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct VECTOR {
 	float	x;
 	float	y;
 	float	z;
 } VECTOR;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Short Vector
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct SHORTVECTOR {
 	int16	x;
 	int16	y;
@@ -92,17 +205,17 @@ typedef struct SHORTVECTOR {
 } SHORTVECTOR;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Plane
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct PLANE {
 	VECTOR Normal;
 	float Offset;
 } PLANE;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Prototypes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 float DotProduct( VECTOR * a , VECTOR * b ); 
 
 void CrossProduct( VECTOR * a, VECTOR * b, VECTOR * ab );

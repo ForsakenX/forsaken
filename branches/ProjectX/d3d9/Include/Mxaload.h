@@ -10,9 +10,9 @@
 #ifndef MXALOAD_INCLUDED
 #define MXALOAD_INCLUDED
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Includes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include "d3dmain.h"
 #include "d3ddemo.h"
 #include "typedefs.h"
@@ -25,9 +25,9 @@
 #include "Transexe.h"
 //#include "pickups.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define MAX_MXAGROUPS			1
 #define	MAX_ANIM_FRAMES			16 //1
 #define MAXTEXTUREGROUPSPEREXECLIST 8
@@ -40,9 +40,9 @@
 #define MXA_ANIM_RGB		(1 << 1)
 #define MXA_ANIM_UV			(1 << 2)
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Structures
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 typedef struct MXAVERT {
 	float x;
 	float y;
@@ -62,15 +62,16 @@ typedef struct D3DCOLOR_RGBA {
 	uint8 a;
 } D3DCOLOR_RGBA;
 
-
 typedef struct MXAGROUP{
 	uint16	num_execbufs;
 	uint16	exec_type[MAXEXECBUFSPERGROUP];
 	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
 	uint16	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
 	uint16	num_texture_groups[MAXTEXTUREGROUPSPEREXECLIST];
-	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
-	LPD3DLVERTEX org_vertpnt[MAXEXECBUFSPERGROUP];
+//	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
+	RENDEROBJECT renderObject[MAXEXECBUFSPERGROUP];
+	LPOLDD3DLVERTEX org_vertpnt[MAXEXECBUFSPERGROUP];
+	LPD3DLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	LPD3DTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
 	uint32	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];
 	char	name[16];
@@ -93,7 +94,6 @@ typedef struct MXALOADHEADER{
 	uint16				num_groups;
 	MXAGROUP			Group[MAX_MXAGROUPS];
 	int16				TloadIndex[MAXTPAGESPERMXALOAD];		// which texture in the Tloadheader....
-	int16				SysTloadIndex[MAXTPAGESPERMXALOAD];		// which texture in the Tloadheader....
     char                ImageFile[MAXTPAGESPERMXALOAD][32];	// Texture Files....
 	uint16				num_frames;
 #if 1
@@ -113,9 +113,9 @@ typedef struct MXALOADHEADER{
 
 }MXALOADHEADER;
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Prototypes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, BOOL LevelSpecific );
 BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangles  );
 BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 group );

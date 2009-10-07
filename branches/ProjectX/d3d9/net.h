@@ -21,14 +21,24 @@
 #ifndef NET_INCLUDED
 #define NET_INCLUDED
 
+#define NETWORK_DEFAULT_PORT 2300
+
+typedef enum {
+	NETWORK_OK,			// success
+	NETWORK_ERROR_INIT,	// failed to initialize
+	NETWORK_ERROR_BIND	// failed to bind socket
+} network_return_t;
+
 /*
  *  Network State
  */
 
 typedef enum {
-	NETWORK_CONNECTED,
-	NETWORK_CONNECTING,
-	NETWORK_DISCONNECTED,
+	NETWORK_CONNECTED,		// in the game
+	NETWORK_CONNECTING,		// connecting to host
+	NETWORK_DISCONNECTED,	// not connect yet
+	NETWORK_SYNCHING,		// connecting to all players
+	NETWORK_SYNCH_FAILED,	// failed to synch with other players
 } network_state_t;
 
 network_state_t network_state;
@@ -38,7 +48,7 @@ network_state_t network_state;
  */
 
 // 0 for default port
-int  network_setup( char* player_name, int local_port ); // must be called first
+network_return_t network_setup( char* player_name, int local_port ); // must be called first
 int  network_join( char* address, int port );
 void network_host();
 

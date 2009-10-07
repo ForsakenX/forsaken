@@ -82,6 +82,8 @@ extern float GetPlayerNumCount1;
 extern float GetPlayerNumCount2;
 extern int   GetPlayerNumCount;
 
+extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+
 extern	BOOL	DS;
 
 #define YourVersion "YOUR VERSION: " ProjectXVersion
@@ -265,8 +267,7 @@ BOOL	HostDuties = FALSE;
 
 LPGUID					g_lpGuid = NULL;
 HANDLE					dphEvent = NULL;
-BOOL						IsHost = TRUE;
-BYTE						WhoIAm = 0;
+BOOL					IsHost = TRUE;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
 BOOL					RemoteCameraActive = FALSE;
@@ -360,6 +361,7 @@ extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
 
 BOOL	UseShortPackets;
+BOOL	MyUseShortPackets;
 
 extern	int16	NumOrbs;
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
@@ -544,7 +546,6 @@ void set_player_name( int BikeNum, char* name )
 void set_my_player_name( void )
 {
 	set_player_name( WhoIAm, &biker_name[0] );
-	network_set_player_name(&biker_name[0]);
 }
 
 void SendANormalUpdate( void )
@@ -930,7 +931,7 @@ void	CreateShockwaveSend( uint16 OwnerShip, uint16 Owner, VECTOR * Pos, uint16 G
 	for(i = 0; i < MAX_PLAYERS; i++)
 	{
 		// excluding myself and those who aren't in normal mode
-		if((GameStatus[ i ] ==  0x0a/*STATUS_NORMAL*/) && (i != WhoIAm))
+		if((GameStatus[ i ] ==  STATUS_Normal) && (i != WhoIAm))
 		{
 			// if they are close to me
 			dist = ReturnDistanceVolumeVector( &Ships[ i ].Object.Pos, Ships[ i ].Object.Group, &Ships[ Current_Camera_View ].Object.Pos, Ships[ Current_Camera_View ].Object.Group, NULL, NULL );
@@ -1030,8 +1031,9 @@ void SetupNetworkGame()
 
 		}
 
-	memset(&Ships[0], 0, ( sizeof(GLOBALSHIP) * ( MAX_PLAYERS + 1 ) ) );
-	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
+	memset(&Ships,			0,				sizeof(Ships) );
+	memset(&Names,			0,				sizeof(SHORTNAMETYPE) );
+	memset(&GameStatus,		STATUS_Null,	sizeof(GameStatus) );
 
 	JustGenerated = TRUE;
 	
@@ -1364,13 +1366,7 @@ void network_event_player_joined( network_player_t * player )
 	if( player == NULL )
 	{
 		DebugPrintf("We have joined the game...\n");
-		PlayDemo = FALSE;
-		
-		SetBikeMods( 0 );
-		
-		SetupNetworkGame();
-		
-		WhoIAm = 0xff;
+
 		MyGameStatus = STATUS_GetPlayerNum;
 		GetPlayerNumCount1 = 0.0F;
 		GetPlayerNumCount2 = 60.0F * 30.0F;	// 30 Seconds...
@@ -1941,22 +1937,21 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
     case MSG_VERYSHORTUPDATE:
 
+		lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
+
+		UpdatePlayer( from, lpVeryShortUpdate->WhoIAm );
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
-			// only need ship scores...
-			lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
-			// ...and need to get host game status...
+			//  need to get host game status...
 			if( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpVeryShortUpdate->ShortGlobalShip.Status;
-			// update network pointer and name
-			UpdatePlayer( from, lpVeryShortUpdate->WhoIAm );
-			// ...and fill out GameStatus
+			// and fill out GameStatus
 			GameStatus[lpVeryShortUpdate->WhoIAm] = lpVeryShortUpdate->ShortGlobalShip.Status;
 			return;
 		}
 		else
 		{
-			lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG) MsgPnt;
 			if( lpVeryShortUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpVeryShortUpdate->WhoIAm].PacketDelay = PacketDelay;
@@ -2047,20 +2042,19 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
     case MSG_UPDATE:
 
+		lpUpdate = (LPUPDATEMSG) MsgPnt;
+
+		UpdatePlayer( from, lpUpdate->WhoIAm );
+
 		if (MyGameStatus == STATUS_StartingMultiplayer)
 		{
-			// only need ship scores...
-			lpUpdate = (LPUPDATEMSG) MsgPnt;
 			// ...and need to get host game status...
 			if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 				OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-			// update network pointer and name
-			UpdatePlayer( from, lpUpdate->WhoIAm );
 			return;
 		}
 		else
 		{
-			lpUpdate = (LPUPDATEMSG) MsgPnt;
 			if( lpUpdate->WhoIAm != WhoIAm )
 			{
 				Ships[lpUpdate->WhoIAm].PacketDelay = PacketDelay;
@@ -2241,15 +2235,16 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		{
 			LPHEREIAMMSG msg = (LPHEREIAMMSG) MsgPnt;
 			SendGameMessage(MSG_INIT, from, msg->WhoIAm, 0, msg->MPVersion);
-
-			// BUG: why is this sent to everyone ?
-			SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
+			SendGameMessage(MSG_STATUS, from, 0, 0, 0);
 		}
 		return;
 
     case MSG_INIT:
 
 		lpInit = (LPINITMSG) MsgPnt;
+
+		// save host network pointer
+		host_network_player = from;
 
 		//
 		// Check if we are allowed in game
@@ -2308,6 +2303,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		memcpy( KillCounter,	lpInit->KillCounter,	sizeof(KillCounter));
 		memcpy( BonusStats,		lpInit->BonusStats,		sizeof(BonusStats));
 
+		memset( PickupValid, 0, sizeof(PickupValid) );  // turn off all weapons
 		UnpackPickupInfo( lpInit->PickupFlags );	// which weapons are enabled
 
 		//
@@ -2360,13 +2356,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 
-		// setup names
-		memset( &Names, 0, sizeof(SHORTNAMETYPE) );		// reset names
-		set_my_player_name();							// set my name
-		set_player_name( lpInit->WhoIAm, from->name );	// set host name
+		// now that i know my ship number i can set my name
+		set_my_player_name();
 
-		// save player network pointer
-		host_network_player = from;
+		// update status
+		MyGameStatus = STATUS_StartingMultiplayer;
+
+		// tell everyone my status (includes my ship number and from->name)
+		// they can now use this message to relate my name to my ship number
+		SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
 		return;
 
@@ -2405,8 +2403,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		TempPickup.LifeCount = lpVeryShortDropPickup->PickupInfo.LifeCount;
 		TempPickup.TriggerMod = lpVeryShortDropPickup->PickupInfo.TriggerMod;
 #if DEBUG_PICKUPS
-		if( lpDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
-		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
+		if( lpVeryShortDropPickup->WhoIAm != (uint16) -1 ) DebugPrintf( "PACKET OWNER '%s' : Init '%s', Owner '%s', ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], TempPickup.IDCount );
+		else DebugPrintf( "PACKET OWNER '%s' : Init '%s', No Owner, ID %d\n", &Names[ lpVeryShortDropPickup->WhoIAm ][ 0 ], Messages[ TempPickup.Type ], TempPickup.IDCount );
 #endif
 	 	Pickup = InitOnePickup( &TempPickup.Pos, TempPickup.Group,
 		 				   &TempPickup.Dir, TempPickup.Speed,
@@ -2787,9 +2785,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		return;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	This is where the host gets told what state he thinks we are in
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
     case MSG_STATUS:
    		lpStatus = (LPSTATUSMSG)MsgPnt;
 
@@ -2829,7 +2827,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					tempstatus = OverallGameStatus;
    					OverallGameStatus = lpStatus->Status;
 					if ( tempstatus != OverallGameStatus )
-						DebugPrintf("Setting overall game status to %x\n", lpStatus->Status );
+						DebugPrintf("Setting overall game status to %d\n", lpStatus->Status );
 				}
    			}
 
@@ -3348,8 +3346,22 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 			return;
 
 		// MSG_INIT only needs to be sent once
-		if( ShipNum != 0xff )
+		if( ShipNum != UNASSIGNED_SHIP )
 			return;
+
+		// MSG_INIT only needs to be sent once
+		for( i = 0; i < MAX_PLAYERS; i++ )
+			if( Ships[i].network_player == to ) // we have already assigned this user
+			{
+				// at this point enet reliability will assure that the last sent message
+				// does reach there...  If it doesn't... Well then the player has some
+				// really bad connection... and the connection will most likely shutdown...
+				// none the less probably better not to let such a problem player in...
+				DebugPrintf("Ignoring MSG_INIT request from player %s (%d) %s\n",
+							Ships[i].network_player->name, i,
+							"because I already replied to him...");
+				return;
+			}
 
 		// setup the basic message flags
 		flags |= NETWORK_RELIABLE;
@@ -3999,11 +4011,11 @@ send:
 
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Read packet stuff from a file and pass it on..
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 void DemoPlayingNetworkGameUpdate()
 {
@@ -4074,13 +4086,13 @@ void DemoPlayingNetworkGameUpdate()
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Read packet stuff from a file if its a ship update..
 						scan ahead to find the next one and write in a
 						interpolate msg..
 	Input		:		nothing
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void DemoClean( void )
 {
 #ifdef DEMO_SUPPORT
@@ -4270,11 +4282,11 @@ void DemoClean( void )
 #endif
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Create a regen effect...
 	Input		:		uint16 ship....
 	Output		:		nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 
 void CreateReGen( uint16 ship )
@@ -4311,11 +4323,11 @@ void CreateReGen( uint16 ship )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		FindSameLevel....
 	Input		:		char * Name
 	Output		:		int -1 no level....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int FindSameLevel( char * Name )
 {
 	int i;
@@ -4337,11 +4349,11 @@ void Demo_fwrite( const void *buffer, size_t size, size_t count , FILE *stream )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		StopDemoRecording
 	Input		:		char * Name
 	Output		:		int -1 no level....
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void StopDemoRecording( void )
 {
 	if( DemoFp )	// make sure that changing level stop any demo from recording!!!!
@@ -4353,11 +4365,11 @@ void StopDemoRecording( void )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
 	Output		:		uint32 Flags
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 uint32 BuildShipFlags( BYTE Player )
 {
 	uint32 Flags;
@@ -4387,11 +4399,11 @@ uint32 BuildShipFlags( BYTE Player )
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Build Ship Flags...
 	Input		:		BYTE Player
 	Output		:		uint32 Flags
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UnPackShipFlags( BYTE Player , uint32 Flags )
 {
 	Ships[ Player ].Object.Flags = Flags;
@@ -4410,11 +4422,11 @@ void UnPackShipFlags( BYTE Player , uint32 Flags )
 	Ships[Player].NumMultiples = (BYTE)((Flags >> SHIP_NumMultiples_Bit1 ) & 15);
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Set Ship Bank and Mat..
 	Input		:		OBJECT *
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetShipBankAndMat( OBJECT * ShipObjPnt )
 {
 	QUAT	StepQuat;
@@ -4425,11 +4437,11 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:		Update Ammo And Validate Message...
 	Input		:		void	*	Message
 	Output		:		BOOL		True/False ( Valid Message )
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL UpdateAmmoAndValidateMessage( void * Message )
 {
 	BYTE					Weapon;

@@ -45,6 +45,7 @@ extern int OldColPerspective;
 extern int OldUseShortPackets;
 
 BOOL ResetKillsPerLevel;
+BOOL MyResetKillsPerLevel;
 BOOL IpOnCLI = FALSE;
 
 extern uint8 QuickStart;
@@ -92,6 +93,7 @@ extern	MENUITEM	NewTeamItem;
 extern	BOOL	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	SLIDER	TimeLimit;
+extern	SLIDER	MyTimeLimit;
 extern	SLIDER	DemoSpeed;
 extern	SLIDER	MaxPlayersSlider;
 extern	SLIDER	MaxKillsSlider;
@@ -246,21 +248,47 @@ void SetUpGameType( int type )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Hosting a session...
 	Input		:	nothing
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern void SetGamePrefs( void );
-extern void config_save( void );
 extern TEXT local_port_str;
+extern BOOL	PickupValid[ MAXPICKUPTYPES ];
+extern BOOL	MyPickupValid[ MAXPICKUPTYPES ];
+extern SLIDER MyPacketsSlider;
+extern int32 MyColPerspective;
+extern BOOL MyRandomPickups;
+extern BOOL MyUseShortPackets;
+
+// these settings get over ridden when you join a game
+// so we need a separate copy of them to backup our settings
+void copy_in_my_settings( void )
+{
+	memset( PickupValid, 0, sizeof(PickupValid) );
+	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+
+	TimeLimit.value		= MyTimeLimit.value;
+	PacketsSlider.value	= MyPacketsSlider.value;
+
+	ColPerspective		= MyColPerspective;
+	ResetKillsPerLevel	= MyResetKillsPerLevel;
+	RandomPickups		= MyRandomPickups;
+	UseShortPackets		= MyUseShortPackets;
+}
+
+extern MENU MENU_NEW_CreateGame;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
 	LONGLONG	TempTime;
 	uint32		Seed;
+	network_return_t rv;
 
 	SetGamePrefs();
+
+	copy_in_my_settings();
 
 	Seed = timeGetTime();
 	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
@@ -276,10 +304,9 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	BountyHunt = FALSE;
 	CTF = FALSE;
 
-	DebugPrintf("Setting up game type.\n");
 	SetUpGameType( GameType );
 
-	DebugPrintf("Setting up bike modes.\n");
+	// set bike mode to normal
 	SetBikeMods( 0 );
 
 	MaxKills = MaxKillsSlider.value;
@@ -287,16 +314,35 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
 
-	DebugPrintf("d3d FlipToGDISurface.\n");
-	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
+//bjd - CHECK	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 
 	local_port = atoi(local_port_str.text);
-	config_save();
+	SetGamePrefs();
 
-	if( ! network_setup( &biker_name[0], local_port ) )
+	rv = network_setup( &biker_name[0], local_port );
+
+	if( rv != NETWORK_OK )
 	{
-		Msg("Failed to setup network!");
-		return FALSE;
+		char error_str[600] = "Failed to setup network!";
+		switch( rv )
+		{
+		case NETWORK_ERROR_INIT:
+			break;
+		case NETWORK_ERROR_BIND:
+			{
+				char * str = "";
+				if( local_port < 1024 )
+					str = "Ports bellow 1024 are normally restricted.";
+				sprintf(error_str, "%s %s %s %s",
+						"The selected port is in use or invalid.", 
+						str,
+						"Disable the program using the port or",
+						"select a different local port under network options." );
+			}
+			break;
+		}
+		PrintErrorMessage(error_str, 2, &MENU_NEW_CreateGame, 0);
+		return TRUE;
 	}
 
 	network_host();
@@ -316,13 +362,10 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	WhoIAm = 0;								// I was the first to join...
 	Ships[WhoIAm].network_player = NULL;
 
-	DebugPrintf("MenuChange.\n");
 	if ( TeamGame )
 		MenuChange( &NewTeamItem );
 	else
 		MenuChange( Item );
-
-	DebugPrintf("Other Bullshit.\n");
 
 	MyGameStatus = STATUS_StartingMultiplayer;
 	
@@ -427,16 +470,14 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	
 	BrightShips = MyBrightShips;
 
-	DebugPrintf("Done.\n");
-
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get The Players In the Current Session...
 	Input		:	MENUITEM * Item
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetPlayersInCurrentSession( MENUITEM *Item )
 {
 	int i;
@@ -458,11 +499,11 @@ void GetPlayersInCurrentSession( MENUITEM *Item )
 		NumOfPlayersSlider.redraw_req = TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	The host has waited for everyone now the game will init and start..
 	Input		:	MENUITEM * Item
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GoToSynchup ( MENUITEM * Item )
 {
 
@@ -489,11 +530,11 @@ void GoToSynchup ( MENUITEM * Item )
 	}
 
 }
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	The host has waited for everyone now the game will init and start..
 	Input		:	MENUITEM * Item
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void TeamGoToSynchup ( MENUITEM * Item )
 {
 	PreSynchupStatus = MyGameStatus;
@@ -504,11 +545,11 @@ void TeamGoToSynchup ( MENUITEM * Item )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Bail out of a multiplayer game before it starts...
 	Input		:	MENU * Menu
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void BailMultiplayer( MENU * Menu )
 {
 	MyGameStatus = STATUS_Left;
@@ -563,11 +604,11 @@ void InitExistingGameJoin( MENU *Menu )
 	InitTitleMessaging();
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set the Team player lists..
 	Input		:	MENU * Menu
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InitTeamSelection( MENU *Menu )
 {
 	int i;

@@ -1,4 +1,4 @@
-
+#if 0 // bjd
 /*
  *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
  *
@@ -1200,3 +1200,4 @@ D3DAppFreeVideoMemory(void)
     else
         return HELCaps.dwVidMemFree;
 }
+#endif

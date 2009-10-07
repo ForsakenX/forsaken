@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="ProjectX"
 	ProjectGUID="{89BBCE52-A93E-4A93-A1E3-44FB23777195}"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -45,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
@@ -71,15 +72,19 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -98,9 +103,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -138,9 +140,11 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
-				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,DEBUG_ON,DEBUG,Z_TRICK,DEBUG_COMP,DEBUG_SPOTFX_SOUND,BSP,DEBUG_VIEWPORT,DPTEST"
+				InlineFunctionExpansion="0"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
+				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;Z_TRICK;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
+				SmallerTypeCheck="false"
+				DefaultCharIsUnsigned="true"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug\trash\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug\trash\"
@@ -148,6 +152,7 @@
 				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Debug\trash\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 				CompileAs="0"
 				OmitDefaultLibName="false"
@@ -166,15 +171,20 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dsound.lib dinput8.lib comctl32.lib ws2_32.lib enet.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug\ProjectX.pdb"
+				GenerateMapFile="false"
 				SubSystem="2"
+				OptimizeReferences="0"
+				EnableCOMDATFolding="0"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -193,9 +203,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -232,9 +239,9 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="2"
+				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -244,6 +251,7 @@
 				ObjectFile=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release_OPT\Xtrash\"
 				SuppressStartupBanner="true"
+				DebugInformationFormat="3"
 				CallingConvention="0"
 				CompileAs="0"
 			/>
@@ -261,14 +269,19 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
-				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release_OPT\Xrelease.pdb"
+				GenerateDebugInformation="true"
+				ProgramDatabaseFile="Xrelease.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -289,10 +302,9 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
 				Name="VCPostBuildEventTool"
+				Description="Generate breakpad symbols."
+				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 		<Configuration
@@ -327,7 +339,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;enet\include;lua\include;$(MSSDK_DIR)\include;$(MSSDK_DIR)\include\mfc;$(DXSDK_DIR)\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -354,14 +366,18 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -380,9 +396,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -501,27 +514,15 @@
 				>
 			</File>
 			<File
+				RelativePath=".\d3d_render.cpp"
+				>
+			</File>
+			<File
 				RelativePath="D3dapp.c"
 				>
 			</File>
 			<File
-				RelativePath="D3dcalls.c"
-				>
-			</File>
-			<File
 				RelativePath="D3dmain.cpp"
-				>
-			</File>
-			<File
-				RelativePath="Ddcalls.c"
-				>
-			</File>
-			<File
-				RelativePath="DDsurfhand.c"
-				>
-			</File>
-			<File
-				RelativePath="Ddutil.cpp"
 				>
 			</File>
 			<File
@@ -585,6 +586,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\lua_games.c"
+				>
+			</File>
+			<File
 				RelativePath="MipMap.c"
 				>
 			</File>
@@ -609,7 +614,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Mxload.c"
+				RelativePath=".\Mxload.c"
 				>
 			</File>
 			<File
@@ -826,14 +831,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\DDSurfhand.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\Ddutil.h"
-				>
-			</File>
-			<File
 				RelativePath=".\demo.h"
 				>
 			</File>
@@ -895,6 +892,10 @@
 			</File>
 			<File
 				RelativePath=".\lua_config.h"
+				>
+			</File>
+			<File
+				RelativePath=".\lua_games.h"
 				>
 			</File>
 			<File

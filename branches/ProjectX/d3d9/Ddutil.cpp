@@ -1,4 +1,4 @@
-
+#if 0 // bjd
 /*==========================================================================
  *
  *  Copyright (C) 1995-1996 Microsoft Corporation. All Rights Reserved.
@@ -11,7 +11,7 @@
 #define WIN32_EXTRA_LEAN
 #include <windows.h>
 #include <windowsx.h>
-#include <ddraw.h>
+//#include <ddraw.h>
 #include "ddutil.h"
 #include "ddsurfhand.h"
 #include "math.h"
@@ -911,6 +911,7 @@ extern "C" BOOL HasBmpGotRealBlack( LPCSTR szBitmap)
 	}
     return FALSE;
 }
+#endif
 
 
 

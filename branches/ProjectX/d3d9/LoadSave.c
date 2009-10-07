@@ -1,8 +1,8 @@
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Include Files...	
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include <stdarg.h>
 #include <sys/stat.h>
@@ -74,17 +74,17 @@
 
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #define MAX_SAVEGAME_FILENAME		128
 
 
 BOOL SaveSnapShot( int8 * Filename );
 																   
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Externals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern BOOL Cheated;
 extern	char biker_name[];
 extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
@@ -103,9 +103,9 @@ extern float Old_LevelTime_Float;
 extern float Old_Time_Float;
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 		Globals ...
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 
 
 char *SaveGameFileName( int slot )
@@ -127,11 +127,11 @@ char *SaveGamePicFileName( int slot )
 	return name;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	PreInGame Load
 	Input		:	MENUITEM * MenuItem
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int8	LoadGameFilename[ 256 ];
 
 BOOL PreInGameLoad( MENUITEM * MenuItem )
@@ -155,6 +155,8 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -164,6 +166,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 #endif
 			return( FALSE );
 		}
+*/
 
 		i = 0;
 		do
@@ -193,11 +196,11 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 	return FALSE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	InGame Load
 	Input		:	MENUITEM * MenuItem
 	Output		:	nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void InGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
@@ -223,6 +226,8 @@ void InGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+/*
 		{
 			fclose( fp );
 #ifdef SAVEGAME_SLOTS
@@ -232,6 +237,7 @@ void InGameLoad( MENUITEM * MenuItem )
 #endif
 			return;
 		}
+*/
 
 		i = 0;
 		do
@@ -418,11 +424,11 @@ char *GetMissionName( char *levelname )
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	InGame Save
 	Input		:	MENUITEM * MenuItem
 	Output		:	BOOL	True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL InGameSave( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
@@ -586,11 +592,14 @@ char *SavedGameInfo( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 			sprintf( info, "unused slot %d", slot + 1 );
 			return info;
 		}
+		*/
 
 		i = 0;
 		do
@@ -648,10 +657,13 @@ BOOL SaveGameSlotUsed( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
+			Msg("Save file is in an old format.\nYou will most likely crash...");
+		/*
 		{
 			fclose( fp );
 			return FALSE;
 		}
+		*/
 
 		fclose( fp );
 		return TRUE;

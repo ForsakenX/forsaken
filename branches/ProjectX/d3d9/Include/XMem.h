@@ -2,7 +2,7 @@
 #ifndef XMEM_INCLUDED
 #define XMEM_INCLUDED
 
-#include <ddraw.h>
+//#include <ddraw.h>
 
 /*
  * Defines

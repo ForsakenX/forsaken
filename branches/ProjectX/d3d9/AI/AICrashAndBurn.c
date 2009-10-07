@@ -36,11 +36,11 @@ extern	SECONDARYWEAPONATTRIB	SecondaryWeaponAttribs[];
 extern	MLOADHEADER Mloadheader;
 void CreateSpotFXBurning( VECTOR * Pos, VECTOR * Dir, uint16 Group );
 
-/*컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�
+/*===================================================================
 	Procedure	:	AIR Crash and burn...
 	Input		:	ENEMY * Enemy
 	Output		:	Nothing
-컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴�*/
+===================================================================*/
 void AI_AIR_DEATH_CRASHANDBURN( register ENEMY * Enemy )
 {
 	OBJECT * SObject;

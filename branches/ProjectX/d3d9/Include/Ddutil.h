@@ -1,4 +1,4 @@
-
+#if 0 // bjd
 /*==========================================================================
  *
  *  Copyright (C) 1995 Microsoft Corporation. All Rights Reserved.
@@ -39,3 +39,5 @@ extern "C" {            /* Assume C declarations for C++ */
 }
 
 #endif  /* __cplusplus */
+
+#endif

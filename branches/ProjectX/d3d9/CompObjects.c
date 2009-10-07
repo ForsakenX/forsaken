@@ -1,6 +1,6 @@
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Includes
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
@@ -33,15 +33,15 @@
 #include "XMem.h"
 #include "util.h"
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Defines
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 //#define	DEBUG_COMP			1
 #define	COB_VERSION_NUMBER	2
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	External Variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;
@@ -75,19 +75,19 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 //#pragma optimize( "gty", on )
 //#endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Global Variables
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 int8 * CompObjPath = "data\\bgobjects\\";
 MODELNAME	*	ModNames = &ModelNames[ 0 ];
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	PreLoad Componented Object Data
 	Input		:	int8		*	Filename of .COB data
 				:	uint16		*	BaseModel
 				:	BOOL			Level Specific?
 	Output		:	BOOL			TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 {
 	int16		i;
@@ -151,7 +151,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 				ModNames[ (*BaseModel) + Count ].DoIMorph = FALSE;
 				ModNames[ (*BaseModel) + Count ].ModelIndex = (*BaseModel) + Count;
 				ModNames[ (*BaseModel) + Count ].StoreTriangles = FALSE;
-				ModNames[ (*BaseModel) + Count ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+				ModNames[ (*BaseModel) + Count ].AllocateTpage = LOAD_TPAGES;
 				ModNames[ (*BaseModel) + Count ].LevelSpecific = LevelSpecific;
 				ModNames[ (*BaseModel) + Count ].LoadEnable = DO_LOAD;
 			}
@@ -162,7 +162,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 			ModNames[ (*BaseModel) + NumModels ].DoIMorph = FALSE;
 			ModNames[ (*BaseModel) + NumModels ].ModelIndex = (*BaseModel) + NumModels;
 			ModNames[ (*BaseModel) + NumModels ].StoreTriangles = FALSE;
-			ModNames[ (*BaseModel) + NumModels ].AllocateTpage = LOAD_TPAGES_VIDMEM;
+			ModNames[ (*BaseModel) + NumModels ].AllocateTpage = LOAD_TPAGES;
 			ModNames[ (*BaseModel) + NumModels ].LevelSpecific = LevelSpecific;
 			ModNames[ (*BaseModel) + NumModels ].LoadEnable = DO_LOAD;
 
@@ -186,7 +186,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 	return( TRUE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load Componented Object Data
 	Input		:	int8		*	Filename of .COB data ( Including Path )
 				:	VECTOR		*	Pos
@@ -199,7 +199,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 				:	uint16			OwnerType
 				:	uint16			OwnerID
 	Output		:	COMP_OBJ	*	Components
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Group,
 					    float * OverallTime, float * MidTime, uint16 * BaseModel,
 						uint16 OwnerType, uint16 OwnerID )
@@ -276,7 +276,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	return( CompsPtr );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load and allocate background object children
 	Input		:	FILE		*	File Ptr
 				:	COMP_OBJ	*	Components Address
@@ -290,7 +290,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 				:	uint16			OwnerType
 				:	uint16			OwnerID
 	Output		:	FILE		*	Updated File Pointer
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 						    VECTOR * Pos, VECTOR * Dir, uint16 Group,
 							float * Time, float * MidTime, uint16 * BaseModel,
@@ -824,12 +824,12 @@ FILE * LoadCompObjChildren( FILE * fp, COMP_OBJ * Comp, int16 NumComp,
 #pragma optimize( "gty", on )
 #endif
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Free components of object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 {
 	int16			Count;
@@ -918,7 +918,7 @@ void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -928,7 +928,7 @@ void FreeCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 				:	uint16			Group
 				:	VECTOR		*	Center
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix, VECTOR * ParentPos, float Time, uint16 Group, VECTOR * Center )
 {
 	int16				Count;
@@ -1160,12 +1160,12 @@ void UpdateCompObjChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * Par
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Undo Anim of CompObject and children
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;
@@ -1193,13 +1193,13 @@ void UndoCompObjAnim( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get Component Address
 	Input		:	int16			ID
 				:	int16			Number of Children
 				:	COMP_OBJ	*	Start of Componented Object
 	Output		:	COMP_OBJ	*	Component
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children )
 {
 	int16			Count;
@@ -1223,11 +1223,11 @@ COMP_OBJ * GetCompObjAddress( int16 ID, int16 NumChildren, COMP_OBJ * Children )
 	return( NULL );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Component
 	Output		:	BOOL			True/False
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL GetCompObjAxis( COMP_OBJ * Comp )
 {
 	int16				Trans;
@@ -1262,13 +1262,13 @@ BOOL GetCompObjAxis( COMP_OBJ * Comp )
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Enable Component Object models
 	Input		:	COMP_OBJ	*	Start of Componented Object
 				:	int16			Number of Children
 				:	BOOL			True/False ( Visible / Invisible )
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible )
 {
 	int16			Count;
@@ -1292,13 +1292,13 @@ void SetCompObjModelsState( COMP_OBJ * Children, int16 NumChildren, BOOL Visible
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Display components collision zones
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 				:	uint16			Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
 {
 	int16					Count;
@@ -1397,7 +1397,7 @@ void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
  	Procedure	:		Check Ray to Col Zone
 	Input		:		VECTOR	*	StartPos
 				:		VECTOR	*	EndPos
@@ -1407,7 +1407,7 @@ void ShowCompObjColZones( COMP_OBJ * Children, int16 NumChildren, uint16 Group )
 				:		ZONESIDE **	Intersection Side ( TBFI )
 				:		float		Collision Radius
 	Output		:		void
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int16 StartNumSides, VECTOR * IntPoint, ZONESIDE ** IntSide, float Radius )
 {
 	float		d1, d2;
@@ -1446,13 +1446,13 @@ BOOL RayToColZone( VECTOR * StartPos, VECTOR * EndPos, ZONESIDE * StartSide, int
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
  	Procedure	:		Is point inside convex shape?
 	Input		:		VECTOR	*	Pos
 				:		ZONESIDE *	Sides
 				:		int16		NumSides
 	Output		:		BOOL		TRUE/FALSE
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, int16 Side )
 {
 	float		d1;
@@ -1470,7 +1470,7 @@ BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, 
 	return TRUE;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get Componented Object Bounding Box
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
@@ -1480,7 +1480,7 @@ BOOL PointInside( VECTOR * Pos, ZONESIDE * Sides, int16 NumSides, float Radius, 
 				:	VECTOR		*	Top Left (TBFI)
 				:	VECTOR		*	Botom Right (TBFI)
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight )
@@ -1511,7 +1511,7 @@ void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 								   BottomRight );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1521,7 +1521,7 @@ void GetCompObjBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 				:	VECTOR		*	TopLeft
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight )
 {
@@ -1663,7 +1663,7 @@ void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATR
 }
 
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update components model colours
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1671,7 +1671,7 @@ void GetCompObjBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATR
 				:	int				Green
 				:	int				Blue
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int Green, int Blue )
 {
 	int16	Count;
@@ -1698,13 +1698,13 @@ void UpdateCompObjColours( COMP_OBJ * Children, int16 NumChildren, int Red, int 
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update components model Flags
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 				:	uint16			Flags
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags )
 {
 	int16	Count;
@@ -1729,13 +1729,13 @@ void UpdateCompObjFlags( COMP_OBJ * Children, int16 NumChildren, uint16 Flags )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Update components model clip groups
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 				:	uint16			Clip Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 ClipGroup )
 {
 	int16	Count;
@@ -1768,13 +1768,13 @@ void UpdateCompObjClipGroup( COMP_OBJ * Children, int16 NumChildren, uint16 Clip
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 				:	float			Radius
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radius )
 {
 	int16	Count;
@@ -1799,12 +1799,12 @@ void SetCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren, float Radiu
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void ClearCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;
@@ -1828,12 +1828,12 @@ void ClearCompObjRealLighting( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Maximize Bounding box
 	Input		:	VECTOR	*	TopLeft
 				:	VECTOR	*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 {
 	float	GreatestDistance;
@@ -1851,7 +1851,7 @@ void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 	BottomRight->z = GreatestDistance;
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -1860,7 +1860,7 @@ void MaximizeBoundingBox( VECTOR * TopLeft, VECTOR * BottomRight )
 				:	float			Time
 				:	uint16			Group
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
 {
 	int16				Count;
@@ -1938,13 +1938,13 @@ BOOL AmIInvulnerable( COMP_OBJ * Children, int16 NumChildren, float Time )
 	return( FALSE );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Save CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	FILE		*	Updated FilePtr
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;
@@ -1994,13 +1994,13 @@ FILE * SaveAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Load CompObj + Children
 	Input		:	FILE		*	FilePtr
 				:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	FILE		*	Updated FilePtr
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;
@@ -2050,7 +2050,7 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 	return( fp );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Get Componented Object Collision Bounding Box
 	Input		:	MATRIX		*	Parent Matrix
 				:	VECTOR		*	Parent Pos
@@ -2060,7 +2060,7 @@ FILE * LoadAllCompObj( FILE * fp, COMP_OBJ * Children, int16 NumChildren )
 				:	VECTOR		*	Top Left (TBFI)
 				:	VECTOR		*	Botom Right (TBFI)
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 						   COMP_OBJ * Children, int16 NumChildren, float OverallTime, VECTOR * TopLeft,
 						   VECTOR * BottomRight )
@@ -2091,7 +2091,7 @@ void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 								   BottomRight );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
@@ -2101,7 +2101,7 @@ void GetCompObjColBoundingBox( MATRIX * ParentMatrix, VECTOR * ParentPos,
 				:	VECTOR		*	TopLeft
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, MATRIX * ParentMatrix,
 								    VECTOR * ParentPos, float Time, VECTOR * TopLeft, VECTOR * BottomRight )
 {
@@ -2230,7 +2230,7 @@ void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, M
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	COMP_OBJ	*	Children
 				:	MATRIX		*	Display Matrix
@@ -2238,7 +2238,7 @@ void GetCompObjColBoundingBoxChildren( COMP_OBJ * Children, int16 NumChildren, M
 				:	VECTOR		*	TopLeft
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, VECTOR * DisplayPos,
 								   VECTOR * TopLeft, VECTOR * BottomRight )
 {
@@ -2278,7 +2278,7 @@ void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, 
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Process components of an object
 	Input		:	VECTOR		*	Center Offset
 				:	VECTOR		*	HalfSize
@@ -2287,7 +2287,7 @@ void GetCompObjColZoneBoundingBox( COMP_OBJ * Children, MATRIX * DisplayMatrix, 
 				:	VECTOR		*	TopLeft
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void GetZoneBoundingBox( VECTOR * Center, VECTOR * HalfSize, MATRIX * Matrix, VECTOR * Pos,
 						 VECTOR * TopLeft, VECTOR * BottomRight )
 {
@@ -2334,7 +2334,7 @@ void GetZoneBoundingBox( VECTOR * Center, VECTOR * HalfSize, MATRIX * Matrix, VE
 	AddVertToBoundingBox( &TempVert, Matrix, Pos, TopLeft, BottomRight );
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Add Vertex to bounding Box
 	Input		:	VECTOR		*	Vertex
 				:	MATRIX		*	Display Matrix
@@ -2342,7 +2342,7 @@ void GetZoneBoundingBox( VECTOR * Center, VECTOR * HalfSize, MATRIX * Matrix, VE
 				:	VECTOR		*	TopLeft
 				:	VECTOR		*	BottomRight
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void AddVertToBoundingBox( VECTOR * Vert, MATRIX * Matrix, VECTOR * Pos, VECTOR * TopLeft, VECTOR * BottomRight )
 {
 	VECTOR		TempVert;
@@ -2375,13 +2375,13 @@ void AddVertToBoundingBox( VECTOR * Vert, MATRIX * Matrix, VECTOR * Pos, VECTOR 
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Clear components model real lighting flag
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 				:	int16			Model Offset for stealth
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset )
 {
 	int16	Count;
@@ -2406,12 +2406,12 @@ void SetStealthOffset( COMP_OBJ * Children, int16 NumChildren, uint16 Offset )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;
@@ -2436,12 +2436,12 @@ void SetCompObjStealth( COMP_OBJ * Children, int16 NumChildren )
 	}
 }
 
-/*ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ
+/*===================================================================
 	Procedure	:	Set Stealthmode
 	Input		:	COMP_OBJ	*	Children
 				:	int16			NumChildren
 	Output		:	Nothing
-ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
+===================================================================*/
 void SetCompObjNonStealth( COMP_OBJ * Children, int16 NumChildren )
 {
 	int16	Count;

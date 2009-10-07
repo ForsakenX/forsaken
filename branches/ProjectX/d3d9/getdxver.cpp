@@ -1,3 +1,4 @@
+#if 0 // bjd
 /**************************************************************************
 
     GetDXVer.cpp
@@ -20,7 +21,7 @@
 
 #include <windows.h>
 #include <windowsx.h>
-#include <ddraw.h>
+//#include <ddraw.h>
 #include "typedefs.h"
 #include <dinput.h>
 #include <d3drm.h>
@@ -324,3 +325,4 @@ extern "C" void GetDXVersion(LPDWORD pdwDXVersion, LPDWORD pdwDXPlatform)
     return;
 }
 
+#endif
