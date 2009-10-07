@@ -438,8 +438,8 @@ void reset_cull( void )
 void set_alpha_ignore( void )
 {
 	STATE( D3DRS_ALPHATESTENABLE,	TRUE); 
-	STATE( D3DRS_ALPHAREF,			0x000000FF );
-	STATE( D3DRS_ALPHAFUNC,			D3DCMP_EQUAL);
+	STATE( D3DRS_ALPHAREF,			(DWORD)100 );
+	STATE( D3DRS_ALPHAFUNC,			D3DCMP_GREATER);
 }
 
 void unset_alpha_ignore( void )
