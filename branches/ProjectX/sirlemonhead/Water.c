@@ -529,7 +529,8 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].startIndex = 0;
 	WO->renderObject.textureGroups[0].startVert = 0;
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
-	WO->renderObject.textureGroups[0].texture = Tloadheader.ColourKey[WaterTPage];
+	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
+	WO->renderObject.material = Tloadheader.lpMat[WaterTPage];
 
 /*
 	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
@@ -739,8 +740,12 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 //	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
 //			return;
 
+	cull_none();
+
 	if (FAILED(draw_object(&Wo->renderObject)))
 		return;
+
+	reset_cull();
 
 //	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
 //	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
