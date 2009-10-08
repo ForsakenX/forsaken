@@ -1729,9 +1729,9 @@ BOOL SetMatrixViewPort( void )
 //	MAKE_MATRIX(lpDev, hProj, proj);
 //	MAKE_MATRIX(lpDev, hWorld, world);
 
-	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_VIEW, &identity);
-	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_PROJECTION, &proj);
-	d3dappi.lpD3DDevice->lpVtbl->SetTransform(d3dappi.lpD3DDevice, D3DTS_WORLD, &world);
+	FSSetMatrix( D3DTS_VIEW, &identity );
+	FSSetMatrix( D3DTS_PROJECTION, &proj );
+	FSSetMatrix( D3DTS_WORLD, &world );
 
 	world = identity;
 //	size = 0;
