@@ -1206,6 +1206,7 @@ ClipGroup( CAMERA *cam, uint16 group )
 BOOL
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
+    HRESULT rval;
 	D3DMATRIX	Tempproj;
 	D3DMATRIX	Tempview;
 	VISGROUP *g;
@@ -1231,8 +1232,8 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	GroupImIn = CurrentCamera.GroupImIn;
 
-	// bjd - need to revert this and figure out why blackness is drawn at the portals
-	if ( 0 ) //GroupImIn != (uint16) -1 )
+	// bjd - if you go to the next block the portals will render.
+	if ( GroupImIn != (uint16) -1 )
 	{
 		DisplayBSPNode( OldCollideNode );
 
@@ -1277,10 +1278,18 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			return FALSE;
 	}
 
-	FSSetViewPort(&OldViewPort);
+	rval = FSSetViewPort(&OldViewPort);
 /* bjd
 	d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &OldViewPort );
 */
+    if (rval != D3D_OK) {
+#ifdef DEBUG_VIEWPORT
+		SetViewportError( "ClipGroup", &g->viewport, rval );
+#else
+        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+#endif
+        return FALSE;
+    }
 
 	proj = Tempproj;
 	view = Tempview;

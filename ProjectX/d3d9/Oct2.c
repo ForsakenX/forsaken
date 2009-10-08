@@ -1236,27 +1236,25 @@ SetFOV( float fov )
 
 void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval )
 {
-/* bjd
   static char msg[1024];
-
-  sprintf( msg, "SetViewport failed in %s.\n"
-    "%s\n"
-    "size=%d(=sizeof()%d?)\n"
+  sprintf( msg,
+	"SetViewport failed in %s.\n"
+	"Error: %s\n"
+    "size=%d\n"
     "xpos=%d ypos=%d\n"
     "width=%d height=%d\n"
-    "xscale=%f yscale=%f\n"
-    "xmax=%f ymax=%f\n"
+    //"xscale=%f yscale=%f\n"
+    //"xmax=%f ymax=%f\n"
     "zmin=%f zmax=%f\n",
     where,
     D3DAppErrorToString( rval ),
-    vp->dwSize, sizeof( *vp ),
-    vp->dwX, vp->dwY,
-    vp->dwWidth, vp->dwHeight,
-    vp->dvScaleX, vp->dvScaleY,
-    vp->dvMaxX, vp->dvMaxY,
-    vp->dvMinZ, vp->dvMaxZ );
+    sizeof( *vp ),
+    vp->X, vp->Y,
+    vp->Width, vp->Height,
+    //vp->dvScaleX, vp->dvScaleY,
+    //vp->dvMaxX, vp->dvMaxY,
+    vp->MinZ, vp->MaxZ );
   Msg( msg );
-*/
 }
 
 BOOL
