@@ -1049,7 +1049,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	g->extent.max.z = HUGE_VALUE;
 
 	// process visible portals
-	if ( outside_map )
+	if ( 1 ) //outside_map )
 	{
 		if ( !last_outside )
 		{
@@ -1251,8 +1251,8 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
 
-			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
-				return FALSE;
+//			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
+//				return FALSE;
 
    			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
 					return FALSE;
