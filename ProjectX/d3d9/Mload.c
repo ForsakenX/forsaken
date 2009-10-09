@@ -1220,38 +1220,12 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 {
-	int i;
 	int group;
-	D3DMATRIX Matrix;
 	if (Mloadheader->state == TRUE )
 	{
 		for ( group=0 ; group<Mloadheader->num_groups ; group++)
 		{
-			for ( i=0 ; i<Mloadheader->Group[group].num_execbufs; i++)
-			{
-				// if its a Transparent Execute Buffer then dont display it add it to the Transexe list
-//				if( ((Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
-				if( Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
-				{
-	//				if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
-					if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))
-					{
-						return FALSE;
-					}
-					AddTransExe( &Matrix , /*Mloadheader->Group[group].lpExBuf[i]*/&Mloadheader->Group[group].renderObject[i] , 0, (uint16) -1, (uint16) group, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
-				}
-				else
-				{
-/*
-					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-						return FALSE;
-*/
-					if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
-					{
-						return FALSE;
-					}
-				}
-			}
+			ExecuteSingleGroupMloadHeader( Mloadheader, group );
 		}
 	}
 	return TRUE;
@@ -1274,7 +1248,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 		for ( i=0 ; i<Mloadheader->Group[group].num_execbufs; i++)
 		{
 			// if its a Transparent Execute Buffer then dont diplay it add it to the Transexe list
-//			if( ((Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
+			//if( ((Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 			if( Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 			{
 				//if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
@@ -1282,8 +1256,14 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 				{
 					return FALSE;
 				}
-				AddTransExe( &Matrix , &Mloadheader->Group[group].renderObject[i], 0, (uint16) -1, group, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
-
+				AddTransExe(
+					&Matrix,
+					&Mloadheader->Group[group].renderObject[i],
+					0,
+					(uint16) -1,
+					(uint16) group,
+					Mloadheader->Group[ group ].num_verts_per_execbuf[i] 
+				);
 			}
 			else
 			{
