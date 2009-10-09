@@ -95,6 +95,10 @@ void cull_none( void );
 void cull_cw( void );
 void reset_cull( void );
 BOOL D3DAppISetRenderState(void);
+void screenpoly_filtering( void );
+void disable_zbuff( void );
+void set_alpha_states( void );
+void set_normal_states( void );
 //BOOL D3DAppIEnumDrivers(void);
 BOOL D3DAppIPickDriver(int* driver, DWORD depths);
 BOOL D3DAppICreateD3D(void);
@@ -131,8 +135,10 @@ void D3DAppIGetClientWin(HWND hwnd);
 void D3DAppISetDefaults(void);
 BOOL D3DAppICallDeviceDestroyCallback(void);
 BOOL D3DAppICallDeviceCreateCallback(int w, int h);
-
 BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp);
+void reset_zbuff( void );
+void reset_filtering( void );
+void set_alpha_fx_states( void );
 /*
 void D3DAppIMergeRectLists(int* dstnum, LPD3DRECT dst, int src1num,
                            LPD3DRECT src1, int src2num, LPD3DRECT src2);
@@ -209,7 +215,7 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
-HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort);
+HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
 HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
@@ -220,9 +226,10 @@ HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
-HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
-HRESULT FSGetViewport(D3DVIEWPORT9 *returnViewPort);
-HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort);
+HRESULT draw_object(RENDEROBJECT *renderObject);
+HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort);
+HRESULT FSGetViewport(MYD3DVIEWPORT9 *returnViewPort);
+HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
@@ -231,6 +238,9 @@ HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
 HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+HRESULT draw_line_object(RENDEROBJECT *renderObject);
+HRESULT draw_object(RENDEROBJECT *renderObject);
+HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 
 #define FSBackBuffer 0 // pass this to FSBlit for "to" to point to back buffer
 void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest );

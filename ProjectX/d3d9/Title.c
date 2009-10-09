@@ -84,7 +84,7 @@ extern BOOL ZClearsOn;
 extern BOOL SetZProj( void );
 extern BOOL SetZCompare();
 extern BOOL HideCursor;
-extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
+extern void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
 
@@ -282,7 +282,7 @@ extern	BOOL                    IsHost;
 extern	D3DMATRIX view;
 BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
 extern	MATRIX	MATRIX_Identity;
-extern	D3DVIEWPORT9 viewport;
+extern	MYD3DVIEWPORT9 viewport;
 extern	MODEL	Models[];
 uint16	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
@@ -5104,10 +5104,10 @@ BOOL DisplayTitle(void)
 		CurrentCamera.Viewport.Y = 0;
 		CurrentCamera.Viewport.Width = d3dapp->szClient.cx;
 		CurrentCamera.Viewport.Height = d3dapp->szClient.cy;
+		CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+		CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
 /* bjd
-		CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-		CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
 		CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
 										  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
 		CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),

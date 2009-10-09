@@ -91,6 +91,17 @@ typedef struct _D3DVIEWPORT {
     D3DVALUE dvMaxZ; 
 } D3DVIEWPORT, *LPD3DVIEWPORT; 
 
+typedef struct {
+    DWORD       X;
+    DWORD       Y;            /* Viewport Top left */
+    DWORD       Width;
+    DWORD       Height;       /* Viewport Dimensions */
+    float       MinZ;         /* Min/max of clip Volume */
+    float       MaxZ;
+    D3DVALUE	ScaleX; 
+    D3DVALUE	ScaleY; 
+} MYD3DVIEWPORT9;
+
 /*
  * D3DAppTextureFormat stucture
  * Describes a texture format
@@ -133,7 +144,7 @@ typedef struct tagD3DAppInfo {
 	*/
     LPDIRECT3D9              lpD3D;         /* D3D object */
     LPDIRECT3DDEVICE9        lpD3DDevice;   /* D3D device */
-	D3DVIEWPORT9			 D3DViewport; /* D3D viewport, created by application */
+	MYD3DVIEWPORT9			 D3DViewport; /* D3D viewport, created by application */
     int                     NumDrivers;    /* number of D3D drivers avail. */
 //    int                     CurrDriver;    /* number of curr. D3D driver */
 //    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/

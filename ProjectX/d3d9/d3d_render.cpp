@@ -106,7 +106,7 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
 	d3dappi.D3DViewport.MinZ = 0.0f;
 	d3dappi.D3DViewport.MaxZ = 1.0f;
 
-	LastError = d3dappi.lpD3DDevice->SetViewport(&d3dappi.D3DViewport);
+	LastError = FSSetViewPort(&d3dappi.D3DViewport);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("couldn't set viewport\n");
@@ -536,14 +536,14 @@ BOOL FSClearBlack(void)
 	else return TRUE;
 }
 
-HRESULT FSGetViewPort(D3DVIEWPORT9 *returnViewPort)
+HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort)
 {
-	return d3dapp->lpD3DDevice->GetViewport( returnViewPort );
+	return d3dapp->lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
 }
 
-HRESULT FSSetViewPort(D3DVIEWPORT9 *newViewPort)
+HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort)
 {
-	return d3dapp->lpD3DDevice->SetViewport( newViewPort );
+	return d3dapp->lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
 }
 
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)

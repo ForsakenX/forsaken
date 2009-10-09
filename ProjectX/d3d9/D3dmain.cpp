@@ -147,7 +147,7 @@ BOOL bOnlyEmulation			= FALSE;
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 static BOOL CreateD3DApp(void);
 static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/);
-static BOOL AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lpViewport, LPVOID lpContext);
+static BOOL AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
@@ -1155,7 +1155,7 @@ static BOOL CreateD3DApp(void)
 BOOL SplashOnceOnly = TRUE;
 
 static BOOL
-AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
+AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
 {
 	return TRUE;
 #if 0 // bjd
@@ -1187,13 +1187,14 @@ AfterDeviceCreated(int w, int h, D3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
     viewData.dwX = viewData.dwY = 0;
     viewData.dwWidth = w;
     viewData.dwHeight = h;
-    viewData.dvScaleX = viewData.dwWidth / (float)2.0;
-    viewData.dvScaleY = viewData.dwHeight / (float)2.0;
+    viewData.ScaleX = viewData.dwWidth / (float)2.0;
+    viewData.ScaleY = viewData.dwHeight / (float)2.0;
+	/* bjd
     viewData.dvMaxX = (float)D3DDivide(D3DVAL(viewData.dwWidth),
                                        D3DVAL(2 * viewData.dvScaleX));
     viewData.dvMaxY = (float)D3DDivide(D3DVAL(viewData.dwHeight),
                                        D3DVAL(2 * viewData.dvScaleY));
-
+	*/
     rval = lpD3DViewport->SetViewport(&viewData);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT

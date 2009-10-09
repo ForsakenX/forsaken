@@ -578,7 +578,7 @@ BOOL TermDInput( void );
 BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
 BOOL  ClearZBuffer();
 
-BOOL RenderCurrentCamera( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
+BOOL RenderCurrentCamera( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void FreeSfxHolder( int index ) ;
 
@@ -587,8 +587,8 @@ void  PlotSimplePanel( void );
 RECT cursorclip;
 
 //LPDIRECT3DDEVICE lpD3Ddev = NULL;
-D3DVIEWPORT9 viewport;
-D3DVIEWPORT9 oldviewport;
+MYD3DVIEWPORT9 viewport;
+MYD3DVIEWPORT9 oldviewport;
 HRESULT hresult;
 int initfov = 0;
 float viewplane_distance;
@@ -986,7 +986,7 @@ LPDIRECT3DSURFACE9     lpDDSOverlay;				// Panel
 D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
 
 MLOADHEADER Mloadheader;
-BOOL TestTransformClip(D3DVIEWPORT9 *lpView);
+BOOL TestTransformClip(MYD3DVIEWPORT9 *lpView);
 
 MCLOADHEADER MCloadheader;          //  inner skin collision map...
 MCLOADHEADER MCloadheadert0;        //  0 thickness collision map...
@@ -1007,11 +1007,11 @@ extern  int16     ShowSkin;
 extern  int16         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
 
-BOOL MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
+BOOL MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
 
 void Build_View();
-BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
-BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ); // bjd
+BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
+BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
 
 /**************************************************************************
   DirectInput Globals
@@ -1227,7 +1227,7 @@ SetFOV( float fov )
 }
 
 
-void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval )
+void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval )
 {
   static char msg[1024];
   sprintf( msg,
@@ -1236,7 +1236,7 @@ void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval )
     "size=%d\n"
     "xpos=%d ypos=%d\n"
     "width=%d height=%d\n"
-    //"xscale=%f yscale=%f\n"
+    "xscale=%f yscale=%f\n"
     //"xmax=%f ymax=%f\n"
     "zmin=%f zmax=%f\n",
     where,
@@ -1244,7 +1244,7 @@ void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval )
     sizeof( *vp ),
     vp->X, vp->Y,
     vp->Width, vp->Height,
-    //vp->dvScaleX, vp->dvScaleY,
+    vp->ScaleX, vp->ScaleY,
     //vp->dvMaxX, vp->dvMaxY,
     vp->MinZ, vp->MaxZ );
   Msg( msg );
@@ -1348,9 +1348,9 @@ ResizeViewport( float scale )
 	viewport.Y = top;
     viewport.Width = width;
     viewport.Height = height;
+    viewport.ScaleX = viewport.Width / (float)2.0;
+    viewport.ScaleY = viewport.Height / (float)2.0;
 /*  bjd
-    viewport.dvScaleX = viewport.dwWidth / (float)2.0;
-    viewport.dvScaleY = viewport.dwHeight / (float)2.0;
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
@@ -1406,8 +1406,8 @@ FullScreenViewport()
 	viewport.Y = top;
     viewport.Width = width;
     viewport.Height = height;
-//    viewport.dvScaleX = viewport.dwWidth / (float)2.0;
-//    viewport.dvScaleY = viewport.dwHeight / (float)2.0;
+    viewport.ScaleX = viewport.Width / (float)2.0;
+    viewport.ScaleY = viewport.Height / (float)2.0;
 /* bjd 
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
@@ -3749,7 +3749,7 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
  // LPDIRECTDRAW lpDD = d3dapp->lpDD;
  // LPDIRECT3D lpD3D = d3dapp->lpD3D;
 //  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-  D3DVIEWPORT9 *lpView = &d3dapp->D3DViewport;
+  MYD3DVIEWPORT9 *lpView = &d3dapp->D3DViewport;
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
@@ -5565,7 +5565,7 @@ void CheckLevelEnd ( void )
 ===================================================================*/
 
 BOOL
-MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
+MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
@@ -5698,10 +5698,10 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
         CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height >>4);
         CurrentCamera.Viewport.Width = viewport.Width >>2;
         CurrentCamera.Viewport.Height = viewport.Height >>2;
+        CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+        CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
 /* bjd
-        CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-        CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
         CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
         CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
@@ -5747,9 +5747,9 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
         CurrentCamera.Viewport.Y = viewport.Y + (viewport.Height >>4);
         CurrentCamera.Viewport.Width = viewport.Width >>2;
         CurrentCamera.Viewport.Height = viewport.Height >>2;
+        CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+        CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 /* bjd 
-        CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-        CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
         CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.wWidth),
                            D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
         CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.Height),
@@ -5848,12 +5848,14 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView) // bjd
       CurrentCamera.Viewport.dwY = 0;
       CurrentCamera.Viewport.dwWidth = 128;
       CurrentCamera.Viewport.dwHeight = 128;
-      CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-      CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
+      CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
+      CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
+	  /* bjd
       CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
                          D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
       CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
                          D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+	 */
       
       {
         if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
@@ -6518,7 +6520,7 @@ void ReleaseRenderBufs( void )
   Input   :
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
-BOOL RenderCurrentCamera( D3DVIEWPORT9 *lpView )
+BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 {
 	HRESULT rval;
 	int16 Count;
@@ -6988,7 +6990,7 @@ BOOL Our_CalculateFrameRate(void)
   Input   :
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
-BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
+BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
 {
 	VECTOR  Trans;
 	MATRIX  Matrix;
@@ -6999,7 +7001,7 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
 	VECTOR  Scale;
 	int clearflags;
 	D3DRECT dummy;
-	D3DVIEWPORT9 newviewport;
+	MYD3DVIEWPORT9 newviewport;
 	float screen_width, screen_height;
 
  //   newviewport.dwSize = sizeof(D3DVIEWPORT);
@@ -7007,10 +7009,10 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView )
 	newviewport.Y = 0;
     newviewport.Width = d3dapp->szClient.cx;
     newviewport.Height = d3dapp->szClient.cy;
+    newviewport.ScaleX = newviewport.Width / (float)2.0;
+    newviewport.ScaleY = newviewport.Height / (float)2.0;
 
 /*
-    newviewport.dvScaleX = newviewport.dwWidth / (float)2.0;
-    newviewport.dvScaleY = newviewport.dwHeight / (float)2.0;
     newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
                                        D3DVAL(2 * newviewport.dvScaleX));
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
@@ -7307,9 +7309,9 @@ InitViewport( float scale )
 	viewport.Y = top;
     viewport.Width = width;
     viewport.Height = height;
+    viewport.ScaleX = viewport.Width / (float)2.0;
+    viewport.ScaleY = viewport.Height / (float)2.0;
 /* bjd - CHECK
-    viewport.dvScaleX = viewport.dwWidth / (float)2.0;
-    viewport.dvScaleY = viewport.dwHeight / (float)2.0;
     viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
                                        D3DVAL(2 * viewport.dvScaleX));
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
@@ -7844,12 +7846,12 @@ void CalculateFramelag( void )
         : LPDIRECT3DVIEWPORT  lpView
   Output    : BOOL        TRUE/FALSE
 ===================================================================*/
-BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ) // bjd
+BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
 {
 	uint16      i;
 	int         clearflags;
 	D3DRECT     dummy;
-	D3DVIEWPORT9 newviewport;
+	MYD3DVIEWPORT9 newviewport;
 	float       screen_width, screen_height;
 	VECTOR      TempVector;
 	MATRIX      TempMatrix;
@@ -7876,10 +7878,10 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ D3DVIEWPORT9 *lpView ) // bjd
 	newviewport.Y = 0;
     newviewport.Width = ( d3dapp->szClient.cx / 3 ) & -2;
     newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
+    newviewport.ScaleX = newviewport.Width / (float)2.0;
+    newviewport.ScaleY = newviewport.Height / (float)2.0;
 
 /* bjd
-    newviewport.dvScaleX = newviewport.dwWidth / (float)2.0;
-    newviewport.dvScaleY = newviewport.dwHeight / (float)2.0;
     newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
                                        D3DVAL(2 * newviewport.dvScaleX));
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
@@ -8331,7 +8333,7 @@ void RenderSnapshot( void )
 {
 #if 0 // bjd - CHECK
 //  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-    D3DVIEWPORT9 View = d3dapp->D3DViewport;
+    MYD3DVIEWPORT9 View = d3dapp->D3DViewport;
 
 //bjd  lpDev->lpVtbl->BeginScene(lpDev);
 
@@ -8348,10 +8350,10 @@ void RenderSnapshot( void )
   CurrentCamera.Viewport.Y = 0;
   CurrentCamera.Viewport.Width = 128;
   CurrentCamera.Viewport.Height = 128;
+  CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
+  CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
 
 /* bjd
-  CurrentCamera.Viewport.dvScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-  CurrentCamera.Viewport.dvScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
   CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
                      D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
   CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),

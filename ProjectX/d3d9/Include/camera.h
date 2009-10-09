@@ -31,7 +31,7 @@ typedef struct _VISGROUP
 	int			group;
 	int			visible;
 	EXTENT		extent;
-	D3DVIEWPORT9 viewport;
+	MYD3DVIEWPORT9 viewport;
 	D3DMATRIX	projection;
 	VISGROUP	*next_visible;
 } VISGROUP;
@@ -43,7 +43,7 @@ typedef struct
 	VISGROUP	group[ MAXGROUPS ];
 	VISGROUP	*first_visible;
 	VISGROUP	*last_visible;
-	D3DVIEWPORT9	*viewport;
+	MYD3DVIEWPORT9	*viewport;
 	D3DMATRIX	viewproj;
 } VISLIST;
 
@@ -58,7 +58,7 @@ typedef struct CAMERA{
 	MATRIX	Mat;
 	MATRIX	InvMat;
 	D3DMATRIX	Proj;
-	D3DVIEWPORT9 Viewport;
+	MYD3DVIEWPORT9 Viewport;
 	void *	CurrentOwner;
 	VISLIST visible;
 	D3DMATRIX	View;

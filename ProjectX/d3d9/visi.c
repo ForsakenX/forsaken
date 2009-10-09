@@ -31,7 +31,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-extern void SetViewportError( char *where, D3DVIEWPORT9 *vp, HRESULT rval );
+extern void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval );
 
 extern float hfov;
 extern float screen_aspect_ratio;
@@ -119,8 +119,8 @@ D3DRECT	GroupVisibleExtents[MAXGROUPS];
 uint16	NumPortalsVisible;
 uint16	PortalsVisible[MAXPORTALSPERGROUP];
 D3DRECT	PortalExtents[MAXGROUPS];
-D3DVIEWPORT9	OldViewPort;
-D3DVIEWPORT9	PresentViewPort;
+MYD3DVIEWPORT9	OldViewPort;
+MYD3DVIEWPORT9	PresentViewPort;
 MATRIX	VisPolyMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
 				0.0F, 1.0F, 0.0F, 0.0F,
@@ -857,7 +857,7 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 	}
 	else
 	{
-//bjd - CHECK		vpos->x = v->viewport->X + ( v->viewport->Width * 0.5F ) + (v->viewport->dvScaleX * vpos->x);
+		vpos->x = v->viewport->X + ( v->viewport->Width * 0.5F ) + (v->viewport->ScaleX * vpos->x);
 	}
 
    	if ( vpos->y < -1.0F )
@@ -872,7 +872,7 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 	}
 	else
 	{
-//bjd - CHECK		vpos->y = v->viewport->Y + ( v->viewport->Height * 0.5F ) - (v->viewport->dvScaleY * vpos->y);
+		vpos->y = v->viewport->Y + ( v->viewport->Height * 0.5F ) - (v->viewport->ScaleY * vpos->y);
 	}
 
 	return clip;
@@ -988,7 +988,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	VISLIST *v;
 	VISGROUP *g;
 	D3DRECT clip;
-	D3DVIEWPORT9 *vp;
+	MYD3DVIEWPORT9 *vp;
 	VISGROUP *gsort, *gprev, *gnext;
 	int j;
 	float w, h;
@@ -1049,7 +1049,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	g->extent.max.z = HUGE_VALUE;
 
 	// process visible portals
-	if ( 1 ) //outside_map )
+	if ( outside_map )
 	{
 		if ( !last_outside )
 		{
@@ -1115,10 +1115,8 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 			else
 				vp->Height--;
 		}
-/* bjd - CHECK
-		vp->dvScaleX = vp->Width * 0.5F;
-		vp->dvScaleY = vp->Height * 0.5F;
-*/
+		vp->ScaleX = vp->Width * 0.5F;
+		vp->ScaleY = vp->Height * 0.5F;
 		g->projection = cam->Proj;
 		g->projection._11 = ( cam->Proj._11 * v->viewport->Width ) / vp->Width;
 		g->projection._22 = ( cam->Proj._22 * v->viewport->Height ) / vp->Height;

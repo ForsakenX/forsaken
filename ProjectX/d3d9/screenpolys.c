@@ -772,11 +772,9 @@ void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	VECTOR	TempVert;
 
 	VisPolyApplyMatrix( FinalMat, SrcVert, &TempVert );
-/* bjd - CHECK
-	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
-	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
+	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.ScaleX * TempVert.x ) );
+	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.ScaleY * TempVert.y ) );
 	DstVert->z = TempVert.z;
-*/
 }
 
 /*===================================================================
@@ -829,11 +827,9 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 			TempVert.y = 1.0F;
 		}
 	}
-/* bjd - CHECK
-	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.dvScaleX * TempVert.x ) );
-	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.dvScaleY * TempVert.y ) );
+	DstVert->x = CurrentCamera.Viewport.X + ( ( CurrentCamera.Viewport.Width / 2 ) + ( CurrentCamera.Viewport.ScaleX * TempVert.x ) );
+	DstVert->y = CurrentCamera.Viewport.Y + ( ( CurrentCamera.Viewport.Height / 2 ) - ( CurrentCamera.Viewport.ScaleY * TempVert.y ) );
 	DstVert->z = TempVert.z;
-*/
 	if( Flags ) return( TRUE );
 	return( FALSE );
 }
