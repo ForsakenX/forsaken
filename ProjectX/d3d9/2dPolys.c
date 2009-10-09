@@ -32,7 +32,6 @@
 ===================================================================*/
 extern	CAMERA	CurrentCamera;
 extern	D3DMATRIX			view;
-extern	MATRIX				Identity;
 extern	MATRIX				ProjMatrix;
 extern	VECTOR				Camera_Dir;
 extern	VECTOR				Forward;
