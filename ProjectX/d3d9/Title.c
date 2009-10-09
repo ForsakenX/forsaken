@@ -5135,8 +5135,8 @@ BOOL DisplayTitle(void)
 			return FALSE;
 		}
 
-/* bjd - check
-		if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport) != D3D_OK )
+		//if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport) != D3D_OK )
+		if( FSSetViewPort(&CurrentCamera.Viewport) != D3D_OK )
 		{
 #ifdef DEBUG_VIEWPORT
 			SetViewportError( "DisplayTitle", &CurrentCamera.Viewport, D3D_OK );
@@ -5145,7 +5145,7 @@ BOOL DisplayTitle(void)
 #endif
 			return FALSE;
 		}
-*/
+
 		if (ClearBuffers( TRUE, FALSE ) != TRUE )
 		{
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
