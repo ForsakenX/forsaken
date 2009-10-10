@@ -1249,8 +1249,8 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
 
-//			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
-//				return FALSE;
+			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
+				return FALSE;
 
    			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
 					return FALSE;
