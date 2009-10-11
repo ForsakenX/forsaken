@@ -2453,7 +2453,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-/* bjd - CHECK		      					
+    					
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -2465,7 +2465,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-*/		      					
+
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
@@ -2586,7 +2586,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
-/* bjd - CHECK		      					
+
 		      				if( ClipBox( ScrPolyVertPnt-4, ScrPolyVertPnt-2 ) )
 		      				{
 		      					( ScrPolyVertPnt - 4 )->sx = 0.0F;
@@ -2598,7 +2598,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      					( ScrPolyVertPnt - 1 )->sx = 0.0F;
 		      					( ScrPolyVertPnt - 1 )->sy = 0.0F;
 		      				}
-*/		      					
+   					
 		      				( ScrPolyVertPnt - 3 )->sx = ( ScrPolyVertPnt - 2 )->sx;
 		      				( ScrPolyVertPnt - 3 )->sy = ( ScrPolyVertPnt - 4 )->sy;
 		      				( ScrPolyVertPnt - 3 )->tu = ( ScrPolyVertPnt - 2 )->tu;
