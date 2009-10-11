@@ -12,7 +12,6 @@
 #include "typedefs.h"
 #include "tload.h"
 #include "mipmap.h"
-#include "ddutil.h"
 #include "xmem.h"
 #include "util.h"
 

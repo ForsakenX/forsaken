@@ -17,7 +17,6 @@
 #include "d3dmain.h"
 #include "typedefs.h"
 #include <time.h>
-#include "ddutil.h"
 #include "sfx.h"
 #include "Text.h"
 #include "dinput.h"
@@ -44,7 +43,6 @@
 #include "loadsave.h"
 #include "magic.h"
 #include "XMem.h"
-#include "ddsurfhand.h"
 #include "net.h"
 #include "restart.h"
 #include "version.h"

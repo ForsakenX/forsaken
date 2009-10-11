@@ -22,7 +22,6 @@
 #include "screenpolys.h"
 #include "magic.h"
 #include "XMem.h"
-#include "ddsurfhand.h"
 #include "local.h"
 #include "stats.h"
 #include "util.h"

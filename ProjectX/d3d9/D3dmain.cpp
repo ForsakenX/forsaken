@@ -31,7 +31,6 @@
 #include "dsound.h"
 #include "dbt.h"
 #include <direct.h>
-#include "getdxver.h"
 #include "version.h"
 #include "client/windows/handler/exception_handler.h"
 
@@ -44,7 +43,6 @@ extern "C" {
 #include	"d3dapp.h"
 #include	"malloc.h"
 #include	"Exechand.h" 
-#include	"DDSurfhand.h" 
 #include	"SBufferHand.h"
 #include	"file.h"
 #include	"XMem.h" 
@@ -592,8 +590,6 @@ static BOOL breakpad_init( void )
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
-//	DWORD dwPlatform, dwVersion;
-
 	// Appears to be a complete fuckup...
 	// Only used in two other places...
 	// never updated...
@@ -621,19 +617,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// initialize COM library
 	if FAILED( CoInitialize(NULL) )
 		return FALSE;
-
-/* bjd
-	// check directx version
-	GetDXVersion( &dwVersion, &dwPlatform );
-	DebugPrintf("Detected DirectX version: %x\n",dwVersion);
-	DebugPrintf("Detected Window platform: %s\n",(!dwPlatform?"Unknown":(dwPlatform>1?"98":"NT")));
-	if ( dwVersion < 0x600 )
-	{
-		DebugPrintf( "DirectX version less than 6\n" );
-		Msg("You need to install Direct X 6 or later.");
-		return FALSE;
-	}
-*/
 
 	// setup globals used by application
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));

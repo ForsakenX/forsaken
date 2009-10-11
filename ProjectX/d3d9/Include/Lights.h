@@ -23,7 +23,6 @@
 #include "Mxload.h"
 #include "Mxaload.h"
 #include "collision.h"
-#include "ddutil.h"
 
 /*
  * defines

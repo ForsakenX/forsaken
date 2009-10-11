@@ -13,7 +13,6 @@
 #include "exechand.h"
 #include "Mload.h"
 #include "collision.h"
-#include "ddutil.h"
 #include "lights.h"
 #include "2dtextures.h"
 #include "2dpolys.h"

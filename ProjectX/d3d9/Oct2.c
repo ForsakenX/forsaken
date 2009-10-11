@@ -16,8 +16,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-#include "ddsurfhand.h"
-#include "getdxver.h"
 #include <stdarg.h>
 #include <math.h>
 #include <time.h>
@@ -31,7 +29,6 @@
 #include "Ships.h"
 #include "exechand.h"
 #include "collision.h"
-#include "ddutil.h"
 #include "2dpolys.h"
 #include "lines.h"
 #include "polys.h"

@@ -550,10 +550,6 @@
 				>
 			</File>
 			<File
-				RelativePath="getdxver.cpp"
-				>
-			</File>
-			<File
 				RelativePath="goal.c"
 				>
 			</File>
@@ -856,10 +852,6 @@
 			</File>
 			<File
 				RelativePath="Include\File.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\getdxver.h"
 				>
 			</File>
 			<File
