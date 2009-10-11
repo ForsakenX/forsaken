@@ -1946,21 +1946,21 @@ void TestBlt()
         if( !energy )
         {
           energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
-          if( energy > 8 ) energy = 8;
+          if( energy > 8 )
+			  energy = 8;
         }
         if( energy )
         {
           AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
         }
 
+		// nitro bar
         if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
         {
           AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
                       (float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
                       64, 255, 64, 255 );
         }
-
-      
       }
 	  else
 	  {
