@@ -1524,6 +1524,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 }
 
 extern	int FontHeight;
+#ifdef NO_PRECALCULATED_CELL_COLOURS
 /*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
@@ -1580,6 +1581,8 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	DebugPrintf( "There are %d Lightcells in this level\n",num_of_cells );
 	CurrentLoadingStep++;
 }
+#endif
+
 /*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..
 	Input		:	MLOADHEADER * Mloadheader
