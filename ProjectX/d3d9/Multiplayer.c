@@ -131,7 +131,6 @@ extern	LONGLONG	TempGameElapsedTime;		// when the game started
 extern	LIST	DemoList;
 extern	float Demoframelag;
 extern	LONGLONG	DemoTimeSoFar;
-extern	BOOL	AutoDetail;
 extern	MENUITEM	JoinItem;
 extern	MENUITEM	NewJoinItem;
 extern  MENUITEM	WatchTeamSelectionItem;

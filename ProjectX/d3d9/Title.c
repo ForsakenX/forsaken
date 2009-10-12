@@ -869,7 +869,6 @@ BOOL TeamGame					= FALSE;
 BOOL PickupLightDetail;
 BOOL PrimaryLightDetail;
 BOOL SecondaryLightDetail;
-BOOL AutoDetail;
 BOOL BountyBonus;
 BOOL BikeEnginesOn;
 BOOL ToggleTest;
@@ -1682,7 +1681,6 @@ MENU	MENU_NEW_DetailLevels = {
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 60, 140, 70, 0, LT_MENU_NEW_DetailLevels3/*"Lens Flare"*/, FONT_Small, TEXTFLAG_CentreY,		&LensFlare,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 70, 140, 80, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 80, 140, 90, 0, LT_MENU_NEW_DetailLevels5/*"Auto Detail"*/, FONT_Small, TEXTFLAG_CentreY,		&AutoDetail,			NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 90, 115, 100, 0, LT_MENU_NEW_DetailLevels6/*"Smoke Trail Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 100, 115, 110, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 110, 115, 120, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
@@ -2755,7 +2753,6 @@ MENU	MENU_Detail = {
 		{ 200, 228, 0, 0, 0, LT_MENU_Detail7	/*"Pickup Lights"			*/, 0, 0,		&PickupLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 244, 0, 0, 0, LT_MENU_Detail8	/*"Mono Lighting"			*/, 0, 0,		&SWMonoChrome,		NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 260, 0, 0, 0, LT_MENU_Detail9	/*"Smoke Trail Detail"	*/, 0, 0,		&TrailDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
-		{ 200, 276, 0, 0, 0, LT_MENU_Detail10	/*"Auto Detail"				*/, 0, 0,		&AutoDetail,				NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
@@ -11124,7 +11121,6 @@ void GetGamePrefs( void )
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
-    AutoDetail                       = config_get_bool( "AutoDetail",				TRUE );
     LensFlare                        = config_get_bool( "LensFlare",				TRUE );
     PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
@@ -11269,7 +11265,6 @@ void SetGamePrefs( void )
 	config_set_bool( "BrightShips",				MyBrightShips );
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );
-    config_set_bool( "AutoDetail",				AutoDetail );
     config_set_bool( "LensFlare",				LensFlare );
     config_set_bool( "PickupLightDetail",		PickupLightDetail );
     config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );

@@ -96,8 +96,6 @@ extern	float	BankDecell;
 extern	int		DifficultyLevel;
 extern	int		outside_map;
 extern	float	NmeDamageModifier;
-extern	BOOL	AutoDetail;
-extern	float	avgframelag;
 extern	SLIDER	TrailDetailSlider;
 extern	VECTOR	FleshmorphPos;
 extern	MODELNAME	*	ModNames;
@@ -8661,11 +8659,6 @@ void DoNmeDamagedEffects( ENEMY * Enemy )
 	uint8	Colour;
 
 	EnemySmokeInterval = (float) ( 11 - TrailDetailSlider.value );
-
-	if( AutoDetail )
-	{
-		if( avgframelag > 2.0F ) EnemySmokeInterval +=  ( avgframelag - 1.0F );
-	}
 
 	if( ( Enemy->Status & ENEMY_STATUS_Enable ) )
 	{

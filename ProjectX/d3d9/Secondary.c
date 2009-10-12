@@ -138,8 +138,6 @@ extern	BOOL			DebugInfo;
 extern	BOOL			GodMode;
 extern	SLIDER			TrailDetailSlider;
 extern	uint16			IsGroupVisible[MAXGROUPS];
-extern	BOOL			AutoDetail;
-extern	float			avgframelag;
 extern	BOOL			PickupInvulnerability;
 extern	int16			NumInvuls;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
@@ -1629,11 +1627,6 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 		SecBulls[i].NumBounces = 0;
 		SecBulls[i].RetractPos = 0.0F;
 		SecBulls[i].FramelagAddition = 0.0F;
-
-		if( AutoDetail )
-		{
-			if( avgframelag > 2.0F ) SecBulls[i].Interval +=  ( avgframelag - 1.0F );
-		}
 
 		if( ( OwnerType == OWNER_SHIP ) && ( Owner == WhoIAm ) )
 		{
@@ -7974,11 +7967,6 @@ void DoDamagedEffects( uint16 i )
 	float	Cos;
 
 	ShipSmokeInterval = (float) ( 11 - TrailDetailSlider.value );
-
-	if( AutoDetail )
-	{
-		if( avgframelag > 2.0F ) ShipSmokeInterval +=  ( avgframelag - 1.0F );
-	}
 
 	if( ( Ships[ i ].enable ) &&
 		( Ships[ i ].Object.Mode != LIMBO_MODE ) &&

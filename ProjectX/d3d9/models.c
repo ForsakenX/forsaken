@@ -84,8 +84,6 @@ extern	PICKUP			Pickups[ MAXPICKUPS ];
 
 extern	int16			NumPickupsPerGroup[ MAXGROUPS ];
 extern	SLIDER			TrailDetailSlider;
-extern	BOOL			AutoDetail;
-extern	float			avgframelag;
 extern	MODELNAME		TitleModelNames[MAXMODELHEADERS];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
@@ -761,12 +759,6 @@ void OnceOnlyInitModel( void )
 
 		Models[i].Next = i + 1;
 		Models[i].Prev = (uint16) -1;
-
-		if( AutoDetail )
-		{
-			if( avgframelag > 2.0F ) Models[i].TimeInterval +=  ( avgframelag - 1.0F );
-		}
-
 	}
 
 	Models[MAXNUMOFMODELS-1].Next = (uint16) -1;
@@ -956,11 +948,6 @@ uint16	FindFreeModel()
 	Models[i].Red = 255;
 	Models[i].Green = 255;
 	Models[i].Blue = 255;
-
-   	if( AutoDetail )
-   	{
-   		if( avgframelag > 2.0F ) Models[i].TimeInterval +=  ( avgframelag - 1.0F );
-   	}
 
 	FirstModelUsed = i;
 	FirstModelFree = Models[i].Next;
@@ -1324,70 +1311,47 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 						// regular front view camera
 						//else
 						{
-							// AutoDetail 
-							// this method is pretty ugly as the frame lag fluctuates
-							// causing the textures to constantly jitter back and forth between diff lod values
-							// on todays cards this is probably just best to enable the best lod for everything
-							// i say we just get rid of this altogether and support the next method bellow
+							// appears the larger you make this number 
+							// the farther away we can see the object with better lod's
+							// we should probably make this a global so people can control it on it's own
+							float distance = CurrentCamera.UseLowestLOD ? 
+											6144.0F	:	// down grade for smaller cams
+											12288.0F;	// larger value for full screen
 
-							if( AutoDetail && ( avgframelag >= 2.0F ) ) // should probably increase this allot
+							// appears to be based on how many many pickups need to be rendered
+							temp2 = ( temp + ( ( (float) NumPickupsPerGroup[ group ] ) * ( 128.0F * GLOBAL_SCALE ) ) );
+								
+							// wtf is this?
+							if( temp2 >= ( ( distance * GLOBAL_SCALE )  * ( (float) ModelHeaders[Models[i].ModelNum].LOD ) )  )
 							{
-								// auto detail level....
-								ModelNum = (uint16) (avgframelag - 1.0F);
-
-								// make sure we don't select a value larger than acceptable
-								if( ModelNum > ModelHeaders[Models[i].ModelNum].LOD )
-								{
-									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
-								}
+								// sets it to the lowest value
+								ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 							}
-
-							// this method appears to use the distance to the object as the factor in lod level
-							// we probably want to tweak this to be farther away to the point where it's not noticeable
 							else
 							{
-								// appears the larger you make this number 
-								// the farther away we can see the object with better lod's
-								// we should probably make this a global so people can control it on it's own
-								float distance = CurrentCamera.UseLowestLOD ? 
-												6144.0F	:	// down grade for smaller cams
-												12288.0F;	// larger value for full screen
+								// wtf is this ?
+								ModelNum = (uint16) ( temp2 / (distance*GLOBAL_SCALE )  );
 
-								// appears to be based on how many many pickups need to be rendered
-								temp2 = ( temp + ( ( (float) NumPickupsPerGroup[ group ] ) * ( 128.0F * GLOBAL_SCALE ) ) );
-									
-								// wtf is this?
-								if( temp2 >= ( ( distance * GLOBAL_SCALE )  * ( (float) ModelHeaders[Models[i].ModelNum].LOD ) )  )
-								{
-									// sets it to the lowest value
-									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
-								}
-								else
-								{
-									// wtf is this ?
-									ModelNum = (uint16) ( temp2 / (distance*GLOBAL_SCALE )  );
-
-									// make sure we don't select a value larger than acceptable
-									if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
-									{
-										ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
-									}
-								}
-							}
-
-							// some kind of hack to for bike detail settings
-							if( ModelHeaders[ Models[i].ModelNum ].LOD == NUMBIKEDETAILS )
-							{
-								// this sets it to the bike detail slider
-								// shouldn't this be reversed ? detail 4 should be best detail which is 0 right ?
-								if( ModelNum < BikeDetail )
-									ModelNum = BikeDetail;
-
-								// this just caps it to the lowest possible value just in case
+								// make sure we don't select a value larger than acceptable
 								if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
 								{
 									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 								}
+							}
+						}
+
+						// some kind of hack to for bike detail settings
+						if( ModelHeaders[ Models[i].ModelNum ].LOD == NUMBIKEDETAILS )
+						{
+							// this sets it to the bike detail slider
+							// shouldn't this be reversed ? detail 4 should be best detail which is 0 right ?
+							if( ModelNum < BikeDetail )
+								ModelNum = BikeDetail;
+
+							// this just caps it to the lowest possible value just in case
+							if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
+							{
+								ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 							}
 						}
 					}
@@ -2141,10 +2105,6 @@ void ProcessModels( void )
 	     	   			MatrixTranspose( &Models[i].Mat, &Models[i].InvMat );						// Create Dir Matrix
 
 						Models[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
-   						if( AutoDetail )
-   						{
-   							Models[i].TimeInterval += avgframelag;
-   						}
 
 						if( IsGroupVisible[ Models[i].Group ] )
 						{
@@ -2340,11 +2300,6 @@ void ProcessModels( void )
 						if( !( Models[i].Flags & MODFLAG_Stealth ) || ( SpotFXPtr->Type == SPOTFX_SoundFX ) )
 						{
 							Models[i].SpotFXTimeInterval[ Count ] = (float) ( 11 - TrailDetailSlider.value );
-
-							if( AutoDetail )
-							{
-								Models[i].SpotFXTimeInterval[ Count ] += avgframelag;
-							}
 
 							VisNum = VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[i].Group, &VisGroups[ 0 ] );
 

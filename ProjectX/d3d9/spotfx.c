@@ -50,8 +50,6 @@ extern	FRAME_INFO	*	Bubble_Header;
 extern	FRAME_INFO	*	EnemyGen_Header;
 extern	FRAME_INFO	*	Drip_Header;
 extern	SLIDER			TrailDetailSlider;
-extern	BOOL			AutoDetail;
-extern	float			avgframelag;
 extern	XLIGHT			XLights[MAXXLIGHTS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -216,11 +214,6 @@ void ProcessSpotFX( void )
 	while( SpotFX )
 	{
 		SpotFX->TimeInterval = (float) ( 11 - TrailDetailSlider.value );
-
-		if( AutoDetail )
-		{
-			SpotFX->TimeInterval += avgframelag;
-		}
 
 		if( SpotFX->Flags & SPOTFX_FLAGS_Enabled )
 		{

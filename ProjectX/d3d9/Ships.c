@@ -132,9 +132,7 @@ extern	D3DMATRIXHANDLE hWorld;
 extern	VECTOR	SlideRight;
 extern	VECTOR	SlideUp;
 extern	VECTOR	Forward;
-extern	float	framelag;  
-extern	float	avgframelag;  
-extern	BOOL	AutoDetail;  
+extern	float	framelag;
 extern	float	Oldframelag;  
 extern	float	Demoframelag;  
 extern	SLIDER	DemoEyesSelect;
@@ -1845,15 +1843,6 @@ BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWP
 					if( temp >= SHIP_RADIUS + (200.0F * GLOBAL_SCALE) )
 					{
 						ModelNum = (uint16) ( temp / ( 2048.0F * GLOBAL_SCALE ) );
-
-						if( AutoDetail )
-						{
-							if( avgframelag >= 2.0F )
-							{
-								// auto detail level....
-								ModelNum += (uint16) (avgframelag - 1.0F);
-							}
-						}
 						
 						if( ModelNum < BikeDetail )
 							ModelNum = BikeDetail;

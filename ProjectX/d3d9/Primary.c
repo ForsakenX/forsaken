@@ -123,8 +123,6 @@ extern	int				no_collision;		// disables player ship-to-background collisions
 extern	int16			NumOrbs;
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	SLIDER			TrailDetailSlider;
-extern	BOOL			AutoDetail;
-extern	float			avgframelag;
 extern	int16			NumSuperNashrams;
 extern	BOOL			PickupInvulnerability;
 extern	int16			NumInvuls;
@@ -712,10 +710,6 @@ void	InitPrimBulls(void)
 		PrimBulls[i].light = (uint16) -1;
 		PrimBulls[i].line = (uint16) -1;
 		PrimBulls[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
-		if( AutoDetail )
-		{
-			if( avgframelag > 2.0F ) PrimBulls[i].TimeInterval +=  ( avgframelag - 1.0F );
-		}
 	}
 	PrimBulls[MAXPRIMARYWEAPONBULLETS-1].Next = (uint16) -1;
 
@@ -870,11 +864,6 @@ uint16	FindFreePrimBull(void)
 
 	PrimBulls[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
 	PrimBulls[i].TimeCount = 0.0F;
-
-   	if( AutoDetail )
-   	{
-   		if( avgframelag > 2.0F ) PrimBulls[i].TimeInterval +=  ( avgframelag - 1.0F );
-   	}
 	PrimBulls[i].Used = TRUE;
 
 	return i ;
@@ -8598,11 +8587,6 @@ void CreateInvEffect( uint16 ShipHit, int16 Num, uint8 RVal, uint8 GVal, uint8 B
 	MATRIX	TempInvMat;
 
 	InvulInterval = 1.0F;
-
-	if( AutoDetail )
-	{
-		if( avgframelag > 2.0F ) InvulInterval +=  ( avgframelag - 1.0F );
-	}
 
 	InvulCount += framelag;
 		

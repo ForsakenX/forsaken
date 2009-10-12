@@ -41,7 +41,6 @@ extern	GLOBALSHIP              Ships[MAX_PLAYERS];
 extern	SHORTNAMETYPE			Names;	// all the players short Names....
 extern	char	biker_name[256];
 extern	BOOL	CountDownOn;
-extern	BOOL	AutoDetail;
 extern	BOOL	TeamGame;
 
 BOOL LoadASinglePlayerGame( MENUITEM * Item )
@@ -86,7 +85,6 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 
 	PlayDemo = FALSE;
 	IsHost = TRUE;
-	AutoDetail = TRUE;
 	// reset all bollocks...
 	TeamGame = FALSE;
 	CaptureTheFlag = FALSE;

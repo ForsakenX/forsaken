@@ -461,7 +461,6 @@ extern  ENEMY * TestEnemy;
 
 extern  char  biker_name[256];
 extern  int16 SelectedBike;
-extern  BOOL  AutoDetail;
 extern  LONGLONG  DemoTimeSoFar;
 
 extern  float cral;
@@ -604,8 +603,7 @@ float pixel_aspect_ratio;
 float ticksperframe = 14.0F;  
 float Oldframelag;  
 float framelag = 0.0F; 
-float real_framelag = 0.0F; 
-float avgframelag = 0.0F; 
+float real_framelag = 0.0F;
 float Demoframelag = 0.5F;
 
 extern int FontWidth;
@@ -5044,7 +5042,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     Ships[WhoIAm].enable = 1;
     IsHost = TRUE;
     Current_Camera_View = MAX_PLAYERS;    // which object is currently using the camera view....
-    AutoDetail = FALSE;
   
     for( i = 0 ; i < MAX_PLAYERS ; i++ )
     {
@@ -7608,10 +7605,6 @@ void CalculateFramelag( void )
   real_framelag  = timer_run( &framelag_timer );
   
   framelag = real_framelag * 71.0F;
-
-  // average framelag of the last time and this time
-  // probably cheap way to clamp value down if a loop takes a long time
-  avgframelag = (avgframelag + framelag) * 0.5F;
 
   // debugging
   //if (TimeWorst == 0.0 || seconds > TimeWorst) TimeWorst = seconds;
