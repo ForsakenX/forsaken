@@ -35,7 +35,7 @@
 extern int CurrentLoadingStep;
 extern	BOOL	ShowPlaneRGB;
 extern	float	WhiteOut;
-
+extern D3DAppInfo* d3dapp; 
 extern	uint16	NumGroupsVisible;
 extern	uint16	GroupsVisible[MAXGROUPS];
 extern	int16	ShowPortal;
@@ -402,15 +402,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 		
 		
 		lpD3DLVERTEX = lpPointer;
-		if( ( myglobs.rstate.FillMode == D3DFILL_WIREFRAME )&& ShowPortal )
 		{
-			vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			while( vert --)
-			{
-				lpD3DLVERTEX->color = GroupColours[ group % 8 ];
-				lpD3DLVERTEX++;
-			}
-		}else{
 			lpD3DLVERTEX2 = Mloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf];
 			
 			vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1554,7 +1546,6 @@ void	CreateCellColours( MLOADHEADER * Mloadheader )
 	while( group--)
 	{
 		DrawLoadingBox( CurrentLoadingStep, total_groups - group, total_groups );
-		//D3DAppShowBackBuffer(TRUE);
 		//FSClearBlack();
 		PrintInitViewStatus( MyGameStatus );
 		Printuint16( group, 0,0,1);

@@ -15,12 +15,11 @@
 #include <string.h>
 #include <time.h>
 #include <search.h>
-//#include <ddraw.h>
 #include <d3d9.h>
 #include "d3dapp.h"         /* prototypes for D3D helper functions */
-#include "d3ddemo.h"        /* prototypes for functions to communicate with
-                               each sample */
-
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "new3d.h"
 #include "main.h"
 
@@ -32,14 +31,10 @@ extern "C" {
 typedef struct tagd3dmainglobals {
     HWND hWndMain;          /* application window handle */
     HINSTANCE hInstApp;     /* application instance for dialog boxes */
-
-    D3DAppRenderState rstate; /* struct describing the current render state */
-
     BOOL bSingleStepMode;        /* render one frame at a time */
     BOOL bDrawAFrame;            /* render on this pass of the main loop */
     BOOL bShowFrameRate;         /* show the frame rate at the top */
     BOOL bShowInfo;              /* show window information at the bottom */
-    BOOL bResizingDisabled;      /* do not allow resizing */
 
     BOOL bResized; /* the window has resized or some other drastic change, the
                       entire client area should be cleared */
@@ -80,8 +75,6 @@ void EnableSecondaryLights( void );
 void DisableSecondaryLights( void );
 void EnablePickupLights( void );
 void DisablePickupLights( void );
-
-BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp);
 BOOL FlipBuffers();
 
 extern	int		BikeDetail;

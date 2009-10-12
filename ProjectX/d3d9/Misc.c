@@ -27,42 +27,6 @@ int default_x;
 int default_y;
 
 /***************************************************************************/
-/*                          Setting Defaults                               */
-/***************************************************************************/
-/*
- * D3DAppISetDefaults
- * Set all the global variables to their default values.  Do not reset the
- * image files.
- */
-void
-D3DAppISetDefaults(void)
-{
-    ZEROMEM(d3dappi);
-    ZEROMEM(d3dapprs);
-    d3dapprs.bPerspCorrect = TRUE;
-    d3dapprs.ShadeMode = D3DSHADE_GOURAUD;
-//bjd - CHECK    d3dapprs.TextureFilter = D3DFILTER_LINEAR;
-//    d3dapprs.TextureBlend = D3DTBLEND_MODULATE;
-    d3dapprs.FillMode = D3DFILL_SOLID;
-    d3dapprs.bDithering = TRUE;
-    d3dapprs.bSpecular = FALSE;
-    d3dapprs.bAntialiasing = FALSE;
-//    lpClipper = NULL;
-//    lpPalette = NULL;
-    bPrimaryPalettized = FALSE;
-    bPaletteActivate = FALSE;
-    bIgnoreWM_SIZE = FALSE;
-//    ZEROMEM(ppe);
-//    ZEROMEM(Originalppe);
-//    LastError = DD_OK;
-    ZEROMEM(LastErrorString);
-//    D3DDeviceDestroyCallback = NULL;
-//    D3DDeviceDestroyCallbackContext = NULL;
-//    D3DDeviceCreateCallback = NULL;
-//    D3DDeviceCreateCallbackContext = NULL;
-}
-
-/***************************************************************************/
 /*                Calling Device Create And Destroy Callbacks              */
 /***************************************************************************/
 BOOL

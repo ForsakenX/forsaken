@@ -51,7 +51,12 @@ extern "C" {
 #include	"util.h"
 #include	"net.h"
 #include	"lua_common.h"
+#include	"d3dappi.h"
 
+	extern void ReleaseScene(void);
+	extern void ReleaseView(void);
+	extern BOOL InitScene(void);
+	extern BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp);
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
@@ -88,7 +93,6 @@ extern "C" {
 	extern	int		TextureMemory;
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
-	extern  BOOL	DontColourKey;
 	BOOL	TripleBuffer;
 	extern	BOOL	PolygonText;
 	extern	float	UV_Fix;
@@ -128,19 +132,15 @@ extern "C" {
 
 // GLOBAL VARIABLES
 
-D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D objects maintained by D3DApp
+extern "C" D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D objects maintained by D3DApp
 
 d3dmainglobals myglobs;     // collection of global variables
 
 BOOL Debug					= FALSE;
-BOOL DeviceOnCommandline	= FALSE;
-BOOL bOnlySystemMemory		= FALSE;
-BOOL bOnlyEmulation			= FALSE;
 
 // INTERNAL FUNCTION PROTOTYPES
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
-static BOOL CreateD3DApp(void);
 static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/);
 static BOOL AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
@@ -155,7 +155,6 @@ static void InitGlobals(void);
 extern "C" BOOL AppPause(BOOL f);
 extern "C" void SetInputAcquired( BOOL );
 static BOOL RenderLoop(void);
-static BOOL RestoreSurfaces();
 
 extern "C" BOOL VSync = FALSE;
 
@@ -616,7 +615,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return FALSE;
 
 	// setup globals used by application
-    memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
@@ -680,11 +678,14 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// This  must come after everything above
 
-    // Call D3DApp to initialize all DD and D3D objects necessary to render.
-    // D3DApp will call the device creation callback which will initialize the
-    // viewport and the sample's execute buffers.
-    if (!CreateD3DApp())
-        return FALSE;
+    ZEROMEM(d3dappi);
+//    D3DDeviceDestroyCallback = NULL;
+//    D3DDeviceDestroyCallbackContext = NULL;
+//    D3DDeviceCreateCallback = NULL;
+//    D3DDeviceCreateCallbackContext = NULL;
+
+	if (!init_renderer(myglobs.hWndMain, &d3dapp))
+		return FALSE;
 
 	// show the mouse if acting like window
 	if ( ActLikeWindow || ! d3dappi.bFullscreen )
@@ -694,8 +695,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 			SetInputAcquired( FALSE );
 		SetCursorClip( FALSE );
 	}
-
-	D3DAppSetRenderState(&myglobs.rstate);
 
 	SetSoundLevels( NULL );
 
@@ -726,9 +725,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     //  Set Global Defaults
     //
 	
-	DeviceOnCommandline		= FALSE;
-    bOnlySystemMemory		= FALSE;
-    bOnlyEmulation			= FALSE;
 	Is3Dfx					= FALSE;
 	Is3Dfx2					= FALSE;
 	NoSFX					= FALSE; // turns off sound
@@ -739,7 +735,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	PolygonText				= FALSE;
 	DS						= FALSE;
 	Wine					= FALSE;
-	DontColourKey			= FALSE;
 	NoCursorClip			= FALSE;
 	VSync					= FALSE;
 
@@ -813,24 +808,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
 			bFullscreen = FALSE;
 		}
-
-		// colour key transparency
-		else if (!_stricmp(option,"DontColourKey")) 
-		{
-			DontColourKey = TRUE;
-		}
-
-		// all surfaces forced into system memory
-		else if (!_stricmp(option, "systemmemory")) 
-		{
-			bOnlySystemMemory = TRUE;
-        }
-
-		// no hardware acceleration only emulation
-		else if (!_stricmp(option, "emulation")) 
-		{
-            bOnlyEmulation = TRUE;
-        }
 
 		// display status messages and other information
 		else if (!_stricmp(option, "DS"))
@@ -950,14 +927,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				DebugPrintf("Command Line: local port set to %s\n", local_port_str.text);
 			}
 
-/*
-			// selecte your d3d/ddraw device
-			else if ( sscanf( option, "dev:%d", &num ) == 1 )
-			{
-				ddchosen3d = num;
-				DeviceOnCommandline = TRUE;
-			}
-*/
 			// sleep time for every loop
 			else if ( sscanf( option, "sleep:%d", &cliSleep ))
 			{
@@ -1046,68 +1015,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 }
 
 /*
- * CreateD3DApp
- * Create all DirectDraw and Direct3D objects necessary to begin rendering.
- * Add the list of D3D drivers to the file menu.
- */
-
-static BOOL CreateD3DApp(void)
-{
-
-    DWORD flags;
-    Defaults defaults;
-
-	// Set the flags to pass to the D3DApp creation based on command line
-    flags = ( (bOnlySystemMemory) ? D3DAPP_ONLYSYSTEMMEMORY : 0 ) | 
-            ( (bOnlyEmulation)    ? (D3DAPP_ONLYD3DEMULATION |	D3DAPP_ONLYDDEMULATION) : 0 );
-
-    /*
-     * Create all the DirectDraw and D3D objects neccesary to render.  The
-     * AfterDeviceCreated callback function is called by D3DApp to create the
-     * viewport and the example's execute buffers.
-     */
-
-#if 0
-    if (!D3DAppCreateFromHWND(flags, myglobs.hWndMain, /*AfterDeviceCreated,
-                              NULL, BeforeDeviceDestroyed, NULL,*/ &d3dapp)) {
-        ReportD3DAppError();
-        return FALSE;
-    }
-#endif
-
-	if (!Init3DRenderer(myglobs.hWndMain, &d3dapp))
-	{
-		return FALSE;
-	}
-
-	/*
-     * Allow the sample to override the default render state and other
-     * settings
-     */
-
-    if (!D3DAppGetRenderState(&defaults.rs)) {
-        ReportD3DAppError();
-        return FALSE;
-    }
-
-    defaults.bTexturesDisabled = FALSE;
-    defaults.bResizingDisabled = myglobs.bResizingDisabled;
-    myglobs.bResizingDisabled = defaults.bResizingDisabled;
-
-    /*
-     * Apply any changes to the render state
-     */
-
-    memcpy(&myglobs.rstate, &defaults.rs, sizeof(D3DAppRenderState));
-    if (!D3DAppSetRenderState(&myglobs.rstate)) {
-        ReportD3DAppError();
-        return FALSE;
-    }
-
-    return TRUE;
-}
-
-/*
  * AfterDeviceCreated
  * D3DApp will call this function immediately after the D3D device has been
  * created (or re-created).  D3DApp expects the D3D viewport to be created and
@@ -1193,8 +1100,7 @@ AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
  * DD or D3D objects.
  */
 
-static BOOL
-BeforeDeviceDestroyed(/*LPVOID lpContext*/)
+static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/)
 {
     // Release all objects (ie execute buffers) created by InitView
     ReleaseView();
@@ -1207,22 +1113,13 @@ BeforeDeviceDestroyed(/*LPVOID lpContext*/)
 }
 
 // Render the next frame and update the window
+extern "C" BOOL RenderScene( void );
 static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
     if ( ! d3dapp->bRenderingIsOK )
 		return TRUE;
-
-    // Restore any lost surfaces
-    if (!RestoreSurfaces())
-	{
-        // Restoring surfaces sometimes fails because the surfaces cannot
-        // yet be restored.  If this is the case, the error will show up
-        // somewhere else and we should return success here to prevent
-        // unnecessary error's being reported.
-        return TRUE;
-    }
 
     // Call the sample's RenderScene to render this frame
     if (!RenderScene(/*d3dapp->lpD3DDevice, d3dapp->lpD3DViewport*/))
@@ -1244,12 +1141,9 @@ static BOOL RenderLoop()
 		if ((	! PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	) && ! PreventFlips	)
 		{
 			// this is the actual call to render a frame...
-			//if (!D3DAppShowBackBuffer( !myglobs.bResized ? D3DAPP_SHOWALL : NULL ))
 			if (!FlipBuffers())
 			{
-				Msg("!D3DAppShowBackBuffer");
-				DebugPrintf("In RenderLoop: ! D3DAppShowBackBuffer");
-				ReportD3DAppError();
+				Msg("RenderLoop: FlipBuffers() failed");
 				return FALSE;
 			}
 		}
@@ -1301,24 +1195,6 @@ BOOL AppPause(BOOL f)
     }
     return TRUE;
 }
-
-/*
- * RestoreSurfaces
- * Restores any lost surfaces.  Returns TRUE if all surfaces are not lost and
- * FALSE if one or more surfaces is lost and can not be restored at the
- * moment.
- */
-static BOOL
-RestoreSurfaces()
-{
-    /*
-     * Have D3DApp check all the surfaces it's in charge of
-     */
-    if (!D3DAppCheckForLostSurfaces())
-            return FALSE;
-    return TRUE;
-}
-
 
 /*************************************************************************
   Windows message handlers
@@ -1373,8 +1249,8 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
  * CleanUpAndPostQuit
  * Release all D3D objects, post a quit message and set the bQuit flag
  */
-void
-CleanUpAndPostQuit(void)
+
+void CleanUpAndPostQuit(void)
 {
 	// unpause d3d
 	AppPause( FALSE );
@@ -1416,7 +1292,7 @@ CleanUpAndPostQuit(void)
 void
 ReportD3DAppError(void)
 {
-    Msg("%s", D3DAppLastErrorString());
+    Msg("%s", LastErrorString);
 }
 
 /* Msg

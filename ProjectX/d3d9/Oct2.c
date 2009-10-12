@@ -202,8 +202,6 @@ extern DWORD BufferedKey[];
 
 extern  BOOL ResetKillsPerLevel;
 
-extern BOOL DebugVisible;
-
 extern int  outside_map;
 
 extern  int16 NextNewModel;
@@ -271,9 +269,6 @@ char * AiModes[] = {
 extern  int EnemiesActive;
 void CheckTimeLimit( void );
 extern  int16 InGameLoadGameLevelNum;
-#ifdef REFLECTION
-void WierdShit( void );
-#endif
 
 BOOL  ScoreDisplaySfx = TRUE;
 BOOL  IMustQuit = FALSE;
@@ -386,7 +381,6 @@ extern  BOOL  PauseDemo;
 extern  BOOL  RecordDemo;
 extern  SLIDER  DemoSpeed;
 extern  SLIDER  DemoEyesSelect;
-extern  BOOL  DemoScreenGrab;
 extern  BOOL  ShowWeaponKills;
 extern  BOOL ShowStats; 
 
@@ -665,7 +659,6 @@ void GetHardwareCaps( void );
 void UpdateBGObjectsClipGroup( CAMERA * Camera );
 void UpdateEnemiesClipGroup( CAMERA * Camera  );
 void SpecialDestroyGame( void );
-BOOL SaveFullScreenSnapShot( int8 * Filename );
 
 extern  int16 PrimaryInLevel[ MAXPRIMARYWEAPONS ];
 extern  int16 SecondaryInLevel[ MAXSECONDARYWEAPONS ];
@@ -1092,7 +1085,7 @@ D3DMATRIX world = {
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0),
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
 };
-
+extern D3DAppInfo* d3dapp; 
 SetFOV( float fov )
 {
 	HRESULT rval;
@@ -2204,8 +2197,7 @@ ReleaseScene(void)
 
 }
 
-void
-ReleaseView(void)
+void ReleaseView(void)
 {
   switch( MyGameStatus )
   {
@@ -3329,18 +3321,6 @@ void ProcessGameKeys( void )
 	if ( IsKeyPressed( DIK_F7 ) )
 		Panel = !Panel;
 
-#ifdef SAVESCREEN_3DFX
-    // capture a screen shot
-    if ( IsKeyPressed( DIK_F8 ) && ScreenSaving )
-    {
-      sprintf( fname, ".\\ScreenShots\\screen%d.ppm", fnum++ );
-      // wtf is this ?
-      // _spawnl( _P_WAIT, "grab.exe", "grab.exe", "-fp" , "-w 512" , "-h 384" , fname, NULL );
-      folder_exists( SNAPSHOT_FOLDER );
-      SaveFullScreenSnapShot( fname );
-    }
-#endif
-
     // single player mode
     if( MyGameStatus == STATUS_SinglePlayer )
     {
@@ -3669,8 +3649,8 @@ char NodeName[256];
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-BOOL
-RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
+extern void ReleaseView(void);
+BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 {
   uint16  i,e;
   char  buf[256];
@@ -4563,25 +4543,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       framelag *= Demoframelag;
     }
 
-    if( DemoScreenGrab && !CurrentMenu )
-    {
-	//      framelag = 2.24F;   // 30 fps
-      framelag = 2.613333F; // 25 fps
-      Demoframelag = 1.0F;
-      Oldframelag = framelag;
-    }
-
-    if( DemoScreenGrab && !CurrentMenu )
-    {
-	sprintf( fname, "ScreenShots\\scr%04d.ppm", fnum );
-	//      _spawnl( _P_WAIT, "grab.exe", "grab.exe", "-fp" , "-w 512" , "-h 384" , fname, NULL );
-      folder_exists( FMVSNAPSHOT_FOLDER );
-      SaveFullScreenSnapShot( fname );
-      fnum++;
-      if( fnum > 9999 )
-        DemoScreenGrab = FALSE;
-    }
-
     if( MainGame( /* lpDev ,*/ lpView ) != TRUE ) // bjd
       return FALSE;
 
@@ -4610,16 +4571,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     WaitingToQuit = FALSE;
   
     ReceiveGameMessages();
-
-    if (bPrimaryPalettized )
-    {
-/* bjd - CHECK
-      lpPalette = DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-      ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-      LastError = d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
-      LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
-*/
-    }
   
     if( !SetMatrixViewPort() )
     {
@@ -5506,14 +5457,8 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
     {
       TempGameElapsedTime = GameCurrentTime;
     }else{
-      if( DemoScreenGrab && !CurrentMenu )
-      {
-        GameElapsedTime += (LONGLONG) ( ( ( 2 * ticksperframe ) / 1000.0F) * Freq );  // approx every 2 frames...
-      }else{
-        GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
-      }
+      GameElapsedTime += (LONGLONG) ( ( GameCurrentTime - TempGameElapsedTime ) * Demoframelag );
       TempGameElapsedTime = GameCurrentTime;
-
       GameCurrentTime = GameCurrentTime - GameStartedTime;
       GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
     }
@@ -5769,13 +5714,8 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
   }
 #endif
 
-//bjd  if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
 	if (FSEndScene() != D3D_OK)
         return FALSE;
-
-#ifdef REFLECTION
-  WierdShit();
-#endif
 
   ScreenPolyProcess();
   DispHUDNames();
@@ -6434,7 +6374,7 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
   UpdateBGObjectsClipGroup( &CurrentCamera );
   UpdateEnemiesClipGroup( &CurrentCamera );
 
-  if( CurrentCamera.GroupImIn != (uint16) -1 && !DebugVisible )
+  if( CurrentCamera.GroupImIn != (uint16) -1 )
   {
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
     {
@@ -8386,70 +8326,6 @@ BOOL SaveSnapShot( int8 * Filename )
 #endif
 }
 
-/*===================================================================
-  Procedure :   Save SnapShot screen
-  Input   :   int8  * Filename
-  Output    :   BOOL    True/False
-===================================================================*/
-BOOL SaveFullScreenSnapShot( int8 * Filename )
-{
-	return TRUE;
-#if 0 // bjd
-  HRESULT     hr;
-//  DDSURFACEDESC SurfaceDesc;
-
-  memset( &SurfaceDesc, 0, sizeof( SurfaceDesc ) );
-  SurfaceDesc.dwSize = sizeof( SurfaceDesc );
-
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Lock( d3dapp->lpFrontBuffer, NULL, &SurfaceDesc,
-        DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT | DDLOCK_READONLY, NULL );
-
-  if ( hr != DD_OK )
-  {
-    switch( hr )
-    {
-      case DDERR_INVALIDOBJECT:
-        DebugPrintf( "Error Locking Surface ( Invalid Object )\n" );
-        break;
-
-      case DDERR_INVALIDPARAMS:
-        DebugPrintf( "Error Locking Surface ( Invalid Params )\n" );
-        break;
-
-      case DDERR_OUTOFMEMORY:
-        DebugPrintf( "Error Locking Surface ( Out of Memory )\n" );
-        break;
-
-      case DDERR_SURFACEBUSY:
-        DebugPrintf( "Error Locking Surface ( Surface Busy )\n" );
-        break;
-
-      case DDERR_SURFACELOST:
-        DebugPrintf( "Error Locking Surface ( Surface Lost )\n" );
-        break;
-
-      case DDERR_WASSTILLDRAWING:
-        DebugPrintf( "Error Locking Surface ( Was Still Drawing )\n" );
-        break;
-    }
-    return( FALSE );
-  }
-
-  SavePPM( Filename, SurfaceDesc.lpSurface, SurfaceDesc.dwWidth, SurfaceDesc.dwHeight,
-        ( ( SurfaceDesc.ddpfPixelFormat.dwRGBBitCount + 7 )  / 8 ),
-        SurfaceDesc.lPitch, SurfaceDesc.ddpfPixelFormat.dwRBitMask, SurfaceDesc.ddpfPixelFormat.dwGBitMask,
-        SurfaceDesc.ddpfPixelFormat.dwBBitMask, 0, 0, SurfaceDesc.dwWidth, SurfaceDesc.dwHeight );
-
-  hr = d3dapp->lpFrontBuffer->lpVtbl->Unlock( d3dapp->lpFrontBuffer, NULL );
-  if ( hr != DD_OK )
-  {
-    DebugPrintf( "Error Unlocking Surface\n" );
-    return( FALSE );
-  }
-  return( TRUE );
-#endif
-}
-
 static int CheckFileWriteable( char *fname )
 {
     HANDLE      fhandle;
@@ -8484,57 +8360,6 @@ static int CheckFileWriteable( char *fname )
 
   return 1;
 }
-
-#ifdef  REFLECTION
-LPDIRECTDRAWSURFACE lpDestTextureSurf = NULL;
-void WierdShit( void )
-{
-    HDC                 hdcPrimary;
-    HDC                 hdcDest;
-    HRESULT             hr;
-  DDSURFACEDESC ddsd2;
-    LPDIRECT3DTEXTURE lpDestTexture = NULL;
-
-  if( MyGameStatus != STATUS_Normal )
-    return;
-
-
-  if( !lpDestTextureSurf )
-  {
-    memcpy(&ddsd2, &d3dappi.ThisTextureFormat.ddsd, sizeof(DDSURFACEDESC));
-    ddsd2.dwSize = sizeof(DDSURFACEDESC);
-    ddsd2.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-    ddsd2.ddsCaps.dwCaps = DDSCAPS_TEXTURE | DDSCAPS_SYSTEMMEMORY;
-
-    ddsd2.dwHeight = 128;
-    ddsd2.dwWidth = 256;
-    
-    if (d3dappi.lpDD->lpVtbl->CreateSurface(d3dappi.lpDD , &ddsd2, &lpDestTextureSurf, NULL) != DD_OK)
-      lpDestTextureSurf = NULL;
-  }
-  if( !lpDestTextureSurf )
-    return;
-
-
-    if ((hr = d3dapp->lpBackBuffer->lpVtbl->GetDC( d3dapp->lpBackBuffer, &hdcPrimary )) == DD_OK)
-  {
-      if ((hr = lpDestTextureSurf->lpVtbl->GetDC( lpDestTextureSurf, &hdcDest )) == DD_OK)
-    {
-
-        StretchBlt(hdcDest, 0, 0, 128, 128, hdcPrimary, 0, 0, 128, 128, SRCCOPY);
-
-          lpDestTextureSurf->lpVtbl->ReleaseDC(lpDestTextureSurf, hdcDest);
-    }
-        d3dapp->lpBackBuffer->lpVtbl->ReleaseDC( d3dapp->lpBackBuffer, hdcPrimary);
-  }
-  LastError = lpDestTextureSurf->lpVtbl->QueryInterface(lpDestTextureSurf,
-                       &IID_IDirect3DTexture,
-                       (LPVOID*)&lpDestTexture);
-
-    Tloadheader.lpTexture[12]->lpVtbl->Load(Tloadheader.lpTexture[12], lpDestTexture);
-
-}
-#endif
 
 // if we met the max kills limit then set flag to change level
 void CheckMetKillLimit()

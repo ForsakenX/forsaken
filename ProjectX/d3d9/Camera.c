@@ -11,10 +11,7 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-
-//#include "d3ddemo.h"
 #include "mload.h"
-
 #include "camera.h"
 #include "magic.h"
 #include "XMem.h"

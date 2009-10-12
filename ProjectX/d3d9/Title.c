@@ -295,17 +295,6 @@ extern	BOOL	MyRandomPickups;
 ===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-/*===================================================================
-		Texture Format changing stuff..
-===================================================================*/
-LIST	TextureList = { 0 };
-int		TexturePalettized;
-int		TextureRedBPP;
-int		TextureGreenBPP;
-int		TextureBlueBPP;
-int		TextureAlphaBPP;
-int		TextureIndexBPP;
-
 SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
 /*===================================================================
@@ -438,11 +427,9 @@ void InitRoomList( void );
 void SetRoomName( MENUITEM *item );
 void ChooseRoom( MENUITEM *item );
 void DebugModeChanged( MENUITEM *item );
-void DebugVisibleChanged( MENUITEM *item );
 void SavePickups( MENUITEM *item );
 void ShowNodeToggle( MENUITEM *item );
 void ShowStartPointsToggle( MENUITEM *item );
-void TexturesEnabledToggle( MENUITEM *item );
 void SetLightStates( MENUITEM *item );
 void InitDemoList( MENU * Menu );
 void GetGamePrefs( void );
@@ -456,9 +443,6 @@ BOOL InitLevels( char *levels_list );
 void InitLevelSelect( MENU *Menu );
 void ExitLevelSelect( MENU * Menu );
 void GoToStats( MENUITEM *Item );
-void MenuTextureMode( MENU *Menu );
-void NewMenuTextureMode( MENU *Menu );
-void MakeTextureList( MENU *Menu );
 void GetSavedGameData( void );
 
 SetFOV( float fov );
@@ -869,7 +853,6 @@ BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
 BOOL GodMode					= FALSE;
 BOOL TexturesEnabled			= TRUE;
-BOOL DebugVisible				= FALSE;
 BOOL ShowPlaneRGB				= FALSE;
 BOOL PlayDemo					= FALSE;
 BOOL PauseDemo					= FALSE;
@@ -877,7 +860,6 @@ BOOL RecordDemo					= FALSE;
 BOOL BrightShips;
 BOOL MyBrightShips;
 BOOL BikeExhausts;
-BOOL DemoScreenGrab				= FALSE;
 BOOL ScreenSaving				= TRUE;
 BOOL ShowNode					= FALSE;
 BOOL NodeCube					= FALSE;
@@ -1735,23 +1717,12 @@ MENU	MENU_NEW_ScreenRes = {
 	}
 };
 
-MENU	MENU_NEW_TextureFormat = {
-	"" , MakeTextureList , NULL , NULL, 0,
-	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_TextureFormat0 /*"Choose From..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 15, 30, 195, 150, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &TextureList, NewMenuTextureMode , SelectList , DrawFlatMenuList, NULL, 0 } ,
-		{ 0, 155, 200, 165, 0, LT_MENU_NEW_TextureFormat1 /*"press escape to go back"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
-
 MENU	MENU_NEW_Visuals = {
 	"", NULL, NULL, NULL, TITLE_TIMER_Visuals,
 	{
 		{  0,   0, 200,  20, 0,					LT_MENU_NEW_Visuals0 /*"Visuals"*/,					FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  40, 200,  50, 0,					LT_MENU_NEW_Visuals1 /*"Change Detail Levels"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_DetailLevels,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
-		{ 20,  80, 200,  90, 0,					LT_MENU_NEW_Visuals3 /*"Select Texture Format"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_TextureFormat,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
 		
 		{ 20, 120, 200, 120, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
@@ -2799,7 +2770,6 @@ MENU	MENU_DebugMode = {
 	{
 		
 		{ 200, 96, 0, 0, 0, "Show Plane RGB", 0, 0, &ShowPlaneRGB, NULL, SelectToggle, DrawToggle, NULL, 0 },
-	    { 200, 112, 0, 0, 0,"Textures Enabled", 0, 0,	&TexturesEnabled,	TexturesEnabledToggle, SelectToggle, DrawToggle, NULL, 0 },
 		
 		{ 200, 144, 0, 0, 0, "external forces", 0, 0, &ShowEFZones, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 160, 0, 0, 0, "teleports", 0, 0, &ShowTeleports, NULL, SelectToggle, DrawToggle, NULL, 0 },
@@ -2873,20 +2843,12 @@ MENU	MENU_SelectScreenMode = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
-MENU	MENU_SelectTextureFormat = {
-	LT_MENU_SelectTextureFormat0 /*"Select Texture Format"*/ , MakeTextureList , MenuTextureMode , NULL, 0,
-	{
-		{ 200, 128, 0, 0, 0, LT_MENU_SelectTextureFormat1 /*"Choose From..."*/, 0, 0, &TextureList, NULL , SelectList , DrawList, NULL, 0 } ,
-		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
 
 /*XXX*/
 MENU	MENU_Visuals = {
 	LT_MENU_Visuals0 /*"Visuals"*/, NULL, NULL, NULL, 0,
 	{
 		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1		/*"Select Screen Mode"		*/, 0, 0, NULL,									&MENU_SelectScreenMode,		MenuChange,			MenuItemDrawName,		NULL, 0 },
-		{ 200, 128 + ( 1*16 ), 0, 0, 0, LT_MENU_Visuals2		/*"Select Texture Format"	*/, 0, 0, NULL,									&MENU_SelectTextureFormat,		MenuChange,			MenuItemDrawName,		NULL, 0 },
 		
 		{ 200, 128 + ( 3*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
@@ -2920,7 +2882,6 @@ MENU	MENU_SelfPlayOptions = {
 	"Options"/*"Options"*/, NULL, NULL, NULL, 0,
 	{
 		{ 200, 128           , 0, 0, 0, "Select Screen Mode"/*"Select Screen Mode"*/, 0, 0, NULL, &MENU_SelectScreenMode, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200, 128 + ( 1*16 ), 0, 0, 0, "Select Texture Format"/*"Select Texture Format"*/, 0, 0, NULL, &MENU_SelectTextureFormat, MenuChange, MenuItemDrawName, NULL, 0 },
 		{ 200, 128 + ( 2*16 ), 0, 0, 0, "Detail Levels"/*"Detail Levels"*/, 0, 0, NULL, &MENU_Detail, MenuChange, MenuItemDrawName, NULL, 0 },
 		{ 200 ,128 + ( 3*16 ), 0, 0, 0, "Show Player Names "/*"Show Player Names "*/, 0, 0, &ShowNamesAnyway, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200 ,128 + ( 4*16 ), 0, 0, 0, "Show Frame Rate "/*"Show Frame Rate "*/, 0, 0, &myglobs.bShowFrameRate, NULL, SelectToggle, DrawToggle, NULL, 0 },
@@ -2933,7 +2894,6 @@ MENU	MENU_DemoPlaying = {
 	LT_MENU_DemoPlaying0 /*"Demo Playing"*/ , NULL, NULL, NULL, 0,
 	{
 		{ 200 , 128           , 0, 0, 0, LT_MENU_DemoPlaying1 /*"Pause Demo "*/, 0, 0,	&PauseDemo,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
-		{ 200 , 128 + ( 1*16 ), 0, 0, 0, LT_MENU_DemoPlaying6 /*"Grab 3dfx demo "*/, 0, 0,	&DemoScreenGrab,	NULL, PauseDemoToggle,	DrawToggle, NULL, 0 },
 		{ 200 , 128 + ( 2*16 ), 0, 0, 0, LT_MENU_DemoPlaying7 /*"Playback Speed"*/, 0, 0,	&DemoSpeed,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 128 + ( 4*16 ), 0, 0, 0, LT_MENU_DemoPlaying8 /*"Watch Player"*/, 0, 0,		&DemoEyesSelect,		NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 		{ 200 , 128 + ( 5*16 ), 0, 0, 0, LT_MENU_DemoPlaying9 /*"Options"*/ , 0, 0, NULL, &MENU_Options , MenuChange , MenuItemDrawName, NULL, 0 } ,
@@ -3027,7 +2987,6 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
 #endif
 #endif
-				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"			*/,	&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
 					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"					*/,	NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"				*/,	NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
 					
@@ -3050,7 +3009,6 @@ MENU	MENU_InGameSingle = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , Exi
 					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
 #endif
 #endif
-				  	  OLDMENUITEM( 200, 288, LT_MENU_InGame13 /*"Wireframe Mode"			*/,	&DebugVisible,				DebugVisibleChanged,	SelectToggle,			DrawToggle),
 					  OLDMENUITEM( 200, 304, LT_MENU_InGame14 /*"Save Menu"					*/,	NULL,						&MENU_Save,				MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 320, LT_MENU_InGame15 /*"Debug Menu"				*/,	NULL,						&MENU_DebugMode,		MenuChange,				MenuItemDrawName),
 					  					  
@@ -3682,14 +3640,6 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 		SetCursorClip( TRUE );
 
 	framelag = 0;
-
-    if (bPrimaryPalettized)
-	{
-		lpPalette = DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-		ddpal =  DDLoadPalette( lpDD , "data\\pictures\\pal.bmp");
-		LastError = d3dappi.lpFrontBuffer->lpVtbl->SetPalette( d3dappi.lpFrontBuffer, ddpal );
-		LastError = d3dappi.lpBackBuffer->lpVtbl->SetPalette( d3dappi.lpBackBuffer, ddpal );
-	}
 
 	memset(&bmat, 0, sizeof(D3DMATERIAL));
     bmat.dwSize = sizeof(D3DMATERIAL);
@@ -4926,6 +4876,7 @@ uint8 QuickStart = QUICKSTART_None;
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 BOOL IpOnCLI;
+extern D3DAppInfo* d3dapp; 
 BOOL DisplayTitle(void)
 {
 #if 1 // bjd - CHECK IMPORTANT
@@ -8856,6 +8807,8 @@ void InitDetailLevels( MENU *Menu )
 	Input		:		pointer to menu
 	Output		:		Nothing
 ===================================================================*/
+
+extern BOOL InitView(void);
 void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
@@ -10098,20 +10051,6 @@ void InitInGameMenu( MENU *Menu )
 				item->FuncDraw = NULL;
 			}
 		}
-		
-		else if ( item->Value == DebugVisibleChanged )
-		{
-			if ( DebugInfo )
-			{
-				item->FuncSelect = SelectToggle;
-				item->FuncDraw = DrawToggle;
-			}
-			else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
 
 		if ( item->FuncSelect == SelectQuitCurrentGame )
 				item->StrPnt = LT_QuitToMainMenu/*"Quit to Main Menu"*/;
@@ -10774,75 +10713,6 @@ void NewMenuSelectMode( MENUITEM *Item )
 
    	InitialTexturesSet = FALSE;
 }
-/*===================================================================
-		Texture Format changing stuff..
-===================================================================*/
-void MakeTextureList( MENU *Menu )
-{
-	int i;
-	TextureList.items = 0;
-	TextureList.top_item = 0;
-
-	if ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU))
-		TextureList.display_items = 16;
-	else
-		TextureList.display_items = 8;
-
-	TextureList.selected_item = 0;
-
-	TextureList.items = d3dapp->NumTextureFormats;
-    for (i = 0; i < d3dapp->NumTextureFormats; i++)
-	{
-/* bjd - CHECK
-        if (d3dapp->TextureFormat[i].bPalettized) {
-				sprintf( &TextureList.item[i][0] , "%d-bit Palettized" , d3dapp->TextureFormat[i].IndexBPP );
-        } else {
-
-            sprintf(&TextureList.item[i][0], "%d%d%d%d RGBA",
-					 d3dapp->TextureFormat[i].RedBPP,
-                     d3dapp->TextureFormat[i].GreenBPP,
-                     d3dapp->TextureFormat[i].BlueBPP,
-                     d3dapp->TextureFormat[i].AlphaBPP);
-        }
-
-		if( i == d3dapp->CurrTextureFormat )
-			TextureList.selected_item = i;
-*/
-	}
-}
-
-/*===================================================================
-	Procedure	:		Menu Select Texture Format..
-	Input		:		Nothing
-	Output		:		Nothing
-===================================================================*/
-void MenuTextureMode( MENU *Menu )
-{
-	if( d3dapp->CurrTextureFormat != TextureList.selected_item )
-	{
-		ReleaseView();
-		D3DAppChangeTextureFormat( TextureList.selected_item );
-
-		if ( !InitView() )
-			exit( 1 );
-	}
-}
-
-void NewMenuTextureMode( MENU *Menu )
-{
-	if( d3dapp->CurrTextureFormat != TextureList.selected_item )
-	{
-		ReleaseView();
-		D3DAppChangeTextureFormat( TextureList.selected_item );
-
-		if ( !InitView() )
-			exit( 1 );
-
-		InitialTexturesSet = FALSE;
-		FadeHoloLight(HoloLightBrightness);
-		DarkenRoom2(RoomDarkness);
-	}
-}
 
 void InitDebugMenu( MENU *Menu )
 {
@@ -10930,45 +10800,10 @@ void DebugModeChanged( MENUITEM *item )
 	InitInGameMenu( &MENU_InGame );
 }
 
-void DebugVisibleChanged( MENUITEM *item )
-{
-	int16 i;
-
-	if ( DebugVisible )
-	{
-		ShowPortal = 1;
-		if (myglobs.rstate.FillMode != D3DFILL_WIREFRAME)
-		{
-			myglobs.rstate.FillMode = D3DFILL_WIREFRAME;
-			D3DAppSetRenderState(&myglobs.rstate);
-		}
-		for ( i = 0; i < Mloadheader.num_texture_files; i++ )
-		{
-			TloadBlankTextureSurf( &Tloadheader, Mloadheader.TloadIndex[i] );
-		}
-		PolyText[STATUS_Normal]	= FALSE;
-	}
-	else
-	{
-		ShowPortal = 0;
-		if (myglobs.rstate.FillMode != D3DFILL_SOLID)
-		{
-			myglobs.rstate.FillMode = D3DFILL_SOLID;
-			D3DAppSetRenderState(&myglobs.rstate);
-		}
-		for ( i = 0; i < Mloadheader.num_texture_files; i++ )
-		{
-			TloadReloadTextureSurf( &Tloadheader, Mloadheader.TloadIndex[i] );
-		}
-		PolyText[STATUS_Normal]	= TRUE;
-	}
-}
-
 void SavePickups( MENUITEM *item )
 {
 	SavePickupsPositions();
 }
-
 
 void ShowNodeToggle( MENUITEM *item )
 {
@@ -10984,20 +10819,6 @@ void ShowStartPointsToggle( MENUITEM *item )
 	else
 	{
 		InitLines();
-	}
-}
-
-
-void TexturesEnabledToggle( MENUITEM *item )
-{
-	int i;
-
-	for ( i = 0; i < Mloadheader.num_texture_files; i++ )
-	{
-		if ( TexturesEnabled )
-			TloadReloadTextureSurf( &Tloadheader, Mloadheader.TloadIndex[i] );
-		else
-			TloadBlankTextureSurf( &Tloadheader, Mloadheader.TloadIndex[i] );
 	}
 }
 
@@ -11398,13 +11219,6 @@ void GetGamePrefs( void )
 	default_x						  =	config_get_int( "ScreenPosX",				0 );
 	default_y						  =	config_get_int( "ScreenPosY",				0 );
 
-    TexturePalettized                = config_get_int( "TexturePalettized",			-1 );
-    TextureRedBPP                    = config_get_int( "TextureRedBPP",				0 );
-    TextureGreenBPP                  = config_get_int( "TextureGreenBPP",			0 );
-    TextureBlueBPP                   = config_get_int( "TextureBlueBPP",			0 );
-    TextureAlphaBPP                  = config_get_int( "TextureAlphaBPP",			0 );
-    TextureIndexBPP                  = config_get_int( "TextureIndexBPP",			0 );
-
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
     SystemMessageColour              = config_get_int( "SystemMessageColour",		GREEN );
@@ -11502,12 +11316,6 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
 	config_set_int( "ScreenPosX",				d3dapp->pWindow.x );
 	config_set_int( "ScreenPosY",				d3dapp->pWindow.y );
-//bjd	config_set_int( "TexturePalettized",		d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].bPalettized );
-//bjd	config_set_int( "TextureRedBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].RedBPP );
-//bjd	config_set_int( "TextureGreenBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].GreenBPP );
-//bjd	config_set_int( "TextureBlueBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].BlueBPP );
-//bjd	config_set_int( "TextureAlphaBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].AlphaBPP );
-//bjd	config_set_int( "TextureIndexBPP",			d3dapp->TextureFormat[ d3dapp->CurrTextureFormat ].IndexBPP );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );
@@ -16938,6 +16746,7 @@ void SelectGoldBarModel( MENU *Menu )
 	ShowHoloModel( TITLE_MODEL_GoldBar );
 }
 
+BOOL InitScene(void);
 void AfterSpecialMessage( MENUITEM *Item )
 {
 	switch( GameCompleted )
@@ -17126,7 +16935,6 @@ BOOL SetGamma( SLIDER *slider )
 		return TRUE;
 
 	ReleaseView();
-	D3DAppChangeTextureFormat( TextureList.selected_item );
 
 	if ( !InitView() )
 		exit( 1 );
@@ -17678,9 +17486,6 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_ScreenRes\n");  
 	GetFormatInfo ( &MENU_NEW_ScreenRes );
-
-	DebugPrintf("MENU_NEW_TextureFormat\n");  
-	GetFormatInfo ( &MENU_NEW_TextureFormat );
 
 	DebugPrintf("MENU_NEW_Visuals\n");  
 	GetFormatInfo ( &MENU_NEW_Visuals );

@@ -13,7 +13,9 @@
 #define SHIPS_INCLUDED
 
 #include <math.h>
-#include "d3ddemo.h"
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "typedefs.h"
 #include "New3D.h"
 #include <time.h>

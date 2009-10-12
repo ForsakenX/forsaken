@@ -9,26 +9,18 @@ extern "C" {
 #include <assert.h>
 #include "util.h"
 
-extern  BOOL DontColourKey;
 extern	BOOL MipMap;
 extern	BOOL	Is3Dfx2;
-extern	int		TexturePalettized;
-extern	int		TextureRedBPP;
-extern	int		TextureGreenBPP;
-extern	int		TextureBlueBPP;
-extern	int		TextureAlphaBPP;
-extern	int		TextureIndexBPP;
 
 /***************************************************************************/
 /*                            Creation of D3D                              */
 /***************************************************************************/
+extern D3DAppInfo* d3dapp; 
+extern BOOL InitView(void);
 
-BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
+BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp)
 {
 	HRESULT LastError;
-
-	D3DAppISetDefaults();
-	
 
 	/* Set up Direct3D interface object */
 	d3dappi.lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -118,6 +110,9 @@ BOOL Init3DRenderer(HWND hwnd, D3DAppInfo** D3DApp)
         return FALSE;
 	}
 
+    if(!init_render_states())
+		return FALSE;
+
 	return TRUE;
 }
 
@@ -125,7 +120,7 @@ BOOL FlipBuffers()
 {
 	if (!d3dappi.bRenderingIsOK) 
 	{
-		OutputDebugString("Cannot call D3DAppShowBackBuffer while bRenderingIsOK is FALSE.\n");
+		OutputDebugString("Cannot call FlipBuffers() while bRenderingIsOK is FALSE.\n");
 		return FALSE;
 	}
 
@@ -138,7 +133,6 @@ BOOL FlipBuffers()
 /*                      Setting the render state                           */
 /***************************************************************************/
 /*
- * D3DAppISetRenderState
  * Create and execute an execute buffer which will set the render state and
  * light state for the current viewport.
  */
@@ -494,13 +488,11 @@ void set_alpha_fx_states( void )
 //    }
 }
 
-BOOL
-D3DAppISetRenderState()
+BOOL init_render_states()
 {
 	//STATE( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
 
-	STATE(	D3DRS_SHADEMODE,		d3dapprs.ShadeMode);
-	STATE(	D3DRS_SPECULARENABLE,	d3dapprs.bSpecular);
+	STATE(	D3DRS_SHADEMODE,		D3DSHADE_GOURAUD );
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
 	reset_cull();

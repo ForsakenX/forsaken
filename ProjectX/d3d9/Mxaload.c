@@ -1314,6 +1314,7 @@ void ReleaseWaterMesh()
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
+extern D3DAppInfo* d3dapp; 
 void DisplayWaterMesh()
 {
 	LPDIRECTDRAW lpDD = d3dapp->lpDD;

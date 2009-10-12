@@ -13,6 +13,7 @@
 #include "lines.h"
 #include "camera.h"
 
+extern D3DAppInfo* d3dapp; 
 extern	CAMERA	CurrentCamera;
 extern	BOOL	UsedStippledAlpha;
 extern	BOOL	DebugInfo;

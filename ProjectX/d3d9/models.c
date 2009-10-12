@@ -39,6 +39,7 @@
 #endif
 
 #define NO_GRAVGON_TIMER 0
+extern D3DAppInfo* d3dapp;
 
 /*===================================================================
 		Externals ...

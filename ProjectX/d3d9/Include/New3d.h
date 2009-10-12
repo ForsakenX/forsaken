@@ -2,7 +2,9 @@
 #ifndef __New3d_h
 #define __New3d_h
 #include <math.h>
-#include "d3ddemo.h"
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "typedefs.h"
 
 /*===================================================================

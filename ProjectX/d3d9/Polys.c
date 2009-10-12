@@ -673,6 +673,7 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 				:	uint16	*					Current Poly
 	Output		:	True/False
 ===================================================================*/
+extern D3DAppInfo* d3dapp; 
 BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly )
 {
 	uint16			i;

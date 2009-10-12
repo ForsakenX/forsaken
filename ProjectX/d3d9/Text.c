@@ -168,7 +168,7 @@ int Printint16( int16 num , int x , int y , int color )
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
 ===================================================================*/
-
+extern D3DAppInfo* d3dapp; 
 void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;

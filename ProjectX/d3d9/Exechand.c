@@ -9,7 +9,9 @@
 ===================================================================*/
 #include <malloc.h>
 #include "typedefs.h"
-#include "d3ddemo.h"
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "d3dappi.h"
 #include "util.h"
 

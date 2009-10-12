@@ -165,7 +165,6 @@ extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 											// this tells the drones what status the host thinks hes in..
 
 extern	int		outside_group;
-extern	BOOL	DemoScreenGrab;
 extern	BOOL	PickupInvulnerability;
 extern	BOOL	Sound3D;
 
@@ -1519,12 +1518,7 @@ BOOL ProcessShips()
 			{
 				framelag = 0.0F;
 			}else{
-				if( DemoScreenGrab && !CurrentMenu )
-				{
-					framelag = 4.0F;
-				}else{
-					framelag = Oldframelag * Demoframelag;
-				}
+				framelag = Oldframelag * Demoframelag;
 			}
 		}
 

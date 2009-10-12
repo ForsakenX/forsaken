@@ -12,7 +12,9 @@
 #define TLOAD_INCLUDED
 
 #include "d3dmain.h"
-#include "d3ddemo.h"
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "typedefs.h"
 #include "file.h"
 #include "exechand.h"
@@ -83,8 +85,6 @@ BOOL
 TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width , uint16 * Height );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 //LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpFormat, DWORD memoryflag, DWORD dwWidth, DWORD dwHeight);
-//LPDIRECTDRAWSURFACE TloadSurfaceScale( LPDIRECTDRAW lpDD, LPCSTR lpName,
- //                  LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
 
 int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
@@ -92,10 +92,6 @@ BOOL
 TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader);
 BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n);
 
-BOOL TloadBlankTextureSurf(TLOADHEADER * Tloadheader , int16 n);
-
-//LPDIRECTDRAWSURFACE TloadSurfaceScale8BitPrimary( LPDIRECTDRAW lpDD, LPCSTR lpName,
-//                   LPDDSURFACEDESC lpFormat, DWORD memoryflag , int16 Scale );
 //BOOL InitCopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
 //BOOL CopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );

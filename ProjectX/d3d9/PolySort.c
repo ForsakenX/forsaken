@@ -3,15 +3,14 @@
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"
-
 #include "d3dmain.h"
-#include "d3ddemo.h"
+#include <d3d9.h>
+#include "d3dapp.h"
+#include "d3dmacs.h"
 #include "exechand.h"
 #include "d3dappi.h"
 #include "mload.h"
-
 #include "camera.h"
-
 #include "PolySort.h"
 #include "XMem.h"
 

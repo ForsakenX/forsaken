@@ -520,6 +520,7 @@ void ScreenPolyProcess( void )
 	Input		:	Nothing
 	Output		:	Nothing
 ===================================================================*/
+extern D3DAppInfo* d3dapp; 
 void DoLensflareEffect( void )
 {
 	VECTOR		DirVector;

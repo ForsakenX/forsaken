@@ -112,7 +112,6 @@ num_start_points : uint16
 ===================================================================*/
 extern	BOOL SWMonoChrome;
 extern	TRIGGERMOD	*	TrigMods;
-extern	PALETTEENTRY ppe[256];
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern  D3DMATRIXHANDLE hWorld;
@@ -160,8 +159,8 @@ uint16	GroupTris[ MAXGROUPS ];
 	Input		:		Who can tell...
 	Output		:		int93???
 ===================================================================*/
-static BOOL
-read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, uint16 **Uint16PntPtr )
+extern D3DAppInfo* d3dapp; 
+static BOOL read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, uint16 **Uint16PntPtr )
 {
 	BOOL ok;
 	uint16 *ptr;

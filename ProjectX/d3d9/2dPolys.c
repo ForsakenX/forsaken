@@ -30,6 +30,7 @@
 /*===================================================================
 	Externs
 ===================================================================*/
+extern D3DAppInfo* d3dapp; 
 extern	CAMERA	CurrentCamera;
 extern	D3DMATRIX			view;
 extern	MATRIX				ProjMatrix;

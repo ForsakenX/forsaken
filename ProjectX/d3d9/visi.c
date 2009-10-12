@@ -1138,9 +1138,8 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	}
 }
 
-
-int
-ClipGroup( CAMERA *cam, uint16 group )
+extern D3DAppInfo* d3dapp; 
+int ClipGroup( CAMERA *cam, uint16 group )
 {
     HRESULT rval;
 	VISGROUP *g;

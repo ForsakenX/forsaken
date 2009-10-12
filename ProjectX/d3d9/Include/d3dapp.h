@@ -103,23 +103,6 @@ typedef struct {
 } MYD3DVIEWPORT9;
 
 /*
- * D3DAppTextureFormat stucture
- * Describes a texture format
- */
-
-#if 0 //bjd
-typedef struct tagD3DAppTextureFormat {
-    DDSURFACEDESC ddsd; /* DDSURFACEDESC for complete information */
-    BOOL bPalettized;   /* is this format palettized */
-    int RedBPP;         /* number of red, */
-    int BlueBPP;        /*                blue, */
-    int GreenBPP;       /*                      and green bits per pixel */
-    int AlphaBPP;       /*                      and green bits per pixel */
-    int IndexBPP;       /* number of bits in palette index */
-} D3DAppTextureFormat;
-#endif
-
-/*
  * D3DAppMode structure
  * Describes a display mode
  */
@@ -149,14 +132,6 @@ typedef struct tagD3DAppInfo {
 //    int                     CurrDriver;    /* number of curr. D3D driver */
 //    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/
 //    D3DAppD3DDriver         ThisDriver;    /* description of this driver, identical to Driver[CurrDriver] */
-
-    int                     NumTextureFormats; /* num texture formats avail*/
-    int                     CurrTextureFormat; /* current texture format
-                  will only change if driver changes or when app changes it*/
-//    D3DAppTextureFormat     TextureFormat[D3DAPP_MAXTEXTUREFORMATS];
-                                      /* description of all avail. formats */
-//    D3DAppTextureFormat     ThisTextureFormat; /* description of this format, identical to TextureFormat[CurrTextureFormat] */
-
     /*
      * DirectDraw objects and information
      */
@@ -164,14 +139,6 @@ typedef struct tagD3DAppInfo {
     BOOL                    bIsPrimary;    /* Is this the primary DD device?
                If FALSE, we're using a hardware DD device that cannot
                display a window and so only fullscreen modes are available */
-
-#if 0 // dont need
-    LPDIRECTDRAWSURFACE     lpFrontBuffer; /* front buffer surface */
-    LPDIRECTDRAWSURFACE     lpBackBuffer;  /* back buffer surface */
-    LPDIRECTDRAWSURFACE     lpZBuffer;     /* z-buffer surface */
-    BOOL                    bBackBufferInVideo; /* back buf in video mem? */
-    BOOL                    bZBufferInVideo;    /* is Z-buf in video mem? */
-#endif
 
     int                     NumModes; /* number of available display modes */
     int                     CurrMode; /* number of current display mode (only
@@ -188,95 +155,14 @@ typedef struct tagD3DAppInfo {
 
     BOOL                    bPaused;           /* the app is paused */
     BOOL                    bAppActive;        /* the app is active */
-    BOOL                    bTexturesDisabled; /* textures are disabled */
-    BOOL                    bOnlySystemMemory; /* all surfaces forced into
-                                                  system memory */
-    BOOL                    bOnlyEmulation;    /* no hardware DD or D3D
-                                                  devices allowed */
     BOOL                    bMinimized;        /* app window is minimized */
     BOOL                    bRenderingIsOK;    /* All objects etc. necessary
                                                   for rendering are in ok */
 } D3DAppInfo;
 
 /*
- * D3DAppRenderState structure
- * The "render state" is the status of this collection of D3D options and
- * variables.  This structure is used to get and set the render state.  The
- * render state will only change during program initialization and when
- * the application sets it.
- */
-typedef struct tagD3DAppRenderState {
-    BOOL             bPerspCorrect; /* perspective correction is on */
-    D3DSHADEMODE     ShadeMode;     /* flat, gouraud, phong? */
-//    D3DTEXTUREFILTER TextureFilter; /* linear or bi-linear texture filter */
-	D3DTEXTUREFILTERTYPE TextureFilter;
-//?    D3DTEXTUREBLEND  TextureBlend;  /* Use shade mode or copy mode? */
-    D3DFILLMODE      FillMode;      /* solid, lines or points? */
-    BOOL             bDithering;    /* dithering is on */
-    BOOL             bSpecular;     /* specular highlights are on */
-    BOOL             bAntialiasing; /* anti-aliasing is on */
-} D3DAppRenderState;
-
-/*
  * FUNCTION PROTOTYPES
  */
-
-/*
- * D3DAppCreateFromHWND
- *
- * Call this before all other D3DApp functions (except AddTexture).  
- * Initializes all DD and D3D objects necessary for rendering, enumerates the
- * available display modes and drivers and loads textures specified by prior
- * AddTexture() calls.  Caller passes the handle of the window to be manged
- * and callback functions to execute for device creation and destruction.
- * 
- * DeviceCreateCallback is executed AFTER the creation of D3D device and all
- * objects D3DApp created using the device.  This allows an application to
- * reconstruct the scene and create any additional objects.  The callback
- * must create and return (in the variable provided) the DIRECT3DVIEWPORT
- * from the given width and height.  The returned pointer is stored in the
- * D3DAppInfo structure and used for clearing and setting the render state.
- * A NULL pointer is fine if D3DApp is not used for either of these
- * functions. The create callback will always be called before any calls to
- * the destroy callback.  The boolean returned indicates success or failure.
- *
- * DeviceDestroyCallback is executed BEFORE the D3D device and objects
- * created by D3DApp using the device are released.  This allows an
- * application to save data regarding the scene or release any objects
- * created from the device before it is destroyed.  The DIRECT3DVIEWPORT
- * should be released in this callback.  The boolean returned indicates the
- * success or failure.
- *
- * A pointer to the internal D3DAppInfo data structure is returned.  This
- * should be READ ONLY!
- *
- * The DirectDraw device, Direct3D driver, display mode and texture format
- * will all be chosen by D3DApp.  Hardware DD and D3D devices are prefered.
- * Mono lighting D3D drivers are prefered.  Paletted texture formats are
- * prefered.  If possible, the current window size will be used, otherwise
- * a fullscreen mode will be selected.
- *
- * Call AddTexture() to add textures to be loaded upon initialization.
- *
- * Valid flags:
- *    D3DAPP_ONLYSYSTEMMEMORY  Force all surfaces into system memory.  Also
- *                             disables hardware DD and D3D drivers.
- *    D3DAPP_ONLYD3DEMULATION  Disable D3D hardware
- *    D3DAPP_ONLYDDEMULATION   Disable DD hardware
- */
-#define D3DAPP_ONLYSYSTEMMEMORY 0x00000001
-#define D3DAPP_ONLYD3DEMULATION 0x00000002
-#define D3DAPP_ONLYDDEMULATION  0x00000004
-
-
-BOOL D3DAppCreateFromHWND(DWORD flags, HWND hwnd,
-                          /*BOOL(*DeviceCreateCallback)(int, int,
-                                                      LPDIRECT3DVIEWPORT*,
-                                                      LPVOID),
-                          LPVOID lpCreateContext,
-                          BOOL(*DeviceDestroyCallback)(LPVOID),
-                          LPVOID lpDestroyContext,*/
-                          D3DAppInfo** D3DApp);
 
 /*
  * D3DAppWindowProc
@@ -315,43 +201,6 @@ BOOL D3DAppWindow(int w, int h, int bpp);
  */
 //BOOL D3DAppChangeDriver(int driver, DWORD flags);
 
-
-/*
- * D3DAppChangeTextureFormat
- * Changes all textures to the given format.  Texture handles and objects
- * will change.
- */
-BOOL D3DAppChangeTextureFormat(int format);
-
-/*
- * D3DAppSetRenderState
- * Uses a D3D execute buffer to set the render state.  If lpState is NULL,
- * the current settings are reset.
- */
-BOOL D3DAppSetRenderState(D3DAppRenderState* lpState);
-
-/*
- * D3DAppGetRenderState
- * Returns the current render state.
- */
-BOOL D3DAppGetRenderState(D3DAppRenderState* lpState);
-
-/*
- * D3DAppShowBackBuffer
- * Blts or flips the back buffer to the primary surface.
- */
-#define D3DAPP_SHOWALL 0x00000001
-BOOL D3DAppShowBackBuffer(DWORD flags);
-
-/*
- * D3DAppCheckForLostSurfaces
- * Checks all surfaces D3DApp has allocated and restores them if necessary.
- * An error is returned on any type of failure, but it may be best to ignore
- * it since restoring surface can fail for non-fatal reasons and the app may
- * just want to spin.
- */
-BOOL D3DAppCheckForLostSurfaces(void);
-
 /*
  * D3DAppPause
  * Use D3DAppPause(TRUE) to pause the app and D3DAppPause(FALSE) to unpause.
@@ -365,21 +214,6 @@ BOOL D3DAppPause(BOOL flag);
  * Converts a DirectDraw, Direct3D or Direct3D RM error code to a string.
  */
 char* D3DAppErrorToString(HRESULT error);
-
-/*
- * D3DAppCreateSurface
- * Creates a surface described by ddsd.  Will force the surface into
- * systemmemory if D3DApp was initialized with D3DAPP_ONLYSYSTEMMEMORY.
- */
-//bjd BOOL D3DAppCreateSurface(DDSURFACEDESC *ddsd, LPDIRECTDRAWSURFACE *lplpSurf);
-
-/*
- * D3DAppLastError
- * D3DAppLastErrorString
- * Returns the last D3DApp error as a string and HRESULT.
- */
-HRESULT D3DAppLastError(void);
-char* D3DAppLastErrorString(void);
 
 /*
  * D3DAppDestroy

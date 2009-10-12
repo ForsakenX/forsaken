@@ -1077,16 +1077,6 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 			    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
 */
 		}
-		else
-		{
-	   		if( myglobs.rstate.FillMode == D3DFILL_WIREFRAME )
-	   		{
-/* bjd - CHECK
-	   		   	OP_STATE_RENDER( 1, lpPointer);
-	   				STATE_DATA( D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID, lpPointer );
-*/
-	   		}
-		}
    	}
 /* bjd - CHECK
     OP_STATE_LIGHT( 1, lpPointer );
@@ -1098,14 +1088,7 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
     OP_TRIANGLE_LIST( NumTris, lpPointer );
         TRIANGLE_LIST_DATA( Tris, NumTris, lpPointer );		// Copy Triangles to Execute Buffer
 */
-   	if( (( ShowSkin == 3  ) || ( ShowSkin == 4 )) || ( myglobs.rstate.FillMode == D3DFILL_WIREFRAME ) )
-   	{
-/*
-   	   	OP_STATE_RENDER( 1, lpPointer);
-   			STATE_DATA( D3DRENDERSTATE_FILLMODE, myglobs.rstate.FillMode, lpPointer );
-*/
-   	}
-   
+
 //   	OP_EXIT( lpPointer );
    
 //   	Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Unlock( Skin_Execs[ Num_Skin_Execs ] );
@@ -1321,24 +1304,7 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 	memcpy(lpBufStart, Verts, sizeof(D3DLVERTEX) * NumVerts);
    
 //    lpInsStart = lpPointer;
-   
-   	if( ShowPortal > 2 )
-   	{
-/* bjd - CHECK
-   	   	OP_STATE_RENDER( 1, lpPointer);
-   			STATE_DATA( D3DRENDERSTATE_FILLMODE, D3DFILL_WIREFRAME, lpPointer );
-*/
-   	}
-   	else
-   	{
-   		if( myglobs.rstate.FillMode == D3DFILL_WIREFRAME )
-   		{
-/* bjd - CHECK
-   		   	OP_STATE_RENDER( 1, lpPointer);
-   				STATE_DATA( D3DRENDERSTATE_FILLMODE, D3DFILL_SOLID, lpPointer );
-*/
-   		}
-   	}
+
 /* bjd - CHECK   
     OP_STATE_LIGHT( 1, lpPointer );
         STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer );
@@ -1349,13 +1315,6 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
     OP_TRIANGLE_LIST( NumTris, lpPointer );
         TRIANGLE_LIST_DATA( Tris, NumTris, lpPointer );		// Copy Triangles to Execute Buffer
 */		
-   	if( ( ShowPortal > 2 ) || ( myglobs.rstate.FillMode == D3DFILL_WIREFRAME ) )
-   	{
-/* bjd - CHECK
-   	   	OP_STATE_RENDER( 1, lpPointer);
-   			STATE_DATA( D3DRENDERSTATE_FILLMODE, myglobs.rstate.FillMode, lpPointer );
-*/
-   	}
    
 //   	OP_EXIT( lpPointer );
    
