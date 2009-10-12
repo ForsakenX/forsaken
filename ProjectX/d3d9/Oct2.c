@@ -4648,7 +4648,6 @@ RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     
     DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
-    SetOurRenderStates( NULL );
     FSClearBlack();
 
     ReceiveGameMessages();
@@ -6667,15 +6666,14 @@ Display Group Clipped Faceme Transluecent Polys
   Display Transluecent Screen Polys
 ===================================================================*/
 
-    if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
       return FALSE;
 
 /*===================================================================
   Display Solid Screen Polys
 ===================================================================*/
-  BilinearSolidScrPolys = FALSE;
 
-  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
     return FALSE;
 
   // reset mode

@@ -132,7 +132,6 @@ extern	LIST	DemoList;
 extern	float Demoframelag;
 extern	LONGLONG	DemoTimeSoFar;
 extern	BOOL	AutoDetail;
-void SetOurRenderStates( MENUITEM *item );
 extern	MENUITEM	JoinItem;
 extern	MENUITEM	NewJoinItem;
 extern  MENUITEM	WatchTeamSelectionItem;

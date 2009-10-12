@@ -84,7 +84,6 @@ extern "C" {
 	extern BOOL SeriousError;
 	extern	BOOL	Is3Dfx;
 	extern	BOOL	Is3Dfx2;
-	extern	BOOL	TriLinear;
 	extern	BOOL	NoSFX;
 	extern	int		TextureMemory;
 	extern	BOOL	NoTextureScaling;
@@ -124,7 +123,6 @@ extern "C" {
 
 	void GetDefaultPilot(void);
 	void SetSoundLevels( int *dummy );
-	void SetOurRenderStates( MENUITEM *item );
 }
 
 
@@ -620,7 +618,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// setup globals used by application
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
-	// bjd - set temporarly on till texture rendering works...
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
@@ -698,7 +695,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		SetCursorClip( FALSE );
 	}
 
-	SetOurRenderStates( (MENUITEM *)NULL );
+	D3DAppSetRenderState(&myglobs.rstate);
 
 	SetSoundLevels( NULL );
 
@@ -839,12 +836,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option, "DS"))
 		{
 			DS = TRUE;
-        }
-
-		// trilinear filtering
-		else if (!_stricmp(option, "NoTriLinear")) 
-		{
-			TriLinear = FALSE;
         }
 
 		// turn off sound

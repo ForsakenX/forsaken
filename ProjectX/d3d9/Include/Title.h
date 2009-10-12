@@ -525,8 +525,6 @@ void	DrawSlider( MENUITEM *Item );
 void	SelectKey( MENUITEM *Item );
 void	DrawKey( MENUITEM *Item );
 void	MenuItemBack( MENUITEM *item );
-void	SetOurRenderStates( MENUITEM *item );
-void	GetOurRenderStates( MENUITEM *item );
 void	DecrementSlider( MENUITEM *Item );
 void	IncrementSlider( MENUITEM *Item );
 void	SliderHome( MENUITEM *Item );

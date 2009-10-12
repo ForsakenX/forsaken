@@ -744,7 +744,6 @@ void GetTitleMessage(void);
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
-extern BOOL	TriLinear;
 extern BOOL	MipMap;
 
 enum
@@ -865,8 +864,6 @@ BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
 BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
-BOOL BiLinearFiltering;
-BOOL PerspectiveCorrect;
 BOOL LensFlare;
 BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
@@ -1701,9 +1698,6 @@ MENU	MENU_NEW_DetailLevels = {
 	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 30, 140, 40, 0, LT_MENU_Detail1/*"Bi Linear Filtering"*/, FONT_Small, TEXTFLAG_CentreY,  &BiLinearFiltering, SetOurRenderStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0  },
-		{ 10, 40, 140, 50, 0, LT_MENU_Detail1a/*"Tri Linear Filtering"*/, FONT_Small, TEXTFLAG_CentreY,  &TriLinear, SetOurRenderStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0  },
-		{ 10, 50, 140, 60, 0, LT_MENU_NEW_DetailLevels2/*"Perspective Correct"*/, FONT_Small, TEXTFLAG_CentreY,		&PerspectiveCorrect,	SetOurRenderStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 60, 140, 70, 0, LT_MENU_NEW_DetailLevels3/*"Lens Flare"*/, FONT_Small, TEXTFLAG_CentreY,		&LensFlare,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 70, 140, 80, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 80, 140, 90, 0, LT_MENU_NEW_DetailLevels5/*"Auto Detail"*/, FONT_Small, TEXTFLAG_CentreY,		&AutoDetail,			NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
@@ -2783,9 +2777,6 @@ MENU	MENU_Sound;
 MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
-		{ 200, 100, 0, 0, 0, LT_MENU_Detail1	/*"Bi Linear Filtering"		*/, 0, 0,		&BiLinearFiltering,			SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 116, 0, 0, 0, LT_MENU_Detail1a	/*"Tri Linear Filtering"	*/, 0, 0,		&TriLinear,					SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 148, 0, 0, 0, LT_MENU_Detail2	/*"Perspective Correct"	*/, 0, 0,		&PerspectiveCorrect,	SetOurRenderStates,	SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 164, 0, 0, 0, LT_MENU_Detail3	/*"Lens Flare"				*/, 0, 0,		&LensFlare,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
@@ -5204,7 +5195,7 @@ BOOL DisplayTitle(void)
 		Display Transluecent Screen Polys
 	===================================================================*/
 
-			if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
 				return FALSE;
 
 	/*===================================================================
@@ -5217,9 +5208,8 @@ BOOL DisplayTitle(void)
 	/*===================================================================
 		Display Solid Screen Polys
 	===================================================================*/
-		BilinearSolidScrPolys = TRUE;
 
-		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ]/*, lpDev,*/ /*lpView*/ ) )
+		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
 			return FALSE;
 
   // reset mode
@@ -8829,74 +8819,6 @@ void DrawKeyDef( MENUITEM *Item )
  
 }
 
-
-
-/*===================================================================
-	Procedure	:		Set the Rendering States...
-	Input		:		Nothing...
-	Output		:		Nothing
-===================================================================*/
-void SetOurRenderStates( MENUITEM *item )
-{
-	// Perspective Correct
-	myglobs.rstate.bPerspCorrect = 0;
-	if( PerspectiveCorrect )
-		myglobs.rstate.bPerspCorrect = 1;
-
-#ifdef TRILINEAR_MENU_OPTION
-
-	if ( MipMap )
-	{
-		if ( !TriLinear && !BiLinearFiltering ) // mip map, no filter
-		{
-//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPNEAREST;
-		}else if ( TriLinear )	// mip map, tri-linear
-		{
-//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEARMIPLINEAR;
-		}else if ( BiLinearFiltering )	// mip map, bi-linear
-		{
-//bjd			myglobs.rstate.TextureFilter = D3DFILTER_MIPLINEAR;
-		}
-	}else
-	{
-		if ( BiLinearFiltering )	// bi-linear
-		{
-//bjd			myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
-		}else	// no filter
-		{
-//bjd		   myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
-		}	
-	}
-#else
-	// Bi Linear Filtering
-	myglobs.rstate.TextureFilter = D3DFILTER_NEAREST;
-	if( BiLinearFiltering || MyGameStatus == STATUS_Title || MyGameStatus == STATUS_BetweenLevels)
-		myglobs.rstate.TextureFilter = D3DFILTER_LINEAR;
-#endif
-
-	D3DAppSetRenderState(&myglobs.rstate);
-}
-/*===================================================================
-	Procedure	:		Set the Rendering States...
-	Input		:		Nothing...
-	Output		:		Nothing
-===================================================================*/
-void GetOurRenderStates( MENUITEM *item )
-{
-	// Perspective Correct
-//	PerspectiveCorrect = FALSE;
-//	if( myglobs.rstate.bPerspCorrect )
-//		PerspectiveCorrect = TRUE;
-
-	// Bi Linear Filtering
-//	BiLinearFiltering = FALSE;
-//	if( myglobs.rstate.TextureFilter == D3DFILTER_LINEAR )
-//		BiLinearFiltering = TRUE;
-}
-
-
-
-
 /*===================================================================
 	Procedure	:		Initialise the detail level menu items
 	Input		:		pointer to menu
@@ -8923,21 +8845,7 @@ void InitDetailLevels( MENU *Menu )
 				item->FuncDraw = NULL;
 			}
 		}
-
-		if ( item->Variable == &TriLinear )
-		{
-			if ( MipMap )
-			{
-				item->FuncSelect = SelectToggle;
-				item->FuncDraw = DrawToggle;
-			}else
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
 	}
-	GetOurRenderStates( NULL );
 	Last_SWMonoChrome = SWMonoChrome;
 //	BikeDetailSlider.value = 5 - BikeDetail;
 }
@@ -11396,9 +11304,6 @@ void GetGamePrefs( void )
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
     AutoDetail                       = config_get_bool( "AutoDetail",				TRUE );
-    BiLinearFiltering                = config_get_bool( "BiLinearFiltering",		TRUE );
-    TriLinear                        = config_get_bool( "TriLinear",				TRUE );
-    PerspectiveCorrect               = config_get_bool( "PerspectiveCorrect",		TRUE );
     LensFlare                        = config_get_bool( "LensFlare",				TRUE );
     PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
@@ -11551,9 +11456,6 @@ void SetGamePrefs( void )
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );
     config_set_bool( "AutoDetail",				AutoDetail );
-    config_set_bool( "BiLinearFiltering",		BiLinearFiltering );
-    config_set_bool( "TriLinear",				TriLinear );
-    config_set_bool( "PerspectiveCorrect",		PerspectiveCorrect );
     config_set_bool( "LensFlare",				LensFlare );
     config_set_bool( "PickupLightDetail",		PickupLightDetail );
     config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );

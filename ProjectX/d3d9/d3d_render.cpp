@@ -19,8 +19,6 @@ extern	int		TextureBlueBPP;
 extern	int		TextureAlphaBPP;
 extern	int		TextureIndexBPP;
 
-BOOL	TriLinear;
-
 /***************************************************************************/
 /*                            Creation of D3D                              */
 /***************************************************************************/
@@ -388,18 +386,35 @@ void disable_zbuff( void )
 	STATE(	D3DRS_ZENABLE,			D3DZB_FALSE);
 }
 
-void reset_filtering( void )
+void linear_filtering( void )
+{
+	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_LINEAR );
+	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_LINEAR );
+}
+
+void anisotropic_filtering( void )
 {
 	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
 	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
-	SSTATE(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 }
 
-// i think this should be bileaner based on BilinearSolidScrPolys
-void screenpoly_filtering( void )
+void disable_filtering( void )
 {
+	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_NONE );
+	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_NONE );
+}
+
+// d3d default filtering settings
+void default_filtering( void ){
 	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_POINT );
 	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_POINT );
+}
+
+// reset to our default filtering modes
+void reset_filtering( void )
+{
+	anisotropic_filtering();
+	SSTATE(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 }
 
 void cull_none( void )

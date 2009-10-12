@@ -37,7 +37,6 @@
 ===================================================================*/
 extern	BOOL			MipMap;
 extern	BOOL			Is3Dfx2;
-extern	BOOL			TriLinear;
 extern	CAMERA			CurrentCamera;
 extern	CAMERA			MainCamera;
 extern	MLOADHEADER		Mloadheader;
@@ -89,7 +88,6 @@ extern	int16			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
 extern	int16			Lives;
 extern	BOOL			DebugInfo;
-extern	BOOL			BiLinearFiltering;
 extern	TRIGGERVAR	*	DecreaseTemperature;
 extern	FRAME_INFO	*	Flag_Header;
 extern	FRAME_INFO	*	Flags_Header;
@@ -2058,7 +2056,7 @@ void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
+BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;
 	uint16	i;
@@ -2068,24 +2066,15 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 
 	while( 1 )
 	{
- 		if( !ScrPolyDispSolid( /*ExecBuff*/renderObject, &TPage, &i ) )
+ 		if( !ScrPolyDispSolid( renderObject, &TPage, &i ) )
 			return( TRUE );
 
-			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-//				return FALSE;
-
 		disable_zbuff();
-		screenpoly_filtering();
 
 		if (FAILED(draw_2d_object(renderObject)))
-		{
 			return FALSE;
-		}
 
-		reset_filtering();
 		reset_zbuff();
-
 	}
 
 	return( FALSE );
@@ -2098,7 +2087,7 @@ BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *ren
 				:	LPDIRECT3DVIEWPORT			D3D ViewPort
 	Output		:	True/False
 ===================================================================*/
-BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
+BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;
 	uint16	i;
@@ -2108,24 +2097,15 @@ BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *
 
 	while( 1 )
 	{
- 		if( !ScrPolyDispNonSolid( /*ExecBuff*/renderObject, &TPage, &i ) )
+ 		if( !ScrPolyDispNonSolid( renderObject, &TPage, &i ) )
 			return( TRUE );
 
-			//if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_UNCLIPPED ) != D3D_OK )
-//				return FALSE;
-
 		disable_zbuff();
-		screenpoly_filtering();
 
 		if (FAILED(draw_2d_object(renderObject)))
-		{
 			return FALSE;
-		}
 
-		reset_filtering();
 		reset_zbuff();
-
 	}
 
 	return( FALSE );

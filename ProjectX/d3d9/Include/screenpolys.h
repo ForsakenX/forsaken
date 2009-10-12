@@ -151,8 +151,8 @@ void ResetCountDownBombTag( float Amount );
 void InitScrPolyTPages( void );
 void AddScrPolyToTPage( uint16 i, int16 TPage );
 void RemoveScrPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplaySolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL DisplayNonSolidScrPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ );
+BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject );
+BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject );
 BOOL ScrPolyDispSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
 BOOL ScrPolyDispNonSolid( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextScrPoly );
 void FreeAllLastAFrameScrPolys( void );

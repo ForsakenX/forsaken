@@ -43,8 +43,6 @@
 extern "C" {
 #endif
 
-#define TRILINEAR_MENU_OPTION
-
 /*
  * MACROS
  */
@@ -95,7 +93,6 @@ void cull_none( void );
 void cull_cw( void );
 void reset_cull( void );
 BOOL D3DAppISetRenderState(void);
-void screenpoly_filtering( void );
 void disable_zbuff( void );
 void set_alpha_states( void );
 void set_normal_states( void );
