@@ -405,7 +405,7 @@ extern  CAMERA  CurrentCamera;
 extern  CAMERA  MainCamera;     // the main viewing screen...
 
 float FPS = 0.0F;         // Frames Per Second...
-double  TPS = 0.0;          // Textures Per Second...     
+//double  TPS = 0.0;          // Textures Per Second...     
 
 #define MYTIMER
 #undef MYTIMER
@@ -6716,12 +6716,11 @@ int our_count = 0;
 int our_last_polygons = 0;
 #endif
 
+// TODO need to find replacement for D3DSTATS9
 BOOL Our_CalculateFrameRate(void)
 {
-	return TRUE;
-#if 0 // bjd
-	int polygons;
-	D3DSTATS9 stats;
+//	int polygons;
+//	D3DSTATS9 stats;
 	char buf[256];
 	static int avg_time_per_frame = 0;
 
@@ -6737,16 +6736,16 @@ BOOL Our_CalculateFrameRate(void)
 		{
 
 			// ask d3d for stats
-			memset(&stats, 0, sizeof(D3DSTATS));
-			stats.dwSize = sizeof(D3DSTATS);
-			d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
+			//memset(&stats, 0, sizeof(D3DSTATS));
+			//stats.dwSize = sizeof(D3DSTATS);
+			//d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
 
-#ifdef DEBUG_ON
+//#ifdef DEBUG_ON
 			// calculate average triangels per second
-			polygons = stats.dwTrianglesDrawn - our_last_polygons;
-			our_last_polygons = polygons;
-			TPS = (long)(polygons / our_timer.seconds);
-#endif
+			//polygons = stats.dwTrianglesDrawn - our_last_polygons;
+			//our_last_polygons = polygons;
+			//TPS = (long)(polygons / our_timer.seconds);
+//#endif
 
 			// calculate average frames per second
 			FPS = (float) our_count / (float) our_timer.seconds;
@@ -6762,11 +6761,11 @@ BOOL Our_CalculateFrameRate(void)
 	// display the framerate
 	if( myglobs.bShowFrameRate )
 	{
-#ifdef DEBUG_ON
-		sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
-#else
+//#ifdef DEBUG_ON
+//		sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
+//#else
 		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
-#endif
+//#endif
 		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
 	}
 
@@ -6818,18 +6817,18 @@ BOOL Our_CalculateFrameRate(void)
 			for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
 			{
 				// display primary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display primary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(15*FontWidth), (viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 
 			// show all secondary weapon kills
 			for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
 			{		
 				// display secondary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display secondary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.dwY + (viewport.dwHeight>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 		}
 
@@ -6845,7 +6844,6 @@ BOOL Our_CalculateFrameRate(void)
 	}
 
 	return TRUE;
-#endif
 }
 
 
