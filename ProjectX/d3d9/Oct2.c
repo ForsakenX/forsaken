@@ -275,29 +275,17 @@ static int fnum = 0;
 extern int CameraStatus;  
 
 char *  InitViewMessages[] = {
-                 "Loading... 1 of 10" ,
-                 "Loading... 2 of 10" ,
-                 "Loading... 3 of 10" ,
-                 "Loading... 4 of 10" ,
-                 "Loading... 5 of 10" ,
-                 "Loading... 6 of 10" ,
-                 "Loading... 7 of 10" ,
-                 "Loading... 8 of 10" ,
-                 "Loading... 9 of 10" ,
-                 "Loading... 10 of 10" ,
-                 /*
-                 "Loading OffScreen Surfaces" ,
-                 "Texture Load Prep         " ,
-                 "Loading Textures          " ,
-                 "Loading Models            " ,
-                 "Loading World Mesh        " ,
-                 "Loading Collision Skins   " ,
-                 "Init Sound Info           " ,
-                 "Init Ambient Lighting     " ,
-                 "Loading Sfx               " ,
-                 "Everything Else...Nodes   " ,
-                 */
-                 "" 
+     "Loading OffScreen Surfaces" ,
+     "Texture Load Prep         " ,
+     "Loading Textures          " ,
+     "Loading Models            " ,
+     "Loading World Mesh        " ,
+     "Loading Collision Skins   " ,
+     "Init Sound Info           " ,
+     "Init Ambient Lighting     " ,
+     "Loading Sfx               " ,
+     "Everything Else...Nodes   " ,
+     "" 
 };
 
 extern  float MaxMoveSpeed;
@@ -7094,12 +7082,16 @@ BOOL ChangeBackgroundColour( float R, float G, float B )
 ===================================================================*/
 void PrintInitViewStatus( BYTE Status )
 {
-  int i;
-
-  for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
-  {
-    CenterPrint4x5Text( InitViewMessages[i], ( d3dappi.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , 2 );
-  }
+	int i;
+	RENDEROBJECT ro;
+	FSCreatePretransformedVertexBuffer(&ro, 32767);
+	FSCreateIndexBuffer(&ro, 32767*3);
+	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
+		CenterPrint4x5Text( InitViewMessages[i], ( d3dappi.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
+	DisplayNonSolidScrPolys(&ro);
+	DisplaySolidScrPolys(&ro);
+	FSReleaseRenderObject(&ro);
+	FlipBuffers();
 }
 
 /*===================================================================
