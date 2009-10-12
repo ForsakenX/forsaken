@@ -229,9 +229,6 @@ HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 
-#define FSBackBuffer 0 // pass this to FSBlit for "to" to point to back buffer
-void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest );
-
 #define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname, D3DCOLOR m_ColourKey );
 

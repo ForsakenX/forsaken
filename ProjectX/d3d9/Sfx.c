@@ -115,7 +115,6 @@ extern 	ENEMY Enemies[];
 extern SLIDER BikeCompSpeechSlider;
 extern SLIDER BikerSpeechSlider;
 extern USERCONFIG	*player_config;
-extern int	CurrentLoadingStep;
 extern VECTOR	SlideUp;
 extern VECTOR	Forward;
 extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
@@ -140,7 +139,6 @@ Fn Prototypes
 *****************************************/
 BOOL Init_SoundGlobals(void);
 void FreeSBufferList( void );
-void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void InitSfxHolders( void );
 void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
 int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance );
@@ -1105,8 +1103,6 @@ void LoadSfx( int sfxnum )
 
 	flags = Sfx_Filenames[ sfxnum ].Flags;
 
-	DrawLoadingBox( CurrentLoadingStep, sfxnum, SFX_LEVELSPEC_End );
-
 	/*	
 	// get correct flags...
 	if ( flags & SFX_LevelSpec )
@@ -1951,8 +1947,6 @@ BOOL InitializeSound( int flags )
 			LoadSfx( Num_Sfx );
 		}
 
-	DrawLoadingBox( ++CurrentLoadingStep, 0, 1 );
-	
 	// store start/stop info for all compound sfx....( not for title )
 	for (j = 0; j < AllocatedCompoundSfx; j++)
 	{

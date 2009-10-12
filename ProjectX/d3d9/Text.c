@@ -43,8 +43,6 @@ extern LONGLONG	Freq;
 extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
-
-extern LPDIRECT3DSURFACE9      lpFontSurface;       // Font Bitmap
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
@@ -56,7 +54,6 @@ extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	BOOL	ShowTeamInfo;
 extern	MLOADHEADER Mloadheader;
 extern	BOOL Is3Dfx;
-extern	BOOL	bPolyText;
 extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16					Lives;
 extern	int16					MaxKills;
@@ -130,8 +127,6 @@ char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
 uint8	CharTrans[256];
 
-BOOL	PolyText[255];
-
 uint16 NumOfTextMessages = 0;
 char * TextMessagesPnt[MAXTEXTMESSAGES];
 char * TextMessages = NULL;
@@ -173,20 +168,15 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;
 	int num;
-    RECT  src;
-	POINT dest;
-	int		Zeros= 0 ;
+	int	Zeros= 0 ;
 	uint8 r , g , b;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
 		return;
 	
-	if( bPolyText && PolyText[MyGameStatus])
-	{
-		r = Colourtrans[col][0];
-		g = Colourtrans[col][1];
-		b = Colourtrans[col][2];
-	}
+	r = Colourtrans[col][0];
+	g = Colourtrans[col][1];
+	b = Colourtrans[col][2];
 
 	for( i = 0 ; i < 4 ; i++ )
 	{
@@ -195,23 +185,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 		if( ( num + Zeros != 0 ) || ( i == 3 ) )
 		{
 			Zeros = 1;
-			if( bPolyText && PolyText[MyGameStatus])
-			{
-				AddScreenPolyText( (uint16) (num+1), (float) x , (float) y, r, g, b, 255 );
-			}
-			else
-			{	
-				src.top = TextSrcY[col][num+1];
-				src.left = TextSrcX[col][num+1];
-				
-				src.right = src.left+FontSourceWidth;
-				src.bottom = src.top+FontSourceHeight;
-
-				dest.x = x;
-				dest.y = y;
-
-				FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
-			}
+			AddScreenPolyText( (uint16) (num+1), (float) x , (float) y, r, g, b, 255 );
 			x += FontWidth;
 		}
 	}
@@ -286,20 +260,14 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 int Print4x5Text( char * Text , int x , int y , int color )
 {
 	uint8 num;
-    RECT    src, dest;
-	POINT	destp;
 	uint8 r , g , b;
-	BOOL ignore;
 
 	if( (y + FontHeight ) >= d3dapp->szClient.cy )
 		return PermX;
 
-	if( bPolyText && PolyText[MyGameStatus])
-	{
-		r = Colourtrans[color][0];
-		g = Colourtrans[color][1];
-		b = Colourtrans[color][2];
-	}
+	r = Colourtrans[color][0];
+	g = Colourtrans[color][1];
+	b = Colourtrans[color][2];
 
 	if( x != -1 )
 		PermX = x;
@@ -308,56 +276,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 		num = CharTrans[num];
 
 		if ( num )
-		{
-
-			if( bPolyText && PolyText[MyGameStatus] )
-			{
 				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}
-			else
-			{
-		
-				src.top = TextSrcY[color][num];
-				src.left = TextSrcX[color][num];
-				
-				src.right = src.left+FontSourceWidth;
-				src.bottom = src.top+FontSourceHeight;
-				dest.bottom = y + FontHeight;
-				dest.top = y;
-				dest.left = PermX;
-				dest.right = PermX + FontWidth;
-
-				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
-					ignore = TRUE;
-				else
-				{
-					
-					if ((dest.left >= 0) || (dest.right <= d3dapp->szClient.cx))
-						ignore = FALSE;
-					else
-					{
-						// partial clipping required...
-						if (dest.left < 0)
-						{
-							src.left -= dest.left;
-							dest.left = 0;
-						}
-						else
-						{
-							src.right -= (dest.right - d3dapp->szClient.cx);
-							dest.right = d3dapp->szClient.cx;
-						}
-						ignore = FALSE;
-					}
-				}
-				
-				destp.x = dest.left;
-				destp.y = dest.top;
-
-				if( !ignore )
-					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
-			}
-		}
 	
 		PermX += FontWidth;
 	}
@@ -374,22 +293,16 @@ int Print4x5Text( char * Text , int x , int y , int color )
 void PrintClipped4x5Text( char * Text , int x , int y , int col )
 {
 	uint8 num;
-    RECT    src, dest;
-	POINT	destp;
 	uint8 r , g , b;
-	BOOL ignore;
 	int dummy;
 
 
 	if (x < 0)
 		dummy = 0;
 
-	if( bPolyText && PolyText[MyGameStatus])
-	{
-		r = Colourtrans[col][0];
-		g = Colourtrans[col][1];
-		b = Colourtrans[col][2];
-	}
+	r = Colourtrans[col][0];
+	g = Colourtrans[col][1];
+	b = Colourtrans[col][2];
 
 	PermX = x;
 
@@ -398,55 +311,7 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 		num = CharTrans[num];
 
 		if ( num )
-		{
-
-			if( bPolyText && PolyText[MyGameStatus] )
-			{
-				AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
-			}
-			else
-			{
-		
-				src.top = TextSrcY[col][num];
-				src.left = TextSrcX[col][num];
-				
-				src.right = src.left+FontSourceWidth;
-				src.bottom = src.top+FontSourceHeight;
-				dest.bottom = y + FontHeight;
-				dest.top = y;
-				dest.left = PermX;
-				dest.right = PermX + FontWidth;
-
-				if ((dest.right < 0) || (dest.left > d3dapp->szClient.cx))
-					ignore = TRUE;
-				else
-				{
-					if ((dest.left >= 0) && (dest.right <= d3dapp->szClient.cx))
-						ignore = FALSE;
-					else
-					{
-						// partial clipping required...
- 						if (dest.left < 0)
- 						{
- 							src.left -= dest.left;
- 							dest.left = 0;
- 						}else
-	 					{
- 							src.right -= (dest.right - d3dapp->szClient.cx);
- 							dest.right = d3dapp->szClient.cx;
- 						}
- 						ignore = FALSE;
-	 				}
-				}
- 				
-				destp.x = dest.left;
-				destp.y = dest.top;
-
-				if( !ignore )
-					FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
-
-			}
-		}
+			AddScreenPolyText( (uint16) num, (float) PermX , (float) y, r , g , b, 255 );
 	
 		PermX += FontWidth;
 	}
@@ -874,81 +739,6 @@ void PrintScoreSort( void )
 		}
 	}
 }
-		
-
-/*===================================================================
-	Procedure	:		Print a uint16 number to any surface..
-	Input		:		uint16 num, uint16 x , uint16 y
-	Output		:		nothing
-===================================================================*/
-
-void Printuint16AnySurface( uint16 tempnum , int x , int y , int col , LPDIRECT3DSURFACE9 DestSurface )
-{
-	int i;
-	int num;
-    RECT    src;
-	POINT	dest;
-	int		Zeros= 0 ;
-	for( i = 0 ; i < 4 ; i++ )
-	{
-		num = tempnum % big[i];
-		num /= little[i];
-		if( ( num + Zeros != 0 ) || ( i == 3 ) )
-		{
-			Zeros = 1;
-			if( col < 8 )
-			{
-				src.top = col*(FontSourceHeight * 3);
-				src.left = (num * FontSourceWidth)+FontSourceWidth;
-			}else{
-				src.top =  (6*(FontSourceHeight*3));
-				src.left = ( (num * FontSourceWidth)+FontSourceWidth ) + ( FontSourceWidth << 4 );
-			}
-
-			src.right = src.left+FontSourceWidth;
-			src.bottom = src.top+FontSourceHeight;
-		}else{
-			src.top = 0;
-			src.left = 0;
-			src.right = FontSourceWidth;
-			src.bottom = FontSourceHeight;
-		}
-		dest.x = x;
-		dest.y = y;
-		FSBlit( lpFontSurface, DestSurface, &src, &dest );
-		x += FontWidth;
-	}
-}
-
-/*===================================================================
-	Procedure	:		Init PolyText allowed Array..
-	Input		:		nothing
-	Output		:		nothing
-===================================================================*/
-void InitPolyText( void )
-{
-	int i;
-
-	for( i = 0 ; i < 256 ; i++ )
-	{
-		PolyText[i] = FALSE;
-	}
-
-	PolyText[STATUS_Title]											= TRUE;
-	PolyText[STATUS_BetweenLevels]								= TRUE;
-	PolyText[STATUS_StartingMultiplayer]							= TRUE;			
-	PolyText[STATUS_PlayingDemo]									= TRUE;
-	PolyText[STATUS_Normal]											= TRUE;					
-	PolyText[STATUS_SinglePlayer]									= TRUE;					
-	//PolyText[STATUS_ViewingScore]								= TRUE;					
-	PolyText[STATUS_WaitingToStartSinglePlayer]				= TRUE;					
-	PolyText[STATUS_WaitingToStartMultiPlayerHost]			= TRUE;					
-	PolyText[STATUS_WaitingToStartMultiPlayerClient]			= TRUE;					
-	PolyText[STATUS_WaitingToStartTeamGame]				= TRUE;					
-	PolyText[STATUS_WaitingToStartDemo]						= TRUE;
-	PolyText[STATUS_WaitingToStartEndGameSequence]		= TRUE;
-}
-
 
 /*===================================================================
 	Procedure	:		Read in the level specific text messages.......
@@ -2037,40 +1827,12 @@ void BuildReliabilityTab( void )
 __inline
 void DisplayConnectionStatus( int num , int x , int y)
 {
-    RECT src;
-	POINT dest;
-	int offset;
-
 	if( !num )
 		return;
+
 	num--;
 
-	if( bPolyText && PolyText[MyGameStatus])
-	{
-		AddScreenPolyText( (uint16) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
-	}
-	else
-	{
-
-		if( ModeCase < Mode512X384 )
-		{
-			src.top = 128-8;
-			src.left = 16 + (num*8);
-			offset = 0;
-
-		}else{
-			src.top = 256-8;
-			src.left = 0 + (num*8);
-			offset = 2;
-		}
-		src.bottom = src.top + 4;
-		src.right = src.left + 4;
-
-		dest.x = x;
-		dest.y = y+offset;
-
-		FSBlit( lpFontSurface, FSBackBuffer, &src, &dest );
-	}
+	AddScreenPolyText( (uint16) (83+num), (float) x , (float) y+2, 255, 255, 255, 255 );
 }
 
 
@@ -2079,27 +1841,15 @@ void DisplayConnectionStatus( int num , int x , int y)
 	Input		:		nothing
 	Output		:		nothing
 ===================================================================*/
-void InitFont( BOOL OverridePolytext )
+void InitFont( void )
 {
 	uint16 i;
 	uint8 e;
 	int x,y;
 	int col;
 
-	// if font already initialised...
-	if (lpFontSurface && !OverridePolytext )
-		return;
-
-	if( lpFontSurface )
-	{
-		// bjd - how to release in d3d9 ?
-		//ReleaseDDSurf(lpFontSurface);
-		lpFontSurface = NULL;
-	}
-
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
-		lpFontSurface = FSLoadBitmap( "data\\pictures\\font512.bmp", FSColourKeyBlack );
 		FontWidth = 8;
 		FontHeight = 8;
 		FontSourceWidth = 8;
@@ -2107,7 +1857,6 @@ void InitFont( BOOL OverridePolytext )
 	}
 	else
 	{
-		lpFontSurface = FSLoadBitmap( "data\\pictures\\font.bmp", FSColourKeyBlack );
 		FontWidth = 4;
 		FontHeight = 5;
 		FontSourceWidth = 4;
@@ -2146,8 +1895,7 @@ void InitFont( BOOL OverridePolytext )
 		CharTrans[i] = e;
 	}
 	CharTrans['.'] = e++;
-	if ( bPolyText && !OverridePolytext)
-		e = 73;
+	e = 73;
 	CharTrans[(uint8)','] = e++;
 	CharTrans[(uint8)';'] = e++;
 	CharTrans[(uint8)'['] = e;
@@ -2166,97 +1914,50 @@ void InitFont( BOOL OverridePolytext )
 	CharTrans[(uint8)'ç'] = 13; //'C'
 	CharTrans[(uint8)'Ç'] = 13; //'C'
 
-	if ( bPolyText && !OverridePolytext)
-	{
-		e = 86;
-		CharTrans[(uint8)'à'] = e;
-		CharTrans[(uint8)'À'] = e++;
-		CharTrans[(uint8)'á'] = e;
-		CharTrans[(uint8)'Á'] = e++;
-		CharTrans[(uint8)'ä'] = e;
-		CharTrans[(uint8)'Ä'] = e++;
-		CharTrans[(uint8)'â'] = e;
-		CharTrans[(uint8)'Â'] = e++;
-		CharTrans[(uint8)'è'] = e;
-		CharTrans[(uint8)'È'] = e++;
-		CharTrans[(uint8)'é'] = e;
-		CharTrans[(uint8)'É'] = e++;
-		CharTrans[(uint8)'ë'] = e;
-		CharTrans[(uint8)'Ë'] = e++;
-		CharTrans[(uint8)'ê'] = e;
-		CharTrans[(uint8)'Ê'] = e++;
-		CharTrans[(uint8)'ì'] = e;
-		CharTrans[(uint8)'Ì'] = e++;
-		CharTrans[(uint8)'í'] = e;
-		CharTrans[(uint8)'Í'] = e++;
-		CharTrans[(uint8)'ï'] = e;
-		CharTrans[(uint8)'Ï'] = e++;
-		CharTrans[(uint8)'î'] = e;
-		CharTrans[(uint8)'Î'] = e++;
-		CharTrans[(uint8)'ò'] = e;
-		CharTrans[(uint8)'Ò'] = e++;
-		CharTrans[(uint8)'ó'] = e;
-		CharTrans[(uint8)'Ó'] = e++;
-		CharTrans[(uint8)'ö'] = e;
-		CharTrans[(uint8)'Ö'] = e++;
-		CharTrans[(uint8)'ô'] = e;
-		CharTrans[(uint8)'Ô'] = e++;
-		CharTrans[(uint8)'ù'] = e;
-		CharTrans[(uint8)'Ù'] = e++;
-		CharTrans[(uint8)'ú'] = e;
-		CharTrans[(uint8)'Ú'] = e++;
-		CharTrans[(uint8)'ü'] = e;
-		CharTrans[(uint8)'Ü'] = e++;
-		CharTrans[(uint8)'û'] = e;
-		CharTrans[(uint8)'Û'] = e++;
-		CharTrans[(uint8)'ñ'] = e;
-		CharTrans[(uint8)'Ñ'] = e++;
-	}
-	else
-	{
-		CharTrans[(uint8)'à'] = 'à';
-		CharTrans[(uint8)'À'] = 'à';
-		CharTrans[(uint8)'á'] = 'á';
-		CharTrans[(uint8)'Á'] = 'á';
-		CharTrans[(uint8)'ä'] = 'ä';
-		CharTrans[(uint8)'Ä'] = 'ä';
-		CharTrans[(uint8)'â'] = 'â';
-		CharTrans[(uint8)'Â'] = 'â';
-		CharTrans[(uint8)'è'] = 'è';
-		CharTrans[(uint8)'È'] = 'è';
-		CharTrans[(uint8)'é'] = 'é';
-		CharTrans[(uint8)'É'] = 'é';
-		CharTrans[(uint8)'ë'] = 'ë';
-		CharTrans[(uint8)'Ë'] = 'ë';
-		CharTrans[(uint8)'ê'] = 'ê';
-		CharTrans[(uint8)'Ê'] = 'ê';
-		CharTrans[(uint8)'ì'] = 'ì';
-		CharTrans[(uint8)'Ì'] = 'ì';
-		CharTrans[(uint8)'í'] = 'í';
-		CharTrans[(uint8)'Í'] = 'í';
-		CharTrans[(uint8)'ï'] = 'ï';
-		CharTrans[(uint8)'Ï'] = 'ï';
-		CharTrans[(uint8)'î'] = 'î';
-		CharTrans[(uint8)'Î'] = 'î';
-		CharTrans[(uint8)'ò'] = 'ò';
-		CharTrans[(uint8)'Ò'] = 'ò';
-		CharTrans[(uint8)'ó'] = 'ó';
-		CharTrans[(uint8)'Ó'] = 'ó';
-		CharTrans[(uint8)'ö'] = 'ö';
-		CharTrans[(uint8)'Ö'] = 'ö';
-		CharTrans[(uint8)'ô'] = 'ô';
-		CharTrans[(uint8)'Ô'] = 'ô';
-		CharTrans[(uint8)'ù'] = 'ù';
-		CharTrans[(uint8)'Ù'] = 'ù';
-		CharTrans[(uint8)'ú'] = 'ú';
-		CharTrans[(uint8)'Ú'] = 'ú';
-		CharTrans[(uint8)'ü'] = 'ü';
-		CharTrans[(uint8)'Ü'] = 'ü';
-		CharTrans[(uint8)'û'] = 'û';
-		CharTrans[(uint8)'Û'] = 'û';
-		CharTrans[(uint8)'ñ'] = 'ñ';
-		CharTrans[(uint8)'Ñ'] = 'ñ';
-	}
+
+	e = 86;
+	CharTrans[(uint8)'à'] = e;
+	CharTrans[(uint8)'À'] = e++;
+	CharTrans[(uint8)'á'] = e;
+	CharTrans[(uint8)'Á'] = e++;
+	CharTrans[(uint8)'ä'] = e;
+	CharTrans[(uint8)'Ä'] = e++;
+	CharTrans[(uint8)'â'] = e;
+	CharTrans[(uint8)'Â'] = e++;
+	CharTrans[(uint8)'è'] = e;
+	CharTrans[(uint8)'È'] = e++;
+	CharTrans[(uint8)'é'] = e;
+	CharTrans[(uint8)'É'] = e++;
+	CharTrans[(uint8)'ë'] = e;
+	CharTrans[(uint8)'Ë'] = e++;
+	CharTrans[(uint8)'ê'] = e;
+	CharTrans[(uint8)'Ê'] = e++;
+	CharTrans[(uint8)'ì'] = e;
+	CharTrans[(uint8)'Ì'] = e++;
+	CharTrans[(uint8)'í'] = e;
+	CharTrans[(uint8)'Í'] = e++;
+	CharTrans[(uint8)'ï'] = e;
+	CharTrans[(uint8)'Ï'] = e++;
+	CharTrans[(uint8)'î'] = e;
+	CharTrans[(uint8)'Î'] = e++;
+	CharTrans[(uint8)'ò'] = e;
+	CharTrans[(uint8)'Ò'] = e++;
+	CharTrans[(uint8)'ó'] = e;
+	CharTrans[(uint8)'Ó'] = e++;
+	CharTrans[(uint8)'ö'] = e;
+	CharTrans[(uint8)'Ö'] = e++;
+	CharTrans[(uint8)'ô'] = e;
+	CharTrans[(uint8)'Ô'] = e++;
+	CharTrans[(uint8)'ù'] = e;
+	CharTrans[(uint8)'Ù'] = e++;
+	CharTrans[(uint8)'ú'] = e;
+	CharTrans[(uint8)'Ú'] = e++;
+	CharTrans[(uint8)'ü'] = e;
+	CharTrans[(uint8)'Ü'] = e++;
+	CharTrans[(uint8)'û'] = e;
+	CharTrans[(uint8)'Û'] = e++;
+	CharTrans[(uint8)'ñ'] = e;
+	CharTrans[(uint8)'Ñ'] = e++;
 
 	for( col = 0 ; col < MAXFONTCOLOURS ; col++ )
 	{
@@ -2325,13 +2026,12 @@ void InitFont( BOOL OverridePolytext )
 	Input		:		nothing
 	Output		:		nothing
 ===================================================================*/
-void InitFontTransTable( BOOL BlitText )
+void InitFontTransTable( void )
 {
 	uint16 i;
 	uint8 e;
 	int x,y;
 	int col;
-
 
 	for( i = 0; i < 0x100 ; i++ )
 	{
@@ -2365,8 +2065,7 @@ void InitFontTransTable( BOOL BlitText )
 		CharTrans[i] = e;
 	}
 	CharTrans['.'] = e++;
-	if ( !BlitText)
-		e = 73;
+	e = 73;
 	CharTrans[(uint8)','] = e++;
 	CharTrans[(uint8)';'] = e++;
 	CharTrans[(uint8)'['] = e;
@@ -2385,95 +2084,49 @@ void InitFontTransTable( BOOL BlitText )
 	CharTrans[(uint8)'ç'] = 13; //'C'
 	CharTrans[(uint8)'Ç'] = 13; //'C'
 
-	if ( !BlitText)
-	{
-		e = 86;
-		CharTrans[(uint8)'à'] = e;
-		CharTrans[(uint8)'À'] = e++;
-		CharTrans[(uint8)'á'] = e;
-		CharTrans[(uint8)'Á'] = e++;
-		CharTrans[(uint8)'ä'] = e;
-		CharTrans[(uint8)'Ä'] = e++;
-		CharTrans[(uint8)'â'] = e;
-		CharTrans[(uint8)'Â'] = e++;
-		CharTrans[(uint8)'è'] = e;
-		CharTrans[(uint8)'È'] = e++;
-		CharTrans[(uint8)'é'] = e;
-		CharTrans[(uint8)'É'] = e++;
-		CharTrans[(uint8)'ë'] = e;
-		CharTrans[(uint8)'Ë'] = e++;
-		CharTrans[(uint8)'ê'] = e;
-		CharTrans[(uint8)'Ê'] = e++;
-		CharTrans[(uint8)'ì'] = e;
-		CharTrans[(uint8)'Ì'] = e++;
-		CharTrans[(uint8)'í'] = e;
-		CharTrans[(uint8)'Í'] = e++;
-		CharTrans[(uint8)'ï'] = e;
-		CharTrans[(uint8)'Ï'] = e++;
-		CharTrans[(uint8)'î'] = e;
-		CharTrans[(uint8)'Î'] = e++;
-		CharTrans[(uint8)'ò'] = e;
-		CharTrans[(uint8)'Ò'] = e++;
-		CharTrans[(uint8)'ó'] = e;
-		CharTrans[(uint8)'Ó'] = e++;
-		CharTrans[(uint8)'ö'] = e;
-		CharTrans[(uint8)'Ö'] = e++;
-		CharTrans[(uint8)'ô'] = e;
-		CharTrans[(uint8)'Ô'] = e++;
-		CharTrans[(uint8)'ù'] = e;
-		CharTrans[(uint8)'Ù'] = e++;
-		CharTrans[(uint8)'ú'] = e;
-		CharTrans[(uint8)'Ú'] = e++;
-		CharTrans[(uint8)'ü'] = e;
-		CharTrans[(uint8)'Ü'] = e++;
-		CharTrans[(uint8)'û'] = e;
-		CharTrans[(uint8)'Û'] = e++;
-		CharTrans[(uint8)'ñ'] = e;
-		CharTrans[(uint8)'Ñ'] = e++;
-	}else{
-		CharTrans[(uint8)'à'] = 'à';
-		CharTrans[(uint8)'À'] = 'à';
-		CharTrans[(uint8)'á'] = 'á';
-		CharTrans[(uint8)'Á'] = 'á';
-		CharTrans[(uint8)'ä'] = 'ä';
-		CharTrans[(uint8)'Ä'] = 'ä';
-		CharTrans[(uint8)'â'] = 'â';
-		CharTrans[(uint8)'Â'] = 'â';
-		CharTrans[(uint8)'è'] = 'è';
-		CharTrans[(uint8)'È'] = 'è';
-		CharTrans[(uint8)'é'] = 'é';
-		CharTrans[(uint8)'É'] = 'é';
-		CharTrans[(uint8)'ë'] = 'ë';
-		CharTrans[(uint8)'Ë'] = 'ë';
-		CharTrans[(uint8)'ê'] = 'ê';
-		CharTrans[(uint8)'Ê'] = 'ê';
-		CharTrans[(uint8)'ì'] = 'ì';
-		CharTrans[(uint8)'Ì'] = 'ì';
-		CharTrans[(uint8)'í'] = 'í';
-		CharTrans[(uint8)'Í'] = 'í';
-		CharTrans[(uint8)'ï'] = 'ï';
-		CharTrans[(uint8)'Ï'] = 'ï';
-		CharTrans[(uint8)'î'] = 'î';
-		CharTrans[(uint8)'Î'] = 'î';
-		CharTrans[(uint8)'ò'] = 'ò';
-		CharTrans[(uint8)'Ò'] = 'ò';
-		CharTrans[(uint8)'ó'] = 'ó';
-		CharTrans[(uint8)'Ó'] = 'ó';
-		CharTrans[(uint8)'ö'] = 'ö';
-		CharTrans[(uint8)'Ö'] = 'ö';
-		CharTrans[(uint8)'ô'] = 'ô';
-		CharTrans[(uint8)'Ô'] = 'ô';
-		CharTrans[(uint8)'ù'] = 'ù';
-		CharTrans[(uint8)'Ù'] = 'ù';
-		CharTrans[(uint8)'ú'] = 'ú';
-		CharTrans[(uint8)'Ú'] = 'ú';
-		CharTrans[(uint8)'ü'] = 'ü';
-		CharTrans[(uint8)'Ü'] = 'ü';
-		CharTrans[(uint8)'û'] = 'û';
-		CharTrans[(uint8)'Û'] = 'û';
-		CharTrans[(uint8)'ñ'] = 'ñ';
-		CharTrans[(uint8)'Ñ'] = 'ñ';
-	}
+	e = 86;
+	CharTrans[(uint8)'à'] = e;
+	CharTrans[(uint8)'À'] = e++;
+	CharTrans[(uint8)'á'] = e;
+	CharTrans[(uint8)'Á'] = e++;
+	CharTrans[(uint8)'ä'] = e;
+	CharTrans[(uint8)'Ä'] = e++;
+	CharTrans[(uint8)'â'] = e;
+	CharTrans[(uint8)'Â'] = e++;
+	CharTrans[(uint8)'è'] = e;
+	CharTrans[(uint8)'È'] = e++;
+	CharTrans[(uint8)'é'] = e;
+	CharTrans[(uint8)'É'] = e++;
+	CharTrans[(uint8)'ë'] = e;
+	CharTrans[(uint8)'Ë'] = e++;
+	CharTrans[(uint8)'ê'] = e;
+	CharTrans[(uint8)'Ê'] = e++;
+	CharTrans[(uint8)'ì'] = e;
+	CharTrans[(uint8)'Ì'] = e++;
+	CharTrans[(uint8)'í'] = e;
+	CharTrans[(uint8)'Í'] = e++;
+	CharTrans[(uint8)'ï'] = e;
+	CharTrans[(uint8)'Ï'] = e++;
+	CharTrans[(uint8)'î'] = e;
+	CharTrans[(uint8)'Î'] = e++;
+	CharTrans[(uint8)'ò'] = e;
+	CharTrans[(uint8)'Ò'] = e++;
+	CharTrans[(uint8)'ó'] = e;
+	CharTrans[(uint8)'Ó'] = e++;
+	CharTrans[(uint8)'ö'] = e;
+	CharTrans[(uint8)'Ö'] = e++;
+	CharTrans[(uint8)'ô'] = e;
+	CharTrans[(uint8)'Ô'] = e++;
+	CharTrans[(uint8)'ù'] = e;
+	CharTrans[(uint8)'Ù'] = e++;
+	CharTrans[(uint8)'ú'] = e;
+	CharTrans[(uint8)'Ú'] = e++;
+	CharTrans[(uint8)'ü'] = e;
+	CharTrans[(uint8)'Ü'] = e++;
+	CharTrans[(uint8)'û'] = e;
+	CharTrans[(uint8)'Û'] = e++;
+	CharTrans[(uint8)'ñ'] = e;
+	CharTrans[(uint8)'Ñ'] = e++;
 
 	for( col = 0 ; col < MAXFONTCOLOURS ; col++ )
 	{

@@ -65,7 +65,6 @@ extern "C" {
 	extern BOOL MouseExclusive;
 	extern LONGLONG  LargeTime;
 	extern LONGLONG  LastTime;
-	extern void InitPolyText( void );
 	extern BOOL InitDInput(void);
 	extern char * LogFilename;
 	extern BOOL bFullscreen;
@@ -93,15 +92,12 @@ extern "C" {
 	extern	int		TextureMemory;
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
-	BOOL	TripleBuffer;
-	extern	BOOL	PolygonText;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
 //	extern BOOL CanDoStrechBlt;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
-	extern BOOL PreventFlips;
 	extern	BOOL DS;
 	extern BOOL SpaceOrbSetup;
 	extern BOOL NoCompoundSfxBuffer;
@@ -664,10 +660,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// because InitDInput will wipe the joystick settings
 	GetDefaultPilot();
 
-	// wtf is this ?
-	// polygon based text.. (Not blitted from what I know) 
-	InitPolyText();
-
 // this is where it starts to take so long cause it scans directory for dynamic sound files...
 
 	// start the title scene
@@ -730,9 +722,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoSFX					= FALSE; // turns off sound
 	TextureMemory			= 0;
 	MipMap					= TRUE;
-	TripleBuffer			= FALSE;
 	NoTextureScaling		= FALSE;
-	PolygonText				= FALSE;
 	DS						= FALSE;
 	Wine					= FALSE;
 	NoCursorClip			= FALSE;
@@ -820,12 +810,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
 			NoSFX = TRUE;
         }
-
-		// use polygon text instead of blitting
-		else if (!_stricmp(option, "PolyText"))
-		{
-			PolygonText = TRUE;
-        }
 		
 		// jump to the host screen
 		else if ( !_stricmp( option, "QuickHost" ) ) 
@@ -880,13 +864,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if (!_stricmp(option, "NoMipMap"))
 		{
 			MipMap = FALSE;
-        }
-
-		// create a middle buffer (2nd backbuffer) (only in fullscreen mode)
-		// don't know what actually uses it yet...
-		else if (!_stricmp(option, "TripleBuffer")) 
-		{
-			TripleBuffer = TRUE;
         }
 
 		// supposedly to set wire mode for mxv's...
@@ -1138,7 +1115,7 @@ static BOOL RenderLoop()
     // Blt or flip the back buffer to the front buffer
 	if( !myglobs.bQuit )
 	{
-		if ((	! PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	) && ! PreventFlips	)
+		if ((!PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	))
 		{
 			// this is the actual call to render a frame...
 			if (!FlipBuffers())

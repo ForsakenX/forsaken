@@ -28,8 +28,6 @@ BOOL Wine = FALSE;
 extern void SetInputAcquired( BOOL );
 extern void SetCursorClip( BOOL );
 extern BOOL	DrawPanel;
-extern BOOL	DrawCrosshair;
-extern uint16 PanelHeight;
 extern void ProcessTextItems (void);
 extern BOOL cursor_clipped;
 extern int ignore_mouse_input;

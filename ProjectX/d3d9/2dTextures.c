@@ -28,8 +28,6 @@
 	extern	TLOADHEADER	Tloadheader;
 	extern	int16	ModeCase;
 	extern	BOOL	Is3Dfx;
-	extern	BOOL	bPolyText;
-	extern	BOOL	PolyText[255];
 	extern	TRIGGERVAR	*	DecreaseTemperature;
 	extern	BOOL	CaptureTheFlag;
 	extern	BOOL	CTF;
@@ -347,11 +345,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 		Frm_Info->NumBoxes = Num_Boxes;
 	}
 
-	if(stricmp(Filename, "data//offsets//hud.off"))
-	{
-		return( Frm_Info );
-	}
-
 	return( Frm_Info );
 }
 
@@ -371,15 +364,8 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 
 	EnableRelevantOffFiles( FileInfo );
 
-	if( bPolyText )
-	{
-		strcpy( &FontFile[ 0 ], Font512File );
-	}
-	else
-	{
-		FontFile[ 0 ] = 0;
-		Text512_Header = NULL;
-	}
+	// polytext is default now
+	strcpy( &FontFile[ 0 ], Font512File );
 
 	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
 	{
@@ -453,10 +439,7 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 		{
 			if ( strcmp(&FileInfo->Filename[ 0 ], &TitleFontFile[ 0 ] ) == 0 )
 			{
-				if ( !( bPolyText && PolyText[MyGameStatus] ) )
-					FileInfo->LoadTPages = DONTLOAD_TPAGES;
-				else
-					FileInfo->LoadTPages = LOAD_TPAGES;
+				FileInfo->LoadTPages = LOAD_TPAGES;
 			}
 
 			if ( ( !FileInfo->Filename[0] ) && (!( FileInfo->LoadTPages & LOAD_TPAGES_PLACEHOLDER ) ) )

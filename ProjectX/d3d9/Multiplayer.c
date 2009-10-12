@@ -68,7 +68,6 @@ extern BOOL	Panel;
 
 extern MENUITEM TeamGameHostMenuItem;
 extern BYTE	PreSynchupStatus;
-extern int CurrentLoadingStep;
 extern BOOL DemoShipInit[];
 extern	float NetUpdateInterval;
 extern	BOOL	BrightShips;
@@ -141,19 +140,15 @@ extern	BOOL AutoSelectConnection;
 extern	LONGLONG	Freq;
 extern  MENUSTATE MenuState;
 extern  char TeamCurrentScore[MAX_TEAMS][64];
-
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
-
-extern BOOL PreventFlips;
 extern	int		GameType;
 extern	uint16		Seed1;
 extern	uint16		Seed2;
 extern	uint16		CopyOfSeed1;
 extern	uint16		CopyOfSeed2;
 extern	BOOL		RandomPickups;
-extern	BOOL	PolygonText;
 extern	BOOL	NoSFX;
 
 /*
@@ -169,7 +164,6 @@ BOOL	Modem2Modem = FALSE;
 
 uint16	RandomStartPosModify = 0;							
 
-void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 void DrawFlatMenuItem( MENUITEM *Item );
 void GetLevelName( char *buf, int bufsize, int level );
 void InitDemoList( MENU * Menu );

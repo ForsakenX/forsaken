@@ -66,7 +66,7 @@ extern	BOOL		PickupLightDetail;
 
 extern	BYTE		MyGameStatus;
 
-void TestBlt();
+void DrawSimplePanel( void );
 void SetCursorClip( BOOL );
 void ReallyShowCursor( BOOL );
 void EnablePrimaryLights( void );

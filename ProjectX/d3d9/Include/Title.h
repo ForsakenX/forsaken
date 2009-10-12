@@ -497,10 +497,7 @@ MENU *LastMenu;
 
 //	Function Prototypes
 
-BOOL
-InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView*/ ); // bjd
-void InitTitleFont(void);
+BOOL InitTitle();
 void ReleaseTitle(void);
 BOOL DisplayTitle(void);
 

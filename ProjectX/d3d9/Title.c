@@ -179,7 +179,6 @@ extern BOOL LockOutWindows;
 extern SLIDER BikerSpeechSlider;
 extern int16 Lives;
 extern BYTE	GameStatus[];	// Game Status for every Ship...
-extern BOOL PreventFlips;
 extern BOOL bSoundEnabled;
 extern BOOL ShowTrigZones;
 extern BOOL ShowEFZones;
@@ -207,7 +206,6 @@ extern int16 NumKeysToProcess;
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
 extern BOOL	Is3Dfx;
-extern BOOL	PolyText[255];
 extern float VduScaleX, VduScaleY;
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY   			Polys[MAXPOLYS];
@@ -252,10 +250,6 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-extern	LPDIRECT3DSURFACE9     lpFontSurface;
-//bjd extern	DDCOLORKEY				ddcolorkey;
-LPDIRECT3DSURFACE9	lpDDSTitleFont;
-//bjd extern	LPDIRECT3DMATERIAL lpBmat;		// a Material for the Background clearing	
 extern	int16	ModeCase;
 extern	int16	ModesX[8];
 extern	int16	ModesY[8];
@@ -283,7 +277,6 @@ extern	float	LastDistance[];
 extern	MXLOADHEADER ModelHeaders[];
 extern	MODELNAME	TitleModelNames[]; 
 extern	MODELNAME	InterLevelModelNames[];
-extern	BOOL	bPolyText;
 extern	char *PrimaryDescription[];
 extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
@@ -3670,21 +3663,9 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
 #endif
 
-	InitFont(FALSE);
-
-	// init vdu font for blitting if used...
-	if(!bPolyText)
-		InitTitleFont();
+	InitFont();
 
 	return TRUE;
-}
-
-void InitTitleFont(void)
-{
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f512X384.bmp", FSColourKeyBlack );
-	else
-		lpDDSTitleFont = FSLoadBitmap( "data\\pictures\\f320X200.bmp", FSColourKeyBlack );
 }
 
 /*===================================================================
@@ -3696,20 +3677,6 @@ void
 ReleaseTitle(void)
 {
    	int i;
-	
-	// only release font if not showing loading bar...
-	if ( !PreventFlips )
-		if ( lpFontSurface )
-		{
-		 //ReleaseDDSurf(lpFontSurface);
-		 lpFontSurface = NULL;
-		}
-
-	if(!bPolyText && lpDDSTitleFont)
-	{
-		//ReleaseDDSurf(lpDDSTitleFont);
-	}
-
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
 	{
 		StopSfx( TitleLoopId[ i ] );
@@ -13672,11 +13639,10 @@ BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 	}
 
 	xmin -= (TEXTINFO_TextSpace / 2.0F);
-	if (bPolyText && PolyText[MyGameStatus])
+
+	TempPoly = FindFreeScrPoly();					
+	if( TempPoly != (uint16 ) -1 )
 	{
-		TempPoly = FindFreeScrPoly();					
-		if( TempPoly != (uint16 ) -1 )
-		{
 					   	
 		ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
 		ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
@@ -13694,14 +13660,10 @@ BOOL DrawTextEditCursor( TEXTINFO *TextInfo, int font )
 					
 		AddScrPolyToTPage( TempPoly, GetTPage( *ScrPolys[ TempPoly ].Frm_Info, 0 ) );
 
-		}
-			else
-				return FALSE;
-	}else
-	{
-		// TO DO!!!
-		/****** fill in for blitted cursor ******/
 	}
+	else
+		return FALSE;
+
 	return TRUE;
 }
  
@@ -13808,84 +13770,52 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 			break;
 		}
 
-		if (bPolyText && PolyText[MyGameStatus])
+		TempPoly = FindFreeScrPoly();					
+		if( TempPoly != (uint16 ) -1 )
 		{
-			TempPoly = FindFreeScrPoly();					
-			if( TempPoly != (uint16 ) -1 )
+					   	
+			ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
+			ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
+
+			ScrPolys[TempPoly].Pos.x = xpos;			  
+			ScrPolys[TempPoly].Pos.y = ypos;
+			if (TextInfo->flags & TEXTFLAG_NotImplemented)
 			{
-						   	
-				ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
-				ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
-
-				ScrPolys[TempPoly].Pos.x = xpos;			  
-				ScrPolys[TempPoly].Pos.y = ypos;
-				if (TextInfo->flags & TEXTFLAG_NotImplemented)
-				{
-					ScrPolys[TempPoly].R = 100;					
-					ScrPolys[TempPoly].G = 100;
-					ScrPolys[TempPoly].B = 100;				  
-				}
-				else
-				{
-					ScrPolys[TempPoly].R = 255;					
-					ScrPolys[TempPoly].G = 255;					
-					ScrPolys[TempPoly].B = 255;				  
-				}
-
-				ScrPolys[TempPoly].Trans = 255;				
-				ScrPolys[TempPoly].Xscale = VduScaleX;				
-				ScrPolys[TempPoly].Yscale = VduScaleY;			  
-				switch (pos)
-				{
-					case -1:
-						ScrPolys[TempPoly].Frame = TextLookup[font][16];
-						break;
-					case -2:
-						ScrPolys[TempPoly].Frame = TextLookup[font]['*'];
-						ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
-						break;
-					default:
-						ScrPolys[TempPoly].Frame = TextLookup[font][TextInfo->text[pos]];
-				}
-									
-				ScrPolys[TempPoly].Frm_Info = &Title_Fonts_Header;
-					
-				AddScrPolyToTPage( TempPoly, GetTPage( *ScrPolys[ TempPoly ].Frm_Info, 0 ) );
-
+				ScrPolys[TempPoly].R = 100;					
+				ScrPolys[TempPoly].G = 100;
+				ScrPolys[TempPoly].B = 100;				  
 			}
 			else
-				return FALSE;
-		}else
-		{
-			switch (pos)
 			{
-			case -1:
-				Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][16]) );
-				break;
-			case -2:
-				Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font]['*']) );
-				break;
-			default:
-				Bit_Ptr = ( Title_Fonts_Header->Bit_Info + (int16)(TextLookup[font][TextInfo->text[pos]]) );
+				ScrPolys[TempPoly].R = 255;					
+				ScrPolys[TempPoly].G = 255;					
+				ScrPolys[TempPoly].B = 255;				  
 			}
 
-			Off_Ptr = ( Title_Fonts_Header->Off_Info + Bit_Ptr->startbit );
-			Box_Ptr = ( Title_Fonts_Header->Box_Info + ( Off_Ptr->box & 0x0fff ) );
+			ScrPolys[TempPoly].Trans = 255;				
+			ScrPolys[TempPoly].Xscale = VduScaleX;				
+			ScrPolys[TempPoly].Yscale = VduScaleY;			  
+			switch (pos)
+			{
+				case -1:
+					ScrPolys[TempPoly].Frame = TextLookup[font][16];
+					break;
+				case -2:
+					ScrPolys[TempPoly].Frame = TextLookup[font]['*'];
+					ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
+					break;
+				default:
+					ScrPolys[TempPoly].Frame = TextLookup[font][TextInfo->text[pos]];
+			}
+								
+			ScrPolys[TempPoly].Frm_Info = &Title_Fonts_Header;
+				
+			AddScrPolyToTPage( TempPoly, GetTPage( *ScrPolys[ TempPoly ].Frm_Info, 0 ) );
 
-			src.top = (long)(Box_Ptr->v1 * 256.0F);
-			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
-			src.left = (long)(Box_Ptr->u1 * 256.0F);
-			src.right = (long)(Box_Ptr->u2 * 256.0F);
-
-			dest.top = (long)ypos - (long)((float)Box_Ptr->ysize * VduScaleY);
-			dest.bottom = (long)ypos;
-			dest.left = (long)xpos;
-			dest.right = (long)xpos + (long)((float)Box_Ptr->xsize * VduScaleX);
-
-			destp.x = dest.left;
-			destp.y = dest.top;
-			
-			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
+		}
+		else
+		{
+			return FALSE;
 		}
 	}
 
@@ -13917,51 +13847,29 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 
 	for (i = 0; i < 3; i++)
 	{
-		if (bPolyText && PolyText[MyGameStatus])
+		TempPoly = FindFreeScrPoly();					
+		if( TempPoly != (uint16 ) -1 )
 		{
-			TempPoly = FindFreeScrPoly();					
-			if( TempPoly != (uint16 ) -1 )
-			{
-							
-				ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
-				ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
+			ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
+			ScrPolys[TempPoly].Flags = SCRFLAG_Nothing;
 
-				ScrPolys[TempPoly].Pos.x = xpos;			  
-				ScrPolys[TempPoly].Pos.y = ypos;
-				ScrPolys[TempPoly].R = 255;					
-				ScrPolys[TempPoly].G = 255;					
-				ScrPolys[TempPoly].B = 255;				  
-				ScrPolys[TempPoly].Trans = 255;				
-				ScrPolys[TempPoly].Xscale = VduScaleX;				
-				ScrPolys[TempPoly].Yscale = VduScaleY;			  
-				ScrPolys[TempPoly].Frame = TextLookup[font]['.'];
-				ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
-				ScrPolys[TempPoly].Frm_Info = &Title_Fonts_Header;
-				AddScrPolyToTPage( TempPoly, GetTPage( *ScrPolys[ TempPoly ].Frm_Info, 0 ) );
-
-			}
-			else
-			{
-				Msg("Unable to allocate screen poly\n");
-				exit(1);
-			}
-		}else
+			ScrPolys[TempPoly].Pos.x = xpos;			  
+			ScrPolys[TempPoly].Pos.y = ypos;
+			ScrPolys[TempPoly].R = 255;					
+			ScrPolys[TempPoly].G = 255;					
+			ScrPolys[TempPoly].B = 255;				  
+			ScrPolys[TempPoly].Trans = 255;				
+			ScrPolys[TempPoly].Xscale = VduScaleX;				
+			ScrPolys[TempPoly].Yscale = VduScaleY;			  
+			ScrPolys[TempPoly].Frame = TextLookup[font]['.'];
+			ScrPolys[TempPoly].Type = SCRTYPE_LastAFrame;
+			ScrPolys[TempPoly].Frm_Info = &Title_Fonts_Header;
+			AddScrPolyToTPage( TempPoly, GetTPage( *ScrPolys[ TempPoly ].Frm_Info, 0 ) );
+		}
+		else
 		{
-
-			src.top = (long)(Box_Ptr->v1 * 256.0F);
-			src.bottom = (long)(Box_Ptr->v2 * 256.0F);
-			src.left = (long)(Box_Ptr->u1 * 256.0F);
-			src.right = (long)(Box_Ptr->u2 * 256.0F);
-			dest.top = (unsigned long)ypos - Box_Ptr->ysize * (long)VduScaleY;
-			dest.bottom = (unsigned long)ypos;
-			dest.left = (unsigned long)xpos;
-			dest.right = (unsigned long)xpos + Box_Ptr->xsize * (long)VduScaleX;
-
-			destp.x = dest.left;
-			destp.y = dest.top;
-			
-			FSBlit( lpDDSTitleFont, FSBackBuffer, &src, &destp );
-
+			Msg("Unable to allocate screen poly\n");
+			exit(1);
 		}
 		xpos += width + TEXTINFO_TextSpace;
 	}
@@ -14302,7 +14210,7 @@ void ProcessTextItems (void)
 	if (
 		VDU_Ready &&
 		((CameraStatus == CAMERA_AtRightVDU) || (CameraStatus == CAMERA_AtLeftVDU)) &&
-		((LastMenuItem != CurrentMenuItem) || !(bPolyText && PolyText[MyGameStatus]))
+		((LastMenuItem != CurrentMenuItem))
 	)
 	{
 		LastMenuItem = CurrentMenuItem;

@@ -72,7 +72,6 @@ extern	BOOL	UsedStippledAlpha;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 extern	BOOL	DrawPanel;
-extern	BOOL	DrawSimplePanel;
 extern	GLOBALSHIP	Ships[MAX_PLAYERS];
 extern	float	framelag;
 

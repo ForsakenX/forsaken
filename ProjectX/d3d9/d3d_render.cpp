@@ -50,7 +50,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp)
 	}
 
 	d3dpp.BackBufferCount = 1;
-	d3dpp.BackBufferFormat = D3DFMT_A8R8G8B8; // 32 bit alpha channel
+	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8; //D3DFMT_A8R8G8B8; // 32 bit alpha channel
 	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
 	d3dpp.EnableAutoDepthStencil = true;
@@ -513,7 +513,7 @@ BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, fl
 	{
 		return FALSE;
 	}
-	else return TRUE;
+	return TRUE;
 }
 
 BOOL FSClearBlack(void)
@@ -522,7 +522,7 @@ BOOL FSClearBlack(void)
 	{
 		return FALSE;
 	}
-	else return TRUE;
+	return TRUE;
 }
 
 HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort)
@@ -932,37 +932,6 @@ LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname, D3DCOLOR m_ColourKey )
         DebugPrintf("FSLoadBitmap: D3DXLoadSurfaceFromFile failed\n");
 	}
     return pdds;
-}
-
-// pass FSBackBuffer or NULL for "to" argument to point to back buffer
-void FSBlit(LPDIRECT3DSURFACE9 from, LPDIRECT3DSURFACE9 to, RECT * src, POINT * dest )
-{
-	HRESULT hr;
-	if(!from)
-	{
-		DebugPrintf("FSBlit: !pdds\n");
-		return;
-	}
-	if(to)
-	{
-		d3dappi.lpD3DDevice->UpdateSurface(from, src, to, dest);
-	}
-	else
-	{
-		hr=d3dappi.lpD3DDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &to);
-		if(FAILED(hr))
-		{
-			DebugPrintf("FSBlit: GetBackBuffer failed\n");
-			return;
-		}
-		if(!to)
-		{
-			DebugPrintf("FSBlit: !pRenderSurface\n");
-			return;
-		}
-		d3dappi.lpD3DDevice->UpdateSurface(from, src, to, dest);
-		to->Release();
-	}
 }
 
 };

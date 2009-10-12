@@ -32,7 +32,6 @@
 /*===================================================================
 		Externals...	
 ===================================================================*/
-extern int CurrentLoadingStep;
 extern	BOOL	ShowPlaneRGB;
 extern	float	WhiteOut;
 extern D3DAppInfo* d3dapp; 
@@ -54,7 +53,6 @@ extern BOOL	BrightShips;
 
 extern	CAMERA	CurrentCamera;
 void PrintInitViewStatus( BYTE Status );
-void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
 
 /*===================================================================
 		Globals...	
@@ -1522,66 +1520,6 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 	}
 	return TRUE;
 }
-
-extern	int FontHeight;
-#ifdef NO_PRECALCULATED_CELL_COLOURS
-/*===================================================================
-	Procedure	:	Make all the Cell Ambient Colours..
-	Input		:	MLOADHEADER * Mloadheader
-	Output		:	nothing
-===================================================================*/
-void	CreateCellColours( MLOADHEADER * Mloadheader )
-{
-	uint16	group, total_groups;
-	uint16	execbuf;
-	VECTOR	Pos;
-
-	D3DCOLOR * ColourPnt;
-	uint16 * OrgVertexIndexPnt;
-	float	CellSize;
-	int		x,y,z;
-	int		num_of_cells = 0;
-	CellSize = 1.0F / Mloadheader->CellSize;
-	group = Mloadheader->num_groups;
-	total_groups = group;
-	while( group--)
-	{
-		DrawLoadingBox( CurrentLoadingStep, total_groups - group, total_groups );
-		//FSClearBlack();
-		PrintInitViewStatus( MyGameStatus );
-		Printuint16( group, 0,0,1);
-		execbuf = 0;//Mloadheader->Group[group].num_execbufs;
-//		while( execbuf--)
-		{
-			OrgVertexIndexPnt = Mloadheader->Group[group].vertex_index_pnt[execbuf];
-
-			num_of_cells += Mloadheader->Group[group].numofcells[execbuf];
-
-			ColourPnt = Mloadheader->Group[group].colour_cell_pnt[execbuf];
-
-			Pos.z = Mloadheader->Group[group].cell_origin[execbuf].z + ( CellSize * 0.5F );
-			for( z = 0 ; z < Mloadheader->Group[group].zcells[execbuf] ; z++ )
-			{
-				Pos.y = Mloadheader->Group[group].cell_origin[execbuf].y + ( CellSize * 0.5F );
-				for( y = 0 ; y < Mloadheader->Group[group].ycells[execbuf] ; y++ )
-				{	
-					Pos.x = Mloadheader->Group[group].cell_origin[execbuf].x + ( CellSize * 0.5F );
-					for( x = 0 ; x < Mloadheader->Group[group].xcells[execbuf] ; x++ )
-					{
-						*ColourPnt++ = WorkOutAverageLight( &Pos , Mloadheader , group , execbuf );
-						Pos.x += CellSize;
-					}
-					Pos.y += CellSize;
-
-				}
-				Pos.z += CellSize;
-			}
-		}
-	}
-	DebugPrintf( "There are %d Lightcells in this level\n",num_of_cells );
-	CurrentLoadingStep++;
-}
-#endif
 
 /*===================================================================
 	Procedure	:	Make all the Cell Ambient Colours..

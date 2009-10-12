@@ -146,9 +146,6 @@ extern	float	PickupMessageCount;
 extern	int16	PickupMessageIndex;
 extern	BOOL	RemoteCameraActive;
 extern	uint16	RandomStartPosModify;
-
-BOOL	ResizeViewport( float scale );
-extern	float	CurrentViewportScale;
 BOOL	FullScreenViewport();
 extern	BOOL	DrawPanel;
 extern	BOOL	OldDrawPanel;

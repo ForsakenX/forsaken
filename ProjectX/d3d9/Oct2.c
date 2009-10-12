@@ -1,8 +1,6 @@
 
 #define RENDER_USING_FACES
 
-//#define REFLECTION
-
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
@@ -177,7 +175,6 @@ extern size_t MaxSBufferMemUsedSW;
 extern uint32 CurrentBikeCompSpeech;
 #endif
 
-BOOL PreventFlips = FALSE;
 BOOL Cheated = FALSE;
 
 void InitSoundInfo( MLOADHEADER * Mloadheader );
@@ -188,7 +185,6 @@ void InitShipSpeeds( void );
 #define SAVESCREEN_3DFX
 
 uint32        AnimOncePerFrame = 0;         // used for stuff that is displayed more than once in a single frame..
-int CurrentLoadingStep = 0;
 
 extern BOOL bSoundEnabled;
 
@@ -205,10 +201,6 @@ extern  BOOL ResetKillsPerLevel;
 extern int  outside_map;
 
 extern  int16 NextNewModel;
-
-BOOL  bPolyText = FALSE;
-BOOL  PolygonText = FALSE;
-extern  BOOL  PolyText[255];
 extern MENUSTATE MenuState;
 extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS]; 
 extern  char * LogFilename;
@@ -236,12 +228,10 @@ char *CurrentLevelsList;
 BOOL HideCursor = FALSE;
 
 float Old_LevelTime_Float;
-void InitFontTransTable( BOOL BlitText );
+void InitFontTransTable();
 
 void InitModeCase(void);
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
-void InitPolyText( void );
-
 void DebugState( const char * str );
 
 
@@ -497,7 +487,7 @@ extern  BOOL  quitting;
 extern  int16 MakeColourMode;
 extern  BOOL  ShowBoundingBoxes;
 
-BOOL InitViewport( float scale );
+BOOL InitViewport( void );
 
 
 BYTE  InitView_MyGameStatus;
@@ -530,10 +520,8 @@ BOOL VduFinished( MENU *Menu );
 BOOL WriteMessage(const char *format, ...); // printf-a-like for bottom line of window
 
 BOOL ScoreDisplay();
-BOOL FreeScoreDisplay();
 BOOL InitScoreDisplay();
 BOOL StatsDisplay();
-BOOL FreeStatsDisplay();
 BOOL InitStatsDisplay();
 BOOL ScoreDisplayOrig(void);
 
@@ -555,8 +543,7 @@ int CrystalsFound = 0;
 extern  int16   NumInitEnemies;
 extern  int16   NumKilledEnemies;
 
-BOOL  ResizeViewport( float scale );
-float CurrentViewportScale;
+BOOL  ResizeViewport( void );
 BOOL  FullScreenViewport();
 
 BOOL InitDInput(void);
@@ -564,8 +551,7 @@ BOOL TermDInput( void );
 BOOL  ClearBuffers( void );
 BOOL  ClearZBuffer( void );
 
-BOOL RenderCurrentCamera( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
-void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
+BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView );
 void FreeSfxHolder( int index ) ;
 
 void  PlotSimplePanel( void );
@@ -582,14 +568,11 @@ float hfov = START_FOV;
 float chosen_fov = START_FOV;
 float normal_fov = START_FOV;
 float screen_aspect_ratio = DEFAULT_SCREEN_ASPECT_RATIO;
-uint16 PanelHeight = 48;
 
 BOOL  DrawPanel = FALSE;
-BOOL  DrawSimplePanel = TRUE;
 BOOL  ReMakeSimplePanel = TRUE;
 
 BOOL  OldDrawPanel = TRUE;
-BOOL  DrawCrosshair = TRUE;
 BOOL  Panel = TRUE;
 
 BOOL  UsedStippledAlpha = FALSE;
@@ -613,8 +596,6 @@ extern int FontSourceHeight;
 
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
-
-void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 Surface ,  char * FileName , LPDIRECT3DSURFACE9 DestSurface);
 
 void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
@@ -960,13 +941,6 @@ void FillInPanelPositions()
 /*===================================================================
     Off Screen Sufaces...Used to Blit to screen...
 ===================================================================*/
-LPDIRECT3DSURFACE9      lpFontSurface = NULL;       // Font Bitmap
-LPDIRECT3DSURFACE9     lpDDSOne;					// crosshair
-LPDIRECT3DSURFACE9     lpDDSThree;					// Panel
-LPDIRECT3DSURFACE9     lpDDSFour;					// Panel Contents
-LPDIRECT3DSURFACE9     lpDDSOverlay;				// Panel
-//DDCOLORKEY ddcolorkey;
-
 D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
 
 MLOADHEADER Mloadheader;
@@ -1175,7 +1149,7 @@ void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval )
 }
 
 BOOL
-ResizeViewport( float scale )
+ResizeViewport( void )
 {
 	HRESULT rval;
 	int left, top;
@@ -1183,18 +1157,14 @@ ResizeViewport( float scale )
 	int maxwidth, maxheight;
 	BOOL  NewDrawPanel;
 	BOOL  NewDrawSimplePanel;
+	float scale = 1.0F;
   
 	InsideResizeViewport = TRUE;
 
-	scale = 1.0F;
-
-  /*
+	/*
      * Setup the viewport for specified viewing area
      */
-//   memset(&viewport, 0, sizeof(D3DVIEWPORT));
-//    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-//    if (rval != D3D_OK) {
+
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
@@ -1203,25 +1173,10 @@ ResizeViewport( float scale )
     }
 	maxwidth = d3dapp->szClient.cx;
 
-
-//  DrawSimplePanel = FALSE;
-	if( scale < 1.0F )
-	{
-		NewDrawSimplePanel = TRUE;
-	}
-	if( scale >= 1.0F )
-	{
-		NewDrawSimplePanel = FALSE;
-	}
+	NewDrawSimplePanel = FALSE;
   
-	if( NewDrawSimplePanel )
-	{
-		maxheight = d3dapp->szClient.cy - PanelVisibleY[ModeCase];
-	}
-	else
-	{
-		maxheight = d3dapp->szClient.cy;
-	}
+	maxheight = d3dapp->szClient.cy;
+
 	if ( scale < 1.01F )
 	{
 		width = (int) floor( maxwidth * scale );
@@ -1237,51 +1192,33 @@ ResizeViewport( float scale )
 		left = ( ( maxwidth - width ) >> 1 ) & ~1;
 		top = ( ( maxheight - height ) >> 1 ) & ~1;
 	}
-  else
-  {
-	width = maxwidth;
-	height = maxheight;
-	if ( scale > 1.11F )
-	{
-		NewDrawPanel = TRUE;
-		scale = 1.2F;
-	}
 	else
 	{
-		NewDrawPanel = FALSE;
+		width = maxwidth;
+		height = maxheight;
+		if ( scale > 1.11F )
+		{
+			NewDrawPanel = TRUE;
+			scale = 1.2F;
+		}
+		else
+		{
+			NewDrawPanel = FALSE;
+		}
+		left = 0;
+		top = 0;
 	}
-	left = 0;
-	top = 0;
-  }
-  CurrentViewportScale = scale;
 
-  // This disables the 3d panel...
-  NewDrawPanel = DrawPanel;
+	// This disables the 3d panel...
+	NewDrawPanel = DrawPanel;
 
-    
-  if( (NewDrawPanel != DrawPanel) || (NewDrawSimplePanel != DrawSimplePanel) )
-  {
-//    ReleaseView();
-//    DrawPanel = NewDrawPanel;
-//    DrawSimplePanel = NewDrawSimplePanel;
-//    InitView();
-  }
-  
-  
 	viewport.X = left;
 	viewport.Y = top;
-    viewport.Width = width;
-    viewport.Height = height;
-    viewport.ScaleX = viewport.Width / (float)2.0;
-    viewport.ScaleY = viewport.Height / (float)2.0;
-/*  bjd
-    viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
-                                       D3DVAL(2 * viewport.dvScaleX));
-    viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
-                                       D3DVAL(2 * viewport.dvScaleY));
-*/
-//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
-//    if (rval != D3D_OK) {
+	viewport.Width = width;
+	viewport.Height = height;
+	viewport.ScaleX = viewport.Width / (float)2.0;
+	viewport.ScaleY = viewport.Height / (float)2.0;
+
 	if (FAILED(FSSetViewPort(&viewport)))
 	{
 #ifdef DEBUG_VIEWPORT
@@ -1291,15 +1228,15 @@ ResizeViewport( float scale )
 #endif
         return FALSE;
     }
-  SetFOV( hfov );
+  
+	SetFOV( hfov );
 
-  // clear viewport
 	FSClearBlack();
 
-  return TRUE;
+	return TRUE;
 }
-BOOL
-FullScreenViewport()
+
+BOOL FullScreenViewport()
 {
 	HRESULT rval;
 	int left, top;
@@ -1715,7 +1652,7 @@ BOOL SetMatrixViewPort( void )
 
     if( InsideResizeViewport == FALSE )
     {
-		InitViewport( 1.1F );
+		InitViewport();
     }
 	else
 	{
@@ -1847,213 +1784,117 @@ void  GetHardwareCaps( void )
 
 float HealthCount = 0.0F;
 int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
-void TestBlt()
+void DrawSimplePanel()
 {
-#if 0
-    RECT    src;
-    HRESULT ddrval;
-  RECT    dest;
-  DDBLTFX fx;
-  int x;
-  int y;
-#endif
-  int energy;
+	int energy;
 
-//  while( 1 )
-  {
-    if( DrawCrosshair && WhoIAm == Current_Camera_View)
+    if( WhoIAm == Current_Camera_View )
     {
-      if( bPolyText && PolyText[MyGameStatus])
-      {
-        // Add Crosshair Polygon..
-        AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
+		// Add Crosshair Polygon..
+		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
 
-        // Blt trojax PowerLevel / LaserTemperature
-        energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
-        if( !energy )
-        {
-          energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
-          if( energy > 8 )
-			  energy = 8;
-        }
-        if( energy )
-        {
-          AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
-        }
+		// Blt trojax PowerLevel / LaserTemperature
+		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
+		if( !energy )
+		{
+			energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
+			if( energy > 8 )
+				energy = 8;
+		}
+		if( energy )
+		{
+			AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
+		}
 
 		// nitro bar
-        if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
-        {
-          AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
-                      (float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-                      64, 255, 64, 255 );
-        }
-      }
-	  else
-	  {
-        //  Blt Crosshair
-        GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
+		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
+		{
+			AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
+			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, 64, 255, 64, 255 );
+		}
 
-        //  Blt Nitro...
-        if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
-        {
-          Printuint16( (uint16) NitroFuel , (d3dappi.szClient.cx>>1)-(1*FontWidth), (viewport.Y + (viewport.Height>>1))+8 , 2 );
-          GeneralBlt( 0 , 24 , (int)NitroFuel , 3  , (d3dappi.szClient.cx>>1)-(int)(NitroFuel*0.5F) , (viewport.Y + (viewport.Height>>1))-8 ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-        }
-        // Blt trojax PowerLevel / LaserTemperature
-        energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
-        if( !energy )
-        {
-          energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
-          if( energy > 8 ) energy = 8;
-        }
-        if( energy )
-        {
-          GeneralBlt( 0 , 24-energy , 4 , energy  , (viewport.X + (viewport.Width>>1))-16 , (viewport.Y + (viewport.Height>>1))+4-energy ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-        }
-      }
-
-      if( Ships[WhoIAm].Invul )
-      {
-        Print4x5Text( "I" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
-        Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
-      }
-      if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
-      {
-        Print4x5Text( "S" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
-        Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
-      }
-      if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
-      {
-        Print4x5Text( "C" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
-        Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
-      }
-
+		// character flags
+		if( Ships[WhoIAm].Invul )
+		{
+			Print4x5Text( "I" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
+		}
+		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
+		{
+			Print4x5Text( "S" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
+		}
+		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
+		{
+			Print4x5Text( "C" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
+		}
     }
     
-    if( Panel && !PlayDemo)
+    if( Panel && !PlayDemo )
     {
-      if( DrawSimplePanel )
-      {
-        PlotSimplePanel();
-      }
-	  else
-	  {
         if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
         {
           // Full Screen Minimum Stats...
 
-          if( bPolyText && PolyText[MyGameStatus])
-          {
-            // blt hull
-            AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
-            // blt shld
-            AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
-            // Blt Primary
-            AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
-            // Blt Secondary
-            AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
-            // Blt Power Pods
-            AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (d3dappi.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
-            // Blt Mine..
-            energy = (int) GetBestMine();
-            if( energy != 65535 )
-            {
-              AddScreenPolyText( (uint16)( energy + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
-              Printuint16( (uint16) SecondaryAmmo[energy] , d3dappi.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
-            }
+			// blt hull
+			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
+			// blt shld
+			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			// Blt Primary
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			// Blt Secondary
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			// Blt Power Pods
+			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (d3dappi.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			// Blt Mine..
+			energy = (int) GetBestMine();
+			if( energy != 65535 )
+			{
+				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
+				Printuint16( (uint16) SecondaryAmmo[energy] , d3dappi.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
+			}
 
+			// poly shld bar
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*2)-2) ,
+					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
+					(uint8)(63+(ShieldHit * (192/24) )), (uint8)(255-(ShieldHit * (192/24) )), 64, 255 );
 
-            
-            // poly shld bar
-            AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*2)-2) ,
-                        (float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-                        (uint8)(63+(ShieldHit * (192/24) )), (uint8)(255-(ShieldHit * (192/24) )), 64, 255 );
-            if( ShieldHit )
-              ShieldHit -=1;
-            
-            // poly hull bar
-            AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*1)-2) ,
-                        (float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-                        (uint8)(63+(HullHit * (192/24) )), (uint8)(255-(HullHit * (192/24) )), 64, 255 );
-            if( HullHit )
-              HullHit -=1;
-            
+			if( ShieldHit )
+				ShieldHit -=1;
 
-          }
-		  else
-		  {
-            // blt hull
-            DoFontBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight , FontWidth , d3dappi.szClient.cy-((FontHeight*1)+2) );
-            // blt shld
-            DoFontBlt( FontWidth*28 , 0 , FontWidth*4 , FontHeight , FontWidth , d3dappi.szClient.cy-((FontHeight*2)+4) );
-            // Blt Primary
-            DoFontBlt( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary , FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight , d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) , d3dappi.szClient.cy-((FontHeight*2)+4)  );
-            // Blt Secondary
-            DoFontBlt( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight , d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) , d3dappi.szClient.cy-((FontHeight*1)+2)  );
-            // Blt Power Pods
-            DoFontBlt( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight , (d3dappi.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , d3dappi.szClient.cy-((FontHeight*1)+2) );
-            // Blt Mine..
-            energy = (int) GetBestMine();
-            if( energy != 65535 )
-            {
-              DoFontBlt( FontWidth*16 , (FontHeight*6)+FontHeight*energy , FontWidth*SecondaryLengths[energy] , FontHeight , d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) , FontHeight  );
-              Printuint16( (uint16) SecondaryAmmo[energy] , d3dappi.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
-            }
-            // blt shld bar
-            if( ShieldHit == 0 )
-            {
-              GeneralBlt( 0 , 24 , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-            }
+			// poly hull bar
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*1)-2) ,
+					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
+					(uint8)(63+(HullHit * (192/24) )), (uint8)(255-(HullHit * (192/24) )), 64, 255 );
+
+			if( HullHit )
+				HullHit -=1;
+
+			// blt shield num
+			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
+
+			// blt hull num
+			if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
+				Printuint16( (uint16) 1 , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
+			else
+				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
+
+			// Blt Primary ammo
+			if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
+				energy =  (int) PyroliteAmmo;
 			else
 			{
-              ShieldHit -=1;
-              GeneralBlt( 0 , 24 + ((ShieldHit>>2)*8) , (int)(Ships[WhoIAm].Object.Shield * 0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*2)+3) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-            }
-            Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
-            // blt hull bar
-            if( HullHit == 0 )
-            {
-              GeneralBlt( 0 , 24 ,(int) (Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-            }
-			else
-			{
-              HullHit -=1;
-              GeneralBlt( 0 , 24 + ((HullHit>>2)*8) , (int)(Ships[WhoIAm].Object.Hull *0.25F) , 3  , FontWidth*10 , d3dappi.szClient.cy-((FontHeight*1)+1) ,
-                      lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-            }
-          }
+				if( Ships[WhoIAm].Primary == SUSS_GUN )
+					energy = (int) SussGunAmmo;
+				else
+					energy = (int) GeneralAmmo;
+			}
+			Printuint16( (uint16) energy , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
 
-          // blt shield num
-          Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
-          // blt hull num
-          if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
-            Printuint16( (uint16) 1 , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
-		  else
-            Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
-          // Blt Primary ammo
-          if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
-            energy =  (int) PyroliteAmmo;
-		  else
-		  {
-            if( Ships[WhoIAm].Primary == SUSS_GUN )
-              energy = (int) SussGunAmmo;
-			else
-              energy = (int) GeneralAmmo;
-          }
-          Printuint16( (uint16) energy , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
-          
-          // Blt Secondary ammo
-          Printuint16( (uint16) GetCurSecAmmo() , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
-          
+			// Blt Secondary ammo
+			Printuint16( (uint16) GetCurSecAmmo() , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
         }
-      }
     
       if( (NamesAreLegal != 0) || IsHost )
       {
@@ -2086,8 +1927,10 @@ void TestBlt()
 			// show who i am watching
 			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 4 );
 			// display cross-hair
-			GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
-				lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
+			AddScreenPolyText(
+					(uint16) 63 ,
+					(float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) ,
+					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
 				Print4x5Text( "Invulnerable" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
@@ -2117,7 +1960,6 @@ void TestBlt()
     }
     if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
       CenterPrint4x5Text( "Game Over" , (d3dappi.szClient.cy >> 1) - (FontHeight*2) , 2 );
-  }
 
 }
 
@@ -2227,11 +2069,9 @@ void ReleaseView(void)
     ReleaseRenderBufs();
     ReleasePolySort();
 #endif
-    FreeScoreDisplay();
     break;
 
   case STATUS_ViewingStats:
-    FreeStatsDisplay();
     break;
 
   default:
@@ -2264,30 +2104,6 @@ void ReleaseView(void)
     
     FreeTxtFile();
     FreeMsgFile();
-/* bjd
-    if( lpDDSOne != NULL ) {
-      ReleaseDDSurf(lpDDSOne);
-      lpDDSOne = NULL;
-    }
- 
-    if( lpFontSurface != NULL ) {
-      ReleaseDDSurf(lpFontSurface);
-      lpFontSurface = NULL;
-    }
-
-    if( !DrawPanel && DrawSimplePanel ) {
-      if( lpDDSThree != NULL ) {
-        ReleaseDDSurf(lpDDSThree);
-        lpFontSurface = NULL;
-      }
-      if( lpDDSFour != NULL ) {
-        ReleaseDDSurf(lpDDSFour);
-        lpFontSurface = NULL;
-      }
-    }
-*/
-//    RELEASE(lpBmat);
-
   }
 }
 //extern  uint16  BackgroundModel;
@@ -2500,7 +2316,6 @@ InitView( void )
 		InitView_MyGameStatus = MyGameStatus;
 
     MyGameStatus = STATUS_InitView_0;
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     FSClearBlack();
     CameraStatus = CAMERA_AtStart;  //prevents on screen menus from being suppressed
     break;
@@ -3469,133 +3284,6 @@ BOOL ChangeLevel( void )
 	return( TRUE );
 }
 
-// bjd - doesn't actually render anymore
-//     - this use to blit to the front buffer
-//     - flipping in d3d9 doesn't appear to support color value anymore either
-//     - this does although cause the loading status messages to appear so it's good to leave this enable for now
-// draw the loading bar that fills from left to right
-void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps )
-{
-  POINT destp;
-  RECT    dest, darkgreen, lightgreen;
-  float xmin, xmax, ymin, ymax, loaded, one_step;
-  int total_loading_steps = 11;
-  int BarXMin = 20;
-  int BarXMax = 180;
-  int BarYMin = 155;
-  int BarYMax = 160;
-  float BorderX, BorderY;
-
-  // if not in mission loading screen ( buffer flips disabled ), do not display loading status
-  if ( !PreventFlips )
-    return;
-
-//  BorderX = (float)floor(ModeScaleX[ModeCase]);
-//  BorderY = (float)floor(ModeScaleY[ModeCase]);
-  BorderX = 1.0F;
-  BorderY = 1.0F;
-
-  if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-  {
-    //coords for high res font...
-    darkgreen.left = 10;
-    darkgreen.right = 11;
-    darkgreen.top = 194;
-    darkgreen.bottom = 195;
-
-    lightgreen.left = 50;
-    lightgreen.right = 51;
-    lightgreen.top = 194;
-    lightgreen.bottom = 195;
-
-  }else
-  {
-    //coords for low res font...
-    darkgreen.left = 2;
-    darkgreen.right = 3;
-    darkgreen.top = 122;
-    darkgreen.bottom = 123;
-
-    lightgreen.left = 10;
-    lightgreen.right = 11;
-    lightgreen.top = 122;
-    lightgreen.bottom = 123;
-  }
-
-  if ( !BorderX)
-    BorderX = 1.0F;
-  if ( !BorderY)
-    BorderY = 1.0F;
-
-  xmin = (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase];
-  xmax = (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase];
-  ymin = (BarYMin + VDUoffsetY) * ModeScaleY[ModeCase];
-  ymax = (BarYMax + VDUoffsetY) * ModeScaleY[ModeCase];
-
-  loaded = (float)current_loading_step / (float)total_loading_steps;
-  xmax = ( ( xmax - xmin ) * loaded ) + xmin;
-
-  loaded = (float)current_substep / (float)total_substeps;
-
-  one_step = (float)( xmax - xmin ) / (float)total_loading_steps;
-  one_step *= loaded;
-  xmax += one_step;
-
-  // specify co-ordinates to plot to...
-  dest.left = (LONG)xmin;
-  dest.right = (LONG)xmax;
-  dest.top = (LONG)ymin;
-  dest.bottom = (LONG)ymax;
-
-  //DebugPrintf("blitted to l:%d r:%d t:%d b:%d\n", dest.left, dest.right, dest.top, dest.bottom );
-
-  destp.x = dest.left;
-  destp.y = dest.top;
-  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
-
-  // top...
-  dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
-  dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
-  dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  dest.bottom = (LONG)((BarYMin + VDUoffsetY) * ModeScaleY[ModeCase]);
-  
-  destp.x = dest.left;
-  destp.y = dest.top;
-  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
-
-  // bottom...
-  dest.left = (LONG) ( (BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]) ;
-  dest.right = (LONG)((BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]);
-  dest.top = (LONG)((BarYMax + VDUoffsetY) * ModeScaleY[ModeCase]);
-  dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  
-  destp.x = dest.left;
-  destp.y = dest.top;
-  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
-  
-  // left...
-  dest.left = (LONG) ( (BarXMin - BorderX + VDUoffsetX) * ModeScaleX[ModeCase]) ;
-  dest.right = (LONG)((BarXMin + VDUoffsetX) * ModeScaleX[ModeCase]);
-  dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  
-  destp.x = dest.left;
-  destp.y = dest.top;
-  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
-
-  // right...
-  dest.left = (LONG) ( (BarXMax + VDUoffsetX) * ModeScaleX[ModeCase]) ;
-  dest.right = (LONG)((BarXMax + BorderX + VDUoffsetX) * ModeScaleX[ModeCase]);
-  dest.top = (LONG)((BarYMin - BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  dest.bottom = (LONG)((BarYMax + BorderY + VDUoffsetY) * ModeScaleY[ModeCase]);
-  
-  destp.x = dest.left;
-  destp.y = dest.top;
-  FSBlit( lpFontSurface, FSBackBuffer, &dest, &destp );
-
-  FlipBuffers();
-}
-
 void GetLevelName( char *buf, int bufsize, int level )
 {
   FILE *f;
@@ -3715,10 +3403,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if ( !WaitFrames )
     {
       WaitFrames = 2;
-          PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
       StartASinglePlayerGame( NULL );
     }
     
@@ -3749,9 +3433,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if ( !WaitFrames )
     {
       WaitFrames = 2;
-      PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
       MyGameStatus = STATUS_Title;
       ReleaseView();
     }
@@ -3779,9 +3460,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if ( !WaitFrames )
     {
       WaitFrames = 2;
-      PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
       MyGameStatus = STATUS_StartingMultiplayer;
       GoToSynchup( NULL );
     }
@@ -3811,11 +3489,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       WaitFrames = 2;
       LastMenu = CurrentMenu;
       VduClear();
-      
-      PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
       MenuAbort();
       ReleaseView();
       LevelNum = -1;
@@ -3851,13 +3524,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       WaitFrames = 2;
       LastMenu = CurrentMenu;
       VduClear();
-      
       MenuAbort();
-
-      PreventFlips = TRUE;
-      CurrentLoadingStep = 1;
-      DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-
       MyGameStatus = PreSynchupStatus;
     }
 
@@ -3885,8 +3552,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   case STATUS_Normal:
     DebugState("STATUS_Normal\n");
-
-    PreventFlips = FALSE;
 
     if ( !CheatsDisabled )
       DisableCheats();
@@ -4160,14 +3825,14 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
       //DebugPrintf("STATUS_WaitingAfterScore setting MyGameStatus to STATUS_Normal\n");
       MyGameStatus = STATUS_Normal;
-      InitFontTransTable( !bPolyText );
+      InitFontTransTable();
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 
     }else{
       if( OverallGameStatus == STATUS_Normal )
       {
-        InitFontTransTable( !bPolyText );
+        InitFontTransTable();
 
         if( CountDownOn )
         {
@@ -4185,7 +3850,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   case STATUS_Joining:
 	DebugState("STATUS_Joining\n");
-    PreventFlips = FALSE;
     FSClearBlack();
 
     ReceiveGameMessages();
@@ -4318,8 +3982,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_PreStartingMultiplayerSynch:
 	DebugState("STATUS_PreStartingMultiplayerSynch\n");
 
-    PreventFlips = FALSE;
-
     ReceiveGameMessages();
     if( IMustQuit )
     {
@@ -4344,7 +4006,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case  STATUS_StartingMultiplayerSynch:
 	DebugState("STATUS_StartingMultiplayerSynch\n");
 
-    PreventFlips = FALSE;
     InitFontTransTable( TRUE );
 
     ReceiveGameMessages();
@@ -4413,7 +4074,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
 	  // $$$
       NextworkOldBikeNum = -1;
-      InitFontTransTable( !bPolyText );
+      InitFontTransTable();
 
     }
 	else
@@ -4426,7 +4087,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
         // $$$
         NextworkOldBikeNum = -1;
-        InitFontTransTable( !bPolyText );
+        InitFontTransTable();
       }
     }
     break;
@@ -4559,7 +4220,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
     FSClearBlack();
 
     MenuFrozen = FALSE; // ensure that menus are OK to use once in game
@@ -4577,7 +4237,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       return FALSE;
     }
     
-    InitFont(FALSE);
+    InitFont();
 
     MyGameStatus = STATUS_InitView_1;
     PrintInitViewStatus( MyGameStatus );
@@ -4594,23 +4254,10 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
     FSClearBlack();
 
     ReceiveGameMessages();
-
-    // Create the offscreen surface, by loading our bitmap
-	lpDDSOne = FSLoadBitmap( "data\\pictures\\panel.bmp", FSColourKeyBlack );
-
-    // Create the offscreen surface, by loading our bitmap.
-    if( ( ModeCase != -1 ) && ( DrawPanel == FALSE ) && DrawSimplePanel )
-    {
-		lpDDSThree = FSLoadBitmap( &PanelNames[ModeCase][0], RGB_MAKE( 255 , 0 , 255 ) );
-		PanelHeight = PanelVisibleY[ModeCase];
-		lpDDSFour = FSLoadBitmap( "data\\pictures\\pcontent.bmp" , RGB_MAKE( 255 , 0 , 255 ) );
-    }
 
     FillInPanelPositions();
     ReMakeSimplePanel = TRUE;
@@ -4698,8 +4345,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 	{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
-    
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
 
     FSClearBlack();
 
@@ -4732,8 +4377,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    
     FSClearBlack();
 
     ReceiveGameMessages();
@@ -4758,8 +4401,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    
     FSClearBlack();
 
     ReceiveGameMessages();
@@ -4788,8 +4429,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    
     FSClearBlack();
     ReceiveGameMessages();
 
@@ -4856,8 +4495,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    DrawLoadingBox( CurrentLoadingStep++, 0, 1 );
-    
     FSClearBlack();
     ReceiveGameMessages();
 
@@ -5114,8 +4751,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_SinglePlayer:
 	DebugState("STATUS_SinglePlayer\n");
 
-    PreventFlips = FALSE;
-      
     if( MainGame(/* lpDev , */lpView ) != TRUE ) // bjd
       return FALSE;
 
@@ -5665,53 +5300,7 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
 		DispTracker( /*lpDev,*/ lpView ); // bjd
   }
 
-#ifdef REFLECTION
-  {
-    VECTOR  TempUp;
-    CameraRendering = CAMRENDERING_Missile;
-//    CameraRendering = CAMRENDERING_Main;
-
-    SetFOV( 90.0F );
-    if( Ships[WhoIAm ^ 1].enable )
-    {
-      Current_Camera_View = WhoIAm ^ 1;
-      CurrentCamera.enable = 1;
-      CurrentCamera.UseLowestLOD = FALSE;
-      CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;
-      ApplyMatrix( &Ships[WhoIAm].Object.Mat, &SlideUp, &TempUp );      /* Calc Direction Vector */
-      MakeViewMatrix( &Ships[Current_Camera_View].Object.Pos, &Ships[WhoIAm].Object.Pos, &TempUp, &CurrentCamera.Mat);
-      MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
-
-//    CurrentCamera.Mat = Ships[Current_Camera_View].Object.FinalMat; 
-//    CurrentCamera.InvMat = Ships[Current_Camera_View].Object.FinalInvMat; 
-      CurrentCamera.Pos = Ships[Current_Camera_View].Object.Pos;  
-      CurrentCamera.Viewport = viewport;  
-      CurrentCamera.Proj = proj;  
-
-      CurrentCamera.Viewport.dwX = 0;
-      CurrentCamera.Viewport.dwY = 0;
-      CurrentCamera.Viewport.dwWidth = 128;
-      CurrentCamera.Viewport.dwHeight = 128;
-      CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.dwWidth / (float)2.0;
-      CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
-	  /* bjd
-      CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
-                         D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-      CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
-                         D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
-	 */
-      
-      {
-        if( RenderCurrentCamera( lpDev , lpView ) != TRUE ) 
-          return FALSE;
-      }
-    }
-    Current_Camera_View = WhoIAm;
-    SetFOV( START_FOV );
-  }
-#endif
-
-	if (FSEndScene() != D3D_OK)
+  if (FSEndScene() != D3D_OK)
         return FALSE;
 
   ScreenPolyProcess();
@@ -5755,23 +5344,17 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
     if( CurrentMenu && CurrentMenuItem )
     {
       MenuDraw( CurrentMenu );
-
       MenuItemDrawCursor( CurrentMenuItem );
-
-      if ( DrawSimplePanel )
-        TestBlt();
-// Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
+	  DrawSimplePanel();
+	  // Just to make sure that another press of escape doesnt take you back into the menu you wanted to exit!!
       JustExitedMenu = TRUE;
-      
 	  // menu keys are processed here
       MenuProcess();
     }
     else
     {
-#ifndef REFLECTION
         if( !FullRearView )
-          TestBlt();
-#endif
+          DrawSimplePanel();
     }
 
   // here is where we process F keys
@@ -5853,7 +5436,7 @@ void ShowGameStats( stats_mode_t mode )
 
 	// paint black background or black box
 
-	if( !bPolyText && mode != NO_BG ) // you can't see anything in polytext mode
+	if( 0 && mode != NO_BG ) // TODO bjd - you can't see anything in polytext mode
 	{
 		RECT box;
 		if( mode == BOX_BG )
@@ -6075,12 +5658,7 @@ BOOL  InitScoreDisplay()
 #endif
    //Create the offscreen surface, by loading our bitmap.
 
-  if( ModeCase != -1 )
-  {
-	lpDDSOne = FSLoadBitmap( /* (char*) &ScoreNames[ModeCase]*/ DynamicScoreNames, 0 );
-  }
-
-  InitFont(TRUE);
+  InitFont();
   ChangeBackgroundColour( 0, 0, 0 );
 
 #ifdef SCROLLING_MESSAGES
@@ -6092,26 +5670,8 @@ BOOL  InitScoreDisplay()
 #endif
   // process scores...
   ScoreSort();
-
   ScoreDisplaySfx = TRUE;
 
-  PreventFlips = FALSE;
-
-  return TRUE;
-}
-/*===================================================================
-  Procedure :   Free Score Display Stuff...
-  Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
-===================================================================*/
-BOOL  FreeScoreDisplay()
-{
-/* bjd
-  ReleaseDDSurf(lpDDSOne);  
-  ReleaseDDSurf(lpFontSurface);
-  lpFontSurface = NULL;
-  lpDDSOne = NULL;
-*/
   return TRUE;
 }
 
@@ -6188,84 +5748,6 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
   PrintClipped4x5Text( message, xpos, d3dappi.szClient.cy - (FontHeight*2) , col[CurrentString] );
 
   free (message);
-}
-
-
-#if 0
-  RECT rectOverlaySource, rectOverlayDest;
-  DDOVERLAYFX ddofx;
-
-  lpDDSOverlay =  DDLoadBitmapOverlay( lpDD, (char*) &PanelNames[0] , 320, 80 );
-  DDSetColorKey( lpDDSOverlay, RGB_MAKE( 255 , 0 , 255 ) );
-  
-    /* Set the overlay source rect */
-    SetRect(&rectOverlaySource,0,0,320,80);
-    /* Fill the entire display with the overlay */
-    SetRect(&rectOverlayDest, 0 , 0 , 320 , 80 );
-
-  memset(&ddofx, 0, sizeof(DDOVERLAYFX));
-    ddofx.dwSize = sizeof(DDOVERLAYFX);
-    /* Position, set colorkey values, and show the front overlay buffer */
-    lpDDSOverlay->lpVtbl->UpdateOverlay( lpDDSOverlay , &rectOverlaySource,
-                                      lpDDSOverlay,
-                                      &rectOverlayDest,
-                                      DDOVER_SHOW | DDOVER_KEYDESTOVERRIDE,
-                                      &ddofx);
-#endif
-
-#if 0
-	POINT destp;
-      fx.dwAlphaSrcConstBitDepth = 8;
-      fx.dwAlphaSrcConst = 128;
-      fx.dwAlphaDestConstBitDepth = 8;
-      fx.dwAlphaDestConst = 255;
-      dest.top = d3dappi.szClient.cy-PanelVisibleY[ModeCase];
-      dest.bottom = d3dappi.szClient.cy;
-      dest.left = 0;
-      dest.right = d3dappi.szClient.cx;
-	  destp.x = dest.left;
-	  destp.y = dest.top;
-	  FSBlit( lpDDSThree, FSBackBuffer, &src, &destp );
-#endif
-
-#ifdef  USEINLINE
-_inline
-#endif
-// pass FSBackBuffer or NULL for "DestSurface" argument to point to back buffer
-void GeneralBlt( int srcx, int srcy , int w , int h  , int dstx , int dsty , LPDIRECT3DSURFACE9 SrcSurface ,   char * FileName , LPDIRECT3DSURFACE9 DestSurface)
-{
-	RECT    src;
-	POINT	destp;
-	src.top = srcy;
-	src.left = srcx;
-	src.right = src.left+w;
-	src.bottom = src.top+h;
-	destp.x = dstx;
-	destp.y = dsty;
-	FSBlit( SrcSurface, DestSurface, &src, &destp );
-}
-
-/*===================================================================
-  Procedure :   Do font blt..
-  Input   :   int sx , int sy , int sw , int sh , int x ,int y
-  Output    :   nothing
-===================================================================*/
-#ifdef  USEINLINE
-_inline
-#endif
-void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
-{
-	RECT    src;
-	POINT	destp;
-	src.left = sx;
-	src.top = sy;
-	src.right = sx+sw;
-	src.bottom = sy+sh;
-	
-	destp.x = x;
-	destp.y = y;
-
-	FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 }
 
 // Clears the target(back) and zbuffer for the current camera
@@ -6929,163 +6411,47 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
 	return TRUE;
 }
 
-
-
-
-
-#if 0
-        if( ModeCase != -1 )
-        {
-			POINT destp;
-
-          //  Blt Panel
-          GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-                  lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
-          //  Primary one
-          GeneralBlt( PrimaryX[Ships[WhoIAm].Primary] , PrimaryY[Ships[WhoIAm].Primary] , 48 , 32  , PrimaryWeaponShowX , PrimaryWeaponShowY ,
-                  lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-          
-          HealthCount+=  framelag;
-          //  Health one
-          src.top = ( ( (int) (HealthCount * 0.25F) ) & 15 ) * 8;
-          src.left = 0;
-          src.right = 32;
-          src.bottom = src.top+8;
-      
-          memset(&fx, 0, sizeof(DDBLTFX));
-          fx.dwSize = sizeof(DDBLTFX);
-          dest.top = ( d3dappi.szClient.cy-10 )- ( Ships[WhoIAm].Shield >> 3 );
-          dest.bottom = d3dappi.szClient.cy-10;
-          dest.left = (d3dappi.szClient.cx >> 1) - 16 - 4;
-          dest.right = (d3dappi.szClient.cx >> 1) - 4;
-          
-		  destp.x = dest.left;
-		  destp.y = dest.top;
-		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
-      
-          //  Hull one
-          src.top = ( ( (int) ( (HealthCount * 0.25F) + 8 ) ^ 15 ) & 15 ) * 8;
-          src.left = 0;
-          src.right = 32;
-          src.bottom = src.top+8;
-      
-          memset(&fx, 0, sizeof(DDBLTFX));
-          fx.dwSize = sizeof(DDBLTFX);
-          dest.top = ( d3dappi.szClient.cy-10 )- ( Ships[WhoIAm].Hull >> 3 );
-          dest.bottom = d3dappi.szClient.cy-10;
-          dest.left = (d3dappi.szClient.cx >> 1) + 4;
-          dest.right = (d3dappi.szClient.cx >> 1) + 4 + 16;
-          
-		  destp.x = dest.left;
-		  destp.y = dest.top;
-		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
-
-          //  Powerpods
-          src.top = 0;
-          src.left = 32+64;
-          src.right = src.left+PowerSizes[Ships[WhoIAm].PowerLevel];
-          src.bottom = src.top+8;
-          y =  d3dappi.szClient.cy-74;
-          x =  ( d3dappi.szClient.cx >> 1 ) - 28;
-      
-		  destp.x = x;
-		  destp.y = y;
-		  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
-        
-        //  Blt Score
-        Printuint16( Ships[WhoIAm].Shield , PanelShieldPosX, PanelShieldPosY , 2 );
-        Printuint16( Ships[WhoIAm].Hull , PanelHullPosX, PanelHullPosY , 2 );
-        // Blt Primary
-        if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
-        {
-          energy =  (int) PyroliteAmmo;
-        }else{
-          if( Ships[WhoIAm].Primary == SUSS_GUN )
-          {
-            energy = (int) SussGunAmmo;
-          }else{
-            energy = (int) GeneralAmmo;
-          }
-        }
-        Printuint16( (uint16) energy , ( d3dappi.szClient.cx >> 1) - 64 , d3dappi.szClient.cy-( 48 - FontHeight - (FontHeight>>1) ), 2  );
-      
-        DoFontBlt( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary , FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight , PrimaryWeaponTextX , PrimaryWeaponTextY   );
-        // Blt Secondary
-        DoFontBlt( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,SecondaryWeaponTextX - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) , SecondaryWeaponTextY );
-        Printuint16( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX - ( 4*FontWidth)  , SecondaryWeaponNumY + (FontHeight + (FontHeight>>1) ) , 2 );
-        // blt shld
-        DoFontBlt( FontWidth*28 , 0 , FontWidth*4 , FontHeight , PanelShieldTextPosX , PanelShieldTextPosY );
-        // blt hull
-        DoFontBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight , PanelHullTextPosX , PanelHullTextPosY );
-#endif
 /*===================================================================
   Procedure : Init View port without calling initview..
   Input   : Nothing
   Output    : Nothing
 ===================================================================*/
 BOOL
-InitViewport( float scale )
+InitViewport( void )
 {
-    HRESULT rval;
-  int left, top;
-  int width, height;
-  int maxwidth, maxheight;
+	HRESULT rval;
+	int left, top;
+	int width, height;
+	int maxwidth, maxheight;
+	float scale = 1.1F;
 
-    /*
-     * Setup the viewport for specified viewing area
-     */
-//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-//    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-//    if (rval != D3D_OK) {
+	/*
+	 * Setup the viewport for specified viewing area
+	 */
+
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
-        Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
-        return FALSE;
-    }
-  maxwidth = d3dapp->szClient.cx;
+		Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+		return FALSE;
+	}
 
-  DrawSimplePanel = FALSE;
-  if( scale < 1.01F )
-    DrawSimplePanel = TRUE;
+	maxwidth = d3dapp->szClient.cx;
+	maxheight = d3dapp->szClient.cy;
 
-  if( DrawSimplePanel )
-  {
-    maxheight = d3dapp->szClient.cy - PanelVisibleY[ModeCase];
-  }else{
-    maxheight = d3dapp->szClient.cy;
-  }
-  if ( scale < 1.01F )
-  {
-    width = (int) floor( maxwidth * scale );
-    if ( width < MIN_VIEWPORT_WIDTH )
-    {
-      width = MIN_VIEWPORT_WIDTH;
-      scale = (float) width / maxwidth;
-    }
-    height = (int) floor( maxheight * scale );
-    DrawPanel = FALSE;
-    left = ( ( maxwidth - width ) >> 1 ) & ~1;
-    top = ( ( maxheight - height ) >> 1 ) & ~1;
-  }
-  else
-  {
-    width = maxwidth;
-    height = maxheight;
-    if ( scale > 1.11F )
-    {
-      DrawPanel = TRUE;
-      scale = 1.2F;
-    }
-    else
-    {
-      DrawPanel = FALSE;
-    }
-    left = 0;
-    top = 0;
-  }
-  CurrentViewportScale = scale;
+	width = maxwidth;
+	height = maxheight;
+	if ( scale > 1.11F )
+	{
+		DrawPanel = TRUE;
+		scale = 1.2F;
+	}
+	else
+	{
+		DrawPanel = FALSE;
+	}
+	left = 0;
+	top = 0;
 
     viewport.X = left;
 	viewport.Y = top;
@@ -7093,193 +6459,28 @@ InitViewport( float scale )
     viewport.Height = height;
     viewport.ScaleX = viewport.Width / (float)2.0;
     viewport.ScaleY = viewport.Height / (float)2.0;
-/* bjd - CHECK
-    viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
-                                       D3DVAL(2 * viewport.dvScaleX));
-    viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
-                                       D3DVAL(2 * viewport.dvScaleY));
-*/
-//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
- //   if (rval != D3D_OK) {
+
 	if (FAILED(FSSetViewPort(&viewport)))
 	{
 #ifdef DEBUG_VIEWPORT
-    SetViewportError( "InitViewport", &viewport, rval );
+		SetViewportError( "InitViewport", &viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+		Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
 #endif
-        return FALSE;
-    }
-  SetFOV( hfov );
+		return FALSE;
+	}
+	
+	SetFOV( hfov );
 
-  // clear viewport
 	FSClearBlack();
 
-  return TRUE;
-}
-
-
-/*===================================================================
-  Procedure : Plot Simple Panel...
-  Input   : Nothing
-  Output    : Nothing
-===================================================================*/
-void  PlotSimplePanel( void )
-{
-  int energy;
-
-  // Blt Primary
-  if( ( Ships[WhoIAm].Primary != PrimaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    PrimaryChanged = Ships[WhoIAm].Primary;
-    GeneralBlt(
-		( Ships[WhoIAm].Primary & 3 ) * 64 ,
-        ( ( Ships[WhoIAm].Primary >> 2 )& 3 ) * 64 ,
-        64, 64,
-		PrimaryWeaponShowX, PrimaryWeaponShowY,
-        //WeaponSizeX , WeaponSizeY ,
-        lpDDSFour,
-		"data\\pictures\\pcontent.bmp",
-		FSBackBuffer
-	);
-
-    GeneralBlt( FontWidth*16 , FontHeight*Ships[WhoIAm].Primary,
-				FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] , FontHeight ,
-				PrimaryWeaponTextX , PrimaryWeaponTextY , 
-				lpFontSurface ,
-				/*&FontNames[ModeCase][0]*/DynamicFontNames,
-				FSBackBuffer);
-  }
-  
-  
-
-  // Blt Secondary
-  if( ( Ships[WhoIAm].Secondary != SecondaryChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    SecondaryChanged = Ships[WhoIAm].Secondary;
-    GeneralBlt(
-			( (Ships[WhoIAm].Secondary+6) & 3 ) * 64 ,
-            ( ( (Ships[WhoIAm].Secondary+6) >> 2 )& 3 ) * 64 ,
-			64 , 64 ,
-			SecondaryWeaponShowX , SecondaryWeaponShowY ,
-			//WeaponSizeX , WeaponSizeY ,
-			lpDDSFour , "data\\pictures\\pcontent.bmp" , FSBackBuffer);
-    GeneralBlt( FontWidth*16 , (FontHeight*6)+FontHeight*Ships[WhoIAm].Secondary  , FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] , FontHeight ,
-              SecondaryWeaponTextX , SecondaryWeaponTextY , lpFontSurface ,
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            FSBackBuffer);
-  }
-
-
-  // blt shld
-  if( ReMakeSimplePanel == TRUE )
-  {
-    GeneralBlt( FontWidth*28 , 0 , FontWidth*4 , FontHeight  , PanelShieldTextPosX , PanelShieldTextPosY ,
-            lpFontSurface ,
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-           FSBackBuffer);
-  }
-  if( ( Ships[WhoIAm].Object.Shield != ShieldChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    ShieldChanged = (uint16) Ships[WhoIAm].Object.Shield;
-
-    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Shield , PanelShieldPosX, PanelShieldPosY , 2 , lpDDSThree );
-    
-    if( ShieldHit == 0 )
-    {
-      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 , 56 , 3 , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-    }else{
-      ShieldHit -=1;
-      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Shield *0.5F) , 24 + ((ShieldHit>>2)*8) , 56 , 3  , PanelShieldBarPosX , PanelShieldBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-      ShieldChanged = (uint16)-1;
-    }
-  }
-  // blt Hull
-  if( ReMakeSimplePanel == TRUE )
-  {
-    GeneralBlt( FontWidth*28 , FontHeight , FontWidth*4 , FontHeight  , PanelHullTextPosX , PanelHullTextPosY ,
-            lpFontSurface , 
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            FSBackBuffer);
-  }
-
-  if( ( Ships[WhoIAm].Object.Hull != HullChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    HullChanged = (uint16)Ships[WhoIAm].Object.Hull;
-    Printuint16AnySurface( (uint16) Ships[WhoIAm].Object.Hull , PanelHullPosX, PanelHullPosY , 2 , lpDDSThree);
-    if( HullHit == 0 )
-    {
-      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-    }else{
-      HullHit -=1;
-      GeneralBlt( 64 - (int)(Ships[WhoIAm].Object.Hull *0.5F) , 24 + ((HullHit>>2)*8) , 56 , 3  , PanelHullBarPosX , PanelHullBarPosY ,
-              lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-      HullChanged = (uint16)-1;
-    }
-  }
-
-
-  // Blt Power Pods
-  if( ( PowerChanged != Ships[WhoIAm].Object.PowerLevel ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    GeneralBlt( FontWidth*(32-7) , FontHeight*(7+Ships[WhoIAm].Object.PowerLevel) , FontWidth*7 , FontHeight  , PanelPowerPosX , PanelPowerPosY ,
-            lpFontSurface , 
-            /*&FontNames[ModeCase][0]*/DynamicFontNames ,
-            FSBackBuffer);
-
-    PowerChanged = Ships[WhoIAm].Object.PowerLevel;
-  }
-  
-  //  Blt Primary ammo
-  if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
-  {
-    energy =  (int) PyroliteAmmo;
-  }else{
-    if( Ships[WhoIAm].Primary == SUSS_GUN )
-    {
-      energy = (int) SussGunAmmo;
-    }else{
-      energy = (int) GeneralAmmo;
-    }
-  }
-  if( ( energy != PrimaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    PrimaryNumChanged = energy;
-    Printuint16AnySurface( (uint16) energy , PrimaryWeaponNumX , PrimaryWeaponNumY , 2 , lpDDSThree);
-  }
-
-  // Blt Secondary ammo
-  if( ( (uint16) GetCurSecAmmo() != SecondaryNumChanged ) || ( ReMakeSimplePanel == TRUE ) )
-  {
-    SecondaryNumChanged = (uint16) GetCurSecAmmo();
-      Printuint16AnySurface( (uint16) GetCurSecAmmo() , SecondaryWeaponNumX , SecondaryWeaponNumY , 2 , lpDDSThree );
-  }
-  
-  //  Blt Panel
-  GeneralBlt( 0 , 0 , PanelVisibleX[ModeCase] , PanelVisibleY[ModeCase]  , 0  , d3dappi.szClient.cy-PanelVisibleY[ModeCase] ,
-          lpDDSThree , (char*) &PanelNames[ModeCase] , FSBackBuffer);
-
-  energy = (int) GetBestMine();
-  // Blt Mine..
-  if( energy != 65535 )
-  {
-    DoFontBlt( FontWidth*16 , (FontHeight*6)+FontHeight*energy , FontWidth*SecondaryLengths[energy] , FontHeight , d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) , FontHeight  );
-    Printuint16( (uint16) SecondaryAmmo[energy] , d3dappi.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
-  }
-
-  ReMakeSimplePanel = FALSE;
+	return TRUE;
 }
 
 void  FlipToGDISurface()
 {
 //bjd - CHECK  d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
 }
-
-
-
 
 /*===================================================================
   Procedure :   Make Specific Cmd Buffers...
@@ -7527,7 +6728,6 @@ void SpecialDestroyGame( void )
 		MenuRestart( &MENU_ForceAbort );
 		break;
 	default:
-		PreventFlips = FALSE;
 		MyGameStatus = STATUS_QuitCurrentGame;
 		break;
 	}
@@ -7911,31 +7111,14 @@ BOOL  InitStatsDisplay()
 {
   // Create the offscreen surface, by loading our bitmap.
 
-//  if( ModeCase != -1 )
-//  {
-//		lpDDSOne = FSLoadBitmap( (char*) &StatsNames[ModeCase], 0 );
-//  }
-  InitFont(FALSE);
+  InitFont();
   ChangeBackgroundColour( 0, 0, 0 );
 
   HowManySecrets( &TotalSecrets , &Secrets );
 
   return TRUE;
 }
-/*===================================================================
-  Procedure :   Free Stats Display Stuff...
-  Input   :   nothing...
-  Output    :   BOOL TRUE/FALSE
-===================================================================*/
-BOOL  FreeStatsDisplay()
-{
-#if 0 // bjd - CHECHK
-//  ReleaseDDSurf(lpDDSOne);
-  ReleaseDDSurf(lpFontSurface);
-  lpFontSurface = NULL;
-#endif
-  return TRUE;
-}
+
 /*===================================================================
   Procedure :   Stats Display...
   Input   :   nothing...
@@ -7965,7 +7148,6 @@ BOOL StatsDisplay()
       
   destp.x = dest.left;
   destp.y = dest.top;
-  FSBlit( lpDDSOne, FSBackBuffer, &src, &destp );
 
   if( !GameCompleted )
   {
@@ -8010,25 +7192,6 @@ BOOL StatsDisplay()
 
 void InitModeCase(void)
 {
-#if 0
-  if( d3dappi.szClient.cx >= 1024 && d3dappi.szClient.cy >= 768 )
-    ModeCase = Mode1024X768;
-  else if( d3dappi.szClient.cx >= 800 && d3dappi.szClient.cy >= 600 )
-    ModeCase = Mode800X600;
-  else if( d3dappi.szClient.cx >= 640 && d3dappi.szClient.cy >= 480 )
-    ModeCase = Mode640X480;
-  else if( d3dappi.szClient.cx >= 640 && d3dappi.szClient.cy >= 400 )
-    ModeCase = Mode640X400;
-  else if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-    ModeCase = Mode512X384;
-  else if( d3dappi.szClient.cx >= 320 && d3dappi.szClient.cy >= 400 )
-    ModeCase = Mode320X400;
-  else if( d3dappi.szClient.cx >= 320 && d3dappi.szClient.cy >= 240 )
-    ModeCase = Mode320X240;
-  else
-    ModeCase = Mode320X200;
-#endif
-
   ModeCase = 0; // now dynamic
 
   ModeScaleX[ 0 ] = (float)d3dappi.szClient.cx / 320.0F;
@@ -8056,11 +7219,6 @@ void InitModeCase(void)
     strcpy( DynamicScoreNames, ScoreNames[ Mode320X240 ] );
   else
     strcpy( DynamicScoreNames, ScoreNames[ Mode320X200 ] );
-
-  // Check for Polygon Text.....
-  bPolyText = FALSE;
-  if(( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 ) && PolygonText )
-    bPolyText = TRUE;
 
 }
 
