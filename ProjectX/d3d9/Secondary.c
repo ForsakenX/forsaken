@@ -102,7 +102,6 @@ extern	FRAME_INFO	*	ScatterTrail_Header;
 extern	FRAME_INFO	*	GreyFlare_Header;
 extern	FRAME_INFO	*	BigFlash_Header;
 extern	FRAME_INFO	*	Target_Header;
-extern	FRAME_INFO	*	Hud_Header;
 extern	FRAME_INFO	*	LensFlare_Header;
 extern	FRAME_INFO	*	BlueSpark_Header;
 extern	FRAME_INFO	*	Circle_Header;
@@ -133,7 +132,6 @@ extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 extern	float			ticksperframe;
 extern	SCRPOLY			ScrPolys[ MAXNUMOFSCRPOLYS ];
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
-extern	BOOL			EnhancedXHair;
 extern	BOOL			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
 extern	BOOL			DebugInfo;
@@ -6252,57 +6250,6 @@ void TargetingComputer( uint16 ClosestShip, uint16 ClosestEnemy )
 				KillUsedScrPoly( HitBox );
 				HitBox = (uint16) -1;
 			}
-		}
-	}
-}
-
-/*===================================================================
-	Procedure	:	Display Enhanced Crosshair
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void DispEnhancedCrosshair( void )
-{
-	float	Center_X, Center_Y;
-
-	if( EnhancedXHair )
-	{
-		Center_X = ( CurrentCamera.Viewport.X + ( CurrentCamera.Viewport.Width / 2.0F ) );
-		Center_Y = ( CurrentCamera.Viewport.Y + ( CurrentCamera.Viewport.Height / 2.0F ) );
-	
-		if( HudScrPoly == (uint16) -1 )
-		{
-			HudScrPoly = FindFreeScrPoly();
-			if( HudScrPoly != (uint16) -1 )
-			{
-				ScrPolys[ HudScrPoly ].Flags = SCRFLAG_Scale;
-				ScrPolys[ HudScrPoly ].Type = SCRTYPE_Normal;
-				ScrPolys[ HudScrPoly ].Pos.x = Center_X;
-				ScrPolys[ HudScrPoly ].Pos.y = Center_Y;
-				ScrPolys[ HudScrPoly ].R = 255;							// R Colour
-				ScrPolys[ HudScrPoly ].G = 255;							// G Colour
-				ScrPolys[ HudScrPoly ].B = 255;							// B Colour
-				ScrPolys[ HudScrPoly ].Trans = 255;						// Amount of transparency
-				ScrPolys[ HudScrPoly ].SeqNum = SCRSEQ_Nothing;
-				ScrPolys[ HudScrPoly ].Frame = 0.0F;					// Animation Frame
-				ScrPolys[ HudScrPoly ].Frm_Info = &Hud_Header;			// Offset Info
-				ScrPolys[ HudScrPoly ].Xscale = 1.0F;
-				ScrPolys[ HudScrPoly ].Yscale = 1.0F;
-				AddScrPolyToTPage( HudScrPoly, GetTPage( *ScrPolys[ HudScrPoly ].Frm_Info, 0 ) );
-			}
-		}
-		else
-		{
-			ScrPolys[ HudScrPoly ].Pos.x = Center_X;
-			ScrPolys[ HudScrPoly ].Pos.y = Center_Y;
-		}
-	}
-	else
-	{
-		if( HudScrPoly != (uint16) -1 )
-		{
-			KillUsedScrPoly( HudScrPoly );
-			HudScrPoly = (uint16) -1;
 		}
 	}
 }

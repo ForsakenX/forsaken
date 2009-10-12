@@ -50,7 +50,6 @@ extern	BOOL			UsedStippledAlpha;
 extern	FRAME_INFO	*	Laser_Header;
 extern	FRAME_INFO	*	AfterBurner_Header;
 extern	FRAME_INFO	*	LensFlare_Header;
-extern	FRAME_INFO	*	Hud_Header;
 extern	FRAME_INFO	*	Numbers_Header;
 extern	FRAME_INFO	*	Numbers2_Header;
 extern	FRAME_INFO	*	Text512_Header;

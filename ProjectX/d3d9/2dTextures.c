@@ -81,7 +81,6 @@ float VduScaleX, VduScaleY;
 	FRAME_INFO	*	BloodSplat_Header = NULL;
 	FRAME_INFO	*	BloodDribble_Header = NULL;
 	FRAME_INFO	*	Target_Header = NULL;
-	FRAME_INFO	*	Hud_Header = NULL;
 	FRAME_INFO	*	Numbers_Header = NULL;
 	FRAME_INFO	*	Numbers2_Header = NULL;
 	FRAME_INFO	*	Text512_Header = NULL;
@@ -135,7 +134,6 @@ OFF_FILES OffsetFiles[] = {
 	{ "Splat.off",		&BloodSplat_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Blood Splat
 	{ "SpltDrib.off",	&BloodDribble_Header,	DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Blood Splat & Dribble
 	{ "Target.off",		&Target_Header,			DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Target
-	{ "Hud.off",		&Hud_Header,			DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// HUD
 	{ "Orb.off",		&Orb_Header,			DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Orb
 	{ "Solid.off",		&Solid_Header,			DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Solid 8x8
 	{ "Multiple.off",	&Multiple_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Multiple
@@ -347,6 +345,11 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 		Frm_Info->Off_Info = Off_Info;
 		Frm_Info->Bit_Info = Bit_Info;
 		Frm_Info->NumBoxes = Num_Boxes;
+	}
+
+	if(stricmp(Filename, "data//offsets//hud.off"))
+	{
+		return( Frm_Info );
 	}
 
 	return( Frm_Info );

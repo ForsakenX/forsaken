@@ -867,7 +867,6 @@ BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
 BOOL BiLinearFiltering;
 BOOL PerspectiveCorrect;
-BOOL EnhancedXHair;
 BOOL LensFlare;
 BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
@@ -11400,7 +11399,6 @@ void GetGamePrefs( void )
     BiLinearFiltering                = config_get_bool( "BiLinearFiltering",		TRUE );
     TriLinear                        = config_get_bool( "TriLinear",				TRUE );
     PerspectiveCorrect               = config_get_bool( "PerspectiveCorrect",		TRUE );
-    EnhancedXHair                    = config_get_bool( "EnhancedXHair",			FALSE );
     LensFlare                        = config_get_bool( "LensFlare",				TRUE );
     PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
@@ -11556,7 +11554,6 @@ void SetGamePrefs( void )
     config_set_bool( "BiLinearFiltering",		BiLinearFiltering );
     config_set_bool( "TriLinear",				TriLinear );
     config_set_bool( "PerspectiveCorrect",		PerspectiveCorrect );
-    config_set_bool( "EnhancedXHair",			EnhancedXHair );
     config_set_bool( "LensFlare",				LensFlare );
     config_set_bool( "PickupLightDetail",		PickupLightDetail );
     config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );

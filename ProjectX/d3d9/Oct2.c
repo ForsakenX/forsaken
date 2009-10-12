@@ -481,7 +481,6 @@ extern  PICKUP  Pickups[ MAXPICKUPS ];
 extern  BOOL  DebugInfo;
 extern  BOOL  GodMode;
 extern  BOOL  GodModeOnceOnly;
-extern  BOOL  EnhancedXHair;
 
 extern  BOOL  TeamGame;
 extern  BYTE  TeamNumber[MAX_PLAYERS];
@@ -1902,11 +1901,9 @@ void TestBlt()
 	  else
 	  {
         //  Blt Crosshair
-        if( !EnhancedXHair )
-        {
-          GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
+        GeneralBlt( 0 , 0 , 16 , 16  , (viewport.X + (viewport.Width>>1))-8 , (viewport.Y + (viewport.Height>>1))-8 ,
                   lpDDSOne ,  (char*) "data\\pictures\\panel.bmp" , FSBackBuffer);
-        }
+
         //  Blt Nitro...
         if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
         {
@@ -5583,7 +5580,6 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
       CurrentCamera = MainCamera;
 
       HUDNames();
-      DispEnhancedCrosshair();
 
       CurrentCamera.UseLowestLOD = FALSE;
       if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd

@@ -269,7 +269,6 @@ void	DoDamagedEffects( uint16 i );
 
 void	GetFinalMatrix( MATRIX * FinalMatrix );
 void	TargetingComputer( uint16 ClosestShip, uint16 ClosestEnemy );
-void	DispEnhancedCrosshair( void );
 void	HeatseakerTarget( uint16 ClosestShip, uint16 ClosestEnemy );
 void	HUDNames( void );
 void	DispHUDNames( void );
