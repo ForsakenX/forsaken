@@ -238,24 +238,6 @@ exit_with_error:
 #endif
 }
 
-extern BOOL ZClearsOn;
-extern BOOL g_OddFrame;
-
-BOOL SetZCompare( void )
-{
-	if( !ZClearsOn && g_OddFrame )
-	{
-		if( !SetUpZBuf( D3DCMP_GREATEREQUAL ) )
-			return FALSE;
-	}else
-	{
-		if( !SetUpZBuf( D3DCMP_LESSEQUAL ) )
-			return FALSE;
-	}
-
-    return TRUE;
-}
-
 #define STATE( K, V ) \
 	d3dappi.lpD3DDevice->SetRenderState( K, V );
 
@@ -628,6 +610,7 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 // this is not good cause LEVELRENDEROBJECT is of a diff size...
 //	memset(renderObject, 0, sizeof(RENDEROBJECT));
 
+	renderObject->vbLocked = 0;
 
 	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
@@ -646,6 +629,8 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 // this is not good cause LEVELRENDEROBJECT is of a diff size...
 //	memset(renderObject, 0, sizeof(RENDEROBJECT));
+
+	renderObject->vbLocked = 0;
 
 	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
@@ -667,6 +652,8 @@ HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVe
 
 // this is not good cause LEVELRENDEROBJECT is of a diff size...
 //	memset(renderObject, 0, sizeof(RENDEROBJECT));
+
+	renderObject->vbLocked = 0;
 
 	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))

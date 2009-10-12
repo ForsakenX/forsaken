@@ -76,11 +76,6 @@ extern int default_y;
 extern int default_width;
 extern int default_height;
 extern int default_bpp;
-
-extern BOOL g_OddFrame;
-extern BOOL ZClearsOn;
-extern BOOL SetZProj( void );
-extern BOOL SetZCompare();
 extern BOOL HideCursor;
 extern void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
@@ -278,7 +273,7 @@ extern	BOOL                    IsHost;
 //extern	D3DMATRIXHANDLE hView;
 //extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
-BOOL	ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
+extern	BOOL ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
 extern	MYD3DVIEWPORT9 viewport;
 extern	MODEL	Models[];
@@ -2804,9 +2799,7 @@ MENU	MENU_Detail = {
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 340, 0, 0, 0, LT_MENU_Detail14	/*"mature content"		*/, 0, 0,		&GoreGuts,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
-#ifdef Z_TRICK
-		{ 200, 356, 0, 0, 0, LT_MENU_Detail15	/*"Z Clears"					*/, 0, 0,		&ZClearsOn,				SetZCompare,				SelectToggle,	DrawToggle,	NULL, 0 },
-#endif		
+
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5080,18 +5073,6 @@ BOOL DisplayTitle(void)
 
 	if ( ModeCase != -1 )
 	{
-#ifdef Z_TRICK
-		if ( !ZClearsOn )
-		{
-			g_OddFrame = !g_OddFrame;
-			SetZProj();
-			if( !SetZCompare() )
-			{
-				Msg("unable to set z compare\n");
-				return FALSE;
-			}
-		}
-#endif
 		//Set up camera
 		MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
 		MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
@@ -5144,7 +5125,7 @@ BOOL DisplayTitle(void)
 			return FALSE;
 		}
 
-		if (ClearBuffers( TRUE, FALSE ) != TRUE )
+		if (ClearBuffers() != TRUE )
 		{
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
 			return FALSE;
@@ -11049,7 +11030,6 @@ void DebugVisibleChanged( MENUITEM *item )
 	if ( DebugVisible )
 	{
 		ShowPortal = 1;
-        myglobs.bClearsOn = TRUE;
 		if (myglobs.rstate.FillMode != D3DFILL_WIREFRAME)
 		{
 			myglobs.rstate.FillMode = D3DFILL_WIREFRAME;
@@ -11064,7 +11044,6 @@ void DebugVisibleChanged( MENUITEM *item )
 	else
 	{
 		ShowPortal = 0;
-        myglobs.bClearsOn = FALSE;
 		if (myglobs.rstate.FillMode != D3DFILL_SOLID)
 		{
 			myglobs.rstate.FillMode = D3DFILL_SOLID;
@@ -11412,11 +11391,7 @@ void GetGamePrefs( void )
 	tracker_enabled = config_get_bool( "TrackerEnabled", TRUE );
 
 	// booleans
-
-#ifdef Z_TRICK
-    ZClearsOn                        = config_get_bool( "ZClearsOn",				TRUE );
-#endif
-
+ 
     MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
@@ -11572,10 +11547,6 @@ void SetGamePrefs( void )
 	config_set_bool( "TrackerEnabled",			tracker_enabled );
 	
 	// booleans
-
-#ifdef Z_TRICK
-	config_set_bool( "ZClearsOn",				ZClearsOn );
-#endif
 
 	config_set_bool( "ResetKillsPerLevel",		MyResetKillsPerLevel );
 	config_set_bool( "BrightShips",				MyBrightShips );

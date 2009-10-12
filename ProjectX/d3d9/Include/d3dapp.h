@@ -206,7 +206,6 @@ typedef struct tagD3DAppInfo {
  * the application sets it.
  */
 typedef struct tagD3DAppRenderState {
-    BOOL             bZBufferOn;    /* Z buffer is on */
     BOOL             bPerspCorrect; /* perspective correction is on */
     D3DSHADEMODE     ShadeMode;     /* flat, gouraud, phong? */
 //    D3DTEXTUREFILTER TextureFilter; /* linear or bi-linear texture filter */

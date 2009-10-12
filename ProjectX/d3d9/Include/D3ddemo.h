@@ -52,7 +52,6 @@ extern "C" {
         D3DAppRenderState rs;
         BOOL bTexturesDisabled;
         BOOL bResizingDisabled;
-        BOOL bClearsOn;
         char Name[30];
     } Defaults;
 

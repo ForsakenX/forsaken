@@ -797,9 +797,6 @@ MaximiseExtent( EXTENT *e1, EXTENT *e2, EXTENT *e )
 	e->max.z = MAX( e1->max.z, e2->max.z );
 }
 
-extern BOOL ZClearsOn;
-extern BOOL g_OddFrame;
-
 static int
 Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 {
@@ -807,11 +804,7 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 
     VisPolyApplyMatrix( (MATRIX *) &v->viewproj, (VECTOR *) wpos, vpos );
 	clip = 0;
-#ifdef Z_TRICK
-	if ( ZClearsOn ? ( vpos->z > 1.0F ) : g_OddFrame ? ( vpos->z < 0.5F ) : ( vpos->z > 0.5F ) )
-#else
 	if ( vpos->z > 1.0F )
-#endif
 	{
 		clip |= D3DCLIP_FRONT;
 	    VisPolyApplyMatrix( (MATRIX *) &cam->View, (VECTOR *) wpos, vpos );
@@ -983,8 +976,6 @@ ProcessVisiblePortal( CAMERA *cam, VISLIST *v, VISTREE *t, EXTENT *e )
 void
 FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
-	static int last_outside = 0;
-	static BOOL last_clear = 0;
 	VISLIST *v;
 	VISGROUP *g;
 	D3DRECT clip;
@@ -1051,11 +1042,6 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	// process visible portals
 	if ( outside_map )
 	{
-		if ( !last_outside )
-		{
-			last_clear = myglobs.bClearsOn;
-			myglobs.bClearsOn = TRUE;
-		}
 		for ( j = 0; j < Mloadheader->num_groups; j++ )
 		{
 			if ( j != cam->GroupImIn )
@@ -1071,16 +1057,11 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	}
 	else
 	{
-		if ( last_outside )
-		{
-			myglobs.bClearsOn = last_clear;
-		}
 		for ( j = 0; j < Mloadheader->Group[ cam->GroupImIn].num_portals; j++ )
 		{
 			ProcessVisiblePortal( cam, v, &Mloadheader->Group[ cam->GroupImIn ].Portal [ j ].visible, &g->extent );
 		}
 	}
-	last_outside = outside_map;
 
 	// set viewport and projection matrix for each visible group
 	for ( g = v->first_visible; g; g = g->next_visible )

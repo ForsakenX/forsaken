@@ -103,9 +103,6 @@ BOOL OriginalLevels = FALSE;
 BOOL CheatsDisabled = FALSE;
 BOOL WaitingToQuit;
 
-BOOL  ClearScrOverride = FALSE;
-BOOL  ClearZOverride = FALSE;
-
 void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
 
@@ -572,8 +569,8 @@ BOOL  FullScreenViewport();
 
 BOOL InitDInput(void);
 BOOL TermDInput( void );
-BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer );
-BOOL  ClearZBuffer();
+BOOL  ClearBuffers( void );
+BOOL  ClearZBuffer( void );
 
 BOOL RenderCurrentCamera( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
 void DrawLoadingBox( int current_loading_step, int current_substep, int total_substeps );
@@ -1097,50 +1094,6 @@ D3DMATRIX world = {
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
 };
 
-BOOL ZClearsOn;
-BOOL g_OddFrame = FALSE;
-
-
-BOOL SetZProj( void )
-{
-  float Scale, NewNear;
-
-  if( hfov > START_FOV )
-  {
-    Scale = ( ( MAX_FOV - hfov ) / ( MAX_FOV - START_FOV ) );
-    NewNear = ( MinNear + ( ( Near - MinNear ) * Scale ) );
-    proj._33 = D3DVAL(Far/(Far-NewNear));
-    proj._43 = D3DVAL(-Far*NewNear/(Far-NewNear));
-  }
-  else
-  {
-    proj._33 = D3DVAL(Far/(Far-Near));
-    proj._43 = D3DVAL(-Far*Near/(Far-Near));
-  }
-
-#ifdef Z_TRICK
-	if( g_OddFrame )
-	{
-		proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
-		proj._43 *= -0.5f;
-	}
-	else
-	{
-		proj._33 *= 0.5f;
-		proj._43 *= 0.5f;
-		}
-	ProjMatrix._33 = proj._33;
-	ProjMatrix._43 = proj._43;
-//  if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
-	{
-		return FALSE;
-	}
-#endif
-	return TRUE;
-}
-
-
 SetFOV( float fov )
 {
 	HRESULT rval;
@@ -1190,22 +1143,6 @@ SetFOV( float fov )
 		proj._43 = D3DVAL(-Far*Near/(Far-Near));
 		proj._44 = D3DVAL( 0.0 );
 	}
-
-#ifdef Z_TRICK
-	if ( !ZClearsOn )
-	{
-		if( g_OddFrame )
-		{
-			proj._33 = ( 1.0f - ( 0.5f * proj._33 ) );
-			proj._43 *= -0.5f;
-		}
-		else
-		{
-			proj._33 *= 0.5f;
-			proj._43 *= 0.5f;
-		}
-	}
-#endif
 
 	ProjMatrix._11 = proj._11;
 	ProjMatrix._22 = proj._22;
@@ -3725,8 +3662,6 @@ float HostMultiPlayerTimeout;
 int colourflash = 0;
 char NodeName[256];
 
-BOOL SetZCompare( void );
-
 /*===================================================================
   Procedure :   Game Status Control...
   Input   :   nothing...
@@ -5653,19 +5588,6 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
       CurrentCamera.UseLowestLOD = FALSE;
       if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
         return FALSE;
-
-#ifdef Z_TRICK
-      if ( !ZClearsOn )
-      {
-        g_OddFrame = !g_OddFrame;
-        SetZProj();
-        if( !SetZCompare() )
-        {
-          Msg("unable to set z compare\n");
-          return FALSE;
-        }
-      }
-#endif
   
       if( RearCameraActive && !RearCameraDisable )
       {
@@ -5792,18 +5714,6 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
       if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
           return FALSE;
 
-#ifdef Z_TRICK
-      if ( !ZClearsOn )
-      {
-        g_OddFrame = !g_OddFrame;
-        SetZProj();
-        if( !SetZCompare() )
-        {
-          Msg("unable to set z compare\n");
-          return FALSE;
-        }
-      }
-#endif
     }
  /* done with rendering camera stuff */
 
@@ -6426,66 +6336,36 @@ void DoFontBlt(int sx , int sy , int sw , int sh , int x ,int y)
 	FSBlit( lpFontSurface, FSBackBuffer, &src, &destp );
 }
 
-
-/*===================================================================
-  Procedure :  Clear the Zbuffer / screen 
-===================================================================*/
-BOOL  ClearBuffers( BOOL ClearScreen, BOOL ClearZBuffer )
+// Clears the target(back) and zbuffer for the current camera
+BOOL  ClearBuffers( void )
 {
-	int clearflags = 0;
 	D3DRECT dummy;
 
 	if (!d3dappi.bRenderingIsOK)
 		return FALSE;
 
-	if( myglobs.bClearsOn || ClearScreen )  // toggle clearing the screen...
-		clearflags |= D3DCLEAR_TARGET;
+	dummy.x1 = CurrentCamera.Viewport.X;
+	dummy.y1 = CurrentCamera.Viewport.Y;
+	dummy.x2 = CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width;
+	dummy.y2 = CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height;
 
-#ifdef Z_TRICK
-	if ( ZClearsOn || ClearZBuffer )  // never clear Z buffer unless told to...
-#else
-	if (d3dapprs.bZBufferOn || ClearZBuffer ) // If a ZBuffer is enabled then always clear it..
-#endif
-	{
-		clearflags |= D3DCLEAR_ZBUFFER;
-	}
-
-	if( clearflags != 0 )
-	{
-		dummy.x1 = CurrentCamera.Viewport.X;
-		dummy.y1 = CurrentCamera.Viewport.Y;
-		dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
-		dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
-
-		if(!FSClear(1, &dummy, clearflags, D3DCOLOR_XRGB(0,0,0), 1.0f, 0))
-			return FALSE;
-	}
-
-	return TRUE;
+	return FSClear(1, &dummy, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
 }
 
-/*===================================================================
-  Procedure :  Clear the Zbuffer
-===================================================================*/
+// Clear the Zbuffer
 BOOL ClearZBuffer()
 {
-	int clearflags;
 	D3DRECT dummy;
 
 	if (!d3dappi.bRenderingIsOK)
 		return FALSE;
-
-	clearflags = D3DCLEAR_ZBUFFER;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
 	dummy.y1 = CurrentCamera.Viewport.Y;
 	dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
 	dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
 
-	if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0F, 0 ))
-		return FALSE;
-
-	return TRUE;
+	return FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0F, 0 );
 }
 
 
@@ -6559,8 +6439,6 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
   UpdateBGObjectsClipGroup( &CurrentCamera );
   UpdateEnemiesClipGroup( &CurrentCamera );
 
-  ClearScrOverride = FALSE;
-  ClearZOverride = FALSE;
   if( CurrentCamera.GroupImIn != (uint16) -1 && !DebugVisible )
   {
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -6573,14 +6451,13 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
           G = Mloadheader.Group[ g->group ].BGClear_Green;
           B = Mloadheader.Group[ g->group ].BGClear_Blue;
           ChangeBackgroundColour( R, G, B );
-          ClearScrOverride = TRUE;
         }
         break;
       }
     }
   }
 
-  if (ClearBuffers( ClearScrOverride, ClearZOverride ) != TRUE )
+  if (ClearBuffers() != TRUE )
     return FALSE;
 
 	// reset all the normal execute status flags...
@@ -6918,16 +6795,6 @@ BOOL Our_CalculateFrameRate(void)
 			(int) TotalFmPolysInUse,(int) TotalPolysInUse,(int) TotalScrPolysInUse, NumOfVertsTouched);
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*6, 2 );
 
-		// ???
-/*
-		sprintf( &buf[0] , "Clear=%c%c", ClearScrOverride ? 'S' : ' ', ClearZOverride ? 'Z' : ' ' );
-#ifdef INSIDE_BSP
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, (!Inside) ? 1 : 2 );
-#else
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, (outside_group) ? 1 : 2 );
-#endif
-*/
-
 		if ( ! ShowWeaponKills ) //ShowNetworkInfo)
 		{
 
@@ -6996,7 +6863,6 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
 	VECTOR  Pos;
 	VECTOR  Temp;
 	VECTOR  Scale;
-	int clearflags;
 	D3DRECT dummy;
 	MYD3DVIEWPORT9 newviewport;
 	float screen_width, screen_height;
@@ -7041,23 +6907,13 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
 		return FALSE;
 	}
 
-	clearflags = 0;
+	dummy.x1 = newviewport.X;
+	dummy.x2 = newviewport.X+newviewport.Width;
+	dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
+	dummy.y2 = dummy.y1+( newviewport.Height >> 1);
 
-	if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
-	{
-		clearflags |= D3DCLEAR_ZBUFFER;
-	}
-	if( clearflags != 0 )
-	{
-		dummy.x1 = newviewport.X;
-		dummy.x2 = newviewport.X+newviewport.Width;
-
-		dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
-		dummy.y2 = dummy.y1+( newviewport.Height >> 1);
-
-		if(!FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
-			return FALSE;
-	}
+	if(!FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
+		return FALSE;
 
 	Trans.x = 0.0F;
 	Trans.y = -180.0F;
@@ -7846,7 +7702,6 @@ void CalculateFramelag( void )
 BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
 {
 	uint16      i;
-	int         clearflags;
 	D3DRECT     dummy;
 	MYD3DVIEWPORT9 newviewport;
 	float       screen_width, screen_height;
@@ -7898,23 +7753,13 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
 		return FALSE;
 	}
 
-	clearflags = 0;
+	dummy.x1 = newviewport.X;
+	dummy.x2 = newviewport.X + newviewport.Width;
+	dummy.y1 = newviewport.Y;
+	dummy.y2 = newviewport.Y + newviewport.Height;
 
-	if (d3dapprs.bZBufferOn != 0 )      // If a ZBuffer is enabled then always clear it..
-	{
-		clearflags |= D3DCLEAR_ZBUFFER;
-	}
-	if( clearflags != 0 )
-	{
-		dummy.x1 = newviewport.X;
-		dummy.x2 = newviewport.X + newviewport.Width;
-
-		dummy.y1 = newviewport.Y;
-		dummy.y2 = newviewport.Y + newviewport.Height;
-
-		if (FSClear( 1, &dummy, clearflags, FSColourKeyBlack, 1.0f, 0 ))
-			return FALSE;
-	}
+	if (FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
+		return FALSE;
 
 	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );
 	ShadeModel( MODEL_Tracker, &TempMatrix, ( 40.0F * GLOBAL_SCALE ), ( 220.0F * GLOBAL_SCALE ) );

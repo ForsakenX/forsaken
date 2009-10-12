@@ -37,7 +37,6 @@ typedef struct tagd3dmainglobals {
 
     BOOL bSingleStepMode;        /* render one frame at a time */
     BOOL bDrawAFrame;            /* render on this pass of the main loop */
-    BOOL bClearsOn;              /* clear the back and z-buffer each frame */
     BOOL bShowFrameRate;         /* show the frame rate at the top */
     BOOL bShowInfo;              /* show window information at the bottom */
     BOOL bResizingDisabled;      /* do not allow resizing */

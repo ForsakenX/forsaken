@@ -67,7 +67,6 @@ extern "C" {
 	extern char *config_name;
 	extern D3DAppInfo d3dappi;
 	extern BOOL NoCursorClip;
-	extern BOOL ZClearsOn;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int NetUpdateIntervalCmdLine;
 	extern void GetGamePrefs( void );
@@ -622,7 +621,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
     memset(&myglobs.rstate, 0, sizeof(myglobs.rstate));
     memset(&myglobs, 0, sizeof(myglobs));
 	// bjd - set temporarly on till texture rendering works...
-    myglobs.bClearsOn		= TRUE; //FALSE;
     myglobs.bShowFrameRate	= TRUE;
     myglobs.bShowInfo		= FALSE;
     myglobs.hInstApp		= hInstance;
@@ -947,14 +945,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			NoCompoundSfxBuffer = TRUE;
 		}
 
-#ifdef Z_TRICK
-		// no zbuffer clearing
-		else if ( !_stricmp( option, "NoZClear" ) )
-		{
-			ZClearsOn = FALSE;
-		}
-#endif
-
 		// use sscanf
 		else 
 		{
@@ -1111,7 +1101,6 @@ static BOOL CreateD3DApp(void)
 
     defaults.bTexturesDisabled = FALSE;
     defaults.bResizingDisabled = myglobs.bResizingDisabled;
-    defaults.bClearsOn = myglobs.bClearsOn;
     myglobs.bResizingDisabled = defaults.bResizingDisabled;
 
     /*

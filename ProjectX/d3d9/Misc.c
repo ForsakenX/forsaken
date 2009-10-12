@@ -39,7 +39,6 @@ D3DAppISetDefaults(void)
 {
     ZEROMEM(d3dappi);
     ZEROMEM(d3dapprs);
-    d3dapprs.bZBufferOn = TRUE;
     d3dapprs.bPerspCorrect = TRUE;
     d3dapprs.ShadeMode = D3DSHADE_GOURAUD;
 //bjd - CHECK    d3dapprs.TextureFilter = D3DFILTER_LINEAR;
