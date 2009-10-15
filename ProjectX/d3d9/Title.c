@@ -3614,11 +3614,6 @@ BOOL
 InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
            LPDIRECT3DVIEWPORT lpView*/ )  // bjd
 {
-#if 0
-    LPDIRECTDRAWPALETTE ddpal;
-    D3DMATERIAL bmat;
-    D3DMATERIALHANDLE hBmat;
-
 	HideCursor = FALSE;
 
 	// acting like a window show mouse
@@ -3631,9 +3626,15 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
 
 	framelag = 0;
 
+#if 0
+    LPDIRECTDRAWPALETTE ddpal;
+    D3DMATERIAL bmat;
+    D3DMATERIALHANDLE hBmat;
+
 	memset(&bmat, 0, sizeof(D3DMATERIAL));
     bmat.dwSize = sizeof(D3DMATERIAL);
     bmat.dwRampSize = 1;
+
     if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK)
 	{
 		Msg( "InitTitle() CreateMaterial() Failed\n" );
@@ -3655,13 +3656,13 @@ InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
         return FALSE;
 	}
 
+#endif
+
 	ticksperframe = 14.0F;
     
 	InitModeCase();
 
     memset(&Names, 0, sizeof(SHORTNAMETYPE) );
-
-#endif
 
 	InitFont();
 

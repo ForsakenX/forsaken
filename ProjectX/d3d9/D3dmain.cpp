@@ -107,6 +107,8 @@ extern "C" {
 
 extern "C" D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D objects maintained by D3DApp
 
+BOOL render_initialized;
+
 d3dmainglobals myglobs;     // collection of global variables
 
 BOOL Debug					= FALSE;
@@ -641,6 +643,8 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	if (!init_renderer(myglobs.hWndMain, &d3dapp, bFullscreen))
 		return FALSE;
+
+	render_initialized = TRUE;
 
 	// show the mouse if acting like window
 	if ( ActLikeWindow || ! d3dappi.bFullscreen )

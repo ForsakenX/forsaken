@@ -19,6 +19,8 @@ extern	BOOL	Is3Dfx2;
 extern D3DAppInfo* d3dapp; 
 extern BOOL InitView(void);
 
+BOOL render_initialized = FALSE;
+
 BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 {
 	HRESULT LastError;
@@ -178,8 +180,8 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	*D3DApp = &d3dappi;
 
 	//d3dapp->bFullscreen = !d3dpp.Windowed;
-
-	bD3DAppInitialized = TRUE;
+	
+	render_initialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;
 
 	d3dappi.szClient.cx = d3dpp.BackBufferWidth; 

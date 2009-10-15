@@ -225,7 +225,7 @@ D3DAppIPickDisplayMode(int *mode, DWORD depths)
 #endif
 }
 
-BOOL	FirstTime = TRUE;
+//BOOL	FirstTime = TRUE;
 /*
  * D3DAppIVerifyDriverAndMode
  * Verifies the selected driver and mode combination.  If the driver is

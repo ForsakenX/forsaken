@@ -726,16 +726,6 @@ int SecondaryLengths[12] = {
 /*===================================================================
     Panel Description Stuff...
 ===================================================================*/
-char  PanelNames[8][32] ={  
-               { "data\\pictures\\p320X50.bmp" } ,
-               { "data\\pictures\\p320X60.bmp" } ,
-               { "data\\pictures\\p320X100.bmp" } ,
-               { "data\\pictures\\p512X96.bmp" } ,
-               { "data\\pictures\\p640X100.bmp" } ,
-               { "data\\pictures\\p640X120.bmp" } ,
-               { "data\\pictures\\p800X150.bmp" } ,
-               { "" }
-};
 
 //  How much can we get away with not rendering... and how much do we have to blit???
 int16 PanelVisibleY[8] = { 50,      //320X200
@@ -791,46 +781,6 @@ float ModeScaleY[8] ={ 1.0F  ,      //320X200
              2.0F  ,      //640X400
              2.4F  ,      //640X480
              3.0F   };      //800X600
-
-
-char  FontNames[8][64] = {
-	           { "data\\pictures\\font.bmp"		} , //320X200
-               { "data\\pictures\\font.bmp"		} , //320X240
-               { "data\\pictures\\font.bmp"		} , //320X400
-               { "data\\pictures\\font512.bmp"	} , //512X384
-               { "data\\pictures\\font512.bmp"	} , //640X400
-               { "data\\pictures\\font800.bmp"	} , //640X480
-               { "data\\pictures\\font800.bmp"	}	//800X600
-			   };
-
-char  DynamicFontNames[ 64 ];
-
-char  ScoreNames[8][64] ={  
-               { "data\\pictures\\S320X200.bmp" } ,
-               { "data\\pictures\\S320X240.bmp" } ,
-               { "data\\pictures\\S320X400.bmp" } ,
-               { "data\\pictures\\S512X384.bmp" } ,
-               { "data\\pictures\\S640X400.bmp" } ,
-               { "data\\pictures\\S640X480.bmp" } ,
-               { "data\\pictures\\S800X600.bmp" } ,
-               { "" }
-};
-
-char  DynamicScoreNames[ 64 ];
-
-char  StatsNames[8][64] ={  
-               { "data\\pictures\\T320X200.bmp" } ,
-               { "data\\pictures\\T320X240.bmp" } ,
-               { "data\\pictures\\T320X400.bmp" } ,
-               { "data\\pictures\\T512X384.bmp" } ,
-               { "data\\pictures\\T640X400.bmp" } ,
-               { "data\\pictures\\T640X480.bmp" } ,
-               { "data\\pictures\\T800X600.bmp" } ,
-               { "" }
-};
-
-
-
 
 /*===================================================================
     Positions of stuff to go on the panel....
@@ -6903,30 +6853,6 @@ void InitModeCase(void)
 
   ModeScaleX[ 0 ] = (float)d3dappi.szClient.cx / 320.0F;
   ModeScaleY[ 0 ] = (float)d3dappi.szClient.cy / 200.0F;
-
-  if ( ( d3dappi.szClient.cx >= 512 ) && ( d3dappi.szClient.cy >= 384 ) )
-  {
-    strcpy( DynamicFontNames, FontNames[ Mode512X384 ] );
-  }else
-  {
-    strcpy( DynamicFontNames, FontNames[ Mode320X200 ] );
-  }
-
-  if( d3dappi.szClient.cx >= 800 && d3dappi.szClient.cy >= 600 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode800X600 ] );
-  else if( d3dappi.szClient.cx >= 640 && d3dappi.szClient.cy >= 480 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode640X480 ] );
-  else if( d3dappi.szClient.cx >= 640 && d3dappi.szClient.cy >= 400 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode640X400 ] );
-  else if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode512X384 ] );
-  else if( d3dappi.szClient.cx >= 320 && d3dappi.szClient.cy >= 400 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode320X400 ] );
-  else if( d3dappi.szClient.cx >= 320 && d3dappi.szClient.cy >= 240 )
-    strcpy( DynamicScoreNames, ScoreNames[ Mode320X240 ] );
-  else
-    strcpy( DynamicScoreNames, ScoreNames[ Mode320X200 ] );
-
 }
 
 /*===================================================================

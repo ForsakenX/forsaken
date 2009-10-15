@@ -35,12 +35,8 @@ D3DAppInfo d3dappi;
 
 void InitModeCase(void);
 
-BOOL bD3DAppInitialized;       /* Is D3DApp initialized? */
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 BOOL bFullscreen = TRUE;	   /* Fullscreen flag from cli */
-SIZE szLastClient;             /* Dimensions of the last window */
-SIZE szBuffers;                /* Current buffer dimensions, not necessarily
-                                  the same as the client window */
 
 /***************************************************************************/
 /*                               FUNCTIONS                                 */
@@ -87,14 +83,18 @@ extern float RoomDarkness;
 extern void ProcessVduItems( MENU *Menu );
 extern InitialTexturesSet;
 extern void SetGamePrefs( void );
+extern BOOL render_initialized;
 
 BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
                  UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;
     *bStopProcessing = FALSE; // when set to true stops processing the message
-    if (!bD3DAppInitialized)
+
+	//
+	if (!render_initialized)
         return TRUE;
+
     /*
      * Look for messages which effect rendering.  In some cases, we will not
      * want the app to continue processing the message, so set the flag and

@@ -46,10 +46,7 @@ extern "C" {
  *    see d3dapp.c for descriptions
  */
 extern D3DAppInfo d3dappi;
-extern BOOL bD3DAppInitialized;
 extern BOOL bIgnoreWM_SIZE;
-extern SIZE szLastClient;
-extern SIZE szBuffers;
 
 #ifdef __cplusplus
 };
