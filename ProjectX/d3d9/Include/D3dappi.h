@@ -115,6 +115,7 @@ HRESULT D3DAppIGetSurfDesc(LPDDSURFACEDESC lpDDSurfDesc,
 */
 BOOL D3DAppICreateBuffers(HWND hwnd, int w, int h, int bpp,BOOL bFullscreen);
 //BOOL D3DAppIRememberWindowsMode(void);
+#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
 BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
 DWORD D3DAppIBPPToDDBD(int bpp);
@@ -228,9 +229,6 @@ HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVe
 HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT draw_2d_object(RENDEROBJECT *renderObject);
-
-#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
-LPDIRECT3DSURFACE9 FSLoadBitmap(char* pathname, D3DCOLOR m_ColourKey );
 
 #ifdef __cplusplus
 };
