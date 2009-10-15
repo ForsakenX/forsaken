@@ -20,7 +20,6 @@ extern "C" {
 #include	"stdwin.h"
 #include	"d3dapp.h"
 #include	"malloc.h"
-#include	"Exechand.h" 
 #include	"SBufferHand.h"
 #include	"file.h"
 #include	"XMem.h" 
@@ -118,7 +117,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
-void ReportD3DAppError(void);
 void CleanUpAndPostQuit(void);
 
 static void InitGlobals(void);
@@ -255,9 +253,6 @@ FAILURE:
 
 	if ( UnMallocedBlocks() )
 		DebugPrintf( "Un-malloced blocks found!" );
-
-//	if ( UnMallocedExecBlocks() )
-//		DebugPrintf( "Un-malloced Exec blocks found!" );
 
 //	if ( UnMallocedDDSurfBlocks() )
 //		DebugPrintf( "Un-malloced DDSurf blocks found!" );
@@ -574,8 +569,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
 	// special debuggin routines
 	XMem_Init();
-//	XExec_Init();
-//	DDSurf_Init();
 	XSBuffer_Init();
 
 #endif
@@ -1036,9 +1029,6 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
     // Give D3DApp an opportunity to process any messages
     if (!D3DAppWindowProc(&bStop, &lresult, hWnd, message, wParam, lParam))
 	{
-		// print error message
-        ReportD3DAppError();
-
 		// quit
         CleanUpAndPostQuit();
         return 0;
@@ -1080,9 +1070,11 @@ void CleanUpAndPostQuit(void)
 	// kill stuff
     ReleaseView();
 
-	// tell d3d to stop and report any errors
-    if (!D3DAppDestroy())
-        ReportD3DAppError();
+	// stop rendering and destroy objects
+    d3dappi.bRenderingIsOK = FALSE;
+    d3dappi.hwnd = NULL;
+    RELEASE(d3dappi.lpD3DDevice);
+	RELEASE(d3dappi.lpD3D);
   
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
@@ -1102,16 +1094,6 @@ void CleanUpAndPostQuit(void)
 
 	//
     PostQuitMessage( 0 );
-}
-
-/*
- * ReportD3DAppError
- * Reports an error during a d3d app call.
- */
-void
-ReportD3DAppError(void)
-{
-    Msg("%s", LastErrorString);
 }
 
 extern "C"

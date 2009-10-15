@@ -25,7 +25,6 @@
 #include "triggers.h"
 #include "pickups.h"
 #include "Ships.h"
-#include "exechand.h"
 #include "collision.h"
 #include "2dpolys.h"
 #include "lines.h"
@@ -165,7 +164,6 @@ extern  int16 NextworkOldBikeNum;
 extern  BOOL  DS;
 
 extern  size_t  MemUsed;
-extern  size_t  ExecMemUsed;
 
 #ifdef DEBUG_ON
 extern size_t SBufferMemUsedSW;
@@ -962,10 +960,10 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
 /**************************************************************************
   DirectInput Globals
  **************************************************************************/
-LPDIRECTINPUT8                   lpdi = NULL;
-LPDIRECTINPUTDEVICE8             lpdiMouse = NULL;
-LPDIRECTINPUTDEVICE8       lpdiKeyboard = NULL;
-LPDIRECTINPUTDEVICE8       lpdiBufferedKeyboard = NULL;
+LPDIRECTINPUT                   lpdi = NULL;
+LPDIRECTINPUTDEVICE             lpdiMouse = NULL;
+LPDIRECTINPUTDEVICE       lpdiKeyboard = NULL;
+LPDIRECTINPUTDEVICE       lpdiBufferedKeyboard = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 int               Num_Joysticks;
@@ -1061,7 +1059,7 @@ SetFOV( float fov )
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
-		Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
 		return FALSE;
 	}
 	if ( d3dapp->bFullscreen )
@@ -1126,7 +1124,7 @@ void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval )
     //"xmax=%f ymax=%f\n"
     "zmin=%f zmax=%f\n",
     where,
-    D3DAppErrorToString( rval ),
+    render_error_description( rval ),
     sizeof( *vp ),
     vp->X, vp->Y,
     vp->Width, vp->Height,
@@ -1156,7 +1154,7 @@ ResizeViewport( void )
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
-        Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+        Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
 	maxwidth = d3dapp->szClient.cx;
@@ -1212,7 +1210,7 @@ ResizeViewport( void )
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "ResizeViewport", &viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
@@ -1241,7 +1239,7 @@ BOOL FullScreenViewport()
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
-        Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+        Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
 	maxwidth = d3dapp->szClient.cx;
@@ -1270,7 +1268,7 @@ BOOL FullScreenViewport()
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "FullScreenViewport", &viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
@@ -1534,20 +1532,11 @@ BOOL InitLevels( char * levels_list )
 
 BOOL SetMatrixViewPort( void )
 {
-//	LPVOID lpBufStart, lpInsStart, lpPointer;
-//	LPDIRECT3DEXECUTEBUFFER lpD3DExCmdBuf;
 	D3DMATERIAL9 bmat;
-//	D3DMATERIALHANDLE hBmat;
-//	LPDIRECTDRAW lpDD = d3dapp->lpDD;
-//	LPDIRECT3D lpD3D = d3dapp->lpD3D;
-//	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-//	LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
-
 	memset(&bmat, 0, sizeof(D3DMATERIAL9));
-//	bmat.dwSize = sizeof(D3DMATERIAL);
-//	bmat.dwRampSize = 1;
 
 /* bjd
+//	D3DMATERIALHANDLE hBmat;
 	if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) {
 		return FALSE;
 	}
@@ -1562,76 +1551,29 @@ BOOL SetMatrixViewPort( void )
 	}
 */ 
     ticksperframe = 14.0F;
-       
-	/*
-	* Set the view, world and projection matrices
-	* Create a buffer for matrix set commands etc.
-	*/
-//	MAKE_MATRIX(lpDev, hView, identity);
-//	MAKE_MATRIX(lpDev, hProj, proj);
-//	MAKE_MATRIX(lpDev, hWorld, world);
 
+#if 0 // bjd - CHECK
+      STATE_DATA(D3DTRANSFORMSTATE_PROJECTION, hProj, lpPointer);
+      STATE_DATA(D3DTRANSFORMSTATE_VIEW, hView, lpPointer);
+      STATE_DATA(D3DTRANSFORMSTATE_WORLD, hWorld, lpPointer);
+      STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
+#endif
+
+	// TODO
+	// use to set projection first...
+	// not sure if that matters ?
 	FSSetMatrix( D3DTS_VIEW, &identity );
 	FSSetMatrix( D3DTS_PROJECTION, &proj );
 	FSSetMatrix( D3DTS_WORLD, &world );
 
 	world = identity;
-//	size = 0;
-//	size += sizeof(D3DINSTRUCTION) * 3;
-//	size += sizeof(D3DSTATE) * 5;
-   
-//	if (MakeExecuteBuffer( &debDesc, /*lpDev,*/ &lpD3DExCmdBuf , size ) != TRUE ) // bjd
-//		return FALSE; 
-   
-   
-  /*
-   * lock it so it can be filled
-   */
-//  if (lpD3DExCmdBuf->lpVtbl->Lock(lpD3DExCmdBuf, &debDesc) != D3D_OK) return FALSE; // bjd
 
-#if 0 // bjd - CHECK
-	if (FSLockExecuteBuffer(lpD3DExCmdBuf, &debDesc) != D3D_OK)
-		return FALSE;
-  
-	lpBufStart = debDesc.lpData;
-	memset(lpBufStart, 0, size);
-	lpPointer = lpBufStart;
-  
-  lpInsStart = lpPointer;
-  OP_STATE_TRANSFORM(3, lpPointer);
-      STATE_DATA(D3DTRANSFORMSTATE_PROJECTION, hProj, lpPointer);
-      STATE_DATA(D3DTRANSFORMSTATE_VIEW, hView, lpPointer);
-      STATE_DATA(D3DTRANSFORMSTATE_WORLD, hWorld, lpPointer);
-  OP_STATE_LIGHT(1, lpPointer);
-      STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
-  OP_EXIT(lpPointer);
-
-	/*
-	* Setup the execute data describing the buffer
-	*/
-	lpD3DExCmdBuf->lpVtbl->Unlock(lpD3DExCmdBuf);
-	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
-	d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
-	d3dExData.dwInstructionOffset = (ULONG) 0;
-	d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
-	lpD3DExCmdBuf->lpVtbl->SetExecuteData(lpD3DExCmdBuf, &d3dExData);
-	lpDev->lpVtbl->BeginScene(lpDev);
-	lpDev->lpVtbl->Execute(lpDev, lpD3DExCmdBuf, lpView , D3DEXECUTE_CLIPPED);
-	lpDev->lpVtbl->EndScene(lpDev);
-
-	/*
-	* We are done with the command buffer.
-	*/
-	XRELEASE(lpD3DExCmdBuf);
-#endif
-//    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    if ((hresult = lpView->lpVtbl->GetViewport(lpView, (LPD3DVIEWPORT)&viewport)) != D3D_OK)
 	if (FAILED(FSGetViewPort(&viewport)))
     {
       viewport.Width = 320;
       viewport.Height = 200;
     }
-//    lpD3Ddev = lpDev;
+
     if ( !initfov )
     {
       SetFOV( chosen_fov = normal_fov );
@@ -2579,8 +2521,8 @@ BOOL InitDInput(void)
 	int i, j, k;
 	BOOL failjoystick;
 
- //   err = DirectInputCreateA(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
-	if (FAILED(DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
+    err = DirectInputCreate(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
+	if (FAILED(err))//DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
 		return FALSE;
     }
@@ -2735,7 +2677,9 @@ BOOL InitDInput(void)
     lpdiJoystick[i] = NULL;
   Num_Joysticks = 0;
 
-  lpdi->lpVtbl->EnumDevices(lpdi, /*DIDEVTYPE_JOYSTICK*/DI8DEVCLASS_GAMECTRL, 
+  lpdi->lpVtbl->EnumDevices(lpdi,
+						DIDEVTYPE_JOYSTICK,
+						//DI8DEVCLASS_GAMECTRL, 
                          InitJoystickInput, lpdi, DIEDFL_ATTACHEDONLY); 
 
   failjoystick = FALSE;
@@ -5821,7 +5765,7 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
@@ -6092,7 +6036,7 @@ Display Group Clipped Faceme Transluecent Polys
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera2", &viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
@@ -6179,9 +6123,8 @@ BOOL Our_CalculateFrameRate(void)
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*3, 2 );
 
 		// memory information
-		sprintf(&buf[0], "Mem %d - ExecMem %d - vidBefore %d - vidAfter %d",
-			(int)MemUsed, (int)ExecMemUsed,
-			Tloadheader.VidMemBefore, Tloadheader.VidMemAfter );
+		sprintf(&buf[0], "Mem %d - vidBefore %d - vidAfter %d",
+			(int)MemUsed, Tloadheader.VidMemBefore, Tloadheader.VidMemAfter );
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*4, 2 );
 
 		// sound memory info
@@ -6420,7 +6363,7 @@ InitViewport( void )
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
-		Msg( "GetViewport failed.\n%s", D3DAppErrorToString(rval) );
+		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
 		return FALSE;
 	}
 
@@ -6453,7 +6396,7 @@ InitViewport( void )
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "InitViewport", &viewport, rval );
 #else
-		Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+		Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
 		return FALSE;
 	}

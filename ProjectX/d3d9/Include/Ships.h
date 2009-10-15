@@ -19,7 +19,6 @@
 #include "typedefs.h"
 #include "New3D.h"
 #include <time.h>
-#include "exechand.h"
 #include "mload.h"
 #include "quat.h"
 #include "collision.h"

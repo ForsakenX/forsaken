@@ -8,6 +8,7 @@ extern "C" {
 #include "new3d.h"
 #include <assert.h>
 #include "util.h"
+#include <dxerr9.h>
 
 extern	BOOL MipMap;
 extern	BOOL	Is3Dfx2;
@@ -44,15 +45,16 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit rgb mode with 8 bits per color
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
-	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
+	d3dpp.PresentationInterval			= D3DPRESENT_DONOTWAIT;//D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
+	// default resolution
+	d3dpp.BackBufferWidth				= 640;	// resolution width
+	d3dpp.BackBufferHeight				= 480;	// resolution height
 	//d3dpp.Flags	// not needed for now
 
 	// window mode
 	if ( ! fullscreen )
 	{
 		d3dpp.Windowed = TRUE;
-		d3dpp.BackBufferWidth = 800;	// resolution width
-		d3dpp.BackBufferHeight = 600;	// resolution height
 		SetWindowPos( 
 			d3dappi.hwnd,	// the window handle
 			HWND_TOP,		// bring window to the front
@@ -98,8 +100,6 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 			}
 		}
 		*/
-		d3dpp.BackBufferWidth = 640;	// resolution width
-		d3dpp.BackBufferHeight = 480;	// resolution height
 	}
 
 	// try to create a device falling back to less capable versions
@@ -108,6 +108,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	// TODO
 	// the docs say that pure devices don't support Get* calls
 	// which explains why people are crashing on FSGet* functions for no reason
+	// to support pure device we'd have to track our own states
 	//
 
 	/*
@@ -268,8 +269,8 @@ static BOOL SetUpZBuf( DWORD type )
         d3dappi.lpD3DDevice->lpVtbl->CreateExecuteBuffer(d3dappi.lpD3DDevice,
                                              &debDesc, &lpD3DExCmdBuf, NULL);
     if (LastError != D3D_OK) {
-        D3DAppISetErrorString("CreateExecuteBuffer failed in SetRenderState.\n%s",
-                              D3DAppErrorToString(LastError));
+        render_error_description("CreateExecuteBuffer failed in SetRenderState.\n%s",
+                              render_error_description(LastError));
         goto exit_with_error;
     }
     /*
@@ -277,8 +278,8 @@ static BOOL SetUpZBuf( DWORD type )
      */
     LastError = lpD3DExCmdBuf->lpVtbl->Lock(lpD3DExCmdBuf, &debDesc);
     if (LastError != D3D_OK) {
-        D3DAppISetErrorString("Lock failed on execute buffer in SetRenderState.\n%s",
-                              D3DAppErrorToString(LastError));
+        render_error_description("Lock failed on execute buffer in SetRenderState.\n%s",
+                              render_error_description(LastError));
         goto exit_with_error;
     }
     memset(debDesc.lpData, 0, size);
@@ -296,8 +297,8 @@ static BOOL SetUpZBuf( DWORD type )
 
     LastError = lpD3DExCmdBuf->lpVtbl->Unlock(lpD3DExCmdBuf);
     if (LastError != D3D_OK) {
-        D3DAppISetErrorString("Unlock failed on execute buffer in SetRenderState.\n%s",
-                              D3DAppErrorToString(LastError));
+        render_error_description("Unlock failed on execute buffer in SetRenderState.\n%s",
+                              render_error_description(LastError));
         goto exit_with_error;
     }
     /*
@@ -315,8 +316,8 @@ static BOOL SetUpZBuf( DWORD type )
                                                      d3dappi.lpD3DViewport,
                                                      D3DEXECUTE_UNCLIPPED);
     if (LastError != D3D_OK) {
-        D3DAppISetErrorString("Execute failed in SetRenderState.\n%s",
-                              D3DAppErrorToString(LastError));
+        render_error_description("Execute failed in SetRenderState.\n%s",
+                              render_error_description(LastError));
         goto exit_with_error;
     }
 
@@ -1000,4 +1001,9 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	}
 }
 
-};
+}; // end of c linkage (extern "C")
+
+const char * render_error_description( HRESULT hr )
+{
+	return DXGetErrorDescription9(hr);
+}

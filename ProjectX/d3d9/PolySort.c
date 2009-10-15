@@ -7,7 +7,6 @@
 #include <d3d9.h>
 #include "d3dapp.h"
 #include "d3dmacs.h"
-#include "exechand.h"
 #include "d3dappi.h"
 #include "mload.h"
 #include "camera.h"
@@ -33,9 +32,6 @@ POLYSORTPRIM * PolySortPrims = NULL;
 MATRIX	PolySortMatrix;
 
 int	CurrentPolySortPrim = 0;
-
-//D3DEXECUTEBUFFERDESC debDesc;
-//LPDIRECT3DEXECUTEBUFFER PolySortExec = NULL;
 
 /*===================================================================
 	Function	:	Apply Matrix to a Vector
@@ -92,13 +88,6 @@ void	ReleasePolySort( void )
 		free( PolySortPrims);
 		PolySortPrims = NULL;
 	}
-/* bjd - unused?
-	if( PolySortExec )
-	{
-		XRELEASE(PolySortExec );
-		PolySortExec = NULL;
-	}
-*/
 }
 
 /*===================================================================

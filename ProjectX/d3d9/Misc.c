@@ -251,7 +251,7 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
 	/* primary mode would be for a second monitor etc... */
 	if ( mode == D3DAPP_USEWINDOW && d3dappi.bIsPrimary )
 	{
-		D3DAppISetErrorString("Cannot render to a window when the DirectDraw device is not the primary.\n");
+		render_error_description("Cannot render to a window when the DirectDraw device is not the primary.\n");
 		goto exit_with_error;
 	}
 
@@ -267,7 +267,7 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
             depths = D3DAppIBPPToDDBD(d3dappi.WindowsDisplay.bpp);
             ATTEMPT(D3DAppIPickDriver(&driver, depths));
             if (driver == D3DAPP_BOGUS) {
-                D3DAppISetErrorString("Cannot find a D3D device driver which is compatible with the current display depth.\n");
+                render_error_description("Cannot find a D3D device driver which is compatible with the current display depth.\n");
                 goto exit_with_error;
             }
             /*
@@ -295,7 +295,7 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
             ATTEMPT(D3DAppIPickDriver(&driver, depths));
 
             if (driver == D3DAPP_BOGUS) {
-                D3DAppISetErrorString("Cannot find a D3D device driver which is compatible with the current display depth or any supported fullscreen mode.\n");
+                render_error_description("Cannot find a D3D device driver which is compatible with the current display depth or any supported fullscreen mode.\n");
             }
 
             /*
@@ -308,7 +308,7 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
             ATTEMPT(D3DAppIPickDriver(&driver,
                                   D3DAppIBPPToDDBD(d3dappi.Mode[mode].bpp)));
             if (driver == D3DAPP_BOGUS) {
-                D3DAppISetErrorString("Cannot find a D3D device driver which is compatible with the specified fullscreen mode.\n");
+                render_error_description("Cannot find a D3D device driver which is compatible with the specified fullscreen mode.\n");
                 goto exit_with_error;
             }
             /*
@@ -344,7 +344,7 @@ D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode)
         ATTEMPT(D3DAppIPickDisplayMode(&mode,
                         d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth));
         if (mode == D3DAPP_BOGUS) {
-            D3DAppISetErrorString("The selected D3D device driver is not compatible with the current display depth or any supported fullscreen modes.\n");
+            render_error_description("The selected D3D device driver is not compatible with the current display depth or any supported fullscreen modes.\n");
             goto exit_with_error;
         }
         goto ret_ok;
@@ -469,24 +469,4 @@ D3DAppIGetClientWin(HWND hwnd)
         d3dappi.szClient.cx = d3dappi.ThisMode.w;
         d3dappi.szClient.cy = d3dappi.ThisMode.h;
     }
-}
-
-
-/***************************************************************************/
-/*                              Error reporting                            */
-/***************************************************************************/
-
-/*
- * D3DAppISetErrorString
- * Set the global variable which records the last error string.
- */
-void __cdecl
-D3DAppISetErrorString( LPSTR fmt, ... )
-{
-    char buff[256];
-
-    buff[0] = 0;
-    wvsprintf(&buff[0], fmt, (char *)(&fmt+1));
-    lstrcat(buff, "\r\n");
-    strcpy(LastErrorString, buff);
 }

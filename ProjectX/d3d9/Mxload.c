@@ -1073,7 +1073,6 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 //		   	free(Mxloadheader->Group[group].org_colors[i]);
 //		   	Mxloadheader->Group[group].org_colors[i]= NULL;
 
-//			XRELEASE(Mxloadheader->Group[group].lpExBuf[i]);
 			FSReleaseRenderObject(&Mxloadheader->Group[group].renderObject[i]);
 
 			if (Mxloadheader->Group[group].poly_ptr[i])

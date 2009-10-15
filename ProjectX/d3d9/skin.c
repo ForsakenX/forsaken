@@ -1028,19 +1028,11 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 		return FALSE;
 	}
 
-//	if( MakeExecuteBuffer( &Skin_debdesc, /*d3dappi.lpD3DDevice,*/ &Skin_Execs[ Num_Skin_Execs ], 32767 ) != TRUE ) // bjd
-//		return FALSE;
 	if (FAILED(FSCreateVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], NumVerts)))
 	{
 		return FALSE;
 	}
-
-//	memset( &Skin_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//   	Skin_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-   		
-//   	if( Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Lock( Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK) return FALSE; // bjd
-//	if (FSLockExecuteBuffer(Skin_Execs[ Num_Skin_Execs ], &Skin_debdesc) != D3D_OK)
-//		return FALSE;
+   
 	if (FAILED(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], &lpBufStart)))
 	{
 		return FALSE;
@@ -1049,7 +1041,6 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 //   	lpBufStart = Skin_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-//	VERTEX_DATA( Verts, NumVerts, lpPointer );				// Copy Vertices to Execute Buffer
 	memcpy(lpBufStart, Verts, sizeof(D3DLVERTEX) * NumVerts);
    
 //    lpInsStart = lpPointer;
@@ -1123,7 +1114,6 @@ void ReleaseSkinExecs( void )
 //		if( Skin_Execs[ Count ] != NULL )
 		{
 			FSReleaseRenderObject(&Skin_Execs[ Count ]);
-//			XRELEASE( Skin_Execs[ Count ] );
 //			Skin_Execs[ Count ] = NULL;
 	 	}
 	}
@@ -1279,19 +1269,11 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 		return FALSE;
 	}
 
-//	if( MakeExecuteBuffer( &Portal_debdesc, /*d3dappi.lpD3DDevice,*/ &Portal_Execs[ Num_Portal_Execs ], 32767 ) != TRUE ) // bjd
-//		return FALSE;
 	if (FAILED(FSCreateVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], NumVerts)))
 	{
 		return FALSE;
 	}
 
-//   	memset( &Portal_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//   	Portal_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-   		
-//   	if( Portal_Execs[ Num_Portal_Execs ]->lpVtbl->Lock( Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK) return FALSE;
-//	if (FSLockExecuteBuffer(Portal_Execs[ Num_Portal_Execs ], &Portal_debdesc) != D3D_OK)
-//		return FALSE;
 	if (FAILED(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], &lpBufStart)))
 	{
 		return FALSE;
@@ -1300,7 +1282,6 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 //   	lpBufStart = Portal_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-//	VERTEX_DATA( Verts, NumVerts, lpPointer );				// Copy Vertices to Execute Buffer
 	memcpy(lpBufStart, Verts, sizeof(D3DLVERTEX) * NumVerts);
    
 //    lpInsStart = lpPointer;
@@ -1369,7 +1350,6 @@ void ReleasePortalExecs( void )
 //		if( Portal_Execs[ Count ] != NULL )
 		{
 			FSReleaseRenderObject(&Portal_Execs[ Count ]);
-//			XRELEASE( Portal_Execs[ Count ] );
 //			Portal_Execs[ Count ] = NULL;
 	 	}
 	}

@@ -1322,7 +1322,6 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 
 		for (i = 0; i < Mloadheader->Group[group].num_execbufs; i++)
 		{
-//			XRELEASE(Mloadheader->Group[group].lpExBuf[i]);
 			FSReleaseRenderObject(&(Mloadheader->Group[group].renderObject[i]));
 
 			if ( Mloadheader->Group[group].colour_cell_pnt[i] )

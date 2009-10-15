@@ -11,7 +11,6 @@
 ===================================================================*/
 #include "typedefs.h"
 #include "tload.h"
-#include "mipmap.h"
 #include "xmem.h"
 #include "util.h"
 
@@ -32,9 +31,6 @@ extern	BOOL	TexturesEnabled;
 extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
 BOOL FreeTextureMemory( int * TMem);
-
-extern void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
-extern char* D3DAppErrorToString(HRESULT error);
 
 /*===================================================================
 		Globals...	
@@ -677,6 +673,7 @@ BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 /*
  * TloadCheckForLostSurfaces
  */
+#if 0
 #define TLOADCHECKSURF(x) if (x) {                                               \
                         if (x->lpVtbl->IsLost(x) == DDERR_SURFACELOST) {    \
                             LastError = x->lpVtbl->Restore(x);              \
@@ -684,6 +681,8 @@ BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
                             b = TRUE;                                       \
                         }                                                   \
                      }
+#endif
+
 BOOL
 TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader)
 {

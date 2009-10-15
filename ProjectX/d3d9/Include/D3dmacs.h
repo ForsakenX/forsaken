@@ -1,13 +1,3 @@
-/*
- *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dmacs.h
- *
- *  Useful macros for generating execute buffers.  Consult the D3D sample
- *  code for examples of their usage.
- *
- *  Use OP_NOP to QWORD align triangle and line instructions.
- */
 
 #ifndef __D3DMACS_H__
 #define __D3DMACS_H__
@@ -15,22 +5,8 @@
 #undef RELEASE
 
 #ifndef __cplusplus
-#define MAKE_MATRIX(lpDev, handle, data) \
-{   if (lpDev->lpVtbl->CreateMatrix(lpDev, &handle) != D3D_OK) \
-    	return FALSE; \
-    if (lpDev->lpVtbl->SetMatrix(lpDev, handle, &data) != D3D_OK) \
-    	return FALSE; \
-}
 #define RELEASE(x) {if (x != NULL) {x->lpVtbl->Release(x); x = NULL;}}
-#endif
-
-#ifdef __cplusplus
-#define MAKE_MATRIX(lpDev, handle, data) \
-{   if (lpDev->CreateMatrix(&handle) != D3D_OK) \
-    	return FALSE; \
-    if (lpDev->SetMatrix(handle, &data) != D3D_OK) \
-    	return FALSE; \
-}
+#else
 #define RELEASE(x) {if (x != NULL) {x->Release(); x = NULL;}}
 #endif
 
@@ -39,11 +15,6 @@
     ((LPD3DINSTRUCTION) ptr)->bSize = sz, \
     ((LPD3DINSTRUCTION) ptr)->wCount = cnt, \
     ptr = (void *)(((LPD3DINSTRUCTION) ptr) + 1) \
-)
-
-#define VERTEX_DATA(loc, cnt, ptr) \
-(   (((ptr) != (loc))? memcpy((ptr), (loc), sizeof(D3DVERTEX) * (cnt)) : 0), \
-    ptr = (void *)(((LPD3DVERTEX) (ptr)) + (cnt)) \
 )
 
 // OP_MATRIX_MULTIPLY size: 4 (sizeof D3DINSTRUCTION)

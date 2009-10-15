@@ -894,7 +894,6 @@ ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	{
 	    for (i = 0; i < Mxaloadheader->Group[group].num_execbufs; i++)
 		{
-//			XRELEASE(Mxaloadheader->Group[group].lpExBuf[i]);
 			FSReleaseRenderObject(&Mxaloadheader->Group[group].renderObject[i]);
 
 			/* This is not allocated...

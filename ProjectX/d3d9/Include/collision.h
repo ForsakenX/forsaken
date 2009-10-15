@@ -18,7 +18,6 @@
 #include "d3dmacs.h"
 #include "typedefs.h"
 #include "file.h"
-#include "exechand.h"
 #include "d3dappi.h"
 #include "new3d.h"
 #include "mload.h"

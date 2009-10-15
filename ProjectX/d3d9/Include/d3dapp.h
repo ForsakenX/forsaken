@@ -1,23 +1,3 @@
-
-/*
- *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dapp.h
- *
- *  Header to be included in source using D3DApp.  Contains D3DApp function
- *  prototypes and defines.
- *
- *  D3DApp is a collection of helper functions for Direct3D applications.
- *  D3DApp consists of the following files:
- *      d3dapp.h    Main D3DApp header to be included by application
- *      d3dappi.h   Internal header
- *      d3dapp.c    D3DApp functions seen by application.
- *      ddcalls.c   All calls to DirectDraw objects except textures
- *      d3dcalls.c  All calls to Direct3D objects except textures
- *      texture.c   Texture loading and managing texture list
- *      misc.c      Miscellaneous calls
- */
-
 #ifndef __D3DAPP_H__
 #define __D3DAPP_H__
 
@@ -191,19 +171,6 @@ BOOL D3DAppFullscreen(int mode);
  */
 BOOL D3DAppWindowMode( int mode );
 BOOL D3DAppWindow(int w, int h, int bpp);
-
-/*
- * D3DAppErrorToString
- * Converts a DirectDraw, Direct3D or Direct3D RM error code to a string.
- */
-char* D3DAppErrorToString(HRESULT error);
-
-/*
- * D3DAppDestroy
- * Destroys all objects including Direct Draw.  Call before program
- * termination.
- */
-BOOL D3DAppDestroy(void);
 
 #ifdef __cplusplus
 };

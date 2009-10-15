@@ -13,12 +13,10 @@
 #include <string.h>
 #include <time.h>
 #include <search.h>
-//#include <ddraw.h>
 #include <d3d9.h>
 #include "d3dapp.h"
 #include "d3dmacs.h"
 #include "d3dmain.h"
-#include "lclib.h"  /* lclib is a override for standard string lib */
 #include <assert.h>
 
 #ifdef __cplusplus
@@ -31,7 +29,11 @@ extern "C" {
 #undef ATTEMPT
 #define ATTEMPT(x) if (!(x)) goto exit_with_error
 #undef RELEASE
-#define RELEASE(x) if (x) { x->lpVtbl->Release(x); x = NULL; }
+#ifndef __cplusplus
+#define RELEASE(x) {if (x != NULL) {x->lpVtbl->Release(x); x = NULL;}}
+#else
+#define RELEASE(x) {if (x != NULL) {x->Release(); x = NULL;}}
+#endif
 #undef MAX
 #define MAX(x, y) ((x) > (y)) ? (x) : (y)
 #undef MIN
@@ -45,9 +47,7 @@ extern "C" {
  */
 extern D3DAppInfo d3dappi;
 extern BOOL bD3DAppInitialized;
-extern HRESULT LastError;
 extern BOOL bIgnoreWM_SIZE;
-extern char LastErrorString[256];
 extern SIZE szLastClient;
 extern SIZE szBuffers;
 
@@ -66,34 +66,15 @@ BOOL init_render_states(void);
 void disable_zbuff( void );
 void set_alpha_states( void );
 void set_normal_states( void );
-//BOOL D3DAppIEnumDrivers(void);
-BOOL D3DAppIPickDriver(int* driver, DWORD depths);
-BOOL D3DAppICreateD3D(void);
-BOOL D3DAppIEnumTextureFormats(void);
-BOOL D3DAppICreateZBuffer(int w, int h, int driver);
-//BOOL D3DAppICreateDevice(int driver);
-BOOL D3DAppISetCoopLevel(HWND hwnd, BOOL bFullscreen);
-BOOL D3DAppISetDisplayMode(int w, int h, int bpp);
-//BOOL D3DAppICheckForPalettized(void);
-BOOL D3DAppIVerifyDriverAndMode(int* lpdriver, int* lpmode);
-BOOL D3DAppIFilterDrivers(int mode);
-DWORD D3DAppTotalVideoMemory(void);
-DWORD D3DAppFreeVideoMemory(void);
-BOOL D3DAppIEnumDisplayModes(void);
-BOOL D3DAppIPickDisplayMode(int* mode, DWORD depths);
-BOOL D3DAppISetDispMode(int w, int h, int bpp);
-BOOL D3DAppIFilterDisplayModes(int driver);
-BOOL D3DAppICreateBuffers(HWND hwnd, int w, int h, int bpp,BOOL bFullscreen);
-#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
-BOOL FSClearBlack(void);
-BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
-DWORD D3DAppIBPPToDDBD(int bpp);
-void D3DAppIReleasePathList(void);
-void D3DAppISetClientSize(HWND hwnd, int w,int h,BOOL bReturnFromFullscreen);
-void D3DAppIGetClientWin(HWND hwnd);
 void reset_zbuff( void );
 void reset_filtering( void );
 void set_alpha_fx_states( void );
+
+const char * render_error_description( HRESULT hr );
+
+#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
+BOOL FSClearBlack(void);
+BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
 
 #ifdef __cplusplus
 extern "C" {
@@ -221,7 +202,4 @@ typedef struct _OLDD3DLVERTEX {
 #define D3DCLIP_FRONT               0x00000010L
 #define D3DCLIP_BACK                0x00000020L
 
-void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
-
-FILE * D3DAppIFindFile(const char *name, const char *mode);
 #endif // __D3DAPPI_H__

@@ -17,7 +17,6 @@
 #include "polys.h"
 #include "d3dmain.h"
 #include "Ships.h"
-#include "exechand.h"
 #include "Mload.h"
 #include "collision.h"
 #include "lights.h"

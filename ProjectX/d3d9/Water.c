@@ -17,7 +17,6 @@
 #include "d3dmacs.h"
 #include "typedefs.h"
 #include "file.h"
-#include "exechand.h"
 #include "d3dappi.h"
 #include "new3d.h"
 #include "Tload.h"
@@ -317,20 +316,8 @@ void WaterRelease( void )
 		free(WO->Verts);
 		free(WO->Vels);
 
-/*
-		if( WO->lpExBuf )
-		{
-			XRELEASE(WO->lpExBuf);
-		}
-*/
-		// abstract out
 		FSReleaseRenderObject(&WO->renderObject);
-/*
-		if (WO->renderObject.lpD3DVertexBuffer)
-		{
-			XRELEASE(WO->lpD3DVertexBuffer);
-		}
-*/
+
 		WO++;
 	}
 
@@ -381,10 +368,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->Verts = (float*) calloc(  WO->num_of_verts , sizeof(float) );
 	WO->Vels = (float*) calloc( WO->num_of_verts , sizeof(float) );
 
-#if 0 
-	if (MakeExecuteBuffer( &debDesc, /*d3dappi.lpD3DDevice,*/ &WO->lpExBuf , 512 + ( WO->num_of_verts * sizeof(D3DLVERTEX) ) + ( ( (WO->XVerts-1)*(WO->YVerts-1)*2 ) * sizeof(D3DTRIANGLE) )  ) != TRUE ) // bjd
-		return FALSE;
-#endif
 	if (FAILED(FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts)))
 	{
 		return FALSE;
@@ -401,19 +384,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		return FALSE;
 	}
 
-/*
-	memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-	debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/
-
-	/*	lock the execute buffer	*/
-//	if ( WO->lpExBuf->lpVtbl->Lock( WO->lpExBuf, &debDesc ) != D3D_OK)
-// 		return FALSE; // bjd
-
-/*
-	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
-		return FALSE;
-*/
 	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
 	{
 		return FALSE;

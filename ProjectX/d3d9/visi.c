@@ -1170,7 +1170,7 @@ int ClipGroup( CAMERA *cam, uint16 group )
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
@@ -1264,7 +1264,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );
 #else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
         return FALSE;
     }
