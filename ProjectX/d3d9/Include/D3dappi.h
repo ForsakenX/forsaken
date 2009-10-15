@@ -1,28 +1,10 @@
-
-/*
- *  Copyright (C) 1995, 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dappi.h
- *
- *  Internal header.  Part of D3DApp.
- *
- *  D3DApp is a collection of helper functions for Direct3D applications.
- *  D3DApp consists of the following files:
- *      d3dapp.h    Main D3DApp header to be included by application
- *      d3dappi.h   Internal header
- *      d3dapp.c    D3DApp functions seen by application.
- *      ddcalls.c   All calls to DirectDraw objects except textures
- *      d3dcalls.c  All calls to Direct3D objects except textures
- *      texture.c   Texture loading and managing texture list
- *      misc.c      Miscellaneous calls
- */
-
 #ifndef __D3DAPPI_H__
 #define __D3DAPPI_H__
 
 /*
  * INCLUDED HEADERS
  */
+
 #define WIN32_EXTRA_LEAN
 #include <windows.h>
 #include <windowsx.h>
@@ -64,15 +46,10 @@ extern "C" {
 extern D3DAppInfo d3dappi;
 extern BOOL bD3DAppInitialized;
 extern HRESULT LastError;
-extern BOOL(*D3DDeviceDestroyCallback)(LPVOID);
-extern LPVOID D3DDeviceDestroyCallbackContext;
-//extern BOOL(*D3DDeviceCreateCallback)(int, int, LPDIRECT3DVIEWPORT*, LPVOID);
-extern LPVOID D3DDeviceCreateCallbackContext;
 extern BOOL bIgnoreWM_SIZE;
 extern char LastErrorString[256];
 extern SIZE szLastClient;
 extern SIZE szBuffers;
-extern int CallbackRefCount;
 
 #ifdef __cplusplus
 };
@@ -105,16 +82,8 @@ DWORD D3DAppFreeVideoMemory(void);
 BOOL D3DAppIEnumDisplayModes(void);
 BOOL D3DAppIPickDisplayMode(int* mode, DWORD depths);
 BOOL D3DAppISetDispMode(int w, int h, int bpp);
-//BOOL D3DAppICreateDD(DWORD flags);
 BOOL D3DAppIFilterDisplayModes(int driver);
-/* bjd
-HRESULT D3DAppICreateSurface(LPDDSURFACEDESC lpDDSurfDesc,
-                LPDIRECTDRAWSURFACE FAR *lpDDSurface);
-HRESULT D3DAppIGetSurfDesc(LPDDSURFACEDESC lpDDSurfDesc,
-                           LPDIRECTDRAWSURFACE lpDDSurf);
-*/
 BOOL D3DAppICreateBuffers(HWND hwnd, int w, int h, int bpp,BOOL bFullscreen);
-//BOOL D3DAppIRememberWindowsMode(void);
 #define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
 BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
@@ -122,19 +91,9 @@ DWORD D3DAppIBPPToDDBD(int bpp);
 void D3DAppIReleasePathList(void);
 void D3DAppISetClientSize(HWND hwnd, int w,int h,BOOL bReturnFromFullscreen);
 void D3DAppIGetClientWin(HWND hwnd);
-BOOL D3DAppICallDeviceDestroyCallback(void);
-BOOL D3DAppICallDeviceCreateCallback(int w, int h);
 void reset_zbuff( void );
 void reset_filtering( void );
 void set_alpha_fx_states( void );
-/*
-void D3DAppIMergeRectLists(int* dstnum, LPD3DRECT dst, int src1num,
-                           LPD3DRECT src1, int src2num, LPD3DRECT src2);
-void D3DAppICopyRectList(int* dstnum, LPD3DRECT dst, int srcnum,
-                         LPD3DRECT src);
-BOOL D3DAppIHandleWM_SIZE(LRESULT* lresult, HWND hwnd, UINT message,
-                          WPARAM wParam, LPARAM lParam);
-*/
 
 #ifdef __cplusplus
 extern "C" {
@@ -147,14 +106,6 @@ extern "C" {
 #define INCREASE_TEXTURE_GROUPS( group ) \
 	assert( group->numTextureGroups < MAX_TEXTURE_GROUPS ); \
 	group->numTextureGroups++;
-
-/*
-enum VERTEXFORMAT
-{
-	VT_TLVERTEX,
-	VT_LVERTEX
-};
-*/
 
 typedef struct TEXTUREGROUP
 {
@@ -175,8 +126,6 @@ typedef struct RENDEROBJECT
 	/*BOOL*/int				vbLocked;
 	int numTextureGroups;
 
-//	enum VERTEXFORMAT vertexFormat;
-
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
 
 	/* add whatever else needed.. */
@@ -190,8 +139,6 @@ typedef struct LEVELRENDEROBJECT
 	D3DMATERIAL9 material;
 	/*BOOL*/int				vbLocked;
 	int numTextureGroups;
-
-//	enum VERTEXFORMAT vertexFormat;
 
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
 
@@ -275,8 +222,6 @@ typedef struct _OLDD3DLVERTEX {
 #define D3DCLIP_BACK                0x00000020L
 
 void __cdecl D3DAppISetErrorString( LPSTR fmt, ... );
-
-void __cdecl dpf( LPSTR fmt, ... );
 
 FILE * D3DAppIFindFile(const char *name, const char *mode);
 #endif // __D3DAPPI_H__

@@ -106,6 +106,7 @@ num_start_points : uint16
 #include "triggers.h"
 #include "magic.h"
 #include "Xmem.h"
+#include "util.h"
 
 /*===================================================================
 		Externals...	

@@ -50,7 +50,6 @@ static int lua_debug_str(lua_State *state)
 	return 0; // number of results
 }
 
-extern void __cdecl Msg( LPSTR fmt, ... );
 static int lua_alert(lua_State *state)
 {
 	char * str = (char*) lua_tostring(state,1); // get argument

@@ -33,7 +33,6 @@ extern BOOL cursor_clipped;
 extern int ignore_mouse_input;
 extern BOOL CanRenderWindowed;
 extern void DebugPrintf( char *fmt, ... );
-extern BOOL AppPause(BOOL f);
 extern BOOL flush_input;
 extern BOOL HideCursor;
 extern BOOL ActLikeWindow;
@@ -49,21 +48,13 @@ extern d3dmainglobals myglobs;     /* collection of global variables */
  */
 D3DAppInfo d3dappi;
 
-/* 
- * Callback functions for D3D device creation and destruction
- */
-
-/*
-BOOL(*D3DDeviceDestroyCallback)(LPVOID);
-LPVOID D3DDeviceDestroyCallbackContext;
-BOOL(*D3DDeviceCreateCallback)(int, int, LPDIRECT3DVIEWPORT*, LPVOID);
-LPVOID D3DDeviceCreateCallbackContext;
-*/
 /*
  * The last error code and string
  */
+
 HRESULT LastError;
 char LastErrorString[256];
+
 /*
  * List of texture handles which is copied to D3DAppInfo structure when
  * necessary
@@ -73,12 +64,10 @@ void InitModeCase(void);
 
 BOOL bD3DAppInitialized;       /* Is D3DApp initialized? */
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
-BOOL bFullscreen;			   /* Fullscreen flag from cli */
+BOOL bFullscreen = TRUE;	   /* Fullscreen flag from cli */
 SIZE szLastClient;             /* Dimensions of the last window */
 SIZE szBuffers;                /* Current buffer dimensions, not necessarily
                                   the same as the client window */
-int CallbackRefCount;          /* How many times DeviceCreateCallback has
-                                  been called in a row */
 
 /***************************************************************************/
 /*                               FUNCTIONS                                 */
@@ -90,82 +79,6 @@ int CallbackRefCount;          /* How many times DeviceCreateCallback has
 BOOL D3DAppFullscreen(int mode)
 {
 	return TRUE;
-#if 0 //bjd
-    int w, h, bpp;
-    BOOL b; /* was already in a fullscreen mode? */
-
-    d3dappi.bRenderingIsOK = FALSE;
-    /* 
-     * Make sure this is a valid request, otherwise doctor mode so it will
-     * work with this driver.
-     */
-    ATTEMPT(D3DAppIVerifyDriverAndMode(&d3dappi.CurrDriver, &mode));
-    /* 
-     * Release everything
-     */
-    ATTEMPT(D3DAppICallDeviceDestroyCallback());
-    if (d3dappi.bFullscreen) {
-        ATTEMPT(FSClearBlack());
-    }
-    RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    /*
-     * Record information about the current status
-     */
-    b = d3dappi.bFullscreen;
-    w = d3dappi.Mode[mode].w;
-    h = d3dappi.Mode[mode].h;
-    bpp = d3dappi.Mode[mode].bpp;
-    if (!b) {
-        /*
-         * If this is not a fullscreen mode, we'll need to record the window
-         * size for when we return to it.
-         */
-        szLastClient = d3dappi.szClient;
-    }
-    /*
-     * Set the cooperative level and create front and back buffers
-     */
-    d3dappi.szClient.cx = w; d3dappi.szClient.cy = h;
-
-	InitModeCase();
-
-    ATTEMPT(D3DAppISetCoopLevel(d3dappi.hwnd, TRUE));
-    ATTEMPT(D3DAppISetDisplayMode(w, h, bpp));
-    d3dappi.CurrMode = mode;
-    ATTEMPT(D3DAppICreateBuffers(d3dappi.hwnd, w, h, bpp, TRUE));
-    /*
-     * If the front buffer is palettized, initialize its palette
-     */
-    ATTEMPT(D3DAppICheckForPalettized());
-    /*
-     * Create the Z-buffer
-     */
-    ATTEMPT(D3DAppICreateZBuffer(w, h, d3dappi.CurrDriver));
-    /*
-     * Create the D3D device, load the textures, call the device create
-     * callback and set a default render state
-     */
-    ATTEMPT(D3DAppICreateDevice(d3dappi.CurrDriver));
-    ATTEMPT(D3DAppICallDeviceCreateCallback(w, h));
-    ATTEMPT(init_render_states());
-    /* 
-     * Set current mode
-     */
-    d3dappi.CurrMode = mode;
-    d3dappi.bRenderingIsOK = TRUE;
-
-    return TRUE;
-
-exit_with_error:
-    D3DAppICallDeviceDestroyCallback();
-    RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    if (!b) {
-        D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
-    }
-    return FALSE;
-#endif
 }
 
 /*
@@ -182,159 +95,10 @@ BOOL D3DAppWindowMode( int mode )
 		d3dappi.Mode[mode].bpp);
 }
 
-BOOL
-D3DAppWindow(int w, int h, int bpp)
+BOOL D3DAppWindow(int w, int h, int bpp)
 {
 	return TRUE;
-#if 0 // bjd
-    BOOL b; /* changing from a fullscreen mode? */
-
-    /*
-	if (!d3dappi.bIsPrimary) {
-        D3DAppISetErrorString("It is not possible to create a D3D window with a hardware DirectDraw device.  Check the bIsPrimary flag before calling D3DAppWindow.");
-        return FALSE;
-    }
-	*/
-	if ( !CanRenderWindowed )
-	{
-		Msg("this video card cannot render to a window\n");
-		return FALSE;
-	}
-
-    b = d3dappi.bFullscreen;
-    /*
-     * If asked to set the window size, return it to the last value or use
-     * a default value.
-     */
-    if (w == D3DAPP_YOUDECIDE) {
-        w = b ? szLastClient.cx : D3DAPP_DEFAULTWINDOWDIM;
-    }
-    if (h == D3DAPP_YOUDECIDE) {
-        h = b ? szLastClient.cy : D3DAPP_DEFAULTWINDOWDIM;
-    }
-
-    /*
-     * Release everything
-     */
-    d3dappi.bRenderingIsOK = FALSE;
-    ATTEMPT(D3DAppICallDeviceDestroyCallback());
-    if (b) {
-        ATTEMPT(FSClearBlack());
-    }
-    RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    /* 
-     * Set the cooperative level and create front and back buffers
-     */
-    D3DAppISetCoopLevel(d3dappi.hwnd, FALSE);
-    D3DAppISetClientSize(d3dappi.hwnd, w, h, b);
-    ATTEMPT(D3DAppICreateBuffers(d3dappi.hwnd, w, h, bpp, FALSE));
-    /*
-     * If the front buffer is palettized, initialize its palette
-     */
-    ATTEMPT(D3DAppICheckForPalettized());
-    /*
-     * Create the Z-buffer
-     */
-    ATTEMPT(D3DAppICreateZBuffer(szBuffers.cx, szBuffers.cy,
-                                 d3dappi.CurrDriver));
-    /*
-     * Create the D3D device, load the textures, call the device create
-     * callback and set a default render state
-     */
-    ATTEMPT(D3DAppICreateDevice(d3dappi.CurrDriver));
-    ATTEMPT(D3DAppICallDeviceCreateCallback(szBuffers.cx, szBuffers.cy));
-    ATTEMPT(init_render_states());
-    d3dappi.bRenderingIsOK = TRUE;
-
-	// resize window
-	// BUG: need to have title bar automatically calculated for
-	// for now adding 20 pixels works on my computer...
-	SetWindowPos(d3dappi.hwnd, 0, 0, 0, w, h+20, SWP_NOMOVE|SWP_NOZORDER);
-
-    return TRUE;
-
-exit_with_error:
-    D3DAppICallDeviceDestroyCallback();
-    RELEASE(d3dappi.lpD3DDevice);
-    RELEASE(d3dappi.lpZBuffer);
-    RELEASE(d3dappi.lpBackBuffer);
-    return FALSE;
-#endif
 }
-
-#if 0
-/*
- * D3DAppChangeDriver 
- */
-BOOL
-D3DAppChangeDriver(int driver, DWORD flags)
-{
-    int mode;
-
-    /*
-     * Verify the compatibility of this mode with the specified driver.
-     * The mode may change.
-     */
-    if (d3dappi.bFullscreen)
-        mode = d3dappi.CurrMode;
-    else
-        mode = D3DAPP_USEWINDOW;
-    ATTEMPT(D3DAppIVerifyDriverAndMode(&driver, &mode));
-    if (driver == D3DAPP_BOGUS || mode == D3DAPP_BOGUS)
-        goto exit_with_error;
-    /*
-     * Update the current driver and set bThisDriverCanDo flags
-     */
-    d3dappi.CurrDriver = driver;
-    ATTEMPT(D3DAppIFilterDisplayModes(driver));
-    /*
-     * Either call D3DAppWindow or D3DAppFullscreen depending on mode
-     */
-    if (mode == D3DAPP_USEWINDOW) {
-        if (d3dappi.bFullscreen) {
-            /*
-             * We need to switch to a window.  D3DApp will either use the
-             * size of the last window it saw or use a default size.
-             */
-            ATTEMPT(D3DAppWindow(D3DAPP_YOUDECIDE, D3DAPP_YOUDECIDE, d3dappi.Mode[d3dappi.CurrMode].bpp));
-        } else {
-            /*
-             * We need to recreate the current window.  Don't let D3DApp
-             * decide on the size.
-             */
-            ATTEMPT(D3DAppWindow(d3dappi.szClient.cx, d3dappi.szClient.cy, d3dappi.Mode[d3dappi.CurrMode].bpp));
-        }
-        /*
-         * Change the currently selected mode if it's not compatible with
-         * this driver.  Just to make sure that CurrMode is always a mode the
-         * current driver can do.
-         */
-
-#if 0 // bjd
-        if (!(d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth &
-              D3DAppIBPPToDDBD(d3dappi.Mode[d3dappi.CurrMode].bpp))){
-            ATTEMPT(D3DAppIPickDisplayMode(&d3dappi.CurrMode,
-                        d3dappi.Driver[driver].Desc.dwDeviceRenderBitDepth));
-        }
-#endif
-        return TRUE;
-    } else {
-        /*
-         * We need to switch to fullscreen or switch fullscreen modes or stay
-         * in the same fullscreen mode.  In any of these cases, we call the
-         * same function.
-         */
-        ATTEMPT(D3DAppFullscreen(mode));
-        return TRUE;
-    }
-exit_with_error:
-    /*
-     * The failed mode setting call would have released everything
-     */
-    return FALSE;
-}
-#endif
 
 /*
  * D3DAppWindowProc
@@ -476,7 +240,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				}
 
 				// resize d3d to match the window size..
-//bjd				ATTEMPT(D3DAppIHandleWM_SIZE(lresult, d3dappi.hwnd, message, wParam, lParam));
+				// TODO does d3d do the resizing on it's own now?
 
 				if( MyGameStatus == STATUS_Title )
 				{
@@ -793,61 +557,6 @@ exit_with_error:
 }
 
 /*
- * D3DAppPause
- */
-BOOL
-D3DAppPause(BOOL flag)
-{
-	return TRUE;
-#if 0 // bjd
-    static int pausecount;
-
-    /*
-     * Keep a count of the number of times D3DAppPause has been called to 
-     * prevent pausing more than once in a row.
-     */
-    if (pausecount != 0) {
-        if (flag) {
-            ++pausecount;
-            return TRUE;
-        } else {
-            --pausecount;
-            if (pausecount != 0)
-                return TRUE;
-        } 
-    }
-
-    d3dappi.bPaused = flag;
-    if (flag && d3dappi.bFullscreen) {
-        /*
-         * Flip to GDI surface (either front or back buffer)
-         */
-#if 0 // bjd
-        if (d3dappi.lpDD) 
-		{
-//        if (d3dappi.bIsPrimary && d3dappi.lpDD) 
-		  {
-            LastError = d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-            if (LastError != DD_OK) 
-			{
-                D3DAppISetErrorString("Flipping to GDI surface failed.\n%s", D3DAppErrorToString(LastError));
-                goto exit_with_error;
-            }
-          }
-        /*
-         * Draw the menu and frame
-         */
-        DrawMenuBar(d3dappi.hwnd);
-        RedrawWindow(d3dappi.hwnd, NULL, NULL, RDW_FRAME);
-        }
-#endif
-    return TRUE;
-exit_with_error:
-    return FALSE;
-#endif
-}
-
-/*
  * D3DAppDestroy
  */
 BOOL
@@ -858,7 +567,6 @@ D3DAppDestroy(void)
      */
     d3dappi.bRenderingIsOK = FALSE;
     d3dappi.hwnd = NULL;
-    ATTEMPT(D3DAppICallDeviceDestroyCallback());
 
     RELEASE(d3dappi.lpD3DDevice);
 	RELEASE(d3dappi.lpD3D);

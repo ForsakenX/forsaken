@@ -62,6 +62,7 @@ num_frames : uint16 // number of animation frames
 #include "sfx.h"
 #include "spotfx.h"
 #include "XMem.h"
+#include "util.h"
 
 /*===================================================================
 		Defines
@@ -75,7 +76,6 @@ num_frames : uint16 // number of animation frames
 		Externals...	
 ===================================================================*/
 
-void DebugPrintf( char *fmt, ... );
 extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert );
 
 extern	MATRIX ProjMatrix;

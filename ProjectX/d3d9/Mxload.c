@@ -49,6 +49,7 @@ mxtype : uint16 // always 0 for mx format
 #include "sfx.h"
 #include "spotfx.h"
 #include "XMem.h"
+#include "util.h"
 
 /*===================================================================
 		Defines
@@ -58,7 +59,7 @@ mxtype : uint16 // always 0 for mx format
 /*===================================================================
 		Externals...
 ===================================================================*/
-void DebugPrintf( char *fmt, ... );
+
 extern	BOOL SWMonoChrome;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern	DWORD				CurrentSrcBlend;

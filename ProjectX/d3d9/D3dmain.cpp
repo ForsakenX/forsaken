@@ -1,26 +1,4 @@
 
-/*
- *  Copyright (C) 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dmain.cpp
- *
- *  Each of the Direct3D samples must be linked with this file.  It contains
- *  the code which allows them to run in the Windows environment.
- *
- *  A window is created using d3dmain.res which allows the user to select the
- *  Direct3D driver to use and change the render options.  The D3DApp
- *  collection of functions is used to initialize DirectDraw, Direct3D and
- *  keep surfaces and D3D devices available for rendering.
- *
- *  Frame rate and a screen mode information buffer is Blt'ed to the screen
- *  by functions in stats.cpp.
- *
- *  Each sample is executed through the functions: InitScene, InitView,
- *  RenderScene, ReleaseView, ReleaseScene and OverrideDefaults, as described
- *  in d3ddemo.h.
- */
-
-
 // Includes
 
 #include "typedefs.h"
@@ -56,7 +34,7 @@ extern "C" {
 	extern void ReleaseScene(void);
 	extern void ReleaseView(void);
 	extern BOOL InitScene(void);
-	extern BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp);
+	extern BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen);
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
@@ -137,8 +115,6 @@ BOOL Debug					= FALSE;
 // INTERNAL FUNCTION PROTOTYPES
 
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine);
-static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/);
-static BOOL AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lpViewport, LPVOID lpContext);
 
 long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam );
 
@@ -146,9 +122,7 @@ void ReportD3DAppError(void);
 void CleanUpAndPostQuit(void);
 
 static void InitGlobals(void);
-//static 
 
-extern "C" BOOL AppPause(BOOL f);
 extern "C" void SetInputAcquired( BOOL );
 static BOOL RenderLoop(void);
 
@@ -671,12 +645,8 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	// This  must come after everything above
 
     ZEROMEM(d3dappi);
-//    D3DDeviceDestroyCallback = NULL;
-//    D3DDeviceDestroyCallbackContext = NULL;
-//    D3DDeviceCreateCallback = NULL;
-//    D3DDeviceCreateCallbackContext = NULL;
 
-	if (!init_renderer(myglobs.hWndMain, &d3dapp))
+	if (!init_renderer(myglobs.hWndMain, &d3dapp, bFullscreen))
 		return FALSE;
 
 	// show the mouse if acting like window
@@ -791,6 +761,12 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
         else if (!_stricmp(option, "Debug"))
 		{
             Debug = TRUE;
+		}
+		
+		// start in window mode
+		else if (!_stricmp(option,"Fullscreen"))
+		{
+			bFullscreen = TRUE;
 		}
 
 		// start in window mode
@@ -991,104 +967,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	return TRUE;
 }
 
-/*
- * AfterDeviceCreated
- * D3DApp will call this function immediately after the D3D device has been
- * created (or re-created).  D3DApp expects the D3D viewport to be created and
- * returned.  The sample's execute buffers are also created (or re-created)
- * here.
- */
-
-BOOL SplashOnceOnly = TRUE;
-
-static BOOL
-AfterDeviceCreated(int w, int h, MYD3DVIEWPORT9 *lplpViewport, LPVOID lpContext)
-{
-	return TRUE;
-#if 0 // bjd
-	LPDIRECT3DVIEWPORT lpD3DViewport;
-    HRESULT rval;
-
-    // Create the D3D viewport object
-    rval = d3dapp->lpD3D->CreateViewport(&lpD3DViewport, NULL);
-    if (rval != D3D_OK) {
-        Msg("Create D3D viewport failed.\n%s", D3DAppErrorToString(rval));
-        CleanUpAndPostQuit();
-        return FALSE;
-    }
-
-    // Add the viewport to the D3D device
-    rval = d3dapp->lpD3DDevice->AddViewport(lpD3DViewport);
-    if (rval != D3D_OK) {
-        Msg("Add D3D viewport failed.\n%s", D3DAppErrorToString(rval));
-        CleanUpAndPostQuit();
-        return FALSE;
-    }
-    
-    // Setup the viewport for a reasonable viewing area
-
-    D3DVIEWPORT viewData;
-    memset(&viewData, 0, sizeof(D3DVIEWPORT));
-
-    viewData.dwSize = sizeof(D3DVIEWPORT);
-    viewData.dwX = viewData.dwY = 0;
-    viewData.dwWidth = w;
-    viewData.dwHeight = h;
-    viewData.ScaleX = viewData.dwWidth / (float)2.0;
-    viewData.ScaleY = viewData.dwHeight / (float)2.0;
-	/* bjd
-    viewData.dvMaxX = (float)D3DDivide(D3DVAL(viewData.dwWidth),
-                                       D3DVAL(2 * viewData.dvScaleX));
-    viewData.dvMaxY = (float)D3DDivide(D3DVAL(viewData.dwHeight),
-                                       D3DVAL(2 * viewData.dvScaleY));
-	*/
-    rval = lpD3DViewport->SetViewport(&viewData);
-    if (rval != D3D_OK) {
-#ifdef DEBUG_VIEWPORT
-		SetViewportError( "AfterDeviceCreated", &viewData, rval );
-#else
-        Msg("SetViewport failed.\n%s", D3DAppErrorToString(rval));
-#endif
-        CleanUpAndPostQuit();
-        return FALSE;
-    }
-
-    // Return the viewport to D3DApp so it can use it
-    *lplpViewport = lpD3DViewport;
-
-	DebugPrintf("AfterDeviceCreated\n");
-
-	// load the view
-	if (!InitView() )
-	{
-	    Msg("InitView failed.\n");
-		CleanUpAndPostQuit();
-        return FALSE;
-	}
-
-    return TRUE;
-#endif
-}
-
-/*
- * BeforeDeviceDestroyed
- * D3DApp will call this function before the current D3D device is destroyed
- * to give the app the opportunity to destroy objects it has created with the
- * DD or D3D objects.
- */
-
-static BOOL BeforeDeviceDestroyed(/*LPVOID lpContext*/)
-{
-    // Release all objects (ie execute buffers) created by InitView
-    ReleaseView();
-
-    // Since we created the viewport it is our responsibility to release it
-//bjd    d3dapp->lpD3DViewport->Release();
-
-	//
-    return TRUE;
-}
-
 // Render the next frame and update the window
 extern "C" BOOL RenderScene( void );
 static BOOL RenderLoop()
@@ -1136,40 +1014,6 @@ static BOOL RenderLoop()
 	myglobs.bResized = FALSE;
 
 	//
-    return TRUE;
-}
-
-
-//
-// AppPause
-// Pause and unpause the application
-//
-
-//static
-
-extern "C"
-BOOL AppPause(BOOL f)
-{
-    // Flip to the GDI surface and halt rendering
-    if (!D3DAppPause(f))
-        return FALSE;
-
-	if ( (d3dapp) ? !d3dapp->bPaused : 0 ) // if d3d and NOT paused
-	{
-		SetInputAcquired( TRUE );
-		if ( HideCursor )
-			SetCursorClip( TRUE ); // grab the mouse
-	}
-	else // game has been paused
-	{
-		SetInputAcquired( FALSE );
-		SetCursorClip( FALSE );
-	}
-
-    // When returning from a pause, reset the frame rate count
-    if (!f) {
-		flush_input = TRUE; // and flush any mouse input that occurred while paused
-    }
     return TRUE;
 }
 
@@ -1229,14 +1073,12 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 
 void CleanUpAndPostQuit(void)
 {
-	// unpause d3d
-	AppPause( FALSE );
-
-	// check if this function was ran allready
+	// check if this function was ran already
     if (myglobs.bQuit)
 		return;
 
-	BeforeDeviceDestroyed();
+	// kill stuff
+    ReleaseView();
 
 	// tell d3d to stop and report any errors
     if (!D3DAppDestroy())
@@ -1272,65 +1114,8 @@ ReportD3DAppError(void)
     Msg("%s", LastErrorString);
 }
 
-/* Msg
- * Message output for error notification.
- */
-void __cdecl
-Msg( LPSTR fmt, ... )
-{
-    char buff[256];
-
-#ifndef	WATCOM
-    wvsprintf(&buff[0], fmt, (char *)(&fmt+1));
-#endif
-    lstrcat(buff, "\r\n");
-    AppPause(TRUE);
-    if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-    MessageBox( NULL, buff, "ProjectX", MB_OK );
-    if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-
-	DebugPrintf( buff );
-
-    AppPause(FALSE);
-}
-
-
-/* RetryMsg
- * Message output for error notification with option to retry or cancel
- */
-int __cdecl
-RetryMsg( LPSTR fmt, ... )
-{
-    char buff[256];
-	int result;
-
-#ifndef	WATCOM
-    wvsprintf(&buff[0], fmt, (char *)(&fmt+1));
-#endif
-    lstrcat(buff, "\r\n");
-    AppPause(TRUE);
-    if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-    result = MessageBox( NULL, buff, "Forsaken Request", MB_RETRYCANCEL | MB_ICONEXCLAMATION | MB_SYSTEMMODAL );
-    if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-
-	DebugPrintf( buff );
-
-    AppPause(FALSE);
-
-	return result != IDCANCEL;
-}
-
-
 extern "C"
-int __cdecl MsgBox( int type, char *msg, ... )
+int Msg( char * msg, ... )
 {
 	char txt[ 1024 ];
 	va_list args;
@@ -1340,15 +1125,15 @@ int __cdecl MsgBox( int type, char *msg, ... )
 	vsprintf( txt, msg, args);
 	va_end( args );
 
-    AppPause(TRUE);
     if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-    res = MessageBox( NULL, txt, "Forsaken", type );
+        SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+
+    res = MessageBox( NULL, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
+
     if (d3dapp && d3dapp->bFullscreen)
-        SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,
-                     SWP_NOSIZE | SWP_NOMOVE);
-    AppPause(FALSE);
+        SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
+
+	DebugPrintf( txt );
 
 	return res;
 }

@@ -11,7 +11,7 @@
 #include "networking.h"
 #include "triggers.h"
 #include "pickups.h"
-
+#include "util.h"
 #include "rtlight.h"
 #include "Lights.h"
 #include "magic.h"

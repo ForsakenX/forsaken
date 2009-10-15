@@ -586,10 +586,6 @@
 				>
 			</File>
 			<File
-				RelativePath="MipMap.c"
-				>
-			</File>
-			<File
 				RelativePath="Misc.c"
 				>
 			</File>
@@ -892,10 +888,6 @@
 			</File>
 			<File
 				RelativePath="Include\main.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\MipMap.h"
 				>
 			</File>
 			<File

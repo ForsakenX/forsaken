@@ -306,8 +306,6 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
 
-//bjd - CHECK	d3dappi.lpDD->lpVtbl->FlipToGDISurface(d3dappi.lpDD);
-
 	local_port = atoi(local_port_str.text);
 	SetGamePrefs();
 

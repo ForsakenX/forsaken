@@ -54,8 +54,6 @@
 extern	LINE			Lines[ MAXLINES ];
 extern	ENEMY	*	FirstEnemyUsed;
 
-extern	int __cdecl MsgBox( int type, char *msg, ... );
-
 /*===================================================================
 		Globals...	
 ===================================================================*/
@@ -159,8 +157,9 @@ int     __cdecl _matherr(struct _exception * except)
 		except->retval, MathErrStrings[ except->type - 1 ] );
 	if ( !ignore )
 	{
-		if ( MsgBox( MB_OKCANCEL | MB_ICONEXCLAMATION, "MathErr() %s( %lf, %lf ) = %lf %s\n",
-			except->name, except->arg1, except->arg2, except->retval, MathErrStrings[ except->type - 1 ] ) != IDOK )
+		if ( Msg( "MathErr() %s( %lf, %lf ) = %lf %s\n", 
+					except->name, except->arg1, except->arg2, except->retval, 
+					MathErrStrings[ except->type - 1 ] ) )
 			ignore = 1;
 	}
 

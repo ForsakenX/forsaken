@@ -1,7 +1,7 @@
 /*===================================================================
 	Includes
 ===================================================================*/
-#include	<stdio.h>
+#include <stdio.h>
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
@@ -9,6 +9,7 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
+#include "util.h"
 
 #include	<stdlib.h>
 #include	<malloc.h>

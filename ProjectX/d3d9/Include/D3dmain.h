@@ -1,10 +1,3 @@
-
-/*
- *  Copyright (C) 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: d3dmain.h
- *
- */
 #ifndef __D3DMAIN_H__
 #define __D3DMAIN_H__
 
@@ -78,9 +71,6 @@ void DisablePickupLights( void );
 BOOL FlipBuffers();
 
 extern	int		BikeDetail;
-
-void __cdecl Msg( LPSTR fmt, ... );
-int __cdecl RetryMsg( LPSTR fmt, ... );
 
 #ifdef __cplusplus
 };

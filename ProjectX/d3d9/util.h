@@ -3,7 +3,7 @@
 
 #include <windows.h>
 
-extern void __cdecl Msg( LPSTR fmt, ... );
+extern int Msg( LPSTR fmt, ... );
 
 void DebugPrintf( const char * format, ... );
 void DebugState( const char * str );

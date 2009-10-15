@@ -58,9 +58,6 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int color );
 void InitTextMessages( void );
 
 void InitFont( void );
-void ReInitFont( void );
-
-
 
 BOOL ReadTxtFile( char *Filename );
 void FreeTxtFile( void );

@@ -18,65 +18,165 @@ extern	BOOL	Is3Dfx2;
 extern D3DAppInfo* d3dapp; 
 extern BOOL InitView(void);
 
-BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp)
+BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 {
 	HRESULT LastError;
 
-	/* Set up Direct3D interface object */
+	// Set up Direct3D interface object
 	d3dappi.lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
-
 	if (!d3dappi.lpD3D)
 	{
 		OutputDebugString("couldnt create d3d9\n");
 		return FALSE;
 	}
 
-	D3DDISPLAYMODE d3ddm;
-	LastError = d3dappi.lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
-
-	/* create d3d device */
+	// create d3d device
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory (&d3dpp, sizeof(d3dpp));
-	d3dpp.hDeviceWindow = hwnd;
-    d3dpp.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
-	if (/*windowed*/1) 
+	// setup defaults
+	d3dpp.hDeviceWindow					= hwnd;							// the window handle
+	d3dpp.BackBufferCount				= 1;							// we only have one swap chain
+	// shouldn't we specify D3DSWAPEFFECT_FLIP ?
+	// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
+    d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
+	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
+	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit rgb mode with 8 bits per color
+	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
+	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
+	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
+	//d3dpp.Flags	// not needed for now
+
+	// window mode
+	if ( ! fullscreen )
 	{
 		d3dpp.Windowed = TRUE;
-		d3dpp.BackBufferWidth = 800;
-		d3dpp.BackBufferHeight = 600;
-		d3dpp.PresentationInterval = 0;
-		SetWindowPos( d3dappi.hwnd, HWND_TOP, 0, 0, /*d3dpp.BackBufferWidth, d3dpp.BackBufferHeight*/800, 600, SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW );
+		d3dpp.BackBufferWidth = 800;	// resolution width
+		d3dpp.BackBufferHeight = 600;	// resolution height
+		SetWindowPos( 
+			d3dappi.hwnd,	// the window handle
+			HWND_TOP,		// bring window to the front
+			0, 0,			// top left of screen
+			d3dpp.BackBufferWidth, d3dpp.BackBufferHeight, // size of viewport
+			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW 
+		);
 	}
 
-	d3dpp.BackBufferCount = 1;
-	d3dpp.BackBufferFormat = D3DFMT_X8R8G8B8; //D3DFMT_A8R8G8B8; // 32 bit alpha channel
-	d3dpp.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
+	// full screen mode
+	else
+	{
+		d3dpp.Windowed = FALSE;
 
-	d3dpp.EnableAutoDepthStencil = true;
-	d3dpp.AutoDepthStencilFormat = D3DFMT_D24S8;
+		// we must enumerate all the proper settings here
+		// IDirect3D9::EnumAdapterModes
+			//d3dpp.BackBufferWidth = 800;	// resolution width
+			//d3dpp.BackBufferHeight = 600;	// resolution height
 
-	LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-		D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_PUREDEVICE, &d3dpp, &d3dappi.lpD3DDevice);
+		// d3dpp.BackBufferFormat
+		// could possibly be invalid as the choice above
+		// the choice should be validated by IDirect3D9::CheckDeviceType
+		// you can use the following code to get the current desktop display mode
+			//D3DDISPLAYMODE d3ddm;
+			//LastError = d3dappi.lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
+
+		/*
+		{
+			unsigned int best_mode = 0;
+			unsigned int i;
+			unsigned int num_modes = d3dappi.lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
+			D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
+			for ( i = 0; i < num_modes; i++ )
+			{
+				d3dappi.lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &modes[i] );
+				if(modes[i].Width > modes[best_mode].Width)
+					best_mode = i;
+			}
+			{
+				D3DDISPLAYMODE mode = modes[best_mode];
+				d3dpp.BackBufferWidth  = mode.Width;
+				d3dpp.BackBufferHeight = mode.Height;
+			}
+		}
+		*/
+		d3dpp.BackBufferWidth = 640;	// resolution width
+		d3dpp.BackBufferHeight = 480;	// resolution height
+	}
+
+	// try to create a device falling back to less capable versions
+
+	//
+	// TODO
+	// the docs say that pure devices don't support Get* calls
+	// which explains why people are crashing on FSGet* functions for no reason
+	//
+
+	/*
+	LastError = d3dappi.lpD3D->CreateDevice(
+		D3DADAPTER_DEFAULT,							// the default video card 
+		D3DDEVTYPE_HAL,								// device type - hal = Hardware rasterization
+		hwnd,										// the window handle
+
+		// these define how the device is created
+
+		D3DCREATE_HARDWARE_VERTEXPROCESSING |		// do vertex processing in hardware
+		D3DCREATE_PUREDEVICE, 						// D3D will not support Get* calls for anything that can be stored in state blocks.
+													// and not to provide any emulation services for vertex processing.
+													// Thus if the device does not support vertex processing,
+													// then the application can use only post-transformed vertices.
+
+		&d3dpp,										// presentation parameters defined above
+		&d3dappi.lpD3DDevice						// pointer that will contain the returned device
+	);
+
+	if (SUCCEEDED(LastError))
+	{
+		Msg("pure");
+	}
 
 	if (FAILED(LastError)) 
+	*/
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
+		if (SUCCEEDED(LastError))
+		{
+			DebugPrintf("d3d device created: hardware");
+		}
 	}
+
 	if (FAILED(LastError)) 
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-			D3DCREATE_MIXED_VERTEXPROCESSING , &d3dpp, &d3dappi.lpD3DDevice);
+			D3DCREATE_MIXED_VERTEXPROCESSING,		// do vertex processing in both hardware and software
+			&d3dpp, &d3dappi.lpD3DDevice);
+		if (SUCCEEDED(LastError))
+		{
+			DebugPrintf("d3d device created: mixed");
+		}
 	}
+
 	if (FAILED(LastError)) 
 	{
 		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-			D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
+			D3DCREATE_SOFTWARE_VERTEXPROCESSING,	// do vertex processing in software only
+			&d3dpp, &d3dappi.lpD3DDevice);
+		if (SUCCEEDED(LastError))
+		{
+			DebugPrintf("d3d device created: software");
+		}
+	}
+
+	if (FAILED(LastError))
+	{
+		CloseWindow(hwnd);
+		Msg("Failed to create a suitable d3d device");
+		exit(1);
 	}
 
 	d3dappi.hwnd = hwnd;
 	*D3DApp = &d3dappi;
+
+	//d3dapp->bFullscreen = !d3dpp.Windowed;
 
 	bD3DAppInitialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;

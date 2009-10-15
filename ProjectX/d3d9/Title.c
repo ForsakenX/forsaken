@@ -8773,6 +8773,7 @@ void InitDetailLevels( MENU *Menu )
 ===================================================================*/
 
 extern BOOL InitView(void);
+extern void ReleaseView(void);
 void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
@@ -13714,8 +13715,6 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-    RECT    src, dest;
-	POINT destp;
 	BOOL	OKtoProcess;
 	uint16 TempPoly;
 
@@ -13829,8 +13828,6 @@ void Print3Dots(TEXTINFO *TextInfo, float totalheight)
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-    RECT    src, dest;
-	POINT	destp;
 	uint16 TempPoly;
 	
 	font = GetScreenFont(TextInfo->font);

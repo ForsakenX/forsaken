@@ -193,23 +193,6 @@ BOOL D3DAppWindowMode( int mode );
 BOOL D3DAppWindow(int w, int h, int bpp);
 
 /*
- * D3DAppChangeDriver 
- * Changes the driver.  If the current display mode is incompatible with the
- * driver, a new one will be selected and employed.  A new texture format is
- * selected and textures are reloaded, hence their handles may change.  By
- * default, paletted formats are prefered.
- */
-//BOOL D3DAppChangeDriver(int driver, DWORD flags);
-
-/*
- * D3DAppPause
- * Use D3DAppPause(TRUE) to pause the app and D3DAppPause(FALSE) to unpause.
- * When fullscreen, the menu bar is redrawn.  bPaused is updated to reflect
- * the current status.
- */
-BOOL D3DAppPause(BOOL flag);
-
-/*
  * D3DAppErrorToString
  * Converts a DirectDraw, Direct3D or Direct3D RM error code to a string.
  */

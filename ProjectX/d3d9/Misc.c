@@ -1,22 +1,3 @@
-
-/*
- *  Copyright (C) 1996 Microsoft Corporation. All Rights Reserved.
- *
- *  File: misc.c
- *
- *  Miscellaneous functions not involving DD and D3D.  Part of D3DApp.
- *
- *  D3DApp is a collection of helper functions for Direct3D applications.
- *  D3DApp consists of the following files:
- *      d3dapp.h    Main D3DApp header to be included by application
- *      d3dappi.h   Internal header
- *      d3dapp.c    D3DApp functions seen by application.
- *      ddcalls.c   All calls to DirectDraw objects except textures
- *      d3dcalls.c  All calls to Direct3D objects except textures
- *      texture.c   Texture loading and managing texture list
- *      misc.c      Miscellaneous calls
- */
-
 #include "typedefs.h"
 #include "d3dappi.h"
 
@@ -25,37 +6,6 @@ int default_height;
 int default_bpp;
 int default_x;
 int default_y;
-
-/***************************************************************************/
-/*                Calling Device Create And Destroy Callbacks              */
-/***************************************************************************/
-BOOL
-D3DAppICallDeviceDestroyCallback(void)
-{
-	return TRUE;
-/* bjd
-    if (D3DDeviceDestroyCallback) {
-        if (CallbackRefCount) {
-            --CallbackRefCount;
-            return (D3DDeviceDestroyCallback)(D3DDeviceDestroyCallbackContext);
-        }
-    }
-    return TRUE;
-*/
-}
-
-#if 0 // bjd
-BOOL
-D3DAppICallDeviceCreateCallback(int w, int h)
-{
-    if (D3DDeviceCreateCallback) {
-        ++CallbackRefCount;
-        return (D3DDeviceCreateCallback)(w, h, &d3dappi.lpD3DViewport,
-                                         D3DDeviceCreateCallbackContext);
-    }
-    return TRUE;
-}
-#endif
 
 /***************************************************************************/
 /*            Choosing and verifying the driver and display mode           */
@@ -539,19 +489,4 @@ D3DAppISetErrorString( LPSTR fmt, ... )
     wvsprintf(&buff[0], fmt, (char *)(&fmt+1));
     lstrcat(buff, "\r\n");
     strcpy(LastErrorString, buff);
-}
-
-/* dpf
- * Debug printf.  Very useful for fullscreen exclusive mode or when surfaces
- * are in video memory.
- */
-void __cdecl
-dpf( LPSTR fmt, ... )
-{
-    char buff[256];
-
-    lstrcpy(buff, "D3DApp: ");
-    wvsprintf(&buff[lstrlen(buff)], fmt, (char *)(&fmt+1));
-    lstrcat(buff, "\r\n");
-    OutputDebugString(buff);
 }

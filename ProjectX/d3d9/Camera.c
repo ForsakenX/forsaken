@@ -15,7 +15,7 @@
 #include "camera.h"
 #include "magic.h"
 #include "XMem.h"
-
+#include "util.h"
 
 #define	CAM_VERSION_NUMBER 1
 
