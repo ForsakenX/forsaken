@@ -13,7 +13,6 @@
 #include "d3dmain.h"
 #include <d3d9.h>
 #include "d3dapp.h"
-#include "d3dmacs.h"
 #include "typedefs.h"
 #include "file.h"
 #include "d3dappi.h"

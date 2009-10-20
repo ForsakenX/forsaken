@@ -2,6 +2,7 @@
 #include "d3dappi.h"
 #include "main.h"
 #include "title.h"
+#include "util.h"
 
 BOOL Wine = FALSE;
 
@@ -12,7 +13,6 @@ extern void ProcessTextItems (void);
 extern BOOL cursor_clipped;
 extern int ignore_mouse_input;
 extern BOOL CanRenderWindowed;
-extern void DebugPrintf( char *fmt, ... );
 extern BOOL flush_input;
 extern BOOL HideCursor;
 extern BOOL ActLikeWindow;

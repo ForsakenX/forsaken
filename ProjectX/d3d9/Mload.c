@@ -123,8 +123,6 @@ extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	float framelag;
 extern	uint32	AnimOncePerFrame;	// used for stuff that is displayed more than once in a single frame..
-
-void DebugPrintf( char *fmt, ... );
 BOOL FindGroupConnections( MLOADHEADER *m );
 BOOL ReadGroupConnections( MLOADHEADER *m, char **pbuf );
 void FreeGroupConnections( void );

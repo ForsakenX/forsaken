@@ -12,7 +12,6 @@
 #include "d3dapp.h"         /* prototypes for D3D helper functions */
 #include <d3d9.h>
 #include "d3dapp.h"
-#include "d3dmacs.h"
 #include "new3d.h"
 #include "main.h"
 

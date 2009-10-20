@@ -799,10 +799,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\D3dmacs.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\D3dmain.h"
 				>
 			</File>
