@@ -66,7 +66,6 @@ extern "C" {
 	extern	BOOL	Is3Dfx;
 	extern	BOOL	Is3Dfx2;
 	extern	BOOL	NoSFX;
-	extern	int		TextureMemory;
 	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
 	extern	float	UV_Fix;
@@ -687,7 +686,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	Is3Dfx					= FALSE;
 	Is3Dfx2					= FALSE;
 	NoSFX					= FALSE; // turns off sound
-	TextureMemory			= 0;
 	MipMap					= TRUE;
 	NoTextureScaling		= FALSE;
 	DS						= FALSE;
@@ -922,12 +920,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			else if ( sscanf( option, "bpp:%d", &num ) == 1 )
 			{
 				default_bpp = num;
-			}
-
-			// set how much memory is allocated for textures
-			else if ( sscanf( option, "TextureMemory:%d", &num ) == 1 )
-			{
-				TextureMemory = num;
 			}
 
 			// modifies texture dimentions.. don't now what uv stands for..

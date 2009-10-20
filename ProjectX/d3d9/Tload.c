@@ -30,7 +30,6 @@
 extern	BOOL	TexturesEnabled;
 extern	BOOL	Is3Dfx;
 extern	BOOL	Is3Dfx2;
-BOOL FreeTextureMemory( int * TMem);
 
 /*===================================================================
 		Globals...	
@@ -39,7 +38,6 @@ BOOL FreeTextureMemory( int * TMem);
 
 TLOADHEADER	Tloadheader;
 BOOL	Pal332 = FALSE;
-int		TextureMemory = 0;
 BOOL	MipMap = TRUE;
 BOOL	NoTextureScaling = FALSE;
 int Print4x5Text( char * Text , int x , int y , int col );
@@ -113,7 +111,6 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 ===================================================================*/
 BOOL Tload( TLOADHEADER * Tloadheader  )
 {
-	DWORD	Estimate;
 	int		i,e;
 	int16	bpp;
 	int16	temp;
@@ -134,24 +131,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
  
 	// Tloadheader is not valid until everything has been done..
 	Tloadheader->state = FALSE;
-
-/* bjd
-	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware )
-	{
-		// Find out how much video memory there is before...
-
-		Tloadheader->VidMemBefore = 0;
-
-		if( !FreeTextureMemory( &Tloadheader->VidMemBefore ) )
-		{
-			Tloadheader->VidMemBefore = D3DAppFreeVideoMemory();
-		}
-		if ( TextureMemory )
-		{
-			Tloadheader->VidMemBefore = TextureMemory * 1024;
-		}
-	}
-*/
 
 	// allocate space for placeholder file names
 	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
@@ -189,8 +168,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		
 		for( e = 0 ; e < Tloadheader->num_texture_files*MAXSCALE ; e ++ )
 		{
-			// work out how much video memory they need....
-			Estimate = 65536;
 			for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
 			{
 				Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
@@ -214,17 +191,8 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 				}
 
 				Tloadheader->SizeInVidMem[i] = Xsize * Ysize * Tloadheader->CurrentBPP;
-				Estimate += Tloadheader->SizeInVidMem[i];
 			}
-		
-			Tloadheader->VidMemEstimate = Estimate;
-			// if it fits then break out and load them....
-			// Take this out if you want to show off the Riva 128...
 
-/* bjd - CHECK
-			if(	(Tloadheader->VidMemEstimate <= Tloadheader->VidMemBefore) || NoTextureScaling )
-				break;
-*/			
 			LeastScaledThatCanbe = -1;
 			LeastScaledThatCanbeScale = MAXSCALE;
 
@@ -262,14 +230,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			return FALSE;
 		}
 	}
-	
-/*	bjd
-	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 )
-	{
-		// Find out how much video memory there is after...
-		Tloadheader->VidMemAfter = D3DAppFreeVideoMemory();
-	}
-*/
 
 	// Tloadheader is valid
 	Tloadheader->state = TRUE;
@@ -384,31 +344,6 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 }
 
 /*
- * TloadGethTex
- * Get a texture handle from the current D3D device for this texture and save
- * it in the MasterhTex list and public texture handle list.
- */
-BOOL
-TloadGethTex(TLOADHEADER * Tloadheader , int n)
-{
-#if 0 // bjd
-    if (d3dappi.ThisDriver.bIsHardware && !Tloadheader->bTexturesInVideo[n]) {
-        goto exit_with_error;
-    }
-
-	LastError = Tloadheader->lpTexture[n]->lpVtbl->GetHandle(Tloadheader->lpTexture[n],
-                               d3dappi.lpD3DDevice, &Tloadheader->hTex[n]);
-    if (LastError != DD_OK) {
-        goto exit_with_error;
-    }
-    return TRUE;
-exit_with_error:
-    Tloadheader->hTex[n] = 0;
-#endif
-    return TRUE;       
-}
-
-/*
  * TloadReleaseTexture
  * Release this texture surface and texture interface.  Remember, a texture
  * handle is NOT an object and does not need to be released or destroyed.
@@ -460,14 +395,11 @@ TloadAllTextures(TLOADHEADER * Tloadheader)
     int i;
 //bjd    if (d3dappi.ThisDriver.bDoesTextures) 
 	{
-
-        for (i = 0; i < Tloadheader->num_texture_files; i++) {
+        for (i = 0; i < Tloadheader->num_texture_files; i++)
+		{
             ATTEMPT(TloadTextureSurf( Tloadheader , i));
-            ATTEMPT(TloadGethTex( Tloadheader , i));
         }
-    } 
-//	else {
-  //  }
+    }
     return TRUE;
 
 exit_with_error:
@@ -476,40 +408,6 @@ exit_with_error:
     }
     return FALSE;
 }
-
-#if 0 // bjd
-LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpFormat, DWORD memoryflag, DWORD dwWidth, DWORD dwHeight)
-{
-    DDSURFACEDESC ddsd;
-    LPDIRECTDRAWSURFACE lpDDS;
-    HRESULT ddrval;
-
-    memcpy(&ddsd, lpFormat, sizeof(DDSURFACEDESC));
-    ddsd.dwSize = sizeof(DDSURFACEDESC);
-    ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH | DDSD_PIXELFORMAT;
-
-    ddsd.ddsCaps.dwCaps = DDSCAPS_TEXTURE | memoryflag;
-
-	if( dwHeight != dwWidth )
-	{
-		DebugPrintf("Tload.c: CreateTextureSurf() Tried to create a non-square texture surface - aborting");
-		exit(1);
-	}
-
-	ddsd.dwHeight = dwHeight;
-	ddsd.dwWidth = dwWidth;
-	
-    ddrval = lpDD->lpVtbl->CreateSurface(lpDD, &ddsd, &lpDDS, NULL);
-    if (ddrval != DD_OK)
-	{
-		DebugPrintf("Tload.c: CreateTextureSurf() unable to create texture surface - aborting");
-		exit(1);
-	}
-
-	return lpDDS;
-}
-#endif
-
 
 /*===================================================================
 	Procedure	:		Get the width and height for a PPM
@@ -669,105 +567,6 @@ BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
 	DebugPrintf("STUB: Need to recreate this function.\n");
 	return TRUE;
 }
-
-/*
- * TloadCheckForLostSurfaces
- */
-#if 0
-#define TLOADCHECKSURF(x) if (x) {                                               \
-                        if (x->lpVtbl->IsLost(x) == DDERR_SURFACELOST) {    \
-                            LastError = x->lpVtbl->Restore(x);              \
-                            if (LastError != DD_OK) goto exit_with_error;   \
-                            b = TRUE;                                       \
-                        }                                                   \
-                     }
-#endif
-
-BOOL
-TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader)
-{
-	return TRUE;
-#if 0 // bjd
-	BOOL b;
-    int16 i;
-    for (i = 0; i < Tloadheader->num_texture_files; i++)
-	{
-        b = FALSE;
-        TLOADCHECKSURF(Tloadheader->lpTextureSurf[i]);
-        if (b)
-		{
-            if ( !Tloadheader->PlaceHolder[ i ] )
-			{
-				ATTEMPT(TloadReloadTextureSurf( Tloadheader , i));
-			}
-			else
-			{
-				// we are not bothered if TloadReloadPlaceHolder returns FALSE, since current texture may not exist,
-				// which indicates that the texture is not currently displayed.
-				TloadReloadPlaceHolder( Tloadheader, i );
-			}
-        }
-    }
-    return TRUE;
-exit_with_error:
-    return FALSE;   
-#endif
-}
-
-BOOL FreeTextureMemory( int * TMem)
-{
-	return TRUE;
-#if 0 // bjd
-    HRESULT ddrval;
-    DWORD dwTotalMem;
-    DWORD dwFreeMem;
-    DDSCAPS DDSCaps;
-	LPDIRECTDRAW2 lpDD2;
-
-    IDirectDraw_QueryInterface(d3dappi.lpDD,&IID_IDirectDraw2,&lpDD2);
-
-#if 0
-    DDSCaps.dwCaps = DDSCAPS_VIDEOMEMORY;
-    ddrval = IDirectDraw2_GetAvailableVidMem(lpDD2, &DDSCaps, &dwTotalMem, &dwFreeMem );
-    if(ddrval != DD_OK)
-    {
-        dwTotalMem = 0;
-        dwFreeMem = 0;
-    };
-
-    DDSCaps.dwCaps = DDSCAPS_LOCALVIDMEM;
-    ddrval = IDirectDraw2_GetAvailableVidMem(lpDD2, &DDSCaps, &dwTotalMem, &dwFreeMem );
-    if(ddrval != DD_OK)
-    {
-        dwTotalMem = 0;
-        dwFreeMem = 0;
-    };
-
-    DDSCaps.dwCaps = DDSCAPS_NONLOCALVIDMEM;
-    ddrval = IDirectDraw2_GetAvailableVidMem(lpDD2, &DDSCaps, &dwTotalMem, &dwFreeMem );
-    if(ddrval != DD_OK)
-    {
-        dwTotalMem = 0;
-        dwFreeMem = 0;
-    };
-#endif
-
-    DDSCaps.dwCaps = DDSCAPS_TEXTURE;
-    ddrval = IDirectDraw2_GetAvailableVidMem(lpDD2, &DDSCaps, &dwTotalMem, &dwFreeMem );
-    if(ddrval != DD_OK)
-    {
-		return FALSE;
-    };
-
-	*TMem = dwFreeMem;
-
-	RELEASE(lpDD2);
-
-    return TRUE;
-#endif
-};
-
-
 
 #ifdef OPT_ON
 #pragma optimize( "", off )

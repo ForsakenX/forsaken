@@ -37,9 +37,6 @@
 
 typedef struct TLOADHEADER{
 	uint16	CurrentBPP;
-	DWORD	VidMemBefore;
-	DWORD	VidMemEstimate;
-	DWORD	VidMemAfter;
 	int		state;
 	uint16 num_texture_files;
 	uint16				Xsize[MAXTPAGESPERTLOAD];		// the Xsize now
@@ -77,22 +74,15 @@ void TloadReleaseTexture(TLOADHEADER * Tloadheader, int n);
 void ReleaseTloadheader( TLOADHEADER * Tloadheader );
 
 BOOL TloadAllTextures(TLOADHEADER * Tloadheader);
-//LPDIRECTDRAWSURFACE TloadSurface(LPDIRECTDRAW lpDD, LPCSTR lpName,
-//                   LPDDSURFACEDESC lpFormat, DWORD memoryflag);
 
 BOOL
 TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width , uint16 * Height );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
-//LPDIRECTDRAWSURFACE CreateTextureSurf(LPDIRECTDRAW lpDD, LPDDSURFACEDESC lpFormat, DWORD memoryflag, DWORD dwWidth, DWORD dwHeight);
 
 int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
-BOOL
-TloadCheckForLostSurfaces(TLOADHEADER * Tloadheader);
 BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n);
 
-//BOOL InitCopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
-//BOOL CopyDDSurfaceToTextureSurfaces ( LPDIRECTDRAWSURFACE lpDDS_source, LPDIRECTDRAWSURFACE lpDDS_dest1, LPDIRECTDRAWSURFACE lpDDS_dest2 );
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
 
 #endif	//TLOAD_INCLUDED

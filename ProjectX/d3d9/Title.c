@@ -4999,28 +4999,21 @@ BOOL DisplayTitle(void)
 										   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 		
-		
-		TloadCheckForLostSurfaces(&Tloadheader);
-
-		
 		Build_View();
 		CurrentCamera.View = view;
 
-//		if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
 		if (FSBeginScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : BeginScene failed\n" );
 			return FALSE;
 		}
 
-//		if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
 		if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		{
 			Msg( "DisplayTitle() : SetMatrix failed\n" );
 			return FALSE;
 		}
 
-		//if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport) != D3D_OK )
 		if( FSSetViewPort(&CurrentCamera.Viewport) != D3D_OK )
 		{
 #ifdef DEBUG_VIEWPORT
@@ -5040,7 +5033,6 @@ BOOL DisplayTitle(void)
 		InitPolySort();
 
 		// reset all the normal execute status flags...
-//		lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 		set_normal_states();
 
 		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
@@ -5063,7 +5055,6 @@ BOOL DisplayTitle(void)
 #endif
 
 		// set all the Translucent execute status flags...
-//		lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 		set_alpha_states();
 
 		// display clipped translucencies
@@ -5138,7 +5129,6 @@ BOOL DisplayTitle(void)
 
 			ExecuteLines( group, &RenderBufs[ 0 ] );
 
-//		if (lpDev->lpVtbl->EndScene(lpDev) != D3D_OK)
 		if (FSEndScene() != D3D_OK)
 		{
 			Msg( "DisplayTitle() : EndScene failed\n" );

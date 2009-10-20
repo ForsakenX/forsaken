@@ -5002,7 +5002,6 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
   if( MyGameStatus == STATUS_QuitCurrentGame )
     return TRUE;
 
-  TloadCheckForLostSurfaces(&Tloadheader);
   memset( (void*) &IsGroupVisible[0] , 0 , MAXGROUPS * sizeof(uint16) );
   cral += (framelag*2.0F);
 
@@ -6014,8 +6013,6 @@ int our_last_polygons = 0;
 // TODO need to find replacement for D3DSTATS9
 BOOL Our_CalculateFrameRate(void)
 {
-//	int polygons;
-//	D3DSTATS9 stats;
 	char buf[256];
 	static int avg_time_per_frame = 0;
 
@@ -6029,38 +6026,21 @@ BOOL Our_CalculateFrameRate(void)
 		// first time running so bank
 		if ( our_timer.seconds != 0.0F )
 		{
-
-			// ask d3d for stats
-			//memset(&stats, 0, sizeof(D3DSTATS));
-			//stats.dwSize = sizeof(D3DSTATS);
-			//d3dapp->lpD3DDevice->lpVtbl->GetStats( d3dapp->lpD3DDevice, &stats);
-
-//#ifdef DEBUG_ON
-			// calculate average triangels per second
-			//polygons = stats.dwTrianglesDrawn - our_last_polygons;
-			//our_last_polygons = polygons;
-			//TPS = (long)(polygons / our_timer.seconds);
-//#endif
-
 			// calculate average frames per second
 			FPS = (float) our_count / (float) our_timer.seconds;
 
 			// average time per frame in milliseconds
 			avg_time_per_frame = (int)((1.0F / FPS) * 1000.0F);
 
+			//
 			our_count = 0;
-
 		}
 	}
   
 	// display the framerate
 	if( myglobs.bShowFrameRate )
 	{
-//#ifdef DEBUG_ON
-//		sprintf(&buf[0], "FPS %d - AVG F %d MS - TPS %d", (int) FPS, avg_time_per_frame, (int) TPS );
-//#else
 		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
-//#endif
 		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
 	}
 
@@ -6073,8 +6053,7 @@ BOOL Our_CalculateFrameRate(void)
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*3, 2 );
 
 		// memory information
-		sprintf(&buf[0], "Mem %d - vidBefore %d - vidAfter %d",
-			(int)MemUsed, Tloadheader.VidMemBefore, Tloadheader.VidMemAfter );
+		sprintf(&buf[0], "Mem %d",(int)MemUsed );
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*4, 2 );
 
 		// sound memory info
