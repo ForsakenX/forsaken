@@ -25,7 +25,7 @@
 #include "trigarea.h"
 #include "bsp.h"
 #include "lines.h"
-#include "magic.h"
+
 #include "visi.h"
 #include "enemies.h"
 #include "spotfx.h"

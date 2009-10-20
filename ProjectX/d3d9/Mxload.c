@@ -45,7 +45,7 @@ mxtype : uint16 // always 0 for mx format
 #include "networking.h"
 #include "mxload.h"
 #include "models.h"
-#include "magic.h"
+
 #include "sfx.h"
 #include "spotfx.h"
 #include "XMem.h"
@@ -246,7 +246,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
 			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
-			//bjd - Mxloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
 
 			/*	create a vertex buffer	*/
 			if (FAILED(FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], num_vertices)))
@@ -456,7 +455,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						MFacePnt->pad &= ~1;
 					}
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
-					FixUV( &FacePnt, lpBufStart, tpage, /*Mxloadheader->Group[group].org_vertpnt[execbuf]*/ Mxloadheader->Group[group].originalVerts[execbuf]);
+					FixUV( &FacePnt, lpBufStart, tpage, Mxloadheader->Group[group].originalVerts[execbuf]);
 //					FacePnt++;
 					//lpD3DLVERTEX+=3;
 					MFacePnt++;
@@ -673,7 +672,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 						}
 						Buffer = ( char * ) FloatPnt;
 
-						FixUV_Anim( PolyAnim, lpD3DLVERTEX, /*Mxloadheader->Group[group].org_vertpnt[execbuf]*/Mxloadheader->Group[group].originalVerts[execbuf] );
+						FixUV_Anim( PolyAnim, lpD3DLVERTEX, Mxloadheader->Group[group].originalVerts[execbuf] );
 
 						if( Panel )
 						{
@@ -1081,8 +1080,6 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 				Mxloadheader->Group[group].poly_ptr[i] = NULL;
 			}
 
-//			free(Mxloadheader->Group[group].org_vertpnt[i]);
-
 			PolyAnim = Mxloadheader->Group[group].polyanim[i];
 
 			if( PolyAnim )
@@ -1384,7 +1381,6 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 //			lpD3DLVERTEX1 = (LPD3DLVERTEX) debDesc1.lpData;
 
 			//ColourPnt = Mxloadheader1->Group[group].org_colors[i];
-			//bjd VertPtr = Mxloadheader1->Group[group].org_vertpnt[i];
 			VertPtr = Mxloadheader1->Group[group].originalVerts[i];
 
 			for( e = 0 ; e < Mxloadheader1->Group[group].num_verts_per_execbuf[i] ; e++ )

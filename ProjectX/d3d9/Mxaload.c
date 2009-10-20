@@ -58,7 +58,7 @@ num_frames : uint16 // number of animation frames
 #include "pickups.h"
 #include "mxload.h"
 #include "mxaload.h"
-#include "magic.h"
+
 #include "sfx.h"
 #include "spotfx.h"
 #include "XMem.h"
@@ -534,19 +534,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				{
 					for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 					{
-/*
-						memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-						debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/
-//						if( Mxaloadheader->Group[ group ].lpExBuf[ execbuf ]->lpVtbl->Lock(
-//							Mxaloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK ) // bjd
-/*
-						if (FSLockExecuteBuffer(Mxaloadheader->Group[ group ].lpExBuf[ execbuf ], &debDesc ) != D3D_OK )
-						{
-							Msg( "Mxaload : Lock ExecBuffer failed\n" );
-							return FALSE;
-						}
-*/
 						if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[ group ].renderObject[execbuf], &lpD3DLVERTEX)))
 						{
 							Msg( "Mxaload : Lock VertexBuffer failed\n" );
@@ -571,13 +558,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 #endif
 							Buffer += ( num_anim_vertices * sizeof( MXAVERT ) );
 						}
-/*
-						if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-						{
-							Msg( "Mxaload : Unlock ExecBuffer failed\n" );
-							return FALSE ;
-						}
-*/						
+
 						if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 						{
 							Msg( "Mxaload : Unlock VertexBuffer failed\n" );
@@ -1100,7 +1081,7 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 				lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( (char*) lpBufStart+( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX += 8;
 
-				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group]./*org_vertpnt*/originalVerts[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+				lpD3DLVERTEX2 = ( LPD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].originalVerts[execbuf] + ( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 				lpD3DLVERTEX2 += 8;
 				
 				FromVert = ( MXAVERT * ) Mxaloadheader->frame_pnts[FromFrame][group][execbuf][texgroup];

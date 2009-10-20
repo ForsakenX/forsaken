@@ -28,7 +28,7 @@
 #include "enemies.h"
 #include "controls.h"
 #include "AI.h"
-#include "magic.h"
+
 #include "extforce.h"
 #include "Teleport.h"
 #include "spotfx.h"

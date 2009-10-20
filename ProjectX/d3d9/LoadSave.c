@@ -21,7 +21,7 @@
 #include "pickups.h"
 #include "enemies.h"
 #include "mload.h"
-#include "magic.h"
+
 #include "Ships.h"
 #include "title.h"
 #include "2dpolys.h"

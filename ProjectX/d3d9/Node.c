@@ -37,7 +37,7 @@
 #include "d3dappi.h"
 #include "AI.h"
 #include "lines.h"
-#include "magic.h"
+
 #include "collision.h"
 #include "XMem.h"
 

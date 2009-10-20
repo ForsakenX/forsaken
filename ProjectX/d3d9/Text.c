@@ -20,7 +20,7 @@
 #include "Title.h"
 #include "Text.h"
 #include "screenpolys.h"
-#include "magic.h"
+
 #include "XMem.h"
 #include "local.h"
 #include "stats.h"

@@ -51,7 +51,7 @@ num_zones : uint16
 #include "bsp.h"
 #include "enemies.h"
 #include "skin.h"
-#include "magic.h"
+
 #include "primary.h"
 #include "secondary.h"
 #include "XMem.h"

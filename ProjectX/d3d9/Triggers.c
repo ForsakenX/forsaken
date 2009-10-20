@@ -22,7 +22,7 @@
 #include "water.h"
 #include "spotfx.h"
 #include "text.h"
-#include "magic.h"
+
 #include "TrigArea.h"
 #include "ExtForce.h"
 #include "rtlight.h"

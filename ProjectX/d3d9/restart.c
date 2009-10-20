@@ -15,7 +15,7 @@
 #include <malloc.h>
 #include "mload.h"
 #include "models.h"
-#include "magic.h"
+
 #include "2dpolys.h"
 #include "primary.h"
 #include "restart.h"

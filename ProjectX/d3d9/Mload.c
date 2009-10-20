@@ -104,7 +104,7 @@ num_start_points : uint16
 #include "mload.h"
 #include "lights.h"
 #include "triggers.h"
-#include "magic.h"
+
 #include "Xmem.h"
 #include "util.h"
 
@@ -651,7 +651,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 //						FacePnt->wFlags = MFacePnt->pad;
 					}
 
-					FixUV( &FacePnt, lpBufStart, tpage, /*Mloadheader->Group[group].org_vertpnt[execbuf]*/ Mloadheader->Group[group].originalVerts[execbuf] );
+					FixUV( &FacePnt, lpBufStart, tpage, Mloadheader->Group[group].originalVerts[execbuf] );
 					//FacePnt++;
 					//MFacePnt++;
 					MFacePnt++;
@@ -1114,7 +1114,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 							TanimUV++;
 						}
 						Buffer = ( char * ) FloatPnt;
-						FixUV_Anim( PolyAnim, lpD3DLVERTEX, /*Mloadheader->Group[group].org_vertpnt[execbuf]*/ Mloadheader->Group[group].originalVerts[execbuf] );
+						FixUV_Anim( PolyAnim, lpD3DLVERTEX, Mloadheader->Group[group].originalVerts[execbuf] );
 						PolyAnim++;
 					}
 

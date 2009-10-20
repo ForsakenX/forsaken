@@ -18,7 +18,7 @@
 #include "bsp.h"
 #include "enemies.h"
 #include "skin.h"
-#include "magic.h"
+
 #include "primary.h"
 #include "secondary.h"
 #include "2dpolys.h"

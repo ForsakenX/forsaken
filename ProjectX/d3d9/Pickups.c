@@ -39,7 +39,7 @@
 #include "lines.h"
 #include "text.h"
 #include "screenpolys.h"
-#include "magic.h"
+
 #include "goal.h"
 #include "local.h"
 #include "XMem.h"

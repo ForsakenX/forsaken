@@ -28,7 +28,7 @@
 #include "lines.h"
 #include "mxload.h"
 #include "mxaload.h"
-#include "magic.h"
+
 #include "SpotFX.h"
 #include "XMem.h"
 #include "util.h"

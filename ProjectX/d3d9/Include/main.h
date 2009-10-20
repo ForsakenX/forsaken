@@ -79,5 +79,6 @@
 #define MAX_FOV				(120.0F) // max horizontal field-of-view (in degrees)
 
 #define MAXLEVELS			(64)
+#define	MAGIC_NUMBER		0x584A5250
 
 #endif	// MAIN_INCLUDED

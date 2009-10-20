@@ -2961,7 +2961,6 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 //			OrigColours = DstMloadheader->Group[ Group ].org_colors[ ExecBuf ];
-			//bjd VertPtr = DstMloadheader->Group[ Group ].org_vertpnt[ ExecBuf ];
 			VertPtr = DstMloadheader->Group[ Group ].originalVerts[ ExecBuf ];
 
 			while( Vert-- )
@@ -3416,7 +3415,7 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 
 //			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
 
-			lpD3DLVERTEX2 = MXAloadheader->Group[group].org_vertpnt[execbuf];
+			lpD3DLVERTEX2 = MXAloadheader->Group[group].originalVerts[execbuf];
 			
 			lpD3DLVERTEX = lpPointer;
 			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -3494,7 +3493,7 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 				return FALSE;
 			}
 
-			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ]./*org_vertpnt*/originalVerts[ExecBuf];
+			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].originalVerts[ExecBuf];
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
 			while( Vert-- )
@@ -3640,7 +3639,6 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 			}
 
 //			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
-			//bjd SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].org_vertpnt[ExecBuf];
 			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].originalVerts[ExecBuf];
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];

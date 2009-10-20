@@ -22,7 +22,7 @@
 #include "spotfx.h"
 #include "Trigarea.h"
 #include "Teleport.h"
-#include "magic.h"
+
 #include "sfx.h"
 #include "Ships.h"
 #include "XMem.h"

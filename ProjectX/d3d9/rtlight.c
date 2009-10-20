@@ -14,7 +14,7 @@
 #include "util.h"
 #include "rtlight.h"
 #include "Lights.h"
-#include "magic.h"
+
 #include "XMem.h"
 
 #ifdef OPT_ON

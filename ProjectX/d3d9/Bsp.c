@@ -10,7 +10,7 @@
 #include "mload.h"
 #include "bsp.h"
 #include "file.h"
-#include "magic.h"
+
 #include "XMem.h"
 #include "util.h"
 

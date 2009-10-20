@@ -21,7 +21,7 @@
 #include "controls.h"
 #include "triggers.h"
 #include "enemies.h"
-#include "magic.h"
+
 #include "sphere.h"
 #include "secondary.h"
 #include "Restart.h"

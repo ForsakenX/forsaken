@@ -41,7 +41,7 @@
 #include "Local.h"
 #include "lines.h"
 #include "loadsave.h"
-#include "magic.h"
+
 #include "XMem.h"
 #include "net.h"
 #include "restart.h"
@@ -3977,7 +3977,7 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
   
 				num_polys = mxaheader->Group[Group].num_polys_per_execbuf[ExecBuf];
 				poly_ptr = mxaheader->Group[Group].poly_ptr[ExecBuf];
-				vertex_ptr = mxaheader->Group[Group].org_vertpnt[ExecBuf];
+				vertex_ptr = mxaheader->Group[Group].originalVerts[ExecBuf];
 
 				intersection_points = 0;
 				scanlinenum = 0;
@@ -4153,7 +4153,6 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
   
 				num_polys = mxheader->Group[Group].num_polys_per_execbuf[ExecBuf];
 				poly_ptr = mxheader->Group[Group].poly_ptr[ExecBuf];
-				//bjd vertex_ptr = mxheader->Group[Group].org_vertpnt[ExecBuf];
 				vertex_ptr = mxheader->Group[Group].originalVerts[ExecBuf];
 
 				intersection_points = 0;
@@ -4757,8 +4756,6 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 
 //	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
 
-	
-	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
 	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 
 	
@@ -11377,7 +11374,6 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
-			//bjd VertPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
 			VertPtr = DstMloadheader->Group[Group].originalVerts[ExecBuf];
 		
 			for (i=0; i<Vert; i++)
@@ -11445,7 +11441,7 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 			for( ExecBuf = 0; ExecBuf < ModelHeaderPtr->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
 				TotalVerts = ModelHeaderPtr->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
-				VertPtr = ModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
+				VertPtr = ModelHeaderPtr->Group[Group].originalVerts[ExecBuf];
 
 				for (i=8; i<TotalVerts; i++)	//ignore bounding box, so start at 8...
 				{
@@ -11476,7 +11472,6 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 			for( ExecBuf = 0; ExecBuf < MxModelHeaderPtr->Group[ Group ].num_execbufs; ExecBuf++ )
 			{   
 				TotalVerts = MxModelHeaderPtr->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
-				//bjd VertPtr = MxModelHeaderPtr->Group[Group].org_vertpnt[ExecBuf];
 				VertPtr = MxModelHeaderPtr->Group[Group].originalVerts[ExecBuf];
 
 				for (i=8; i<TotalVerts; i++)	//ignore bounding box, so start at 8...
@@ -11540,7 +11535,7 @@ BOOL MakeTranslucent( uint16 Model )
 
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
-				ColourPtr = DstMloadheader->Group[Group].org_vertpnt[ExecBuf];
+				ColourPtr = DstMloadheader->Group[Group].originalVerts[ExecBuf];
 
 
 				for (i=0; i<Vert; i++)
@@ -11605,7 +11600,6 @@ BOOL MakeTranslucent( uint16 Model )
 
 				DstMxloadheader->Group[ Group ].exec_type[ ExecBuf ] = 0;
 
-				//bjd ColourPtr = DstMxloadheader->Group[Group].org_vertpnt[ExecBuf];
 				ColourPtr = DstMxloadheader->Group[Group].originalVerts[ExecBuf];
 
 				for (i=0; i<Vert; i++)
@@ -11658,7 +11652,6 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 		return FALSE;
 	}
 
-	//bjd VertPtr = &(DstMloadheader->Group[Group].org_vertpnt[ExecBuf])[VertexNo];
 	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 	  
 	vred = (uint8)RGBA_GETRED(VertPtr->color);
@@ -14819,7 +14812,6 @@ void GetTVCoords( POLY *poly, float zoffset )
 			{
 				for ( vert = 0; vert < ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vertices; vert++ )
 				{
-					//bjd VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].org_vertpnt[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
 					VertPtr = &ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].originalVerts[ e ][ ModelHeaders[ TITLE_MODEL_MenuTV ].Group[ g ].polyanim[ e ]->vert[ vert ] ];
 					
 					switch( vert )

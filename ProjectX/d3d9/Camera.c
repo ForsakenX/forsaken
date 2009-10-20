@@ -13,7 +13,7 @@
 #include "networking.h"
 #include "mload.h"
 #include "camera.h"
-#include "magic.h"
+
 #include "XMem.h"
 #include "util.h"
 

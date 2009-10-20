@@ -863,10 +863,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Magic.h"
-				>
-			</File>
-			<File
 				RelativePath="Include\main.h"
 				>
 			</File>

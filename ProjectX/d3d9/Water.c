@@ -22,7 +22,7 @@
 #include "Mload.h"
 #include "Transexe.h"
 #include "water.h"
-#include "magic.h"
+
 #include "XMem.h"
 #include "util.h"
 

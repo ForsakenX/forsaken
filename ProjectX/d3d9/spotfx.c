@@ -29,7 +29,7 @@
 #include "AI.h"
 #include "title.h"
 #include "spotfx.h"
-#include "magic.h"
+
 #include "sfx.h"
 #include "util.h"
 
