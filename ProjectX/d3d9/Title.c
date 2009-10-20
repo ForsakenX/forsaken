@@ -14717,7 +14717,7 @@ void KillBikeCharPic( MENU *Menu )
 // also seems to be a pure rewrite of TloadTextureSurf()
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 {
-	LPDIRECT3DSURFACE9 lpSrcTextureSurf;
+	LPDIRECT3DTEXTURE9 texture;
 	char NewName2[256];
 
 	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
@@ -14728,13 +14728,13 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 	if( File_Exists( &NewName2[0] ) )
 	{
 			if( MipMap && Tloadheader->MipMap[n] )
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
+				FSCreateTexture(&texture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
 			else
-				FSCreateTexture(&lpSrcTextureSurf, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
+				FSCreateTexture(&texture, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
 	}
 	
-	Tloadheader->lpTexture[n] = lpSrcTextureSurf;
-	lpSrcTextureSurf = NULL;
+	Tloadheader->lpTexture[n] = texture;
+	texture = NULL;
 
 	return TRUE;
 }

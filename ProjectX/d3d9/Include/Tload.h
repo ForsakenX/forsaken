@@ -45,7 +45,6 @@ typedef struct TLOADHEADER{
 	BOOL				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
 	DWORD				SizeInVidMem[MAXTPAGESPERTLOAD]; // Calculated size in video memory....
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
-//    LPDIRECTDRAWSURFACE lpTextureSurf[MAXTPAGESPERTLOAD]; /* surfaces */
     LPDIRECT3DTEXTURE9  lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
 	D3DMATERIAL9		lpMat[MAXTPAGESPERTLOAD];
 /*
@@ -53,7 +52,6 @@ typedef struct TLOADHEADER{
 	LPDIRECT3DMATERIAL	lpMat[MAXTPAGESPERTLOAD];
 	D3DMATERIALHANDLE	hMat[MAXTPAGESPERTLOAD];
 */
-    BOOL                bTexturesInVideo[MAXTPAGESPERTLOAD]; /* are textures in video memory? */
 	BOOL				MipMap[MAXTPAGESPERTLOAD];
 
 	BOOL				PlaceHolder[MAXTPAGESPERTLOAD];	// is the texture a placeholder ( for subsequent dynamic loading of textures? )

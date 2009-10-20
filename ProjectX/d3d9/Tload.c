@@ -82,12 +82,8 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	Tloadheader->num_texture_files = 0;
 	for( i = 0 ; i < MAXTPAGESPERTLOAD ; i++ )
 	{
-//		Tloadheader->lpTextureSurf[i] = NULL; // surfaces
 		Tloadheader->lpTexture[i]     = NULL; // texture
-//		Tloadheader->hTex[i]          = 0;	  // texture handle
-		//Tloadheader->lpMat[i]         = NULL; // material
 		memset(&Tloadheader->lpMat[i], 0, sizeof(D3DMATERIAL9));
-//		Tloadheader->hMat[i]          = 0;	  // material handle
 		Tloadheader->CurScale[i]      = 0;	  // handle
 		Tloadheader->Scale[i]		  = FALSE;// Should it scale??
 
@@ -354,7 +350,6 @@ void
 TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 {
     RELEASE(Tloadheader->lpTexture[n]);
-//    RELEASE(Tloadheader->lpTextureSurf[n]);
 
 	if ( Tloadheader->PlaceHolder[ n ] )
 	{
