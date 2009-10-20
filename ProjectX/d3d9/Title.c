@@ -14699,9 +14699,6 @@ void LoadBikeCharPic(MENUITEM *Item)
 		else
 			return;
 	}
-
-
-	//LoadGeneralPic(Item, header, &Biker, &BikerScrPoly, &BikerDisplayed);
 }
 
 void KillBikeCharPic( MENU *Menu )
@@ -14723,12 +14720,18 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 
 	if( ! File_Exists( name ) )
 	{
-		Change_Ext( Tloadheader->PlaceHolderFile[ n ], name, ".BMP" );
+		Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
 		name = &NewName2[0];
 	}
 
 	if( File_Exists( name ) )
-		update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
+	{
+		// for some reason level pic would not show up properly if you let update_texture_from_file create the texture for us
+		if(!Tloadheader->lpTexture[n])
+			FSCreateTexture(&Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
+		else
+			update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
+	}
 
 	return TRUE;
 }
@@ -14926,12 +14929,6 @@ BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO *
 	ScrPolys[*scrpoly].y3 = ymax;					
 	ScrPolys[ *scrpoly ].Frame = (float)*frame;
 
-	// load correct texture...
-/*
-	newimagefile = (*header)->tpage_name;
-	strcpy (Tloadheader.ImageFile[(*header)->vid_tpage_index], newimagefile);
-	TloadReloadTextureSurf( &Tloadheader, (*header)->vid_tpage_index );
-*/
 	return TRUE;
 }
 

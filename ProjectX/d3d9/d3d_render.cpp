@@ -717,6 +717,8 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
+	if(!dstTexture) // incase texture doesn't exist yet
+		return FSCreateTexture(&dstTexture, fileName, width, height, numMips, colourkey);
 	create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
 	dstTexture->AddDirtyRect(NULL);
 	hr = d3dappi.lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
