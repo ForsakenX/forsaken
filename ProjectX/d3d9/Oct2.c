@@ -7089,41 +7089,6 @@ BOOL SaveSnapShot( int8 * Filename )
 #endif
 }
 
-static int CheckFileWriteable( char *fname )
-{
-    HANDLE      fhandle;
-
-    if ( ( fhandle = CreateFile( fname, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL ))
-    == INVALID_HANDLE_VALUE )
-  {
-    DebugPrintf( "CreateFile( %s ) failed\n", fname );
-    return 0;
-  }
-    else
-  {
-    DWORD attr;
-
-        CloseHandle( fhandle );
-    if ( ( attr = GetFileAttributes( fname ) ) == 0xFFFFFFFFL )
-    {
-      DebugPrintf( "GetFileAttributes( %s ) failed\n", fname );
-      return -1;
-    }
-        if ( !SetFileAttributes( fname, FILE_ATTRIBUTE_NORMAL ) )
-    {
-      DebugPrintf( "SetFileAttributes( %s, 0x%x ) failed\n", fname, FILE_ATTRIBUTE_NORMAL );
-      return -2;
-    }
-        if ( !SetFileAttributes( fname, attr ) )
-    {
-      DebugPrintf( "SetFileAttributes( %s, 0x%x ) failed\n", fname, attr );
-      return -3;
-    }
-  }
-
-  return 1;
-}
-
 // if we met the max kills limit then set flag to change level
 void CheckMetKillLimit()
 {
