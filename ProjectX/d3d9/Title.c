@@ -14713,28 +14713,22 @@ void KillBikeCharPic( MENU *Menu )
 	}
 }
 
-// bjd - shouldn't this check for a loaded surface and first remove it?
-// also seems to be a pure rewrite of TloadTextureSurf()
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 {
-	LPDIRECT3DTEXTURE9 texture;
+	char * name = Tloadheader->PlaceHolderFile[ n ];
 	char NewName2[256];
 
 	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
 		return FALSE;
 
-	Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
-
-	if( File_Exists( &NewName2[0] ) )
+	if( ! File_Exists( name ) )
 	{
-			if( MipMap && Tloadheader->MipMap[n] )
-				FSCreateTexture(&texture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
-			else
-				FSCreateTexture(&texture, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
+		Change_Ext( Tloadheader->PlaceHolderFile[ n ], name, ".BMP" );
+		name = &NewName2[0];
 	}
-	
-	Tloadheader->lpTexture[n] = texture;
-	texture = NULL;
+
+	if( File_Exists( name ) )
+		update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
 
 	return TRUE;
 }

@@ -672,7 +672,7 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
+HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey, D3DPOOL pool)
 {
 	D3DXIMAGE_INFO imageInfo;
 
@@ -684,7 +684,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 				0,
 				// most likely will end up as the format the file is in
 				D3DFMT_A8R8G8B8,
-				D3DPOOL_MANAGED,
+				pool,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
 				(*colourkey) ? FSColourKeyBlack : 0, // colour key
@@ -711,6 +711,23 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int w
 	}
 
 	return LastError;
+}
+
+HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
+{
+	HRESULT hr;
+    LPDIRECT3DTEXTURE9 new_texture = NULL;
+	create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
+	dstTexture->AddDirtyRect(NULL);
+	hr = d3dappi.lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
+	new_texture = NULL;
+	return hr;
+}
+
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
+{
+	// had to use the default pool so we could update the texture above
+	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_DEFAULT);//D3DPOOL_MANAGED);
 }
 
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)

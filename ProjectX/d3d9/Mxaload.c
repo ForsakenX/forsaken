@@ -803,19 +803,14 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 //				if( ((Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 				if( Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
-//					if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
 					if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))
 					{
 						return FALSE;
 					}
-					AddTransExe( &Matrix , /*Mxaloadheader->Group[group].lpExBuf[i]*/&Mxaloadheader->Group[group].renderObject[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
+					AddTransExe( &Matrix , &Mxaloadheader->Group[group].renderObject[i] , 0, (uint16) -1, in_group, Mxaloadheader->Group[ group ].num_verts_per_execbuf[i] );
 				}
 				else
 				{
-/*
-					if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxaloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-						return FALSE;
-*/					
 					if (FAILED(draw_object(&Mxaloadheader->Group[group].renderObject[i])))
 					{
 						return FALSE;
