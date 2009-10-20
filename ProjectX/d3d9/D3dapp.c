@@ -5,6 +5,11 @@
 #include "util.h"
 
 BOOL Wine = FALSE;
+int default_width;
+int default_height;
+int default_bpp;
+int default_x;
+int default_y;
 
 extern void SetInputAcquired( BOOL );
 extern void SetCursorClip( BOOL );

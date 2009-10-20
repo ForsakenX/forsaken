@@ -578,10 +578,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Misc.c"
-				>
-			</File>
-			<File
 				RelativePath="Mload.c"
 				>
 			</File>
