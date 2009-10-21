@@ -134,6 +134,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
+HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
@@ -150,7 +151,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
-HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT draw_2d_object(RENDEROBJECT *renderObject);

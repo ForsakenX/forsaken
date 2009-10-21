@@ -52,8 +52,8 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
 	d3dpp.PresentationInterval			= D3DPRESENT_DONOTWAIT;//D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
-	d3dpp.BackBufferWidth				= 640;	// resolution width
-	d3dpp.BackBufferHeight				= 480;	// resolution height
+	d3dpp.BackBufferWidth				= 800;	// resolution width
+	d3dpp.BackBufferHeight				= 600;	// resolution height
 	//d3dpp.Flags	// not needed for now
 
 	// window mode
@@ -748,7 +748,7 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -768,7 +768,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -780,7 +780,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 }
 
 
-HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -884,6 +884,19 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	LastError = lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
+	if (FAILED(LastError))
+	{
+		OutputDebugString("can't create vertex buffer\n");
+	}
+
+	OutputDebugString("created vertex buffer\n");
+
+	return LastError;
+}
+
+HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+{
+	LastError = lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD),  D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &renderObject->lpD3DIndexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");

@@ -5642,10 +5642,10 @@ void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 	FSCreateDynamicVertexBuffer(&RenderBufs[1], 32767);
 	// index data as well
 	FSCreateDynamicVertexBuffer(&RenderBufs[2], 32767);
-	FSCreateIndexBuffer(&RenderBufs[2], 32767*3);
+	FSCreateDynamicIndexBuffer(&RenderBufs[2], 32767*3);
 	// indexed pre-transformed (2d)
-	FSCreatePretransformedVertexBuffer(&RenderBufs[3], 32767);
-	FSCreateIndexBuffer(&RenderBufs[3], 32767*3);
+	FSCreateDynamic2dVertexBuffer(&RenderBufs[3], 32767);
+	FSCreateDynamicIndexBuffer(&RenderBufs[3], 32767*3);
 }
 
 void ReleaseRenderBufs( void )
@@ -6654,7 +6654,7 @@ void PrintInitViewStatus( BYTE Status )
 {
 	int i;
 	RENDEROBJECT ro;
-	FSCreatePretransformedVertexBuffer(&ro, 32767);
+	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
 		CenterPrint4x5Text( InitViewMessages[i], ( d3dappi.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
