@@ -139,7 +139,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	}
 	
 
-//bjd CHECK	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 && d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures != 0)
+//bjd CHECK	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 )
 	{
 		// store the current Bytes per pixel...min of 8...
 		Tloadheader->CurrentBPP = bpp;
@@ -388,13 +388,8 @@ BOOL
 TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
-//bjd    if (d3dappi.ThisDriver.bDoesTextures) 
-	{
-        for (i = 0; i < Tloadheader->num_texture_files; i++)
-		{
-            ATTEMPT(TloadTextureSurf( Tloadheader , i));
-        }
-    }
+    for (i = 0; i < Tloadheader->num_texture_files; i++)
+        ATTEMPT(TloadTextureSurf( Tloadheader , i));
     return TRUE;
 
 exit_with_error:
@@ -476,11 +471,6 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 	int	i;
 	char * pnt1;
 	char * pnt2;
-
-/* bjd
-	if( !d3dappi.Driver[d3dappi.CurrDriver].bDoesTextures )
-		return 0;
-*/
 
 	pnt1 = strrchr( Name, '\\' );
 	if( pnt1 )

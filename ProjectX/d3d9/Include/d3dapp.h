@@ -47,10 +47,7 @@ typedef struct tagD3DAppD3DDriver {
 	D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
     GUID Guid;          /* it's GUID */
     BOOL bIsHardware;   /* does this driver represent a hardware device? */
-    BOOL bDoesTextures; /* does this driver do texture mapping? */
-    BOOL bDoesZBuffer;  /* can this driver use a z-buffer? */
     BOOL bSquareOnly;  /* can this driver only have Square Texures.. */
-    BOOL bCanDoWindow;  /* can it render to Window's display depth? */
 	BOOL bTransparency; // Does this Driver do Colour Key Transparency on Textures?
 } D3DAppD3DDriver;
 #endif
