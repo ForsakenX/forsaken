@@ -556,13 +556,6 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 	return i;
 }
 
-// TODO
-BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n)
-{
-	DebugPrintf("STUB: Need to recreate this function.\n");
-	return TRUE;
-}
-
 #ifdef OPT_ON
 #pragma optimize( "", off )
 #endif

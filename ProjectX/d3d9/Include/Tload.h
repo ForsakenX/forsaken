@@ -78,7 +78,6 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 
 int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
-BOOL TloadReloadTextureSurf(TLOADHEADER * Tloadheader , int16 n);
 
 BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n );
 
