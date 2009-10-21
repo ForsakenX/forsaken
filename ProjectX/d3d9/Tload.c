@@ -138,76 +138,72 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		}
 	}
 	
-
-//bjd CHECK	if( d3dappi.Driver[d3dappi.CurrDriver].bIsHardware != 0 )
+	// store the current Bytes per pixel...min of 8...
+	Tloadheader->CurrentBPP = bpp;
+	
+	
+	// get the stats for the Currently files..
+	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
 	{
-		// store the current Bytes per pixel...min of 8...
-		Tloadheader->CurrentBPP = bpp;
-		
-		
-		// get the stats for the Currently files..
-		for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
-		{
-			Tloadheader->CurScale[i] = 0;
+		Tloadheader->CurScale[i] = 0;
 
-			if ( !Tloadheader->PlaceHolder[ i ] )
-			{
+		if ( !Tloadheader->PlaceHolder[ i ] )
+		{
 //				DebugPrintf( "Tload: texture file %2d = %s\n", i, Tloadheader->ImageFile[ i ] );
-				if (TloadGetStats( Tloadheader , i , (char*) &Tloadheader->ImageFile[i] ,
-								&Tloadheader->Xsize[i] , &Tloadheader->Ysize[i] ) != TRUE)
-				{
-					Msg( "TLoad() Failed on %s\n", Tloadheader->ImageFile[i] );
-					return FALSE;
-				}
+			if (TloadGetStats( Tloadheader , i , (char*) &Tloadheader->ImageFile[i] ,
+							&Tloadheader->Xsize[i] , &Tloadheader->Ysize[i] ) != TRUE)
+			{
+				Msg( "TLoad() Failed on %s\n", Tloadheader->ImageFile[i] );
+				return FALSE;
 			}
 		}
-		
-		for( e = 0 ; e < Tloadheader->num_texture_files*MAXSCALE ; e ++ )
+	}
+	
+	for( e = 0 ; e < Tloadheader->num_texture_files*MAXSCALE ; e ++ )
+	{
+		for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
 		{
-			for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
-			{
-				Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
-				Ysize = Tloadheader->Ysize[i] / ( 1 << Tloadheader->CurScale[i] );
+			Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
+			Ysize = Tloadheader->Ysize[i] / ( 1 << Tloadheader->CurScale[i] );
 /* bjd - TODO?
-				if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
+			if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
+			{
+				if( Xsize != Ysize )
 				{
-					if( Xsize != Ysize )
-					{
-						if( Xsize > Ysize )
-							Xsize = Ysize;
-						if( Ysize > Xsize )
-							Ysize = Xsize;
-					}
+					if( Xsize > Ysize )
+						Xsize = Ysize;
+					if( Ysize > Xsize )
+						Ysize = Xsize;
 				}
+			}
 */
-				if( MipMap && Tloadheader->MipMap[i] )
-				{
-					Xsize = (int) (Xsize * 1.4F);
-					Ysize = (int) (Ysize * 1.4F);
-				}
-
-				Tloadheader->SizeInVidMem[i] = Xsize * Ysize * Tloadheader->CurrentBPP;
-			}
-
-			LeastScaledThatCanbe = -1;
-			LeastScaledThatCanbeScale = MAXSCALE;
-
-			for( i = Tloadheader->num_texture_files-1 ; i >= 0 ; i-- )
+			if( MipMap && Tloadheader->MipMap[i] )
 			{
-				if( Tloadheader->Scale[i] && ( Tloadheader->CurScale[i] < LeastScaledThatCanbeScale ) )
-				{
-					LeastScaledThatCanbeScale = Tloadheader->CurScale[i];
-					LeastScaledThatCanbe = i;
-				}
+				Xsize = (int) (Xsize * 1.4F);
+				Ysize = (int) (Ysize * 1.4F);
 			}
 
-			if( LeastScaledThatCanbe != -1 )
+			Tloadheader->SizeInVidMem[i] = Xsize * Ysize * Tloadheader->CurrentBPP;
+		}
+
+		LeastScaledThatCanbe = -1;
+		LeastScaledThatCanbeScale = MAXSCALE;
+
+		for( i = Tloadheader->num_texture_files-1 ; i >= 0 ; i-- )
+		{
+			if( Tloadheader->Scale[i] && ( Tloadheader->CurScale[i] < LeastScaledThatCanbeScale ) )
 			{
-				Tloadheader->CurScale[LeastScaledThatCanbe]++;
-			}else{
-				// couldnt find any more to scale....
-				break;
+				LeastScaledThatCanbeScale = Tloadheader->CurScale[i];
+				LeastScaledThatCanbe = i;
 			}
+		}
+
+		if( LeastScaledThatCanbe != -1 )
+		{
+			Tloadheader->CurScale[LeastScaledThatCanbe]++;
+		}else{
+			// couldnt find any more to scale....
+			break;
 		}
 	}
 

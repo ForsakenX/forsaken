@@ -41,11 +41,7 @@ typedef float D3DVALUE, *LPD3DVALUE;
  */
 
 typedef struct tagD3DAppD3DDriver {
-    char Name[30];      /* short name of the driver */
-    char About[50];     /* short string about the driver */
-	D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
-    GUID Guid;          /* it's GUID */
-    BOOL bIsHardware;   /* does this driver represent a hardware device? */
+	//D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
     BOOL bSquareOnly;  /* can this driver only have Square Texures.. */
 } D3DAppD3DDriver;
 

@@ -190,6 +190,9 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dappi.WindowsDisplay.w = d3dpp.BackBufferWidth;
 	d3dappi.WindowsDisplay.h = d3dpp.BackBufferHeight;
 
+	d3dappi.ThisMode.w = d3dpp.BackBufferWidth;
+	d3dappi.ThisMode.h = d3dpp.BackBufferHeight;
+
 	/* do "after device created" stuff */
 	ZeroMemory( &viewport, sizeof(viewport) );
 	viewport.X = 0;
@@ -237,107 +240,6 @@ BOOL FlipBuffers()
 	lpD3DDevice->Present(NULL, NULL, NULL, NULL);
 
 	return TRUE;
-}
-
-/***************************************************************************/
-/*                      Setting the render state                           */
-/***************************************************************************/
-/*
- * Create and execute an execute buffer which will set the render state and
- * light state for the current viewport.
- */
-static BOOL SetUpZBuf( DWORD type )
-{
-	return TRUE;
-#if 0 // bjd
-	D3DEXECUTEBUFFERDESC debDesc;
-    D3DEXECUTEDATA d3dExData;
-    LPVOID lpBuffer, lpInsStart;
-    size_t size;
-	LPDIRECT3DEXECUTEBUFFER lpD3DExCmdBuf;
-
-	lpD3DExCmdBuf = NULL;
-
-    /*
-     * If there is no D3D Viewport, we must return true because it is not
-     * required.
-     */
-    if (!d3dappi.lpD3DViewport)
-        return TRUE;
-    /*
-     * Create an execute buffer of the required size
-     */
-    size = 0;
-    size += sizeof(D3DINSTRUCTION) * 3;
-    size += sizeof(D3DSTATE);
-    memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-    debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-    debDesc.dwFlags = D3DDEB_BUFSIZE;
-    debDesc.dwBufferSize = size;
-    LastError =
-        lpD3DDevice->lpVtbl->CreateExecuteBuffer(lpD3DDevice,
-                                             &debDesc, &lpD3DExCmdBuf, NULL);
-    if (LastError != D3D_OK) {
-        render_error_description("CreateExecuteBuffer failed in SetRenderState.\n%s",
-                              render_error_description(LastError));
-        goto exit_with_error;
-    }
-    /*
-     * Lock the execute buffer so it can be filled
-     */
-    LastError = lpD3DExCmdBuf->lpVtbl->Lock(lpD3DExCmdBuf, &debDesc);
-    if (LastError != D3D_OK) {
-        render_error_description("Lock failed on execute buffer in SetRenderState.\n%s",
-                              render_error_description(LastError));
-        goto exit_with_error;
-    }
-    memset(debDesc.lpData, 0, size);
-
-    lpInsStart = debDesc.lpData;
-    lpBuffer = lpInsStart;
-    /*
-     * Set render state
-     */
-    OP_STATE_RENDER(1, lpBuffer);
-
-	STATE_DATA(D3DRENDERSTATE_ZFUNC, type, lpBuffer);
-
-    OP_EXIT(lpBuffer);
-
-    LastError = lpD3DExCmdBuf->lpVtbl->Unlock(lpD3DExCmdBuf);
-    if (LastError != D3D_OK) {
-        render_error_description("Unlock failed on execute buffer in SetRenderState.\n%s",
-                              render_error_description(LastError));
-        goto exit_with_error;
-    }
-    /*
-     * Set the execute data and exectue the buffer
-     */
-    memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
-    d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
-    d3dExData.dwInstructionOffset = (ULONG) 0;
-    d3dExData.dwInstructionLength = (ULONG) ((char*)lpBuffer -
-                                                          (char*)lpInsStart);
-    lpD3DExCmdBuf->lpVtbl->SetExecuteData(lpD3DExCmdBuf, &d3dExData);
-
-    LastError = lpD3DDevice->lpVtbl->Execute(lpD3DDevice,
-                                                     lpD3DExCmdBuf,
-                                                     d3dappi.lpD3DViewport,
-                                                     D3DEXECUTE_UNCLIPPED);
-    if (LastError != D3D_OK) {
-        render_error_description("Execute failed in SetRenderState.\n%s",
-                              render_error_description(LastError));
-        goto exit_with_error;
-    }
-
-    RELEASE( lpD3DExCmdBuf );
-
-    return TRUE;
-
-exit_with_error:
-    RELEASE( lpD3DExCmdBuf );
-    return FALSE;
-#endif
 }
 
 #define STATE( K, V ) \
@@ -597,6 +499,29 @@ void set_alpha_fx_states( void )
 //	  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
 //    }
 }
+
+/* bjd - CHECK
+
+// game attempted to use these modes in order
+// first one that was fully supported was used
+
+mode	D3DPTBLENDCAPS_MODULATE = D3DTBLEND_MODULATE;
+src		D3DPBLENDCAPS_ONE		= D3DBLEND_ONE; 
+dest	D3DPBLENDCAPS_ONE		= D3DBLEND_ONE;
+
+mode	D3DPTBLENDCAPS_MODULATEALPHA = D3DTBLEND_MODULATEALPHA;
+src		D3DPBLENDCAPS_SRCALPHA		 = D3DBLEND_SRCALPHA; 
+dest	D3DPBLENDCAPS_SRCALPHA		 = D3DBLEND_SRCALPHA;
+
+mode	D3DPTBLENDCAPS_ADD			 = D3DTBLEND_ADD;
+src		D3DPBLENDCAPS_INVSRCALPHA	 = D3DBLEND_INVSRCALPHA; 
+dest	D3DPBLENDCAPS_SRCALPHA		 = D3DBLEND_SRCALPHA;
+
+mode	D3DPTBLENDCAPS_MODULATEALPHA	= D3DTBLEND_MODULATEALPHA;
+src		D3DPBLENDCAPS_SRCALPHA			= D3DBLEND_SRCALPHA; 
+dest	D3DPBLENDCAPS_INVSRCALPHA		= D3DBLEND_INVSRCALPHA;
+
+*/
 
 BOOL init_render_states()
 {

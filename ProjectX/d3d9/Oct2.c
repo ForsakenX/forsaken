@@ -618,7 +618,6 @@ void ReleaseRenderBufs( void );
 BOOL ChangeBackgroundColour( float R, float G, float B );
 BOOL SetMatrixViewPort( void );
 void PrintInitViewStatus( BYTE Status );
-void GetHardwareCaps( void );
 
 void UpdateBGObjectsClipGroup( CAMERA * Camera );
 void UpdateEnemiesClipGroup( CAMERA * Camera  );
@@ -1529,126 +1528,6 @@ BOOL SetMatrixViewPort( void )
 
   return TRUE;
 }
-/* bjd - CHECK
-struct {
-
-  DWORD ModeMask;
-  DWORD SourceMask;
-  DWORD DestMask;
-  DWORD Mode;
-  DWORD Source;
-  DWORD Dest;
-
-} PreferredCaps[] = {
-
-  { D3DPTBLENDCAPS_MODULATE,  D3DPBLENDCAPS_ONE,  D3DPBLENDCAPS_ONE,          // Mask
-    D3DTBLEND_MODULATE,   D3DBLEND_ONE,   D3DBLEND_ONE },           // Value
-
-  { D3DPTBLENDCAPS_MODULATEALPHA, D3DPBLENDCAPS_SRCALPHA, D3DPBLENDCAPS_SRCALPHA,   // Mask
-    D3DTBLEND_MODULATEALPHA,      D3DBLEND_SRCALPHA,      D3DBLEND_SRCALPHA },    // Value
-
-  { D3DPTBLENDCAPS_ADD, D3DPBLENDCAPS_INVSRCALPHA,  D3DPBLENDCAPS_SRCALPHA,     // Mask
-    D3DTBLEND_ADD,      D3DBLEND_INVSRCALPHA,     D3DBLEND_SRCALPHA },      // Value
-
-  { D3DPTBLENDCAPS_MODULATEALPHA, D3DPBLENDCAPS_SRCALPHA, D3DPBLENDCAPS_INVSRCALPHA,  // Mask
-    D3DTBLEND_MODULATEALPHA,      D3DBLEND_SRCALPHA,      D3DBLEND_INVSRCALPHA },   // Value
-
-};
-
-struct {
-
-  DWORD ModeMask;
-  DWORD SourceMask;
-  DWORD DestMask;
-  DWORD Mode;
-  DWORD Source;
-  DWORD Dest;
-
-} NonPrimPreferredCaps[] = {
-
-  { D3DPTBLENDCAPS_MODULATEALPHA, D3DPBLENDCAPS_SRCALPHA, D3DPBLENDCAPS_SRCALPHA,   // Mask
-    D3DTBLEND_MODULATEALPHA,      D3DBLEND_SRCALPHA,      D3DBLEND_SRCALPHA },    // Value
-
-  { D3DPTBLENDCAPS_MODULATE,  D3DPBLENDCAPS_ONE,  D3DPBLENDCAPS_ONE,          // Mask
-    D3DTBLEND_MODULATE,   D3DBLEND_ONE,   D3DBLEND_ONE },           // Value
-
-  { D3DPTBLENDCAPS_ADD, D3DPBLENDCAPS_INVSRCALPHA,  D3DPBLENDCAPS_SRCALPHA,     // Mask
-    D3DTBLEND_ADD,      D3DBLEND_INVSRCALPHA,     D3DBLEND_SRCALPHA },      // Value
-
-  { D3DPTBLENDCAPS_MODULATEALPHA, D3DPBLENDCAPS_SRCALPHA, D3DPBLENDCAPS_INVSRCALPHA,  // Mask
-    D3DTBLEND_MODULATEALPHA,      D3DBLEND_SRCALPHA,      D3DBLEND_INVSRCALPHA },   // Value
-};
-*/
-
-void  GetHardwareCaps( void )
-{   
-#if 0 //bjd - CHECK
-  int16         Count;
-  int16         NumPreferredCaps;
-  struct  _D3DPrimCaps *  TriCapsPtr;
-
-/*===================================================================
-  Check for Culling Caps
-===================================================================*/
-  CanCullFlag = FALSE;
-  if( ( d3dappi.ThisDriver.Desc.dpcTriCaps.dwMiscCaps & D3DPMISCCAPS_CULLCCW ) &&
-    ( d3dappi.ThisDriver.Desc.dpcTriCaps.dwMiscCaps & D3DPMISCCAPS_CULLNONE ) )
-    CanCullFlag = TRUE;
-
-/*===================================================================
-  Check for Translucency Caps
-===================================================================*/
-  UsedStippledAlpha = FALSE;
-
-  if( !Is3Dfx && !Is3Dfx2 )
-  {
-    TriCapsPtr = &d3dappi.ThisDriver.Desc.dpcTriCaps;
-    NumPreferredCaps = ( sizeof( PreferredCaps ) / sizeof( PreferredCaps[ 0 ] ) );
-    
-    for( Count = 0; Count < NumPreferredCaps; Count++ )
-    {
-      if( ( TriCapsPtr->dwDestBlendCaps & PreferredCaps[ Count ].ModeMask ) &&
-        ( TriCapsPtr->dwSrcBlendCaps & PreferredCaps[ Count ].SourceMask ) &&
-        ( TriCapsPtr->dwDestBlendCaps & PreferredCaps[ Count ].DestMask ) )
-      {
-        CurrentTextureBlend = PreferredCaps[ Count ].Mode;
-        CurrentSrcBlend = PreferredCaps[ Count ].Source;
-        CurrentDestBlend = PreferredCaps[ Count ].Dest;
-        break;
-      }
-    }
-  }
-  else
-  {
-    TriCapsPtr = &d3dappi.ThisDriver.Desc.dpcTriCaps;
-    NumPreferredCaps = ( sizeof( NonPrimPreferredCaps ) / sizeof( NonPrimPreferredCaps[ 0 ] ) );
-    
-    for( Count = 0; Count < NumPreferredCaps; Count++ )
-    {
-      if( ( TriCapsPtr->dwDestBlendCaps & NonPrimPreferredCaps[ Count ].ModeMask ) &&
-        ( TriCapsPtr->dwSrcBlendCaps & NonPrimPreferredCaps[ Count ].SourceMask ) &&
-        ( TriCapsPtr->dwDestBlendCaps & NonPrimPreferredCaps[ Count ].DestMask ) )
-      {
-        CurrentTextureBlend = NonPrimPreferredCaps[ Count ].Mode;
-        CurrentSrcBlend = NonPrimPreferredCaps[ Count ].Source;
-        CurrentDestBlend = NonPrimPreferredCaps[ Count ].Dest;
-        break;
-      }
-    }
-  }
-
-  if( Count == NumPreferredCaps )
-  {
-    UsedStippledAlpha = TRUE;
-    if( d3dappi.ThisDriver.Desc.dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAFLATBLEND )
-      UsedStippledAlpha = FALSE;
-    if( d3dappi.ThisDriver.Desc.dpcTriCaps.dwShadeCaps & D3DPSHADECAPS_ALPHAGOURAUDBLEND )
-      UsedStippledAlpha = FALSE;
-  }
-#endif
-}
-
-
 
 float HealthCount = 0.0F;
 int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
@@ -2061,7 +1940,6 @@ InitView( void )
 	}
 	*/
 
-	GetHardwareCaps();
 	InitModeCase();
 
 	switch( MyGameStatus )
