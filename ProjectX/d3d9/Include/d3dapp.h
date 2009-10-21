@@ -40,7 +40,6 @@ typedef float D3DVALUE, *LPD3DVALUE;
  * Describes a D3D driver
  */
 
-#if 0 // bjd
 typedef struct tagD3DAppD3DDriver {
     char Name[30];      /* short name of the driver */
     char About[50];     /* short string about the driver */
@@ -48,9 +47,7 @@ typedef struct tagD3DAppD3DDriver {
     GUID Guid;          /* it's GUID */
     BOOL bIsHardware;   /* does this driver represent a hardware device? */
     BOOL bSquareOnly;  /* can this driver only have Square Texures.. */
-	BOOL bTransparency; // Does this Driver do Colour Key Transparency on Textures?
 } D3DAppD3DDriver;
-#endif
 
 typedef int D3DMATRIXHANDLE;
 
@@ -97,7 +94,6 @@ typedef struct tagD3DAppMode {
  * function.
  */
 typedef struct tagD3DAppInfo {
-
     int                     NumDrivers;				/* number of D3D drivers avail. */
     int                     NumModes;				/* number of available display modes */
     int                     CurrMode;				/* number of current display mode (only when fullscreen) */
