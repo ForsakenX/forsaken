@@ -690,7 +690,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 ===================================================================*/
 void DisplayWaterObject(WATEROBJECT * Wo)
 {										 
-//	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
+//	LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
 	TempWorld = identity;
 	TempWorld._41 = Wo->Pos.x;
 	TempWorld._42 = Wo->Pos.y + Wo->offset;

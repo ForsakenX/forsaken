@@ -29,7 +29,6 @@
 /*===================================================================
 	Externs
 ===================================================================*/
-extern D3DAppInfo* d3dapp; 
 extern	CAMERA	CurrentCamera;
 extern	D3DMATRIX			view;
 extern	MATRIX				ProjMatrix;
@@ -1722,7 +1721,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	if( !TotalVerts ) return( FALSE );
 
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );
@@ -2333,7 +2332,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	if( !TotalVerts ) return( FALSE );
 
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );

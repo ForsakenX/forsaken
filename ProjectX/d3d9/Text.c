@@ -163,7 +163,7 @@ int Printint16( int16 num , int x , int y , int color )
 	Input		:		uint16 num, uint16 x , uint16 y
 	Output		:		nothing
 ===================================================================*/
-extern D3DAppInfo* d3dapp; 
+
 void Printuint16( uint16 tempnum , int x , int y , int col )
 {
 	int i;
@@ -171,7 +171,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 	int	Zeros= 0 ;
 	uint8 r , g , b;
 
-	if( (y + FontHeight ) >= d3dapp->szClient.cy )
+	if( (y + FontHeight ) >= d3dappi.szClient.cy )
 		return;
 	
 	r = Colourtrans[col][0];
@@ -262,7 +262,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 	uint8 num;
 	uint8 r , g , b;
 
-	if( (y + FontHeight ) >= d3dapp->szClient.cy )
+	if( (y + FontHeight ) >= d3dappi.szClient.cy )
 		return PermX;
 
 	r = Colourtrans[color][0];

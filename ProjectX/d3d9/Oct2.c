@@ -992,7 +992,7 @@ D3DMATRIX world = {
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0),
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
 };
-extern D3DAppInfo* d3dapp; 
+
 SetFOV( float fov )
 {
 	HRESULT rval;
@@ -1001,26 +1001,25 @@ SetFOV( float fov )
 
 	if ( fov <= 1.0F || fov >= 150.0F )
 		fov = hfov;
-//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-//    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
-//    if (rval != D3D_OK) {
+
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
 		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
 		return FALSE;
 	}
-	if ( d3dapp->bFullscreen )
+
+	if ( d3dappi.bFullscreen )
 	{
-		screen_width = (float) d3dapp->ThisMode.w;
-		screen_height = (float) d3dapp->ThisMode.h;
+		screen_width = (float) d3dappi.ThisMode.w;
+		screen_height = (float) d3dappi.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dapp->WindowsDisplay.w;
-		screen_height = (float) d3dapp->WindowsDisplay.h;
+		screen_width = (float) d3dappi.WindowsDisplay.w;
+		screen_height = (float) d3dappi.WindowsDisplay.h;
 	}
+
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
 	viewplane_distance = (float) ( viewport.Width / ( 2 * tan( DEG2RAD( fov ) * 0.5 ) ) );
 	proj._11 = 2 * viewplane_distance / viewport.Width;
@@ -1051,11 +1050,10 @@ SetFOV( float fov )
 	ProjMatrix._44 = proj._44;
 
 	hfov = fov;
-//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
+
 	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
-	{
 		return FALSE;
-	}
+
 	return TRUE;
 }
 
@@ -1106,11 +1104,11 @@ ResizeViewport( void )
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
-	maxwidth = d3dapp->szClient.cx;
+	maxwidth = d3dappi.szClient.cx;
 
 	NewDrawSimplePanel = FALSE;
   
-	maxheight = d3dapp->szClient.cy;
+	maxheight = d3dappi.szClient.cy;
 
 	if ( scale < 1.01F )
 	{
@@ -1183,7 +1181,7 @@ BOOL FullScreenViewport()
      */
 //    memset(&viewport, 0, sizeof(D3DVIEWPORT));
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = d3dapp->lpD3DViewport->lpVtbl->GetViewport(d3dapp->lpD3DViewport, &viewport);
+//    rval = d3dappi.lpD3DViewport->lpVtbl->GetViewport(d3dappi.lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
@@ -1191,8 +1189,8 @@ BOOL FullScreenViewport()
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
-	maxwidth = d3dapp->szClient.cx;
-	maxheight = d3dapp->szClient.cy;
+	maxwidth = d3dappi.szClient.cx;
+	maxheight = d3dappi.szClient.cy;
 	width = maxwidth;
 	height = maxheight;
 	left = 0;
@@ -1210,7 +1208,7 @@ BOOL FullScreenViewport()
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
 */
-//    rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+//    rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport);
  //   if (rval != D3D_OK) {
 	if (FAILED(FSSetViewPort(&viewport)))
 	{
@@ -1330,13 +1328,6 @@ BOOL cursor_clipped;
 BOOL NoCursorClip = FALSE;
 void SetCursorClip( BOOL clip )
 {
-	if ( !d3dapp )
-	{
-		DebugPrintf( "SetCursorClip: d3dapp is NULL\n" );
-		ClipCursor( NULL );
-		ReallyShowCursor( TRUE );
-		return;
-	}
 
 // yea but exclusive mouse mode hides it on us without asking...
 // maybe just set cusor_clipped to true when acquiring with exclusive...
@@ -1346,8 +1337,8 @@ void SetCursorClip( BOOL clip )
 	if ( !cursor_clipped && !clip ) return;
 
 	// the clipping area
-	cursorclip.left = d3dapp->pClientOnPrimary.x + d3dapp->szClient.cx / 2;
-	cursorclip.top = d3dapp->pClientOnPrimary.y + d3dapp->szClient.cy / 2;
+	cursorclip.left = d3dappi.pClientOnPrimary.x + d3dappi.szClient.cx / 2;
+	cursorclip.top = d3dappi.pClientOnPrimary.y + d3dappi.szClient.cy / 2;
 	cursorclip.right = cursorclip.left + 1;
 	cursorclip.bottom = cursorclip.top + 1;
 
@@ -1804,7 +1795,7 @@ void DrawSimplePanel()
 	  if(SwitchedToWatchMode)
 	  {
 			// show who i am watching
-			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dapp->szClient.cy - 15, 4 );
+			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dappi.szClient.cy - 15, 4 );
 			// display cross-hair
 			AddScreenPolyText(
 					(uint16) 63 ,
@@ -2039,20 +2030,13 @@ InitScene(void)
 }
 
 /*===================================================================
-  Procedure :   Init the view...This might be title or score
-            or main game....
-  Input   :   LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev,
-            LPDIRECT3DVIEWPORT lpView
+  Procedure :   Init the view...This might be title or score or main game....
   Output    :   BOOL TRUE/FLASE
 ===================================================================*/
 
 BOOL
 InitView( void )
 {
-//	LPDIRECTDRAW lpDD				= d3dapp->lpDD;
-//	LPDIRECT3D lpD3D				= d3dapp->lpD3D;
-//	LPDIRECT3DDEVICE lpDev		= d3dapp->lpD3DDevice;
-//	LPDIRECT3DVIEWPORT lpView		= d3dapp->lpD3DViewport;
 	DWORD dwItems					= INFINITE;
 
 	DebugPrintf("InitView Starting...\n");
@@ -2067,7 +2051,7 @@ InitView( void )
 	}
 
 	/* bjd curr driver = 0 use to be software mode */
-	//if (d3dapp->CurrDriver != 0)
+	//if (d3dappi.CurrDriver != 0)
 	{
 		if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
 		else MakeColourMode = MCM_Stipple;
@@ -2091,7 +2075,7 @@ InitView( void )
 		case  STATUS_StartingMultiplayer:
 		case  STATUS_GetPlayerNum:
 
-		if( InitTitle(/*lpDD, lpD3D, lpDev, lpView*/) != TRUE ) // bjd
+		if( InitTitle() != TRUE ) // bjd
 		{
 			SeriousError = TRUE;
 			return FALSE;
@@ -2107,7 +2091,7 @@ InitView( void )
 			}
 		}
 
-    InitRenderBufs(/*lpDev */); // bjd
+    InitRenderBufs(); // bjd
     
     if( !SetMatrixViewPort() )
     {
@@ -2131,7 +2115,7 @@ InitView( void )
     }
     
 
-    if( !PreInitModel( /*lpDev,*/ TitleModelSet ) ) // bjd
+    if( !PreInitModel( TitleModelSet ) ) // bjd
     {
       SeriousError = TRUE;
       return FALSE;
@@ -2144,7 +2128,7 @@ InitView( void )
       return FALSE;
     }
 
-    if( !InitModel( /*lpDev,*/ TitleModelSet ) ) // bjd
+    if( !InitModel( TitleModelSet ) ) // bjd
     {
       SeriousError = TRUE;
       return FALSE;
@@ -2162,7 +2146,6 @@ InitView( void )
 
     QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
-    //DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.ppm" );
     DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
     if ( DummyTextureIndex != -1 )
     {
@@ -3217,11 +3200,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 {
   uint16  i,e;
   char  buf[256];
-//  LPDIRECTDRAWPALETTE ddpal;
- // LPDIRECTDRAW lpDD = d3dapp->lpDD;
- // LPDIRECT3D lpD3D = d3dapp->lpD3D;
-//  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-  MYD3DVIEWPORT9 *lpView = &d3dapp->D3DViewport;
+  MYD3DVIEWPORT9 *lpView = &d3dappi.D3DViewport;
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
@@ -5703,7 +5682,7 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 	if (FSSetMatrix(/*hView*/D3DTS_VIEW, &view) != D3D_OK)
 		return FALSE;
 
- //   rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &CurrentCamera.Viewport); // bjd
+ //   rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &CurrentCamera.Viewport); // bjd
 	rval = FSSetViewPort(&CurrentCamera.Viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
@@ -5971,7 +5950,7 @@ Display Group Clipped Faceme Transluecent Polys
   // reset mode
 	set_normal_states();
 
-//  rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport);
+//  rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport);
 	rval = FSSetViewPort(&viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
@@ -6133,8 +6112,8 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
  //   newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;
 	newviewport.Y = 0;
-    newviewport.Width = d3dapp->szClient.cx;
-    newviewport.Height = d3dapp->szClient.cy;
+    newviewport.Width = d3dappi.szClient.cx;
+    newviewport.Height = d3dappi.szClient.cy;
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
@@ -6144,19 +6123,19 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
 */  
-//    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
+//    if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &newviewport) != D3D_OK )
 	if (FSSetViewPort(&newviewport) != D3D_OK )
 		return FALSE;
 
-	if ( d3dapp->bFullscreen )
+	if ( d3dappi.bFullscreen )
 	{
-		screen_width = (float) d3dapp->ThisMode.w;
-		screen_height = (float) d3dapp->ThisMode.h;
+		screen_width = (float) d3dappi.ThisMode.w;
+		screen_height = (float) d3dappi.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dapp->WindowsDisplay.w;
-		screen_height = (float) d3dapp->WindowsDisplay.h;
+		screen_width = (float) d3dappi.WindowsDisplay.w;
+		screen_height = (float) d3dappi.WindowsDisplay.h;
 	}
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
@@ -6242,7 +6221,7 @@ BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
 	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
 		return FALSE;
 
-//	if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
+//	if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport) != D3D_OK )
 //		return FALSE;
 
 	if (FAILED(FSSetViewPort(&viewport)))
@@ -6288,8 +6267,8 @@ InitViewport( void )
 		return FALSE;
 	}
 
-	maxwidth = d3dapp->szClient.cx;
-	maxheight = d3dapp->szClient.cy;
+	maxwidth = d3dappi.szClient.cx;
+	maxheight = d3dappi.szClient.cy;
 
 	width = maxwidth;
 	height = maxheight;
@@ -6461,15 +6440,15 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
 	VECTOR      ShipDir, TargetDir;
 	float       Cos;
 
-	if ( d3dapp->bFullscreen )
+	if ( d3dappi.bFullscreen )
 	{
-		screen_width = (float) d3dapp->ThisMode.w;
-		screen_height = (float) d3dapp->ThisMode.h;
+		screen_width = (float) d3dappi.ThisMode.w;
+		screen_height = (float) d3dappi.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dapp->WindowsDisplay.w;
-		screen_height = (float) d3dapp->WindowsDisplay.h;
+		screen_width = (float) d3dappi.WindowsDisplay.w;
+		screen_height = (float) d3dappi.WindowsDisplay.h;
 	}
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
@@ -6477,7 +6456,7 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
 //    newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;	
 	newviewport.Y = 0;
-    newviewport.Width = ( d3dapp->szClient.cx / 3 ) & -2;
+    newviewport.Width = ( d3dappi.szClient.cx / 3 ) & -2;
     newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
@@ -6488,7 +6467,7 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
 */
-//	if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &newviewport) != D3D_OK )
+//	if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &newviewport) != D3D_OK )
 	if (FSSetViewPort(&newviewport) != D3D_OK )
 		return FALSE;
 
@@ -6614,7 +6593,7 @@ BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
       return FALSE;
   }
 
-//    if( d3dapp->lpD3DViewport->lpVtbl->SetViewport(d3dapp->lpD3DViewport, &viewport) != D3D_OK )
+//    if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport) != D3D_OK )
 	if (FSSetViewPort(&viewport) != D3D_OK )
 		return FALSE;
 
@@ -6677,38 +6656,15 @@ void  ReleaseJoysticks( void )
 BOOL ChangeBackgroundColour( float R, float G, float B )
 {
     D3DMATERIAL9 bmat;
-//    D3DMATERIALHANDLE hBmat;
-//  LPDIRECT3D lpD3D = d3dapp->lpD3D;
+	memset(&bmat, 0, sizeof(D3DMATERIAL9));
+	bmat.Diffuse.r = R;
+	bmat.Diffuse.g = G;
+	bmat.Diffuse.b = B;
 
-  BOOL  HadtoCreate = FALSE;
+	// bjd - this still needs to be done
+	//       what did this use to do anyway?
 
-
-  memset(&bmat, 0, sizeof(D3DMATERIAL9));
-  bmat.Diffuse.r = R;
-  bmat.Diffuse.g = G;
-  bmat.Diffuse.b = B;
-//    bmat.dwSize = sizeof(D3DMATERIAL);
-//    bmat.dwRampSize = 1;
-
-/*
-  if( !lpBmat )
-  {
-    if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) return FALSE;
-    HadtoCreate = TRUE;
-
-  }
-*/
-//bjd - CHECK  if( lpBmat->lpVtbl->SetMaterial( lpBmat, &bmat ) != D3D_OK) return FALSE;
-//    if( lpBmat->lpVtbl->GetHandle(lpBmat, d3dapp->lpD3DDevice, &hBmat) != D3D_OK) return FALSE;
-//    if( d3dapp->lpD3DViewport->lpVtbl->SetBackground( d3dapp->lpD3DViewport, hBmat ) != D3D_OK) return FALSE;
-
-/*
-  if( HadtoCreate )
-  {
-    RELEASE(lpBmat);
-  }
-*/
-  return TRUE;
+	return TRUE;
 }
 
 /*===================================================================
@@ -6861,8 +6817,8 @@ int16 GetBitShift( int32 Mask )
 void RenderSnapshot( void )
 {
 #if 0 // bjd - CHECK
-//  LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-    MYD3DVIEWPORT9 View = d3dapp->D3DViewport;
+//  LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
+    MYD3DVIEWPORT9 View = d3dappi.D3DViewport;
 
 //bjd  lpDev->lpVtbl->BeginScene(lpDev);
 
@@ -7028,7 +6984,7 @@ BOOL SaveSnapShot( int8 * Filename )
   memset( &SurfaceDesc, 0, sizeof( SurfaceDesc ) );
   SurfaceDesc.dwSize = sizeof( SurfaceDesc );
 
-  hr = d3dapp->lpBackBuffer->lpVtbl->Lock( d3dapp->lpBackBuffer, NULL, &SurfaceDesc,
+  hr = d3dappi.lpBackBuffer->lpVtbl->Lock( d3dappi.lpBackBuffer, NULL, &SurfaceDesc,
         DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT | DDLOCK_READONLY, NULL );
 
   if ( hr != DD_OK )
@@ -7067,7 +7023,7 @@ BOOL SaveSnapShot( int8 * Filename )
         SurfaceDesc.lPitch, SurfaceDesc.ddpfPixelFormat.dwRBitMask, SurfaceDesc.ddpfPixelFormat.dwGBitMask,
         SurfaceDesc.ddpfPixelFormat.dwBBitMask, 0, 0, 128, 128 );
 
-  hr = d3dapp->lpBackBuffer->lpVtbl->Unlock( d3dapp->lpBackBuffer, NULL );
+  hr = d3dappi.lpBackBuffer->lpVtbl->Unlock( d3dappi.lpBackBuffer, NULL );
   if ( hr != DD_OK )
   {
     DebugPrintf( "Error Unlocking Surface\n" );
@@ -7075,7 +7031,7 @@ BOOL SaveSnapShot( int8 * Filename )
   }
 
   if( CurrentMenu ) MenuDraw( CurrentMenu );
-  MainGame( /*d3dapp->lpD3DDevice,*/ d3dapp->lpD3DViewport ); // bjd
+  MainGame( /*d3dappi.lpD3DDevice,*/ d3dappi.lpD3DViewport ); // bjd
 
   return( TRUE );
 #endif

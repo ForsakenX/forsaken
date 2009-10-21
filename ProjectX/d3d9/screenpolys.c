@@ -519,7 +519,7 @@ void ScreenPolyProcess( void )
 	Input		:	Nothing
 	Output		:	Nothing
 ===================================================================*/
-extern D3DAppInfo* d3dapp; 
+
 void DoLensflareEffect( void )
 {
 	VECTOR		DirVector;
@@ -548,7 +548,7 @@ void DoLensflareEffect( void )
 	uint16		i;
 
 	/* bjd curr driver = 0 use to be software mode
-	if( d3dapp->CurrDriver == 0 )
+	if( d3dappi.CurrDriver == 0 )
 	{	}
 	else
 	*/
@@ -954,7 +954,7 @@ void SecBullLensflare( uint16 i )
 	uint8		Int;
 
 	/* bjd curre driver = 0 use to be software mode
-	if( d3dapp->CurrDriver == 0 )
+	if( d3dappi.CurrDriver == 0 )
 	{	}
 	else
 	*/
@@ -2193,7 +2193,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
-//	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+//	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 //	else Specular = RGB_MAKE( 128, 128, 128 );
 
 	Specular = RGB_MAKE( 0, 0, 0 );
@@ -2754,7 +2754,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	renderObject->numTextureGroups = 0;
 
 	/* bjd curre driver = 0 use to be software mode
-	if(d3dapp->CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );

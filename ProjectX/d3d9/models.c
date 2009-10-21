@@ -39,7 +39,6 @@
 #endif
 
 #define NO_GRAVGON_TIMER 0
-extern D3DAppInfo* d3dapp;
 
 /*===================================================================
 		Externals ...
@@ -5952,7 +5951,7 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 		LightPnt = LightPnt->NextVisible;
 	}
 	/* bjd curr driver = 0 use to be software mode
-	if ( !d3dapp->CurrDriver )
+	if ( !d3dappi.CurrDriver )
 	{
 		RF = ( RF+GF+BF ) * 0.33333F;
 		GF = RF;

@@ -1289,13 +1289,12 @@ void ReleaseWaterMesh()
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
-extern D3DAppInfo* d3dapp; 
 void DisplayWaterMesh()
 {
-	LPDIRECTDRAW lpDD = d3dapp->lpDD;
-	LPDIRECT3D lpD3D = d3dapp->lpD3D;
-	LPDIRECT3DDEVICE lpDev = d3dapp->lpD3DDevice;
-	LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
+	LPDIRECTDRAW lpDD = d3dappi.lpDD;
+	LPDIRECT3D lpD3D = d3dappi.lpD3D;
+	LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
+	LPDIRECT3DVIEWPORT lpView = d3dappi.lpD3DViewport;
 
 	if( !WaterEnable || NewLevelNum != WATERLEVEL )
 		return;

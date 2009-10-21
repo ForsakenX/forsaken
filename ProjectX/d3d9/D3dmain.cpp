@@ -33,7 +33,7 @@ extern "C" {
 	extern void ReleaseScene(void);
 	extern void ReleaseView(void);
 	extern BOOL InitScene(void);
-	extern BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen);
+	extern BOOL init_renderer(HWND hwnd, BOOL fullscreen);
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
@@ -103,8 +103,6 @@ extern "C" {
 
 
 // GLOBAL VARIABLES
-
-extern "C" D3DAppInfo* d3dapp = NULL;  // Pointer to read only collection of DD and D3D objects maintained by D3DApp
 
 BOOL render_initialized;
 
@@ -185,7 +183,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
-        if (d3dapp->bRenderingIsOK && !d3dapp->bMinimized && !d3dapp->bPaused && !myglobs.bQuit)
+        if (d3dappi.bRenderingIsOK && !d3dappi.bMinimized && !d3dappi.bPaused && !myglobs.bQuit)
 		{
 
             // NOT in single step mode
@@ -640,7 +638,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
     ZEROMEM(d3dappi);
 
-	if (!init_renderer(myglobs.hWndMain, &d3dapp, bFullscreen))
+	if (!init_renderer(myglobs.hWndMain, bFullscreen))
 		return FALSE;
 
 	render_initialized = TRUE;
@@ -962,11 +960,11 @@ static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
-    if ( ! d3dapp->bRenderingIsOK )
+    if ( ! d3dappi.bRenderingIsOK )
 		return TRUE;
 
     // Call the sample's RenderScene to render this frame
-    if (!RenderScene(/*d3dapp->lpD3DDevice, d3dapp->lpD3DViewport*/))
+    if (!RenderScene(/*d3dappi.lpD3DDevice, d3dappi.lpD3DViewport*/))
 	{
         Msg("RenderScene failed.\n");
 		DebugPrintf("RenderScene: failed.");
@@ -1057,6 +1055,7 @@ FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
  * Release all D3D objects, post a quit message and set the bQuit flag
  */
 
+extern "C" void render_cleanup( void );
 void CleanUpAndPostQuit(void)
 {
 	// check if this function was ran already
@@ -1067,10 +1066,7 @@ void CleanUpAndPostQuit(void)
     ReleaseView();
 
 	// stop rendering and destroy objects
-    d3dappi.bRenderingIsOK = FALSE;
-    d3dappi.hwnd = NULL;
-    RELEASE(d3dappi.lpD3DDevice);
-	RELEASE(d3dappi.lpD3D);
+	render_cleanup();
   
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
@@ -1103,12 +1099,12 @@ int Msg( char * msg, ... )
 	vsprintf( txt, msg, args);
 	va_end( args );
 
-    if (d3dapp && d3dapp->bFullscreen)
+    if (d3dappi.bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
     res = MessageBox( NULL, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
-    if (d3dapp && d3dapp->bFullscreen)
+    if (d3dappi.bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
 
 	DebugPrintf( txt );

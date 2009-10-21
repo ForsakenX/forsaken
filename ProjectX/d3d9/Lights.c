@@ -34,7 +34,6 @@
 ===================================================================*/
 extern	BOOL	ShowPlaneRGB;
 extern	float	WhiteOut;
-extern D3DAppInfo* d3dapp; 
 extern	uint16	NumGroupsVisible;
 extern	uint16	GroupsVisible[MAXGROUPS];
 extern	int16	ShowPortal;
@@ -592,7 +591,7 @@ clear:					mov		eax, [esi]
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dapp->CurrDriver ) // is it ramp mode..
+						if(!d3dappi.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1063,7 +1062,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dapp->CurrDriver ) // is it ramp mode..
+						if(!d3dappi.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1310,7 +1309,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dapp->CurrDriver ) // is it ramp mode..
+						if(!d3dappi.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;

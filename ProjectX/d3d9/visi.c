@@ -1138,7 +1138,6 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	}
 }
 
-extern D3DAppInfo* d3dapp; 
 int ClipGroup( CAMERA *cam, uint16 group )
 {
     HRESULT rval;
@@ -1163,7 +1162,7 @@ int ClipGroup( CAMERA *cam, uint16 group )
 	if (FSSetMatrix(D3DTS_VIEW, &cam->View) != D3D_OK)
 		return FALSE;
 
-//	rval = d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &g->viewport );
+//	rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport( d3dappi.lpD3DViewport , &g->viewport );
 	rval = FSSetViewPort(&g->viewport);
 
     if (rval != D3D_OK) {
@@ -1203,7 +1202,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	FSGetViewPort(&OldViewPort);
 /*
-	d3dapp->lpD3DViewport->lpVtbl->GetViewport( d3dapp->lpD3DViewport , &OldViewPort );
+	d3dappi.lpD3DViewport->lpVtbl->GetViewport( d3dappi.lpD3DViewport , &OldViewPort );
 */
 
 	PresentViewPort = OldViewPort;
@@ -1258,7 +1257,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	rval = FSSetViewPort(&OldViewPort);
 /* bjd
-	d3dapp->lpD3DViewport->lpVtbl->SetViewport( d3dapp->lpD3DViewport , &OldViewPort );
+	d3dappi.lpD3DViewport->lpVtbl->SetViewport( d3dappi.lpD3DViewport , &OldViewPort );
 */
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT

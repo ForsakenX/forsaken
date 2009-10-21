@@ -158,7 +158,6 @@ uint16	GroupTris[ MAXGROUPS ];
 	Input		:		Who can tell...
 	Output		:		int93???
 ===================================================================*/
-extern D3DAppInfo* d3dapp; 
 static BOOL read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, uint16 **Uint16PntPtr )
 {
 	BOOL ok;
@@ -492,7 +491,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				b = color&255;
 
 				/* bjd curr driver = 0 use to be software mode
-				if(d3dapp->CurrDriver == 0) // is it or ramp mode..
+				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
 				{
 					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha ) )	// if transparencies and alpha stipple
 					{

@@ -3605,13 +3605,10 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 
 /*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
-	Input		:		LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-						LPDIRECT3DVIEWPORT lpView
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 BOOL
-InitTitle(/*LPDIRECTDRAW lpDD, LPDIRECT3D lpD3D, LPDIRECT3DDEVICE lpDev, 
-           LPDIRECT3DVIEWPORT lpView*/ )  // bjd
+InitTitle()
 {
 	HideCursor = FALSE;
 
@@ -4837,18 +4834,11 @@ uint8 QuickStart = QUICKSTART_None;
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 BOOL IpOnCLI;
-extern D3DAppInfo* d3dapp; 
+
 BOOL DisplayTitle(void)
 {
 #if 1 // bjd - CHECK IMPORTANT
 	uint16 i;
-/*
-	LPDIRECTDRAW lpDD		  = d3dapp->lpDD;
-	LPDIRECT3D lpD3D		  = d3dapp->lpD3D;
-	LPDIRECT3DDEVICE lpDev	  = d3dapp->lpD3DDevice;
-*/
-//    LPDIRECT3DVIEWPORT lpView = d3dapp->lpD3DViewport;
-
 	uint16	group;
 	MENUITEM *Item;
 	LIST *l;
@@ -4983,8 +4973,8 @@ BOOL DisplayTitle(void)
 		CurrentCamera.Viewport = viewport;	
 		CurrentCamera.Viewport.X = 0;
 		CurrentCamera.Viewport.Y = 0;
-		CurrentCamera.Viewport.Width = d3dapp->szClient.cx;
-		CurrentCamera.Viewport.Height = d3dapp->szClient.cy;
+		CurrentCamera.Viewport.Width = d3dappi.szClient.cx;
+		CurrentCamera.Viewport.Height = d3dappi.szClient.cy;
 		CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
 		CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
@@ -7991,9 +7981,9 @@ void	MenuProcess()
 
 	// print text to screen
 #ifdef ProjectXVersionTip
-	CenterPrint4x5Text( ProjectXVersionTip, d3dapp->szClient.cy - (FontHeight+3) * 4, GREEN ); // +3 padding
+	CenterPrint4x5Text( ProjectXVersionTip, d3dappi.szClient.cy - (FontHeight+3) * 4, GREEN ); // +3 padding
 #endif
-	CenterPrint4x5Text( ProjectXVersion, d3dapp->szClient.cy - FontHeight * 3, GREEN );
+	CenterPrint4x5Text( ProjectXVersion, d3dappi.szClient.cy - FontHeight * 3, GREEN );
 
 	// ??
 	Pulse += framelag/60.0F;
@@ -8733,7 +8723,7 @@ void InitDetailLevels( MENU *Menu )
 		if ( item->Variable == &SWMonoChrome )
 		{
 			/* bjd curre driver = 0 use to be software mode
-			if ( !d3dapp->CurrDriver )
+			if ( !d3dappi.CurrDriver )
 			{
 				item->FuncSelect = SelectToggle;
 				item->FuncDraw = DrawToggle;
@@ -10540,16 +10530,16 @@ void MenuGoFullScreen( MENUITEM *Item )
 
 	bIgnoreWM_SIZE = TRUE;
 
-	if ( !d3dapp->bFullscreen ) // going into fullscreen
+	if ( !d3dappi.bFullscreen ) // going into fullscreen
 	{
-	    D3DAppFullscreen(d3dapp->CurrMode);
+	    D3DAppFullscreen(d3dappi.CurrMode);
 
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
 	}
 	else // going into window mode
 	{
-        D3DAppWindowMode( d3dapp->CurrMode );
+        D3DAppWindowMode( d3dappi.CurrMode );
 
 		// just let the user click to focus
 		HideCursor = FALSE;
@@ -10589,19 +10579,19 @@ void MakeModeList( MENU *Menu )
 	ModeList.selected_item = 0;
 
 	// read em backwards so low res modes come first...
-	for( i = d3dapp->NumModes-1 ; i >= 0 ; i-- )
+	for( i = d3dappi.NumModes-1 ; i >= 0 ; i-- )
 	{
-		if( d3dapp->Mode[i].bThisDriverCanDo != 0 )
+		if( d3dappi.Mode[i].bThisDriverCanDo != 0 )
 		{
 			if( ModeList.items < MAXLISTITEMS )
 			{
 				WhichMode[ModeList.items] = i;
 				sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
-					d3dapp->Mode[i].w , d3dapp->Mode[i].h , d3dapp->Mode[i].bpp );
+					d3dappi.Mode[i].w , d3dappi.Mode[i].h , d3dappi.Mode[i].bpp );
 
-				if( (d3dapp->Mode[i].w == d3dapp->ThisMode.w) &&				
-					(d3dapp->Mode[i].h == d3dapp->ThisMode.h) &&
-					(d3dapp->Mode[i].bpp == d3dapp->ThisMode.bpp) )
+				if( (d3dappi.Mode[i].w == d3dappi.ThisMode.w) &&				
+					(d3dappi.Mode[i].h == d3dappi.ThisMode.h) &&
+					(d3dappi.Mode[i].bpp == d3dappi.ThisMode.bpp) )
 				{
 					ModeList.selected_item = ModeList.items;
 				}
@@ -10625,7 +10615,7 @@ void MenuSelectMode( MENU *Menu )
 	 * resort to another mode if this driver cannot do
 	 * the currently selected mode.
 	 */
-	if ( d3dapp->CurrMode != WhichMode[ModeList.selected_item] )
+	if ( d3dappi.CurrMode != WhichMode[ModeList.selected_item] )
 		D3DAppFullscreen(WhichMode[ModeList.selected_item]);
 }
 
@@ -10637,7 +10627,7 @@ void NewMenuSelectMode( MENUITEM *Item )
 	LastMenu = CurrentMenu;	
 	VduClear();
 
-	if ( d3dapp->bFullscreen )
+	if ( d3dappi.bFullscreen )
 	{
 	    D3DAppFullscreen(mode);
 
@@ -11259,11 +11249,11 @@ void SetGamePrefs( void )
 
 	config_set_int( "BikeDetail",				BikeDetailSlider.value );
 	config_set_int( "TrailDetail",				TrailDetailSlider.value );
-	config_set_int( "ScreenWidth",				d3dapp->Mode[ d3dapp->CurrMode ].w );
-	config_set_int( "ScreenHeight",				d3dapp->Mode[ d3dapp->CurrMode ].h );
-	config_set_int( "ScreenBPP",				d3dapp->Mode[ d3dapp->CurrMode ].bpp );
-	config_set_int( "ScreenPosX",				d3dapp->pWindow.x );
-	config_set_int( "ScreenPosY",				d3dapp->pWindow.y );
+	config_set_int( "ScreenWidth",				d3dappi.Mode[ d3dappi.CurrMode ].w );
+	config_set_int( "ScreenHeight",				d3dappi.Mode[ d3dappi.CurrMode ].h );
+	config_set_int( "ScreenBPP",				d3dappi.Mode[ d3dappi.CurrMode ].bpp );
+	config_set_int( "ScreenPosX",				d3dappi.pWindow.x );
+	config_set_int( "ScreenPosY",				d3dappi.pWindow.y );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );

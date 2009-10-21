@@ -16,18 +16,19 @@ extern	BOOL	Is3Dfx2;
 /***************************************************************************/
 /*                            Creation of D3D                              */
 /***************************************************************************/
-extern D3DAppInfo* d3dapp; 
 extern BOOL InitView(void);
 
 BOOL render_initialized = FALSE;
 
-BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
+LPDIRECT3D9 lpD3D; /* D3D interface object */
+
+BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 {
 	HRESULT LastError;
 
 	// Set up Direct3D interface object
-	d3dappi.lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
-	if (!d3dappi.lpD3D)
+	lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
+	if (!lpD3D)
 	{
 		OutputDebugString("couldnt create d3d9\n");
 		return FALSE;
@@ -81,17 +82,17 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 		// the choice should be validated by IDirect3D9::CheckDeviceType
 		// you can use the following code to get the current desktop display mode
 			//D3DDISPLAYMODE d3ddm;
-			//LastError = d3dappi.lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
+			//LastError = lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 
 		/*
 		{
 			unsigned int best_mode = 0;
 			unsigned int i;
-			unsigned int num_modes = d3dappi.lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
+			unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
 			D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
 			for ( i = 0; i < num_modes; i++ )
 			{
-				d3dappi.lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &modes[i] );
+				lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &modes[i] );
 				if(modes[i].Width > modes[best_mode].Width)
 					best_mode = i;
 			}
@@ -114,7 +115,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	//
 
 	/*
-	LastError = d3dappi.lpD3D->CreateDevice(
+	LastError = lpD3D->CreateDevice(
 		D3DADAPTER_DEFAULT,							// the default video card 
 		D3DDEVTYPE_HAL,								// device type - hal = Hardware rasterization
 		hwnd,										// the window handle
@@ -139,7 +140,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	if (FAILED(LastError)) 
 	*/
 	{
-		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
@@ -149,7 +150,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 
 	if (FAILED(LastError)) 
 	{
-		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_MIXED_VERTEXPROCESSING,		// do vertex processing in both hardware and software
 			&d3dpp, &d3dappi.lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -160,7 +161,7 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 
 	if (FAILED(LastError)) 
 	{
-		LastError = d3dappi.lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_SOFTWARE_VERTEXPROCESSING,	// do vertex processing in software only
 			&d3dpp, &d3dappi.lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -177,9 +178,8 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	}
 
 	d3dappi.hwnd = hwnd;
-	*D3DApp = &d3dappi;
 
-	//d3dapp->bFullscreen = !d3dpp.Windowed;
+	//d3dappi.bFullscreen = !d3dpp.Windowed;
 	
 	render_initialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;
@@ -187,8 +187,8 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 	d3dappi.szClient.cx = d3dpp.BackBufferWidth; 
 	d3dappi.szClient.cy = d3dpp.BackBufferHeight;
 
-	d3dapp->WindowsDisplay.w = d3dpp.BackBufferWidth;
-	d3dapp->WindowsDisplay.h = d3dpp.BackBufferHeight;
+	d3dappi.WindowsDisplay.w = d3dpp.BackBufferWidth;
+	d3dappi.WindowsDisplay.h = d3dpp.BackBufferHeight;
 
 	/* do "after device created" stuff */
 	ZeroMemory( &d3dappi.D3DViewport, sizeof(d3dappi.D3DViewport) );
@@ -217,6 +217,14 @@ BOOL init_renderer(HWND hwnd, D3DAppInfo** D3DApp, BOOL fullscreen)
 		return FALSE;
 
 	return TRUE;
+}
+
+void render_cleanup( void )
+{
+    d3dappi.bRenderingIsOK = FALSE;
+    d3dappi.hwnd = NULL;
+    RELEASE(d3dappi.lpD3DDevice);
+	RELEASE(lpD3D);
 }
 
 BOOL FlipBuffers()
@@ -630,12 +638,12 @@ BOOL FSClearBlack(void)
 
 HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort)
 {
-	return d3dapp->lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
+	return d3dappi.lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
 }
 
 HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort)
 {
-	return d3dapp->lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
+	return d3dappi.lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
 }
 
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)

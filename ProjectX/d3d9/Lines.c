@@ -13,7 +13,6 @@
 #include "lines.h"
 #include "camera.h"
 
-extern D3DAppInfo* d3dapp; 
 extern	CAMERA	CurrentCamera;
 extern	BOOL	UsedStippledAlpha;
 extern	BOOL	DebugInfo;
@@ -129,7 +128,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 
 	specular = RGB_MAKE( 255, 255, 255 );
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dapp->CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
+	if(d3dappi.CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
 	else specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	
@@ -158,7 +157,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 			if( Lines[ i ].Group == Group )
 			{
 				/* bjd curr driver = 0 use to be software mode */
-				//if(d3dapp->CurrDriver != 0)
+				//if(d3dappi.CurrDriver != 0)
 				{
 					if( UsedStippledAlpha != TRUE )
 					{
@@ -189,7 +188,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				Vert_Ptr++;
 	
 				/* bjd curr driver = 0 use to be software mode */
-				//if(d3dapp->CurrDriver != 0)
+				//if(d3dappi.CurrDriver != 0)
 				{
 					if( UsedStippledAlpha != TRUE )
 					{
@@ -278,7 +277,7 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 {
 	uint16  i = 0;
 
-	//  if( !d3dapp->bIsPrimary )
+	//  if( !d3dappi.bIsPrimary )
 	//		return TRUE;
 
 	i = FirstLineUsed;
