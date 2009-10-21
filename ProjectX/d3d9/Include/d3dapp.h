@@ -100,25 +100,16 @@ typedef struct tagD3DAppMode {
  * function.
  */
 typedef struct tagD3DAppInfo {
+
     HWND                    hwnd;          /*handle of window being managed*/
 
-	/*
-	* Direct3D objects and information
-	*/
-    LPDIRECT3D9              lpD3D;         /* D3D object */
-    LPDIRECT3DDEVICE9        lpD3DDevice;   /* D3D device */
-	MYD3DVIEWPORT9			 D3DViewport; /* D3D viewport, created by application */
-    int                     NumDrivers;    /* number of D3D drivers avail. */
-//    int                     CurrDriver;    /* number of curr. D3D driver */
-//    D3DAppD3DDriver         Driver[D3DAPP_MAXD3DDRIVERS]; /* avail. drivers*/
-//    D3DAppD3DDriver         ThisDriver;    /* description of this driver, identical to Driver[CurrDriver] */
-    /*
-     * DirectDraw objects and information
-     */
-//    LPDIRECTDRAW            lpDD;          /* DirectDraw object */
+    LPDIRECT3DDEVICE9       lpD3DDevice;	/* D3D device */
+	MYD3DVIEWPORT9			D3DViewport;	/* D3D viewport, created by application */
+    int                     NumDrivers;		/* number of D3D drivers avail. */
+
     BOOL                    bIsPrimary;    /* Is this the primary DD device?
-               If FALSE, we're using a hardware DD device that cannot
-               display a window and so only fullscreen modes are available */
+											   If FALSE, we're using a hardware DD device that cannot
+											   display a window and so only fullscreen modes are available */
 
     int                     NumModes; /* number of available display modes */
     int                     CurrMode; /* number of current display mode (only
