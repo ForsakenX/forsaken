@@ -185,35 +185,25 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
         if (d3dappi.bRenderingIsOK && !d3dappi.bMinimized && !d3dappi.bPaused && !myglobs.bQuit)
 		{
+            // Attempt to render a frame, if it fails, take a note.  If
+            // rendering fails more than twice, abort execution.
+            if( !RenderLoop() )
+			{
+                ++failcount;
 
-            // NOT in single step mode
-			// OR  in single step mode with bDrawAFrame flag is set
-            if (!(myglobs.bSingleStepMode && !myglobs.bDrawAFrame))
-
-                // Attempt to render a frame, if it fails, take a note.  If
-                // rendering fails more than twice, abort execution.
-                if( !RenderLoop() )
+				if( SeriousError )
 				{
-                    ++failcount;
+					CleanUpAndPostQuit();
+					break;
+				}
 
-					if( SeriousError )
-					{
-						CleanUpAndPostQuit();
-						break;
-					}
+				if (failcount == 3) {
+					DebugPrintf("Rendering has failed too many times.  Aborting execution.\n");
+					CleanUpAndPostQuit();
+					break;
+				}
 
-					if (failcount == 3) {
-						DebugPrintf("Rendering has failed too many times.  Aborting execution.\n");
-						CleanUpAndPostQuit();
-						break;
-					}
-
-                }
-
-            // Reset the bDrawAFrame flag if we are in single step mode
-            if (myglobs.bSingleStepMode)
-                myglobs.bDrawAFrame = FALSE;
-
+            }
         }
 
 		// call the sound proccesses
