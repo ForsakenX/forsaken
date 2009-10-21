@@ -630,10 +630,6 @@
 				>
 			</File>
 			<File
-				RelativePath="PolySort.c"
-				>
-			</File>
-			<File
 				RelativePath="Primary.c"
 				>
 			</File>
@@ -912,10 +908,6 @@
 			</File>
 			<File
 				RelativePath="Include\polys.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\PolySort.h"
 				>
 			</File>
 			<File

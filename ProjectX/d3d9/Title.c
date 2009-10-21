@@ -34,7 +34,6 @@
 #include "models.h"
 #include "camera.h"
 #include "models.h"
-#include "polysort.h"
 #include "polys.h"
 #include "2dpolys.h"
 #include "screenpolys.h"
@@ -5026,8 +5025,6 @@ BOOL DisplayTitle(void)
 			Msg( "DisplayTitle() : ClearBuffers failed\n" );
 			return FALSE;
 		}
-
-		InitPolySort();
 
 		// reset all the normal execute status flags...
 		set_normal_states();

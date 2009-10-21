@@ -16,7 +16,6 @@
 #include "2dpolys.h"
 #include "camera.h"
 #include "Primary.h"
-#include "polysort.h"
 #include "spotfx.h"
 #include "water.h"
 #include "util.h"

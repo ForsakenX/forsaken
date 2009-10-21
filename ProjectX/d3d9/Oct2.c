@@ -58,7 +58,6 @@
 #include  <malloc.h>
 #include  <string.h>
 #include  "file.h"
-#include  "PolySort.h"
 #include  "Ai.h"
 #include  "Water.h"
 #include  "spotfx.h"
@@ -1939,7 +1938,6 @@ void ReleaseView(void)
     ReleaseTitleModels();
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
-    ReleasePolySort();
     break;
 
   case STATUS_ViewingScore:
@@ -1947,7 +1945,6 @@ void ReleaseView(void)
     ReleaseTloadheader( &Tloadheader );
     Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
     ReleaseRenderBufs();
-    ReleasePolySort();
 #endif
     break;
 
@@ -2109,8 +2106,6 @@ InitView( void )
 				exit(1);
 			}
 		}
-        
-    InitPolySort();
 
     InitRenderBufs(/*lpDev */); // bjd
     
@@ -5722,9 +5717,6 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 
   // Ship Model Enable/Disable
   SetShipsVisibleFlag();
-
-  // translucent poly sort
-  InitPolySort();
 
   // find visible groups
   FindVisible( &CurrentCamera, &Mloadheader );

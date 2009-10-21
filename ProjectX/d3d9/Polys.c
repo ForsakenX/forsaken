@@ -16,7 +16,6 @@
 #include "controls.h"
 #include "camera.h"
 #include "secondary.h"
-#include "polysort.h"
 #include "main.h"
 #include "util.h"
 

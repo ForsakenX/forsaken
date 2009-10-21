@@ -16,7 +16,6 @@
 #include "controls.h"
 #include "secondary.h"
 #include "camera.h"
-#include "polysort.h"
 #include "title.h"
 #include "main.h"
 #include "text.h"
