@@ -192,7 +192,7 @@ BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			{
 				WINDOWPLACEMENT placement;
 				placement.length = sizeof(WINDOWPLACEMENT);
-				if(GetWindowPlacement( d3dappi.hwnd, &placement ))
+				if(GetWindowPlacement( hwnd, &placement ))
 				{
 					d3dappi.pWindow.x = placement.rcNormalPosition.left;
 					d3dappi.pWindow.y = placement.rcNormalPosition.top;

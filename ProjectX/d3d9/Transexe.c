@@ -118,21 +118,17 @@ void ExecuteTransExe( uint16 group )
 
 			if( TransExe[i].UseIdentity	== 1 )
 			{
-				//d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
 				FSSetMatrix(D3DTS_WORLD, &identity);
 			}
 			else
 			{
-				//d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &TransExe[i].Matrix);
 				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
 			}
 
 			if( Display )
-					//d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
 					draw_object(&TransExe[i].renderObject);
 		}
 	}
-//	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
 	FSSetMatrix(D3DTS_WORLD, &identity);
 }
 
@@ -199,20 +195,16 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 			if( TransExe[i].UseIdentity	== 1 )
 			{
-//				d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
 				FSSetMatrix(D3DTS_WORLD, &identity);
 			}
 			else
 			{
-//				d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &TransExe[i].Matrix);
 				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
 			}
 
 			if( Display )
-//					d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, TransExe[i].lpExBuf , d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED);
 					draw_object(&TransExe[i].renderObject);
 		}
 	}
-//	d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hWorld, &identity);
 	FSSetMatrix(D3DTS_WORLD, &identity);
 }

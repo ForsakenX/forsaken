@@ -954,7 +954,7 @@ static BOOL RenderLoop()
 		return TRUE;
 
     // Call the sample's RenderScene to render this frame
-    if (!RenderScene(/*d3dappi.lpD3DDevice, d3dappi.lpD3DViewport*/))
+    if (!RenderScene())
 	{
         Msg("RenderScene failed.\n");
 		DebugPrintf("RenderScene: failed.");
@@ -1057,7 +1057,7 @@ void CleanUpAndPostQuit(void)
 
 	// stop rendering and destroy objects
 	render_cleanup();
-  
+
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
 

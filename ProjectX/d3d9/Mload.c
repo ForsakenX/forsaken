@@ -1248,7 +1248,6 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 			//if( ((Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 			if( Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 			{
-				//if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
 				if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))
 				{
 					return FALSE;

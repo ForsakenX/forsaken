@@ -5028,7 +5028,7 @@ BOOL DisplayTitle(void)
 		Display 0 solid Clipped Non Faceme Transluecent Polys
 	*/
 
-			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 /*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 					return FALSE;
 #if 0
 /*
@@ -5046,7 +5046,7 @@ BOOL DisplayTitle(void)
 		Display 0 Clipped Non Faceme Transluecent Polys
 	===================================================================*/
 
-			if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 					return FALSE;
 
 /*===================================================================
@@ -5054,10 +5054,10 @@ BOOL DisplayTitle(void)
 ===================================================================*/
 			
 #ifdef RENDER_USING_FACES
-			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 					return FALSE;
 #else
-			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], 0/*, lpDev,*/ /*lpView*/ ) ) // bjd
+			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], 0 ) ) // bjd
 					return FALSE;
 #endif
 
@@ -5069,17 +5069,17 @@ BOOL DisplayTitle(void)
 	===================================================================*/
 
 #ifdef RENDER_USING_FACES
-		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
 				return FALSE;
 #else
-		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/* ,lpDev,*/ /*lpView*/ ) ) // bjd
+		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ] ) ) // bjd
 				return FALSE;
 #endif
 
 /*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
 				return FALSE;
 
 	/*===================================================================

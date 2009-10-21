@@ -536,7 +536,7 @@ BOOL TermDInput( void );
 BOOL  ClearBuffers( void );
 BOOL  ClearZBuffer( void );
 
-BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView );
+BOOL RenderCurrentCamera( void );
 void FreeSfxHolder( int index ) ;
 
 void  PlotSimplePanel( void );
@@ -878,9 +878,7 @@ void FillInPanelPositions()
 ===================================================================*/
 D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
 
-MLOADHEADER Mloadheader;
-BOOL TestTransformClip(MYD3DVIEWPORT9 *lpView);
-
+MLOADHEADER  Mloadheader;
 MCLOADHEADER MCloadheader;          //  inner skin collision map...
 MCLOADHEADER MCloadheadert0;        //  0 thickness collision map...
 
@@ -900,11 +898,11 @@ extern  int16     ShowSkin;
 extern  int16         NamesAreLegal;
 extern  SHORTNAMETYPE     Names;  // all the players short Names....
 
-BOOL MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
+BOOL MainGame(); // bjd
 
 void Build_View();
-BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
-BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ); // bjd
+BOOL Disp3dPanel( void ); // bjd
+BOOL DispTracker( void ); // bjd
 
 /**************************************************************************
   DirectInput Globals
@@ -3200,7 +3198,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 {
   uint16  i,e;
   char  buf[256];
-  MYD3DVIEWPORT9 *lpView = &d3dappi.D3DViewport;
   //struct _stat stat_buf;
   //int result;
   static int WaitFrames = 2;
@@ -3415,7 +3412,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if( IMustQuit )
       SpecialDestroyGame();
 
-    if( MainGame( /*lpDev , */lpView ) != TRUE ) // bjd
+    if( MainGame() != TRUE ) // bjd
       return FALSE;
 
     if ( bSoundEnabled )
@@ -4058,7 +4055,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       framelag *= Demoframelag;
     }
 
-    if( MainGame( /* lpDev ,*/ lpView ) != TRUE ) // bjd
+    if( MainGame() != TRUE ) // bjd
       return FALSE;
 
     break;
@@ -4607,7 +4604,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   case STATUS_SinglePlayer:
 	DebugState("STATUS_SinglePlayer\n");
 
-    if( MainGame(/* lpDev , */lpView ) != TRUE ) // bjd
+    if( MainGame() != TRUE ) // bjd
       return FALSE;
 
     if ( bSoundEnabled && !CurrentMenu )
@@ -4932,7 +4929,7 @@ void CheckLevelEnd ( void )
 ===================================================================*/
 
 BOOL
-MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
+MainGame( void ) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
@@ -5013,7 +5010,7 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
       HUDNames();
 
       CurrentCamera.UseLowestLOD = FALSE;
-      if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
+      if( RenderCurrentCamera() != TRUE ) // bjd
         return FALSE;
   
       if( RearCameraActive && !RearCameraDisable )
@@ -5055,7 +5052,7 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
 */        
         CurrentCamera.UseLowestLOD = TRUE;
 
-        if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
+        if( RenderCurrentCamera() != TRUE ) // bjd
             return FALSE;
       }
 
@@ -5104,7 +5101,7 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
         
         CurrentCamera.UseLowestLOD = TRUE;
 
-        if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
+        if( RenderCurrentCamera() != TRUE ) // bjd
             return FALSE;
        
         Current_Camera_View=TempMissileCam;
@@ -5138,21 +5135,20 @@ MainGame(/*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView) // bjd
       CurrentCamera.Mat._31 *= -1.0F;
       CurrentCamera.UseLowestLOD = FALSE;
 
-      if( RenderCurrentCamera( /*lpDev,*/ lpView ) != TRUE ) // bjd
+      if( RenderCurrentCamera() != TRUE ) // bjd
           return FALSE;
 
     }
  /* done with rendering camera stuff */
 
   if( DrawPanel && (WhoIAm == Current_Camera_View ))
-    Disp3dPanel( /*lpDev,*/ lpView );
+    Disp3dPanel();
   
   /* do the target c omputer trick */
   if( TargetComputerOn )
   {
-		//lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 		set_alpha_states();
-		DispTracker( /*lpDev,*/ lpView ); // bjd
+		DispTracker(); // bjd
   }
 
   if (FSEndScene() != D3D_OK)
@@ -5666,7 +5662,7 @@ void ReleaseRenderBufs( void )
   Input   :
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
-BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
+BOOL RenderCurrentCamera( void )
 {
 	HRESULT rval;
 	int16 Count;
@@ -5678,11 +5674,9 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 	Build_View();
 	CurrentCamera.View = view;
 
-//	if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK) // bjd
-	if (FSSetMatrix(/*hView*/D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetMatrix( D3DTS_VIEW, &view) != D3D_OK)
 		return FALSE;
 
- //   rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &CurrentCamera.Viewport); // bjd
 	rval = FSSetViewPort(&CurrentCamera.Viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
@@ -5727,13 +5721,11 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
     return FALSE;
 
 	// reset all the normal execute status flags...
-	//  lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 	set_normal_states();
 
 	// set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
-		//		lpDev->lpVtbl->Execute(lpDev, lpD3DSpcFxTransCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 		set_alpha_fx_states();
 	}
 
@@ -5745,14 +5737,13 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 	// reset all the normal execute status flags...
 	if( WhiteOut == 0.0F)
 	{
-		//      lpDev->lpVtbl->Execute(lpDev, lpD3DNormCmdBuf, lpView , D3DEXECUTE_CLIPPED); // bjd
 		set_normal_states();
 	}
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplaySolidGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
         return FALSE;
 
 #ifdef SHADOWTEST
@@ -5785,22 +5776,18 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], group ) ) // bjd
     return FALSE;
 #ifdef SHADOWTEST
   if( !DisplaySolidGroupClippedTriangles( RenderBufs[ 1 ], group, lpDev, lpView ) )
     return FALSE;
 #endif
 
-//    if (Mod_Ship_Exec_Buffer( group, lpDev, lpView ) != TRUE)
-//      return FALSE;
   }
 
   ClipGroup( &CurrentCamera, CurrentCamera.GroupImIn );
-//  DisplayWaterMesh();
 
 	// set all the Translucent execute status flags...
-	//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
   	set_alpha_states();
 
 
@@ -5816,8 +5803,6 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 	{
 //		if( Skin_Execs[ Count ] != NULL )
 		{
-		//          if (lpDev->lpVtbl->Execute(lpDev, Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-//			if (FSExecuteBuffer(&Skin_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
 			if (FAILED(draw_object(&Skin_Execs[ Count ])))
 			{
 				return FALSE;
@@ -5836,7 +5821,6 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
 
   }
 
-//  lpDev->lpVtbl->Execute(lpDev, lpD3DTransCmdBuf, lpView , D3DEXECUTE_CLIPPED);
 		set_alpha_states();
 
   // display clipped translucencies
@@ -5852,7 +5836,7 @@ BOOL RenderCurrentCamera( MYD3DVIEWPORT9 *lpView )
   Display Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
 
-  if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], group ) ) // bjd
     return FALSE;
 
 #ifdef SHADOWTEST
@@ -5865,10 +5849,10 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
 #ifdef RENDER_USING_FACES
-  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group ) ) // bjd
       return FALSE;
 #else
-  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group/*, lpDev,*/ /*lpView*/ ) ) // bjd
+  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group ) ) // bjd
       return FALSE;
 #endif
 
@@ -5885,17 +5869,17 @@ Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
 #ifdef RENDER_USING_FACES
-    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
         return FALSE;
 #else
-    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ] ) ) // bjd
         return FALSE;
 #endif
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ]/*, lpDev,*/ /*lpView*/ ) ) // bjd
+    if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
         return FALSE;
 #ifdef SHADOWTEST
     if( !DisplayGroupUnclippedTriangles( RenderBufs[ 0 ], lpDev, lpView ) )
@@ -5919,9 +5903,6 @@ Display Group Clipped Faceme Transluecent Polys
 	{
 //		if( Portal_Execs[ Count ] != NULL )
 		{
-		//          if (lpDev->lpVtbl->Execute(lpDev, Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-//			if (FSExecuteBuffer(Portal_Execs[ Count ], lpView , D3DEXECUTE_CLIPPED) != D3D_OK)
-//				return FALSE;
 			if (FAILED(draw_object(&Portal_Execs[ Count ])))
 			{
 				return FALSE;
@@ -5950,7 +5931,6 @@ Display Group Clipped Faceme Transluecent Polys
   // reset mode
 	set_normal_states();
 
-//  rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport);
 	rval = FSSetViewPort(&viewport);
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
@@ -6096,7 +6076,7 @@ BOOL Our_CalculateFrameRate(void)
   Input   :
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
-BOOL Disp3dPanel( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView )
+BOOL Disp3dPanel( void )
 {
 	VECTOR  Trans;
 	MATRIX  Matrix;
@@ -6423,11 +6403,9 @@ void CalculateFramelag( void )
 
 /*===================================================================
   Procedure : Disp Tracker
-  Input   : LPDIRECT3DDEVICE  lpDev
-        : LPDIRECT3DVIEWPORT  lpView
   Output    : BOOL        TRUE/FALSE
 ===================================================================*/
-BOOL DispTracker( /*LPDIRECT3DDEVICE lpDev,*/ MYD3DVIEWPORT9 *lpView ) // bjd
+BOOL DispTracker( void ) // bjd
 {
 	uint16      i;
 	D3DRECT     dummy;
@@ -6846,7 +6824,7 @@ void RenderSnapshot( void )
 */
 
   CurrentCamera.UseLowestLOD = TRUE;
-  if( RenderCurrentCamera( /*lpDev,*/ &View ) != TRUE ) // bjd
+  if( RenderCurrentCamera() != TRUE ) // bjd
     return;
 #endif
 //bjd  lpDev->lpVtbl->EndScene(lpDev);

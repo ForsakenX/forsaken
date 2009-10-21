@@ -690,26 +690,13 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 ===================================================================*/
 void DisplayWaterObject(WATEROBJECT * Wo)
 {										 
-//	LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
 	TempWorld = identity;
 	TempWorld._41 = Wo->Pos.x;
 	TempWorld._42 = Wo->Pos.y + Wo->offset;
 	TempWorld._43 = Wo->Pos.z;
 
-//	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
-//	if (FSSetMatrix(hWorld, &TempWorld) != D3D_OK)
-//		return;
-
 	if (FAILED(FSSetMatrix(D3DTS_WORLD, &TempWorld)))
-	{
 		return;
-	}
-
-	/*	Execute it	*/
-//	if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-
-//	if (FSExecuteBuffer(Wo->lpExBuf, d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-//			return;
 
 	cull_none();
 
@@ -718,14 +705,8 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 
 	reset_cull();
 
-//	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK)
-//	if (FSSetMatrix(hWorld, &identity) != D3D_OK)
-//		return;
-
 	if (FAILED(FSSetMatrix(D3DTS_WORLD, &identity)))
-	{
 		return;
-	}
 }
 
 

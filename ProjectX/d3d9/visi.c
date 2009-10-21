@@ -1150,19 +1150,11 @@ int ClipGroup( CAMERA *cam, uint16 group )
 	if( !DoClipping )
 		g = &cam->visible.group[ cam->visible.first_visible->group ];
 
-/* bjd
-	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hProj, &g->projection) != D3D_OK)
-		return FALSE;
-	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hView, &cam->View) != D3D_OK)
-		return FALSE;
-*/
-
 	if (FSSetMatrix(D3DTS_PROJECTION, &g->projection) != D3D_OK)
 		return FALSE;
 	if (FSSetMatrix(D3DTS_VIEW, &cam->View) != D3D_OK)
 		return FALSE;
 
-//	rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport( d3dappi.lpD3DViewport , &g->viewport );
 	rval = FSSetViewPort(&g->viewport);
 
     if (rval != D3D_OK) {
@@ -1271,12 +1263,6 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	proj = Tempproj;
 	view = Tempview;
 
-/* bjd
-	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hProj, &proj) != D3D_OK)
-		return FALSE;
-	if (d3dappi.lpD3DDevice->lpVtbl->SetMatrix(d3dappi.lpD3DDevice, hView, &view) != D3D_OK)
-		return FALSE;
-*/
 	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
 		return FALSE;
 	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)

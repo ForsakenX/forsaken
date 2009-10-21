@@ -101,34 +101,20 @@ typedef struct tagD3DAppMode {
  */
 typedef struct tagD3DAppInfo {
 
-    HWND                    hwnd;          /*handle of window being managed*/
-
-    LPDIRECT3DDEVICE9       lpD3DDevice;	/* D3D device */
-	MYD3DVIEWPORT9			D3DViewport;	/* D3D viewport, created by application */
-    int                     NumDrivers;		/* number of D3D drivers avail. */
-
-    BOOL                    bIsPrimary;    /* Is this the primary DD device?
-											   If FALSE, we're using a hardware DD device that cannot
-											   display a window and so only fullscreen modes are available */
-
-    int                     NumModes; /* number of available display modes */
-    int                     CurrMode; /* number of current display mode (only
-                                         when fullscreen) */
-    D3DAppMode              Mode[D3DAPP_MAXMODES]; /* desc avail modes */
-    D3DAppMode              ThisMode; /* description of this mode, identical
-                                         to Mode[CurrMode] */
-    BOOL                    bFullscreen; /* in fullscreen exclusive mode? */
-    D3DAppMode              WindowsDisplay; /* current Windows disply mode */
-
-    SIZE                    szClient;         /* dimensions of client win */
-    POINT                   pClientOnPrimary; /* position of client area */
-    POINT                   pWindow;		  /* position of win */
-
-    BOOL                    bPaused;           /* the app is paused */
-    BOOL                    bAppActive;        /* the app is active */
-    BOOL                    bMinimized;        /* app window is minimized */
-    BOOL                    bRenderingIsOK;    /* All objects etc. necessary
-                                                  for rendering are in ok */
+    int                     NumDrivers;				/* number of D3D drivers avail. */
+    int                     NumModes;				/* number of available display modes */
+    int                     CurrMode;				/* number of current display mode (only when fullscreen) */
+    D3DAppMode              Mode[D3DAPP_MAXMODES];	/* desc avail modes */
+    D3DAppMode              ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
+    BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
+    D3DAppMode              WindowsDisplay;			/* current Windows disply mode */
+    SIZE                    szClient;				/* dimensions of client win */
+    POINT                   pClientOnPrimary;		/* position of client area */
+    POINT                   pWindow;				/* position of win */
+    BOOL                    bPaused;				/* the app is paused */
+    BOOL                    bAppActive;				/* the app is active */
+    BOOL                    bMinimized;				/* app window is minimized */
+    BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
 } D3DAppInfo;
 
 /*

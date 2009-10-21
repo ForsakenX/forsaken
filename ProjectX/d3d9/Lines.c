@@ -285,9 +285,6 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 	{
 		if( LinesDispGroup( group, renderObject, &i ) )
 		{
-					//          if( lpDev->lpVtbl->Execute(lpDev, RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED ) != D3D_OK )
-					//			if (FSExecuteBuffer(RenderBufs[ 0 ], lpView, D3DEXECUTE_CLIPPED) != D3D_OK)
-					//				return FALSE;
 			if (FAILED(draw_line_object(renderObject)))
 				return FALSE;
 		}

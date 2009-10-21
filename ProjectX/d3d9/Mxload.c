@@ -1018,38 +1018,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 	}
 	return TRUE;
 }
-/*===================================================================
-	Procedure	:		Execute one group for an Mxloadheader
-	Input		;		MXLOADHEADER *
-	Output		:		FLASE/TRUE
-===================================================================*/
-#if 0
-BOOL ExecuteSingleGroupMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 group  )
-{
-	uint16 i;
-	D3DMATRIX Matrix;
-
-	if (Mxloadheader->state == TRUE )
-	{
-		for ( i=0 ; i<Mxloadheader->Group[group].num_execbufs; i++)
-		{
-			// if its a Transparent Execute Buffer then dont diplay it add it to the Transexe list
-//			if( ((Mxloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
-			if( Mxloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
-			{
-				if (d3dappi.lpD3DDevice->lpVtbl->GetMatrix(d3dappi.lpD3DDevice, hWorld, &Matrix) != D3D_OK) return FALSE;
-				AddTransExe( &Matrix , Mxloadheader->Group[group].lpExBuf[i] , 0, (uint16) -1, Mloadheader->Group[ group ].num_verts_per_execbuf[i] );
-
-			}else{
-				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-					return FALSE;
-			}
-		}
-	}
-	return TRUE;
-}
-#endif
-
 
 /*
  * ReleaseMxloadheader
@@ -1278,8 +1246,6 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 		{
 			for ( i=0 ; i<Mxloadheader->Group[group].num_execbufs; i++)
 			{
-//				if (d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice, Mxloadheader->Group[group].lpExBuf[i], d3dappi.lpD3DViewport, D3DEXECUTE_CLIPPED) != D3D_OK)
-//					return FALSE;
 				if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
 				{
 					return FALSE;

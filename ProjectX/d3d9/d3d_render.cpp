@@ -20,11 +20,13 @@ extern BOOL InitView(void);
 
 BOOL render_initialized = FALSE;
 
-LPDIRECT3D9 lpD3D; /* D3D interface object */
+LPDIRECT3D9			lpD3D; /* D3D interface object */
+LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
 BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 {
 	HRESULT LastError;
+	MYD3DVIEWPORT9 viewport;
 
 	// Set up Direct3D interface object
 	lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -59,7 +61,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	{
 		d3dpp.Windowed = TRUE;
 		SetWindowPos( 
-			d3dappi.hwnd,	// the window handle
+			hwnd,			// the window handle
 			HWND_TOP,		// bring window to the front
 			0, 0,			// top left of screen
 			d3dpp.BackBufferWidth, d3dpp.BackBufferHeight, // size of viewport
@@ -129,7 +131,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 													// then the application can use only post-transformed vertices.
 
 		&d3dpp,										// presentation parameters defined above
-		&d3dappi.lpD3DDevice						// pointer that will contain the returned device
+		&lpD3DDevice						// pointer that will contain the returned device
 	);
 
 	if (SUCCEEDED(LastError))
@@ -141,7 +143,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	*/
 	{
 		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
-			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &d3dappi.lpD3DDevice);
+			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
 			DebugPrintf("d3d device created: hardware");
@@ -152,7 +154,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	{
 		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_MIXED_VERTEXPROCESSING,		// do vertex processing in both hardware and software
-			&d3dpp, &d3dappi.lpD3DDevice);
+			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
 			DebugPrintf("d3d device created: mixed");
@@ -163,7 +165,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	{
 		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
 			D3DCREATE_SOFTWARE_VERTEXPROCESSING,	// do vertex processing in software only
-			&d3dpp, &d3dappi.lpD3DDevice);
+			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
 			DebugPrintf("d3d device created: software");
@@ -177,8 +179,6 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		exit(1);
 	}
 
-	d3dappi.hwnd = hwnd;
-
 	//d3dappi.bFullscreen = !d3dpp.Windowed;
 	
 	render_initialized = TRUE;
@@ -191,15 +191,15 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dappi.WindowsDisplay.h = d3dpp.BackBufferHeight;
 
 	/* do "after device created" stuff */
-	ZeroMemory( &d3dappi.D3DViewport, sizeof(d3dappi.D3DViewport) );
-	d3dappi.D3DViewport.X = 0;
-	d3dappi.D3DViewport.Y = 0;
-	d3dappi.D3DViewport.Width = 800;
-	d3dappi.D3DViewport.Height = 600;
-	d3dappi.D3DViewport.MinZ = 0.0f;
-	d3dappi.D3DViewport.MaxZ = 1.0f;
+	ZeroMemory( &viewport, sizeof(viewport) );
+	viewport.X = 0;
+	viewport.Y = 0;
+	viewport.Width = 800;
+	viewport.Height = 600;
+	viewport.MinZ = 0.0f;
+	viewport.MaxZ = 1.0f;
 
-	LastError = FSSetViewPort(&d3dappi.D3DViewport);
+	LastError = FSSetViewPort(&viewport);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("couldn't set viewport\n");
@@ -222,8 +222,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 void render_cleanup( void )
 {
     d3dappi.bRenderingIsOK = FALSE;
-    d3dappi.hwnd = NULL;
-    RELEASE(d3dappi.lpD3DDevice);
+    RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
 }
 
@@ -235,7 +234,7 @@ BOOL FlipBuffers()
 		return FALSE;
 	}
 
-	d3dappi.lpD3DDevice->Present(NULL, NULL, NULL, NULL);
+	lpD3DDevice->Present(NULL, NULL, NULL, NULL);
 
 	return TRUE;
 }
@@ -276,7 +275,7 @@ static BOOL SetUpZBuf( DWORD type )
     debDesc.dwFlags = D3DDEB_BUFSIZE;
     debDesc.dwBufferSize = size;
     LastError =
-        d3dappi.lpD3DDevice->lpVtbl->CreateExecuteBuffer(d3dappi.lpD3DDevice,
+        lpD3DDevice->lpVtbl->CreateExecuteBuffer(lpD3DDevice,
                                              &debDesc, &lpD3DExCmdBuf, NULL);
     if (LastError != D3D_OK) {
         render_error_description("CreateExecuteBuffer failed in SetRenderState.\n%s",
@@ -321,7 +320,7 @@ static BOOL SetUpZBuf( DWORD type )
                                                           (char*)lpInsStart);
     lpD3DExCmdBuf->lpVtbl->SetExecuteData(lpD3DExCmdBuf, &d3dExData);
 
-    LastError = d3dappi.lpD3DDevice->lpVtbl->Execute(d3dappi.lpD3DDevice,
+    LastError = lpD3DDevice->lpVtbl->Execute(lpD3DDevice,
                                                      lpD3DExCmdBuf,
                                                      d3dappi.lpD3DViewport,
                                                      D3DEXECUTE_UNCLIPPED);
@@ -342,18 +341,18 @@ exit_with_error:
 }
 
 #define STATE( K, V ) \
-	d3dappi.lpD3DDevice->SetRenderState( K, V );
+	lpD3DDevice->SetRenderState( K, V );
 
 #define TSTATE( N, K, V ) \
-	d3dappi.lpD3DDevice->SetTextureStageState( N, K, V );
+	lpD3DDevice->SetTextureStageState( N, K, V );
 
 #define SSTATE( N, K, V ) \
-	d3dappi.lpD3DDevice->SetSamplerState( N, K, V );
+	lpD3DDevice->SetSamplerState( N, K, V );
 
 // c helper
 void render_state( D3DRENDERSTATETYPE type, int val )
 {
-	d3dappi.lpD3DDevice->SetRenderState( type, val );
+	lpD3DDevice->SetRenderState( type, val );
 }
 
 void set_trans_state_3( void )
@@ -620,7 +619,7 @@ HRESULT LastError;
 
 BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil)
 {
-	if (FAILED(d3dappi.lpD3DDevice->Clear( Count, pRects, Flags, Color, Z, Stencil )))
+	if (FAILED(lpD3DDevice->Clear( Count, pRects, Flags, Color, Z, Stencil )))
 	{
 		return FALSE;
 	}
@@ -629,7 +628,7 @@ BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, fl
 
 BOOL FSClearBlack(void)
 {
-	if (FAILED(d3dappi.lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
+	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
 	{
 		return FALSE;
 	}
@@ -638,37 +637,37 @@ BOOL FSClearBlack(void)
 
 HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort)
 {
-	return d3dappi.lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
+	return lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
 }
 
 HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort)
 {
-	return d3dappi.lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
+	return lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
 }
 
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)
 {
-	return d3dappi.lpD3DDevice->SetTransform(type, matrix);
+	return lpD3DDevice->SetTransform(type, matrix);
 }
 
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 {
-	return d3dappi.lpD3DDevice->GetTransform(type, matrix);
+	return lpD3DDevice->GetTransform(type, matrix);
 }
 
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material)
 {
-	return d3dappi.lpD3DDevice->SetMaterial(material);
+	return lpD3DDevice->SetMaterial(material);
 }
 
 HRESULT FSBeginScene()
 {
-	return d3dappi.lpD3DDevice->BeginScene();
+	return lpD3DDevice->BeginScene();
 }
 
 HRESULT FSEndScene()
 {
-	return d3dappi.lpD3DDevice->EndScene();
+	return lpD3DDevice->EndScene();
 }
 
 void save_texture( char * path, LPDIRECT3DTEXTURE9 texture )
@@ -684,7 +683,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 {
 	D3DXIMAGE_INFO imageInfo;
 
-	HRESULT LastError = D3DXCreateTextureFromFileEx(d3dappi.lpD3DDevice, 
+	HRESULT LastError = D3DXCreateTextureFromFileEx(lpD3DDevice, 
 				fileName, 
 				width, 
 				height, 
@@ -729,7 +728,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 		return FSCreateTexture(&dstTexture, fileName, width, height, numMips, colourkey);
 	create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
 	dstTexture->AddDirtyRect(NULL);
-	hr = d3dappi.lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
+	hr = lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
 	new_texture = NULL;
 	return hr;
 }
@@ -749,7 +748,7 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -769,7 +768,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), /*D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY*/0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -792,7 +791,7 @@ HRESULT FSCreatePretransformedVertexBuffer(RENDEROBJECT *renderObject, int numVe
 
 	renderObject->vbLocked = 0;
 
-	LastError = d3dappi.lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -884,7 +883,7 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-	LastError = d3dappi.lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
+	LastError = lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't create vertex buffer\n");
@@ -924,29 +923,29 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	assert(renderObject->vbLocked == 0);
 
 	if( transformed )
-		LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
 	else
-		LastError = d3dappi.lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
 
 	if (FAILED(LastError))
 		return LastError;
 
 	if(renderObject->lpD3DIndexBuffer)
 	{
-		LastError = d3dappi.lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
+		LastError = lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
 		if(FAILED(LastError)) 
 			return LastError;
 	}
 
 	if( transformed )
-		LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
+		LastError = lpD3DDevice->SetFVF(D3DFVF_TLVERTEX);
 	else
-		LastError = d3dappi.lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+		LastError = lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
 
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = d3dappi.lpD3DDevice->SetMaterial(&renderObject->material);
+	LastError = lpD3DDevice->SetMaterial(&renderObject->material);
 	if (FAILED(LastError))
 		return LastError;
 
@@ -955,13 +954,13 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 		if(renderObject->textureGroups[i].colourkey)
 			set_alpha_ignore();
 
-		LastError = d3dappi.lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		LastError = lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
 		if (FAILED(LastError))
 			return LastError;
 
 		if(renderObject->lpD3DIndexBuffer)
 		{
-			LastError = d3dappi.lpD3DDevice->DrawIndexedPrimitive(
+			LastError = lpD3DDevice->DrawIndexedPrimitive(
 				primitive_type,
 				renderObject->textureGroups[i].startVert,
 				0, 
@@ -972,7 +971,7 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 		}
 		else
 		{
-			LastError = d3dappi.lpD3DDevice->DrawPrimitive(
+			LastError = lpD3DDevice->DrawPrimitive(
 				primitive_type,
 				renderObject->textureGroups[i].startVert,
 				renderObject->textureGroups[i].numVerts

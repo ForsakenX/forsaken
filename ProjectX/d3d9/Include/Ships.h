@@ -73,7 +73,6 @@ typedef struct _BIKEMOD
  */
 
 BOOL SetUpShips();
-//BOOL Mod_Ship_Exec_Buffer( uint16 group, LPDIRECT3DDEVICE lpDev, LPDIRECT3DVIEWPORT lpView );
 BOOL ProcessShips();
 void	InitShipsChangeLevel( MLOADHEADER * Mloadheader );
 BOOL	ENV( MXLOADHEADER * Mloadheader , MATRIX * Mat ,VECTOR * Pos);
