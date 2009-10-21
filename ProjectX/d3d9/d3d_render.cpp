@@ -733,8 +733,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
-	/* TODO - check the Lock type flag. Do we ever need to discard? read only? */
-	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, 0);
+	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't lock vertex buffer!\n");
@@ -752,8 +751,7 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX
 {
 	assert(renderObject->vbLocked == 0);
 
-	/* TODO - check the Lock type flag. Do we ever need to discard? read only? */
-	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, 0);
+	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't lock vertex buffer!\n");
@@ -834,7 +832,7 @@ HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {
-	LastError = renderObject->lpD3DIndexBuffer->Lock(0, 0, (void**)indices, 0);
+	LastError = renderObject->lpD3DIndexBuffer->Lock(0, 0, (void**)indices, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		OutputDebugString("can't lock index buffer!\n");
