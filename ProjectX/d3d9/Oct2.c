@@ -1540,7 +1540,7 @@ void DrawSimplePanel()
 		// Add Crosshair Polygon..
 		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
 
-		// Blt trojax PowerLevel / LaserTemperature
+		// trojax PowerLevel / LaserTemperature
 		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
 		if( !energy )
 		{

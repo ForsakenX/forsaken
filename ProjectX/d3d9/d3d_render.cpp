@@ -47,11 +47,12 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
-	//d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
+	d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
 	//d3dpp.BackBufferFormat				= D3DFMT_R8G8B8;				// 24 bit
-	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit
+	//d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
-	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
+	//d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// 32bit zbuffer
+	d3dpp.AutoDepthStencilFormat		= D3DFMT_INDEX16;				// 16bit zbuffer
 	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
 	d3dpp.BackBufferWidth				= 640;	// resolution width
@@ -150,6 +151,11 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		{
 			DebugPrintf("d3d device created: hardware");
 		}
+		else
+		{
+			const char * error = render_error_description(LastError);
+			DebugPrintf("d3d device create failed with hardware: %s\n",error);
+		}
 	}
 
 	if (FAILED(LastError)) 
@@ -161,6 +167,11 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		{
 			DebugPrintf("d3d device created: mixed");
 		}
+		else
+		{
+			const char * error = render_error_description(LastError);
+			DebugPrintf("d3d device create failed with mixed: %s\n",error);
+		}
 	}
 
 	if (FAILED(LastError)) 
@@ -171,6 +182,11 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		if (SUCCEEDED(LastError))
 		{
 			DebugPrintf("d3d device created: software");
+		}
+		else
+		{
+			const char * error = render_error_description(LastError);
+			DebugPrintf("d3d device create failed with software: %s\n",error);
 		}
 	}
 
