@@ -5835,10 +5835,6 @@ extern  int   NumOfVertsTouched;
 timer our_timer;
 int our_count = 0;
 
-#ifdef DEBUG_ON
-int our_last_polygons = 0;
-#endif
-
 // TODO need to find replacement for D3DSTATS9
 BOOL Our_CalculateFrameRate(void)
 {
