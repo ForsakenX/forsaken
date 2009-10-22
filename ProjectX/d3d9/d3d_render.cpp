@@ -50,10 +50,10 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit rgb mode with 8 bits per color
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
-	d3dpp.PresentationInterval			= D3DPRESENT_DONOTWAIT;//D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
+	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
-	d3dpp.BackBufferWidth				= 800;	// resolution width
-	d3dpp.BackBufferHeight				= 600;	// resolution height
+	d3dpp.BackBufferWidth				= 640;	// resolution width
+	d3dpp.BackBufferHeight				= 480;	// resolution height
 	//d3dpp.Flags	// not needed for now
 
 	// window mode
