@@ -5843,7 +5843,7 @@ BOOL Our_CalculateFrameRate(void)
 
 	// every 25 frames
 	our_count++;
-	if (our_count >= 120) // every 2 seconds on vsync pc
+	if (our_count >= 30) // every 0.5 seconds on vsync pc
 	{
 		// calculate time passed
 		timer_run( &our_timer );
