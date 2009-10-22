@@ -47,7 +47,9 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
-	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit rgb mode with 8 bits per color
+	//d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
+	//d3dpp.BackBufferFormat				= D3DFMT_R8G8B8;				// 24 bit
+	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// the zbuffer format
 	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
