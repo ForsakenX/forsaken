@@ -52,6 +52,7 @@ BOOL bFullscreen = TRUE;	   /* Fullscreen flag from cli */
  */
 BOOL D3DAppFullscreen(int mode)
 {
+	Msg("Not supported yet!");
 	return TRUE;
 }
 
@@ -71,6 +72,7 @@ BOOL D3DAppWindowMode( int mode )
 
 BOOL D3DAppWindow(int w, int h, int bpp)
 {
+	Msg("Not supported yet!");
 	return TRUE;
 }
 
