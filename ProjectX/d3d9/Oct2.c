@@ -1532,6 +1532,8 @@ float HealthCount = 0.0F;
 int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
 void DrawSimplePanel()
 {
+			static int max = 0;
+			static int least = 10000000;
 	int energy;
 
     if( WhoIAm == Current_Camera_View )
@@ -1539,17 +1541,20 @@ void DrawSimplePanel()
 		// Add Crosshair Polygon..
 		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
 
-		// trojax PowerLevel / LaserTemperature
+		// trojax level
 		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
+
+		// or lazer temperature
 		if( !energy )
-		{
 			energy = (int) ( ( LaserTemperature *0.01F ) * 9.0F );
-			if( energy > 8 )
-				energy = 8;
-		}
+
+		// render trojax/lazer bar
 		if( energy )
 		{
-			AddScreenPolyText( (uint16) (64+8-energy) , (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
+			// 72   (first frame) is power bar charging
+			// 72-8 (last frame)  is power bar at full charge
+			if( energy > 8 ) energy = 8;
+			AddScreenPolyText( (72-energy), (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
 		}
 
 		// nitro bar
