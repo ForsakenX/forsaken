@@ -205,7 +205,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		exit(1);
 	}
 
-	//d3dappi.bFullscreen = !d3dpp.Windowed;
+	d3dappi.bFullscreen = !d3dpp.Windowed;
 	
 	render_initialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;
