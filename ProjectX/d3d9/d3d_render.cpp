@@ -21,6 +21,7 @@ BOOL  CanCullFlag = TRUE;
 /*                            Creation of D3D                              */
 /***************************************************************************/
 extern BOOL InitView(void);
+extern BOOL VSync;
 
 BOOL render_initialized = FALSE;
 
@@ -58,7 +59,10 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// 32bit zbuffer
 	//d3dpp.AutoDepthStencilFormat		= D3DFMT_D16; //D3DFMT_INDEX16;				// 16bit zbuffer
-	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
+	if(VSync)
+		d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_ONE; // enable vsync
+	else
+		d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
 	d3dpp.BackBufferWidth				= 640;	// resolution width
 	d3dpp.BackBufferHeight				= 480;	// resolution height
