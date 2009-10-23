@@ -2202,14 +2202,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	RHWValue = ( 1.0F / ZValue );
 
 /*===================================================================
-		Lock Exec Buffer and get ready to fill in...
+		Lock Buffer and get ready to fill in...
 ===================================================================*/
-//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
-//		return FALSE;
 
 	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
@@ -2223,14 +2217,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	ScrPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
 
-//	lpBufStart = ExecBuffer_debdesc.lpData;
 	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
-	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
-	//lpInsStart = lpPointer;
 
 /*===================================================================
-		Fill in Exec Buffer ( Verts and Faces Simultaneously )
+		Fill in Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
+
 	for( Count = *TPage; Count <= MAXTPAGESPERTLOAD; Count++ )
 	{
 		if( Count == MAXTPAGESPERTLOAD ) Textured = FALSE;
