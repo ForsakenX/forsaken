@@ -561,7 +561,7 @@ BOOL  OldDrawPanel = TRUE;
 BOOL  Panel = TRUE;
 
 BOOL  UsedStippledAlpha = FALSE;
-BOOL  CanCullFlag = FALSE;
+BOOL  CanCullFlag = TRUE;
 
 
 BOOL ChangeLevel( void );
