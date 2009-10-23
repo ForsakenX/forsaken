@@ -11062,6 +11062,9 @@ void GetGamePrefs( void )
  
     MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
+    SWMonoChrome                     = config_get_bool( "SWMonoChrome",				FALSE );
+    MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
+
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
     LensFlare                        = config_get_bool( "LensFlare",				TRUE );
@@ -11069,12 +11072,10 @@ void GetGamePrefs( void )
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
     SecondaryLightDetail             = config_get_bool( "SecondaryLightDetail",		TRUE );
     GoreGuts                         = config_get_bool( "GoreGuts",					TRUE );
-    SWMonoChrome                     = config_get_bool( "SWMonoChrome",				FALSE );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
-    ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			FALSE );
+    ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
-    MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
 	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );

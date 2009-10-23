@@ -5976,7 +5976,7 @@ BOOL Disp3dPanel( void )
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
 */  
-//    if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &newviewport) != D3D_OK )
+
 	if (FSSetViewPort(&newviewport) != D3D_OK )
 		return FALSE;
 
@@ -5996,7 +5996,6 @@ BOOL Disp3dPanel( void )
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
 	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
 	{
 		return FALSE;
@@ -6066,32 +6065,18 @@ BOOL Disp3dPanel( void )
 	                                    
 	view._44 = rotMatrix._44;
 
-//	if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
 	if (FAILED(FSSetMatrix(D3DTS_VIEW, &view)))
 		return FALSE;
 
-//  if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Panel], (uint16) -1 ) != TRUE )
 	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
 		return FALSE;
 
-//	if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport) != D3D_OK )
-//		return FALSE;
-
 	if (FAILED(FSSetViewPort(&viewport)))
-	{
 		return FALSE;
-	}
 
-/*
-	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
-	{
-		return FALSE;
-	}
-*/
 	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
-	{
 		return FALSE;
-	}
+
 	return TRUE;
 }
 
