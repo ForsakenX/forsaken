@@ -28,7 +28,6 @@
 ===================================================================*/
 	extern	TLOADHEADER	Tloadheader;
 	extern	int16	ModeCase;
-	extern	BOOL	Is3Dfx;
 	extern	TRIGGERVAR	*	DecreaseTemperature;
 	extern	BOOL	CaptureTheFlag;
 	extern	BOOL	CTF;

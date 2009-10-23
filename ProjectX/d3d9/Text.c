@@ -53,7 +53,6 @@ extern	BOOL	TeamGame;
 extern	BYTE	TeamNumber[MAX_PLAYERS];
 extern	BOOL	ShowTeamInfo;
 extern	MLOADHEADER Mloadheader;
-extern	BOOL Is3Dfx;
 extern	int16			Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16					Lives;
 extern	int16					MaxKills;

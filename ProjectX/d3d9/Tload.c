@@ -28,8 +28,6 @@
 ===================================================================*/
 
 extern	BOOL	TexturesEnabled;
-extern	BOOL	Is3Dfx;
-extern	BOOL	Is3Dfx2;
 
 /*===================================================================
 		Globals...	
@@ -37,9 +35,6 @@ extern	BOOL	Is3Dfx2;
 #define	MAXSCALE 3
 
 TLOADHEADER	Tloadheader;
-BOOL	Pal332 = FALSE;
-BOOL	MipMap = TRUE;
-BOOL	NoTextureScaling = FALSE;
 int Print4x5Text( char * Text , int x , int y , int col );
 double	Gamma = 1.0;
 /*===================================================================
@@ -177,7 +172,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 				}
 			}
 */
-			if( MipMap && Tloadheader->MipMap[i] )
+			if( Tloadheader->MipMap[i] )
 			{
 				Xsize = (int) (Xsize * 1.4F);
 				Ysize = (int) (Ysize * 1.4F);
@@ -318,7 +313,7 @@ TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 		// if file exists
 		if( File_Exists( &NewName2[ 0 ] ) )
 		{
-			if( MipMap && Tloadheader->MipMap[n] )
+			if( Tloadheader->MipMap[n] )
 			{
 				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
 			}

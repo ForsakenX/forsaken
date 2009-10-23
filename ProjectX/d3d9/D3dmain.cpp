@@ -63,10 +63,7 @@ extern "C" {
 	extern int default_bpp;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
-	extern	BOOL	Is3Dfx;
-	extern	BOOL	Is3Dfx2;
 	extern	BOOL	NoSFX;
-	extern	BOOL	MipMap;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
 //	extern BOOL CanDoStrechBlt;
@@ -265,11 +262,6 @@ static BOOL InitWindow( void )
 	HICON small_icon;
 	HICON large_icon;
     WNDCLASSEX wc;
-
-	/* bjd - FIXME hardcoded */
-	default_width = 800;
-    default_height = 600;
-
 
 //// START UGLY
 
@@ -670,10 +662,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
     //  Set Global Defaults
     //
 	
-	Is3Dfx					= FALSE;
-	Is3Dfx2					= FALSE;
 	NoSFX					= FALSE; // turns off sound
-	MipMap					= TRUE;
 	DS						= FALSE;
 	Wine					= FALSE;
 	NoCursorClip			= FALSE;
@@ -811,12 +800,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			strcpy( (LPSTR)TCPAddress.text, address );
 		}
 
-		// turn off texture mip mapping
-		else if (!_stricmp(option, "NoMipMap"))
-		{
-			MipMap = FALSE;
-        }
-
 		// supposedly to set wire mode for mxv's...
 		else if (!_stricmp(option, "AllWires")) 
 		{
@@ -894,7 +877,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				// values set directly by sscanf
 			}
 
-			// bits per second
+			// bits per pixel
 			// by default the game picks 16bbps cause that renders the best
 			// use bbp32 to get 32bbp/sec
 			else if ( sscanf( option, "bpp:%d", &num ) == 1 )

@@ -34,8 +34,6 @@
 /*===================================================================
 	Externs
 ===================================================================*/
-extern	BOOL			MipMap;
-extern	BOOL			Is3Dfx2;
 extern	CAMERA			CurrentCamera;
 extern	CAMERA			MainCamera;
 extern	MLOADHEADER		Mloadheader;

@@ -128,7 +128,6 @@ extern double	Gamma;
 extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
 extern BOOL MyUseShortPackets;
 extern BOOL MyResetKillsPerLevel;
-extern BOOL	Pal332;
 extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
 extern	int16	NumGoldBars;
@@ -204,7 +203,6 @@ extern DWORD BufferedKey[];
 extern int16 NumKeysToProcess;
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
-extern BOOL	Is3Dfx;
 extern float VduScaleX, VduScaleY;
 extern	FMPOLY			FmPolys[MAXNUMOF2DPOLYS];
 extern	POLY   			Polys[MAXPOLYS];
@@ -720,7 +718,6 @@ void GetTitleMessage(void);
 
 extern BYTE	TeamNumber[MAX_PLAYERS];
 extern BOOL	ShowStartPoints;
-extern BOOL	MipMap;
 
 enum
 {
@@ -11149,10 +11146,10 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    default_width                     = config_get_int( "ScreenWidth",				640 );
-    default_height                    = config_get_int( "ScreenHeight",				480 );
+    default_width                     = config_get_int( "ScreenWidth",				800 );
+    default_height                    = config_get_int( "ScreenHeight",				600 );
 
-    default_bpp                       = config_get_int( "ScreenBPP",				16 );
+    default_bpp                       = config_get_int( "ScreenBPP",				32 );
 	if( default_bpp != 16 && default_bpp != 32 )
 		default_bpp = 16;
 
@@ -14714,11 +14711,14 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 
 	if( File_Exists( name ) )
 	{
+		int numMips = 1; // create only one mipmap level (hence original texture only)
+		if(Tloadheader->MipMap[n])
+			numMips = 0; // let d3d generate mipmaps for us that are needed
 		// for some reason level pic would not show up properly if you let update_texture_from_file create the texture for us
 		if(!Tloadheader->lpTexture[n])
-			FSCreateTexture(&Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
+			FSCreateTexture(&Tloadheader->lpTexture[n], name, 0, 0, numMips, &Tloadheader->ColourKey[n]);
 		else
-			update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, !(MipMap && Tloadheader->MipMap[n]), &Tloadheader->ColourKey[n]);
+			update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, numMips, &Tloadheader->ColourKey[n]);
 	}
 
 	return TRUE;
@@ -14762,12 +14762,8 @@ void LoadSavedGamePic( char *file )
 	
 	strcpy( Tloadheader.PlaceHolderFile[ DummyTextureIndex ], file );
 
-	Pal332 = TRUE;
-
 	if ( !TloadReloadPlaceHolder( &Tloadheader, DummyTextureIndex ) )
 		return;
-
-	Pal332 = FALSE;
 
 	// display dummy tv
 	Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 1;

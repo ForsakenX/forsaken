@@ -10,9 +10,6 @@ extern "C" {
 #include "util.h"
 #include <dxerr9.h>
 
-extern	BOOL MipMap;
-extern	BOOL	Is3Dfx2;
-
 BOOL  UsedStippledAlpha = FALSE;
 BOOL  CanCullFlag = TRUE;
 
@@ -22,6 +19,8 @@ BOOL  CanCullFlag = TRUE;
 /***************************************************************************/
 extern BOOL InitView(void);
 extern BOOL VSync;
+extern int default_width;
+extern int default_height;
 
 BOOL render_initialized = FALSE;
 
@@ -64,8 +63,8 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	else
 		d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
-	d3dpp.BackBufferWidth				= 640;	// resolution width
-	d3dpp.BackBufferHeight				= 480;	// resolution height
+	d3dpp.BackBufferWidth				= default_width;	// resolution width
+	d3dpp.BackBufferHeight				= default_height;	// resolution height
 	//d3dpp.Flags	// not needed for now
 
 	// window mode

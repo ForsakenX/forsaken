@@ -307,9 +307,6 @@ extern BOOL BrightShips;
 
 extern  float LastDistance[MAX_SFX];
 
-BOOL  Is3Dfx;
-BOOL  Is3Dfx2;
-
 extern int GameCompleted;
 extern  OFF_FILES OffsetFiles[];
 extern  OFF_FILES Title_OffsetFiles[];
