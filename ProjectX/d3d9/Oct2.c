@@ -5888,7 +5888,7 @@ BOOL Our_CalculateFrameRate(void)
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*5, 2 );
 
 		// show polygon information
-		sprintf(&buf[0], "FmPolys %d - Polys %d - ScrPolys %d - VertsTouched %d",
+		sprintf(&buf[0], "Face Me Polys %d - Dynamic? Polys %d - Screen Polys %d - Verts Touched (lighting?) %d",
 			(int) TotalFmPolysInUse,(int) TotalPolysInUse,(int) TotalScrPolysInUse, NumOfVertsTouched);
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*6, 2 );
 
