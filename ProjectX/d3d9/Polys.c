@@ -26,6 +26,7 @@
 /*===================================================================
 	Externs
 ===================================================================*/
+extern	BOOL CanCullFlag;
 extern	CAMERA			CurrentCamera;
 extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;
@@ -52,7 +53,6 @@ extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
-extern	BOOL			CanCullFlag;
 extern	int16			MakeColourMode;
 extern	BYTE			GameStatus[MAX_PLAYERS];
 
@@ -614,14 +614,12 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 //		if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //			return FALSE;
 
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 	}
 	return( FALSE );
 }
@@ -651,14 +649,12 @@ BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
 
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 	}
 
 	return( FALSE );
@@ -1398,14 +1394,12 @@ BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/ RENDERO
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
 
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 	}
 
 	return( FALSE );
@@ -1432,18 +1426,12 @@ BOOL DisplaySolidGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDER
  		if( !SolidPolyDispGroupUnclipped( /*ExecBuff*/renderObject, &TPage, &i ) )
 			return( TRUE );
 
-//			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//		if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//			return FALSE;
-
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 
 	}
 

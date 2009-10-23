@@ -37,7 +37,6 @@ extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
-extern	BOOL	CanCullFlag;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
 extern	D3DMATRIXHANDLE hView;
 extern	D3DMATRIX view;
@@ -46,7 +45,6 @@ extern	MATRIX	MATRIX_Identity;
 extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX  TempWorld;	
 extern	D3DMATRIX identity;
-extern	BOOL	CanCullFlag;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 
@@ -351,9 +349,6 @@ void AddWaterLink(WATEROBJECT * WO)
 ===================================================================*/
 BOOL InitWaterObject(WATEROBJECT * WO)
 {
-//	D3DEXECUTEDATA			d3dExData;
-//	D3DEXECUTEBUFFERDESC	debDesc;
-//    LPVOID lpBufStart, lpInsStart, lpPointer;
 	int x,y;
 	LPD3DTRIANGLE	FacePnt = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
@@ -383,7 +378,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		return FALSE;
 	}
 
-	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(&WO->renderObject, &lpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -394,12 +389,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	}
 
 	FacePnt =  (LPD3DTRIANGLE) lpIndices;
-
-/*
-	lpBufStart = debDesc.lpData;
-	lpPointer = lpBufStart;
-	lpD3DLVERTEX = (LPD3DLVERTEX ) lpPointer;
-*/
 
 	for( x = 0 ; x < WO->XVerts ; x++ )
 	{
@@ -419,32 +408,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			vertsCount++;
 		}
 	}
-/*	
-	lpPointer = (void * )  lpD3DLVERTEX;			
-	lpInsStart = lpPointer;
-	OP_STATE_LIGHT(1, lpPointer);
-		STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[WaterTPage], lpPointer);
-
-//	OP_STATE_RENDER(2, lpPointer);
-//	    STATE_DATA( D3DRENDERSTATE_WRAPU, TRUE, lpPointer );
-//	    STATE_DATA( D3DRENDERSTATE_WRAPV, TRUE, lpPointer );
-		
-	OP_PROCESS_VERTICES(1, lpPointer);
-		PROCESSVERTICES_DATA(D3DPROCESSVERTICES_TRANSFORM, 0, WO->XVerts*WO->YVerts, lpPointer);
-	OP_STATE_RENDER(1, lpPointer);
-		STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[WaterTPage], lpPointer);
-	if (QWORD_ALIGNED(lpPointer))
-		OP_NOP(lpPointer);
-	if( CanCullFlag )
-	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_NONE, lpPointer );
-	}
-	OP_TRIANGLE_LIST( (short) (WO->XVerts-1)*(WO->YVerts-1)*2, lpPointer);
-				
-
-	FacePnt = (LPD3DTRIANGLE ) lpPointer;
-*/
 
 	/*	copy the faces data into the execute buffer	*/
 
@@ -466,22 +429,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		}
 	}
 
-/*
-	lpPointer = (LPVOID) FacePnt;
-	if( CanCullFlag )
-	{
-		OP_STATE_RENDER( 1, lpPointer);
-		    STATE_DATA( D3DRENDERSTATE_CULLMODE, D3DCULL_CCW, lpPointer );
-	}
-//	OP_STATE_RENDER(2, lpPointer);
-//	    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
-//	    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
-	OP_EXIT(lpPointer);
-*/			
-	/*	unlock the execute buffer	*/
-//	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
-//		return FALSE;
-
 	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
 	{
 		return FALSE;
@@ -502,16 +449,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
 	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
 	WO->renderObject.material = Tloadheader.lpMat[WaterTPage];
-
-/*
-	memset(&d3dExData, 0, sizeof(D3DEXECUTEDATA));
-	d3dExData.dwSize = sizeof(D3DEXECUTEDATA);
-	d3dExData.dwVertexCount = (WO->XVerts*WO->YVerts);
-	d3dExData.dwInstructionOffset = (ULONG) ((char *)lpInsStart - (char *)lpBufStart);
-	d3dExData.dwInstructionLength = (ULONG) ((char *)lpPointer - (char*)lpInsStart);
-	if ( WO->lpExBuf->lpVtbl->SetExecuteData(WO->lpExBuf, &d3dExData) != D3D_OK)
-		return FALSE;
-*/
 
 	return TRUE;
 }

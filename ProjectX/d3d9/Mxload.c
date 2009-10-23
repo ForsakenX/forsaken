@@ -65,7 +65,6 @@ extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more 
 extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;
 extern	DWORD				CurrentTextureBlend;
-extern	BOOL				CanCullFlag;
 
 extern	TLOADHEADER Tloadheader;
 extern	D3DMATRIXHANDLE hWorld;

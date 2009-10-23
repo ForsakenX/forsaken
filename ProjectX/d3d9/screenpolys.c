@@ -70,7 +70,6 @@ extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
-extern	BOOL			CanCullFlag;
 extern	BOOL			LensFlare;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	uint16		FirstSecBullUsed;

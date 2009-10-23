@@ -29,6 +29,7 @@
 /*===================================================================
 	Externs
 ===================================================================*/
+extern	BOOL CanCullFlag;
 extern	CAMERA	CurrentCamera;
 extern	D3DMATRIX			view;
 extern	MATRIX				ProjMatrix;
@@ -48,7 +49,6 @@ extern	MATRIX				MATRIX_Identity;
 extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;
 extern	DWORD				CurrentTextureBlend;
-extern	BOOL				CanCullFlag;
 extern	MLOADHEADER			Mloadheader;
 extern	MCLOADHEADER		MCloadheader;
 extern	MCLOADHEADER		MCloadheadert0;
@@ -1581,18 +1581,12 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
  		if( !FmPolyDispGroupClipped( Group, renderObject, &TPage, &i ) )
 			return( TRUE );
 
-//			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//				return FALSE;
-
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 	}
 
 	return( FALSE );
@@ -1622,14 +1616,12 @@ BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJ
 //			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
 //				return FALSE;
 
-		if(	CanCullFlag )
-			cull_none();
+		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
 			return FALSE;
 
-		if( CanCullFlag )
-			reset_cull();
+		reset_cull();
 	}
 
 	return( FALSE );

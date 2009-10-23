@@ -13,6 +13,10 @@ extern "C" {
 extern	BOOL MipMap;
 extern	BOOL	Is3Dfx2;
 
+BOOL  UsedStippledAlpha = FALSE;
+BOOL  CanCullFlag = TRUE;
+
+
 /***************************************************************************/
 /*                            Creation of D3D                              */
 /***************************************************************************/
@@ -447,17 +451,20 @@ void reset_filtering( void )
 
 void cull_none( void )
 {
-	STATE(	D3DRS_CULLMODE,	D3DCULL_NONE);
+	if(	CanCullFlag )
+		STATE(	D3DRS_CULLMODE,	D3DCULL_NONE);
 }
 
 void cull_cw( void )
 {
-	STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
+	if(	CanCullFlag )
+		STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
 }
 
 void reset_cull( void )
 {
-	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
+	if(	CanCullFlag )
+		STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
 }
 
 void set_alpha_ignore( void )
