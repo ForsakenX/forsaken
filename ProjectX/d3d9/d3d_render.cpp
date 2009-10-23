@@ -47,12 +47,13 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
-	d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
-	//d3dpp.BackBufferFormat				= D3DFMT_R8G8B8;				// 24 bit
-	//d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;				// 32 bit
+	//d3dpp.BackBufferFormat				= D3DFMT_R5G6B5;				// 16 bit - works for nvidia vanta w/ D3DFMT_D16 zbuff
+	//d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
+	//d3dpp.BackBufferFormat				= D3DFMT_R8G8B8;			// 24 bit
+	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;			// 32 bit
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
-	//d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// 32bit zbuffer
-	d3dpp.AutoDepthStencilFormat		= D3DFMT_INDEX16;				// 16bit zbuffer
+	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// 32bit zbuffer
+	//d3dpp.AutoDepthStencilFormat		= D3DFMT_D16; //D3DFMT_INDEX16;				// 16bit zbuffer
 	d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
 	// default resolution
 	d3dpp.BackBufferWidth				= 640;	// resolution width
@@ -88,16 +89,17 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		// you can use the following code to get the current desktop display mode
 			//D3DDISPLAYMODE d3ddm;
 			//LastError = lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
-
-		/*
+/*
 		{
 			unsigned int best_mode = 0;
 			unsigned int i;
-			unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8 );
+			unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
 			D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
 			for ( i = 0; i < num_modes; i++ )
 			{
-				lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, D3DFMT_X8R8G8B8, i, &modes[i] );
+				lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
+				if(modes[i].Width == 640)
+					break;
 				if(modes[i].Width > modes[best_mode].Width)
 					best_mode = i;
 			}
@@ -107,8 +109,10 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 				d3dpp.BackBufferHeight = mode.Height;
 			}
 		}
-		*/
+*/
 	}
+
+	DebugPrintf("Using display size of %dx%d\n",d3dpp.BackBufferWidth,d3dpp.BackBufferHeight);
 
 	// try to create a device falling back to less capable versions
 
