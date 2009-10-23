@@ -66,7 +66,6 @@ extern "C" {
 	extern	BOOL	Is3Dfx;
 	extern	BOOL	Is3Dfx2;
 	extern	BOOL	NoSFX;
-	extern	BOOL	NoTextureScaling;
 	extern	BOOL	MipMap;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
@@ -675,7 +674,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	Is3Dfx2					= FALSE;
 	NoSFX					= FALSE; // turns off sound
 	MipMap					= TRUE;
-	NoTextureScaling		= FALSE;
 	DS						= FALSE;
 	Wine					= FALSE;
 	NoCursorClip			= FALSE;
@@ -812,12 +810,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// copy in the hostname
 			strcpy( (LPSTR)TCPAddress.text, address );
 		}
-
-		// don't scale textures
-		else if (!_stricmp(option, "NoTextureScaling")) 
-		{
-			NoTextureScaling = TRUE;
-        }
 
 		// turn off texture mip mapping
 		else if (!_stricmp(option, "NoMipMap"))
