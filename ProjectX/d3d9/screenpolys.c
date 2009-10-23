@@ -92,7 +92,6 @@ extern	FRAME_INFO	*	Flag_Header;
 extern	FRAME_INFO	*	Flags_Header;
 extern	int				outside_map;
 extern	uint16			HitBox;
-extern	uint16			HudScrPoly;
 extern	uint16			TargScrPolys[ 4 ];
 extern	uint32			TeamFlagMask[ MAX_TEAMS ];
 extern	TRIGGERVAR	*	TimeLimitTrigger;
@@ -126,9 +125,7 @@ static	float		CountDown_Col = 1.0F;
 uint16	ScreenMultiples[ MAXMULTIPLES ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 int		SinglePlayerTimeLimit = 0;
 uint16	ThermoScrPoly = (uint16) -1;
-uint16	LogoScrPoly = (uint16) -1;
 uint16	FlashScreenPoly	= (uint16) -1;
-uint16	FadeOutScreenPoly = (uint16) -1;
 uint32	TotalScrPolysInUse = 0;
 SCRPOLY	ScrPolys[ MAXNUMOFSCRPOLYS ];
 uint16	FirstScrPolyUsed;
@@ -183,9 +180,7 @@ void InitScrPolys( void )
 	uint16	i;
 
 	FlashScreenPoly = (uint16) -1;
-	LogoScrPoly = (uint16) -1;
 	HitBox = (uint16) -1;
-	HudScrPoly = (uint16) -1;
 	for( i = 0; i < 4; i++ ) TargScrPolys[ i ] = (uint16) -1;
 	for( i = 0; i < MAXMULTIPLES; i++ ) ScreenMultiples[ i ] = (uint16) -1;
 	ClearCountdownBuffers();

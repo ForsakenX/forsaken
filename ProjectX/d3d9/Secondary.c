@@ -6091,7 +6091,6 @@ VISISHIP	VisibleShipsPos[ MAX_PLAYERS ];
 int16		NumVisibleShips = 0;
 uint16		TargScrPolys[ 4 ] = { (uint16) -1, (uint16) -1, (uint16) -1, (uint16) -1 };
 uint16		HitBox = (uint16) -1;
-uint16		HudScrPoly = (uint16) -1;
 int			TeamColours[ 4 ] = { 1, 2, 3 ,4 };		
 
 /*===================================================================
