@@ -170,11 +170,35 @@ uint16	Bit1Digit[ 1 ] = { 0xffff };
 uint16	Hun1Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 uint16	Hun0Digit[ 7 ] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 
-/*===================================================================
-	Procedure	:	Init screen poly structures
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
+// defaults a screen poly
+void InitScrPoly( uint16 i )
+{
+		ScrPolys[i].Flags = SCRFLAG_Nothing;
+		ScrPolys[i].Type = SCRTYPE_Normal;
+		ScrPolys[i].R = 255;
+		ScrPolys[i].G = 255;
+		ScrPolys[i].B = 255;
+		ScrPolys[i].Trans = 255;
+		ScrPolys[i].Frame = 0.0F;
+		ScrPolys[i].FrameRate = 1.0F;
+		ScrPolys[i].Frm_Info = NULL;
+		ScrPolys[i].SeqNum = SCRSEQ_Nothing;
+		ScrPolys[i].Xscale = 1.0F;
+		ScrPolys[i].Yscale = 1.0F;
+
+		ScrPolys[i].NextInTPage = (uint16) -1;
+		ScrPolys[i].PrevInTPage = (uint16) -1;
+
+		ScrPolys[i].x1 = 0.0F;
+		ScrPolys[i].y1 = 0.0F;
+		ScrPolys[i].x2 = 0.0F;
+		ScrPolys[i].y2 = 0.0F;
+		ScrPolys[i].x3 = 0.0F;
+		ScrPolys[i].y3 = 0.0F;
+		ScrPolys[i].x4 = 0.0F;
+		ScrPolys[i].y4 = 0.0F;
+}
+
 void InitScrPolys( void )
 {
 	uint16	i;
@@ -190,32 +214,9 @@ void InitScrPolys( void )
 	
 	for( i = 0; i < MAXNUMOFSCRPOLYS; i++ )
 	{
-		ScrPolys[i].Flags = SCRFLAG_Nothing;
-		ScrPolys[i].Type = SCRTYPE_Normal;
-		ScrPolys[i].R = 255;
-		ScrPolys[i].G = 255;
-		ScrPolys[i].B = 255;
-		ScrPolys[i].Trans = 255;
-		ScrPolys[i].Frame = 0.0F;
-		ScrPolys[i].FrameRate = 1.0F;
-		ScrPolys[i].Frm_Info = NULL;
-		ScrPolys[i].SeqNum = SCRSEQ_Nothing;
-		ScrPolys[i].Xscale = 1.0F;
-		ScrPolys[i].Yscale = 1.0F;
 		ScrPolys[i].Next = i + 1;
 		ScrPolys[i].Prev = (uint16) -1;
-
-		ScrPolys[i].NextInTPage = (uint16) -1;
-		ScrPolys[i].PrevInTPage = (uint16) -1;
-
-		ScrPolys[i].x1 = 0.0F;
-		ScrPolys[i].y1 = 0.0F;
-		ScrPolys[i].x2 = 0.0F;
-		ScrPolys[i].y2 = 0.0F;
-		ScrPolys[i].x3 = 0.0F;
-		ScrPolys[i].y3 = 0.0F;
-		ScrPolys[i].x4 = 0.0F;
-		ScrPolys[i].y4 = 0.0F;
+		InitScrPoly(i);
 	}
 
 	ScrPolys[ MAXNUMOFSCRPOLYS-1 ].Next = (uint16) -1;
@@ -287,6 +288,13 @@ void KillUsedScrPoly( uint16 i )
 	ScrPolys[i].Prev = (uint16) -1;
 	ScrPolys[i].Next = FirstScrPolyFree;
 	FirstScrPolyFree = i;
+
+	// cleanup the poly
+	// this is important other wise bugs will appear
+	// not all routines that get a poly 
+	// clear out all previous possible settings
+
+	InitScrPoly( i );
 }
 
 /*===================================================================
