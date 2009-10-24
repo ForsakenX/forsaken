@@ -4082,15 +4082,12 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     ReceiveGameMessages();
 
-
     //  Load in And if nescessary ReScale Textures... 
     if( !Tload( &Tloadheader ) )
     {
       SeriousError = TRUE;
       return FALSE;
     }
-  
-    FixTextureUVs( &OffsetFiles[ 0 ] );
 
     MyGameStatus = STATUS_InitView_3;
     PrintInitViewStatus( MyGameStatus );
