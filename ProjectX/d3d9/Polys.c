@@ -1107,7 +1107,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 255 );
-#endifbreak;
+#endif
 							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos2.x;
