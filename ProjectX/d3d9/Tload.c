@@ -102,8 +102,7 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 ===================================================================*/
 BOOL Tload( TLOADHEADER * Tloadheader  )
 {
-	int		i,e;
-	uint16	Xsize,Ysize;
+	int	i,e;
 	int LeastScaledThatCanbe;
 	int LeastScaledThatCanbeScale;
 

@@ -611,7 +611,7 @@ RENDEROBJECT RenderBufs[4];
 
 void InitRenderBufs(/*LPDIRECT3DDEVICE lpDev*/ ); // bjd
 void ReleaseRenderBufs( void );
-BOOL ChangeBackgroundColour( float R, float G, float B );
+//BOOL ChangeBackgroundColour( float R, float G, float B );
 BOOL SetMatrixViewPort( void );
 void PrintInitViewStatus( BYTE Status );
 
@@ -5386,7 +5386,7 @@ BOOL  InitScoreDisplay()
    //Create the offscreen surface, by loading our bitmap.
 
   InitFont();
-  ChangeBackgroundColour( 0, 0, 0 );
+  //ChangeBackgroundColour( 0, 0, 0 );
 
 #ifdef SCROLLING_MESSAGES
   // get random phrases...
@@ -5544,7 +5544,7 @@ BOOL RenderCurrentCamera( void )
 	int16 Count;
 	VISGROUP  *g;
 	uint16  group;
-	float R, G, B;
+//	float R, G, B;
 	NumOfTransExe = 0;
 
 	Build_View();
@@ -5575,6 +5575,7 @@ BOOL RenderCurrentCamera( void )
   UpdateBGObjectsClipGroup( &CurrentCamera );
   UpdateEnemiesClipGroup( &CurrentCamera );
 
+  /*
   if( CurrentCamera.GroupImIn != (uint16) -1 )
   {
     for ( g = CurrentCamera.visible.first_visible; g; g = g->next_visible )
@@ -5592,6 +5593,7 @@ BOOL RenderCurrentCamera( void )
       }
     }
   }
+  */
 
   if (ClearBuffers() != TRUE )
     return FALSE;
@@ -6488,6 +6490,8 @@ void  ReleaseJoysticks( void )
         : float B ( 0.0F - 1.0F )
   Output    : BOOL  TRUE/FALSE
 ===================================================================*/
+// TODO - might want this
+/*
 BOOL ChangeBackgroundColour( float R, float G, float B )
 {
     D3DMATERIAL9 bmat;
@@ -6501,6 +6505,7 @@ BOOL ChangeBackgroundColour( float R, float G, float B )
 
 	return TRUE;
 }
+*/
 
 /*===================================================================
   Procedure : Print up how far the init view has to go...
@@ -6531,7 +6536,7 @@ BOOL  InitStatsDisplay()
   // Create the offscreen surface, by loading our bitmap.
 
   InitFont();
-  ChangeBackgroundColour( 0, 0, 0 );
+  //ChangeBackgroundColour( 0, 0, 0 );
 
   HowManySecrets( &TotalSecrets , &Secrets );
 
