@@ -76,7 +76,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 BOOL Load_All_Off_Files( OFF_FILES * FileInfo );
 void Free_All_Off_Files( OFF_FILES * FileInfo );
 int16 GetTPage( FRAME_INFO * FrameInfo, int16 Frame );
-BOOL FixTextureUVs( OFF_FILES * FileInfo );
 int16 Get_Frm_Info_Index( FRAME_INFO ** Frame_Info );
 FRAME_INFO ** Get_Frm_Info_Address( int16 Index );
 void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename );
