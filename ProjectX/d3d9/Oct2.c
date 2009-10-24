@@ -1,6 +1,4 @@
 
-#define RENDER_USING_FACES
-
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
@@ -5726,13 +5724,8 @@ BOOL RenderCurrentCamera( void )
 Display Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
-#ifdef RENDER_USING_FACES
   if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], group ) ) // bjd
       return FALSE;
-#else
-  if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], group ) ) // bjd
-      return FALSE;
-#endif
 
   ExecuteTransExe( group );
 
@@ -5746,13 +5739,8 @@ Display Group Clipped Faceme Transluecent Polys
   Display Non Group Clipped Faceme Transluecent Polys
 ===================================================================*/
 
-#ifdef RENDER_USING_FACES
     if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
         return FALSE;
-#else
-    if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ] ) ) // bjd
-        return FALSE;
-#endif
 
 /*===================================================================
   Display Non Group Clipped Non Faceme Transluecent Polys

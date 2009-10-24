@@ -1,6 +1,4 @@
 
-#define RENDER_USING_FACES
-
 /*===================================================================
 	Include Files...	
 ===================================================================*/
@@ -5050,13 +5048,8 @@ BOOL DisplayTitle(void)
 	Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
 			
-#ifdef RENDER_USING_FACES
 			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 					return FALSE;
-#else
-			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 0 ], 0 ) ) // bjd
-					return FALSE;
-#endif
 
 			ExecuteTransExe( 0 );
 			ExecuteTransExeUnclipped( 0 );
@@ -5065,13 +5058,8 @@ BOOL DisplayTitle(void)
 		Display Non 0 Clipped Faceme Transluecent Polys
 	===================================================================*/
 
-#ifdef RENDER_USING_FACES
 		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
 				return FALSE;
-#else
-		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 0 ] ) ) // bjd
-				return FALSE;
-#endif
 
 /*===================================================================
 	Display Non 0 Clipped Non Faceme Transluecent Polys

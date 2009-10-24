@@ -26,7 +26,6 @@
 /*===================================================================
 	Externs
 ===================================================================*/
-extern	BOOL CanCullFlag;
 extern	CAMERA			CurrentCamera;
 extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;
@@ -713,10 +712,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 					if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 					{
 						Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
-		
-						if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag ) NumTris += ( 4 * Bit_Ptr->numbits );
-						else NumTris += ( 2 * Bit_Ptr->numbits );
-		
+						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
 				}
@@ -941,25 +937,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
-				
-							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
-							{
-					   			PolyFacePnt->v1 = 0;
-								PolyFacePnt->v2 = 3;
-					   			PolyFacePnt->v3 = 2;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
-					   			PolyFacePnt++;
-								ntris++;
 
-					   			PolyFacePnt->v1 = 0;
-					   			PolyFacePnt->v2 = 2;
-					   			PolyFacePnt->v3 = 1;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
-					   			PolyFacePnt++;
-								ntris++;
-
-							}
-					
 							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
 							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
@@ -1068,10 +1046,7 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 					if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 					{
 						Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
-		
-						if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag ) NumTris += ( 4 * Bit_Ptr->numbits );
-						else NumTris += ( 2 * Bit_Ptr->numbits );
-		
+						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
 				}
@@ -1295,23 +1270,6 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 				   			PolyFacePnt++;
 							ntris++;
 				
-							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
-							{
-					   			PolyFacePnt->v1 = 0;
-								PolyFacePnt->v2 = 3;
-					   			PolyFacePnt->v3 = 2;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
-					   			PolyFacePnt++;
-								ntris++;
-
-					   			PolyFacePnt->v1 = 0;
-					   			PolyFacePnt->v2 = 2;
-					   			PolyFacePnt->v3 = 1;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
-					   			PolyFacePnt++;
-								ntris++;
-							}
-				
 							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
 							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
@@ -1490,10 +1448,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 					if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 					{
 						Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
-		
-						if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag ) NumTris += ( 4 * Bit_Ptr->numbits );
-						else NumTris += ( 2 * Bit_Ptr->numbits );
-		
+						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
 				}
@@ -1717,23 +1672,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 				   			PolyFacePnt++;
 							ntris++;
 				
-							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
-							{
-					   			PolyFacePnt->v1 = 0;
-								PolyFacePnt->v2 = 3;
-					   			PolyFacePnt->v3 = 2;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
-					   			PolyFacePnt++;
-								ntris++;
-
-					   			PolyFacePnt->v1 = 0;
-					   			PolyFacePnt->v2 = 2;
-					   			PolyFacePnt->v3 = 1;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
-					   			PolyFacePnt++;
-								ntris++;
-							}
-				
 							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = 0;
 							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = NumVerts;
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = 0;
@@ -1844,10 +1782,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 					if( Polys[i].Frm_Info && (*Polys[i].Frm_Info ) )
 					{
 						Bit_Ptr = ( (*Polys[ i ].Frm_Info)->Bit_Info + (int16) Polys[ i ].Frame );
-		
-						if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag ) NumTris += ( 4 * Bit_Ptr->numbits );
-						else NumTris += ( 2 * Bit_Ptr->numbits );
-		
+						NumTris += ( 2 * Bit_Ptr->numbits );
 						NumVerts += ( 4 * Bit_Ptr->numbits );
 					}
 				}
@@ -2070,23 +2005,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 //				   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			PolyFacePnt++;
 							ntris++;
-				
-							if( ( Polys[i].Flags & POLY_FLAG_TWOSIDED ) && !CanCullFlag )
-							{
-					   			PolyFacePnt->v1 = 0;
-								PolyFacePnt->v2 = 3;
-					   			PolyFacePnt->v3 = 2;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE1 | D3DTRIFLAG_EDGEENABLE2 );
-					   			PolyFacePnt++;
-								ntris++;
-
-					   			PolyFacePnt->v1 = 0;
-					   			PolyFacePnt->v2 = 2;
-					   			PolyFacePnt->v3 = 1;
-//					   			PolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
-					   			PolyFacePnt++;
-								ntris++;
-							}
 
 							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
 							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;

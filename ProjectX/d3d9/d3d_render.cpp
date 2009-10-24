@@ -11,7 +11,6 @@ extern "C" {
 #include <dxerr9.h>
 
 BOOL  UsedStippledAlpha = FALSE;
-BOOL  CanCullFlag = TRUE;
 
 // d3d caps
 // D3DPTEXTURECAPS_SQUAREONLY
@@ -458,20 +457,17 @@ void reset_filtering( void )
 
 void cull_none( void )
 {
-	if(	CanCullFlag )
-		STATE(	D3DRS_CULLMODE,	D3DCULL_NONE);
+	STATE(	D3DRS_CULLMODE,	D3DCULL_NONE);
 }
 
 void cull_cw( void )
 {
-	if(	CanCullFlag )
-		STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
+	STATE(	D3DRS_CULLMODE,	D3DCULL_CW);
 }
 
 void reset_cull( void )
 {
-	if(	CanCullFlag )
-		STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
+	STATE(	D3DRS_CULLMODE,	D3DCULL_CCW);
 }
 
 void set_alpha_ignore( void )
