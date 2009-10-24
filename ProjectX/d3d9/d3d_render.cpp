@@ -13,6 +13,10 @@ extern "C" {
 BOOL  UsedStippledAlpha = FALSE;
 BOOL  CanCullFlag = TRUE;
 
+// d3d caps
+// D3DPTEXTURECAPS_SQUAREONLY
+BOOL  bSquareOnly = FALSE;
+
 
 /***************************************************************************/
 /*                            Creation of D3D                              */

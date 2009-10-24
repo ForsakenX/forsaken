@@ -31,20 +31,6 @@ typedef float D3DVALUE, *LPD3DVALUE;
                                        value for you */
 #define D3DAPP_USEWINDOW -24        /* Used in place of fullscreen mode */
 
-/*
- * DATA STRUCTURES
- */
-
-/*
- * D3DAppD3DDriver structure
- * Describes a D3D driver
- */
-
-typedef struct tagD3DAppD3DDriver {
-	//D3DDEVICEDESC Desc; /* D3DDEVICEDESC for complete information */
-    BOOL bSquareOnly;  /* can this driver only have Square Texures.. */
-} D3DAppD3DDriver;
-
 typedef int D3DMATRIXHANDLE;
 
 typedef struct _D3DVIEWPORT { 

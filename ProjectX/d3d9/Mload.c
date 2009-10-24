@@ -224,8 +224,8 @@ void BuildGammaCorrect( double GammaValue )
 	}
 };
 
-void
-FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
+extern BOOL bSquareOnly;
+void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
 {
 	static LPD3DLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
 	static float u[ 3 ], v[ 3 ];
@@ -238,8 +238,7 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Ver
 	Xsize = Tloadheader.Xsize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
 	Ysize = Tloadheader.Ysize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
 
-/* bjd - TODO - store D3D9 caps in the struct and check that
-	if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
+	if( bSquareOnly )
 	{
 		if( Xsize != Ysize )
 		{
@@ -249,7 +248,7 @@ FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Ver
 				Ysize = Xsize;
 		}
 	}
-*/
+
 	u[ 0 ] = Vert[ Tri->v1 ].tu;
 	u[ 1 ] = Vert[ Tri->v2 ].tu;
 	u[ 2 ] = Vert[ Tri->v3 ].tu;
