@@ -103,22 +103,11 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 BOOL Tload( TLOADHEADER * Tloadheader  )
 {
 	int		i,e;
-	int16	bpp;
-	int16	temp;
 	uint16	Xsize,Ysize;
 	int LeastScaledThatCanbe;
 	int LeastScaledThatCanbeScale;
 
 	BuildGammaTab( Gamma );
-
-	temp = 32; // bjd
-
-	bpp = 0;
-	while( temp > 0 )
-	{
-		bpp++;
-		temp -= 8;
-	}
  
 	// Tloadheader is not valid until everything has been done..
 	Tloadheader->state = FALSE;
@@ -129,13 +118,12 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		if ( Tloadheader->PlaceHolder[ i ] )
 		{
 			Tloadheader->PlaceHolderFile[ i ] = ( char * )malloc( sizeof( char ) * 256 );
-//			DebugPrintf( "Tload: Placeholder ( texture %2d ) xsize %d ysize %d\n", i, Tloadheader->Xsize[ i ], Tloadheader->Ysize[ i ] );
+			DebugPrintf( "Tload: Placeholder ( texture %2d ) xsize %d ysize %d\n", i, Tloadheader->Xsize[ i ], Tloadheader->Ysize[ i ] );
 		}
 	}
 	
 	// store the current Bytes per pixel...min of 8...
-	Tloadheader->CurrentBPP = bpp;
-	
+	Tloadheader->CurrentBPP = 32;
 	
 	// get the stats for the Currently files..
 	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
@@ -144,7 +132,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 
 		if ( !Tloadheader->PlaceHolder[ i ] )
 		{
-//				DebugPrintf( "Tload: texture file %2d = %s\n", i, Tloadheader->ImageFile[ i ] );
+			DebugPrintf( "Tload: texture file %2d = %s\n", i, Tloadheader->ImageFile[ i ] );
 			if (TloadGetStats( Tloadheader , i , (char*) &Tloadheader->ImageFile[i] ,
 							&Tloadheader->Xsize[i] , &Tloadheader->Ysize[i] ) != TRUE)
 			{
@@ -156,31 +144,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	
 	for( e = 0 ; e < Tloadheader->num_texture_files*MAXSCALE ; e ++ )
 	{
-		for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
-		{
-			Xsize = Tloadheader->Xsize[i] / ( 1 << Tloadheader->CurScale[i] );
-			Ysize = Tloadheader->Ysize[i] / ( 1 << Tloadheader->CurScale[i] );
-/* bjd - TODO?
-			if( d3dappi.Driver[d3dappi.CurrDriver].bSquareOnly )
-			{
-				if( Xsize != Ysize )
-				{
-					if( Xsize > Ysize )
-						Xsize = Ysize;
-					if( Ysize > Xsize )
-						Ysize = Xsize;
-				}
-			}
-*/
-			if( Tloadheader->MipMap[i] )
-			{
-				Xsize = (int) (Xsize * 1.4F);
-				Ysize = (int) (Ysize * 1.4F);
-			}
-
-			Tloadheader->SizeInVidMem[i] = Xsize * Ysize * Tloadheader->CurrentBPP;
-		}
-
 		LeastScaledThatCanbe = -1;
 		LeastScaledThatCanbeScale = MAXSCALE;
 
@@ -202,9 +165,9 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		}
 	}
 
-	if ( Tloadheader->num_texture_files !=0)
+	if ( Tloadheader->num_texture_files != 0 )
 	{
-		/*	load in and convert all textures */
+		//	load in and convert all textures
 		if ( TloadAllTextures( Tloadheader ) != TRUE)
 		{
 			Msg( "TLoadAllTextures() Failed\n" );
