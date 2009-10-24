@@ -81,7 +81,6 @@ extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DL
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern	D3DMATRIXHANDLE hWorld;
-extern	BOOL	UsedStippledAlpha;
 extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
@@ -774,8 +773,6 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 		{
 			for ( i=0 ; i<Mxaloadheader->Group[group].num_execbufs; i++)
 			{
-				// if its a Transparent Execute Buffer then dont display it add it to the Transexe list
-//				if( ((Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 				if( Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
 					if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))

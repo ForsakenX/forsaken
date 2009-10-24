@@ -53,7 +53,6 @@ extern	D3DMATRIX		view;
 extern	D3DMATRIXHANDLE hProj;
 extern	D3DMATRIXHANDLE hView;
 extern	MCLOADHEADER	MCloadheader;
-extern	BOOL			UsedStippledAlpha;
 
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;

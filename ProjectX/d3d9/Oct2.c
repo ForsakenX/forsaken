@@ -80,8 +80,6 @@
 #include "shadows.h"
 #endif
 
-extern BOOL UsedStippledAlpha;
-
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
@@ -1929,8 +1927,7 @@ InitView( void )
 	/* bjd curr driver = 0 use to be software mode */
 	//if (d3dappi.CurrDriver != 0)
 	{
-		if( UsedStippledAlpha != TRUE ) MakeColourMode = MCM_Normal;
-		else MakeColourMode = MCM_Stipple;
+		MakeColourMode = MCM_Normal;
 	}
 	/*
 	else

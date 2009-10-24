@@ -32,7 +32,6 @@
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern	D3DMATRIXHANDLE hWorld;
-extern	BOOL	UsedStippledAlpha;
 extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;

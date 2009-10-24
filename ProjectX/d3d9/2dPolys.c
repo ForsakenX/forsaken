@@ -41,7 +41,6 @@ extern	TLOADHEADER			Tloadheader;
 extern	FRAME_INFO	*		Troj_Exp_Header;
 extern	FRAME_INFO	*		Shrapnel_Header;
 extern	float				framelag;
-extern	BOOL				UsedStippledAlpha;
 extern	MATRIX				MATRIX_Identity;
 extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;

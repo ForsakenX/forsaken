@@ -116,7 +116,6 @@ extern	TRIGGERMOD	*	TrigMods;
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
 extern  D3DMATRIXHANDLE hWorld;
-extern	BOOL	UsedStippledAlpha;
 extern	MLOADHEADER Mloadheader;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
@@ -492,10 +491,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				/* bjd curr driver = 0 use to be software mode
 				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
 				{
-					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha ) )	// if transparencies and alpha stipple
-					{
-						a = 128;
-					}else{
 						if ( SWMonoChrome )
 						{
 							r = (r+g+b) / 3;
@@ -503,17 +498,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 							b = g;
 						}
 						a = 128;
-					}
 				}else
 				*/
 				{
-					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
-					{
-						r = Tab[r];
-						g = Tab[g];
-						b = Tab[b];
-						a = 64;
-					}else{
 						r = Tab[r];
 						g = Tab[g];
 						b = Tab[b];
@@ -522,7 +509,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 #else
 						a = 255;
 #endif
-					}
 				}
 
 				// right here you could override texture coloring if you wanted
@@ -1243,8 +1229,6 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 	{
 		for ( i=0 ; i<Mloadheader->Group[group].num_execbufs; i++)
 		{
-			// if its a Transparent Execute Buffer then dont diplay it add it to the Transexe list
-			//if( ((Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 			if( Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 			{
 				if (FAILED(FSGetMatrix(D3DTS_WORLD, &Matrix)))

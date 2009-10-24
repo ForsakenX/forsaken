@@ -14,7 +14,6 @@
 #include "camera.h"
 
 extern	CAMERA	CurrentCamera;
-extern	BOOL	UsedStippledAlpha;
 extern	BOOL	DebugInfo;
 
 /*===================================================================
@@ -159,16 +158,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				/* bjd curr driver = 0 use to be software mode */
 				//if(d3dappi.CurrDriver != 0)
 				{
-					if( UsedStippledAlpha != TRUE )
-					{
 						color = RGBA_MAKE( Lines[ i ].StartCol.R, Lines[ i ].StartCol.G,
 										   Lines[ i ].StartCol.B, Lines[ i ].StartTrans );
-					}
-					else
-					{
-						color = RGBA_MAKE( Lines[ i ].StartCol.R, Lines[ i ].StartCol.G,
-										   Lines[ i ].StartCol.B, Lines[ i ].StartTrans / 2 );
-					}
 				}
 				/*
 				else
@@ -190,16 +181,8 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				/* bjd curr driver = 0 use to be software mode */
 				//if(d3dappi.CurrDriver != 0)
 				{
-					if( UsedStippledAlpha != TRUE )
-					{
 						color = RGBA_MAKE( Lines[ i ].EndCol.R, Lines[ i ].EndCol.G,
 										   Lines[ i ].EndCol.B, Lines[ i ].EndTrans );
-					}
-					else
-					{
-						color = RGBA_MAKE( Lines[ i ].EndCol.R, Lines[ i ].EndCol.G,
-										   Lines[ i ].EndCol.B, Lines[ i ].EndTrans / 2 );
-					}
 				}
 				/*
 				else

@@ -60,7 +60,6 @@ extern	XLIGHT * FirstLightVisible;
 //extern	D3DMATRIX		view;
 extern	D3DMATRIX		identity;
 //extern	D3DMATRIXHANDLE	hWorld;
-extern	BOOL			UsedStippledAlpha;
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -2843,19 +2842,11 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 	if( B ) Blue = Col;
 	else Blue = 0;
 
-
-	if( UsedStippledAlpha != TRUE )
-	{
 #if ACTUAL_TRANS
 		Colour = RGBA_MAKE( Red, Green, Blue, Col );
 #else
 		Colour = RGBA_MAKE( Red, Green, Blue, 255 );
 #endif
-	}
-	else
-	{
-		Colour = RGBA_MAKE( Red, Green, Blue, Col );
-	}
 
 	for( Group = 0; Group < DstMloadheader->num_groups; Group++ )
 	{
@@ -3028,18 +3019,12 @@ BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderOb
 	if( B ) Blue = Col;
 	else Blue = 0;
 
-	if( UsedStippledAlpha != TRUE )
-	{
 #if ACTUAL_TRANS
 		Colour = RGBA_MAKE( Red, Green, Blue, Col );
 #else
 		Colour = RGBA_MAKE( Red, Green, Blue, 255 );
 #endif
-	}
-	else
-	{
-		Colour = RGBA_MAKE( Red, Green, Blue, Col );
-	}
+
 /*
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
@@ -3086,18 +3071,11 @@ BOOL ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT
 	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
 	D3DCOLOR				Colour;
 
-	if( UsedStippledAlpha != TRUE )
-	{
 #if ACTUAL_TRANS
 		Colour = RGBA_MAKE( R, G, B, 255 );
 #else
 		Colour = RGBA_MAKE( R, G, B, 255 );
 #endif
-	}
-	else
-	{
-		Colour = RGBA_MAKE( R, G, B, 255 );
-	}
 
 /*
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );

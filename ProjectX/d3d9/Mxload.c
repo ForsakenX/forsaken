@@ -68,7 +68,6 @@ extern	DWORD				CurrentTextureBlend;
 
 extern	TLOADHEADER Tloadheader;
 extern	D3DMATRIXHANDLE hWorld;
-extern	BOOL	UsedStippledAlpha;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 extern	BOOL	DrawPanel;
@@ -285,31 +284,21 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				/* bjd curr driver = 0 use to be software mode
 				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
 				{
-					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha ) )	// if transparencies and alpha stipple
-					{
-						a = 128;
-					}else{
 						if ( SWMonoChrome )
 						{
 							r = (r+g+b) / 3;
 							g = b = r;
 						}
 						a = 128;
-					}
 				}
 				else
 				*/
 				{
-					if( ( exec_type&HASTRANSPARENCIES )  && ( UsedStippledAlpha  ) )	// if transparencies and alpha stipple
-					{
-						a = 128;
-					}else{
 #if ACTUAL_TRANS
 						a = 128;
 #else
 						a = 255;
 #endif
-					}
 				}
 
 				color = RGBA_MAKE( r , g , b , a  );
@@ -921,8 +910,6 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 					VertBufferLocked = FALSE;
 				}
 
-				// if its a Transparent Execute Buffer then dont display it add it to the Transexe list
-//				if( ((Mxloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES) != 0) && ( UsedStippledAlpha == FALSE)  )
 				if( Mxloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
 

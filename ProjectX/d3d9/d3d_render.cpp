@@ -10,8 +10,6 @@ extern "C" {
 #include "util.h"
 #include <dxerr9.h>
 
-BOOL  UsedStippledAlpha = FALSE;
-
 // d3d caps
 // D3DPTEXTURECAPS_SQUAREONLY
 BOOL  bSquareOnly = FALSE;
@@ -496,40 +494,29 @@ void set_normal_states( void )
 
 // old lpD3DTransCmdBuf
 void set_alpha_states( void )
-{	   
-//	if( UsedStippledAlpha == TRUE )
-//  {
-//      STATE( D3DRS_STIPPLEDALPHA , TRUE );
-//	}else{
+{
 //#if ACTUAL_TRANS
 //      STATE( D3DRS_ZWRITEENABLE, TRUE );
 //#else
-      disable_zbuff_write();
+	disable_zbuff_write();
 //#endif
-      STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-	  // 9 seems to be perfect !
-	  set_trans_state_9();
+	STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+	// 9 seems to be perfect !
+	set_trans_state_9();
 //      STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
 //      STATE( D3DRS_DESTBLEND, CurrentDestBlend );
 
-	  // how to convert this ?
-
-//      STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
-//	}
+//	how to convert this ?
+//  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
 }
 
 // old lpD3DSpcFxTransCmdBuf
 void set_alpha_fx_states( void )
-{  
-//    if( UsedStippledAlpha == TRUE )
-//      STATE( D3DRS_STIPPLEDALPHA , TRUE );
-//	else
-//    {
+{
     STATE( D3DRS_ALPHABLENDENABLE, TRUE );
 //    STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
 //    STATE( D3DRS_DESTBLEND, CurrentDestBlend );
 //	  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
-//    }
 }
 
 /* bjd - CHECK

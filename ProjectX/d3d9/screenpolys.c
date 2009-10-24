@@ -42,7 +42,6 @@ extern	MCLOADHEADER	MCloadheadert0;
 extern	TLOADHEADER		Tloadheader;
 extern	float			framelag;
 extern	GLOBALSHIP		Ships[MAX_PLAYERS];
-extern	BOOL			UsedStippledAlpha;
 extern	FRAME_INFO	*	Laser_Header;
 extern	FRAME_INFO	*	AfterBurner_Header;
 extern	FRAME_INFO	*	LensFlare_Header;
@@ -547,15 +546,6 @@ void DoLensflareEffect( void )
 	uint8		Int;
 	uint16		i;
 
-	/* bjd curr driver = 0 use to be software mode
-	if( d3dappi.CurrDriver == 0 )
-	{	}
-	else
-	*/
-	{
-		if( UsedStippledAlpha == TRUE ) return;
-	}
-
 	if( !LensFlare ) return;
 
 	specular = RGB_MAKE( 255, 255, 255 );
@@ -952,15 +942,6 @@ void SecBullLensflare( uint16 i )
 	float		DistToBull;
 	float		DistFactor;
 	uint8		Int;
-
-	/* bjd curre driver = 0 use to be software mode
-	if( d3dappi.CurrDriver == 0 )
-	{	}
-	else
-	*/
-	{
-		if( UsedStippledAlpha == TRUE ) return;
-	}
 
 	if( !LensFlare ) return;
 
