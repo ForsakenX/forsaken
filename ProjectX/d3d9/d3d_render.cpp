@@ -495,19 +495,14 @@ void set_normal_states( void )
 // old lpD3DTransCmdBuf
 void set_alpha_states( void )
 {
-//#if ACTUAL_TRANS
-//      STATE( D3DRS_ZWRITEENABLE, TRUE );
-//#else
+#if ACTUAL_TRANS
+      STATE( D3DRS_ZWRITEENABLE, TRUE );
+#else
 	disable_zbuff_write();
-//#endif
+#endif
 	STATE( D3DRS_ALPHABLENDENABLE, TRUE );
 	// 9 seems to be perfect !
 	set_trans_state_9();
-//      STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
-//      STATE( D3DRS_DESTBLEND, CurrentDestBlend );
-
-//	how to convert this ?
-//  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
 }
 
 // old lpD3DSpcFxTransCmdBuf
