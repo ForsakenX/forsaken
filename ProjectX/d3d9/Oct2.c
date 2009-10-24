@@ -1913,7 +1913,6 @@ InitView( void )
 	DWORD dwItems					= INFINITE;
 
 	DebugPrintf("InitView Starting...\n");
-	OutputDebugString("InitView Starting...\n");
 
 	CheatsDisabled = FALSE;
 

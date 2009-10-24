@@ -3170,23 +3170,14 @@ BOOL Turned[6], LastTurned[6], RotateSetup, DoHighlight,
 MXLOADHEADER ModelHeaders[MAXMODELHEADERS];	//as defined in models.c
 
 POLYANIM *PolyAnim[6];
-MXLOADHEADER * Mxloadheader[6];										
-
-VECTOR FMPolyDirVector = {0.0F, 0.0F, -1.0F};
+MXLOADHEADER * Mxloadheader[6];
 
 uint16 fmpoly[2];
 uint16 scrpoly[MAXVDULINES][MAXVDULINELENGTH];
 uint16 bikerfmpoly;
 uint16 BikerScrPoly;
 uint16 LevelScrPoly;
-uint16 BoxPoly[32];
-uint16 PlanePoly;
 int CurrentPos[MAXVDULINELENGTH];
-float NextX[MAXVDULINES][MAXVDULINELENGTH];
-float WipeX[MAXVDULINES][MAXVDULINELENGTH];
-float Text_Y_Pos[MAXVDULINES];
-float Text_X_Pos[MAXVDULINES];
-float TextHeight[MAXVDULINES];
 
 typedef struct 
 {
@@ -3205,20 +3196,11 @@ typedef struct
 
 VECTOR CurrentVDUPos;
 float VDUrot;
-float VDU_Start_Rot = -43.0F;
-float VDU_End_Rot = 20.0F;
-float VDU_Rot_Speed = 3.0F;
-float VDU_Theta;
 
 VDUINFO	LeftVDU, RightVDU;
 
-//offsets for vdu text
-VECTOR CurrentTextOffset;
-
-
 //offsets for biker character
 VECTOR CharOffset = {-670.0F, 40.0F, 345.0F};
-
 
 int KeyDefLines[MAXVDULINES];
 
@@ -3303,10 +3285,8 @@ new text globals
 TEXTINFO VDUTextItems[MAXTEXTITEMS];
 int Current2dBox;
 BOOL DrawTextItemBox;
-uint16 BoxPoly2d[32];
 float VDUoffsetX = 105.0F;
 float VDUoffsetY = 15.0F;
-char TestStr[256] = "This is a test for plotting text as two d polys within  a bounding box test test test test";
 uint16 screenpoly[MAXNUMOFSCRPOLYS];
 int CurrentScreenPoly;
 float	TEXTINFO_currentx;					
