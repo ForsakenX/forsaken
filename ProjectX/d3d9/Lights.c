@@ -120,33 +120,6 @@ __asm
 #endif
 
 /*===================================================================
-	Procedure	:	Does this light fall in a group...
-	Input		:	nothing
-	Output		:	FALSE/TRUE
-===================================================================*/
-#ifdef USEINLINE
-_inline
-#endif
-BOOL	DoIEffectThisGroup1( MLOADHEADER * Mloadheader , VECTOR * Pos , float size , uint16 group)
-{
-	VECTOR	Temp;
-	Temp.x = Pos->x - Mloadheader->Group[group].center.x;
-	if( Temp.x < 0.0F )	Temp.x *= -1.0F;
-	Temp.y = Pos->y - Mloadheader->Group[group].center.y;
-	if( Temp.y < 0.0F )	Temp.y *= -1.0F;
-	Temp.z = Pos->z - Mloadheader->Group[group].center.z;
-	if( Temp.z < 0.0F )	Temp.z *= -1.0F;
-	if ( (Temp.x <= ( Mloadheader->Group[group].half_size.x + size ) ) &&
-		 (Temp.y <= ( Mloadheader->Group[group].half_size.y + size ) ) &&
-		 (Temp.z <= ( Mloadheader->Group[group].half_size.z + size ) ) )
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
-
-/*===================================================================
 	Procedure	:	Set up And Init all XLights
 	Input		:	nothing
 	Output		:	nothing

@@ -63,8 +63,6 @@ void	InitXLights();
 uint16	FindFreeXLight();
 void	KillUsedXLight(uint16);
 
-//BOOL	DoIEffectThisGroup( MLOADHEADER * MloadHeader , VECTOR * Pos , float size , uint16 group);
-
 void	SetLightDie ( uint16 light );
 BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group );
 

@@ -497,7 +497,6 @@
 #define LT_MENU_Detail12 "Water Detail       "
 #define LT_MENU_Detail13 "gamma              "
 #define LT_MENU_Detail14 "mature content     "
-#define LT_MENU_Detail15 "Z-Buffer clearing  "
 #define LT_MENU_Detail16 "Lightning Laser    "
 
 #define LT_MENU_SelectBike0 "Select Bike"
