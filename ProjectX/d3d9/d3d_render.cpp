@@ -495,13 +495,8 @@ void set_normal_states( void )
 // old lpD3DTransCmdBuf
 void set_alpha_states( void )
 {
-#if ACTUAL_TRANS
-      STATE( D3DRS_ZWRITEENABLE, TRUE );
-#else
 	disable_zbuff_write();
-#endif
 	STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-	// 9 seems to be perfect !
 	set_trans_state_9();
 }
 
@@ -509,9 +504,7 @@ void set_alpha_states( void )
 void set_alpha_fx_states( void )
 {
     STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-//    STATE( D3DRS_SRCBLEND, CurrentSrcBlend );
-//    STATE( D3DRS_DESTBLEND, CurrentDestBlend );
-//	  STATE( D3DRS_TEXTUREMAPBLEND, CurrentTextureBlend );
+	// need some type of states here that would create white out affect
 }
 
 /* bjd - CHECK
