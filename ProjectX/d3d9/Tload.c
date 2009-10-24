@@ -122,9 +122,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		}
 	}
 	
-	// store the current Bytes per pixel...min of 8...
-	Tloadheader->CurrentBPP = 32;
-	
 	// get the stats for the Currently files..
 	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
 	{

@@ -35,7 +35,6 @@
  */
 
 typedef struct TLOADHEADER{
-	uint16	CurrentBPP;
 	int		state;
 	uint16 num_texture_files;
 	uint16				Xsize[MAXTPAGESPERTLOAD];		// the Xsize now
