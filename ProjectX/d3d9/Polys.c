@@ -51,7 +51,6 @@ extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
-extern	int16			MakeColourMode;
 extern	BYTE			GameStatus[MAX_PLAYERS];
 
 
@@ -807,24 +806,11 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
-									break;
-
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos1.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos1.y;
@@ -835,25 +821,12 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos2.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos2.y;
@@ -864,25 +837,12 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+ 
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos3.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos3.y;
@@ -893,25 +853,12 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   					
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+   	
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
 	   		
 		   					PolyVertPnt->x = Polys[ i ].Pos4.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos4.y;
@@ -1139,24 +1086,12 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos1.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos1.y;
@@ -1168,23 +1103,11 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 255 );
-#endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
+#endifbreak;
 							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos2.x;
@@ -1197,24 +1120,12 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+	
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos3.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos3.y;
@@ -1226,24 +1137,12 @@ BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT 
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    					
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+	
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
 	   		
 		   					PolyVertPnt->x = Polys[ i ].Pos4.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos4.y;
@@ -1541,24 +1440,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos1.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos1.y;
@@ -1569,25 +1456,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos2.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos2.y;
@@ -1599,25 +1473,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
-   		
+
 		   					PolyVertPnt->x = Polys[ i ].Pos3.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos3.y;
 		   					PolyVertPnt->z = Polys[ i ].Pos3.z;
@@ -1627,25 +1488,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   					
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
 	   		
 		   					PolyVertPnt->x = Polys[ i ].Pos4.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos4.y;
@@ -1875,23 +1723,11 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		   					Off_Ptr = ( (*Polys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 		   					Box_Ptr = ( (*Polys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, 255 );
-#endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col1.R, Polys[ i ].Col1.G, Polys[ i ].Col1.B, Polys[ i ].Trans1 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
+#endifbreak;
 							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos1.x;
@@ -1903,25 +1739,12 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
-   							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col2.R, Polys[ i ].Col2.G, Polys[ i ].Col2.B, Polys[ i ].Trans2 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos2.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos2.y;
@@ -1933,24 +1756,11 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col3.R, Polys[ i ].Col3.G, Polys[ i ].Col3.B, Polys[ i ].Trans3 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
    		
 		   					PolyVertPnt->x = Polys[ i ].Pos3.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos3.y;
@@ -1962,24 +1772,11 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    					
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 );
 #else
 									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, 255 );
 #endif
-									break;
-			
-								case MCM_Stipple:
-									Colour = RGBA_MAKE( Polys[ i ].Col4.R, Polys[ i ].Col4.G, Polys[ i ].Col4.B, Polys[ i ].Trans4 / 2 );
-									break;
-				
-								case MCM_Software:
-									Colour = RGBA_MAKE( 128, 128, 128, 255 );
-									break;
-							}
 	   		
 		   					PolyVertPnt->x = Polys[ i ].Pos4.x;
 		   					PolyVertPnt->y = Polys[ i ].Pos4.y;

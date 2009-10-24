@@ -464,7 +464,6 @@ extern  uint32  TotalPolysInUse;
 extern  uint32  TotalScrPolysInUse;
 extern  MODELNAME ModelNames[MAXMODELHEADERS];
 extern  BOOL  quitting; 
-extern  int16 MakeColourMode;
 extern  BOOL  ShowBoundingBoxes;
 
 BOOL InitViewport( void );
@@ -1923,18 +1922,6 @@ InitView( void )
 	{
 		IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
 	}
-
-	/* bjd curr driver = 0 use to be software mode */
-	//if (d3dappi.CurrDriver != 0)
-	{
-		MakeColourMode = MCM_Normal;
-	}
-	/*
-	else
-	{
-		MakeColourMode = MCM_Software;
-	}
-	*/
 
 	InitModeCase();
 

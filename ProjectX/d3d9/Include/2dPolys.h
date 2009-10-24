@@ -107,16 +107,6 @@
 #define	FM_FLAG_RELATIVE	16							// Direction and Up Vector Relative to camera.
 
 /*===================================================================
-	Make Colour Mode ( MakeColourMode Values )
-===================================================================*/
-enum
-{
-	MCM_Normal,					// Actual Colours
-	MCM_Stipple,				// Stipple Card Colours
-	MCM_Software,				// Software Emulation Colours
-};
-
-/*===================================================================
 		TPage Info Structure for FmPolys/Polys/ScreenPolys
 ===================================================================*/
 typedef struct TPAGEINFO {

@@ -56,7 +56,6 @@ FMPOLY		FmPolys[ MAXNUMOF2DPOLYS ];
 uint16		FirstFmPolyUsed;
 uint16		FirstFmPolyFree;
 uint32		TotalFmPolysInUse = 0;
-int16		MakeColourMode = MCM_Normal;
 TPAGEINFO	FmPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
 void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
@@ -1773,24 +1772,12 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 /*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
-						switch( MakeColourMode )
-						{
-							case MCM_Normal:
+
 #if ACTUAL_TRANS
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans );
 #else
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 255 );
 #endif
-								break;
-		
-							case MCM_Stipple:
-								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans / 2 );
-								break;
-			
-							case MCM_Software:
-								Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-								break;
-						}
 			
 /*===================================================================
 		Set Dir and Up Vectors
@@ -2175,24 +2162,12 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 /*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
-						switch( MakeColourMode )
-						{
-							case MCM_Normal:
+
 #if ACTUAL_TRANS
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans );
 #else
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 255 );
 #endif
-								break;
-		
-							case MCM_Stipple:
-								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, FmPolys[ i ].Trans / 2 );
-								break;
-			
-							case MCM_Software:
-								Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-								break;
-						}
 			
 /*===================================================================
 		Set Dir and Up Vectors

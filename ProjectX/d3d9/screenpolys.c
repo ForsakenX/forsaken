@@ -76,7 +76,6 @@ extern	int16			NumLevels;
 extern	MODEL		Models[ MAXNUMOFMODELS ];
 extern	int				FontWidth;
 extern	int				FontHeight;
-extern	int16			MakeColourMode;
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	BOOL			CountDownOn;
 extern	int16			LevelNum;
@@ -2350,24 +2349,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 /*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
 #else
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 255 );
 #endif
-									break;
-		
-								case MCM_Stipple:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
-									break;
-			
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
 
 		      				ScrPolyVertPnt->sx = x1;
 		      				ScrPolyVertPnt->sy = y1;
@@ -2483,24 +2470,11 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 							x4 = ScrPolys[ i ].x4;
 							y4 = ScrPolys[ i ].y4;
 							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS			
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
 #else						
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 255 );
-#endif						
-									break;
-							
-								case MCM_Stipple:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
-									break;
-							
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
+#endif					
 									
 	      					ScrPolyVertPnt->sx = x1;
 	      					ScrPolyVertPnt->sy = y1;
@@ -2909,24 +2883,12 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 /*===================================================================
 		Create Colour Value for polys
 ===================================================================*/
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+
 #if ACTUAL_TRANS
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans );
 #else
 									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, 255 );
 #endif
-									break;
-		
-								case MCM_Stipple:
-									Colour = RGBA_MAKE2( ScrPolys[ i ].R, ScrPolys[ i ].G, ScrPolys[ i ].B, ScrPolys[ i ].Trans / 2 );
-									break;
-			
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
 								
 		      				ScrPolyVertPnt->sx = x1;
 		      				ScrPolyVertPnt->sy = y1;
@@ -3042,24 +3004,12 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							x4 = ScrPolys[ i ].x4;
 							y4 = ScrPolys[ i ].y4;
 							
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
+			
 #if ACTUAL_TRANS			
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col1.R, ScrPolys[ i ].Col1.G, ScrPolys[ i ].Col1.B, ScrPolys[ i ].Col1.Trans );
 #else																						      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col1.R, ScrPolys[ i ].Col1.G, ScrPolys[ i ].Col1.B, 255 );
-#endif																						      				        
-									break;													      				        
-																							      				        
-								case MCM_Stipple:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col1.R, ScrPolys[ i ].Col1.G, ScrPolys[ i ].Col1.B, ScrPolys[ i ].Col1.Trans / 2 );
-									break;
-							
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
+#endif						
 									
 	      					ScrPolyVertPnt->sx = x1;
 	      					ScrPolyVertPnt->sy = y1;
@@ -3071,24 +3021,11 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->tv = v1;
 		      				ScrPolyVertPnt++;
 		      					
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS			
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col2.R, ScrPolys[ i ].Col2.G, ScrPolys[ i ].Col2.B, ScrPolys[ i ].Col2.Trans );
 #else																						      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col2.R, ScrPolys[ i ].Col2.G, ScrPolys[ i ].Col2.B, 255 );
-#endif																						      				        
-									break;													      				        
-																							      				        
-								case MCM_Stipple:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col2.R, ScrPolys[ i ].Col2.G, ScrPolys[ i ].Col2.B, ScrPolys[ i ].Col2.Trans / 2 );
-									break;
-							
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
+#endif						
 
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
@@ -3096,24 +3033,11 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS			
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col3.R, ScrPolys[ i ].Col3.G, ScrPolys[ i ].Col3.B, ScrPolys[ i ].Col3.Trans );
 #else																						      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col3.R, ScrPolys[ i ].Col3.G, ScrPolys[ i ].Col3.B, 255 );
-#endif																						      				        
-									break;													      				        
-																							      				        
-								case MCM_Stipple:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col3.R, ScrPolys[ i ].Col3.G, ScrPolys[ i ].Col3.B, ScrPolys[ i ].Col3.Trans / 2 );
-									break;
-							
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
+#endif						
 							
 		      				ScrPolyVertPnt->sx = x3;
 		      				ScrPolyVertPnt->sy = y3;
@@ -3125,24 +3049,11 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->tv = v2;
 		      				ScrPolyVertPnt++;
 
-							switch( MakeColourMode )
-							{
-								case MCM_Normal:
 #if ACTUAL_TRANS			
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col4.R, ScrPolys[ i ].Col4.G, ScrPolys[ i ].Col4.B, ScrPolys[ i ].Col4.Trans );
 #else																						      				        
 									Colour = RGBA_MAKE2( ScrPolys[ i ].Col4.R, ScrPolys[ i ].Col4.G, ScrPolys[ i ].Col4.B, 255 );
-#endif																						      				        
-									break;													      				        
-																							      				        
-								case MCM_Stipple:											      				        
-									Colour = RGBA_MAKE2( ScrPolys[ i ].Col4.R, ScrPolys[ i ].Col4.G, ScrPolys[ i ].Col4.B, ScrPolys[ i ].Col4.Trans / 2 );
-									break;
-							
-								case MCM_Software:
-									Colour = RGBA_MAKE2( 128, 128, 128, 255 );
-									break;
-							}
+#endif				
 							
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
