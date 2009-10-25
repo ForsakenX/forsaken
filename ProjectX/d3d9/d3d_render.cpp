@@ -285,8 +285,6 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
     if(!init_render_states())
 		return FALSE;
 
-	render_initialized = TRUE;
-
 	return TRUE;
 }
 

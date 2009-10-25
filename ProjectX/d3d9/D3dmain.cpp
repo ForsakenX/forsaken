@@ -105,8 +105,6 @@ extern "C" {
 
 // GLOBAL VARIABLES
 
-BOOL render_initialized;
-
 d3dmainglobals myglobs;     // collection of global variables
 
 BOOL Debug					= FALSE;
@@ -986,7 +984,7 @@ extern void SetCursorClip( BOOL );
 extern BOOL HideCursor;
 extern BOOL ActLikeWindow;
 extern BOOL MouseExclusive;
-extern BOOL render_initialized;
+extern "C" BOOL render_initialized;
 extern d3dmainglobals myglobs;
 
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
