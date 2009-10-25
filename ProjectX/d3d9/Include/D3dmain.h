@@ -9,9 +9,6 @@
 #include <time.h>
 #include <search.h>
 #include <d3d9.h>
-#include "d3dapp.h"         /* prototypes for D3D helper functions */
-#include <d3d9.h>
-#include "d3dapp.h"
 #include "new3d.h"
 #include "main.h"
 

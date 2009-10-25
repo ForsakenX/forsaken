@@ -6,7 +6,6 @@
 #include "typedefs.h"
 #include "d3dmain.h"
 #include <d3d9.h>
-#include "d3dapp.h"
 #include "d3dappi.h"
 #include "New3D.h"
 

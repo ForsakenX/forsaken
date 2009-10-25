@@ -518,10 +518,6 @@
 				>
 			</File>
 			<File
-				RelativePath="D3dapp.c"
-				>
-			</File>
-			<File
 				RelativePath="D3dmain.cpp"
 				>
 			</File>
@@ -780,10 +776,6 @@
 			</File>
 			<File
 				RelativePath="Include\controls.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\d3dapp.h"
 				>
 			</File>
 			<File
