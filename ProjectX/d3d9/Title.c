@@ -3571,8 +3571,7 @@ BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
-BOOL
-InitTitle()
+BOOL InitTitle()
 {
 	HideCursor = FALSE;
 

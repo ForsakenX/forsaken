@@ -1912,7 +1912,8 @@ BOOL InitializeSound( int flags )
 	{
 		bSoundEnabled = FALSE;
 		return TRUE;
-	}else
+	}
+	else
 	{
 		bSoundEnabled = TRUE;
 	}

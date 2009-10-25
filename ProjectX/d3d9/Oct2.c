@@ -1948,70 +1948,70 @@ BOOL InitView( void )
 			}
 		}
 
-    InitRenderBufs(); // bjd
-    
-    if( !SetMatrixViewPort() )
-    {
-      SeriousError = TRUE;
-      Msg( "SetMatrixViewPort() Failed\n" );
-      return FALSE;
-    }
-    // Init the Texture Handler
-    InitTload( &Tloadheader );
+		InitRenderBufs();
+	    
+		if( !SetMatrixViewPort() )
+		{
+		  SeriousError = TRUE;
+		  Msg( "SetMatrixViewPort() Failed\n" );
+		  return FALSE;
+		}
+		// Init the Texture Handler
+		InitTload( &Tloadheader );
 
-    if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-    
-    if( !PreLoadFlyGirl() )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-    
+		if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+	    
+		if( !PreLoadFlyGirl() )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+	    
 
-    if( !PreInitModel( TitleModelSet ) ) // bjd
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-    
-    //  Load in And if nescessary ReScale Textures...
-    if( !Tload( &Tloadheader ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
+		if( !PreInitModel( TitleModelSet ) ) // bjd
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+	    
+		//  Load in And if nescessary ReScale Textures...
+		if( !Tload( &Tloadheader ) )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
 
-    if( !InitModel( TitleModelSet ) ) // bjd
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
-      
-    if ( !AllocateCompFlyGirl() )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }else
-    {
-      UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
-    }
-    
+		if( !InitModel( TitleModelSet ) ) // bjd
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+	      
+		if ( !AllocateCompFlyGirl() )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+		else
+		{
+		  UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
+		}
 
-    QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
+		QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
-    DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
-    if ( DummyTextureIndex != -1 )
-    {
-      Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
-      Tloadheader.PlaceHolder[ DummyTextureIndex ] = TRUE;
-    }
+		DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
+		if ( DummyTextureIndex != -1 )
+		{
+		  Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
+		  Tloadheader.PlaceHolder[ DummyTextureIndex ] = TRUE;
+		}
 
-    if ( !CurrentMenu )
-      MenuRestart( &MENU_Start );
+		if ( !CurrentMenu )
+		  MenuRestart( &MENU_Start );
 
     break;
 
