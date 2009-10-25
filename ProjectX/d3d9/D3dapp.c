@@ -5,9 +5,7 @@
 #include "util.h"
 
 BOOL Wine = FALSE;
-int default_width;
-int default_height;
-int default_bpp;
+render_display_mode_t default_mode;
 int default_x;
 int default_y;
 
@@ -31,10 +29,10 @@ extern d3dmainglobals myglobs;     /* collection of global variables */
  * All DD and D3D objects which are also available to the application
  * See d3dapp.h for typedef
  */
-D3DAppInfo d3dappi;
+render_info_t d3dappi;
 
 /*
- * List of texture handles which is copied to D3DAppInfo structure when
+ * List of texture handles which is copied to render_info_t structure when
  * necessary
  */
 

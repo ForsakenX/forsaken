@@ -70,11 +70,9 @@ void *mem;
 
 extern int default_x;
 extern int default_y;
-extern int default_width;
-extern int default_height;
-extern int default_bpp;
+extern render_display_mode_t default_mode;
 extern BOOL HideCursor;
-extern void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval );
+extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
 
@@ -264,7 +262,7 @@ extern	BOOL                    IsHost;
 extern	D3DMATRIX view;
 extern	BOOL ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
-extern	MYD3DVIEWPORT9 viewport;
+extern	render_viewport_t viewport;
 extern	MODEL	Models[];
 uint16	BackgroundModel[NUMOFTITLEMODELS];
 extern	TLOADHEADER Tloadheader;
@@ -10546,23 +10544,20 @@ void MakeModeList( MENU *Menu )
 	// read em backwards so low res modes come first...
 	for( i = d3dappi.NumModes-1 ; i >= 0 ; i-- )
 	{
-		if( d3dappi.Mode[i].bThisDriverCanDo != 0 )
+		if( ModeList.items < MAXLISTITEMS )
 		{
-			if( ModeList.items < MAXLISTITEMS )
-			{
-				WhichMode[ModeList.items] = i;
-				sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
-					d3dappi.Mode[i].w , d3dappi.Mode[i].h , d3dappi.Mode[i].bpp );
+			WhichMode[ModeList.items] = i;
+			sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
+				d3dappi.Mode[i].w , d3dappi.Mode[i].h , d3dappi.Mode[i].bpp );
 
-				if( (d3dappi.Mode[i].w == d3dappi.ThisMode.w) &&				
-					(d3dappi.Mode[i].h == d3dappi.ThisMode.h) &&
-					(d3dappi.Mode[i].bpp == d3dappi.ThisMode.bpp) )
-				{
-					ModeList.selected_item = ModeList.items;
-				}
-				
-				ModeList.items++;
+			if( (d3dappi.Mode[i].w == d3dappi.ThisMode.w) &&				
+				(d3dappi.Mode[i].h == d3dappi.ThisMode.h) &&
+				(d3dappi.Mode[i].bpp == d3dappi.ThisMode.bpp) )
+			{
+				ModeList.selected_item = ModeList.items;
 			}
+			
+			ModeList.items++;
 		}
 	}
 
@@ -11114,14 +11109,14 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    default_width                     = config_get_int( "ScreenWidth",				800 );
-    default_height                    = config_get_int( "ScreenHeight",				600 );
+    default_mode.w                     = config_get_int( "ScreenWidth",				800 );
+    default_mode.h                    = config_get_int( "ScreenHeight",				600 );
 
-    default_bpp                       = config_get_int( "ScreenBPP",				32 );
-	if( default_bpp >= 32 )
-		default_bpp = 32;
+    default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
+	if( default_mode.bpp >= 32 )
+		default_mode.bpp = 32;
 	else
-		default_bpp = 16;
+		default_mode.bpp = 16;
 
 	default_x						  =	config_get_int( "ScreenPosX",				0 );
 	default_y						  =	config_get_int( "ScreenPosY",				0 );

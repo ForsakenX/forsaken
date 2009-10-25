@@ -33,7 +33,7 @@ extern "C" {
 	extern void ReleaseScene(void);
 	extern void ReleaseView(void);
 	extern BOOL InitScene(void);
-	extern BOOL init_renderer(HWND hwnd, BOOL fullscreen);
+	extern BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t mode, BOOL vsync);
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
@@ -46,7 +46,7 @@ extern "C" {
 	extern char * LogFilename;
 	extern BOOL bFullscreen;
 	extern char *config_name;
-	extern D3DAppInfo d3dappi;
+	extern render_info_t d3dappi;
 	extern BOOL NoCursorClip;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int NetUpdateIntervalCmdLine;
@@ -58,9 +58,7 @@ extern "C" {
 	extern int ddchosen3d;
 	extern int default_x;
 	extern int default_y;
-	extern int default_width;
-	extern int default_height;
-	extern int default_bpp;
+	extern render_display_mode_t default_mode;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
 	extern	BOOL	NoSFX;
@@ -349,7 +347,7 @@ static BOOL InitWindow( void )
 	// cause the last window state had a window size of 0
 	
 	if ( ! screen_aspect_ratio )
-		screen_aspect_ratio = (float) (default_width / default_height);
+		screen_aspect_ratio = (float) (default_mode.w / default_mode.h);
 
     // Create a window with some default settings that may change
 	myglobs.hWndMain = CreateWindow(
@@ -360,8 +358,8 @@ static BOOL InitWindow( void )
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
          0, 0, // start position x,y
-		 default_width,
-		 default_height,
+		 default_mode.w,
+		 default_mode.h,
 
          NULL,				// parent window
          NULL,			    // menu handle
@@ -384,8 +382,8 @@ static BOOL InitWindow( void )
 		placement.showCmd = SW_SHOWNORMAL;
 		placement.rcNormalPosition.left		= default_x;
 		placement.rcNormalPosition.top		= default_y;
-		placement.rcNormalPosition.right	= default_x + default_width;
-		placement.rcNormalPosition.bottom	= default_y + default_height;
+		placement.rcNormalPosition.right	= default_x + default_mode.w;
+		placement.rcNormalPosition.bottom	= default_y + default_mode.h;
 		SetWindowPlacement( myglobs.hWndMain, &placement );
 	}
 
@@ -529,6 +527,8 @@ static BOOL breakpad_init( void )
 	return TRUE;
 }
 
+
+extern "C" BOOL InitView( void );
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
 	// Appears to be a complete fuckup...
@@ -619,10 +619,16 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 
     ZEROMEM(d3dappi);
 
-	if (!init_renderer(myglobs.hWndMain, bFullscreen))
+	if (!init_renderer(myglobs.hWndMain, bFullscreen, default_mode, VSync))
 		return FALSE;
 
-	render_initialized = TRUE;
+	// load the view
+	if (!InitView() )
+	{
+	    Msg("InitView failed.\n");
+		//CleanUpAndPostQuit();
+        return FALSE;
+	}
 
 	// show the mouse if acting like window
 	if ( ActLikeWindow || ! d3dappi.bFullscreen )
@@ -872,7 +878,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// we should figure out how to stretch/scale the resolution on the window
 			// just like when you resize the window
 			// or just make the window default to the selected resolution...
-			else if ( sscanf( option, "mode:%d:%d", &default_width, &default_height ) == 1 )
+			else if ( sscanf( option, "mode:%d:%d", &default_mode.w, &default_mode.h ) == 1 )
 			{
 				// values set directly by sscanf
 			}
@@ -882,7 +888,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// use bbp32 to get 32bbp/sec
 			else if ( sscanf( option, "bpp:%d", &num ) == 1 )
 			{
-				default_bpp = num;
+				default_mode.bpp = num;
 			}
 
 			// modifies texture dimentions.. don't now what uv stands for..

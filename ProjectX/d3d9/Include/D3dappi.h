@@ -44,7 +44,7 @@ extern "C" {
  * GLOBAL VARIABLES
  *    see d3dapp.c for descriptions
  */
-extern D3DAppInfo d3dappi;
+extern render_info_t d3dappi;
 extern BOOL bIgnoreWM_SIZE;
 
 #ifdef __cplusplus
@@ -127,7 +127,7 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
-HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort);
+HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();
 HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
@@ -140,9 +140,9 @@ HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
-HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort);
-HRESULT FSGetViewport(MYD3DVIEWPORT9 *returnViewPort);
-HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort);
+HRESULT FSSetViewPort(render_viewport_t *newViewPort);
+HRESULT FSGetViewport(render_viewport_t *returnViewPort);
+HRESULT FSSetViewPort(render_viewport_t *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material);

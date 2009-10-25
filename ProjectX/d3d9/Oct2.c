@@ -538,8 +538,8 @@ void  PlotSimplePanel( void );
 RECT cursorclip;
 
 //LPDIRECT3DDEVICE lpD3Ddev = NULL;
-MYD3DVIEWPORT9 viewport;
-MYD3DVIEWPORT9 oldviewport;
+render_viewport_t viewport;
+render_viewport_t oldviewport;
 HRESULT hresult;
 int initfov = 0;
 float viewplane_distance;
@@ -1046,7 +1046,7 @@ SetFOV( float fov )
 }
 
 
-void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval )
+void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval )
 {
   static char msg[1024];
   sprintf( msg,
@@ -1907,8 +1907,7 @@ InitScene(void)
   Output    :   BOOL TRUE/FLASE
 ===================================================================*/
 
-BOOL
-InitView( void )
+BOOL InitView( void )
 {
 	DWORD dwItems					= INFINITE;
 
@@ -2285,7 +2284,7 @@ char *DI_KeyName( DWORD key )
  **************************************************************************/
 BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
-extern D3DAppInfo d3dappi;
+extern render_info_t d3dappi;
 
 BOOL InitDInput(void)
 {
@@ -5930,7 +5929,7 @@ BOOL Disp3dPanel( void )
 	VECTOR  Temp;
 	VECTOR  Scale;
 	D3DRECT dummy;
-	MYD3DVIEWPORT9 newviewport;
+	render_viewport_t newviewport;
 	float screen_width, screen_height;
 
  //   newviewport.dwSize = sizeof(D3DVIEWPORT);
@@ -6238,7 +6237,7 @@ BOOL DispTracker( void ) // bjd
 {
 	uint16      i;
 	D3DRECT     dummy;
-	MYD3DVIEWPORT9 newviewport;
+	render_viewport_t newviewport;
 	float       screen_width, screen_height;
 	VECTOR      TempVector;
 	MATRIX      TempMatrix;
@@ -6628,7 +6627,7 @@ void RenderSnapshot( void )
 {
 #if 0 // bjd - CHECK
 //  LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
-    MYD3DVIEWPORT9 View = d3dappi.D3DViewport;
+    render_viewport_t View = d3dappi.D3DViewport;
 
 //bjd  lpDev->lpVtbl->BeginScene(lpDev);
 

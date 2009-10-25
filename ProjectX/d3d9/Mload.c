@@ -451,7 +451,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				return FALSE;
 			}
 
-			DeubgPrintf("created buffer to hold :%d verts\n", num_vertices);
+			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
 			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
 			{

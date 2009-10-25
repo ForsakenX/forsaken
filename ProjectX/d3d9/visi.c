@@ -31,7 +31,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-extern void SetViewportError( char *where, MYD3DVIEWPORT9 *vp, HRESULT rval );
+extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
 
 extern float hfov;
 extern float screen_aspect_ratio;
@@ -118,8 +118,8 @@ D3DRECT	GroupVisibleExtents[MAXGROUPS];
 uint16	NumPortalsVisible;
 uint16	PortalsVisible[MAXPORTALSPERGROUP];
 D3DRECT	PortalExtents[MAXGROUPS];
-MYD3DVIEWPORT9	OldViewPort;
-MYD3DVIEWPORT9	PresentViewPort;
+render_viewport_t	OldViewPort;
+render_viewport_t	PresentViewPort;
 MATRIX	VisPolyMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
 				0.0F, 1.0F, 0.0F, 0.0F,
@@ -978,7 +978,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	VISLIST *v;
 	VISGROUP *g;
 	D3DRECT clip;
-	MYD3DVIEWPORT9 *vp;
+	render_viewport_t *vp;
 	VISGROUP *gsort, *gprev, *gnext;
 	int j;
 	float w, h;

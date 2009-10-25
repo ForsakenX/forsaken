@@ -18,21 +18,17 @@ BOOL  bSquareOnly = FALSE;
 /***************************************************************************/
 /*                            Creation of D3D                              */
 /***************************************************************************/
-extern BOOL InitView(void);
-extern BOOL VSync;
-extern int default_width;
-extern int default_height;
-extern int default_bpp;
 
 BOOL render_initialized = FALSE;
 
 LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
-BOOL init_renderer(HWND hwnd, BOOL fullscreen)
+BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mode, BOOL vsync)
 {
 	HRESULT LastError;
-	MYD3DVIEWPORT9 viewport;
+	render_viewport_t viewport;
+	int bpp = 16;
 
 	// Set up Direct3D interface object
 	lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -62,7 +58,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 
-	if(VSync)	
+	if(vsync)	
 		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_ONE;			// enable vsync
 	else
 		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;	// disable vsync
@@ -73,9 +69,10 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 
 	// 32 bit back buffer
 	// Also supports 32 bit zbuffer
-	if( default_bpp >= 32 && 
+	if( default_mode.bpp >= 32 && 
 		SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, d3dpp.Windowed)))
 	{
+		bpp = 32;
 		d3dpp.BackBufferFormat			= D3DFMT_X8R8G8B8;
 		//d3dpp.AutoDepthStencilFormat	= D3DFMT_D32;	// 32 bit depth buffer
 		d3dpp.AutoDepthStencilFormat	= D3DFMT_D24S8;	// 24 bit depth buffer with 8 bit stencil buffer
@@ -103,21 +100,25 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 
 	//
 	// Enumerates display modes 
-	// picking default_height & default_width if they exist
+	// picking default_mode if it exists
 	// or picking the biggest mode possible :]
 	//
 
 	{
 		int mode = 0;
 		int desired_mode = -1;
-		unsigned int best_mode = 0;
-		unsigned int i;
-		unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
-		D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
-		for ( i = 0; i < num_modes; i++ )
+		int best_mode = 0;
+		int i;
+		d3dappi.NumModes		= (int) lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
+		d3dappi.Mode			= (render_display_mode_t *) malloc( d3dappi.NumModes * sizeof(render_display_mode_t) );
+		D3DDISPLAYMODE * modes	= (D3DDISPLAYMODE *) malloc( d3dappi.NumModes * sizeof(D3DDISPLAYMODE) );
+		for ( i = 0; i < d3dappi.NumModes; i++ )
 		{
 			lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
-			if(modes[i].Width == default_width && modes[i].Height == default_height )
+			d3dappi.Mode[i].h   = modes[i].Height;
+			d3dappi.Mode[i].w   = modes[i].Width;
+			d3dappi.Mode[i].bpp = bpp;
+			if(modes[i].Width == default_mode.w && modes[i].Height == default_mode.h )
 				desired_mode = i;
 			if(modes[i].Width > modes[best_mode].Width)
 				best_mode = i;
@@ -130,11 +131,15 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		{
 			mode = best_mode;
 		}
+		d3dappi.CurrMode = mode;
+		d3dappi.ThisMode = d3dappi.Mode[ d3dappi.CurrMode ];
+		d3dappi.WindowsDisplay = d3dappi.Mode[ d3dappi.CurrMode ];
 		{
 			D3DDISPLAYMODE m = modes[mode];
 			d3dpp.BackBufferWidth  = m.Width;
 			d3dpp.BackBufferHeight = m.Height;
 		}
+		free(modes);
 	}
 
 	DebugPrintf("Using display size of %dx%d\n",d3dpp.BackBufferWidth,d3dpp.BackBufferHeight);
@@ -252,10 +257,17 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 
 	/* do "after device created" stuff */
 	ZeroMemory( &viewport, sizeof(viewport) );
-	viewport.X = 0;
-	viewport.Y = 0;
-	viewport.Width = 800;
-	viewport.Height = 600;
+	{
+		WINDOWPLACEMENT placement;
+		placement.length = sizeof(WINDOWPLACEMENT);
+		if(GetWindowPlacement( hwnd, &placement ))
+		{
+			viewport.X = placement.rcNormalPosition.left;
+			viewport.Y = placement.rcNormalPosition.top;
+		}
+	}
+	viewport.Width = d3dpp.BackBufferWidth;
+	viewport.Height = d3dpp.BackBufferHeight;
 	viewport.MinZ = 0.0f;
 	viewport.MaxZ = 1.0f;
 
@@ -265,16 +277,10 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		DebugPrintf("couldn't set viewport\n");
 	}
 
-	// load the view
-	if (!InitView() )
-	{
-	    Msg("InitView failed.\n");
-//		CleanUpAndPostQuit();
-        return FALSE;
-	}
-
     if(!init_render_states())
 		return FALSE;
+
+	render_initialized = TRUE;
 
 	return TRUE;
 }
@@ -282,6 +288,8 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 void render_cleanup( void )
 {
     d3dappi.bRenderingIsOK = FALSE;
+	if(d3dappi.Mode)
+		free(d3dappi.Mode);
     RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
 }
@@ -594,12 +602,12 @@ BOOL FSClearBlack(void)
 	return TRUE;
 }
 
-HRESULT FSGetViewPort(MYD3DVIEWPORT9 *returnViewPort)
+HRESULT FSGetViewPort(render_viewport_t *returnViewPort)
 {
 	return lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
 }
 
-HRESULT FSSetViewPort(MYD3DVIEWPORT9 *newViewPort)
+HRESULT FSSetViewPort(render_viewport_t *newViewPort)
 {
 	return lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
 }

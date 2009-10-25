@@ -10,27 +10,6 @@ extern "C" {
 
 typedef float D3DVALUE, *LPD3DVALUE;
 
-/*
- * DEFINES
- */
-#define D3DAPP_WINDOWMINIMUM 50     /* smallest buffer size allowed */
-#define D3DAPP_DEFAULTWINDOWDIM 320 /* replaces window size if invalid */
-#define D3DAPP_MINBUFFERSIZE 15360  /* minimum "maximum buffer size" for a
-                                       D3D driver to be accepted */
-#define D3DAPP_MINVERTEXCOUNT 320   /* minimum "maximum vertex count" for a
-                                       D3D driver to be accepted */
-#define D3DAPP_MAXD3DDRIVERS 5      /* maximum Direct3D drivers ever expected
-                                       to find */
-#define D3DAPP_MAXTEXTUREFORMATS 10 /* maximum texture formats ever expected
-                                       to be reported by a D3D driver */
-#define D3DAPP_MAXMODES 32          /* maximum display modes ever expected to
-                                       be reported by DirectDraw */
-#define D3DAPP_BOGUS -100           /* unused parameters accept this */
-#define D3DAPP_YOUDECIDE -25        /* Use this for certain parameters to
-                                       have D3DApp decide an appropriate
-                                       value for you */
-#define D3DAPP_USEWINDOW -24        /* Used in place of fullscreen mode */
-
 typedef int D3DMATRIXHANDLE;
 
 typedef struct _D3DVIEWPORT { 
@@ -56,33 +35,21 @@ typedef struct {
     float       MaxZ;
     D3DVALUE	ScaleX; 
     D3DVALUE	ScaleY; 
-} MYD3DVIEWPORT9;
+} render_viewport_t;
 
-/*
- * D3DAppMode structure
- * Describes a display mode
- */
-typedef struct tagD3DAppMode {
+typedef struct {
     int     w;                /* width */
     int     h;                /* height */
     int     bpp;              /* bits per pixel */
-    BOOL    bThisDriverCanDo; /*can current D3D driver render in this mode?*/
-} D3DAppMode;
+} render_display_mode_t;
 
-/*
- * D3DAppInfo structure
- * Contains all the information D3DApp makes available to the application. A
- * pointer to the internal, read only copy is returned by the initializing
- * function.
- */
-typedef struct tagD3DAppInfo {
-    int                     NumDrivers;				/* number of D3D drivers avail. */
+typedef struct {
     int                     NumModes;				/* number of available display modes */
     int                     CurrMode;				/* number of current display mode (only when fullscreen) */
-    D3DAppMode              Mode[D3DAPP_MAXMODES];	/* desc avail modes */
-    D3DAppMode              ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
+    render_display_mode_t * Mode;					/* desc avail modes */
+    render_display_mode_t   ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
     BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
-    D3DAppMode              WindowsDisplay;			/* current Windows disply mode */
+    render_display_mode_t   WindowsDisplay;			/* current Windows disply mode */
     SIZE                    szClient;				/* dimensions of client win */
     POINT                   pClientOnPrimary;		/* position of client area */
     POINT                   pWindow;				/* position of win */
@@ -90,7 +57,7 @@ typedef struct tagD3DAppInfo {
     BOOL                    bAppActive;				/* the app is active */
     BOOL                    bMinimized;				/* app window is minimized */
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
-} D3DAppInfo;
+} render_info_t;
 
 /*
  * FUNCTION PROTOTYPES
