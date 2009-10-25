@@ -11118,7 +11118,9 @@ void GetGamePrefs( void )
     default_height                    = config_get_int( "ScreenHeight",				600 );
 
     default_bpp                       = config_get_int( "ScreenBPP",				32 );
-	if( default_bpp != 16 && default_bpp != 32 )
+	if( default_bpp >= 32 )
+		default_bpp = 32;
+	else
 		default_bpp = 16;
 
 	default_x						  =	config_get_int( "ScreenPosX",				0 );

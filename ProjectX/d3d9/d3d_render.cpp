@@ -22,6 +22,7 @@ extern BOOL InitView(void);
 extern BOOL VSync;
 extern int default_width;
 extern int default_height;
+extern int default_bpp;
 
 BOOL render_initialized = FALSE;
 
@@ -45,33 +46,102 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 	D3DPRESENT_PARAMETERS d3dpp;
 	ZeroMemory (&d3dpp, sizeof(d3dpp));
 
-	// setup defaults
+	//
+	d3dappi.bFullscreen = fullscreen;
+	d3dpp.Windowed = !fullscreen;
+
+	//
+	// presentation settings
+	//
+
 	d3dpp.hDeviceWindow					= hwnd;							// the window handle
 	d3dpp.BackBufferCount				= 1;							// we only have one swap chain
-	// shouldn't we specify D3DSWAPEFFECT_FLIP ?
-	// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
+																		// shouldn't we specify D3DSWAPEFFECT_FLIP ?
+																		// wouldn't D3DSWAPEFFECT_OVERLAY be fastest ?
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
-	//d3dpp.BackBufferFormat				= D3DFMT_R5G6B5;				// 16 bit - works for nvidia vanta w/ D3DFMT_D16 zbuff
-	//d3dpp.BackBufferFormat				= D3DFMT_X1R5G5B5;				// 16 bit
-	//d3dpp.BackBufferFormat				= D3DFMT_R8G8B8;			// 24 bit
-	d3dpp.BackBufferFormat				= D3DFMT_X8R8G8B8;			// 32 bit
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
-	d3dpp.AutoDepthStencilFormat		= D3DFMT_D24S8;					// 32bit zbuffer
-	//d3dpp.AutoDepthStencilFormat		= D3DFMT_D16; //D3DFMT_INDEX16;				// 16bit zbuffer
-	if(VSync)
-		d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_ONE; // enable vsync
+
+	if(VSync)	
+		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_ONE;			// enable vsync
 	else
-		d3dpp.PresentationInterval			= D3DPRESENT_INTERVAL_IMMEDIATE;// disable vsync
-	// default resolution
-	d3dpp.BackBufferWidth				= default_width;	// resolution width
-	d3dpp.BackBufferHeight				= default_height;	// resolution height
-	//d3dpp.Flags	// not needed for now
+		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;	// disable vsync
+
+	// 16 bit zbuffer
+	//d3dpp.AutoDepthStencilFormat	= D3DFMT_D15S1; // 16 bit depth buffer with 1 bit stencil
+	d3dpp.AutoDepthStencilFormat	= D3DFMT_D16;	// 16 bit depth buffer
+
+	// 32 bit back buffer
+	// Also supports 32 bit zbuffer
+	if( default_bpp >= 32 && 
+		SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, d3dpp.Windowed)))
+	{
+		d3dpp.BackBufferFormat			= D3DFMT_X8R8G8B8;
+		//d3dpp.AutoDepthStencilFormat	= D3DFMT_D32;	// 32 bit depth buffer
+		d3dpp.AutoDepthStencilFormat	= D3DFMT_D24S8;	// 24 bit depth buffer with 8 bit stencil buffer
+		DebugPrintf("picked 32 bit textures\n");
+	}
+	// 16 bit
+	else if(SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X1R5G5B5, D3DFMT_X1R5G5B5, d3dpp.Windowed)))
+	{
+		d3dpp.BackBufferFormat	= D3DFMT_X1R5G5B5;
+		DebugPrintf("picked 16 bit textures\n");
+	}
+	// 16 bit 
+	else if(SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_R5G6B5, D3DFMT_R5G6B5, d3dpp.Windowed)))
+	{
+		d3dpp.BackBufferFormat	= D3DFMT_R5G6B5;
+		DebugPrintf("picked 16 bit textures\n");
+	}
+	// failed
+	else
+	{
+		CloseWindow(hwnd);
+		Msg("Failed to find a suitable back buffer format");
+		exit(1);
+	}
+
+	//
+	// Enumerates display modes 
+	// picking default_height & default_width if they exist
+	// or picking the biggest mode possible :]
+	//
+
+	{
+		int mode = 0;
+		int desired_mode = -1;
+		unsigned int best_mode = 0;
+		unsigned int i;
+		unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
+		D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
+		for ( i = 0; i < num_modes; i++ )
+		{
+			lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
+			if(modes[i].Width == default_width && modes[i].Height == default_height )
+				desired_mode = i;
+			if(modes[i].Width > modes[best_mode].Width)
+				best_mode = i;
+		}
+		if( desired_mode >= 0 )
+		{
+			mode = desired_mode;
+		}
+		else
+		{
+			mode = best_mode;
+		}
+		{
+			D3DDISPLAYMODE m = modes[mode];
+			d3dpp.BackBufferWidth  = m.Width;
+			d3dpp.BackBufferHeight = m.Height;
+		}
+	}
+
+	DebugPrintf("Using display size of %dx%d\n",d3dpp.BackBufferWidth,d3dpp.BackBufferHeight);
 
 	// window mode
 	if ( ! fullscreen )
 	{
-		d3dpp.Windowed = TRUE;
 		SetWindowPos( 
 			hwnd,			// the window handle
 			HWND_TOP,		// bring window to the front
@@ -80,47 +150,6 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW 
 		);
 	}
-
-	// full screen mode
-	else
-	{
-		d3dpp.Windowed = FALSE;
-
-		// we must enumerate all the proper settings here
-		// IDirect3D9::EnumAdapterModes
-			//d3dpp.BackBufferWidth = 800;	// resolution width
-			//d3dpp.BackBufferHeight = 600;	// resolution height
-
-		// d3dpp.BackBufferFormat
-		// could possibly be invalid as the choice above
-		// the choice should be validated by IDirect3D9::CheckDeviceType
-		// you can use the following code to get the current desktop display mode
-			//D3DDISPLAYMODE d3ddm;
-			//LastError = lpD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
-/*
-		{
-			unsigned int best_mode = 0;
-			unsigned int i;
-			unsigned int num_modes = lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
-			D3DDISPLAYMODE * modes = (D3DDISPLAYMODE *) malloc( num_modes * sizeof(D3DDISPLAYMODE) );
-			for ( i = 0; i < num_modes; i++ )
-			{
-				lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
-				if(modes[i].Width == 640)
-					break;
-				if(modes[i].Width > modes[best_mode].Width)
-					best_mode = i;
-			}
-			{
-				D3DDISPLAYMODE mode = modes[best_mode];
-				d3dpp.BackBufferWidth  = mode.Width;
-				d3dpp.BackBufferHeight = mode.Height;
-			}
-		}
-*/
-	}
-
-	DebugPrintf("Using display size of %dx%d\n",d3dpp.BackBufferWidth,d3dpp.BackBufferHeight);
 
 	// try to create a device falling back to less capable versions
 
@@ -161,7 +190,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
-			DebugPrintf("d3d device created: hardware");
+			DebugPrintf("d3d device created: hardware\n");
 		}
 		else
 		{
@@ -177,7 +206,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
-			DebugPrintf("d3d device created: mixed");
+			DebugPrintf("d3d device created: mixed\n");
 		}
 		else
 		{
@@ -193,7 +222,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
-			DebugPrintf("d3d device created: software");
+			DebugPrintf("d3d device created: software\n");
 		}
 		else
 		{
@@ -209,8 +238,6 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen)
 		exit(1);
 	}
 
-	d3dappi.bFullscreen = !d3dpp.Windowed;
-	
 	render_initialized = TRUE;
 	d3dappi.bRenderingIsOK = TRUE;
 
