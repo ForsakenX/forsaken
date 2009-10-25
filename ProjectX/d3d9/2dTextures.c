@@ -42,9 +42,7 @@
 #define	DONT_SCALE		FALSE
 
 int8	*	Font512File = "font512.off";
-int8	*	Font320File = "font.off";
 int8	*	VduFont512	= "f512x384.off";
-int8	*	VduFont320	= "f320x200.off";
 int8		FontFile[ 16 ];
 int8		TitleFontFile[ 16 ];
 
@@ -366,62 +364,12 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 	// polytext is default now
 	strcpy( &FontFile[ 0 ], Font512File );
 
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
-	{
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = (float)d3dappi.szClient.cx / 512.0F;
-		VduScaleY = (float)d3dappi.szClient.cy / 384.0F;
-	}else
-	{
-		strcpy ( &TitleFontFile[ 0 ], VduFont320 );
-		VduScaleX = (float)d3dappi.szClient.cx / 320.0F;
-		VduScaleY = (float)d3dappi.szClient.cy / 200.0F;
-	}
+	// this still uses the old blitted font file
+	strcpy ( &TitleFontFile[ 0 ], VduFont512 );
 
-	VduScaleX = (float)floor((double)VduScaleX);
-	VduScaleY = (float)floor((double)VduScaleY);
-
-/*
-	VduScaleX = 1.0F; VduScaleY = 1.0F;
-	switch ( ModeCase )
-	{
-	case Mode320X200:
-		strcpy ( &TitleFontFile[ 0 ], VduFont320 );
-		VduScaleX = 1.0F; VduScaleY = 1.0F;
-		break;
-	case Mode320X240:
-		strcpy ( &TitleFontFile[ 0 ], VduFont320 );
-		VduScaleX = 1.0F; VduScaleY = 1.2F;
-		break;
-	case Mode320X400:
-	case Mode800X600:
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = 1.5625F; VduScaleY = 1.5625F;
-		strcpy ( &TitleFontFile[ 0 ], VduFont320 );
-		VduScaleX = 1.0F; VduScaleY = 2.0F;
-		break;
-	case Mode512X384:
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = 1.0F; VduScaleY = 1.0F;
-		break;
-	case Mode640X400:
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = 1.25F; VduScaleY = 1.04F;
-		break;
-	case Mode640X480:
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = 1.25F; VduScaleY = 1.25F;
-		break;
-	case Mode1024X768:
-		strcpy ( &TitleFontFile[ 0 ], VduFont512 );
-		VduScaleX = 2.0F; VduScaleY = 2.0F;
-		break;
-	default:
-		strcpy ( &TitleFontFile[ 0 ], VduFont320 );
-		VduScaleX = 1.0F; VduScaleY = 1.0F;
-		break;
-	}
-*/
+	//
+	VduScaleX = (float)floor((double)((float)d3dappi.szClient.cx / 512.0F));
+	VduScaleY = (float)floor((double)((float)d3dappi.szClient.cy / 384.0F));
 
 	last_tpage = 0;
 
