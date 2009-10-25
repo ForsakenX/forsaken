@@ -46,7 +46,6 @@ extern BOOL BountyHunt;
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
-extern	int16	ModeCase;
 extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
 extern	BOOL	TeamGame;

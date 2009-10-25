@@ -57,20 +57,6 @@
 #define STATUS_LeftCrashed								254	// I have left and crashed...
 #define STATUS_Null										255	// Im not doing anything yet...
 
-
-/*===================================================================
-	Screen Mode Defines...
-===================================================================*/
-
-#define Mode320X200 0
-#define Mode320X240 1
-#define Mode320X400 2
-#define Mode512X384 3
-#define Mode640X400 4
-#define Mode640X480 5
-#define Mode800X600 6
-#define Mode1024X768 7
-
 /*===================================================================
 	Some Global Defines...
 ===================================================================*/

@@ -233,11 +233,8 @@ extern	int		FontHeight;
 extern	int		FontSourceWidth;
 extern	int		FontSourceHeight;
 BOOL	ShowWeaponKills = FALSE;
-extern	int16	ModeCase;
-extern	int16	ModesX[8];
-extern	int16	ModesY[8];
-extern	float	ModeScaleX[8];
-extern	float	ModeScaleY[8];
+extern	float	ModeScaleX;
+extern	float	ModeScaleY;
 extern	BOOL					HostDuties;
 extern	int16	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
@@ -4926,159 +4923,155 @@ BOOL DisplayTitle(void)
 
 	CheckForRogueSfx();
 
-	if ( ModeCase != -1 )
-	{
-		//Set up camera
-		MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
-		MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
-		CurrentCamera.Pos = View;
-		CurrentCamera.GroupImIn = -1;
-		CurrentCamera.Viewport = viewport;	
-		CurrentCamera.Viewport.X = 0;
-		CurrentCamera.Viewport.Y = 0;
-		CurrentCamera.Viewport.Width = d3dappi.szClient.cx;
-		CurrentCamera.Viewport.Height = d3dappi.szClient.cy;
-		CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
-		CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+	//Set up camera
+	MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
+	MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
+	CurrentCamera.Pos = View;
+	CurrentCamera.GroupImIn = -1;
+	CurrentCamera.Viewport = viewport;	
+	CurrentCamera.Viewport.X = 0;
+	CurrentCamera.Viewport.Y = 0;
+	CurrentCamera.Viewport.Width = d3dappi.szClient.cx;
+	CurrentCamera.Viewport.Height = d3dappi.szClient.cy;
+	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
 /* bjd
-		CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
-										  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-		CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
-										   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+	CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
+									  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
+	CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
+									   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
-		
-		Build_View();
-		CurrentCamera.View = view;
+	
+	Build_View();
+	CurrentCamera.View = view;
 
-		if (FSBeginScene() != D3D_OK)
-		{
-			Msg( "DisplayTitle() : BeginScene failed\n" );
-			return FALSE;
-		}
+	if (FSBeginScene() != D3D_OK)
+	{
+		Msg( "DisplayTitle() : BeginScene failed\n" );
+		return FALSE;
+	}
 
-		if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
-		{
-			Msg( "DisplayTitle() : SetMatrix failed\n" );
-			return FALSE;
-		}
+	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+	{
+		Msg( "DisplayTitle() : SetMatrix failed\n" );
+		return FALSE;
+	}
 
-		if( FSSetViewPort(&CurrentCamera.Viewport) != D3D_OK )
-		{
+	if( FSSetViewPort(&CurrentCamera.Viewport) != D3D_OK )
+	{
 #ifdef DEBUG_VIEWPORT
-			SetViewportError( "DisplayTitle", &CurrentCamera.Viewport, D3D_OK );
+		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport, D3D_OK );
 #else
-			Msg( "DisplayTitle() : SetViewport failed\n" );
+		Msg( "DisplayTitle() : SetViewport failed\n" );
 #endif
-			return FALSE;
-		}
+		return FALSE;
+	}
 
-		if (ClearBuffers() != TRUE )
-		{
-			Msg( "DisplayTitle() : ClearBuffers failed\n" );
-			return FALSE;
-		}
+	if (ClearBuffers() != TRUE )
+	{
+		Msg( "DisplayTitle() : ClearBuffers failed\n" );
+		return FALSE;
+	}
 
-		// reset all the normal execute status flags...
-		set_normal_states();
+	// reset all the normal execute status flags...
+	set_normal_states();
 
-		if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
-		{
-			return FALSE;
-		}
+	if( !ModelDisp( 0, /*lpDev,*/ TitleModelSet ) ) // bjd
+	{
+		return FALSE;
+	}
 
-	/*
-		Display 0 solid Clipped Non Faceme Transluecent Polys
-	*/
+/*
+	Display 0 solid Clipped Non Faceme Transluecent Polys
+*/
 
-			if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-					return FALSE;
+		if( !DisplaySolidGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
+				return FALSE;
 #if 0
 /*
-	Display 0 solid Clipped Faceme Transluecent Polys
+Display 0 solid Clipped Faceme Transluecent Polys
 */
-			if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
-					return FALSE;
+		if( !DisplaySolidGroupClippedFmPolys( &RenderBufs[ 1 ], 0, lpDev, lpView ) )
+				return FALSE;
 #endif
 
-		// set all the Translucent execute status flags...
-		set_alpha_states();
+	// set all the Translucent execute status flags...
+	set_alpha_states();
 
-		// display clipped translucencies
-	/*===================================================================
-		Display 0 Clipped Non Faceme Transluecent Polys
-	===================================================================*/
-
-			if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-					return FALSE;
-
+	// display clipped translucencies
 /*===================================================================
-	Display 0 Clipped Faceme Transluecent Polys
+	Display 0 Clipped Non Faceme Transluecent Polys
 ===================================================================*/
-			
-			if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
-					return FALSE;
 
-			ExecuteTransExe( 0 );
-			ExecuteTransExeUnclipped( 0 );
-
-	/*===================================================================
-		Display Non 0 Clipped Faceme Transluecent Polys
-	===================================================================*/
-
-		if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
+		if( !DisplayGroupClippedPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 				return FALSE;
 
 /*===================================================================
-	Display Non 0 Clipped Non Faceme Transluecent Polys
+Display 0 Clipped Faceme Transluecent Polys
 ===================================================================*/
-		if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
+		
+		if( !DisplayGroupClippedFmPolys( &RenderBufs[ 2 ], 0 ) ) // bjd
 				return FALSE;
 
-	/*===================================================================
-		Display Transluecent Screen Polys
-	===================================================================*/
+		ExecuteTransExe( 0 );
+		ExecuteTransExeUnclipped( 0 );
 
-			if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
-				return FALSE;
+/*===================================================================
+	Display Non 0 Clipped Faceme Transluecent Polys
+===================================================================*/
 
-	/*===================================================================
-		Display Solid Screen Polys
-	===================================================================*/
-
-		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
+	if( !DisplayGroupUnclippedFmPolys( &RenderBufs[ 2 ] ) ) // bjd
 			return FALSE;
 
-  // reset mode
-		set_normal_states();
-
-	/*===================================================================
-	Display Opaque Lines
-	===================================================================*/
-			group = (uint16)-1;
-
-			ExecuteLines( group, &RenderBufs[ 0 ] );
-
-	/*===================================================================
-	Display Solid Lines
-	===================================================================*/
-			group = (uint16)-1;
-
-			ExecuteLines( group, &RenderBufs[ 0 ] );
-
-		if (FSEndScene() != D3D_OK)
-		{
-			Msg( "DisplayTitle() : EndScene failed\n" );
+/*===================================================================
+Display Non 0 Clipped Non Faceme Transluecent Polys
+===================================================================*/
+	if( !DisplayGroupUnclippedPolys( &RenderBufs[ 2 ] ) ) // bjd
 			return FALSE;
-		}
 
-		ScreenPolyProcess();
+/*===================================================================
+	Display Transluecent Screen Polys
+===================================================================*/
 
-		PulsateVDU();
-		RotateHoloLight();
+		if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
+			return FALSE;
 
+/*===================================================================
+	Display Solid Screen Polys
+===================================================================*/
+
+	if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
+		return FALSE;
+
+// reset mode
+	set_normal_states();
+
+/*===================================================================
+Display Opaque Lines
+===================================================================*/
+		group = (uint16)-1;
+
+		ExecuteLines( group, &RenderBufs[ 0 ] );
+
+/*===================================================================
+Display Solid Lines
+===================================================================*/
+		group = (uint16)-1;
+
+		ExecuteLines( group, &RenderBufs[ 0 ] );
+
+	if (FSEndScene() != D3D_OK)
+	{
+		Msg( "DisplayTitle() : EndScene failed\n" );
+		return FALSE;
 	}
-	
+
+	ScreenPolyProcess();
+
+	PulsateVDU();
+	RotateHoloLight();
+
 	switch (StackMode)
 	{
 	case DISC_MODE_ALL:
@@ -5097,9 +5090,6 @@ BOOL DisplayTitle(void)
 		TitleReset( NULL );
 	}
 #endif
-
-
-	
 
 /****************************************/
 	ProcessHoloModel();
@@ -5265,8 +5255,8 @@ void	MenuItemDrawName( MENUITEM * Item )
 
 	if ( Item->StrPnt )
 	{
-		x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-		y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+		x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 		Print4x5Text( Item->StrPnt , x , y , col );
 	}
@@ -5288,8 +5278,8 @@ void	MenuItemDrawPageName( MENUITEM * Item )
 	page = (int) Item->Value;
 	if ( Item->StrPnt && page == CurrentPage )
 	{
-		x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-		y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+		x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 		Print4x5Text( Item->StrPnt , x , y , col );
 	}
@@ -5305,8 +5295,8 @@ void DrawKeyDefPage( MENUITEM * Item )
 	static int col = 0;
 
 	sprintf( page, LT_PageNo, CurrentPage + 1, MaxPage );
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 	if ( MaxPage > 1 )
 	{
 		if ( !CurrentPage )
@@ -5360,8 +5350,8 @@ void DrawKeyDefHelp1( MENUITEM * Item )
 	{
 		sprintf( help, LT_SelectControl/*"[up/down]=select control"*/ );
 	}
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 	CenterPrint4x5Text( help, y, col );
 }
 
@@ -5395,8 +5385,8 @@ void DrawKeyDefHelp2( MENUITEM * Item )
 	{
 		help[ 0 ] = 0;
 	}
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 	CenterPrint4x5Text( help, y, col );
 }
 
@@ -5498,8 +5488,8 @@ void DrawKeyDefHelp3( MENUITEM * Item )
 	}
 	if ( help[ 0 ] )
 	{
-		x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-		y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+		x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 		CenterPrint4x5Text( help, y, col );
 	}
 }
@@ -5517,8 +5507,8 @@ void DrawNameVar( MENUITEM * Item )
 	int	y;
 	char *var;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
 	var = (char *)(Item->Variable);
@@ -5532,8 +5522,8 @@ void DrawCenteredNameVar( MENUITEM * Item )
 	int	y;
 	char *var;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	var = (char *)(Item->Variable);
 	CenterPrint4x5Text( var, y, 5 );
@@ -5552,13 +5542,13 @@ void	DrawHelpKey( MENUITEM * Item )
 	int	y;
 	char *key;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	key = (char *)(Item->Value);
 	if ( key )
 		Print4x5Text( key, x , y , 1 );
-	x = (int) ( ( ( Item->x + 64 ) >> 1 ) * ModeScaleX[ModeCase] );
+	x = (int) ( ( ( Item->x + 64 ) >> 1 ) * ModeScaleX );
 	Print4x5Text( Item->StrPnt , x, y , 2 );
 }
 
@@ -5574,7 +5564,7 @@ void MenuDraw( MENU * Menu )
 	MENUITEM * Item;
 	int	y;
 
-	y = (int) ( ( 80 >> 1 ) * ModeScaleY[ModeCase] );
+	y = (int) ( ( 80 >> 1 ) * ModeScaleY );
 
 	if ( Menu->MenuFuncDraw )
 		Menu->MenuFuncDraw ( &DiscStatus);
@@ -5820,8 +5810,8 @@ void	MenuItemDrawCursor( MENUITEM * Item )
 	case CAMERA_AtStart:
 		if ( MenuState != MENUSTATE_Select && MenuState != MENUSTATE_SelectKeydef )
 			return;
-		x = (int) ( ( ( Item->x - 18 ) >> 1 ) * ModeScaleX[ModeCase] );
-		y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+		x = (int) ( ( ( Item->x - 18 ) >> 1 ) * ModeScaleX );
+		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 		
 		if ( !( Item->highlightflags & TEXTFLAG_AutoSelect ) ) 
 			Print4x5Text( "0" , x , y , 0 );
@@ -8331,12 +8321,12 @@ void DrawSlider( MENUITEM *Item )
 	SLIDER *s;
 	int colour;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
 	sx = Print4x5Text( " ", -1, y, 2 );
-	ex = sx + (int) floor( ( 128 >> 1 ) * ModeScaleX[ModeCase] );
+	ex = sx + (int) floor( ( 128 >> 1 ) * ModeScaleX );
 	s = (SLIDER *) (Item->Variable);
 	sprintf( min, "%d", s->min );
 	sprintf( max, "%d", s->max );
@@ -8373,8 +8363,8 @@ void DrawRadioButton( MENUITEM *Item )
 	int	x;
 	int	y;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	if ( Item->Variable )
 	{
@@ -8425,8 +8415,8 @@ void DrawToggle( MENUITEM *Item )
 	int	x;
 	int	y;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
 	if ( Item->Variable )
@@ -8452,8 +8442,8 @@ void DrawColToggle( MENUITEM *Item )
 	int	x;
 	int	y;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
 
@@ -8486,8 +8476,8 @@ void DrawMessagesToggle( MENUITEM *Item )
 	int	x;
 	int	y;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	Print4x5Text( Item->StrPnt , x , y , 2 );
 	if ( Item->Variable )
@@ -8557,8 +8547,8 @@ void DrawKey( MENUITEM *Item )
 	int	y;
 	int colour;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	if ( Item->Variable )
 	{
@@ -8622,8 +8612,8 @@ void DrawKeyDef( MENUITEM *Item )
 	static char place[ 80 ];
 	int page;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	page = (int) Item->Value;
 	if ( Item->Variable && page == CurrentPage )
@@ -9418,14 +9408,14 @@ void DrawList( MENUITEM *Item )
 	if ( l->FuncInfo )
 		l->FuncInfo( l );
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	if ( !l )
 		return;
 
 	Print4x5Text( Item->StrPnt, x , y , 2 );
-	x += (int) ( ( 16 >> 1 ) * ModeScaleX[ModeCase] );
+	x += (int) ( ( 16 >> 1 ) * ModeScaleX );
 	for ( j = 0; j < l->display_items; j++ )
 	{
 		it = l->top_item + j;
@@ -9435,7 +9425,7 @@ void DrawList( MENUITEM *Item )
 			colour = ( MenuState == MENUSTATE_List && CurrentList == l ) ? ( SelectionColour() ) : 1;
 		else
 			colour = 2;
-		y += (int) ( (16 >> 1) * ModeScaleY[ModeCase] );
+		y += (int) ( (16 >> 1) * ModeScaleY );
 		Print4x5Text( l->item[ it ], x , y , colour );
 	}
 }
@@ -9640,8 +9630,8 @@ void DrawTextItem( MENUITEM *Item )
 	int tx;
 	int colour;
 
-	x = (int) ( ( Item->x >> 1 ) * ModeScaleX[ModeCase] );
-	y = (int) ( ( Item->y >> 1 ) * ModeScaleY[ModeCase] );
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	tx = Print4x5Text( Item->StrPnt, x , y , 2 );
 	t = (TEXT *)(Item->Variable);
@@ -12736,11 +12726,11 @@ void UpdateSlider (MENUITEM *Item)
 		decreaseY = 2;
 	}
 
-	xmin = (Item->xmax + space + VDUoffsetX) * ModeScaleX[ModeCase];
-	xmax = (Item->xmax + space + frac * width + VDUoffsetX) * ModeScaleX[ModeCase];
+	xmin = (Item->xmax + space + VDUoffsetX) * ModeScaleX;
+	xmax = (Item->xmax + space + frac * width + VDUoffsetX) * ModeScaleX;
   
-	ymin = (Item->y + VDUoffsetY + decreaseY) * ModeScaleY[ModeCase];
-	ymax = (Item->ymax + VDUoffsetY - decreaseY) * ModeScaleY[ModeCase];
+	ymin = (Item->y + VDUoffsetY + decreaseY) * ModeScaleY;
+	ymax = (Item->ymax + VDUoffsetY - decreaseY) * ModeScaleY;
 
 	height = (float)floor(ymax - ymin);
 
@@ -13291,14 +13281,14 @@ BOOL Plot2dBox (TEXTINFO *TextInfo)
 		ScrPolys[screenpoly[CurrentScreenPoly]].Yscale = 1.0F;			  
 		ScrPolys[screenpoly[CurrentScreenPoly]].Frame = 11.0F;			 
 		ScrPolys[screenpoly[CurrentScreenPoly]].Frm_Info = NULL;
-		ScrPolys[screenpoly[CurrentScreenPoly]].x1 = ((float)TextInfo->xmin + VDUoffsetX) * ModeScaleX[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].y1 = ((float)TextInfo->ymin + VDUoffsetY) * ModeScaleY[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].x2 = ((float)TextInfo->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].y2 = ((float)TextInfo->ymin + VDUoffsetY) * ModeScaleY[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].x3 = ((float)TextInfo->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].y3 = ((float)TextInfo->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].x4 = ((float)TextInfo->xmin + VDUoffsetX) * ModeScaleX[ModeCase];
-		ScrPolys[screenpoly[CurrentScreenPoly]].y4 = ((float)TextInfo->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
+		ScrPolys[screenpoly[CurrentScreenPoly]].x1 = ((float)TextInfo->xmin + VDUoffsetX) * ModeScaleX;
+		ScrPolys[screenpoly[CurrentScreenPoly]].y1 = ((float)TextInfo->ymin + VDUoffsetY) * ModeScaleY;
+		ScrPolys[screenpoly[CurrentScreenPoly]].x2 = ((float)TextInfo->xmax + VDUoffsetX) * ModeScaleX;
+		ScrPolys[screenpoly[CurrentScreenPoly]].y2 = ((float)TextInfo->ymin + VDUoffsetY) * ModeScaleY;
+		ScrPolys[screenpoly[CurrentScreenPoly]].x3 = ((float)TextInfo->xmax + VDUoffsetX) * ModeScaleX;
+		ScrPolys[screenpoly[CurrentScreenPoly]].y3 = ((float)TextInfo->ymax + VDUoffsetY) * ModeScaleY;
+		ScrPolys[screenpoly[CurrentScreenPoly]].x4 = ((float)TextInfo->xmin + VDUoffsetX) * ModeScaleX;
+		ScrPolys[screenpoly[CurrentScreenPoly]].y4 = ((float)TextInfo->ymax + VDUoffsetY) * ModeScaleY;
 		AddScrPolyToTPage(screenpoly[CurrentScreenPoly], GetTPage( NULL, 0 ) );
     	//AddScrPolyToTPage( screenpoly[CurrentScreenPoly], GetTPage( *ScrPolys[ screenpoly[CurrentScreenPoly] ].Frm_Info, 0 ) );
 		
@@ -13332,25 +13322,11 @@ BOOL Plot2dBox (TEXTINFO *TextInfo)
 
 int GetScreenFont(int fontsize)
 {
-	switch (ModeCase)
-	{
-	case Mode320X200:
-		TEXTINFO_TextSpace = 1.0F;
-		TEXTINFO_LineSpace = 2.0F * ModeScaleY[ModeCase];
-		return FONT_320X200_Small + fontsize;
-	case Mode320X240:
-		TEXTINFO_TextSpace = 1.0F;
-		TEXTINFO_LineSpace = 2.0F * ModeScaleY[ModeCase];
-		return FONT_320X240_Small + fontsize;
-	case Mode512X384:
-		TEXTINFO_TextSpace = 2.0F;
-		TEXTINFO_LineSpace = 2.0F * ModeScaleY[ModeCase];
-		return FONT_320X200_Small + fontsize;
-	default:
-		TEXTINFO_TextSpace = ModeScaleX[ModeCase];
-		TEXTINFO_LineSpace = 2.0F * ModeScaleY[ModeCase];
-		return FONT_320X200_Small+ fontsize;	//default font is for 320X200 display.
-	}
+	// was the highest settings around for 512
+	TEXTINFO_TextSpace = 2.0F;
+	TEXTINFO_LineSpace = 2.0F * ModeScaleY;
+	// adding fontsize moves it up to medium or large in the array
+	return FONT_512X384_Small + fontsize;
 }
 
 BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
@@ -13368,17 +13344,15 @@ BOOL FormatTextItem(int start, int end, TEXTINFO *TextInfo, BOOL *newline)
 	*newline = FALSE;
 
 
-	xmin = TextInfo->xmin * ModeScaleX[ModeCase];
-	xmax = TextInfo->xmax * ModeScaleX[ModeCase];
-	ymin = TextInfo->ymin * ModeScaleY[ModeCase];
-	ymax = TextInfo->ymax * ModeScaleY[ModeCase];
+	xmin = TextInfo->xmin * ModeScaleX;
+	xmax = TextInfo->xmax * ModeScaleX;
+	ymin = TextInfo->ymin * ModeScaleY;
+	ymax = TextInfo->ymax * ModeScaleY;
 
-	
 	TotalWidth = (float)(xmax - xmin);
 	TotalHeight = (float)(ymax - ymin);
 	RemainingWidth = xmax - TEXTINFO_currentx - xmin;
 
-	
 	font = GetScreenFont(TextInfo->font);
 	
 	 //find total width of word...
@@ -13594,10 +13568,10 @@ void GetTextPos(TEXTINFO *TextInfo, float *xpos, float *ypos, int line, float to
 	currentx = TextInfo->currentx[line];
 	currenty = TextInfo->currenty;
 
-	xmin = (TextInfo->xmin + VDUoffsetX) * ModeScaleX[ModeCase];
-	xmax = (TextInfo->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-	ymin = (TextInfo->ymin + VDUoffsetY) * ModeScaleY[ModeCase];
-	ymax = (TextInfo->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
+	xmin = (TextInfo->xmin + VDUoffsetX) * ModeScaleX;
+	xmax = (TextInfo->xmax + VDUoffsetX) * ModeScaleX;
+	ymin = (TextInfo->ymin + VDUoffsetY) * ModeScaleY;
+	ymax = (TextInfo->ymax + VDUoffsetY) * ModeScaleY;
 
 	//default x, y pos...
 	*xpos = (currentx + xmin);	
@@ -13639,7 +13613,7 @@ BOOL DisplayTextCharacter(TEXTINFO *TextInfo, int line, int pos, int font, float
 	currentx = TextInfo->currentx[line];
 	currenty = TextInfo->currenty;
 
-	xmin = (TextInfo->xmin + VDUoffsetX) * ModeScaleX[ModeCase];
+	xmin = (TextInfo->xmin + VDUoffsetX) * ModeScaleX;
 
 	OKtoProcess = FALSE;
 
@@ -13941,7 +13915,7 @@ void GetFinalChars( TEXTINFO *TextInfo, int currentpos, int length)
 
 	font = GetScreenFont(TextInfo->font);
 	
-	width = TextInfo->xmax * ModeScaleX[ModeCase] - TextInfo->xmin * ModeScaleX[ModeCase];
+	width = TextInfo->xmax * ModeScaleX - TextInfo->xmin * ModeScaleX;
 
 	for (i = currentpos; i < length; i++)
 	{
@@ -14193,28 +14167,25 @@ void InitScreenFonts (void)
 
 		switch (font)
 		{
-		case FONT_512X384_Small:
-		case FONT_320X200_Small:
-		case FONT_320X240_Small:
-			offset = 148;
-			space = 222;
-			break;
-		case FONT_512X384_Medium:
-		case FONT_320X200_Medium:
-		case FONT_320X240_Medium:
-			offset = 74;
-			space = 223;
-			break;
 		case FONT_512X384_Large:
-		case FONT_320X200_Large:
-		case FONT_320X240_Large:
 			offset = 0;
 			space = 224;
 			break;
+// new default
+// TODO - fix the fonts so small isn't so hard to see
+		//case FONT_512X384_Medium:
+		default:
+			offset = 74;
+			space = 223;
+			break;
+// original default
+		/* 
+		//case FONT_512X384_Small:
 		default:
 			offset = 148;
 			space = 222;
 			break;
+		*/
 		}
 
 		TextLookup[font][0] = 0 + offset;	//ASCII 0 used for cursor
@@ -14314,8 +14285,6 @@ void InitScreenFonts (void)
 		switch (font)
 		{
 		case FONT_512X384_Small:
-		case FONT_320X200_Small:
-		case FONT_320X240_Small:
 			TextLookup[font][39] = 228; // apostrophe
 			TextLookup[font][96] = 228; // apostrophe
 			TextLookup[font][','] = 231; // comma
@@ -14336,8 +14305,6 @@ void InitScreenFonts (void)
 			TextLookup[font][(uint8)'û'] = 264;
 			break;
 		case FONT_512X384_Medium:
-		case FONT_320X200_Medium:
-		case FONT_320X240_Medium:
 			TextLookup[font][39] = 227; // apostrophe
 			TextLookup[font][96] = 227; // apostrophe
 			TextLookup[font][','] = 230; // comma
@@ -14358,8 +14325,6 @@ void InitScreenFonts (void)
 			TextLookup[font][(uint8)'û'] = 263;
 			break;
 		case FONT_512X384_Large:
-		case FONT_320X200_Large:
-		case FONT_320X240_Large:
 			TextLookup[font][39] = 226; // apostrophe
 			TextLookup[font][96] = 226; // apostrophe
 			TextLookup[font][','] = 229; // comma
@@ -14550,10 +14515,10 @@ void LoadBikeChar(MENUITEM *Item)
 	float BikeCharScale = 0.7F;
 	FRAME_INFO **header;
 	
-	xmin = (Item->x + VDUoffsetX) * ModeScaleX[ModeCase];
-	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-	ymin = (Item->y + VDUoffsetY) * ModeScaleY[ModeCase];
-	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
+	xmin = (Item->x + VDUoffsetX) * ModeScaleX;
+	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX;
+	ymin = (Item->y + VDUoffsetY) * ModeScaleY;
+	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY;
 	
 
 	Biker = SelectedBikeFrame;
@@ -14592,8 +14557,8 @@ void LoadBikeChar(MENUITEM *Item)
 	Off_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
 	Box_Ptr = ( (*ScrPolys[ BikerScrPoly ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
 
-	newxmax = Box_Ptr->xsize * ModeScaleX[ModeCase] * BikeCharScale + xmin;
-	newymax = Box_Ptr->ysize * ModeScaleY[ModeCase] * BikeCharScale + ymin;
+	newxmax = Box_Ptr->xsize * ModeScaleX * BikeCharScale + xmin;
+	newymax = Box_Ptr->ysize * ModeScaleY * BikeCharScale + ymin;
 
 	xgap = (xmax - newxmax) / 2.0F;
 	ygap = (ymax - newymax) / 2.0F;
@@ -14615,10 +14580,10 @@ void LoadBikeCharPic(MENUITEM *Item)
 	float xmin, xmax, ymin, ymax;
 	FRAME_INFO **header;
 
-	xmin = (Item->x + VDUoffsetX) * ModeScaleX[ModeCase];
-	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-	ymin = (Item->y + VDUoffsetY) * ModeScaleY[ModeCase];
-	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
+	xmin = (Item->x + VDUoffsetX) * ModeScaleX;
+	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX;
+	ymin = (Item->y + VDUoffsetY) * ModeScaleY;
+	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY;
 
 	Biker = SelectedBikeFrame;
 
@@ -14684,10 +14649,10 @@ void LoadLevelPic(MENUITEM *Item)
 	if ( !TloadReloadPlaceHolder( &Tloadheader, Title_LevelPics_Header->vid_tpage_index ) )
 		return;
 
-	xmin = (Item->x + VDUoffsetX) * ModeScaleX[ModeCase];
-	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX[ModeCase];
-	ymin = (Item->y + VDUoffsetY) * ModeScaleY[ModeCase];
-	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY[ModeCase];
+	xmin = (Item->x + VDUoffsetX) * ModeScaleX;
+	xmax = (Item->xmax + VDUoffsetX) * ModeScaleX;
+	ymin = (Item->y + VDUoffsetY) * ModeScaleY;
+	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY;
 
 	header = &Title_LevelPics_Header;
 	if (!LoadGeneralPic(xmin, ymin, xmax, ymax, header, &frame, &LevelScrPoly, &LevelDisplayed))
@@ -15613,8 +15578,8 @@ void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b)
 	int i, font;
 	font = GetScreenFont(TextInfo->font);
 
-	widthX = (float)ceil(ModeScaleX[ModeCase]);
-	widthY = (float)ceil(ModeScaleY[ModeCase]);
+	widthX = (float)ceil(ModeScaleX);
+	widthY = (float)ceil(ModeScaleY);
 
 	height = 0.0F;
 	length = 0.0F;
@@ -15631,11 +15596,11 @@ void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b)
 			actuallength = TextInfo->length[i];
 	}
 
-	length += 2.0F * ModeScaleX[ModeCase];
+	length += 2.0F * ModeScaleX;
 	if (length > actuallength)
 		length = actuallength;
 	
-	//xmin = (float)(TextInfo->xmin + VDUoffsetX) * ModeScaleX[ModeCase];
+	//xmin = (float)(TextInfo->xmin + VDUoffsetX) * ModeScaleX;
 	xmin = TextInfo->char1x - widthX;
 	xmax = xmin + length + widthX * 2.0F;
 	ymin = TextInfo->text_y_min - widthY;
@@ -16051,7 +16016,7 @@ void InitJoystickAxisConfig ( MENU *Menu)
 	}
 
 	AxisPtr_mid = (AXISTEST_XPos + AXISTEST_Width / 2.0F) + VDUoffsetX;
-	AxisPtr_mid *= ModeScaleX[ModeCase];
+	AxisPtr_mid *= ModeScaleX;
 //	mid = (AXISTEST_XPos + AXISTEST_Width / 2.0F); 
 	
 //	AxisPtr_xmin = mid - AXISTEST_PtrWidth / 2.0F + VDUoffsetX;
@@ -16059,10 +16024,10 @@ void InitJoystickAxisConfig ( MENU *Menu)
 	AxisPtr_ymin = AXISTEST_YPos + VDUoffsetY;
 	AxisPtr_ymax = AXISTEST_YPos + AXISTEST_Height + VDUoffsetY;
 
-	AxisPtr_xmin *= ModeScaleX[ModeCase];
-	AxisPtr_xmax *= ModeScaleX[ModeCase];
-	AxisPtr_ymin *= ModeScaleY[ModeCase];
-	AxisPtr_ymax *= ModeScaleY[ModeCase];
+	AxisPtr_xmin *= ModeScaleX;
+	AxisPtr_xmax *= ModeScaleX;
+	AxisPtr_ymin *= ModeScaleY;
+	AxisPtr_ymax *= ModeScaleY;
 	
 	UpdateAxisPtr( 0.0F );	// 0 = centered
 
@@ -16085,7 +16050,7 @@ void UpdateAxisPtr( float pos )
 	dark.B = 0;
 	dark.Trans = 0;
 
-	distance = (AXISTEST_Width / 2.0F) * ModeScaleX[ModeCase];
+	distance = (AXISTEST_Width / 2.0F) * ModeScaleX;
 	
 	if ( pos < -1.0F )
 		pos = -1.0F;

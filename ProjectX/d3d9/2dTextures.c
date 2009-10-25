@@ -27,7 +27,6 @@
 	External variables
 ===================================================================*/
 	extern	TLOADHEADER	Tloadheader;
-	extern	int16	ModeCase;
 	extern	TRIGGERVAR	*	DecreaseTemperature;
 	extern	BOOL	CaptureTheFlag;
 	extern	BOOL	CTF;
@@ -350,7 +349,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 	Input		:	Nothing
 	Output		:	BOOL	True/False
 ===================================================================*/
-extern	short	ModeCase;
 BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 {
 	int8			TempFilename[ 256 ];

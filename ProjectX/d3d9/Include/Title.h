@@ -163,21 +163,10 @@ enum
 
 enum
 {
-	FONT_320X200_Small,
-	FONT_320X200_Medium,
-	FONT_320X200_Large,
-	FONT_320X240_Small,
-	FONT_320X240_Medium,
-	FONT_320X240_Large,
+	// this is the only font file we have
 	FONT_512X384_Small,
 	FONT_512X384_Medium,
 	FONT_512X384_Large,
-	FONT_640X400_Small,
-	FONT_640X400_Medium,
-	FONT_640X400_Large,
-	FONT_800X600_Small,
-	FONT_800X600_Medium,
-	FONT_800X600_Large,
 };
 
 enum

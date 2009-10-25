@@ -716,152 +716,8 @@ int SecondaryLengths[12] = {
     Panel Description Stuff...
 ===================================================================*/
 
-//  How much can we get away with not rendering... and how much do we have to blit???
-int16 PanelVisibleY[8] = { 50,      //320X200
-               60,      //320X240
-               100,     //320X400
-               96,      //512X384
-               100,     //640X400
-               120,     //640X480
-               150 };     //800X600
-
-int16 PanelVisibleX[8] = { 320,     //320X200
-               320,     //320X240
-               320,     //320X400
-               512,     //512X384
-               640,     //640X400
-               640,     //640X480
-               800 };     //800X600
-              
-int16 CrossHairX[10] = { 192 ,192 ,160 , 128, 96, 224, 192, 160, 128, 96 };
-int16 CrossHairY[10] = {  64, 64, 64, 64, 64, 32, 32, 32, 32, 32 };
-
-int16 PrimaryX[6] = { 64+(48*0), 64+(48*1) , 64+(48*2) , 64+(48*3) , 64+(48*0), 64+(48*1) } ;
-int16 PrimaryY[6] = { 96 , 96 , 96 , 96 , 96+(32*1) , 96+(32*1) };
-
-
-int16 ModesX[8] = { 320,      //320X200
-            320,      //320X240
-            320,      //320X400
-            512,      //512X384
-            640,      //640X400
-            640,      //640X480
-            800 };      //800X600
-int16 ModesY[8] = { 200,      //320X200
-            240,      //320X240
-            400,      //320X400
-            384,      //512X384
-            400,      //640X400
-            480,      //640X480
-            600 };      //800X600
-
-float ModeScaleX[8] ={ 1.0F ,     //320X200
-             1.0F ,     //320X240
-             1.0F ,     //320X400
-             1.6F ,     //512X384
-             2.0F ,     //640X400
-             2.0F ,     //640X480
-             2.5F  };     //800X600
-    
-float ModeScaleY[8] ={ 1.0F  ,      //320X200
-             1.2F  ,      //320X240
-             2.0F  ,      //320X400
-             1.92F ,      //512X384
-             2.0F  ,      //640X400
-             2.4F  ,      //640X480
-             3.0F   };      //800X600
-
-/*===================================================================
-    Positions of stuff to go on the panel....
-===================================================================*/
-int16 ModeCase = 0;
-uint16  PrimaryChanged;
-uint16  SecondaryChanged;
-uint16  ShieldChanged;
-uint16  HullChanged;
-uint16  PowerChanged;
-uint16  PrimaryNumChanged;
-uint16  SecondaryNumChanged;
-
-int   PrimaryWeaponShowX;
-int   PrimaryWeaponShowY;
-int   PrimaryWeaponTextX;
-int   PrimaryWeaponTextY;
-int   SecondaryWeaponShowX;
-int   SecondaryWeaponShowY;
-int   SecondaryWeaponTextX;
-int   SecondaryWeaponTextY;
-int   PanelShieldPosX;
-int   PanelShieldPosY;
-int   PanelHullPosX;
-int   PanelHullPosY;
-int   PanelShieldTextPosX;
-int   PanelShieldTextPosY;
-int   PanelHullTextPosX;
-int   PanelHullTextPosY;
-int   PanelShieldBarPosX;
-int   PanelShieldBarPosY;
-int   PanelHullBarPosX;
-int   PanelHullBarPosY;
-int   PrimaryWeaponNumX;
-int   PrimaryWeaponNumY;
-int   SecondaryWeaponNumX;
-int   SecondaryWeaponNumY;
-int   PanelPowerPosX;
-int   PanelPowerPosY;  
-
-int   WeaponSizeX;
-int   WeaponSizeY;
-
-void FillInPanelPositions()
-{
-  if( ModeCase != -1 )
-  {
-    PrimaryChanged = (uint16) -1;
-    HullChanged = (uint16) -1;
-    ShieldChanged = (uint16) -1;
-    PowerChanged = (uint16) -1;   
-    PrimaryNumChanged = (uint16) -1;    
-    SecondaryNumChanged = (uint16) -1;    
-    
-    WeaponSizeX = (int) ceil(36.0F * ModeScaleX[ModeCase]);
-    WeaponSizeY = (int) ceil(37.0F * ModeScaleY[ModeCase]);
-    PrimaryWeaponShowX = (int) floor( ( ModesX[ModeCase] * 0.5F ) - ( 149.0F * ModeScaleX[ModeCase] ) );
-    PrimaryWeaponShowY = (int) floor( ( 6.0F * ModeScaleY[ModeCase] ) );
-    SecondaryChanged = (uint16) -1;
-    SecondaryWeaponShowX = (int) floor( ( ModesX[ModeCase] * 0.5F ) + ( 113.0F * ModeScaleX[ModeCase] ) );
-    SecondaryWeaponShowY = (int) floor( ( 6.0F * ModeScaleY[ModeCase] ) );
-
-    PanelShieldBarPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( 80.0F * ModeScaleX[ModeCase] ) );
-    PanelShieldBarPosY = (int) ( PanelVisibleY[ModeCase] - ( 16.0F * ModeScaleY[ModeCase] ) );
-    PanelShieldPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( 28.0F * ModeScaleX[ModeCase] ) );
-    PanelShieldPosY = (int) ( PanelVisibleY[ModeCase] - ( 17.0F * ModeScaleY[ModeCase] ) );
-    PanelShieldTextPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( 98.0F * ModeScaleX[ModeCase] ) );
-    PanelShieldTextPosY = (int) ( PanelVisibleY[ModeCase] - ( 17.0F * ModeScaleY[ModeCase] ) );
-
-    PanelHullBarPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) + ( 28.0F * ModeScaleX[ModeCase] ) );
-    PanelHullBarPosY = (int) ( PanelVisibleY[ModeCase] - ( 16.0F * ModeScaleY[ModeCase] ) );
-    PanelHullPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) + ( 12.0F * ModeScaleX[ModeCase] ) );
-    PanelHullPosY = (int) ( PanelVisibleY[ModeCase] - ( 17.0F * ModeScaleY[ModeCase] ) );
-    PanelHullTextPosX = ( int ) ( ( PanelVisibleX[ModeCase] * 0.5F ) + ( 86.0F * ModeScaleX[ModeCase] ) );
-    PanelHullTextPosY = (int) ( PanelVisibleY[ModeCase] - ( 17.0F * ModeScaleY[ModeCase] ) );
-
-    PrimaryWeaponTextX = (int) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( 44.0F * ModeScaleX[ModeCase] ) );
-    PrimaryWeaponTextY = (int) ( PanelVisibleY[ModeCase] - ( 45.0F * ModeScaleY[ModeCase] ) );
-    SecondaryWeaponTextX = (int) ( ( PanelVisibleX[ModeCase] * 0.5F ) + ( 29.0F * ModeScaleX[ModeCase] ) );
-    SecondaryWeaponTextY = (int) ( PanelVisibleY[ModeCase] - ( 45.0F * ModeScaleY[ModeCase] ) );
-
-    PrimaryWeaponNumX = (int) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( 44.0F * ModeScaleX[ModeCase] ) );
-    PrimaryWeaponNumY = (int) ( PanelVisibleY[ModeCase] - ( 39.0F * ModeScaleY[ModeCase] ) );
-    SecondaryWeaponNumX = (int) ( ( PanelVisibleX[ModeCase] * 0.5F ) + ( 29.0F * ModeScaleX[ModeCase] ) );
-    SecondaryWeaponNumY = (int) ( PanelVisibleY[ModeCase] - ( 39.0F * ModeScaleY[ModeCase] ) );
-
-    
-    PanelPowerPosX = (int) ( ( PanelVisibleX[ModeCase] * 0.5F ) - ( (FontWidth*7)>>1 ) );
-    PanelPowerPosY = (int) ( PanelVisibleY[ModeCase] - ( 38 *ModeScaleY[ModeCase] ) );
-  
-  }
-}
+float ModeScaleX;
+float ModeScaleY;
   
 /*===================================================================
     Off Screen Sufaces...Used to Blit to screen...
@@ -3970,7 +3826,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
     ReceiveGameMessages();
 
-    FillInPanelPositions();
     ReMakeSimplePanel = TRUE;
     
 	//    InitVisiExecList( lpDev );
@@ -6583,12 +6438,13 @@ BOOL StatsDisplay()
   return TRUE;
 }
 
+// ModeScaleX use to have hard coded spacing value and such for fonts etc...
+// now we just use index 0 and set it dynamically to whatever screen size we are at
+
 void InitModeCase(void)
 {
-  ModeCase = 0; // now dynamic
-
-  ModeScaleX[ 0 ] = (float)d3dappi.szClient.cx / 320.0F;
-  ModeScaleY[ 0 ] = (float)d3dappi.szClient.cy / 200.0F;
+  ModeScaleX = (float)d3dappi.szClient.cx / 320.0F;
+  ModeScaleY = (float)d3dappi.szClient.cy / 200.0F;
 }
 
 /*===================================================================
