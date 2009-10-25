@@ -167,7 +167,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	int triangleCount = 0;
 	int indexOffset = 0;
 	int tempInt;
-	char buf[100];
 
 	// Mxaloadheader is not valid until everything has been done..
 	Mxaloadheader->state = FALSE;
@@ -176,7 +175,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	Mxaloadheader->Interp = 0.0F;
 	Mxaloadheader->Time = 0.0F;
 
-	OutputDebugString("MxaLoad\n");
+	DebugPrintf("MxaLoad\n");
 	
 	Buffer = Mxaloadheader->Buffer;
 	if( Buffer == NULL)
@@ -241,8 +240,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				return FALSE;
 			}
 
-			sprintf(buf, "created buffer to hold :%d verts\n", num_vertices);
-			OutputDebugString(buf);
+			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
 			/*	lock the vertex buffer	*/
 			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
@@ -334,8 +332,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				return FALSE;
 			}
 
-			sprintf(buf, "created index buffer to hold :%d incidices\n", triangleCount * 3);
-			OutputDebugString(buf);
+			DebugPrintf("created index buffer to hold :%d incidices\n", triangleCount * 3);
 
 			/*	lock the index buffer	*/
 			if (FAILED(FSLockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpIndices)))
@@ -407,8 +404,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					tempInt+=3;
 				}
 
-				sprintf(buf, "put %d verts into VB\n", tempInt);
-				OutputDebugString(buf);
+				DebugPrintf("put %d verts into VB\n", tempInt);
 
 				Buffer = (char *) MFacePnt;
 

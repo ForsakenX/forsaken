@@ -161,11 +161,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	int triangleCount = 0;
 	int indexOffset = 0;
 	int tempInt;
-	char buf[100];
 
-	OutputDebugString("Mxload - ");
-	OutputDebugString(Filename);
-	OutputDebugString("\n");
+	DebugPrintf("Mxload - %s\n",Filename);
 
 	// Mxloadheader is not valid until everything has been done..
 	Mxloadheader->state = FALSE;
@@ -252,8 +249,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				return FALSE;
 			}
 
-			sprintf(buf, "created buffer to hold :%d verts\n", num_vertices);
-			OutputDebugString(buf);
+			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
 			/*	lock the vertex buffer	*/
 			if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
@@ -341,8 +337,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			Uint16Pnt = (uint16 *) Buffer;
 			num_texture_groups = *Uint16Pnt++;
-			sprintf(buf, "texture groups: %d\n", num_texture_groups);
-			OutputDebugString(buf);
+			DebugPrintf("texture groups: %d\n", num_texture_groups);
 			Buffer = (char *) Uint16Pnt;
 			Mxloadheader->Group[group].num_texture_groups[execbuf] = num_texture_groups;
 
@@ -374,8 +369,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				return FALSE;
 			}
 
-			sprintf(buf, "created index buffer to hold :%d incidices\n", triangleCount * 3);
-			OutputDebugString(buf);
+			DebugPrintf("created index buffer to hold :%d incidices\n", triangleCount * 3);
 
 			/*	lock the index buffer	*/
 			if (FAILED(FSLockIndexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpIndices)))
@@ -395,8 +389,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				group_vertex_num = *Uint16Pnt++;
 				tpage = *Uint16Pnt++;
 				num_triangles = *Uint16Pnt++;
-				sprintf(buf, "trinagles %d\n", num_triangles);
-				OutputDebugString(buf);
+				DebugPrintf("trinagles %d\n", num_triangles);
 				Buffer = (char *) Uint16Pnt;
 
 				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
@@ -471,8 +464,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				}
 			}
 
-			sprintf(buf, "put %d indices into IB\n", tempInt);
-			OutputDebugString(buf);
+			DebugPrintf("put %d indices into IB\n", tempInt);
 
 			// bjd - probably should be part of the render object.
 			if( Panel )
@@ -528,7 +520,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			}
 			else
 			{
-				OutputDebugString("setting a material\n");
+				DebugPrintf("setting a material\n");
 				Mxloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxloadheader->TloadIndex[tpage]];
 				//STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxloadheader->TloadIndex[tpage]], lpPointer);
 			}

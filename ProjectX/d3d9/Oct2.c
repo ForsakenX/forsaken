@@ -3068,7 +3068,6 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
   float   time_diff;
 
   //DebugPrintf("RenderScene Started\n");
-  //OutputDebugString("RenderScene Started\n");
 
   if ( SeriousError )
     return FALSE;
@@ -4580,7 +4579,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 
   }
 
- // OutputDebugString("RenderScene Ended\n");
+ // DebugPrintf("RenderScene Ended\n");
 
   return TRUE;
 }

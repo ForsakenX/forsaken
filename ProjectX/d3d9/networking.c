@@ -1543,7 +1543,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
-    char				dBuf[256];
 	int					i;
 	BYTE				OldMode;
 	BYTE				OldStatus;
@@ -1861,8 +1860,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		}
 		else
 		{
-			wsprintf(dBuf, "someone else is in your slot..%d\n", lpVeryShortFUpdate->WhoIAm);
-			OutputDebugString( dBuf );
+			DebugPrintf("someone else is in your slot..%d\n", lpVeryShortFUpdate->WhoIAm);
 			return;
 		}
 
@@ -1929,8 +1927,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		}
 		else
 		{
-			wsprintf(dBuf, "someone else is in your slot..%d\n", lpGroupOnly_VeryShortFUpdate->WhoIAm);
-			OutputDebugString( dBuf );
+			DebugPrintf("someone else is in your slot..%d\n", lpGroupOnly_VeryShortFUpdate->WhoIAm);
 			return;
 		}
 
@@ -2033,8 +2030,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			}
 			else
 			{
-				wsprintf(dBuf, "someone else is in your slot..%d\n", lpVeryShortUpdate->WhoIAm);
-				OutputDebugString( dBuf );
+				DebugPrintf("someone else is in your slot..%d\n", lpVeryShortUpdate->WhoIAm);
 				return;
 			}
 		}
@@ -2099,9 +2095,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 #ifdef DEBUG_ON
 					if( ((int8)( Ships[lpUpdate->WhoIAm].LastPacketID + 1)) != lpUpdate->ShortGlobalShip.LastPacketID )
 					{
-						wsprintf(dBuf, "Missed %d Packets From %s\n", (lpUpdate->ShortGlobalShip.LastPacketID + 1 - Ships[lpUpdate->WhoIAm].LastPacketID) ,
-													 &Names[lpUpdate->WhoIAm][0] );
-						OutputDebugString( dBuf );
+						DebugPrintf("Missed %d Packets From %s\n",
+												(lpUpdate->ShortGlobalShip.LastPacketID + 1 - Ships[lpUpdate->WhoIAm].LastPacketID) ,
+												&Names[lpUpdate->WhoIAm][0] );
 					}
 					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
 #endif
@@ -2152,8 +2148,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			}
 			else
 			{
-				wsprintf(dBuf, "someone else is in your slot..%d\n", lpUpdate->WhoIAm);
-				OutputDebugString( dBuf );
+				DebugPrintf("someone else is in your slot..%d\n", lpUpdate->WhoIAm);
 				return;
 			}
 		}
@@ -2223,8 +2218,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		}
 		else
 		{
-			wsprintf(dBuf, "someone else is in your slot..%d\n", lpFUpdate->WhoIAm);
-			OutputDebugString( dBuf );
+			DebugPrintf("someone else is in your slot..%d\n", lpFUpdate->WhoIAm);
 			return;
 		}
 
@@ -3233,8 +3227,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		return;
 	}
 
-	wsprintf(dBuf, "corrupt message: %d\n", *MsgPnt);
-	OutputDebugString( dBuf );
+	DebugPrintf("corrupt message: %d\n", *MsgPnt);
 }
 
 typedef enum {

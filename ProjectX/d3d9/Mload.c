@@ -380,17 +380,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	int16	whenstoppedtriggermod;
 	D3DCOLOR *ambient;
 	int colourkey = 0;
-	char buf[100];
 
-
-	OutputDebugString("Mload - ");
-	OutputDebugString(Filename);
-	OutputDebugString("\n");
-
-	if (strcmp("data\\levels\\vol2\\vol2.mxv", Filename) == 0)
-	{
-		OutputDebugString("break here...\n");
-	}
+	DebugPrintf("Mload - %s\n",Filename);
 
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
@@ -460,8 +451,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				return FALSE;
 			}
 
-			sprintf(buf, "created buffer to hold :%d verts\n", num_vertices);
-			OutputDebugString(buf);
+			DeubgPrintf("created buffer to hold :%d verts\n", num_vertices);
 
 			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
 			{
