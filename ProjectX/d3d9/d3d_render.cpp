@@ -115,9 +115,12 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		for ( i = 0; i < d3dappi.NumModes; i++ )
 		{
 			lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
-			d3dappi.Mode[i].h   = modes[i].Height;
-			d3dappi.Mode[i].w   = modes[i].Width;
-			d3dappi.Mode[i].bpp = bpp;
+			DebugPrintf("Enumerated mode: %dx%d @ %dhz , format=%d\n",
+				modes[i].Width,modes[i].Height,modes[i].RefreshRate,modes[i].Format);
+			d3dappi.Mode[i].h    = modes[i].Height;
+			d3dappi.Mode[i].w    = modes[i].Width;
+			d3dappi.Mode[i].bpp  = bpp;
+			d3dappi.Mode[i].rate = modes[i].RefreshRate;
 			if(modes[i].Width == default_mode.w && modes[i].Height == default_mode.h )
 				desired_mode = i;
 			if(modes[i].Width > modes[best_mode].Width)
