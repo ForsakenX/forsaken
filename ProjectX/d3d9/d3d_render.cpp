@@ -1013,9 +1013,8 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 		if (renderObject->textureGroups[i].texture)
 		{
-			// the texture code probably already deals with this.
-			// but we need to figure out why this is crashing for sure.
-			//renderObject->textureGroups[i].texture->Release();
+			// this is just a pointer to Tloadheader
+			// we do not need to worry about releasing it
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
