@@ -64,7 +64,6 @@ extern "C" {
 	extern	BOOL	NoSFX;
 	extern	float	UV_Fix;
 	extern BOOL AllWires;
-//	extern BOOL CanDoStrechBlt;
 	extern float normal_fov;
 	extern float screen_aspect_ratio;
 	extern	BOOL LockOutWindows;
@@ -816,12 +815,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
 		{
 			SpaceOrbSetup = TRUE;
-		} 
-
-		// don't try to scale blitted text
-		else if ( !_stricmp( option, "NoBlitTextScaling" ) )
-		{
-//			CanDoStrechBlt = FALSE;
 		}
 
 		// no compound sound buffer

@@ -33,7 +33,6 @@
 	extern	BOOL	CTF;
 	extern	BOOL	BountyHunt;
 	extern	BYTE	ChangeLevel_MyGameStatus;
-	extern	BOOL	CanDoStrechBlt;
 	extern	float	UV_Fix;
 
 /*===================================================================
@@ -381,13 +380,6 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 
 	VduScaleX = (float)floor((double)VduScaleX);
 	VduScaleY = (float)floor((double)VduScaleY);
-
-/* bjd - CHECK
-	if (!CanDoStrechBlt)
-	{
-		VduScaleX = 1.0F; VduScaleY = 1.0F;
-	}
-*/
 
 /*
 	VduScaleX = 1.0F; VduScaleY = 1.0F;
