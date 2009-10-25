@@ -586,6 +586,9 @@ BOOL init_render_states()
 	STATE(	D3DRS_SHADEMODE,		D3DSHADE_GOURAUD );
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
+	if( d3dappi.ThisMode.bpp < 32 )
+		STATE( D3DRS_DITHERENABLE, TRUE );
+
 	reset_cull();
 	reset_trans();
 	reset_filtering();
