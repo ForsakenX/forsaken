@@ -60,38 +60,6 @@ typedef struct {
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
 } render_info_t;
 
-/*
- * FUNCTION PROTOTYPES
- */
-
-/*
- * D3DAppWindowProc
- * To be truly effective, D3DApp should be allowed to trap incoming window
- * messages such as WM_SIZE.  Call D3DAppWindowProc at the begining of the
- * application's main window WindowProc with the message information.  If
- * bStopProcessing is set to TRUE, stop processing the message and return
- * lresult.
- */
-BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
-                      UINT message, WPARAM wParam, LPARAM lParam);
-
-/*
- * D3DAppFullscreen
- * Places the app in a fullscreen mode using the current driver.
- */
-BOOL D3DAppFullscreen(int mode);
-
-/*
- * D3DAppWindow
- * Places the application in windowed mode at the given client size.  If w
- * and h are D3DAPP_YOUDECIDE, D3DApp will decide on a suitable client size.
- * If called while in fullscreen, restores the display mode and returns the
- * hooked window to the size it was before a call to D3DAppFullscreen or to
- * the size specified.
- */
-BOOL D3DAppWindowMode( int mode );
-BOOL D3DAppWindow(int w, int h, int bpp);
-
 #ifdef __cplusplus
 };
 #endif

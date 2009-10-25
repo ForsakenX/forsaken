@@ -30,20 +30,7 @@ extern TEXT	MacroText1;
 extern TEXT	MacroText2;
 extern TEXT	MacroText3;
 extern LIST BikeComputerList;
-
-#if 1
-extern int total_malloced;
-extern void *mem;
-#if 0
-#define X_malloc( THINGAMAJIG )\
- ( DebugPrintf( "malloc( %s ) total_malloced = %d address %X\n", #THINGAMAJIG, ++total_malloced , (int) (mem = malloc( THINGAMAJIG ) ) ), mem)
-#define X_free( THINGAMAJIG ) \
-( DebugPrintf( "address %X free( %s )  total_malloced = %d\n", (int)THINGAMAJIG, #THINGAMAJIG, --total_malloced ), free( THINGAMAJIG ) )
-#endif
-#endif
-
 extern void ConfigureSpaceorbAxis( int joystick );
-
 
 typedef int (*ReadConfig)( FILE *, USERCONFIG *, char * );
 

@@ -984,15 +984,17 @@ static BOOL RenderLoop()
  * Main window message handler.
  */
 
-long
-FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+extern "C" BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
+                 UINT message, WPARAM wParam, LPARAM lParam);
+
+long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
 {
 
     BOOL bStop;
     LRESULT lresult;
 
     // Give D3DApp an opportunity to process any messages
-    if (!D3DAppWindowProc(&bStop, &lresult, hWnd, message, wParam, lParam))
+    if (!window_proc(&bStop, &lresult, hWnd, message, wParam, lParam))
 	{
 		// quit
         CleanUpAndPostQuit();

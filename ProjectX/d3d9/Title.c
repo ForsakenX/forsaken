@@ -57,17 +57,7 @@
 
 //#pragma optimize( "gty", on )
 
-#if 1
-int total_malloced = 0;
-void *mem;
-#if 0
-#define X_malloc( THINGAMAJIG )\
- ( DebugPrintf( "malloc( %s ) total_malloced = %d address %X\n", #THINGAMAJIG, ++total_malloced , (int) (mem = malloc( THINGAMAJIG ) ) ), mem)
-#define X_free( THINGAMAJIG ) \
-( DebugPrintf( "address %X free( %s )  total_malloced = %d\n", (int)THINGAMAJIG, #THINGAMAJIG, --total_malloced ), free( THINGAMAJIG ) )
-#endif
-#endif
-
+extern BOOL VSync;
 extern int default_x;
 extern int default_y;
 extern render_display_mode_t default_mode;
@@ -2860,18 +2850,6 @@ MENU	MENU_Options = {
 	}
 };
 
-MENU	MENU_SelfPlayOptions = {
-	"Options"/*"Options"*/, NULL, NULL, NULL, 0,
-	{
-		{ 200, 128           , 0, 0, 0, "Select Screen Mode"/*"Select Screen Mode"*/, 0, 0, NULL, &MENU_SelectScreenMode, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200, 128 + ( 2*16 ), 0, 0, 0, "Detail Levels"/*"Detail Levels"*/, 0, 0, NULL, &MENU_Detail, MenuChange, MenuItemDrawName, NULL, 0 },
-		{ 200 ,128 + ( 3*16 ), 0, 0, 0, "Show Player Names "/*"Show Player Names "*/, 0, 0, &ShowNamesAnyway, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		{ 200 ,128 + ( 4*16 ), 0, 0, 0, "Show Frame Rate "/*"Show Frame Rate "*/, 0, 0, &myglobs.bShowFrameRate, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
-	}
-};
-
-
 MENU	MENU_DemoPlaying = {
 	LT_MENU_DemoPlaying0 /*"Demo Playing"*/ , NULL, NULL, NULL, 0,
 	{
@@ -3575,6 +3553,19 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE}
 };
 
+extern BOOL InitView( void );
+extern BOOL render_mode_select( int mode, BOOL fullscreen, BOOL vsync );
+BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
+{
+    render_mode_select( mode, fullscreen, vsync );
+	if (!InitView())
+	{
+	    Msg("InitView failed.\n");
+        return FALSE;
+	}
+	SetGamePrefs();
+	return TRUE;
+}
 
 /*===================================================================
 	Procedure	:		Init Title load in all graphics etc for Titles..
@@ -10493,17 +10484,15 @@ void MenuGoFullScreen( MENUITEM *Item )
 
 	bIgnoreWM_SIZE = TRUE;
 
-	if ( !d3dappi.bFullscreen ) // going into fullscreen
-	{
-	    D3DAppFullscreen(d3dappi.CurrMode);
+    RenderModeSelect( d3dappi.CurrMode, !d3dappi.bFullscreen, VSync );
 
+	if ( !d3dappi.bFullscreen )
+	{
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
 	}
-	else // going into window mode
+	else
 	{
-        D3DAppWindowMode( d3dappi.CurrMode );
-
 		// just let the user click to focus
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
@@ -10571,13 +10560,8 @@ void MakeModeList( MENU *Menu )
 ===================================================================*/
 void MenuSelectMode( MENU *Menu )
 {
-     /*
-	 * Enter the current fullscreen mode.  D3DApp may
-	 * resort to another mode if this driver cannot do
-	 * the currently selected mode.
-	 */
 	if ( d3dappi.CurrMode != WhichMode[ModeList.selected_item] )
-		D3DAppFullscreen(WhichMode[ModeList.selected_item]);
+		RenderModeSelect(WhichMode[ModeList.selected_item], d3dappi.bFullscreen, VSync);
 }
 
 
@@ -10590,22 +10574,20 @@ void NewMenuSelectMode( MENUITEM *Item )
 
 	if ( d3dappi.bFullscreen )
 	{
-	    D3DAppFullscreen(mode);
+        RenderModeSelect( mode, d3dappi.bFullscreen, VSync );
 
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
-
 	}
 	else
 	{
 		bIgnoreWM_SIZE = TRUE;
-        D3DAppWindowMode( mode );
+        RenderModeSelect( mode, d3dappi.bFullscreen, VSync );
 		bIgnoreWM_SIZE = FALSE;
 
 		// just let the user click to focus
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
-
 	}
 
 	FadeHoloLight(HoloLightBrightness);
@@ -11110,8 +11092,9 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    default_mode.w                     = config_get_int( "ScreenWidth",				800 );
+    default_mode.w                    = config_get_int( "ScreenWidth",				800 );
     default_mode.h                    = config_get_int( "ScreenHeight",				600 );
+	default_mode.rate				  = config_get_int( "ScreenRefreshRate",        0   );	// will pick lowest
 
     default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
 	if( default_mode.bpp >= 32 )
@@ -11216,6 +11199,7 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenWidth",				d3dappi.Mode[ d3dappi.CurrMode ].w );
 	config_set_int( "ScreenHeight",				d3dappi.Mode[ d3dappi.CurrMode ].h );
 	config_set_int( "ScreenBPP",				d3dappi.Mode[ d3dappi.CurrMode ].bpp );
+	config_set_int( "ScreenRefreshRate",		d3dappi.Mode[ d3dappi.CurrMode ].rate );
 	config_set_int( "ScreenPosX",				d3dappi.pWindow.x );
 	config_set_int( "ScreenPosY",				d3dappi.pWindow.y );
 	config_set_int( "SfxVolume",				SfxSlider.value );

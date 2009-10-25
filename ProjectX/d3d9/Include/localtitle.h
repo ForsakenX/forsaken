@@ -518,7 +518,6 @@
 #define LT_MENU_Visuals0 "Visuals"
 #define LT_MENU_Visuals1 "Select Screen Mode"
 #define LT_MENU_Visuals2 "Select Texture Format"
-#define LT_MENU_Visuals3 "Toggle Full Screen"
 
 #define LT_MENU_Options0 "Options"
 #define LT_MENU_Options1 "Visuals"

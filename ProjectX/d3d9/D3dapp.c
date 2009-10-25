@@ -41,43 +41,6 @@ void InitModeCase(void);
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 BOOL bFullscreen = TRUE;	   /* Fullscreen flag from cli */
 
-/***************************************************************************/
-/*                               FUNCTIONS                                 */
-/***************************************************************************/
-
-/*
- * D3DAppFullscreen
- */
-BOOL D3DAppFullscreen(int mode)
-{
-	Msg("Not supported yet!");
-	return TRUE;
-}
-
-/*
- * D3DAppWindow
- */
-
-BOOL D3DAppWindowMode( int mode )
-{
-    d3dappi.CurrMode = mode;
-	d3dappi.ThisMode = d3dappi.Mode[mode];
-	return D3DAppWindow(
-		d3dappi.Mode[mode].w,
-		d3dappi.Mode[mode].h,
-		d3dappi.Mode[mode].bpp);
-}
-
-BOOL D3DAppWindow(int w, int h, int bpp)
-{
-	Msg("Not supported yet!");
-	return TRUE;
-}
-
-/*
- * D3DAppWindowProc
- */
-
 // Returning false causes program to quit...
 
 extern float HoloLightBrightness;
@@ -90,7 +53,7 @@ extern InitialTexturesSet;
 extern void SetGamePrefs( void );
 extern BOOL render_initialized;
 
-BOOL D3DAppWindowProc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
+BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
                  UINT message, WPARAM wParam, LPARAM lParam)
 {
     PAINTSTRUCT ps;

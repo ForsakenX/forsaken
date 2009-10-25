@@ -121,7 +121,8 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 			d3dappi.Mode[i].w    = modes[i].Width;
 			d3dappi.Mode[i].bpp  = bpp;
 			d3dappi.Mode[i].rate = modes[i].RefreshRate;
-			if(modes[i].Width == default_mode.w && modes[i].Height == default_mode.h )
+			if(	modes[i].Width == default_mode.w && modes[i].Height == default_mode.h &&
+				(!default_mode.rate || default_mode.rate && modes[i].RefreshRate == default_mode.rate) )
 				desired_mode = i;
 			if(modes[i].Width > modes[best_mode].Width)
 				best_mode = i;
@@ -145,7 +146,8 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		free(modes);
 	}
 
-	DebugPrintf("Using display size of %dx%d\n",d3dpp.BackBufferWidth,d3dpp.BackBufferHeight);
+	DebugPrintf("Using display mode: %dx%dx%d @ %dhz\n",
+		d3dappi.ThisMode.w,d3dappi.ThisMode.h,d3dappi.ThisMode.bpp,d3dappi.ThisMode.rate);
 
 	// window mode
 	if ( ! fullscreen )
@@ -295,6 +297,15 @@ void render_cleanup( void )
 		free(d3dappi.Mode);
     RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
+}
+
+BOOL render_mode_select( int mode, BOOL fullscreen, BOOL vsync )
+{
+	render_display_mode_t m = d3dappi.Mode[mode];
+	render_cleanup();
+	if(!init_renderer(myglobs.hWndMain, fullscreen, m, vsync))
+		return FALSE;
+	return TRUE;
 }
 
 BOOL FlipBuffers()
