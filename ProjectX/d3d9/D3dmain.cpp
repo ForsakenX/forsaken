@@ -1517,7 +1517,7 @@ int Msg( char * msg, ... )
     if (d3dappi.bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 
-    res = MessageBox( NULL, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
+    res = MessageBox( myglobs.hWndMain, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
     if (d3dappi.bFullscreen)
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
