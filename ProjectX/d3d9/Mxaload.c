@@ -355,18 +355,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				Buffer = (char *) Uint16Pnt;		
 	
 				Mxaloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
-/* bjd - TODO
-				OP_STATE_LIGHT(1, lpPointer);
-				    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxaloadheader->TloadIndex[tpage]], lpPointer);
-				OP_PROCESS_VERTICES(1, lpPointer);
-					PROCESSVERTICES_DATA(D3DPROCESSVERTICES_TRANSFORM, group_vertex_start+8, group_vertex_num, lpPointer);
-				OP_STATE_RENDER(1, lpPointer);
-				    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[Mxaloadheader->TloadIndex[tpage]], lpPointer);
-			    if (QWORD_ALIGNED(lpPointer))
-					OP_NOP(lpPointer);
-
-				OP_TRIANGLE_LIST( (short) num_triangles, lpPointer);
-*/
 
 				MFacePnt = (MFACE *) Buffer;
 

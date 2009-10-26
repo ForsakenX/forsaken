@@ -2113,7 +2113,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	D3DCOLOR		Specular;
 	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPD3DTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPD3DTLVERTEX	lpBufStart;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2218,32 +2218,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 			{
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
 				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
-/* bjd - TODO
-				OP_STATE_LIGHT( 1, lpPointer );
-			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
-			   	OP_PROCESS_VERTICES( 1, lpPointer );
-			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
-			   	OP_STATE_RENDER( 1, lpPointer );
-			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, 0, lpPointer);
-			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/
 			}
 			else
 			{	
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
-/* bjd - TODO
-				OP_STATE_LIGHT( 1, lpPointer );
-			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
-			   	OP_PROCESS_VERTICES( 1, lpPointer );
-			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
-			   	OP_STATE_RENDER( 1, lpPointer );
-			   	    STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer);
-			   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/
 			}
-
-	   		//ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
@@ -2574,28 +2554,15 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		
 				i = ScrPolys[ i ].NextInTPage;
 			}
-
-	   		//lpPointer = ( LPVOID ) ScrPolyFacePnt;
 		}
 
 		if( StartVert >= MAXSCREENPOLYVERTS ) break;
 	}
 
-//	OP_EXIT( lpPointer );
-
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-/*
-	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
 	if (FAILED(FSUnlockPretransformedVertexBuffer(renderObject)))
 	{
 		return FALSE;

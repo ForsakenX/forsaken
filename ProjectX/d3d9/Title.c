@@ -14177,21 +14177,15 @@ void InitScreenFonts (void)
 			offset = 0;
 			space = 224;
 			break;
-// new default
-// TODO - fix the fonts so small isn't so hard to see
-		//case FONT_512X384_Medium:
-		default:
+		case FONT_512X384_Medium:
 			offset = 74;
 			space = 223;
 			break;
-// original default
-		/* 
 		//case FONT_512X384_Small:
 		default:
 			offset = 148;
 			space = 222;
 			break;
-		*/
 		}
 
 		TextLookup[font][0] = 0 + offset;	//ASCII 0 used for cursor
@@ -16711,8 +16705,6 @@ BOOL SetGamma( SLIDER *slider )
 
 	if ( tempgamma == Gamma )
 		return TRUE;
-
-	// TODO - need to edit every single vertex and update it based on new Gamma value
 
 	ReleaseView();
 	if ( !InitView() )

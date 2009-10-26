@@ -679,11 +679,9 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -742,13 +740,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-/*
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/		
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
-//		return FALSE;
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -761,11 +752,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	}
 
 	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-
-//	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	//lpInsStart = lpPointer;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -778,17 +765,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 		if( NumVerts )
 		{
-/* bjd - TODO
-		   	OP_STATE_LIGHT( 1, lpPointer );
-		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
-		   	OP_PROCESS_VERTICES( 1, lpPointer );
-		   	    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, StartVert, NumVerts, lpPointer );
-		   	OP_STATE_RENDER( 1, lpPointer );
-		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
-		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/	 
-	   		//PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
-			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
 	
@@ -901,19 +877,15 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		
 				i = Polys[ i ].NextInTPage;
 			}
-
-//	   		lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-//	OP_EXIT( lpPointer );
-
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-//	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
+
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
@@ -925,16 +897,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		return FALSE ;
 	}
 
-//	renderObject->numVerts = TotalVerts;
-//	renderObject->texture = 0;
-/*
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
 	*TPage = Count;
 	*NextPoly = i;
 
@@ -1272,11 +1234,9 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -1334,13 +1294,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-/*
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/		
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
-//		return FALSE;
+
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -1352,15 +1306,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	}
 
 	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-
-//	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	//lpInsStart = lpPointer;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
+
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
 	{
 		StartVert = PolyTPages[ Count ].StartVert;
@@ -1369,17 +1320,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 		if( NumVerts )
 		{
-/* bjd - TODO?
-		   	OP_STATE_LIGHT( 1, lpPointer );
-		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
-		   	OP_PROCESS_VERTICES( 1, lpPointer );
-		   	    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, StartVert, NumVerts, lpPointer );
-		   	OP_STATE_RENDER( 1, lpPointer );
-		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
-		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/
-//	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
-			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
 	
@@ -1493,19 +1433,15 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		
 				i = Polys[ i ].NextInTPage;
 			}
-
-	   		//lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-//	OP_EXIT( lpPointer );
-
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-//	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
+
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
@@ -1516,18 +1452,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
 	}
-
-/*
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
-
-//FIXME	renderObject->numVerts = TotalVerts;
-//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;
@@ -1542,7 +1466,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 				:	uint16	*					Current Poly
 	Output		:	True/False
 ===================================================================*/
-BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly )
+BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly )
 {
 	uint16			i;
 	int16			Count;
@@ -1555,11 +1479,9 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPD3DLVERTEX	PolyVertPnt;
 	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPD3DLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -1617,13 +1539,7 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-/*
-	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/		
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
-//		return FALSE;
+
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -1635,15 +1551,12 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 	}
 	
 	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-
-//	lpBufStart = ExecBuffer_debdesc.lpData;
 	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
-	//lpPointer = (LPVOID) ( PolyVertPnt + TotalVerts );
-	//lpInsStart = lpPointer;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
 ===================================================================*/
+
 	for( Count = *TPage; Count < MAXTPAGESPERTLOAD; Count++ )
 	{
 		StartVert = PolyTPages[ Count ].StartVert;
@@ -1652,17 +1565,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 
 		if( NumVerts )
 		{
-/* bjd - TODO?
-		   	OP_STATE_LIGHT( 1, lpPointer );
-		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
-		   	OP_PROCESS_VERTICES( 1, lpPointer );
-		   	    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, StartVert, NumVerts, lpPointer );
-		   	OP_STATE_RENDER( 1, lpPointer );
-		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
-		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/
-//	   		PolyFacePnt = (LPD3DTRIANGLE) lpPointer;
-			
 			if( Count == *TPage ) i = *NextPoly;
 			else i = PolyTPages[ Count ].FirstPoly;
 	
@@ -1774,19 +1676,15 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 				}
 				i = Polys[ i ].NextInTPage;
 			}
-
-	   		//lpPointer = ( LPVOID ) PolyFacePnt;
 		}
 
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-//	OP_EXIT( lpPointer );
-
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-//	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
+
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
@@ -1797,16 +1695,6 @@ BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROB
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
 	}
-/*
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
-//FIXME	renderObject->numVerts = TotalVerts;
-//	renderObject->texture = 0;
 
 	*TPage = Count;
 	*NextPoly = i;

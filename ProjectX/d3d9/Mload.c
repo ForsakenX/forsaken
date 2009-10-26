@@ -552,19 +552,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				
 				GroupTris[ group ] += num_triangles;
 	
-/* bjd - TODO?
-				OP_STATE_LIGHT(1, lpPointer);
-				    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mloadheader->TloadIndex[tpage]], lpPointer);
-				OP_PROCESS_VERTICES(1, lpPointer);
-					PROCESSVERTICES_DATA(D3DPROCESSVERTICES_TRANSFORM, group_vertex_start, group_vertex_num, lpPointer);
-				OP_STATE_RENDER(1, lpPointer);
-					STATE_DATA(D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[Mloadheader->TloadIndex[tpage]], lpPointer);
-
-			    if (QWORD_ALIGNED(lpPointer))
-					OP_NOP(lpPointer);
-					
-				OP_TRIANGLE_LIST( (short) num_triangles, lpPointer);
-*/
 				MFacePnt = (MFACE *) Buffer;
 				TempFacePnt = (LPD3DTRIANGLE ) lpIndices;
 	
@@ -594,11 +581,11 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					}
 					if ( AllWires )
 					{
-//bjd - CHECK						FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
+						//FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 					}
 					else
 					{
-//						FacePnt->wFlags = MFacePnt->pad;
+						//FacePnt->wFlags = MFacePnt->pad;
 					}
 
 					FixUV( &FacePnt, lpBufStart, tpage, Mloadheader->Group[group].originalVerts[execbuf] );

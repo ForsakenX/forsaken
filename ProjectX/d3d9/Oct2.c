@@ -1336,18 +1336,12 @@ BOOL SetMatrixViewPort( void )
 */ 
     ticksperframe = 14.0F;
 
-#if 0 // bjd - CHECK
-      STATE_DATA(D3DTRANSFORMSTATE_PROJECTION, hProj, lpPointer);
-      STATE_DATA(D3DTRANSFORMSTATE_VIEW, hView, lpPointer);
-      STATE_DATA(D3DTRANSFORMSTATE_WORLD, hWorld, lpPointer);
+#if 0 // bjd - TODO - CHECK
       STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
 #endif
 
-	// TODO
-	// use to set projection first...
-	// not sure if that matters ?
-	FSSetMatrix( D3DTS_VIEW, &identity );
 	FSSetMatrix( D3DTS_PROJECTION, &proj );
+	FSSetMatrix( D3DTS_VIEW, &identity );
 	FSSetMatrix( D3DTS_WORLD, &world );
 
 	world = identity;
@@ -4997,7 +4991,7 @@ void ShowGameStats( stats_mode_t mode )
 
 	// paint black background or black box
 
-	if( 0 && mode != NO_BG ) // TODO bjd - you can't see anything in polytext mode
+	if( 0 && mode != NO_BG ) // TODO - could use flashbackgroundcolor function here if we want later
 	{
 		RECT box;
 		if( mode == BOX_BG )
@@ -5659,7 +5653,6 @@ extern  int   NumOfVertsTouched;
 timer our_timer;
 int our_count = 0;
 
-// TODO need to find replacement for D3DSTATS9
 BOOL Our_CalculateFrameRate(void)
 {
 	char buf[256];
