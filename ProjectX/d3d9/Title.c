@@ -1650,25 +1650,25 @@ MENU	MENU_NEW_Lights = {
 MENU	MENU_NEW_DetailLevels = {
 	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 60, 140, 70, 0, LT_MENU_NEW_DetailLevels3/*"Lens Flare"*/, FONT_Small, TEXTFLAG_CentreY,		&LensFlare,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 70, 140, 80, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 90, 115, 100, 0, LT_MENU_NEW_DetailLevels6/*"Smoke Trail Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-		{ 10, 100, 115, 110, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-		{ 10, 110, 115, 120, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-		{ 10, 120, 140, 130, 0, LT_MENU_NEW_DetailLevels9/*"mature content"*/, FONT_Small, TEXTFLAG_CentreY,		&GoreGuts,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 0, 10, 200, 10, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+		{ 10, 32, 140, 32, 0, LT_MENU_NEW_DetailLevels3/*"Lens Flare"*/, FONT_Small, TEXTFLAG_CentreY,		&LensFlare,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 48, 115, 48, 0, LT_MENU_NEW_DetailLevels6/*"Smoke Trail Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
+		{ 10, 56, 115, 56, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
+		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
+		{ 10, 72, 140, 72, 0, LT_MENU_NEW_DetailLevels9/*"mature content"*/, FONT_Small, TEXTFLAG_CentreY,		&GoreGuts,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #ifndef SEPARATE_PRE_GAME_LIGHTS_MENU
-		{ 10, 130, 140, 140, 0, LT_MENU_NEW_DetailLevels10/*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 140, 140, 150, 0, LT_MENU_NEW_DetailLevels11/*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 150, 140, 160, 0, LT_MENU_NEW_DetailLevels12/*"Pickup Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PickupLightDetail,		SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 80, 140, 80, 0, LT_MENU_NEW_DetailLevels10/*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 88, 140, 88, 0, LT_MENU_NEW_DetailLevels11/*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 96, 140, 96, 0, LT_MENU_NEW_DetailLevels12/*"Pickup Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PickupLightDetail,		SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #else
-		{ 10, 130, 140, 140, 0, LT_MENU_NEW_DetailLevels13/*"Lights..."*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		&MENU_NEW_Lights,	MenuChange,	DrawFlatMenuItem, NULL, 0 },
+		{ 10, 104, 140, 104, 0, LT_MENU_NEW_DetailLevels13/*"Lights..."*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		&MENU_NEW_Lights,	MenuChange,	DrawFlatMenuItem, NULL, 0 },
 #if !defined ( FINAL_RELEASE )
-		{ 10 ,140, 150, 140, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10 ,150, 160, 150, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 120, 160, 120, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #endif
 #endif
-		{ 10, 160, 135, 170, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
+		{ 10, 150, 135, 150, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
 
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -10519,13 +10519,12 @@ void MakeModeList( MENU *Menu )
 
 	ModeList.selected_item = 0;
 
-	// read em backwards so low res modes come first...
-	for( i = d3dappi.NumModes-1 ; i >= 0 ; i-- )
+	for( i = 0; i < d3dappi.NumModes; i++ )
 	{
 		if( ModeList.items < MAXLISTITEMS )
 		{
 			WhichMode[ModeList.items] = i;
-			sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d @ %d" ,
+			sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d @ %dhz" ,
 				d3dappi.Mode[i].w , d3dappi.Mode[i].h , d3dappi.Mode[i].bpp, d3dappi.Mode[i].rate );
 
 			if( (d3dappi.Mode[i].w == d3dappi.ThisMode.w) &&				

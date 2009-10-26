@@ -109,24 +109,43 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		int desired_mode = -1;
 		int best_mode = 0;
 		int i;
-		d3dappi.NumModes		= (int) lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
-		d3dappi.Mode			= (render_display_mode_t *) malloc( d3dappi.NumModes * sizeof(render_display_mode_t) );
-		D3DDISPLAYMODE * modes	= (D3DDISPLAYMODE *) malloc( d3dappi.NumModes * sizeof(D3DDISPLAYMODE) );
-		for ( i = 0; i < d3dappi.NumModes; i++ )
+		int x = 0;
+		int count				=  (int) lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
+		d3dappi.Mode			= (render_display_mode_t *) malloc( count * sizeof(render_display_mode_t) );
+		D3DDISPLAYMODE * modes	= (D3DDISPLAYMODE *) malloc( count * sizeof(D3DDISPLAYMODE) );
+		for ( i = 0; i < count; i++ )
 		{
+			// get the mode description
 			lpD3D->EnumAdapterModes( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat, i, &modes[i] );
 			DebugPrintf("Enumerated mode: %dx%d @ %dhz , format=%d\n",
 				modes[i].Width,modes[i].Height,modes[i].RefreshRate,modes[i].Format);
-			d3dappi.Mode[i].h    = modes[i].Height;
-			d3dappi.Mode[i].w    = modes[i].Width;
-			d3dappi.Mode[i].bpp  = bpp;
-			d3dappi.Mode[i].rate = modes[i].RefreshRate;
-			if(	modes[i].Width == default_mode.w && modes[i].Height == default_mode.h &&
-				(!default_mode.rate || default_mode.rate && modes[i].RefreshRate == default_mode.rate) )
-				desired_mode = i;
-			if(modes[i].Width > modes[best_mode].Width)
-				best_mode = i;
+
+			// ignore modes under 640x480
+			if(modes[i].Width<640 || modes[i].Height < 480)
+			{
+				DebugPrintf("Skipping mode because it's to small for anyone to want...\n");
+				continue;
+			}
+
+			// save the mode
+			d3dappi.Mode[x].h    = modes[i].Height;
+			d3dappi.Mode[x].w    = modes[i].Width;
+			d3dappi.Mode[x].bpp  = bpp;
+			d3dappi.Mode[x].rate = modes[i].RefreshRate;
+
+			// if this is the mode the user wanted pick it
+			if(	d3dappi.Mode[x].w == default_mode.w && d3dappi.Mode[x].h == default_mode.h &&
+				(!default_mode.rate || default_mode.rate && d3dappi.Mode[x].rate == default_mode.rate) )
+				desired_mode = x;
+
+			// check if this is the biggest mode
+			if(d3dappi.Mode[x].w > d3dappi.Mode[best_mode].w)
+				best_mode = x;
+
+			// go to next storage location
+			x++;
 		}
+		d3dappi.NumModes = x;
 		if( desired_mode >= 0 )
 		{
 			mode = desired_mode;
