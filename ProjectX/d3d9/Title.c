@@ -1681,7 +1681,7 @@ MENU	MENU_NEW_ScreenRes = {
 	"Select Screen Mode" , MakeModeList , NULL , NULL, 0,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_ScreenRes0 /*"Choose From..."*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 15, 30, 100, 150, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &ModeList, NewMenuSelectMode , SelectList , DrawFlatMenuList, NULL, 0 } ,
+		{ 15, 30, 200, 150, 0, "", FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &ModeList, NewMenuSelectMode , SelectList , DrawFlatMenuList, NULL, 0 } ,
 		{ 0, 155, 200, 165, 0, LT_MENU_NEW_ScreenRes1 /*"press escape to go back"*/, FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CentreX, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
