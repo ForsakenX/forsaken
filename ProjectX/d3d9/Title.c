@@ -11306,7 +11306,10 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				green = (uint8)RGBA_GETGREEN(VertPtr->color);
 				blue = (uint8)RGBA_GETBLUE(VertPtr->color);
 				alpha = (uint8)RGBA_GETALPHA(VertPtr->color);
-			
+				
+				//DebugPrintf("vertex color rgba=%d,%d,%d,%d\n",
+				//				red, green, blue, alpha);
+
 			  	if ((CurrentExclude) && (*CurrentExclude == i))
 			  	{
 			  		ExcludedSoFar++;
@@ -11321,6 +11324,9 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 			  		green = (uint8)((float)green * percent);
 			  		blue = (uint8)((float)blue * percent);
 			  	}
+
+				//DebugPrintf("tinted vertex color by %f%% to rgba=%d,%d,%d,%d\n",
+				//				percent, red, green, blue, alpha);
 			  
 				Colour = RGBA_MAKE( red, green, blue, alpha );
 				if( !Colour ) 
@@ -16706,10 +16712,14 @@ BOOL SetGamma( SLIDER *slider )
 	if ( tempgamma == Gamma )
 		return TRUE;
 
-	ReleaseView();
+	// TODO - need to edit every single vertex and update it based on new Gamma value
 
+	ReleaseView();
 	if ( !InitView() )
+	{
+		Msg("Failed to InitView() in SetGamma()\n");
 		exit( 1 );
+	}
 
 	InitialTexturesSet = FALSE;
 	FadeHoloLight(HoloLightBrightness);

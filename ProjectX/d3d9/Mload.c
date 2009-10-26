@@ -200,28 +200,6 @@ static BOOL read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, u
 	*Uint16PntPtr = ptr;
 	return ok;
 }
-/*===================================================================
-	Procedure	:		Build a Gamma Correction table 
-	Input		:		double GammaValue
-	Output		:		Nothing
-===================================================================*/
-BYTE  Tab[256];
-void BuildGammaCorrect( double GammaValue )
-{
-	double k;
-	int i;
-
-	// recover in release build
-	if (GammaValue <= 0)
-	    GammaValue = 1.0;
-	
-	k = 255.0/pow(255.0, 1.0/GammaValue);
-	
-	for (i = 0; i <= 255; i++)
-	{
-	    Tab[i] = (BYTE)(k*(pow((double)i, 1.0/GammaValue)));
-	}
-};
 
 extern BOOL bSquareOnly;
 void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
@@ -385,8 +363,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 	// Mloadheader is not valid until everything has been done..
 	Mloadheader->state = FALSE;
-
-	BuildGammaCorrect( 1.0 );
 	
 	Buffer = Mloadheader->Buffer;
 	if( Buffer == NULL)
@@ -491,9 +467,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				}else
 				*/
 				{
-						r = Tab[r];
-						g = Tab[g];
-						b = Tab[b];
+						//r = Tab[r];
+						//g = Tab[g];
+						//b = Tab[b];
 #if ACTUAL_TRANS
 						a = 128;
 #else
