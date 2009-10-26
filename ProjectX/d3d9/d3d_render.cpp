@@ -1034,18 +1034,68 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 	return LastError;
 }
 
+// copies source texture into the surface of destination surface
+// does a straight copy so you best make sure the images are the same size
+
+static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE9 dstTexture )
+{
+	HRESULT hr;
+	D3DLOCKED_RECT srcRect;
+	D3DLOCKED_RECT dstRect;
+	unsigned int y, x;
+	BYTE* srcBits;
+	BYTE* dstBits;
+	D3DSURFACE_DESC srcDesc;
+	srcTexture->GetLevelDesc(0,&srcDesc);
+	hr = srcTexture->LockRect(0,&srcRect,NULL,D3DLOCK_READONLY);
+	if(FAILED(hr))
+		return;
+	hr = dstTexture->LockRect(0,&dstRect,NULL,D3DLOCK_DISCARD);
+	if(FAILED(hr))
+		return;
+	srcBits = (BYTE*)srcRect.pBits;
+	dstBits = (BYTE*)dstRect.pBits;
+	for (y = 0; y < srcDesc.Height; y++)
+	{
+		for (x = 0; x < srcDesc.Width; x++)
+		{
+			// move to the correct off set in the table
+			// pitch is the width of a row
+			// (x*size) is the length of each pixel data
+			DWORD srcIndex = (x*4)+(y*srcRect.Pitch);
+			DWORD dstIndex = (x*4)+(y*dstRect.Pitch);
+			//
+			dstBits[dstIndex]   = (BYTE)GammaTab[srcBits[srcIndex]];	// Blue
+			dstBits[dstIndex+1] = (BYTE)GammaTab[srcBits[srcIndex+1]];	// Green
+			dstBits[dstIndex+2] = (BYTE)GammaTab[srcBits[srcIndex+2]];	// Red
+			dstBits[dstIndex+3] = (BYTE)GammaTab[srcBits[srcIndex+3]];	// Alpha
+		}
+	}
+	dstTexture->UnlockRect(0);
+	srcTexture->UnlockRect(0);
+}
+
 HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
-	if(!dstTexture) // incase texture doesn't exist yet
+
+	// incase texture doesn't exist yet then just create it for them and return it
+	if(!dstTexture)
 		return FSCreateTexture(&dstTexture, fileName, width, height, numMips, colourkey);
-	create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
-	dstTexture->AddDirtyRect(NULL);
-	hr = lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
-	// this probably needs a ->Release()
+
+	// create the texture so we can copy the data over
+	hr = create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
+	if(FAILED(hr))
+		return hr;
+
+	// copy data from src to dst
+	copy_texture_bits( new_texture, dstTexture );
+
+	// 
+	new_texture->Release();
 	new_texture = NULL;
-	return hr;
+	return S_OK;
 }
 
 HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
