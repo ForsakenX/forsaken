@@ -661,6 +661,8 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
+extern BYTE GammaTab[256];
+
 HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey, D3DPOOL pool)
 {
 	D3DXIMAGE_INFO imageInfo;
@@ -692,11 +694,45 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 
 	DebugPrintf("FSCreateTexture: %s\n",fileName);
 
+	/*
+	// saves the texture in it's loaded format to a file
 	{
 		static int count = 0;
 		sprintf(buf, ".\\Dumps\\%s.png", fileName);
 		D3DXSaveTextureToFile(buf, D3DXIFF_PNG, (*texture), 0);
 		count++;
+	}
+	*/
+
+	//
+	// gamma correction
+	//
+
+	// TODO - how do i know how the data is packed?
+	{
+		unsigned int y, x;
+		D3DLOCKED_RECT lrect;
+		BYTE* pBits;
+		LPDIRECT3DTEXTURE9 _texture = *texture;
+		_texture->LockRect(0,&lrect,NULL,D3DLOCK_DISCARD);
+		pBits = (BYTE*)lrect.pBits;
+		for (y = 0; y < imageInfo.Height; y++)
+		{
+			for (x = 0; x < imageInfo.Width; x++)
+			{
+				// move to the correct off set in the table
+				// pitch is the width of a row
+				// x*4 is the size of rgba for each pixel
+				DWORD index = (x*4)+(y*lrect.Pitch);
+				// apply gamma correction
+				pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
+				pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
+				pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
+				// i did not see any alpha values changed for gamma in d3d6 version
+				//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
+			}
+		}
+		_texture->UnlockRect(0);
 	}
 
 	return LastError;
@@ -718,7 +754,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
 {
 	// had to use the default pool so we could update the texture above
-	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_DEFAULT);//D3DPOOL_MANAGED);
+	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
 
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)

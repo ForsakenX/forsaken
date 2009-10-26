@@ -37,6 +37,33 @@ extern	BOOL	TexturesEnabled;
 TLOADHEADER	Tloadheader;
 int Print4x5Text( char * Text , int x , int y , int col );
 double	Gamma = 1.0;
+/*===================================================================
+	Procedure	:		Build a Gamma Correction table 
+	Input		:		double GammaValue
+	Output		:		Nothing
+===================================================================*/
+BYTE  GammaTab[256];
+void BuildGammaTab( double GammaValue )
+{
+	double k;
+	int i;
+
+	// recover in release build
+	if (GammaValue <= 0)
+	    GammaValue = 1.0;
+	
+	k = 255.0/pow(255.0, 1.0/GammaValue);
+	
+	for (i = 0; i <= 255; i++)
+	{
+	    GammaTab[i] = (BYTE)(k*(pow((double)i, 1.0/GammaValue)));
+		if( i )
+		{
+			if( !GammaTab[i] )
+				GammaTab[i] = 1;
+		}
+	}
+};
 
 /*===================================================================
 	Procedure	:		Init a Tloadheader
@@ -79,6 +106,8 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	int LeastScaledThatCanbe;
 	int LeastScaledThatCanbeScale;
 
+	BuildGammaTab( Gamma );
+ 
 	// Tloadheader is not valid until everything has been done..
 	Tloadheader->state = FALSE;
 
