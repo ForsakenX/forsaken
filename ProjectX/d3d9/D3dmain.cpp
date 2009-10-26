@@ -1021,18 +1021,11 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			SetCursorClip( FALSE );
 
 			// ask them to confirm clossing
-			if( IDYES == MessageBox(
-							myglobs.hWndMain,
-							"Are you sure you want to exit?",
-							"User requested to close application...",
-							MB_YESNO |
-							MB_ICONQUESTION |
-							MB_DEFBUTTON2) // default is no
-
-			// user wants to quit
-			// let our code know we're quitting and not failing
-			// let the message reach DefWindowProc so it calls CloseWindow
-			){
+			if( IDOK == Msg("Are you sure you want to exit?") )
+			{
+				// user wants to quit
+				// let our code know we're quitting and not failing
+				// let the message reach DefWindowProc so it calls CloseWindow
 				myglobs.bQuit = 1;
 			}
 
@@ -1506,6 +1499,8 @@ void CleanUpAndPostQuit(void)
 extern "C"
 int Msg( char * msg, ... )
 {
+	BOOL was_fullscreen = d3dappi.bFullscreen;
+
 	char txt[ 1024 ];
 	va_list args;
 	int res;
@@ -1515,15 +1510,31 @@ int Msg( char * msg, ... )
 	va_end( args );
 
     if (d3dappi.bFullscreen)
+	{
+		// switch to window mode
+		// other wise pop up will get stuck behind main window
+		MenuGoFullScreen(NULL);
+		// push main window to background so popup shows
         SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	}
+	
+	// release mouse so they can interact with message box
+	SetCursorClip( FALSE );
 
     res = MessageBox( myglobs.hWndMain, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
-    if (d3dappi.bFullscreen)
+    if (was_fullscreen)
+	{
+		// switch back to fullscreen
+		MenuGoFullScreen(NULL);
         SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
+		SetCursorClip( TRUE ); // don't do this in window mode just let them click back on the window
+	}
 
 	DebugPrintf( txt );
 
+	// IDCANCEL	Cancel button was selected.
+	// IDOK	OK button was selected.
 	return res;
 }
 
