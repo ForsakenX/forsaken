@@ -663,6 +663,268 @@ int imageCount = 0;
 
 extern BYTE GammaTab[256];
 
+char * d3d_image_file_formats[] =
+{
+"D3DXIFF_BMP",
+"D3DXIFF_JPG",
+"D3DXIFF_TGA",
+"D3DXIFF_PNG",
+"D3DXIFF_DDS",
+"D3DXIFF_PPM",
+"D3DXIFF_DIB",
+"D3DXIFF_HDR",
+"D3DXIFF_PFM",
+};
+
+char * d3d_format( D3DFORMAT format )
+{
+	switch(format)
+	{
+	case D3DFMT_UNKNOWN:
+		return "D3DFMT_UNKNOWN";
+		break;
+
+	case D3DFMT_R8G8B8:
+		return "D3DFMT_R8G8B8";
+		break;
+
+	case D3DFMT_A8R8G8B8:
+		return "D3DFMT_A8R8G8B8";
+		break;
+
+	case D3DFMT_X8R8G8B8:
+		return "D3DFMT_X8R8G8B8";
+		break;
+
+	case D3DFMT_R5G6B5:
+		return "D3DFMT_R5G6B5";
+		break;
+
+	case D3DFMT_X1R5G5B5:
+		return "D3DFMT_X1R5G5B5";
+		break;
+
+	case D3DFMT_A1R5G5B5:
+		return "D3DFMT_A1R5G5B5";
+		break;
+
+	case D3DFMT_A4R4G4B4:
+		return "D3DFMT_A4R4G4B4";
+		break;
+
+	case D3DFMT_R3G3B2:
+		return "D3DFMT_R3G3B2";
+		break;
+
+	case D3DFMT_A8:
+		return "D3DFMT_A8";
+		break;
+
+	case D3DFMT_A8R3G3B2:
+		return "D3DFMT_A8R3G3B2";
+		break;
+
+	case D3DFMT_X4R4G4B4:
+		return "D3DFMT_X4R4G4B4";
+		break;
+
+	case D3DFMT_A2B10G10R10:
+		return "D3DFMT_A2B10G10R10";
+		break;
+
+	case D3DFMT_A8B8G8R8:
+		return "D3DFMT_A8B8G8R8";
+		break;
+
+	case D3DFMT_X8B8G8R8:
+		return "D3DFMT_X8B8G8R8";
+		break;
+
+	case D3DFMT_G16R16:
+		return "D3DFMT_G16R16";
+		break;
+
+	case D3DFMT_A2R10G10B10:
+		return "D3DFMT_A2R10G10B10";
+		break;
+
+	case D3DFMT_A16B16G16R16:
+		return "D3DFMT_A16B16G16R16";
+		break;
+
+	case D3DFMT_A8P8:
+		return "D3DFMT_A8P8";
+		break;
+
+	case D3DFMT_P8:
+		return "D3DFMT_P8";
+		break;
+
+	case D3DFMT_L8:
+		return "D3DFMT_L8";
+		break;
+
+	case D3DFMT_A8L8:
+		return "D3DFMT_A8L8";
+		break;
+
+	case D3DFMT_A4L4:
+		return "D3DFMT_A4L4";
+		break;
+
+	case D3DFMT_V8U8:
+		return "D3DFMT_V8U8";
+		break;
+
+	case D3DFMT_L6V5U5:
+		return "D3DFMT_L6V5U5";
+		break;
+
+	case D3DFMT_X8L8V8U8:
+		return "D3DFMT_X8L8V8U8";
+		break;
+
+	case D3DFMT_Q8W8V8U8:
+		return "D3DFMT_Q8W8V8U8";
+		break;
+
+	case D3DFMT_V16U16:
+		return "D3DFMT_V16U16";
+		break;
+
+	case D3DFMT_A2W10V10U10:
+		return "D3DFMT_A2W10V10U10";
+		break;
+
+	case D3DFMT_UYVY:
+		return "D3DFMT_UYVY";
+		break;
+
+	case D3DFMT_R8G8_B8G8:
+		return "D3DFMT_R8G8_B8G8";
+		break;
+
+	case D3DFMT_YUY2:
+		return "D3DFMT_YUY2";
+		break;
+
+	case D3DFMT_G8R8_G8B8:
+		return "D3DFMT_G8R8_G8B8";
+		break;
+
+	case D3DFMT_DXT1:
+		return "D3DFMT_DXT1";
+		break;
+
+	case D3DFMT_DXT2:
+		return "D3DFMT_DXT2";
+		break;
+
+	case D3DFMT_DXT3:
+		return "D3DFMT_DXT3";
+		break;
+
+	case D3DFMT_DXT4:
+		return "D3DFMT_DXT4";
+		break;
+
+	case D3DFMT_DXT5:
+		return "D3DFMT_DXT5";
+		break;
+
+	case D3DFMT_D16_LOCKABLE:
+		return "D3DFMT_D16_LOCKABLE";
+		break;
+
+	case D3DFMT_D32:
+		return "D3DFMT_D32";
+		break;
+
+	case D3DFMT_D15S1:
+		return "D3DFMT_D15S1";
+		break;
+
+	case D3DFMT_D24S8:
+		return "D3DFMT_D24S8";
+		break;
+
+	case D3DFMT_D24X8:
+		return "D3DFMT_D24X8";
+		break;
+
+	case D3DFMT_D24X4S4:
+		return "D3DFMT_D24X4S4";
+		break;
+
+	case D3DFMT_D16:
+		return "D3DFMT_D16";
+		break;
+
+	case D3DFMT_D32F_LOCKABLE:
+		return "D3DFMT_D32F_LOCKABLE";
+		break;
+
+	case D3DFMT_D24FS8:
+		return "D3DFMT_D24FS8";
+		break;
+
+	case D3DFMT_L16:
+		return "D3DFMT_L16";
+		break;
+
+	case D3DFMT_VERTEXDATA:
+		return "D3DFMT_VERTEXDATA";
+		break;
+
+	case D3DFMT_INDEX16:
+		return "D3DFMT_INDEX16";
+		break;
+
+	case D3DFMT_INDEX32:
+		return "D3DFMT_INDEX32";
+		break;
+
+	case D3DFMT_Q16W16V16U16:
+		return "D3DFMT_Q16W16V16U16";
+		break;
+
+	case D3DFMT_MULTI2_ARGB8:
+		return "D3DFMT_MULTI2_ARGB8";
+		break;
+
+	case D3DFMT_R16F:
+		return "D3DFMT_R16F";
+		break;
+
+	case D3DFMT_G16R16F:
+		return "D3DFMT_G16R16F";
+		break;
+
+	case D3DFMT_A16B16G16R16F:
+		return "D3DFMT_A16B16G16R16F";
+		break;
+
+	case D3DFMT_R32F:
+		return "D3DFMT_R32F";
+		break;
+
+	case D3DFMT_G32R32F:
+		return "D3DFMT_G32R32F";
+		break;
+
+	case D3DFMT_A32B32G32R32F:
+		return "D3DFMT_A32B32G32R32F";
+		break;
+
+	case D3DFMT_CxV8U8:
+		return "D3DFMT_CxV8U8";
+		break;
+
+	default:
+		return "UNKNOWN";
+	}
+}
+
 HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey, D3DPOOL pool)
 {
 	D3DXIMAGE_INFO imageInfo;
@@ -689,10 +951,17 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 	}
 
 	// image has no alpha layer
+	// only way image would have an alpha layer
+	// is the updated textures we created
+	// which will have exactly this format!
 	if( imageInfo.Format != D3DFMT_A8R8G8B8 )
 		(*colourkey) = FALSE;
 
-	DebugPrintf("FSCreateTexture: %s\n",fileName);
+	// debugging info
+	DebugPrintf("FSCreateTexture: created texture from %s\n",fileName);
+	DebugPrintf("Texture Details: width=%d, height=%d, depth=%d, mips=%d, image_format=%s, file_format=%s\n",
+					imageInfo.Width, imageInfo.Height, imageInfo.Depth, imageInfo.MipLevels, 
+					d3d_format(imageInfo.Format), d3d_image_file_formats[imageInfo.ImageFileFormat] );
 
 	/*
 	// saves the texture in it's loaded format to a file
@@ -707,29 +976,56 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 	//
 	// gamma correction
 	//
-
-	// TODO - how do i know how the data is packed?
 	{
 		unsigned int y, x;
+		int size = 4;
 		D3DLOCKED_RECT lrect;
 		BYTE* pBits;
 		LPDIRECT3DTEXTURE9 _texture = *texture;
 		_texture->LockRect(0,&lrect,NULL,D3DLOCK_DISCARD);
 		pBits = (BYTE*)lrect.pBits;
+		// these are the only modes we use in forsaken so far
+		// D3DFMT_R8G8B8	20	24-bit RGB pixel format with 8 bits per channel.
+		// D3DFMT_A8R8G8B8	21	32-bit ARGB pixel format with alpha, using 8 bits per channel.
+		// D3DFMT_P8		41	8-bit color indexed.  (how is this data packed?)
+// TODO
+// for some reason setting size at anything other than 4 is obviously to small from the visual results
+// what could possibly be going on ?
+		/*
+		switch (imageInfo.Format)
+		{
+		case D3DFMT_A8R8G8B8:
+			size = 4;
+			break;
+		case D3DFMT_P8: // what size is this?
+			size = 1;
+			break;
+		case D3DFMT_R8G8B8:
+			size = 3;
+			break;
+		}
+		*/
 		for (y = 0; y < imageInfo.Height; y++)
 		{
 			for (x = 0; x < imageInfo.Width; x++)
 			{
 				// move to the correct off set in the table
 				// pitch is the width of a row
-				// x*4 is the size of rgba for each pixel
-				DWORD index = (x*4)+(y*lrect.Pitch);
-				// apply gamma correction
-				pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
-				pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
-				pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
-				// i did not see any alpha values changed for gamma in d3d6 version
-				//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
+				// (x*size) is the length of each pixel data
+				DWORD index = (x*size)+(y*lrect.Pitch);
+				// rgb/a
+				//if( size > 1 )
+				//{
+					pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
+					pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
+					pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
+					// i did not see any alpha values changed for gamma in d3d6 version
+					//if( size > 3 )
+						//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
+				//}
+				// palleted
+				//else
+					//pBits[index]   = (BYTE)GammaTab[pBits[index]];	// pallete value
 			}
 		}
 		_texture->UnlockRect(0);
@@ -747,6 +1043,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 	create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
 	dstTexture->AddDirtyRect(NULL);
 	hr = lpD3DDevice->UpdateTexture( (IDirect3DBaseTexture9*) new_texture, (IDirect3DBaseTexture9*) dstTexture );
+	// this probably needs a ->Release()
 	new_texture = NULL;
 	return hr;
 }
