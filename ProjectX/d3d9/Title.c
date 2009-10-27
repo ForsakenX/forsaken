@@ -11080,9 +11080,9 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    default_mode.w                    = config_get_int( "ScreenWidth",				800 );
-    default_mode.h                    = config_get_int( "ScreenHeight",				600 );
-	default_mode.rate				  = config_get_int( "ScreenRefreshRate",        0   );	// will pick lowest
+    default_mode.w                    = config_get_int( "ScreenWidth",				640 );
+    default_mode.h                    = config_get_int( "ScreenHeight",				480 );
+	default_mode.rate				  = config_get_int( "ScreenRefreshRate",        60  );
 
     default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
 	if( default_mode.bpp >= 32 )

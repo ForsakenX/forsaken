@@ -107,7 +107,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	{
 		int mode = 0;
 		int desired_mode = -1;
-		int best_mode = 0;
+		int best_mode = 0; // default to the first mode
 		int i;
 		int x = 0;
 		int count				=  (int) lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
@@ -121,7 +121,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 				modes[i].Width,modes[i].Height,modes[i].RefreshRate,modes[i].Format);
 
 			// ignore modes under 640x480
-			if(modes[i].Width<640 || modes[i].Height < 480)
+			if(modes[i].Width < 640 || modes[i].Height < 480)
 			{
 				DebugPrintf("Skipping mode because it's to small for anyone to want...\n");
 				continue;
@@ -134,16 +134,32 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 			d3dappi.Mode[x].rate = modes[i].RefreshRate;
 
 			// if this is the mode the user wanted pick it
-			if(	d3dappi.Mode[x].w == default_mode.w && d3dappi.Mode[x].h == default_mode.h &&
-				(!default_mode.rate || default_mode.rate && d3dappi.Mode[x].rate == default_mode.rate) )
+			if(	d3dappi.Mode[x].w == default_mode.w &&
+				d3dappi.Mode[x].h == default_mode.h &&
+				d3dappi.Mode[x].rate == default_mode.rate )
+			{
 				desired_mode = x;
-
-			// check if this is the biggest mode
-			if(d3dappi.Mode[x].w > d3dappi.Mode[best_mode].w)
+			}
+			
+			// smallest mode as default
+			if( d3dappi.Mode[x].w < d3dappi.Mode[best_mode].w && 
+				d3dappi.Mode[x].h < d3dappi.Mode[best_mode].h && 
+				d3dappi.Mode[x].rate < d3dappi.Mode[best_mode].rate )
+			{
 				best_mode = x;
+			}
+
+			// biggest mode by width as default
+			//if(d3dappi.Mode[x].w > d3dappi.Mode[best_mode].w && d3dappi.Mode[x].rate == 60)
+			//	best_mode = x;
+
+			// 800x600 @ 60 as default
+			//if(	d3dappi.Mode[x].w == 800 && d3dappi.Mode[x].h == 600 && d3dappi.Mode[x].rate == 60 )
+			//	desired_mode = x;
 
 			// go to next storage location
 			x++;
+		
 		}
 		d3dappi.NumModes = x;
 		if( desired_mode >= 0 )

@@ -849,16 +849,10 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			}
 
 			// sleep time for every loop
-			else if ( sscanf( option, "sleep:%d", &cliSleep ))
-			{
-				// set directly
-			}
+			else if ( sscanf( option, "sleep:%d", &cliSleep )){}
 
 			// select the pilot
-			else if ( sscanf( option , "pilot:%s", &config_name ))
-			{
-				// sccanf writes to the config_name variable
-			}
+			else if ( sscanf( option , "pilot:%s", &config_name )){}
 
 			// ammount of memory to allocate for sound buffer
 			else if ( sscanf( option, "CompoundSfxBufferMem:%d", &mem ) == 1 )
@@ -868,46 +862,21 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			}
 
 			// set the packets per second
-			else if ( sscanf( option, "PPS:%d", &num ) == 1 )
-			{
-				NetUpdateIntervalCmdLine = num;
-			}
+			else if ( sscanf( option, "PPS:%d", &NetUpdateIntervalCmdLine ) == 1 ){}
 
 			// resolution mode
-			// although you can set this to any value you like
-			// the values *should* (for now) be valid resolutions for your device
-			// other wise you will end up with the default resolution (lowest)
-			// BUT your window size will be set to the value you picked...
-			// this means the window and resolution will be out of sync and doesn't look pretty
-			// we should figure out how to stretch/scale the resolution on the window
-			// just like when you resize the window
-			// or just make the window default to the selected resolution...
-			else if ( sscanf( option, "mode:%d:%d", &default_mode.w, &default_mode.h ) == 1 )
-			{
-				// values set directly by sscanf
-			}
+			// must be a valid resolution list in the resolution list in game
+			// other wise you will end up with the default highest possible resolution
+			// note: if you pick a value not in the list then your window will be 1 size and your resolution another
+			else if ( sscanf( option, "mode:%d:%d", &default_mode.w, &default_mode.h ) == 1 ){}
+
+			// horizontal refresh rate
+			// most monitors normally support 60hz so pass 60 if you get weird stuff happening
+			else if ( sscanf( option, "rate:%d", &default_mode.rate ) == 1 ){}
 
 			// bits per pixel
-			// by default the game picks 16bbps cause that renders the best
-			// use bbp32 to get 32bbp/sec
-			else if ( sscanf( option, "bpp:%d", &num ) == 1 )
-			{
-				default_mode.bpp = num;
-			}
-
-			// modifies texture dimentions.. don't now what uv stands for..
-			else if ( sscanf( option, "UVFix:%f", &fnum ) == 1 )
-			{
-				UV_Fix = fnum;
-			}
-
-			// set the horizontal frame of view
-			// this is the screen stretching when you go into nitro
-			// default is 90... max is 120...
-			else if ( sscanf( option, "fov:%d", &num ) == 1 )
-			{
-				normal_fov = (float) num;
-			}
+			// default is 32 bpp
+			else if ( sscanf( option, "bpp:%d", &default_mode.bpp ) == 1 ){}
 
 			// the aspect ratio tells forsaken the ratio between width/height of your monitor
 			// for example on an 12"x/7.5"y widescreen the ratio is 8/5
@@ -919,6 +888,14 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 				if ( num && denom )
 					screen_aspect_ratio = (float) num / denom;
 			}
+
+			// modifies texture dimentions.. don't now what uv stands for..
+			else if ( sscanf( option, "UVFix:%f", &UV_Fix ) == 1 ){}
+
+			// set the horizontal frame of view
+			// this is the screen stretching when you go into nitro
+			// default is 90... max is 120...
+			else if ( sscanf( option, "fov:%f", &normal_fov ) == 1 ){}
         }
 
 		// get the next token
