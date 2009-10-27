@@ -51,8 +51,6 @@ void SetCursorClip( BOOL );
 void ReallyShowCursor( BOOL );
 BOOL FlipBuffers();
 
-extern	int		BikeDetail;
-
 #ifdef __cplusplus
 };
 #endif

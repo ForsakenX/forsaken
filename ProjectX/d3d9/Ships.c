@@ -626,9 +626,6 @@ BIKEMOD	BikeMods[MAXBIKETYPES+3] = {
 
 
 int		outside_map = 0;
-
-
-int		BikeDetail	= 0;
 int		HullHit = 0;
 int		ShieldHit = 0;
 /*===================================================================

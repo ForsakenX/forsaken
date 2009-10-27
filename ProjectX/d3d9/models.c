@@ -1128,6 +1128,7 @@ void KillAttachedSpotFX( uint16 i )
 /*===================================================================
 *		display all active Models...
 ===================================================================*/
+
 BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
 {
 	D3DMATRIX TempWorld;
@@ -1297,16 +1298,6 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 					// objects that support lod
 					else
 					{
-						// this is used for rear view and such
-						// going to leave it distabled and lets see if distance gets involved
-
-						//if( CurrentCamera.UseLowestLOD )
-						//{
-						//	ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
-						//}
-
-						// regular front view camera
-						//else
 						{
 							// appears the larger you make this number 
 							// the farther away we can see the object with better lod's
@@ -1334,21 +1325,6 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								{
 									ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 								}
-							}
-						}
-
-						// some kind of hack to for bike detail settings
-						if( ModelHeaders[ Models[i].ModelNum ].LOD == NUMBIKEDETAILS )
-						{
-							// this sets it to the bike detail slider
-							// shouldn't this be reversed ? detail 4 should be best detail which is 0 right ?
-							if( ModelNum < BikeDetail )
-								ModelNum = BikeDetail;
-
-							// this just caps it to the lowest possible value just in case
-							if( ModelNum > ModelHeaders[ Models[i].ModelNum ].LOD )
-							{
-								ModelNum = ModelHeaders[Models[i].ModelNum].LOD;
 							}
 						}
 					}

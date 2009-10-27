@@ -785,7 +785,6 @@ TEXT OriginalText;
 
 SLIDER SensitivityXSlider				= { 1, 16, 1, 5, 0, 0.0F };
 SLIDER SensitivityYSlider				= { 1, 16, 1, 5, 0, 0.0F };
-SLIDER BikeDetailSlider					= { 0, 5, 1, 5, 0, 0.0F };
 SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
@@ -1626,7 +1625,6 @@ MENU	MENU_NEW_DetailLevels = {
 	{
 		{ 0, 10, 200, 10, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 56, 115, 56, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 #if !defined ( FINAL_RELEASE )
 		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
@@ -2683,7 +2681,6 @@ MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, NULL, ExitDetailLevels, NULL, 0,
 	{
 		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 
@@ -8619,7 +8616,6 @@ extern BOOL InitView(void);
 extern void ReleaseView(void);
 void ExitDetailLevels( MENU *Menu )
 {
-	BikeDetail = 5 - BikeDetailSlider.value;
 	SetGamePrefs();
 }
 
@@ -10938,13 +10934,11 @@ void GetGamePrefs( void )
 	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max )	
 	SetWaterDetail( &WaterDetailSlider );
 
-    BikeDetailSlider.value           = config_get_int( "BikeDetail",				BikeDetailSlider.max );
     SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
     FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
 	BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
     BikeCompSpeechSlider.value       = config_get_int( "BikeCompSpeechVol",			(int)(BikeCompSpeechSlider.max	* 0.60F) );
 
-	CLAMP( BikeDetailSlider.value,		BikeDetailSlider.max );
 	CLAMP( SfxSlider.value,				SfxSlider.max );
 	CLAMP( FlagSfxSlider.value,			FlagSfxSlider.max );
 	CLAMP( BikerSpeechSlider.value,		BikerSpeechSlider.max );
@@ -11068,7 +11062,6 @@ void SetGamePrefs( void )
 
 	// integers
 
-	config_set_int( "BikeDetail",				BikeDetailSlider.value );
 	config_set_int( "ScreenWidth",				d3dappi.Mode[ d3dappi.CurrMode ].w );
 	config_set_int( "ScreenHeight",				d3dappi.Mode[ d3dappi.CurrMode ].h );
 	config_set_int( "ScreenBPP",				d3dappi.Mode[ d3dappi.CurrMode ].bpp );
