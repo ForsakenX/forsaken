@@ -820,7 +820,6 @@ BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
 BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
-BOOL LensFlare;
 BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
 BOOL GodMode					= FALSE;
@@ -1651,7 +1650,6 @@ MENU	MENU_NEW_DetailLevels = {
 	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
 		{ 0, 10, 200, 10, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 32, 140, 32, 0, LT_MENU_NEW_DetailLevels3/*"Lens Flare"*/, FONT_Small, TEXTFLAG_CentreY,		&LensFlare,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 48, 115, 48, 0, LT_MENU_NEW_DetailLevels6/*"Smoke Trail Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&TrailDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 56, 115, 56, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
@@ -2718,7 +2716,6 @@ MENU	MENU_Sound;
 MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, InitDetailLevels, ExitDetailLevels, NULL, 0,
 	{
-		{ 200, 164, 0, 0, 0, LT_MENU_Detail3	/*"Lens Flare"				*/, 0, 0,		&LensFlare,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 212, 0, 0, 0, LT_MENU_Detail6	/*"Secondary Lights"		*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
@@ -10998,7 +10995,6 @@ void GetGamePrefs( void )
 
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
-    LensFlare                        = config_get_bool( "LensFlare",				TRUE );
     PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
     SecondaryLightDetail             = config_get_bool( "SecondaryLightDetail",		TRUE );
@@ -11143,7 +11139,6 @@ void SetGamePrefs( void )
 	config_set_bool( "BrightShips",				MyBrightShips );
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );
-    config_set_bool( "LensFlare",				LensFlare );
     config_set_bool( "PickupLightDetail",		PickupLightDetail );
     config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );
     config_set_bool( "SecondaryLightDetail",	SecondaryLightDetail );

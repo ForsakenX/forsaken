@@ -67,7 +67,6 @@ extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
-extern	BOOL			LensFlare;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	uint16		FirstSecBullUsed;
 extern	float			ticksperframe;
@@ -545,8 +544,6 @@ void DoLensflareEffect( void )
 	uint8		Int;
 	uint16		i;
 
-	if( !LensFlare ) return;
-
 	specular = RGB_MAKE( 255, 255, 255 );
 
 	Trans.x = -CurrentCamera.Pos.x;
@@ -941,8 +938,6 @@ void SecBullLensflare( uint16 i )
 	float		DistToBull;
 	float		DistFactor;
 	uint8		Int;
-
-	if( !LensFlare ) return;
 
 	specular = RGB_MAKE( 255, 255, 255 );
 
