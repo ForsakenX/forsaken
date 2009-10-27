@@ -839,7 +839,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
 
 			int num, denom;
-			float fnum;
 			DWORD mem;
 
 			// override local port

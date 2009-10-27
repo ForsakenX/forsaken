@@ -121,7 +121,6 @@ extern	BOOL			GodMode;
 extern	int				no_collision;		// disables player ship-to-background collisions
 extern	int16			NumOrbs;
 extern	uint16			IsGroupVisible[MAXGROUPS];
-extern	SLIDER			TrailDetailSlider;
 extern	int16			NumSuperNashrams;
 extern	BOOL			PickupInvulnerability;
 extern	int16			NumInvuls;
@@ -708,7 +707,7 @@ void	InitPrimBulls(void)
 		PrimBulls[i].fmpoly = (uint16) -1;
 		PrimBulls[i].light = (uint16) -1;
 		PrimBulls[i].line = (uint16) -1;
-		PrimBulls[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+		PrimBulls[i].TimeInterval = (float) 1;
 	}
 	PrimBulls[MAXPRIMARYWEAPONBULLETS-1].Next = (uint16) -1;
 
@@ -861,7 +860,7 @@ uint16	FindFreePrimBull(void)
 	FirstPrimBullUsed = i;
 	FirstPrimBullFree = PrimBulls[i].Next;
 
-	PrimBulls[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+	PrimBulls[i].TimeInterval = (float) 1;
 	PrimBulls[i].TimeCount = 0.0F;
 	PrimBulls[i].Used = TRUE;
 
@@ -9213,7 +9212,7 @@ FILE * LoadPrimBulls( FILE * fp )
 			PrimBulls[i].fmpoly = (uint16) -1;
 			PrimBulls[i].light = (uint16) -1;
 			PrimBulls[i].line = (uint16) -1;
-			PrimBulls[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+			PrimBulls[i].TimeInterval = (float) 1;
 
 			fread( &PrimBulls[ i ].Next, sizeof( PrimBulls[ i ].Next ), 1, fp );
 			i = PrimBulls[ i ].Next;

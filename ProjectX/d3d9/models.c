@@ -81,7 +81,6 @@ extern	uint16			FirstXLightFree;
 extern	PICKUP			Pickups[ MAXPICKUPS ];
 
 extern	int16			NumPickupsPerGroup[ MAXGROUPS ];
-extern	SLIDER			TrailDetailSlider;
 extern	MODELNAME		TitleModelNames[MAXMODELHEADERS];
 extern	float			SoundInfo[MAXGROUPS][MAXGROUPS];
 extern	ENEMY	*		FirstEnemyUsed;
@@ -751,7 +750,7 @@ void OnceOnlyInitModel( void )
 		Models[i].LifeCount = -1.0F;
 		Models[i].Scale = 1.0F;
 		Models[i].Visible = TRUE;
-		Models[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+		Models[i].TimeInterval = (float) 1;
 
 		for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (uint16) -1;
 
@@ -940,7 +939,7 @@ uint16	FindFreeModel()
 	Models[i].LifeCount = -1.0F;
 	Models[i].Scale = 1.0F;
 	Models[i].Visible = TRUE;
-	Models[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+	Models[i].TimeInterval = (float) 1;
 	Models[i].TimeCount = 0.0F;
 
 	Models[i].Red = 255;
@@ -2102,7 +2101,7 @@ void ProcessModels( void )
 	     	   			QuatToMatrix( &Models[i].Quat, &Models[i].Mat );							// Create Dir Matrix
 	     	   			MatrixTranspose( &Models[i].Mat, &Models[i].InvMat );						// Create Dir Matrix
 
-						Models[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+						Models[i].TimeInterval = (float) 1;
 
 						if( IsGroupVisible[ Models[i].Group ] )
 						{
@@ -2297,7 +2296,7 @@ void ProcessModels( void )
 					{
 						if( !( Models[i].Flags & MODFLAG_Stealth ) || ( SpotFXPtr->Type == SPOTFX_SoundFX ) )
 						{
-							Models[i].SpotFXTimeInterval[ Count ] = (float) ( 11 - TrailDetailSlider.value );
+							Models[i].SpotFXTimeInterval[ Count ] = (float) 1;
 
 							VisNum = VisibleOverlap( Ships[ Current_Camera_View ].Object.Group, Models[i].Group, &VisGroups[ 0 ] );
 
@@ -6294,7 +6293,7 @@ FILE * LoadModels( FILE * fp )
 			Models[i].LifeCount = -1.0F;
 			Models[i].Scale = 1.0F;
 			Models[i].Visible = TRUE;
-			Models[i].TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+			Models[i].TimeInterval = (float) 1;
 			for( Count = 0; Count < 12; Count++ ) Models[i].TempLines[ Count ] = (uint16) -1;
 			Models[i].Prev = (uint16) -1;
 

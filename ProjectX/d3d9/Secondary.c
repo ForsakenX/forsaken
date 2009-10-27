@@ -135,7 +135,6 @@ extern	BOOL			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
 extern	BOOL			DebugInfo;
 extern	BOOL			GodMode;
-extern	SLIDER			TrailDetailSlider;
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	BOOL			PickupInvulnerability;
 extern	int16			NumInvuls;
@@ -1621,7 +1620,7 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 		SecBulls[i].numfmpolys = 0;
 		SecBulls[i].numpolys = 0;
 		SecBulls[i].Time = 0.0F;
-		SecBulls[i].Interval = (float) ( 12 - TrailDetailSlider.value ); //8.0F;
+		SecBulls[i].Interval = (float) 1.0F;
 		SecBulls[i].Lensflare = SecondaryWeaponAttribs[ Weapon ].Lensflare;
 		SecBulls[i].NumBounces = 0;
 		SecBulls[i].RetractPos = 0.0F;
@@ -7964,7 +7963,7 @@ void DoDamagedEffects( uint16 i )
 	VECTOR	LookDir;
 	float	Cos;
 
-	ShipSmokeInterval = (float) ( 11 - TrailDetailSlider.value );
+	ShipSmokeInterval = (float) 1;
 
 	if( ( Ships[ i ].enable ) &&
 		( Ships[ i ].Object.Mode != LIMBO_MODE ) &&

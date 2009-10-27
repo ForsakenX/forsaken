@@ -49,7 +49,6 @@ extern	FRAME_INFO	*	GravgonTrail_Header;
 extern	FRAME_INFO	*	Bubble_Header;
 extern	FRAME_INFO	*	EnemyGen_Header;
 extern	FRAME_INFO	*	Drip_Header;
-extern	SLIDER			TrailDetailSlider;
 extern	XLIGHT			XLights[MAXXLIGHTS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -213,7 +212,7 @@ void ProcessSpotFX( void )
 
 	while( SpotFX )
 	{
-		SpotFX->TimeInterval = (float) ( 11 - TrailDetailSlider.value );
+		SpotFX->TimeInterval = (float) 1;
 
 		if( SpotFX->Flags & SPOTFX_FLAGS_Enabled )
 		{
