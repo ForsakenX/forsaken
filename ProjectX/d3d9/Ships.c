@@ -152,7 +152,6 @@ extern	BOOL	OldDrawPanel;
 extern	uint16 IsGroupVisible[MAXGROUPS];
 extern	int16	NumStealths;
 extern	int16	NumInvuls;
-extern	BOOL	GoreGuts;
 extern	float	GeneralAmmo;
 extern	float	PowerLevel;
 
@@ -2428,7 +2427,7 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 
 		ShipPnt->Object.Mode = LIMBO_MODE;
 
-		if( GoreGuts ) ThrowOutRider( i );
+		ThrowOutRider( i );
 		PlayPannedSfx( SFX_BikeExplode, Ships[ WhoIAm ].Object.Group , &Ships[WhoIAm].Object.Pos, 0.0F );
 		StopTaunt();
 	}

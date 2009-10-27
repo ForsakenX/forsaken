@@ -355,7 +355,6 @@ MATRIX	TempMatrix = {
 extern	char biker_name[256];
 
 extern	LONGLONG		Time_LastValue;
-extern	BOOL			GoreGuts;
 extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
@@ -1850,7 +1849,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpVeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( GoreGuts ) ThrowOutRider( lpVeryShortFUpdate->WhoIAm );
+				ThrowOutRider( lpVeryShortFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpVeryShortFUpdate->WhoIAm ].Object.Group , &Ships[lpVeryShortFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
 			}
@@ -1917,7 +1916,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( GoreGuts ) ThrowOutRider( lpGroupOnly_VeryShortFUpdate->WhoIAm );
+				ThrowOutRider( lpGroupOnly_VeryShortFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpGroupOnly_VeryShortFUpdate->WhoIAm ].Object.Group , &Ships[lpGroupOnly_VeryShortFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
 			}
@@ -2014,7 +2013,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpVeryShortUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 				{
-					if( GoreGuts ) ThrowOutRider( lpVeryShortUpdate->WhoIAm );
+					ThrowOutRider( lpVeryShortUpdate->WhoIAm );
 					PlayPannedSfx( SFX_BikeExplode, Ships[ lpVeryShortUpdate->WhoIAm ].Object.Group , &Ships[lpVeryShortUpdate->WhoIAm].Object.Pos, 0.0F );
 					StopTaunt();
 				}
@@ -2132,7 +2131,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				if( ( OldMode == DEATH_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 					( OldMode == NORMAL_MODE ) && ( Ships[lpUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 				{
-					if( GoreGuts ) ThrowOutRider( lpUpdate->WhoIAm );
+					ThrowOutRider( lpUpdate->WhoIAm );
 					PlayPannedSfx( SFX_BikeExplode, Ships[ lpUpdate->WhoIAm ].Object.Group , &Ships[lpUpdate->WhoIAm].Object.Pos, 0.0F );
 					StopTaunt();
 				}
@@ -2208,7 +2207,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			if( ( OldMode == DEATH_MODE ) && ( Ships[lpFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) ||
 				( OldMode == NORMAL_MODE ) && ( Ships[lpFUpdate->WhoIAm].Object.Mode == LIMBO_MODE ) )
 			{
-				if( GoreGuts ) ThrowOutRider( lpFUpdate->WhoIAm );
+				ThrowOutRider( lpFUpdate->WhoIAm );
 				PlayPannedSfx( SFX_BikeExplode, Ships[ lpFUpdate->WhoIAm ].Object.Group , &Ships[lpFUpdate->WhoIAm].Object.Pos, 0.0F );
 				StopTaunt();
 			}

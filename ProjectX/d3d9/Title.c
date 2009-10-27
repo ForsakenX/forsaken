@@ -819,7 +819,6 @@ BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
 BOOL GameRestricted				= FALSE;
 BOOL Autoleveling				= TRUE;
-BOOL GoreGuts;
 BOOL DebugInfo					= FALSE;
 BOOL GodMode					= FALSE;
 BOOL TexturesEnabled			= TRUE;
@@ -1652,7 +1651,6 @@ MENU	MENU_NEW_DetailLevels = {
 		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 56, 115, 56, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-		{ 10, 72, 140, 72, 0, LT_MENU_NEW_DetailLevels9/*"mature content"*/, FONT_Small, TEXTFLAG_CentreY,		&GoreGuts,				NULL,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #ifndef SEPARATE_PRE_GAME_LIGHTS_MENU
 		{ 10, 80, 140, 80, 0, LT_MENU_NEW_DetailLevels10/*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 88, 140, 88, 0, LT_MENU_NEW_DetailLevels11/*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
@@ -2722,7 +2720,6 @@ MENU	MENU_Detail = {
 		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
-		{ 200, 340, 0, 0, 0, LT_MENU_Detail14	/*"mature content"		*/, 0, 0,		&GoreGuts,					NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -10995,7 +10992,6 @@ void GetGamePrefs( void )
     PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
     PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
     SecondaryLightDetail             = config_get_bool( "SecondaryLightDetail",		TRUE );
-    GoreGuts                         = config_get_bool( "GoreGuts",					TRUE );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
@@ -11137,7 +11133,6 @@ void SetGamePrefs( void )
     config_set_bool( "PickupLightDetail",		PickupLightDetail );
     config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );
     config_set_bool( "SecondaryLightDetail",	SecondaryLightDetail );
-    config_set_bool( "GoreGuts",				GoreGuts );
     config_set_bool( "SWMonoChrome",			SWMonoChrome );
     config_set_bool( "BikeEnginesOn",			BikeEnginesOn );
     config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
