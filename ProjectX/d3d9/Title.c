@@ -15658,7 +15658,7 @@ void SelectConnectionToStart (MENUITEM *Item)
 void SelectConnectionToJoin (MENUITEM *Item)
 {
 	// a game in the list has been selected
-	if( Item->Value )
+	if( Item && Item->Value )
 	{
 		int index = 0;
 		// find the selected game
