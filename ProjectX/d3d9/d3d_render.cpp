@@ -971,7 +971,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 				numMips, 
 				0,
 				// most likely will end up as the format the file is in
-				D3DFMT_A8R8G8B8,
+				D3DFMT_A8R8G8B8, // all texure data will be accessible in LockRect()'s pBits backwards: bgra
 				pool,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
@@ -1019,27 +1019,6 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 		LPDIRECT3DTEXTURE9 _texture = *texture;
 		_texture->LockRect(0,&lrect,NULL,D3DLOCK_DISCARD);
 		pBits = (BYTE*)lrect.pBits;
-		// these are the only modes we use in forsaken so far
-		// D3DFMT_R8G8B8	20	24-bit RGB pixel format with 8 bits per channel.
-		// D3DFMT_A8R8G8B8	21	32-bit ARGB pixel format with alpha, using 8 bits per channel.
-		// D3DFMT_P8		41	8-bit color indexed.  (how is this data packed?)
-// TODO
-// for some reason setting size at anything other than 4 is obviously to small from the visual results
-// what could possibly be going on ?
-		/*
-		switch (imageInfo.Format)
-		{
-		case D3DFMT_A8R8G8B8:
-			size = 4;
-			break;
-		case D3DFMT_P8: // what size is this?
-			size = 1;
-			break;
-		case D3DFMT_R8G8B8:
-			size = 3;
-			break;
-		}
-		*/
 		for (y = 0; y < imageInfo.Height; y++)
 		{
 			for (x = 0; x < imageInfo.Width; x++)
@@ -1048,19 +1027,12 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 				// pitch is the width of a row
 				// (x*size) is the length of each pixel data
 				DWORD index = (x*size)+(y*lrect.Pitch);
-				// rgb/a
-				//if( size > 1 )
-				//{
-					pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
-					pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
-					pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
-					// i did not see any alpha values changed for gamma in d3d6 version
-					//if( size > 3 )
-						//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
-				//}
-				// palleted
-				//else
-					//pBits[index]   = (BYTE)GammaTab[pBits[index]];	// pallete value
+				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
+				pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
+				pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
+				pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
+				// i did not see any alpha values changed for gamma in d3d6 version
+				//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
 			}
 		}
 		_texture->UnlockRect(0);
@@ -1099,7 +1071,7 @@ static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE
 			// (x*size) is the length of each pixel data
 			DWORD srcIndex = (x*4)+(y*srcRect.Pitch);
 			DWORD dstIndex = (x*4)+(y*dstRect.Pitch);
-			//
+			// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
 			dstBits[dstIndex]   = (BYTE)GammaTab[srcBits[srcIndex]];	// Blue
 			dstBits[dstIndex+1] = (BYTE)GammaTab[srcBits[srcIndex+1]];	// Green
 			dstBits[dstIndex+2] = (BYTE)GammaTab[srcBits[srcIndex+2]];	// Red
