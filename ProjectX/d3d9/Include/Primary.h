@@ -263,8 +263,6 @@ uint16	CheckHitShip( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group,
 uint16	CheckHitSecondary( VECTOR * Pos, uint16 Group, VECTOR * Dir, VECTOR * UpDir, float DirLength, VECTOR * Int_Point, VECTOR * Int_Point2, float * Dist, float WeaponRadius, uint16 ColType );
 void	PrimarySelectControl( void );
 void	CreateDebugLine( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint8 Green, uint8 Blue );
-void	EnablePrimaryLights( void );
-void	DisablePrimaryLights( void );
 void	FirePrimaryWeapons( uint8 Ship );
 void	CreateColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );
 void	CreateSmallColSparks( VECTOR * Pos, VECTOR * Dir, uint16 Group );

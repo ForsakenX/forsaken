@@ -97,8 +97,6 @@ void MoveConfigFile( MENU *Menu );
 extern void ShowNodeNetwork( uint32 NetMask );
 void ProcessTextItems (void);
 
-
-BOOL	SWMonoChrome;
 BOOL	Last_SWMonoChrome = FALSE;
 
 /*===================================================================
@@ -361,7 +359,6 @@ int GetFontInfo( MENUITEM * Item );
 void DrawBikeLabel ( MENUITEM * Item );
 void DrawNameVar( MENUITEM * Item );
 void DrawCenteredNameVar( MENUITEM * Item );
-void InitDetailLevels( MENU *Menu );
 void ExitDetailLevels( MENU *Menu );
 void NewInitBikeMenu ( MENU *Menu);
 void InitBikerMenu( MENU *Menu );
@@ -403,7 +400,6 @@ void DebugModeChanged( MENUITEM *item );
 void SavePickups( MENUITEM *item );
 void ShowNodeToggle( MENUITEM *item );
 void ShowStartPointsToggle( MENUITEM *item );
-void SetLightStates( MENUITEM *item );
 void InitDemoList( MENU * Menu );
 void GetGamePrefs( void );
 void SetGamePrefs( void );
@@ -835,9 +831,6 @@ BOOL NodeCube					= FALSE;
 BOOL OldNodeCube				= FALSE;
 BOOL NodeCubeType				= FALSE;
 BOOL TeamGame					= FALSE;
-BOOL PickupLightDetail;
-BOOL PrimaryLightDetail;
-BOOL SecondaryLightDetail;
 BOOL BountyBonus;
 BOOL BikeEnginesOn;
 BOOL ToggleTest;
@@ -1627,40 +1620,17 @@ MENU	MENU_NEW_Controls = {
 	}
 };
 
-
-MENU	MENU_NEW_Lights = {
-	"Lights", InitDetailLevels, ExitDetailLevels, NULL, 0,
-	{
-
-		{ 0, 0, 200, 20, 0, LT_MENU_NEW_Lights0 /*"LIGHTS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 40, 135, 50, 0, LT_MENU_NEW_Lights1 /*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 60, 135, 70, 0, LT_MENU_NEW_Lights2 /*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 80, 135, 90, 0, LT_MENU_NEW_Lights3 /*"Pickup Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PickupLightDetail,		SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 100, 135, 110, 0, LT_MENU_NEW_Lights4 /*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
-
-		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
-	 
-	}
-};
-
 // Out-of-game menu
 MENU	MENU_NEW_DetailLevels = {
-	"", InitDetailLevels, ExitDetailLevels, NULL, 0,
+	"", NULL, ExitDetailLevels, NULL, 0,
 	{
 		{ 0, 10, 200, 10, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
 		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 56, 115, 56, 0, LT_MENU_NEW_DetailLevels7/*"Bike Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&BikeDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-#ifndef SEPARATE_PRE_GAME_LIGHTS_MENU
-		{ 10, 80, 140, 80, 0, LT_MENU_NEW_DetailLevels10/*"Primary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PrimaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 88, 140, 88, 0, LT_MENU_NEW_DetailLevels11/*"Secondary Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&SecondaryLightDetail,	SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 96, 140, 96, 0, LT_MENU_NEW_DetailLevels12/*"Pickup Lights"*/, FONT_Small, TEXTFLAG_CentreY,		&PickupLightDetail,		SetLightStates,	SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-#else
-		{ 10, 104, 140, 104, 0, LT_MENU_NEW_DetailLevels13/*"Lights..."*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		&MENU_NEW_Lights,	MenuChange,	DrawFlatMenuItem, NULL, 0 },
 #if !defined ( FINAL_RELEASE )
 		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 120, 160, 120, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-#endif
 #endif
 		{ 10, 150, 135, 150, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
 
@@ -2707,16 +2677,12 @@ MENU	MENU_Controls = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}																					
 };
-MENU	MENU_Sound;
+
 // in-game-menu
 MENU	MENU_Detail = {
-	LT_MENU_Detail0 /*"Detail Levels"*/, InitDetailLevels, ExitDetailLevels, NULL, 0,
+	LT_MENU_Detail0 /*"Detail Levels"*/, NULL, ExitDetailLevels, NULL, 0,
 	{
 		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 196, 0, 0, 0, LT_MENU_Detail5	/*"Primary Lights"			*/, 0, 0,		&PrimaryLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 212, 0, 0, 0, LT_MENU_Detail6	/*"Secondary Lights"		*/, 0, 0,		&SecondaryLightDetail,	SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 228, 0, 0, 0, LT_MENU_Detail7	/*"Pickup Lights"			*/, 0, 0,		&PickupLightDetail,		SetLightStates,			SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 244, 0, 0, 0, LT_MENU_Detail8	/*"Mono Lighting"			*/, 0, 0,		&SWMonoChrome,		NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
 		{ 200, 292, 0, 0, 0, LT_MENU_Detail11	/*"Bike Detail"				*/, 0, 0,		&BikeDetailSlider,			NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
 		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
@@ -8644,38 +8610,6 @@ void DrawKeyDef( MENUITEM *Item )
 }
 
 /*===================================================================
-	Procedure	:		Initialise the detail level menu items
-	Input		:		pointer to menu
-	Output		:		Nothing
-===================================================================*/
-void InitDetailLevels( MENU *Menu )
-{
-	MENUITEM *item;
-
-	for ( item = Menu->Item; item->x >= 0; item++ )
-	{
-		if ( item->Variable == &SWMonoChrome )
-		{
-			/* bjd curre driver = 0 use to be software mode
-			if ( !d3dappi.CurrDriver )
-			{
-				item->FuncSelect = SelectToggle;
-				item->FuncDraw = DrawToggle;
-			}
-			else
-			*/
-			{
-				item->FuncSelect = NULL;
-				item->FuncDraw = NULL;
-			}
-		}
-	}
-	Last_SWMonoChrome = SWMonoChrome;
-//	BikeDetailSlider.value = 5 - BikeDetail;
-}
-
-
-/*===================================================================
 	Procedure	:		Save values from the detail level menu items
 	Input		:		pointer to menu
 	Output		:		Nothing
@@ -8687,32 +8621,7 @@ void ExitDetailLevels( MENU *Menu )
 {
 	BikeDetail = 5 - BikeDetailSlider.value;
 	SetGamePrefs();
-	if ( SWMonoChrome != Last_SWMonoChrome )
-	{
-		ReleaseView();
-		if ( !InitView() )
-		{
-			Msg("InitView failed.\n");
-			exit( 1 );
-		}
-	}
 }
-
-/*===================================================================
-	Procedure	:		Initialise the biker menu items
-	Input		:		pointer to menu
-	Output		:		Nothing
-===================================================================*/
-void SetLightStates( MENUITEM *item )
-{
-	if( PrimaryLightDetail ) EnablePrimaryLights();
-	else DisablePrimaryLights();
-	if( SecondaryLightDetail ) EnableSecondaryLights();
-	else DisableSecondaryLights();
-	if( PickupLightDetail ) EnablePickupLights();
-	else DisablePickupLights();
-}
-
 
 /*===================================================================
 	Procedure	:		Initialise the biker menu items
@@ -10984,14 +10893,10 @@ void GetGamePrefs( void )
  
     MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
-    SWMonoChrome                     = config_get_bool( "SWMonoChrome",				FALSE );
     MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
 
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
-    PickupLightDetail                = config_get_bool( "PickupLightDetail",		TRUE );
-    PrimaryLightDetail               = config_get_bool( "PrimaryLightDetail",		TRUE );
-    SecondaryLightDetail             = config_get_bool( "SecondaryLightDetail",		TRUE );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
@@ -11130,10 +11035,6 @@ void SetGamePrefs( void )
 	config_set_bool( "BrightShips",				MyBrightShips );
     config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
     config_set_bool( "RearCameraActive",		RearCameraActive );
-    config_set_bool( "PickupLightDetail",		PickupLightDetail );
-    config_set_bool( "PrimaryLightDetail",		PrimaryLightDetail );
-    config_set_bool( "SecondaryLightDetail",	SecondaryLightDetail );
-    config_set_bool( "SWMonoChrome",			SWMonoChrome );
     config_set_bool( "BikeEnginesOn",			BikeEnginesOn );
     config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
     config_set_bool( "BikeExhausts",			BikeExhausts );
@@ -17234,9 +17135,6 @@ void TestMenuFormat( void )
 
 	DebugPrintf("MENU_NEW_Controls\n");  
 	GetFormatInfo ( &MENU_NEW_Controls );
-
-	DebugPrintf("MENU_NEW_Lights\n");  
-	GetFormatInfo ( &MENU_NEW_Lights );
 
 	DebugPrintf("MENU_NEW_DetailLevels\n");  
 	GetFormatInfo ( &MENU_NEW_DetailLevels );

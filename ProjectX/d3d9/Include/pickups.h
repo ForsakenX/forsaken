@@ -269,8 +269,6 @@ void	KillAllPickups( void );
 void	NewSecondaryWeapon( int16 Weapon );
 void	NewPrimaryWeapon( int16 Weapon );
 void	CopyPickups( uint16 Player );
-void	EnablePickupLights( void );
-void	DisablePickupLights( void );
 void	AddPickupToRegen( uint16 Type );
 uint16	InitSlotPickup( uint16 Slot );
 void	CopyRegenSlots( uint16 Player );

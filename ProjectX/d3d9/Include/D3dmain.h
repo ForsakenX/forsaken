@@ -43,21 +43,12 @@ extern	int16		NumLevels;
 extern	char	ShortLevelNames[MAXLEVELS][32];
 extern	int16		LevelNum;
 extern	int16		NewLevelNum;
-extern	BOOL		PrimaryLightDetail;
-extern	BOOL		SecondaryLightDetail;
-extern	BOOL		PickupLightDetail;
 
 extern	BYTE		MyGameStatus;
 
 void DrawSimplePanel( void );
 void SetCursorClip( BOOL );
 void ReallyShowCursor( BOOL );
-void EnablePrimaryLights( void );
-void DisablePrimaryLights( void );
-void EnableSecondaryLights( void );
-void DisableSecondaryLights( void );
-void EnablePickupLights( void );
-void DisablePickupLights( void );
 BOOL FlipBuffers();
 
 extern	int		BikeDetail;

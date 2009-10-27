@@ -111,7 +111,6 @@ num_start_points : uint16
 /*===================================================================
 		Externals...	
 ===================================================================*/
-extern	BOOL SWMonoChrome;
 extern	TRIGGERMOD	*	TrigMods;
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
@@ -457,14 +456,9 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				/* bjd curr driver = 0 use to be software mode
 				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
 				{
-						if ( SWMonoChrome )
-						{
-							r = (r+g+b) / 3;
-							g = r;
-							b = g;
-						}
 						a = 128;
-				}else
+				}
+				else
 				*/
 				{
 						//r = Tab[r];

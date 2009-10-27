@@ -91,8 +91,6 @@ extern	int16			SecAmmoUsed[ MAXSECONDARYWEAPONS ];
 extern	USERCONFIG	*	player_config;
 extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
-extern	BOOL			PrimaryLightDetail;
-extern	BOOL			SecondaryLightDetail;
 extern	BOOL            bSoundEnabled;
 
 extern	FRAME_INFO	*	Pulsar_Header;
@@ -3775,7 +3773,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -3929,7 +3926,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4010,7 +4006,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 					light = FindFreeXLight();
 					if( light != (uint16 ) -1 )					// Light attached
 					{
-						if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 						XLights[ light ].Pos = PrimBulls[i].Pos;
 						XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 						XLights[ light ].SizeCount = 0.0F;
@@ -4080,7 +4075,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4174,7 +4168,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4241,7 +4234,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4372,7 +4364,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4439,7 +4430,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4495,7 +4485,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4649,7 +4638,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4724,7 +4712,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 					light = FindFreeXLight();
 					if( light != (uint16 ) -1 )					// Light attached
 					{
-						if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 						XLights[ light ].Pos = PrimBulls[i].Pos;
 						XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 						XLights[ light ].SizeCount = 0.0F;
@@ -4786,7 +4773,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4880,7 +4866,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -4947,7 +4932,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -5099,7 +5083,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -5253,7 +5236,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -5307,7 +5289,6 @@ uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 
 				light = FindFreeXLight();
 				if( light != (uint16 ) -1 )					// Light attached
 				{
-					if( !PrimaryLightDetail ) XLights[ light ].Visible = FALSE;
 					XLights[ light ].Pos = PrimBulls[i].Pos;
 					XLights[ light ].Size = PrimaryWeaponAttribs[ Weapon ].lightsize;
 					XLights[ light ].SizeCount = 0.0F;
@@ -7217,50 +7198,6 @@ void CreateDebugLine( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint8 Red, uint8
    		Lines[ line ].EndTrans = 255;
    		Lines[ line ].Group = Group;
    	}
-}
-
-/*===================================================================
-	Procedure	:	Enable All Primary Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void EnablePrimaryLights( void )
-{
-	uint16	i;
-
-	i = FirstPrimBullUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( PrimBulls[ i ].light != (uint16) -1 )
-		{
-			XLights[ PrimBulls[ i ].light ].Visible = TRUE;
-		}
- 		
-		i = PrimBulls[ i ].Prev;						/* Next Primary Bull */
-	}																				
-}
-
-/*===================================================================
-	Procedure	:	Disable All Primary Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void DisablePrimaryLights( void )
-{
-	uint16	i;
-
-	i = FirstPrimBullUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( PrimBulls[ i ].light != (uint16) -1 )
-		{
-			XLights[ PrimBulls[ i ].light ].Visible = FALSE;
-		}
- 		
-		i = PrimBulls[ i ].Prev;						/* Next Primary Bull */
-	}																				
 }
 
 /*===================================================================

@@ -139,9 +139,6 @@ extern	int16			NumOfActivePlayers;
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 extern	BOOL			DebugInfo;
 
-extern	BOOL			PickupLightDetail;
-extern	BOOL			PrimaryLightDetail;
-extern	BOOL			SecondaryLightDetail;
 extern	TRIGGERMOD	*	TrigMods;
 extern	int				NumOfTrigMods;
 extern	BOOL			TargetComputerOn;
@@ -2661,7 +2658,6 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 			light = FindFreeXLight();
 			if( light != (uint16 ) -1 )
 			{
-				if( !PickupLightDetail ) XLights[ light ].Visible = FALSE;
 				XLights[ light ].Pos = *Pos;
 				XLights[ light ].Size = PickupAttribs[ Type ].Lightsize;
 				XLights[ light ].SizeCount = 0.0F;
@@ -2857,7 +2853,6 @@ uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, in
 			light = FindFreeXLight();
 			if( light != (uint16 ) -1 )
 			{
-				if( !PickupLightDetail ) XLights[ light ].Visible = FALSE;
 				XLights[ light ].Pos = *Pos;
 				XLights[ light ].Size = PickupAttribs[ Type ].Lightsize;
 				XLights[ light ].SizeCount = 0.0F;
@@ -4381,50 +4376,6 @@ void CopyRegenSlots( uint16 Player )
 		DebugPrintf( "No regen point copy slot!\n" );
 #endif
 	}
-}
-
-/*===================================================================
-	Procedure	:	Enable All Pickup Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void EnablePickupLights( void )
-{
-	uint16	i;
-
-	i = FirstPickupUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( Pickups[ i ].Light != (uint16) -1 )
-		{
-			XLights[ Pickups[ i ].Light ].Visible = TRUE;
-		}
- 		
-		i = Pickups[ i ].Prev;							/* Next Pickup */
-	}																				
-}
-
-/*===================================================================
-	Procedure	:	Enable All Pickup Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void DisablePickupLights( void )
-{
-	uint16	i;
-
-	i = FirstPickupUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( Pickups[ i ].Light != (uint16) -1 )
-		{
-			XLights[ Pickups[ i ].Light ].Visible = FALSE;
-		}
-
-		i = Pickups[ i ].Prev;							/* Next Pickup */
-	}																				
 }
 
 /*===================================================================

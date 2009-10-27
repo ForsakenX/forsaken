@@ -60,7 +60,6 @@ mxtype : uint16 // always 0 for mx format
 		Externals...
 ===================================================================*/
 
-extern	BOOL SWMonoChrome;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern	DWORD				CurrentSrcBlend;
 extern	DWORD				CurrentDestBlend;
@@ -280,11 +279,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				/* bjd curr driver = 0 use to be software mode
 				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
 				{
-						if ( SWMonoChrome )
-						{
-							r = (r+g+b) / 3;
-							g = b = r;
-						}
 						a = 128;
 				}
 				else

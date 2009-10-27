@@ -113,7 +113,6 @@ extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
 extern	int16			NumStealths;
 extern	int16			NumOrbs;
-extern	BOOL			SecondaryLightDetail;
 extern	uint16			CameraMissile;
 extern	int				MissileCameraActive;
 extern	MATRIX			ProjMatrix;
@@ -1753,7 +1752,6 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 						XLights[light].Group = SecBulls[i].GroupImIn;
 						break;
 				}
-				if( !SecondaryLightDetail ) XLights[ light ].Visible = FALSE;
 			}
 		}
 		SecBulls[i].light = light;
@@ -2692,7 +2690,6 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
    				Light = FindFreeXLight();									/* Generate Light */
    				if( Light != (uint16 ) -1 )
    				{
-					if( !SecondaryLightDetail ) XLights[ Light ].Visible = FALSE;
    					XLights[ Light ].Pos = SecBulls[i].Pos;
    					XLights[ Light ].Size = SecondaryWeaponAttribs[ SecBulls[i].Type ].lightsize;
    					XLights[ Light ].SizeCount = 0.0F;
@@ -6029,50 +6026,6 @@ void DropMine( void )
 							&Pos, &Dir, &UpVector, &DropVector, (BYTE) Mine, TRUE );
 			break;
 	}
-}
-
-/*===================================================================
-	Procedure	:	Enable All Secondary Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void EnableSecondaryLights( void )
-{
-	uint16	i;
-
-	i = FirstSecBullUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( SecBulls[ i ].light != (uint16) -1 )
-		{
-			XLights[ SecBulls[ i ].light ].Visible = TRUE;
-		}
- 		
-		i = SecBulls[ i ].Prev;						/* Next Secondary Bull */
-	}																				
-}
-
-/*===================================================================
-	Procedure	:	Disable All Secondary Lights
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void DisableSecondaryLights( void )
-{
-	uint16	i;
-
-	i = FirstSecBullUsed;
-
-	while( i != (uint16) -1 )
-	{
-		if( SecBulls[ i ].light != (uint16) -1 )
-		{
-			XLights[ SecBulls[ i ].light ].Visible = FALSE;
-		}
- 		
-		i = SecBulls[ i ].Prev;						/* Next Secondary Bull */
-	}																				
 }
 
 typedef struct VISISHIP {

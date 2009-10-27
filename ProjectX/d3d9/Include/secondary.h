@@ -249,8 +249,6 @@ int16	GetCurSecAmmo( void );
 void	SecondarySelectControl( void );
 uint16	GetBestMine( void );
 void	DropMine( void );
-void	EnableSecondaryLights( void );
-void	DisableSecondaryLights( void );
 uint16	TargetClosestShip( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeType, uint16 Me, float ViewConeCos, float * ClosestCos );
 BOOL	StillGotTarget( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 TargetType, uint16 Target, float ViewConeCos );
 void	CreateScatterTrail( uint16 i );

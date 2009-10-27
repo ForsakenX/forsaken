@@ -486,7 +486,6 @@
 #define LT_MENU_Detail5 "Primary Lights     "
 #define LT_MENU_Detail6 "Secondary Lights   "
 #define LT_MENU_Detail7 "Pickup Lights      "
-#define LT_MENU_Detail8 "Mono Lighting      "
 #define LT_MENU_Detail10 "Auto Detail        "
 #define LT_MENU_Detail11 "Bike Detail        "
 #define LT_MENU_Detail12 "Water Detail       "
