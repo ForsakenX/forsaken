@@ -16,17 +16,6 @@
 extern "C" {
 #endif
 
-typedef struct tagd3dmainglobals {
-    HINSTANCE hInstApp;     /* application instance for dialog boxes */
-    BOOL bShowFrameRate;         /* show the frame rate at the top */
-    BOOL bShowInfo;              /* show window information at the bottom */
-
-    BOOL bResized; /* the window has resized or some other drastic change, the
-                      entire client area should be cleared */
-    BOOL bQuit;    /* program is about to terminate */
-} d3dmainglobals;
-
-extern	d3dmainglobals	myglobs;
 extern	VECTOR Camera_Pos;
 extern	uint16 NumGroupsVisible;
 extern	uint16 GroupImIn;

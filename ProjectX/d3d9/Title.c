@@ -1618,6 +1618,7 @@ MENU	MENU_NEW_Controls = {
 };
 
 // Out-of-game menu
+extern BOOL ShowInfo;
 MENU	MENU_NEW_DetailLevels = {
 	"", NULL, ExitDetailLevels, NULL, 0,
 	{
@@ -1625,7 +1626,7 @@ MENU	MENU_NEW_DetailLevels = {
 		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
 #if !defined ( FINAL_RELEASE )
-		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &myglobs.bShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &ShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 		{ 10, 120, 160, 120, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
 #endif
 		{ 10, 150, 135, 150, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
@@ -2784,14 +2785,17 @@ MENU	MENU_Visuals = {
 	}
 };
 
+extern BOOL ShowFrameRate;
+extern BOOL ShowInfo;
+
 MENU	MENU_Options = {
 	LT_MENU_Options0/*"Options"*/, NULL, (MenuFunc) SetGamePrefs, NULL, 0,
 	{
 		{ 200, 128, 0, 0, 0, LT_MENU_Options1	/*"Visuals"*/,				0, 0, NULL,						&MENU_Visuals,			MenuChange,		MenuItemDrawName,	NULL, 0 },
 		{ 200, 144, 0, 0, 0, LT_MENU_Options2	/*"Sound FX and Music"*/,	0, 0, NULL,						&MENU_NEW_InGameSound,	MenuChange,		MenuItemDrawName,	NULL, 0 },
 		{ 200, 160, 0, 0, 0, LT_MENU_Options3	/*"Detail Levels"*/,		0, 0, NULL,						&MENU_Detail,			MenuChange,		MenuItemDrawName,	NULL, 0 },
-		{ 200, 176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "*/,		0, 0, &myglobs.bShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
-		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &myglobs.bShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 176, 0, 0, 0, LT_MENU_Options4	/*"Show Frame Rate "*/,		0, 0, &ShowFrameRate,	NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &ShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 
@@ -10407,9 +10411,6 @@ void MenuGoFullScreen( MENUITEM *Item )
 		ProcessVduItems( CurrentMenu );
    		InitialTexturesSet = FALSE;
 	}
-
-    // flushes
-    myglobs.bResized = TRUE;
 }
 	
 

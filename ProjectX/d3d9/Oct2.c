@@ -2135,6 +2135,7 @@ char *DI_KeyName( DWORD key )
 BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
 extern render_info_t render_info;
+extern HINSTANCE hInstApp;
 
 BOOL InitDInput(void)
 {
@@ -2156,8 +2157,8 @@ BOOL InitDInput(void)
 	int i, j, k;
 	BOOL failjoystick;
 
-    err = DirectInputCreate(myglobs.hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
-	if (FAILED(err))//DirectInput8Create(myglobs.hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
+    err = DirectInputCreate(hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
+	if (FAILED(err))//DirectInput8Create(hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
 		return FALSE;
     }
@@ -5652,6 +5653,8 @@ extern  int   NumOfVertsTouched;
 
 timer our_timer;
 int our_count = 0;
+extern BOOL ShowFrameRate;
+extern BOOL ShowInfo;
 
 BOOL Our_CalculateFrameRate(void)
 {
@@ -5680,13 +5683,13 @@ BOOL Our_CalculateFrameRate(void)
 	}
   
 	// display the framerate
-	if( myglobs.bShowFrameRate )
+	if( ShowFrameRate )
 	{
 		sprintf(&buf[0], "FPS %d - AVG F %d MS", (int) FPS, avg_time_per_frame );
 		CenterPrint4x5Text( (char *) &buf[0] , FontHeight, 2 );
 	}
 
-	if( myglobs.bShowInfo )
+	if( ShowInfo )
 	{
 
 		// group information

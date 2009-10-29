@@ -30,6 +30,7 @@ extern "C" {
 #include	"util.h"
 #include	"d3dappi.h"
 
+	extern "C" HINSTANCE hInstApp;
 	extern BOOL cursor_clipped;
 	extern int ignore_mouse_input;
 	extern BOOL InitialTexturesSet;
@@ -98,14 +99,20 @@ extern "C" {
 
 	void GetDefaultPilot(void);
 	void SetSoundLevels( int *dummy );
+	
+	extern BOOL ShowFrameRate;
+	extern BOOL QuitRequested;
+	extern BOOL ShowInfo;
 }
 
 
 // GLOBAL VARIABLES
 
-d3dmainglobals myglobs;     // collection of global variables
-
 BOOL Debug					= FALSE;
+HINSTANCE hInstApp;
+BOOL ShowFrameRate = TRUE;
+BOOL QuitRequested = FALSE;
+BOOL ShowInfo = FALSE;
 
 // INTERNAL FUNCTION PROTOTYPES
 
@@ -148,7 +155,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		goto FAILURE;
 
     // Main game loop...
-	while (!myglobs.bQuit)
+	while (!QuitRequested)
 	{
 
 		// dispatches any messages that are in the queue and removes them
@@ -180,7 +187,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
-        if (render_info.bRenderingIsOK && !render_info.bMinimized && !render_info.bPaused && !myglobs.bQuit)
+        if (render_info.bRenderingIsOK && !render_info.bMinimized && !render_info.bPaused && !QuitRequested)
 		{
             // Attempt to render a frame, if it fails, take a note.  If
             // rendering fails more than twice, abort execution.
@@ -290,7 +297,7 @@ static BOOL InitWindow( void )
 	if ( ! large_icon )
 	{
 		DebugPrintf("Failed to load large icon from ProjectX.ico.\n");
-		large_icon = (HICON) LoadImage( myglobs.hInstApp, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
+		large_icon = (HICON) LoadImage( hInstApp, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
 		if( ! large_icon )
 			DebugPrintf("Failed to load large AppIcon from executable.\n");
 	}
@@ -310,7 +317,7 @@ static BOOL InitWindow( void )
 	if ( ! small_icon )
 	{
 		DebugPrintf("Failed to load small icon from ProjectX.ico.\n");
-		small_icon = (HICON) LoadImage( myglobs.hInstApp, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
+		small_icon = (HICON) LoadImage( hInstApp, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
 		if( ! small_icon )
 			DebugPrintf("Failed to load small AppIcon from executable.\n");
 	}
@@ -331,7 +338,7 @@ static BOOL InitWindow( void )
     wc.lpfnWndProc		= WindowProc;								// processer for window messages
     wc.cbClsExtra		= 0;										// extra bytes to initialize
 	wc.cbWndExtra		= 0;										// extra bytes to initialize
-    wc.hInstance		= myglobs.hInstApp;							// window instance
+    wc.hInstance		= hInstApp;							// window instance
     wc.hIcon			= large_icon;								// handle to icons
     wc.hCursor			= LoadCursor( NULL, IDC_ARROW );			// the cursor for mouse over window
     wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
@@ -368,7 +375,7 @@ static BOOL InitWindow( void )
 
          NULL,				// parent window
          NULL,			    // menu handle
-         myglobs.hInstApp,	// program handle
+         hInstApp,	// program handle
          NULL				// pointer to pass to WM_CREATE event
 
 	);
@@ -565,10 +572,9 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return FALSE;
 
 	// setup globals used by application
-    memset(&myglobs, 0, sizeof(myglobs));
-    myglobs.bShowFrameRate	= TRUE;
-    myglobs.bShowInfo		= FALSE;
-    myglobs.hInstApp		= hInstance;
+    ShowFrameRate	= TRUE;
+    ShowInfo		= FALSE;
+    hInstApp		= hInstance;
 
 	// parse chdir from command line first
 	if(!parse_chdir(lpCmdLine))
@@ -921,7 +927,7 @@ static BOOL RenderLoop()
 	}
 
     // Blt or flip the back buffer to the front buffer
-	if( !myglobs.bQuit )
+	if( !QuitRequested )
 	{
 		if ((!PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	))
 		{
@@ -940,9 +946,6 @@ static BOOL RenderLoop()
 
 	}
 
-	// Reset the resize flag
-	myglobs.bResized = FALSE;
-
 	//
     return TRUE;
 }
@@ -953,7 +956,6 @@ extern BOOL HideCursor;
 extern BOOL ActLikeWindow;
 extern BOOL MouseExclusive;
 extern "C" BOOL render_initialized;
-extern d3dmainglobals myglobs;
 extern "C" BOOL RenderModeReset( void );
 
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
@@ -995,7 +997,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				// user wants to quit
 				// let our code know we're quitting and not failing
 				// let the message reach DefWindowProc so it calls CloseWindow
-				myglobs.bQuit = 1;
+				QuitRequested = 1;
 			}
 
 			// user says to cancel the close...
@@ -1088,8 +1090,6 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 					ProcessVduItems( CurrentMenu );
    					InitialTexturesSet = FALSE;
 				}
-
-				myglobs.bResized = TRUE;
 			}
 
 			SetGamePrefs();
@@ -1439,7 +1439,7 @@ extern "C" void render_cleanup( render_info_t * info );
 void CleanUpAndPostQuit(void)
 {
 	// check if this function was ran already
-    if (myglobs.bQuit)
+    if (QuitRequested)
 		return;
 
 	// kill stuff
@@ -1458,7 +1458,7 @@ void CleanUpAndPostQuit(void)
 	ReleaseScene();
 
 	// set flag
-    myglobs.bQuit = TRUE;
+    QuitRequested = TRUE;
 
 	// we dont control the cursor anymore
 	SetInputAcquired( FALSE );
