@@ -1564,6 +1564,7 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 	Input		:	MLOADHEADER * Mloadheader
 	Output		:	D3DCOLOR
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
 {
 	D3DCOLOR Col;

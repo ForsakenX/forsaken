@@ -12,7 +12,6 @@
 #ifndef COLLISION_INCLUDED
 #define COLLISION_INCLUDED
 
-#include "d3dmain.h"
 #include <d3d9.h>
 #include "typedefs.h"
 #include "file.h"

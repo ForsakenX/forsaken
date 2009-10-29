@@ -23,7 +23,6 @@
 #include "mload.h"
 #include "text.h"
 #include "models.h"
-#include "d3dmain.h"
 #include "d3dappi.h"
 #include "net.h"
 #include "Lights.h"
@@ -4320,6 +4319,7 @@ void CreateReGen( uint16 ship )
 	Input		:		char * Name
 	Output		:		int -1 no level....
 ===================================================================*/
+extern	int16			NumLevels;
 int FindSameLevel( char * Name )
 {
 	int i;

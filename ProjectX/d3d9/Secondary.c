@@ -15,7 +15,6 @@
 #include "networking.h"
 #include "screenpolys.h"
 #include "polys.h"
-#include "d3dmain.h"
 #include "Ships.h"
 #include "Mload.h"
 #include "collision.h"
@@ -2517,6 +2516,7 @@ BOOL ProcessMines( uint16 i )
 	Input		:	uint16		Secondary Weapon Bullet Index
 	Output		:	BOOL		NotDestroyed/Destroyed?  ( TRUE/FALSE )
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 {
 	QUATLERP		qlerp;

@@ -14,8 +14,9 @@
 #include <time.h>
 #include <search.h>
 #include <d3d9.h>
-#include "d3dmain.h"
 #include <assert.h>
+#include "new3d.h"
+#include "main.h"
 
 #ifdef __cplusplus
 extern "C" {

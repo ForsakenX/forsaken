@@ -18,7 +18,6 @@
 #include "primary.h"
 #include "secondary.h"
 
-#include "d3dmain.h"
 #include <math.h>
 #include <time.h>
 #include "Ships.h"
@@ -2528,6 +2527,7 @@ void CleanUpPickup( uint16 i )
 	Output		:	uint16		-1 if none free
 				:				-2 if too many of same type
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int16 Type, uint16 Owner, uint16 ID, int16 RegenSlot, BOOL Sparkle, float LifeCount, uint16 TriggerMod )
 {
 	uint16	i;

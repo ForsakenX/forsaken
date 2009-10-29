@@ -1133,6 +1133,7 @@ void SecBullLensflare( uint16 i )
 				:	LONGLONG	Number
 	Output		:	Nothing
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 void UpdateCountdownDigits( void )
 {
 	float		XPos, YPos;

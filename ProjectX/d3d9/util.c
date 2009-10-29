@@ -181,3 +181,54 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid)
 
 	return S_OK;
 }// GUIDFromString
+
+//
+// Creates a message box and returns ok/cancel press
+//
+
+// temporarily jumps to desktop mode
+#include "d3dappi.h"
+#include "title.h"
+extern render_info_t render_info;
+extern void MenuGoFullScreen( MENUITEM *Item );
+extern void SetCursorClip( BOOL clip );
+int Msg( char * msg, ... )
+{
+	BOOL was_fullscreen = render_info.bFullscreen;
+
+	char txt[ 1024 ];
+	va_list args;
+	int res;
+
+	va_start( args, msg );
+	vsprintf( txt, msg, args);
+	va_end( args );
+
+    if (render_info.bFullscreen)
+	{
+		// switch to window mode
+		// other wise pop up will get stuck behind main window
+		MenuGoFullScreen(NULL);
+		// push main window to background so popup shows
+        SetWindowPos(render_info.window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+	}
+	
+	// release mouse so they can interact with message box
+	SetCursorClip( FALSE );
+
+    res = MessageBox( render_info.window, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
+
+    if (was_fullscreen)
+	{
+		// switch back to fullscreen
+		MenuGoFullScreen(NULL);
+        SetWindowPos(render_info.window, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
+		SetCursorClip( TRUE ); // don't do this in window mode just let them click back on the window
+	}
+
+	DebugPrintf( txt );
+
+	// IDCANCEL	Cancel button was selected.
+	// IDOK	OK button was selected.
+	return res;
+}

@@ -784,6 +784,8 @@ void OnceOnlyInitModel( void )
 				:	MODELNAME	*		Current Model Name
 	Output		:	BOOL				TRUE/FALSE
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 {
 	int			i;

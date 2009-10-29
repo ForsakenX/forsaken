@@ -12,7 +12,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-#include "d3dmain.h"
 #include "typedefs.h"
 #include <time.h>
 #include "sfx.h"
@@ -3541,6 +3540,8 @@ BOOL RenderModeReset( void )
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
+extern void SetCursorClip( BOOL clip );
+extern float ticksperframe;
 BOOL InitTitle()
 {
 	HideCursor = FALSE;

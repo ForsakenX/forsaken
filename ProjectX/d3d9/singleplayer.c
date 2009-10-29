@@ -42,6 +42,8 @@ extern	SHORTNAMETYPE			Names;	// all the players short Names....
 extern	char	biker_name[256];
 extern	BOOL	CountDownOn;
 extern	BOOL	TeamGame;
+extern  int16   NewLevelNum;
+extern  BYTE          MyGameStatus;
 
 BOOL LoadASinglePlayerGame( MENUITEM * Item )
 {

@@ -1085,6 +1085,8 @@ ReleaseMxloadheader( MXLOADHEADER * Mxloadheader )
 	Input		:		char	*	Filename , MXLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL LevelSpecific )
 {
 	long			File_Size;

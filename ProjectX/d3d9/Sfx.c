@@ -616,6 +616,14 @@ char *BikerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {
 	"EX",	//	-	extra 
 };
 
+// if there is 3D sound, commit 3D sound processing
+void commit_any_sounds( void )
+{
+	if ( lpDS3DListener )
+		if ( IDirectSound3DListener_CommitDeferredSettings(lpDS3DListener) != DS_OK )
+			DebugPrintf("Error commiting 3D\n");
+}
+
 void CheckSpeech( int index )
 {
 	if ( CurrentBikerSpeech )
@@ -1597,6 +1605,7 @@ void GetFullSfxPath( char *fullpath, int sfxnum, int variant, int total_variants
 
 }
 
+extern BYTE MyGameStatus;
 void PreInitSfx( void )
 {
 	int i;

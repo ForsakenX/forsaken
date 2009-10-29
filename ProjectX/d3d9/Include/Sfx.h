@@ -3,12 +3,11 @@
 #define	SFX_INCLUDED
 
 #include <dsound.h>
-#include "d3dmain.h"
 #include "dsutil.h"
 
 #include "main.h"
 #include "typedefs.h"
-#include "new3d.h"
+#include "d3dappi.h"
 #include "quat.h"
 #include "CompObjects.h"
 #include "object.h"

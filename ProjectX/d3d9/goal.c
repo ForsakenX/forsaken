@@ -76,6 +76,7 @@ int16 Teamgoal[ MAX_TEAMS ];
 int LastEnable[ MAX_PLAYERS ];
 
 
+extern int16   LevelNum;
 BOOL GoalLoad( void )
 {
 	int8		Filename[ 256 ];
@@ -411,6 +412,7 @@ void SetTeamGoals( uint16 *TeamGoals )
 }
 
 
+extern  BYTE          MyGameStatus;
 void ProcessGoals( void )
 {
 	int j, k;

@@ -854,6 +854,8 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	Input		:		char	*	Filename , MXALOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num, BOOL LevelSpecific )
 {
 	long			File_Size;

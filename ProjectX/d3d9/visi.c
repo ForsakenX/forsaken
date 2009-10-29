@@ -145,7 +145,7 @@ typedef struct
 	} from, to;
 } DebugRay;
 
-
+extern int16 LevelNum;
 static void InitDebugRays( void )
 {
 #if 1

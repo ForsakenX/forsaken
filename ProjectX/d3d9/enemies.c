@@ -3988,6 +3988,7 @@ ENEMY * FindFreeEnemy( void )
 	Input		:	ENEMY	*	Object
 	Output		:	nothing
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 #ifdef DEBUG_ON
 void KillUsedEnemyDebugOn( ENEMY * Object, char *in_file, int in_line )
 #else
@@ -4221,6 +4222,8 @@ void ReleaseAllEnemies( void )
 	Input		:	Nothing
 	Output		:	BOOL	True/False
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreLoadEnemies( void )
 {
 	FILE	*	fp;

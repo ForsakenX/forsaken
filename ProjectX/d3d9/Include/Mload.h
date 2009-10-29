@@ -10,7 +10,6 @@
 #ifndef MLOAD_INCLUDED
 #define MLOAD_INCLUDED
 
-#include "d3dmain.h"
 #include <d3d9.h>
 #include "typedefs.h"
 #include "file.h"

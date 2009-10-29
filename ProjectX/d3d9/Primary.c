@@ -13,7 +13,6 @@
 #include "bgobjects.h"
 #include "Object.h"
 #include "networking.h"
-#include "d3dmain.h"
 #include "typedefs.h"
 #include "New3D.h"
 #include "Ships.h"
@@ -3660,6 +3659,7 @@ void CleanUpPrimBull( uint16 i, BOOL LightFlag  )
 				:	BOOL		NetFlag ( Send to everyone )
 	Output		:	nothing
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 uint16 InitOnePrimBull( uint16 OwnerType, uint16 OwnerID, uint16 BulletID, int8 Weapon,
 						uint16 Group, VECTOR * Pos, VECTOR * Offset, VECTOR * Dir, VECTOR * Up,
 						int16 PowerLevel, float PLevel, BOOL NetFlag )

@@ -271,6 +271,7 @@ void copy_in_my_settings( void )
 }
 
 extern MENU MENU_NEW_CreateGame;
+extern  BYTE          MyGameStatus;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;

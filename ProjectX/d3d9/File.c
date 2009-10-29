@@ -13,7 +13,6 @@
 #include	<malloc.h>
 #include	<string.h>
 #include	"typedefs.h"
-#include	"d3dmain.h"
 #include	"file.h"
 #include	"util.h"
 

@@ -543,6 +543,7 @@ extern int GetScoreStats(int Player);
 
 
 extern BOOL ShowPlayersOnHUD;
+extern BYTE MyGameStatus;
 void PrintScoreSort( void )
 {
 	BOOL teamOK[MAX_TEAMS];

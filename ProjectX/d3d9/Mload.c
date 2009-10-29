@@ -1354,6 +1354,8 @@ static void Unscramble( char *buf, long size, char *fname )
 	Input		:		char	*	Filename , MLOADHEADER *
 	Output		:		Nothing
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 {
 	long			File_Size;

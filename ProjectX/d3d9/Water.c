@@ -11,7 +11,6 @@
 #include "Object.h"
 #include "networking.h"
 #include "triggers.h"
-#include "d3dmain.h"
 #include <d3d9.h>
 #include "typedefs.h"
 #include "file.h"
@@ -87,6 +86,8 @@ float WaterFade = 1.0F;
 	Input		:	char * filename....
 	Output		:	BOOL
 ===================================================================*/
+extern char ShortLevelNames[MAXLEVELS][32];
+extern int16 LevelNum;
 BOOL PreWaterLoad( char * Filename )
 {
 	long			File_Size;

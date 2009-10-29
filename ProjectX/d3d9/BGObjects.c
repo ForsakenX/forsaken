@@ -1007,6 +1007,8 @@ void ChangeBGState( BGOBJECT * Object, uint16 OwnerType, uint16 Owner, int16 How
 	Input		:	int8	*	Filename
 	Output		:	BOOL		TRUE/FALSE
 ===================================================================*/
+extern char  ShortLevelNames[MAXLEVELS][32];
+extern	int16		LevelNum;
 BOOL PreLoadBGOFiles( void )
 {
 	BGO_FILE	*	FilePtr = NULL;
@@ -2081,6 +2083,7 @@ BOOL CheckBGObjectToEnemies( BGOBJECT * Object )
 	Input		:	BGOBJECT	*	Object
 	Output		:	BOOL			True/False
 ===================================================================*/
+extern  BYTE          MyGameStatus;
 BOOL CheckBGObjectToPickups( BGOBJECT * Object )
 {
 	int16		Count;

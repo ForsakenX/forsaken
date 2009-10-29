@@ -496,6 +496,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\breakpad.cpp"
+				>
+			</File>
+			<File
 				RelativePath="Bsp.c"
 				>
 			</File>
@@ -521,10 +525,6 @@
 			</File>
 			<File
 				RelativePath=".\d3d_render.cpp"
-				>
-			</File>
-			<File
-				RelativePath="D3dmain.cpp"
 				>
 			</File>
 			<File
@@ -577,6 +577,14 @@
 			</File>
 			<File
 				RelativePath=".\lua_games.c"
+				>
+			</File>
+			<File
+				RelativePath=".\main.c"
+				>
+			</File>
+			<File
+				RelativePath=".\main_.cpp"
 				>
 			</File>
 			<File
@@ -786,10 +794,6 @@
 			</File>
 			<File
 				RelativePath="Include\D3dappi.h"
-				>
-			</File>
-			<File
-				RelativePath="Include\D3dmain.h"
 				>
 			</File>
 			<File

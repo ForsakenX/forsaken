@@ -133,6 +133,7 @@ char *SaveGamePicFileName( int slot )
 	Output		:	nothing
 ===================================================================*/
 int8	LoadGameFilename[ 256 ];
+extern	int16			NumLevels;
 
 BOOL PreInGameLoad( MENUITEM * MenuItem )
 {

@@ -710,6 +710,7 @@ BOOL SetUpShips()
 static	LONGLONG	TempTime;
 static	LONGLONG	TempTime2;
 static	float	Interp;	
+extern  BYTE          MyGameStatus;
 
 BOOL ProcessShips()
 {

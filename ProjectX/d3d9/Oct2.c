@@ -15,7 +15,6 @@
 #include <stdarg.h>
 #include <math.h>
 #include <time.h>
-#include "d3dmain.h"
 #include "2dtextures.h"
 #include "mload.h"
 #include "primary.h"
@@ -1085,8 +1084,7 @@ void ReallyShowCursor( BOOL show )
 
 }
 
-void
-SetInputAcquired( BOOL acquire )
+void SetInputAcquired( BOOL acquire )
 {
     HRESULT         err;
 	if ( acquire )
@@ -5655,6 +5653,8 @@ timer our_timer;
 int our_count = 0;
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
+extern	uint16		NumGroupsVisible;
+extern uint16	GroupImIn;
 
 BOOL Our_CalculateFrameRate(void)
 {
