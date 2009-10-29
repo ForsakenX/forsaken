@@ -1705,7 +1705,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	if( !TotalVerts ) return( FALSE );
 
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );
@@ -2096,7 +2096,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	if( !TotalVerts ) return( FALSE );
 
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );

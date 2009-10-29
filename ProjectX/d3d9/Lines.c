@@ -127,7 +127,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 
 	specular = RGB_MAKE( 255, 255, 255 );
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
 	else specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	
@@ -156,7 +156,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 			if( Lines[ i ].Group == Group )
 			{
 				/* bjd curr driver = 0 use to be software mode */
-				//if(d3dappi.CurrDriver != 0)
+				//if(render_info.CurrDriver != 0)
 				{
 						color = RGBA_MAKE( Lines[ i ].StartCol.R, Lines[ i ].StartCol.G,
 										   Lines[ i ].StartCol.B, Lines[ i ].StartTrans );
@@ -179,7 +179,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				Vert_Ptr++;
 	
 				/* bjd curr driver = 0 use to be software mode */
-				//if(d3dappi.CurrDriver != 0)
+				//if(render_info.CurrDriver != 0)
 				{
 						color = RGBA_MAKE( Lines[ i ].EndCol.R, Lines[ i ].EndCol.G,
 										   Lines[ i ].EndCol.B, Lines[ i ].EndTrans );
@@ -260,7 +260,7 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 {
 	uint16  i = 0;
 
-	//  if( !d3dappi.bIsPrimary )
+	//  if( !render_info.bIsPrimary )
 	//		return TRUE;
 
 	i = FirstLineUsed;

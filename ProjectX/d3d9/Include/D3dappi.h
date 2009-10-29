@@ -62,8 +62,9 @@ typedef struct {
     int                     CurrMode;				/* number of current display mode (only when fullscreen) */
     render_display_mode_t * Mode;					/* desc avail modes */
     render_display_mode_t   ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
-    BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
     render_display_mode_t   WindowsDisplay;			/* current Windows disply mode */
+    render_display_mode_t   default_mode;			/* current Windows disply mode */
+    BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
     SIZE                    szClient;				/* dimensions of client win */
     POINT                   pClientOnPrimary;		/* position of client area */
     POINT                   pWindow;				/* position of win */
@@ -71,6 +72,12 @@ typedef struct {
     BOOL                    bAppActive;				/* the app is active */
     BOOL                    bMinimized;				/* app window is minimized */
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
+	BOOL					vsync;					/* vertical sync */
+#ifdef WIN32
+	HWND					window;			        /* application window handle */
+#else
+	// linux ?
+#endif
 } render_info_t;
 
 /*
@@ -95,7 +102,7 @@ typedef struct {
  * GLOBAL VARIABLES
  *    see d3dapp.c for descriptions
  */
-extern render_info_t d3dappi;
+extern render_info_t render_info;
 extern BOOL bIgnoreWM_SIZE;
 
 #ifdef __cplusplus
@@ -109,7 +116,6 @@ extern BOOL bIgnoreWM_SIZE;
 void cull_none( void );
 void cull_cw( void );
 void reset_cull( void );
-BOOL init_render_states(void);
 void disable_zbuff( void );
 void set_alpha_states( void );
 void set_normal_states( void );
@@ -178,6 +184,7 @@ typedef struct RENDERSTATE
 	int blah; // temp
 } RENDERSTATE;
 
+BOOL render_flip( render_info_t * info );
 HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
 HRESULT FSBeginScene();
 HRESULT FSEndScene();

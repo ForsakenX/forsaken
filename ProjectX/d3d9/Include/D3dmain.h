@@ -16,9 +16,7 @@
 extern "C" {
 #endif
 
-
 typedef struct tagd3dmainglobals {
-    HWND hWndMain;          /* application window handle */
     HINSTANCE hInstApp;     /* application instance for dialog boxes */
     BOOL bShowFrameRate;         /* show the frame rate at the top */
     BOOL bShowInfo;              /* show window information at the bottom */
@@ -49,7 +47,6 @@ extern	BYTE		MyGameStatus;
 void DrawSimplePanel( void );
 void SetCursorClip( BOOL );
 void ReallyShowCursor( BOOL );
-BOOL FlipBuffers();
 
 #ifdef __cplusplus
 };

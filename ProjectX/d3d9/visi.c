@@ -1193,7 +1193,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	FSGetViewPort(&OldViewPort);
 /*
-	d3dappi.lpD3DViewport->lpVtbl->GetViewport( d3dappi.lpD3DViewport , &OldViewPort );
+	render_info.lpD3DViewport->lpVtbl->GetViewport( render_info.lpD3DViewport , &OldViewPort );
 */
 
 	PresentViewPort = OldViewPort;
@@ -1248,7 +1248,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	rval = FSSetViewPort(&OldViewPort);
 /* bjd
-	d3dappi.lpD3DViewport->lpVtbl->SetViewport( d3dappi.lpD3DViewport , &OldViewPort );
+	render_info.lpD3DViewport->lpVtbl->SetViewport( render_info.lpD3DViewport , &OldViewPort );
 */
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT

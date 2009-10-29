@@ -4549,8 +4549,8 @@ void DispSecAmmoLevels( void )
 	int16	x, y;
 	int16	Ammo;
 
-	x = ((int16)d3dappi.szClient.cx / 2 ) + ( 16 * 4 );
-	y = (int16)d3dappi.szClient.cy - ( (int16)d3dappi.szClient.cy / 5 ) + 6;
+	x = ((int16)render_info.szClient.cx / 2 ) + ( 16 * 4 );
+	y = (int16)render_info.szClient.cy - ( (int16)render_info.szClient.cy / 5 ) + 6;
 
 	Ammo = SecondaryAmmo[ Ships[ WhoIAm ].Secondary ];
 

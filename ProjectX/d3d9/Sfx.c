@@ -3009,7 +3009,7 @@ BOOL Init_SoundGlobals(void)
 	dsbdesc.lpwfxFormat = NULL;
 	
 	// Set control-level of DS. (To normal, default.)
-	if (IDirectSound_SetCooperativeLevel(lpDS, myglobs.hWndMain ,DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
+	if (IDirectSound_SetCooperativeLevel(lpDS, render_info.window ,DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
 	{
 		// Create primary buffer.
 		if ( MakeSoundBuffer( lpDS, &dsbdesc, &glpPrimaryBuffer, NULL ) )

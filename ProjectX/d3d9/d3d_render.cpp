@@ -10,6 +10,9 @@ extern "C" {
 #include "util.h"
 #include <dxerr9.h>
 
+// prototypes
+static BOOL init_render_states( render_info_t * info );
+
 // d3d caps
 // D3DPTEXTURECAPS_SQUAREONLY
 BOOL  bSquareOnly = FALSE;
@@ -24,7 +27,7 @@ BOOL render_initialized = FALSE;
 LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
-BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mode, BOOL vsync)
+BOOL init_renderer( render_info_t * info )
 {
 	HRESULT LastError;
 	render_viewport_t viewport;
@@ -43,14 +46,13 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	ZeroMemory (&d3dpp, sizeof(d3dpp));
 
 	//
-	d3dappi.bFullscreen = fullscreen;
-	d3dpp.Windowed = !fullscreen;
+	d3dpp.Windowed = !info->bFullscreen;
 
 	//
 	// presentation settings
 	//
 
-	d3dpp.hDeviceWindow					= hwnd;							// the window handle
+	d3dpp.hDeviceWindow					= info->window;					// the window handle
 	d3dpp.BackBufferCount				= 1;							// we only have one swap chain
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
 																		// shouldn't we specify D3DSWAPEFFECT_FLIP ?
@@ -58,7 +60,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	d3dpp.FullScreen_RefreshRateInHz	= D3DPRESENT_RATE_DEFAULT;		// display refresh
 	d3dpp.EnableAutoDepthStencil		= TRUE;							// let d3d manage the z-buffer
 
-	if(vsync)	
+	if(info->vsync)	
 		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_ONE;			// enable vsync
 	else
 		d3dpp.PresentationInterval		= D3DPRESENT_INTERVAL_IMMEDIATE;	// disable vsync
@@ -69,7 +71,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 
 	// 32 bit back buffer
 	// Also supports 32 bit zbuffer
-	if( default_mode.bpp >= 32 && 
+	if( info->default_mode.bpp >= 32 && 
 		SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, d3dpp.Windowed)))
 	{
 		bpp = 32;
@@ -93,14 +95,14 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	// failed
 	else
 	{
-		CloseWindow(hwnd);
+		CloseWindow(info->window);
 		Msg("Failed to find a suitable back buffer format");
 		exit(1);
 	}
 
 	//
 	// Enumerates display modes 
-	// picking default_mode if it exists
+	// picking info->default_mode if it exists
 	// or picking the biggest mode possible :]
 	//
 
@@ -111,7 +113,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		int i;
 		int x = 0;
 		int count				=  (int) lpD3D->GetAdapterModeCount( D3DADAPTER_DEFAULT, d3dpp.BackBufferFormat );
-		d3dappi.Mode			= (render_display_mode_t *) malloc( count * sizeof(render_display_mode_t) );
+		info->Mode			= (render_display_mode_t *) malloc( count * sizeof(render_display_mode_t) );
 		D3DDISPLAYMODE * modes	= (D3DDISPLAYMODE *) malloc( count * sizeof(D3DDISPLAYMODE) );
 		for ( i = 0; i < count; i++ )
 		{
@@ -128,40 +130,40 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 			}
 
 			// save the mode
-			d3dappi.Mode[x].h    = modes[i].Height;
-			d3dappi.Mode[x].w    = modes[i].Width;
-			d3dappi.Mode[x].bpp  = bpp;
-			d3dappi.Mode[x].rate = modes[i].RefreshRate;
+			info->Mode[x].h    = modes[i].Height;
+			info->Mode[x].w    = modes[i].Width;
+			info->Mode[x].bpp  = bpp;
+			info->Mode[x].rate = modes[i].RefreshRate;
 
 			// if this is the mode the user wanted pick it
-			if(	d3dappi.Mode[x].w == default_mode.w &&
-				d3dappi.Mode[x].h == default_mode.h &&
-				d3dappi.Mode[x].rate == default_mode.rate )
+			if(	info->Mode[x].w == info->default_mode.w &&
+				info->Mode[x].h == info->default_mode.h &&
+				info->Mode[x].rate == info->default_mode.rate )
 			{
 				desired_mode = x;
 			}
 			
 			// smallest mode as default
-			if( d3dappi.Mode[x].w < d3dappi.Mode[best_mode].w && 
-				d3dappi.Mode[x].h < d3dappi.Mode[best_mode].h && 
-				d3dappi.Mode[x].rate < d3dappi.Mode[best_mode].rate )
+			if( info->Mode[x].w < info->Mode[best_mode].w && 
+				info->Mode[x].h < info->Mode[best_mode].h && 
+				info->Mode[x].rate < info->Mode[best_mode].rate )
 			{
 				best_mode = x;
 			}
 
 			// biggest mode by width as default
-			//if(d3dappi.Mode[x].w > d3dappi.Mode[best_mode].w && d3dappi.Mode[x].rate == 60)
+			//if(info->Mode[x].w > info->Mode[best_mode].w && info->Mode[x].rate == 60)
 			//	best_mode = x;
 
 			// 800x600 @ 60 as default
-			//if(	d3dappi.Mode[x].w == 800 && d3dappi.Mode[x].h == 600 && d3dappi.Mode[x].rate == 60 )
+			//if(	info->Mode[x].w == 800 && info->Mode[x].h == 600 && info->Mode[x].rate == 60 )
 			//	desired_mode = x;
 
 			// go to next storage location
 			x++;
 		
 		}
-		d3dappi.NumModes = x;
+		info->NumModes = x;
 		if( desired_mode >= 0 )
 		{
 			mode = desired_mode;
@@ -170,9 +172,9 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		{
 			mode = best_mode;
 		}
-		d3dappi.CurrMode = mode;
-		d3dappi.ThisMode = d3dappi.Mode[ d3dappi.CurrMode ];
-		d3dappi.WindowsDisplay = d3dappi.Mode[ d3dappi.CurrMode ];
+		info->CurrMode = mode;
+		info->ThisMode = info->Mode[ info->CurrMode ];
+		info->WindowsDisplay = info->Mode[ info->CurrMode ];
 		{
 			D3DDISPLAYMODE m = modes[mode];
 			d3dpp.BackBufferWidth  = m.Width;
@@ -182,15 +184,15 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	}
 
 	DebugPrintf("Using display mode: %dx%dx%d @ %dhz\n",
-		d3dappi.ThisMode.w,d3dappi.ThisMode.h,d3dappi.ThisMode.bpp,d3dappi.ThisMode.rate);
+		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp,info->ThisMode.rate);
 
 	// window mode
-	if ( ! fullscreen )
+	if ( ! info->bFullscreen )
 	{
 		SetWindowPos( 
-			hwnd,			// the window handle
-			HWND_TOP,		// bring window to the front
-			0, 0,			// top left of screen
+			info->window,		// the window handle
+			HWND_TOP,			// bring window to the front
+			0, 0,				// top left of screen
 			d3dpp.BackBufferWidth, d3dpp.BackBufferHeight, // size of viewport
 			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW 
 		);
@@ -209,7 +211,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	LastError = lpD3D->CreateDevice(
 		D3DADAPTER_DEFAULT,							// the default video card 
 		D3DDEVTYPE_HAL,								// device type - hal = Hardware rasterization
-		hwnd,										// the window handle
+		info->window,							// the window handle
 
 		// these define how the device is created
 
@@ -231,7 +233,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 	if (FAILED(LastError)) 
 	*/
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
@@ -246,7 +248,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 
 	if (FAILED(LastError)) 
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
 			D3DCREATE_MIXED_VERTEXPROCESSING,		// do vertex processing in both hardware and software
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -262,7 +264,7 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 
 	if (FAILED(LastError)) 
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hwnd,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
 			D3DCREATE_SOFTWARE_VERTEXPROCESSING,	// do vertex processing in software only
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -278,29 +280,29 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 
 	if (FAILED(LastError))
 	{
-		CloseWindow(hwnd);
+		CloseWindow(info->window);
 		Msg("Failed to create a suitable d3d device");
 		exit(1);
 	}
 
 	render_initialized = TRUE;
-	d3dappi.bRenderingIsOK = TRUE;
+	info->bRenderingIsOK = TRUE;
 
-	d3dappi.szClient.cx = d3dpp.BackBufferWidth; 
-	d3dappi.szClient.cy = d3dpp.BackBufferHeight;
+	info->szClient.cx = d3dpp.BackBufferWidth; 
+	info->szClient.cy = d3dpp.BackBufferHeight;
 
-	d3dappi.WindowsDisplay.w = d3dpp.BackBufferWidth;
-	d3dappi.WindowsDisplay.h = d3dpp.BackBufferHeight;
+	info->WindowsDisplay.w = d3dpp.BackBufferWidth;
+	info->WindowsDisplay.h = d3dpp.BackBufferHeight;
 
-	d3dappi.ThisMode.w = d3dpp.BackBufferWidth;
-	d3dappi.ThisMode.h = d3dpp.BackBufferHeight;
+	info->ThisMode.w = d3dpp.BackBufferWidth;
+	info->ThisMode.h = d3dpp.BackBufferHeight;
 
 	/* do "after device created" stuff */
 	ZeroMemory( &viewport, sizeof(viewport) );
 	{
 		WINDOWPLACEMENT placement;
 		placement.length = sizeof(WINDOWPLACEMENT);
-		if(GetWindowPlacement( hwnd, &placement ))
+		if(GetWindowPlacement( info->window, &placement ))
 		{
 			viewport.X = placement.rcNormalPosition.left;
 			viewport.Y = placement.rcNormalPosition.top;
@@ -317,40 +319,84 @@ BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t default_mod
 		DebugPrintf("couldn't set viewport\n");
 	}
 
-    if(!init_render_states())
+    if(!init_render_states( info ))
 		return FALSE;
 
 	return TRUE;
 }
 
-void render_cleanup( void )
+void render_cleanup( render_info_t * info )
 {
-    d3dappi.bRenderingIsOK = FALSE;
-	if(d3dappi.Mode)
-		free(d3dappi.Mode);
+    info->bRenderingIsOK = FALSE;
+	if(info->Mode)
+		free(info->Mode);
     RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
 }
 
-BOOL render_mode_select( int mode, BOOL fullscreen, BOOL vsync )
+BOOL render_mode_select( render_info_t * info )
 {
-	render_display_mode_t m = d3dappi.Mode[mode];
-	render_cleanup();
-	if(!init_renderer(myglobs.hWndMain, fullscreen, m, vsync))
+	render_cleanup( info );
+	if(!init_renderer( info ))
 		return FALSE;
 	return TRUE;
 }
 
-BOOL FlipBuffers()
+// If the device can be restored,
+// the application prepares the device by destroying all video-memory 
+// resources and any swap chains.
+
+// Then, the application calls the IDirect3DDevice9::Reset method.
+// Reset is the only method that has an effect when a device is lost,
+// and is the only method by which an application can change the device
+// from a lost to an operational state.
+
+// Reset will fail unless the application releases all resources that
+// are allocated in D3DPOOL_DEFAULT, including those created by the 
+// The application can determine what to do on encountering a lost device by querying the return
+// value of the IDirect3DDevice9::TestCooperativeLevel method.
+
+// All video memory must be released before a device can be reset from a lost state to an operational state.
+// This means that the application should release any resources placed in the D3DPOOL_DEFAULT memory class.
+
+// TODO - right now we just call render_reset which creates a new device
+// * does the things we didn't release get released when the device gets destroyed?
+// * fullscreen to window mode is completely broken
+
+static BOOL needs_reset = FALSE;
+
+BOOL render_reset( render_info_t * info )
 {
-	if (!d3dappi.bRenderingIsOK) 
+	if(!needs_reset)
+		return FALSE;
+	if(!render_mode_select( info ))
+		return FALSE;
+	needs_reset = FALSE;
+	return TRUE;
+}
+
+BOOL render_flip( render_info_t * info )
+{
+	HRESULT hr;
+	if (!info->bRenderingIsOK) 
 	{
-		DebugPrintf("Cannot call FlipBuffers() while bRenderingIsOK is FALSE.\n");
+		DebugPrintf("Cannot call render_flip() while bRenderingIsOK is FALSE.\n");
 		return FALSE;
 	}
-
-	lpD3DDevice->Present(NULL, NULL, NULL, NULL);
-
+	hr = lpD3DDevice->Present(NULL, NULL, NULL, NULL);
+	if(FAILED(hr))
+	{
+		DebugPrintf("render_flip Error: %s\n",render_error_description(hr));
+		switch(hr)
+		{
+		case D3DERR_DEVICELOST:
+			needs_reset = TRUE;
+			break;
+		case D3DERR_DEVICENOTRESET:
+			DebugPrintf("render_flip Stub: Device needs to be reset.\n");
+			break;
+		}
+	}
 	return TRUE;
 }
 
@@ -466,7 +512,7 @@ void render_state_trans( void )
 	}
 	DebugPrintf("trans state = %d ...... count %d\n",state,count);
 
-	//FlipBuffers();
+	//render_flip();
 
 	// try the next state
 	count++;
@@ -612,14 +658,14 @@ dest	D3DPBLENDCAPS_INVSRCALPHA		= D3DBLEND_INVSRCALPHA;
 
 */
 
-BOOL init_render_states()
+static BOOL init_render_states( render_info_t * info )
 {
 	//STATE( D3DRS_FILLMODE, D3DFILL_WIREFRAME );
 
 	STATE(	D3DRS_SHADEMODE,		D3DSHADE_GOURAUD );
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
-	if( d3dappi.ThisMode.bpp < 32 )
+	if( info->ThisMode.bpp < 32 )
 		STATE( D3DRS_DITHERENABLE, TRUE );
 
 	reset_cull();
@@ -1164,6 +1210,7 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 	renderObject->vbLocked = 0;
 
 	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");

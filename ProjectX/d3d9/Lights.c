@@ -564,7 +564,7 @@ clear:					mov		eax, [esi]
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dappi.CurrDriver ) // is it ramp mode..
+						if(!render_info.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1033,7 +1033,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dappi.CurrDriver ) // is it ramp mode..
+						if(!render_info.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;
@@ -1280,7 +1280,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 						blf	= XLightPnt->b;
 
 						/* bjd curr driver = 0 use to be software mode
-						if(!d3dappi.CurrDriver ) // is it ramp mode..
+						if(!render_info.CurrDriver ) // is it ramp mode..
 						{
 							rlf = ( rlf+glf+blf ) * 0.33333F;
 							glf = rlf;

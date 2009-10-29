@@ -729,7 +729,7 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 	Specular = RGB_MAKE( 255, 255, 255 );
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 
@@ -974,7 +974,7 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 
 	Specular = RGB_MAKE( 255, 255, 255 );
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 
@@ -1287,7 +1287,7 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 	Specular = RGB_MAKE( 255, 255, 255 );
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 
@@ -1531,7 +1531,7 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 	renderObject->numTextureGroups = 0;
 
 	/* bjd curr driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );

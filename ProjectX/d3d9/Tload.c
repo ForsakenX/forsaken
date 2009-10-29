@@ -219,7 +219,7 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 #if 0 // bjd - CHECK
 		/* create the material and header */	
 	    mat.hTexture = Tloadheader->hTex[i];
-	    if (d3dappi.lpD3D->lpVtbl->CreateMaterial(d3dappi.lpD3D, &Tloadheader->lpMat[i], NULL) != D3D_OK)
+	    if (render_info.lpD3D->lpVtbl->CreateMaterial(render_info.lpD3D, &Tloadheader->lpMat[i], NULL) != D3D_OK)
 		{
 			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
 			return FALSE;
@@ -229,7 +229,7 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 			Msg( "Couldnt Set Material for %s\n", &Tloadheader->ImageFile[i] );
 			return FALSE;
 		}
-	    if (Tloadheader->lpMat[i]->lpVtbl->GetHandle(Tloadheader->lpMat[i], d3dappi.lpD3DDevice, &Tloadheader->hMat[i]) != D3D_OK)
+	    if (Tloadheader->lpMat[i]->lpVtbl->GetHandle(Tloadheader->lpMat[i], render_info.lpD3DDevice, &Tloadheader->hMat[i]) != D3D_OK)
 		{
 			Msg( "Couldnt Get Handle for %s\n", &Tloadheader->ImageFile[i] );
 			return FALSE;

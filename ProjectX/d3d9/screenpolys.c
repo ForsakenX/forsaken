@@ -2168,7 +2168,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
-//	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+//	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 //	else Specular = RGB_MAKE( 128, 128, 128 );
 
 	Specular = RGB_MAKE( 0, 0, 0 );
@@ -2663,7 +2663,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	renderObject->numTextureGroups = 0;
 
 	/* bjd curre driver = 0 use to be software mode
-	if(d3dappi.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
+	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
 	else Specular = RGB_MAKE( 128, 128, 128 );
 	*/
 	Specular = RGB_MAKE( 255, 255, 255 );

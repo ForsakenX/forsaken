@@ -853,15 +853,15 @@ SetFOV( float fov )
 		return FALSE;
 	}
 
-	if ( d3dappi.bFullscreen )
+	if ( render_info.bFullscreen )
 	{
-		screen_width = (float) d3dappi.ThisMode.w;
-		screen_height = (float) d3dappi.ThisMode.h;
+		screen_width = (float) render_info.ThisMode.w;
+		screen_height = (float) render_info.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dappi.WindowsDisplay.w;
-		screen_height = (float) d3dappi.WindowsDisplay.h;
+		screen_width = (float) render_info.WindowsDisplay.w;
+		screen_height = (float) render_info.WindowsDisplay.h;
 	}
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
@@ -948,11 +948,11 @@ ResizeViewport( void )
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
-	maxwidth = d3dappi.szClient.cx;
+	maxwidth = render_info.szClient.cx;
 
 	NewDrawSimplePanel = FALSE;
   
-	maxheight = d3dappi.szClient.cy;
+	maxheight = render_info.szClient.cy;
 
 	if ( scale < 1.01F )
 	{
@@ -1025,7 +1025,7 @@ BOOL FullScreenViewport()
      */
 //    memset(&viewport, 0, sizeof(D3DVIEWPORT));
 //    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = d3dappi.lpD3DViewport->lpVtbl->GetViewport(d3dappi.lpD3DViewport, &viewport);
+//    rval = render_info.lpD3DViewport->lpVtbl->GetViewport(render_info.lpD3DViewport, &viewport);
 //    if (rval != D3D_OK) {
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
@@ -1033,8 +1033,8 @@ BOOL FullScreenViewport()
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
     }
-	maxwidth = d3dappi.szClient.cx;
-	maxheight = d3dappi.szClient.cy;
+	maxwidth = render_info.szClient.cx;
+	maxheight = render_info.szClient.cy;
 	width = maxwidth;
 	height = maxheight;
 	left = 0;
@@ -1052,7 +1052,7 @@ BOOL FullScreenViewport()
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
 */
-//    rval = d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport);
+//    rval = render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &viewport);
  //   if (rval != D3D_OK) {
 	if (FAILED(FSSetViewPort(&viewport)))
 	{
@@ -1095,7 +1095,7 @@ SetInputAcquired( BOOL acquire )
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
 												err = IDirectInputDevice_SetCooperativeLevel(
 													lpdiMouse,			// mouse handle
-													myglobs.hWndMain,	// window handle
+													render_info.window,	// window handle
 
 													DISCL_EXCLUSIVE |	// application requires exclusive access to device
 																		// this cuases the mouse to disapear
@@ -1135,7 +1135,7 @@ SetInputAcquired( BOOL acquire )
 												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
 												err = IDirectInputDevice_SetCooperativeLevel(
 													lpdiMouse,			// mouse handle
-													myglobs.hWndMain,	// window handle
+													render_info.window,	// window handle
 													DISCL_NONEXCLUSIVE | // this mode does not lock the mouse down
 																		// the mouse still works but is free to roam to other windows...
 													DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
@@ -1181,8 +1181,8 @@ void SetCursorClip( BOOL clip )
 	if ( !cursor_clipped && !clip ) return;
 
 	// the clipping area
-	cursorclip.left = d3dappi.pClientOnPrimary.x + d3dappi.szClient.cx / 2;
-	cursorclip.top = d3dappi.pClientOnPrimary.y + d3dappi.szClient.cy / 2;
+	cursorclip.left = render_info.pClientOnPrimary.x + render_info.szClient.cx / 2;
+	cursorclip.top = render_info.pClientOnPrimary.y + render_info.szClient.cy / 2;
 	cursorclip.right = cursorclip.left + 1;
 	cursorclip.bottom = cursorclip.top + 1;
 
@@ -1402,25 +1402,25 @@ void DrawSimplePanel()
 		// nitro bar
 		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
 		{
-			AddScreenPolyTextScale( 72, (float) ( (d3dappi.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
+			AddScreenPolyTextScale( 72, (float) ( (render_info.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
 			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, 64, 255, 64, 255 );
 		}
 
 		// character flags
 		if( Ships[WhoIAm].Invul )
 		{
-			Print4x5Text( "I" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
+			Print4x5Text( "I" , FontWidth , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 		{
-			Print4x5Text( "S" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
+			Print4x5Text( "S" , FontWidth , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 		{
-			Print4x5Text( "C" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
+			Print4x5Text( "C" , FontWidth , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
 		}
     }
     
@@ -1431,25 +1431,25 @@ void DrawSimplePanel()
           // Full Screen Minimum Stats...
 
 			// blt hull
-			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.szClient.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
 			// blt shld
-			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
 			// Blt Primary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (d3dappi.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
 			// Blt Secondary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
 			// Blt Power Pods
-			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (d3dappi.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (d3dappi.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
 			// Blt Mine..
 			energy = (int) GetBestMine();
 			if( energy != 65535 )
 			{
-				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (d3dappi.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
-				Printuint16( (uint16) SecondaryAmmo[energy] , d3dappi.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
+				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
+				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
 			}
 
 			// poly shld bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*2)-2) ,
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.szClient.cy-(FontHeight*2)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
 					(uint8)(63+(ShieldHit * (192/24) )), (uint8)(255-(ShieldHit * (192/24) )), 64, 255 );
 
@@ -1457,7 +1457,7 @@ void DrawSimplePanel()
 				ShieldHit -=1;
 
 			// poly hull bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (d3dappi.szClient.cy-(FontHeight*1)-2) ,
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.szClient.cy-(FontHeight*1)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
 					(uint8)(63+(HullHit * (192/24) )), (uint8)(255-(HullHit * (192/24) )), 64, 255 );
 
@@ -1465,13 +1465,13 @@ void DrawSimplePanel()
 				HullHit -=1;
 
 			// blt shield num
-			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.szClient.cy-((FontHeight*2)+4) , 2 );
 
 			// blt hull num
 			if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
-				Printuint16( (uint16) 1 , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
+				Printuint16( (uint16) 1 , FontWidth*6 , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
 			else
-				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
+				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
 
 			// Blt Primary ammo
 			if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
@@ -1483,10 +1483,10 @@ void DrawSimplePanel()
 				else
 					energy = (int) GeneralAmmo;
 			}
-			Printuint16( (uint16) energy , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) energy , render_info.szClient.cx - ( FontWidth*5) , render_info.szClient.cy-((FontHeight*2)+4) , 2 );
 
 			// Blt Secondary ammo
-			Printuint16( (uint16) GetCurSecAmmo() , d3dappi.szClient.cx - ( FontWidth*5) , d3dappi.szClient.cy-((FontHeight*1)+2) , 2 );
+			Printuint16( (uint16) GetCurSecAmmo() , render_info.szClient.cx - ( FontWidth*5) , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
         }
     
       if( (NamesAreLegal != 0) || IsHost )
@@ -1518,7 +1518,7 @@ void DrawSimplePanel()
 	  if(SwitchedToWatchMode)
 	  {
 			// show who i am watching
-			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), d3dappi.szClient.cy - 15, 4 );
+			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), render_info.szClient.cy - 15, 4 );
 			// display cross-hair
 			AddScreenPolyText(
 					(uint16) 63 ,
@@ -1526,13 +1526,13 @@ void DrawSimplePanel()
 					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Invulnerable" , FontWidth , d3dappi.szClient.cy-((FontHeight*4)+8) , 2 );
+				Print4x5Text( "Invulnerable" , FontWidth , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
 			// golden power pod
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "Golden Power Pod" , FontWidth , d3dappi.szClient.cy-((FontHeight*5)+10) , 2 );
+				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , d3dappi.szClient.cy-((FontHeight*6)+12) , 2 );
+				Print4x5Text( "Stealth" , FontWidth , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
 	  }
     }
 	else
@@ -1548,11 +1548,11 @@ void DrawSimplePanel()
 			MessageQuePrint();
 
         if( DemoEyesSelect.value != MAX_PLAYERS )
-          Print4x5Text( Names[DemoEyesSelect.value] ,d3dappi.szClient.cx - (FontWidth*9), FontHeight , 0 );
+          Print4x5Text( Names[DemoEyesSelect.value] ,render_info.szClient.cx - (FontWidth*9), FontHeight , 0 );
       }
     }
     if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
-      CenterPrint4x5Text( "Game Over" , (d3dappi.szClient.cy >> 1) - (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Game Over" , (render_info.szClient.cy >> 1) - (FontHeight*2) , 2 );
 
 }
 
@@ -2134,7 +2134,7 @@ char *DI_KeyName( DWORD key )
  **************************************************************************/
 BOOL MouseExclusive = TRUE;
 extern BOOL ActLikeWindow;
-extern render_info_t d3dappi;
+extern render_info_t render_info;
 
 BOOL InitDInput(void)
 {
@@ -2183,7 +2183,7 @@ BOOL InitDInput(void)
 	{
 		err = IDirectInputDevice_SetCooperativeLevel(
 			lpdiMouse,			// mouse handle
-			myglobs.hWndMain,	// window handle
+			render_info.window,	// window handle
 			DISCL_EXCLUSIVE |	// application requires exclusive access to device
 								// this cuases the mouse to disapear
 								// and be fully controlled by direct input
@@ -2193,7 +2193,7 @@ BOOL InitDInput(void)
 		// doesn't work as it should...
 
 		// if acting like a window or not fullscreen
-		if ( ActLikeWindow || !d3dappi.bFullscreen )
+		if ( ActLikeWindow || !render_info.bFullscreen )
 		{
 			SetInputAcquired( FALSE );
 			SetCursorClip( FALSE );
@@ -2204,7 +2204,7 @@ BOOL InitDInput(void)
 	{
 		err = IDirectInputDevice_SetCooperativeLevel(
 			lpdiMouse,			// mouse handle
-			myglobs.hWndMain,	// window handle
+			render_info.window,	// window handle
 			DISCL_NONEXCLUSIVE |// this mode does not lock the mouse down
 								// the mouse still works but is free to roam to other windows...
 			DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
@@ -2248,7 +2248,7 @@ BOOL InitDInput(void)
     }
 
     // set cooperative level
-    if(IDirectInputDevice_SetCooperativeLevel(lpdiKeyboard, myglobs.hWndMain,
+    if(IDirectInputDevice_SetCooperativeLevel(lpdiKeyboard, render_info.window,
                      DISCL_EXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
     {
             goto fail;
@@ -2285,7 +2285,7 @@ BOOL InitDInput(void)
     }
 
     // set cooperative level
-    if(IDirectInputDevice_SetCooperativeLevel(lpdiBufferedKeyboard, myglobs.hWndMain,
+    if(IDirectInputDevice_SetCooperativeLevel(lpdiBufferedKeyboard, render_info.window,
                      DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
     {
             goto fail;
@@ -2355,7 +2355,7 @@ BOOL InitDInput(void)
     if (IDirectInputDevice2_SetDataFormat(lpdiJoystick[i], &c_dfDIJoystick2) == DI_OK)
     {                          
       // set cooperative level
-      if(IDirectInputDevice2_SetCooperativeLevel(lpdiJoystick[i], myglobs.hWndMain,
+      if(IDirectInputDevice2_SetCooperativeLevel(lpdiJoystick[i], render_info.window,
                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) == DI_OK)
       {
         // try to acquire the Joystick
@@ -3170,7 +3170,7 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     if ( WaitingToQuit )
     {
       FSClearBlack();
-      CenterPrint4x5Text( PLEASE_WAIT, (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
+      CenterPrint4x5Text( PLEASE_WAIT, (render_info.szClient.cy>>1)-(FontHeight>>1) , 2 );
       SelectQuitCurrentGame( NULL );
     }
     break;
@@ -3338,19 +3338,19 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
 		//        if( GameStatus[i] == STATUS_ViewingScore )
 		//        {
 		//          wsprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
-		//          CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
+		//          CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
 		//        }
 		//        else
           {
             wsprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
-            CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
+            CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
           }
           
           e++;
         }
       }
     }
-    CenterPrint4x5Text( "waiting for all other players" , (d3dappi.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
+    CenterPrint4x5Text( "waiting for all other players" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
 
     Browl -= framelag;
     if( Browl < 0.0F )
@@ -3426,20 +3426,20 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    CenterPrint4x5Text( "Pickups Left   " , (d3dappi.szClient.cy>>1)-(FontHeight<<2), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Pickups , (d3dappi.szClient.cx>>1)+((17*FontWidth>>1)), (d3dappi.szClient.cy>>1)-(FontHeight<<2), 2 );
+    CenterPrint4x5Text( "Pickups Left   " , (render_info.szClient.cy>>1)-(FontHeight<<2), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Pickups , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)-(FontHeight<<2), 2 );
 
-    CenterPrint4x5Text( "RegenSlots Left" , (d3dappi.szClient.cy>>1)-(FontHeight<<1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (d3dappi.szClient.cx>>1)+((17*FontWidth>>1)), (d3dappi.szClient.cy>>1)-(FontHeight<<1), 2 );
+    CenterPrint4x5Text( "RegenSlots Left" , (render_info.szClient.cy>>1)-(FontHeight<<1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)-(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "Mines Left     " , (d3dappi.szClient.cy>>1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Mines , (d3dappi.szClient.cx>>1)+((17*FontWidth>>1)), (d3dappi.szClient.cy>>1), 2 );
+    CenterPrint4x5Text( "Mines Left     " , (render_info.szClient.cy>>1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Mines , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1), 2 );
 
-    CenterPrint4x5Text( "Triggers Left  " , (d3dappi.szClient.cy>>1)+(FontHeight<<1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Triggers , (d3dappi.szClient.cx>>1)+((17*FontWidth>>1)), (d3dappi.szClient.cy>>1)+(FontHeight<<1), 2 );
+    CenterPrint4x5Text( "Triggers Left  " , (render_info.szClient.cy>>1)+(FontHeight<<1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Triggers , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)+(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "TrigVars Left  " , (d3dappi.szClient.cy>>1)+(FontHeight<<2), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].TrigVars , (d3dappi.szClient.cx>>1)+((17*FontWidth>>1)), (d3dappi.szClient.cy>>1)+(FontHeight<<2), 2 );
+    CenterPrint4x5Text( "TrigVars Left  " , (render_info.szClient.cy>>1)+(FontHeight<<2), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].TrigVars , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)+(FontHeight<<2), 2 );
     
     // wait for all the pickup and mine stuff to be sent to me.....
     if( ( Ships[WhoIAm].Pickups == 0 ) && ( Ships[WhoIAm].Mines == 0 ) && ( Ships[WhoIAm].RegenSlots == 0 ) &&
@@ -3589,12 +3589,12 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
         if( ( GameStatus[i] != STATUS_GetPlayerNum )&& (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) )
         {
           wsprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
-          CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
+          CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
           e++;
         }
       }
     }
-    CenterPrint4x5Text( "all players synching" , (d3dappi.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
+    CenterPrint4x5Text( "all players synching" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
     Browl -= framelag;
     if( Browl <= 0.0F )
     {
@@ -3677,10 +3677,10 @@ BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
     FSClearBlack();
     ReceiveGameMessages();
     
-    CenterPrint4x5Text( "Requesting Player Number" , (d3dappi.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
+    CenterPrint4x5Text( "Requesting Player Number" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
                                           
     sprintf( &buf[0] , "Attempt %d\n" , GetPlayerNumCount );
-    CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-(FontHeight>>1) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-(FontHeight>>1) , 2 );
 
     GetPlayerNumCount1 -= framelag;
     GetPlayerNumCount2 -= framelag;
@@ -4933,7 +4933,7 @@ void ShowDeathModeStats()
 {
 	ShowGameStats( BOX_BG );
 	if( Ships[ WhoIAm ].Timer < RESPAWN_TIMER )
-		CenterPrint4x5Text( "Press any key to continue" , d3dappi.szClient.cy - (FontHeight*2) , GREEN );	
+		CenterPrint4x5Text( "Press any key to continue" , render_info.szClient.cy - (FontHeight*2) , GREEN );	
 }
 
 /* Display the Statistics in-game when key is pressed */
@@ -4970,8 +4970,8 @@ void ShowGameStats( stats_mode_t mode )
 	int total_height = 0;
 	int top_offset = 0;
 	int row_height = (FontHeight+(FontHeight/2));
-	int x_center = ( d3dappi.szClient.cx >>1 );
-	int y_center = ( d3dappi.szClient.cy >>1 );
+	int x_center = ( render_info.szClient.cx >>1 );
+	int y_center = ( render_info.szClient.cy >>1 );
 
 	// generate active players
 
@@ -5001,7 +5001,7 @@ void ShowGameStats( stats_mode_t mode )
 
 			// whole width
 			box.left = 0;
-			box.right = d3dappi.szClient.cx;
+			box.right = render_info.szClient.cx;
 
 			//box.left = left_offset - x_padding;						// begging of first col
 			//box.right = column[ ncols-1 ] + col_width + x_padding;	// end of last col
@@ -5196,7 +5196,7 @@ void ShowGameStats( stats_mode_t mode )
 BOOL ScoreDisplay()
 {
 	ShowGameStats( FULL_BG ); // use BLT background
-	CenterPrint4x5Text( "Press Space to continue" , d3dappi.szClient.cy - (FontHeight*2) , 0 );	
+	CenterPrint4x5Text( "Press Space to continue" , render_info.szClient.cy - (FontHeight*2) , 0 );	
 	return TRUE;
 }
 
@@ -5258,7 +5258,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
     TotalShift -= FontWidth;
   }
 
-  MaxChars = (d3dappi.szClient.cx / FontWidth) + 2;
+  MaxChars = (render_info.szClient.cx / FontWidth) + 2;
 
   message = (char *)calloc( MaxChars, sizeof(char) );
   
@@ -5289,7 +5289,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
     {
       // display text so far...
       message[CurrentMessagePos] = 0;
-      PrintClipped4x5Text( message, xpos, d3dappi.szClient.cy - (FontHeight*2) , col[CurrentString] );
+      PrintClipped4x5Text( message, xpos, render_info.szClient.cy - (FontHeight*2) , col[CurrentString] );
       xpos += FontWidth * strlen( message );
       message[0] = 0;
       CurrentMessagePos = 0;
@@ -5300,7 +5300,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
   }
   // display remaining text...
   message[CurrentMessagePos] = 0;
-  PrintClipped4x5Text( message, xpos, d3dappi.szClient.cy - (FontHeight*2) , col[CurrentString] );
+  PrintClipped4x5Text( message, xpos, render_info.szClient.cy - (FontHeight*2) , col[CurrentString] );
 
   free (message);
 }
@@ -5310,7 +5310,7 @@ BOOL  ClearBuffers( void )
 {
 	D3DRECT dummy;
 
-	if (!d3dappi.bRenderingIsOK)
+	if (!render_info.bRenderingIsOK)
 		return FALSE;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
@@ -5326,7 +5326,7 @@ BOOL ClearZBuffer()
 {
 	D3DRECT dummy;
 
-	if (!d3dappi.bRenderingIsOK)
+	if (!render_info.bRenderingIsOK)
 		return FALSE;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
@@ -5732,18 +5732,18 @@ BOOL Our_CalculateFrameRate(void)
 			for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
 			{
 				// display primary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.szClient.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display primary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(d3dappi.szClient.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.szClient.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 
 			// show all secondary weapon kills
 			for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
 			{		
 				// display secondary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(d3dappi.szClient.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.szClient.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display secondary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (d3dappi.szClient.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.szClient.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 		}
 
@@ -5783,8 +5783,8 @@ BOOL Disp3dPanel( void )
  //   newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;
 	newviewport.Y = 0;
-    newviewport.Width = d3dappi.szClient.cx;
-    newviewport.Height = d3dappi.szClient.cy;
+    newviewport.Width = render_info.szClient.cx;
+    newviewport.Height = render_info.szClient.cy;
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
@@ -5798,15 +5798,15 @@ BOOL Disp3dPanel( void )
 	if (FSSetViewPort(&newviewport) != D3D_OK )
 		return FALSE;
 
-	if ( d3dappi.bFullscreen )
+	if ( render_info.bFullscreen )
 	{
-		screen_width = (float) d3dappi.ThisMode.w;
-		screen_height = (float) d3dappi.ThisMode.h;
+		screen_width = (float) render_info.ThisMode.w;
+		screen_height = (float) render_info.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dappi.WindowsDisplay.w;
-		screen_height = (float) d3dappi.WindowsDisplay.h;
+		screen_width = (float) render_info.WindowsDisplay.w;
+		screen_height = (float) render_info.WindowsDisplay.h;
 	}
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
@@ -5923,8 +5923,8 @@ InitViewport( void )
 		return FALSE;
 	}
 
-	maxwidth = d3dappi.szClient.cx;
-	maxheight = d3dappi.szClient.cy;
+	maxwidth = render_info.szClient.cx;
+	maxheight = render_info.szClient.cy;
 
 	width = maxwidth;
 	height = maxheight;
@@ -6094,15 +6094,15 @@ BOOL DispTracker( void ) // bjd
 	VECTOR      ShipDir, TargetDir;
 	float       Cos;
 
-	if ( d3dappi.bFullscreen )
+	if ( render_info.bFullscreen )
 	{
-		screen_width = (float) d3dappi.ThisMode.w;
-		screen_height = (float) d3dappi.ThisMode.h;
+		screen_width = (float) render_info.ThisMode.w;
+		screen_height = (float) render_info.ThisMode.h;
 	}
 	else
 	{
-		screen_width = (float) d3dappi.WindowsDisplay.w;
-		screen_height = (float) d3dappi.WindowsDisplay.h;
+		screen_width = (float) render_info.WindowsDisplay.w;
+		screen_height = (float) render_info.WindowsDisplay.h;
 	}
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
@@ -6110,7 +6110,7 @@ BOOL DispTracker( void ) // bjd
 //    newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;	
 	newviewport.Y = 0;
-    newviewport.Width = ( d3dappi.szClient.cx / 3 ) & -2;
+    newviewport.Width = ( render_info.szClient.cx / 3 ) & -2;
     newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
@@ -6121,7 +6121,7 @@ BOOL DispTracker( void ) // bjd
     newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
                                        D3DVAL(2 * newviewport.dvScaleY));
 */
-//	if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &newviewport) != D3D_OK )
+//	if( render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &newviewport) != D3D_OK )
 	if (FSSetViewPort(&newviewport) != D3D_OK )
 		return FALSE;
 
@@ -6247,7 +6247,7 @@ BOOL DispTracker( void ) // bjd
       return FALSE;
   }
 
-//    if( d3dappi.lpD3DViewport->lpVtbl->SetViewport(d3dappi.lpD3DViewport, &viewport) != D3D_OK )
+//    if( render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &viewport) != D3D_OK )
 	if (FSSetViewPort(&viewport) != D3D_OK )
 		return FALSE;
 
@@ -6336,11 +6336,11 @@ void PrintInitViewStatus( BYTE Status )
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
-		CenterPrint4x5Text( InitViewMessages[i], ( d3dappi.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
+		CenterPrint4x5Text( InitViewMessages[i], ( render_info.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
 	DisplayNonSolidScrPolys(&ro);
 	DisplaySolidScrPolys(&ro);
 	FSReleaseRenderObject(&ro);
-	FlipBuffers();
+	render_flip(&render_info);
 }
 
 /*===================================================================
@@ -6377,15 +6377,15 @@ BOOL StatsDisplay()
   //  Blt Background
   src.top = 0;
   src.left = 0;
-  src.right = d3dappi.szClient.cx;
-  src.bottom = d3dappi.szClient.cy;
+  src.right = render_info.szClient.cx;
+  src.bottom = render_info.szClient.cy;
   x = 0;
   y = 0;
 
   dest.top = 0;
-  dest.bottom = d3dappi.szClient.cy;
+  dest.bottom = render_info.szClient.cy;
   dest.left = 0;
-  dest.right = d3dappi.szClient.cx;
+  dest.right = render_info.szClient.cx;
       
   destp.x = dest.left;
   destp.y = dest.top;
@@ -6398,33 +6398,33 @@ BOOL StatsDisplay()
     }else{
       sprintf( (char*) &buf ,"%d Secrets found out of %d", Secrets , TotalSecrets );
     }
-    CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
     if( NumKilledEnemies == 1 )
     {
       sprintf( (char*) &buf ,"%d Enemy killed out of %d", NumKilledEnemies , NumInitEnemies );
     }else{
       sprintf( (char*) &buf ,"%d Enemies killed out of %d", NumKilledEnemies , NumInitEnemies );
     }
-    CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
     if( CrystalsFound == 1 )
     {
       sprintf( (char*) &buf ,"%d Crystal found so far", CrystalsFound );
     }else{
       sprintf( (char*) &buf ,"%d Crystals found so far", CrystalsFound );
     }
-    CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
   }else{
-    CenterPrint4x5Text( "Congratulations" , (d3dappi.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
-    CenterPrint4x5Text( "Demo Complete" , (d3dappi.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
+    CenterPrint4x5Text( "Congratulations" , (render_info.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
+    CenterPrint4x5Text( "Demo Complete" , (render_info.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
     if( DifficultyLevel != 3 )
     {
-      CenterPrint4x5Text( "Now Try a Harder Difficulty Setting" , (d3dappi.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Now Try a Harder Difficulty Setting" , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
     }else{
-      CenterPrint4x5Text( "Try the real Game for a harder challenge" , (d3dappi.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Try the real Game for a harder challenge" , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
     }
   }
   
-  CenterPrint4x5Text( "Press Space to continue" , d3dappi.szClient.cy - (FontHeight*2) , 2 );
+  CenterPrint4x5Text( "Press Space to continue" , render_info.szClient.cy - (FontHeight*2) , 2 );
 //  Our_CalculateFrameRate();
 
 
@@ -6436,8 +6436,8 @@ BOOL StatsDisplay()
 
 void InitModeCase(void)
 {
-  ModeScaleX = (float)d3dappi.szClient.cx / 320.0F;
-  ModeScaleY = (float)d3dappi.szClient.cy / 200.0F;
+  ModeScaleX = (float)render_info.szClient.cx / 320.0F;
+  ModeScaleY = (float)render_info.szClient.cy / 200.0F;
 }
 
 /*===================================================================
@@ -6475,8 +6475,8 @@ int16 GetBitShift( int32 Mask )
 void RenderSnapshot( void )
 {
 #if 0 // bjd - CHECK
-//  LPDIRECT3DDEVICE lpDev = d3dappi.lpD3DDevice;
-    render_viewport_t View = d3dappi.D3DViewport;
+//  LPDIRECT3DDEVICE lpDev = render_info.lpD3DDevice;
+    render_viewport_t View = render_info.D3DViewport;
 
 //bjd  lpDev->lpVtbl->BeginScene(lpDev);
 
@@ -6642,7 +6642,7 @@ BOOL SaveSnapShot( int8 * Filename )
   memset( &SurfaceDesc, 0, sizeof( SurfaceDesc ) );
   SurfaceDesc.dwSize = sizeof( SurfaceDesc );
 
-  hr = d3dappi.lpBackBuffer->lpVtbl->Lock( d3dappi.lpBackBuffer, NULL, &SurfaceDesc,
+  hr = render_info.lpBackBuffer->lpVtbl->Lock( render_info.lpBackBuffer, NULL, &SurfaceDesc,
         DDLOCK_SURFACEMEMORYPTR | DDLOCK_WAIT | DDLOCK_READONLY, NULL );
 
   if ( hr != DD_OK )
@@ -6681,7 +6681,7 @@ BOOL SaveSnapShot( int8 * Filename )
         SurfaceDesc.lPitch, SurfaceDesc.ddpfPixelFormat.dwRBitMask, SurfaceDesc.ddpfPixelFormat.dwGBitMask,
         SurfaceDesc.ddpfPixelFormat.dwBBitMask, 0, 0, 128, 128 );
 
-  hr = d3dappi.lpBackBuffer->lpVtbl->Unlock( d3dappi.lpBackBuffer, NULL );
+  hr = render_info.lpBackBuffer->lpVtbl->Unlock( render_info.lpBackBuffer, NULL );
   if ( hr != DD_OK )
   {
     DebugPrintf( "Error Unlocking Surface\n" );
@@ -6689,7 +6689,7 @@ BOOL SaveSnapShot( int8 * Filename )
   }
 
   if( CurrentMenu ) MenuDraw( CurrentMenu );
-  MainGame( /*d3dappi.lpD3DDevice,*/ d3dappi.lpD3DViewport ); // bjd
+  MainGame( /*render_info.lpD3DDevice,*/ render_info.lpD3DViewport ); // bjd
 
   return( TRUE );
 #endif

@@ -5904,7 +5904,7 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 		LightPnt = LightPnt->NextVisible;
 	}
 	/* bjd curr driver = 0 use to be software mode
-	if ( !d3dappi.CurrDriver )
+	if ( !render_info.CurrDriver )
 	{
 		RF = ( RF+GF+BF ) * 0.33333F;
 		GF = RF;

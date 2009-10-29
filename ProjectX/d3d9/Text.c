@@ -169,7 +169,7 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 	int	Zeros= 0 ;
 	uint8 r , g , b;
 
-	if( (y + FontHeight ) >= d3dappi.szClient.cy )
+	if( (y + FontHeight ) >= render_info.szClient.cy )
 		return;
 	
 	r = Colourtrans[col][0];
@@ -208,7 +208,7 @@ void CenterPrint4x5Text( char * Text , int y, int col )
 	i = 0;
 	while( *Text2++ != 0 ) i++;
 
-	x = (d3dappi.szClient.cx >> 1 ) - (i * ( FontWidth >> 1 )  ); // i *2 is half the size of the chars...
+	x = (render_info.szClient.cx >> 1 ) - (i * ( FontWidth >> 1 )  ); // i *2 is half the size of the chars...
 	
 	Print4x5Text( Text , x , y , col );
 }
@@ -260,7 +260,7 @@ int Print4x5Text( char * Text , int x , int y , int color )
 	uint8 num;
 	uint8 r , g , b;
 
-	if( (y + FontHeight ) >= d3dappi.szClient.cy )
+	if( (y + FontHeight ) >= render_info.szClient.cy )
 		return PermX;
 
 	r = Colourtrans[color][0];
@@ -328,10 +328,10 @@ void	MessageQuePrint( void )
 
 	// scale in-game text according to screenwidth
 	// small::: less than 800 res (e.g. 640x480)
-	if(d3dappi.szClient.cx < 800)
+	if(render_info.szClient.cx < 800)
 		MAX = 38;
 	// medium::: less than 1024 res (e.g. 800x600)
-	else if(d3dappi.szClient.cx < 1024)
+	else if(render_info.szClient.cx < 1024)
 		MAX = 59;
 	// big::: 1024+ (e.g. 1024x786, 1280x1024)
 	else
@@ -391,10 +391,10 @@ void	MessageQuePrintAll( void )
 
 	// scale in-game text according to screenwidth
 	// small::: less than 800 res (e.g. 640x480)
-	if(d3dappi.szClient.cx < 800)
+	if(render_info.szClient.cx < 800)
 		MAX = 55;
 	// medium::: less than 1024 res (e.g. 800x600)
-	else if(d3dappi.szClient.cx < 1024)
+	else if(render_info.szClient.cx < 1024)
 		MAX = 73;
 	// big::: 1024+ (e.g. 1024x786, 1280x1024)
 	else
@@ -1785,7 +1785,7 @@ void DisplayStatusMessages( void )
 			Temp = 999999;
 
 		sprintf( buf, "%-8s status %8s %3d lpt %1d \n", &Names[i][0] , StatusTab[GameStatus[i]] , Temp , Ships[i].enable );
-		CenterPrint4x5Text( &buf[0] , (d3dappi.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (i * (FontHeight+(FontHeight>>1)) ) , 1 );
+		CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (i * (FontHeight+(FontHeight>>1)) ) , 1 );
 	}
 }
 
@@ -1846,7 +1846,7 @@ void InitFont( void )
 	int x,y;
 	int col;
 
-	if( d3dappi.szClient.cx >= 512 && d3dappi.szClient.cy >= 384 )
+	if( render_info.szClient.cx >= 512 && render_info.szClient.cy >= 384 )
 	{
 		FontWidth = 8;
 		FontHeight = 8;

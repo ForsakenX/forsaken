@@ -57,10 +57,8 @@
 
 //#pragma optimize( "gty", on )
 
-extern BOOL VSync;
 extern int default_x;
 extern int default_y;
-extern render_display_mode_t default_mode;
 extern BOOL HideCursor;
 extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
 extern BOOL ActLikeWindow;
@@ -3505,10 +3503,27 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 };
 
 extern BOOL InitView( void );
-extern BOOL render_mode_select( int mode, BOOL fullscreen, BOOL vsync );
+extern BOOL render_mode_select( render_info_t * info );
 BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 {
-    render_mode_select( mode, fullscreen, vsync );
+	render_info.Mode[mode];
+	render_info.bFullscreen = fullscreen;
+	render_info.vsync = vsync;
+    render_mode_select( &render_info );
+	if (!InitView())
+	{
+	    Msg("InitView failed.\n");
+        return FALSE;
+	}
+	SetGamePrefs();
+	return TRUE;
+}
+
+extern BOOL render_reset( render_info_t * info );
+BOOL RenderModeReset( void )
+{
+	if(!render_reset( &render_info ))
+		return TRUE;
 	if (!InitView())
 	{
 	    Msg("InitView failed.\n");
@@ -3531,7 +3546,7 @@ BOOL InitTitle()
 		SetCursorClip( FALSE );
 
 	// if we are in fullscreen hide mouse
-	else if ( d3dappi.bFullscreen )
+	else if ( render_info.bFullscreen )
 		SetCursorClip( TRUE );
 
 	framelag = 0;
@@ -4885,8 +4900,8 @@ BOOL DisplayTitle(void)
 	CurrentCamera.Viewport = viewport;	
 	CurrentCamera.Viewport.X = 0;
 	CurrentCamera.Viewport.Y = 0;
-	CurrentCamera.Viewport.Width = d3dappi.szClient.cx;
-	CurrentCamera.Viewport.Height = d3dappi.szClient.cy;
+	CurrentCamera.Viewport.Width = render_info.szClient.cx;
+	CurrentCamera.Viewport.Height = render_info.szClient.cy;
 	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
 	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
@@ -7878,9 +7893,9 @@ void	MenuProcess()
 
 	// print text to screen
 #ifdef ProjectXVersionTip
-	CenterPrint4x5Text( ProjectXVersionTip, d3dappi.szClient.cy - (FontHeight+3) * 4, GREEN ); // +3 padding
+	CenterPrint4x5Text( ProjectXVersionTip, render_info.szClient.cy - (FontHeight+3) * 4, GREEN ); // +3 padding
 #endif
-	CenterPrint4x5Text( ProjectXVersion, d3dappi.szClient.cy - FontHeight * 3, GREEN );
+	CenterPrint4x5Text( ProjectXVersion, render_info.szClient.cy - FontHeight * 3, GREEN );
 
 	// ??
 	Pulse += framelag/60.0F;
@@ -9795,7 +9810,7 @@ void InitInGameMenu( MENU *Menu )
 	MENUITEM *item;
 
 	// if we are not full screen then unclip the cursor
-	if ( ActLikeWindow || !d3dappi.bFullscreen )
+	if ( ActLikeWindow || !render_info.bFullscreen )
 	{
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
@@ -10369,9 +10384,9 @@ void MenuGoFullScreen( MENUITEM *Item )
 
 	bIgnoreWM_SIZE = TRUE;
 
-    RenderModeSelect( d3dappi.CurrMode, !d3dappi.bFullscreen, VSync );
+    RenderModeSelect( render_info.CurrMode, !render_info.bFullscreen, render_info.vsync );
 
-	if ( !d3dappi.bFullscreen )
+	if ( !render_info.bFullscreen )
 	{
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
@@ -10415,18 +10430,18 @@ void MakeModeList( MENU *Menu )
 
 	ModeList.selected_item = 0;
 
-	for( i = 0; i < d3dappi.NumModes; i++ )
+	for( i = 0; i < render_info.NumModes; i++ )
 	{
 		if( ModeList.items < MAXLISTITEMS )
 		{
 			WhichMode[ModeList.items] = i;
 			sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d @ %dhz" ,
-				d3dappi.Mode[i].w , d3dappi.Mode[i].h , d3dappi.Mode[i].bpp, d3dappi.Mode[i].rate );
+				render_info.Mode[i].w , render_info.Mode[i].h , render_info.Mode[i].bpp, render_info.Mode[i].rate );
 
-			if( (d3dappi.Mode[i].w == d3dappi.ThisMode.w) &&				
-				(d3dappi.Mode[i].h == d3dappi.ThisMode.h) &&
-				(d3dappi.Mode[i].bpp == d3dappi.ThisMode.bpp) &&
-				(d3dappi.Mode[i].rate == d3dappi.ThisMode.rate))
+			if( (render_info.Mode[i].w == render_info.ThisMode.w) &&				
+				(render_info.Mode[i].h == render_info.ThisMode.h) &&
+				(render_info.Mode[i].bpp == render_info.ThisMode.bpp) &&
+				(render_info.Mode[i].rate == render_info.ThisMode.rate))
 			{
 				ModeList.selected_item = ModeList.items;
 			}
@@ -10444,8 +10459,8 @@ void MakeModeList( MENU *Menu )
 ===================================================================*/
 void MenuSelectMode( MENU *Menu )
 {
-	if ( d3dappi.CurrMode != WhichMode[ModeList.selected_item] )
-		RenderModeSelect(WhichMode[ModeList.selected_item], d3dappi.bFullscreen, VSync);
+	if ( render_info.CurrMode != WhichMode[ModeList.selected_item] )
+		RenderModeSelect(WhichMode[ModeList.selected_item], render_info.bFullscreen, render_info.vsync);
 }
 
 
@@ -10456,9 +10471,9 @@ void NewMenuSelectMode( MENUITEM *Item )
 	LastMenu = CurrentMenu;	
 	VduClear();
 
-	if ( d3dappi.bFullscreen )
+	if ( render_info.bFullscreen )
 	{
-        RenderModeSelect( mode, d3dappi.bFullscreen, VSync );
+        RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
 
 		if( ! ActLikeWindow )
 			SetCursorClip( TRUE );
@@ -10466,7 +10481,7 @@ void NewMenuSelectMode( MENUITEM *Item )
 	else
 	{
 		bIgnoreWM_SIZE = TRUE;
-        RenderModeSelect( mode, d3dappi.bFullscreen, VSync );
+        RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
 		bIgnoreWM_SIZE = FALSE;
 
 		// just let the user click to focus
@@ -10867,7 +10882,6 @@ void ExitLevelSelect( MENU * Menu )
 	Output		:		Nothing
 ===================================================================*/
 extern void InitValidPickups();
-extern BOOL bFullscreen;
 void GetGamePrefs( void )
 {
 	// default allow all pickups
@@ -10899,7 +10913,7 @@ void GetGamePrefs( void )
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
-	bFullscreen						 = config_get_bool( "FullScreen",				TRUE );
+	render_info.bFullscreen			 = config_get_bool( "FullScreen",				TRUE );
 
 	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
@@ -10966,15 +10980,15 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    default_mode.w                    = config_get_int( "ScreenWidth",				640 );
-    default_mode.h                    = config_get_int( "ScreenHeight",				480 );
-	default_mode.rate				  = config_get_int( "ScreenRefreshRate",        60  );
+    render_info.default_mode.w                    = config_get_int( "ScreenWidth",				640 );
+    render_info.default_mode.h                    = config_get_int( "ScreenHeight",				480 );
+	render_info.default_mode.rate				  = config_get_int( "ScreenRefreshRate",        60  );
 
-    default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
-	if( default_mode.bpp >= 32 )
-		default_mode.bpp = 32;
+    render_info.default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
+	if( render_info.default_mode.bpp >= 32 )
+		render_info.default_mode.bpp = 32;
 	else
-		default_mode.bpp = 16;
+		render_info.default_mode.bpp = 16;
 
 	default_x						  =	config_get_int( "ScreenPosX",				0 );
 	default_y						  =	config_get_int( "ScreenPosY",				0 );
@@ -11036,7 +11050,7 @@ void SetGamePrefs( void )
     config_set_bool( "RandomPickups",			MyRandomPickups );
     config_set_bool( "UseShortPackets",			MyUseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
-	config_set_bool( "FullScreen",				d3dappi.bFullscreen );
+	config_set_bool( "FullScreen",				render_info.bFullscreen );
 
 	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
 	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_HeatseakerPickup ] );
@@ -11062,12 +11076,12 @@ void SetGamePrefs( void )
 
 	// integers
 
-	config_set_int( "ScreenWidth",				d3dappi.Mode[ d3dappi.CurrMode ].w );
-	config_set_int( "ScreenHeight",				d3dappi.Mode[ d3dappi.CurrMode ].h );
-	config_set_int( "ScreenBPP",				d3dappi.Mode[ d3dappi.CurrMode ].bpp );
-	config_set_int( "ScreenRefreshRate",		d3dappi.Mode[ d3dappi.CurrMode ].rate );
-	config_set_int( "ScreenPosX",				d3dappi.pWindow.x );
-	config_set_int( "ScreenPosY",				d3dappi.pWindow.y );
+	config_set_int( "ScreenWidth",				render_info.Mode[ render_info.CurrMode ].w );
+	config_set_int( "ScreenHeight",				render_info.Mode[ render_info.CurrMode ].h );
+	config_set_int( "ScreenBPP",				render_info.Mode[ render_info.CurrMode ].bpp );
+	config_set_int( "ScreenRefreshRate",		render_info.Mode[ render_info.CurrMode ].rate );
+	config_set_int( "ScreenPosX",				render_info.pWindow.x );
+	config_set_int( "ScreenPosY",				render_info.pWindow.y );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );

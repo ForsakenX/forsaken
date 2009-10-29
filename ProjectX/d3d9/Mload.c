@@ -454,7 +454,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				b = color&255;
 
 				/* bjd curr driver = 0 use to be software mode
-				if(d3dappi.CurrDriver == 0) // is it or ramp mode..
+				if(render_info.CurrDriver == 0) // is it or ramp mode..
 				{
 						a = 128;
 				}

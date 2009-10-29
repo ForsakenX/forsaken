@@ -42,7 +42,7 @@ extern "C" {
 	extern void ReleaseScene(void);
 	extern void ReleaseView(void);
 	extern BOOL InitScene(void);
-	extern BOOL init_renderer(HWND hwnd, BOOL fullscreen, render_display_mode_t mode, BOOL vsync);
+	extern BOOL init_renderer( render_info_t * info );
 	extern BOOL Debug;
 	extern BOOL DebugLog;
 	extern BOOL HideCursor;
@@ -52,9 +52,8 @@ extern "C" {
 	extern LONGLONG  LastTime;
 	extern BOOL InitDInput(void);
 	extern char * LogFilename;
-	extern BOOL bFullscreen;
 	extern char *config_name;
-	extern render_info_t d3dappi;
+	extern render_info_t render_info;
 	extern BOOL NoCursorClip;
 	extern void SetViewportError( char *where, D3DVIEWPORT *vp, HRESULT rval );
 	extern	int NetUpdateIntervalCmdLine;
@@ -66,7 +65,6 @@ extern "C" {
 	extern int ddchosen3d;
 	extern int default_x;
 	extern int default_y;
-	extern render_display_mode_t default_mode;
 	extern BOOL	MoviePlaying;
 	extern BOOL SeriousError;
 	extern	BOOL	NoSFX;
@@ -122,14 +120,11 @@ static void InitGlobals(void);
 extern "C" void SetInputAcquired( BOOL );
 static BOOL RenderLoop(void);
 
-extern "C" BOOL VSync = FALSE;
-
 BOOL ParseCommandLine(LPSTR lpCmdLine);
 
 int cliSleep = 0;
 
-render_info_t d3dappi;
-render_display_mode_t default_mode;
+render_info_t render_info;
 
 
 /****************************************************************************/
@@ -168,7 +163,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			}
 
 			// we have a valid window handle
-			if ( myglobs.hWndMain )
+			if ( render_info.window )
 			{
 
 				// translates virtual-key messages into character messages
@@ -185,7 +180,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		}
 
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
-        if (d3dappi.bRenderingIsOK && !d3dappi.bMinimized && !d3dappi.bPaused && !myglobs.bQuit)
+        if (render_info.bRenderingIsOK && !render_info.bMinimized && !render_info.bPaused && !myglobs.bQuit)
 		{
             // Attempt to render a frame, if it fails, take a note.  If
             // rendering fails more than twice, abort execution.
@@ -357,10 +352,10 @@ static BOOL InitWindow( void )
 	// cause the last window state had a window size of 0
 	
 	if ( ! screen_aspect_ratio )
-		screen_aspect_ratio = (float) (default_mode.w / default_mode.h);
+		screen_aspect_ratio = (float) (render_info.default_mode.w / render_info.default_mode.h);
 
     // Create a window with some default settings that may change
-	myglobs.hWndMain = CreateWindow(
+	render_info.window = CreateWindow(
 
          "MainWindow",			// window class name (registered above)
          ProjectXVersion,	// window title
@@ -368,8 +363,8 @@ static BOOL InitWindow( void )
 		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
 
          0, 0, // start position x,y
-		 default_mode.w,
-		 default_mode.h,
+		 render_info.default_mode.w,
+		 render_info.default_mode.h,
 
          NULL,				// parent window
          NULL,			    // menu handle
@@ -378,7 +373,7 @@ static BOOL InitWindow( void )
 
 	);
 	
-	if( myglobs.hWndMain == NULL )
+	if( render_info.window == NULL )
 	{
 		Msg("CreateWindow Failed: %d\n",GetLastError());
         DebugPrintf("CreateWindow Failed: %d\n",GetLastError());
@@ -392,9 +387,9 @@ static BOOL InitWindow( void )
 		placement.showCmd = SW_SHOWNORMAL;
 		placement.rcNormalPosition.left		= default_x;
 		placement.rcNormalPosition.top		= default_y;
-		placement.rcNormalPosition.right	= default_x + default_mode.w;
-		placement.rcNormalPosition.bottom	= default_y + default_mode.h;
-		SetWindowPlacement( myglobs.hWndMain, &placement );
+		placement.rcNormalPosition.right	= default_x + render_info.default_mode.w;
+		placement.rcNormalPosition.bottom	= default_y + render_info.default_mode.h;
+		SetWindowPlacement( render_info.window, &placement );
 	}
 
 	//
@@ -541,6 +536,8 @@ static BOOL breakpad_init( void )
 extern "C" BOOL InitView( void );
 static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 {
+    ZEROMEM(render_info);
+
 	// Appears to be a complete fuckup...
 	// Only used in two other places...
 	// never updated...
@@ -626,10 +623,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 		return FALSE;
 
 	// This  must come after everything above
-
-    ZEROMEM(d3dappi);
-
-	if (!init_renderer(myglobs.hWndMain, bFullscreen, default_mode, VSync))
+	if (!init_renderer( &render_info ))
 		return FALSE;
 
 	// load the view
@@ -641,7 +635,7 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 	}
 
 	// show the mouse if acting like window
-	if ( ActLikeWindow || ! d3dappi.bFullscreen )
+	if ( ActLikeWindow || ! render_info.bFullscreen )
 	{
 		DebugPrintf("AppInit setting mouse clip for fullscreen mode.\n");
 		if ( MouseExclusive )
@@ -662,7 +656,6 @@ static BOOL AppInit(HINSTANCE hInstance, LPSTR lpCmdLine)
 // Parse the Command Line
 //
 
-extern "C" BOOL bFullscreen = TRUE;	   /* Fullscreen flag from cli */
 BOOL ParseCommandLine(LPSTR lpCmdLine)
 {
 	
@@ -682,7 +675,6 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 	NoSFX					= FALSE; // turns off sound
 	DS						= FALSE;
 	NoCursorClip			= FALSE;
-	VSync					= FALSE;
 
 	NetUpdateIntervalCmdLine	= 0;
 
@@ -718,7 +710,7 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// off only works in full screen...
 		// turn on vertical syncing
 		else if (!_stricmp(option,"vSync")){
-			VSync = TRUE;
+			render_info.vsync = TRUE;
 		}
 
 		// treate mouse like it's window mode regardless of fullscreen
@@ -752,13 +744,13 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// start in window mode
 		else if (!_stricmp(option,"Fullscreen"))
 		{
-			bFullscreen = TRUE;
+			render_info.bFullscreen = TRUE;
 		}
 
 		// start in window mode
 		else if (!_stricmp(option,"Window"))
 		{
-			bFullscreen = FALSE;
+			render_info.bFullscreen = FALSE;
 		}
 
 		// display status messages and other information
@@ -867,15 +859,15 @@ BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// must be a valid resolution list in the resolution list in game
 			// other wise you will end up with the default highest possible resolution
 			// note: if you pick a value not in the list then your window will be 1 size and your resolution another
-			else if ( sscanf( option, "mode:%d:%d", &default_mode.w, &default_mode.h ) == 1 ){}
+			else if ( sscanf( option, "mode:%d:%d", &render_info.default_mode.w, &render_info.default_mode.h ) == 1 ){}
 
 			// horizontal refresh rate
 			// most monitors normally support 60hz so pass 60 if you get weird stuff happening
-			else if ( sscanf( option, "rate:%d", &default_mode.rate ) == 1 ){}
+			else if ( sscanf( option, "rate:%d", &render_info.default_mode.rate ) == 1 ){}
 
 			// bits per pixel
 			// default is 32 bpp
-			else if ( sscanf( option, "bpp:%d", &default_mode.bpp ) == 1 ){}
+			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) == 1 ){}
 
 			// the aspect ratio tells forsaken the ratio between width/height of your monitor
 			// for example on an 12"x/7.5"y widescreen the ratio is 8/5
@@ -911,7 +903,7 @@ static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
-    if ( ! d3dappi.bRenderingIsOK )
+    if ( ! render_info.bRenderingIsOK )
 		return TRUE;
 
     // Call the sample's RenderScene to render this frame
@@ -934,9 +926,9 @@ static BOOL RenderLoop()
 		if ((!PlayDemo || ( MyGameStatus != STATUS_PlayingDemo ) ||	DemoShipInit[ Current_Camera_View ]	))
 		{
 			// this is the actual call to render a frame...
-			if (!FlipBuffers())
+			if (!render_flip(&render_info))
 			{
-				Msg("RenderLoop: FlipBuffers() failed");
+				Msg("RenderLoop: render_flip() failed");
 				return FALSE;
 			}
 		}
@@ -962,6 +954,7 @@ extern BOOL ActLikeWindow;
 extern BOOL MouseExclusive;
 extern "C" BOOL render_initialized;
 extern d3dmainglobals myglobs;
+extern "C" BOOL RenderModeReset( void );
 
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 
@@ -990,7 +983,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
 					// render one frame :]
 					BeginPaint(hwnd, &ps);
-					FlipBuffers();
+					render_flip(&render_info);
 					EndPaint(hwnd, &ps);
 
 			// release mouse so they can interact with message box
@@ -1026,7 +1019,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 					SetCursorClip( FALSE );
 				
 				// clip the cursor if we are in fullscreen
-				else if ( d3dappi.bFullscreen )
+				else if ( render_info.bFullscreen )
 					SetCursorClip( TRUE );
 
 
@@ -1049,12 +1042,12 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			//DebugPrintf("Window has been moved (top left corner moved).\n");
 
 			// these must be set to 0 before changing
-			d3dappi.pClientOnPrimary.x = 0;
-			d3dappi.pClientOnPrimary.y = 0;
+			render_info.pClientOnPrimary.x = 0;
+			render_info.pClientOnPrimary.y = 0;
 
 			// this sets the CLIENT AREA POSITION
-			d3dappi.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
-			d3dappi.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
+			render_info.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
+			render_info.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
 
 			// save the WINDOW POSITION
 			{
@@ -1062,8 +1055,8 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 				placement.length = sizeof(WINDOWPLACEMENT);
 				if(GetWindowPlacement( hwnd, &placement ))
 				{
-					d3dappi.pWindow.x = placement.rcNormalPosition.left;
-					d3dappi.pWindow.y = placement.rcNormalPosition.top;
+					render_info.pWindow.x = placement.rcNormalPosition.left;
+					render_info.pWindow.y = placement.rcNormalPosition.top;
 				}
 			}
 			
@@ -1132,7 +1125,8 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			{
 				// hitting title bar in wine causes capture...
 				// we don't want that...
-				if ( MouseExclusive ){
+				if ( MouseExclusive )
+				{
 					SetInputAcquired( FALSE );
 					SetCursorClip( FALSE );
 					*lresult = 0;
@@ -1178,7 +1172,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 					SetCursorClip( FALSE );
 
 				// hide cursor in fullscreen
-				else if ( d3dappi.bFullscreen )
+				else if ( render_info.bFullscreen )
 					SetCursorClip( TRUE );
 
 			}
@@ -1187,8 +1181,10 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 
 		// this event is same as above but sends TRUE|FALSE
         case WM_ACTIVATEAPP:
-			//DebugPrintf("Window is being %s.\n",(wParam?"activated":"de-activated"));
-            d3dappi.bAppActive = (BOOL)wParam;
+			DebugPrintf("Window is being %s.\n",(wParam?"activated":"de-activated"));
+            render_info.bAppActive = (BOOL)wParam;
+			if(wParam)
+				RenderModeReset();
             break;
 
 		// this means the app is about to minimize or maximize
@@ -1201,7 +1197,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 			//DebugPrintf("Something has requested that we update/paint our screen.\n");
             // Clear the rectangle and blt the backbuffer image
             BeginPaint(hwnd, &ps);
-            FlipBuffers();
+            render_flip(&render_info);
             EndPaint(hwnd, &ps);
 			//*lresult = 1;
 			//*bStopProcessing = TRUE;
@@ -1210,7 +1206,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
         case WM_NCPAINT:
 			//DebugPrintf("We are requested to update the window frame.\n");
             // When in fullscreen mode, don't draw the window frame.
-            if (d3dappi.bFullscreen) {
+            if (render_info.bFullscreen) {
            //     *lresult = 0;
            //     *bStopProcessing = FALSE;
             }
@@ -1221,7 +1217,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 		// I'd rather leave cursor showing at all times except real game time...
         case WM_SETCURSOR:
 			//DebugPrintf("SETCURSOR: Mouse is within window but mouse is not captured.\n");
-            //if (d3dappi.bFullscreen) {
+            //if (render_info.bFullscreen) {
 				//SetCursor(NULL);
                 //*lresult = 1;
                 //*bStopProcessing = TRUE;
@@ -1378,7 +1374,7 @@ BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd,
 		// stuff that should be ignored in fullscreen
 		case WM_NCHITTEST:		// mouse on non client area
 		case WM_CONTEXTMENU:	// window context menu
-			if(d3dappi.bFullscreen)
+			if(render_info.bFullscreen)
 			{
 				*lresult = 0;
 				*bStopProcessing = TRUE;
@@ -1439,7 +1435,7 @@ long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
  * Release all D3D objects, post a quit message and set the bQuit flag
  */
 
-extern "C" void render_cleanup( void );
+extern "C" void render_cleanup( render_info_t * info );
 void CleanUpAndPostQuit(void)
 {
 	// check if this function was ran already
@@ -1450,7 +1446,7 @@ void CleanUpAndPostQuit(void)
     ReleaseView();
 
 	// stop rendering and destroy objects
-	render_cleanup();
+	render_cleanup( &render_info );
 
 	// destroy the sound
 	DestroySound( DESTROYSOUND_All );
@@ -1475,7 +1471,7 @@ void CleanUpAndPostQuit(void)
 extern "C"
 int Msg( char * msg, ... )
 {
-	BOOL was_fullscreen = d3dappi.bFullscreen;
+	BOOL was_fullscreen = render_info.bFullscreen;
 
 	char txt[ 1024 ];
 	va_list args;
@@ -1485,25 +1481,25 @@ int Msg( char * msg, ... )
 	vsprintf( txt, msg, args);
 	va_end( args );
 
-    if (d3dappi.bFullscreen)
+    if (render_info.bFullscreen)
 	{
 		// switch to window mode
 		// other wise pop up will get stuck behind main window
 		MenuGoFullScreen(NULL);
 		// push main window to background so popup shows
-        SetWindowPos(myglobs.hWndMain, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+        SetWindowPos(render_info.window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
 	
 	// release mouse so they can interact with message box
 	SetCursorClip( FALSE );
 
-    res = MessageBox( myglobs.hWndMain, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
+    res = MessageBox( render_info.window, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
     if (was_fullscreen)
 	{
 		// switch back to fullscreen
 		MenuGoFullScreen(NULL);
-        SetWindowPos(myglobs.hWndMain, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
+        SetWindowPos(render_info.window, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
 		SetCursorClip( TRUE ); // don't do this in window mode just let them click back on the window
 	}
 
