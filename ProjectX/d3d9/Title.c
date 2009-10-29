@@ -3509,7 +3509,7 @@ extern BOOL InitView( void );
 extern BOOL render_mode_select( render_info_t * info );
 BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 {
-	render_info.Mode[mode];
+	render_info.default_mode = render_info.Mode[mode];
 	render_info.bFullscreen = fullscreen;
 	render_info.vsync = vsync;
     render_mode_select( &render_info );
