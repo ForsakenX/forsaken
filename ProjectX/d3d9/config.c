@@ -15,7 +15,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>
-#include "dinput.h"
+#include "input.h"
 #include "models.h"
 #include "mxaload.h"
 #include "config.h"
