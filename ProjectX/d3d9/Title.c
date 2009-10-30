@@ -16,7 +16,7 @@
 #include <time.h>
 #include "sfx.h"
 #include "Text.h"
-#include "dinput.h"
+#include "input.h"
 #include "main.h"
 #include "controls.h"
 #include "config.h"

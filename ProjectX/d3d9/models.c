@@ -5940,9 +5940,9 @@ void RefreshModel( uint16 model )
 		{
 			for ( Vert = 0; Vert < DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ]; Vert++ )
 			{
-				point.x = DstMloadheader->Group[ Group ].org_vertpnt[ ExecBuf ][ Vert ].x;
-				point.y = DstMloadheader->Group[ Group ].org_vertpnt[ ExecBuf ][ Vert ].y;
-				point.z = DstMloadheader->Group[ Group ].org_vertpnt[ ExecBuf ][ Vert ].z;
+				point.x = DstMloadheader->Group[ Group ].originalVerts[ ExecBuf ][ Vert ].x;
+				point.y = DstMloadheader->Group[ Group ].originalVerts[ ExecBuf ][ Vert ].y;
+				point.z = DstMloadheader->Group[ Group ].originalVerts[ ExecBuf ][ Vert ].z;
 
 				ApplyMatrix( &Mat_R, &point, &point );
 				distance = POINT_TO_PLANE( &point, &Models[ model ].IntersectionPlane );

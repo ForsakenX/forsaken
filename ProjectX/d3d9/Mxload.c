@@ -123,7 +123,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16			num_triangles = 0;		// number of triangles in group
 	uint16			group_vertex_start = 0; // where in the vert list to start processing
 	uint16			group_vertex_num = 0;	// and how many to do...
-	LPOLDD3DLVERTEX lpD3DLVERTEX2 = NULL;
+	LPOLDLVERTEX lpD3DLVERTEX2 = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
 	LPD3DLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
@@ -238,7 +238,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			/*	record how many verts there are in the exec buffer	*/
 			Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
-			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
+			lpD3DLVERTEX2 = (LPOLDLVERTEX ) Buffer;
 
 			/*	create a vertex buffer	*/
 			if (FAILED(FSCreateVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], num_vertices)))
@@ -261,7 +261,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			/*	copy the vertex data into the execute buffer	*/
 			for ( i=0 ; i<num_vertices; i++)
 			{
-				OLDD3DLVERTEX *old = lpD3DLVERTEX2;
+				LPOLDLVERTEX old = lpD3DLVERTEX2;
 
 				lpD3DLVERTEX[i].x = old->x;
 				lpD3DLVERTEX[i].y = old->y;

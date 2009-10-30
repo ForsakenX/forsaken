@@ -164,37 +164,38 @@ HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 };
 #endif
 
-typedef struct _OLDD3DLVERTEX {
+// this is used to read the file because the file is encoded with dwReserved
+typedef struct {
     union {
-    float     x;             /* Homogeneous coordinates */
-    float     dvX;
+		float     x;             /* Homogeneous coordinates */
+		float     dvX;
     };
     union {
-    float     y;
-    float     dvY;
+		float     y;
+		float     dvY;
     };
     union {
-    float     z;
-    float     dvZ;
+		float     z;
+		float     dvZ;
     };
     DWORD            dwReserved;
     union {
-    D3DCOLOR     color;         /* Vertex color */
-    D3DCOLOR     dcColor;
+		D3DCOLOR     color;         /* Vertex color */
+		D3DCOLOR     dcColor;
     };
     union {
-    D3DCOLOR     specular;      /* Specular component of vertex */
-    D3DCOLOR     dcSpecular;
+		D3DCOLOR     specular;      /* Specular component of vertex */
+		D3DCOLOR     dcSpecular;
     };
     union {
-    float     tu;            /* Texture coordinates */
-    float     dvTU;
+		float     tu;            /* Texture coordinates */
+		float     dvTU;
     };
     union {
-    float     tv;
-    float     dvTV;
+		float     tv;
+		float     dvTV;
     };
-} OLDD3DLVERTEX, *LPOLDD3DLVERTEX;
+} *LPOLDLVERTEX;
 
 /* bjd - remove when done. taken from SDK */
 #define D3DCLIP_LEFT                0x00000001L

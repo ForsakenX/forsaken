@@ -76,7 +76,7 @@ num_frames : uint16 // number of animation frames
 		Externals...	
 ===================================================================*/
 
-extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DLVERTEX Orig_Vert );
+extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDLVERTEX Orig_Vert );
 
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
@@ -134,7 +134,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	uint16			num_triangles;		// number of triangles in group
 	uint16			group_vertex_start; // where in the vert list to start processing
 	uint16			group_vertex_num;	// and how many to do...
-	LPOLDD3DLVERTEX lpD3DLVERTEX2;
+	LPOLDLVERTEX lpD3DLVERTEX2;
 	LPD3DLVERTEX	lpD3DLVERTEX;
 	LPD3DLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
@@ -226,8 +226,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			/*	record how many verts there are in the exec buffer	*/
 			Mxaloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
-			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
-			Mxaloadheader->Group[group].org_vertpnt[execbuf] = lpD3DLVERTEX2;
+			lpD3DLVERTEX2 = (LPOLDLVERTEX ) Buffer;
 
 			//vertexArray = (D3DLVERTEX*)malloc(sizeof(D3DLVERTEX) * num_vertices);
 
@@ -252,7 +251,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			for ( i=0 ; i<num_vertices; i++)
 			{
 
-				OLDD3DLVERTEX *old = lpD3DLVERTEX2;
+				LPOLDLVERTEX old = lpD3DLVERTEX2;
 
 				lpD3DLVERTEX[i].x = old->x;
 				lpD3DLVERTEX[i].y = old->y;
@@ -381,7 +380,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 //					FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
 //					FacePnt->wFlags = MFacePnt->pad;
 #ifdef FIX_MXA_UV
-					FixUV( &FacePnt, lpBufStart, tpage, Mxaloadheader->Group[group].org_vertpnt[execbuf] );
+					FixUV( &FacePnt, lpBufStart, tpage, Mxaloadheader->Group[group].originalVerts[execbuf] );
 #endif
 					//lpD3DLVERTEX+=3;
 					//FacePnt++;
@@ -502,10 +501,10 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 							Buffer = (char * ) Uint16Pnt;
 							Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup] = num_anim_vertices;
 							Mxaloadheader->frame_pnts[frame][group][execbuf][texgroup] = (MXAVERT*) Buffer;
-							lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( /*(char*) debDesc.lpData*/lpD3DLVERTEX +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							lpD3DLVERTEX = 	( LPD3DLVERTEX ) ( lpD3DLVERTEX +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
 							lpD3DLVERTEX += 8;
-							lpD3DLVERTEX2 =	( LPOLDD3DLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
-							lpD3DLVERTEX2 += 8;
+							//lpD3DLVERTEX2 =	( LPOLDLVERTEX ) ( (char*) Mxaloadheader->Group[group].org_vertpnt[execbuf] +( (uint32) Mxaloadheader->Group[group].texture_group_vert_off[execbuf][texgroup]));
+							//lpD3DLVERTEX2 += 8;
 #ifdef FIX_MXA_UV
 							FixUV_MXA( Mxaloadheader->num_anim_vertices[frame][group][execbuf][texgroup],
 								Mxaloadheader->frame_pnts[frame][group][execbuf][texgroup],
@@ -792,15 +791,6 @@ void ReleaseMxaloadheader( MXALOADHEADER * Mxaloadheader )
 	    for (i = 0; i < Mxaloadheader->Group[group].num_execbufs; i++)
 		{
 			FSReleaseRenderObject(&Mxaloadheader->Group[group].renderObject[i]);
-
-			/* This is not allocated...
-			if(Mxaloadheader->Group[group].org_vertpnt[i])
-			{
-				free(Mxaloadheader->Group[group].org_vertpnt[i]);
-				Mxaloadheader->Group[group].org_vertpnt[i] = NULL;
-			}
-			*/
-	
 			if (Mxaloadheader->Group[group].poly_ptr[i])
 			{
 				free(Mxaloadheader->Group[group].poly_ptr[i]);

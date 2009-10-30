@@ -1,4 +1,6 @@
 
+#define DIRECTSOUND_VERSION 0x0700
+
 #include "typedefs.h"
 #include <stdio.h>
 #include "sfx.h"
@@ -16,7 +18,6 @@
 #include "title.h"
 #include "text.h"
 #include "main.h"
-#include "dinput.h"
 #include "controls.h"
 #include "ships.h"
 #include "vfw.h"
@@ -24,8 +25,6 @@
 #include "XMem.h"
 #include "SBufferHand.h"
 #include "util.h"
-
-#define DIRECTSOUND_VERSION 0x0700
 
 void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
 

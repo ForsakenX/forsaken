@@ -323,7 +323,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16			verts;
 	uint16			portal;
 	uint16			ExecSize;
-	LPOLDD3DLVERTEX lpD3DLVERTEX2 = NULL;
+	LPOLDLVERTEX	lpD3DLVERTEX2 = NULL;
 	LPD3DLVERTEX	lpD3DLVERTEX;
 	LPD3DLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
@@ -417,7 +417,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			/*	record how many verts there are in the exec buffer	*/
 			Mloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
-			lpD3DLVERTEX2 = (LPOLDD3DLVERTEX ) Buffer;
+			lpD3DLVERTEX2 = (LPOLDLVERTEX ) Buffer;
 
 			if (FAILED(FSCreateVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], num_vertices)))
 			{
@@ -438,7 +438,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			/*	copy the vertex data into the execute buffer	*/
 			for ( i=0 ; i<num_vertices; i++)
 			{
-				OLDD3DLVERTEX *old = lpD3DLVERTEX2;
+				LPOLDLVERTEX old = lpD3DLVERTEX2;
 
 				lpD3DLVERTEX[i].x = old->x;
 				lpD3DLVERTEX[i].y = old->y;
