@@ -3,7 +3,7 @@
 #include <math.h>
 #include "windows.h"
 #include "typedefs.h"
-#include "dinput.h"
+#include "input.h"
 #include "config.h"
 #include "title.h"
 #include "controls.h"
@@ -73,8 +73,6 @@ extern  BOOL  SecondaryWeaponCheat;
 extern  BOOL  GodMode;
 
 extern  int FontHeight;
-
-int NakedGirls( char *cheat );
 
 /*===================================================================
     Some Keyboard and Mouse Globals
@@ -353,13 +351,11 @@ static struct
 {
 #if CHEATS_AS_PLAINTEXT
   { "BUBBLES", EnableCheats, TRUE },
-  { "TITSOOT", NakedGirls, TRUE },
   { "JIMBEAM", JimBeam, FALSE },
   { "LUMBERJACK", Lumberjack, FALSE },
   { "IAMZEUS", ToggleGodMode, FALSE },
 #else
   { { DIK_B, DIK_U, DIK_B, DIK_B, DIK_L, DIK_E, DIK_S, 0 }, EnableCheats, TRUE },
-  { { DIK_T, DIK_I, DIK_T, DIK_S, DIK_O, DIK_O, DIK_T, 0 }, NakedGirls, TRUE },
   { { DIK_J, DIK_I, DIK_M, DIK_B, DIK_E, DIK_A, DIK_M, 0 }, JimBeam, FALSE },
   { { DIK_L, DIK_U, DIK_M, DIK_B, DIK_E, DIK_R, DIK_J, DIK_A, DIK_C, DIK_K, 0 }, Lumberjack, FALSE },
   { { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
