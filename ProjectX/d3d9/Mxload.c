@@ -66,7 +66,6 @@ extern	DWORD				CurrentDestBlend;
 extern	DWORD				CurrentTextureBlend;
 
 extern	TLOADHEADER Tloadheader;
-extern	D3DMATRIXHANDLE hWorld;
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 extern	BOOL	DrawPanel;

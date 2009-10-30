@@ -45,8 +45,6 @@ extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
 extern	BYTE			Current_Camera_View;
 extern	MATRIX			ProjMatrix;
-extern	D3DVIEWPORT		OldViewPort;
-extern	D3DVIEWPORT		viewport;
 extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;

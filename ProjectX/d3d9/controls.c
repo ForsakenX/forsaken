@@ -36,6 +36,7 @@ extern GLOBALSHIP Ships[];
 extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;
 
+extern render_info_t render_info;
 extern  BOOL  Cheated;
 extern BOOL WaitingToQuit;
 extern BOOL CheatsDisabled;

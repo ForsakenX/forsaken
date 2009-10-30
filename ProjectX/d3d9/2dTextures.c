@@ -34,6 +34,7 @@
 	extern	BYTE	ChangeLevel_MyGameStatus;
 	extern	float	UV_Fix;
 
+extern render_info_t render_info;
 /*===================================================================
 	Globals
 ===================================================================*/

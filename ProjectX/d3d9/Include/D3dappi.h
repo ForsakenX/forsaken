@@ -1,10 +1,6 @@
 #ifndef __D3DAPPI_H__
 #define __D3DAPPI_H__
 
-/*
- * INCLUDED HEADERS
- */
-
 #define WIN32_EXTRA_LEAN
 #include <windows.h>
 #include <windowsx.h>
@@ -17,28 +13,11 @@
 #include <assert.h>
 #include "new3d.h"
 #include "main.h"
+#include "typedefs.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-	
-typedef float D3DVALUE, *LPD3DVALUE;
-
-typedef int D3DMATRIXHANDLE;
-
-typedef struct _D3DVIEWPORT { 
-    DWORD    dwSize; 
-    DWORD    dwX; 
-    DWORD    dwY; 
-    DWORD    dwWidth; 
-    DWORD    dwHeight; 
-    D3DVALUE dvScaleX; 
-    D3DVALUE dvScaleY; 
-    D3DVALUE dvMaxX; 
-    D3DVALUE dvMaxY; 
-    D3DVALUE dvMinZ; 
-    D3DVALUE dvMaxZ; 
-} D3DVIEWPORT, *LPD3DVIEWPORT; 
 
 typedef struct {
     DWORD       X;
@@ -47,8 +26,8 @@ typedef struct {
     DWORD       Height;       /* Viewport Dimensions */
     float       MinZ;         /* Min/max of clip Volume */
     float       MaxZ;
-    D3DVALUE	ScaleX; 
-    D3DVALUE	ScaleY; 
+    float	ScaleX; 
+    float	ScaleY; 
 } render_viewport_t;
 
 typedef struct {
@@ -81,38 +60,21 @@ typedef struct {
 #endif
 } render_info_t;
 
-/*
- * MACROS
- */
-#undef ATTEMPT
-#define ATTEMPT(x) if (!(x)) goto exit_with_error
 #undef RELEASE
 #ifndef __cplusplus
 #define RELEASE(x) {if (x != NULL) {x->lpVtbl->Release(x); x = NULL;}}
 #else
 #define RELEASE(x) {if (x != NULL) {x->Release(); x = NULL;}}
 #endif
+
 #undef MAX
 #define MAX(x, y) ((x) > (y)) ? (x) : (y)
+
 #undef MIN
 #define MIN(x, y) ((x) > (y)) ? (y) : (x)
+
 #undef ZEROMEM
 #define ZEROMEM(x) memset(&x, 0, sizeof(x))
-
-/*
- * GLOBAL VARIABLES
- *    see d3dapp.c for descriptions
- */
-extern render_info_t render_info;
-extern BOOL bIgnoreWM_SIZE;
-
-#ifdef __cplusplus
-};
-#endif
-
-/*
- * INTERNAL FUNCTION PROTOTYPES
- */
 
 void cull_none( void );
 void cull_cw( void );
@@ -129,10 +91,6 @@ const char * render_error_description( HRESULT hr );
 #define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
 BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
-
-#ifdef __cplusplus
-extern "C" {
-#endif
 
 #define MAX_LEVEL_TEXTURE_GROUPS 8
 
@@ -152,38 +110,25 @@ typedef struct TEXTUREGROUP
 	LPDIRECT3DTEXTURE9 texture;
 } TEXTUREGROUP;
 
-/* bjd - move this stuff somewhere more appropriate */
 typedef struct RENDEROBJECT
 {
 	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
 	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
 	D3DMATERIAL9 material;
-	/*BOOL*/int				vbLocked;
+	BOOL			vbLocked;
 	int numTextureGroups;
-
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
-
-	/* add whatever else needed.. */
 } RENDEROBJECT;
 
-/* bjd - move this stuff somewhere more appropriate */
 typedef struct LEVELRENDEROBJECT
 {
 	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
 	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
 	D3DMATERIAL9 material;
-	/*BOOL*/int				vbLocked;
+	BOOL				vbLocked;
 	int numTextureGroups;
-
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
-
-	/* add whatever else needed.. */
 } LEVELRENDEROBJECT;
-
-typedef struct RENDERSTATE
-{
-	int blah; // temp
-} RENDERSTATE;
 
 BOOL render_flip( render_info_t * info );
 HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
@@ -221,16 +166,16 @@ HRESULT draw_2d_object(RENDEROBJECT *renderObject);
 
 typedef struct _OLDD3DLVERTEX {
     union {
-    D3DVALUE     x;             /* Homogeneous coordinates */
-    D3DVALUE     dvX;
+    float     x;             /* Homogeneous coordinates */
+    float     dvX;
     };
     union {
-    D3DVALUE     y;
-    D3DVALUE     dvY;
+    float     y;
+    float     dvY;
     };
     union {
-    D3DVALUE     z;
-    D3DVALUE     dvZ;
+    float     z;
+    float     dvZ;
     };
     DWORD            dwReserved;
     union {
@@ -242,12 +187,12 @@ typedef struct _OLDD3DLVERTEX {
     D3DCOLOR     dcSpecular;
     };
     union {
-    D3DVALUE     tu;            /* Texture coordinates */
-    D3DVALUE     dvTU;
+    float     tu;            /* Texture coordinates */
+    float     dvTU;
     };
     union {
-    D3DVALUE     tv;
-    D3DVALUE     dvTV;
+    float     tv;
+    float     dvTV;
     };
 } OLDD3DLVERTEX, *LPOLDD3DLVERTEX;
 

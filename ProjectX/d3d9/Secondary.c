@@ -177,6 +177,7 @@ extern	char PrimaryNames[7][16];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	float	RegenDelay;
 
+extern render_info_t render_info;
 
 // custom colour messages (Title.c)
 extern int PickupMessageColour;

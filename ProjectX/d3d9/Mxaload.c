@@ -80,18 +80,15 @@ extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPOLDD3DL
 
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
-extern	D3DMATRIXHANDLE hWorld;
 extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
 extern	int16	BikeModels[ MAXBIKETYPES ];
-extern	D3DMATRIXHANDLE hView;
 extern	D3DMATRIX view;
 extern	D3DMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
-extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX  TempWorld;
 
 int16		NewLevelNum;

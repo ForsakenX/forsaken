@@ -61,6 +61,8 @@ extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
 extern	LONGLONG	LargeTime;
 
+extern render_info_t render_info;
+
 // color names are defined in text.h colors_t
 uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 	// r, g, b   values...

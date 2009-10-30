@@ -195,16 +195,16 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
     int i;
 	/*	create a default material for each texture */
 	memset(&mat, 0, sizeof(D3DMATERIAL9));
-	mat.Diffuse.r = (D3DVALUE)1.0;
-	mat.Diffuse.g = (D3DVALUE)1.0;
-	mat.Diffuse.b = (D3DVALUE)1.0;
-	mat.Diffuse.a = (D3DVALUE)1.0;
-	mat.Ambient.r = (D3DVALUE)1.0;
-	mat.Ambient.g = (D3DVALUE)1.0;
-	mat.Ambient.b = (D3DVALUE)1.0;
-	mat.Specular.r = (D3DVALUE)0.0;
-	mat.Specular.g = (D3DVALUE)0.0;
-	mat.Specular.b = (D3DVALUE)0.0;
+	mat.Diffuse.r = (float)1.0;
+	mat.Diffuse.g = (float)1.0;
+	mat.Diffuse.b = (float)1.0;
+	mat.Diffuse.a = (float)1.0;
+	mat.Ambient.r = (float)1.0;
+	mat.Ambient.g = (float)1.0;
+	mat.Ambient.b = (float)1.0;
+	mat.Specular.r = (float)0.0;
+	mat.Specular.g = (float)0.0;
+	mat.Specular.b = (float)0.0;
 	mat.Power = (float)0.0;
 
 	for (i = 0; i<Tloadheader->num_texture_files; i++)
@@ -338,8 +338,15 @@ BOOL
 TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
+
     for (i = 0; i < Tloadheader->num_texture_files; i++)
-        ATTEMPT(TloadTextureSurf( Tloadheader , i));
+	{
+        if(!TloadTextureSurf( Tloadheader, i ))
+		{
+			goto exit_with_error;
+		}
+	}
+
     return TRUE;
 
 exit_with_error:

@@ -61,8 +61,6 @@ extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
 extern	BYTE			Current_Camera_View;
 extern	MATRIX			ProjMatrix;
-extern	D3DVIEWPORT		OldViewPort;
-extern	D3DVIEWPORT		viewport;
 extern	float			pixel_aspect_ratio;
 extern	DWORD			CurrentSrcBlend;
 extern	DWORD			CurrentDestBlend;
@@ -826,15 +824,15 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 
 BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
 {
-	D3DVALUE xmin, ymin, xmax, ymax;
+	float xmin, ymin, xmax, ymax;
 	int clip_topleft, clip_bottomright;
-	D3DVALUE dx, dy;
-	D3DVALUE du, dv;
+	float dx, dy;
+	float du, dv;
 
-	xmin = (D3DVALUE) CurrentCamera.Viewport.X;
-	ymin = (D3DVALUE) CurrentCamera.Viewport.Y;
-	xmax = (D3DVALUE) ( CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width );
-	ymax = (D3DVALUE) ( CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height );
+	xmin = (float) CurrentCamera.Viewport.X;
+	ymin = (float) CurrentCamera.Viewport.Y;
+	xmax = (float) ( CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width );
+	ymax = (float) ( CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height );
 
 	if ( topleft->sx < xmin )
 		clip_topleft = D3DCLIP_LEFT;

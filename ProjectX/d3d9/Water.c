@@ -29,17 +29,14 @@
 ===================================================================*/
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
-extern	D3DMATRIXHANDLE hWorld;
 extern	float	framelag;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
-extern	D3DMATRIXHANDLE hView;
 extern	D3DMATRIX view;
 extern	D3DMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
-extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX  TempWorld;	
 extern	D3DMATRIX identity;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..

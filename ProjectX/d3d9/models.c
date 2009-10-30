@@ -56,10 +56,7 @@ extern	GLOBALSHIP		Ships[MAX_PLAYERS];
 extern	float			framelag;
 extern	XLIGHT * FirstLightVisible;
 
-//extern	D3DMATRIXHANDLE	hView;
-//extern	D3DMATRIX		view;
 extern	D3DMATRIX		identity;
-//extern	D3DMATRIXHANDLE	hWorld;
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -1273,8 +1270,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 					TempWorld._42 = Models[i].Pos.y;
 					TempWorld._43 = Models[i].Pos.z;
 					TempWorld._44 = Models[i].InvMat._44;
-					
-//					if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &TempWorld) != D3D_OK)
+
 					if (FSSetMatrix(D3DTS_WORLD, &TempWorld) != D3D_OK)
 					{
 						Msg( "ModelDisp() SetMatrix1 Failed\n" );
@@ -1493,7 +1489,6 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 
 	//DebugPrintf("drew %d objects\n", count);
 
-//	if (lpDev->lpVtbl->SetMatrix(lpDev, hWorld, &identity) != D3D_OK) // bjd
 	if (FSSetMatrix(D3DTS_WORLD, &identity) != D3D_OK)
 	{
 		Msg( "ModelDisp() SetMatrix2 Failed\n" );

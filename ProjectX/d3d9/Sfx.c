@@ -36,6 +36,8 @@ void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
 #pragma optimize( "gty", on )
 #endif
 
+extern render_info_t render_info;
+
 /****************************************
 globals
 *****************************************/

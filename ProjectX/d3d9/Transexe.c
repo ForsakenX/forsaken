@@ -18,7 +18,6 @@
 		Externals...
 ===================================================================*/
 extern D3DMATRIX identity;
-extern D3DMATRIXHANDLE hWorld;
 extern MODEL Models[MAXNUMOFMODELS];
 extern GLOBALSHIP Ships[MAX_PLAYERS];
 

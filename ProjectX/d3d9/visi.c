@@ -50,8 +50,6 @@ extern	MATRIX			ProjMatrix;
 extern	TLOADHEADER		Tloadheader;
 extern	D3DMATRIX		proj;
 extern	D3DMATRIX		view;
-extern	D3DMATRIXHANDLE hProj;
-extern	D3DMATRIXHANDLE hView;
 extern	MCLOADHEADER	MCloadheader;
 
 extern	DWORD			CurrentSrcBlend;
@@ -1180,7 +1178,6 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	VISGROUP *g;
 	int	i;
 	uint32 t;
-	//float	Start , End;
 
 	Tempproj = proj;
 	Tempview = view;
@@ -1188,19 +1185,12 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	NumOfVertsConsidered= 0;
 	NumOfVertsTouched= 0;
 
-
-//	OldViewPort.dwSize = sizeof(D3DVIEWPORT);
-
 	FSGetViewPort(&OldViewPort);
-/*
-	render_info.lpD3DViewport->lpVtbl->GetViewport( render_info.lpD3DViewport , &OldViewPort );
-*/
 
 	PresentViewPort = OldViewPort;
 
 	GroupImIn = CurrentCamera.GroupImIn;
 
-	// bjd - if you go to the next block the portals will render.
 	if ( GroupImIn != (uint16) -1 )
 	{
 		DisplayBSPNode( OldCollideNode );
@@ -1247,9 +1237,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	}
 
 	rval = FSSetViewPort(&OldViewPort);
-/* bjd
-	render_info.lpD3DViewport->lpVtbl->SetViewport( render_info.lpD3DViewport , &OldViewPort );
-*/
+
     if (rval != D3D_OK) {
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );

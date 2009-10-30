@@ -79,6 +79,7 @@
 #include "shadows.h"
 #endif
 
+extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
@@ -817,9 +818,6 @@ MATRIX  ProjMatrix = {
 /*
  * Global projection, view, world and identity matricies
  */
-//D3DMATRIXHANDLE hProj;
-//D3DMATRIXHANDLE hView;
-//D3DMATRIXHANDLE hWorld;
 
 D3DMATRIX view;
 D3DMATRIX identity = {
@@ -1019,13 +1017,6 @@ BOOL FullScreenViewport()
 	int width, height;
 	int maxwidth, maxheight;
 
-    /*
-     * Setup the viewport for specified viewing area
-     */
-//    memset(&viewport, 0, sizeof(D3DVIEWPORT));
-//    viewport.dwSize = sizeof(D3DVIEWPORT);
-//    rval = render_info.lpD3DViewport->lpVtbl->GetViewport(render_info.lpD3DViewport, &viewport);
-//    if (rval != D3D_OK) {
 	rval = FSGetViewPort(&viewport);
 	if (FAILED(rval))
 	{
@@ -1051,8 +1042,7 @@ BOOL FullScreenViewport()
     viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
                                        D3DVAL(2 * viewport.dvScaleY));
 */
-//    rval = render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &viewport);
- //   if (rval != D3D_OK) {
+
 	if (FAILED(FSSetViewPort(&viewport)))
 	{
 #ifdef DEBUG_VIEWPORT
@@ -1063,7 +1053,6 @@ BOOL FullScreenViewport()
         return FALSE;
     }
 	SetFOV( hfov );
-	// clear viewport
 	FSClearBlack();
 	return TRUE;
 }
@@ -2902,7 +2891,7 @@ char NodeName[256];
   Output    :   nothing
 ===================================================================*/
 extern void ReleaseView(void);
-BOOL RenderScene(/*LPDIRECT3DDEVICE Null1,*/ /*D3DVIEWPORT *Null2*/ )
+BOOL RenderScene( void )
 {
   uint16  i,e;
   char  buf[256];
@@ -5783,7 +5772,6 @@ BOOL Disp3dPanel( void )
 	render_viewport_t newviewport;
 	float screen_width, screen_height;
 
- //   newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;
 	newviewport.Y = 0;
     newviewport.Width = render_info.szClient.cx;
@@ -6110,7 +6098,6 @@ BOOL DispTracker( void ) // bjd
 
 	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
 
-//    newviewport.dwSize = sizeof(D3DVIEWPORT);
     newviewport.X = 0;	
 	newviewport.Y = 0;
     newviewport.Width = ( render_info.szClient.cx / 3 ) & -2;
@@ -6132,7 +6119,6 @@ BOOL DispTracker( void ) // bjd
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-//	if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &panelproj) != D3D_OK)
 	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
 	{
 		return FALSE;
@@ -6175,7 +6161,6 @@ BOOL DispTracker( void ) // bjd
 	view._43 = ( 280.0F * GLOBAL_SCALE );
 	view._44 = 1.0F;
 
-//  if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK) // bjd
 	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		return FALSE;
 
@@ -6242,7 +6227,6 @@ BOOL DispTracker( void ) // bjd
     view._43 = TempVector.z + ( 280.0F * GLOBAL_SCALE );
     view._44 = 1.0F;
 
-//    if (lpDev->lpVtbl->SetMatrix(lpDev, hView, &view) != D3D_OK)
 	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
 		return FALSE;
 
@@ -6254,7 +6238,6 @@ BOOL DispTracker( void ) // bjd
 	if (FSSetViewPort(&viewport) != D3D_OK )
 		return FALSE;
 
-// if (lpD3Ddev->lpVtbl->SetMatrix(lpD3Ddev, hProj, &proj) != D3D_OK)
 	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
 	{
 		return FALSE;

@@ -56,6 +56,8 @@
 
 //#pragma optimize( "gty", on )
 
+extern render_info_t render_info;
+
 extern int default_x;
 extern int default_y;
 extern BOOL HideCursor;
@@ -239,8 +241,6 @@ extern int16		NewLevelNum;
 extern int16		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
 extern	BOOL                    IsHost;
-//extern	D3DMATRIXHANDLE hView;
-//extern	D3DMATRIXHANDLE hWorld;
 extern	D3DMATRIX view;
 extern	BOOL ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
@@ -257,6 +257,7 @@ extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	MyRandomPickups;
+extern  BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 
 /*===================================================================
 		Mode changing stuff..

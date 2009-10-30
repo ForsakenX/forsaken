@@ -114,7 +114,6 @@ num_start_points : uint16
 extern	TRIGGERMOD	*	TrigMods;
 extern	MATRIX ProjMatrix;
 extern	TLOADHEADER Tloadheader;
-extern  D3DMATRIXHANDLE hWorld;
 extern	MLOADHEADER Mloadheader;
 extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
