@@ -524,10 +524,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\render_d3d.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\demo.c"
 				>
 			</File>
@@ -553,6 +549,14 @@
 			</File>
 			<File
 				RelativePath=".\icon.rc"
+				>
+			</File>
+			<File
+				RelativePath=".\input.h"
+				>
+			</File>
+			<File
+				RelativePath=".\input_dinput.c"
 				>
 			</File>
 			<File
@@ -645,6 +649,10 @@
 			</File>
 			<File
 				RelativePath="Quat.c"
+				>
+			</File>
+			<File
+				RelativePath=".\render_d3d.cpp"
 				>
 			</File>
 			<File

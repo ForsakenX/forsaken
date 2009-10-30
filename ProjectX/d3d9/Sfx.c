@@ -25,6 +25,8 @@
 #include "SBufferHand.h"
 #include "util.h"
 
+#define DIRECTSOUND_VERSION 0x0700
+
 void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
 
 #ifdef DEBUG_ON

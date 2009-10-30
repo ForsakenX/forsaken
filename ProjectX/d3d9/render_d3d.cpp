@@ -1,6 +1,8 @@
 
 #include <d3dx9.h>
 
+#define DIRECT3D_VERSION    0x0900
+
 extern "C" {
 #include "typedefs.h"
 #include "render.h"

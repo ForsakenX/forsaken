@@ -1,10 +1,6 @@
 #ifndef	DATATYPES
 #define	DATATYPES
 
-#define DIRECT3D_VERSION    0x0900
-#define DIRECTSOUND_VERSION 0x0700
-#define DIRECTINPUT_VERSION 0x0700
-
 #ifndef	TRUE
 #define	TRUE					(1==1)
 #endif
