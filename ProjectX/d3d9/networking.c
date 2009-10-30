@@ -23,7 +23,7 @@
 #include "mload.h"
 #include "text.h"
 #include "models.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "net.h"
 #include "Lights.h"
 #include "title.h"

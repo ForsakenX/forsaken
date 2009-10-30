@@ -14,7 +14,7 @@
 #include <d3d9.h>
 #include "typedefs.h"
 #include "file.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "new3d.h"
 #include "Tload.h"
 #include "Mload.h"

@@ -7,7 +7,7 @@
 
 #include "main.h"
 #include "typedefs.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "quat.h"
 #include "CompObjects.h"
 #include "object.h"

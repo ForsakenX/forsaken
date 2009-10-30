@@ -8,7 +8,7 @@
 #include "typedefs.h"
 #include "main.h"
 #include "net.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "title.h"
 #include "typedefs.h"
 #include "new3d.h"

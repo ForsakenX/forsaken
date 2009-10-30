@@ -12,7 +12,7 @@
 
 #include "version.h"
 #include "typedefs.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "xmem.h"
 #include "sbufferhand.h"
 #include "util.h"

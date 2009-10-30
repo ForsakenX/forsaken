@@ -17,7 +17,7 @@
 #include "primary.h"
 #include "secondary.h"
 #include "sfx.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "util.h"
 
 #if 1

@@ -25,7 +25,7 @@
 #include "local.h"
 #include "stats.h"
 #include "util.h"
-#include "d3dappi.h"
+#include "render.h"
 
 #define MSG_VERSION_NUMBER 1
 

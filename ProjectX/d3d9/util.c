@@ -187,7 +187,7 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid)
 //
 
 // temporarily jumps to desktop mode
-#include "d3dappi.h"
+#include "render.h"
 #include "title.h"
 extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );

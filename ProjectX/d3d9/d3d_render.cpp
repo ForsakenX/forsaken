@@ -3,7 +3,7 @@
 
 extern "C" {
 #include "typedefs.h"
-#include "d3dappi.h"
+#include "render.h"
 #include "tload.h"
 #include "new3d.h"
 #include <assert.h>

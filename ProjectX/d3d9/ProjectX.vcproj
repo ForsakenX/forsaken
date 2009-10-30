@@ -793,10 +793,6 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\D3dappi.h"
-				>
-			</File>
-			<File
 				RelativePath=".\demo.h"
 				>
 			</File>
@@ -918,6 +914,10 @@
 			</File>
 			<File
 				RelativePath="Include\quat.h"
+				>
+			</File>
+			<File
+				RelativePath=".\Include\render.h"
 				>
 			</File>
 			<File

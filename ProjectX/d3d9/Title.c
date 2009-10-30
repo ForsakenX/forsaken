@@ -49,7 +49,7 @@
 #include "net_tracker.h"
 #include "lua_games.h"
 #include "timer.h"
-#include "d3dappi.h"
+#include "render.h"
 
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
@@ -257,7 +257,7 @@ extern	char *SecondaryDescription[];
 extern	BOOL	ShowUntriggeredNMEs;
 extern	BOOL	BilinearSolidScrPolys;
 extern	BOOL	MyRandomPickups;
-extern  BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
+extern  BOOL bIgnoreWM_SIZE;
 
 /*===================================================================
 		Mode changing stuff..

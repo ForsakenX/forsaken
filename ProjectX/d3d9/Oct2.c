@@ -72,7 +72,7 @@
 #include "demo.h"
 #include "file.h"
 #include "singleplayer.h"
-#include "d3dappi.h"
+#include "render.h"
 
 #ifdef SHADOWTEST
 #include "triangles.h"
