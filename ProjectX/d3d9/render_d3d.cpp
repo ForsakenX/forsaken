@@ -11,6 +11,7 @@ extern "C" {
 #include <assert.h>
 #include "util.h"
 #include <dxerr9.h>
+#include "file.h"
 
 // prototypes
 static BOOL init_render_states( render_info_t * info );
@@ -1028,9 +1029,19 @@ char * d3d_format( D3DFORMAT format )
 	}
 }
 
+
 HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey, D3DPOOL pool)
 {
 	D3DXIMAGE_INFO imageInfo;
+
+	// if the file doesn't exist
+	char real_file[256];
+	if( ! File_Exists( (char*) fileName ) )
+	{
+		// try to find a png version
+		Change_Ext( (char*) fileName, real_file, ".PNG" );
+		fileName = &real_file[0];
+	}
 
 	HRESULT LastError = D3DXCreateTextureFromFileEx(lpD3DDevice, 
 				fileName, 
@@ -1175,7 +1186,6 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 
 HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
 {
-	// had to use the default pool so we could update the texture above
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
 

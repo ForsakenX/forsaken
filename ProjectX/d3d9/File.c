@@ -108,7 +108,7 @@ long Write_File( char * Filename, char * File_Buffer, long Write_Size )
 				:		uint8	*	Extension to add
 	Output		:		Nothing
 ===================================================================*/
-void Change_Ext( uint8 * Src, uint8 * Dest, uint8 * Ext )
+void Change_Ext( char * Src, char * Dest, char * Ext )
 {
 	uint8	*	Char_Ptr;
 

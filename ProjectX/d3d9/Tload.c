@@ -347,6 +347,9 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
 
 	Change_Ext( &Tloadheader->ImageFile[i][0], &NewName2[ 0 ], ".BMP" );
 
+	if( !File_Exists( &NewName2[ 0 ] ) )
+		Change_Ext( &Tloadheader->ImageFile[i][0], &NewName2[ 0 ], ".PNG" );
+
 	if( File_Exists( &NewName2[ 0 ] ) )
 	{
 		fp = fopen( &NewName2[ 0 ], "rb" );
@@ -358,35 +361,37 @@ TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width
 		*Width = (uint16) abs(Header.biWidth);
 		*Height = (uint16) abs(Header.biHeight);
 
-	}else{
-		/*
-		 * Find the image file and open it
-		 */
-		strcpy( &TempFilename[ 0 ], (char *) lpName );
-		fp = fopen( &TempFilename[ 0 ], "rb" );
-		if (fp == NULL) {
-			Msg( "Couldnt Find %s\n", lpName );
-			return FALSE;
-		}
-		// Is it a PPM file?
-		fgets(buf, sizeof buf, fp);
-		if (lstrcmp(buf, "P6\n")) {
-			fclose(fp);
-			Msg( "%s Is Not a PPM File\n", lpName );
-			return FALSE;
-		}
-		// Skip any comments
-		do {
-			fgets(buf, sizeof buf, fp);
-		} while (buf[0] == '#');
-		// Read the width and height
-		sscanf(buf, "%d %d\n", &dwWidth, &dwHeight);
-		// close the file
-		fclose(fp);
-		// store the width and heights
-		*Width = (uint16) dwWidth;
-		*Height = (uint16) dwHeight;
+		return TRUE;
 	}
+
+	/*
+	 * Find the image file and open it
+	 */
+	strcpy( &TempFilename[ 0 ], (char *) lpName );
+	fp = fopen( &TempFilename[ 0 ], "rb" );
+	if (fp == NULL) {
+		Msg( "Couldnt Find %s\n", lpName );
+		return FALSE;
+	}
+	// Is it a PPM file?
+	fgets(buf, sizeof buf, fp);
+	if (lstrcmp(buf, "P6\n")) {
+		fclose(fp);
+		Msg( "%s Is Not a PPM File\n", lpName );
+		return FALSE;
+	}
+	// Skip any comments
+	do {
+		fgets(buf, sizeof buf, fp);
+	} while (buf[0] == '#');
+	// Read the width and height
+	sscanf(buf, "%d %d\n", &dwWidth, &dwHeight);
+	// close the file
+	fclose(fp);
+	// store the width and heights
+	*Width = (uint16) dwWidth;
+	*Height = (uint16) dwHeight;
+
 	return TRUE;
 }
 
