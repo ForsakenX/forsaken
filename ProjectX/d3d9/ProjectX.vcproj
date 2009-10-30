@@ -524,7 +524,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\d3d_render.cpp"
+				RelativePath=".\render_d3d.cpp"
 				>
 			</File>
 			<File
@@ -917,7 +917,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\render.h"
+				RelativePath="render.h"
 				>
 			</File>
 			<File
