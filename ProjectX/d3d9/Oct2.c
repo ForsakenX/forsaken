@@ -531,7 +531,6 @@ BOOL  ClearBuffers( void );
 BOOL  ClearZBuffer( void );
 
 BOOL RenderCurrentCamera( void );
-void FreeSfxHolder( int index ) ;
 
 void  PlotSimplePanel( void );
 
@@ -4515,41 +4514,6 @@ void MainRoutines( void )
 	//DebugPrintf("MainRoutines Finished...\n");
 }
 
-void CheckForRogueSfx( void )
-{ 
-  DWORD current_time, dwStatus;
-  int i;
-
-  // Dirty hack to kill off any rogue sfx!! 
-  if ( bSoundEnabled && NumDupCompoundBuffers )
-  {
-    current_time = GetTickCount();
-
-    for ( i = 0; i < NumDupCompoundBuffers; i++ )
-    {
-      IDirectSoundBuffer_GetStatus( CompoundSfxBuffer[ i ].buffer, &dwStatus );
-
-      // if buffer is playing, check whether it should have stopped by now...
-      if (dwStatus & DSBSTATUS_PLAYING)
-      {
-        if ( current_time > ( CompoundSfxBuffer[ i ].finish_time + 50 ) )
-        {
-          DebugPrintf("Rogue SFX killed off: SfxNum %d, SndObj index %d, start time %d finish time %d ( current time %d ), timerID %d  \n",
-          CompoundSfxBuffer[ i ].current_sfx, CompoundSfxBuffer[ i ].compound_buffer_lookup_index, CompoundSfxBuffer[ i ].start_time,
-          CompoundSfxBuffer[ i ].finish_time, current_time, CompoundSfxBuffer[ i ].timerID);
-
-          KillCompoundSfxBuffer( i );
-
-          //SfxHolder[ CompoundSfxBuffer[ i ].SfxHolderIndex ].Used = FALSE;
-          FreeSfxHolder( CompoundSfxBuffer[ i ].SfxHolderIndex );
-  
-
-        }
-      }
-    }
-  }
-}
-
 void CheckLevelEnd ( void )
 {
 
@@ -4620,8 +4584,8 @@ void CheckLevelEnd ( void )
   Output    :   nothing
 ===================================================================*/
 
-BOOL
-MainGame( void ) // bjd
+extern void CheckForRogueSfx( void );
+BOOL MainGame( void ) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
