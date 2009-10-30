@@ -19,10 +19,29 @@ static BOOL init_render_states( render_info_t * info );
 // D3DPTEXTURECAPS_SQUAREONLY
 BOOL  bSquareOnly = FALSE;
 
+// Build a Gamma Correction table
+BYTE  gamma_lookup[256];
+void render_gamma_correction( double gamma )
+{
+	double k;
+	int i;
 
-/***************************************************************************/
-/*                            Creation of D3D                              */
-/***************************************************************************/
+	// recover in release build
+	if (gamma <= 0)
+	    gamma = 1.0;
+	
+	k = 255.0/pow(255.0, 1.0/gamma);
+	
+	for (i = 0; i <= 255; i++)
+	{
+	    gamma_lookup[i] = (BYTE)(k*(pow((double)i, 1.0/gamma)));
+		if( i )
+		{
+			if( !gamma_lookup[i] )
+				gamma_lookup[i] = 1;
+		}
+	}
+};
 
 BOOL render_initialized = FALSE;
 
@@ -34,6 +53,9 @@ BOOL init_renderer( render_info_t * info )
 	HRESULT LastError;
 	render_viewport_t viewport;
 	int bpp = 16;
+
+	// default gamma table
+	render_gamma_correction(1.0);
 
 	// Set up Direct3D interface object
 	lpD3D = Direct3DCreate9(D3D_SDK_VERSION);
@@ -744,8 +766,6 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
-extern BYTE GammaTab[256];
-
 char * d3d_image_file_formats[] =
 {
 "D3DXIFF_BMP",
@@ -1076,11 +1096,11 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 				// (x*size) is the length of each pixel data
 				DWORD index = (x*size)+(y*lrect.Pitch);
 				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
-				pBits[index]   = (BYTE)GammaTab[pBits[index]];	// Blue
-				pBits[index+1] = (BYTE)GammaTab[pBits[index+1]];// Green
-				pBits[index+2] = (BYTE)GammaTab[pBits[index+2]];// Red
+				pBits[index]   = (BYTE)gamma_lookup[pBits[index]];	// Blue
+				pBits[index+1] = (BYTE)gamma_lookup[pBits[index+1]];// Green
+				pBits[index+2] = (BYTE)gamma_lookup[pBits[index+2]];// Red
 				// i did not see any alpha values changed for gamma in d3d6 version
-				//pBits[index+3] = (BYTE)GammaTab[pBits[index+3]];// Alpha
+				//pBits[index+3] = (BYTE)gamma_lookup[pBits[index+3]];// Alpha
 			}
 		}
 		_texture->UnlockRect(0);
@@ -1120,10 +1140,10 @@ static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE
 			DWORD srcIndex = (x*4)+(y*srcRect.Pitch);
 			DWORD dstIndex = (x*4)+(y*dstRect.Pitch);
 			// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
-			dstBits[dstIndex]   = (BYTE)GammaTab[srcBits[srcIndex]];	// Blue
-			dstBits[dstIndex+1] = (BYTE)GammaTab[srcBits[srcIndex+1]];	// Green
-			dstBits[dstIndex+2] = (BYTE)GammaTab[srcBits[srcIndex+2]];	// Red
-			dstBits[dstIndex+3] = (BYTE)GammaTab[srcBits[srcIndex+3]];	// Alpha
+			dstBits[dstIndex]   = (BYTE)gamma_lookup[srcBits[srcIndex]];	// Blue
+			dstBits[dstIndex+1] = (BYTE)gamma_lookup[srcBits[srcIndex+1]];	// Green
+			dstBits[dstIndex+2] = (BYTE)gamma_lookup[srcBits[srcIndex+2]];	// Red
+			dstBits[dstIndex+3] = (BYTE)gamma_lookup[srcBits[srcIndex+3]];	// Alpha
 		}
 	}
 	dstTexture->UnlockRect(0);
