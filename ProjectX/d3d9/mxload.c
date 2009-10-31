@@ -39,16 +39,16 @@ mxtype : uint16 // always 0 for mx format
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "mxload.h"
 #include "models.h"
 
 #include "sfx.h"
 #include "spotfx.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

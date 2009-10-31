@@ -7,9 +7,9 @@
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 
 #include "2dtextures.h"
@@ -20,8 +20,8 @@
 
 #include <math.h>
 #include <time.h>
-#include "Ships.h"
-#include "Mload.h"
+#include "ships.h"
+#include "mload.h"
 #include "collision.h"
 #include "lights.h"
 #include "2dpolys.h"
@@ -41,7 +41,7 @@
 
 #include "goal.h"
 #include "local.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 #ifdef OPT_ON

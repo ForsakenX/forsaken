@@ -1,6 +1,6 @@
 
 #include "typedefs.h"
-#include "New3D.h"
+#include "new3d.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

@@ -6,12 +6,12 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 
-#include "Transexe.h"
+#include "transexe.h"
 #include "models.h"
 
 /*===================================================================

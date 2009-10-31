@@ -6,9 +6,9 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "triggers.h"
 #include <d3d9.h>
@@ -16,12 +16,12 @@
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
-#include "Tload.h"
-#include "Mload.h"
-#include "Transexe.h"
+#include "tload.h"
+#include "mload.h"
+#include "transexe.h"
 #include "water.h"
 
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

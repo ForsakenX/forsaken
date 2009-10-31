@@ -33,14 +33,14 @@
 #include <stdio.h>
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
-#include "Object.h"
+#include "compobjects.h"
+#include "object.h"
 #include "networking.h"
 #include "2dtextures.h"
 #include "primary.h"
 #include "secondary.h"
 #include "visi.h"
-#include "Text.h"
+#include "text.h"
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on

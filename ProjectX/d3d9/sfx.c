@@ -8,9 +8,9 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "mload.h"
 #include "networking.h"
 #include <objbase.h>
@@ -22,8 +22,8 @@
 #include "ships.h"
 #include "vfw.h"
 #include "config.h"
-#include "XMem.h"
-#include "SBufferHand.h"
+#include "xmem.h"
+#include "sbufferhand.h"
 #include "util.h"
 
 void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );

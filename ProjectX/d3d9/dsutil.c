@@ -19,7 +19,7 @@
 #include "file.h"
 #include "dsutil.h"
 #include "sfx.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 static const char c_szWAV[] = "WAV";

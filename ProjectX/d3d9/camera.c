@@ -7,14 +7,14 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "mload.h"
 #include "camera.h"
 
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 #define	CAM_VERSION_NUMBER 1

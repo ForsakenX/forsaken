@@ -5,9 +5,9 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "controls.h"
 #include <windows.h>
@@ -19,7 +19,7 @@
 #include "models.h"
 #include "mxaload.h"
 #include "config.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 extern int	Num_Joysticks;

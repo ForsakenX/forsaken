@@ -50,9 +50,9 @@ num_frames : uint16 // number of animation frames
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "triggers.h"
 #include "pickups.h"
@@ -61,7 +61,7 @@ num_frames : uint16 // number of animation frames
 
 #include "sfx.h"
 #include "spotfx.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

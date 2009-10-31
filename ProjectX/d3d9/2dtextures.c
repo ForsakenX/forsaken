@@ -5,9 +5,9 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "util.h"
 
@@ -21,7 +21,7 @@
 #include	"triggers.h"
 #include	"pickups.h"
 #include	"restart.h"
-#include	"XMem.h"
+#include	"xmem.h"
 
 /*===================================================================
 	External variables

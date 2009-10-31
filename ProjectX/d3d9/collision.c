@@ -10,9 +10,9 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "collision.h"
 #include "trigarea.h"
@@ -24,8 +24,8 @@
 
 #include "sphere.h"
 #include "secondary.h"
-#include "Restart.h"
-#include "XMem.h"
+#include "restart.h"
+#include "xmem.h"
 #include "util.h"
 
 //#undef COLLISION_FUDGE

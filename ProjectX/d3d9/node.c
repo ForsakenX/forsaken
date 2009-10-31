@@ -21,10 +21,10 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "Node.h"
-#include "CompObjects.h"
+#include "node.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "file.h"
 #include "triggers.h"
@@ -33,11 +33,11 @@
 #include "mload.h"
 #include <d3d9.h>
 #include "render.h"
-#include "AI.h"
+#include "ai.h"
 #include "lines.h"
 
 #include "collision.h"
-#include "XMem.h"
+#include "xmem.h"
 
 /*===================================================================
 		Defines

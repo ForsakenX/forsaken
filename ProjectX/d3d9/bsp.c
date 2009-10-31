@@ -11,7 +11,7 @@
 #include "bsp.h"
 #include "file.h"
 
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 

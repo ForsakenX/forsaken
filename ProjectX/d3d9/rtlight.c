@@ -6,16 +6,16 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "CompObjects.h"
-#include "Object.h"
+#include "compobjects.h"
+#include "object.h"
 #include "networking.h"
 #include "triggers.h"
 #include "pickups.h"
 #include "util.h"
 #include "rtlight.h"
-#include "Lights.h"
+#include "lights.h"
 
-#include "XMem.h"
+#include "xmem.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

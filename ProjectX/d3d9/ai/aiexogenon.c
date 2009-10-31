@@ -7,10 +7,10 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "Node.h"
+#include "node.h"
 #include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "ships.h"
 #include "text.h"
@@ -19,9 +19,9 @@
 #include "pickups.h"
 #include "compobjects.h"
 #include "enemies.h"
-#include "AI.h"
-#include "Primary.h"
-#include "Secondary.h"
+#include "ai.h"
+#include "primary.h"
+#include "secondary.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

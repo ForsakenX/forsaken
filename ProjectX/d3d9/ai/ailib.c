@@ -7,10 +7,10 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "Node.h"
-#include "CompObjects.h"
+#include "node.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "ships.h"
 #include "2dpolys.h"
@@ -24,7 +24,7 @@
 #include "pickups.h"
 #include "enemies.h"
 #include "controls.h"
-#include "AI.h"
+#include "ai.h"
 #include "lines.h"
 
 #ifdef OPT_ON

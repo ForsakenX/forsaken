@@ -9,9 +9,9 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "ships.h"
 #include "2dpolys.h"
@@ -31,7 +31,7 @@
 #include "spotfx.h"
 #include "node.h"
 #include "controls.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

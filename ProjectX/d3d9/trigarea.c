@@ -39,13 +39,13 @@ num_zones : uint16
 #include "new3d.h"
 #include "quat.h"
 #include "main.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "file.h"
-#include "Triggers.h"
-#include "TrigArea.h"
+#include "triggers.h"
+#include "trigarea.h"
 #include "pickups.h"
 #include "mload.h"
 #include "bsp.h"
@@ -54,7 +54,7 @@ num_zones : uint16
 
 #include "primary.h"
 #include "secondary.h"
-#include "XMem.h"
+#include "xmem.h"
 #include "util.h"
 
 

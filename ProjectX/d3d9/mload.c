@@ -96,16 +96,16 @@ num_start_points : uint16
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "Local.h"
-#include "CompObjects.h"
+#include "local.h"
+#include "compobjects.h"
 #include "bgobjects.h"
-#include "Object.h"
+#include "object.h"
 #include "networking.h"
 #include "mload.h"
 #include "lights.h"
 #include "triggers.h"
 
-#include "Xmem.h"
+#include "xmem.h"
 #include "util.h"
 
 /*===================================================================
