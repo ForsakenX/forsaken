@@ -416,39 +416,39 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="2dPolys.c"
+				RelativePath="2dpolys.c"
 				>
 			</File>
 			<File
-				RelativePath="2dTextures.c"
+				RelativePath="2dtextures.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiCrashAndBurn.c"
+				RelativePath="ai\aicrashandburn.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiDogfight.c"
+				RelativePath="ai\aidogfight.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiExogenon.c"
+				RelativePath="ai\aiexogenon.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiFire.c"
+				RelativePath="ai\aifire.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiFleshmorph.c"
+				RelativePath="ai\aifleshmorph.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiFollow.c"
+				RelativePath="ai\aifollow.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiFormation.c"
+				RelativePath="ai\aiformation.c"
 				>
 			</File>
 			<File
@@ -456,7 +456,7 @@
 				>
 			</File>
 			<File
-				RelativePath="ai\aiKillMine.c"
+				RelativePath="ai\aikillmine.c"
 				>
 			</File>
 			<File
@@ -472,15 +472,15 @@
 				>
 			</File>
 			<File
-				RelativePath="ai\aiPingOff.c"
+				RelativePath="ai\aipingoff.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiPsycho.c"
+				RelativePath="ai\aipsycho.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiRetreat.c"
+				RelativePath="ai\airetreat.c"
 				>
 			</File>
 			<File
@@ -488,11 +488,11 @@
 				>
 			</File>
 			<File
-				RelativePath="ai\aiSpline.c"
+				RelativePath="ai\aispline.c"
 				>
 			</File>
 			<File
-				RelativePath="BGObjects.c"
+				RelativePath="bgobjects.c"
 				>
 			</File>
 			<File
@@ -500,11 +500,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Bsp.c"
+				RelativePath="bsp.c"
 				>
 			</File>
 			<File
-				RelativePath="Camera.c"
+				RelativePath="camera.c"
 				>
 			</File>
 			<File
@@ -512,7 +512,7 @@
 				>
 			</File>
 			<File
-				RelativePath="CompObjects.c"
+				RelativePath="compobjects.c"
 				>
 			</File>
 			<File
@@ -528,7 +528,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Dsutil.c"
+				RelativePath="dsutil.c"
 				>
 			</File>
 			<File
@@ -540,7 +540,7 @@
 				>
 			</File>
 			<File
-				RelativePath="File.c"
+				RelativePath="file.c"
 				>
 			</File>
 			<File
@@ -560,15 +560,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Lights.c"
+				RelativePath="lights.c"
 				>
 			</File>
 			<File
-				RelativePath="Lines.c"
+				RelativePath="lines.c"
 				>
 			</File>
 			<File
-				RelativePath="LoadSave.c"
+				RelativePath="loadsave.c"
 				>
 			</File>
 			<File
@@ -592,7 +592,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Mload.c"
+				RelativePath="mload.c"
 				>
 			</File>
 			<File
@@ -600,15 +600,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Multiplayer.c"
+				RelativePath="multiplayer.c"
 				>
 			</File>
 			<File
-				RelativePath="Mxaload.c"
+				RelativePath="mxaload.c"
 				>
 			</File>
 			<File
-				RelativePath=".\Mxload.c"
+				RelativePath=".\mxload.c"
 				>
 			</File>
 			<File
@@ -624,31 +624,31 @@
 				>
 			</File>
 			<File
-				RelativePath="New3d.c"
+				RelativePath="new3d.c"
 				>
 			</File>
 			<File
-				RelativePath="Node.c"
+				RelativePath="node.c"
 				>
 			</File>
 			<File
-				RelativePath="Oct2.c"
+				RelativePath="oct2.c"
 				>
 			</File>
 			<File
-				RelativePath="Pickups.c"
+				RelativePath="pickups.c"
 				>
 			</File>
 			<File
-				RelativePath="Polys.c"
+				RelativePath="polys.c"
 				>
 			</File>
 			<File
-				RelativePath="Primary.c"
+				RelativePath="primary.c"
 				>
 			</File>
 			<File
-				RelativePath="Quat.c"
+				RelativePath="quat.c"
 				>
 			</File>
 			<File
@@ -664,7 +664,7 @@
 				>
 			</File>
 			<File
-				RelativePath="SBufferHand.c"
+				RelativePath="sbufferhand.c"
 				>
 			</File>
 			<File
@@ -672,15 +672,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Secondary.c"
+				RelativePath="secondary.c"
 				>
 			</File>
 			<File
-				RelativePath="Sfx.c"
+				RelativePath="sfx.c"
 				>
 			</File>
 			<File
-				RelativePath="Ships.c"
+				RelativePath="ships.c"
 				>
 			</File>
 			<File
@@ -692,7 +692,7 @@
 				>
 			</File>
 			<File
-				RelativePath="Sphere.c"
+				RelativePath="sphere.c"
 				>
 			</File>
 			<File
@@ -704,15 +704,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Stdwin.c"
+				RelativePath="stdwin.c"
 				>
 			</File>
 			<File
-				RelativePath="Teleport.c"
+				RelativePath="teleport.c"
 				>
 			</File>
 			<File
-				RelativePath="Text.c"
+				RelativePath="text.c"
 				>
 			</File>
 			<File
@@ -720,23 +720,23 @@
 				>
 			</File>
 			<File
-				RelativePath="Title.c"
+				RelativePath="title.c"
 				>
 			</File>
 			<File
-				RelativePath="Tload.c"
+				RelativePath="tload.c"
 				>
 			</File>
 			<File
-				RelativePath="Transexe.c"
+				RelativePath="transexe.c"
 				>
 			</File>
 			<File
-				RelativePath="TrigArea.c"
+				RelativePath="trigarea.c"
 				>
 			</File>
 			<File
-				RelativePath="Triggers.c"
+				RelativePath="triggers.c"
 				>
 			</File>
 			<File
@@ -748,11 +748,11 @@
 				>
 			</File>
 			<File
-				RelativePath="Water.c"
+				RelativePath="water.c"
 				>
 			</File>
 			<File
-				RelativePath="XMem.c"
+				RelativePath="xmem.c"
 				>
 			</File>
 		</Filter>
