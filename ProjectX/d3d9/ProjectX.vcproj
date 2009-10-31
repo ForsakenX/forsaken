@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -245,7 +245,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -343,7 +343,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\AI\AIinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -424,71 +424,71 @@
 				>
 			</File>
 			<File
-				RelativePath="Ai\AICrashAndBurn.c"
+				RelativePath="ai\aiCrashAndBurn.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIDogfight.c"
+				RelativePath="ai\aiDogfight.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIExogenon.c"
+				RelativePath="ai\aiExogenon.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIFire.c"
+				RelativePath="ai\aiFire.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIFleshmorph.c"
+				RelativePath="ai\aiFleshmorph.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AiFollow.c"
+				RelativePath="ai\aiFollow.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AiFormation.c"
+				RelativePath="ai\aiFormation.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\Aiidle.c"
+				RelativePath="ai\aiidle.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIKillMine.c"
+				RelativePath="ai\aiKillMine.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\Ailib.c"
+				RelativePath="ai\ailib.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\Aimain.c"
+				RelativePath="ai\aimain.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\Aimovet.c"
+				RelativePath="ai\aimovet.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIPingOff.c"
+				RelativePath="ai\aiPingOff.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIPsycho.c"
+				RelativePath="ai\aiPsycho.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AiRetreat.c"
+				RelativePath="ai\aiRetreat.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\Aiscan.c"
+				RelativePath="ai\aiscan.c"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AISpline.c"
+				RelativePath="ai\aiSpline.c"
 				>
 			</File>
 			<File
@@ -761,43 +761,43 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
-				RelativePath="Include\2dPolys.h"
+				RelativePath="include\2dPolys.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\2dtextures.h"
+				RelativePath="include\2dtextures.h"
 				>
 			</File>
 			<File
-				RelativePath="Ai\AIinclude\Ai.h"
+				RelativePath="ai\aiinclude\ai.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\BGObjects.h"
+				RelativePath="include\BGObjects.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Bsp.h"
+				RelativePath="include\Bsp.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\camera.h"
+				RelativePath="include\camera.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\collision.h"
+				RelativePath="include\collision.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\CompObjects.h"
+				RelativePath="include\CompObjects.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\config.h"
+				RelativePath="include\config.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\controls.h"
+				RelativePath="include\controls.h"
 				>
 			</File>
 			<File
@@ -805,47 +805,47 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\Dsutil.h"
+				RelativePath="include\Dsutil.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\enemies.h"
+				RelativePath="include\enemies.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\EnglishLocal.h"
+				RelativePath="include\EnglishLocal.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\ExtForce.h"
+				RelativePath="include\ExtForce.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\File.h"
+				RelativePath="include\File.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\goal.h"
+				RelativePath="include\goal.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Lights.h"
+				RelativePath="include\Lights.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\lines.h"
+				RelativePath="include\lines.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\LoadSave.h"
+				RelativePath="include\LoadSave.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Include\Local.h"
+				RelativePath=".\include\Local.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Include\localtitle.h"
+				RelativePath=".\include\localtitle.h"
 				>
 			</File>
 			<File
@@ -861,27 +861,27 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\main.h"
+				RelativePath="include\main.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Mload.h"
+				RelativePath="include\Mload.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\models.h"
+				RelativePath="include\models.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\MultiPlayer.h"
+				RelativePath="include\MultiPlayer.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Mxaload.h"
+				RelativePath="include\Mxaload.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Mxload.h"
+				RelativePath="include\Mxload.h"
 				>
 			</File>
 			<File
@@ -893,35 +893,35 @@
 				>
 			</File>
 			<File
-				RelativePath=".\Include\networking.h"
+				RelativePath=".\include\networking.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\New3d.h"
+				RelativePath="include\New3d.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Node.h"
+				RelativePath="include\Node.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Object.h"
+				RelativePath="include\Object.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\pickups.h"
+				RelativePath="include\pickups.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\polys.h"
+				RelativePath="include\polys.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Primary.h"
+				RelativePath="include\Primary.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\quat.h"
+				RelativePath="include\quat.h"
 				>
 			</File>
 			<File
@@ -929,31 +929,31 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\restart.h"
+				RelativePath="include\restart.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\rtlight.h"
+				RelativePath="include\rtlight.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\SBufferHand.h"
+				RelativePath="include\SBufferHand.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\screenpolys.h"
+				RelativePath="include\screenpolys.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\secondary.h"
+				RelativePath="include\secondary.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Sfx.h"
+				RelativePath="include\Sfx.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Ships.h"
+				RelativePath="include\Ships.h"
 				>
 			</File>
 			<File
@@ -961,59 +961,59 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\skin.h"
+				RelativePath="include\skin.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\sphere.h"
+				RelativePath="include\sphere.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Spotfx.h"
+				RelativePath="include\Spotfx.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\stats.h"
+				RelativePath="include\stats.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Stdwin.h"
+				RelativePath="include\Stdwin.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Teleport.h"
+				RelativePath="include\Teleport.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Text.h"
+				RelativePath="include\Text.h"
 				>
 			</File>
 			<File
-				RelativePath=".\Include\timer.h"
+				RelativePath=".\include\timer.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Title.h"
+				RelativePath="include\Title.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Tload.h"
+				RelativePath="include\Tload.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Transexe.h"
+				RelativePath="include\Transexe.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\TrigArea.h"
+				RelativePath="include\TrigArea.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Triggers.h"
+				RelativePath="include\Triggers.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Typedefs.h"
+				RelativePath="include\Typedefs.h"
 				>
 			</File>
 			<File
@@ -1025,15 +1025,15 @@
 				>
 			</File>
 			<File
-				RelativePath="Include\visi.h"
+				RelativePath="include\visi.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\Water.h"
+				RelativePath="include\Water.h"
 				>
 			</File>
 			<File
-				RelativePath="Include\XMem.h"
+				RelativePath="include\XMem.h"
 				>
 			</File>
 		</Filter>
