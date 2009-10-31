@@ -336,15 +336,13 @@ BOOL Nodeload( char * Filename )
 		
 		if( !PointInsideSkin( &NodePnt->Pos, NodePnt->Group ) )
 		{
-			Msg( "NoadLoad failed Node %d is in WRONG Group (%s)\n",
-				e, Mloadheader.Group[ NodePnt->Group ].name );
+			DebugPrintf( "NoadLoad failed Node %d is in WRONG Group (%s)\n", e, Mloadheader.Group[ NodePnt->Group ].name );
 			for( i = 0 ; i < Mloadheader.num_groups ; i++ )
 			{
 				if( PointInsideSkin( &NodePnt->Pos, (uint16) i ) )
 				{
 					NodePnt->Group = i;
-					Msg( "Node %d Should be in %s, FIX IT NOW!\n",
-						e, Mloadheader.Group[ i ].name );
+					DebugPrintf( "Node %d Should be in %s, FIX IT NOW!\n", e, Mloadheader.Group[ i ].name );
 					LegalGroup = TRUE;
 					break;
 				}
@@ -367,18 +365,17 @@ BOOL Nodeload( char * Filename )
 				move.z = NodePnt->SolidPos.z - NodePnt->Pos.z;
 				move_len = VectorLength( &move );
 				if ( move_len > VectorLength( &Move_Off ) )
-					Msg( "NodeLoad: move_len = %f , Node %d\n", move_len, e);
+					DebugPrintf( "NodeLoad: move_len = %f , Node %d\n", move_len, e);
 				if ( TempGroup != NodePnt->Group )
-					Msg( "NodeLoad: ground group =%hd != node group = %hd, Node %d\n", TempGroup, NodePnt->Group, e );
+					DebugPrintf( "NodeLoad: ground group =%hd != node group = %hd, Node %d\n", TempGroup, NodePnt->Group, e );
 #endif
 				NodePnt->SolidPos.y += 75.0F;
 			}else{
-				Msg( "NodeLoad failed Couldnt find a Solid collide , Node %d in %s\n",
-					e, Mloadheader.Group[ NodePnt->Group ].name );
-				//			return FALSE;
+				DebugPrintf( "NodeLoad failed Couldnt find a Solid collide , Node %d in %s\n", e, Mloadheader.Group[ NodePnt->Group ].name );
+				//return FALSE;
 			}
 		}else{
-			Msg( "Node %d Is not in any Legal Group..This is Very Bad...FIX IT!\n", e );
+			DebugPrintf( "Node %d Is not in any Legal Group..This is Very Bad...FIX IT!\n", e );
 		}
 		
 		NodePnt->LegalGroup = LegalGroup;
