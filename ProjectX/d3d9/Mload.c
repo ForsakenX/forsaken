@@ -1433,22 +1433,13 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 		/*	put the filenames in the tex struct	*/
 		for( i = 0;	 i < Mloadheader->num_texture_files; i++)
 		{
+			// moves the pointer forward ???
 			FileNamePnt = (char *) &Mloadheader->ImageFile[i];
 			while ( ( *FileNamePnt++ = *Buffer++ ) != 0 );
 
-			sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], (char * ) &Mloadheader->ImageFile[i][0] );
+			GetLevelTexturePath( &TempFilename[ 0 ], &Mloadheader->ImageFile[i][0], &ShortLevelNames[ LevelNum ][ 0 ] );
 
-			if( !_stricmp( "default.ppm", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
-			if( !_stricmp( "pkups.ppm", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.ppm", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "default.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
-			if( !_stricmp( "pkups.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "titana.bmp", &Mloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-
-			DebugPrintf("Adding Texture: %s\n",&TempFilename[0]);
-
-			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , FALSE , TRUE, 0, 0 );		// do colourkey	dont scale do MipMap
+			Mloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , FALSE , TRUE, 0, 0 );
 
 			if( Mloadheader->TloadIndex[i] == -1 )
 			{

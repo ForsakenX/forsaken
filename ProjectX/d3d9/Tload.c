@@ -381,6 +381,8 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 
 		return i;
 	}
+			
+	DebugPrintf("Added Texture: %s\n",Name);
 
 	// has the Texture allready been Added ??
 	if( ( i = FindTexture( Tloadheader , Name ) ) != -1 )
@@ -400,6 +402,48 @@ int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey  , 
 		Tloadheader->PlaceHolder[i] = FALSE;
 	Tloadheader->num_texture_files++;
 	return i;
+}
+
+// Allows consolodating commonly used texture files
+// use texture in level folder as the ultimate source
+// if it doesn't exist then look for it in data/textures
+// or fall back to default.png
+// also pkupsa?.bmp is hard coded to map to titana.png as the old game did
+// size of destination should always be 256, path should end up at least 256-1
+void GetLevelTexturePath( char * destination, char * file, char * level )
+{
+	char path[256];
+	char new_file[256];
+
+	// pkups pkup[sa] is really titana (old game hard coded it that way)
+	if( !_stricmp( "pkups.bmp", file ) || !_stricmp( "pkupsa.bmp", file ) )
+	{
+		strncpy(destination,"data\\textures\\titana.png",256);
+		return;
+	}
+
+	// convert file extension to new standard
+	Change_Ext( file, new_file, ".PNG" );
+
+	// check for level folder override
+	sprintf(path,"data\\levels\\%s\\textures\\%s",level,new_file);
+	if( File_Exists( path ) )
+	{
+		strncpy(destination,path,256);
+		return;
+	}
+
+	// default to data/textures
+	sprintf(path,"data\\textures\\%s",new_file);
+	if( File_Exists( path ) )
+	{
+		strncpy(destination,path,256);
+		return;
+	}
+
+	// we can't find it so set it to default for safety
+	strncpy(file,"data\\textures\\defaults.png",sizeof(destination));
+	DebugPrintf("ERROR: GetTexturePath() could not find %s\n",new_file);
 }
 
 #ifdef OPT_ON

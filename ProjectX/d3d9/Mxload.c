@@ -1170,23 +1170,11 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 			while ( ( *FileNamePnt++ = *Buffer++ ) != 0 );
 
 			if( LevelSpecific )
-			{
-				sprintf( &TempFilename[ 0 ], "data\\levels\\%s\\textures\\%s", &ShortLevelNames[ LevelNum ][ 0 ], &Mxloadheader->ImageFile[i] );
-			}
+				GetLevelTexturePath( &TempFilename[ 0 ], &Mxloadheader->ImageFile[i][0], &ShortLevelNames[ LevelNum ][ 0 ] );
 			else
-			{
 				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxloadheader->ImageFile[i] );
-			}
 
-			if( !_stricmp( "default.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
-			if( !_stricmp( "pkups.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.ppm", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "default.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\default.ppm" );
-			if( !_stricmp( "pkups.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "pkupsa.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-			if( !_stricmp( "titana.bmp", &Mxloadheader->ImageFile[i][0] ) ) sprintf( &TempFilename[ 0 ], "data\\textures\\titana.ppm" );
-
-			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );		// colourkey , can scale
+			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );
 			if( Mxloadheader->TloadIndex[i] == -1 )
 			{
 				Msg( "PreMxload() Too many TPages\n" );
