@@ -761,7 +761,7 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
-				RelativePath="include\2dPolys.h"
+				RelativePath="include\2dpolys.h"
 				>
 			</File>
 			<File
@@ -773,11 +773,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\BGObjects.h"
+				RelativePath="include\bgobjects.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Bsp.h"
+				RelativePath="include\bsp.h"
 				>
 			</File>
 			<File
@@ -789,7 +789,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\CompObjects.h"
+				RelativePath="include\compobjects.h"
 				>
 			</File>
 			<File
@@ -805,7 +805,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Dsutil.h"
+				RelativePath="include\dsutil.h"
 				>
 			</File>
 			<File
@@ -813,15 +813,15 @@
 				>
 			</File>
 			<File
-				RelativePath="include\EnglishLocal.h"
+				RelativePath="include\englishlocal.h"
 				>
 			</File>
 			<File
-				RelativePath="include\ExtForce.h"
+				RelativePath="include\extforce.h"
 				>
 			</File>
 			<File
-				RelativePath="include\File.h"
+				RelativePath="include\file.h"
 				>
 			</File>
 			<File
@@ -829,7 +829,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Lights.h"
+				RelativePath="include\lights.h"
 				>
 			</File>
 			<File
@@ -837,11 +837,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\LoadSave.h"
+				RelativePath="include\loadsave.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\Local.h"
+				RelativePath=".\include\local.h"
 				>
 			</File>
 			<File
@@ -865,7 +865,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Mload.h"
+				RelativePath="include\mload.h"
 				>
 			</File>
 			<File
@@ -873,15 +873,15 @@
 				>
 			</File>
 			<File
-				RelativePath="include\MultiPlayer.h"
+				RelativePath="include\multiplayer.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Mxaload.h"
+				RelativePath="include\mxaload.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Mxload.h"
+				RelativePath="include\mxload.h"
 				>
 			</File>
 			<File
@@ -897,15 +897,15 @@
 				>
 			</File>
 			<File
-				RelativePath="include\New3d.h"
+				RelativePath="include\new3d.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Node.h"
+				RelativePath="include\node.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Object.h"
+				RelativePath="include\object.h"
 				>
 			</File>
 			<File
@@ -917,7 +917,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Primary.h"
+				RelativePath="include\primary.h"
 				>
 			</File>
 			<File
@@ -937,7 +937,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\SBufferHand.h"
+				RelativePath="include\sbufferhand.h"
 				>
 			</File>
 			<File
@@ -949,11 +949,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Sfx.h"
+				RelativePath="include\sfx.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Ships.h"
+				RelativePath="include\ships.h"
 				>
 			</File>
 			<File
@@ -969,7 +969,7 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Spotfx.h"
+				RelativePath="include\spotfx.h"
 				>
 			</File>
 			<File
@@ -977,15 +977,15 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Stdwin.h"
+				RelativePath="include\stdwin.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Teleport.h"
+				RelativePath="include\teleport.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Text.h"
+				RelativePath="include\text.h"
 				>
 			</File>
 			<File
@@ -993,27 +993,27 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Title.h"
+				RelativePath="include\title.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Tload.h"
+				RelativePath="include\tload.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Transexe.h"
+				RelativePath="include\transexe.h"
 				>
 			</File>
 			<File
-				RelativePath="include\TrigArea.h"
+				RelativePath="include\trigarea.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Triggers.h"
+				RelativePath="include\triggers.h"
 				>
 			</File>
 			<File
-				RelativePath="include\Typedefs.h"
+				RelativePath="include\typedefs.h"
 				>
 			</File>
 			<File
@@ -1029,11 +1029,11 @@
 				>
 			</File>
 			<File
-				RelativePath="include\Water.h"
+				RelativePath="include\water.h"
 				>
 			</File>
 			<File
-				RelativePath="include\XMem.h"
+				RelativePath="include\xmem.h"
 				>
 			</File>
 		</Filter>
