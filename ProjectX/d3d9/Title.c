@@ -14502,35 +14502,6 @@ void KillBikeCharPic( MENU *Menu )
 	}
 }
 
-BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
-{
-	char * name = Tloadheader->PlaceHolderFile[ n ];
-	char NewName2[256];
-
-	if( !Tloadheader->PlaceHolderFile[ n ] || !Tloadheader->PlaceHolderFile[ n ][ 0 ] )
-		return FALSE;
-
-	if( ! File_Exists( name ) )
-	{
-		Change_Ext( Tloadheader->PlaceHolderFile[ n ], NewName2, ".BMP" );
-		name = &NewName2[0];
-	}
-
-	if( File_Exists( name ) )
-	{
-		int numMips = 1; // create only one mipmap level (hence original texture only)
-		if(Tloadheader->MipMap[n])
-			numMips = 0; // let d3d generate mipmaps for us that are needed
-		// for some reason level pic would not show up properly if you let update_texture_from_file create the texture for us
-		if(!Tloadheader->lpTexture[n])
-			FSCreateTexture(&Tloadheader->lpTexture[n], name, 0, 0, numMips, &Tloadheader->ColourKey[n]);
-		else
-			update_texture_from_file(Tloadheader->lpTexture[n], name, 0, 0, numMips, &Tloadheader->ColourKey[n]);
-	}
-
-	return TRUE;
-}
-
 void LoadLevelPic(MENUITEM *Item)
 {
 	float xmin, xmax, ymin, ymax;

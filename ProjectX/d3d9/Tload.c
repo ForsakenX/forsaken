@@ -92,24 +92,23 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		{
 			if(!Tloadheader->PlaceHolderFile[ i ])
 				Tloadheader->PlaceHolderFile[ i ] = ( char * )malloc( sizeof( char ) * 256 );
-			DebugPrintf( "Tload: Placeholder ( texture %2d ) xsize %d ysize %d\n", i, Tloadheader->Xsize[ i ], Tloadheader->Ysize[ i ] );
+			DebugPrintf( "Tload: Placeholder ( texture %2d )\n", i );
 		}
 	}
-	
-	// get the stats for the Currently files..
-	for( i = 0 ; i < Tloadheader->num_texture_files ; i ++ )
-	{
-		Tloadheader->CurScale[i] = 0;
 
-		if ( !Tloadheader->PlaceHolder[ i ] )
+	if ( Tloadheader->num_texture_files != 0 )
+	{
+		//	load in and convert all textures
+		if ( TloadAllTextures( Tloadheader ) != TRUE)
 		{
-			DebugPrintf( "Tload: texture file %2d = %s\n", i, Tloadheader->ImageFile[ i ] );
-			if (TloadGetStats( Tloadheader , i , (char*) &Tloadheader->ImageFile[i] ,
-							&Tloadheader->Xsize[i] , &Tloadheader->Ysize[i] ) != TRUE)
-			{
-				Msg( "TLoad() Failed on %s\n", Tloadheader->ImageFile[i] );
-				return FALSE;
-			}
+			Msg( "TLoadAllTextures() Failed\n" );
+			return FALSE;
+		}
+		// if there are any textures then create materials for them
+		if ( TloadCreateMaterials( Tloadheader ) != TRUE)
+		{
+			Msg( "TLoadCreateMaterials() Failed\n" );
+			return FALSE;
 		}
 	}
 	
@@ -133,22 +132,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 		}else{
 			// couldnt find any more to scale....
 			break;
-		}
-	}
-
-	if ( Tloadheader->num_texture_files != 0 )
-	{
-		//	load in and convert all textures
-		if ( TloadAllTextures( Tloadheader ) != TRUE)
-		{
-			Msg( "TLoadAllTextures() Failed\n" );
-			return FALSE;
-		}
-		// if there are any textures then create materials for them
-		if ( TloadCreateMaterials( Tloadheader ) != TRUE)
-		{
-			Msg( "TLoadCreateMaterials() Failed\n" );
-			return FALSE;
 		}
 	}
 
@@ -214,52 +197,64 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
     return TRUE;
 }
 
-/*===================================================================
-	Procedure	:		
-	Input		;		TLOADHEADER * , int n 
-	Output		:		FLASE/TRUE
-===================================================================*/
+//
+// this will create and set a brand new texture pointer
+//
 
-BOOL
-TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
+BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
     LPDIRECT3DTEXTURE9 lpSrcTexture = NULL;
 
-	char NewName2[256];
-
-    /*
-     * Release the surface if it is hanging around
-     */
-
-	//LPDIRECT3DTEXTURE9  lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
-
     RELEASE(Tloadheader->lpTexture[n]);
+	Tloadheader->lpTexture[n] = NULL;
 
-    /*
-     * Create a surface in system memory and load the PPM file into it.
-     * Query for the texture interface.
-     */
 	if ( !Tloadheader->PlaceHolder[ n ] )
-	{
-		// change extension of file name
-		Change_Ext( &Tloadheader->ImageFile[n][0], &NewName2[ 0 ], ".BMP" );
-
-		// if file exists
-		if( File_Exists( &NewName2[ 0 ] ) )
-		{
-			if( Tloadheader->MipMap[n] )
-			{
-				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 0, &Tloadheader->ColourKey[n]);
-			}
-			else
-			{
-				FSCreateTexture(&lpSrcTexture, &NewName2[0], 0, 0, 1, &Tloadheader->ColourKey[n]);
-			}
-		}
-	}
+		if( Tloadheader->MipMap[n] )
+			FSCreateTexture(
+				&lpSrcTexture, &Tloadheader->ImageFile[n][0],
+				&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
+				0, &Tloadheader->ColourKey[n]);
+		else
+			FSCreateTexture(
+				&lpSrcTexture, &Tloadheader->ImageFile[n][0],
+				&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
+				1, &Tloadheader->ColourKey[n]);
 
 	Tloadheader->lpTexture[n] = lpSrcTexture;
 	lpSrcTexture = NULL;
+
+	return TRUE;
+}
+
+//
+// this will either create a new texture pointer if it doesn't exist
+// or reload a new surface while keeping the pointer the same
+//
+
+BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
+{
+	// create only one mipmap level (original texture only)
+	int numMips = 1;
+
+	// we only work on place holders
+	if( !Tloadheader->PlaceHolderFile[n] || !Tloadheader->PlaceHolderFile[n][0] )
+		return FALSE;
+
+	// let d3d generate mipmaps for us that are needed
+	if(Tloadheader->MipMap[n])
+		numMips = 0;
+
+	// for some reason level pic would not show up properly if you let update_texture_from_file create the texture for us
+	if(!Tloadheader->lpTexture[n])
+		FSCreateTexture(
+			&Tloadheader->lpTexture[n], &Tloadheader->PlaceHolderFile[n][0],
+			&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
+			numMips, &Tloadheader->ColourKey[n]);
+	else
+		update_texture_from_file(
+			Tloadheader->lpTexture[n], &Tloadheader->PlaceHolderFile[n][0],
+			&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
+			numMips, &Tloadheader->ColourKey[n]);
 
 	return TRUE;
 }
@@ -275,14 +270,11 @@ void
 TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 {
     RELEASE(Tloadheader->lpTexture[n]);
-
 	if ( Tloadheader->PlaceHolder[ n ] )
 	{
 		free( Tloadheader->PlaceHolderFile[ n ] );
 		Tloadheader->PlaceHolderFile[ n ] = NULL;
 	}
-
-//    Tloadheader->hTex[n] = 0;
 }
 
 /*
@@ -297,20 +289,13 @@ ReleaseTloadheader( TLOADHEADER * Tloadheader )
     for (i = 0; i < Tloadheader->num_texture_files; i++)
 	{
         TloadReleaseTexture( Tloadheader , i);
-//		RELEASE(Tloadheader->lpMat[i]);
     }
 
 	InitTload( Tloadheader  );
   
 }
 
-/*
- * TloadAllTextures
- * Load all texture surfaces, qeury them for texture interfaces and get
- * handles for them from the current D3D driver.
- */
-BOOL
-TloadAllTextures(TLOADHEADER * Tloadheader)
+BOOL TloadAllTextures(TLOADHEADER * Tloadheader)
 {
     int i;
 
@@ -330,72 +315,6 @@ exit_with_error:
     }
     return FALSE;
 }
-
-/*===================================================================
-	Procedure	:		Get the width and height for a PPM
-	Input		:		TLOADHEADER * , int , lpname, uint16 * , uint16 * 
-	Output		:		BOOL FALSE/TRUE
-===================================================================*/
-BOOL
-TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width , uint16 * Height )
-{
-    DWORD dwWidth, dwHeight;
-    FILE *fp;
-    CHAR buf[100];
-	int8 TempFilename[ 256 ];
-	char NewName2[256];
-	BITMAPINFOHEADER Header;
-
-	Change_Ext( &Tloadheader->ImageFile[i][0], &NewName2[ 0 ], ".BMP" );
-
-	if( !File_Exists( &NewName2[ 0 ] ) )
-		Change_Ext( &Tloadheader->ImageFile[i][0], &NewName2[ 0 ], ".PNG" );
-
-	if( File_Exists( &NewName2[ 0 ] ) )
-	{
-		fp = fopen( &NewName2[ 0 ], "rb" );
-		fseek( fp , sizeof(BITMAPFILEHEADER) ,0 );
-		fread( &Header , sizeof(BITMAPINFOHEADER) , 1 , fp );
-
-		fclose(fp);
-
-		*Width = (uint16) abs(Header.biWidth);
-		*Height = (uint16) abs(Header.biHeight);
-
-		return TRUE;
-	}
-
-	/*
-	 * Find the image file and open it
-	 */
-	strcpy( &TempFilename[ 0 ], (char *) lpName );
-	fp = fopen( &TempFilename[ 0 ], "rb" );
-	if (fp == NULL) {
-		Msg( "Couldnt Find %s\n", lpName );
-		return FALSE;
-	}
-	// Is it a PPM file?
-	fgets(buf, sizeof buf, fp);
-	if (lstrcmp(buf, "P6\n")) {
-		fclose(fp);
-		Msg( "%s Is Not a PPM File\n", lpName );
-		return FALSE;
-	}
-	// Skip any comments
-	do {
-		fgets(buf, sizeof buf, fp);
-	} while (buf[0] == '#');
-	// Read the width and height
-	sscanf(buf, "%d %d\n", &dwWidth, &dwHeight);
-	// close the file
-	fclose(fp);
-	// store the width and heights
-	*Width = (uint16) dwWidth;
-	*Height = (uint16) dwHeight;
-
-	return TRUE;
-}
-
 
 /*===================================================================
 	Procedure	:		Find a texture from a tloadheader Ignores the Path

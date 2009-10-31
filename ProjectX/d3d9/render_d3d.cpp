@@ -1030,7 +1030,7 @@ char * d3d_format( D3DFORMAT format )
 }
 
 
-HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey, D3DPOOL pool)
+HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey, D3DPOOL pool)
 {
 	D3DXIMAGE_INFO imageInfo;
 
@@ -1042,11 +1042,23 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 		Change_Ext( (char*) fileName, real_file, ".PNG" );
 		fileName = &real_file[0];
 	}
+	if( ! File_Exists( (char*) fileName ) )
+	{
+		// try to find a png version
+		Change_Ext( (char*) fileName, real_file, ".BMP" );
+		fileName = &real_file[0];
+		DebugPrintf("Could not find PNG version of: %s\n",fileName);
+	}
+	if( ! File_Exists( (char*) fileName ) )
+	{
+		DebugPrintf("Could not find texture file: %s\n",fileName);
+		return S_FALSE;
+	}
 
 	HRESULT LastError = D3DXCreateTextureFromFileEx(lpD3DDevice, 
 				fileName, 
-				width, 
-				height, 
+				0,//*width, 
+				0,//*height, 
 				numMips, 
 				0,
 				// most likely will end up as the format the file is in
@@ -1063,6 +1075,10 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 	{
 		DebugPrintf("couldn't create texture\n");
 	}
+	
+	// return the values
+	*width  = (uint16) imageInfo.Width;
+	*height = (uint16) imageInfo.Height;
 
 	// image has no alpha layer
 	// only way image would have an alpha layer
@@ -1072,7 +1088,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int wi
 		(*colourkey) = FALSE;
 
 	// debugging info
-	DebugPrintf("FSCreateTexture: created texture from %s\n",fileName);
+	DebugPrintf("Created texture from %s\n",fileName);
 	DebugPrintf("Texture Details: width=%d, height=%d, depth=%d, mips=%d, image_format=%s, file_format=%s\n",
 					imageInfo.Width, imageInfo.Height, imageInfo.Depth, imageInfo.MipLevels, 
 					d3d_format(imageInfo.Format), d3d_image_file_formats[imageInfo.ImageFileFormat] );
@@ -1161,7 +1177,7 @@ static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE
 	srcTexture->UnlockRect(0);
 }
 
-HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
+HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
@@ -1184,7 +1200,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 	return S_OK;
 }
 
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, int width, int height, int numMips, BOOL * colourkey)
+HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }

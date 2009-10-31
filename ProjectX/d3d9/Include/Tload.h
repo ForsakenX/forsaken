@@ -68,8 +68,6 @@ void ReleaseTloadheader( TLOADHEADER * Tloadheader );
 
 BOOL TloadAllTextures(TLOADHEADER * Tloadheader);
 
-BOOL
-TloadGetStats( TLOADHEADER * Tloadheader , int i ,LPCSTR lpName , uint16 * Width , uint16 * Height );
 int16	FindTexture( TLOADHEADER * Tloadheader , char * Name );
 
 int16	AddTexture( TLOADHEADER * Tloadheader , char * Name , uint16 ColourKey , BOOL Scale , BOOL MipMap, int16 xsize, int16 ysize );
