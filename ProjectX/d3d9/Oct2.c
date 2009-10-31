@@ -1977,8 +1977,9 @@ BOOL InitView( void )
 		DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
 		if ( DummyTextureIndex != -1 )
 		{
-		  Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
-		  Tloadheader.PlaceHolder[ DummyTextureIndex ] = TRUE;
+			if(!Tloadheader.PlaceHolderFile[ DummyTextureIndex ])
+				Tloadheader.PlaceHolderFile[ DummyTextureIndex ] = ( char * )malloc( sizeof( char ) * 256 );
+			Tloadheader.PlaceHolder[ DummyTextureIndex ] = TRUE;
 		}
 
 		if ( !CurrentMenu )

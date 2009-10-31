@@ -90,7 +90,8 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	{
 		if ( Tloadheader->PlaceHolder[ i ] )
 		{
-			Tloadheader->PlaceHolderFile[ i ] = ( char * )malloc( sizeof( char ) * 256 );
+			if(!Tloadheader->PlaceHolderFile[ i ])
+				Tloadheader->PlaceHolderFile[ i ] = ( char * )malloc( sizeof( char ) * 256 );
 			DebugPrintf( "Tload: Placeholder ( texture %2d ) xsize %d ysize %d\n", i, Tloadheader->Xsize[ i ], Tloadheader->Ysize[ i ] );
 		}
 	}
