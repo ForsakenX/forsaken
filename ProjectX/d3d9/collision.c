@@ -1102,7 +1102,7 @@ BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
 }
 
 
-#else !BSP_ONLY
+#else // ! BSP_ONLY
 
 
 BOOL BackgroundCollideOneGroup( MCLOADHEADER *c, MLOADHEADER *m,
@@ -1307,7 +1307,7 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 
 	return group;
 }
-#else !BSP_ONLY
+#else // ! BSP_ONLY
 {
 	VECTOR ppos, pmove, epos;
 	NORMAL pnorm;
@@ -1351,7 +1351,8 @@ uint16 MoveGroup( MLOADHEADER *m, VECTOR *StartPos, uint16 StartGroup, VECTOR *M
 
 	return group;
 }
-#endif !BSP_ONLY
+
+#endif // ! BSP_ONLY
 
 
 /*===================================================================
@@ -1865,7 +1866,7 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 
 	return ( flag ) ? TRUE : FALSE;
 }
-#else !BSP_ONLY
+#else // ! BSP_ONLY
 {
 	PORTAL	*	PortalPnt;
 	uint16		i;
