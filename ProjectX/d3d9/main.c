@@ -22,6 +22,10 @@
 #include "lua_common.h"
 #include "sfx.h"
 
+#ifdef __WINE__
+#define LR_VGACOLOR LR_VGA_COLOR
+#endif
+
 //
 // GLOBAL VARIABLES
 //
@@ -1069,12 +1073,16 @@ static BOOL InitWindow( void )
 // Initializes the application
 //
 
+// breakpad running through wine, built for windows doens't work well..
+#ifndef __WINE__
+extern BOOL breakpad_init( void );
+#endif
+
 extern BOOL MouseExclusive;
 extern BOOL ActLikeWindow;
 extern BOOL InitView( void );
 extern LONGLONG LargeTime;
 extern LONGLONG LastTime;
-extern BOOL breakpad_init( void );
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void SetInputAcquired( BOOL acquire );
@@ -1096,9 +1104,14 @@ static BOOL AppInit( char * lpCmdLine )
 	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
 	LastTime = LargeTime;
 
+// breakpad running through wine, built for windows doens't work well..
+#ifndef __WINE__
+
 	// initialize google breakpad crash reporting
 	if(!breakpad_init())
 		return FALSE;
+
+#endif
 
 	// test breakpad by uncommenting this
 	//{ *(int*)0=0; }
