@@ -200,8 +200,12 @@ BOOL init_renderer( render_info_t * info )
 		info->CurrMode = mode;
 		info->ThisMode = info->Mode[ info->CurrMode ];
 		info->WindowsDisplay = info->Mode[ info->CurrMode ];
-		d3dpp.BackBufferWidth  = info->ThisMode.w;
-		d3dpp.BackBufferHeight = info->ThisMode.h;
+		d3dpp.BackBufferWidth   = info->ThisMode.w;
+		d3dpp.BackBufferHeight  = info->ThisMode.h;
+		info->szClient.cx		= info->ThisMode.w;
+		info->szClient.cy		= info->ThisMode.h;
+		info->WindowsDisplay.w  = info->ThisMode.w;
+		info->WindowsDisplay.h  = info->ThisMode.h;
 		free(modes);
 	}
 
@@ -310,15 +314,6 @@ BOOL init_renderer( render_info_t * info )
 
 	render_initialized = TRUE;
 	info->bRenderingIsOK = TRUE;
-
-	info->szClient.cx = d3dpp.BackBufferWidth; 
-	info->szClient.cy = d3dpp.BackBufferHeight;
-
-	info->WindowsDisplay.w = d3dpp.BackBufferWidth;
-	info->WindowsDisplay.h = d3dpp.BackBufferHeight;
-
-	info->ThisMode.w = d3dpp.BackBufferWidth;
-	info->ThisMode.h = d3dpp.BackBufferHeight;
 
 	viewport.X = 0;
 	viewport.Y = 0;
