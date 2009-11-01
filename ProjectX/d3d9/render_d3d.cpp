@@ -200,11 +200,8 @@ BOOL init_renderer( render_info_t * info )
 		info->CurrMode = mode;
 		info->ThisMode = info->Mode[ info->CurrMode ];
 		info->WindowsDisplay = info->Mode[ info->CurrMode ];
-		{
-			D3DDISPLAYMODE m = modes[mode];
-			d3dpp.BackBufferWidth  = m.Width;
-			d3dpp.BackBufferHeight = m.Height;
-		}
+		d3dpp.BackBufferWidth  = info->ThisMode.w;
+		d3dpp.BackBufferHeight = info->ThisMode.h;
 		free(modes);
 	}
 
@@ -306,7 +303,8 @@ BOOL init_renderer( render_info_t * info )
 	if (FAILED(LastError))
 	{
 		CloseWindow(info->window);
-		Msg("Failed to create a suitable d3d device");
+		Msg("Failed to create a suitable d3d device:\n%s",
+			render_error_description(LastError));
 		exit(1);
 	}
 
@@ -322,6 +320,8 @@ BOOL init_renderer( render_info_t * info )
 	info->ThisMode.w = d3dpp.BackBufferWidth;
 	info->ThisMode.h = d3dpp.BackBufferHeight;
 
+	viewport.X = 0;
+	viewport.Y = 0;
 	/* do "after device created" stuff */
 	ZeroMemory( &viewport, sizeof(viewport) );
 	{
