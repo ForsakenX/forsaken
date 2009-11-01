@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
-				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,USEINLINE,FINAL_RELEASE,DEBUG_ON,DEBUG,DEBUG_COMP,DEBUG_ENUM_PLAYERS,DEBUG_SPOTFX_SOUND,DEBUG_VIEWPORT,DPTEST"
+				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;USEINLINE;FINAL_RELEASE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_ENUM_PLAYERS;DEBUG_SPOTFX_SOUND;DEBUG_VIEWPORT;DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
 				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug_OPT_ON\"
@@ -63,7 +63,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -133,7 +133,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -164,7 +164,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,_DEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -235,7 +235,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -246,7 +246,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
-				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,USEINLINE,FINAL_RELEASE,BSP,PLAYER_SPEECH_TAUNTS"
+				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USEINLINE;FINAL_RELEASE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -264,7 +264,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -334,7 +334,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -344,7 +344,7 @@
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
 				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;lua\include;.\include;.\ai\aiinclude"
-				PreprocessorDefinitions="WIN32,NET_ENET,_CRT_SECURE_NO_WARNINGS,_CRT_SECURE_NO_DEPRECATE,BSP,PLAYER_SPEECH_TAUNTS"
+				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
 				UsePrecompiledHeader="0"
@@ -361,7 +361,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32,NET_ENET,NDEBUG"
+				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
 				Culture="1033"
 			/>
 			<Tool
