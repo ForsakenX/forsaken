@@ -119,7 +119,7 @@ extern int GoalScore;
 extern int GameCompleted;
 extern USERCONFIG	*player_config;
 
-char *TeamName[];
+extern char *TeamName[ MAX_TEAMS ];
 
 extern int	AllowedBike[ ALLOWED_BIKETYPES ];
 extern int32 ColPerspective;
