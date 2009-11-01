@@ -79,19 +79,6 @@ DWORD	chop_status;
 
 D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf );
 
-
-__inline
-void FLOAT2INT( int * I, float F )
-{
-	__asm
-	{
-		fld		F
-		mov		esi, I
-		fistp	[esi]
-	}
-}
-
-
 /*===================================================================
 	Floating Point Cull Mode
 ===================================================================*/
