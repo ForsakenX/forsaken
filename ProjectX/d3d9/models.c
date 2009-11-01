@@ -6459,7 +6459,7 @@ void CheckModelLinkList( void )
 	if( i == MAXNUMOFMODELS*2 )
 	{
 		// oh shit
-        Msg( "Model Free link list Gone up its ass\n" );
+        DebugPrintf( "Model Free link list Gone up its ass\n" );
 		i = 0;
 	}
 
@@ -6479,7 +6479,7 @@ void CheckModelLinkList( void )
 	if( i == MAXNUMOFMODELS*2 )
 	{
 		// oh shit
-        Msg( "Model Used link list Gone up its ass\n" );
+        DebugPrintf( "Model Used link list Gone up its ass\n" );
 		i = 0;
 	}
 }
