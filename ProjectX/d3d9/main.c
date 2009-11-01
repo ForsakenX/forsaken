@@ -335,7 +335,7 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 			else if ( sscanf( option, "sleep:%d", &cliSleep )){}
 
 			// select the pilot
-			else if ( sscanf( option , "pilot:%s", &config_name )){}
+			else if ( sscanf( option , "pilot:%s", config_name )){}
 
 			// ammount of memory to allocate for sound buffer
 			else if ( sscanf( option, "CompoundSfxBufferMem:%d", &mem ) == 1 )

@@ -922,7 +922,7 @@ BOOL PreMxaload( char * Filename, MXALOADHEADER * Mxaloadheaders, int header_num
 			if( LevelSpecific )
 				GetLevelTexturePath( &TempFilename[ 0 ], &Mxaloadheader->ImageFile[i][0], &ShortLevelNames[ LevelNum ][ 0 ] );
 			else
-				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxaloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxaloadheader->ImageFile[i][0] );
 
 			if (Mxaloadheader->AllocateTPage & LOAD_TPAGES)
 				Mxaloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[0] , TRUE , TRUE ,FALSE, 0, 0 );

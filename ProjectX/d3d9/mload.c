@@ -601,7 +601,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				Mloadheader->Group[group].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mloadheader->TloadIndex[tpage]];
 
 				{
-					RENDEROBJECT * obj = &(Mloadheader->Group[group].renderObject[execbuf]);
+					LEVELRENDEROBJECT * obj = &(Mloadheader->Group[group].renderObject[execbuf]);
 					INCREASE_TEXTURE_GROUPS( obj );
 				}
 			}

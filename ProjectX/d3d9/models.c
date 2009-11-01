@@ -5021,7 +5021,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 						}
 
 						// somebody killed me
-						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr );
+						sprintf( (char*)&tempstr[0] , SOMEONE_KILLED_YOU, &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], &methodstr[0], &teamstr[0] );
 						AddColourMessageToQue( KillMessageColour, &tempstr[0] );
 						// update stats 6 (stats.c) -- somebody killed me
 						UpdateKillStats(Ships[WhoIAm].ShipThatLastKilledMe,WhoIAm,WeaponType,Weapon); 

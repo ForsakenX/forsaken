@@ -1172,7 +1172,7 @@ BOOL PreMxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL 
 			if( LevelSpecific )
 				GetLevelTexturePath( &TempFilename[ 0 ], &Mxloadheader->ImageFile[i][0], &ShortLevelNames[ LevelNum ][ 0 ] );
 			else
-				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxloadheader->ImageFile[i] );
+				sprintf( &TempFilename[ 0 ], "data\\textures\\%s", &Mxloadheader->ImageFile[i][0] );
 
 			Mxloadheader->TloadIndex[i] = AddTexture( &Tloadheader , &TempFilename[ 0 ], (uint16) (Panel ^ TRUE) , Panel ^ TRUE, FALSE, 0, 0 );
 			if( Mxloadheader->TloadIndex[i] == -1 )

@@ -2549,7 +2549,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr );
+   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr[0] );
    					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
@@ -2633,7 +2633,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						strcpy(&teamstr[0], "");
 
 					// called in TOL OFF multiplayer!!
-					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr );
+					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr[0] );
    					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
 					// update stats 1 (stats.c) -- somebody killed me
 					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
@@ -2767,7 +2767,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					strcpy (&teamstr[0], "");
 
 				// gee someone killed somebody...who cares...
-				sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr );
+				sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr[0] );
 				AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
 			}
 

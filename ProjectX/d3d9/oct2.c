@@ -4938,11 +4938,10 @@ BOOL Our_CalculateFrameRate(void)
 			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*8, 2 );
 
 			sprintf( &buf[0], "BPS %5d CurSent %5d MaxRec %5d MaxSent %5d",
-				CurrentBytesPerSecRec , CurrentBytesPerSecSent , MaxCurrentBytesPerSecRec ,MaxCurrentBytesPerSecSent );
+				(int)CurrentBytesPerSecRec , (int)CurrentBytesPerSecSent , (int)MaxCurrentBytesPerSecRec , (int)MaxCurrentBytesPerSecSent );
 			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*9, 2 );
 
-			sprintf( &buf[0], "ReceiveSize %4d MaxReceiveSize %4d",
-				RecPacketSize , MaxRecPacketSize );
+			sprintf( &buf[0], "ReceiveSize %4d MaxReceiveSize %4d", (int)RecPacketSize , (int)MaxRecPacketSize );
 			CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*10, 2 );
 
 		}
@@ -5733,7 +5732,7 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
 
   if( fp != NULL )
   {
-    sprintf( &Header[ 0 ], "P6%c#Forsaken (c)1998%c%d %d%c255%c", 10, 10, Xsize, Ysize, 10, 10 );
+    sprintf( &Header[ 0 ], "P6%c#Forsaken (c)1998%c%d %d%c255%c", 10, 10, (int)Xsize, (int)Ysize, 10, 10 );
 
     i = 0;
     while( Header[ i ] )

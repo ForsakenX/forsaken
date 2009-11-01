@@ -3573,7 +3573,7 @@ void PrintLoopingSfxDebug( void )
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%4.0f", SpotSfxList[ i ].fixedpos.z );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
-		sprintf( buf, "%d%", SpotSfxList[ i ].type );
+		sprintf( buf, "%d", SpotSfxList[ i ].type );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%d", *SpotSfxList[ i ].group );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
@@ -3595,7 +3595,7 @@ void PrintLoopingSfxDebug( void )
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%d", SpotSfxList[ i ].Effects );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
-		sprintf( buf, "%d", SpotSfxList[ i ].uid );
+		sprintf( buf, "%d", (int)SpotSfxList[ i ].uid );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 	}
 }
