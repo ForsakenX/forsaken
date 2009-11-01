@@ -1,7 +1,7 @@
 
-#include <d3dx9.h>
-
 #define DIRECT3D_VERSION    0x0900
+
+#include <d3dx9.h>
 
 extern "C" {
 #include "typedefs.h"
