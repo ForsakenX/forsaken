@@ -21,7 +21,7 @@
 
 
 // pukes
-#include <Windows.h>
+#include <windows.h>
 
 // holds all our counters
 // non global/static declartions are dirty so run timer_clear on them...
