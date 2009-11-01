@@ -192,7 +192,7 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid)
 extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
 extern void SetCursorClip( BOOL clip );
-int Msg( char * msg, ... )
+int Msg( const char * msg, ... )
 {
 	BOOL was_fullscreen = render_info.bFullscreen;
 

@@ -7,7 +7,7 @@ extern "C" {
 
 #include <windows.h>
 
-int Msg( LPSTR fmt, ... );
+int Msg( const char * fmt, ... );
 
 void DebugPrintf( const char * format, ... );
 void DebugState( const char * str );

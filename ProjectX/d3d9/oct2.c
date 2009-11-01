@@ -819,7 +819,7 @@ D3DMATRIX world = {
     D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
 };
 
-SetFOV( float fov )
+BOOL SetFOV( float fov )
 {
 	HRESULT rval;
 	float screen_width, screen_height;

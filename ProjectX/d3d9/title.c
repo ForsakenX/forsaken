@@ -411,7 +411,7 @@ void ExitLevelSelect( MENU * Menu );
 void GoToStats( MENUITEM *Item );
 void GetSavedGameData( void );
 
-SetFOV( float fov );
+BOOL SetFOV( float fov );
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude );
 BOOL MakeTranslucent( uint16 Model );
 void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *maxoffset );

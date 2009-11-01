@@ -1825,8 +1825,7 @@ void BuildReliabilityTab( void )
 	Input		:		void
 	Output		:		void
 ===================================================================*/
-__inline
-void DisplayConnectionStatus( int num , int x , int y)
+__inline void DisplayConnectionStatus( int num , int x , int y)
 {
 	if( !num )
 		return;
