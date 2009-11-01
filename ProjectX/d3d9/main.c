@@ -1260,7 +1260,7 @@ extern void network_cleanup( void );
 extern BOOL SeriousError;
 extern void ReallyShowCursor( BOOL show );
 
-int main( HINSTANCE hInstance, char * cli )
+int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
 {
     int failcount = 0; // number of times RenderLoop has failed
     MSG msg;

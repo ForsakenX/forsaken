@@ -588,10 +588,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\main_.cpp"
-				>
-			</File>
-			<File
 				RelativePath="mload.c"
 				>
 			</File>
