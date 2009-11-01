@@ -7,10 +7,10 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "node.h"
 #include "compobjects.h"
 #include "bgobjects.h"
 #include "object.h"
+#include "node.h"
 #include "networking.h"
 #include "ships.h"
 #include "text.h"
@@ -91,7 +91,7 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 			// The node Im Targetting is not on my network...Better try and find one...
 			if( Enemy->Object.LastNearestNode )
 			{
-				TNode = (NODE*) Enemy->TNode = WhichNode( 1 , Enemy->Object.NearestNode , Enemy->Object.LastNearestNode );
+				TNode = (NODE*) ( Enemy->TNode = WhichNode( 1 , Enemy->Object.NearestNode , Enemy->Object.LastNearestNode ) );
 				
 				if( !TNode )
 				{
@@ -102,7 +102,7 @@ void AI_AIR_FOLLOWPATH( register ENEMY * Enemy )
 				if( !AI_ClearLOSNonZero( &Enemy->Object, &TNode->Pos , EnemyTypes[Enemy->Type].Radius  ) )
 				{
 					// couldnt find a node that will take me to my target so go back to my nearest...
-					TNode = (NODE*) Enemy->TNode = Enemy->Object.NearestNode;
+					TNode = (NODE*) ( Enemy->TNode = Enemy->Object.NearestNode );
 				}
 			}
 		}

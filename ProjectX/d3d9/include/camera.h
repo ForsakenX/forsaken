@@ -26,7 +26,7 @@ typedef struct
 typedef struct _VISGROUP VISGROUP;
 
 
-typedef struct _VISGROUP
+struct _VISGROUP
 {
 	int			group;
 	int			visible;
@@ -34,7 +34,7 @@ typedef struct _VISGROUP
 	render_viewport_t viewport;
 	D3DMATRIX	projection;
 	VISGROUP	*next_visible;
-} VISGROUP;
+};
 
 
 typedef struct

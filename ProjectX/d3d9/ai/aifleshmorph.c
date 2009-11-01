@@ -1,5 +1,5 @@
 
-#include	<stdio.h>
+#include <stdio.h>
 #include <math.h>
 #include <malloc.h>
 #include "typedefs.h"
@@ -7,10 +7,10 @@
 #include "new3d.h"
 #include "quat.h"
 #include "mload.h"
-#include "node.h"
 #include "compobjects.h"
 #include "bgobjects.h"
 #include "object.h"
+#include "node.h"
 #include "networking.h"
 #include "ships.h"
 #include "text.h"

@@ -326,7 +326,7 @@ enum
 	TITLE_TIMER_ExpandObject,
 };
 
-typedef struct _TITLE_EVENT
+struct _TITLE_EVENT
 {
 	EventFunc	InitFunc;
 	EventFunc	ProcessFunc;	//must set EventStatus to TITLE_EVENT_FINISHED when this function is finished
@@ -335,7 +335,7 @@ typedef struct _TITLE_EVENT
 	float		StartTime;	//0 = start, 1 = finish
 	float		EndTime;	//0 = start, 1 = finish
 	int			Status;
-}TITLE_EVENT;
+};
 
 enum
 {	
@@ -345,13 +345,13 @@ enum
 	TITLE_EVENT_TIMER_AWAITINGRESET,
 };
 
-typedef struct _TITLE_EVENT_TIMER
+struct _TITLE_EVENT_TIMER
 {
 	float		Interval;		//lifespan of timer (secs)
 	float		CurrentTime;	//0 = start, 1 = end
 	int			Status;
 	TimerFunc	InitFunc;
-}TITLE_EVENT_TIMER;
+};
 
 typedef struct _LEVEL_LOOKUP
 {
@@ -371,7 +371,7 @@ typedef struct
 } SCANLINES;
 
 
-typedef struct _MENUITEM
+struct _MENUITEM
 {
 	int		x;
 	int		y;
@@ -388,10 +388,10 @@ typedef struct _MENUITEM
 	TEXTINFO *TextInfo[MAXTEXTPERMENUITEM];
 	int numtextitems;
 	int EventToTrigger;
-}MENUITEM;
+};
 
 
-typedef struct _MENU
+struct _MENU
 {
 	uint8 *			Name;
 	MenuFunc		FuncEntry;
@@ -399,9 +399,9 @@ typedef struct _MENU
 	MenuStatusFunc	MenuFuncDraw;
 	int				MenuStatus;
 	MENUITEM Item[ MAXMENUITEMS ];
-}MENU;
+};
 
-typedef struct _SLIDER
+struct _SLIDER
 {
 	int min;
 	int max;
@@ -415,10 +415,10 @@ typedef struct _SLIDER
 	SliderUserFunc FuncUser;
 	SliderSetFunc FuncSet;
 	SliderSetFunc FuncRefresh;
-} SLIDER;
+};
 
 
-typedef struct _LIST
+struct _LIST
 {
 	int items;
 	int display_items;
@@ -431,10 +431,10 @@ typedef struct _LIST
 	ListInfoFunc FuncInfo;	// used to get info from a particular item
 	uint8 old_item[MAXLISTITEMS][64];
 	BOOL Static;	// list is 'frozen' & awaiting event before allowing processing
-} LIST;
+};
 
 
-typedef struct _TEXT
+struct _TEXT
 {
 	int insert_pos;
 	int VDU_insert_pos;
@@ -442,7 +442,7 @@ typedef struct _TEXT
 	MenuItemFunc FuncSet;
 	int limit_length;
 	TextTypeFunc FuncType;
-} TEXT;
+};
 
 #define EXCLUDE_ALL -1
 #define MAXEXCLUDEDVERTICES 16

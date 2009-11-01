@@ -36,9 +36,9 @@ typedef struct _NODENETWORKHEADER
 void NodeRelease(void);
 BOOL Nodeload( char * Filename );
 
-void FindNearestNode( struct OBJECT * Object );
-void UpdateNearestNode( struct OBJECT * Object );
-void UpdateNearestNodeSpecial( struct OBJECT * Object );
+void FindNearestNode( OBJECT * Object );
+void UpdateNearestNode( OBJECT * Object );
+void UpdateNearestNodeSpecial( OBJECT * Object );
 NODE * WhichNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo );
 NODE * WhichRetreatNode( uint32 Network , NODE * NodeFrom , NODE * NodeTo );
 

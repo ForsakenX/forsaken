@@ -108,23 +108,23 @@ typedef struct VISTREE VISTREE;
 typedef struct PORTAL PORTAL;
 
 
-typedef struct VISTREE
+struct VISTREE
 {
 	PORTAL *portal;
 	uint16 group;
 	uint16 num_visible;
 	VISTREE *visible;
-}VISTREE;
+};
 
 
 
-typedef struct PORTAL{
+struct PORTAL{
 	uint16 num_vertices_in_portal;
 	VERT   Verts[MAXVERTSPERPORTAL];
 	uint16 num_polys_in_portal;
 	MCFACE Poly[MAXPOLYSPERPORTAL];
 	VISTREE visible;
-}PORTAL;
+};
 
 
 typedef struct  {

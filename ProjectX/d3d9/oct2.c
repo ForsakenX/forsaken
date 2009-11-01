@@ -7,10 +7,10 @@
 #include "typedefs.h"
 #include "new3d.h"
 #include "quat.h"
-#include "node.h"
 #include "compobjects.h"
 #include "bgobjects.h"
 #include "object.h"
+#include "node.h"
 #include "networking.h"
 #include <stdarg.h>
 #include <math.h>
@@ -513,7 +513,7 @@ void ShowDetailedStats(int NumActivePlayers, BOOL TeamsGame, BOOL KillsBased, BO
 void ShowBasicStats(int NumActivePlayers);
 void ShowInGameStats();
 void ShowDeathModeStats();
-void ShowGameStats(BOOL ShowBLTBackground);
+void ShowGameStats(stats_mode_t mode);
 
 int Secrets = 0;
 int TotalSecrets = 0;
