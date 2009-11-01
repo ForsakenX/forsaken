@@ -3766,7 +3766,7 @@ ENEMY * TestEnemy = NULL;
 ENEMY * PutEnemiesAtNodes(void);
 void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore );
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy );
-void AutoDisplay( OBJECT * Object );
+__inline void AutoDisplay( OBJECT * Object );
 void CarryOutAIMovementCommands( ENEMY * Enemy );
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy );
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * Object );
@@ -6608,8 +6608,7 @@ void SetWheelPos( VECTOR * DestPos , VECTOR * SourcePos , float xoff , float zof
 	Output		:	OBJECt * Object
 	Output		:	Nothing
 ===================================================================*/
-__inline
-void AutoDisplay( OBJECT * Object )
+__inline void AutoDisplay( OBJECT * Object )
 {
 	QuatToMatrix( &Object->Quat, &Object->Mat );
 	MatrixTranspose( &Object->Mat, &Object->InvMat );
