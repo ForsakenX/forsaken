@@ -10610,7 +10610,7 @@ void InitAvgFrameRateGlobals( MENU *Menu )
 {
     sprintf( DemoAvgFpsText, "Avg %.2f FPS", DemoAvgFps );
 	sprintf( DemoTotalFramesText, "%d frames %d.%02d",
-		DemoGameLoops,
+		(int)DemoGameLoops,
 		(int) DemoTotalTime / 60, (int) DemoTotalTime % 60 );
 }
 
