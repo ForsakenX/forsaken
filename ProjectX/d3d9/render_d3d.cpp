@@ -1034,13 +1034,13 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint16
 	if( ! File_Exists( (char*) fileName ) )
 	{
 		// try to find a png version
-		Change_Ext( (char*) fileName, real_file, ".PNG" );
+		Change_Ext( fileName, real_file, ".PNG" );
 		fileName = &real_file[0];
 	}
 	if( ! File_Exists( (char*) fileName ) )
 	{
 		// try to find a png version
-		Change_Ext( (char*) fileName, real_file, ".BMP" );
+		Change_Ext( fileName, real_file, ".BMP" );
 		fileName = &real_file[0];
 		DebugPrintf("Could not find PNG version of: %s\n",fileName);
 	}
