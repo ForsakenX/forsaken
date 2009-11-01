@@ -762,7 +762,7 @@ char saveFile[MAX_PATH];
 
 int imageCount = 0;
 
-char * d3d_image_file_formats[] =
+const char * d3d_image_file_formats[] =
 {
 "D3DXIFF_BMP",
 "D3DXIFF_JPG",
@@ -775,7 +775,7 @@ char * d3d_image_file_formats[] =
 "D3DXIFF_PFM",
 };
 
-char * d3d_format( D3DFORMAT format )
+const char * d3d_format( D3DFORMAT format )
 {
 	switch(format)
 	{
