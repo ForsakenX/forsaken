@@ -14,7 +14,7 @@
 #define	SPOTFX_FLAGS_Enabled	1
 #define	SPOTFX_FLAGS_DoneOnce	2
 
-typedef enum
+enum
 {
 	SPOTFX_Smoke,					// 0
 	SPOTFX_Steam,					// 1

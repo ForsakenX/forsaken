@@ -185,7 +185,7 @@ struct	AI_BEHAVIOUR Behave;
 /*===================================================================
 	Defines
 ===================================================================*/
-typedef enum
+enum
 {
 	ENEMY_BeamTurret,			// 0
 	ENEMY_DuelTurret,			// 1
@@ -247,7 +247,8 @@ typedef enum
 	ENEMY_LAST,					//	This one should allways be last!!!
 
 };
-typedef enum
+
+enum
 {
 	GUN_Beam,				// 0
 	GUN_Duel,				// 1
