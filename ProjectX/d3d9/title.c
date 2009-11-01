@@ -16330,10 +16330,10 @@ void InitCrystalsFoundText( MENU *Menu )
 
 	if ( NumGoldBars == 1 )
 	{
-		sprintf( GoldBarsFoundText, LT_OneGoldBarFound, NumGoldBars );
+		sprintf( GoldBarsFoundText, LT_OneGoldBarFound, (int)NumGoldBars );
 	}else
 	{
-		sprintf( GoldBarsFoundText, LT_GoldBarsFound, NumGoldBars );
+		sprintf( GoldBarsFoundText, LT_GoldBarsFound, (int)NumGoldBars );
 	}
 	
 	if( Secrets == 1 )
@@ -16346,10 +16346,10 @@ void InitCrystalsFoundText( MENU *Menu )
 
 	if( NumKilledEnemies == 1 )
 	{
-		sprintf( EnemiesKilledText, LT_OneEnemyKilled, NumKilledEnemies, NumInitEnemies );
+		sprintf( EnemiesKilledText, LT_OneEnemyKilled, (int)NumKilledEnemies, (int)NumInitEnemies );
 	}else
 	{
-		sprintf( EnemiesKilledText, LT_EnemysKilled, NumKilledEnemies, NumInitEnemies );
+		sprintf( EnemiesKilledText, LT_EnemysKilled, (int)NumKilledEnemies, (int)NumInitEnemies );
 	}
 
 	/*
@@ -16361,19 +16361,19 @@ void InitCrystalsFoundText( MENU *Menu )
 	*/
 	if ( ( ( IntLevelTimeTaken / 60 ) == 1 ) && ( ( IntLevelTimeTaken % 60 ) == 1 ) )
 	{
-		sprintf( TimeTakenText, LT_TimeTaken1/*"time taken %d min %d sec"*/,	IntLevelTimeTaken / 60,	IntLevelTimeTaken % 60 ); 
+		sprintf( TimeTakenText, LT_TimeTaken1/*"time taken %d min %d sec"*/,	(int)(IntLevelTimeTaken / 60),	(int)(IntLevelTimeTaken % 60) ); 
 	}
 	if ( ( ( IntLevelTimeTaken / 60 ) != 1 ) && ( ( IntLevelTimeTaken % 60 ) == 1 ) )
 	{
-		sprintf( TimeTakenText, LT_TimeTaken2/*"time taken %d mins %d sec"*/,	IntLevelTimeTaken / 60,	IntLevelTimeTaken % 60 ); 
+		sprintf( TimeTakenText, LT_TimeTaken2/*"time taken %d mins %d sec"*/,	(int)(IntLevelTimeTaken / 60),	(int)(IntLevelTimeTaken % 60) ); 
 	}
 	if ( ( ( IntLevelTimeTaken / 60 ) == 1 ) && ( ( IntLevelTimeTaken % 60 ) != 1 ) )
 	{
-		sprintf( TimeTakenText, LT_TimeTaken3/*"time taken %d min %d secs"*/,	IntLevelTimeTaken / 60,	IntLevelTimeTaken % 60 ); 
+		sprintf( TimeTakenText, LT_TimeTaken3/*"time taken %d min %d secs"*/,	(int)(IntLevelTimeTaken / 60),	(int)(IntLevelTimeTaken % 60) ); 
 	}
 	if ( ( ( IntLevelTimeTaken / 60 ) != 1 ) && ( ( IntLevelTimeTaken % 60 ) != 1 ) )
 	{
-		sprintf( TimeTakenText, LT_TimeTaken4/*"time taken %d mins %d secs"*/,	IntLevelTimeTaken / 60,	IntLevelTimeTaken % 60 ); 
+		sprintf( TimeTakenText, LT_TimeTaken4/*"time taken %d mins %d secs"*/,	(int)(IntLevelTimeTaken / 60),	(int)(IntLevelTimeTaken % 60) ); 
 	}
 }
 

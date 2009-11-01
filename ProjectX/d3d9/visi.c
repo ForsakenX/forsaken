@@ -237,10 +237,11 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 	{
 		fprintf( f, "%s%3d %9d %9d %9d %9d      %s\n",
 			( VisiStats[ j ].tmax > 1000 ) ? "*" : " ",
-			j, VisiStats[ j ].tmax,
-			( VisiStats[ j ].visits ) ? VisiStats[ j ].tsum / VisiStats[ j ].visits : 0,
-			( VisiStats[ j ].visits ) ? VisiStats[ j ].tmin : 0,
-			VisiStats[ j ].visits,
+			j,
+			(int)VisiStats[ j ].tmax,
+			(int)( VisiStats[ j ].visits ) ? VisiStats[ j ].tsum / VisiStats[ j ].visits : 0,
+			(int)( VisiStats[ j ].visits ) ? VisiStats[ j ].tmin : 0,
+			(int)VisiStats[ j ].visits,
 			m->Group[ j ].name );
 	}
 
