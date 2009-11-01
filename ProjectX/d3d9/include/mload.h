@@ -165,7 +165,7 @@ TEXTUREANIMINFOINDEX * TAnimInfoIndex;
 }ANIMDATA;
 
 
-typedef struct GROUP{
+typedef struct LVLGROUP{
 	uint16	num_execbufs;
 	uint16	exec_type[MAXEXECBUFSPERGROUP];
 	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
@@ -199,7 +199,7 @@ typedef struct GROUP{
 	POLYANIM *polyanim[MAXEXECBUFSPERGROUP];
 	uint16	StartPosInThisGroup;
 	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
-}GROUP;
+}LVLGROUP;
 
 
 typedef struct MLOADHEADER{
@@ -209,7 +209,7 @@ typedef struct MLOADHEADER{
 	char		*		testBuffer;
 	uint16				num_texture_files;
 	uint16				num_groups;
-	GROUP				Group[MAXGROUPS];
+	LVLGROUP				Group[MAXGROUPS];
 	int16				TloadIndex[MAXTPAGESPERMLOAD];		// which texture in the Tloadheader....
     char                ImageFile[MAXTPAGESPERMLOAD][32];	// Texture Files....
 	float				CellSize;

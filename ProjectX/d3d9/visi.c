@@ -190,7 +190,7 @@ static void InitDebugRays( void )
 void InitVisiStats( MLOADHEADER *m )
 {
 	int j;
-	GROUP *g;
+	LVLGROUP *g;
 	VECTOR min, max;
 
 	for ( j = 0; j < m->num_groups; j++ )
@@ -472,7 +472,7 @@ BOOL FindGroupConnections( MLOADHEADER *m )
 {
 	uint32 tabsize;
 	uint16 g, p, g2;
-	GROUP *group;
+	LVLGROUP *group;
 	PORTAL *portal;
 	uint16 gnum;
 
@@ -1264,7 +1264,7 @@ FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max )
 {
 	uint16 group;
 	VISGROUP *vg;
-	GROUP *mg;
+	LVLGROUP *mg;
 	uint16 in_groups;
 	EXTENT extent, *e;
 	float extent_size, min_extent_size;
@@ -1324,7 +1324,7 @@ FindClipGroup( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max )
 uint16 FindOverlappingVisibleGroups( CAMERA *cam, MLOADHEADER *m, VECTOR *min, VECTOR *max, uint16 * group )
 {
 	VISGROUP *vg;
-	GROUP *mg;
+	LVLGROUP *mg;
 	uint16 in_groups;
 
 	if ( outside_map )
