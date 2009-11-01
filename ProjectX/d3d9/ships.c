@@ -684,7 +684,7 @@ void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		RemoteCameraMode3
 };
 
-_inline
+__inline
 void AccellDecell(  float *  value ,  float  Decell ) 
 {
 	*value *= (float) (pow( 1.0 - Decell, framelag) );
@@ -2733,7 +2733,7 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
-_inline
+__inline
 #endif
 #endif
 BOOL	IsStartPosVacant( int16 i , uint16 startpos )
@@ -2761,7 +2761,7 @@ BOOL	IsStartPosVacant( int16 i , uint16 startpos )
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
-_inline
+__inline
 #endif
 #endif
 BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
@@ -2789,7 +2789,7 @@ BOOL	IsStartPosVacantMutualyVisibleGroup( int16 i , uint16 startpos )
 ===================================================================*/
 #ifdef USEINLINE
 #ifdef FINAL_RELEASE
-_inline
+__inline
 #endif
 #endif
 BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos )

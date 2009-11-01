@@ -96,7 +96,7 @@ void FLOAT2INT( int * I, float F )
 	Floating Point Cull Mode
 ===================================================================*/
 #ifdef USEASM
-_inline
+__inline
 void	start_chop(void)
 {
 __asm
@@ -109,7 +109,7 @@ __asm
 	}
 }
 
-_inline
+__inline
 void	end_chop(void)
 {
 __asm

@@ -3807,7 +3807,7 @@ void (* EnemyControlType[ ])( ENEMY * Enemy ) = {
 	EnemyUnderFleshMorphControl,
 };
 
-_inline
+__inline
 void AccellDecell(  float *  value ,  float  Decell ) 
 {
 	*value *= (float) (pow( 1.0 - Decell, framelag) );

@@ -111,7 +111,7 @@ void QuatMultiply( QUAT * q1, QUAT * q2, QUAT * q1q2 )
 	Output		:	Nothing
 ===================================================================*/
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 void QuatMultiplyX_Y( QUAT * qx, QUAT * qy, QUAT * qxy )
 {
@@ -136,7 +136,7 @@ void QuatMultiplyX_Y( QUAT * qx, QUAT * qy, QUAT * qxy )
 	Output		:	Nothing
 ===================================================================*/
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 void QuatMultiplyXY_Z( QUAT * qxy, QUAT * qz, QUAT * qxyz )
 {

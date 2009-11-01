@@ -212,7 +212,7 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 	Output		:	int			TRUE/ FALSE
 ===================================================================*/
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	 				 VERT *  Point, NORMAL * FaceNormal , float D , float * TempDistance)
@@ -399,7 +399,7 @@ typedef enum
 } AxisIndex;
 
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 BOOL ColRayPolyIntersect( MCFACE *face )
 {
@@ -597,7 +597,7 @@ BOOL ColRayPlaneIntersect( VECTOR *normal, float offset )
 ===================================================================*/
 #if 1
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 float ColDotProduct( VECTOR * a , NORMAL * b ) 
 {
@@ -607,7 +607,7 @@ float ColDotProduct( VECTOR * a , NORMAL * b )
 }
 #else
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 float ColDotProduct( VECTOR * vec0 , NORMAL * vec1 ) 
 {

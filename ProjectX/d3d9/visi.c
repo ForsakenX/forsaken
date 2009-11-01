@@ -764,7 +764,7 @@ void AddIndirectVisible( uint16 g )
 
 
 #ifdef USEINLINE
-_inline
+__inline
 #endif
  int EmptyXYExtent( EXTENT *e )
 {

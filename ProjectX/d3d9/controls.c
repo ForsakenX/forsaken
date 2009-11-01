@@ -384,7 +384,7 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
 
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 #ifdef USEINLINE
-_inline
+__inline
 #endif
  short
 key_pressed( USERKEY *k )
@@ -451,7 +451,7 @@ key_pressed( USERKEY *k )
 }
 
 #ifdef USEINLINE
-_inline
+__inline
 #endif
  short
 key_released( USERKEY *k )
@@ -519,7 +519,7 @@ key_released( USERKEY *k )
 
 
 #ifdef USEINLINE
-_inline
+__inline
 #endif
 short key_held( USERKEY *k )
 {
