@@ -3053,7 +3053,7 @@ BOOL RenderScene( void )
     InitFont();
 
     MyGameStatus = STATUS_InitView_1;
-    PrintInitViewStatus( MyGameStatus );
+    //PrintInitViewStatus( MyGameStatus );
     break;
   
 
@@ -3142,7 +3142,7 @@ BOOL RenderScene( void )
 	}
 
     MyGameStatus = STATUS_InitView_2;
-    PrintInitViewStatus( MyGameStatus );
+    //PrintInitViewStatus( MyGameStatus );
     break;
   
 
