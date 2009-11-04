@@ -72,7 +72,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib DevIL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -172,13 +172,15 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib DevIL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib IL.lib ILU.lib zlib-d.lib libpng-d.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="breakpad;enet;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
+				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
 				GenerateMapFile="false"
@@ -273,7 +275,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib DevIL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
@@ -370,7 +372,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib DevIL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"

@@ -1,7 +1,10 @@
-#include "texture.h" // api
+#include <stdlib.h>
+#include "texture.h" // defines this api
+
+#define IL_STATIC_LIB
+
 #include "IL/il.h"
 #include "IL/ilu.h"
-#include "IL/ilut.h"
 
 #define IMAGE_COMPONENTS 4 // rgba
 
