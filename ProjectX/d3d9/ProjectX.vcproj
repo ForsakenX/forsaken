@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;USEINLINE;FINAL_RELEASE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_ENUM_PLAYERS;DEBUG_SPOTFX_SOUND;DEBUG_VIEWPORT;DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
@@ -72,11 +72,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib.lib libpng.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -174,11 +174,11 @@
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib IL.lib ILU.lib zlib-d.lib libpng-d.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib IL.lib ILU.lib zlib.lib libpng.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="true"
@@ -247,7 +247,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USEINLINE;FINAL_RELEASE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -275,11 +275,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib.lib libpng.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
@@ -345,7 +345,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;breakpad\include;devil\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -372,11 +372,11 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib-d.lib libpng-d.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib ILU.lib zlib.lib libpng.lib IL.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;devil\lib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
@@ -715,6 +715,10 @@
 			</File>
 			<File
 				RelativePath=".\texture_devil.c"
+				>
+			</File>
+			<File
+				RelativePath=".\texture_png.c"
 				>
 			</File>
 			<File

@@ -1,6 +1,9 @@
 #ifndef TEXTURE_INCLUDED
 #define TEXTURE_INCLUDED
 
+#define TEXTURE_PNG // use custom png reader
+//#define TEXTURE_DEVIL // use devil to read png
+
 typedef struct {
 	int id;			// internal id
 	int w;			// width

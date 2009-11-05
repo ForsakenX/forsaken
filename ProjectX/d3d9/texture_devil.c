@@ -1,5 +1,9 @@
+
+#include "texture.h"
+
+#ifdef TEXTURE_DEVIL
+
 #include <stdlib.h>
-#include "texture.h" // defines this api
 
 #define IL_STATIC_LIB
 
@@ -62,3 +66,5 @@ int load_image( texture_image_t * image, int mipmaps ) //, float gamma )
 	ilCopyPixels(0, 0, 0, image->w, image->h, 1, IL_RGBA, IL_UNSIGNED_BYTE, image->data);
 	return 0;
 }
+
+#endif
