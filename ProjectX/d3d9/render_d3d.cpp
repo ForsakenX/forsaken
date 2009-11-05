@@ -820,7 +820,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *wi
 				pBits[index_p+1] = (BYTE)gamma_lookup[image.data[index+1]]; // green
 				pBits[index_p+2] = (BYTE)gamma_lookup[image.data[index]];   // red
 				// colour key
-				if( image.colorkey && pBits[index_p] + pBits[index_p+1] + pBits[index_p+2] == 0 )
+				if( image.colorkey && (pBits[index_p] + pBits[index_p+1] + pBits[index_p+2]) == 0 )
 					pBits[index_p+3] = 0; // alpha - pixel will not be coppied do to alpha=0 ignore
 				// do not colour key
 				else
@@ -1167,7 +1167,8 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 			);
 		}
 
-		unset_alpha_ignore();
+		if(renderObject->textureGroups[i].colourkey)
+			unset_alpha_ignore();
 
 		if (FAILED(LastError))
 			return LastError;
