@@ -101,7 +101,7 @@ int load_image( texture_image_t * image, int mipmap )
   /* detect if has alpha */
   image->colorkey = (color_type & PNG_COLOR_MASK_ALPHA);
   
-  // add colour key
+  // add alpha layer
   if(!image->colorkey)
 	png_set_add_alpha(png_ptr, (png_uint_32)255, PNG_FILLER_AFTER);
 
