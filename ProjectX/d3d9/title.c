@@ -5011,15 +5011,18 @@ Display Non 0 Clipped Non Faceme Transluecent Polys
 		if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
 			return FALSE;
 
+//
+// turn off transparency mode
+//
+
+	set_normal_states();
+
 /*===================================================================
 	Display Solid Screen Polys
 ===================================================================*/
 
 	if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
 		return FALSE;
-
-// reset mode
-	set_normal_states();
 
 /*===================================================================
 Display Opaque Lines
@@ -7895,12 +7898,6 @@ void	MenuProcess()
 	DWORD Key;
 	BOOL KeyFound = FALSE;
 	uint16 i;
-
-	// print text to screen
-#ifdef ProjectXVersionTip
-	CenterPrint4x5Text( ProjectXVersionTip, render_info.szClient.cy - (FontHeight+3) * 4, GREEN ); // +3 padding
-#endif
-	CenterPrint4x5Text( ProjectXVersion, render_info.szClient.cy - FontHeight * 3, GREEN );
 
 	// ??
 	Pulse += framelag/60.0F;

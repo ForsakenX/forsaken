@@ -4834,15 +4834,18 @@ Display Group Clipped Faceme Transluecent Polys
     if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
       return FALSE;
 
+//
+// turn off transparency modes
+//
+
+	set_normal_states();
+
 /*===================================================================
   Display Solid Screen Polys
 ===================================================================*/
 
   if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
     return FALSE;
-
-  // reset mode
-	set_normal_states();
 
 	rval = FSSetViewPort(&viewport);
     if (rval != D3D_OK) {
