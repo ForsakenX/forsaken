@@ -12,6 +12,7 @@
 void destroy_image( texture_image_t * image )
 {
 	free(image->data);
+	memset(image,0,sizeof(image));
 }
 
 int load_image( texture_image_t * image, int mipmap )
