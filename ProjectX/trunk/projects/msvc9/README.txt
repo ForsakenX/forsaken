@@ -1,15 +1,63 @@
 
-					...Welcome...
+!!!! WARNING !!!!
 
-SVN Convenstions:
+	THESE SETUP INSTRUCTIONS ARE ONLY A GUIDE.
+	THEY ARE COMPLETELY OUTDATED..
 
-	plain/text files:
 
-		You should set the following properties on new text files so they are portable:
 
-			svn propset svn:eol-style native "$file"
+Requirements:
 
-projects/*
+  VISUAL STUDIO 2005 Express C++ Edition
+  (Note: Visual Studio 2008 Express C++ Edition inflates executable file size by ~300KB and will not run on Windows ME/9X)
 
-	Contains build environments for various compilers and operating systems.
+  Windows 2003 Platform SDK R2
+
+  Enet
+
+Environment Variables:
+
+  NOTE: Right click "My Computer" -> Advanced -> "Environment Variables"
+
+  MSSDK_DIR = C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
+
+  NOTE: Restart Visual Studio
+
+Visual Studio Directories:
+
+  Includes:
+
+    $(MSSDK_DIR)\include
+    $(MSSDK_DIR)\include\mfc
+
+  Libraries:
+
+   $(MSSDK_DIR)\Lib
+
+Templates:
+
+  Copy *.template files to their basename's and edit their contents
+
+Debugging:
+
+  Default Debugger: (this may not be needed for you)
+
+	Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+	Value: "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv.exe" -p %ld -e %ld
+
+  Visual Studios:
+
+	project -> propeteries -> debuggin -> command line arguments
+
+  	-debug -chdir c:\\path\\to\\your\\skeleton
+
+  Explanation:
+  
+	debug:
+
+	  log files and debuggin error messages.
+
+	chdir:
+
+	  so the exe can find all the files.
 
