@@ -46,7 +46,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;USEINLINE;FINAL_RELEASE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_ENUM_PLAYERS;DEBUG_SPOTFX_SOUND;DEBUG_VIEWPORT;DPTEST"
 				UsePrecompiledHeader="0"
 				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
@@ -76,7 +76,7 @@
 				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
@@ -107,7 +107,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Generate breakpad symbols."
-				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
+				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 		<Configuration
@@ -143,7 +143,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -178,7 +178,7 @@
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="true"
@@ -211,7 +211,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Generate breakpad symbols."
-				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
+				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 		<Configuration
@@ -247,7 +247,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USEINLINE;FINAL_RELEASE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -279,7 +279,7 @@
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
@@ -310,7 +310,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Generate breakpad symbols."
-				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
+				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 		<Configuration
@@ -345,7 +345,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;breakpad\include;enet\include;libzlib;libpng;lua\include;.\include;.\ai\aiinclude"
+				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -376,7 +376,7 @@
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="breakpad;enet;libpng;libzlib;lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
 				IgnoreAllDefaultLibraries="false"
 				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
@@ -406,7 +406,7 @@
 			<Tool
 				Name="VCPostBuildEventTool"
 				Description="Generate breakpad symbols."
-				CommandLine=".\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
+				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
 			/>
 		</Configuration>
 	</Configurations>
@@ -418,347 +418,347 @@
 			Filter="cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
 			>
 			<File
-				RelativePath="2dpolys.c"
+				RelativePath="..\..\src\2dpolys.c"
 				>
 			</File>
 			<File
-				RelativePath="2dtextures.c"
+				RelativePath="..\..\src\2dtextures.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aicrashandburn.c"
+				RelativePath="..\..\src\ai\aicrashandburn.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aidogfight.c"
+				RelativePath="..\..\src\ai\aidogfight.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiexogenon.c"
+				RelativePath="..\..\src\ai\aiexogenon.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aifire.c"
+				RelativePath="..\..\src\ai\aifire.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aifleshmorph.c"
+				RelativePath="..\..\src\ai\aifleshmorph.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aifollow.c"
+				RelativePath="..\..\src\ai\aifollow.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiformation.c"
+				RelativePath="..\..\src\ai\aiformation.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiidle.c"
+				RelativePath="..\..\src\ai\aiidle.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aikillmine.c"
+				RelativePath="..\..\src\ai\aikillmine.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\ailib.c"
+				RelativePath="..\..\src\ai\ailib.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aimain.c"
+				RelativePath="..\..\src\ai\aimain.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aimovet.c"
+				RelativePath="..\..\src\ai\aimovet.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aipingoff.c"
+				RelativePath="..\..\src\ai\aipingoff.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aipsycho.c"
+				RelativePath="..\..\src\ai\aipsycho.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\airetreat.c"
+				RelativePath="..\..\src\ai\airetreat.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiscan.c"
+				RelativePath="..\..\src\ai\aiscan.c"
 				>
 			</File>
 			<File
-				RelativePath="ai\aispline.c"
+				RelativePath="..\..\src\ai\aispline.c"
 				>
 			</File>
 			<File
-				RelativePath="bgobjects.c"
+				RelativePath="..\..\src\bgobjects.c"
 				>
 			</File>
 			<File
-				RelativePath=".\breakpad.cpp"
+				RelativePath="..\..\src\.\breakpad.cpp"
 				>
 			</File>
 			<File
-				RelativePath="bsp.c"
+				RelativePath="..\..\src\bsp.c"
 				>
 			</File>
 			<File
-				RelativePath="camera.c"
+				RelativePath="..\..\src\camera.c"
 				>
 			</File>
 			<File
-				RelativePath="collision.c"
+				RelativePath="..\..\src\collision.c"
 				>
 			</File>
 			<File
-				RelativePath="compobjects.c"
+				RelativePath="..\..\src\compobjects.c"
 				>
 			</File>
 			<File
-				RelativePath="config.c"
+				RelativePath="..\..\src\config.c"
 				>
 			</File>
 			<File
-				RelativePath="controls.c"
+				RelativePath="..\..\src\controls.c"
 				>
 			</File>
 			<File
-				RelativePath=".\demo.c"
+				RelativePath="..\..\src\.\demo.c"
 				>
 			</File>
 			<File
-				RelativePath="dsutil.c"
+				RelativePath="..\..\src\dsutil.c"
 				>
 			</File>
 			<File
-				RelativePath="enemies.c"
+				RelativePath="..\..\src\enemies.c"
 				>
 			</File>
 			<File
-				RelativePath="extforce.c"
+				RelativePath="..\..\src\extforce.c"
 				>
 			</File>
 			<File
-				RelativePath="file.c"
+				RelativePath="..\..\src\file.c"
 				>
 			</File>
 			<File
-				RelativePath="goal.c"
+				RelativePath="..\..\src\goal.c"
 				>
 			</File>
 			<File
-				RelativePath=".\icon.rc"
+				RelativePath="icon.rc"
 				>
 			</File>
 			<File
-				RelativePath=".\input.h"
+				RelativePath="..\..\src\.\input.h"
 				>
 			</File>
 			<File
-				RelativePath=".\input_dinput.c"
+				RelativePath="..\..\src\.\input_dinput.c"
 				>
 			</File>
 			<File
-				RelativePath="lights.c"
+				RelativePath="..\..\src\lights.c"
 				>
 			</File>
 			<File
-				RelativePath="lines.c"
+				RelativePath="..\..\src\lines.c"
 				>
 			</File>
 			<File
-				RelativePath="loadsave.c"
+				RelativePath="..\..\src\loadsave.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_common.c"
+				RelativePath="..\..\src\.\lua_common.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_config.c"
+				RelativePath="..\..\src\.\lua_config.c"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_games.c"
+				RelativePath="..\..\src\.\lua_games.c"
 				>
 			</File>
 			<File
-				RelativePath=".\main.c"
+				RelativePath="..\..\src\.\main.c"
 				>
 			</File>
 			<File
-				RelativePath="mload.c"
+				RelativePath="..\..\src\mload.c"
 				>
 			</File>
 			<File
-				RelativePath="models.c"
+				RelativePath="..\..\src\models.c"
 				>
 			</File>
 			<File
-				RelativePath="multiplayer.c"
+				RelativePath="..\..\src\multiplayer.c"
 				>
 			</File>
 			<File
-				RelativePath="mxaload.c"
+				RelativePath="..\..\src\mxaload.c"
 				>
 			</File>
 			<File
-				RelativePath=".\mxload.c"
+				RelativePath="..\..\src\.\mxload.c"
 				>
 			</File>
 			<File
-				RelativePath=".\net_enet.c"
+				RelativePath="..\..\src\.\net_enet.c"
 				>
 			</File>
 			<File
-				RelativePath=".\net_tracker.c"
+				RelativePath="..\..\src\.\net_tracker.c"
 				>
 			</File>
 			<File
-				RelativePath=".\networking.c"
+				RelativePath="..\..\src\.\networking.c"
 				>
 			</File>
 			<File
-				RelativePath="new3d.c"
+				RelativePath="..\..\src\new3d.c"
 				>
 			</File>
 			<File
-				RelativePath="node.c"
+				RelativePath="..\..\src\node.c"
 				>
 			</File>
 			<File
-				RelativePath="oct2.c"
+				RelativePath="..\..\src\oct2.c"
 				>
 			</File>
 			<File
-				RelativePath="pickups.c"
+				RelativePath="..\..\src\pickups.c"
 				>
 			</File>
 			<File
-				RelativePath="polys.c"
+				RelativePath="..\..\src\polys.c"
 				>
 			</File>
 			<File
-				RelativePath="primary.c"
+				RelativePath="..\..\src\primary.c"
 				>
 			</File>
 			<File
-				RelativePath="quat.c"
+				RelativePath="..\..\src\quat.c"
 				>
 			</File>
 			<File
-				RelativePath=".\render_d3d.cpp"
+				RelativePath="..\..\src\.\render_d3d.cpp"
 				>
 			</File>
 			<File
-				RelativePath="restart.c"
+				RelativePath="..\..\src\restart.c"
 				>
 			</File>
 			<File
-				RelativePath="rtlight.c"
+				RelativePath="..\..\src\rtlight.c"
 				>
 			</File>
 			<File
-				RelativePath="sbufferhand.c"
+				RelativePath="..\..\src\sbufferhand.c"
 				>
 			</File>
 			<File
-				RelativePath="screenpolys.c"
+				RelativePath="..\..\src\screenpolys.c"
 				>
 			</File>
 			<File
-				RelativePath="secondary.c"
+				RelativePath="..\..\src\secondary.c"
 				>
 			</File>
 			<File
-				RelativePath="sfx.c"
+				RelativePath="..\..\src\sfx.c"
 				>
 			</File>
 			<File
-				RelativePath="ships.c"
+				RelativePath="..\..\src\ships.c"
 				>
 			</File>
 			<File
-				RelativePath=".\singleplayer.c"
+				RelativePath="..\..\src\.\singleplayer.c"
 				>
 			</File>
 			<File
-				RelativePath="skin.c"
+				RelativePath="..\..\src\skin.c"
 				>
 			</File>
 			<File
-				RelativePath="sphere.c"
+				RelativePath="..\..\src\sphere.c"
 				>
 			</File>
 			<File
-				RelativePath="spotfx.c"
+				RelativePath="..\..\src\spotfx.c"
 				>
 			</File>
 			<File
-				RelativePath="stats.c"
+				RelativePath="..\..\src\stats.c"
 				>
 			</File>
 			<File
-				RelativePath="stdwin.c"
+				RelativePath="..\..\src\stdwin.c"
 				>
 			</File>
 			<File
-				RelativePath="teleport.c"
+				RelativePath="..\..\src\teleport.c"
 				>
 			</File>
 			<File
-				RelativePath="text.c"
+				RelativePath="..\..\src\text.c"
 				>
 			</File>
 			<File
-				RelativePath=".\texture_devil.c"
+				RelativePath="..\..\src\.\texture_devil.c"
 				>
 			</File>
 			<File
-				RelativePath=".\texture_png.c"
+				RelativePath="..\..\src\.\texture_png.c"
 				>
 			</File>
 			<File
-				RelativePath=".\timer.c"
+				RelativePath="..\..\src\.\timer.c"
 				>
 			</File>
 			<File
-				RelativePath="title.c"
+				RelativePath="..\..\src\title.c"
 				>
 			</File>
 			<File
-				RelativePath="tload.c"
+				RelativePath="..\..\src\tload.c"
 				>
 			</File>
 			<File
-				RelativePath="transexe.c"
+				RelativePath="..\..\src\transexe.c"
 				>
 			</File>
 			<File
-				RelativePath="trigarea.c"
+				RelativePath="..\..\src\trigarea.c"
 				>
 			</File>
 			<File
-				RelativePath="triggers.c"
+				RelativePath="..\..\src\triggers.c"
 				>
 			</File>
 			<File
-				RelativePath=".\util.c"
+				RelativePath="..\..\src\.\util.c"
 				>
 			</File>
 			<File
-				RelativePath="visi.c"
+				RelativePath="..\..\src\visi.c"
 				>
 			</File>
 			<File
-				RelativePath="water.c"
+				RelativePath="..\..\src\water.c"
 				>
 			</File>
 			<File
-				RelativePath="xmem.c"
+				RelativePath="..\..\src\xmem.c"
 				>
 			</File>
 		</Filter>
@@ -767,283 +767,283 @@
 			Filter="h;hpp;hxx;hm;inl;fi;fd"
 			>
 			<File
-				RelativePath="include\2dpolys.h"
+				RelativePath="..\..\src\include\2dpolys.h"
 				>
 			</File>
 			<File
-				RelativePath="include\2dtextures.h"
+				RelativePath="..\..\src\include\2dtextures.h"
 				>
 			</File>
 			<File
-				RelativePath="ai\aiinclude\ai.h"
+				RelativePath="..\..\src\ai\aiinclude\ai.h"
 				>
 			</File>
 			<File
-				RelativePath="include\bgobjects.h"
+				RelativePath="..\..\src\include\bgobjects.h"
 				>
 			</File>
 			<File
-				RelativePath="include\bsp.h"
+				RelativePath="..\..\src\include\bsp.h"
 				>
 			</File>
 			<File
-				RelativePath="include\camera.h"
+				RelativePath="..\..\src\include\camera.h"
 				>
 			</File>
 			<File
-				RelativePath="include\collision.h"
+				RelativePath="..\..\src\include\collision.h"
 				>
 			</File>
 			<File
-				RelativePath="include\compobjects.h"
+				RelativePath="..\..\src\include\compobjects.h"
 				>
 			</File>
 			<File
-				RelativePath="include\config.h"
+				RelativePath="..\..\src\include\config.h"
 				>
 			</File>
 			<File
-				RelativePath="include\controls.h"
+				RelativePath="..\..\src\include\controls.h"
 				>
 			</File>
 			<File
-				RelativePath=".\demo.h"
+				RelativePath="..\..\src\.\demo.h"
 				>
 			</File>
 			<File
-				RelativePath="include\dsutil.h"
+				RelativePath="..\..\src\include\dsutil.h"
 				>
 			</File>
 			<File
-				RelativePath="include\enemies.h"
+				RelativePath="..\..\src\include\enemies.h"
 				>
 			</File>
 			<File
-				RelativePath="include\englishlocal.h"
+				RelativePath="..\..\src\include\englishlocal.h"
 				>
 			</File>
 			<File
-				RelativePath="include\extforce.h"
+				RelativePath="..\..\src\include\extforce.h"
 				>
 			</File>
 			<File
-				RelativePath="include\file.h"
+				RelativePath="..\..\src\include\file.h"
 				>
 			</File>
 			<File
-				RelativePath="include\goal.h"
+				RelativePath="..\..\src\include\goal.h"
 				>
 			</File>
 			<File
-				RelativePath="include\lights.h"
+				RelativePath="..\..\src\include\lights.h"
 				>
 			</File>
 			<File
-				RelativePath="include\lines.h"
+				RelativePath="..\..\src\include\lines.h"
 				>
 			</File>
 			<File
-				RelativePath="include\loadsave.h"
+				RelativePath="..\..\src\include\loadsave.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\local.h"
+				RelativePath="..\..\src\.\include\local.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\localtitle.h"
+				RelativePath="..\..\src\.\include\localtitle.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_common.h"
+				RelativePath="..\..\src\.\lua_common.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_config.h"
+				RelativePath="..\..\src\.\lua_config.h"
 				>
 			</File>
 			<File
-				RelativePath=".\lua_games.h"
+				RelativePath="..\..\src\.\lua_games.h"
 				>
 			</File>
 			<File
-				RelativePath="include\main.h"
+				RelativePath="..\..\src\include\main.h"
 				>
 			</File>
 			<File
-				RelativePath="include\mload.h"
+				RelativePath="..\..\src\include\mload.h"
 				>
 			</File>
 			<File
-				RelativePath="include\models.h"
+				RelativePath="..\..\src\include\models.h"
 				>
 			</File>
 			<File
-				RelativePath="include\multiplayer.h"
+				RelativePath="..\..\src\include\multiplayer.h"
 				>
 			</File>
 			<File
-				RelativePath="include\mxaload.h"
+				RelativePath="..\..\src\include\mxaload.h"
 				>
 			</File>
 			<File
-				RelativePath="include\mxload.h"
+				RelativePath="..\..\src\include\mxload.h"
 				>
 			</File>
 			<File
-				RelativePath=".\net.h"
+				RelativePath="..\..\src\.\net.h"
 				>
 			</File>
 			<File
-				RelativePath=".\net_tracker.h"
+				RelativePath="..\..\src\.\net_tracker.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\networking.h"
+				RelativePath="..\..\src\.\include\networking.h"
 				>
 			</File>
 			<File
-				RelativePath="include\new3d.h"
+				RelativePath="..\..\src\include\new3d.h"
 				>
 			</File>
 			<File
-				RelativePath="include\node.h"
+				RelativePath="..\..\src\include\node.h"
 				>
 			</File>
 			<File
-				RelativePath="include\object.h"
+				RelativePath="..\..\src\include\object.h"
 				>
 			</File>
 			<File
-				RelativePath="include\pickups.h"
+				RelativePath="..\..\src\include\pickups.h"
 				>
 			</File>
 			<File
-				RelativePath="include\polys.h"
+				RelativePath="..\..\src\include\polys.h"
 				>
 			</File>
 			<File
-				RelativePath="include\primary.h"
+				RelativePath="..\..\src\include\primary.h"
 				>
 			</File>
 			<File
-				RelativePath="include\quat.h"
+				RelativePath="..\..\src\include\quat.h"
 				>
 			</File>
 			<File
-				RelativePath="render.h"
+				RelativePath="..\..\src\render.h"
 				>
 			</File>
 			<File
-				RelativePath="include\restart.h"
+				RelativePath="..\..\src\include\restart.h"
 				>
 			</File>
 			<File
-				RelativePath="include\rtlight.h"
+				RelativePath="..\..\src\include\rtlight.h"
 				>
 			</File>
 			<File
-				RelativePath="include\sbufferhand.h"
+				RelativePath="..\..\src\include\sbufferhand.h"
 				>
 			</File>
 			<File
-				RelativePath="include\screenpolys.h"
+				RelativePath="..\..\src\include\screenpolys.h"
 				>
 			</File>
 			<File
-				RelativePath="include\secondary.h"
+				RelativePath="..\..\src\include\secondary.h"
 				>
 			</File>
 			<File
-				RelativePath="include\sfx.h"
+				RelativePath="..\..\src\include\sfx.h"
 				>
 			</File>
 			<File
-				RelativePath="include\ships.h"
+				RelativePath="..\..\src\include\ships.h"
 				>
 			</File>
 			<File
-				RelativePath=".\singleplayer.h"
+				RelativePath="..\..\src\.\singleplayer.h"
 				>
 			</File>
 			<File
-				RelativePath="include\skin.h"
+				RelativePath="..\..\src\include\skin.h"
 				>
 			</File>
 			<File
-				RelativePath="include\sphere.h"
+				RelativePath="..\..\src\include\sphere.h"
 				>
 			</File>
 			<File
-				RelativePath="include\spotfx.h"
+				RelativePath="..\..\src\include\spotfx.h"
 				>
 			</File>
 			<File
-				RelativePath="include\stats.h"
+				RelativePath="..\..\src\include\stats.h"
 				>
 			</File>
 			<File
-				RelativePath="include\stdwin.h"
+				RelativePath="..\..\src\include\stdwin.h"
 				>
 			</File>
 			<File
-				RelativePath="include\teleport.h"
+				RelativePath="..\..\src\include\teleport.h"
 				>
 			</File>
 			<File
-				RelativePath="include\text.h"
+				RelativePath="..\..\src\include\text.h"
 				>
 			</File>
 			<File
-				RelativePath=".\texture.h"
+				RelativePath="..\..\src\.\texture.h"
 				>
 			</File>
 			<File
-				RelativePath=".\include\timer.h"
+				RelativePath="..\..\src\.\include\timer.h"
 				>
 			</File>
 			<File
-				RelativePath="include\title.h"
+				RelativePath="..\..\src\include\title.h"
 				>
 			</File>
 			<File
-				RelativePath="include\tload.h"
+				RelativePath="..\..\src\include\tload.h"
 				>
 			</File>
 			<File
-				RelativePath="include\transexe.h"
+				RelativePath="..\..\src\include\transexe.h"
 				>
 			</File>
 			<File
-				RelativePath="include\trigarea.h"
+				RelativePath="..\..\src\include\trigarea.h"
 				>
 			</File>
 			<File
-				RelativePath="include\triggers.h"
+				RelativePath="..\..\src\include\triggers.h"
 				>
 			</File>
 			<File
-				RelativePath="include\typedefs.h"
+				RelativePath="..\..\src\include\typedefs.h"
 				>
 			</File>
 			<File
-				RelativePath=".\util.h"
+				RelativePath="..\..\src\.\util.h"
 				>
 			</File>
 			<File
-				RelativePath=".\version.h"
+				RelativePath="..\..\src\.\version.h"
 				>
 			</File>
 			<File
-				RelativePath="include\visi.h"
+				RelativePath="..\..\src\include\visi.h"
 				>
 			</File>
 			<File
-				RelativePath="include\water.h"
+				RelativePath="..\..\src\include\water.h"
 				>
 			</File>
 			<File
-				RelativePath="include\xmem.h"
+				RelativePath="..\..\src\include\xmem.h"
 				>
 			</File>
 		</Filter>
