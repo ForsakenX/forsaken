@@ -1,15 +1,16 @@
 
 					...Welcome...
 
-SVN Convenstions:
+SVN Conventions:
 
-	plain/text files:
+	For creating new plain/text files:
 
-		You should set the following properties on new text files so they are portable:
+		svn propset svn:eol-style native <file>
 
-			svn propset svn:eol-style native "$file"
 
-projects/*
+Folder Layout:
 
-	Contains build environments for various compilers and operating systems.
+	projects/	Contains build environments for various compilers and operating systems.
+	skeleton/	Contains the game assets such as sounds and textures.
+	src/		Contains the source code for ProjectX.
 
