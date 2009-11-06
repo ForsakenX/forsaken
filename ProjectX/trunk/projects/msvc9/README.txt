@@ -36,7 +36,7 @@ Visual Studio Directories:
 
 Templates:
 
-  Copy *.template files to their basename's and edit their contents
+	copy and edit src/version.h.template to projects/msvc9/version.h
 
 Debugging:
 

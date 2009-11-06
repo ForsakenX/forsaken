@@ -15,102 +15,6 @@
 	</ToolFiles>
 	<Configurations>
 		<Configuration
-			Name="Debug - Optimisations|Win32"
-			OutputDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON"
-			IntermediateDirectory=".\temp\ProjectX___Win32_Debug_OPT_ON\"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
-				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;USEINLINE;FINAL_RELEASE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_ENUM_PLAYERS;DEBUG_SPOTFX_SOUND;DEBUG_VIEWPORT;DPTEST"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX.pch"
-				AssemblerListingLocation=".\temp\ProjectX___Win32_Debug_OPT_ON\"
-				ObjectFile=".\temp\ProjectX___Win32_Debug_OPT_ON\"
-				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Debug_OPT_ON\"
-				WarningLevel="3"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="3"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;NET_ENET;_DEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib zlib.lib libpng.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib"
-				OutputFile="ProjectX___Win32_Debug_OPT_ON.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
-				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=".\temp\ProjectX___Win32_Debug_OPT_ON\ProjectX_Opton.pdb"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Generate breakpad symbols."
-				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
-			/>
-		</Configuration>
-		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\temp\ProjectX___Win32_Debug\"
 			IntermediateDirectory=".\temp\ProjectX___Win32_Debug\trash"
@@ -143,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;DPTEST;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				DefaultCharIsUnsigned="true"
@@ -178,7 +82,7 @@
 				OutputFile="ProjectX___Win32_Debug.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames="MSVCRT"
 				GenerateDebugInformation="true"
@@ -247,7 +151,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
 				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USEINLINE;FINAL_RELEASE;BSP;PLAYER_SPEECH_TAUNTS"
 				StringPooling="true"
 				EnableFunctionLevelLinking="true"
@@ -279,106 +183,10 @@
 				OutputFile="ProjectX___Win32_Release.exe"
 				LinkIncremental="1"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
+				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="Xrelease.pdb"
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Generate breakpad symbols."
-				CommandLine=".\lib\breakpad\dump_syms.exe .\Xrelease.pdb &gt; Xrelease.sym"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\temp\ProjectX___Win32_Release"
-			IntermediateDirectory=".\temp\ProjectX___Win32_Release\Xtrash"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\temp\ProjectX___Win32_Release\ProjectX.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories="..\..\src\;lib\breakpad\include;lib\enet\include;lib\libzlib;lib\libpng;lib\lua\include;lib\include;lib\ai\aiinclude"
-				PreprocessorDefinitions="WIN32;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;PLAYER_SPEECH_TAUNTS"
-				StringPooling="true"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\ProjectX___Win32_Release\ProjectX.pch"
-				AssemblerListingLocation=".\temp\ProjectX___Win32_Release\Xtrash\"
-				ObjectFile=".\temp\ProjectX___Win32_Release\Xtrash\"
-				ProgramDataBaseFileName=".\temp\ProjectX___Win32_Release\Xtrash\"
-				SuppressStartupBanner="true"
-				CallingConvention="1"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;NET_ENET;NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib ddraw.lib  dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib zlib.lib libpng.lib exception_handler.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib amstrmid.lib"
-				OutputFile="ProjectX___Win32_Release.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\breakpad;lib\enet;lib\libpng;lib\libzlib;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib"
-				IgnoreAllDefaultLibraries="false"
-				ProgramDatabaseFile=".\temp\ProjectX___Win32_Release\Xrelease.pdb"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
@@ -498,7 +306,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\breakpad.cpp"
+				RelativePath="..\..\src\breakpad.cpp"
 				>
 			</File>
 			<File
@@ -526,7 +334,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\demo.c"
+				RelativePath="..\..\src\demo.c"
 				>
 			</File>
 			<File
@@ -554,11 +362,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\input.h"
+				RelativePath="..\..\src\input.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\input_dinput.c"
+				RelativePath="..\..\src\input_dinput.c"
 				>
 			</File>
 			<File
@@ -574,19 +382,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_common.c"
+				RelativePath="..\..\src\lua_common.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_config.c"
+				RelativePath="..\..\src\lua_config.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_games.c"
+				RelativePath="..\..\src\lua_games.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\main.c"
+				RelativePath="..\..\src\main.c"
 				>
 			</File>
 			<File
@@ -606,19 +414,19 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\mxload.c"
+				RelativePath="..\..\src\mxload.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\net_enet.c"
+				RelativePath="..\..\src\net_enet.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\net_tracker.c"
+				RelativePath="..\..\src\net_tracker.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\networking.c"
+				RelativePath="..\..\src\networking.c"
 				>
 			</File>
 			<File
@@ -650,7 +458,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\render_d3d.cpp"
+				RelativePath="..\..\src\render_d3d.cpp"
 				>
 			</File>
 			<File
@@ -682,7 +490,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\singleplayer.c"
+				RelativePath="..\..\src\singleplayer.c"
 				>
 			</File>
 			<File
@@ -714,15 +522,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\texture_devil.c"
+				RelativePath="..\..\src\texture_devil.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\texture_png.c"
+				RelativePath="..\..\src\texture_png.c"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\timer.c"
+				RelativePath="..\..\src\timer.c"
 				>
 			</File>
 			<File
@@ -746,7 +554,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\util.c"
+				RelativePath="..\..\src\util.c"
 				>
 			</File>
 			<File
@@ -807,7 +615,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\demo.h"
+				RelativePath="..\..\src\demo.h"
 				>
 			</File>
 			<File
@@ -847,23 +655,23 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\include\local.h"
+				RelativePath="..\..\src\include\local.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\include\localtitle.h"
+				RelativePath="..\..\src\include\localtitle.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_common.h"
+				RelativePath="..\..\src\lua_common.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_config.h"
+				RelativePath="..\..\src\lua_config.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\lua_games.h"
+				RelativePath="..\..\src\lua_games.h"
 				>
 			</File>
 			<File
@@ -891,15 +699,15 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\net.h"
+				RelativePath="..\..\src\net.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\net_tracker.h"
+				RelativePath="..\..\src\net_tracker.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\include\networking.h"
+				RelativePath="..\..\src\include\networking.h"
 				>
 			</File>
 			<File
@@ -963,7 +771,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\singleplayer.h"
+				RelativePath="..\..\src\singleplayer.h"
 				>
 			</File>
 			<File
@@ -995,11 +803,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\texture.h"
+				RelativePath="..\..\src\texture.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\include\timer.h"
+				RelativePath="..\..\src\include\timer.h"
 				>
 			</File>
 			<File
@@ -1027,11 +835,11 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\util.h"
+				RelativePath="..\..\src\util.h"
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\.\version.h"
+				RelativePath="version.h"
 				>
 			</File>
 			<File
