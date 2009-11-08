@@ -761,9 +761,273 @@ void save_texture( char * path, LPDIRECT3DTEXTURE9 texture )
 #endif
 }
 
+const char * d3d_image_file_formats[] =
+{
+"D3DXIFF_BMP",
+"D3DXIFF_JPG",
+"D3DXIFF_TGA",
+"D3DXIFF_PNG",
+"D3DXIFF_DDS",
+"D3DXIFF_PPM",
+"D3DXIFF_DIB",
+"D3DXIFF_HDR",
+"D3DXIFF_PFM",
+};
+
+
+const char * d3d_format( D3DFORMAT format )
+{
+	switch(format)
+	{
+	case D3DFMT_UNKNOWN:
+		return "D3DFMT_UNKNOWN";
+		break;
+
+	case D3DFMT_R8G8B8:
+		return "D3DFMT_R8G8B8";
+		break;
+
+	case D3DFMT_A8R8G8B8:
+		return "D3DFMT_A8R8G8B8";
+		break;
+
+	case D3DFMT_X8R8G8B8:
+		return "D3DFMT_X8R8G8B8";
+		break;
+
+	case D3DFMT_R5G6B5:
+		return "D3DFMT_R5G6B5";
+		break;
+
+	case D3DFMT_X1R5G5B5:
+		return "D3DFMT_X1R5G5B5";
+		break;
+
+	case D3DFMT_A1R5G5B5:
+		return "D3DFMT_A1R5G5B5";
+		break;
+
+	case D3DFMT_A4R4G4B4:
+		return "D3DFMT_A4R4G4B4";
+		break;
+
+	case D3DFMT_R3G3B2:
+		return "D3DFMT_R3G3B2";
+		break;
+
+	case D3DFMT_A8:
+		return "D3DFMT_A8";
+		break;
+
+	case D3DFMT_A8R3G3B2:
+		return "D3DFMT_A8R3G3B2";
+		break;
+
+	case D3DFMT_X4R4G4B4:
+		return "D3DFMT_X4R4G4B4";
+		break;
+
+	case D3DFMT_A2B10G10R10:
+		return "D3DFMT_A2B10G10R10";
+		break;
+
+	case D3DFMT_A8B8G8R8:
+		return "D3DFMT_A8B8G8R8";
+		break;
+
+	case D3DFMT_X8B8G8R8:
+		return "D3DFMT_X8B8G8R8";
+		break;
+
+	case D3DFMT_G16R16:
+		return "D3DFMT_G16R16";
+		break;
+
+	case D3DFMT_A2R10G10B10:
+		return "D3DFMT_A2R10G10B10";
+		break;
+
+	case D3DFMT_A16B16G16R16:
+		return "D3DFMT_A16B16G16R16";
+		break;
+
+	case D3DFMT_A8P8:
+		return "D3DFMT_A8P8";
+		break;
+
+	case D3DFMT_P8:
+		return "D3DFMT_P8";
+		break;
+
+	case D3DFMT_L8:
+		return "D3DFMT_L8";
+		break;
+
+	case D3DFMT_A8L8:
+		return "D3DFMT_A8L8";
+		break;
+
+	case D3DFMT_A4L4:
+		return "D3DFMT_A4L4";
+		break;
+
+	case D3DFMT_V8U8:
+		return "D3DFMT_V8U8";
+		break;
+
+	case D3DFMT_L6V5U5:
+		return "D3DFMT_L6V5U5";
+		break;
+
+	case D3DFMT_X8L8V8U8:
+		return "D3DFMT_X8L8V8U8";
+		break;
+
+	case D3DFMT_Q8W8V8U8:
+		return "D3DFMT_Q8W8V8U8";
+		break;
+
+	case D3DFMT_V16U16:
+		return "D3DFMT_V16U16";
+		break;
+
+	case D3DFMT_A2W10V10U10:
+		return "D3DFMT_A2W10V10U10";
+		break;
+
+	case D3DFMT_UYVY:
+		return "D3DFMT_UYVY";
+		break;
+
+	case D3DFMT_R8G8_B8G8:
+		return "D3DFMT_R8G8_B8G8";
+		break;
+
+	case D3DFMT_YUY2:
+		return "D3DFMT_YUY2";
+		break;
+
+	case D3DFMT_G8R8_G8B8:
+		return "D3DFMT_G8R8_G8B8";
+		break;
+
+	case D3DFMT_DXT1:
+		return "D3DFMT_DXT1";
+		break;
+
+	case D3DFMT_DXT2:
+		return "D3DFMT_DXT2";
+		break;
+
+	case D3DFMT_DXT3:
+		return "D3DFMT_DXT3";
+		break;
+
+	case D3DFMT_DXT4:
+		return "D3DFMT_DXT4";
+		break;
+
+	case D3DFMT_DXT5:
+		return "D3DFMT_DXT5";
+		break;
+
+	case D3DFMT_D16_LOCKABLE:
+		return "D3DFMT_D16_LOCKABLE";
+		break;
+
+	case D3DFMT_D32:
+		return "D3DFMT_D32";
+		break;
+
+	case D3DFMT_D15S1:
+		return "D3DFMT_D15S1";
+		break;
+
+	case D3DFMT_D24S8:
+		return "D3DFMT_D24S8";
+		break;
+
+	case D3DFMT_D24X8:
+		return "D3DFMT_D24X8";
+		break;
+
+	case D3DFMT_D24X4S4:
+		return "D3DFMT_D24X4S4";
+		break;
+
+	case D3DFMT_D16:
+		return "D3DFMT_D16";
+		break;
+
+	case D3DFMT_D32F_LOCKABLE:
+		return "D3DFMT_D32F_LOCKABLE";
+		break;
+
+	case D3DFMT_D24FS8:
+		return "D3DFMT_D24FS8";
+		break;
+
+	case D3DFMT_L16:
+		return "D3DFMT_L16";
+		break;
+
+	case D3DFMT_VERTEXDATA:
+		return "D3DFMT_VERTEXDATA";
+		break;
+
+	case D3DFMT_INDEX16:
+		return "D3DFMT_INDEX16";
+		break;
+
+	case D3DFMT_INDEX32:
+		return "D3DFMT_INDEX32";
+		break;
+
+	case D3DFMT_Q16W16V16U16:
+		return "D3DFMT_Q16W16V16U16";
+		break;
+
+	case D3DFMT_MULTI2_ARGB8:
+		return "D3DFMT_MULTI2_ARGB8";
+		break;
+
+	case D3DFMT_R16F:
+		return "D3DFMT_R16F";
+		break;
+
+	case D3DFMT_G16R16F:
+		return "D3DFMT_G16R16F";
+		break;
+
+	case D3DFMT_A16B16G16R16F:
+		return "D3DFMT_A16B16G16R16F";
+		break;
+
+	case D3DFMT_R32F:
+		return "D3DFMT_R32F";
+		break;
+
+	case D3DFMT_G32R32F:
+		return "D3DFMT_G32R32F";
+		break;
+
+	case D3DFMT_A32B32G32R32F:
+		return "D3DFMT_A32B32G32R32F";
+		break;
+
+	case D3DFMT_CxV8U8:
+		return "D3DFMT_CxV8U8";
+		break;
+
+	default:
+		return "UNKNOWN";
+	}
+}
+
 extern double Gamma;
 HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
 {
+#ifdef TEXTURE_PNG
 	HRESULT hr;
 	texture_image_t image;
 
@@ -845,6 +1109,113 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *wi
 
 	//
 	return S_OK;
+
+#else
+
+	D3DXIMAGE_INFO imageInfo;
+
+	// if the file doesn't exist
+	char real_file[256];
+	if( ! File_Exists( (char*) path ) )
+	{
+		// try to find a png version
+		Change_Ext( path, real_file, ".PNG" );
+		path = &real_file[0];
+	}
+	if( ! File_Exists( (char*) path ) )
+	{
+		// try to find a png version
+		Change_Ext( path, real_file, ".BMP" );
+		path = &real_file[0];
+		DebugPrintf("Could not find PNG version of: %s\n",path);
+	}
+	if( ! File_Exists( (char*) path ) )
+	{
+		DebugPrintf("Could not find texture file: %s\n",path);
+		return S_FALSE;
+	}
+
+	HRESULT LastError = D3DXCreateTextureFromFileEx(lpD3DDevice, 
+				path, 
+				0,//*width, 
+				0,//*height, 
+				numMips, 
+				0,
+				// most likely will end up as the format the file is in
+				D3DFMT_A8R8G8B8, // all texure data will be accessible in LockRect()'s pBits backwards: bgra
+				pool,
+				D3DX_DEFAULT,
+				D3DX_DEFAULT,
+				(*colorkey) ? FSColourKeyBlack : 0, // colour key
+				&imageInfo,
+				NULL,
+				texture);
+
+	if (FAILED(LastError))
+	{
+		DebugPrintf("couldn't create texture\n");
+	}
+	
+	// return the values
+	*width  = (uint16) imageInfo.Width;
+	*height = (uint16) imageInfo.Height;
+
+	// image has no alpha layer
+	// only way image would have an alpha layer
+	// is the updated textures we created
+	// which will have exactly this format!
+	if( imageInfo.Format != D3DFMT_A8R8G8B8 )
+		(*colorkey) = FALSE;
+
+	// debugging info
+	DebugPrintf("Created texture from %s\n",path);
+	DebugPrintf("Texture Details: width=%d, height=%d, depth=%d, mips=%d, image_format=%s, file_format=%s\n",
+					imageInfo.Width, imageInfo.Height, imageInfo.Depth, imageInfo.MipLevels, 
+					d3d_format(imageInfo.Format), d3d_image_file_formats[imageInfo.ImageFileFormat] );
+
+	/*
+	// saves the texture in it's loaded format to a file
+	{
+		static int count = 0;
+		sprintf(buf, ".\\Dumps\\%s.png", fileName);
+		D3DXSaveTextureToFile(buf, D3DXIFF_PNG, (*texture), 0);
+		count++;
+	}
+	*/
+
+	//
+	// gamma correction
+	//
+	{
+		unsigned int y, x;
+		int size = 4;
+		D3DLOCKED_RECT lrect;
+		BYTE* pBits;
+		LPDIRECT3DTEXTURE9 _texture = *texture;
+		_texture->LockRect(0,&lrect,NULL,D3DLOCK_DISCARD);
+		pBits = (BYTE*)lrect.pBits;
+		for (y = 0; y < imageInfo.Height; y++)
+		{
+			for (x = 0; x < imageInfo.Width; x++)
+			{
+				// move to the correct off set in the table
+				// pitch is the width of a row
+				// (x*size) is the length of each pixel data
+				DWORD index = (x*size)+(y*lrect.Pitch);
+				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
+				pBits[index]   = (BYTE)gamma_lookup[pBits[index]];	// Blue
+				pBits[index+1] = (BYTE)gamma_lookup[pBits[index+1]];// Green
+				pBits[index+2] = (BYTE)gamma_lookup[pBits[index+2]];// Red
+				// i did not see any alpha values changed for gamma in d3d6 version
+				//pBits[index+3] = (BYTE)gamma_lookup[pBits[index+3]];// Alpha
+			}
+		}
+		_texture->UnlockRect(0);
+	}
+
+	return LastError;
+
+#endif
 }
 
 // copies source texture into the surface of destination surface

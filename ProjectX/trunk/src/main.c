@@ -1073,9 +1073,11 @@ static BOOL InitWindow( void )
 // Initializes the application
 //
 
+#ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
 extern BOOL breakpad_init( void );
+#endif
 #endif
 
 extern BOOL MouseExclusive;
@@ -1104,6 +1106,7 @@ static BOOL AppInit( char * lpCmdLine )
 	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
 	LastTime = LargeTime;
 
+#ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
 
@@ -1111,6 +1114,7 @@ static BOOL AppInit( char * lpCmdLine )
 	if(!breakpad_init())
 		return FALSE;
 
+#endif
 #endif
 
 	// test breakpad by uncommenting this

@@ -1,3 +1,4 @@
+#ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
 
@@ -68,4 +69,5 @@ extern "C" BOOL breakpad_init( void )
 	return TRUE;
 }
 
-#endif // __WINE__
+#endif // ! __WINE__
+#endif // BREAKPAD
