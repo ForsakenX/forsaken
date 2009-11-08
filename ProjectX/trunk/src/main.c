@@ -412,6 +412,9 @@ void CleanUpAndPostQuit(void)
     if (QuitRequested)
 		return;
 
+	//
+	SDL_Quit();
+
 	// kill stuff
     ReleaseView();
 
@@ -938,7 +941,8 @@ int default_x;
 int default_y;
 static BOOL InitWindow( void )
 {
-	SDL_Surface* icon;
+	SDL_Surface* myVideoSurface = NULL;
+	SDL_Surface* icon = NULL;
 
 	// set the window icon
 	icon = SDL_LoadBMP("Data/ProjectX-32x32.bmp");
@@ -952,12 +956,18 @@ static BOOL InitWindow( void )
 	}
 
 	// create the window
-	SDL_SetVideoMode(
+	myVideoSurface = SDL_SetVideoMode(
 		render_info.default_mode.w,
 		render_info.default_mode.h,
 		SDL_GetVideoInfo()->vfmt->BitsPerPixel, 
 		SDL_RESIZABLE 
 		);
+
+	if(!myVideoSurface)
+	{
+		Msg("Failed to create video surface: %s\n",SDL_GetError());
+		return FALSE;
+	}
 
 	// window title, icon title (taskbar and other places)
 	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
@@ -1046,7 +1056,10 @@ static BOOL AppInit( char * lpCmdLine )
 
 	// init sdl
 	if( SDL_Init( SDL_INIT_VIDEO  ) < 0 || !SDL_GetVideoInfo() )
+	{
+		Msg("Failed to initialize sdl: %s\n",SDL_GetError());
 		return 0;
+	}
 
 	// initialize COM library
 	if FAILED( CoInitialize(NULL) )
@@ -1284,6 +1297,9 @@ int main( int argc, char* argv[] )
 	}
 
 FAILURE:
+
+	//
+	SDL_Quit();
 
 	// cleanup networking
 	network_cleanup();
