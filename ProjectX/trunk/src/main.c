@@ -22,6 +22,9 @@
 #include "lua_common.h"
 #include "sfx.h"
 
+#include "SDL.h"
+
+
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR
 #endif
@@ -935,124 +938,36 @@ int default_x;
 int default_y;
 static BOOL InitWindow( void )
 {
-	HICON small_icon;
-	HICON large_icon;
-    WNDCLASSEX wc;
+	SDL_Surface* icon;
 
-//// START UGLY
-
-// It's supposed to be able to dyanmically load the right an icon
-// from a resource holding multiple sizes
-
-// For now I just manually
-// Search for local ProjectX.ico and fall back to embedded image in exe
-// 32x32 for large and 16x16 for small but falls back to any one found
-
-	// load the application icons
-	large_icon = (HICON) LoadImage(
-		NULL,					// hInstance (not needed when load from file)
-		"ProjectX.ico",			// image name / file path
-		IMAGE_ICON,				// used as icon
-		32,32,					// x,y height of the icon (0 == use actual)
-		LR_LOADFROMFILE |		// load the icon from file
-		LR_VGACOLOR				// use true color
-	);
-
-	// if failed to load the icon file then use the embedded icon in the exe
-	// see above for explanation of fields
-	if ( ! large_icon )
+	// set the window icon
+	icon = SDL_LoadBMP("Data/ProjectX-32x32.bmp");
+	if(icon)
 	{
-		DebugPrintf("Failed to load large icon from ProjectX.ico.\n");
-		large_icon = (HICON) LoadImage( hInstApp, "AppIcon", IMAGE_ICON, 32, 32, LR_VGACOLOR );
-		if( ! large_icon )
-			DebugPrintf("Failed to load large AppIcon from executable.\n");
-	}
-	
-	// load the application icons
-	small_icon = (HICON) LoadImage(
-		NULL,					// hInstance (not needed when load from file)
-		"ProjectX.ico",			// image name / file path
-		IMAGE_ICON,				// used as icon
-		16,16,					// x,y height of the icon (0 == use actual)
-		LR_LOADFROMFILE |		// load the icon from file
-		LR_VGACOLOR				// use true color
-	);
-
-	// if failed to load the icon file then use the embedded icon in the exe
-	// see above for explanation of fields
-	if ( ! small_icon )
-	{
-		DebugPrintf("Failed to load small icon from ProjectX.ico.\n");
-		small_icon = (HICON) LoadImage( hInstApp, "AppIcon", IMAGE_ICON, 16, 16, LR_VGACOLOR );
-		if( ! small_icon )
-			DebugPrintf("Failed to load small AppIcon from executable.\n");
+		// remove black pixels
+		Uint32 colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
+		SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);        
+		SDL_WM_SetIcon(icon, NULL);
+		SDL_FreeSurface(icon);
 	}
 
-	if ( ! small_icon && large_icon )
-		small_icon = large_icon;
-	if ( ! large_icon && small_icon )
-		large_icon = small_icon;
+	// create the window
+	SDL_SetVideoMode(
+		render_info.default_mode.w,
+		render_info.default_mode.h,
+		SDL_GetVideoInfo()->vfmt->BitsPerPixel, 
+		SDL_RESIZABLE 
+		);
 
+	// window title, icon title (taskbar and other places)
+	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
 
-//////// END UGLY
+	// hack to get the window handle
+	render_info.window = GetActiveWindow();
 
+	// still platform specific
 
-	// Setup the window class
-	wc.cbSize			= sizeof(WNDCLASSEX);
-	wc.style			= CS_HREDRAW | CS_VREDRAW |					// redraw window if horizontal width changes
-						CS_DBLCLKS;									// send my window double click messages
-    wc.lpfnWndProc		= WindowProc;								// processer for window messages
-    wc.cbClsExtra		= 0;										// extra bytes to initialize
-	wc.cbWndExtra		= 0;										// extra bytes to initialize
-    wc.hInstance		= hInstApp;							// window instance
-    wc.hIcon			= large_icon;								// handle to icons
-    wc.hCursor			= LoadCursor( NULL, IDC_ARROW );			// the cursor for mouse over window
-    wc.hbrBackground	= (HBRUSH)GetStockObject(BLACK_BRUSH);		//
-    wc.lpszClassName	= "MainWindow";								// class name
-	wc.hIconSm			= small_icon;								// the small icon
-	wc.lpszMenuName		= NULL;
-
-	// Register the window class
-    if (!RegisterClassEx(&wc))
-	{
-		Msg("RegistrClass failed: %d", GetLastError());
-		DebugPrintf("RegistrClass failed: %d", GetLastError());
-        return FALSE;
-	}
-	
-	// this is just a safety cause if these values are 0
-	// then starting in fullscreen and switching to window crashes
-	// cause the last window state had a window size of 0
-	
-	if ( ! screen_aspect_ratio )
-		screen_aspect_ratio = (float) (render_info.default_mode.w / render_info.default_mode.h);
-
-    // Create a window with some default settings that may change
-	render_info.window = CreateWindow(
-
-         "MainWindow",			// window class name (registered above)
-         ProjectXVersion,	// window title
-
-		 WS_TILEDWINDOW, // frame, resizing, caption, overlap, sysmenu, min|max|lower
-
-         0, 0, // start position x,y
-		 render_info.default_mode.w,
-		 render_info.default_mode.h,
-
-         NULL,				// parent window
-         NULL,			    // menu handle
-         hInstApp,	// program handle
-         NULL				// pointer to pass to WM_CREATE event
-
-	);
-	
-	if( render_info.window == NULL )
-	{
-		Msg("CreateWindow Failed: %d\n",GetLastError());
-        DebugPrintf("CreateWindow Failed: %d\n",GetLastError());
-        return FALSE;
-    }
-
+#ifdef WIN32
 	// restore window position
 	{
 		WINDOWPLACEMENT placement;
@@ -1064,6 +979,7 @@ static BOOL InitWindow( void )
 		placement.rcNormalPosition.bottom	= default_y + render_info.default_mode.h;
 		SetWindowPlacement( render_info.window, &placement );
 	}
+#endif
 
 	//
 	return TRUE;
@@ -1114,11 +1030,11 @@ static BOOL AppInit( char * lpCmdLine )
 	if(!breakpad_init())
 		return FALSE;
 
-#endif
-#endif
-
 	// test breakpad by uncommenting this
 	//{ *(int*)0=0; }
+
+#endif
+#endif
 
 #ifdef DEBUG_ON
 
@@ -1127,6 +1043,10 @@ static BOOL AppInit( char * lpCmdLine )
 	XSBuffer_Init();
 
 #endif
+
+	// init sdl
+	if( SDL_Init( SDL_INIT_VIDEO  ) < 0 || !SDL_GetVideoInfo() )
+		return 0;
 
 	// initialize COM library
 	if FAILED( CoInitialize(NULL) )
@@ -1161,7 +1081,15 @@ static BOOL AppInit( char * lpCmdLine )
 	if(!ParseCommandLine(lpCmdLine))
 		return FALSE;
 
+	// this is just a safety cause if these values are 0
+	// then starting in fullscreen and switching to window crashes
+	// cause the last window state had a window size of 0
+	if ( ! screen_aspect_ratio )
+		screen_aspect_ratio = (float) (render_info.default_mode.w / render_info.default_mode.h);
+
+	//
 	// create and show the window
+	//
 	if(!InitWindow())
 		return FALSE;
 
@@ -1277,49 +1205,36 @@ extern void network_cleanup( void );
 extern BOOL SeriousError;
 extern void ReallyShowCursor( BOOL show );
 
-int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
+//int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
+int main( int argc, char* argv[] )
 {
+	int i;
+	char cli[500];
+	SDL_Event event;   //used to poll for events and handle input
     int failcount = 0; // number of times RenderLoop has failed
-    MSG msg;
 	
-	//
-	hInstApp = hInstance;
+	// application handle
+	hInstApp = GetModuleHandle(NULL);
+
+	// build cli string
+	strncpy(cli, " ", 500);
+	for ( i=1; i<argc; i++ )
+	{
+		if( strlen(cli) + strlen(argv[i]) -1 > 500 )
+		{
+			DebugPrintf("Stopped parsing cli options at argc='%s' because greator than 500 characters\n",argv[i]);
+			break;
+		}
+		strcat( cli, " " );
+		strcat( cli, argv[i] );
+	}
 
     // Create the window and initialize all objects needed to begin rendering
     if(!AppInit(cli))
 		goto FAILURE;
 
-    // Main game loop...
-	while (!QuitRequested)
+	while( !QuitRequested )
 	{
-
-		// dispatches any messages that are in the queue and removes them
-		while(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			// if the window got the WM_QUIT message
-			if (msg.message == WM_QUIT)
-			{
-				// quit
-				CleanUpAndPostQuit();
-				break;
-			}
-
-			// we have a valid window handle
-			if ( render_info.window )
-			{
-
-				// translates virtual-key messages into character messages
-				// posts them to the message queue
-				// to be read the next time PeekMessage is called
-				// this does not modify the original message
-				// it simply creates new translated messages
-				TranslateMessage(&msg);
-
-				// dispatches a message to a window procedure
-				DispatchMessage(&msg);
-
-			}
-		}
 
         // Render if app is not minimized, not about to quit, not paused and D3D initialized
         if (render_info.bRenderingIsOK && !render_info.bMinimized && !render_info.bPaused && !QuitRequested)
@@ -1345,6 +1260,20 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, in
             }
         }
 
+		while( SDL_PollEvent( &event ) )
+		{
+			switch( event.type )
+			{
+			case SDL_KEYDOWN:
+				if ( event.key.keysym.sym == SDLK_ESCAPE )
+				{
+					CleanUpAndPostQuit();
+					goto FAILURE;
+				}
+				break;
+			}
+		}
+		
 		// call the sound proccesses
 		ProcessSoundRoutines( NULL );
 
@@ -1352,7 +1281,7 @@ int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, in
 		if ( cliSleep )
 			Sleep( cliSleep );
 
-    }
+	}
 
 FAILURE:
 
@@ -1383,5 +1312,5 @@ FAILURE:
 
 #endif
 
-    return (int) msg.wParam;
+	return 1;
 }
