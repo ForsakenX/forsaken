@@ -73,7 +73,7 @@ void InitFmPoly( void )
 
 	FirstFmPolyUsed = (uint16) -1;
 	FirstFmPolyFree = 0;
-	
+
 	for( i=0;i<MAXNUMOF2DPOLYS;i++)
 	{
 		memset( &FmPolys[i], 0, sizeof( FMPOLY ) );
@@ -118,7 +118,7 @@ uint16 FindFreeFmPoly( void )
 
 	i = FirstFmPolyFree;
 	if( i == (uint16) -1 ) return i;
- 
+
 	FmPolys[i].Prev = FirstFmPolyUsed;
 
 	if ( FirstFmPolyUsed != (uint16) -1)
@@ -143,7 +143,7 @@ void KillUsedFmPoly( uint16 i )
 {
 	uint16	its_prev;
 	uint16	its_next;
-	
+
 	its_prev = FmPolys[i].Prev;
 	its_next = FmPolys[i].Next;
 
@@ -254,7 +254,7 @@ void FmPolyProcess( void )
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -267,7 +267,7 @@ void FmPolyProcess( void )
 		   			KillUsedFmPoly( i );
 		   		}
 		   		break;
-		
+
 		   	case FM_ANIM2:								// Ship Explosion?
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
 		   		FmPolys[i].Frame += ( framelag / 4.0F );
@@ -276,33 +276,33 @@ void FmPolyProcess( void )
 		   			KillUsedFmPoly( i );
 		   		}
 		   		break;
-		
+
 		   	case FM_SMOKE_TRAIL:						// Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
-		
+
 		   		FmPolys[i].R = ShadeTable[ (int16) FmPolys[i].Frame ];
 		   		FmPolys[i].G = ShadeTable[ (int16) FmPolys[i].Frame ];
 		   		FmPolys[i].B = ShadeTable[ (int16) FmPolys[i].Frame ];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= 4.0F;
 		   			if( FmPolys[i].Speed < 0.0F ) FmPolys[i].Speed = 0.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( framelag / 2.0F );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
-		
+
 		   	case FM_TROJAX_EXP:								// Explosion?
 				FadeDec = ( 8.0F * framelag );
 				R = ( ( (float) FmPolys[i].R ) - FadeDec );
@@ -325,7 +325,7 @@ void FmPolyProcess( void )
 	   				KillUsedFmPoly( i );
 	   			}
 		   		break;
-		
+
 		   	case FM_TROJAX:								// Trojax bullet
 		   		FmPolys[ i ].Rot += ( FmPolys[i].RotSpeed * framelag );
 		   		if( FmPolys[ i ].Rot > 360.0F ) FmPolys[ i ].Rot -= 360.0F;
@@ -335,7 +335,7 @@ void FmPolyProcess( void )
 				Rotation.z = 0.0F;
 				ApplyMatrix( &FmPolys[ i ].Mat, &Rotation, &FmPolys[ i ].UpVector );
 		   		break;
-		
+
 		   	case FM_PULSAR_EXP:							// Pulsar Explosion?
 		   		FmPolys[i].Frame += ( framelag / 4.0F );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
@@ -343,7 +343,7 @@ void FmPolyProcess( void )
 		   			KillUsedFmPoly( i );
 		   		}
 		   		break;
-		
+
 		   	case FM_PULSAR:
 		   		break;
 
@@ -355,7 +355,7 @@ void FmPolyProcess( void )
 											* (*FmPolys[i].Frm_Info)->Num_Frames );
 		   		}
 		   		break;
-		 				
+
 		   	case FM_SHRAPNEL_EXP:						// Shrapnel Explosion?
 				if( FmPolys[i].LifeCount < 995.0F )
 				{
@@ -381,16 +381,16 @@ void FmPolyProcess( void )
 					}
 				}
 		   		break;
-		
+
 		   	case FM_FLAME:								// Flame Thrower?
 				FmPolys[ i ].Rot += ( FmPolys[i].RotSpeed * framelag );
 		   		if( FmPolys[ i ].Rot > 360.0F ) FmPolys[ i ].Rot -= 360.0F;
 		   		else if( FmPolys[ i ].Rot < 0.0F ) FmPolys[ i ].Rot += 360.0F;
-				
+
 				FmPolys[i].Frame += framelag;
 		   		if( FmPolys[i].Frame > 12.0F ) FmPolys[i].Frame = 12.0F;
 		   		break;
-	
+
 		   	case FM_STATIC:								// Static Obj Don't move/rotate
 		   		break;
 
@@ -469,15 +469,15 @@ void FmPolyProcess( void )
 		   	case FM_GRAVGON_TRAIL:						// Gravgon Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
-		
+
 		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
 		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
 		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 				FmPolys[i].xsize += ( GRAVGON_TRAIL_INC * framelag );
 				FmPolys[i].ysize += ( GRAVGON_TRAIL_INC * framelag );
 
@@ -486,7 +486,7 @@ void FmPolyProcess( void )
 		   			FmPolys[i].Speed -= ( 2.0F * framelag );
 		   			if( FmPolys[i].Speed < 0.0F ) FmPolys[i].Speed = 0.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( 0.1F * framelag );
 				if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames ) KillUsedFmPoly( i );
 		   		break;
@@ -494,15 +494,15 @@ void FmPolyProcess( void )
 		   	case FM_SOLARIS_TRAIL:						// Solaris Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
-		
+
 		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
 		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
 		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= ( 2.0F * framelag );
@@ -516,21 +516,21 @@ void FmPolyProcess( void )
 		   	case FM_NEW_TRAIL:								// New Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 3.0F ) * 8.0F ) ) );
-		
+
 		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
 		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
 		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 3.0F )];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= ( 2.0F * framelag );
 		   			if( FmPolys[i].Speed < 0.0F ) FmPolys[i].Speed = 0.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( 0.166F * framelag );
 				if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames ) KillUsedFmPoly( i );
 		   		break;
@@ -615,8 +615,8 @@ void FmPolyProcess( void )
 
 		   	case FM_BLACK_SMOKE:						// Black Smoke?
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
-		
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -625,7 +625,7 @@ void FmPolyProcess( void )
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= 0.2F;
@@ -637,12 +637,12 @@ void FmPolyProcess( void )
 		   			FmPolys[i].UpSpeed += 0.2F;
 		   			if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( framelag / 2.0F );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -661,16 +661,16 @@ void FmPolyProcess( void )
 		   		FmPolys[i].R = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
 		   		FmPolys[i].G = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
 		   		FmPolys[i].B = SmokeRingShadeTable[ (int16) FmPolys[i].Frame ];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -682,7 +682,7 @@ void FmPolyProcess( void )
 				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
 				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -691,7 +691,7 @@ void FmPolyProcess( void )
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 				FmPolys[i].xsize += ( ( 0.5F * GLOBAL_SCALE ) * framelag );
 				FmPolys[i].ysize += ( ( 0.5F * GLOBAL_SCALE ) * framelag );
 
@@ -706,12 +706,12 @@ void FmPolyProcess( void )
 		   			FmPolys[i].UpSpeed += 0.075F;
 		   			if( FmPolys[i].UpSpeed > 4.0F ) FmPolys[i].UpSpeed = 4.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -723,7 +723,7 @@ void FmPolyProcess( void )
 				FmPolys[i].G = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_G ) );
 				FmPolys[i].B = (uint8) ( ( Speed / 256.0F ) * ( (float) FmPolys[i].Start_B ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -735,7 +735,7 @@ void FmPolyProcess( void )
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= 0.2F;
@@ -747,19 +747,19 @@ void FmPolyProcess( void )
 		   			FmPolys[i].UpSpeed += 0.2F;
 		   			if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
 		   	case FM_SPOTFX_FLAME:							// Flame?
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -792,12 +792,12 @@ void FmPolyProcess( void )
 		   				FmPolys[i].UpSpeed += 0.2F;
 		   				if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   			}
-			
+
 		   			FmPolys[i].Frame += ( framelag / 2.0F );
 		   			if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   			{
 		   				KillUsedFmPoly( i );
-			
+
 		   			}
 				}
 				else
@@ -831,15 +831,15 @@ void FmPolyProcess( void )
 		   	case FM_SPOTFX_GRAVGON_TRAIL:						// Gravgon Smoke Trail?
 				Speed = ( FmPolys[i].Speed * framelag );
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( ( FmPolys[i].Frame * 5.0F ) * 8.0F ) ) );
-		
+
 		   		FmPolys[i].R = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
 		   		FmPolys[i].G = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
 		   		FmPolys[i].B = ShadeTable[ (int16) ( FmPolys[i].Frame * 5.0F )];
-		
+
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 				FmPolys[i].xsize += ( GRAVGON_TRAIL_INC * framelag );
 				FmPolys[i].ysize += ( GRAVGON_TRAIL_INC * framelag );
 
@@ -878,7 +878,7 @@ void FmPolyProcess( void )
 					FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   			FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   			FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-			
+
 		   			if( FmPolys[i].Speed > 0.0F )
 		   			{
 		   				FmPolys[i].Speed -= ( 2.0F * framelag );
@@ -899,7 +899,7 @@ void FmPolyProcess( void )
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 				FmPolys[i].xsize += ( ( 0.05F * GLOBAL_SCALE ) * framelag );
 				FmPolys[i].ysize += ( ( 0.05F * GLOBAL_SCALE ) * framelag );
 
@@ -913,7 +913,7 @@ void FmPolyProcess( void )
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -932,7 +932,7 @@ void FmPolyProcess( void )
 		   		FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-		
+
 		   		if( FmPolys[i].Speed > 0.0F )
 		   		{
 		   			FmPolys[i].Speed -= 0.2F;
@@ -944,12 +944,12 @@ void FmPolyProcess( void )
 		   			FmPolys[i].UpSpeed += 0.2F;
 		   			if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   		}
-		
+
 		   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 		   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   		{
 		   			KillUsedFmPoly( i );
-		
+
 		   		}
 		   		break;
 
@@ -971,7 +971,7 @@ void FmPolyProcess( void )
 	     			TempDir.x = ( FmPolys[i].Dir.x * framelag );
 	     			TempDir.y = ( FmPolys[i].Dir.y * framelag );
   	     			TempDir.z = ( FmPolys[i].Dir.z * framelag );
-		  
+
 					if( BackgroundCollide( &MCloadheadert0 ,&Mloadheader, &FmPolys[i].Pos,
 	     								  FmPolys[i].Group, &TempDir, (VECTOR *) &Int_Point,
 	     								  &FmPolys[i].Group, &Int_Normal, &TempVector, TRUE, NULL ) == TRUE )
@@ -983,7 +983,7 @@ void FmPolyProcess( void )
 	     				Speed = VectorLength( &FmPolys[i].Dir );
 	     				ReflectVector( &TempVector, &Int_Normal, &FmPolys[i].Dir );
 	     				Speed *= 0.5F;
-		  
+
 						if( Speed < ( 5.0F * GLOBAL_SCALE ) )
 	     				{
 		  					KillUsedFmPoly( i );
@@ -1038,7 +1038,7 @@ void FmPolyProcess( void )
 			case FM_SPOTFX_BUBBLE:							// Bubble?
 				OldPos = FmPolys[i].Pos;
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 	   			FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.10F ) ) * framelag );
 	   			FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.05F ) ) * framelag );
 	   			FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.15F ) ) * framelag );
@@ -1047,7 +1047,7 @@ void FmPolyProcess( void )
 	   			FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.10F ) ) * framelag );
 	   			FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.05F ) ) * framelag );
 	   			FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed ) + ( (float) sin( FmPolys[i].LifeCount * ( 0.15F ) ) * framelag );
-			
+
 	   			if( FmPolys[i].Speed > 0.0F )
 	   			{
 	   				FmPolys[i].Speed -= ( 0.4F * framelag );
@@ -1199,7 +1199,7 @@ void FmPolyProcess( void )
 		   	case FM_SPOTFX_BURNING:
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -1227,12 +1227,12 @@ void FmPolyProcess( void )
 		   				FmPolys[i].UpSpeed += ( 0.15F * framelag );
 		   				if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   			}
-			
+
 		   			FmPolys[i].Frame += ( framelag / 2.0F );
 		   			if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   			{
 		   				KillUsedFmPoly( i );
-			
+
 		   			}
 				}
 				else
@@ -1244,7 +1244,7 @@ void FmPolyProcess( void )
 		   	case FM_SPOTFX_BEARD_AFTERBURNER:
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -1270,7 +1270,7 @@ void FmPolyProcess( void )
 		   				FmPolys[i].UpSpeed += ( 0.15F * framelag );
 		   				if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   			}
-			
+
 			   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 			   		if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 			   		{
@@ -1317,7 +1317,7 @@ void FmPolyProcess( void )
 	     			TempDir.x = ( FmPolys[i].Dir.x * framelag );
 	     			TempDir.y = ( FmPolys[i].Dir.y * framelag );
   	     			TempDir.z = ( FmPolys[i].Dir.z * framelag );
-		  
+
 					if( WaterObjectCollide( FmPolys[i].Group, &FmPolys[i].Pos, &TempDir, &Int_Point, 0 ) )
 					{
 			   			KillUsedFmPoly( i );
@@ -1377,7 +1377,7 @@ void FmPolyProcess( void )
 					FmPolys[i].Pos.x += ( FmPolys[i].Dir.x * Speed );
 		   			FmPolys[i].Pos.y += ( FmPolys[i].Dir.y * Speed );
 		   			FmPolys[i].Pos.z += ( FmPolys[i].Dir.z * Speed );
-			
+
 		   			if( FmPolys[i].Speed > 0.0F )
 		   			{
 		   				FmPolys[i].Speed -= ( 0.125F * framelag );
@@ -1389,7 +1389,7 @@ void FmPolyProcess( void )
 		   	case FM_FIREBALL:
 		   		FmPolys[i].Trans = ( 248 - ( (int16) ( FmPolys[i].Frame * 8.0F ) ) );
 
-				Speed = ( FmPolys[i].UpSpeed * framelag ); 
+				Speed = ( FmPolys[i].UpSpeed * framelag );
 		   		FmPolys[i].Pos.x += ( FmPolys[i].UpVector.x * Speed );
 		   		FmPolys[i].Pos.y += ( FmPolys[i].UpVector.y * Speed );
 		   		FmPolys[i].Pos.z += ( FmPolys[i].UpVector.z * Speed );
@@ -1417,12 +1417,12 @@ void FmPolyProcess( void )
 		   				FmPolys[i].UpSpeed += ( 0.15F * framelag );
 		   				if( FmPolys[i].UpSpeed > 10.0F ) FmPolys[i].UpSpeed = 10.0F;
 		   			}
-			
+
 			   		FmPolys[i].Frame += ( framelag / FmPolys[i].AnimSpeed );
 		   			if( FmPolys[i].Frame >= (*FmPolys[i].Frm_Info)->Num_Frames )
 		   			{
 		   				KillUsedFmPoly( i );
-			
+
 		   			}
 				}
 				else
@@ -1690,7 +1690,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 					NumVerts += ( 4 * Bit_Ptr->numbits );
 				}
 			}
-			
+
 			i = FmPolys[ i ].NextInTPage;
 		}
 
@@ -1718,14 +1718,14 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 ===================================================================*/
 //	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 //	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
+
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE ); // bjd
 //	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
-	
+
 	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
@@ -1759,10 +1759,10 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
 	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
-			
+
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
-	
+
 			while( ( i != (uint16) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
 			{
 				if( !( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) && ( FmPolys[i].Group == Group ) )
@@ -1778,7 +1778,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 #else
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 255 );
 #endif
-			
+
 /*===================================================================
 		Set Dir and Up Vectors
 ===================================================================*/
@@ -1801,7 +1801,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 								ApplyMatrix( &TempMatrix, &YVector, &YVector );
 								ApplyMatrix( &TempMatrix, &ZVector, &ZVector );
 							}
-			
+
 							MatrixCopy = CurrentCamera.Mat;
 							MatrixCopy._41 = 0.0F;
 							MatrixCopy._42 = 0.0F;
@@ -1809,28 +1809,28 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							ApplyMatrix( &MatrixCopy, &YVector, &YVector );		/* Calc Up Vector */
 							ApplyMatrix( &MatrixCopy, &ZVector, &ZVector );		/* Calc Forward Vector */
 						}
-			
+
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
-			
+
 /*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
-			
+
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 						{
 							int ntris = 0;
 
 							Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
-			
+
 							Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
 							Xoff.y = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.y );
 							Xoff.z = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.z );
 							Yoff.x = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.x );
 							Yoff.y = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.y );
 							Yoff.z = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.z );
-					
+
 							switch( Off_Ptr->box & BOX_BOTHFLIP )
 							{
 								case BOX_NOFLIP:
@@ -1841,7 +1841,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			   						Ysize.y = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_XFLIP:
 			   						Xsize.x = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -1850,7 +1850,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			   						Ysize.y = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_YFLIP:
 			   						Xsize.x = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -1859,7 +1859,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			   						Ysize.y = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_BOTHFLIP:
 			   						Xsize.x = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -1869,7 +1869,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 			   						Ysize.z = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
 							}
-			
+
 /*-------------- Errrrmmmmmmm ---------------*/
 							if( ( FmPolys[ i ].Flags & FM_FLAG_MOVEOUT ) )
 							{
@@ -1878,7 +1878,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 								TempVector.z = ( FmPolys[ i ].Pos.z - CurrentCamera.Pos.z );
 								Distance = VectorLength( &TempVector );
 								NormaliseVector( &TempVector );
-			
+
 								if( Distance >= ( EXPLO_DISTANCE + 110.0F ) )
 								{
 									Distance = EXPLO_DISTANCE;
@@ -1888,7 +1888,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 									Distance -= 110.0F;
 									if( Distance < 32.0F ) Distance = 32.0F;
 								}
-					
+
 								NewPos.x = ( FmPolys[ i ].Pos.x + ( -Distance * TempVector.x ) );
 								NewPos.y = ( FmPolys[ i ].Pos.y + ( -Distance * TempVector.y ) );
 								NewPos.z = ( FmPolys[ i ].Pos.z + ( -Distance * TempVector.z ) );
@@ -1898,7 +1898,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 								NewPos = FmPolys[i].Pos;
 							}
 /*-------------------------------------------*/
-					
+
 							NewPos.x += ( Xoff.x + Yoff.x );
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
@@ -1922,7 +1922,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
- 								
+
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
 							FmPolyVertPnt->y = ( NewPos.y + Xsize.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z + Xsize.z - Ysize.z );
@@ -1932,7 +1932,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
- 							
+
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
 							FmPolyVertPnt->y = ( NewPos.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z - Ysize.z );
@@ -1956,7 +1956,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 //				   			FmPolyFacePnt->wFlags = ( D3DTRIFLAG_EDGEENABLE2 | D3DTRIFLAG_EDGEENABLE3 );
 				   			FmPolyFacePnt++;
 							ntris++;
-							
+
 							renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = ntris;
 							renderObject->textureGroups[renderObject->numTextureGroups].numVerts = 4;
 							renderObject->textureGroups[renderObject->numTextureGroups].startIndex = start_index;
@@ -1972,7 +1972,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 						}
 					}
 				}
-		
+
 				i = FmPolys[ i ].NextInTPage;
 			}
 
@@ -2081,7 +2081,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 					NumVerts += ( 4 * Bit_Ptr->numbits );
 				}
 			}
-			
+
 			i = FmPolys[ i ].NextInTPage;
 		}
 
@@ -2109,13 +2109,13 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 ===================================================================*/
 //	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
 //	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
+
 //	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
-		
+
 	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
@@ -2147,12 +2147,12 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		   	OP_STATE_RENDER( 1, lpPointer );
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
-*/	 
+*/
 	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
-			
+
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
-	
+
 			while( ( i != (uint16) -1 ) && ( StartVert < MAXFMPOLYVERTS ) )
 			{
 				if( ( FmPolys[i].Flags & FM_FLAG_DONTCLIP ) )
@@ -2168,7 +2168,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 #else
 								Colour = RGBA_MAKE2( FmPolys[ i ].R, FmPolys[ i ].G, FmPolys[ i ].B, 255 );
 #endif
-			
+
 /*===================================================================
 		Set Dir and Up Vectors
 ===================================================================*/
@@ -2191,7 +2191,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 								ApplyMatrix( &TempMatrix, &YVector, &YVector );
 								ApplyMatrix( &TempMatrix, &ZVector, &ZVector );
 							}
-			
+
 							MatrixCopy = CurrentCamera.Mat;
 							MatrixCopy._41 = 0.0F;
 							MatrixCopy._42 = 0.0F;
@@ -2199,28 +2199,28 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							ApplyMatrix( &MatrixCopy, &YVector, &YVector );		/* Calc Up Vector */
 							ApplyMatrix( &MatrixCopy, &ZVector, &ZVector );		/* Calc Forward Vector */
 						}
-			
+
 						CrossProduct( &YVector, &ZVector, &XVector );			/* Calc Left Vector */
-			
+
 /*===================================================================
 		Setup FrameInfo description pointers
 ===================================================================*/
 						Bit_Ptr = ( (*FmPolys[ i ].Frm_Info)->Bit_Info + (int16) FmPolys[ i ].Frame );
 						Off_Ptr = ( (*FmPolys[ i ].Frm_Info)->Off_Info + Bit_Ptr->startbit );
-			
+
 						for( BitCount = 0; BitCount < Bit_Ptr->numbits; BitCount++ )
 						{
 							int ntris = 0;
 
 							Box_Ptr = ( (*FmPolys[ i ].Frm_Info)->Box_Info + ( Off_Ptr->box & 0x0fff ) );
-			
+
 							Xoff.x = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.x );
 							Xoff.y = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.y );
 							Xoff.z = ( ( Off_Ptr->xoff * FmPolys[ i ].xsize ) * XVector.z );
 							Yoff.x = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.x );
 							Yoff.y = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.y );
 							Yoff.z = ( ( -Off_Ptr->yoff * FmPolys[ i ].ysize ) * YVector.z );
-					
+
 							switch( Off_Ptr->box & BOX_BOTHFLIP )
 							{
 								case BOX_NOFLIP:
@@ -2231,7 +2231,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 			   						Ysize.y = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_XFLIP:
 			   						Xsize.x = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -2240,7 +2240,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 			   						Ysize.y = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = ( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_YFLIP:
 			   						Xsize.x = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = ( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -2249,7 +2249,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 			   						Ysize.y = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.y );
 			   						Ysize.z = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
-			
+
 								case BOX_BOTHFLIP:
 			   						Xsize.x = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.x );
 			   						Xsize.y = -( ( Box_Ptr->xsize * FmPolys[ i ].xsize ) * XVector.y );
@@ -2259,7 +2259,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 			   						Ysize.z = -( ( Box_Ptr->ysize * FmPolys[ i ].ysize ) * YVector.z );
 									break;
 							}
-			
+
 /*-------------- Errrrmmmmmmm ---------------*/
 							if( ( FmPolys[ i ].Flags & FM_FLAG_MOVEOUT ) )
 							{
@@ -2268,7 +2268,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 								TempVector.z = ( FmPolys[ i ].Pos.z - CurrentCamera.Pos.z );
 								Distance = VectorLength( &TempVector );
 								NormaliseVector( &TempVector );
-			
+
 								if( Distance >= ( EXPLO_DISTANCE + 110.0F ) )
 								{
 									Distance = EXPLO_DISTANCE;
@@ -2278,7 +2278,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 									Distance -= 110.0F;
 									if( Distance < 32.0F ) Distance = 32.0F;
 								}
-					
+
 								NewPos.x = ( FmPolys[ i ].Pos.x + ( -Distance * TempVector.x ) );
 								NewPos.y = ( FmPolys[ i ].Pos.y + ( -Distance * TempVector.y ) );
 								NewPos.z = ( FmPolys[ i ].Pos.z + ( -Distance * TempVector.z ) );
@@ -2288,7 +2288,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 								NewPos = FmPolys[i].Pos;
 							}
 /*-------------------------------------------*/
-					
+
 							NewPos.x += ( Xoff.x + Yoff.x );
 							NewPos.y += ( Xoff.y + Yoff.y );
 							NewPos.z += ( Xoff.z + Yoff.z );
@@ -2302,7 +2302,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-								
+
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x );			// v2
 							FmPolyVertPnt->y = ( NewPos.y + Xsize.y );
 							FmPolyVertPnt->z = ( NewPos.z + Xsize.z );
@@ -2312,7 +2312,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-								
+
 							FmPolyVertPnt->x = ( NewPos.x + Xsize.x - Ysize.x ); // v3
 							FmPolyVertPnt->y = ( NewPos.y + Xsize.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z + Xsize.z - Ysize.z );
@@ -2322,7 +2322,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
-							
+
 							FmPolyVertPnt->x = ( NewPos.x - Ysize.x );			// v4
 							FmPolyVertPnt->y = ( NewPos.y - Ysize.y );
 							FmPolyVertPnt->z = ( NewPos.z - Ysize.z );
@@ -2362,7 +2362,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 						}
 					}
 				}
-		
+
 				i = FmPolys[ i ].NextInTPage;
 			}
 
@@ -2447,7 +2447,7 @@ FILE * SaveFmPolys( FILE * fp )
 		fwrite( &TotalFmPolysInUse, sizeof( uint32 ),1 ,fp );
 		fwrite( &FirstFmPolyUsed, sizeof( FirstFmPolyUsed ), 1, fp );
 		fwrite( &FirstFmPolyFree, sizeof( FirstFmPolyFree ), 1, fp );
-		
+
 		for( i = 0; i < ( MAXTPAGESPERTLOAD + 1 ); i++ )
 		{
 			fwrite( &FmPolyTPages[ i ].FirstPoly, sizeof( uint16 ), 1, fp );
@@ -2519,7 +2519,7 @@ FILE * LoadFmPolys( FILE * fp )
 		fread( &TotalFmPolysInUse, sizeof( uint32 ),1 ,fp );
 		fread( &FirstFmPolyUsed, sizeof( FirstFmPolyUsed ), 1, fp );
 		fread( &FirstFmPolyFree, sizeof( FirstFmPolyFree ), 1, fp );
-		
+
 		for( i = 0; i < ( MAXTPAGESPERTLOAD + 1 ); i++ )
 		{
 			fread( &FmPolyTPages[ i ].FirstPoly, sizeof( uint16 ), 1, fp );
