@@ -461,10 +461,6 @@
 				>
 			</File>
 			<File
-				RelativePath="icon.rc"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\input.h"
 				>
 			</File>
@@ -955,15 +951,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\xmem.h"
-				>
-			</File>
-		</Filter>
-		<Filter
-			Name="Resource Files"
-			Filter="ico;cur;bmp;dlg;rc2;rct;bin;cnt;rtf;gif;jpg;jpeg;jpe"
-			>
-			<File
-				RelativePath="Projectx.ico"
 				>
 			</File>
 		</Filter>

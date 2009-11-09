@@ -956,11 +956,14 @@ static BOOL InitWindow( void )
 	}
 
 	// create the window
+	// TODO -
+	//		look into: SDL_DOUBLEBUF|SDL_FULLSCREEN|SDL_HWSURFACE
+	//		opengl: for win32 need to redo all the gl init stuff after this
 	myVideoSurface = SDL_SetVideoMode(
 		render_info.default_mode.w,
 		render_info.default_mode.h,
 		SDL_GetVideoInfo()->vfmt->BitsPerPixel, 
-		SDL_RESIZABLE 
+		0
 		);
 
 	if(!myVideoSurface)
@@ -974,22 +977,6 @@ static BOOL InitWindow( void )
 
 	// hack to get the window handle
 	render_info.window = GetActiveWindow();
-
-	// still platform specific
-
-#ifdef WIN32
-	// restore window position
-	{
-		WINDOWPLACEMENT placement;
-		placement.length  = sizeof(WINDOWPLACEMENT);
-		placement.showCmd = SW_SHOWNORMAL;
-		placement.rcNormalPosition.left		= default_x;
-		placement.rcNormalPosition.top		= default_y;
-		placement.rcNormalPosition.right	= default_x + render_info.default_mode.w;
-		placement.rcNormalPosition.bottom	= default_y + render_info.default_mode.h;
-		SetWindowPlacement( render_info.window, &placement );
-	}
-#endif
 
 	//
 	return TRUE;

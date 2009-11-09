@@ -213,18 +213,6 @@ BOOL init_renderer( render_info_t * info )
 	DebugPrintf("Using display mode: %dx%dx%d @ %dhz\n",
 		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp,info->ThisMode.rate);
 
-	// window mode
-	if ( ! info->bFullscreen )
-	{
-		SetWindowPos( 
-			info->window,		// the window handle
-			HWND_TOP,			// bring window to the front
-			0, 0,				// top left of screen
-			d3dpp.BackBufferWidth, d3dpp.BackBufferHeight, // size of viewport
-			SWP_DRAWFRAME | SWP_FRAMECHANGED | SWP_SHOWWINDOW 
-		);
-	}
-
 	// try to create a device falling back to less capable versions
 
 	//
