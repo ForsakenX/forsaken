@@ -46,8 +46,6 @@ typedef struct {
     render_display_mode_t   default_mode;			/* current Windows disply mode */
     BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
     SIZE                    szClient;				/* dimensions of client win */
-    POINT                   pClientOnPrimary;		/* position of client area */
-    POINT                   pWindow;				/* position of win */
     BOOL                    bPaused;				/* the app is paused */
     BOOL                    bAppActive;				/* the app is active */
     BOOL                    bMinimized;				/* app window is minimized */

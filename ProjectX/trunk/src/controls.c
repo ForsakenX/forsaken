@@ -40,7 +40,6 @@ extern render_info_t render_info;
 extern  BOOL  Cheated;
 extern BOOL WaitingToQuit;
 extern BOOL CheatsDisabled;
-extern  BOOL  MouseInput;
 extern  BOOL  JoystickInput;
 
 extern  BYTE  MyGameStatus;
@@ -777,12 +776,6 @@ static void ReadMouse( int dup_last )
 		return;
 	}
 
-	if ( !MouseInput || !lpdiMouse )
-	{
-		DebugPrintf("Cannot read mouse: !MouseInput or !lpdiMouse in ReadMouse().\n");
-		goto fail;
-	}
-
 	// I'll leave this here for now but it should probably be removed
 	if ( dup_last )
 	{
@@ -791,6 +784,12 @@ static void ReadMouse( int dup_last )
 		if ( MOUSE_WHEEL_DOWN() )	MouseState[ new_input ].lZ++;
 		//DebugPrintf("Mouse State has been Dupped!.\n");
 		return;
+	}
+
+	if ( !lpdiMouse )
+	{
+		//DebugPrintf("Cannot read mouse: !lpdiMouse in ReadMouse().\n");
+		goto fail;
 	}
 
 	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );

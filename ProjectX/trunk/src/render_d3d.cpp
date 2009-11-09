@@ -45,8 +45,6 @@ void render_gamma_correction( double gamma )
 	}
 };
 
-BOOL render_initialized = FALSE;
-
 LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
@@ -301,7 +299,6 @@ BOOL init_renderer( render_info_t * info )
 		exit(1);
 	}
 
-	render_initialized = TRUE;
 	info->bRenderingIsOK = TRUE;
 
 	viewport.X = 0;

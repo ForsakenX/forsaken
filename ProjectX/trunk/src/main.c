@@ -33,7 +33,6 @@
 // GLOBAL VARIABLES
 //
 
-BOOL ActLikeWindow;
 BOOL Debug = FALSE;
 BOOL ShowFrameRate = TRUE;
 BOOL ShowInfo = FALSE;
@@ -144,7 +143,6 @@ extern BOOL NoCompoundSfxBuffer;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
-extern BOOL ActLikeWindow;
 extern BOOL MouseExclusive;
 extern BOOL DebugLog;
 extern BOOL Debug;
@@ -206,12 +204,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// turn on vertical syncing
 		else if (!_stricmp(option,"vSync")){
 			render_info.vsync = TRUE;
-		}
-
-		// treate mouse like it's window mode regardless of fullscreen
-		// used for wine desktop emulation mode...
-		else if (!_stricmp(option, "ActLikeWindow")){
-			ActLikeWindow = TRUE;
 		}
 
 		// don't exclusivly grab the mouse
@@ -403,7 +395,6 @@ extern void DestroySound( int flags );
 extern void render_cleanup( render_info_t * info );
 extern BOOL TermDInput(void);
 extern void ReleaseScene(void);
-extern void SetInputAcquired( BOOL );
 extern void SetCursorClip( BOOL );
 
 void CleanUpAndPostQuit(void)
@@ -434,7 +425,6 @@ void CleanUpAndPostQuit(void)
     QuitRequested = TRUE;
 
 	// we dont control the cursor anymore
-	SetInputAcquired( FALSE );
 	SetCursorClip( FALSE );
 
 	//
@@ -447,12 +437,9 @@ void CleanUpAndPostQuit(void)
 
 BOOL QuitRequested = FALSE;
 
-extern void SetInputAcquired( BOOL );
 extern void SetCursorClip( BOOL );
 extern BOOL HideCursor;
-extern BOOL ActLikeWindow;
 extern BOOL MouseExclusive;
-extern BOOL render_initialized;
 extern BOOL RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);
@@ -467,459 +454,230 @@ extern BYTE MyGameStatus;
 
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 
-static BOOL window_proc(BOOL* bStopProcessing, LRESULT* lresult, HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+
+
+//
+// Window/Input Events
+//
+
+extern void SetInputAcquired( BOOL acquire );
+void app_active( SDL_ActiveEvent active )
 {
-    PAINTSTRUCT ps;
-    *bStopProcessing = FALSE; // when set to true stops processing the message
+	DebugPrintf("window active state set to: %s\n",(active.gain?"true":"false"));
 
-	//
-	if (!render_initialized)
-        return TRUE;
+	SetCursorClip( active.gain );
+	SetInputAcquired( active.gain );
 
-    /*
-     * Look for messages which effect rendering.  In some cases, we will not
-     * want the app to continue processing the message, so set the flag and
-     * provide a return value in lresult.
-     */
-    switch(message) {
+	if(active.gain)
+		RenderModeReset();
 
-		// user requested application to close
-		case WM_CLOSE:
-
-			// in case the window isn't in the foreground
-			// we'd end up with a huge black spot from being previously covered
-
-					// render one frame :]
-					BeginPaint(hwnd, &ps);
-					render_flip(&render_info);
-					EndPaint(hwnd, &ps);
-
-			// release mouse so they can interact with message box
-			SetCursorClip( FALSE );
-
-			// ask them to confirm clossing
-			if( IDOK == Msg("Are you sure you want to exit?") )
-			{
-				// user wants to quit
-				// let our code know we're quitting and not failing
-				// let the message reach DefWindowProc so it calls CloseWindow
-				QuitRequested = 1;
-			}
-
-			// user says to cancel the close...
-			else
-			{
-
-				// grab the input again
-				if ( ! MouseExclusive ) // will capture if so...
-					SetInputAcquired( TRUE );
-
-				// clip if HideCursor requests so...
-				if ( HideCursor )
-					SetCursorClip( TRUE );
-
-				else if ( MouseExclusive )
-					SetCursorClip( TRUE );
-
-				// don't clip if acting like a window
-				// and clip if fullscreen
-				else if ( ActLikeWindow )
-					SetCursorClip( FALSE );
-				
-				// clip the cursor if we are in fullscreen
-				else if ( render_info.bFullscreen )
-					SetCursorClip( TRUE );
-
-
-				// eat the message
-				*lresult = 1;
-				*bStopProcessing = TRUE;
-
-			}
-			break;
-			
-		// window has been destroyed
-		//case WM_DESTROY:
-		//	break;
-
-		//case WM_MOVING:
-			//DebugPrintf("The window is moving.\n");
-        //    break;
-
-        case WM_MOVE:
-			//DebugPrintf("Window has been moved (top left corner moved).\n");
-
-			// these must be set to 0 before changing
-			render_info.pClientOnPrimary.x = 0;
-			render_info.pClientOnPrimary.y = 0;
-
-			// this sets the CLIENT AREA POSITION
-			render_info.pClientOnPrimary.x = (int)(short) LOWORD(lParam);
-			render_info.pClientOnPrimary.y = (int)(short) HIWORD(lParam);
-
-			// save the WINDOW POSITION
-			{
-				WINDOWPLACEMENT placement;
-				placement.length = sizeof(WINDOWPLACEMENT);
-				if(GetWindowPlacement( hwnd, &placement ))
-				{
-					render_info.pWindow.x = placement.rcNormalPosition.left;
-					render_info.pWindow.y = placement.rcNormalPosition.top;
-				}
-			}
-			
-			SetGamePrefs();
-
-            break;
-
-        case WM_SIZE: // happens after WM_WINDOWPOSCHANGED
-			//DebugPrintf("Window size changed.\n");
-			
-            if (!bIgnoreWM_SIZE)
-			{
-				// we should save the size
-				// then startup at this size next time
-
-				if( MyGameStatus == STATUS_Title )
-				{
-					LastMenu = CurrentMenu;	
-					VduClear();
-				}
-
-				// resize d3d to match the window size..
-				// TODO does d3d do the resizing on it's own now?
-
-				if( MyGameStatus == STATUS_Title )
-				{
-					FadeHoloLight(HoloLightBrightness);
-					DarkenRoom2(RoomDarkness);
-					ProcessVduItems( CurrentMenu );
-   					InitialTexturesSet = FALSE;
-				}
-			}
-
-			SetGamePrefs();
-
-            break;
-
-		// We have been clicked so activate the application
-		// the next case statement will catch the activation message
-        case WM_MOUSEACTIVATE:
-			//DebugPrintf("Window is defocused and has been clicked.\n");\
-			// mouse has activated us and clicked on the client area
-			// don't active if a menu is showing
-			// cause we turn that off...
-			if ( LOWORD( lParam ) == HTCLIENT )
-			{
-				// of course with exclusive mode this will also clip the mouse
-				// but not much we can do because we need to get focus...
-				// don't put this under the HideCursor section...
-				SetInputAcquired( TRUE );
-				SetCursorClip( HideCursor );
-				
-				if ( MouseExclusive )
-				{
-					SetCursorClip( TRUE );
-					return TRUE;
-				}
-
-				// activate the application and remove event from queue
-				*lresult = MA_ACTIVATEANDEAT;
-				*bStopProcessing = TRUE;
-			}
-			else
-			{
-				// hitting title bar in wine causes capture...
-				// we don't want that...
-				if ( MouseExclusive )
-				{
-					SetInputAcquired( FALSE );
-					SetCursorClip( FALSE );
-					*lresult = 0;
-					*bStopProcessing = TRUE;
-				}
-			}
-			// do not eat the input on non client hits...
-			// you want the close button etc.. to still work...
-			break;
-
-		// this seems to be a catch all for click on taskbar entry and title bar...
-		// rather not make this cause cursor to clip
-        case WM_ACTIVATE: // should recieve keyboard focus if being activated
-
-			// release the mouse on deactivation
-			if ( LOWORD( wParam ) == WA_INACTIVE )
-			{
-				DebugPrintf("Window has been de-activated.\n");
-				// release clip and acquired state
-				SetInputAcquired( FALSE );
-				SetCursorClip( FALSE );
-			}
-			// need to set keyboard and mouse focus
-			// but don't clip the mouse...
-			else
-			{
-				DebugPrintf("Window has been activated.\n");
-				ignore_mouse_input = 15; // for this many reads
-				SetInputAcquired( TRUE );
-
-				if ( MouseExclusive )
-				{
-					SetCursorClip( TRUE );
-					return TRUE;
-				}
-
-				// i don't think we should ever clip cursor unless in game play
-				// this makes it work better in wine emulation mode
-				// plus we could use the cursor for on screen shit sometimes ui updates ?
-
-				// show cursor if we are acting like window
-				if ( ActLikeWindow )
-					SetCursorClip( FALSE );
-
-				// hide cursor in fullscreen
-				else if ( render_info.bFullscreen )
-					SetCursorClip( TRUE );
-
-			}
-
-            break;
-
-		// this event is same as above but sends TRUE|FALSE
-        case WM_ACTIVATEAPP:
-			DebugPrintf("Window is being %s.\n",(wParam?"activated":"de-activated"));
-            render_info.bAppActive = (BOOL)wParam;
-			if(wParam)
-				RenderModeReset();
-            break;
-
-		// this means the app is about to minimize or maximize
-		// we should probably trap maximize messages and go fullscreen...
-        case WM_GETMINMAXINFO:
-			//DebugPrintf("The size or position of the window is about to change.\n");
-            break;
-
-        case WM_PAINT:
-			//DebugPrintf("Something has requested that we update/paint our screen.\n");
-            // Clear the rectangle and blt the backbuffer image
-            BeginPaint(hwnd, &ps);
-            render_flip(&render_info);
-            EndPaint(hwnd, &ps);
-			//*lresult = 1;
-			//*bStopProcessing = TRUE;
-			break;
-
-        case WM_NCPAINT:
-			//DebugPrintf("We are requested to update the window frame.\n");
-            // When in fullscreen mode, don't draw the window frame.
-            if (render_info.bFullscreen) {
-           //     *lresult = 0;
-           //     *bStopProcessing = FALSE;
-            }
-            break;
-/*
-		// we should have a ShowCursor global
-		// then any other part of the code can turn it on/off
-		// I'd rather leave cursor showing at all times except real game time...
-        case WM_SETCURSOR:
-			//DebugPrintf("SETCURSOR: Mouse is within window but mouse is not captured.\n");
-            //if (render_info.bFullscreen) {
-				//SetCursor(NULL);
-                //*lresult = 1;
-                //*bStopProcessing = TRUE;
-            //}
-            break;
-
-		case WM_WINDOWPOSCHANGING: // is changing
-			//DebugPrintf("Window size, position, or place in z order is about to change.\n");
-			break;
-
-		case WM_CHAR:
-			//DebugPrintf("TranslateMessage has generated a CHAR (standard ascii character) out of a WM_KEYDOWN event.\n");
-			break;
-*/
-
-		case WM_KEYDOWN: // non system key (no alt modifier)
-			{
-				// if lParam bit 30 is 1 then key is REPEATING
-				int repeating = (lParam & (1<<30));
-
-				//DebugPrintf("virtual-key %x is %s.\n", wParam, (repeating?"repeating":"pressed") );
-
-				// PAUSE
-				if ( wParam == VK_PAUSE )
-				{
-					if ( ! repeating ) // only want first event
-					{
-						DebugPrintf("VK_PAUSE.\n");
-						// we need a key to swap in and out of fullscreen
-						// and swap in/out of mouse acquire mode...
-						SetInputAcquired( ! cursor_clipped );
-						SetCursorClip( ! cursor_clipped );
-					}
-				} 
-
-				// SHIFT + F12
-				// fullscreen toggle
-				else if ( wParam == VK_F12 && HIWORD( GetKeyState( VK_SHIFT ) ) )
-				{
-					MenuGoFullScreen( NULL );	
-					*lresult = 0; // we are processing the message
-					*bStopProcessing = TRUE;
-				}
-			}
-			break;
-
-		// might want to migrate this into ReadInput
-		case WM_LBUTTONDOWN:
-		case WM_RBUTTONDOWN:
-		case WM_MBUTTONDOWN:
-			//DebugPrintf("mouse button event on client area...\n");
-
-			// of course with exclusive mode this will also clip the mouse
-			// but not much we can do because we need to get focus...
-			// don't put this under the HideCursor section...
-			SetInputAcquired( TRUE );
-
-			// only clip if told
-			if ( HideCursor || MouseExclusive )
-				SetCursorClip( TRUE );
-
-			break;
-
-		// something just put us into idle mode
-		// this means that DefWindowProc is blocking the main loop
-		// expecting some kinda context menu or dialog to respond with the user action
-		case WM_ENTERIDLE:
-			switch ( wParam )
-			{
-			case MSGF_DIALOGBOX:
-				DebugPrintf("WM_ENTERIDLE triggered because of: MSGF_DIALOGBOX\n");
-				break;
-			case MSGF_MENU:
-				DebugPrintf("WM_ENTERIDLE triggered because of: MSGF_MENU\n");
-				break;
-			default:
-				DebugPrintf("WM_ENTERIDLE triggered because of: Unknown Reason\n");
-			}
-			break;
-
-		// we might have to stop certain key strokes here like, alt+ctrl+del
-		// or perhaps drop out of screen and loose focus...
-		case WM_SYSCOMMAND: // system key (alt modifier)
-			//DebugPrintf("A command from the window menu or window buttons has been selected.\n");
-			switch( wParam )
-			{
-			// we have no window menu
-			// hitting alt initiates the window menu
-			// DefWindowProc blocks expecting the window menu to return some kinda event
-			// so we block this call here to stop any menu messages to cause the app to enter 
-			case SC_KEYMENU:
-				DebugPrintf("WM_SYSCOMMAND SC_KEYMENU 0x%x\n",lParam);
-				*lresult = 0;
-				*bStopProcessing = TRUE;
-				break;
-				/*
-			case SC_CLOSE:
-				DebugPrintf("WM_SYSCOMMAND SC_CLOSE\n");
-				break;
-			case SC_CONTEXTHELP:
-				DebugPrintf("WM_SYSCOMMAND SC_CONTEXTHELP\n");
-				break;
-			case SC_DEFAULT:
-				DebugPrintf("WM_SYSCOMMAND SC_DEFAULT\n");
-				break;
-			case SC_HOTKEY:
-				DebugPrintf("WM_SYSCOMMAND SC_HOTKEY\n");
-				break;
-			case SC_HSCROLL:
-				DebugPrintf("WM_SYSCOMMAND SC_HSCROLL\n");
-				break;
-			case SC_MAXIMIZE:
-				DebugPrintf("WM_SYSCOMMAND SC_MAXIMIZE\n");
-				break;
-			case SC_MINIMIZE:
-				DebugPrintf("WM_SYSCOMMAND SC_MINIMIZE\n");
-				break;
-			case SC_MONITORPOWER:
-				DebugPrintf("WM_SYSCOMMAND SC_MONITORPOWER\n");
-				break;
-			case SC_MOUSEMENU:
-				DebugPrintf("WM_SYSCOMMAND SC_MOUSEMENU\n");
-				break;
-			case SC_MOVE:
-				DebugPrintf("WM_SYSCOMMAND SC_MOVE\n");
-				break;
-			case SC_NEXTWINDOW:
-				DebugPrintf("WM_SYSCOMMAND SC_NEXTWINDOW\n");
-				break;
-			case SC_PREVWINDOW:
-				DebugPrintf("WM_SYSCOMMAND SC_PREVWINDOW\n");
-				break;
-			case SC_RESTORE:
-				DebugPrintf("WM_SYSCOMMAND SC_RESTORE\n");
-				break;
-			case SC_SCREENSAVE:
-				DebugPrintf("WM_SYSCOMMAND SC_SCREENSAVE\n");
-				break;
-			case SC_SIZE:
-				DebugPrintf("WM_SYSCOMMAND SC_SIZE\n");
-				break;
-			case SC_TASKLIST:
-				DebugPrintf("WM_SYSCOMMAND SC_TASKLIST\n");
-				break;
-			case SC_VSCROLL:
-				DebugPrintf("WM_SYSCOMMAND SC_VSCROLL\n");
-				break;
-			default:
-				DebugPrintf("WM_SYSCOMMAND unknown action.\n");
-				*/
-			}
-			break;
-
-		// stuff that should be ignored in fullscreen
-		case WM_NCHITTEST:		// mouse on non client area
-		case WM_CONTEXTMENU:	// window context menu
-			if(render_info.bFullscreen)
-			{
-				*lresult = 0;
-				*bStopProcessing = TRUE;
-			}
-			break;
-
-		case WM_DEVICECHANGE:
-			DebugPrintf("A device has changed.\n");
-			break;
-
-		case WM_DISPLAYCHANGE:
-			DebugPrintf("Display resolution has changed.\n");
-			break;
-
-
-    }
-    return TRUE;
+	switch( active.state )
+	{
+	case SDL_APPMOUSEFOCUS: // mouse
+		DebugPrintf("Mouse event\n");
+		break;
+	case SDL_APPINPUTFOCUS: // keyboard
+		DebugPrintf("keyboard event\n");
+		break;
+	case SDL_APPACTIVE: // minimize/iconified
+		DebugPrintf("Iconify event\n");
+		break;
+	}
 }
 
-extern void CleanUpAndPostQuit(void);
-long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+// TODO
+//	when this is ready then pass SDL_RESIZABLE to SDL_SetVideoMode
+//  need to resize video with SDL_SetVideoMode
+void app_resize( SDL_ResizeEvent resize )
 {
+	DebugPrintf("Window size changed.\n");
 
-    BOOL bStop;
-    LRESULT lresult;
+	// TODO - need to save resize.w/h somewhere
 
-    // Give D3DApp an opportunity to process any messages
-    if (!window_proc(&bStop, &lresult, hWnd, message, wParam, lParam))
+	if (!bIgnoreWM_SIZE)
+		return;
+
+	// we should save the size
+	// then startup at this size next time
+
+	if( MyGameStatus == STATUS_Title )
 	{
-		// quit
-        CleanUpAndPostQuit();
-        return 0;
-    }
+		LastMenu = CurrentMenu;	
+		VduClear();
+	}
 
-	// if bStop is set by D3DApp, dont process message and return lresult
-    if (bStop)
-        return lresult;
+	// resize d3d to match the window size..
+	// TODO does d3d do the resizing on it's own now?
 
-	//
+	if( MyGameStatus == STATUS_Title )
+	{
+		FadeHoloLight(HoloLightBrightness);
+		DarkenRoom2(RoomDarkness);
+		ProcessVduItems( CurrentMenu );
+		InitialTexturesSet = FALSE;
+	}
+
+	SetGamePrefs();
+}
+
+void app_quit( void )
+{
+	// in case the window isn't in the foreground
+	// we'd end up with a huge black spot from being previously covered
+	render_flip(&render_info);
+
+	// release mouse so they can interact with message box
+	SetCursorClip( FALSE );
+
+	// ask them to confirm clossing
+	if( IDOK == Msg("Are you sure you want to exit?") )
+	{
+		// user wants to quit
+		// let our code know we're quitting and not failing
+		// let the message reach DefWindowProc so it calls CloseWindow
+		QuitRequested = 1;
+		return;
+	}
+
+	// clip if HideCursor requests so...
+	if ( HideCursor )
+		SetCursorClip( TRUE );
+
+	else if ( MouseExclusive )
+		SetCursorClip( TRUE );
+	
+	// clip the cursor if we are in fullscreen
+	else if ( render_info.bFullscreen )
+		SetCursorClip( TRUE );
+}
+
+// TODO - how do i know if the key is pressed/released or repeating?
+// TODO - may need to enable keyboard repeat
+//	int SDL_EnableKeyRepeat(int delay, int interval);
+//	SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL
+//
+// NOTE - 
+//	SDLK_CAPSLOCK and SDLK_NUMLOCK will never repeat cause of sun workstation compatbility
+//	edit lines 403 and 449 of src/events if you want to change sdl behavior
+
+void app_keyboard( SDL_KeyboardEvent key )
+{
+	// TODO - use unicode characters
+	// int SDL_EnableUNICODE(int enable);
+
+	// A lot of the keysyms are unavailable on most keyboards.
+	// So, you should not hardcode any keysym unless it's one 
+	// of the universal keys that are available on all keyboards.
+
+	/*
+	// If the high 9 bits of the character are 0, then this maps
+	// to the equivalent ASCII character.
+	char ch;
+	if ( (keysym.unicode & 0xFF80) == 0 ) {
+	  ch = keysym.unicode & 0x7F;
+	}
+	else {
+	  printf("An International Character.\n");
+	}
+	*/
+
+	/*
+	key.keysym
+		typedef struct{
+		  Uint8 scancode;	// Hardware specific scancode
+		  SDLKey sym;		// SDL virtual keysym
+		  SDLMod mod;		// Current key modifiers
+		  Uint16 unicode;	// Translated character
+		} SDL_keysym;
+	*/
+
+	/* mod
+		KMOD_NONE 		No modifiers applicable
+		KMOD_LSHIFT 	Left Shift is down
+		KMOD_RSHIFT		Right Shift is down
+		KMOD_LCTRL		Left Control is down
+		KMOD_RCTRL		Right Control is down
+		KMOD_LALT		Left Alt is down
+		KMOD_RALT		Right Alt is down
+		KMOD_LMETA		Left Meta is down
+		KMOD_RMETA		Right Meta is down
+		KMOD_NUM		Numlock is down
+		KMOD_CAPS		Capslock is down
+		KMOD_MODE		Mode is down
+		KMOD_CTRL		A Control key is down
+		KMOD_SHIFT		A Shift key is down
+		KMOD_ALT		An Alt key is down
+		KMOD_META		A Meta key is down
+	*/
+
+	switch( key.keysym.sym )
+	{
+	case SDLK_PAUSE:
+		// TODO - why is this 1 and not key down/up ?
+		DebugPrintf("pause key clicked: %d\n",key.state);
+		if( key.state == 1 ) //SDL_KEYDOWN )
+		{
+			DebugPrintf("pause key clicked\n");
+			SetInputAcquired( ! cursor_clipped );
+			SetCursorClip( ! cursor_clipped );
+		}
+		break;
+	case SDLK_F12:
+		if( key.keysym.mod & KMOD_SHIFT )
+			MenuGoFullScreen( NULL );
+		break;
+	}
+
+	// TODO - need to pass key event to rest of app processing
+}
+
+BOOL handle_events( void )
+{
+	SDL_Event event;
+
+	/*
+	  SDL_MouseMotionEvent motion;
+	  SDL_MouseButtonEvent button;
+	  SDL_JoyAxisEvent jaxis;
+	  SDL_JoyBallEvent jball;
+	  SDL_JoyHatEvent jhat;
+	  SDL_JoyButtonEvent jbutton;
+	*/
+
+	while( SDL_PollEvent( &event ) )
+	{
+		switch( event.type )
+		{
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			app_keyboard( event.key );
+			break;
+
+		case SDL_ACTIVEEVENT:
+			app_active( event.active );
+			break;
+
+		case SDL_VIDEORESIZE:
+			app_resize( event.resize );
+			break;
+
+		case SDL_VIDEOEXPOSE: // need redraw
+            render_flip(&render_info);
+			break;
+
+		case SDL_QUIT:
+			app_quit();
+			break;
+
+		// platform specific event type
+		// must be enabled using SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE)
+		case SDL_SYSWMEVENT:
+			DebugPrintf("recived a platform specific event type\n");
+			break;
+
+		}
+	}
+
 	if ( quitting )
 	{
 		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
@@ -927,8 +685,7 @@ long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 		CleanUpAndPostQuit();
 	}
 
-	// default processing for any messages not processed
-    return DefWindowProc(hWnd, message, wParam, lParam);
+	return TRUE;
 }
 
 //
@@ -937,8 +694,6 @@ long FAR PASCAL WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam
 
 extern HINSTANCE hInstApp;
 
-int default_x;
-int default_y;
 static BOOL InitWindow( void )
 {
 	SDL_Surface* myVideoSurface = NULL;
@@ -994,13 +749,11 @@ extern BOOL breakpad_init( void );
 #endif
 
 extern BOOL MouseExclusive;
-extern BOOL ActLikeWindow;
 extern BOOL InitView( void );
 extern LONGLONG LargeTime;
 extern LONGLONG LastTime;
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
-extern void SetInputAcquired( BOOL acquire );
 extern BOOL init_renderer( render_info_t * info );
 extern void GetDefaultPilot(void);
 extern BOOL InitScene(void);
@@ -1129,11 +882,9 @@ static BOOL AppInit( char * lpCmdLine )
 	}
 
 	// show the mouse if acting like window
-	if ( ActLikeWindow || ! render_info.bFullscreen )
+	if ( ! render_info.bFullscreen )
 	{
 		DebugPrintf("AppInit setting mouse clip for fullscreen mode.\n");
-		if ( MouseExclusive )
-			SetInputAcquired( FALSE );
 		SetCursorClip( FALSE );
 	}
 
@@ -1157,7 +908,7 @@ static BOOL RenderLoop()
 {
 
     // If all the DD and D3D objects have been initialized we can render
-    if ( ! render_info.bRenderingIsOK )
+    if ( !render_info.bRenderingIsOK || render_info.bMinimized || render_info.bPaused || QuitRequested )
 		return TRUE;
 
     // Call the sample's RenderScene to render this frame
@@ -1204,13 +955,13 @@ extern int DebugMathErrors( void );
 extern void network_cleanup( void );
 extern BOOL SeriousError;
 extern void ReallyShowCursor( BOOL show );
+extern void CleanUpAndPostQuit(void);
 
 //int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
 int main( int argc, char* argv[] )
 {
 	int i;
 	char cli[500];
-	SDL_Event event;   //used to poll for events and handle input
     int failcount = 0; // number of times RenderLoop has failed
 	
 	// application handle
@@ -1235,44 +986,29 @@ int main( int argc, char* argv[] )
 
 	while( !QuitRequested )
 	{
-
-        // Render if app is not minimized, not about to quit, not paused and D3D initialized
-        if (render_info.bRenderingIsOK && !render_info.bMinimized && !render_info.bPaused && !QuitRequested)
+        // Attempt to render a frame, if it fails, take a note.  If
+        // rendering fails more than twice, abort execution.
+        if( !RenderLoop() )
 		{
-            // Attempt to render a frame, if it fails, take a note.  If
-            // rendering fails more than twice, abort execution.
-            if( !RenderLoop() )
+            ++failcount;
+
+			if( SeriousError )
 			{
-                ++failcount;
-
-				if( SeriousError )
-				{
-					CleanUpAndPostQuit();
-					break;
-				}
-
-				if (failcount == 3) {
-					DebugPrintf("Rendering has failed too many times.  Aborting execution.\n");
-					CleanUpAndPostQuit();
-					break;
-				}
-
-            }
-        }
-
-		while( SDL_PollEvent( &event ) )
-		{
-			switch( event.type )
-			{
-			case SDL_KEYDOWN:
-				if ( event.key.keysym.sym == SDLK_ESCAPE )
-				{
-					CleanUpAndPostQuit();
-					goto FAILURE;
-				}
+				CleanUpAndPostQuit();
 				break;
 			}
-		}
+
+			if (failcount == 3) {
+				DebugPrintf("Rendering has failed too many times.  Aborting execution.\n");
+				CleanUpAndPostQuit();
+				break;
+			}
+
+        }
+
+		// window/input events
+		if(!handle_events())
+			goto FAILURE;
 		
 		// call the sound proccesses
 		ProcessSoundRoutines( NULL );
@@ -1284,6 +1020,9 @@ int main( int argc, char* argv[] )
 	}
 
 FAILURE:
+
+	//
+	CleanUpAndPostQuit();
 
 	//
 	SDL_Quit();

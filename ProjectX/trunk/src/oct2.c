@@ -523,8 +523,6 @@ extern  int16   NumKilledEnemies;
 
 BOOL  ResizeViewport( void );
 BOOL  FullScreenViewport();
-
-BOOL InitDInput(void);
 BOOL TermDInput( void );
 BOOL  ClearBuffers( void );
 BOOL  ClearZBuffer( void );

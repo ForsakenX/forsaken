@@ -288,7 +288,6 @@ void ReallyShowCursor( BOOL show )
 extern HINSTANCE hInstApp;
 extern BOOL MouseExclusive;
 extern render_info_t render_info;
-extern BOOL ActLikeWindow;
 extern void SetCursorClip( BOOL clip );
 extern void SetInputAcquired( BOOL acquire );
 
@@ -349,7 +348,7 @@ BOOL InitDInput(void)
 		// doesn't work as it should...
 
 		// if acting like a window or not fullscreen
-		if ( ActLikeWindow || !render_info.bFullscreen )
+		if ( !render_info.bFullscreen )
 		{
 			SetInputAcquired( FALSE );
 			SetCursorClip( FALSE );
@@ -732,19 +731,24 @@ BOOL cursor_clipped;
 BOOL NoCursorClip = FALSE;
 void SetCursorClip( BOOL clip )
 {
+	POINT p;
+	p.x = 0;
+	p.y = 1;
 
-// yea but exclusive mouse mode hides it on us without asking...
-// maybe just set cusor_clipped to true when acquiring with exclusive...
+	ClientToScreen(render_info.window, &p);
+
+	// yea but exclusive mouse mode hides it on us without asking...
+	// maybe just set cusor_clipped to true when acquiring with exclusive...
 
 	// we already are in this state...
 	if ( cursor_clipped && clip ) return;
 	if ( !cursor_clipped && !clip ) return;
 
 	// the clipping area
-	cursorclip.left = render_info.pClientOnPrimary.x + render_info.szClient.cx / 2;
-	cursorclip.top = render_info.pClientOnPrimary.y + render_info.szClient.cy / 2;
-	cursorclip.right = cursorclip.left + 1;
-	cursorclip.bottom = cursorclip.top + 1;
+	cursorclip.left		= p.x + render_info.szClient.cx / 2;
+	cursorclip.top		= p.y + render_info.szClient.cy / 2;
+	cursorclip.right	= cursorclip.left + 1;
+	cursorclip.bottom	= cursorclip.top + 1;
 
 	// save last state
 	cursor_clipped = clip;
@@ -769,8 +773,8 @@ void SetCursorClip( BOOL clip )
 	{
 		if ( clip ) // clip
 		{
-			ClipCursor( &cursorclip );
-			SetCursorPos( cursorclip.left, cursorclip.top );
+			//ClipCursor( &cursorclip );
+			//SetCursorPos( cursorclip.left, cursorclip.top );
 		}
 		else // unclip
 		{

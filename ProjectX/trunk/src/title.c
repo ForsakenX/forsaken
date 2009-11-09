@@ -58,11 +58,8 @@
 
 extern render_info_t render_info;
 
-extern int default_x;
-extern int default_y;
 extern BOOL HideCursor;
 extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
-extern BOOL ActLikeWindow;
 extern BOOL ShowNamesAnyway;
 
 BOOL SpaceOrbSetup = FALSE;
@@ -128,7 +125,6 @@ int GameCompleted = GAMECOMPLETE_NotComplete;
 #define TITLE_LOOP_VduAmbience 1
 uint32 TitleLoopId[ NUM_TITLE_LOOPS ];
 
-BOOL MouseInput = TRUE;
 BOOL JoystickInput = TRUE;
 
 BOOL CTF = FALSE;
@@ -347,7 +343,6 @@ void InGameSaveASinglePlayerGame( MENUITEM *item );
 char TypeFileName( TEXT *t, char c );
 
 void LoadLevelText( MENU *Menu );
-BOOL InitDInput(void);
 BOOL TermDInput( void );
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );
 void ToggleBikeEngines( MENUITEM *Item );
@@ -2662,7 +2657,6 @@ MENU	MENU_Controls = {
 		{ 200, 352, 0, 0, 0, "Reorder Secondary", 0, 0,	NULL,					&MENU_NotYet,				MenuChange,			MenuItemDrawName, NULL, 0 },
 #else
 		{ 200, 112, 0, 0, 0, LT_MENU_Controls1 /*"Configure controls"*/, 0, 0,	NULL,					&MENU_Keyboard,				MenuChange,			MenuItemDrawName, NULL, 0 },
-		{ 200, 144, 0, 0, 0, LT_MENU_Controls2 /*"Mouse             "*/, 0, 0,	&MouseInput,			NULL,						SelectToggle,		DrawToggle, NULL, 0 },
 		{ 200, 160, 0, 0, 0, LT_MENU_Controls3 /*"Joystick          "*/, 0, 0,	&JoystickInput,			NULL,						SelectToggle,		DrawToggle, NULL, 0 },
 		{ 200, 192, 0, 0, 0, LT_MENU_Controls4 /*"Autoleveling      "*/,  0, 0,			&Autoleveling,			SetAutolevel,				SelectToggle,		DrawToggle, NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Controls5 /*"Invert X          "*/,  0, 0,			&Config.invert_turn,			NULL,				SelectToggle,		DrawToggle, NULL, 0 },
@@ -3546,12 +3540,8 @@ BOOL InitTitle()
 {
 	HideCursor = FALSE;
 
-	// acting like a window show mouse
-	if ( ActLikeWindow )
-		SetCursorClip( FALSE );
-
 	// if we are in fullscreen hide mouse
-	else if ( render_info.bFullscreen )
+	if ( render_info.bFullscreen )
 		SetCursorClip( TRUE );
 
 	framelag = 0;
@@ -9812,7 +9802,7 @@ void InitInGameMenu( MENU *Menu )
 	MENUITEM *item;
 
 	// if we are not full screen then unclip the cursor
-	if ( ActLikeWindow || !render_info.bFullscreen )
+	if ( !render_info.bFullscreen )
 	{
 		HideCursor = FALSE;
 		SetCursorClip( FALSE );
@@ -10388,12 +10378,7 @@ void MenuGoFullScreen( MENUITEM *Item )
 
     RenderModeSelect( render_info.CurrMode, !render_info.bFullscreen, render_info.vsync );
 
-	if ( !render_info.bFullscreen )
-	{
-		if( ! ActLikeWindow )
-			SetCursorClip( TRUE );
-	}
-	else
+	if ( render_info.bFullscreen )
 	{
 		// just let the user click to focus
 		HideCursor = FALSE;
@@ -10473,9 +10458,6 @@ void NewMenuSelectMode( MENUITEM *Item )
 	if ( render_info.bFullscreen )
 	{
         RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
-
-		if( ! ActLikeWindow )
-			SetCursorClip( TRUE );
 	}
 	else
 	{
@@ -10989,9 +10971,6 @@ void GetGamePrefs( void )
 	else
 		render_info.default_mode.bpp = 16;
 
-	default_x						  =	config_get_int( "ScreenPosX",				0 );
-	default_y						  =	config_get_int( "ScreenPosY",				0 );
-
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
     SystemMessageColour              = config_get_int( "SystemMessageColour",		GREEN );
@@ -11079,8 +11058,6 @@ void SetGamePrefs( void )
 	config_set_int( "ScreenHeight",				render_info.Mode[ render_info.CurrMode ].h );
 	config_set_int( "ScreenBPP",				render_info.Mode[ render_info.CurrMode ].bpp );
 	config_set_int( "ScreenRefreshRate",		render_info.Mode[ render_info.CurrMode ].rate );
-	config_set_int( "ScreenPosX",				render_info.pWindow.x );
-	config_set_int( "ScreenPosY",				render_info.pWindow.y );
 	config_set_int( "SfxVolume",				SfxSlider.value );
 	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
 	config_set_int( "Gamma",					GammaSlider.value );
