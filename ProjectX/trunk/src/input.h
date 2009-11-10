@@ -8,6 +8,7 @@
 
 struct {
 	int wheel;
+	int buttons[3];
 } mouse_state;
 
 #endif

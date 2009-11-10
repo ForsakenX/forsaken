@@ -91,9 +91,9 @@ extern  int FontHeight;
 #define KEY_PRESSED( K )    ( !( KeyState[ old_input ][ K ] & 0x80) && ( KeyState[ new_input ][ K ] & 0x80 ) )
 #define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
 
-#define MOUSE_BUTTON_HELD( B )    ( MouseState[ new_input ].rgbButtons[ B ] & 0x80 )
-#define MOUSE_BUTTON_PRESSED( B ) ( !( MouseState[ old_input ].rgbButtons[ B ] & 0x80 ) && ( MouseState[ new_input ].rgbButtons[ B ] & 0x80 ) )
-#define MOUSE_BUTTON_RELEASED( B )  ( ( MouseState[ old_input ].rgbButtons[ B ] & 0x80 ) && !( MouseState[ new_input ].rgbButtons[ B ] & 0x80 ) )
+#define MOUSE_BUTTON_HELD( B )    ( MouseState[ new_input ].rgbButtons[ B ] )
+#define MOUSE_BUTTON_PRESSED( B ) ( !( MouseState[ old_input ].rgbButtons[ B ] ) && ( MouseState[ new_input ].rgbButtons[ B ] ) )
+#define MOUSE_BUTTON_RELEASED( B )  ( ( MouseState[ old_input ].rgbButtons[ B ] ) && !( MouseState[ new_input ].rgbButtons[ B ] ) )
 
 #define MOUSE_WHEEL_UP()          ( MouseState[ new_input ].lZ > 0 )
 #define MOUSE_WHEEL_DOWN()          ( MouseState[ new_input ].lZ < 0 )
@@ -631,50 +631,28 @@ again:;
 
 static void ReadMouse( int dup_last )
 {
-	HRESULT hr;
-
 	if ( dup_last )
 	{
 		MouseState[ new_input ] = MouseState[ old_input ];
-		MouseState[ new_input ].lZ = 0;
+		MouseState[ new_input ].lZ = 0; // wheel cannot be held
 		return;
 	}
 
-	MouseState[ new_input ].lZ = mouse_state.wheel;
-	//DebugPrintf("mouse wheel value: %d\n",MouseState[ new_input ].lZ);
-
-	if ( !lpdiMouse )
-		goto fail;
-
-	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
-
-	if( hr != DI_OK )
+	// TODO - replace this part with sdl reads
+	if ( lpdiMouse )
 	{
-		if (hr ==  DIERR_INPUTLOST)
-			hr = IDirectInputDevice_Acquire(lpdiMouse);
-		goto fail;
+		HRESULT hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
+		if( hr != DI_OK )
+		{
+			if (hr ==  DIERR_INPUTLOST)
+				hr = IDirectInputDevice_Acquire(lpdiMouse);
+		}
 	}
 
-	/*
-	typedef struct DIMOUSESTATE {
-		LONG lX;
-		LONG lY;
-		LONG lZ;
-		BYTE rgbButtons[4];
-	} DIMOUSESTATE, *LPDIMOUSESTATE;
-
-	DebugPrintf("b0:%d b1:%d b2:%d b3:%d\n",
-		MouseState[ new_input ].rgbButtons[0],
-		MouseState[ new_input ].rgbButtons[1],
-		MouseState[ new_input ].rgbButtons[2],
-		MouseState[ new_input ].rgbButtons[3]
-		);
-	*/
-
-return;
-fail:
-	memset( &MouseState[ new_input ], 0, sizeof(MouseState[ new_input ]) );
 	MouseState[ new_input ].lZ = mouse_state.wheel;
+	MouseState[ new_input ].rgbButtons[ 0 ] = mouse_state.buttons[ 0 ]; // left
+	MouseState[ new_input ].rgbButtons[ 1 ] = mouse_state.buttons[ 2 ]; // right
+	MouseState[ new_input ].rgbButtons[ 2 ] = mouse_state.buttons[ 1 ]; // middle
 }
 
 float framelagfix = 0.0F;
@@ -1176,12 +1154,12 @@ int IsKeyHeld( int di_keycode )
     if ( MOUSE_BUTTON_HELD( 0 ) )
       return 1;
     break;
-  case DIK_RBUTTON:
-    if ( MOUSE_BUTTON_HELD( 1 ) )
-      return 1;
-    break;
   case DIK_MBUTTON:
     if ( MOUSE_BUTTON_HELD( 2 ) )
+      return 1;
+    break;
+  case DIK_RBUTTON:
+    if ( MOUSE_BUTTON_HELD( 1 ) )
       return 1;
     break;
   case DIK_WHEELUP:

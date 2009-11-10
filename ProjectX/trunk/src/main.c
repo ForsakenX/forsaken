@@ -668,11 +668,12 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	// TODO - handle standard mouse buttons
 	//
 
-	case SDL_BUTTON_LEFT:
-		break;
-	case SDL_BUTTON_MIDDLE:
-		break;
-	case SDL_BUTTON_RIGHT:
+	case SDL_BUTTON_LEFT:	// 1
+	case SDL_BUTTON_MIDDLE:	// 2
+	case SDL_BUTTON_RIGHT:	// 3
+		mouse_state.buttons[ _event.button - 1 ] = ( _event.type == SDL_MOUSEBUTTONDOWN );
+		//DebugPrintf("sdl mouse button %d %s\n",_event.button,
+		//	(mouse_state.buttons[ _event.button - 1 ]?"pressed":"released"));
 		break;
 
 	// mouse wheel button down/up are sent at same time
