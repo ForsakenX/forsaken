@@ -143,7 +143,6 @@ extern BOOL NoCompoundSfxBuffer;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
-extern BOOL MouseExclusive;
 extern BOOL DebugLog;
 extern BOOL Debug;
 extern uint8 QuickStart;
@@ -204,11 +203,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// turn on vertical syncing
 		else if (!_stricmp(option,"vSync")){
 			render_info.vsync = TRUE;
-		}
-
-		// don't exclusivly grab the mouse
-		else if (!_stricmp(option, "MouseNonExclusive")){
-			MouseExclusive = FALSE;
 		}
 
 		// never clip the cursor...
@@ -439,7 +433,6 @@ BOOL QuitRequested = FALSE;
 
 extern void SetCursorClip( BOOL );
 extern BOOL HideCursor;
-extern BOOL MouseExclusive;
 extern BOOL RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);
@@ -448,7 +441,6 @@ extern float RoomDarkness;
 extern void DarkenRoom2(float darkness);
 extern void ProcessVduItems( MENU * Menu );
 extern BOOL InitialTexturesSet;
-extern int ignore_mouse_input;
 extern BOOL cursor_clipped;
 extern BYTE MyGameStatus;
 
@@ -543,9 +535,6 @@ void app_quit( void )
 	if ( HideCursor )
 		SetCursorClip( TRUE );
 
-	else if ( MouseExclusive )
-		SetCursorClip( TRUE );
-	
 	// clip the cursor if we are in fullscreen
 	else if ( render_info.bFullscreen )
 		SetCursorClip( TRUE );
@@ -615,7 +604,7 @@ void app_keyboard( SDL_KeyboardEvent key )
 	case SDLK_PAUSE:
 		// TODO - why is this 1 and not key down/up ?
 		DebugPrintf("pause key clicked: %d\n",key.state);
-		if( key.state == 1 ) //SDL_KEYDOWN )
+		if( key.type == SDL_KEYDOWN )
 		{
 			DebugPrintf("pause key clicked\n");
 			SetInputAcquired( ! cursor_clipped );
@@ -631,9 +620,92 @@ void app_keyboard( SDL_KeyboardEvent key )
 	// TODO - need to pass key event to rest of app processing
 }
 
+#include "input.h"
+
+// mouse wheel button down/up are sent at same time
+// so if we react to the up event then we undo the down event !
+// so we must ignore up events and reset the value each game loop
+// since a wheel event can never be held down this is ok...
+
+void mouse_wheel_up( void )
+{
+	//DebugPrintf("mouse wheel up pressed\n");
+	mouse_state.wheel = 1;
+}
+
+void mouse_wheel_down( void )
+{
+	//DebugPrintf("mouse wheel down pressed\n");
+	mouse_state.wheel = -1;
+}
+
+void reset_mouse_wheel( void )
+{
+	//DebugPrintf("mouse wheel state reset\n");
+	mouse_state.wheel = 0;
+}
+
+//
+// mouse button events
+//
+
+void app_mouse_button( SDL_MouseButtonEvent _event )
+{
+	/*
+	typedef struct{
+	  Uint8 type;
+	  Uint8 which;	// The input device index
+	  Uint8 button;	// The mouse button index (SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE, SDL_BUTTON_RIGHT, SDL_BUTTON_WHEELUP, SDL_BUTTON_WHEELDOWN)
+	  Uint8 state;
+	  Uint16 x, y;
+	} SDL_MouseButtonEvent;
+	*/
+
+	switch( _event.button )
+	{
+
+	//
+	// TODO - handle standard mouse buttons
+	//
+
+	case SDL_BUTTON_LEFT:
+		break;
+	case SDL_BUTTON_MIDDLE:
+		break;
+	case SDL_BUTTON_RIGHT:
+		break;
+
+	// mouse wheel button down/up are sent at same time
+	// so if we react to the up event then we undo the down event !
+	// so we must ignore up events and reset it further bellow manually
+	// since a wheel event can never be held down this is ok...
+
+	case SDL_BUTTON_WHEELUP:
+		if( _event.type == SDL_MOUSEBUTTONDOWN )
+			mouse_wheel_up();
+		break;
+	case SDL_BUTTON_WHEELDOWN:
+		if( _event.type == SDL_MOUSEBUTTONDOWN )
+			mouse_wheel_down();
+		break;
+
+	//
+	// TODO - handle non standard mouse buttons
+	//
+
+	default: 
+		break;
+	}
+}
+
+void reset_events( void )
+{
+	reset_mouse_wheel();
+}
+
 BOOL handle_events( void )
 {
-	SDL_Event event;
+	SDL_Event _event;
 
 	/*
 	  SDL_MouseMotionEvent motion;
@@ -644,21 +716,30 @@ BOOL handle_events( void )
 	  SDL_JoyButtonEvent jbutton;
 	*/
 
-	while( SDL_PollEvent( &event ) )
+	reset_events();
+
+	//DebugPrintf("processing events\n");
+
+	while( SDL_PollEvent( &_event ) )
 	{
-		switch( event.type )
+		switch( _event.type )
 		{
 		case SDL_KEYDOWN:
 		case SDL_KEYUP:
-			app_keyboard( event.key );
+			app_keyboard( _event.key );
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			app_mouse_button( _event.button );
 			break;
 
 		case SDL_ACTIVEEVENT:
-			app_active( event.active );
+			app_active( _event.active );
 			break;
 
 		case SDL_VIDEORESIZE:
-			app_resize( event.resize );
+			app_resize( _event.resize );
 			break;
 
 		case SDL_VIDEOEXPOSE: // need redraw
@@ -669,14 +750,16 @@ BOOL handle_events( void )
 			app_quit();
 			break;
 
-		// platform specific event type
+		// platform specific _event type
 		// must be enabled using SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE)
 		case SDL_SYSWMEVENT:
-			DebugPrintf("recived a platform specific event type\n");
+			DebugPrintf("recived a platform specific _event type\n");
 			break;
 
 		}
 	}
+
+	//DebugPrintf("DONE processing events\n");
 
 	if ( quitting )
 	{
@@ -748,7 +831,6 @@ extern BOOL breakpad_init( void );
 #endif
 #endif
 
-extern BOOL MouseExclusive;
 extern BOOL InitView( void );
 extern LONGLONG LargeTime;
 extern LONGLONG LastTime;
@@ -986,6 +1068,10 @@ int main( int argc, char* argv[] )
 
 	while( !QuitRequested )
 	{
+		// window/input events
+		if(!handle_events())
+			goto FAILURE;
+		
         // Attempt to render a frame, if it fails, take a note.  If
         // rendering fails more than twice, abort execution.
         if( !RenderLoop() )
@@ -1006,17 +1092,12 @@ int main( int argc, char* argv[] )
 
         }
 
-		// window/input events
-		if(!handle_events())
-			goto FAILURE;
-		
 		// call the sound proccesses
 		ProcessSoundRoutines( NULL );
 
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )
 			Sleep( cliSleep );
-
 	}
 
 FAILURE:

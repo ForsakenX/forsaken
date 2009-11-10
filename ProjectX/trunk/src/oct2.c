@@ -2010,9 +2010,6 @@ BOOL InitView( void )
   return TRUE;
 }
 
-BOOL MouseExclusive = TRUE;
-
-
 /*===================================================================
   Procedure :   Set the View Matrix
   Input   :   nothing...  Current_Camera_View must be set

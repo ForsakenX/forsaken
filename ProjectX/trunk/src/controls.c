@@ -87,26 +87,18 @@ extern  int FontHeight;
 #define MouseXFactor    (  1.0F / ( MAX_MOUSE_DELTA_X * MAX_MOUSE_DELTA_X ) )
 #define MouseYFactor    ( -1.0F / ( MAX_MOUSE_DELTA_Y * MAX_MOUSE_DELTA_Y ) )
 
-
-
-
 #define KEY_HELD( K )     ( KeyState[ new_input ][ K ] & 0x80 )
 #define KEY_PRESSED( K )    ( !( KeyState[ old_input ][ K ] & 0x80) && ( KeyState[ new_input ][ K ] & 0x80 ) )
 #define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
-
 
 #define MOUSE_BUTTON_HELD( B )    ( MouseState[ new_input ].rgbButtons[ B ] & 0x80 )
 #define MOUSE_BUTTON_PRESSED( B ) ( !( MouseState[ old_input ].rgbButtons[ B ] & 0x80 ) && ( MouseState[ new_input ].rgbButtons[ B ] & 0x80 ) )
 #define MOUSE_BUTTON_RELEASED( B )  ( ( MouseState[ old_input ].rgbButtons[ B ] & 0x80 ) && !( MouseState[ new_input ].rgbButtons[ B ] & 0x80 ) )
 
-
 #define MOUSE_WHEEL_UP()          ( MouseState[ new_input ].lZ > 0 )
 #define MOUSE_WHEEL_DOWN()          ( MouseState[ new_input ].lZ < 0 )
 #define MOUSE_WHEEL_UP_PRESSED()      ( !( MouseState[ old_input ].lZ > 0 ) && ( MouseState[ new_input ].lZ > 0 ) )
-#define MOUSE_WHEEL_UP_RELEASED()     ( ( MouseState[ old_input ].lZ > 0 ) && !( MouseState[ new_input ].lZ > 0 ) )
 #define MOUSE_WHEEL_DOWN_PRESSED()      ( !( MouseState[ old_input ].lZ < 0 ) && ( MouseState[ new_input ].lZ < 0 ) )
-#define MOUSE_WHEEL_DOWN_RELEASED()     ( ( MouseState[ old_input ].lZ < 0 ) && !( MouseState[ new_input ].lZ < 0 ) )
-
 
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
@@ -143,8 +135,6 @@ extern MENU MENU_NEW_StartSinglePlayer;
 extern SendBikerTaunt();
 
 BOOL flush_input = TRUE;
-
-int ignore_mouse_input = 0;
 
 static uint16 old_input = 0;
 uint16 new_input = 1;
@@ -338,43 +328,21 @@ int ToggleGodMode( char *cheat )
 
 static struct
 {
-#if CHEATS_AS_PLAINTEXT
-  unsigned char *cheatcode;
-#else
   unsigned char cheatcode[ 16 ];
-#endif
   int (*cheatfunc)( char * );
   BOOL allowmultiplayer;
   int next;
 } CheatTable[] = 
 {
-#if CHEATS_AS_PLAINTEXT
-  { "BUBBLES", EnableCheats, TRUE },
-  { "JIMBEAM", JimBeam, FALSE },
-  { "LUMBERJACK", Lumberjack, FALSE },
-  { "IAMZEUS", ToggleGodMode, FALSE },
-#else
   { { DIK_B, DIK_U, DIK_B, DIK_B, DIK_L, DIK_E, DIK_S, 0 }, EnableCheats, TRUE },
   { { DIK_J, DIK_I, DIK_M, DIK_B, DIK_E, DIK_A, DIK_M, 0 }, JimBeam, FALSE },
   { { DIK_L, DIK_U, DIK_M, DIK_B, DIK_E, DIK_R, DIK_J, DIK_A, DIK_C, DIK_K, 0 }, Lumberjack, FALSE },
   { { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
-#endif
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
 
-VirtualKeycode asckey[ 256 ];
-
-
 int ShipAxisLookup[NUM_SHIP_AXIS_ACTIONS] = { SHIPACTION_Nothing, SHIPACTION_RotateUp, SHIPACTION_RotateLeft, SHIPACTION_RollLeft,
                         SHIPACTION_SlideUp, SHIPACTION_SlideLeft, SHIPACTION_MoveForward };
-#if 0
-
-// Test SFX stuff...
-VECTOR TestSfxPos;
-uint16 TestSfxGroup;
-extern GLOBALSHIP Ships[MAX_PLAYERS+1];
-
-#endif
 
 char *JoystickPOVDirections[MAX_POV_DIRECTIONS] = { "Up", "Down", "Left", "Right" };
 
@@ -452,74 +420,6 @@ key_pressed( USERKEY *k )
 #ifdef USEINLINE
 __inline
 #endif
- short
-key_released( USERKEY *k )
-{
-  int j;
-  VirtualKeycode c;
-
-  for ( j = 0; j < k->keys; j++ )
-  {
-    c = k->key[ j ];
-    if ( KEY_ON_KEYBOARD( c ) )
-    {
-      if ( KEY_RELEASED( c ) )
-        return 1;
-    }
-    else if ( KEY_ON_MOUSE( c ) )
-    {
-      switch( c )
-      {
-      case DIK_LBUTTON:
-      case DIK_RBUTTON:
-      case DIK_MBUTTON:
-      case DIK_TBUTTON:
-        if ( MOUSE_BUTTON_RELEASED( c - DIK_LBUTTON ) )
-          return 1;
-        break;
-      case DIK_WHEELUP:
-        if ( MOUSE_WHEEL_UP_RELEASED() )
-          return 1;
-        break;
-      case DIK_WHEELDOWN:
-        if ( MOUSE_WHEEL_DOWN_RELEASED() )
-          return 1;
-        break;
-      }
-    }
-    else if ( KEY_ON_JOYSTICK( c ) )
-    {
-      int joystick;
-
-      joystick = KEY_JOYSTICK( c );
-      if ( !JoystickInfo[ joystick ].connected )
-        continue;
-      if ( KEY_ON_JOYSTICK_BUTTON( c ) )
-      {
-        int button;
-
-        button = KEY_JOYSTICK_BUTTON( c );
-        if ( JOYSTICK_BUTTON_RELEASED( joystick, button ) )
-          return 1;
-      }
-      else if ( KEY_ON_JOYSTICK_POV( c ) )
-      {
-        int pov, dir;
-
-        pov = KEY_JOYSTICK_POV( c );
-        dir = KEY_JOYSTICK_POVDIR( c );
-        if ( JOYSTICK_POV_RELEASED( joystick, pov, dir ) )
-          return 1;
-      }
-    }
-  }
-  return 0;
-}
-
-
-#ifdef USEINLINE
-__inline
-#endif
 short key_held( USERKEY *k )
 {
   int j;
@@ -585,29 +485,6 @@ short key_held( USERKEY *k )
   return 0;
 }
 
-
-
-static void InitAscKey( void )
-{
-  int j, k;
-  char *keyword;
-
-  for ( j = 0; j < 256; j++ )
-  {
-    asckey[ j ] = 0;
-  }
-  for ( k = 0; vkey_map[ k ].keyword; k++ )
-  {
-    keyword = vkey_map[ k ].keyword;
-    if ( strstr( keyword, "DIK_" ) == keyword &&
-      strlen( keyword ) == 5 &&
-      !asckey[ keyword[ 4 ] ] )
-    {
-      asckey[ keyword[ 4 ] ] = vkey_map[ k ].keycode;
-    }
-  }
-}
-
 void DisableCheats( void )
 {
   CheatsEnabled = FALSE;
@@ -629,17 +506,6 @@ void CheckCheats( VirtualKeycode key )
   int j, i;
   int cheats;
   unsigned char ch;
-#if CHEATS_AS_PLAINTEXT
-  static int init = 0;
-#endif
-
-#if CHEATS_AS_PLAINTEXT
-  if ( !init )
-  {
-    InitAscKey();
-    init = 1;
-  }
-#endif
 
   cheats = sizeof( CheatTable ) / sizeof( CheatTable[ 0 ] );
   if ( key )
@@ -647,11 +513,7 @@ void CheckCheats( VirtualKeycode key )
     for ( j = 0; j < cheats; j++ )
     {
       ch = CheatTable[ j ].cheatcode[ CheatTable[ j ].next ];
-#if CHEATS_AS_PLAINTEXT
-      if ( key == asckey[ ch ] )
-#else
       if ( key == ch )
-#endif
       {
         CheatTable[ j ].next++;
         if ( !CheatTable[ j ].cheatcode[ CheatTable[ j ].next ] )
@@ -763,97 +625,56 @@ again:;
     }
 }
 
+// TODO - should compare sdl input events with ReadMouse and make sure they are the same
+
+#include "input.h"
+
 static void ReadMouse( int dup_last )
 {
-	int j;
 	HRESULT hr;
 
-	// ignore input if told to flush
-	if(ignore_mouse_input)
-	{
-		ignore_mouse_input--;
-		//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse Input Being Ignored.\n");
-		return;
-	}
-
-	// I'll leave this here for now but it should probably be removed
 	if ( dup_last )
 	{
 		MouseState[ new_input ] = MouseState[ old_input ];
-		if ( MOUSE_WHEEL_UP()   )	MouseState[ new_input ].lZ--;
-		if ( MOUSE_WHEEL_DOWN() )	MouseState[ new_input ].lZ++;
-		//DebugPrintf("Mouse State has been Dupped!.\n");
+		MouseState[ new_input ].lZ = 0;
 		return;
 	}
 
+	MouseState[ new_input ].lZ = mouse_state.wheel;
+	//DebugPrintf("mouse wheel value: %d\n",MouseState[ new_input ].lZ);
+
 	if ( !lpdiMouse )
+		goto fail;
+
+	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
+
+	if( hr != DI_OK )
 	{
-		//DebugPrintf("Cannot read mouse: !lpdiMouse in ReadMouse().\n");
+		if (hr ==  DIERR_INPUTLOST)
+			hr = IDirectInputDevice_Acquire(lpdiMouse);
 		goto fail;
 	}
 
-	hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
-	if( hr != DI_OK )
-	{
-		switch (hr)
-		{
+	/*
+	typedef struct DIMOUSESTATE {
+		LONG lX;
+		LONG lY;
+		LONG lZ;
+		BYTE rgbButtons[4];
+	} DIMOUSESTATE, *LPDIMOUSESTATE;
 
-		case DIERR_INPUTLOST:
-			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse input lost - reacuiring mouse...\n");
-			hr = IDirectInputDevice_Acquire(lpdiMouse);
-			goto fail;
+	DebugPrintf("b0:%d b1:%d b2:%d b3:%d\n",
+		MouseState[ new_input ].rgbButtons[0],
+		MouseState[ new_input ].rgbButtons[1],
+		MouseState[ new_input ].rgbButtons[2],
+		MouseState[ new_input ].rgbButtons[3]
+		);
+	*/
 
-		case DIERR_INVALIDPARAM:
-			DebugPrintf("IDirectInputDevice_GetDeviceState INVALID PARAMS.\n");
-			goto fail;
-			break;
-
-		// this is a normal thing to happen...
-		// we are probably in window mode and told to let go of the mouse
-		case DIERR_NOTACQUIRED:
-			//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse not acquired.\n");
-			goto fail;
-			break;
-
-		case DIERR_NOTINITIALIZED:
-			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse not initialized.\n");
-			goto fail;
-			break;
-
-		case E_PENDING:
-			DebugPrintf("IDirectInputDevice_GetDeviceState Mouse E_PENDING.\n");
-			goto fail;
-			break;
-
-		default:
-			DebugPrintf("IDirectInputDevice_GetDeviceState Unknown Errors %d.\n", hr);
-			goto fail;
-		}
-	}
-
-	// read the mouse
-	//DebugPrintf("IDirectInputDevice_GetDeviceState Mouse State Read.\n");
-
-	// some kind of mouse wheel rounding ?
-#if 1
-	if ( MouseState[ new_input ].lZ > 0 )		MouseState[ new_input ].lZ =  1;
-	else if ( MouseState[ new_input ].lZ < 0 )	MouseState[ new_input ].lZ = -1;
-#else
-	MouseState[ new_input ].lZ /= MOUSE_ZSTEP;
-#endif
-
-
-// failed to read the mouse
-return; // don't remove this or it will always 0 out changes
+return;
 fail:
-
-	MouseState[ new_input ].lX = 0;
-	MouseState[ new_input ].lY = 0;
-	MouseState[ new_input ].lZ = 0;
-
-	for ( j = 0; j < 4; j++ )
-		MouseState[ new_input ].rgbButtons[ j ] = 0;
-
+	memset( &MouseState[ new_input ], 0, sizeof(MouseState[ new_input ]) );
+	MouseState[ new_input ].lZ = mouse_state.wheel;
 }
 
 float framelagfix = 0.0F;

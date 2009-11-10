@@ -286,7 +286,6 @@ void ReallyShowCursor( BOOL show )
 }
 
 extern HINSTANCE hInstApp;
-extern BOOL MouseExclusive;
 extern render_info_t render_info;
 extern void SetCursorClip( BOOL clip );
 extern void SetInputAcquired( BOOL acquire );
@@ -332,38 +331,12 @@ BOOL InitDInput(void)
 		goto fail;
     }
 
-	DebugPrintf("Setting mouse mode: %s\n",MouseExclusive?"Exclusive":"Non Exclusive");
-
-	if ( MouseExclusive )
-	{
-		err = IDirectInputDevice_SetCooperativeLevel(
-			lpdiMouse,			// mouse handle
-			render_info.window,	// window handle
-			DISCL_EXCLUSIVE |	// application requires exclusive access to device
-								// this cuases the mouse to disapear
-								// and be fully controlled by direct input
-			DISCL_FOREGROUND);	// Application only wants mouse access when it's in the foreground
-								// automatically unacquires on window de-activate
-
-		// doesn't work as it should...
-
-		// if acting like a window or not fullscreen
-		if ( !render_info.bFullscreen )
-		{
-			SetInputAcquired( FALSE );
-			SetCursorClip( FALSE );
-		}
-
-	}
-	else
-	{
-		err = IDirectInputDevice_SetCooperativeLevel(
-			lpdiMouse,			// mouse handle
-			render_info.window,	// window handle
-			DISCL_NONEXCLUSIVE |// this mode does not lock the mouse down
-								// the mouse still works but is free to roam to other windows...
-			DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
-	}
+	err = IDirectInputDevice_SetCooperativeLevel(
+		lpdiMouse,			// mouse handle
+		render_info.window,	// window handle
+		DISCL_NONEXCLUSIVE |// this mode does not lock the mouse down
+							// the mouse still works but is free to roam to other windows...
+		DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
 
     if(err != DI_OK)
     {

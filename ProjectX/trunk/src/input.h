@@ -6,4 +6,8 @@
 #include "dinput.h"
 #include "controls.h"
 
+struct {
+	int wheel;
+} mouse_state;
+
 #endif
