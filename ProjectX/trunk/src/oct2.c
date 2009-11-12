@@ -89,7 +89,7 @@ extern int    FlagsInLevel;
 extern int    TeamFlagsInLevel[ MAX_TEAMS ];
 extern int    TeamFlagsInShips[ MAX_TEAMS ];
 
-extern SetCursorClip( BOOL );
+extern void input_grab( BOOL clip );
 extern BOOL NeedFlagAtHome;
 extern BOOL OwnFlagTeleportsHome;
 extern BOOL CanCarryOwnFlag;
@@ -218,8 +218,6 @@ extern BOOL ShowStatistics; // show in-game statistics
 
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
-
-BOOL HideCursor = FALSE;
 
 float Old_LevelTime_Float;
 void InitFontTransTable();
@@ -3350,10 +3348,8 @@ BOOL RenderScene( void )
     if( InitView_MyGameStatus != STATUS_InitView_0 )
 		MyGameStatus = InitView_MyGameStatus;
 
-	// lets keep this global next to the cursor clip for now
-	// this is a good place to define that we are going into game mode...
-	SetCursorClip( TRUE );
-	HideCursor = TRUE;
+	//
+	input_grab( TRUE );
 
     break;
 

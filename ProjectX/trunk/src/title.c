@@ -58,7 +58,6 @@
 
 extern render_info_t render_info;
 
-extern BOOL HideCursor;
 extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
 extern BOOL ShowNamesAnyway;
 
@@ -3534,16 +3533,10 @@ BOOL RenderModeReset( void )
 	Procedure	:		Init Title load in all graphics etc for Titles..
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
-extern void SetCursorClip( BOOL clip );
+extern void input_grab( BOOL clip );
 extern float ticksperframe;
 BOOL InitTitle()
 {
-	HideCursor = FALSE;
-
-	// if we are in fullscreen hide mouse
-	if ( render_info.bFullscreen )
-		SetCursorClip( TRUE );
-
 	framelag = 0;
 
 #if 0
@@ -9791,9 +9784,7 @@ void InitStartMenu( MENU *Menu )
 
 void ExitInGameMenu( MENU *Menu )
 {
-	// reclip the cursor
-	HideCursor = TRUE;
-	SetCursorClip( TRUE );
+	input_grab( TRUE );
 }
 
 
@@ -9801,12 +9792,8 @@ void InitInGameMenu( MENU *Menu )
 {
 	MENUITEM *item;
 
-	// if we are not full screen then unclip the cursor
-	if ( !render_info.bFullscreen )
-	{
-		HideCursor = FALSE;
-		SetCursorClip( FALSE );
-	}
+	if ( render_info.bFullscreen )
+		input_grab( FALSE );
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
 	{
@@ -10378,12 +10365,10 @@ void MenuGoFullScreen( MENUITEM *Item )
 
     RenderModeSelect( render_info.CurrMode, !render_info.bFullscreen, render_info.vsync );
 
-	if ( render_info.bFullscreen )
-	{
-		// just let the user click to focus
-		HideCursor = FALSE;
-		SetCursorClip( FALSE );
-	}
+	// user goes into window mode to do something else
+	// so release their inputs and let them click to activate
+	if ( ! render_info.bFullscreen )
+		input_grab( FALSE );
 
 	bIgnoreWM_SIZE = FALSE;
 
@@ -10465,9 +10450,9 @@ void NewMenuSelectMode( MENUITEM *Item )
         RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
 		bIgnoreWM_SIZE = FALSE;
 
-		// just let the user click to focus
-		HideCursor = FALSE;
-		SetCursorClip( FALSE );
+		// user goes into window mode to do something else
+		// just let them click to regain inputs
+		input_grab( FALSE );
 	}
 
 	FadeHoloLight(HoloLightBrightness);

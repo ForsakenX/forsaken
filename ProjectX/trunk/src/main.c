@@ -23,7 +23,7 @@
 #include "sfx.h"
 
 #include "SDL.h"
-
+#include "input.h"
 
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR
@@ -127,7 +127,6 @@ static BOOL missing_folders( void )
 
 extern BOOL NoSFX;
 extern BOOL DS;
-extern BOOL	NoCursorClip;
 extern float normal_fov;
 extern float UV_Fix;
 extern float screen_aspect_ratio;
@@ -166,7 +165,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 	
 	NoSFX					= FALSE; // turns off sound
 	DS						= FALSE;
-	NoCursorClip			= FALSE;
 
 	NetUpdateIntervalCmdLine	= 0;
 
@@ -203,11 +201,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// turn on vertical syncing
 		else if (!_stricmp(option,"vSync")){
 			render_info.vsync = TRUE;
-		}
-
-		// never clip the cursor...
-		else if (!_stricmp(option, "NoCursorClip")){
-			NoCursorClip = TRUE;
 		}
 
 		// debugging information send to Log...
@@ -389,7 +382,6 @@ extern void DestroySound( int flags );
 extern void render_cleanup( render_info_t * info );
 extern BOOL TermDInput(void);
 extern void ReleaseScene(void);
-extern void SetCursorClip( BOOL );
 
 void CleanUpAndPostQuit(void)
 {
@@ -419,7 +411,7 @@ void CleanUpAndPostQuit(void)
     QuitRequested = TRUE;
 
 	// we dont control the cursor anymore
-	SetCursorClip( FALSE );
+	input_grab( FALSE );
 
 	//
     PostQuitMessage( 0 );
@@ -431,8 +423,6 @@ void CleanUpAndPostQuit(void)
 
 BOOL QuitRequested = FALSE;
 
-extern void SetCursorClip( BOOL );
-extern BOOL HideCursor;
 extern BOOL RenderModeReset( void );
 extern void SetGamePrefs( void );
 extern void FadeHoloLight(float Brightness);
@@ -446,19 +436,35 @@ extern BYTE MyGameStatus;
 
 BOOL bIgnoreWM_SIZE = FALSE;   /* Ignore this WM_SIZE messages */
 
-
-
 //
 // Window/Input Events
 //
 
-extern void SetInputAcquired( BOOL acquire );
 void app_active( SDL_ActiveEvent active )
 {
 	DebugPrintf("window active state set to: %s\n",(active.gain?"true":"false"));
 
-	SetCursorClip( active.gain );
-	SetInputAcquired( active.gain );
+	// lost focus so release inputs
+	if( ! active.gain )
+		input_grab( FALSE );
+
+	// gained focus
+	else
+	{
+		// fullscreen always has exclusive inputs
+		if( render_info.bFullscreen )
+			input_grab(TRUE);
+
+		// window mode
+		else
+		{
+			// only grab inputs if we are playing
+			if( MyGameStatus == STATUS_Normal )
+				input_grab(TRUE);
+			else
+				input_grab(FALSE);
+		}
+	}
 
 	if(active.gain)
 		RenderModeReset();
@@ -519,7 +525,7 @@ void app_quit( void )
 	render_flip(&render_info);
 
 	// release mouse so they can interact with message box
-	SetCursorClip( FALSE );
+	input_grab( FALSE );
 
 	// ask them to confirm clossing
 	if( IDOK == Msg("Are you sure you want to exit?") )
@@ -531,13 +537,9 @@ void app_quit( void )
 		return;
 	}
 
-	// clip if HideCursor requests so...
-	if ( HideCursor )
-		SetCursorClip( TRUE );
-
-	// clip the cursor if we are in fullscreen
-	else if ( render_info.bFullscreen )
-		SetCursorClip( TRUE );
+	// let them click to get focus again
+	if( ! render_info.bFullscreen )
+		input_grab( TRUE );
 }
 
 // TODO - how do i know if the key is pressed/released or repeating?
@@ -607,8 +609,7 @@ void app_keyboard( SDL_KeyboardEvent key )
 		if( key.type == SDL_KEYDOWN )
 		{
 			DebugPrintf("pause key clicked\n");
-			SetInputAcquired( ! cursor_clipped );
-			SetCursorClip( ! cursor_clipped );
+			input_grab( ! input_grabbed );
 		}
 		break;
 	case SDLK_F12:
@@ -619,8 +620,6 @@ void app_keyboard( SDL_KeyboardEvent key )
 
 	// TODO - need to pass key event to rest of app processing
 }
-
-#include "input.h"
 
 // mouse wheel button down/up are sent at same time
 // so if we react to the up event then we undo the down event !
@@ -699,8 +698,42 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	}
 }
 
+//
+// mouse movement events
+//
+	/*
+	typedef struct{
+	  Uint8 type;
+	  Uint8 state;
+	  Uint16 x, y;
+	  Sint16 xrel, yrel;
+	} SDL_MouseMotionEvent;
+	*/
+
+void app_mouse_motion( SDL_MouseMotionEvent motion )
+{
+	mouse_state.xrel = motion.xrel;
+	mouse_state.yrel = motion.yrel;
+	// for now we only support relative motion
+	//mouse_state.x = motion.x;
+	//mouse_state.y = motion.y;
+}
+
+// the motion event only goes off if we move the mouse
+// hence we need to clear out the old values each loop
+// other wise absence of movement will cause old value to stick around
+// and the player will continue to move by the last motion
+void reset_mouse_motion( void )
+{
+	mouse_state.xrel = 0;
+	mouse_state.yrel = 0;
+	mouse_state.x = 0;
+	mouse_state.y = 0;
+}
+
 void reset_events( void )
 {
+	reset_mouse_motion();
 	reset_mouse_wheel();
 }
 
@@ -733,6 +766,10 @@ BOOL handle_events( void )
 		case SDL_MOUSEBUTTONDOWN:
 		case SDL_MOUSEBUTTONUP:
 			app_mouse_button( _event.button );
+			break;
+
+		case SDL_MOUSEMOTION:
+			app_mouse_motion( _event.motion );
 			break;
 
 		case SDL_ACTIVEEVENT:
@@ -964,18 +1001,14 @@ static BOOL AppInit( char * lpCmdLine )
         return FALSE;
 	}
 
-	// show the mouse if acting like window
-	if ( ! render_info.bFullscreen )
-	{
-		DebugPrintf("AppInit setting mouse clip for fullscreen mode.\n");
-		SetCursorClip( FALSE );
-	}
+	// exclusively grab input in fullscreen mode
+	input_grab( render_info.bFullscreen );
 
+	//
 	SetSoundLevels( NULL );
 
-	DebugPrintf("AppInit finished...\n");
-
 	// done
+	DebugPrintf("AppInit finished...\n");
     return TRUE;
 
 }
@@ -1037,7 +1070,6 @@ static BOOL RenderLoop()
 extern int DebugMathErrors( void );
 extern void network_cleanup( void );
 extern BOOL SeriousError;
-extern void ReallyShowCursor( BOOL show );
 extern void CleanUpAndPostQuit(void);
 
 //int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
@@ -1106,17 +1138,8 @@ FAILURE:
 	//
 	CleanUpAndPostQuit();
 
-	//
-	SDL_Quit();
-
 	// cleanup networking
 	network_cleanup();
-
-	// free the cursor to move outside the window
-	ClipCursor( NULL );
-
-	// show the cursor
-	ReallyShowCursor( TRUE );
 
 	// Uninitialize the COM library
 	CoUninitialize();

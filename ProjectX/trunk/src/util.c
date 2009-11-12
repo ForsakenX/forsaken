@@ -191,7 +191,7 @@ HRESULT GUIDFromString( char *lpStr, GUID * pGuid)
 #include "title.h"
 extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
-extern void SetCursorClip( BOOL clip );
+extern void input_grab( BOOL clip );
 int Msg( const char * msg, ... )
 {
 	BOOL was_fullscreen = render_info.bFullscreen;
@@ -214,7 +214,7 @@ int Msg( const char * msg, ... )
 	}
 	
 	// release mouse so they can interact with message box
-	SetCursorClip( FALSE );
+	input_grab( FALSE );
 
     res = MessageBox( render_info.window, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
@@ -223,7 +223,7 @@ int Msg( const char * msg, ... )
 		// switch back to fullscreen
 		MenuGoFullScreen(NULL);
         SetWindowPos(render_info.window, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
-		SetCursorClip( TRUE ); // don't do this in window mode just let them click back on the window
+		input_grab( TRUE ); // don't do this in window mode just let them click back on the window
 	}
 
 	DebugPrintf( txt );

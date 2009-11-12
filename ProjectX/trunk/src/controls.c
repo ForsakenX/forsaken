@@ -91,6 +91,7 @@ extern  int FontHeight;
 #define KEY_PRESSED( K )    ( !( KeyState[ old_input ][ K ] & 0x80) && ( KeyState[ new_input ][ K ] & 0x80 ) )
 #define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
 
+// TODO - all MOUSE_BUTTON_* macro usage should be rewritten to use new button paradigms
 #define MOUSE_BUTTON_HELD( B )    ( MouseState[ new_input ].rgbButtons[ B ] )
 #define MOUSE_BUTTON_PRESSED( B ) ( !( MouseState[ old_input ].rgbButtons[ B ] ) && ( MouseState[ new_input ].rgbButtons[ B ] ) )
 #define MOUSE_BUTTON_RELEASED( B )  ( ( MouseState[ old_input ].rgbButtons[ B ] ) && !( MouseState[ new_input ].rgbButtons[ B ] ) )
@@ -625,10 +626,7 @@ again:;
     }
 }
 
-// TODO - should compare sdl input events with ReadMouse and make sure they are the same
-
-#include "input.h"
-
+// TODO - MouseState[] should be replaced with an array of mouse_state
 static void ReadMouse( int dup_last )
 {
 	if ( dup_last )
@@ -637,18 +635,8 @@ static void ReadMouse( int dup_last )
 		MouseState[ new_input ].lZ = 0; // wheel cannot be held
 		return;
 	}
-
-	// TODO - replace this part with sdl reads
-	if ( lpdiMouse )
-	{
-		HRESULT hr = IDirectInputDevice_GetDeviceState( lpdiMouse, sizeof(DIMOUSESTATE), &MouseState[ new_input ] );
-		if( hr != DI_OK )
-		{
-			if (hr ==  DIERR_INPUTLOST)
-				hr = IDirectInputDevice_Acquire(lpdiMouse);
-		}
-	}
-
+	MouseState[ new_input ].lX = mouse_state.xrel;
+	MouseState[ new_input ].lY = mouse_state.yrel;
 	MouseState[ new_input ].lZ = mouse_state.wheel;
 	MouseState[ new_input ].rgbButtons[ 0 ] = mouse_state.buttons[ 0 ]; // left
 	MouseState[ new_input ].rgbButtons[ 1 ] = mouse_state.buttons[ 2 ]; // right

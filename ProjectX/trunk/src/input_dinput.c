@@ -2,6 +2,7 @@
 #include "input.h"
 #include "util.h"
 #include "render.h"
+#include "SDL.h"
 
 #include <stdio.h>
 #include <windows.h>
@@ -269,26 +270,8 @@ char *DI_KeyName( DWORD key )
 
 #endif // USE_DINPUT_KEYNAMES
 
-// show or hide the cursor
-void ReallyShowCursor( BOOL show )
-{
-
-  // increment display count by one
-  if ( show )
-    while ( ShowCursor( TRUE ) < 0 )
-      ; // try again
-
-  // deincrement display count by one
-  else
-    while ( ShowCursor( FALSE ) >= 0 )
-      ; // try again
-
-}
-
 extern HINSTANCE hInstApp;
 extern render_info_t render_info;
-extern void SetCursorClip( BOOL clip );
-extern void SetInputAcquired( BOOL acquire );
 
 BOOL InitDInput(void)
 {
@@ -618,146 +601,19 @@ void  ReleaseJoysticks( void )
   }
 }
 
-void SetInputAcquired( BOOL acquire )
+void input_grab( BOOL grab )
 {
-    HRESULT         err;
-	if ( acquire )
+	// always acquire and hide mouse if in fullscreen
+	if( render_info.bFullscreen )
 	{
-		/*
-												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
-												err = IDirectInputDevice_SetCooperativeLevel(
-													lpdiMouse,			// mouse handle
-													render_info.window,	// window handle
-
-													DISCL_EXCLUSIVE |	// application requires exclusive access to device
-																		// this cuases the mouse to disapear
-																		// and be fully controlled by direct input
-
-													DISCL_FOREGROUND);	// Application only wants mouse access when it's in the foreground
-																		// automatically unacquires on window de-activate
-
-												if(err != DI_OK)
-												{
-													switch(err)
-													{
-													case DIERR_INVALIDPARAM:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
-														break;
-													case DIERR_NOTINITIALIZED:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
-														break;
-													case E_HANDLE:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
-														break;
-													case E_NOTIMPL:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
-														break;
-													}
-												}
-												*/
-
-		if ( lpdiMouse )			err = IDirectInputDevice_Acquire(lpdiMouse);
-		if ( lpdiKeyboard )			err = IDirectInputDevice_Acquire(lpdiKeyboard);
-		if ( lpdiBufferedKeyboard ) err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
-		DebugPrintf( "Input has been Acquired.\n" );
+		input_grabbed = TRUE;
+		SDL_WM_GrabInput( TRUE );
+		SDL_ShowCursor( FALSE );
+		return;
 	}
-	else
-	{
-/*
-												// set desired access mode -- RESET BACK TO DISCL_EXCLUSIVE -- D0 N0T M355!!!111
-												err = IDirectInputDevice_SetCooperativeLevel(
-													lpdiMouse,			// mouse handle
-													render_info.window,	// window handle
-													DISCL_NONEXCLUSIVE | // this mode does not lock the mouse down
-																		// the mouse still works but is free to roam to other windows...
-													DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
-
-												if(err != DI_OK)
-												{
-													switch(err)
-													{
-													case DIERR_INVALIDPARAM:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
-														break;
-													case DIERR_NOTINITIALIZED:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
-														break;
-													case E_HANDLE:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
-														break;
-													case E_NOTIMPL:
-														DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
-														break;
-													}
-												}
-
-*/
-
-		if ( lpdiMouse )			err = IDirectInputDevice_Unacquire(lpdiMouse);
-		if ( lpdiKeyboard )			err = IDirectInputDevice_Unacquire(lpdiKeyboard);
-		if ( lpdiBufferedKeyboard )	err = IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
-		DebugPrintf( "Input has been UN-Acquired.\n" );
-	}
-}
-
-BOOL cursor_clipped;
-BOOL NoCursorClip = FALSE;
-void SetCursorClip( BOOL clip )
-{
-	POINT p;
-	p.x = 0;
-	p.y = 1;
-
-	ClientToScreen(render_info.window, &p);
-
-	// yea but exclusive mouse mode hides it on us without asking...
-	// maybe just set cusor_clipped to true when acquiring with exclusive...
-
-	// we already are in this state...
-	if ( cursor_clipped && clip ) return;
-	if ( !cursor_clipped && !clip ) return;
-
-	// the clipping area
-	cursorclip.left		= p.x + render_info.szClient.cx / 2;
-	cursorclip.top		= p.y + render_info.szClient.cy / 2;
-	cursorclip.right	= cursorclip.left + 1;
-	cursorclip.bottom	= cursorclip.top + 1;
-
-	// save last state
-	cursor_clipped = clip;
-	//DebugPrintf( "SetCursorClip: cursor is %s\n", ( clip ? "clipped" : "not clipped" ));
-
-	// this shit is just shoved into this function
-	// cause it's pretty tied to the procedure...
-	if ( clip )
-	{
-		SetInputAcquired( TRUE );	// must acquire before clipping
-		ReallyShowCursor( FALSE );
-	}
-	else
-	{
-		//SetInputAcquired( FALSE );
-		ReallyShowCursor( TRUE );
-	}
-
-	// don't do any clipping if cli option says not to
-	// wine already clips the mouse and it causes input to go haywire
-	if ( ! NoCursorClip )
-	{
-		if ( clip ) // clip
-		{
-			//ClipCursor( &cursorclip );
-			//SetCursorPos( cursorclip.left, cursorclip.top );
-		}
-		else // unclip
-		{
-			ClipCursor( NULL );
-		}
-	}
-	else
-	{
-		// logs
-		if ( NoCursorClip )
-			DebugPrintf("NoCursorClip.\n");
-	}
+	// window mode
+	input_grabbed = grab;
+	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
+	DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
 }
