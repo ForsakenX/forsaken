@@ -10,7 +10,6 @@
 extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS]; 
 
 LPDIRECTINPUT                   lpdi = NULL;
-LPDIRECTINPUTDEVICE             lpdiMouse = NULL;
 LPDIRECTINPUTDEVICE       lpdiKeyboard = NULL;
 LPDIRECTINPUTDEVICE       lpdiBufferedKeyboard = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
@@ -276,7 +275,6 @@ extern render_info_t render_info;
 BOOL InitDInput(void)
 {
   HRESULT  err;
-  GUID     guid_mouse		= GUID_SysMouse;
   GUID     guid_keyboard	= GUID_SysKeyboard;
   DIPROPDWORD dipdw =
         {
@@ -298,53 +296,6 @@ BOOL InitDInput(void)
     {
 		return FALSE;
     }
-
-    // Create a mouse.
-	err = IDirectInput_CreateDevice(lpdi, &guid_mouse, &lpdiMouse, NULL);
-	if ( err != DI_OK )
-	{
-		goto fail;
-	}
-
-    // Tell DirectInput that we want to receive data in mouse format
-    err = IDirectInputDevice_SetDataFormat(lpdiMouse, &c_dfDIMouse);
-
-    if(err != DI_OK)
-    {
-		goto fail;
-    }
-
-	err = IDirectInputDevice_SetCooperativeLevel(
-		lpdiMouse,			// mouse handle
-		render_info.window,	// window handle
-		DISCL_NONEXCLUSIVE |// this mode does not lock the mouse down
-							// the mouse still works but is free to roam to other windows...
-		DISCL_BACKGROUND);	// allows mouse to be acquired even when it's not active window
-
-    if(err != DI_OK)
-    {
-		switch(err)
-		{
-		case DIERR_INVALIDPARAM:
-			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params.\n");
-			break;
-		case DIERR_NOTINITIALIZED:
-			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Not Initialized.\n");
-			break;
-		case E_HANDLE:
-			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Invalid Params\n");
-			break;
-		case E_NOTIMPL:
-			DebugPrintf("IDirectInputDevice_SetCooperativeLevel failed: Method Not Supported\n");
-			break;
-		}
-        goto fail;
-    }
-
-	// this is the moment the mouse disapears when usnig exclusive access.
-	// we would most likely just want a global state flag defining the type of mouse state we want.
-	// and then make sure the mouse is properly set in the right state.
-	err = IDirectInputDevice_Acquire(lpdiMouse);
 
     // try to create keyboard device
     if(IDirectInput_CreateDevice(lpdi, &guid_keyboard, &lpdiKeyboard, NULL) !=DI_OK)
@@ -509,7 +460,6 @@ BOOL InitDInput(void)
   return TRUE;
 
 fail:
-    if (lpdiMouse)  IDirectInputDevice_Release(lpdiMouse), lpdiMouse  = NULL;
     if (lpdiKeyboard)  IDirectInputDevice_Release(lpdiKeyboard), lpdiKeyboard  = NULL;
     if (lpdiBufferedKeyboard)  IDirectInputDevice_Release(lpdiBufferedKeyboard), lpdiBufferedKeyboard  = NULL;
   for (i = 0; i < Num_Joysticks; i++)
@@ -528,12 +478,6 @@ BOOL TermDInput( void )
 {
     int i;
 
-  if (lpdiMouse)
-  {
-    IDirectInputDevice_Unacquire(lpdiMouse);
-    IDirectInputDevice_Release(lpdiMouse);
-    lpdiMouse  = NULL;
-  }
     if (lpdiKeyboard)
   {
     IDirectInputDevice_Unacquire(lpdiKeyboard);

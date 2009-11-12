@@ -727,8 +727,8 @@ void reset_mouse_motion( void )
 {
 	mouse_state.xrel = 0;
 	mouse_state.yrel = 0;
-	mouse_state.x = 0;
-	mouse_state.y = 0;
+	//mouse_state.x = 0;
+	//mouse_state.y = 0;
 }
 
 void reset_events( void )
