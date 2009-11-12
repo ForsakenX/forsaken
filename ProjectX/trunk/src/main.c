@@ -603,15 +603,6 @@ void app_keyboard( SDL_KeyboardEvent key )
 
 	switch( key.keysym.sym )
 	{
-	case SDLK_PAUSE:
-		// TODO - why is this 1 and not key down/up ?
-		DebugPrintf("pause key clicked: %d\n",key.state);
-		if( key.type == SDL_KEYDOWN )
-		{
-			DebugPrintf("pause key clicked\n");
-			input_grab( ! input_grabbed );
-		}
-		break;
 	case SDLK_F12:
 		if( key.keysym.mod & KMOD_SHIFT )
 			MenuGoFullScreen( NULL );
