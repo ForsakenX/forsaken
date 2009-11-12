@@ -3539,6 +3539,9 @@ BOOL InitTitle()
 {
 	framelag = 0;
 
+	if( ! render_info.bFullscreen )
+		input_grab( FALSE );
+
 #if 0
     LPDIRECTDRAWPALETTE ddpal;
     D3DMATERIAL bmat;
@@ -9792,7 +9795,7 @@ void InitInGameMenu( MENU *Menu )
 {
 	MENUITEM *item;
 
-	if ( render_info.bFullscreen )
+	if ( ! render_info.bFullscreen )
 		input_grab( FALSE );
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
