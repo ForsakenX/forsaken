@@ -2177,13 +2177,8 @@ BOOL RenderScene( void )
     CheckSBufferList();
   }
 
-#ifndef MULTIPLE_READINPUTS
-
   // This is where in game we are getting input data read
-  // Why would it be wrapped in this def check ?
   ReadInput();
-
-#endif
 
   switch( MyGameStatus )
   {
@@ -2512,9 +2507,6 @@ BOOL RenderScene( void )
     }
 
     ScoreDisplay();
-#ifdef MULTIPLE_READINPUTS
-    ReadInput();
-#endif
 
     HostMultiPlayerTimeout -= framelag;
 

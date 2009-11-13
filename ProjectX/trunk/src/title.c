@@ -5063,10 +5063,6 @@ Event handling
 	ProcessTimers();
 	ProcessEvents();
 
-#ifdef MULTIPLE_READINPUTS
-	ReadInput();
-#endif
-	
 	//MorphHoloLight();
 	
 	ProcessTextItems();

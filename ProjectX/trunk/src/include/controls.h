@@ -184,10 +184,6 @@ IsKeyPressed( int di_keycode );
 extern int
 IsKeyHeld( int di_keycode );
 
-
-extern int
-WhichKeyPressed( void );
-
 extern int
 WhichMousePressed( void );
 

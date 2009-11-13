@@ -717,10 +717,6 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   if ( !conf )
     return; // bail if no config supplied
 
-#ifdef MULTIPLE_READINPUTS
-  ReadInput();
-#endif
-
   if ( CurrentMenu )
     return; // disable bike controls if using menus
 
@@ -1019,10 +1015,6 @@ int AnyKeyPressed( void )
     (VirtualKeycode) -1,
   };
 
-#ifdef MULTIPLE_READINPUTS
-  ReadInput();
-#endif
-
   if ( CurrentMenu )
     return 0;
 
@@ -1075,10 +1067,6 @@ int AnyKeyReleased( void )
     DIK_F15,
     (VirtualKeycode) -1,
   };
-
-#ifdef MULTIPLE_READINPUTS
-  ReadInput();
-#endif
 
   if ( CurrentMenu )
     return 0;
@@ -1197,16 +1185,6 @@ int CheckMouse( void )
 
   return key;
 }
-
-int WhichKeyPressed( void )
-{
-  int k;
-  for ( k = 0; k < MAX_KEYS; k++ )
-    if ( KEY_PRESSED( k ) )
-		return k;
-  return 0;
-}
-
 
 int WhichMousePressed( void )
 {
