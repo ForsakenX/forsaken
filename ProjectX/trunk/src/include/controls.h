@@ -194,16 +194,12 @@ WhichMousePressed( void );
 extern int
 WhichJoystickPressed( void );
 
-extern int
-WhichKeyHeld( void );
-
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum);
 BOOL PollJoystick( int joysticknum );
 
 void ReadBufferedKeyboard( void );
 int CheckMouse( void );
 void SetUpJoystickAxis(int joystick);
-int BitPos (int flag);
 BOOL IsJoystickButtonPressed( int joysticknum );
 BOOL IsAnyJoystickButtonPressed( void );
 BOOL IsJoystickButtonReleased( int joysticknum );

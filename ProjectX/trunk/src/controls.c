@@ -1285,51 +1285,6 @@ int WhichJoystickPressed( void )
   return key;
 }
 
-
-int WhichKeyHeld( void )
-{
-  int k;
-  int key;
-
-  key = 0;
-  for ( k = 0; k < MAX_KEYS; k++ )
-  {
-    if ( KEY_HELD( k ) )
-    {
-      if ( !key )
-        key = k;
-      else
-        return 0;
-    }
-  }
-  for ( k = 0; k < MAX_MOUSE_BUTTONS; k++ )
-  {
-    if ( MOUSE_BUTTON_HELD( k ) )
-    {
-      if ( !key )
-        key = DIK_LBUTTON + k;
-      else
-        return 0;
-    }
-  }
-  if ( MOUSE_WHEEL_UP() )
-  {
-    if ( !key )
-      key = DIK_WHEELUP;
-    else
-      return 0;
-  }
-  if ( MOUSE_WHEEL_DOWN() )
-  {
-    if ( !key )
-      key = DIK_WHEELDOWN;
-    else
-      return 0;
-  }
-
-  return key;
-}
-
 void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
 {
   switch (Action)
@@ -1795,24 +1750,6 @@ int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
     return dir;
   }else
     return POV_Centre;
-}
-
-// returns the position of the least sig. bit...
-int BitPos (int flag)
-{
-  int i = 0;
-  int mask = 1;
-
-  if (flag == 0)
-    return 0;
-
-  while (!(mask & flag))  
-  {
-    flag >>= 1;
-    i++;
-  }
-
-  return i;
 }
 
 // returns TRUE if it is OK to repeat the given ship action

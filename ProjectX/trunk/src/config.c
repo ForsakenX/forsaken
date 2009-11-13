@@ -1720,29 +1720,12 @@ const char *key_fullname( int keycode )
 	return NULL;
 }
 
-
-#ifdef USE_DINPUT_KEYNAMES
-
-extern char *DI_KeyName( DWORD key );
-extern uint8 CharTrans[256];
-
-#endif // USE_DINPUT_KEYNAMES
-
 const char *key_name( int keycode )
 {
 	if ( KEY_ON_KEYBOARD( keycode ) || KEY_ON_MOUSE( keycode ) )
 	{
 		VIRTUALKEYMAP *vk;
 		const char *name;
-
-#ifdef USE_DINPUT_KEYNAMES
-		// check for Direct Input key name first
-		name = DI_KeyName( keycode );
-		if ( name && ( strlen( name ) > 1 || CharTrans[ *name ] ) )
-			return name;
-
-		// use internal key table if no Direct Input key name found
-#endif // USE_DINPUT_KEYNAMES
 
 		for ( vk = vkey_map; vk->keyword; vk++ )
 		{

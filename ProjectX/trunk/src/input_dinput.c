@@ -244,31 +244,6 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
 
 }
 
-
-#ifdef USE_DINPUT_KEYNAMES
-
-#define MAX_KEYS  (256)
-DWORD KeyMax;
-DIDEVICEOBJECTINSTANCE KeyInfo[ MAX_KEYS ];
-
-BOOL CALLBACK DIEnumKeyboardObjectsProc( LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef )
-{
-  DWORD key = lpddoi->dwOfs;
-  if ( key < MAX_KEYS )
-    KeyInfo[ key ] = *lpddoi;
-  if ( KeyMax < key )
-    KeyMax = key;
-  return DIENUM_CONTINUE;
-}
-
-
-char *DI_KeyName( DWORD key )
-{
-  return ( key < MAX_KEYS && KeyInfo[ key ].dwSize ) ? KeyInfo[ key ].tszName : NULL;
-}
-
-#endif // USE_DINPUT_KEYNAMES
-
 extern HINSTANCE hInstApp;
 extern render_info_t render_info;
 
@@ -315,16 +290,6 @@ BOOL InitDInput(void)
     {
             goto fail;
     }
-
-#ifdef USE_DINPUT_KEYNAMES
-  // get key info
-  KeyMax = 0;
-  memset( KeyInfo, 0, sizeof( KeyInfo ) );
-  if (IDirectInputDevice_EnumObjects(lpdiKeyboard, DIEnumKeyboardObjectsProc, NULL, DIDFT_ALL ) != DI_OK)
-  {
-    // don't care -- fall back on internal key name info
-  }
-#endif // USE_DINPUT_KEYNAMES
 
     // try to acquire the keyboard
     err = IDirectInputDevice_Acquire(lpdiKeyboard);
