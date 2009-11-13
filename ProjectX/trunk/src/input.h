@@ -6,7 +6,7 @@
 #include "dinput.h"
 #include "controls.h"
 
-struct {
+typedef struct {
 
 	// wheel state -1 (down) 0 (nothing) 1 (up)
 	int wheel;
@@ -22,7 +22,10 @@ struct {
 	//int x;
 	//int y;
 
-} mouse_state;
+} mouse_state_t;
+
+// this holds the current state each loop
+mouse_state_t mouse_state;
 
 int input_grabbed;
 void input_grab( BOOL grab );

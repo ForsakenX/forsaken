@@ -92,14 +92,14 @@ extern  int FontHeight;
 #define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
 
 // TODO - all MOUSE_BUTTON_* macro usage should be rewritten to use new button paradigms
-#define MOUSE_BUTTON_HELD( B )    ( MouseState[ new_input ].rgbButtons[ B ] )
-#define MOUSE_BUTTON_PRESSED( B ) ( !( MouseState[ old_input ].rgbButtons[ B ] ) && ( MouseState[ new_input ].rgbButtons[ B ] ) )
-#define MOUSE_BUTTON_RELEASED( B )  ( ( MouseState[ old_input ].rgbButtons[ B ] ) && !( MouseState[ new_input ].rgbButtons[ B ] ) )
+#define MOUSE_BUTTON_HELD( B )    ( mouse_states[ new_input ].buttons[ B ] )
+#define MOUSE_BUTTON_PRESSED( B ) ( !( mouse_states[ old_input ].buttons[ B ] ) && ( mouse_states[ new_input ].buttons[ B ] ) )
+#define MOUSE_BUTTON_RELEASED( B )  ( ( mouse_states[ old_input ].buttons[ B ] ) && !( mouse_states[ new_input ].buttons[ B ] ) )
 
-#define MOUSE_WHEEL_UP()          ( MouseState[ new_input ].lZ > 0 )
-#define MOUSE_WHEEL_DOWN()          ( MouseState[ new_input ].lZ < 0 )
-#define MOUSE_WHEEL_UP_PRESSED()      ( !( MouseState[ old_input ].lZ > 0 ) && ( MouseState[ new_input ].lZ > 0 ) )
-#define MOUSE_WHEEL_DOWN_PRESSED()      ( !( MouseState[ old_input ].lZ < 0 ) && ( MouseState[ new_input ].lZ < 0 ) )
+#define MOUSE_WHEEL_UP()				( mouse_states[ new_input ].wheel > 0 )
+#define MOUSE_WHEEL_DOWN()				( mouse_states[ new_input ].wheel < 0 )
+#define MOUSE_WHEEL_UP_PRESSED()		( !( mouse_states[ old_input ].wheel > 0 ) && ( mouse_states[ new_input ].wheel > 0 ) )
+#define MOUSE_WHEEL_DOWN_PRESSED()      ( !( mouse_states[ old_input ].wheel < 0 ) && ( mouse_states[ new_input ].wheel < 0 ) )
 
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
@@ -138,7 +138,7 @@ BOOL flush_input = TRUE;
 
 static uint16 old_input = 0;
 uint16 new_input = 1;
-static DIMOUSESTATE MouseState[ INPUT_BUFFERS ];
+static mouse_state_t mouse_states[ INPUT_BUFFERS ];
 static uint8 KeyState[ INPUT_BUFFERS ][ MAX_KEYS ];
 
 char *ShipActionText[NUM_SHIP_ACTIONS] = {
@@ -625,21 +625,21 @@ again:;
     }
 }
 
-// TODO - MouseState[] should be replaced with an array of mouse_state
+// TODO - mouse should not have to remap the order of the buttons
 static void ReadMouse( int dup_last )
 {
 	if ( dup_last )
 	{
-		MouseState[ new_input ] = MouseState[ old_input ];
-		MouseState[ new_input ].lZ = 0; // wheel cannot be held
+		mouse_states[ new_input ] = mouse_states[ old_input ];
+		mouse_states[ new_input ].wheel = 0; // wheel cannot be held
 		return;
 	}
-	MouseState[ new_input ].lX = mouse_state.xrel;
-	MouseState[ new_input ].lY = mouse_state.yrel;
-	MouseState[ new_input ].lZ = mouse_state.wheel;
-	MouseState[ new_input ].rgbButtons[ 0 ] = mouse_state.buttons[ 0 ]; // left
-	MouseState[ new_input ].rgbButtons[ 1 ] = mouse_state.buttons[ 2 ]; // right
-	MouseState[ new_input ].rgbButtons[ 2 ] = mouse_state.buttons[ 1 ]; // middle
+	mouse_states[ new_input ].xrel = mouse_state.xrel;
+	mouse_states[ new_input ].yrel = mouse_state.yrel;
+	mouse_states[ new_input ].wheel = mouse_state.wheel;
+	mouse_states[ new_input ].buttons[ 0 ] = mouse_state.buttons[ 0 ]; // left
+	mouse_states[ new_input ].buttons[ 1 ] = mouse_state.buttons[ 2 ]; // right
+	mouse_states[ new_input ].buttons[ 2 ] = mouse_state.buttons[ 1 ]; // middle
 }
 
 float framelagfix = 0.0F;
@@ -720,8 +720,8 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   if ( CurrentMenu )
     return; // disable bike controls if using menus
 
-  mouse_dx = MouseState[ new_input ].lX * conf->mouse_x_sensitivity * 4.0F;
-  mouse_dy = MouseState[ new_input ].lY * conf->mouse_y_sensitivity * 4.0F;
+  mouse_dx = mouse_states[ new_input ].xrel * conf->mouse_x_sensitivity * 4.0F;
+  mouse_dy = mouse_states[ new_input ].yrel * conf->mouse_y_sensitivity * 4.0F;
 
 #if 0
   if ( mouse_dx < -MAX_MOUSE_DELTA_X )
