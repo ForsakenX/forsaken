@@ -7914,6 +7914,7 @@ void	MenuProcess()
 		
 		// first special operation
 		// set key equal to whatever last mouse input was
+		// this is where mouse input is used to interact with the menus
 		if ( i == NumKeysToProcess + 1 )
 			Key = CheckMouse();
 		 
