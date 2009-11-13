@@ -988,62 +988,6 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   }
 }
 
-
-int AnyKeyPressed( void )
-{
-  int k;
-  static VirtualKeycode null_key[] =
-  {
-#if 0
-    DIK_ESCAPE,
-    DIK_F1,
-    DIK_F2,
-    DIK_F3,
-    DIK_F4,
-    DIK_F5,
-    DIK_F6,
-    DIK_F7,
-    DIK_F8,
-    DIK_F9,
-    DIK_F10,
-    DIK_F11,
-    DIK_F12,
-    DIK_F13,
-    DIK_F14,
-    DIK_F15,
-#endif
-    (VirtualKeycode) -1,
-  };
-
-  if ( CurrentMenu )
-    return 0;
-
-  for ( k = 0; null_key[ k ] != (VirtualKeycode) -1; k++ )
-  {
-    if ( KEY_PRESSED( null_key[ k ] ) )
-      return 0;
-  }
-
-  for ( k = 0; k < MAX_KEYS; k++ )
-  {
-    if ( KEY_PRESSED( k ) )
-      return 1;
-  }
-  for ( k = 0; k < MAX_MOUSE_BUTTONS; k++ )
-  {
-    if ( MOUSE_BUTTON_PRESSED( k ) )
-      return 1;
-  }
-
-  if( IsAnyJoystickButtonPressed() )
-  {
-    return 1;
-  }
-
-  return 0;
-}
-
-
 int AnyKeyReleased( void )
 {
   int k;

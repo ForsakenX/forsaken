@@ -170,9 +170,6 @@ extern void
 control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl );
 
 extern int
-AnyKeyPressed( void );
-
-extern int
 AnyKeyReleased( void );
 
 extern void
