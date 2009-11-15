@@ -91,16 +91,6 @@ extern  int FontHeight;
 #define KEY_PRESSED( K )    ( !( KeyState[ old_input ][ K ] & 0x80) && ( KeyState[ new_input ][ K ] & 0x80 ) )
 #define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
 
-// TODO - all MOUSE_BUTTON_* macro usage should be rewritten to use new button paradigms
-#define MOUSE_BUTTON_HELD( B )    ( mouse_states[ new_input ].buttons[ B ] )
-#define MOUSE_BUTTON_PRESSED( B ) ( !( mouse_states[ old_input ].buttons[ B ] ) && ( mouse_states[ new_input ].buttons[ B ] ) )
-#define MOUSE_BUTTON_RELEASED( B )  ( ( mouse_states[ old_input ].buttons[ B ] ) && !( mouse_states[ new_input ].buttons[ B ] ) )
-
-#define MOUSE_WHEEL_UP()				( mouse_states[ new_input ].wheel > 0 )
-#define MOUSE_WHEEL_DOWN()				( mouse_states[ new_input ].wheel < 0 )
-#define MOUSE_WHEEL_UP_PRESSED()		( !( mouse_states[ old_input ].wheel > 0 ) && ( mouse_states[ new_input ].wheel > 0 ) )
-#define MOUSE_WHEEL_DOWN_PRESSED()      ( !( mouse_states[ old_input ].wheel < 0 ) && ( mouse_states[ new_input ].wheel < 0 ) )
-
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
 #define JOYSTICK_BUTTON_RELEASED( J, B )  ( ( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && !( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
@@ -138,7 +128,6 @@ BOOL flush_input = TRUE;
 
 static uint16 old_input = 0;
 uint16 new_input = 1;
-static mouse_state_t mouse_states[ INPUT_BUFFERS ];
 static uint8 KeyState[ INPUT_BUFFERS ][ MAX_KEYS ];
 
 char *ShipActionText[NUM_SHIP_ACTIONS] = {
@@ -1067,7 +1056,7 @@ int CheckMouse( void )
     if ( MOUSE_BUTTON_PRESSED( k ) )
     {
       if ( !key )
-        key = DIK_LBUTTON + k;
+        key = DIK_MOUSE + k;
       else
         return 0;
     }
@@ -1101,7 +1090,7 @@ int WhichMousePressed( void )
     if ( MOUSE_BUTTON_PRESSED( k ) )
     {
       if ( !key )
-        key = DIK_LBUTTON + k;
+        key = DIK_MOUSE + k;
       else
         return 0;
     }

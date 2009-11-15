@@ -6,7 +6,6 @@
 /*===================================================================
 		Some Keyboard and Mouse Globals
 ===================================================================*/
-#define INPUT_BUFFERS		(2)
 
 #define CRUISE_NORMAL		(0)
 #define CRUISE_FORWARD		(1)

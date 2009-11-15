@@ -39,7 +39,7 @@
 /*
  * Externals
  */
-extern BOOL OKToProcessKeys;
+
 extern int OldPPSValue;
 extern int OldColPerspective;
 extern int OldUseShortPackets;

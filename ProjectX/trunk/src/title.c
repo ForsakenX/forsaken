@@ -51,6 +51,7 @@
 #include "timer.h"
 #include "render.h"
 
+
 #define MAX_SAVEGAME_SLOTS		16
 #define MAX_PILOTNAME_LENGTH	(MAX_PLAYER_NAME_LENGTH - 1)
 
@@ -799,7 +800,6 @@ SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 BOOL ShowTeamInfo;
-BOOL OKToProcessKeys			= FALSE;
 BOOL MenuFrozen					= FALSE;
 BOOL NoTeamSelect				= FALSE;
 BOOL UseNewMenus				= TRUE;
@@ -6132,65 +6132,6 @@ DefineKey( MENUITEM *item, VirtualKeycode key )
 
 
 
-BOOL ProcessKeydef( int Key )
-{
-	BOOL done;
-	int KeyDefNo;
-	MENUITEM *Item, *nextitem;
-
-	done = FALSE;
-	switch( Key )
-	{
-	case DIK_ESCAPE:
-	case DIK_F1:
-	case DIK_F2:
-	case DIK_F3:
-	case DIK_F4:
-	case DIK_F5:
-	case DIK_F6:
-	case DIK_F7:
-	case DIK_F8:
-	case DIK_F9:
-	case DIK_F10:
-	case DIK_F11:
-	case DIK_F12:
-		done = TRUE; // back out of key definition mode if illegal key selected
-		break;
-	default:
-		if ( Key )
-		{
-			if ( KeyItem->Variable )
-			{
-				DefineKey( KeyItem, (VirtualKeycode) Key );
-			}
-			done = TRUE;
-		}
-		break;
-	}
-
-
-
-	nextitem = CurrentMenu->Item;
-
-	for ( KeyDefNo = 0; KeyDefNo <= CurrentKeyDef; KeyDefNo++)
-	{
-		for( Item = nextitem; Item->x >= 0; Item++ )
-		{	
-			if (Item->FrameNo == KeyDefLines[KeyDefNo])
-			{
-				CurrentKeyDef--;
-				nextitem = Item;	
-				break;
-			}
-		}
-	}
-
-
-
-
-
-	return !done;
-}
 
 
 static void KeySelect( DEFKEY *kdef, int key )
@@ -6377,280 +6318,6 @@ void InitKeyDef( MENU *Menu )
 }
 
 
-BOOL ProcessSlider( int Key )
-{
-	BOOL done, redraw;
-	SLIDER *slider;
-	MenuItemFunc set_fn;
-
-	slider = (SLIDER *)SliderItem->Variable;
-	
-	done = FALSE;
-	redraw = FALSE;
-	switch( Key )
-	{
-	case DIK_LEFT:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		DecrementSlider( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		IncrementSlider( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_HOME:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		SliderHome( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_END:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		SliderEnd( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_RETURN:
-		done = TRUE;
-		break;
-	case DIK_ESCAPE:
-		slider->oldvalue = slider->value;
-		SliderCancel( SliderItem );
-		done = TRUE;
-		redraw = TRUE;
-		break;
-	default:
-		break;
-	}
-
-	if (done )
-	{
-		if ( SliderItem->Value )
-		{
-			set_fn = (MenuItemFunc)(SliderItem->Value);
-			set_fn ( SliderItem );
-		}
-	}
-
-
-	return !done;
-}
-
-BOOL ProcessSlider2( int Key )
-{
-	BOOL done, redraw, refresh;
-	SLIDER *slider;
-	MenuItemFunc set_fn;
-
-	slider = (SLIDER *)SliderItem->Variable;
-	
-	done = FALSE;
-	redraw = FALSE;
-	refresh = FALSE;
-	switch( Key )
-	{
-	case DIK_LEFT:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		DecrementSlider( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-		slider->oldvalue = slider->value;
-		IncrementSlider( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-/*
-	case DIK_HOME:
-		slider->oldvalue = slider->value;
-		SliderHome( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-	case DIK_END:
-		slider->oldvalue = slider->value;
-		SliderEnd( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-*/
-	case DIK_HOME:
-		CursorHome();
-		done = TRUE;
-		break;
-	case DIK_END:
-		CursorEnd();
-		done = TRUE;
-		break;
-
-
-	case DIK_WHEELUP:
-	case DIK_UP:
-		CursorUp();
-		done = TRUE;
-		break;
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		CursorDown();
-		done = TRUE;
-		break;
-	case DIK_ESCAPE:
-		MenuBack();
-		done = TRUE;
-		break;
-	case DIK_RETURN:
-		refresh = TRUE;
-		break;
-	default:
-		if ( Key )
-		{
-			char *c;
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				CursorSearch( SearchKey( *c ) );
-				if (CurrentMenuItem != SliderItem)
-				{
-					done = TRUE;
-				}
-			}
-		}
-		break;
-	}
-
-	if ( ( refresh ) || ( CurrentMenuItem != SliderItem ) )
-	{
-		if ( slider->FuncRefresh )
-		{
-			slider->FuncRefresh( slider );
-		}
-	}
-
-
-	if (redraw && ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU)))
-	{
-		slider->redraw_req = TRUE;
-	}
-
-	if (done || redraw)
-	{
-		if ( SliderItem->Value )
-		{
-			set_fn = (MenuItemFunc)(SliderItem->Value);
-			set_fn ( SliderItem );
-		}
-	}
-	
-	return !done;
-}
-
-BOOL ProcessLevelList ( int Key )
-{
-	BOOL done, redraw;
-	int current;
-
-	done = FALSE;
-	redraw = FALSE;
-
-	switch(Key)
-	{
-	case DIK_LEFT:
-		PlayCursorSfx();
-		//make selected item 1 to the left
-		current = LevelList.selected_item;
-		SelectListPrev( &LevelList );
-		if (current != LevelList.selected_item)
-			redraw = TRUE;
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-		//make selected item 1 to the right
-		current = LevelList.selected_item;
-		SelectListNext( &LevelList );
-		if (current != LevelList.selected_item)
-			redraw = TRUE;
-		break;
-	case DIK_RETURN:
-		if ( MenuState == MENUSTATE_SelectLevelQuick )
-		{
-			if ( CurrentMenu != &MENU_NEW_CreateGame )
-			{
-				MenuState = MENUSTATE_SelectLevelSlow;
-				MenuChange ( &SlowLevelSelectItem );
-			}
-		}else
-		{
-			done = TRUE;
-			MenuBack();
-		}
-		break;
-	case DIK_ESCAPE:
-		done = TRUE;
-		MenuBack();
-		break;
-		
-	case DIK_WHEELUP:
-	case DIK_UP:
-		if (MenuState == MENUSTATE_SelectLevelQuick)
-		{
-			CursorUp();
-			done = TRUE; 
-		}
-		break;
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		if (MenuState == MENUSTATE_SelectLevelQuick)
-		{
-			CursorDown();
-			done = TRUE;
-		}
-		break;
-	default:
-		if ( Key )
-		{
-			char *c;
-
-			current = LevelList.selected_item;
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				SelectListSearch( &LevelList, SearchKey( *c ) );
-			}
-			if (current != LevelList.selected_item)
-			{
-				PlayCursorSfx();
-				redraw = TRUE;
-			}
-		}
-		break;
-	}
-
-	if( MyGameStatus != STATUS_Normal && MyGameStatus != STATUS_SinglePlayer )
-		NewLevelNum = LevelList.selected_item;
-
-	if (redraw)
-	{
-		if (MenuState == MENUSTATE_SelectLevelSlow)
-		{
-			LastMenu = CurrentMenu;	// because we are not actually changing menus, 
-									// but we still want to clear this menu
-			LoadLevelText( NULL );
-			VduClear();
-			ProcessVduItems(CurrentMenu);
-		}
-		LoadLevelText( NULL );
-	}
-
-	return !done;
-}
-
-
 
 int ValidBikeSelected( int bike)
 {
@@ -6668,506 +6335,6 @@ int ValidBikeSelected( int bike)
 	return -1;
 }
 
-
-/*===================================================================
-	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
-	Input		:		key pressed
-	Output		:		BOOL - indicates when biker list is no longer being used
-===================================================================*/
-BOOL ProcessBikerList ( int Key )
-{
-	BOOL done, redraw;
-	int current;
-
-	done = FALSE;
-	redraw = FALSE;
-
-	switch(Key)
-	{
-	case DIK_LEFT:
-		PlayCursorSfx();
-		//make selected item 1 to the left
-		current = BikeList.selected_item;
-		do {
-			SelectListPrev( &BikeList );
-		} while ( BikeList.selected_item > 0 && !CanSelectBike[ BikeList.selected_item ] );
-		if ( !CanSelectBike[ BikeList.selected_item ] )
-			BikeList.selected_item = current;
-		BikeList.selected_item = ValidBikeSelected( BikeList.selected_item );
-		if (current != BikeList.selected_item)
-		{
-			ExitBikeSelection(NULL);
-			redraw = TRUE;
-		}
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-
-		//make selected item 1 to the right
-		current = BikeList.selected_item;
-		do {
-			SelectListNext( &BikeList );
-		} while ( BikeList.selected_item < BikeList.items - 1 && !CanSelectBike[ BikeList.selected_item ] );
-		if ( !CanSelectBike[ BikeList.selected_item ] )
-			BikeList.selected_item = current;
-		BikeList.selected_item = ValidBikeSelected( BikeList.selected_item );
-		if (current != BikeList.selected_item)
-		{
-			ExitBikeSelection(NULL);
-			redraw = TRUE;
-		}
-		break;
-	case DIK_RETURN:
-		done = TRUE;
-		MenuBack();
-		break;
-	case DIK_ESCAPE:
-		done = TRUE;
-		MenuBack();
-		break;
-	}
-
-	if (redraw)
-	{
-		LastMenu = CurrentMenu;	// because we are not actually changing menus, 
-								// but we still want to clear this menu
-		VduClear();
-		OldSelectedBike = BikeList.selected_item;
-		ProcessVduItems(CurrentMenu);
-	}
-
-	return !done;
-}
-
-BOOL ProcessSavedGameList( int Key )
-{
-	BOOL done, redraw;
-	int current;
-
-	done = FALSE;
-	redraw = FALSE;
-
-	switch(Key)
-	{
-	case DIK_LEFT:
-		PlayCursorSfx();
-
-		current = LoadSavedGameList.selected_item;
-		SelectListPrev( &LoadSavedGameList );
-		if (current != LoadSavedGameList.selected_item)
-		{
-			redraw = TRUE;
-		}
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-
-		current = LoadSavedGameList.selected_item;
-		SelectListNext( &LoadSavedGameList );
-		if (current != LoadSavedGameList.selected_item)
-		{
-			redraw = TRUE;
-		}
-		break;
-	case DIK_RETURN:
-		done = TRUE;
-		TitleLoadGame( NULL );
-		break;
-	case DIK_ESCAPE:
-		done = TRUE;
-		MenuBack();
-		break;
-	}
-
-	if (redraw)
-	{
-		GetSavedGameData();
-		LastMenu = CurrentMenu;	// because we are not actually changing menus, 
-								// but we still want to clear this menu
-		VduClear();
-		ProcessVduItems(CurrentMenu);
-	}
-
-	return !done;
-}
-
-/*===================================================================
-	Procedure	:		Processes the player list - auto selects highlighted item, 
-						and draws corresponding biker character.
-	Input		:		key pressed...
-	Output		:		BOOL - indicates when player list is no longer being used.
-===================================================================*/
-BOOL ProcessPlayerList ( int Key )
-{
-	BOOL done, redraw;
-	char old_bike_name[16];
-
-	done = FALSE;	 
-	redraw = FALSE;
-
-	strcpy(old_bike_name, bike_name);
-
-	switch(Key)
-	{
-		
-	case DIK_WHEELUP:
-	case DIK_UP:
-		//make selected item 1 up
-		PlayCursorSfx();
-		SelectListPrev( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		//make selected item 1 down
-		PlayCursorSfx();
-		SelectListNext( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_RETURN:
-		done = TRUE;
-		redraw = TRUE;
-		MenuBack();
-		break;
-	case DIK_ESCAPE:
-		done = TRUE;
-		redraw = TRUE;
-		MenuBack();
-		break;
-	case DIK_NEXT:
-		PlayCursorSfx();
-		SelectListNextPage( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_PRIOR:
-		PlayCursorSfx();
-		SelectListPrevPage( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_HOME:
-		PlayCursorSfx();
-		SelectListHome( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_END:
-		PlayCursorSfx();
-		SelectListEnd( &PilotList );
-		redraw = TRUE;
-		break;
-	case DIK_DELETE:
-		if ( PilotList.FuncDelete )
-		{
-			if ( PilotList.selected_item >= 0 && PilotList.selected_item < PilotList.items 
-				&& !PilotList.FuncDelete( &PilotList, PilotList.selected_item ) )
-			{
-				PlaySfx( SFX_Error, 1.0F );
-			}
-			redraw = TRUE;
-		}
-		break;
-	default:
-		if ( Key )
-		{
-			char *c;
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				SelectListSearch( &PilotList, SearchKey( *c ) );
-				redraw = TRUE;
-				PlayCursorSfx();
-			}
-		}
-		break;
-	}
-  
-	if (redraw)
-	{	
-		SelectPilot(CurrentMenuItem);
-		if (strcmp(old_bike_name, bike_name))	// if bike name has changed....
-		{
-
-			ShowHoloModel( HoloModelLookup[ SelectedBike ] );
-
-#if 0
-			PrintTextItem(BikeNameTextPtr); 
-
-			if ((Title_Timers[TITLE_TIMER_SwapBikes].Status != TITLE_EVENT_TIMER_ACTIVE) && (Title_Timers[TITLE_TIMER_SwapBikes].Status != TITLE_EVENT_TIMER_FINISHED))
-			{
-				Title_Timers[TITLE_TIMER_SwapBikes].Status = TITLE_EVENT_TIMER_ACTIVE;
- 				Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime = 0.0F;
-				OldSelectedBikeScale = SelectedBikeScale;
-			}else
-			{	if (Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime > 0.5F)
-				{	for (Event = Title_Events; Event->TriggeredBy >= 0; Event++)
-					{
-						if (Event->TriggeredBy == TITLE_TIMER_SwapBikes)
-						{
-				
-							if ((Event->Status == TITLE_EVENT_STATUS_ACTIVE) || (Event->Status == TITLE_EVENT_STATUS_FINISHED))
-							{
-								Event->Status = TITLE_EVENT_STATUS_IDLE;
-
-								if (Event->Status == TITLE_EVENT_STATUS_ACTIVE)
-								{
-									if (Event->ExitFunc)
-										Event->ExitFunc(Event);
-								}
-
-								Title_Timers[TITLE_TIMER_SwapBikes].Status = TITLE_EVENT_TIMER_ACTIVE;
-			 					Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime = 0.0F;
-								OldSelectedBikeScale = BikeSwapScale;
-							}
-
-						}
-					}
-		
-				}
-			}
-#endif
-		}
-
-		KillBikeChar( NULL );
-		LoadBikeChar( &BikeCharItem );
-
-
-//		RedrawFlatMenuList(CurrentMenuItem);
-	}
-
-	
-	return !done;
-}
-
-BOOL ProcessWeaponOrder ( int Key )
-{
-	BOOL done, redraw;
-	int highlighttype, temp, oldselectedweapon, i;
-
-	done = FALSE;
-	redraw = FALSE;
-	
-	switch(Key)
-	{
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		PlayCursorSfx();
-		oldselectedweapon = SelectedWeapon;
-
-		if (WeaponOrderStatus == WEAPON_ChoosingSecond)
-		{
-			// if currently at bottom of used list...
-			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
-			{
-				Num_Unused_Weapons++;
-				redraw = TRUE;
-			}else
-			{
-				// if last item...
-				if (SelectedWeapon == MaxWeapons - 1)
-				{
-					// if no weapons in unused list...
-					if (Num_Unused_Weapons == 0)
-						Num_Unused_Weapons++;
-						redraw = TRUE;
-				}else
-				{
-					// swap current weapon with one below...
-					temp = WeaponList[SelectedWeapon];
-					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon + 1];
-					WeaponList[SelectedWeapon + 1] = temp;
-					redraw = TRUE;
-
-					SelectedWeapon++;
-				}
-			}
-		}else
-		// choosing first weapon...
-		{
-			// if not last weapon...
-			if (SelectedWeapon != MaxWeapons - 1)
-				SelectedWeapon++;
-		}
-
-		// move cursor if necessary...
-		if (oldselectedweapon != SelectedWeapon)
-		{
-			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
-			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
-			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
-		}
-		break;
-		
-	case DIK_WHEELUP:
-	case DIK_UP:
-		PlayCursorSfx();
-		oldselectedweapon = SelectedWeapon;
-
-		if (WeaponOrderStatus == WEAPON_ChoosingSecond)
-		{
-			// if currently at top of unused list...
-			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
-			{
-				Num_Unused_Weapons--;
-				redraw = TRUE;
-			}else
-			{
-				// if first item...
-				if (SelectedWeapon == 0)
-				{
-					// if no weapons in used list...
-					if (Num_Unused_Weapons == MaxWeapons)
-						Num_Unused_Weapons--;
-						redraw = TRUE;
-				}else
-				{
-					// swap current weapon with one above...
-					temp = WeaponList[SelectedWeapon];
-					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon - 1];
-					WeaponList[SelectedWeapon - 1] = temp;
-					redraw = TRUE;
-
-					SelectedWeapon--;
-				}
-			}
-		}else
-		// choosing first weapon...
-		{
-			// if not first weapon...
-			if (SelectedWeapon != 0)
-				SelectedWeapon--;
-		}
-
-		// move cursor if necessary...
-		if (oldselectedweapon != SelectedWeapon)
-		{
-			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
-			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
-			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
-		}
-		break;
-	case DIK_LEFT:
-		PlayCursorSfx();
-		// if currently in unused list...
-		if (SelectedWeapon >= MaxWeapons - Num_Unused_Weapons)
-		{
-			oldselectedweapon = SelectedWeapon;
-
-			if (WeaponOrderStatus == WEAPON_ChoosingSecond)
-			{
-				// if at top of unused list...
-				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
-				{
-					Num_Unused_Weapons--;
-					redraw = TRUE;
-					SelectedWeapon++;
-					if (SelectedWeapon > MaxWeapons - 1)
-						SelectedWeapon = MaxWeapons - 1;
-				}else
-				{
-					temp = WeaponList[SelectedWeapon];
-					for (i = SelectedWeapon; i > MaxWeapons - Num_Unused_Weapons; i--)
-					{
-						WeaponList[i] = WeaponList[i - 1];
-
-					}
-					WeaponList[i] = temp;
-					Num_Unused_Weapons--;
-					redraw = TRUE;
-				}
-				// return to choosing first weapon...
-				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
-				WeaponItem->TextInfo[oldselectedweapon]->highlighttype = HIGHLIGHT_Pulsing;
-				WeaponOrderStatus = WEAPON_ChoosingFirst;
-			}else
-			{
-				// if there are items in the used list...
-				if (Num_Unused_Weapons < MaxWeapons)
-					SelectedWeapon = MaxWeapons - Num_Unused_Weapons - 1;
-			}
-
-			// move cursor if necessary...
-			if (oldselectedweapon != SelectedWeapon)
-			{
-				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
-				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
-				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
-			}
-		}
-		break;
-	case DIK_RIGHT:
-		PlayCursorSfx();
-		// if currently in used list...
-		if (SelectedWeapon < MaxWeapons - Num_Unused_Weapons)
-		{
-			oldselectedweapon = SelectedWeapon;
-
-			if (WeaponOrderStatus == WEAPON_ChoosingSecond)
-			{
-				// if at bottom of used list...
-				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
-				{
-					Num_Unused_Weapons++;
-					redraw = TRUE;
-					SelectedWeapon--;
-					if (SelectedWeapon < 0)
-						SelectedWeapon = 0;
-				}else
-				{
-					temp = WeaponList[SelectedWeapon];
-					for (i = SelectedWeapon; i < MaxWeapons - 1 - Num_Unused_Weapons; i++)
-					{
-						WeaponList[i] = WeaponList[i + 1];
-
-					}
-					WeaponList[i] = temp;
-					Num_Unused_Weapons++;
-					redraw = TRUE;
-				}
-				// return to choosing first weapon...
-				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
-				WeaponItem->TextInfo[oldselectedweapon]->highlighttype = HIGHLIGHT_Pulsing;
-				WeaponOrderStatus = WEAPON_ChoosingFirst;
-			}else
-			{
-				// if there are items in the unused list...
-				if (Num_Unused_Weapons > 0)
-					SelectedWeapon = MaxWeapons - Num_Unused_Weapons;
-			}
-
-			// move cursor if necessary...
-			if (oldselectedweapon != SelectedWeapon)
-			{
-				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
-				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
-				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
-				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
-			}
-		}
-		break;
-	case DIK_RETURN:
-		if (WeaponOrderStatus == WEAPON_ChoosingFirst)
-		{
-			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Static;
-			WeaponOrderStatus = WEAPON_ChoosingSecond;
-		}else
-		{
-			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
-			WeaponOrderStatus = WEAPON_ChoosingFirst;
-		}
-		break;
-	case DIK_ESCAPE:
-		done = TRUE;
-		MenuBack();
-		break;
-	}
-
-	if (redraw)
-		DrawGeneralWeaponText(WeaponItem);
-
-	return !done;
-}
 
 void DeleteJoyButton( void )
 {
@@ -7194,623 +6361,6 @@ void DeleteJoyButton( void )
 			}
 		}
 	}
-}
-
-/* process list movement
-   lists are not the rotating disks
-   but text lists ... 
-   while in the pregame menu's */
-
-BOOL ProcessList( int Key )
-{
-	BOOL done;
-	MenuItemFunc FuncSet;
-	int i;
-
-	if (CurrentList->Static)
-	{
-	 	if ( Key == DIK_ESCAPE || Key == DIK_RBUTTON )
-			CurrentList->Static = FALSE;
-		return TRUE;
-	}
-
-	done = FALSE;
-
-	if ( CurrentList->selected_item < 0 )
-		SelectListHome( CurrentList );
-
-	if ( CurrentList->selected_item > CurrentList->items )
-		SelectListEnd( CurrentList );
-
-	switch( Key )
-	{
-
-	case DIK_RIGHT:
-		// if there is an item of the same height to the left, move to this item
-		for (i = 0; i < CurrentList->items; i++)
-		{
-			if (i != CurrentList->selected_item && CurrentListItem->TextInfo[i] && CurrentListItem->TextInfo[CurrentList->selected_item])
-			{
-				if ((CurrentListItem->TextInfo[i]->ymin == CurrentListItem->TextInfo[CurrentList->selected_item]->ymin) &&
-					(CurrentListItem->TextInfo[CurrentList->selected_item]->xmin < CurrentListItem->TextInfo[i]->xmin))
-				{
-					CurrentList->selected_item = i;
-					PlayCursorSfx();
-				}
-			}
-		}
-		break;
-
-	case DIK_LEFT:
-		// if there is an item of the same height to the right, move to this item
-		for (i = 0; i < CurrentList->items; i++)
-		{
-			if (i != CurrentList->selected_item && CurrentListItem->TextInfo[i] && CurrentListItem->TextInfo[CurrentList->selected_item])
-			{
-				if ((CurrentListItem->TextInfo[i]->ymin == CurrentListItem->TextInfo[CurrentList->selected_item]->ymin) &&
-					(CurrentListItem->TextInfo[CurrentList->selected_item]->xmin > CurrentListItem->TextInfo[i]->xmin))
-				{
-					CurrentList->selected_item = i;
-					PlayCursorSfx();
-				}
-			}
-		}
-		break;
-
-	case DIK_WHEELUP:
-	case DIK_UP:
-		PlayCursorSfx();
-		SelectListPrev( CurrentList );
-		break;
-
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		PlayCursorSfx();
-		SelectListNext( CurrentList );
-		break;
-
-	case DIK_NEXT:
-		PlayCursorSfx();
-		SelectListNextPage( CurrentList );
-		break;
-
-	case DIK_PRIOR:
-		PlayCursorSfx();
-		SelectListPrevPage( CurrentList );
-		break;
-
-	case DIK_HOME:
-		PlayCursorSfx();
-		SelectListHome( CurrentList );
-		break;
-
-	case DIK_END:
-		PlayCursorSfx();
-		SelectListEnd( CurrentList );
-		break;
-	
-	case DIK_LBUTTON:
-	case DIK_RETURN:
-			FuncSet = (MenuItemFunc) CurrentMenuItem->Value;
-			if ( FuncSet )
-			{
-				FuncSet( CurrentMenuItem );
-			}
-			done = TRUE;
-		break;
-
-	case DIK_MBUTTON:
-	case DIK_RBUTTON:
-	case DIK_ESCAPE:
-		CancelListSelection( CurrentList );
-		done = TRUE;
-		if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-			MenuBack();
-		break;
-
-	case DIK_DELETE:
-		if ( CurrentList->FuncDelete )
-		{
-			if ( CurrentList->selected_item >= 0 && CurrentList->selected_item < CurrentList->items 
-				&& !CurrentList->FuncDelete( CurrentList, CurrentList->selected_item ) )
-			{
-				PlaySfx( SFX_Error, 1.0F );
-			}
-		}
-		break;
-
-	default:
-		if ( Key )
-		{
-			char *c;
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				SelectListSearch( CurrentList, SearchKey( *c ) );
-				PlayCursorSfx();
-			}
-		}
-		break;
-	}
-
-	return !done;
-}
-
-
-BOOL ProcessText( int Key )
-{
-	BOOL done;
-	TEXT *t;
-
-	done = FALSE;
-	t = (TEXT *)(TextItem->Variable);
-
-	switch( Key )
-	{
-	case DIK_LEFT:
-		TextLeft( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_RIGHT:
-		TextRight( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_BACK:
-		TextBackspace( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_DELETE:
-		TextDelete( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_TAB:
-		TextClear( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_HOME:
-		TextHome( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_END:
-		TextEnd( (TEXT *)(TextItem->Variable) );
-		break;
-	case DIK_RETURN:
-	case DIK_WHEELUP:
-	case DIK_WHEELDOWN:
-	case DIK_UP:
-	case DIK_DOWN:
-		TextEnter( TextItem );
-		done = TRUE;
-		break;
-	case DIK_ESCAPE:
-		TextCancel( (TEXT *)(TextItem->Variable) );
-		done = TRUE;
-		break;
-	case DIK_SPACE:
-		TextType( (TEXT *)(TextItem->Variable), ' ' );
-		break;
-	default:
-		if ( Key )
-		{
-			char *c;
-
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				TextType( (TEXT *)(TextItem->Variable), *c );
-			}
-		}
-	}
-
-	// if we are doing text editing on the VDU, reformat if any key was pressed (except return)
-	if ((MenuState == MENUSTATE_Text2) && Key && !done)
-	{
-		GetVduTextFormattingInfo ( t );
-	}
-
-	return !done;
-}
-
-
-/*****************************************************************\
-|
-| ProcessSelect
-|	
-|	Process keys the main menu
-|
-\*****************************************************************/
-
-void ProcessSelect( int Key )
-{
-
-	/* should we process ? */
-	if (StackStatus != DISC_NOTHING)
-		return;
-	
-	/*********************\
-	|
-	| Key Definitions
-	|
-	\*********************/
-
-
-	if
-	(
-		CurrentMenuItem->Variable &&
-		(
-		   ( CurrentMenuItem->FuncSelect == SelectKey ) ||
-		   ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-		)
-	)
-	{
-
-		/* delete, backspace, right click */
-		if ( Key == DIK_DELETE || Key == DIK_BACK ){
-
-			/* reset the key to nothing */
-			*(VirtualKeycode *)(CurrentMenuItem->Variable) = (VirtualKeycode) 0; 
-			
-			/* */
-			if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-				CheckKeysForChanges();
-
-		}
-
-		return; /* finish key definitions */
-	}
-
-
-			
-	/************************\
-	|
-	| Selection & Navigation
-	|
-	\************************/
-
-
-
-	/* cursor up */
-	if ( Key == DIK_UP || Key == DIK_WHEELUP )
-		CursorUp();
-
-	/* cursor down */
-	else if ( Key == DIK_DOWN || Key == DIK_WHEELDOWN )
-
-		CursorDown();
-
-	/* cursor left */
-	else if ( Key == DIK_LEFT )
-	{
-
-		/* if were acting on a selection list */
-
-		if (
-			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
-		)
-		{
-
-				if
-				(
-					  (CurrentMenuItem->Variable && *(BOOL *)(CurrentMenuItem->Variable)) &&
-					  CurrentMenuItem->FuncSelect
-				)
-				{
-				  CurrentMenuItem->FuncSelect( CurrentMenuItem );
-				  PlayCursorSfx();
-				}
-
-		}
-		else
-			
-			CursorLeft();
-
-	}
-				
-	/* cursor left */
-	else if ( Key == DIK_RIGHT  )
-	{
-
-		/* if were acting on a selection list */
-
-		if (
-			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
-		)
-		{
-
-			if (  CurrentMenuItem->Variable &&
-				  !*(BOOL *)(CurrentMenuItem->Variable) &&
-				  CurrentMenuItem->FuncSelect )
-			{
-				CurrentMenuItem->FuncSelect( CurrentMenuItem );
-				PlayCursorSfx();
-			}
-
-		}
-		else
-
-			CursorRight();
-	
-	}
-
-	/* cursor first */
-	else if ( Key == DIK_HOME )
-
-		CursorHome();
-
-	/* cursor last */
-	else if ( Key == DIK_END )
-
-		CursorEnd();
-
-	/* go back */
-	/* escape, right click */
-	else if ( Key == DIK_ESCAPE || Key == DIK_RBUTTON )
-
-		MenuBack();
-
-	/* select */
-	/* enter, left mouse */
-	else if ( Key == DIK_RETURN || Key == DIK_LBUTTON || Key == DIK_MBUTTON ){
-
-		/* perform the menu's callback */
-		if ( CurrentMenuItem->FuncSelect )
-			CurrentMenuItem->FuncSelect( CurrentMenuItem );
-
-	}
-	else
-	{
-
-		/* move to position which starts with the letter you just hit */
-		if ( Key )
-		{
-			char *c;
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-				CursorSearch( SearchKey( *c ) );
-		}
-	}
-}
-
-
-BOOL ProcessSelectKeydef( int Key )
-{
-	BOOL done;
-
-	done = FALSE;
-	if (StackStatus == DISC_NOTHING)
-	{
-		switch(Key)
-		{
-
-		case DIK_WHEELUP:
-		case DIK_UP:
-			CursorUp();
-			break;
-			
-	case DIK_WHEELDOWN:
-		case DIK_DOWN:
-			CursorDown();
-			break;
-			
-		case DIK_LEFT:
-			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
-				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-			{
-				DEFKEY *kdef;
-				
-				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
-				if ( kdef->selected_key > 0 )
-				{
-					kdef->selected_key--;
-					PlayCursorSfx();
-					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-						CheckKeysForChanges();
-				}
-			}else
-				CursorLeft();
-			break;
-		case DIK_RIGHT:
-			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
-				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-			{
-				DEFKEY *kdef;
-				
-				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
-				if ( kdef->selected_key < kdef->def->keys - 1 )
-				{
-					kdef->selected_key++;
-					PlayCursorSfx();
-					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-						CheckKeysForChanges();
-				}
-#ifdef KEY_RIGHT_AT_END_ADDS_KEYDEF
-				else if ( kdef->def->keys < MAX_KEYS_PER_CONTROL )
-				{
-					kdef->selected_key = kdef->def->keys++;
-					kdef->def->key[ kdef->selected_key ] = (VirtualKeycode) 0;
-					CurrentMenuItem->FuncSelect( CurrentMenuItem );
-					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-						CheckKeysForChanges();
-				}
-#endif
-			}else
-				CursorRight();
-			break;
-		case DIK_HOME:
-			CursorHome();
-			break;
-			
-		case DIK_END:
-			CursorEnd();
-			break;
-		case DIK_RETURN:
-			if ( CurrentMenuItem->FuncSelect )
-			{
-				if ( CurrentMenuItem->FuncSelect == SelectKeyDef
-					|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-				{
-					DEFKEY *kdef;
-					
-					kdef = (DEFKEY *)(CurrentMenuItem->Variable);
-#ifdef KEY_ENTER_AT_EMPTY_ADDS_KEYDEF
-					if ( !kdef->def->keys )
-#else
-						if ( kdef->def->keys < MAX_KEYS_PER_CONTROL )
-#endif
-						{
-							kdef->selected_key = kdef->def->keys++;
-							kdef->def->key[ kdef->selected_key ] = (VirtualKeycode) 0;
-							CurrentMenuItem->FuncSelect( CurrentMenuItem );
-							if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-								CheckKeysForChanges();
-						}
-						else
-							PlaySfx( SFX_Error, 1.0F );
-				}
-				else
-					CurrentMenuItem->FuncSelect( CurrentMenuItem );
-			}
-			break;
-		case DIK_INSERT:
-			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
-				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-			{
-				DEFKEY *kdef;
-				
-				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
-				if ( kdef->def->keys < MAX_KEYS_PER_CONTROL )
-				{
-					kdef->selected_key = kdef->def->keys++;
-					kdef->def->key[ kdef->selected_key ] = (VirtualKeycode) 0;
-					CurrentMenuItem->FuncSelect( CurrentMenuItem );
-					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-						CheckKeysForChanges();
-				}
-				else
-					PlaySfx( SFX_Error, 1.0F );
-			}
-			break;
-		case DIK_DELETE:
-			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
-				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-			{
-				DEFKEY *kdef;
-				
-				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
-				KeyDelete( kdef, kdef->selected_key );
-			}
-			
-			if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
-				CheckKeysForChanges();
-			
-			break;
-			
-		case DIK_ESCAPE:
-			MenuBack();
-			done = TRUE;
-			break;
-			
-		case DIK_PGUP:
-			if ( CurrentMenu == &MENU_Keyboard )
-			{
-				if ( CurrentPage > 0 )
-				{
-					PlaySfx( SFX_InGameMenuSelect, 1.0F );
-					SetKeyDefPage( CurrentPage - 1 );
-				}
-			}
-			break;
-			
-		case DIK_PGDN:
-			if ( CurrentMenu == &MENU_Keyboard )
-			{
-				if ( CurrentPage < MaxPage - 1 )
-				{
-					PlaySfx( SFX_InGameMenuSelect, 1.0F );
-					SetKeyDefPage( CurrentPage + 1 );
-				}
-			}
-			break;
-			
-		default:
-			if ( Key )
-			{
-				char *c;
-				
-				c = (char *) key_name( Key );
-				if ( c && strlen( c ) == 1 )
-				{
-					CursorSearch( SearchKey( *c ) );
-				}
-			}
-			break;
-		}
-	}
-	
-	return !done;
-}
-
-
-BOOL ProcessDifficultySet ( int Key )
-{
-	BOOL done = FALSE;
-
-	if ( StackStatus != DISC_NOTHING )
-		return !done;
-
-	switch(Key)
-	{
-	case DIK_WHEELUP:
-	case DIK_UP:
-		CursorUp();
-		done = TRUE;
-		break;
-
-	case DIK_WHEELDOWN:
-	case DIK_DOWN:
-		CursorDown();
-		done = TRUE;
-		break;
-
-	case DIK_LEFT:
-		StackMode = DISC_MODE_ONE;
-		StackStatus = DISC_EXPAND;
-		DifficultyDir = ROTATE_DISC_DifficultyBack;
-		DifficultyLevel--;
-		if( DifficultyLevel < DIFF_Easy )
-			DifficultyLevel = DIFF_Vhard;
-		break;
-	case DIK_RIGHT:
-		StackMode = DISC_MODE_ONE;
-		StackStatus = DISC_EXPAND;
-		DifficultyDir = ROTATE_DISC_DifficultyForward;
-		DifficultyLevel++;
-		if( DifficultyLevel > DIFF_Vhard )
-			DifficultyLevel = DIFF_Easy;
-		break;
-		break;
-	case DIK_HOME:
-		CursorHome();
-		done = TRUE;
-		break;
-	case DIK_END:
-		done = TRUE;
-		CursorEnd();
-		break;
-	case DIK_ESCAPE:
-		MenuBack();
-		done = TRUE;
-		break;
-	default:
-		if ( Key )
-		{
-			char *c;
-
-			c = (char *) key_name( Key );
-			if ( c && strlen( c ) == 1 )
-			{
-				CursorSearch( SearchKey( *c ) );
-			}
-			done = TRUE;
-		}
-		break;
-	}
-
-	return !done;
 }
 
 void StartTimer( int timer )
@@ -7857,285 +6407,6 @@ void SetVolumeLevels( void )
 	}
 
 }
-
-/***********************************************\
-|
-|  MenuProces()
-|
-|    Description: Processes keys for menus
-|
-\***********************************************/
-
-void	MenuProcess()
-{
-	DWORD Key;
-	BOOL KeyFound = FALSE;
-	uint16 i;
-
-	// ??
-	Pulse += framelag/60.0F;
-	if (Pulse > 1.0F)
-		Pulse -= (float)floor((double)Pulse);
-
-	// if we are not in a menu
-	if ( !CurrentMenu || !CurrentMenuItem )
-	{
-		// dont process any keys
-		return;
-	}
-
-	// read keyboard buffer
-	ReadBufferedKeyboard();
-
-	// loop over the keys in the buffer
-	// + 2 loops to do special operations
-	for ( i = 0; i < NumKeysToProcess + 2; i++ )
-	{
-	    // if last key pressed exited from menu system
-		// do not process any more keys
-		if ( !CurrentMenu )	break;
-	
-		// force first key to be zero
-		// so that any auto selection is done before any keys are processed
-		if ( !i ) Key = 0;
-		
-		// first special operation
-		// set key equal to whatever last mouse input was
-		// this is where mouse input is used to interact with the menus
-		if ( i == NumKeysToProcess + 1 )
-			Key = CheckMouse();
-		 
-		// get a handle on the current key from globals
-		if ( ( i > 0 ) && ( i <= NumKeysToProcess ) )
-			Key = BufferedKey[ i - 1 ];
-
-		// check to see if we have entered a cheat code
-		// this is called every time in the loop
-		// CheckCheats must remember the keys fed previously
-		CheckCheats( ( VirtualKeycode)Key );
-
-        // if error then any key acts like return
-		if (Key && (CurrentMenu == &MENU_NEW_Error))
-			Key = DIK_RETURN;
-
-		// if the menu is frozen
-		if (MenuFrozen)
-			// if key is not RETURN or ESCAPE
-			if ( ! ((Key == DIK_RETURN) || (Key == DIK_ESCAPE)))
-				// quit
-				return;
-		    // 
-			else
-				MenuFrozen = FALSE;
-
-		//  set global to define if we are in a title room
-		switch ( MyGameStatus )
-		{
-			case	STATUS_StartingMultiplayer:
-			case	STATUS_GetPlayerNum:
-			case	STATUS_Title:
-			case	STATUS_BetweenLevels:
-			case	STATUS_StartingSinglePlayer:
-				InTitleRoom = TRUE;
-				break;
-			default:
-				InTitleRoom = FALSE;
-		}
-
-		// if someone told us not to process keys
-		// then default key to 0
-		if ( !OKToProcessKeys )
-			Key = 0;
-
-
-		// no menu processing done while loading...
-		switch ( MyGameStatus )
-		{
-		  case STATUS_WaitingToStartSinglePlayer:
-		  case STATUS_WaitingToStartMultiPlayerHost:
-		  case STATUS_WaitingToStartMultiPlayerClient:
-		  case STATUS_WaitingToStartTeamGame:
-		  case STATUS_WaitingToStartDemo:
-			Key = 0;
-			break;
-		}
-
-
-		// if RETURN was hit
-		if ( Key == DIK_RETURN )
-			if ( InTitleRoom ){
-				// if were looking at the discs
-				if ( CameraStatus == CAMERA_AtDiscs )
-					// make a sound
-					PlaySfx( SFX_SelectStackOption, 1.0F );
-				else
-					// make a sound
-					PlaySfx( SFX_VidText, 1.0F );
-			}else
-				// make a sound
-				PlaySfx( SFX_VidText, 1.0F );
-
-
-
-		switch ( MenuState )
-		{
-
-
-			case MENUSTATE_SelectKeydef:
-				if ( !ProcessSelectKeydef( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
-
-			case MENUSTATE_Keydef:
-#ifdef KDEF
-				if ( !ProcessDefKey( Key ) )
-					MenuState = MENUSTATE_SelectKeydef;
-#else
-				if ( !ProcessKeydef( Key ) )
-					MenuState = MENUSTATE_Select;
-#endif
-				break;
-
-
-			case MENUSTATE_Keydef2:
-#ifdef VDUKDEF
-				if ( !ProcessDefKey( Key ) )
-				{	
-					MenuState = MENUSTATE_SelectKeydef;
-#else
-				if ( !ProcessKeydef( Key ) )
-				{	
-					MenuState = MENUSTATE_Select;
-#endif
-	//				RedrawFlatMenuKey( KeyItem);
-					CheckKeysForChanges();
-					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
-				}
-				break;
-
-
-			case MENUSTATE_Slider:
-				if ( !ProcessSlider( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
-
-			case MENUSTATE_Slider2:
-				if ( !ProcessSlider2( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
-
-			case MENUSTATE_List:
-				/* process text list keys */
-				if ( !ProcessList( Key ) )
-				{
-					if ( CurrentMenuItem &&
-						(!(CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)) )
-					{
-						CurrentList = NULL;
-						MenuState = MENUSTATE_Select;
-						if (PreListMenu == CurrentMenu)
-							CurrentMenuItem = PreListItem;
-						CurrentListItem = NULL;
-					}
-				}
-			break;
-
-
-		    case MENUSTATE_Text:
-				if ( !ProcessText( Key ) )
-				{
-					MenuState = MENUSTATE_Select;
-					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
-					{
-						MenuBack();
-					}
-				}
-				break;
-
-
-			case MENUSTATE_Text2:
-				if ( !ProcessText( Key ) )
-				{	MenuState = MENUSTATE_Select;
-					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
-					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
-					{
-						MenuBack();
-					}
-				}
-				break;
-
-
-			case MENUSTATE_SelectBiker:
-				if ( !ProcessBikerList ( Key ) )
-				{	MenuState = MENUSTATE_Select;
-				}
-				break;
-
-
-			case MENUSTATE_SelectSavedGame:
-				if ( !ProcessSavedGameList ( Key ) )
-				{	MenuState = MENUSTATE_Select;
-				}
-				break;
-
-
-			case MENUSTATE_SelectPlayer:
-				if ( !ProcessPlayerList ( Key ) )
-				{	MenuState = MENUSTATE_Select;
-				}
-				break;
-
-
-			case MENUSTATE_WeaponOrder:
-				if ( !ProcessWeaponOrder ( Key ) )
-				{	MenuState = MENUSTATE_Select;
-				}
-				break;
-
-
-			case MENUSTATE_SelectLevelQuick:
-			case MENUSTATE_SelectLevelSlow:
-				if ( !ProcessLevelList ( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
-			case MENUSTATE_DifficultySet:
-				if ( !ProcessDifficultySet ( Key ) )
-					MenuState = MENUSTATE_Select;
-				break;
-
-
-			default:
-
-				if (CurrentMenuItem)
-				{
-					if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-					{
-						if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-						{
-							if (CurrentMenuItem->FuncSelect)
-								CurrentMenuItem->FuncSelect(CurrentMenuItem);
-						}
-					}
-					if (MenuState == MENUSTATE_Select)
-						ProcessSelect( Key );
-
-					break;
-				}
-		}
-	}
-
-	CheckMenuTimer();
-	ProcessMenuFlashText();
-
-	if( InTitleRoom )
-		SetVolumeLevels();
-}
-
-
 
 /*===================================================================
 	Procedure	:		Select/operate a slider menuitem
@@ -10213,7 +8484,6 @@ void SelectQuitCurrentGame( MENUITEM *Item )
 	if(IsHost && tracker_enabled)
 		send_tracker_finished( tracker_server, tracker_port );
 	MyGameStatus = STATUS_QuitCurrentGame;
-	//OKToProcessKeys = FALSE;
 }
 
 void AddBikeArrow( char *name, int num )
@@ -14743,7 +13013,6 @@ void ExitEventVDUPan(TITLE_EVENT *TitleEvent)
 {
 	ProcessVduItems( CurrentMenu );
 	VDU_Ready = TRUE;
-	OKToProcessKeys = TRUE;
 }
 
 void InitEventLeftVDUPan(TITLE_EVENT *TitleEvent)
@@ -15115,7 +13384,6 @@ void EventJudderStack(TITLE_EVENT *TitleEvent)
 
 void ExitEventDiscPanInit( TITLE_EVENT *TitleEvent )
 {
-	OKToProcessKeys = TRUE;
 }
 
 void InitEventExpandBike(TITLE_EVENT *TitleEvent)
@@ -17242,6 +15510,1703 @@ void InitBattleMenu( MENU *menu )
 		}
 	}
 }
+
+
+
+
+
+
+
+//
+//
+//
+//  MENU PROCESSING
+//
+//
+//
+
+
+
+
+
+
+
+BOOL ProcessSelectKeydef( int Key )
+{
+	BOOL done;
+
+	done = FALSE;
+	if (StackStatus == DISC_NOTHING)
+	{
+		switch(Key)
+		{
+
+		//case SDLK_WHEELUP:
+		case SDLK_UP:
+			CursorUp();
+			break;
+			
+		//case SDLK_WHEELDOWN:
+		case SDLK_DOWN:
+			CursorDown();
+			break;
+			
+		case SDLK_LEFT:
+			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
+				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+			{
+				DEFKEY *kdef;
+				
+				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
+				if ( kdef->selected_key > 0 )
+				{
+					kdef->selected_key--;
+					PlayCursorSfx();
+					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+						CheckKeysForChanges();
+				}
+			}else
+				CursorLeft();
+			break;
+
+		case SDLK_RIGHT:
+			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
+				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+			{
+				DEFKEY *kdef;
+				
+				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
+				if ( kdef->selected_key < kdef->def->keys - 1 )
+				{
+					kdef->selected_key++;
+					PlayCursorSfx();
+					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+						CheckKeysForChanges();
+				}
+			}else
+				CursorRight();
+			break;
+
+		case SDLK_HOME:
+			CursorHome();
+			break;
+			
+		case SDLK_END:
+			CursorEnd();
+			break;
+
+		case SDLK_RETURN:
+			if ( CurrentMenuItem->FuncSelect )
+			{
+				if ( CurrentMenuItem->FuncSelect == SelectKeyDef
+					|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+				{
+					DEFKEY *kdef;
+					
+					kdef = (DEFKEY *)(CurrentMenuItem->Variable);
+						if ( kdef->def->keys < MAX_KEYS_PER_CONTROL )
+						{
+							kdef->selected_key = kdef->def->keys++;
+							kdef->def->key[ kdef->selected_key ] = (VirtualKeycode) 0;
+							CurrentMenuItem->FuncSelect( CurrentMenuItem );
+							if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+								CheckKeysForChanges();
+						}
+						else
+							PlaySfx( SFX_Error, 1.0F );
+				}
+				else
+					CurrentMenuItem->FuncSelect( CurrentMenuItem );
+			}
+			break;
+
+		case SDLK_INSERT:
+			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
+				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+			{
+				DEFKEY *kdef;
+				
+				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
+				if ( kdef->def->keys < MAX_KEYS_PER_CONTROL )
+				{
+					kdef->selected_key = kdef->def->keys++;
+					kdef->def->key[ kdef->selected_key ] = (VirtualKeycode) 0;
+					CurrentMenuItem->FuncSelect( CurrentMenuItem );
+					if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+						CheckKeysForChanges();
+				}
+				else
+					PlaySfx( SFX_Error, 1.0F );
+			}
+			break;
+
+		case SDLK_DELETE:
+			if ( CurrentMenuItem->FuncSelect == SelectKeyDef
+				|| CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+			{
+				DEFKEY *kdef;
+				
+				kdef = (DEFKEY *)(CurrentMenuItem->Variable);
+				KeyDelete( kdef, kdef->selected_key );
+			}
+			
+			if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+				CheckKeysForChanges();
+			
+			break;
+			
+		case SDLK_ESCAPE:
+			MenuBack();
+			done = TRUE;
+			break;
+			
+		case SDLK_PAGEUP:
+			if ( CurrentMenu == &MENU_Keyboard )
+			{
+				if ( CurrentPage > 0 )
+				{
+					PlaySfx( SFX_InGameMenuSelect, 1.0F );
+					SetKeyDefPage( CurrentPage - 1 );
+				}
+			}
+			break;
+			
+		case SDLK_PAGEDOWN:
+			if ( CurrentMenu == &MENU_Keyboard )
+			{
+				if ( CurrentPage < MaxPage - 1 )
+				{
+					PlaySfx( SFX_InGameMenuSelect, 1.0F );
+					SetKeyDefPage( CurrentPage + 1 );
+				}
+			}
+			break;
+		
+		// TODO - need to pass unicode char to this function
+		/*
+		default:
+			if ( Key )
+			{
+				char *c;
+				
+				c = (char *) key_name( Key );
+				if ( c && strlen( c ) == 1 )
+				{
+					CursorSearch( SearchKey( *c ) );
+				}
+			}
+			break;
+		*/
+		}
+	}
+	
+	return !done;
+}
+
+BOOL ProcessKeydef( int Key )
+{
+	BOOL done;
+	int KeyDefNo;
+	MENUITEM *Item, *nextitem;
+
+	done = FALSE;
+	switch( Key )
+	{
+	case SDLK_ESCAPE:
+	case SDLK_F1:
+	case SDLK_F2:
+	case SDLK_F3:
+	case SDLK_F4:
+	case SDLK_F5:
+	case SDLK_F6:
+	case SDLK_F7:
+	case SDLK_F8:
+	case SDLK_F9:
+	case SDLK_F10:
+	case SDLK_F11:
+	case SDLK_F12:
+		done = TRUE; // back out of key definition mode if illegal key selected
+		break;
+	default:
+		if ( Key )
+		{
+			if ( KeyItem->Variable )
+			{
+				DefineKey( KeyItem, (VirtualKeycode) Key );
+			}
+			done = TRUE;
+		}
+		break;
+	}
+
+	nextitem = CurrentMenu->Item;
+
+	for ( KeyDefNo = 0; KeyDefNo <= CurrentKeyDef; KeyDefNo++)
+	{
+		for( Item = nextitem; Item->x >= 0; Item++ )
+		{	
+			if (Item->FrameNo == KeyDefLines[KeyDefNo])
+			{
+				CurrentKeyDef--;
+				nextitem = Item;	
+				break;
+			}
+		}
+	}
+
+	return !done;
+}
+
+
+BOOL ProcessSlider( int Key )
+{
+	BOOL done, redraw;
+	SLIDER *slider;
+	MenuItemFunc set_fn;
+
+	slider = (SLIDER *)SliderItem->Variable;
+	
+	done = FALSE;
+	redraw = FALSE;
+	switch( Key )
+	{
+	case SDLK_LEFT:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		DecrementSlider( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		IncrementSlider( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_HOME:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		SliderHome( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_END:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		SliderEnd( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_RETURN:
+		done = TRUE;
+		break;
+	case SDLK_ESCAPE:
+		slider->oldvalue = slider->value;
+		SliderCancel( SliderItem );
+		done = TRUE;
+		redraw = TRUE;
+		break;
+	default:
+		break;
+	}
+
+	if (done )
+	{
+		if ( SliderItem->Value )
+		{
+			set_fn = (MenuItemFunc)(SliderItem->Value);
+			set_fn ( SliderItem );
+		}
+	}
+
+
+	return !done;
+}
+
+
+BOOL ProcessSlider2( int Key )
+{
+	BOOL done, redraw, refresh;
+	SLIDER *slider;
+	MenuItemFunc set_fn;
+
+	slider = (SLIDER *)SliderItem->Variable;
+	
+	done = FALSE;
+	redraw = FALSE;
+	refresh = FALSE;
+	switch( Key )
+	{
+	case SDLK_LEFT:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		DecrementSlider( SliderItem );
+		SliderSet( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+		slider->oldvalue = slider->value;
+		IncrementSlider( SliderItem );
+		SliderSet( SliderItem );
+		redraw = TRUE;
+		break;
+/*
+	case SDLK_HOME:
+		slider->oldvalue = slider->value;
+		SliderHome( SliderItem );
+		SliderSet( SliderItem );
+		redraw = TRUE;
+		break;
+	case SDLK_END:
+		slider->oldvalue = slider->value;
+		SliderEnd( SliderItem );
+		SliderSet( SliderItem );
+		redraw = TRUE;
+		break;
+*/
+	case SDLK_HOME:
+		CursorHome();
+		done = TRUE;
+		break;
+	case SDLK_END:
+		CursorEnd();
+		done = TRUE;
+		break;
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		CursorUp();
+		done = TRUE;
+		break;
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		CursorDown();
+		done = TRUE;
+		break;
+	case SDLK_ESCAPE:
+		MenuBack();
+		done = TRUE;
+		break;
+	case SDLK_RETURN:
+		refresh = TRUE;
+		break;
+	default:
+		if ( Key )
+		{
+			char *c;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				CursorSearch( SearchKey( *c ) );
+				if (CurrentMenuItem != SliderItem)
+				{
+					done = TRUE;
+				}
+			}
+		}
+		break;
+	}
+
+	if ( ( refresh ) || ( CurrentMenuItem != SliderItem ) )
+	{
+		if ( slider->FuncRefresh )
+		{
+			slider->FuncRefresh( slider );
+		}
+	}
+
+
+	if (redraw && ((CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU)))
+	{
+		slider->redraw_req = TRUE;
+	}
+
+	if (done || redraw)
+	{
+		if ( SliderItem->Value )
+		{
+			set_fn = (MenuItemFunc)(SliderItem->Value);
+			set_fn ( SliderItem );
+		}
+	}
+	
+	return !done;
+}
+
+
+/* process list movement
+   lists are not the rotating disks
+   but text lists ... 
+   while in the pregame menu's */
+
+BOOL ProcessList( int Key )
+{
+	BOOL done;
+	MenuItemFunc FuncSet;
+	int i;
+
+	if (CurrentList->Static)
+	{
+	 	if ( Key == SDLK_ESCAPE ) // || Key == SDLK_RBUTTON )
+			CurrentList->Static = FALSE;
+		return TRUE;
+	}
+
+	done = FALSE;
+
+	if ( CurrentList->selected_item < 0 )
+		SelectListHome( CurrentList );
+
+	if ( CurrentList->selected_item > CurrentList->items )
+		SelectListEnd( CurrentList );
+
+	switch( Key )
+	{
+
+	case SDLK_RIGHT:
+		// if there is an item of the same height to the left, move to this item
+		for (i = 0; i < CurrentList->items; i++)
+		{
+			if (i != CurrentList->selected_item && CurrentListItem->TextInfo[i] && CurrentListItem->TextInfo[CurrentList->selected_item])
+			{
+				if ((CurrentListItem->TextInfo[i]->ymin == CurrentListItem->TextInfo[CurrentList->selected_item]->ymin) &&
+					(CurrentListItem->TextInfo[CurrentList->selected_item]->xmin < CurrentListItem->TextInfo[i]->xmin))
+				{
+					CurrentList->selected_item = i;
+					PlayCursorSfx();
+				}
+			}
+		}
+		break;
+
+	case SDLK_LEFT:
+		// if there is an item of the same height to the right, move to this item
+		for (i = 0; i < CurrentList->items; i++)
+		{
+			if (i != CurrentList->selected_item && CurrentListItem->TextInfo[i] && CurrentListItem->TextInfo[CurrentList->selected_item])
+			{
+				if ((CurrentListItem->TextInfo[i]->ymin == CurrentListItem->TextInfo[CurrentList->selected_item]->ymin) &&
+					(CurrentListItem->TextInfo[CurrentList->selected_item]->xmin > CurrentListItem->TextInfo[i]->xmin))
+				{
+					CurrentList->selected_item = i;
+					PlayCursorSfx();
+				}
+			}
+		}
+		break;
+
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		PlayCursorSfx();
+		SelectListPrev( CurrentList );
+		break;
+
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		PlayCursorSfx();
+		SelectListNext( CurrentList );
+		break;
+
+	case SDLK_PAGEDOWN:
+		PlayCursorSfx();
+		SelectListNextPage( CurrentList );
+		break;
+
+	case SDLK_PAGEUP:
+		PlayCursorSfx();
+		SelectListPrevPage( CurrentList );
+		break;
+
+	case SDLK_HOME:
+		PlayCursorSfx();
+		SelectListHome( CurrentList );
+		break;
+
+	case SDLK_END:
+		PlayCursorSfx();
+		SelectListEnd( CurrentList );
+		break;
+	
+	//case SDLK_LBUTTON:
+	case SDLK_RETURN:
+			FuncSet = (MenuItemFunc) CurrentMenuItem->Value;
+			if ( FuncSet )
+			{
+				FuncSet( CurrentMenuItem );
+			}
+			done = TRUE;
+		break;
+
+	//case SDLK_MBUTTON:
+	//case SDLK_RBUTTON:
+	case SDLK_ESCAPE:
+		CancelListSelection( CurrentList );
+		done = TRUE;
+		if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+			MenuBack();
+		break;
+
+	case SDLK_DELETE:
+		if ( CurrentList->FuncDelete )
+		{
+			if ( CurrentList->selected_item >= 0 && CurrentList->selected_item < CurrentList->items 
+				&& !CurrentList->FuncDelete( CurrentList, CurrentList->selected_item ) )
+			{
+				PlaySfx( SFX_Error, 1.0F );
+			}
+		}
+		break;
+
+	default:
+		if ( Key )
+		{
+			char *c;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				SelectListSearch( CurrentList, SearchKey( *c ) );
+				PlayCursorSfx();
+			}
+		}
+		break;
+	}
+
+	return !done;
+}
+
+
+BOOL ProcessText( int Key )
+{
+	BOOL done;
+	TEXT *t;
+
+	done = FALSE;
+	t = (TEXT *)(TextItem->Variable);
+
+	switch( Key )
+	{
+	case SDLK_LEFT:
+		TextLeft( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_RIGHT:
+		TextRight( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_BACKSPACE:
+		TextBackspace( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_DELETE:
+		TextDelete( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_TAB:
+		TextClear( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_HOME:
+		TextHome( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_END:
+		TextEnd( (TEXT *)(TextItem->Variable) );
+		break;
+	case SDLK_RETURN:
+	//case SDLK_WHEELUP:
+	//case SDLK_WHEELDOWN:
+	case SDLK_UP:
+	case SDLK_DOWN:
+		TextEnter( TextItem );
+		done = TRUE;
+		break;
+	case SDLK_ESCAPE:
+		TextCancel( (TEXT *)(TextItem->Variable) );
+		done = TRUE;
+		break;
+	case SDLK_SPACE:
+		TextType( (TEXT *)(TextItem->Variable), ' ' );
+		break;
+	default:
+		if ( Key )
+		{
+			char *c;
+
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				TextType( (TEXT *)(TextItem->Variable), *c );
+			}
+		}
+	}
+
+	// if we are doing text editing on the VDU, reformat if any key was pressed (except return)
+	if ((MenuState == MENUSTATE_Text2) && Key && !done)
+	{
+		GetVduTextFormattingInfo ( t );
+	}
+
+	return !done;
+}
+
+
+void ProcessSelect( int Key )
+{
+
+	/* should we process ? */
+	if (StackStatus != DISC_NOTHING)
+		return;
+	
+	/*********************\
+	|
+	| Key Definitions
+	|
+	\*********************/
+
+
+	if
+	(
+		CurrentMenuItem->Variable &&
+		(
+		   ( CurrentMenuItem->FuncSelect == SelectKey ) ||
+		   ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+		)
+	)
+	{
+
+		/* delete, backspace, right click */
+		if ( Key == SDLK_DELETE || Key == SDLK_BACKSPACE ){
+
+			/* reset the key to nothing */
+			*(VirtualKeycode *)(CurrentMenuItem->Variable) = (VirtualKeycode) 0; 
+			
+			/* */
+			if ( CurrentMenuItem->FuncSelect == SelectFlatMenuKey )
+				CheckKeysForChanges();
+
+		}
+
+		return; /* finish key definitions */
+	}
+
+
+			
+	/************************\
+	|
+	| Selection & Navigation
+	|
+	\************************/
+
+
+
+	/* cursor up */
+	if ( Key == SDLK_UP )//|| Key == SDLK_WHEELUP )
+		CursorUp();
+
+	/* cursor down */
+	else if ( Key == SDLK_DOWN )//|| Key == SDLK_WHEELDOWN )
+
+		CursorDown();
+
+	/* cursor left */
+	else if ( Key == SDLK_LEFT )
+	{
+
+		/* if were acting on a selection list */
+
+		if (
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		)
+		{
+
+				if
+				(
+					  (CurrentMenuItem->Variable && *(BOOL *)(CurrentMenuItem->Variable)) &&
+					  CurrentMenuItem->FuncSelect
+				)
+				{
+				  CurrentMenuItem->FuncSelect( CurrentMenuItem );
+				  PlayCursorSfx();
+				}
+
+		}
+		else
+			
+			CursorLeft();
+
+	}
+				
+	/* cursor left */
+	else if ( Key == SDLK_RIGHT  )
+	{
+
+		/* if were acting on a selection list */
+
+		if (
+			(CurrentMenuItem->FuncSelect == SelectFlatMenuToggle)
+		)
+		{
+
+			if (  CurrentMenuItem->Variable &&
+				  !*(BOOL *)(CurrentMenuItem->Variable) &&
+				  CurrentMenuItem->FuncSelect )
+			{
+				CurrentMenuItem->FuncSelect( CurrentMenuItem );
+				PlayCursorSfx();
+			}
+
+		}
+		else
+
+			CursorRight();
+	
+	}
+
+	/* cursor first */
+	else if ( Key == SDLK_HOME )
+
+		CursorHome();
+
+	/* cursor last */
+	else if ( Key == SDLK_END )
+
+		CursorEnd();
+
+	/* go back */
+	/* escape, right click */
+	else if ( Key == SDLK_ESCAPE )//|| Key == SDLK_RBUTTON )
+
+		MenuBack();
+
+	/* select */
+	/* enter, left mouse */
+	else if ( Key == SDLK_RETURN )//|| Key == SDLK_LBUTTON || Key == SDLK_MBUTTON )
+	{
+
+		/* perform the menu's callback */
+		if ( CurrentMenuItem->FuncSelect )
+			CurrentMenuItem->FuncSelect( CurrentMenuItem );
+
+	}
+	else
+	{
+
+		/* move to position which starts with the letter you just hit */
+		if ( Key )
+		{
+			char *c;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+				CursorSearch( SearchKey( *c ) );
+		}
+	}
+}
+
+
+
+BOOL ProcessDifficultySet ( int Key )
+{
+	BOOL done = FALSE;
+
+	if ( StackStatus != DISC_NOTHING )
+		return !done;
+
+	switch(Key)
+	{
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		CursorUp();
+		done = TRUE;
+		break;
+
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		CursorDown();
+		done = TRUE;
+		break;
+
+	case SDLK_LEFT:
+		StackMode = DISC_MODE_ONE;
+		StackStatus = DISC_EXPAND;
+		DifficultyDir = ROTATE_DISC_DifficultyBack;
+		DifficultyLevel--;
+		if( DifficultyLevel < DIFF_Easy )
+			DifficultyLevel = DIFF_Vhard;
+		break;
+	case SDLK_RIGHT:
+		StackMode = DISC_MODE_ONE;
+		StackStatus = DISC_EXPAND;
+		DifficultyDir = ROTATE_DISC_DifficultyForward;
+		DifficultyLevel++;
+		if( DifficultyLevel > DIFF_Vhard )
+			DifficultyLevel = DIFF_Easy;
+		break;
+		break;
+	case SDLK_HOME:
+		CursorHome();
+		done = TRUE;
+		break;
+	case SDLK_END:
+		done = TRUE;
+		CursorEnd();
+		break;
+	case SDLK_ESCAPE:
+		MenuBack();
+		done = TRUE;
+		break;
+	default:
+		if ( Key )
+		{
+			char *c;
+
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				CursorSearch( SearchKey( *c ) );
+			}
+			done = TRUE;
+		}
+		break;
+	}
+
+	return !done;
+}
+
+
+/*===================================================================
+	Procedure	:		Processes biker list, auto selects highlighted item and redraws biker char and text
+	Input		:		key pressed
+	Output		:		BOOL - indicates when biker list is no longer being used
+===================================================================*/
+BOOL ProcessBikerList ( int Key )
+{
+	BOOL done, redraw;
+	int current;
+
+	done = FALSE;
+	redraw = FALSE;
+
+	switch(Key)
+	{
+	case SDLK_LEFT:
+		PlayCursorSfx();
+		//make selected item 1 to the left
+		current = BikeList.selected_item;
+		do {
+			SelectListPrev( &BikeList );
+		} while ( BikeList.selected_item > 0 && !CanSelectBike[ BikeList.selected_item ] );
+		if ( !CanSelectBike[ BikeList.selected_item ] )
+			BikeList.selected_item = current;
+		BikeList.selected_item = ValidBikeSelected( BikeList.selected_item );
+		if (current != BikeList.selected_item)
+		{
+			ExitBikeSelection(NULL);
+			redraw = TRUE;
+		}
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+
+		//make selected item 1 to the right
+		current = BikeList.selected_item;
+		do {
+			SelectListNext( &BikeList );
+		} while ( BikeList.selected_item < BikeList.items - 1 && !CanSelectBike[ BikeList.selected_item ] );
+		if ( !CanSelectBike[ BikeList.selected_item ] )
+			BikeList.selected_item = current;
+		BikeList.selected_item = ValidBikeSelected( BikeList.selected_item );
+		if (current != BikeList.selected_item)
+		{
+			ExitBikeSelection(NULL);
+			redraw = TRUE;
+		}
+		break;
+	case SDLK_RETURN:
+		done = TRUE;
+		MenuBack();
+		break;
+	case SDLK_ESCAPE:
+		done = TRUE;
+		MenuBack();
+		break;
+	}
+
+	if (redraw)
+	{
+		LastMenu = CurrentMenu;	// because we are not actually changing menus, 
+								// but we still want to clear this menu
+		VduClear();
+		OldSelectedBike = BikeList.selected_item;
+		ProcessVduItems(CurrentMenu);
+	}
+
+	return !done;
+}
+
+BOOL ProcessSavedGameList( int Key )
+{
+	BOOL done, redraw;
+	int current;
+
+	done = FALSE;
+	redraw = FALSE;
+
+	switch(Key)
+	{
+	case SDLK_LEFT:
+		PlayCursorSfx();
+
+		current = LoadSavedGameList.selected_item;
+		SelectListPrev( &LoadSavedGameList );
+		if (current != LoadSavedGameList.selected_item)
+		{
+			redraw = TRUE;
+		}
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+
+		current = LoadSavedGameList.selected_item;
+		SelectListNext( &LoadSavedGameList );
+		if (current != LoadSavedGameList.selected_item)
+		{
+			redraw = TRUE;
+		}
+		break;
+	case SDLK_RETURN:
+		done = TRUE;
+		TitleLoadGame( NULL );
+		break;
+	case SDLK_ESCAPE:
+		done = TRUE;
+		MenuBack();
+		break;
+	}
+
+	if (redraw)
+	{
+		GetSavedGameData();
+		LastMenu = CurrentMenu;	// because we are not actually changing menus, 
+								// but we still want to clear this menu
+		VduClear();
+		ProcessVduItems(CurrentMenu);
+	}
+
+	return !done;
+}
+
+/*===================================================================
+	Procedure	:		Processes the player list - auto selects highlighted item, 
+						and draws corresponding biker character.
+	Input		:		key pressed...
+	Output		:		BOOL - indicates when player list is no longer being used.
+===================================================================*/
+BOOL ProcessPlayerList ( int Key )
+{
+	BOOL done, redraw;
+	char old_bike_name[16];
+
+	done = FALSE;	 
+	redraw = FALSE;
+
+	strcpy(old_bike_name, bike_name);
+
+	switch(Key)
+	{
+		
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		//make selected item 1 up
+		PlayCursorSfx();
+		SelectListPrev( &PilotList );
+		redraw = TRUE;
+		break;
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		//make selected item 1 down
+		PlayCursorSfx();
+		SelectListNext( &PilotList );
+		redraw = TRUE;
+		break;
+	case SDLK_RETURN:
+		done = TRUE;
+		redraw = TRUE;
+		MenuBack();
+		break;
+	case SDLK_ESCAPE:
+		done = TRUE;
+		redraw = TRUE;
+		MenuBack();
+		break;
+	case SDLK_PAGEDOWN:
+		PlayCursorSfx();
+		SelectListNextPage( &PilotList );
+		redraw = TRUE;
+		break;
+	case SDLK_PAGEUP:
+		PlayCursorSfx();
+		SelectListPrevPage( &PilotList );
+		redraw = TRUE;
+		break;
+	case SDLK_HOME:
+		PlayCursorSfx();
+		SelectListHome( &PilotList );
+		redraw = TRUE;
+		break;
+	case SDLK_END:
+		PlayCursorSfx();
+		SelectListEnd( &PilotList );
+		redraw = TRUE;
+		break;
+	case SDLK_DELETE:
+		if ( PilotList.FuncDelete )
+		{
+			if ( PilotList.selected_item >= 0 && PilotList.selected_item < PilotList.items 
+				&& !PilotList.FuncDelete( &PilotList, PilotList.selected_item ) )
+			{
+				PlaySfx( SFX_Error, 1.0F );
+			}
+			redraw = TRUE;
+		}
+		break;
+	default:
+		if ( Key )
+		{
+			char *c;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				SelectListSearch( &PilotList, SearchKey( *c ) );
+				redraw = TRUE;
+				PlayCursorSfx();
+			}
+		}
+		break;
+	}
+  
+	if (redraw)
+	{	
+		SelectPilot(CurrentMenuItem);
+		if (strcmp(old_bike_name, bike_name))	// if bike name has changed....
+		{
+
+			ShowHoloModel( HoloModelLookup[ SelectedBike ] );
+
+#if 0
+			PrintTextItem(BikeNameTextPtr); 
+
+			if ((Title_Timers[TITLE_TIMER_SwapBikes].Status != TITLE_EVENT_TIMER_ACTIVE) && (Title_Timers[TITLE_TIMER_SwapBikes].Status != TITLE_EVENT_TIMER_FINISHED))
+			{
+				Title_Timers[TITLE_TIMER_SwapBikes].Status = TITLE_EVENT_TIMER_ACTIVE;
+ 				Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime = 0.0F;
+				OldSelectedBikeScale = SelectedBikeScale;
+			}else
+			{	if (Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime > 0.5F)
+				{	for (Event = Title_Events; Event->TriggeredBy >= 0; Event++)
+					{
+						if (Event->TriggeredBy == TITLE_TIMER_SwapBikes)
+						{
+				
+							if ((Event->Status == TITLE_EVENT_STATUS_ACTIVE) || (Event->Status == TITLE_EVENT_STATUS_FINISHED))
+							{
+								Event->Status = TITLE_EVENT_STATUS_IDLE;
+
+								if (Event->Status == TITLE_EVENT_STATUS_ACTIVE)
+								{
+									if (Event->ExitFunc)
+										Event->ExitFunc(Event);
+								}
+
+								Title_Timers[TITLE_TIMER_SwapBikes].Status = TITLE_EVENT_TIMER_ACTIVE;
+			 					Title_Timers[TITLE_TIMER_SwapBikes].CurrentTime = 0.0F;
+								OldSelectedBikeScale = BikeSwapScale;
+							}
+
+						}
+					}
+		
+				}
+			}
+#endif
+		}
+
+		KillBikeChar( NULL );
+		LoadBikeChar( &BikeCharItem );
+
+
+//		RedrawFlatMenuList(CurrentMenuItem);
+	}
+
+	
+	return !done;
+}
+
+BOOL ProcessWeaponOrder ( int Key )
+{
+	BOOL done, redraw;
+	int highlighttype, temp, oldselectedweapon, i;
+
+	done = FALSE;
+	redraw = FALSE;
+	
+	switch(Key)
+	{
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		PlayCursorSfx();
+		oldselectedweapon = SelectedWeapon;
+
+		if (WeaponOrderStatus == WEAPON_ChoosingSecond)
+		{
+			// if currently at bottom of used list...
+			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
+			{
+				Num_Unused_Weapons++;
+				redraw = TRUE;
+			}else
+			{
+				// if last item...
+				if (SelectedWeapon == MaxWeapons - 1)
+				{
+					// if no weapons in unused list...
+					if (Num_Unused_Weapons == 0)
+						Num_Unused_Weapons++;
+						redraw = TRUE;
+				}else
+				{
+					// swap current weapon with one below...
+					temp = WeaponList[SelectedWeapon];
+					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon + 1];
+					WeaponList[SelectedWeapon + 1] = temp;
+					redraw = TRUE;
+
+					SelectedWeapon++;
+				}
+			}
+		}else
+		// choosing first weapon...
+		{
+			// if not last weapon...
+			if (SelectedWeapon != MaxWeapons - 1)
+				SelectedWeapon++;
+		}
+
+		// move cursor if necessary...
+		if (oldselectedweapon != SelectedWeapon)
+		{
+			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
+			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
+		}
+		break;
+		
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		PlayCursorSfx();
+		oldselectedweapon = SelectedWeapon;
+
+		if (WeaponOrderStatus == WEAPON_ChoosingSecond)
+		{
+			// if currently at top of unused list...
+			if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
+			{
+				Num_Unused_Weapons--;
+				redraw = TRUE;
+			}else
+			{
+				// if first item...
+				if (SelectedWeapon == 0)
+				{
+					// if no weapons in used list...
+					if (Num_Unused_Weapons == MaxWeapons)
+						Num_Unused_Weapons--;
+						redraw = TRUE;
+				}else
+				{
+					// swap current weapon with one above...
+					temp = WeaponList[SelectedWeapon];
+					WeaponList[SelectedWeapon] = WeaponList[SelectedWeapon - 1];
+					WeaponList[SelectedWeapon - 1] = temp;
+					redraw = TRUE;
+
+					SelectedWeapon--;
+				}
+			}
+		}else
+		// choosing first weapon...
+		{
+			// if not first weapon...
+			if (SelectedWeapon != 0)
+				SelectedWeapon--;
+		}
+
+		// move cursor if necessary...
+		if (oldselectedweapon != SelectedWeapon)
+		{
+			WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+			highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
+			WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
+		}
+		break;
+	case SDLK_LEFT:
+		PlayCursorSfx();
+		// if currently in unused list...
+		if (SelectedWeapon >= MaxWeapons - Num_Unused_Weapons)
+		{
+			oldselectedweapon = SelectedWeapon;
+
+			if (WeaponOrderStatus == WEAPON_ChoosingSecond)
+			{
+				// if at top of unused list...
+				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons)
+				{
+					Num_Unused_Weapons--;
+					redraw = TRUE;
+					SelectedWeapon++;
+					if (SelectedWeapon > MaxWeapons - 1)
+						SelectedWeapon = MaxWeapons - 1;
+				}else
+				{
+					temp = WeaponList[SelectedWeapon];
+					for (i = SelectedWeapon; i > MaxWeapons - Num_Unused_Weapons; i--)
+					{
+						WeaponList[i] = WeaponList[i - 1];
+
+					}
+					WeaponList[i] = temp;
+					Num_Unused_Weapons--;
+					redraw = TRUE;
+				}
+				// return to choosing first weapon...
+				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
+				WeaponItem->TextInfo[oldselectedweapon]->highlighttype = HIGHLIGHT_Pulsing;
+				WeaponOrderStatus = WEAPON_ChoosingFirst;
+			}else
+			{
+				// if there are items in the used list...
+				if (Num_Unused_Weapons < MaxWeapons)
+					SelectedWeapon = MaxWeapons - Num_Unused_Weapons - 1;
+			}
+
+			// move cursor if necessary...
+			if (oldselectedweapon != SelectedWeapon)
+			{
+				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
+				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
+			}
+		}
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+		// if currently in used list...
+		if (SelectedWeapon < MaxWeapons - Num_Unused_Weapons)
+		{
+			oldselectedweapon = SelectedWeapon;
+
+			if (WeaponOrderStatus == WEAPON_ChoosingSecond)
+			{
+				// if at bottom of used list...
+				if (SelectedWeapon == MaxWeapons - Num_Unused_Weapons - 1)
+				{
+					Num_Unused_Weapons++;
+					redraw = TRUE;
+					SelectedWeapon--;
+					if (SelectedWeapon < 0)
+						SelectedWeapon = 0;
+				}else
+				{
+					temp = WeaponList[SelectedWeapon];
+					for (i = SelectedWeapon; i < MaxWeapons - 1 - Num_Unused_Weapons; i++)
+					{
+						WeaponList[i] = WeaponList[i + 1];
+
+					}
+					WeaponList[i] = temp;
+					Num_Unused_Weapons++;
+					redraw = TRUE;
+				}
+				// return to choosing first weapon...
+				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
+				WeaponItem->TextInfo[oldselectedweapon]->highlighttype = HIGHLIGHT_Pulsing;
+				WeaponOrderStatus = WEAPON_ChoosingFirst;
+			}else
+			{
+				// if there are items in the unused list...
+				if (Num_Unused_Weapons > 0)
+					SelectedWeapon = MaxWeapons - Num_Unused_Weapons;
+			}
+
+			// move cursor if necessary...
+			if (oldselectedweapon != SelectedWeapon)
+			{
+				WeaponItem->TextInfo[oldselectedweapon]->highlight = FALSE;
+				highlighttype = WeaponItem->TextInfo[oldselectedweapon]->highlighttype;
+				WeaponItem->TextInfo[SelectedWeapon]->highlight = TRUE;
+				WeaponItem->TextInfo[SelectedWeapon]->highlighttype = highlighttype;
+			}
+		}
+		break;
+	case SDLK_RETURN:
+		if (WeaponOrderStatus == WEAPON_ChoosingFirst)
+		{
+			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Static;
+			WeaponOrderStatus = WEAPON_ChoosingSecond;
+		}else
+		{
+			WeaponItem->TextInfo[SelectedWeapon]->highlighttype = HIGHLIGHT_Pulsing;
+			WeaponOrderStatus = WEAPON_ChoosingFirst;
+		}
+		break;
+	case SDLK_ESCAPE:
+		done = TRUE;
+		MenuBack();
+		break;
+	}
+
+	if (redraw)
+		DrawGeneralWeaponText(WeaponItem);
+
+	return !done;
+}
+
+
+
+BOOL ProcessLevelList ( int Key )
+{
+	BOOL done, redraw;
+	int current;
+
+	done = FALSE;
+	redraw = FALSE;
+
+	switch(Key)
+	{
+	case SDLK_LEFT:
+		PlayCursorSfx();
+		//make selected item 1 to the left
+		current = LevelList.selected_item;
+		SelectListPrev( &LevelList );
+		if (current != LevelList.selected_item)
+			redraw = TRUE;
+		break;
+	case SDLK_RIGHT:
+		PlayCursorSfx();
+		//make selected item 1 to the right
+		current = LevelList.selected_item;
+		SelectListNext( &LevelList );
+		if (current != LevelList.selected_item)
+			redraw = TRUE;
+		break;
+	case SDLK_RETURN:
+		if ( MenuState == MENUSTATE_SelectLevelQuick )
+		{
+			if ( CurrentMenu != &MENU_NEW_CreateGame )
+			{
+				MenuState = MENUSTATE_SelectLevelSlow;
+				MenuChange ( &SlowLevelSelectItem );
+			}
+		}else
+		{
+			done = TRUE;
+			MenuBack();
+		}
+		break;
+	case SDLK_ESCAPE:
+		done = TRUE;
+		MenuBack();
+		break;
+		
+	//case SDLK_WHEELUP:
+	case SDLK_UP:
+		if (MenuState == MENUSTATE_SelectLevelQuick)
+		{
+			CursorUp();
+			done = TRUE; 
+		}
+		break;
+	//case SDLK_WHEELDOWN:
+	case SDLK_DOWN:
+		if (MenuState == MENUSTATE_SelectLevelQuick)
+		{
+			CursorDown();
+			done = TRUE;
+		}
+		break;
+	default:
+		if ( Key )
+		{
+			char *c;
+
+			current = LevelList.selected_item;
+			c = (char *) key_name( Key );
+			if ( c && strlen( c ) == 1 )
+			{
+				SelectListSearch( &LevelList, SearchKey( *c ) );
+			}
+			if (current != LevelList.selected_item)
+			{
+				PlayCursorSfx();
+				redraw = TRUE;
+			}
+		}
+		break;
+	}
+
+	if( MyGameStatus != STATUS_Normal && MyGameStatus != STATUS_SinglePlayer )
+		NewLevelNum = LevelList.selected_item;
+
+	if (redraw)
+	{
+		if (MenuState == MENUSTATE_SelectLevelSlow)
+		{
+			LastMenu = CurrentMenu;	// because we are not actually changing menus, 
+									// but we still want to clear this menu
+			LoadLevelText( NULL );
+			VduClear();
+			ProcessVduItems(CurrentMenu);
+		}
+		LoadLevelText( NULL );
+	}
+
+	return !done;
+}
+
+void MenuProcess()
+{
+	int i;
+	SDLKey Key;
+
+	// used for flashing text
+	Pulse += framelag/60.0F;
+	if (Pulse > 1.0F)
+		Pulse -= (float)floor((double)Pulse);
+
+	// if we are not in a menu
+	if ( !CurrentMenu || !CurrentMenuItem )
+	{
+		// dont process any keys
+		return;
+	}
+
+	// TODO - need to add mouse input to menus
+	// TODO - need to rewrite CheckCheats
+	// TODO - need to handle MENU_NEW_Error and MenuFrozen
+
+	for( i = 0 ; i < keyboard_buffer_count ; i++ )
+	{
+		Key = keyboard_buffer[i].sym;
+
+	    // if last key pressed exited from menu system
+		// do not process any more keys
+		if ( !CurrentMenu )
+			goto end;
+				
+		//  set global to define if we are in a title room
+		switch ( MyGameStatus )
+		{
+			case	STATUS_StartingMultiplayer:
+			case	STATUS_GetPlayerNum:
+			case	STATUS_Title:
+			case	STATUS_BetweenLevels:
+			case	STATUS_StartingSinglePlayer:
+				InTitleRoom = TRUE;
+				break;
+			default:
+				InTitleRoom = FALSE;
+		}
+
+		// no menu processing done while loading...
+		switch ( MyGameStatus )
+		{
+		  case STATUS_WaitingToStartSinglePlayer:
+		  case STATUS_WaitingToStartMultiPlayerHost:
+		  case STATUS_WaitingToStartMultiPlayerClient:
+		  case STATUS_WaitingToStartTeamGame:
+		  case STATUS_WaitingToStartDemo:
+			goto end;
+			break;
+		}
+
+		if(!Key)
+			goto end;
+
+		switch( Key )
+		{
+		case SDLK_RETURN:
+			{
+							if ( InTitleRoom )
+							{
+								// if were looking at the discs
+								if ( CameraStatus == CAMERA_AtDiscs )
+									PlaySfx( SFX_SelectStackOption, 1.0F );
+								else
+									PlaySfx( SFX_VidText, 1.0F );
+							}
+							else
+							{
+								PlaySfx( SFX_VidText, 1.0F );
+							}
+			}
+			break;
+		}
+
+		switch ( MenuState )
+		{
+			case MENUSTATE_SelectKeydef:
+				if ( !ProcessSelectKeydef( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			case MENUSTATE_Keydef:
+#ifdef KDEF
+				if ( !ProcessDefKey( Key ) )
+					MenuState = MENUSTATE_SelectKeydef;
+#else
+				if ( !ProcessKeydef( Key ) )
+					MenuState = MENUSTATE_Select;
+#endif
+				break;
+
+
+			case MENUSTATE_Keydef2:
+#ifdef VDUKDEF
+				if ( !ProcessDefKey( Key ) )
+				{	
+					MenuState = MENUSTATE_SelectKeydef;
+#else
+				if ( !ProcessKeydef( Key ) )
+				{	
+					MenuState = MENUSTATE_Select;
+#endif
+	//				RedrawFlatMenuKey( KeyItem);
+					CheckKeysForChanges();
+					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
+				}
+				break;
+
+
+			case MENUSTATE_Slider:
+				if ( !ProcessSlider( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			case MENUSTATE_Slider2:
+				if ( !ProcessSlider2( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			case MENUSTATE_List:
+				/* process text list keys */
+				if ( !ProcessList( Key ) )
+				{
+					if ( CurrentMenuItem &&
+						(!(CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)) )
+					{
+						CurrentList = NULL;
+						MenuState = MENUSTATE_Select;
+						if (PreListMenu == CurrentMenu)
+							CurrentMenuItem = PreListItem;
+						CurrentListItem = NULL;
+					}
+				}
+			break;
+
+
+		    case MENUSTATE_Text:
+				if ( !ProcessText( Key ) )
+				{
+					MenuState = MENUSTATE_Select;
+					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
+					{
+						MenuBack();
+					}
+				}
+				break;
+
+
+			case MENUSTATE_Text2:
+				if ( !ProcessText( Key ) )
+				{	MenuState = MENUSTATE_Select;
+					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
+					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
+					{
+						MenuBack();
+					}
+				}
+				break;
+
+
+			case MENUSTATE_SelectBiker:
+				if ( !ProcessBikerList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectSavedGame:
+				if ( !ProcessSavedGameList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectPlayer:
+				if ( !ProcessPlayerList ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_WeaponOrder:
+				if ( !ProcessWeaponOrder ( Key ) )
+				{	MenuState = MENUSTATE_Select;
+				}
+				break;
+
+
+			case MENUSTATE_SelectLevelQuick:
+			case MENUSTATE_SelectLevelSlow:
+				if ( !ProcessLevelList ( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+			case MENUSTATE_DifficultySet:
+				if ( !ProcessDifficultySet ( Key ) )
+					MenuState = MENUSTATE_Select;
+				break;
+
+
+			default:
+
+				if (CurrentMenuItem)
+				{
+					if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+					{
+						if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+						{
+							if (CurrentMenuItem->FuncSelect)
+								CurrentMenuItem->FuncSelect(CurrentMenuItem);
+						}
+					}
+					if (MenuState == MENUSTATE_Select)
+						ProcessSelect( Key );
+
+					break;
+				}
+
+		}
+	}
+
+end:
+
+	CheckMenuTimer();
+	ProcessMenuFlashText();
+
+	if( InTitleRoom )
+		SetVolumeLevels();
+}
+
+
+
+
 
 
 //#pragma optimize( "", off )

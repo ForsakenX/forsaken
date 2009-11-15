@@ -134,8 +134,9 @@ void app_quit( void )
 //	SDLK_CAPSLOCK and SDLK_NUMLOCK will never repeat cause of sun workstation compatbility
 //	edit lines 403 and 449 of src/events if you want to change sdl behavior
 
+
 void app_keyboard( SDL_KeyboardEvent key )
-{
+{	
 	// TODO - use unicode characters
 	// int SDL_EnableUNICODE(int enable);
 
@@ -191,8 +192,22 @@ void app_keyboard( SDL_KeyboardEvent key )
 			MenuGoFullScreen( NULL );
 		break;
 	}
+	
+	// TODO - we'll probably want to rewrite code that depends on this to use the new
+	//        methods that use SDL_GetKeyState and provide functions such as IsKeyHeld
+	// TODO - we could probably have mouse events added here as keyboard events
+	//			to emulate mouse menu navigation... ex: right click maps to escape
+	if( key.type == SDL_KEYUP )
+	{
+		keyboard_buffer[ keyboard_buffer_count++ ] = key.keysym;
+		if( keyboard_buffer_count >= MAX_KEY_BOARD_BUFFER )
+			keyboard_buffer_count = 0;
+	}
+}
 
-	// TODO - need to pass key event to rest of app processing
+void reset_keyboard_buffer( void )
+{
+	keyboard_buffer_count = 0;
 }
 
 // mouse wheel button down/up are sent at same time
@@ -309,6 +324,7 @@ void reset_events( void )
 {
 	reset_mouse_motion();
 	reset_mouse_wheel();
+	reset_keyboard_buffer();
 }
 
 BOOL handle_events( void )
