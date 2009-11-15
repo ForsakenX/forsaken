@@ -30,4 +30,6 @@ mouse_state_t mouse_state;
 int input_grabbed;
 void input_grab( BOOL grab );
 
+BOOL handle_events( void );
+
 #endif
