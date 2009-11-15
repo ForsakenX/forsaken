@@ -6242,19 +6242,19 @@ BOOL ProcessDefKey( int Key )
 	done = FALSE;
 	switch( Key )
 	{
-	case DIK_ESCAPE:
-	case DIK_F1:
-	case DIK_F2:
-	case DIK_F3:
-	case DIK_F4:
-	case DIK_F5:
-	case DIK_F6:
-	case DIK_F7:
-	case DIK_F8:
-	case DIK_F9:
-	case DIK_F10:
-	case DIK_F11:
-	case DIK_F12:
+	case SDLK_ESCAPE:
+	case SDLK_F1:
+	case SDLK_F2:
+	case SDLK_F3:
+	case SDLK_F4:
+	case SDLK_F5:
+	case SDLK_F6:
+	case SDLK_F7:
+	case SDLK_F8:
+	case SDLK_F9:
+	case SDLK_F10:
+	case SDLK_F11:
+	case SDLK_F12:
 		if ( KeyItem->Variable )
 			KeyDefine( KeyItem, (VirtualKeycode) 0 );
 		done = TRUE; // back out of key definition mode if illegal key selected
@@ -15535,12 +15535,12 @@ BOOL ProcessSelectKeydef( int Key )
 		switch(Key)
 		{
 
-		//case SDLK_WHEELUP:
+		case UP_MOUSE:
 		case SDLK_UP:
 			CursorUp();
 			break;
 			
-		//case SDLK_WHEELDOWN:
+		case DOWN_MOUSE:
 		case SDLK_DOWN:
 			CursorDown();
 			break;
@@ -15864,12 +15864,12 @@ BOOL ProcessSlider2( int Key )
 		CursorEnd();
 		done = TRUE;
 		break;
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		CursorUp();
 		done = TRUE;
 		break;
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		CursorDown();
 		done = TRUE;
@@ -15938,7 +15938,7 @@ BOOL ProcessList( int Key )
 
 	if (CurrentList->Static)
 	{
-	 	if ( Key == SDLK_ESCAPE ) // || Key == SDLK_RBUTTON )
+	 	if ( Key == SDLK_ESCAPE || Key == RIGHT_MOUSE )
 			CurrentList->Static = FALSE;
 		return TRUE;
 	}
@@ -15986,13 +15986,13 @@ BOOL ProcessList( int Key )
 		}
 		break;
 
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		PlayCursorSfx();
 		SelectListPrev( CurrentList );
 		break;
 
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		PlayCursorSfx();
 		SelectListNext( CurrentList );
@@ -16018,7 +16018,7 @@ BOOL ProcessList( int Key )
 		SelectListEnd( CurrentList );
 		break;
 	
-	//case SDLK_LBUTTON:
+	case LEFT_MOUSE:
 	case SDLK_RETURN:
 			FuncSet = (MenuItemFunc) CurrentMenuItem->Value;
 			if ( FuncSet )
@@ -16028,8 +16028,8 @@ BOOL ProcessList( int Key )
 			done = TRUE;
 		break;
 
-	//case SDLK_MBUTTON:
-	//case SDLK_RBUTTON:
+	case MIDDLE_MOUSE:
+	case RIGHT_MOUSE:
 	case SDLK_ESCAPE:
 		CancelListSelection( CurrentList );
 		done = TRUE;
@@ -16098,8 +16098,8 @@ BOOL ProcessText( int Key )
 		TextEnd( (TEXT *)(TextItem->Variable) );
 		break;
 	case SDLK_RETURN:
-	//case SDLK_WHEELUP:
-	//case SDLK_WHEELDOWN:
+	case UP_MOUSE:
+	case DOWN_MOUSE:
 	case SDLK_UP:
 	case SDLK_DOWN:
 		TextEnter( TextItem );
@@ -16185,11 +16185,11 @@ void ProcessSelect( int Key )
 
 
 	/* cursor up */
-	if ( Key == SDLK_UP )//|| Key == SDLK_WHEELUP )
+	if ( Key == SDLK_UP || Key == UP_MOUSE )
 		CursorUp();
 
 	/* cursor down */
-	else if ( Key == SDLK_DOWN )//|| Key == SDLK_WHEELDOWN )
+	else if ( Key == SDLK_DOWN || Key == DOWN_MOUSE )
 
 		CursorDown();
 
@@ -16259,13 +16259,13 @@ void ProcessSelect( int Key )
 
 	/* go back */
 	/* escape, right click */
-	else if ( Key == SDLK_ESCAPE )//|| Key == SDLK_RBUTTON )
+	else if ( Key == SDLK_ESCAPE || Key == RIGHT_MOUSE )
 
 		MenuBack();
 
 	/* select */
 	/* enter, left mouse */
-	else if ( Key == SDLK_RETURN )//|| Key == SDLK_LBUTTON || Key == SDLK_MBUTTON )
+	else if ( Key == SDLK_RETURN || Key == LEFT_MOUSE || Key == MIDDLE_MOUSE )
 	{
 
 		/* perform the menu's callback */
@@ -16298,13 +16298,13 @@ BOOL ProcessDifficultySet ( int Key )
 
 	switch(Key)
 	{
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		CursorUp();
 		done = TRUE;
 		break;
 
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		CursorDown();
 		done = TRUE;
@@ -16499,14 +16499,14 @@ BOOL ProcessPlayerList ( int Key )
 	switch(Key)
 	{
 		
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		//make selected item 1 up
 		PlayCursorSfx();
 		SelectListPrev( &PilotList );
 		redraw = TRUE;
 		break;
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		//make selected item 1 down
 		PlayCursorSfx();
@@ -16636,7 +16636,7 @@ BOOL ProcessWeaponOrder ( int Key )
 	
 	switch(Key)
 	{
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		PlayCursorSfx();
 		oldselectedweapon = SelectedWeapon;
@@ -16686,7 +16686,7 @@ BOOL ProcessWeaponOrder ( int Key )
 		}
 		break;
 		
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		PlayCursorSfx();
 		oldselectedweapon = SelectedWeapon;
@@ -16905,7 +16905,7 @@ BOOL ProcessLevelList ( int Key )
 		MenuBack();
 		break;
 		
-	//case SDLK_WHEELUP:
+	case UP_MOUSE:
 	case SDLK_UP:
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{
@@ -16913,7 +16913,7 @@ BOOL ProcessLevelList ( int Key )
 			done = TRUE; 
 		}
 		break;
-	//case SDLK_WHEELDOWN:
+	case DOWN_MOUSE:
 	case SDLK_DOWN:
 		if (MenuState == MENUSTATE_SelectLevelQuick)
 		{

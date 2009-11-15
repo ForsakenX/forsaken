@@ -26,6 +26,17 @@ typedef struct {
 // this holds the current state each loop
 mouse_state_t mouse_state;
 
+// special keydefs for mouse actions
+// this is only used by MenuProcess
+enum {
+	MOUSE_RANGE = SDLK_LAST,
+	LEFT_MOUSE,
+	MIDDLE_MOUSE,
+	RIGHT_MOUSE,
+	UP_MOUSE,
+	DOWN_MOUSE
+};
+
 #define MAX_KEY_BOARD_BUFFER 100
 SDL_keysym keyboard_buffer[MAX_KEY_BOARD_BUFFER];
 int keyboard_buffer_count;

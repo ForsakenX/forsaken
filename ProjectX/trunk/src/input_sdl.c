@@ -198,11 +198,8 @@ void app_keyboard( SDL_KeyboardEvent key )
 	// TODO - we could probably have mouse events added here as keyboard events
 	//			to emulate mouse menu navigation... ex: right click maps to escape
 	if( key.type == SDL_KEYUP )
-	{
-		keyboard_buffer[ keyboard_buffer_count++ ] = key.keysym;
-		if( keyboard_buffer_count >= MAX_KEY_BOARD_BUFFER )
-			keyboard_buffer_count = 0;
-	}
+		if( keyboard_buffer_count < MAX_KEY_BOARD_BUFFER )
+			keyboard_buffer[ keyboard_buffer_count++ ] = key.keysym;
 }
 
 void reset_keyboard_buffer( void )
@@ -258,6 +255,18 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	} SDL_MouseButtonEvent;
 	*/
 
+	// pass down mouse events for menu processing
+	if(  _event.type == SDL_MOUSEBUTTONDOWN )
+	{
+		if( keyboard_buffer_count < MAX_KEY_BOARD_BUFFER )
+		{
+			SDL_keysym key;
+			memset(&key,0,sizeof(SDL_keysym));
+			key.sym = _event.button - 1 + LEFT_MOUSE;
+			keyboard_buffer[ keyboard_buffer_count++ ] = key;
+		}
+	}
+
 	switch( _event.button )
 	{
 
@@ -268,6 +277,7 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	case SDL_BUTTON_LEFT:	// 1
 	case SDL_BUTTON_MIDDLE:	// 2
 	case SDL_BUTTON_RIGHT:	// 3
+		// save the button state
 		mouse_state.buttons[ _event.button - 1 ] = ( _event.type == SDL_MOUSEBUTTONDOWN );
 		//DebugPrintf("sdl mouse button %d %s\n",_event.button,
 		//	(mouse_state.buttons[ _event.button - 1 ]?"pressed":"released"));

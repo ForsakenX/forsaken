@@ -527,7 +527,6 @@ void CheckCheats( VirtualKeycode key )
   }
 }
 
-
 static void ReadKeyboard( int dup_last )
 {
   int j;
@@ -545,8 +544,7 @@ static void ReadKeyboard( int dup_last )
     }
 }
 
-// TODO - mouse should not have to remap the order of the buttons
-// TODO - this should probably just use SDL_GetMouseState , no need for the event saving then
+// TODO - this could use SDL_GetMouseState instead of all the event processing
 static void ReadMouse( int dup_last )
 {
 	int i;
