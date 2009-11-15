@@ -626,6 +626,7 @@ again:;
 }
 
 // TODO - mouse should not have to remap the order of the buttons
+// TODO - this should probably just use SDL_GetMouseState , no need for the event saving then
 static void ReadMouse( int dup_last )
 {
 	if ( dup_last )
@@ -1043,41 +1044,17 @@ int AnyKeyReleased( void )
 
 int IsKeyPressed( int di_keycode )
 {
-   if ( KEY_PRESSED( di_keycode ) )
-      return 1;
-  return 0;
+	if ( KEY_PRESSED( di_keycode ) )
+		return 1;
+	return 0;
 }
 
 
 int IsKeyHeld( int di_keycode )
 {
-  switch( di_keycode )
-  {
-  case DIK_LBUTTON:
-    if ( MOUSE_BUTTON_HELD( 0 ) )
-      return 1;
-    break;
-  case DIK_MBUTTON:
-    if ( MOUSE_BUTTON_HELD( 2 ) )
-      return 1;
-    break;
-  case DIK_RBUTTON:
-    if ( MOUSE_BUTTON_HELD( 1 ) )
-      return 1;
-    break;
-  case DIK_WHEELUP:
-    if ( MOUSE_WHEEL_UP() )
-      return 1;
-    break;
-  case DIK_WHEELDOWN:
-    if ( MOUSE_WHEEL_DOWN() )
-      return 1;
-    break;
-  default:
-    if ( KEY_HELD( di_keycode ) )
-      return 1;
-  }
-  return 0;
+	if ( KEY_HELD( di_keycode ) )
+		return 1;
+	return 0;
 }
 
 int CheckMouse( void )
