@@ -183,7 +183,6 @@ WhichJoystickPressed( void );
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum);
 BOOL PollJoystick( int joysticknum );
 
-void ReadBufferedKeyboard( void );
 int CheckMouse( void );
 void SetUpJoystickAxis(int joystick);
 BOOL IsJoystickButtonPressed( int joysticknum );

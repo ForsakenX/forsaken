@@ -105,9 +105,6 @@ int GetPOVMask( DWORD pov );
 
 BOOL CheatsEnabled = FALSE;
 
-DIDEVICEOBJECTDATA rgod[DINPUT_BUFFERSIZE]; /* Receives buffered data */
-DWORD BufferedKey[ DINPUT_BUFFERSIZE ];
-int16 NumKeysToProcess;
 #define TOTAL_JOYSTICK_ACTIONS  140 // 5 axis positions, 3 axis rotations, 4 POV hats and 128 buttons!
 #define TOTAL_JOYSTICK_AXIS   8 // 5 axis positions, 3 axis rotations
 DIJOYSTATE2   js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
@@ -115,7 +112,6 @@ BYTE      js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV
 JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
 
 extern LPDIRECTINPUTDEVICE lpdiKeyboard;
-extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
 extern LPDIRECTINPUTDEVICE2 lpdiJoystick[MAX_JOYSTICKS];
 extern MENU MENU_QuickTextSend;
 extern MENU MENU_QuickTextSendWhisper;
@@ -546,70 +542,6 @@ static void ReadKeyboard( int dup_last )
         // failed to read the keyboard
     for ( j = 0; j < MAX_KEYS; j++ )
       KeyState[ new_input ][ j ] = 0;
-    }
-}
-
-void ReadBufferedKeyboard( void )
-{
-    uint16 i;
-  
-  if (lpdiBufferedKeyboard) 
-  {
-
-        DWORD cod;
-        HRESULT hr;
-    DIDEVICEOBJECTDATA keyinfo;
-again:;
-        cod = DINPUT_BUFFERSIZE;
-        hr = lpdiBufferedKeyboard->lpVtbl->GetDeviceData(lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA),
-                                        rgod, &cod, 0);
-        if (hr != DI_OK) 
-    {
-
-            /* << insert recovery code here if you need any >> */
-
-            if (hr == DIERR_INPUTLOST) 
-      {
-          hr = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
-                if (SUCCEEDED(hr)) 
-        {
-                    goto again;
-                }
-            }
-        }
-        /*
-         *  In order for it to be worth our while to parse the
-         *  buffer elements, the GetDeviceData must have succeeded,
-         *  and we must have received some data at all.
-         */
-
-    /*
-    if (SUCCEEDED(hr) && cod > 0) 
-    {
-      keyinfo = rgod[0];
-      
-      if (keyinfo.dwData & 0x80)    // only set for key down
-        BufferedKey = keyinfo.dwOfs;
-      else
-        BufferedKey = 0;
-        }
-    else
-      BufferedKey = 0;
-    */
-    NumKeysToProcess = 0;
-
-    if ( SUCCEEDED ( hr ) ) 
-    {
-      for ( i = 0; i < cod; i++ )
-      {
-        keyinfo = rgod[ i ];
-
-        if ( keyinfo.dwData & 0x80 )
-        {
-          BufferedKey[ NumKeysToProcess++ ] = keyinfo.dwOfs;
-        }
-      }
-    }
     }
 }
 

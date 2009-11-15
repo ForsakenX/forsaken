@@ -11,20 +11,9 @@ extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 
 LPDIRECTINPUT                   lpdi = NULL;
 LPDIRECTINPUTDEVICE       lpdiKeyboard = NULL;
-LPDIRECTINPUTDEVICE       lpdiBufferedKeyboard = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 int               Num_Joysticks;
-RECT cursorclip;
-
-void flush_keyboard( void )
-{
-	if (lpdiBufferedKeyboard)
-	{
-		DWORD dwItems = INFINITE;
-		IDirectInputDevice_GetDeviceData( lpdiBufferedKeyboard, sizeof(DIDEVICEOBJECTDATA), NULL, &dwItems, 0); 
-	}
-}
 
 BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, 
                                   LPVOID pvRef) 
@@ -289,46 +278,6 @@ BOOL InitDInput(void)
     // try to acquire the keyboard
     err = IDirectInputDevice_Acquire(lpdiKeyboard);
 
-    if(err != DI_OK)
-    {
-//            goto fail;
-    }
-
-    // try to create another keyboard device (which will be buffered, for menu screens)
-    if(IDirectInput_CreateDevice(lpdi, &guid_keyboard, &lpdiBufferedKeyboard, NULL) !=DI_OK)
-    {
-            goto fail;
-    }
-
-    // Tell DirectInput that we want to receive data in keyboard format
-    if (IDirectInputDevice_SetDataFormat(lpdiBufferedKeyboard, &c_dfDIKeyboard) != DI_OK)
-    {
-            goto fail;
-    }
-
-    // set cooperative level
-    if(IDirectInputDevice_SetCooperativeLevel(lpdiBufferedKeyboard, render_info.window,
-                     DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
-    {
-            goto fail;
-    }
-
-    // set the buffer size...
-  err = lpdiBufferedKeyboard->lpVtbl->SetProperty(lpdiBufferedKeyboard, DIPROP_BUFFERSIZE, &dipdw.diph);
-
-    if(err != DI_OK)
-    {
-            goto fail;
-    }
-
-    // try to acquire the keyboard
-    err = IDirectInputDevice_Acquire(lpdiBufferedKeyboard);
-
-    if(err != DI_OK)
-    {
- //           goto fail;
-    }
-
   // try to create Joystick devices
   for ( i = 0; i < MAX_JOYSTICKS; i++ )
     lpdiJoystick[i] = NULL;
@@ -420,18 +369,22 @@ BOOL InitDInput(void)
   return TRUE;
 
 fail:
-    if (lpdiKeyboard)  IDirectInputDevice_Release(lpdiKeyboard), lpdiKeyboard  = NULL;
-    if (lpdiBufferedKeyboard)  IDirectInputDevice_Release(lpdiBufferedKeyboard), lpdiBufferedKeyboard  = NULL;
-  for (i = 0; i < Num_Joysticks; i++)
-  {
-      if (lpdiJoystick[i])
-    {
-      IDirectInputDevice2_Release(lpdiJoystick[i]);
-      lpdiJoystick[i] = NULL;
-    }
-  }
-    if (lpdi)   IDirectInputDevice_Release(lpdi), lpdi     = NULL;
-    return FALSE;    
+	if (lpdiKeyboard)  
+		IDirectInputDevice_Release(lpdiKeyboard), lpdiKeyboard = NULL;
+
+	for (i = 0; i < Num_Joysticks; i++)
+	{
+		if (lpdiJoystick[i])
+		{
+			IDirectInputDevice2_Release(lpdiJoystick[i]);
+			lpdiJoystick[i] = NULL;
+		}
+	}
+
+	if (lpdi)   
+		IDirectInputDevice_Release(lpdi), lpdi = NULL;
+
+	return FALSE;    
 }
 
 BOOL TermDInput( void )
@@ -443,12 +396,6 @@ BOOL TermDInput( void )
     IDirectInputDevice_Unacquire(lpdiKeyboard);
     IDirectInputDevice_Release(lpdiKeyboard);
     lpdiKeyboard  = NULL;
-  }
-    if (lpdiBufferedKeyboard)
-  {
-    IDirectInputDevice_Unacquire(lpdiBufferedKeyboard);
-    IDirectInputDevice_Release(lpdiBufferedKeyboard);
-    lpdiBufferedKeyboard  = NULL;
   }
 
   for (i = 0; i < Num_Joysticks; i++)

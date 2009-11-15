@@ -190,7 +190,6 @@ extern TeamCol[];
 extern int Num_StatsMessage_Parts;
 extern LIST BikeList;
 extern LIST LevelList;
-extern DWORD BufferedKey[];
 
 extern  BOOL ResetKillsPerLevel;
 
@@ -1878,15 +1877,13 @@ InitScene(void)
   Output    :   BOOL TRUE/FLASE
 ===================================================================*/
 
-extern void flush_keyboard( void );
 BOOL InitView( void )
 {
 	DebugPrintf("InitView Starting...\n");
 
 	CheatsDisabled = FALSE;
 
-	// flush keyboard buffer...
-	flush_keyboard();
+	reset_keyboard_buffer();
 
 	InitModeCase();
 

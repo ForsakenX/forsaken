@@ -105,7 +105,6 @@ extern float GlobalSoundAttenuation;
 extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
-extern LPDIRECTINPUTDEVICE lpdiBufferedKeyboard;
 extern BOOL MyUseShortPackets;
 extern BOOL MyResetKillsPerLevel;
 extern SNDLOOKUP SndLookup[];
@@ -177,9 +176,6 @@ extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
 extern int	Num_Joysticks;
 extern TLOADHEADER	Tloadheader;
-extern DIDEVICEOBJECTDATA rgod[DINPUT_BUFFERSIZE]; /* Receives buffered data */
-extern DWORD BufferedKey[];
-extern int16 NumKeysToProcess;
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
 extern float VduScaleX, VduScaleY;
@@ -5122,10 +5118,8 @@ void MenuRestart( MENU * Menu )
 	}
 	
 	FramesIgnored = 0;
-	memset( BufferedKey, 0, sizeof( DWORD ) * DINPUT_BUFFERSIZE );
-	// flush the keyboard buffer...
-	ReadBufferedKeyboard();
-	NumKeysToProcess = 0;
+
+	reset_keyboard_buffer();
 	
 	if ( !QuickStart )
 	{

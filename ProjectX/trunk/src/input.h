@@ -30,6 +30,7 @@ mouse_state_t mouse_state;
 SDL_keysym keyboard_buffer[MAX_KEY_BOARD_BUFFER];
 int keyboard_buffer_count;
 int buffered_key_released( SDLKey key );
+void reset_keyboard_buffer( void );
 
 int input_grabbed;
 void input_grab( BOOL grab );
