@@ -2147,7 +2147,6 @@ char NodeName[256];
   Output    :   nothing
 ===================================================================*/
 extern void ReleaseView(void);
-extern is_space_pressed(void);
 BOOL RenderScene( void )
 {
   uint16  i,e;
@@ -2510,11 +2509,10 @@ BOOL RenderScene( void )
 
     HostMultiPlayerTimeout -= framelag;
 
-    if( is_space_pressed() ||
-      ( OverallGameStatus == STATUS_WaitingAfterScore ) )
+    if( buffered_key_released( SDLK_SPACE ) || ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
 		FSClearBlack();
-      HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
+		HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
       {

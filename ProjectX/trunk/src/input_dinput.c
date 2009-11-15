@@ -17,11 +17,6 @@ DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 int               Num_Joysticks;
 RECT cursorclip;
 
-BOOL is_space_pressed( void )
-{
-	return buffered_key_released( SDLK_SPACE );
-}
-
 void flush_keyboard( void )
 {
 	if (lpdiBufferedKeyboard)
