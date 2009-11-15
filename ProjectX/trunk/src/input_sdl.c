@@ -194,7 +194,7 @@ void app_keyboard( SDL_KeyboardEvent key )
 	}
 	
 	// TODO - we'll probably want to rewrite code that depends on this to use the new
-	//        methods that use SDL_GetKeyState and provide functions such as IsKeyHeld
+	//        methods that use SDL_GetKeyState and provide functions such as IsKeyPressed
 	// TODO - we could probably have mouse events added here as keyboard events
 	//			to emulate mouse menu navigation... ex: right click maps to escape
 	if( key.type == SDL_KEYUP )

@@ -954,7 +954,7 @@ void ProcessGameKeys( void )
   if ( DebugInfo ) {
 
     // Shift Modifier
-    if ( IsKeyHeld( DIK_LSHIFT ) || IsKeyHeld( DIK_RSHIFT ) )
+    if ( SDL_GetModState() & KMOD_SHIFT )
     {
 
       // Shift + F1
@@ -965,7 +965,7 @@ void ProcessGameKeys( void )
           MenuExit();
 
       // Shift + Ctrl Modifier
-      if ( IsKeyHeld( DIK_LCONTROL ) || IsKeyHeld( DIK_RCONTROL ) )
+      if ( SDL_GetModState() & KMOD_CTRL )
       {
 
         // Shift + Ctrl + F2
@@ -1045,7 +1045,7 @@ void ProcessGameKeys( void )
 
     } // end shift modifier
     // CTRL Modifiers
-    else if ( IsKeyHeld( DIK_LCONTROL ) || IsKeyHeld( DIK_RCONTROL ) )
+    else if ( SDL_GetModState() & KMOD_CTRL )
     {
 
 		// Ctrl + F1
@@ -1166,7 +1166,7 @@ void ProcessGameKeys( void )
     {
 
       // Shift Modifier
-      if ( ( IsKeyHeld( DIK_LSHIFT ) || IsKeyHeld( DIK_RSHIFT ) ) )
+      if ( SDL_GetModState() & KMOD_SHIFT )
       {
 
         // Shift + F9

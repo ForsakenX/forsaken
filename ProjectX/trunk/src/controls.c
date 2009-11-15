@@ -928,7 +928,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
     }
   }
 
-  if ( ( IsKeyHeld( DIK_LCONTROL ) || IsKeyHeld( DIK_RCONTROL ) ) && ( key_pressed( &conf->send_msg ) ) && MyGameStatus == STATUS_Normal )
+  if ( ( SDL_GetModState() & KMOD_CTRL ) && key_pressed( &conf->send_msg ) && MyGameStatus == STATUS_Normal )
   {
     MenuRestart( &MENU_QuickTextSendWhisper );
   }else if ( ( key_pressed( &conf->send_msg ) ) && MyGameStatus == STATUS_Normal )
@@ -1033,14 +1033,6 @@ int AnyKeyReleased( void )
 int IsKeyPressed( int di_keycode )
 {
 	if ( KEY_PRESSED( di_keycode ) )
-		return 1;
-	return 0;
-}
-
-
-int IsKeyHeld( int di_keycode )
-{
-	if ( KEY_HELD( di_keycode ) )
 		return 1;
 	return 0;
 }
