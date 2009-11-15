@@ -469,6 +469,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\input_sdl.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\lights.c"
 				>
 			</File>
