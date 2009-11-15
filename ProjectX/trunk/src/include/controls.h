@@ -175,9 +175,6 @@ extern void
 ReadInput( void );
 
 extern int
-IsKeyPressed( int di_keycode );
-
-extern int
 WhichMousePressed( void );
 
 extern int

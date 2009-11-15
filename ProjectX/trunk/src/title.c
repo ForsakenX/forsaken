@@ -1781,7 +1781,7 @@ char show_f1[100] = "( press F1 to retry )";
 void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
-	if ( IsKeyPressed( DIK_F1 ) )
+	if ( buffered_key_released( SDLK_F1 ) )
 		network_join( host_address, host_port );
 
 	// process network routines

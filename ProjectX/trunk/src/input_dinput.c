@@ -19,7 +19,7 @@ RECT cursorclip;
 
 BOOL is_space_pressed( void )
 {
-	return IsKeyPressed( DIK_SPACE );
+	return buffered_key_released( SDLK_SPACE );
 }
 
 void flush_keyboard( void )

@@ -194,7 +194,7 @@ void app_keyboard( SDL_KeyboardEvent key )
 	}
 	
 	// TODO - we'll probably want to rewrite code that depends on this to use the new
-	//        methods that use SDL_GetKeyState and provide functions such as IsKeyPressed
+	//        methods that use SDL_GetKeyState and provide functions such as "is key held" etc..
 	// TODO - we could probably have mouse events added here as keyboard events
 	//			to emulate mouse menu navigation... ex: right click maps to escape
 	if( key.type == SDL_KEYUP )
@@ -208,6 +208,15 @@ void app_keyboard( SDL_KeyboardEvent key )
 void reset_keyboard_buffer( void )
 {
 	keyboard_buffer_count = 0;
+}
+
+int buffered_key_released( SDLKey key )
+{
+	int i;
+	for ( i = 0 ; i < keyboard_buffer_count; i++ )
+		if( keyboard_buffer[ i ].sym == key )
+			return 1;
+	return 0;
 }
 
 // mouse wheel button down/up are sent at same time

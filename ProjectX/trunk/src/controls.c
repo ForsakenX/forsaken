@@ -1029,14 +1029,6 @@ int AnyKeyReleased( void )
   return 0;
 }
 
-
-int IsKeyPressed( int di_keycode )
-{
-	if ( KEY_PRESSED( di_keycode ) )
-		return 1;
-	return 0;
-}
-
 int CheckMouse( void )
 {
   int k;
