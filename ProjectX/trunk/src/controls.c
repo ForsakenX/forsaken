@@ -1043,24 +1043,8 @@ int AnyKeyReleased( void )
 
 int IsKeyPressed( int di_keycode )
 {
-  switch( di_keycode )
-  {
-  case DIK_LBUTTON:
-    if ( MOUSE_BUTTON_PRESSED( 0 ) )
+   if ( KEY_PRESSED( di_keycode ) )
       return 1;
-    break;
-  case DIK_RBUTTON:
-    if ( MOUSE_BUTTON_PRESSED( 1 ) )
-      return 1;
-    break;
-  case DIK_MBUTTON:
-    if ( MOUSE_BUTTON_PRESSED( 2 ) )
-      return 1;
-    break;
-  default:
-    if ( KEY_PRESSED( di_keycode ) )
-      return 1;
-  }
   return 0;
 }
 

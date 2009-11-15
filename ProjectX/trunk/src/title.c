@@ -5045,15 +5045,6 @@ Display Solid Lines
 		break;
 	}
 
-
-
-#if 0
-	if ( IsKeyPressed( DIK_NUMPAD0 ) )
-	{
-		TitleReset( NULL );
-	}
-#endif
-
 /****************************************/
 	ProcessHoloModel();
 	GetTitleMessage();
