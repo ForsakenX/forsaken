@@ -3,8 +3,11 @@
 
 #define DIRECTINPUT_VERSION 0x0700
 
+#include "SDL.h"
 #include "dinput.h"
 #include "controls.h"
+
+#define MAX_MOUSE_BUTTONS (3)
 
 typedef struct {
 
@@ -12,15 +15,11 @@ typedef struct {
 	int wheel;
 
 	// left (0) , middle (1) , right (2)
-	int buttons[3];
+	int buttons[MAX_MOUSE_BUTTONS];
 
 	// relative mouse location
 	int xrel; 
 	int yrel;
-
-	// absolute mouse location
-	//int x;
-	//int y;
 
 } mouse_state_t;
 
