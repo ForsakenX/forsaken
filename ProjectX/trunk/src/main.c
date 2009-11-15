@@ -709,10 +709,6 @@ int main( int argc, char* argv[] )
 
 	while( !QuitRequested )
 	{
-		// window/input events
-		if(!handle_events())
-			goto FAILURE;
-		
         // Attempt to render a frame, if it fails, take a note.  If
         // rendering fails more than twice, abort execution.
         if( !RenderLoop() )
@@ -733,6 +729,12 @@ int main( int argc, char* argv[] )
 
         }
 
+		// process system events
+		// leave this at the end of the loop cause it wipes out all events
+		// we want the rest of the game to have a chance to peep events
+		if(!handle_events())
+			goto FAILURE;
+		
 		// call the sound proccesses
 		ProcessSoundRoutines( NULL );
 
