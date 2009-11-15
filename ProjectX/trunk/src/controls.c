@@ -628,6 +628,7 @@ again:;
 // TODO - this should probably just use SDL_GetMouseState , no need for the event saving then
 static void ReadMouse( int dup_last )
 {
+	int i;
 	if ( dup_last )
 	{
 		mouse_states[ new_input ] = mouse_states[ old_input ];
@@ -637,9 +638,8 @@ static void ReadMouse( int dup_last )
 	mouse_states[ new_input ].xrel = mouse_state.xrel;
 	mouse_states[ new_input ].yrel = mouse_state.yrel;
 	mouse_states[ new_input ].wheel = mouse_state.wheel;
-	mouse_states[ new_input ].buttons[ 0 ] = mouse_state.buttons[ 0 ]; // left
-	mouse_states[ new_input ].buttons[ 1 ] = mouse_state.buttons[ 2 ]; // right
-	mouse_states[ new_input ].buttons[ 2 ] = mouse_state.buttons[ 1 ]; // middle
+	for ( i = 0; i < MAX_MOUSE_BUTTONS; i++ )
+		mouse_states[ new_input ].buttons[ i ] = mouse_state.buttons[ i ];
 }
 
 float framelagfix = 0.0F;

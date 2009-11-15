@@ -6,7 +6,7 @@
 
 #define MAX_KEYS_PER_CONTROL	(8)
 
-#define MAX_MOUSE_BUTTONS		(4)
+#define MAX_MOUSE_BUTTONS		(3)
 
 #define MAX_PRIMARY_WEAPONS		(6)
 #define MAX_SECONDARY_WEAPONS	(11)
@@ -20,8 +20,8 @@
 
 #define DIK_MOUSE				(0x100)
 #define DIK_LBUTTON				(0x100)
-#define DIK_RBUTTON				(0x101)
-#define DIK_MBUTTON				(0x102)
+#define DIK_MBUTTON				(0x101)
+#define DIK_RBUTTON				(0x102)
 #define DIK_TBUTTON				(0x103)
 #define DIK_WHEELUP				(0x104)
 #define DIK_WHEELDOWN			(0x105)
