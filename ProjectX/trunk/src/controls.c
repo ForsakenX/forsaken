@@ -350,11 +350,14 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue);
 
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
+
+
+// this function receives higher level encoded bits
+
 #ifdef USEINLINE
 __inline
 #endif
- short
-key_pressed( USERKEY *k )
+short key_pressed( USERKEY *k )
 {
   int j;
   VirtualKeycode c;
@@ -371,19 +374,16 @@ key_pressed( USERKEY *k )
     {
       switch( c )
       {
-      case DIK_LBUTTON:
-      case DIK_RBUTTON:
-      case DIK_MBUTTON:
-      case DIK_TBUTTON:
-        if ( MOUSE_BUTTON_PRESSED( c - DIK_LBUTTON ) )
-          return 1;
-        break;
       case DIK_WHEELUP:
         if ( MOUSE_WHEEL_UP_PRESSED() )
           return 1;
         break;
       case DIK_WHEELDOWN:
         if ( MOUSE_WHEEL_DOWN_PRESSED() )
+          return 1;
+        break;
+	  default:
+        if ( MOUSE_BUTTON_PRESSED( c - DIK_MOUSE ) )
           return 1;
         break;
       }
@@ -417,6 +417,8 @@ key_pressed( USERKEY *k )
   return 0;
 }
 
+// this function receives higher level encoded bits
+
 #ifdef USEINLINE
 __inline
 #endif
@@ -437,19 +439,16 @@ short key_held( USERKEY *k )
     {
       switch( c )
       {
-      case DIK_LBUTTON:
-      case DIK_RBUTTON:
-      case DIK_MBUTTON:
-      case DIK_TBUTTON:
-        if ( MOUSE_BUTTON_HELD( c - DIK_LBUTTON ) )
-          return 1;
-        break;
       case DIK_WHEELUP:
         if ( MOUSE_WHEEL_UP() )
           return 1;
         break;
       case DIK_WHEELDOWN:
         if ( MOUSE_WHEEL_DOWN() )
+          return 1;
+        break;
+	  default:
+        if ( MOUSE_BUTTON_HELD( c - DIK_MOUSE ) )
           return 1;
         break;
       }
