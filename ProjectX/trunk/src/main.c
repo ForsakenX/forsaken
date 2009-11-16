@@ -684,6 +684,7 @@ int main( int argc, char* argv[] )
     int failcount = 0; // number of times RenderLoop has failed
 
 	// build cli string
+	// TODO - cli parsing should be updated
 	strncpy(cli, " ", 500);
 	for ( i=1; i<argc; i++ )
 	{
