@@ -738,7 +738,7 @@ int main( int argc, char* argv[] )
 
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )
-			Sleep( cliSleep );
+			SDL_Delay( cliSleep );
 	}
 
 FAILURE:
