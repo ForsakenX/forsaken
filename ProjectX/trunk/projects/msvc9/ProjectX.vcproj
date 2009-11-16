@@ -16,8 +16,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug OpenGL|Win32"
-			OutputDirectory=".\temp\debug\"
-			IntermediateDirectory=".\temp\debug\trash"
+			OutputDirectory=".\temp\debug_gl\"
+			IntermediateDirectory=".\temp\debug_gl\trash"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -41,7 +41,7 @@
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\temp\debug\ProjectX.tlb"
+				TypeLibraryName=".\temp\debug_gl\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
@@ -53,10 +53,10 @@
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\debug\trash\ProjectX.pch"
-				AssemblerListingLocation=".\temp\debug\trash\"
-				ObjectFile=".\temp\debug\trash\"
-				ProgramDataBaseFileName=".\temp\debug\trash\"
+				PrecompiledHeaderFile=".\temp\debug_gl\trash\ProjectX.pch"
+				AssemblerListingLocation=".\temp\debug_gl\trash\"
+				ObjectFile=".\temp\debug_gl\trash\"
+				ProgramDataBaseFileName=".\temp\debug_gl\trash\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -80,7 +80,7 @@
 				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/MACHINE:I386"
 				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib"
-				OutputFile="debug.exe"
+				OutputFile="debug_gl.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib\enet;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
