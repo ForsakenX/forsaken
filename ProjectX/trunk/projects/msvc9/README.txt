@@ -1,63 +1,40 @@
 
-!!!! WARNING !!!!
-
-	THESE SETUP INSTRUCTIONS ARE ONLY A GUIDE.
-	THEY ARE COMPLETELY OUTDATED..
-
-
+				...General Instructions...
 
 Requirements:
 
-  VISUAL STUDIO 2005 Express C++ Edition
-  (Note: Visual Studio 2008 Express C++ Edition inflates executable file size by ~300KB and will not run on Windows ME/9X)
+	Visual Studios C++ 2008 Express
 
-  Windows 2003 Platform SDK R2
+	Windows 2003 Platform SDK
 
-  Enet
+	DirectX SDK
+
 
 Environment Variables:
 
-  NOTE: Right click "My Computer" -> Advanced -> "Environment Variables"
+	You can set these environment variable or add the paths to include/lib directories in vs manually.
 
-  MSSDK_DIR = C:\Program Files\Microsoft Platform SDK for Windows Server 2003 R2\
+		MSSDK_DIR =  path to your Window 2003 Platform SDK
+		DXSDK_DIR =  path to your DirectX SDK
 
-  NOTE: Restart Visual Studio
-
-Visual Studio Directories:
-
-  Includes:
-
-    $(MSSDK_DIR)\include
-    $(MSSDK_DIR)\include\mfc
-
-  Libraries:
-
-   $(MSSDK_DIR)\Lib
 
 Templates:
 
 	copy and edit src/version.h.template to projects/msvc9/version.h
 
+
 Debugging:
 
-  Default Debugger: (this may not be needed for you)
+	Default Debugger:
+	
+		This may not be needed for you
 
-	Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
-	Value: "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv.exe" -p %ld -e %ld
+			Key: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\AeDebug
+			Value: "C:\Program Files\Microsoft Visual Studio 8\Common7\IDE\devenv.exe" -p %ld -e %ld
 
-  Visual Studios:
+	Visual Studios:
 
-	project -> propeteries -> debuggin -> command line arguments
+		project -> propeteries -> debuggin -> command line arguments
 
-  	-debug -chdir c:\\path\\to\\your\\skeleton
-
-  Explanation:
-  
-	debug:
-
-	  log files and debuggin error messages.
-
-	chdir:
-
-	  so the exe can find all the files.
+			-window -sleep:1 -debug -chdir ..\\..\\skeleton
 
