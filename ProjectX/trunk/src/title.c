@@ -14512,7 +14512,7 @@ void SendQuickText( MENUITEM *Item )
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 	QuickText.text[0] = 0;
 	JustExitedMenu = FALSE;
-	//flush_input = TRUE;
+	flush_input = TRUE;
 }
 void SendQuickTextWhisper( MENUITEM *Item )
 {
@@ -14522,7 +14522,7 @@ void SendQuickTextWhisper( MENUITEM *Item )
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTauntWhisper, 0);
 	QuickTextWhisper.text[0] = 0;
 	JustExitedMenu = FALSE;
-	//flush_input = TRUE;
+	flush_input = TRUE;
 }
 
 

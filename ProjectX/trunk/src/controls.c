@@ -77,8 +77,6 @@ extern  int FontHeight;
     Some Keyboard and Mouse Globals
 ===================================================================*/
 
-#define MAX_KEYS      (256)
-
 #define MOUSE_ZSTEP     (120)
 
 #define MAX_MOUSE_DELTA_X (40.0F)
@@ -87,9 +85,9 @@ extern  int FontHeight;
 #define MouseXFactor    (  1.0F / ( MAX_MOUSE_DELTA_X * MAX_MOUSE_DELTA_X ) )
 #define MouseYFactor    ( -1.0F / ( MAX_MOUSE_DELTA_Y * MAX_MOUSE_DELTA_Y ) )
 
-#define KEY_HELD( K )     ( KeyState[ new_input ][ K ] & 0x80 )
-#define KEY_PRESSED( K )    ( !( KeyState[ old_input ][ K ] & 0x80) && ( KeyState[ new_input ][ K ] & 0x80 ) )
-#define KEY_RELEASED( K )   ( ( KeyState[ old_input ][ K ] & 0x80) && !( KeyState[ new_input ][ K ] & 0x80 ) )
+#define KEY_HELD( K )     ( key_state[ new_input ][ K ] )
+#define KEY_PRESSED( K )    ( !( key_state[ old_input ][ K ] ) && ( key_state[ new_input ][ K ] ) )
+#define KEY_RELEASED( K )   ( ( key_state[ old_input ][ K ] ) && !( key_state[ new_input ][ K ] ) )
 
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
@@ -98,8 +96,6 @@ extern  int FontHeight;
 #define JOYSTICK_POV_HELD( J, P, D )    ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 )
 #define JOYSTICK_POV_PRESSED( J, P, D )   ( !( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
 #define JOYSTICK_POV_RELEASED( J, P, D )  ( ( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && !( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
-
-extern VIRTUALKEYMAP vkey_map[];
 
 int GetPOVMask( DWORD pov );
 
@@ -111,7 +107,6 @@ DIJOYSTATE2   js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
 BYTE      js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
 
-extern LPDIRECTINPUTDEVICE lpdiKeyboard;
 extern LPDIRECTINPUTDEVICE2 lpdiJoystick[MAX_JOYSTICKS];
 extern MENU MENU_QuickTextSend;
 extern MENU MENU_QuickTextSendWhisper;
@@ -124,7 +119,8 @@ BOOL flush_input = TRUE;
 
 static uint16 old_input = 0;
 uint16 new_input = 1;
-static uint8 KeyState[ INPUT_BUFFERS ][ MAX_KEYS ];
+
+Uint8 key_state[ INPUT_BUFFERS ][ SDLK_LAST ];
 
 char *ShipActionText[NUM_SHIP_ACTIONS] = {
   "No Action",
@@ -319,10 +315,10 @@ static struct
   int next;
 } CheatTable[] = 
 {
-  { { DIK_B, DIK_U, DIK_B, DIK_B, DIK_L, DIK_E, DIK_S, 0 }, EnableCheats, TRUE },
-  { { DIK_J, DIK_I, DIK_M, DIK_B, DIK_E, DIK_A, DIK_M, 0 }, JimBeam, FALSE },
-  { { DIK_L, DIK_U, DIK_M, DIK_B, DIK_E, DIK_R, DIK_J, DIK_A, DIK_C, DIK_K, 0 }, Lumberjack, FALSE },
-  { { DIK_I, DIK_A, DIK_M, DIK_Z, DIK_E, DIK_U, DIK_S, 0 }, ToggleGodMode, FALSE },
+  { { SDLK_b, SDLK_u, SDLK_b, SDLK_b, SDLK_l, SDLK_e, SDLK_s, 0 }, EnableCheats, TRUE },
+  { { SDLK_j, SDLK_i, SDLK_m, SDLK_b, SDLK_e, SDLK_a, SDLK_m, 0 }, JimBeam, FALSE },
+  { { SDLK_l, SDLK_u, SDLK_m, SDLK_b, SDLK_e, SDLK_r, SDLK_j, SDLK_a, SDLK_c, SDLK_k, 0 }, Lumberjack, FALSE },
+  { { SDLK_i, SDLK_a, SDLK_m, SDLK_z, SDLK_e, SDLK_u, SDLK_s, 0 }, ToggleGodMode, FALSE },
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
 
@@ -359,16 +355,16 @@ short key_pressed( USERKEY *k )
     {
       switch( c )
       {
-      case DIK_WHEELUP:
+      case UP_MOUSE:
         if ( MOUSE_WHEEL_UP_PRESSED() )
           return 1;
         break;
-      case DIK_WHEELDOWN:
+      case DOWN_MOUSE:
         if ( MOUSE_WHEEL_DOWN_PRESSED() )
           return 1;
         break;
 	  default:
-        if ( MOUSE_BUTTON_PRESSED( c - DIK_MOUSE ) )
+        if ( MOUSE_BUTTON_PRESSED( c - LEFT_MOUSE ) )
           return 1;
         break;
       }
@@ -424,16 +420,16 @@ short key_held( USERKEY *k )
     {
       switch( c )
       {
-      case DIK_WHEELUP:
+      case UP_MOUSE:
         if ( MOUSE_WHEEL_UP() )
           return 1;
         break;
-      case DIK_WHEELDOWN:
+      case DOWN_MOUSE:
         if ( MOUSE_WHEEL_DOWN() )
           return 1;
         break;
 	  default:
-        if ( MOUSE_BUTTON_HELD( c - DIK_MOUSE ) )
+        if ( MOUSE_BUTTON_HELD( c - LEFT_MOUSE ) )
           return 1;
         break;
       }
@@ -527,21 +523,22 @@ void CheckCheats( VirtualKeycode key )
   }
 }
 
-static void ReadKeyboard( int dup_last )
+static void ReadKeyboard( void )
 {
-  int j;
+	int i, nkeys;
+	Uint8 * keys;
 
-  if ( dup_last )
-  {
-    for ( j = 0; j < MAX_KEYS; j++ )
-      KeyState[ new_input ][ j ] = KeyState[ old_input ][ j ];
-  }
-  else if( !lpdiKeyboard || IDirectInputDevice_GetDeviceState( lpdiKeyboard, sizeof( KeyState[ 0 ] ), KeyState[ new_input ] ) != DI_OK || flush_input )
-    {
-        // failed to read the keyboard
-    for ( j = 0; j < MAX_KEYS; j++ )
-      KeyState[ new_input ][ j ] = 0;
-    }
+	if( flush_input )
+	{
+		memset( &key_state[ new_input ], 0, SDLK_LAST );
+		return;
+	}
+
+	keys = SDL_GetKeyState( &nkeys );
+	memset( &key_state[ new_input ], 0, SDLK_LAST );
+
+	for( i = 0; i < SDLK_LAST; i++ )
+		key_state[ new_input ][ i ] = keys[ i ];
 }
 
 // TODO - this could use SDL_GetMouseState instead of all the event processing
@@ -591,7 +588,7 @@ void ReadInput( void )
   }
 
   /* read keyboard input */
-  ReadKeyboard( 0 );
+  ReadKeyboard();
 
   /* read joysticks inputs */
   for (i = 0; i < Num_Joysticks; i++)
@@ -910,41 +907,16 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 int AnyKeyReleased( void )
 {
   int k;
-  static VirtualKeycode null_key[] =
-  {
-    DIK_ESCAPE,
-    DIK_F1,
-    DIK_F2,
-    DIK_F3,
-    DIK_F4,
-    DIK_F5,
-    DIK_F6,
-    DIK_F7,
-    DIK_F8,
-    DIK_F9,
-    DIK_F10,
-    DIK_F11,
-    DIK_F12,
-    DIK_F13,
-    DIK_F14,
-    DIK_F15,
-    (VirtualKeycode) -1,
-  };
 
   if ( CurrentMenu )
     return 0;
 
-  for ( k = 0; null_key[ k ] != (VirtualKeycode) -1; k++ )
-  {
-    if ( KEY_RELEASED( null_key[ k ] ) )
-      return 0;
-  }
-
-  for ( k = 0; k < MAX_KEYS; k++ )
+  for ( k = 0; k < SDLK_LAST; k++ )
   {
     if ( KEY_RELEASED( k ) )
       return 1;
   }
+
   for ( k = 0; k < MAX_MOUSE_BUTTONS; k++ )
   {
     if ( MOUSE_BUTTON_RELEASED( k ) )
@@ -959,40 +931,6 @@ int AnyKeyReleased( void )
   return 0;
 }
 
-int CheckMouse( void )
-{
-  int k;
-  int key;
-
-  key = 0;
-  for ( k = 0; k < MAX_MOUSE_BUTTONS; k++ )
-  {
-    if ( MOUSE_BUTTON_PRESSED( k ) )
-    {
-      if ( !key )
-        key = DIK_MOUSE + k;
-      else
-        return 0;
-    }
-  }
-  if ( MOUSE_WHEEL_UP() )
-  {
-    if ( !key )
-      key = DIK_WHEELUP;
-    else
-      return 0;
-  }
-  if ( MOUSE_WHEEL_DOWN() )
-  {
-    if ( !key )
-      key = DIK_WHEELDOWN;
-    else
-      return 0;
-  }
-
-  return key;
-}
-
 int WhichMousePressed( void )
 {
   int k;
@@ -1004,7 +942,7 @@ int WhichMousePressed( void )
     if ( MOUSE_BUTTON_PRESSED( k ) )
     {
       if ( !key )
-        key = DIK_MOUSE + k;
+        key = LEFT_MOUSE + k;
       else
         return 0;
     }
@@ -1012,14 +950,14 @@ int WhichMousePressed( void )
   if ( MOUSE_WHEEL_UP_PRESSED() )
   {
     if ( !key )
-      key = DIK_WHEELUP;
+      key = UP_MOUSE;
     else
       return 0;
   }
   if ( MOUSE_WHEEL_DOWN_PRESSED() )
   {
     if ( !key )
-      key = DIK_WHEELDOWN;
+      key = DOWN_MOUSE;
     else
       return 0;
   }

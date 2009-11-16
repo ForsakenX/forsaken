@@ -9,8 +9,7 @@
 
 extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS]; 
 
-LPDIRECTINPUT                   lpdi = NULL;
-LPDIRECTINPUTDEVICE       lpdiKeyboard = NULL;
+LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 int               Num_Joysticks;
@@ -231,10 +230,9 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
 extern HINSTANCE hInstApp;
 extern render_info_t render_info;
 
-BOOL InitDInput(void)
+BOOL InitDInputJS(void)
 {
   HRESULT  err;
-  GUID     guid_keyboard	= GUID_SysKeyboard;
   DIPROPDWORD dipdw =
         {
             {
@@ -255,28 +253,6 @@ BOOL InitDInput(void)
     {
 		return FALSE;
     }
-
-    // try to create keyboard device
-    if(IDirectInput_CreateDevice(lpdi, &guid_keyboard, &lpdiKeyboard, NULL) !=DI_OK)
-    {
-            goto fail;
-    }
-
-    // Tell DirectInput that we want to receive data in keyboard format
-    if (IDirectInputDevice_SetDataFormat(lpdiKeyboard, &c_dfDIKeyboard) != DI_OK)
-    {
-            goto fail;
-    }
-
-    // set cooperative level
-    if(IDirectInputDevice_SetCooperativeLevel(lpdiKeyboard, render_info.window,
-                     DISCL_EXCLUSIVE | DISCL_FOREGROUND) != DI_OK)
-    {
-            goto fail;
-    }
-
-    // try to acquire the keyboard
-    err = IDirectInputDevice_Acquire(lpdiKeyboard);
 
   // try to create Joystick devices
   for ( i = 0; i < MAX_JOYSTICKS; i++ )
@@ -339,7 +315,8 @@ BOOL InitDInput(void)
       {
         failjoystick = TRUE;
       }
-    }else
+    }
+	else
     {
       failjoystick = TRUE;
     }
@@ -351,52 +328,18 @@ BOOL InitDInput(void)
       IDirectInputDevice2_Release(lpdiJoystick[i]);
       lpdiJoystick[i] = NULL;
     }
-#if NOW_DONE_INSIDE_DEFAULTJOYSTICKSETTINGS
-    SetUpJoystickAxis(i);
 
-     // if spaceorb...
-    if ( !_stricmp( JoystickInfo[i].Name, "Spacetec SpaceOrb 360" ) )
-    {
-      DebugPrintf("Spaceorb detected - auto configuring axis...\n");
-      ConfigureSpaceorbAxis( i );
-    }
-#endif
   }
 
-  DebugPrintf( "InitDInput: %d joysticks connected\n", Num_Joysticks );
+  DebugPrintf( "InitDInputJS: %d joysticks connected\n", Num_Joysticks );
 
   // if we get here, all DirectInput objects were created ok
   return TRUE;
-
-fail:
-	if (lpdiKeyboard)  
-		IDirectInputDevice_Release(lpdiKeyboard), lpdiKeyboard = NULL;
-
-	for (i = 0; i < Num_Joysticks; i++)
-	{
-		if (lpdiJoystick[i])
-		{
-			IDirectInputDevice2_Release(lpdiJoystick[i]);
-			lpdiJoystick[i] = NULL;
-		}
-	}
-
-	if (lpdi)   
-		IDirectInputDevice_Release(lpdi), lpdi = NULL;
-
-	return FALSE;    
 }
 
 BOOL TermDInput( void )
 {
     int i;
-
-    if (lpdiKeyboard)
-  {
-    IDirectInputDevice_Unacquire(lpdiKeyboard);
-    IDirectInputDevice_Release(lpdiKeyboard);
-    lpdiKeyboard  = NULL;
-  }
 
   for (i = 0; i < Num_Joysticks; i++)
   {
@@ -452,19 +395,3 @@ void  ReleaseJoysticks( void )
   }
 }
 
-void input_grab( BOOL grab )
-{
-	// always acquire and hide mouse if in fullscreen
-	if( render_info.bFullscreen )
-	{
-		input_grabbed = TRUE;
-		SDL_WM_GrabInput( TRUE );
-		SDL_ShowCursor( FALSE );
-		return;
-	}
-	// window mode
-	input_grabbed = grab;
-	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
-	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
-	DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
-}

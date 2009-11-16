@@ -350,8 +350,6 @@ extern  SLIDER  DemoEyesSelect;
 extern  BOOL  ShowWeaponKills;
 extern  BOOL ShowStats; 
 
-extern  BOOL  flush_input; // tells control routines to ignore next player input
-
 extern  uint16  IsGroupVisible[MAXGROUPS];
 
 extern  MXLOADHEADER ModelHeaders[MAXMODELHEADERS];

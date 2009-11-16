@@ -15,21 +15,15 @@
 #define MAX_JOYSTICK_TEXT		128
 #define MAX_JOYNAME				16	// length of joystick object description, ie. "X Axis"
 
-#define DIK_MOUSE				(0x100)
-#define DIK_LBUTTON				(0x100)
-#define DIK_MBUTTON				(0x101)
-#define DIK_RBUTTON				(0x102)
-#define DIK_WHEELUP				(0x103)
-#define DIK_WHEELDOWN			(0x104)
-
-#define DIK_JOYSTICK			(0x200)
+#define DIK_JOYSTICK			(0x300)
 #define DIK_JOYSTICK_POV		(0x080)
 
 #define JOYSTICK_BUTTON_KEYCODE( J, B )		( DIK_JOYSTICK | ( ( (J) & 0x0F ) << 12 ) | ( (B) & 0x7F ) )
 #define JOYSTICK_POVDIR_KEYCODE( J, P, D )	( DIK_JOYSTICK | DIK_JOYSTICK_POV | ( ( (J) & 0x0F ) << 12 ) | ( ( (P) & 0x03 ) << 2 ) | ( (D) & 0x03 ) )
 
-#define KEY_ON_KEYBOARD( K )				( (K) < DIK_MOUSE )
-#define KEY_ON_MOUSE( K )					( (K) & DIK_MOUSE )
+#define KEY_ON_KEYBOARD( K )				( (K) < SDLK_LAST )
+#define KEY_ON_MOUSE( K )					( (K) > SDLK_LAST && (K) < DIK_JOYSTICK )
+
 #define KEY_ON_JOYSTICK( K )				( (K) & DIK_JOYSTICK )
 #define KEY_ON_JOYSTICK_BUTTON( K )			!( (K) & DIK_JOYSTICK_POV )
 #define KEY_ON_JOYSTICK_POV( K )			( (K) & DIK_JOYSTICK_POV )

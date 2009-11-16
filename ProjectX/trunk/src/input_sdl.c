@@ -17,6 +17,23 @@ extern BOOL QuitRequested;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
 
+void input_grab( BOOL grab )
+{
+	// always acquire and hide mouse if in fullscreen
+	if( render_info.bFullscreen )
+	{
+		input_grabbed = TRUE;
+		SDL_WM_GrabInput( TRUE );
+		SDL_ShowCursor( FALSE );
+		return;
+	}
+	// window mode
+	input_grabbed = grab;
+	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
+	DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
+}
+
 //
 // Window/Input Events
 //

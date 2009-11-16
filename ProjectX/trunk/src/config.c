@@ -51,51 +51,51 @@ USERCONFIG default_config = {
 	0,								// roll control...
 	0.05F,							// autolevel rate
 //	{ num_keys, { key list [ num_keys ] } },
-	{ 2,	{ DIK_UP,		DIK_NUMPAD8	} },	// pitch forward
-	{ 2,	{ DIK_DOWN,		DIK_NUMPAD2	} },	// pitch backward
-	{ 2,	{ DIK_LEFT,		DIK_NUMPAD4	} },	// yaw left
-	{ 2,	{ DIK_RIGHT,	DIK_NUMPAD6	} },	// yaw right
-	{ 2,	{ DIK_Q,		DIK_NUMPAD7	} },	// roll left
-	{ 2,	{ DIK_E,		DIK_NUMPAD9	} },	// roll right
-	{ 1,	{ DIK_NUMPAD1 } },					// slide left
-	{ 1,	{ DIK_NUMPAD3 } },					// slide right
-	{ 1,	{ DIK_SUBTRACT } },					// slide up
-	{ 1,	{ DIK_ADD } },						// slide down
-	{ 1,	{ DIK_A	} },						// forward
-	{ 1,	{ DIK_Z	} },						// backward
-	{ 1,	{ DIK_LMENU	} },					// slide
+	{ 2,	{ SDLK_DOWN	} },					// pitch forward
+	{ 2,	{ SDLK_UP	} },					// pitch backward
+	{ 2,	{ SDLK_LEFT	} },					// yaw left
+	{ 2,	{ SDLK_RIGHT	} },				// yaw right
+	{ 2,	{ SDLK_q		} },				// roll left
+	{ 2,	{ SDLK_e		} },				// roll right
+	{ 1,	{ SDLK_1 } },						// slide left
+	{ 1,	{ SDLK_3 } },						// slide right
+	{ 1,	{ SDLK_KP_MINUS } },				// slide up
+	{ 1,	{ SDLK_KP_PLUS } },					// slide down
+	{ 1,	{ SDLK_a	} },					// forward
+	{ 1,	{ SDLK_z	} },					// backward
+	{ 1,	{ SDLK_LALT	} },					// slide
 	{ 0 },										// roll
-	{ 1,	{ DIK_S	} },						// turbo
+	{ 1,	{ SDLK_s	} },					// turbo
 	{ 0 },										// cruise faster
 	{ 0 },										// cruise slower
-	{ 2,	{ DIK_LBUTTON, DIK_LCONTROL } },	// fire primary
-	{ 2,	{ DIK_RBUTTON, DIK_SPACE } },		// fire secondary
-	{ 1,	{ DIK_B } },						// fire mine
-	{ 1,	{ DIK_NEXT } },						// select next primary
-	{ 1,	{ DIK_PRIOR } },					// select prev primary
-	{ 1,	{ DIK_HOME } },						// select next secondary
-	{ 1,	{ DIK_END } },						// select prev secondary
-	{ 1,	{ DIK_R } },						// select rear view
-	{ 1,	{ DIK_H } },						// toggle headlights
+	{ 2,	{ LEFT_MOUSE } },					// fire primary
+	{ 2,	{ RIGHT_MOUSE } },					// fire secondary
+	{ 1,	{ SDLK_b } },						// fire mine
+	{ 1,	{ SDLK_PAGEDOWN } },					// select next primary
+	{ 1,	{ SDLK_PAGEUP } },					// select prev primary
+	{ 1,	{ SDLK_HOME } },					// select next secondary
+	{ 1,	{ SDLK_END } },						// select prev secondary
+	{ 1,	{ SDLK_r } },						// select rear view
+	{ 1,	{ SDLK_h } },						// toggle headlights
 	{
-		{ 1, { DIK_GRAVE } },					// select primary #1
-		{ 1, { DIK_1	} },					// select primary #2
-		{ 1, { DIK_4	} },					// select primary #3
-		{ 1, { DIK_3	} },					// select primary #4
-		{ 1, { DIK_2	} },					// select primary #5
-		{ 1, { DIK_5	} },					// select primary #6
+		{ 1, { SDLK_BACKQUOTE } },				// select primary #1
+		{ 1, { SDLK_1	} },					// select primary #2
+		{ 1, { SDLK_4	} },					// select primary #3
+		{ 1, { SDLK_3	} },					// select primary #4
+		{ 1, { SDLK_2	} },					// select primary #5
+		{ 1, { SDLK_5	} },					// select primary #6
 	},
 	{
-		{ 1, { DIK_6 } },						// select secondary #1
-		{ 1, { DIK_7 } },						// select secondary #2
+		{ 1, { SDLK_6 } },						// select secondary #1
+		{ 1, { SDLK_7 } },						// select secondary #2
 		{ 0	},									// select secondary #3 (thief missile -- not used)
-		{ 1, { DIK_8 } },						// select secondary #4
-		{ 1, { DIK_9 } },						// select secondary #5
-		{ 1, { DIK_0 } },						// select secondary #6
-		{ 1, { DIK_MINUS } },					// select secondary #7
-		{ 1, { DIK_Y } },						// select secondary #8
-		{ 1, { DIK_U } },						// select secondary #9
-		{ 1, { DIK_I } },						// select secondary #10
+		{ 1, { SDLK_8 } },						// select secondary #4
+		{ 1, { SDLK_9 } },						// select secondary #5
+		{ 1, { SDLK_0 } },						// select secondary #6
+		{ 1, { SDLK_MINUS } },					// select secondary #7
+		{ 1, { SDLK_y } },						// select secondary #8
+		{ 1, { SDLK_u } },						// select secondary #9
+		{ 1, { SDLK_i } },						// select secondary #10
 		{ 0 },									// select secondary #11 (spider mine -- not used)
 	},
 	{ 0 },										// drop primary
@@ -104,7 +104,7 @@ USERCONFIG default_config = {
 	{ 0 },										// drop ammo
 	{ 0 },										// show messages
 	{ 0 },										// show statistics
-	{ 1, { DIK_RETURN } },				// send text message
+	{ 1, { SDLK_RETURN } },				// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0 },					// send speech taunt
 #endif
@@ -168,51 +168,51 @@ USERCONFIG my_controls = {
 	0,								// roll control...
 	0.05F,							// autolevel rate
 //	{ num_keys, { key list [ num_keys ] } },
-	{ 2,	{ DIK_UP,		DIK_NUMPAD8	} },	// pitch forward
-	{ 2,	{ DIK_DOWN,		DIK_NUMPAD2	} },	// pitch backward
-	{ 2,	{ DIK_LEFT,		DIK_NUMPAD4	} },	// yaw left
-	{ 2,	{ DIK_RIGHT,	DIK_NUMPAD6	} },	// yaw right
-	{ 2,	{ DIK_Q,		DIK_NUMPAD7	} },	// roll left
-	{ 2,	{ DIK_E,		DIK_NUMPAD9	} },	// roll right
-	{ 1,	{ DIK_NUMPAD1 } },					// slide left
-	{ 1,	{ DIK_NUMPAD3 } },					// slide right
-	{ 1,	{ DIK_SUBTRACT } },					// slide up
-	{ 1,	{ DIK_ADD } },						// slide down
-	{ 1,	{ DIK_A	} },						// forward
-	{ 1,	{ DIK_Z	} },						// backward
-	{ 1,	{ DIK_LMENU	} },					// slide
+	{ 2,	{ SDLK_UP	} },	// pitch forward
+	{ 2,	{ SDLK_DOWN	} },	// pitch backward
+	{ 2,	{ SDLK_LEFT	} },	// yaw left
+	{ 2,	{ SDLK_RIGHT	} },	// yaw right
+	{ 2,	{ SDLK_q		} },	// roll left
+	{ 2,	{ SDLK_e		} },	// roll right
+	{ 1,	{ SDLK_1 } },					// slide left
+	{ 1,	{ SDLK_3 } },					// slide right
+	{ 1,	{ SDLK_KP_MINUS } },					// slide up
+	{ 1,	{ SDLK_KP_PLUS } },						// slide down
+	{ 1,	{ SDLK_a	} },						// forward
+	{ 1,	{ SDLK_z	} },						// backward
+	{ 1,	{ SDLK_LALT	} },					// slide
 	{ 0 },										// roll
-	{ 1,	{ DIK_S	} },						// turbo
+	{ 1,	{ SDLK_s	} },						// turbo
 	{ 0 },										// cruise faster
 	{ 0 },										// cruise slower
-	{ 2,	{ DIK_LBUTTON, DIK_LCONTROL } },	// fire primary
-	{ 2,	{ DIK_RBUTTON, DIK_SPACE } },		// fire secondary
-	{ 1,	{ DIK_B } },						// fire mine
-	{ 1,	{ DIK_NEXT } },						// select next primary
-	{ 1,	{ DIK_PRIOR } },					// select prev primary
-	{ 1,	{ DIK_HOME } },						// select next secondary
-	{ 1,	{ DIK_END } },						// select prev secondary
-	{ 1,	{ DIK_R } },						// select rear view
-	{ 1,	{ DIK_H } },						// toggle headlights
+	{ 2,	{ LEFT_MOUSE	} },	// fire primary
+	{ 2,	{ RIGHT_MOUSE	} },		// fire secondary
+	{ 1,	{ SDLK_b } },						// fire mine
+	{ 1,	{ SDLK_PAGEDOWN } },						// select next primary
+	{ 1,	{ SDLK_PAGEUP } },					// select prev primary
+	{ 1,	{ SDLK_HOME } },						// select next secondary
+	{ 1,	{ SDLK_END } },						// select prev secondary
+	{ 1,	{ SDLK_r } },						// select rear view
+	{ 1,	{ SDLK_h } },						// toggle headlights
 	{
-		{ 1, { DIK_GRAVE } },					// select primary #1
-		{ 1, { DIK_1	} },					// select primary #2
-		{ 1, { DIK_4	} },					// select primary #3
-		{ 1, { DIK_3	} },					// select primary #4
-		{ 1, { DIK_2	} },					// select primary #5
-		{ 1, { DIK_5	} },					// select primary #6
+		{ 1, { SDLK_BACKQUOTE } },				// select primary #1
+		{ 1, { SDLK_1	} },					// select primary #2
+		{ 1, { SDLK_4	} },					// select primary #3
+		{ 1, { SDLK_3	} },					// select primary #4
+		{ 1, { SDLK_2	} },					// select primary #5
+		{ 1, { SDLK_5	} },					// select primary #6
 	},
 	{
-		{ 1, { DIK_6 } },						// select secondary #1
-		{ 1, { DIK_7 } },						// select secondary #2
+		{ 1, { SDLK_6 } },						// select secondary #1
+		{ 1, { SDLK_7 } },						// select secondary #2
 		{ 0	},									// select secondary #3 (thief missile -- not used)
-		{ 1, { DIK_8 } },						// select secondary #4
-		{ 1, { DIK_9 } },						// select secondary #5
-		{ 1, { DIK_0 } },						// select secondary #6
-		{ 1, { DIK_MINUS } },					// select secondary #7
-		{ 1, { DIK_Y } },						// select secondary #8
-		{ 1, { DIK_U } },						// select secondary #9
-		{ 1, { DIK_I } },						// select secondary #10
+		{ 1, { SDLK_8 } },						// select secondary #4
+		{ 1, { SDLK_9 } },						// select secondary #5
+		{ 1, { SDLK_0 } },						// select secondary #6
+		{ 1, { SDLK_MINUS } },					// select secondary #7
+		{ 1, { SDLK_y } },						// select secondary #8
+		{ 1, { SDLK_u } },						// select secondary #9
+		{ 1, { SDLK_i } },						// select secondary #10
 		{ 0 },									// select secondary #11 (spider mine -- not used)
 	},
 	{ 0 },										// drop primary
@@ -221,7 +221,7 @@ USERCONFIG my_controls = {
 	{ 0 },										// drop ammo
 	{ 0 },										// show messages
 	{ 0 },										// show statistics
-	{ 1, { DIK_RETURN } },					// send text message
+	{ 1, { SDLK_RETURN } },					// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
 	{ 0 },					// send speech taunt
 #endif
@@ -279,340 +279,75 @@ USERCONFIG my_controls = {
 USERCONFIG *player_config = &my_controls;
 
 
-VIRTUALKEYMAP vkey_map[] = {
-	{ "DIK_ESCAPE",         DIK_ESCAPE },      
-	{ "DIK_ESC",			DIK_ESCAPE },      
-	{ "DIK_1",              DIK_1 },           
-	{ "DIK_2",              DIK_2 },           
-	{ "DIK_3",              DIK_3 },           
-	{ "DIK_4",              DIK_4 },           
-	{ "DIK_5",              DIK_5 },           
-	{ "DIK_6",              DIK_6 },           
-	{ "DIK_7",              DIK_7 },           
-	{ "DIK_8",              DIK_8 },           
-	{ "DIK_9",              DIK_9 },           
-	{ "DIK_0",              DIK_0 },           
-	{ "DIK_-",				DIK_MINUS },           /* - on main keyboard */
-	{ "DIK_MINUS",          DIK_MINUS },           /* - on main keyboard */
-	{ "DIK_=",				DIK_EQUALS },      
-	{ "DIK_EQUALS",         DIK_EQUALS },      
-	{ "DIK_BACKSPACE",      DIK_BACK },            /* backspace */
-	{ "DIK_BACK",           DIK_BACK },            /* backspace */
-	{ "DIK_TAB",            DIK_TAB },         
-	{ "DIK_Q",              DIK_Q },           
-	{ "DIK_W",              DIK_W },           
-	{ "DIK_E",              DIK_E },           
-	{ "DIK_R",              DIK_R },           
-	{ "DIK_T",              DIK_T },           
-	{ "DIK_Y",              DIK_Y },           
-	{ "DIK_U",              DIK_U },           
-	{ "DIK_I",              DIK_I },           
-	{ "DIK_O",              DIK_O },           
-	{ "DIK_P",              DIK_P },           
-	{ "DIK_[",				DIK_LBRACKET },    
-	{ "DIK_LBRACKET",       DIK_LBRACKET },    
-	{ "DIK_]",				DIK_RBRACKET },    
-	{ "DIK_RBRACKET",       DIK_RBRACKET },    
-	{ "DIK_ENTER",			DIK_RETURN },          /* Enter on main keyboard */
-	{ "DIK_RETURN",         DIK_RETURN },          /* Enter on main keyboard */
-	{ "DIK_LEFT_CONTROL",	DIK_LCONTROL },    
-	{ "DIK_LCTRL",			DIK_LCONTROL },    
-	{ "DIK_LCONTROL",       DIK_LCONTROL },    
-	{ "DIK_A",              DIK_A },           
-	{ "DIK_S",              DIK_S },           
-	{ "DIK_D",              DIK_D },           
-	{ "DIK_F",              DIK_F },           
-	{ "DIK_G",              DIK_G },           
-	{ "DIK_H",              DIK_H },           
-	{ "DIK_J",              DIK_J },           
-	{ "DIK_K",              DIK_K },           
-	{ "DIK_L",              DIK_L },           
-	{ "DIK_;",				DIK_SEMICOLON },   
-	{ "DIK_SEMICOLON",      DIK_SEMICOLON },   
-	{ "DIK_'",				DIK_APOSTROPHE },  
-	{ "DIK_APOSTROPHE",     DIK_APOSTROPHE },  
-	{ "DIK_GRAVE",          DIK_GRAVE },           /* accent grave */
-	{ "DIK_LEFT_SHIFT",		DIK_LSHIFT },      
-	{ "DIK_LSHFT",			DIK_LSHIFT },      
-	{ "DIK_LSHIFT",         DIK_LSHIFT },      
-	{ "DIK_BACKSLASH",      DIK_BACKSLASH },   
-	{ "DIK_BACK/",			DIK_BACKSLASH },   
-	{ "DIK_Z",              DIK_Z },           
-	{ "DIK_X",              DIK_X },           
-	{ "DIK_C",              DIK_C },           
-	{ "DIK_V",              DIK_V },           
-	{ "DIK_B",              DIK_B },           
-	{ "DIK_N",              DIK_N },           
-	{ "DIK_M",              DIK_M },           
-	{ "DIK_,",				DIK_COMMA },       
-	{ "DIK_COMMA",          DIK_COMMA },       
-	{ "DIK_.",				DIK_PERIOD },          /* . on main keyboard */
-	{ "DIK_PERIOD",			DIK_PERIOD },          /* . on main keyboard */
-	{ "DIK_/",				DIK_SLASH },           /* / on main keyboard */
-	{ "DIK_SLASH",          DIK_SLASH },           /* / on main keyboard */
-	{ "DIK_RIGHT_SHIFT",	DIK_RSHIFT },      
-	{ "DIK_RSHFT",			DIK_RSHIFT },      
-	{ "DIK_RSHIFT",         DIK_RSHIFT },      
-	{ "DIK_NUMPAD_*",		DIK_MULTIPLY },        /* * on numeric keypad */
-	{ "DIK_NUM*",			DIK_MULTIPLY },        /* * on numeric keypad */
-	{ "DIK_MULTIPLY",       DIK_MULTIPLY },        /* * on numeric keypad */
-	{ "DIK_LEFT_ALT",		DIK_LMENU },           /* left Alt */
-	{ "DIK_LALT",			DIK_LMENU },           /* left Alt */
-	{ "DIK_LMENU",          DIK_LMENU },           /* left Alt */
-	{ "DIK_SPACE",          DIK_SPACE },       
-	{ "DIK_ ",				DIK_SPACE },       
-	{ "DIK_CAPS_LOCK",		DIK_CAPITAL },     
-	{ "DIK_CAPS",			DIK_CAPITAL },     
-	{ "DIK_CAPITAL",        DIK_CAPITAL },     
-	{ "DIK_F1",             DIK_F1 },          
-	{ "DIK_F2",             DIK_F2 },          
-	{ "DIK_F3",             DIK_F3 },          
-	{ "DIK_F4",             DIK_F4 },          
-	{ "DIK_F5",             DIK_F5 },          
-	{ "DIK_F6",             DIK_F6 },          
-	{ "DIK_F7",             DIK_F7 },          
-	{ "DIK_F8",             DIK_F8 },          
-	{ "DIK_F9",             DIK_F9 },          
-	{ "DIK_F10",            DIK_F10 },         
-	{ "DIK_NUM_LOCK",		DIK_NUMLOCK },     
-	{ "DIK_NUMLK",			DIK_NUMLOCK },     
-	{ "DIK_NUMLOCK",        DIK_NUMLOCK },     
-	{ "DIK_SCROLL_LOCK",	DIK_SCROLL },          /* Scroll Lock */
-	{ "DIK_SCRLL",			DIK_SCROLL },          /* Scroll Lock */
-	{ "DIK_SCROLL",         DIK_SCROLL },          /* Scroll Lock */
-	{ "DIK_NUMPAD_7",       DIK_NUMPAD7 },     
-	{ "DIK_NUM7",			DIK_NUMPAD7 },     
-	{ "DIK_NUMPAD_8",       DIK_NUMPAD8 },     
-	{ "DIK_NUM8",			DIK_NUMPAD8 },     
-	{ "DIK_NUMPAD_9",       DIK_NUMPAD9 },     
-	{ "DIK_NUM9",			DIK_NUMPAD9 },     
-	{ "DIK_NUMPAD_-",		DIK_SUBTRACT },        /* - on numeric keypad */
-	{ "DIK_NUM-",			DIK_SUBTRACT },        /* - on numeric keypad */
-	{ "DIK_SUBTRACT",       DIK_SUBTRACT },        /* - on numeric keypad */
-	{ "DIK_NUMPAD_4",       DIK_NUMPAD4 },     
-	{ "DIK_NUM4",			DIK_NUMPAD4 },     
-	{ "DIK_NUMPAD_5",       DIK_NUMPAD5 },     
-	{ "DIK_NUM5",			DIK_NUMPAD5 },     
-	{ "DIK_NUMPAD_6",       DIK_NUMPAD6 },     
-	{ "DIK_NUM6",			DIK_NUMPAD6 },     
-	{ "DIK_NUMPAD_+",       DIK_ADD },             /* + on numeric keypad */
-	{ "DIK_NUM+",           DIK_ADD },             /* + on numeric keypad */
-	{ "DIK_ADD",            DIK_ADD },             /* + on numeric keypad */
-	{ "DIK_NUMPAD_1",       DIK_NUMPAD1 },     
-	{ "DIK_NUM1",			DIK_NUMPAD1 },     
-	{ "DIK_NUMPAD_2",       DIK_NUMPAD2 },     
-	{ "DIK_NUM2",			DIK_NUMPAD2 },     
-	{ "DIK_NUMPAD_3",       DIK_NUMPAD3 },     
-	{ "DIK_NUM3",			DIK_NUMPAD3 },     
-	{ "DIK_NUMPAD_0",       DIK_NUMPAD0 },     
-	{ "DIK_NUM0",			DIK_NUMPAD0 },     
-	{ "DIK_NUMPAD_.",		DIK_DECIMAL },         /* . on numeric keypad */
-	{ "DIK_NUM.",			DIK_DECIMAL },         /* . on numeric keypad */
-	{ "DIK_DECIMAL",        DIK_DECIMAL },         /* . on numeric keypad */
-	{ "DIK_F11",            DIK_F11 },         
-	{ "DIK_F12",            DIK_F12 },         
-					               
-	{ "DIK_F13",            DIK_F13 },             /*                     (NEC PC98) */
-	{ "DIK_F14",            DIK_F14 },             /*                     (NEC PC98) */
-	{ "DIK_F15",            DIK_F15 },             /*                     (NEC PC98) */
-					               
-	{ "DIK_KANA",           DIK_KANA },            /* (Japanese keyboard)            */
-	{ "DIK_CONVERT",        DIK_CONVERT },         /* (Japanese keyboard)            */
-	{ "DIK_NOCONVERT",      DIK_NOCONVERT },       /* (Japanese keyboard)            */
-	{ "DIK_YEN",            DIK_YEN },             /* (Japanese keyboard)            */
-	{ "DIK_NUMPAD=",		DIK_NUMPADEQUALS },    /* = on numeric keypad (NEC PC98) */
-	{ "DIK_NUMPADEQUALS",   DIK_NUMPADEQUALS },    /* = on numeric keypad (NEC PC98) */
-	{ "DIK_CIRCUMFLEX",     DIK_CIRCUMFLEX },      /* (Japanese keyboard)            */
-	{ "DIK_AT",             DIK_AT },              /*                     (NEC PC98) */
-	{ "DIK_COLON",          DIK_COLON },           /*                     (NEC PC98) */
-	{ "DIK_UNDERLINE",      DIK_UNDERLINE },       /*                     (NEC PC98) */
-	{ "DIK_KANJI",          DIK_KANJI },           /* (Japanese keyboard)            */
-	{ "DIK_STOP",           DIK_STOP },            /*                     (NEC PC98) */
-	{ "DIK_AX",             DIK_AX },              /*                     (Japan AX) */
-	{ "DIK_UNLABELED",      DIK_UNLABELED },       /*                        (J3100) */
-	{ "DIK_NUMPAD_ENTER",   DIK_NUMPADENTER },     /* Enter on numeric keypad */
-	{ "DIK_NUMENT",			DIK_NUMPADENTER },     /* Enter on numeric keypad */
-	{ "DIK_RIGHT_CONTROL",	DIK_RCONTROL },    
-	{ "DIK_RCTRL",			DIK_RCONTROL },    
-	{ "DIK_RCONTROL",       DIK_RCONTROL },    
-	{ "DIK_NUMPAD_,",		DIK_NUMPADCOMMA },     /* , on numeric keypad (NEC PC98) */
-	{ "DIK_NUM,",			DIK_NUMPADCOMMA },     /* , on numeric keypad (NEC PC98) */
-	{ "DIK_NUMPADCOMMA",    DIK_NUMPADCOMMA },     /* , on numeric keypad (NEC PC98) */
-	{ "DIK_NUMPAD_/",		DIK_DIVIDE },          /* / on numeric keypad */
-	{ "DIK_NUM/",			DIK_DIVIDE },          /* / on numeric keypad */
-	{ "DIK_DIVIDE",         DIK_DIVIDE },          /* / on numeric keypad */
-	{ "DIK_SYSRQ",          DIK_SYSRQ },       
-	{ "DIK_RIGHT_ALT",		DIK_RMENU },           /* right Alt */
-	{ "DIK_RALT",			DIK_RMENU },           /* right Alt */
-	{ "DIK_RMENU",          DIK_RMENU },           /* right Alt */
-	{ "DIK_HOME",           DIK_HOME },            /* Home on arrow keypad */
-	{ "DIK_CURSOR_UP",      DIK_UP },              /* UpArrow on arrow keypad */
-	{ "DIK_UP",             DIK_UP },              /* UpArrow on arrow keypad */
-	{ "DIK_PAGE_UP",		DIK_PRIOR },           /* PgUp on arrow keypad */
-	{ "DIK_PGUP",			DIK_PRIOR },           /* PgUp on arrow keypad */
-	{ "DIK_PRIOR",          DIK_PRIOR },           /* PgUp on arrow keypad */
-	{ "DIK_CURSOR_LEFT",    DIK_LEFT },            /* LeftArrow on arrow keypad */
-	{ "DIK_LEFT",           DIK_LEFT },            /* LeftArrow on arrow keypad */
-	{ "DIK_CURSOR_RIGHT",   DIK_RIGHT },           /* RightArrow on arrow keypad */
-	{ "DIK_RIGHT",          DIK_RIGHT },           /* RightArrow on arrow keypad */
-	{ "DIK_END",            DIK_END },             /* End on arrow keypad */
-	{ "DIK_CURSOR_DOWN",    DIK_DOWN },            /* DownArrow on arrow keypad */
-	{ "DIK_DOWN",           DIK_DOWN },            /* DownArrow on arrow keypad */
-	{ "DIK_PAGE_DOWN",      DIK_NEXT },            /* PgDn on arrow keypad */
-	{ "DIK_PGDN",           DIK_NEXT },            /* PgDn on arrow keypad */
-	{ "DIK_NEXT",           DIK_NEXT },            /* PgDn on arrow keypad */
-	{ "DIK_INSERT",         DIK_INSERT },          /* Insert on arrow keypad */
-	{ "DIK_INS",			DIK_INSERT },          /* Insert on arrow keypad */
-	{ "DIK_DELETE",         DIK_DELETE },          /* Delete on arrow keypad */
-	{ "DIK_DEL",			DIK_DELETE },          /* Delete on arrow keypad */
-	{ "DIK_LWIN",           DIK_LWIN },            /* Left Windows key */
-	{ "DIK_RWIN",           DIK_RWIN },            /* Right Windows key */
-	{ "DIK_APPS",           DIK_APPS },            /* AppMenu key */
+char * get_key_name( int i )
+{  
+	char * pch;
+	char * name = SDL_GetKeyName(i);
+	char * new_name = malloc(strlen(name)+1);
+	strncpy( new_name, name, strlen(name)+1 );
+	pch = strchr(new_name,' ');
+	while(pch!=NULL)
+	{ 
+		*pch = '_';
+		pch = strchr(pch+1,' ');
+	}
+	return new_name;
+}
 
-	{ "DIK_BACKSPACE",      DIK_BACK },            /* backspace */
-	{ "DIK_NUMPADSTAR",     DIK_MULTIPLY },        /* * on numeric keypad */
-	{ "DIK_CAPSLOCK",       DIK_CAPITAL },         /* CapsLock */
-	{ "DIK_NUMPADMINUS",    DIK_SUBTRACT },        /* - on numeric keypad */
-	{ "DIK_NUMPADPLUS",     DIK_ADD },             /* + on numeric keypad */
-	{ "DIK_NUMPADPERIOD",   DIK_DECIMAL },         /* . on numeric keypad */
-	{ "DIK_NUMPADSLASH",    DIK_DIVIDE },          /* / on numeric keypad */
-	{ "DIK_UPARROW",        DIK_UP },              /* UpArrow on arrow keypad */
-	{ "DIK_LEFTARROW",      DIK_LEFT },            /* LeftArrow on arrow keypad */
-	{ "DIK_RIGHTARROW",     DIK_RIGHT },           /* RightArrow on arrow keypad */
-	{ "DIK_DOWNARROW",      DIK_DOWN },            /* DownArrow on arrow keypad */
+// text ,  keydef
+VIRTUALKEYMAP vkey_map[DOWN_MOUSE+1];
 
-	// my own "pseudo-DIK" codes for mouse controls
-	{ "DIK_MOUSE_1",		DIK_LBUTTON },		// Left mouse button 
-	{ "DIK_MB1",			DIK_LBUTTON },		// Left mouse button 
-	{ "DIK_LBUTTON",		DIK_LBUTTON },		// Left mouse button 
-	{ "DIK_MOUSE_2",		DIK_RBUTTON },		// Right mouse button 
-	{ "DIK_MB2",			DIK_RBUTTON },		// Right mouse button 
-	{ "DIK_RBUTTON",		DIK_RBUTTON },		// Right mouse button 
-	{ "DIK_MOUSE_3",		DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_MB3",			DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_MBUTTON",		DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_MOUSE_4",		DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_MB4",			DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_TBUTTON",		DIK_MBUTTON },		// Middle mouse button 
-	{ "DIK_WHEEL_UP",		DIK_WHEELUP },		// Mouse wheel up 
-	{ "DIK_MWUP",			DIK_WHEELUP },		// Mouse wheel up 
-	{ "DIK_WHEELUP",		DIK_WHEELUP },		// Mouse wheel up 
-	{ "DIK_WHEEL_DOWN",		DIK_WHEELDOWN },		// Mouse wheel down 
-	{ "DIK_MWDN",			DIK_WHEELDOWN },		// Mouse wheel down 
-	{ "DIK_WHEELDOWN",		DIK_WHEELDOWN },		// Mouse wheel down 
+static void init_key_map( void )
+{
+	int i;
+	static int initialized = 0;
+	if(initialized)
+		return;
+	initialized = 1;
+	for( i = 0; i <= DOWN_MOUSE; i++ )
+	{
+		char * name;
+		if(i > MOUSE_RANGE)
+		{
+			switch(i)
+			{
+			case LEFT_MOUSE:
+				name = "left_mouse";
+				break;
+			case MIDDLE_MOUSE:
+				name = "middle_mouse";
+				break;
+			case RIGHT_MOUSE:
+				name = "right_mouse";
+				break;
+			case UP_MOUSE:
+				name = "up_mouse";
+				break;
+			case DOWN_MOUSE:
+				name = "down_mouse";
+				break;
+			}
+		}
+		else
+		{
+			name = get_key_name(i);
+			if(!_stricmp(name,"unknown_key"))
+				name = NULL;
+		}
+		if(!name)
+		{
+			name = malloc(4); // 3 chars + 1
+			sprintf( &name[0], "%d", i );
+		}
+		vkey_map[i].keycode = i;
+		vkey_map[i].keyword = name;
+		DebugPrintf("vkey_map: %s = %d\n",name,i);
+	}
+	// (end of table marker)
+	vkey_map[DOWN_MOUSE+1].keycode = 0x00;
+	vkey_map[DOWN_MOUSE+1].keyword = NULL;
+}
 
-	// virtual keycodes retained from original for compatibility
-
-	{ "VK_LBUTTON",			DIK_LBUTTON },		// Left mouse button 
-	{ "VK_RBUTTON",			DIK_RBUTTON },		// Right mouse button 
-//	{ "VK_CANCEL",			DIK_CANCEL },		// Control-break processing 
-	{ "VK_MBUTTON",			DIK_MBUTTON },		// Middle mouse button (three-button mouse) 
-	{ "VK_BACK",			DIK_BACK },			// BACKSPACE key 
-	{ "VK_TAB",				DIK_TAB },			// TAB key 
-//	{ "VK_CLEAR",			DIK_CLEAR },		// CLEAR key 
-	{ "VK_RETURN",			DIK_RETURN },		// ENTER key 
-	{ "VK_SHIFT",			DIK_LSHIFT },		// SHIFT key *** defaults to LEFT SHIFT
-	{ "VK_CONTROL",			DIK_LCONTROL },		// CTRL key *** defaults to LEFT CONTROL
-	{ "VK_MENU",			DIK_LMENU },		// ALT key **** defaults to LEFT ALT
-//	{ "VK_PAUSE",			DIK_PAUSE },		// PAUSE key 
-	{ "VK_CAPITAL",			DIK_CAPITAL },		// CAPS LOCK key 
-	{ "VK_ESCAPE",			DIK_ESCAPE },		// ESC key 
-	{ "VK_SPACE",			DIK_SPACE },		// SPACEBAR 
-	{ "VK_PRIOR",			DIK_PRIOR },		// PAGE UP key 
-	{ "VK_NEXT",			DIK_NEXT },			// PAGE DOWN key 
-	{ "VK_END",				DIK_END },			// END key 
-	{ "VK_HOME",			DIK_HOME },			// HOME key 
-	{ "VK_LEFT",			DIK_LEFT },			// LEFT ARROW key 
-	{ "VK_UP",				DIK_UP },			// UP ARROW key 
-	{ "VK_RIGHT",			DIK_RIGHT },		// RIGHT ARROW key 
-	{ "VK_DOWN",			DIK_DOWN },			// DOWN ARROW key 
-//	{ "VK_SELECT",			DIK_SELECT },		// SELECT key 
-//	{ "VK_EXECUTE",			DIK_EXECUTE },		// EXECUTE key 
-//	{ "VK_SNAPSHOT",		DIK_SNAPSHOT },		// PRINT SCREEN key for Windows 3.0 and later 
-	{ "VK_INSERT",			DIK_INSERT },		// INS key 
-	{ "VK_DELETE",			DIK_DELETE },		// DEL key 
-//	{ "VK_HELP",			DIK_HELP },			// HELP key 
-	{ "VK_0",				DIK_0 },			// 0 key 
-	{ "VK_1",				DIK_1 },			// 1 key 
-	{ "VK_2",				DIK_2 },			// 2 key 
-	{ "VK_3",				DIK_3 },			// 3 key 
-	{ "VK_4",				DIK_4 },			// 4 key 
-	{ "VK_5",				DIK_5 },			// 5 key 
-	{ "VK_6",				DIK_6 },			// 6 key 
-	{ "VK_7",				DIK_7 },			// 7 key 
-	{ "VK_8",				DIK_8 },			// 8 key 
-	{ "VK_9",				DIK_9 },			// 9 key 
-	{ "VK_A",				DIK_A },			// A key 
-	{ "VK_B",				DIK_B },			// B key 
-	{ "VK_C",				DIK_C },			// C key 
-	{ "VK_D",				DIK_D },			// D key 
-	{ "VK_E",				DIK_E },			// E key 
-	{ "VK_F",				DIK_F },			// F key 
-	{ "VK_G",				DIK_G },			// G key 
-	{ "VK_H",				DIK_H },			// H key 
-	{ "VK_I",				DIK_I },			// I key 
-	{ "VK_J",				DIK_J },			// J key 
-	{ "VK_K",				DIK_K },			// K key 
-	{ "VK_L",				DIK_L },			// L key 
-	{ "VK_M",				DIK_M },			// M key 
-	{ "VK_N",				DIK_N },			// N key 
-	{ "VK_O",				DIK_O },			// O key 
-	{ "VK_P",				DIK_P },			// P key 
-	{ "VK_Q",				DIK_Q },			// Q key 
-	{ "VK_R",				DIK_R },			// R key 
-	{ "VK_S",				DIK_S },			// S key 
-	{ "VK_T",				DIK_T },			// T key 
-	{ "VK_U",				DIK_U },			// U key 
-	{ "VK_V",				DIK_V },			// V key 
-	{ "VK_W",				DIK_W },			// W key 
-	{ "VK_X",				DIK_X },			// X key 
-	{ "VK_Y",				DIK_Y },			// Y key 
-	{ "VK_Z",				DIK_Z },			// Z key 
-	{ "VK_NUMPAD0",			DIK_NUMPAD0 },		// Numeric keypad 0 key 
-	{ "VK_NUMPAD1",			DIK_NUMPAD1 },		// Numeric keypad 1 key 
-	{ "VK_NUMPAD2",			DIK_NUMPAD2 },		// Numeric keypad 2 key 
-	{ "VK_NUMPAD3",			DIK_NUMPAD3 },		// Numeric keypad 3 key 
-	{ "VK_NUMPAD4",			DIK_NUMPAD4 },		// Numeric keypad 4 key 
-	{ "VK_NUMPAD5",			DIK_NUMPAD5 },		// Numeric keypad 5 key 
-	{ "VK_NUMPAD6",			DIK_NUMPAD6 },		// Numeric keypad 6 key 
-	{ "VK_NUMPAD7",			DIK_NUMPAD7 },		// Numeric keypad 7 key 
-	{ "VK_NUMPAD8",			DIK_NUMPAD8 },		// Numeric keypad 8 key 
-	{ "VK_NUMPAD9",			DIK_NUMPAD9 },		// Numeric keypad 9 key 
-	{ "VK_MULTIPLY",		DIK_MULTIPLY },		// Multiply key 
-	{ "VK_ADD",				DIK_ADD },			// Add key 
-//	{ "VK_SEPARATOR",		DIK_SEPARATOR },	// Separator key 
-	{ "VK_SUBTRACT",		DIK_SUBTRACT },		// Subtract key 
-	{ "VK_DECIMAL",			DIK_DECIMAL },		// Decimal key 
-	{ "VK_DIVIDE",			DIK_DIVIDE },		// Divide key 
-	{ "VK_F1",				DIK_F1 },			// F1 key 
-	{ "VK_F2",				DIK_F2 },			// F2 key 
-	{ "VK_F3",				DIK_F3 },			// F3 key 
-	{ "VK_F4",				DIK_F4 },			// F4 key 
-	{ "VK_F5",				DIK_F5 },			// F5 key 
-	{ "VK_F6",				DIK_F6 },			// F6 key 
-	{ "VK_F7",				DIK_F7 },			// F7 key 
-	{ "VK_F8",				DIK_F8 },			// F8 key 
-	{ "VK_F9",				DIK_F9 },			// F9 key 
-	{ "VK_F10",				DIK_F10 },			// F10 key 
-	{ "VK_F11",				DIK_F11 },			// F11 key 
-	{ "VK_F12",				DIK_F12 },			// F12 key 
-	{ "VK_F13",				DIK_F13 },			// F13 key 
-	{ "VK_F14",				DIK_F14 },			// F14 key 
-	{ "VK_F15",				DIK_F15 },			// F15 key 
-//	{ "VK_F16",				DIK_F16 },			// F16 key 
-//	{ "VK_F17",				DIK_F17 },   		// F17 key 
-//	{ "VK_F18",				DIK_F18 },   		// F18 key 
-//	{ "VK_F19",				DIK_F19 },   		// F19 key 
-//	{ "VK_F20",				DIK_F20 },   		// F20 key 
-//	{ "VK_F21",				DIK_F21 },   		// F21 key 
-//	{ "VK_F22",				DIK_F22 },   		// F22 key 
-//	{ "VK_F23",				DIK_F23 },   		// F23 key 
-//	{ "VK_F24",				DIK_F24 },   		// F24 key 
-	{ "VK_NUMLOCK",			DIK_NUMLOCK },		// NUM LOCK key 
-	{ "VK_SCROLL",			DIK_SCROLL },		// SCROLL LOCK key 
-
-	{ NULL,					0x00 }		// (end of table marker)
-};
 
 /* read user defined controls from config file */
 static int
@@ -622,6 +357,8 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 	VIRTUALKEYMAP *vk;
 	int j;
 	int keys_defined;
+
+	init_key_map();
 
 	keys_defined = 0;
 	for ( j = 0; j < MAX_KEYS_PER_CONTROL; j++ )
@@ -1655,7 +1392,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 	u->invert_pitch = 0;
 	u->mouse_x_sensitivity = 0.6F;
 	u->mouse_y_sensitivity = 0.6F;
-	u->send_msg.key[ 0 ] = DIK_RETURN;
+	u->send_msg.key[ 0 ] = SDLK_RETURN;
 
 	// reset all joystick settings
 	ReInitJoysticks();
@@ -1710,6 +1447,8 @@ read_config( USERCONFIG *u, char *cfg_name )
 const char *key_fullname( int keycode )
 {
 	VIRTUALKEYMAP *vk;
+	
+	init_key_map();
 
 	for ( vk = vkey_map; vk->keyword; vk++ )
 	{
@@ -1722,6 +1461,7 @@ const char *key_fullname( int keycode )
 
 const char *key_name( int keycode )
 {
+	init_key_map();
 	if ( KEY_ON_KEYBOARD( keycode ) || KEY_ON_MOUSE( keycode ) )
 	{
 		VIRTUALKEYMAP *vk;
