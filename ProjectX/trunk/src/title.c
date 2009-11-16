@@ -14779,7 +14779,8 @@ BOOL SetGamma( SLIDER *slider )
 	
 	Gamma = ( (double)slider->value ) / 100.0F;
 
-	if ( tempgamma == Gamma )
+	// convert to float to get rid of small rounding errors
+	if ( (float)tempgamma == (float)Gamma )
 		return TRUE;
 
 	ReleaseView();
