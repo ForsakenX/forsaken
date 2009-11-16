@@ -475,7 +475,7 @@ float GetPlayerNumCount1 = 0.0F;
 float GetPlayerNumCount2 = 0.0F;
 int   GetPlayerNumCount = 0;
 
-timer framelag_timer;
+timer_t framelag_timer;
 
 int i, j; // index counters
 
@@ -4846,8 +4846,8 @@ extern  int   NumOfVertsTouched;
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
 
-timer our_timer;
-int our_count = 0;
+timer_t our_timer;
+float our_count = 0;
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
 extern	uint16		NumGroupsVisible;
@@ -4863,13 +4863,13 @@ BOOL Our_CalculateFrameRate(void)
 	if (our_count >= 30) // every 0.5 seconds on vsync pc
 	{
 		// calculate time passed
-		timer_run( &our_timer );
+		float seconds = timer_run( &our_timer );
 
 		// first time running so bank
-		if ( our_timer.seconds != 0.0F )
+		if ( seconds != 0.0F )
 		{
 			// calculate average frames per second
-			FPS = (float) our_count / (float) our_timer.seconds;
+			FPS = our_count / seconds;
 
 			// average time per frame in milliseconds
 			avg_time_per_frame = (int)((1.0F / FPS) * 1000.0F);

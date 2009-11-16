@@ -2,39 +2,47 @@
 #include "timer.h"
 #include "util.h"
 
-// frequency time does not change
-__int64 timer_freq = 0;
-
 // run timer and compute seconds without modifying stats
-float timer_peek( timer* stats )
+float timer_peek( timer_t* stats )
 {
 	float seconds;
-	timer old = *stats;
+	timer_t old = *stats;
 	seconds = timer_run( stats );
 	*stats = old; // restore it
 	return seconds;
 }
 
+// send debug info to console
+void timer_debug( char* name, timer_t* stats )
+{
+  DebugPrintf("%s: seconds = %5f, best = %5f, worst = %5f\n",name,stats->seconds,stats->best,stats->worst);
+}
+
+// clear the timer
+void timer_clear( timer_t* stats )
+{
+	stats->last    = 0;
+	stats->worst   = 0;
+	stats->best    = 0;
+	stats->seconds = 0.0F;
+}
+
 // run timer and compute calculations
-float timer_run( timer* stats )
+float timer_run( timer_t* stats )
 {
 
   // current counter value
-  __int64 time_now = 0;
+  Uint32 time_now;
 
-  // difference between last and now
-  __int64 time_diff = 0;
-
-  // get the frequency if not already attained
-  if(!timer_freq)
-    QueryPerformanceFrequency((LARGE_INTEGER *) &timer_freq);
+  // ms between last and now
+  Uint32 time_diff;
 
   // if there is no count_before then we know this is the first run
   if(!stats->last)
   {
 
     // set the the count_before
-    QueryPerformanceCounter((LARGE_INTEGER *) &stats->last);
+    stats->last = SDL_GetTicks();
 
     // your program should know it's a first run
     return 0.0F;
@@ -42,13 +50,13 @@ float timer_run( timer* stats )
   }
   
   // get the count_after
-  QueryPerformanceCounter((LARGE_INTEGER *) &time_now);
+  time_now = SDL_GetTicks();
 
-  // calculate the count_diff
+  // calculate ms since last run
   time_diff = time_now - stats->last;
 
   // calculate the duration in seconds
-  stats->seconds = (float) time_diff / (float) timer_freq;
+  stats->seconds = ((float)time_diff) / 1000.0F; // 1000 ms == 1 s
 
   // reset the last value
   stats->last = time_now;
@@ -64,19 +72,4 @@ float timer_run( timer* stats )
   // nice feature
   return stats->seconds;
 
-}
-
-// send debug info to console
-void timer_debug( char* name, timer* stats )
-{
-  DebugPrintf("%s: seconds = %5f, best = %5f, worst = %5f\n",name,stats->seconds,stats->best,stats->worst);
-}
-
-// clear the timer
-void timer_clear( timer* stats )
-{
-	stats->last    = 0;
-	stats->worst   = 0;
-	stats->best    = 0;
-	stats->seconds = 0.0F;
 }

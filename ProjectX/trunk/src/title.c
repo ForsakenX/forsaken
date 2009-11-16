@@ -1868,7 +1868,7 @@ void UpdateGameList( void )
 	}
 }
 
-timer game_list_timer;
+timer_t game_list_timer;
 
 void Enter_ChooseConnectionToJoin( MENU *Menu )
 {

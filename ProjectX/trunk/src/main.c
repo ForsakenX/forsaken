@@ -680,7 +680,6 @@ extern void network_cleanup( void );
 extern BOOL SeriousError;
 extern void CleanUpAndPostQuit(void);
 
-//int PASCAL WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, char * cli, int nCmdShow )
 int main( int argc, char* argv[] )
 {
 	int i;

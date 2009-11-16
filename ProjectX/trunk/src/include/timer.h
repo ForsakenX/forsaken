@@ -2,6 +2,11 @@
 #define TIMER
 
 /*
+
+	description:
+
+			used to track seconds between each timer_run
+
 	setup:
 
 			timer t;
@@ -9,9 +14,13 @@
 
 	time passed between two points:
 
-			timer_run( &t );
-			sleep(10);
-			duration = timer_run( &t );
+			while(1)
+			{
+				timer_run( &t );
+				sleep( 10 );
+				duration = timer_run( &t );
+				// duration is always 10
+			}
 
 	peeking at the time without modifing last time:
 
@@ -19,22 +28,18 @@
 
 */
 
+#include "SDL.h"
 
-// pukes
-#include <windows.h>
-
-// holds all our counters
-// non global/static declartions are dirty so run timer_clear on them...
 typedef struct timer {
-  __int64 last;
+  Uint32  last;
   float   best;
   float   worst;
   float   seconds;
-} timer;
+} timer_t;
 
-float timer_run   ( timer* );
-float timer_peek  ( timer* );
-void  timer_clear ( timer* );
-void  timer_debug ( char*, timer* );
+float timer_run   ( timer_t* );
+float timer_peek  ( timer_t* );
+void  timer_clear ( timer_t* );
+void  timer_debug ( char*, timer_t* );
 
 #endif
