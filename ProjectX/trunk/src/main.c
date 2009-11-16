@@ -40,7 +40,6 @@ BOOL ShowInfo = FALSE;
 int cliSleep = 0;
 
 render_info_t render_info;
-HINSTANCE hInstApp;
 
 //
 // Parses the directory to change to from the command line options
@@ -420,8 +419,6 @@ void CleanUpAndPostQuit(void)
 // Creates the window
 //
 
-extern HINSTANCE hInstApp;
-
 static BOOL InitWindow( void )
 {
 	SDL_Surface* myVideoSurface = NULL;
@@ -685,9 +682,6 @@ int main( int argc, char* argv[] )
 	int i;
 	char cli[500];
     int failcount = 0; // number of times RenderLoop has failed
-	
-	// application handle
-	hInstApp = GetModuleHandle(NULL);
 
 	// build cli string
 	strncpy(cli, " ", 500);

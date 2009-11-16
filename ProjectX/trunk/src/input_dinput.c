@@ -227,7 +227,6 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
 
 }
 
-extern HINSTANCE hInstApp;
 extern render_info_t render_info;
 
 BOOL InitDInputJS(void)
@@ -248,7 +247,7 @@ BOOL InitDInputJS(void)
 	int i, j, k;
 	BOOL failjoystick;
 
-    err = DirectInputCreate(hInstApp, DIRECTINPUT_VERSION, &lpdi, NULL);
+    err = DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &lpdi, NULL);
 	if (FAILED(err))//DirectInput8Create(hInstApp, DIRECTINPUT_VERSION, &IID_IDirectInput8, (void**)&lpdi, NULL)))
     {
 		return FALSE;
