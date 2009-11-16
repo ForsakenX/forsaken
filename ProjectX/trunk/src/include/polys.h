@@ -8,7 +8,7 @@
 	Includes
 ===================================================================*/
 #include <math.h>
-#include "typedefs.h"
+
 #include "New3D.h"
 #include "quat.h"
 #include <time.h>

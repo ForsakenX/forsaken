@@ -3,7 +3,7 @@
 *	All routines to do with 3d user defined polygons...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -677,9 +677,9 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DLVERTEX	PolyVertPnt;
-	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;
+	LPLVERTEX	PolyVertPnt;
+	LPTRIANGLE	PolyFacePnt;
+    LPLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -749,8 +749,8 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		return FALSE;
 	}
 
-	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	PolyFacePnt = (LPTRIANGLE) lpIndices;
+	PolyVertPnt = (LPLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -921,9 +921,9 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DLVERTEX	PolyVertPnt;
-	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;
+	LPLVERTEX	PolyVertPnt;
+	LPTRIANGLE	PolyFacePnt;
+    LPLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -989,8 +989,8 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		return FALSE;
 	}
 
-	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	PolyFacePnt = (LPTRIANGLE) lpIndices;
+	PolyVertPnt = (LPLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -1232,9 +1232,9 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DLVERTEX	PolyVertPnt;
-	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;
+	LPLVERTEX	PolyVertPnt;
+	LPTRIANGLE	PolyFacePnt;
+    LPLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -1303,8 +1303,8 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		return FALSE;
 	}
 
-	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	PolyFacePnt = (LPTRIANGLE) lpIndices;
+	PolyVertPnt = (LPLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )
@@ -1477,9 +1477,9 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DLVERTEX	PolyVertPnt;
-	LPD3DTRIANGLE	PolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;
+	LPLVERTEX	PolyVertPnt;
+	LPTRIANGLE	PolyFacePnt;
+    LPLVERTEX	lpBufStart;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 
@@ -1548,8 +1548,8 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		return FALSE;
 	}
 	
-	PolyFacePnt = (LPD3DTRIANGLE) lpIndices;
-	PolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	PolyFacePnt = (LPTRIANGLE) lpIndices;
+	PolyVertPnt = (LPLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Exec Buffer ( Verts and Faces Simultaneously )

@@ -3,7 +3,7 @@
 *	All routines to do with lines...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -113,7 +113,7 @@ void KillUsedLine( uint16 i )
 ===================================================================*/
 BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
 {
-	LPD3DLVERTEX	Vert_Ptr;
+	LPLVERTEX	Vert_Ptr;
 	D3DCOLOR		color;
 	D3DCOLOR		specular;
 	int16			Num_Lines;

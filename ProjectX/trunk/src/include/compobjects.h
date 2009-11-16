@@ -5,6 +5,8 @@
 #ifndef COMPOBJECTS_INCLUDED
 #define COMPOBJECTS_INCLUDED
 
+#include <stdio.h>
+
 /*===================================================================
 	Defines
 ===================================================================*/

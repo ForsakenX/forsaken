@@ -5,7 +5,7 @@
 
 #include "localtitle.h"
 #include "d3d9.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "2dtextures.h"
 
@@ -367,7 +367,7 @@ typedef struct
 {
 	VECTOR start;
 	VECTOR end;
-	D3DTRIANGLE poly;
+	TRIANGLE poly;
 } SCANLINES;
 
 

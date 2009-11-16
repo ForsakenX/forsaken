@@ -14,7 +14,7 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <mmsystem.h>
-#include "typedefs.h"
+
 #include <dsound.h>
 #include "file.h"
 #include "dsutil.h"

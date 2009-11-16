@@ -2,7 +2,7 @@
 #define WIN32_EXTRA_LEAN
 
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"

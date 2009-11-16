@@ -4,7 +4,7 @@
  *	loads in a bin....
  *  extracts the names of the ppm's and creates a suface and material...
  *  make an execution list per group of....
- *  make a list of D3DVERTEX's.....and D3DTRIANGLE's....
+ *  make a list of D3DVERTEX's.....and TRIANGLE's....
 ***************************************************************************/
 
 /*
@@ -90,10 +90,10 @@ num_start_points : uint16
 /*===================================================================
 		Include File...	
 ===================================================================*/
-#include "typedefs.h"
+
 #include "main.h"
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "local.h"
@@ -200,9 +200,9 @@ static BOOL read_visible( MLOADHEADER * Mloadheader, VISTREE *v, uint16 group, u
 }
 
 extern BOOL bSquareOnly;
-void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert )
+void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert )
 {
-	static LPD3DLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
+	static LPLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
 	static float u[ 3 ], v[ 3 ];
 	float du, dv;
 	int j, k;
@@ -275,7 +275,7 @@ void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Ori
 
 
 void
-FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert )
+FixUV_Anim( POLYANIM *PolyAnim, LPLVERTEX Vert, LPLVERTEX Orig_Vert )
 {
 	int vnum, frame, vi;
 	TANIMUV *UV;
@@ -311,8 +311,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	MFACE		*	MFacePnt;
 	VERT		*	VertPnt;
 	VERTEXCELL  *	VertexCellPnt;
-	D3DTRIANGLE		FacePnt; // was a pointer
-	LPD3DTRIANGLE	TempFacePnt;
+	TRIANGLE		FacePnt; // was a pointer
+	LPTRIANGLE	TempFacePnt;
 	uint16			exec_type;			// the type of execute buffer
 	uint16			texture_type;			// the type of texture...0 normal  1 env
 	uint16			num_vertices;		// overall number of verts
@@ -324,8 +324,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16			portal;
 	uint16			ExecSize;
 	LPOLDLVERTEX	lpD3DLVERTEX2 = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-	LPD3DLVERTEX	lpBufStart = NULL;
+	LPLVERTEX	lpD3DLVERTEX;
+	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
 	int				indexOffset = 0;
 	int				ibIndex = 0;
@@ -487,8 +487,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			}
 
 			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
-			Mloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(D3DLVERTEX) * num_vertices);
-			memcpy(Mloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(D3DLVERTEX) * num_vertices);
+			Mloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(LVERTEX) * num_vertices);
+			memcpy(Mloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(LVERTEX) * num_vertices);
 	
 			Buffer = (char *) lpD3DLVERTEX2;
 			
@@ -546,7 +546,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				GroupTris[ group ] += num_triangles;
 	
 				MFacePnt = (MFACE *) Buffer;
-				TempFacePnt = (LPD3DTRIANGLE ) lpIndices;
+				TempFacePnt = (LPTRIANGLE ) lpIndices;
 	
 				/*	copy the faces data into the execute buffer	*/
 				for( e=0; e<num_triangles; e++)
@@ -987,7 +987,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						Msg( "Mload : Lock VertexBuffer failed\n" );
 						return FALSE;
 					}
-//					lpD3DLVERTEX = (LPD3DLVERTEX ) debDesc.lpData;
+//					lpD3DLVERTEX = (LPLVERTEX ) debDesc.lpData;
 
 					for( i = 0 ; i < Mloadheader->Group[group].num_animating_polys[execbuf] ; i++ )
 					{

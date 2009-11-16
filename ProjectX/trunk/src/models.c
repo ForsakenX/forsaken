@@ -7,7 +7,7 @@
 *	All routines to do with 3d Model Objects
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -2792,7 +2792,7 @@ void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -2839,7 +2839,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -2874,7 +2874,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, int8 R, int8 G, int8 B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -2885,7 +2885,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 	uint16					Blue;
 	
 	//D3DCOLOR	*			OrigColours;
-	LPD3DLVERTEX			VertPtr;
+	LPLVERTEX			VertPtr;
 
 	//D3DCOLOR_RGBA *			OrigRGBA;
 	D3DCOLOR_RGBA *			DestRGBA;
@@ -2919,7 +2919,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 //			OrigColours = DstMloadheader->Group[ Group ].org_colors[ ExecBuf ];
@@ -2972,7 +2972,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16 NumVerts, float Scale, float MaxScale, int8 R, int8 G, int8 B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	D3DCOLOR				Colour;
 	float					Col2;
 	uint8					Col;
@@ -3010,7 +3010,7 @@ BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderOb
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 	
 	while( NumVerts-- )
 	{
@@ -3040,7 +3040,7 @@ BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderOb
 BOOL ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject, int16 NumVerts, uint8 R, uint8 G, uint8 B )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	D3DCOLOR				Colour;
 
 #if ACTUAL_TRANS
@@ -3063,7 +3063,7 @@ BOOL ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 	
 	while( NumVerts-- )
 	{
@@ -3216,7 +3216,7 @@ void CreateTracker( void )
 BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -3246,7 +3246,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -3277,7 +3277,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF, float TF )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -3304,7 +3304,7 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 				return FALSE;
 			}	
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -3332,9 +3332,9 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 ===================================================================*/
 BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 {
-    LPD3DLVERTEX	lpPointer = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX;
-    LPD3DLVERTEX	lpD3DLVERTEX2;
+    LPLVERTEX	lpPointer = NULL;
+	LPLVERTEX	lpD3DLVERTEX;
+    LPLVERTEX	lpD3DLVERTEX2;
 //	D3DEXECUTEBUFFERDESC	debDesc;
 	int		group;
 	int		execbuf;
@@ -3362,7 +3362,7 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 				return FALSE;
 			}
 
-//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPLVERTEX) debDesc.lpData;
 
 			lpD3DLVERTEX2 = MXAloadheader->Group[group].originalVerts[execbuf];
 			
@@ -3396,8 +3396,8 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 ===================================================================*/
 BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
-	LPD3DLVERTEX			SrclpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			SrclpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -3532,8 +3532,8 @@ __asm
 BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, int A , float rp , float gp , float bp)
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
-	LPD3DLVERTEX			SrclpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			SrclpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -3587,7 +3587,7 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 			SrclpD3DLVERTEX = DstMloadheader->Group[ Group ].originalVerts[ExecBuf];
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
@@ -3685,7 +3685,7 @@ __asm
 BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
@@ -3713,7 +3713,7 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -3767,7 +3767,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
 	uint16					Group;
@@ -3830,7 +3830,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -3862,7 +3862,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
 	uint16					Group;
@@ -3925,7 +3925,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 				return FALSE;
 			}
 
-//			DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//			DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 			Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -3961,7 +3961,7 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
 	uint16					Group;
@@ -4021,7 +4021,7 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 					return FALSE;
 				}
 	
-//				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 	
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 	
@@ -4058,7 +4058,7 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 {
 	XLIGHT * LightPnt;
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	VECTOR					DistVector;
 	float					Dist;
 	uint16					Group;
@@ -4118,7 +4118,7 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 					return FALSE;
 				}
 	
-//				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 	
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 	
@@ -5201,7 +5201,7 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 					   VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Count;
 	uint16					ExecBuf;
@@ -5223,7 +5223,7 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 	for( Count = 0; Count < 8; Count++ )
 	{
@@ -5291,7 +5291,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 					    VECTOR * BottomRight )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Count;
 	uint16					ExecBuf;
@@ -5312,7 +5312,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 	for( Count = 0; Count < 8; Count++ )
 	{
@@ -5369,7 +5369,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Count;
 	uint16					ExecBuf;
@@ -5401,7 +5401,7 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 	for( Count = 0; Count < 8; Count++ )
 	{
@@ -5452,7 +5452,7 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * Pos, uint16 * LineArray, uint16 Group2 )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Count;
 	uint16					ExecBuf;
@@ -5484,7 +5484,7 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//	DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 	for( Count = 0; Count < 8; Count++ )
 	{
@@ -6581,7 +6581,7 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 	uint16 group;
 	uint16 vert;
 	uint16 execbuf;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
 	float	u,v;
 
 	for( group = 0 ; group < Mxloadheader->num_groups ; group ++ )
@@ -6603,7 +6603,7 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 					return FALSE;
 				}
 
-//				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
+//				lpD3DLVERTEX = ( LPLVERTEX ) debDesc.lpData;
 
 				for( vert = 0 ; vert < 	Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] ; vert ++ )
 				{

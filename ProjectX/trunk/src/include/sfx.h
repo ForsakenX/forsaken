@@ -6,7 +6,7 @@
 #include "dsutil.h"
 
 #include "main.h"
-#include "typedefs.h"
+
 #include "render.h"
 #include "quat.h"
 #include "CompObjects.h"

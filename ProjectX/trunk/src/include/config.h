@@ -34,7 +34,7 @@
 #define KEY_JOYSTICK_POVDIR( K )			( (K) & 0x03 )
 
 
-#include "typedefs.h"
+
 #include "title.h"
 
 

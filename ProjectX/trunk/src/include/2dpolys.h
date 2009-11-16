@@ -15,7 +15,7 @@
 	Includes
 ===================================================================*/
 #include <math.h>
-#include "typedefs.h"
+
 #include "New3D.h"
 #include <time.h>
 #include "Ships.h"

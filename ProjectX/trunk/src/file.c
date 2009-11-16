@@ -3,18 +3,18 @@
 	Header files
 ===================================================================*/
 
+#include	"main.h"
+#include	"file.h"
+#include	"util.h"
+
 #include	<fcntl.h>
 #include	<sys/types.h>
 #include	<sys/stat.h>
 #include	<direct.h>
 #include	<io.h>
-#include	<stdio.h>
 #include	<stdlib.h>
 #include	<malloc.h>
 #include	<string.h>
-#include	"typedefs.h"
-#include	"file.h"
-#include	"util.h"
 
 /*===================================================================
 	External Variables

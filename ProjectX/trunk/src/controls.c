@@ -2,7 +2,7 @@
 
 #include <math.h>
 #include "windows.h"
-#include "typedefs.h"
+
 #include "input.h"
 #include "config.h"
 #include "title.h"

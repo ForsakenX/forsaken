@@ -11,7 +11,7 @@
 #include "stdwin.h"
 
 #include "version.h"
-#include "typedefs.h"
+
 #include "render.h"
 #include "xmem.h"
 #include "sbufferhand.h"

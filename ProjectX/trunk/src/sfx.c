@@ -1,11 +1,11 @@
 
 #define DIRECTSOUND_VERSION 0x0700
 
-#include "typedefs.h"
+
 #include <stdio.h>
 #include "sfx.h"
 #include "new3d.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"

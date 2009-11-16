@@ -14,7 +14,7 @@
 	Includes
 ===================================================================*/
 #include <math.h>
-#include "typedefs.h"
+
 #include "New3D.h"
 #include <time.h>
 #include "Ships.h"
@@ -126,7 +126,7 @@ void DoLensflareEffect( void );
 void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 void KillScrOneFramers( void );
-//bjd - CHECK BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright );
+//bjd - CHECK BOOL ClipBox( LPLPTLVERTEX topleft, LPLPTLVERTEX bottomright );
 void DoAllSecBullLensflare( void );
 void SecBullLensflare( uint16 i );
 void CreateCountdownDigits( void );

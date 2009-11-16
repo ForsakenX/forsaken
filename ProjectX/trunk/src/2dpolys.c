@@ -4,7 +4,7 @@
 *	All routines to do with 2d always face you polygons...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -1657,9 +1657,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	D3DCOLOR		Specular;
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
-	LPD3DLVERTEX	FmPolyVertPnt;
-	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPD3DLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
+	LPLVERTEX	FmPolyVertPnt;
+	LPTRIANGLE	FmPolyFacePnt;
+    LPLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 	WORD			*lpIndices = NULL;
@@ -1731,10 +1731,10 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		return FALSE;
 	}
 
-	FmPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+	FmPolyFacePnt = (LPTRIANGLE) lpIndices;
 
 //	lpBufStart = ExecBuffer_debdesc.lpData;
-	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	FmPolyVertPnt = (LPLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
 
@@ -1758,7 +1758,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//FmPolyFacePnt = (LPTRIANGLE) lpPointer;
 
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;
@@ -2048,9 +2048,9 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	D3DCOLOR		Specular;
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
-	LPD3DLVERTEX	FmPolyVertPnt;
-	LPD3DTRIANGLE	FmPolyFacePnt;
-    LPD3DLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+	LPLVERTEX	FmPolyVertPnt;
+	LPTRIANGLE	FmPolyFacePnt;
+    LPLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 	WORD			*lpIndices = NULL;
@@ -2121,10 +2121,10 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		return FALSE;
 	}
 
-	FmPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+	FmPolyFacePnt = (LPTRIANGLE) lpIndices;
 
 //	lpBufStart = ExecBuffer_debdesc.lpData;
-	FmPolyVertPnt = (LPD3DLVERTEX) lpBufStart;
+	FmPolyVertPnt = (LPLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( FmPolyVertPnt + TotalVerts );
 	//lpInsStart = lpPointer;
 
@@ -2148,7 +2148,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		   	    STATE_DATA( D3DRENDERSTATE_TEXTUREHANDLE, Tloadheader.hTex[ Count ], lpPointer );
 		   	OP_TRIANGLE_LIST( NumTris, lpPointer );
 */
-	   		//FmPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//FmPolyFacePnt = (LPTRIANGLE) lpPointer;
 
 			if( Count == *TPage ) i = *NextFmPoly;
 			else i = FmPolyTPages[ Count ].FirstPoly;

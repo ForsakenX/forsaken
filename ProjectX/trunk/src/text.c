@@ -6,9 +6,9 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"

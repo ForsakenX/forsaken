@@ -9,10 +9,11 @@
 /*===================================================================
 		Include File...	
 ===================================================================*/
-#include "typedefs.h"
+
 #include "tload.h"
 #include "xmem.h"
 #include "util.h"
+#include "stdio.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

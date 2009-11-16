@@ -13,7 +13,7 @@
 #define COLLISION_INCLUDED
 
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "file.h"
 #include "render.h"
 #include "new3d.h"

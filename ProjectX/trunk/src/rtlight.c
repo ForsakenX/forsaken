@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
-#include "typedefs.h"
+
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"

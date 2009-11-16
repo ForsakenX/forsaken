@@ -3,7 +3,7 @@
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -12,7 +12,7 @@
 #include "networking.h"
 #include "triggers.h"
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
@@ -346,8 +346,8 @@ void AddWaterLink(WATEROBJECT * WO)
 BOOL InitWaterObject(WATEROBJECT * WO)
 {
 	int x,y;
-	LPD3DTRIANGLE	FacePnt = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPTRIANGLE	FacePnt = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 	int			i;
@@ -384,7 +384,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		return FALSE;
 	}
 
-	FacePnt =  (LPD3DTRIANGLE) lpIndices;
+	FacePnt =  (LPTRIANGLE) lpIndices;
 
 	for( x = 0 ; x < WO->XVerts ; x++ )
 	{
@@ -501,7 +501,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 {
 	int x,y;
 // 	D3DEXECUTEBUFFERDESC	debDesc;
-	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPLVERTEX	lpD3DLVERTEX;
 //  LPVOID lpBufStart;
 	int col;
 	float dx, dy;
@@ -574,7 +574,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 
 /*
 	lpBufStart = debDesc.lpData;
-	lpD3DLVERTEX = ( LPD3DLVERTEX )lpBufStart;
+	lpD3DLVERTEX = ( LPLVERTEX )lpBufStart;
 */
 	VertPnt = WO->Verts;
 	

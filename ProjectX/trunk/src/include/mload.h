@@ -11,7 +11,7 @@
 #define MLOAD_INCLUDED
 
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
@@ -172,7 +172,7 @@ typedef struct LVLGROUP{
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
 	LEVELRENDEROBJECT			renderObject[MAXEXECBUFSPERGROUP];
 //	D3DVERTEXBUFFERDESC		vbdesc[MAXEXECBUFSPERGROUP];
-	LPD3DLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
+	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	char	name[32];
 	VERT	center;
 	VERT	half_size;

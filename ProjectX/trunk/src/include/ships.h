@@ -14,7 +14,7 @@
 
 #include <math.h>
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "New3D.h"
 #include <time.h>
 #include "mload.h"

@@ -1,12 +1,12 @@
 
 #include <stdio.h>
 #include "windows.h"
-#include "typedefs.h"
+
 #include "main.h"
 #include "net.h"
 #include "render.h"
 #include "title.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"

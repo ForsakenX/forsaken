@@ -4,7 +4,7 @@
 	Includes
 ===================================================================*/
 #include	<math.h>
-#include "typedefs.h"
+
 #include	"new3d.h"
 #include	"quat.h"
 

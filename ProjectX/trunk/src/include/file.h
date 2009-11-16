@@ -1,7 +1,8 @@
 #ifndef FILE_H
 #define FILE_H
 
-#include "Typedefs.h"
+#include "main.h"
+#include <stdio.h>
 
 void touch_file( char* path );
 BOOL is_folder( char* path );

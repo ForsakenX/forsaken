@@ -6,7 +6,7 @@
 ===================================================================*/
 #include <stdio.h>
 #include "main.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"

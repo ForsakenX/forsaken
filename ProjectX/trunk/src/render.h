@@ -1,22 +1,17 @@
-#ifndef __D3DAPPI_H__
-#define __D3DAPPI_H__
-
-#define WIN32_EXTRA_LEAN
-#include <windows.h>
-#include <windowsx.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <time.h>
-#include <search.h>
-#include <d3d9.h>
-#include <assert.h>
-#include "new3d.h"
-#include "main.h"
-#include "typedefs.h"
+#ifndef RENDER_INCLUDED
+#define RENDER_INCLUDED
 
 #ifdef __cplusplus
 extern "C" {
+#endif
+
+#include <assert.h>
+
+#include "main.h"
+#include "new3d.h"
+
+#ifndef OPENGL
+#include "d3d9.h"
 #endif
 
 typedef struct {
@@ -86,9 +81,16 @@ void set_alpha_fx_states( void );
 
 const char * render_error_description( HRESULT hr );
 
+typedef struct {
+    LONG x1;
+    LONG y1;
+    LONG x2;
+    LONG y2;
+} XYRECT;
+
 #define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
-BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil);
+BOOL FSClear(DWORD Count, XYRECT* rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil);
 
 #define MAX_LEVEL_TEXTURE_GROUPS 8
 
@@ -134,7 +136,7 @@ HRESULT FSBeginScene();
 HRESULT FSEndScene();
 HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts);
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
 HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
@@ -152,7 +154,7 @@ HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint1
 HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts);
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts);
 HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
@@ -203,4 +205,4 @@ typedef struct {
 #define D3DCLIP_FRONT               0x00000010L
 #define D3DCLIP_BACK                0x00000020L
 
-#endif // __D3DAPPI_H__
+#endif // RENDER_INCLUDED

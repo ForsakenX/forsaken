@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include "main.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -4501,7 +4501,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 // Clears the target(back) and zbuffer for the current camera
 BOOL  ClearBuffers( void )
 {
-	D3DRECT dummy;
+	XYRECT dummy;
 
 	if (!render_info.bRenderingIsOK)
 		return FALSE;
@@ -4517,7 +4517,7 @@ BOOL  ClearBuffers( void )
 // Clear the Zbuffer
 BOOL ClearZBuffer()
 {
-	D3DRECT dummy;
+	XYRECT dummy;
 
 	if (!render_info.bRenderingIsOK)
 		return FALSE;
@@ -4975,7 +4975,7 @@ BOOL Disp3dPanel( void )
 	VECTOR  Pos;
 	VECTOR  Temp;
 	VECTOR  Scale;
-	D3DRECT dummy;
+	XYRECT dummy;
 	render_viewport_t newviewport;
 	float screen_width, screen_height;
 
@@ -5282,7 +5282,7 @@ void CalculateFramelag( void )
 BOOL DispTracker( void ) // bjd
 {
 	uint16      i;
-	D3DRECT     dummy;
+	XYRECT     dummy;
 	render_viewport_t newviewport;
 	float       screen_width, screen_height;
 	VECTOR      TempVector;

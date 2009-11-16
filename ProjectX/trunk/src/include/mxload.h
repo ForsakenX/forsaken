@@ -11,7 +11,7 @@
 #define MXLOAD_INCLUDED
 
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
@@ -77,9 +77,9 @@ typedef struct MXGROUP{
 	uint16	num_texture_groups[MAXTEXTUREGROUPSPEREXECLIST];
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
 	RENDEROBJECT renderObject[MAXTEXTUREGROUPSPEREXECLIST];
-	LPD3DLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
+	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 
-	LPD3DTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
+	LPTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
 	uint32		texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];
 	char		name[16];
 	uint16		num_animating_polys[MAXEXECBUFSPERGROUP];

@@ -3,7 +3,7 @@
 *	All routines to do with pickup objects.....
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"

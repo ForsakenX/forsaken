@@ -4,7 +4,7 @@
 ===================================================================*/
 
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -112,10 +112,10 @@ uint16	CurrentGroupVisible;						// the real group thats visible
 uint16	GroupInVisibleList;							// where it is in the visibility list
 uint16	NumGroupsVisible;
 uint16	GroupsVisible[MAXGROUPS];
-D3DRECT	GroupVisibleExtents[MAXGROUPS];
+XYRECT	GroupVisibleExtents[MAXGROUPS];
 uint16	NumPortalsVisible;
 uint16	PortalsVisible[MAXPORTALSPERGROUP];
-D3DRECT	PortalExtents[MAXGROUPS];
+XYRECT	PortalExtents[MAXGROUPS];
 render_viewport_t	OldViewPort;
 render_viewport_t	PresentViewPort;
 MATRIX	VisPolyMatrix = {
@@ -976,7 +976,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
 	VISLIST *v;
 	VISGROUP *g;
-	D3DRECT clip;
+	XYRECT clip;
 	render_viewport_t *vp;
 	VISGROUP *gsort, *gprev, *gnext;
 	int j;

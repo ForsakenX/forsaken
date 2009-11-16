@@ -5,7 +5,7 @@
 	Includes
 ===================================================================*/
 #include <math.h>
-#include "typedefs.h"
+
 #include "New3D.h"
 #include <time.h>
 #include "Ships.h"
@@ -29,7 +29,7 @@
 	Prototypes
 ===================================================================*/
 BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible );
-BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, int16 NumTris );
+BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 NumTris );
 void ReleaseSkinExecs( void );
 void DisplayBSPNode( BSP_NODE * Node );
 void DisplayNewBSPNode( BSP_NODE * Node );
@@ -40,7 +40,7 @@ void DisplayNodeVolume( BSP_NODE * Node );
 void KillNodeCubeLines( void );
 void KillBoxLines( void );
 void InitSkinExecs( void );
-BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, int16 NumTris );
+BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 NumTris );
 BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible );
 void ReleasePortalExecs( void );
 void InitPortalExecs( void );

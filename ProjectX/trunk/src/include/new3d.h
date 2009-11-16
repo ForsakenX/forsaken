@@ -3,7 +3,8 @@
 #define __New3d_h
 #include <math.h>
 #include <d3d9.h>
-#include "typedefs.h"
+#include "main.h"
+
 
 /*===================================================================
 	Defines
@@ -49,7 +50,7 @@
 	taken from http://www.mvps.org/directx/articles/definitions_for_dx7_vertex_types.htm
 */
 
-typedef struct _D3DLVERTEX {
+typedef struct {
     union {
        float x;
        float dvX;
@@ -78,17 +79,9 @@ typedef struct _D3DLVERTEX {
         float tv;
         float dvTV;
 	};
-/*
-    _D3DLVERTEX() { }
-    _D3DLVERTEX(const D3DVECTOR& v,D3DCOLOR col,D3DCOLOR spec,float _tu, float _tv)
-        { x = v.x; y = v.y; z = v.z;
-          color = col; specular = spec;
-          tu = _tu; tv = _tv;
-    }
-*/
-} D3DLVERTEX, *LPD3DLVERTEX;
+} LVERTEX, *LPLVERTEX;
 
-typedef struct _D3DTLVERTEX {
+typedef struct {
     union {
         float sx;
         float dvSX;
@@ -122,11 +115,9 @@ typedef struct _D3DTLVERTEX {
         float dvTV;
     };
 
-} D3DTLVERTEX, *LPD3DTLVERTEX;
+} LPTLVERTEX, *LPLPTLVERTEX;
 
-#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
-
-typedef struct _D3DTRIANGLE {
+typedef struct {
     union {
         WORD v1;
         WORD wV1;
@@ -140,7 +131,7 @@ typedef struct _D3DTRIANGLE {
         WORD wV3;
     };
 //    WORD     wFlags;
-} D3DTRIANGLE, *LPD3DTRIANGLE;
+} TRIANGLE, *LPTRIANGLE;
 
 
 /*===================================================================

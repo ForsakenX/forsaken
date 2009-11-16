@@ -5,7 +5,7 @@
 ===================================================================*/
 #include <stdio.h>
 #include "main.h"
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -1786,7 +1786,7 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 	uint16 group;
 	uint16 vert;
 	uint16 execbuf;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
 	float	u,v;
 
 	for( group = 0 ; group < Mxloadheader->num_groups ; group ++ )
@@ -1808,7 +1808,7 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 					return FALSE;
 				}
 
-//				lpD3DLVERTEX = ( LPD3DLVERTEX ) debDesc.lpData;
+//				lpD3DLVERTEX = ( LPLVERTEX ) debDesc.lpData;
 				for( vert = 0 ; vert < 	Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] ; vert ++ )
 				{
 					ApplyMatrix( Mat , (VECTOR *) lpD3DLVERTEX,  &Temp);

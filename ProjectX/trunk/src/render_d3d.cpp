@@ -1,18 +1,28 @@
+#ifndef OPENGL
 
 #define DIRECT3D_VERSION    0x0900
+#define WIN32_EXTRA_LEAN
 
+#include <windows.h>
+#include <windowsx.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <search.h>
+#include <d3d9.h>
 #include <d3dx9.h>
 
 extern "C" {
-#include "typedefs.h"
 #include "render.h"
 #include "tload.h"
-#include "new3d.h"
 #include <assert.h>
 #include "util.h"
 #include <dxerr9.h>
 #include "file.h"
 #include "texture.h"
+
+#define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 
 // prototypes
 static BOOL init_render_states( render_info_t * info );
@@ -686,9 +696,10 @@ static BOOL init_render_states( render_info_t * info )
 char buf[100];
 HRESULT LastError;
 
-BOOL FSClear(DWORD Count, CONST D3DRECT* pRects, DWORD Flags, D3DCOLOR Color, float Z, DWORD Stencil)
+BOOL FSClear(DWORD Count, XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
 {
-	if (FAILED(lpD3DDevice->Clear( Count, pRects, Flags, Color, Z, Stencil )))
+	D3DCOLOR color = (D3DCOLOR) Color;
+	if (FAILED(lpD3DDevice->Clear( Count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
 	{
 		return FALSE;
 	}
@@ -1281,7 +1292,7 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1301,7 +1312,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1311,7 +1322,6 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	return LastError;
 }
-
 
 HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
@@ -1324,8 +1334,8 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
-	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(D3DTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1338,7 +1348,7 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 
 int lockTest = 0;
 
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -1356,7 +1366,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, D3DLVERTEX **verts)
 	return LastError;
 }
 
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, D3DTLVERTEX **verts)
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -1468,9 +1478,9 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	assert(renderObject->vbLocked == 0);
 
 	if( transformed )
-		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DTLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(LPTLVERTEX));
 	else
-		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(D3DLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(LVERTEX));
 
 	if (FAILED(LastError))
 		return LastError;
@@ -1584,3 +1594,5 @@ const char * render_error_description( HRESULT hr )
 	return DXGetErrorDescription9(hr);
 #endif
 }
+
+#endif // ! OPENGL

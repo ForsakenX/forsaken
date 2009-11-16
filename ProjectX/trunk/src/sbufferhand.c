@@ -9,7 +9,7 @@
 		Include File...	
 ===================================================================*/
 #include <malloc.h>
-#include "typedefs.h"
+
 #include "sbufferhand.h"
 #include "dsutil.h"
 #include "sfx.h"

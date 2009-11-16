@@ -4,7 +4,7 @@
 *	All routines to do with Lights...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -252,9 +252,9 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	distance;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
+    LPLVERTEX	lpPointer = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	VERTEXCELL * VertexCellPnt;
 	uint16 * VertexIndexPnt;
@@ -318,7 +318,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 			return FALSE;
 		}	
 
-//		lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//		lpPointer = (LPLVERTEX) debDesc.lpData;
 
 		VertexCellPnt = Mloadheader->Group[group].vertex_cell_pnt[execbuf];
 		OrgVertexIndexPnt = Mloadheader->Group[group].vertex_index_pnt[execbuf];
@@ -819,7 +819,7 @@ __asm
 										while( vert-- )
 										{
 //											NumOfVertsConsidered++;
-//											lpD3DLVERTEX = ((LPD3DLVERTEX ) lpPointer) + *VertexIndexPnt++;
+//											lpD3DLVERTEX = ((LPLVERTEX ) lpPointer) + *VertexIndexPnt++;
 											lpD3DLVERTEX = lpPointer + *VertexIndexPnt++;
 											/* find the distance from vert to light */
 											x = lpD3DLVERTEX->x - Posx;
@@ -932,10 +932,10 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer = NULL;
+    LPLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -974,7 +974,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 				return FALSE;
 			}
 
-//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1188,10 +1188,10 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 	int		group;
 	int		execbuf;
 	int		vert;
-    LPD3DLVERTEX	lpPointer = NULL;
+    LPLVERTEX	lpPointer = NULL;
 
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX2 = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpD3DLVERTEX2 = NULL;
 	D3DCOLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1433,8 +1433,8 @@ PLOP2:
 ===================================================================*/
 BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 {
-    LPD3DLVERTEX	lpPointer = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+    LPLVERTEX	lpPointer = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
 //	D3DEXECUTEBUFFERDESC	debDesc;
 	int		group;
 	int		execbuf;
@@ -1456,7 +1456,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 				return FALSE;
 			}
 
-//			lpPointer = (LPD3DLVERTEX) debDesc.lpData;
+//			lpPointer = (LPLVERTEX) debDesc.lpData;
 		
 			lpD3DLVERTEX = lpPointer;
 			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
@@ -1488,7 +1488,7 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 	float	r,g,b;
 	float	R,G,B;
 	D3DCOLOR Colour;
-	LPD3DLVERTEX	lpD3DLVERTEX;
+	LPLVERTEX	lpD3DLVERTEX;
 	float	CellSize;
 	float	Distance;
 	int		i;

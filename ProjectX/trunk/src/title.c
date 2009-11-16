@@ -5,14 +5,14 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
 #include "bgobjects.h"
 #include "object.h"
 #include "networking.h"
-#include "typedefs.h"
+
 #include <time.h>
 #include "sfx.h"
 #include "text.h"
@@ -3855,8 +3855,8 @@ BOOL SetUpLines (uint16 Model, PLANE plane, VECTOR *rot)
 {
 	int num_polys;	
 	int poly, edge;
-	LPD3DTRIANGLE poly_ptr;
-	LPD3DLVERTEX vertex_ptr;
+	LPTRIANGLE poly_ptr;
+	LPLVERTEX vertex_ptr;
 	VECTOR tempv1, tempv2, tempv3;
 	VECTOR start, end, IntPoint;
 	float point1dist, point2dist, distance2plane;
@@ -4648,9 +4648,9 @@ void MorphHoloLight(void)
 BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy)
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DLVERTEX		    *		VertPtr;
+	LVERTEX		    *		VertPtr;
 	DstMloadheader = &ModelHeaders[ Model ];
 /*
 	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
@@ -4666,7 +4666,7 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 		return FALSE;
 	}
 
-//	DstlpD3DLVERTEX = &((LPD3DLVERTEX) DstDebDesc.lpData)[VertexNo];
+//	DstlpD3DLVERTEX = &((LPLVERTEX) DstDebDesc.lpData)[VertexNo];
 
 	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
 
@@ -9365,12 +9365,12 @@ void SetDiscStatus(MENU *menu)
 ===================================================================*/
 BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 {
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	LPD3DLVERTEX			VertPtr;
+	LPLVERTEX			VertPtr;
 	D3DCOLOR				Colour;
 	uint8 red, green, blue, alpha;
 	int i;
@@ -9461,7 +9461,7 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 	MXALOADHEADER	*		ModelHeaderPtr;
 	MXLOADHEADER	*		MxModelHeaderPtr;
 	int i, TotalVerts;
-	LPD3DLVERTEX			VertPtr;
+	LPLVERTEX			VertPtr;
 	VECTOR tempvert;
 	float dist;
 
@@ -9536,13 +9536,13 @@ void GetExtremeOffsets( uint16 Model, PLANE *plane, float *minoffset, float *max
 BOOL MakeTranslucent( uint16 Model )
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXALOADHEADER	*		DstMloadheader;
 	MXLOADHEADER	*		DstMxloadheader;
-	LPD3DLVERTEX			ColourPtr;
+	LPLVERTEX			ColourPtr;
 	D3DCOLOR				Colour;
 	uint8 red, green, blue, alpha;
 	int i;
@@ -9568,7 +9568,7 @@ BOOL MakeTranslucent( uint16 Model )
 					return FALSE;
 				}
 
-//				DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+//				DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -9631,7 +9631,7 @@ BOOL MakeTranslucent( uint16 Model )
 					return FALSE;
 				}
 
-				//DstlpD3DLVERTEX = (LPD3DLVERTEX) DstDebDesc.lpData;
+				//DstlpD3DLVERTEX = (LPLVERTEX) DstDebDesc.lpData;
 
 				Vert = DstMxloadheader->Group[ Group ].num_verts_per_execbuf[ ExecBuf ];
 
@@ -9675,9 +9675,9 @@ BOOL MakeTranslucent( uint16 Model )
 
 BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float tr, float tg, float tb, float ta )
 {
-	LPD3DLVERTEX			DstlpD3DLVERTEX = NULL;
+	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
-	LPD3DLVERTEX			VertPtr;
+	LPLVERTEX			VertPtr;
 	D3DCOLOR				Colour;
 	uint8 red, green, blue, alpha;
 	uint8 vred, vgreen, vblue, valpha;
@@ -12775,7 +12775,7 @@ void KillLevelPic( MENU *Menu )
 void GetTVCoords( POLY *poly, float zoffset )
 {
 	int g, e, vert;
-	LPD3DLVERTEX VertPtr;
+	LPLVERTEX VertPtr;
 
 	for ( g = 0; g < ModelHeaders[ TITLE_MODEL_MenuTV ].num_groups; g++ )
 	{

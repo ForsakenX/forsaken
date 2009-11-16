@@ -15,7 +15,7 @@
 ===================================================================*/
 
 #include <d3d9.h>
-#include "typedefs.h"
+
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
@@ -69,8 +69,8 @@ typedef struct MXAGROUP{
 	uint16	num_texture_groups[MAXTEXTUREGROUPSPEREXECLIST];
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
 	RENDEROBJECT renderObject[MAXEXECBUFSPERGROUP];
-	LPD3DLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
-	LPD3DTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
+	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
+	LPTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
 	uint32	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];
 	char	name[16];
 }MXAGROUP;

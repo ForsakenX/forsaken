@@ -3,7 +3,7 @@
 *	All routines to do with 2d always face you polygons...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -817,12 +817,12 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 
 /*===================================================================
 	Procedure	:	Clip box to viewport
-	Input		:	LPD3DTLVERTEX	Vert1
-				:	LPD3DTLVERTEX	Vert3
+	Input		:	LPLPTLVERTEX	Vert1
+				:	LPLPTLVERTEX	Vert3
 	Output		:	FALSE if box is inside viewport, TRUE if outside
 ===================================================================*/
 
-BOOL ClipBox( LPD3DTLVERTEX topleft, LPD3DTLVERTEX bottomright )
+BOOL ClipBox( LPLPTLVERTEX topleft, LPLPTLVERTEX bottomright )
 {
 	float xmin, ymin, xmax, ymax;
 	int clip_topleft, clip_bottomright;
@@ -2105,9 +2105,9 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
-	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPD3DTLVERTEX	lpBufStart;
+	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
+	LPTRIANGLE	ScrPolyFacePnt;
+    LPLPTLVERTEX	lpBufStart;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2189,9 +2189,9 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		return FALSE;
 	}
 
-	ScrPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
 
-	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
+	ScrPolyVertPnt = (LPLPTLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Buffer ( Verts and Faces Simultaneously )
@@ -2599,9 +2599,9 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	OFF_INFO	*	Off_Ptr;
 	D3DCOLOR		Colour;
 	D3DCOLOR		Specular;
-	LPD3DTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
-	LPD3DTRIANGLE	ScrPolyFacePnt;
-    LPD3DTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
+	LPTRIANGLE	ScrPolyFacePnt;
+    LPLPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2689,10 +2689,10 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		return FALSE;
 	}
 
-	ScrPolyFacePnt = (LPD3DTRIANGLE) lpIndices;
+	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
 		
 //	lpBufStart = ExecBuffer_debdesc.lpData;
-	ScrPolyVertPnt = (LPD3DTLVERTEX) lpBufStart;
+	ScrPolyVertPnt = (LPLPTLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 //	lpInsStart = lpPointer;
 
@@ -2739,7 +2739,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 */
 			}
 
-	   		//ScrPolyFacePnt = (LPD3DTRIANGLE) lpPointer;
+	   		//ScrPolyFacePnt = (LPTRIANGLE) lpPointer;
 			
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;

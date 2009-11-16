@@ -7,7 +7,7 @@
 #include <stdarg.h>
 #include <sys/stat.h>
 #include <direct.h>
-#include "typedefs.h"
+
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"

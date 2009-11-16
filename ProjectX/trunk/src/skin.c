@@ -2,7 +2,7 @@
 	Debugging display routines collision skin
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -52,8 +52,8 @@ extern	MATRIX		MATRIX_Identity;
 /*===================================================================
 	Globals variables and structures
 ===================================================================*/
-	static	D3DLVERTEX		PortalVerts[ 310 * 3 ];
-	static	D3DTRIANGLE		PortalTris[ 310 ];
+	static	LVERTEX		PortalVerts[ 310 * 3 ];
+	static	TRIANGLE		PortalTris[ 310 ];
 	static	int16			PortalVertCount;
 	static	int16			PortalTriCount;
 //	D3DEXECUTEBUFFERDESC	Portal_debdesc;
@@ -63,8 +63,8 @@ extern	MATRIX		MATRIX_Identity;
 	int16					Num_Portal_Execs = 0;
 	int16					ShowPortal = 0;
 
-	static	D3DLVERTEX		SkinVerts[ 310 * 3 ];
-	static	D3DTRIANGLE		SkinTris[ 310 ];
+	static	LVERTEX		SkinVerts[ 310 * 3 ];
+	static	TRIANGLE		SkinTris[ 310 ];
 	static	int16			SkinVertCount;
 	static	int16			SkinTriCount;
 //	D3DEXECUTEBUFFERDESC	Skin_debdesc;
@@ -1017,9 +1017,9 @@ void KillNodeCubeLines( void )
 	Input		:		Nothing
 	Output		:		BOOL		True/False
 ===================================================================*/
-BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, int16 NumTris )
+BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 NumTris )
 {
-    LPD3DLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
+    LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
 	if( Num_Skin_Execs >= MAXSKINEXECS )
 	{
@@ -1040,7 +1040,7 @@ BOOL MakeNewSkinExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16	NumVerts, in
 //   	lpBufStart = Skin_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-	memcpy(lpBufStart, Verts, sizeof(D3DLVERTEX) * NumVerts);
+	memcpy(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);
    
 //    lpInsStart = lpPointer;
    
@@ -1258,9 +1258,9 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 	Input		:		Nothing
 	Output		:		BOOL		True/False
 ===================================================================*/
-BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, int16 NumTris )
+BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 NumTris )
 {
-    LPD3DLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
+    LPLVERTEX	lpBufStart = NULL;//, lpInsStart, lpPointer;
 
 	if( Num_Portal_Execs >= MAXPORTALEXECS )
 	{
@@ -1281,7 +1281,7 @@ BOOL MakeNewPortalExec( LPD3DLVERTEX Verts, LPD3DTRIANGLE Tris, int16 NumVerts, 
 //   	lpBufStart = Portal_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-	memcpy(lpBufStart, Verts, sizeof(D3DLVERTEX) * NumVerts);
+	memcpy(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);
    
 //    lpInsStart = lpPointer;
 

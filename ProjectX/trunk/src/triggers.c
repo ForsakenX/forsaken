@@ -4,7 +4,7 @@
 ===================================================================*/
 #define WIN32_EXTRA_LEAN
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "main.h"
 #include <windows.h>
 #include "new3d.h"

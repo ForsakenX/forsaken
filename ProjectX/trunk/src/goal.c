@@ -1,5 +1,5 @@
 #define WIN32_EXTRA_LEAN
-#include "typedefs.h"
+
 #include <stdio.h>
 #include "main.h"
 #include <windows.h>

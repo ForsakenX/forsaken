@@ -1,5 +1,5 @@
 
-#include "typedefs.h"
+
 #include "new3d.h"
 
 #ifdef OPT_ON

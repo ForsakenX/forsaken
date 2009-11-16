@@ -4,7 +4,7 @@
  *	loads in a bin....
  *  extracts the names of the ppm's and creates a suface and material...
  *  make an execution list per group of....
- *  make a list of D3DVERTEX's.....and D3DTRIANGLE's....
+ *  make a list of D3DVERTEX's.....and TRIANGLE's....
 ***************************************************************************/
 
 /*
@@ -36,7 +36,7 @@ mxtype : uint16 // always 0 for mx format
 		Include File...
 ===================================================================*/
 #include <stdio.h>
-#include "typedefs.h"
+
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -84,8 +84,8 @@ POLYANIM * Panel3DPolyAnims_MineNum[NUMOFPOLYSPER3DPANELITEM];
 
 void Check3DPanelPolyAnim(POLYANIM * PolyAnim );
 
-extern void FixUV( LPD3DTRIANGLE Tri, LPD3DLVERTEX Vert, uint16 Tpage, LPD3DLVERTEX Orig_Vert );
-extern void FixUV_Anim( POLYANIM *PolyAnim, LPD3DLVERTEX Vert, LPD3DLVERTEX Orig_Vert );
+extern void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert );
+extern void FixUV_Anim( POLYANIM *PolyAnim, LPLVERTEX Vert, LPLVERTEX Orig_Vert );
 
 /*===================================================================
 		Function from title.c not #included due to dependences...
@@ -113,9 +113,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16		*	Uint16Pnt2;
 	float		*	FloatPnt;
 	MFACE		*	MFacePnt;
-//	LPD3DTRIANGLE	FacePnt;
-	D3DTRIANGLE		FacePnt; // was a pointer
-	LPD3DTRIANGLE	TempFacePnt;
+//	LPTRIANGLE	FacePnt;
+	TRIANGLE		FacePnt; // was a pointer
+	LPTRIANGLE	TempFacePnt;
 	uint16			exec_type = 0;			// the type of execute buffer
 	uint16			texture_type = 0;		// the type of texture...0 normal  1 env
 	uint16			num_vertices = 0;		// overall number of verts
@@ -124,8 +124,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16			group_vertex_start = 0; // where in the vert list to start processing
 	uint16			group_vertex_num = 0;	// and how many to do...
 	LPOLDLVERTEX lpD3DLVERTEX2 = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
-	LPD3DLVERTEX	lpBufStart = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
 	int				ibIndex = 0;
 	int				i,e,o;
@@ -300,8 +300,8 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 			}
 
 			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
-			Mxloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(D3DLVERTEX) * num_vertices);
-			memcpy(Mxloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(D3DLVERTEX) * num_vertices);
+			Mxloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(LVERTEX) * num_vertices);
+			memcpy(Mxloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(LVERTEX) * num_vertices);
 
 			//	Stuff to clip if bounding box is off screen
 /* bjd - CHECK
@@ -385,7 +385,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				DebugPrintf("trinagles %d\n", num_triangles);
 				Buffer = (char *) Uint16Pnt;
 
-				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(D3DLVERTEX));
+				Mxloadheader->Group[group].texture_group_vert_off[execbuf][i] = (uint32) (group_vertex_start*sizeof(LVERTEX));
 /* bjd - CHECK
 				OP_STATE_LIGHT(1, lpPointer);
 
@@ -405,7 +405,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 				OP_TRIANGLE_LIST( (short) num_triangles, lpPointer);
 */
 				MFacePnt = (MFACE *) Buffer;
-				TempFacePnt = (LPD3DTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
+				TempFacePnt = (LPTRIANGLE ) /*lpD3DLVERTEX*/lpIndices;
 
 
 				/*	copy the faces data into the execute buffer	*/
@@ -467,9 +467,9 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 			if (StoreTriangles)
 			{	Mxloadheader->Group[group].num_polys_per_execbuf[execbuf] = triangleCount;//num_triangles;
-				Mxloadheader->Group[group].poly_ptr[execbuf] = (LPD3DTRIANGLE)malloc( sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);
+				Mxloadheader->Group[group].poly_ptr[execbuf] = (LPTRIANGLE)malloc( sizeof (TRIANGLE) * /*num_triangles*/triangleCount);
 
-				memcpy(Mxloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (D3DTRIANGLE) * /*num_triangles*/triangleCount);
+				memcpy(Mxloadheader->Group[group].poly_ptr[execbuf], TempFacePnt, sizeof (TRIANGLE) * /*num_triangles*/triangleCount);
 
 			}
 			else
@@ -832,8 +832,8 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 	int		group;
 	D3DMATRIX Matrix;
 	BOOL	Display;
-    LPD3DLVERTEX	lpPointer = NULL;
-	LPD3DLVERTEX	lpD3DLVERTEX = NULL;
+    LPLVERTEX	lpPointer = NULL;
+	LPLVERTEX	lpD3DLVERTEX = NULL;
 	POLYANIM * PolyAnim;
 	uint32 * uint32Pnt;
 	TANIMUV * TanimUV;
@@ -1284,9 +1284,9 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 	int		i,e;
 	int		group;
 //	D3DEXECUTEBUFFERDESC	debDesc1;
-	LPD3DLVERTEX	lpD3DLVERTEX1 = NULL;
+	LPLVERTEX	lpD3DLVERTEX1 = NULL;
 //	D3DCOLOR * ColourPnt;
-	LPD3DLVERTEX			VertPtr;
+	LPLVERTEX			VertPtr;
 
 	if( !Mxloadheader1->state )
 		return FALSE;
@@ -1305,7 +1305,7 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 				return FALSE;
 			}
 
-//			lpD3DLVERTEX1 = (LPD3DLVERTEX) debDesc1.lpData;
+//			lpD3DLVERTEX1 = (LPLVERTEX) debDesc1.lpData;
 
 			//ColourPnt = Mxloadheader1->Group[group].org_colors[i];
 			VertPtr = Mxloadheader1->Group[group].originalVerts[i];

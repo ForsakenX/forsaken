@@ -2,7 +2,7 @@
 #ifndef VISI_INCLUDED
 #define VISI_INCLUDED
 
-#include "typedefs.h"
+
 #include <math.h>
 #include <time.h>
 #include "New3D.h"
