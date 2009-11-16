@@ -27,10 +27,6 @@ extern "C" {
 // prototypes
 static BOOL init_render_states( render_info_t * info );
 
-// d3d caps
-// D3DPTEXTURECAPS_SQUAREONLY
-BOOL  bSquareOnly = FALSE;
-
 // Build a Gamma Correction table
 BYTE  gamma_lookup[256];
 void render_gamma_correction( double gamma )
@@ -63,6 +59,9 @@ BOOL init_renderer( render_info_t * info )
 	HRESULT LastError;
 	render_viewport_t viewport;
 	int bpp = 16;
+
+	// should get this from d3d caps
+	bSquareOnly = FALSE;
 
 	// default gamma table
 	render_gamma_correction(1.0);

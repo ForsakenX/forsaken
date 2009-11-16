@@ -1,9 +1,21 @@
 #ifdef OPENGL
 
+#include "main.h"
+#include "util.h"
 #include "render.h"
+
+// TODO - port functions to not use hresult
+typedef long HRESULT;
+
+void render_gamma_correction( double gamma )
+{
+}
 
 BOOL init_renderer( render_info_t * info )
 {
+	// TODO - all textures should be scaled to square
+	//		  other wise should get this from gl caps
+	bSquareOnly = FALSE;
 	return TRUE;
 }
 
@@ -227,12 +239,10 @@ HRESULT draw_2d_object(RENDEROBJECT *renderObject)
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
-	return S_OK;
 }
 
 const char * render_error_description( HRESULT hr )
 {
-	DebugPrint("stub\n");
 	return "";
 }
 

@@ -14,6 +14,8 @@ extern "C" {
 #include "d3d9.h"
 #endif
 
+BOOL  bSquareOnly;
+
 typedef struct {
     DWORD       X;
     DWORD       Y;            /* Viewport Top left */
