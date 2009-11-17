@@ -32,7 +32,7 @@ struct _VISGROUP
 	int			visible;
 	EXTENT		extent;
 	render_viewport_t viewport;
-	D3DMATRIX	projection;
+	RENDERMATRIX	projection;
 	VISGROUP	*next_visible;
 };
 
@@ -44,7 +44,7 @@ typedef struct
 	VISGROUP	*first_visible;
 	VISGROUP	*last_visible;
 	render_viewport_t	*viewport;
-	D3DMATRIX	viewproj;
+	RENDERMATRIX	viewproj;
 } VISLIST;
 
 
@@ -57,11 +57,11 @@ typedef struct CAMERA{
 	VECTOR	Pos;
 	MATRIX	Mat;
 	MATRIX	InvMat;
-	D3DMATRIX	Proj;
+	RENDERMATRIX	Proj;
 	render_viewport_t Viewport;
 	void *	CurrentOwner;
 	VISLIST visible;
-	D3DMATRIX	View;
+	RENDERMATRIX	View;
 }CAMERA;
 
 typedef struct _REMOTECAMERA{

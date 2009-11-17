@@ -8,7 +8,7 @@
 
 typedef struct _TRANSEXE{
 	int	UseIdentity;
-	D3DMATRIX  Matrix;
+	RENDERMATRIX  Matrix;
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf;
 	RENDEROBJECT renderObject;
 	int16		NumVerts;
@@ -23,7 +23,7 @@ extern int16	NumOfTransExe;
  */
 
 //bjd void AddTransExe( LPD3DMATRIX Matrix , LPDIRECT3DEXECUTEBUFFER lpExBuf , int UseIdentity, uint16 Model, uint16 group, int16 NumVerts );
-void AddTransExe( D3DMATRIX *Matrix , RENDEROBJECT *renderObject, int UseIdentity, uint16 Model, uint16 group, int16 NumVerts );
+void AddTransExe( RENDERMATRIX *Matrix , RENDEROBJECT *renderObject, int UseIdentity, uint16 Model, uint16 group, int16 NumVerts );
 void ExecuteTransExe( uint16 group );
 void ExecuteTransExeUnclipped( uint16 group );
 

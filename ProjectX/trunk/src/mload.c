@@ -1169,7 +1169,7 @@ BOOL ExecuteMloadHeader( MLOADHEADER * Mloadheader  )
 BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 {
 	uint16 i;
-	D3DMATRIX Matrix;
+	RENDERMATRIX Matrix;
 	
 	if (Mloadheader->state == TRUE )
 	{

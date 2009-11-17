@@ -31,11 +31,11 @@ extern	DWORD	CurrentSrcBlend;
 extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
-extern	D3DMATRIX view;
-extern	D3DMATRIX identity;
+extern	RENDERMATRIX view;
+extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
-extern	D3DMATRIX  TempWorld;	
-extern	D3DMATRIX identity;
+extern	RENDERMATRIX  TempWorld;	
+extern	RENDERMATRIX identity;
 extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 

@@ -233,7 +233,7 @@ extern int16		NewLevelNum;
 extern int16		NumLevels;
 extern char	ShortLevelNames[MAXLEVELS][32];
 extern	BOOL                    IsHost;
-extern	D3DMATRIX view;
+extern	RENDERMATRIX view;
 extern	BOOL ClearBuffers( void );
 extern	MATRIX	MATRIX_Identity;
 extern	render_viewport_t viewport;

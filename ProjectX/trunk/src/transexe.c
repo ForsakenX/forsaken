@@ -17,7 +17,7 @@
 /*===================================================================
 		Externals...
 ===================================================================*/
-extern D3DMATRIX identity;
+extern RENDERMATRIX identity;
 extern MODEL Models[MAXNUMOFMODELS];
 extern GLOBALSHIP Ships[MAX_PLAYERS];
 
@@ -34,7 +34,7 @@ TRANSEXE TransExe[MAXTRANSEXE];
 			  lpExBuf... Pointer to Execution Buffer
 			  int UseIdentity....set to 0 for normal background...1 for Bikes etc..
 ===================================================================*/
-void AddTransExe( /*LPD3DMATRIX Matrix*/D3DMATRIX *Matrix , /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject , int UseIdentity, uint16 Model, uint16 group, int16 NumVerts )
+void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderObject , int UseIdentity, uint16 Model, uint16 group, int16 NumVerts )
 {
 	if( NumOfTransExe < MAXTRANSEXE	)
 	{

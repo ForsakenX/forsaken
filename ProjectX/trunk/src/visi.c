@@ -48,8 +48,8 @@ extern	BOOL			CaptureTheFlag;
 
 extern	MATRIX			ProjMatrix;
 extern	TLOADHEADER		Tloadheader;
-extern	D3DMATRIX		proj;
-extern	D3DMATRIX		view;
+extern	RENDERMATRIX		proj;
+extern	RENDERMATRIX		view;
 extern	MCLOADHEADER	MCloadheader;
 
 extern	DWORD			CurrentSrcBlend;
@@ -1174,8 +1174,8 @@ BOOL
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
     HRESULT rval;
-	D3DMATRIX	Tempproj;
-	D3DMATRIX	Tempview;
+	RENDERMATRIX	Tempproj;
+	RENDERMATRIX	Tempview;
 	VISGROUP *g;
 	int	i;
 	uint32 t;

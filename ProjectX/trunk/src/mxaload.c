@@ -86,10 +86,10 @@ extern	DWORD	CurrentDestBlend;
 extern	DWORD	CurrentTextureBlend;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
 extern	int16	BikeModels[ MAXBIKETYPES ];
-extern	D3DMATRIX view;
-extern	D3DMATRIX identity;
+extern	RENDERMATRIX view;
+extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
-extern	D3DMATRIX  TempWorld;
+extern	RENDERMATRIX  TempWorld;
 
 int16		NewLevelNum;
 
@@ -746,7 +746,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 {
 	int i;
 	int group;
-	D3DMATRIX Matrix;
+	RENDERMATRIX Matrix;
 	if (Mxaloadheader->state == TRUE )
 	{
 		for ( group=0 ; group<Mxaloadheader->num_groups ; group++)

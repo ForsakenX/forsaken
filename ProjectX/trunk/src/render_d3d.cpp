@@ -725,24 +725,24 @@ HRESULT FSSetViewPort(render_viewport_t *newViewPort)
 	return lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
 }
 
-HRESULT FSSetWorld( D3DMATRIX *matrix )
+HRESULT FSSetWorld( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_WORLD, matrix);
+	return lpD3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix);
 }
 
-HRESULT FSSetProjection( D3DMATRIX *matrix )
+HRESULT FSSetProjection( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, matrix);
+	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix);
 }
 
-HRESULT FSSetView( D3DMATRIX *matrix )
+HRESULT FSSetView( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_VIEW, matrix);
+	return lpD3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix);
 }
 
-HRESULT FSGetWorld(D3DMATRIX *matrix)
+HRESULT FSGetWorld(RENDERMATRIX *matrix)
 {
-	return lpD3DDevice->GetTransform(D3DTS_WORLD, matrix);
+	return lpD3DDevice->GetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix);
 }
 
 HRESULT FSSetMaterial(RENDERMATERIAL *material)

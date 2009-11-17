@@ -56,7 +56,7 @@ extern	GLOBALSHIP		Ships[MAX_PLAYERS];
 extern	float			framelag;
 extern	XLIGHT * FirstLightVisible;
 
-extern	D3DMATRIX		identity;
+extern	RENDERMATRIX		identity;
 extern	uint16			IsGroupVisible[MAXGROUPS];
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
@@ -1130,7 +1130,7 @@ void KillAttachedSpotFX( uint16 i )
 
 BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  ) // bjd
 {
-	D3DMATRIX TempWorld;
+	RENDERMATRIX TempWorld;
 	uint16	i;
 	uint16	nextmodel;
 	uint16	ModelNum;

@@ -123,8 +123,8 @@ extern MCLOADHEADER MCloadheadert0;
 extern	BYTE					Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE                    WhoIAm;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS];
-extern	D3DMATRIX view;
-extern	D3DMATRIX identity;
+extern	RENDERMATRIX view;
+extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	VECTOR	SlideRight;
 extern	VECTOR	SlideUp;
@@ -634,7 +634,7 @@ extern int BountyBonusInterval;
 BOOL ShieldCritical = FALSE;
 BOOL HullCritical = FALSE;
 
-D3DMATRIX  TempWorld;	
+RENDERMATRIX  TempWorld;	
 
 float	WhiteOut = 0.0F;
 float	RandomBubbleTimer = 0.0F;

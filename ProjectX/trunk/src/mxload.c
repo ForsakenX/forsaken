@@ -830,7 +830,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 {
 	int		i,e,f;
 	int		group;
-	D3DMATRIX Matrix;
+	RENDERMATRIX Matrix;
 	BOOL	Display;
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpD3DLVERTEX = NULL;

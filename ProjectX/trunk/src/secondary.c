@@ -66,7 +66,7 @@ extern	FRAME_INFO	*	Trojax_Exp_Header;
 extern	FRAME_INFO	*	Pulsar_Exp_Header;
 extern	FRAME_INFO	*	Bits_Header;
 extern	SHIPCONTROL		control;
-extern	D3DMATRIX		view;
+extern	RENDERMATRIX		view;
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;

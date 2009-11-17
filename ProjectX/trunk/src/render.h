@@ -161,6 +161,18 @@ typedef struct LEVELRENDEROBJECT
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
 } LEVELRENDEROBJECT;
 
+typedef struct {
+    union {
+        struct {
+            float        _11, _12, _13, _14;
+            float        _21, _22, _23, _24;
+            float        _31, _32, _33, _34;
+            float        _41, _42, _43, _44;
+        };
+        float m[4][4];
+    };
+} RENDERMATRIX;
+
 BOOL render_flip( render_info_t * info );
 HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
 HRESULT FSBeginScene();
@@ -178,7 +190,7 @@ HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT FSSetViewPort(render_viewport_t *newViewPort);
 HRESULT FSGetViewport(render_viewport_t *returnViewPort);
 HRESULT FSSetViewPort(render_viewport_t *newViewPort);
-HRESULT FSGetWorld(D3DMATRIX *matrix);
+HRESULT FSGetWorld(RENDERMATRIX *matrix);
 HRESULT FSSetMaterial(RENDERMATERIAL *material);
 void release_texture( LPTEXTURE texture );
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
@@ -187,9 +199,9 @@ HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts);
 HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-HRESULT FSSetWorld( D3DMATRIX *matrix );
-HRESULT FSSetProjection( D3DMATRIX *matrix );
-HRESULT FSSetView( D3DMATRIX *matrix );
+HRESULT FSSetWorld( RENDERMATRIX *matrix );
+HRESULT FSSetProjection( RENDERMATRIX *matrix );
+HRESULT FSSetView( RENDERMATRIX *matrix );
 HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT draw_2d_object(RENDEROBJECT *renderObject);

@@ -60,7 +60,7 @@ extern render_info_t render_info;
 extern SLIDER BikeCompSpeechSlider;
 
 extern	SHIPCONTROL		control;
-extern	D3DMATRIX		view;
+extern	RENDERMATRIX		view;
 extern	VECTOR			Forward;
 extern	VECTOR			Backward;
 extern	VECTOR			SlideUp;
@@ -81,7 +81,7 @@ extern	GLOBALSHIP      Ships[MAX_PLAYERS+1];
 extern	BYTE			WhoIAm;
 extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	MODEL			Models[ MAXNUMOFMODELS ];
-extern	D3DMATRIX		identity;
+extern	RENDERMATRIX		identity;
 extern	uint16			FirstSecBullUsed;
 extern	SECONDARYWEAPONBULLET SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	int16			SecondaryWeaponsGot[ MAXSECONDARYWEAPONS ];
