@@ -121,11 +121,14 @@ typedef struct TEXTUREGROUP
 	LPTEXTURE texture;
 } TEXTUREGROUP;
 
+typedef void * LPVERTEXBUFFER;
+typedef void * LPINDEXBUFFER;
+
 typedef struct RENDEROBJECT
 {
-	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
-	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
-	D3DMATERIAL9 material;
+	LPVERTEXBUFFER	lpVertexBuffer;
+	LPINDEXBUFFER	lpIndexBuffer;
+	D3DMATERIAL9	material;
 	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
@@ -133,10 +136,10 @@ typedef struct RENDEROBJECT
 
 typedef struct LEVELRENDEROBJECT
 {
-	LPDIRECT3DVERTEXBUFFER9 lpD3DVertexBuffer;
-	LPDIRECT3DINDEXBUFFER9	lpD3DIndexBuffer;
-	D3DMATERIAL9 material;
-	BOOL				vbLocked;
+	LPVERTEXBUFFER	lpVertexBuffer;
+	LPINDEXBUFFER	lpIndexBuffer;
+	D3DMATERIAL9	material;
+	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
 } LEVELRENDEROBJECT;

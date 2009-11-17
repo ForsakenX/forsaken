@@ -1022,6 +1022,8 @@ const char * d3d_format( D3DFORMAT format )
 
 void release_texture( LPTEXTURE texture )
 {
+	if(!texture)
+		return;
 	((LPDIRECT3DTEXTURE9)texture)->Release();
 	texture = NULL;
 }
@@ -1302,7 +1304,10 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(
+		numVertices * sizeof(LVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED,
+		(LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
+	);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1322,7 +1327,10 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_LVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(
+		numVertices * sizeof(LVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 
+		D3DFVF_LVERTEX, D3DPOOL_DEFAULT, (LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
+	);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1337,15 +1345,18 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 {
 //	assert (numVertices < 10000);
 
-	assert (renderObject->lpD3DVertexBuffer == NULL);
+	assert (renderObject->lpVertexBuffer == NULL);
 
 // this is not good cause LEVELRENDEROBJECT is of a diff size...
 //	memset(renderObject, 0, sizeof(RENDEROBJECT));
 
 	renderObject->vbLocked = 0;
 
-	LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX, D3DPOOL_DEFAULT, &renderObject->lpD3DVertexBuffer, NULL);
-	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpD3DVertexBuffer, NULL);
+	LastError = lpD3DDevice->CreateVertexBuffer(
+		numVertices * sizeof(LPTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX,
+		D3DPOOL_DEFAULT, (LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
+	);
+	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1362,7 +1373,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
-	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock vertex buffer!\n");
@@ -1380,7 +1391,7 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX 
 {
 	assert(renderObject->vbLocked == 0);
 
-	LastError = renderObject->lpD3DVertexBuffer->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock vertex buffer!\n");
@@ -1399,7 +1410,7 @@ HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 	assert(renderObject->vbLocked == 1);
 
 //	DebugPrintf("unlocking vertex buffer\n");
-	LastError = renderObject->lpD3DVertexBuffer->Unlock();
+	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Unlock();
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't unlock vertex buffer!\n");
@@ -1419,7 +1430,7 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 	assert(renderObject->vbLocked == 1);
 
 //	DebugPrintf("unlocking vertex buffer\n");
-	LastError = renderObject->lpD3DVertexBuffer->Unlock();
+	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Unlock();
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't unlock vertex buffer!\n");
@@ -1435,7 +1446,10 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-	LastError = lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED, &renderObject->lpD3DIndexBuffer, NULL);
+	LastError = lpD3DDevice->CreateIndexBuffer(
+		numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED,
+		(LPDIRECT3DINDEXBUFFER9*)&renderObject->lpIndexBuffer, NULL
+	);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1448,7 +1462,10 @@ HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 
 HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
-	LastError = lpD3DDevice->CreateIndexBuffer(numIndices * 3 * sizeof(WORD),  D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFMT_INDEX16, D3DPOOL_DEFAULT, &renderObject->lpD3DIndexBuffer, NULL);
+	LastError = lpD3DDevice->CreateIndexBuffer(
+		numIndices * 3 * sizeof(WORD),  D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
+		D3DFMT_INDEX16, D3DPOOL_DEFAULT, (LPDIRECT3DINDEXBUFFER9*)&renderObject->lpIndexBuffer, NULL
+	);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1461,7 +1478,7 @@ HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {
-	LastError = renderObject->lpD3DIndexBuffer->Lock(0, 0, (void**)indices, D3DLOCK_DISCARD);
+	LastError = ((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer)->Lock(0, 0, (void**)indices, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock index buffer!\n");
@@ -1472,7 +1489,7 @@ HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 {
-	LastError = renderObject->lpD3DIndexBuffer->Unlock();
+	LastError = ((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer)->Unlock();
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock index buffer!\n");
@@ -1488,16 +1505,16 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	assert(renderObject->vbLocked == 0);
 
 	if( transformed )
-		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(LPTLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, (LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer, 0, sizeof(LPTLVERTEX));
 	else
-		LastError = lpD3DDevice->SetStreamSource(0, renderObject->lpD3DVertexBuffer, 0, sizeof(LVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, (LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer, 0, sizeof(LVERTEX));
 
 	if (FAILED(LastError))
 		return LastError;
 
-	if(renderObject->lpD3DIndexBuffer)
+	if(renderObject->lpIndexBuffer)
 	{
-		LastError = lpD3DDevice->SetIndices(renderObject->lpD3DIndexBuffer);
+		LastError = lpD3DDevice->SetIndices((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer);
 		if(FAILED(LastError)) 
 			return LastError;
 	}
@@ -1523,7 +1540,7 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 		if (FAILED(LastError))
 			return LastError;
 
-		if(renderObject->lpD3DIndexBuffer)
+		if(renderObject->lpIndexBuffer)
 		{
 			LastError = lpD3DDevice->DrawIndexedPrimitive(
 				primitive_type,
@@ -1570,15 +1587,15 @@ HRESULT draw_2d_object(RENDEROBJECT *renderObject)
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
-	if (renderObject->lpD3DVertexBuffer)
+	if (renderObject->lpVertexBuffer)
 	{
-		renderObject->lpD3DVertexBuffer->Release();
-		renderObject->lpD3DVertexBuffer = NULL;
+		((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Release();
+		renderObject->lpVertexBuffer = NULL;
 	}
-	if (renderObject->lpD3DIndexBuffer)
+	if (renderObject->lpIndexBuffer)
 	{
-		renderObject->lpD3DIndexBuffer->Release();
-		renderObject->lpD3DIndexBuffer = NULL;
+		((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer)->Release();
+		renderObject->lpIndexBuffer = NULL;
 	}
 	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{

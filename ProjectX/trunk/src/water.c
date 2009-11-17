@@ -422,7 +422,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		}
 	}
 
-	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
 	{
 		return FALSE;
 	}
@@ -564,7 +564,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 //	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
 	{
 		return;
 	}
@@ -607,7 +607,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 	/*	unlock the execute buffer	*/
 //	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
 //		return;
-	if (FAILED(FSUnlockVertexBuffer(/*WO->lpD3DVertexBuffer*/&WO->renderObject)))
+	if (FAILED(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
 	{
 		return;
 	}
