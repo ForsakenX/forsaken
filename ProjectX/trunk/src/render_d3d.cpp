@@ -740,9 +740,9 @@ HRESULT FSSetView( D3DMATRIX *matrix )
 	return lpD3DDevice->SetTransform(D3DTS_VIEW, matrix);
 }
 
-HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
+HRESULT FSGetWorld(D3DMATRIX *matrix)
 {
-	return lpD3DDevice->GetTransform(type, matrix);
+	return lpD3DDevice->GetTransform(D3DTS_WORLD, matrix);
 }
 
 HRESULT FSSetMaterial(RENDERMATERIAL *material)

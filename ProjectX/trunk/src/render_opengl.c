@@ -122,7 +122,22 @@ HRESULT FSSetViewPort(render_viewport_t *newViewPort)
 	return S_OK;
 }
 
-HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
+HRESULT FSSetWorld( D3DMATRIX *matrix )
+{
+	return lpD3DDevice->SetTransform(D3DTS_WORLD, matrix);
+}
+
+HRESULT FSSetProjection( D3DMATRIX *matrix )
+{
+	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, matrix);
+}
+
+HRESULT FSSetView( D3DMATRIX *matrix )
+{
+	return lpD3DDevice->SetTransform(D3DTS_VIEW, matrix);
+}
+
+HRESULT FSGetWorld(D3DMATRIX *matrix)
 {
 	return S_OK;
 }

@@ -178,7 +178,7 @@ HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT FSSetViewPort(render_viewport_t *newViewPort);
 HRESULT FSGetViewport(render_viewport_t *returnViewPort);
 HRESULT FSSetViewPort(render_viewport_t *newViewPort);
-HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
+HRESULT FSGetWorld(D3DMATRIX *matrix);
 HRESULT FSSetMaterial(RENDERMATERIAL *material);
 void release_texture( LPTEXTURE texture );
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
