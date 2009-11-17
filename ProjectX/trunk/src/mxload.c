@@ -141,7 +141,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	uint16			maxloops;
 	uint16			animsize;
 	int				r,g,b,a;
-	D3DCOLOR		color;
+	COLOR		color;
 	uint16			NumSpotFX;
 	PVSPOTFX	*	SpotFXPtr;
 	uint16			NumFirePoints;
@@ -1285,7 +1285,7 @@ BOOL RestoreColourMxloadHeader( MXLOADHEADER * Mxloadheader1 )
 	int		group;
 //	D3DEXECUTEBUFFERDESC	debDesc1;
 	LPLVERTEX	lpD3DLVERTEX1 = NULL;
-//	D3DCOLOR * ColourPnt;
+//	COLOR * ColourPnt;
 	LPLVERTEX			VertPtr;
 
 	if( !Mxloadheader1->state )

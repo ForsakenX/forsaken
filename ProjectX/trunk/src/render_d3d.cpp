@@ -23,6 +23,7 @@ extern "C" {
 #include "texture.h"
 
 #define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
+#define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
 
 // prototypes
 static BOOL init_render_states( render_info_t * info );
@@ -697,7 +698,7 @@ HRESULT LastError;
 
 BOOL FSClear(DWORD Count, XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
 {
-	D3DCOLOR color = (D3DCOLOR) Color;
+	COLOR color = (COLOR) Color;
 	if (FAILED(lpD3DDevice->Clear( Count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
 	{
 		return FALSE;

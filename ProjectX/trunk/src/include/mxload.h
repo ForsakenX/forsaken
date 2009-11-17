@@ -70,7 +70,7 @@ typedef struct MXGROUP{
 	uint16		num_execbufs;
 	uint16		exec_type[MAXEXECBUFSPERGROUP];
 	uint16		num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
-//	D3DCOLOR *	org_colors[MAXEXECBUFSPERGROUP];
+//	COLOR *	org_colors[MAXEXECBUFSPERGROUP];
 	uint16	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
 	uint16	num_texture_groups[MAXTEXTUREGROUPSPEREXECLIST];
 //	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];

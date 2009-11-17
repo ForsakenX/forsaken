@@ -999,7 +999,10 @@ void SetupNetworkGame()
 	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG					);	
 	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG						);	 
 	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG						);	 
+#ifdef DEMO_SUPPORT
 	RealPacketSize[MSG_INTERPOLATE					] = sizeof( INTERPOLATEMSG						);	
+	RealPacketSize[MSG_VERYSHORTINTERPOLATE			] = sizeof( VERYSHORTINTERPOLATEMSG				);	 
+#endif
 	RealPacketSize[MSG_BGOUPDATE					] = sizeof( BGOUPDATEMSG						);	
 	RealPacketSize[MSG_LONGSTATUS					] = sizeof( LONGSTATUSMSG						);	
 	RealPacketSize[MSG_SETTIME						] = sizeof( SETTIMEMSG							);	
@@ -1007,7 +1010,6 @@ void SetupNetworkGame()
 	RealPacketSize[MSG_BIKENUM						] = sizeof( BIKENUMMSG							);	
 	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG					);	
 	RealPacketSize[MSG_VERYSHORTFUPDATE				] = sizeof( VERYSHORTFUPDATEMSG					);	 
-	RealPacketSize[MSG_VERYSHORTINTERPOLATE			] = sizeof( VERYSHORTINTERPOLATEMSG				);	 
 	RealPacketSize[MSG_TEAMGOALS					] = sizeof( TEAMGOALSMSG						);	
 	RealPacketSize[MSG_YOUQUIT						] = sizeof( YOUQUITMSG							);	
 	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG						);	 
@@ -1536,8 +1538,10 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
     LPSHORTTRIGVARMSG				lpShortTrigVar;
     LPSHORTMINEMSG					lpShortMine;
     LPTEXTMSG								lpTextMsg;
+#ifdef DEMO_SUPPORT
 	LPINTERPOLATEMSG					lpInterpolate;
 	LPVERYSHORTINTERPOLATEMSG	lpVeryShortInterpolate;
+#endif
 	LPBIKENUMMSG						lpBikeNumMsg;
 	LPYOUQUITMSG						lpYouQuitMsg;
 	LPNETSETTINGSMSG					lpNetSettingsMsg;
@@ -3149,6 +3153,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		}
 		return;
 
+#ifdef DEMO_SUPPORT
 
     case MSG_INTERPOLATE:
 
@@ -3164,7 +3169,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		Ships[lpInterpolate->WhoIAm].NextTime = lpInterpolate->NextTime;
 		Ships[lpInterpolate->WhoIAm].DemoInterpolate = TRUE;
 		return;
-
 
     case MSG_VERYSHORTINTERPOLATE:
 
@@ -3184,6 +3188,8 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		Ships[lpVeryShortInterpolate->WhoIAm].OldBank		= Ships[lpVeryShortInterpolate->WhoIAm].Object.Bank;
 		Ships[lpVeryShortInterpolate->WhoIAm].OldTime		= DemoTimeSoFar;
 		return;
+
+#endif
 
     case MSG_SETTIME:
 

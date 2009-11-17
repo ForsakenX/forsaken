@@ -60,7 +60,7 @@ TPAGEINFO	FmPolyTPages[ MAXTPAGESPERTLOAD + 1 ];
 
 void FadeColour( uint8 * Colour, uint8 WantedColour, float Speed );
 
-#define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
+#define RGBA_MAKE2(r, g, b, a)   ((COLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 
 /*===================================================================
 	Procedure	:	Init Faceme poly structures
@@ -1653,8 +1653,8 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	OFF_INFO	*	Off_Ptr;
  	float			Distance;
 	MATRIX			MatrixCopy;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPLVERTEX	FmPolyVertPnt;
@@ -2044,8 +2044,8 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	OFF_INFO	*	Off_Ptr;
  	float			Distance;
 	MATRIX			MatrixCopy;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 //	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
 //	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPLVERTEX	FmPolyVertPnt;

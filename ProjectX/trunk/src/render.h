@@ -9,6 +9,7 @@ extern "C" {
 
 #include "main.h"
 #include "new3d.h"
+#include <windows.h>
 
 #ifndef OPENGL
 #include <d3d9.h>
@@ -34,6 +35,12 @@ typedef struct {
 	int		rate;			  /* refresh rate (HZ) */
 } render_display_mode_t;
 
+typedef struct
+{
+    long cx;
+    long cy;
+} CLIENTSIZE;
+
 typedef struct {
     int                     NumModes;				/* number of available display modes */
     int                     CurrMode;				/* number of current display mode (only when fullscreen) */
@@ -42,7 +49,7 @@ typedef struct {
     render_display_mode_t   WindowsDisplay;			/* current Windows disply mode */
     render_display_mode_t   default_mode;			/* current Windows disply mode */
     BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
-    SIZE                    szClient;				/* dimensions of client win */
+    CLIENTSIZE              szClient;				/* dimensions of client win */
     BOOL                    bPaused;				/* the app is paused */
     BOOL                    bAppActive;				/* the app is active */
     BOOL                    bMinimized;				/* app window is minimized */
@@ -182,12 +189,12 @@ typedef struct {
     };
     DWORD            dwReserved;
     union {
-		D3DCOLOR     color;         /* Vertex color */
-		D3DCOLOR     dcColor;
+		COLOR     color;         /* Vertex color */
+		COLOR     dcColor;
     };
     union {
-		D3DCOLOR     specular;      /* Specular component of vertex */
-		D3DCOLOR     dcSpecular;
+		COLOR     specular;      /* Specular component of vertex */
+		COLOR     dcSpecular;
     };
     union {
 		float     tu;            /* Texture coordinates */

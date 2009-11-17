@@ -1360,6 +1360,9 @@ BOOL ProcessShips()
 					StartPos = ShipObjPnt->Pos;
 					if( ShipObjPnt->Mode != LIMBO_MODE && ShipObjPnt->Mode != WATCH_MODE)
 					{
+
+#ifdef DEMO_SUPPORT
+
 						// playing demo
 						if( 
 							(MyGameStatus == STATUS_PlayingDemo) &&
@@ -1395,6 +1398,8 @@ BOOL ProcessShips()
 						}
 						// not playing a demo
 						else
+
+#endif
 						{
 								// carry out movements
 								Move_Off.x = ShipPnt->Move_Off.x * framelag;
@@ -1417,7 +1422,8 @@ BOOL ProcessShips()
 				 					AccellDecell( &ShipPnt->LastAngle.x , TurnDecell );
 				 					AccellDecell( &ShipPnt->LastAngle.z , RollDecell );
 								}
-							}
+						}
+
 						// Still need to update the group....
 						Move_Off.x = ShipObjPnt->Pos.x - StartPos.x;
 						Move_Off.y = ShipObjPnt->Pos.y - StartPos.y;

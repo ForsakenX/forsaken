@@ -111,11 +111,11 @@ void InitSkinExecs( void )
 ===================================================================*/
 BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 {
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
-	D3DCOLOR		skincolor;
-	D3DCOLOR		patchcolor;
-	D3DCOLOR		backpatchcolor;
+	COLOR		color;
+	COLOR		specular;
+	COLOR		skincolor;
+	COLOR		patchcolor;
+	COLOR		backpatchcolor;
 	MCFACE		*	FacePtr;
 	int16			g;
 	int16			Count;
@@ -352,9 +352,9 @@ void DisplayBSPNode( BSP_NODE * Node )
 	int16			Vnum;
 	VECTOR			TLPos;
 	VECTOR			BRPos;
-	D3DCOLOR		color;
-	D3DCOLOR		tempcolor;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		tempcolor;
+	COLOR		specular;
 	float			D;
 	BSP_NODE	*	TempNode;
 	float			NumNodes = 0.0F;
@@ -534,8 +534,8 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 #ifdef BSP
 	int16			Count;
 	int16			Vnum;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		specular;
 	BSP_NODE	*	TempNode;
 	BSP_NODE	*	StartNode;
 	float			NumNodes = 0.0F;
@@ -792,8 +792,8 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 {
 	int16			Count;
 	int16			Vnum;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		specular;
 	TRIGGER_ZONE *	StartSide;
 	float			NumNodes = 0.0F;
 	int				Side;
@@ -892,8 +892,8 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 {
 	int16			Count;
 	int16			Vnum;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		specular;
 	ZONESIDE	*	StartSide;
 	float			NumNodes = 0.0F;
 	int				Side;
@@ -1129,8 +1129,8 @@ void ReleaseSkinExecs( void )
 ===================================================================*/
 BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 {
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		specular;
 	int16			g;
 	int16			Count, Count2;
 	uint16			VertCount;

@@ -87,4 +87,7 @@ typedef	long				int32;			/* Signed 32 Bit Integer   */
 typedef int                 BOOL;
 typedef unsigned char       BYTE;
 
+typedef unsigned long       DWORD;
+typedef unsigned short      WORD;
+
 #endif	// MAIN_INCLUDED

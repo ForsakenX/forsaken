@@ -675,8 +675,8 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -919,8 +919,8 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -1230,8 +1230,8 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -1475,8 +1475,8 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;

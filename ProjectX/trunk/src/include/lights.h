@@ -70,7 +70,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXAloadheader , VECTOR * Pos , float R
 
 
 void	CreateCellColours( MLOADHEADER * Mloadheader );
-D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group );
+COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group );
 void BuildVisibleLightList( uint16 Group );
 FILE * SaveXLights( FILE * fp );
 FILE * LoadXLights( FILE * fp );

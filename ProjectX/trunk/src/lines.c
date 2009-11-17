@@ -114,8 +114,8 @@ void KillUsedLine( uint16 i )
 BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 * StartLine )
 {
 	LPLVERTEX	Vert_Ptr;
-	D3DCOLOR		color;
-	D3DCOLOR		specular;
+	COLOR		color;
+	COLOR		specular;
 	int16			Num_Lines;
 	uint16			i;
 

@@ -4893,10 +4893,10 @@ BOOL DisplayTitle(void)
 	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
 /* bjd
-	CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
-									  D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-	CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
-									   D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+	CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwWidth),
+									  RENDERVAL(2 * CurrentCamera.Viewport.dvScaleX));
+	CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwHeight),
+									   RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 	
 	Build_View();
@@ -9371,7 +9371,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
 	LPLVERTEX			VertPtr;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	uint8 red, green, blue, alpha;
 	int i;
 	int *CurrentExclude;
@@ -9543,7 +9543,7 @@ BOOL MakeTranslucent( uint16 Model )
 	MXALOADHEADER	*		DstMloadheader;
 	MXLOADHEADER	*		DstMxloadheader;
 	LPLVERTEX			ColourPtr;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	uint8 red, green, blue, alpha;
 	int i;
 
@@ -9678,7 +9678,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
 	MXLOADHEADER	*		DstMloadheader;
 	LPLVERTEX			VertPtr;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	uint8 red, green, blue, alpha;
 	uint8 vred, vgreen, vblue, valpha;
 

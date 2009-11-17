@@ -190,7 +190,7 @@ typedef struct LVLGROUP{
 	uint16	num_vertex_indices[MAXEXECBUFSPERGROUP];
 	uint16 * vertex_index_pnt[MAXEXECBUFSPERGROUP];
 	VERTEXCELL * vertex_cell_pnt[MAXEXECBUFSPERGROUP];
-	D3DCOLOR * colour_cell_pnt[MAXEXECBUFSPERGROUP];
+	COLOR * colour_cell_pnt[MAXEXECBUFSPERGROUP];
 
 	uint16	num_animating_polys[MAXEXECBUFSPERGROUP];
 

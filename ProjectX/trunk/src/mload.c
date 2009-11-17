@@ -338,7 +338,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	int execbuf;
 	int group;
 	int r,g,b,a;
-	D3DCOLOR color;
+	COLOR color;
 	float		*	up;
 	uint16	animation,frames,vertices;
 	POLYANIM * PolyAnim;
@@ -354,7 +354,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16	polyanim;
 	uint16	initstate;
 	int16	whenstoppedtriggermod;
-	D3DCOLOR *ambient;
+	COLOR *ambient;
 	int colourkey = 0;
 
 	DebugPrintf("Mload - %s\n",Filename);
@@ -818,7 +818,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 #if MXV_VERSION_NUMBER >= 2
 					if ( !execbuf )
-						Mloadheader->Group[group].colour_cell_pnt[0] = (D3DCOLOR*) malloc( Mloadheader->Group[group].numofcells[execbuf] * sizeof(D3DCOLOR) );
+						Mloadheader->Group[group].colour_cell_pnt[0] = (COLOR*) malloc( Mloadheader->Group[group].numofcells[execbuf] * sizeof(COLOR) );
 					else
 						Mloadheader->Group[group].colour_cell_pnt[execbuf] = NULL;
 					if( !Mloadheader->Group[group].colour_cell_pnt[0] )
@@ -827,7 +827,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						return FALSE;
 					}
 #else
-					Mloadheader->Group[group].colour_cell_pnt[execbuf] = (D3DCOLOR*) malloc( Mloadheader->Group[group].numofcells[execbuf] * sizeof(D3DCOLOR) );
+					Mloadheader->Group[group].colour_cell_pnt[execbuf] = (COLOR*) malloc( Mloadheader->Group[group].numofcells[execbuf] * sizeof(COLOR) );
 					if( !Mloadheader->Group[group].colour_cell_pnt[execbuf] )
 					{
 						Msg( "Mload : Couldnt allocate enough memory for the cell colour info\n" );
@@ -850,7 +850,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					
 				}
 #if MXV_VERSION_NUMBER >= 2
-				ambient = (D3DCOLOR *) Buffer;
+				ambient = (COLOR *) Buffer;
 				for ( i = 0; i < Mloadheader->Group[group].numofcells[0]; i++ )
 				{
 					Mloadheader->Group[group].colour_cell_pnt[0][i] = *ambient++;

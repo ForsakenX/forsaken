@@ -44,8 +44,8 @@ typedef struct MXAVERT {
 	float x;
 	float y;
 	float z;
-	D3DCOLOR color;
-	D3DCOLOR specular;
+	COLOR color;
+	COLOR specular;
 	float tu;
 	float tv;
 	int32 flags;

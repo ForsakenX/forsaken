@@ -750,28 +750,28 @@ BOOL DispTracker( void ); // bjd
 #define MinNear ( 50.0F * GLOBAL_SCALE )
 
 D3DMATRIX proj = {
-    D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(Far/(Far-Near)), D3DVAL(1.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(-Far*Near/(Far-Near)), D3DVAL(0.0) };
+    RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(Far/(Far-Near)), RENDERVAL(1.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(-Far*Near/(Far-Near)), RENDERVAL(0.0) };
 
 D3DMATRIX panelproj = {
-    D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(Far/(Far-Near)), D3DVAL(1.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(-Far*Near/(Far-Near)), D3DVAL(0.0) };
+    RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(Far/(Far-Near)), RENDERVAL(1.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(-Far*Near/(Far-Near)), RENDERVAL(0.0) };
 
 D3DMATRIX trackerproj = {
-    D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(Far/(Far-Near)), D3DVAL(1.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(-Far*Near/(Far-Near)), D3DVAL(0.0) };
+    RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(Far/(Far-Near)), RENDERVAL(1.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(-Far*Near/(Far-Near)), RENDERVAL(0.0) };
 
 MATRIX  ProjMatrix = {
-    D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(2.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(Far/(Far-Near)), D3DVAL(1.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(-Far*Near/(Far-Near)), D3DVAL(0.0) };
+    RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(2.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(Far/(Far-Near)), RENDERVAL(1.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(-Far*Near/(Far-Near)), RENDERVAL(0.0) };
 
 
   VECTOR  SlideLeft = { -1.0F, 0.0F, 0.0F };
@@ -799,17 +799,17 @@ MATRIX  ProjMatrix = {
 
 D3DMATRIX view;
 D3DMATRIX identity = {
-    D3DVAL(1.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
+    RENDERVAL(1.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(1.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
 D3DMATRIX world = {
-    D3DVAL(1.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0), D3DVAL(0.0),
-    D3DVAL(0.0), D3DVAL(0.0), D3DVAL(0.0), D3DVAL(1.0)
+    RENDERVAL(1.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(1.0), RENDERVAL(0.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0), RENDERVAL(0.0),
+    RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
 BOOL SetFOV( float fov )
@@ -848,17 +848,17 @@ BOOL SetFOV( float fov )
 	{
 		Scale = ( ( MAX_FOV - fov ) / ( MAX_FOV - START_FOV ) );
 		NewNear = ( MinNear + ( ( Near - MinNear ) * Scale ) );
-		proj._33 = D3DVAL(Far/(Far-NewNear));
-		proj._34 = D3DVAL( 1.0 );
-		proj._43 = D3DVAL(-Far*NewNear/(Far-NewNear));
-		proj._44 = D3DVAL( 0.0 );
+		proj._33 = RENDERVAL(Far/(Far-NewNear));
+		proj._34 = RENDERVAL( 1.0 );
+		proj._43 = RENDERVAL(-Far*NewNear/(Far-NewNear));
+		proj._44 = RENDERVAL( 0.0 );
 	}
 	else
 	{
-		proj._33 = D3DVAL(Far/(Far-Near));
-		proj._34 = D3DVAL( 1.0 );
-		proj._43 = D3DVAL(-Far*Near/(Far-Near));
-		proj._44 = D3DVAL( 0.0 );
+		proj._33 = RENDERVAL(Far/(Far-Near));
+		proj._34 = RENDERVAL( 1.0 );
+		proj._43 = RENDERVAL(-Far*Near/(Far-Near));
+		proj._44 = RENDERVAL( 0.0 );
 	}
 
 	ProjMatrix._11 = proj._11;
@@ -1323,10 +1323,10 @@ BOOL FullScreenViewport()
     viewport.ScaleX = viewport.Width / (float)2.0;
     viewport.ScaleY = viewport.Height / (float)2.0;
 /* bjd 
-    viewport.dvMaxX = (float)D3DDivide(D3DVAL(viewport.dwWidth),
-                                       D3DVAL(2 * viewport.dvScaleX));
-    viewport.dvMaxY = (float)D3DDivide(D3DVAL(viewport.dwHeight),
-                                       D3DVAL(2 * viewport.dvScaleY));
+    viewport.dvMaxX = (float)D3DDivide(RENDERVAL(viewport.dwWidth),
+                                       RENDERVAL(2 * viewport.dvScaleX));
+    viewport.dvMaxY = (float)D3DDivide(RENDERVAL(viewport.dwHeight),
+                                       RENDERVAL(2 * viewport.dvScaleY));
 */
 
 	if (FAILED(FSSetViewPort(&viewport)))
@@ -3942,10 +3942,10 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
 /* bjd
-        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
-                           D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
-                           D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwWidth),
+                           RENDERVAL(2 * CurrentCamera.Viewport.dvScaleX));
+        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwHeight),
+                           RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */        
         CurrentCamera.UseLowestLOD = TRUE;
 
@@ -3990,10 +3990,10 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
         CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 /* bjd 
-        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.wWidth),
-                           D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.Height),
-                           D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+        CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.wWidth),
+                           RENDERVAL(2 * CurrentCamera.Viewport.dvScaleX));
+        CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.Height),
+                           RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */        
         
         CurrentCamera.UseLowestLOD = TRUE;
@@ -4987,10 +4987,10 @@ BOOL Disp3dPanel( void )
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
 /*
-    newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
-                                       D3DVAL(2 * newviewport.dvScaleX));
-    newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
-                                       D3DVAL(2 * newviewport.dvScaleY));
+    newviewport.dvMaxX = (float)D3DDivide(RENDERVAL(newviewport.dwWidth),
+                                       RENDERVAL(2 * newviewport.dvScaleX));
+    newviewport.dvMaxY = (float)D3DDivide(RENDERVAL(newviewport.dwHeight),
+                                       RENDERVAL(2 * newviewport.dvScaleY));
 */  
 
 	if (FSSetViewPort(&newviewport) != D3D_OK )
@@ -5313,10 +5313,10 @@ BOOL DispTracker( void ) // bjd
     newviewport.ScaleY = newviewport.Height / (float)2.0;
 
 /* bjd
-    newviewport.dvMaxX = (float)D3DDivide(D3DVAL(newviewport.dwWidth),
-                                       D3DVAL(2 * newviewport.dvScaleX));
-    newviewport.dvMaxY = (float)D3DDivide(D3DVAL(newviewport.dwHeight),
-                                       D3DVAL(2 * newviewport.dvScaleY));
+    newviewport.dvMaxX = (float)D3DDivide(RENDERVAL(newviewport.dwWidth),
+                                       RENDERVAL(2 * newviewport.dvScaleX));
+    newviewport.dvMaxY = (float)D3DDivide(RENDERVAL(newviewport.dwHeight),
+                                       RENDERVAL(2 * newviewport.dvScaleY));
 */
 //	if( render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &newviewport) != D3D_OK )
 	if (FSSetViewPort(&newviewport) != D3D_OK )
@@ -5651,10 +5651,10 @@ void RenderSnapshot( void )
   CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.dwHeight / (float)2.0;
 
 /* bjd
-  CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwWidth),
-                     D3DVAL(2 * CurrentCamera.Viewport.dvScaleX));
-  CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(D3DVAL(CurrentCamera.Viewport.dwHeight),
-                     D3DVAL(2 * CurrentCamera.Viewport.dvScaleY));
+  CurrentCamera.Viewport.dvMaxX = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwWidth),
+                     RENDERVAL(2 * CurrentCamera.Viewport.dvScaleX));
+  CurrentCamera.Viewport.dvMaxY = (float)D3DDivide(RENDERVAL(CurrentCamera.Viewport.dwHeight),
+                     RENDERVAL(2 * CurrentCamera.Viewport.dvScaleY));
 */
 
   CurrentCamera.UseLowestLOD = TRUE;

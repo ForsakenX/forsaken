@@ -56,7 +56,7 @@ void PrintInitViewStatus( BYTE Status );
 /*===================================================================
 		Globals...	
 ===================================================================*/
-D3DCOLOR GroupColours[ 8 ] = {
+COLOR GroupColours[ 8 ] = {
 
 	RGBA_MAKE( 0,128,0,255 ),
 	RGBA_MAKE( 0,0,128,255 ),
@@ -77,7 +77,7 @@ WORD	status;
 DWORD	chop_status;		
 
 
-D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf );
+COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf );
 
 /*===================================================================
 	Floating Point Cull Mode
@@ -255,7 +255,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpD3DLVERTEX = NULL;
 	LPLVERTEX	lpD3DLVERTEX2 = NULL;
-	D3DCOLOR col;
+	COLOR col;
 	VERTEXCELL * VertexCellPnt;
 	uint16 * VertexIndexPnt;
 	uint16 * OrgVertexIndexPnt;
@@ -397,7 +397,7 @@ clear:					mov		eax, [esi]
 					{
 						while( vert --)
 						{
-//							lpD3DLVERTEX->color = (D3DCOLOR) lpD3DLVERTEX2->dwReserved;
+//							lpD3DLVERTEX->color = (COLOR) lpD3DLVERTEX2->dwReserved;
 							lpD3DLVERTEX++;		
 							lpD3DLVERTEX2++;		
 						}
@@ -936,7 +936,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 
 	LPLVERTEX	lpD3DLVERTEX = NULL;
 	LPLVERTEX	lpD3DLVERTEX2 = NULL;
-	D3DCOLOR col;
+	COLOR col;
 	float	Size,OSize;
 	float	SizeX2;
 	float	x,y,z;
@@ -1192,7 +1192,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 
 	LPLVERTEX	lpD3DLVERTEX = NULL;
 	LPLVERTEX	lpD3DLVERTEX2 = NULL;
-	D3DCOLOR col;
+	COLOR col;
 	float	Size,OSize;
 	float	SizeX2;
 	float	x,y,z;
@@ -1431,7 +1431,7 @@ PLOP2:
 	Input		:	nothing
 	Output		:	nothing
 ===================================================================*/
-BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
+BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 {
     LPLVERTEX	lpPointer = NULL;
 	LPLVERTEX	lpD3DLVERTEX = NULL;
@@ -1483,11 +1483,11 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , D3DCOLOR Col )
 	Output		:	nothing
 ===================================================================*/
 
-D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf )
+COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf )
 {
 	float	r,g,b;
 	float	R,G,B;
-	D3DCOLOR Colour;
+	COLOR Colour;
 	LPLVERTEX	lpD3DLVERTEX;
 	float	CellSize;
 	float	Distance;
@@ -1549,13 +1549,13 @@ D3DCOLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 
 /*===================================================================
 	Procedure	:	Find Nearest Cell Colour..
 	Input		:	MLOADHEADER * Mloadheader
-	Output		:	D3DCOLOR
+	Output		:	COLOR
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-D3DCOLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
+COLOR FindNearestCellColour( MLOADHEADER * Mloadheader,VECTOR * Pos, uint16 group )
 {
-	D3DCOLOR Col;
-	D3DCOLOR * colpnt;
+	COLOR Col;
+	COLOR * colpnt;
 	VECTOR	CellIndex;
 	int		Cell;
 	int		CellIndex_x;

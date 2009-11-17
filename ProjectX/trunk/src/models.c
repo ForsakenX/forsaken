@@ -2796,7 +2796,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	float					Col2;
 	uint8					Col;
 	uint8					Red;
@@ -2884,7 +2884,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 	uint16					Green;
 	uint16					Blue;
 	
-	//D3DCOLOR	*			OrigColours;
+	//COLOR	*			OrigColours;
 	LPLVERTEX			VertPtr;
 
 	//D3DCOLOR_RGBA *			OrigRGBA;
@@ -2973,7 +2973,7 @@ BOOL ProcessModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT *renderOb
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	float					Col2;
 	uint8					Col;
 	uint8					Red;
@@ -3041,7 +3041,7 @@ BOOL ProcessSphereZoneModelExec( /*LPDIRECT3DEXECUTEBUFFER lpExBuf*/RENDEROBJECT
 {
 //	D3DEXECUTEBUFFERDESC	DstDebDesc;
 	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 
 #if ACTUAL_TRANS
 		Colour = RGBA_MAKE( R, G, B, 255 );
@@ -3221,7 +3221,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
@@ -3281,7 +3281,7 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 
 	Colour = RGBA_MAKE( (uint8) RF, (uint8) GF, (uint8) BF, (uint8) TF );
 	if( !Colour ) return FALSE;
@@ -3401,7 +3401,7 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
 #ifndef USEASM
 	uint32					tempiA;
@@ -3537,7 +3537,7 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 	uint16					Group;
 	uint16					Vert;
 	uint16					ExecBuf;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 #ifdef FAST_RGB_CLAMP
 #ifndef USEASM
 	uint32					tempiA;
@@ -3690,7 +3690,7 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
 	float					RF, GF, BF, TF;
 	VECTOR					TempPoint;
 
@@ -3774,7 +3774,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
     float					Val;
 	float					TF = 0.0F;
 	float					RF = 0.0F;
@@ -3869,7 +3869,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
     float					Val;
 	float					TF = 255.0F;
 	float					RF = 128.0F;
@@ -3968,7 +3968,7 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXLOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
     float					Val;
 
 	DstMloadheader = &ModelHeaders[ Model ];
@@ -4065,7 +4065,7 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 	uint16					Vert;
 	uint16					ExecBuf;
 	MXALOADHEADER	*		DstMloadheader;
-	D3DCOLOR				Colour;
+	COLOR				Colour;
     float					Val;
 
 	DstMloadheader = &MxaModelHeaders[ Model ];
@@ -5809,7 +5809,7 @@ void UpdateShipModel( uint16 Ship )
 ===================================================================*/
 void UpdateObjectAmbientColour( OBJECT * Object )
 {
-	D3DCOLOR	Col;
+	COLOR	Col;
 	float		Red,Green,Blue,Speed;
 
 	Col = FindNearestCellColour( &Mloadheader, &Object->Pos, Object->Group );

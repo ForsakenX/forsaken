@@ -170,8 +170,8 @@ BOOL WaterLoad( void )
 	uint16 * Uint16Pnt;
 	int16 * int16Pnt;
 	uint16 NumOfGroups = 0;
-	D3DCOLOR col;
-	D3DCOLOR * D3DColourPnt;
+	COLOR col;
+	COLOR * D3DColourPnt;
 
 	FirstWaterObject = NULL;
 	Buffer = WaterBuffer;
@@ -190,7 +190,7 @@ BOOL WaterLoad( void )
 		GroupWaterInfo[i] = *Uint16Pnt++;
 		Buffer = (char*) Uint16Pnt;
 
-		D3DColourPnt = (D3DCOLOR *) Buffer;
+		D3DColourPnt = (COLOR *) Buffer;
 		col = *D3DColourPnt++;
 
 		GroupWaterIntensity_Red[i] = RGBA_GETRED(col) * ONEOVER255;
@@ -258,7 +258,7 @@ BOOL WaterLoad( void )
 		AddWaterLink(WO);
 		Buffer = (char *) FloatPnt;		
 
-		D3DColourPnt = (D3DCOLOR *) Buffer;
+		D3DColourPnt = (COLOR *) Buffer;
 		col = *D3DColourPnt++;
 		WO->Red = RGBA_GETRED(col) * ONEOVER255;
 		WO->Green = RGBA_GETGREEN(col) * ONEOVER255;

@@ -1,10 +1,11 @@
-
 #ifndef __New3d_h
 #define __New3d_h
 #include <math.h>
-#include <d3d9.h>
 #include "main.h"
 
+// taken from d3d9.h
+
+typedef DWORD COLOR;
 
 /*===================================================================
 	Defines
@@ -33,17 +34,15 @@
 ===================================================================*/
 
 // bjd - taken from d3dtypes.h
-#define RGBA_MAKE(r, g, b, a)   ((D3DCOLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
-#define	RGB_MAKE(r, g, b)    ((D3DCOLOR) (((r) << 16) | ((g) << 8) | (b)))
+#define RGBA_MAKE(r, g, b, a)   ((COLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
+#define	RGB_MAKE(r, g, b)    ((COLOR) (((r) << 16) | ((g) << 8) | (b)))
 #define RGBA_GETALPHA(rgb)    ((rgb) >> 24)
 
 #define RGBA_GETRED(rgb)    (((rgb) >> 16) & 0xff)
 #define RGBA_GETGREEN(rgb)    (((rgb) >> 8) & 0xff)
 #define RGBA_GETBLUE(rgb)    ((rgb) & 0xff)
 
-#define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
-
-#define D3DVAL(val)    ((float)val)
+#define RENDERVAL(val)    ((float)val)
 
 /*
 	Pre-DX8 vertex formats
@@ -64,12 +63,12 @@ typedef struct {
         float dvZ;
     };
     union {
-        D3DCOLOR color;
-        D3DCOLOR dcColor;
+        COLOR color;
+        COLOR dcColor;
     };
     union {
-        D3DCOLOR specular;
-		D3DCOLOR dcSpecular;
+        COLOR specular;
+		COLOR dcSpecular;
     };
     union {
         float tu;
@@ -99,12 +98,12 @@ typedef struct {
         float dvRHW;
     };
     union {
-        D3DCOLOR color;
-        D3DCOLOR dcColor;
+        COLOR color;
+        COLOR dcColor;
     };
     union {
-        D3DCOLOR specular;
-        D3DCOLOR dcSpecular;
+        COLOR specular;
+        COLOR dcSpecular;
     };
     union {
         float tu;

@@ -94,7 +94,7 @@ extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern int PlayerMessageColour;
 
-#define RGBA_MAKE2(r, g, b, a)   ((D3DCOLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
+#define RGBA_MAKE2(r, g, b, a)   ((COLOR) (( (DWORD) ((a) & 0xff) << 24) | ( (DWORD) ((r) & 0xff) << 16) | ( (DWORD) ((g) & 0xff) << 8) | (DWORD) ((b) & 0xff)))
 #define	CUTOFF				( 5.0F * 1024.0F * GLOBAL_SCALE )
 
 /*===================================================================
@@ -529,7 +529,7 @@ void DoLensflareEffect( void )
 	int16		Count;
 	float		Center_X;
 	float		Center_Y;
-	D3DCOLOR	specular;
+	COLOR	specular;
 	VECTOR		Int_Point;
 	uint16		Int_Group;
 	NORMAL		Int_Normal;
@@ -925,7 +925,7 @@ void SecBullLensflare( uint16 i )
 	MATRIX		FinalMatrix;
 	float		Center_X;
 	float		Center_Y;
-	D3DCOLOR	specular;
+	COLOR	specular;
 	VECTOR		Int_Point;
 	uint16		Int_Group;
 	NORMAL		Int_Normal;
@@ -2103,8 +2103,8 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPTRIANGLE	ScrPolyFacePnt;
     LPLPTLVERTEX	lpBufStart;
@@ -2597,8 +2597,8 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
-	D3DCOLOR		Colour;
-	D3DCOLOR		Specular;
+	COLOR		Colour;
+	COLOR		Specular;
 	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
 	LPTRIANGLE	ScrPolyFacePnt;
     LPLPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
