@@ -27,7 +27,7 @@
 ===================================================================*/
 #define MAX_MXAGROUPS			1
 #define	MAX_ANIM_FRAMES			16 //1
-#define MAXTEXTUREGROUPSPEREXECLIST 8
+#define MAXMXATEXTUREGROUPSPER 8
 #define	MAXTPAGESPERMXALOAD		8
 #define	MAXMXAMODELHEADERS		1024
 
@@ -64,18 +64,17 @@ typedef struct MXAGROUP{
 	uint16	exec_type[MAXEXECBUFSPERGROUP];
 	uint16	num_verts_per_execbuf[MAXEXECBUFSPERGROUP];
 	uint16	num_polys_per_execbuf[MAXEXECBUFSPERGROUP];
-	uint16	num_texture_groups[MAXTEXTUREGROUPSPEREXECLIST];
-//	LPDIRECT3DEXECUTEBUFFER	lpExBuf[MAXEXECBUFSPERGROUP];
+	uint16	num_texture_groups[MAXMXATEXTUREGROUPSPER];
 	RENDEROBJECT renderObject[MAXEXECBUFSPERGROUP];
 	LPLVERTEX originalVerts[MAXEXECBUFSPERGROUP];
 	LPTRIANGLE poly_ptr	[MAXEXECBUFSPERGROUP];
-	uint32	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];
+	uint32	texture_group_vert_off[MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];
 	char	name[16];
 }MXAGROUP;
 
 
-typedef uint16 MXAVERTCOUNT[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];		// points to the begining of each set of verts...	
-typedef	MXAVERT	*MXAVERTFRAME[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];		// points to the begining of each set of verts...	
+typedef uint16 MXAVERTCOUNT[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
+typedef	MXAVERT	*MXAVERTFRAME[MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 
 typedef struct MXALOADHEADER{
 
@@ -96,8 +95,8 @@ typedef struct MXALOADHEADER{
 	MXAVERTCOUNT *		num_anim_vertices;// points to the begining of each set of verts...	
 	MXAVERTFRAME *		frame_pnts;		  // points to the begining of each set of verts...	
 #else
-	uint16				num_anim_vertices[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];		// points to the begining of each set of verts...	
-	MXAVERT		*		frame_pnts[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXTEXTUREGROUPSPEREXECLIST];		// points to the begining of each set of verts...	
+	uint16				num_anim_vertices[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
+	MXAVERT		*		frame_pnts[MAX_ANIM_FRAMES][MAX_MXAGROUPS][MAXEXECBUFSPERGROUP][MAXMXATEXTUREGROUPSPER];		// points to the begining of each set of verts...	
 #endif
 	int					AllocateTPage;
 	uint16				NumFirePoints;							// Number of FirePoints

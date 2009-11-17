@@ -204,11 +204,9 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 
 BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
-    LPDIRECT3DTEXTURE9 lpSrcTexture = NULL;
-
-    RELEASE(Tloadheader->lpTexture[n]);
-	Tloadheader->lpTexture[n] = NULL;
-
+    LPTEXTURE lpSrcTexture = NULL;
+    release_texture(Tloadheader->lpTexture[n]);
+	//Tloadheader->lpTexture[n] = NULL;
 	if ( !Tloadheader->PlaceHolder[ n ] )
 		if( Tloadheader->MipMap[n] )
 			FSCreateTexture(
@@ -223,7 +221,6 @@ BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 
 	Tloadheader->lpTexture[n] = lpSrcTexture;
 	lpSrcTexture = NULL;
-
 	return TRUE;
 }
 
@@ -270,7 +267,7 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 void
 TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 {
-    RELEASE(Tloadheader->lpTexture[n]);
+    release_texture(Tloadheader->lpTexture[n]);
 	if ( Tloadheader->PlaceHolder[ n ] )
 	{
 		free( Tloadheader->PlaceHolderFile[ n ] );

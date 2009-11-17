@@ -750,10 +750,10 @@ HRESULT FSEndScene()
 	return lpD3DDevice->EndScene();
 }
 
-void save_texture( char * path, LPDIRECT3DTEXTURE9 texture )
+void save_texture( char * path, LPTEXTURE texture )
 {
 #ifndef __WINE__
-	D3DXSaveTextureToFile(path, D3DXIFF_PNG, texture, 0);
+	D3DXSaveTextureToFile(path, D3DXIFF_PNG, (LPDIRECT3DTEXTURE9)texture, 0);
 #endif
 }
 
@@ -1020,8 +1020,14 @@ const char * d3d_format( D3DFORMAT format )
 	}
 }
 
+void release_texture( LPTEXTURE texture )
+{
+	((LPDIRECT3DTEXTURE9)texture)->Release();
+	texture = NULL;
+}
+
 extern double Gamma;
-HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
+HRESULT create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
 {
 #ifdef TEXTURE_PNG
 	HRESULT hr;
@@ -1061,7 +1067,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *wi
 		int pitch = size*image.w;
 		D3DLOCKED_RECT lrect;
 		BYTE* pBits;
-		LPDIRECT3DTEXTURE9 _texture = *texture;
+		LPTEXTURE _texture = *texture;
 		_texture->LockRect(0,&lrect,NULL,D3DLOCK_DISCARD);
 		pBits = (BYTE*)lrect.pBits;
 		for (y = 0; y < image.h; y++)
@@ -1108,6 +1114,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *wi
 
 #else
 
+	LPDIRECT3DTEXTURE9 * texture = (LPDIRECT3DTEXTURE9*)t;
 	D3DXIMAGE_INFO imageInfo;
 
 	// if the file doesn't exist
@@ -1217,7 +1224,7 @@ HRESULT create_texture(LPDIRECT3DTEXTURE9 *texture, const char *path, uint16 *wi
 // copies source texture into the surface of destination surface
 // does a straight copy so you best make sure the images are the same size
 
-static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE9 dstTexture )
+static void copy_texture_bits( LPTEXTURE srcT, LPTEXTURE dstT )
 {
 	HRESULT hr;
 	D3DLOCKED_RECT srcRect;
@@ -1226,6 +1233,8 @@ static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE
 	BYTE* srcBits;
 	BYTE* dstBits;
 	D3DSURFACE_DESC srcDesc;
+	LPDIRECT3DTEXTURE9 srcTexture = (LPDIRECT3DTEXTURE9) srcT;
+	LPDIRECT3DTEXTURE9 dstTexture = (LPDIRECT3DTEXTURE9) dstT;
 	srcTexture->GetLevelDesc(0,&srcDesc);
 	hr = srcTexture->LockRect(0,&srcRect,NULL,D3DLOCK_READONLY);
 	if(FAILED(hr))
@@ -1255,17 +1264,18 @@ static void copy_texture_bits(  LPDIRECT3DTEXTURE9 srcTexture, LPDIRECT3DTEXTURE
 	srcTexture->UnlockRect(0);
 }
 
-HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+HRESULT update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
+	LPDIRECT3DTEXTURE9 dstTexture = (LPDIRECT3DTEXTURE9)dstT;
 
 	// incase texture doesn't exist yet then just create it for them and return it
 	if(!dstTexture)
-		return FSCreateTexture(&dstTexture, fileName, width, height, numMips, colourkey);
+		return FSCreateTexture((LPTEXTURE*)&dstTexture, fileName, width, height, numMips, colourkey);
 
 	// create the texture so we can copy the data over
-	hr = create_texture(&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
+	hr = create_texture((LPTEXTURE*)&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
 	if(FAILED(hr))
 		return hr;
 
@@ -1278,7 +1288,7 @@ HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *file
 	return S_OK;
 }
 
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
@@ -1509,7 +1519,7 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 		if(renderObject->textureGroups[i].colourkey)
 			set_alpha_ignore();
 
-		LastError = lpD3DDevice->SetTexture(0, renderObject->textureGroups[i].texture);
+		LastError = lpD3DDevice->SetTexture(0, (LPDIRECT3DTEXTURE9)renderObject->textureGroups[i].texture);
 		if (FAILED(LastError))
 			return LastError;
 

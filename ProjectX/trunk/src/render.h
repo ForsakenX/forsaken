@@ -109,6 +109,8 @@ BOOL FSClear(DWORD Count, XYRECT* rect, DWORD Flags, DWORD Color, float Z, DWORD
 	assert( group->numTextureGroups < MAX_TEXTURE_GROUPS ); \
 	group->numTextureGroups++;
 
+typedef void * LPTEXTURE;
+
 typedef struct TEXTUREGROUP
 {
 	int startVert;
@@ -116,7 +118,7 @@ typedef struct TEXTUREGROUP
 	int numVerts;
 	int numTriangles;
 	BOOL colourkey;
-	LPDIRECT3DTEXTURE9 texture;
+	LPTEXTURE texture;
 } TEXTUREGROUP;
 
 typedef struct RENDEROBJECT
@@ -159,8 +161,9 @@ HRESULT FSSetViewPort(render_viewport_t *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
 HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
-HRESULT FSCreateTexture(LPDIRECT3DTEXTURE9 *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-HRESULT update_texture_from_file(LPDIRECT3DTEXTURE9 dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+void release_texture( LPTEXTURE texture );
+HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts);
