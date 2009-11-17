@@ -11,10 +11,6 @@ extern "C" {
 #include "new3d.h"
 #include <windows.h>
 
-#ifndef OPENGL
-#include <d3d9.h>
-#endif
-
 BOOL  bSquareOnly;
 
 typedef struct {

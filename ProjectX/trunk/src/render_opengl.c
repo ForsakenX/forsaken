@@ -124,17 +124,17 @@ HRESULT FSSetViewPort(render_viewport_t *newViewPort)
 
 HRESULT FSSetWorld( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_WORLD, matrix);
+	return S_OK;
 }
 
 HRESULT FSSetProjection( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, matrix);
+	return S_OK;
 }
 
 HRESULT FSSetView( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_VIEW, matrix);
+	return S_OK;
 }
 
 HRESULT FSGetWorld(RENDERMATRIX *matrix)
@@ -142,7 +142,7 @@ HRESULT FSGetWorld(RENDERMATRIX *matrix)
 	return S_OK;
 }
 
-HRESULT FSSetMaterial(const RENDERMATERIAL *material)
+HRESULT FSSetMaterial(RENDERMATERIAL *material)
 {
 	return S_OK;
 }
@@ -157,14 +157,13 @@ HRESULT FSEndScene()
 	return S_OK;
 }
 
-HRESULT create_texture(LPTEXTURE *texture, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
+HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	return S_OK;
 }
 
-HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+void release_texture( LPTEXTURE texture )
 {
-	return S_OK;
 }
 
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
@@ -223,11 +222,6 @@ HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 }
 
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
 {
 	return S_OK;
 }
