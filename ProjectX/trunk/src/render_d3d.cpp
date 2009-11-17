@@ -735,9 +735,9 @@ HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 	return lpD3DDevice->GetTransform(type, matrix);
 }
 
-HRESULT FSSetMaterial(const D3DMATERIAL9 *material)
+HRESULT FSSetMaterial(RENDERMATERIAL *material)
 {
-	return lpD3DDevice->SetMaterial(material);
+	return lpD3DDevice->SetMaterial((D3DMATERIAL9*)material);
 }
 
 HRESULT FSBeginScene()
@@ -1527,7 +1527,7 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = lpD3DDevice->SetMaterial(&renderObject->material);
+	LastError = lpD3DDevice->SetMaterial((D3DMATERIAL9*)&renderObject->material);
 	if (FAILED(LastError))
 		return LastError;
 

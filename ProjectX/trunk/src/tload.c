@@ -52,7 +52,7 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	for( i = 0 ; i < MAXTPAGESPERTLOAD ; i++ )
 	{
 		Tloadheader->lpTexture[i]     = NULL; // texture
-		memset(&Tloadheader->lpMat[i], 0, sizeof(D3DMATERIAL9));
+		memset(&Tloadheader->lpMat[i], 0, sizeof(RENDERMATERIAL));
 		Tloadheader->CurScale[i]      = 0;	  // handle
 		Tloadheader->Scale[i]		  = FALSE;// Should it scale??
 
@@ -149,11 +149,11 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 ===================================================================*/
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 {
-	D3DMATERIAL9 mat;
+	RENDERMATERIAL mat;
 
     int i;
 	/*	create a default material for each texture */
-	memset(&mat, 0, sizeof(D3DMATERIAL9));
+	memset(&mat, 0, sizeof(RENDERMATERIAL));
 	mat.Diffuse.r = (float)1.0;
 	mat.Diffuse.g = (float)1.0;
 	mat.Diffuse.b = (float)1.0;

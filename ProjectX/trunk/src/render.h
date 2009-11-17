@@ -124,11 +124,28 @@ typedef struct TEXTUREGROUP
 typedef void * LPVERTEXBUFFER;
 typedef void * LPINDEXBUFFER;
 
+// taken from d3d9
+
+typedef struct {
+    float r;
+    float g;
+    float b;
+    float a;
+} COLORVALUE;
+
+typedef struct {
+    COLORVALUE   Diffuse;        /* Diffuse color RGBA */
+    COLORVALUE   Ambient;        /* Ambient color RGB */
+    COLORVALUE   Specular;       /* Specular 'shininess' */
+    COLORVALUE   Emissive;       /* Emissive color RGB */
+    float        Power;          /* Sharpness if specular highlight */
+} RENDERMATERIAL;
+
 typedef struct RENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	D3DMATERIAL9	material;
+	RENDERMATERIAL	material;
 	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
@@ -138,7 +155,7 @@ typedef struct LEVELRENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	D3DMATERIAL9	material;
+	RENDERMATERIAL	material;
 	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];
@@ -163,7 +180,7 @@ HRESULT FSGetViewport(render_viewport_t *returnViewPort);
 HRESULT FSSetViewPort(render_viewport_t *newViewPort);
 HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix);
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix);
-HRESULT FSSetMaterial(const D3DMATERIAL9 *material);
+HRESULT FSSetMaterial(RENDERMATERIAL *material);
 void release_texture( LPTEXTURE texture );
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);

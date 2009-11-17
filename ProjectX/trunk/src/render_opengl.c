@@ -132,7 +132,7 @@ HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 	return S_OK;
 }
 
-HRESULT FSSetMaterial(const D3DMATERIAL9 *material)
+HRESULT FSSetMaterial(const RENDERMATERIAL *material)
 {
 	return S_OK;
 }

@@ -40,7 +40,7 @@ typedef struct TLOADHEADER{
 	BOOL				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
     LPTEXTURE			lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
-	D3DMATERIAL9		lpMat[MAXTPAGESPERTLOAD];
+	RENDERMATERIAL		lpMat[MAXTPAGESPERTLOAD];
 /*
     D3DTEXTUREHANDLE    hTex[MAXTPAGESPERTLOAD]; // handles
 	LPDIRECT3DMATERIAL	lpMat[MAXTPAGESPERTLOAD];

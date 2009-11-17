@@ -712,7 +712,7 @@ float ModeScaleY;
 /*===================================================================
     Off Screen Sufaces...Used to Blit to screen...
 ===================================================================*/
-D3DMATERIAL9 *lpBmat;    // a Material for the Background clearing
+RENDERMATERIAL *lpBmat;    // a Material for the Background clearing
 
 MLOADHEADER  Mloadheader;
 MCLOADHEADER MCloadheader;          //  inner skin collision map...
@@ -1434,8 +1434,8 @@ BOOL InitLevels( char * levels_list )
 
 BOOL SetMatrixViewPort( void )
 {
-	D3DMATERIAL9 bmat;
-	memset(&bmat, 0, sizeof(D3DMATERIAL9));
+	RENDERMATERIAL bmat;
+	memset(&bmat, 0, sizeof(RENDERMATERIAL));
 
 /* bjd
 //	D3DMATERIALHANDLE hBmat;
@@ -5465,8 +5465,8 @@ BOOL DispTracker( void ) // bjd
 /*
 BOOL ChangeBackgroundColour( float R, float G, float B )
 {
-    D3DMATERIAL9 bmat;
-	memset(&bmat, 0, sizeof(D3DMATERIAL9));
+    RENDERMATERIAL bmat;
+	memset(&bmat, 0, sizeof(RENDERMATERIAL));
 	bmat.Diffuse.r = R;
 	bmat.Diffuse.g = G;
 	bmat.Diffuse.b = B;
