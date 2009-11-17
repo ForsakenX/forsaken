@@ -13,8 +13,6 @@
 #define SHIPS_INCLUDED
 
 #include <math.h>
-#include <d3d9.h>
-
 #include "New3D.h"
 #include <time.h>
 #include "mload.h"

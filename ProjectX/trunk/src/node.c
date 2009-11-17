@@ -31,7 +31,6 @@
 #include "models.h"
 #include "enemies.h"
 #include "mload.h"
-#include <d3d9.h>
 #include "render.h"
 #include "ai.h"
 #include "lines.h"

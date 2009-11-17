@@ -11,7 +11,7 @@ extern "C" {
 #include "new3d.h"
 
 #ifndef OPENGL
-#include "d3d9.h"
+#include <d3d9.h>
 #endif
 
 BOOL  bSquareOnly;

@@ -10,7 +10,6 @@
 #include "ships.h"
 #include "lights.h"
 #include "skin.h"
-#include "d3d9.h"
 #include "camera.h"
 
 typedef struct _GROUPLIST

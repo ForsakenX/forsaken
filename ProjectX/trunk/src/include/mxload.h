@@ -10,8 +10,6 @@
 #ifndef MXLOAD_INCLUDED
 #define MXLOAD_INCLUDED
 
-#include <d3d9.h>
-
 #include "file.h"
 #include "render.h"
 #include "new3d.h"

@@ -1,18 +1,10 @@
-
-
 #ifndef TITLE_INCLUDED
 #define TITLE_INCLUDED
 
 #include "localtitle.h"
-#include "d3d9.h"
 
 #include "new3d.h"
 #include "2dtextures.h"
-
-//	Defines
-
-extern float PseudoHostAck_Timeout;
-#define PSEUDOHOST_WAIT_TIME 1800.0F	// 30 secs approx 
 
 #define QUICKSTART_None		0
 #define QUICKSTART_Start	1

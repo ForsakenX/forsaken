@@ -11,8 +11,6 @@
 #include "object.h"
 #include "networking.h"
 #include "triggers.h"
-#include <d3d9.h>
-
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
@@ -20,7 +18,6 @@
 #include "mload.h"
 #include "transexe.h"
 #include "water.h"
-
 #include "xmem.h"
 #include "util.h"
 
