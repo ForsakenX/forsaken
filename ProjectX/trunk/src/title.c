@@ -4908,7 +4908,7 @@ BOOL DisplayTitle(void)
 		return FALSE;
 	}
 
-	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetView(  &view) != D3D_OK)
 	{
 		Msg( "DisplayTitle() : SetMatrix failed\n" );
 		return FALSE;

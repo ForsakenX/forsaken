@@ -870,7 +870,7 @@ BOOL SetFOV( float fov )
 
 	hfov = fov;
 
-	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
+	if (FAILED(FSSetProjection(  &proj)))
 		return FALSE;
 
 	return TRUE;
@@ -1458,9 +1458,9 @@ BOOL SetMatrixViewPort( void )
       STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
 #endif
 
-	FSSetMatrix( D3DTS_PROJECTION, &proj );
-	FSSetMatrix( D3DTS_VIEW, &identity );
-	FSSetMatrix( D3DTS_WORLD, &world );
+	FSSetProjection(  &proj );
+	FSSetView(  &identity );
+	FSSetWorld(  &world );
 
 	world = identity;
 
@@ -4571,7 +4571,7 @@ BOOL RenderCurrentCamera( void )
 	Build_View();
 	CurrentCamera.View = view;
 
-	if (FSSetMatrix( D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetView(  &view) != D3D_OK)
 		return FALSE;
 
 	rval = FSSetViewPort(&CurrentCamera.Viewport);
@@ -5012,7 +5012,7 @@ BOOL Disp3dPanel( void )
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
+	if (FSSetProjection(  &panelproj) != D3D_OK)
 	{
 		return FALSE;
 	}
@@ -5081,7 +5081,7 @@ BOOL Disp3dPanel( void )
 	                                    
 	view._44 = rotMatrix._44;
 
-	if (FAILED(FSSetMatrix(D3DTS_VIEW, &view)))
+	if (FAILED(FSSetView(  &view)))
 		return FALSE;
 
 	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
@@ -5090,7 +5090,7 @@ BOOL Disp3dPanel( void )
 	if (FAILED(FSSetViewPort(&viewport)))
 		return FALSE;
 
-	if (FAILED(FSSetMatrix(D3DTS_PROJECTION, &proj)))
+	if (FAILED(FSSetProjection(  &proj)))
 		return FALSE;
 
 	return TRUE;
@@ -5326,7 +5326,7 @@ BOOL DispTracker( void ) // bjd
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-	if (FSSetMatrix(D3DTS_PROJECTION, &panelproj) != D3D_OK)
+	if (FSSetProjection(  &panelproj) != D3D_OK)
 	{
 		return FALSE;
 	}
@@ -5368,7 +5368,7 @@ BOOL DispTracker( void ) // bjd
 	view._43 = ( 280.0F * GLOBAL_SCALE );
 	view._44 = 1.0F;
 
-	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetView(  &view) != D3D_OK)
 		return FALSE;
 
 	if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (uint16) -1 ) != TRUE )
@@ -5434,7 +5434,7 @@ BOOL DispTracker( void ) // bjd
     view._43 = TempVector.z + ( 280.0F * GLOBAL_SCALE );
     view._44 = 1.0F;
 
-	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetView(  &view) != D3D_OK)
 		return FALSE;
 
     if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Ping], (uint16) -1 ) != TRUE )
@@ -5445,7 +5445,7 @@ BOOL DispTracker( void ) // bjd
 	if (FSSetViewPort(&viewport) != D3D_OK )
 		return FALSE;
 
-	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
+	if (FSSetProjection(  &proj) != D3D_OK)
 	{
 		return FALSE;
 	}

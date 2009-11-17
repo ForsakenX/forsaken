@@ -117,18 +117,18 @@ void ExecuteTransExe( uint16 group )
 
 			if( TransExe[i].UseIdentity	== 1 )
 			{
-				FSSetMatrix(D3DTS_WORLD, &identity);
+				FSSetWorld(  &identity);
 			}
 			else
 			{
-				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
+				FSSetWorld(  &TransExe[i].Matrix);
 			}
 
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 		}
 	}
-	FSSetMatrix(D3DTS_WORLD, &identity);
+	FSSetWorld(  &identity);
 }
 
 
@@ -194,16 +194,16 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 			if( TransExe[i].UseIdentity	== 1 )
 			{
-				FSSetMatrix(D3DTS_WORLD, &identity);
+				FSSetWorld(  &identity);
 			}
 			else
 			{
-				FSSetMatrix(D3DTS_WORLD, &TransExe[i].Matrix);
+				FSSetWorld(  &TransExe[i].Matrix);
 			}
 
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 		}
 	}
-	FSSetMatrix(D3DTS_WORLD, &identity);
+	FSSetWorld(  &identity);
 }

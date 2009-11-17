@@ -122,11 +122,6 @@ HRESULT FSSetViewPort(render_viewport_t *newViewPort)
 	return S_OK;
 }
 
-HRESULT FSSetMatrix(D3DTRANSFORMSTATETYPE type, const D3DMATRIX *matrix)
-{
-	return S_OK;
-}
-
 HRESULT FSGetMatrix(D3DTRANSFORMSTATETYPE type, D3DMATRIX *matrix)
 {
 	return S_OK;

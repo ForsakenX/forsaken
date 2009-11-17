@@ -625,7 +625,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 	TempWorld._42 = Wo->Pos.y + Wo->offset;
 	TempWorld._43 = Wo->Pos.z;
 
-	if (FAILED(FSSetMatrix(D3DTS_WORLD, &TempWorld)))
+	if (FAILED(FSSetWorld(  &TempWorld)))
 		return;
 
 	cull_none();
@@ -635,7 +635,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 
 	reset_cull();
 
-	if (FAILED(FSSetMatrix(D3DTS_WORLD, &identity)))
+	if (FAILED(FSSetWorld(  &identity)))
 		return;
 }
 

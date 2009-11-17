@@ -1148,9 +1148,9 @@ int ClipGroup( CAMERA *cam, uint16 group )
 	if( !DoClipping )
 		g = &cam->visible.group[ cam->visible.first_visible->group ];
 
-	if (FSSetMatrix(D3DTS_PROJECTION, &g->projection) != D3D_OK)
+	if (FSSetProjection(  &g->projection) != D3D_OK)
 		return FALSE;
-	if (FSSetMatrix(D3DTS_VIEW, &cam->View) != D3D_OK)
+	if (FSSetView(  &cam->View) != D3D_OK)
 		return FALSE;
 
 	rval = FSSetViewPort(&g->viewport);
@@ -1251,9 +1251,9 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	proj = Tempproj;
 	view = Tempview;
 
-	if (FSSetMatrix(D3DTS_PROJECTION, &proj) != D3D_OK)
+	if (FSSetProjection(  &proj) != D3D_OK)
 		return FALSE;
-	if (FSSetMatrix(D3DTS_VIEW, &view) != D3D_OK)
+	if (FSSetView(  &view) != D3D_OK)
 		return FALSE;
 	
 	return TRUE;
