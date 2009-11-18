@@ -3,6 +3,8 @@
 #include "main.h"
 #include "util.h"
 #include "render.h"
+#include "SDL.h"
+#include "SDL_opengl.h"
 
 // TODO - port functions to not use hresult
 typedef long HRESULT;
@@ -35,6 +37,7 @@ BOOL render_reset( render_info_t * info )
 
 BOOL render_flip( render_info_t * info )
 {
+	SDL_GL_SwapBuffers();
 	return TRUE;
 }
 

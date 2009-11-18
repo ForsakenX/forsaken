@@ -604,6 +604,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\main_sdl.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\mload.c"
 				>
 			</File>

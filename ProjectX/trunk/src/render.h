@@ -9,6 +9,7 @@ extern "C" {
 
 #include "main.h"
 #include "new3d.h"
+#include "SDL.h"
 #include <windows.h>
 
 BOOL  bSquareOnly;
@@ -51,6 +52,7 @@ typedef struct {
     BOOL                    bMinimized;				/* app window is minimized */
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
 	BOOL					vsync;					/* vertical sync */
+	SDL_Surface*	        screen;					
 #ifdef WIN32
 	HWND					window;			        /* application window handle */
 #else

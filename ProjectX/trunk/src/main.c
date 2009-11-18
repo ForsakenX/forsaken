@@ -33,7 +33,7 @@
 // GLOBAL VARIABLES
 //
 
-BOOL Debug = FALSE;
+BOOL Debug = TRUE;
 BOOL ShowFrameRate = TRUE;
 BOOL ShowInfo = FALSE;
 
@@ -142,7 +142,6 @@ extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
 extern BOOL DebugLog;
-extern BOOL Debug;
 extern uint8 QuickStart;
 extern BOOL IpOnCLI;
 
@@ -164,6 +163,7 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 	
 	NoSFX					= FALSE; // turns off sound
 	DS						= FALSE;
+	Debug					= FALSE; // turns it off now
 
 	NetUpdateIntervalCmdLine	= 0;
 
@@ -416,53 +416,6 @@ void CleanUpAndPostQuit(void)
 }
 
 //
-// Creates the window
-//
-
-static BOOL InitWindow( void )
-{
-	SDL_Surface* myVideoSurface = NULL;
-	SDL_Surface* icon = NULL;
-
-	// set the window icon
-	icon = SDL_LoadBMP("Data/ProjectX-32x32.bmp");
-	if(icon)
-	{
-		// remove black pixels
-		Uint32 colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
-		SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);        
-		SDL_WM_SetIcon(icon, NULL);
-		SDL_FreeSurface(icon);
-	}
-
-	// create the window
-	// TODO -
-	//		look into: SDL_DOUBLEBUF|SDL_FULLSCREEN|SDL_HWSURFACE
-	//		opengl: for win32 need to redo all the gl init stuff after this
-	myVideoSurface = SDL_SetVideoMode(
-		render_info.default_mode.w,
-		render_info.default_mode.h,
-		SDL_GetVideoInfo()->vfmt->BitsPerPixel, 
-		0
-		);
-
-	if(!myVideoSurface)
-	{
-		Msg("Failed to create video surface: %s\n",SDL_GetError());
-		return FALSE;
-	}
-
-	// window title, icon title (taskbar and other places)
-	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
-
-	// hack to get the window handle
-	render_info.window = GetActiveWindow();
-
-	//
-	return TRUE;
-}
-
-//
 // Initializes the application
 //
 
@@ -485,6 +438,8 @@ extern BOOL InitDInputJS(void);
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
 extern BYTE MyGameStatus;
+extern BOOL sdl_init_window( void );
+extern BOOL sdl_init( void );
 
 static BOOL AppInit( char * lpCmdLine )
 {
@@ -519,15 +474,12 @@ static BOOL AppInit( char * lpCmdLine )
 
 #endif
 
-	// init sdl
-	if( SDL_Init( SDL_INIT_VIDEO  ) < 0 || !SDL_GetVideoInfo() )
-	{
-		Msg("Failed to initialize sdl: %s\n",SDL_GetError());
-		return 0;
-	}
-
 	// initialize COM library
 	if FAILED( CoInitialize(NULL) )
+		return FALSE;
+
+	//
+	if(!sdl_init())
 		return FALSE;
 
 	// setup globals used by application
@@ -568,7 +520,7 @@ static BOOL AppInit( char * lpCmdLine )
 	//
 	// create and show the window
 	//
-	if(!InitWindow())
+	if(!sdl_init_window())
 		return FALSE;
 
 	// appears dinput has to be after init window
@@ -627,8 +579,6 @@ extern void commit_any_sounds( void );
 
 static BOOL RenderLoop()
 {
-
-    // If all the DD and D3D objects have been initialized we can render
     if ( !render_info.bRenderingIsOK || render_info.bMinimized || render_info.bPaused || QuitRequested )
 		return TRUE;
 
