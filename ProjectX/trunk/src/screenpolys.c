@@ -2018,13 +2018,6 @@ void RemoveScrPolyFromTPage( uint16 i, int16 TPage )
 	ScrPolys[ i ].NextInTPage = (uint16) -1;
 }
 
-/*===================================================================
-	Procedure	:	Display all solid screen Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
 BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;
@@ -2049,13 +2042,6 @@ BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 	return( FALSE );
 }
 
-/*===================================================================
-	Procedure	:	Display all solid screen Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
 BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;

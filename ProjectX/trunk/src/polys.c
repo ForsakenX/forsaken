@@ -582,17 +582,7 @@ void RemovePolyFromTPage( uint16 i, int16 TPage )
 	Polys[ i ].NextInTPage = (uint16) -1;
 }
 
-
-/*===================================================================
-	Procedure	:	Display all group clipped Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	uint16						Group
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group
-								/*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
+BOOL DisplayGroupClippedPolys(RENDEROBJECT *renderObject, uint16 Group )
 {
 	int16	TPage;
 	uint16	i;
@@ -619,15 +609,7 @@ BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT 
 	return( FALSE );
 }
 
-/*===================================================================
-	Procedure	:	Display all non group clipped Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject
-								   /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
+BOOL DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;
 	uint16	i;
@@ -1141,16 +1123,7 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	return( TRUE );
 }
 
-/*===================================================================
-	Procedure	:	Display all solid group clipped Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	uint16						Group
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/ RENDEROBJECT *renderObject, uint16 Group
-								/*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
+BOOL DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group )
 {
 	int16	TPage;
 	uint16	i;
@@ -1178,15 +1151,7 @@ BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/ RENDERO
 	return( FALSE );
 }
 
-/*===================================================================
-	Procedure	:	Display all solid non group clipped Polys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplaySolidGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject
-								   /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
+BOOL DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject )
 {
 	int16	TPage;
 	uint16	i;

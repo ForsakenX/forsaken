@@ -1554,16 +1554,7 @@ void RemoveFmPolyFromTPage( uint16 i, int16 TPage )
 	FmPolys[ i ].NextInTPage = (uint16) -1;
 }
 
-/*===================================================================
-	Procedure	:	Display all group clipped FmPolys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	uint16						Group
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group
-								 /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ) // bjd
+BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group )
 {
 	int16	TPage;
 	uint16	i;
@@ -1587,14 +1578,7 @@ BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJEC
 	return( FALSE );
 }
 
-/*===================================================================
-	Procedure	:	Display all non group clipped FmPolys
-	Input		:	LPDIRECT3DEXECUTEBUFFER		Execute Buffer
-				:	LPDIRECT3DDEVICE			D3D Device
-				:	LPDIRECT3DVIEWPORT			D3D ViewPort
-	Output		:	True/False
-===================================================================*/
-BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ )
+BOOL DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 {
 	int16	TPage;
 	uint16	i;
