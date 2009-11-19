@@ -68,15 +68,33 @@ BOOL init_renderer( render_info_t * info )
 
 void render_cleanup( render_info_t * info )
 {
+    info->bRenderingIsOK = FALSE;
+	if(info->Mode)
+		free(info->Mode);
+    // TODO - any opengl cleanup required ?
 }
 
 BOOL render_mode_select( render_info_t * info )
 {
+	render_cleanup( info );
+	if(!init_renderer( info ))
+		return FALSE;
 	return TRUE;
 }
 
+// TODO - in d3d9 render_flip would detect a lost device
+//		lost as in alt+tab (etc) which caused video memory to dump
+//		at this point we should set needs_reset = TRUE
+
+static BOOL needs_reset = FALSE;
+
 BOOL render_reset( render_info_t * info )
 {
+	if(!needs_reset)
+		return FALSE;
+	if(!render_mode_select( info ))
+		return FALSE;
+	needs_reset = FALSE;
 	return TRUE;
 }
 
