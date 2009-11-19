@@ -57,6 +57,9 @@ void render_gamma_correction( double gamma )
 LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
+// TODO - shouldn't sdl handle the window and resolution enumeration ?
+// TODO - should we not change the refresh rate of desktop?
+
 BOOL init_renderer( render_info_t * info )
 {
 	HRESULT LastError;

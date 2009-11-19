@@ -23,43 +23,29 @@ void render_gamma_correction( double gamma )
 
 BOOL init_renderer( render_info_t * info )
 {
-
-	/* everything that d3d9 init did */
-
-	// default the gamma table
-		// is this needed ?
-
-	// do any gl object init stuff
-		// anything needed ?
-
-	// doesn't sdl do this now ?
-		// define back buffer count
-		// define refresh rate	
-		// select front/back buffer formats
+	// reminaing d3d9 initialization steps
+	// doesn't sdl do this now?
 		// enumerate and select a display mode
-		//{
 			// assign enumeration info to info->Mode
 			// assign info->(CurrMode|ThisMode|WindowsDisplay|szClient)
 			// set the viewport
-		//}
-
-	// enable automated depth stencil
-		// doesn't reset_zbuff() already do this?
-		// in d3d9 zbuffer being managed *for us* needed to be enabled
 
 	//
 	// init render state
 	//
 
-	glShadeModel(GL_SMOOTH); // TODO - no gouraud ?
+	render_gamma_correction(1.0f);
+	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
 	glDisable(GL_LIGHTING);
 	reset_cull();
 	reset_trans();
 	reset_filtering();
 
+	glPolygonMode(GL_BACK, GL_NONE);
+	
 	// wireframe
-	//glPolygonMode(GL_BACK, GL_LINE);
 	//glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
 
 	set_normal_states();
 

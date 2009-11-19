@@ -26,6 +26,10 @@ BOOL sdl_init( void )
 	return TRUE;
 }
 
+// TODO - should this be part of init_renderer?
+//		  does sdl enumerate resolutions that are valid for dx?
+//		  seems that dx does allot of work that sdl could do...
+
 BOOL sdl_init_window( void )
 {
 	SDL_Surface* icon = NULL;
@@ -50,6 +54,7 @@ BOOL sdl_init_window( void )
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,			32 );
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,		1  );
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,		render_info.vsync );
 #endif
 
 
@@ -60,7 +65,6 @@ BOOL sdl_init_window( void )
 		render_info.default_mode.w,
 		render_info.default_mode.h,
 		SDL_GetVideoInfo()->vfmt->BitsPerPixel,
-		// do not use SDL_DOUBLEBUF here
 #ifdef OPENGL
 		SDL_OPENGL | SDL_ANYFORMAT
 #else
