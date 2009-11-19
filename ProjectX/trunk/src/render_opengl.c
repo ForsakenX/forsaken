@@ -155,16 +155,18 @@ void set_alpha_fx_states( void )
 {
 }
 
-BOOL FSClear(DWORD Count, XYRECT* pRects, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
+BOOL FSClear(XYRECT* pRects, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
 {
 	return TRUE;
 }
 
 BOOL FSClearBlack(void)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	// TODO - analyze the d3d9 implementation
+	// clearing the depth/stencil may not be needed
 	glClearDepth(1.0f);
 	glClearStencil(0);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	return TRUE;
 }

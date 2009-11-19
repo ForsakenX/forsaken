@@ -4511,7 +4511,7 @@ BOOL  ClearBuffers( void )
 	dummy.x2 = CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width;
 	dummy.y2 = CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height;
 
-	return FSClear(1, &dummy, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
+	return FSClear(&dummy, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
 }
 
 // Clear the Zbuffer
@@ -4527,7 +4527,7 @@ BOOL ClearZBuffer()
 	dummy.x2 = CurrentCamera.Viewport.X+CurrentCamera.Viewport.Width;
 	dummy.y2 = CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height;
 
-	return FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0F, 0 );
+	return FSClear(&dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0F, 0 );
 }
 
 
@@ -5022,7 +5022,7 @@ BOOL Disp3dPanel( void )
 	dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
 	dummy.y2 = dummy.y1+( newviewport.Height >> 1);
 
-	if(!FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
+	if(!FSClear(&dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
 		return FALSE;
 
 	Trans.x = 0.0F;
@@ -5336,7 +5336,7 @@ BOOL DispTracker( void ) // bjd
 	dummy.y1 = newviewport.Y;
 	dummy.y2 = newviewport.Y + newviewport.Height;
 
-	if (FSClear( 1, &dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
+	if (FSClear(&dummy, D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 ))
 		return FALSE;
 
 	MatrixTranspose( &Ships[ WhoIAm ].Object.FinalMat, &TempMatrix );

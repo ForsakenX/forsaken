@@ -97,7 +97,7 @@ typedef struct {
 
 #define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
-BOOL FSClear(DWORD Count, XYRECT* rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil);
+BOOL FSClear(XYRECT* rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil);
 
 #define MAX_LEVEL_TEXTURE_GROUPS 8
 

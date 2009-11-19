@@ -708,10 +708,11 @@ static BOOL init_render_states( render_info_t * info )
 char buf[100];
 HRESULT LastError;
 
-BOOL FSClear(DWORD Count, XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
+BOOL FSClear(XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
 {
+	int count = (rect) ? 1 : 0 ;
 	COLOR color = (COLOR) Color;
-	if (FAILED(lpD3DDevice->Clear( Count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
+	if (FAILED(lpD3DDevice->Clear( count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
 	{
 		return FALSE;
 	}
@@ -720,6 +721,8 @@ BOOL FSClear(DWORD Count, XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWOR
 
 BOOL FSClearBlack(void)
 {
+	// TODO - does this function actually clear the zbuff/stencil ?
+	// this specifies values for zbuff/stencil but then states D3DCLEAR_TARGET
 	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
 	{
 		return FALSE;
