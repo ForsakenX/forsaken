@@ -95,7 +95,6 @@ typedef struct {
     LONG y2;
 } XYRECT;
 
-#define FSColourKeyBlack 0xFF000000 // pass this as colour key for black as transparent
 BOOL FSClearBlack(void);
 BOOL FSClear(XYRECT * rect);
 BOOL FSClearDepth(XYRECT * rect);

@@ -22,6 +22,8 @@ extern "C" {
 #include "file.h"
 #include "texture.h"
 
+#define OPAQUE_BLACK OPAQUE_BLACK
+
 #define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 #define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
 
@@ -713,7 +715,7 @@ BOOL FSClear(XYRECT * rect)
 {
 	int count = (rect) ? 1 : 0 ;
 	if (FAILED(lpD3DDevice->Clear( 
-		count, (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 
+		count, (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, OPAQUE_BLACK, 1.0f, 0 
 	)))
 		return FALSE;
 	return TRUE;
@@ -731,7 +733,7 @@ BOOL FSClearBlack(void)
 {
 	// TODO - does this function actually clear the zbuff/stencil ?
 	// this specifies values for zbuff/stencil but then states D3DCLEAR_TARGET
-	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
+	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, OPAQUE_BLACK, 1.0f, 0 )))
 		return FALSE;
 	return TRUE;
 }
@@ -1182,7 +1184,7 @@ HRESULT create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *he
 				pool,
 				D3DX_DEFAULT,
 				D3DX_DEFAULT,
-				(*colorkey) ? FSColourKeyBlack : 0, // colour key
+				(*colorkey) ? OPAQUE_BLACK : 0, // colour key
 				&imageInfo,
 				NULL,
 				texture);
