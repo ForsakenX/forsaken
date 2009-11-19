@@ -708,11 +708,13 @@ static BOOL init_render_states( render_info_t * info )
 char buf[100];
 HRESULT LastError;
 
-BOOL FSClear(XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
+// clears color/zbuff same time to opaque black
+BOOL FSClear(XYRECT * rect)
 {
 	int count = (rect) ? 1 : 0 ;
-	COLOR color = (COLOR) Color;
-	if (FAILED(lpD3DDevice->Clear( count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
+	if (FAILED(lpD3DDevice->Clear( 
+		count, (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, FSColourKeyBlack, 1.0f, 0 
+	)))
 		return FALSE;
 	return TRUE;
 }

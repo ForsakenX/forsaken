@@ -4499,7 +4499,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
 }
 
 // Clears the target(back) and zbuffer for the current camera
-BOOL  ClearBuffers( void )
+BOOL ClearBuffers( void )
 {
 	XYRECT dummy;
 
@@ -4511,10 +4511,7 @@ BOOL  ClearBuffers( void )
 	dummy.x2 = CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width;
 	dummy.y2 = CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height;
 
-	if(!FSClearDepth(&dummy))
-		return FALSE;
-
-	return FSClear(&dummy, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,0), 1.0f, 0);
+	return FSClear(&dummy);
 }
 
 // Clear the Zbuffer

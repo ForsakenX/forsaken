@@ -155,8 +155,17 @@ void set_alpha_fx_states( void )
 {
 }
 
-BOOL FSClear(XYRECT* pRects, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
-{
+// TODO - is the stencil buffer ever cleared ?
+// TODO - do we even use the stencil buffer ?
+// TODO - FSClear is meant to clear current viewport
+//        perhaps we can automate and remove need for rect arg ?
+
+// clears color/zbuff same time to opaque black
+BOOL FSClear(XYRECT * rect)
+{	
+	glClearDepth(1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	return TRUE;
 }
 
@@ -169,12 +178,8 @@ BOOL FSClearDepth(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
-	// TODO - analyze the d3d9 implementation
-	// clearing the depth/stencil may not be needed
-	//glClearDepth(1.0f);
-	//glClearStencil(0);
 	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-	glClear(GL_COLOR_BUFFER_BIT);// | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;
 }
 
