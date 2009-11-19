@@ -300,7 +300,12 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 const char * render_error_description( HRESULT hr )
 {
-	return "";
+	GLenum error;
+	const GLubyte * str;
+	if( ( error = glGetError() ) == GL_NO_ERROR )
+		return "";
+	str = gluErrorString(error);
+	return (const char *) str;
 }
 
 #endif // OPENGL
