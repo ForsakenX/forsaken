@@ -162,6 +162,10 @@ BOOL FSClear(DWORD Count, XYRECT* pRects, DWORD Flags, DWORD Color, float Z, DWO
 
 BOOL FSClearBlack(void)
 {
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearDepth(1.0f);
+	glClearStencil(0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	return TRUE;
 }
 
@@ -296,6 +300,29 @@ HRESULT draw_2d_object(RENDEROBJECT *renderObject)
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
+	int i;
+	if (renderObject->lpVertexBuffer)
+	{
+		// TODO - need to destroy buffer gl style
+		renderObject->lpVertexBuffer = NULL;
+	}
+	if (renderObject->lpIndexBuffer)
+	{
+		// TODO - need to destroy buffer gl style
+		renderObject->lpIndexBuffer = NULL;
+	}
+	for (i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		renderObject->textureGroups[i].numVerts = 0;
+		renderObject->textureGroups[i].startVert = 0;
+
+		if (renderObject->textureGroups[i].texture)
+		{
+			// this is just a pointer to Tloadheader
+			// we do not need to worry about releasing it
+			renderObject->textureGroups[i].texture = NULL;
+		}
+	}
 }
 
 const char * render_error_description( HRESULT hr )
