@@ -46,6 +46,8 @@ BOOL sdl_init_window( void )
 	}
 
 #ifdef OPENGL
+	// TODO - do i need to specify the rgba sizes ?
+	//		  i would think for true 32 bit mode then yes ?
     //SDL_GL_SetAttribute(SDL_GL_RED_SIZE,			8  );
     //SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,		8  );
     //SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,			8  );
