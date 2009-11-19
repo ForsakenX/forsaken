@@ -713,9 +713,15 @@ BOOL FSClear(XYRECT * rect, DWORD Flags, DWORD Color, float Z, DWORD Stencil)
 	int count = (rect) ? 1 : 0 ;
 	COLOR color = (COLOR) Color;
 	if (FAILED(lpD3DDevice->Clear( count, (D3DRECT*)rect, Flags, color, Z, Stencil )))
-	{
 		return FALSE;
-	}
+	return TRUE;
+}
+
+BOOL FSClearDepth(XYRECT * rect)
+{
+	int count = (rect) ? 1 : 0 ;
+	if (FAILED(lpD3DDevice->Clear( count, (D3DRECT*)rect, D3DCLEAR_ZBUFFER, 0, 1.0f, 0 )))
+		return FALSE;
 	return TRUE;
 }
 
@@ -724,9 +730,7 @@ BOOL FSClearBlack(void)
 	// TODO - does this function actually clear the zbuff/stencil ?
 	// this specifies values for zbuff/stencil but then states D3DCLEAR_TARGET
 	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, FSColourKeyBlack, 1.0f, 0 )))
-	{
 		return FALSE;
-	}
 	return TRUE;
 }
 
