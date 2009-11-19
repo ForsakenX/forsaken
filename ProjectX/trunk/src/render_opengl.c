@@ -72,6 +72,9 @@ void render_cleanup( render_info_t * info )
 	if(info->Mode)
 		free(info->Mode);
     // TODO - any opengl cleanup required ?
+	//		i believe SDL_Quit() handles everything
+	//		and at this point we might just be changing resolutions
+	//		so sdl again may handle any context cleanup needed
 }
 
 BOOL render_mode_select( render_info_t * info )
