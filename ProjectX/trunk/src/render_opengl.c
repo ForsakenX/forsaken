@@ -6,6 +6,9 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
+// prototypes
+void reset_trans( void );
+
 // TODO - port functions to not use hresult
 typedef long HRESULT;
 
@@ -48,7 +51,7 @@ BOOL init_renderer( render_info_t * info )
 	// init render state
 	//
 
-	glShadeMode(GL_SMOOTH); // TODO - no gouraud ?
+	glShadeModel(GL_SMOOTH); // TODO - no gouraud ?
 	glDisable(GL_LIGHTING);
 	reset_cull();
 	reset_trans();
