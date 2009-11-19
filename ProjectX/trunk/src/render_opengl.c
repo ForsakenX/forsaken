@@ -9,15 +9,57 @@
 // TODO - port functions to not use hresult
 typedef long HRESULT;
 
+// TODO - all textures should be scaled to square
+//		  other wise should get this from gl caps
+BOOL bSquareOnly = FALSE;
+
+// will this even be needed?
 void render_gamma_correction( double gamma )
 {
 }
 
 BOOL init_renderer( render_info_t * info )
 {
-	// TODO - all textures should be scaled to square
-	//		  other wise should get this from gl caps
-	bSquareOnly = FALSE;
+
+	/* everything that d3d9 init did */
+
+	// default the gamma table
+		// is this needed ?
+
+	// do any gl object init stuff
+		// anything needed ?
+
+	// doesn't sdl do this now ?
+		// define back buffer count
+		// define refresh rate	
+		// select front/back buffer formats
+		// enumerate and select a display mode
+		//{
+			// assign enumeration info to info->Mode
+			// assign info->(CurrMode|ThisMode|WindowsDisplay|szClient)
+			// set the viewport
+		//}
+
+	// enable automated depth stencil
+		// doesn't reset_zbuff() already do this?
+		// in d3d9 zbuffer being managed *for us* needed to be enabled
+
+	//
+	// init render state
+	//
+
+	glShadeMode(GL_SMOOTH); // TODO - no gouraud ?
+	glDisable(GL_LIGHTING);
+	reset_cull();
+	reset_trans();
+	reset_filtering();
+
+	// wireframe
+	//glPolygonMode(GL_BACK, GL_LINE);
+	//glPolygonMode(GL_FRONT, GL_LINE);
+
+	set_normal_states();
+
 	return TRUE;
 }
 
@@ -43,50 +85,53 @@ BOOL render_flip( render_info_t * info )
 
 void reset_trans( void )
 {
+	glDisable(GL_BLEND);
+	glBlendFunc(GL_ONE,GL_ZERO); // src, dest
 }
 
 void reset_zbuff( void )
 {
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glDepthMask(GL_TRUE); // depth write
 }
 
 void disable_zbuff_write( void )
 {
+	glDepthMask(GL_FALSE); // depth write
 }
 
 void disable_zbuff( void )
 {
-}
-
-void linear_filtering( void )
-{
-}
-
-void anisotropic_filtering( void )
-{
-}
-
-void disable_filtering( void )
-{
-}
-
-void default_filtering( void )
-{
+	glDisable(GL_DEPTH_TEST);
 }
 
 void reset_filtering( void )
 {
+	// texture and mipmap filter
+	// TODO - anisotropic texture filtering ?
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+		GL_LINEAR_MIPMAP_LINEAR // interpolates two nearest mip levels
+		//GL_LINEAR
+		);
 }
 
 void cull_none( void )
 {
+	glDisable(GL_CULL_FACE);
 }
 
 void cull_cw( void )
 {
+	glCullFace(GL_FRONT); // cw is the front for us
 }
 
 void reset_cull( void )
-{
+{	
+	glEnable(GL_CULL_FACE);
+	glFrontFace(GL_CW);
+	glCullFace(GL_BACK);
 }
 
 void set_alpha_ignore( void )
@@ -95,6 +140,8 @@ void set_alpha_ignore( void )
 
 void set_normal_states( void )
 {
+	reset_zbuff();
+	reset_trans();
 }
 
 void set_alpha_states( void )

@@ -574,6 +574,9 @@ void linear_filtering( void )
 
 void anisotropic_filtering( void )
 {
+	// Compensates for distortion caused by the difference
+	// in angle between the texture polygon and the plane 
+	// of the screen.
 	SSTATE(0, D3DSAMP_MAGFILTER, D3DTEXF_ANISOTROPIC );
 	SSTATE(0, D3DSAMP_MINFILTER, D3DTEXF_ANISOTROPIC );
 }
@@ -594,6 +597,15 @@ void default_filtering( void ){
 void reset_filtering( void )
 {
 	anisotropic_filtering();
+
+	// D3DSAMP_MIPFILTER
+    // Mipmap filter to use during minification.
+
+	// When used with D3DSAMP_MIPFILTER,
+	// enables mipmapping and trilinear filtering;
+	// it specifies that the rasterizer interpolates
+	// between the two nearest mip levels.
+
 	SSTATE(0, D3DSAMP_MIPFILTER, D3DTEXF_LINEAR);
 }
 

@@ -62,7 +62,7 @@ BOOL sdl_init_window( void )
 		SDL_GetVideoInfo()->vfmt->BitsPerPixel,
 		// do not use SDL_DOUBLEBUF here
 #ifdef OPENGL
-		SDL_OPENGL | SDL_ANYFORMAT | SDL_HWSURFACE
+		SDL_OPENGL | SDL_ANYFORMAT
 #else
 		0
 #endif
