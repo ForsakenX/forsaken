@@ -662,7 +662,7 @@ void set_alpha_states( void )
 void set_alpha_fx_states( void )
 {
     STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-	// need some type of states here that would create white out affect
+	// TODO - need some type of states here that would create white out affect
 }
 
 /* bjd - CHECK

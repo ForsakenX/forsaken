@@ -139,6 +139,13 @@ void reset_cull( void )
 
 void set_alpha_ignore( void )
 {
+	glEnable(GL_ALPHA_TEST);
+	glAlphaFunc(GL_GREATER,(DWORD)100);
+}
+
+void unset_alpha_ignore( void )
+{
+	glDisable(GL_ALPHA_TEST);
 }
 
 void set_normal_states( void )
@@ -147,12 +154,22 @@ void set_normal_states( void )
 	reset_trans();
 }
 
+void set_trans_state_9()
+{
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE); // src, dest
+}
+
 void set_alpha_states( void )
 {
+	disable_zbuff_write();
+	glEnable(GL_BLEND);
+	set_trans_state_9();
 }
 
 void set_alpha_fx_states( void )
 {
+	glEnable(GL_BLEND);
+	// TODO - need some type of states here that would create white out affect
 }
 
 // TODO - is the stencil buffer ever cleared ?
