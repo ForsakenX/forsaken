@@ -804,7 +804,7 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 	clip = 0;
 	if ( vpos->z > 1.0F )
 	{
-		clip |= D3DCLIP_FRONT;
+		clip |= CLIP_FRONT;
 	    VisPolyApplyMatrix( (MATRIX *) &cam->View, (VECTOR *) wpos, vpos );
 #if 0
 		if ( vpos->x < 0.0F )
@@ -818,19 +818,19 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 #else
 		if ( DotProduct( vpos, &clip_left ) < 0.0F )
 		{
-			clip |= D3DCLIP_LEFT;
+			clip |= CLIP_LEFT;
 		}
 		else if ( DotProduct( vpos, &clip_right ) < 0.0F )
 		{
-			clip |= D3DCLIP_RIGHT;
+			clip |= CLIP_RIGHT;
 		}
 		if ( DotProduct( vpos, &clip_top ) < 0.0F )
 		{
-			clip |= D3DCLIP_TOP;
+			clip |= CLIP_TOP;
 		}
 		else if ( DotProduct( vpos, &clip_bottom ) < 0.0F )
 		{
-			clip |= D3DCLIP_BOTTOM;
+			clip |= CLIP_BOTTOM;
 		}
 		return clip;
 #endif
@@ -838,12 +838,12 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 
 	if ( vpos->x < -1.0F )
 	{
-		clip |= D3DCLIP_LEFT;
+		clip |= CLIP_LEFT;
 		vpos->x = (float) v->viewport->X;
 	}
 	else if ( vpos->x > 1.0F )
 	{
-		clip |= D3DCLIP_RIGHT;
+		clip |= CLIP_RIGHT;
 		vpos->x = (float) ( v->viewport->X + v->viewport->Width );
 	}
 	else
@@ -853,12 +853,12 @@ Transform2Viewport( CAMERA *cam, VISLIST *v, VERT *wpos, VECTOR *vpos )
 
    	if ( vpos->y < -1.0F )
 	{
-		clip |= D3DCLIP_BOTTOM;
+		clip |= CLIP_BOTTOM;
 		vpos->y = (float) ( v->viewport->Y + v->viewport->Height );
 	}
 	else if ( vpos->y > 1.0F )
 	{
-		clip |= D3DCLIP_TOP;
+		clip |= CLIP_TOP;
 		vpos->y = (float) v->viewport->Y;
 	}
 	else
@@ -888,13 +888,13 @@ VisiblePortalExtent( CAMERA *cam, VISLIST *v, PORTAL *p, EXTENT *e )
 		return 0; // camera behind portal
 	init = 0;
 	clip_any = 0;
-	clip_all = D3DCLIP_LEFT | D3DCLIP_RIGHT | D3DCLIP_TOP | D3DCLIP_BOTTOM | D3DCLIP_FRONT;
+	clip_all = CLIP_LEFT | CLIP_RIGHT | CLIP_TOP | CLIP_BOTTOM | CLIP_FRONT;
 	for ( vnum = 0; vnum < p->num_vertices_in_portal; vnum++ )
 	{
 		clip = Transform2Viewport( cam, v, &p->Verts[ vnum ], &pos );
 		clip_any |= clip;
 		clip_all &= clip;
-		if ( !( clip & D3DCLIP_FRONT ) )
+		if ( !( clip & CLIP_FRONT ) )
 		{
 			if ( !init )
 			{
@@ -923,7 +923,7 @@ VisiblePortalExtent( CAMERA *cam, VISLIST *v, PORTAL *p, EXTENT *e )
 	{
 		return 0; // all vertices clipped by main viewport
 	}
-	if ( clip_any & D3DCLIP_FRONT )
+	if ( clip_any & CLIP_FRONT )
 	{
 		*e = v->first_visible->extent; // portal clipped by front plane -> force extents fullscreen
 	}

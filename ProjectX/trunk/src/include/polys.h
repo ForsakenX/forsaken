@@ -97,19 +97,15 @@ void InitAfterBurners( void );
 void InitPolyTPages( void );
 void AddPolyToTPage( uint16 i, int16 TPage );
 void RemovePolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplayGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group
-								/*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL DisplayGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject
-								   /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
-BOOL PolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+BOOL DisplayGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group );
+BOOL DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject );
+BOOL PolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
 
-BOOL DisplaySolidGroupClippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, uint16 Group
-								/*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL DisplaySolidGroupUnclippedPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject
-								   /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
-BOOL SolidPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+BOOL DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group );
+BOOL DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject );
+BOOL SolidPolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
+BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextPoly );
 
 FILE * SavePolys( FILE * fp );
 FILE * LoadPolys( FILE * fp );

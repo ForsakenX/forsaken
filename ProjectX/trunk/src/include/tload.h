@@ -41,16 +41,9 @@ typedef struct TLOADHEADER{
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
     LPTEXTURE			lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
 	RENDERMATERIAL		lpMat[MAXTPAGESPERTLOAD];
-/*
-    D3DTEXTUREHANDLE    hTex[MAXTPAGESPERTLOAD]; // handles
-	LPDIRECT3DMATERIAL	lpMat[MAXTPAGESPERTLOAD];
-	D3DMATERIALHANDLE	hMat[MAXTPAGESPERTLOAD];
-*/
 	BOOL				MipMap[MAXTPAGESPERTLOAD];
-
 	BOOL				PlaceHolder[MAXTPAGESPERTLOAD];	// is the texture a placeholder ( for subsequent dynamic loading of textures? )
 	char				*PlaceHolderFile[MAXTPAGESPERTLOAD];	// current full path of file occupying placeholder ( needed to restore surface )
-
 	int					LOD[MAXTPAGESPERTLOAD];
 }TLOADHEADER;
 

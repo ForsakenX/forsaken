@@ -203,9 +203,9 @@ BOOL MCload( char * Filename , MCLOADHEADER * MCloadheader )
 
 /*===================================================================
 	Procedure	:	Check Ray to Polygon intersection
-	Input		:	D3DVECTOR	*	Point 0
-				:	D3DVECTOR	*	Point 1
-				:	D3DVECTOR	*	Point 2
+	Input		:	VECTOR	*	Point 0
+				:	VECTOR	*	Point 1
+				:	VECTOR	*	Point 2
 				:	VECTOR	*	Origin
 				:	VECTOR	*	Direction
 				:	VECTOR	*	Intersect Point

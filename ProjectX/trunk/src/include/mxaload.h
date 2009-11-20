@@ -52,12 +52,12 @@ typedef struct MXAVERT {
 } MXAVERT;
 
 
-typedef struct D3DCOLOR_RGBA {
+typedef struct COLOR_RGBA {
 	uint8 b;
 	uint8 g;
 	uint8 r;
 	uint8 a;
-} D3DCOLOR_RGBA;
+} COLOR_RGBA;
 
 typedef struct MXAGROUP{
 	uint16	num_execbufs;

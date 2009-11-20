@@ -10,7 +10,7 @@ typedef DWORD COLOR;
 /*===================================================================
 	Defines
 ===================================================================*/
-/* bjd - 3 defines below changed as they cause compilation errors with D3DVIEWPORT9 - only used in collision.c */
+
 #define	ourX					0
 #define	ourY					1
 #define	ourZ					2

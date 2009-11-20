@@ -33,7 +33,6 @@ uint16 WhichGroupImIn( MLOADHEADER	* Mloadheader , VECTOR * Pos );
 BOOL PortalTestTransformClip( MLOADHEADER * Mloadheader , uint16 group );
 void FindVisiblePortals( MLOADHEADER * Mloadheader , uint16 group );
 void BuildGroupList ( MLOADHEADER * Mloadheader , uint16 group );
-//void OurVispolyTransformVertices( DWORD VertexCount, D3DTRANSFORMDATA * Data );
 void FindVisible( CAMERA *cam, MLOADHEADER	* Mloadheader );
 int ClipGroup( CAMERA *cam, uint16 group );
 BOOL DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam );

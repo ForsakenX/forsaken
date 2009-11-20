@@ -135,13 +135,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 
 	if( *StartLine != (uint16) -1 )
 	{
-/*
-		memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-		ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/		
-//		if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK) return FALSE; // bjd
-//		if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc ) != D3D_OK)
-//			return FALSE;
 		if (FAILED(FSLockVertexBuffer(renderObject, &Vert_Ptr)))
 		{
 			return FALSE;
@@ -230,14 +223,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		
 		if( Num_Lines == 0 ) 
 			return FALSE;
-/*
-		memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-		ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-		ExecBuffer_d3dexdata.dwVertexCount = ( Num_Lines * 2 );
-		ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-		ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-		if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return FALSE;
-*/
 		
 		renderObject->textureGroups[renderObject->numTextureGroups].numTriangles = Num_Lines; // each line is a triangle
 		renderObject->textureGroups[renderObject->numTextureGroups].numVerts = Num_Lines * 2; // 3 verts in a triangle

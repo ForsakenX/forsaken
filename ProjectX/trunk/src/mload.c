@@ -323,8 +323,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	uint16			verts;
 	uint16			portal;
 	uint16			ExecSize;
-	LPOLDLVERTEX	lpD3DLVERTEX2 = NULL;
-	LPLVERTEX	lpD3DLVERTEX;
+	LPOLDLVERTEX	lpLVERTEX2 = NULL;
+	LPLVERTEX	lpLVERTEX;
 	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
 	int				indexOffset = 0;
@@ -417,7 +417,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			/*	record how many verts there are in the exec buffer	*/
 			Mloadheader->Group[group].num_verts_per_execbuf[execbuf] = num_vertices;
 
-			lpD3DLVERTEX2 = (LPOLDLVERTEX ) Buffer;
+			lpLVERTEX2 = (LPOLDLVERTEX ) Buffer;
 
 			if (FAILED(FSCreateVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], num_vertices)))
 			{
@@ -427,24 +427,24 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
-			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
+			if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 			{
 				Msg( "Mload() lock failed in %s\n", Filename );
 				return FALSE;
 			}
 
-			lpBufStart = lpD3DLVERTEX;
+			lpBufStart = lpLVERTEX;
 
 			/*	copy the vertex data into the execute buffer	*/
 			for ( i=0 ; i<num_vertices; i++)
 			{
-				LPOLDLVERTEX old = lpD3DLVERTEX2;
+				LPOLDLVERTEX old = lpLVERTEX2;
 
-				lpD3DLVERTEX[i].x = old->x;
-				lpD3DLVERTEX[i].y = old->y;
-				lpD3DLVERTEX[i].z = old->z;
-				lpD3DLVERTEX[i].tu = old->tu;
-				lpD3DLVERTEX[i].tv = old->tv;
+				lpLVERTEX[i].x = old->x;
+				lpLVERTEX[i].y = old->y;
+				lpLVERTEX[i].z = old->z;
+				lpLVERTEX[i].tu = old->tu;
+				lpLVERTEX[i].tv = old->tv;
 
 				color = old->color;
 				a = (color>>24)&255;
@@ -472,25 +472,25 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 				// right here you could override texture coloring if you wanted
 				color = RGBA_MAKE( r , g , b , a  );
-				lpD3DLVERTEX[i].color = color;
-				lpD3DLVERTEX2->color = color;
+				lpLVERTEX[i].color = color;
+				lpLVERTEX2->color = color;
 
-// bjd - CHECK				lpD3DLVERTEX2->dwReserved |= 0xff000000;
+// bjd - CHECK				lpLVERTEX2->dwReserved |= 0xff000000;
 
 				// right here you could set the specular value
 				// they seemed to have turned it off anyway
 				// testing shows that it appears to do nothing
-				//lpD3DLVERTEX->specular = lpD3DLVERTEX2->specular;
-				lpD3DLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
-//				lpD3DLVERTEX++;
-				lpD3DLVERTEX2++;
+				//lpLVERTEX->specular = lpLVERTEX2->specular;
+				lpLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
+//				lpLVERTEX++;
+				lpLVERTEX2++;
 			}
 
 			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
 			Mloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(LVERTEX) * num_vertices);
-			memcpy(Mloadheader->Group[group].originalVerts[execbuf], &lpD3DLVERTEX[0], sizeof(LVERTEX) * num_vertices);
+			memcpy(Mloadheader->Group[group].originalVerts[execbuf], &lpLVERTEX[0], sizeof(LVERTEX) * num_vertices);
 	
-			Buffer = (char *) lpD3DLVERTEX2;
+			Buffer = (char *) lpLVERTEX2;
 			
 			Uint16Pnt = (uint16 *) Buffer;
 			num_triangle_groups = *Uint16Pnt++;    
@@ -982,12 +982,12 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						return FALSE;
 					}
 */
-					if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[ group ].renderObject[execbuf], &lpD3DLVERTEX)))
+					if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
 					{
 						Msg( "Mload : Lock VertexBuffer failed\n" );
 						return FALSE;
 					}
-//					lpD3DLVERTEX = (LPLVERTEX ) debDesc.lpData;
+//					lpLVERTEX = (LPLVERTEX ) debDesc.lpData;
 
 					for( i = 0 ; i < Mloadheader->Group[group].num_animating_polys[execbuf] ; i++ )
 					{
@@ -1044,7 +1044,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 							TanimUV++;
 						}
 						Buffer = ( char * ) FloatPnt;
-						FixUV_Anim( PolyAnim, lpD3DLVERTEX, Mloadheader->Group[group].originalVerts[execbuf] );
+						FixUV_Anim( PolyAnim, lpLVERTEX, Mloadheader->Group[group].originalVerts[execbuf] );
 						PolyAnim++;
 					}
 

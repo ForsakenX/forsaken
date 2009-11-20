@@ -1792,7 +1792,7 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 	uint16 group;
 	uint16 vert;
 	uint16 execbuf;
-	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpLVERTEX = NULL;
 	float	u,v;
 
 	for( group = 0 ; group < Mxloadheader->num_groups ; group ++ )
@@ -1809,24 +1809,24 @@ BOOL	ENV( MXLOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 //					return FALSE ; // bjd
 //				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //					return FALSE;
-				if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpD3DLVERTEX)))
+				if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 				{
 					return FALSE;
 				}
 
-//				lpD3DLVERTEX = ( LPLVERTEX ) debDesc.lpData;
+//				lpLVERTEX = ( LPLVERTEX ) debDesc.lpData;
 				for( vert = 0 ; vert < 	Mxloadheader->Group[group].num_verts_per_execbuf[execbuf] ; vert ++ )
 				{
-					ApplyMatrix( Mat , (VECTOR *) lpD3DLVERTEX,  &Temp);
+					ApplyMatrix( Mat , (VECTOR *) lpLVERTEX,  &Temp);
 					NormaliseVector( &Temp );
 
 					u = (0.125f + (-0.125f * Temp.x) );
 					v = (0.125f + (-0.125f * Temp.y) );
 
-//					lpD3DLVERTEX->color = RGBA_MAKE( (long) (u * 255), (long) (v * 255), 0, 255 );
-					lpD3DLVERTEX->tu = u;//+(Pos->x*0.001F)+(Pos->z*0.001F);
-					lpD3DLVERTEX->tv = v;//+(Pos->y*0.001F);
-					lpD3DLVERTEX++;
+//					lpLVERTEX->color = RGBA_MAKE( (long) (u * 255), (long) (v * 255), 0, 255 );
+					lpLVERTEX->tu = u;//+(Pos->x*0.001F)+(Pos->z*0.001F);
+					lpLVERTEX->tv = v;//+(Pos->y*0.001F);
+					lpLVERTEX++;
 				}
 
 				/*	unlock the execute buffer	*/

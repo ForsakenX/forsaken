@@ -166,10 +166,10 @@ void FmPolyProcess( void );
 void InitFmPolyTPages( void );
 void AddFmPolyToTPage( uint16 i, int16 TPage );
 void RemoveFmPolyFromTPage( uint16 i, int16 TPage );
-BOOL DisplayGroupClippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject, uint16 Group /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL DisplayGroupUnclippedFmPolys( /*LPDIRECT3DEXECUTEBUFFER ExecBuff*/RENDEROBJECT *renderObject /*LPDIRECT3DDEVICE D3D_Device,*/ /*LPDIRECT3DVIEWPORT D3D_ViewPort*/ ); // bjd
-BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
-BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
+BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group );
+BOOL DisplayGroupUnclippedFmPolys( RENDEROBJECT *renderObject );
+BOOL FmPolyDispGroupClipped( uint16 Group, RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
+BOOL FmPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextFmPoly );
 FILE * SaveFmPolys( FILE * fp );
 FILE * LoadFmPolys( FILE * fp );
 

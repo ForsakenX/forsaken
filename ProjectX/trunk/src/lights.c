@@ -253,8 +253,8 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	int		execbuf;
 	int		vert;
     LPLVERTEX	lpPointer = NULL;
-	LPLVERTEX	lpD3DLVERTEX = NULL;
-	LPLVERTEX	lpD3DLVERTEX2 = NULL;
+	LPLVERTEX	lpLVERTEX = NULL;
+	LPLVERTEX	lpLVERTEX2 = NULL;
 	COLOR col;
 	VERTEXCELL * VertexCellPnt;
 	uint16 * VertexIndexPnt;
@@ -343,11 +343,11 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 					for( e = 0 ; e < PolyAnim->vertices ; e++ )
 					{
 
-						lpD3DLVERTEX = lpPointer+ *uint32Pnt++;
+						lpLVERTEX = lpPointer+ *uint32Pnt++;
 						TanimUV = PolyAnim->UVs;
 						TanimUV += e + (PolyAnim->vertices * PolyAnim->newframe);
-						lpD3DLVERTEX->tu = TanimUV->u;
-						lpD3DLVERTEX->tv = TanimUV->v;
+						lpLVERTEX->tu = TanimUV->u;
+						lpLVERTEX->tv = TanimUV->v;
 					}
 
 					PolyAnim->currentframe = PolyAnim->newframe;
@@ -358,9 +358,9 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 		
 		
 		
-		lpD3DLVERTEX = lpPointer;
+		lpLVERTEX = lpPointer;
 		{
-			lpD3DLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
+			lpLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
 			
 			vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 			
@@ -375,14 +375,14 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 						mov		eax, DWORD PTR ShowPlaneRGB
 						or		eax, eax
 						jnz		useplanergb
-						mov		esi, [lpD3DLVERTEX2]
+						mov		esi, [lpLVERTEX2]
 						add		esi,16
 						jmp		go
 useplanergb:
-						mov		esi, [lpD3DLVERTEX2]
+						mov		esi, [lpLVERTEX2]
 						add		esi,12
 go:
-						mov		edi, [lpD3DLVERTEX]
+						mov		edi, [lpLVERTEX]
 						add		edi,16
 						mov		ecx, vert
 clear:					mov		eax, [esi]
@@ -397,18 +397,18 @@ clear:					mov		eax, [esi]
 					{
 						while( vert --)
 						{
-//							lpD3DLVERTEX->color = (COLOR) lpD3DLVERTEX2->dwReserved;
-							lpD3DLVERTEX++;		
-							lpD3DLVERTEX2++;		
+//							lpLVERTEX->color = (COLOR) lpLVERTEX2->dwReserved;
+							lpLVERTEX++;		
+							lpLVERTEX2++;		
 						}
 					}
 					else
 					{
 						while( vert --)
 						{
-							lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
-							lpD3DLVERTEX++;		
-							lpD3DLVERTEX2++;		
+							lpLVERTEX->color = lpLVERTEX2->color;
+							lpLVERTEX++;		
+							lpLVERTEX2++;		
 						}
 					}
 #endif	//USEASM
@@ -418,11 +418,11 @@ clear:					mov		eax, [esi]
 					while( vert --)
 					{
 						
-						x = (float)((int) (lpD3DLVERTEX2->x * 0.35F) % 360);
-						y = (float)((int) (lpD3DLVERTEX2->y * 0.35F) % 360);
-						z = (float)((int) (lpD3DLVERTEX2->z * 0.35F) % 360);
+						x = (float)((int) (lpLVERTEX2->x * 0.35F) % 360);
+						y = (float)((int) (lpLVERTEX2->y * 0.35F) % 360);
+						z = (float)((int) (lpLVERTEX2->z * 0.35F) % 360);
 						//					distance = (float) sqrt( (x*x) + (y*y) + (z*z) );
-						col = lpD3DLVERTEX2->color;
+						col = lpLVERTEX2->color;
 						col &= 0xffff;
 						//					tal = 128.0F + 127.0F * (float) sin( (distance+cral) * (PI / 180.0F ) );
 						b = (int)  ( ( sin( D2R( x + cral ) ) + sin( D2R( y + cral ) ) + sin( D2R( z + cral ) ) ) * 127.0F * 0.3333333F + 128.0F ) ;
@@ -430,25 +430,25 @@ clear:					mov		eax, [esi]
 						if( b > 255 )
 							b = 255;
 						col |= (b<<24)+(b<<16);
-						lpD3DLVERTEX->color = col;
-						lpD3DLVERTEX++;		
-						lpD3DLVERTEX2++;		
+						lpLVERTEX->color = col;
+						lpLVERTEX++;		
+						lpLVERTEX2++;		
 						
 					}
 				}
 			}else if( GroupWaterInfo[group] == WATERSTATE_ALLWATER )
 			{
 				// ****************** Full Water Effect ********************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
-				lpD3DLVERTEX = lpPointer;
+				lpLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
+				lpLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
 				while( vert --)
 				{
-					x = (float)((int) (lpD3DLVERTEX2->x * 0.35F) % 360);
-					y = (float)((int) (lpD3DLVERTEX2->y * 0.35F) % 360);
-					z = (float)((int) (lpD3DLVERTEX2->z * 0.35F) % 360);
-					col = lpD3DLVERTEX2->color;
+					x = (float)((int) (lpLVERTEX2->x * 0.35F) % 360);
+					y = (float)((int) (lpLVERTEX2->y * 0.35F) % 360);
+					z = (float)((int) (lpLVERTEX2->z * 0.35F) % 360);
+					col = lpLVERTEX2->color;
 					r = RGBA_GETRED(col);
 					g = RGBA_GETGREEN(col);
 					b = RGBA_GETBLUE(col);
@@ -466,25 +466,25 @@ clear:					mov		eax, [esi]
 					b += (int) (GroupWaterIntensity_Blue[group] * intensity);
 					if( b > 255 )
 						b = 255;
-					lpD3DLVERTEX->color = RGBA_MAKE( r ,g ,b , 128 );
-					lpD3DLVERTEX++;		
-					lpD3DLVERTEX2++;		
+					lpLVERTEX->color = RGBA_MAKE( r ,g ,b , 128 );
+					lpLVERTEX++;		
+					lpLVERTEX2++;		
 				}
 				// ****************** End of Water Effect ******************************
 			}else{
 				// ****************** Partial Water Effect ******************************
-				lpD3DLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
-				lpD3DLVERTEX = lpPointer;
+				lpLVERTEX2 = Mloadheader->Group[group].originalVerts[execbuf];
+				lpLVERTEX = lpPointer;
 				vert = Mloadheader->Group[group].num_verts_per_execbuf[execbuf];
 				//	Special Lighting effects
 				while( vert --)
 				{
-					if( lpD3DLVERTEX2->y < GroupWaterLevel[group] )
+					if( lpLVERTEX2->y < GroupWaterLevel[group] )
 					{
-						x = (float)((int) (lpD3DLVERTEX2->x * 0.35F) % 360);
-						y = (float)((int) (lpD3DLVERTEX2->y * 0.35F) % 360);
-						z = (float)((int) (lpD3DLVERTEX2->z * 0.35F) % 360);
-						col = lpD3DLVERTEX2->color;
+						x = (float)((int) (lpLVERTEX2->x * 0.35F) % 360);
+						y = (float)((int) (lpLVERTEX2->y * 0.35F) % 360);
+						z = (float)((int) (lpLVERTEX2->z * 0.35F) % 360);
+						col = lpLVERTEX2->color;
 						r = RGBA_GETRED(col);
 						g = RGBA_GETGREEN(col);
 						b = RGBA_GETBLUE(col);
@@ -502,12 +502,12 @@ clear:					mov		eax, [esi]
 						b += (int) (GroupWaterIntensity_Blue[group] * intensity);
 						if( b > 255 )
 							b = 255;
-						lpD3DLVERTEX->color = RGBA_MAKE( r ,g ,b , 128 );
+						lpLVERTEX->color = RGBA_MAKE( r ,g ,b , 128 );
 					}else{
-  						lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
+  						lpLVERTEX->color = lpLVERTEX2->color;
 					}
-					lpD3DLVERTEX++;		
-					lpD3DLVERTEX2++;		
+					lpLVERTEX++;		
+					lpLVERTEX2++;		
 				}
 				// ****************** End of Water Effect ******************************
 			}
@@ -649,11 +649,11 @@ clear:					mov		eax, [esi]
 										while( vert-- )
 										{
 //											NumOfVertsConsidered++;
-											lpD3DLVERTEX = lpPointer + *VertexIndexPnt++;
+											lpLVERTEX = lpPointer + *VertexIndexPnt++;
 											/* find the distance from vert to light */
-											x = lpD3DLVERTEX->x;
-											y = lpD3DLVERTEX->y;
-											z = lpD3DLVERTEX->z;
+											x = lpLVERTEX->x;
+											y = lpLVERTEX->y;
+											z = lpLVERTEX->z;
 											x -= Posx;
 											y -= Posy;
 											z -= Posz;
@@ -682,7 +682,7 @@ __asm
 														fxch	st(0)
 														fistp	tempiB			;float int store tempiG
 			
- 												mov	esi , [lpD3DLVERTEX];set up the pointer
+ 												mov	esi , [lpLVERTEX];set up the pointer
 												mov	ecx , [esi+16]		;int ecx = col   get the color
 
 												mov edi , ecx			; edi = col..
@@ -702,7 +702,7 @@ __asm
 			
 														fld rlf					;float load rlf        
 														fmul distance			;float mul distance    
- 												mov	esi , [lpD3DLVERTEX];set up the pointer
+ 												mov	esi , [lpLVERTEX];set up the pointer
 														fistp tempiR			;float int store tempiR
 												mov	ecx , [esi+16]		;int ecx = col   get the color
 														fld glf					;float load glf
@@ -745,9 +745,9 @@ __asm
 
 
 #ifdef	USE_SPECULAR
-												col = lpD3DLVERTEX->specular;
+												col = lpLVERTEX->specular;
 #else		
-												col = lpD3DLVERTEX->color;
+												col = lpLVERTEX->color;
 #endif		
 #ifdef TESTING_SUBTRACTIVE
 												tempiA = col & 0xff000000;
@@ -781,9 +781,9 @@ __asm
 #endif
 			
 #ifdef	USE_SPECULAR
-												lpD3DLVERTEX->specular = col;
+												lpLVERTEX->specular = col;
 #else		
-												lpD3DLVERTEX->color = col;
+												lpLVERTEX->color = col;
 #endif		
 			
 #endif	//USEASM
@@ -819,12 +819,12 @@ __asm
 										while( vert-- )
 										{
 //											NumOfVertsConsidered++;
-//											lpD3DLVERTEX = ((LPLVERTEX ) lpPointer) + *VertexIndexPnt++;
-											lpD3DLVERTEX = lpPointer + *VertexIndexPnt++;
+//											lpLVERTEX = ((LPLVERTEX ) lpPointer) + *VertexIndexPnt++;
+											lpLVERTEX = lpPointer + *VertexIndexPnt++;
 											/* find the distance from vert to light */
-											x = lpD3DLVERTEX->x - Posx;
-											y = lpD3DLVERTEX->y - Posy;
-											z = lpD3DLVERTEX->z - Posz;
+											x = lpLVERTEX->x - Posx;
+											y = lpLVERTEX->y - Posy;
+											z = lpLVERTEX->z - Posz;
 											//distance = (float) sqrt( (x*x) + (y*y) + (z*z)); 
 											distance = (x*x) + (y*y) + (z*z); 
 					
@@ -871,9 +871,9 @@ __asm
 												}
 												
 #ifdef	USE_SPECULAR
-												col =  lpD3DLVERTEX->specular;			// int
+												col =  lpLVERTEX->specular;			// int
 #else		
-												col =  lpD3DLVERTEX->color;				// int
+												col =  lpLVERTEX->color;				// int
 #endif		
 
 												tempiA = col & 0xff000000;
@@ -887,9 +887,9 @@ __asm
 												col |= tempiA;
 			
 #ifdef	USE_SPECULAR
-												lpD3DLVERTEX->specular = col;
+												lpLVERTEX->specular = col;
 #else		
-												lpD3DLVERTEX->color = col;
+												lpLVERTEX->color = col;
 #endif		
 											}
 										}
@@ -926,7 +926,6 @@ __asm
 BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radius , MATRIX * Matrix )
 {
 	XLIGHT * XLightPnt;
-//	D3DEXECUTEBUFFERDESC	debDesc;
 	VECTOR	Temp;
 	float	distance;
 	int		group;
@@ -934,8 +933,8 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	int		vert;
     LPLVERTEX	lpPointer = NULL;
 
-	LPLVERTEX	lpD3DLVERTEX = NULL;
-	LPLVERTEX	lpD3DLVERTEX2 = NULL;
+	LPLVERTEX	lpLVERTEX = NULL;
+	LPLVERTEX	lpLVERTEX2 = NULL;
 	COLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -963,12 +962,6 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			/*	lock the execute buffer	*/
-//			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//			if (FSLockExecuteBuffer(MXloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//				return FALSE;
 			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
@@ -976,19 +969,19 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 
 //			lpPointer = (LPLVERTEX) debDesc.lpData;
 		
-			lpD3DLVERTEX = lpPointer;
+			lpLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
+			lpLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
 
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR
-				lpD3DLVERTEX->specular = 0;
-				lpD3DLVERTEX++;		
+				lpLVERTEX->specular = 0;
+				lpLVERTEX++;		
 #else	
-				lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
-				lpD3DLVERTEX++;		
-				lpD3DLVERTEX2++;		
+				lpLVERTEX->color = lpLVERTEX2->color;
+				lpLVERTEX++;		
+				lpLVERTEX2++;		
 #endif
 			}
 		
@@ -1036,7 +1029,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 							CosArc = XLightPnt->CosArc;
 						}
 					
-						lpD3DLVERTEX = lpPointer;
+						lpLVERTEX = lpPointer;
 						vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
 		
 						switch( XLightPnt->Type )
@@ -1047,7 +1040,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 							{
 								/* find the distance from vert to light */
 
-								ApplyMatrix( Matrix, (VECTOR*) lpD3DLVERTEX, &Temp );
+								ApplyMatrix( Matrix, (VECTOR*) lpLVERTEX, &Temp );
 								
 								x = Temp.x - Posx;
 								y = Temp.y - Posy;
@@ -1058,9 +1051,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 								{
 									distance = 1.0F - ( distance * Size );	// float
 #ifdef	USE_SPECULAR
-									col =  lpD3DLVERTEX->specular;			// int
+									col =  lpLVERTEX->specular;			// int
 #else
-									col =  lpD3DLVERTEX->color;				// int
+									col =  lpLVERTEX->color;				// int
 #endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * distance );
@@ -1073,19 +1066,19 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 									col |= tempiA;
 
 #ifdef	USE_SPECULAR
-									lpD3DLVERTEX->specular = col;
+									lpLVERTEX->specular = col;
 #else
-									lpD3DLVERTEX->color = col;
+									lpLVERTEX->color = col;
 #endif		
 								}
-								lpD3DLVERTEX++;
+								lpLVERTEX++;
 							}
 							break;
 						case SPOT_LIGHT:
 							while( vert-- )
 							{
 								/* find the distance from vert to light */
-								ApplyMatrix( Matrix, (VECTOR*) lpD3DLVERTEX, &Temp );
+								ApplyMatrix( Matrix, (VECTOR*) lpLVERTEX, &Temp );
 
 								x = Temp.x - Posx;
 								y = Temp.y - Posy;
@@ -1134,9 +1127,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 									}
 									
 #ifdef	USE_SPECULAR
-									col =  lpD3DLVERTEX->specular;			// int
+									col =  lpLVERTEX->specular;			// int
 #else		
-									col =  lpD3DLVERTEX->color;				// int
+									col =  lpLVERTEX->color;				// int
 #endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * intense );
@@ -1149,13 +1142,13 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 									col |= tempiA;
 
 #ifdef	USE_SPECULAR
-									lpD3DLVERTEX->specular = col;
+									lpLVERTEX->specular = col;
 #else		
-									lpD3DLVERTEX->color = col;
+									lpLVERTEX->color = col;
 #endif		
 								}
 PLOP:
-								lpD3DLVERTEX++;
+								lpLVERTEX++;
 							}
 							break;
 						}
@@ -1190,8 +1183,8 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 	int		vert;
     LPLVERTEX	lpPointer = NULL;
 
-	LPLVERTEX	lpD3DLVERTEX = NULL;
-	LPLVERTEX	lpD3DLVERTEX2 = NULL;
+	LPLVERTEX	lpLVERTEX = NULL;
+	LPLVERTEX	lpLVERTEX2 = NULL;
 	COLOR col;
 	float	Size,OSize;
 	float	SizeX2;
@@ -1224,18 +1217,18 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 				return FALSE;
 			}
 		
-			lpD3DLVERTEX = lpPointer;
+			lpLVERTEX = lpPointer;
 			vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			lpD3DLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
+			lpLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
 			while( vert --)
 			{
 #ifdef	USE_SPECULAR
-				lpD3DLVERTEX->specular = 0;
-				lpD3DLVERTEX++;		
+				lpLVERTEX->specular = 0;
+				lpLVERTEX++;		
 #else	
-				lpD3DLVERTEX->color = lpD3DLVERTEX2->color;
-				lpD3DLVERTEX++;		
-				lpD3DLVERTEX2++;		
+				lpLVERTEX->color = lpLVERTEX2->color;
+				lpLVERTEX++;		
+				lpLVERTEX2++;		
 #endif
 			}
 		
@@ -1283,7 +1276,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 							CosArc = XLightPnt->CosArc;
 						}
 					
-						lpD3DLVERTEX = lpPointer;
+						lpLVERTEX = lpPointer;
 						vert = MXloadheader->Group[group].num_verts_per_execbuf[execbuf];
 		
 						switch( XLightPnt->Type )
@@ -1294,7 +1287,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 							{
 								/* find the distance from vert to light */
 
-								ApplyMatrix( Matrix, (VECTOR*) lpD3DLVERTEX, &Temp );
+								ApplyMatrix( Matrix, (VECTOR*) lpLVERTEX, &Temp );
 								
 								x = Temp.x - Posx;
 								y = Temp.y - Posy;
@@ -1305,9 +1298,9 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 								{
 									distance = 1.0F - ( distance * Size );	// float
 #ifdef	USE_SPECULAR
-									col =  lpD3DLVERTEX->specular;			// int
+									col =  lpLVERTEX->specular;			// int
 #else
-									col =  lpD3DLVERTEX->color;				// int
+									col =  lpLVERTEX->color;				// int
 #endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * distance );
@@ -1320,19 +1313,19 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 									col |= tempiA;
 
 #ifdef	USE_SPECULAR
-									lpD3DLVERTEX->specular = col;
+									lpLVERTEX->specular = col;
 #else
-									lpD3DLVERTEX->color = col;
+									lpLVERTEX->color = col;
 #endif		
 								}
-								lpD3DLVERTEX++;
+								lpLVERTEX++;
 							}
 							break;
 						case SPOT_LIGHT:
 							while( vert-- )
 							{
 								/* find the distance from vert to light */
-								ApplyMatrix( Matrix, (VECTOR*) lpD3DLVERTEX, &Temp );
+								ApplyMatrix( Matrix, (VECTOR*) lpLVERTEX, &Temp );
 								
 								x = Temp.x - Posx;
 								y = Temp.y - Posy;
@@ -1381,9 +1374,9 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 									}
 									
 #ifdef	USE_SPECULAR
-									col =  lpD3DLVERTEX->specular;			// int
+									col =  lpLVERTEX->specular;			// int
 #else		
-									col =  lpD3DLVERTEX->color;				// int
+									col =  lpLVERTEX->color;				// int
 #endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * intense );
@@ -1396,13 +1389,13 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 									col |= tempiA;
 
 #ifdef	USE_SPECULAR
-									lpD3DLVERTEX->specular = col;
+									lpLVERTEX->specular = col;
 #else		
-									lpD3DLVERTEX->color = col;
+									lpLVERTEX->color = col;
 #endif		
 								}
 PLOP2:
-								lpD3DLVERTEX++;
+								lpLVERTEX++;
 							}
 							break;
 						}
@@ -1434,8 +1427,7 @@ PLOP2:
 BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 {
     LPLVERTEX	lpPointer = NULL;
-	LPLVERTEX	lpD3DLVERTEX = NULL;
-//	D3DEXECUTEBUFFERDESC	debDesc;
+	LPLVERTEX	lpLVERTEX = NULL;
 	int		group;
 	int		execbuf;
 	int		vert;
@@ -1445,12 +1437,6 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 		execbuf = MXAloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-//			memset(&debDesc, 0, sizeof(D3DEXECUTEBUFFERDESC));
-//			debDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-			/*	lock the execute buffer	*/
-//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Lock( MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
-//				return FALSE;
 			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
@@ -1458,12 +1444,12 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 
 //			lpPointer = (LPLVERTEX) debDesc.lpData;
 		
-			lpD3DLVERTEX = lpPointer;
+			lpLVERTEX = lpPointer;
 			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
 			while( vert --)
 			{
-				lpD3DLVERTEX->color = Col;
-				lpD3DLVERTEX++;		
+				lpLVERTEX->color = Col;
+				lpLVERTEX++;		
 			}
 			/*	unlock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
@@ -1488,7 +1474,7 @@ COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 gro
 	float	r,g,b;
 	float	R,G,B;
 	COLOR Colour;
-	LPLVERTEX	lpD3DLVERTEX;
+	LPLVERTEX	lpLVERTEX;
 	float	CellSize;
 	float	Distance;
 	int		i;
@@ -1503,20 +1489,20 @@ COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 gro
 
 	for ( execbuf = 0; execbuf < Mloadheader->Group[group].num_execbufs; execbuf++ )
 	{
-		lpD3DLVERTEX = Mloadheader->Group[group].originalVerts[execbuf];
+		lpLVERTEX = Mloadheader->Group[group].originalVerts[execbuf];
 		
 		for( i = 0 ; i < Mloadheader->Group[group].num_verts_per_execbuf[execbuf] ; i++ )
 		{
-			vPos.x = lpD3DLVERTEX->x;
-			vPos.y = lpD3DLVERTEX->y;
-			vPos.z = lpD3DLVERTEX->z;
+			vPos.x = lpLVERTEX->x;
+			vPos.y = lpLVERTEX->y;
+			vPos.z = lpLVERTEX->z;
 			
 			Distance = DistanceVector2Vector( &vPos , Pos);
 			Weight = CellSize / Distance;
 			Weight *= Weight;
 //			if ( Weight > 1.0F )
 //				Weight = 1.0F;
-			Colour = lpD3DLVERTEX->color;
+			Colour = lpLVERTEX->color;
 			
 			R = RGBA_GETRED(Colour) * Weight;
 			G = RGBA_GETGREEN(Colour) * Weight;
@@ -1527,7 +1513,7 @@ COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 gro
 			g += G;
 			b += B;
 			TotalWeight += Weight;
-			lpD3DLVERTEX++;
+			lpLVERTEX++;
 		}
 	}
 

@@ -242,11 +242,11 @@ typedef struct {
 } *LPOLDLVERTEX;
 
 /* bjd - remove when done. taken from SDK */
-#define D3DCLIP_LEFT                0x00000001L
-#define D3DCLIP_RIGHT               0x00000002L
-#define D3DCLIP_TOP					0x00000004L
-#define D3DCLIP_BOTTOM              0x00000008L
-#define D3DCLIP_FRONT               0x00000010L
-#define D3DCLIP_BACK                0x00000020L
+#define CLIP_LEFT                0x00000001L
+#define CLIP_RIGHT               0x00000002L
+#define CLIP_TOP					0x00000004L
+#define CLIP_BOTTOM              0x00000008L
+#define CLIP_FRONT               0x00000010L
+#define CLIP_BACK                0x00000020L
 
 #endif // RENDER_INCLUDED

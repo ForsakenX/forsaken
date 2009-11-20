@@ -34,8 +34,6 @@ extern	VECTOR				Camera_Dir;
 extern	VECTOR				Forward;
 extern	VECTOR				SlideUp;
 extern	VECTOR				SlideLeft;
-//extern	D3DMATERIALHANDLE	hMat2;
-//extern	D3DTEXTUREHANDLE	bTex;
 extern	BYTE				WhoIAm;
 extern	TLOADHEADER			Tloadheader;
 extern	FRAME_INFO	*		Troj_Exp_Header;
@@ -1591,10 +1589,6 @@ BOOL DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
  		if( !FmPolyDispGroupUnclipped( renderObject, &TPage, &i ) )
 			return( TRUE );
 
-//			if( D3D_Device->lpVtbl->Execute( D3D_Device, ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//			if (FSExecuteBuffer(ExecBuff, D3D_ViewPort, D3DEXECUTE_CLIPPED ) != D3D_OK )
-//				return FALSE;
-
 		cull_none();
 
 		if (FAILED(draw_object(renderObject)))
@@ -1639,11 +1633,9 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	MATRIX			MatrixCopy;
 	COLOR		Colour;
 	COLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPLVERTEX	FmPolyVertPnt;
 	LPTRIANGLE	FmPolyFacePnt;
-    LPLVERTEX	lpBufStart; //, lpInsStart, lpPointer;
+    LPLVERTEX	lpBufStart;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 	WORD			*lpIndices = NULL;
@@ -1700,11 +1692,7 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE ); // bjd
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -1982,16 +1970,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		return FALSE ;
 	}
 
-/*
-	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
-
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
 	*TPage = Count;
 	*NextFmPoly = i;
 
@@ -2030,11 +2008,9 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	MATRIX			MatrixCopy;
 	COLOR		Colour;
 	COLOR		Specular;
-//	D3DEXECUTEBUFFERDESC ExecBuffer_debdesc;
-//	D3DEXECUTEDATA	ExecBuffer_d3dexdata;
 	LPLVERTEX	FmPolyVertPnt;
 	LPTRIANGLE	FmPolyFacePnt;
-    LPLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPLVERTEX	lpBufStart;
 	MATRIX			TempMatrix;
 	QUAT			TempQuat;
 	WORD			*lpIndices = NULL;
@@ -2091,10 +2067,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
 
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
 	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -2361,16 +2334,7 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-/*
-	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
 	if (FAILED(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;

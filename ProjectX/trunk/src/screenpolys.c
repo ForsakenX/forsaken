@@ -778,33 +778,33 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 	{
 		TempVert.x = -TempVert.x; 
 		TempVert.y = -TempVert.y;
-		Flags |= D3DCLIP_FRONT;
+		Flags |= CLIP_FRONT;
 	}
 
 	if( TempVert.x < -1.0F )
 	{
-		Flags |= D3DCLIP_LEFT;
+		Flags |= CLIP_LEFT;
 		TempVert.x = -1.0F;
 	}
 	else
 	{
 		if( TempVert.x > 1.0F )
 		{
-			Flags |= D3DCLIP_RIGHT;
+			Flags |= CLIP_RIGHT;
 			TempVert.x = 1.0F;
 		}
 	}
 
    	if( TempVert.y < -1.0F )
 	{
-		Flags |= D3DCLIP_TOP;
+		Flags |= CLIP_TOP;
 		TempVert.y = -1.0F;
 	}
 	else
 	{
 		if( TempVert.y > 1.0F )
 		{
-			Flags |= D3DCLIP_BOTTOM;
+			Flags |= CLIP_BOTTOM;
 			TempVert.y = 1.0F;
 		}
 	}
@@ -835,49 +835,49 @@ BOOL ClipBox( LPLPTLVERTEX topleft, LPLPTLVERTEX bottomright )
 	ymax = (float) ( CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height );
 
 	if ( topleft->sx < xmin )
-		clip_topleft = D3DCLIP_LEFT;
+		clip_topleft = CLIP_LEFT;
 	else if ( topleft->sx >= xmax )
 		return TRUE;
 	else
 		clip_topleft = 0;
 	if ( topleft->sy < ymin )
-		clip_topleft |= D3DCLIP_TOP;
+		clip_topleft |= CLIP_TOP;
 	else if ( topleft->sy >= ymax )
 		return TRUE;
 
 	if ( bottomright->sx < xmin )
 		return TRUE;
 	else if ( bottomright->sx > xmax )
-		clip_bottomright = D3DCLIP_RIGHT;
+		clip_bottomright = CLIP_RIGHT;
 	else
 		clip_bottomright = 0;
 	if ( bottomright->sy < ymin )
 		return TRUE;
 	else if ( bottomright->sy > ymax )
-		clip_bottomright |= D3DCLIP_BOTTOM;
+		clip_bottomright |= CLIP_BOTTOM;
 
 	dx = bottomright->sx - topleft->sx;
 	dy = bottomright->sy - topleft->sy;
 	du = bottomright->tu - topleft->tu;
 	dv = bottomright->tv - topleft->tv;
 
-	if ( clip_topleft & D3DCLIP_LEFT )
+	if ( clip_topleft & CLIP_LEFT )
 	{
 		topleft->tu += du * ( xmin - topleft->sx ) / dx;
 		topleft->sx = xmin;
 	}
-	if ( clip_topleft & D3DCLIP_TOP )
+	if ( clip_topleft & CLIP_TOP )
 	{
 		topleft->tv += dv * ( ymin - topleft->sy ) / dy;
 		topleft->sy = ymin;
 	}
 
-	if ( clip_bottomright & D3DCLIP_RIGHT )
+	if ( clip_bottomright & CLIP_RIGHT )
 	{
 		bottomright->tu -= du * ( bottomright->sx - xmax ) / dx;
 		bottomright->sx = xmax;
 	}
-	if ( clip_bottomright & D3DCLIP_BOTTOM )
+	if ( clip_bottomright & CLIP_BOTTOM )
 	{
 		bottomright->tv -= dv * ( bottomright->sy - ymax ) / dy;
 		bottomright->sy = ymax;

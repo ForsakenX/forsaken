@@ -344,7 +344,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 {
 	int x,y;
 	LPTRIANGLE	FacePnt = NULL;
-	LPLVERTEX	lpD3DLVERTEX = NULL;
+	LPLVERTEX	lpLVERTEX = NULL;
 	WORD			*lpIndices = NULL;
 	int				start_index = 0;
 	int			i;
@@ -371,7 +371,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		return FALSE;
 	}
 
-	if (FAILED(FSLockVertexBuffer(&WO->renderObject, &lpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(&WO->renderObject, &lpLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -387,16 +387,16 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	{
 		for( y = 0 ; y < WO->YVerts ; y++ )
 		{
-			lpD3DLVERTEX->x = -( ((WO->XVerts-1) * WATER_CELLSIZE ) * 0.5F ) + (x*WATER_CELLSIZE);
-			lpD3DLVERTEX->z = -( ((WO->YVerts-1) * WATER_CELLSIZE ) * 0.5F ) + (y*WATER_CELLSIZE);
-			lpD3DLVERTEX->y = 0.0F;
-			lpD3DLVERTEX->tu = 0.0F;
-			lpD3DLVERTEX->tv = 0.0F;
-			lpD3DLVERTEX->color = RGBA_MAKE(128,128,128,128);
-			lpD3DLVERTEX->specular = RGBA_MAKE(128,128,128,128);
-//			lpD3DLVERTEX->dwReserved = 0;
+			lpLVERTEX->x = -( ((WO->XVerts-1) * WATER_CELLSIZE ) * 0.5F ) + (x*WATER_CELLSIZE);
+			lpLVERTEX->z = -( ((WO->YVerts-1) * WATER_CELLSIZE ) * 0.5F ) + (y*WATER_CELLSIZE);
+			lpLVERTEX->y = 0.0F;
+			lpLVERTEX->tu = 0.0F;
+			lpLVERTEX->tv = 0.0F;
+			lpLVERTEX->color = RGBA_MAKE(128,128,128,128);
+			lpLVERTEX->specular = RGBA_MAKE(128,128,128,128);
+//			lpLVERTEX->dwReserved = 0;
 			
-			lpD3DLVERTEX++;
+			lpLVERTEX++;
 
 			vertsCount++;
 		}
@@ -498,7 +498,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 {
 	int x,y;
 // 	D3DEXECUTEBUFFERDESC	debDesc;
-	LPLVERTEX	lpD3DLVERTEX;
+	LPLVERTEX	lpLVERTEX;
 //  LPVOID lpBufStart;
 	int col;
 	float dx, dy;
@@ -564,14 +564,14 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 //	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpD3DLVERTEX)))
+	if (FAILED(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpLVERTEX)))
 	{
 		return;
 	}
 
 /*
 	lpBufStart = debDesc.lpData;
-	lpD3DLVERTEX = ( LPLVERTEX )lpBufStart;
+	lpLVERTEX = ( LPLVERTEX )lpBufStart;
 */
 	VertPnt = WO->Verts;
 	
@@ -579,7 +579,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 	{
 		for( y = 0 ; y < WO->YVerts ; y++ )
 		{
-			lpD3DLVERTEX->y = *VertPnt;
+			lpLVERTEX->y = *VertPnt;
 			if( x > 0 && x < WO->XVerts-1 && y > 0 && y < WO->YVerts-1 )
 			{
 				dx = *(VertPnt+WO->YVerts) - *(VertPnt-WO->YVerts) + 0.25F
@@ -592,15 +592,15 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 			}
 			u = (float) ( x + dx * 0.025F) / WO->XVerts;
 			v = 1.0F - (float) ( y + dy * 0.025F) / WO->YVerts;
-			lpD3DLVERTEX->tu = (u * WO->uRange) + WO->uTL;
-			lpD3DLVERTEX->tv = (v * WO->vRange) + WO->vTL;
+			lpLVERTEX->tu = (u * WO->uRange) + WO->uTL;
+			lpLVERTEX->tv = (v * WO->vRange) + WO->vTL;
 			col = 192 + (int) ( dy * 8 );
 			if( col > 255 )
 				col = 255;
 			if( col < 0 )
 				col = 0;
-			lpD3DLVERTEX->color = RGBA_MAKE( (int)(col * WO->Red) , (int)(col * WO->Green) , (int)(col * WO->Blue) , 128);
-			lpD3DLVERTEX++;
+			lpLVERTEX->color = RGBA_MAKE( (int)(col * WO->Red) , (int)(col * WO->Green) , (int)(col * WO->Blue) , 128);
+			lpLVERTEX++;
 			VertPnt++;
 		}
 	}
