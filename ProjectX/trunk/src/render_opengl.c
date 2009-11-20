@@ -207,39 +207,39 @@ BOOL FSClearBlack(void)
 	return TRUE;
 }
 
-HRESULT FSGetViewPort(render_viewport_t *returnViewPort)
+BOOL FSGetViewPort(render_viewport_t *returnViewPort)
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSSetViewPort(render_viewport_t *newViewPort)
+BOOL FSSetViewPort(render_viewport_t *newViewPort)
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSSetWorld( RENDERMATRIX *matrix )
+BOOL FSSetWorld( RENDERMATRIX *matrix )
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSSetProjection( RENDERMATRIX *matrix )
+BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSSetView( RENDERMATRIX *matrix )
+BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSGetWorld(RENDERMATRIX *matrix)
+BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSSetMaterial(RENDERMATERIAL *material)
+BOOL FSSetMaterial(RENDERMATERIAL *material)
 {
-	return S_OK;
+	return TRUE;
 }
 
 BOOL FSBeginScene()

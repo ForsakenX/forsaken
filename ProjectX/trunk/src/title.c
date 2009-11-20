@@ -4908,13 +4908,13 @@ BOOL DisplayTitle(void)
 		return FALSE;
 	}
 
-	if (FSSetView(  &view) != D3D_OK)
+	if (!FSSetView(&view))
 	{
 		Msg( "DisplayTitle() : SetMatrix failed\n" );
 		return FALSE;
 	}
 
-	if( FSSetViewPort(&CurrentCamera.Viewport) != D3D_OK )
+	if(!FSSetViewPort(&CurrentCamera.Viewport))
 	{
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport, D3D_OK );

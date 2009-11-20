@@ -822,7 +822,7 @@ BOOL SetFOV( float fov )
 		fov = hfov;
 
 	rval = FSGetViewPort(&viewport);
-	if (FAILED(rval))
+	if (!rval)
 	{
 		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
 		return FALSE;
@@ -870,7 +870,7 @@ BOOL SetFOV( float fov )
 
 	hfov = fov;
 
-	if (FAILED(FSSetProjection(  &proj)))
+	if (!FSSetProjection(&proj))
 		return FALSE;
 
 	return TRUE;
@@ -1226,7 +1226,7 @@ ResizeViewport( void )
      */
 
 	rval = FSGetViewPort(&viewport);
-	if (FAILED(rval))
+	if (!rval)
 	{
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
@@ -1279,7 +1279,7 @@ ResizeViewport( void )
 	viewport.ScaleX = viewport.Width / (float)2.0;
 	viewport.ScaleY = viewport.Height / (float)2.0;
 
-	if (FAILED(FSSetViewPort(&viewport)))
+	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "ResizeViewport", &viewport, rval );
@@ -1304,7 +1304,7 @@ BOOL FullScreenViewport()
 	int maxwidth, maxheight;
 
 	rval = FSGetViewPort(&viewport);
-	if (FAILED(rval))
+	if (!rval)
 	{
         Msg( "GetViewport failed.\n%s", render_error_description(rval) );
         return FALSE;
@@ -1329,7 +1329,7 @@ BOOL FullScreenViewport()
                                        RENDERVAL(2 * viewport.dvScaleY));
 */
 
-	if (FAILED(FSSetViewPort(&viewport)))
+	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "FullScreenViewport", &viewport, rval );
@@ -1458,13 +1458,13 @@ BOOL SetMatrixViewPort( void )
       STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);
 #endif
 
-	FSSetProjection(  &proj );
-	FSSetView(  &identity );
-	FSSetWorld(  &world );
+	FSSetProjection(&proj);
+	FSSetView(&identity);
+	FSSetWorld(&world);
 
 	world = identity;
 
-	if (FAILED(FSGetViewPort(&viewport)))
+	if (!FSGetViewPort(&viewport))
     {
       viewport.Width = 320;
       viewport.Height = 200;
@@ -4570,11 +4570,11 @@ BOOL RenderCurrentCamera( void )
 	Build_View();
 	CurrentCamera.View = view;
 
-	if (FSSetView(  &view) != D3D_OK)
+	if (!FSSetView(&view))
 		return FALSE;
 
 	rval = FSSetViewPort(&CurrentCamera.Viewport);
-    if (rval != D3D_OK) {
+    if (!rval) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport, rval );
 #else
@@ -4823,7 +4823,7 @@ Display Group Clipped Faceme Transluecent Polys
     return FALSE;
 
 	rval = FSSetViewPort(&viewport);
-    if (rval != D3D_OK) {
+    if (!rval) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera2", &viewport, rval );
 #else
@@ -4992,7 +4992,7 @@ BOOL Disp3dPanel( void )
                                        RENDERVAL(2 * newviewport.dvScaleY));
 */  
 
-	if (FSSetViewPort(&newviewport) != D3D_OK )
+	if (!FSSetViewPort(&newviewport))
 		return FALSE;
 
 	if ( render_info.bFullscreen )
@@ -5011,7 +5011,7 @@ BOOL Disp3dPanel( void )
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-	if (FSSetProjection(  &panelproj) != D3D_OK)
+	if (!FSSetProjection(&panelproj))
 	{
 		return FALSE;
 	}
@@ -5080,16 +5080,16 @@ BOOL Disp3dPanel( void )
 	                                    
 	view._44 = rotMatrix._44;
 
-	if (FAILED(FSSetView(  &view)))
+	if (!FSSetView(&view))
 		return FALSE;
 
 	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
 		return FALSE;
 
-	if (FAILED(FSSetViewPort(&viewport)))
+	if (!FSSetViewPort(&viewport))
 		return FALSE;
 
-	if (FAILED(FSSetProjection(  &proj)))
+	if (!FSSetProjection(&proj))
 		return FALSE;
 
 	return TRUE;
@@ -5114,7 +5114,7 @@ InitViewport( void )
 	 */
 
 	rval = FSGetViewPort(&viewport);
-	if (FAILED(rval))
+	if (!rval)
 	{
 		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
 		return FALSE;
@@ -5144,7 +5144,7 @@ InitViewport( void )
     viewport.ScaleX = viewport.Width / (float)2.0;
     viewport.ScaleY = viewport.Height / (float)2.0;
 
-	if (FAILED(FSSetViewPort(&viewport)))
+	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "InitViewport", &viewport, rval );
@@ -5317,15 +5317,15 @@ BOOL DispTracker( void ) // bjd
     newviewport.dvMaxY = (float)D3DDivide(RENDERVAL(newviewport.dwHeight),
                                        RENDERVAL(2 * newviewport.dvScaleY));
 */
-//	if( render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &newviewport) != D3D_OK )
-	if (FSSetViewPort(&newviewport) != D3D_OK )
+
+	if (!FSSetViewPort(&newviewport))
 		return FALSE;
 
 	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
 
-	if (FSSetProjection(  &panelproj) != D3D_OK)
+	if (!FSSetProjection(&panelproj))
 	{
 		return FALSE;
 	}
@@ -5367,7 +5367,7 @@ BOOL DispTracker( void ) // bjd
 	view._43 = ( 280.0F * GLOBAL_SCALE );
 	view._44 = 1.0F;
 
-	if (FSSetView(  &view) != D3D_OK)
+	if (!FSSetView(&view))
 		return FALSE;
 
 	if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Tracker], (uint16) -1 ) != TRUE )
@@ -5433,18 +5433,17 @@ BOOL DispTracker( void ) // bjd
     view._43 = TempVector.z + ( 280.0F * GLOBAL_SCALE );
     view._44 = 1.0F;
 
-	if (FSSetView(  &view) != D3D_OK)
+	if (!FSSetView(&view))
 		return FALSE;
 
     if (ReallyExecuteMxloadHeader( &ModelHeaders[MODEL_Ping], (uint16) -1 ) != TRUE )
       return FALSE;
   }
 
-//    if( render_info.lpD3DViewport->lpVtbl->SetViewport(render_info.lpD3DViewport, &viewport) != D3D_OK )
-	if (FSSetViewPort(&viewport) != D3D_OK )
+	if (!FSSetViewPort(&viewport))
 		return FALSE;
 
-	if (FSSetProjection(  &proj) != D3D_OK)
+	if (!FSSetProjection(&proj))
 	{
 		return FALSE;
 	}

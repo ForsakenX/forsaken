@@ -755,7 +755,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 			{
 				if( Mxaloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 				{
-					if (FAILED(FSGetWorld(&Matrix)))
+					if (!FSGetWorld(&Matrix))
 					{
 						return FALSE;
 					}

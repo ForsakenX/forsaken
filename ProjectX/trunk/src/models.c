@@ -1271,7 +1271,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 					TempWorld._43 = Models[i].Pos.z;
 					TempWorld._44 = Models[i].InvMat._44;
 
-					if (FSSetWorld(  &TempWorld) != D3D_OK)
+					if (!FSSetWorld(&TempWorld))
 					{
 						Msg( "ModelDisp() SetMatrix1 Failed\n" );
 						return FALSE;
@@ -1489,7 +1489,7 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 
 	//DebugPrintf("drew %d objects\n", count);
 
-	if (FSSetWorld(  &identity) != D3D_OK)
+	if (!FSSetWorld(&identity))
 	{
 		Msg( "ModelDisp() SetMatrix2 Failed\n" );
 		return FALSE;

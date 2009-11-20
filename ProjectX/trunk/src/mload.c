@@ -1177,7 +1177,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 		{
 			if( Mloadheader->Group[group].exec_type[i]&HASTRANSPARENCIES )
 			{
-				if (FAILED(FSGetWorld(&Matrix)))
+				if (!FSGetWorld(&Matrix))
 				{
 					return FALSE;
 				}

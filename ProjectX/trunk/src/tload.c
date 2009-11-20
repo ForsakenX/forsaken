@@ -170,7 +170,7 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 	{
 		Tloadheader->lpMat[i] = mat;
 
-		if (FAILED(FSSetMaterial(&mat)))
+		if (!FSSetMaterial(&mat))
 		{
 			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
 			return FALSE;

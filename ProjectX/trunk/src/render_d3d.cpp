@@ -335,7 +335,7 @@ BOOL init_renderer( render_info_t * info )
 	viewport.MaxZ = 1.0f;
 
 	LastError = FSSetViewPort(&viewport);
-	if (FAILED(LastError))
+	if (!LastError)
 	{
 		DebugPrintf("couldn't set viewport\n");
 	}
@@ -741,39 +741,53 @@ BOOL FSClearBlack(void)
 	return TRUE;
 }
 
-HRESULT FSGetViewPort(render_viewport_t *returnViewPort)
+BOOL FSGetViewPort(render_viewport_t *returnViewPort)
 {
-	return lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort );
+	if(lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort ) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSSetViewPort(render_viewport_t *newViewPort)
+BOOL FSSetViewPort(render_viewport_t *newViewPort)
 {
-	return lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort );
+	if(lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort ) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSSetWorld( RENDERMATRIX *matrix )
+BOOL FSSetWorld( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix);
+	if(lpD3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSSetProjection( RENDERMATRIX *matrix )
+BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix);
+	if(lpD3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSSetView( RENDERMATRIX *matrix )
+BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	return lpD3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix);
+	if(lpD3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSGetWorld(RENDERMATRIX *matrix)
+BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	return lpD3DDevice->GetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix);
+	if(lpD3DDevice->GetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSSetMaterial(RENDERMATERIAL *material)
+BOOL FSSetMaterial(RENDERMATERIAL *material)
 {
-	return lpD3DDevice->SetMaterial((D3DMATERIAL9*)material);
+	if(lpD3DDevice->SetMaterial((D3DMATERIAL9*)material) != D3D_OK)
+		return FALSE;
+	return TRUE;
 }
 
 BOOL FSBeginScene( void )

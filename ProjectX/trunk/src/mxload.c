@@ -916,7 +916,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 #endif
 					}
 
-					if (FAILED(FSGetWorld(&Matrix)))
+					if (!FSGetWorld(&Matrix))
 					{
 						return FALSE;
 					}

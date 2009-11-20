@@ -1148,14 +1148,14 @@ int ClipGroup( CAMERA *cam, uint16 group )
 	if( !DoClipping )
 		g = &cam->visible.group[ cam->visible.first_visible->group ];
 
-	if (FSSetProjection(  &g->projection) != D3D_OK)
+	if (!FSSetProjection(&g->projection))
 		return FALSE;
-	if (FSSetView(  &cam->View) != D3D_OK)
+	if (!FSSetView(&cam->View))
 		return FALSE;
 
 	rval = FSSetViewPort(&g->viewport);
 
-    if (rval != D3D_OK) {
+    if (!rval) {
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );
 #else
@@ -1239,7 +1239,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 
 	rval = FSSetViewPort(&OldViewPort);
 
-    if (rval != D3D_OK) {
+    if (!rval) {
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "ClipGroup", &g->viewport, rval );
 #else
@@ -1251,9 +1251,9 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	proj = Tempproj;
 	view = Tempview;
 
-	if (FSSetProjection(  &proj) != D3D_OK)
+	if (!FSSetProjection(&proj))
 		return FALSE;
-	if (FSSetView(  &view) != D3D_OK)
+	if (!FSSetView(&view))
 		return FALSE;
 	
 	return TRUE;

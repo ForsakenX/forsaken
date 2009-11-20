@@ -172,9 +172,17 @@ typedef struct {
 } RENDERMATRIX;
 
 BOOL render_flip( render_info_t * info );
-HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
+
+BOOL FSGetViewPort(render_viewport_t *returnViewPort);
 BOOL FSBeginScene(void);
 BOOL FSEndScene(void);
+BOOL FSSetViewPort(render_viewport_t *newViewPort);
+BOOL FSGetWorld(RENDERMATRIX *matrix);
+BOOL FSSetMaterial(RENDERMATERIAL *material);
+BOOL FSSetWorld( RENDERMATRIX *matrix );
+BOOL FSSetProjection( RENDERMATRIX *matrix );
+BOOL FSSetView( RENDERMATRIX *matrix );
+
 HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
@@ -183,26 +191,21 @@ HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
-void FSReleaseRenderObject(RENDEROBJECT *renderObject);
-HRESULT draw_object(RENDEROBJECT *renderObject);
-HRESULT FSSetViewPort(render_viewport_t *newViewPort);
-HRESULT FSGetViewport(render_viewport_t *returnViewPort);
-HRESULT FSSetViewPort(render_viewport_t *newViewPort);
-HRESULT FSGetWorld(RENDERMATRIX *matrix);
-HRESULT FSSetMaterial(RENDERMATERIAL *material);
-void release_texture( LPTEXTURE texture );
-HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts);
 HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-HRESULT FSSetWorld( RENDERMATRIX *matrix );
-HRESULT FSSetProjection( RENDERMATRIX *matrix );
-HRESULT FSSetView( RENDERMATRIX *matrix );
+
+HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+void release_texture( LPTEXTURE texture );
+
+HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
 HRESULT draw_line_object(RENDEROBJECT *renderObject);
 HRESULT draw_object(RENDEROBJECT *renderObject);
 HRESULT draw_2d_object(RENDEROBJECT *renderObject);
+HRESULT draw_object(RENDEROBJECT *renderObject);
+
+void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 
 #ifdef __cplusplus
 };
