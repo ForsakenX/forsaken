@@ -236,10 +236,10 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	// as most likely we don't need this info in render_viewport_t
 	if(view->MaxZ!=1.0f || view->MinZ!=0.0f)
 	{
-		DeubgPrintf("-------------------------------\n");
+		DebugPrintf("-------------------------------\n");
 		DebugPrintf("max/min z used: max=%d min=%d\n",
 			view->MaxZ, view->MinZ);
-		DeubgPrintf("-------------------------------\n");
+		DebugPrintf("-------------------------------\n");
 	}
 	// ScaleX|Y are not even part of the d3d9 struct anymore
 	// they were part of the old d3d6 viewport settings
