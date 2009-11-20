@@ -776,14 +776,18 @@ HRESULT FSSetMaterial(RENDERMATERIAL *material)
 	return lpD3DDevice->SetMaterial((D3DMATERIAL9*)material);
 }
 
-HRESULT FSBeginScene()
+BOOL FSBeginScene( void )
 {
-	return lpD3DDevice->BeginScene();
+	if(D3D_OK != lpD3DDevice->BeginScene())
+		return FALSE;
+	return TRUE;
 }
 
-HRESULT FSEndScene()
+BOOL FSEndScene( void )
 {
-	return lpD3DDevice->EndScene();
+	if(D3D_OK != lpD3DDevice->EndScene())
+		return FALSE;
+	return TRUE;
 }
 
 void save_texture( char * path, LPTEXTURE texture )

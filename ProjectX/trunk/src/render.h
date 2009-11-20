@@ -173,8 +173,8 @@ typedef struct {
 
 BOOL render_flip( render_info_t * info );
 HRESULT FSGetViewPort(render_viewport_t *returnViewPort);
-HRESULT FSBeginScene();
-HRESULT FSEndScene();
+BOOL FSBeginScene(void);
+BOOL FSEndScene(void);
 HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);

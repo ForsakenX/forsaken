@@ -4902,7 +4902,7 @@ BOOL DisplayTitle(void)
 	Build_View();
 	CurrentCamera.View = view;
 
-	if (FSBeginScene() != D3D_OK)
+	if (!FSBeginScene())
 	{
 		Msg( "DisplayTitle() : BeginScene failed\n" );
 		return FALSE;
@@ -5020,7 +5020,7 @@ Display Solid Lines
 
 		ExecuteLines( group, &RenderBufs[ 0 ] );
 
-	if (FSEndScene() != D3D_OK)
+	if (!FSEndScene())
 	{
 		Msg( "DisplayTitle() : EndScene failed\n" );
 		return FALSE;

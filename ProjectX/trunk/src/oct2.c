@@ -3880,8 +3880,7 @@ BOOL MainGame( void ) // bjd
   Procedure :  Now the Rendering can begin...
 ===================================================================*/
 
-//  if (lpDev->lpVtbl->BeginScene(lpDev) != D3D_OK)
-	if (FSBeginScene() != D3D_OK)
+	if (!FSBeginScene())
 		return FALSE;
 
 	// show the stats screen
@@ -4048,7 +4047,7 @@ BOOL MainGame( void ) // bjd
 		DispTracker(); // bjd
   }
 
-  if (FSEndScene() != D3D_OK)
+  if (!FSEndScene())
         return FALSE;
 
   ScreenPolyProcess();

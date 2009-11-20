@@ -242,14 +242,14 @@ HRESULT FSSetMaterial(RENDERMATERIAL *material)
 	return S_OK;
 }
 
-HRESULT FSBeginScene()
+BOOL FSBeginScene()
 {
-	return S_OK;
+	return TRUE;
 }
 
-HRESULT FSEndScene()
+BOOL FSEndScene()
 {
-	return S_OK;
+	return TRUE;
 }
 
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
