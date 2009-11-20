@@ -116,8 +116,6 @@ XYRECT	GroupVisibleExtents[MAXGROUPS];
 uint16	NumPortalsVisible;
 uint16	PortalsVisible[MAXPORTALSPERGROUP];
 XYRECT	PortalExtents[MAXGROUPS];
-render_viewport_t	OldViewPort;
-render_viewport_t	PresentViewPort;
 MATRIX	VisPolyMatrix = {
 				1.0F, 0.0F, 0.0F, 0.0F,
 				0.0F, 1.0F, 0.0F, 0.0F,
@@ -1179,6 +1177,7 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	VISGROUP *g;
 	int	i;
 	uint32 t;
+	render_viewport_t OldViewPort;
 
 	Tempproj = proj;
 	Tempview = view;
@@ -1187,8 +1186,6 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 	NumOfVertsTouched= 0;
 
 	FSGetViewPort(&OldViewPort);
-
-	PresentViewPort = OldViewPort;
 
 	GroupImIn = CurrentCamera.GroupImIn;
 

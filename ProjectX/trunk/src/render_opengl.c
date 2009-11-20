@@ -6,6 +6,10 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
+// TODO - does gl even have such a concept?
+BOOL FSBeginScene(){ return TRUE; }
+BOOL FSEndScene(){ return TRUE; }
+
 // prototypes
 void reset_trans( void );
 
@@ -207,134 +211,75 @@ BOOL FSClearBlack(void)
 	return TRUE;
 }
 
+// TODO - how do i query for these values ?
+//        can i simply return my last Set ?
 BOOL FSGetViewPort(render_viewport_t *returnViewPort)
 {
+	// scalex/y are not modified here
 	return TRUE;
 }
 
-BOOL FSSetViewPort(render_viewport_t *newViewPort)
+BOOL FSSetViewPort(render_viewport_t *view)
 {
+	// render_viewport_t x/y starts top/left
+	// but glViewport starts from bottom/left
+	int bottom = view->Y + view->Height;
+	glViewport(
+		view->X, bottom, 
+		(GLint) view->Width, (GLint) view->Height
+	);
+	// sets the min/max depth values to render
+	// default is max 1.0f and min 0.0f
+	// this is here for compatibility with d3d9
+	glDepthRange(view->MinZ,view->MaxZ);
+	// i want to know if this is ever changed
+	// as most likely we don't need this info in render_viewport_t
+	if(view->MaxZ!=1.0f || view->MinZ!=0.0f)
+	{
+		DeubgPrintf("-------------------------------\n");
+		DebugPrintf("max/min z used: max=%d min=%d\n",
+			view->MaxZ, view->MinZ);
+		DeubgPrintf("-------------------------------\n");
+	}
+	// ScaleX|Y are not even part of the d3d9 struct anymore
+	// they were part of the old d3d6 viewport settings
+	// from testing d3d9 passes the values along untouched
+	// probably need some testing here to see how d3d6 worked
+	// forsaken still uses these values so we need them
 	return TRUE;
 }
 
-BOOL FSSetWorld( RENDERMATRIX *matrix )
-{
-	return TRUE;
-}
-
-BOOL FSSetProjection( RENDERMATRIX *matrix )
-{
-	return TRUE;
-}
-
-BOOL FSSetView( RENDERMATRIX *matrix )
-{
-	return TRUE;
-}
-
-BOOL FSGetWorld(RENDERMATRIX *matrix)
-{
-	return TRUE;
-}
-
-BOOL FSSetMaterial(RENDERMATERIAL *material)
-{
-	return TRUE;
-}
-
-BOOL FSBeginScene()
-{
-	return TRUE;
-}
-
-BOOL FSEndScene()
-{
-	return TRUE;
-}
-
+// these can be done later
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{
-	return S_OK;
-}
-
-void release_texture( LPTEXTURE texture )
-{
-}
-
+{return S_OK;}
+void release_texture( LPTEXTURE texture ){}
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{
-	return S_OK;
-}
+{return S_OK;}
 
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
-{
-	return S_OK;
-}
+// probably needs to be done second
+BOOL FSGetWorld(RENDERMATRIX *matrix){return TRUE;}
+BOOL FSSetWorld( RENDERMATRIX *matrix ){return TRUE;}
+BOOL FSSetProjection( RENDERMATRIX *matrix ){return TRUE;}
+BOOL FSSetView( RENDERMATRIX *matrix ){return TRUE;}
+BOOL FSSetMaterial(RENDERMATERIAL *material){return TRUE;}
 
-HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
-{
-	return S_OK;
-}
+// these should probably be done first
+HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
+HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
+HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts){return TRUE;}
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts){return TRUE;}
+HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices){return TRUE;}
+HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices){return TRUE;}
+HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices){return TRUE;}
+HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
-HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
-{
-	return S_OK;
-}
-
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
-{
-	return S_OK;
-}
-
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts)
-{
-	return S_OK;
-}
-
-HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
-{
-	return S_OK;
-}
-
-HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
-{
-	return S_OK;
-}
-
-HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
-{
-	return S_OK;
-}
-
-HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT draw_line_object(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT draw_object(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
-
-HRESULT draw_2d_object(RENDEROBJECT *renderObject)
-{
-	return S_OK;
-}
+// probably last thing to do
+HRESULT draw_object(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {

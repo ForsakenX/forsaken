@@ -560,6 +560,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\src\gears.c"
+				>
+			</File>
+			<File
 				RelativePath="..\..\src\goal.c"
 				>
 			</File>
