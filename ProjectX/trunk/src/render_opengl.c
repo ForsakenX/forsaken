@@ -211,11 +211,23 @@ BOOL FSClearBlack(void)
 	return TRUE;
 }
 
-// TODO - how do i query for these values ?
-//        can i simply return my last Set ?
-BOOL FSGetViewPort(render_viewport_t *returnViewPort)
+// TODO - conversion from bottom/left to top/left is totaly broken
+
+BOOL FSGetViewPort(render_viewport_t *view)
 {
+	GLint * i;
+	GLfloat * f;
 	// scalex/y are not modified here
+	// xywh
+	glGetIntegerv( GL_VIEWPORT, i );
+	view->X	= i[0];
+	view->Y	= i[1] + i[3]; // bottom + height = top
+	view->Width	= i[2];
+	view->Height = i[3];
+	// near,far
+	glGetFloatv( GL_DEPTH_RANGE, f );
+	view->MinZ = f[0];
+	view->MaxZ = f[1];
 	return TRUE;
 }
 
