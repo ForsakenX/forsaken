@@ -355,7 +355,7 @@ BOOL Nodeload( char * Filename )
 			if(	BackgroundCollide( &MCloadheadert0, &Mloadheader, &NodePnt->Pos, NodePnt->Group, &Move_Off,
 				&NodePnt->SolidPos , &TempGroup, &TempNormal, &TempPos_New, FALSE, NULL ) )
 			{
-#ifdef DEBUG
+#ifdef DEBUG_ON
 				VECTOR move;
 				float move_len;
 

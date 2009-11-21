@@ -57,9 +57,10 @@ BOOL init_renderer( render_info_t * info )
 	reset_trans();
 	reset_filtering();
 
-	glPolygonMode(GL_BACK, GL_NONE);
+	// normally we don't draw back faces
+	//glPolygonMode(GL_BACK, GL_NONE);
 	
-	// wireframe
+	// wireframe mode
 	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 

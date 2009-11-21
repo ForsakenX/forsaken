@@ -3838,12 +3838,12 @@ BOOL MainGame( void ) // bjd
     GameCurrentTime = GameCurrentTime - GameStartedTime;
   }
 
-#ifdef DEBUG
+#ifdef DEBUG_ON
   if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging
   {
     framelag = 10.0F; // clamp framelag to something reasonable
   }
-#endif // DEBUG
+#endif
 
 
 /*===================================================================
