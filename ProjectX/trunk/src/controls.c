@@ -330,9 +330,6 @@ char *JoystickPOVDirections[MAX_POV_DIRECTIONS] = { "Up", "Down", "Left", "Right
 HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue);
 
-BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
-
-
 // this function receives higher level encoded bits
 
 #ifdef USEINLINE

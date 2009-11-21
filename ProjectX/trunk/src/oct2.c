@@ -222,7 +222,6 @@ float Old_LevelTime_Float;
 void InitFontTransTable();
 
 void InitModeCase(void);
-BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2);
 void DebugState( const char * str );
 
 
