@@ -6,6 +6,8 @@
 #include "SDL.h"
 #include "SDL_opengl.h"
 
+extern render_info_t render_info;
+
 // TODO - does gl even have such a concept?
 BOOL FSBeginScene(){ return TRUE; }
 BOOL FSEndScene(){ return TRUE; }
@@ -63,8 +65,36 @@ BOOL init_renderer( render_info_t * info )
 
 	set_normal_states();
 
+	//
 	// everything went ok
-	info->bRenderingIsOK = TRUE;
+	// fill in all the structures
+	//
+
+	info->bRenderingIsOK	= TRUE;
+	info->NumModes			= 1;
+	info->CurrMode			= 0;
+	info->Mode				= (render_display_mode_t *) malloc(sizeof(render_display_mode_t));
+	info->Mode[0].h			= render_info.default_mode.h;
+	info->Mode[0].w			= render_info.default_mode.w;
+	info->Mode[0].rate		= render_info.default_mode.rate;
+	info->Mode[0].bpp		= render_info.default_mode.bpp;
+	info->ThisMode			= info->Mode[ info->CurrMode ];
+	info->WindowsDisplay	= info->Mode[ info->CurrMode ];
+	info->szClient.cx		= info->ThisMode.w;
+	info->szClient.cy		= info->ThisMode.h;
+	info->WindowsDisplay.w  = info->ThisMode.w;
+	info->WindowsDisplay.h  = info->ThisMode.h;
+
+	{
+		render_viewport_t viewport;
+		viewport.X = 0;
+		viewport.Y = 0;
+		viewport.Width = info->ThisMode.w;
+		viewport.Height = info->ThisMode.h;
+		viewport.MinZ = 0.0f;
+		viewport.MaxZ = 1.0f;
+		FSSetViewPort(&viewport);
+	}
 
 	return TRUE;
 }
@@ -226,8 +256,6 @@ BOOL FSClearBlack(void)
 
 // TODO - conversion from bottom/left to top/left is totaly broken
 
-extern render_info_t render_info;
-
 BOOL FSGetViewPort(render_viewport_t *view)
 {
 	GLint i[4];
@@ -383,18 +411,12 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TR
 HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
 HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
 HRESULT draw_object(RENDEROBJECT *renderObject)
-{
-	static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
-	glLoadIdentity();
-	glTranslatef(-1.5f,0.0f,-6.0f);
+{  
 	glBegin(GL_TRIANGLES);
 		glVertex3f( 0.0f, 1.0f, 0.0f);				// Top
-		glVertex3f(-1.0f,-1.0f, 0.0f);				// Bottom Left
 		glVertex3f( 1.0f,-1.0f, 0.0f);				// Bottom Right
+		glVertex3f(-1.0f,-1.0f, 0.0f);				// Bottom Left
 	glEnd();
-	glTranslatef(3.0f,0.0f,0.0f);
-	SDL_GL_SwapBuffers();
 	return TRUE;
 }
 
