@@ -405,31 +405,41 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
-static BOOL draw_vertex_list( RENDEROBJECT *renderObject )
+static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
 	int group;
 	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
+	TLVERTEX * tlverts = (TLVERTEX*) renderObject->lpVertexBuffer;
+	WORD * indices = (WORD*) renderObject->lpIndexBuffer;
 
 	assert(renderObject->vbLocked == 0);
 
-	//lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
-	//SetMaterial((D3DMATERIAL9*)&renderObject->material);
+	//SetMaterial( &renderObject->material );
 
-	glBegin(GL_TRIANGLES);
+	glBegin(primitive_type);
 
 		for (group = 0; group < renderObject->numTextureGroups; group++)
 		{
 			int i;
-			int start = renderObject->textureGroups[group].startVert;
-			int stop  = renderObject->textureGroups[group].numVerts;
+			int startVert  = renderObject->textureGroups[group].startVert;
+			int numVerts   = renderObject->textureGroups[group].numVerts;
+			int startIndex = renderObject->textureGroups[group].startIndex;
+			int numIndices = renderObject->textureGroups[group].numTriangles * 3;
 
 			//if(renderObject->textureGroups[group].colourkey)
 			//	set_alpha_ignore();
 
-			//SetTexture(0, (LPDIRECT3DTEXTURE9)renderObject->textureGroups[i].texture);
+			//SetTexture( renderObject->textureGroups[i].texture );
 
-			for( i = start; i < stop; i++ )
-				glVertex3f( verts[i].x, verts[i].y, verts[i].z );
+			for( i = 0; i < numIndices; i++ )
+			{
+				int indice = indices[ startIndex + i ];
+				int vert = startVert + indice;
+				if(tlvertex)
+					glVertex4f( tlverts[vert].x, tlverts[vert].y, tlverts[vert].z, tlverts[vert].w );
+				else
+					glVertex3f( verts[vert].x, verts[vert].y, verts[vert].z );
+			}
 
 			//if(renderObject->textureGroups[group].colourkey)
 			//	unset_alpha_ignore();
@@ -440,9 +450,9 @@ static BOOL draw_vertex_list( RENDEROBJECT *renderObject )
 	return TRUE;
 }
 
-BOOL draw_object(RENDEROBJECT *renderObject){return draw_vertex_list(renderObject);}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
+BOOL draw_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,FALSE);}
+BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,TRUE);;}
+BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_LINES,FALSE);;}
 
 
 // these can be done later

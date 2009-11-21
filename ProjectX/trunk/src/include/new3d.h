@@ -82,18 +82,22 @@ typedef struct {
 
 typedef struct {
     union {
+		float x;
         float sx;
         float dvSX;
     };
     union {
+		float y;
         float sy;
         float dvSY;
     };
     union {
+	    float z;
         float sz;
         float dvSZ;
     };
     union {
+		float w;
         float rhw;
         float dvRHW;
     };
