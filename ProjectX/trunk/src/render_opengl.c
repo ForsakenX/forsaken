@@ -58,10 +58,13 @@ BOOL init_renderer( render_info_t * info )
 	glPolygonMode(GL_BACK, GL_NONE);
 	
 	// wireframe
-	//glPolygonMode(GL_FRONT, GL_LINE);
-	//glPolygonMode(GL_BACK, GL_LINE);
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
 
 	set_normal_states();
+
+	// everything went ok
+	info->bRenderingIsOK = TRUE;
 
 	return TRUE;
 }
@@ -216,12 +219,14 @@ BOOL FSClearDepth(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;
 }
 
 // TODO - conversion from bottom/left to top/left is totaly broken
+
+extern render_info_t render_info;
 
 BOOL FSGetViewPort(render_viewport_t *view)
 {
@@ -231,7 +236,7 @@ BOOL FSGetViewPort(render_viewport_t *view)
 	// xywh
 	glGetIntegerv( GL_VIEWPORT, i );
 	view->X	= i[0];
-	view->Y	= i[1] + i[3]; // bottom + height = top
+	view->Y	= render_info.ThisMode.h - (i[1] + i[3]);
 	view->Width	= i[2];
 	view->Height = i[3];
 	// near,far
@@ -245,11 +250,8 @@ BOOL FSSetViewPort(render_viewport_t *view)
 {
 	// render_viewport_t x/y starts top/left
 	// but glViewport starts from bottom/left
-	int bottom = view->Y + view->Height;
-	glViewport(
-		view->X, bottom, 
-		(GLint) view->Width, (GLint) view->Height
-	);
+	int bottom = render_info.ThisMode.h - (view->Y + view->Height);
+	glViewport(	view->X, bottom, (GLint) view->Width, (GLint) view->Height	);
 	// sets the min/max depth values to render
 	// default is max 1.0f and min 0.0f
 	// this is here for compatibility with d3d9
@@ -378,10 +380,23 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TR
 
 // these should go next
 // maybe just draw a triangle or something ?
-HRESULT draw_object(RENDEROBJECT *renderObject){return TRUE;}
 HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
 HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
-
+HRESULT draw_object(RENDEROBJECT *renderObject)
+{
+	static GLfloat green[4] = {0.0, 0.8, 0.2, 1.0};
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, green);
+	glLoadIdentity();
+	glTranslatef(-1.5f,0.0f,-6.0f);
+	glBegin(GL_TRIANGLES);
+		glVertex3f( 0.0f, 1.0f, 0.0f);				// Top
+		glVertex3f(-1.0f,-1.0f, 0.0f);				// Bottom Left
+		glVertex3f( 1.0f,-1.0f, 0.0f);				// Bottom Right
+	glEnd();
+	glTranslatef(3.0f,0.0f,0.0f);
+	SDL_GL_SwapBuffers();
+	return TRUE;
+}
 
 // these can be done later
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
