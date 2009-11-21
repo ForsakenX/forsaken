@@ -817,12 +817,12 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 
 /*===================================================================
 	Procedure	:	Clip box to viewport
-	Input		:	LPLPTLVERTEX	Vert1
-				:	LPLPTLVERTEX	Vert3
+	Input		:	LPTLVERTEX	Vert1
+				:	LPTLVERTEX	Vert3
 	Output		:	FALSE if box is inside viewport, TRUE if outside
 ===================================================================*/
 
-BOOL ClipBox( LPLPTLVERTEX topleft, LPLPTLVERTEX bottomright )
+BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 {
 	float xmin, ymin, xmax, ymax;
 	int clip_topleft, clip_bottomright;
@@ -2091,9 +2091,9 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
 	COLOR		Specular;
-	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
+	LPTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPTRIANGLE	ScrPolyFacePnt;
-    LPLPTLVERTEX	lpBufStart;
+    LPTLVERTEX	lpBufStart;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2177,7 +2177,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
 
-	ScrPolyVertPnt = (LPLPTLVERTEX) lpBufStart;
+	ScrPolyVertPnt = (LPTLVERTEX) lpBufStart;
 
 /*===================================================================
 		Fill in Buffer ( Verts and Faces Simultaneously )
@@ -2585,9 +2585,9 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
 	COLOR		Specular;
-	LPLPTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
+	LPTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
 	LPTRIANGLE	ScrPolyFacePnt;
-    LPLPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
+    LPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
 	float			u1,v1,u2,v2;
 	float			x1,y1,x2,y2,x3,y3,x4,y4;
 	BOOL			Textured;
@@ -2659,12 +2659,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
-//	memset( &ExecBuffer_debdesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-//	ExecBuffer_debdesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-		
-//	if( ExecBuffer->lpVtbl->Lock( ExecBuffer, &ExecBuffer_debdesc) != D3D_OK ) return( FALSE );
-//	if (FSLockExecuteBuffer(ExecBuffer, &ExecBuffer_debdesc) != D3D_OK )
-//		return FALSE;
+
 	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
@@ -2678,7 +2673,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	ScrPolyFacePnt = (LPTRIANGLE) lpIndices;
 		
 //	lpBufStart = ExecBuffer_debdesc.lpData;
-	ScrPolyVertPnt = (LPLPTLVERTEX) lpBufStart;
+	ScrPolyVertPnt = (LPTLVERTEX) lpBufStart;
 	//lpPointer = (LPVOID) ( ScrPolyVertPnt + TotalVerts );
 //	lpInsStart = lpPointer;
 

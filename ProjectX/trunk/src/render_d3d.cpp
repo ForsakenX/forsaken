@@ -1400,10 +1400,10 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 	renderObject->vbLocked = 0;
 
 	LastError = lpD3DDevice->CreateVertexBuffer(
-		numVertices * sizeof(LPTLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX,
+		numVertices * sizeof(TLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX,
 		D3DPOOL_DEFAULT, (LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
 	);
-	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(LPTLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpVertexBuffer, NULL);
+	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(TLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
@@ -1434,7 +1434,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 	return LastError;
 }
 
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX *verts)
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -1552,7 +1552,7 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	assert(renderObject->vbLocked == 0);
 
 	if( transformed )
-		LastError = lpD3DDevice->SetStreamSource(0, (LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer, 0, sizeof(LPTLVERTEX));
+		LastError = lpD3DDevice->SetStreamSource(0, (LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer, 0, sizeof(TLVERTEX));
 	else
 		LastError = lpD3DDevice->SetStreamSource(0, (LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer, 0, sizeof(LVERTEX));
 

@@ -191,7 +191,7 @@ HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX *verts);
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
 HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);

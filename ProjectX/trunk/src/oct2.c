@@ -1437,17 +1437,7 @@ BOOL SetMatrixViewPort( void )
 	RENDERMATERIAL bmat;
 	memset(&bmat, 0, sizeof(RENDERMATERIAL));
 
-/* bjd
-//	D3DMATERIALHANDLE hBmat;
-	if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK) {
-		return FALSE;
-	}
-	if (lpBmat->lpVtbl->SetMaterial(lpBmat, &bmat) != D3D_OK) {
-		return FALSE;
-	}
-	if (lpBmat->lpVtbl->GetHandle(lpBmat, lpDev, &hBmat) != D3D_OK) {
-		return FALSE;
-	}
+/* TODO - what did this function do in d3d6 ?
 	if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
 		return FALSE;
 	}

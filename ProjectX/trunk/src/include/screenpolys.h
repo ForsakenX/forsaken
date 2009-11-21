@@ -126,7 +126,7 @@ void DoLensflareEffect( void );
 void Conv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat );
 void KillScrOneFramers( void );
-//bjd - CHECK BOOL ClipBox( LPLPTLVERTEX topleft, LPLPTLVERTEX bottomright );
+//bjd - CHECK BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright );
 void DoAllSecBullLensflare( void );
 void SecBullLensflare( uint16 i );
 void CreateCountdownDigits( void );

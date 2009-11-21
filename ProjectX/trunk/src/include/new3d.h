@@ -114,7 +114,7 @@ typedef struct {
         float dvTV;
     };
 
-} LPTLVERTEX, *LPLPTLVERTEX;
+} TLVERTEX, *LPTLVERTEX;
 
 typedef struct {
     union {

@@ -27,6 +27,16 @@ void render_gamma_correction( double gamma )
 
 BOOL init_renderer( render_info_t * info )
 {
+	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', shader='%s'\n",
+		glGetString(GL_VENDOR),
+		glGetString(GL_RENDERER),
+		glGetString(GL_VERSION),
+		glGetString(GL_SHADING_LANGUAGE_VERSION));
+
+	// this is way to long for OutputDebugString to show
+	//DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', extensions='%s', shaders='%s'\n",
+	//	glGetString(GL_EXTENSIONS));
+
 	// reminaing d3d9 initialization steps
 	// doesn't sdl do this now?
 		// enumerate and select a display mode
@@ -215,8 +225,8 @@ BOOL FSClearBlack(void)
 
 BOOL FSGetViewPort(render_viewport_t *view)
 {
-	GLint * i;
-	GLfloat * f;
+	GLint i[4];
+	GLfloat f[2];
 	// scalex/y are not modified here
 	// xywh
 	glGetIntegerv( GL_VIEWPORT, i );
@@ -263,14 +273,28 @@ BOOL FSSetViewPort(render_viewport_t *view)
 
 // TODO - might have to use non tranpose functions in set/get world/view/proj
 
+// i could not get glext.h to work 
+static void transpose_matrix( GLfloat m1[4][4], GLfloat m2[4][4] )
+{
+        int a, b;
+        for( a = 0; a < 4; a++ )
+                for( b = 0; b < 4; b++ )
+                        m2[a][b] = m1[b][a];
+}
+
+
 // TODO - is it good form to clean up and set matrix mode to GL_MODELVIEW ?
 // load the given matrix to be the current project matrix
 // it looks like forsaken already does all the matrix math on it's own
 // and the d3d9 api basicaly says it's "loaded" not multiplied against the identity or anything
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
+	GLfloat transposed[4][4];
+	transpose_matrix(matrix->m,transposed);
 	glMatrixMode(GL_PROJECTION);
-	glLoadTransposeMatrix(&matrix->m);
+	//glLoadTransposeMatrixf(&matrix->m);
+	//glLoadMatrixf((GLfloat*)transposed[0]);
+	glLoadMatrixf((GLfloat*)transposed);
 	return TRUE;
 }
 
@@ -278,8 +302,11 @@ BOOL FSSetProjection( RENDERMATRIX *matrix )
 // we probably don't want to load identity here and simply want to multiply against the current
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
+	GLfloat transposed[4][4];
+	transpose_matrix(matrix->m,transposed);
 	glMatrixMode(GL_MODELVIEW);
-	glMultTransposeMatrix(&matrix->m);
+	//glMultTransposeMatrixf(&matrix->m);
+	glMultMatrixf((GLfloat*)transposed);
 	return TRUE;
 }
 
@@ -287,8 +314,11 @@ BOOL FSSetView( RENDERMATRIX *matrix )
 // it's used to jump to a location of an object previously stored
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {
+	GLfloat transposed[4][4];
+	transpose_matrix(matrix->m,transposed);
 	glMatrixMode(GL_MODELVIEW);
-	glLoadTransposeMatrix(&matrix->m);
+	//glLoadTransposeMatrixf(&matrix->m);
+	glLoadMatrixf((GLfloat*)transposed);
 	return TRUE;
 }
 
@@ -296,12 +326,62 @@ BOOL FSSetWorld( RENDERMATRIX *matrix )
 // meaning that we could return here at any time by loading this matrix
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	GLfloat * f;
+	GLfloat f[16];
 	glGetFloatv(GL_TRANSPOSE_MODELVIEW_MATRIX, f);
 	// TODO - this copy may not work properly based on col/row major
-	matrix->m = *f;
+	memcpy(&matrix->m,f,sizeof(matrix->m));
 	return TRUE;
 }
+
+//
+// using the concept of index/vertex buffers in opengl is a bit different
+// so for now I'm just going going to return a pointer to memory
+// then just convert the index/vertex buffer to a pure vertex buffer on draw
+//
+// the vertex/index pointers could probably end up being the glGen* id
+// then internal display lists can be generated for the non dynamic functions
+// so we can render the static objects as display lists
+//
+
+HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{
+	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
+	return TRUE;
+}
+HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{FSCreateVertexBuffer(renderObject, numVertices); return TRUE;}
+
+HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+{
+	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
+	return TRUE;
+}
+HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+{return FSCreateIndexBuffer(renderObject,numIndices);}
+
+HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+{(*indices) = renderObject->lpIndexBuffer; return TRUE;}
+HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+{(*verts) = renderObject->lpVertexBuffer; return TRUE;}
+HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+
+HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+{
+	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
+	return TRUE;
+}
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+{(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
+HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+
+
+// these should go next
+// maybe just draw a triangle or something ?
+HRESULT draw_object(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
+HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
+
 
 // these can be done later
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
@@ -310,35 +390,19 @@ void release_texture( LPTEXTURE texture ){}
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 
-// these should probably be done first
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
-HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
-HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts){return TRUE;}
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts){return TRUE;}
-HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices){return TRUE;}
-HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices){return TRUE;}
-HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices){return TRUE;}
-HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-
-// probably last thing to do
-HRESULT draw_object(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
-
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
 	int i;
 	if (renderObject->lpVertexBuffer)
 	{
 		// TODO - need to destroy buffer gl style
+		free(renderObject->lpVertexBuffer);
 		renderObject->lpVertexBuffer = NULL;
 	}
 	if (renderObject->lpIndexBuffer)
 	{
 		// TODO - need to destroy buffer gl style
+		free(renderObject->lpIndexBuffer);
 		renderObject->lpIndexBuffer = NULL;
 	}
 	for (i = 0; i < renderObject->numTextureGroups; i++)
