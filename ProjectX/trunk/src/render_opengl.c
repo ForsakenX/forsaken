@@ -263,8 +263,10 @@ BOOL FSSetViewPort(render_viewport_t *view)
 
 // TODO - might have to use non tranpose functions in set/get world/view/proj
 
-// TODO - is it good form to clearn up and set matrix mode to GL_MODELVIEW ?
+// TODO - is it good form to clean up and set matrix mode to GL_MODELVIEW ?
 // load the given matrix to be the current project matrix
+// it looks like forsaken already does all the matrix math on it's own
+// and the d3d9 api basicaly says it's "loaded" not multiplied against the identity or anything
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
 	glMatrixMode(GL_PROJECTION);
@@ -281,8 +283,8 @@ BOOL FSSetView( RENDERMATRIX *matrix )
 	return TRUE;
 }
 
-// i believe this should loadIdentity so we go back to the origin
-// then apply the matrix so we jump to the desired location in the world
+// i believe the given matrix should represent a location from the identify
+// it's used to jump to a location of an object previously stored
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {
 	glMatrixMode(GL_MODELVIEW);
@@ -290,11 +292,8 @@ BOOL FSSetWorld( RENDERMATRIX *matrix )
 	return TRUE;
 }
 
-// i believe this should return a matrix representing the local location from the perspective of the origin...
-// meaning that we could get here by applying it to the identity at any time...
-// I'm confused here cause I would think the current matrix is that exact result
-// what in the world would d3d9 send back if you requested the current view then?
-// perhaps the last matrix used during multiplication ... ?
+// i believe this should return a matrix representing the current matrix after multiplications
+// meaning that we could return here at any time by loading this matrix
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
 	GLfloat * f;
