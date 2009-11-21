@@ -273,7 +273,6 @@ BOOL FSGetWorld(RENDERMATRIX *matrix){return TRUE;}
 BOOL FSSetWorld( RENDERMATRIX *matrix ){return TRUE;}
 BOOL FSSetProjection( RENDERMATRIX *matrix ){return TRUE;}
 BOOL FSSetView( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSSetMaterial(RENDERMATERIAL *material){return TRUE;}
 
 // these should probably be done first
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}

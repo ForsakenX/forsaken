@@ -141,18 +141,13 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 
 	return( TRUE );
 }
-
-/*===================================================================
-	Procedure	:		Make a material for all textures associated with Tloadheader
-	Input		;		TLOADHEADER *
-	Output		:		FLASE/TRUE
-===================================================================*/
+	
+// create a default material for each texture
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 {
+    int i;
 	RENDERMATERIAL mat;
 
-    int i;
-	/*	create a default material for each texture */
 	memset(&mat, 0, sizeof(RENDERMATERIAL));
 	mat.Diffuse.r = (float)1.0;
 	mat.Diffuse.g = (float)1.0;
@@ -167,34 +162,8 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 	mat.Power = (float)0.0;
 
 	for (i = 0; i<Tloadheader->num_texture_files; i++)
-	{
 		Tloadheader->lpMat[i] = mat;
 
-		if (!FSSetMaterial(&mat))
-		{
-			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
-			return FALSE;
-		}
-#if 0 // bjd - CHECK
-		/* create the material and header */	
-	    mat.hTexture = Tloadheader->hTex[i];
-	    if (render_info.lpD3D->lpVtbl->CreateMaterial(render_info.lpD3D, &Tloadheader->lpMat[i], NULL) != D3D_OK)
-		{
-			Msg( "Couldnt Create Material for %s\n", &Tloadheader->ImageFile[i] );
-			return FALSE;
-		}
-	    if (Tloadheader->lpMat[i]->lpVtbl->SetMaterial(Tloadheader->lpMat[i], &mat) != D3D_OK)
-		{
-			Msg( "Couldnt Set Material for %s\n", &Tloadheader->ImageFile[i] );
-			return FALSE;
-		}
-	    if (Tloadheader->lpMat[i]->lpVtbl->GetHandle(Tloadheader->lpMat[i], render_info.lpD3DDevice, &Tloadheader->hMat[i]) != D3D_OK)
-		{
-			Msg( "Couldnt Get Handle for %s\n", &Tloadheader->ImageFile[i] );
-			return FALSE;
-		}
-#endif
-	}
     return TRUE;
 }
 

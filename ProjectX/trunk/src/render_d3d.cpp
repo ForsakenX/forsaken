@@ -783,13 +783,6 @@ BOOL FSGetWorld(RENDERMATRIX *matrix)
 	return TRUE;
 }
 
-BOOL FSSetMaterial(RENDERMATERIAL *material)
-{
-	if(lpD3DDevice->SetMaterial((D3DMATERIAL9*)material) != D3D_OK)
-		return FALSE;
-	return TRUE;
-}
-
 BOOL FSBeginScene( void )
 {
 	if(D3D_OK != lpD3DDevice->BeginScene())

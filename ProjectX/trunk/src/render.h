@@ -178,7 +178,6 @@ BOOL FSBeginScene(void);
 BOOL FSEndScene(void);
 BOOL FSSetViewPort(render_viewport_t *newViewPort);
 BOOL FSGetWorld(RENDERMATRIX *matrix);
-BOOL FSSetMaterial(RENDERMATERIAL *material);
 BOOL FSSetWorld( RENDERMATRIX *matrix );
 BOOL FSSetProjection( RENDERMATRIX *matrix );
 BOOL FSSetView( RENDERMATRIX *matrix );
