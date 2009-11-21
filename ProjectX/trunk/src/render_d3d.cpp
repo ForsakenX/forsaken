@@ -1434,7 +1434,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 	return LastError;
 }
 
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX **verts)
+HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, LPTLVERTEX *verts)
 {
 	assert(renderObject->vbLocked == 0);
 
