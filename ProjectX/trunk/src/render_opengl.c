@@ -261,18 +261,55 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	return TRUE;
 }
 
+// TODO - might have to use non tranpose functions in set/get world/view/proj
+
+// TODO - is it good form to clearn up and set matrix mode to GL_MODELVIEW ?
+// load the given matrix to be the current project matrix
+BOOL FSSetProjection( RENDERMATRIX *matrix )
+{
+	glMatrixMode(GL_PROJECTION);
+	glLoadTransposeMatrix(&matrix->m);
+	return TRUE;
+}
+
+// i believe this maps to normal model view transformations
+// we probably don't want to load identity here and simply want to multiply against the current
+BOOL FSSetView( RENDERMATRIX *matrix )
+{
+	glMatrixMode(GL_MODELVIEW);
+	glMultTransposeMatrix(&matrix->m);
+	return TRUE;
+}
+
+// i believe this should loadIdentity so we go back to the origin
+// then apply the matrix so we jump to the desired location in the world
+BOOL FSSetWorld( RENDERMATRIX *matrix )
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadTransposeMatrix(&matrix->m);
+	return TRUE;
+}
+
+// i believe this should return a matrix representing the local location from the perspective of the origin...
+// meaning that we could get here by applying it to the identity at any time...
+// I'm confused here cause I would think the current matrix is that exact result
+// what in the world would d3d9 send back if you requested the current view then?
+// perhaps the last matrix used during multiplication ... ?
+BOOL FSGetWorld(RENDERMATRIX *matrix)
+{
+	GLfloat * f;
+	glGetFloatv(GL_TRANSPOSE_MODELVIEW_MATRIX, f);
+	// TODO - this copy may not work properly based on col/row major
+	matrix->m = *f;
+	return TRUE;
+}
+
 // these can be done later
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 void release_texture( LPTEXTURE texture ){}
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
-
-// probably needs to be done second
-BOOL FSGetWorld(RENDERMATRIX *matrix){return TRUE;}
-BOOL FSSetWorld( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSSetProjection( RENDERMATRIX *matrix ){return TRUE;}
-BOOL FSSetView( RENDERMATRIX *matrix ){return TRUE;}
 
 // these should probably be done first
 HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices){return TRUE;}
