@@ -18,7 +18,7 @@
 #include "sphere.h"
 #include "pickups.h"
 #include "enemies.h"
-#include "AI.h"
+#include "ai.h"
 #include "secondary.h"
 #include "primary.h"
 

@@ -17,7 +17,7 @@ extern "C" {
 
 #include <time.h>
 #include "new3d.h"
-#include "SBufferHand.h"
+#include "sbufferhand.h"
 ///////////////////////////////////////////////////////////////////////////////
 //
 // DSLoadSoundBuffer    Loads an IDirectSoundBuffer from a Win32 resource in

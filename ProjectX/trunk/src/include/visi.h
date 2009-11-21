@@ -5,8 +5,8 @@
 
 #include <math.h>
 #include <time.h>
-#include "New3D.h"
-#include "Mload.h"
+#include "new3d.h"
+#include "mload.h"
 #include "ships.h"
 #include "lights.h"
 #include "skin.h"

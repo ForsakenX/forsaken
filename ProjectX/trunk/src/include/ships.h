@@ -3,7 +3,7 @@
 /*==========================================================================
  *
  *
- *  File:       Ships.h
+ *  File:       ships.h
  *  Content:    shipstuff include file
  *
  *
@@ -13,7 +13,7 @@
 #define SHIPS_INCLUDED
 
 #include <math.h>
-#include "New3D.h"
+#include "new3d.h"
 #include <time.h>
 #include "mload.h"
 #include "quat.h"

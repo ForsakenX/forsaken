@@ -1,5 +1,5 @@
 /*===================================================================
-	File	:	BGObjects.h
+	File	:	bgobjects.h
 	Content	:	BGObjects.c include file
 ===================================================================*/
 #ifndef ENEMIES_INCLUDED

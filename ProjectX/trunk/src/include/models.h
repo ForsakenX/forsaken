@@ -4,12 +4,12 @@
 
 #include <math.h>
 
-#include "New3D.h"
-#include "Mload.h"
+#include "new3d.h"
+#include "mload.h"
 #include "collision.h"
-#include "Ships.h"
-#include "Mxload.h"
-#include "Mxaload.h"
+#include "ships.h"
+#include "mxload.h"
+#include "mxaload.h"
 #include "lights.h"
 #include "camera.h"
 

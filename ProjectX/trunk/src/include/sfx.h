@@ -9,7 +9,7 @@
 
 #include "render.h"
 #include "quat.h"
-#include "CompObjects.h"
+#include "compobjects.h"
 #include "object.h"
 #include "networking.h"
 #include "triggers.h"

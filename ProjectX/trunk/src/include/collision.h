@@ -18,7 +18,7 @@
 #include "mload.h"
 #include <time.h>
 #include "compobjects.h"
-#include "BGObjects.h"
+#include "bgobjects.h"
 
 /*
  * defines

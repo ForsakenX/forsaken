@@ -15,10 +15,10 @@
 ===================================================================*/
 #include <math.h>
 
-#include "New3D.h"
+#include "new3d.h"
 #include <time.h>
-#include "Ships.h"
-#include "Mload.h"
+#include "ships.h"
+#include "mload.h"
 #include "collision.h"
 #include "lights.h"
 #include "2dtextures.h"

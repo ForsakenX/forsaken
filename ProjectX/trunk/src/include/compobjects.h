@@ -1,5 +1,5 @@
 /*===================================================================
-	File	:	CompObjects.h
+	File	:	compobjects.h
 	Content	:	CompObjects.c include file
 ===================================================================*/
 #ifndef COMPOBJECTS_INCLUDED

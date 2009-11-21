@@ -14,12 +14,12 @@
 
 #include <math.h>
 
-#include "New3D.h"
+#include "new3d.h"
 #include <time.h>
-#include "Ships.h"
-#include "Mload.h"
-#include "Mxload.h"
-#include "Mxaload.h"
+#include "ships.h"
+#include "mload.h"
+#include "mxload.h"
+#include "mxaload.h"
 #include "collision.h"
 
 /*

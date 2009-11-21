@@ -3,7 +3,7 @@
 /*==========================================================================
  *
  *
- *  File:       SBufferHand.h
+ *  File:       sbufferhand.h
  *  Content:    sound buffer handle include file
  *
  *

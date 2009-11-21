@@ -1,7 +1,7 @@
 /*==========================================================================
  *
  *
- *  File:       Mxaload.h
+ *  File:       mxaload.h
  *  Content:    Mxaload include file
  *
  *
@@ -17,9 +17,9 @@
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
-#include "Tload.h"
-#include "Mload.h"
-#include "Transexe.h"
+#include "tload.h"
+#include "mload.h"
+#include "transexe.h"
 //#include "pickups.h"
 
 /*===================================================================

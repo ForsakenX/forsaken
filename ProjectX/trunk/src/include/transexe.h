@@ -2,7 +2,7 @@
 #define TRANSEXE_INCLUDED
 
 #include "render.h"
-#include "New3D.h"
+#include "new3d.h"
 
 #define MAXTRANSEXE 128
 

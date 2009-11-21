@@ -1,7 +1,7 @@
 /*==========================================================================
  *
  *
- *  File:       Mload.h
+ *  File:       mload.h
  *  Content:    Mload include file
  *
  *
@@ -13,8 +13,8 @@
 #include "file.h"
 #include "render.h"
 #include "new3d.h"
-#include "Tload.h"
-#include "Transexe.h"
+#include "tload.h"
+#include "transexe.h"
 
 /*
  * defines
