@@ -4691,7 +4691,7 @@ BOOL RenderCurrentCamera( void )
 	{
 //		if( Skin_Execs[ Count ] != NULL )
 		{
-			if (FAILED(draw_object(&Skin_Execs[ Count ])))
+			if (!draw_object(&Skin_Execs[ Count ]))
 			{
 				return FALSE;
 			}
@@ -4781,7 +4781,7 @@ Display Group Clipped Faceme Transluecent Polys
 	{
 //		if( Portal_Execs[ Count ] != NULL )
 		{
-			if (FAILED(draw_object(&Portal_Execs[ Count ])))
+			if (!draw_object(&Portal_Execs[ Count ]))
 			{
 				return FALSE;
 			}

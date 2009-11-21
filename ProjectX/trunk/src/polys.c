@@ -601,7 +601,7 @@ BOOL DisplayGroupClippedPolys(RENDEROBJECT *renderObject, uint16 Group )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();
@@ -628,7 +628,7 @@ BOOL DisplayGroupUnclippedPolys( RENDEROBJECT *renderObject )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();
@@ -1142,7 +1142,7 @@ BOOL DisplaySolidGroupClippedPolys( RENDEROBJECT *renderObject, uint16 Group )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();
@@ -1166,7 +1166,7 @@ BOOL DisplaySolidGroupUnclippedPolys( RENDEROBJECT *renderObject )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();

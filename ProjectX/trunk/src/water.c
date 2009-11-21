@@ -630,7 +630,7 @@ void DisplayWaterObject(WATEROBJECT * Wo)
 
 	cull_none();
 
-	if (FAILED(draw_object(&Wo->renderObject)))
+	if (!draw_object(&Wo->renderObject))
 		return;
 
 	reset_cull();

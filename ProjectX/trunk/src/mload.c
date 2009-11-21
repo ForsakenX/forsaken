@@ -1192,7 +1192,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 			}
 			else
 			{
-				if (FAILED(draw_object(&Mloadheader->Group[group].renderObject[i])))
+				if (!draw_object(&Mloadheader->Group[group].renderObject[i]))
 				{
 					return FALSE;
 				}

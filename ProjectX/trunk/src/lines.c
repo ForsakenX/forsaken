@@ -253,7 +253,7 @@ BOOL ExecuteLines( uint16 group, RENDEROBJECT *renderObject )
 	{
 		if( LinesDispGroup( group, renderObject, &i ) )
 		{
-			if (FAILED(draw_line_object(renderObject)))
+			if (!draw_line_object(renderObject))
 				return FALSE;
 		}
 	}

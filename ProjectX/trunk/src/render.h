@@ -198,11 +198,9 @@ HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width,
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 void release_texture( LPTEXTURE texture );
 
-HRESULT draw_line_vertex_buffer(RENDEROBJECT *renderObject);
-HRESULT draw_line_object(RENDEROBJECT *renderObject);
-HRESULT draw_object(RENDEROBJECT *renderObject);
-HRESULT draw_2d_object(RENDEROBJECT *renderObject);
-HRESULT draw_object(RENDEROBJECT *renderObject);
+BOOL draw_line_object(RENDEROBJECT *renderObject);
+BOOL draw_object(RENDEROBJECT *renderObject);
+BOOL draw_2d_object(RENDEROBJECT *renderObject);
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 

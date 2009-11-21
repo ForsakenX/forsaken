@@ -405,20 +405,43 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
-
-// these should go next
-// maybe just draw a triangle or something ?
-HRESULT draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT draw_object(RENDEROBJECT *renderObject)
+static BOOL draw_vertex_list( RENDEROBJECT *renderObject )
 {  
+	/*
 	glBegin(GL_TRIANGLES);
 		glVertex3f( 0.0f, 1.0f, 0.0f);				// Top
-		glVertex3f( 1.0f,-1.0f, 0.0f);				// Bottom Right
 		glVertex3f(-1.0f,-1.0f, 0.0f);				// Bottom Left
+		glVertex3f( 1.0f,-1.0f, 0.0f);				// Bottom Right
 	glEnd();
+	*/
+
+	assert(renderObject->vbLocked == 0);
+
+	//renderObject->lpVertexBuffer, 0, sizeof(LVERTEX)
+	//lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
+	//SetMaterial((D3DMATERIAL9*)&renderObject->material);
+
+	for (int i = 0; i < renderObject->numTextureGroups; i++)
+	{
+		if(renderObject->textureGroups[i].colourkey)
+			set_alpha_ignore();
+
+		//SetTexture(0, (LPDIRECT3DTEXTURE9)renderObject->textureGroups[i].texture);
+		//DrawPrimitive
+			//renderObject->textureGroups[i].startVert,
+			//renderObject->textureGroups[i].numVerts
+
+		if(renderObject->textureGroups[i].colourkey)
+			unset_alpha_ignore();
+	}
+
 	return TRUE;
 }
+
+BOOL draw_object(RENDEROBJECT *renderObject){return draw_vertex_list(renderObject);}
+BOOL draw_2d_object(RENDEROBJECT *renderObject){return TRUE;}
+BOOL draw_line_object(RENDEROBJECT *renderObject){return TRUE;}
+
 
 // these can be done later
 HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
@@ -426,6 +449,7 @@ HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uin
 void release_texture( LPTEXTURE texture ){}
 HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
+
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {

@@ -763,7 +763,7 @@ BOOL ExecuteMxaloadHeader( MXALOADHEADER * Mxaloadheader, uint16 in_group  )
 				}
 				else
 				{
-					if (FAILED(draw_object(&Mxaloadheader->Group[group].renderObject[i])))
+					if (!draw_object(&Mxaloadheader->Group[group].renderObject[i]))
 					{
 						return FALSE;
 					}

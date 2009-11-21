@@ -1591,19 +1591,19 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	return S_OK;
 }
 
-HRESULT draw_line_object(RENDEROBJECT *renderObject)
+BOOL draw_line_object(RENDEROBJECT *renderObject)
 {
-	return draw_render_object( renderObject, FALSE, D3DPT_LINELIST );
+	return SUCCEEDED(draw_render_object( renderObject, FALSE, D3DPT_LINELIST ));
 }
 
-HRESULT draw_object(RENDEROBJECT *renderObject)
+BOOL draw_object(RENDEROBJECT *renderObject)
 {
-	return draw_render_object( renderObject, FALSE, D3DPT_TRIANGLELIST );
+	return SUCCEEDED(draw_render_object( renderObject, FALSE, D3DPT_TRIANGLELIST ));
 }
 
-HRESULT draw_2d_object(RENDEROBJECT *renderObject)
+BOOL draw_2d_object(RENDEROBJECT *renderObject)
 {
-	return draw_render_object( renderObject, TRUE, D3DPT_TRIANGLELIST );
+	return SUCCEEDED(draw_render_object( renderObject, TRUE, D3DPT_TRIANGLELIST ));
 }
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)

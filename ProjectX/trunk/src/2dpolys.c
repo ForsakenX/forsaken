@@ -1567,7 +1567,7 @@ BOOL DisplayGroupClippedFmPolys( RENDEROBJECT *renderObject, uint16 Group )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();
@@ -1591,7 +1591,7 @@ BOOL DisplayGroupUnclippedFmPolys(RENDEROBJECT *renderObject )
 
 		cull_none();
 
-		if (FAILED(draw_object(renderObject)))
+		if (!draw_object(renderObject))
 			return FALSE;
 
 		reset_cull();

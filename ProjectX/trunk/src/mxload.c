@@ -978,7 +978,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Display )
 					{
-						if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
+						if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 						{
 							return FALSE;
 						}
@@ -1207,7 +1207,7 @@ BOOL ReallyExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model )
 		{
 			for ( i=0 ; i<Mxloadheader->Group[group].num_execbufs; i++)
 			{
-				if (FAILED(draw_object(&Mxloadheader->Group[group].renderObject[i])))
+				if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 				{
 					return FALSE;
 				}

@@ -2033,7 +2033,7 @@ BOOL DisplaySolidScrPolys( RENDEROBJECT *renderObject )
 
 		disable_zbuff();
 
-		if (FAILED(draw_2d_object(renderObject)))
+		if (!draw_2d_object(renderObject))
 			return FALSE;
 
 		reset_zbuff();
@@ -2057,7 +2057,7 @@ BOOL DisplayNonSolidScrPolys( RENDEROBJECT *renderObject )
 
 		disable_zbuff();
 
-		if (FAILED(draw_2d_object(renderObject)))
+		if (!draw_2d_object(renderObject))
 			return FALSE;
 
 		reset_zbuff();
