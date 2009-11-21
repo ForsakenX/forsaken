@@ -406,34 +406,36 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **
 HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
 static BOOL draw_vertex_list( RENDEROBJECT *renderObject )
-{  
-	/*
-	glBegin(GL_TRIANGLES);
-		glVertex3f( 0.0f, 1.0f, 0.0f);				// Top
-		glVertex3f(-1.0f,-1.0f, 0.0f);				// Bottom Left
-		glVertex3f( 1.0f,-1.0f, 0.0f);				// Bottom Right
-	glEnd();
-	*/
+{
+	int group;
+	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
 
 	assert(renderObject->vbLocked == 0);
 
-	//renderObject->lpVertexBuffer, 0, sizeof(LVERTEX)
 	//lpD3DDevice->SetFVF(D3DFVF_LVERTEX);
 	//SetMaterial((D3DMATERIAL9*)&renderObject->material);
 
-	for (int i = 0; i < renderObject->numTextureGroups; i++)
-	{
-		if(renderObject->textureGroups[i].colourkey)
-			set_alpha_ignore();
+	glBegin(GL_TRIANGLES);
 
-		//SetTexture(0, (LPDIRECT3DTEXTURE9)renderObject->textureGroups[i].texture);
-		//DrawPrimitive
-			//renderObject->textureGroups[i].startVert,
-			//renderObject->textureGroups[i].numVerts
+		for (group = 0; group < renderObject->numTextureGroups; group++)
+		{
+			int i;
+			int start = renderObject->textureGroups[group].startVert;
+			int stop  = renderObject->textureGroups[group].numVerts;
 
-		if(renderObject->textureGroups[i].colourkey)
-			unset_alpha_ignore();
-	}
+			//if(renderObject->textureGroups[group].colourkey)
+			//	set_alpha_ignore();
+
+			//SetTexture(0, (LPDIRECT3DTEXTURE9)renderObject->textureGroups[i].texture);
+
+			for( i = start; i < stop; i++ )
+				glVertex3f( verts[i].x, verts[i].y, verts[i].z );
+
+			//if(renderObject->textureGroups[group].colourkey)
+			//	unset_alpha_ignore();
+		}
+
+	glEnd();
 
 	return TRUE;
 }
