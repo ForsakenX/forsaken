@@ -716,85 +716,59 @@ HRESULT LastError;
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
-	int count = (rect) ? 1 : 0 ;
-	if (FAILED(lpD3DDevice->Clear( 
-		count, (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, OPAQUE_BLACK, 1.0f, 0 
-	)))
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->Clear( ((rect) ? 1 : 0), (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, OPAQUE_BLACK, 1.0f, 0 ) == D3D_OK;
 }
 
 BOOL FSClearDepth(XYRECT * rect)
 {
-	int count = (rect) ? 1 : 0 ;
-	if (FAILED(lpD3DDevice->Clear( count, (D3DRECT*)rect, D3DCLEAR_ZBUFFER, 0, 1.0f, 0 )))
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->Clear( ((rect) ? 1 : 0), (D3DRECT*)rect, D3DCLEAR_ZBUFFER, 0, 1.0f, 0 ) == D3D_OK;
 }
 
 BOOL FSClearBlack(void)
 {
 	// TODO - does this function actually clear the zbuff/stencil ?
 	// this specifies values for zbuff/stencil but then states D3DCLEAR_TARGET
-	if (FAILED(lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, OPAQUE_BLACK, 1.0f, 0 )))
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, OPAQUE_BLACK, 1.0f, 0 ) == D3D_OK;
 }
 
 BOOL FSGetViewPort(render_viewport_t *returnViewPort)
 {
-	if(lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort ) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->GetViewport( (D3DVIEWPORT9*) returnViewPort ) == D3D_OK;
 }
 
 BOOL FSSetViewPort(render_viewport_t *newViewPort)
 {
-	if(lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort ) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->SetViewport( (D3DVIEWPORT9*) newViewPort ) == D3D_OK;
 }
 
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {
-	if(lpD3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->SetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) == D3D_OK;
 }
 
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	if(lpD3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->SetTransform(D3DTS_PROJECTION, (D3DMATRIX*)matrix) == D3D_OK;
 }
 
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	if(lpD3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->SetTransform(D3DTS_VIEW, (D3DMATRIX*)matrix) == D3D_OK;
 }
 
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	if(lpD3DDevice->GetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) != D3D_OK)
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->GetTransform(D3DTS_WORLD, (D3DMATRIX*)matrix) == D3D_OK;
 }
 
 BOOL FSBeginScene( void )
 {
-	if(D3D_OK != lpD3DDevice->BeginScene())
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->BeginScene() == D3D_OK;
 }
 
 BOOL FSEndScene( void )
 {
-	if(D3D_OK != lpD3DDevice->EndScene())
-		return FALSE;
-	return TRUE;
+	return lpD3DDevice->EndScene() == D3D_OK;
 }
 
 void save_texture( char * path, LPTEXTURE texture )
