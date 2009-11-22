@@ -73,7 +73,7 @@ BOOL init_renderer( render_info_t * info )
 	
 	// wireframe mode
 	//glPolygonMode(GL_FRONT, GL_LINE);
-	glPolygonMode(GL_BACK, GL_LINE);
+	//glPolygonMode(GL_BACK, GL_LINE);
 
 	//
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -329,8 +329,10 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	return TRUE;
 }
 
+GLfloat proj_matrix[4][4];
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
+	memcpy(&proj_matrix,&matrix->m,sizeof(proj_matrix));
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf((GLfloat*)&matrix->m);
 	return TRUE;
@@ -415,7 +417,7 @@ static void draw_vert( void * _vert, int tlvertex )
 	{
 		set_color( tlvert->color );
 		glTexCoord2f( tlvert->tu, tlvert->tv );
-		glVertex4f( tlvert->x, tlvert->y, tlvert->z, tlvert->w );
+		glVertex2f( tlvert->x, tlvert->y );
 	}
 	else
 	{
@@ -455,8 +457,25 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glMultMatrixf((GLfloat*)&world_matrix);
+		glLoadMatrixf((GLfloat*)&world_matrix);
 		glMultMatrixf((GLfloat*)&view_matrix);
+	}
+
+	// translated vertices are already in screen coordinate format
+	// they do not need to go through the pipe line to be converted
+
+	else
+	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glMatrixMode(GL_PROJECTION);
+		glPushMatrix();
+		glLoadIdentity();
+		glOrtho(0.0, (double)render_info.ThisMode.w, 0.0, (double)render_info.ThisMode.h, 0.0, 1.0);
+		// invert the y axis, down is positive
+		glScalef(1, -1, 1);
+		// move the origin from the bottom left corner to the upper left corner
+		glTranslatef(0.0f, -((float)render_info.ThisMode.h), 0.0f);
 	}
 
 	set_material( &renderObject->material );
@@ -490,14 +509,20 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 			{
 				int indice = indices[ startIndex + i ];
 				int vert = startVert + indice;
-				draw_vert( &verts[vert], tlvertex );
+				if(tlvertex)
+					draw_vert( &tlverts[vert], tlvertex );
+				else
+					draw_vert( &verts[vert], tlvertex );
 			}
 		}
 		// draw only vertex list
 		else
 		{
 			for( i = startVert; i < numVerts; i++ )
-				draw_vert( &verts[i], tlvertex );
+				if(tlvertex)
+					draw_vert( &tlverts[i], tlvertex );
+				else
+					draw_vert( &verts[i], tlvertex );
 		}
 		
 		glEnd();
@@ -509,6 +534,12 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 		if(renderObject->textureGroups[group].colourkey)
 			unset_alpha_ignore();
 			*/
+	}
+
+	if(tlvertex)
+	{
+		glMatrixMode(GL_PROJECTION);
+		glPopMatrix();
 	}
 
 	return TRUE;

@@ -3081,16 +3081,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-/*
-	if( ExecBuffer->lpVtbl->Unlock( ExecBuffer ) != D3D_OK ) return( FALSE );
 
-	memset( &ExecBuffer_d3dexdata, 0, sizeof(D3DEXECUTEDATA) );
-	ExecBuffer_d3dexdata.dwSize = sizeof(D3DEXECUTEDATA);
-	ExecBuffer_d3dexdata.dwVertexCount = TotalVerts;
-	ExecBuffer_d3dexdata.dwInstructionOffset = (ULONG) ( (char *) lpInsStart - (char *) lpBufStart );
-	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
-	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
-*/
 	if (!FSUnlockVertexBuffer(renderObject))
 	{
 		return FALSE;
