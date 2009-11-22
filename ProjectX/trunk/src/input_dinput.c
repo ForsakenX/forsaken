@@ -5,6 +5,23 @@
 #include "SDL.h"
 
 #include <stdio.h>
+
+int Num_Joysticks = 0;
+
+#ifndef WIN32
+
+BOOL TermDInput( void )
+{
+	return TRUE;
+}
+
+BOOL InitDInputJS(void)
+{
+	return TRUE;
+}
+
+#else
+
 #include <windows.h>
 
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
@@ -21,7 +38,6 @@ extern JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
-int               Num_Joysticks;
 
 BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, 
                                   LPVOID pvRef) 
@@ -402,4 +418,6 @@ void  ReleaseJoysticks( void )
     }
   }
 }
+
+#endif // WIN32
 

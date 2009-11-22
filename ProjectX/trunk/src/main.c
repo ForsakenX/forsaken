@@ -3,7 +3,6 @@
 #include <time.h>
 #include <search.h>
 #include <direct.h>
-#include "stdwin.h"
 #include "version.h"
 #include "render.h"
 #include "xmem.h"

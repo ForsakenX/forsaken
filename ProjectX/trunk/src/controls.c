@@ -103,7 +103,10 @@ DIJOYSTATE2   js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
 BYTE      js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
 
+#ifdef WIN32
 extern LPDIRECTINPUTDEVICE2 lpdiJoystick[MAX_JOYSTICKS];
+#endif
+
 extern MENU MENU_QuickTextSend;
 extern MENU MENU_QuickTextSendWhisper;
 extern MENU MENU_NEW_StartSinglePlayer;
@@ -1050,7 +1053,7 @@ void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
 *-------------------------------------------------------------------------*/
 BOOL PollJoystick( int joysticknum )
 {
-
+#ifdef WIN32
    HRESULT hRes;
    int i, j, povdir;
 
@@ -1162,9 +1165,10 @@ povs:
         ( povdir & ( 1 << j ) ) ? 0x80 : 0;
    }
 
+#endif // WIN32
+
    /* everything fine */
    return TRUE;
-
 }
 
 /*--------------------------------------------------------------------------
@@ -1192,6 +1196,7 @@ SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
 
 void SetUpJoystickAxis(int joystick)
 {
+#ifdef WIN32
   DIPROPRANGE diprg;
   BOOL DeadzoneNotSet = FALSE;
   int i;
@@ -1400,6 +1405,8 @@ void SetUpJoystickAxis(int joystick)
   // could do something about unset deadzones here...
   if (DeadzoneNotSet)
     DeadzoneNotSet = FALSE;
+
+#endif // WIN32
 }
 
 #define POV_UP      0
@@ -1496,7 +1503,7 @@ static BOOL RepeatShipActionOK ( int action )
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 {
-
+#ifdef WIN32
    int  ShipAction, axis;
    float amount;
 
@@ -1549,6 +1556,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 
     }
   }
+#endif // WIN32
 }
 
 /*===================================================================
@@ -1559,6 +1567,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 ===================================================================*/
 BOOL IsJoystickButtonPressed( int joysticknum )
 {
+#ifdef WIN32
   int i;
 
   if( !lpdiJoystick[joysticknum] )
@@ -1571,6 +1580,7 @@ BOOL IsJoystickButtonPressed( int joysticknum )
       return( TRUE );
     }
   }
+#endif // WIN32
   return( FALSE );
 }
 
@@ -1582,6 +1592,7 @@ BOOL IsJoystickButtonPressed( int joysticknum )
 ===================================================================*/
 BOOL IsJoystickButtonReleased( int joysticknum )
 {
+#ifdef WIN32
   int i;
 
   if( !lpdiJoystick[joysticknum] )
@@ -1594,6 +1605,7 @@ BOOL IsJoystickButtonReleased( int joysticknum )
       return( TRUE );
     }
   }
+#endif // WIN32
   return( FALSE );
 }
 
