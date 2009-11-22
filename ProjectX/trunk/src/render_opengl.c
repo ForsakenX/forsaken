@@ -383,6 +383,33 @@ BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
 
+// TODO - is COLOR directly passable to gl ?
+static void set_color( COLOR c )
+{
+	glColor4f(
+		(GLfloat)RGBA_GETRED(c),
+		(GLfloat)RGBA_GETGREEN(c),
+		(GLfloat)RGBA_GETBLUE(c),
+		(GLfloat)RGBA_GETALPHA(c)
+	);
+}
+
+static void draw_vert( void * _vert, int tlvertex )
+{
+	LVERTEX * vert = (LVERTEX*) _vert;
+	TLVERTEX * tlvert = (TLVERTEX*) _vert;
+	if(tlvertex)
+	{
+		set_color( tlvert->color );
+		glVertex4f( tlvert->x, tlvert->y, tlvert->z, tlvert->w );
+	}
+	else
+	{
+		set_color( vert->color );
+		glVertex3f( vert->x, vert->y, vert->z );
+	}
+}
+
 static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
 	int group;
@@ -391,8 +418,8 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 	WORD * indices = (WORD*) renderObject->lpIndexBuffer;
 
 	assert(renderObject->vbLocked == 0);
-
-	//if(!tlvertex)
+	
+	if(!tlvertex)
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
@@ -424,20 +451,14 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 				{
 					int indice = indices[ startIndex + i ];
 					int vert = startVert + indice;
-					if(tlvertex)
-						glVertex4f( tlverts[vert].x, tlverts[vert].y, tlverts[vert].z, tlverts[vert].w );
-					else
-						glVertex3f( verts[vert].x, verts[vert].y, verts[vert].z );
+					draw_vert( &verts[vert], tlvertex );
 				}
 			}
 			// draw only vertex list
 			else
 			{
 				for( i = startVert; i < numVerts; i++ )
-					if(tlvertex)
-						glVertex4f( tlverts[i].x, tlverts[i].y, tlverts[i].z, tlverts[i].w );
-					else
-						glVertex3f( verts[i].x, verts[i].y, verts[i].z );
+					draw_vert( &verts[i], tlvertex );
 			}
 
 			//if(renderObject->textureGroups[group].colourkey)
