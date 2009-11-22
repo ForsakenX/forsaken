@@ -34,7 +34,6 @@
 extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
 
 extern float hfov;
-extern float screen_aspect_ratio;
 extern int outside_map;
 extern	BOOL	DoClipping;
 extern	CAMERA	CurrentCamera;
@@ -969,8 +968,8 @@ ProcessVisiblePortal( CAMERA *cam, VISLIST *v, VISTREE *t, EXTENT *e )
 }
 
 
-void
-FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
+extern render_info_t render_info;
+void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
 	VISLIST *v;
 	VISGROUP *g;
@@ -982,7 +981,7 @@ FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 
 	// calculate clipping planes
 	w = (float) tan( hfov );
-	h = w / screen_aspect_ratio;
+	h = w / render_info.aspect_ratio;
 	clip_right.x = w;
 	clip_right.y = 0.0F;
 	clip_right.z = 2.0F;

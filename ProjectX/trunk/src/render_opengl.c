@@ -58,7 +58,7 @@ BOOL init_renderer( render_info_t * info )
 	reset_filtering();
 
 	// normally we don't draw back faces
-	//glPolygonMode(GL_BACK, GL_NONE);
+	glPolygonMode(GL_BACK, GL_NONE);
 	
 	// wireframe mode
 	glPolygonMode(GL_FRONT, GL_LINE);
@@ -85,6 +85,7 @@ BOOL init_renderer( render_info_t * info )
 	info->szClient.cy		= info->ThisMode.h;
 	info->WindowsDisplay.w  = info->ThisMode.w;
 	info->WindowsDisplay.h  = info->ThisMode.h;
+	info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 
 	{
 		render_viewport_t viewport;
@@ -231,6 +232,7 @@ void set_alpha_fx_states( void )
 // TODO - do we even use the stencil buffer ?
 // TODO - FSClear is meant to clear current viewport
 //        perhaps we can automate and remove need for rect arg ?
+// TODO - these functions are clearing the whole screen not the rect !
 
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
@@ -313,54 +315,30 @@ static void transpose_matrix( GLfloat m1[4][4], GLfloat m2[4][4] )
                         m2[a][b] = m1[b][a];
 }
 
-
-// TODO - is it good form to clean up and set matrix mode to GL_MODELVIEW ?
-// load the given matrix to be the current project matrix
-// it looks like forsaken already does all the matrix math on it's own
-// and the d3d9 api basicaly says it's "loaded" not multiplied against the identity or anything
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	GLfloat transposed[4][4];
-	transpose_matrix(matrix->m,transposed);
 	glMatrixMode(GL_PROJECTION);
-	//glLoadTransposeMatrixf(&matrix->m);
-	//glLoadMatrixf((GLfloat*)transposed[0]);
-	glLoadMatrixf((GLfloat*)transposed);
+	glLoadMatrixf((GLfloat*)&matrix->m);
 	return TRUE;
 }
 
-// i believe this maps to normal model view transformations
-// we probably don't want to load identity here and simply want to multiply against the current
+GLfloat view_matrix[4][4];
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	GLfloat transposed[4][4];
-	transpose_matrix(matrix->m,transposed);
-	glMatrixMode(GL_MODELVIEW);
-	//glMultTransposeMatrixf(&matrix->m);
-	glMultMatrixf((GLfloat*)transposed);
+	memcpy(&view_matrix,&matrix->m,sizeof(view_matrix));
 	return TRUE;
 }
 
-// i believe the given matrix should represent a location from the identify
-// it's used to jump to a location of an object previously stored
+GLfloat world_matrix[4][4];
 BOOL FSSetWorld( RENDERMATRIX *matrix )
-{
-	GLfloat transposed[4][4];
-	transpose_matrix(matrix->m,transposed);
-	glMatrixMode(GL_MODELVIEW);
-	//glLoadTransposeMatrixf(&matrix->m);
-	glLoadMatrixf((GLfloat*)transposed);
+{	
+	memcpy(&world_matrix,&matrix->m,sizeof(world_matrix));
 	return TRUE;
 }
 
-// i believe this should return a matrix representing the current matrix after multiplications
-// meaning that we could return here at any time by loading this matrix
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	GLfloat f[16];
-	glGetFloatv(GL_TRANSPOSE_MODELVIEW_MATRIX, f);
-	// TODO - this copy may not work properly based on col/row major
-	memcpy(&matrix->m,f,sizeof(matrix->m));
+	memcpy(&matrix->m,&world_matrix,sizeof(matrix->m));
 	return TRUE;
 }
 
@@ -414,31 +392,52 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 
 	assert(renderObject->vbLocked == 0);
 
-	//SetMaterial( &renderObject->material );
+	//if(!tlvertex)
+	{
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glMultMatrixf((GLfloat*)&world_matrix);
+		glMultMatrixf((GLfloat*)&view_matrix);
+	}
 
 	glBegin(primitive_type);
+
+		//SetMaterial( &renderObject->material );
 
 		for (group = 0; group < renderObject->numTextureGroups; group++)
 		{
 			int i;
 			int startVert  = renderObject->textureGroups[group].startVert;
 			int numVerts   = renderObject->textureGroups[group].numVerts;
-			int startIndex = renderObject->textureGroups[group].startIndex;
-			int numIndices = renderObject->textureGroups[group].numTriangles * 3;
 
 			//if(renderObject->textureGroups[group].colourkey)
 			//	set_alpha_ignore();
 
 			//SetTexture( renderObject->textureGroups[i].texture );
 
-			for( i = 0; i < numIndices; i++ )
+			// draw vertex list using index list
+			if(renderObject->lpIndexBuffer)
 			{
-				int indice = indices[ startIndex + i ];
-				int vert = startVert + indice;
-				if(tlvertex)
-					glVertex4f( tlverts[vert].x, tlverts[vert].y, tlverts[vert].z, tlverts[vert].w );
-				else
-					glVertex3f( verts[vert].x, verts[vert].y, verts[vert].z );
+				int startIndex = renderObject->textureGroups[group].startIndex;
+				int numIndices = renderObject->textureGroups[group].numTriangles * 3;
+				for( i = 0; i < numIndices; i++ )
+				{
+					int indice = indices[ startIndex + i ];
+					int vert = startVert + indice;
+					if(tlvertex)
+						glVertex4f( tlverts[vert].x, tlverts[vert].y, tlverts[vert].z, tlverts[vert].w );
+					else
+						glVertex3f( verts[vert].x, verts[vert].y, verts[vert].z );
+				}
+			}
+			// draw only vertex list
+			else
+			{
+				for( i = startVert; i < numVerts; i++ )
+					if(tlvertex)
+						glVertex4f( tlverts[i].x, tlverts[i].y, tlverts[i].z, tlverts[i].w );
+					else
+						glVertex3f( verts[i].x, verts[i].y, verts[i].z );
 			}
 
 			//if(renderObject->textureGroups[group].colourkey)
@@ -492,7 +491,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	}
 }
 
-const char * render_error_description( int error )
+const char * render_error_description( int e )
 {
 	GLenum error;
 	const GLubyte * str;

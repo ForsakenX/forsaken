@@ -221,6 +221,7 @@ BOOL init_renderer( render_info_t * info )
 		info->szClient.cy		= info->ThisMode.h;
 		info->WindowsDisplay.w  = info->ThisMode.w;
 		info->WindowsDisplay.h  = info->ThisMode.h;
+		info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 		free(modes);
 	}
 

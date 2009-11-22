@@ -51,6 +51,7 @@ typedef struct {
     BOOL                    bMinimized;				/* app window is minimized */
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
 	BOOL					vsync;					/* vertical sync */
+	float					aspect_ratio;			/* screen aspect ratio */
 	SDL_Surface*	        screen;
 } render_info_t;
 

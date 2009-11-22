@@ -119,7 +119,6 @@ extern BOOL NoSFX;
 extern BOOL DS;
 extern float normal_fov;
 extern float UV_Fix;
-extern float screen_aspect_ratio;
 extern int NetUpdateIntervalCmdLine;
 extern DWORD UserTotalCompoundSfxBufferSize;
 extern BOOL CustomCompoundBufferSize;
@@ -293,8 +292,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// use sscanf
 		else 
 		{
-
-			int num, denom;
 			DWORD mem;
 
 			// override local port
@@ -332,17 +329,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 			// bits per pixel
 			// default is 32 bpp
 			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) == 1 ){}
-
-			// the aspect ratio tells forsaken the ratio between width/height of your monitor
-			// for example on an 12"x/7.5"y widescreen the ratio is 8/5
-			// a shortcut is to simply alter the base 10
-			//		12/7.5*10=120/750
-			//		12.25/7.75*100=1225/775
-			else if ( sscanf( option, "ratio:%d:%d", &num, &denom ) == 2 )
-			{
-				if ( num && denom )
-					screen_aspect_ratio = (float) num / denom;
-			}
 
 			// modifies texture dimentions.. don't now what uv stands for..
 			else if ( sscanf( option, "UVFix:%f", &UV_Fix ) == 1 ){}
@@ -501,12 +487,6 @@ static BOOL AppInit( char * lpCmdLine )
 	// parse the command line
 	if(!ParseCommandLine(lpCmdLine))
 		return FALSE;
-
-	// this is just a safety cause if these values are 0
-	// then starting in fullscreen and switching to window crashes
-	// cause the last window state had a window size of 0
-	if ( ! screen_aspect_ratio )
-		screen_aspect_ratio = (float) (render_info.default_mode.w / render_info.default_mode.h);
 
 	//
 	// create and show the window

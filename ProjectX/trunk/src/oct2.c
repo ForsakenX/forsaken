@@ -176,8 +176,6 @@ BOOL Cheated = FALSE;
 void InitSoundInfo( MLOADHEADER * Mloadheader );
 void InitShipSpeeds( void );
 
-#define DEFAULT_SCREEN_ASPECT_RATIO ( 4.0F / 3.0F )
-
 #define SAVESCREEN_3DFX
 
 uint32        AnimOncePerFrame = 0;         // used for stuff that is displayed more than once in a single frame..
@@ -535,7 +533,6 @@ float viewplane_distance;
 float hfov = START_FOV;
 float chosen_fov = START_FOV;
 float normal_fov = START_FOV;
-float screen_aspect_ratio = DEFAULT_SCREEN_ASPECT_RATIO;
 
 BOOL  DrawPanel = FALSE;
 BOOL  ReMakeSimplePanel = TRUE;
@@ -838,7 +835,7 @@ BOOL SetFOV( float fov )
 		screen_height = (float) render_info.WindowsDisplay.h;
 	}
 
-	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+	pixel_aspect_ratio = render_info.aspect_ratio * screen_height / screen_width;
 	viewplane_distance = (float) ( viewport.Width / ( 2 * tan( DEG2RAD( fov ) * 0.5 ) ) );
 	proj._11 = 2 * viewplane_distance / viewport.Width;
 	proj._22 = 2 * viewplane_distance / ( viewport.Height / pixel_aspect_ratio );
@@ -4995,7 +4992,7 @@ BOOL Disp3dPanel( void )
 		screen_height = (float) render_info.WindowsDisplay.h;
 	}
 
-	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
+	pixel_aspect_ratio = render_info.aspect_ratio * screen_height / screen_width;
 	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
 	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
 	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
@@ -5290,8 +5287,6 @@ BOOL DispTracker( void ) // bjd
 		screen_width = (float) render_info.WindowsDisplay.w;
 		screen_height = (float) render_info.WindowsDisplay.h;
 	}
-
-	pixel_aspect_ratio = screen_aspect_ratio * screen_height / screen_width;
 
     newviewport.X = 0;	
 	newviewport.Y = 0;
