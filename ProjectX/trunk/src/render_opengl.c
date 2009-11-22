@@ -146,6 +146,7 @@ BOOL render_reset( render_info_t * info )
 BOOL render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
+	render_error_description(0);
 	return TRUE;
 }
 
@@ -537,10 +538,12 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 const char * render_error_description( int e )
 {
 	GLenum error;
-	const GLubyte * str;
-	if( ( error = glGetError() ) == GL_NO_ERROR )
-		return "";
-	str = gluErrorString(error);
+	const GLubyte * str = NULL;
+	while( ( error = glGetError() ) != GL_NO_ERROR )
+	{
+		str = gluErrorString(error);
+		DebugPrintf("render error: %s\n",str);
+	}
 	return (const char *) str;
 }
 
