@@ -392,10 +392,10 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
 static void set_color( COLOR c )
 {
 	glColor4f(
-		(GLfloat)RGBA_GETRED(c),
-		(GLfloat)RGBA_GETGREEN(c),
-		(GLfloat)RGBA_GETBLUE(c),
-		(GLfloat)RGBA_GETALPHA(c)
+		(GLfloat)RGBA_GETRED(c)/255,
+		(GLfloat)RGBA_GETGREEN(c)/255,
+		(GLfloat)RGBA_GETBLUE(c)/255,
+		(GLfloat)RGBA_GETALPHA(c)/255
 	);
 }
 
