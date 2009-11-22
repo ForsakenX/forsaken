@@ -294,50 +294,16 @@ char * LogFilename = "Logs\\projectx.log";
 FILE * fp;
 
 // add comment to log
-void AddCommentToLog( const char * format, ... )
+void AddCommentToLog( char * str )
 {
-    static char buf1[256], buf2[512];
-	va_list		args;
-
-	// only log if debuggin on
 	if(!Debug)return;
 
-	// no file open
 	if(!fp)
 		fp = fopen( LogFilename, "w" );
 
 	if( fp )
 	{
-		va_start( args, format );
-		vsprintf( buf1, format, args );
-		wsprintf( buf2, "%hs", buf1 );
-		fprintf( fp, "%s", buf2 );
-		va_end( args );
+		fprintf( fp, "%s", str );
 		fflush(fp);
-	}
-}
-
-// use this for whatever you want
-
-void WriteToFile( char* path, const char * format, ... )
-{
-    static char buf1[256], buf2[512];
-	va_list		args;
-
-	FILE * fp = fopen( path, "a" );
-
-	if( fp )
-	{
-		va_start( args, format );
-		vsprintf( buf1, format, args );
-		wsprintf( buf2, "%hs", buf1 );
-		fprintf( fp, "%s", buf2 );
-		va_end( args );
-		fflush(fp);
-		fclose(fp);
-	}
-	else
-	{
-		DebugPrintf("WriteToFile() Failed to Open File.\n");
 	}
 }

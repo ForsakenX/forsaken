@@ -1,7 +1,6 @@
 /* handle keyboard and mouse control */
 
 #include <math.h>
-#include "windows.h"
 
 #include "input.h"
 #include "config.h"
@@ -20,8 +19,6 @@
 #include "render.h"
 #include "util.h"
 
-#if 1
-
 // TEMP!! - for testing looping SFX
 #include "sfx.h"
 #include "compobjects.h"
@@ -32,7 +29,6 @@
 
 extern GLOBALSHIP Ships[];
 
-#endif
 extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;
 

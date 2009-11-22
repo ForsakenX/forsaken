@@ -4,7 +4,6 @@
 //
 
 #include <stdio.h>
-#include "windows.h"
 
 #include "main.h"
 #include "net.h"

@@ -10,7 +10,6 @@
 #include "object.h"
 #include "networking.h"
 #include "controls.h"
-#include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <memory.h>

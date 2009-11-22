@@ -18,6 +18,5 @@ long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 void AddCommentToLog( const char * format, ... );
 BOOL File_Exists( char * Filename );
-void WriteToFile( char* path, const char * format, ... );
 
 #endif // FILE_H

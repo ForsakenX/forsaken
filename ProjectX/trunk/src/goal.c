@@ -2,7 +2,6 @@
 
 #include <stdio.h>
 #include "main.h"
-#include <windows.h>
 #include "new3d.h"
 #include "quat.h"
 #include "main.h"

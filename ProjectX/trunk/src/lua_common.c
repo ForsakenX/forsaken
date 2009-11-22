@@ -46,7 +46,7 @@ int lua_dofile(char* name)
 static int lua_debug_str(lua_State *state)
 {
 	char * str = (char*) lua_tostring(state,1); // get argument
-	OutputDebugString( str );
+	DebugPrintf(str);
 	return 0; // number of results
 }
 

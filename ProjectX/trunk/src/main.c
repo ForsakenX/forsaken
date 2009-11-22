@@ -1,17 +1,10 @@
-
-#define WIN32_EXTRA_LEAN
-#include <windows.h>
-#include <windowsx.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
 #include <search.h>
-#include <winuser.h>
 #include <direct.h>
 #include "stdwin.h"
-
 #include "version.h"
-
 #include "render.h"
 #include "xmem.h"
 #include "sbufferhand.h"
@@ -21,7 +14,6 @@
 #include "title.h"
 #include "lua_common.h"
 #include "sfx.h"
-
 #include "SDL.h"
 #include "input.h"
 
