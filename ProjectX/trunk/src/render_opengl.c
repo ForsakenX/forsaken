@@ -416,7 +416,8 @@ static void set_material( RENDERMATERIAL * m )
 	glMaterialfv( GL_FRONT, GL_AMBIENT,	 (GLfloat*)&m->Ambient  );
 	glMaterialfv( GL_FRONT, GL_SPECULAR, (GLfloat*)&m->Specular );
 	glMaterialfv( GL_FRONT, GL_EMISSION, (GLfloat*)&m->Emissive );
-	//glMaterialf ( GL_FRONT, GL_SHININESS, 1.0 ); // specular exponent
+	// gl specular exponent =~ d3d specular sharpness
+	glMaterialf ( GL_FRONT, GL_SHININESS,(GLfloat)m->Power      );
 }
 
 static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
@@ -480,8 +481,8 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 }
 
 BOOL draw_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,FALSE);}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,TRUE);;}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_LINES,FALSE);;}
+BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,TRUE);}
+BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_LINES,FALSE);}
 
 
 // these can be done later
