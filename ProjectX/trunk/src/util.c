@@ -27,7 +27,7 @@ void DebugPrintf( const char * format, ... )
 #ifdef WIN32
   OutputDebugString( buf2 );
 #else
-  puts( buf2 );
+  printf( buf2 );
 #endif
 
   va_end( args );
