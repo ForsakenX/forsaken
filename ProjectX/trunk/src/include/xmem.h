@@ -1,31 +1,7 @@
-
 #ifndef XMEM_INCLUDED
 #define XMEM_INCLUDED
 
-//#include <ddraw.h>
-
-/*
- * Defines
- */
-/*
- * Structures
- */
-/*
- * fn prototypes
- */
-
-#if 0
-
-void InitUsedMemList( void );
-void AddToUsedMemList( char *start, DWORD size );
-void FreeUsedMemList( void );
-void MakeMemNonVolitile( void );
-void MakeRegionPresent(volatile BYTE *pb, UINT cb);
-
-#endif
-
 #ifdef DEBUG_ON
-
 
 #undef malloc
 #undef calloc
@@ -44,9 +20,7 @@ void X_free( void * Pnt, char *in_file, int in_line );
 void * X_realloc( void * Pnt , size_t size, char *in_file, int in_line );
 int UnMallocedBlocks( void );
 
-
 #endif
-
 
 #endif	// XMEM_INCLUDED
 
