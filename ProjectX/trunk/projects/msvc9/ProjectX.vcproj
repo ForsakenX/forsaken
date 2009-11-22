@@ -728,10 +728,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\stdwin.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\teleport.c"
 				>
 			</File>
@@ -1006,10 +1002,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\stats.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\stdwin.h"
 				>
 			</File>
 			<File
