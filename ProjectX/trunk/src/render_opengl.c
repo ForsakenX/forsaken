@@ -61,7 +61,7 @@ BOOL init_renderer( render_info_t * info )
 	glPolygonMode(GL_BACK, GL_NONE);
 	
 	// wireframe mode
-	//glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	set_normal_states();
@@ -408,10 +408,6 @@ static void draw_vert( void * _vert, int tlvertex )
 		glVertex3f( vert->x, vert->y, vert->z );
 	}
 }
-
-static GLfloat red[4]   = {0.8f, 0.1f, 0.0f, 1.0f};
-static GLfloat green[4] = {0.0f, 0.8f, 0.2f, 1.0f};
-static GLfloat blue[4]  = {0.2f, 0.2f, 1.0f, 1.0f};
 
 static void set_material( RENDERMATERIAL * m )
 {
