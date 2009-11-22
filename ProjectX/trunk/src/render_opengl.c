@@ -22,6 +22,13 @@ typedef long HRESULT;
 //		  other wise should get this from gl caps
 BOOL bSquareOnly = FALSE;
 
+// these can be done later
+BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+{return S_OK;}
+void release_texture( LPTEXTURE texture ){}
+BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+{return S_OK;}
+
 // will this even be needed?
 void render_gamma_correction( double gamma )
 {
@@ -400,11 +407,13 @@ static void draw_vert( void * _vert, int tlvertex )
 	if(tlvertex)
 	{
 		set_color( tlvert->color );
+		glTexCoord2f( tlvert->tu, tlvert->tv );
 		glVertex4f( tlvert->x, tlvert->y, tlvert->z, tlvert->w );
 	}
 	else
 	{
 		set_color( vert->color );
+		glTexCoord2f( vert->tu, vert->tv );
 		glVertex3f( vert->x, vert->y, vert->z );
 	}
 }
@@ -437,45 +446,57 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 		glMultMatrixf((GLfloat*)&view_matrix);
 	}
 
-	glBegin(primitive_type);
+	set_material( &renderObject->material );
 
-		set_material( &renderObject->material );
+	for (group = 0; group < renderObject->numTextureGroups; group++)
+	{
+		int i;
+		int startVert  = renderObject->textureGroups[group].startVert;
+		int numVerts   = renderObject->textureGroups[group].numVerts;
 
-		for (group = 0; group < renderObject->numTextureGroups; group++)
+		/*
+		if(renderObject->textureGroups[group].colourkey)
+			set_alpha_ignore();
+		*/
+
+		if( renderObject->textureGroups[group].texture )
 		{
-			int i;
-			int startVert  = renderObject->textureGroups[group].startVert;
-			int numVerts   = renderObject->textureGroups[group].numVerts;
-
-			if(renderObject->textureGroups[group].colourkey)
-				set_alpha_ignore();
-
-			//SetTexture( renderObject->textureGroups[i].texture );
-
-			// draw vertex list using index list
-			if(renderObject->lpIndexBuffer)
-			{
-				int startIndex = renderObject->textureGroups[group].startIndex;
-				int numIndices = renderObject->textureGroups[group].numTriangles * 3;
-				for( i = 0; i < numIndices; i++ )
-				{
-					int indice = indices[ startIndex + i ];
-					int vert = startVert + indice;
-					draw_vert( &verts[vert], tlvertex );
-				}
-			}
-			// draw only vertex list
-			else
-			{
-				for( i = startVert; i < numVerts; i++ )
-					draw_vert( &verts[i], tlvertex );
-			}
-
-			if(renderObject->textureGroups[group].colourkey)
-				unset_alpha_ignore();
+			GLuint texture = *(GLuint*)renderObject->textureGroups[group].texture;
+			glEnable(GL_TEXTURE_2D);
+			glBindTexture(GL_TEXTURE_2D, texture);
 		}
 
-	glEnd();
+		glBegin(primitive_type);
+
+		// draw vertex list using index list
+		if(renderObject->lpIndexBuffer)
+		{
+			int startIndex = renderObject->textureGroups[group].startIndex;
+			int numIndices = renderObject->textureGroups[group].numTriangles * 3;
+			for( i = 0; i < numIndices; i++ )
+			{
+				int indice = indices[ startIndex + i ];
+				int vert = startVert + indice;
+				draw_vert( &verts[vert], tlvertex );
+			}
+		}
+		// draw only vertex list
+		else
+		{
+			for( i = startVert; i < numVerts; i++ )
+				draw_vert( &verts[i], tlvertex );
+		}
+		
+		glEnd();
+
+		if( renderObject->textureGroups[group].texture )
+			glDisable(GL_TEXTURE_2D);
+
+		/*
+		if(renderObject->textureGroups[group].colourkey)
+			unset_alpha_ignore();
+			*/
+	}
 
 	return TRUE;
 }
@@ -483,15 +504,6 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 BOOL draw_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,FALSE);}
 BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,TRUE);}
 BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_LINES,FALSE);}
-
-
-// these can be done later
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{return S_OK;}
-void release_texture( LPTEXTURE texture ){}
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{return S_OK;}
-
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
