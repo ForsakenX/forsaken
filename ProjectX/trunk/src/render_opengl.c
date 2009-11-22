@@ -61,7 +61,7 @@ BOOL init_renderer( render_info_t * info )
 	glPolygonMode(GL_BACK, GL_NONE);
 	
 	// wireframe mode
-	glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
 	set_normal_states();
@@ -383,7 +383,6 @@ BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
 
-// TODO - is COLOR directly passable to gl ?
 static void set_color( COLOR c )
 {
 	glColor4f(
@@ -410,8 +409,13 @@ static void draw_vert( void * _vert, int tlvertex )
 	}
 }
 
+static GLfloat red[4]   = {0.8f, 0.1f, 0.0f, 1.0f};
+static GLfloat green[4] = {0.0f, 0.8f, 0.2f, 1.0f};
+static GLfloat blue[4]  = {0.2f, 0.2f, 1.0f, 1.0f};
+
 static void set_material( RENDERMATERIAL * m )
 {
+	if(!m)return;
 	glMaterialfv( GL_FRONT, GL_DIFFUSE,	 (GLfloat*)&m->Diffuse  );
 	glMaterialfv( GL_FRONT, GL_AMBIENT,	 (GLfloat*)&m->Ambient  );
 	glMaterialfv( GL_FRONT, GL_SPECULAR, (GLfloat*)&m->Specular );
