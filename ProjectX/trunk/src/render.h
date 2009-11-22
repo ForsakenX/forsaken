@@ -10,7 +10,6 @@ extern "C" {
 #include "main.h"
 #include "new3d.h"
 #include "SDL.h"
-#include <windows.h>
 
 BOOL  bSquareOnly;
 
@@ -52,12 +51,7 @@ typedef struct {
     BOOL                    bMinimized;				/* app window is minimized */
     BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
 	BOOL					vsync;					/* vertical sync */
-	SDL_Surface*	        screen;					
-#ifdef WIN32
-	HWND					window;			        /* application window handle */
-#else
-	// linux ?
-#endif
+	SDL_Surface*	        screen;
 } render_info_t;
 
 #undef RELEASE
@@ -86,13 +80,13 @@ void reset_zbuff( void );
 void reset_filtering( void );
 void set_alpha_fx_states( void );
 
-const char * render_error_description( HRESULT hr );
+const char * render_error_description( int error );
 
 typedef struct {
-    LONG x1;
-    LONG y1;
-    LONG x2;
-    LONG y2;
+    long x1;
+    long y1;
+    long x2;
+    long y2;
 } XYRECT;
 
 BOOL FSClearBlack(void);
@@ -182,20 +176,20 @@ BOOL FSSetWorld( RENDERMATRIX *matrix );
 BOOL FSSetProjection( RENDERMATRIX *matrix );
 BOOL FSSetView( RENDERMATRIX *matrix );
 
-HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
-HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
-HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
-HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
-HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
-HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
-HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
-HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
+BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
+int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
+BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
+int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
+BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
+int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 
-HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+int update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 void release_texture( LPTEXTURE texture );
 
 BOOL draw_line_object(RENDEROBJECT *renderObject);

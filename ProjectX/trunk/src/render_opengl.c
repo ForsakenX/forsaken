@@ -374,37 +374,37 @@ BOOL FSGetWorld(RENDERMATRIX *matrix)
 // so we can render the static objects as display lists
 //
 
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
 	return TRUE;
 }
-HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {FSCreateVertexBuffer(renderObject, numVertices); return TRUE;}
 
-HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
 	return TRUE;
 }
-HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {return FSCreateIndexBuffer(renderObject,numIndices);}
 
-HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {(*indices) = renderObject->lpIndexBuffer; return TRUE;}
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {(*verts) = renderObject->lpVertexBuffer; return TRUE;}
-HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
-HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
-HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
 	return TRUE;
 }
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
-HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
 static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
@@ -457,10 +457,10 @@ BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(rende
 
 
 // these can be done later
-HRESULT update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+int update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 void release_texture( LPTEXTURE texture ){}
-HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 
 
@@ -493,7 +493,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	}
 }
 
-const char * render_error_description( HRESULT hr )
+const char * render_error_description( int error )
 {
 	GLenum error;
 	const GLubyte * str;

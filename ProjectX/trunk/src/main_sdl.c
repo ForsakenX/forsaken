@@ -92,9 +92,6 @@ BOOL sdl_init_window( void )
 	// window title, icon title (taskbar and other places)
 	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
 
-	// hack to get the window handle
-	render_info.window = GetActiveWindow();
-
 	//
 	return TRUE;
 }

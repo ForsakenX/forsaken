@@ -231,7 +231,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			//vertexArray = (LVERTEX*)malloc(sizeof(LVERTEX) * num_vertices);
 
 			/*	create a vertex buffer	*/
-			if (FAILED(FSCreateVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], num_vertices)))
+			if (!FSCreateVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], num_vertices))
 			{
 				return FALSE;
 			}
@@ -239,7 +239,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
 			/*	lock the vertex buffer	*/
-			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
+			if (!(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
 				return FALSE;
@@ -323,7 +323,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			}
 
 			/*	create an index buffer	*/
-			if (FAILED(FSCreateIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount * 3)))
+			if (!FSCreateIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
 			{
 				return FALSE;
 			}
@@ -331,7 +331,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			DebugPrintf("created index buffer to hold :%d incidices\n", triangleCount * 3);
 
 			/*	lock the index buffer	*/
-			if (FAILED(FSLockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpIndices)))
+			if (!(FSLockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpIndices)))
 			{
 				Msg( "Mxload() lock failed in %s\n", Filename );
 				return FALSE;
@@ -429,14 +429,14 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				Mxaloadheader->Group[group].poly_ptr[execbuf] = NULL;			
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxaload() unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
 
 			/*	unlock the index buffer	*/
-			if (FAILED(FSUnlockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
 				return FALSE ;
@@ -488,7 +488,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				{
 					for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 					{
-						if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
+						if (!(FSLockVertexBuffer(&Mxaloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
 						{
 							Msg( "Mxaload : Lock VertexBuffer failed\n" );
 							return FALSE;
@@ -513,7 +513,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 							Buffer += ( num_anim_vertices * sizeof( MXAVERT ) );
 						}
 
-						if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+						if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 						{
 							Msg( "Mxaload : Unlock VertexBuffer failed\n" );
 							return FALSE ;
@@ -967,7 +967,7 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 	{
 		for( execbuf=0 ; execbuf<Mxaloadheader->Group[group].num_execbufs; execbuf++)
 		{
-			if (FAILED(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
+			if (!(FSLockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpBufStart)))
 			{
 				return FALSE;
 			}
@@ -1022,7 +1022,7 @@ BOOL	InterpFrames( MXALOADHEADER * Mxaloadheader , int FromFrame, int ToFrame , 
 			if ( Mxaloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxaloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 				return FALSE ;
 #endif
-			if (FAILED(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				return FALSE;
 			}

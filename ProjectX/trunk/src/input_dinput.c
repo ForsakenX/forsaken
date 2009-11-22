@@ -310,7 +310,7 @@ BOOL InitDInputJS(void)
     if (IDirectInputDevice2_SetDataFormat(lpdiJoystick[i], &c_dfDIJoystick2) == DI_OK)
     {                          
       // set cooperative level
-      if(IDirectInputDevice2_SetCooperativeLevel(lpdiJoystick[i], render_info.window,
+      if(IDirectInputDevice2_SetCooperativeLevel(lpdiJoystick[i], GetActiveWindow(),
                  DISCL_NONEXCLUSIVE | DISCL_FOREGROUND) == DI_OK)
       {
         // try to acquire the Joystick

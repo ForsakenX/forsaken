@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
+#include <windows.h>
 
 #include "main.h"
 #include "new3d.h"

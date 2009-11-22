@@ -720,13 +720,13 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 		
 	
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -866,12 +866,12 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -961,12 +961,12 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 	
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -1106,12 +1106,12 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		if( StartVert >= MAXPOLYVERTS ) break;
 	}
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}	
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -1258,12 +1258,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 			
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -1405,12 +1405,12 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -1503,12 +1503,12 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 		
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -1648,12 +1648,12 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;

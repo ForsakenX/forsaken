@@ -75,27 +75,31 @@ int Msg( const char * msg, ... )
 	vsprintf( txt, msg, args);
 	va_end( args );
 
+#ifdef WIN32
+
     if (render_info.bFullscreen)
 	{
 		// switch to window mode
 		// other wise pop up will get stuck behind main window
 		MenuGoFullScreen(NULL);
 		// push main window to background so popup shows
-        SetWindowPos(render_info.window, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+        SetWindowPos(GetActiveWindow(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
 	
 	// release mouse so they can interact with message box
 	input_grab( FALSE );
 
-    res = MessageBox( render_info.window, txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
+    res = MessageBox( GetActiveWindow(), txt, "Forsaken", MB_OKCANCEL | MB_ICONEXCLAMATION );
 
     if (was_fullscreen)
 	{
 		// switch back to fullscreen
 		MenuGoFullScreen(NULL);
-        SetWindowPos(render_info.window, HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
+        SetWindowPos(GetActiveWindow(), HWND_TOPMOST, 0, 0, 0, 0,  SWP_NOSIZE | SWP_NOMOVE);
 		input_grab( TRUE ); // don't do this in window mode just let them click back on the window
 	}
+
+#endif
 
 	DebugPrintf( txt );
 

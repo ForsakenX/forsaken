@@ -2165,12 +2165,12 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		Lock Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}	
 
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -2548,7 +2548,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -2660,12 +2660,12 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockPretransformedVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -3096,7 +3096,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;

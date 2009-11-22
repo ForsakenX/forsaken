@@ -1502,7 +1502,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 
    JOYSTICKAXIS *joyaxis;
 
-   LONG *axisptr[MAX_JOYSTICK_AXIS] =
+   long *axisptr[MAX_JOYSTICK_AXIS] =
    {
     &js[ new_input ][joysticknum].lX,
     &js[ new_input ][joysticknum].lY,

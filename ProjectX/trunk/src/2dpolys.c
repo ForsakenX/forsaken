@@ -1693,12 +1693,12 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -1959,12 +1959,12 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 /*===================================================================
 		UnLock Exec Buffer and set data description
 ===================================================================*/
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -2068,12 +2068,12 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		Lock Exec Buffer and get ready to fill in...
 ===================================================================*/
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &lpBufStart)))
+	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockIndexBuffer(renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -2335,12 +2335,12 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSUnlockIndexBuffer(renderObject)))
+	if (!(FSUnlockIndexBuffer(renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;

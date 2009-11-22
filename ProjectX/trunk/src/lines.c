@@ -135,7 +135,7 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 
 	if( *StartLine != (uint16) -1 )
 	{
-		if (FAILED(FSLockVertexBuffer(renderObject, &Vert_Ptr)))
+		if (!(FSLockVertexBuffer(renderObject, &Vert_Ptr)))
 		{
 			return FALSE;
 		}

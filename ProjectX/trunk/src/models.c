@@ -2823,7 +2823,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 	{
 		for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 		{
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -2836,7 +2836,7 @@ BOOL ProcessModel( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, i
 				DstlpD3DLVERTEX++;
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -2889,7 +2889,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 	{
 		for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 		{
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -2920,7 +2920,7 @@ BOOL ProcessModel2( MXLOADHEADER * DstMloadheader, float Scale, float MaxScale, 
 				
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -2959,7 +2959,7 @@ BOOL ProcessModelExec( RENDEROBJECT *renderObject, int16 NumVerts, float Scale, 
 		Colour = RGBA_MAKE( Red, Green, Blue, 255 );
 #endif
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -2970,7 +2970,7 @@ BOOL ProcessModelExec( RENDEROBJECT *renderObject, int16 NumVerts, float Scale, 
 		DstlpD3DLVERTEX++;
 	}
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
@@ -2998,7 +2998,7 @@ BOOL ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16 NumVerts, uin
 		Colour = RGBA_MAKE( R, G, B, 255 );
 #endif
 
-	if (FAILED(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(renderObject, &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -3009,7 +3009,7 @@ BOOL ProcessSphereZoneModelExec( RENDEROBJECT *renderObject, int16 NumVerts, uin
 		DstlpD3DLVERTEX++;
 	}
 
-	if (FAILED(FSUnlockVertexBuffer(renderObject)))
+	if (!(FSUnlockVertexBuffer(renderObject)))
 	{
 		return FALSE;
 	}
@@ -3168,7 +3168,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 	{
 		for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 		{
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3181,7 +3181,7 @@ BOOL TintModel( uint16 Model, float RF, float GF, float BF, float TF )
 				DstlpD3DLVERTEX++;
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3220,7 +3220,7 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
 
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}	
@@ -3233,7 +3233,7 @@ BOOL TintMxaModel( MXALOADHEADER * DstMloadheader, float RF, float GF, float BF,
 				DstlpD3DLVERTEX++;
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3274,7 +3274,7 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 //			if (FSLockExecuteBuffer(MXAloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //				return FALSE;
 
-			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			if (!(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -3295,7 +3295,7 @@ BOOL UpdateMxaModel( MXALOADHEADER * MXAloadheader )
 			/*	unlock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
 			{
 				return FALSE;
 			}
@@ -3354,7 +3354,7 @@ BOOL AmbientLightMxaModel( MXALOADHEADER * DstMloadheader, int R, int G, int B, 
 	{
 		for( ExecBuf = 0; ExecBuf < DstMloadheader->Group[ Group ].num_execbufs; ExecBuf++ )
 		{
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3432,7 +3432,7 @@ __asm
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3499,7 +3499,7 @@ BOOL AmbientLightMxModel( MXLOADHEADER * DstMloadheader, int R, int G, int B, in
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3579,7 +3579,7 @@ __asm
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3625,7 +3625,7 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3664,7 +3664,7 @@ BOOL ShadeModel( uint16 Model, MATRIX * Matrix, float ZTrans, float Range )
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3742,7 +3742,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
 
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3759,7 +3759,7 @@ BOOL LightModel( uint16 Model, VECTOR * Pos )
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3837,7 +3837,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 //			if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //				return FALSE;
 
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -3854,7 +3854,7 @@ BOOL LightModel2( uint16 Model, VECTOR * Pos )
 
 //			if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //							DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -3933,7 +3933,7 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
 
-				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -3950,7 +3950,7 @@ BOOL LightMxModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, flo
 	
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
 					return FALSE;
 				}
@@ -4030,7 +4030,7 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
-				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -4047,7 +4047,7 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 	
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
 					return FALSE;
 				}
@@ -5135,7 +5135,7 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -5177,7 +5177,7 @@ BOOL GetMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR * 
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -5224,7 +5224,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -5266,7 +5266,7 @@ BOOL GetMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR 
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -5313,7 +5313,7 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE;
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -5350,7 +5350,7 @@ BOOL CreateMXBoundingBox( MXLOADHEADER * DstMloadheader, MATRIX * Matrix, VECTOR
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -5396,7 +5396,7 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -5433,7 +5433,7 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -6515,7 +6515,7 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 //					return FALSE ; // bjd
 //				if (FSLockExecuteBuffer(Mxloadheader->Group[group].lpExBuf[execbuf], &debDesc ) != D3D_OK)
 //					return FALSE;
-				if (FAILED(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
+				if (!(FSLockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -6538,7 +6538,7 @@ BOOL	ENVMxa( MXALOADHEADER * Mxloadheader , MATRIX * Mat ,VECTOR * Pos)
 				/*	unlock the execute buffer	*/
 //				if ( Mxloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( Mxloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 //					return FALSE ;
-				if (FAILED(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
+				if (!(FSUnlockVertexBuffer(&Mxloadheader->Group[group].renderObject[execbuf])))
 				{
 					return FALSE;
 				}

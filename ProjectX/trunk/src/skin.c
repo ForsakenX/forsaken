@@ -1027,12 +1027,12 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 		return FALSE;
 	}
 
-	if (FAILED(FSCreateVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], NumVerts)))
+	if (!FSCreateVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], NumVerts))
 	{
 		return FALSE;
 	}
    
-	if (FAILED(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], &lpBufStart)))
+	if (!(FSLockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ], &lpBufStart)))
 	{
 		return FALSE;
 	}
@@ -1082,7 +1082,7 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 //   	OP_EXIT( lpPointer );
    
 //   	Skin_Execs[ Num_Skin_Execs ]->lpVtbl->Unlock( Skin_Execs[ Num_Skin_Execs ] );
-	if (FAILED(FSUnlockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ])))
+	if (!(FSUnlockVertexBuffer(&Skin_Execs[ Num_Skin_Execs ])))
 	{
 		return FALSE;
 	}
@@ -1268,12 +1268,12 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
 		return FALSE;
 	}
 
-	if (FAILED(FSCreateVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], NumVerts)))
+	if (!FSCreateVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], NumVerts))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], &lpBufStart)))
+	if (!(FSLockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ], &lpBufStart)))
 	{
 		return FALSE;
 	}
@@ -1300,7 +1300,7 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
    
 //   	Portal_Execs[ Num_Portal_Execs ]->lpVtbl->Unlock( Portal_Execs[ Num_Portal_Execs ] );
 
-	if (FAILED(FSUnlockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ])))
+	if (!(FSUnlockVertexBuffer(&Portal_Execs[ Num_Portal_Execs ])))
 	{
 		return FALSE;
 	}

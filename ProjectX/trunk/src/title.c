@@ -4661,7 +4661,7 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 //	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -4676,7 +4676,7 @@ BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, f
 	
 //	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -9398,7 +9398,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				continue;
 
 
-			if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+			if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 			{
 				return FALSE;
 			}
@@ -9445,7 +9445,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 				VertPtr++;
 			}
 
-			if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+			if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 			{
 				return FALSE;
 			}
@@ -9563,7 +9563,7 @@ BOOL MakeTranslucent( uint16 Model )
 //								DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
 //				if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
-				if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -9602,7 +9602,7 @@ BOOL MakeTranslucent( uint16 Model )
 
 //				if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //				DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+				if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
 					return FALSE;
 				}
@@ -9626,7 +9626,7 @@ BOOL MakeTranslucent( uint16 Model )
 //				if (FSLockExecuteBuffer(DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
 //					return FALSE;
 
-				if (FAILED(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+				if (!(FSLockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 				{
 					return FALSE;
 				}
@@ -9662,7 +9662,7 @@ BOOL MakeTranslucent( uint16 Model )
 
 //				if( DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
 //				DstMxloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-				if (FAILED(FSUnlockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf])))
+				if (!(FSUnlockVertexBuffer(&DstMxloadheader->Group[ Group ].renderObject[ExecBuf])))
 				{
 					return FALSE;
 				}
@@ -9684,7 +9684,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
-	if (FAILED(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
+	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
 	{
 		return FALSE;
 	}
@@ -9712,7 +9712,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 			
 	DstlpD3DLVERTEX->color = Colour;
 
-	if (FAILED(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
+	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
 		return FALSE;
 	}
@@ -14338,7 +14338,7 @@ void CheckJoyAxis( int *dummy )
 	int joystick = JoystickMap[JoystickList.selected_item];
 	int axis;
 	float pos;
-	LONG *axisptr[MAX_JOYSTICK_AXIS] = { &js[ new_input ][joystick].lX, &js[ new_input ][joystick].lY, &js[ new_input ][joystick].lZ, 
+	long *axisptr[MAX_JOYSTICK_AXIS] = { &js[ new_input ][joystick].lX, &js[ new_input ][joystick].lY, &js[ new_input ][joystick].lZ, 
 										&js[ new_input ][joystick].lRx, &js[ new_input ][joystick].lRy, &js[ new_input ][joystick].lRz,
 										&js[ new_input ][joystick].rglSlider[0], &js[ new_input ][joystick].rglSlider[1] };
 	char *left;

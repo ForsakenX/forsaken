@@ -355,7 +355,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->Verts = (float*) calloc(  WO->num_of_verts , sizeof(float) );
 	WO->Vels = (float*) calloc( WO->num_of_verts , sizeof(float) );
 
-	if (FAILED(FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts)))
+	if (!FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts))
 	{
 		return FALSE;
 	}
@@ -366,17 +366,17 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		for( y = 0 ; y < WO->YVerts-1 ; y++ )
 			ntris += 2;
 
-	if (FAILED(FSCreateIndexBuffer(&WO->renderObject, ntris*3 ))) // 3 vertexes in a triangle
+	if (!FSCreateIndexBuffer(&WO->renderObject, ntris*3 )) // 3 vertexes in a triangle
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockVertexBuffer(&WO->renderObject, &lpLVERTEX)))
+	if (!FSLockVertexBuffer(&WO->renderObject, &lpLVERTEX))
 	{
 		return FALSE;
 	}
 
-	if (FAILED(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
+	if (!(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
 	{
 		return FALSE;
 	}
@@ -422,12 +422,12 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		}
 	}
 
-	if (FAILED(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
+	if (!(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
 	{
 		return FALSE;
 	}
 	
-	if (FAILED(FSUnlockIndexBuffer(&WO->renderObject)))
+	if (!(FSUnlockIndexBuffer(&WO->renderObject)))
 	{
 		Msg( "FSUnlockIndexBuffer failed");
 		return FALSE ;
@@ -564,7 +564,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 //	if (FSLockExecuteBuffer(WO->lpExBuf, &debDesc ) != D3D_OK)
 //		return FALSE;
 
-	if (FAILED(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpLVERTEX)))
+	if (!(FSLockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject, &lpLVERTEX)))
 	{
 		return;
 	}
@@ -607,7 +607,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 	/*	unlock the execute buffer	*/
 //	if ( WO->lpExBuf->lpVtbl->Unlock( WO->lpExBuf ) != D3D_OK)
 //		return;
-	if (FAILED(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
+	if (!(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
 	{
 		return;
 	}

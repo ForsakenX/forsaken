@@ -91,7 +91,7 @@ BOOL init_renderer( render_info_t * info )
 	// presentation settings
 	//
 
-	d3dpp.hDeviceWindow					= info->window;					// the window handle
+	d3dpp.hDeviceWindow					= GetActiveWindow();			// the window handle
 	d3dpp.BackBufferCount				= 1;							// we only have one swap chain
     d3dpp.SwapEffect					= D3DSWAPEFFECT_DISCARD;		// does not protect the contents of the backbuffer after flipping (faster)
 																		// shouldn't we specify D3DSWAPEFFECT_FLIP ?
@@ -134,7 +134,7 @@ BOOL init_renderer( render_info_t * info )
 	// failed
 	else
 	{
-		CloseWindow(info->window);
+		CloseWindow(d3dpp.hDeviceWindow);
 		Msg("Failed to find a suitable back buffer format");
 		exit(1);
 	}
@@ -239,7 +239,7 @@ BOOL init_renderer( render_info_t * info )
 	LastError = lpD3D->CreateDevice(
 		D3DADAPTER_DEFAULT,							// the default video card 
 		D3DDEVTYPE_HAL,								// device type - hal = Hardware rasterization
-		info->window,							// the window handle
+		d3dpp.hDeviceWindow,							// the window handle
 
 		// these define how the device is created
 
@@ -261,7 +261,7 @@ BOOL init_renderer( render_info_t * info )
 	if (FAILED(LastError)) 
 	*/
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow,
 			D3DCREATE_HARDWARE_VERTEXPROCESSING, &d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
 		{
@@ -276,7 +276,7 @@ BOOL init_renderer( render_info_t * info )
 
 	if (FAILED(LastError)) 
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow,
 			D3DCREATE_MIXED_VERTEXPROCESSING,		// do vertex processing in both hardware and software
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -292,7 +292,7 @@ BOOL init_renderer( render_info_t * info )
 
 	if (FAILED(LastError)) 
 	{
-		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, info->window,
+		LastError = lpD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, d3dpp.hDeviceWindow,
 			D3DCREATE_SOFTWARE_VERTEXPROCESSING,	// do vertex processing in software only
 			&d3dpp, &lpD3DDevice);
 		if (SUCCEEDED(LastError))
@@ -308,7 +308,7 @@ BOOL init_renderer( render_info_t * info )
 
 	if (FAILED(LastError))
 	{
-		CloseWindow(info->window);
+		CloseWindow(d3dpp.hDeviceWindow);
 		Msg("Failed to create a suitable d3d device:\n%s",
 			render_error_description(LastError));
 		exit(1);
@@ -323,7 +323,7 @@ BOOL init_renderer( render_info_t * info )
 	{
 		WINDOWPLACEMENT placement;
 		placement.length = sizeof(WINDOWPLACEMENT);
-		if(GetWindowPlacement( info->window, &placement ))
+		if(GetWindowPlacement( d3dpp.hDeviceWindow, &placement ))
 		{
 			viewport.X = placement.rcNormalPosition.left;
 			viewport.Y = placement.rcNormalPosition.top;
@@ -711,7 +711,7 @@ static BOOL init_render_states( render_info_t * info )
 }
 
 char buf[100];
-HRESULT LastError;
+int LastError;
 
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
@@ -1050,7 +1050,7 @@ void release_texture( LPTEXTURE texture )
 }
 
 extern double Gamma;
-HRESULT create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
+int create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey, D3DPOOL pool)
 {
 #ifdef TEXTURE_PNG
 	HRESULT hr;
@@ -1287,7 +1287,7 @@ static void copy_texture_bits( LPTEXTURE srcT, LPTEXTURE dstT )
 	srcTexture->UnlockRect(0);
 }
 
-HRESULT update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+int update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
@@ -1311,12 +1311,12 @@ HRESULT update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *w
 	return S_OK;
 }
 
-HRESULT FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
 
-HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -1329,17 +1329,19 @@ HRESULT FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 		numVertices * sizeof(LVERTEX), 0, D3DFVF_LVERTEX, D3DPOOL_MANAGED,
 		(LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
 	);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
+		return FALSE;
 	}
 
 	DebugPrintf("created vertex buffer\n");
 
-	return LastError;
+	return TRUE;
 }
 
-HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -1362,7 +1364,7 @@ HRESULT FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	return LastError;
 }
 
-HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -1390,7 +1392,7 @@ HRESULT FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertice
 
 int lockTest = 0;
 
-HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
+BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -1408,7 +1410,7 @@ HRESULT FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 	return LastError;
 }
 
-HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
+BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
@@ -1426,7 +1428,7 @@ HRESULT FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **
 	return LastError;
 }
 
-HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
+BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
 	assert(renderObject->vbLocked == 1);
 
@@ -1446,7 +1448,7 @@ HRESULT FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 }
 
 // can just use the above if we want...
-HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
+int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 {
 	assert(renderObject->vbLocked == 1);
 
@@ -1465,23 +1467,25 @@ HRESULT FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
 	return LastError;
 }
 
-HRESULT FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	LastError = lpD3DDevice->CreateIndexBuffer(
 		numIndices * 3 * sizeof(WORD), 0, D3DFMT_INDEX16, D3DPOOL_MANAGED,
 		(LPDIRECT3DINDEXBUFFER9*)&renderObject->lpIndexBuffer, NULL
 	);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
+		return FALSE;
 	}
 
 	DebugPrintf("created vertex buffer\n");
 
-	return LastError;
+	return TRUE;
 }
 
-HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	LastError = lpD3DDevice->CreateIndexBuffer(
 		numIndices * 3 * sizeof(WORD),  D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
@@ -1497,7 +1501,7 @@ HRESULT FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 	return LastError;
 }
 
-HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
+BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {
 	LastError = ((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer)->Lock(0, 0, (void**)indices, D3DLOCK_DISCARD);
 	if (FAILED(LastError))
@@ -1508,7 +1512,7 @@ HRESULT FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 	return LastError;
 }
 
-HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
+BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 {
 	LastError = ((LPDIRECT3DINDEXBUFFER9)renderObject->lpIndexBuffer)->Unlock();
 	if (FAILED(LastError))
@@ -1519,7 +1523,7 @@ HRESULT FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 	return LastError;
 }
 
-HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
+int draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
 {
 	HRESULT LastError;
 
@@ -1634,12 +1638,12 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 }; // end of c linkage (extern "C")
 
-const char * render_error_description( HRESULT hr )
+const char * render_error_description( int error )
 {
 #ifdef __WINE__
 	return "";
 #else
-	return DXGetErrorDescription9(hr);
+	return DXGetErrorDescription9(error);
 #endif
 }
 

@@ -313,7 +313,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	execbuf = Mloadheader->Group[group].num_execbufs;
 	while( execbuf--)
 	{
-		if (FAILED(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+		if (!(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 		{
 			return FALSE;
 		}	
@@ -962,7 +962,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			if (!(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -1159,7 +1159,7 @@ PLOP:
 			/*	unlock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
 			{
 				return FALSE;
 			}
@@ -1212,7 +1212,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 		execbuf = MXloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			if (FAILED(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			if (!(FSLockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -1406,7 +1406,7 @@ PLOP2:
 			/*	unlock the execute buffer	*/
 //			if ( MXloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&MXloadheader->Group[group].renderObject[execbuf])))
 			{
 				return FALSE;
 			}
@@ -1437,7 +1437,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 		execbuf = MXAloadheader->Group[group].num_execbufs;
 		while( execbuf--)
 		{
-			if (FAILED(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+			if (!(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 			{
 				return FALSE;
 			}
@@ -1454,7 +1454,7 @@ BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
 			/*	unlock the execute buffer	*/
 //			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
 //				return FALSE;
-			if (FAILED(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
 			{
 				return FALSE;
 			}
