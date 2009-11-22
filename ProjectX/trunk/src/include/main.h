@@ -1,6 +1,10 @@
 #ifndef MAIN_INCLUDED
 #define MAIN_INCLUDED
 
+#ifdef WIN32
+#define WIN32_EXTRA_LEAN
+#endif
+
 /*===================================================================
 	Game Status Defines...
 ===================================================================*/

@@ -3,8 +3,6 @@
 // General Networking
 //
 
-#define WIN32_EXTRA_LEAN
-
 #include "main.h"
 #include <stdio.h>
 

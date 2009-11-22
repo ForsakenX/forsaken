@@ -2,7 +2,7 @@
 /*===================================================================
 		Include Files...	
 ===================================================================*/
-#define WIN32_EXTRA_LEAN
+
 #include <stdio.h>
 
 #include "main.h"
@@ -21,7 +21,6 @@
 #include "water.h"
 #include "spotfx.h"
 #include "text.h"
-
 #include "trigarea.h"
 #include "extforce.h"
 #include "rtlight.h"

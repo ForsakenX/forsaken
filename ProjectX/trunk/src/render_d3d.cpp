@@ -1,7 +1,8 @@
 #ifndef OPENGL
 
 #define DIRECT3D_VERSION    0x0900
-#define WIN32_EXTRA_LEAN
+
+#include "main.h"
 
 #include <windows.h>
 #include <windowsx.h>

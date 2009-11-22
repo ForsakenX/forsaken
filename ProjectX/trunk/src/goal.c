@@ -1,4 +1,3 @@
-#define WIN32_EXTRA_LEAN
 
 #include <stdio.h>
 #include "main.h"

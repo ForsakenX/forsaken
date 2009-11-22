@@ -26,8 +26,6 @@ int local_port;
 int host_port;
 char host_address[256];
 
-#define WIN32_EXTRA_LEAN
-
  /*
  * defines
  */
