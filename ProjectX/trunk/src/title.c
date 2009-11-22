@@ -3538,38 +3538,6 @@ BOOL InitTitle()
 	if( ! render_info.bFullscreen )
 		input_grab( FALSE );
 
-#if 0
-    LPDIRECTDRAWPALETTE ddpal;
-    D3DMATERIAL bmat;
-    D3DMATERIALHANDLE hBmat;
-
-	memset(&bmat, 0, sizeof(D3DMATERIAL));
-    bmat.dwSize = sizeof(D3DMATERIAL);
-    bmat.dwRampSize = 1;
-
-    if (lpD3D->lpVtbl->CreateMaterial(lpD3D, &lpBmat, NULL) != D3D_OK)
-	{
-		Msg( "InitTitle() CreateMaterial() Failed\n" );
-        return FALSE;
-	}
-    if (lpBmat->lpVtbl->SetMaterial(lpBmat, &bmat) != D3D_OK)
-	{
-		Msg( "InitTitle() SetMaterial() Failed\n" );
-        return FALSE;
-	}
-    if (lpBmat->lpVtbl->GetHandle(lpBmat, lpDev, &hBmat) != D3D_OK)
-	{
-		Msg( "InitTitle() GetHangle() Failed\n" );
-        return FALSE;
-	}
-    if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK)
-	{
-		Msg( "InitTitle() SetBackground() Failed\n" );
-        return FALSE;
-	}
-
-#endif
-
 	ticksperframe = 14.0F;
     
 	InitModeCase();

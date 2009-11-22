@@ -312,17 +312,6 @@ BOOL FSSetViewPort(render_viewport_t *view)
 	return TRUE;
 }
 
-// TODO - might have to use non tranpose functions in set/get world/view/proj
-
-// i could not get glext.h to work 
-static void transpose_matrix( GLfloat m1[4][4], GLfloat m2[4][4] )
-{
-        int a, b;
-        for( a = 0; a < 4; a++ )
-                for( b = 0; b < 4; b++ )
-                        m2[a][b] = m1[b][a];
-}
-
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
 	glMatrixMode(GL_PROJECTION);
