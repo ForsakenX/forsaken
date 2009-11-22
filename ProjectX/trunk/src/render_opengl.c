@@ -240,21 +240,23 @@ void set_alpha_fx_states( void )
 // TODO - do we even use the stencil buffer ?
 // TODO - FSClear is meant to clear current viewport
 //        perhaps we can automate and remove need for rect arg ?
-// TODO - these functions are clearing the whole screen not the rect !
 
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
-{	
+{
+	int width = rect->x2 - rect->x1;
+	int height = rect->y2 - rect->y1;
+	int x = rect->x1;
+	int y = render_info.ThisMode.h - rect->y1 - height;
+	//
+	glEnable(GL_SCISSOR_TEST);
+	glScissor(x, y, width, height);
+	//
 	glClearDepth(1.0f);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-	return TRUE;
-}
-
-BOOL FSClearDepth(XYRECT * rect)
-{
-	glClearDepth(1.0f);
-	glClear(GL_DEPTH_BUFFER_BIT);
+	//
+	glDisable(GL_SCISSOR_TEST);
 	return TRUE;
 }
 
@@ -262,6 +264,13 @@ BOOL FSClearBlack(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
+	return TRUE;
+}
+
+BOOL FSClearDepth(XYRECT * rect)
+{
+	glClearDepth(1.0f);
+	glClear(GL_DEPTH_BUFFER_BIT);
 	return TRUE;
 }
 
