@@ -9,8 +9,12 @@
 extern render_info_t render_info;
 
 // TODO - does gl even have such a concept?
-BOOL FSBeginScene(){ return TRUE; }
-BOOL FSEndScene(){ return TRUE; }
+BOOL FSBeginScene(){ 
+	return TRUE; 
+}
+BOOL FSEndScene(){ 
+	return TRUE; 
+}
 
 // prototypes
 void reset_trans( void );
@@ -68,9 +72,13 @@ BOOL init_renderer( render_info_t * info )
 	glPolygonMode(GL_BACK, GL_NONE);
 	
 	// wireframe mode
-	glPolygonMode(GL_FRONT, GL_LINE);
+	//glPolygonMode(GL_FRONT, GL_LINE);
 	glPolygonMode(GL_BACK, GL_LINE);
 
+	//
+	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+	//
 	set_normal_states();
 
 	//
@@ -428,7 +436,7 @@ static void set_material( RENDERMATERIAL * m )
 	glMaterialf ( GL_FRONT, GL_SHININESS,(GLfloat)m->Power      );
 }
 
-static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
+static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
 	int group;
 	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
@@ -437,6 +445,12 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 
 	assert(renderObject->vbLocked == 0);
 	
+	// d3d stored the world/view matrixes
+	// and then multiplied them together before rendering
+	// in the following order: world * view * projection
+	// opengl handles only world and projection
+	// so we must emulate the behavior of world*view
+
 	if(!tlvertex)
 	{
 		glMatrixMode(GL_MODELVIEW);
@@ -500,9 +514,9 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 	return TRUE;
 }
 
-BOOL draw_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,FALSE);}
-BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_TRIANGLES,TRUE);}
-BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(renderObject,GL_LINES,FALSE);}
+BOOL draw_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,FALSE);}
+BOOL draw_2d_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_TRIANGLES,TRUE);}
+BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_render_object(renderObject,GL_LINES,FALSE);}
 
 void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 {
