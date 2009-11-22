@@ -410,6 +410,15 @@ static void draw_vert( void * _vert, int tlvertex )
 	}
 }
 
+static void set_material( RENDERMATERIAL * m )
+{
+	glMaterialfv( GL_FRONT, GL_DIFFUSE,	 (GLfloat*)&m->Diffuse  );
+	glMaterialfv( GL_FRONT, GL_AMBIENT,	 (GLfloat*)&m->Ambient  );
+	glMaterialfv( GL_FRONT, GL_SPECULAR, (GLfloat*)&m->Specular );
+	glMaterialfv( GL_FRONT, GL_EMISSION, (GLfloat*)&m->Emissive );
+	//glMaterialf ( GL_FRONT, GL_SHININESS, 1.0 ); // specular exponent
+}
+
 static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
 	int group;
@@ -429,7 +438,7 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 
 	glBegin(primitive_type);
 
-		//SetMaterial( &renderObject->material );
+		set_material( &renderObject->material );
 
 		for (group = 0; group < renderObject->numTextureGroups; group++)
 		{
@@ -437,8 +446,8 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 			int startVert  = renderObject->textureGroups[group].startVert;
 			int numVerts   = renderObject->textureGroups[group].numVerts;
 
-			//if(renderObject->textureGroups[group].colourkey)
-			//	set_alpha_ignore();
+			if(renderObject->textureGroups[group].colourkey)
+				set_alpha_ignore();
 
 			//SetTexture( renderObject->textureGroups[i].texture );
 
@@ -461,8 +470,8 @@ static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, B
 					draw_vert( &verts[i], tlvertex );
 			}
 
-			//if(renderObject->textureGroups[group].colourkey)
-			//	unset_alpha_ignore();
+			if(renderObject->textureGroups[group].colourkey)
+				unset_alpha_ignore();
 		}
 
 	glEnd();
