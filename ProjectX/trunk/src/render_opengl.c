@@ -379,7 +379,7 @@ BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(LVERTEX) );
 	return TRUE;
 }
-int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {FSCreateVertexBuffer(renderObject, numVertices); return TRUE;}
 
 BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
@@ -387,7 +387,7 @@ BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
 	return TRUE;
 }
-int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {return FSCreateIndexBuffer(renderObject,numIndices);}
 
 BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
@@ -397,14 +397,13 @@ BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
-int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = malloc( numVertices * sizeof(TLVERTEX) ); 
 	return TRUE;
 }
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
 {(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
-int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
 static BOOL draw_indexed_list( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
 {
@@ -457,10 +456,10 @@ BOOL draw_line_object(RENDEROBJECT *renderObject){return draw_indexed_list(rende
 
 
 // these can be done later
-int update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 void release_texture( LPTEXTURE texture ){}
-int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {return S_OK;}
 
 

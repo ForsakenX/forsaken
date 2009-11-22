@@ -2543,7 +2543,7 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		UnLock Exec Buffer and set data description
 ===================================================================*/
 
-	if (FAILED(FSUnlockPretransformedVertexBuffer(renderObject)))
+	if (!FSUnlockVertexBuffer(renderObject))
 	{
 		return FALSE;
 	}
@@ -3091,7 +3091,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	ExecBuffer_d3dexdata.dwInstructionLength = (ULONG) ( (char *) lpPointer - (char *) lpInsStart );
 	if( ( ExecBuffer->lpVtbl->SetExecuteData( ExecBuffer, &ExecBuffer_d3dexdata ) ) != D3D_OK) return( FALSE );
 */
-	if (FAILED(FSUnlockPretransformedVertexBuffer(renderObject)))
+	if (!FSUnlockVertexBuffer(renderObject))
 	{
 		return FALSE;
 	}

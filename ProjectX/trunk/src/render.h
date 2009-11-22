@@ -176,20 +176,19 @@ BOOL FSSetWorld( RENDERMATRIX *matrix );
 BOOL FSSetProjection( RENDERMATRIX *matrix );
 BOOL FSSetView( RENDERMATRIX *matrix );
 
-int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
 BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject);
-int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
+BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices);
 BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices);
 BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject);
-int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject);
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts);
-int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
+BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 
-int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
-int update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
+BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey);
 void release_texture( LPTEXTURE texture );
 
 BOOL draw_line_object(RENDEROBJECT *renderObject);

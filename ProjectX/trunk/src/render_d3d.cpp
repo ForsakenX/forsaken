@@ -1287,7 +1287,7 @@ static void copy_texture_bits( LPTEXTURE srcT, LPTEXTURE dstT )
 	srcTexture->UnlockRect(0);
 }
 
-int update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+BOOL update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	HRESULT hr;
     LPDIRECT3DTEXTURE9 new_texture = NULL;
@@ -1300,7 +1300,7 @@ int update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width
 	// create the texture so we can copy the data over
 	hr = create_texture((LPTEXTURE*)&new_texture, fileName, width, height, numMips, colourkey, D3DPOOL_SYSTEMMEM);
 	if(FAILED(hr))
-		return hr;
+		return FALSE;
 
 	// copy data from src to dst
 	copy_texture_bits( new_texture, dstTexture );
@@ -1308,10 +1308,10 @@ int update_texture_from_file(LPTEXTURE dstT, const char *fileName, uint16 *width
 	// 
 	new_texture->Release();
 	new_texture = NULL;
-	return S_OK;
+	return TRUE;
 }
 
-int FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
@@ -1341,7 +1341,7 @@ BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	return TRUE;
 }
 
-int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -1354,17 +1354,17 @@ int FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 		numVertices * sizeof(LVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, 
 		D3DFVF_LVERTEX, D3DPOOL_DEFAULT, (LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
 	);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
+		return FALSE;
 	}
 
-	DebugPrintf("created vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
 
-int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
+BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
 
@@ -1379,35 +1379,32 @@ int FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 		numVertices * sizeof(TLVERTEX), D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY, D3DFVF_TLVERTEX,
 		D3DPOOL_DEFAULT, (LPDIRECT3DVERTEXBUFFER9*)&renderObject->lpVertexBuffer, NULL
 	);
+
 	//LastError = lpD3DDevice->CreateVertexBuffer(numVertices * sizeof(TLVERTEX), 0, D3DFVF_TLVERTEX, D3DPOOL_MANAGED, &renderObject->lpVertexBuffer, NULL);
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
+		return FALSE;
 	}
 
-	DebugPrintf("created vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
-
-int lockTest = 0;
 
 BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {
 	assert(renderObject->vbLocked == 0);
 
 	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock vertex buffer!\n");
+		return FALSE;
 	}
 
 	renderObject->vbLocked = TRUE;
-	lockTest++;
 
-//	DebugPrintf("locked vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
 
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
@@ -1415,56 +1412,32 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
 	assert(renderObject->vbLocked == 0);
 
 	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Lock(0, 0, (void**)verts, D3DLOCK_DISCARD);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock vertex buffer!\n");
+		return FALSE;
 	}
 
 	renderObject->vbLocked = TRUE;
-	lockTest++;
 
-//	DebugPrintf("locked vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
 
 BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
 {
 	assert(renderObject->vbLocked == 1);
 
-//	DebugPrintf("unlocking vertex buffer\n");
 	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Unlock();
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't unlock vertex buffer!\n");
+		return FALSE;
 	}
 
 	renderObject->vbLocked = FALSE;
-	lockTest--;
 
-//	DebugPrintf("unlocked vertex buffer\n");
-
-	return LastError;
-}
-
-// can just use the above if we want...
-int FSUnlockPretransformedVertexBuffer(RENDEROBJECT *renderObject)
-{
-	assert(renderObject->vbLocked == 1);
-
-//	DebugPrintf("unlocking vertex buffer\n");
-	LastError = ((LPDIRECT3DVERTEXBUFFER9)renderObject->lpVertexBuffer)->Unlock();
-	if (FAILED(LastError))
-	{
-		DebugPrintf("can't unlock vertex buffer!\n");
-	}
-
-	renderObject->vbLocked = FALSE;
-	lockTest--;
-
-//	DebugPrintf("unlocked vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
 
 BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
@@ -1480,25 +1453,23 @@ BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 		return FALSE;
 	}
 
-	DebugPrintf("created vertex buffer\n");
-
 	return TRUE;
 }
 
-int FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
+BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	LastError = lpD3DDevice->CreateIndexBuffer(
 		numIndices * 3 * sizeof(WORD),  D3DUSAGE_DYNAMIC | D3DUSAGE_WRITEONLY,
 		D3DFMT_INDEX16, D3DPOOL_DEFAULT, (LPDIRECT3DINDEXBUFFER9*)&renderObject->lpIndexBuffer, NULL
 	);
+
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't create vertex buffer\n");
+		return FALSE;
 	}
 
-	DebugPrintf("created vertex buffer\n");
-
-	return LastError;
+	return TRUE;
 }
 
 BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
@@ -1507,9 +1478,10 @@ BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock index buffer!\n");
+		return FALSE;
 	}
 
-	return LastError;
+	return TRUE;
 }
 
 BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
@@ -1518,12 +1490,13 @@ BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject)
 	if (FAILED(LastError))
 	{
 		DebugPrintf("can't lock index buffer!\n");
+		return FALSE;
 	}
 
-	return LastError;
+	return TRUE;
 }
 
-int draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
+HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2d*/, D3DPRIMITIVETYPE primitive_type )
 {
 	HRESULT LastError;
 
