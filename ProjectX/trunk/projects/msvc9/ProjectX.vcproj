@@ -48,7 +48,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude;lib\libzlib;lib\libpng;"
-				PreprocessorDefinitions="WIN32;OPENGL;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
+				PreprocessorDefinitions="WIN32;TEXTURE_PNG;OPENGL;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
