@@ -46,12 +46,6 @@ BOOL sdl_init_window( void )
 	}
 
 #ifdef OPENGL
-	// TODO - do i need to specify the rgba sizes ?
-	//		  i would think for true 32 bit mode then yes ?
-    //SDL_GL_SetAttribute(SDL_GL_RED_SIZE,			8  );
-    //SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE,		8  );
-    //SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,			8  );
-    //SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE,		8  );
 	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,		8  );
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,			32 );
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,		1  );
@@ -61,18 +55,23 @@ BOOL sdl_init_window( void )
 
 
 	// create the window
-	//		opengl: for win32 need to redo all the gl init stuff after this
+	{
+		int flags = SDL_ANYFORMAT;
 
-	render_info.screen = SDL_SetVideoMode(
-		render_info.default_mode.w,
-		render_info.default_mode.h,
-		SDL_GetVideoInfo()->vfmt->BitsPerPixel,
+		if(render_info.bFullscreen)
+			flags |= SDL_FULLSCREEN;
+		
 #ifdef OPENGL
-		SDL_OPENGL | SDL_ANYFORMAT
-#else
-		0
+		flags |= SDL_OPENGL;
 #endif
+
+		render_info.screen = SDL_SetVideoMode(
+			render_info.default_mode.w,
+			render_info.default_mode.h,
+			render_info.default_mode.bpp,
+			flags
 		);
+	}
 
 	if(!render_info.screen)
 	{
