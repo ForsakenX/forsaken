@@ -104,9 +104,9 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				DWORD index = (y*pitch)+(x*size);
 				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
 				// image.data is packed in rgba
-				image.data[index]   = (BYTE)gamma_lookup[image.data[index+2]]; // blue
-				image.data[index+1] = (BYTE)gamma_lookup[image.data[index+1]]; // green
-				image.data[index+2] = (BYTE)gamma_lookup[image.data[index]];   // red
+				image.data[index]   = (BYTE)gamma_lookup[image.data[index]];	// red
+				image.data[index+1] = (BYTE)gamma_lookup[image.data[index+1]];	// green
+				image.data[index+2] = (BYTE)gamma_lookup[image.data[index+2]];  // blue
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
 					image.data[index+3] = 0; // alpha - pixel will not be coppied do to alpha=0 ignore
