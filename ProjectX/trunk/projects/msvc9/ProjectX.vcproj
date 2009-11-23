@@ -47,7 +47,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
-				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
+				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude;lib\libzlib;lib\libpng;"
 				PreprocessorDefinitions="WIN32;OPENGL;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
@@ -79,11 +79,11 @@
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib GlU32.Lib OpenGL32.Lib"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib GlU32.Lib OpenGL32.Lib zlib.lib libpng.lib"
 				OutputFile="debug_gl.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\enet;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
+				AdditionalLibraryDirectories="lib\enet;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;lib\libzlib;lib\libpng;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
@@ -737,6 +737,10 @@
 			</File>
 			<File
 				RelativePath="..\..\src\texture_png.c"
+				>
+			</File>
+			<File
+				RelativePath="..\..\src\texture_sdl.c"
 				>
 			</File>
 			<File

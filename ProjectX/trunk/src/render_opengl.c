@@ -3,6 +3,8 @@
 #include "main.h"
 #include "util.h"
 #include "render.h"
+#include "texture.h"
+#include "file.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
 
@@ -26,17 +28,138 @@ typedef long HRESULT;
 //		  other wise should get this from gl caps
 BOOL bSquareOnly = FALSE;
 
-// these can be done later
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{return S_OK;}
-void release_texture( LPTEXTURE texture ){}
-BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
-{return S_OK;}
+//
+// Texture Routines
+//
 
-// will this even be needed?
+// TODO - can't gl do this for us ?
+BYTE  gamma_lookup[256];
 void render_gamma_correction( double gamma )
 {
+	double k;
+	int i;
+
+	// recover in release build
+	if (gamma <= 0)
+	    gamma = 1.0;
+	
+	k = 255.0/pow(255.0, 1.0/gamma);
+	
+	for (i = 0; i <= 255; i++)
+	{
+	    gamma_lookup[i] = (BYTE)(k*(pow((double)i, 1.0/gamma)));
+		if( i )
+		{
+			if( !gamma_lookup[i] )
+				gamma_lookup[i] = 1;
+		}
+	}
 }
+
+void release_texture( LPTEXTURE texture ){
+	if(!texture)
+		return;
+	glDeleteTextures( 1, texture );
+	free(texture);
+	texture = NULL;
+}
+
+BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
+{
+	GLuint * id = malloc(sizeof(GLuint));
+	texture_image_t image;
+	LPTEXTURE texture = *t;
+	*t = (void*)id;
+
+	Change_Ext( path, image.path, ".PNG" );
+	if( ! File_Exists( (char*) image.path ) )
+	{
+		DebugPrintf("Could not find texture file: %s\n",path);
+		return TRUE;
+	}
+
+	if(load_image( &image, numMips )!=0)
+	{
+		DebugPrintf("couldn't load image\n");
+		return S_FALSE;
+	}
+
+	// return values
+	*width  = (uint16) image.w;
+	*height = (uint16) image.h;
+	(*colorkey) = (BOOL) image.colorkey;
+
+	// employ colour key and gamma correction
+	{
+		int y, x;
+		int size = 4;
+		int pitch = size*image.w;
+		for (y = 0; y < image.h; y++)
+		{
+			for (x = 0; x < image.w; x++)
+			{
+				// move to the correct offset in the data
+				// y is the row and pitch is the size of a row
+				// (x*size) is the length of each pixel data (column)
+				DWORD index = (y*pitch)+(x*size);
+				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
+				// image.data is packed in rgba
+				image.data[index]   = (BYTE)gamma_lookup[image.data[index+2]]; // blue
+				image.data[index+1] = (BYTE)gamma_lookup[image.data[index+1]]; // green
+				image.data[index+2] = (BYTE)gamma_lookup[image.data[index]];   // red
+				// colour key
+				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
+					image.data[index+3] = 0; // alpha - pixel will not be coppied do to alpha=0 ignore
+				// do not colour key
+				else
+					image.data[index+3] = (BYTE)gamma_lookup[image.data[index+3]]; // alpha
+
+			}
+		}
+	}
+
+	// create opengl texture
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	glGenTextures(1, id);
+	glBindTexture(GL_TEXTURE_2D, *id);
+
+	// when texture area is small, bilinear filter the closest mipmap
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
+	// when texture area is large, bilinear filter the original
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+	// the texture wraps over at the edges (repeat)
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
+	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
+
+	// generates full range of mipmaps and scales to nearest power of 2
+	if(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data) != 0)
+	{
+	   render_error_description(0);
+	   return FALSE;
+	}
+
+	DebugPrintf( "Created texture: file=%s, width=%d, height=%d, colorkey=%s\n", 
+		image.path, image.w, image.h, (image.colorkey ? "true" : "false") );
+
+	destroy_image( &image );
+
+	return TRUE;
+}
+
+BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+{
+	//glTexSubImage2D can be used to replace contents of image
+	return TRUE;
+}
+
+BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+{	
+	return create_texture(texture, fileName, width, height, numMips, colourkey);
+}
+
+//
+//
+//
 
 BOOL init_renderer( render_info_t * info )
 {
@@ -66,7 +189,6 @@ BOOL init_renderer( render_info_t * info )
 	glDisable(GL_LIGHTING);
 	reset_cull();
 	reset_trans();
-	reset_filtering();
 
 	// normally we don't draw back faces
 	glPolygonMode(GL_BACK, GL_NONE);
@@ -179,17 +301,6 @@ void disable_zbuff_write( void )
 void disable_zbuff( void )
 {
 	glDisable(GL_DEPTH_TEST);
-}
-
-void reset_filtering( void )
-{
-	// texture and mipmap filter
-	// TODO - anisotropic texture filtering ?
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-		GL_LINEAR_MIPMAP_LINEAR // interpolates two nearest mip levels
-		//GL_LINEAR
-		);
 }
 
 void cull_none( void )

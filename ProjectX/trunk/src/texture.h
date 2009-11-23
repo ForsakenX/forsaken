@@ -1,8 +1,9 @@
 #ifndef TEXTURE_INCLUDED
 #define TEXTURE_INCLUDED
 
-//#define TEXTURE_PNG // use custom png reader
-//#define TEXTURE_DEVIL // use devil to read png
+#define TEXTURE_PNG	// use custom libpng
+//#define TEXTURE_DEVIL // use devil/IL
+//#define TEXTURE_SDL	// use sdl_image
 
 typedef struct {
 	int id;			// internal id
