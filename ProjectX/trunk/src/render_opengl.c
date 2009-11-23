@@ -323,7 +323,8 @@ void reset_cull( void )
 void set_alpha_ignore( void )
 {
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,(DWORD)100);
+	glAlphaFunc(GL_GREATER,(DWORD)0);
+	// TODO - this is not correct
 }
 
 void unset_alpha_ignore( void )
@@ -568,8 +569,12 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
-		glLoadMatrixf((GLfloat*)&world_matrix);
+		// here we multiply the arguments backwards view*world
+		// other wise instead of an object turning
+		// you end up turning the entire scene
+		// causing pickups etc.. to fly around the entire level wicked fast!
 		glMultMatrixf((GLfloat*)&view_matrix);
+		glMultMatrixf((GLfloat*)&world_matrix);
 	}
 
 	// translated vertices are already in screen coordinate format
@@ -597,10 +602,8 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 		int startVert  = renderObject->textureGroups[group].startVert;
 		int numVerts   = renderObject->textureGroups[group].numVerts;
 
-		/*
 		if(renderObject->textureGroups[group].colourkey)
 			set_alpha_ignore();
-		*/
 
 		if( renderObject->textureGroups[group].texture )
 		{
@@ -641,10 +644,8 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 		if( renderObject->textureGroups[group].texture )
 			glDisable(GL_TEXTURE_2D);
 
-		/*
 		if(renderObject->textureGroups[group].colourkey)
 			unset_alpha_ignore();
-			*/
 	}
 
 	if(tlvertex)
