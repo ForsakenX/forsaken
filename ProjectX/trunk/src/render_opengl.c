@@ -21,9 +21,8 @@ BOOL FSEndScene(){
 // prototypes
 void reset_trans( void );
 
-// TODO - port functions to not use hresult
-typedef long HRESULT;
-
+// TODO - gl scales textures to be square automatically
+//        maybe this should be removed ?
 // TODO - all textures should be scaled to square
 //		  other wise should get this from gl caps
 BOOL bSquareOnly = FALSE;
@@ -147,7 +146,7 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 
 BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
 {
-	//glTexSubImage2D can be used to replace contents of image
+	// TODO - glTexSubImage2D can be used to replace contents of image
 	return TRUE;
 }
 
@@ -155,10 +154,6 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 {	
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
-
-//
-//
-//
 
 BOOL init_renderer( render_info_t * info )
 {
@@ -184,6 +179,7 @@ BOOL init_renderer( render_info_t * info )
 	//
 
 	render_gamma_correction(1.0f);
+	glEnable(GL_DITHER);
 	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
 	glDisable(GL_LIGHTING);
 	reset_cull();
@@ -206,6 +202,8 @@ BOOL init_renderer( render_info_t * info )
 	// everything went ok
 	// fill in all the structures
 	//
+
+	// TODO - this should all be part of init_sdl_window
 
 	info->bRenderingIsOK	= TRUE;
 	info->NumModes			= 1;
@@ -319,15 +317,16 @@ void reset_cull( void )
 	glCullFace(GL_BACK);
 }
 
+// accept fragment if alpha value is greater than x
+// alpha values are from 0-255 (8bit units)
+// glAlphaFunc expects the number as a fraction
+// if your images have an alpha value less than x
+// then they will be ignored during rendering !!!
+
 void set_alpha_ignore( void )
 {
-	// if your images have an alpha value less than x
-	// then they will be ignored during rendering !!!
 	float x = 100.f;
 	glEnable(GL_ALPHA_TEST);
-	// accept fragment if alpha value is greater than x
-	// alpha values are from 0-255 (8bit units)
-	// glAlphaFunc expects the number as a fraction
 	glAlphaFunc(GL_GREATER,(x/255.0f));
 }
 
@@ -372,7 +371,8 @@ BOOL FSClear(XYRECT * rect)
 	int height = rect->y2 - rect->y1;
 	int x = rect->x1;
 	int y = render_info.ThisMode.h - rect->y1 - height;
-	//
+	// here we employ a stencil buffer so that we
+	// only clear the desired part of the screen
 	glEnable(GL_SCISSOR_TEST);
 	glScissor(x, y, width, height);
 	//
@@ -398,8 +398,6 @@ BOOL FSClearDepth(XYRECT * rect)
 	return TRUE;
 }
 
-// TODO - conversion from bottom/left to top/left is totaly broken
-
 BOOL FSGetViewPort(render_viewport_t *view)
 {
 	GLint i[4];
@@ -417,6 +415,9 @@ BOOL FSGetViewPort(render_viewport_t *view)
 	view->MaxZ = f[1];
 	return TRUE;
 }
+
+// TODO - we can probably use glScalef and glTranslatef
+//        to invert the viewport dimentions
 
 BOOL FSSetViewPort(render_viewport_t *view)
 {
@@ -454,17 +455,39 @@ BOOL FSSetProjection( RENDERMATRIX *matrix )
 	return TRUE;
 }
 
+//
+// d3d stored the world/view matrixes
+// and then multiplied them together before rendering
+// in the following order: world * view * projection
+// opengl handles only world and projection
+// so we must emulate the behavior of world*view
+//
+// although we multiply the arguments backwards view*world
+// other wise instead of an object rotating you end up turning the world
+// causing pickups etc.. to fly around the entire level wicked fast!
+//
+
 GLfloat view_matrix[4][4];
+GLfloat world_matrix[4][4];
+
+static void reset_modelview( void )
+{
+	glMatrixMode(GL_MODELVIEW);
+	glLoadMatrixf((GLfloat*)&view_matrix);
+	glMultMatrixf((GLfloat*)&world_matrix);
+}
+
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
 	memcpy(&view_matrix,&matrix->m,sizeof(view_matrix));
+	reset_modelview();
 	return TRUE;
 }
 
-GLfloat world_matrix[4][4];
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {	
 	memcpy(&world_matrix,&matrix->m,sizeof(world_matrix));
+	reset_modelview();
 	return TRUE;
 }
 
@@ -525,11 +548,11 @@ static void set_color( COLOR c )
 	);
 }
 
-static void draw_vert( void * _vert, int tlvertex )
+static void draw_vert( void * _vert, BOOL orthographic )
 {
 	LVERTEX * vert = (LVERTEX*) _vert;
 	TLVERTEX * tlvert = (TLVERTEX*) _vert;
-	if(tlvertex)
+	if(orthographic)
 	{
 		set_color( tlvert->color );
 		glTexCoord2f( tlvert->tu, tlvert->tv );
@@ -554,7 +577,7 @@ static void set_material( RENDERMATERIAL * m )
 	glMaterialf ( GL_FRONT, GL_SHININESS,(GLfloat)m->Power      );
 }
 
-static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, BOOL tlvertex )
+static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, BOOL orthographic )
 {
 	int group;
 	LVERTEX * verts = (LVERTEX*) renderObject->lpVertexBuffer;
@@ -563,38 +586,18 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 
 	assert(renderObject->vbLocked == 0);
 	
-	// d3d stored the world/view matrixes
-	// and then multiplied them together before rendering
-	// in the following order: world * view * projection
-	// opengl handles only world and projection
-	// so we must emulate the behavior of world*view
-
-	if(!tlvertex)
-	{
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		// here we multiply the arguments backwards view*world
-		// other wise instead of an object turning
-		// you end up turning the entire scene
-		// causing pickups etc.. to fly around the entire level wicked fast!
-		glMultMatrixf((GLfloat*)&view_matrix);
-		glMultMatrixf((GLfloat*)&world_matrix);
-	}
-
-	// translated vertices are already in screen coordinate format
-	// they do not need to go through the pipe line to be converted
-
-	else
+	if(orthographic)
 	{
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
 		glMatrixMode(GL_PROJECTION);
 		glPushMatrix();
 		glLoadIdentity();
-		glOrtho(0.0, (double)render_info.ThisMode.w, 0.0, (double)render_info.ThisMode.h, 0.0, 1.0);
+		gluOrtho2D(0.0, (double)render_info.ThisMode.w, 0.0, (double)render_info.ThisMode.h);
+		// These next two steps allow us to specify screen location from top/left offets
 		// invert the y axis, down is positive
 		glScalef(1, -1, 1);
-		// move the origin from the bottom left corner to the upper left corner
+		// and move the origin from the bottom left corner to the upper left corner
 		glTranslatef(0.0f, -((float)render_info.ThisMode.h), 0.0f);
 	}
 
@@ -627,20 +630,20 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 			{
 				int indice = indices[ startIndex + i ];
 				int vert = startVert + indice;
-				if(tlvertex)
-					draw_vert( &tlverts[vert], tlvertex );
+				if(orthographic)
+					draw_vert( &tlverts[vert], orthographic );
 				else
-					draw_vert( &verts[vert], tlvertex );
+					draw_vert( &verts[vert], orthographic );
 			}
 		}
-		// draw only vertex list
+		// draw using only vertex list
 		else
 		{
 			for( i = startVert; i < numVerts; i++ )
-				if(tlvertex)
-					draw_vert( &tlverts[i], tlvertex );
+				if(orthographic)
+					draw_vert( &tlverts[i], orthographic );
 				else
-					draw_vert( &verts[i], tlvertex );
+					draw_vert( &verts[i], orthographic );
 		}
 		
 		glEnd();
@@ -652,7 +655,7 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 			unset_alpha_ignore();
 	}
 
-	if(tlvertex)
+	if(orthographic)
 	{
 		glMatrixMode(GL_PROJECTION);
 		glPopMatrix();
@@ -670,13 +673,11 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	int i;
 	if (renderObject->lpVertexBuffer)
 	{
-		// TODO - need to destroy buffer gl style
 		free(renderObject->lpVertexBuffer);
 		renderObject->lpVertexBuffer = NULL;
 	}
 	if (renderObject->lpIndexBuffer)
 	{
-		// TODO - need to destroy buffer gl style
 		free(renderObject->lpIndexBuffer);
 		renderObject->lpIndexBuffer = NULL;
 	}
@@ -693,6 +694,12 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 		}
 	}
 }
+
+//
+// loop and clear out all gl errors
+// it will does not use the argument
+// and the last argument is returned
+//
 
 const char * render_error_description( int e )
 {
