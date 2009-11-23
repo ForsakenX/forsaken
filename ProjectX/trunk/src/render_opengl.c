@@ -65,10 +65,8 @@ void release_texture( LPTEXTURE texture ){
 
 BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
 {
-	GLuint * id = malloc(sizeof(GLuint));
+	GLuint * id = NULL;
 	texture_image_t image;
-	LPTEXTURE texture = *t;
-	*t = (void*)id;
 
 	Change_Ext( path, image.path, ".PNG" );
 	if( ! File_Exists( (char*) image.path ) )
@@ -80,7 +78,7 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	if(load_image( &image, numMips )!=0)
 	{
 		DebugPrintf("couldn't load image\n");
-		return S_FALSE;
+		return FALSE;
 	}
 
 	// return values
@@ -116,10 +114,23 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 		}
 	}
 
-	// create opengl texture
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	glGenTextures(1, id);
-	glBindTexture(GL_TEXTURE_2D, *id);
+
+	// create a new opengl texture
+	if( ! *t )
+	{
+		id = malloc(sizeof(GLuint));
+		*t = (void*)id;
+		glGenTextures(1, id);
+		glBindTexture(GL_TEXTURE_2D, *id);
+	}
+	// updates an existing texture
+	else
+	{
+		id = *t;
+		glBindTexture(GL_TEXTURE_2D, *id);
+		glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data);
+	}
 
 	// when texture area is small, bilinear filter the closest mipmap
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST );
@@ -144,9 +155,9 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	return TRUE;
 }
 
-BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colourkey)
+BOOL update_texture_from_file(LPTEXTURE dstTexture, const char *fileName, uint16 *width, uint16 *height, int numMips, BOOL * colorkey)
 {
-	// TODO - glTexSubImage2D can be used to replace contents of image
+	create_texture(&dstTexture, fileName, width, height, numMips, colorkey);
 	return TRUE;
 }
 
