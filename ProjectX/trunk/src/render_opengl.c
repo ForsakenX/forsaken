@@ -102,7 +102,6 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				// y is the row and pitch is the size of a row
 				// (x*size) is the length of each pixel data (column)
 				DWORD index = (y*pitch)+(x*size);
-				// D3DFMT_A8R8G8B8 data will be accessible backwards: bgra
 				// image.data is packed in rgba
 				image.data[index]   = (BYTE)gamma_lookup[image.data[index]];	// red
 				image.data[index+1] = (BYTE)gamma_lookup[image.data[index+1]];	// green
@@ -322,9 +321,14 @@ void reset_cull( void )
 
 void set_alpha_ignore( void )
 {
+	// if your images have an alpha value less than x
+	// then they will be ignored during rendering !!!
+	float x = 100.f;
 	glEnable(GL_ALPHA_TEST);
-	glAlphaFunc(GL_GREATER,(DWORD)0);
-	// TODO - this is not correct
+	// accept fragment if alpha value is greater than x
+	// alpha values are from 0-255 (8bit units)
+	// glAlphaFunc expects the number as a fraction
+	glAlphaFunc(GL_GREATER,(x/255.0f));
 }
 
 void unset_alpha_ignore( void )
