@@ -2146,6 +2146,9 @@ BOOL RenderScene( void )
   if ( SeriousError )
     return FALSE;
 
+  // This is where in game we are getting input data read
+  ReadInput();
+
   //if ( !Bsp_Identical( &Bsp_Header[ 0 ], &Bsp_Original ) )
   //  hr = 0;
 
@@ -2156,9 +2159,6 @@ BOOL RenderScene( void )
   {
     CheckSBufferList();
   }
-
-  // This is where in game we are getting input data read
-  ReadInput();
 
   switch( MyGameStatus )
   {
