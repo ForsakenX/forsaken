@@ -538,15 +538,9 @@ static void ReadKeyboard( void )
 }
 
 // TODO - this could use SDL_GetMouseState instead of all the event processing
-static void ReadMouse( int dup_last )
+static void ReadMouse( void )
 {
 	int i;
-	if ( dup_last )
-	{
-		mouse_states[ new_input ] = mouse_states[ old_input ];
-		mouse_states[ new_input ].wheel = 0; // wheel cannot be held
-		return;
-	}
 	mouse_states[ new_input ].xrel = mouse_state.xrel;
 	mouse_states[ new_input ].yrel = mouse_state.yrel;
 	mouse_states[ new_input ].wheel = mouse_state.wheel;
@@ -554,39 +548,21 @@ static void ReadMouse( int dup_last )
 		mouse_states[ new_input ].buttons[ i ] = mouse_state.buttons[ i ];
 }
 
-float framelagfix = 0.0F;
-
 void ReadInput( void )
 {
   int i;
 
-  if ( WaitingToQuit ) return;
+  if ( WaitingToQuit )
+	  return;
 
   old_input = new_input;
   new_input++;
   if ( new_input >= INPUT_BUFFERS )
     new_input = 0;
 
-  // I'll leave framelag bullshit here for now but it should probably be removed
-
-  framelagfix -= framelag;
-
-  /* read mouse input */
-  if( framelagfix <= 0.0F )
-  {
-    ReadMouse( 0 );
-	// this is probably saying to ignore mouse input for 2.0F framelag units...
-    framelagfix = 2.0F;
-  }
-  else
-  {
-    ReadMouse( 1 );
-  }
-
-  /* read keyboard input */
+  ReadMouse();
   ReadKeyboard();
 
-  /* read joysticks inputs */
   for (i = 0; i < Num_Joysticks; i++)
     if (JoystickInfo[i].connected)
       PollJoystick(i);
