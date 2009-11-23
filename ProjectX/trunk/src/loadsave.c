@@ -156,7 +156,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
-			Msg("Save file is in an old format.\nYou will most likely crash...");
+			Msg("Save file is in an old format.\nYou will most likely crash...\n");
 /*
 		{
 			fclose( fp );
@@ -227,7 +227,7 @@ void InGameLoad( MENUITEM * MenuItem )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
-			Msg("Save file is in an old format.\nYou will most likely crash...");
+			Msg("Save file is in an old format.\nYou will most likely crash...\n");
 /*
 		{
 			fclose( fp );
@@ -593,7 +593,7 @@ char *SavedGameInfo( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
-			Msg("Save file is in an old format.\nYou will most likely crash...");
+			Msg("Save file is in an old format.\nYou will most likely crash...\n");
 		/*
 		{
 			fclose( fp );
@@ -658,7 +658,7 @@ BOOL SaveGameSlotUsed( int slot )
 		fread( &VersionNumber, sizeof( uint32 ), 1, fp );
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != LOADSAVE_VERSION_NUMBER  ) )
-			Msg("Save file is in an old format.\nYou will most likely crash...");
+			Msg("Save file is in an old format.\nYou will most likely crash...\n");
 		/*
 		{
 			fclose( fp );
