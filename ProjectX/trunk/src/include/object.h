@@ -2,13 +2,13 @@
 #ifndef OBJECT_INCLUDED
 #define OBJECT_INCLUDED
 
+#include "quat.h"
+#include "compobjects.h"
 
 enum {
 	OBJECT_TYPE_SHIP,
 	OBJECT_TYPE_ENEMY,
 };
-
-
 
 typedef struct OBJECT
 {

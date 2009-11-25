@@ -1,6 +1,7 @@
-
 #ifndef TRIGGERS_INCLUDED
 #define TRIGGERS_INCLUDED
+
+#include "networking.h"
 
 /*
  * Defines

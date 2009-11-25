@@ -1,13 +1,6 @@
 #ifndef	SFX_INCLUDED
 #define	SFX_INCLUDED
 
-#include "main.h"
-#include "render.h"
-#include "quat.h"
-#include "compobjects.h"
-#include "object.h"
-#include "networking.h"
-#include "triggers.h"
 #include "enemies.h"
 
 #define SFX_Biker			4	// biker speech

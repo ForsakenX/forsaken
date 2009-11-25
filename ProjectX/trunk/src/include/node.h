@@ -1,6 +1,7 @@
-
 #ifndef NODE_INCLUDED
 #define NODE_INCLUDED
+
+#include "object.h"
 
 #define	MAXLINKSPERNODE 16
 

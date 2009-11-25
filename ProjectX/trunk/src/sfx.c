@@ -1,6 +1,4 @@
-
 #define DIRECTSOUND_VERSION 0x0700
-
 
 #include <stdio.h>
 #include <windows.h>
@@ -11,6 +9,13 @@
 #include <cguid.h>
 #include <time.h>
 #include <dsound.h>
+
+#include "main.h"
+#include "render.h"
+#include "quat.h"
+#include "compobjects.h"
+#include "object.h"
+#include "networking.h"
 
 #include "sfx.h"
 #include "quat.h"
