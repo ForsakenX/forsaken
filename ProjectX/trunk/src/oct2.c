@@ -3819,6 +3819,7 @@ BOOL MainGame( void ) // bjd
 
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
 
+#ifdef DEMO_SUPPORT
   if( PlayDemo )
   {
     if( PauseDemo )
@@ -3830,7 +3831,10 @@ BOOL MainGame( void ) // bjd
       GameCurrentTime = GameCurrentTime - GameStartedTime;
       GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
     }
-  }else{
+  }
+  else
+#endif
+  {
     GameCurrentTime = GameCurrentTime - GameStartedTime;
   }
 
@@ -4946,11 +4950,8 @@ BOOL Our_CalculateFrameRate(void)
 }
 
 
-/*===================================================================
-  Procedure :  Disp3d Panel..
-  Input   :
-  Output    : BOOL TRUE/FALSE
-===================================================================*/
+// TODO - this function is never really used
+//		  one funny thing is it makes an eye ball that mimics mouse motion :]
 BOOL Disp3dPanel( void )
 {
 	VECTOR  Trans;
@@ -4964,12 +4965,14 @@ BOOL Disp3dPanel( void )
 	render_viewport_t newviewport;
 	float screen_width, screen_height;
 
-    newviewport.X = 0;
-	newviewport.Y = 0;
-    newviewport.Width = render_info.szClient.cx;
-    newviewport.Height = render_info.szClient.cy;
-    newviewport.ScaleX = newviewport.Width / (float)2.0;
-    newviewport.ScaleY = newviewport.Height / (float)2.0;
+    newviewport.X		= 0;
+	newviewport.Y		= 0;
+    newviewport.Width	= render_info.szClient.cx;
+    newviewport.Height	= render_info.szClient.cy;
+    newviewport.ScaleX	= newviewport.Width / (float)2.0;
+    newviewport.ScaleY	= newviewport.Height / (float)2.0;
+	newviewport.MaxZ	= 1.0f;
+	newviewport.MinZ	= 0.0f;
 
 /*
     newviewport.dvMaxX = (float)D3DDivide(RENDERVAL(newviewport.dwWidth),
