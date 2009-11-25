@@ -17,7 +17,12 @@ extern "C" {
 
 #include <time.h>
 #include "new3d.h"
-#include "sbufferhand.h"
+#include <dsound.h>
+
+#define MakeSoundBuffer( A, B, C, D ) ( IDirectSound_CreateSoundBuffer( (A), (B), (C), (D)) == DS_OK )
+#define SoundBufferDuplicate( A, B, C ) ( IDirectSound_DuplicateSoundBuffer( (A), (B), (C) ) == DS_OK )
+#define SoundBufferRelease(x) {if (*x != NULL) {(*x)->lpVtbl->Release( *x ); *x = NULL;}}
+
 ///////////////////////////////////////////////////////////////////////////////
 //
 // DSLoadSoundBuffer    Loads an IDirectSoundBuffer from a Win32 resource in
@@ -52,46 +57,6 @@ IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, 
 IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags );
 IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr );
 #endif
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSReloadSoundBuffer  Reloads an IDirectSoundBuffer from a Win32 resource in
-//                      the current application. normally used to handle
-//                      a DSERR_BUFFERLOST error.
-// Params:
-//  pDSB        -- Pointer to an IDirectSoundBuffer to be reloaded.
-//
-//  lpName      -- Name of WAV resource to load the data from.  Can be a
-//                 resource id specified using the MAKEINTRESOURCE macro.
-//
-// Returns a BOOL indicating whether the buffer was successfully reloaded.
-//
-// example:
-//  in the application's resource script (.RC file)
-//      Turtle WAV turtle.wav
-//
-//  some code in the application:
-//  TryAgain:
-//      HRESULT hres = IDirectSoundBuffer_Play(pDSB, 0, 0, DSBPLAY_TOEND);
-//
-//      if (FAILED(hres))
-//      {
-//          if ((hres == DSERR_BUFFERLOST) &&
-//              DSReloadSoundBuffer(pDSB, "Turtle"))
-//          {
-//              goto TryAgain;
-//          }
-//          /* deal with other errors... */
-//      }
-//
-///////////////////////////////////////////////////////////////////////////////
-BOOL DSReloadSoundBuffer(IDirectSoundBuffer *pDSB, char *lpName);
-
-void * DSGetWave( char *lpName,
-    WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize);
-
-void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -133,8 +98,6 @@ typedef struct SFXNAME{
 #define SFX_HOLDERTYPE_Dynamic 2
 #define SFX_HOLDERTYPE_Looping 3
 #define SFX_HOLDERTYPE_Taunt 4
-
-#define IS_COMPOUND( flags ) ( (!(flags & SFX_Looping)) && (!(flags & SFX_Dynamic)))
 
 #define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
 #define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
@@ -236,10 +199,6 @@ void SndObjDestroy(SNDOBJ *hSO);
 // helper routines
 //
 ///////////////////////////////////////////////////////////////////////////////
-
-BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD dwWaveSize);
-
-BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
 
 void GetSfxPath( int sfxnum, char *path );
 

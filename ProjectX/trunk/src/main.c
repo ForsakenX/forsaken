@@ -447,7 +447,6 @@ static BOOL AppInit( char * lpCmdLine )
 
 	// special debuggin routines
 	XMem_Init();
-	XSBuffer_Init();
 
 #endif
 
@@ -676,9 +675,6 @@ FAILURE:
 
 	if ( UnMallocedBlocks() )
 		DebugPrintf( "Un-malloced blocks found!" );
-
-	if ( UnMallocedSBufferBlocks() )
-		DebugPrintf( "Un-malloced SBuffer blocks found!" );
 
 #endif
 

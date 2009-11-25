@@ -60,11 +60,33 @@ extern SNDOBJ *SndObjs[];
 extern SFXNAME Sfx_Filenames[MAX_SFX];
 extern TEMPSFXINFO TempSfxInfo[];
 
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSLoadSoundBuffer
-//
-///////////////////////////////////////////////////////////////////////////////
+void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
+
+BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD dwWaveSize);
+
+#define IS_COMPOUND( flags ) ( (!(flags & SFX_Looping)) && (!(flags & SFX_Dynamic)))
+
+BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
+
+void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize)
+{
+	long			File_Size;
+	long			Read_Size;
+	void		*	Buffer;
+	void *End;
+	
+	File_Size = Get_File_Size( lpName );	// how big is the file...
+	if( !File_Size ) return NULL;
+	Buffer = malloc( File_Size );							// alloc enough space to load it...
+	if( Buffer == NULL ) return( NULL );					// if couldnt then return
+	Read_Size = Read_File( lpName, Buffer, File_Size ); // Read it in making a note of the Size returned
+	if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
+
+	DSParseWave( Buffer , ppWaveHeader, ppbWaveData, pcbWaveSize, &End);
+
+	return Buffer;
+}
+
 #ifdef DEBUG_ON
 IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags, char *from_file, int from_line )
 #else
@@ -99,6 +121,7 @@ IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dw
 		free( Buffer );
     return pDSB;
 }
+
 #ifdef DEBUG_ON
 IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr, char *from_file, int from_line )
 #else
@@ -132,34 +155,6 @@ IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, 
 		free( Buffer );
     return pDSB;
 }
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSReloadSoundBuffer
-//
-///////////////////////////////////////////////////////////////////////////////
-
-BOOL DSReloadSoundBuffer(IDirectSoundBuffer *pDSB, char *lpName)
-{
-    BOOL result=FALSE;
-    BYTE *pbWaveData;
-    DWORD cbWaveSize;
-	void * Buffer = NULL;
-
-    if (Buffer = DSGetWave( lpName, NULL, &pbWaveData, &cbWaveSize))
-    {
-        if (SUCCEEDED(IDirectSoundBuffer_Restore(pDSB)) &&
-            DSFillSoundBuffer(pDSB, pbWaveData, cbWaveSize))
-        {
-            result = TRUE;
-        }
-    }
-	if( Buffer != NULL )
-		free( Buffer );
-
-    return result;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 // SndObj fns
@@ -374,31 +369,6 @@ BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveS
     }
 
     return FALSE;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSGetWave
-//
-///////////////////////////////////////////////////////////////////////////////
-
-void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize)
-{
-	long			File_Size;
-	long			Read_Size;
-	void		*	Buffer;
-	void *End;
-	
-	File_Size = Get_File_Size( lpName );	// how big is the file...
-	if( !File_Size ) return NULL;
-	Buffer = malloc( File_Size );							// alloc enough space to load it...
-	if( Buffer == NULL ) return( NULL );					// if couldnt then return
-	Read_Size = Read_File( lpName, Buffer, File_Size ); // Read it in making a note of the Size returned
-	if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
-
-	DSParseWave( Buffer , ppWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-	return Buffer;
 }
 
 void GetSfxPath( int sfxnum, char *path )

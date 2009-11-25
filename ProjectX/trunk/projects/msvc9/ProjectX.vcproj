@@ -684,10 +684,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\sbufferhand.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\screenpolys.c"
 				>
 			</File>
@@ -962,10 +958,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\include\rtlight.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\sbufferhand.h"
 				>
 			</File>
 			<File

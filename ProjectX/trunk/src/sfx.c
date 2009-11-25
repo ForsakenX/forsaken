@@ -3418,12 +3418,6 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 				// if buffer exists, set frequency...
 				if ( SpotSfxList[ LoopingSfxIndex ].bufferloaded && SpotSfxList[ LoopingSfxIndex ].buffer )
 				{
-	   				if ( !CheckSBufferValid( SpotSfxList[ LoopingSfxIndex ].buffer ) )
-					{
-						Msg("trying to modify invalid sound buffer\n");
-						return;
-					}
-					
 					// get original frequency of buffer
 					IDirectSoundBuffer_GetFormat( SpotSfxList[ LoopingSfxIndex ].buffer, NULL, 0, &dwSizeWritten );
 					lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );

@@ -164,10 +164,6 @@ extern  BOOL  DS;
 extern  size_t  MemUsed;
 
 #ifdef DEBUG_ON
-extern size_t SBufferMemUsedSW;
-extern size_t SBufferMemUsedHW;
-extern size_t MaxSBufferMemUsedHW;
-extern size_t MaxSBufferMemUsedSW;
 extern uint32 CurrentBikeCompSpeech;
 #endif
 
@@ -384,11 +380,6 @@ float DemoAvgFps = 0.0F;
 
 #define VIEWPORT_GROW   (1.1F)
 #define VIEWPORT_SHRINK   (1.0F/1.1F)
-
-extern size_t	SBufferMemUsedSW;
-extern size_t	SBufferMemUsedHW;
-extern size_t	MaxSBufferMemUsedHW;
-extern size_t	MaxSBufferMemUsedSW;
 
 extern  TLOADHEADER Tloadheader;
 extern  int16   SecondaryAmmo[ MAXSECONDARYWEAPONS ];
@@ -4882,12 +4873,6 @@ BOOL Our_CalculateFrameRate(void)
 		// memory information
 		sprintf(&buf[0], "Mem %d",(int)MemUsed );
 		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*4, 2 );
-
-		// sound memory info
-		sprintf(&buf[0], "SoundMemUsedHW %d (max %d) - SoundMemUsedSW %d (max %d)",
-			SBufferMemUsedHW, MaxSBufferMemUsedHW,
-			SBufferMemUsedSW, MaxSBufferMemUsedSW );
-		CenterPrint4x5Text( (char *) &buf[0], (FontHeight+3)*5, 2 );
 
 		// show polygon information
 		sprintf(&buf[0], "Face Me Polys %d - Dynamic? Polys %d - Screen Polys %d - Verts Touched (lighting?) %d",
