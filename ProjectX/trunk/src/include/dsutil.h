@@ -87,35 +87,6 @@ IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, 
 ///////////////////////////////////////////////////////////////////////////////
 BOOL DSReloadSoundBuffer(IDirectSoundBuffer *pDSB, char *lpName);
 
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSGetWaveResource    Finds a WAV resource in a Win32 module.
-//
-// Params:
-//  hModule     -- Win32 module handle of module containing WAV resource.
-//                 Pass NULL to indicate current application.
-//
-//  lpName      -- Name of WAV resource to load the data from.  Can be a
-//                 resource id specified using the MAKEINTRESOURCE macro.
-//
-//  ppWaveHeader-- Optional pointer to WAVEFORMATEX * to receive a pointer to
-//                 the WAVEFORMATEX header in the specified WAV resource.
-//                 Pass NULL if not required.
-//
-//  ppbWaveData -- Optional pointer to BYTE * to receive a pointer to the
-//                 waveform data in the specified WAV resource.  Pass NULL if
-//                 not required.
-//
-//  pdwWaveSize -- Optional pointer to DWORD to receive the size of the
-//                 waveform data in the specified WAV resource.  Pass NULL if
-//                 not required.
-//
-// Returns a BOOL indicating whether a valid WAV resource was found.
-//
-///////////////////////////////////////////////////////////////////////////////
-BOOL DSGetWaveResource(HMODULE hModule, LPCTSTR lpName,
-    WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pdwWaveSize);
-
 void * DSGetWave( char *lpName,
     WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize);
 
@@ -165,15 +136,10 @@ typedef struct SFXNAME{
 
 #define IS_COMPOUND( flags ) ( (!(flags & SFX_Looping)) && (!(flags & SFX_Dynamic)))
 
-#define SFX_BUFFER_HW 512	// use 9th bit of DWORD to indicate HW buffer
-#define SFX_BUFFER_SW 1024	// use 10th bit of DWORD to indicate SW buffer
-
 #define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
 #define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
 #define MAX_COMPOUND_BUFFERS 16	// max number of mixing channels
 #define MIN_COMPOUND_BUFFERS 8	// min number of mixing channels ( otherwise sw mixing will be used )
-
-#define NUM_SFX_DETAIL_LEVELS 2
 
 typedef struct
 {
@@ -228,26 +194,6 @@ typedef struct _SNDOBJ
 	int						SfxHolderIndex[MAX_DUP_BUFFERS];
 } SNDOBJ;
 
-typedef struct _GENERIC_SFX_INF0
-{
-	int					SfxNum;					// which sfx?
-	BOOL				Retain;					// retain info for this sound until explicitly deallocated?
-	float				Dist;					// distance of sound ( used for 2D sounds only )
-	uint16				*Group;					// address of group no. of sound
-	VECTOR				*pos;					// address of position vector of sound
-	DWORD				Freq;					// freq of sound ( 0 for original freq )
-	float				Volume;					// sound volume ( 0 = nothing, 1 = Max )
-} GENERIC_SFX_INFO;
-
-typedef struct _GENERIC_SFX
-{
-	GENERIC_SFX_INFO	*Info;					
-	BOOL				Allocated;				// is this slot occupied?
-	int					Flags;					// flags ( as copied from original list )
-	int					BufferIndex;			// index no. of sound buffer
-	IDirectSoundBuffer	*Buffer;				// buffer address
-} GENERIC_SFX;
-
 #define _HSNDOBJ_DEFINED
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -287,54 +233,11 @@ void SndObjDestroy(SNDOBJ *hSO);
 
 ///////////////////////////////////////////////////////////////////////////////
 //
-// SndObjPlay   Plays a buffer in a SNDOBJ.
-//
-// Params:
-//  hSO         -- Handle to a SNDOBJ to play a buffer from.
-//
-//  dwPlayFlags -- Flags to pass to IDirectSoundBuffer::Play.  It is not
-//                 legal to play an SndObj which has more than one buffer
-//                 with the DSBPLAY_LOOPING flag.  Pass 0 to stop playback.
-//
-///////////////////////////////////////////////////////////////////////////////
-BOOL SndObjPlay(SNDOBJ *pSO, DWORD dwPlayFlags , long Volume);
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// SndObjStop   Stops one or more buffers in a SNDOBJ.
-//
-// Params:
-//  hSO         -- Handle to a SNDOBJ to play a buffer from.
-//
-///////////////////////////////////////////////////////////////////////////////
-BOOL SndObjStop(SNDOBJ *hSO);
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// SndObjGetFreeBuffer      returns one of the cloned buffers that is
-//                          not currently playing
-//
-// Params:
-//  hSO         -- Handle to a SNDOBJ
-//
-// NOTES:
-//  This function is provided so that callers can set things like pan etc
-//  before playing the buffer.
-//
-// EXAMPLE:
-//  ...
-//
-///////////////////////////////////////////////////////////////////////////////
-IDirectSoundBuffer *SndObjGetFreeBuffer(SNDOBJ *hSO , IDirectSound3DBuffer **pDSB3D );
-
-///////////////////////////////////////////////////////////////////////////////
-//
 // helper routines
 //
 ///////////////////////////////////////////////////////////////////////////////
 
 BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD dwWaveSize);
-BOOL DSParseWaveResource(void *pvRes, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pdwWaveSize);
 
 BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
 

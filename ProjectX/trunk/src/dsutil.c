@@ -29,7 +29,6 @@ void CheckSBufferList( void );
 extern LPDIRECTSOUND lpDS;
 extern SNDLOOKUP SndLookup[];
 
-BOOL UseSfxHardware = FALSE;
 extern BOOL CompoundSfxAllocated[MAX_SFX];
 extern BOOL FreeHWBuffers;
 
@@ -37,8 +36,6 @@ DWORD CompoundSfxDataRate;
 
 DWORD UserTotalCompoundSfxBufferSize = 0;
 BOOL CustomCompoundBufferSize = FALSE;
-
-#define SFX_FOLDER "sound"
 
 char *GenericSfxPath = {
 	"data\\sound\\generic\\",

@@ -522,7 +522,6 @@ void StopLoopingSfx( int index );
 void ModifyLoopingSfx( uint32 uid, float Freq, float Volume );
 void ProcessLoopingSfx( void );
 void StopCompoundSfx( void );
-int PlayGenericSfx( GENERIC_SFX_INFO *Info );
 int16 ReturnSFXIndex( char *file );
 uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects );
 BOOL StopSfx( uint32 uid );
