@@ -135,51 +135,6 @@ IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, 
 		free( Buffer );
     return pDSB;
 }
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSLoad3DSoundBuffer - Loads a .WAV into a 3D sound buffer and returns the sound buffer
-//
-///////////////////////////////////////////////////////////////////////////////
-
-IDirectSoundBuffer *DSLoad3DSoundBuffer(IDirectSound *pDS, char *lpName, IDirectSound3DBuffer ** lpDirectSound3DBuffer, DWORD dwflags )
-{
-#if 0
-	IDirectSoundBuffer *pDSB = NULL;
-    DSBUFFERDESC dsBD = {0};
-    BYTE *pbWaveData;
-	void * Buffer = NULL;
-
-    dsBD.dwSize = sizeof(dsBD);
-    dsBD.dwFlags = dwflags;
-
-	if ( Buffer = DSGetWave(lpName, &dsBD.lpwfxFormat, &pbWaveData,
-                        &dsBD.dwBufferBytes))
-    {
-        if ( MakeSoundBuffer( pDS, &dsBD, &pDSB, NULL ) )
-        {
-			if (DS_OK==IDirectSoundBuffer_QueryInterface(pDSB, &IID_IDirectSound3DBuffer, (void **)lpDirectSound3DBuffer))        
-			{
-				if (!DSFillSoundBuffer(pDSB, pbWaveData, dsBD.dwBufferBytes))
-				{
-					SoundBufferRelease(&pDSB);
-					pDSB = NULL;
-				}
-			}
-        }
-        else
-        {
-            pDSB = NULL;
-			lpDirectSound3DBuffer = NULL;
-        }
-	}
-	
-	if( Buffer != NULL )
-		free( Buffer );
-    return pDSB;
-#endif
-	return NULL;
-}
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -277,7 +232,7 @@ SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int sfx_flags , DWORD buf_
 				// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
 				if( buf_flags & DSBCAPS_CTRL3D )
 				{
-					pSO->Dup_Buffer[0] = DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[0], buf_flags );
+					pSO->Dup_Buffer[0] = NULL; //DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[0], buf_flags );
 				}else{
 					pSO->Dup_Buffer[0] = DSLoadSoundBuffer(pDS, lpName, buf_flags );
 				}
@@ -336,7 +291,7 @@ SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int sfx_flags , DWORD buf_
 						// recreate all buffers up to & including this one in software
 						if( buf_flags & DSBCAPS_CTRL3D )
 						{
-							pSO->Dup_Buffer[ 0 ] = DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[ 0 ], buf_flags | DSBCAPS_LOCSOFTWARE );
+							pSO->Dup_Buffer[ 0 ] = NULL; //DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[ 0 ], buf_flags | DSBCAPS_LOCSOFTWARE );
 						}else{
 							pSO->Dup_Buffer[ 0 ] = DSLoadSoundBuffer(pDS, lpName, buf_flags | DSBCAPS_LOCSOFTWARE );
 						}
