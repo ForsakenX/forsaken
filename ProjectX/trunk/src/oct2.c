@@ -733,7 +733,6 @@ extern  SHORTNAMETYPE     Names;  // all the players short Names....
 BOOL MainGame(); // bjd
 
 void Build_View();
-BOOL Disp3dPanel( void ); // bjd
 BOOL DispTracker( void ); // bjd
 
 
@@ -4026,9 +4025,6 @@ BOOL MainGame( void ) // bjd
 
     }
  /* done with rendering camera stuff */
-
-  if( DrawPanel && (WhoIAm == Current_Camera_View ))
-    Disp3dPanel();
   
   /* do the target c omputer trick */
   if( TargetComputerOn )
@@ -4945,141 +4941,6 @@ BOOL Our_CalculateFrameRate(void)
 		DemoTotalTime = ( (float) TimeDiff / (float) Freq );
 		DemoAvgFps = DemoGameLoops / DemoTotalTime;
 	}
-
-	return TRUE;
-}
-
-
-// TODO - this function is never really used
-//		  one funny thing is it makes an eye ball that mimics mouse motion :]
-BOOL Disp3dPanel( void )
-{
-	VECTOR  Trans;
-	MATRIX  Matrix;
-	MATRIX  rotMatrix;
-	MATRIX  finalMatrix;
-	VECTOR  Pos;
-	VECTOR  Temp;
-	VECTOR  Scale;
-	XYRECT dummy;
-	render_viewport_t newviewport;
-	float screen_width, screen_height;
-
-    newviewport.X		= 0;
-	newviewport.Y		= 0;
-    newviewport.Width	= render_info.szClient.cx;
-    newviewport.Height	= render_info.szClient.cy;
-    newviewport.ScaleX	= newviewport.Width / (float)2.0;
-    newviewport.ScaleY	= newviewport.Height / (float)2.0;
-	newviewport.MaxZ	= 1.0f;
-	newviewport.MinZ	= 0.0f;
-
-/*
-    newviewport.dvMaxX = (float)D3DDivide(RENDERVAL(newviewport.dwWidth),
-                                       RENDERVAL(2 * newviewport.dvScaleX));
-    newviewport.dvMaxY = (float)D3DDivide(RENDERVAL(newviewport.dwHeight),
-                                       RENDERVAL(2 * newviewport.dvScaleY));
-*/  
-
-	if (!FSSetViewPort(&newviewport))
-		return FALSE;
-
-	if ( render_info.bFullscreen )
-	{
-		screen_width = (float) render_info.ThisMode.w;
-		screen_height = (float) render_info.ThisMode.h;
-	}
-	else
-	{
-		screen_width = (float) render_info.WindowsDisplay.w;
-		screen_height = (float) render_info.WindowsDisplay.h;
-	}
-
-	pixel_aspect_ratio = render_info.aspect_ratio * screen_height / screen_width;
-	viewplane_distance = (float) ( newviewport.Width / ( 2 * tan( DEG2RAD( normal_fov ) * 0.5 ) ) );
-	panelproj._11 = 2 * viewplane_distance / newviewport.Width;
-	panelproj._22 = 2 * viewplane_distance / ( newviewport.Height / pixel_aspect_ratio );
-
-	if (!FSSetProjection(&panelproj))
-	{
-		return FALSE;
-	}
-
-	dummy.x1 = newviewport.X;
-	dummy.x2 = newviewport.X+newviewport.Width;
-	dummy.y1 = newviewport.Y + ( newviewport.Height >> 1 );
-	dummy.y2 = dummy.y1+( newviewport.Height >> 1);
-
-	if(!FSClearDepth(&dummy))
-		return FALSE;
-
-	Trans.x = 0.0F;
-	Trans.y = -180.0F;
-	Trans.z = 280.0F;
-
-	Trans.x -= ( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
-	Trans.y -= ( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
-	Trans.z += ( Ships[WhoIAm].Object.Speed.z * 4.0F );
-  
-	Pos.x = -( ( Ships[WhoIAm].Object.Speed.x * -4.0F ) + ( Ships[WhoIAm].Object.Angle.y * 8.0F ) );
-	Pos.y = -( ( Ships[WhoIAm].Object.Speed.y * -2.0F ) + ( Ships[WhoIAm].Object.Angle.x * 4.0F ) );
-	Pos.z = +( Ships[WhoIAm].Object.Speed.z * 4.0F );
-
-	ApplyMatrix( &MainCamera.Mat, &Pos, &Temp );
-
-	Temp.x += MainCamera.Pos.x;
-	Temp.y += MainCamera.Pos.y;
-	Temp.z += MainCamera.Pos.z;
-
-	Matrix = MainCamera.Mat;
-	Matrix._41 = Temp.x;
-	Matrix._42 = Temp.y;
-	Matrix._43 = Temp.z;
-
-	Scale.x = 0.5F;
-	Scale.y = 0.5F;
-	Scale.z = 0.5F;
-	ScaleMatrix( &Matrix, &Scale );
-  
-	BuildRotMatrix( Ships[WhoIAm].Object.Angle.x, Ships[WhoIAm].Object.Angle.y, Ships[WhoIAm].Object.Angle.y+Ships[WhoIAm].Object.Angle.z, &rotMatrix);
-
-	MatrixMultiply( &Matrix, &rotMatrix, &finalMatrix );
-
-//  XLightMxloadHeader( &ModelHeaders[MODEL_Panel] , &Temp , SHIP_RADIUS*4.0F , &finalMatrix );
-	XLightMxloadHeader( &ModelHeaders[MODEL_Eyeball] , &Temp , SHIP_RADIUS*4.0F , &finalMatrix );
-  
-//  view = identity;
-	view._41 = Trans.x;
-	view._42 = Trans.y;
-	view._43 = Trans.z;
-	view._11 = rotMatrix._11; 
-	view._12 = rotMatrix._12;
-	view._13 = rotMatrix._13;
-	view._14 = rotMatrix._14;
-	         
-	view._21 = rotMatrix._21;
-	view._22 = rotMatrix._22;
-	view._23 = rotMatrix._23;
-	view._24 = rotMatrix._24;
-	         
-	view._31 = rotMatrix._31;
-	view._32 = rotMatrix._32;
-	view._33 = rotMatrix._33;
-	view._34 = rotMatrix._34;
-	                                    
-	view._44 = rotMatrix._44;
-
-	if (!FSSetView(&view))
-		return FALSE;
-
-	if (ExecuteMxloadHeader( &ModelHeaders[MODEL_Eyeball], (uint16) -1 ) != TRUE )
-		return FALSE;
-
-	if (!FSSetViewPort(&viewport))
-		return FALSE;
-
-	if (!FSSetProjection(&proj))
-		return FALSE;
 
 	return TRUE;
 }
