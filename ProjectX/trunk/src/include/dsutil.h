@@ -16,7 +16,6 @@ extern "C" {
 #endif
 
 #include <time.h>
-#include "new3d.h"
 #include <dsound.h>
 
 #define MakeSoundBuffer( A, B, C, D ) ( IDirectSound_CreateSoundBuffer( (A), (B), (C), (D)) == DS_OK )
