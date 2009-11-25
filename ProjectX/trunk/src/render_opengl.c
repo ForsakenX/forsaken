@@ -168,11 +168,15 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 
 BOOL init_renderer( render_info_t * info )
 {
-	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', shader='%s'\n",
+	GLboolean b;
+	glGetBooleanv(GL_STEREO,&b);
+
+	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', shader='%s', stereo='%s'\n",
 		glGetString(GL_VENDOR),
 		glGetString(GL_RENDERER),
 		glGetString(GL_VERSION),
-		glGetString(GL_SHADING_LANGUAGE_VERSION));
+		glGetString(GL_SHADING_LANGUAGE_VERSION),
+		(b)?"true":"false");
 
 	// this is way to long for OutputDebugString to show
 	//DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', extensions='%s', shaders='%s'\n",
