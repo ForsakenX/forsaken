@@ -21,10 +21,7 @@
 #include "xmem.h"
 #include "util.h"
 
-static const char c_szWAV[] = "WAV";
-
 int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex );
-void CheckSBufferList( void );
 
 extern LPDIRECTSOUND lpDS;
 extern SNDLOOKUP SndLookup[];
@@ -32,31 +29,15 @@ extern SNDLOOKUP SndLookup[];
 extern BOOL CompoundSfxAllocated[MAX_SFX];
 extern BOOL FreeHWBuffers;
 
-DWORD CompoundSfxDataRate;
-
 DWORD UserTotalCompoundSfxBufferSize = 0;
 BOOL CustomCompoundBufferSize = FALSE;
-
-char *GenericSfxPath = {
-	"data\\sound\\generic\\",
-};
-char *BikeCompSfxPath = {
-	"data\\sound\\BikeComp\\",
-};
-char *BikerSfxPath = {
-	"data\\sound\\Biker\\",
-};
-char *LevelSpecSfxPath = {
-	"data\\sound\\Mapped\\",
-};
 
 // establish compound sample format...temporarily hard coded for now...
 DWORD CompoundSfxBitDepth = 16;
 DWORD CompoundSfxFrequency = 22050;
-DWORD CompoundSfxChannels = 1;
+extern DWORD CompoundSfxChannels;
 float CompoundSfxGap = 0.1F;	// secs
 
-extern SNDOBJ *SndObjs[];
 extern SFXNAME Sfx_Filenames[MAX_SFX];
 extern TEMPSFXINFO TempSfxInfo[];
 
@@ -369,34 +350,6 @@ BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveS
     }
 
     return FALSE;
-}
-
-void GetSfxPath( int sfxnum, char *path )
-{
-
-	if ( sfxnum > SFX_LEVELSPEC_Start )
-		sfxnum = SFX_LEVELSPEC_Start;
-
-	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_BikeComp )
-	{
-		strcpy( path, BikeCompSfxPath );
-		return;
-	}
-
-	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_Biker )
-	{
-		strcpy( path, BikerSfxPath );
-		return;
-	}
-
-	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_LevelSpec )
-	{
-		strcpy( path, LevelSpecSfxPath );
-		return;
-	}
-
-	strcpy( path, GenericSfxPath );
-
 }
 
 void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr )

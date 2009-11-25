@@ -6,7 +6,6 @@
 #include "version.h"
 #include "render.h"
 #include "xmem.h"
-#include "sbufferhand.h"
 #include "util.h"
 #include "file.h"
 #include "net.h"
@@ -120,8 +119,6 @@ extern BOOL DS;
 extern float normal_fov;
 extern float UV_Fix;
 extern int NetUpdateIntervalCmdLine;
-extern DWORD UserTotalCompoundSfxBufferSize;
-extern BOOL CustomCompoundBufferSize;
 extern char *config_name;
 extern int cliSleep;
 extern TEXT local_port_str;
@@ -305,13 +302,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 
 			// select the pilot
 			else if ( sscanf( option , "pilot:%s", config_name )){}
-
-			// ammount of memory to allocate for sound buffer
-			else if ( sscanf( option, "CompoundSfxBufferMem:%d", &mem ) == 1 )
-			{
-				UserTotalCompoundSfxBufferSize = mem;
-				CustomCompoundBufferSize = TRUE;
-			}
 
 			// set the packets per second
 			else if ( sscanf( option, "PPS:%d", &NetUpdateIntervalCmdLine ) == 1 ){}

@@ -107,7 +107,6 @@ extern BOOL flush_input;
 extern double	Gamma;
 extern BOOL MyUseShortPackets;
 extern BOOL MyResetKillsPerLevel;
-extern SNDLOOKUP SndLookup[];
 extern int CrystalsFound;
 extern	int16	NumGoldBars;
 extern int Secrets;

@@ -23,7 +23,6 @@
 #include "vfw.h"
 #include "config.h"
 #include "xmem.h"
-#include "sbufferhand.h"
 #include "util.h"
 
 void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
@@ -124,11 +123,11 @@ extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
 extern SLIDER  SfxSlider; 
-extern DWORD CompoundSfxDataRate;
+
+DWORD CompoundSfxDataRate;
 
 extern DWORD CompoundSfxBitDepth;
-extern DWORD CompoundSfxFrequency;
-extern DWORD CompoundSfxChannels;
+DWORD CompoundSfxChannels = 1;
 extern USERCONFIG *player_config;
 
 extern float framelag;	
@@ -619,6 +618,46 @@ char *BikerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {
 	"EX",	//	-	extra 
 };
 
+char *GenericSfxPath = {
+	"data\\sound\\generic\\",
+};
+char *BikeCompSfxPath = {
+	"data\\sound\\BikeComp\\",
+};
+char *BikerSfxPath = {
+	"data\\sound\\Biker\\",
+};
+char *LevelSpecSfxPath = {
+	"data\\sound\\Mapped\\",
+};
+
+void GetSfxPath( int sfxnum, char *path )
+{
+
+	if ( sfxnum > SFX_LEVELSPEC_Start )
+		sfxnum = SFX_LEVELSPEC_Start;
+
+	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_BikeComp )
+	{
+		strcpy( path, BikeCompSfxPath );
+		return;
+	}
+
+	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_Biker )
+	{
+		strcpy( path, BikerSfxPath );
+		return;
+	}
+
+	if ( Sfx_Filenames[ sfxnum ].Flags & SFX_LevelSpec )
+	{
+		strcpy( path, LevelSpecSfxPath );
+		return;
+	}
+
+	strcpy( path, GenericSfxPath );
+
+}
 // if there is 3D sound, commit 3D sound processing
 void commit_any_sounds( void )
 {
