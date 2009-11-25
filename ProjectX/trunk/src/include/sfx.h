@@ -1,12 +1,7 @@
-
 #ifndef	SFX_INCLUDED
 #define	SFX_INCLUDED
 
-#include <dsound.h>
-#include "dsutil.h"
-
 #include "main.h"
-
 #include "render.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -15,102 +10,20 @@
 #include "triggers.h"
 #include "enemies.h"
 
-
-typedef struct SFXNAME{
-	char		*Name;			// Name of the Sfx...
-	int			Flags;
-	int			Priority;			// for compound sfx
-	int			SfxLookup;			// for biker / computer speech
-}SFXNAME;
-
-
-#define SFX_Dynamic			1	// sound is loaded up as required
-#define SFX_BikeComp		2	// bike computer speech 
 #define SFX_Biker			4	// biker speech
-#define SFX_LevelSpec		8	// level specific sfx
-#define SFX_Looping			16	// level specific sfx
-#define SFX_BikerSpeechOveride	32	// use when biker speech must play ( will cut off any existing speech )
 #define SFX_Title	64	// use when biker speech must play ( will cut off any existing speech )
-#define SFX_End	128	// end of sfx batch
 #define SFX_InGame	256	// sfx must be loaded in game, regardless of whether or not SFX_Title is set
-#define SFX_BikeCompNoOveride	512
 
-#define SFX_HOLDERTYPE_Static 0
-#define SFX_HOLDERTYPE_Compound 1
-#define SFX_HOLDERTYPE_Dynamic 2
-#define SFX_HOLDERTYPE_Looping 3
-#define SFX_HOLDERTYPE_Taunt 4
-
-typedef struct _SPOT_SFX_LIST
-{
-	//struct					_SPOT_SFX_LIST *next;	// next list item
-	//struct					_SPOT_SFX_LIST *prev;	// prev list item
-	BOOL					used;					// is sfx in use?
-	int16					sfxindex;					// sfx num, from enum list
-	int						variant;					// sfx num, from enum list
-	int						flags;
-	VECTOR					*pos;					// current sfx position vector
-	VECTOR					fixedpos;
-	int						type;					// fixed or variable group?
-	uint16					*group;					// current sfx group num
-	uint16					fixedgroup;				// current sfx group num
-	float					freq;					// frequency ( 0 for original frequency )
-	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
-	BOOL					bufferloaded;			// flag to indicate if buffer is loaded ( or about to be loaded )
-	IDirectSoundBuffer		*buffer;				// buffer address
-	IDirectSound3DBuffer	*buffer3D;				// 3D buffer interface address
-	DWORD					buffersize;
-	float					distance;
-	int						SfxHolderIndex;
-	int						SfxThreadInfoIndex;
-	uint16					Effects;
-	uint32					uid;
-} SPOT_SFX_LIST;
-
-
-#define MAX_LOOPING_SFX 64
-
-/****************************************
-defines
-*****************************************/
-#define MAX_BIKE_COMPUTER_SFX 64 
-#define MAX_BIKER_SFX 16 
 #define SPOT_SFX_TYPE_Normal 0
 #define SPOT_SFX_TYPE_NoPan 1
 #define SPOT_SFX_TYPE_Taunt 2
-
-#define MAX_THREADED_SFX 2
 
 #define SFX_TYPE_Normal 1
 #define SFX_TYPE_Panned 2
 #define SFX_TYPE_Looping 3
 #define SFX_TYPE_Taunt 4
 
-#define SFX_BUFFERTYPE_OnceOnly	FALSE
-#define SFX_BUFFERTYPE_Looping	TRUE
-
-#define LOOPING_SFX_MIXAHEAD 500	// time from end of sample ( in mS ) that it is not safe to make control changes
-									// else you will get a gap when looping.
-
-#define LOOPING_SFX_SCALE 0.75F		// used for max distance of looping sfx ( fraction of max distance used for normal sfx )
-
-#define SFX_MIN_VOLUME  ( DSBVOLUME_MIN / 3) 
-
-#define LOOPING_SFX_PANNING_PROXIMITY 10	// no. of ships radius's distance that you must be away from sound
-											// before sound is panned
-
-#define MAX_DISTANCE  ( 24 * 1024 * GLOBAL_SCALE )
-
-#define LOOPING_SFX_FRAME_SKIP 5.0F	// process looping sfx every 5 frames
-
-#define LOOPING_SFX_FixedGroup 0
-#define LOOPING_SFX_VariableGroup 1
-#define SFX_2D 2
-
-#define TRIGGER_SFX_PAUSE_VALUE 20.0F	// pause between triggered sfx ( 20.0F = 1/3 second )
-
 #define GLOBAL_MAX_SFX ( 0.9F ) 
-#define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 
 // sfx is -1 if free
 // allocate one variable only - sfx loader can wait if not available
@@ -119,13 +32,6 @@ defines
 #define SFX_TYPE_Static 1
 #define SFX_TYPE_Dynamic 2
 #define SFX_TYPE_Compound 3
-
-#define MAX_CONCURRENT_SFX 32
-#define MAX_SYNCHRONOUS_DYNAMIC_SFX 16
-
-#define VOL_SCALE_FACTOR 0.6F
-
-#define MIN_SOUNDCARD_HW_MEM 262144		// 256K 
 
 #define MAX_LEVELSPECIFIC_SFX 64
 
@@ -342,224 +248,9 @@ enum {
 	MAX_SFX,
 };
 
-#define SFX_BIKER_START ( SFX_BIKER_GP )
-#define SFX_BIKECOMP_START ( SFX_BIKECOMP_AM )
-#define SFX_NUM_BIKE_PHRASES ( SFX_BIKER_EX - SFX_BIKER_GP + 1 )
-#define SFX_NUM_BIKECOMP_PHRASES ( SFX_Select_Trojax - SFX_BIKECOMP_AM + 1 )
-
 #define MAXBIKECOMPTYPES 5
 
-/*************************************
-randomised sound lookup table identifiers
-**************************************/
-enum {
-	SFX_RANDOMISED_LOOKUP_BikeCollideMetal,
-	SFX_RANDOMISED_LOOKUP_BikeCollideStone,
-	SFX_RANDOMISED_LOOKUP_BikeCollideLargeEnemy,
-	SFX_RANDOMISED_LOOKUP_BikeCollideMediumEnemy,
-	SFX_RANDOMISED_LOOKUP_BikeCollideSmallEnemy,
-	SFX_RANDOMISED_LOOKUP_BikeScrapeMetal,
-	SFX_RANDOMISED_LOOKUP_BikeScrapeStone,
-};
-
-/*************************************
-Bike Computer lookup table identifiers
-**************************************/
-enum {
-	SFX_BIKECOMP_LOOKUP_AM,  //	-	assassin missile                        
-	SFX_BIKECOMP_LOOKUP_AP,  //	-	picking up a weapon which is already pre
-	SFX_BIKECOMP_LOOKUP_BL,  //	-	beam laser                              
-	SFX_BIKECOMP_LOOKUP_BN,  //	-	bad navigation                          
-	SFX_BIKECOMP_LOOKUP_CA,  //	-	camping                                 
-	SFX_BIKECOMP_LOOKUP_CD,  //	-	chaff dispenser                         
-	SFX_BIKECOMP_LOOKUP_CS,  //	-	chaos shield                            
-	SFX_BIKECOMP_LOOKUP_DY,  //	-	destroying yourself                     
-	SFX_BIKECOMP_LOOKUP_EA,  //	-	extra ammo                              
-	SFX_BIKECOMP_LOOKUP_EX,  //	-	extra,   miscellaneous phrases            
-	SFX_BIKECOMP_LOOKUP_FL,  //	-	flares                                  
-	SFX_BIKECOMP_LOOKUP_GK,  //	-	good kill total                         
-	SFX_BIKECOMP_LOOKUP_GL,  //	-	general ammo low                        
-	SFX_BIKECOMP_LOOKUP_GM,  //	-	gravgon missile                         
-	SFX_BIKECOMP_LOOKUP_GP,  //	-	golden power pod                        
-	SFX_BIKECOMP_LOOKUP_HC,  //	-	hull critical                           
-	SFX_BIKECOMP_LOOKUP_IN,  //	-	incoming                                
-	SFX_BIKECOMP_LOOKUP_IR,  //	-	IR goggles                              
-	SFX_BIKECOMP_LOOKUP_MA,  //	-	maximum ammo                            
-	SFX_BIKECOMP_LOOKUP_MK,  //	-	many kills in a short time period       
-	SFX_BIKECOMP_LOOKUP_MR,  //	-	MRFL                                    
-	SFX_BIKECOMP_LOOKUP_MU,  //	-	mug                                     
-	SFX_BIKECOMP_LOOKUP_NK,  //	-	no kills for a lengthy time period      
-	SFX_BIKECOMP_LOOKUP_NL,  //	-	nitro low                               
-	SFX_BIKECOMP_LOOKUP_NP,  //	-	selecting a weapon which is not present 
-	SFX_BIKECOMP_LOOKUP_NT,  //	-	nitro                                   
-	SFX_BIKECOMP_LOOKUP_OP,  //	-	orbit pulsar                            
-	SFX_BIKECOMP_LOOKUP_PG,  //	-	petro gel                               
-	SFX_BIKECOMP_LOOKUP_PK,  //	-	poor kill total                         
-	SFX_BIKECOMP_LOOKUP_PL,  //	-	pyrolite fuel low                       
-	SFX_BIKECOMP_LOOKUP_PM,  //	-	pine mine                               
-	SFX_BIKECOMP_LOOKUP_PO,  //	-	power pod                               
-	SFX_BIKECOMP_LOOKUP_PP,  //	-	plasma pack                             
-	SFX_BIKECOMP_LOOKUP_PR,  //	-	purge mine                              
-	SFX_BIKECOMP_LOOKUP_PS,  //	-	pulsar                                  
-	SFX_BIKECOMP_LOOKUP_PY,  //	-	pyrolite                                
-	SFX_BIKECOMP_LOOKUP_QM,  //	-	quantum mine                            
-	SFX_BIKECOMP_LOOKUP_RR,  //	-	resnic reanimator                       
-	SFX_BIKECOMP_LOOKUP_SA,  //	-	scatter missile                         
-	SFX_BIKECOMP_LOOKUP_SC,  //	-	shield critical                         
-	SFX_BIKECOMP_LOOKUP_SG,  //	-	suss-gun                                
-	SFX_BIKECOMP_LOOKUP_SH,  //	-	shield                                  
-	SFX_BIKECOMP_LOOKUP_SI,  //	-	scatter missile impact                  
-	SFX_BIKECOMP_LOOKUP_SL,  //	-	suss gun ammo low                       
-	SFX_BIKECOMP_LOOKUP_SM,  //	-	smoke streamer                          
-	SFX_BIKECOMP_LOOKUP_SO,  //	-	spider mine                             
-	SFX_BIKECOMP_LOOKUP_SP,  //	-	solaris heatseaker                      
-	SFX_BIKECOMP_LOOKUP_ST,  //	-	stealth mantle                          
-	SFX_BIKECOMP_LOOKUP_TI,  //	-	titan star missile                      
-	SFX_BIKECOMP_LOOKUP_TR,  //	-	transpulse                              
-	SFX_BIKECOMP_LOOKUP_TX,  //	-	trojax  
-};
-
-/*************************************
-Biker speech lookup table identifiers
-**************************************/
-enum {
-	SFX_BIKER_LOOKUP_GP, //	-	general        
-	SFX_BIKER_LOOKUP_VP, //	-	victory        
-	SFX_BIKER_LOOKUP_LP, //	-	losing         
-	SFX_BIKER_LOOKUP_BW, //	-	big weapon gain
-	SFX_BIKER_LOOKUP_LE, //	-	low energy     
-	SFX_BIKER_LOOKUP_TN, //	-	taunt          
-	SFX_BIKER_LOOKUP_PN, //	-	pain           
-	SFX_BIKER_LOOKUP_DT, //	-	death          
-	SFX_BIKER_LOOKUP_EX, //	-	extra          
-};
-
-/*************************************
-level specific sfx lookup table identifiers
-**************************************/
-enum {
-	SFX_LEVELSPEC_LOOKUP_00, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_01, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_02, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_03, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_04, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_05, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_06, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_07, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_08, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_09, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_10, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_11, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_12, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_13, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_14, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_15, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_16, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_17, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_18, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_19, //	-	level specific 
-	SFX_LEVELSPEC_LOOKUP_20, //	-	level specific 
-};
-
-typedef struct _SBUFFER_LIST
-{
-	struct _SBUFFER_LIST *next;
-	IDirectSoundBuffer* buffer;
-	IDirectSound3DBuffer* buffer3D;
-} SBUFFER_LIST;
-
-typedef struct
-{
-	int		current_sfx;
-	int		current_variant;
-	int		compound_buffer_lookup_index;
-	DWORD	start_time;
-	DWORD	finish_time;
-	float	distance;
-	UINT	timerID;
-	IDirectSoundBuffer *buffer;
-	int		SfxHolderIndex;
-}COMPOUND_SFX_INFO;
-
-#define MAX_ANY_SFX 64
-
-typedef struct
-{
-	BOOL Used;
-	uint32	UniqueID;
-	int SndObjIndex;
-	int SfxFlags;
-	int SfxBufferIndex;
-	int ThreadIndex;
-	UINT CompoundSfxTimerID;
-	int16 TriggerSfx;
-	BOOL OnPause;
-	float PauseValue;
-} SFX_HOLDER;
-
-typedef struct
-{
-	int sfx;
-	IDirectSoundBuffer *buffer;
-	IDirectSound3DBuffer *buffer3D;
-	DWORD SampleLength;
-	DWORD buffersize;
-	int SpotSfxListIndex;
-} LOOPING_SFX_PIPE;
-
-
-typedef struct
-{
-	int type;
-	int SndObjIndex;
-	int SndObjBuffer;
-	IDirectSoundBuffer *DynamicSfxBuffer;
-	int CompoundSfxBufferIndex;
-	int LoopingSfxIndex;
-} SFX_PLAYING;
-
-typedef struct
-{
-	BOOL used;
-	IDirectSoundBuffer *buffer;
-	int SfxHolderIndex;
-} SBUFFERLIST;
-
-typedef struct
-{
-	BOOL SfxToPlay;
-	int16 SfxNum;
-	int Variant;
-	uint16 SfxGroup;
-	VECTOR SfxVector;
-	VECTOR SfxTempVector;
-	float SfxFreq;
-	float SfxDistance;
-	int SfxType;
-//	SPOT_SFX_LIST *node;
-	int SpotSfxListIndex;
-	int SfxHolderIndex;
-	long Vol;
-	uint16 Effects;
-} SFX_THREAD_INFO;
-
-typedef struct
-{
-	char file[128];
-	int	flags;
-}LEVELSPEC_SFX_FILES;
-
-typedef struct{
-	uint16 Num_Variants;
-	uint16 SndObjIndex;
-	BOOL Requested;
-} SNDLOOKUP;
-
 #define DESTROYSOUND_All 0
-#define DESTROYSOUND_KeepLevelSpecTable 1
-
-//#define	MAX_SFX	128
-#define	MAXCHANNELS	4
 
 // functions
 void ProcessSoundRoutines (void * pParm);
@@ -569,7 +260,6 @@ uint32	PlaySfx( int16 Sfx, float Dist );
 uint32	PlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 BOOL	SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
-int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex );
 void CheckSBufferList( void );
 void FreeSBufferList( void );
 int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float Freq, float Volume, int type, int SfxHolderIndex, uint16 Effects, uint32 uid );

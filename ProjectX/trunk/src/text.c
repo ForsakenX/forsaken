@@ -34,7 +34,6 @@
 		Externals ...
 ===================================================================*/
 
-//#define SFX_DEBUG
 extern BOOL Debug;
 extern BOOL	CanDoDamage[MAX_PLAYERS+1];
 extern BOOL	PlayDemo;
@@ -528,8 +527,6 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 		}
 	}
 }
-
-//#define SFX_DEBUG
 	
 /*===================================================================
 	Procedure	:		Print the Scores....
@@ -554,22 +551,9 @@ void PrintScoreSort( void )
 	int16 TeamBounty[MAX_TEAMS];
 	int TeamBadConnection[MAX_TEAMS];
 	char buf[256];
-#ifdef SFX_DEBUG
-	int	numfreeholders;
-#endif
 	int col;
 
 	NumOfActivePlayers = 0;
-#ifdef SFX_DEBUG
-	numfreeholders = 0;
-	for ( i = 0; i < MAX_ANY_SFX; i++ )
-	{
-		if ( !SfxHolder[ i ].Used )
-			numfreeholders++;
-	}
-	sprintf( buf, "num free sfx holders = %d", numfreeholders ); 
-	Print4x5Text( buf , 8 , FontHeight * 3 , 2 );
-#endif
 
 	// single player
 	if( MyGameStatus == STATUS_SinglePlayer )

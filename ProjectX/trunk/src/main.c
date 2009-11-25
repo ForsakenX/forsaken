@@ -289,8 +289,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		// use sscanf
 		else 
 		{
-			DWORD mem;
-
 			// override local port
 			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) == 1 )
 			{

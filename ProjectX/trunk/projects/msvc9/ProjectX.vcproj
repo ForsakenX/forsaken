@@ -544,10 +544,6 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\src\dsutil.c"
-				>
-			</File>
-			<File
 				RelativePath="..\..\src\enemies.c"
 				>
 			</File>
@@ -826,10 +822,6 @@
 			</File>
 			<File
 				RelativePath="..\..\src\demo.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\src\include\dsutil.h"
 				>
 			</File>
 			<File

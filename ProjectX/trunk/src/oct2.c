@@ -138,7 +138,6 @@ extern float LevelTimeTaken;
 
 extern BYTE PreDemoEndMyGameStatus;
 extern int NumDupCompoundBuffers;
-extern COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
 extern  TEXT  DemoGameName;
 
 extern  BOOL FullRearView;
@@ -203,7 +202,6 @@ extern  BOOL  IllegalTime;
 extern  int   SinglePlayerTimeLimit;
 extern  BOOL  BilinearSolidScrPolys;
 extern  uint16  RandomStartPosModify;
-extern  LONGLONG  LastPacketTime[MAX_PLAYERS+1];
 extern  char * StatusTab[256];
 
 extern BOOL ShowMessages; // show long list of chat messages
@@ -550,7 +548,7 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
 
-void CALLBACK TimerProc( UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
+void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
 
 int16   LevelNum = 0 ;
 int16   NewLevelNum = 0 ;
