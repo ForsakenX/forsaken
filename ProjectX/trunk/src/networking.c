@@ -66,7 +66,6 @@ extern char LevelNames[MAXLEVELS][128];
 
 extern	SLIDER	MaxPlayersSlider;
 
-extern	LONGLONG	LargeTime;
 extern SLIDER	GoalScoreSlider;
 
 extern LIST	LevelList;
@@ -80,8 +79,6 @@ extern float GetPlayerNumCount2;
 extern int   GetPlayerNumCount;
 
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
-
-extern	BOOL	DS;
 
 #define YourVersion "YOUR VERSION: " ProjectXVersion
 
@@ -1164,7 +1161,7 @@ void DestroyGame( void )
 
 	network_cleanup();
 
-	if( Debug && DS )
+	if( Debug )
 		for( i = 0 ; i < 256 ; i++ )
 			if( PacketGot[i] )
 				DebugPrintf("num %3d quantity %12d size %12d\n", i, PacketGot[i] , PacketSize[i] );
@@ -4040,7 +4037,7 @@ void DemoPlayingNetworkGameUpdate()
 			{
 				PreDemoEndMyGameStatus = MyGameStatus;
 
-				if( Debug && DS )
+				if( Debug )
 					for( i = 0 ; i < 256 ; i++ )
 						if( PacketGot[i] )
 							DebugPrintf("num %3d quantity %12d size %12d\n", i, PacketGot[i] , PacketSize[i] );

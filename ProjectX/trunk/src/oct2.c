@@ -158,7 +158,6 @@ extern MENU MENU_NEW_WatchTeamSelect;
 extern float VDUoffsetX;
 extern float VDUoffsetY;
 extern  int16 NextworkOldBikeNum;
-extern  BOOL  DS;
 
 extern  size_t  MemUsed;
 
@@ -2519,13 +2518,6 @@ BOOL RenderScene( void )
       HostMultiPlayerTimeout -= framelag;
     }
 
-    if( DS )
-    {
-      DisplayStatusMessages();
-    }
-	else
-	{	
-
 		// you must clear player scores if MaxKills limit is set...
 		// other wise the game just keeps on changing levels...
 		// cause at the start of each level they already have max kills...
@@ -2553,7 +2545,7 @@ BOOL RenderScene( void )
           e++;
         }
       }
-    }
+
     CenterPrint4x5Text( "waiting for all other players" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
 
     Browl -= framelag;
@@ -2784,10 +2776,6 @@ BOOL RenderScene( void )
     FSClearBlack();
     e = 0;
 
-    if( DS )
-    {
-      DisplayStatusMessages();
-    }else{
       for( i = 0 ; i < MAX_PLAYERS ; i++ )
       {
         if( ( GameStatus[i] != STATUS_GetPlayerNum )&& (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) )
@@ -2797,7 +2785,7 @@ BOOL RenderScene( void )
           e++;
         }
       }
-    }
+
     CenterPrint4x5Text( "all players synching" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
     Browl -= framelag;
     if( Browl <= 0.0F )

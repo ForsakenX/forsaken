@@ -4159,7 +4159,7 @@ BOOL Init_SoundGlobals(void)
 									 &IID_IDirectSound, (void **) &lpDS);
 		
 		if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
-			iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init DS.
+			iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init Direct Sound.
 
 		if (iErr < DS_OK)
 		{
@@ -4187,7 +4187,7 @@ BOOL Init_SoundGlobals(void)
 	dsbdesc.dwBufferBytes = 0; //dwBufferBytes and lpwfxFormat must be set this way.
 	dsbdesc.lpwfxFormat = NULL;
 	
-	// Set control-level of DS. (To normal, default.)
+	// Set control-level of DirectSound. (To normal, default.)
 	if (IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
 	{
 		// Create primary buffer.

@@ -105,8 +105,6 @@ char *TeamName[ MAX_TEAMS ] = // team colour names should match TeamCol[] colour
 	LT_TEAM_4  // yellow
 };
 
-BOOL DS = FALSE;
-
 int FontWidth = 4;
 int FontHeight = 5;
 int FontSourceWidth = 4;
@@ -1752,30 +1750,6 @@ void FillStatusTab( void )
     StatusTab[STATUS_Null                                 ] = "Null                       ";
 #endif
 }
-/*===================================================================
-	Procedure	:		Display Status messages..
-	Input		:		void
-	Output		:		void
-===================================================================*/
-void DisplayStatusMessages( void )
-{
-	int i;
-	char buf[256];
-	int	Temp;
-	if( !DS )
-		return;
-	for( i = 0 ; i < MAX_PLAYERS ; i++ )
-	{
-
-		Temp = (int32) ((((LargeTime - LastPacketTime[i]) ) / Freq ) );
-		if( (Temp > 999999) || (GameStatus[i] == STATUS_Null) || (i == WhoIAm) )
-			Temp = 999999;
-
-		sprintf( buf, "%-8s status %8s %3d lpt %1d \n", &Names[i][0] , StatusTab[GameStatus[i]] , Temp , Ships[i].enable );
-		CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (i * (FontHeight+(FontHeight>>1)) ) , 1 );
-	}
-}
-
 
 /*===================================================================
 	Procedure	:		Build Reliability Tab...

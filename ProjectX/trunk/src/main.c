@@ -115,7 +115,6 @@ static BOOL missing_folders( void )
 //
 
 extern BOOL NoSFX;
-extern BOOL DS;
 extern float normal_fov;
 extern float UV_Fix;
 extern int NetUpdateIntervalCmdLine;
@@ -149,7 +148,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
     //
 	
 	NoSFX					= FALSE; // turns off sound
-	DS						= FALSE;
 	Debug					= FALSE; // turns it off now
 
 	NetUpdateIntervalCmdLine	= 0;
@@ -212,12 +210,6 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 		{
 			render_info.bFullscreen = FALSE;
 		}
-
-		// display status messages and other information
-		else if (!_stricmp(option, "DS"))
-		{
-			DS = TRUE;
-        }
 
 		// turn off sound
 		else if (!_stricmp(option, "NoSFX"))
