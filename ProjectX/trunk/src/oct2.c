@@ -315,8 +315,6 @@ LONGLONG  GameStartedTime;    // when the game started
 LONGLONG  GameElapsedTime;    // Real how long the game has been going in game time not real..
 LONGLONG  TempGameElapsedTime;  // Real how long the game has been going in game time not real..
 LONGLONG  GameCurrentTime;    // How long the game has been going...
-LONGLONG  LargeTime;
-LONGLONG  LastTime;
 LONGLONG  TimeDiff;
 LONGLONG  Freq;
 BOOL  JustExitedMenu =FALSE;
@@ -1936,8 +1934,6 @@ BOOL InitView( void )
 		  UpdateFlyGirl( &BikePos, &MATRIX_Identity, FALSE );
 		}
 
-		QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
-
 		DummyTextureIndex = FindTexture( &Tloadheader, "data\\textures\\dummy.bmp" );
 		if ( DummyTextureIndex != -1 )
 		{
@@ -3285,7 +3281,6 @@ BOOL RenderScene( void )
 	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
-    QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
     // dummy call to timer ensures no pauses later...
     timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
     InitShipSpeeds();
@@ -3410,8 +3405,6 @@ BOOL RenderScene( void )
     }
 
     GodModeOnceOnly = TRUE;
-
-    QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
     MyGameStatus = ChangeLevel_MyGameStatus;
 
@@ -3603,7 +3596,6 @@ BOOL RenderScene( void )
     InGameLoad( NULL );
     
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
-    QueryPerformanceCounter((LARGE_INTEGER *) &LastTime);
 
     MyGameStatus = STATUS_SinglePlayer;
     GameStatus[WhoIAm] = MyGameStatus;

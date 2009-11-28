@@ -384,8 +384,6 @@ extern BOOL breakpad_init( void );
 #endif
 
 extern BOOL InitView( void );
-extern LONGLONG LargeTime;
-extern LONGLONG LastTime;
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern BOOL init_renderer( render_info_t * info );
@@ -401,13 +399,6 @@ extern BOOL sdl_init( void );
 static BOOL AppInit( char * lpCmdLine )
 {
     ZEROMEM(render_info);
-
-	// Appears to be a complete fuckup...
-	// Only used in two other places...
-	// never updated...
-	// wtf is the point...
-	QueryPerformanceCounter((LARGE_INTEGER *) &LargeTime);
-	LastTime = LargeTime;
 
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..

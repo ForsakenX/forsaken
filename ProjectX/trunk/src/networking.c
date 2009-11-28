@@ -35,6 +35,7 @@
 #include "stats.h"
 #include "version.h"
 #include "net_tracker.h"
+#include "timer.h"
 
 extern BOOL Debug;
 
@@ -309,8 +310,8 @@ extern uint16	num_start_positions;
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
 BOOL	DemoShipInit[MAX_PLAYERS+1];
 
-LONGLONG	LastPacketTime[MAX_PLAYERS+1];
-BYTE		CommBuff[MAX_BUFFER_SIZE];
+timer_t	LastPacketTime[MAX_PLAYERS+1];
+BYTE	CommBuff[MAX_BUFFER_SIZE];
 
 int		RealPacketSize[256];
 
@@ -1559,7 +1560,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	
 	if( *(MsgPnt+1) < MAX_PLAYERS )
 	{
-		LastPacketTime[*(MsgPnt+1)] = TempTime;
+		timer_run( &LastPacketTime[*(MsgPnt+1)] );
 
 		if ( Debug )
 		{

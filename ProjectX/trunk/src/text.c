@@ -26,6 +26,7 @@
 #include "stats.h"
 #include "util.h"
 #include "render.h"
+#include "timer.h"
 
 #define MSG_VERSION_NUMBER 1
 
@@ -37,7 +38,7 @@
 extern BOOL Debug;
 extern BOOL	CanDoDamage[MAX_PLAYERS+1];
 extern BOOL	PlayDemo;
-extern LONGLONG	LastPacketTime[MAX_PLAYERS+1];
+extern timer_t LastPacketTime[MAX_PLAYERS+1];
 extern LONGLONG	Freq;
 extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
@@ -58,7 +59,6 @@ extern	BOOL                    IsHost;
 extern	int16			NewLevelNum;
 extern	int16			NumLevels;
 extern	int				TeamFlag[ MAX_TEAMS ];
-extern	LONGLONG	LargeTime;
 
 extern render_info_t render_info;
 
@@ -1766,12 +1766,12 @@ void BuildReliabilityTab( void )
 
 		if( (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) && (i != WhoIAm) )
 		{
-			Temp = (int32) (((LargeTime - LastPacketTime[i]) * 1000 ) / Freq);
+			Temp = (int) timer_run( &LastPacketTime[i] );
 
-			if( Temp >= 10000 )
+			if( Temp >= 10 )
 			{
 				ReliabilityTab[i]++;
-				if( Temp >= 30000 )
+				if( Temp >= 30 )
 					ReliabilityTab[i]++;
 			}
 		}
