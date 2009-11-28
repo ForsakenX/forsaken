@@ -1998,6 +1998,8 @@ MENU	MENU_NEW_SelectBiker = {
 MENUITEM BikeCharItem = 
 		{ 125 , 20, 200, 130, 0, "" , FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , NULL, NULL , NULL , LoadBikeChar, NULL, 0};
 
+#ifdef DEMO_SUPPORT
+
 MENU	MENU_NEW_DemoPlayBack = {
 	"Demo Playback" , InitDemoList, NULL, NULL, 0,
 	{
@@ -2015,6 +2017,8 @@ MENU	MENU_NEW_DemoPlayBack = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
+
+#endif
 
 int16 InGameLoadGameLevelNum;
 extern	BOOL	CountDownOn;
@@ -2075,6 +2079,7 @@ MENU	MENU_NEW_InGameSound = {
 	}
 };
 
+#ifdef DEMO_SUPPORT
 
 MENU	MENU_NEW_DemoCleaning = {
 	"" , InitDemoList, NULL, NULL, 0,
@@ -2088,6 +2093,8 @@ MENU	MENU_NEW_DemoCleaning = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
+
+#endif
 
 #define MAX_SAVEDGAME_INFO_LENGTH 128
 
@@ -2116,8 +2123,10 @@ MENU	MENU_NEW_RestoreGame = {
 	"", NULL, NULL, NULL, TITLE_TIMER_PanToLeftVDU,
 	{
 		{ 0, 0, 200, 20, 0, LT_MENU_NEW_RestoreGame0 /*"Restore Game"*/, FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
+#ifdef DEMO_SUPPORT
 		{ 5, 30, 100, 40, 0, LT_MENU_NEW_RestoreGame1 /*"Play Demo"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_DemoPlayBack, MenuChange, DrawFlatMenuItem, NULL, 0  },
 		{ 5, 50, 100, 60, 0, LT_MENU_NEW_RestoreGame2 /*"Clean Demo"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_DemoCleaning, MenuChange, DrawFlatMenuItem, NULL, 0  },
+#endif
 		{ 5, 70, 100, 80, 0, LT_MENU_NEW_RestoreGame3 /*"load game"*/, FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, &MENU_NEW_LoadGame, MenuChange, DrawFlatMenuItem, NULL, 0  },
 						 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -2806,6 +2815,7 @@ MENU	MENU_DemoPlaying = {
 };
 
 
+#ifdef DEMO_SUPPORT
 
 MENU	MENU_DemoPlayBack = {
 	"Demo Playback"/*"Demo Playback"*/ , InitDemoList, NULL, NULL, 0,
@@ -2827,6 +2837,9 @@ MENU	MENU_DemoCleaning = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
+
+#endif
+
 MENU	MENU_SetUpBiker = {
 	LT_MENU_SetUpBiker0 /*"Set Up Biker"*/ , InitBikerMenu, ExitBikerMenu, NULL, 0,
 	{
@@ -2852,8 +2865,10 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 					  OLDMENUITEM( 200 , 160, "Multi Player", NULL, &MENU_HostOrJoin , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 176, "Load Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 192, "Save Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
+#ifdef DEMO_SUPPORT
 					  OLDMENUITEM( 200 , 208, "Play Demo", NULL, &MENU_DemoPlayBack , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 224, "Clean Demo", NULL, &MENU_DemoCleaning , MenuChange , MenuItemDrawName ),
+#endif
 					  OLDMENUITEM( 200 , 240, "Options", NULL, &MENU_Options , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 256, "Quit", NULL, NULL, SelectQuit , MenuItemDrawName ),
 					{ 200 , 272, 0, 0, 0, "New Menu System" , 0, 0, NULL, &MENU_NEW_Start, MenuChange , MenuItemDrawName, NULL, 0, 0 } ,
@@ -7022,6 +7037,8 @@ _cdecl compare( const void *arg1, const void *arg2 )
    return _stricmp( ( char* ) arg1, ( char* ) arg2 );
 }
 
+#ifdef DEMO_SUPPORT
+
 static int
 _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 {
@@ -7082,6 +7099,8 @@ _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 
 	return 0;
 }
+
+#endif // DEMO_SUPPORT
 
 /*===================================================================
 	Procedure	:		Initialise the pilot list
@@ -8800,6 +8819,8 @@ void InitAvgFrameRateGlobals( MENU *Menu )
 		(int) DemoTotalTime / 60, (int) DemoTotalTime % 60 );
 }
 
+#ifdef DEMO_SUPPORT
+
 void RestoreDemoSettings( void )
 {
 	PauseDemo = FALSE;
@@ -8921,6 +8942,7 @@ void InitDemoList( MENU * Menu )
 	DemoList.FuncDelete = ( DemoList.items > 0 ) ? DeleteDemo : NULL;
 }
 
+#endif // DEMO_SUPPORT
 
 /*===================================================================
 	Procedure	:		Initialise Load Game Name list
