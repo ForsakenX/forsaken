@@ -313,7 +313,9 @@ DWORD CurrentTextureBlend;
  
 LONGLONG  GameStartedTime;    // when the game started
 LONGLONG  GameElapsedTime;    // Real how long the game has been going in game time not real..
+#ifdef DEMO_SUPPORT
 LONGLONG  TempGameElapsedTime;  // Real how long the game has been going in game time not real..
+#endif
 LONGLONG  GameCurrentTime;    // How long the game has been going...
 LONGLONG  TimeDiff;
 LONGLONG  Freq;
@@ -364,11 +366,13 @@ extern  MENU  *       GetPlayerNumMenu;
 #define FOV_GROW(A)     ((A) + 10.0F)
 #define FOV_SHRINK(A)   ((A) - 10.0F)
 
+#ifdef DEMO_SUPPORT
 LONGLONG  DemoStartedTime;    // when the game started
 LONGLONG  DemoEndedTime;      // when the game started
 float   DemoTotalTime = 0.0F; // total game time (in seconds)
 int32   DemoGameLoops = 0;
 float DemoAvgFps = 0.0F;
+#endif
 
 #define MIN_VIEWPORT_WIDTH  (64)
 #define MIN_VIEWPORT_HEIGHT (64)
@@ -2929,6 +2933,7 @@ BOOL RenderScene( void )
 
     break;
 
+#ifdef DEMO_SUPPORT
   case STATUS_PlayingDemo:
 	DebugState("STATUS_PlayingDemo\n");
 
@@ -2955,7 +2960,7 @@ BOOL RenderScene( void )
       return FALSE;
 
     break;
-
+#endif
 
   case STATUS_InitView_0:
 	DebugState("STATUS_InitView_0\n");
@@ -3411,6 +3416,7 @@ BOOL RenderScene( void )
     break;
 
 
+#ifdef DEMO_SUPPORT
   case STATUS_ChangeLevelPostPlayingDemo:
 	DebugState("STATUS_ChangeLevelPostPlayingDemo\n");
 
@@ -3434,13 +3440,15 @@ BOOL RenderScene( void )
       Demoframelag = 1.0F * (float) ( 9 - DemoSpeed.value );
     }
   
+    GameElapsedTime = 0;
+
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
     QueryPerformanceCounter((LARGE_INTEGER *) &DemoStartedTime);
-    GameElapsedTime = 0;
     DemoGameLoops = 0;
     TempGameElapsedTime = GameStartedTime;
     MyGameStatus = STATUS_PlayingDemo;
     break;
+#endif
 
 	//  *********************** Single Player Game Stuff **********************************
 
@@ -4896,6 +4904,7 @@ BOOL Our_CalculateFrameRate(void)
 
 	}
 
+#ifdef DEMO_SUPPORT
     // some stupid place for a demo calculation
 	if( MyGameStatus == STATUS_PlayingDemo )
 	{
@@ -4904,6 +4913,7 @@ BOOL Our_CalculateFrameRate(void)
 		DemoTotalTime = ( (float) TimeDiff / (float) Freq );
 		DemoAvgFps = DemoGameLoops / DemoTotalTime;
 	}
+#endif
 
 	return TRUE;
 }

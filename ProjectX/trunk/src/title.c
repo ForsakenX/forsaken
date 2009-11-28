@@ -160,9 +160,13 @@ extern BOOL ShowEFZones;
 extern BOOL ShowTeleports;
 extern BOOL ShowBoundingBoxes;
 extern BOOL ShowColZones;
+
+#ifdef DEMO_SUPPORT
 extern float DemoAvgFps;
 extern float DemoTotalTime;
 extern int32 DemoGameLoops;
+#endif
+
 extern	int16 actual_volume;
 extern	BOOL RearCameraActive;
 char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
@@ -226,7 +230,6 @@ extern	float	ModeScaleY;
 extern	BOOL					HostDuties;
 extern	int16	BikeModels[ MAXBIKETYPES ];
 extern	MLOADHEADER Mloadheader;
-extern  LONGLONG GameStartedTime;
 extern int16		LevelNum;
 extern int16		NewLevelNum;
 extern int16		NumLevels;
@@ -8811,6 +8814,8 @@ void ShowStartPointsToggle( MENUITEM *item )
 	}
 }
 
+#ifdef DEMO_SUPPORT
+
 void InitAvgFrameRateGlobals( MENU *Menu )
 {
     sprintf( DemoAvgFpsText, "Avg %.2f FPS", DemoAvgFps );
@@ -8818,8 +8823,6 @@ void InitAvgFrameRateGlobals( MENU *Menu )
 		(int)DemoGameLoops,
 		(int) DemoTotalTime / 60, (int) DemoTotalTime % 60 );
 }
-
-#ifdef DEMO_SUPPORT
 
 void RestoreDemoSettings( void )
 {

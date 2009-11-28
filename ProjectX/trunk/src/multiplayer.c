@@ -123,9 +123,7 @@ BOOL InitLevels( char *levels_list );
 extern	int16		LevelNum;
 extern	int16		NewLevelNum;
 extern	BOOL	PlayDemo;
-extern	LONGLONG	GameStartedTime;		// when the game started
 extern	LONGLONG	GameElapsedTime;		// when the game started
-extern	LONGLONG	TempGameElapsedTime;		// when the game started
 extern	LIST	DemoList;
 extern	float Demoframelag;
 extern	LONGLONG	DemoTimeSoFar;
@@ -139,9 +137,11 @@ extern	BOOL AutoSelectConnection;
 extern	LONGLONG	Freq;
 extern  MENUSTATE MenuState;
 extern  char TeamCurrentScore[MAX_TEAMS][64];
+#ifdef DEMO_SUPPORT
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
+#endif
 extern	int		GameType;
 extern	uint16		Seed1;
 extern	uint16		Seed2;

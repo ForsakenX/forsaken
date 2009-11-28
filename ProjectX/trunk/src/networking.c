@@ -145,9 +145,13 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt );
 
 extern	SLIDER	MaxKillsSlider;
 int16	MaxKills = 0;
+
+#ifdef DEMO_SUPPORT
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
+#endif
+
 extern	float	DemoAvgFps;
 extern	LONGLONG	TimeDiff;
 extern	MENUITEM	NewJoinItem;
