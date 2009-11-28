@@ -42,6 +42,7 @@
 #include "xmem.h"
 #include "file.h"
 #include "util.h"
+#include "timer.h"
 
 /*			Stuff that needs to be saved/loaded.....
 
@@ -100,7 +101,6 @@ extern	int16		NumInitEnemies;
 extern	int16		NumKilledEnemies;
 extern	LIST		LoadSavedGameList;
 extern float Old_LevelTime_Float;
-extern float Old_Time_Float;
 
 
 /*===================================================================
@@ -202,6 +202,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 	Input		:	MENUITEM * MenuItem
 	Output		:	nothing
 ===================================================================*/
+extern timer_t countdown_timer;
 void InGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;
@@ -210,8 +211,6 @@ void InGameLoad( MENUITEM * MenuItem )
 	int16		i;
 	int16		Hours, Minutes, Seconds;
 	int16		KilledEnemiesNum, InitEnemiesNum;
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Value;
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
@@ -375,11 +374,7 @@ void InGameLoad( MENUITEM * MenuItem )
 		DebugPrintf( "Loaded OK\n" );
 		fclose( fp );
 
-		// init timers...
-		QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-		QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-		Old_LevelTime_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
-		Old_Time_Float = Old_LevelTime_Float;
+		timer_clear( &countdown_timer );
 	}
 }
 

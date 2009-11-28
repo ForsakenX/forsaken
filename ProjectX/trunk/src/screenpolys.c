@@ -22,6 +22,7 @@
 #include "triggers.h"
 #include "local.h"
 #include "util.h"
+#include "timer.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -122,7 +123,6 @@ uint32	TotalScrPolysInUse = 0;
 SCRPOLY	ScrPolys[ MAXNUMOFSCRPOLYS ];
 uint16	FirstScrPolyUsed;
 uint16	FirstScrPolyFree;
-float	Old_Time_Float;
 float	Countdown_Float = 3000.0F;	// 30 Seconds
 float	ZValue;
 float	RHWValue;
@@ -1132,14 +1132,12 @@ void SecBullLensflare( uint16 i )
 	Output		:	Nothing
 ===================================================================*/
 extern  BYTE          MyGameStatus;
+timer_t countdown_timer;
 void UpdateCountdownDigits( void )
 {
 	float		XPos, YPos;
-	LONGLONG	DigitNumber;
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Value;
-	LONGLONG	Number;
-	float		Time_Float;
+	int			DigitNumber;
+	int			Number;
 	float		Scale = 0.125F;
 	float		Center_X = 160.0F;
 	float		Center_Y = 120.0F;
@@ -1149,10 +1147,7 @@ void UpdateCountdownDigits( void )
 	Graphics = CountDownFontGraphics[ CurrentCountDownFont ];
 	Width = CountDownFontWidth[ CurrentCountDownFont ];
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
-	Time_Diff = ( Time_Float - Old_Time_Float );
+	Time_Diff = timer_run( &countdown_timer );
 
 	if( MyGameStatus == STATUS_SinglePlayer )
 	{
@@ -1178,7 +1173,6 @@ void UpdateCountdownDigits( void )
 		Toggle = TRUE;
 	}
 
-	Old_Time_Float = Time_Float;
 	Countdown_Float -= Time_Diff;
 	Number = (LONGLONG) Countdown_Float;
 
@@ -1534,15 +1528,10 @@ void DeleteSeperatorDigit( uint16 * DigitArray )
 ===================================================================*/
 void StartCountDown( int16 Minutes, int16 Seconds )
 {
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Value;
-
 	CurrentCountDownFont = 0;
 	Countdown_Float = ( ( Minutes * 6000.0F ) + ( Seconds * 100.0F ) );
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Old_Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
+	timer_clear( &countdown_timer );
 
 	Toggle = FALSE;
 	ScaleInc = 0.0F;
@@ -1604,15 +1593,10 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 ===================================================================*/
 void ResetCountDownBombTag( float Amount )
 {
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Value;
-
 	CurrentCountDownFont = 0;
 	Countdown_Float = Amount;
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Old_Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
+	timer_clear( &countdown_timer );
 
 	Toggle = FALSE;
 	ScaleInc = 0.0F;
