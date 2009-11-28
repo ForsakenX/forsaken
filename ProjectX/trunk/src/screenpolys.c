@@ -1174,7 +1174,7 @@ void UpdateCountdownDigits( void )
 	}
 
 	Countdown_Float -= Time_Diff;
-	Number = (LONGLONG) Countdown_Float;
+	Number = (int) Countdown_Float;
 
 	if( Countdown_Float < 0.0F )
 	{
