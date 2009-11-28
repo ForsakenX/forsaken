@@ -171,7 +171,11 @@ extern	BOOL	PlayDemo;
 extern	FILE	*	DemoFp;
 extern	FILE	*	DemoFpClean;
 extern	LIST	DemoList;
+
+#ifdef DEMO_SUPPORT
 extern	LONGLONG	GameCurrentTime;		// How long the game has been going...
+#endif
+
 extern	char	ShortLevelNames[MAXLEVELS][32];
 extern BOOL	bSoundEnabled;
 
@@ -207,9 +211,11 @@ int16	NextworkOldBikeNum = -1;
 
 float		Interval = 0.0F;
 
+#ifdef DEMO_SUPPORT
 extern	LONGLONG	GameStartedTime;
 extern	LONGLONG	GameElapsedTime;
 LONGLONG	TempTime;
+#endif
 
 extern	uint16		Seed1;
 extern	uint16		Seed2;
@@ -1391,8 +1397,8 @@ void network_event_player_joined( network_player_t * player )
 void network_event_new_message( network_player_t * from, BYTE * data, int size )
 {
 	//DebugPrintf("network_event_new_message: type = %s\n",msg_to_str(*data));
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 #ifdef DEMO_SUPPORT
+	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	if( RecordDemo && ( MyGameStatus == STATUS_Normal ) )
 	{
 		TempTime -= GameStartedTime;

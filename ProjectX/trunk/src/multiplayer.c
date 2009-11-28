@@ -122,11 +122,15 @@ BOOL ChangeLevel( void );
 BOOL InitLevels( char *levels_list );
 extern	int16		LevelNum;
 extern	int16		NewLevelNum;
+
+#ifdef DEMO_SUPPORT
 extern	BOOL	PlayDemo;
 extern	LONGLONG	GameElapsedTime;		// when the game started
 extern	LIST	DemoList;
 extern	float Demoframelag;
 extern	LONGLONG	DemoTimeSoFar;
+#endif
+
 extern	MENUITEM	JoinItem;
 extern	MENUITEM	NewJoinItem;
 extern  MENUITEM	WatchTeamSelectionItem;
@@ -288,7 +292,11 @@ BOOL StartAHostSession ( MENUITEM * Item )
 	CopyOfSeed1 = Seed1;
 	CopyOfSeed2 = Seed2;
 
+	
+#ifdef DEMO_SUPPORT
 	PlayDemo = FALSE;
+#endif
+
 	IsHost = TRUE;
 
 	TeamGame = FALSE;

@@ -1,4 +1,3 @@
-
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
@@ -176,8 +175,6 @@ uint32        AnimOncePerFrame = 0;         // used for stuff that is displayed 
 
 extern BOOL bSoundEnabled;
 
-//extern LPDIRECTDRAWSURFACE    Lp_AVI_DDSurface;
-
 extern TeamCol[];
 extern int Num_StatsMessage_Parts;
 extern LIST BikeList;
@@ -311,13 +308,14 @@ DWORD CurrentSrcBlend;
 DWORD CurrentDestBlend;
 DWORD CurrentTextureBlend;
  
+#ifdef DEMO_SUPPORT
 LONGLONG  GameStartedTime;    // when the game started
 LONGLONG  GameElapsedTime;    // Real how long the game has been going in game time not real..
-#ifdef DEMO_SUPPORT
 LONGLONG  TempGameElapsedTime;  // Real how long the game has been going in game time not real..
-#endif
 LONGLONG  GameCurrentTime;    // How long the game has been going...
 LONGLONG  TimeDiff;
+#endif
+
 LONGLONG  Freq;
 BOOL  JustExitedMenu =FALSE;
 
@@ -2646,7 +2644,11 @@ BOOL RenderScene( void )
         SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_JoiningTeamGame, 0);
 
       MyGameStatus = OverallGameStatus;
+	  
+#ifdef DEMO_SUPPORT
       QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
+#endif
+
       GameStatus[WhoIAm] = OverallGameStatus;
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
       SyncMines();
@@ -2819,7 +2821,9 @@ BOOL RenderScene( void )
           break;  // not yet..
       }
       // tell them all they can now restart a new level...
+#ifdef DEMO_SUPPORT
       QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
+#endif
       DebugPrintf("STATUS_StartingMultiplayerSynch setting MyGameStatus to STATUS_Normal\n");
       MyGameStatus = STATUS_Normal;
       GameStatus[WhoIAm] = STATUS_Normal;
@@ -2834,7 +2838,9 @@ BOOL RenderScene( void )
 	{
       if( OverallGameStatus == STATUS_Normal )
       {
+#ifdef DEMO_SUPPORT
         QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
+#endif
         MyGameStatus = OverallGameStatus;
         GameStatus[WhoIAm] = MyGameStatus;
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
@@ -3484,7 +3490,10 @@ BOOL RenderScene( void )
 	//      StartCountDown( (int16) TimeLimit.value, 0 );
 	//    }
     
+#ifdef DEMO_SUPPORT
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
+#endif
+
     MyGameStatus = STATUS_SinglePlayer;
     GameStatus[WhoIAm] = MyGameStatus;
     LevelTimeTaken = 0.0F;
@@ -3603,7 +3612,9 @@ BOOL RenderScene( void )
     smallinitShip( WhoIAm );
     InGameLoad( NULL );
     
+#ifdef DEMO_SUPPORT
     QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
+#endif
 
     MyGameStatus = STATUS_SinglePlayer;
     GameStatus[WhoIAm] = MyGameStatus;
@@ -3793,9 +3804,8 @@ BOOL MainGame( void ) // bjd
   int i;
   static float fov_inc = 0.0F;
 
-  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
-
 #ifdef DEMO_SUPPORT
+  QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
   if( PlayDemo )
   {
     if( PauseDemo )
@@ -3808,11 +3818,7 @@ BOOL MainGame( void ) // bjd
       GameCurrentTime = (LONGLONG) ( GameCurrentTime * Demoframelag );
     }
   }
-  else
 #endif
-  {
-    GameCurrentTime = GameCurrentTime - GameStartedTime;
-  }
 
 #ifdef DEBUG_ON
   if ( framelag > 10.0F ) // check framelag out of reasonable range -> probably debugging

@@ -47,10 +47,8 @@ extern  BYTE          MyGameStatus;
 BOOL LoadASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
-	LONGLONG	TempTime;
 	PlayDemo = FALSE;
 	IsHost = TRUE;
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = 0;
 	SetBikeMods( (uint16) (SelectedBike+2) );
 	SetupNetworkGame();
@@ -82,7 +80,6 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 BOOL StartASinglePlayerGame( MENUITEM * Item )
 {
 	int i;
-	LONGLONG	TempTime;
 
 	PlayDemo = FALSE;
 	IsHost = TRUE;
@@ -91,7 +88,6 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	CaptureTheFlag = FALSE;
 	CTF = FALSE;
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
 	RandomStartPosModify = 0;
 
 	SetBikeMods( (uint16) (SelectedBike+2) );

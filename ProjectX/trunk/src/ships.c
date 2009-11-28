@@ -133,7 +133,10 @@ extern	float	framelag;
 extern	float	Oldframelag;  
 extern	float	Demoframelag;  
 extern	SLIDER	DemoEyesSelect;
+
+#ifdef DEMO_SUPPORT
 extern	LONGLONG	GameElapsedTime;
+#endif
 
 extern	volatile DWORD	XTimer;
 
@@ -698,8 +701,12 @@ BOOL SetUpShips()
 
 	return TRUE;
 }
+
+#ifdef DEMO_SUPPORT
 static	LONGLONG	TempTime;
 static	LONGLONG	TempTime2;
+#endif
+
 static	float	Interp;	
 extern  BYTE          MyGameStatus;
 
