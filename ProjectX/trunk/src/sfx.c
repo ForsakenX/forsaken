@@ -1,3 +1,65 @@
+#include "main.h"
+#include "render.h"
+#include "sfx.h"
+
+#ifndef SOUND_SUPPORT
+
+float LastDistance[MAX_SFX];
+BOOL  bSoundEnabled = FALSE;
+char  CurrentTauntVariant;
+BOOL  NoSFX = TRUE;
+BOOL  NoCompoundSfxBuffer = TRUE;
+
+BOOL InitializeSound( int flags ){return 1;}
+
+void PlayEnemyBikerTaunt( ENEMY *Enemy ){}
+uint32 PlaySfx( int16 Sfx, float Vol ){return 0;}
+void PlayRecievedSpeechTaunt( BYTE player, char variant ){}
+uint32 PlaySfxWithTrigger( int16 Sfx, int16 TriggeredSfx ){return 0;}
+uint32 PlayPannedSfx(int16 Sfx, uint16 Group, VECTOR * SfxPos, float Freq ){return 0;}
+uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq ){return 0;}
+uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects ){return 0;}
+uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects ){return 0;}
+uint32 PlayPannedSfxWithVolModify(int16 Sfx, uint16 Group, VECTOR * SfxPos, float Freq, float Vol ){return 0;}
+void commit_any_sounds( void ){}
+
+void StopEnemyBikerTaunt( ENEMY *Enemy ){}
+BOOL StopSfx( uint32 uid ){return 0;}
+void StopCompoundSfx( void ){}
+void StopTaunt( void ){}
+
+void DestroySound( int flags ){}
+
+void PauseAllSfx( void ){}
+
+void UpdateSfxForBiker( uint16 biker ){}
+void UpdateSfxForBikeComputer( uint16 bikecomp ){}
+
+void ProcessLoopingSfx( void ){}
+void ProcessEnemyBikerTaunt( void ){}
+void ProcessSoundRoutines (void * pParm){}
+
+BOOL RestoreSfxData( uint32 id, VECTOR *pos, uint16 *group ){return 0;}
+int16 ReturnSFXIndex( char *file ){return -1;}
+void ReTriggerSfx( void ){}
+
+void ModifyLoopingSfx( uint32 uid, float Freq, float Volume ){}
+
+void CheckForRogueSfx( void ){}
+void CheckSBufferList( void ){}
+
+BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat ){return 0;}
+void SetSoundLevels( int *dummy ){}
+
+void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 ){}
+
+float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *listenerpos, uint16 listenergroup, long *vol, VECTOR *sfxvector ){return 0;}
+
+FILE *SaveAllSfx( FILE *fp ){return fp;}
+FILE *LoadAllSfx( FILE *fp ){return fp;}
+
+#else
+
 #define DIRECTSOUND_VERSION 0x0700
 
 #include <stdio.h>
@@ -10,14 +72,11 @@
 #include <time.h>
 #include <dsound.h>
 
-#include "main.h"
-#include "render.h"
 #include "quat.h"
 #include "compobjects.h"
 #include "object.h"
 #include "networking.h"
 
-#include "sfx.h"
 #include "quat.h"
 #include "compobjects.h"
 #include "bgobjects.h"
@@ -4210,6 +4269,8 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 {
 	VECTOR UpVector;
 	VECTOR ForwardVector;
+	if(!Sound3D)
+		return 0;
 	if(DS_OK != IDirectSound3DListener_SetPosition(lpDS3DListener, Pos->x / 128.0F, Pos->y / 128.0F, Pos->z / 128.0F, DS3D_DEFERRED))
 		return FALSE;
     //if(DS_OK != IDirectSound3DListener_SetVelocity(lpDS3DListener, Velocity->x / 128.0F,
@@ -5317,6 +5378,4 @@ void PlayEnemyBikerTaunt( ENEMY *Enemy )
 }
 
 
-
-
-
+#endif

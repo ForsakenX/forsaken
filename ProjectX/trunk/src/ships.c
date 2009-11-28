@@ -156,7 +156,6 @@ extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
 extern	int		outside_group;
 extern	BOOL	PickupInvulnerability;
-extern	BOOL	Sound3D;
 
 extern	int16	BikeModels[ MAXBIKETYPES ];
 
@@ -1530,10 +1529,7 @@ BOOL ProcessShips()
 		}
 	}
 
-	if( Sound3D )
-	{
-		SetPosVelDir_Listner( &Ships[WhoIAm].Object.Pos , &Ships[WhoIAm].Move_Off , &Ships[WhoIAm].Object.Mat );
-	}
+	SetPosVelDir_Listner( &Ships[WhoIAm].Object.Pos , &Ships[WhoIAm].Move_Off , &Ships[WhoIAm].Object.Mat );
 	
 	return TRUE;
 }
