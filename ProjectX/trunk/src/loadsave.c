@@ -100,8 +100,6 @@ extern	float		LevelTimeTaken;
 extern	int16		NumInitEnemies;
 extern	int16		NumKilledEnemies;
 extern	LIST		LoadSavedGameList;
-extern float Old_LevelTime_Float;
-
 
 /*===================================================================
 		Globals ...
@@ -435,7 +433,6 @@ BOOL InGameSave( MENUITEM * MenuItem )
 	int8		SFilename[ 256 ];
 	int16		Hours, Minutes, Seconds;
 	int8		sep = 0;
-	uint32 IntLevelTimeTaken;
 	uint32		MagicNumber = MAGIC_NUMBER;
 	uint32		VersionNumber = LOADSAVE_VERSION_NUMBER;
 
@@ -458,9 +455,8 @@ BOOL InGameSave( MENUITEM * MenuItem )
 
 		fclose( f );
 
-		IntLevelTimeTaken = ( uint32 ) ( LevelTimeTaken / 100.0F );
-		Minutes = ( uint16 ) ( IntLevelTimeTaken / 60 );
-		Seconds = ( uint16 ) ( IntLevelTimeTaken % 60 );
+		Minutes = ( uint16 ) ( LevelTimeTaken / 60 );
+		Seconds = ( uint16 ) LevelTimeTaken;
 		Hours = ( uint16 ) ( Minutes / 60 );
 		Minutes = ( uint16 ) ( Minutes % 60 );
 

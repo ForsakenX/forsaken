@@ -210,7 +210,8 @@ extern BOOL ShowStatistics; // show in-game statistics
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
 
-float Old_LevelTime_Float;
+timer_t level_time;
+
 void InitFontTransTable();
 
 void InitModeCase(void);
@@ -529,7 +530,6 @@ BOOL  ReMakeSimplePanel = TRUE;
 BOOL  OldDrawPanel = TRUE;
 BOOL  Panel = TRUE;
 
-
 BOOL ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
 
@@ -538,6 +538,8 @@ float Oldframelag;
 float framelag = 0.0F; 
 float real_framelag = 0.0F;
 float Demoframelag = 0.5F;
+
+timer_t level_timer;
 
 extern int FontWidth;
 extern int FontHeight;
@@ -1189,7 +1191,6 @@ void ProcessGameKeys( void )
 BOOL
 ResizeViewport( void )
 {
-	HRESULT rval;
 	int left, top;
 	int width, height;
 	int maxwidth, maxheight;
@@ -1203,10 +1204,9 @@ ResizeViewport( void )
      * Setup the viewport for specified viewing area
      */
 
-	rval = FSGetViewPort(&viewport);
-	if (!rval)
+	if (!FSGetViewPort(&viewport))
 	{
-        Msg( "GetViewport failed.\n%s", render_error_description(rval) );
+        Msg( "GetViewport failed.\n%s", render_error_description(0) );
         return FALSE;
     }
 	maxwidth = render_info.szClient.cx;
@@ -1276,17 +1276,16 @@ ResizeViewport( void )
 
 BOOL FullScreenViewport()
 {
-	HRESULT rval;
 	int left, top;
 	int width, height;
 	int maxwidth, maxheight;
 
-	rval = FSGetViewPort(&viewport);
-	if (!rval)
+	if (!FSGetViewPort(&viewport))
 	{
-        Msg( "GetViewport failed.\n%s", render_error_description(rval) );
+        Msg( "GetViewport failed.\n%s", render_error_description(0) );
         return FALSE;
     }
+
 	maxwidth = render_info.szClient.cx;
 	maxheight = render_info.szClient.cy;
 	width = maxwidth;
@@ -2113,10 +2112,6 @@ BOOL RenderScene( void )
   //int result;
   static int WaitFrames = 2;
   BOOL done;
-  LONGLONG  Time_Freq;
-  LONGLONG  Time_Value;
-  float   Time_Float;
-  float   time_diff;
 
   //DebugPrintf("RenderScene Started\n");
 
@@ -2328,7 +2323,7 @@ BOOL RenderScene( void )
 #endif
     }
 
-    LevelTimeTaken += framelag;
+    LevelTimeTaken += timer_run( &level_timer );
 
     // if player is quiting nothing should stop him.....
     if( MyGameStatus != STATUS_QuitCurrentGame )
@@ -3493,10 +3488,7 @@ BOOL RenderScene( void )
     MyGameStatus = STATUS_SinglePlayer;
     GameStatus[WhoIAm] = MyGameStatus;
     LevelTimeTaken = 0.0F;
-
-    QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-    QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-    Old_LevelTime_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
+    timer_run( &level_time );
 
     break;
 
@@ -3513,18 +3505,7 @@ BOOL RenderScene( void )
       ProcessEnemyBikerTaunt();
     }
 
-    //LevelTimeTaken += framelag;
-
-    QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-    QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-    Time_Float = ( ( Time_Value * 100.0F ) / Time_Freq );
-    time_diff = ( Time_Float - Old_LevelTime_Float );
-    Old_LevelTime_Float = Time_Float;
-
-    if ( framelag )
-    {
-      LevelTimeTaken += time_diff;
-    }
+    LevelTimeTaken += timer_run( &level_timer );
 
     //sprintf( buf, "time so far %d", ((uint32)LevelTimeTaken) / 100 );
     //Print4x5Text( buf, 10, 30, 2 );
