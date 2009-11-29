@@ -1883,7 +1883,7 @@ void UpdateGameList( void )
 	}
 }
 
-timer_t game_list_timer;
+px_timer_t game_list_timer;
 
 void Enter_ChooseConnectionToJoin( MENU *Menu )
 {

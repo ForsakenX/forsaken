@@ -1131,7 +1131,7 @@ void SecBullLensflare( uint16 i )
 	Output		:	Nothing
 ===================================================================*/
 extern  BYTE          MyGameStatus;
-timer_t countdown_timer;
+px_timer_t countdown_timer;
 void UpdateCountdownDigits( void )
 {
 	float		XPos, YPos;

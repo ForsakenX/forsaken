@@ -3,23 +3,23 @@
 #include "util.h"
 
 // run timer and compute seconds without modifying stats
-float timer_peek( timer_t* stats )
+float timer_peek( px_timer_t* stats )
 {
 	float seconds;
-	timer_t old = *stats;
+	px_timer_t old = *stats;
 	seconds = timer_run( stats );
 	*stats = old; // restore it
 	return seconds;
 }
 
 // send debug info to console
-void timer_debug( char* name, timer_t* stats )
+void timer_debug( char* name, px_timer_t* stats )
 {
   DebugPrintf("%s: seconds = %5f, best = %5f, worst = %5f\n",name,stats->seconds,stats->best,stats->worst);
 }
 
 // clear the timer
-void timer_clear( timer_t* stats )
+void timer_clear( px_timer_t* stats )
 {
 	stats->last    = 0;
 	stats->worst   = 0;
@@ -28,7 +28,7 @@ void timer_clear( timer_t* stats )
 }
 
 // run timer and compute calculations
-float timer_run( timer_t* stats )
+float timer_run( px_timer_t* stats )
 {
 
   // current counter value

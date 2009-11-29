@@ -3156,10 +3156,10 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 BOOL MultiSfxTaunt1Off = FALSE;
 
 uint16 CurrentKillPos = 0;
-timer_t	KillMemoryTime[MAXKILLMEMORY];
+px_timer_t	KillMemoryTime[MAXKILLMEMORY];
 int16	KillMemory[MAXKILLMEMORY];
 
-timer_t	camping_time;
+px_timer_t	camping_time;
 VECTOR		CampingPos;
 BOOL	CampingPos1Off = FALSE;
 

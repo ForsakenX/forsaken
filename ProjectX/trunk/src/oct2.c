@@ -206,7 +206,7 @@ extern BOOL ShowStatistics; // show in-game statistics
 BYTE  PreSynchupStatus;
 char *CurrentLevelsList;
 
-timer_t level_time;
+px_timer_t level_time;
 
 void InitFontTransTable();
 
@@ -461,7 +461,7 @@ float GetPlayerNumCount1 = 0.0F;
 float GetPlayerNumCount2 = 0.0F;
 int   GetPlayerNumCount = 0;
 
-timer_t framelag_timer;
+px_timer_t framelag_timer;
 
 int i, j; // index counters
 
@@ -535,7 +535,7 @@ float framelag = 0.0F;
 float real_framelag = 0.0F;
 float Demoframelag = 0.5F;
 
-timer_t level_timer;
+px_timer_t level_timer;
 
 extern int FontWidth;
 extern int FontHeight;
@@ -4783,7 +4783,7 @@ extern  int   NumOfVertsTouched;
   Output    : BOOL TRUE/FALSE
 ===================================================================*/
 
-timer_t our_timer;
+px_timer_t our_timer;
 float our_count = 0;
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;

@@ -7653,7 +7653,7 @@ void DestroySecondary( uint16 i, VECTOR * Int_Point )
 ===================================================================*/
 
 float ticksperframe = 14.0F; 
-timer_t last_mine_timer;
+px_timer_t last_mine_timer;
 
 void GenMineList( uint16 Ship, SHORTMINE * MineSlots, BYTE * NumMines, BYTE Section )
 {

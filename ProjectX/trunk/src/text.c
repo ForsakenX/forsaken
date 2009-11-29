@@ -38,7 +38,7 @@
 extern BOOL Debug;
 extern BOOL	CanDoDamage[MAX_PLAYERS+1];
 extern BOOL	PlayDemo;
-extern timer_t LastPacketTime[MAX_PLAYERS+1];
+extern px_timer_t LastPacketTime[MAX_PLAYERS+1];
 extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;

@@ -199,7 +199,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 	Input		:	MENUITEM * MenuItem
 	Output		:	nothing
 ===================================================================*/
-extern timer_t countdown_timer;
+extern px_timer_t countdown_timer;
 void InGameLoad( MENUITEM * MenuItem )
 {
 	FILE	*	fp;

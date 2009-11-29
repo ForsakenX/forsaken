@@ -314,7 +314,7 @@ extern uint16	num_start_positions;
 GLOBALSHIP              Ships[MAX_PLAYERS+1];
 BOOL	DemoShipInit[MAX_PLAYERS+1];
 
-timer_t	LastPacketTime[MAX_PLAYERS+1];
+px_timer_t	LastPacketTime[MAX_PLAYERS+1];
 BYTE	CommBuff[MAX_BUFFER_SIZE];
 
 int		RealPacketSize[256];
@@ -1509,7 +1509,7 @@ void ReceiveGameMessages( void )
 	}
 }
 
-extern timer_t last_mine_timer;
+extern px_timer_t last_mine_timer;
 
 void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 {
