@@ -7424,7 +7424,9 @@ static int read_NumOfGuns( FILE *f, char *last_token )
 // Read the Gun Type
 static int read_GunType( FILE *f, char *last_token )
 {
-	if ( fscanf( f, " %hu", &EnemyTypes[CurrentEnemy].GunType ) == 1 )
+	// NOTE - GunType[CurrentGun] use to be GunType but that's a compiler error in unix somehow it gets away on msvc
+	// none the less this function appears to never be used during reading of the enemies.txt
+	if ( fscanf( f, " %hu", &EnemyTypes[CurrentEnemy].GunType[CurrentGun] ) == 1 )
 	{
 		fscanf( f, " %80s", last_token );
 		return 1;
