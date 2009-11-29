@@ -8,12 +8,8 @@
 #include	"util.h"
 
 #include	<fcntl.h>
-#include	<sys/types.h>
 #include	<sys/stat.h>
-#include	<direct.h>
 #include	<io.h>
-#include	<stdlib.h>
-#include	<malloc.h>
 #include	<string.h>
 
 /*===================================================================
