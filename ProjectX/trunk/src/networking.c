@@ -150,12 +150,12 @@ int16	MaxKills = 0;
 extern	LONGLONG	DemoStartedTime;		// when the game started
 extern	LONGLONG	DemoEndedTime;		// when the game started
 extern	int32		DemoGameLoops;
+extern	LONGLONG	TimeDiff;
+extern	LONGLONG	Freq;
 #endif
 
 extern	float	DemoAvgFps;
-extern	LONGLONG	TimeDiff;
 extern	MENUITEM	NewJoinItem;
-extern	LONGLONG	Freq;
 extern	BOOL	Buffer1InUse;
 extern	int		Buffer1Count;
 extern	DWORD	Buffer1Offset;
@@ -183,8 +183,6 @@ extern float framelag;
 
 extern	float	Start_Shield;
 extern	float	Start_Hull;
-
-LONGLONG PingRequestTime;					// used to reply the time it was sent...
 
 void SpecialDestroyGame( void );
 void GetLevelName( char *buf, int bufsize, int level );
@@ -215,6 +213,7 @@ float		Interval = 0.0F;
 extern	LONGLONG	GameStartedTime;
 extern	LONGLONG	GameElapsedTime;
 LONGLONG	TempTime;
+LONGLONG	DemoTimeSoFar = 0;
 #endif
 
 extern	uint16		Seed1;
@@ -269,9 +268,6 @@ BOOL InitLevels( char *levels_list );
 extern	MODEL	Models[MAXNUMOFMODELS];
 
 BOOL	HostDuties = FALSE;
-
-LPGUID					g_lpGuid = NULL;
-HANDLE					dphEvent = NULL;
 BOOL					IsHost = TRUE;
 
 BYTE					Current_Camera_View = 0;		// which object is currently using the camera view....
@@ -312,8 +308,6 @@ SHORTKILLMINE				MissedKillMines[ MAXMISSEDMINES ];
 int16								NumMissedMines = 0;
 int16								NumMissedInitMines = 0;
 int16								NumMissedKillMines = 0;
-
-LONGLONG	DemoTimeSoFar = 0;
 
 extern uint16	num_start_positions;
 

@@ -108,7 +108,6 @@ extern	int16					Lives;
 extern int  no_collision;
 extern	XLIGHT	XLights[MAXXLIGHTS];
 extern	BOOL	flush_input;
-extern	LONGLONG	Freq;
 extern	MATRIX TempMatrix;
 extern USERCONFIG *player_config;
 extern char MyName[];

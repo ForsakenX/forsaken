@@ -94,11 +94,4 @@ typedef unsigned char       BYTE;
 typedef unsigned long       DWORD;
 typedef unsigned short      WORD;
 
-// TODO - remove this after all QueryPerformanceCounter()'s converted
-typedef __int64 LONGLONG;
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #endif	// MAIN_INCLUDED
