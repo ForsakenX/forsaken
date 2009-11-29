@@ -146,7 +146,7 @@ typedef struct BGO_FILE {
 	char		Filename[ 256 ];
 	uint16		BaseModel;
 	uint16		Type;
-	int16		OpenEvent;
+	int16		open_event;	// renamed cause OpenEvent is part of winapi
 	int16		CloseEvent;
 	int16		ShotEvent;
 	int16		BumpEvent;

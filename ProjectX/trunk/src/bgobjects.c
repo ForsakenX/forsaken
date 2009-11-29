@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
-#include <windows.h>
 
 #include "main.h"
 #include "new3d.h"
@@ -1094,14 +1093,14 @@ BOOL PreLoadBGOFiles( void )
 /*ÄÄÄÄÄÄÄÄÄ	STATIC ANIM ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
 					case BGOTYPE_Static:
-						FilePtr->OpenEvent = -1;
+						FilePtr->open_event = -1;
 						FilePtr->CloseEvent = -1;
 						break;
 
 /*ÄÄÄÄÄÄÄÄÄ	DOOR ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ*/
 
 					case BGOTYPE_Door:
-						fread( &FilePtr->OpenEvent, sizeof( int16 ), 1, fp );
+						fread( &FilePtr->open_event, sizeof( int16 ), 1, fp );
 						fread( &FilePtr->CloseEvent, sizeof( int16 ), 1, fp );
 						fread( &FilePtr->ShotEvent, sizeof( int16 ), 1, fp );
 						fread( &FilePtr->BumpEvent, sizeof( int16 ), 1, fp );
@@ -1243,7 +1242,7 @@ BOOL LoadBGOFiles( void )
 
 			Object = LoadBGObjectData( &FilePtr->Filename[ 0 ], FilePtr->Type, &FilePtr->Pos,
 									   &FilePtr->Dir, &FilePtr->Up, FilePtr->Group,
-									   FilePtr->OpenEvent, FilePtr->CloseEvent,
+									   FilePtr->open_event, FilePtr->CloseEvent,
 									   FilePtr->ShotEvent, FilePtr->BumpEvent, FilePtr->EndEvent,
 									   FilePtr->OpenedBy, FilePtr->DestroyAtEnd, FilePtr->GenType,
 									   FilePtr->Delay, FilePtr->Locked, FilePtr->PickupNeeded, &BaseModel,
