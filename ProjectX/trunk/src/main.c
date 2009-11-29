@@ -34,10 +34,6 @@ render_info_t render_info;
 // Parses the directory to change to from the command line options
 //
 
-#ifdef WIN32
-#include <direct.h> // for _chdir
-#endif
-
 static BOOL parse_chdir( char *cli )
 {
     char * option;
@@ -59,7 +55,7 @@ static BOOL parse_chdir( char *cli )
 		// WARNING:	chdir can only be the LAST option !
 		// For running the exe outside the root folder
 		// -chdir c:\\Program Files\\ProjectX
-		if (!_stricmp(option,"chdir"))
+		if (!strcasecmp(option,"chdir"))
 		{
 			// get option enclosed in quotes
 			// this does not consider space as separator
@@ -72,16 +68,14 @@ static BOOL parse_chdir( char *cli )
 				break;
 			}
 
-#ifdef WIN32
 			// change to root directory
 			// the rest of the command line will be used as the path
-			if( _chdir( option ) != 0 )
+			if( chdir( option ) != 0 )
 			{
 				// error
 				Msg("Could not change to directory: %s", option);
 				return FALSE;
 			}
-#endif
 
 			// dont loop anymore were done
 			break;
@@ -178,7 +172,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 	{
 
 		// last option
-		if (!_stricmp(option,"chdir"))
+		if (!strcasecmp(option,"chdir"))
 		{
 			// dont loop anymore were done
 			break;
@@ -186,54 +180,54 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 		// off only works in full screen...
 		// turn on vertical syncing
-		else if (!_stricmp(option,"vSync")){
+		else if (!strcasecmp(option,"vSync")){
 			render_info.vsync = TRUE;
 		}
 
 		// debugging information send to Log...
-        else if (!_stricmp(option, "log"))
+        else if (!strcasecmp(option, "log"))
 		{
             DebugLog = TRUE;
 		}
 
 		// debugging information
-        else if (!_stricmp(option, "Debug"))
+        else if (!strcasecmp(option, "Debug"))
 		{
             Debug = TRUE;
 		}
 		
 		// start in window mode
-		else if (!_stricmp(option,"Fullscreen"))
+		else if (!strcasecmp(option,"Fullscreen"))
 		{
 			render_info.bFullscreen = TRUE;
 		}
 
 		// start in window mode
-		else if (!_stricmp(option,"Window"))
+		else if (!strcasecmp(option,"Window"))
 		{
 			render_info.bFullscreen = FALSE;
 		}
 
 		// turn off sound
-		else if (!_stricmp(option, "NoSFX"))
+		else if (!strcasecmp(option, "NoSFX"))
 		{
 			NoSFX = TRUE;
         }
 		
 		// jump to the host screen
-		else if ( !_stricmp( option, "QuickHost" ) ) 
+		else if ( !strcasecmp( option, "QuickHost" ) ) 
 		{
 			QuickStart = QUICKSTART_Start;
 		}
 
 		// jump to the join game screen
-		else if ( !_stricmp( option, "QuickJoin" ) ) 
+		else if ( !strcasecmp( option, "QuickJoin" ) ) 
 		{
 			QuickStart = QUICKSTART_Join;
 		}
 
 		// set the ip address for game to join
-		else if ( !_stricmp( option, "TCP" ) )
+		else if ( !strcasecmp( option, "TCP" ) )
 		{
 			char * port;
 			char address[255];
@@ -264,19 +258,19 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		}
 
 		// supposedly to set wire mode for mxv's...
-		else if (!_stricmp(option, "AllWires")) 
+		else if (!strcasecmp(option, "AllWires")) 
 		{
             AllWires = TRUE;
         }
 
 		// special override to allow setting up of spaceorb
-		else if ( !_stricmp( option, "SetupSpaceOrb" ) )
+		else if ( !strcasecmp( option, "SetupSpaceOrb" ) )
 		{
 			SpaceOrbSetup = TRUE;
 		}
 
 		// no compound sound buffer
-		else if ( !_stricmp( option, "NoCompoundSfxBuffer" ) )
+		else if ( !strcasecmp( option, "NoCompoundSfxBuffer" ) )
 		{
 			NoCompoundSfxBuffer = TRUE;
 		}

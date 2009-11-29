@@ -4332,7 +4332,7 @@ int FindSameLevel( char * Name )
 	int i;
     for (i = 0; i < NumLevels; i++)
 	{
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , Name ) == 0 ) 
+		if( strcasecmp( (char*) &ShortLevelNames[i][0] , Name ) == 0 ) 
 		{
 			return i;
 		}

@@ -328,7 +328,7 @@ static void init_key_map( void )
 		else
 		{
 			name = get_key_name(i);
-			if(!_stricmp(name,"unknown_key"))
+			if(!strcasecmp(name,"unknown_key"))
 				name = NULL;
 		}
 		if(!name)
@@ -367,7 +367,7 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 	{
 		for ( vk = vkey_map; vk->keyword; vk++ )
 		{
-			if ( !_stricmp( last_token, vk->keyword ) )
+			if ( !strcasecmp( last_token, vk->keyword ) )
 				break;
 		}
 		if ( vk->keyword )
@@ -1022,7 +1022,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	joy = NULL;
 	for (i = 0; i < Num_Joysticks; i++)
 	{
-		if (_stricmp( JoystickInfo[i].Name, tempstr ) )
+		if (strcasecmp( JoystickInfo[i].Name, tempstr ) )
 			continue;
 
 		if ( JoystickInfo[i].assigned )
@@ -1052,7 +1052,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	}
 
 	// read in joystick button bindings
-	while ( !_stricmp( last_token, "button" ) )
+	while ( !strcasecmp( last_token, "button" ) )
 	{
 		if ( fscanf( f, " %d %d", &i, &a ) == 2 )
 		{
@@ -1068,7 +1068,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	}
 
 	// read in joystick pov direction bindings
-	while ( !_stricmp( last_token, "povdir" ) )
+	while ( !strcasecmp( last_token, "povdir" ) )
 	{
 		if ( fscanf( f, " %d %d %d", &i, &num, &a ) == 3 )
 		{
@@ -1092,7 +1092,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 		 	joy->Axis[axis].exists = FALSE;
 			continue;
 		}
-		if (!_stricmp( last_token, axistoken[axis] ) )
+		if (!strcasecmp( last_token, axistoken[axis] ) )
 		{
 			if ( !joy->connected && joy->NumAxis < axis + 1 )
 				joy->NumAxis = axis + 1;
@@ -1215,7 +1215,7 @@ void DefaultJoystickSettings( USERCONFIG *u )
 		if ( JoystickInfo[ j ].connected && !JoystickInfo[ j ].assigned )
 		{
 			// if spaceorb...
-			if ( !_stricmp( JoystickInfo[ j ].Name, "Spacetec SpaceOrb 360" ) )
+			if ( !strcasecmp( JoystickInfo[ j ].Name, "Spacetec SpaceOrb 360" ) )
 			{
 				DebugPrintf( "DefaultJoystickSettings: player '%s' joystick #%d='%s' configuring as SpaceOrb\n",
 					u->name,
@@ -1402,7 +1402,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 		{
 			// find which keyword is equal to the current cfg value
 			for ( j = 0; jumptab[ j ].keyword; j++ )
-				if ( !_stricmp( token, jumptab[ j ].keyword ) )
+				if ( !strcasecmp( token, jumptab[ j ].keyword ) )
 					break;
 
 			// if the handle is valid

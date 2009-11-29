@@ -2122,7 +2122,7 @@ int16 ReturnSFXIndex( char *file )
 
 	// check all non level specific sfx for file
 	for( i = 0; i < SFX_LEVELSPEC_Start; i++ )
-		if ( Sfx_Filenames[ i ].Name && ( !_stricmp( Sfx_Filenames[ i ].Name, file ) ) )
+		if ( Sfx_Filenames[ i ].Name && ( !strcasecmp( Sfx_Filenames[ i ].Name, file ) ) )
 			if ( SfxExists( i, file ) )
 			{
 				RequestSfx( i );
@@ -2136,8 +2136,8 @@ int16 ReturnSFXIndex( char *file )
 		//if ( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file[0] )
 		if ( Sfx_Filenames[ i ].Name )
 		{
-			//if ( !_stricmp( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file, file ) )
-			if ( !_stricmp( Sfx_Filenames[ i ].Name, file ) )
+			//if ( !strcasecmp( LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file, file ) )
+			if ( !strcasecmp( Sfx_Filenames[ i ].Name, file ) )
 			{
 				RequestSfx( i );
 				return i;
@@ -2152,7 +2152,7 @@ int16 ReturnSFXIndex( char *file )
 
 	while (!( LevelSpecificSfxLookup[ i ].flags & SFX_End ))
 	{
-		if ( !_stricmp( LevelSpecificSfxLookup[ i ].file, file ) )
+		if ( !strcasecmp( LevelSpecificSfxLookup[ i ].file, file ) )
 		{
 			if ( SfxExists( SFX_LEVELSPEC_Start , file ) )	
 			{
@@ -2176,7 +2176,7 @@ int16 ReturnSFXIndex( char *file )
 			i = 0;
 			while (!( LevelSpecificSfxLookup[ i ].flags & SFX_End ))
 			{
-				if ( !_stricmp( LevelSpecificSfxLookup[ i ].file, filetocheck ) )
+				if ( !strcasecmp( LevelSpecificSfxLookup[ i ].file, filetocheck ) )
 				{
 					if ( SfxExists( SFX_LEVELSPEC_Start , file ) )
 					{

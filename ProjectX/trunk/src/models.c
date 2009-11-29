@@ -807,7 +807,7 @@ BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 
 				Get_Ext( NamePnt->Name, &Ext[ 0 ] );
 
-				if( !_stricmp( &Ext[ 0 ], "MX" ) )
+				if( !strcasecmp( &Ext[ 0 ], "MX" ) )
 				{
 					NamePnt->DoIMorph = FALSE;
 
@@ -817,7 +817,7 @@ BOOL PreInitModel( /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME *NamePnt ) // bjd
 				}
 				else
 				{
-					if( !_stricmp( &Ext[ 0 ], "MXA" ) )
+					if( !strcasecmp( &Ext[ 0 ], "MXA" ) )
 					{
 						NamePnt->DoIMorph = TRUE;
 

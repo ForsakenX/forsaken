@@ -1171,7 +1171,7 @@ BOOL PreLoadBGOFiles( void )
 #if	DUPLICATE_BGOBJECTS == 0
 				while( TempPtr != FilePtr )
 				{
-					if( !_stricmp( &TempPtr->Filename[ 0 ], &FilePtr->Filename[ 0 ] ) )
+					if( !strcasecmp( &TempPtr->Filename[ 0 ], &FilePtr->Filename[ 0 ] ) )
 					{
 						TempBaseModel = TempPtr->BaseModel;
 						break;

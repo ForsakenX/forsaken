@@ -110,7 +110,7 @@ char *SaveGameFileName( int slot )
 	static char name[ MAX_SAVEGAME_FILENAME ];
 
 	sprintf( name, SAVEGAME_FOLDER "\\save%02d" SAVEGAME_EXTENSION, slot + 1 );
-	_strupr( name );
+	strtoupper( name );
 	return name;
 }
 
@@ -120,7 +120,7 @@ char *SaveGamePicFileName( int slot )
 	static char name[ MAX_SAVEGAME_FILENAME ];
 
 	sprintf( name, SAVEGAME_FOLDER "\\save%02d" SAVEGAMEPIC_EXTENSION, slot + 1 );
-	_strupr( name );
+	strtoupper( name );
 	return name;
 }
 
@@ -176,7 +176,7 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 		for (i = 0; i < NumLevels; i++)
 		{
 
-			if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
+			if( strcasecmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
 			{
 				NewLevelNum = i;
 				break;
@@ -385,7 +385,7 @@ char *GetMissionName( char *levelname )
 	for (i = 0; i < NumLevels; i++)
 	{
 		
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , levelname ) == 0 ) 
+		if( strcasecmp( (char*) &ShortLevelNames[i][0] , levelname ) == 0 ) 
 		{
 			break;
 		}
@@ -613,7 +613,7 @@ char *SavedGameInfo( int slot )
 		fread( &InitEnemiesNum, sizeof( NumInitEnemies ), 1, fp );
 		fread( &KilledEnemiesNum, sizeof( NumKilledEnemies ), 1, fp );
 		fread( &Lives, sizeof( Lives ), 1, fp );
-		if ( _stricmp( biker, DEFAULT_PLAYER_NAME ) )
+		if ( strcasecmp( biker, DEFAULT_PLAYER_NAME ) )
 			sprintf( info, "%s in %s %hd'%02hd %hd/%hd",
 				biker,
 				LevelName,

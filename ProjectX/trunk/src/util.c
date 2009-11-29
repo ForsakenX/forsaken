@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include "main.h"
 #include "file.h"
 #include "util.h"
 #include "string.h"
@@ -8,8 +9,100 @@ extern BOOL Debug;
 BOOL DebugLog = FALSE;
 
 #ifdef WIN32
-#include <windows.h>
+#include <windows.h>	// for various things
+#include <ctype.h>		// for toupper
 #endif
+
+void strtoupper(char *str)
+{
+	while (*str)
+	{
+		*str = (char) toupper(*str); 
+		str++; 
+	}
+}
+
+void GetFilename( uint8 * Src, uint8 * Dest )
+{
+	uint8	*	Char_Ptr;
+
+	Char_Ptr = ( Src + strlen( Src ) ) -1;
+
+	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' ) Char_Ptr--;
+
+	if( Char_Ptr == Src )
+	{
+		strcpy( Dest, Src );
+		return;
+	}
+
+	if( Char_Ptr != ( Src + strlen( Src ) - 1 ) )
+	{
+		strcpy( Dest, ( Char_Ptr + 1 ) );
+	}
+	else
+	{
+		*Dest = 0;
+	}
+}
+
+void Get_Ext( uint8 * Src, uint8 * Dest )
+{
+	uint8	*	Char_Ptr;
+
+	Char_Ptr = ( Src + strlen( Src ) ) -1;
+
+	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
+
+	if( *Char_Ptr == '.' )
+	{
+		Char_Ptr++;
+		while( *Char_Ptr ) *Dest++ = *Char_Ptr++;
+		*Dest = 0;
+	}
+	else
+	{
+		*Dest = 0;
+	}
+}
+
+void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
+{
+	strcpy( Dest, Path );
+	Dest = ( Dest + strlen( Path ) );
+	strcpy( Dest, Src );
+}
+
+void Change_Ext( const char * Src, char * Dest, const char * Ext )
+{
+	uint8	*	Char_Ptr;
+
+	int length = strlen( Src );
+
+	if ( ! length )
+	{
+		strcpy( Dest, Ext ); // set the extension
+		Msg("Change_Ext called with Src empty!");
+		return;
+	}
+
+	Char_Ptr = ( (uint8*)Src + length ) - 1;
+
+	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
+
+	if( *Char_Ptr == '.' )
+	{
+		while( Src != Char_Ptr )
+			*Dest++ = *Src++;
+		strcpy( Dest, Ext );
+	}
+	else
+	{
+		strcpy( Dest, Src );
+		Dest += strlen( Src );
+		strcpy( Dest, Ext );
+	}
+}
 
 void DebugPrintf( const char * format, ... )
 {

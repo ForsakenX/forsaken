@@ -533,7 +533,7 @@ void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 {
 	while( FileInfo->InfoPtrAddr != NULL )
 	{
-		if( !_stricmp( &FileInfo->Filename[ 0 ], Filename ) )
+		if( !strcasecmp( &FileInfo->Filename[ 0 ], Filename ) )
 		{
 			FileInfo->LoadEnable = TRUE;
 			return;
@@ -553,7 +553,7 @@ void DisableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 {		
 	while( FileInfo->InfoPtrAddr != NULL )
 	{
-		if( !_stricmp( &FileInfo->Filename[ 0 ], Filename ) )
+		if( !strcasecmp( &FileInfo->Filename[ 0 ], Filename ) )
 		{
 			FileInfo->LoadEnable = FALSE;
 			return;

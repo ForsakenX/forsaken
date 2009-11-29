@@ -1401,8 +1401,8 @@ BOOL PreMload( char * Filename, MLOADHEADER * Mloadheader  )
 	Mloadheader->OrgAddr = Buffer;
 
 #ifdef UNSCRAMBLE
-	if ( _stricmp( Filename, "data\\levels\\accworld\\accworld.mxv" ) &&
-		 _stricmp( Filename, "data\\levels\\probeworld\\probeworld.mxv" ) )
+	if ( strcasecmp( Filename, "data\\levels\\accworld\\accworld.mxv" ) &&
+		 strcasecmp( Filename, "data\\levels\\probeworld\\probeworld.mxv" ) )
 		Unscramble( Buffer, Read_Size, Filename );
 #endif
 

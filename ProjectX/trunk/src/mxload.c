@@ -1337,7 +1337,7 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim )
 {
 	int j;
 	// Make a note of any polyanims that are to do with the 3D Panel.....
-	if( _stricmp( "Primary" , (char*) &PolyAnim->Tag[0] ) == 0 )
+	if( strcasecmp( "Primary" , (char*) &PolyAnim->Tag[0] ) == 0 )
 	{
 		for( j = 0 ; j < NUMOFPOLYSPER3DPANELITEM ; j++ )
 		{
@@ -1345,7 +1345,7 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim )
 				Panel3DPolyAnims_Primary[j] = PolyAnim;
 		}
 	}
-	else if( _stricmp( "Secondary" , (char*) &PolyAnim->Tag[0] ) == 0 )
+	else if( strcasecmp( "Secondary" , (char*) &PolyAnim->Tag[0] ) == 0 )
 	{
 		for( j = 0 ; j < NUMOFPOLYSPER3DPANELITEM ; j++ )
 		{
@@ -1353,7 +1353,7 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim )
 				Panel3DPolyAnims_Secondary[j] = PolyAnim;
 		}
 	}
-	else if( _stricmp( "Mine" , (char*) &PolyAnim->Tag[0] ) == 0 )
+	else if( strcasecmp( "Mine" , (char*) &PolyAnim->Tag[0] ) == 0 )
 	{
 		for( j = 0 ; j < NUMOFPOLYSPER3DPANELITEM ; j++ )
 		{
@@ -1362,7 +1362,7 @@ void Check3DPanelPolyAnim(POLYANIM * PolyAnim )
 		}
 
 	}
-	else if( _stricmp( "MineNum" , (char*) &PolyAnim->Tag[0] ) == 0 )
+	else if( strcasecmp( "MineNum" , (char*) &PolyAnim->Tag[0] ) == 0 )
 	{
 		for( j = 0 ; j < NUMOFPOLYSPER3DPANELITEM ; j++ )
 		{

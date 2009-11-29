@@ -7,6 +7,8 @@
 #include <windows.h>
 #endif
 
+#include "main.h"
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -22,7 +24,6 @@
 #include "sfx.h"
 #include "text.h"
 #include "input.h"
-#include "main.h"
 #include "controls.h"
 #include "config.h"
 #include "title.h"
@@ -1857,7 +1858,7 @@ void UpdateGameList( void )
 	games_update();
 
 	length = games_length();
-	_snprintf(GamesLength.text, sizeof(GamesLength.text), "%d", length);
+	snprintf(GamesLength.text, sizeof(GamesLength.text), "%d", length);
 
 	for( i = 0; i < MAX_GAME_LIST; i++ )
 	{
@@ -1868,7 +1869,7 @@ void UpdateGameList( void )
 		if( i < length )
 		{
 			// set the game line
-			_snprintf(GameList[i], sizeof(GameList[i]),
+			snprintf(GameList[i], sizeof(GameList[i]),
 						"%d. %s %s:%s", x, games_name_at(x), games_ip_at(x), games_port_at(x));
 
 			// set the game name so we can find the index later
@@ -1877,7 +1878,7 @@ void UpdateGameList( void )
 		// empty out the game
 		else
 		{
-			_snprintf(GameList[i], sizeof(GameList[i]), "%d.", x);
+			snprintf(GameList[i], sizeof(GameList[i]), "%d.", x);
 			memset(GameName[i],0,sizeof(GameName[i]));
 		}
 	}
@@ -6056,13 +6057,13 @@ void CursorSearch( char *keyword )
 		{
 			if ( ( ( item->x > x ) || ( item->y > y ) )
 				&& ( !next || ( ( abs( item->x - x ) + abs( item->y - y ) ) <= ( abs( next->x - x ) + abs( next->y - y ) ) ) )
-				&& item->StrPnt && !_strnicmp( item->StrPnt, keyword, keyword_len ) )
+				&& item->StrPnt && !strncasecmp( item->StrPnt, keyword, keyword_len ) )
 			{
 				next = item;
 			}
 			if ( ( ( item->x < x ) || ( item->y < y ) )
 				&& ( !wrap || ( ( abs( item->x - x ) + abs( item->y - y ) ) >= ( abs( wrap->x - x ) + abs( wrap->y - y ) ) ) )
-				&& item->StrPnt && !_strnicmp( item->StrPnt, keyword, keyword_len ) )
+				&& item->StrPnt && !strncasecmp( item->StrPnt, keyword, keyword_len ) )
 			{
 				wrap = item;
 			}
@@ -6931,7 +6932,7 @@ void MoveConfigFile( MENU *Menu )
 		PlaySfx( SFX_Error, 1.0F );
 		return;
 	}
-	if( !_stricmp( old_config, biker_config ) )
+	if( !strcasecmp( old_config, biker_config ) )
 	{
 		// name not changed
 		return;
@@ -7046,7 +7047,7 @@ void ExitControls( MENU *Menu )
 static int compare( const void *arg1, const void *arg2 )
 {
    /* Compare all of both strings: */
-   return _stricmp( ( char* ) arg1, ( char* ) arg2 );
+   return strcasecmp( ( char* ) arg1, ( char* ) arg2 );
 }
 
 #ifdef DEMO_SUPPORT
@@ -7168,7 +7169,7 @@ void InitPilotList( void )
 	for ( j = 0; j < PilotList.items; j++ )
 	{
 		// 
-		if ( !_stricmp( PilotList.item[ j ], biker_name ) )
+		if ( !strcasecmp( PilotList.item[ j ], biker_name ) )
 			PilotList.selected_item = j;
 	}
 
@@ -7663,11 +7664,11 @@ void SelectListSearch( LIST *l, char *keyword )
 	wrap = -1;
 	for ( item = 0; item < l->items; item++ )
 	{
-		if ( ( item >= l->selected_item ) && ( next == -1 ) && !_strnicmp( l->item[ item ], keyword, keyword_len ) )
+		if ( ( item >= l->selected_item ) && ( next == -1 ) && !strncasecmp( l->item[ item ], keyword, keyword_len ) )
 		{
 			next = item;
 		}
-		if ( ( item < l->selected_item ) && ( wrap == -1 ) && !_strnicmp( l->item[ item ], keyword, keyword_len ) )
+		if ( ( item < l->selected_item ) && ( wrap == -1 ) && !strncasecmp( l->item[ item ], keyword, keyword_len ) )
 		{
 			wrap = item;
 		}
@@ -8178,7 +8179,7 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 	config_get_strncpy( &level_name[0], 64, "LevelName", "ship" );
 
 	for ( i = 0; i < LevelList.items; i++ )
-		if ( !_strnicmp( LevelList.item[ i ], level_name, 7 ) )
+		if ( !strncasecmp( LevelList.item[ i ], level_name, 7 ) )
 		{
 			selected_level = i;
 			break;
@@ -8372,7 +8373,7 @@ void GetSavedGameData( void )
 		fclose( fp );
 
 		sprintf( CurrentSavedGameLevel, LT_LevelName/*"level name: %s"*/, GetMissionName( buf ) );
-		if ( _stricmp( biker, DEFAULT_PLAYER_NAME ) )
+		if ( strcasecmp( biker, DEFAULT_PLAYER_NAME ) )
 			sprintf( CurrentSavedGameTimeLevelPlayed, LT_LevelPlayedFor1/*"%s played for %hd mins %hd secs"*/, biker, Hours * 60 + Minutes, Seconds );
 		else
 			sprintf( CurrentSavedGameTimeLevelPlayed, LT_LevelPlayedFor2/*"played for %hd mins %hd secs"*/, Hours * 60 + Minutes, Seconds );
@@ -8899,7 +8900,7 @@ void InitDemoList( MENU * Menu )
 				for (i = 0; i < NumLevels; i++)
 				{
 					
-					if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
+					if( strcasecmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
 					{
 						break;
 					}
@@ -13917,7 +13918,7 @@ void MenuItemBackFromError ( MENUITEM *Item )
 
 void SelectConfigureAxisMenu ( MENUITEM *Item )
 {
-	if ( !_stricmp( JoystickList.item[ JoystickList.selected_item ], "Spacetec SpaceOrb 360" ) 
+	if ( !strcasecmp( JoystickList.item[ JoystickList.selected_item ], "Spacetec SpaceOrb 360" ) 
 		&& !SpaceOrbSetup )
 	{
 		// do not allow axis setup

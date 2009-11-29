@@ -1,45 +1,69 @@
-
-/*===================================================================
-	Header files
-===================================================================*/
-
 #include	"main.h"
 #include	"file.h"
 #include	"util.h"
 
 #include	<fcntl.h>
-#ifdef WIN32
-#include	<sys/stat.h>
-#endif
 #include	<string.h>
+#include	<sys/stat.h>
 #include	<stdarg.h>
+#include	<io.h>
+#include	<stdio.h>
+#include	<stdlib.h>
 
-/*===================================================================
-	External Variables
-===================================================================*/
+#ifdef WIN32
+#include	<ctype.h>	// for tolower
+#include	<windows.h> // for DeleteFile
+#include	<direct.h>	// for _mkdir
+#define		mkdir	_mkdir
+// following are in <io.h>
+#define		access	_access
+#define		open	_open
+#define		close	_close
+#define		read	_read
+#define		write	_write
+#endif
 
 extern BOOL Debug;
 
-// creates the file if not found
-void touch_file( char* path )
+static char* convert_path( char* _str )
 {
+#ifdef WIN32
+	return _str;
+#else
+	static char temp[500];
+	char * str = temp;
+	strncpy( temp, _str, sizeof(temp) );
+	while (*str)
+	{
+		if (*str == '\\')
+			*str = '/';
+		else
+			*str = (char) tolower(*str);
+		str++;
+	}
+	return temp;
+#endif
+}
+
+void touch_file( char* str )
+{
+	char * path = convert_path(str);
 	if(!File_Exists(path))
 		Write_File(path, "", 0);
 }
 
-BOOL is_folder( char* path )
+BOOL is_folder( char* str )
 {
-#ifdef WIN32
 	static struct _stat stat;
+	char * path = convert_path(str);
 	if ( _stat( path, &stat ) == 0 && stat.st_mode & _S_IFDIR )
 		return TRUE;
-#endif
 	return FALSE;
 }
 
 int folder_exists( char *pathspec, ... )
 {
-#ifdef WIN32
+	char * path;
 	static char pathname[ 256 ];
 	static struct _stat stat;
 	va_list args;
@@ -47,10 +71,13 @@ int folder_exists( char *pathspec, ... )
 	va_start( args, pathspec );
 	vsprintf( pathname, pathspec, args );
 	va_end( args );
-	if ( _stat( pathname, &stat ) )
+
+	path = convert_path(pathname);
+
+	if ( _stat( path, &stat ) )
 	{
 		// no such path exists...attempt to create a directory with that name
-		return !_mkdir( pathname );
+		return !mkdir( path );
 	}
 	else if ( stat.st_mode & _S_IFDIR )
 	{
@@ -62,175 +89,41 @@ int folder_exists( char *pathspec, ... )
 		// path exists but is not a directory
 		return 0;
 	}
-#endif
 	return 0;
 }
 
-
-/*===================================================================
-	Procedure	:		See if file exists
-	Input		:		char	*	Filename
-	Output		:		BOOL		TRUE if exists
-===================================================================*/
-BOOL File_Exists( char * Filename )
+BOOL File_Exists( char * str )
 {
-#ifdef WIN32
-	if ( !_access( Filename, 00 ) )
-		return TRUE;
-#endif
-	//DebugPrintf("File does not exist: %s\n", Filename);
-	return FALSE;
+	char * path = convert_path(str);
+	return access( path, 00 ) == 0;
 }
 
-
-
-/*===================================================================
-	Procedure	:		Write File ( Creating file if non exists )
-	Input		:		char	*	Filename
-				:		char	*	Buffer to Write
-				:		long		Bytes to Write ( 0 = All )
-	Output		:		long		Number of bytes Written
-===================================================================*/
-long Write_File( char * Filename, char * File_Buffer, long Write_Size )
+long Write_File( char * str, char * File_Buffer, long Write_Size )
 {
-#ifdef WIN32
 	int		Handle = -1;
 	long	Bytes_Written = 0;
 
-	Handle = _open( Filename, _O_CREAT | _O_TRUNC | _O_BINARY | _O_RDWR ,
+	char * path = convert_path(str);
+
+	Handle = open( path, _O_CREAT | _O_TRUNC | _O_BINARY | _O_RDWR ,
 							  _S_IREAD | _S_IWRITE );
 	if( Handle != -1 ) {
-		Bytes_Written = _write( Handle, File_Buffer, Write_Size );
-		_close( Handle );
+		Bytes_Written = write( Handle, File_Buffer, Write_Size );
+		close( Handle );
 	}
 
 	return ( Bytes_Written );
-#endif
-	return 0;
 }
 
-/*===================================================================
-	Procedure	:		Change Extension of Filename
-	Input		:		uint8	*	Src Filename
-				:		uint8	*	Dest Filename
-				:		uint8	*	Extension to add
-	Output		:		Nothing
-===================================================================*/
-void Change_Ext( const char * Src, char * Dest, const char * Ext )
-{
-	uint8	*	Char_Ptr;
-
-	int length = strlen( Src );
-
-	if ( ! length )
-	{
-		strcpy( Dest, Ext ); // set the extension
-		Msg("Change_Ext called with Src empty!");
-		return;
-	}
-
-	Char_Ptr = ( Src + length ) -1;
-
-	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
-
-	if( *Char_Ptr == '.' )
-	{
-		while( Src != Char_Ptr )
-			*Dest++ = *Src++;
-		strcpy( Dest, Ext );
-	}
-	else
-	{
-		strcpy( Dest, Src );
-		Dest += strlen( Src );
-		strcpy( Dest, Ext );
-	}
-}
-
-/*===================================================================
-	Procedure	:		Get Filename from path\filename
-	Input		:		uint8	*	Src path\Filename
-				:		uint8	*	Dest Filename
-				:		uint8	*	Extension to add
-	Output		:		Nothing
-===================================================================*/
-void GetFilename( uint8 * Src, uint8 * Dest )
-{
-	uint8	*	Char_Ptr;
-
-	Char_Ptr = ( Src + strlen( Src ) ) -1;
-
-	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' ) Char_Ptr--;
-
-	if( Char_Ptr == Src )
-	{
-		strcpy( Dest, Src );
-		return;
-	}
-
-	if( Char_Ptr != ( Src + strlen( Src ) - 1 ) )
-	{
-		strcpy( Dest, ( Char_Ptr + 1 ) );
-	}
-	else
-	{
-		*Dest = 0;
-	}
-}
-
-/*===================================================================
-	Procedure	:		Change Extension of Filename
-	Input		:		uint8	*	Src Filename
-				:		uint8	*	Dest to put ext
-	Output		:		Nothing
-===================================================================*/
-void Get_Ext( uint8 * Src, uint8 * Dest )
-{
-	uint8	*	Char_Ptr;
-
-	Char_Ptr = ( Src + strlen( Src ) ) -1;
-
-	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
-
-	if( *Char_Ptr == '.' )
-	{
-		Char_Ptr++;
-		while( *Char_Ptr ) *Dest++ = *Char_Ptr++;
-		*Dest = 0;
-	}
-	else
-	{
-		*Dest = 0;
-	}
-}
-
-/*===================================================================
-	Procedure	:		Add path to filename
-	Input		:		uint8	*	Path\
-				:		uint8	*	Src Filename
-				:		uint8	*	Dest Path\Filename
-	Output		:		Nothing
-===================================================================*/
-void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
-{
-	strcpy( Dest, Path );
-	Dest = ( Dest + strlen( Path ) );
-	strcpy( Dest, Src );
-}
-
-/*===================================================================
-	Procedure	:		Return Size of File given Filename
-	Input		:		char	*	Filename
-	Output		:		long		Size of File
-===================================================================*/
 long Get_File_Size( char * Filename )
 {
 #ifdef WIN32
+
 	int		Handle = -1;
 	long	Read_Size = 0;
 
 	// open the file
-	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
+	Handle = open( Filename, _O_RDONLY | _O_BINARY );
 
 	// opened successfully
 	if( Handle != -1 )
@@ -239,33 +132,39 @@ long Get_File_Size( char * Filename )
 		Read_Size = _filelength( Handle );
 
 		// close the file
-		_close( Handle );
+		close( Handle );
 
 	}
 
 	// return the size
 	return ( Read_Size );
+
+#else // ! WIN32
+
+	struct stat st;
+
+	char * path = convert_path(Filename);
+
+    if ( !stat( path, &st ) ) 
+	{
+		return (long) st.st_size;
+    }
+    else 
+	{
+		perror("stat");
+		return -1;
+    }
+
 #endif
-	return 0;
 }
 
-/*===================================================================
-	Procedure	:		Read Part or All of File Into Memory
-				:		data\ as base directory
-				:		read from override dir first, then normal
-	Input		:		char	*	Filename
-				:		char	*	Buffer to Load into
-				:		long		Bytes to Read ( 0 = All )
-	Output		:		long		Number of bytes Read
-===================================================================*/
 long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 {
-#ifdef WIN32
 	int		Handle = -1;
 	long	Bytes_Read = 0;
 
 	// open the file handle
-	Handle = _open( Filename, _O_RDONLY | _O_BINARY );
+	Handle = open( Filename, _O_RDONLY | _O_BINARY );
 
 	// file opened successfully
 	if( Handle != -1 )
@@ -274,59 +173,46 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 		if( Read_Size == 0 ) Read_Size = _filelength( Handle );
 
 		// read in the file
-		Bytes_Read = _read( Handle, File_Buffer, Read_Size );
+		Bytes_Read = read( Handle, File_Buffer, Read_Size );
 
 		// set bytes read to 0
 		// if no data was read
 		if( Bytes_Read == -1 ) Bytes_Read = 0;
 
 		// close up the file
-		_close( Handle );
+		close( Handle );
 
 	}
 
 	// return the size of the file
 	return ( Bytes_Read );
+}
+
+BOOL delete_file( char * str )
+{
+#ifdef WIN32
+	return DeleteFile( str );
+#else // ! WIN32
+	char * path = convert_path(str);
+	return (unlink( path )==0);
 #endif
 }
 
-/*===================================================================
-	Procedure	:		Add Comment to log
-	Input		:		const char * format, .....
-	Output		:		Nothing
-===================================================================*/
-
-// log file name
-char * LogFilename = "Logs\\projectx.log";
-
-// pointer to log file
-FILE * fp;
-
-// add comment to log
 void AddCommentToLog( char * str )
 {
-	if(!Debug)return;
+	static FILE * logfile_fp;
 
-	if(!fp)
-		fp = fopen( LogFilename, "w" );
+	if(!Debug)
+		return;
 
-	if( fp )
+	if(!logfile_fp)
+		logfile_fp = fopen( convert_path("Logs\\projectx.log"), "w" );
+
+	if( logfile_fp )
 	{
-		fprintf( fp, "%s", str );
-		fflush(fp);
+		fprintf( logfile_fp, "%s", str );
+		fflush( logfile_fp );
 	}
-}
-
-#ifdef WIN32
-#include <windows.h>
-#endif
-
-BOOL delete_file( char * path )
-{
-#ifdef WIN32
-	return DeleteFile( path );
-#endif
-	return 1;
 }
 
 //
@@ -360,8 +246,9 @@ void find_close( void )
 
 #else
 
-char* find_file( char * path )
+char* find_file( char * str )
 {
+	char * path = convert_path(str);
 	return NULL;
 }
 

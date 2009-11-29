@@ -129,7 +129,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
       strncpy( JoystickInfo[joysticknum].Axis[axis].name, lpddoi->tszName, MAX_JOYNAME );
     else
       /* use generic name */
-      _snprintf( JoystickInfo[joysticknum].Axis[axis].name, MAX_JOYNAME, "Axis %d", axis );
+      snprintf( JoystickInfo[joysticknum].Axis[axis].name, MAX_JOYNAME, "Axis %d", axis );
 
     /* this current axis exists */
     JoystickInfo[joysticknum].Axis[axis].exists = TRUE;
@@ -168,7 +168,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
       );
     else
       /* use generic name */
-      _snprintf(
+      snprintf(
          JoystickInfo[joysticknum].Button[JoystickInfo[joysticknum].NumButtons].name,
          MAX_JOYNAME,
          "Button %d",
@@ -208,7 +208,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
       );
     else
       /* use generic name */
-      _snprintf(
+      snprintf(
          JoystickInfo[joysticknum].POV[JoystickInfo[joysticknum].NumPOVs].name,
          MAX_JOYNAME,
          "Hat %d",
@@ -231,7 +231,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
       );
 
       /* use generic name */
-      _snprintf(
+      snprintf(
          JoystickInfo[joysticknum].POV[JoystickInfo[joysticknum].NumPOVs].dirname[ dir ],
          MAX_JOYNAME,
          "%s %d",

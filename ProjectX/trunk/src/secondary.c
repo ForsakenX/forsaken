@@ -6761,7 +6761,7 @@ uint16 TargetClosestShip( VECTOR * Pos, VECTOR * Dir, uint16 Group, uint16 MeTyp
 #ifdef SINT_PEACEFROG_CHEAT
 					if(	( TargetingWeaponCheat == TITANSTARMISSILE ) || ( TargetingWeaponCheat == TITANSTARSHRAPNEL ) )
 					{
-						if( !_stricmp( &Names[ Count ][ 0 ], "sint" ) || !_stricmp( &Names[ Count ][ 0 ], "peacefr" ) )
+						if( !strcasecmp( &Names[ Count ][ 0 ], "sint" ) || !strcasecmp( &Names[ Count ][ 0 ], "peacefr" ) )
 						{
 							DirVector.x = ( Ships[ Count ].Object.Pos.x - Pos->x );
 							DirVector.y = ( Ships[ Count ].Object.Pos.y - Pos->y );

@@ -100,7 +100,7 @@ int     __cdecl _matherr(struct _exception * except)
 	switch( except->type )
 	{
 		case _DOMAIN:
-			if( !_stricmp( except->name, "acos" ) )
+			if( !strcasecmp( except->name, "acos" ) )
 			{
 				if( ( except->arg1 < -1.0 ) && ( except->arg1 > -1.0001 ) )
 				{
@@ -116,7 +116,7 @@ int     __cdecl _matherr(struct _exception * except)
 					return( 1 );
 				}
 			}
-			else if ( !_stricmp( except->name, "sqrt" ) )
+			else if ( !strcasecmp( except->name, "sqrt" ) )
 			{
 				if ( except->arg1 < 0.0 )
 				{
@@ -132,7 +132,7 @@ int     __cdecl _matherr(struct _exception * except)
 		case _TLOSS:
 			break;
 		case _UNDERFLOW:
-			if ( !_stricmp( except->name, "pow" ) )
+			if ( !strcasecmp( except->name, "pow" ) )
 			{
 				if ( except->arg1 < 1.0 && except->arg2 > 0.0 )
 				{

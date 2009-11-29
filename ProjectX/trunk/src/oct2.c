@@ -172,7 +172,6 @@ extern int  outside_map;
 
 extern  int16 NextNewModel;
 extern MENUSTATE MenuState;
-extern  char * LogFilename;
 extern  BOOL  ShowEFZones;
 extern  BOOL  ShowTeleports;
 extern BOOL MenuFrozen;

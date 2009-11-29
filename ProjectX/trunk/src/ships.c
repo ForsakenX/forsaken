@@ -2201,7 +2201,7 @@ BOOL GotoRoom( int16 i, char *roomname )
 	{
 		for ( group = 0; group < Mloadheader.num_groups; group++ )
 		{
-			if ( !_stricmp( roomname, Mloadheader.Group[ ( Ships[i].Object.Group + group ) % Mloadheader.num_groups ].name ) )
+			if ( !strcasecmp( roomname, Mloadheader.Group[ ( Ships[i].Object.Group + group ) % Mloadheader.num_groups ].name ) )
 				break;
 		}
 		if ( group >= Mloadheader.num_groups )

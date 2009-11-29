@@ -59,7 +59,7 @@ char *DemoFileName( char *demoname )
 	strncat( filename, "\\", MAX_DEMONAME_LENGTH );
 	strncat( filename, demoname, MAX_DEMONAME_LENGTH );
 	filename[ strlen( DEMOFOLDER ) + 1 + MAX_DEMONAME_LENGTH ] = 0;
-	_strupr( filename );
+	strtoupper( filename );
 	dmo = strstr( filename, DEMOFILE_EXTENSION );
 	if ( !dmo )
 		strcat( filename, DEMOFILE_EXTENSION );
@@ -76,7 +76,7 @@ char *DemoName( char *demofilename )
 	offset = strstr( demofilename, DEMOFOLDER ) ? strlen( DEMOFOLDER ) + 1 : 0;
 	strncpy( demoname, demofilename + offset, sizeof( demoname ) - 1 );
 	demoname[ sizeof( demoname ) - 1 ] = 0;
-	_strupr( demoname );
+	strtoupper( demoname );
 	dmo = strstr( demoname, DEMOFILE_EXTENSION );
 	if ( dmo )
 		*dmo = 0;
@@ -141,7 +141,7 @@ void StartDemoCleaning( MENUITEM * Item )
     for (i = 0; i < NumLevels; i++)
 	{
 
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 )
+		if( strcasecmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 )
 		{
 			NewLevelNum = i;
 			break;
@@ -277,7 +277,7 @@ void StartDemoPlayback( MENUITEM * Item )
     for (i = 0; i < NumLevels; i++)
 	{
 
-		if( _stricmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
+		if( strcasecmp( (char*) &ShortLevelNames[i][0] , (char*) &buf[0] ) == 0 ) 
 		{
 			NewLevelNum = i;
 			break;

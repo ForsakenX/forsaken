@@ -313,10 +313,10 @@ int16	FindTexture( TLOADHEADER * Tloadheader , char * Name )
 			pnt2 = &Tloadheader->ImageFile[i][0];
 		}
 
-		if( _stricmp( pnt1, pnt2 ) == 0 )
+		if( strcasecmp( pnt1, pnt2 ) == 0 )
 			return i;
 
-//		if( _stricmp( (char*) Name, (char*) &Tloadheader->ImageFile[i] ) == 0 )
+//		if( strcasecmp( (char*) Name, (char*) &Tloadheader->ImageFile[i] ) == 0 )
 //			return i;
 	}
 	return -1;
@@ -383,7 +383,7 @@ void GetLevelTexturePath( char * destination, char * file, char * level )
 	char new_file[256];
 
 	// pkups pkup[sa] is really titana (old game hard coded it that way)
-	if( !_stricmp( "pkups.bmp", file ) || !_stricmp( "pkupsa.bmp", file ) )
+	if( !strcasecmp( "pkups.bmp", file ) || !strcasecmp( "pkupsa.bmp", file ) )
 	{
 		strncpy(destination,"data\\textures\\titana.png",256);
 		return;

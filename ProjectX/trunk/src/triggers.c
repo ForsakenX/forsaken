@@ -269,7 +269,7 @@ void ModifyTriggerVar( TRIGGERVAR * TrigVar , int Op , int Val )
 			DebugPrintf( "modifytrigvar: trigger %d (type=%d, activestate=%d) activated (was %d)\n",
 				Trig - Triggers, (int) Trig->Type, Trig->ActiveState, Trig->Active );
 #endif
-			if( !(_strnicmp( "secret" , &TrigVar->Name[0], 6 ) ) )
+			if( !(strncasecmp( "secret" , &TrigVar->Name[0], 6 ) ) )
 			{
 				PlaySfx( SFX_Secret, 1.0F );
 			}
@@ -1056,7 +1056,7 @@ BOOL Triggerload( char * Filename )
 	{
 		for( i = 0 ; i < NumOfTrigVars ; i ++ )
 		{
-			if( !(_strnicmp( "LEVEL_END" , &TVpnt->Name[0], 9 ) ) )
+			if( !(strncasecmp( "LEVEL_END" , &TVpnt->Name[0], 9 ) ) )
 			{
 				Level_End = TVpnt;
 				break;
@@ -1079,7 +1079,7 @@ BOOL Triggerload( char * Filename )
 	{
 		for( i = 0 ; i < NumOfTrigVars ; i ++ )
 		{
-			if( !(_strnicmp( "AvatarActivated" , &TVpnt->Name[0], 15 ) ) )
+			if( !(strncasecmp( "AvatarActivated" , &TVpnt->Name[0], 15 ) ) )
 			{
 				AvatarActivated = TVpnt;
 				break;
@@ -1096,7 +1096,7 @@ BOOL Triggerload( char * Filename )
 	{
 		for( i = 0 ; i < NumOfTrigVars ; i ++ )
 		{
-			if( !(_strnicmp( "Decreasetemperature" , &TVpnt->Name[0], 19 ) ) )
+			if( !(strncasecmp( "Decreasetemperature" , &TVpnt->Name[0], 19 ) ) )
 			{
 				DecreaseTemperature = TVpnt;
 				break;
@@ -1107,7 +1107,7 @@ BOOL Triggerload( char * Filename )
 		TVpnt =	TrigVars;
 		for( i = 0 ; i < NumOfTrigVars ; i ++ )
 		{
-			if( !(_strnicmp( "Minimumtemperature" , &TVpnt->Name[0], 18 ) ) )
+			if( !(strncasecmp( "Minimumtemperature" , &TVpnt->Name[0], 18 ) ) )
 			{
 				MinimumTemperature = TVpnt;
 				break;
@@ -1123,7 +1123,7 @@ BOOL Triggerload( char * Filename )
 	{
 		for( i = 0 ; i < NumOfTrigVars ; i ++ )
 		{
-			if( !(_strnicmp( "Timelimit" , &TVpnt->Name[0], 9 ) ) )
+			if( !(strncasecmp( "Timelimit" , &TVpnt->Name[0], 9 ) ) )
 			{
 				TimeLimitTrigger = TVpnt;
 				break;
@@ -1391,7 +1391,7 @@ void HowManySecrets( int * NumOfSecrets , int * SecretsFound )
 	for( i = 0 ; i < NumOfTrigVars ; i ++ )
 	{
 		
-		if( !(_strnicmp( "secret" , &TVpnt->Name[0], 6 ) ) )
+		if( !(strncasecmp( "secret" , &TVpnt->Name[0], 6 ) ) )
 		{
 			*NumOfSecrets += 1;
 			if( TVpnt->State )

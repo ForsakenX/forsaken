@@ -906,7 +906,7 @@ typedef struct
 
 	while ( fscanf( f, " %80s", token ) == 1)   
 	{
-		if ( !_stricmp( token, "NewMessage" ) )
+		if ( !strcasecmp( token, "NewMessage" ) )
 		{
 			rv = GetMessageName())
 			if (!rv)
@@ -922,14 +922,14 @@ typedef struct
 		}
 	}
 		
-		if ( !_stricmp( token, "NewMessage" ) )
+		if ( !strcasecmp( token, "NewMessage" ) )
 		{
 			// read in message name
 			if ( fscanf( f, " %80s", token ) != 1 )
 				break;
 			for ( j = 0; MessageNumLookup[ j ].keyword; j++ )
 			{
-				if ( !_stricmp( token, MessageNumLookup[ j ].keyword ) )
+				if ( !strcasecmp( token, MessageNumLookup[ j ].keyword ) )
 					break;
 			}
 			if (!MessageNumLookup[ j ].keyword)		// not a valid message token
@@ -940,7 +940,7 @@ typedef struct
 			// read in next line, store in StatsMessages
 			fgets( tempstr, MAX_STATS_MESSAGE_LENGTH, f );
 			
-			if ( !_stricmp( token, "EndMessage") )
+			if ( !strcasecmp( token, "EndMessage") )
 				continue;
 
 			if ( feof( f ) )
@@ -963,7 +963,7 @@ typedef struct
 			{
 	 			for ( j = 0; MessageVarLookup[ j ].keyword; j++ )
 				{
-					if ( !_stricmp( token, MessageVarLookup[ j ].keyword ) )
+					if ( !strcasecmp( token, MessageVarLookup[ j ].keyword ) )
 						break;
 				}
 				if (!MessageVarLookup[ j ].keyword)		// not a valid message token

@@ -108,4 +108,15 @@ typedef struct
     long  y;
 } point_t;
 
+#ifdef WIN32
+#include <string.h>
+#define strcasecmp	_stricmp
+#define strncasecmp _strnicmp
+#include <stdio.h>
+#define snprintf	_snprintf
+#include <direct.h>
+#define chdir		_chdir
+// _strupr use strtoupper see util.h
+#endif
+
 #endif	// MAIN_INCLUDED

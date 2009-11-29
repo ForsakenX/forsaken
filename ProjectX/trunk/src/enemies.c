@@ -4302,7 +4302,7 @@ BOOL PreLoadEnemies( void )
 
 				Get_Ext( &EnemyTypes[ ModelNum ].ModelFilename[ 0 ], &Ext[ 0 ] );
 
-				if( !_stricmp( &Ext[ 0 ], "MXA" ) )
+				if( !strcasecmp( &Ext[ 0 ], "MXA" ) )
 				{
 					if( EnemyTypes[ ModelNum ].ModelNumber == -1 )
 					{
@@ -4346,7 +4346,7 @@ BOOL PreLoadEnemies( void )
 				}
 				else
 				{
-					if( !_stricmp( &Ext[ 0 ], "MX" ) )
+					if( !strcasecmp( &Ext[ 0 ], "MX" ) )
 					{
 						if( EnemyTypes[ ModelNum ].ModelNumber == -1 )
 						{
@@ -4390,7 +4390,7 @@ BOOL PreLoadEnemies( void )
 					}
 					else
 					{
-						if( !_stricmp( &Ext[ 0 ], "COB" ) )
+						if( !strcasecmp( &Ext[ 0 ], "COB" ) )
 						{
 							if( EnemyTypes[ ModelNum ].ModelNumber == -1 )
 							{
@@ -4516,7 +4516,7 @@ BOOL LoadEnemies( void )
 				{
 					Get_Ext( EnemyTypes[ ModelNum ].ModelFilename, &Ext[ 0 ] );
 
-					if( !_stricmp( &Ext[ 0 ], "MXA" ) )
+					if( !strcasecmp( &Ext[ 0 ], "MXA" ) )
 					{
 						if( EnemyTypes[ ModelNum ].ModelNumber != -1 )
 						{
@@ -4531,7 +4531,7 @@ BOOL LoadEnemies( void )
 					}
 					else
 					{
-						if( !_stricmp( &Ext[ 0 ], "MX" ) )
+						if( !strcasecmp( &Ext[ 0 ], "MX" ) )
 						{
 							if( EnemyTypes[ ModelNum ].ModelNumber != -1 )
 							{
@@ -4546,7 +4546,7 @@ BOOL LoadEnemies( void )
 						}
 						else
 						{
-							if( !_stricmp( &Ext[ 0 ], "COB" ) )
+							if( !strcasecmp( &Ext[ 0 ], "COB" ) )
 							{
 								if( EnemyTypes[ ModelNum ].ModelNumber != -1 )
 								{
@@ -7831,7 +7831,7 @@ read_Flags( FILE *f, char *last_token )
 		i = 0;
 		while( tab[i].keyword )
 		{
-			if ( !_stricmp( last_token, tab[i].keyword ) )
+			if ( !strcasecmp( last_token, tab[i].keyword ) )
 			{
 				EnemyTypes[CurrentEnemy].Behave.Flags |= tab[i].Flags;
 				break;
@@ -7921,7 +7921,7 @@ static int read_EnemyType( FILE *f, char *last_token )
 		{
 			if (
 				(tab[i].keyword != NULL) &&
-				(!_stricmp( last_token, tab[i].keyword ))
+				(!strcasecmp( last_token, tab[i].keyword ))
 			)
 				break;
 		}
@@ -8160,7 +8160,7 @@ BOOL ReadEnemyTxtFile( char *Filename )
 		{
 			for ( j = 0; jumptab[ j ].keyword; j++ )
 			{
-				if ( !_stricmp( token, jumptab[ j ].keyword ) )
+				if ( !strcasecmp( token, jumptab[ j ].keyword ) )
 					break;
 			}
 			if ( jumptab[ j ].handle )
@@ -8424,7 +8424,7 @@ uint16 FindDuplicateModel( int8 * Filename, int16 NumModels )
 
 	for( Count = 0; Count < NumModels; Count++ )
 	{
-		if( !_stricmp( &ModelNames[ Count ].Name[ 0 ], Filename ) )
+		if( !strcasecmp( &ModelNames[ Count ].Name[ 0 ], Filename ) )
 		{
 			return( Count );
 		}
