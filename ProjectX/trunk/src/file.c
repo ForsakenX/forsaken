@@ -9,7 +9,6 @@
 
 #include	<fcntl.h>
 #include	<sys/stat.h>
-#include	<io.h>
 #include	<string.h>
 
 /*===================================================================
