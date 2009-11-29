@@ -551,7 +551,7 @@ BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	return TRUE;
 }
 BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **verts)
-{(void*)(*verts) = (void*)renderObject->lpVertexBuffer; return TRUE;}
+{*verts = (void*)renderObject->lpVertexBuffer; return TRUE;}
 
 static void set_color( COLOR c )
 {
