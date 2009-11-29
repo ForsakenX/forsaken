@@ -3170,8 +3170,8 @@ int16 OldKills = 0;
 void MultiSfxHandle( void )
 {
 	int16	KillIndex;
-	LONGLONG TempTime;
 	BOOL	NewKill;
+	Uint32  ms = SDL_GetTicks();
 
 	if( MyGameStatus != STATUS_Normal || WhoIAm >= MAX_PLAYERS )
 		return;
@@ -3184,13 +3184,11 @@ void MultiSfxHandle( void )
 		OldKills = GetTotalKills(WhoIAm);
 
 	}
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime );
-	TempTime = TempTime * 1000 / (Freq||1);
 
 	KillIndex = (CurrentKillPos - KILLSOVERTIME) & ( MAXKILLMEMORY -1 );
 	if( (KillMemory[KillIndex] != -1)  && NewKill )
 	{
-		if( ( TempTime - KillMemoryTime[KillIndex] ) < ( 1000 * TIMEKILLSOVER ) )
+		if( ( ms - KillMemoryTime[KillIndex] ) < ( 1000 * TIMEKILLSOVER ) )
 		{
 			// play congrat gloat thing...
 			PlaySfx( SFX_BIKECOMP_MK, 1.0F );
@@ -3206,7 +3204,7 @@ void MultiSfxHandle( void )
 	}
 
 	KillIndex = (CurrentKillPos - 1) & ( MAXKILLMEMORY -1 );
-	if( ( TempTime - KillMemoryTime[KillIndex] ) > ( 1000 * BADTIMEKILLSOVER ) )
+	if( ( ms - KillMemoryTime[KillIndex] ) > ( 1000 * BADTIMEKILLSOVER ) )
 	{
 		// play taunt for not getting a kill....in a long time...
 		if( MultiSfxTaunt1Off )
@@ -3216,26 +3214,26 @@ void MultiSfxHandle( void )
 		}else{
 			MultiSfxTaunt1Off = TRUE;
 		}
-		KillMemoryTime[KillIndex] = TempTime;
+		KillMemoryTime[KillIndex] = ms;
 	}
 
 
 	if( !CampingPos1Off )
 	{
-		CampingPosTime = TempTime;
+		CampingPosTime = ms;
 		CampingPos1Off = TRUE;
 		CampingPos = Ships[WhoIAm].Object.Pos;
 	}else{
 
 		if( DistanceVector2Vector( &CampingPos , &Ships[WhoIAm].Object.Pos ) < CAMPINGRANGE )
 		{
-			if( (TempTime - CampingPosTime) > (CAMPINGTIME * 1000) )
+			if( (ms - CampingPosTime) > (CAMPINGTIME * 1000) )
 			{
 				PlaySfx( SFX_BIKECOMP_CA, 1.0F );
-				CampingPosTime = TempTime;
+				CampingPosTime = ms;
 			}
 		}else{
-			CampingPosTime = TempTime;
+			CampingPosTime = ms;
 			CampingPos = Ships[WhoIAm].Object.Pos;
 		}
 	}

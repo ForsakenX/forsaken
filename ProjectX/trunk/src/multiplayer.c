@@ -278,8 +278,8 @@ extern  BYTE          MyGameStatus;
 BOOL StartAHostSession ( MENUITEM * Item )
 {
 	int i;
-	LONGLONG	TempTime;
-	uint32		Seed;
+	Uint32	ms = SDL_GetTicks();
+	uint32	Seed;
 	network_return_t rv;
 
 	SetGamePrefs();
@@ -311,8 +311,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	MaxKills = MaxKillsSlider.value;
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &TempTime);
-	RandomStartPosModify = (uint16) ( ( TempTime * 71.42857143 ) / Freq );
+	RandomStartPosModify = (uint16) ( ms * 71.42857143 );
 
 	local_port = atoi(local_port_str.text);
 	SetGamePrefs();
@@ -450,8 +449,8 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 		// Best way I can Think of to send the Host Name to the demo file...
 		Temp = 1;
-		TempTime = 1;
-		Demo_fwrite( &TempTime, sizeof(LONGLONG), 1, DemoFp );
+		ms = 1;
+		Demo_fwrite( &ms, sizeof(LONGLONG), 1, DemoFp );
 		size = sizeof( NAMEMSG );
 		Demo_fwrite( &size, sizeof(int), 1, DemoFp );
 		Demo_fwrite( &Temp, sizeof(DWORD), 1, DemoFp );
