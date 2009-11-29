@@ -16,7 +16,6 @@
 #include "bgobjects.h"
 #include "object.h"
 #include "networking.h"
-#include "winsock.h"
 #include "multiplayer.h"
 #include "mxload.h"
 #include "mxaload.h"
@@ -136,7 +135,6 @@ extern int CameraStatus;
 extern	BYTE					OverallGameStatus;
 extern char *CurrentLevelsList;
 extern	BOOL AutoSelectConnection;
-extern	LONGLONG	Freq;
 extern  MENUSTATE MenuState;
 extern  char TeamCurrentScore[MAX_TEAMS][64];
 #ifdef DEMO_SUPPORT
@@ -284,7 +282,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 
 	copy_in_my_settings();
 
-	Seed = timeGetTime();
+	Seed = SDL_GetTicks();
 	Seed1 = (uint16) ( ( Seed >> 16 ) & 0xffff );
 	Seed2 = (uint16) ( Seed & 0xffff );
 	CopyOfSeed1 = Seed1;

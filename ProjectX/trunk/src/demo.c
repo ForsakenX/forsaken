@@ -12,7 +12,6 @@
 #include "bgobjects.h"
 #include "object.h"
 #include "networking.h"
-#include "winsock.h"
 #include "multiplayer.h"
 #include "mxload.h"
 #include "mxaload.h"

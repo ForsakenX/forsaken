@@ -3851,7 +3851,7 @@ uint32 PlayGeneralPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Fre
 	if ( !GlobalSoundAttenuation || !bSoundEnabled )
 		return 0;
 
-	//DebugPrintf("started playing sfx at %d\n", timeGetTime() );
+	//DebugPrintf("started playing sfx at %d\n", SDL_GetTicks() );
 
 	index = FindFreeSfxHolder();
 	if ( index < 0 )
@@ -3872,11 +3872,11 @@ uint32 PlayGeneralPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Fre
 	// if sound was played, return unique ID
 	if ( SfxHolder[ index ].Used )
 	{
-		//DebugPrintf("finished playing sfx at %d\n", timeGetTime() );
+		//DebugPrintf("finished playing sfx at %d\n", SDL_GetTicks() );
 		return SfxHolder[ index ].UniqueID;
 	}
 
-	//DebugPrintf("sfx not played at %d\n", timeGetTime() );
+	//DebugPrintf("sfx not played at %d\n", SDL_GetTicks() );
 	return 0;
 }
 
