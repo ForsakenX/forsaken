@@ -99,11 +99,15 @@ BOOL CheatsEnabled = FALSE;
 
 #define TOTAL_JOYSTICK_ACTIONS  140 // 5 axis positions, 3 axis rotations, 4 POV hats and 128 buttons!
 #define TOTAL_JOYSTICK_AXIS   8 // 5 axis positions, 3 axis rotations
+
+#ifdef DINPUTJOY
 DIJOYSTATE2   js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
+#endif
+
 BYTE      js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
 
-#ifdef WIN32
+#ifdef DINPUTJOY
 extern LPDIRECTINPUTDEVICE2 lpdiJoystick[MAX_JOYSTICKS];
 #endif
 
@@ -326,8 +330,10 @@ int ShipAxisLookup[NUM_SHIP_AXIS_ACTIONS] = { SHIPACTION_Nothing, SHIPACTION_Rot
 
 char *JoystickPOVDirections[MAX_POV_DIRECTIONS] = { "Up", "Down", "Left", "Right" };
 
+#ifdef DINPUTJOY
 HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue);
+#endif
 
 // this function receives higher level encoded bits
 
@@ -367,6 +373,7 @@ short key_pressed( USERKEY *k )
     }
     else if ( KEY_ON_JOYSTICK( c ) )
     {
+#ifdef DINPUTJOY
       int joystick;
 
       joystick = KEY_JOYSTICK( c );
@@ -389,6 +396,7 @@ short key_pressed( USERKEY *k )
         if ( JOYSTICK_POV_PRESSED( joystick, pov, dir ) )
           return 1;
       }
+#endif
     }
   }
   return 0;
@@ -432,6 +440,7 @@ short key_held( USERKEY *k )
     }
     else if ( KEY_ON_JOYSTICK( c ) )
     {
+#ifdef DINPUTJOY
       int joystick;
 
       joystick = KEY_JOYSTICK( c );
@@ -456,6 +465,7 @@ short key_held( USERKEY *k )
         if ( JOYSTICK_POV_HELD( joystick, pov, dir ) )
           return 1;
       }
+#endif
     }
   }
   return 0;
@@ -940,10 +950,11 @@ int WhichMousePressed( void )
 
 int WhichJoystickPressed( void )
 {
-  int k;
-  int key;
+  int key = 0;
 
-  key = 0;
+#ifdef DINPUTJOY
+  int k;
+
   for ( k = 0; k < Num_Joysticks; k++ )
   {
     if ( JoystickInfo[ k ].connected )
@@ -976,6 +987,7 @@ int WhichJoystickPressed( void )
       }
     }
   }
+#endif
 
   return key;
 }
@@ -1029,7 +1041,7 @@ void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
 *-------------------------------------------------------------------------*/
 BOOL PollJoystick( int joysticknum )
 {
-#ifdef WIN32
+#ifdef DINPUTJOY
    HRESULT hRes;
    int i, j, povdir;
 
@@ -1154,8 +1166,9 @@ povs:
 | Set a DWORD property on a DirectInputDevice.
 |
 *-------------------------------------------------------------------------*/
-HRESULT
-SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
+
+#ifdef DINPUTJOY
+HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue)
 {
    DIPROPDWORD dipdw;
@@ -1169,10 +1182,11 @@ SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
    return pdev->lpVtbl->SetProperty(pdev, guidProperty, &dipdw.diph);
 
 }
+#endif
 
 void SetUpJoystickAxis(int joystick)
 {
-#ifdef WIN32
+#ifdef DINPUTJOY
   DIPROPRANGE diprg;
   BOOL DeadzoneNotSet = FALSE;
   int i;
@@ -1422,7 +1436,7 @@ int GetPOVMask( DWORD pov )
   return mask;
 }
 
-
+#ifdef DINPUTJOY
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
 {
   int dir;
@@ -1450,6 +1464,7 @@ int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
   }else
     return POV_Centre;
 }
+#endif
 
 // returns TRUE if it is OK to repeat the given ship action
 static BOOL RepeatShipActionOK ( int action )
@@ -1479,7 +1494,7 @@ static BOOL RepeatShipActionOK ( int action )
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 {
-#ifdef WIN32
+#ifdef DINPUTJOY
    int  ShipAction, axis;
    float amount;
 
@@ -1543,7 +1558,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 ===================================================================*/
 BOOL IsJoystickButtonPressed( int joysticknum )
 {
-#ifdef WIN32
+#ifdef DINPUTJOY
   int i;
 
   if( !lpdiJoystick[joysticknum] )
@@ -1568,7 +1583,7 @@ BOOL IsJoystickButtonPressed( int joysticknum )
 ===================================================================*/
 BOOL IsJoystickButtonReleased( int joysticknum )
 {
-#ifdef WIN32
+#ifdef DINPUTJOY
   int i;
 
   if( !lpdiJoystick[joysticknum] )

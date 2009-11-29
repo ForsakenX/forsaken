@@ -51,7 +51,9 @@ void CheckSBufferList( void ){}
 BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat ){return 0;}
 void SetSoundLevels( int *dummy ){}
 
+#ifdef WIN32
 void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 ){}
+#endif
 
 float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *listenerpos, uint16 listenergroup, long *vol, VECTOR *sfxvector ){return 0;}
 
@@ -3498,7 +3500,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			DWORD current_time;
 			int buffer, lastkilledbuffer;
 
-			current_time = GetTickCount();
+			current_time = SDL_GetTicks();
 			age = 0;
 
 			for (i = 0; i < MAX_DUP_BUFFERS; i++)
@@ -3594,7 +3596,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			//DebugPrintf("about to play: start %d buffer %d\n", SndObjs[ sndobj_index ]->StartPos, buffer); 
 			IDirectSoundBuffer_Play( CompoundSfxBuffer[ buffer ].buffer, 0, 0, 0 );
 
-			current_time = GetTickCount();
+			current_time = SDL_GetTicks();
 			CompoundSfxBuffer[ buffer ].finish_time = current_time + SndObjs[ sndobj_index ]->Length;
 			CompoundSfxBuffer[ buffer ].start_time = current_time;
 			
@@ -4927,7 +4929,7 @@ void ProcessLoopingSfx( void )
 			DWORD dwStatus;
 
 			// check sfx is not in 'safe zone'
-			//currenttime = GetTickCount();
+			//currenttime = SDL_GetTicks();
 
 			// get current buffer position...
 			hres = IDirectSoundBuffer_GetCurrentPosition(SpotSfxList[ i ].buffer, &dwCurrentPlayCursor, NULL);

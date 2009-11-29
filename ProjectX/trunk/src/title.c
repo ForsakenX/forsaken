@@ -2,6 +2,11 @@
 /*===================================================================
 	Include Files...	
 ===================================================================*/
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <stdio.h>
 #include <stdarg.h>
 #include <math.h>
@@ -174,7 +179,11 @@ extern char *JoystickPOVDirections[];
 extern char *ShipAxisText[];
 extern int ShipAxisLookup[];
 extern uint16 new_input;
+
+#ifdef DINPUTJOY
 extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
+#endif
+
 extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
 extern int	Num_Joysticks;
@@ -342,7 +351,11 @@ char TypeFileName( TEXT *t, char c );
 
 void LoadLevelText( MENU *Menu );
 BOOL TermDInput( void );
+
+#ifdef DINPUTJOY
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );
+#endif
+
 void ToggleBikeEngines( MENUITEM *Item );
 void DrawHelpKey( MENUITEM * Item );
 int GetFontInfo( MENUITEM * Item );
@@ -5084,7 +5097,7 @@ static int SelectionColour( void )
 	{
 		0, 1, 2, 3, 4, 5, 6, 7, 7, 6, 5, 4, 3, 2, 1, 0
 	};
-	return colour_table[ ( GetTickCount() / ( 14 * 4 ) ) & 15 ];
+	return colour_table[ ( SDL_GetTicks() / ( 14 * 4 ) ) & 15 ];
 }
 
 /*===================================================================
@@ -6923,7 +6936,7 @@ void MoveConfigFile( MENU *Menu )
 		// name not changed
 		return;
 	}
-	if ( !DeleteFile( old_config ) )
+	if ( !delete_file( old_config ) )
 	{
 		// error deleting old config
 		PlaySfx( SFX_Error, 1.0F );
@@ -7221,7 +7234,7 @@ void SetPilotName( MENUITEM *item )
 {
 	FILE *f;
 	uint16 tempbike;
-	static char filepath[ MAX_PATH ];
+	static char filepath[ 255 ];
 
 	// abort if pilot name empty
 	if ( !strlen( PilotName.text ) )
@@ -7313,7 +7326,7 @@ void SetPilotName( MENUITEM *item )
 void SetPilotNameInGame( MENUITEM *item )
 {
 	FILE *f;
-	static char fname[ MAX_PATH ];
+	static char fname[ 255 ];
 
 	if ( !strlen( PilotNameInGame.text ) )
 		return; // abort if pilot name empty
@@ -7369,7 +7382,7 @@ void RenamePilotName( MENUITEM *item )
 {
 	FILE *f;
 	uint16 tempbike;
-	static char fname[ MAX_PATH ];
+	static char fname[ 255 ];
 
 	if ( !strlen( PilotReName.text ) )
 		return; // abort if pilot name empty
@@ -8132,7 +8145,7 @@ char *SearchKey( char c )
 	static int last_time = 0;
 	int this_time;
 
-	this_time = GetTickCount();
+	this_time = SDL_GetTicks();
 	if ( this_time - last_time > 300 )
 	{
 		len = 0;
@@ -14324,6 +14337,7 @@ void SetAxisSensitivity( MENUITEM *Item )
 
 void CheckJoyAxis( int *dummy )
 {
+#ifdef DINPUTJOY
 	int joystick = JoystickMap[JoystickList.selected_item];
 	int axis;
 	float pos;
@@ -14359,6 +14373,7 @@ void CheckJoyAxis( int *dummy )
 		if ((LIST *)CurrentListItem->Variable == &JoystickAxisList)
 			ChooseJoyAxis( NULL );
 	}
+#endif
 }
 
 void ExitJoySetup( MENU *Menu )
@@ -14702,7 +14717,7 @@ BOOL ListDelete( LIST *l, int item )
 
 BOOL DeleteDemo( LIST *l, int item )
 {
-	return DeleteFile( DemoFileName( l->item[ item ] ) ) ? ListDelete( l, item ) : FALSE;
+	return delete_file( DemoFileName( l->item[ item ] ) ) ? ListDelete( l, item ) : FALSE;
 }
 
 
@@ -14740,8 +14755,8 @@ void DebugLastError( void )
 
 BOOL DeleteSavedGame( LIST *l, int item )
 {
-	if ( DeleteFile( SaveGameFileName( item ) )
-		&& DeleteFile( SaveGamePicFileName( item ) ) )
+	if ( delete_file( SaveGameFileName( item ) )
+		&& delete_file( SaveGamePicFileName( item ) ) )
 	{
 		strncpy( l->item[ item ], SavedGameInfo( item ), sizeof( l->item[ 0 ] ) - 1 );
 		l->item[ item ][ sizeof( l->item[ 0 ] ) - 1 ] = 0;
@@ -15183,10 +15198,10 @@ void ProcessHoloModel( void )
 
 BOOL DeletePilot( LIST *l, int item )
 {
-	static char fname[ MAX_PATH ];
+	static char fname[ 255 ];
 
 	sprintf( fname, "pilots\\%s.txt", l->item[ item ] );
-	if ( l->items > 1 && DeleteFile( fname ) && ListDelete( l, item ) )
+	if ( l->items > 1 && delete_file( fname ) && ListDelete( l, item ) )
 	{
 		SelectPilot( NULL );
 		return TRUE;

@@ -1,6 +1,10 @@
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
+#ifdef WIN32
+#include <windows.h>
+#endif
+
 #include <stdio.h>
 #include "main.h"
 
@@ -314,9 +318,9 @@ LONGLONG  GameElapsedTime;    // Real how long the game has been going in game t
 LONGLONG  TempGameElapsedTime;  // Real how long the game has been going in game time not real..
 LONGLONG  GameCurrentTime;    // How long the game has been going...
 LONGLONG  TimeDiff;
+LONGLONG  Freq;
 #endif
 
-LONGLONG  Freq;
 BOOL  JustExitedMenu =FALSE;
 
 BOOL  Inside;
@@ -370,6 +374,7 @@ LONGLONG  DemoEndedTime;      // when the game started
 float   DemoTotalTime = 0.0F; // total game time (in seconds)
 int32   DemoGameLoops = 0;
 float DemoAvgFps = 0.0F;
+extern  LONGLONG  DemoTimeSoFar;
 #endif
 
 #define MIN_VIEWPORT_WIDTH  (64)
@@ -410,7 +415,6 @@ extern  ENEMY * TestEnemy;
 
 extern  char  biker_name[256];
 extern  int16 SelectedBike;
-extern  LONGLONG  DemoTimeSoFar;
 
 extern  float cral;
 extern  int   HullHit;
@@ -511,11 +515,8 @@ BOOL RenderCurrentCamera( void );
 
 void  PlotSimplePanel( void );
 
-
-//LPDIRECT3DDEVICE lpD3Ddev = NULL;
 render_viewport_t viewport;
 render_viewport_t oldviewport;
-HRESULT hresult;
 int initfov = 0;
 float viewplane_distance;
 float hfov = START_FOV;
@@ -546,7 +547,10 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
 
+#ifdef SOUND_SUPPORT
+#include <windows.h>
 void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
+#endif
 
 int16   LevelNum = 0 ;
 int16   NewLevelNum = 0 ;
@@ -792,17 +796,15 @@ RENDERMATRIX world = {
 
 BOOL SetFOV( float fov )
 {
-	HRESULT rval;
 	float screen_width, screen_height;
 	float Scale, NewNear;
 
 	if ( fov <= 1.0F || fov >= 150.0F )
 		fov = hfov;
 
-	rval = FSGetViewPort(&viewport);
-	if (!rval)
+	if (!FSGetViewPort(&viewport))
 	{
-		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
+		Msg( "GetViewport failed.\n%s", render_error_description(0) );
 		return FALSE;
 	}
 
@@ -1813,8 +1815,6 @@ InitScene(void)
   {
     Ships[i].ModelNum = (uint16) -1;
   }
-
-  QueryPerformanceFrequency((LARGE_INTEGER *) &Freq);
 
   switch( MyGameStatus )
   {
@@ -3284,8 +3284,12 @@ BOOL RenderScene( void )
 	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
+
+#ifdef WIN32
     // dummy call to timer ensures no pauses later...
     timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
+#endif
+
     InitShipSpeeds();
 
     // this will cause a lovely game loop and crash the game
@@ -4906,6 +4910,7 @@ BOOL Our_CalculateFrameRate(void)
     // some stupid place for a demo calculation
 	if( MyGameStatus == STATUS_PlayingDemo )
 	{
+		QueryPerformanceFrequency((LARGE_INTEGER *) &Freq);
 		QueryPerformanceCounter((LARGE_INTEGER *) &DemoEndedTime);
 		TimeDiff = DemoEndedTime - DemoStartedTime;
 		DemoTotalTime = ( (float) TimeDiff / (float) Freq );

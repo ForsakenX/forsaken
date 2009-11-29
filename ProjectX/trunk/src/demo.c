@@ -188,9 +188,9 @@ void StartDemoCleaning( MENUITEM * Item )
 	
 	fclose( DemoFp );
 	fclose( DemoFpClean );
-	if ( !DeleteFile( DemoFileName( DemoList.item[DemoList.selected_item] ) ) )
+	if ( !delete_file( DemoFileName( DemoList.item[DemoList.selected_item] ) ) )
 	{
-		DebugPrintf( "DeleteFile( %s ) failed\n", DemoFileName( DemoList.item[DemoList.selected_item] ) );
+		DebugPrintf( "delete_file( %s ) failed\n", DemoFileName( DemoList.item[DemoList.selected_item] ) );
 		DebugLastError();
 	}
 	if ( !MoveFile( clean_name, DemoFileName( DemoList.item[DemoList.selected_item] ) ) )

@@ -37,8 +37,7 @@ render_info_t render_info;
 
 static BOOL parse_chdir( char *cli )
 {
-	LPSTR tmp = "";
-    LPSTR option = "";
+    char * option;
 	char cmdline[256];
 	int size;
 
@@ -131,15 +130,14 @@ extern BOOL DebugLog;
 extern uint8 QuickStart;
 extern BOOL IpOnCLI;
 
-static BOOL ParseCommandLine(LPSTR lpCmdLine)
+static BOOL ParseCommandLine(char* lpCmdLine)
 {
 	
 	//
 	//  Locals
 	//
 
-	LPSTR tmp = "";
-    LPSTR option = "";
+    char * option;
 	char cmdline[256];
 	int size;
 
@@ -257,7 +255,7 @@ static BOOL ParseCommandLine(LPSTR lpCmdLine)
 			}
 
 			// copy in the hostname
-			strcpy( (LPSTR)TCPAddress.text, address );
+			strcpy( (char*)TCPAddress.text, address );
 		}
 
 		// supposedly to set wire mode for mxv's...
@@ -367,9 +365,6 @@ void CleanUpAndPostQuit(void)
 
 	// we dont control the cursor anymore
 	input_grab( FALSE );
-
-	//
-    PostQuitMessage( 0 );
 }
 
 //
@@ -420,10 +415,6 @@ static BOOL AppInit( char * lpCmdLine )
 	XMem_Init();
 
 #endif
-
-	// initialize COM library
-	if FAILED( CoInitialize(NULL) )
-		return FALSE;
 
 	//
 	if(!sdl_init())
@@ -633,9 +624,6 @@ FAILURE:
 
 	// cleanup networking
 	network_cleanup();
-
-	// Uninitialize the COM library
-	CoUninitialize();
 
 	// close up lua
 	lua_shutdown();

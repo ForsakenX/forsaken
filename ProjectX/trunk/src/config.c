@@ -998,7 +998,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	int num, i, axis, a;
 	char axistoken[MAX_JOYSTICK_AXIS][80] = { "axisx", "axisy", "axisz", "axisrx", "axisry", "axisrz", "axiss1", "axiss2"};
 	BOOL joystickfound = FALSE;
-	char tempstr[MAX_PATH];
+	char tempstr[255];
 	int joynum;
 
 	// move to next line...
@@ -1010,7 +1010,7 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	}while (c != '\n');
 
 	// get joystick name...
-	fgets( tempstr, MAX_PATH, f );
+	fgets( tempstr, 255, f );
 	if ( feof( f ) || (strlen(tempstr) == 0))
 		return 0;
 	tempstr[strlen(tempstr) - 1] = '\0';

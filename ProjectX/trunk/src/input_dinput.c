@@ -23,6 +23,7 @@ BOOL InitDInputJS(void)
 #else
 
 #include <windows.h>
+#include "dinput.h"
 
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
 {
@@ -45,7 +46,7 @@ BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst,
    LPDIRECTINPUT pdi = pvRef; 
    LPDIRECTINPUTDEVICE pdev;
    HRESULT hr;
-   char tempstr[MAX_PATH];
+   char tempstr[255];
 
    // create the DirectInput joystick device 
    if (pdi->lpVtbl->CreateDevice(pdi, &pdinst->guidInstance, 

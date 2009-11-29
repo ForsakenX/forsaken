@@ -128,7 +128,7 @@ void app_quit( void )
 	input_grab( FALSE );
 
 	// ask them to confirm clossing
-	if( IDOK == Msg("Are you sure you want to exit?") )
+	if(Msg("Are you sure you want to exit?") )
 	{
 		// user wants to quit
 		// let our code know we're quitting and not failing

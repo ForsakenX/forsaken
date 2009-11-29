@@ -307,3 +307,15 @@ void AddCommentToLog( char * str )
 		fflush(fp);
 	}
 }
+
+#ifdef WIN32
+#include <windows.h>
+#endif
+
+BOOL delete_file( char * path )
+{
+#ifdef WIN32
+	return DeleteFile( path );
+#endif
+	return 1;
+}

@@ -1,10 +1,12 @@
 #ifndef INPUT_INCLUDED
 #define INPUT_INCLUDED
 
+#ifdef DINPUTJOY
 #define DIRECTINPUT_VERSION 0x0700
+#include <dinput.h>
+#endif
 
 #include "SDL.h"
-#include "dinput.h"
 #include "controls.h"
 
 #define MAX_MOUSE_BUTTONS (3)
