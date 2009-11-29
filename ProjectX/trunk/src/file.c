@@ -346,12 +346,12 @@ void find_close( void )
 
 #else
 
-char* find_file( char * path, char * found_name )
+char* find_file( char * path )
 {
 	return NULL;
 }
 
-char* find_next_file( char * found_name )
+char* find_next_file( void )
 {
 	return NULL;
 }

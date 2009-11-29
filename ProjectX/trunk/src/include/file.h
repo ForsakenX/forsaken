@@ -16,7 +16,7 @@ void GetFilename( uint8 * Src, uint8 * Dest );
 void Change_Ext( const char * Src, char * Dest, const char * Ext );
 long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
-void AddCommentToLog( const char * format, ... );
+void AddCommentToLog( char * str );
 BOOL File_Exists( char * Filename );
 BOOL delete_file( char * path );
 
