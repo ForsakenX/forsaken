@@ -1,9 +1,7 @@
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
-#include <stdio.h>
 #include "main.h"
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -11,9 +9,6 @@
 #include "object.h"
 #include "node.h"
 #include "networking.h"
-#include <stdarg.h>
-#include <math.h>
-#include <time.h>
 #include "2dtextures.h"
 #include "mload.h"
 #include "primary.h"
@@ -44,27 +39,18 @@
 #include "bsp.h"
 #include "trigarea.h"
 #include "multiplayer.h"
-#include  <fcntl.h>
-#include  <sys/types.h>
-#include  <sys/stat.h>
-#include  <io.h>
-#include  <stdio.h>
-#include  <stdlib.h>
-#include  <malloc.h>
-#include  <string.h>
-#include  "file.h"
-#include  "ai.h"
-#include  "water.h"
-#include  "spotfx.h"
-#include <process.h>
-#include  "extforce.h"
-#include  "teleport.h"
-#include  "rtlight.h"
-#include  "restart.h"
+#include "file.h"
+#include "ai.h"
+#include "water.h"
+#include "spotfx.h"
+#include "extforce.h"
+#include "teleport.h"
+#include "rtlight.h"
+#include "restart.h"
 #include "local.h"
-#include  "goal.h"
-#include  "loadsave.h"
-#include  "xmem.h"
+#include "goal.h"
+#include "loadsave.h"
+#include "xmem.h"
 #include "stats.h"
 #include "timer.h"
 #include "demo.h"
