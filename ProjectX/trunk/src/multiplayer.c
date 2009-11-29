@@ -53,8 +53,6 @@ extern BOOL BikeExhausts;
 extern int32 ColPerspective;
 
 extern BOOL NoMenuBack;
-
-extern void DebugLastError( void );
 extern BOOL Debug;
 
 extern BOOL NeedFlagAtHome;

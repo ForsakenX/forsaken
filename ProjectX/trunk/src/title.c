@@ -7957,16 +7957,7 @@ void GetDefaultPilot(void)
 	else
 	{
 		char * name;
-
-		// search for files that match pattern
-		if( ! (name = find_file( "Pilots\\*.txt" )))
-		{
-			// tell developers
-			DebugPrintf("find_file: failed %d\n", GetLastError());
-		}
-
-		// if we found files
-		else
+		if( (name = find_file( "Pilots\\*.txt" )))
 		{
 			strncpy( &pilot_name[0], name, sizeof(pilot_name) );
 
@@ -7977,10 +7968,10 @@ void GetDefaultPilot(void)
 
 			// found
 			found = TRUE;
-		}
 
-		// close the find handle
-		find_close();
+			// close the find handle
+			find_close();
+		}
 	}
 	
 	// if found
@@ -8285,6 +8276,7 @@ void LoadLevelText( MENU *Menu )
 
 void GetSavedGameData( void )
 {
+#ifdef WIN32
 	HANDLE hfile;
 	FILETIME Time;
 	SYSTEMTIME systime;
@@ -8406,6 +8398,7 @@ void GetSavedGameData( void )
 		Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 0;
 		Models[ BackgroundModel[ TITLE_MODEL_MenuTV ] ].Visible = 1;
 	}
+#endif
 }
 
 void InitTitleLoad( MENU *Menu )
@@ -14710,6 +14703,7 @@ void InGameSaveASinglePlayerGame( MENUITEM *item )
 
 void DebugLastError( void )
 {
+#ifdef WIN32
 	DWORD err;
 	LPVOID lpMsgBuf;
 
@@ -14727,6 +14721,7 @@ void DebugLastError( void )
 	DebugPrintf( "DeleteSavedGame failed: err=0x%08X msg=%s\n",
 		err, lpMsgBuf );
 	LocalFree( lpMsgBuf );
+#endif
 }
 
 
