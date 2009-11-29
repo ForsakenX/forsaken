@@ -94,4 +94,18 @@ typedef unsigned char       BYTE;
 typedef unsigned long       DWORD;
 typedef unsigned short      WORD;
 
+typedef struct
+{
+    long    left;
+    long    top;
+    long    right;
+    long    bottom;
+} rect_t;
+
+typedef struct
+{
+    long  x;
+    long  y;
+} point_t;
+
 #endif	// MAIN_INCLUDED

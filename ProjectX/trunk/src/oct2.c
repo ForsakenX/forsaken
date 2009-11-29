@@ -1,10 +1,6 @@
 #define INSIDE_BSP // disable to use bounding box inside check instead
 #define BSP_ONLY
 
-#ifdef WIN32
-#include <windows.h>
-#endif
-
 #include <stdio.h>
 #include "main.h"
 
@@ -1262,7 +1258,7 @@ ResizeViewport( void )
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "ResizeViewport", &viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }
@@ -1311,7 +1307,7 @@ BOOL FullScreenViewport()
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "FullScreenViewport", &viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }
@@ -2518,12 +2514,12 @@ BOOL RenderScene( void )
 
 		//        if( GameStatus[i] == STATUS_ViewingScore )
 		//        {
-		//          wsprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
+		//          sprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
 		//          CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
 		//        }
 		//        else
           {
-            wsprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
+            sprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
             CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
           }
           
@@ -2769,7 +2765,7 @@ BOOL RenderScene( void )
       {
         if( ( GameStatus[i] != STATUS_GetPlayerNum )&& (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) )
         {
-          wsprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
+          sprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
           CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
           e++;
         }
@@ -4080,7 +4076,7 @@ void ShowInGameStats()
 	ShowGameStats( NO_BG );	// don't use BLT background
 }
 
-void PaintBackground( RECT * box ) // pass NULL to black out all of the screen
+void PaintBackground( rect_t * box ) // pass NULL to black out all of the screen
 {
 	/* would simply blit the area defined by box on the backbuffer to black */
 }
@@ -4131,7 +4127,7 @@ void ShowGameStats( stats_mode_t mode )
 
 	if( 0 && mode != NO_BG ) // TODO - could use flashbackgroundcolor function here if we want later
 	{
-		RECT box;
+		rect_t box;
 		if( mode == BOX_BG )
 		{
 			int x_padding = FontWidth*2;
@@ -4506,7 +4502,6 @@ void ReleaseRenderBufs( void )
 ===================================================================*/
 BOOL RenderCurrentCamera( void )
 {
-	HRESULT rval;
 	int16 Count;
 	VISGROUP  *g;
 	uint16  group;
@@ -4519,16 +4514,14 @@ BOOL RenderCurrentCamera( void )
 	if (!FSSetView(&view))
 		return FALSE;
 
-	rval = FSSetViewPort(&CurrentCamera.Viewport);
-    if (!rval) {
+    if (!FSSetViewPort(&CurrentCamera.Viewport)) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }
-
 
   // Ship Model Enable/Disable
   SetShipsVisibleFlag();
@@ -4768,12 +4761,11 @@ Display Group Clipped Faceme Transluecent Polys
   if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
     return FALSE;
 
-	rval = FSSetViewPort(&viewport);
-    if (!rval) {
+    if (!FSSetViewPort(&viewport)) {
 #ifdef DEBUG_VIEWPORT
     SetViewportError( "RenderCurrentCamera2", &viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }
@@ -4910,7 +4902,6 @@ BOOL Our_CalculateFrameRate(void)
 BOOL
 InitViewport( void )
 {
-	HRESULT rval;
 	int left, top;
 	int width, height;
 	int maxwidth, maxheight;
@@ -4920,10 +4911,9 @@ InitViewport( void )
 	 * Setup the viewport for specified viewing area
 	 */
 
-	rval = FSGetViewPort(&viewport);
-	if (!rval)
+	if (!FSGetViewPort(&viewport))
 	{
-		Msg( "GetViewport failed.\n%s", render_error_description(rval) );
+		Msg( "GetViewport failed.\n%s", render_error_description(0) );
 		return FALSE;
 	}
 
@@ -4956,7 +4946,7 @@ InitViewport( void )
 #ifdef DEBUG_VIEWPORT
 		SetViewportError( "InitViewport", &viewport );
 #else
-		Msg("SetViewport failed.\n%s", render_error_description(rval));
+		Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
 		return FALSE;
 	}
@@ -5324,9 +5314,9 @@ BOOL  InitStatsDisplay()
 ===================================================================*/
 BOOL StatsDisplay()
 {
-  RECT    src;
-  RECT    dest;
-  POINT destp;
+  rect_t    src;
+  rect_t    dest;
+  point_t	destp;
   int x,y;
 
   char buf[256];

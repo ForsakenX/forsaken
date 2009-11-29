@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdarg.h>
 #include "file.h"
 #include "util.h"
 #include "string.h"
@@ -22,7 +23,7 @@ void DebugPrintf( const char * format, ... )
 
   va_start( args, format );
   vsprintf( buf1, format, args );
-  wsprintf( buf2, "%hs", buf1 );
+  sprintf( buf2, "%hs", buf1 );
 
 #ifdef WIN32
   OutputDebugString( buf2 );
