@@ -176,8 +176,12 @@ long Get_File_Size( char * Filename )
 
 long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 {
-	int		Handle = -1;
+	int	Handle = -1;
 	long	Bytes_Read = 0;
+
+	// get the size of the file
+	if( Read_Size == 0 ) 
+		Read_Size = Get_File_Size( Filename );
 
 	// open the file handle
 	Handle = open( Filename, O_RDONLY | O_BINARY );
@@ -185,9 +189,6 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	// file opened successfully
 	if( Handle != -1 )
 	{
-		// get the size of the file
-		if( Read_Size == 0 ) Read_Size = _filelength( Handle );
-
 		// read in the file
 		Bytes_Read = read( Handle, File_Buffer, Read_Size );
 
