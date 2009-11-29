@@ -27,14 +27,17 @@ void touch_file( char* path )
 
 BOOL is_folder( char* path )
 {
+#ifdef WIN32
 	static struct _stat stat;
 	if ( _stat( path, &stat ) == 0 && stat.st_mode & _S_IFDIR )
 		return TRUE;
+#endif
 	return FALSE;
 }
 
 int folder_exists( char *pathspec, ... )
 {
+#ifdef WIN32
 	static char pathname[ 256 ];
 	static struct _stat stat;
 	va_list args;
@@ -57,6 +60,8 @@ int folder_exists( char *pathspec, ... )
 		// path exists but is not a directory
 		return 0;
 	}
+#endif
+	return 0;
 }
 
 
@@ -84,6 +89,7 @@ BOOL File_Exists( char * Filename )
 ===================================================================*/
 long Write_File( char * Filename, char * File_Buffer, long Write_Size )
 {
+#ifdef WIN32
 	int		Handle = -1;
 	long	Bytes_Written = 0;
 
@@ -95,6 +101,8 @@ long Write_File( char * Filename, char * File_Buffer, long Write_Size )
 	}
 
 	return ( Bytes_Written );
+#endif
+	return 0;
 }
 
 /*===================================================================
@@ -213,7 +221,7 @@ void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
 ===================================================================*/
 long Get_File_Size( char * Filename )
 {
-
+#ifdef WIN32
 	int		Handle = -1;
 	long	Read_Size = 0;
 
@@ -233,7 +241,8 @@ long Get_File_Size( char * Filename )
 
 	// return the size
 	return ( Read_Size );
-
+#endif
+	return 0;
 }
 
 /*===================================================================
@@ -247,7 +256,7 @@ long Get_File_Size( char * Filename )
 ===================================================================*/
 long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 {
-
+#ifdef WIN32
 	int		Handle = -1;
 	long	Bytes_Read = 0;
 
@@ -274,7 +283,7 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 
 	// return the size of the file
 	return ( Bytes_Read );
-
+#endif
 }
 
 /*===================================================================
