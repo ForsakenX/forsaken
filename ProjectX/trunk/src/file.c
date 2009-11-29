@@ -8,7 +8,9 @@
 #include	"util.h"
 
 #include	<fcntl.h>
+#ifdef WIN32
 #include	<sys/stat.h>
+#endif
 #include	<string.h>
 #include	<stdarg.h>
 
@@ -72,8 +74,10 @@ int folder_exists( char *pathspec, ... )
 ===================================================================*/
 BOOL File_Exists( char * Filename )
 {
+#ifdef WIN32
 	if ( !_access( Filename, 00 ) )
 		return TRUE;
+#endif
 	//DebugPrintf("File does not exist: %s\n", Filename);
 	return FALSE;
 }
