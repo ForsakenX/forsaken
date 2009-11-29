@@ -7043,8 +7043,7 @@ void ExitControls( MENU *Menu )
 	Input		:		Nothing
 	Output		:		Nothing
 ===================================================================*/
-static int
-_cdecl compare( const void *arg1, const void *arg2 )
+static int compare( const void *arg1, const void *arg2 )
 {
    /* Compare all of both strings: */
    return _stricmp( ( char* ) arg1, ( char* ) arg2 );
