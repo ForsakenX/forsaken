@@ -6,13 +6,13 @@
 #include	<string.h>
 #include	<sys/stat.h>
 #include	<stdarg.h>
-#include	<io.h>
 #include	<stdio.h>
 #include	<stdlib.h>
 
 #ifdef WIN32
+#include	<io.h>		// for various things
 #include	<ctype.h>	// for tolower
-#include	<windows.h> // for DeleteFile
+#include	<windows.h> 	// for DeleteFile
 #include	<direct.h>	// for _mkdir
 #define		mkdir	_mkdir
 // following are in <io.h>
@@ -21,6 +21,17 @@
 #define		close	_close
 #define		read	_read
 #define		write	_write
+//
+#define		O_BINARY 	_O_BINARY 
+#define		O_RDONLY 	_O_RDONLY 
+#define		O_CREAT 	_O_CREAT 
+#define		O_TRUNC		_O_TRUNC
+#define		O_RDWR		_O_RDWR
+#define		S_IFDIR		_S_IFDIR
+#define		S_IREAD		_S_IREAD
+#define		S_IWRITE	_S_IWRITE
+#else // ! WIN32
+#define		O_BINARY 	0 // no such thing on unixa
 #endif
 
 extern BOOL Debug;
@@ -56,7 +67,7 @@ BOOL is_folder( char* str )
 {
 	static struct _stat stat;
 	char * path = convert_path(str);
-	if ( _stat( path, &stat ) == 0 && stat.st_mode & _S_IFDIR )
+	if ( _stat( path, &stat ) == 0 && stat.st_mode & S_IFDIR )
 		return TRUE;
 	return FALSE;
 }
@@ -77,9 +88,13 @@ int folder_exists( char *pathspec, ... )
 	if ( _stat( path, &stat ) )
 	{
 		// no such path exists...attempt to create a directory with that name
-		return !mkdir( path );
+#ifdef WIN32
+		return mkdir( path ) == 0;
+#else
+		return mkdir( path, 0777 ) == 0;
+#endif
 	}
-	else if ( stat.st_mode & _S_IFDIR )
+	else if ( stat.st_mode & S_IFDIR )
 	{
 		// path exists and is a directory
 		return 1;
@@ -105,8 +120,8 @@ long Write_File( char * str, char * File_Buffer, long Write_Size )
 
 	char * path = convert_path(str);
 
-	Handle = open( path, _O_CREAT | _O_TRUNC | _O_BINARY | _O_RDWR ,
-							  _S_IREAD | _S_IWRITE );
+	Handle = open( path, O_CREAT | O_TRUNC | O_BINARY | O_RDWR ,
+							  S_IREAD | S_IWRITE );
 	if( Handle != -1 ) {
 		Bytes_Written = write( Handle, File_Buffer, Write_Size );
 		close( Handle );
@@ -123,7 +138,7 @@ long Get_File_Size( char * Filename )
 	long	Read_Size = 0;
 
 	// open the file
-	Handle = open( Filename, _O_RDONLY | _O_BINARY );
+	Handle = open( Filename, O_RDONLY | O_BINARY );
 
 	// opened successfully
 	if( Handle != -1 )
@@ -164,7 +179,7 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	long	Bytes_Read = 0;
 
 	// open the file handle
-	Handle = open( Filename, _O_RDONLY | _O_BINARY );
+	Handle = open( Filename, O_RDONLY | O_BINARY );
 
 	// file opened successfully
 	if( Handle != -1 )
