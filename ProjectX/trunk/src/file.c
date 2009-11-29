@@ -319,3 +319,50 @@ BOOL delete_file( char * path )
 #endif
 	return 1;
 }
+
+//
+// Find File Wrapper
+//
+
+#ifdef WIN32
+
+static HANDLE find_file_handle;
+static WIN32_FIND_DATA find_file_info;
+
+char* find_file( char * path ) // ex: ./www/*.html
+{
+	find_file_handle = FindFirstFile( path, (LPWIN32_FIND_DATA) &find_file_info );
+	if ( find_file_handle == INVALID_HANDLE_VALUE )
+		return NULL;
+	return &find_file_info.cFileName[0];
+}
+
+char* find_next_file( void ) // iterate next file
+{
+	if(!FindNextFile( find_file_handle, (LPWIN32_FIND_DATA) &find_file_info ))
+		return NULL;
+	return &find_file_info.cFileName[0];
+}
+
+void find_close( void )
+{
+	FindClose(find_file_handle);
+}
+
+#else
+
+char* find_file( char * path, char * found_name )
+{
+	return NULL;
+}
+
+char* find_next_file( char * found_name )
+{
+	return NULL;
+}
+
+void find_close( void )
+{
+}
+
+#endif

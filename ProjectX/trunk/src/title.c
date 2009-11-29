@@ -7122,8 +7122,6 @@ _cdecl CompareDemoDate( const void *arg1, const void *arg2 )
 ===================================================================*/
 void InitPilotList( void )
 {
-	HANDLE h;
-	WIN32_FIND_DATA ConfigFiles;
 	int j;
 	char *fname, *bname;
 
@@ -7136,11 +7134,7 @@ void InitPilotList( void )
 	else
 		PilotList.display_items = 8;
 
-	// search for files that match *.cfg
-	h = FindFirstFile( "pilots\\*.txt" , (LPWIN32_FIND_DATA) &ConfigFiles );	// pointer to returned information 
-
-	// if we didn't find any cfg's return
-	if ( h == INVALID_HANDLE_VALUE )
+	if(!(fname = find_file( "pilots\\*.txt" )))
 		return;
 
 	// for each found cfg
@@ -7149,16 +7143,12 @@ void InitPilotList( void )
         // the next empty pilot slot to fill in
 		bname = PilotList.item[PilotList.items];
 
-		// temporary holder for file name found
-		fname = ConfigFiles.cFileName;
-
 		// size of the pilot name
 		j = strlen( fname ) - strlen( ".txt" );
 
 		// if pilot name size is within boundaries
 		if ( j > 0 && j < MAX_PLAYER_NAME_LENGTH )
 		{
-
 			// set the pilot name
 			strncpy( bname, fname, j );
 
@@ -7167,11 +7157,10 @@ void InitPilotList( void )
 
 			// up the count of pilots
 			PilotList.items++;
-
 		}
 
 	// get the next file
-	}while(	FindNextFile( h , (LPWIN32_FIND_DATA) &ConfigFiles ) );
+	}while(	(fname = find_next_file()) );
 
 	// sort the pilot list
 	qsort( (void *)PilotList.item, (size_t) PilotList.items, sizeof( PilotList.item[ 0 ] ), compare );
@@ -7191,7 +7180,7 @@ void InitPilotList( void )
 		PilotList.top_item = PilotList.selected_item - PilotList.display_items + 1;
 
 	// close the find handle
-	FindClose(h);
+	find_close();
 
 	// delete function
 	PilotList.FuncDelete = DeletePilot;
@@ -7967,25 +7956,19 @@ void GetDefaultPilot(void)
 	// if failed to get registry setting
 	else
 	{
-	
-		WIN32_FIND_DATA files;
-		HANDLE h;
+		char * name;
 
 		// search for files that match pattern
-		h = FindFirstFile( "Pilots\\*.txt" , (LPWIN32_FIND_DATA) &files );
-
-		// if we had an error
-		if ( h == INVALID_HANDLE_VALUE )
+		if( ! (name = find_file( "Pilots\\*.txt" )))
 		{
 			// tell developers
-			DebugPrintf("FindFirstFile: failed %d\n", GetLastError());
+			DebugPrintf("find_file: failed %d\n", GetLastError());
 		}
 
 		// if we found files
 		else
 		{
-			// return the filename
-			strncpy( pilot_name , files.cFileName , sizeof(pilot_name) );
+			strncpy( &pilot_name[0], name, sizeof(pilot_name) );
 
 			// remove the .cfg
 			strptr = strrchr( pilot_name , '.' );
@@ -7997,7 +7980,7 @@ void GetDefaultPilot(void)
 		}
 
 		// close the find handle
-		FindClose(h);
+		find_close();
 	}
 	
 	// if found
@@ -8965,10 +8948,6 @@ void InitDemoList( MENU * Menu )
 void InitLoadSavedGameList( MENU * Menu )
 {
 #ifndef SAVEGAME_SLOTS
-	HANDLE h;
-#endif
-#ifndef SAVEGAME_SLOTS
-	WIN32_FIND_DATA SavedFiles;
 	char *fname, *bname;
 #endif
 
@@ -9018,15 +8997,13 @@ void InitLoadSavedGameList( MENU * Menu )
 			LoadSavedGameList.top_item = LoadSavedGameList.selected_item;
 	}
 #else
-	h = FindFirstFile( SAVEGAME_FOLDER "\\" SAVEGAME_FILESPEC SAVEGAME_EXTENSION,	// pointer to name of file to search for  
-						(LPWIN32_FIND_DATA) &SavedFiles );	// pointer to returned information 
 
-	if ( h == INVALID_HANDLE_VALUE )
+	if( ! (fname = find_file( SAVEGAME_FOLDER "\\" SAVEGAME_FILESPEC SAVEGAME_EXTENSION )))
 		return;
 
 	do
 	{
-		for ( bname = LoadSavedGameList.item[ LoadSavedGameList.items ] , fname = SavedFiles.cFileName; fname && *fname; bname++, fname++ )
+		for ( bname = LoadSavedGameList.item[ LoadSavedGameList.items ]; fname && *fname; bname++, fname++ )
 		{
 			if ( *fname == 0 ) //'.' )
 				break;
@@ -9035,11 +9012,11 @@ void InitLoadSavedGameList( MENU * Menu )
 		*bname = 0;
 		LoadSavedGameList.items++;
 
-	}while(	FindNextFile( h , (LPWIN32_FIND_DATA) &SavedFiles ) && LoadSavedGameList.items < MAX_SAVEGAME_SLOTS );
+	}while(	(fname = find_next_file()) && LoadSavedGameList.items < MAX_SAVEGAME_SLOTS );
 
 	qsort( (void *)LoadSavedGameList.item, (size_t) LoadSavedGameList.items, sizeof( LoadSavedGameList.item[ 0 ] ), compare );
 
-	FindClose(h);
+	find_close();
 #endif
 //	LoadSavedGameList.FuncDelete = ( LoadSavedGameList.items > 0 ) ? DeleteSavedGame : NULL;
 }

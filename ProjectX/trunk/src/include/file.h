@@ -20,4 +20,8 @@ void AddCommentToLog( const char * format, ... );
 BOOL File_Exists( char * Filename );
 BOOL delete_file( char * path );
 
+char* find_file( char * path );
+char* find_next_file( void );
+void find_close( void );
+
 #endif // FILE_H
