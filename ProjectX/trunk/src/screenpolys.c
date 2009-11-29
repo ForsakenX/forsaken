@@ -68,7 +68,6 @@ extern	DWORD			CurrentDestBlend;
 extern	DWORD			CurrentTextureBlend;
 extern	SECONDARYWEAPONBULLET	SecBulls[MAXSECONDARYWEAPONBULLETS];
 extern	uint16		FirstSecBullUsed;
-extern	float			ticksperframe;
 extern	int16			NewLevelNum;
 extern	int16			NumLevels;
 extern	MODEL		Models[ MAXNUMOFMODELS ];

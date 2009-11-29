@@ -533,7 +533,6 @@ BOOL ChangeLevel( void );
 void SelectQuitCurrentGame( MENUITEM *Item );
 
 float pixel_aspect_ratio;
-float ticksperframe = 14.0F;  
 float Oldframelag;  
 float framelag = 0.0F; 
 float real_framelag = 0.0F;
@@ -1424,8 +1423,7 @@ BOOL SetMatrixViewPort( void )
 	if (lpView->lpVtbl->SetBackground(lpView, hBmat) != D3D_OK) {
 		return FALSE;
 	}
-*/ 
-    ticksperframe = 14.0F;
+*/
 
 #if 0 // bjd - TODO - CHECK
       STATE_DATA(D3DLIGHTSTATE_AMBIENT, RGBA_MAKE(255, 255, 255, 0), lpPointer);

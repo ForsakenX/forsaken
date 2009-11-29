@@ -3547,15 +3547,12 @@ BOOL RenderModeReset( void )
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 extern void input_grab( BOOL clip );
-extern float ticksperframe;
 BOOL InitTitle()
 {
 	framelag = 0;
 
 	if( ! render_info.bFullscreen )
 		input_grab( FALSE );
-
-	ticksperframe = 14.0F;
     
 	InitModeCase();
 

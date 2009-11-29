@@ -37,6 +37,7 @@
 #include "water.h"
 #include "local.h"
 #include "util.h"
+#include "timer.h"
 
 #define	SCATTER_TEST	0
 
@@ -126,7 +127,7 @@ extern	int16			NumMissedKillMines;
 extern	int16			NumPowerPods;
 extern	BYTE			GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 																	// this tells the drones what status the host thinks hes in..
-extern	float			ticksperframe;
+
 extern	SCRPOLY			ScrPolys[ MAXNUMOFSCRPOLYS ];
 extern	PRIMARYWEAPONATTRIB PrimaryWeaponAttribs[ TOTALPRIMARYWEAPONS ];
 extern	BOOL			TeamGame;
@@ -263,8 +264,6 @@ float		MissileDistance = 0.0F;
 uint16		MissileNum;
 
 BOOL		ShowNamesAnyway = FALSE;
-
-LONGLONG	Time_LastValue;
 
 uint16		GlobalSecBullsID = 0;
 
@@ -7650,22 +7649,20 @@ void DestroySecondary( uint16 i, VECTOR * Int_Point )
 				:	BYTE		*	Mine Number to be filled in
 				:	BYTE			Section of Mines
 	Output		:	Nothing
+
 ===================================================================*/
+
+float ticksperframe = 14.0F; 
+timer_t last_mine_timer;
+
 void GenMineList( uint16 Ship, SHORTMINE * MineSlots, BYTE * NumMines, BYTE Section )
 {
 	int16	Count;
 	int16	i;
 	int16	NumUsed = 0;
+	float	Diff_Float;
 
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Diff;
-	LONGLONG	Time_Value;
-	float		Diff_Float;
-
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Time_Diff = ( Time_Value - Time_LastValue );
-	Diff_Float = (float) ( Time_Diff * 1000.0F / Time_Freq ) / ticksperframe;
+	Diff_Float = (float) timer_run( &last_mine_timer ) / ticksperframe;
 
 	Section = ( ( ( MAXSECONDARYWEAPONBULLETS + ( MAXGENMINECOUNT - 1 ) ) / MAXGENMINECOUNT ) - Section );
 
@@ -7728,15 +7725,9 @@ void SyncMines( void )
 {
 	uint16		i;
 	uint16		Next;
-	LONGLONG	Time_Freq;
-	LONGLONG	Time_Diff;
-	LONGLONG	Time_Value;
 	float		Diff_Float;
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_Value);
-	QueryPerformanceFrequency((LARGE_INTEGER *) &Time_Freq);
-	Time_Diff = ( Time_Value - Time_LastValue );
-	Diff_Float = (float) ( Time_Diff * 1000.0F / Time_Freq ) / ticksperframe;
+	Diff_Float = (float) timer_run( &last_mine_timer ) / ticksperframe;
 
 	i = FirstSecBullUsed;
 
@@ -7804,7 +7795,7 @@ void CopyMines( uint16 Player )
 	uint16	Next;
 	int16	Num = 0;
 
-	QueryPerformanceCounter((LARGE_INTEGER *) &Time_LastValue);
+	timer_run( &last_mine_timer );
 
 	for( i = 0; i < MAXSECONDARYWEAPONBULLETS; i++ )
 	{

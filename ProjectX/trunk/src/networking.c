@@ -359,7 +359,6 @@ MATRIX	TempMatrix = {
 
 extern	char biker_name[256];
 
-extern	LONGLONG		Time_LastValue;
 extern	int16			NumRegenPoints;
 extern	int				NumOfTrigVars;
 extern	int				NumOfTriggers;
@@ -1515,6 +1514,8 @@ void ReceiveGameMessages( void )
 		}
 	}
 }
+
+extern timer_t last_mine_timer;
 
 void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 {
@@ -3050,7 +3051,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
    		if( lpShortMine->Mines == Ships[WhoIAm].Mines )
    		{
 			if( Ships[WhoIAm].Mines == ( ( MAXSECONDARYWEAPONBULLETS / MAXGENMINECOUNT	) + 1 ) )
-				QueryPerformanceCounter( (LARGE_INTEGER *) &Time_LastValue );
+				timer_run( &last_mine_timer );
 
   			DebugPrintf( "Message from host to init mines\n" );
 

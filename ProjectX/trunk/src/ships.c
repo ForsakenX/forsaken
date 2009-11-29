@@ -39,7 +39,7 @@
 #include "xmem.h"
 #include "local.h"
 #include "util.h"
-
+#include "timer.h"
 
 //#undef MULTI_RAY_COLLISION
 //#define MULTI_RAY_SLIDE
@@ -3157,10 +3157,10 @@ BOOL CarryonDeathMove( GLOBALSHIP * ShipPnt,BYTE i)
 BOOL MultiSfxTaunt1Off = FALSE;
 
 uint16 CurrentKillPos = 0;
-LONGLONG	KillMemoryTime[MAXKILLMEMORY];
-int16		KillMemory[MAXKILLMEMORY];
+timer_t	KillMemoryTime[MAXKILLMEMORY];
+int16	KillMemory[MAXKILLMEMORY];
 
-LONGLONG	CampingPosTime;
+timer_t	camping_time;
 VECTOR		CampingPos;
 BOOL	CampingPos1Off = FALSE;
 
@@ -3171,7 +3171,6 @@ void MultiSfxHandle( void )
 {
 	int16	KillIndex;
 	BOOL	NewKill;
-	Uint32  ms = SDL_GetTicks();
 
 	if( MyGameStatus != STATUS_Normal || WhoIAm >= MAX_PLAYERS )
 		return;
@@ -3182,13 +3181,12 @@ void MultiSfxHandle( void )
 	{
 		NewKill = TRUE;
 		OldKills = GetTotalKills(WhoIAm);
-
 	}
 
 	KillIndex = (CurrentKillPos - KILLSOVERTIME) & ( MAXKILLMEMORY -1 );
-	if( (KillMemory[KillIndex] != -1)  && NewKill )
+	if( NewKill )
 	{
-		if( ( ms - KillMemoryTime[KillIndex] ) < ( 1000 * TIMEKILLSOVER ) )
+		if( timer_peek( &KillMemoryTime[KillIndex] ) > TIMEKILLSOVER )
 		{
 			// play congrat gloat thing...
 			PlaySfx( SFX_BIKECOMP_MK, 1.0F );
@@ -3200,40 +3198,45 @@ void MultiSfxHandle( void )
 				KillIndex += 1;
 				KillIndex &= ( MAXKILLMEMORY -1 );
 			}
+			timer_run( &KillMemoryTime[KillIndex] );
 		}
 	}
 
 	KillIndex = (CurrentKillPos - 1) & ( MAXKILLMEMORY -1 );
-	if( ( ms - KillMemoryTime[KillIndex] ) > ( 1000 * BADTIMEKILLSOVER ) )
+	if( timer_peek( &KillMemoryTime[KillIndex] ) > BADTIMEKILLSOVER )
 	{
-		// play taunt for not getting a kill....in a long time...
 		if( MultiSfxTaunt1Off )
 		{
+			DebugPrintf("Playing taunt for not getting a kill in a long time...\n");
 			PlaySfx( SFX_BIKECOMP_NK, 1.0F );
-			CampingPosTime += 1000 * 5;
-		}else{
+			timer_run( &camping_time );
+		}
+		else
+		{
 			MultiSfxTaunt1Off = TRUE;
 		}
-		KillMemoryTime[KillIndex] = ms;
+		timer_run( &KillMemoryTime[KillIndex] );
 	}
-
 
 	if( !CampingPos1Off )
 	{
-		CampingPosTime = ms;
+		timer_run( &camping_time );
 		CampingPos1Off = TRUE;
 		CampingPos = Ships[WhoIAm].Object.Pos;
-	}else{
-
+	}
+	else
+	{
 		if( DistanceVector2Vector( &CampingPos , &Ships[WhoIAm].Object.Pos ) < CAMPINGRANGE )
 		{
-			if( (ms - CampingPosTime) > (CAMPINGTIME * 1000) )
+			if( timer_peek( &camping_time ) > CAMPINGTIME )
 			{
 				PlaySfx( SFX_BIKECOMP_CA, 1.0F );
-				CampingPosTime = ms;
+				timer_run( &camping_time );
 			}
-		}else{
-			CampingPosTime = ms;
+		}
+		else
+		{
+			timer_run( &camping_time );
 			CampingPos = Ships[WhoIAm].Object.Pos;
 		}
 	}
@@ -3248,8 +3251,7 @@ void MultiSfxHandle( void )
 void AddKill( void )
 {
 	KillMemory[CurrentKillPos] = GetTotalKills(WhoIAm);
-	QueryPerformanceCounter((LARGE_INTEGER *) &KillMemoryTime[CurrentKillPos]  );
-	KillMemoryTime[CurrentKillPos] = KillMemoryTime[CurrentKillPos] * 1000 / Freq;
+	timer_run( &KillMemoryTime[CurrentKillPos] );
 	CurrentKillPos++;
 	if( CurrentKillPos >= MAXKILLMEMORY )
 		CurrentKillPos = 0;
@@ -3262,7 +3264,7 @@ void InitMultiSfxHandle( void )
 	for( i = 0 ; i < MAXKILLMEMORY ; i ++ )
 	{
 		KillMemory[i] = -1;
-		KillMemoryTime[i] = 0;
+		timer_run( &KillMemoryTime[i] );
 	}
 	CurrentKillPos = 0;
 	MultiSfxTaunt1Off = FALSE;
