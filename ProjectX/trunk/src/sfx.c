@@ -4155,6 +4155,10 @@ BOOL Init_SoundGlobals(void)
 
 		lpDS = NULL;
 
+       // initialize COM library
+       if FAILED( CoInitialize(NULL) )
+               return FALSE;
+
 		// Attempt to initialize with DirectSound.
 		// First look for DSOUND.DLL using CoCreateInstance.
 		iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
