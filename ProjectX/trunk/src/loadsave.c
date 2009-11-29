@@ -6,7 +6,6 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <sys/stat.h>
-#include <direct.h>
 
 #include "main.h"
 #include "new3d.h"

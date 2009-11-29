@@ -2,7 +2,6 @@
 #include <string.h>
 #include <time.h>
 #include <search.h>
-#include <direct.h>
 #include "version.h"
 #include "render.h"
 #include "xmem.h"
@@ -34,6 +33,10 @@ render_info_t render_info;
 //
 // Parses the directory to change to from the command line options
 //
+
+#ifdef WIN32
+#include <direct.h> // for _chdir
+#endif
 
 static BOOL parse_chdir( char *cli )
 {
@@ -69,6 +72,7 @@ static BOOL parse_chdir( char *cli )
 				break;
 			}
 
+#ifdef WIN32
 			// change to root directory
 			// the rest of the command line will be used as the path
 			if( _chdir( option ) != 0 )
@@ -77,6 +81,7 @@ static BOOL parse_chdir( char *cli )
 				Msg("Could not change to directory: %s", option);
 				return FALSE;
 			}
+#endif
 
 			// dont loop anymore were done
 			break;
