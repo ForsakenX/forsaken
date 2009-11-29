@@ -31,7 +31,7 @@
 #pragma optimize( "gty", on )
 #endif
 
-extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
+extern void SetViewportError( char *where, render_viewport_t *vp );
 
 extern float hfov;
 extern int outside_map;
@@ -1135,7 +1135,6 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 
 int ClipGroup( CAMERA *cam, uint16 group )
 {
-    HRESULT rval;
 	VISGROUP *g;
 
 	g = &cam->visible.group[ group ];
@@ -1150,13 +1149,11 @@ int ClipGroup( CAMERA *cam, uint16 group )
 	if (!FSSetView(&cam->View))
 		return FALSE;
 
-	rval = FSSetViewPort(&g->viewport);
-
-    if (!rval) {
+    if (!FSSetViewPort(&g->viewport)) {
 #ifdef DEBUG_VIEWPORT
-		SetViewportError( "ClipGroup", &g->viewport, rval );
+		SetViewportError( "ClipGroup", &g->viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }
@@ -1170,7 +1167,6 @@ int ClipGroup( CAMERA *cam, uint16 group )
 BOOL
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
-    HRESULT rval;
 	RENDERMATRIX	Tempproj;
 	RENDERMATRIX	Tempview;
 	VISGROUP *g;
@@ -1233,13 +1229,12 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			return FALSE;
 	}
 
-	rval = FSSetViewPort(&OldViewPort);
-
-    if (!rval) {
+    if (!FSSetViewPort(&OldViewPort)) 
+	{
 #ifdef DEBUG_VIEWPORT
-		SetViewportError( "ClipGroup", &g->viewport, rval );
+		SetViewportError( "ClipGroup", &g->viewport );
 #else
-        Msg("SetViewport failed.\n%s", render_error_description(rval));
+        Msg("SetViewport failed.\n%s", render_error_description(0));
 #endif
         return FALSE;
     }

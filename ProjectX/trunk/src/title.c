@@ -59,7 +59,7 @@
 
 extern render_info_t render_info;
 
-extern void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval );
+extern void SetViewportError( char *where, render_viewport_t *vp );
 extern BOOL ShowNamesAnyway;
 
 BOOL SpaceOrbSetup = FALSE;
@@ -4899,7 +4899,7 @@ BOOL DisplayTitle(void)
 	if(!FSSetViewPort(&CurrentCamera.Viewport))
 	{
 #ifdef DEBUG_VIEWPORT
-		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport, D3D_OK );
+		SetViewportError( "DisplayTitle", &CurrentCamera.Viewport );
 #else
 		Msg( "DisplayTitle() : SetViewport failed\n" );
 #endif

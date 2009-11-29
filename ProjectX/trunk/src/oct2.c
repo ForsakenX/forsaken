@@ -766,10 +766,6 @@ MATRIX  ProjMatrix = {
 
   VECTOR  Camera_Dir = { 0.0F, 0.0F,0.0F };
 
-
-  D3DLIGHT9 light;
-
-
 /*===================================================================
 ===================================================================*/
 //static D3DEXECUTEDATA d3dExData;
@@ -859,12 +855,11 @@ BOOL SetFOV( float fov )
 }
 
 
-void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval )
+void SetViewportError( char *where, render_viewport_t *vp )
 {
   static char msg[1024];
   sprintf( msg,
 	"SetViewport failed in %s.\n"
-	"Error: %s\n"
     "size=%d\n"
     "xpos=%d ypos=%d\n"
     "width=%d height=%d\n"
@@ -872,7 +867,6 @@ void SetViewportError( char *where, render_viewport_t *vp, HRESULT rval )
     //"xmax=%f ymax=%f\n"
     "zmin=%f zmax=%f\n",
     where,
-    render_error_description( rval ),
     sizeof( *vp ),
     vp->X, vp->Y,
     vp->Width, vp->Height,
@@ -1264,7 +1258,7 @@ ResizeViewport( void )
 	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
-    SetViewportError( "ResizeViewport", &viewport, rval );
+    SetViewportError( "ResizeViewport", &viewport );
 #else
         Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
@@ -1314,7 +1308,7 @@ BOOL FullScreenViewport()
 	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
-    SetViewportError( "FullScreenViewport", &viewport, rval );
+    SetViewportError( "FullScreenViewport", &viewport );
 #else
         Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
@@ -4543,7 +4537,7 @@ BOOL RenderCurrentCamera( void )
 	rval = FSSetViewPort(&CurrentCamera.Viewport);
     if (!rval) {
 #ifdef DEBUG_VIEWPORT
-    SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport, rval );
+    SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport );
 #else
         Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
@@ -4792,7 +4786,7 @@ Display Group Clipped Faceme Transluecent Polys
 	rval = FSSetViewPort(&viewport);
     if (!rval) {
 #ifdef DEBUG_VIEWPORT
-    SetViewportError( "RenderCurrentCamera2", &viewport, rval );
+    SetViewportError( "RenderCurrentCamera2", &viewport );
 #else
         Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
@@ -4974,7 +4968,7 @@ InitViewport( void )
 	if (!FSSetViewPort(&viewport))
 	{
 #ifdef DEBUG_VIEWPORT
-		SetViewportError( "InitViewport", &viewport, rval );
+		SetViewportError( "InitViewport", &viewport );
 #else
 		Msg("SetViewport failed.\n%s", render_error_description(rval));
 #endif
