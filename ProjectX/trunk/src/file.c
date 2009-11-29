@@ -21,6 +21,7 @@
 #define		close	_close
 #define		read	_read
 #define		write	_write
+#define		stat	_stat
 //
 #define		O_BINARY 	_O_BINARY 
 #define		O_RDONLY 	_O_RDONLY 
@@ -65,9 +66,9 @@ void touch_file( char* str )
 
 BOOL is_folder( char* str )
 {
-	static struct _stat stat;
+	static struct stat s;
 	char * path = convert_path(str);
-	if ( _stat( path, &stat ) == 0 && stat.st_mode & S_IFDIR )
+	if ( stat( path, &s ) == 0 && s.st_mode & S_IFDIR )
 		return TRUE;
 	return FALSE;
 }
@@ -76,7 +77,7 @@ int folder_exists( char *pathspec, ... )
 {
 	char * path;
 	static char pathname[ 256 ];
-	static struct _stat stat;
+	static struct stat s;
 	va_list args;
 
 	va_start( args, pathspec );
@@ -85,7 +86,7 @@ int folder_exists( char *pathspec, ... )
 
 	path = convert_path(pathname);
 
-	if ( _stat( path, &stat ) )
+	if ( stat( path, &s ) )
 	{
 		// no such path exists...attempt to create a directory with that name
 #ifdef WIN32
@@ -94,7 +95,7 @@ int folder_exists( char *pathspec, ... )
 		return mkdir( path, 0777 ) == 0;
 #endif
 	}
-	else if ( stat.st_mode & S_IFDIR )
+	else if ( s.st_mode & S_IFDIR )
 	{
 		// path exists and is a directory
 		return 1;
