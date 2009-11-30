@@ -39,7 +39,7 @@ lua_State *L1;
 int lua_dofile(char* name)
 {
 	char path[100] = "";
-	sprintf(path,"Scripts/%s",name);
+	sprintf(path,"scripts/%s",name);
 	return luaL_dofile(L1,path);
 }
 

@@ -19,6 +19,8 @@ void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest );
 void Get_Ext( uint8 * Src, uint8 * Dest );
 void GetFilename( uint8 * Src, uint8 * Dest );
 
+char* convert_path( char* _str );
+
 #ifdef __cplusplus
 };
 #endif

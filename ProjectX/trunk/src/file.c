@@ -37,26 +37,6 @@
 
 extern BOOL Debug;
 
-static char* convert_path( char* _str )
-{
-#ifdef WIN32
-	return _str;
-#else
-	static char temp[500];
-	char * str = temp;
-	strncpy( temp, _str, sizeof(temp) );
-	while (*str)
-	{
-		if (*str == '\\')
-			*str = '/';
-		else
-			*str = (char) tolower(*str);
-		str++;
-	}
-	return temp;
-#endif
-}
-
 void touch_file( char* str )
 {
 	char * path = convert_path(str);

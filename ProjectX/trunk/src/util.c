@@ -13,6 +13,26 @@ BOOL DebugLog = FALSE;
 #include <ctype.h>		// for toupper
 #endif
 
+char* convert_path( char* _str )
+{
+#ifdef WIN32
+	return _str;
+#else
+	static char temp[500];
+	char * str = temp;
+	strncpy( temp, _str, sizeof(temp) );
+	while (*str)
+	{
+		if (*str == '\\')
+			*str = '/';
+		else
+			*str = (char) tolower(*str);
+		str++;
+	}
+	return temp;
+#endif
+}
+
 void strtoupper(char *str)
 {
 	while (*str)
@@ -193,11 +213,15 @@ int Msg( const char * msg, ... )
 		input_grab( TRUE ); // don't do this in window mode just let them click back on the window
 	}
 
-#endif
-
 	DebugPrintf( txt );
 
+#else // ! WIN32
+
+	DebugPrintf("Msg: %s\n",txt);
+
+#endif
 	// IDCANCEL	Cancel button was selected.
 	// IDOK	OK button was selected.
 	return res;
 }
+
