@@ -1365,7 +1365,7 @@ read_config( USERCONFIG *u, char *cfg_name )
 	};
 
 	// try to open the config file.
-	f = fopen( cfg_name, "r" );
+	f = file_open( cfg_name, "r" );
 
 	// leave if it failed
 	if ( !f )
@@ -1593,7 +1593,7 @@ write_config( USERCONFIG *u, char *cfg_name )
 	char axistok[MAX_JOYSTICK_AXIS][80] = { "AXISX",  "AXISY",  "AXISZ",  "AXISRX",
 		                                    "AXISRY", "AXISRZ", "AXISS1", "AXISS2"};
 
-	f = fopen( cfg_name, "w" );
+	f = file_open( cfg_name, "w" );
 	if ( !f )
 		return 0;
 

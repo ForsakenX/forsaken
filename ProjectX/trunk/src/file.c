@@ -37,6 +37,11 @@
 
 extern BOOL Debug;
 
+FILE * file_open(char * filename, char * mode)
+{
+	return fopen(convert_path(filename), mode);
+}
+
 void touch_file( char* str )
 {
 	char * path = convert_path(str);
@@ -205,7 +210,7 @@ void AddCommentToLog( char * str )
 		return;
 
 	if(!logfile_fp)
-		logfile_fp = fopen( convert_path("Logs\\projectx.log"), "w" );
+		logfile_fp = file_open( convert_path("Logs\\projectx.log"), "w" );
 
 	if( logfile_fp )
 	{

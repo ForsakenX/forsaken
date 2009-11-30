@@ -900,7 +900,7 @@ typedef struct
 
 	// init all messages
 
-	f = fopen( StatsMessagesFile, "r" );
+	f = file_open( StatsMessagesFile, "r" );
 	if ( !f )
 		return;
 

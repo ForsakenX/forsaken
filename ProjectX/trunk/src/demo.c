@@ -99,7 +99,7 @@ void StartDemoCleaning( MENUITEM * Item )
 	NewLevelNum = -1;
 
 	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
-	DemoFp = fopen( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
+	DemoFp = file_open( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
 	if ( !DemoFp )
 	{
 		// can't open file
@@ -161,8 +161,8 @@ void StartDemoCleaning( MENUITEM * Item )
 		return;
 	}
 	DebugPrintf( "temp demo clean name = %s\n", clean_name );
-//	DemoFpClean = fopen( DemoFileName( DemoGameName.text ) , "wbc" );
-	DemoFpClean = fopen( clean_name , "wbc" );
+//	DemoFpClean = file_open( DemoFileName( DemoGameName.text ) , "wbc" );
+	DemoFpClean = file_open( clean_name , "wbc" );
 	setvbuf( DemoFpClean, NULL, _IONBF , 0 );		// size of stream buffer...
 
 	fwrite( &mp_version, sizeof( mp_version ), 1, DemoFpClean );
@@ -232,7 +232,7 @@ void StartDemoPlayback( MENUITEM * Item )
 	DemoShipInit[ MAX_PLAYERS ] = TRUE;
 	memset (TeamNumber, 255, sizeof(BYTE) * MAX_PLAYERS);
 
-	DemoFp = fopen( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
+	DemoFp = file_open( DemoFileName( DemoList.item[DemoList.selected_item] ) , "rb" );
 
 	if( !DemoFp )
 	{

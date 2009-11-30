@@ -3251,7 +3251,7 @@ void SavePickupsPositions( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	fp = fopen( &NewFilename[ 0 ], "wb" );
+	fp = file_open( &NewFilename[ 0 ], "wb" );
 
 	if( fp != NULL )
 	{
@@ -3422,7 +3422,7 @@ BOOL LoadPickupsPositions( void )
   FileSize = Get_File_Size( &NewFilename[ 0 ] );
 
   /* open the file for reading */
-  fp = fopen( &NewFilename[ 0 ], "rb" );
+  fp = file_open( &NewFilename[ 0 ], "rb" );
 
   /* if the file handle is valid */
   if( fp != NULL )

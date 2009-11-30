@@ -7233,7 +7233,7 @@ void SetPilotName( MENUITEM *item )
 	sprintf( filepath, "pilots\\%s.txt", PilotName.text );
 
 	// open the new/existing file to cfg open
-	f = fopen( filepath, "r" );
+	f = file_open( filepath, "r" );
 
 	// if cfg found report error
 	// since we want to create a new pilot
@@ -7322,7 +7322,7 @@ void SetPilotNameInGame( MENUITEM *item )
 
 	sprintf( fname, "pilots\\%s.txt", PilotNameInGame.text );
 
-	f = fopen( fname, "r" );
+	f = file_open( fname, "r" );
 	if ( f )
 	{
 		fclose( f );
@@ -7378,7 +7378,7 @@ void RenamePilotName( MENUITEM *item )
 
 	sprintf( fname, "pilots\\%s.txt", PilotReName.text );
 
-	f = fopen( fname, "r" );
+	f = file_open( fname, "r" );
 	if ( f )
 	{
 		fclose( f );
@@ -8226,7 +8226,7 @@ void LoadLevelText( MENU *Menu )
 	FILE *f;
 	char *newlinechar;
 
-	f = fopen( MissionTextNames[ NewLevelNum ], "r" );
+	f = file_open( MissionTextNames[ NewLevelNum ], "r" );
 
 	if ( !f )
 	{
@@ -8327,7 +8327,7 @@ void GetSavedGameData( void )
 #endif
 	}
 
-	fp = fopen( filename, "r" );
+	fp = file_open( filename, "r" );
 
 	if( fp )
 	{
@@ -8860,7 +8860,7 @@ void InitDemoList( MENU * Menu )
 		strncpy( DemoList.item[ DemoList.items ], DemoName( DemoFiles.cFileName ), sizeof( DemoList.item[ 0 ] ) - 1 );
 		DemoList.item[ DemoList.items ][ sizeof( DemoList.item[ 0 ] ) - 1 ] = 0;
 
-		DemoFp = fopen( DemoFileName( DemoList.item[ DemoList.items ] ), "rb" );
+		DemoFp = file_open( DemoFileName( DemoList.item[ DemoList.items ] ), "rb" );
 
 		if ( DemoFp )
 		{

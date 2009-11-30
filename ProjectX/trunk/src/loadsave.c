@@ -141,10 +141,10 @@ BOOL PreInGameLoad( MENUITEM * MenuItem )
 	uint32		VersionNumber;
 
 #ifdef SAVEGAME_SLOTS
-	fp = fopen( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
+	fp = file_open( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
 #else
 	sprintf( &LoadGameFilename[ 0 ], "savegame\\%s", &LoadSavedGameList.item[ LoadSavedGameList.selected_item ][ 0 ] );
-	fp = fopen( &LoadGameFilename[ 0 ], "rb" );
+	fp = file_open( &LoadGameFilename[ 0 ], "rb" );
 #endif
 
 	if( fp != NULL )
@@ -212,9 +212,9 @@ void InGameLoad( MENUITEM * MenuItem )
 	uint32		VersionNumber;
 
 #ifdef SAVEGAME_SLOTS
-	fp = fopen( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
+	fp = file_open( SaveGameFileName( LoadSavedGameList.selected_item ), "rb" );
 #else
-	fp = fopen( &LoadGameFilename[ 0 ], "rb" );
+	fp = file_open( &LoadGameFilename[ 0 ], "rb" );
 #endif
 
 	if( fp != NULL )
@@ -393,7 +393,7 @@ char *GetMissionName( char *levelname )
 	if ( i >= NumLevels )
 		return levelname;
 
-	f = fopen( MissionTextNames[ i ], "r" );
+	f = file_open( MissionTextNames[ i ], "r" );
 
 	RealLevelName[ 0 ] = 0;
 	if( f )
@@ -435,7 +435,7 @@ BOOL InGameSave( MENUITEM * MenuItem )
 	uint32		MagicNumber = MAGIC_NUMBER;
 	uint32		VersionNumber = LOADSAVE_VERSION_NUMBER;
 
-	f = fopen( MissionTextNames[ NewLevelNum ], "r" );
+	f = file_open( MissionTextNames[ NewLevelNum ], "r" );
 
 	if( f )
 	{
@@ -484,7 +484,7 @@ BOOL InGameSave( MENUITEM * MenuItem )
 		return FALSE;
 	}
 
-	fp = fopen( &Filename[ 0 ], "wb" );
+	fp = file_open( &Filename[ 0 ], "wb" );
 
 	if( fp != NULL )
 	{
@@ -575,7 +575,7 @@ char *SavedGameInfo( int slot )
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
-	fp = fopen( SaveGameFileName( slot ), "rb" );
+	fp = file_open( SaveGameFileName( slot ), "rb" );
 
 	if( fp != NULL )
 	{
@@ -641,7 +641,7 @@ BOOL SaveGameSlotUsed( int slot )
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
-	fp = fopen( SaveGameFileName( slot ), "rb" );
+	fp = file_open( SaveGameFileName( slot ), "rb" );
 	if ( fp )
 	{
 		fread( &MagicNumber, sizeof( uint32 ), 1, fp );

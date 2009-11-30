@@ -3098,7 +3098,7 @@ void LoadTimeForLevel( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	f = fopen( &NewFilename[ 0 ], "r" );
+	f = file_open( &NewFilename[ 0 ], "r" );
 
 	if( f )
 	{

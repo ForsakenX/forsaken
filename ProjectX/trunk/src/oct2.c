@@ -1322,7 +1322,7 @@ BOOL InitLevels( char * levels_list )
   // Read Levels From File
   /////
 
-  f = fopen( levels_file, "r" );
+  f = file_open( levels_file, "r" );
   if (!f )
     return FALSE;
 
@@ -2043,7 +2043,7 @@ void GetLevelName( char *buf, int bufsize, int level )
   if ( level < 0 )
     return;
   
-  f = fopen( MissionTextNames[ level ], "r" );
+  f = file_open( MissionTextNames[ level ], "r" );
   if ( f )
   {
     // read level name
@@ -5485,7 +5485,7 @@ BOOL SavePPM( uint8 * Filename, uint8 * ScreenPtr, uint32 Width, uint32 Height, 
   Xsize = ( x2 - x1 );
   Ysize = ( y2 - y1 );
 
-  fp = fopen( Filename, "wb" );
+  fp = file_open( Filename, "wb" );
 
   if( fp != NULL )
   {

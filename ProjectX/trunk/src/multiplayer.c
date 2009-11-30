@@ -412,7 +412,7 @@ BOOL StartAHostSession ( MENUITEM * Item )
 				biker_name );
 		}
 #endif
-		DemoFp = fopen( DemoFileName( DemoGameName.text ) , "wb" );
+		DemoFp = file_open( DemoFileName( DemoGameName.text ) , "wb" );
 		setvbuf( DemoFp, NULL, _IONBF , 0 );		// size of stream buffer...
 
 		Demo_fwrite( &mp_version, sizeof( mp_version ), 1, DemoFp );

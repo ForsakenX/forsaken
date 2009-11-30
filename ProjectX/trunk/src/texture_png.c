@@ -26,7 +26,7 @@ int load_image( texture_image_t * image, int mipmap )
   int i;
 
   /* open image file */
-  fp = fopen (image->path, "rb");
+  fp = file_open (image->path, "rb");
   if (!fp)
     {
       fprintf (stderr, "error: couldn't open \"%s\"!\n", image->path);

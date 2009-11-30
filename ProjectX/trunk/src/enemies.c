@@ -4266,7 +4266,7 @@ BOOL PreLoadEnemies( void )
 	
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	fp = fopen( &NewFilename[ 0 ], "rb" );
+	fp = file_open( &NewFilename[ 0 ], "rb" );
 
 	if( fp != NULL )
 	{
@@ -4478,7 +4478,7 @@ BOOL LoadEnemies( void )
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], &NewFilename[ 0 ], NewExt );
 
-	fp = fopen( &NewFilename[ 0 ], "rb" );
+	fp = file_open( &NewFilename[ 0 ], "rb" );
 
 	if( fp != NULL )
 	{
@@ -8146,7 +8146,7 @@ BOOL ReadEnemyTxtFile( char *Filename )
 	CurrentEnemy = 0;
 	CurrentGun = 0;
 
-	f = fopen( Filename, "r" );
+	f = file_open( Filename, "r" );
 	if ( !f )
 	{
 		DebugPrintf("Could not read enemy text file: %s\n", Filename);

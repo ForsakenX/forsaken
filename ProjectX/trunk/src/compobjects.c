@@ -99,7 +99,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 
 	char * path = convert_path(Filename);
 
-	fp = fopen( path, "rb" );
+	fp = file_open( path, "rb" );
 
 	if( fp != NULL )
 	{
@@ -216,7 +216,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
 
-	fp = fopen( path, "rb" );
+	fp = file_open( path, "rb" );
 
 	if( fp != NULL )
 	{

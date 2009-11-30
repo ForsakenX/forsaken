@@ -150,7 +150,7 @@ static void InitDebugRays( void )
 	uint16 line;
 
 	Change_Ext( &LevelNames[ LevelNum ][ 0 ], fname, ".ray" );
-	rf = fopen( fname, "rb" );
+	rf = file_open( fname, "rb" );
 	if ( !rf )
 		return;
 	while ( fread( &ray.group, sizeof( ray.group ), 1, rf ) )
@@ -225,7 +225,7 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 
 	Change_Ext( lname, fname, ".vis" );
 
-	f = fopen( fname, "w" );
+	f = file_open( fname, "w" );
 	if ( !f )
 		return FALSE;
 

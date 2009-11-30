@@ -20,4 +20,6 @@ char* find_file( char * path );
 char* find_next_file( void );
 void find_close( void );
 
+FILE * file_open(char * filename, char * mode);
+
 #endif // FILE_H
