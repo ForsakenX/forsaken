@@ -64,3 +64,4 @@ mouse_state_t mouse_states[ INPUT_BUFFERS ];
 #define MOUSE_WHEEL_DOWN_PRESSED()      ( !( mouse_states[ old_input ].wheel < 0 ) && ( mouse_states[ new_input ].wheel < 0 ) )
 
 #endif
+
