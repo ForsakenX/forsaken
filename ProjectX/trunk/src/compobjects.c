@@ -94,38 +94,37 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 	FILE	*	fp;
 	int16		Count;
 	int16		NumModels;
-	int8		TempFilename[ 256 ];
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
-	strcpy( &TempFilename[ 0 ], Filename );
+	char * path = convert_path(Filename);
 
-	fp = fopen( &TempFilename[ 0 ], "rb" );
+	fp = fopen( path, "rb" );
 
 	if( fp != NULL )
 	{
 		if( fread( &MagicNumber, sizeof( uint32 ), 1, fp ) != 1 )
 		{
-			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", &TempFilename[ 0 ] );
+			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
 			return( FALSE );
 		}
 
 		if( fread( &VersionNumber, sizeof( uint32 ), 1, fp ) != 1 )
 		{
-			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", &TempFilename[ 0 ] );
+			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
 			return( FALSE );
 		}
 
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != COB_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
-			Msg( "PreLoadCompObj() Incompatible Componented Object (.COB) file %s", &TempFilename[ 0 ] );
+			Msg( "PreLoadCompObj() Incompatible Componented Object (.COB) file %s", path );
 			return( FALSE );
 		}
 
 		if( fread( &NumModels, sizeof( int16 ), 1, fp ) != 1 )
 		{
-			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", &TempFilename[ 0 ] );
+			Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
 			return( FALSE );
 		}
    	
@@ -139,7 +138,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 				{
 					if( fread( &ModNames[ (*BaseModel) + Count ].Name[ i ], sizeof( int8 ), 1, fp ) != 1 )
 					{
-						Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", &TempFilename[ 0 ] );
+						Msg( "PreLoadCompObj() Corrupt Componented Object (.COB) file %s", path );
 						return( FALSE );
 					}
 					i++;
@@ -212,10 +211,12 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	uint32			MagicNumber;
 	uint32			VersionNumber;
 
+	char * path = convert_path(Filename);
+
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
 
-	fp = fopen( Filename, "rb" );
+	fp = fopen( path, "rb" );
 
 	if( fp != NULL )
 	{
@@ -225,7 +226,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 		if( ( MagicNumber != MAGIC_NUMBER ) || ( VersionNumber != COB_VERSION_NUMBER  ) )
 		{
 			fclose( fp );
-			Msg( "LoadCompObj() Incompatible Componented Object (.COB) file %s", Filename );
+			Msg( "LoadCompObj() Incompatible Componented Object (.COB) file %s", path );
 			return( NULL );
 		}
 
@@ -257,13 +258,13 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 		}
 		else
 		{
-	        Msg( "LoadCompObj() Unable to alloc CompsPtr in %s\n", Filename );
+	        Msg( "LoadCompObj() Unable to alloc CompsPtr in %s\n", path );
 			return( NULL );
 		}
 	}
 	else
 	{
-        Msg( "LoadCompObj() Unable to load Componented object %s\n", Filename );
+        Msg( "LoadCompObj() Unable to load Componented object %s\n", path );
 		return( NULL );
 	}
 
