@@ -1,7 +1,7 @@
 
 -- dofile that looks in proper folder
 function dofile(filename)
-	path="./Scripts/"..filename
+	path="./scripts/"..filename
 	local f = assert(loadfile(path))
 	return f()
 end
@@ -10,7 +10,7 @@ end
 function init( debug )
 
 	-- tell require() to look in ./Scripts/*
-	package.path = "./Scripts/?.lua;" .. package.path
+	package.path = "./scripts/?.lua;" .. package.path
 
 	-- globals
 	config = {} -- main config table

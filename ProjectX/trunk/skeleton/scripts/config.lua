@@ -30,7 +30,7 @@
 -- POSSIBILITY OF SUCH DAMAGE.
 
 function config_path(name)
-	return "Configs/"..name..".txt"
+	return "configs/"..name..".txt"
 end
 
 function config_load(name)
