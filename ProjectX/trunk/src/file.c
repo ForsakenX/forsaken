@@ -159,12 +159,14 @@ long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 	int	Handle = -1;
 	long	Bytes_Read = 0;
 
+	char * path = convert_path(Filename);
+
 	// get the size of the file
 	if( Read_Size == 0 ) 
-		Read_Size = Get_File_Size( Filename );
+		Read_Size = Get_File_Size( path );
 
 	// open the file handle
-	Handle = open( Filename, O_RDONLY | O_BINARY );
+	Handle = open( path, O_RDONLY | O_BINARY );
 
 	// file opened successfully
 	if( Handle != -1 )
