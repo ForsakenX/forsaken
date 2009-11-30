@@ -87,7 +87,11 @@ char * MathErrStrings[] = {
 };
 
 #ifdef DEBUG_ON
+#ifdef WIN32
 int     __cdecl _matherr(struct _exception * except)
+#else
+int matherr(struct exception * except)
+#endif
 //int _matherr( struct _exception *except )
 {
 	static int ignore = 0;
@@ -99,7 +103,11 @@ int     __cdecl _matherr(struct _exception * except)
 		unknown_exceptions++;
 	switch( except->type )
 	{
+#ifdef WIN32
 		case _DOMAIN:
+#else
+		case DOMAIN:
+#endif
 			if( !strcasecmp( except->name, "acos" ) )
 			{
 				if( ( except->arg1 < -1.0 ) && ( except->arg1 > -1.0001 ) )
@@ -125,13 +133,21 @@ int     __cdecl _matherr(struct _exception * except)
 				}
 			}
 	  		break;
-
+#ifdef WIN32
 		case _SING:
 		case _OVERFLOW:
 		case _PLOSS:
 		case _TLOSS:
 			break;
 		case _UNDERFLOW:
+#else
+		case SING:
+		case OVERFLOW:
+		case PLOSS:
+		case TLOSS:
+			break;
+		case UNDERFLOW:
+#endif
 			if ( !strcasecmp( except->name, "pow" ) )
 			{
 				if ( except->arg1 < 1.0 && except->arg2 > 0.0 )
