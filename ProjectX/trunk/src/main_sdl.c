@@ -88,29 +88,34 @@ BOOL sdl_init_window( void )
 		);
 	}
 
-	if(!render_info.screen)
+	if(render_info.screen)
 	{
-		Msg("main_sdl: failed to create video surface: %s\n",SDL_GetError());
-		return FALSE;
-	}
+		int bpp;
+		char driver[64];
 
-	// print info on created surface
-	{
+		// surface created by sdl
 		DebugPrintf("main_sdl: surface { w=%d, h=%d, bpp=%d, Bpp=%d }\n",
 			render_info.screen->w,
 			render_info.screen->h,
 			render_info.screen->format->BitsPerPixel,
 			render_info.screen->format->BytesPerPixel
 		);
-	}
 
-	// print video driver name
-	{
-		char video_driver_name[64];
-		if(SDL_VideoDriverName(video_driver_name, 64)!=NULL)
-			DebugPrintf("main_sd: sdl video driver name: %s\n",video_driver_name);
+		// actual depth size set by sdl
+	        SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
+	        DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
+
+		// video driver
+		if(SDL_VideoDriverName(driver, 64)!=NULL)
+			DebugPrintf("main_sd: sdl video driver name: %s\n",driver);
 		else
 			DebugPrintf("main_sdl: failed to obtain the video driver name.\n");
+
+	}
+	else
+	{
+		Msg("main_sdl: failed to create video surface: %s\n",SDL_GetError());
+		return FALSE;
 	}
 
 	// window title, icon title (taskbar and other places)
