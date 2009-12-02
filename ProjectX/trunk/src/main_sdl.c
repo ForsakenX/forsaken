@@ -32,27 +32,42 @@ BOOL sdl_init( void )
 
 BOOL sdl_init_window( void )
 {
-	SDL_Surface* icon = NULL;
-
 	// set the window icon
-	icon = SDL_LoadBMP("Data/ProjectX-32x32.bmp");
-	if(icon)
 	{
-		// remove black pixels
-		Uint32 colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
-		SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);        
-		SDL_WM_SetIcon(icon, NULL);
-		SDL_FreeSurface(icon);
+		SDL_Surface* icon = NULL;
+		icon = SDL_LoadBMP("Data/ProjectX-32x32.bmp");
+		if(icon)
+		{
+			// remove black pixels
+			Uint32 colorkey = SDL_MapRGB(icon->format, 0, 0, 0);
+			SDL_SetColorKey(icon, SDL_SRCCOLORKEY, colorkey);        
+			SDL_WM_SetIcon(icon, NULL);
+			SDL_FreeSurface(icon);
+		}
 	}
 
 #ifdef OPENGL
-	SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE,		8  );
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE,			32 );
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,		1  );
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,	1  );
 	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
-	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,		render_info.vsync );
+	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
+	{
+		int mode = render_info.default_mode.bpp;
+		if ( mode == 16 && mode == 24 && mode == 32 )
+		{
+			mode = 24;
+			DebugPrintf("main_sdl: invalid bpp (%d) defaulting to 24\n",mode);
+		}
+		{
+			int size = ( mode > 16 ) ? 8 : 5 ;
+                	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   size);
+        	        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
+                	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  size);
+	                SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
+			DebugPrintf("main_sdl: set pixel sizes to %d\n",size);
+			DebugPrintf("main_sdl: set pixel depth to %d\n",mode);
+		}
+	}
 #endif
-
 
 	// create the window
 	{
@@ -75,17 +90,27 @@ BOOL sdl_init_window( void )
 
 	if(!render_info.screen)
 	{
-		Msg("Failed to create video surface: %s\n",SDL_GetError());
+		Msg("main_sdl: failed to create video surface: %s\n",SDL_GetError());
 		return FALSE;
+	}
+
+	// print info on created surface
+	{
+		DebugPrintf("main_sdl: surface { w=%d, h=%d, bpp=%d, Bpp=%d }\n",
+			render_info.screen->w,
+			render_info.screen->h,
+			render_info.screen->format->BitsPerPixel,
+			render_info.screen->format->BytesPerPixel
+		);
 	}
 
 	// print video driver name
 	{
 		char video_driver_name[64];
 		if(SDL_VideoDriverName(video_driver_name, 64)!=NULL)
-			DebugPrintf("sdl video driver name: %s\n",video_driver_name);
+			DebugPrintf("main_sd: sdl video driver name: %s\n",video_driver_name);
 		else
-			DebugPrintf("Failed to obtain the video driver name.\n");
+			DebugPrintf("main_sdl: failed to obtain the video driver name.\n");
 	}
 
 	// window title, icon title (taskbar and other places)
@@ -94,3 +119,4 @@ BOOL sdl_init_window( void )
 	//
 	return TRUE;
 }
+
