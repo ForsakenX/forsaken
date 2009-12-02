@@ -96,7 +96,10 @@ int folder_exists( char *pathspec, ... )
 BOOL File_Exists( char * str )
 {
 	char * path = convert_path(str);
-	return access( path, 00 ) == 0;
+	int rval  = (access( path, 0 ) == 0);
+	DebugPrintf("file: check exists '%s' = %s\n",
+		path, (rval)?"exits":"missing");
+	return rval;
 }
 
 long Write_File( char * str, char * File_Buffer, long Write_Size )
@@ -153,7 +156,7 @@ long Get_File_Size( char * Filename )
     else 
 	{
 		perror("stat");
-		return -1;
+		return 0;
     }
 
 #endif
@@ -250,9 +253,11 @@ void find_close( void )
 
 #else
 
+// TODO - this must be implimented!!
 char* find_file( char * str )
 {
 	char * path = convert_path(str);
+	DebugPrintf("file: find_file called with %s\n",path);
 	return NULL;
 }
 
