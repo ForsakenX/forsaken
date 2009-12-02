@@ -253,21 +253,68 @@ void find_close( void )
 
 #else
 
-// TODO - this must be implimented!!
+#include <glob.h>
+
+static glob_t glob_handle;
+static int glob_pos = -1;
+
+static char *find_strip_path( const char *path )
+{
+	char *c = strrchr(path, '/');
+	if( c )
+		return &c[1];
+	else
+		return path;
+}
+
+static int find_globerr( const char *epath, int eerrno )
+{
+	DebugPrintf("file: glob error while searching for \"%s\": %s\n", epath, strerror(eerrno));
+	DebugPrintf("Trying to continue anyway...\n");
+	return 0;
+}
+
 char* find_file( char * str )
 {
 	char * path = convert_path(str);
 	DebugPrintf("file: find_file called with %s\n",path);
+	if (glob_pos >= 0)
+		globfree(&glob_handle);
+	switch( glob(path, 0, find_globerr, &glob_handle) )
+	{
+		case 0:
+			glob_pos = 0;
+			DebugPrintf("file: found file \"%s\" (1 of %d)\n", glob_handle.gl_pathv[0], glob_handle.gl_pathc);
+			return find_strip_path(glob_handle.gl_pathv[glob_pos++]);
+			break;
+		case GLOB_NOSPACE:
+			DebugPrintf("file: find_file: ran out of memory!\n");
+			break;
+		case GLOB_ABORTED:
+			DebugPrintf("file: find_file: read error!\n");
+			break;
+		case GLOB_NOMATCH:
+			DebugPrintf("file: find_file: no match\n");
+			break;
+		default:
+			DebugPrintf("file: find_file: unknown return value from glob()\n");
+			break;
+	}
 	return NULL;
 }
 
 char* find_next_file( void )
 {
-	return NULL;
+	if (glob_pos < 0 || glob_pos >= glob_handle.gl_pathc)
+		return NULL;
+	DebugPrintf("file: found file \"%s\" (%d of %d)\n", glob_handle.gl_pathv[glob_pos], glob_pos+1, glob_handle.gl_pathc);
+	return find_strip_path(glob_handle.gl_pathv[glob_pos++]);
 }
 
 void find_close( void )
 {
+	globfree(&glob_handle);
+	glob_pos = -1;
 }
 
 #endif
