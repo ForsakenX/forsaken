@@ -38,6 +38,8 @@ void render_gamma_correction( double gamma )
 	double k;
 	int i;
 
+	DebugPrintf("render: gamma correction value set to: %d\n");
+
 	// recover in release build
 	if (gamma <= 0)
 	    gamma = 1.0;
@@ -109,9 +111,11 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
 					image.data[index+3] = 0; // alpha - pixel will not be coppied do to alpha=0 ignore
+#ifdef WIN32
 				// do not colour key
 				else
 					image.data[index+3] = (BYTE)gamma_lookup[image.data[index+3]]; // alpha
+#endif
 
 			}
 		}

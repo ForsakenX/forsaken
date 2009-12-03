@@ -9152,8 +9152,12 @@ void GetGamePrefs( void )
 	CLAMP( BikeCompSpeechSlider.value,	BikeCompSpeechSlider.max );
 
     GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
+
+DebugPrintf("gamma read from config as %d, max %d\n",GammaSlider.value,GammaSlider.max);
 	CLAMP( GammaSlider.value, GammaSlider.max );
+DebugPrintf("gamma after clamp: %d\n",GammaSlider.value);
 	Gamma = ( (double)GammaSlider.value ) / 100.0F;
+DebugPrintf("gamma variable: %d/100.0F = %ld\n",GammaSlider.value,Gamma);
 
     MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
     MyTimeLimit.value                = config_get_int( "TimeLimit",					0);
