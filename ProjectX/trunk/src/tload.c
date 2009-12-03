@@ -74,14 +74,14 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	Input		:		TLOADHEADER *
 	Output		:		BOOL FALSE/TRUE
 ===================================================================*/
-void render_gamma_correction( double gamma );
+void build_gamma_table( double gamma );
 BOOL Tload( TLOADHEADER * Tloadheader  )
 {
 	int	i,e;
 	int LeastScaledThatCanbe;
 	int LeastScaledThatCanbeScale;
 
-	render_gamma_correction( Gamma );
+	build_gamma_table( Gamma );
  
 	// Tloadheader is not valid until everything has been done..
 	Tloadheader->state = FALSE;

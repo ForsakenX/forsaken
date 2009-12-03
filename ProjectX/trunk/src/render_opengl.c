@@ -31,29 +31,25 @@ BOOL bSquareOnly = FALSE;
 // Texture Routines
 //
 
-// TODO - can't gl do this for us ?
-BYTE  gamma_lookup[256];
-void render_gamma_correction( double gamma )
+uchar_t gamma_table[256];
+
+void build_gamma_table( double gamma )
 {
 	double k;
 	int i;
 
-	DebugPrintf("render: gamma correction value set to: %d\n");
-
-	// recover in release build
+#ifndef DEBUG_ON
 	if (gamma <= 0)
-	    gamma = 1.0;
-	
+		gamma = 1.0;
+#endif
+
 	k = 255.0/pow(255.0, 1.0/gamma);
 	
 	for (i = 0; i <= 255; i++)
 	{
-	    gamma_lookup[i] = (BYTE)(k*(pow((double)i, 1.0/gamma)));
-		if( i )
-		{
-			if( !gamma_lookup[i] )
-				gamma_lookup[i] = 1;
-		}
+		gamma_table[i] = (uchar_t)(k*(pow((double)i, 1.0/gamma)));
+		if( i && !gamma_table[i] )
+			gamma_table[i] = 1;
 	}
 }
 
@@ -101,21 +97,16 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 				// y is the row and pitch is the size of a row
 				// (x*size) is the length of each pixel data (column)
 				DWORD index = (y*pitch)+(x*size);
-// TODO - get this to work on linux
-#ifdef WIN32
+
 				// image.data is packed in rgba
-				image.data[index]   = (BYTE)gamma_lookup[image.data[index]];	// red
-				image.data[index+1] = (BYTE)gamma_lookup[image.data[index+1]];	// green
-				image.data[index+2] = (BYTE)gamma_lookup[image.data[index+2]];  // blue
-#endif
+				image.data[index]   = (char) gamma_table[ (uchar_t) image.data[index]];	   // red
+				image.data[index+1] = (char) gamma_table[ (uchar_t) image.data[index+1]];  // green
+				image.data[index+2] = (char) gamma_table[ (uchar_t) image.data[index+2]];  // blue
+				image.data[index+3] = (char) gamma_table[ (uchar_t) image.data[index+3]];  // alpha
+
 				// colour key
 				if( image.colorkey && (image.data[index] + image.data[index+1] + image.data[index+2]) == 0 )
-					image.data[index+3] = 0; // alpha - pixel will not be coppied do to alpha=0 ignore
-#ifdef WIN32
-				// do not colour key
-				else
-					image.data[index+3] = (BYTE)gamma_lookup[image.data[index+3]]; // alpha
-#endif
+					image.data[index+3] = 0; // alpha - pixel will not be rendered do to alpha value tests
 
 			}
 		}
@@ -200,7 +191,7 @@ BOOL init_renderer( render_info_t * info )
 	// init render state
 	//
 
-	render_gamma_correction(1.0f);
+	build_gamma_table(1.0f);
 	glEnable(GL_DITHER);
 	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
 	glDisable(GL_LIGHTING);

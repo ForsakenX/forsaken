@@ -94,6 +94,8 @@ typedef unsigned char       BYTE;
 typedef unsigned long       DWORD;
 typedef unsigned short      WORD;
 
+typedef unsigned char uchar_t;
+
 typedef struct
 {
     long    left;
