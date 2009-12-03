@@ -52,7 +52,7 @@ BOOL sdl_init_window( void )
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
 	{
 		int mode = render_info.default_mode.bpp;
-		if ( mode == 16 && mode == 24 && mode == 32 )
+		if ( mode != 16 && mode != 24 && mode != 32 )
 		{
 			mode = 24;
 			DebugPrintf("main_sdl: invalid bpp (%d) defaulting to 24\n",mode);
