@@ -637,6 +637,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   mouse_dx = mouse_dx * (float) fabs( mouse_dx ) * MouseXFactor;
   mouse_dy = mouse_dy * (float) fabs( mouse_dy ) * MouseYFactor;
 
+#if 0
   if ( mouse_dx < -framelag )
     mouse_dx = -framelag;
   if ( mouse_dx > framelag )
@@ -645,6 +646,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
     mouse_dy = -framelag;
   if ( mouse_dy > framelag )
     mouse_dy = framelag;
+#endif
 
   pitch_sign = ( conf->invert_pitch ) ? -1.0F : 1.0F;
   turn_sign = ( conf->invert_turn ) ? -1.0F : 1.0F;
