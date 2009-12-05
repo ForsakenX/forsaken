@@ -95,7 +95,7 @@ static BOOL parse_chdir( char *cli )
 static BOOL missing_folders( void )
 {
 	int x = 0;
-	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Dumps","Pilots","Scripts","Utils"};
+	char* folders[CRITICAL_FOLDERS] = {"Configs","Data","Pilots","Scripts"};
 	for( x = 0; x < CRITICAL_FOLDERS; x++ )
 		if( ! is_folder(folders[x]) )
 		{
