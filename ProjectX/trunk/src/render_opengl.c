@@ -10,13 +10,25 @@
 
 extern render_info_t render_info;
 
-// TODO - does gl even have such a concept?
-BOOL FSBeginScene(){ 
-	return TRUE; 
+// capabilities of the opengl system
+
+static struct
+{
+	float anisotropic; // anisotropic filtering for viewing textures at a flat angle
+} caps;
+
+static void detect_caps( void )
+{
+	//check whether anisotropic filtering extension is supported
+	caps.anisotropic = 0.0f;
+	if(strstr((char*)glGetString(GL_EXTENSIONS), "GL_EXT_texture_filter_anisotropic"))
+		glGetFloatv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &caps.anisotropic );
+	DebugPrintf("render: anisotropic filtering support = %s\n",caps.anisotropic?"true":"false");
 }
-BOOL FSEndScene(){ 
-	return TRUE; 
-}
+
+// unused in opengl
+BOOL FSBeginScene(){ return TRUE; }
+BOOL FSEndScene(){ return TRUE; }
 
 // prototypes
 void reset_trans( void );
@@ -138,6 +150,10 @@ BOOL create_texture(LPTEXTURE *t, const char *path, uint16 *width, uint16 *heigh
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
 	glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
 
+	// anisotropic settings
+	if(caps.anisotropic)
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAX_ANISOTROPY_EXT, caps.anisotropic);
+
 	// generates full range of mipmaps and scales to nearest power of 2
 	if(gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, image.w, image.h, GL_RGBA, GL_UNSIGNED_BYTE, image.data) != 0)
 	{
@@ -191,6 +207,7 @@ BOOL init_renderer( render_info_t * info )
 	// init render state
 	//
 
+	detect_caps();
 	build_gamma_table(1.0f);
 	glEnable(GL_DITHER);
 	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
