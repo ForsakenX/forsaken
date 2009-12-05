@@ -91,7 +91,7 @@ static BOOL parse_chdir( char *cli )
 // checks for all critical folders
 //
 
-#define CRITICAL_FOLDERS 6
+#define CRITICAL_FOLDERS 4
 static BOOL missing_folders( void )
 {
 	int x = 0;
@@ -278,6 +278,8 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		// use sscanf
 		else 
 		{
+			int w,h;
+
 			// override local port
 			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) == 1 )
 			{
@@ -298,6 +300,12 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 			// other wise you will end up with the default highest possible resolution
 			// note: if you pick a value not in the list then your window will be 1 size and your resolution another
 			else if ( sscanf( option, "mode:%d:%d", &render_info.default_mode.w, &render_info.default_mode.h ) == 1 ){}
+
+			// let user fix up aspect
+			else if ( sscanf( option, "aspect:%d:%d", &w, &h ) == 1 )
+			{
+				render_info.aspect_ratio = (float) w / (float) h;
+			}
 
 			// horizontal refresh rate
 			// most monitors normally support 60hz so pass 60 if you get weird stuff happening
