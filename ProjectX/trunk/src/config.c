@@ -1,6 +1,10 @@
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <memory.h>
+#include <string.h>
 
+#include "main.h"
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -8,10 +12,6 @@
 #include "object.h"
 #include "networking.h"
 #include "controls.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <memory.h>
-#include <string.h>
 #include "input.h"
 #include "models.h"
 #include "mxaload.h"
@@ -355,6 +355,10 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 	int j;
 	int keys_defined;
 
+	char line[256];
+	char * ptr = line;
+	fgets(line,256,f);
+
 	init_key_map();
 
 	keys_defined = 0;
@@ -363,28 +367,26 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 		save_key.key[ j ] = k->key[ j ]; // save old definition in case of failure
 		k->key[ j ] = 0; // clear any existing key definitions
 	}
-	while ( fscanf( f, " %80s", last_token ) == 1 )
+	while ( ptr && sscanf( ptr, " %80s", last_token ) == 1 )
 	{
 		for ( vk = vkey_map; vk->keyword; vk++ )
-		{
-			if ( !strcasecmp( last_token, vk->keyword ) )
+			if ( strcasecmp( last_token, vk->keyword ) == 0 )
 				break;
-		}
-		if ( vk->keyword )
-		{
-			for ( j = 0; j < MAX_KEYS_PER_CONTROL; j++ )
+
+		if ( ! vk->keyword )
+			continue;
+
+		for ( j = 0; j < MAX_KEYS_PER_CONTROL; j++ )
+			if ( !k->key[ j ] )
 			{
-				if ( !k->key[ j ] )
-				{
-					k->key[ j ] = vk->keycode;
-					keys_defined++;
-					break;
-				}
+				k->key[ j ] = vk->keycode;
+				keys_defined++;
+				break;
 			}
-		}
-		else
-			break;
+
+		ptr = strstr(ptr," ");
 	}
+	last_token[0] = 0;
 
 	if ( keys_defined )
 	{
