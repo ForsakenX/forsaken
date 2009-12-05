@@ -251,7 +251,10 @@ BOOL init_renderer( render_info_t * info )
 	info->WindowsDisplay.h  = info->ThisMode.h;
 
 	if(!info->aspect_ratio)
+	{
 		info->aspect_ratio = (float) info->ThisMode.w / (float) info->ThisMode.h;
+		DebugPrintf("render: aspect ratio set to %d:%d\n",info->ThisMode.w,info->ThisMode.h);
+	}
 
 	{
 		render_viewport_t viewport;

@@ -281,7 +281,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 			int w,h;
 
 			// override local port
-			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) == 1 )
+			if ( sscanf( option, "port:%s", (char*)&local_port_str.text[0] ) )
 			{
 				DebugPrintf("Command Line: local port set to %s\n", local_port_str.text);
 			}
@@ -293,35 +293,41 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 			else if ( sscanf( option , "pilot:%s", config_name )){}
 
 			// set the packets per second
-			else if ( sscanf( option, "PPS:%d", &NetUpdateIntervalCmdLine ) == 1 ){}
+			else if ( sscanf( option, "PPS:%d", &NetUpdateIntervalCmdLine ) ){}
 
 			// resolution mode
 			// must be a valid resolution list in the resolution list in game
 			// other wise you will end up with the default highest possible resolution
 			// note: if you pick a value not in the list then your window will be 1 size and your resolution another
-			else if ( sscanf( option, "mode:%d:%d", &render_info.default_mode.w, &render_info.default_mode.h ) == 1 ){}
+			else if ( sscanf( option, "mode:%d:%d", &render_info.default_mode.w, &render_info.default_mode.h ) ){}
 
 			// let user fix up aspect
-			else if ( sscanf( option, "aspect:%d:%d", &w, &h ) == 1 )
+			else if ( sscanf( option, "aspect:%d:%d", &w, &h ) )
 			{
+				DebugPrintf("cli: aspect ratio set to %d:%d\n",w,h);
 				render_info.aspect_ratio = (float) w / (float) h;
 			}
 
 			// horizontal refresh rate
 			// most monitors normally support 60hz so pass 60 if you get weird stuff happening
-			else if ( sscanf( option, "rate:%d", &render_info.default_mode.rate ) == 1 ){}
+			else if ( sscanf( option, "rate:%d", &render_info.default_mode.rate ) ){}
 
 			// bits per pixel
 			// default is 32 bpp
-			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) == 1 ){}
+			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) ){}
 
 			// modifies texture dimentions.. don't now what uv stands for..
-			else if ( sscanf( option, "UVFix:%f", &UV_Fix ) == 1 ){}
+			else if ( sscanf( option, "UVFix:%f", &UV_Fix ) ){}
 
 			// set the horizontal frame of view
 			// this is the screen stretching when you go into nitro
 			// default is 90... max is 120...
-			else if ( sscanf( option, "fov:%f", &normal_fov ) == 1 ){}
+			else if ( sscanf( option, "fov:%f", &normal_fov ) ){}
+
+			//
+			else {
+				DebugPrintf("cli: unknown option: %s\n",option);
+			}
         }
 
 		// get the next token
