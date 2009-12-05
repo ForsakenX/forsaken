@@ -250,11 +250,7 @@ BOOL init_renderer( render_info_t * info )
 	info->WindowsDisplay.w  = info->ThisMode.w;
 	info->WindowsDisplay.h  = info->ThisMode.h;
 
-//	if(info->bFullscreen)
-		// fullscreen stretches resolutions to fit
-		// so we should use the screen's w/h to fix the aspect properly
-//		info->aspect_ratio = (float) info->screen.w / (float) info->screen.h;
-//	else
+	if(!info->aspect_ratio)
 		info->aspect_ratio = (float) info->ThisMode.w / (float) info->ThisMode.h;
 
 	{
