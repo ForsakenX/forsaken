@@ -676,41 +676,60 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 ////////////////////////////////////////////////////////////////////////////////////////
 
 // these functions are helpers for the following sound buffer loading functions
-static BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
-static void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize);
 static BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize);
-static void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
 
 static void* sound_buffer_load(char *name, DWORD flags)
 {
-    IDirectSoundBuffer *pDSB = NULL;
-    DSBUFFERDESC dsBD = {0};
-    BYTE *pbWaveData;
-	void * Buffer = NULL;
+    IDirectSoundBuffer *sound_buffer = NULL;
+    DSBUFFERDESC buffer_description = {0};
+	WAVEFORMATEX buffer_format;
+	SDL_AudioSpec wav_spec;
+	Uint32 wav_length;
+	Uint8 *wav_buffer;
 
-    if (Buffer = DSGetWave(name, &dsBD.lpwfxFormat, &pbWaveData, &dsBD.dwBufferBytes))
+	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &wav_length) == NULL )
+	{
+		DebugPrintf("Could not open test.wav: %s\n", SDL_GetError());
+		return NULL;
+	}
+
+	// http://msdn.microsoft.com/en-us/library/ms897764.aspx
+    buffer_description.dwSize			= sizeof(buffer_description);
+    buffer_description.dwFlags			= flags;
+	buffer_description.dwBufferBytes	= (DWORD) wav_length;
+	buffer_description.lpwfxFormat		= &buffer_format;
+
+	// http://msdn.microsoft.com/en-us/library/dd757720%28VS.85%29.aspx
+	buffer_format.wFormatTag		= (WORD)	WAVE_FORMAT_PCM;
+	buffer_format.nChannels			= (WORD)	wav_spec.channels;
+	buffer_format.wBitsPerSample	= (WORD)	((wav_spec.format == AUDIO_U8 || wav_spec.format == AUDIO_S8) ? 8 : 16);
+	buffer_format.nSamplesPerSec	= (DWORD)	wav_spec.freq;
+	buffer_format.nBlockAlign		= (WORD)	(buffer_format.nChannels * buffer_format.wBitsPerSample) / 8;
+	buffer_format.nAvgBytesPerSec	= (DWORD)	(buffer_format.nSamplesPerSec * buffer_format.nBlockAlign);
+	buffer_format.cbSize			= (WORD)	0;
+
+	// http://msdn.microsoft.com/en-us/library/ms898123.aspx
+	if( IDirectSound_CreateSoundBuffer( lpDS, &buffer_description, &sound_buffer, NULL ) == DS_OK )
     {
-        dsBD.dwSize = sizeof(dsBD);
-        dsBD.dwFlags = flags ;
-
-        if ( IDirectSound_CreateSoundBuffer( lpDS, &dsBD, &pDSB, NULL ) == DS_OK )
+        if (!DSFillSoundBuffer(sound_buffer, (BYTE*) wav_buffer, (DWORD) wav_length))
         {
-            if (!DSFillSoundBuffer(pDSB, pbWaveData, dsBD.dwBufferBytes))
-            {
-                sound_buffer_release(pDSB);
-                pDSB = NULL;
-            }
-        }
-        else
-        {
-            pDSB = NULL;
+            sound_buffer_release(sound_buffer);
+            sound_buffer = NULL;
         }
     }
+    else
+    {
+        sound_buffer = NULL;
+    }
 
-	if( Buffer != NULL )
-		free( Buffer );
-    return pDSB;
+	SDL_FreeWAV(wav_buffer);
+
+    return sound_buffer;
 }
+
+// only used by the following
+static BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
+static void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
 
 static void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr)
 {
