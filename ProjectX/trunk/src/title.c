@@ -4744,7 +4744,6 @@ uint8 QuickStart = QUICKSTART_None;
 	Output		:		BOOL TRUE/FALSE
 ===================================================================*/
 BOOL IpOnCLI;
-extern void CheckForRogueSfx( void );
 BOOL DisplayTitle(void)
 {
 #if 1 // bjd - CHECK IMPORTANT
@@ -4870,8 +4869,6 @@ BOOL DisplayTitle(void)
 	// initialise sfx
 	for( i = 0 ; i < MAX_SFX ; i++ )
 		LastDistance[i] = 100000.0F;
-
-	CheckForRogueSfx();
 
 	//Set up camera
 	MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);

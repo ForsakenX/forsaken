@@ -459,13 +459,6 @@ void sound_source_destroy( sound_source_t * source )
 		return;
 	for (i = 0; i < MAX_DUP_BUFFERS; i++)
 	{
-		if (source->Dup_3DBuffer[i])
-		{
-            IDirectSound3DBuffer_Release(
-				(IDirectSound3DBuffer*)source->Dup_3DBuffer[i]
-			);
-	        source->Dup_3DBuffer[i] = NULL;
-		}
 		if (source->Dup_Buffer[i])
 		{
             sound_buffer_release(source->Dup_Buffer[i]);
@@ -489,81 +482,62 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 
 	memset( pSO, 0, sizeof(sound_source_t) );
 
-	pSO->Dup_Buffer[0] = NULL;
-	pSO->CompoundBuffer = FALSE;
 	pSO->looping_sfx_index[0] = -1;
+	pSO->Dup_Buffer[0] = sound_buffer_load(path);
 
-	// if sound is already loaded into HW...
-	if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
-	{				  
-		DebugPrintf("sound: compound buffer created!\n");
-		pSO->CompoundBuffer = TRUE;
-		for (i = 0; i < MAX_DUP_BUFFERS; i++)
-		   pSO->CompoundBufferLookup[i] = -1;
-	}
-	else
+	if( !pSO->Dup_Buffer[ 0 ] )
 	{
-		pSO->Dup_Buffer[0] = sound_buffer_load(path);
+		Msg("Unable to create sound buffer for %s\n", path );
+		sound_source_destroy( pSO );
+		return pSO;
+	}
 
-		if( !pSO->Dup_Buffer[ 0 ] )
+	// get caps of buffer
+	memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
+	dsbcaps.dwSize = sizeof( DSBCAPS );
+	IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
+
+	// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
+	// so we will just have to try duplicating until failure
+	for (i = 1; i < MAX_DUP_BUFFERS; i++)
+	{
+		pSO->looping_sfx_index[i] = -1;
+		// duplicate 2D buffer...
+		if ( !IDirectSound_DuplicateSoundBuffer( 
+			lpDS, 
+			(LPDIRECTSOUNDBUFFER)pSO->Dup_Buffer[0], 
+			(LPDIRECTSOUNDBUFFER*)&pSO->Dup_Buffer[i] 
+		) == DS_OK )
 		{
-			Msg("Unable to create sound buffer for %s\n", path );
+			DebugPrintf("unable to duplicate sound buffer\n");
+
+			// invalidate buffer & all duplicates
 			sound_source_destroy( pSO );
-			return pSO;
-		}
 
-		// get caps of buffer
-		memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
-		dsbcaps.dwSize = sizeof( DSBCAPS );
-		IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
-
-		// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
-		// so we will just have to try duplicating until failure
-		for (i = 1; i < MAX_DUP_BUFFERS; i++)
-		{
-			pSO->looping_sfx_index[i] = -1;
-			// duplicate 2D buffer...
-			if ( !IDirectSound_DuplicateSoundBuffer( lpDS, pSO->Dup_Buffer[0], &pSO->Dup_Buffer[i] ) == DS_OK )
+			// was original buffer hw? if so, try to recreate in sw
+			if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
 			{
-				DebugPrintf("unable to duplicate sound buffer\n");
+				DebugPrintf("trying to recreate in sw\n");
+				FreeHWBuffers = FALSE;
 
-				// invalidate buffer & all duplicates
-				sound_source_destroy( pSO );
+				// recreate all buffers up to & including this one in software
+				pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
 
-				// was original buffer hw? if so, try to recreate in sw
-				if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
+				if( !pSO->Dup_Buffer[ 0 ] )
 				{
-					DebugPrintf("trying to recreate in sw\n");
-					FreeHWBuffers = FALSE;
-
-					// recreate all buffers up to & including this one in software
-					pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
-
-					if( !pSO->Dup_Buffer[ 0 ] )
-					{
-						Msg("Unable to create sound buffer for %s\n", path );
-						sound_source_destroy( pSO );
-						return pSO;
-					}
-
-					i = 0;
-					continue;
+					Msg("Unable to create sound buffer for %s\n", path );
+					sound_source_destroy( pSO );
+					return pSO;
 				}
-				else
-				{
-					// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
-					Msg("unable to duplicate buffers in sw\n");
-					break;
-				}
+
+				i = 0;
+				continue;
 			}
-			// query for 3D interface if we are using 3D...
-			if ( pSO->Dup_3DBuffer[0] )
+			else
 			{
-				IDirectSoundBuffer_QueryInterface(
-					(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
-					&IID_IDirectSound3DBuffer, 
-					&pSO->Dup_3DBuffer[i]
-				);        
+				// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
+				Msg("unable to duplicate buffers in sw\n");
+				break;
 			}
 		}
 	}

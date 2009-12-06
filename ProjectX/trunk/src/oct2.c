@@ -2817,7 +2817,6 @@ BOOL RenderScene( void )
   case STATUS_QuitCurrentGame:
 	DebugState("STATUS_QuitCurrentGame\n");
 
-    StopCompoundSfx();
     OutputVisiStats( &Mloadheader, LevelNames[ LevelNum ] );
     MenuAbort();
     MenuRestart( &MENU_Start );
@@ -3745,7 +3744,6 @@ void CheckLevelEnd ( void )
   Output    :   nothing
 ===================================================================*/
 
-extern void CheckForRogueSfx( void );
 BOOL MainGame( void ) // bjd
 {
   int i;
@@ -4022,8 +4020,6 @@ BOOL MainGame( void ) // bjd
 
   // here is where we process F keys
   ProcessGameKeys();
-
-  CheckForRogueSfx();
 
   CheckLevelEnd();
 

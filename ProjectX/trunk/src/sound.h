@@ -78,11 +78,8 @@ void* sound_buffer_load(char* file);
 typedef struct
 {
 	void*			Dup_Buffer[MAX_DUP_BUFFERS];
-	void*			Dup_3DBuffer[MAX_DUP_BUFFERS];
-	BOOL			CompoundBuffer;	// is sound part of compound buffer?
 	DWORD			StartPos;		// start offset in buffer...
 	unsigned int	Length;			// length of sample (ms)...
-	int				CompoundBufferLookup[MAX_DUP_BUFFERS];
 	float			Buffer_Dist[MAX_DUP_BUFFERS];
 	Uint32			Buffer_TimeStamp[MAX_DUP_BUFFERS];
 	DWORD			TransferRate;	// bytes per second
