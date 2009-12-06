@@ -51,6 +51,16 @@ BOOL sound_init( void )
 	if (iErr < DS_OK)
 		return FALSE; // Failed to get DirectSound, so no sound-system available.
 
+	// build sound_caps structure
+	{
+		DSCAPS DSCaps;
+		memset (&DSCaps, 0, sizeof (DSCAPS));
+		DSCaps.dwSize = sizeof(DSCAPS);
+		IDirectSound_GetCaps( lpDS, &DSCaps );
+		sound_caps.memory = DSCaps.dwMaxContigFreeHwMemBytes;
+		sound_caps.buffers = DSCaps.dwFreeHwMixingStaticBuffers;
+	}
+
 	// Succeeded in getting DirectSound.
 	// Check to see if there is 3D acceleration.
 	/*
@@ -214,6 +224,29 @@ void sound_buffer_stop( void * buffer )
 	IDirectSoundBuffer_Stop( 
 		(IDirectSoundBuffer*) buffer 
 	);
+}
+
+DWORD sound_buffer_size( void * buffer )
+{
+	DSBCAPS dsbcaps; 
+	dsbcaps.dwSize = sizeof( DSBCAPS );
+	IDirectSoundBuffer_GetCaps(
+		(IDirectSoundBuffer*)buffer,
+		&dsbcaps 
+	);
+	return dsbcaps.dwBufferBytes;
+}
+
+BOOL sound_buffer_in_hw( void * buffer )
+{
+	DSBCAPS DSBCaps;
+	memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
+	DSBCaps.dwSize = sizeof( DSBCAPS );
+	IDirectSoundBuffer_GetCaps(
+		(IDirectSoundBuffer*) buffer,
+		&DSBCaps 
+	);
+	return (DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE);
 }
 
 void sound_buffer_release( void * ptr )
@@ -525,13 +558,17 @@ static void* sound_buffer_load(char *name, DWORD flags)
     return pDSB;
 }
 
-void* sound_buffer_load_compound(DWORD flags, int *num_allocated_ptr)
+void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr)
 {
 	IDirectSoundBuffer *pDSB = NULL;
     DSBUFFERDESC dsBD = {0};
     BYTE *pbWaveData;
 	void * Buffer = NULL;
 	WAVEFORMATEX format;
+	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
+
+	if(use_sound_hw)
+		flags |= DSBCAPS_LOCHARDWARE;
 
     if (Buffer = DSGetMultiWave(&format, &pbWaveData, &dsBD.dwBufferBytes, flags, num_allocated_ptr))
     {

@@ -67,8 +67,7 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 #include <stdio.h>
 #include <stdio.h>
 #include <time.h>
-#include <windows.h> // still needed for timers
-#include <dsound.h> // still needed
+#include <dsound.h> // TODO
 
 #include "quat.h"
 #include "compobjects.h"
@@ -1049,19 +1048,13 @@ void ProcessSoundRoutines (void * pParm)
 
 			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
 			{
-				DSBCAPS dsbcaps; 
-
 				DebugPrintf( "-- adding SpotSfx %d onto SpotSfxList, buffer is %s\n",
 								SfxThreadInfo[ i ].SpotSfxListIndex,
 								(sound_buffer)?"GOOD":"BAD");
 
-				// get caps of buffer...
-				dsbcaps.dwSize = sizeof( DSBCAPS );
-				IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)sound_buffer, &dsbcaps );
-
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer3D = NULL;
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = dsbcaps.dwBufferBytes;
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = sound_buffer_size( sound_buffer );
 
 				sound_buffer_set_freq( 
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
@@ -1986,59 +1979,38 @@ extern LPDIRECTSOUND lpDS;
 
 int LoadSfxToHW( void )
 {
-	DSCAPS DSCaps;
-	DSBCAPS DSBCaps;
-	DWORD FreeMem;
-	DWORD flags;
+	DWORD FreeMem = 1;  // so that it equates to TRUE
 	DWORD buffers_before;
 	int AllocatedCompoundSfx = 0;
 	int j, i;
 	DWORD dwSizeWritten;
-	LPWAVEFORMATEX lpwaveinfo; 
+	LPWAVEFORMATEX lpwaveinfo;
+	BOOL use_sound_hw = 0;
 
 	NumDupCompoundBuffers = 0;
 
-	memset (&DSCaps, 0, sizeof (DSCAPS));
-	DSCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps( lpDS, &DSCaps );
-
-	if ( DSCaps.dwMaxContigFreeHwMemBytes > MIN_SOUNDCARD_HW_MEM )
+	if ( sound_caps.memory > MIN_SOUNDCARD_HW_MEM )
 	{
-		FreeMem = DSCaps.dwMaxContigFreeHwMemBytes;
-		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCHARDWARE | DSBCAPS_CTRLFREQUENCY; 
+		FreeMem = sound_caps.memory;
+		use_sound_hw = TRUE;
 		DebugPrintf("Loading compound sfx buffer in HW\n");
 	}
-	else
-	{
-		FreeMem = 1;	// so that it equates to TRUE
-		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
-		DebugPrintf("Loading compound sfx buffer in SW\n");
-	}
 
-	// if we have hardware mixing channels & hardware mem & not in titles
-	if ( FreeMem && ( DSCaps.dwFreeHwMixingStaticBuffers >= MIN_COMPOUND_BUFFERS ) )
+	// if we have hardware mixing channels & hardware mem
+	if ( FreeMem && ( sound_caps.buffers >= MIN_COMPOUND_BUFFERS ) )
 	{
-		buffers_before = DSCaps.dwFreeHwMixingStaticBuffers;
+		buffers_before = sound_caps.buffers;
 
 		// load first compound buffer
-		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(flags, &AllocatedCompoundSfx );
+		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(
+			use_sound_hw,
+			&AllocatedCompoundSfx 
+		);
 
 		// if buffer succesfully loaded...
 		if ( CompoundSfxBuffer[0].buffer )
 		{
-			/*
-			// get caps after creating buffer, to check that buffer is using hw mixing channel
-			memset (&DSCaps, 0, sizeof (DSCAPS));
-			DSCaps.dwSize = sizeof(DSCAPS);
-			IDirectSound_GetCaps( lpDS , &DSCaps );
-			*/
-
-			memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
-			DSBCaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)CompoundSfxBuffer[ 0 ].buffer, &DSBCaps );
-
-			//if ( buffers_before == DSCaps.dwFreeHwMixingStaticBuffers)
-			if (!( DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE ))
+			if (!sound_buffer_in_hw(CompoundSfxBuffer[ 0 ].buffer))
 			{
    				// no point in using compound buffer, since HW mixing channels are not being used
 				DebugPrintf("Crap sound driver detected - Buffers stored are not using HW mixing channels, therefor compound buffer will not be created\n");
@@ -2062,7 +2034,7 @@ int LoadSfxToHW( void )
 				CompoundSfxBuffer[0].current_sfx = -1;
 
 				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
-				NumDupCompoundBuffers = DSCaps.dwFreeHwMixingStaticBuffers;
+				NumDupCompoundBuffers = sound_caps.buffers;
 
 				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
 					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
@@ -2094,10 +2066,6 @@ int LoadSfxToHW( void )
 				}
 
 				NumDupCompoundBuffers = j;
-
-				memset (&DSCaps, 0, sizeof (DSCAPS));
-				DSCaps.dwSize = sizeof(DSCAPS);
-				IDirectSound_GetCaps( lpDS , &DSCaps );
 			}
 		}else
 		{

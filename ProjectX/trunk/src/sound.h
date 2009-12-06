@@ -12,6 +12,11 @@
 // this will eventually be removed but is required right now
 BOOL Sound3D;
 
+struct {
+	int memory; // hw contiguous bytes of ram
+	int buffers; // hw static mixing buffers
+} sound_caps; // capabilities
+
 //
 // Generic Functions
 //
@@ -50,6 +55,8 @@ void sound_buffer_play( void * buffer );
 void sound_buffer_play_looping( void * buffer );
 BOOL sound_buffer_is_playing( void * buffer );
 void sound_buffer_stop( void * buffer );
+DWORD sound_buffer_size( void * buffer );
+BOOL sound_buffer_in_hw( void * buffer );
 void sound_buffer_release( void * buffer );
 void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );
@@ -64,7 +71,7 @@ void* sound_buffer_load_for_sfx(char* file);
 
 // only used by LoadSfxToHW
 // this is only here till i port that function over and hide it away
-void* sound_buffer_load_compound(DWORD flags, int *num_allocated_ptr);
+void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr);
 
 //
 // Sources
