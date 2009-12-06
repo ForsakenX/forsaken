@@ -122,7 +122,6 @@ extern MODELNAME *TitleModelSet;
 extern float LevelTimeTaken;
 
 extern BYTE PreDemoEndMyGameStatus;
-extern int NumDupCompoundBuffers;
 extern  TEXT  DemoGameName;
 
 extern  BOOL FullRearView;

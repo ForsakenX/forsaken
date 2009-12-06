@@ -81,6 +81,7 @@
 
 #define	GLOBAL_SCALE			(0.25F)
 
+typedef unsigned int		uint;
 typedef	unsigned char		uint8;			/* Unsigned 8 Bit Integer  */
 typedef	char				int8;			/* Signed 8 Bit Integer    */
 typedef	unsigned short int	uint16;			/* Unsigned 16 Bit Integer */

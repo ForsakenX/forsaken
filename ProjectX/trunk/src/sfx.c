@@ -1,5 +1,6 @@
 #include "main.h"
 #include "render.h"
+#include "sound.h"
 #include "sfx.h"
 
 #ifndef SOUND_SUPPORT
@@ -62,17 +63,11 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 #else
 
-#define DIRECTSOUND_VERSION 0x0700
-
 #include <stdio.h>
-#include <windows.h>
-#include <windowsx.h>
-#include <mmsystem.h>
 #include <stdio.h>
-#include <objbase.h>
-#include <cguid.h>
 #include <time.h>
-#include <dsound.h>
+#include <windows.h> // still needed for timers
+#include <dsound.h> // still needed
 
 #include "quat.h"
 #include "compobjects.h"
@@ -90,14 +85,10 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 #include "main.h"
 #include "controls.h"
 #include "ships.h"
-#include "vfw.h"
 #include "config.h"
 #include "xmem.h"
 #include "util.h"
 #include "file.h"
-
-void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq );
-
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -117,354 +108,7 @@ BOOL NoCompoundSfxBuffer = FALSE;
 char CurrentTauntVariant;
 #define MAX_ANY_SFX 64
 
-typedef struct
-{
-        BOOL Used;
-        uint32  UniqueID;
-        int SndObjIndex;
-        int SfxFlags;
-        int SfxBufferIndex;
-        int ThreadIndex;
-        UINT CompoundSfxTimerID;
-        int16 TriggerSfx;
-        BOOL OnPause;
-        float PauseValue;
-} SFX_HOLDER;
-
-SFX_HOLDER	SfxHolder[ MAX_ANY_SFX ];
-BOOL		NoSFX = FALSE;
-BOOL		Sound3D = FALSE;
-float		GlobalSoundAttenuation = 0.8F;
-BOOL CompoundSfxAllocated[MAX_SFX];
-
-int NumDupCompoundBuffers;
-
-BOOL bSoundEnabled = FALSE;
-
-LPDIRECTSOUND           lpDS = NULL;
-LPDIRECTSOUND3DLISTENER	lpDS3DListener;
-LPDIRECTSOUNDBUFFER		glpPrimaryBuffer;
-DSCAPS					DSCaps;
-int	MaxCompoundSfx;
-uint32 CurrentBikerSpeech = 0;
-uint32 CurrentBikeCompSpeech = 0;
-
-float	LastDistance[MAX_SFX];
-
-int Num_SndObjs;
-
-#define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
-#define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
-#define MAX_COMPOUND_BUFFERS 16	// max number of mixing channels
-#define MIN_COMPOUND_BUFFERS 8	// min number of mixing channels ( otherwise sw mixing will be used )
-
-
-typedef struct _SNDOBJ
-{
-	IDirectSoundBuffer		*Dup_Buffer[MAX_DUP_BUFFERS];
-	IDirectSound3DBuffer	*Dup_3DBuffer[MAX_DUP_BUFFERS];
-	BOOL					CompoundBuffer;	// is sound part of compound buffer?
-	DWORD					StartPos;			// start offset in buffer...
-	unsigned int					Length;			// length of sample (ms)...
-	int						CompoundBufferLookup[MAX_DUP_BUFFERS];
-	float					Buffer_Dist[MAX_DUP_BUFFERS];
-	clock_t					Buffer_TimeStamp[MAX_DUP_BUFFERS];
-	DWORD					TransferRate;	// bytes per second
-	DWORD					Bytes;
-	int						looping_sfx_index[MAX_DUP_BUFFERS];
-	int						SfxHolderIndex[MAX_DUP_BUFFERS];
-} SNDOBJ;
-
-
-int CurrentLevel = 16;
-SNDOBJ *SndObjs[MAX_SFX];
-#define MAX_SYNCHRONOUS_DYNAMIC_SFX 16
-
-typedef struct
-{
-        BOOL used;
-        IDirectSoundBuffer *buffer;
-        int SfxHolderIndex;
-} SBUFFERLIST;
-
-
-SBUFFERLIST SBufferList[ MAX_SYNCHRONOUS_DYNAMIC_SFX ];
-
-
-typedef struct _SBUFFER_LIST
-{
-	struct _SBUFFER_LIST *next;
-	IDirectSoundBuffer* buffer;
-	IDirectSound3DBuffer* buffer3D;
-} SBUFFER_LIST;
-
-// buffer linked list pointers...
-SBUFFER_LIST *SBufferList_Start = NULL;
-SBUFFER_LIST *SBufferList_Current = NULL;
-
-SNDOBJ *SndObjList_Static_Start;
-
-
-typedef struct _SPOT_SFX_LIST
-{
-	//struct					_SPOT_SFX_LIST *next;	// next list item
-	//struct					_SPOT_SFX_LIST *prev;	// prev list item
-	BOOL					used;					// is sfx in use?
-	int16					sfxindex;					// sfx num, from enum list
-	int						variant;					// sfx num, from enum list
-	int						flags;
-	VECTOR					*pos;					// current sfx position vector
-	VECTOR					fixedpos;
-	int						type;					// fixed or variable group?
-	uint16					*group;					// current sfx group num
-	uint16					fixedgroup;				// current sfx group num
-	float					freq;					// frequency ( 0 for original frequency )
-	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
-	BOOL					bufferloaded;			// flag to indicate if buffer is loaded ( or about to be loaded )
-	IDirectSoundBuffer		*buffer;				// buffer address
-	IDirectSound3DBuffer	*buffer3D;				// 3D buffer interface address
-	DWORD					buffersize;
-	float					distance;
-	int						SfxHolderIndex;
-	int						SfxThreadInfoIndex;
-	uint16					Effects;
-	uint32					uid;
-} SPOT_SFX_LIST;
-
-#define MAX_LOOPING_SFX 64
-SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
-
-
-#define MAX_THREADED_SFX 2
-
-
-typedef struct
-{
-        BOOL SfxToPlay;
-        int16 SfxNum;
-        int Variant;
-        uint16 SfxGroup;
-        VECTOR SfxVector;
-        VECTOR SfxTempVector;
-        float SfxFreq;
-        float SfxDistance;
-        int SfxType;
-//      SPOT_SFX_LIST *node;
-        int SpotSfxListIndex;
-        int SfxHolderIndex;
-        long Vol;
-        uint16 Effects;
-} SFX_THREAD_INFO;
-
-SFX_THREAD_INFO SfxThreadInfo[MAX_THREADED_SFX];
-
-int sfxref = 0;
-int dupbufref = 0;
-char TauntPath[ 128 ];
-
-DWORD CompoundSfxTimeStamp[64];
-DWORD CompoundSfxMaxLag = 0;
-
-BOOL BikerSpeechPlaying = FALSE;
-BOOL FreeHWBuffers;
-
-typedef struct
-{
-	int		current_sfx;
-	int		current_variant;
-	int		compound_buffer_lookup_index;
-	DWORD	start_time;
-	DWORD	finish_time;
-	float	distance;
-	unsigned int	timerID;
-	IDirectSoundBuffer *buffer;
-	int		SfxHolderIndex;
-}COMPOUND_SFX_INFO;
-
-COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// HSNDOBJ             Handle to a SNDOBJ object.
-//
-//  SNDOBJs are implemented in dsutil as an example layer built on top
-//      of DirectSound.
-//
-//      A SNDOBJ is generally used to manage individual
-//      sounds which need to be played multiple times concurrently.  A
-//      SNDOBJ represents a queue of IDirectSoundBuffer objects which
-//      all refer to the same buffer memory.
-//
-//      A SNDOBJ also automatically reloads the sound resource when
-//      DirectSound returns a DSERR_BUFFERLOST
-//
-///////////////////////////////////////////////////////////////////////////////
-
-typedef struct
-{
-	int SfxNum;
-	int Variant;
-	DWORD StartPos;
-	unsigned int Length;
-	DWORD Bytes;
-} TEMPSFXINFO;
-
-#define _HSNDOBJ_DEFINED
-TEMPSFXINFO TempSfxInfo[MAX_COMPOUND_SFX];
-
-
-#define MAX_CONCURRENT_SFX 32
-
-
-typedef struct
-{
-        int type;
-        int SndObjIndex;
-        int SndObjBuffer;
-        IDirectSoundBuffer *DynamicSfxBuffer;
-        int CompoundSfxBufferIndex;
-        int LoopingSfxIndex;
-} SFX_PLAYING;
-
-
-
-SFX_PLAYING SfxPlaying[ MAX_CONCURRENT_SFX ];
-
-
-typedef struct{
-	uint16 Num_Variants;
-	uint16 SndObjIndex;
-	BOOL Requested;
-} SNDLOOKUP;
-SNDLOOKUP SndLookup[ MAX_SFX ];
-
-uint32 SfxUniqueID = 1;
-
-char *CompoundSfxFilename = "sfx\\Compound.wav";
-
-#define MAX_SFX_VARIANTS 16
-char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
-
-/****************************************
-Externals
-*****************************************/
-extern 	ENEMY Enemies[];
-extern SLIDER BikeCompSpeechSlider;
-extern SLIDER BikerSpeechSlider;
-extern USERCONFIG	*player_config;
-extern VECTOR	SlideUp;
-extern VECTOR	Forward;
-extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
-extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
-extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
-extern SLIDER  SfxSlider; 
-
-DWORD CompoundSfxDataRate;
-
-extern DWORD CompoundSfxBitDepth;
-DWORD CompoundSfxChannels = 1;
-extern USERCONFIG *player_config;
-
-extern float framelag;	
-extern LEVEL_LOOKUP LevelLookup[];
-extern char	ShortLevelNames[MAXLEVELS][32];
-extern LIST	BikeList;
-extern LIST BikeComputerList;
-
-/****************************************
-Fn Prototypes
-*****************************************/
-BOOL Init_SoundGlobals(void);
-void FreeSBufferList( void );
-void InitSfxHolders( void );
-void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
-int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance );
-
-/*************************************
-Bike Computer lookup table identifiers
-**************************************/
-enum {
-	SFX_BIKECOMP_LOOKUP_AM,  //	-	assassin missile                        
-	SFX_BIKECOMP_LOOKUP_AP,  //	-	picking up a weapon which is already pre
-	SFX_BIKECOMP_LOOKUP_BL,  //	-	beam laser                              
-	SFX_BIKECOMP_LOOKUP_BN,  //	-	bad navigation                          
-	SFX_BIKECOMP_LOOKUP_CA,  //	-	camping                                 
-	SFX_BIKECOMP_LOOKUP_CD,  //	-	chaff dispenser                         
-	SFX_BIKECOMP_LOOKUP_CS,  //	-	chaos shield                            
-	SFX_BIKECOMP_LOOKUP_DY,  //	-	destroying yourself                     
-	SFX_BIKECOMP_LOOKUP_EA,  //	-	extra ammo                              
-	SFX_BIKECOMP_LOOKUP_EX,  //	-	extra,   miscellaneous phrases            
-	SFX_BIKECOMP_LOOKUP_FL,  //	-	flares                                  
-	SFX_BIKECOMP_LOOKUP_GK,  //	-	good kill total                         
-	SFX_BIKECOMP_LOOKUP_GL,  //	-	general ammo low                        
-	SFX_BIKECOMP_LOOKUP_GM,  //	-	gravgon missile                         
-	SFX_BIKECOMP_LOOKUP_GP,  //	-	golden power pod                        
-	SFX_BIKECOMP_LOOKUP_HC,  //	-	hull critical                           
-	SFX_BIKECOMP_LOOKUP_IN,  //	-	incoming                                
-	SFX_BIKECOMP_LOOKUP_IR,  //	-	IR goggles                              
-	SFX_BIKECOMP_LOOKUP_MA,  //	-	maximum ammo                            
-	SFX_BIKECOMP_LOOKUP_MK,  //	-	many kills in a short time period       
-	SFX_BIKECOMP_LOOKUP_MR,  //	-	MRFL                                    
-	SFX_BIKECOMP_LOOKUP_MU,  //	-	mug                                     
-	SFX_BIKECOMP_LOOKUP_NK,  //	-	no kills for a lengthy time period      
-	SFX_BIKECOMP_LOOKUP_NL,  //	-	nitro low                               
-	SFX_BIKECOMP_LOOKUP_NP,  //	-	selecting a weapon which is not present 
-	SFX_BIKECOMP_LOOKUP_NT,  //	-	nitro                                   
-	SFX_BIKECOMP_LOOKUP_OP,  //	-	orbit pulsar                            
-	SFX_BIKECOMP_LOOKUP_PG,  //	-	petro gel                               
-	SFX_BIKECOMP_LOOKUP_PK,  //	-	poor kill total                         
-	SFX_BIKECOMP_LOOKUP_PL,  //	-	pyrolite fuel low                       
-	SFX_BIKECOMP_LOOKUP_PM,  //	-	pine mine                               
-	SFX_BIKECOMP_LOOKUP_PO,  //	-	power pod                               
-	SFX_BIKECOMP_LOOKUP_PP,  //	-	plasma pack                             
-	SFX_BIKECOMP_LOOKUP_PR,  //	-	purge mine                              
-	SFX_BIKECOMP_LOOKUP_PS,  //	-	pulsar                                  
-	SFX_BIKECOMP_LOOKUP_PY,  //	-	pyrolite                                
-	SFX_BIKECOMP_LOOKUP_QM,  //	-	quantum mine                            
-	SFX_BIKECOMP_LOOKUP_RR,  //	-	resnic reanimator                       
-	SFX_BIKECOMP_LOOKUP_SA,  //	-	scatter missile                         
-	SFX_BIKECOMP_LOOKUP_SC,  //	-	shield critical                         
-	SFX_BIKECOMP_LOOKUP_SG,  //	-	suss-gun                                
-	SFX_BIKECOMP_LOOKUP_SH,  //	-	shield                                  
-	SFX_BIKECOMP_LOOKUP_SI,  //	-	scatter missile impact                  
-	SFX_BIKECOMP_LOOKUP_SL,  //	-	suss gun ammo low                       
-	SFX_BIKECOMP_LOOKUP_SM,  //	-	smoke streamer                          
-	SFX_BIKECOMP_LOOKUP_SO,  //	-	spider mine                             
-	SFX_BIKECOMP_LOOKUP_SP,  //	-	solaris heatseaker                      
-	SFX_BIKECOMP_LOOKUP_ST,  //	-	stealth mantle                          
-	SFX_BIKECOMP_LOOKUP_TI,  //	-	titan star missile                      
-	SFX_BIKECOMP_LOOKUP_TR,  //	-	transpulse                              
-	SFX_BIKECOMP_LOOKUP_TX,  //	-	trojax  
-};
-
-#define SFX_BikeComp		2	// bike computer speech 
-#define SFX_BikeCompNoOveride	512
-#define SFX_BikerSpeechOveride	32	// use when biker speech must play ( will cut off any existing speech )
-
-/*************************************
-Biker speech lookup table identifiers
-**************************************/
-enum {
-	SFX_BIKER_LOOKUP_GP, //	-	general        
-	SFX_BIKER_LOOKUP_VP, //	-	victory        
-	SFX_BIKER_LOOKUP_LP, //	-	losing         
-	SFX_BIKER_LOOKUP_BW, //	-	big weapon gain
-	SFX_BIKER_LOOKUP_LE, //	-	low energy     
-	SFX_BIKER_LOOKUP_TN, //	-	taunt          
-	SFX_BIKER_LOOKUP_PN, //	-	pain           
-	SFX_BIKER_LOOKUP_DT, //	-	death          
-	SFX_BIKER_LOOKUP_EX, //	-	extra          
-};
-#define SFX_Dynamic			1	// sound is loaded up as required
-#define SFX_Looping			16	// level specific sfx
-#define SFX_LevelSpec		8	// level specific sfx
-typedef struct SFXNAME{
-	char		*Name;			// Name of the Sfx...
-	int			Flags;
-	int			Priority;			// for compound sfx
-	int			SfxLookup;			// for biker / computer speech
-}SFXNAME;
-SFXNAME		Sfx_Filenames[MAX_SFX] =
+SFXNAME	Sfx_Filenames[MAX_SFX] =
 {
 	/************************************************
 	Generic
@@ -677,6 +321,150 @@ SFXNAME		Sfx_Filenames[MAX_SFX] =
 
 };
 
+typedef struct
+{
+        BOOL Used;
+        uint32  UniqueID;
+        int SndObjIndex;
+        int SfxFlags;
+        int SfxBufferIndex;
+        int ThreadIndex;
+        uint CompoundSfxTimerID;
+        int16 TriggerSfx;
+        BOOL OnPause;
+        float PauseValue;
+} SFX_HOLDER;
+
+SFX_HOLDER	SfxHolder[ MAX_ANY_SFX ];
+BOOL		NoSFX = FALSE;
+float		GlobalSoundAttenuation = 0.8F;
+
+BOOL bSoundEnabled = FALSE;
+
+int	MaxCompoundSfx;
+uint32 CurrentBikerSpeech = 0;
+uint32 CurrentBikeCompSpeech = 0;
+
+float	LastDistance[MAX_SFX];
+
+int Num_SndSources;
+
+int CurrentLevel = 16;
+sound_source_t *SndSources[MAX_SFX];
+
+sound_source_t *SndObjList_Static_Start;
+
+typedef struct _SPOT_SFX_LIST
+{
+	//struct					_SPOT_SFX_LIST *next;	// next list item
+	//struct					_SPOT_SFX_LIST *prev;	// prev list item
+	BOOL					used;					// is sfx in use?
+	int16					sfxindex;				// sfx num, from enum list
+	int						variant;				// sfx num, from enum list
+	int						flags;
+	VECTOR					*pos;					// current sfx position vector
+	VECTOR					fixedpos;
+	int						type;					// fixed or variable group?
+	uint16					*group;					// current sfx group num
+	uint16					fixedgroup;				// current sfx group num
+	float					freq;					// frequency ( 0 for original frequency )
+	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
+	BOOL					bufferloaded;			// flag to indicate if buffer is loaded ( or about to be loaded )
+	void*					buffer;					// buffer address
+	void*					buffer3D;				// 3D buffer interface address
+	DWORD					buffersize;
+	float					distance;
+	int						SfxHolderIndex;
+	int						SfxThreadInfoIndex;
+	uint16					Effects;
+	uint32					uid;
+} SPOT_SFX_LIST;
+
+#define MAX_LOOPING_SFX 64
+SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
+
+#define MAX_THREADED_SFX 2
+
+typedef struct
+{
+        BOOL SfxToPlay;
+        int16 SfxNum;
+        int Variant;
+        uint16 SfxGroup;
+        VECTOR SfxVector;
+        VECTOR SfxTempVector;
+        float SfxFreq;
+        float SfxDistance;
+        int SfxType;
+//      SPOT_SFX_LIST *node;
+        int SpotSfxListIndex;
+        int SfxHolderIndex;
+        long Vol;
+        uint16 Effects;
+} SFX_THREAD_INFO;
+
+SFX_THREAD_INFO SfxThreadInfo[MAX_THREADED_SFX];
+
+int sfxref = 0;
+int dupbufref = 0;
+char TauntPath[ 128 ];
+
+DWORD CompoundSfxTimeStamp[64];
+DWORD CompoundSfxMaxLag = 0;
+
+BOOL BikerSpeechPlaying = FALSE;
+
+typedef struct
+{
+	int		current_sfx;
+	int		current_variant;
+	int		compound_buffer_lookup_index;
+	DWORD	start_time;
+	DWORD	finish_time;
+	float	distance;
+	unsigned int	timerID;
+	void*	buffer; // IDirectSoundBuffer
+	int		SfxHolderIndex;
+}COMPOUND_SFX_INFO;
+
+COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
+
+#define MAX_CONCURRENT_SFX 32
+
+uint32 SfxUniqueID = 1;
+
+#define MAX_SFX_VARIANTS 16
+char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
+
+/****************************************
+Externals
+*****************************************/
+extern 	ENEMY Enemies[];
+extern SLIDER BikeCompSpeechSlider;
+extern SLIDER BikerSpeechSlider;
+extern USERCONFIG	*player_config;
+extern VECTOR	SlideUp;
+extern VECTOR	Forward;
+extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
+extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
+extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
+extern SLIDER  SfxSlider; 
+
+DWORD CompoundSfxDataRate;
+extern USERCONFIG *player_config;
+
+extern float framelag;	
+extern LEVEL_LOOKUP LevelLookup[];
+extern char	ShortLevelNames[MAXLEVELS][32];
+extern LIST	BikeList;
+extern LIST BikeComputerList;
+
+/****************************************
+Fn Prototypes
+*****************************************/
+void FreeSBufferList( void );
+void InitSfxHolders( void );
+int FindFreeBufferSpace( sound_source_t *SndObj, float Distance );
 
 typedef struct
 {
@@ -945,750 +733,6 @@ char *BikerSpeechEffects[MAX_BIKE_COMPUTER_SFX] = {
 	"EX",	//	-	extra 
 };
 
-
-#define MakeSoundBuffer( A, B, C, D ) ( IDirectSound_CreateSoundBuffer( (A), (B), (C), (D)) == DS_OK )
-#define SoundBufferDuplicate( A, B, C ) ( IDirectSound_DuplicateSoundBuffer( (A), (B), (C) ) == DS_OK )
-#define SoundBufferRelease(x) {if (*x != NULL) {(*x)->lpVtbl->Release( *x ); *x = NULL;}}
-
-
-int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex );
-
-extern LPDIRECTSOUND lpDS;
-extern SNDLOOKUP SndLookup[];
-
-extern BOOL CompoundSfxAllocated[MAX_SFX];
-extern BOOL FreeHWBuffers;
-
-DWORD UserTotalCompoundSfxBufferSize = 0;
-BOOL CustomCompoundBufferSize = FALSE;
-
-// establish compound sample format...temporarily hard coded for now...
-DWORD CompoundSfxBitDepth = 16;
-DWORD CompoundSfxFrequency = 22050;
-extern DWORD CompoundSfxChannels;
-float CompoundSfxGap = 0.1F;	// secs
-
-extern SFXNAME Sfx_Filenames[MAX_SFX];
-extern TEMPSFXINFO TempSfxInfo[];
-
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSLoadSoundBuffer    Loads an IDirectSoundBuffer from a Win32 resource in
-//                      the current application.
-//
-// Params:
-//  pDS         -- Pointer to an IDirectSound that will be used to create
-//                 the buffer.
-//
-//  lpName      -- Name of WAV resource to load the data from.  Can be a
-//                 resource id specified using the MAKEINTRESOURCE macro.
-//
-// Returns an IDirectSoundBuffer containing the wave data or NULL on error.
-//
-// example:
-//  in the application's resource script (.RC file)
-//      Turtle WAV turtle.wav
-//
-//  some code in the application:
-//      IDirectSoundBuffer *pDSB = DSLoadSoundBuffer(pDS, "Turtle");
-//
-//      if (pDSB)
-//      {
-//          IDirectSoundBuffer_Play(pDSB, 0, 0, DSBPLAY_TOEND);
-//          /* ... */
-//
-///////////////////////////////////////////////////////////////////////////////
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#ifdef DEBUG_ON
-
-IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags, char *from_file, int from_line );
-IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr, char *from_file, int from_line );
-
-
-#else
-IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags );
-IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr );
-#endif
-
-#ifdef __cplusplus
-}
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// SndObjCreate     Loads a SNDOBJ from a Win32 resource in
-//                  the current application.
-//
-// Params:
-//  pDS         -- Pointer to an IDirectSound that will be used to create
-//                 the SNDOBJ.
-//
-//  lpName      -- Name of WAV resource to load the data from.  Can be a
-//                 resource id specified using the MAKEINTRESOURCE macro.
-//
-//  iConcurrent -- Integer representing the number of concurrent playbacks of
-//                 to plan for.  Attempts to play more than this number will
-//                 succeed but will restart the least recently played buffer
-//                 even if it is not finished playing yet.
-//
-// Returns an HSNDOBJ or NULL on error.
-//
-// NOTES:
-//      SNDOBJs automatically restore and reload themselves as required.
-//
-///////////////////////////////////////////////////////////////////////////////
-SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int iConcurrent , DWORD dwFlags, int sfx);
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// SndObjDestroy  Frees a SNDOBJ and releases all of its buffers.
-//
-// Params:
-//  hSO         -- Handle to a SNDOBJ to free.
-//
-///////////////////////////////////////////////////////////////////////////////
-void SndObjDestroy(SNDOBJ *hSO);
-
-void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
-
-BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD dwWaveSize);
-
-#define IS_COMPOUND( flags ) ( (!(flags & SFX_Looping)) && (!(flags & SFX_Dynamic)))
-
-BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
-
-void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize)
-{
-	long			File_Size;
-	long			Read_Size;
-	void		*	Buffer;
-	void *End;
-	
-	File_Size = Get_File_Size( lpName );	// how big is the file...
-	if( !File_Size ) return NULL;
-	Buffer = malloc( File_Size );							// alloc enough space to load it...
-	if( Buffer == NULL ) return( NULL );					// if couldnt then return
-	Read_Size = Read_File( lpName, Buffer, File_Size ); // Read it in making a note of the Size returned
-	if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
-
-	DSParseWave( Buffer , ppWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-	return Buffer;
-}
-
-#ifdef DEBUG_ON
-IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags, char *from_file, int from_line )
-#else
-IDirectSoundBuffer *DSLoadSoundBuffer(IDirectSound *pDS, char *lpName , DWORD dwFlags )
-#endif
-{
-    IDirectSoundBuffer *pDSB = NULL;
-    DSBUFFERDESC dsBD = {0};
-    BYTE *pbWaveData;
-	void * Buffer = NULL;
-
-    if (Buffer = DSGetWave(lpName, &dsBD.lpwfxFormat, &pbWaveData, &dsBD.dwBufferBytes))
-    {
-        dsBD.dwSize = sizeof(dsBD);
-        dsBD.dwFlags = dwFlags ;
-
-        if ( MakeSoundBuffer( pDS, &dsBD, &pDSB, NULL ) )
-        {
-            if (!DSFillSoundBuffer(pDSB, pbWaveData, dsBD.dwBufferBytes))
-            {
-                SoundBufferRelease(&pDSB);
-                pDSB = NULL;
-            }
-        }
-        else
-        {
-            pDSB = NULL;
-        }
-    }
-
-	if( Buffer != NULL )
-		free( Buffer );
-    return pDSB;
-}
-
-#ifdef DEBUG_ON
-IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr, char *from_file, int from_line )
-#else
-IDirectSoundBuffer *DSLoadCompoundSoundBuffer(IDirectSound *pDS, DWORD dwFlags, int *num_allocated_ptr )
-#endif
-{
-	IDirectSoundBuffer *pDSB = NULL;
-    DSBUFFERDESC dsBD = {0};
-    BYTE *pbWaveData;
-	void * Buffer = NULL;
-	WAVEFORMATEX format;
-
-    if (Buffer = DSGetMultiWave(&format, &pbWaveData, &dsBD.dwBufferBytes, dwFlags, num_allocated_ptr))
-    {
-        dsBD.dwSize = sizeof(dsBD);
-        dsBD.dwFlags = dwFlags;
-
-		dsBD.lpwfxFormat = &format;
-
-		if ( MakeSoundBuffer( pDS, &dsBD, &pDSB, NULL ) )
-        {
-            if (!DSFillSoundBuffer(pDSB, Buffer, dsBD.dwBufferBytes))
-            {
-                SoundBufferRelease(&pDSB);
-                pDSB = NULL;
-            }
-        }
-    }
-
-	if( Buffer != NULL )
-		free( Buffer );
-    return pDSB;
-}
-
-#ifdef DEBUG_ON
-#define DSLoadSoundBuffer(A, B, C) DSLoadSoundBuffer(A, B, C, __FILE__, __LINE__)
-#define DSLoadCompoundSoundBuffer(A, B, C) DSLoadCompoundSoundBuffer(A, B, C, __FILE__, __LINE__)
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
-// SndObj fns
-///////////////////////////////////////////////////////////////////////////////
-
-void InvalidateBuffers( SNDOBJ *pSO )
-{
-	int j;
-
-	for( j = 0; j < MAX_DUP_BUFFERS; j++ )
-	{
-		if (pSO->Dup_3DBuffer[ j ])
-		{
-			IDirectSound3DBuffer_Release(pSO->Dup_3DBuffer[ j ]);
-			pSO->Dup_3DBuffer[ j ] = NULL;
-		}
-		if (pSO->Dup_Buffer[ j ])
-		{
-			SoundBufferRelease(&pSO->Dup_Buffer[ j ]);
-			pSO->Dup_Buffer[ j ] = NULL;
-		}
-	}
-}
-
-#ifdef DEBUG_ON
-#define DSLoadSoundBuffer(A, B, C) DSLoadSoundBuffer(A, B, C, __FILE__, __LINE__)
-#endif
-
-SNDOBJ *SndObjCreate(IDirectSound *pDS, char *lpName, int sfx_flags , DWORD buf_flags, int sfx)
-{
-    SNDOBJ *pSO = NULL;
-	void * Buffer = NULL;
-	int i;
-	HRESULT hres;
-	DSBCAPS dsbcaps;
-
-#if 0
-	// needed for locking sound buffer
-	LPVOID lpvAudioPtr1;
-	DWORD dwAudioBytes1;
-	LPVOID lpvAudioPtr2;  
-	DWORD dwAudioBytes2;  
-	DWORD dwFlags = DSBLOCK_ENTIREBUFFER;
-#endif
-
-    pSO = (SNDOBJ *)malloc(sizeof(SNDOBJ));
-
-	if ( !FreeHWBuffers )
-		buf_flags |= DSBCAPS_LOCSOFTWARE;
-
-    if (pSO != NULL)
-    {
-		memset( pSO, 0, sizeof(SNDOBJ) );
-
-		pSO->Dup_Buffer[0] = NULL;
-		pSO->CompoundBuffer = FALSE;
-		pSO->looping_sfx_index[0] = -1;
-
-		// if sound is already loaded into HW...
-		if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
-		{				  
-			pSO->CompoundBuffer = TRUE;
-			for (i = 0; i < MAX_DUP_BUFFERS; i++)
-			   pSO->CompoundBufferLookup[i] = -1;
-		}else
-		{
-				// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
-				if( buf_flags & DSBCAPS_CTRL3D )
-				{
-					pSO->Dup_Buffer[0] = NULL; //DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[0], buf_flags );
-				}else{
-					pSO->Dup_Buffer[0] = DSLoadSoundBuffer(pDS, lpName, buf_flags );
-				}
-
-			if( !pSO->Dup_Buffer[ 0 ] )
-			{
-				Msg("Unable to create sound buffer for %s\n", lpName );
-				InvalidateBuffers( pSO );
-				return pSO;
-			}
-
-
-			// get caps of buffer
-			memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
-			dsbcaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( pSO->Dup_Buffer[ 0 ], &dsbcaps );
-
-			if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
-			{
-				//DebugPrintf("creating %s in hardware\n", lpName );
-			}else
-			{
-				//DebugPrintf("creating %s in software\n", lpName );
-#if 0
-				// lock buffer
-				IDirectSoundBuffer_Lock( pSO->Dup_Buffer[ 0 ], 0, 0, &lpvAudioPtr1, &dwAudioBytes1,
-				&lpvAudioPtr2, &dwAudioBytes2, dwFlags );
-
-				// make non-volatile
-				MakeRegionPresent( ( BYTE * )lpvAudioPtr1, (unsigned int)dwAudioBytes1 );
-
-				// unlock buffer
-				IDirectSoundBuffer_Unlock( pSO->Dup_Buffer[ 0 ], lpvAudioPtr1, 0, lpvAudioPtr2, 0 );
-#endif
-			}
-
-
-			// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
-			// so we will just have to try duplicating until failure
-			for (i = 1; i < MAX_DUP_BUFFERS; i++)
-			{
-				pSO->looping_sfx_index[i] = -1;
-				// duplicate 2D buffer...
-				if ( !SoundBufferDuplicate( pDS, pSO->Dup_Buffer[0], &pSO->Dup_Buffer[i]) )
-				{
-					DebugPrintf("unable to duplicate sound buffer\n");
-
-					// invalidate buffer & all duplicates
-					InvalidateBuffers( pSO );
-
-					// was original buffer hw? if so, try to recreate in sw
-					if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
-					{
-						DebugPrintf("trying to recreate in sw\n");
-						FreeHWBuffers = FALSE;
-						// recreate all buffers up to & including this one in software
-						if( buf_flags & DSBCAPS_CTRL3D )
-						{
-							pSO->Dup_Buffer[ 0 ] = NULL; //DSLoad3DSoundBuffer(pDS, lpName, &pSO->Dup_3DBuffer[ 0 ], buf_flags | DSBCAPS_LOCSOFTWARE );
-						}else{
-							pSO->Dup_Buffer[ 0 ] = DSLoadSoundBuffer(pDS, lpName, buf_flags | DSBCAPS_LOCSOFTWARE );
-						}
-
-						if( !pSO->Dup_Buffer[ 0 ] )
-						{
-							Msg("Unable to create sound buffer for %s\n", lpName );
-							InvalidateBuffers( pSO );
-							return pSO;
-						}
-
-						i = 0;
-						continue;
-
-					}else
-					{
-						// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
-						Msg("unable to duplicate buffers in sw\n");
-						break;
-					}
-				}
-
-				// query for 3D interface if we are using 3D...
-				if ( pSO->Dup_3DBuffer[0] )
-				{
-					hres = IDirectSoundBuffer_QueryInterface(pSO->Dup_Buffer[i], &IID_IDirectSound3DBuffer, &pSO->Dup_3DBuffer[i]);        
-				}
-
-			}
-		}
-    }
-
-    return pSO;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-void SndObjDestroy(SNDOBJ *pSO)
-{
-    int i;
-
-	if (pSO)
-    {
-		for (i = 0; i < MAX_DUP_BUFFERS; i++)
-		{
-			if (pSO->Dup_3DBuffer[i])
-			{
-	            IDirectSound3DBuffer_Release(pSO->Dup_3DBuffer[i]);
-		        pSO->Dup_3DBuffer[i] = NULL;
-			}
-			if (pSO->Dup_Buffer[i])
-			{
-	            SoundBufferRelease(&pSO->Dup_Buffer[i]);
-		        pSO->Dup_Buffer[i] = NULL;
-			}
-		}
-        free(pSO);
-    }
-}
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize)
-{
-    if (pDSB && pbWaveData && cbWaveSize)
-    {
-        LPVOID pMem1, pMem2;
-        DWORD dwSize1, dwSize2;
-
-        if (SUCCEEDED(IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize,
-            &pMem1, &dwSize1, &pMem2, &dwSize2, 0)))
-        {
-            CopyMemory(pMem1, pbWaveData, dwSize1);
-
-            if ( 0 != dwSize2 )
-                CopyMemory(pMem2, pbWaveData+dwSize1, dwSize2);
-
-            IDirectSoundBuffer_Unlock(pDSB, pMem1, dwSize1, pMem2, dwSize2);
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr )
-{
-	long File_Size;
-	long Read_Size;
-	void *Buffer;
-	void *End;
-	int i, min, index, variant;
-	char *TempCompositeBuffer, *CompositeBuffer, *IntermediateBuffer;
-	char TempFileName[256];
-	WAVEFORMATEX TempWaveHeader;
-	int temp_num_allocated;
-
-	LPWAVEFORMATEX pWaveHeader;
-	
-	DWORD BytesPerSec, dwGapSize, total_size, dwBufferOffset;
-	float gap_size; 
-	
-	DWORD BufferSizeSoFar, MaxBufferSize;
-	BOOL SfxChecked[ MAX_SFX ];
-	DSCAPS DSCaps;
-	BOOL error;
-	
-	memset (&DSCaps, 0, sizeof (DSCAPS));
-	DSCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps( lpDS, &DSCaps );
-	
-	memset (SfxChecked, 0, sizeof( BOOL ) * MAX_SFX);
-
-	BytesPerSec = (CompoundSfxBitDepth * CompoundSfxChannels / 8) * CompoundSfxFrequency;
-	gap_size = (float)BytesPerSec * CompoundSfxGap;
-	dwGapSize = (DWORD)gap_size;
-
-	total_size = 0;
-
-	// for all compound sfx...
-	for ( i = 0; Sfx_Filenames[ i ].Name; i++ )
-	{
-		if ( ( IS_COMPOUND( Sfx_Filenames[ i ].Flags ) ) && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Requested )
-		{
-			// if sfx does not exist, ignore
-			if ( !SndLookup[ i ].Num_Variants )
-				continue;
-
-			for ( variant = 0; variant < SndLookup[ i ].Num_Variants; variant++ )
-			{
-				GetFullSfxPath( TempFileName, i, variant, SndLookup[ i ].Num_Variants );
-
-				if ( File_Exists( TempFileName ) )
-				{
-					File_Size = Get_File_Size( TempFileName );	// how big is the file...
-					if( !File_Size ) return NULL;
-
-					Buffer = malloc( File_Size );							// alloc enough space to load it...
-					if( Buffer == NULL ) return( NULL );					// if couldnt then return
-
-					Read_Size = Read_File( TempFileName, Buffer, File_Size ); // Read it in making a note of the Size returned
-					if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
-
-					DSParseWave( Buffer, &pWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-					// get size of file...
-					total_size += *pcbWaveSize;
-						
-					// add space for gap afterwards...
-					total_size += dwGapSize;
-
-					free ( Buffer );
-				}
-			}
-		}
-	}
-
-	if ( dwFlags & DSBCAPS_LOCHARDWARE )
-		MaxBufferSize = DSCaps.dwMaxContigFreeHwMemBytes;
-	else
-	{
-		return NULL;
-	}
-
-	if ( total_size > MaxBufferSize )
-		total_size = MaxBufferSize;
-
-	if ( CustomCompoundBufferSize && ( total_size > UserTotalCompoundSfxBufferSize ) )
-		total_size = UserTotalCompoundSfxBufferSize;
-
-	CompositeBuffer = (char *)malloc( total_size );
-	TempCompositeBuffer = CompositeBuffer;
-	dwBufferOffset = 0;
-	BufferSizeSoFar = 0;
-	do
-	{
-		min = -1;
-		index = -1;
-
-		// find sfx with next highest priority...
-		for ( i = 0; Sfx_Filenames[ i ].Name; i++ )
-			if ( IS_COMPOUND( Sfx_Filenames[ i ].Flags ) )
-				if ( ( min == -1 ) && !SfxChecked[ i ] && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Num_Variants && SndLookup[ i ].Requested )
-				{
-					min = Sfx_Filenames[ i ].Priority;
-					index = i;
-				}else
-				{
-					if ( ( Sfx_Filenames[ i ].Priority < min ) && !SfxChecked[ i ] && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Num_Variants && SndLookup[ i ].Requested )
-					{
-						min = Sfx_Filenames[ i ].Priority;
-						index = i;
-					}
-				}
-
-		if ( index != -1 )	// sfx has been found...
-		{
-			SfxChecked[ index ] = TRUE;
-
-			error = FALSE;
-			IntermediateBuffer = TempCompositeBuffer;
-			temp_num_allocated = *num_allocated_ptr;
-
-			for ( variant = 0; variant < SndLookup[ index ].Num_Variants; variant++ )
-			{
-
-				GetFullSfxPath( TempFileName, index, variant, SndLookup[ index ].Num_Variants );
-			
-				if ( File_Exists( TempFileName ) )
-				{
-					File_Size = Get_File_Size( TempFileName );	// how big is the file...
-					if( !File_Size )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() File size returned was zero\n");
-						break;
-					}
-
-					Buffer = malloc( File_Size );		 // alloc enough space to load it...
-
-					if( Buffer == NULL )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() unable to malloc memory for temp buffer\n");
-						break;
-					}
-
-					Read_Size = Read_File( TempFileName, Buffer, File_Size ); // Read it in making a note of the Size returned
-
-					if( Read_Size != File_Size )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() read file size not equal to actual file size\n");
-						break;
-					}
-
-					DSParseWave( Buffer, &pWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-					if ( ( (pWaveHeader)->nChannels != CompoundSfxChannels ) ||
-						( (pWaveHeader)->nSamplesPerSec != CompoundSfxFrequency ) ||
-						( (pWaveHeader)->wBitsPerSample != CompoundSfxBitDepth ) )
-					{
-						DebugPrintf("Dsutil.c: DSGetMultiWave() - sfx %d variant %d not of correct type for composite buffer, ignoring\n", index, variant);
-						*pWaveHeader = TempWaveHeader;
-						error = TRUE;
-						break;
-					}else
-					{
-						TempWaveHeader = *pWaveHeader;
-
-						// if pcbWaveSize < available mem left, and format is OK...
-						if ( ( (*pcbWaveSize + dwGapSize) < ( total_size - BufferSizeSoFar ) ) || !total_size )
-						{
-							//DebugPrintf("sfx %d marked allocated\n", index);
-						   
-							BufferSizeSoFar += *pcbWaveSize + dwGapSize;
-
-							TempSfxInfo[ *num_allocated_ptr ].SfxNum = index;
-							TempSfxInfo[ *num_allocated_ptr ].StartPos = dwBufferOffset;
-							TempSfxInfo[ *num_allocated_ptr ].Length = (*pcbWaveSize * 1000) / BytesPerSec;
-							TempSfxInfo[ *num_allocated_ptr ].Bytes = *pcbWaveSize;
-							TempSfxInfo[ *num_allocated_ptr ].Variant = variant;
-
-							(*num_allocated_ptr)++;
-
-							// check to see if max sfx allocated...
-							if (*num_allocated_ptr == MAX_COMPOUND_SFX)
-							{
-								DebugPrintf("tried to allocate more than MAX_COMPOUND_SFX sfx\n");
-								error = TRUE;
-								break;
-							}
-
-							dwBufferOffset = dwBufferOffset + *pcbWaveSize + dwGapSize;
-
-							// copy wave data to composite buffer...
-							memcpy( TempCompositeBuffer, *ppbWaveData, *pcbWaveSize );
-							TempCompositeBuffer += *pcbWaveSize;
-							
-							// add gap
-							memset( TempCompositeBuffer, 0, dwGapSize );
-							TempCompositeBuffer += dwGapSize;
-						}else
-						{
-							DebugPrintf("Not enough HW mem for SFX %d\n", index);
-							error = TRUE;
-							break;
-						}
-					}
-
-					*pWaveHeaderStore = *pWaveHeader;
-
-					free ( Buffer );
-				}
-			}
-
-			if ( error )
-			{
-				if ( Buffer )
-					free ( Buffer );
-				
-				// move current buffer ptr back to position b4 this sfx
-				TempCompositeBuffer = IntermediateBuffer;
-
-				// invalidate compound sfx info for this sfx
-				*num_allocated_ptr = temp_num_allocated;
-			}else
-			{
-				CompoundSfxAllocated[ index ] = TRUE;
-			}
-		}
-	}while ( index != -1 );
-
-	*pcbWaveSize = BufferSizeSoFar;
-
-	return (void *)CompositeBuffer;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-//
-// DSParseWave
-//
-///////////////////////////////////////////////////////////////////////////////
-
-
-
-BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End)
-{
-    DWORD *pdw;
-    DWORD *pdwEnd;
-    DWORD dwRiff;
-    DWORD dwType;
-    DWORD dwLength;
-
-    if (ppWaveHeader)
-        *ppWaveHeader = NULL;
-
-    if (ppbWaveData)
-        *ppbWaveData = NULL;
-
-    if (pcbWaveSize)
-        *pcbWaveSize = 0;
-
-    pdw = (DWORD *)Buffer;
-    dwRiff = *pdw++;
-    dwLength = *pdw++;
-    dwType = *pdw++;
-
-    if (dwRiff != mmioFOURCC('R', 'I', 'F', 'F'))
-        goto exit;      // not even RIFF
-
-    if (dwType != mmioFOURCC('W', 'A', 'V', 'E'))
-        goto exit;      // not a WAV
-
-    pdwEnd = (DWORD *)((BYTE *)pdw + dwLength-4);
-	*End = (void *)pdwEnd;
-
-    while (pdw < pdwEnd)
-    {
-        dwType = *pdw++;
-        dwLength = *pdw++;
-
-        switch (dwType)
-        {
-        case mmioFOURCC('f', 'm', 't', ' '):
-            if (ppWaveHeader && !*ppWaveHeader)
-            {
-                if (dwLength < sizeof(WAVEFORMAT))
-                    goto exit;      // not a WAV
-
-                *ppWaveHeader = (WAVEFORMATEX *)pdw;
-
-                if ((!ppbWaveData || *ppbWaveData) &&
-                    (!pcbWaveSize || *pcbWaveSize))
-                {
-                    return TRUE;
-                }
-            }
-            break;
-
-        case mmioFOURCC('d', 'a', 't', 'a'):
-            if ((ppbWaveData && !*ppbWaveData) ||
-                (pcbWaveSize && !*pcbWaveSize))
-            {
-                if (ppbWaveData)
-                    *ppbWaveData = (LPBYTE)pdw;
-
-                if (pcbWaveSize)
-                    *pcbWaveSize = dwLength;
-
-                if (!ppWaveHeader || *ppWaveHeader)
-                    return TRUE;
-            }
-            break;
-        }
-
-        pdw = (DWORD *)((BYTE *)pdw + ((dwLength+1)&~1));
-    }
-
-exit:
-    return FALSE;
-}
-
-
 char *GenericSfxPath = {
 	"data\\sound\\generic\\",
 };
@@ -1729,12 +773,42 @@ void GetSfxPath( int sfxnum, char *path )
 	strcpy( path, GenericSfxPath );
 
 }
-// if there is 3D sound, commit 3D sound processing
-void commit_any_sounds( void )
+
+BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 {
-	if ( lpDS3DListener )
-		if ( IDirectSound3DListener_CommitDeferredSettings(lpDS3DListener) != DS_OK )
-			DebugPrintf("Error commiting 3D\n");
+	VECTOR UpVector;
+	VECTOR ForwardVector;
+	
+	if(!Sound3D)
+		return 0;
+
+	if(!sound_listener_position(
+		Pos->x / 128.0F,
+		Pos->y / 128.0F,
+		Pos->z / 128.0F
+	)) return FALSE;
+
+    if(!sound_listener_velocity(
+		Velocity->x, // / 128.0F,
+		Velocity->y, // / 128.0F,
+		Velocity->z // / 128.0F,
+	)) return FALSE;
+
+	ApplyMatrix( Mat, &SlideUp, &UpVector ); /* Calc Direction Vector */
+	ApplyMatrix( Mat, &Forward, &ForwardVector ); /* Calc Direction Vector */
+
+	if(!sound_listener_orientation(
+		ForwardVector.x,
+		ForwardVector.y,
+		ForwardVector.z,
+		UpVector.x,
+		UpVector.y,
+		UpVector.z
+	)) return FALSE;
+
+	sound_commit_any_pending();
+
+	return TRUE;
 }
 
 void CheckSpeech( int index )
@@ -1782,22 +856,21 @@ void FreeSfxHolder( int index )
 	SfxHolder[ index ].Used = FALSE;
 }
 
+int NumDupCompoundBuffers = 0;
+
 void CheckForRogueSfx( void )
 { 
-  DWORD current_time, dwStatus;
+  DWORD current_time;
   int i;
 
   // Dirty hack to kill off any rogue sfx!! 
   if ( bSoundEnabled && NumDupCompoundBuffers )
   {
     current_time = GetTickCount();
-
     for ( i = 0; i < NumDupCompoundBuffers; i++ )
     {
-      IDirectSoundBuffer_GetStatus( CompoundSfxBuffer[ i ].buffer, &dwStatus );
-
       // if buffer is playing, check whether it should have stopped by now...
-      if (dwStatus & DSBSTATUS_PLAYING)
+      if(!sound_buffer_is_playing( CompoundSfxBuffer[ i ].buffer ))
       {
         if ( current_time > ( CompoundSfxBuffer[ i ].finish_time + 50 ) )
         {
@@ -1809,8 +882,6 @@ void CheckForRogueSfx( void )
 
           //SfxHolder[ CompoundSfxBuffer[ i ].SfxHolderIndex ].Used = FALSE;
           FreeSfxHolder( CompoundSfxBuffer[ i ].SfxHolderIndex );
-  
-
         }
       }
     }
@@ -1838,12 +909,9 @@ void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWOR
 				// safe to ignore, since timer was killed off
 				if ( CompoundSfxBuffer[dwUser].current_sfx != -1 )																
 				{
-					IDirectSoundBuffer_Stop( CompoundSfxBuffer[dwUser].buffer );
-					if ( IDirectSoundBuffer_SetFrequency( CompoundSfxBuffer[dwUser].buffer, DSBFREQUENCY_ORIGINAL ) != DS_OK )
-					{
-						DebugPrintf("set frequency failed ( 1 )\n");
-					}
-					SndObjs[ SndLookup[ CompoundSfxBuffer[ dwUser ].current_sfx ].SndObjIndex + CompoundSfxBuffer[ dwUser ].current_variant ]->CompoundBufferLookup[ CompoundSfxBuffer[dwUser].compound_buffer_lookup_index ] = -1;
+					sound_buffer_stop( CompoundSfxBuffer[dwUser].buffer );
+					sound_buffer_set_freq( CompoundSfxBuffer[dwUser].buffer, 0 );
+					SndSources[ SndLookup[ CompoundSfxBuffer[ dwUser ].current_sfx ].SndObjIndex + CompoundSfxBuffer[ dwUser ].current_variant ]->CompoundBufferLookup[ CompoundSfxBuffer[dwUser].compound_buffer_lookup_index ] = -1;
 					CompoundSfxBuffer[dwUser].current_sfx = -1;
 					FreeSfxHolder( CompoundSfxBuffer[ dwUser ].SfxHolderIndex );
 				}
@@ -1889,6 +957,9 @@ void GetSfxFileNamePrefix( int sfxnum, char *file )
 	strcpy( file, Sfx_Filenames[ sfxnum ].Name);
 }
 
+int AddToSBufferList( void* buffer, int SfxHolderIndex );
+void SetPannedBufferParams( void* sound_buffer, void* sound_buffer3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
+
 /****************************************
 	Procedure	: ProcessSoundRoutines		
 	description	: runs continuously while sfx are active - loads sound buffers when SfxThreadInfo contains valid information
@@ -1897,15 +968,14 @@ void GetSfxFileNamePrefix( int sfxnum, char *file )
 *****************************************/
 void ProcessSoundRoutines (void * pParm)
 {
-	IDirectSoundBuffer* TempSndBuf;
 	int i;
 	char *file;
+	void* sound_buffer;
 
 	for ( i = 0; i < MAX_THREADED_SFX; i++ )
 	{
 		if (SfxThreadInfo[ i ].SfxToPlay)
 		{
-
 			switch( SfxThreadInfo[ i ].SfxType )
 			{
 			case SFX_TYPE_Looping:
@@ -1921,11 +991,12 @@ void ProcessSoundRoutines (void * pParm)
 			//DebugPrintf( "ProcessSoundRoutines SfxTypeLooping: %s, file: %s\n",
 			//			(SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"),	file);
 
-			// create temporary sound buffer - will have volume, frequency & pan facilities 
+			// create temporary sound buffer
+			// - will have volume, frequency & pan facilities 
 			// - located in sw ( any hardware will have been used by now )
 			// - static ( not streamed )
-			TempSndBuf = DSLoadSoundBuffer(lpDS, file, DSBCAPS_CTRLFREQUENCY | DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCSOFTWARE);
-			if ( !TempSndBuf )
+			sound_buffer = sound_buffer_load_for_sfx(file);
+			if ( !sound_buffer )
 			{
 				DebugPrintf( "Sfx Load failed...in %s \n", file );
 				SfxThreadInfo[ i ].SfxToPlay = FALSE;
@@ -1936,11 +1007,17 @@ void ProcessSoundRoutines (void * pParm)
 			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Normal )
 			{
 				// set buffer parameters & play
-				IDirectSoundBuffer_SetVolume( TempSndBuf, ( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol );
-				IDirectSoundBuffer_Play(TempSndBuf, 0, 0, 0);
+				sound_buffer_volume( 
+					sound_buffer, 
+					( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol 
+				);
+
+				sound_buffer_play(sound_buffer);
 
 				// add to list of dynamic buffers
-				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
+				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( 
+					sound_buffer, SfxThreadInfo[ i ].SfxHolderIndex 
+				);
 
 				// if unable to store buffer, free up sfx holder
 				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
@@ -1953,11 +1030,13 @@ void ProcessSoundRoutines (void * pParm)
 			if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Panned ) || ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Taunt ) )
 			{
 				// set buffer parameters & play
-				SetPannedBufferParams( TempSndBuf, NULL, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
-				IDirectSoundBuffer_Play( TempSndBuf, 0, 0, 0 );
+				SetPannedBufferParams( sound_buffer, NULL, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
+				sound_buffer_play(sound_buffer);
 
 				// add to list of dynamic buffers
-				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( TempSndBuf, NULL, SfxThreadInfo[ i ].SfxHolderIndex );
+				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList(
+					sound_buffer, SfxThreadInfo[ i ].SfxHolderIndex 
+				);
 				
 				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
 				{
@@ -1973,17 +1052,17 @@ void ProcessSoundRoutines (void * pParm)
 
 				DebugPrintf( "-- adding SpotSfx %d onto SpotSfxList, buffer is %s\n",
 								SfxThreadInfo[ i ].SpotSfxListIndex,
-								(TempSndBuf)?"GOOD":"BAD");
+								(sound_buffer)?"GOOD":"BAD");
 
 				// get caps of buffer...
 				dsbcaps.dwSize = sizeof( DSBCAPS );
-				IDirectSoundBuffer_GetCaps( TempSndBuf, &dsbcaps );
+				IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)sound_buffer, &dsbcaps );
 
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = TempSndBuf;
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer3D = NULL;
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = dsbcaps.dwBufferBytes;
 
-				SetBufferFreq( 
+				sound_buffer_set_freq( 
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].freq );
 
@@ -2225,25 +1304,25 @@ BOOL CreateSndObj( char *file, int sfxnum, int flags )
 	BOOL BuffersMissing = FALSE;
 	int i;
 
-	SndObjs[ Num_SndObjs ] = SndObjCreate( lpDS, file, flags , DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY, sfxnum );
+	SndSources[ Num_SndSources ] = sound_source_create( file, flags, sfxnum );
 
 	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
 	{
-		if ( !SndObjs[ Num_SndObjs ]->Dup_Buffer[ i ] )
+		if ( !SndSources[ Num_SndSources ]->Dup_Buffer[ i ] )
 		{
 			BuffersMissing = TRUE;
 		}
 	}
 
 	// if sound buffer could not be loaded for some reason ( & has not already been loaded into hw )...
-	if ( ( !SndObjs[ Num_SndObjs ] || BuffersMissing ) && 
-		!( SndObjs[ Num_SndObjs ] && SndObjs[ Num_SndObjs ]->CompoundBuffer ) )
+	if ( ( !SndSources[ Num_SndSources ] || BuffersMissing ) && 
+		!( SndSources[ Num_SndSources ] && SndSources[ Num_SndSources ]->CompoundBuffer ) )
   	{
 		SndLookup[ sfxnum ].Num_Variants = 0;
 		return FALSE;
 	}
 
-	Num_SndObjs++;
+	Num_SndSources++;
 
 	return TRUE;
 }
@@ -2252,7 +1331,7 @@ BOOL CreateSndObj( char *file, int sfxnum, int flags )
 	Procedure	: LoadSfx 
 	description	: Fills in SndLookup info for the given sfx.
 	              If static, also loads sfx ( or sfx's if variants exist )
-				  & stores info in SndObjs
+				  & stores info in SndSources
 	Input		: int sfxnum
 	Output		: none
 *****************************************/
@@ -2282,8 +1361,6 @@ void LoadSfx( int sfxnum )
 	}
 	*/
 
-
-
 	if ( !SndLookup[ sfxnum ].Num_Variants )
 		return;
 
@@ -2300,7 +1377,8 @@ void LoadSfx( int sfxnum )
 				return;
 			}
 		}
-	}else
+	}
+	else
 	{
 		for ( i = 0; i < SndLookup[ sfxnum ].Num_Variants; i++ )
 		{
@@ -2351,155 +1429,6 @@ int16 EssentialSfx[ NUM_ESSENTIAL_SFX ] = {
 	SFX_Select_Transpulse,			//	-	transpulse
 	SFX_Select_Trojax,				//	-	trojax
 };
-
-
-#define MIN_SOUNDCARD_HW_MEM 262144		// 256K 
-int LoadSfxToHW( void )
-{
-	DSCAPS DSCaps;
-	DSBCAPS DSBCaps;
-	DWORD FreeMem;
-	DWORD flags;
-	DWORD buffers_before;
-	int AllocatedCompoundSfx;
-	int j, i;
-	DWORD dwSizeWritten;
-	LPWAVEFORMATEX lpwaveinfo; 
-
-   	if ( !MAX_COMPOUND_SFX )
-		return 0;
-
-	if ( NoCompoundSfxBuffer )
-		return 0;
-
-   	/*
-	if ( ( MyGameStatus == STATUS_Title ) || ( MyGameStatus == STATUS_BetweenLevels ) )
-	{
-		return 0;
-	}
-	*/
-
-	AllocatedCompoundSfx = 0;
-	
-	NumDupCompoundBuffers = 0;
-
-	memset( CompoundSfxAllocated, 0, MAX_SFX * sizeof ( BOOL ) );
-
-	memset (&DSCaps, 0, sizeof (DSCAPS));
-	DSCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps( lpDS, &DSCaps );
-
-	if ( DSCaps.dwMaxContigFreeHwMemBytes > MIN_SOUNDCARD_HW_MEM )
-	{
-		FreeMem = DSCaps.dwMaxContigFreeHwMemBytes;
-		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCHARDWARE | DSBCAPS_CTRLFREQUENCY; 
-		DebugPrintf("Loading compound sfx buffer in HW\n");
-	}else
-	{
-		FreeMem = 1;	// so that it equates to TRUE
-		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
-		DebugPrintf("Loading compound sfx buffer in SW\n");
-	}
-
-	// if we have hardware mixing channels & hardware mem & not in titles
-	if ( FreeMem && ( DSCaps.dwFreeHwMixingStaticBuffers >= MIN_COMPOUND_BUFFERS ) )
-	{
-		buffers_before = DSCaps.dwFreeHwMixingStaticBuffers;
-
-		// load first compound buffer
-		CompoundSfxBuffer[0].buffer = DSLoadCompoundSoundBuffer(lpDS, flags, &AllocatedCompoundSfx );
-
-		// if buffer succesfully loaded...
-		if ( CompoundSfxBuffer[0].buffer )
-		{
-			/*
-			// get caps after creating buffer, to check that buffer is using hw mixing channel
-			memset (&DSCaps, 0, sizeof (DSCAPS));
-			DSCaps.dwSize = sizeof(DSCAPS);
-			IDirectSound_GetCaps( lpDS , &DSCaps );
-			*/
-
-			memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
-			DSBCaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( CompoundSfxBuffer[ 0 ].buffer, &DSBCaps );
-
-			//if ( buffers_before == DSCaps.dwFreeHwMixingStaticBuffers)
-			if (!( DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE ))
-			{
-   				// no point in using compound buffer, since HW mixing channels are not being used
-				DebugPrintf("Crap sound driver detected - Buffers stored are not using HW mixing channels, therefor compound buffer will not be created\n");
-
-				// kill this buffer...
-				SoundBufferRelease( &CompoundSfxBuffer[0].buffer );
-				DebugPrintf("Releasing sound buffer %s %d\n", __FILE__, __LINE__ );
-
-				// mark all newly allocate sfx as not part of compound buffer...
-				for ( j = 0; j < AllocatedCompoundSfx; j++ )
-				{
-					CompoundSfxAllocated[ TempSfxInfo[j].SfxNum ] = FALSE;
-				}
-			}else
-			{
-				// get size of WAVEFORMAT structure to be returned ( is variable size, as stated in DSound docs ) & allocate memory for it
-				IDirectSoundBuffer_GetFormat( CompoundSfxBuffer[0].buffer, NULL, 0, &dwSizeWritten );
-				lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-
-				// get data rate of compound buffer
-				IDirectSoundBuffer_GetFormat( CompoundSfxBuffer[0].buffer, lpwaveinfo, dwSizeWritten, 0 );
-				CompoundSfxDataRate = lpwaveinfo->nAvgBytesPerSec; 
-
-				free(lpwaveinfo);
-
-				CompoundSfxBuffer[0].current_sfx = -1;
-
-				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
-				NumDupCompoundBuffers = DSCaps.dwFreeHwMixingStaticBuffers;
-
-				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
-					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
-
-				for (j = 1; j < NumDupCompoundBuffers; j++)
-				{
-					if ( !SoundBufferDuplicate(lpDS, CompoundSfxBuffer[0].buffer, &CompoundSfxBuffer[j].buffer ) )
-					{	
-						DebugPrintf("unable to duplicate more than %d compound buffers\n",j);
-				
-						// if insufficient buffers created...
-						if ( j < MIN_COMPOUND_BUFFERS )
-						{
-							// free all created buffers
-							for ( i = 0; i < j; i++ )
-							{
-								 IDirectSoundBuffer_Release( CompoundSfxBuffer[ i ].buffer );
-							}
-
-							// return 0 to indicate no hw buffers
-							return 0;
-						}
-
-						break;
-					}
-
-					CompoundSfxBuffer[j].current_sfx = -1;
-				}
-
-				NumDupCompoundBuffers = j;
-
-				memset (&DSCaps, 0, sizeof (DSCAPS));
-				DSCaps.dwSize = sizeof(DSCAPS);
-				IDirectSound_GetCaps( lpDS , &DSCaps );
-			}
-		}else
-		{
-			DebugPrintf("unable to create compound buffer\n");
-		}
-	}else
-	{
-		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
-	}
-
-	return AllocatedCompoundSfx;
-}
 
 void PauseAllSfx( void )
 {
@@ -3051,6 +1980,135 @@ void RequestTitleSfx( void )
 			RequestSfx( i );
 }
 
+#define MIN_SOUNDCARD_HW_MEM 262144	// 256K 
+extern LPDIRECTSOUND lpDS;
+
+int LoadSfxToHW( void )
+{
+	DSCAPS DSCaps;
+	DSBCAPS DSBCaps;
+	DWORD FreeMem;
+	DWORD flags;
+	DWORD buffers_before;
+	int AllocatedCompoundSfx = 0;
+	int j, i;
+	DWORD dwSizeWritten;
+	LPWAVEFORMATEX lpwaveinfo; 
+
+	NumDupCompoundBuffers = 0;
+
+	memset (&DSCaps, 0, sizeof (DSCAPS));
+	DSCaps.dwSize = sizeof(DSCAPS);
+	IDirectSound_GetCaps( lpDS, &DSCaps );
+
+	if ( DSCaps.dwMaxContigFreeHwMemBytes > MIN_SOUNDCARD_HW_MEM )
+	{
+		FreeMem = DSCaps.dwMaxContigFreeHwMemBytes;
+		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_LOCHARDWARE | DSBCAPS_CTRLFREQUENCY; 
+		DebugPrintf("Loading compound sfx buffer in HW\n");
+	}
+	else
+	{
+		FreeMem = 1;	// so that it equates to TRUE
+		flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
+		DebugPrintf("Loading compound sfx buffer in SW\n");
+	}
+
+	// if we have hardware mixing channels & hardware mem & not in titles
+	if ( FreeMem && ( DSCaps.dwFreeHwMixingStaticBuffers >= MIN_COMPOUND_BUFFERS ) )
+	{
+		buffers_before = DSCaps.dwFreeHwMixingStaticBuffers;
+
+		// load first compound buffer
+		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(flags, &AllocatedCompoundSfx );
+
+		// if buffer succesfully loaded...
+		if ( CompoundSfxBuffer[0].buffer )
+		{
+			/*
+			// get caps after creating buffer, to check that buffer is using hw mixing channel
+			memset (&DSCaps, 0, sizeof (DSCAPS));
+			DSCaps.dwSize = sizeof(DSCAPS);
+			IDirectSound_GetCaps( lpDS , &DSCaps );
+			*/
+
+			memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
+			DSBCaps.dwSize = sizeof( DSBCAPS );
+			IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)CompoundSfxBuffer[ 0 ].buffer, &DSBCaps );
+
+			//if ( buffers_before == DSCaps.dwFreeHwMixingStaticBuffers)
+			if (!( DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE ))
+			{
+   				// no point in using compound buffer, since HW mixing channels are not being used
+				DebugPrintf("Crap sound driver detected - Buffers stored are not using HW mixing channels, therefor compound buffer will not be created\n");
+
+				// kill this buffer...
+				sound_buffer_release( CompoundSfxBuffer[0].buffer );
+				DebugPrintf("Releasing sound buffer %s %d\n", __FILE__, __LINE__ );
+			}
+			else
+			{
+				// get size of WAVEFORMAT structure to be returned ( is variable size, as stated in DSound docs ) & allocate memory for it
+				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[0].buffer, NULL, 0, &dwSizeWritten );
+				lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
+
+				// get data rate of compound buffer
+				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[0].buffer, lpwaveinfo, dwSizeWritten, 0 );
+				CompoundSfxDataRate = lpwaveinfo->nAvgBytesPerSec; 
+
+				free(lpwaveinfo);
+
+				CompoundSfxBuffer[0].current_sfx = -1;
+
+				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
+				NumDupCompoundBuffers = DSCaps.dwFreeHwMixingStaticBuffers;
+
+				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
+					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
+
+				for (j = 1; j < NumDupCompoundBuffers; j++)
+				{
+					if ( !sound_buffer_duplicate( 
+						CompoundSfxBuffer[0].buffer,
+						&CompoundSfxBuffer[j].buffer 
+					))
+					{	
+						DebugPrintf("unable to duplicate more than %d compound buffers\n",j);
+				
+						// if insufficient buffers created...
+						if ( j < MIN_COMPOUND_BUFFERS )
+						{
+							// free all created buffers
+							for ( i = 0; i < j; i++ )
+								 sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
+
+							// return 0 to indicate no hw buffers
+							return 0;
+						}
+
+						break;
+					}
+
+					CompoundSfxBuffer[j].current_sfx = -1;
+				}
+
+				NumDupCompoundBuffers = j;
+
+				memset (&DSCaps, 0, sizeof (DSCAPS));
+				DSCaps.dwSize = sizeof(DSCAPS);
+				IDirectSound_GetCaps( lpDS , &DSCaps );
+			}
+		}else
+		{
+			DebugPrintf("unable to create compound buffer\n");
+		}
+	}else
+	{
+		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
+	}
+
+	return AllocatedCompoundSfx;
+}
 
 /****************************************
 	Procedure	: InitializeSound
@@ -3064,18 +2122,8 @@ BOOL InitializeSound( int flags )
 	int i;
 	int j;
 	uint16 Num_Sfx = 0;
-	int AllocatedCompoundSfx;
+	int AllocatedCompoundSfx = 0;
 
-#if 0
-	// neede for locking sound buffer
-	DSCAPS DSCaps;
-	LPVOID lpvAudioPtr1;
-	DWORD dwAudioBytes1;
-	LPVOID lpvAudioPtr2;  
-	DWORD dwAudioBytes2;  
-	DWORD dwFlags = DSBLOCK_ENTIREBUFFER;
-#endif
-	
 	// check sound is not already initialised
 	if ( bSoundEnabled )
 	{
@@ -3086,7 +2134,7 @@ BOOL InitializeSound( int flags )
 	DebugPrintf("Initializing sound.\n");
 
 	// check sound is valid
-	if( NoSFX || !Init_SoundGlobals() )
+	if( NoSFX || !sound_init() )
 	{
 		bSoundEnabled = FALSE;
 		return TRUE;
@@ -3098,15 +2146,13 @@ BOOL InitializeSound( int flags )
 
 	PreInitSfx();
 
-	FreeHWBuffers = TRUE;
-
 	Num_Sfx = 0;
 
 	PreProcessSfx();
 	
-	// initialise SndObjs
-	Num_SndObjs = 0;
-	memset (SndObjs, 0, sizeof( SNDOBJ * ) * MAX_SFX);
+	// initialise SndSources
+	Num_SndSources = 0;
+	memset (SndSources, 0, sizeof( sound_source_t * ) * MAX_SFX);
 
 	// initialise taunt stuff
 	Taunter = 0xFF;
@@ -3115,23 +2161,30 @@ BOOL InitializeSound( int flags )
 	EnemyTaunter = NULL;
 	//TauntDist = 0.0F;
 
+	memset( CompoundSfxAllocated, 0, MAX_SFX * sizeof ( BOOL ) );
+
 	// try to load hw sfx
-	AllocatedCompoundSfx = LoadSfxToHW();
+	if ( NoCompoundSfxBuffer )
+		AllocatedCompoundSfx = LoadSfxToHW();
 	
+	// mark all newly allocate sfx as not part of compound buffer...
+	for ( j = 0; j < AllocatedCompoundSfx; j++ )
+		CompoundSfxAllocated[ TempSfxInfo[j].SfxNum ] = FALSE;
+
 	// load sfx
 	for( Num_Sfx = 0; Num_Sfx < MAX_SFX; Num_Sfx++ )
 		if ( SndLookup[ Num_Sfx ].Requested )
 		{
-			SndLookup[ Num_Sfx ].SndObjIndex = Num_SndObjs;
+			SndLookup[ Num_Sfx ].SndObjIndex = Num_SndSources;
 			LoadSfx( Num_Sfx );
 		}
 
 	// store start/stop info for all compound sfx....( not for title )
 	for (j = 0; j < AllocatedCompoundSfx; j++)
 	{
-		SndObjs[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->StartPos = TempSfxInfo[j].StartPos;
-		SndObjs[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->Length = TempSfxInfo[j].Length;
-		SndObjs[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->Bytes = TempSfxInfo[j].Bytes;
+		SndSources[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->StartPos = TempSfxInfo[j].StartPos;
+		SndSources[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->Length = TempSfxInfo[j].Length;
+		SndSources[ SndLookup[ TempSfxInfo[j].SfxNum ].SndObjIndex + TempSfxInfo[j].Variant ]->Bytes = TempSfxInfo[j].Bytes;
 	}
 
 	for ( i = 0; i < MAX_THREADED_SFX; i++ )
@@ -3145,35 +2198,12 @@ BOOL InitializeSound( int flags )
 	if ( flags & DESTROYSOUND_KeepLevelSpecTable)
 	{
 		ReTriggerSfx();
-	}else
+	}
+	else
 	{
 		for ( i = 0; i < MAX_LOOPING_SFX; i++ )
-		{
 			SpotSfxList[ i ].used = FALSE;
-		}
 	}
-
-
-#if 0
-	InitUsedMemList();
-
-	memset (&DSCaps, 0, sizeof (DSCAPS));
-	DSCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps( lpDS, &DSCaps );
-
-   	
-	if ( CompoundBufferInSysMem && AllocatedCompoundSfx )	// if no hw mem exists, any compound buffer will be in sys mem
-	{
-		// lock compound buffer...
-		IDirectSoundBuffer_Lock( CompoundSfxBuffer[ 0 ].buffer, 0, 0, &lpvAudioPtr1, &dwAudioBytes1,
-			&lpvAudioPtr2, &dwAudioBytes2, dwFlags );
-		
-		MakeRegionPresent( ( BYTE * )lpvAudioPtr1, (unsigned int)dwAudioBytes1 );
-
-		IDirectSoundBuffer_Unlock( CompoundSfxBuffer[ 0 ].buffer, lpvAudioPtr1, 0, lpvAudioPtr2, 0 );
-
-	}
-#endif
 
 	return TRUE;
 }
@@ -3186,14 +2216,14 @@ void StopCompoundSfx( void )
 {
 	int i;
 
-	if ( !lpDS || !bSoundEnabled || !NumDupCompoundBuffers )
+	if ( !bSoundEnabled || !NumDupCompoundBuffers )
 		return;
 
 	for ( i = 0; i < NumDupCompoundBuffers; i++ )
 	{
 		if ( CompoundSfxBuffer[ i ].current_sfx != -1 )
 		{
-		 	IDirectSoundBuffer_Stop( CompoundSfxBuffer[ i ].buffer );
+		 	sound_buffer_stop( CompoundSfxBuffer[ i ].buffer );
 			CompoundSfxBuffer[ i ].current_sfx = -1;
 		}
 	}
@@ -3210,7 +2240,7 @@ void DestroySound( int flags )
 
 	ClearLevelSpecSfx();
 
-	if ( !lpDS || !bSoundEnabled )
+	if ( !bSoundEnabled )
 		return;
 
 	for ( i = 0; i < MAX_SFX; i++ )
@@ -3228,22 +2258,22 @@ void DestroySound( int flags )
 	{
 		if ( CompoundSfxBuffer[ i ].current_sfx != -1 )
 		{
-			IDirectSoundBuffer_Stop( CompoundSfxBuffer[ i ].buffer );
+			sound_buffer_stop( CompoundSfxBuffer[ i ].buffer );
 			timeKillEvent( CompoundSfxBuffer[ i ].timerID ); 
 		}
 
-		SoundBufferRelease( &CompoundSfxBuffer[ i ].buffer );
+		sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
 		CompoundSfxBuffer[ i ].buffer = NULL;
 	}
 	NumDupCompoundBuffers = 0;
 		
 	// free all original buffers...
-	for (i = 0; i < Num_SndObjs; i++)
+	for (i = 0; i < Num_SndSources; i++)
 	{
-		if (SndObjs[i])
+		if (SndSources[i])
 		{
-			SndObjDestroy(SndObjs[i]);
-			SndObjs[i] = NULL;
+			sound_source_destroy(SndSources[i]);
+			SndSources[i] = NULL;
 		}
 	}
 
@@ -3272,28 +2302,22 @@ void DestroySound( int flags )
 
 	Sfx_Filenames[ SFX_LEVELSPEC_Start ].Flags = SFX_LevelSpec;
 
-	// release primary buffer...
-	SoundBufferRelease( &glpPrimaryBuffer );
+	sound_destroy();
 
-	IDirectSound_Release(lpDS);
 	bSoundEnabled = FALSE;
 }
 
-int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance )
+int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 {
 	int free_buffer, i;
-	DWORD age[MAX_DUP_BUFFERS], oldest, dwStatus;
+	DWORD age[MAX_DUP_BUFFERS], oldest;
 	clock_t current_time;
 
 	current_time = clock();
 
 	for (i = 0; i < MAX_DUP_BUFFERS; i++)
 	{
-		
-		IDirectSoundBuffer_GetStatus( SndObj->Dup_Buffer[i], &dwStatus );
-
-		// if buffer not playing...
-		if (!( dwStatus & DSBSTATUS_PLAYING ))
+		if(!sound_buffer_is_playing(SndObj->Dup_Buffer[i]))
 			return i;
 		
 		age[i] = ((current_time - SndObj->Buffer_TimeStamp[i]) +
@@ -3317,16 +2341,9 @@ int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance )
 	if (Distance > oldest)
 		return -1;			// sound is too far away to overwrite any existing sounds...
 
-	// stop buffer...
-	IDirectSoundBuffer_Stop(SndObj->Dup_Buffer[free_buffer]);
-	// reset current position to start of buffer
-	IDirectSoundBuffer_SetCurrentPosition( SndObj->Dup_Buffer[free_buffer], 0 );
-	// reset frequency
-	if ( IDirectSoundBuffer_SetFrequency( SndObj->Dup_Buffer[free_buffer], DSBFREQUENCY_ORIGINAL ) != DS_OK )
-	{
-		DebugPrintf("set frequency failed ( 2 )\n");
-	}
-
+	sound_buffer_stop(SndObj->Dup_Buffer[free_buffer]);
+	IDirectSoundBuffer_SetCurrentPosition( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_buffer_set_freq( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
 	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
 
 	return free_buffer;
@@ -3335,28 +2352,18 @@ int FindFreeBufferSpace( SNDOBJ *SndObj, float Distance )
 	
 void KillCompoundSfxBuffer( int buffer )
 {
-		
-	// kill timer
 	timeKillEvent( CompoundSfxBuffer[ buffer ].timerID ); 
-
-	// stop buffer
-	IDirectSoundBuffer_Stop( CompoundSfxBuffer[ buffer ].buffer );
-	if ( IDirectSoundBuffer_SetFrequency( CompoundSfxBuffer[ buffer ].buffer, DSBFREQUENCY_ORIGINAL ) != DS_OK )
-	{
-		DebugPrintf("set frequency failed ( 3 )\n");
-	}
-
-	SndObjs[ SndLookup[ CompoundSfxBuffer[ buffer ].current_sfx ].SndObjIndex ]->CompoundBufferLookup[ CompoundSfxBuffer[ buffer ].compound_buffer_lookup_index ] = -1;
-
+	sound_buffer_stop( CompoundSfxBuffer[ buffer ].buffer );
+	sound_buffer_set_freq( CompoundSfxBuffer[ buffer ].buffer, 0 );
+	SndSources[ SndLookup[ CompoundSfxBuffer[ buffer ].current_sfx ].SndObjIndex ]->CompoundBufferLookup[ CompoundSfxBuffer[ buffer ].compound_buffer_lookup_index ] = -1;
 	CompoundSfxBuffer[ buffer ].current_sfx = -1;
-
 	FreeSfxHolder( CompoundSfxBuffer[ buffer ].SfxHolderIndex );
-
 }
 
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
 #define SFX_MIN_VOLUME  ( DSBVOLUME_MIN / 3) 
+
 BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int type, int HolderIndex, float VolModify, uint16 Effects, BOOL OverideDistanceCheck )
 {
 	VECTOR	Temp;
@@ -3491,7 +2498,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 
 	if ( !( flags & SFX_Dynamic ) )
 	{
-		if ( SndObjs[ sndobj_index ]->CompoundBuffer )
+		if ( SndSources[ sndobj_index ]->CompoundBuffer )
 		{
 			// check for free buffer index...
 			int buffer_lookup = -1;
@@ -3506,7 +2513,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			for (i = 0; i < MAX_DUP_BUFFERS; i++)
 			{
 				// if free buffer found...
-				if (SndObjs[ sndobj_index ]->CompoundBufferLookup[ i ] < 0)
+				if (SndSources[ sndobj_index ]->CompoundBufferLookup[ i ] < 0)
 				{
 					buffer_lookup = i;
 					//DebugPrintf("free buffer %d found\n", i);
@@ -3514,8 +2521,8 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				}
 
 				// if this buffer has less time left than the last...
-				temp_age = ((current_time - CompoundSfxBuffer[ SndObjs[ sndobj_index ]->CompoundBufferLookup[ i ] ].start_time) +
-						  ((DWORD)CompoundSfxBuffer[ SndObjs[ sndobj_index ]->CompoundBufferLookup[ i ] ].distance) );
+				temp_age = ((current_time - CompoundSfxBuffer[ SndSources[ sndobj_index ]->CompoundBufferLookup[ i ] ].start_time) +
+						  ((DWORD)CompoundSfxBuffer[ SndSources[ sndobj_index ]->CompoundBufferLookup[ i ] ].distance) );
 
 				if ( temp_age > age )
 				{
@@ -3533,9 +2540,9 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 					// all soundfx are same age and just started,also same distance...so dont kill any...
 					return FALSE;
 				}else{
-					lastkilledbuffer = SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ];
-					KillCompoundSfxBuffer( SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ] );
-					SndObjs[ sndobj_index ]->CompoundBufferLookup[ oldest ] = -1;
+					lastkilledbuffer = SndSources[ sndobj_index ]->CompoundBufferLookup[ oldest ];
+					KillCompoundSfxBuffer( SndSources[ sndobj_index ]->CompoundBufferLookup[ oldest ] );
+					SndSources[ sndobj_index ]->CompoundBufferLookup[ oldest ] = -1;
 					buffer_lookup = oldest;
 				}
 
@@ -3572,11 +2579,16 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				buffer = oldest;
 			}
 
-			// play sound in buffer, store buffer num in SndObjs->CompoundSfxBuffer...
+			// play sound in buffer, store buffer num in SndSources->CompoundSfxBuffer...
 
 			// set start pos
 
-			if ( CompoundSfxBuffer[buffer].buffer->lpVtbl->SetCurrentPosition( CompoundSfxBuffer[buffer].buffer, SndObjs[ sndobj_index ]->StartPos ) != DS_OK )
+			if ( 
+				((IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer)->lpVtbl->SetCurrentPosition(
+					(IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, 
+					SndSources[ sndobj_index ]->StartPos 
+				) != DS_OK 
+			)
 				DebugPrintf("error setting position\n");
 			/*
 		   	if ( IDirectSoundBuffer_GetCurrentPosition( CompoundSfxBuffer[buffer].buffer, &dwCurrentPlayPos, NULL ) != DS_OK )
@@ -3591,19 +2603,19 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			if ( type != SFX_2D )
 				SetPannedBufferParams( CompoundSfxBuffer[ buffer ].buffer, NULL, SfxPos, Freq, &Temp, Distance, Volume, Effects );
 			else
-				IDirectSoundBuffer_SetVolume( CompoundSfxBuffer[ buffer ].buffer , ( Volume > 0 ) ?  0 : Volume );
+				sound_buffer_volume( CompoundSfxBuffer[ buffer ].buffer , ( Volume > 0 ) ?  0 : Volume );
 			  
-			//DebugPrintf("about to play: start %d buffer %d\n", SndObjs[ sndobj_index ]->StartPos, buffer); 
-			IDirectSoundBuffer_Play( CompoundSfxBuffer[ buffer ].buffer, 0, 0, 0 );
+			//DebugPrintf("about to play: start %d buffer %d\n", SndSources[ sndobj_index ]->StartPos, buffer); 
+			sound_buffer_play(CompoundSfxBuffer[ buffer ].buffer);
 
 			current_time = SDL_GetTicks();
-			CompoundSfxBuffer[ buffer ].finish_time = current_time + SndObjs[ sndobj_index ]->Length;
+			CompoundSfxBuffer[ buffer ].finish_time = current_time + SndSources[ sndobj_index ]->Length;
 			CompoundSfxBuffer[ buffer ].start_time = current_time;
 			
 			if ( !Freq || ( Freq == 1.0F ) )
 			{
-				CompoundSfxBuffer[ buffer ].finish_time = current_time + SndObjs[ sndobj_index ]->Length;
-				CompoundSfxBuffer[ buffer ].timerID = timeSetEvent( SndObjs[ sndobj_index ]->Length, SndObjs[ sndobj_index ]->Length, TimerProc, buffer, TIME_ONESHOT ); 
+				CompoundSfxBuffer[ buffer ].finish_time = current_time + SndSources[ sndobj_index ]->Length;
+				CompoundSfxBuffer[ buffer ].timerID = timeSetEvent( SndSources[ sndobj_index ]->Length, SndSources[ sndobj_index ]->Length, TimerProc, buffer, TIME_ONESHOT ); 
 			}
 			else
 			{
@@ -3613,9 +2625,9 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				DWORD dwSizeWritten, OrigFreq;
 	
 				// get original frequency of buffer
-				IDirectSoundBuffer_GetFormat( CompoundSfxBuffer[buffer].buffer, NULL, 0, &dwSizeWritten );
+				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, NULL, 0, &dwSizeWritten );
 				lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-				IDirectSoundBuffer_GetFormat( CompoundSfxBuffer[buffer].buffer, lpwaveinfo, dwSizeWritten, 0 );
+				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, lpwaveinfo, dwSizeWritten, 0 );
 				OrigFreq = lpwaveinfo->nSamplesPerSec; 
 				free(lpwaveinfo);
 
@@ -3624,7 +2636,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 
 				// calculate length based on given frequency...
 				BytesPerSec = (CompoundSfxBitDepth * CompoundSfxChannels / 8) * OrigFreq;
-				Length = ( SndObjs[ sndobj_index ]->Bytes * 1000 ) / BytesPerSec;
+				Length = ( SndSources[ sndobj_index ]->Bytes * 1000 ) / BytesPerSec;
 
 				CompoundSfxBuffer[ buffer ].finish_time = current_time + Length;
 				CompoundSfxBuffer[ buffer ].timerID = timeSetEvent( Length, Length, TimerProc, buffer, TIME_ONESHOT ); 
@@ -3633,14 +2645,14 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			if ( !CompoundSfxBuffer[ buffer ].timerID ) 
 			{
 				// timer not created for some reason - stop buffer to prevent multiple sounds playing!
-				IDirectSoundBuffer_Stop( CompoundSfxBuffer[buffer].buffer );
+				sound_buffer_stop( CompoundSfxBuffer[buffer].buffer );
 			}else
 			{
 				CompoundSfxBuffer[ buffer ].current_sfx = Sfx;
 				CompoundSfxBuffer[ buffer ].current_variant = offset; 
 				CompoundSfxBuffer[ buffer ].compound_buffer_lookup_index = buffer_lookup;
 				CompoundSfxBuffer[ buffer ].distance = Distance;
-				SndObjs[ sndobj_index ]->CompoundBufferLookup[ buffer_lookup ] = buffer;
+				SndSources[ sndobj_index ]->CompoundBufferLookup[ buffer_lookup ] = buffer;
 
 
 				SfxHolder[ HolderIndex ].SfxBufferIndex = buffer;
@@ -3657,7 +2669,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		// if we get here, sound must be played in sw
 
 		// find free buffer space - if none, kill off relevent buffer
-		free_buffer = FindFreeBufferSpace( SndObjs[ sndobj_index ], Distance );
+		free_buffer = FindFreeBufferSpace( SndSources[ sndobj_index ], Distance );
 		if (free_buffer < 0)
 		{
 			//SfxHolder[ HolderIndex ].Used = FALSE;	// mark holder as free			
@@ -3669,24 +2681,24 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		SfxHolder[ HolderIndex ].SfxBufferIndex = free_buffer;
 		SfxHolder[ HolderIndex ].SfxFlags = SFX_HOLDERTYPE_Static;
 		SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
-		SndObjs[ sndobj_index ]->SfxHolderIndex[ free_buffer ] = HolderIndex;
+		SndSources[ sndobj_index ]->SfxHolderIndex[ free_buffer ] = HolderIndex;
 
 
 		Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 		Volume = SFX_MIN_VOLUME - (long)( ((float)( SFX_MIN_VOLUME - Volume )) * GlobalSoundAttenuation * VolModify );
 	   	if ( type != SFX_2D )
-			SetPannedBufferParams( SndObjs[ sndobj_index ]->Dup_Buffer[free_buffer], SndObjs[ sndobj_index ]->Dup_3DBuffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
+			SetPannedBufferParams( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer], SndSources[ sndobj_index ]->Dup_3DBuffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
 		else
-			IDirectSoundBuffer_SetVolume( SndObjs[ sndobj_index ]->Dup_Buffer[free_buffer] , ( Volume > 0 ) ? 0 : Volume );
+			sound_buffer_volume( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] , ( Volume > 0 ) ? 0 : Volume );
 	
 		// sfx can only be looping at this point if if is 2D - sfx will just continue to play until stopped.
 		if ( flags & SFX_Looping )
-			IDirectSoundBuffer_Play( SndObjs[ sndobj_index ]->Dup_Buffer[free_buffer], 0, 0, DSBPLAY_LOOPING );
+			sound_buffer_play_looping( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
 		else
-			IDirectSoundBuffer_Play( SndObjs[ sndobj_index ]->Dup_Buffer[free_buffer], 0, 0, 0 );
+			sound_buffer_play( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
 
-		SndObjs[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = clock();
-		SndObjs[ sndobj_index ]->Buffer_Dist[free_buffer] = Distance;
+		SndSources[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = clock();
+		SndSources[ sndobj_index ]->Buffer_Dist[free_buffer] = Distance;
 		return TRUE;
 	}
 	
@@ -3998,14 +3010,14 @@ BOOL StopSfx( uint32 uid )
 				SfxThreadInfo[ SfxHolder[ i ].ThreadIndex ].SfxToPlay = FALSE;
 			else
 			{
-				SoundBufferRelease( &SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
+				sound_buffer_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
 			}
 		}
 
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 		{
-			IDirectSoundBuffer_Stop( SndObjs[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
-			IDirectSoundBuffer_SetCurrentPosition( SndObjs[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
+			sound_buffer_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
+			IDirectSoundBuffer_SetCurrentPosition( (IDirectSoundBuffer*)SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
 		}
 
 		FreeSfxHolder( i );
@@ -4016,52 +3028,6 @@ BOOL StopSfx( uint32 uid )
 	return FALSE;
 }
 
-void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq )
-{
-	LPWAVEFORMATEX lpwaveinfo;
-	DWORD dwSizeWritten, OrigFreq;
-
-	// BUG:  Appears Buffer pointer goes bad or is passed in as NULL
-	if(!Buffer)
-	{
-		DebugPrintf("BUG: SetBufferFreq() Buffer passed in was null\n");
-		return;
-	}
-
-	if ( !Freq || ( Freq == 1.0F ) )
-	{
-		OrigFreq = DSBFREQUENCY_ORIGINAL; 
-	}else
-	{
-		// get original frequency of buffer
-		IDirectSoundBuffer_GetFormat( Buffer, NULL, 0, &dwSizeWritten );
-		lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-		IDirectSoundBuffer_GetFormat( Buffer, lpwaveinfo, dwSizeWritten, 0 );
-		OrigFreq = lpwaveinfo->nSamplesPerSec; 
-		free(lpwaveinfo);
-	
-		// work out new frequency
-		OrigFreq = (DWORD)( (float)OrigFreq * Freq );
-
-		if ( OrigFreq < DSBFREQUENCY_MIN )
-		{
-			OrigFreq = DSBFREQUENCY_MIN;
-		}
-		if ( OrigFreq > DSBFREQUENCY_MAX )
-		{
-			OrigFreq = DSBFREQUENCY_MAX;
-		}
-
-	}
-
-	// set frequency
-	if ( IDirectSoundBuffer_SetFrequency( Buffer, OrigFreq ) != DS_OK )
-	{
-		DebugPrintf("set frequency failed ( 4 )\n");
-	}
-
-}
-
 /*===================================================================
 	Procedure	:	Play Panned Sfx
 	Input		:	int16	Sfx Number
@@ -4069,7 +3035,7 @@ void SetBufferFreq( IDirectSoundBuffer *Buffer, float Freq )
 				:	VECTOR * Pos
 	Output		:	Nothing
 ===================================================================*/
-void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects )
+void SetPannedBufferParams( void* sound_buffer, void* sound_buffer3D, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects )
 {
 	VECTOR	Temp2;
 	float	nz;
@@ -4080,7 +3046,7 @@ void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB
 	float sxmax = 10000.0F;
 	float currentdist;
 
-	if (!pDSB)
+	if (!sound_buffer)
 		return;
 
 	if ( Distance && (!( Effects & SPOT_SFX_TYPE_NoPan )) )
@@ -4107,202 +3073,33 @@ void SetPannedBufferParams( IDirectSoundBuffer *pDSB, IDirectSound3DBuffer *pDSB
 	}else
 		Pan = 0;
     
-	if (pDSB)
+	if (sound_buffer)
     {
-		if( !Sound3D || !pDSB3D )
+		if( !Sound3D || !sound_buffer3D )
 		{
-
-			IDirectSoundBuffer_SetPan(pDSB, Pan );
-			if ( IDirectSoundBuffer_SetVolume( pDSB , ( Volume > 0 ) ? 0 : Volume ) != DS_OK )
-			{
-				DebugPrintf("unable to set volume\n" );
-			}
-
-			SetBufferFreq( pDSB, Freq );
-
-		}else{
-			//DebugPrintf("Creating 3D info\n");
-			IDirectSound3DBuffer_SetPosition( pDSB3D , SfxPos->x / 128.0F ,
-											  SfxPos->y / 128.0F, SfxPos->z / 128.0F,
-											  DS3D_IMMEDIATE);
-		
-			IDirectSound3DBuffer_SetMaxDistance( pDSB3D , 100.0F, DS3D_IMMEDIATE); 
-			IDirectSound3DBuffer_SetMinDistance( pDSB3D ,   1.0F, DS3D_IMMEDIATE); 
-
+			sound_buffer_pan(sound_buffer, Pan );
+			sound_buffer_volume( sound_buffer , ( Volume > 0 ) ? 0 : Volume );
+			sound_buffer_set_freq( sound_buffer, Freq );
+		}
+		else
+		{
+			DebugPrintf("Creating 3D info\n");
+			sound_buffer_set_position(
+				sound_buffer3D,
+				SfxPos->x / 128.0F,
+				SfxPos->y / 128.0F,
+				SfxPos->z / 128.0F,
+				1.0f,	// min distance
+				100.0f  // max distance
+			);
 		}
     }
 }
 
-/****************************************************************************
-FUNCTION:   Init_SoundGlobals
-
-PURPOSE:    Initializes the tiErree main global variables. After this is done,
-            we should have allocated:
-            a. A DirectSound Object
-            b. A DirectSound3DListener Object
-            c. A Primary Buffer.
-
-            These are all global.
-*****************************************************************************/
-BOOL Init_SoundGlobals(void)
-{
-	DSBUFFERDESC  dsbdesc;
-	int			  iErr = 0;
-#ifdef DEBUG_ON
-	char *from_file = __FILE__;
-	int from_line = __LINE__;
-#endif
-
-		lpDS = NULL;
-
-       // initialize COM library
-       if FAILED( CoInitialize(NULL) )
-               return FALSE;
-
-		// Attempt to initialize with DirectSound.
-		// First look for DSOUND.DLL using CoCreateInstance.
-		iErr = CoCreateInstance(&CLSID_DirectSound, NULL, CLSCTX_INPROC_SERVER,
-									 &IID_IDirectSound, (void **) &lpDS);
-		
-		if ((iErr >= DS_OK)	&& (lpDS)) // Found DSOUND.DLL
-			iErr = IDirectSound_Initialize(lpDS, NULL);	// Try to init Direct Sound.
-
-		if (iErr < DS_OK)
-		{
-			DebugPrintf("returning FALSE from Init_SoundGlobals at point 1\n");
-			return(FALSE);	// Failed to get DirectSound, so no sound-system available.
-		}
-		else
-		{
-			// Succeeded in getting DirectSound.
-			// Check to see if there is 3D acceleration.
-			DSCAPS	dsCaps;
-			dsCaps.dwSize = sizeof(DSCAPS);
-			IDirectSound_GetCaps(lpDS, &dsCaps);
-			// Allow 3D sound only if acceleration exists.
-			Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
-		}
-
-	// TEMP!! no 3D sound for now
-	Sound3D = FALSE;
-
-	// If here, got a valid sound-interface...
-	memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
-	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-	dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRL3D;
-	dsbdesc.dwBufferBytes = 0; //dwBufferBytes and lpwfxFormat must be set this way.
-	dsbdesc.lpwfxFormat = NULL;
-	
-	// Set control-level of DirectSound. (To normal, default.)
-	if (IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
-	{
-		// Create primary buffer.
-		if ( MakeSoundBuffer( lpDS, &dsbdesc, &glpPrimaryBuffer, NULL ) )
-		{
-			
-			DWORD dwSizeWritten;
-			LPWAVEFORMATEX lpwaveinfo;
-			
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, NULL, 0, &dwSizeWritten );
-			lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, lpwaveinfo, dwSizeWritten, 0 );
-			
-			lpwaveinfo->nChannels = 2;
-			lpwaveinfo->nSamplesPerSec = 22050;
-			lpwaveinfo->wBitsPerSample = 16;
-			lpwaveinfo->nBlockAlign = 4;
-			lpwaveinfo->nAvgBytesPerSec = lpwaveinfo->nSamplesPerSec * lpwaveinfo->nBlockAlign;
-
-			if ( IDirectSoundBuffer_SetFormat( glpPrimaryBuffer, lpwaveinfo ) != DS_OK )
-			{
-				free(lpwaveinfo);
-				return FALSE;
-			}
-
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, lpwaveinfo, dwSizeWritten, 0 );
-			DebugPrintf("using primary buffer format: wFormatTag %d, nChannels %d, nSamplesPerSec %d, nAvgBytesPerSec %d, nBlockAlign %d, wBitsPerSample %d\n",
-				lpwaveinfo->wFormatTag, lpwaveinfo->nChannels, lpwaveinfo->nSamplesPerSec, lpwaveinfo->nAvgBytesPerSec, lpwaveinfo->nBlockAlign, lpwaveinfo->wBitsPerSample );
-			
-			free(lpwaveinfo);
-
-			// If no 3D, we are done.
-			if (!Sound3D)
-				return(TRUE);
-
-			// If 3D, need to get listener interface.
-			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener,
-															  (void **) &lpDS3DListener) >= DS_OK)
-			{
-				// Start primary-buffer looped-playing to reduce overhead on secondary-play calls.
-				glpPrimaryBuffer->lpVtbl->Play(glpPrimaryBuffer, 0, 0, DSBPLAY_LOOPING);
-				return(TRUE);
-			}
-			else
-			{
-				// Failed to get 3D, so we only have 2D-controls. Release listener if valid, and go with 2D.
-				if (lpDS3DListener)
-				{
-					IDirectSound3DListener_Release(lpDS3DListener);
-					lpDS3DListener = NULL;
-				}
-				
-				// Flag all 3D as off.
-				Sound3D = FALSE;
-
-				return(TRUE);	// Still succeed initialization, but with 2D.
-			}
-		}
-	}
-
-	// If here, failed to initialize sound system in some way. (Either in SetCoopLevel, or creating primary-buffer.)
-	IDirectSound_Release(lpDS);
-	lpDS = NULL;
-	
-	DebugPrintf("returning FALSE from Init_SoundGlobals at point 2\n");
-
-	return(FALSE);
-}
-
-
-/*===================================================================
-	Procedure	:	Set the position velocity and direction of the Listner..
-	Input		:	VECTOR * Pos
-				:	VECTOR * Velocity
-				:	MATRIX * Matrix
-	Output		:	Nothing
-===================================================================*/
-BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
-{
-	VECTOR UpVector;
-	VECTOR ForwardVector;
-	if(!Sound3D)
-		return 0;
-	if(DS_OK != IDirectSound3DListener_SetPosition(lpDS3DListener, Pos->x / 128.0F, Pos->y / 128.0F, Pos->z / 128.0F, DS3D_DEFERRED))
-		return FALSE;
-    //if(DS_OK != IDirectSound3DListener_SetVelocity(lpDS3DListener, Velocity->x / 128.0F,
-	//											   Velocity->y / 128.0F, Velocity->z / 128.0F, DS3D_DEFERRED))
-    if(DS_OK != IDirectSound3DListener_SetVelocity(lpDS3DListener, Velocity->x, Velocity->y, Velocity->z, DS3D_DEFERRED))
-		return FALSE;
-
-	ApplyMatrix( Mat, &SlideUp, &UpVector );			/* Calc Direction Vector */
-	ApplyMatrix( Mat, &Forward, &ForwardVector );			/* Calc Direction Vector */
-	if(DS_OK != IDirectSound3DListener_SetOrientation(lpDS3DListener, ForwardVector.x, ForwardVector.y, ForwardVector.z,
-																	  UpVector.x, UpVector.y, UpVector.z, DS3D_DEFERRED))
-		return FALSE;
-	if (DS_OK != IDirectSound3DListener_CommitDeferredSettings(lpDS3DListener))
-		return FALSE;
-	return TRUE;
-}
+extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
 void SetSoundLevels( int *dummy )
 {
-#if 0
-	float vol;
-	DWORD volbits;
-	MMRESULT mmr;
-#endif
-	// set sfx att.
-	//GlobalSoundAttenuation = SfxSlider.value / 12.5F;
 	GlobalSoundAttenuation = SfxSlider.value / ( SfxSlider.max / GLOBAL_MAX_SFX );
 }
 
@@ -4322,7 +3119,7 @@ void FreeUpSBufferListNode( int node )
 	SBufferList[ node ].used = FALSE;
 }
 
-int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D, int SfxHolderIndex )
+int AddToSBufferList( void* buffer, int SfxHolderIndex )
 {
 	int index;
 	
@@ -4332,8 +3129,8 @@ int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D
 	{
 		// Ahhhh! - no room to store dynamic sfx, therefore must kill off prematurly
 		DebugPrintf("unable to play dynamic sfx - need to increase size of SBufferList\n");
-		IDirectSoundBuffer_Stop( buffer );
-		SoundBufferRelease( &buffer );
+		sound_buffer_stop( buffer );
+		sound_buffer_release( buffer );
 		return -1;
 	}
 
@@ -4348,7 +3145,6 @@ int AddToSBufferList( IDirectSoundBuffer* buffer, IDirectSound3DBuffer* buffer3D
 void CheckSBufferList( void )
 {
 	int i;
-	DWORD dwStatus;
 
 	if ( !bSoundEnabled )
 		return;
@@ -4372,9 +3168,11 @@ void CheckSBufferList( void )
 				{
 					if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 					{
-		 				// if buffer is not playing...
-						IDirectSoundBuffer_GetStatus( SndObjs[  SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] , &dwStatus );
-						if ( !(dwStatus & DSBSTATUS_PLAYING) )
+						if(!sound_buffer_is_playing( 
+							SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ 
+								SfxHolder[ i ].SfxBufferIndex 
+							]
+						))
 						{
 							if ( SfxHolder[ i ].TriggerSfx != -1 )
 							{
@@ -4396,13 +3194,10 @@ void CheckSBufferList( void )
 					// must check SfxBufferIndex is valid, because it might not have been filled in by thread yet
 					if ( (( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt )) && ( SfxHolder[ i ].SfxBufferIndex != -1 ) )
 					{
-						// get status of buffer
-						IDirectSoundBuffer_GetStatus( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer, &dwStatus );
-							
 						// if current node used and not playing, release & mark as unused
-						if ( !(dwStatus & DSBSTATUS_PLAYING) )
+						if(!sound_buffer_is_playing( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer ))
 						{
-							SoundBufferRelease( &SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
+							sound_buffer_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
 							//DebugPrintf("Released sfx %d\n", SfxHolder[ i ].UniqueID);
 
 							if ( SfxHolder[ i ].TriggerSfx != -1 )
@@ -4433,8 +3228,8 @@ void FreeSBufferList( void )
 	{
 		if ( SBufferList[ i ].used )
 		{
-			IDirectSoundBuffer_Stop( SBufferList[ i ].buffer );
-			SoundBufferRelease( &SBufferList[ i ].buffer );
+			sound_buffer_stop( SBufferList[ i ].buffer );
+			sound_buffer_release( SBufferList[ i ].buffer );
 			SBufferList[ i ].used = FALSE;
 		}
 	}
@@ -4515,7 +3310,7 @@ void StopLoopingSfx( int index )
 	{
 		if ( SpotSfxList[ index ].buffer )
 		{
-			IDirectSoundBuffer_Stop( SpotSfxList[ index ].buffer );
+			sound_buffer_stop( SpotSfxList[ index ].buffer );
 			SpotSfxList[ index ].buffer = NULL;
 		}
 	}
@@ -4530,7 +3325,7 @@ void StopLoopingSfx( int index )
 		if ( SpotSfxList[ index ].buffer )
 		{
 			DebugPrintf("- looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
-			SoundBufferRelease( &SpotSfxList[ index ].buffer );
+			sound_buffer_release( SpotSfxList[ index ].buffer );
 			SpotSfxList[ index ].buffer = NULL;
 		}
 	}
@@ -4543,11 +3338,7 @@ void StopLoopingSfx( int index )
 void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 {
 	int index, LoopingSfxIndex;
-	LPWAVEFORMATEX lpwaveinfo;
-	DWORD dwSizeWritten, OrigFreq;
-
 	index = GetSfxHolderIndex( uid );
-
 	if ( index != -1 )
 	{
 		LoopingSfxIndex = SfxHolder[ index ].SfxBufferIndex;
@@ -4559,49 +3350,19 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 
 				// if buffer exists, set frequency...
 				if ( SpotSfxList[ LoopingSfxIndex ].bufferloaded && SpotSfxList[ LoopingSfxIndex ].buffer )
-				{
-					// get original frequency of buffer
-					IDirectSoundBuffer_GetFormat( SpotSfxList[ LoopingSfxIndex ].buffer, NULL, 0, &dwSizeWritten );
-					lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-					IDirectSoundBuffer_GetFormat( SpotSfxList[ LoopingSfxIndex ].buffer, lpwaveinfo, dwSizeWritten, 0 );
-					OrigFreq = lpwaveinfo->nSamplesPerSec; 
-					free(lpwaveinfo);
-			
-					// work out new frequency
-					OrigFreq = (DWORD)( (float)OrigFreq * Freq );
-
-					if ( OrigFreq < DSBFREQUENCY_MIN )
-					{
-						OrigFreq = DSBFREQUENCY_MIN;
-					}
-					if ( OrigFreq > DSBFREQUENCY_MAX )
-					{
-						OrigFreq = DSBFREQUENCY_MAX;
-					}
-
-					if ( IDirectSoundBuffer_SetFrequency( SpotSfxList[ LoopingSfxIndex ].buffer, OrigFreq ) != DS_OK )
-					{
-						DebugPrintf("set frequency failed ( 5 )\n");
-					}
-				}
+					sound_buffer_set_freq( SpotSfxList[ LoopingSfxIndex ].buffer, (float)Freq );
 			}
-
 			if ( Volume && ( Volume != SpotSfxList[ LoopingSfxIndex ].vol ))
-			{
 				SpotSfxList[ LoopingSfxIndex ].vol = Volume;
-			}
-		}else
-		{
-			Msg("invalid looping sfx index! ( %d )\n", LoopingSfxIndex);
 		}
-
+		else
+			Msg("invalid looping sfx index! ( %d )\n", LoopingSfxIndex);
 	}
 }
 
 void FindFreeLoopingSfxBuffer( int index )
 {
 	int i;
-	DWORD dwStatus;
 	float furthest;
 	int furthest_index;
 
@@ -4609,21 +3370,22 @@ void FindFreeLoopingSfxBuffer( int index )
 	furthest_index = 0;
 
 	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
-	{								
-		IDirectSoundBuffer_GetStatus( SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ], &dwStatus );
+	{		
+		void * buffer = SndSources[ 
+				SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + 
+				SpotSfxList[ index ].variant 
+			]->Dup_Buffer[ i ];
 
-		// if buffer not playing...
-		if (!( dwStatus & DSBSTATUS_PLAYING ))
+		if(sound_buffer_is_playing(buffer))
 		{
 			//DebugPrintf("- assigned non playing buffer to looping sfx %d\n", SpotSfxList[ index ].sfxindex);
-			SpotSfxList[ index ].buffer = SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
-			SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] = index;
+			SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
+			SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] = index;
 			return;
 		}
-
-		if ( SpotSfxList[ SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance > furthest )
+		if ( SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance > furthest )
 		{
-			furthest = SpotSfxList[ SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance;
+			furthest = SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance;
 			furthest_index = i;
 		}
 	}
@@ -4637,13 +3399,13 @@ void FindFreeLoopingSfxBuffer( int index )
 
 	//DebugPrintf("- stopping furthest sound buffer and assigning it to current looping sfx buffer %d\n", SpotSfxList[ index ].sfxindex);
 
-	IDirectSoundBuffer_Stop ( SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
+	sound_buffer_stop ( SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
 	
-	SpotSfxList[ SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].buffer = NULL;
-	SpotSfxList[ SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].bufferloaded = FALSE;
+	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].buffer = NULL;
+	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].bufferloaded = FALSE;
 
-	SpotSfxList[ index ].buffer = SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ];
-	SndObjs[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] = index;
+	SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ];
+	SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] = index;
 
 }
 
@@ -4832,10 +3594,8 @@ void ProcessLoopingSfx( void )
 			}
 			if ( !SpotSfxList[i].bufferloaded && SpotSfxList[i].buffer )
 			{
-				DWORD dwStatus;
 				DebugPrintf("- looping sfx sound %d, bufferloaded=false but buffer pointer is GOOD\n", SpotSfxList[ i ].sfxindex);
-				IDirectSoundBuffer_GetStatus( SpotSfxList[ i ].buffer, &dwStatus );
-				if (dwStatus & DSBSTATUS_PLAYING)
+				if(sound_buffer_is_playing( (IDirectSoundBuffer*)SpotSfxList[ i ].buffer ))
 				{
 					DebugPrintf("- and buffer is still playing...\n");
 					DebugPrintf("- stopping buffer now...\n");
@@ -4856,11 +3616,11 @@ void ProcessLoopingSfx( void )
 					// kill off buffer(s)
 					if ( SpotSfxList[ i ].buffer3D )
 					{
-						IDirectSound3DBuffer_Release( SpotSfxList[ i ].buffer3D );
+						sound_buffer_3d_release( SpotSfxList[ i ].buffer3D );
 						SpotSfxList[ i ].buffer3D = NULL;
 					}
 
-					SoundBufferRelease( &SpotSfxList[ i ].buffer );
+					sound_buffer_release( SpotSfxList[ i ].buffer );
 					SpotSfxList[ i ].buffer = NULL;
 				}
 			}
@@ -4869,12 +3629,12 @@ void ProcessLoopingSfx( void )
 				//DebugPrintf("Stopping looping sfx %d\n", SpotSfxList[ i ].sfxindex);
 				if(SpotSfxList[ i ].buffer == NULL)
 				{
-					DebugPrintf("ProcessLoopSFX() Attempt to call IDirectSoundBuffer_Stop() on bad pointer....\n");
+					DebugPrintf("ProcessLoopSFX() Attempt to call sound_buffer_stop() on bad pointer....\n");
 				}
 				else
 				{
-					//DebugPrintf("ProcessLoopSFX() IDirectSoundBuffer_Stop() buffer is not NULL ...\n");
-					IDirectSoundBuffer_Stop( SpotSfxList[ i ].buffer );
+					//DebugPrintf("ProcessLoopSFX() sound_buffer_stop() buffer is not NULL ...\n");
+					sound_buffer_stop( SpotSfxList[ i ].buffer );
 				}
 				SpotSfxList[ i ].buffer = NULL;
 			}
@@ -4918,7 +3678,7 @@ void ProcessLoopingSfx( void )
 
 				if ( SpotSfxList[ i ].buffer )
 				{
-					SetBufferFreq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
+					sound_buffer_set_freq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
 					SpotSfxList[ i ].bufferloaded = TRUE;
 				}
 			}
@@ -4930,20 +3690,24 @@ void ProcessLoopingSfx( void )
 		{
 			DWORD dwCurrentPlayCursor;
 			HRESULT hres;
-			DWORD dwStatus;
 
 			// check sfx is not in 'safe zone'
 			//currenttime = SDL_GetTicks();
 
 			// get current buffer position...
-			hres = IDirectSoundBuffer_GetCurrentPosition(SpotSfxList[ i ].buffer, &dwCurrentPlayCursor, NULL);
+			hres = IDirectSoundBuffer_GetCurrentPosition(
+				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, 
+				&dwCurrentPlayCursor, NULL
+				);
 			if ( hres != DS_OK )
 				DebugPrintf("error getting current looping sound play position\n");
 
 			// get buffer format
-			IDirectSoundBuffer_GetFormat( SpotSfxList[ i ].buffer, NULL, 0, &dwSizeWritten );
+			IDirectSoundBuffer_GetFormat( 
+				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, NULL, 0, &dwSizeWritten );
 			lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-			IDirectSoundBuffer_GetFormat( SpotSfxList[ i ].buffer, lpwaveinfo, dwSizeWritten, 0 );
+			IDirectSoundBuffer_GetFormat( 
+				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, lpwaveinfo, dwSizeWritten, 0 );
 			datarate = lpwaveinfo->nAvgBytesPerSec; 
 			free(lpwaveinfo);
 
@@ -4963,10 +3727,19 @@ void ProcessLoopingSfx( void )
 		
 					Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
-					SetPannedBufferParams( SpotSfxList[ i ].buffer, NULL, &Pos, SpotSfxList[ i ].freq, &Temp, Distance, Volume, SpotSfxList[ i ].Effects );
+					SetPannedBufferParams(
+						SpotSfxList[ i ].buffer,
+						NULL,
+						&Pos, 
+						SpotSfxList[ i ].freq,
+						&Temp,
+						Distance,
+						Volume,
+						SpotSfxList[ i ].Effects 
+					);
 
 					//if ( Distance <= SHIP_RADIUS * LOOPING_SFX_PANNING_PROXIMITY )
-					//	IDirectSoundBuffer_SetPan( SpotSfxList[ i ].buffer, 0 );
+					//	sound_buffer_pan( SpotSfxList[ i ].buffer, 0 );
 			
 				}
 				else
@@ -4976,9 +3749,8 @@ void ProcessLoopingSfx( void )
 
 				//DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
 
-				IDirectSoundBuffer_GetStatus( SpotSfxList[ i ].buffer, &dwStatus );
-				if (!(dwStatus & DSBSTATUS_PLAYING))
-					IDirectSoundBuffer_Play( SpotSfxList[ i ].buffer, 0, 0, DSBPLAY_LOOPING );
+				if( ! sound_buffer_is_playing( SpotSfxList[ i ].buffer ) )
+					sound_buffer_play_looping(SpotSfxList[ i ].buffer);
 
 			}//else
 			 //	DebugPrintf("in safe zone...( current play cursor = %d, buffer size = %d )\n", dwCurrentPlayCursor, tempnode->buffersize);
@@ -5181,7 +3953,8 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 			Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * VolModify * GlobalSoundAttenuation );
 
 			// set buffer parameters
-			SetPannedBufferParams( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer,
+			SetPannedBufferParams( 
+				SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer,
 				NULL,
 				SfxPos, 
 				0.0F, 

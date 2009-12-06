@@ -13,6 +13,7 @@
 #include "sfx.h"
 #include "SDL.h"
 #include "input.h"
+#include "sound.h"
 
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR
@@ -520,7 +521,6 @@ static BOOL AppInit( char * lpCmdLine )
 //
 
 extern BOOL RenderScene( void );
-extern void commit_any_sounds( void );
 
 static BOOL RenderLoop()
 {
@@ -556,7 +556,7 @@ static BOOL RenderLoop()
 			}
 		}
 
-		commit_any_sounds();
+		sound_commit_any_pending();
 	}
 
 	//

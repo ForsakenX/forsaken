@@ -3,6 +3,14 @@
 
 #include "enemies.h"
 
+#define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
+#define MAX_COMPOUND_BUFFERS 16	// max number of mixing channels
+#define MIN_COMPOUND_BUFFERS 8	// min number of mixing channels ( otherwise sw mixing will be used )
+#define CompoundSfxBitDepth 16
+#define CompoundSfxChannels 1
+#define CompoundSfxFrequency 22050 // establish compound sample format...temporarily hard coded for now...
+#define CompoundSfxGap 0.1f	// secs
+
 #define SFX_Biker			4	// biker speech
 #define SFX_Title	64	// use when biker speech must play ( will cut off any existing speech )
 #define SFX_InGame	256	// sfx must be loaded in game, regardless of whether or not SFX_Title is set
@@ -241,6 +249,115 @@ enum {
 	MAX_SFX,
 };
 
+/*************************************
+Biker speech lookup table identifiers
+**************************************/
+enum {
+	SFX_BIKER_LOOKUP_GP, //	-	general        
+	SFX_BIKER_LOOKUP_VP, //	-	victory        
+	SFX_BIKER_LOOKUP_LP, //	-	losing         
+	SFX_BIKER_LOOKUP_BW, //	-	big weapon gain
+	SFX_BIKER_LOOKUP_LE, //	-	low energy     
+	SFX_BIKER_LOOKUP_TN, //	-	taunt          
+	SFX_BIKER_LOOKUP_PN, //	-	pain           
+	SFX_BIKER_LOOKUP_DT, //	-	death          
+	SFX_BIKER_LOOKUP_EX, //	-	extra          
+};
+
+/*************************************
+Bike Computer lookup table identifiers
+**************************************/
+enum {
+	SFX_BIKECOMP_LOOKUP_AM,  //	-	assassin missile                        
+	SFX_BIKECOMP_LOOKUP_AP,  //	-	picking up a weapon which is already pre
+	SFX_BIKECOMP_LOOKUP_BL,  //	-	beam laser                              
+	SFX_BIKECOMP_LOOKUP_BN,  //	-	bad navigation                          
+	SFX_BIKECOMP_LOOKUP_CA,  //	-	camping                                 
+	SFX_BIKECOMP_LOOKUP_CD,  //	-	chaff dispenser                         
+	SFX_BIKECOMP_LOOKUP_CS,  //	-	chaos shield                            
+	SFX_BIKECOMP_LOOKUP_DY,  //	-	destroying yourself                     
+	SFX_BIKECOMP_LOOKUP_EA,  //	-	extra ammo                              
+	SFX_BIKECOMP_LOOKUP_EX,  //	-	extra,   miscellaneous phrases            
+	SFX_BIKECOMP_LOOKUP_FL,  //	-	flares                                  
+	SFX_BIKECOMP_LOOKUP_GK,  //	-	good kill total                         
+	SFX_BIKECOMP_LOOKUP_GL,  //	-	general ammo low                        
+	SFX_BIKECOMP_LOOKUP_GM,  //	-	gravgon missile                         
+	SFX_BIKECOMP_LOOKUP_GP,  //	-	golden power pod                        
+	SFX_BIKECOMP_LOOKUP_HC,  //	-	hull critical                           
+	SFX_BIKECOMP_LOOKUP_IN,  //	-	incoming                                
+	SFX_BIKECOMP_LOOKUP_IR,  //	-	IR goggles                              
+	SFX_BIKECOMP_LOOKUP_MA,  //	-	maximum ammo                            
+	SFX_BIKECOMP_LOOKUP_MK,  //	-	many kills in a short time period       
+	SFX_BIKECOMP_LOOKUP_MR,  //	-	MRFL                                    
+	SFX_BIKECOMP_LOOKUP_MU,  //	-	mug                                     
+	SFX_BIKECOMP_LOOKUP_NK,  //	-	no kills for a lengthy time period      
+	SFX_BIKECOMP_LOOKUP_NL,  //	-	nitro low                               
+	SFX_BIKECOMP_LOOKUP_NP,  //	-	selecting a weapon which is not present 
+	SFX_BIKECOMP_LOOKUP_NT,  //	-	nitro                                   
+	SFX_BIKECOMP_LOOKUP_OP,  //	-	orbit pulsar                            
+	SFX_BIKECOMP_LOOKUP_PG,  //	-	petro gel                               
+	SFX_BIKECOMP_LOOKUP_PK,  //	-	poor kill total                         
+	SFX_BIKECOMP_LOOKUP_PL,  //	-	pyrolite fuel low                       
+	SFX_BIKECOMP_LOOKUP_PM,  //	-	pine mine                               
+	SFX_BIKECOMP_LOOKUP_PO,  //	-	power pod                               
+	SFX_BIKECOMP_LOOKUP_PP,  //	-	plasma pack                             
+	SFX_BIKECOMP_LOOKUP_PR,  //	-	purge mine                              
+	SFX_BIKECOMP_LOOKUP_PS,  //	-	pulsar                                  
+	SFX_BIKECOMP_LOOKUP_PY,  //	-	pyrolite                                
+	SFX_BIKECOMP_LOOKUP_QM,  //	-	quantum mine                            
+	SFX_BIKECOMP_LOOKUP_RR,  //	-	resnic reanimator                       
+	SFX_BIKECOMP_LOOKUP_SA,  //	-	scatter missile                         
+	SFX_BIKECOMP_LOOKUP_SC,  //	-	shield critical                         
+	SFX_BIKECOMP_LOOKUP_SG,  //	-	suss-gun                                
+	SFX_BIKECOMP_LOOKUP_SH,  //	-	shield                                  
+	SFX_BIKECOMP_LOOKUP_SI,  //	-	scatter missile impact                  
+	SFX_BIKECOMP_LOOKUP_SL,  //	-	suss gun ammo low                       
+	SFX_BIKECOMP_LOOKUP_SM,  //	-	smoke streamer                          
+	SFX_BIKECOMP_LOOKUP_SO,  //	-	spider mine                             
+	SFX_BIKECOMP_LOOKUP_SP,  //	-	solaris heatseaker                      
+	SFX_BIKECOMP_LOOKUP_ST,  //	-	stealth mantle                          
+	SFX_BIKECOMP_LOOKUP_TI,  //	-	titan star missile                      
+	SFX_BIKECOMP_LOOKUP_TR,  //	-	transpulse                              
+	SFX_BIKECOMP_LOOKUP_TX,  //	-	trojax  
+};
+
+#define SFX_BikeComp		2	// bike computer speech 
+#define SFX_BikeCompNoOveride	512
+#define SFX_BikerSpeechOveride	32	// use when biker speech must play ( will cut off any existing speech )
+
+#define SFX_Dynamic			1	// sound is loaded up as required
+#define SFX_Looping			16	// level specific sfx
+#define SFX_LevelSpec		8	// level specific sfx
+
+typedef struct SFXNAME{
+	char		*Name;			// Name of the Sfx...
+	int			Flags;
+	int			Priority;			// for compound sfx
+	int			SfxLookup;			// for biker / computer speech
+}SFXNAME;
+
+typedef struct
+{
+	int SfxNum;
+	int Variant;
+	DWORD StartPos;
+	unsigned int Length;
+	DWORD Bytes;
+} TEMPSFXINFO;
+
+TEMPSFXINFO TempSfxInfo[MAX_COMPOUND_SFX];
+
+typedef struct{
+	uint16 Num_Variants;
+	uint16 SndObjIndex;
+	BOOL Requested;
+} SNDLOOKUP;
+
+SNDLOOKUP SndLookup[ MAX_SFX ];
+
+BOOL CompoundSfxAllocated[MAX_SFX];
+#define IS_COMPOUND( flags ) ( (!(flags & SFX_Looping)) && (!(flags & SFX_Dynamic)))
+
 #define MAXBIKECOMPTYPES 5
 
 #define DESTROYSOUND_All 0
@@ -252,7 +369,7 @@ void    DestroySound( int flags );
 uint32	PlaySfx( int16 Sfx, float Dist );
 uint32	PlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
-BOOL	SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
+BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
 void CheckSBufferList( void );
 void FreeSBufferList( void );
 int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float Freq, float Volume, int type, int SfxHolderIndex, uint16 Effects, uint32 uid );

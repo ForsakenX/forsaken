@@ -148,7 +148,6 @@ extern	uint16		Seed2;
 extern	uint16		CopyOfSeed1;
 extern	uint16		CopyOfSeed2;
 extern	BOOL		RandomPickups;
-extern	BOOL	NoSFX;
 
 /*
  * Globals to this module
