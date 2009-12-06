@@ -2,10 +2,6 @@
 
 #define DIRECTSOUND_VERSION 0x0700
 #include <dsound.h>
-
-#include <windows.h>
-#include <windowsx.h>
-#include <mmsystem.h>
 #include <stdio.h>
 
 #include "main.h"
