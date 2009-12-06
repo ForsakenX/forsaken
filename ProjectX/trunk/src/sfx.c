@@ -2462,17 +2462,12 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			}
 			else
 			{
-				DWORD BytesPerSec;
-				DWORD Length;
-				LPWAVEFORMATEX lpwaveinfo;
-				DWORD dwSizeWritten, OrigFreq;
+				DWORD BytesPerSec, Length, OrigFreq;
 	
 				// get original frequency of buffer
-				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, NULL, 0, &dwSizeWritten );
-				lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, lpwaveinfo, dwSizeWritten, 0 );
-				OrigFreq = lpwaveinfo->nSamplesPerSec; 
-				free(lpwaveinfo);
+				OrigFreq = sound_buffer_get_freq(
+					CompoundSfxBuffer[buffer].buffer
+				);
 
 				// get new frequency
 				OrigFreq = (DWORD)( (float)OrigFreq * Freq );
@@ -2489,7 +2484,8 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			{
 				// timer not created for some reason - stop buffer to prevent multiple sounds playing!
 				sound_buffer_stop( CompoundSfxBuffer[buffer].buffer );
-			}else
+			}
+			else
 			{
 				CompoundSfxBuffer[ buffer ].current_sfx = Sfx;
 				CompoundSfxBuffer[ buffer ].current_variant = offset; 
@@ -2497,13 +2493,10 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				CompoundSfxBuffer[ buffer ].distance = Distance;
 				SndSources[ sndobj_index ]->CompoundBufferLookup[ buffer_lookup ] = buffer;
 
-
 				SfxHolder[ HolderIndex ].SfxBufferIndex = buffer;
 				SfxHolder[ HolderIndex ].SfxFlags = SFX_HOLDERTYPE_Compound;
 				SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
 				CompoundSfxBuffer[ buffer ].SfxHolderIndex = HolderIndex; 
-
-
 			}
 
 			return TRUE;
@@ -3351,8 +3344,6 @@ void ProcessLoopingSfx( void )
 	int i, j, flags;
 	long	Volume;
 	static float FrameSkip = 0.0F;
-	DWORD dwSizeWritten;
-	LPWAVEFORMATEX lpwaveinfo;
 	DWORD datarate, safezone;
 	VECTOR Pos;
 
@@ -3538,18 +3529,14 @@ void ProcessLoopingSfx( void )
 
 			// get current buffer position...
 			sound_buffer_get_position(
-				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, 
+				SpotSfxList[ i ].buffer, 
 				&dwCurrentPlayCursor
 			);
 
 			// get buffer format
-			IDirectSoundBuffer_GetFormat( 
-				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, NULL, 0, &dwSizeWritten );
-			lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-			IDirectSoundBuffer_GetFormat( 
-				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, lpwaveinfo, dwSizeWritten, 0 );
-			datarate = lpwaveinfo->nAvgBytesPerSec; 
-			free(lpwaveinfo);
+			datarate = sound_buffer_get_rate(
+				SpotSfxList[ i ].buffer
+			);
 
 			// work out safe zone ( bytes from end )
 			safezone = ( datarate * LOOPING_SFX_MIXAHEAD ) / 1000; 

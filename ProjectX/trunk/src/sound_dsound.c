@@ -152,7 +152,10 @@ BOOL sound_init( void )
 // but it's one of the last things using the dsound api so i had to move it into this file
 // even though it's touching structures from sfx.c that i would rather it not touch
 
+// note: managing of hw/sw will not be needed in openAL
+
 #define MIN_SOUNDCARD_HW_MEM 262144	// 256K 
+static void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr);
 int sound_load_to_hw( void )
 {
 	DWORD FreeMem = 1;  // so that it equates to TRUE
@@ -430,6 +433,42 @@ void sound_buffer_pan( void * buffer, long pan )
 	IDirectSoundBuffer_SetPan( (IDirectSoundBuffer*) buffer, pan );
 }
 
+DWORD sound_buffer_get_freq( void * buffer ) // samples per sec
+{
+	LPWAVEFORMATEX lpwaveinfo;
+	DWORD dwSizeWritten, freq;
+	IDirectSoundBuffer_GetFormat(
+		(IDirectSoundBuffer*) buffer,
+		NULL, 0, &dwSizeWritten 
+	);
+	lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
+	IDirectSoundBuffer_GetFormat( 
+		(IDirectSoundBuffer*) buffer,
+		lpwaveinfo, dwSizeWritten, 0 
+	);
+	freq = lpwaveinfo->nSamplesPerSec; 
+	free(lpwaveinfo);
+	return freq;
+}
+
+DWORD sound_buffer_get_rate( void * buffer ) // avg bytes per second
+{
+	LPWAVEFORMATEX lpwaveinfo;
+	DWORD dwSizeWritten, datarate;
+	IDirectSoundBuffer_GetFormat( 
+		(IDirectSoundBuffer*) buffer, 
+		NULL, 0, &dwSizeWritten 
+	);
+	lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
+	IDirectSoundBuffer_GetFormat( 
+		(IDirectSoundBuffer*) buffer, 
+		lpwaveinfo, dwSizeWritten, 0 
+	);
+	datarate = lpwaveinfo->nAvgBytesPerSec; 
+	free(lpwaveinfo);
+	return datarate;
+}
+
 // this gets the current play location
 void sound_buffer_get_position( void * buffer, DWORD* time )
 {
@@ -672,7 +711,7 @@ static void* sound_buffer_load(char *name, DWORD flags)
     return pDSB;
 }
 
-void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr)
+static void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr)
 {
 	IDirectSoundBuffer *pDSB = NULL;
     DSBUFFERDESC dsBD = {0};

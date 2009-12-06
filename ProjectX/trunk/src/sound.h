@@ -62,7 +62,10 @@ void sound_buffer_release( void * buffer );
 void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );
 BOOL sound_buffer_duplicate( void * buffer, void** duplicate );
-void sound_buffer_volume( void * buffer, long volume );void sound_buffer_pan( void * buffer, long pan );
+void sound_buffer_volume( void * buffer, long volume );
+void sound_buffer_pan( void * buffer, long pan );
+DWORD sound_buffer_get_freq( void * buffer ); // samples per second
+DWORD sound_buffer_get_rate( void * buffer ); // avg bytes per second
 void sound_buffer_get_position( void * buffer, DWORD* time );
 void sound_buffer_set_position( void * buffer, DWORD time );
 void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
@@ -71,10 +74,6 @@ void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, flo
 // this appears to be the only location that directly loads it's own buffers
 // all other buffers are being loaded by sound_source_create
 void* sound_buffer_load_for_sfx(char* file);
-
-// only used by LoadSfxToHW
-// this is only here till i port that function over and hide it away
-void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr);
 
 //
 // Sources
