@@ -423,7 +423,7 @@ typedef struct
 	DWORD	finish_time;
 	float	distance;
 	unsigned int	timerID;
-	void*	buffer; // IDirectSoundBuffer
+	void*	buffer;
 	int		SfxHolderIndex;
 }COMPOUND_SFX_INFO;
 
@@ -2311,7 +2311,7 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 		return -1;			// sound is too far away to overwrite any existing sounds...
 
 	sound_buffer_stop(SndObj->Dup_Buffer[free_buffer]);
-	IDirectSoundBuffer_SetCurrentPosition( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_buffer_set_position( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
 	sound_buffer_set_freq( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
 	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
 
@@ -2551,19 +2551,15 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			// play sound in buffer, store buffer num in SndSources->CompoundSfxBuffer...
 
 			// set start pos
+			sound_buffer_set_position( 
+				CompoundSfxBuffer[buffer].buffer,
+				SndSources[ sndobj_index ]->StartPos 
+			);
 
-			if ( 
-				((IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer)->lpVtbl->SetCurrentPosition(
-					(IDirectSoundBuffer*)CompoundSfxBuffer[buffer].buffer, 
-					SndSources[ sndobj_index ]->StartPos 
-				) != DS_OK 
-			)
-				DebugPrintf("error setting position\n");
 			/*
-		   	if ( IDirectSoundBuffer_GetCurrentPosition( CompoundSfxBuffer[buffer].buffer, &dwCurrentPlayPos, NULL ) != DS_OK )
-				DebugPrintf("error getting position\n");
-			else
-				DebugPrintf("position set at %d\n", dwCurrentPlayPos);
+		   	sound_buffer_get_position(
+					CompoundSfxBuffer[buffer].buffer,
+					&dwCurrentPlayPos);
 			*/
 			Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
@@ -2986,7 +2982,7 @@ BOOL StopSfx( uint32 uid )
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 		{
 			sound_buffer_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
-			IDirectSoundBuffer_SetCurrentPosition( (IDirectSoundBuffer*)SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
+			sound_buffer_set_position( (IDirectSoundBuffer*)SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
 		}
 
 		FreeSfxHolder( i );
@@ -3053,7 +3049,7 @@ void SetPannedBufferParams( void* sound_buffer, void* sound_buffer3D, VECTOR *Sf
 		else
 		{
 			DebugPrintf("Creating 3D info\n");
-			sound_buffer_set_position(
+			sound_buffer_set_3d_position(
 				sound_buffer3D,
 				SfxPos->x / 128.0F,
 				SfxPos->y / 128.0F,
@@ -3658,18 +3654,15 @@ void ProcessLoopingSfx( void )
 		if ( InRange && SpotSfxList[ i ].bufferloaded && SpotSfxList[ i ].buffer)
 		{
 			DWORD dwCurrentPlayCursor;
-			HRESULT hres;
 
 			// check sfx is not in 'safe zone'
 			//currenttime = SDL_GetTicks();
 
 			// get current buffer position...
-			hres = IDirectSoundBuffer_GetCurrentPosition(
+			sound_buffer_get_position(
 				(IDirectSoundBuffer*)SpotSfxList[ i ].buffer, 
-				&dwCurrentPlayCursor, NULL
-				);
-			if ( hres != DS_OK )
-				DebugPrintf("error getting current looping sound play position\n");
+				&dwCurrentPlayCursor
+			);
 
 			// get buffer format
 			IDirectSoundBuffer_GetFormat( 

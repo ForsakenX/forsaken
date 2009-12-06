@@ -62,7 +62,9 @@ void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );
 BOOL sound_buffer_duplicate( void * buffer, void** duplicate );
 void sound_buffer_volume( void * buffer, long volume );void sound_buffer_pan( void * buffer, long pan );
-void sound_buffer_set_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
+DWORD sound_buffer_get_position( void * buffer, DWORD* time );
+void sound_buffer_set_position( void * buffer, DWORD time );
+void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
 
 // special buffer loader that uses proper setting for a single location
 // this appears to be the only location that directly loads it's own buffers

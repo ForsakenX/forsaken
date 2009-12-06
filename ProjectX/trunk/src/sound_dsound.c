@@ -335,8 +335,27 @@ void sound_buffer_pan( void * buffer, long pan )
 	IDirectSoundBuffer_SetPan( (IDirectSoundBuffer*) buffer, pan );
 }
 
-// this the more advanced 3d function
-void sound_buffer_set_position( void * buffer, float x, float y, float z, float min, float max )
+// this gets the current play location
+DWORD sound_buffer_get_position( void * buffer, DWORD* time )
+{
+	IDirectSoundBuffer_GetCurrentPosition(
+		(IDirectSoundBuffer*) buffer,
+		time,
+		NULL
+	);
+}
+
+// this moves to a specific offset in the buffer
+void sound_buffer_set_position( void * buffer, DWORD time )
+{
+	IDirectSoundBuffer_SetCurrentPosition(
+		(IDirectSoundBuffer*) buffer,
+		time
+	);
+}
+
+// this sets the location in 3d space of the sound
+void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min, float max )
 {			
 	IDirectSound3DBuffer_SetPosition(
 		(IDirectSound3DBuffer*) buffer,
