@@ -13,12 +13,10 @@
 #include "file.h"
 #include "sound.h"
 
-LPDIRECTSOUND			lpDS = NULL;
-LPDIRECTSOUNDBUFFER		glpPrimaryBuffer = NULL;
 
 // globals
+LPDIRECTSOUND lpDS = NULL;
 BOOL Sound3D = FALSE;
-BOOL FreeHWBuffers = TRUE;
 
 //
 // Generic Functions
@@ -26,7 +24,6 @@ BOOL FreeHWBuffers = TRUE;
 
 BOOL sound_init( void )
 {
-	DSBUFFERDESC dsbdesc;
 	int iErr;
 	lpDS = NULL;
 	if FAILED( CoInitialize(NULL) )
@@ -54,66 +51,14 @@ BOOL sound_init( void )
 		sound_caps.buffers = DSCaps.dwFreeHwMixingStaticBuffers;
 		sound_caps.min_volume = ( DSBVOLUME_MIN / 3);
 	}
-
-	// Succeeded in getting DirectSound.
-	// Check to see if there is 3D acceleration.
-	/*
-	DSCAPS	dsCaps;
-	dsCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps(lpDS, &dsCaps);
-	// Allow 3D sound only if acceleration exists.
-	Sound3D = ((dsCaps.dwMaxHw3DAllBuffers > 0) ? TRUE : FALSE);
-	*/
-
-	// If here, got a valid sound-interface...
-	memset(&dsbdesc, 0, sizeof(DSBUFFERDESC));
-	dsbdesc.dwSize = sizeof(DSBUFFERDESC);
-	dsbdesc.dwFlags = DSBCAPS_PRIMARYBUFFER | DSBCAPS_CTRL3D;
-	dsbdesc.dwBufferBytes = 0; //dwBufferBytes and lpwfxFormat must be set this way.
-	dsbdesc.lpwfxFormat = NULL;
 	
 	// Set control-level of DirectSound. (To normal, default.)
-	if (IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE /*DSSCL_NORMAL*/) >= DS_OK)    
-	{
-		// Create primary buffer.
-		if ( IDirectSound_CreateSoundBuffer( lpDS, &dsbdesc, &glpPrimaryBuffer, NULL ) == DS_OK )
-		{
-			
-			DWORD dwSizeWritten;
-			LPWAVEFORMATEX lpwaveinfo;
-			
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, NULL, 0, &dwSizeWritten );
-			lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, lpwaveinfo, dwSizeWritten, 0 );
-			
-			lpwaveinfo->nChannels = 2;
-			lpwaveinfo->nSamplesPerSec = 22050;
-			lpwaveinfo->wBitsPerSample = 16;
-			lpwaveinfo->nBlockAlign = 4;
-			lpwaveinfo->nAvgBytesPerSec = lpwaveinfo->nSamplesPerSec * lpwaveinfo->nBlockAlign;
+	if(IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE) >= DS_OK)
+		return TRUE;
 
-			if ( IDirectSoundBuffer_SetFormat( glpPrimaryBuffer, lpwaveinfo ) != DS_OK )
-			{
-				free(lpwaveinfo);
-				return FALSE;
-			}
-
-			IDirectSoundBuffer_GetFormat( glpPrimaryBuffer, lpwaveinfo, dwSizeWritten, 0 );
-			DebugPrintf("using primary buffer format: wFormatTag %d, nChannels %d, nSamplesPerSec %d, nAvgBytesPerSec %d, nBlockAlign %d, wBitsPerSample %d\n",
-				lpwaveinfo->wFormatTag, lpwaveinfo->nChannels, lpwaveinfo->nSamplesPerSec, lpwaveinfo->nAvgBytesPerSec, lpwaveinfo->nBlockAlign, lpwaveinfo->wBitsPerSample );
-			
-			free(lpwaveinfo);
-
-			return TRUE;
-		}
-	}
-
-	// If here, failed to initialize sound system in some way. (Either in SetCoopLevel, or creating primary-buffer.)
+	// If here, failed to initialize sound system in some way
 	IDirectSound_Release(lpDS);
 	lpDS = NULL;
-	
-	DebugPrintf("returning FALSE from Init_SoundGlobals at point 2\n");
-
 	return(FALSE);
 }
 
@@ -151,7 +96,6 @@ void sound_destroy( void )
 {
 	if ( !lpDS )
 		return;
-	sound_buffer_release( glpPrimaryBuffer );
 	IDirectSound_Release(lpDS);
 }
 
@@ -421,16 +365,11 @@ void sound_source_destroy( sound_source_t * source )
 
 sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 {
-    sound_source_t *pSO = NULL;
-	void * Buffer = NULL;
 	int i;
-	DSBCAPS dsbcaps;
 
-    pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
-
-    if (!pSO)
+    sound_source_t *pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
+    if (!pSO) 
 		return NULL;
-
 	memset( pSO, 0, sizeof(sound_source_t) );
 
 	pSO->looping_sfx_index[0] = -1;
@@ -443,53 +382,19 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 		return pSO;
 	}
 
-	// get caps of buffer
-	memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
-	dsbcaps.dwSize = sizeof( DSBCAPS );
-	IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
-
-	// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
-	// so we will just have to try duplicating until failure
+	// try duplicating until failure
 	for (i = 1; i < MAX_DUP_BUFFERS; i++)
 	{
 		pSO->looping_sfx_index[i] = -1;
-		// duplicate 2D buffer...
-		if ( !IDirectSound_DuplicateSoundBuffer( 
-			lpDS, 
+		if ( !IDirectSound_DuplicateSoundBuffer(
+			lpDS,
 			(LPDIRECTSOUNDBUFFER)pSO->Dup_Buffer[0], 
 			(LPDIRECTSOUNDBUFFER*)&pSO->Dup_Buffer[i] 
 		) == DS_OK )
 		{
-			DebugPrintf("unable to duplicate sound buffer\n");
-
-			// invalidate buffer & all duplicates
 			sound_source_destroy( pSO );
-
-			// was original buffer hw? if so, try to recreate in sw
-			if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
-			{
-				DebugPrintf("trying to recreate in sw\n");
-				FreeHWBuffers = FALSE;
-
-				// recreate all buffers up to & including this one in software
-				pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
-
-				if( !pSO->Dup_Buffer[ 0 ] )
-				{
-					Msg("Unable to create sound buffer for %s\n", path );
-					sound_source_destroy( pSO );
-					return pSO;
-				}
-
-				i = 0;
-				continue;
-			}
-			else
-			{
-				// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
-				Msg("unable to duplicate buffers in sw\n");
-				break;
-			}
+			Msg("unable to duplicate sound buffers\n");
+			break;
 		}
 	}
     return pSO;
