@@ -24,7 +24,6 @@ struct {
 
 BOOL sound_init( void );
 void sound_destroy( void );
-void sound_commit_any_pending( void );
 
 //
 // Listener

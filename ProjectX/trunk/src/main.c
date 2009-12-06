@@ -547,8 +547,6 @@ static BOOL RenderLoop()
 				return FALSE;
 			}
 		}
-
-		sound_commit_any_pending();
 	}
 
 	//

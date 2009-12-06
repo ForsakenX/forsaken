@@ -21,8 +21,6 @@ uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq 
 uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects ){return 0;}
 uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, float Vol, uint16 Effects ){return 0;}
 uint32 PlayPannedSfxWithVolModify(int16 Sfx, uint16 Group, VECTOR * SfxPos, float Freq, float Vol ){return 0;}
-void commit_any_sounds( void ){}
-void sound_commit_any_pending( void ){}
 
 void StopEnemyBikerTaunt( ENEMY *Enemy ){}
 BOOL StopSfx( uint32 uid ){return 0;}
@@ -763,8 +761,6 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 		UpVector.y,
 		UpVector.z
 	)) return FALSE;
-
-	sound_commit_any_pending();
 
 	return TRUE;
 }

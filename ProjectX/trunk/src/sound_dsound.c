@@ -14,10 +14,7 @@
 #include "sound.h"
 
 LPDIRECTSOUND			lpDS = NULL;
-LPDIRECTSOUND3DLISTENER	lpDS3DListener = NULL;
 LPDIRECTSOUNDBUFFER		glpPrimaryBuffer = NULL;
-
-#define _HSNDOBJ_DEFINED
 
 // globals
 BOOL Sound3D = FALSE;
@@ -27,10 +24,6 @@ BOOL FreeHWBuffers = TRUE;
 // Generic Functions
 //
 
-// Initializes main globals
-// a. A DirectSound Object
-// b. A DirectSound3DListener Object
-// c. A Primary Buffer.
 BOOL sound_init( void )
 {
 	DSBUFFERDESC dsbdesc;
@@ -111,31 +104,7 @@ BOOL sound_init( void )
 			
 			free(lpwaveinfo);
 
-			// If no 3D, we are done.
-			if (!Sound3D)
-				return(TRUE);
-
-			// If 3D, need to get listener interface.
-			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener, (void **) &lpDS3DListener) >= DS_OK)
-			{
-				// Start primary-buffer looped-playing to reduce overhead on secondary-play calls.
-				glpPrimaryBuffer->lpVtbl->Play(glpPrimaryBuffer, 0, 0, DSBPLAY_LOOPING);
-				return(TRUE);
-			}
-			else
-			{
-				// Failed to get 3D, so we only have 2D-controls. Release listener if valid, and go with 2D.
-				if (lpDS3DListener)
-				{
-					IDirectSound3DListener_Release(lpDS3DListener);
-					lpDS3DListener = NULL;
-				}
-				
-				// Flag all 3D as off.
-				Sound3D = FALSE;
-
-				return(TRUE);	// Still succeed initialization, but with 2D.
-			}
+			return TRUE;
 		}
 	}
 
@@ -148,35 +117,22 @@ BOOL sound_init( void )
 	return(FALSE);
 }
 
-void sound_commit_any_pending( void )
-{
-	if ( !lpDS3DListener )
-		return;
-	IDirectSound3DListener_CommitDeferredSettings(
-		lpDS3DListener
-	);
-}
-
 //
 // Listener
 //
 
+//	 In dsound only valid when using 3d sound
+//   which this game does not currently use
+//   this is left here for openAL later
+
 BOOL sound_listener_position( float x, float y, float z )
 {
-	return IDirectSound3DListener_SetPosition(
-		lpDS3DListener,	
-		x, y, z, 
-		DS3D_DEFERRED
-	) == DS_OK;
+	return TRUE;
 }
 
 BOOL sound_listener_velocity( float x, float y, float z )
 {
-	return IDirectSound3DListener_SetVelocity(
-		lpDS3DListener,	
-		x, y, z, 
-		DS3D_DEFERRED
-	) == DS_OK;
+	return TRUE;
 }
 
 BOOL sound_listener_orientation( 
@@ -184,12 +140,7 @@ BOOL sound_listener_orientation(
 	float ux, float uy, float uz  // up vector
 )
 {
-	return IDirectSound3DListener_SetOrientation(
-		lpDS3DListener,	
-		fx, fy, fz, 
-		ux, uy, uz, 
-		DS3D_DEFERRED
-	) == DS_OK;
+	return TRUE;
 }
 
 //
