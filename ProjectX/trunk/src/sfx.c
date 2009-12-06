@@ -2203,7 +2203,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		SndSources[ sndobj_index ]->SfxHolderIndex[ free_buffer ] = HolderIndex;
 
 		Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-		Volume = sound_caps.min_volume - (long)( ((float)( sound_caps.min_volume - Volume )) * GlobalSoundAttenuation * VolModify );
+		Volume = sound_minimum_volume - (long)( ((float)( sound_minimum_volume - Volume )) * GlobalSoundAttenuation * VolModify );
 	   	if ( type != SFX_2D )
 			SetPannedBufferParams( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
 		else
@@ -2224,7 +2224,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	// in either case, we must dynamically load the sound.
 
 	Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-	Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * VolModify * GlobalSoundAttenuation );
+	Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 
 	if ( Effects == SPOT_SFX_TYPE_Taunt )
@@ -3224,9 +3224,9 @@ void ProcessLoopingSfx( void )
 					// adjust buffer parameters
 					//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
-					Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_caps.min_volume);
+					Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
 		
-					Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
+					Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
 					SetPannedBufferParams(
 						SpotSfxList[ i ].buffer,
@@ -3405,7 +3405,7 @@ float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *liste
 		if( vol )
 		{
 			*vol = ( 0 - (long) ( dist * 0.6F ) );	// Scale it down by a factor...
-			*vol = sound_caps.min_volume - (long)( ((float)( sound_caps.min_volume - *vol )) * GlobalSoundAttenuation );
+			*vol = sound_minimum_volume - (long)( ((float)( sound_minimum_volume - *vol )) * GlobalSoundAttenuation );
 		}
 		if( sfxvector )
 		{
@@ -3450,7 +3450,7 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 		{
 			VolModify = ( (float)BikerSpeechSlider.value / (float)BikerSpeechSlider.max ) * SPEECH_AMPLIFY;	// when multiplied with max value for GlobalSoundAttenuation, gives 1.0F;
 			Volume = 0;
-			Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * VolModify * GlobalSoundAttenuation );
+			Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 			// set buffer parameters
 			SetPannedBufferParams( 

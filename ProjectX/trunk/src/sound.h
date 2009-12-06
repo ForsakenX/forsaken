@@ -12,11 +12,8 @@
 // this will eventually be removed but is required right now
 BOOL Sound3D;
 
-struct {
-	int memory; // hw contiguous bytes of ram
-	int buffers; // hw static mixing buffers
-	int min_volume;
-} sound_caps; // capabilities
+// the game appears to need this probably wont in openAL
+int sound_minimum_volume;
 
 //
 // Generic Functions

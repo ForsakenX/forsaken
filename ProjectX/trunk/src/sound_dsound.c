@@ -38,15 +38,7 @@ BOOL sound_init( void )
 		return FALSE; // Failed to get DirectSound, so no sound-system available.
 
 	// build sound_caps structure
-	{
-		DSCAPS DSCaps;
-		memset (&DSCaps, 0, sizeof (DSCAPS));
-		DSCaps.dwSize = sizeof(DSCAPS);
-		IDirectSound_GetCaps( lpDS, &DSCaps );
-		sound_caps.memory = DSCaps.dwMaxContigFreeHwMemBytes;
-		sound_caps.buffers = DSCaps.dwFreeHwMixingStaticBuffers;
-		sound_caps.min_volume = ( DSBVOLUME_MIN / 3);
-	}
+	sound_minimum_volume = (DSBVOLUME_MIN / 3);
 	
 	// Set control-level of DirectSound. (To normal, default.)
 	if(IDirectSound_SetCooperativeLevel(lpDS, GetActiveWindow(), DSSCL_EXCLUSIVE) >= DS_OK)
