@@ -148,6 +148,101 @@ BOOL sound_init( void )
 	return(FALSE);
 }
 
+// not really sure what this function is doing besides the obvious fact of using hw memory
+// but it's one of the last things using the dsound api so i had to move it into this file
+// even though it's touching structures from sfx.c that i would rather it not touch
+
+#define MIN_SOUNDCARD_HW_MEM 262144	// 256K 
+int sound_load_to_hw( void )
+{
+	DWORD FreeMem = 1;  // so that it equates to TRUE
+	DWORD buffers_before;
+	int AllocatedCompoundSfx = 0;
+	int j, i;
+	BOOL use_sound_hw = 0;
+
+	NumDupCompoundBuffers = 0;
+
+	if ( sound_caps.memory > MIN_SOUNDCARD_HW_MEM )
+	{
+		FreeMem = sound_caps.memory;
+		use_sound_hw = TRUE;
+		DebugPrintf("Loading compound sfx buffer in HW\n");
+	}
+
+	// if we have hardware mixing channels & hardware mem
+	if ( FreeMem && ( sound_caps.buffers >= MIN_COMPOUND_BUFFERS ) )
+	{
+		buffers_before = sound_caps.buffers;
+
+		// load first compound buffer
+		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(
+			use_sound_hw,
+			&AllocatedCompoundSfx 
+		);
+
+		// if buffer succesfully loaded...
+		if ( CompoundSfxBuffer[0].buffer )
+		{
+			if (!sound_buffer_in_hw(CompoundSfxBuffer[ 0 ].buffer))
+			{
+   				// no point in using compound buffer, since HW mixing channels are not being used
+				DebugPrintf("Crap sound driver detected compound buffer will not be created\n");
+				sound_buffer_release( CompoundSfxBuffer[0].buffer );
+				DebugPrintf("Releasing sound buffer %s %d\n", __FILE__, __LINE__ );
+			}
+			else
+			{
+				CompoundSfxBuffer[0].current_sfx = -1;
+
+				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
+				NumDupCompoundBuffers = sound_caps.buffers;
+
+				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
+					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
+
+				for (j = 1; j < NumDupCompoundBuffers; j++)
+				{
+					if ( !sound_buffer_duplicate( 
+						CompoundSfxBuffer[0].buffer,
+						&CompoundSfxBuffer[j].buffer 
+					))
+					{	
+						DebugPrintf("unable to duplicate more than %d compound buffers\n",j);
+				
+						// if insufficient buffers created...
+						if ( j < MIN_COMPOUND_BUFFERS )
+						{
+							// free all created buffers
+							for ( i = 0; i < j; i++ )
+								 sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
+
+							// return 0 to indicate no hw buffers
+							return 0;
+						}
+
+						break;
+					}
+
+					CompoundSfxBuffer[j].current_sfx = -1;
+				}
+
+				NumDupCompoundBuffers = j;
+			}
+		}
+		else
+		{
+			DebugPrintf("unable to create compound buffer\n");
+		}
+	}
+	else
+	{
+		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
+	}
+
+	return AllocatedCompoundSfx;
+}
+
 void sound_commit_any_pending( void )
 {
 	if ( !lpDS3DListener )
@@ -336,7 +431,7 @@ void sound_buffer_pan( void * buffer, long pan )
 }
 
 // this gets the current play location
-DWORD sound_buffer_get_position( void * buffer, DWORD* time )
+void sound_buffer_get_position( void * buffer, DWORD* time )
 {
 	IDirectSoundBuffer_GetCurrentPosition(
 		(IDirectSoundBuffer*) buffer,

@@ -3,6 +3,7 @@
 
 #include "enemies.h"
 
+int NumDupCompoundBuffers;
 #define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
 #define MAX_COMPOUND_BUFFERS 16	// max number of mixing channels
 #define MIN_COMPOUND_BUFFERS 8	// min number of mixing channels ( otherwise sw mixing will be used )
@@ -10,6 +11,22 @@
 #define CompoundSfxChannels 1
 #define CompoundSfxFrequency 22050 // establish compound sample format...temporarily hard coded for now...
 #define CompoundSfxGap 0.1f	// secs
+
+typedef struct
+{
+	int		current_sfx;
+	int		current_variant;
+	int		compound_buffer_lookup_index;
+	DWORD	start_time;
+	DWORD	finish_time;
+	float	distance;
+	unsigned int	timerID;
+	void*	buffer;
+	int		SfxHolderIndex;
+}COMPOUND_SFX_INFO;
+
+COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
+
 
 #define SFX_Biker			4	// biker speech
 #define SFX_Title	64	// use when biker speech must play ( will cut off any existing speech )

@@ -414,21 +414,6 @@ DWORD CompoundSfxMaxLag = 0;
 
 BOOL BikerSpeechPlaying = FALSE;
 
-typedef struct
-{
-	int		current_sfx;
-	int		current_variant;
-	int		compound_buffer_lookup_index;
-	DWORD	start_time;
-	DWORD	finish_time;
-	float	distance;
-	unsigned int	timerID;
-	void*	buffer;
-	int		SfxHolderIndex;
-}COMPOUND_SFX_INFO;
-
-COMPOUND_SFX_INFO CompoundSfxBuffer[MAX_COMPOUND_BUFFERS];
-
 #define MAX_CONCURRENT_SFX 32
 
 uint32 SfxUniqueID = 1;
@@ -449,8 +434,6 @@ extern GLOBALSHIP	Ships[MAX_PLAYERS+1];
 extern BYTE	Current_Camera_View;		// which object is currently using the camera view....
 extern float	SoundInfo[MAXGROUPS][MAXGROUPS];
 extern SLIDER  SfxSlider; 
-
-DWORD CompoundSfxDataRate;
 extern USERCONFIG *player_config;
 
 extern float framelag;	
@@ -1974,111 +1957,6 @@ void RequestTitleSfx( void )
 			RequestSfx( i );
 }
 
-#define MIN_SOUNDCARD_HW_MEM 262144	// 256K 
-extern LPDIRECTSOUND lpDS;
-
-int LoadSfxToHW( void )
-{
-	DWORD FreeMem = 1;  // so that it equates to TRUE
-	DWORD buffers_before;
-	int AllocatedCompoundSfx = 0;
-	int j, i;
-	DWORD dwSizeWritten;
-	LPWAVEFORMATEX lpwaveinfo;
-	BOOL use_sound_hw = 0;
-
-	NumDupCompoundBuffers = 0;
-
-	if ( sound_caps.memory > MIN_SOUNDCARD_HW_MEM )
-	{
-		FreeMem = sound_caps.memory;
-		use_sound_hw = TRUE;
-		DebugPrintf("Loading compound sfx buffer in HW\n");
-	}
-
-	// if we have hardware mixing channels & hardware mem
-	if ( FreeMem && ( sound_caps.buffers >= MIN_COMPOUND_BUFFERS ) )
-	{
-		buffers_before = sound_caps.buffers;
-
-		// load first compound buffer
-		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(
-			use_sound_hw,
-			&AllocatedCompoundSfx 
-		);
-
-		// if buffer succesfully loaded...
-		if ( CompoundSfxBuffer[0].buffer )
-		{
-			if (!sound_buffer_in_hw(CompoundSfxBuffer[ 0 ].buffer))
-			{
-   				// no point in using compound buffer, since HW mixing channels are not being used
-				DebugPrintf("Crap sound driver detected - Buffers stored are not using HW mixing channels, therefor compound buffer will not be created\n");
-
-				// kill this buffer...
-				sound_buffer_release( CompoundSfxBuffer[0].buffer );
-				DebugPrintf("Releasing sound buffer %s %d\n", __FILE__, __LINE__ );
-			}
-			else
-			{
-				// get size of WAVEFORMAT structure to be returned ( is variable size, as stated in DSound docs ) & allocate memory for it
-				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[0].buffer, NULL, 0, &dwSizeWritten );
-				lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-
-				// get data rate of compound buffer
-				IDirectSoundBuffer_GetFormat( (IDirectSoundBuffer*)CompoundSfxBuffer[0].buffer, lpwaveinfo, dwSizeWritten, 0 );
-				CompoundSfxDataRate = lpwaveinfo->nAvgBytesPerSec; 
-
-				free(lpwaveinfo);
-
-				CompoundSfxBuffer[0].current_sfx = -1;
-
-				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
-				NumDupCompoundBuffers = sound_caps.buffers;
-
-				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
-					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
-
-				for (j = 1; j < NumDupCompoundBuffers; j++)
-				{
-					if ( !sound_buffer_duplicate( 
-						CompoundSfxBuffer[0].buffer,
-						&CompoundSfxBuffer[j].buffer 
-					))
-					{	
-						DebugPrintf("unable to duplicate more than %d compound buffers\n",j);
-				
-						// if insufficient buffers created...
-						if ( j < MIN_COMPOUND_BUFFERS )
-						{
-							// free all created buffers
-							for ( i = 0; i < j; i++ )
-								 sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
-
-							// return 0 to indicate no hw buffers
-							return 0;
-						}
-
-						break;
-					}
-
-					CompoundSfxBuffer[j].current_sfx = -1;
-				}
-
-				NumDupCompoundBuffers = j;
-			}
-		}else
-		{
-			DebugPrintf("unable to create compound buffer\n");
-		}
-	}else
-	{
-		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
-	}
-
-	return AllocatedCompoundSfx;
-}
-
 /****************************************
 	Procedure	: InitializeSound
 	description	: 
@@ -2134,7 +2012,7 @@ BOOL InitializeSound( int flags )
 
 	// try to load hw sfx
 	if ( NoCompoundSfxBuffer )
-		AllocatedCompoundSfx = LoadSfxToHW();
+		AllocatedCompoundSfx = sound_load_to_hw();
 	
 	// mark all newly allocate sfx as not part of compound buffer...
 	for ( j = 0; j < AllocatedCompoundSfx; j++ )
@@ -2310,9 +2188,9 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 	if (Distance > oldest)
 		return -1;			// sound is too far away to overwrite any existing sounds...
 
-	sound_buffer_stop(SndObj->Dup_Buffer[free_buffer]);
-	sound_buffer_set_position( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
-	sound_buffer_set_freq( (IDirectSoundBuffer*)SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_buffer_stop( SndObj->Dup_Buffer[free_buffer] );
+	sound_buffer_set_position( SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_buffer_set_freq( SndObj->Dup_Buffer[free_buffer], 0 );
 	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
 
 	return free_buffer;
@@ -2982,7 +2860,7 @@ BOOL StopSfx( uint32 uid )
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 		{
 			sound_buffer_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
-			sound_buffer_set_position( (IDirectSoundBuffer*)SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
+			sound_buffer_set_position( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
 		}
 
 		FreeSfxHolder( i );
@@ -3560,7 +3438,7 @@ void ProcessLoopingSfx( void )
 			if ( !SpotSfxList[i].bufferloaded && SpotSfxList[i].buffer )
 			{
 				DebugPrintf("- looping sfx sound %d, bufferloaded=false but buffer pointer is GOOD\n", SpotSfxList[ i ].sfxindex);
-				if(sound_buffer_is_playing( (IDirectSoundBuffer*)SpotSfxList[ i ].buffer ))
+				if(sound_buffer_is_playing( SpotSfxList[ i ].buffer ))
 				{
 					DebugPrintf("- and buffer is still playing...\n");
 					DebugPrintf("- stopping buffer now...\n");

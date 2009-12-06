@@ -22,6 +22,7 @@ struct {
 //
 
 BOOL sound_init( void );
+int sound_load_to_hw( void );
 void sound_destroy( void );
 void sound_commit_any_pending( void );
 
@@ -62,7 +63,7 @@ void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );
 BOOL sound_buffer_duplicate( void * buffer, void** duplicate );
 void sound_buffer_volume( void * buffer, long volume );void sound_buffer_pan( void * buffer, long pan );
-DWORD sound_buffer_get_position( void * buffer, DWORD* time );
+void sound_buffer_get_position( void * buffer, DWORD* time );
 void sound_buffer_set_position( void * buffer, DWORD time );
 void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
 
