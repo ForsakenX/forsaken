@@ -23,7 +23,6 @@ struct {
 //
 
 BOOL sound_init( void );
-int sound_load_to_hw( void );
 void sound_destroy( void );
 void sound_commit_any_pending( void );
 
@@ -58,7 +57,6 @@ void sound_buffer_play_looping( void * buffer );
 BOOL sound_buffer_is_playing( void * buffer );
 void sound_buffer_stop( void * buffer );
 DWORD sound_buffer_size( void * buffer );
-BOOL sound_buffer_in_hw( void * buffer );
 void sound_buffer_release( void * buffer );
 void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );

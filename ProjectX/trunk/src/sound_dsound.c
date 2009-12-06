@@ -23,6 +23,9 @@ DSCAPS					DSCaps;
 BOOL Sound3D = FALSE;
 BOOL FreeHWBuffers = TRUE;
 
+// only used internally
+static void* sound_buffer_load(char* file, DWORD flags);
+
 //
 // Generic Functions
 //
@@ -149,104 +152,6 @@ BOOL sound_init( void )
 	return(FALSE);
 }
 
-// not really sure what this function is doing besides the obvious fact of using hw memory
-// but it's one of the last things using the dsound api so i had to move it into this file
-// even though it's touching structures from sfx.c that i would rather it not touch
-
-// note: managing of hw/sw will not be needed in openAL
-
-#define MIN_SOUNDCARD_HW_MEM 262144	// 256K 
-static void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr);
-int sound_load_to_hw( void )
-{
-	DWORD FreeMem = 1;  // so that it equates to TRUE
-	DWORD buffers_before;
-	int AllocatedCompoundSfx = 0;
-	int j, i;
-	BOOL use_sound_hw = 0;
-
-	NumDupCompoundBuffers = 0;
-
-	if ( sound_caps.memory > MIN_SOUNDCARD_HW_MEM )
-	{
-		FreeMem = sound_caps.memory;
-		use_sound_hw = TRUE;
-		DebugPrintf("Loading compound sfx buffer in HW\n");
-	}
-
-	// if we have hardware mixing channels & hardware mem
-	if ( FreeMem && ( sound_caps.buffers >= MIN_COMPOUND_BUFFERS ) )
-	{
-		buffers_before = sound_caps.buffers;
-
-		// load first compound buffer
-		CompoundSfxBuffer[0].buffer = sound_buffer_load_compound(
-			use_sound_hw,
-			&AllocatedCompoundSfx 
-		);
-
-		// if buffer succesfully loaded...
-		if ( CompoundSfxBuffer[0].buffer )
-		{
-			if (!sound_buffer_in_hw(CompoundSfxBuffer[ 0 ].buffer))
-			{
-   				// no point in using compound buffer, since HW mixing channels are not being used
-				DebugPrintf("Crap sound driver detected compound buffer will not be created\n");
-				sound_buffer_release( CompoundSfxBuffer[0].buffer );
-				DebugPrintf("Releasing sound buffer %s %d\n", __FILE__, __LINE__ );
-			}
-			else
-			{
-				CompoundSfxBuffer[0].current_sfx = -1;
-
-				// duplicate for rest of buffers ( limit number of buffers to MAX_COMPOUND_BUFFERS )
-				NumDupCompoundBuffers = sound_caps.buffers;
-
-				if ( NumDupCompoundBuffers > MAX_COMPOUND_BUFFERS )
-					NumDupCompoundBuffers = MAX_COMPOUND_BUFFERS;
-
-				for (j = 1; j < NumDupCompoundBuffers; j++)
-				{
-					if ( !sound_buffer_duplicate( 
-						CompoundSfxBuffer[0].buffer,
-						&CompoundSfxBuffer[j].buffer 
-					))
-					{	
-						DebugPrintf("unable to duplicate more than %d compound buffers\n",j);
-				
-						// if insufficient buffers created...
-						if ( j < MIN_COMPOUND_BUFFERS )
-						{
-							// free all created buffers
-							for ( i = 0; i < j; i++ )
-								 sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
-
-							// return 0 to indicate no hw buffers
-							return 0;
-						}
-
-						break;
-					}
-
-					CompoundSfxBuffer[j].current_sfx = -1;
-				}
-
-				NumDupCompoundBuffers = j;
-			}
-		}
-		else
-		{
-			DebugPrintf("unable to create compound buffer\n");
-		}
-	}
-	else
-	{
-		DebugPrintf("not loading compound sfx buffer becuase not enough mixing channels or not enough free memory in sound driver.\n");
-	}
-
-	return AllocatedCompoundSfx;
-}
-
 void sound_commit_any_pending( void )
 {
 	if ( !lpDS3DListener )
@@ -334,18 +239,6 @@ DWORD sound_buffer_size( void * buffer )
 		&dsbcaps 
 	);
 	return dsbcaps.dwBufferBytes;
-}
-
-BOOL sound_buffer_in_hw( void * buffer )
-{
-	DSBCAPS DSBCaps;
-	memset (&DSBCaps, 0, sizeof( DSBCAPS ) );
-	DSBCaps.dwSize = sizeof( DSBCAPS );
-	IDirectSoundBuffer_GetCaps(
-		(IDirectSoundBuffer*) buffer,
-		&DSBCaps 
-	);
-	return (DSBCaps.dwFlags & DSBCAPS_LOCHARDWARE);
 }
 
 void sound_buffer_release( void * ptr )
@@ -508,7 +401,6 @@ void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, flo
 
 // loads a sound buffer object
 // only used in one location so options are hard coded
-static void* sound_buffer_load(char *name, DWORD flags);
 void* sound_buffer_load_for_sfx(char* file)
 {
 	return (void*) sound_buffer_load(
@@ -549,15 +441,13 @@ void sound_source_destroy( sound_source_t * source )
 }
 
 // Loads a sound_source_t from a Win32 resource in the current application.
-static void* sound_buffer_load(char* file, DWORD flags);
 sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 {
     sound_source_t *pSO = NULL;
 	void * Buffer = NULL;
 	int i;
-	HRESULT hres;
-	DSBCAPS dsbcaps;	
-	DWORD buf_flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
+	DSBCAPS dsbcaps;
+	DWORD buf_flags = 0;
 
     pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
 
@@ -581,15 +471,15 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 		}
 		else
 		{
-				// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
-				if( buf_flags & DSBCAPS_CTRL3D )
-				{
-					pSO->Dup_Buffer[0] = NULL; //DSLoad3DSoundBuffer(pDS, path, &pSO->Dup_3DBuffer[0], buf_flags );
-				}
-				else
-				{
-					pSO->Dup_Buffer[0] = sound_buffer_load(path, buf_flags );
-				}
+			// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
+			if( buf_flags & DSBCAPS_CTRL3D )
+			{
+				pSO->Dup_Buffer[0] = NULL; //DSLoad3DSoundBuffer(pDS, path, &pSO->Dup_3DBuffer[0], buf_flags );
+			}
+			else
+			{
+				pSO->Dup_Buffer[0] = sound_buffer_load(path, buf_flags );
+			}
 
 			if( !pSO->Dup_Buffer[ 0 ] )
 			{
@@ -597,7 +487,6 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 				sound_source_destroy( pSO );
 				return pSO;
 			}
-
 
 			// get caps of buffer
 			memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
@@ -642,25 +531,26 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 
 						i = 0;
 						continue;
-
-					}else
+					}
+					else
 					{
 						// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
 						Msg("unable to duplicate buffers in sw\n");
 						break;
 					}
 				}
-
 				// query for 3D interface if we are using 3D...
 				if ( pSO->Dup_3DBuffer[0] )
 				{
-					hres = IDirectSoundBuffer_QueryInterface((IDirectSoundBuffer*)pSO->Dup_Buffer[i], &IID_IDirectSound3DBuffer, &pSO->Dup_3DBuffer[i]);        
+					IDirectSoundBuffer_QueryInterface(
+						(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
+						&IID_IDirectSound3DBuffer, 
+						&pSO->Dup_3DBuffer[i]
+					);        
 				}
-
 			}
 		}
     }
-
     return pSO;
 }
 
@@ -675,10 +565,30 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 //
 ////////////////////////////////////////////////////////////////////////////////////////
 
-// these functions are helpers for the following sound buffer loading functions
-static BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize);
+static BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize)
+{
+    if (pDSB && pbWaveData && cbWaveSize)
+    {
+        LPVOID pMem1, pMem2;
+        DWORD dwSize1, dwSize2;
 
-static void* sound_buffer_load(char *name, DWORD flags)
+        if (SUCCEEDED(IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize,
+            &pMem1, &dwSize1, &pMem2, &dwSize2, 0)))
+        {
+            CopyMemory(pMem1, pbWaveData, dwSize1);
+
+            if ( 0 != dwSize2 )
+                CopyMemory(pMem2, pbWaveData+dwSize1, dwSize2);
+
+            IDirectSoundBuffer_Unlock(pDSB, pMem1, dwSize1, pMem2, dwSize2);
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+static void* sound_buffer_load(char *name, DWORD extra_flags)
 {
     IDirectSoundBuffer *sound_buffer = NULL;
     DSBUFFERDESC buffer_description = {0};
@@ -686,6 +596,13 @@ static void* sound_buffer_load(char *name, DWORD flags)
 	SDL_AudioSpec wav_spec;
 	Uint32 wav_length;
 	Uint8 *wav_buffer;
+	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
+
+	if(extra_flags)
+		flags |= extra_flags;
+
+	if (!lpDS)
+		return NULL;
 
 	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &wav_length) == NULL )
 	{
@@ -711,11 +628,20 @@ static void* sound_buffer_load(char *name, DWORD flags)
 	// http://msdn.microsoft.com/en-us/library/ms898123.aspx
 	if( IDirectSound_CreateSoundBuffer( lpDS, &buffer_description, &sound_buffer, NULL ) == DS_OK )
     {
-        if (!DSFillSoundBuffer(sound_buffer, (BYTE*) wav_buffer, (DWORD) wav_length))
+        LPVOID pMem1, pMem2;
+        DWORD dwSize1, dwSize2;
+        if (SUCCEEDED(IDirectSoundBuffer_Lock(sound_buffer, 0, wav_length, &pMem1, &dwSize1, &pMem2, &dwSize2, 0)))
         {
+            CopyMemory(pMem1, wav_buffer, dwSize1);
+            if ( 0 != dwSize2 )
+                CopyMemory(pMem2, wav_buffer+dwSize1, dwSize2);
+            IDirectSoundBuffer_Unlock(sound_buffer, pMem1, dwSize1, pMem2, dwSize2);
+        }
+		else
+		{
             sound_buffer_release(sound_buffer);
             sound_buffer = NULL;
-        }
+		}
     }
     else
     {
@@ -725,413 +651,6 @@ static void* sound_buffer_load(char *name, DWORD flags)
 	SDL_FreeWAV(wav_buffer);
 
     return sound_buffer;
-}
-
-// only used by the following
-static BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End);
-static void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr );
-
-static void* sound_buffer_load_compound(BOOL use_sound_hw, int *num_allocated_ptr)
-{
-	IDirectSoundBuffer *pDSB = NULL;
-    DSBUFFERDESC dsBD = {0};
-    BYTE *pbWaveData;
-	void * Buffer = NULL;
-	WAVEFORMATEX format;
-	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
-
-	if(use_sound_hw)
-		flags |= DSBCAPS_LOCHARDWARE;
-
-    if (Buffer = DSGetMultiWave(&format, &pbWaveData, &dsBD.dwBufferBytes, flags, num_allocated_ptr))
-    {
-        dsBD.dwSize = sizeof(dsBD);
-        dsBD.dwFlags = flags;
-
-		dsBD.lpwfxFormat = &format;
-
-		if ( IDirectSound_CreateSoundBuffer( lpDS, &dsBD, &pDSB, NULL ) == DS_OK )
-        {
-            if (!DSFillSoundBuffer(pDSB, Buffer, dsBD.dwBufferBytes))
-            {
-                sound_buffer_release(pDSB);
-                pDSB = NULL;
-            }
-        }
-    }
-
-	if( Buffer != NULL )
-		free( Buffer );
-    return pDSB;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//  I really feel these don't belong in this file cause they use things from sfx.h
-//  But they are basically part of the sound_buffer_load process
-//
-//
-//
-////////////////////////////////////////////////////////////////////////////////////////
-
-BOOL CustomCompoundBufferSize = FALSE;
-DWORD UserTotalCompoundSfxBufferSize = 0;
-extern SFXNAME Sfx_Filenames[MAX_SFX];
-static void * DSGetMultiWave( WAVEFORMATEX *pWaveHeaderStore, BYTE **ppbWaveData, DWORD *pcbWaveSize, DWORD dwFlags, int *num_allocated_ptr )
-{
-	long File_Size;
-	long Read_Size;
-	void *Buffer;
-	void *End;
-	int i, min, index, variant;
-	char *TempCompositeBuffer, *CompositeBuffer, *IntermediateBuffer;
-	char TempFileName[256];
-	WAVEFORMATEX TempWaveHeader;
-	int temp_num_allocated;
-
-	LPWAVEFORMATEX pWaveHeader;
-	
-	DWORD BytesPerSec, dwGapSize, total_size, dwBufferOffset;
-	float gap_size; 
-	
-	DWORD BufferSizeSoFar, MaxBufferSize;
-	BOOL SfxChecked[ MAX_SFX ];
-	DSCAPS DSCaps;
-	BOOL error;
-	
-	memset (&DSCaps, 0, sizeof (DSCAPS));
-	DSCaps.dwSize = sizeof(DSCAPS);
-	IDirectSound_GetCaps( lpDS, &DSCaps );
-	
-	memset (SfxChecked, 0, sizeof( BOOL ) * MAX_SFX);
-
-	BytesPerSec = (CompoundSfxBitDepth * CompoundSfxChannels / 8) * CompoundSfxFrequency;
-	gap_size = (float)BytesPerSec * CompoundSfxGap;
-	dwGapSize = (DWORD)gap_size;
-
-	total_size = 0;
-
-	// for all compound sfx...
-	for ( i = 0; Sfx_Filenames[ i ].Name; i++ )
-	{
-		if ( ( IS_COMPOUND( Sfx_Filenames[ i ].Flags ) ) && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Requested )
-		{
-			// if sfx does not exist, ignore
-			if ( !SndLookup[ i ].Num_Variants )
-				continue;
-
-			for ( variant = 0; variant < SndLookup[ i ].Num_Variants; variant++ )
-			{
-				GetFullSfxPath( TempFileName, i, variant, SndLookup[ i ].Num_Variants );
-
-				if ( File_Exists( TempFileName ) )
-				{
-					File_Size = Get_File_Size( TempFileName );	// how big is the file...
-					if( !File_Size ) return NULL;
-
-					Buffer = malloc( File_Size );							// alloc enough space to load it...
-					if( Buffer == NULL ) return( NULL );					// if couldnt then return
-
-					Read_Size = Read_File( TempFileName, Buffer, File_Size ); // Read it in making a note of the Size returned
-					if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
-
-					DSParseWave( Buffer, &pWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-					// get size of file...
-					total_size += *pcbWaveSize;
-						
-					// add space for gap afterwards...
-					total_size += dwGapSize;
-
-					free ( Buffer );
-				}
-			}
-		}
-	}
-
-	if ( dwFlags & DSBCAPS_LOCHARDWARE )
-		MaxBufferSize = DSCaps.dwMaxContigFreeHwMemBytes;
-	else
-	{
-		return NULL;
-	}
-
-	if ( total_size > MaxBufferSize )
-		total_size = MaxBufferSize;
-
-	if ( CustomCompoundBufferSize && ( total_size > UserTotalCompoundSfxBufferSize ) )
-		total_size = UserTotalCompoundSfxBufferSize;
-
-	CompositeBuffer = (char *)malloc( total_size );
-	TempCompositeBuffer = CompositeBuffer;
-	dwBufferOffset = 0;
-	BufferSizeSoFar = 0;
-	do
-	{
-		min = -1;
-		index = -1;
-
-		// find sfx with next highest priority...
-		for ( i = 0; Sfx_Filenames[ i ].Name; i++ )
-			if ( IS_COMPOUND( Sfx_Filenames[ i ].Flags ) )
-				if ( ( min == -1 ) && !SfxChecked[ i ] && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Num_Variants && SndLookup[ i ].Requested )
-				{
-					min = Sfx_Filenames[ i ].Priority;
-					index = i;
-				}else
-				{
-					if ( ( Sfx_Filenames[ i ].Priority < min ) && !SfxChecked[ i ] && !CompoundSfxAllocated[ i ] && SndLookup[ i ].Num_Variants && SndLookup[ i ].Requested )
-					{
-						min = Sfx_Filenames[ i ].Priority;
-						index = i;
-					}
-				}
-
-		if ( index != -1 )	// sfx has been found...
-		{
-			SfxChecked[ index ] = TRUE;
-
-			error = FALSE;
-			IntermediateBuffer = TempCompositeBuffer;
-			temp_num_allocated = *num_allocated_ptr;
-
-			for ( variant = 0; variant < SndLookup[ index ].Num_Variants; variant++ )
-			{
-
-				GetFullSfxPath( TempFileName, index, variant, SndLookup[ index ].Num_Variants );
-			
-				if ( File_Exists( TempFileName ) )
-				{
-					File_Size = Get_File_Size( TempFileName );	// how big is the file...
-					if( !File_Size )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() File size returned was zero\n");
-						break;
-					}
-
-					Buffer = malloc( File_Size );		 // alloc enough space to load it...
-
-					if( Buffer == NULL )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() unable to malloc memory for temp buffer\n");
-						break;
-					}
-
-					Read_Size = Read_File( TempFileName, Buffer, File_Size ); // Read it in making a note of the Size returned
-
-					if( Read_Size != File_Size )
-					{
-						error = TRUE;
-						DebugPrintf("DSGetMultiWave() read file size not equal to actual file size\n");
-						break;
-					}
-
-					DSParseWave( Buffer, &pWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-					if ( 
-						( (pWaveHeader)->nChannels != CompoundSfxChannels ) ||
-						( (pWaveHeader)->nSamplesPerSec != CompoundSfxFrequency ) ||
-						( (pWaveHeader)->wBitsPerSample != CompoundSfxBitDepth ) 
-					)
-					{
-						DebugPrintf("Dsutil.c: DSGetMultiWave() - sfx %d variant %d not of correct type for composite buffer, ignoring\n", index, variant);
-						*pWaveHeader = TempWaveHeader;
-						error = TRUE;
-						break;
-					}
-					else
-					{
-						TempWaveHeader = *pWaveHeader;
-
-						// if pcbWaveSize < available mem left, and format is OK...
-						if ( ( (*pcbWaveSize + dwGapSize) < ( total_size - BufferSizeSoFar ) ) || !total_size )
-						{
-							//DebugPrintf("sfx %d marked allocated\n", index);
-						   
-							BufferSizeSoFar += *pcbWaveSize + dwGapSize;
-
-							TempSfxInfo[ *num_allocated_ptr ].SfxNum = index;
-							TempSfxInfo[ *num_allocated_ptr ].StartPos = dwBufferOffset;
-							TempSfxInfo[ *num_allocated_ptr ].Length = (*pcbWaveSize * 1000) / BytesPerSec;
-							TempSfxInfo[ *num_allocated_ptr ].Bytes = *pcbWaveSize;
-							TempSfxInfo[ *num_allocated_ptr ].Variant = variant;
-
-							(*num_allocated_ptr)++;
-
-							// check to see if max sfx allocated...
-							if (*num_allocated_ptr == MAX_COMPOUND_SFX)
-							{
-								DebugPrintf("tried to allocate more than MAX_COMPOUND_SFX sfx\n");
-								error = TRUE;
-								break;
-							}
-
-							dwBufferOffset = dwBufferOffset + *pcbWaveSize + dwGapSize;
-
-							// copy wave data to composite buffer...
-							memcpy( TempCompositeBuffer, *ppbWaveData, *pcbWaveSize );
-							TempCompositeBuffer += *pcbWaveSize;
-							
-							// add gap
-							memset( TempCompositeBuffer, 0, dwGapSize );
-							TempCompositeBuffer += dwGapSize;
-						}else
-						{
-							DebugPrintf("Not enough HW mem for SFX %d\n", index);
-							error = TRUE;
-							break;
-						}
-					}
-
-					*pWaveHeaderStore = *pWaveHeader;
-
-					free ( Buffer );
-				}
-			}
-
-			if ( error )
-			{
-				if ( Buffer )
-					free ( Buffer );
-				
-				// move current buffer ptr back to position b4 this sfx
-				TempCompositeBuffer = IntermediateBuffer;
-
-				// invalidate compound sfx info for this sfx
-				*num_allocated_ptr = temp_num_allocated;
-			}else
-			{
-				CompoundSfxAllocated[ index ] = TRUE;
-			}
-		}
-	}while ( index != -1 );
-
-	*pcbWaveSize = BufferSizeSoFar;
-
-	return (void *)CompositeBuffer;
-}
-
-static BOOL DSParseWave(void *Buffer, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,DWORD *pcbWaveSize, void **End)
-{
-    DWORD *pdw;
-    DWORD *pdwEnd;
-    DWORD dwRiff;
-    DWORD dwType;
-    DWORD dwLength;
-
-    if (ppWaveHeader)
-        *ppWaveHeader = NULL;
-
-    if (ppbWaveData)
-        *ppbWaveData = NULL;
-
-    if (pcbWaveSize)
-        *pcbWaveSize = 0;
-
-    pdw = (DWORD *)Buffer;
-    dwRiff = *pdw++;
-    dwLength = *pdw++;
-    dwType = *pdw++;
-
-    if (dwRiff != mmioFOURCC('R', 'I', 'F', 'F'))
-        goto exit;      // not even RIFF
-
-    if (dwType != mmioFOURCC('W', 'A', 'V', 'E'))
-        goto exit;      // not a WAV
-
-    pdwEnd = (DWORD *)((BYTE *)pdw + dwLength-4);
-	*End = (void *)pdwEnd;
-
-    while (pdw < pdwEnd)
-    {
-        dwType = *pdw++;
-        dwLength = *pdw++;
-
-        switch (dwType)
-        {
-        case mmioFOURCC('f', 'm', 't', ' '):
-            if (ppWaveHeader && !*ppWaveHeader)
-            {
-                if (dwLength < sizeof(WAVEFORMAT))
-                    goto exit;      // not a WAV
-
-                *ppWaveHeader = (WAVEFORMATEX *)pdw;
-
-                if ((!ppbWaveData || *ppbWaveData) &&
-                    (!pcbWaveSize || *pcbWaveSize))
-                {
-                    return TRUE;
-                }
-            }
-            break;
-
-        case mmioFOURCC('d', 'a', 't', 'a'):
-            if ((ppbWaveData && !*ppbWaveData) ||
-                (pcbWaveSize && !*pcbWaveSize))
-            {
-                if (ppbWaveData)
-                    *ppbWaveData = (LPBYTE)pdw;
-
-                if (pcbWaveSize)
-                    *pcbWaveSize = dwLength;
-
-                if (!ppWaveHeader || *ppWaveHeader)
-                    return TRUE;
-            }
-            break;
-        }
-
-        pdw = (DWORD *)((BYTE *)pdw + ((dwLength+1)&~1));
-    }
-
-exit:
-    return FALSE;
-}
-
-static void * DSGetWave( char *lpName , WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pcbWaveSize)
-{
-	long			File_Size;
-	long			Read_Size;
-	void		*	Buffer;
-	void *End;
-	
-	File_Size = Get_File_Size( lpName );	// how big is the file...
-	if( !File_Size ) return NULL;
-	Buffer = malloc( File_Size );							// alloc enough space to load it...
-	if( Buffer == NULL ) return( NULL );					// if couldnt then return
-	Read_Size = Read_File( lpName, Buffer, File_Size ); // Read it in making a note of the Size returned
-	if( Read_Size != File_Size ) return( NULL );			// if size read doesnt qual file size return
-
-	DSParseWave( Buffer , ppWaveHeader, ppbWaveData, pcbWaveSize, &End);
-
-	return Buffer;
-}
-
-static BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize)
-{
-    if (pDSB && pbWaveData && cbWaveSize)
-    {
-        LPVOID pMem1, pMem2;
-        DWORD dwSize1, dwSize2;
-
-        if (SUCCEEDED(IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize,
-            &pMem1, &dwSize1, &pMem2, &dwSize2, 0)))
-        {
-            CopyMemory(pMem1, pbWaveData, dwSize1);
-
-            if ( 0 != dwSize2 )
-                CopyMemory(pMem2, pbWaveData+dwSize1, dwSize2);
-
-            IDirectSoundBuffer_Unlock(pDSB, pMem1, dwSize1, pMem2, dwSize2);
-            return TRUE;
-        }
-    }
-
-    return FALSE;
 }
 
 #endif // SOUND_DSOUND

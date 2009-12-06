@@ -6,7 +6,6 @@
 int NumDupCompoundBuffers;
 #define MAX_COMPOUND_SFX 256 // max number of individual sfx that can be stored in a compound buffer
 #define MAX_COMPOUND_BUFFERS 16	// max number of mixing channels
-#define MIN_COMPOUND_BUFFERS 8	// min number of mixing channels ( otherwise sw mixing will be used )
 #define CompoundSfxBitDepth 16
 #define CompoundSfxChannels 1
 #define CompoundSfxFrequency 22050 // establish compound sample format...temporarily hard coded for now...

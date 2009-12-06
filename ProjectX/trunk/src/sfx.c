@@ -9,7 +9,6 @@ float LastDistance[MAX_SFX];
 BOOL  bSoundEnabled = FALSE;
 char  CurrentTauntVariant;
 BOOL  NoSFX = TRUE;
-BOOL  NoCompoundSfxBuffer = TRUE;
 
 BOOL InitializeSound( int flags ){return 1;}
 
@@ -88,7 +87,6 @@ ENEMY *EnemyTaunter;
 BYTE Taunter = 0xFF;
 uint32 TauntID = 0;
 BOOL TauntUpdatable = FALSE;
-BOOL NoCompoundSfxBuffer = FALSE;
 //float TauntDist = 0.0F;
 char CurrentTauntVariant;
 #define MAX_ANY_SFX 64
@@ -2014,10 +2012,6 @@ BOOL InitializeSound( int flags )
 	//TauntDist = 0.0F;
 
 	memset( CompoundSfxAllocated, 0, MAX_SFX * sizeof ( BOOL ) );
-
-	// try to load hw sfx
-	if ( NoCompoundSfxBuffer )
-		AllocatedCompoundSfx = sound_load_to_hw();
 	
 	// mark all newly allocate sfx as not part of compound buffer...
 	for ( j = 0; j < AllocatedCompoundSfx; j++ )

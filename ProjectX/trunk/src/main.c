@@ -121,7 +121,6 @@ extern int cliSleep;
 extern TEXT local_port_str;
 extern BOOL AllWires;
 extern BOOL SpaceOrbSetup;
-extern BOOL NoCompoundSfxBuffer;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
 extern TEXT host_port_str;
@@ -267,12 +266,6 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		else if ( !strcasecmp( option, "SetupSpaceOrb" ) )
 		{
 			SpaceOrbSetup = TRUE;
-		}
-
-		// no compound sound buffer
-		else if ( !strcasecmp( option, "NoCompoundSfxBuffer" ) )
-		{
-			NoCompoundSfxBuffer = TRUE;
 		}
 
 		// use sscanf
