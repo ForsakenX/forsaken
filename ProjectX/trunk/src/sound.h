@@ -60,7 +60,6 @@ DWORD sound_buffer_size( void * buffer );
 void sound_buffer_release( void * buffer );
 void sound_buffer_3d_release( void * buffer );
 void sound_buffer_set_freq( void* buffer, float freq );
-BOOL sound_buffer_duplicate( void * buffer, void** duplicate );
 void sound_buffer_volume( void * buffer, long volume );
 void sound_buffer_pan( void * buffer, long pan );
 DWORD sound_buffer_get_freq( void * buffer ); // samples per second

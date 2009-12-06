@@ -1666,7 +1666,8 @@ void GetFullSfxPath( char *fullpath, int sfxnum, int variant, int total_variants
 		GetSfxPath( sfxnum , fullpath );
 		strcat( fullpath, filename );
 		strcat( fullpath, ".wav" );
-	}else
+	}
+	else
 	{
 		// create filename with num extension
 		GetSfxPath( sfxnum , fullpath );

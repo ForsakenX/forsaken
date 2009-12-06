@@ -13,10 +13,10 @@
 #include "file.h"
 #include "sound.h"
 
-LPDIRECTSOUND lpDS = NULL;
-LPDIRECTSOUND3DLISTENER	lpDS3DListener;
-LPDIRECTSOUNDBUFFER		glpPrimaryBuffer;
-DSCAPS					DSCaps;
+LPDIRECTSOUND			lpDS = NULL;
+LPDIRECTSOUND3DLISTENER	lpDS3DListener = NULL;
+LPDIRECTSOUNDBUFFER		glpPrimaryBuffer = NULL;
+
 #define _HSNDOBJ_DEFINED
 
 // globals
@@ -116,8 +116,7 @@ BOOL sound_init( void )
 				return(TRUE);
 
 			// If 3D, need to get listener interface.
-			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener,
-															  (void **) &lpDS3DListener) >= DS_OK)
+			if (IDirectSoundBuffer_QueryInterface(glpPrimaryBuffer, &IID_IDirectSound3DListener, (void **) &lpDS3DListener) >= DS_OK)
 			{
 				// Start primary-buffer looped-playing to reduce overhead on secondary-play calls.
 				glpPrimaryBuffer->lpVtbl->Play(glpPrimaryBuffer, 0, 0, DSBPLAY_LOOPING);
@@ -262,15 +261,6 @@ BOOL sound_buffer_is_playing( void * buffer )
 		&dwStatus 
 	);
 	return (dwStatus & DSBSTATUS_PLAYING);
-}
-
-BOOL sound_buffer_duplicate( void * buffer, void** duplicate )
-{
-	return IDirectSound_DuplicateSoundBuffer(
-		lpDS, 
-		(LPDIRECTSOUNDBUFFER)  buffer, 
-		(LPDIRECTSOUNDBUFFER*) duplicate
-	) == DS_OK;
 }
 
 void sound_buffer_set_freq( void* ptr, float freq )
@@ -494,91 +484,89 @@ sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
 
     pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
 
-    if (pSO != NULL)
-    {
-		memset( pSO, 0, sizeof(sound_source_t) );
+    if (!pSO)
+		return NULL;
 
-		pSO->Dup_Buffer[0] = NULL;
-		pSO->CompoundBuffer = FALSE;
-		pSO->looping_sfx_index[0] = -1;
+	memset( pSO, 0, sizeof(sound_source_t) );
 
-		// if sound is already loaded into HW...
-		if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
-		{				  
-			pSO->CompoundBuffer = TRUE;
-			for (i = 0; i < MAX_DUP_BUFFERS; i++)
-			   pSO->CompoundBufferLookup[i] = -1;
-		}
-		else
+	pSO->Dup_Buffer[0] = NULL;
+	pSO->CompoundBuffer = FALSE;
+	pSO->looping_sfx_index[0] = -1;
+
+	// if sound is already loaded into HW...
+	if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
+	{				  
+		DebugPrintf("sound: compound buffer created!\n");
+		pSO->CompoundBuffer = TRUE;
+		for (i = 0; i < MAX_DUP_BUFFERS; i++)
+		   pSO->CompoundBufferLookup[i] = -1;
+	}
+	else
+	{
+		pSO->Dup_Buffer[0] = sound_buffer_load(path);
+
+		if( !pSO->Dup_Buffer[ 0 ] )
 		{
-			pSO->Dup_Buffer[0] = sound_buffer_load(path);
+			Msg("Unable to create sound buffer for %s\n", path );
+			sound_source_destroy( pSO );
+			return pSO;
+		}
 
-			if( !pSO->Dup_Buffer[ 0 ] )
+		// get caps of buffer
+		memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
+		dsbcaps.dwSize = sizeof( DSBCAPS );
+		IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
+
+		// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
+		// so we will just have to try duplicating until failure
+		for (i = 1; i < MAX_DUP_BUFFERS; i++)
+		{
+			pSO->looping_sfx_index[i] = -1;
+			// duplicate 2D buffer...
+			if ( !IDirectSound_DuplicateSoundBuffer( lpDS, pSO->Dup_Buffer[0], &pSO->Dup_Buffer[i] ) == DS_OK )
 			{
-				Msg("Unable to create sound buffer for %s\n", path );
+				DebugPrintf("unable to duplicate sound buffer\n");
+
+				// invalidate buffer & all duplicates
 				sound_source_destroy( pSO );
-				return pSO;
+
+				// was original buffer hw? if so, try to recreate in sw
+				if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
+				{
+					DebugPrintf("trying to recreate in sw\n");
+					FreeHWBuffers = FALSE;
+
+					// recreate all buffers up to & including this one in software
+					pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
+
+					if( !pSO->Dup_Buffer[ 0 ] )
+					{
+						Msg("Unable to create sound buffer for %s\n", path );
+						sound_source_destroy( pSO );
+						return pSO;
+					}
+
+					i = 0;
+					continue;
+				}
+				else
+				{
+					// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
+					Msg("unable to duplicate buffers in sw\n");
+					break;
+				}
 			}
-
-			// get caps of buffer
-			memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
-			dsbcaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
-
-			// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
-			// so we will just have to try duplicating until failure
-			for (i = 1; i < MAX_DUP_BUFFERS; i++)
+			// query for 3D interface if we are using 3D...
+			if ( pSO->Dup_3DBuffer[0] )
 			{
-				pSO->looping_sfx_index[i] = -1;
-				// duplicate 2D buffer...
-				if ( !sound_buffer_duplicate(
-					pSO->Dup_Buffer[0],
-					&pSO->Dup_Buffer[i]
-				))
-				{
-					DebugPrintf("unable to duplicate sound buffer\n");
-
-					// invalidate buffer & all duplicates
-					sound_source_destroy( pSO );
-
-					// was original buffer hw? if so, try to recreate in sw
-					if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
-					{
-						DebugPrintf("trying to recreate in sw\n");
-						FreeHWBuffers = FALSE;
-
-						// recreate all buffers up to & including this one in software
-						pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
-
-						if( !pSO->Dup_Buffer[ 0 ] )
-						{
-							Msg("Unable to create sound buffer for %s\n", path );
-							sound_source_destroy( pSO );
-							return pSO;
-						}
-
-						i = 0;
-						continue;
-					}
-					else
-					{
-						// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
-						Msg("unable to duplicate buffers in sw\n");
-						break;
-					}
-				}
-				// query for 3D interface if we are using 3D...
-				if ( pSO->Dup_3DBuffer[0] )
-				{
-					IDirectSoundBuffer_QueryInterface(
-						(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
-						&IID_IDirectSound3DBuffer, 
-						&pSO->Dup_3DBuffer[i]
-					);        
-				}
+				IDirectSoundBuffer_QueryInterface(
+					(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
+					&IID_IDirectSound3DBuffer, 
+					&pSO->Dup_3DBuffer[i]
+				);        
 			}
 		}
-    }
+	}
     return pSO;
 }
 
