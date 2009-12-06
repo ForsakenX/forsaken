@@ -12,7 +12,6 @@
 #include "sfx.h"
 #include "SDL.h"
 #include "input.h"
-#include "sound.h"
 
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR

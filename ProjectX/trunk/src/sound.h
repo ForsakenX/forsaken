@@ -2,7 +2,6 @@
 #define SOUND_INCLUDED
 
 #include "main.h"
-#include "sfx.h"
 #include "SDL.h"
 
 //
