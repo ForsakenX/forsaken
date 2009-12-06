@@ -23,9 +23,6 @@ DSCAPS					DSCaps;
 BOOL Sound3D = FALSE;
 BOOL FreeHWBuffers = TRUE;
 
-// only used internally
-static void* sound_buffer_load(char* file, DWORD flags);
-
 //
 // Generic Functions
 //
@@ -399,196 +396,7 @@ void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, flo
 	); 
 }
 
-// loads a sound buffer object
-// only used in one location so options are hard coded
-void* sound_buffer_load_for_sfx(char* file)
-{
-	return (void*) sound_buffer_load(
-		file, 
-		DSBCAPS_CTRLFREQUENCY | 
-		DSBCAPS_STATIC | 
-		DSBCAPS_CTRLPAN | 
-		DSBCAPS_CTRLVOLUME | 
-		DSBCAPS_LOCSOFTWARE
-	);
-}
-
-//
-// Sources
-//
-
-void sound_source_destroy( sound_source_t * source )
-{
-	int i;
-	if (!source)
-		return;
-	for (i = 0; i < MAX_DUP_BUFFERS; i++)
-	{
-		if (source->Dup_3DBuffer[i])
-		{
-            IDirectSound3DBuffer_Release(
-				(IDirectSound3DBuffer*)source->Dup_3DBuffer[i]
-			);
-	        source->Dup_3DBuffer[i] = NULL;
-		}
-		if (source->Dup_Buffer[i])
-		{
-            sound_buffer_release(source->Dup_Buffer[i]);
-	        source->Dup_Buffer[i] = NULL;
-		}
-	}
-    free(source);
-}
-
-// Loads a sound_source_t from a Win32 resource in the current application.
-sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
-{
-    sound_source_t *pSO = NULL;
-	void * Buffer = NULL;
-	int i;
-	DSBCAPS dsbcaps;
-	DWORD buf_flags = 0;
-
-    pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
-
-	if ( !FreeHWBuffers )
-		buf_flags |= DSBCAPS_LOCSOFTWARE;
-
-    if (pSO != NULL)
-    {
-		memset( pSO, 0, sizeof(sound_source_t) );
-
-		pSO->Dup_Buffer[0] = NULL;
-		pSO->CompoundBuffer = FALSE;
-		pSO->looping_sfx_index[0] = -1;
-
-		// if sound is already loaded into HW...
-		if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
-		{				  
-			pSO->CompoundBuffer = TRUE;
-			for (i = 0; i < MAX_DUP_BUFFERS; i++)
-			   pSO->CompoundBufferLookup[i] = -1;
-		}
-		else
-		{
-			// create buffer. Will create in hw if available, since only 16 channels have been used for compound sfx
-			if( buf_flags & DSBCAPS_CTRL3D )
-			{
-				pSO->Dup_Buffer[0] = NULL; //DSLoad3DSoundBuffer(pDS, path, &pSO->Dup_3DBuffer[0], buf_flags );
-			}
-			else
-			{
-				pSO->Dup_Buffer[0] = sound_buffer_load(path, buf_flags );
-			}
-
-			if( !pSO->Dup_Buffer[ 0 ] )
-			{
-				Msg("Unable to create sound buffer for %s\n", path );
-				sound_source_destroy( pSO );
-				return pSO;
-			}
-
-			// get caps of buffer
-			memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
-			dsbcaps.dwSize = sizeof( DSBCAPS );
-			IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
-
-			// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
-			// so we will just have to try duplicating until failure
-			for (i = 1; i < MAX_DUP_BUFFERS; i++)
-			{
-				pSO->looping_sfx_index[i] = -1;
-				// duplicate 2D buffer...
-				if ( !sound_buffer_duplicate(
-					pSO->Dup_Buffer[0],
-					&pSO->Dup_Buffer[i]
-				))
-				{
-					DebugPrintf("unable to duplicate sound buffer\n");
-
-					// invalidate buffer & all duplicates
-					sound_source_destroy( pSO );
-
-					// was original buffer hw? if so, try to recreate in sw
-					if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
-					{
-						DebugPrintf("trying to recreate in sw\n");
-						FreeHWBuffers = FALSE;
-						// recreate all buffers up to & including this one in software
-						if( buf_flags & DSBCAPS_CTRL3D )
-						{
-							pSO->Dup_Buffer[ 0 ] = NULL; //DSLoad3DSoundBuffer(pDS, path, &pSO->Dup_3DBuffer[ 0 ], buf_flags | DSBCAPS_LOCSOFTWARE );
-						}else{
-							pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path, buf_flags | DSBCAPS_LOCSOFTWARE );
-						}
-
-						if( !pSO->Dup_Buffer[ 0 ] )
-						{
-							Msg("Unable to create sound buffer for %s\n", path );
-							sound_source_destroy( pSO );
-							return pSO;
-						}
-
-						i = 0;
-						continue;
-					}
-					else
-					{
-						// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
-						Msg("unable to duplicate buffers in sw\n");
-						break;
-					}
-				}
-				// query for 3D interface if we are using 3D...
-				if ( pSO->Dup_3DBuffer[0] )
-				{
-					IDirectSoundBuffer_QueryInterface(
-						(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
-						&IID_IDirectSound3DBuffer, 
-						&pSO->Dup_3DBuffer[i]
-					);        
-				}
-			}
-		}
-    }
-    return pSO;
-}
-
-////////////////////////////////////////////////////////////////////////////////////////
-//
-//
-//
-//  These functions should probably be exposed since openAL allows creating buffers
-//  But apparently only SndObjCreate requires it
-//
-//
-//
-////////////////////////////////////////////////////////////////////////////////////////
-
-static BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD cbWaveSize)
-{
-    if (pDSB && pbWaveData && cbWaveSize)
-    {
-        LPVOID pMem1, pMem2;
-        DWORD dwSize1, dwSize2;
-
-        if (SUCCEEDED(IDirectSoundBuffer_Lock(pDSB, 0, cbWaveSize,
-            &pMem1, &dwSize1, &pMem2, &dwSize2, 0)))
-        {
-            CopyMemory(pMem1, pbWaveData, dwSize1);
-
-            if ( 0 != dwSize2 )
-                CopyMemory(pMem2, pbWaveData+dwSize1, dwSize2);
-
-            IDirectSoundBuffer_Unlock(pDSB, pMem1, dwSize1, pMem2, dwSize2);
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-static void* sound_buffer_load(char *name, DWORD extra_flags)
+void* sound_buffer_load(char *name)
 {
     IDirectSoundBuffer *sound_buffer = NULL;
     DSBUFFERDESC buffer_description = {0};
@@ -596,10 +404,7 @@ static void* sound_buffer_load(char *name, DWORD extra_flags)
 	SDL_AudioSpec wav_spec;
 	Uint32 wav_length;
 	Uint8 *wav_buffer;
-	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY;
-
-	if(extra_flags)
-		flags |= extra_flags;
+	DWORD flags = DSBCAPS_STATIC | DSBCAPS_CTRLPAN | DSBCAPS_CTRLVOLUME | DSBCAPS_CTRLFREQUENCY | DSBCAPS_LOCSOFTWARE;
 
 	if (!lpDS)
 		return NULL;
@@ -651,6 +456,130 @@ static void* sound_buffer_load(char *name, DWORD extra_flags)
 	SDL_FreeWAV(wav_buffer);
 
     return sound_buffer;
+}
+
+//
+// Sources
+//
+
+void sound_source_destroy( sound_source_t * source )
+{
+	int i;
+	if (!source)
+		return;
+	for (i = 0; i < MAX_DUP_BUFFERS; i++)
+	{
+		if (source->Dup_3DBuffer[i])
+		{
+            IDirectSound3DBuffer_Release(
+				(IDirectSound3DBuffer*)source->Dup_3DBuffer[i]
+			);
+	        source->Dup_3DBuffer[i] = NULL;
+		}
+		if (source->Dup_Buffer[i])
+		{
+            sound_buffer_release(source->Dup_Buffer[i]);
+	        source->Dup_Buffer[i] = NULL;
+		}
+	}
+    free(source);
+}
+
+sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
+{
+    sound_source_t *pSO = NULL;
+	void * Buffer = NULL;
+	int i;
+	DSBCAPS dsbcaps;
+
+    pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
+
+    if (pSO != NULL)
+    {
+		memset( pSO, 0, sizeof(sound_source_t) );
+
+		pSO->Dup_Buffer[0] = NULL;
+		pSO->CompoundBuffer = FALSE;
+		pSO->looping_sfx_index[0] = -1;
+
+		// if sound is already loaded into HW...
+		if ( ( IS_COMPOUND( sfx_flags ) ) && CompoundSfxAllocated[sfx] ) 
+		{				  
+			pSO->CompoundBuffer = TRUE;
+			for (i = 0; i < MAX_DUP_BUFFERS; i++)
+			   pSO->CompoundBufferLookup[i] = -1;
+		}
+		else
+		{
+			pSO->Dup_Buffer[0] = sound_buffer_load(path);
+
+			if( !pSO->Dup_Buffer[ 0 ] )
+			{
+				Msg("Unable to create sound buffer for %s\n", path );
+				sound_source_destroy( pSO );
+				return pSO;
+			}
+
+			// get caps of buffer
+			memset( &dsbcaps, 0, sizeof( DSBCAPS ) );
+			dsbcaps.dwSize = sizeof( DSBCAPS );
+			IDirectSoundBuffer_GetCaps( (IDirectSoundBuffer*)pSO->Dup_Buffer[ 0 ], &dsbcaps );
+
+			// if buffer in hw, should check free channels here, but Ensoniq driver always reports back 256
+			// so we will just have to try duplicating until failure
+			for (i = 1; i < MAX_DUP_BUFFERS; i++)
+			{
+				pSO->looping_sfx_index[i] = -1;
+				// duplicate 2D buffer...
+				if ( !sound_buffer_duplicate(
+					pSO->Dup_Buffer[0],
+					&pSO->Dup_Buffer[i]
+				))
+				{
+					DebugPrintf("unable to duplicate sound buffer\n");
+
+					// invalidate buffer & all duplicates
+					sound_source_destroy( pSO );
+
+					// was original buffer hw? if so, try to recreate in sw
+					if ( dsbcaps.dwFlags & DSBCAPS_LOCHARDWARE )
+					{
+						DebugPrintf("trying to recreate in sw\n");
+						FreeHWBuffers = FALSE;
+
+						// recreate all buffers up to & including this one in software
+						pSO->Dup_Buffer[ 0 ] = sound_buffer_load(path);
+
+						if( !pSO->Dup_Buffer[ 0 ] )
+						{
+							Msg("Unable to create sound buffer for %s\n", path );
+							sound_source_destroy( pSO );
+							return pSO;
+						}
+
+						i = 0;
+						continue;
+					}
+					else
+					{
+						// couldn't duplicate buffer in sw - just break out with buffer info still marked as invalid
+						Msg("unable to duplicate buffers in sw\n");
+						break;
+					}
+				}
+				// query for 3D interface if we are using 3D...
+				if ( pSO->Dup_3DBuffer[0] )
+				{
+					IDirectSoundBuffer_QueryInterface(
+						(IDirectSoundBuffer*) pSO->Dup_Buffer[i], 
+						&IID_IDirectSound3DBuffer, 
+						&pSO->Dup_3DBuffer[i]
+					);        
+				}
+			}
+		}
+    }
+    return pSO;
 }
 
 #endif // SOUND_DSOUND

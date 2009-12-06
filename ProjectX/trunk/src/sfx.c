@@ -981,7 +981,7 @@ void ProcessSoundRoutines (void * pParm)
 			// - will have volume, frequency & pan facilities 
 			// - located in sw ( any hardware will have been used by now )
 			// - static ( not streamed )
-			sound_buffer = sound_buffer_load_for_sfx(file);
+			sound_buffer = sound_buffer_load(file);
 			if ( !sound_buffer )
 			{
 				DebugPrintf( "Sfx Load failed...in %s \n", file );

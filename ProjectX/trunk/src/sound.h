@@ -68,11 +68,7 @@ DWORD sound_buffer_get_rate( void * buffer ); // avg bytes per second
 void sound_buffer_get_position( void * buffer, DWORD* time );
 void sound_buffer_set_position( void * buffer, DWORD time );
 void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
-
-// special buffer loader that uses proper setting for a single location
-// this appears to be the only location that directly loads it's own buffers
-// all other buffers are being loaded by sound_source_create
-void* sound_buffer_load_for_sfx(char* file);
+void* sound_buffer_load(char* file);
 
 //
 // Sources
