@@ -20,7 +20,7 @@ typedef struct
 	DWORD	start_time;
 	DWORD	finish_time;
 	float	distance;
-	unsigned int	timerID;
+	void*	timerID; // SDL_TimerID
 	void*	buffer;
 	int		SfxHolderIndex;
 }COMPOUND_SFX_INFO;

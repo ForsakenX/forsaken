@@ -420,6 +420,15 @@ BOOL handle_events( void )
 			DebugPrintf("recived a platform specific _event type\n");
 			break;
 
+		// to avoid threading issues timers will add an event to the queue
+		// so that we can call the callbacks from the same thread
+		case SDL_USEREVENT:
+			{
+				void (*p) (void*) = _event.user.data1; // callback
+				p(_event.user.data2); // callback( data )
+			}
+			break;
+
 		}
 	}
 

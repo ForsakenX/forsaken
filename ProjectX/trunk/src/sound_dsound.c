@@ -59,6 +59,7 @@ BOOL sound_init( void )
 		IDirectSound_GetCaps( lpDS, &DSCaps );
 		sound_caps.memory = DSCaps.dwMaxContigFreeHwMemBytes;
 		sound_caps.buffers = DSCaps.dwFreeHwMixingStaticBuffers;
+		sound_caps.min_volume = ( DSBVOLUME_MIN / 3);
 	}
 
 	// Succeeded in getting DirectSound.

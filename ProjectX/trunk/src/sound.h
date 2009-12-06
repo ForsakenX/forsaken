@@ -15,6 +15,7 @@ BOOL Sound3D;
 struct {
 	int memory; // hw contiguous bytes of ram
 	int buffers; // hw static mixing buffers
+	int min_volume;
 } sound_caps; // capabilities
 
 //

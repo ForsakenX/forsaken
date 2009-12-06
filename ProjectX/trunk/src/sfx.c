@@ -53,10 +53,6 @@ void CheckSBufferList( void ){}
 BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat ){return 0;}
 void SetSoundLevels( int *dummy ){}
 
-#ifdef WIN32
-void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 ){}
-#endif
-
 float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *listenerpos, uint16 listenergroup, long *vol, VECTOR *sfxvector ){return 0;}
 
 FILE *SaveAllSfx( FILE *fp ){return fp;}
@@ -64,31 +60,20 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 #else
 
-#include <stdio.h>
-#include <stdio.h>
-#include <time.h>
-#include <dsound.h> // TODO
-
+#include "main.h"
 #include "quat.h"
 #include "compobjects.h"
 #include "object.h"
 #include "networking.h"
-
-#include "quat.h"
-#include "compobjects.h"
-#include "bgobjects.h"
 #include "object.h"
 #include "mload.h"
-#include "networking.h"
 #include "title.h"
 #include "text.h"
-#include "main.h"
 #include "controls.h"
 #include "ships.h"
 #include "config.h"
 #include "xmem.h"
 #include "util.h"
-#include "file.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -843,13 +828,13 @@ int NumDupCompoundBuffers = 0;
 
 void CheckForRogueSfx( void )
 { 
-  DWORD current_time;
+  Uint32 current_time;
   int i;
 
   // Dirty hack to kill off any rogue sfx!! 
   if ( bSoundEnabled && NumDupCompoundBuffers )
   {
-    current_time = GetTickCount();
+    current_time = SDL_GetTicks();
     for ( i = 0; i < NumDupCompoundBuffers; i++ )
     {
       // if buffer is playing, check whether it should have stopped by now...
@@ -880,27 +865,47 @@ void CheckForRogueSfx( void )
 										high 2 bytes = buffer type flags
 	Output		:		none
 *****************************************/
-void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 )
+
+void RealTimerProc(void* ptr)
 {
-	if (dwUser != (DWORD)-1 )
-	{
-		if ( CompoundSfxBuffer )
-		{
-			if ( CompoundSfxBuffer[dwUser].buffer )
-			{
-				// current_sfx could have been set to -1 in KillCompoundSfx ( inside critical section )
-				// safe to ignore, since timer was killed off
-				if ( CompoundSfxBuffer[dwUser].current_sfx != -1 )																
-				{
-					sound_buffer_stop( CompoundSfxBuffer[dwUser].buffer );
-					sound_buffer_set_freq( CompoundSfxBuffer[dwUser].buffer, 0 );
-					SndSources[ SndLookup[ CompoundSfxBuffer[ dwUser ].current_sfx ].SndObjIndex + CompoundSfxBuffer[ dwUser ].current_variant ]->CompoundBufferLookup[ CompoundSfxBuffer[dwUser].compound_buffer_lookup_index ] = -1;
-					CompoundSfxBuffer[dwUser].current_sfx = -1;
-					FreeSfxHolder( CompoundSfxBuffer[ dwUser ].SfxHolderIndex );
-				}
-			}
-		}
-	}
+	COMPOUND_SFX_INFO * compound_buffer = ptr;
+	if ( !CompoundSfxBuffer )
+		return;
+	if ( !compound_buffer->buffer )
+		return;
+	// current_sfx could have been set to -1 in KillCompoundSfx ( inside critical section )
+	// safe to ignore, since timer was killed off
+	if ( compound_buffer->current_sfx == -1 )																
+		return;
+	//
+	sound_buffer_stop( compound_buffer->buffer );
+	sound_buffer_set_freq( compound_buffer->buffer, 0 );
+	SndSources[ 
+		SndLookup[ compound_buffer->current_sfx ].SndObjIndex + 
+		compound_buffer->current_variant 
+	]->CompoundBufferLookup[ compound_buffer->compound_buffer_lookup_index ] = -1;
+	compound_buffer->current_sfx = -1;
+	FreeSfxHolder( compound_buffer->SfxHolderIndex );
+}
+
+// to avoid threading issues we push an sdl user event to the event queue
+// then we call the callback from the same thread, see handle_events()
+Uint32 TimerProc( Uint32 interval, void* ptr )
+{
+	SDL_Event _event;
+	SDL_UserEvent userevent;
+
+	userevent.type = SDL_USEREVENT;
+	userevent.code = 0;
+	userevent.data1 = &RealTimerProc;
+	userevent.data2 = ptr;
+
+	_event.type = SDL_USEREVENT;
+	_event.user = userevent;
+
+	SDL_PushEvent(&_event);
+
+	return 0; // our callbacks only run once
 }
 
 /****************************************
@@ -2106,7 +2111,7 @@ void DestroySound( int flags )
 		if ( CompoundSfxBuffer[ i ].current_sfx != -1 )
 		{
 			sound_buffer_stop( CompoundSfxBuffer[ i ].buffer );
-			timeKillEvent( CompoundSfxBuffer[ i ].timerID ); 
+			SDL_RemoveTimer( CompoundSfxBuffer[ i ].timerID ); 
 		}
 
 		sound_buffer_release( CompoundSfxBuffer[ i ].buffer );
@@ -2199,7 +2204,7 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 	
 void KillCompoundSfxBuffer( int buffer )
 {
-	timeKillEvent( CompoundSfxBuffer[ buffer ].timerID ); 
+	SDL_RemoveTimer( CompoundSfxBuffer[ buffer ].timerID ); 
 	sound_buffer_stop( CompoundSfxBuffer[ buffer ].buffer );
 	sound_buffer_set_freq( CompoundSfxBuffer[ buffer ].buffer, 0 );
 	SndSources[ SndLookup[ CompoundSfxBuffer[ buffer ].current_sfx ].SndObjIndex ]->CompoundBufferLookup[ CompoundSfxBuffer[ buffer ].compound_buffer_lookup_index ] = -1;
@@ -2209,7 +2214,6 @@ void KillCompoundSfxBuffer( int buffer )
 
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
-#define SFX_MIN_VOLUME  ( DSBVOLUME_MIN / 3) 
 
 BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int type, int HolderIndex, float VolModify, uint16 Effects, BOOL OverideDistanceCheck )
 {
@@ -2441,7 +2445,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			*/
 			Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
-			Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * VolModify * GlobalSoundAttenuation );
+			Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 			if ( type != SFX_2D )
 				SetPannedBufferParams( CompoundSfxBuffer[ buffer ].buffer, NULL, SfxPos, Freq, &Temp, Distance, Volume, Effects );
@@ -2458,7 +2462,11 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			if ( !Freq || ( Freq == 1.0F ) )
 			{
 				CompoundSfxBuffer[ buffer ].finish_time = current_time + SndSources[ sndobj_index ]->Length;
-				CompoundSfxBuffer[ buffer ].timerID = timeSetEvent( SndSources[ sndobj_index ]->Length, SndSources[ sndobj_index ]->Length, TimerProc, buffer, TIME_ONESHOT ); 
+				CompoundSfxBuffer[ buffer ].timerID = SDL_AddTimer(
+					(Uint32) SndSources[ sndobj_index ]->Length,
+					TimerProc, 
+					&CompoundSfxBuffer[ buffer ]
+				); 
 			}
 			else
 			{
@@ -2477,7 +2485,11 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				Length = ( SndSources[ sndobj_index ]->Bytes * 1000 ) / BytesPerSec;
 
 				CompoundSfxBuffer[ buffer ].finish_time = current_time + Length;
-				CompoundSfxBuffer[ buffer ].timerID = timeSetEvent( Length, Length, TimerProc, buffer, TIME_ONESHOT ); 
+				CompoundSfxBuffer[ buffer ].timerID = SDL_AddTimer(
+					(Uint32) Length,
+					TimerProc, 
+					&CompoundSfxBuffer[ buffer ]
+				); 
 			}
 
 			if ( !CompoundSfxBuffer[ buffer ].timerID ) 
@@ -2521,7 +2533,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 
 
 		Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-		Volume = SFX_MIN_VOLUME - (long)( ((float)( SFX_MIN_VOLUME - Volume )) * GlobalSoundAttenuation * VolModify );
+		Volume = sound_caps.min_volume - (long)( ((float)( sound_caps.min_volume - Volume )) * GlobalSoundAttenuation * VolModify );
 	   	if ( type != SFX_2D )
 			SetPannedBufferParams( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer], SndSources[ sndobj_index ]->Dup_3DBuffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
 		else
@@ -2542,7 +2554,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	// in either case, we must dynamically load the sound.
 
 	Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-	Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * VolModify * GlobalSoundAttenuation );
+	Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 
 	if ( Effects == SPOT_SFX_TYPE_Taunt )
@@ -2931,8 +2943,6 @@ void SetPannedBufferParams( void* sound_buffer, void* sound_buffer3D, VECTOR *Sf
 		}
     }
 }
-
-extern LPDIRECTSOUND3DLISTENER	lpDS3DListener;
 
 void SetSoundLevels( int *dummy )
 {
@@ -3550,9 +3560,9 @@ void ProcessLoopingSfx( void )
 					// adjust buffer parameters
 					//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
-					Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * SFX_MIN_VOLUME);
+					Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_caps.min_volume);
 		
-					Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
+					Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
 					SetPannedBufferParams(
 						SpotSfxList[ i ].buffer,
@@ -3732,7 +3742,7 @@ float ReturnDistanceVolumeVector( VECTOR *sfxpos, uint16 sfxgroup, VECTOR *liste
 		if( vol )
 		{
 			*vol = ( 0 - (long) ( dist * 0.6F ) );	// Scale it down by a factor...
-			*vol = SFX_MIN_VOLUME - (long)( ((float)( SFX_MIN_VOLUME - *vol )) * GlobalSoundAttenuation );
+			*vol = sound_caps.min_volume - (long)( ((float)( sound_caps.min_volume - *vol )) * GlobalSoundAttenuation );
 		}
 		if( sfxvector )
 		{
@@ -3777,7 +3787,7 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 		{
 			VolModify = ( (float)BikerSpeechSlider.value / (float)BikerSpeechSlider.max ) * SPEECH_AMPLIFY;	// when multiplied with max value for GlobalSoundAttenuation, gives 1.0F;
 			Volume = 0;
-			Volume = SFX_MIN_VOLUME - (long)( (float)( SFX_MIN_VOLUME - Volume ) * VolModify * GlobalSoundAttenuation );
+			Volume = sound_caps.min_volume - (long)( (float)( sound_caps.min_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 			// set buffer parameters
 			SetPannedBufferParams( 

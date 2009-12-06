@@ -529,11 +529,6 @@ extern int FontSourceHeight;
 extern  int PlayerSort[MAX_PLAYERS];
 extern int16 NumOfActivePlayers;
 
-#ifdef SOUND_SUPPORT
-#include <windows.h>
-void CALLBACK TimerProc( unsigned int uID, unsigned int uMsg, DWORD dwUser, DWORD dw1, DWORD dw2 );
-#endif
-
 int16   LevelNum = 0 ;
 int16   NewLevelNum = 0 ;
 int16   NumLevels = 0;
@@ -3259,11 +3254,6 @@ BOOL RenderScene( void )
 	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
-
-#ifdef WIN32
-    // dummy call to timer ensures no pauses later...
-    timeSetEvent( 10, 10, TimerProc, (DWORD)-1, TIME_ONESHOT ); 
-#endif
 
     InitShipSpeeds();
 
