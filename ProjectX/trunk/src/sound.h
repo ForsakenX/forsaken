@@ -3,7 +3,7 @@
 
 #include "main.h"
 #include "sfx.h"
-#include <time.h>
+#include "SDL.h"
 
 //
 // Globals
@@ -91,7 +91,7 @@ typedef struct
 	unsigned int	Length;			// length of sample (ms)...
 	int				CompoundBufferLookup[MAX_DUP_BUFFERS];
 	float			Buffer_Dist[MAX_DUP_BUFFERS];
-	clock_t			Buffer_TimeStamp[MAX_DUP_BUFFERS];
+	Uint32			Buffer_TimeStamp[MAX_DUP_BUFFERS];
 	DWORD			TransferRate;	// bytes per second
 	DWORD			Bytes;
 	int				looping_sfx_index[MAX_DUP_BUFFERS];

@@ -14,7 +14,6 @@
 
 #include <math.h>
 #include "new3d.h"
-#include <time.h>
 #include "mload.h"
 #include "quat.h"
 #include "collision.h"

@@ -16,7 +16,6 @@
 #include "render.h"
 #include "new3d.h"
 #include "mload.h"
-#include <time.h>
 #include "compobjects.h"
 #include "bgobjects.h"
 

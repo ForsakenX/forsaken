@@ -19,7 +19,6 @@
 #include "secondary.h"
 
 #include <math.h>
-#include <time.h>
 #include "ships.h"
 #include "mload.h"
 #include "collision.h"

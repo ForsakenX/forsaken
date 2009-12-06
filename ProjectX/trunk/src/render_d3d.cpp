@@ -9,7 +9,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
 #include <search.h>
 #include <d3d9.h>
 #include <d3dx9.h>

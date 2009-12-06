@@ -11,7 +11,6 @@
 
 #include "new3d.h"
 #include "quat.h"
-#include <time.h>
 #include "ships.h"
 #include "mload.h"
 #include "collision.h"

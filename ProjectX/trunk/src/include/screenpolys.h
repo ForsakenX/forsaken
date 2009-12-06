@@ -16,7 +16,6 @@
 #include <math.h>
 
 #include "new3d.h"
-#include <time.h>
 #include "ships.h"
 #include "mload.h"
 #include "collision.h"

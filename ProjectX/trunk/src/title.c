@@ -19,8 +19,6 @@
 #include "bgobjects.h"
 #include "object.h"
 #include "networking.h"
-
-#include <time.h>
 #include "sfx.h"
 #include "text.h"
 #include "input.h"

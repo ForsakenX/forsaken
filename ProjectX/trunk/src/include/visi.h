@@ -4,7 +4,6 @@
 
 
 #include <math.h>
-#include <time.h>
 #include "new3d.h"
 #include "mload.h"
 #include "ships.h"

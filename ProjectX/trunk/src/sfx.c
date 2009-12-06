@@ -2163,9 +2163,9 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 {
 	int free_buffer, i;
 	DWORD age[MAX_DUP_BUFFERS], oldest;
-	clock_t current_time;
+	Uint32 current_time;
 
-	current_time = clock();
+	current_time = SDL_GetTicks();
 
 	for (i = 0; i < MAX_DUP_BUFFERS; i++)
 	{
@@ -2545,7 +2545,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		else
 			sound_buffer_play( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
 
-		SndSources[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = clock();
+		SndSources[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = SDL_GetTicks();
 		SndSources[ sndobj_index ]->Buffer_Dist[free_buffer] = Distance;
 		return TRUE;
 	}

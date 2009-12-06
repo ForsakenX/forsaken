@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <string.h>
-#include <time.h>
 #include <search.h>
 #include "version.h"
 #include "render.h"
