@@ -16,16 +16,16 @@ else
 	CFLAGS+=-O2
 	LDFLAGS+=-s
 endif
-LIBS=-lSDL -lGL -lGLU -llua -llua-mime -llua-socket -lm -lenet -lpng12
+LIBS=-lSDL -lGL -lGLU -llua -llua-mime -llua-socket -lm -lenet -lpng12 -lopenal
 
 # ProjectX-specific macros
-CFLAGS+= -DOPENGL -DNET_ENET -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG
+CFLAGS+= -DOPENGL -DNET_ENET -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
 ifeq ($(DEBUG),1)
-CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT
+CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT 
 endif
 
 # Include paths
-CFLAGS+= -I/usr/include/SDL -I. -Iinclude -Iai/aiinclude -I/usr/include/lua
+CFLAGS+= -I/usr/include/SDL -I. -Iinclude -Iai/aiinclude -I/usr/include/lua -I/usr/include/AL
 
 INCLUDE=$(wildcard include/*.h) $(wildcard ai/aiinclude/*.h)
 SRC=$(wildcard *.c) $(wildcard ai/*.c)
