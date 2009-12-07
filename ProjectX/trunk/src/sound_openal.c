@@ -3,11 +3,12 @@
 #include "main.h"
 #include "util.h"
 #include "sound.h"
+#include "file.h"
 #include "SDL.h"
 #include <al.h>
 #include <alc.h>
-#include <efx.h>
-#include <efx-creative.h>
+//#include <efx.h>
+//#include <efx-creative.h>
 
 //
 // globals
@@ -216,7 +217,9 @@ BOOL sound_is_playing( sound_t * source )
 
 void sound_get_seek( sound_t * source, long * bytes )
 {
-	alGetSourcei(source->source, AL_BYTE_OFFSET, bytes);
+	ALint i;
+	alGetSourcei(source->source, AL_BYTE_OFFSET, &i);
+	*bytes = (long) i;
 }
 
 void sound_set_seek( sound_t * source, long bytes )
@@ -231,13 +234,14 @@ void sound_position( sound_t * source, float x, float y, float z, float min, flo
 	alSourcef(source->source, AL_MAX_DISTANCE, max);
 }
 
-sound_t * sound_load(char *name)
+sound_t * sound_load(char *path)
 {
 	ALenum error;
 	ALenum format;
 	SDL_AudioSpec wav_spec;
 	Uint8 *wav_buffer;
 	sound_t * source = malloc(sizeof(sound_t));
+	char * file_path = convert_path(path);
 
 	// Generate Buffers
 	alGetError(); // clear error code
@@ -249,7 +253,7 @@ sound_t * sound_load(char *name)
 		return NULL;
 	}
 
-	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
+	if( SDL_LoadWAV(file_path, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
 	{
 		DebugPrintf("Could not open test.wav: %s\n", SDL_GetError());
 		return NULL;

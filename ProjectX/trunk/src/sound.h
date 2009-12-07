@@ -44,7 +44,7 @@ typedef struct sound_t sound_t;
 #endif
 
 sound_t * sound_load(char* file);
-BOOL sound_duplicate( sound_t * s, void ** destination );
+BOOL sound_duplicate( sound_t * s, sound_t ** destination );
 
 void sound_play( sound_t * s );
 void sound_play_looping( sound_t * s );
