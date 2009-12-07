@@ -42,9 +42,8 @@ FILE * file_open(char * filename, char * mode)
 	return fopen(convert_path(filename), mode);
 }
 
-void touch_file( char* str )
+void touch_file( char* path )
 {
-	char * path = convert_path(str);
 	if(!File_Exists(path))
 		Write_File(path, "", 0);
 }
