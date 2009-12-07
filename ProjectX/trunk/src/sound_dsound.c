@@ -331,61 +331,13 @@ void* sound_buffer_load(char *name)
     return sound_buffer;
 }
 
-//
-// Sources
-//
-
-void sound_source_destroy( sound_source_t * source )
+BOOL sound_buffer_duplicate( void * source, void ** destination )
 {
-	int i;
-	if (!source)
-		return;
-	for (i = 0; i < MAX_DUP_BUFFERS; i++)
-	{
-		if (source->Dup_Buffer[i])
-		{
-            sound_buffer_release(source->Dup_Buffer[i]);
-	        source->Dup_Buffer[i] = NULL;
-		}
-	}
-    free(source);
-}
-
-sound_source_t *sound_source_create(char *path)
-{
-	int i;
-
-    sound_source_t *pSO = (sound_source_t *)malloc(sizeof(sound_source_t));
-    if (!pSO) 
-		return NULL;
-	memset( pSO, 0, sizeof(sound_source_t) );
-
-	pSO->looping_sfx_index[0] = -1;
-	pSO->Dup_Buffer[0] = sound_buffer_load(path);
-
-	if( !pSO->Dup_Buffer[ 0 ] )
-	{
-		Msg("Unable to create sound buffer for %s\n", path );
-		sound_source_destroy( pSO );
-		return pSO;
-	}
-
-	// try duplicating until failure
-	for (i = 1; i < MAX_DUP_BUFFERS; i++)
-	{
-		pSO->looping_sfx_index[i] = -1;
-		if ( !IDirectSound_DuplicateSoundBuffer(
-			lpDS,
-			(LPDIRECTSOUNDBUFFER)pSO->Dup_Buffer[0], 
-			(LPDIRECTSOUNDBUFFER*)&pSO->Dup_Buffer[i] 
-		) == DS_OK )
-		{
-			sound_source_destroy( pSO );
-			Msg("unable to duplicate sound buffers\n");
-			break;
-		}
-	}
-    return pSO;
+	return IDirectSound_DuplicateSoundBuffer( 
+		lpDS,
+		(LPDIRECTSOUNDBUFFER) source, 
+		(LPDIRECTSOUNDBUFFER*) destination
+	) == DS_OK;
 }
 
 #endif // SOUND_DSOUND

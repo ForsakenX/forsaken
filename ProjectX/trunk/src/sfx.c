@@ -76,6 +76,73 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 extern render_info_t render_info;
 
+#define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
+
+typedef struct
+{
+	void*			Dup_Buffer[MAX_DUP_BUFFERS];
+	DWORD			StartPos;		// start offset in buffer...
+	unsigned int	Length;			// length of sample (ms)...
+	float			Buffer_Dist[MAX_DUP_BUFFERS];
+	Uint32			Buffer_TimeStamp[MAX_DUP_BUFFERS];
+	DWORD			TransferRate;	// bytes per second
+	DWORD			Bytes;
+	int				looping_sfx_index[MAX_DUP_BUFFERS];
+	int				SfxHolderIndex[MAX_DUP_BUFFERS];
+} sound_source_t;
+
+void sound_source_destroy( sound_source_t * source )
+{
+	int i;
+	if (!source)
+		return;
+	for (i = 0; i < MAX_DUP_BUFFERS; i++)
+	{
+		if (source->Dup_Buffer[i])
+		{
+            sound_buffer_release(source->Dup_Buffer[i]);
+	        source->Dup_Buffer[i] = NULL;
+		}
+	}
+    free(source);
+}
+
+sound_source_t *sound_source_create(char *path)
+{
+	int i;
+
+    sound_source_t * source = (sound_source_t *)malloc(sizeof(sound_source_t));
+    if (!source) 
+		return NULL;
+	memset( source, 0, sizeof(sound_source_t) );
+
+	source->looping_sfx_index[0] = -1;
+	source->Dup_Buffer[0] = sound_buffer_load(path);
+
+	if( !source->Dup_Buffer[ 0 ] )
+	{
+		Msg("Unable to create sound buffer for %s\n", path );
+		sound_source_destroy( source );
+		return source;
+	}
+
+	// try duplicating until failure
+	for (i = 1; i < MAX_DUP_BUFFERS; i++)
+	{
+		source->looping_sfx_index[i] = -1;
+		if (!sound_buffer_duplicate(
+			source->Dup_Buffer[0], 
+			&source->Dup_Buffer[i] 
+		))
+		{
+			sound_source_destroy( source );
+			Msg("unable to duplicate sound buffers\n");
+			break;
+		}
+	}
+    return source;
+}
+
 typedef struct
 {
         BOOL used;

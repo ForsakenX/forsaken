@@ -52,30 +52,6 @@ void sound_buffer_get_position( void * buffer, DWORD* time );
 void sound_buffer_set_position( void * buffer, DWORD time );
 void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
 void* sound_buffer_load(char* file);
-
-//
-// Sources
-//	at this point i would say that sources are something custom in projectx
-//	since they indirectly call sound_buffer_load it would simplify everything
-//  to simply port this over to sfx.c
-//
-
-#define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
-
-typedef struct
-{
-	void*			Dup_Buffer[MAX_DUP_BUFFERS];
-	DWORD			StartPos;		// start offset in buffer...
-	unsigned int	Length;			// length of sample (ms)...
-	float			Buffer_Dist[MAX_DUP_BUFFERS];
-	Uint32			Buffer_TimeStamp[MAX_DUP_BUFFERS];
-	DWORD			TransferRate;	// bytes per second
-	DWORD			Bytes;
-	int				looping_sfx_index[MAX_DUP_BUFFERS];
-	int				SfxHolderIndex[MAX_DUP_BUFFERS];
-} sound_source_t;
-
-void sound_source_destroy( void * source );
-sound_source_t *sound_source_create(char *path);
+BOOL sound_buffer_duplicate( void * source, void ** destination );
 
 #endif
