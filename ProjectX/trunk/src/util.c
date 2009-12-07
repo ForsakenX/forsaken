@@ -86,13 +86,6 @@ void Get_Ext( uint8 * Src, uint8 * Dest )
 	}
 }
 
-void Add_Path( uint8 * Path, uint8 * Src, uint8 * Dest )
-{
-	strcpy( Dest, Path );
-	Dest = ( Dest + strlen( Path ) );
-	strcpy( Dest, Src );
-}
-
 void Change_Ext( const char * Src, char * Dest, const char * Ext )
 {
 	uint8	*	Char_Ptr;

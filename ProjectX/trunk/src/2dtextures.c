@@ -387,7 +387,7 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 				continue;
 			}
 
-			Add_Path( OffsetPath, FileInfo->Filename, &TempFilename[ 0 ] );
+			sprintf(TempFilename,"%s%s",OffsetPath,FileInfo->Filename);
 
 			*FileInfo->InfoPtrAddr = Load_Off_File( &TempFilename[ 0 ], FileInfo->Scale, FileInfo->LoadTPages, &last_tpage, FileInfo->xsize, FileInfo->ysize, ( FileInfo->LoadTPages & LOAD_TPAGES_PLACEHOLDER ) );
 			if( *FileInfo->InfoPtrAddr == NULL )
