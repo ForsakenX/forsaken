@@ -97,9 +97,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
-	char * path = convert_path(Filename);
-
-	fp = file_open( path, "rb" );
+	fp = file_open( Filename, "rb" );
 
 	if( fp != NULL )
 	{
@@ -211,12 +209,10 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	uint32			MagicNumber;
 	uint32			VersionNumber;
 
-	char * path = convert_path(Filename);
-
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
 
-	fp = file_open( path, "rb" );
+	fp = file_open( Filename, "rb" );
 
 	if( fp != NULL )
 	{
