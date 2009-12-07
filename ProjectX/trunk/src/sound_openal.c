@@ -348,10 +348,10 @@ sound_t * sound_load(char *path)
 
 	{
 		ALint i;
-		ALfloat pos[3];
+		ALfloat f, pos[3];
 		sound_listener_position(0,0,0);
-		alGetSourcei(source->source,AL_GAIN,&i);
-		DebugPrintf("buffer gain: %d\n",i);
+		alGetSourcef(source->source,AL_GAIN,&f);
+		DebugPrintf("buffer gain: %f\n",f);
 		alGetSource3f(source->source,AL_POSITION,&pos[0],&pos[1],&pos[2]);
 		DebugPrintf("buffer position: %f %f %f\n",pos[0],pos[1],pos[2]);
 		alGetSourcei(source->source,AL_SOURCE_RELATIVE,&i);
