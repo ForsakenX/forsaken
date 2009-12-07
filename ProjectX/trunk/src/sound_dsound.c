@@ -192,9 +192,9 @@ long sound_rate( sound_t * buffer ) // avg bytes per second
 // this gets the current play location
 void sound_get_seek( sound_t * buffer, long * bytes )
 {
-	DWORD _time;
-	IDirectSoundBuffer_GetCurrentPosition( buffer, &_time, NULL	);
-	*time = (long) _time;
+	DWORD _bytes;
+	IDirectSoundBuffer_GetCurrentPosition( buffer, &_bytes, NULL	);
+	*bytes = (long) _bytes;
 }
 
 // this moves to a specific offset in the buffer
