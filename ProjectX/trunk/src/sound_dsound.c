@@ -351,7 +351,7 @@ void sound_source_destroy( sound_source_t * source )
     free(source);
 }
 
-sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx)
+sound_source_t *sound_source_create(char *path)
 {
 	int i;
 

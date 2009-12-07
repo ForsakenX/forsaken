@@ -1275,7 +1275,7 @@ BOOL CreateSndObj( char *file, int sfxnum, int flags )
 	BOOL BuffersMissing = FALSE;
 	int i;
 
-	SndSources[ Num_SndSources ] = sound_source_create( file, flags, sfxnum );
+	SndSources[ Num_SndSources ] = sound_source_create( file );
 
 	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
 	{

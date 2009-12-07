@@ -66,6 +66,9 @@ void* sound_buffer_load(char* file);
 
 //
 // Sources
+//	at this point i would say that sources are something custom in projectx
+//	since they indirectly call sound_buffer_load it would simplify everything
+//  to simply port this over to sfx.c
 //
 
 #define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
@@ -84,6 +87,6 @@ typedef struct
 } sound_source_t;
 
 void sound_source_destroy( void * source );
-sound_source_t *sound_source_create(char *path, int sfx_flags, int sfx);
+sound_source_t *sound_source_create(char *path);
 
 #endif
