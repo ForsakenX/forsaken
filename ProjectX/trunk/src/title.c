@@ -9175,12 +9175,7 @@ DebugPrintf("gamma variable: %d/100.0F = %ld\n",GammaSlider.value,Gamma);
     render_info.default_mode.w                    = config_get_int( "ScreenWidth",				640 );
     render_info.default_mode.h                    = config_get_int( "ScreenHeight",				480 );
 	render_info.default_mode.rate				  = config_get_int( "ScreenRefreshRate",        60  );
-
-    render_info.default_mode.bpp                  = config_get_int( "ScreenBPP",				32 );
-	if( render_info.default_mode.bpp >= 32 )
-		render_info.default_mode.bpp = 32;
-	else
-		render_info.default_mode.bpp = 16;
+    render_info.default_mode.bpp                  = config_get_int( "ScreenBPP",				24 );
 
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
