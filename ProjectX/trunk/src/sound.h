@@ -36,17 +36,6 @@ BOOL sound_listener_orientation(
 // Buffers
 //
 
-typedef struct
-{
-        BOOL used;
-        void* buffer;
-        int SfxHolderIndex;
-} SBUFFERLIST;
-
-#define MAX_SYNCHRONOUS_DYNAMIC_SFX 16
-
-SBUFFERLIST SBufferList[ MAX_SYNCHRONOUS_DYNAMIC_SFX ];
-
 void sound_buffer_play( void * buffer );
 void sound_buffer_play_looping( void * buffer );
 BOOL sound_buffer_is_playing( void * buffer );

@@ -76,6 +76,16 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 extern render_info_t render_info;
 
+typedef struct
+{
+        BOOL used;
+        void* buffer;
+        int SfxHolderIndex;
+} SBUFFERLIST;
+
+#define MAX_SYNCHRONOUS_DYNAMIC_SFX 16
+
+SBUFFERLIST SBufferList[ MAX_SYNCHRONOUS_DYNAMIC_SFX ];
 
 /*************************************
 Biker speech lookup table identifiers
