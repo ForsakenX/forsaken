@@ -36,21 +36,28 @@ BOOL sound_listener_orientation(
 // Buffers
 //
 
-void sound_play( void * buffer );
-void sound_play_looping( void * buffer );
-BOOL sound_is_playing( void * buffer );
-void sound_stop( void * buffer );
-long sound_size( void * buffer );
-void sound_release( void * buffer );
-void sound_3d_release( void * buffer );
-void sound_set_freq( void* buffer, float freq );
-void sound_volume( void * buffer, long volume );
-void sound_pan( void * buffer, long pan );
-long sound_get_rate( void * buffer );
-void sound_get_seek( void * buffer, long * time );
-void sound_set_seek( void * buffer, long time );
-void sound_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
-void* sound_load(char* file);
-BOOL sound_duplicate( void * source, void ** destination );
+#ifdef SOUND_DSOUND
+#include <dsound.h>
+typedef IDirectSoundBuffer sound_t;
+#else
+typedef struct sound_t sound_t;
+#endif
+
+sound_t * sound_load(char* file);
+BOOL sound_duplicate( sound_t * s, void ** destination );
+
+void sound_play( sound_t * s );
+void sound_play_looping( sound_t * s );
+BOOL sound_is_playing( sound_t * s );
+void sound_stop( sound_t * s );
+long sound_size( sound_t * s );
+void sound_release( sound_t * s );
+void sound_set_freq( void* source, float freq );
+void sound_volume( sound_t * s, long volume );
+void sound_pan( sound_t * s, long pan );
+long sound_get_rate( sound_t * s );
+void sound_get_seek( sound_t * s, long * time );
+void sound_set_seek( sound_t * s, long time );
+void sound_position( sound_t * s, float x, float y, float z, float min_distance, float max_distance );
 
 #endif

@@ -9,8 +9,10 @@
 #include "file.h"
 #include "sound.h"
 
-
+//
 // globals
+//
+
 LPDIRECTSOUND lpDS = NULL;
 BOOL Sound3D = FALSE;
 
@@ -87,68 +89,46 @@ void sound_destroy( void )
 	IDirectSound_Release(lpDS);
 }
 
-void sound_play( void * buffer )
+void sound_play( sound_t * buffer )
 {
-	IDirectSoundBuffer_Play(
-		(IDirectSoundBuffer*)buffer, 0, 0, 0 
-	);
+	IDirectSoundBuffer_Play( buffer, 0, 0, 0 );
 }
 
-void sound_play_looping( void * buffer )
+void sound_play_looping( sound_t * buffer )
 {
-	IDirectSoundBuffer_Play(
-		(IDirectSoundBuffer*)buffer, 0, 0,
-		DSBPLAY_LOOPING 
-	);
+	IDirectSoundBuffer_Play( buffer, 0, 0, DSBPLAY_LOOPING );
 }
 
-void sound_stop( void * buffer )
+void sound_stop( sound_t * buffer )
 {
-	IDirectSoundBuffer_Stop( 
-		(IDirectSoundBuffer*) buffer 
-	);
+	IDirectSoundBuffer_Stop( buffer );
 }
 
-long sound_size( void * buffer )
+long sound_size( sound_t * buffer )
 {
 	DSBCAPS dsbcaps; 
 	dsbcaps.dwSize = sizeof( DSBCAPS );
-	IDirectSoundBuffer_GetCaps(
-		(IDirectSoundBuffer*)buffer,
-		&dsbcaps 
-	);
+	IDirectSoundBuffer_GetCaps( buffer,	&dsbcaps );
 	return (long) dsbcaps.dwBufferBytes;
 }
 
-void sound_release( void * ptr )
+void sound_release( sound_t * buffer )
 {
-	IDirectSoundBuffer* buffer = ptr;
 	if (buffer != NULL)
 		return;
 	buffer->lpVtbl->Release(buffer);
 	buffer = NULL;
 }
 
-void sound_3d_release( void * buffer )
-{
-	IDirectSound3DBuffer_Release(
-		(IDirectSound3DBuffer*) buffer 
-	);
-}
-
-BOOL sound_is_playing( void * buffer )
+BOOL sound_is_playing( sound_t * buffer )
 {
 	DWORD dwStatus;
-	IDirectSoundBuffer_GetStatus(
-		(IDirectSoundBuffer*)buffer, 
-		&dwStatus 
-	);
+	IDirectSoundBuffer_GetStatus( buffer, &dwStatus );
 	return (dwStatus & DSBSTATUS_PLAYING);
 }
 
-void sound_set_freq( void* ptr, float freq )
+void sound_set_freq( sound_t * buffer, float freq )
 {
-	IDirectSoundBuffer * buffer = ptr;
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, OrigFreq;
 
@@ -187,73 +167,48 @@ void sound_set_freq( void* ptr, float freq )
 		DebugPrintf("sound_set_freq: failed\n");
 }
 
-void sound_volume( void * buffer, long volume )
+void sound_volume( sound_t * buffer, long volume )
 {
-	IDirectSoundBuffer_SetVolume( (IDirectSoundBuffer*) buffer, volume );
+	IDirectSoundBuffer_SetVolume( buffer, volume );
 }
 
-void sound_pan( void * buffer, long pan )
+void sound_pan( sound_t * buffer, long pan )
 {
-	IDirectSoundBuffer_SetPan( (IDirectSoundBuffer*) buffer, pan );
+	IDirectSoundBuffer_SetPan( buffer, pan );
 }
 
-long sound_get_rate( void * buffer ) // avg bytes per second
+long sound_get_rate( sound_t * buffer ) // avg bytes per second
 {
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, datarate;
-	IDirectSoundBuffer_GetFormat( 
-		(IDirectSoundBuffer*) buffer, 
-		NULL, 0, &dwSizeWritten 
-	);
+	IDirectSoundBuffer_GetFormat( buffer, NULL, 0, &dwSizeWritten );
 	lpwaveinfo = (LPWAVEFORMATEX)malloc( dwSizeWritten );
-	IDirectSoundBuffer_GetFormat( 
-		(IDirectSoundBuffer*) buffer, 
-		lpwaveinfo, dwSizeWritten, 0 
-	);
+	IDirectSoundBuffer_GetFormat( buffer, lpwaveinfo, dwSizeWritten, 0 	);
 	datarate = lpwaveinfo->nAvgBytesPerSec; 
 	free(lpwaveinfo);
 	return (long) datarate;
 }
 
 // this gets the current play location
-void sound_get_seek( void * buffer, long * time )
+void sound_get_seek( sound_t * buffer, long * time )
 {
 	DWORD _time;
-	IDirectSoundBuffer_GetCurrentPosition(
-		(IDirectSoundBuffer*) buffer,
-		&_time,
-		NULL
-	);
+	IDirectSoundBuffer_GetCurrentPosition( buffer, &_time, NULL	);
 	*time = (long) _time;
 }
 
 // this moves to a specific offset in the buffer
-void sound_set_seek( void * buffer, long time )
+void sound_set_seek( sound_t * buffer, long time )
 {
-	IDirectSoundBuffer_SetCurrentPosition(
-		(IDirectSoundBuffer*) buffer,
-		(DWORD) time
-	);
+	IDirectSoundBuffer_SetCurrentPosition( buffer, (DWORD) time	);
 }
 
 // this sets the location in 3d space of the sound
-void sound_position( void * buffer, float x, float y, float z, float min, float max )
-{			
-	IDirectSound3DBuffer_SetPosition(
-		(IDirectSound3DBuffer*) buffer,
-		x, y, z, DS3D_IMMEDIATE
-	);
-	IDirectSound3DBuffer_SetMinDistance(
-		(IDirectSound3DBuffer*) buffer,
-		min, DS3D_IMMEDIATE
-	); 
-	IDirectSound3DBuffer_SetMaxDistance(
-		(IDirectSound3DBuffer*) buffer,
-		max, DS3D_IMMEDIATE
-	); 
+void sound_position( sound_t * buffer, float x, float y, float z, float min, float max )
+{
 }
 
-void* sound_load(char *name)
+sound_t * sound_load(char *name)
 {
     IDirectSoundBuffer *sound_buffer = NULL;
     DSBUFFERDESC buffer_description = {0};
@@ -315,13 +270,9 @@ void* sound_load(char *name)
     return sound_buffer;
 }
 
-BOOL sound_duplicate( void * source, void ** destination )
+BOOL sound_duplicate( sound_t * source, sound_t ** destination )
 {
-	return IDirectSound_DuplicateSoundBuffer( 
-		lpDS,
-		(LPDIRECTSOUNDBUFFER) source, 
-		(LPDIRECTSOUNDBUFFER*) destination
-	) == DS_OK;
+	return IDirectSound_DuplicateSoundBuffer( lpDS, source, destination	) == DS_OK;
 }
 
 #endif // SOUND_DSOUND

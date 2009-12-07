@@ -22,10 +22,10 @@ static ALCcontext* Context = NULL;
 // buffer description
 //
 
-struct {
+typedef struct sound_t {
 	ALuint source;
 	ALuint buffer;
-} source_id_t;
+};
 
 //
 // Generic Functions
@@ -93,32 +93,28 @@ void sound_destroy( void )
 {
 }
 
-void sound_play( void * buffer )
+void sound_play( sound_t * source )
 {
 }
 
-void sound_play_looping( void * buffer )
+void sound_play_looping( sound_t * source )
 {
 }
 
-void sound_stop( void * buffer )
+void sound_stop( sound_t * source )
 {
 }
 
-long sound_size( void * buffer )
+long sound_size( sound_t * source )
 {
 	return 0;
 }
 
-void sound_release( void * ptr )
+void sound_release( sound_t * source )
 {
 }
 
-void sound_3d_release( void * buffer )
-{
-}
-
-BOOL sound_is_playing( void * buffer )
+BOOL sound_is_playing( sound_t * source )
 {
 	return FALSE;
 }
@@ -127,48 +123,46 @@ void sound_set_freq( void* ptr, float freq )
 {
 }
 
-void sound_volume( void * buffer, long volume )
+void sound_volume( sound_t * source, long volume )
 {
 }
 
-void sound_pan( void * buffer, long pan )
+void sound_pan( sound_t * source, long pan )
 {
 }
 
-long sound_get_rate( void * buffer ) // avg bytes per second
+long sound_get_rate( sound_t * source ) // avg bytes per second
 {
 	return 0;
 }
 
 // this gets the current play location
-void sound_get_seek( void * buffer, long * time )
+void sound_get_seek( sound_t * source, long * time )
 {
 }
 
 // this moves to a specific offset in the buffer
-void sound_set_seek( void * buffer, long time )
+void sound_set_seek( sound_t * source, long time )
 {
 }
 
 // this sets the location in 3d space of the sound
-void sound_position( void * buffer, float x, float y, float z, float min, float max )
+void sound_position( sound_t * source, float x, float y, float z, float min, float max )
 {			
 }
 
-void* sound_load(char *name)
+sound_t * sound_load(char *name)
 {
 	ALenum error;
 	ALenum format;
-
 	SDL_AudioSpec wav_spec;
 	Uint32 wav_length;
 	Uint8 *wav_buffer;
-
-	source_id_t * source = malloc(sizeof(source_id_t));
+	sound_t * source = malloc(sizeof(sound_t));
 
 	// Generate Buffers
 	alGetError(); // clear error code
-	alGenBuffers(1, &source.buffer);
+	alGenBuffers(1, &source->buffer);
 
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
@@ -198,11 +192,11 @@ void* sound_load(char *name)
 	}
 
 	// Copy data into AL Buffer 0
-	alBufferData(source.buffer,format,&wav_buffer,wav_spec.size,wav_spec.freq);
+	alBufferData(source->buffer,format,&wav_buffer,wav_spec.size,wav_spec.freq);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alBufferData buffer 0 : %d\n", error);
-		alDeleteBuffers(1, &source.buffer);
+		alDeleteBuffers(1, &source->buffer);
 		return NULL;
 	}
 
@@ -210,7 +204,7 @@ void* sound_load(char *name)
 	SDL_FreeWAV(wav_buffer);
 
 	// Generate Sources
-	alGenSources(1,source.source);
+	alGenSources(1,&source->source);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenSources 1 : %d\n", error);
@@ -218,14 +212,19 @@ void* sound_load(char *name)
 	}
 
 	// Attach buffer 0 to source
-	alSourcei(*source.source, AL_BUFFER, source.buffer);
+	alSourcei(source->source, AL_BUFFER, source->buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alSourcei AL_BUFFER 0 : %d\n", error);
 		return NULL;
 	}
 
-	return source.source;
+	return source;
+}
+
+BOOL sound_duplicate( sound_t * source, sound_t ** destination )
+{
+	return FALSE;
 }
 
 #endif // SOUND_OPENAL

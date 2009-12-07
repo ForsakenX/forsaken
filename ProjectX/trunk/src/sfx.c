@@ -1107,7 +1107,6 @@ void ProcessSoundRoutines (void * pParm)
 								(sound_buffer)?"GOOD":"BAD");
 
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer3D = NULL;
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = sound_size( sound_buffer );
 
 				sound_set_freq( 
@@ -2957,10 +2956,7 @@ int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float
 
 	SpotSfxList[ index ].freq = Freq;
 	SpotSfxList[ index ].vol = Volume;
-
 	SpotSfxList[ index ].buffer = NULL;
-	SpotSfxList[ index ].buffer3D = NULL;
-
 	SpotSfxList[ index ].bufferloaded = FALSE;
 	SpotSfxList[ index ].buffersize = 0;
 	SpotSfxList[ index ].distance = 0.0F;
@@ -3286,14 +3282,6 @@ void ProcessLoopingSfx( void )
 			 	if ( SpotSfxList[ i ].buffer )
 				{
 					//DebugPrintf("Releasing dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-			
-					// kill off buffer(s)
-					if ( SpotSfxList[ i ].buffer3D )
-					{
-						sound_3d_release( SpotSfxList[ i ].buffer3D );
-						SpotSfxList[ i ].buffer3D = NULL;
-					}
-
 					sound_release( SpotSfxList[ i ].buffer );
 					SpotSfxList[ i ].buffer = NULL;
 				}
@@ -3383,7 +3371,7 @@ void ProcessLoopingSfx( void )
 			
 			if ( dwCurrentPlayCursor < ( SpotSfxList[ i ].buffersize - safezone ) )
 			{
-				if( !Sound3D || !SpotSfxList[ i ].buffer3D )
+				if( !Sound3D )
 				{
 					//DebugPrintf("- adjusting looping sound volumne based on distance.\n");
 
