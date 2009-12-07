@@ -1012,7 +1012,6 @@ extern	int16		LevelNum;
 BOOL PreLoadBGOFiles( void )
 {
 	BGO_FILE	*	FilePtr = NULL;
-	BGO_FILE	*	TablePtr = NULL;
 	char			TempFilename[ 256 ];
 	uint16			BaseModel;
 	uint16			TempBaseModel = (uint16) -1;
@@ -1321,7 +1320,6 @@ BGOBJECT * LoadBGObjectData( int8 * Filename, int16 Type, VECTOR * Pos, VECTOR *
 	BGOBJECT	*	Object;
 	QUAT			TempQuat;
 	MATRIX			TempMatrix;
-	float			OverallTime = 0.0F;
 
 	Object = FindFreeBGObject();
 	
@@ -2170,7 +2168,6 @@ BOOL CheckBGObjectToMines( BGOBJECT * Object )
 	GROUPLIST * GroupsVisible;
 	uint16	  * GroupList;
 	uint16		CurrentGroup;
-	uint16		DebugCount = 0;
 	SECONDARYWEAPONBULLET * SecBull;
 	SECONDARYWEAPONBULLET * NextSecBull;
 	BOOL		HitFlag = FALSE;
@@ -2635,7 +2632,6 @@ BOOL AllocateCompShip( uint16 Ship )
 	char			TempFilename[ 256 ];
 	COMP_OBJ	*	CompObj;
 	float			MidTime;
-	VECTOR			TempVector = { 0.0F, 0.0F, 0.0F };
 	VECTOR			DirVector;
 
 	Type = ( Ships[ Ship ].BikeNum % MAXBIKETYPES );
