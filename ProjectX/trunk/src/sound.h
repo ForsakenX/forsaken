@@ -52,7 +52,7 @@ BOOL sound_is_playing( sound_t * s );
 void sound_stop( sound_t * s );
 long sound_size( sound_t * s );
 void sound_release( sound_t * s );
-void sound_set_freq( void* source, float freq );
+void sound_set_freq( sound_t * s, float freq );
 void sound_volume( sound_t * s, long volume );
 void sound_pan( sound_t * s, long pan );
 long sound_rate( sound_t * s );

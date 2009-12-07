@@ -619,7 +619,7 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 	TLVERTEX * tlverts = (TLVERTEX*) renderObject->lpVertexBuffer;
 	WORD * indices = (WORD*) renderObject->lpIndexBuffer;
 
-	assert(renderObject->vbLocked == 0);
+	//assert(renderObject->vbLocked == 0);
 	
 	if(orthographic)
 	{

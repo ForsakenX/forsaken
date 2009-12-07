@@ -1229,7 +1229,6 @@ BOOL IsDigit( char check )
 int16 ReturnSFXIndex( char *file )
 {
 	int16 i, level_spec_flags, filelen;
-	BOOL exists = FALSE;
 	char *suffix;
 	char filetocheck[ 256 ];
 	BOOL found;
@@ -1245,14 +1244,20 @@ int16 ReturnSFXIndex( char *file )
 
 	// check all non level specific sfx for file
 	for( i = 0; i < SFX_LEVELSPEC_Start; i++ )
+	{
 		if ( Sfx_Filenames[ i ].Name && ( !strcasecmp( Sfx_Filenames[ i ].Name, file ) ) )
+		{
 			if ( SfxExists( i, file ) )
 			{
 				RequestSfx( i );
 				return i;
 			}
 			else
+			{
 				return -1;
+			}
+		}
+	}
 
 	// check all existing level specific sfx for file
 	for ( i = SFX_LEVELSPEC_Start; i <= SFX_LEVELSPEC_End; i++ )
@@ -1381,7 +1386,6 @@ BOOL CreateSndObj( char *file, int sfxnum, int flags )
 void LoadSfx( int sfxnum )
 {
 	char fullpath[256];
-	char filename[256] = "";
 	int flags, i;
 
 	flags = Sfx_Filenames[ sfxnum ].Flags;
