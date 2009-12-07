@@ -26,12 +26,76 @@ static ALCcontext* Context = NULL;
 typedef struct sound_t {
 	ALuint source;
 	ALuint buffer;
-	Uint32 size;
 };
 
 //
 // Generic Functions
 //
+
+static void print_info ( void ) 
+{
+	ALint version_major, version_minor;
+	ALenum error;
+	ALCdevice *device;
+
+	DebugPrintf("openal: info start\n");
+
+	// Check for EAX 2.0 support
+	DebugPrintf("EAX2.0 support = %s\n",
+		alIsExtensionPresent("EAX2.0")?"true":"false");
+
+	if(alcIsExtensionPresent(NULL, "ALC_ENUMERATION_EXT") == AL_TRUE) 
+	{
+		DebugPrintf("default playback: %s\n",alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
+		DebugPrintf("default capture: %s\n",alcGetString(NULL, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER));
+		{	
+			// print all playback devices
+			const char * s = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
+			do { 
+				DebugPrintf("playback: %s\n", s); 
+				while(*s++ != '\0'); 
+			} while(*s != '\0');
+			// print all capture devices
+			s = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
+			do { 
+				DebugPrintf("capture: %s\n", s); 
+				while(*s++ != '\0'); 
+			} while(*s != '\0');
+		}
+	} 
+	else 
+		DebugPrintf("No device enumeration available\n");
+
+	DebugPrintf("Default device: %s\n", alcGetString(NULL, ALC_DEFAULT_DEVICE_SPECIFIER));
+	DebugPrintf("Default capture device: %s\n", (alcGetString(NULL, ALC_CAPTURE_DEFAULT_DEVICE_SPECIFIER)));
+
+	device = alcGetContextsDevice(alcGetCurrentContext());
+
+	if ((error = alGetError()) != AL_NO_ERROR)
+		DebugPrintf("blah :%s\n", alGetString(error));
+
+	alcGetIntegerv(device, ALC_MAJOR_VERSION, 1, &version_major);
+	alcGetIntegerv(device, ALC_MINOR_VERSION, 1, &version_minor);
+	
+	if ((error = alGetError()) != AL_NO_ERROR)
+		DebugPrintf("blah :%s\n", alGetString(error));
+
+	DebugPrintf("ALC version: %d.%d\n", (int)version_major, (int)version_minor);
+	DebugPrintf("ALC extensions: %s\n", alcGetString(device, ALC_EXTENSIONS));
+
+	if ((error = alGetError()) != AL_NO_ERROR)
+		DebugPrintf("blah :%s\n", alGetString(error));
+
+	DebugPrintf("OpenAL vendor string: %s\n", alGetString(AL_VENDOR));
+	DebugPrintf("OpenAL renderer string: %s\n", alGetString(AL_RENDERER));
+	DebugPrintf("OpenAL version string: %s\n", alGetString(AL_VERSION));
+	DebugPrintf("OpenAL extensions: %s\n", alGetString(AL_EXTENSIONS));
+
+	if ((error = alGetError()) != AL_NO_ERROR)
+		DebugPrintf("blah :%s\n", alGetString(error));
+
+	DebugPrintf("openal: info end\n");
+}
 
 BOOL sound_init( void )
 {
@@ -45,9 +109,16 @@ BOOL sound_init( void )
 
 	alcMakeContextCurrent(Context);
 
-	// Check for EAX 2.0 support
-	DebugPrintf("openal: EAX2.0 support = %s\n",
-		alIsExtensionPresent("EAX2.0")?"true":"false");
+	{
+		ALint i;
+		ALfloat pos[3];
+		alGetListeneri(AL_GAIN,&i);
+		DebugPrintf("listener gain: %d\n",i);
+		alGetListenerfv(AL_POSITION,pos);
+		DebugPrintf("listener position: %f %f %f\n",pos[0],pos[1],pos[2]);
+	}
+
+	print_info();
 
 	return TRUE;
 }
@@ -128,8 +199,12 @@ long sound_rate( sound_t * source )
 
 void sound_release( sound_t * source )
 {
+	if(!source)
+		return;
 	alDeleteBuffers( 1, &source->buffer );
 	alDeleteSources( 1, &source->source );
+	free(source);
+	source = NULL;
 }
 
 BOOL sound_is_playing( sound_t * source )
@@ -174,7 +249,7 @@ sound_t * sound_load(char *name)
 		return NULL;
 	}
 
-	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &source->size) == NULL )
+	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
 	{
 		DebugPrintf("Could not open test.wav: %s\n", SDL_GetError());
 		return NULL;
@@ -196,7 +271,7 @@ sound_t * sound_load(char *name)
 	}
 
 	// Copy data into AL Buffer 0
-	alBufferData(source->buffer,format,&wav_buffer,wav_spec.size,wav_spec.freq);
+	alBufferData(source->buffer,format,wav_buffer,wav_spec.size,wav_spec.freq);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alBufferData buffer 0 : %d\n", error);
@@ -223,11 +298,29 @@ sound_t * sound_load(char *name)
 		return NULL;
 	}
 
+	{
+		ALint i;
+		ALfloat pos[3];
+		sound_listener_position(0,0,0);
+		alGetSourcei(source->source,AL_GAIN,&i);
+		DebugPrintf("buffer gain: %d\n",i);
+		alGetSource3f(source->source,AL_POSITION,&pos[0],&pos[1],&pos[2]);
+		DebugPrintf("buffer position: %f %f %f\n",pos[0],pos[1],pos[2]);
+		alGetSourcei(source->source,AL_SOURCE_RELATIVE,&i);
+		DebugPrintf("buffer relative? %s\n",(i==AL_TRUE)?"true":"false");
+	}
+
 	return source;
 }
 
+BOOL sound_duplicate( sound_t * source, sound_t ** destination )
+{
+	*destination = malloc(sizeof(sound_t));
+	memcpy(*destination,source,sizeof(sound_t));
+	return TRUE;
+}
+
 // i think we can ignore these
-BOOL sound_duplicate( sound_t * source, sound_t ** destination ){return TRUE;}
 void sound_set_freq( void* ptr, float freq ){}
 
 // i believe this is only for 2d sounds
