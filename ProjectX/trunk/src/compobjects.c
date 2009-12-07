@@ -88,7 +88,7 @@ MODELNAME	*	ModNames = &ModelNames[ 0 ];
 				:	BOOL			Level Specific?
 	Output		:	BOOL			TRUE/FALSE
 ===================================================================*/
-BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
+BOOL PreLoadCompObj( int8 * path, uint16 * BaseModel, BOOL LevelSpecific )
 {
 	int16		i;
 	FILE	*	fp;
@@ -97,7 +97,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 	uint32		MagicNumber;
 	uint32		VersionNumber;
 
-	fp = file_open( Filename, "rb" );
+	fp = file_open( path, "rb" );
 
 	if( fp != NULL )
 	{
@@ -168,13 +168,13 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 		else
 		{
 			fclose( fp );
-	        Msg( "PreLoadCompObj() Too many models in %s\n", Filename );
+	        Msg( "PreLoadCompObj() Too many models in %s\n", path );
 			return( FALSE );
 		}
  	}
 	else
 	{
-        Msg( "PreLoadCompObj() Unable to open %s\n", Filename );
+        Msg( "PreLoadCompObj() Unable to open %s\n", path );
 		return( FALSE );
 	}
 
@@ -197,7 +197,7 @@ BOOL PreLoadCompObj( int8 * Filename, uint16 * BaseModel, BOOL LevelSpecific )
 				:	uint16			OwnerID
 	Output		:	COMP_OBJ	*	Components
 ===================================================================*/
-COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Group,
+COMP_OBJ * LoadCompObj( int8 * path, VECTOR * Pos, VECTOR * Dir, uint16 Group,
 					    float * OverallTime, float * MidTime, uint16 * BaseModel,
 						uint16 OwnerType, uint16 OwnerID )
 {
@@ -212,7 +212,7 @@ COMP_OBJ * LoadCompObj( int8 * Filename, VECTOR * Pos, VECTOR * Dir, uint16 Grou
 	*OverallTime = 0.0F;
 	*MidTime = 0.0F;
 
-	fp = file_open( Filename, "rb" );
+	fp = file_open( path, "rb" );
 
 	if( fp != NULL )
 	{
