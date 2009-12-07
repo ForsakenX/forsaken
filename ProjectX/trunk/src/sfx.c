@@ -100,7 +100,7 @@ void sound_source_destroy( sound_source_t * source )
 	{
 		if (source->Dup_Buffer[i])
 		{
-            sound_buffer_release(source->Dup_Buffer[i]);
+            sound_release(source->Dup_Buffer[i]);
 	        source->Dup_Buffer[i] = NULL;
 		}
 	}
@@ -117,7 +117,7 @@ sound_source_t *sound_source_create(char *path)
 	memset( source, 0, sizeof(sound_source_t) );
 
 	source->looping_sfx_index[0] = -1;
-	source->Dup_Buffer[0] = sound_buffer_load(path);
+	source->Dup_Buffer[0] = sound_load(path);
 
 	if( !source->Dup_Buffer[ 0 ] )
 	{
@@ -130,7 +130,7 @@ sound_source_t *sound_source_create(char *path)
 	for (i = 1; i < MAX_DUP_BUFFERS; i++)
 	{
 		source->looping_sfx_index[i] = -1;
-		if (!sound_buffer_duplicate(
+		if (!sound_duplicate(
 			source->Dup_Buffer[0], 
 			&source->Dup_Buffer[i] 
 		))
@@ -513,7 +513,7 @@ typedef struct _SPOT_SFX_LIST
 	BOOL					bufferloaded;			// flag to indicate if buffer is loaded ( or about to be loaded )
 	void*					buffer;					// buffer address
 	void*					buffer3D;				// 3D buffer interface address
-	DWORD					buffersize;
+	long					buffersize;
 	float					distance;
 	int						SfxHolderIndex;
 	int						SfxThreadInfoIndex;
@@ -1049,7 +1049,7 @@ void ProcessSoundRoutines (void * pParm)
 			// - will have volume, frequency & pan facilities 
 			// - located in sw ( any hardware will have been used by now )
 			// - static ( not streamed )
-			sound_buffer = sound_buffer_load(file);
+			sound_buffer = sound_load(file);
 			if ( !sound_buffer )
 			{
 				DebugPrintf( "Sfx Load failed...in %s \n", file );
@@ -1061,12 +1061,12 @@ void ProcessSoundRoutines (void * pParm)
 			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Normal )
 			{
 				// set buffer parameters & play
-				sound_buffer_volume( 
+				sound_volume( 
 					sound_buffer, 
 					( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol 
 				);
 
-				sound_buffer_play(sound_buffer);
+				sound_play(sound_buffer);
 
 				// add to list of dynamic buffers
 				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( 
@@ -1085,7 +1085,7 @@ void ProcessSoundRoutines (void * pParm)
 			{
 				// set buffer parameters & play
 				SetPannedBufferParams( sound_buffer, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
-				sound_buffer_play(sound_buffer);
+				sound_play(sound_buffer);
 
 				// add to list of dynamic buffers
 				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList(
@@ -1108,9 +1108,9 @@ void ProcessSoundRoutines (void * pParm)
 
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer3D = NULL;
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = sound_buffer_size( sound_buffer );
+				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = sound_size( sound_buffer );
 
-				sound_buffer_set_freq( 
+				sound_set_freq( 
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].freq );
 
@@ -2183,7 +2183,7 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 
 	for (i = 0; i < MAX_DUP_BUFFERS; i++)
 	{
-		if(!sound_buffer_is_playing(SndObj->Dup_Buffer[i]))
+		if(!sound_is_playing(SndObj->Dup_Buffer[i]))
 			return i;
 		
 		age[i] = ((current_time - SndObj->Buffer_TimeStamp[i]) +
@@ -2207,9 +2207,9 @@ int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
 	if (Distance > oldest)
 		return -1;			// sound is too far away to overwrite any existing sounds...
 
-	sound_buffer_stop( SndObj->Dup_Buffer[free_buffer] );
-	sound_buffer_set_position( SndObj->Dup_Buffer[free_buffer], 0 );
-	sound_buffer_set_freq( SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_stop( SndObj->Dup_Buffer[free_buffer] );
+	sound_set_seek( SndObj->Dup_Buffer[free_buffer], 0 );
+	sound_set_freq( SndObj->Dup_Buffer[free_buffer], 0 );
 	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
 
 	return free_buffer;
@@ -2372,13 +2372,13 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	   	if ( type != SFX_2D )
 			SetPannedBufferParams( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
 		else
-			sound_buffer_volume( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] , ( Volume > 0 ) ? 0 : Volume );
+			sound_volume( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] , ( Volume > 0 ) ? 0 : Volume );
 	
 		// sfx can only be looping at this point if if is 2D - sfx will just continue to play until stopped.
 		if ( flags & SFX_Looping )
-			sound_buffer_play_looping( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
+			sound_play_looping( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
 		else
-			sound_buffer_play( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
+			sound_play( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
 
 		SndSources[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = SDL_GetTicks();
 		SndSources[ sndobj_index ]->Buffer_Dist[free_buffer] = Distance;
@@ -2687,14 +2687,14 @@ BOOL StopSfx( uint32 uid )
 				SfxThreadInfo[ SfxHolder[ i ].ThreadIndex ].SfxToPlay = FALSE;
 			else
 			{
-				sound_buffer_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
+				sound_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
 			}
 		}
 
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 		{
-			sound_buffer_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
-			sound_buffer_set_position( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
+			sound_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
+			sound_set_seek( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
 		}
 
 		FreeSfxHolder( i );
@@ -2754,14 +2754,14 @@ void SetPannedBufferParams( void* sound_buffer, VECTOR *SfxPos, float Freq, VECT
     {
 		if( !Sound3D )
 		{
-			sound_buffer_pan(sound_buffer, Pan );
-			sound_buffer_volume( sound_buffer , ( Volume > 0 ) ? 0 : Volume );
-			sound_buffer_set_freq( sound_buffer, Freq );
+			sound_pan(sound_buffer, Pan );
+			sound_volume( sound_buffer , ( Volume > 0 ) ? 0 : Volume );
+			sound_set_freq( sound_buffer, Freq );
 		}
 		else
 		{
 			DebugPrintf("Creating 3D info\n");
-			sound_buffer_set_3d_position(
+			sound_position(
 				sound_buffer,
 				SfxPos->x / 128.0F,
 				SfxPos->y / 128.0F,
@@ -2804,8 +2804,8 @@ int AddToSBufferList( void* buffer, int SfxHolderIndex )
 	{
 		// Ahhhh! - no room to store dynamic sfx, therefore must kill off prematurly
 		DebugPrintf("unable to play dynamic sfx - need to increase size of SBufferList\n");
-		sound_buffer_stop( buffer );
-		sound_buffer_release( buffer );
+		sound_stop( buffer );
+		sound_release( buffer );
 		return -1;
 	}
 
@@ -2843,7 +2843,7 @@ void CheckSBufferList( void )
 				{
 					if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 					{
-						if(!sound_buffer_is_playing( 
+						if(!sound_is_playing( 
 							SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ 
 								SfxHolder[ i ].SfxBufferIndex 
 							]
@@ -2870,9 +2870,9 @@ void CheckSBufferList( void )
 					if ( (( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt )) && ( SfxHolder[ i ].SfxBufferIndex != -1 ) )
 					{
 						// if current node used and not playing, release & mark as unused
-						if(!sound_buffer_is_playing( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer ))
+						if(!sound_is_playing( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer ))
 						{
-							sound_buffer_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
+							sound_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
 							//DebugPrintf("Released sfx %d\n", SfxHolder[ i ].UniqueID);
 
 							if ( SfxHolder[ i ].TriggerSfx != -1 )
@@ -2903,8 +2903,8 @@ void FreeSBufferList( void )
 	{
 		if ( SBufferList[ i ].used )
 		{
-			sound_buffer_stop( SBufferList[ i ].buffer );
-			sound_buffer_release( SBufferList[ i ].buffer );
+			sound_stop( SBufferList[ i ].buffer );
+			sound_release( SBufferList[ i ].buffer );
 			SBufferList[ i ].used = FALSE;
 		}
 	}
@@ -2985,7 +2985,7 @@ void StopLoopingSfx( int index )
 	{
 		if ( SpotSfxList[ index ].buffer )
 		{
-			sound_buffer_stop( SpotSfxList[ index ].buffer );
+			sound_stop( SpotSfxList[ index ].buffer );
 			SpotSfxList[ index ].buffer = NULL;
 		}
 	}
@@ -3000,7 +3000,7 @@ void StopLoopingSfx( int index )
 		if ( SpotSfxList[ index ].buffer )
 		{
 			DebugPrintf("- looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
-			sound_buffer_release( SpotSfxList[ index ].buffer );
+			sound_release( SpotSfxList[ index ].buffer );
 			SpotSfxList[ index ].buffer = NULL;
 		}
 	}
@@ -3025,7 +3025,7 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 
 				// if buffer exists, set frequency...
 				if ( SpotSfxList[ LoopingSfxIndex ].bufferloaded && SpotSfxList[ LoopingSfxIndex ].buffer )
-					sound_buffer_set_freq( SpotSfxList[ LoopingSfxIndex ].buffer, (float)Freq );
+					sound_set_freq( SpotSfxList[ LoopingSfxIndex ].buffer, (float)Freq );
 			}
 			if ( Volume && ( Volume != SpotSfxList[ LoopingSfxIndex ].vol ))
 				SpotSfxList[ LoopingSfxIndex ].vol = Volume;
@@ -3051,7 +3051,7 @@ void FindFreeLoopingSfxBuffer( int index )
 				SpotSfxList[ index ].variant 
 			]->Dup_Buffer[ i ];
 
-		if(sound_buffer_is_playing(buffer))
+		if(sound_is_playing(buffer))
 		{
 			//DebugPrintf("- assigned non playing buffer to looping sfx %d\n", SpotSfxList[ index ].sfxindex);
 			SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
@@ -3074,7 +3074,7 @@ void FindFreeLoopingSfxBuffer( int index )
 
 	//DebugPrintf("- stopping furthest sound buffer and assigning it to current looping sfx buffer %d\n", SpotSfxList[ index ].sfxindex);
 
-	sound_buffer_stop ( SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
+	sound_stop ( SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
 	
 	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].buffer = NULL;
 	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].bufferloaded = FALSE;
@@ -3183,7 +3183,8 @@ void ProcessLoopingSfx( void )
 	int i, j, flags;
 	long	Volume;
 	static float FrameSkip = 0.0F;
-	DWORD datarate, safezone;
+	long datarate;
+	long safezone;
 	VECTOR Pos;
 
 	// print debug info
@@ -3268,7 +3269,7 @@ void ProcessLoopingSfx( void )
 			if ( !SpotSfxList[i].bufferloaded && SpotSfxList[i].buffer )
 			{
 				DebugPrintf("- looping sfx sound %d, bufferloaded=false but buffer pointer is GOOD\n", SpotSfxList[ i ].sfxindex);
-				if(sound_buffer_is_playing( SpotSfxList[ i ].buffer ))
+				if(sound_is_playing( SpotSfxList[ i ].buffer ))
 				{
 					DebugPrintf("- and buffer is still playing...\n");
 					DebugPrintf("- stopping buffer now...\n");
@@ -3289,11 +3290,11 @@ void ProcessLoopingSfx( void )
 					// kill off buffer(s)
 					if ( SpotSfxList[ i ].buffer3D )
 					{
-						sound_buffer_3d_release( SpotSfxList[ i ].buffer3D );
+						sound_3d_release( SpotSfxList[ i ].buffer3D );
 						SpotSfxList[ i ].buffer3D = NULL;
 					}
 
-					sound_buffer_release( SpotSfxList[ i ].buffer );
+					sound_release( SpotSfxList[ i ].buffer );
 					SpotSfxList[ i ].buffer = NULL;
 				}
 			}
@@ -3302,12 +3303,12 @@ void ProcessLoopingSfx( void )
 				//DebugPrintf("Stopping looping sfx %d\n", SpotSfxList[ i ].sfxindex);
 				if(SpotSfxList[ i ].buffer == NULL)
 				{
-					DebugPrintf("ProcessLoopSFX() Attempt to call sound_buffer_stop() on bad pointer....\n");
+					DebugPrintf("ProcessLoopSFX() Attempt to call sound_stop() on bad pointer....\n");
 				}
 				else
 				{
-					//DebugPrintf("ProcessLoopSFX() sound_buffer_stop() buffer is not NULL ...\n");
-					sound_buffer_stop( SpotSfxList[ i ].buffer );
+					//DebugPrintf("ProcessLoopSFX() sound_stop() buffer is not NULL ...\n");
+					sound_stop( SpotSfxList[ i ].buffer );
 				}
 				SpotSfxList[ i ].buffer = NULL;
 			}
@@ -3351,7 +3352,7 @@ void ProcessLoopingSfx( void )
 
 				if ( SpotSfxList[ i ].buffer )
 				{
-					sound_buffer_set_freq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
+					sound_set_freq( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
 					SpotSfxList[ i ].bufferloaded = TRUE;
 				}
 			}
@@ -3361,24 +3362,24 @@ void ProcessLoopingSfx( void )
 		// if in range, and buffer already loaded
 		if ( InRange && SpotSfxList[ i ].bufferloaded && SpotSfxList[ i ].buffer)
 		{
-			DWORD dwCurrentPlayCursor;
+			long dwCurrentPlayCursor;
 
 			// check sfx is not in 'safe zone'
 			//currenttime = SDL_GetTicks();
 
 			// get current buffer position...
-			sound_buffer_get_position(
+			sound_get_seek(
 				SpotSfxList[ i ].buffer, 
 				&dwCurrentPlayCursor
 			);
 
 			// get buffer format
-			datarate = sound_buffer_get_rate(
+			datarate = sound_get_rate(
 				SpotSfxList[ i ].buffer
 			);
 
 			// work out safe zone ( bytes from end )
-			safezone = ( datarate * LOOPING_SFX_MIXAHEAD ) / 1000; 
+			safezone = ( datarate * LOOPING_SFX_MIXAHEAD ) / 1000;
 			
 			if ( dwCurrentPlayCursor < ( SpotSfxList[ i ].buffersize - safezone ) )
 			{
@@ -3404,7 +3405,7 @@ void ProcessLoopingSfx( void )
 					);
 
 					//if ( Distance <= SHIP_RADIUS * LOOPING_SFX_PANNING_PROXIMITY )
-					//	sound_buffer_pan( SpotSfxList[ i ].buffer, 0 );
+					//	sound_pan( SpotSfxList[ i ].buffer, 0 );
 			
 				}
 				else
@@ -3414,8 +3415,8 @@ void ProcessLoopingSfx( void )
 
 				//DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
 
-				if( ! sound_buffer_is_playing( SpotSfxList[ i ].buffer ) )
-					sound_buffer_play_looping(SpotSfxList[ i ].buffer);
+				if( ! sound_is_playing( SpotSfxList[ i ].buffer ) )
+					sound_play_looping(SpotSfxList[ i ].buffer);
 
 			}//else
 			 //	DebugPrintf("in safe zone...( current play cursor = %d, buffer size = %d )\n", dwCurrentPlayCursor, tempnode->buffersize);

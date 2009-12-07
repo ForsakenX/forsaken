@@ -36,22 +36,21 @@ BOOL sound_listener_orientation(
 // Buffers
 //
 
-void sound_buffer_play( void * buffer );
-void sound_buffer_play_looping( void * buffer );
-BOOL sound_buffer_is_playing( void * buffer );
-void sound_buffer_stop( void * buffer );
-DWORD sound_buffer_size( void * buffer );
-void sound_buffer_release( void * buffer );
-void sound_buffer_3d_release( void * buffer );
-void sound_buffer_set_freq( void* buffer, float freq );
-void sound_buffer_volume( void * buffer, long volume );
-void sound_buffer_pan( void * buffer, long pan );
-DWORD sound_buffer_get_freq( void * buffer ); // samples per second
-DWORD sound_buffer_get_rate( void * buffer ); // avg bytes per second
-void sound_buffer_get_position( void * buffer, DWORD* time );
-void sound_buffer_set_position( void * buffer, DWORD time );
-void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
-void* sound_buffer_load(char* file);
-BOOL sound_buffer_duplicate( void * source, void ** destination );
+void sound_play( void * buffer );
+void sound_play_looping( void * buffer );
+BOOL sound_is_playing( void * buffer );
+void sound_stop( void * buffer );
+long sound_size( void * buffer );
+void sound_release( void * buffer );
+void sound_3d_release( void * buffer );
+void sound_set_freq( void* buffer, float freq );
+void sound_volume( void * buffer, long volume );
+void sound_pan( void * buffer, long pan );
+long sound_get_rate( void * buffer );
+void sound_get_seek( void * buffer, long * time );
+void sound_set_seek( void * buffer, long time );
+void sound_position( void * buffer, float x, float y, float z, float min_distance, float max_distance );
+void* sound_load(char* file);
+BOOL sound_duplicate( void * source, void ** destination );
 
 #endif

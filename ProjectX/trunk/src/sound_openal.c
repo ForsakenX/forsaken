@@ -8,10 +8,24 @@
 #include <efx.h>
 #include <efx-creative.h>
 
+//
 // globals
+//
+
+// tells forsaken to use 3d functions
 BOOL Sound3D = TRUE;
-ALCdevice* Device = NULL;
-ALCcontext* Context = NULL;
+
+static ALCdevice* Device = NULL;
+static ALCcontext* Context = NULL;
+
+//
+// buffer description
+//
+
+struct {
+	ALuint source;
+	ALuint buffer;
+} source_id_t;
 
 //
 // Generic Functions
@@ -79,87 +93,82 @@ void sound_destroy( void )
 {
 }
 
-void sound_buffer_play( void * buffer )
+void sound_play( void * buffer )
 {
 }
 
-void sound_buffer_play_looping( void * buffer )
+void sound_play_looping( void * buffer )
 {
 }
 
-void sound_buffer_stop( void * buffer )
+void sound_stop( void * buffer )
 {
 }
 
-DWORD sound_buffer_size( void * buffer )
+long sound_size( void * buffer )
 {
 	return 0;
 }
 
-void sound_buffer_release( void * ptr )
+void sound_release( void * ptr )
 {
 }
 
-void sound_buffer_3d_release( void * buffer )
+void sound_3d_release( void * buffer )
 {
 }
 
-BOOL sound_buffer_is_playing( void * buffer )
+BOOL sound_is_playing( void * buffer )
 {
 	return FALSE;
 }
 
-void sound_buffer_set_freq( void* ptr, float freq )
+void sound_set_freq( void* ptr, float freq )
 {
 }
 
-void sound_buffer_volume( void * buffer, long volume )
+void sound_volume( void * buffer, long volume )
 {
 }
 
-void sound_buffer_pan( void * buffer, long pan )
+void sound_pan( void * buffer, long pan )
 {
 }
 
-DWORD sound_buffer_get_freq( void * buffer ) // samples per sec
-{
-	return 0;
-}
-
-DWORD sound_buffer_get_rate( void * buffer ) // avg bytes per second
+long sound_get_rate( void * buffer ) // avg bytes per second
 {
 	return 0;
 }
 
 // this gets the current play location
-void sound_buffer_get_position( void * buffer, DWORD* time )
+void sound_get_seek( void * buffer, long * time )
 {
 }
 
 // this moves to a specific offset in the buffer
-void sound_buffer_set_position( void * buffer, DWORD time )
+void sound_set_seek( void * buffer, long time )
 {
 }
 
 // this sets the location in 3d space of the sound
-void sound_buffer_set_3d_position( void * buffer, float x, float y, float z, float min, float max )
+void sound_position( void * buffer, float x, float y, float z, float min, float max )
 {			
 }
 
-void* sound_buffer_load(char *name)
+void* sound_load(char *name)
 {
+	ALenum error;
+	ALenum format;
+
 	SDL_AudioSpec wav_spec;
 	Uint32 wav_length;
 	Uint8 *wav_buffer;
 
-	ALuint buffer_id;
-	ALuint * source_id = malloc(sizeof(ALuint));
-	ALenum error;
-	ALenum format;
+	source_id_t * source = malloc(sizeof(source_id_t));
 
 	// Generate Buffers
 	alGetError(); // clear error code
-	alGenBuffers(1, &buffer_id);
+	alGenBuffers(1, &source.buffer);
 
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
@@ -189,11 +198,11 @@ void* sound_buffer_load(char *name)
 	}
 
 	// Copy data into AL Buffer 0
-	alBufferData(buffer_id,format,&wav_buffer,wav_spec.size,wav_spec.freq);
+	alBufferData(source.buffer,format,&wav_buffer,wav_spec.size,wav_spec.freq);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alBufferData buffer 0 : %d\n", error);
-		alDeleteBuffers(1, &buffer_id);
+		alDeleteBuffers(1, &source.buffer);
 		return NULL;
 	}
 
@@ -201,7 +210,7 @@ void* sound_buffer_load(char *name)
 	SDL_FreeWAV(wav_buffer);
 
 	// Generate Sources
-	alGenSources(1,source_id);
+	alGenSources(1,source.source);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenSources 1 : %d\n", error);
@@ -209,27 +218,14 @@ void* sound_buffer_load(char *name)
 	}
 
 	// Attach buffer 0 to source
-	alSourcei(*source_id, AL_BUFFER, buffer_id);
+	alSourcei(*source.source, AL_BUFFER, source.buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alSourcei AL_BUFFER 0 : %d\n", error);
 		return NULL;
 	}
 
-	return source_id;
-}
-
-//
-// Sources
-//
-
-void sound_source_destroy( sound_source_t * source )
-{
-}
-
-sound_source_t *sound_source_create(char *path)
-{
-	return NULL;
+	return source.source;
 }
 
 #endif // SOUND_OPENAL
