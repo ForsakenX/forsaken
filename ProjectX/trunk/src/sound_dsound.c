@@ -177,7 +177,7 @@ void sound_pan( sound_t * buffer, long pan )
 	IDirectSoundBuffer_SetPan( buffer, pan );
 }
 
-long sound_get_rate( sound_t * buffer ) // avg bytes per second
+long sound_rate( sound_t * buffer ) // avg bytes per second
 {
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, datarate;
@@ -190,7 +190,7 @@ long sound_get_rate( sound_t * buffer ) // avg bytes per second
 }
 
 // this gets the current play location
-void sound_get_seek( sound_t * buffer, long * time )
+void sound_get_seek( sound_t * buffer, long * bytes )
 {
 	DWORD _time;
 	IDirectSoundBuffer_GetCurrentPosition( buffer, &_time, NULL	);

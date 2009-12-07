@@ -3362,7 +3362,7 @@ void ProcessLoopingSfx( void )
 			);
 
 			// get buffer format
-			datarate = sound_get_rate(
+			datarate = sound_rate(
 				SpotSfxList[ i ].buffer
 			);
 

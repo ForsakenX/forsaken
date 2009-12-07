@@ -3,6 +3,7 @@
 #include "main.h"
 #include "util.h"
 #include "sound.h"
+#include "SDL.h"
 #include <al.h>
 #include <alc.h>
 #include <efx.h>
@@ -25,6 +26,7 @@ static ALCcontext* Context = NULL;
 typedef struct sound_t {
 	ALuint source;
 	ALuint buffer;
+	Uint32 size;
 };
 
 //
@@ -50,7 +52,7 @@ BOOL sound_init( void )
 	return TRUE;
 }
 
-void sound_cleanup( void )
+void sound_destroy( void )
 {
 	ALCcontext * Context = alcGetCurrentContext();
 	ALCdevice * Device = alcGetContextsDevice(Context);
@@ -69,19 +71,24 @@ void sound_cleanup( void )
 
 BOOL sound_listener_position( float x, float y, float z )
 {
+	alListener3f(AL_POSITION, x, y, z);
 	return TRUE;
 }
 
 BOOL sound_listener_velocity( float x, float y, float z )
 {
+	alListener3f(AL_VELOCITY, x, y, z);
 	return TRUE;
 }
 
+// TODO - does the at-vector equate to forward vector?
 BOOL sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
 )
 {
+	float vector[6] = {fx,fy,fz,ux,uy,uz};
+	alListenerfv(AL_ORIENTATION, &vector[0]);
 	return TRUE;
 }
 
@@ -89,66 +96,64 @@ BOOL sound_listener_orientation(
 // Buffers
 //
 
-void sound_destroy( void )
-{
-}
-
 void sound_play( sound_t * source )
 {
+	alSourcePlay( source->source );
 }
 
 void sound_play_looping( sound_t * source )
 {
+	alSourcei( source->source, AL_LOOPING, AL_TRUE );
+	sound_play( source );
 }
 
 void sound_stop( sound_t * source )
 {
+	alSourceStop( source->source );
 }
 
 long sound_size( sound_t * source )
 {
-	return 0;
+	ALint size;
+	alGetBufferi( source->buffer, AL_SIZE, &size );
+	return (long) size;
+}
+
+long sound_rate( sound_t * source )
+{
+	ALint freq;
+	alGetBufferi( source->buffer, AL_FREQUENCY, &freq );
+	return (long) freq;
 }
 
 void sound_release( sound_t * source )
 {
+	alDeleteBuffers( 1, &source->buffer );
+	alDeleteSources( 1, &source->source );
 }
 
 BOOL sound_is_playing( sound_t * source )
 {
-	return FALSE;
+	ALint state;
+	alGetSourcei( source->source, AL_SOURCE_STATE, &state	);
+	return (state == AL_PLAYING);
 }
 
-void sound_set_freq( void* ptr, float freq )
+void sound_get_seek( sound_t * source, long * bytes )
 {
+	alGetSourcei(source->source, AL_BYTE_OFFSET, bytes);
 }
 
-void sound_volume( sound_t * source, long volume )
+void sound_set_seek( sound_t * source, long bytes )
 {
+	alSourcei(source->source, AL_BYTE_OFFSET, bytes);
 }
 
-void sound_pan( sound_t * source, long pan )
-{
-}
-
-long sound_get_rate( sound_t * source ) // avg bytes per second
-{
-	return 0;
-}
-
-// this gets the current play location
-void sound_get_seek( sound_t * source, long * time )
-{
-}
-
-// this moves to a specific offset in the buffer
-void sound_set_seek( sound_t * source, long time )
-{
-}
-
-// this sets the location in 3d space of the sound
+// TODO - min, position, velocity, relative ?
 void sound_position( sound_t * source, float x, float y, float z, float min, float max )
-{			
+{
+	alSource3f(source->source, AL_POSITION, x, y, z);
+	alSourcef(source->source, AL_MAX_DISTANCE, max);
 }
 
 sound_t * sound_load(char *name)
@@ -156,7 +161,6 @@ sound_t * sound_load(char *name)
 	ALenum error;
 	ALenum format;
 	SDL_AudioSpec wav_spec;
-	Uint32 wav_length;
 	Uint8 *wav_buffer;
 	sound_t * source = malloc(sizeof(sound_t));
 
@@ -170,7 +174,7 @@ sound_t * sound_load(char *name)
 		return NULL;
 	}
 
-	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &wav_length) == NULL )
+	if( SDL_LoadWAV(name, &wav_spec, &wav_buffer, &source->size) == NULL )
 	{
 		DebugPrintf("Could not open test.wav: %s\n", SDL_GetError());
 		return NULL;
@@ -222,9 +226,12 @@ sound_t * sound_load(char *name)
 	return source;
 }
 
-BOOL sound_duplicate( sound_t * source, sound_t ** destination )
-{
-	return FALSE;
-}
+// i think we can ignore these
+BOOL sound_duplicate( sound_t * source, sound_t ** destination ){return TRUE;}
+void sound_set_freq( void* ptr, float freq ){}
+
+// i believe this is only for 2d sounds
+void sound_volume( sound_t * source, long volume ){}
+void sound_pan( sound_t * source, long pan ){}
 
 #endif // SOUND_OPENAL
