@@ -76,11 +76,11 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 extern render_info_t render_info;
 
-#define	MAX_DUP_BUFFERS	4 // max num occurances of any one sfx
+#define	MAX_DUP_BUFFERS	2 // 4 // max num occurances of any one sfx
 
 typedef struct
 {
-	void*			Dup_Buffer[MAX_DUP_BUFFERS];
+	sound_t*		Dup_Buffer[MAX_DUP_BUFFERS];
 	DWORD			StartPos;		// start offset in buffer...
 	unsigned int	Length;			// length of sample (ms)...
 	float			Buffer_Dist[MAX_DUP_BUFFERS];
@@ -899,9 +899,6 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 {
 	VECTOR UpVector;
 	VECTOR ForwardVector;
-	
-	if(!Sound3D)
-		return 0;
 
 	if(!sound_listener_position(
 		Pos->x / 128.0F,
@@ -2272,13 +2269,16 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			{
 				StopSfx( CurrentBikerSpeech );
 				CurrentBikerSpeech = SfxHolder[ HolderIndex ].UniqueID;
-			}else
+			}
+			else
 			{
 				return FALSE;
 			}
-
-		}else
+		}
+		else
+		{
 			CurrentBikerSpeech = SfxHolder[ HolderIndex ].UniqueID;
+		}
 	}
 
 	if ( flags & SFX_BikeComp )
@@ -2288,12 +2288,12 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 			if( flags & SFX_BikeCompNoOveride )
 			{
 				return FALSE;
-			}else
+			}
+			else
 			{
 				StopSfx( CurrentBikeCompSpeech );
 			}
 		}
-		
 		CurrentBikeCompSpeech = SfxHolder[ HolderIndex ].UniqueID;
 	}
 
@@ -2302,24 +2302,27 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	// do not allow looping 2D sfx...
 	if ( ( flags & SFX_Looping ) && ( type != SFX_2D ) )
 	{
-
 		SfxHolder[ HolderIndex ].SfxFlags = SFX_HOLDERTYPE_Looping;
 		SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
-
-		SfxHolder[ HolderIndex ].SfxBufferIndex = InitLoopingSfx( Sfx, offset, Group, SfxPos, Freq, VolModify, type, HolderIndex, Effects, SfxHolder[ HolderIndex ].UniqueID );
+		SfxHolder[ HolderIndex ].SfxBufferIndex = InitLoopingSfx(
+			Sfx, offset, Group, SfxPos, Freq, VolModify, type, HolderIndex, Effects, SfxHolder[ HolderIndex ].UniqueID 
+		);
 		if ( SfxHolder[ HolderIndex ].SfxBufferIndex < 0 )
 			return FALSE;
-
 		return TRUE;
 	}
 	
+	// TODO - all this volume hacking should be removed for openal
+
 	if ( type != SFX_2D )
 	{
 		// work out sound distance...
 		if( Ships[ Current_Camera_View ].Object.Group != (uint16) -1 )
 		{
-			Modify= SoundInfo[Ships[ Current_Camera_View ].Object.Group][*Group];
-		}else{
+			Modify = SoundInfo[Ships[ Current_Camera_View ].Object.Group][*Group];
+		}
+		else
+		{
 			Modify = 0.0F;
 		}
 		if( Modify < 0.0F )
@@ -2390,7 +2393,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 	Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
-
 	if ( Effects == SPOT_SFX_TYPE_Taunt )
 		SfxHolder[ HolderIndex ].SfxFlags = SFX_HOLDERTYPE_Taunt;
 	else
@@ -2403,7 +2405,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	{
 		if ( !SfxThreadInfo[ i ].SfxToPlay )
 		{
-
 			SfxThreadInfo[ i ].SfxToPlay = TRUE;
 			SfxThreadInfo[ i ].SfxNum = Sfx;
 			SfxThreadInfo[ i ].Vol = Volume;
@@ -2421,11 +2422,13 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 				if ( Effects == SPOT_SFX_TYPE_Taunt )
 				{
 					SfxThreadInfo[ i ].SfxType = SFX_TYPE_Taunt;
-				}else
+				}
+				else
 				{
 					SfxThreadInfo[ i ].SfxType = SFX_TYPE_Panned;
 				}
-			}else
+			}
+			else
 			{
 				SfxThreadInfo[ i ].SfxType = SFX_TYPE_Normal;
 			}
@@ -2435,7 +2438,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	}
 
 	return TRUE;
-
 }
 
 void InitSfxHolders( void )
@@ -2716,7 +2718,7 @@ void SetPannedBufferParams( void* sound_buffer, VECTOR *SfxPos, float Freq, VECT
 	VECTOR	Temp2;
 	float	nz;
 	float	sx, sxmod;
-	long	Pan;
+	long	Pan = 0;
 	float mindist = SHIP_RADIUS * 6.0F;
 	float sxmin = 100.0F;
 	float sxmax = 10000.0F;
@@ -2742,24 +2744,24 @@ void SetPannedBufferParams( void* sound_buffer, VECTOR *SfxPos, float Freq, VECT
 			sx *= sxmod;
 
 			Pan = (long) ( ( 1.0F - fabs(nz) )* ( sx ) );
-		}else{
+		}
+		else
+		{
 			Pan = 0;
 		}
 		//DebugPrintf("nz: %f\tsx: %f\tsxmod: %f\tPan: %d\n", nz, sx, sxmod, Pan);
-	}else
-		Pan = 0;
+	}
     
 	if (sound_buffer)
     {
 		if( !Sound3D )
 		{
-			sound_pan(sound_buffer, Pan );
+			sound_pan(sound_buffer, Pan);
 			sound_volume( sound_buffer , ( Volume > 0 ) ? 0 : Volume );
 			sound_set_freq( sound_buffer, Freq );
 		}
 		else
 		{
-			DebugPrintf("Creating 3D info\n");
 			sound_position(
 				sound_buffer,
 				SfxPos->x / 128.0F,
@@ -3373,7 +3375,7 @@ void ProcessLoopingSfx( void )
 			{
 				if( !Sound3D )
 				{
-					//DebugPrintf("- adjusting looping sound volumne based on distance.\n");
+					DebugPrintf("- adjusting looping sound volumne based on distance.\n");
 
 					// adjust buffer parameters
 					//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
@@ -3398,6 +3400,7 @@ void ProcessLoopingSfx( void )
 				}
 				else
 				{
+					DebugPrintf("TODO\n");
 					// would do 3D stuff here...
 				}
 

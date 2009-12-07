@@ -9,13 +9,14 @@
 #include <alc.h>
 //#include <efx.h>
 //#include <efx-creative.h>
+#include <math.h>
 
 //
 // globals
 //
 
 // tells forsaken to use 3d functions
-BOOL Sound3D = TRUE;
+BOOL Sound3D = FALSE;
 
 static ALCdevice* Device = NULL;
 static ALCcontext* Context = NULL;
@@ -110,6 +111,9 @@ BOOL sound_init( void )
 
 	alcMakeContextCurrent(Context);
 
+	// TODO AL_MIN_GAIN
+	sound_minimum_volume = 0;
+
 	{
 		ALint i;
 		ALfloat pos[3];
@@ -136,10 +140,6 @@ void sound_destroy( void )
 //
 // Listener
 //
-
-//	 In dsound only valid when using 3d sound
-//   which this game does not currently use
-//   this is left here for openAL later
 
 BOOL sound_listener_position( float x, float y, float z )
 {
@@ -202,10 +202,33 @@ void sound_release( sound_t * source )
 {
 	if(!source)
 		return;
-	alDeleteBuffers( 1, &source->buffer );
+	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->source );
+	// now good to delete the buffer
+	alDeleteBuffers( 1, &source->buffer );
 	free(source);
 	source = NULL;
+}
+
+void sound_set_freq( sound_t * source, float freq )
+{
+	alBufferi(source->buffer,AL_FREQUENCY, (ALint) freq);
+}
+
+void sound_volume( sound_t * source, long volume )
+{
+	// volume must be scaled from 0 <-> +1 and converted from dsound format
+	alSourcef(source->source, AL_GAIN, (ALfloat) pow(10.0, volume/2000.0));
+}
+
+void sound_pan( sound_t * source, long _pan )
+{
+	// where pan is -1 (left) to +1 (right)
+	// must be scaled from -1 <-> +1
+	// probably need to scale down by 10,000, since dsound goes from -10000 to +10000
+	// so:
+	float pan = (float) _pan / 10000.0f;
+	alSource3f(source->source, AL_POSITION, pan, (float) sqrt(1 - pan*pan), 0.0f);
 }
 
 BOOL sound_is_playing( sound_t * source )
@@ -227,11 +250,12 @@ void sound_set_seek( sound_t * source, long bytes )
 	alSourcei(source->source, AL_BYTE_OFFSET, bytes);
 }
 
-// TODO - min, position, velocity, relative ?
+// TODO - we'll want to set velocity some day for moving players ?
 void sound_position( sound_t * source, float x, float y, float z, float min, float max )
 {
 	alSource3f(source->source, AL_POSITION, x, y, z);
 	alSourcef(source->source, AL_MAX_DISTANCE, max);
+	alSourcef(source->source, AL_REFERENCE_DISTANCE, min); // is this right?
 }
 
 sound_t * sound_load(char *path)
@@ -242,14 +266,15 @@ sound_t * sound_load(char *path)
 	Uint8 *wav_buffer;
 	sound_t * source = malloc(sizeof(sound_t));
 	char * file_path = convert_path(path);
+ 
+	// clear error code
+	alGetError();
 
 	// Generate Buffers
-	alGetError(); // clear error code
 	alGenBuffers(1, &source->buffer);
-
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
-		DebugPrintf("alGenBuffers :%d\n", error);
+		DebugPrintf("alGenBuffers: %s\n", alGetString(error));
 		return NULL;
 	}
 
@@ -261,6 +286,13 @@ sound_t * sound_load(char *path)
 
 	if(wav_spec.format == AUDIO_U8 || wav_spec.format == AUDIO_S8) // 8 bit
 	{
+		// openal only supports usigned 8bit
+		if(wav_spec.format == AUDIO_S8)
+		{
+			int i;
+			for(i = 0; i < (int) wav_spec.size; i++)
+				wav_buffer[i] ^= 0x80; // converts S8 to U8
+		}
 		if(wav_spec.channels == 1)
 			format = AL_FORMAT_MONO8;
 		else
@@ -268,6 +300,13 @@ sound_t * sound_load(char *path)
 	}
 	else // 16 bit
 	{
+		// openal only supports signed 16bit
+		if(wav_spec.format == AUDIO_U16)
+		{
+			int i;
+			for(i = 0;i < (int)wav_spec.size/2;i++)
+				((Uint16*)wav_buffer)[i] ^= 0x8000; // converts U16 to S16
+		}
 		if(wav_spec.channels == 1)
 			format = AL_FORMAT_MONO16;
 		else
@@ -278,7 +317,7 @@ sound_t * sound_load(char *path)
 	alBufferData(source->buffer,format,wav_buffer,wav_spec.size,wav_spec.freq);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
-		DebugPrintf("alBufferData buffer 0 : %d\n", error);
+		DebugPrintf("alBufferData: %s\n", alGetString(error));
 		alDeleteBuffers(1, &source->buffer);
 		return NULL;
 	}
@@ -290,7 +329,7 @@ sound_t * sound_load(char *path)
 	alGenSources(1,&source->source);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
-		DebugPrintf("alGenSources 1 : %d\n", error);
+		DebugPrintf("alGenSources: %s\n", alGetString(error));
 		return NULL;
 	}
 
@@ -298,8 +337,13 @@ sound_t * sound_load(char *path)
 	alSourcei(source->source, AL_BUFFER, source->buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
-		DebugPrintf("alSourcei AL_BUFFER 0 : %d\n", error);
+		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
 		return NULL;
+	}
+
+	if(!Sound3D)
+	{
+		alSourcei(source->source,AL_SOURCE_RELATIVE,AL_TRUE);
 	}
 
 	{
@@ -319,16 +363,43 @@ sound_t * sound_load(char *path)
 
 BOOL sound_duplicate( sound_t * source, sound_t ** destination )
 {
+	ALenum error;
+
+	// allocate space for new source
 	*destination = malloc(sizeof(sound_t));
-	memcpy(*destination,source,sizeof(sound_t));
+
+	// use the same buffer as the source
+	(*destination)->buffer = source->buffer;
+
+	// clear errors
+	alGetError();
+
+	// generate a new source id
+	alGenSources(1,&(*destination)->source);
+	if ((error = alGetError()) != AL_NO_ERROR)
+	{
+		DebugPrintf("alGenSources: %s\n", alGetString(error));
+		free(*destination);
+		*destination = NULL;
+		return FALSE;
+	}
+
+	// attach the buffer to the source
+	alSourcei((*destination)->source, AL_BUFFER, (*destination)->buffer);
+	if ((error = alGetError()) != AL_NO_ERROR)
+	{
+		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
+		free(*destination);
+		*destination = NULL;
+		return FALSE;
+	}
+
+	if(!Sound3D)
+	{
+		alSourcei((*destination)->source,AL_SOURCE_RELATIVE,AL_TRUE);
+	}
+
 	return TRUE;
 }
-
-// i think we can ignore these
-void sound_set_freq( void* ptr, float freq ){}
-
-// i believe this is only for 2d sounds
-void sound_volume( sound_t * source, long volume ){}
-void sound_pan( sound_t * source, long pan ){}
 
 #endif // SOUND_OPENAL
