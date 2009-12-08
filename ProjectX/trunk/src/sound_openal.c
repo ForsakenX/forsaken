@@ -116,9 +116,10 @@ BOOL sound_init( void )
 
 	{
 		ALint i;
+		ALfloat f;
 		ALfloat pos[3];
-		alGetListeneri(AL_GAIN,&i);
-		DebugPrintf("listener gain: %d\n",i);
+		alGetListenerf(AL_GAIN,&f);
+		DebugPrintf("listener gain: %f\n",f);
 		alGetListenerfv(AL_POSITION,pos);
 		DebugPrintf("listener position: %f %f %f\n",pos[0],pos[1],pos[2]);
 	}

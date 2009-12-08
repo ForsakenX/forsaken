@@ -370,21 +370,27 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 	while ( ptr && sscanf( ptr, " %80s", last_token ) == 1 )
 	{
 		for ( vk = vkey_map; vk->keyword; vk++ )
-			if ( strcasecmp( last_token, vk->keyword ) == 0 )
+		{
+			if(strcasecmp( last_token, vk->keyword ) == 0)
+			{
 				break;
+			}
+		}
 
 		if ( ! vk->keyword )
 			continue;
 
 		for ( j = 0; j < MAX_KEYS_PER_CONTROL; j++ )
+		{
 			if ( !k->key[ j ] )
 			{
 				k->key[ j ] = vk->keycode;
 				keys_defined++;
 				break;
 			}
+		}
 
-		ptr = strstr(ptr," ");
+		ptr = (strstr(ptr,last_token)+strlen(last_token));
 	}
 	last_token[0] = 0;
 
