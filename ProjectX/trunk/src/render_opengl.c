@@ -575,12 +575,11 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
 
 static void set_color( COLOR c )
 {
-	glColor4f(
-		(GLfloat)RGBA_GETRED(c)/255,
-		(GLfloat)RGBA_GETGREEN(c)/255,
-		(GLfloat)RGBA_GETBLUE(c)/255,
-		(GLfloat)RGBA_GETALPHA(c)/255
-	);
+	// COLOR is the value loaded from the files
+	// it's packed as uchar[4] (bgra) and glColor expects (rgba)
+	// so we flip the red/blue values with each other
+	c = (c & 0xff00ff00) | ((c & 0x00ff0000) >> 16) | ((c & 0x000000ff) << 16);
+	glColor4ubv(&c);
 }
 
 static void draw_vert( void * _vert, BOOL orthographic )
