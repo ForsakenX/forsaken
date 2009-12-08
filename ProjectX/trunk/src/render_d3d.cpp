@@ -58,7 +58,7 @@ LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 // TODO - shouldn't sdl handle the window and resolution enumeration ?
 // TODO - should we not change the refresh rate of desktop?
 
-BOOL init_renderer( render_info_t * info )
+BOOL render_init( render_info_t * info )
 {
 	HRESULT LastError;
 	render_viewport_t viewport;
@@ -357,7 +357,7 @@ void render_cleanup( render_info_t * info )
 BOOL render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
-	if(!init_renderer( info ))
+	if(!render_init( info ))
 		return FALSE;
 	return TRUE;
 }

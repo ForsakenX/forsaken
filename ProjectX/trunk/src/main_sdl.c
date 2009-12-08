@@ -8,6 +8,7 @@
 #endif
 
 extern render_info_t render_info;
+extern BOOL render_init( render_info_t * info );
 
 BOOL sdl_init( void )
 {
@@ -26,11 +27,7 @@ BOOL sdl_init( void )
 	return TRUE;
 }
 
-// TODO - should this be part of init_renderer?
-//		  does sdl enumerate resolutions that are valid for dx?
-//		  seems that dx does allot of work that sdl could do...
-
-BOOL sdl_init_window( void )
+BOOL sdl_init_video( void )
 {
 	// set the window icon
 	{
@@ -69,7 +66,7 @@ BOOL sdl_init_window( void )
 	}
 #endif
 
-	// create the window
+	// create video surface and window
 	{
 		int flags = SDL_ANYFORMAT;
 
@@ -102,15 +99,14 @@ BOOL sdl_init_window( void )
 		);
 
 		// actual depth size set by sdl
-	        SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
-	        DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
+	    SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
+	    DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
 
 		// video driver
 		if(SDL_VideoDriverName(driver, 64)!=NULL)
 			DebugPrintf("main_sd: sdl video driver name: %s\n",driver);
 		else
 			DebugPrintf("main_sdl: failed to obtain the video driver name.\n");
-
 	}
 	else
 	{
@@ -120,6 +116,10 @@ BOOL sdl_init_window( void )
 
 	// window title, icon title (taskbar and other places)
 	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
+
+	// initialize rendering implementation
+	if (!render_init( &render_info ))
+		return FALSE;
 
 	//
 	return TRUE;

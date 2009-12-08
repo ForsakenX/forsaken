@@ -180,7 +180,7 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
 
-BOOL init_renderer( render_info_t * info )
+BOOL render_init( render_info_t * info )
 {
 	GLboolean b;
 	glGetBooleanv(GL_STEREO,&b);
@@ -284,7 +284,7 @@ void render_cleanup( render_info_t * info )
 BOOL render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
-	if(!init_renderer( info ))
+	if(!render_init( info ))
 		return FALSE;
 	return TRUE;
 }
@@ -579,7 +579,7 @@ static void set_color( COLOR c )
 	// it's packed as uchar[4] (bgra) and glColor expects (rgba)
 	// so we flip the red/blue values with each other
 	c = (c & 0xff00ff00) | ((c & 0x00ff0000) >> 16) | ((c & 0x000000ff) << 16);
-	glColor4ubv(&c);
+	glColor4ubv((GLubyte*)&c);
 }
 
 static void draw_vert( void * _vert, BOOL orthographic )

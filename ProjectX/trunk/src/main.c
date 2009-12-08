@@ -386,14 +386,13 @@ extern BOOL breakpad_init( void );
 extern BOOL InitView( void );
 extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
-extern BOOL init_renderer( render_info_t * info );
 extern void GetDefaultPilot(void);
 extern BOOL InitScene(void);
 extern BOOL InitDInputJS(void);
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
 extern BYTE MyGameStatus;
-extern BOOL sdl_init_window( void );
+extern BOOL sdl_init_video( void );
 extern BOOL sdl_init( void );
 
 static BOOL AppInit( char * lpCmdLine )
@@ -457,7 +456,7 @@ static BOOL AppInit( char * lpCmdLine )
 	//
 	// create and show the window
 	//
-	if(!sdl_init_window())
+	if(!sdl_init_video())
 		return FALSE;
 
 	// appears dinput has to be after init window
@@ -481,10 +480,6 @@ static BOOL AppInit( char * lpCmdLine )
 	MyGameStatus = STATUS_Title;
 
 	if (!InitScene())
-		return FALSE;
-
-	// This  must come after everything above
-	if (!init_renderer( &render_info ))
 		return FALSE;
 
 	// load the view
