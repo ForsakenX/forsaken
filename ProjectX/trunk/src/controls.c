@@ -635,11 +635,13 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 //  mouse_dx = mouse_dx * MouseXFactor;
 //  mouse_dy = mouse_dy * MouseYFactor;
 
-  {
-	float factor = 0.01f; // original 0.000625
-	mouse_dx = mouse_dx * (float) fabs( mouse_dx ) * factor; //MouseXFactor;
-	mouse_dy = mouse_dy * (float) fabs( mouse_dy ) * -factor; //MouseYFactor;
-  }
+#ifdef WIN32
+	mouse_dx = mouse_dx * (float) fabs( mouse_dx ) * MouseXFactor; // factor = 0.000625
+	mouse_dy = mouse_dy * (float) fabs( mouse_dy ) * MouseYFactor; // factor = -0.000625
+#else
+	mouse_dx = mouse_dx * (float) fabs( mouse_dx ) * 0.01f; // tweaked for linux
+	mouse_dy = mouse_dy * (float) fabs( mouse_dy ) * -0.01f;
+#endif
 
 #if 0
   if ( mouse_dx < -framelag )
