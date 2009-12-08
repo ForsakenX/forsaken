@@ -5,7 +5,7 @@
 
 // taken from d3d9.h
 
-typedef DWORD COLOR;
+typedef DWORD COLOR; // bgra
 
 /*===================================================================
 	Defines
@@ -36,8 +36,9 @@ typedef DWORD COLOR;
 // bjd - taken from d3dtypes.h
 #define RGBA_MAKE(r, g, b, a)   ((COLOR) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b)))
 #define	RGB_MAKE(r, g, b)    ((COLOR) (((r) << 16) | ((g) << 8) | (b)))
-#define RGBA_GETALPHA(rgb)    ((rgb) >> 24)
 
+// COLOR is packed bgra
+#define RGBA_GETALPHA(rgb)    ((rgb) >> 24)
 #define RGBA_GETRED(rgb)    (((rgb) >> 16) & 0xff)
 #define RGBA_GETGREEN(rgb)    (((rgb) >> 8) & 0xff)
 #define RGBA_GETBLUE(rgb)    ((rgb) & 0xff)
