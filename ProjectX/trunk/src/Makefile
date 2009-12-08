@@ -3,6 +3,7 @@
 # The contents of this Makefile is in the public domain.
 
 DEBUG=0
+STATIC=0
 
 CC=gcc
 
@@ -11,12 +12,17 @@ CFLAGS=$(FLAGS)
 LDFLAGS=$(FLAGS)
 ifeq ($(DEBUG),1)
 	FLAGS+=-g
-	CFLAGS+=-Wall
+	CFLAGS+=-Wall -Wextra
 else
 	CFLAGS+=-O2
 	LDFLAGS+=-s
 endif
-LIBS=-lSDL -lGL -lGLU -llua -llua-mime -llua-socket -lm -lenet -lpng12 -lopenal
+
+ifeq ($(STATIC),1)
+LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet -llua -llua-mime -llua-socket -Wl,-dy -lm -lpng12 -lz -lopenal
+else
+LIBS=-lSDL -lGL -lGLU -lenet -llua -llua-mime -llua-socket -lm -lpng12 -lz -lopenal
+endif
 
 # ProjectX-specific macros
 CFLAGS+= -DOPENGL -DNET_ENET -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
@@ -43,7 +49,7 @@ BIN=projectx
 all: $(BIN)
 
 $(BIN): $(OBJS)
-	$(CC) -o $(BIN) $(LDFLAGS) $(OBJS) $(LIBS)
+	$(CC) -o $(BIN) $(OBJS) $(LDFLAGS) $(LIBS)
 
 $(OBJS): $(wildcard include/*.h) $(wildcard ai/aiinclude/*.h)
 
