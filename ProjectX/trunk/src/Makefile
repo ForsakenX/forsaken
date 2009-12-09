@@ -7,7 +7,7 @@ STATIC=0
 
 CC=gcc
 
-FLAGS=-pipe -march=native
+FLAGS=-pipe
 CFLAGS=$(FLAGS)
 LDFLAGS=$(FLAGS)
 ifeq ($(DEBUG),1)
