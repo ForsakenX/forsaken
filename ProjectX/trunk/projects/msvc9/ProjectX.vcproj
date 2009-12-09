@@ -190,7 +190,7 @@
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="Xrelease.pdb"
+				ProgramDatabaseFile="debug_open.pdb"
 				GenerateMapFile="false"
 				SubSystem="2"
 				OptimizeReferences="0"
