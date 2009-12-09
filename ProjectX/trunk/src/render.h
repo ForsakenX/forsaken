@@ -28,7 +28,6 @@ typedef struct {
     int     w;                /* width */
     int     h;                /* height */
     int     bpp;              /* bits per pixel */
-	int		rate;			  /* refresh rate (HZ) */
 } render_display_mode_t;
 
 typedef struct

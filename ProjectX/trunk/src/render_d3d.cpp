@@ -56,7 +56,6 @@ LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
 
 // TODO - shouldn't sdl handle the window and resolution enumeration ?
-// TODO - should we not change the refresh rate of desktop?
 
 BOOL render_init( render_info_t * info )
 {
@@ -171,30 +170,27 @@ BOOL render_init( render_info_t * info )
 			info->Mode[x].h    = modes[i].Height;
 			info->Mode[x].w    = modes[i].Width;
 			info->Mode[x].bpp  = bpp;
-			info->Mode[x].rate = modes[i].RefreshRate;
 
 			// if this is the mode the user wanted pick it
 			if(	info->Mode[x].w == info->default_mode.w &&
-				info->Mode[x].h == info->default_mode.h &&
-				info->Mode[x].rate == info->default_mode.rate )
+				info->Mode[x].h == info->default_mode.h )
 			{
 				desired_mode = x;
 			}
 			
 			// smallest mode as default
 			if( info->Mode[x].w < info->Mode[best_mode].w && 
-				info->Mode[x].h < info->Mode[best_mode].h && 
-				info->Mode[x].rate < info->Mode[best_mode].rate )
+				info->Mode[x].h < info->Mode[best_mode].h )
 			{
 				best_mode = x;
 			}
 
 			// biggest mode by width as default
-			//if(info->Mode[x].w > info->Mode[best_mode].w && info->Mode[x].rate == 60)
+			//if(info->Mode[x].w > info->Mode[best_mode].w )
 			//	best_mode = x;
 
 			// 800x600 @ 60 as default
-			//if(	info->Mode[x].w == 800 && info->Mode[x].h == 600 && info->Mode[x].rate == 60 )
+			//if(	info->Mode[x].w == 800 && info->Mode[x].h == 600 )
 			//	desired_mode = x;
 
 			// go to next storage location
@@ -226,8 +222,8 @@ BOOL render_init( render_info_t * info )
 		
 	info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 
-	DebugPrintf("Using display mode: %dx%dx%d @ %dhz\n",
-		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp,info->ThisMode.rate);
+	DebugPrintf("Using display mode: %dx%dx%d\n",
+		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp);
 
 	// try to create a device falling back to less capable versions
 

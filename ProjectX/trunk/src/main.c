@@ -300,10 +300,6 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 				render_info.aspect_ratio = (float) w / (float) h;
 			}
 
-			// horizontal refresh rate
-			// most monitors normally support 60hz so pass 60 if you get weird stuff happening
-			else if ( sscanf( option, "rate:%d", &render_info.default_mode.rate ) ){}
-
 			// bits per pixel
 			// default is 32 bpp
 			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) ){}

@@ -76,7 +76,6 @@ static BOOL enumerate_video_modes( Uint32 flags )
 				continue;
 			render_info.Mode[count].w		= modes[i]->w;
 			render_info.Mode[count].h		= modes[i]->h;
-			render_info.Mode[count].rate	= render_info.default_mode.rate;
 			render_info.Mode[count].bpp		= render_info.default_mode.bpp;
 			count++;
 		}
@@ -111,32 +110,26 @@ static BOOL enumerate_video_modes( Uint32 flags )
 		// first mode is user selected
 		render_info.Mode[0].w			= render_info.default_mode.w;
 		render_info.Mode[0].h			= render_info.default_mode.h;
-		render_info.Mode[0].rate		= render_info.default_mode.rate;
 		render_info.Mode[0].bpp			= render_info.default_mode.bpp;
 		// 640x480
 		render_info.Mode[1].w			= 640;
 		render_info.Mode[1].h			= 480;
-		render_info.Mode[1].rate		= render_info.default_mode.rate;
 		render_info.Mode[1].bpp			= render_info.default_mode.bpp;
 		// 800x600
 		render_info.Mode[2].w			= 800;
 		render_info.Mode[2].h			= 600;
-		render_info.Mode[2].rate		= render_info.default_mode.rate;
 		render_info.Mode[2].bpp			= render_info.default_mode.bpp;
 		// 1024x768
 		render_info.Mode[3].w			= 1024;
 		render_info.Mode[3].h			= 768;
-		render_info.Mode[3].rate		= render_info.default_mode.rate;
 		render_info.Mode[3].bpp			= render_info.default_mode.bpp;
 		// 1280x800
 		render_info.Mode[4].w			= 1280;
 		render_info.Mode[4].h			= 800;
-		render_info.Mode[4].rate		= render_info.default_mode.rate;
 		render_info.Mode[4].bpp			= render_info.default_mode.bpp;
 		// 1280x1024
 		render_info.Mode[5].w			= 1280;
 		render_info.Mode[5].h			= 1024;
-		render_info.Mode[5].rate		= render_info.default_mode.rate;
 		render_info.Mode[5].bpp			= render_info.default_mode.bpp;
 	}
 
@@ -276,6 +269,14 @@ BOOL sdl_init_video( void )
 
 	if(!create_video_surface( flags ))
 		return FALSE;
+
+#ifdef WIN32
+	// on windows the 2nd time you try to set video mode
+	// you need to call the opengl states again after wards
+	// as stated on http://sdl.beuc.net/sdl.wiki/SDL_SetVideoMode
+	// this fixes a bug where the screen goes black on mode change
+	set_opengl_settings();
+#endif
 
 	set_window_title();
 
