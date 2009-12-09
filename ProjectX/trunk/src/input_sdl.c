@@ -20,7 +20,7 @@ extern void CleanUpAndPostQuit(void);
 void input_grab( BOOL grab )
 {
 	// always acquire and hide mouse if in fullscreen
-	if( render_info.bFullscreen )
+	if( render_info.fullscreen )
 	{
 		input_grabbed = TRUE;
 		SDL_WM_GrabInput( TRUE );
@@ -50,7 +50,7 @@ void app_active( SDL_ActiveEvent active )
 	else
 	{
 		// fullscreen always has exclusive inputs
-		if( render_info.bFullscreen )
+		if( render_info.fullscreen )
 			input_grab(TRUE);
 
 		// window mode
@@ -138,7 +138,7 @@ void app_quit( void )
 	}
 
 	// let them click to get focus again
-	if( ! render_info.bFullscreen )
+	if( ! render_info.fullscreen )
 		input_grab( TRUE );
 }
 

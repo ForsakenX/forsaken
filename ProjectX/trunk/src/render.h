@@ -44,12 +44,12 @@ typedef struct {
     render_display_mode_t   ThisMode;				/* description of this mode, identical to Mode[CurrMode] */
     render_display_mode_t   WindowsDisplay;			/* current Windows disply mode */
     render_display_mode_t   default_mode;			/* current Windows disply mode */
-    BOOL                    bFullscreen;			/* in fullscreen exclusive mode? */
-    CLIENTSIZE              szClient;				/* dimensions of client win */
+    BOOL                    fullscreen;				/* in fullscreen exclusive mode? */
+    CLIENTSIZE              window_size;			/* dimensions of client win */
     BOOL                    bPaused;				/* the app is paused */
-    BOOL                    bAppActive;				/* the app is active */
-    BOOL                    bMinimized;				/* app window is minimized */
-    BOOL                    bRenderingIsOK;			/* All objects etc. necessary rendering are in ok */
+    BOOL                    app_active;				/* the app is active */
+    BOOL                    minimized;				/* app window is minimized */
+    BOOL                    ok_to_render;			/* All objects etc. necessary rendering are in ok */
 	BOOL					vsync;					/* vertical sync */
 	float					aspect_ratio;			/* screen aspect ratio */
 	SDL_Surface*	        screen;

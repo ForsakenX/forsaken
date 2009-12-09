@@ -785,7 +785,7 @@ BOOL SetFOV( float fov )
 		return FALSE;
 	}
 
-	if ( render_info.bFullscreen )
+	if ( render_info.fullscreen )
 	{
 		screen_width = (float) render_info.ThisMode.w;
 		screen_height = (float) render_info.ThisMode.h;
@@ -1184,11 +1184,11 @@ ResizeViewport( void )
         Msg( "GetViewport failed.\n%s", render_error_description(0) );
         return FALSE;
     }
-	maxwidth = render_info.szClient.cx;
+	maxwidth = render_info.window_size.cx;
 
 	NewDrawSimplePanel = FALSE;
   
-	maxheight = render_info.szClient.cy;
+	maxheight = render_info.window_size.cy;
 
 	if ( scale < 1.01F )
 	{
@@ -1261,8 +1261,8 @@ BOOL FullScreenViewport()
         return FALSE;
     }
 
-	maxwidth = render_info.szClient.cx;
-	maxheight = render_info.szClient.cy;
+	maxwidth = render_info.window_size.cx;
+	maxheight = render_info.window_size.cy;
 	width = maxwidth;
 	height = maxheight;
 	left = 0;
@@ -1461,25 +1461,25 @@ void DrawSimplePanel()
 		// nitro bar
 		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
 		{
-			AddScreenPolyTextScale( 72, (float) ( (render_info.szClient.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
+			AddScreenPolyTextScale( 72, (float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
 			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, 64, 255, 64, 255 );
 		}
 
 		// character flags
 		if( Ships[WhoIAm].Invul )
 		{
-			Print4x5Text( "I" , FontWidth , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
+			Print4x5Text( "I" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 		{
-			Print4x5Text( "S" , FontWidth , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
+			Print4x5Text( "S" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 		{
-			Print4x5Text( "C" , FontWidth , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
+			Print4x5Text( "C" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
+			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
 		}
     }
     
@@ -1490,25 +1490,25 @@ void DrawSimplePanel()
           // Full Screen Minimum Stats...
 
 			// blt hull
-			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.szClient.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
 			// blt shld
-			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
 			// Blt Primary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.szClient.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.window_size.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
 			// Blt Secondary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
 			// Blt Power Pods
-			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.szClient.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.szClient.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.window_size.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
 			// Blt Mine..
 			energy = (int) GetBestMine();
 			if( energy != 65535 )
 			{
-				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.szClient.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
-				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.szClient.cx - ( FontWidth*5) , FontHeight , 2 );
+				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
+				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.window_size.cx - ( FontWidth*5) , FontHeight , 2 );
 			}
 
 			// poly shld bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.szClient.cy-(FontHeight*2)-2) ,
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*2)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
 					(uint8)(63+(ShieldHit * (192/24) )), (uint8)(255-(ShieldHit * (192/24) )), 64, 255 );
 
@@ -1516,7 +1516,7 @@ void DrawSimplePanel()
 				ShieldHit -=1;
 
 			// poly hull bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.szClient.cy-(FontHeight*1)-2) ,
+			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*1)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
 					(uint8)(63+(HullHit * (192/24) )), (uint8)(255-(HullHit * (192/24) )), 64, 255 );
 
@@ -1524,13 +1524,13 @@ void DrawSimplePanel()
 				HullHit -=1;
 
 			// blt shield num
-			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.szClient.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.window_size.cy-((FontHeight*2)+4) , 2 );
 
 			// blt hull num
 			if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
-				Printuint16( (uint16) 1 , FontWidth*6 , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
+				Printuint16( (uint16) 1 , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
 			else
-				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
+				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
 
 			// Blt Primary ammo
 			if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
@@ -1542,10 +1542,10 @@ void DrawSimplePanel()
 				else
 					energy = (int) GeneralAmmo;
 			}
-			Printuint16( (uint16) energy , render_info.szClient.cx - ( FontWidth*5) , render_info.szClient.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) energy , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*2)+4) , 2 );
 
 			// Blt Secondary ammo
-			Printuint16( (uint16) GetCurSecAmmo() , render_info.szClient.cx - ( FontWidth*5) , render_info.szClient.cy-((FontHeight*1)+2) , 2 );
+			Printuint16( (uint16) GetCurSecAmmo() , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
         }
     
       if( (NamesAreLegal != 0) || IsHost )
@@ -1577,7 +1577,7 @@ void DrawSimplePanel()
 	  if(SwitchedToWatchMode)
 	  {
 			// show who i am watching
-			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), render_info.szClient.cy - 15, 4 );
+			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), render_info.window_size.cy - 15, 4 );
 			// display cross-hair
 			AddScreenPolyText(
 					(uint16) 63 ,
@@ -1585,13 +1585,13 @@ void DrawSimplePanel()
 					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Invulnerable" , FontWidth , render_info.szClient.cy-((FontHeight*4)+8) , 2 );
+				Print4x5Text( "Invulnerable" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
 			// golden power pod
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.szClient.cy-((FontHeight*5)+10) , 2 );
+				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , render_info.szClient.cy-((FontHeight*6)+12) , 2 );
+				Print4x5Text( "Stealth" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
 	  }
     }
 	else
@@ -1607,11 +1607,11 @@ void DrawSimplePanel()
 			MessageQuePrint();
 
         if( DemoEyesSelect.value != MAX_PLAYERS )
-          Print4x5Text( Names[DemoEyesSelect.value] ,render_info.szClient.cx - (FontWidth*9), FontHeight , 0 );
+          Print4x5Text( Names[DemoEyesSelect.value] ,render_info.window_size.cx - (FontWidth*9), FontHeight , 0 );
       }
     }
     if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
-      CenterPrint4x5Text( "Game Over" , (render_info.szClient.cy >> 1) - (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Game Over" , (render_info.window_size.cy >> 1) - (FontHeight*2) , 2 );
 
 }
 
@@ -2337,7 +2337,7 @@ BOOL RenderScene( void )
     if ( WaitingToQuit )
     {
       FSClearBlack();
-      CenterPrint4x5Text( PLEASE_WAIT, (render_info.szClient.cy>>1)-(FontHeight>>1) , 2 );
+      CenterPrint4x5Text( PLEASE_WAIT, (render_info.window_size.cy>>1)-(FontHeight>>1) , 2 );
       SelectQuitCurrentGame( NULL );
     }
     break;
@@ -2494,19 +2494,19 @@ BOOL RenderScene( void )
 		//        if( GameStatus[i] == STATUS_ViewingScore )
 		//        {
 		//          sprintf( buf, "%-8s status %8s\n", &Names[i][0] , "viewing score" );
-		//          CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
+		//          CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
 		//        }
 		//        else
           {
             sprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
-            CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
+            CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_WaitingAfterScore ? 2 : 1 );
           }
           
           e++;
         }
       }
 
-    CenterPrint4x5Text( "waiting for all other players" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
+    CenterPrint4x5Text( "waiting for all other players" , (render_info.window_size.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
 
     Browl -= framelag;
     if( Browl < 0.0F )
@@ -2582,20 +2582,20 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    CenterPrint4x5Text( "Pickups Left   " , (render_info.szClient.cy>>1)-(FontHeight<<2), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Pickups , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)-(FontHeight<<2), 2 );
+    CenterPrint4x5Text( "Pickups Left   " , (render_info.window_size.cy>>1)-(FontHeight<<2), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Pickups , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<2), 2 );
 
-    CenterPrint4x5Text( "RegenSlots Left" , (render_info.szClient.cy>>1)-(FontHeight<<1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)-(FontHeight<<1), 2 );
+    CenterPrint4x5Text( "RegenSlots Left" , (render_info.window_size.cy>>1)-(FontHeight<<1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "Mines Left     " , (render_info.szClient.cy>>1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Mines , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1), 2 );
+    CenterPrint4x5Text( "Mines Left     " , (render_info.window_size.cy>>1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Mines , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1), 2 );
 
-    CenterPrint4x5Text( "Triggers Left  " , (render_info.szClient.cy>>1)+(FontHeight<<1), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].Triggers , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)+(FontHeight<<1), 2 );
+    CenterPrint4x5Text( "Triggers Left  " , (render_info.window_size.cy>>1)+(FontHeight<<1), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].Triggers , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "TrigVars Left  " , (render_info.szClient.cy>>1)+(FontHeight<<2), 8 );
-    Printuint16( (uint16) Ships[WhoIAm].TrigVars , (render_info.szClient.cx>>1)+((17*FontWidth>>1)), (render_info.szClient.cy>>1)+(FontHeight<<2), 2 );
+    CenterPrint4x5Text( "TrigVars Left  " , (render_info.window_size.cy>>1)+(FontHeight<<2), 8 );
+    Printuint16( (uint16) Ships[WhoIAm].TrigVars , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<2), 2 );
     
     // wait for all the pickup and mine stuff to be sent to me.....
     if( ( Ships[WhoIAm].Pickups == 0 ) && ( Ships[WhoIAm].Mines == 0 ) && ( Ships[WhoIAm].RegenSlots == 0 ) &&
@@ -2745,12 +2745,12 @@ BOOL RenderScene( void )
         if( ( GameStatus[i] != STATUS_GetPlayerNum )&& (GameStatus[i] != STATUS_LeftCrashed ) && (GameStatus[i] != STATUS_Left ) && (GameStatus[i] != STATUS_Null ) )
         {
           sprintf( buf, "%-8s status %14s\n", &Names[i][0] , &StatusTab[ GameStatus[i] ][0] );
-          CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
+          CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy>>1)-( ( (FontHeight+2) * MAX_PLAYERS ) >> 1 )+ (e * (FontHeight+(FontHeight>>1)) ) , GameStatus[i] == STATUS_StartingMultiplayerSynch ? 2 : 1 );
           e++;
         }
       }
 
-    CenterPrint4x5Text( "all players synching" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
+    CenterPrint4x5Text( "all players synching" , (render_info.window_size.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , (colourflash>>3) &3);
     Browl -= framelag;
     if( Browl <= 0.0F )
     {
@@ -2836,10 +2836,10 @@ BOOL RenderScene( void )
     FSClearBlack();
     ReceiveGameMessages();
     
-    CenterPrint4x5Text( "Requesting Player Number" , (render_info.szClient.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
+    CenterPrint4x5Text( "Requesting Player Number" , (render_info.window_size.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
                                           
     sprintf( &buf[0] , "Attempt %d\n" , GetPlayerNumCount );
-    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy>>1)-(FontHeight>>1) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy>>1)-(FontHeight>>1) , 2 );
 
     GetPlayerNumCount1 -= framelag;
     GetPlayerNumCount2 -= framelag;
@@ -4037,7 +4037,7 @@ void ShowDeathModeStats()
 {
 	ShowGameStats( BOX_BG );
 	if( Ships[ WhoIAm ].Timer < RESPAWN_TIMER )
-		CenterPrint4x5Text( "Press any key to continue" , render_info.szClient.cy - (FontHeight*2) , GREEN );	
+		CenterPrint4x5Text( "Press any key to continue" , render_info.window_size.cy - (FontHeight*2) , GREEN );	
 }
 
 /* Display the Statistics in-game when key is pressed */
@@ -4074,8 +4074,8 @@ void ShowGameStats( stats_mode_t mode )
 	int total_height = 0;
 	int top_offset = 0;
 	int row_height = (FontHeight+(FontHeight/2));
-	int x_center = ( render_info.szClient.cx >>1 );
-	int y_center = ( render_info.szClient.cy >>1 );
+	int x_center = ( render_info.window_size.cx >>1 );
+	int y_center = ( render_info.window_size.cy >>1 );
 
 	// generate active players
 
@@ -4105,7 +4105,7 @@ void ShowGameStats( stats_mode_t mode )
 
 			// whole width
 			box.left = 0;
-			box.right = render_info.szClient.cx;
+			box.right = render_info.window_size.cx;
 
 			//box.left = left_offset - x_padding;						// begging of first col
 			//box.right = column[ ncols-1 ] + col_width + x_padding;	// end of last col
@@ -4300,7 +4300,7 @@ void ShowGameStats( stats_mode_t mode )
 BOOL ScoreDisplay()
 {
 	ShowGameStats( FULL_BG ); // use BLT background
-	CenterPrint4x5Text( "Press Space to continue" , render_info.szClient.cy - (FontHeight*2) , 0 );	
+	CenterPrint4x5Text( "Press Space to continue" , render_info.window_size.cy - (FontHeight*2) , 0 );	
 	return TRUE;
 }
 
@@ -4362,7 +4362,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
     TotalShift -= FontWidth;
   }
 
-  MaxChars = (render_info.szClient.cx / FontWidth) + 2;
+  MaxChars = (render_info.window_size.cx / FontWidth) + 2;
 
   message = (char *)calloc( MaxChars, sizeof(char) );
   
@@ -4393,7 +4393,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
     {
       // display text so far...
       message[CurrentMessagePos] = 0;
-      PrintClipped4x5Text( message, xpos, render_info.szClient.cy - (FontHeight*2) , col[CurrentString] );
+      PrintClipped4x5Text( message, xpos, render_info.window_size.cy - (FontHeight*2) , col[CurrentString] );
       xpos += FontWidth * strlen( message );
       message[0] = 0;
       CurrentMessagePos = 0;
@@ -4404,7 +4404,7 @@ void ScrollingTeamMessage(char **str, int num_strings, int *col)
   }
   // display remaining text...
   message[CurrentMessagePos] = 0;
-  PrintClipped4x5Text( message, xpos, render_info.szClient.cy - (FontHeight*2) , col[CurrentString] );
+  PrintClipped4x5Text( message, xpos, render_info.window_size.cy - (FontHeight*2) , col[CurrentString] );
 
   free (message);
 }
@@ -4414,7 +4414,7 @@ BOOL ClearBuffers( void )
 {
 	XYRECT dummy;
 
-	if (!render_info.bRenderingIsOK)
+	if (!render_info.ok_to_render)
 		return FALSE;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
@@ -4430,7 +4430,7 @@ BOOL ClearZBuffer()
 {
 	XYRECT dummy;
 
-	if (!render_info.bRenderingIsOK)
+	if (!render_info.ok_to_render)
 		return FALSE;
 
 	dummy.x1 = CurrentCamera.Viewport.X;
@@ -4832,18 +4832,18 @@ BOOL Our_CalculateFrameRate(void)
 			for( i = 0 ; i < MAXPRIMARYWEAPONS+1 ; i++ )
 			{
 				// display primary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.szClient.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(11*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display primary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.szClient.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Primary,i),	(render_info.window_size.cx>>1)-(15*FontWidth), (viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 
 			// show all secondary weapon kills
 			for( i = 0 ; i < TOTALSECONDARYWEAPONS ; i++ )
 			{		
 				// display secondary weapon name
-				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.szClient.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Print4x5Text( GetWeaponName(WEPTYPE_Secondary,i),	(render_info.window_size.cx>>1)+(5*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 				// display secondary weapon kills
-				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.szClient.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
+				Printuint16( GetWeaponKillStats(WhoIAm,WEPTYPE_Secondary,i) , (render_info.window_size.cx>>1)+(1*FontWidth),	(viewport.Y + (viewport.Height>>2))+( i * ( FontHeight+(FontHeight>>1) ) ), 2 );
 			}
 		}
 
@@ -4887,8 +4887,8 @@ InitViewport( void )
 		return FALSE;
 	}
 
-	maxwidth = render_info.szClient.cx;
-	maxheight = render_info.szClient.cy;
+	maxwidth = render_info.window_size.cx;
+	maxheight = render_info.window_size.cy;
 
 	width = maxwidth;
 	height = maxheight;
@@ -5058,7 +5058,7 @@ BOOL DispTracker( void ) // bjd
 	VECTOR      ShipDir, TargetDir;
 	float       Cos;
 
-	if ( render_info.bFullscreen )
+	if ( render_info.fullscreen )
 	{
 		screen_width = (float) render_info.ThisMode.w;
 		screen_height = (float) render_info.ThisMode.h;
@@ -5071,7 +5071,7 @@ BOOL DispTracker( void ) // bjd
 
     newviewport.X = 0;	
 	newviewport.Y = 0;
-    newviewport.Width = ( render_info.szClient.cx / 3 ) & -2;
+    newviewport.Width = ( render_info.window_size.cx / 3 ) & -2;
     newviewport.Height = (uint32) ( (float) newviewport.Width * pixel_aspect_ratio );
     newviewport.ScaleX = newviewport.Width / (float)2.0;
     newviewport.ScaleY = newviewport.Height / (float)2.0;
@@ -5253,7 +5253,7 @@ void PrintInitViewStatus( BYTE Status )
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
-		CenterPrint4x5Text( InitViewMessages[i], ( render_info.szClient.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
+		CenterPrint4x5Text( InitViewMessages[i], ( render_info.window_size.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
 	DisplayNonSolidScrPolys(&ro);
 	DisplaySolidScrPolys(&ro);
 	FSReleaseRenderObject(&ro);
@@ -5294,15 +5294,15 @@ BOOL StatsDisplay()
   //  Blt Background
   src.top = 0;
   src.left = 0;
-  src.right = render_info.szClient.cx;
-  src.bottom = render_info.szClient.cy;
+  src.right = render_info.window_size.cx;
+  src.bottom = render_info.window_size.cy;
   x = 0;
   y = 0;
 
   dest.top = 0;
-  dest.bottom = render_info.szClient.cy;
+  dest.bottom = render_info.window_size.cy;
   dest.left = 0;
-  dest.right = render_info.szClient.cx;
+  dest.right = render_info.window_size.cx;
       
   destp.x = dest.left;
   destp.y = dest.top;
@@ -5315,33 +5315,33 @@ BOOL StatsDisplay()
     }else{
       sprintf( (char*) &buf ,"%d Secrets found out of %d", Secrets , TotalSecrets );
     }
-    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy >> 1 ) - (FontHeight*2) , 2 );
     if( NumKilledEnemies == 1 )
     {
       sprintf( (char*) &buf ,"%d Enemy killed out of %d", NumKilledEnemies , NumInitEnemies );
     }else{
       sprintf( (char*) &buf ,"%d Enemies killed out of %d", NumKilledEnemies , NumInitEnemies );
     }
-    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy >> 1 ) + (FontHeight*0) , 2 );
     if( CrystalsFound == 1 )
     {
       sprintf( (char*) &buf ,"%d Crystal found so far", CrystalsFound );
     }else{
       sprintf( (char*) &buf ,"%d Crystals found so far", CrystalsFound );
     }
-    CenterPrint4x5Text( &buf[0] , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+    CenterPrint4x5Text( &buf[0] , (render_info.window_size.cy >> 1 ) + (FontHeight*2) , 2 );
   }else{
-    CenterPrint4x5Text( "Congratulations" , (render_info.szClient.cy >> 1 ) - (FontHeight*2) , 2 );
-    CenterPrint4x5Text( "Demo Complete" , (render_info.szClient.cy >> 1 ) + (FontHeight*0) , 2 );
+    CenterPrint4x5Text( "Congratulations" , (render_info.window_size.cy >> 1 ) - (FontHeight*2) , 2 );
+    CenterPrint4x5Text( "Demo Complete" , (render_info.window_size.cy >> 1 ) + (FontHeight*0) , 2 );
     if( DifficultyLevel != 3 )
     {
-      CenterPrint4x5Text( "Now Try a Harder Difficulty Setting" , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Now Try a Harder Difficulty Setting" , (render_info.window_size.cy >> 1 ) + (FontHeight*2) , 2 );
     }else{
-      CenterPrint4x5Text( "Try the real Game for a harder challenge" , (render_info.szClient.cy >> 1 ) + (FontHeight*2) , 2 );
+      CenterPrint4x5Text( "Try the real Game for a harder challenge" , (render_info.window_size.cy >> 1 ) + (FontHeight*2) , 2 );
     }
   }
   
-  CenterPrint4x5Text( "Press Space to continue" , render_info.szClient.cy - (FontHeight*2) , 2 );
+  CenterPrint4x5Text( "Press Space to continue" , render_info.window_size.cy - (FontHeight*2) , 2 );
 //  Our_CalculateFrameRate();
 
 
@@ -5353,8 +5353,8 @@ BOOL StatsDisplay()
 
 void InitModeCase(void)
 {
-  ModeScaleX = (float)render_info.szClient.cx / 320.0F;
-  ModeScaleY = (float)render_info.szClient.cy / 200.0F;
+  ModeScaleX = (float)render_info.window_size.cx / 320.0F;
+  ModeScaleY = (float)render_info.window_size.cy / 200.0F;
 }
 
 /*===================================================================

@@ -6622,8 +6622,8 @@ void DispPowerLevel( void )
 	int16	Steps, Count;
 	int16	x, y;
 
-	x = ((int16)render_info.szClient.cx / 2 ) - ( 16 * 4 );
-	y = (int16)render_info.szClient.cy - ( (int16)render_info.szClient.cy / 5 ) + 6;
+	x = ((int16)render_info.window_size.cx / 2 ) - ( 16 * 4 );
+	y = (int16)render_info.window_size.cy - ( (int16)render_info.window_size.cy / 5 ) + 6;
 
 	switch( Ships[ WhoIAm ].Primary )
 	{

@@ -3527,10 +3527,17 @@ extern BOOL InitView( void );
 extern BOOL render_mode_select( render_info_t * info );
 BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 {
-	render_info.default_mode = render_info.Mode[mode];
-	render_info.bFullscreen = fullscreen;
+	// this happens if Msg() or something else is called during resize etc...
+	if(!render_info.Mode)
+		return TRUE;
+	render_info.default_mode.bpp  = render_info.Mode[mode].bpp;
+	render_info.default_mode.rate = render_info.Mode[mode].rate;
+	render_info.default_mode.h    = render_info.Mode[mode].h;
+	render_info.default_mode.w    = render_info.Mode[mode].w;
+	render_info.fullscreen = fullscreen;
 	render_info.vsync = vsync;
-    render_mode_select( &render_info );
+    if(!render_mode_select( &render_info ))
+		return FALSE;
 	if (!InitView())
 	{
 	    Msg("InitView failed.\n");
@@ -3563,7 +3570,7 @@ BOOL InitTitle()
 {
 	framelag = 0;
 
-	if( ! render_info.bFullscreen )
+	if( ! render_info.fullscreen )
 		input_grab( FALSE );
     
 	InitModeCase();
@@ -4878,8 +4885,8 @@ BOOL DisplayTitle(void)
 	CurrentCamera.Viewport = viewport;	
 	CurrentCamera.Viewport.X = 0;
 	CurrentCamera.Viewport.Y = 0;
-	CurrentCamera.Viewport.Width = render_info.szClient.cx;
-	CurrentCamera.Viewport.Height = render_info.szClient.cy;
+	CurrentCamera.Viewport.Width = render_info.window_size.cx;
+	CurrentCamera.Viewport.Height = render_info.window_size.cy;
 	CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
 	CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
 
@@ -8016,11 +8023,13 @@ void InitInGameMenu( MENU *Menu )
 {
 	MENUITEM *item;
 
-	if ( ! render_info.bFullscreen )
+	if ( ! render_info.fullscreen )
 		input_grab( FALSE );
 
 	for ( item = Menu->Item; item->x >= 0; item++ )
 	{
+		if(!item)
+			continue;
 		if ( item->Value == &MENU_LoadSavedGame || item->Value == &MENU_SaveGame )
 		{
 			if ( MyGameStatus != STATUS_Normal ) // normal -> multiplayer game, so !normal -> single player
@@ -8588,11 +8597,11 @@ void MenuGoFullScreen( MENUITEM *Item )
 
 	bIgnoreWM_SIZE = TRUE;
 
-    RenderModeSelect( render_info.CurrMode, !render_info.bFullscreen, render_info.vsync );
+    RenderModeSelect( render_info.CurrMode, !render_info.fullscreen, render_info.vsync );
 
 	// user goes into window mode to do something else
 	// so release their inputs and let them click to activate
-	if ( ! render_info.bFullscreen )
+	if ( ! render_info.fullscreen )
 		input_grab( FALSE );
 
 	bIgnoreWM_SIZE = FALSE;
@@ -8654,7 +8663,7 @@ void MakeModeList( MENU *Menu )
 void MenuSelectMode( MENU *Menu )
 {
 	if ( render_info.CurrMode != WhichMode[ModeList.selected_item] )
-		RenderModeSelect(WhichMode[ModeList.selected_item], render_info.bFullscreen, render_info.vsync);
+		RenderModeSelect(WhichMode[ModeList.selected_item], render_info.fullscreen, render_info.vsync);
 }
 
 
@@ -8665,14 +8674,14 @@ void NewMenuSelectMode( MENUITEM *Item )
 	LastMenu = CurrentMenu;	
 	VduClear();
 
-	if ( render_info.bFullscreen )
+	if ( render_info.fullscreen )
 	{
-        RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
+        RenderModeSelect( mode, render_info.fullscreen, render_info.vsync );
 	}
 	else
 	{
 		bIgnoreWM_SIZE = TRUE;
-        RenderModeSelect( mode, render_info.bFullscreen, render_info.vsync );
+        RenderModeSelect( mode, render_info.fullscreen, render_info.vsync );
 		bIgnoreWM_SIZE = FALSE;
 
 		// user goes into window mode to do something else
@@ -9101,7 +9110,7 @@ void GetGamePrefs( void )
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
-	render_info.bFullscreen			 = config_get_bool( "FullScreen",				TRUE );
+	render_info.fullscreen			 = config_get_bool( "FullScreen",				TRUE );
 
 	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
@@ -9148,11 +9157,11 @@ void GetGamePrefs( void )
 
     GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
 
-DebugPrintf("gamma read from config as %d, max %d\n",GammaSlider.value,GammaSlider.max);
+	//DebugPrintf("gamma read from config as %d, max %d\n",GammaSlider.value,GammaSlider.max);
 	CLAMP( GammaSlider.value, GammaSlider.max );
-DebugPrintf("gamma after clamp: %d\n",GammaSlider.value);
+	//DebugPrintf("gamma after clamp: %d\n",GammaSlider.value);
 	Gamma = ( (double)GammaSlider.value ) / 100.0F;
-DebugPrintf("gamma variable: %d/100.0F = %ld\n",GammaSlider.value,Gamma);
+	//DebugPrintf("gamma variable: %d/100.0F = %ld\n",GammaSlider.value,Gamma);
 
     MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
     MyTimeLimit.value                = config_get_int( "TimeLimit",					0);
@@ -9234,7 +9243,7 @@ void SetGamePrefs( void )
     config_set_bool( "RandomPickups",			MyRandomPickups );
     config_set_bool( "UseShortPackets",			MyUseShortPackets );
     config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
-	config_set_bool( "FullScreen",				render_info.bFullscreen );
+	config_set_bool( "FullScreen",				render_info.fullscreen );
 
 	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
 	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_HeatseakerPickup ] );

@@ -172,7 +172,7 @@ extern void MenuGoFullScreen( MENUITEM *Item );
 extern void input_grab( BOOL clip );
 int Msg( const char * msg, ... )
 {
-	BOOL was_fullscreen = render_info.bFullscreen;
+	BOOL was_fullscreen = render_info.fullscreen;
 
 	char txt[ 1024 ];
 	va_list args;
@@ -182,9 +182,9 @@ int Msg( const char * msg, ... )
 	vsprintf( txt, msg, args);
 	va_end( args );
 
-#ifdef WIN32
+#if 0 //def WIN32
 
-    if (render_info.bFullscreen)
+    if (render_info.fullscreen)
 	{
 		// switch to window mode
 		// other wise pop up will get stuck behind main window
@@ -192,6 +192,7 @@ int Msg( const char * msg, ... )
 		// push main window to background so popup shows
         SetWindowPos(GetActiveWindow(), HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
 	}
+
 	
 	// release mouse so they can interact with message box
 	input_grab( FALSE );

@@ -26,6 +26,26 @@ static void detect_caps( void )
 	DebugPrintf("render: anisotropic filtering support = %s\n",caps.anisotropic?"true":"false");
 }
 
+// poly modes
+
+void render_mode_wireframe(void)
+{
+	glPolygonMode(GL_FRONT, GL_LINE);
+	glPolygonMode(GL_BACK, GL_LINE);
+}
+
+void render_mode_points(void)
+{
+	glPolygonMode(GL_FRONT, GL_POINT);
+	glPolygonMode(GL_BACK, GL_POINT);
+}
+
+void render_mode_fill(void)
+{
+	glPolygonMode(GL_FRONT, GL_FILL);
+	glPolygonMode(GL_BACK, GL_FILL);
+}
+
 // unused in opengl
 BOOL FSBeginScene(){ return TRUE; }
 BOOL FSEndScene(){ return TRUE; }
@@ -180,7 +200,7 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
 
-BOOL render_init( render_info_t * info )
+static print_info( void )
 {
 	GLboolean b;
 	glGetBooleanv(GL_STEREO,&b);
@@ -192,100 +212,66 @@ BOOL render_init( render_info_t * info )
 		glGetString(GL_SHADING_LANGUAGE_VERSION),
 		(b)?"true":"false");
 
-	// this is way to long for OutputDebugString to show
-	//DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', extensions='%s', shaders='%s'\n",
-	//	glGetString(GL_EXTENSIONS));
+	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', extensions='%s', shaders='%s'\n",
+		glGetString(GL_EXTENSIONS));
+}
 
-	// reminaing d3d9 initialization steps
-	// doesn't sdl do this now?
-		// enumerate and select a display mode
-			// assign enumeration info to info->Mode
-			// assign info->(CurrMode|ThisMode|WindowsDisplay|szClient)
-			// set the viewport
-
-	//
-	// init render state
-	//
-
-	detect_caps();
-	build_gamma_table(1.0f);
-	glEnable(GL_DITHER);
+static set_defaults( void )
+{
+	build_gamma_table(1.0f); // 1.0f means no gamma change
 	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
-	glDisable(GL_LIGHTING);
-	reset_cull();
-	reset_trans();
-
-	// normally we don't draw back faces
-	glPolygonMode(GL_BACK, GL_NONE);
-	
-	// wireframe mode
-	//glPolygonMode(GL_FRONT, GL_LINE);
-	//glPolygonMode(GL_BACK, GL_LINE);
-
-	//
+	glDisable(GL_LIGHTING); // we light our own verts
+	reset_cull(); // default cull
+	reset_trans(); // default blending
+	glPolygonMode(GL_BACK, GL_NONE); // don't draw back faces
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+	set_normal_states(); // default preset render mode
+}
 
-	//
-	set_normal_states();
+static resize_viewport( int width, int height )
+{
+	render_viewport_t viewport;
+	viewport.X = 0;
+	viewport.Y = 0;
+	viewport.Width = width;
+	viewport.Height = height;
+	viewport.MinZ = 0.0f;
+	viewport.MaxZ = 1.0f;
+	FSSetViewPort(&viewport);
+}
 
-	//
-	// everything went ok
-	// fill in all the structures
-	//
-
-	// TODO - this should all be part of init_sdl_window
-
-	info->bRenderingIsOK	= TRUE;
-	info->NumModes			= 1;
-	info->CurrMode			= 0;
-	info->Mode				= (render_display_mode_t *) malloc(sizeof(render_display_mode_t));
-	info->Mode[0].h			= render_info.default_mode.h;
-	info->Mode[0].w			= render_info.default_mode.w;
-	info->Mode[0].rate		= render_info.default_mode.rate;
-	info->Mode[0].bpp		= render_info.default_mode.bpp;
-	info->ThisMode			= info->Mode[ info->CurrMode ];
-	info->WindowsDisplay	= info->Mode[ info->CurrMode ];
-	info->szClient.cx		= info->ThisMode.w;
-	info->szClient.cy		= info->ThisMode.h;
-	info->WindowsDisplay.w  = info->ThisMode.w;
-	info->WindowsDisplay.h  = info->ThisMode.h;
-
-	if(!info->aspect_ratio)
-	{
-		info->aspect_ratio = (float) info->ThisMode.w / (float) info->ThisMode.h;
-		DebugPrintf("render: aspect ratio set to %d:%d\n",info->ThisMode.w,info->ThisMode.h);
-	}
-
-	{
-		render_viewport_t viewport;
-		viewport.X = 0;
-		viewport.Y = 0;
-		viewport.Width = info->ThisMode.w;
-		viewport.Height = info->ThisMode.h;
-		viewport.MinZ = 0.0f;
-		viewport.MaxZ = 1.0f;
-		FSSetViewPort(&viewport);
-	}
-
+BOOL render_init( render_info_t * info )
+{
+	print_info();
+	detect_caps();
+	set_defaults();
+	resize_viewport(info->ThisMode.w, info->ThisMode.h);
+	info->ok_to_render = TRUE;
 	return TRUE;
 }
 
 void render_cleanup( render_info_t * info )
 {
-    info->bRenderingIsOK = FALSE;
+    info->ok_to_render = FALSE;
 	if(info->Mode)
+	{
 		free(info->Mode);
+		info->Mode = NULL;
+	}
     // TODO - any opengl cleanup required ?
 	//		i believe SDL_Quit() handles everything
 	//		and at this point we might just be changing resolutions
 	//		so sdl again may handle any context cleanup needed
 }
 
+extern BOOL sdl_init_video( void );
 BOOL render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
-	if(!render_init( info ))
+	if(!sdl_init_video())
 		return FALSE;
+	//if(!render_init( info ))
+	//	return FALSE;
 	return TRUE;
 }
 

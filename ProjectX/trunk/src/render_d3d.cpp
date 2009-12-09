@@ -83,7 +83,7 @@ BOOL render_init( render_info_t * info )
 	ZeroMemory (&d3dpp, sizeof(d3dpp));
 
 	//
-	d3dpp.Windowed = !info->bFullscreen;
+	d3dpp.Windowed = !info->fullscreen;
 
 	//
 	// presentation settings
@@ -115,19 +115,19 @@ BOOL render_init( render_info_t * info )
 		d3dpp.BackBufferFormat			= D3DFMT_X8R8G8B8;
 		//d3dpp.AutoDepthStencilFormat	= D3DFMT_D32;	// 32 bit depth buffer
 		d3dpp.AutoDepthStencilFormat	= D3DFMT_D24S8;	// 24 bit depth buffer with 8 bit stencil buffer
-		DebugPrintf("picked 32 bit textures\n");
+		DebugPrintf("picked 24 bit D3DFMT_X8R8G8B8 back buffer\n");
 	}
 	// 16 bit
 	else if(SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X1R5G5B5, D3DFMT_X1R5G5B5, d3dpp.Windowed)))
 	{
 		d3dpp.BackBufferFormat	= D3DFMT_X1R5G5B5;
-		DebugPrintf("picked 16 bit textures\n");
+		DebugPrintf("picked 16 bit D3DFMT_X1R5G5B5 back buffer\n");
 	}
 	// 16 bit 
 	else if(SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_R5G6B5, D3DFMT_R5G6B5, d3dpp.Windowed)))
 	{
 		d3dpp.BackBufferFormat	= D3DFMT_R5G6B5;
-		DebugPrintf("picked 16 bit textures\n");
+		DebugPrintf("picked 16 bit D3DFMT_R5G6B5 back buffer\n");
 	}
 	// failed
 	else
@@ -143,6 +143,7 @@ BOOL render_init( render_info_t * info )
 	// or picking the biggest mode possible :]
 	//
 
+#if 0 // done by sdl now
 	{
 		int mode = 0;
 		int desired_mode = -1;
@@ -212,15 +213,18 @@ BOOL render_init( render_info_t * info )
 		info->CurrMode = mode;
 		info->ThisMode = info->Mode[ info->CurrMode ];
 		info->WindowsDisplay = info->Mode[ info->CurrMode ];
-		d3dpp.BackBufferWidth   = info->ThisMode.w;
-		d3dpp.BackBufferHeight  = info->ThisMode.h;
-		info->szClient.cx		= info->ThisMode.w;
-		info->szClient.cy		= info->ThisMode.h;
+		info->window_size.cx		= info->ThisMode.w;
+		info->window_size.cy		= info->ThisMode.h;
 		info->WindowsDisplay.w  = info->ThisMode.w;
 		info->WindowsDisplay.h  = info->ThisMode.h;
-		info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 		free(modes);
 	}
+#endif // done by sdl now
+
+	d3dpp.BackBufferWidth   = info->ThisMode.w;
+	d3dpp.BackBufferHeight  = info->ThisMode.h;
+		
+	info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 
 	DebugPrintf("Using display mode: %dx%dx%d @ %dhz\n",
 		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp,info->ThisMode.rate);
@@ -313,7 +317,7 @@ BOOL render_init( render_info_t * info )
 		exit(1);
 	}
 
-	info->bRenderingIsOK = TRUE;
+	info->ok_to_render = TRUE;
 
 	viewport.X = 0;
 	viewport.Y = 0;
@@ -347,18 +351,24 @@ BOOL render_init( render_info_t * info )
 
 void render_cleanup( render_info_t * info )
 {
-    info->bRenderingIsOK = FALSE;
+    info->ok_to_render = FALSE;
 	if(info->Mode)
+	{
 		free(info->Mode);
+		info->Mode = NULL;
+	}
     RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
 }
 
+extern BOOL sdl_init_video( void );
 BOOL render_mode_select( render_info_t * info )
 {
 	render_cleanup( info );
-	if(!render_init( info ))
+	if(!sdl_init_video())
 		return FALSE;
+	//if(!render_init( info ))
+	//	return FALSE;
 	return TRUE;
 }
 
@@ -398,9 +408,9 @@ BOOL render_reset( render_info_t * info )
 BOOL render_flip( render_info_t * info )
 {
 	HRESULT hr;
-	if (!info->bRenderingIsOK) 
+	if (!info->ok_to_render) 
 	{
-		DebugPrintf("Cannot call render_flip() while bRenderingIsOK is FALSE.\n");
+		DebugPrintf("Cannot call render_flip() while ok_to_render is FALSE.\n");
 		return FALSE;
 	}
 	hr = lpD3DDevice->Present(NULL, NULL, NULL, NULL);

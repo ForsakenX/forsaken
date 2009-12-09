@@ -197,13 +197,13 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		// start in window mode
 		else if (!strcasecmp(option,"Fullscreen"))
 		{
-			render_info.bFullscreen = TRUE;
+			render_info.fullscreen = TRUE;
 		}
 
 		// start in window mode
 		else if (!strcasecmp(option,"Window"))
 		{
-			render_info.bFullscreen = FALSE;
+			render_info.fullscreen = FALSE;
 		}
 
 		// turn off sound
@@ -491,7 +491,7 @@ static BOOL AppInit( char * lpCmdLine )
 	}
 
 	// exclusively grab input in fullscreen mode
-	input_grab( render_info.bFullscreen );
+	input_grab( render_info.fullscreen );
 
 	//
 	SetSoundLevels( NULL );
@@ -510,7 +510,7 @@ extern BOOL RenderScene( void );
 
 static BOOL RenderLoop()
 {
-    if ( !render_info.bRenderingIsOK || render_info.bMinimized || render_info.bPaused || QuitRequested )
+    if ( !render_info.ok_to_render || render_info.minimized || render_info.bPaused || QuitRequested )
 		return TRUE;
 
     // Call the sample's RenderScene to render this frame

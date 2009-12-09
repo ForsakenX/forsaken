@@ -367,8 +367,8 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 	strcpy ( &TitleFontFile[ 0 ], VduFont512 );
 
 	//
-	VduScaleX = (float)floor((double)((float)render_info.szClient.cx / 512.0F));
-	VduScaleY = (float)floor((double)((float)render_info.szClient.cy / 384.0F));
+	VduScaleX = (float)floor((double)((float)render_info.window_size.cx / 512.0F));
+	VduScaleY = (float)floor((double)((float)render_info.window_size.cy / 384.0F));
 
 	last_tpage = 0;
 
