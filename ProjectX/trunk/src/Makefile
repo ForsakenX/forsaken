@@ -12,7 +12,6 @@ CFLAGS=$(FLAGS)
 LDFLAGS=$(FLAGS)
 ifeq ($(DEBUG),1)
 	FLAGS+= -g -pg
-	LDFLAGS+= -g -pg
 	CFLAGS+=-Wall -Wextra
 else
 	CFLAGS+=-O2
