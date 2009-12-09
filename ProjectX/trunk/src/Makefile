@@ -11,8 +11,8 @@ FLAGS=-pipe -march=native
 CFLAGS=$(FLAGS)
 LDFLAGS=$(FLAGS)
 ifeq ($(DEBUG),1)
-	FLAGS+=-pg
-	LDFLAGS+=-pg
+	FLAGS+= -g -pg
+	LDFLAGS+= -g -pg
 	CFLAGS+=-Wall -Wextra
 else
 	CFLAGS+=-O2
