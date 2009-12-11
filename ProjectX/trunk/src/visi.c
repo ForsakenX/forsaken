@@ -1111,10 +1111,10 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 #ifdef OPENGL
 		switch( StereoMode )
 		{
-		case LEFT:
+		case ST_LEFT:
 			lr -= 0.5 * StereoFocalDist / StereoEyeSep;
 			break;
-		case RIGHT:
+		case ST_RIGHT:
 			lr += 0.5 * StereoFocalDist / StereoEyeSep;
 		}
 #endif

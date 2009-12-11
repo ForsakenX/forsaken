@@ -782,7 +782,7 @@ void stereo_adjust( RENDERMATRIX *m )
 {
 	float left, right, offset;
 
-	if( StereoMode != CENTER )
+	if( StereoMode != ST_CENTER )
 		offset = 0.5f * StereoEyeSep / StereoFocalDist;
 	else
 		return;
@@ -792,11 +792,11 @@ void stereo_adjust( RENDERMATRIX *m )
 
 	switch( StereoMode )
 	{
-	case LEFT:
+	case ST_LEFT:
 		left -= offset;
 		right -= offset;
 		break;
-	case RIGHT:
+	case ST_RIGHT:
 		left += offset;
 		right += offset;
 		break;
@@ -3876,7 +3876,7 @@ BOOL MainGame( void ) // bjd
         cam_offset.z = 0.0f;
         ApplyMatrix( &CurrentCamera.Mat, &cam_offset, &cam_offset );
 
-        StereoMode = LEFT;
+        StereoMode = ST_LEFT;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;
@@ -3885,7 +3885,7 @@ BOOL MainGame( void ) // bjd
         render_set_filter( 1, 0, 0 );
         if( !RenderCurrentCamera() )
           return FALSE;
-        StereoMode = RIGHT;
+        StereoMode = ST_RIGHT;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x += 2.0f * cam_offset.x;
@@ -3905,7 +3905,7 @@ BOOL MainGame( void ) // bjd
         }
         if( !RenderCurrentCamera() )
           return FALSE;
-        StereoMode = CENTER;
+        StereoMode = ST_CENTER;
         SetFOV( hfov );
         FSSetProjection( &proj );
         CurrentCamera.Pos.x -= cam_offset.x;

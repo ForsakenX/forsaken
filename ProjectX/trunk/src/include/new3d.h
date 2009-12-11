@@ -216,7 +216,7 @@ typedef struct PLANE {
 ===================================================================*/
 typedef enum
 {
-	CENTER, LEFT, RIGHT
+	ST_CENTER, ST_LEFT, ST_RIGHT
 } stereo_mode_t;
 
 typedef enum
