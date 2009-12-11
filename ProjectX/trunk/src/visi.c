@@ -968,6 +968,12 @@ ProcessVisiblePortal( CAMERA *cam, VISLIST *v, VISTREE *t, EXTENT *e )
 }
 
 
+#ifdef OPENGL
+extern stereo_mode_t StereoMode;
+extern float StereoEyeSep;
+extern float StereoFocalDist;
+#endif
+
 extern render_info_t render_info;
 void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
@@ -978,6 +984,11 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	VISGROUP *gsort, *gprev, *gnext;
 	int j;
 	float w, h;
+
+#ifdef OPENGL
+	// helper variable used for stereo adjustment
+	float lr;
+#endif
 
 	// calculate clipping planes
 	w = (float) tan( hfov );
@@ -1096,9 +1107,18 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 		g->projection = cam->Proj;
 		g->projection._11 = ( cam->Proj._11 * v->viewport->Width ) / vp->Width;
 		g->projection._22 = ( cam->Proj._22 * v->viewport->Height ) / vp->Height;
-		g->projection._31 = 2.0F * ( ( v->viewport->X + v->viewport->Width * 0.5F )
-									- ( vp->X + vp->Width * 0.5F ) )
-							/ vp->Width;
+		lr = 2.0F * ( ( v->viewport->X + v->viewport->Width * 0.5F ) - ( vp->X + vp->Width * 0.5F ) );
+#ifdef OPENGL
+		switch( StereoMode )
+		{
+		case LEFT:
+			lr -= 0.5 * StereoFocalDist / StereoEyeSep;
+			break;
+		case RIGHT:
+			lr += 0.5 * StereoFocalDist / StereoEyeSep;
+		}
+#endif
+		g->projection._31 = lr / vp->Width;
 		g->projection._32 = -2.0F * ( ( v->viewport->Y + v->viewport->Height * 0.5F )
 									- ( vp->Y + vp->Height * 0.5F ) )
 							/ vp->Height;

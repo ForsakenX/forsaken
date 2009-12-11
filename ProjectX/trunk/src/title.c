@@ -835,6 +835,12 @@ BOOL BountyBonus;
 BOOL BikeEnginesOn;
 BOOL ToggleTest;
 
+#ifdef OPENGL // stereo configuration options
+BOOL StereoEnabled;
+float StereoEyeSep, StereoFocalDist;
+stereo_right_color_t StereoRightColor;
+#endif
+
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
 {
 	TRUE,	// Borg,
@@ -9206,6 +9212,15 @@ void GetGamePrefs( void )
 
     GameType                         = config_get_int( "GameType",					GAME_Normal );
 	CLAMP( GameType, MAX_GAMETYPE );
+
+#ifdef OPENGL
+	// Stereo options
+
+	StereoEnabled = config_get_bool( "StereoEnabled", FALSE );
+	StereoEyeSep = config_get_float( "StereoEyeSep", 20 );
+	StereoFocalDist = config_get_float( "StereoFocalDist", 750 );
+	StereoRightColor = config_get_float( "StereoRightColor", ST_CYAN );
+#endif
 }
 
 /*===================================================================
@@ -9294,6 +9309,14 @@ void SetGamePrefs( void )
 
 	config_set_int( "FlagScore",				GoalScoreSlider.value );
 	GoalScore = GoalScoreSlider.value;
+
+#ifdef OPENGL
+	// Stereo options
+	config_set_bool( "StereoEnabled",			StereoEnabled );
+	config_set_float( "StereoEyeSep",			StereoEyeSep );
+	config_set_float( "StereoFocalDist",		StereoFocalDist );
+	config_set_float( "StereoRightColor",		StereoRightColor );
+#endif
 
 
 	config_save();

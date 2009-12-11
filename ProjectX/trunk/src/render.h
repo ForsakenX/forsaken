@@ -165,6 +165,10 @@ typedef struct {
     };
 } RENDERMATRIX;
 
+#ifdef OPENGL // for stereo
+void render_set_filter( BOOL red, BOOL green, BOOL blue );
+#endif
+
 BOOL render_flip( render_info_t * info );
 
 BOOL FSGetViewPort(render_viewport_t *returnViewPort);

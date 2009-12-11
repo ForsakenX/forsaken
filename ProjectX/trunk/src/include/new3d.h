@@ -210,6 +210,21 @@ typedef struct PLANE {
 	float Offset;
 } PLANE;
 
+#ifdef OPENGL
+/*===================================================================
+	Stereo (anaglyph rendering) modes and colors
+===================================================================*/
+typedef enum
+{
+	CENTER, LEFT, RIGHT
+} stereo_mode_t;
+
+typedef enum
+{
+	ST_GREEN, ST_BLUE, ST_CYAN
+} stereo_right_color_t;
+#endif // OPENGL
+
 /*===================================================================
 	Prototypes
 ===================================================================*/

@@ -771,6 +771,41 @@ RENDERMATRIX world = {
     RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
+#ifdef OPENGL
+extern BOOL StereoEnabled;
+stereo_mode_t StereoMode;
+extern float StereoEyeSep;
+extern float StereoFocalDist;
+extern stereo_right_color_t StereoRightColor;
+
+void stereo_adjust( RENDERMATRIX *m )
+{
+	float left, right, offset;
+
+	if( StereoMode != CENTER )
+		offset = 0.5f * StereoEyeSep / StereoFocalDist;
+	else
+		return;
+
+	right = pixel_aspect_ratio * tanf( hfov * (float)M_PI_2/180.0f );
+	left = -right;
+
+	switch( StereoMode )
+	{
+	case LEFT:
+		left -= offset;
+		right -= offset;
+		break;
+	case RIGHT:
+		left += offset;
+		right += offset;
+		break;
+	}
+
+	m->_31 = (right+left)/(right-left);
+}
+#endif // OPENGL
+
 BOOL SetFOV( float fov )
 {
 	float screen_width, screen_height;
@@ -817,6 +852,10 @@ BOOL SetFOV( float fov )
 		proj._43 = RENDERVAL(-Far*Near/(Far-Near));
 		proj._44 = RENDERVAL( 0.0 );
 	}
+
+#ifdef OPENGL
+	stereo_adjust(&proj);
+#endif
 
 	ProjMatrix._11 = proj._11;
 	ProjMatrix._22 = proj._22;
@@ -3749,6 +3788,11 @@ BOOL MainGame( void ) // bjd
   int i;
   static float fov_inc = 0.0F;
 
+#ifdef OPENGL
+  // For stereo
+  VECTOR cam_offset;
+#endif
+
 #ifdef DEMO_SUPPORT
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
   if( PlayDemo )
@@ -3823,6 +3867,54 @@ BOOL MainGame( void ) // bjd
       HUDNames();
 
       CurrentCamera.UseLowestLOD = FALSE;
+
+#ifdef OPENGL
+      if( StereoEnabled )
+      {
+        cam_offset.x = StereoEyeSep / 2.0f;
+        cam_offset.y = 0.0f;
+        cam_offset.z = 0.0f;
+        ApplyMatrix( &CurrentCamera.Mat, &cam_offset, &cam_offset );
+
+        StereoMode = LEFT;
+        SetFOV( hfov );
+        FSSetProjection( &proj );
+        CurrentCamera.Pos.x -= cam_offset.x;
+        CurrentCamera.Pos.y -= cam_offset.y;
+        CurrentCamera.Pos.z -= cam_offset.z;
+        render_set_filter( 1, 0, 0 );
+        if( !RenderCurrentCamera() )
+          return FALSE;
+        StereoMode = RIGHT;
+        SetFOV( hfov );
+        FSSetProjection( &proj );
+        CurrentCamera.Pos.x += 2.0f * cam_offset.x;
+        CurrentCamera.Pos.y += 2.0f * cam_offset.y;
+        CurrentCamera.Pos.z += 2.0f * cam_offset.z;
+        switch( StereoRightColor )
+        {
+        case ST_GREEN:
+          render_set_filter( 0, 1, 0 );
+          break;
+        case ST_BLUE:
+          render_set_filter( 0, 0, 1 );
+          break;
+        default:
+          render_set_filter( 0, 1, 1 );
+          break;
+        }
+        if( !RenderCurrentCamera() )
+          return FALSE;
+        StereoMode = CENTER;
+        SetFOV( hfov );
+        FSSetProjection( &proj );
+        CurrentCamera.Pos.x -= cam_offset.x;
+        CurrentCamera.Pos.y -= cam_offset.y;
+        CurrentCamera.Pos.z -= cam_offset.z;
+        render_set_filter( 1, 1, 1 );
+      }
+      else
+#endif // OPENGL
       if( RenderCurrentCamera() != TRUE ) // bjd
         return FALSE;
   

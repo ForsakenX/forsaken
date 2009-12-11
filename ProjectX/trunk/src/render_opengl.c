@@ -291,6 +291,13 @@ BOOL render_reset( render_info_t * info )
 	return TRUE;
 }
 
+#ifdef OPENGL // for setting stereo rendering color
+void render_set_filter( BOOL red, BOOL green, BOOL blue )
+{
+	glColorMask(red?1:0, green?1:0, blue?1:0, 1);
+}
+#endif
+
 BOOL render_flip( render_info_t * info )
 {
 	SDL_GL_SwapBuffers();
