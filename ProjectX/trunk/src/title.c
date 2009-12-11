@@ -1657,17 +1657,67 @@ MENU	MENU_NEW_ScreenRes = {
 	}
 };
 
+#ifdef OPENGL // stereo settings
+
+char *StereoColorSliderFunc( SLIDER *slider )
+{
+	switch( slider->value )
+	{
+	case ST_GREEN:
+		return "green";
+	case ST_BLUE:
+		return "blue";
+	case ST_CYAN:
+		return "cyan";
+	default:
+		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
+		return NULL;
+	}
+}
+
+BOOL *SetStereoColor( SLIDER *slider )
+{
+	DebugPrintf( "Setting stereo color to %d\n", slider->value );
+	switch( slider->value )
+	{
+	case ST_GREEN:
+	case ST_BLUE:
+	case ST_CYAN:
+		StereoRightColor = (stereo_mode_t) slider->value;
+		return TRUE;
+	default:
+		DebugPrintf( "Unknown stereo slider value: %d\n", slider->value );
+		return FALSE;
+	}
+}
+
+SLIDER StereoColorSlider = {0, 2, 1, 2, 2, 0.0F, 0.0F, 0, TRUE, StereoColorSliderFunc, SetStereoColor, NULL };
+
+MENU	MENU_NEW_VisualsStereo = {
+	"Stereo", NULL, NULL, NULL, 0,
+	{
+		{  0,   0, 200,  20, 0,					"stereo",											FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
+		{ 20,  40, 150,  50, 0,					"enable stereo mode",								FONT_Small, TEXTFLAG_CentreY,				&StereoEnabled,			NULL,						SelectFlatMenuToggle,	DrawFlatMenuToggle,	NULL, 0 },		 
+		{ 20,  60, 150,  70, SLIDER_User,		"right eye color",									FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,	&StereoColorSlider,	NULL,					SelectSlider,			DrawFlatMenuSlider,			NULL, 0 },		 
+		{ 20, 140, 100, 150, 0,					"back",												FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
+		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
+	}
+};
+#endif // OPENGL
+
 MENU	MENU_NEW_Visuals = {
 	"", NULL, NULL, NULL, TITLE_TIMER_Visuals,
 	{
 		{  0,   0, 200,  20, 0,					LT_MENU_NEW_Visuals0 /*"Visuals"*/,					FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,	NULL,			NULL,						NULL,					DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  40, 200,  50, 0,					LT_MENU_NEW_Visuals1 /*"Change Detail Levels"*/,	FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_DetailLevels,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
 		{ 20,  60, 200,  70, 0,					LT_MENU_NEW_Visuals2 /*"Change Screen Res"*/,		FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_ScreenRes,		MenuChange,				DrawFlatMenuItem,	NULL, 0 },
-		{ 20, 100,  50, 110, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
+		{ 20, 80,  50, 90, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
 		
-		{ 20, 120, 200, 120, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
-
-		{ 20, 140, 100, 150, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
+		{ 20, 100, 200, 100, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
+#ifdef OPENGL // stereo settings
+		{ 20, 120, 200, 130, 0,					"anaglyph stereo 3d options",						FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_VisualsStereo,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },		 
+#endif // OPENGL
+		{ 20, 150, 100, 160, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -9220,6 +9270,7 @@ void GetGamePrefs( void )
 	StereoEyeSep = config_get_float( "StereoEyeSep", 20 );
 	StereoFocalDist = config_get_float( "StereoFocalDist", 750 );
 	StereoRightColor = config_get_float( "StereoRightColor", ST_CYAN );
+	StereoColorSlider.value = StereoRightColor;
 #endif
 }
 
