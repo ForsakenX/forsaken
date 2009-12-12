@@ -724,31 +724,6 @@ read_name( FILE *f, USERCONFIG *u, char *last_token )
 		return 0;
 }
 
-uint32 EncodePlayerName( char *name )
-{
-	uint32 code, temp;
-	uint8 i;
-
-	code = 0;
-	for ( i = 0; i < strlen( name ); i++ )
-	{
-		if ( i < 4 )
-		{
-			code |= name[ i ];
-			code <<= 8;
-		}
-		else
-		{
-			temp = 0;
-			temp |= name[ i ];
-			temp <<= i % 4; 
-			code ^= temp;
-		}
-	}
-
-	return ( code ^ 0x1a7d3f08 );
-}
-
 static int
 read_invert_pitch( FILE *f, USERCONFIG *u, char *last_token )
 {
