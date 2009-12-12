@@ -19,6 +19,9 @@ typedef DWORD COLOR; // bgra
 #ifndef M_PI // defined in mingw
 #define M_PI				3.14159265358979323846F
 #endif
+#ifndef M_PI_2 // pi/2
+#define M_PI_2				1.57079632679489661923
+#endif
 #define	D2R(x)				( ( x ) * ( 1.0F / 57.2957F) )		/* Nick Pelling changed */
 #define	R2D(x)				( ( x ) * 57.2957F )
 #define	SINR(x)				sin( x )
