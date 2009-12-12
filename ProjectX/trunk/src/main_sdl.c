@@ -160,26 +160,27 @@ static void set_window_icon( void )
 static void set_opengl_settings( void )
 {
 #ifdef OPENGL
+	int size;
+	int mode = render_info.default_mode.bpp;
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,	1  );
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
+	// this causes issues on at least one card I've seen.
+	// best to leave this as an option.  if someone says they have
+	// low frame rate then suggest them to pass -forceaccel on cli
+	if(render_info.force_accel)
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
+	if ( mode != 16 && mode != 24 && mode != 32 )
 	{
-		int mode = render_info.default_mode.bpp;
-		if ( mode != 16 && mode != 24 && mode != 32 )
-		{
-			mode = 24;
-			DebugPrintf("main_sdl: invalid bpp (%d) defaulting to 24\n",mode);
-		}
-		{
-			int size = ( mode > 16 ) ? 8 : 5 ;
-        	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   size);
-	        SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
-        	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  size);
-            SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
-			DebugPrintf("main_sdl: set pixel sizes to %d\n",size);
-			DebugPrintf("main_sdl: set pixel depth to %d\n",mode);
-		}
+		mode = 24;
+		DebugPrintf("main_sdl: invalid bpp (%d) defaulting to 24\n",mode);
 	}
+	size = ( mode > 16 ) ? 8 : 5 ;
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   size);
+    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  size);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
+	DebugPrintf("main_sdl: set pixel sizes to %d\n",size);
+	DebugPrintf("main_sdl: set pixel depth to %d\n",mode);
 #endif
 }
 

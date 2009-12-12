@@ -176,6 +176,11 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 			break;
 		}
 
+		// sdl + opengl setting
+		else if (!strcasecmp(option,"ForceAccel")){
+			render_info.force_accel = TRUE;
+		}
+
 		// off only works in full screen...
 		// turn on vertical syncing
 		else if (!strcasecmp(option,"vSync")){

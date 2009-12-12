@@ -51,6 +51,7 @@ typedef struct {
     BOOL                    ok_to_render;			/* All objects etc. necessary rendering are in ok */
 	BOOL					vsync;					/* vertical sync */
 	float					aspect_ratio;			/* screen aspect ratio */
+	BOOL					force_accel;			/* force 3d acelleration on gl */
 	SDL_Surface*	        screen;
 } render_info_t;
 
