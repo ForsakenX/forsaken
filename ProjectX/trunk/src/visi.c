@@ -985,10 +985,8 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 	int j;
 	float w, h;
 
-#ifdef OPENGL
 	// helper variable used for stereo adjustment
 	float lr;
-#endif
 
 	// calculate clipping planes
 	w = (float) tan( hfov );
