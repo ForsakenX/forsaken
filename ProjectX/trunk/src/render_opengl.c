@@ -212,8 +212,7 @@ static print_info( void )
 		glGetString(GL_SHADING_LANGUAGE_VERSION),
 		(b)?"true":"false");
 
-	DebugPrintf( "gl vendor='%s', renderer='%s', version='%s', extensions='%s', shaders='%s'\n",
-		glGetString(GL_EXTENSIONS));
+	DebugPrintf( "extensions='%s'\n", glGetString(GL_EXTENSIONS));
 }
 
 static set_defaults( void )

@@ -1675,7 +1675,7 @@ char *StereoColorSliderFunc( SLIDER *slider )
 	}
 }
 
-BOOL *SetStereoColor( SLIDER *slider )
+BOOL SetStereoColor( SLIDER *slider )
 {
 	DebugPrintf( "Setting stereo color to %d\n", slider->value );
 	switch( slider->value )

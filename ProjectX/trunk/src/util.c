@@ -117,31 +117,6 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 	}
 }
 
-#ifdef WIN32
-void DebugPrintf( const char * format, ... )
-{
-
-  static char buf1[256], buf2[512];
-  va_list args;
-
-  // command line switch
-  if ( ! Debug )
-    return;
-
-  va_start( args, format );
-  vsprintf( buf1, format, args );
-  sprintf( buf2, "%hs", buf1 );
-
-  OutputDebugString( buf2 );
-
-  va_end( args );
-
-  // add the comment to the log file
-  if( DebugLog )
-	AddCommentToLog( buf2 );
-
-}
-#else
 void DebugPrintf( const char * format, ... )
 {
   char buf[0x4000];
@@ -151,12 +126,15 @@ void DebugPrintf( const char * format, ... )
   vsnprintf( buf, 0x4000, format, args );
   va_end( args );
 
+#ifdef WIN32
+  OutputDebugString( buf );
+#else
   fputs( buf, stderr );
+#endif
 
   if( DebugLog )
     AddCommentToLog( buf );
 }
-#endif
 
 // prints a message only if it wasn't the last one to be printed...
 // this way you can debug game state without getting a message every single loop

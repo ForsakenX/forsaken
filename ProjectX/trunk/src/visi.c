@@ -1110,10 +1110,10 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 		switch( StereoMode )
 		{
 		case ST_LEFT:
-			lr -= 0.5 * StereoFocalDist / StereoEyeSep;
+			lr -= 0.5f * StereoFocalDist / StereoEyeSep;
 			break;
 		case ST_RIGHT:
-			lr += 0.5 * StereoFocalDist / StereoEyeSep;
+			lr += 0.5f * StereoFocalDist / StereoEyeSep;
 		}
 #endif
 		g->projection._31 = lr / vp->Width;
