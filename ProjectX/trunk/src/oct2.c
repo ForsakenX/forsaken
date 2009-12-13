@@ -771,7 +771,6 @@ RENDERMATRIX world = {
     RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(0.0), RENDERVAL(1.0)
 };
 
-#ifdef OPENGL
 extern BOOL StereoEnabled;
 stereo_mode_t StereoMode;
 extern float StereoEyeSep;
@@ -804,7 +803,6 @@ void stereo_adjust( RENDERMATRIX *m )
 
 	m->_31 = (right+left)/(right-left);
 }
-#endif // OPENGL
 
 BOOL SetFOV( float fov )
 {
@@ -853,9 +851,7 @@ BOOL SetFOV( float fov )
 		proj._44 = RENDERVAL( 0.0 );
 	}
 
-#ifdef OPENGL
 	stereo_adjust(&proj);
-#endif
 
 	ProjMatrix._11 = proj._11;
 	ProjMatrix._22 = proj._22;
@@ -3788,10 +3784,8 @@ BOOL MainGame( void ) // bjd
   int i;
   static float fov_inc = 0.0F;
 
-#ifdef OPENGL
   // For stereo
   VECTOR cam_offset;
-#endif
 
 #ifdef DEMO_SUPPORT
   QueryPerformanceCounter((LARGE_INTEGER *) &GameCurrentTime);
@@ -3868,7 +3862,6 @@ BOOL MainGame( void ) // bjd
 
       CurrentCamera.UseLowestLOD = FALSE;
 
-#ifdef OPENGL
       if( StereoEnabled )
       {
         cam_offset.x = StereoEyeSep / 2.0f;
@@ -3913,10 +3906,13 @@ BOOL MainGame( void ) // bjd
         CurrentCamera.Pos.z -= cam_offset.z;
         render_set_filter( 1, 1, 1 );
       }
+
+	  // non stereo - normal rendering
       else
-#endif // OPENGL
-      if( RenderCurrentCamera() != TRUE ) // bjd
-        return FALSE;
+	  {
+		if( RenderCurrentCamera() != TRUE ) // bjd
+			return FALSE;
+	  }
   
       if( RearCameraActive && !RearCameraDisable )
       {

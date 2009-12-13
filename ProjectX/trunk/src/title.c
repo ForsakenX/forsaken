@@ -835,11 +835,9 @@ BOOL BountyBonus;
 BOOL BikeEnginesOn;
 BOOL ToggleTest;
 
-#ifdef OPENGL // stereo configuration options
 BOOL StereoEnabled;
 float StereoEyeSep, StereoFocalDist;
 stereo_right_color_t StereoRightColor;
-#endif
 
 BOOL	CanSelectBike[ MAXBIKETYPES ] =
 {
@@ -1657,8 +1655,6 @@ MENU	MENU_NEW_ScreenRes = {
 	}
 };
 
-#ifdef OPENGL // stereo settings
-
 char *StereoColorSliderFunc( SLIDER *slider )
 {
 	switch( slider->value )
@@ -1703,7 +1699,6 @@ MENU	MENU_NEW_VisualsStereo = {
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
-#endif // OPENGL
 
 MENU	MENU_NEW_Visuals = {
 	"", NULL, NULL, NULL, TITLE_TIMER_Visuals,
@@ -1714,9 +1709,7 @@ MENU	MENU_NEW_Visuals = {
 		{ 20, 80,  50, 90, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
 		
 		{ 20, 100, 200, 100, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
-#ifdef OPENGL // stereo settings
 		{ 20, 120, 200, 130, 0,					"anaglyph stereo 3d options",						FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_VisualsStereo,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },		 
-#endif // OPENGL
 		{ 20, 150, 100, 160, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -9263,15 +9256,12 @@ void GetGamePrefs( void )
     GameType                         = config_get_int( "GameType",					GAME_Normal );
 	CLAMP( GameType, MAX_GAMETYPE );
 
-#ifdef OPENGL
 	// Stereo options
-
 	StereoEnabled = config_get_bool( "StereoEnabled", FALSE );
 	StereoEyeSep = config_get_float( "StereoEyeSep", 20 );
 	StereoFocalDist = config_get_float( "StereoFocalDist", 750 );
 	StereoRightColor = config_get_float( "StereoRightColor", ST_CYAN );
 	StereoColorSlider.value = StereoRightColor;
-#endif
 }
 
 /*===================================================================
@@ -9361,14 +9351,11 @@ void SetGamePrefs( void )
 	config_set_int( "FlagScore",				GoalScoreSlider.value );
 	GoalScore = GoalScoreSlider.value;
 
-#ifdef OPENGL
 	// Stereo options
 	config_set_bool( "StereoEnabled",			StereoEnabled );
 	config_set_float( "StereoEyeSep",			StereoEyeSep );
 	config_set_float( "StereoFocalDist",		StereoFocalDist );
 	config_set_float( "StereoRightColor",		StereoRightColor );
-#endif
-
 
 	config_save();
 }

@@ -967,14 +967,11 @@ ProcessVisiblePortal( CAMERA *cam, VISLIST *v, VISTREE *t, EXTENT *e )
 	}
 }
 
-
-#ifdef OPENGL
 extern stereo_mode_t StereoMode;
 extern float StereoEyeSep;
 extern float StereoFocalDist;
-#endif
-
 extern render_info_t render_info;
+
 void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 {
 	VISLIST *v;
@@ -1106,7 +1103,7 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 		g->projection._11 = ( cam->Proj._11 * v->viewport->Width ) / vp->Width;
 		g->projection._22 = ( cam->Proj._22 * v->viewport->Height ) / vp->Height;
 		lr = 2.0F * ( ( v->viewport->X + v->viewport->Width * 0.5F ) - ( vp->X + vp->Width * 0.5F ) );
-#ifdef OPENGL
+
 		switch( StereoMode )
 		{
 		case ST_LEFT:
@@ -1115,7 +1112,7 @@ void FindVisible( CAMERA *cam, MLOADHEADER *Mloadheader )
 		case ST_RIGHT:
 			lr += 0.5f * StereoFocalDist / StereoEyeSep;
 		}
-#endif
+
 		g->projection._31 = lr / vp->Width;
 		g->projection._32 = -2.0F * ( ( v->viewport->Y + v->viewport->Height * 0.5F )
 									- ( vp->Y + vp->Height * 0.5F ) )

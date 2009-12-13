@@ -27,6 +27,15 @@ extern "C" {
 #define D3DFVF_TLVERTEX	(D3DFVF_XYZRHW | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 #define D3DFVF_LVERTEX    D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1
 
+#define STATE( K, V ) \
+	lpD3DDevice->SetRenderState( K, V );
+
+#define TSTATE( N, K, V ) \
+	lpD3DDevice->SetTextureStageState( N, K, V );
+
+#define SSTATE( N, K, V ) \
+	lpD3DDevice->SetSamplerState( N, K, V );
+
 // prototypes
 static BOOL init_render_states( render_info_t * info );
 
@@ -401,6 +410,16 @@ BOOL render_reset( render_info_t * info )
 	return TRUE;
 }
 
+void render_set_filter( BOOL red, BOOL green, BOOL blue )
+{
+	STATE( D3DRS_COLORWRITEENABLE, 
+			  D3DCOLORWRITEENABLE_ALPHA | 
+			  (blue?D3DCOLORWRITEENABLE_BLUE:0) | 
+			  (green?D3DCOLORWRITEENABLE_GREEN:0) |
+			  (red?D3DCOLORWRITEENABLE_RED:0)
+	);
+}
+
 BOOL render_flip( render_info_t * info )
 {
 	HRESULT hr;
@@ -425,15 +444,6 @@ BOOL render_flip( render_info_t * info )
 	}
 	return TRUE;
 }
-
-#define STATE( K, V ) \
-	lpD3DDevice->SetRenderState( K, V );
-
-#define TSTATE( N, K, V ) \
-	lpD3DDevice->SetTextureStageState( N, K, V );
-
-#define SSTATE( N, K, V ) \
-	lpD3DDevice->SetSamplerState( N, K, V );
 
 // c helper
 void render_state( D3DRENDERSTATETYPE type, int val )
