@@ -416,12 +416,18 @@ BOOL render_reset( render_info_t * info )
 // structure for the device.
 void render_set_filter( BOOL red, BOOL green, BOOL blue )
 {
-	STATE( D3DRS_COLORWRITEENABLE, 
-			  D3DCOLORWRITEENABLE_ALPHA | 
-			  (blue?D3DCOLORWRITEENABLE_BLUE:0) | 
-			  (green?D3DCOLORWRITEENABLE_GREEN:0) |
-			  (red?D3DCOLORWRITEENABLE_RED:0)
-	);
+	DWORD flags = (0 | D3DCOLORWRITEENABLE_ALPHA);
+	
+	if(blue)
+		flags |= D3DCOLORWRITEENABLE_BLUE;
+	
+	if(green)
+		flags |= D3DCOLORWRITEENABLE_GREEN;
+	
+	if(red)
+		flags |= D3DCOLORWRITEENABLE_RED;
+
+	STATE( D3DRS_COLORWRITEENABLE, flags );
 }
 
 BOOL render_flip( render_info_t * info )
