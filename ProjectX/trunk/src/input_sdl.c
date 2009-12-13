@@ -398,6 +398,13 @@ BOOL handle_events( void )
 			app_mouse_motion( _event.motion );
 			break;
 
+		case SDL_JOYAXISMOTION:
+		case SDL_JOYBALLMOTION:
+		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYHATMOTION:
+			DebugPrintf("joystick event!\n");
+			break;
+
 		case SDL_ACTIVEEVENT:
 			app_active( _event.active );
 			break;
@@ -449,6 +456,8 @@ BOOL joysticks_init(void)
 {
 	int i, j, k;
 
+	memset(JoystickInfo, 0, sizeof(JOYSTICKINFO)*MAX_JOYSTICKS);
+
 	Num_Joysticks = SDL_NumJoysticks();
 
 	DebugPrintf( "joysticks_init: %d joysticks connected\n", Num_Joysticks );
@@ -459,8 +468,6 @@ BOOL joysticks_init(void)
 	for (i = 0; i < Num_Joysticks; i++)
 	{
 		SDL_Joystick * joy = SDL_JoystickOpen(i);
-
-		memset(&JoystickInfo[i], 0, sizeof(JoystickInfo[i]));
 
 		// failed to open joystick
 		if(!joy)
@@ -510,22 +517,22 @@ BOOL joysticks_init(void)
 			JoystickInfo[i].Axis[j].name =
 				(char*) malloc (MAX_JOYNAME+1);
 
-			snprintf(JoystickInfo[i].Axis[j].name,
-				sizeof(MAX_JOYNAME+1),
+			sprintf(
+				JoystickInfo[i].Axis[j].name,
 				"Axis %d",
-				i);
+				i
+			);
 		}
 
-		for( i = 0; i < JoystickInfo[i].NumButtons; i++ )
+		for( j = 0; j < JoystickInfo[i].NumButtons; j++ )
 		{
 			JoystickInfo[i].Button[j].action = SHIPACTION_Nothing;
 
 			JoystickInfo[i].Button[j].name = 
 				(char *) malloc (MAX_JOYNAME+1);
-  
-			snprintf(
-				JoystickInfo[i].Button[j].name, 
-				MAX_JOYNAME+1,
+
+			sprintf(
+				JoystickInfo[i].Button[j].name,
 				"Button %d", 
 				i
 			);
@@ -536,11 +543,10 @@ BOOL joysticks_init(void)
 			JoystickInfo[i].POV[j].name = 
 				(char *) malloc (MAX_JOYNAME+1);
   
-			snprintf(
-				JoystickInfo[i].POV[j].name, 
-				MAX_JOYNAME+1,
+			sprintf(
+				JoystickInfo[i].POV[j].name,
 				"Hat %d", 
-				i
+				j
 			);
 
 			for (k = 0; k < MAX_POV_DIRECTIONS; k++)
@@ -551,12 +557,11 @@ BOOL joysticks_init(void)
 				 JoystickInfo[i].POV[j].dirname[k] = 
 					(char *) malloc (MAX_JOYNAME+1);
 
-				snprintf(
+				sprintf(
 					JoystickInfo[i].POV[j].dirname[k],
-					MAX_JOYNAME+1,
 					"%s %d",
 					JoystickInfo[i].POV[j].name,
-					j
+					k
 				);
 			}
 		}
@@ -570,27 +575,41 @@ BOOL joysticks_cleanup( void )
 	int i, j, k;
 	for (i = 0; i < Num_Joysticks; i++)
 	{
-		if(SDL_JoystickOpened(i))
-			SDL_JoystickClose(
-				JoystickInfo[i].sdl_joy
-			);
-		
-		free(JoystickInfo[i].Name);
-		JoystickInfo[i].Name = NULL;
-		
 		if ( ! JoystickInfo[ i ].connected )
 			continue;
 
-		for (j = 0; j < JoystickInfo[j].NumButtons; i++)
+		if(JoystickInfo[i].Name)
 		{
-			free(JoystickInfo[i].Button[j].name);
-			JoystickInfo[i].Button[j].name = NULL;
+			free(JoystickInfo[i].Name);
+			JoystickInfo[i].Name = NULL;
 		}
 
-		for (j = 0; j < JoystickInfo[j].NumPOVs; j++)
+		if(JoystickInfo[i].sdl_joy)
 		{
-			free(JoystickInfo[j].POV[j].name);
-			JoystickInfo[j].POV[j].name = NULL;
+			if(SDL_JoystickOpened(i))
+			{
+				SDL_JoystickClose(
+					JoystickInfo[i].sdl_joy
+				);
+			}
+		}
+		
+		for (j = 0; j < JoystickInfo[i].NumButtons; i++)
+		{
+			if(JoystickInfo[i].Button[j].name)
+			{
+				free(JoystickInfo[i].Button[j].name);
+				JoystickInfo[i].Button[j].name = NULL;
+			}
+		}
+
+		for (j = 0; j < JoystickInfo[i].NumPOVs; j++)
+		{
+			if(JoystickInfo[i].POV[j].name)
+			{
+				free(JoystickInfo[i].POV[j].name);
+				JoystickInfo[i].POV[j].name = NULL;
+			}
 			for ( k = 0; k < MAX_POV_DIRECTIONS; k++ )
 			{
 				if ( JoystickInfo[ i ].POV[ j ].dirname[ k ] )
@@ -598,7 +617,6 @@ BOOL joysticks_cleanup( void )
 					free( JoystickInfo[ i ].POV[ j ].dirname[ k ] );
 					JoystickInfo[ i ].POV[ j ].dirname[ k ] = NULL;
 				}
-				JoystickInfo[ i ].POV[ j ].dirname[ k ] = NULL;
 			}
 		}
 
@@ -606,8 +624,11 @@ BOOL joysticks_cleanup( void )
 		{
 			if (JoystickInfo[i].Axis[j].exists)
 			{
-				free(JoystickInfo[i].Axis[j].name);
-				JoystickInfo[i].Axis[j].name = NULL;
+				if(JoystickInfo[i].Axis[j].name)
+				{
+					free(JoystickInfo[i].Axis[j].name);
+					JoystickInfo[i].Axis[j].name = NULL;
+				}
 			}
 		}
 	}

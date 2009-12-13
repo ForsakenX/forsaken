@@ -347,9 +347,6 @@ void CleanUpAndPostQuit(void)
     if (QuitRequested)
 		return;
 
-	//
-	SDL_Quit();
-
 	// kill stuff
     ReleaseView();
 
@@ -370,6 +367,9 @@ void CleanUpAndPostQuit(void)
 
 	// we dont control the cursor anymore
 	input_grab( FALSE );
+	
+	// should come last
+	SDL_Quit();
 }
 
 //
