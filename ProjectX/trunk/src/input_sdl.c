@@ -456,7 +456,7 @@ BOOL joysticks_init(void)
 {
 	int i, j, k;
 
-	memset(JoystickInfo, 0, sizeof(JOYSTICKINFO)*MAX_JOYSTICKS);
+	joysticks_cleanup();
 
 	Num_Joysticks = SDL_NumJoysticks();
 
@@ -499,20 +499,13 @@ BOOL joysticks_init(void)
 			JoystickInfo[i].NumPOVs
 		);
 
-		for (j = AXIS_Start; j <= AXIS_End; j++)
+		for (j = 0; j < JoystickInfo[i].NumAxis; j++)
 		{	
-			JoystickInfo[i].Axis[j].action = SHIPACTION_Nothing;
-			JoystickInfo[i].Axis[j].inverted = FALSE;
-			JoystickInfo[i].Axis[j].deadzone = 20;
-			JoystickInfo[i].Axis[j].fine = TRUE;
-
-			if(j >= JoystickInfo[i].NumAxis)
-			{
-				JoystickInfo[i].Axis[j].exists = FALSE;
-				continue;
-			}
-
-			JoystickInfo[i].Axis[j].exists = TRUE;
+			JoystickInfo[i].Axis[j].action		= SHIPACTION_Nothing;
+			JoystickInfo[i].Axis[j].inverted	= FALSE;
+			JoystickInfo[i].Axis[j].deadzone	= 20;
+			JoystickInfo[i].Axis[j].fine		= TRUE;
+			JoystickInfo[i].Axis[j].exists		= TRUE;
 
 			JoystickInfo[i].Axis[j].name =
 				(char*) malloc (MAX_JOYNAME+1);
@@ -575,14 +568,17 @@ BOOL joysticks_cleanup( void )
 	int i, j, k;
 	for (i = 0; i < Num_Joysticks; i++)
 	{
-		if ( ! JoystickInfo[ i ].connected )
-			continue;
+		JoystickInfo[i].assigned = FALSE;
+		JoystickInfo[i].connected = FALSE;
+		JoystickInfo[i].NumButtons = 0;
+		JoystickInfo[i].NumPOVs = 0;
+		JoystickInfo[i].NumAxis = 0;
 
 		if(JoystickInfo[i].Name)
 		{
 			free(JoystickInfo[i].Name);
-			JoystickInfo[i].Name = NULL;
 		}
+		JoystickInfo[i].Name = NULL;
 
 		if(JoystickInfo[i].sdl_joy)
 		{
@@ -593,14 +589,15 @@ BOOL joysticks_cleanup( void )
 				);
 			}
 		}
-		
+
 		for (j = 0; j < JoystickInfo[i].NumButtons; i++)
 		{
 			if(JoystickInfo[i].Button[j].name)
 			{
 				free(JoystickInfo[i].Button[j].name);
-				JoystickInfo[i].Button[j].name = NULL;
 			}
+			JoystickInfo[i].Button[j].name = NULL;
+			JoystickInfo[i].Button[j].action = SHIPACTION_Nothing;
 		}
 
 		for (j = 0; j < JoystickInfo[i].NumPOVs; j++)
@@ -608,28 +605,32 @@ BOOL joysticks_cleanup( void )
 			if(JoystickInfo[i].POV[j].name)
 			{
 				free(JoystickInfo[i].POV[j].name);
-				JoystickInfo[i].POV[j].name = NULL;
 			}
+			JoystickInfo[i].POV[j].name = NULL;
 			for ( k = 0; k < MAX_POV_DIRECTIONS; k++ )
 			{
 				if ( JoystickInfo[ i ].POV[ j ].dirname[ k ] )
 				{
 					free( JoystickInfo[ i ].POV[ j ].dirname[ k ] );
-					JoystickInfo[ i ].POV[ j ].dirname[ k ] = NULL;
 				}
+				JoystickInfo[ i ].POV[ j ].dirname[ k ] = NULL;
+				JoystickInfo[ i ].POV[ j ].action[ k ] = SHIPACTION_Nothing;
 			}
 		}
 
 		for (j = 0; j < MAX_JOYSTICK_AXIS; j++)
 		{
-			if (JoystickInfo[i].Axis[j].exists)
+			if(JoystickInfo[i].Axis[j].name)
 			{
-				if(JoystickInfo[i].Axis[j].name)
-				{
-					free(JoystickInfo[i].Axis[j].name);
-					JoystickInfo[i].Axis[j].name = NULL;
-				}
+				free(JoystickInfo[i].Axis[j].name);
 			}
+			JoystickInfo[i].Axis[j].name = NULL;
+			JoystickInfo[i].Axis[j].exists = FALSE;
+			JoystickInfo[i].Axis[j].action = SHIPACTION_Nothing;
+			JoystickInfo[i].Axis[j].sensitivity = 0.0f;
+			JoystickInfo[i].Axis[j].deadzone = 0;
+			JoystickInfo[i].Axis[j].inverted = FALSE;
+			JoystickInfo[i].Axis[j].fine = FALSE;
 		}
 	}
 	return TRUE;

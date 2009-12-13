@@ -14061,7 +14061,23 @@ void InitJoystickAxisConfig ( MENU *Menu)
 	{
 		if (JoystickInfo[JoystickMap[JoystickList.selected_item]].Axis[i].exists)
 		{
-			strncpy( JoystickAxisList.item[j], JoystickInfo[JoystickMap[JoystickList.selected_item]].Axis[i].name, sizeof(JoystickList.item[0]));
+			if(JoystickInfo[JoystickMap[JoystickList.selected_item]].Axis[i].name)
+			{
+				strncpy(
+					JoystickAxisList.item[j],
+					JoystickInfo[JoystickMap[JoystickList.selected_item]].Axis[i].name,
+					sizeof(JoystickList.item[0])
+				);
+			}
+			else
+			{
+				snprintf(
+					JoystickAxisList.item[j],
+					sizeof(JoystickList.item[0]),
+					"Axis %d",
+					j
+				);
+			}
 			JoystickAxisList.items++;
 			AxisMap[j] = i;
 			j++;
