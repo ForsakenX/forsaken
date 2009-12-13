@@ -356,6 +356,22 @@ void reset_mouse_motion( void )
 	//mouse_state.y = 0;
 }
 
+void app_joy_axis( SDL_JoyAxisEvent axis )
+{
+}
+
+void app_joy_ball( SDL_JoyBallEvent ball )
+{
+}
+
+void app_joy_button( SDL_JoyButtonEvent button )
+{
+}
+
+void app_joy_hat( SDL_JoyHatEvent hat )
+{
+}
+
 void reset_events( void )
 {
 	reset_mouse_motion();
@@ -399,10 +415,19 @@ BOOL handle_events( void )
 			break;
 
 		case SDL_JOYAXISMOTION:
+			app_joy_axis( _event.jaxis );
+			break;
+
 		case SDL_JOYBALLMOTION:
+			app_joy_ball( _event.jball );
+			break;
+
 		case SDL_JOYBUTTONDOWN:
+			app_joy_button( _event.jbutton );
+			break;
+
 		case SDL_JOYHATMOTION:
-			DebugPrintf("joystick event!\n");
+			app_joy_hat( _event.jhat );
 			break;
 
 		case SDL_ACTIVEEVENT:

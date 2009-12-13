@@ -177,7 +177,6 @@ char *ShipAxisSeperateText[NUM_SHIP_AXIS_ACTIONS * 2];
 extern char *JoystickPOVDirections[];
 extern char *ShipAxisText[];
 extern int ShipAxisLookup[];
-extern uint16 new_input;
 
 #ifdef DINPUTJOY
 extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];

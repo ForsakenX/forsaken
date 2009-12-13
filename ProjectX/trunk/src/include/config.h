@@ -8,13 +8,6 @@
 #define MAX_PRIMARY_WEAPONS		(6)
 #define MAX_SECONDARY_WEAPONS	(11)
 
-#define MAX_JOYSTICKS			16
-#define MAX_JOYSTICK_BUTTONS	128
-#define MAX_JOYSTICK_POVS		4
-#define MAX_JOYSTICK_AXIS		8
-#define MAX_JOYSTICK_TEXT		128
-#define MAX_JOYNAME				16	// length of joystick object description, ie. "X Axis"
-
 #define DIK_JOYSTICK			(0x300)
 #define DIK_JOYSTICK_POV		(0x080)
 

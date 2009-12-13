@@ -170,8 +170,6 @@ extern int
 WhichJoystickPressed( void );
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum);
-BOOL PollJoystick( int joysticknum );
-
 void SetUpJoystickAxis(int joystick);
 BOOL IsJoystickButtonPressed( int joysticknum );
 BOOL IsAnyJoystickButtonPressed( void );

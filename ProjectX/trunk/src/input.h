@@ -9,8 +9,14 @@
 #include "SDL.h"
 #include "controls.h"
 
-// number of state tables to keep
+/////////////
+// Buffers //
+/////////////
+
 #define INPUT_BUFFERS (2)
+
+int old_input;
+int new_input;
 
 ////////////
 // Events //
@@ -80,6 +86,13 @@ void reset_keyboard_buffer( void );
 // Joysticks //
 ///////////////
 
+#define MAX_JOYSTICKS			16
+#define MAX_JOYSTICK_BUTTONS	128
+#define MAX_JOYSTICK_POVS		4
+#define MAX_JOYSTICK_AXIS		8
+#define MAX_JOYSTICK_TEXT		128
+#define MAX_JOYNAME				16
+
 int Num_Joysticks;
 
 typedef struct {
@@ -98,8 +111,6 @@ typedef struct {
 } JOYSTICKINFO;
 
 JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
-
-BYTE js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 
 BOOL joysticks_init(void);
 BOOL joysticks_cleanup( void );

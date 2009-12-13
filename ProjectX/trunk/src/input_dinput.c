@@ -406,5 +406,5 @@ BOOL joysticks_cleanup( void )
 	return TRUE;
 }
 
-#endif // WIN32
+#endif // DINPUTJOY
 
