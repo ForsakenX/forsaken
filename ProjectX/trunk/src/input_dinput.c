@@ -8,14 +8,9 @@
 
 int Num_Joysticks = 0;
 
-#ifndef WIN32
+#ifndef DINPUTJOY
 
 BOOL TermDInput( void )
-{
-	return TRUE;
-}
-
-BOOL InitDInputJS(void)
 {
 	return TRUE;
 }
@@ -255,7 +250,7 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
 
 extern render_info_t render_info;
 
-BOOL InitDInputJS(void)
+BOOL joysticks_init(void)
 {
   HRESULT  err;
   DIPROPDWORD dipdw =
@@ -356,7 +351,7 @@ BOOL InitDInputJS(void)
 
   }
 
-  DebugPrintf( "InitDInputJS: %d joysticks connected\n", Num_Joysticks );
+  DebugPrintf( "joysticks_init: %d joysticks connected\n", Num_Joysticks );
 
   // if we get here, all DirectInput objects were created ok
   return TRUE;

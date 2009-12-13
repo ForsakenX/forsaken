@@ -444,3 +444,9 @@ BOOL handle_events( void )
 	return TRUE;
 }
 
+#ifndef DINPUTJOY
+BOOL joysticks_init(void)
+{
+	return TRUE;
+}
+#endif

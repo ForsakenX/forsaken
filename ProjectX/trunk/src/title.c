@@ -349,7 +349,6 @@ void InGameSaveASinglePlayerGame( MENUITEM *item );
 char TypeFileName( TEXT *t, char c );
 
 void LoadLevelText( MENU *Menu );
-BOOL TermDInput( void );
 
 #ifdef DINPUTJOY
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );

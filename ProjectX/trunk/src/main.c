@@ -389,7 +389,7 @@ extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
 extern BOOL InitScene(void);
-extern BOOL InitDInputJS(void);
+extern BOOL joysticks_init(void);
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
 extern BYTE MyGameStatus;
@@ -465,14 +465,14 @@ static BOOL AppInit( char * lpCmdLine )
 	// initialize direct input
 	// This requires an application and window handle
 	// so it most not come earlier than here
-	if (!InitDInputJS())
+	if (!joysticks_init())
 	{
 		Msg("Failed to initialized Direct Input!");
 		return FALSE;
 	}
 	
-	// this needs to come after InitDInputJS
-	// because InitDInputJS will wipe the joystick settings
+	// this needs to come after joysticks_init
+	// because joysticks_init will wipe the joystick settings
 	GetDefaultPilot();
 
 // this is where it starts to take so long cause it scans directory for dynamic sound files...
