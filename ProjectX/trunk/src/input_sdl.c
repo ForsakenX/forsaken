@@ -520,7 +520,7 @@ BOOL joysticks_init(void)
 			sprintf(
 				JoystickInfo[i].Axis[j].name,
 				"Axis %d",
-				i
+				j
 			);
 		}
 
@@ -534,7 +534,7 @@ BOOL joysticks_init(void)
 			sprintf(
 				JoystickInfo[i].Button[j].name,
 				"Button %d", 
-				i
+				j
 			);
 		}
 
