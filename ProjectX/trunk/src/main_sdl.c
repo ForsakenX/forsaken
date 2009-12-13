@@ -18,7 +18,7 @@ BOOL sdl_init( void )
 	ver = *SDL_Linked_Version();
 	DebugPrintf("SDL runtime version: %u.%u.%u\n", ver.major, ver.minor, ver.patch);
 
-	if( SDL_Init( SDL_INIT_VIDEO  ) < 0 || !SDL_GetVideoInfo() )
+	if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 || !SDL_GetVideoInfo() )
 	{
 		Msg("Failed to initialize sdl: %s\n",SDL_GetError());
 		return FALSE;

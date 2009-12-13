@@ -9,6 +9,22 @@
 #include "SDL.h"
 #include "controls.h"
 
+// number of state tables to keep
+#define INPUT_BUFFERS (2)
+
+////////////
+// Events //
+////////////
+
+int input_grabbed;
+void input_grab( BOOL grab );
+
+BOOL handle_events( void );
+
+///////////
+// Mouse //
+///////////
+
 #define MAX_MOUSE_BUTTONS (3)
 
 typedef struct {
@@ -39,19 +55,6 @@ enum {
 	DOWN_MOUSE
 };
 
-#define MAX_KEY_BOARD_BUFFER 100
-SDL_keysym keyboard_buffer[MAX_KEY_BOARD_BUFFER];
-int keyboard_buffer_count;
-int buffered_key_released( SDLKey key );
-void reset_keyboard_buffer( void );
-
-int input_grabbed;
-void input_grab( BOOL grab );
-
-BOOL handle_events( void );
-
-#define INPUT_BUFFERS		(2)
-
 mouse_state_t mouse_states[ INPUT_BUFFERS ];
 
 #define MOUSE_BUTTON_HELD( B )    ( mouse_states[ new_input ].buttons[ B ] )
@@ -62,6 +65,28 @@ mouse_state_t mouse_states[ INPUT_BUFFERS ];
 #define MOUSE_WHEEL_DOWN()				( mouse_states[ new_input ].wheel < 0 )
 #define MOUSE_WHEEL_UP_PRESSED()		( !( mouse_states[ old_input ].wheel > 0 ) && ( mouse_states[ new_input ].wheel > 0 ) )
 #define MOUSE_WHEEL_DOWN_PRESSED()      ( !( mouse_states[ old_input ].wheel < 0 ) && ( mouse_states[ new_input ].wheel < 0 ) )
+
+//////////////
+// Keyboard //
+//////////////
+
+#define MAX_KEY_BOARD_BUFFER 100
+SDL_keysym keyboard_buffer[MAX_KEY_BOARD_BUFFER];
+int keyboard_buffer_count;
+int buffered_key_released( SDLKey key );
+void reset_keyboard_buffer( void );
+
+///////////////
+// Joysticks //
+///////////////
+
+int Num_Joysticks;
+
+BYTE js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
+JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
+
+BOOL joysticks_init(void);
+BOOL joysticks_cleanup( void );
 
 #endif
 

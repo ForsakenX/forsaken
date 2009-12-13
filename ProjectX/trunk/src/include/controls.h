@@ -1,6 +1,7 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+#include "SDL.h"
 #include "config.h"
 
 /*===================================================================
@@ -105,6 +106,10 @@ enum
 typedef struct {
 	BOOL assigned;
 	BOOL connected;
+#ifndef DINPUTJOY
+	SDL_Joystick * sdl_joy;
+	const
+#endif
 	char *Name;
 	int NumButtons;
 	JOYSTICKBTN Button[MAX_JOYSTICK_BUTTONS];

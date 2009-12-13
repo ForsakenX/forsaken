@@ -3,19 +3,9 @@
 #include "util.h"
 #include "render.h"
 #include "SDL.h"
-
 #include <stdio.h>
 
-int Num_Joysticks = 0;
-
-#ifndef DINPUTJOY
-
-BOOL TermDInput( void )
-{
-	return TRUE;
-}
-
-#else
+#ifdef DINPUTJOY
 
 #include <windows.h>
 #include "dinput.h"
@@ -35,8 +25,7 @@ LPDIRECTINPUT             lpdi = NULL;
 LPDIRECTINPUTDEVICE2      lpdiJoystick[MAX_JOYSTICKS];
 DIDEVCAPS           diJoystickCaps[MAX_JOYSTICKS];
 
-BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, 
-                                  LPVOID pvRef) 
+BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef) 
 { 
    LPDIRECTINPUT pdi = pvRef; 
    LPDIRECTINPUTDEVICE pdev;
@@ -44,8 +33,7 @@ BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst,
    char tempstr[255];
 
    // create the DirectInput joystick device 
-   if (pdi->lpVtbl->CreateDevice(pdi, &pdinst->guidInstance, 
-                                 &pdev, NULL) != DI_OK) 
+   if (pdi->lpVtbl->CreateDevice(pdi, &pdinst->guidInstance, &pdev, NULL) != DI_OK) 
    { 
       return DIENUM_CONTINUE; 
    } 
@@ -78,8 +66,8 @@ BOOL FAR PASCAL InitJoystickInput(LPCDIDEVICEINSTANCE pdinst,
 /* this is called for object in our joystick */
 /* objects can be buttons, axis, sliders etc... */
 BOOL CALLBACK DIEnumDeviceObjectsProc( 
-                      LPCDIDEVICEOBJECTINSTANCE lpddoi, /* the object instance */
-                      LPVOID pvRef) /* pointer to void we passed in from calling block */
+       LPCDIDEVICEOBJECTINSTANCE lpddoi, /* the object instance */
+       LPVOID pvRef) /* pointer to void we passed in from calling block */
 { 
 
   int joysticknum, axis, dir;
@@ -143,8 +131,9 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
   {
 
     /* allocate the memory */
-    JoystickInfo[joysticknum].Button[JoystickInfo[joysticknum].NumButtons].name = 
-        (char *) malloc (MAX_JOYNAME+1);
+    JoystickInfo[joysticknum].Button[
+		JoystickInfo[joysticknum].NumButtons
+	].name = (char *) malloc (MAX_JOYNAME+1);
   
     /* assign all /0's to the stack */
     memset (
@@ -164,7 +153,9 @@ BOOL CALLBACK DIEnumDeviceObjectsProc(
     else
       /* use generic name */
       snprintf(
-         JoystickInfo[joysticknum].Button[JoystickInfo[joysticknum].NumButtons].name,
+         JoystickInfo[joysticknum].Button[
+			 JoystickInfo[joysticknum].NumButtons
+		 ].name,
          MAX_JOYNAME,
          "Button %d",
          JoystickInfo[joysticknum].NumButtons
@@ -357,7 +348,7 @@ BOOL joysticks_init(void)
   return TRUE;
 }
 
-BOOL TermDInput( void )
+BOOL joysticks_cleanup( void )
 {
     int i;
 

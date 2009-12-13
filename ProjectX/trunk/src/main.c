@@ -338,7 +338,6 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 extern void ReleaseView(void);
 extern void DestroySound( int flags );
 extern void render_cleanup( render_info_t * info );
-extern BOOL TermDInput(void);
 extern void ReleaseScene(void);
 
 BOOL QuitRequested = FALSE;
@@ -361,7 +360,7 @@ void CleanUpAndPostQuit(void)
 	DestroySound( DESTROYSOUND_All );
 
 	// destroy direct input
-	TermDInput();
+	joysticks_cleanup();
   
 	// release the scene
 	ReleaseScene();
@@ -389,7 +388,6 @@ extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
 extern BOOL InitScene(void);
-extern BOOL joysticks_init(void);
 extern BOOL ShowFrameRate;
 extern BOOL ShowInfo;
 extern BYTE MyGameStatus;
@@ -467,7 +465,7 @@ static BOOL AppInit( char * lpCmdLine )
 	// so it most not come earlier than here
 	if (!joysticks_init())
 	{
-		Msg("Failed to initialized Direct Input!");
+		Msg("Failed to initialized joysticks!");
 		return FALSE;
 	}
 	

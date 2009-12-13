@@ -410,6 +410,10 @@ BOOL render_reset( render_info_t * info )
 	return TRUE;
 }
 
+// TODO - check caps
+// This functionality is available if the D3DPMISCCAPS_COLORWRITEENABLE
+// capabilities bit is set in the PrimitiveMiscCaps member of the >D3DCAPS8
+// structure for the device.
 void render_set_filter( BOOL red, BOOL green, BOOL blue )
 {
 	STATE( D3DRS_COLORWRITEENABLE, 
