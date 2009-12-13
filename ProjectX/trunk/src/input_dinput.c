@@ -348,31 +348,6 @@ BOOL joysticks_init(void)
   return TRUE;
 }
 
-BOOL joysticks_cleanup( void )
-{
-    int i;
-
-  for (i = 0; i < Num_Joysticks; i++)
-  {
-      if (lpdiJoystick[i])
-    {
-      IDirectInputDevice2_Unacquire(lpdiJoystick[i]);
-      IDirectInputDevice2_Release(lpdiJoystick[i]);
-      lpdiJoystick[i]  = NULL;
-    }
-  }
-
-    if (lpdi)
-  {
-    IDirectInputDevice_Release(lpdi);
-    lpdi     = NULL;
-  }
-
-  return TRUE;
-}
-
-
-
 void  ReleaseJoysticks( void )
 {
   int joystick, i, j;
@@ -404,6 +379,31 @@ void  ReleaseJoysticks( void )
       }
     }
   }
+}
+
+BOOL joysticks_cleanup( void )
+{
+	int i;
+
+	for (i = 0; i < Num_Joysticks; i++)
+	{
+		if (lpdiJoystick[i])
+		{
+			IDirectInputDevice2_Unacquire(lpdiJoystick[i]);
+			IDirectInputDevice2_Release(lpdiJoystick[i]);
+			lpdiJoystick[i]  = NULL;
+		}
+	}
+
+	if (lpdi)
+	{
+		IDirectInputDevice_Release(lpdi);
+		lpdi     = NULL;
+	}
+
+	ReleaseJoysticks();
+
+	return TRUE;
 }
 
 #endif // WIN32

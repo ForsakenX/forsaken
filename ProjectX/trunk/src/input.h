@@ -82,8 +82,24 @@ void reset_keyboard_buffer( void );
 
 int Num_Joysticks;
 
+typedef struct {
+	BOOL assigned;
+	BOOL connected;
+#ifndef DINPUTJOY
+	SDL_Joystick * sdl_joy;
+#endif
+	char *Name;
+	int NumButtons;
+	JOYSTICKBTN Button[MAX_JOYSTICK_BUTTONS];
+	int NumPOVs;
+	JOYSTICKPOV POV[MAX_JOYSTICK_POVS];
+	int NumAxis;
+	JOYSTICKAXIS Axis[MAX_JOYSTICK_AXIS];
+} JOYSTICKINFO;
+
+JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
+
 BYTE js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
-JOYSTICKINFO  JoystickInfo[MAX_JOYSTICKS];
 
 BOOL joysticks_init(void);
 BOOL joysticks_cleanup( void );

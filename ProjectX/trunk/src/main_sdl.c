@@ -167,7 +167,10 @@ static void set_opengl_settings( void )
 	// best to leave this as an option.  if someone says they have
 	// low frame rate then suggest them to pass -forceaccel on cli
 	if(render_info.force_accel)
+	{
+		DebugPrintf("main_sdl: enabling accelerated visual\n");
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
+	}
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
 	if ( mode != 16 && mode != 24 && mode != 32 )
 	{

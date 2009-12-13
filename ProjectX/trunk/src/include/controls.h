@@ -103,22 +103,6 @@ enum
 #define AXIS_Start AXIS_XAxis
 #define AXIS_End AXIS_SliderAxis1
 
-typedef struct {
-	BOOL assigned;
-	BOOL connected;
-#ifndef DINPUTJOY
-	SDL_Joystick * sdl_joy;
-	const
-#endif
-	char *Name;
-	int NumButtons;
-	JOYSTICKBTN Button[MAX_JOYSTICK_BUTTONS];
-	int NumPOVs;
-	JOYSTICKPOV POV[MAX_JOYSTICK_POVS];
-	int NumAxis;
-	JOYSTICKAXIS Axis[MAX_JOYSTICK_AXIS];
-} JOYSTICKINFO;
-
 #define NUM_SHIP_ACTIONS		SHIPACTION_MAX
 #define NUM_SHIP_AXIS_ACTIONS	7
 
