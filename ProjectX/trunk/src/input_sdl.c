@@ -133,7 +133,7 @@ void app_quit( void )
 		// user wants to quit
 		// let our code know we're quitting and not failing
 		// let the message reach DefWindowProc so it calls CloseWindow
-		QuitRequested = 1;
+		CleanUpAndPostQuit();
 		return;
 	}
 

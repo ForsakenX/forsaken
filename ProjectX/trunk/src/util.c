@@ -167,7 +167,7 @@ int Msg( const char * msg, ... )
 
 	char txt[ 1024 ];
 	va_list args;
-	int res = 0;
+	int res = 1; // return an ok
 
 	va_start( args, msg );
 	vsprintf( txt, msg, args);
