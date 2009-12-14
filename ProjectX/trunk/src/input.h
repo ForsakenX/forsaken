@@ -35,6 +35,8 @@ BOOL handle_events( void );
 // mouse_input_enum if (code > SDL_LAST && < DIK_JOYSTICK)
 // joystick event if code > DIK_JOYSTICK
 
+// TODO - probably ok to rewrite this to simply have codes
+
 #define MAX_INPUT_BUFFER 100
 SDL_keysym input_buffer[MAX_INPUT_BUFFER];
 int input_buffer_count;

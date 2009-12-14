@@ -17,6 +17,30 @@ extern BOOL QuitRequested;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
 
+void input_buffer_send( int code )
+{
+	SDL_keysym key;
+	if( input_buffer_count >= MAX_INPUT_BUFFER )
+		return;
+	memset(&key,0,sizeof(SDL_keysym));
+	key.sym = code;
+	input_buffer[ input_buffer_count++ ] = key;
+}
+
+void input_buffer_reset( void )
+{
+	input_buffer_count = 0;
+}
+
+int input_buffer_find( SDLKey key )
+{
+	int i;
+	for ( i = 0 ; i < input_buffer_count; i++ )
+		if( input_buffer[ i ].sym == key )
+			return 1;
+	return 0;
+}
+
 void input_grab( BOOL grab )
 {
 	// always acquire and hide mouse if in fullscreen
@@ -215,22 +239,9 @@ void app_keyboard( SDL_KeyboardEvent key )
 	// TODO - we could probably have mouse events added here as keyboard events
 	//			to emulate mouse menu navigation... ex: right click maps to escape
 	if( key.type == SDL_KEYDOWN )
-		if( input_buffer_count < MAX_INPUT_BUFFER )
-			input_buffer[ input_buffer_count++ ] = key.keysym;
-}
-
-void input_buffer_reset( void )
-{
-	input_buffer_count = 0;
-}
-
-int input_buffer_find( SDLKey key )
-{
-	int i;
-	for ( i = 0 ; i < input_buffer_count; i++ )
-		if( input_buffer[ i ].sym == key )
-			return 1;
-	return 0;
+	{
+		input_buffer_send(key.keysym.sym);
+	}
 }
 
 // mouse wheel button down/up are sent at same time
@@ -275,13 +286,9 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	// pass down mouse events for menu processing
 	if(  _event.type == SDL_MOUSEBUTTONDOWN )
 	{
-		if( input_buffer_count < MAX_INPUT_BUFFER )
-		{
-			SDL_keysym key;
-			memset(&key,0,sizeof(SDL_keysym));
-			key.sym = _event.button - 1 + LEFT_MOUSE;
-			input_buffer[ input_buffer_count++ ] = key;
-		}
+		// we index mouse starting at 0
+		int button = _event.button - 1;
+		input_buffer_send( button + LEFT_MOUSE );
 	}
 
 	switch( _event.button )
@@ -391,24 +398,10 @@ void app_joy_button( SDL_JoyButtonEvent button )
 	// pass down mouse events for menu processing
 	if(  button.type == SDL_JOYBUTTONDOWN )
 	{
-		if( input_buffer_count < MAX_INPUT_BUFFER )
-		{
-			SDL_keysym key;
-			memset(&key,0,sizeof(SDL_keysym));
-			key.sym = button.button + DIK_JOYSTICK;
-			input_buffer[ input_buffer_count++ ] = key;
-		}
+		input_buffer_send(
+			button.button + DIK_JOYSTICK
+		);
 	}
-}
-
-void input_buffer_send( int code )
-{
-	SDL_keysym key;
-	if( input_buffer_count >= MAX_INPUT_BUFFER )
-		return;
-	memset(&key,0,sizeof(SDL_keysym));
-	key.sym = code;
-	input_buffer[ input_buffer_count++ ] = key;
 }
 
 void app_joy_hat( SDL_JoyHatEvent hat )
