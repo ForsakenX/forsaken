@@ -1070,19 +1070,24 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 	// read in joystickaxis
 	for (axis = AXIS_Start; axis <= AXIS_End; axis++)
 	{
+		// joystick does not have this axis
+		if(!joy->Axis[axis].exists)
+			continue;
+
+		// end of file
 		if ( feof( f ) )
 		{
 		 	joy->Axis[axis].exists = FALSE;
 			continue;
 		}
+
+		// read next axis
 		if (!strcasecmp( last_token, axistoken[axis] ) )
 		{
 			if ( !joy->connected && joy->NumAxis < axis + 1 )
 			{
 				joy->NumAxis = axis + 1;
 			}
-			if(!joy->Axis[axis].exists)
-				continue;
 			if ( fscanf( f, " %d", &num ) != 1 )
 			{
 				fscanf( f, " %80s", last_token );
@@ -1116,6 +1121,8 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 			fscanf( f, " %80s", last_token );
 			joy->Axis[axis].action = num;
 		}
+
+		// axises should not be out of order!
 		else
 		{
 			joy->Axis[axis].exists = FALSE;
