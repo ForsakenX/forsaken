@@ -1,0 +1,2 @@
+If you get an error about OpenAl32.dll not being found then,
+run aolinst.exe to install 32/64 bit libraries for OpenAL.
