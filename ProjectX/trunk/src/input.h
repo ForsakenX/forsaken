@@ -115,5 +115,7 @@ JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 BOOL joysticks_init(void);
 BOOL joysticks_cleanup( void );
 
-#endif
+// this holds the current state of an axis
+long joy_state[ MAX_JOYSTICK_AXIS ];
 
+#endif

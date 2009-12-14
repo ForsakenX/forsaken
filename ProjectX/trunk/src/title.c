@@ -1551,12 +1551,6 @@ MENU MENU_NEW_ConfigJoyAxis = {
 		{ 5, 140, 100, 150, 0, "", FONT_Small, TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)AxisExtremeLeftText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 		{ 100, 140, 195, 150, 0, "", FONT_Small, TEXTFLAG_RightX | TEXTFLAG_CentreY | TEXTFLAG_CheckForRefresh,  (void *)AxisExtremeRightText, NULL, NULL, DrawFlatMenuName, NULL, 0  },
 
-#if 0
-		{ 10, 150, 30, 155, 0, ".", FONT_Small, TEXTFLAG_CentreX, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 90, 150, 110, 155, 0, ".", FONT_Small, TEXTFLAG_CentreX, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 170, 150, 190, 155, 0, ".", FONT_Small, TEXTFLAG_CentreX, NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-#endif
-
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -14381,28 +14375,53 @@ void SetAxisSensitivity( MENUITEM *Item )
 
 void CheckJoyAxis( int *dummy )
 {
-#ifdef DINPUTJOY
 	int joystick = JoystickMap[JoystickList.selected_item];
 	int axis;
 	float pos;
-	long *axisptr[MAX_JOYSTICK_AXIS] = { &js[ new_input ][joystick].lX, &js[ new_input ][joystick].lY, &js[ new_input ][joystick].lZ, 
-										&js[ new_input ][joystick].lRx, &js[ new_input ][joystick].lRy, &js[ new_input ][joystick].lRz,
-										&js[ new_input ][joystick].rglSlider[0], &js[ new_input ][joystick].rglSlider[1] };
+
+#ifdef DINPUTJOY
+
+	// this is a good thing cause sdl also considers a slider an axis
+	long *axisptr[MAX_JOYSTICK_AXIS] =
+	{
+		&js[ new_input ][joystick].lX,  // 0
+		&js[ new_input ][joystick].lY,  // 1
+		&js[ new_input ][joystick].lZ,  // 2
+		&js[ new_input ][joystick].lRx, // 3
+		&js[ new_input ][joystick].lRy, // 4
+		&js[ new_input ][joystick].lRz, // 5
+		&js[ new_input ][joystick].rglSlider[0], // 6
+		&js[ new_input ][joystick].rglSlider[1]  // 7
+	};
+
+#endif
+
 	char *left;
 	char *right;
 
 	axis = AxisMap[JoystickAxisList.selected_item];
 
-	pos = *axisptr[axis] * JoystickInfo[ joystick ].Axis[ axis ].sensitivity;
+#ifdef DINPUTJOY
+	pos = (float) *axisptr[axis];
+#else
+	pos = (float) joy_state[ axis ];
+#endif
+
+	DebugPrintf("%f\n",pos);
+
+	pos = pos * JoystickInfo[ joystick ].Axis[ axis ].sensitivity;
+
 	if ( JoystickInfo[ joystick ].Axis[ axis ].fine )
 		pos *= (float) fabs( pos );
+
 	UpdateAxisPtr( pos );
 
 	if (JoystickInfo[joystick].Axis[axis].inverted)
 	{
 		left = ShipAxisSeperateText[AxisActionList.selected_item * 2 + 1];
 		right = ShipAxisSeperateText[AxisActionList.selected_item * 2];
-	}else
+	}
+	else
 	{
 		right = ShipAxisSeperateText[AxisActionList.selected_item * 2 + 1];
 		left = ShipAxisSeperateText[AxisActionList.selected_item * 2];
@@ -14417,7 +14436,6 @@ void CheckJoyAxis( int *dummy )
 		if ((LIST *)CurrentListItem->Variable == &JoystickAxisList)
 			ChooseJoyAxis( NULL );
 	}
-#endif
 }
 
 void ExitJoySetup( MENU *Menu )

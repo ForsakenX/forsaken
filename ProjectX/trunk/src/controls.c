@@ -870,11 +870,15 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
     }
   }
 #endif
-  for (joystick = 0; joystick < Num_Joysticks; joystick++)
-  {
-    if (JoystickInfo[joystick].connected && JoystickInfo[joystick].assigned)
-      ReadJoystickInput(ctrl, joystick);
-  }
+  
+	if ( JoystickInput )
+	{
+		for (joystick = 0; joystick < Num_Joysticks; joystick++)
+		{
+			if (JoystickInfo[joystick].connected && JoystickInfo[joystick].assigned)
+				ReadJoystickInput(ctrl, joystick);
+		}
+	}
 
   MaxMove = MoveAccell * MaxMoveSpeed * framelag;
   MaxTurbo = TurboAccell * MaxTurboSpeed * framelag;
@@ -1349,60 +1353,73 @@ static BOOL RepeatShipActionOK ( int action )
 
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 {
-#ifdef DINPUTJOY
    int  ShipAction, axis;
    float amount;
 
    JOYSTICKAXIS *joyaxis;
 
-   long *axisptr[MAX_JOYSTICK_AXIS] =
-   {
-    &js[ new_input ][joysticknum].lX,
-    &js[ new_input ][joysticknum].lY,
-    &js[ new_input ][joysticknum].lZ, 
-    &js[ new_input ][joysticknum].lRx,
-    &js[ new_input ][joysticknum].lRy,
-    &js[ new_input ][joysticknum].lRz,
-    &js[ new_input ][joysticknum].rglSlider[0],
-    &js[ new_input ][joysticknum].rglSlider[1]
-   };
+#ifdef DINPUTJOY
 
-   /* joystick is disabled by menu toggle */
-   if ( !JoystickInput )
-     return;
+	// this is a good thing cause sdl also considers a slider an axis
+	long *axisptr[MAX_JOYSTICK_AXIS] =
+	{
+		&js[ new_input ][joysticknum].lX,  // 0
+		&js[ new_input ][joysticknum].lY,  // 1
+		&js[ new_input ][joysticknum].lZ,  // 2
+		&js[ new_input ][joysticknum].lRx, // 3
+		&js[ new_input ][joysticknum].lRy, // 4
+		&js[ new_input ][joysticknum].lRz, // 5
+		&js[ new_input ][joysticknum].rglSlider[0], // 6
+		&js[ new_input ][joysticknum].rglSlider[1]  // 7
+	};
 
-   if( !lpdiJoystick[joysticknum] )
-    return;
+	if( !lpdiJoystick[joysticknum] )
+		return;
 
-  for (axis = 0; axis < MAX_JOYSTICK_AXIS; axis++){
-    if ((JoystickInfo[joysticknum].Axis[axis].exists) && (*axisptr[axis])){
+#else // ! DINPUTJOY
 
-      /* the axis were looking at */
-      joyaxis = &JoystickInfo[ joysticknum ].Axis[ axis ];
+	if( joysticknum >= Num_Joysticks )
+		return;
 
-      /* the action it performs */
-      ShipAction = joyaxis->action;
+#endif
 
-      /* continue if the action is nothing */
-      if ( ShipAction == SHIPACTION_Nothing ) continue;
 
-      /* amount of movement detected */
-      amount = (float) *axisptr[ axis ] * joyaxis->sensitivity;
+	for (axis = 0; axis < MAX_JOYSTICK_AXIS; axis++)
+	{
 
-      /* if were using fine control */
-      if ( joyaxis->fine )
-        amount *= (float) fabs( amount );
+#ifdef DINPUTJOY
+			amount = (float) *axisptr[ axis ];
+#else
+			amount = (float) joy_state[ axis ];
+#endif
 
-      /* if the axis is inverted */
-      if ( joyaxis->inverted )
-        amount  = -amount;
+		if ((JoystickInfo[joysticknum].Axis[axis].exists) && amount)
+		{
+			/* the axis were looking at */
+			joyaxis = &JoystickInfo[ joysticknum ].Axis[ axis ];
 
-      /* perform the action */
-      DoShipAction( ctrl, ShipAction, framelag * amount );
+			/* the action it performs */
+			ShipAction = joyaxis->action;
 
-    }
-  }
-#endif // WIN32
+			/* continue if the action is nothing */
+			if ( ShipAction == SHIPACTION_Nothing )
+				continue;
+
+			/* amount of movement detected */
+			amount = amount * joyaxis->sensitivity;
+
+			/* if were using fine control */
+			if ( joyaxis->fine )
+				amount *= (float) fabs( amount );
+
+			/* if the axis is inverted */
+			if ( joyaxis->inverted )
+				amount  = -amount;
+
+			/* perform the action */
+			DoShipAction( ctrl, ShipAction, framelag * amount );
+		}
+	}
 }
 
 /*===================================================================
@@ -1651,10 +1668,7 @@ povs:
 #ifndef DINPUTJOY
 BOOL joystick_poll( int joysticknum )
 {
-	// needs to fill up
-	IDirectInputDevice_GetDeviceState(
-		js[ new_input ][joysticknum]
-	)
-	GetPOVMask( js[ new_input ][ joysticknum ].rgdwPOV )
+	// js[ new_input ][joysticknum]
+	return TRUE;
 }
 #endif // !  DINPUTJOY
