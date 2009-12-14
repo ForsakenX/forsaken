@@ -308,6 +308,14 @@ void FreeAllLastAFrameScrPolys( void )
 		{
 			KillUsedScrPoly( i );
 		}
+		
+		// bustage! we are pointing to our selves!
+		// most likely we are zero and never initialized
+		if(i == NextScrPoly)
+		{
+			break;
+		}
+
 		i = NextScrPoly;
 	}
 }

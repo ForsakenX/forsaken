@@ -4716,6 +4716,13 @@ void KillOwnersSecBulls( uint16 Owner )
 			if( ( SecBulls[i].SecType == SEC_MINE ) && ( IsHost ) )	SecAmmoUsed[ SecBulls[i].Weapon ]++;
 			DestroySecondary( i, &SecBulls[ i ].Pos );
 		}
+		
+		// bustage! we are pointing to our selves!
+		// most likely we are zero and never initialized
+		if(i == Next)
+		{
+			break;
+		}
 
 		i = Next;
 	}																				
