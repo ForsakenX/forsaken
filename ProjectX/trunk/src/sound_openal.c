@@ -114,6 +114,8 @@ BOOL sound_init( void )
 	// TODO AL_MIN_GAIN
 	sound_minimum_volume = 0;
 
+	alListenerf(AL_GAIN, 0.5f);
+
 	{
 		ALfloat f;
 		ALfloat pos[3];
