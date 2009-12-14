@@ -1076,57 +1076,53 @@ read_joystick_info( FILE *f, USERCONFIG *u, char *last_token )
 
 		// end of file
 		if ( feof( f ) )
-		{
-		 	joy->Axis[axis].exists = FALSE;
 			continue;
-		}
 
 		// read next axis
-		if (!strcasecmp( last_token, axistoken[axis] ) )
-		{
-			if ( !joy->connected && joy->NumAxis < axis + 1 )
-			{
-				joy->NumAxis = axis + 1;
-			}
-			if ( fscanf( f, " %d", &num ) != 1 )
-			{
-				fscanf( f, " %80s", last_token );
-				continue;
-			}
-			joy->Axis[axis].inverted = num;
-			if ( fscanf( f, " %d", &num ) != 1 )
-			{
-				fscanf( f, " %80s", last_token );
-				continue;
-			}
-			joy->Axis[axis].deadzone = num;
-			if ( fscanf( f, " %d", &num ) != 1 )
-			{
-				fscanf( f, " %80s", last_token );
-				continue;
-			}
-			joy->Axis[ axis ].sensitivity = ( num < 100 ) ?
-				1.0F / ( 100 - num ) : 1.0F;
-			if ( fscanf( f, " %d", &num ) != 1 )
-			{
-				fscanf( f, " %80s", last_token );
-				continue;
-			}
-			joy->Axis[ axis ].fine = num;
-			if ( fscanf( f, " %d", &num ) != 1 )
-			{
-				fscanf( f, " %80s", last_token );
-				continue;
-			}
-			fscanf( f, " %80s", last_token );
-			joy->Axis[axis].action = num;
-		}
+		// axises should be defined in order!
+		if ( 0 != strcasecmp(last_token, axistoken[axis]) )
+			continue;
 
-		// axises should not be out of order!
-		else
+		//
+		// setup joystick axis
+		//
+
+		if ( !joy->connected && joy->NumAxis < axis + 1 )
 		{
-			joy->Axis[axis].exists = FALSE;
+			joy->NumAxis = axis + 1;
 		}
+		if ( fscanf( f, " %d", &num ) != 1 )
+		{
+			fscanf( f, " %80s", last_token );
+			continue;
+		}
+		joy->Axis[axis].inverted = num;
+		if ( fscanf( f, " %d", &num ) != 1 )
+		{
+			fscanf( f, " %80s", last_token );
+			continue;
+		}
+		joy->Axis[axis].deadzone = num;
+		if ( fscanf( f, " %d", &num ) != 1 )
+		{
+			fscanf( f, " %80s", last_token );
+			continue;
+		}
+		joy->Axis[ axis ].sensitivity = ( num < 100 ) ?
+			1.0F / ( 100 - num ) : 1.0F;
+		if ( fscanf( f, " %d", &num ) != 1 )
+		{
+			fscanf( f, " %80s", last_token );
+			continue;
+		}
+		joy->Axis[ axis ].fine = num;
+		if ( fscanf( f, " %d", &num ) != 1 )
+		{
+			fscanf( f, " %80s", last_token );
+			continue;
+		}
+		fscanf( f, " %80s", last_token );
+		joy->Axis[axis].action = num;
 	}
 
 	if ( joy->connected )
