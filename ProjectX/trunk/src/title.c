@@ -14404,10 +14404,10 @@ void CheckJoyAxis( int *dummy )
 #ifdef DINPUTJOY
 	pos = (float) *axisptr[axis];
 #else
-	pos = (float) joy_state[ axis ];
+	pos = (float) joy_state[ joystick ][ axis ];
 #endif
 
-	DebugPrintf("%f\n",pos);
+	//DebugPrintf("%f\n",pos);
 
 	pos = pos * JoystickInfo[ joystick ].Axis[ axis ].sensitivity;
 

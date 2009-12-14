@@ -360,7 +360,7 @@ void app_joy_axis( SDL_JoyAxisEvent axis )
 {
 	// sdl axis value (range: -32768 to 32767)
 	// dinput axis value (range: -100 to 100)
-	joy_state[ axis.which ] = 
+	joy_state[ axis.which ][ axis.axis ] = 
 		(long) (((float)axis.value) / 327.67f);
 }
 

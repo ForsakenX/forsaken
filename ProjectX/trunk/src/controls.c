@@ -1390,7 +1390,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 #ifdef DINPUTJOY
 			amount = (float) *axisptr[ axis ];
 #else
-			amount = (float) joy_state[ axis ];
+			amount = (float) joy_state[ joysticknum ][ axis ];
 #endif
 
 		if ((JoystickInfo[joysticknum].Axis[axis].exists) && amount)
