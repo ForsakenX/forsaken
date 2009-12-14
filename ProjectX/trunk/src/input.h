@@ -134,4 +134,6 @@ enum {
 	JOY_HAT_LEFT
 } joy_hat_enum;
 
+// TODO - we need settings/implementation for joystick dead zones
+
 #endif

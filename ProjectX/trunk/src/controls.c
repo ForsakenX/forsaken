@@ -1076,6 +1076,7 @@ void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
 |
 *-------------------------------------------------------------------------*/
 
+// this function doesn't really do anything important needed to port
 #ifdef DINPUTJOY
 HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
                    DWORD dwObject, DWORD dwHow, DWORD dwValue)
@@ -1093,6 +1094,9 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
 }
 #endif
 
+
+// this function sets the input range to -100 <-> +100 (we already do that in sdl)
+// it also sets the dead zone which we do not support in sdl yet.. probably easy to do though...
 void SetUpJoystickAxis(int joystick)
 {
 #ifdef DINPUTJOY
@@ -1308,6 +1312,8 @@ void SetUpJoystickAxis(int joystick)
 #endif // WIN32
 }
 
+// this just gets the pov direction which is internal to the dinput version
+// nothing here to port...
 #ifdef DINPUTJOY
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
 {
@@ -1532,6 +1538,8 @@ BOOL IsAnyJoystickButtonReleased( void )
   }
   return( FALSE );
 }
+
+// nothing here to port again we have this all done already in sdl version
 
 #ifdef DINPUTJOY
 
