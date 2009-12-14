@@ -27,6 +27,20 @@ void input_grab( BOOL grab );
 
 BOOL handle_events( void );
 
+//////////////////
+// Input Buffer //
+//////////////////
+
+// stores buffered input events
+// mouse_input_enum if (code > SDL_LAST && < DIK_JOYSTICK)
+// joystick event if code > DIK_JOYSTICK
+
+#define MAX_INPUT_BUFFER 100
+SDL_keysym input_buffer[MAX_INPUT_BUFFER];
+int input_buffer_count;
+int input_buffer_find( SDLKey key );
+void input_buffer_reset( void );
+
 ///////////
 // Mouse //
 ///////////
@@ -59,7 +73,7 @@ enum {
 	RIGHT_MOUSE,
 	UP_MOUSE,
 	DOWN_MOUSE
-};
+} mouse_input_enum;
 
 mouse_state_t mouse_states[ INPUT_BUFFERS ];
 
@@ -71,16 +85,6 @@ mouse_state_t mouse_states[ INPUT_BUFFERS ];
 #define MOUSE_WHEEL_DOWN()				( mouse_states[ new_input ].wheel < 0 )
 #define MOUSE_WHEEL_UP_PRESSED()		( !( mouse_states[ old_input ].wheel > 0 ) && ( mouse_states[ new_input ].wheel > 0 ) )
 #define MOUSE_WHEEL_DOWN_PRESSED()      ( !( mouse_states[ old_input ].wheel < 0 ) && ( mouse_states[ new_input ].wheel < 0 ) )
-
-//////////////
-// Keyboard //
-//////////////
-
-#define MAX_KEY_BOARD_BUFFER 100
-SDL_keysym keyboard_buffer[MAX_KEY_BOARD_BUFFER];
-int keyboard_buffer_count;
-int buffered_key_released( SDLKey key );
-void reset_keyboard_buffer( void );
 
 ///////////////
 // Joysticks //
@@ -115,7 +119,8 @@ JOYSTICKINFO JoystickInfo[MAX_JOYSTICKS];
 BOOL joysticks_init(void);
 BOOL joysticks_cleanup( void );
 
-// this holds the current state of an axis
-long joy_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_AXIS ];
+// this holds the current state joysticks
+long joy_axis_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_AXIS ];
+BOOL joy_button_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_BUTTONS ];
 
 #endif

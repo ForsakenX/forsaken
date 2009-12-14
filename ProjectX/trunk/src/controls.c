@@ -85,9 +85,19 @@ extern  int FontHeight;
 #define KEY_PRESSED( K )    ( !( key_state[ old_input ][ K ] ) && ( key_state[ new_input ][ K ] ) )
 #define KEY_RELEASED( K )   ( ( key_state[ old_input ][ K ] ) && !( key_state[ new_input ][ K ] ) )
 
+#ifdef DINPUTJOY
+
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
 #define JOYSTICK_BUTTON_RELEASED( J, B )  ( ( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && !( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
+
+#else // ! DINPUTJOY
+
+#define JOYSTICK_BUTTON_HELD( J, B )    ( js_buttons[ new_input ][ J ][ B ] )
+#define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js_buttons[ old_input ][ J ][ B ]) && ( js_buttons[ new_input ][ J ][ B ] ) )
+#define JOYSTICK_BUTTON_RELEASED( J, B )  ( ( js_buttons[ old_input ][ J ][ B ]) && !( js_buttons[ new_input ][ J ][ B ] ) )
+
+#endif
 
 #define JOYSTICK_POV_HELD( J, P, D )    ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 )
 #define JOYSTICK_POV_PRESSED( J, P, D )   ( !( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
@@ -99,6 +109,12 @@ BOOL CheatsEnabled = FALSE;
 
 #define TOTAL_JOYSTICK_ACTIONS  140 // 5 axis positions, 3 axis rotations, 4 POV hats and 128 buttons!
 #define TOTAL_JOYSTICK_AXIS   8 // 5 axis positions, 3 axis rotations
+
+#ifdef DINPUTJOY
+DIJOYSTATE2 js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
+#else
+int js_buttons[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_BUTTONS ];
+#endif
 
 #ifdef DINPUTJOY
 extern LPDIRECTINPUTDEVICE2 lpdiJoystick[MAX_JOYSTICKS];
@@ -114,10 +130,6 @@ int new_input = 1;
 BOOL joystick_poll( int joysticknum );
 
 BYTE js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
-
-#ifdef DINPUTJOY
-DIJOYSTATE2 js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
-#endif
 
 // (Sfx.c)
 extern SendBikerTaunt();
@@ -374,7 +386,6 @@ short key_pressed( USERKEY *k )
     }
     else if ( KEY_ON_JOYSTICK( c ) )
     {
-#ifdef DINPUTJOY
       int joystick;
 
       joystick = KEY_JOYSTICK( c );
@@ -397,7 +408,6 @@ short key_pressed( USERKEY *k )
         if ( JOYSTICK_POV_PRESSED( joystick, pov, dir ) )
           return 1;
       }
-#endif
     }
   }
   return 0;
@@ -441,7 +451,6 @@ short key_held( USERKEY *k )
     }
     else if ( KEY_ON_JOYSTICK( c ) )
     {
-#ifdef DINPUTJOY
       int joystick;
 
       joystick = KEY_JOYSTICK( c );
@@ -466,7 +475,6 @@ short key_held( USERKEY *k )
         if ( JOYSTICK_POV_HELD( joystick, pov, dir ) )
           return 1;
       }
-#endif
     }
   }
   return 0;
@@ -966,12 +974,10 @@ int WhichMousePressed( void )
   return key;
 }
 
-
 int WhichJoystickPressed( void )
 {
   int key = 0;
 
-#ifdef DINPUTJOY
   int k;
 
   for ( k = 0; k < Num_Joysticks; k++ )
@@ -1006,7 +1012,6 @@ int WhichJoystickPressed( void )
       }
     }
   }
-#endif
 
   return key;
 }
@@ -1390,7 +1395,7 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 #ifdef DINPUTJOY
 			amount = (float) *axisptr[ axis ];
 #else
-			amount = (float) joy_state[ joysticknum ][ axis ];
+			amount = (float) joy_axis_state[ joysticknum ][ axis ];
 #endif
 
 		if ((JoystickInfo[joysticknum].Axis[axis].exists) && amount)
@@ -1430,11 +1435,15 @@ void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 ===================================================================*/
 BOOL IsJoystickButtonPressed( int joysticknum )
 {
-#ifdef DINPUTJOY
   int i;
 
+#ifdef DINPUTJOY
   if( !lpdiJoystick[joysticknum] )
     return( FALSE );
+#else
+  if( joysticknum >= Num_Joysticks )
+	  return FALSE;
+#endif
 
   for( i = 0; i < JoystickInfo[joysticknum].NumButtons; i++)
   {
@@ -1443,7 +1452,7 @@ BOOL IsJoystickButtonPressed( int joysticknum )
       return( TRUE );
     }
   }
-#endif // WIN32
+
   return( FALSE );
 }
 
@@ -1455,11 +1464,15 @@ BOOL IsJoystickButtonPressed( int joysticknum )
 ===================================================================*/
 BOOL IsJoystickButtonReleased( int joysticknum )
 {
-#ifdef DINPUTJOY
   int i;
 
+#ifdef DINPUTJOY
   if( !lpdiJoystick[joysticknum] )
     return( FALSE );
+#else
+  if( joysticknum >= Num_Joysticks )
+	  return FALSE;
+#endif
 
   for( i = 0; i < JoystickInfo[joysticknum].NumButtons; i++)
   {
@@ -1468,7 +1481,7 @@ BOOL IsJoystickButtonReleased( int joysticknum )
       return( TRUE );
     }
   }
-#endif // WIN32
+
   return( FALSE );
 }
 
@@ -1668,7 +1681,18 @@ povs:
 #ifndef DINPUTJOY
 BOOL joystick_poll( int joysticknum )
 {
-	// js[ new_input ][joysticknum]
+	int i;
+
+	if(joysticknum >= Num_Joysticks)
+		return FALSE;
+
+	// copy joystick button state
+	for( i = 0; i < MAX_JOYSTICK_BUTTONS; i++ )
+	{
+		js_buttons[new_input][joysticknum][i] = 
+			joy_button_state[joysticknum][i];
+	}
+
 	return TRUE;
 }
 #endif // !  DINPUTJOY

@@ -340,19 +340,10 @@ void InitBattleMenu( MENU *Menu );
 void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
 void CheckCheats( VirtualKeycode key );
-
 char *CTF_Type( SLIDER *s );
-
 void InGameSaveASinglePlayerGame( MENUITEM *item );
-
 char TypeFileName( TEXT *t, char c );
-
 void LoadLevelText( MENU *Menu );
-
-#ifdef DINPUTJOY
-int GetPOVDirection( DIJOYSTATE2 *data, int POVNum );
-#endif
-
 void ToggleBikeEngines( MENUITEM *Item );
 void DrawHelpKey( MENUITEM * Item );
 int GetFontInfo( MENUITEM * Item );
@@ -1832,7 +1823,7 @@ char show_f1[100] = "( press F1 to retry )";
 void CheckJoinStatus( int * i )
 {
 	// disconnect and reconnect if f1 is pressed
-	if ( buffered_key_released( SDLK_F1 ) )
+	if ( input_buffer_find( SDLK_F1 ) )
 		network_join( host_address, host_port );
 
 	// process network routines
@@ -5157,7 +5148,7 @@ void MenuRestart( MENU * Menu )
 	
 	FramesIgnored = 0;
 
-	reset_keyboard_buffer();
+	input_buffer_reset();
 	
 	if ( !QuickStart )
 	{
@@ -6161,11 +6152,6 @@ DefineKey( MENUITEM *item, VirtualKeycode key )
 	*kdef = key;
 }
 
-
-
-
-
-
 static void KeySelect( DEFKEY *kdef, int key )
 {
 	int k;
@@ -6298,10 +6284,6 @@ BOOL ProcessDefKey( int Key )
 		done = TRUE; // back out of key definition mode if illegal key selected
 		break;
 	default:
-		if ( !Key )
-			Key = WhichMousePressed();
-		if ( !Key )
-			Key = WhichJoystickPressed();
 		if ( Key )
 		{
 			if ( KeyItem->Variable )
@@ -14404,7 +14386,7 @@ void CheckJoyAxis( int *dummy )
 #ifdef DINPUTJOY
 	pos = (float) *axisptr[axis];
 #else
-	pos = (float) joy_state[ joystick ][ axis ];
+	pos = (float) joy_axis_state[ joystick ][ axis ];
 #endif
 
 	//DebugPrintf("%f\n",pos);
@@ -17039,20 +17021,13 @@ void MenuProcess()
 	if (Pulse > 1.0F)
 		Pulse -= (float)floor((double)Pulse);
 
-	// if we are not in a menu
-	if ( !CurrentMenu || !CurrentMenuItem )
-	{
-		// dont process any keys
-		return;
-	}
-
 	// TODO - need to add mouse input to menus
 	// TODO - need to rewrite CheckCheats
 	// TODO - need to handle MENU_NEW_Error and MenuFrozen
 
-	for( i = 0 ; i < keyboard_buffer_count ; i++ )
+	for( i = 0 ; i < input_buffer_count ; i++ )
 	{
-		Key = keyboard_buffer[i].sym;
+		Key = input_buffer[i].sym;
 
 	    // if last key pressed exited from menu system
 		// do not process any more keys

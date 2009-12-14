@@ -214,21 +214,21 @@ void app_keyboard( SDL_KeyboardEvent key )
 	//        methods that use SDL_GetKeyState and provide functions such as "is key held" etc..
 	// TODO - we could probably have mouse events added here as keyboard events
 	//			to emulate mouse menu navigation... ex: right click maps to escape
-	if( key.type == SDL_KEYUP )
-		if( keyboard_buffer_count < MAX_KEY_BOARD_BUFFER )
-			keyboard_buffer[ keyboard_buffer_count++ ] = key.keysym;
+	if( key.type == SDL_KEYDOWN )
+		if( input_buffer_count < MAX_INPUT_BUFFER )
+			input_buffer[ input_buffer_count++ ] = key.keysym;
 }
 
-void reset_keyboard_buffer( void )
+void input_buffer_reset( void )
 {
-	keyboard_buffer_count = 0;
+	input_buffer_count = 0;
 }
 
-int buffered_key_released( SDLKey key )
+int input_buffer_find( SDLKey key )
 {
 	int i;
-	for ( i = 0 ; i < keyboard_buffer_count; i++ )
-		if( keyboard_buffer[ i ].sym == key )
+	for ( i = 0 ; i < input_buffer_count; i++ )
+		if( input_buffer[ i ].sym == key )
 			return 1;
 	return 0;
 }
@@ -275,12 +275,12 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 	// pass down mouse events for menu processing
 	if(  _event.type == SDL_MOUSEBUTTONDOWN )
 	{
-		if( keyboard_buffer_count < MAX_KEY_BOARD_BUFFER )
+		if( input_buffer_count < MAX_INPUT_BUFFER )
 		{
 			SDL_keysym key;
 			memset(&key,0,sizeof(SDL_keysym));
 			key.sym = _event.button - 1 + LEFT_MOUSE;
-			keyboard_buffer[ keyboard_buffer_count++ ] = key;
+			input_buffer[ input_buffer_count++ ] = key;
 		}
 	}
 
@@ -358,9 +358,16 @@ void reset_mouse_motion( void )
 
 void app_joy_axis( SDL_JoyAxisEvent axis )
 {
+	if(axis.axis > MAX_JOYSTICK_AXIS)
+	{
+		DebugPrintf(
+			"sdl_input: ignoring joy %d axis %d > max axises\n",
+			axis.which, axis.axis);
+		return;
+	}
 	// sdl axis value (range: -32768 to 32767)
 	// dinput axis value (range: -100 to 100)
-	joy_state[ axis.which ][ axis.axis ] = 
+	joy_axis_state[ axis.which ][ axis.axis ] = 
 		(long) (((float)axis.value) / 327.67f);
 }
 
@@ -370,6 +377,28 @@ void app_joy_ball( SDL_JoyBallEvent ball )
 
 void app_joy_button( SDL_JoyButtonEvent button )
 {
+	if(button.button > MAX_JOYSTICK_BUTTONS)
+	{
+		DebugPrintf(
+			"sdl_input: ignoring joy %d button %d > max axises\n",
+			button.which, button.button);
+		return;
+	}
+
+	joy_button_state[ button.which ][ button.button ] =
+		(button.type == SDL_JOYBUTTONDOWN);
+
+	// pass down mouse events for menu processing
+	if(  button.type == SDL_JOYBUTTONDOWN )
+	{
+		if( input_buffer_count < MAX_INPUT_BUFFER )
+		{
+			SDL_keysym key;
+			memset(&key,0,sizeof(SDL_keysym));
+			key.sym = button.button + DIK_JOYSTICK;
+			input_buffer[ input_buffer_count++ ] = key;
+		}
+	}
 }
 
 void app_joy_hat( SDL_JoyHatEvent hat )
@@ -380,7 +409,7 @@ void reset_events( void )
 {
 	reset_mouse_motion();
 	reset_mouse_wheel();
-	reset_keyboard_buffer();
+	input_buffer_reset();
 }
 
 BOOL handle_events( void )

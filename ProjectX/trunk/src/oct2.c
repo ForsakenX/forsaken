@@ -907,7 +907,7 @@ void ProcessGameKeys( void )
   }
 
   // ESCAPE
-  if ( buffered_key_released( SDLK_ESCAPE ) )
+  if ( input_buffer_find( SDLK_ESCAPE ) )
     // if were not currently in a menu
     //   ignore keystroke if we just exited the menu
     //   stops going back itno menu from hitting to many times
@@ -944,7 +944,7 @@ void ProcessGameKeys( void )
     {
 
       // Shift + F1
-      if ( buffered_key_released( SDLK_F1 ) )
+      if ( input_buffer_find( SDLK_F1 ) )
         if ( !CurrentMenu )
           MenuRestart( &MENU_DebugHelp );
         else if ( CurrentMenu == &MENU_DebugHelp )
@@ -955,11 +955,11 @@ void ProcessGameKeys( void )
       {
 
         // Shift + Ctrl + F2
-        if ( buffered_key_released( SDLK_F2 ) )
+        if ( input_buffer_find( SDLK_F2 ) )
           SetFOV( chosen_fov = normal_fov );
         
         // Shift + Ctrl + F3
-        if ( buffered_key_released( SDLK_F3 ) )
+        if ( input_buffer_find( SDLK_F3 ) )
           SetFOV( chosen_fov = normal_fov );
 
       } // end shift + ctrl modifier
@@ -967,22 +967,22 @@ void ProcessGameKeys( void )
       {
 
         // Shift + F2
-        if ( buffered_key_released( SDLK_F2 ) )
+        if ( input_buffer_find( SDLK_F2 ) )
           SetFOV( chosen_fov = FOV_GROW( hfov ) );
 
         // Shift + F3
-        if ( buffered_key_released( SDLK_F3 ) )
+        if ( input_buffer_find( SDLK_F3 ) )
           SetFOV( chosen_fov = FOV_SHRINK( hfov ) );
 
       } // end shift only modifier
 
       // Shift + F4
-      if ( buffered_key_released( SDLK_F4 ) )
+      if ( input_buffer_find( SDLK_F4 ) )
         if ( !CurrentMenu )
           MenuRestart( &MENU_GotoRoom );
 
       // Shift + F5
-      if ( buffered_key_released( SDLK_F5 ) )
+      if ( input_buffer_find( SDLK_F5 ) )
       {
         InitShipStartPos( WhoIAm, ++startpos );
         AddColourMessageToQue(SystemMessageColour,
@@ -992,32 +992,32 @@ void ProcessGameKeys( void )
       }
 
       // Shift + F6
-      if ( buffered_key_released( SDLK_F6 ) )
+      if ( input_buffer_find( SDLK_F6 ) )
         DoClipping = !DoClipping;
 
       // Shift + F7
-      if ( buffered_key_released( SDLK_F7 ) )
+      if ( input_buffer_find( SDLK_F7 ) )
         ShowBoundingBoxes = !ShowBoundingBoxes;
 
       // Shift + F8
-      if ( buffered_key_released( SDLK_F8 ) )
+      if ( input_buffer_find( SDLK_F8 ) )
         ShowEFZones = !ShowEFZones;
 
       // Shift + F9
-      if ( buffered_key_released( SDLK_F9 ) )
+      if ( input_buffer_find( SDLK_F9 ) )
         if( ShowPortal == 4 )
           ShowPortal = 0;
         else
           ShowPortal++;
 
       // Shift + F10
-      if ( buffered_key_released( SDLK_F10 ) )
+      if ( input_buffer_find( SDLK_F10 ) )
         ShowColZones = !ShowColZones;
 
 #ifdef POLYGONAL_COLLISIONS
 
       // Shift + F11
-      if ( buffered_key_released( SDLK_F11 ) )
+      if ( input_buffer_find( SDLK_F11 ) )
         if( ShowSkin == 6 )
           ShowSkin = 0;
         else
@@ -1026,7 +1026,7 @@ void ProcessGameKeys( void )
 #endif
 
       // Shift + F12
-      if( buffered_key_released( SDLK_F12 ) )
+      if( input_buffer_find( SDLK_F12 ) )
         no_collision = !no_collision;
 
     } // end shift modifier
@@ -1035,17 +1035,17 @@ void ProcessGameKeys( void )
     {
 
 		// Ctrl + F1
-		if ( buffered_key_released( SDLK_F1 ) )
+		if ( input_buffer_find( SDLK_F1 ) )
 			ShowTeleports = !ShowTeleports;
 
 		// Ctrl + F2
-		if ( buffered_key_released( SDLK_F2 ) )
+		if ( input_buffer_find( SDLK_F2 ) )
 			ShowTrigZones = !ShowTrigZones;
 
 #ifndef POLYGONAL_COLLISIONS
 #ifdef REMOTE_CAMERA_ENABLED
 		// Ctrl + F3
-		if ( buffered_key_released( SDLK_F3 ) )
+		if ( input_buffer_find( SDLK_F3 ) )
 			if( !RemoteCameraActive )
 			{
 				RemoteCameraActive = TRUE;
@@ -1067,7 +1067,7 @@ void ProcessGameKeys( void )
     {
 
 		// F8
-		if ( buffered_key_released( SDLK_F8 ) )
+		if ( input_buffer_find( SDLK_F8 ) )
 			// Awesome !!!
 			// We need to make this a standard feature!!!
 			if( TargetComputerOn )
@@ -1082,14 +1082,14 @@ void ProcessGameKeys( void )
   {
 
     // F1
-    if ( buffered_key_released( SDLK_F1 )  )
+    if ( input_buffer_find( SDLK_F1 )  )
       if ( !CurrentMenu )
         MenuRestart( &MENU_Controls );
       else if ( CurrentMenu == &MENU_Controls )
         MenuExit();
 
     // F2
-    if ( buffered_key_released( SDLK_F2 )  )
+    if ( input_buffer_find( SDLK_F2 )  )
       if ( !CurrentMenu )
         MenuRestart( &MENU_Options );
       else if ( CurrentMenu == &MENU_Options )
@@ -1100,14 +1100,14 @@ void ProcessGameKeys( void )
     {
 
       // F3
-      if ( buffered_key_released( SDLK_F3 ) )
+      if ( input_buffer_find( SDLK_F3 ) )
         if ( !CurrentMenu )
           MenuRestart( &MENU_LoadSavedGame );
         else if ( CurrentMenu == &MENU_LoadSavedGame )
           MenuExit();
   
       // F4        
-      if ( buffered_key_released( SDLK_F4 ) )
+      if ( input_buffer_find( SDLK_F4 ) )
         // quick save
         if ( !CurrentMenu )
           MenuRestart( &MENU_SaveGame );
@@ -1124,15 +1124,15 @@ void ProcessGameKeys( void )
 	}
 
     // F5
-    if ( buffered_key_released( SDLK_F5 ) )
+    if ( input_buffer_find( SDLK_F5 ) )
       MissileCameraEnable = !MissileCameraEnable;
 
 	// F6
-	if ( buffered_key_released( SDLK_F6 ) )
+	if ( input_buffer_find( SDLK_F6 ) )
 		RearCameraActive = !RearCameraActive;
 
 	// F7
-	if ( buffered_key_released( SDLK_F7 ) )
+	if ( input_buffer_find( SDLK_F7 ) )
 		Panel = !Panel;
 
     // single player mode
@@ -1140,11 +1140,11 @@ void ProcessGameKeys( void )
     {
 
       // F9
-      if ( buffered_key_released( SDLK_F9 ) )
+      if ( input_buffer_find( SDLK_F9 ) )
         LastTextMessage();
 
       // F10
-      if ( buffered_key_released( SDLK_F10 ) )
+      if ( input_buffer_find( SDLK_F10 ) )
         NextTextMessage();
 
     } // end single player mode
@@ -1156,21 +1156,21 @@ void ProcessGameKeys( void )
       {
 
         // Shift + F9
-        if ( buffered_key_released( SDLK_F9 ) )
+        if ( input_buffer_find( SDLK_F9 ) )
           if ( !CurrentMenu )
             MenuRestart( &MENU_EditMacro1 );
           else if ( CurrentMenu == &MENU_EditMacro1 )
             MenuExit();
 
         // Shift + F10
-        if ( buffered_key_released( SDLK_F10 ) )
+        if ( input_buffer_find( SDLK_F10 ) )
           if ( !CurrentMenu )
             MenuRestart( &MENU_EditMacro2 );
           else if ( CurrentMenu == &MENU_EditMacro2 )
             MenuExit();
 
         // Shift + F11
-        if ( buffered_key_released( SDLK_F11 ) )
+        if ( input_buffer_find( SDLK_F11 ) )
           if ( !CurrentMenu )
             MenuRestart( &MENU_EditMacro3 );
           else if ( CurrentMenu == &MENU_EditMacro3 )
@@ -1181,15 +1181,15 @@ void ProcessGameKeys( void )
       {
 
         // F9
-        if ( buffered_key_released( SDLK_F9 ) )
+        if ( input_buffer_find( SDLK_F9 ) )
           SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_Taunt1, 0);
 
         // F10
-        if ( buffered_key_released( SDLK_F10 ) )
+        if ( input_buffer_find( SDLK_F10 ) )
           SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_Taunt2, 0);
 
         // F11
-        if ( buffered_key_released( SDLK_F11 ) )
+        if ( input_buffer_find( SDLK_F11 ) )
           SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_Taunt3, 0);
 
       } // end (not) shift modifier
@@ -1854,7 +1854,7 @@ BOOL InitView( void )
 
 	CheatsDisabled = FALSE;
 
-	reset_keyboard_buffer();
+	input_buffer_reset();
 
 	InitModeCase();
 
@@ -2471,7 +2471,7 @@ BOOL RenderScene( void )
 
     HostMultiPlayerTimeout -= framelag;
 
-    if( buffered_key_released( SDLK_SPACE ) || ( OverallGameStatus == STATUS_WaitingAfterScore ) )
+    if( input_buffer_find( SDLK_SPACE ) || ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
 		FSClearBlack();
 		HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
