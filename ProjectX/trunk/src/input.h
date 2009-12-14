@@ -122,5 +122,14 @@ BOOL joysticks_cleanup( void );
 // this holds the current state joysticks
 long joy_axis_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_AXIS ];
 BOOL joy_button_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_BUTTONS ];
+// hat has 4 directions, diagnols turn on both adjecent angles
+Uint8 joy_hat_state[ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
+
+enum {
+	JOY_HAT_UP,
+	JOY_HAT_RIGHT,
+	JOY_HAT_DOWN,
+	JOY_HAT_LEFT
+} joy_hat_enum;
 
 #endif

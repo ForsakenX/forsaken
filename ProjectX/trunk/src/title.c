@@ -9939,15 +9939,20 @@ void AddToFlatMenuList( MENUITEM *Item )
 
 		TextInfo = Item->TextInfo[i];
 
+		if(!TextInfo)
+			continue;
+
 		current = l->top_item + i;
 
 		if (current >= l->items)
-		{	if (TextInfo->text != EmptyString)
+		{
+			if (TextInfo->text != EmptyString)
 			{	
 				TextInfo->text = EmptyString;
 				PrintTextItem(TextInfo);
 			}
-		}else
+		}
+		else
 		{
 			if (!TextInfo->text)
 			{
@@ -17067,18 +17072,18 @@ void MenuProcess()
 		{
 		case SDLK_RETURN:
 			{
-							if ( InTitleRoom )
-							{
-								// if were looking at the discs
-								if ( CameraStatus == CAMERA_AtDiscs )
-									PlaySfx( SFX_SelectStackOption, 1.0F );
-								else
-									PlaySfx( SFX_VidText, 1.0F );
-							}
-							else
-							{
-								PlaySfx( SFX_VidText, 1.0F );
-							}
+				if ( InTitleRoom )
+				{
+					// if were looking at the discs
+					if ( CameraStatus == CAMERA_AtDiscs )
+						PlaySfx( SFX_SelectStackOption, 1.0F );
+					else
+						PlaySfx( SFX_VidText, 1.0F );
+				}
+				else
+				{
+					PlaySfx( SFX_VidText, 1.0F );
+				}
 			}
 			break;
 		}

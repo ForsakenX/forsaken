@@ -380,7 +380,7 @@ void app_joy_button( SDL_JoyButtonEvent button )
 	if(button.button > MAX_JOYSTICK_BUTTONS)
 	{
 		DebugPrintf(
-			"sdl_input: ignoring joy %d button %d > max axises\n",
+			"sdl_input: ignoring joy %d button %d > max buttons\n",
 			button.which, button.button);
 		return;
 	}
@@ -401,8 +401,99 @@ void app_joy_button( SDL_JoyButtonEvent button )
 	}
 }
 
+void input_buffer_send( int code )
+{
+	SDL_keysym key;
+	if( input_buffer_count >= MAX_INPUT_BUFFER )
+		return;
+	memset(&key,0,sizeof(SDL_keysym));
+	key.sym = code;
+	input_buffer[ input_buffer_count++ ] = key;
+}
+
 void app_joy_hat( SDL_JoyHatEvent hat )
 {
+	if(hat.hat > MAX_JOYSTICK_POVS)
+	{
+		DebugPrintf(
+			"sdl_input: ignoring joy %d hat %d > max hats\n",
+			hat.which, hat.hat);
+		return;
+	}
+
+	if(hat.value == SDL_HAT_CENTERED)
+	{
+		int d;
+		for( d = 0; d < MAX_POV_DIRECTIONS; d++ )
+		{
+			joy_hat_state[ hat.which ][ hat.hat ][ d ] = 0;
+		}
+		return;
+	}
+
+	if(hat.value & SDL_HAT_UP)
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_UP ] = 1;
+		input_buffer_send(
+			JOYSTICK_POVDIR_KEYCODE(
+				hat.which,
+				hat.hat,
+				JOY_HAT_UP
+			)
+		);
+	}
+	else
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_UP ] = 0;
+	}
+
+	if(hat.value & SDL_HAT_RIGHT)
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_RIGHT ] = 1;
+		input_buffer_send(
+			JOYSTICK_POVDIR_KEYCODE(
+				hat.which,
+				hat.hat,
+				JOY_HAT_RIGHT
+			)
+		);
+	}
+	else
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_RIGHT ] = 0;
+	}
+
+	if(hat.value & SDL_HAT_DOWN)
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_DOWN ] = 1;
+		input_buffer_send(
+			JOYSTICK_POVDIR_KEYCODE(
+				hat.which,
+				hat.hat,
+				JOY_HAT_DOWN
+			)
+		);
+	}
+	else
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_DOWN ] = 0;
+	}
+
+	if(hat.value & SDL_HAT_LEFT)
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 1;
+		input_buffer_send(
+			JOYSTICK_POVDIR_KEYCODE(
+				hat.which,
+				hat.hat,
+				JOY_HAT_LEFT
+			)
+		);
+	}
+	else
+	{
+		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 0;
+	}
 }
 
 void reset_events( void )
@@ -456,6 +547,7 @@ BOOL handle_events( void )
 			break;
 
 		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYBUTTONUP:
 			app_joy_button( _event.jbutton );
 			break;
 

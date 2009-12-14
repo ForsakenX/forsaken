@@ -91,17 +91,21 @@ extern  int FontHeight;
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && ( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
 #define JOYSTICK_BUTTON_RELEASED( J, B )  ( ( js[ old_input ][ J ].rgbButtons[ B ] & 0x80) && !( js[ new_input ][ J ].rgbButtons[ B ] & 0x80 ) )
 
+#define JOYSTICK_POV_HELD( J, P, D )    ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 )
+#define JOYSTICK_POV_PRESSED( J, P, D )   ( !( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
+#define JOYSTICK_POV_RELEASED( J, P, D )  ( ( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && !( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
+
 #else // ! DINPUTJOY
 
 #define JOYSTICK_BUTTON_HELD( J, B )    ( js_buttons[ new_input ][ J ][ B ] )
 #define JOYSTICK_BUTTON_PRESSED( J, B )   ( !( js_buttons[ old_input ][ J ][ B ]) && ( js_buttons[ new_input ][ J ][ B ] ) )
 #define JOYSTICK_BUTTON_RELEASED( J, B )  ( ( js_buttons[ old_input ][ J ][ B ]) && !( js_buttons[ new_input ][ J ][ B ] ) )
 
-#endif
+#define JOYSTICK_POV_HELD( J, P, D )    ( js_pov[ new_input ][ J ][ P ][ D ] )
+#define JOYSTICK_POV_PRESSED( J, P, D )   ( !( js_pov[ old_input ][ J ][ P ][ D ] ) && ( js_pov[ new_input ][ J ][ P ][ D ] ) )
+#define JOYSTICK_POV_RELEASED( J, P, D )  ( ( js_pov[ old_input ][ J ][ P ][ D ] ) && !( js_pov[ new_input ][ J ][ P ][ D ] ) )
 
-#define JOYSTICK_POV_HELD( J, P, D )    ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 )
-#define JOYSTICK_POV_PRESSED( J, P, D )   ( !( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && ( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
-#define JOYSTICK_POV_RELEASED( J, P, D )  ( ( js_pov[ old_input ][ J ][ P ][ D ] & 0x80 ) && !( js_pov[ new_input ][ J ][ P ][ D ] & 0x80 ) )
+#endif
 
 int GetPOVMask( DWORD pov );
 
@@ -129,7 +133,12 @@ int new_input = 1;
 
 BOOL joystick_poll( int joysticknum );
 
-BYTE js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
+#ifdef DINPUTJOY
+BYTE 
+#else
+Uint8
+#endif
+js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 
 // (Sfx.c)
 extern SendBikerTaunt();
@@ -469,7 +478,6 @@ short key_held( USERKEY *k )
       else if ( KEY_ON_JOYSTICK_POV( c ) )
       {
         int pov, dir;
-
         pov = KEY_JOYSTICK_POV( c );
         dir = KEY_JOYSTICK_POVDIR( c );
         if ( JOYSTICK_POV_HELD( joystick, pov, dir ) )
@@ -1691,6 +1699,17 @@ BOOL joystick_poll( int joysticknum )
 	{
 		js_buttons[new_input][joysticknum][i] = 
 			joy_button_state[joysticknum][i];
+	}
+
+	// copy hat state
+	for( i = 0; i < MAX_JOYSTICK_POVS; i++ )
+	{
+		int b;
+		for( b = 0; b < MAX_POV_DIRECTIONS; b++ )
+		{
+			js_pov[new_input][joysticknum][i][b] =
+				joy_hat_state[joysticknum][i][b];
+		}
 	}
 
 	return TRUE;
