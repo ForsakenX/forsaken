@@ -74,19 +74,19 @@ static void print_info ( void )
 	device = alcGetContextsDevice(alcGetCurrentContext());
 
 	if ((error = alGetError()) != AL_NO_ERROR)
-		DebugPrintf("blah :%s\n", alGetString(error));
+		DebugPrintf("error:  :%s\n", alGetString(error));
 
 	alcGetIntegerv(device, ALC_MAJOR_VERSION, 1, &version_major);
 	alcGetIntegerv(device, ALC_MINOR_VERSION, 1, &version_minor);
 	
 	if ((error = alGetError()) != AL_NO_ERROR)
-		DebugPrintf("blah :%s\n", alGetString(error));
+		DebugPrintf("error:  :%s\n", alGetString(error));
 
 	DebugPrintf("ALC version: %d.%d\n", (int)version_major, (int)version_minor);
 	DebugPrintf("ALC extensions: %s\n", alcGetString(device, ALC_EXTENSIONS));
 
 	if ((error = alGetError()) != AL_NO_ERROR)
-		DebugPrintf("blah :%s\n", alGetString(error));
+		DebugPrintf("error:  :%s\n", alGetString(error));
 
 	DebugPrintf("OpenAL vendor string: %s\n", alGetString(AL_VENDOR));
 	DebugPrintf("OpenAL renderer string: %s\n", alGetString(AL_RENDERER));
@@ -94,7 +94,7 @@ static void print_info ( void )
 	DebugPrintf("OpenAL extensions: %s\n", alGetString(AL_EXTENSIONS));
 
 	if ((error = alGetError()) != AL_NO_ERROR)
-		DebugPrintf("blah :%s\n", alGetString(error));
+		DebugPrintf("error:  :%s\n", alGetString(error));
 
 	DebugPrintf("openal: info end\n");
 }
@@ -114,6 +114,8 @@ BOOL sound_init( void )
 	// TODO AL_MIN_GAIN
 	sound_minimum_volume = 0;
 
+	// global listener sound set to 50% to reduce crackling
+	// TODO - we should probably have a global sound level setting
 	alListenerf(AL_GAIN, 0.5f);
 
 	{
