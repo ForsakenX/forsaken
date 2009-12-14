@@ -18,7 +18,8 @@ sudo apt-get install liblua5.1-0 liblua5.1-0-dev liblua5.1-socket-dev liblua5.1-
 # outdated ubuntu packages
 ##
 
-# you can get a newer enet with some improvements from their site
+# you can get a newer enet with some improvements from
+# http://fly.thruhere.net/versions/beta/lib/
 
 sudo apt-get install libenet libenet1-dev
 
@@ -29,7 +30,8 @@ sudo apt-get install libenet libenet1-dev
 sudo apt-get install libopenal-dev
 
 # build it your self
-# openal updated is provided in this directory (untar and run ./build.sh)
+# openal updated is provided @ http://fly.thruhere.net/vresions/beta/lib/
+# untar and run ./build.sh
 # openal-soft-1.10.622.tgz
 
 ##
