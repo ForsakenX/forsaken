@@ -17219,24 +17219,22 @@ void MenuProcess()
 
 			default:
 
-				if (CurrentMenuItem)
-				{
-					if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-					{
-						if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-						{
-							if (CurrentMenuItem->FuncSelect)
-								CurrentMenuItem->FuncSelect(CurrentMenuItem);
-						}
-					}
-					if (MenuState == MENUSTATE_Select)
-						ProcessSelect( Key );
+				if (!CurrentMenuItem)
+					continue;
 
-					break;
+				if (MenuState == MENUSTATE_Select)
+					ProcessSelect( Key );
+
+				if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+				{
+					if (CurrentMenuItem->FuncSelect)
+						CurrentMenuItem->FuncSelect(CurrentMenuItem);
 				}
 
-		}
-	}
+				break;
+
+		} // menustate switch
+	} // for each buffered input
 
 end:
 
