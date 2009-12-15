@@ -16185,7 +16185,7 @@ BOOL ProcessText( int Key )
 		{
 			char *c;
 
-			c = (char *) key_name( Key );
+			c = (char *) key_char( Key );
 			if ( c && strlen( c ) == 1 )
 			{
 				TextType( (TEXT *)(TextItem->Variable), *c );
@@ -17047,7 +17047,6 @@ void MenuProcess()
 	if (Pulse > 1.0F)
 		Pulse -= (float)floor((double)Pulse);
 
-	// TODO - need to add mouse input to menus
 	// TODO - need to rewrite CheckCheats
 	// TODO - need to handle MENU_NEW_Error and MenuFrozen
 

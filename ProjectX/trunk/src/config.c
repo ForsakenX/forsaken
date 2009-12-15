@@ -1448,6 +1448,66 @@ const char *key_fullname( int keycode )
 	return NULL;
 }
 
+typedef struct {
+	const char * name;
+	const char * _char;
+} ascii_map_t;
+
+ascii_map_t key_char_lookup[] =
+{
+	{"[0]","0"},
+	{"[1]","1"},
+	{"[2]","2"},
+	{"[3]","3"},
+	{"[4]","4"},
+	{"[5]","5"},
+	{"[6]","6"},
+	{"[7]","7"},
+	{"[8]","8"},
+	{"[9]","9"},
+	{"[.]","."},
+	{"[/]","/"},
+	{"[*]","*"},
+	{"[-]","-"},
+	{"[+]","+"},
+	{"equals","="},
+	{"tab","\t"},
+	{"space"," "},
+	{NULL,NULL}
+};
+
+const char *key_char( int keycode )
+{
+	// get the sdl name
+	char * name = (char *) key_name( keycode );
+
+	// maps to a single char
+	if (strlen( name ) == 1)
+		return name;
+
+	// try to find mapping
+	{
+		ascii_map_t * key = key_char_lookup;
+		while(key++)
+		{
+			// last item in list
+			if(!key->name)
+				break;
+
+			// if name matches
+			if( 0 == strcasecmp(name,key->name) )
+			{
+				// return mapping
+				return key->_char;
+			}
+		}
+	}
+
+	// didn't find anything
+	// but return the long name anyway
+	return name;
+}
+
 const char *key_name( int keycode )
 {
 	init_key_map();

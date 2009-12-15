@@ -118,6 +118,9 @@ write_config( USERCONFIG *u, char *cfg_name );
 extern const char *
 key_name( int keycode );
 
+const char *
+key_char( int keycode );
+
 extern const char *
 key_fullname( int keycode );
 
