@@ -5659,7 +5659,8 @@ void MenuBack()
 	
 		// if going back to old menu system...
 		if ( CurrentMenu == &MENU_NEW_Start ) 
-		{	CameraStatus = CAMERA_AtStart;
+		{	
+			CameraStatus = CAMERA_AtStart;
 		}
 	
 			
@@ -17219,13 +17220,10 @@ void MenuProcess()
 
 			default:
 
-				if (!CurrentMenuItem)
-					continue;
-
 				if (MenuState == MENUSTATE_Select)
 					ProcessSelect( Key );
 
-				if (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
+				if (CurrentMenuItem && CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
 				{
 					if (CurrentMenuItem->FuncSelect)
 						CurrentMenuItem->FuncSelect(CurrentMenuItem);
