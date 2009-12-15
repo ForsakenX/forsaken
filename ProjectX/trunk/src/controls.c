@@ -655,9 +655,9 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
     mouse_dy = MAX_MOUSE_DELTA_Y;
 #endif
 
-//  mouse_dx = mouse_dx * MouseXFactor;
-//  mouse_dy = mouse_dy * MouseYFactor;
-
+// TODO
+// win32 appear to return greator values even in some resolution
+// we should also configure a fine control setting for the mouse to turn on/off the fabs() trick
 #ifdef WIN32
 	mouse_dx = mouse_dx * (float) fabs( mouse_dx ) * MouseXFactor; // factor = 0.000625
 	mouse_dy = mouse_dy * (float) fabs( mouse_dy ) * MouseYFactor; // factor = -0.000625
@@ -871,10 +871,12 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   if ( ( SDL_GetModState() & KMOD_CTRL ) && key_pressed( &conf->send_msg ) && MyGameStatus == STATUS_Normal )
   {
     MenuRestart( &MENU_QuickTextSendWhisper );
-  }else if ( ( key_pressed( &conf->send_msg ) ) && MyGameStatus == STATUS_Normal )
+  }
+  else if ( ( key_pressed( &conf->send_msg ) ) && MyGameStatus == STATUS_Normal )
   {
     MenuRestart( &MENU_QuickTextSend );
   }
+
 #ifdef PLAYER_SPEECH_TAUNTS
   if( key_pressed( &conf->send_speech )  )
   {
@@ -908,6 +910,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
   CLAMP( ctrl->bank, MaxBank );
   CLAMP( ctrl->right, MaxMove );
   CLAMP( ctrl->up, MaxMove );
+
   if ( ctrl->turbo && NitroFuel > 0.0F )
   {
     if ( ctrl->forward > MaxTurbo )

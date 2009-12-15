@@ -74,6 +74,7 @@ void ReInitJoysticks( void );
 int CurrentPage = 0;
 int MaxPage = 0;
 BOOL MissileCameraEnable;
+void MenuItemSelect( MENUITEM * item );
 void GetLevelName( char *buf, int bufsize, int level );
 void MenuItemDrawPageName( MENUITEM *Item );
 void InitKeyDef( MENU *Menu );
@@ -5153,7 +5154,8 @@ void MenuRestart( MENU * Menu )
 	if ( !QuickStart )
 	{
 		if ((CameraStatus == CAMERA_AtDiscs) || (CameraStatus == CAMERA_AtLeftVDU) || (CameraStatus == CAMERA_AtRightVDU))
-		{	StackMode = DISC_MODE_ALL;
+		{
+			StackMode = DISC_MODE_ALL;
 	 		StackStatus = DISC_EXPAND;
 			DoHighlight = TRUE;
 		}
@@ -5168,16 +5170,25 @@ void MenuRestart( MENU * Menu )
 	LastMenu = CurrentMenu;
 	CurrentMenu = Menu;
 	CurrentMenuItem = CurrentMenu->Item;
+
+	// find first item with select callback and callit
 	while ( !CurrentMenuItem->FuncSelect && (CurrentMenuItem->x >= 0 ) )
 	{
 		CurrentMenuItem++;
 	}
+
+	// fire menu entry function
 	if ( CurrentMenu->FuncEntry )
 	{
 		CurrentMenu->FuncEntry( CurrentMenu );
 	}
-	MenuState = MENUSTATE_Select;
+
+	// go into selection mode by default
+	MenuState = MENUSTATE_Select;	
 	
+	// fire selection event on item if it exists
+	// this must come last so it can change things like MenuState
+	MenuItemSelect(CurrentMenuItem);
 }
 
 
@@ -12110,7 +12121,8 @@ void PrintTextItem (TEXTINFO *TextInfo)
 				{
 					//Msg( "FormatTextItem() : returned false\nbounding box for text ( %s ) too small??\n", TextInfo->text );
 					DebugPrintf( "FormatTextItem() : returned false\tbounding box for text ( %s ) too small??\n", TextInfo->text );
-				}else
+				}
+				else
 				{
 				  // need to find out how many chars of last word will fit...
 					GetFinalChars( TextInfo, TEXTINFO_currentendpoint, length);
@@ -12145,7 +12157,6 @@ void PrintTextItem (TEXTINFO *TextInfo)
 	for (i = 0; i < TextInfo->num_lines; i++)
 	{
 		TextInfo->currentchar[i] = 0;
-	
 		TextInfo->currentx[i] = 0.0F;
 		TextInfo->currenty = 0.0F;
 	}
@@ -17017,6 +17028,15 @@ BOOL ProcessLevelList ( int Key )
 	return !done;
 }
 
+void MenuItemSelect( MENUITEM * item )
+{
+	if(!item)
+		return;
+	if( ! (item->highlightflags & TEXTFLAG_AutoSelect))
+		return;
+	item->FuncSelect(item);
+}
+
 void MenuProcess()
 {
 	int i;
@@ -17168,7 +17188,8 @@ void MenuProcess()
 
 			case MENUSTATE_Text2:
 				if ( !ProcessText( Key ) )
-				{	MenuState = MENUSTATE_Select;
+				{
+					MenuState = MENUSTATE_Select;
 					CurrentMenuItem->TextInfo[0]->highlighttype = HIGHLIGHT_Pulsing;
 					if (CurrentMenu && (CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect))	// safe to assume only menu item if autoselected
 					{
@@ -17218,17 +17239,11 @@ void MenuProcess()
 				break;
 
 
+			case MENUSTATE_Select:
+				ProcessSelect( Key );
+
 			default:
-
-				if (MenuState == MENUSTATE_Select)
-					ProcessSelect( Key );
-
-				if (CurrentMenuItem && CurrentMenuItem->highlightflags & TEXTFLAG_AutoSelect)
-				{
-					if (CurrentMenuItem->FuncSelect)
-						CurrentMenuItem->FuncSelect(CurrentMenuItem);
-				}
-
+				MenuItemSelect(CurrentMenuItem);
 				break;
 
 		} // menustate switch
