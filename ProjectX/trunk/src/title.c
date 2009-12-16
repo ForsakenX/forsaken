@@ -16189,7 +16189,6 @@ BOOL ProcessText( int Key )
 		if ( Key )
 		{
 			char *c;
-
 			c = (char *) key_char( Key );
 			if ( c && strlen( c ) == 1 )
 			{

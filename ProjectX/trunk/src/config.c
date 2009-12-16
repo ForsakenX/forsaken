@@ -1478,8 +1478,11 @@ ascii_map_t key_char_lookup[] =
 
 const char *key_char( int keycode )
 {
+	char * name;
+	static char ascii[1];
+
 	// get the sdl name
-	char * name = (char *) key_name( keycode );
+	name = (char *) key_name( keycode );
 
 	// maps to a single char
 	if (strlen( name ) == 1)
@@ -1501,6 +1504,13 @@ const char *key_char( int keycode )
 				return key->_char;
 			}
 		}
+	}
+
+	// if less than 128 then we are ascii (per sdl/unicode docs)
+	if(keycode < 128)
+	{
+		ascii[0] = keycode;
+		return ascii;
 	}
 
 	// didn't find anything
