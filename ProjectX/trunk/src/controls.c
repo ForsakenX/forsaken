@@ -1071,14 +1071,6 @@ void DoShipAction( SHIPCONTROL *ctrl, int Action, float amount )
   }
 }
 
-/*--------------------------------------------------------------------------
-|
-| SetDIDwordProperty
-|
-| Set a DWORD property on a DirectInputDevice.
-|
-*-------------------------------------------------------------------------*/
-
 // this function doesn't really do anything important needed to port
 #ifdef DINPUTJOY
 HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
@@ -1095,14 +1087,11 @@ HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
    return pdev->lpVtbl->SetProperty(pdev, guidProperty, &dipdw.diph);
 
 }
-#endif
-
 
 // this function sets the input range to -100 <-> +100 (we already do that in sdl)
 // it also sets the dead zone which we do not support in sdl yet.. probably easy to do though...
 void SetUpJoystickAxis(int joystick)
 {
-#ifdef DINPUTJOY
   DIPROPRANGE diprg;
   BOOL DeadzoneNotSet = FALSE;
   int i;
@@ -1312,12 +1301,10 @@ void SetUpJoystickAxis(int joystick)
   if (DeadzoneNotSet)
     DeadzoneNotSet = FALSE;
 
-#endif // WIN32
 }
 
 // this just gets the pov direction which is internal to the dinput version
 // nothing here to port...
-#ifdef DINPUTJOY
 int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
 {
   int dir;
@@ -1345,7 +1332,193 @@ int GetPOVDirection( DIJOYSTATE2 *data, int POVNum )
   }else
     return POV_Centre;
 }
-#endif
+// nothing here to port again we have this all done already in sdl version
+
+#define POV_UP      0
+#define POV_RIGHT   9000
+#define POV_DOWN    18000
+#define POV_LEFT    27000
+
+#define POV_RANGE   36000
+#define POV_HALFRANGE 18000
+#define POV_TOLERANCE 6750  // this gives 45 deg for each of 8 compass directions
+
+int GetPOVMask( DWORD pov )
+{
+  static DWORD POVDir[ MAX_POV_DIRECTIONS ] =
+  {
+    POV_UP,
+    POV_DOWN,
+    POV_LEFT,
+    POV_RIGHT
+  };
+  int mask;
+  int dir;
+  int dpov;
+
+  mask = 0;
+  if ( pov != 0xFFFF && pov != 0xFFFFFFFF )
+  {
+    for ( dir = 0; dir < MAX_POV_DIRECTIONS; dir++ )
+    {
+      dpov = abs( pov - POVDir[ dir ] );
+      if ( dpov > POV_HALFRANGE )
+        dpov = POV_RANGE - dpov;
+      if ( dpov <= POV_TOLERANCE )
+        mask |= ( 1 << dir );
+    }
+  }
+  return mask;
+}
+
+BOOL joystick_poll( int joysticknum )
+{
+   HRESULT hRes;
+   int i, j, povdir;
+
+   /* joystick doesn't exist */
+   if( !lpdiJoystick[joysticknum] )
+     return FALSE;
+
+poll:
+
+   /* poll the device */
+   hRes = IDirectInputDevice2_Poll(lpdiJoystick[joysticknum]);
+
+   /* not needed or succeeded */
+   if ( hRes == DI_NOEFFECT && hRes == DI_OK )
+     goto state;
+
+   /* lets look for some errors */
+   switch ( hRes )
+   {
+
+   // Access to the input device has been lost. It must be reacquired. 
+   case DIERR_INPUTLOST:
+
+   // The operation cannot be performed unless the device is acquired. 
+   case DIERR_NOTACQUIRED:
+
+     // acquire the device
+     hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
+
+     // must be a deeper issue
+     if ( hRes != DI_OK )
+       return FALSE;
+
+     // try again
+     goto poll;
+
+     break;
+
+   // The object has not been initialized. 
+   case DIERR_NOTINITIALIZED:
+
+     // must be a deeper issue
+     return FALSE;
+     break;
+
+   }
+
+state:
+
+   // get data from the joystick
+   hRes = IDirectInputDevice_GetDeviceState( lpdiJoystick[joysticknum],
+                                             sizeof(DIJOYSTATE2),
+                                             &js[ new_input ][joysticknum]);
+   // if we got an error
+   if ( hRes == DI_OK )
+     goto povs;
+   
+   // lets check out some errors
+   switch (hRes)
+   {
+
+   // Access to the input device has been lost. It must be reacquired. 
+   case DIERR_INPUTLOST:
+
+   // The operation cannot be performed unless the device is acquired. 
+   case DIERR_NOTACQUIRED:
+
+     // acquire the device
+     hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
+
+     // must be a deeper issue
+     if ( hRes != DI_OK )
+       return FALSE;
+
+     // try again
+     goto state;
+
+     break;
+
+   case DIERR_INVALIDPARAM:
+   case DIERR_NOTINITIALIZED:
+      
+     // must be a deeper issue
+     return FALSE;
+     break;
+
+   // Data is not yet available. 
+   case E_PENDING:
+     // no data just say ok and get out of here
+     return TRUE;
+     break;
+
+   }
+
+povs:
+
+   /* who knows what the rest of this does */
+
+   // for each hat switch
+   for (i = 0; i < JoystickInfo[joysticknum].NumPOVs; i++)
+   {
+     povdir = GetPOVMask( js[ new_input ][ joysticknum ].rgdwPOV[ i ] );
+     for (j = 0; j < MAX_POV_DIRECTIONS; j++)
+		js_pov[ new_input ][ joysticknum ][ i ][ j ] =
+        ( povdir & ( 1 << j ) ) ? 0x80 : 0;
+   }
+
+   /* everything fine */
+   return TRUE;
+}
+
+#else // ! DINPUTJOY
+
+void SetUpJoystickAxis(int joystick)
+{
+}
+
+BOOL joystick_poll( int joysticknum )
+{
+	int i;
+
+	if(joysticknum >= Num_Joysticks)
+		return FALSE;
+
+	// copy joystick button state
+	for( i = 0; i < MAX_JOYSTICK_BUTTONS; i++ )
+	{
+		js_buttons[new_input][joysticknum][i] = 
+			joy_button_state[joysticknum][i];
+	}
+
+	// copy hat state
+	for( i = 0; i < MAX_JOYSTICK_POVS; i++ )
+	{
+		int b;
+		for( b = 0; b < MAX_POV_DIRECTIONS; b++ )
+		{
+			js_pov[new_input][joysticknum][i][b] =
+				joy_hat_state[joysticknum][i][b];
+		}
+	}
+
+	return TRUE;
+}
+
+#endif // !  DINPUTJOY
 
 // returns TRUE if it is OK to repeat the given ship action
 static BOOL RepeatShipActionOK ( int action )
@@ -1541,188 +1714,3 @@ BOOL IsAnyJoystickButtonReleased( void )
   }
   return( FALSE );
 }
-
-// nothing here to port again we have this all done already in sdl version
-
-#ifdef DINPUTJOY
-
-#define POV_UP      0
-#define POV_RIGHT   9000
-#define POV_DOWN    18000
-#define POV_LEFT    27000
-
-#define POV_RANGE   36000
-#define POV_HALFRANGE 18000
-#define POV_TOLERANCE 6750  // this gives 45 deg for each of 8 compass directions
-
-int GetPOVMask( DWORD pov )
-{
-  static DWORD POVDir[ MAX_POV_DIRECTIONS ] =
-  {
-    POV_UP,
-    POV_DOWN,
-    POV_LEFT,
-    POV_RIGHT
-  };
-  int mask;
-  int dir;
-  int dpov;
-
-  mask = 0;
-  if ( pov != 0xFFFF && pov != 0xFFFFFFFF )
-  {
-    for ( dir = 0; dir < MAX_POV_DIRECTIONS; dir++ )
-    {
-      dpov = abs( pov - POVDir[ dir ] );
-      if ( dpov > POV_HALFRANGE )
-        dpov = POV_RANGE - dpov;
-      if ( dpov <= POV_TOLERANCE )
-        mask |= ( 1 << dir );
-    }
-  }
-  return mask;
-}
-
-BOOL joystick_poll( int joysticknum )
-{
-   HRESULT hRes;
-   int i, j, povdir;
-
-   /* joystick doesn't exist */
-   if( !lpdiJoystick[joysticknum] )
-     return FALSE;
-
-poll:
-
-   /* poll the device */
-   hRes = IDirectInputDevice2_Poll(lpdiJoystick[joysticknum]);
-
-   /* not needed or succeeded */
-   if ( hRes == DI_NOEFFECT && hRes == DI_OK )
-     goto state;
-
-   /* lets look for some errors */
-   switch ( hRes )
-   {
-
-   // Access to the input device has been lost. It must be reacquired. 
-   case DIERR_INPUTLOST:
-
-   // The operation cannot be performed unless the device is acquired. 
-   case DIERR_NOTACQUIRED:
-
-     // acquire the device
-     hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
-
-     // must be a deeper issue
-     if ( hRes != DI_OK )
-       return FALSE;
-
-     // try again
-     goto poll;
-
-     break;
-
-   // The object has not been initialized. 
-   case DIERR_NOTINITIALIZED:
-
-     // must be a deeper issue
-     return FALSE;
-     break;
-
-   }
-
-state:
-
-   // get data from the joystick
-   hRes = IDirectInputDevice_GetDeviceState( lpdiJoystick[joysticknum],
-                                             sizeof(DIJOYSTATE2),
-                                             &js[ new_input ][joysticknum]);
-   // if we got an error
-   if ( hRes == DI_OK )
-     goto povs;
-   
-   // lets check out some errors
-   switch (hRes)
-   {
-
-   // Access to the input device has been lost. It must be reacquired. 
-   case DIERR_INPUTLOST:
-
-   // The operation cannot be performed unless the device is acquired. 
-   case DIERR_NOTACQUIRED:
-
-     // acquire the device
-     hRes = IDirectInputDevice2_Acquire(lpdiJoystick[joysticknum]);
-
-     // must be a deeper issue
-     if ( hRes != DI_OK )
-       return FALSE;
-
-     // try again
-     goto state;
-
-     break;
-
-   case DIERR_INVALIDPARAM:
-   case DIERR_NOTINITIALIZED:
-      
-     // must be a deeper issue
-     return FALSE;
-     break;
-
-   // Data is not yet available. 
-   case E_PENDING:
-     // no data just say ok and get out of here
-     return TRUE;
-     break;
-
-   }
-
-povs:
-
-   /* who knows what the rest of this does */
-
-   // for each hat switch
-   for (i = 0; i < JoystickInfo[joysticknum].NumPOVs; i++)
-   {
-     povdir = GetPOVMask( js[ new_input ][ joysticknum ].rgdwPOV[ i ] );
-     for (j = 0; j < MAX_POV_DIRECTIONS; j++)
-		js_pov[ new_input ][ joysticknum ][ i ][ j ] =
-        ( povdir & ( 1 << j ) ) ? 0x80 : 0;
-   }
-
-   /* everything fine */
-   return TRUE;
-}
-#endif // DINPUTJOY
-
-#ifndef DINPUTJOY
-BOOL joystick_poll( int joysticknum )
-{
-	int i;
-
-	if(joysticknum >= Num_Joysticks)
-		return FALSE;
-
-	// copy joystick button state
-	for( i = 0; i < MAX_JOYSTICK_BUTTONS; i++ )
-	{
-		js_buttons[new_input][joysticknum][i] = 
-			joy_button_state[joysticknum][i];
-	}
-
-	// copy hat state
-	for( i = 0; i < MAX_JOYSTICK_POVS; i++ )
-	{
-		int b;
-		for( b = 0; b < MAX_POV_DIRECTIONS; b++ )
-		{
-			js_pov[new_input][joysticknum][i][b] =
-				joy_hat_state[joysticknum][i][b];
-		}
-	}
-
-	return TRUE;
-}
-#endif // !  DINPUTJOY

@@ -359,8 +359,19 @@ void reset_mouse_motion( void )
 	//mouse_state.y = 0;
 }
 
+static get_deadzone( int joy, int axis )
+{
+	// make sure this is a valid joystick/axis
+	if( joy > Num_Joysticks || axis > JoystickInfo[joy].NumAxis )
+		return 0;
+	return JoystickInfo[ joy ].Axis[ axis ].deadzone;
+}
+
 void app_joy_axis( SDL_JoyAxisEvent axis )
 {
+	long value;
+	int deadzone;
+
 	if(axis.axis > MAX_JOYSTICK_AXIS)
 	{
 		DebugPrintf(
@@ -368,10 +379,18 @@ void app_joy_axis( SDL_JoyAxisEvent axis )
 			axis.which, axis.axis);
 		return;
 	}
+
 	// sdl axis value (range: -32768 to 32767)
-	// dinput axis value (range: -100 to 100)
+	// forsaken expects (range: -100 to 100)
+	value = (long) (((float)axis.value) / 327.67f);
+
+	// get the joystick deadzone
+	deadzone = get_deadzone(axis.which,axis.axis);
+
+	// if movement greater then deadzone then apply
+	// other wise no movement at all is registered
 	joy_axis_state[ axis.which ][ axis.axis ] = 
-		(long) (((float)axis.value) / 327.67f);
+		( abs(value) > deadzone ) ? value : 0 ;
 }
 
 void app_joy_ball( SDL_JoyBallEvent ball )
