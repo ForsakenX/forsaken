@@ -38,9 +38,9 @@ BOOL handle_events( void );
 // TODO - probably ok to rewrite this to simply have codes
 
 #define MAX_INPUT_BUFFER 100
-SDL_keysym input_buffer[MAX_INPUT_BUFFER];
+int input_buffer[MAX_INPUT_BUFFER];
 int input_buffer_count;
-int input_buffer_find( SDLKey key );
+int input_buffer_find( int code );
 void input_buffer_reset( void );
 
 ///////////

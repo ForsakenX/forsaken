@@ -7768,11 +7768,18 @@ void CancelListSelection( LIST *l )
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
 ===================================================================*/
+
+void MenuEnterTextInputState(int state)
+{
+	MenuState = state;
+	if(!SDL_EnableUNICODE(-1))
+		SDL_EnableUNICODE(1);
+}
+
 void SelectText( MENUITEM *Item )
 {
 	TEXT *t;
-
-	MenuState = MENUSTATE_Text;
+	MenuEnterTextInputState(MENUSTATE_Text);
 	TextItem = Item;
 	t = (TEXT *)(Item->Variable);
 	OriginalText = *t;
@@ -7782,13 +7789,11 @@ void SelectText( MENUITEM *Item )
 void SelectFlatMenutext( MENUITEM *Item )
 {
 	TEXT *t;
-
 	t = (TEXT *)(Item->Variable);
 	SelectText ( Item );
-	MenuState = MENUSTATE_Text2;
+	MenuEnterTextInputState(MENUSTATE_Text2);
 	t->VDU_insert_pos = 0;
 	TextType (t, 0);	// ensures VDU cursor is placed in correct position
-
 	Item->TextInfo[0]->highlighttype = HIGHLIGHT_Static;
 }
 
@@ -16199,6 +16204,9 @@ BOOL ProcessText( int Key )
 		GetVduTextFormattingInfo ( t );
 	}
 
+	if(done)
+		SDL_EnableUNICODE(0);
+
 	return !done;
 }
 
@@ -17040,7 +17048,7 @@ void MenuItemSelect( MENUITEM * item )
 void MenuProcess()
 {
 	int i;
-	SDLKey Key;
+	int Key;
 
 	// used for flashing text
 	Pulse += framelag/60.0F;
@@ -17052,7 +17060,7 @@ void MenuProcess()
 
 	for( i = 0 ; i < input_buffer_count ; i++ )
 	{
-		Key = input_buffer[i].sym;
+		Key = input_buffer[i];
 
 	    // if last key pressed exited from menu system
 		// do not process any more keys

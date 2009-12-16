@@ -19,12 +19,9 @@ extern void CleanUpAndPostQuit(void);
 
 void input_buffer_send( int code )
 {
-	SDL_keysym key;
 	if( input_buffer_count >= MAX_INPUT_BUFFER )
 		return;
-	memset(&key,0,sizeof(SDL_keysym));
-	key.sym = code;
-	input_buffer[ input_buffer_count++ ] = key;
+	input_buffer[ input_buffer_count++ ] = code;
 }
 
 void input_buffer_reset( void )
@@ -32,11 +29,11 @@ void input_buffer_reset( void )
 	input_buffer_count = 0;
 }
 
-int input_buffer_find( SDLKey key )
+int input_buffer_find( int code )
 {
 	int i;
 	for ( i = 0 ; i < input_buffer_count; i++ )
-		if( input_buffer[ i ].sym == key )
+		if( input_buffer[ i ] == code )
 			return 1;
 	return 0;
 }
@@ -234,13 +231,13 @@ void app_keyboard( SDL_KeyboardEvent key )
 		break;
 	}
 	
-	// TODO - we'll probably want to rewrite code that depends on this to use the new
-	//        methods that use SDL_GetKeyState and provide functions such as "is key held" etc..
-	// TODO - we could probably have mouse events added here as keyboard events
-	//			to emulate mouse menu navigation... ex: right click maps to escape
 	if( key.type == SDL_KEYDOWN )
 	{
-		input_buffer_send(key.keysym.sym);
+		input_buffer_send(
+			key.keysym.unicode ? 
+				key.keysym.unicode :
+				key.keysym.sym
+		);
 	}
 }
 
