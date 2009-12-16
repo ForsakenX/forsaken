@@ -77,9 +77,8 @@ void app_active( SDL_ActiveEvent active )
 		// window mode
 		else
 		{
-			// only grab inputs if we are playing
-			// TODO - this should not grab the mouse if we are in the menu !
-			if( MyGameStatus == STATUS_Normal )
+			// only grab inputs if we are playing and not in menu
+			if( !CurrentMenu && MyGameStatus == STATUS_Normal )
 				input_grab(TRUE);
 			else
 				input_grab(FALSE);
