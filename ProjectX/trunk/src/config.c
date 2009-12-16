@@ -292,7 +292,8 @@ char * get_key_name( int i )
 }
 
 // text ,  keydef
-VIRTUALKEYMAP vkey_map[DOWN_MOUSE+1];
+#define KEY_MAP_LAST DOWN_MOUSE + 1
+VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST ];
 
 static void init_key_map( void )
 {
@@ -333,16 +334,17 @@ static void init_key_map( void )
 		}
 		if(!name)
 		{
-			name = malloc(4); // 3 chars + 1
-			sprintf( &name[0], "%d", i );
+			// key has no mapping...
+			// do not attempt to map 1 to "1" etc...
+			// this was the old approach and broke number keys
+			vkey_map[DOWN_MOUSE+1].keycode = 0x00;
+			vkey_map[DOWN_MOUSE+1].keyword = NULL;
+			continue;
 		}
 		vkey_map[i].keycode = i;
 		vkey_map[i].keyword = name;
 		DebugPrintf("vkey_map: %s = %d\n",name,i);
 	}
-	// (end of table marker)
-	vkey_map[DOWN_MOUSE+1].keycode = 0x00;
-	vkey_map[DOWN_MOUSE+1].keyword = NULL;
 }
 
 
@@ -369,12 +371,14 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 	}
 	while ( ptr && sscanf( ptr, " %80s", last_token ) == 1 )
 	{
-		for ( vk = vkey_map; vk->keyword; vk++ )
+		int i;
+		for ( i = 0; i < KEY_MAP_LAST; i++ )
 		{
+			vk = &vkey_map[i];
+			if(!vk->keycode || !vk->keyword)
+				continue;
 			if(strcasecmp( last_token, vk->keyword ) == 0)
-			{
 				break;
-			}
 		}
 
 		if ( ! vk->keyword )
@@ -413,6 +417,7 @@ read_keydef_indexed( FILE *f, USERKEY *k, char *last_token, int max_index )
 {
 	int index;
 
+	// read the number after SELECT1 representing which primary is bound
 	if ( fscanf( f, " %d", &index ) == 1 && index > 0 && index <= max_index )
 		return read_keydef( f, k + index - 1, last_token );
 	else
@@ -1621,10 +1626,14 @@ write_keydef_indexed( FILE *f, char *ctl_name, USERKEY *keydef, int index )
 
 	if ( k < keydef->keys )
 	{
+		// the first number after SELECT1 represents the primary weapon in enum table
 		fprintf( f, "%s\t\t%d", ctl_name, index + 1 );
+
 		for ( k = 0; k < keydef->keys; k++ )
 		{
 			if ( KEY_ON_KEYBOARD( keydef->key[ k ] ) || KEY_ON_MOUSE( keydef->key[ k ] ) )
+
+				// each string after "SELECT1 n" represents the keys associated
 				fprintf( f, "\t%s", key_fullname( keydef->key[ k ] ) );
 		}
 		fprintf( f, "\n" );
