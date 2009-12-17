@@ -13,6 +13,20 @@ BOOL DebugLog = FALSE;
 #include <ctype.h>		// for toupper
 #endif
 
+char * convert_char( char from, char to, char* in )
+{
+	char * pch;
+	if(!in)
+		return in;
+	pch = strchr( in, from );
+	while( pch != NULL )
+	{ 
+		*pch = to;
+		pch = strchr( pch+1, from );
+	}
+	return in;
+}
+
 char* convert_path( char* _str )
 {
 #ifdef WIN32

@@ -275,24 +275,18 @@ USERCONFIG my_controls = {
 
 USERCONFIG *player_config = &my_controls;
 
-
 char * get_key_name( int i )
-{  
-	char * pch;
+{
 	char * name = SDL_GetKeyName(i);
-	char * new_name = malloc(strlen(name)+1);
-	strncpy( new_name, name, strlen(name)+1 );
-	pch = strchr(new_name,' ');
-	while(pch!=NULL)
-	{ 
-		*pch = '_';
-		pch = strchr(pch+1,' ');
-	}
-	return new_name;
+	if(0==strcasecmp(name,"unknown_key"))
+		return NULL;
+	return convert_char( ' ', '_', 
+		strdup(name)
+	);
 }
 
 // text ,  keydef
-#define KEY_MAP_LAST DOWN_MOUSE + 1
+#define KEY_MAP_LAST DOWN_MOUSE
 VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST ];
 
 static void init_key_map( void )
@@ -329,16 +323,14 @@ static void init_key_map( void )
 		else
 		{
 			name = get_key_name(i);
-			if(!strcasecmp(name,"unknown_key"))
-				name = NULL;
 		}
 		if(!name)
 		{
 			// key has no mapping...
 			// do not attempt to map 1 to "1" etc...
 			// this was the old approach and broke number keys
-			vkey_map[DOWN_MOUSE+1].keycode = 0x00;
-			vkey_map[DOWN_MOUSE+1].keyword = NULL;
+			vkey_map[i].keycode = 0x00;
+			vkey_map[i].keyword = NULL;
 			continue;
 		}
 		vkey_map[i].keycode = i;
@@ -382,7 +374,7 @@ read_keydef( FILE *f, USERKEY *k, char *last_token )
 		}
 
 		if ( ! vk->keyword )
-			continue;
+			break;
 
 		for ( j = 0; j < MAX_KEYS_PER_CONTROL; j++ )
 		{

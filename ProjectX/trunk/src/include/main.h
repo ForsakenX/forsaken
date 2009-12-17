@@ -115,6 +115,7 @@ typedef struct
 #include <string.h>
 #define strcasecmp	_stricmp
 #define strncasecmp _strnicmp
+#define strdup _strdup
 #include <stdio.h>
 #define snprintf	_snprintf
 #include <direct.h>
