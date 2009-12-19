@@ -19,6 +19,7 @@ void Get_Ext( uint8 * Src, uint8 * Dest );
 void GetFilename( uint8 * Src, uint8 * Dest );
 
 char* convert_path( char* _str );
+char * convert_char( char from, char to, char* in );
 
 #ifdef __cplusplus
 };
