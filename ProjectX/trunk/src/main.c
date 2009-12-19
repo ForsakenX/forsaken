@@ -574,6 +574,7 @@ int main( int argc, char* argv[] )
 		strcat( cli, " " );
 		strcat( cli, argv[i] );
 	}
+	DebugPrintf("cli: %s\n",cli);
 
     // Create the window and initialize all objects needed to begin rendering
     if(!AppInit(cli))
