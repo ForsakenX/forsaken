@@ -395,6 +395,9 @@ static network_player_t * create_player( ENetPeer * peer )
 
 static void append_player( network_player_t * player )
 {
+	// TODO - this should never happen but it does
+	if(!player)
+		return;
 	player->prev   = network_players.last;
 	if(player->prev)
 		player->prev->next = player;
