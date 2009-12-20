@@ -278,7 +278,7 @@ USERCONFIG *player_config = &my_controls;
 char * get_key_name( int i )
 {
 	char * name = SDL_GetKeyName(i);
-	if(0==strcasecmp(name,"unknown_key"))
+	if(0==strcasecmp(name,"unknown key"))
 		return NULL;
 	return convert_char( ' ', '_', 
 		strdup(name)
@@ -1432,12 +1432,15 @@ read_config( USERCONFIG *u, char *cfg_name )
 
 const char *key_fullname( int keycode )
 {
-	VIRTUALKEYMAP *vk;
-	
+	int i;
+	VIRTUALKEYMAP *vk;	
 	init_key_map();
 
-	for ( vk = vkey_map; vk->keyword; vk++ )
+	for ( i = 0; i < KEY_MAP_LAST; i++ )
 	{
+		vk = &vkey_map[i];
+		if(!vk->keycode || !vk->keyword)
+			continue;
 		if ( keycode == vk->keycode )
 			return vk->keyword;
 	}
@@ -1520,19 +1523,17 @@ const char *key_name( int keycode )
 	init_key_map();
 	if ( KEY_ON_KEYBOARD( keycode ) || KEY_ON_MOUSE( keycode ) )
 	{
+		int i;
 		VIRTUALKEYMAP *vk;
 		const char *name;
 
-		for ( vk = vkey_map; vk->keyword; vk++ )
+		for ( i = 0; i < KEY_MAP_LAST; i++ )
 		{
+			vk = &vkey_map[i];
+			if(!vk->keycode || !vk->keyword)
+				continue;
 			if ( keycode == vk->keycode )
-			{
-				name = strchr( vk->keyword, '_' );
-				if ( name && *++name )
-					return name;
-				else
-					return vk->keyword; // should never need this...!
-			}
+				return vk->keyword;
 		}
 	}
 	else if ( KEY_ON_JOYSTICK( keycode ) )
