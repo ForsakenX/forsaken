@@ -3188,8 +3188,6 @@ void ProcessLoopingSfx( void )
 	int i, j, flags;
 	long	Volume;
 	static float FrameSkip = 0.0F;
-	long datarate;
-	long safezone;
 	VECTOR Pos;
 
 	// print debug info
