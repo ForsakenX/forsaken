@@ -106,7 +106,7 @@ BOOL sound_init( void )
 	// is there really even a reason we need to re-init sound?
 	static int initialized = 0;
 	if(initialized)
-		return;
+		return TRUE;
 	initialized = 1;
 
 	Device = alcOpenDevice(NULL); // preferred device
@@ -143,11 +143,13 @@ BOOL sound_init( void )
 void sound_destroy( void )
 {
 	return; // TODO - see sound_init()
+#if 0
 	ALCcontext * Context = alcGetCurrentContext();
 	ALCdevice * Device = alcGetContextsDevice(Context);
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(Context);
 	alcCloseDevice(Device);
+#endif
 }
 
 //
