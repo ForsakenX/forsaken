@@ -1525,7 +1525,6 @@ const char *key_name( int keycode )
 	{
 		int i;
 		VIRTUALKEYMAP *vk;
-		const char *name;
 
 		for ( i = 0; i < KEY_MAP_LAST; i++ )
 		{
