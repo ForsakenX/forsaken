@@ -512,8 +512,6 @@ typedef struct _SPOT_SFX_LIST
 	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
 	BOOL					bufferloaded;			// flag to indicate if buffer is loaded ( or about to be loaded )
 	void*					buffer;					// buffer address
-	void*					buffer3D;				// 3D buffer interface address
-	long					buffersize;
 	float					distance;
 	int						SfxHolderIndex;
 	int						SfxThreadInfoIndex;
@@ -1109,7 +1107,6 @@ void ProcessSoundRoutines (void * pParm)
 				//				(sound_buffer)?"GOOD":"BAD");
 
 				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffersize = sound_size( sound_buffer );
 
 				sound_set_pitch( 
 							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
@@ -1507,11 +1504,7 @@ void PauseAllSfx( void )
 	}
 }
 
-#define LOOPING_SFX_MIXAHEAD 500	// time from end of sample ( in mS ) that it is not safe to make control changes
-									// else you will get a gap when looping.
 #define LOOPING_SFX_SCALE 0.75F		// used for max distance of looping sfx ( fraction of max distance used for normal sfx )
-#define LOOPING_SFX_PANNING_PROXIMITY 10	// no. of ships radius's distance that you must be away from sound
-											// before sound is panned
 #define LOOPING_SFX_FRAME_SKIP 5.0F	// process looping sfx every 5 frames
 #define LOOPING_SFX_FixedGroup 0
 #define LOOPING_SFX_VariableGroup 1
@@ -2975,7 +2968,6 @@ int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float
 	SpotSfxList[ index ].vol = Volume;
 	SpotSfxList[ index ].buffer = NULL;
 	SpotSfxList[ index ].bufferloaded = FALSE;
-	SpotSfxList[ index ].buffersize = 0;
 	SpotSfxList[ index ].distance = 0.0F;
 	SpotSfxList[ index ].used = TRUE;
 	SpotSfxList[ index ].SfxHolderIndex = SfxHolderIndex;
@@ -3358,7 +3350,6 @@ void ProcessLoopingSfx( void )
 				if ( SpotSfxList[ i ].buffer )
 				{
 					sound_set_pitch( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
-					SpotSfxList[i].buffersize = sound_size( SpotSfxList[i].buffer );
 					SpotSfxList[i].bufferloaded = TRUE;
 				}
 			}
@@ -3368,57 +3359,37 @@ void ProcessLoopingSfx( void )
 		// if in range, and buffer already loaded
 		if ( InRange && SpotSfxList[ i ].bufferloaded && SpotSfxList[ i ].buffer)
 		{
-			long current = sound_get_seek( SpotSfxList[ i ].buffer );
-
-			datarate = sound_bps( SpotSfxList[ i ].buffer );
-
-			// work out safe zone ( bytes from end )
-			safezone = ( datarate * LOOPING_SFX_MIXAHEAD ) / 1000;
-			
-			if ( current < ( SpotSfxList[ i ].buffersize - safezone ) )
+			if( !Sound3D )
 			{
-				if( !Sound3D )
-				{
-					DebugPrintf("- adjusting looping sound volumne based on distance.\n");
+				DebugPrintf("- adjusting looping sound volumne based on distance.\n");
 
-					// adjust buffer parameters
-					//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
+				// adjust buffer parameters
+				//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
-					Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
-		
-					Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
+				Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
+	
+				Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
-					SetPannedBufferParams(
-						SpotSfxList[ i ].buffer,
-						&Pos, 
-						SpotSfxList[ i ].freq,
-						&Temp,
-						Distance,
-						Volume,
-						SpotSfxList[ i ].Effects 
-					);
-
-					//if ( Distance <= SHIP_RADIUS * LOOPING_SFX_PANNING_PROXIMITY )
-					//	sound_pan( SpotSfxList[ i ].buffer, 0 );
-			
-				}
-				else
-				{
-					DebugPrintf("TODO\n");
-					// would do 3D stuff here...
-				}
-
-				DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
-
-				if( ! sound_is_playing( SpotSfxList[ i ].buffer ) )
-					sound_play_looping(SpotSfxList[ i ].buffer);
-
+				SetPannedBufferParams(
+					SpotSfxList[ i ].buffer,
+					&Pos, 
+					SpotSfxList[ i ].freq,
+					&Temp,
+					Distance,
+					Volume,
+					SpotSfxList[ i ].Effects 
+				);
 			}
 			else
 			{
-				DebugPrintf("sound: in safe zone. current play cursor = %d, buffer size = %d )\n", 
-							current, SpotSfxList[ i ].buffersize);
+				DebugPrintf("TODO\n");
+				// would do 3D stuff here...
 			}
+
+			DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
+
+			if( ! sound_is_playing( SpotSfxList[ i ].buffer ) )
+				sound_play_looping(SpotSfxList[ i ].buffer);
 		}
 	}
 }
