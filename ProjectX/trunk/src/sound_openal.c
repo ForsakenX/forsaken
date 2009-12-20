@@ -101,6 +101,14 @@ static void print_info ( void )
 
 BOOL sound_init( void )
 {
+	// TODO - disabling the ability to re-init sound system
+	// on ubuntu using "drivers = pulse" will handle in alcOpenDevice
+	// is there really even a reason we need to re-init sound?
+	static int initialized = 0;
+	if(initialized)
+		return;
+	initialized = 1;
+
 	Device = alcOpenDevice(NULL); // preferred device
 	if(!Device)
 		return FALSE;
@@ -134,6 +142,7 @@ BOOL sound_init( void )
 
 void sound_destroy( void )
 {
+	return; // TODO - see sound_init()
 	ALCcontext * Context = alcGetCurrentContext();
 	ALCdevice * Device = alcGetContextsDevice(Context);
 	alcMakeContextCurrent(NULL);
