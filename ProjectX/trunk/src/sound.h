@@ -52,11 +52,11 @@ BOOL sound_is_playing( sound_t * s );
 void sound_stop( sound_t * s );
 long sound_size( sound_t * s );
 void sound_release( sound_t * s );
-void sound_set_freq( sound_t * s, float freq );
-void sound_volume( sound_t * s, long volume );
+void sound_set_pitch( sound_t * s, float freq );
+void sound_volume( sound_t * s, long decibels );
 void sound_pan( sound_t * s, long pan );
-long sound_rate( sound_t * s );
-void sound_get_seek( sound_t * s, long * bytes );
+long sound_bps( sound_t * s );
+long sound_get_seek( sound_t * s );
 void sound_set_seek( sound_t * s, long bytes );
 void sound_position( sound_t * s, float x, float y, float z, float min_distance, float max_distance );
 

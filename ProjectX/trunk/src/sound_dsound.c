@@ -127,7 +127,7 @@ BOOL sound_is_playing( sound_t * buffer )
 	return (dwStatus & DSBSTATUS_PLAYING);
 }
 
-void sound_set_freq( sound_t * buffer, float freq )
+void sound_set_pitch( sound_t * buffer, float freq )
 {
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, OrigFreq;
@@ -135,7 +135,7 @@ void sound_set_freq( sound_t * buffer, float freq )
 	// BUG:  Appears buffer pointer goes bad or is passed in as NULL
 	if(!buffer)
 	{
-		DebugPrintf("BUG: sound_set_freq() buffer passed in was null\n");
+		DebugPrintf("BUG: sound_set_pitch() buffer passed in was null\n");
 		return;
 	}
 
@@ -164,7 +164,7 @@ void sound_set_freq( sound_t * buffer, float freq )
 
 	// set frequency
 	if ( IDirectSoundBuffer_SetFrequency( buffer, OrigFreq ) != DS_OK )
-		DebugPrintf("sound_set_freq: failed\n");
+		DebugPrintf("sound_set_pitch: failed\n");
 }
 
 void sound_volume( sound_t * buffer, long volume )
@@ -177,7 +177,7 @@ void sound_pan( sound_t * buffer, long pan )
 	IDirectSoundBuffer_SetPan( buffer, pan );
 }
 
-long sound_rate( sound_t * buffer ) // avg bytes per second
+long sound_bps( sound_t * buffer ) // avg bytes per second
 {
 	LPWAVEFORMATEX lpwaveinfo;
 	DWORD dwSizeWritten, datarate;
@@ -190,11 +190,11 @@ long sound_rate( sound_t * buffer ) // avg bytes per second
 }
 
 // this gets the current play location
-void sound_get_seek( sound_t * buffer, long * bytes )
+long sound_get_seek( sound_t * buffer )
 {
-	DWORD _bytes;
-	IDirectSoundBuffer_GetCurrentPosition( buffer, &_bytes, NULL	);
-	*bytes = (long) _bytes;
+	DWORD bytes;
+	IDirectSoundBuffer_GetCurrentPosition( buffer, &bytes, NULL	);
+	return (long) bytes;
 }
 
 // this moves to a specific offset in the buffer

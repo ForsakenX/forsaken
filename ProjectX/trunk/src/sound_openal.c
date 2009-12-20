@@ -172,6 +172,15 @@ BOOL sound_listener_orientation(
 // Buffers
 //
 
+// (only 3d buffer routine)
+// TODO - we'll want to set velocity some day for moving players ?
+void sound_position( sound_t * source, float x, float y, float z, float min, float max )
+{
+	alSource3f(source->source, AL_POSITION, x, y, z);
+	alSourcef(source->source, AL_MAX_DISTANCE, max);
+	alSourcef(source->source, AL_REFERENCE_DISTANCE, min); // is this right?
+}
+
 void sound_play( sound_t * source )
 {
 	alSourcePlay( source->source );
@@ -195,13 +204,6 @@ long sound_size( sound_t * source )
 	return (long) size;
 }
 
-long sound_rate( sound_t * source )
-{
-	ALint freq;
-	alGetBufferi( source->buffer, AL_FREQUENCY, &freq );
-	return (long) freq;
-}
-
 void sound_release( sound_t * source )
 {
 	if(!source)
@@ -214,15 +216,39 @@ void sound_release( sound_t * source )
 	source = NULL;
 }
 
-void sound_set_freq( sound_t * source, float freq )
+long sound_bps( sound_t * source )
 {
-	alBufferi(source->buffer,AL_FREQUENCY, (ALint) freq);
+	long rate;
+	ALint freq, bits, channels;
+	alGetBufferi( source->buffer, AL_BITS, &bits );
+	alGetBufferi( source->buffer, AL_FREQUENCY, &freq );
+	alGetBufferi( source->buffer, AL_CHANNELS, &channels );
+	// bits should be a multiple of 8
+	// the remainder is lost when you convert to long, anyway
+	rate = (freq * channels * bits) / 8;
+	return rate;
 }
 
-void sound_volume( sound_t * source, long volume )
+float sound_get_pitch( sound_t * source )
 {
-	// volume must be scaled from 0 <-> +1 and converted from dsound format
-	alSourcef(source->source, AL_GAIN, (ALfloat) pow(10.0, volume/2000.0));
+	ALfloat pitch;
+	alGetSourcef( source->source, AL_PITCH, &pitch );
+	return (float) pitch;
+}
+
+void sound_set_pitch( sound_t * source, float pitch )
+{
+	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
+	alSourcef( source->source, AL_PITCH, f );
+}
+
+void sound_volume( sound_t * source, long millibels )
+{
+	// gain is scaled to (silence) 0.0f through (no change) 1.0f
+	// millibels = hundredths of decibels (dB)
+	// defined in Dsound.h as (no change) 0 and (silence) -10,000
+	ALfloat f = (ALfloat) pow(10.0, millibels/2000.0);
+	alSourcef(source->source, AL_GAIN, f);
 }
 
 void sound_pan( sound_t * source, long _pan )
@@ -242,24 +268,16 @@ BOOL sound_is_playing( sound_t * source )
 	return (state == AL_PLAYING);
 }
 
-void sound_get_seek( sound_t * source, long * bytes )
+long sound_get_seek( sound_t * source )
 {
 	ALint i;
 	alGetSourcei(source->source, AL_BYTE_OFFSET, &i);
-	*bytes = (long) i;
+	return (long) i;
 }
 
 void sound_set_seek( sound_t * source, long bytes )
 {
 	alSourcei(source->source, AL_BYTE_OFFSET, bytes);
-}
-
-// TODO - we'll want to set velocity some day for moving players ?
-void sound_position( sound_t * source, float x, float y, float z, float min, float max )
-{
-	alSource3f(source->source, AL_POSITION, x, y, z);
-	alSourcef(source->source, AL_MAX_DISTANCE, max);
-	alSourcef(source->source, AL_REFERENCE_DISTANCE, min); // is this right?
 }
 
 sound_t * sound_load(char *path)
