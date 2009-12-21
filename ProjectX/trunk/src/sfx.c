@@ -3056,7 +3056,7 @@ void FindFreeLoopingSfxBuffer( int index )
 				SpotSfxList[ index ].variant 
 			]->Dup_Buffer[ i ];
 
-		if(sound_is_playing(buffer))
+		if(!sound_is_playing(buffer))
 		{
 			DebugPrintf("- assigned non playing buffer to looping sfx %d\n", SpotSfxList[ index ].sfxindex);
 			SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
