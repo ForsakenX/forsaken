@@ -81,9 +81,8 @@ static BOOL enumerate_video_modes( Uint32 flags )
 		}
 		//
 		{
-			int mode = 0;
-			int desired = 0;
-			int lowest = 0;
+			int desired = -1;
+			int lowest  = 0;
 			for( i = 0; i < render_info.NumModes; i++ )
 			{
 				if( render_info.Mode[i].w == render_info.default_mode.w &&
@@ -94,7 +93,7 @@ static BOOL enumerate_video_modes( Uint32 flags )
 							lowest = i;
 			}
 			render_info.CurrMode = lowest;
-			if(desired)
+			if( desired > -1 )
 				render_info.CurrMode = desired;
 		}
 	}
