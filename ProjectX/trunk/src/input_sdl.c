@@ -52,7 +52,7 @@ void input_grab( BOOL grab )
 	input_grabbed = grab;
 	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
 	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
-	DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
+	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
 }
 
 //
@@ -61,7 +61,7 @@ void input_grab( BOOL grab )
 
 void app_active( SDL_ActiveEvent active )
 {
-	DebugPrintf("window active state set to: %s\n",(active.gain?"true":"false"));
+//	DebugPrintf("window active state set to: %s\n",(active.gain?"true":"false"));
 
 	// lost focus so release inputs
 	if( ! active.gain )
@@ -91,7 +91,7 @@ void app_active( SDL_ActiveEvent active )
 	switch( active.state )
 	{
 	case SDL_APPMOUSEFOCUS: // mouse
-		DebugPrintf("Mouse event\n");
+//		DebugPrintf("Mouse event\n");
 		break;
 	case SDL_APPINPUTFOCUS: // keyboard
 		DebugPrintf("keyboard event\n");
