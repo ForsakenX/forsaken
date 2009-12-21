@@ -286,7 +286,7 @@ char * get_key_name( int i )
 }
 
 // text ,  keydef
-#define KEY_MAP_LAST DOWN_MOUSE
+#define KEY_MAP_LAST DOWN_MOUSE + 1
 VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST ];
 
 static void init_key_map( void )
