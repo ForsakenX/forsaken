@@ -614,6 +614,8 @@ int main( int argc, char* argv[] )
 			SDL_Delay( cliSleep );
 	}
 
+	return 0;
+
 FAILURE:
 
 	//
