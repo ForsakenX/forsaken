@@ -3048,6 +3048,8 @@ void FindFreeLoopingSfxBuffer( int index )
 
 	furthest = 0.0F;
 	furthest_index = 0;
+	
+	DebugPrintf("FindFreeLoopingSfxBuffer: finding a dup sfx buffer (%d) for spot sfx (%d)\n", SpotSfxList[ index ].sfxindex, index);
 
 	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
 	{		
@@ -3058,7 +3060,7 @@ void FindFreeLoopingSfxBuffer( int index )
 
 		if(!sound_is_playing(buffer))
 		{
-			DebugPrintf("- assigned non playing buffer to looping sfx %d\n", SpotSfxList[ index ].sfxindex);
+			DebugPrintf("FindFreeLoopingSfxBuffer: assigned non playing dup buffer (%d) to spotsfx %d\n", i, SpotSfxList[ index ].sfxindex);
 			SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
 			SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] = index;
 			return;
@@ -3073,11 +3075,11 @@ void FindFreeLoopingSfxBuffer( int index )
 	// if furthest sfx is nearer than current sfx, do not allocate buffer for current sfx
 	if ( SpotSfxList[ index ].distance > furthest )
 	{
-		DebugPrintf("- furthest is closer than current so cannot find free buffer %d\n", SpotSfxList[ index ].sfxindex);
+		DebugPrintf("FindFreeLoopingSfxBuffer: all dup buffers are in use and are closer so cannot play spotsfx %d\n", SpotSfxList[ index ].sfxindex);
 		return;
 	}
 
-	DebugPrintf("- stopping furthest sound buffer and assigning it to current looping sfx buffer %d\n", SpotSfxList[ index ].sfxindex);
+	DebugPrintf("FindFreeLoopingSfxBuffer: dup buffer %d is farther so stopping it and playing current spotsfx %d\n", furthest_index, SpotSfxList[ index ].sfxindex);
 
 	sound_stop ( SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
 	
@@ -3246,8 +3248,6 @@ void ProcessLoopingSfx( void )
 			Distance = (float) sqrt( ( Temp.x * Temp.x ) + ( Temp.y * Temp.y ) + ( Temp.z * Temp.z ) );
 			Distance += Modify;
 			MaxDistance = 24 * 1024 * GLOBAL_SCALE * LOOPING_SFX_SCALE;
-			//Distance += (MaxDistance - Distance) - (MaxDistance - Distance) * GlobalSoundAttenuation * SpotSfxList[ i ].vol;
-
 			if( Distance >= MaxDistance ) 
 				InRange = FALSE;
 			else
@@ -3313,7 +3313,6 @@ void ProcessLoopingSfx( void )
 		// if in range & not loaded then find a free slot for the sound
 		if ( InRange && !SpotSfxList[ i ].bufferloaded )
 		{
-
 			if ( flags & SFX_Dynamic )
 			{
 				DebugPrintf("Loading dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
@@ -3336,13 +3335,9 @@ void ProcessLoopingSfx( void )
 						break;
 					}
 				}
-
-
 			}
 			else
 			{
-				DebugPrintf("assigning buffer to looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-
 				FindFreeLoopingSfxBuffer( i );
 
 				if ( SpotSfxList[ i ].buffer )
@@ -3359,7 +3354,7 @@ void ProcessLoopingSfx( void )
 		{
 			if( !Sound3D )
 			{
-				DebugPrintf("- adjusting looping sound volumne based on distance.\n");
+				//DebugPrintf("- adjusting looping sound volumne based on distance.\n");
 
 				// adjust buffer parameters
 				//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
@@ -3384,7 +3379,7 @@ void ProcessLoopingSfx( void )
 				// would do 3D stuff here...
 			}
 
-			DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
+			//DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
 
 			if( ! sound_is_playing( SpotSfxList[ i ].buffer ) )
 				sound_play_looping(SpotSfxList[ i ].buffer);
