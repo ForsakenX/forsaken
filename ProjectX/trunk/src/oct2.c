@@ -1595,17 +1595,19 @@ void DrawSimplePanel()
 	  // show last 3 recent messages
 	  else
 		MessageQuePrint();
-
-	  // if we are dead and waiting for a game
-	  // show statistics
-	  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
+	
+	  if( ! (CurrentMenu && CurrentMenuItem ) )
 	  {
-		  ShowDeathModeStats();
+		  // if we are dead and waiting for a game
+		  // show statistics
+		  if( Ships[ WhoIAm ].Object.Mode == LIMBO_MODE && !SwitchedToWatchMode )
+			  ShowDeathModeStats();
 
-	  // if we have show stats activated (ex: you pressed the stats button)
-	  // show statistics
-	  } else if ( ShowStatistics )
-		  ShowInGameStats();
+		  // if we have show stats activated (ex: you pressed the stats button)
+		  // show statistics
+		  else if ( ShowStatistics)
+			  ShowInGameStats();
+	  }
 
 	  // watch mode
 	  if(SwitchedToWatchMode)
@@ -4155,7 +4157,7 @@ BOOL StatsNamePulse( void )
 extern int GetPlayerByRank( int rank );
 extern int ReliabilityTab[MAX_PLAYERS+1];
 void ShowGameStats( stats_mode_t mode )
-{
+ {
 	int active_players = 0;
 	int total_rows = 0;
 	int total_height = 0;
