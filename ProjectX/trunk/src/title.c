@@ -8215,18 +8215,39 @@ void InitMultiplayerHost( MENU *Menu )
 /* init */
 void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 {
-	uint16 selected_level;
+	int selected_level = -1;
 	int i;
 	char level_name[64];
 
 	config_get_strncpy( &level_name[0], 64, "LevelName", "ship" );
 
-	for ( i = 0; i < LevelList.items; i++ )
-		if ( !strncasecmp( LevelList.item[ i ], level_name, 7 ) )
+	if(level_name || (strlen(level_name) != 0) )
+	{
+		DebugPrintf("level select: config says last level was %s\n",level_name);
+		DebugPrintf("level select: finding level by name in %d items\n",LevelList.items);
+		for ( i = 0; i < LevelList.items; i++ )
 		{
-			selected_level = i;
-			break;
+			//DebugPrintf("level select: testing level %d: %s\n",i,LevelList.item[i]);
+			if ( !strncasecmp( LevelList.item[ i ], level_name, 7 ) )
+			{
+				DebugPrintf("level select: found last level at index %d\n",i);
+				selected_level = (uint16) i;
+				break;
+			}
 		}
+	}
+	else
+	{
+		DebugPrintf("level select: config contained empty/missing LevelName\n");
+	}
+
+	if(selected_level == -1)
+	{
+		selected_level = 0;
+		DebugPrintf("level select: could not find the level defaulting to level 0\n");
+	}
+
+	DebugPrintf("level select: using level %d\n",(int)selected_level);
 
 	// load the multiplayer levels into the global
 	if ( !InitLevels( MULTIPLAYER_LEVELS ) )
