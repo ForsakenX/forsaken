@@ -1484,24 +1484,27 @@ const char *key_char( int keycode )
 	// get the sdl name
 	name = (char *) key_name( keycode );
 
-	// maps to a single char
-	if (strlen( name ) == 1)
-		return name;
-
-	// try to find mapping
+	if ( name )
 	{
-		ascii_map_t * key = key_char_lookup;
-		while(key++)
-		{
-			// last item in list
-			if(!key->name)
-				break;
+		// maps to a single char
+		if(strlen( name ) == 1)
+			return name;
 
-			// if name matches
-			if( 0 == strcasecmp(name,key->name) )
+		// try to find mapping
+		{
+			ascii_map_t * key = key_char_lookup;
+			while(key++)
 			{
-				// return mapping
-				return key->_char;
+				// last item in list
+				if(!key->name)
+					break;
+
+				// if name matches
+				if( 0 == strcasecmp(name,key->name) )
+				{
+					// return mapping
+					return key->_char;
+				}
 			}
 		}
 	}
