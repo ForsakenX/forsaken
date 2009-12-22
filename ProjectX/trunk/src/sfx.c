@@ -2949,6 +2949,10 @@ void ProcessLoopingSfx( void )
 
 		SpotSfxList[ i ].distance = Distance;
 
+// disabling this for now
+// if we ever hit a point where this is needed we can re-enable it
+// other wise unloading the sfx just slows us down
+#if 0
 		// if not in range and currently loaded then stop the sound ... 
 		if ( !InRange && SpotSfxList[ i ].bufferloaded )
 		{
@@ -2960,6 +2964,7 @@ void ProcessLoopingSfx( void )
 			}
 			SpotSfxList[ i ].bufferloaded = FALSE;
 		}
+#endif
 
 		// if in range & not loaded then find a free slot for the sound
 		if ( InRange && !SpotSfxList[ i ].bufferloaded )
