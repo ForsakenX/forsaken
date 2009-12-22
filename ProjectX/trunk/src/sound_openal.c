@@ -24,6 +24,7 @@ static ALCcontext* Context = NULL;
 struct {
 	int buffers;
 	int sources;
+	int playing;
 } stats;
 
 //
@@ -200,17 +201,26 @@ void sound_position( sound_t * source, float x, float y, float z, float min, flo
 void sound_play( sound_t * source )
 {
 	alSourcePlay( source->source );
+	//
+	stats.playing++;
+	DebugPrintf("sound_play: playing %d\n",stats.playing);
 }
 
 void sound_play_looping( sound_t * source )
 {
 	alSourcei( source->source, AL_LOOPING, AL_TRUE );
 	sound_play( source );
+	//
+	stats.playing++;
+	DebugPrintf("sound_play_looping: playing %d\n",stats.playing);
 }
 
 void sound_stop( sound_t * source )
 {
 	alSourceStop( source->source );
+	//
+	stats.playing--;
+	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
 long sound_size( sound_t * source )
@@ -231,6 +241,10 @@ void sound_release( sound_t * source )
 	alDeleteBuffers( 1, &source->buffer );
 	free(source);
 	source = NULL;
+	//
+	stats.buffers--;
+	stats.sources--;
+	DebugPrintf("sound_release: buffers %d sources %d\n",stats.buffers,stats.sources);
 }
 
 long sound_bps( sound_t * source )
