@@ -399,18 +399,6 @@ sound_t * sound_load(char *path)
 		alSourcei(source->source,AL_SOURCE_RELATIVE,AL_TRUE);
 	}
 
-	{
-		ALint i;
-		ALfloat f, pos[3];
-		sound_listener_position(0,0,0);
-		alGetSourcef(source->source,AL_GAIN,&f);
-		DebugPrintf("buffer gain: %f\n",f);
-		alGetSource3f(source->source,AL_POSITION,&pos[0],&pos[1],&pos[2]);
-		DebugPrintf("buffer position: %f %f %f\n",pos[0],pos[1],pos[2]);
-		alGetSourcei(source->source,AL_SOURCE_RELATIVE,&i);
-		DebugPrintf("buffer relative? %s\n",(i==AL_TRUE)?"true":"false");
-	}
-
 	stats.buffers++;
 	stats.sources++;
 	DebugPrintf("sound_load: buffers %d sources %d\n",stats.buffers,stats.sources);
