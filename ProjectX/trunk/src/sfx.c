@@ -76,73 +76,6 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 
 extern render_info_t render_info;
 
-#define	MAX_DUP_BUFFERS	2 // 4 // max num occurances of any one sfx
-
-typedef struct
-{
-	sound_t*		Dup_Buffer[MAX_DUP_BUFFERS];
-	DWORD			StartPos;		// start offset in buffer...
-	unsigned int	Length;			// length of sample (ms)...
-	float			Buffer_Dist[MAX_DUP_BUFFERS];
-	Uint32			Buffer_TimeStamp[MAX_DUP_BUFFERS];
-	DWORD			TransferRate;	// bytes per second
-	DWORD			Bytes;
-	int				looping_sfx_index[MAX_DUP_BUFFERS];
-	int				SfxHolderIndex[MAX_DUP_BUFFERS];
-} sound_source_t;
-
-void sound_source_destroy( sound_source_t * source )
-{
-	int i;
-	if (!source)
-		return;
-	for (i = 0; i < MAX_DUP_BUFFERS; i++)
-	{
-		if (source->Dup_Buffer[i])
-		{
-            sound_release(source->Dup_Buffer[i]);
-	        source->Dup_Buffer[i] = NULL;
-		}
-	}
-    free(source);
-}
-
-sound_source_t *sound_source_create(char *path)
-{
-	int i;
-
-    sound_source_t * source = (sound_source_t *)malloc(sizeof(sound_source_t));
-    if (!source) 
-		return NULL;
-	memset( source, 0, sizeof(sound_source_t) );
-
-	source->looping_sfx_index[0] = -1;
-	source->Dup_Buffer[0] = sound_load(path);
-
-	if( !source->Dup_Buffer[ 0 ] )
-	{
-		Msg("Unable to create sound buffer for %s\n", path );
-		sound_source_destroy( source );
-		return source;
-	}
-
-	// try duplicating until failure
-	for (i = 1; i < MAX_DUP_BUFFERS; i++)
-	{
-		source->looping_sfx_index[i] = -1;
-		if (!sound_duplicate(
-			source->Dup_Buffer[0], 
-			&source->Dup_Buffer[i] 
-		))
-		{
-			sound_source_destroy( source );
-			Msg("unable to duplicate sound buffers\n");
-			break;
-		}
-	}
-    return source;
-}
-
 typedef struct
 {
         BOOL used;
@@ -235,7 +168,6 @@ typedef struct SFXNAME{
 
 typedef struct{
 	uint16 Num_Variants;
-	uint16 SndObjIndex;
 	BOOL Requested;
 } SNDLOOKUP;
 
@@ -396,70 +328,70 @@ SFXNAME	Sfx_Filenames[MAX_SFX] =
 	/***********************************************
 	 Bike computer
 	 ************************************************/
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_AM  }, //	-	assassin missile
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_AP  }, //	-	picking up a weapon which is already present
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_BL  }, //	-	beam laser
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_BN  }, //	-	bad navigation
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CA  }, //	-	camping
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CD  }, //	-	chaff dispenser
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CS  }, //	-	chaos shield
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_DY  }, //	-	destroying yourself
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_EA  }, //	-	extra ammo
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_EX  }, //	-	extra, miscellaneous phrases
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_FL  }, //	-	flares
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GK  }, //	-	good kill total
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GL  }, //	-	general ammo low
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GM  }, //	-	gravgon missile
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GP  }, //	-	golden power pod
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_HC  }, //	-	hull critical
-	{ NULL , SFX_Dynamic | SFX_BikeComp | SFX_BikeCompNoOveride, 0, SFX_BIKECOMP_LOOKUP_IN  }, //	-	incoming
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_IR  }, //	-	IR goggles
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MA  }, //	-	maximum ammo
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MK  }, //	-	many kills in a short time period
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MR  }, //	-	MRFL
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MU  }, //	-	mug
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NK  }, //	-	no kills for a lengthy time period
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NL  }, //	-	nitro low
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NP  }, //	-	selecting a weapon which is not present
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NT  }, //	-	nitro
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_OP  }, //	-	orbit pulsar
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PG  }, //	-	petro gel
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PK  }, //	-	poor kill total
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PL  }, //	-	pyrolite fuel low
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PM  }, //	-	pine mine
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PO  }, //	-	power pod
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PP  }, //	-	plasma pack
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PR  }, //	-	purge mine
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PS  }, //	-	pulsar
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PY  }, //	-	pyrolite
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_QM  }, //	-	quantum mine
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_RR  }, //	-	resnic reanimator
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SA  }, //	-	scatter missile
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SC  }, //	-	shield critical
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SG  }, //	-	suss-gun
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SH  }, //	-	shield
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SI  }, //	-	scatter missile impact
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SL  }, //	-	suss gun ammo low
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SM  }, //	-	smoke streamer
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SO  }, //	-	spider mine
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SP  }, //	-	solaris heatseaker
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_ST  }, //	-	stealth mantle
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TI  }, //	-	titan star missile
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TR  }, //	-	transpulse
-	{ NULL , SFX_Dynamic | SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TX  }, //	-	trojax
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_AM  }, //	-	assassin missile
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_AP  }, //	-	picking up a weapon which is already present
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_BL  }, //	-	beam laser
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_BN  }, //	-	bad navigation
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CA  }, //	-	camping
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CD  }, //	-	chaff dispenser
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_CS  }, //	-	chaos shield
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_DY  }, //	-	destroying yourself
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_EA  }, //	-	extra ammo
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_EX  }, //	-	extra, miscellaneous phrases
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_FL  }, //	-	flares
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GK  }, //	-	good kill total
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GL  }, //	-	general ammo low
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GM  }, //	-	gravgon missile
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_GP  }, //	-	golden power pod
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_HC  }, //	-	hull critical
+	{ NULL , SFX_BikeComp | SFX_BikeCompNoOveride, 0, SFX_BIKECOMP_LOOKUP_IN  }, //	-	incoming
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_IR  }, //	-	IR goggles
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MA  }, //	-	maximum ammo
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MK  }, //	-	many kills in a short time period
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MR  }, //	-	MRFL
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_MU  }, //	-	mug
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NK  }, //	-	no kills for a lengthy time period
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NL  }, //	-	nitro low
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NP  }, //	-	selecting a weapon which is not present
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_NT  }, //	-	nitro
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_OP  }, //	-	orbit pulsar
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PG  }, //	-	petro gel
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PK  }, //	-	poor kill total
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PL  }, //	-	pyrolite fuel low
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PM  }, //	-	pine mine
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PO  }, //	-	power pod
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PP  }, //	-	plasma pack
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PR  }, //	-	purge mine
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PS  }, //	-	pulsar
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_PY  }, //	-	pyrolite
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_QM  }, //	-	quantum mine
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_RR  }, //	-	resnic reanimator
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SA  }, //	-	scatter missile
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SC  }, //	-	shield critical
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SG  }, //	-	suss-gun
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SH  }, //	-	shield
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SI  }, //	-	scatter missile impact
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SL  }, //	-	suss gun ammo low
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SM  }, //	-	smoke streamer
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SO  }, //	-	spider mine
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_SP  }, //	-	solaris heatseaker
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_ST  }, //	-	stealth mantle
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TI  }, //	-	titan star missile
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TR  }, //	-	transpulse
+	{ NULL , SFX_BikeComp, 0, SFX_BIKECOMP_LOOKUP_TX  }, //	-	trojax
 
 	/************************************************
 	Biker
 	*************************************************/
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_GP  }, //	-	general 
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_VP  }, //	-	victory
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_LP  }, //	-	losing
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_BW  }, //	-	big weapon gain
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_LE  }, //	-	low energy
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_TN  }, //	-	taunt
-	{ NULL, SFX_Dynamic | SFX_Biker, 0, SFX_BIKER_LOOKUP_PN  }, //	-	pain
-	{ NULL, SFX_Dynamic | SFX_Biker | SFX_BikerSpeechOveride, 0, SFX_BIKER_LOOKUP_DT  }, //	-	death
-	{ NULL, SFX_Dynamic | SFX_Biker | SFX_Title, 0, SFX_BIKER_LOOKUP_EX  }, //	-	extra 
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_GP  }, //	-	general 
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_VP  }, //	-	victory
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_LP  }, //	-	losing
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_BW  }, //	-	big weapon gain
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_LE  }, //	-	low energy
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_TN  }, //	-	taunt
+	{ NULL, SFX_Biker, 0, SFX_BIKER_LOOKUP_PN  }, //	-	pain
+	{ NULL, SFX_Biker | SFX_BikerSpeechOveride, 0, SFX_BIKER_LOOKUP_DT  }, //	-	death
+	{ NULL, SFX_Biker | SFX_Title, 0, SFX_BIKER_LOOKUP_EX  }, //	-	extra 
   
 	{ NULL, SFX_LevelSpec, 0, 0 }, // first level spec sfx
 
@@ -488,12 +420,46 @@ uint32 CurrentBikeCompSpeech = 0;
 
 float	LastDistance[MAX_SFX];
 
-int Num_SndSources;
-
 int CurrentLevel = 16;
-sound_source_t *SndSources[MAX_SFX];
 
-sound_source_t *SndObjList_Static_Start;
+/////
+// sound buffer storage
+// reusable buffers for sources
+/////
+
+// TODO 
+//   this should just be a buffer list
+//     but apparently something is treating it as a source
+//     because of various lines that do sound_is_playing( sound_buffers[ i ] ) etc...
+//   at the point that it's just a buffer list
+//   then sound_load_buffer() should be created that only returns a buffer
+
+sound_t * sound_buffers[MAX_SFX];
+
+sound_t * sound_buffer_create( char *file, int sfxnum )
+{
+	sound_t * sound;
+
+	if( sound_buffers[ sfxnum ] )
+		return sound_buffers[ sfxnum ];
+	
+	sound = sound_load( file );
+
+	if ( ! sound )
+  	{
+		SndLookup[ sfxnum ].Num_Variants = 0;
+		DebugPrintf("failed to load sfxnum %d from %s\n",sfxnum,file);
+		return NULL;
+	}
+	
+	sound_buffers[ sfxnum ] = sound;
+
+	return sound;
+}
+
+////////
+// End
+////////
 
 typedef struct _SPOT_SFX_LIST
 {
@@ -514,7 +480,6 @@ typedef struct _SPOT_SFX_LIST
 	void*					buffer;					// buffer address
 	float					distance;
 	int						SfxHolderIndex;
-	int						SfxThreadInfoIndex;
 	uint16					Effects;
 	uint32					uid;
 } SPOT_SFX_LIST;
@@ -583,7 +548,6 @@ Fn Prototypes
 *****************************************/
 void FreeSBufferList( void );
 void InitSfxHolders( void );
-int FindFreeBufferSpace( sound_source_t *SndObj, float Distance );
 
 typedef struct
 {
@@ -1099,23 +1063,6 @@ void ProcessSoundRoutines (void * pParm)
 				}
 			}
 
-			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Looping )
-			{
-				//DebugPrintf( "-- adding %d SpotSfx %d onto SpotSfxList, buffer is %s\n",
-				//				SfxThreadInfo[i].SfxNum,
-				//				SfxThreadInfo[ i ].SpotSfxListIndex,
-				//				(sound_buffer)?"GOOD":"BAD");
-
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer = sound_buffer;
-
-				sound_set_pitch( 
-							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].buffer,
-							SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].freq );
-
-				// indicate that thread info index is no longer valid
-				SpotSfxList[ SfxThreadInfo[ i ].SpotSfxListIndex ].SfxThreadInfoIndex = -1;
-			}
-
 			// mark current thread info as free
 			SfxThreadInfo[ i ].SfxToPlay = FALSE;
 			SfxThreadInfo[ i ].SfxType = 0;
@@ -1349,104 +1296,6 @@ int16 ReturnSFXIndex( char *file )
 
 	return -1;
 }
-
-BOOL CreateSndObj( char *file, int sfxnum, int flags )
-{
-	BOOL BuffersMissing = FALSE;
-	int i;
-
-	SndSources[ Num_SndSources ] = sound_source_create( file );
-
-	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
-	{
-		if ( !SndSources[ Num_SndSources ]->Dup_Buffer[ i ] )
-		{
-			BuffersMissing = TRUE;
-		}
-	}
-
-	// if sound buffer could not be loaded for some reason ( & has not already been loaded into hw )...
-	if ( !SndSources[ Num_SndSources ] || BuffersMissing )
-  	{
-		SndLookup[ sfxnum ].Num_Variants = 0;
-		return FALSE;
-	}
-
-	Num_SndSources++;
-
-	return TRUE;
-}
-
-/****************************************
-	Procedure	: LoadSfx 
-	description	: Fills in SndLookup info for the given sfx.
-	              If static, also loads sfx ( or sfx's if variants exist )
-				  & stores info in SndSources
-	Input		: int sfxnum
-	Output		: none
-*****************************************/
-void LoadSfx( int sfxnum )
-{
-	char fullpath[256];
-	int flags, i;
-
-	flags = Sfx_Filenames[ sfxnum ].Flags;
-
-	/*	
-	// get correct flags...
-	if ( flags & SFX_LevelSpec )
-	{
-	 	if ( CurrentLevel < 0 )
-			return;
-
-		flags = LevelSpecificEffects[ Sfx_Filenames[ sfxnum ].SfxLookup ].flags;
-	}
-	else		   
-	{
-		// only load in level specific and biker sfx for title room...
-		if ( ( ( MyGameStatus == STATUS_Title ) || ( MyGameStatus == STATUS_BetweenLevels ) ) &&
-			(!(flags & SFX_Biker)) )
-			return;
-	}
-	*/
-
-	if ( !SndLookup[ sfxnum ].Num_Variants )
-		return;
-
-	if ( SndLookup[ sfxnum ].Num_Variants == 1 )
-	{
-		// load just one sfx
-		if (!( flags & SFX_Dynamic ))
-		{
-			GetFullSfxPath( fullpath, sfxnum, 1, 1 );
-
-			if ( !CreateSndObj( fullpath, sfxnum, flags ))
-			{
-				DebugPrintf( "Error loading sfx %d - marking sound as invalid\n", sfxnum, SndLookup[ sfxnum ].Num_Variants );
-				return;
-			}
-		}
-	}
-	else
-	{
-		for ( i = 0; i < SndLookup[ sfxnum ].Num_Variants; i++ )
-		{
-			// if static, load & store SndObj...
-			if (!( flags & SFX_Dynamic ) )
-			{
-				GetFullSfxPath( fullpath, sfxnum, i, SndLookup[ sfxnum ].Num_Variants );
-
-				if ( !CreateSndObj( fullpath, sfxnum, flags ))
-				{
-					DebugPrintf( "Error loading sfx %d variant %d - marking sound as invalid\n", sfxnum, SndLookup[ sfxnum ].Num_Variants );
-					return;
-				}
-			}
-		}
-	}
-
-}
-
 
 #define NUM_ESSENTIAL_SFX 26
 
@@ -1752,7 +1601,6 @@ void PreInitSfx( void )
 	for( i = 0; i < MAX_SFX; i++ )
 	{
 		SndLookup[ i ].Num_Variants = 0;
-		SndLookup[ i ].SndObjIndex = 0;
 		SndLookup[ i ].Requested = FALSE;
 	}
 
@@ -1944,10 +1792,6 @@ void PreProcessSfx( void )
 
 	for ( i = 0; i < MAX_SFX; i++ )
 	{
-		// all speech must be dynamic!!!
-		if ( ( Sfx_Filenames[ i ].Flags & SFX_Biker ) || ( Sfx_Filenames[ i ].Flags & SFX_BikeComp ) )
-			Sfx_Filenames[ i ].Flags |= SFX_Dynamic;
-		
 		if ( ( i >= SFX_LEVELSPEC_Start ) && !Sfx_Filenames[ i ].Name )
 			break;
 		
@@ -2063,10 +1907,11 @@ BOOL InitializeSound( int flags )
 	Num_Sfx = 0;
 
 	PreProcessSfx();
-	
-	// initialise SndSources
-	Num_SndSources = 0;
-	memset (SndSources, 0, sizeof( sound_source_t * ) * MAX_SFX);
+
+	for(i=0; i<MAX_SFX; i++)
+	{
+		sound_buffers[i] = NULL;
+	}
 
 	// initialise taunt stuff
 	Taunter = 0xFF;
@@ -2074,16 +1919,6 @@ BOOL InitializeSound( int flags )
 	TauntUpdatable = FALSE;
 	EnemyTaunter = NULL;
 	//TauntDist = 0.0F;
-
-	// load sfx
-	for( Num_Sfx = 0; Num_Sfx < MAX_SFX; Num_Sfx++ )
-	{
-		if ( SndLookup[ Num_Sfx ].Requested )
-		{
-			SndLookup[ Num_Sfx ].SndObjIndex = Num_SndSources;
-			LoadSfx( Num_Sfx );
-		}
-	}
 
 	for ( i = 0; i < MAX_THREADED_SFX; i++ )
 	{
@@ -2125,19 +1960,31 @@ void DestroySound( int flags )
 		return;
 
 	for ( i = 0; i < MAX_SFX; i++ )
+	{
 		for( j = 0; j < MAX_SFX_VARIANTS; j++ )
+		{
 			if( SfxFullPath[ i ][ j ] )
 				free( SfxFullPath[ i ][ j ] );
+		}
+	}
+
+	for ( i=0; i < MAX_LOOPING_SFX; i++ )
+	{
+		if(SpotSfxList[ i ].buffer)
+		{
+			sound_stop(SpotSfxList[ i ].buffer);
+		}
+	}
 
 	FreeSBufferList();
 		
 	// free all original buffers...
-	for (i = 0; i < Num_SndSources; i++)
+	for (i = 0; i < MAX_SFX; i++)
 	{
-		if (SndSources[i])
+		if (sound_buffers[i])
 		{
-			sound_source_destroy(SndSources[i]);
-			SndSources[i] = NULL;
+			sound_release(sound_buffers[i]);
+			sound_buffers[i] = NULL;
 		}
 	}
 
@@ -2171,48 +2018,6 @@ void DestroySound( int flags )
 	bSoundEnabled = FALSE;
 }
 
-int FindFreeBufferSpace( sound_source_t *SndObj, float Distance )
-{
-	int free_buffer, i;
-	DWORD age[MAX_DUP_BUFFERS], oldest;
-	Uint32 current_time;
-
-	current_time = SDL_GetTicks();
-
-	for (i = 0; i < MAX_DUP_BUFFERS; i++)
-	{
-		if(!sound_is_playing(SndObj->Dup_Buffer[i]))
-			return i;
-		
-		age[i] = ((current_time - SndObj->Buffer_TimeStamp[i]) +
-			  ((DWORD)SndObj->Buffer_Dist[i]) );
-	}
-
-	// if we get here, we must stop an existing buffer...
-
-	// find buffer to stop...
-	free_buffer = 0;
-	oldest = age[0];
-	for (i = 1; i < MAX_DUP_BUFFERS; i++)
-	{
-		if (age[i] > oldest)
-		{
-			oldest = age[i];
-			free_buffer = i;
-		}
-	}
-
-	if (Distance > oldest)
-		return -1;			// sound is too far away to overwrite any existing sounds...
-
-	sound_stop( SndObj->Dup_Buffer[free_buffer] );
-	sound_set_seek( SndObj->Dup_Buffer[free_buffer], 0 );
-	sound_set_pitch( SndObj->Dup_Buffer[free_buffer], 0 );
-	FreeSfxHolder( SndObj->SfxHolderIndex[ free_buffer ] );
-
-	return free_buffer;
-}
-
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
 
@@ -2221,7 +2026,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	VECTOR	Temp;
 	float	Distance, MaxDistance;
 	float	Modify;
-	int free_buffer;
 	int i;
 	long Volume;
 	int sndobj_index;
@@ -2253,15 +2057,14 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 		//DebugPrintf("Sfx.c: PlaySfx() - sfx #%d does not exist!\n", Sfx);
 		return FALSE;
 	case 1:
-		sndobj_index = SndLookup[ Sfx ].SndObjIndex;
+		sndobj_index = Sfx;
 		offset = 0;
 		break;
 	default:
 		offset = Random_Range( SndLookup[ Sfx ].Num_Variants );
-		sndobj_index = SndLookup[ Sfx ].SndObjIndex + offset;
+		sndobj_index = Sfx + offset;
 		break;
 	}
-
 
 	if ( flags & SFX_Biker )
 	{
@@ -2355,43 +2158,6 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	}
 
 	LastDistance[Sfx] = Distance;
-
-	if ( !( flags & SFX_Dynamic ) )
-	{
-		// find free buffer space - if none, kill off relevent buffer
-		free_buffer = FindFreeBufferSpace( SndSources[ sndobj_index ], Distance );
-		if (free_buffer < 0)
-		{
-			//SfxHolder[ HolderIndex ].Used = FALSE;	// mark holder as free			
-			return FALSE;	// no buffer returned
-		}
-
-		SfxHolder[ HolderIndex ].SfxBufferIndex = free_buffer;
-		SfxHolder[ HolderIndex ].SfxFlags = SFX_HOLDERTYPE_Static;
-		SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
-		SndSources[ sndobj_index ]->SfxHolderIndex[ free_buffer ] = HolderIndex;
-
-		//DebugPrintf("sfx %d\n",Sfx);
-
-		Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-		Volume = sound_minimum_volume - (long)( ((float)( sound_minimum_volume - Volume )) * GlobalSoundAttenuation * VolModify );
-	   	if ( type != SFX_2D )
-			SetPannedBufferParams( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer], SfxPos, Freq, &Temp, Distance, Volume, Effects );
-		else
-			sound_volume( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] , ( Volume > 0 ) ? 0 : Volume );
-	
-		// sfx can only be looping at this point if if is 2D - sfx will just continue to play until stopped.
-		if ( flags & SFX_Looping )
-			sound_play_looping( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
-		else
-		{
-			sound_play( SndSources[ sndobj_index ]->Dup_Buffer[free_buffer] );
-		}
-
-		SndSources[ sndobj_index ]->Buffer_TimeStamp[free_buffer] = SDL_GetTicks();
-		SndSources[ sndobj_index ]->Buffer_Dist[free_buffer] = Distance;
-		return TRUE;
-	}
 	
 	//DebugPrintf("sfx passing %d\n",Sfx);
 
@@ -2702,8 +2468,8 @@ BOOL StopSfx( uint32 uid )
 
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 		{
-			sound_stop( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ] );
-			sound_set_seek( SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ SfxHolder[ i ].SfxBufferIndex ], 0 );
+			sound_stop( sound_buffers[ SfxHolder[ i ].SndObjIndex ] );
+			sound_set_seek( sound_buffers[ SfxHolder[ i ].SndObjIndex ], 0 );
 		}
 
 		FreeSfxHolder( i );
@@ -2853,9 +2619,7 @@ void CheckSBufferList( void )
 					if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
 					{
 						if(!sound_is_playing( 
-							SndSources[ SfxHolder[ i ].SndObjIndex ]->Dup_Buffer[ 
-								SfxHolder[ i ].SfxBufferIndex 
-							]
+							sound_buffers[ SfxHolder[ i ].SndObjIndex ]
 						))
 						{
 							if ( SfxHolder[ i ].TriggerSfx != -1 )
@@ -2970,7 +2734,6 @@ int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float
 	SpotSfxList[ index ].bufferloaded = FALSE;
 	SpotSfxList[ index ].distance = 0.0F;
 	SpotSfxList[ index ].used = TRUE;
-	SpotSfxList[ index ].SfxHolderIndex = SfxHolderIndex;
 	SpotSfxList[ index ].Effects = Effects;
 	SpotSfxList[ index ].uid = uid;	
 	return index;
@@ -2985,29 +2748,12 @@ void StopLoopingSfx( int index )
 	if ( flags & SFX_LevelSpec )
 		flags = LevelSpecificEffects[ Sfx_Filenames[ SpotSfxList[ index ].sfxindex ].SfxLookup ].flags;
 */
-	
-	if (!( flags & SFX_Dynamic ))
-	{
-		if ( SpotSfxList[ index ].buffer )
-		{
-			sound_stop( SpotSfxList[ index ].buffer );
-			SpotSfxList[ index ].buffer = NULL;
-		}
-	}
 
-	if ( flags & SFX_Dynamic )
+	if ( SpotSfxList[ index ].buffer )
 	{
-		if ( SpotSfxList[ index ].SfxThreadInfoIndex != -1 )
-		{
-			SfxThreadInfo[ SpotSfxList[ index ].SfxThreadInfoIndex ].SfxToPlay = FALSE;
-		}
-
-		if ( SpotSfxList[ index ].buffer )
-		{
-			DebugPrintf("- looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
-			sound_release( SpotSfxList[ index ].buffer );
-			SpotSfxList[ index ].buffer = NULL;
-		}
+		DebugPrintf("- looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
+		sound_release( SpotSfxList[ index ].buffer );
+		SpotSfxList[ index ].buffer = NULL;
 	}
 
 	SpotSfxList[ index ].used = FALSE;
@@ -3038,57 +2784,6 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 		else
 			Msg("invalid looping sfx index! ( %d )\n", LoopingSfxIndex);
 	}
-}
-
-void FindFreeLoopingSfxBuffer( int index )
-{
-	int i;
-	float furthest;
-	int furthest_index;
-
-	furthest = 0.0F;
-	furthest_index = 0;
-	
-	DebugPrintf("FindFreeLoopingSfxBuffer: finding a dup sfx buffer (%d) for spot sfx (%d)\n", SpotSfxList[ index ].sfxindex, index);
-
-	for ( i = 0; i < MAX_DUP_BUFFERS; i++ )
-	{		
-		void * buffer = SndSources[ 
-				SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + 
-				SpotSfxList[ index ].variant 
-			]->Dup_Buffer[ i ];
-
-		if(!sound_is_playing(buffer))
-		{
-			DebugPrintf("FindFreeLoopingSfxBuffer: assigned non playing dup buffer (%d) to spotsfx %d\n", i, SpotSfxList[ index ].sfxindex);
-			SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ i ];
-			SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] = index;
-			return;
-		}
-		if ( SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance > furthest )
-		{
-			furthest = SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ i ] ].distance;
-			furthest_index = i;
-		}
-	}
-
-	// if furthest sfx is nearer than current sfx, do not allocate buffer for current sfx
-	if ( SpotSfxList[ index ].distance > furthest )
-	{
-		DebugPrintf("FindFreeLoopingSfxBuffer: all dup buffers are in use and are closer so cannot play spotsfx %d\n", SpotSfxList[ index ].sfxindex);
-		return;
-	}
-
-	DebugPrintf("FindFreeLoopingSfxBuffer: dup buffer %d is farther so stopping it and playing current spotsfx %d\n", furthest_index, SpotSfxList[ index ].sfxindex);
-
-	sound_stop ( SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ] );
-	
-	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].buffer = NULL;
-	SpotSfxList[ SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] ].bufferloaded = FALSE;
-
-	SpotSfxList[ index ].buffer = SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->Dup_Buffer[ furthest_index ];
-	SndSources[ SndLookup[ SpotSfxList[ index ].sfxindex ].SndObjIndex + SpotSfxList[ index ].variant ]->looping_sfx_index[ furthest_index ] = index;
-
 }
 
 #if 1
@@ -3171,8 +2866,6 @@ void PrintLoopingSfxDebug( void )
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%d", SpotSfxList[ i ].SfxHolderIndex );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
-		sprintf( buf, "%d", SpotSfxList[ i ].SfxThreadInfoIndex );
-		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%d", SpotSfxList[ i ].Effects );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%d", (int)SpotSfxList[ i ].uid );
@@ -3187,7 +2880,7 @@ void ProcessLoopingSfx( void )
 	VECTOR	Temp;
 	float	Distance, MaxDistance;
 	BOOL InRange = FALSE;
-	int i, j, flags;
+	int i, flags;
 	long	Volume;
 	static float FrameSkip = 0.0F;
 	VECTOR Pos;
@@ -3198,10 +2891,6 @@ void ProcessLoopingSfx( void )
 
 	// process looping sfx every few frames
 	// i tried disabling this and saw no performance hit
-	// we might find it better to just leave this running
-	// or at least run it every few milliseconds
-	// which is standard across varrying computers
-	// that have diff fps
 	FrameSkip += framelag;
 	if (FrameSkip < LOOPING_SFX_FRAME_SKIP) return;
 	else FrameSkip -= LOOPING_SFX_FRAME_SKIP;
@@ -3260,51 +2949,13 @@ void ProcessLoopingSfx( void )
 
 		SpotSfxList[ i ].distance = Distance;
 
-		// special checks added by methods to fix sound bugs
-		if( !(flags & SFX_Dynamic) )
-		{
-			if ( SpotSfxList[i].bufferloaded && !SpotSfxList[i].buffer )
-			{
-				DebugPrintf("- looping sfx sound %d, bufferloaded=true but buffer pointer is BAD\n", SpotSfxList[ i ].sfxindex);
-				DebugPrintf("- setting bufferloaded to false\n");
-				SpotSfxList[i].bufferloaded = FALSE;
-			}
-			if ( !SpotSfxList[i].bufferloaded && SpotSfxList[i].buffer )
-			{
-				DebugPrintf("- looping sfx sound %d, bufferloaded=false but buffer pointer is GOOD\n", SpotSfxList[ i ].sfxindex);
-				if(sound_is_playing( SpotSfxList[ i ].buffer ))
-				{
-					DebugPrintf("- and buffer is still playing...\n");
-					DebugPrintf("- stopping buffer now...\n");
-					StopLoopingSfx(i);
-				}
-			}
-		}
-
 		// if not in range and currently loaded then stop the sound ... 
 		if ( !InRange && SpotSfxList[ i ].bufferloaded )
 		{
-			if ( flags & SFX_Dynamic )
+		 	if ( SpotSfxList[ i ].buffer )
 			{
-			 	if ( SpotSfxList[ i ].buffer )
-				{
-					DebugPrintf("Releasing dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-					sound_release( SpotSfxList[ i ].buffer );
-					SpotSfxList[ i ].buffer = NULL;
-				}
-			}
-			else
-			{
-				DebugPrintf("Stopping looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-				if(SpotSfxList[ i ].buffer == NULL)
-				{
-					DebugPrintf("ProcessLoopSFX() Attempt to call sound_stop() on bad pointer....\n");
-				}
-				else
-				{
-					DebugPrintf("ProcessLoopSFX() sound_stop() buffer is not NULL ...\n");
-					sound_stop( SpotSfxList[ i ].buffer );
-				}
+				DebugPrintf("ProcessLoopingSfx: Releasing dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
+				sound_release( SpotSfxList[ i ].buffer );
 				SpotSfxList[ i ].buffer = NULL;
 			}
 			SpotSfxList[ i ].bufferloaded = FALSE;
@@ -3313,40 +2964,30 @@ void ProcessLoopingSfx( void )
 		// if in range & not loaded then find a free slot for the sound
 		if ( InRange && !SpotSfxList[ i ].bufferloaded )
 		{
-			if ( flags & SFX_Dynamic )
+			char * file = SfxFullPath[ SpotSfxList[i].sfxindex ][ SpotSfxList[i].variant ];
+
+			int index = SpotSfxList[ i ].sfxindex +	SpotSfxList[ i ].variant;
+			sound_t * existing = sound_buffer_create( file, index );
+			sound_t * sound;
+
+			if ( !existing )
 			{
-				DebugPrintf("Loading dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
-
-				// load buffer(s) in sfx thread
-
-				for ( j = 0; j < MAX_THREADED_SFX; j++ )
-				{
-					if ( !SfxThreadInfo[ j ].SfxToPlay )
-					{
-						SfxThreadInfo[ j ].SfxToPlay = TRUE;
-						SfxThreadInfo[ j ].SfxNum = SpotSfxList[ i ].sfxindex;
-						SfxThreadInfo[ j ].Variant = SpotSfxList[ i ].variant;
-						SfxThreadInfo[ j ].SfxType = SFX_TYPE_Looping;
-						SfxThreadInfo[ j ].SpotSfxListIndex = i;
-
-						SpotSfxList[ i ].SfxThreadInfoIndex = j;
-						SpotSfxList[ i ].bufferloaded = TRUE;
-
-						break;
-					}
-				}
-			}
-			else
-			{
-				FindFreeLoopingSfxBuffer( i );
-
-				if ( SpotSfxList[ i ].buffer )
-				{
-					sound_set_pitch( SpotSfxList[ i ].buffer, SpotSfxList[ i ].freq );
-					SpotSfxList[i].bufferloaded = TRUE;
-				}
+				DebugPrintf( "ProcessLoopingSfx: failed to create sound buffer for: %s\n", file );
+				continue;
 			}
 
+			sound = sound_duplicate( existing );
+
+			if ( !sound )
+			{
+				DebugPrintf( "ProcessLoopingSfx: failed to duplicate sound buffer for: %s\n", file );
+				continue;
+			}
+
+			SpotSfxList[ i ].buffer = sound;
+			SpotSfxList[ i ].bufferloaded = TRUE;
+
+			sound_set_pitch( sound, SpotSfxList[ i ].freq );
 		}
 
 		// if in range, and buffer already loaded
@@ -3354,7 +2995,7 @@ void ProcessLoopingSfx( void )
 		{
 			if( !Sound3D )
 			{
-				//DebugPrintf("- adjusting looping sound volumne based on distance.\n");
+				//DebugPrintf("ProcessLoopingSfx: adjusting looping sound volumne based on distance.\n");
 
 				// adjust buffer parameters
 				//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
@@ -3375,11 +3016,11 @@ void ProcessLoopingSfx( void )
 			}
 			else
 			{
-				DebugPrintf("TODO\n");
-				// would do 3D stuff here...
+				// TODO - 3d stuff here
+				DebugPrintf("ProcessLoopingSfx: stub 3d sound\n");
 			}
 
-			//DebugPrintf("- playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
+			//DebugPrintf("ProcessLoopingSfx: playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
 
 			if( ! sound_is_playing( SpotSfxList[ i ].buffer ) )
 				sound_play_looping(SpotSfxList[ i ].buffer);

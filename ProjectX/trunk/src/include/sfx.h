@@ -245,7 +245,6 @@ enum {
 #define SFX_BikeCompNoOveride	512
 #define SFX_BikerSpeechOveride	32	// use when biker speech must play ( will cut off any existing speech )
 
-#define SFX_Dynamic			1	// sound is loaded up as required
 #define SFX_Looping			16	// level specific sfx
 #define SFX_LevelSpec		8	// level specific sfx
 

@@ -21,6 +21,11 @@ BOOL Sound3D = FALSE;
 static ALCdevice* Device = NULL;
 static ALCcontext* Context = NULL;
 
+struct {
+	int buffers;
+	int sources;
+} stats;
+
 //
 // buffer description
 //
@@ -221,6 +226,7 @@ void sound_release( sound_t * source )
 		return;
 	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->source );
+// TODO - does this also delete the buffer if it's still attached to another source ?
 	// now good to delete the buffer
 	alDeleteBuffers( 1, &source->buffer );
 	free(source);
@@ -313,7 +319,7 @@ sound_t * sound_load(char *path)
 
 	if( SDL_LoadWAV(file_path, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
 	{
-		DebugPrintf("Could not open test.wav: %s\n", SDL_GetError());
+		DebugPrintf("Could not open: %s\n", SDL_GetError());
 		return NULL;
 	}
 
@@ -391,48 +397,55 @@ sound_t * sound_load(char *path)
 		DebugPrintf("buffer relative? %s\n",(i==AL_TRUE)?"true":"false");
 	}
 
+	stats.buffers++;
+	stats.sources++;
+	DebugPrintf("sound_load: buffers %d sources %d\n",stats.buffers,stats.sources);
+
 	return source;
 }
 
-BOOL sound_duplicate( sound_t * source, sound_t ** destination )
+sound_t * sound_duplicate( sound_t * source )
 {
 	ALenum error;
-
-	// allocate space for new source
-	*destination = malloc(sizeof(sound_t));
+	
+	// the destination
+	sound_t * destination = malloc(sizeof(sound_t));
 
 	// use the same buffer as the source
-	(*destination)->buffer = source->buffer;
+	destination->buffer = source->buffer;
 
 	// clear errors
 	alGetError();
 
 	// generate a new source id
-	alGenSources(1,&(*destination)->source);
+	alGenSources(1,&destination->source);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenSources: %s\n", alGetString(error));
-		free(*destination);
-		*destination = NULL;
-		return FALSE;
+		free(destination);
+		destination = NULL;
+		return NULL;
 	}
 
 	// attach the buffer to the source
-	alSourcei((*destination)->source, AL_BUFFER, (*destination)->buffer);
+	alSourcei(destination->source, AL_BUFFER, destination->buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
-		free(*destination);
-		*destination = NULL;
-		return FALSE;
+		free(destination);
+		destination = NULL;
+		return NULL;
 	}
 
 	if(!Sound3D)
 	{
-		alSourcei((*destination)->source,AL_SOURCE_RELATIVE,AL_TRUE);
+		alSourcei(destination->source,AL_SOURCE_RELATIVE,AL_TRUE);
 	}
 
-	return TRUE;
+	stats.sources++;
+	DebugPrintf("sound_duplicate: buffers %d sources %d\n",stats.buffers,stats.sources);
+
+	return destination;
 }
 
 #endif // SOUND_OPENAL
