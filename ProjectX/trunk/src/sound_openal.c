@@ -238,12 +238,13 @@ void sound_release( sound_t * source )
 	alDeleteSources( 1, &source->source );
 	// now good to delete the buffer
 	// buffers will not delete if they are attached to other sources
+	alGetError(); // clear error so we can see if buffer is attached elsewhere
 	alDeleteBuffers( 1, &source->buffer );
-	alGetError(); // clear error if buffer attached to another source
 	free(source);
 	source = NULL;
-	//
-	stats.buffers--;
+	// if buffer attached elsewhere than error is generated
+	if(alGetError() == AL_NO_ERROR)
+		stats.buffers--;
 	stats.sources--;
 	DebugPrintf("sound_release: buffers %d sources %d\n",stats.buffers,stats.sources);
 }
