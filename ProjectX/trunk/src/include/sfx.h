@@ -253,7 +253,6 @@ enum {
 #define DESTROYSOUND_All 0
 
 // functions
-void ProcessSoundRoutines (void * pParm);
 BOOL InitializeSound( int flags );
 void    DestroySound( int flags );
 uint32	PlaySfx( int16 Sfx, float Dist );
@@ -261,7 +260,6 @@ uint32	PlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 uint32 ForcePlayPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq );
 BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat );
 void CheckSBufferList( void );
-void FreeSBufferList( void );
 int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float Freq, float Volume, int type, int SfxHolderIndex, uint16 Effects, uint32 uid );
 void StopLoopingSfx( int index );
 void ModifyLoopingSfx( uint32 uid, float Freq, float Volume );

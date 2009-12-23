@@ -35,7 +35,6 @@ void UpdateSfxForBikeComputer( uint16 bikecomp ){}
 
 void ProcessLoopingSfx( void ){}
 void ProcessEnemyBikerTaunt( void ){}
-void ProcessSoundRoutines (void * pParm){}
 
 BOOL RestoreSfxData( uint32 id, VECTOR *pos, uint16 *group ){return 0;}
 int16 ReturnSFXIndex( char *file ){return -1;}
@@ -75,17 +74,6 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 #endif
 
 extern render_info_t render_info;
-
-typedef struct
-{
-        BOOL used;
-        void* buffer;
-        int SfxHolderIndex;
-} SBUFFERLIST;
-
-#define MAX_SYNCHRONOUS_DYNAMIC_SFX 16
-
-SBUFFERLIST SBufferList[ MAX_SYNCHRONOUS_DYNAMIC_SFX ];
 
 /*************************************
 Biker speech lookup table identifiers
@@ -403,11 +391,11 @@ typedef struct
         uint32  UniqueID;
         int SndObjIndex;
         int SfxFlags;
-        int SfxBufferIndex;
-        int ThreadIndex;
         int16 TriggerSfx;
         BOOL OnPause;
         float PauseValue;
+		int SfxBufferIndex;
+		sound_t * buffer;
 } SFX_HOLDER;
 
 SFX_HOLDER	SfxHolder[ MAX_ANY_SFX ];
@@ -487,28 +475,6 @@ typedef struct _SPOT_SFX_LIST
 #define MAX_LOOPING_SFX 64
 SPOT_SFX_LIST SpotSfxList[ MAX_LOOPING_SFX ];
 
-#define MAX_THREADED_SFX 2
-
-typedef struct
-{
-        BOOL SfxToPlay;
-        int16 SfxNum;
-        int Variant;
-        uint16 SfxGroup;
-        VECTOR SfxVector;
-        VECTOR SfxTempVector;
-        float SfxFreq;
-        float SfxDistance;
-        int SfxType;
-//      SPOT_SFX_LIST *node;
-        int SpotSfxListIndex;
-        int SfxHolderIndex;
-        long Vol;
-        uint16 Effects;
-} SFX_THREAD_INFO;
-
-SFX_THREAD_INFO SfxThreadInfo[MAX_THREADED_SFX];
-
 int sfxref = 0;
 int dupbufref = 0;
 char TauntPath[ 128 ];
@@ -546,7 +512,6 @@ extern LIST BikeComputerList;
 /****************************************
 Fn Prototypes
 *****************************************/
-void FreeSBufferList( void );
 void InitSfxHolders( void );
 
 typedef struct
@@ -919,15 +884,18 @@ void FreeSfxHolder( int index )
 {
 	CheckSpeech( index );
 
-	if ( ( SfxHolder[ index ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ index ].SfxFlags == SFX_HOLDERTYPE_Taunt ) )
-		SBufferList[ SfxHolder[ index ].SfxBufferIndex ].used = FALSE;
-
 	if( SfxHolder[ index ].SfxFlags == SFX_HOLDERTYPE_Taunt )
 	{
 		TauntID = 0;
 		Taunter = 0xFF;
 		TauntUpdatable = FALSE;
 		EnemyTaunter = NULL;
+	}
+
+	if(SfxHolder[index].buffer)
+	{
+		sound_release(SfxHolder[index].buffer);
+		SfxHolder[index].buffer = NULL;
 	}
 	
 	SfxHolder[ index ].Used = FALSE;
@@ -968,106 +936,6 @@ void GetSfxFileNamePrefix( int sfxnum, char *file )
 */
 
 	strcpy( file, Sfx_Filenames[ sfxnum ].Name);
-}
-
-int AddToSBufferList( void* buffer, int SfxHolderIndex );
-void SetPannedBufferParams( void* sound_buffer, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
-
-/****************************************
-	Procedure	: ProcessSoundRoutines		
-	description	: runs continuously while sfx are active - loads sound buffers when SfxThreadInfo contains valid information
-	Input		: void *pParm - not used
-	Output		: none
-*****************************************/
-void ProcessSoundRoutines (void * pParm)
-{
-	int i;
-	char *file;
-	void* sound_buffer;
-
-	for ( i = 0; i < MAX_THREADED_SFX; i++ )
-	{
-		if (SfxThreadInfo[ i ].SfxToPlay)
-		{
-			switch( SfxThreadInfo[ i ].SfxType )
-			{
-			case SFX_TYPE_Looping:
-				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ SfxThreadInfo[ i ].Variant ];
-				break;
-			case SFX_TYPE_Taunt:
-				file = TauntPath;
-				break;
-			default:
-				file = SfxFullPath[ SfxThreadInfo[ i ].SfxNum ][ Random_Range( SndLookup[ SfxThreadInfo[ i ].SfxNum ].Num_Variants )];
-			}
-
-			//DebugPrintf( "ProcessSoundRoutines %d SfxTypeLooping: %s, file: %s\n",
-			//SfxThreadInfo[i].SfxNum, (SfxThreadInfo[i].SfxType == SFX_TYPE_Looping ? "true" : "false"),	file);
-
-			// create temporary sound buffer
-			// - will have volume, frequency & pan facilities 
-			// - located in sw ( any hardware will have been used by now )
-			// - static ( not streamed )
-			sound_buffer = sound_load(file);
-			if ( !sound_buffer )
-			{
-				DebugPrintf( "Sfx %d Load failed...in %s \n",SfxThreadInfo[i].SfxNum, file );
-				SfxThreadInfo[ i ].SfxToPlay = FALSE;
-				SfxThreadInfo[ i ].SfxType = 0;
-				continue;
-			}
-
-			if ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Normal )
-			{
-				// set buffer parameters & play
-				sound_volume( 
-					sound_buffer, 
-					( SfxThreadInfo[ i ].Vol > 0 ) ? 0 : SfxThreadInfo[ i ].Vol 
-				);
-
-				//DebugPrintf("sfx %d\n",SfxThreadInfo[i].SfxNum);
-
-				sound_play(sound_buffer);
-
-				// add to list of dynamic buffers
-				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList( 
-					sound_buffer, SfxThreadInfo[ i ].SfxHolderIndex 
-				);
-
-				// if unable to store buffer, free up sfx holder
-				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
-				{
-					FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
-					DebugPrintf("Unable %d to store buffer(1)!\n",SfxThreadInfo[i].SfxNum);
-				}
-			}
-
-			if ( ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Panned ) || ( SfxThreadInfo[ i ].SfxType == SFX_TYPE_Taunt ) )
-			{
-				//DebugPrintf("sfx %d\n",SfxThreadInfo[i].SfxNum);
-
-				// set buffer parameters & play
-				SetPannedBufferParams( sound_buffer, &SfxThreadInfo[ i ].SfxVector, SfxThreadInfo[ i ].SfxFreq, &SfxThreadInfo[ i ].SfxTempVector, SfxThreadInfo[ i ].SfxDistance, SfxThreadInfo[ i ].Vol, SfxThreadInfo[ i ].Effects );
-				sound_play(sound_buffer);
-
-				// add to list of dynamic buffers
-				SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex = AddToSBufferList(
-					sound_buffer, SfxThreadInfo[ i ].SfxHolderIndex 
-				);
-				
-				if ( SfxHolder[ SfxThreadInfo[ i ].SfxHolderIndex ].SfxBufferIndex < 0 )
-				{
-					// if unable to store buffer, free up sfx holder
-					FreeSfxHolder( SfxThreadInfo[ i ].SfxHolderIndex );
-					DebugPrintf("Unable %d to store buffer(2)!\n",SfxThreadInfo[i].SfxNum);
-				}
-			}
-
-			// mark current thread info as free
-			SfxThreadInfo[ i ].SfxToPlay = FALSE;
-			SfxThreadInfo[ i ].SfxType = 0;
-		}
-	}
 }
 
 #ifdef OPT_ON
@@ -1920,11 +1788,6 @@ BOOL InitializeSound( int flags )
 	EnemyTaunter = NULL;
 	//TauntDist = 0.0F;
 
-	for ( i = 0; i < MAX_THREADED_SFX; i++ )
-	{
-		SfxThreadInfo[ i ].SfxToPlay = FALSE;
-	}
-
 	InitSfxHolders();
 
 	// re-initialise looping sfx list ( if already in level, we need to restart all existing looping sfx )
@@ -1975,8 +1838,6 @@ void DestroySound( int flags )
 			sound_stop(SpotSfxList[ i ].buffer);
 		}
 	}
-
-	FreeSBufferList();
 		
 	// free all original buffers...
 	for (i = 0; i < MAX_SFX; i++)
@@ -2018,6 +1879,8 @@ void DestroySound( int flags )
 	bSoundEnabled = FALSE;
 }
 
+void SetPannedBufferParams( void* sound_buffer, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
+
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
 
@@ -2026,12 +1889,10 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	VECTOR	Temp;
 	float	Distance, MaxDistance;
 	float	Modify;
-	int i;
 	long Volume;
 	int sndobj_index;
 	uint16 offset;
 	int flags;
-	//DWORD dwCurrentPlayPos;
 
 	if( !bSoundEnabled )
 		return FALSE;
@@ -2158,11 +2019,8 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	}
 
 	LastDistance[Sfx] = Distance;
-	
-	//DebugPrintf("sfx passing %d\n",Sfx);
 
-	// if we get here, either no buffers exist for the sound, or we are unable to duplicate a buffer.
-	// in either case, we must dynamically load the sound.
+	//DebugPrintf("sfx passing %d\n",Sfx);
 
 	Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 	Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
@@ -2175,40 +2033,65 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	SfxHolder[ HolderIndex ].SndObjIndex = sndobj_index;
 	SfxHolder[ HolderIndex ].SfxBufferIndex = -1;
 
-	for ( i = 0; i < MAX_THREADED_SFX; i++ )
+	//
+	//
+	//
+
 	{
-		if ( !SfxThreadInfo[ i ].SfxToPlay )
+		char * file;
+		sound_t * existing;
+		int _type = SFX_TYPE_Normal;
+
+		if ( Effects == SPOT_SFX_TYPE_Taunt )
 		{
-			SfxThreadInfo[ i ].SfxToPlay = TRUE;
-			SfxThreadInfo[ i ].SfxNum = Sfx;
-			SfxThreadInfo[ i ].Vol = Volume;
-			SfxThreadInfo[ i ].SfxHolderIndex = HolderIndex;
-			SfxThreadInfo[ i ].Effects = Effects;
-			SfxHolder[ HolderIndex ].ThreadIndex = i;
-	
-			if ( type != SFX_2D )
-			{
-				SfxThreadInfo[ i ].SfxVector = *SfxPos;
-				SfxThreadInfo[ i ].SfxFreq = Freq;
-				SfxThreadInfo[ i ].SfxTempVector = Temp;
-				SfxThreadInfo[ i ].SfxDistance = Distance;
-
-				if ( Effects == SPOT_SFX_TYPE_Taunt )
-				{
-					SfxThreadInfo[ i ].SfxType = SFX_TYPE_Taunt;
-				}
-				else
-				{
-					SfxThreadInfo[ i ].SfxType = SFX_TYPE_Panned;
-				}
-			}
-			else
-			{
-				SfxThreadInfo[ i ].SfxType = SFX_TYPE_Normal;
-			}
-
-			break;
+			_type = SFX_TYPE_Taunt;
+			file = TauntPath;
 		}
+		else
+		{
+			_type = SFX_TYPE_Panned;
+			file = SfxFullPath[ Sfx ][ Random_Range( SndLookup[ Sfx ].Num_Variants )];
+		}
+		
+		existing = sound_buffer_create( file, Sfx );
+
+		if ( !existing )
+		{
+			DebugPrintf( "ProcessLoopingSfx: failed to create sound buffer for %d from %s\n", Sfx, file );
+			return FALSE;
+		}
+
+		SfxHolder[ HolderIndex ].buffer = sound_duplicate( existing );
+
+		if ( !SfxHolder[ HolderIndex ].buffer )
+		{
+			DebugPrintf( "ProcessLoopingSfx: failed to duplicate sound buffer for %d from %s\n", Sfx, file );
+			return FALSE;
+		}
+
+		if ( _type == SFX_TYPE_Normal )
+		{
+			int volume = ( Volume > 0 ) ? 0 : Volume;
+			sound_volume( SfxHolder[ HolderIndex ].buffer, volume );
+		}
+  
+		if ( ( _type == SFX_TYPE_Panned ) || ( _type == SFX_TYPE_Taunt ) )
+		{
+			SetPannedBufferParams( 
+				SfxHolder[ HolderIndex ].buffer, 
+				SfxPos, 
+				Freq, 
+				&Temp, 
+				Distance, 
+				Volume, 
+				Effects 
+			);
+		}
+
+        if ( flags & SFX_Looping )
+                sound_play_looping( SfxHolder[ HolderIndex ].buffer );
+        else
+                sound_play( SfxHolder[ HolderIndex ].buffer );
 	}
 
 	return TRUE;
@@ -2234,14 +2117,11 @@ int FindFreeSfxHolder( void )
 		if ( !SfxHolder[ i ].Used )
 		{
 			SfxHolder[ i ].Used = TRUE;
-
 			SfxHolder[ i ].UniqueID = SfxUniqueID++;
 			SfxHolder[ i ].OnPause = FALSE;
-
 			SfxHolder[ i ].SndObjIndex = -1;
 			SfxHolder[ i ].SfxFlags = -1;
 			SfxHolder[ i ].SfxBufferIndex = -1;
-			SfxHolder[ i ].ThreadIndex = -1;
 			SfxHolder[ i ].TriggerSfx = -1;
 			SfxHolder[ i ].PauseValue = 0.0F;
 			return i;
@@ -2265,12 +2145,7 @@ uint32 PlaySfxWithTrigger( int16 Sfx, int16 TriggeredSfx )
 	else
 	{
 		if ( !StartPannedSfx( Sfx, NULL, NULL, 0.0F, SFX_2D, index, 1.0F, 0, FALSE ) )
-		{
-			/*
-			SfxHolder[ index ].Used = FALSE;
-			*/
 			FreeSfxHolder( index );
-		}
 	}
 
 	// if sound was played, return unique ID
@@ -2295,16 +2170,14 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 	index = FindFreeSfxHolder();
 
 	if ( index < 0 )
+	{
 		DebugPrintf("Unable to play sfx %d - no free sfx holders\n");
+	}
 	else
+	{
 		if ( !StartPannedSfx( Sfx, NULL, NULL, 0.0F, SFX_2D, index, Vol, 0, FALSE ) )
-		{
-			/*
-			SfxHolder[ index ].Used = FALSE;
-			*/
 			FreeSfxHolder( index );
-		}
-
+	}
 
 	// if sound was played, return unique ID
 	if ( SfxHolder[ index ].Used )
@@ -2330,12 +2203,7 @@ uint32 PlayGeneralPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Fre
 	else
 	{
 		if ( !StartPannedSfx( Sfx, &Group , SfxPos, Freq, LOOPING_SFX_FixedGroup, index, VolModify, Effects, OverideDistanceCheck ) )
-		{
-			/*
-			SfxHolder[ index ].Used = FALSE;
-			*/
 			FreeSfxHolder( index );
-		}
 	}
 
 	// if sound was played, return unique ID
@@ -2377,19 +2245,12 @@ uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float
 	else
 	{
 		if ( !StartPannedSfx( Sfx, Group , SfxPos, Freq, LOOPING_SFX_VariableGroup, index, Vol, Effects, FALSE ) )
-		{
-			/*
-			SfxHolder[ index ].Used = FALSE;
-			*/
 			FreeSfxHolder( index );
-		}
 	}
 
 	// if sound was played, return unique ID
 	if ( SfxHolder[ index ].Used )
-	{
 		return SfxHolder[ index ].UniqueID;
-	}
 
 	return 0;
 }
@@ -2409,19 +2270,12 @@ uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, f
 	else
 	{
 		if ( !StartPannedSfx( Sfx, &Group , SfxPos, Freq, LOOPING_SFX_FixedGroup, index, Vol, Effects, FALSE ) )
-		{
-			/*
-			SfxHolder[ index ].Used = FALSE;
-			*/
 			FreeSfxHolder( index );
-		}
 	}
 
 	// if sound was played, return unique ID
 	if ( SfxHolder[ index ].Used )
-	{
 		return SfxHolder[ index ].UniqueID;
-	}
 
 	return 0;
 }
@@ -2429,11 +2283,9 @@ uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, f
 int GetSfxHolderIndex( uint32 uid )
 {
 	int i;
-	
 	for( i = 0; i < MAX_ANY_SFX; i++ )
 		if ( SfxHolder[ i ].Used && ( uid == SfxHolder[ i ].UniqueID ) )
 			return i;
-
 	return -1;
 }
 
@@ -2451,26 +2303,7 @@ BOOL StopSfx( uint32 uid )
 	if ( i != -1 )
 	{
 		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Looping )
-		{
 			StopLoopingSfx( SfxHolder[ i ].SfxBufferIndex ); 
-		}
-
-		if ( ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt ) )
-
-		{
-			if ( SfxHolder[ i ].SfxBufferIndex < 0)
-				SfxThreadInfo[ SfxHolder[ i ].ThreadIndex ].SfxToPlay = FALSE;
-			else
-			{
-				sound_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
-			}
-		}
-
-		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
-		{
-			sound_stop( sound_buffers[ SfxHolder[ i ].SndObjIndex ] );
-			sound_set_seek( sound_buffers[ SfxHolder[ i ].SndObjIndex ], 0 );
-		}
 
 		FreeSfxHolder( i );
 		return TRUE;
@@ -2553,136 +2386,73 @@ void SetSoundLevels( int *dummy )
 	GlobalSoundAttenuation = SfxSlider.value / ( SfxSlider.max / GLOBAL_MAX_SFX );
 }
 
-int FindFreeSBufferListNode( void )
-{
-	int i;
-	
-	for ( i = 0; i < MAX_SYNCHRONOUS_DYNAMIC_SFX; i++ )
-		if ( SBufferList[ i ].used == FALSE )
-			return i;
-
-	return -1;
-}
-
-void FreeUpSBufferListNode( int node )
-{
-	SBufferList[ node ].used = FALSE;
-}
-
-int AddToSBufferList( void* buffer, int SfxHolderIndex )
-{
-	int index;
-	
-	index = FindFreeSBufferListNode();
-
-	if ( index == -1 )
-	{
-		// Ahhhh! - no room to store dynamic sfx, therefore must kill off prematurly
-		DebugPrintf("unable to play dynamic sfx - need to increase size of SBufferList\n");
-		sound_stop( buffer );
-		sound_release( buffer );
-		return -1;
-	}
-
-	SBufferList[ index ].used = TRUE;
-	SBufferList[ index ].buffer = buffer;
-	SBufferList[ index ].SfxHolderIndex = SfxHolderIndex;
-	return index;
-}
-
-
 #define TRIGGER_SFX_PAUSE_VALUE 20.0F	// pause between triggered sfx ( 20.0F = 1/3 second )
 void CheckSBufferList( void )
 {
 	int i;
 
-	if ( !bSoundEnabled )
-		return;
-
 	for( i = 0; i < MAX_ANY_SFX; i++ )
 	{
-		if ( SfxHolder[ i ].Used )
+		if ( ! SfxHolder[ i ].Used )
+			continue;
+
+		if ( SfxHolder[ i ].OnPause )
 		{
-			if ( SfxHolder[ i ].OnPause )
+			SfxHolder[ i ].PauseValue -= framelag;
+			if ( SfxHolder[ i ].PauseValue < 0.0F )
 			{
-				SfxHolder[ i ].PauseValue -= framelag;
-				if ( SfxHolder[ i ].PauseValue < 0.0F )
+				PlaySfx( SfxHolder[ i ].TriggerSfx, 1.0F );
+				FreeSfxHolder( i );
+			}
+			continue;
+		}
+
+		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Looping )	// never want to kill off looping sfx here!!
+			continue;
+
+		if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
+		{
+			if(!sound_is_playing( SfxHolder[ i ].buffer ))
+			{
+				if ( SfxHolder[ i ].TriggerSfx != -1 )
 				{
-					PlaySfx( SfxHolder[ i ].TriggerSfx, 1.0F );
-					//SfxHolder[ i ].Used = FALSE;
+					// we want to trigger an additional sfx...
+					SfxHolder[ i ].OnPause = TRUE;
+					SfxHolder[ i ].PauseValue = TRIGGER_SFX_PAUSE_VALUE;
+
+					// if was biker / bikecomp speech, reset to zero
+					CheckSpeech( i );
+				}
+				else
+				{
 					FreeSfxHolder( i );
 				}
-			}else
+			}
+		}
+
+		if ( (( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt )) )
+		{
+			// if current node used and not playing, release & mark as unused
+			if(!sound_is_playing( SfxHolder[ i ].buffer ))
 			{
-				if ( SfxHolder[ i ].SfxFlags != SFX_Looping )	// never want to kill off looping sfx here!!
+				//DebugPrintf("Released sfx %d\n", SfxHolder[ i ].UniqueID);
+				if ( SfxHolder[ i ].TriggerSfx != -1 )
 				{
-					if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Static )
-					{
-						if(!sound_is_playing( 
-							sound_buffers[ SfxHolder[ i ].SndObjIndex ]
-						))
-						{
-							if ( SfxHolder[ i ].TriggerSfx != -1 )
-							{
-								// we want to trigger an additional sfx...
-								SfxHolder[ i ].OnPause = TRUE;
-								SfxHolder[ i ].PauseValue = TRIGGER_SFX_PAUSE_VALUE;
+					// we want to trigger an additional sfx...
+					SfxHolder[ i ].OnPause = TRUE;
+					SfxHolder[ i ].PauseValue = TRIGGER_SFX_PAUSE_VALUE;
 
-								// if was biker / bikecomp speech, reset to zero
-								CheckSpeech( i );
-
-							}else
-							{
-								//SfxHolder[ i ].Used = FALSE;
-								FreeSfxHolder( i );
-							}
-						}
-					}
-
-					// must check SfxBufferIndex is valid, because it might not have been filled in by thread yet
-					if ( (( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Dynamic ) || ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt )) && ( SfxHolder[ i ].SfxBufferIndex != -1 ) )
-					{
-						// if current node used and not playing, release & mark as unused
-						if(!sound_is_playing( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer ))
-						{
-							sound_release( SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer );
-							//DebugPrintf("Released sfx %d\n", SfxHolder[ i ].UniqueID);
-
-							if ( SfxHolder[ i ].TriggerSfx != -1 )
-							{
-								// we want to trigger an additional sfx...
-								SfxHolder[ i ].OnPause = TRUE;
-								SfxHolder[ i ].PauseValue = TRIGGER_SFX_PAUSE_VALUE;
-
-								// if was biker / bikecomp speech, reset to zero
-								CheckSpeech( i );
-							}else
-							{
-								//SfxHolder[ i ].Used = FALSE;
-								FreeSfxHolder( i );
-							}
-						}
-					}
+					// if was biker / bikecomp speech, reset to zero
+					CheckSpeech( i );
+				}
+				else
+				{
+					FreeSfxHolder( i );
 				}
 			}
 		}
 	}
 }
-
-void FreeSBufferList( void )
-{
-	int i;
-	for ( i = 0; i < MAX_SYNCHRONOUS_DYNAMIC_SFX; i++ )
-	{
-		if ( SBufferList[ i ].used )
-		{
-			sound_stop( SBufferList[ i ].buffer );
-			sound_release( SBufferList[ i ].buffer );
-			SBufferList[ i ].used = FALSE;
-		}
-	}
-}
-
 
 // globals used in functions below:
 // SPOT_SFX_LIST *LoopingSfxListStart - set to NULL in InitializeSound
@@ -2711,7 +2481,6 @@ int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float
 	 	DebugPrintf("No free looping sfx list places!\n");
 		return -1;
 	}
-
 	
 	SpotSfxList[ index ].sfxindex = Sfx;
 	SpotSfxList[ index ].type = type;
@@ -2781,8 +2550,6 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 			if ( Volume && ( Volume != SpotSfxList[ LoopingSfxIndex ].vol ))
 				SpotSfxList[ LoopingSfxIndex ].vol = Volume;
 		}
-		else
-			Msg("invalid looping sfx index! ( %d )\n", LoopingSfxIndex);
 	}
 }
 
@@ -2971,6 +2738,7 @@ void ProcessLoopingSfx( void )
 		{
 			char * file = SfxFullPath[ SpotSfxList[i].sfxindex ][ SpotSfxList[i].variant ];
 
+			// TODO - this should probably be done righta way in InitLoopingSfx()
 			int index = SpotSfxList[ i ].sfxindex +	SpotSfxList[ i ].variant;
 			sound_t * existing = sound_buffer_create( file, index );
 			sound_t * sound;
@@ -3221,23 +2989,22 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 
 	if ( SfxHolder[ i ].SfxFlags == SFX_HOLDERTYPE_Taunt )
 	{
-		if ( SfxHolder[ i ].SfxBufferIndex >= 0)
-		{
-			VolModify = ( (float)BikerSpeechSlider.value / (float)BikerSpeechSlider.max ) * SPEECH_AMPLIFY;	// when multiplied with max value for GlobalSoundAttenuation, gives 1.0F;
-			Volume = 0;
-			Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
+		VolModify = ( (float)BikerSpeechSlider.value / (float)BikerSpeechSlider.max ) * SPEECH_AMPLIFY;	// when multiplied with max value for GlobalSoundAttenuation, gives 1.0F;
+		Volume = 0;
+		Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
-			// set buffer parameters
-			SetPannedBufferParams( 
-				SBufferList[ SfxHolder[ i ].SfxBufferIndex ].buffer,
-				SfxPos, 
-				0.0F, 
-				&sfxvector, 
-				Distance,
-				Volume, 
-				SPOT_SFX_TYPE_Taunt );
-		}
-	}else
+		// set buffer parameters
+		SetPannedBufferParams( 
+			SfxHolder[ i ].buffer,
+			SfxPos, 
+			0.0F, 
+			&sfxvector, 
+			Distance,
+			Volume, 
+			SPOT_SFX_TYPE_Taunt 
+		);
+	}
+	else
 	{
 		DebugPrintf("Holder type not SFX_HOLDERTYPE_Taunt\n");
 	}

@@ -605,9 +605,6 @@ int main( int argc, char* argv[] )
 			}
 
         }
-		
-		// call the sound proccesses
-		ProcessSoundRoutines( NULL );
 
 		// command line asks us to sleep and free up sys resources a bit...
 		if ( cliSleep )

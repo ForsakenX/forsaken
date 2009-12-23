@@ -236,9 +236,10 @@ void sound_release( sound_t * source )
 		return;
 	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->source );
-// TODO - does this also delete the buffer if it's still attached to another source ?
 	// now good to delete the buffer
+	// buffers will not delete if they are attached to other sources
 	alDeleteBuffers( 1, &source->buffer );
+	alGetError(); // clear error if buffer attached to another source
 	free(source);
 	source = NULL;
 	//

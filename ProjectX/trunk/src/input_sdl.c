@@ -91,13 +91,13 @@ void app_active( SDL_ActiveEvent active )
 	switch( active.state )
 	{
 	case SDL_APPMOUSEFOCUS: // mouse
-//		DebugPrintf("Mouse event\n");
+		//DebugPrintf("Mouse event\n");
 		break;
 	case SDL_APPINPUTFOCUS: // keyboard
-		DebugPrintf("keyboard event\n");
+		//DebugPrintf("keyboard event\n");
 		break;
 	case SDL_APPACTIVE: // minimize/iconified
-		DebugPrintf("Iconify event\n");
+		//DebugPrintf("Iconify event\n");
 		break;
 	}
 }
