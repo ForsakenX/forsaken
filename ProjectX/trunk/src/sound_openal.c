@@ -34,6 +34,7 @@ struct {
 typedef struct sound_t {
 	ALuint source;
 	ALuint buffer;
+	BOOL playing;
 };
 
 //
@@ -125,8 +126,11 @@ BOOL sound_init( void )
 
 	alcMakeContextCurrent(Context);
 
-	// TODO AL_MIN_GAIN
-	sound_minimum_volume = 0;
+	// since the game was based around dsound
+	// it performs some volume calculations using this value
+	// dsound defines DSBVOLUME_MIN as -10000
+	// and forsaken defined min volume as 1/3 of that
+	sound_minimum_volume = -10000 / 3;
 
 	// global listener sound set to 50% to reduce crackling
 	// TODO - we should probably have a global sound level setting
@@ -200,26 +204,35 @@ void sound_position( sound_t * source, float x, float y, float z, float min, flo
 
 void sound_play( sound_t * source )
 {
+	if(!source->playing)
+		stats.playing++;
+	source->playing = TRUE;
+	//
 	alSourcePlay( source->source );
 	//
-	stats.playing++;
 	DebugPrintf("sound_play: playing %d\n",stats.playing);
 }
 
 void sound_play_looping( sound_t * source )
 {
+	if(!source->playing)
+		stats.playing++;
+	source->playing = TRUE;
+	//
 	alSourcei( source->source, AL_LOOPING, AL_TRUE );
 	sound_play( source );
 	//
-	stats.playing++;
 	DebugPrintf("sound_play_looping: playing %d\n",stats.playing);
 }
 
 void sound_stop( sound_t * source )
 {
+	if(source->playing)
+		stats.playing--;
+	source->playing = FALSE;
+	//
 	alSourceStop( source->source );
 	//
-	stats.playing--;
 	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
@@ -234,19 +247,25 @@ void sound_release( sound_t * source )
 {
 	if(!source)
 		return;
+	if(source->playing)
+		stats.playing--;
+	source->playing = FALSE;
 	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->source );
 	// now good to delete the buffer
 	// buffers will not delete if they are attached to other sources
 	alGetError(); // clear error so we can see if buffer is attached elsewhere
 	alDeleteBuffers( 1, &source->buffer );
-	free(source);
-	source = NULL;
 	// if buffer attached elsewhere than error is generated
 	if(alGetError() == AL_NO_ERROR)
 		stats.buffers--;
+	// clean up resources
+	free(source);
+	source = NULL;
+	// show stats
 	stats.sources--;
-	DebugPrintf("sound_release: buffers %d sources %d\n",stats.buffers,stats.sources);
+	DebugPrintf("sound_release: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
 }
 
 long sound_bps( sound_t * source )
@@ -282,6 +301,7 @@ void sound_volume( sound_t * source, long millibels )
 	// defined in Dsound.h as (no change) 0 and (silence) -10,000
 	ALfloat f = (ALfloat) pow(10.0, millibels/2000.0);
 	alSourcef(source->source, AL_GAIN, f);
+	//DebugPrintf("sound_volume: %d\n",millibels);
 }
 
 void sound_pan( sound_t * source, long _pan )
@@ -297,7 +317,7 @@ void sound_pan( sound_t * source, long _pan )
 BOOL sound_is_playing( sound_t * source )
 {
 	ALint state;
-	alGetSourcei( source->source, AL_SOURCE_STATE, &state	);
+	alGetSourcei( source->source, AL_SOURCE_STATE, &state );
 	return (state == AL_PLAYING);
 }
 
@@ -319,9 +339,10 @@ sound_t * sound_load(char *path)
 	ALenum format;
 	SDL_AudioSpec wav_spec;
 	Uint8 *wav_buffer;
-	sound_t * source = malloc(sizeof(sound_t));
 	char * file_path = convert_path(path);
- 
+	sound_t * source = malloc(sizeof(sound_t));
+	source->playing = FALSE;
+
 	// clear error code
 	alGetError();
 
@@ -403,7 +424,8 @@ sound_t * sound_load(char *path)
 
 	stats.buffers++;
 	stats.sources++;
-	DebugPrintf("sound_load: buffers %d sources %d\n",stats.buffers,stats.sources);
+	DebugPrintf("sound_load: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
 
 	return source;
 }
@@ -414,6 +436,7 @@ sound_t * sound_duplicate( sound_t * source )
 	
 	// the destination
 	sound_t * destination = malloc(sizeof(sound_t));
+	destination->playing = FALSE;
 
 	// use the same buffer as the source
 	destination->buffer = source->buffer;
@@ -447,7 +470,8 @@ sound_t * sound_duplicate( sound_t * source )
 	}
 
 	stats.sources++;
-	DebugPrintf("sound_duplicate: buffers %d sources %d\n",stats.buffers,stats.sources);
+	DebugPrintf("sound_duplicate: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
 
 	return destination;
 }
