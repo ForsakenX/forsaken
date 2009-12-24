@@ -1776,10 +1776,13 @@ BOOL InitializeSound( int flags )
 
 	PreProcessSfx();
 
-	for(i=0; i<MAX_SFX; i++)
-	{
+	// null globals which could have dirty memory
+	for( i = 0; i < MAX_SFX; i++ )
 		sound_buffers[i] = NULL;
-	}
+	for( i = 0; i < MAX_ANY_SFX; i++ )
+		SfxHolder[i].buffer = NULL;
+	for( i = 0; i < MAX_LOOPING_SFX; i++ )
+		SpotSfxList[i].buffer = NULL;
 
 	// initialise taunt stuff
 	Taunter = 0xFF;
@@ -1835,8 +1838,10 @@ void DestroySound( int flags )
 	{
 		if(SpotSfxList[ i ].buffer)
 		{
-			sound_stop(SpotSfxList[ i ].buffer);
+			sound_release(SpotSfxList[ i ].buffer);
+			SpotSfxList[ i ].buffer = NULL;
 		}
+		SpotSfxList[i].used = FALSE;
 	}
 		
 	// free all original buffers...
@@ -2716,10 +2721,6 @@ void ProcessLoopingSfx( void )
 
 		SpotSfxList[ i ].distance = Distance;
 
-// disabling this for now
-// if we ever hit a point where this is needed we can re-enable it
-// other wise unloading the sfx just slows us down
-#if 0
 		// if not in range and currently loaded then stop the sound ... 
 		if ( !InRange && SpotSfxList[ i ].bufferloaded )
 		{
@@ -2731,7 +2732,6 @@ void ProcessLoopingSfx( void )
 			}
 			SpotSfxList[ i ].bufferloaded = FALSE;
 		}
-#endif
 
 		// if in range & not loaded then find a free slot for the sound
 		if ( InRange && !SpotSfxList[ i ].bufferloaded )
@@ -2766,32 +2766,24 @@ void ProcessLoopingSfx( void )
 		// if in range, and buffer already loaded
 		if ( InRange && SpotSfxList[ i ].bufferloaded && SpotSfxList[ i ].buffer)
 		{
-			if( !Sound3D )
-			{
-				//DebugPrintf("ProcessLoopingSfx: adjusting looping sound volumne based on distance.\n");
+			//DebugPrintf("ProcessLoopingSfx: adjusting looping sound volumne based on distance.\n");
 
-				// adjust buffer parameters
-				//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
+			// adjust buffer parameters
+			//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
 
-				Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
-	
-				Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
+			Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
 
-				SetPannedBufferParams(
-					SpotSfxList[ i ].buffer,
-					&Pos, 
-					SpotSfxList[ i ].freq,
-					&Temp,
-					Distance,
-					Volume,
-					SpotSfxList[ i ].Effects 
-				);
-			}
-			else
-			{
-				// TODO - 3d stuff here
-				DebugPrintf("ProcessLoopingSfx: stub 3d sound\n");
-			}
+			Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
+
+			SetPannedBufferParams(
+				SpotSfxList[ i ].buffer,
+				&Pos, 
+				SpotSfxList[ i ].freq,
+				&Temp,
+				Distance,
+				Volume,
+				SpotSfxList[ i ].Effects 
+			);
 
 			//DebugPrintf("ProcessLoopingSfx: playing looping sound %d\n", SpotSfxList[ i ].sfxindex);
 
