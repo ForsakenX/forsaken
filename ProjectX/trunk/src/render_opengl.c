@@ -245,6 +245,8 @@ BOOL render_init( render_info_t * info )
 	detect_caps();
 	set_defaults();
 	resize_viewport(info->ThisMode.w, info->ThisMode.h);
+	if(info->wireframe)
+		render_mode_wireframe();
 	info->ok_to_render = TRUE;
 	return TRUE;
 }

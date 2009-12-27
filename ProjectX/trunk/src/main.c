@@ -118,7 +118,6 @@ extern int NetUpdateIntervalCmdLine;
 extern char *config_name;
 extern int cliSleep;
 extern TEXT local_port_str;
-extern BOOL AllWires;
 extern BOOL SpaceOrbSetup;
 extern TEXT TCPAddress;
 extern TEXT local_port_str;
@@ -261,9 +260,9 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		}
 
 		// supposedly to set wire mode for mxv's...
-		else if (!strcasecmp(option, "AllWires")) 
+		else if (!strcasecmp(option, "wireframe")) 
 		{
-            AllWires = TRUE;
+            render_info.wireframe = TRUE;
         }
 
 		// special override to allow setting up of spaceorb

@@ -52,6 +52,7 @@ typedef struct {
 	BOOL					vsync;					/* vertical sync */
 	float					aspect_ratio;			/* screen aspect ratio */
 	BOOL					force_accel;			/* force 3d acelleration on gl */
+	BOOL					wireframe;
 	SDL_Surface*	        screen;
 } render_info_t;
 

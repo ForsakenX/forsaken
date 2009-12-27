@@ -137,7 +137,6 @@ void ReadSoundInfo( MLOADHEADER *m, char **pbuf );
 		Globals...	
 ===================================================================*/
 float	UV_Fix = UV_FUDGE;
-BOOL	AllWires = FALSE;
 uint16	num_start_positions = 0;
 uint16	last_start_position = 0;
 GAMESTARTPOS		StartPositions[MAXSTARTPOSITIONS];			// pos and group info...
@@ -572,14 +571,10 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						colourkey++;
 						MFacePnt->pad &= ~1;
 					}
-					if ( AllWires )
-					{
+					//if ( AllWires )
 						//FacePnt->wFlags = D3DTRIFLAG_EDGEENABLETRIANGLE;
-					}
-					else
-					{
+					//else
 						//FacePnt->wFlags = MFacePnt->pad;
-					}
 
 					FixUV( &FacePnt, lpBufStart, tpage, Mloadheader->Group[group].originalVerts[execbuf] );
 					//FacePnt++;
