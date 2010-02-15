@@ -564,7 +564,6 @@ static void ReadKeyboard( void )
 		key_state[ new_input ][ i ] = keys[ i ];
 }
 
-// TODO - this could use SDL_GetMouseState instead of all the event processing
 static void ReadMouse( void )
 {
 	int i;
