@@ -17,6 +17,31 @@ extern BOOL QuitRequested;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
 
+//////////////////////////////////////////////
+// Generic Routines
+//////////////////////////////////////////////
+
+void input_grab( BOOL grab )
+{
+	// always acquire and hide mouse if in fullscreen
+	if( render_info.fullscreen )
+	{
+		input_grabbed = TRUE;
+		SDL_WM_GrabInput( TRUE );
+		SDL_ShowCursor( FALSE );
+		return;
+	}
+	// window mode
+	input_grabbed = grab;
+	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
+	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
+}
+
+//////////////////////////////////////////////
+// Buffered High Level Input Events
+//////////////////////////////////////////////
+
 void input_buffer_send( int code )
 {
 	if( input_buffer_count >= MAX_INPUT_BUFFER )
@@ -38,26 +63,9 @@ int input_buffer_find( int code )
 	return 0;
 }
 
-void input_grab( BOOL grab )
-{
-	// always acquire and hide mouse if in fullscreen
-	if( render_info.fullscreen )
-	{
-		input_grabbed = TRUE;
-		SDL_WM_GrabInput( TRUE );
-		SDL_ShowCursor( FALSE );
-		return;
-	}
-	// window mode
-	input_grabbed = grab;
-	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
-	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
-	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
-}
-
-//
-// Window/Input Events
-//
+//////////////////////////////////////////////
+// Window and Activate Events
+//////////////////////////////////////////////
 
 void app_active( SDL_ActiveEvent active )
 {
@@ -162,66 +170,12 @@ void app_quit( void )
 		input_grab( TRUE );
 }
 
-// TODO - how do i know if the key is pressed/released or repeating?
-// TODO - may need to enable keyboard repeat
-//	int SDL_EnableKeyRepeat(int delay, int interval);
-//	SDL_DEFAULT_REPEAT_DELAY, SDL_DEFAULT_REPEAT_INTERVAL
-//
-// NOTE - 
-//	SDLK_CAPSLOCK and SDLK_NUMLOCK will never repeat cause of sun workstation compatbility
-//	edit lines 403 and 449 of src/events if you want to change sdl behavior
-
+//////////////////////////////////////////////
+// Keyboard Events
+//////////////////////////////////////////////
 
 void app_keyboard( SDL_KeyboardEvent key )
 {	
-	// TODO - use unicode characters
-	// int SDL_EnableUNICODE(int enable);
-
-	// A lot of the keysyms are unavailable on most keyboards.
-	// So, you should not hardcode any keysym unless it's one 
-	// of the universal keys that are available on all keyboards.
-
-	/*
-	// If the high 9 bits of the character are 0, then this maps
-	// to the equivalent ASCII character.
-	char ch;
-	if ( (keysym.unicode & 0xFF80) == 0 ) {
-	  ch = keysym.unicode & 0x7F;
-	}
-	else {
-	  printf("An International Character.\n");
-	}
-	*/
-
-	/*
-	key.keysym
-		typedef struct{
-		  Uint8 scancode;	// Hardware specific scancode
-		  SDLKey sym;		// SDL virtual keysym
-		  SDLMod mod;		// Current key modifiers
-		  Uint16 unicode;	// Translated character
-		} SDL_keysym;
-	*/
-
-	/* mod
-		KMOD_NONE 		No modifiers applicable
-		KMOD_LSHIFT 	Left Shift is down
-		KMOD_RSHIFT		Right Shift is down
-		KMOD_LCTRL		Left Control is down
-		KMOD_RCTRL		Right Control is down
-		KMOD_LALT		Left Alt is down
-		KMOD_RALT		Right Alt is down
-		KMOD_LMETA		Left Meta is down
-		KMOD_RMETA		Right Meta is down
-		KMOD_NUM		Numlock is down
-		KMOD_CAPS		Capslock is down
-		KMOD_MODE		Mode is down
-		KMOD_CTRL		A Control key is down
-		KMOD_SHIFT		A Shift key is down
-		KMOD_ALT		An Alt key is down
-		KMOD_META		A Meta key is down
-	*/
-
 	switch( key.keysym.sym )
 	{
 	case SDLK_F12:
@@ -229,7 +183,6 @@ void app_keyboard( SDL_KeyboardEvent key )
 			MenuGoFullScreen( NULL );
 		break;
 	}
-	
 	if( key.type == SDL_KEYDOWN )
 	{
 		input_buffer_send(
@@ -239,6 +192,10 @@ void app_keyboard( SDL_KeyboardEvent key )
 		);
 	}
 }
+
+//////////////////////////////////////////////
+// Mouse Events
+//////////////////////////////////////////////
 
 // mouse wheel button down/up are sent at same time
 // so if we react to the up event then we undo the down event !
@@ -263,51 +220,21 @@ void reset_mouse_wheel( void )
 	mouse_state.wheel = 0;
 }
 
-//
-// mouse button events
-//
-
 void app_mouse_button( SDL_MouseButtonEvent _event )
 {
-	/*
-	typedef struct{
-	  Uint8 type;
-	  Uint8 which;	// The input device index
-	  Uint8 button;	// The mouse button index (SDL_BUTTON_LEFT, SDL_BUTTON_MIDDLE, SDL_BUTTON_RIGHT, SDL_BUTTON_WHEELUP, SDL_BUTTON_WHEELDOWN)
-	  Uint8 state;
-	  Uint16 x, y;
-	} SDL_MouseButtonEvent;
-	*/
+	// we index mouse starting at 0
+	int button = _event.button - 1;
 
 	// pass down mouse events for menu processing
 	if(  _event.type == SDL_MOUSEBUTTONDOWN )
-	{
-		// we index mouse starting at 0
-		int button = _event.button - 1;
 		input_buffer_send( button + LEFT_MOUSE );
-	}
 
 	switch( _event.button )
 	{
-
-	//
-	// TODO - handle standard mouse buttons
-	//
-
-	case SDL_BUTTON_LEFT:	// 1
-	case SDL_BUTTON_MIDDLE:	// 2
-	case SDL_BUTTON_RIGHT:	// 3
-		// save the button state
-		mouse_state.buttons[ _event.button - 1 ] = ( _event.type == SDL_MOUSEBUTTONDOWN );
-		//DebugPrintf("sdl mouse button %d %s\n",_event.button,
-		//	(mouse_state.buttons[ _event.button - 1 ]?"pressed":"released"));
-		break;
-
 	// mouse wheel button down/up are sent at same time
 	// so if we react to the up event then we undo the down event !
 	// so we must ignore up events and reset it further bellow manually
 	// since a wheel event can never be held down this is ok...
-
 	case SDL_BUTTON_WHEELUP:
 		if( _event.type == SDL_MOUSEBUTTONDOWN )
 			mouse_wheel_up();
@@ -316,35 +243,22 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 		if( _event.type == SDL_MOUSEBUTTONDOWN )
 			mouse_wheel_down();
 		break;
-
 	//
-	// TODO - handle non standard mouse buttons
+	// Every other mouse button works like normal
 	//
-
 	default: 
+		// save the button state
+		mouse_state.buttons[ button ] = ( _event.type == SDL_MOUSEBUTTONDOWN );
+		//DebugPrintf("sdl mouse button %d %s\n",_event.button,
+		//	(mouse_state.buttons[ button ]?"pressed":"released"));
 		break;
 	}
 }
-
-//
-// mouse movement events
-//
-	/*
-	typedef struct{
-	  Uint8 type;
-	  Uint8 state;
-	  Uint16 x, y;
-	  Sint16 xrel, yrel;
-	} SDL_MouseMotionEvent;
-	*/
 
 void app_mouse_motion( SDL_MouseMotionEvent motion )
 {
 	mouse_state.xrel += motion.xrel;
 	mouse_state.yrel += motion.yrel;
-	// for now we only support relative motion
-	//mouse_state.x = motion.x;
-	//mouse_state.y = motion.y;
 }
 
 // the motion event only goes off if we move the mouse
@@ -372,9 +286,11 @@ void reset_mouse_motion( void )
 	}
 	mouse_state.xrel = 0;
 	mouse_state.yrel = 0;
-	//mouse_state.x = 0;
-	//mouse_state.y = 0;
 }
+
+//////////////////////////////////////////////
+// Joystick Events
+//////////////////////////////////////////////
 
 static get_deadzone( int joy, int axis )
 {
@@ -519,112 +435,6 @@ void app_joy_hat( SDL_JoyHatEvent hat )
 	{
 		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 0;
 	}
-}
-
-
-void reset_events( void )
-{
-	reset_mouse_motion();
-	reset_mouse_wheel();
-	input_buffer_reset();
-}
-
-BOOL handle_events( void )
-{
-	SDL_Event _event;
-
-	/*
-	  SDL_MouseMotionEvent motion;
-	  SDL_MouseButtonEvent button;
-	  SDL_JoyAxisEvent jaxis;
-	  SDL_JoyBallEvent jball;
-	  SDL_JoyHatEvent jhat;
-	  SDL_JoyButtonEvent jbutton;
-	*/
-
-	reset_events();
-
-	//DebugPrintf("processing events\n");
-
-	while( SDL_PollEvent( &_event ) )
-	{
-		switch( _event.type )
-		{
-		case SDL_KEYDOWN:
-		case SDL_KEYUP:
-			app_keyboard( _event.key );
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-		case SDL_MOUSEBUTTONUP:
-			app_mouse_button( _event.button );
-			break;
-
-		case SDL_MOUSEMOTION:
-			app_mouse_motion( _event.motion );
-			break;
-
-		case SDL_JOYAXISMOTION:
-			app_joy_axis( _event.jaxis );
-			break;
-
-		case SDL_JOYBALLMOTION:
-			app_joy_ball( _event.jball );
-			break;
-
-		case SDL_JOYBUTTONDOWN:
-		case SDL_JOYBUTTONUP:
-			app_joy_button( _event.jbutton );
-			break;
-
-		case SDL_JOYHATMOTION:
-			app_joy_hat( _event.jhat );
-			break;
-
-		case SDL_ACTIVEEVENT:
-			app_active( _event.active );
-			break;
-
-		case SDL_VIDEORESIZE:
-			app_resize( _event.resize );
-			break;
-
-		case SDL_VIDEOEXPOSE: // need redraw
-            render_flip(&render_info);
-			break;
-
-		case SDL_QUIT:
-			app_quit();
-			break;
-
-		// platform specific _event type
-		// must be enabled using SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE)
-		case SDL_SYSWMEVENT:
-			DebugPrintf("recived a platform specific _event type\n");
-			break;
-
-		// to avoid threading issues timers will add an event to the queue
-		// so that we can call the callbacks from the same thread
-		case SDL_USEREVENT:
-			{
-				void (*p) (void*) = _event.user.data1; // callback
-				p(_event.user.data2); // callback( data )
-			}
-			break;
-
-		}
-	}
-
-	//DebugPrintf("DONE processing events\n");
-
-	if ( quitting )
-	{
-		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
-		quitting = FALSE;
-		CleanUpAndPostQuit();
-	}
-
-	return TRUE;
 }
 
 #ifndef DINPUTJOY
@@ -813,3 +623,104 @@ BOOL joysticks_cleanup( void )
 }
 
 #endif // ! DINPUTJOY
+
+//////////////////////////////////////////////
+// Main Events
+//////////////////////////////////////////////
+
+void reset_events( void )
+{
+	reset_mouse_motion();
+	reset_mouse_wheel();
+	input_buffer_reset();
+}
+
+BOOL handle_events( void )
+{
+	SDL_Event _event;
+
+	reset_events();
+
+	//DebugPrintf("processing events\n");
+
+	while( SDL_PollEvent( &_event ) )
+	{
+		switch( _event.type )
+		{
+		case SDL_KEYDOWN:
+		case SDL_KEYUP:
+			app_keyboard( _event.key );
+			break;
+
+		case SDL_MOUSEBUTTONDOWN:
+		case SDL_MOUSEBUTTONUP:
+			app_mouse_button( _event.button );
+			break;
+
+		case SDL_MOUSEMOTION:
+			app_mouse_motion( _event.motion );
+			break;
+
+		case SDL_JOYAXISMOTION:
+			app_joy_axis( _event.jaxis );
+			break;
+
+		case SDL_JOYBALLMOTION:
+			app_joy_ball( _event.jball );
+			break;
+
+		case SDL_JOYBUTTONDOWN:
+		case SDL_JOYBUTTONUP:
+			app_joy_button( _event.jbutton );
+			break;
+
+		case SDL_JOYHATMOTION:
+			app_joy_hat( _event.jhat );
+			break;
+
+		case SDL_ACTIVEEVENT:
+			app_active( _event.active );
+			break;
+
+		case SDL_VIDEORESIZE:
+			app_resize( _event.resize );
+			break;
+
+		case SDL_VIDEOEXPOSE: // need redraw
+			render_flip(&render_info);
+			break;
+
+		case SDL_QUIT:
+			app_quit();
+			break;
+
+		// platform specific _event type
+		// must be enabled using SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE)
+		case SDL_SYSWMEVENT:
+			DebugPrintf("recived a platform specific _event type\n");
+			break;
+
+		// to avoid threading issues timers will add an event to the queue
+		// so that we can call the callbacks from the same thread
+		case SDL_USEREVENT:
+			{
+				void (*p) (void*) = _event.user.data1; // callback
+				p(_event.user.data2); // callback( data )
+			}
+			break;
+
+		}
+	}
+
+	//DebugPrintf("DONE processing events\n");
+
+	if ( quitting )
+	{
+		DebugPrintf("about to CleanUpAndPostQuit ( from WindowProc )\n");
+		quitting = FALSE;
+		CleanUpAndPostQuit();
+	}
+
+	return TRUE;
+}
+

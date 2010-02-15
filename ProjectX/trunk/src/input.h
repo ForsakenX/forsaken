@@ -47,7 +47,7 @@ void input_buffer_reset( void );
 // Mouse //
 ///////////
 
-#define MAX_MOUSE_BUTTONS (3)
+#define MAX_MOUSE_BUTTONS (255)
 
 typedef struct {
 
@@ -57,8 +57,8 @@ typedef struct {
 	// left (0) , middle (1) , right (2)
 	int buttons[MAX_MOUSE_BUTTONS];
 
-	// relative mouse location
-	int xrel; 
+	// relative mouse movement
+	int xrel;
 	int yrel;
 
 } mouse_state_t;
@@ -76,6 +76,8 @@ enum {
 	UP_MOUSE,
 	DOWN_MOUSE
 } mouse_input_enum;
+
+#define MOUSE_RANGE_END LEFT_MOUSE + MAX_MOUSE_BUTTONS
 
 mouse_state_t mouse_states[ INPUT_BUFFERS ];
 

@@ -286,7 +286,7 @@ char * get_key_name( int i )
 }
 
 // text ,  keydef
-#define KEY_MAP_LAST DOWN_MOUSE + 1
+#define KEY_MAP_LAST MOUSE_RANGE_END
 VIRTUALKEYMAP vkey_map[ KEY_MAP_LAST ];
 
 static void init_key_map( void )
@@ -296,10 +296,10 @@ static void init_key_map( void )
 	if(initialized)
 		return;
 	initialized = 1;
-	for( i = 0; i <= DOWN_MOUSE; i++ )
+	for( i = 0; i <= KEY_MAP_LAST; i++ )
 	{
 		char * name;
-		if(i > MOUSE_RANGE)
+		if(i > MOUSE_RANGE && i < DIK_JOYSTICK)
 		{
 			switch(i)
 			{
@@ -318,6 +318,12 @@ static void init_key_map( void )
 			case DOWN_MOUSE:
 				name = "down_mouse";
 				break;
+			default:
+				{
+					char n[255];
+					sprintf(n,"mouse_%d",(i-LEFT_MOUSE));
+					name = strdup(n);
+				}
 			}
 		}
 		else
