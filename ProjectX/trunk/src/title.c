@@ -2265,15 +2265,35 @@ MENU	MENU_STATS_Start = {
 	}
 };
 
+px_timer_t quick_text_timer;
+void InitQuickText( MENU *Menu )
+{
+	static int initialized = 0;
+	if(!initialized)
+	{
+		timer_clear(&quick_text_timer);
+		initialized = 1;
+	}
+	else
+	{
+		if(timer_peek(&quick_text_timer) < 0.8f)
+		{
+			MenuExit();
+			return;
+		}
+	}
+	timer_run(&quick_text_timer);
+}
+
 MENU	MENU_QuickTextSend = {
-	"" , NULL, NULL, NULL, 0,
+	"" , InitQuickText, NULL, NULL, 0,
 	{
 		{ 48, 144, 0, 0, 0, "Message: "/*"Message: "*/, 0, TEXTFLAG_AutoSelect, &QuickText, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
 MENU	MENU_QuickTextSendWhisper = {
-	"" , NULL, NULL, NULL, 0,
+	"" , InitQuickText, NULL, NULL, 0,
 	{
 		{ 48, 144, 0, 0, 0, LT_MENU_QuickTextSendWhisper0 /*"Whisper Message: "*/, 0, TEXTFLAG_AutoSelect, &QuickTextWhisper, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
@@ -14597,9 +14617,7 @@ void MakeUnselectable( MENUITEM *Item )
 
 void SendQuickText( MENUITEM *Item )
 {
-
 	MenuExit();
-	ReadInput();
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 	QuickText.text[0] = 0;
 	JustExitedMenu = FALSE;
@@ -14607,9 +14625,7 @@ void SendQuickText( MENUITEM *Item )
 }
 void SendQuickTextWhisper( MENUITEM *Item )
 {
-
 	MenuExit();
-	ReadInput();
 	SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTauntWhisper, 0);
 	QuickTextWhisper.text[0] = 0;
 	JustExitedMenu = FALSE;
