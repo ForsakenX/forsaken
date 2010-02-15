@@ -125,6 +125,7 @@ extern TEXT host_port_str;
 extern BOOL DebugLog;
 extern uint8 QuickStart;
 extern BOOL IpOnCLI;
+extern uint MouseResetTimer;
 
 static BOOL ParseCommandLine(char* lpCmdLine)
 {
@@ -284,6 +285,9 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 			// sleep time for every loop
 			else if ( sscanf( option, "sleep:%d", &cliSleep )){}
+
+			// reset the mouse to 0 at interval
+			else if ( sscanf( option, "mouse_reset:%u", &MouseResetTimer )){}
 
 			// select the pilot
 			else if ( sscanf( option , "pilot:%s", config_name )){}

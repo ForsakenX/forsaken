@@ -340,8 +340,8 @@ void app_mouse_button( SDL_MouseButtonEvent _event )
 
 void app_mouse_motion( SDL_MouseMotionEvent motion )
 {
-	mouse_state.xrel = motion.xrel;
-	mouse_state.yrel = motion.yrel;
+	mouse_state.xrel += motion.xrel;
+	mouse_state.yrel += motion.yrel;
 	// for now we only support relative motion
 	//mouse_state.x = motion.x;
 	//mouse_state.y = motion.y;
@@ -351,8 +351,25 @@ void app_mouse_motion( SDL_MouseMotionEvent motion )
 // hence we need to clear out the old values each loop
 // other wise absence of movement will cause old value to stick around
 // and the player will continue to move by the last motion
+
+// the reset timer was added because computers that render to fast
+// render ahead of the input events from the mouse
+// so the mouse ends up with 0's most of the time 
+// and then *framelag destroys the value when it does come through
+
+uint MouseResetTimer = 0;
+static Uint32 last_mouse_reset = 0;
 void reset_mouse_motion( void )
 {
+	if(MouseResetTimer)
+	{
+		Uint32 t = SDL_GetTicks();
+		if ( t - last_mouse_reset < MouseResetTimer )
+		{
+			return;
+		}
+		last_mouse_reset = t;
+	}
 	mouse_state.xrel = 0;
 	mouse_state.yrel = 0;
 	//mouse_state.x = 0;
@@ -503,6 +520,7 @@ void app_joy_hat( SDL_JoyHatEvent hat )
 		joy_hat_state[ hat.which ][ hat.hat ][ JOY_HAT_LEFT ] = 0;
 	}
 }
+
 
 void reset_events( void )
 {
