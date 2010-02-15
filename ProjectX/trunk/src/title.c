@@ -137,6 +137,7 @@ BOOL CanCarryOwnFlag = FALSE;
 BOOL OwnFlagTeleportsHome = TRUE;
 
 BOOL ShowPlayersOnHUD;
+BOOL ShowPlayersOnHUDbyKills;
 
 int	NetUpdateIntervalCmdLine = 0;
 int	GoalScore = 5;
@@ -2863,6 +2864,7 @@ MENU	MENU_Options = {
 		{ 200, 192, 0, 0, 0, LT_MENU_Options8	/*"Show Extra Info "*/,		0, 0, &ShowInfo,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
+		{ 200, 240, 0, 0, 0, "HUD Show Kills Only",	0, 0, &ShowPlayersOnHUDbyKills,NULL,SelectToggle,DrawToggle,NULL, 0 },
 
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
@@ -9192,6 +9194,7 @@ void GetGamePrefs( void )
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
+    ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		TRUE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
@@ -9330,6 +9333,7 @@ void SetGamePrefs( void )
     config_set_bool( "RearCameraActive",		RearCameraActive );
     config_set_bool( "BikeEnginesOn",			BikeEnginesOn );
     config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
+    config_set_bool( "ShowPlayersOnHUDbyKills",		ShowPlayersOnHUDbyKills );
     config_set_bool( "BikeExhausts",			BikeExhausts );
     config_set_bool( "BountyBonus",				BountyBonus );
     config_set_bool( "RandomPickups",			MyRandomPickups );

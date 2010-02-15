@@ -539,6 +539,7 @@ extern int GetScoreStats(int Player);
 
 
 extern BOOL ShowPlayersOnHUD;
+extern BOOL ShowPlayersOnHUDbyKills;
 extern BYTE MyGameStatus;
 void PrintScoreSort( void )
 {
@@ -605,7 +606,10 @@ void PrintScoreSort( void )
 				// print real score
 				{
 					int width = 0;
-					width = Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
+					if(ShowPlayersOnHUDbyKills)
+						width = Printint16( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
+					else
+						width = Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
 					left_offset += (width * FontWidth);
 				}
 
