@@ -3,6 +3,7 @@
 /*===================================================================
 		Include Files...	
 ===================================================================*/
+#define SAVEGAME_SLOTS
 #include <stdio.h>
 #include <stdarg.h>
 #include <sys/stat.h>

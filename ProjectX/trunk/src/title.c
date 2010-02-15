@@ -3,6 +3,7 @@
 	Include Files...	
 ===================================================================*/
 
+#define SAVEGAME_SLOTS
 #ifdef WIN32
 #include <windows.h>
 #endif
@@ -9073,22 +9074,28 @@ void InitLoadSavedGameList( MENU * Menu )
 			LoadSavedGameList.top_item = LoadSavedGameList.selected_item;
 	}
 #else
-
-	if( ! (fname = find_file( SAVEGAME_FOLDER "\\" SAVEGAME_FILESPEC SAVEGAME_EXTENSION )))
-		return;
+	fname = find_file( SAVEGAME_FOLDER "\\" SAVEGAME_FILESPEC SAVEGAME_EXTENSION );
 
 	do
 	{
-		for ( bname = LoadSavedGameList.item[ LoadSavedGameList.items ]; fname && *fname; bname++, fname++ )
+		if(fname)
 		{
-			if ( *fname == 0 ) //'.' )
-				break;
-			*bname = *fname;
+			for ( bname = LoadSavedGameList.item[ LoadSavedGameList.items ]; fname && *fname; bname++, fname++ )
+			{
+				if ( *fname == 0 ) //'.' )
+					break;
+				*bname = *fname;
+			}
+			*bname = 0;
 		}
-		*bname = 0;
+		else
+		{
+			strcpy(LoadSavedGameList.item[ LoadSavedGameList.items ], "Empty");
+		}
+		fname = find_next_file();
 		LoadSavedGameList.items++;
-
-	}while(	(fname = find_next_file()) && LoadSavedGameList.items < MAX_SAVEGAME_SLOTS );
+	}
+	while(	LoadSavedGameList.items < MAX_SAVEGAME_SLOTS );
 
 	qsort( (void *)LoadSavedGameList.item, (size_t) LoadSavedGameList.items, sizeof( LoadSavedGameList.item[ 0 ] ), compare );
 
