@@ -22,7 +22,7 @@
 //
 
 BOOL Debug = TRUE;
-BOOL ShowFrameRate = TRUE;
+BOOL ShowFrameRate = FALSE;
 BOOL ShowInfo = FALSE;
 
 int cliSleep = 0;
@@ -183,8 +183,8 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 		// off only works in full screen...
 		// turn on vertical syncing
-		else if (!strcasecmp(option,"vSync")){
-			render_info.vsync = TRUE;
+		else if (!strcasecmp(option,"NoVSync")){
+			render_info.vsync = FALSE;
 		}
 
 		// debugging information send to Log...
@@ -391,15 +391,17 @@ extern void GetGamePrefs( void );
 extern void SetSoundLevels( int *dummy );
 extern void GetDefaultPilot(void);
 extern BOOL InitScene(void);
-extern BOOL ShowFrameRate;
-extern BOOL ShowInfo;
 extern BYTE MyGameStatus;
 extern BOOL sdl_init_video( void );
 extern BOOL sdl_init( void );
 
 static BOOL AppInit( char * lpCmdLine )
 {
-    ZEROMEM(render_info);
+	ZEROMEM(render_info);
+
+	// default vsync for everyone (dont change this)
+	// read comments about mouse sensitivity in input_sdl.c
+	render_info.vsync = TRUE;
 
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
@@ -425,10 +427,6 @@ static BOOL AppInit( char * lpCmdLine )
 	//
 	if(!sdl_init())
 		return FALSE;
-
-	// setup globals used by application
-    ShowFrameRate	= TRUE;
-    ShowInfo		= FALSE;
 
 	// parse chdir from command line first
 	if(!parse_chdir(lpCmdLine))
