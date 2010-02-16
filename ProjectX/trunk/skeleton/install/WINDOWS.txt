@@ -1,2 +1,10 @@
 If you get an error about OpenAl32.dll not being found then,
 run aolinst.exe to install 32/64 bit libraries for OpenAL.
+
+UPDATE:
+
+You can always find the latest openal from: http://kcat.strangesoft.net/openal.html
+
+Rename soft_oal.dll to OpenAL32.dll and place it in the projectx folder!
+
+Or wherever you run the exe from...
