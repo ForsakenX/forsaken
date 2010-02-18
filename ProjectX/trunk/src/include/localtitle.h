@@ -568,7 +568,7 @@
 
 #define LT_MENU_InGame0 "Forsaken"
 #define LT_MENU_InGame1 "Set Up Biker  "
-#define LT_MENU_InGame2 "Toggle Full Screen"
+#define LT_MENU_InGame2 "Toggle Full Screen (Shift+F12)"
 #define LT_MENU_InGame3 "Load Game"
 #define LT_MENU_InGame4 "Save Game"
 #define LT_MENU_InGame5 "Options"

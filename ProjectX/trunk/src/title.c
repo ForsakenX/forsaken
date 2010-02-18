@@ -2931,7 +2931,7 @@ MENU	MENU_Save = { LT_MENU_Save0 /*"Save Menu"*/ , NULL , NULL , NULL, 0,
 MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 					{ OLDMENUITEM( 200 , 112,  "Set Up Biker  ", (void *)biker_name, &MENU_SetUpBiker, MenuChange, DrawNameVar ),
-					  OLDMENUITEM( 200 , 128, "Toggle Full Screen", NULL, NULL , MenuGoFullScreen , MenuItemDrawName ),
+					  OLDMENUITEM( 200 , 128, LT_MENU_InGame2,/*Toggle fullscreen*/ NULL, NULL , MenuGoFullScreen , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 144, "Single Player", NULL, &MENU_SinglePlayer , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 160, "Multi Player", NULL, &MENU_HostOrJoin , MenuChange , MenuItemDrawName ),
 					  OLDMENUITEM( 200 , 176, "Load Game", NULL, &MENU_NotYet , MenuChange , MenuItemDrawName ),
