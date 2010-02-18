@@ -70,6 +70,8 @@ void build_gamma_table( double gamma )
 	double k;
 	int i;
 
+	DebugPrintf("build_gamma_table( %f )\n",gamma);
+
 #ifndef DEBUG_ON
 	if (gamma <= 0)
 		gamma = 1.0;

@@ -268,7 +268,7 @@ extern  BOOL bIgnoreWM_SIZE;
 ===================================================================*/
 LIST	ModeList = { 0 };
 int		WhichMode[ MAXLISTITEMS ];
-SLIDER GammaSlider = {50, 200, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
+SLIDER GammaSlider = {50, 300, 10, 100, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetGamma };
 
 /*===================================================================
 		Level changing stuff..
@@ -9246,11 +9246,11 @@ void GetGamePrefs( void )
 
     GammaSlider.value                = config_get_int( "Gamma",						(int)(GammaSlider.max * 0.65F) );
 
-	//DebugPrintf("gamma read from config as %d, max %d\n",GammaSlider.value,GammaSlider.max);
+	DebugPrintf("gamma read from config as %d, max %d\n",GammaSlider.value,GammaSlider.max);
 	CLAMP( GammaSlider.value, GammaSlider.max );
-	//DebugPrintf("gamma after clamp: %d\n",GammaSlider.value);
-	Gamma = ( (double)GammaSlider.value ) / 100.0F;
-	//DebugPrintf("gamma variable: %d/100.0F = %ld\n",GammaSlider.value,Gamma);
+	DebugPrintf("gamma after clamp: %d\n",GammaSlider.value);
+	Gamma = ((float)GammaSlider.value / 100.0F);
+	DebugPrintf("gamma variable: %d/100.0F = %f\n",GammaSlider.value,Gamma);
 
     MaxKillsSlider.value             = config_get_int( "MaxKills",					0 );
     MyTimeLimit.value                = config_get_int( "TimeLimit",					0);
@@ -14897,11 +14897,13 @@ BOOL SetGamma( SLIDER *slider )
 
 	tempgamma = Gamma;
 	
-	Gamma = ( (double)slider->value ) / 100.0F;
+	Gamma = (double)((float)slider->value / 100.0F);
 
 	// convert to float to get rid of small rounding errors
 	if ( (float)tempgamma == (float)Gamma )
 		return TRUE;
+
+	DebugPrintf("Gamma set to %f\n",Gamma);
 
 	ReleaseView();
 	if ( !InitView() )
