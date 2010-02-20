@@ -3581,8 +3581,23 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 
 extern BOOL InitView( void );
 extern BOOL render_mode_select( render_info_t * info );
+px_timer_t rendermode_timer;
 BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 {
+	static int initialized = 0;
+	if(!initialized)
+	{
+		timer_clear(&rendermode_timer);
+		initialized = 1;
+	}
+	else
+	{
+		if(timer_peek(&rendermode_timer) < 1.0f)
+		{
+			return;
+		}
+	}
+	timer_run(&rendermode_timer);
 	// this happens if Msg() or something else is called during resize etc...
 	if(!render_info.Mode)
 		return TRUE;
