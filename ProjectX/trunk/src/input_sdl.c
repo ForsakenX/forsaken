@@ -175,13 +175,19 @@ void app_quit( void )
 //////////////////////////////////////////////
 
 void app_keyboard( SDL_KeyboardEvent key )
-{	
-	switch( key.keysym.sym )
+{
+	if( key.type == SDL_KEYUP )
 	{
-	case SDLK_F12:
-		if( key.keysym.mod & KMOD_SHIFT )
-			MenuGoFullScreen( NULL );
-		break;
+		if( key.keysym.sym == SDLK_F12 && key.keysym.mod & KMOD_SHIFT )
+		{
+				MenuGoFullScreen( NULL );
+		}
+		else if( key.keysym.sym == SDLK_RSHIFT || key.keysym.sym == SDLK_LSHIFT )
+		{
+				Uint8 *keystate = SDL_GetKeyState(NULL);
+				if ( keystate[SDLK_F12] )
+					MenuGoFullScreen( NULL );
+		}
 	}
 	if( key.type == SDL_KEYDOWN )
 	{
