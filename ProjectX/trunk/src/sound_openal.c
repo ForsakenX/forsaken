@@ -35,6 +35,7 @@ typedef struct sound_t {
 	ALuint source;
 	ALuint buffer;
 	BOOL playing;
+	char path[500];
 };
 
 //
@@ -210,7 +211,9 @@ void sound_play( sound_t * source )
 	//
 	alSourcePlay( source->source );
 	//
-	DebugPrintf("sound_play: playing %d\n",stats.playing);
+	DebugPrintf("sound_play: playing sound='%s' count=%d\n",
+		source->path,
+		stats.playing);
 }
 
 void sound_play_looping( sound_t * source )
@@ -341,6 +344,7 @@ sound_t * sound_load(char *path)
 	Uint8 *wav_buffer;
 	char * file_path = convert_path(path);
 	sound_t * source = malloc(sizeof(sound_t));
+	strncpy(source->path,file_path,sizeof(source->path));
 	source->playing = FALSE;
 
 	// clear error code
@@ -436,6 +440,7 @@ sound_t * sound_duplicate( sound_t * source )
 	
 	// the destination
 	sound_t * destination = malloc(sizeof(sound_t));
+	strncpy(destination->path, source->path, sizeof(destination->path));
 	destination->playing = FALSE;
 
 	// use the same buffer as the source
