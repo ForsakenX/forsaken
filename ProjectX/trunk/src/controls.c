@@ -504,7 +504,7 @@ void DisableCheats( void )
     ToggleGodMode( NULL );
 }
 
-void CheckCheats( VirtualKeycode key )
+void CheckCheats( int key )
 {
   int j, i;
   int cheats;

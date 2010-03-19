@@ -342,7 +342,7 @@ BOOL IgnoreMenuFuncs = FALSE;
 void InitBattleMenu( MENU *Menu );
 void InitInGameLevelSelect( MENU *menu );
 void TestMenuFormat( void );
-void CheckCheats( VirtualKeycode key );
+void CheckCheats( int key );
 char *CTF_Type( SLIDER *s );
 void InGameSaveASinglePlayerGame( MENUITEM *item );
 char TypeFileName( TEXT *t, char c );
@@ -17104,14 +17104,16 @@ void MenuProcess()
 	if (Pulse > 1.0F)
 		Pulse -= (float)floor((double)Pulse);
 
-	// TODO - need to rewrite CheckCheats
 	// TODO - need to handle MENU_NEW_Error and MenuFrozen
 
 	for( i = 0 ; i < input_buffer_count ; i++ )
 	{
 		Key = input_buffer[i];
 
-	    // if last key pressed exited from menu system
+		//
+		CheckCheats( Key );
+
+	    	// if last key pressed exited from menu system
 		// do not process any more keys
 		if ( !CurrentMenu )
 			goto end;
