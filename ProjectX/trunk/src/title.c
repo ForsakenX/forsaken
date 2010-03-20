@@ -5101,7 +5101,7 @@ Event handling
 	ProcessTimers();
 	ProcessEvents();
 
-	MorphHoloLight();
+	//MorphHoloLight();
 	
 	ProcessTextItems();
 
