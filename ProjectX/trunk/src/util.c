@@ -136,6 +136,9 @@ void DebugPrintf( const char * format, ... )
   char buf[0x4000];
   va_list args;
 
+	if(!Debug)
+		return;
+
   va_start( args, format );
   vsnprintf( buf, 0x4000, format, args );
   va_end( args );
