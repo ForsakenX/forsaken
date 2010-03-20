@@ -4775,7 +4775,6 @@ void PulsateVDU(void)
 		UseThese = RightVertices;
 	else
 		UseThese = LeftVertices;
-
 	
 	theta += (float)((framelag/(1.0 * 60.0F)) * 90.0F);
 
@@ -5102,7 +5101,7 @@ Event handling
 	ProcessTimers();
 	ProcessEvents();
 
-	//MorphHoloLight();
+	MorphHoloLight();
 	
 	ProcessTextItems();
 
@@ -6944,9 +6943,12 @@ void InitBikerMenu( MENU *Menu )
 
 void InitBikeComputerMenu( MENU *Menu )
 {
+	static uint32 CurrentSpeechID = 0;
 	BikeComputerList.selected_item = player_config->bikecomp;
 	KillBikeChar( NULL );
 	UpdateSfxForBikeComputer( player_config->bikecomp );
+	if ( CurrentSpeechID ) StopSfx( CurrentSpeechID );
+	CurrentSpeechID = PlaySfx( SFX_BIKECOMP_EX, 1.0F );
 }
 
 void NewInitBikeMenu ( MENU *Menu)
@@ -8649,16 +8651,20 @@ void ExitBikeSelection( MENUITEM * item )
 	{
 		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	}
-
 	UpdateSfxForBiker( SelectedBike );
 }
 
 void ExitBikeComputerSelection( MENUITEM * item )
 {
+	static uint32 CurrentSpeechID = 0;
+
 	player_config->bikecomp = BikeComputerList.selected_item;
 	Config.bikecomp = player_config->bikecomp;	// backward compatability
 	
 	UpdateSfxForBikeComputer( player_config->bikecomp );
+
+	if ( CurrentSpeechID ) StopSfx( CurrentSpeechID );
+	CurrentSpeechID = PlaySfx( SFX_BIKECOMP_EX, 1.0F );
 
 	if( MyGameStatus == STATUS_Title )
 		MenuBack();
@@ -9774,12 +9780,14 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
   	green = (uint8)((float)vgreen * tg);
   	blue = (uint8)((float)vblue * tb);
   	alpha = (uint8)((float)valpha * ta);
+
 /*
 	red = 255;
 	green = 255;
 	blue = 255;
 	alpha = 255;
 */
+
 	Colour = RGBA_MAKE( red, green, blue, alpha );
 	if( !Colour ) 
 		return FALSE;
