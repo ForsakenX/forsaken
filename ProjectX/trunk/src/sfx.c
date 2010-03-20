@@ -445,6 +445,13 @@ sound_t * sound_buffer_create( char *file, int sfxnum )
 	return sound;
 }
 
+// use this if you want sound to reinit
+void sound_buffer_delete( int sfx )
+{
+	sound_release(sound_buffers[sfx]);
+	sound_buffers[sfx] = NULL;
+}
+
 ////////
 // End
 ////////
@@ -1500,11 +1507,12 @@ void UpdateSfxForBiker( uint16 biker )
 {
 	int i, j;
 	char file[ 128 ];
-	
+
 	for( i = 0; i < SFX_NUM_BIKE_PHRASES; i++ )
 	{
 		SndLookup[ i + SFX_BIKER_START ].Num_Variants = BikeSpeechVariants[ i ][ biker ];
 
+		// cleanup old biker settings
 		for ( j = 0; j < MAX_SFX_VARIANTS; j++ )
 		{
 			if( SfxFullPath[ i + SFX_BIKER_START ][ j ] )
@@ -1512,15 +1520,16 @@ void UpdateSfxForBiker( uint16 biker )
 				free( SfxFullPath[ i + SFX_BIKER_START ][ j ] );
 				SfxFullPath[ i + SFX_BIKER_START ][ j ] = NULL;
 			}
+			sound_buffer_delete(i+SFX_BIKER_START);
 		}
 
+		// apply new biker settings
 		for( j = 0; j < SndLookup[ i + SFX_BIKER_START ].Num_Variants; j++ )
 		{
 			GetFullSfxPath( file, i + SFX_BIKER_START, j, SndLookup[ i + SFX_BIKER_START ].Num_Variants );
 			SfxFullPath[ i + SFX_BIKER_START ][ j ] = ( char * )malloc( strlen( file ) + 1 );
 			strcpy( SfxFullPath[ i + SFX_BIKER_START ][ j ], file );
 		}
-
 	}
 }
 
@@ -1533,6 +1542,7 @@ void UpdateSfxForBikeComputer( uint16 bikecomp )
 	{
 		SndLookup[ i + SFX_BIKECOMP_START ].Num_Variants = BikeCompVariants[ i ][ bikecomp ];
 
+		// cleanup old settings
 		for ( j = 0; j < MAX_SFX_VARIANTS; j++ )
 		{
 			if( SfxFullPath[ i + SFX_BIKECOMP_START ][ j ] )
@@ -1540,8 +1550,10 @@ void UpdateSfxForBikeComputer( uint16 bikecomp )
 				free( SfxFullPath[ i + SFX_BIKECOMP_START ][ j ] );
 				SfxFullPath[ i + SFX_BIKECOMP_START ][ j ] = NULL;
 			}
+			sound_buffer_delete(i+SFX_BIKECOMP_START);
 		}
 
+		// create new settings
 		for( j = 0; j < SndLookup[ i + SFX_BIKECOMP_START ].Num_Variants; j++ )
 		{
 			GetFullSfxPath( file, i + SFX_BIKECOMP_START, j, SndLookup[ i + SFX_BIKECOMP_START ].Num_Variants );
