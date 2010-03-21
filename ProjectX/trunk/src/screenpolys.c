@@ -1154,7 +1154,7 @@ void UpdateCountdownDigits( void )
 	Graphics = CountDownFontGraphics[ CurrentCountDownFont ];
 	Width = CountDownFontWidth[ CurrentCountDownFont ];
 
-	Time_Diff = timer_run( &countdown_timer );
+	Time_Diff = timer_run( &countdown_timer ) * 100.0f;
 
 	if( MyGameStatus == STATUS_SinglePlayer )
 	{

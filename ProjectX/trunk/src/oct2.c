@@ -87,7 +87,6 @@ void ConfigureSpaceorbAxis( int joystick );
 void DefaultJoystickSettings( USERCONFIG *u );
 
 extern const char last_compiled[];
-extern  float Countdown_Float;
 
 extern  uint32 RecPacketSize;
 extern  uint32 MaxRecPacketSize;
