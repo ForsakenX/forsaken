@@ -434,7 +434,6 @@ void RotateHoloLight(void);
 void PlotBikeScanLine(void);
 void PulsateVDU(void);
 void MorphHoloLight(void);
-BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy);
 
 BOOL DeleteSavedGame( LIST *l, int item );
 BOOL DeleteDemo( LIST *l, int item );
@@ -4676,14 +4675,9 @@ void RotateOneDisc(int disc)
 void MorphHoloLight(void)
 {
 	int i;
-	uint16 Model = BackgroundModel[TITLE_MODEL_HoloLight];
-	uint16 Group = 0;
-	uint16 ExecBuf = 0;
-
-	float maxY = 10.0F;
-	float dy, intensity;
-
+	float intensity;
 	static float theta = 0.0F;
+	uint16 Model = BackgroundModel[TITLE_MODEL_HoloLight];
 
 	theta += (float)((framelag/(0.75F * 60.0F)) * 90.0F);
 
@@ -4692,52 +4686,9 @@ void MorphHoloLight(void)
 
 	for (i=0; i<24; i++)
 	{
-	dy = (float)SIND(theta + (i * 15)) * maxY;
-	IncreaseVertexY(Model, Group, ExecBuf, HoloMorphVerts[i], dy);
-	intensity = 1.0F - (((float)SIND(theta + (i * 15)) + 1.0F)/2.0F * 0.4F);
-	TintOneVertex( Model, Group, ExecBuf, HoloTintVerts[i], intensity, intensity, intensity, 1.0F );
-	
+		intensity = 1.0F - (((float)SIND(theta + (i * 15)) + 1.0F)/2.0F * 0.4F) * 2.0f; // methods: final *2.0f added to increase affect of light pulse
+		TintOneVertex( Model, 0, 0, HoloTintVerts[i], intensity, intensity, intensity, 1.0F );
 	} 
-}
-
-BOOL IncreaseVertexY(uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, float IncreaseBy)
-{
-//	D3DEXECUTEBUFFERDESC	DstDebDesc;
-	LPLVERTEX			DstlpD3DLVERTEX = NULL;
-	MXLOADHEADER	*		DstMloadheader;
-	LVERTEX		    *		VertPtr;
-	DstMloadheader = &ModelHeaders[ Model ];
-/*
-	memset( &DstDebDesc, 0, sizeof(D3DEXECUTEBUFFERDESC) );
-	DstDebDesc.dwSize = sizeof(D3DEXECUTEBUFFERDESC);
-*/
-//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Lock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK ) return FALSE; // bjd
-//	if (FSLockExecuteBuffer(DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ], &DstDebDesc ) != D3D_OK )
-//		return FALSE;
-
-	if (!(FSLockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf], &DstlpD3DLVERTEX)))
-	{
-		return FALSE;
-	}
-
-//	DstlpD3DLVERTEX = &((LPLVERTEX) DstDebDesc.lpData)[VertexNo];
-
-	VertPtr = &(DstMloadheader->Group[Group].originalVerts[ExecBuf])[VertexNo];
-
-	
-	
-	DstlpD3DLVERTEX->y = VertPtr->y + IncreaseBy;
-	
-//	if( DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf ]->lpVtbl->Unlock(
-//					DstMloadheader->Group[ Group ].lpExBuf[ ExecBuf] ) != D3D_OK )	return FALSE;
-	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
-	{
-		return FALSE;
-	}
-   	
-	return TRUE;
-
 }
 
 void RotateHoloLight(void)
@@ -5101,7 +5052,7 @@ Event handling
 	ProcessTimers();
 	ProcessEvents();
 
-	//MorphHoloLight();
+	MorphHoloLight();
 	
 	ProcessTextItems();
 
@@ -9792,7 +9743,7 @@ BOOL TintOneVertex( uint16 Model, uint16 Group, uint16 ExecBuf, int VertexNo, fl
 	if( !Colour ) 
 		return FALSE;
 			
-	DstlpD3DLVERTEX->color = Colour;
+	DstlpD3DLVERTEX[VertexNo].color = Colour;
 
 	if (!(FSUnlockVertexBuffer(&DstMloadheader->Group[ Group ].renderObject[ExecBuf])))
 	{
@@ -15131,7 +15082,6 @@ void LoadHoloModel( uint16 model )
 		Models[CurrentHoloModel].Pos = BikePos;
 		Models[CurrentHoloModel].Mat = MATRIX_Identity;
 		MatrixTranspose ( &Models[ CurrentHoloModel ].Mat, &Models[ CurrentHoloModel ].InvMat );
-		Models[CurrentHoloModel].Visible = 1;
 		Models[CurrentHoloModel].Group = 0;
 		Models[CurrentHoloModel].Func = MODFUNC_ScaleXYZandRotate;
 		Models[CurrentHoloModel].ModelNum = model;
