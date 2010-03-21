@@ -604,11 +604,9 @@ void DarkenRoomForStart( MENU *Menu );
 void RotateDiscStack(float theta);
 
 void InitEventShrinkBike(TITLE_EVENT *TitleEvent);
-void ExitEventShrinkBike(TITLE_EVENT *TitleEvent);
 
 void KillBikeChar(MENU *Menu);
 void KillLevelPic( MENU *Menu );
-void FadeBikeChar(float alpha);
 void LoadBikeChar(MENUITEM *Item);
 void LoadLevelPic(MENUITEM *Item);
 void LoadBikeCharPic(MENUITEM *Item);
@@ -617,11 +615,6 @@ BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO *
 BOOL DisplayPicOnTV( FRAME_INFO **header, int *frame, uint16 *poly, BOOL *displayed, float zoffset );
 void LoadSavedGamePic( char *file );
 
-void InitEventPlotBikeChar (TITLE_EVENT *TitleEvent);
-void EventPlotBikeChar (TITLE_EVENT *TitleEvent);
-void InitEventRemoveBikeChar (TITLE_EVENT *TitleEvent);
-void EventRemoveBikeChar (TITLE_EVENT *TitleEvent);
-void ExitEventRemoveBikeChar (TITLE_EVENT *TitleEvent);
 void ExitEventRotateInRightVDU(TITLE_EVENT *TitleEvent);
 void ExitEventRaiseHolopad(TITLE_EVENT *TitleEvent);
 void ExitEventJudderHoloPad(TITLE_EVENT *TitleEvent);
@@ -2791,21 +2784,6 @@ MENU	MENU_SelectBikeComputer = {
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
-/*
-MENU	MENU_NEW_ChoosePlayer = {
-	"", InitVDUPilotMenu, KillBikeChar, NULL, 0,
-	{
-		{ 0, 0, 200, 20, 0, "Choose Player...", FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY, NULL, NULL , NULL , DrawFlatMenuItem, NULL, 0 } ,
-		{ 125 , 130, 200, 150, 0, "" , FONT_Small, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &bike_name, NULL , NULL , DrawFlatBikeName, NULL, 0},
-		{ 15 , 30, 100, 150, 0, "list..." , FONT_Small, TEXTFLAG_SuppressHighlight | TEXTFLAG_ForceFit | TEXTFLAG_CentreY , &PilotList, NULL , NULL , DrawFlatMenuList, NULL, 0},
-
-		{ 125 , 20, 200, 130, 0, "" , FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , NULL, NULL , NULL , LoadBikeChar, NULL, 0},
-			
-		{ -1, -1, 0, 0, 0,"", 0, 0, NULL, NULL, NULL, NULL, NULL, 0 }
-
-	}
-};
-*/
 
 MENU	MENU_NEW_ChangeBikeComputer = {
 	LT_MENU_NEW_ChangeBikeComputer0 /*"Select Bike Computer"*/ , InitBikeComputerMenu , NULL , NULL,	0,
@@ -12649,14 +12627,11 @@ float GetEventCurrentTime(TITLE_EVENT *TitleEvent)
 
 void LoadBikeChar(MENUITEM *Item)
 {
-
-	
 	BIT_INFO	*	Bit_Ptr;
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	int Biker;
 	float xmin, xmax, ymin, ymax, newxmax, newymax, xgap, ygap;
-//	MENUITEM *Item;
 	float BikeCharScale = 0.7F;
 	FRAME_INFO **header;
 	
@@ -12665,7 +12640,6 @@ void LoadBikeChar(MENUITEM *Item)
 	ymin = (Item->y + VDUoffsetY) * ModeScaleY;
 	ymax = (Item->ymax + VDUoffsetY) * ModeScaleY;
 	
-
 	Biker = SelectedBikeFrame;
 
 	if( Biker < 0 )
@@ -12922,9 +12896,9 @@ BOOL LoadGeneralPic(float xmin, float ymin, float xmax, float ymax, FRAME_INFO *
 
 			ScrPolys[*scrpoly].Type = SCRTYPE_Normal;
 			ScrPolys[*scrpoly].Flags = SCRFLAG_UseCoords;
-			ScrPolys[*scrpoly].R = 255;	
-			ScrPolys[*scrpoly].G = 255;					
-			ScrPolys[*scrpoly].B = 255;				  
+			ScrPolys[*scrpoly].R = 255;
+			ScrPolys[*scrpoly].G = 255;
+			ScrPolys[*scrpoly].B = 255;
 			ScrPolys[*scrpoly].Trans = 255;
 			ScrPolys[ *scrpoly ].Frm_Info = header;
 
@@ -12957,20 +12931,6 @@ void KillBikeChar(MENU *Menu)
 	InitBikeList( Menu );
 }
 
-void FadeBikeChar(float alpha)
-{
-	float col;
-
-	col = alpha * 150.0F;
-	alpha *= 255.0F;
-
-	ScrPolys[BikerScrPoly].Trans = (uint8)alpha;	
-	ScrPolys[BikerScrPoly].R = (uint8)col;					
-	ScrPolys[BikerScrPoly].G = (uint8)col;					
-	ScrPolys[BikerScrPoly].B = (uint8)col;				  
-
-}
-	
 void InitEventGeneralPan(TITLE_EVENT *TitleEvent)
 {
 	OldLookPos = Look;
@@ -13447,52 +13407,6 @@ void InitEventShrinkBike(TITLE_EVENT *TitleEvent)
 	*/
 
 	ShowHoloModel( (uint16)-1 );
-}
-
-void ExitEventShrinkBike(TITLE_EVENT *TitleEvent)
-{
-	//KillBike();
-	BikeRot += 180.0F;
-}
-
-void InitEventPlotBikeChar (TITLE_EVENT *TitleEvent)
-{
-#if 0
-	LoadBikeChar();
-	OldBikeCharAlpha = BikeCharAlpha;
-#endif
-}
-
-void EventPlotBikeChar (TITLE_EVENT *TitleEvent)
-{
-	float currenttime;
-
-	currenttime = GetEventCurrentTime(TitleEvent);
-	BikeCharAlpha = ((1.0F - OldBikeCharAlpha) * currenttime) + OldBikeCharAlpha;
-	FadeBikeChar(BikeCharAlpha);
-}
-
-void InitEventRemoveBikeChar (TITLE_EVENT *TitleEvent)
-{
-	OldBikeCharAlpha = BikeCharAlpha;
-}
-
-void EventRemoveBikeChar (TITLE_EVENT *TitleEvent)
-{
-	float currenttime;
-
-	currenttime = GetEventCurrentTime(TitleEvent);
-
-	currenttime = 1.0F - currenttime;
-
-	BikeCharAlpha = OldBikeCharAlpha * currenttime;
-
-	FadeBikeChar(BikeCharAlpha);
-}
-
-void ExitEventRemoveBikeChar (TITLE_EVENT *TitleEvent)
-{
-	KillBikeChar( NULL );
 }
 
 void InitStartDiscPanTimer (TITLE_EVENT_TIMER *TitleEventTimer)
@@ -16552,7 +16466,6 @@ BOOL ProcessPlayerList ( int Key )
 
 		KillBikeChar( NULL );
 		LoadBikeChar( &BikeCharItem );
-
 
 //		RedrawFlatMenuList(CurrentMenuItem);
 	}
