@@ -158,7 +158,7 @@ FRAME_INFO	*	Title_TVFrame_Header;
 OFF_FILES Title_OffsetFiles[] = {
 
 	{ "chars1.off",			&Title_Chars1_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },		
-	{ "chars2.off",			&Title_Chars2_Header, DO_LOAD, DO_SCALE, LOAD_TPAGES, 0, 0 },		
+	{ "chars2.off",			&Title_Chars2_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },		
 	{ "",					&Title_LevelPics_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES_PLACEHOLDER | LOAD_TPAGES, 256, 128 },		
 	{ "",					&Title_TVFrame_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES_PLACEHOLDER | LOAD_TPAGES, 128, 128 },		
 	{ &TitleFontFile[ 0 ],	&Title_Fonts_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },	// vdu font page
