@@ -2736,11 +2736,10 @@ MENU	MENU_Controls = {
 MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, NULL, ExitDetailLevels, NULL, 0,
 	{
-		{ 200, 180, 0, 0, 0, LT_MENU_Detail4	/*"Team Info"				*/, 0, 0,		&ShowTeamInfo,			NULL,							SelectToggle,	DrawToggle,	NULL, 0 },
-		{ 200, 308, 0, 0, 0, LT_MENU_Detail12	/*"Water Detail"			*/, 0, 0,		&WaterDetailSlider,		NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
-		{ 200, 324, 0, 0, 0, LT_MENU_Detail13	/*"gamma"					*/, 0, 0,		&GammaSlider,				NULL,							SelectSlider,	DrawSlider,		NULL, 0 },
-
-		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
+		{ 200, 180, 0, 0, 0, LT_MENU_Detail4/*"Team Info"*/,     0, 0,  &ShowTeamInfo,     NULL,SelectToggle,DrawToggle,NULL, 0 },
+		{ 200, 308, 0, 0, 0, LT_MENU_Detail12/*"Water Detail"*/, 0, 0,	&WaterDetailSlider,NULL,SelectSlider,DrawSlider,NULL, 0 },
+		{ 200, 324, 0, 0, 0, LT_MENU_Detail13/*"gamma"*/,        0, 0,	&GammaSlider,      NULL,SelectSlider,DrawSlider,NULL, 0 },
+		{-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
 
@@ -14785,8 +14784,12 @@ BOOL SetGamma( SLIDER *slider )
 	}
 
 	InitialTexturesSet = FALSE;
-	FadeHoloLight(HoloLightBrightness);
-	DarkenRoom2(RoomDarkness);
+
+	if( MyGameStatus == STATUS_Title )
+	{
+		FadeHoloLight(HoloLightBrightness);
+		DarkenRoom2(RoomDarkness);
+	}
 
 	return TRUE;
 }
@@ -15601,39 +15604,34 @@ BOOL ProcessKeydef( int Key )
 
 BOOL ProcessSlider( int Key )
 {
-	BOOL done, redraw;
+	BOOL done;
 	SLIDER *slider;
 	MenuItemFunc set_fn;
 
 	slider = (SLIDER *)SliderItem->Variable;
 	
 	done = FALSE;
-	redraw = FALSE;
 	switch( Key )
 	{
 	case SDLK_LEFT:
 		PlayCursorSfx();
 		slider->oldvalue = slider->value;
 		DecrementSlider( SliderItem );
-		redraw = TRUE;
 		break;
 	case SDLK_RIGHT:
 		PlayCursorSfx();
 		slider->oldvalue = slider->value;
 		IncrementSlider( SliderItem );
-		redraw = TRUE;
 		break;
 	case SDLK_HOME:
 		PlayCursorSfx();
 		slider->oldvalue = slider->value;
 		SliderHome( SliderItem );
-		redraw = TRUE;
 		break;
 	case SDLK_END:
 		PlayCursorSfx();
 		slider->oldvalue = slider->value;
 		SliderEnd( SliderItem );
-		redraw = TRUE;
 		break;
 	case SDLK_RETURN:
 		done = TRUE;
@@ -15642,21 +15640,23 @@ BOOL ProcessSlider( int Key )
 		slider->oldvalue = slider->value;
 		SliderCancel( SliderItem );
 		done = TRUE;
-		redraw = TRUE;
 		break;
 	default:
 		break;
 	}
 
-	if (done )
+	if (done)
 	{
+		if ( slider->FuncRefresh )
+		{
+			slider->FuncRefresh( slider );
+		}
 		if ( SliderItem->Value )
 		{
 			set_fn = (MenuItemFunc)(SliderItem->Value);
 			set_fn ( SliderItem );
 		}
 	}
-
 
 	return !done;
 }
@@ -15689,20 +15689,6 @@ BOOL ProcessSlider2( int Key )
 		SliderSet( SliderItem );
 		redraw = TRUE;
 		break;
-/*
-	case SDLK_HOME:
-		slider->oldvalue = slider->value;
-		SliderHome( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-	case SDLK_END:
-		slider->oldvalue = slider->value;
-		SliderEnd( SliderItem );
-		SliderSet( SliderItem );
-		redraw = TRUE;
-		break;
-*/
 	case SDLK_HOME:
 		CursorHome();
 		done = TRUE;
@@ -15727,6 +15713,7 @@ BOOL ProcessSlider2( int Key )
 		break;
 	case SDLK_RETURN:
 		refresh = TRUE;
+		done = TRUE;
 		break;
 	default:
 		if ( Key )

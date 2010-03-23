@@ -1791,13 +1791,11 @@ void ReleaseView(void)
     FreeMsgFile();
   }
 }
-//extern  uint16  BackgroundModel;
 
 BOOL
 InitScene(void)
 {
   int i;
-  //BackgroundModel = (uint16) -1;
 
   OnceOnlyInitModel();
   InitXLights();
