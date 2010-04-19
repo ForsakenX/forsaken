@@ -1,8 +1,6 @@
 -- vim:set sw=4 ts=4:
 --
--- Copyright (C) 2009  Pim Goossens
---
--- Modified by Daniel Aquino (aka methods) for ProjectX
+-- Copyright (C) 2009  Daniel Aquino
 --
 -- Redistribution and use in source and binary forms, with or without
 -- modification, are permitted provided that the following conditions
@@ -47,9 +45,7 @@ function config_save(name)
 	local f = io.open(config_path(name), 'wb')
 	for key, value in table.pairsByKeys(config) do
 		if type(value) == "string" then
-			value = value:gsub('\\','\\\\'); -- escape escape characters
-			value = value:gsub('"','\\"'); -- escape quote characters
-			f:write(key.." = \""..value.."\"\r\n")
+			f:write(("%s = %q\r\n"):format(key, value))
 		else
 			f:write(key.." = "..tostring(value).."\r\n")
 		end
