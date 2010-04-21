@@ -36,7 +36,7 @@ extern	RENDERMATRIX identity;
 extern	MATRIX	MATRIX_Identity;
 extern	RENDERMATRIX  TempWorld;	
 extern	RENDERMATRIX identity;
-extern	uint32				AnimOncePerFrame;					// used for stuff that is displayed more than once in a single frame..
+extern	uint32	AnimOncePerFrame;// used for stuff that is displayed more than once in a single frame..
 extern TRIGGERMOD	*	TrigMods;
 
 /*===================================================================
@@ -211,6 +211,8 @@ BOOL WaterLoad( void )
 	
 	
 	WO = FirstWaterObject;
+	WO->Group = 0;
+	WO->AnimOncePerFrame = 0;
 	for( i = 0 ; i < NumOfWaterObjects ; i++ )
 	{
 		WO->Status = WATERSTATUS_STATIC;
