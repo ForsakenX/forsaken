@@ -180,6 +180,10 @@ void InitScrPoly( uint16 i )
 		ScrPolys[i].NextInTPage = (uint16) -1;
 		ScrPolys[i].PrevInTPage = (uint16) -1;
 
+		// do not clear these they are set by caller
+		//ScrPolys[i].Next = (uint16) -1;
+		//ScrPolys[i].Prev = (uint16) -1;
+
 		ScrPolys[i].x1 = 0.0F;
 		ScrPolys[i].y1 = 0.0F;
 		ScrPolys[i].x2 = 0.0F;
@@ -188,6 +192,32 @@ void InitScrPoly( uint16 i )
 		ScrPolys[i].y3 = 0.0F;
 		ScrPolys[i].x4 = 0.0F;
 		ScrPolys[i].y4 = 0.0F;
+
+		ScrPolys[i].Pos.x = 0.0f;
+		ScrPolys[i].Pos.y = 0.0f;
+		ScrPolys[i].Pos.z = 0.0f;
+		ScrPolys[i].LifeCount = 0.0f;
+		ScrPolys[i].FadeRed = 0.0f;
+		ScrPolys[i].FadeGreen = 0.0f;
+		ScrPolys[i].FadeBlue = 0.0f;
+		ScrPolys[i].FadeTrans = 0.0f;
+		ScrPolys[i].Col1.R = 0;
+		ScrPolys[i].Col1.G = 0;
+		ScrPolys[i].Col1.B = 0;
+		ScrPolys[i].Col1.Trans = 0;
+		ScrPolys[i].Col2.R = 0;
+		ScrPolys[i].Col2.G = 0;
+		ScrPolys[i].Col2.B = 0;
+		ScrPolys[i].Col2.Trans = 0;
+		ScrPolys[i].Col3.R = 0;
+		ScrPolys[i].Col3.G = 0;
+		ScrPolys[i].Col3.B = 0;
+		ScrPolys[i].Col3.Trans = 0;
+		ScrPolys[i].Col4.R = 0;
+		ScrPolys[i].Col4.G = 0;
+		ScrPolys[i].Col4.B = 0;
+		ScrPolys[i].Col4.Trans = 0;
+		
 }
 
 void InitScrPolys( void )
@@ -831,7 +861,7 @@ BOOL ClipConv3DTo2D( VECTOR * SrcVert, VECTOR * DstVert, MATRIX * FinalMat )
 
 BOOL ClipBox( LPTLVERTEX topleft, LPTLVERTEX bottomright )
 {
-	float xmin, ymin, xmax, ymax;
+	float xmin = 0.0f, ymin = 0.0f, xmax = 0.0f, ymax = 0.0f;
 	int clip_topleft, clip_bottomright;
 	float dx, dy;
 	float du, dv;
@@ -2716,7 +2746,7 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 			if( Count == *TPage ) i = *NextScrPoly;
 			else i = ScrPolyTPages[ Count ].FirstPoly;
 	
-			while( ( i != (uint16) -1 ) && ( StartVert < MAXSCREENPOLYVERTS ) )
+			while( ( i != (uint16) -1 ) && ( i < MAXNUMOFSCRPOLYS ) && ( StartVert < MAXSCREENPOLYVERTS ) )
 			{
 				if( !( ScrPolys[ i ].Flags & SCRFLAG_Solid ) )
 				{
