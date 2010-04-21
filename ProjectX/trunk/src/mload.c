@@ -1226,13 +1226,15 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 	POLYANIM * PolyAnim;
 
 	if ( !Mloadheader->state )
+	{
+		DebugPrintf("mload release: not freeing header because !state\n");
 		return;
+	}
 
 	FreeGroupConnections();
 
-    for (group = 0; group < Mloadheader->num_groups; group++)
+    	for (group = 0; group < Mloadheader->num_groups; group++)
 	{
-
 		for ( i = 0; i < Mloadheader->Group[ group ].num_portals; i++ )
 		{
 			ReleaseVisible( &Mloadheader->Group[ group ].Portal[ i ].visible );
@@ -1249,11 +1251,9 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 			Mloadheader->Group[group].colour_cell_pnt[i] = NULL;
 
 			PolyAnim = Mloadheader->Group[group].polyanim[i];
-
 			
 			for( e = 0 ; e < Mloadheader->Group[group].num_animating_polys[i] ; e++ )
-			{
-			   		
+			{	
 			   	if( PolyAnim )
 			   	{
 			   		if( PolyAnim->vert )
@@ -1276,6 +1276,7 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 			Mloadheader->Group[group].polyanim[i] = NULL;
 		}
 	}
+
 	for( i = 0 ; i < Mloadheader->AnimData.num_animations ; i++ )
 	{
 		free(Mloadheader->AnimData.AnimSeq[i]);
@@ -1293,6 +1294,8 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 		free( Mloadheader->OrgAddr );
 		Mloadheader->OrgAddr = NULL;
 	}
+
+	memset( Mloadheader, 0, sizeof(MLOADHEADER) );
 
 	Mloadheader->state = FALSE;
 }
