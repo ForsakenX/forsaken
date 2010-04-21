@@ -1630,13 +1630,13 @@ uint16	InitOneSecBull( uint16 OwnerType, uint16 Owner, uint16 BulletID, uint16 G
 			{
 				if( !GodMode )
 				{
-					int8	TempWeapon;
-
-					TempWeapon = ConvSecToNormWeapon( Weapon );
-
-					if( SecBulls[i].SecType != SEC_MINE ) SecAmmoUsed[ TempWeapon ]++;
-					if( SecondaryAmmo[ TempWeapon ] ) SecondaryAmmo[ TempWeapon ]--;
-					if( !SecondaryAmmo[ TempWeapon ] ) SecondaryWeaponsGot[ TempWeapon ] = 0;
+					int8 TempWeapon = ConvSecToNormWeapon( Weapon );
+					if( TempWeapon < MAXSECONDARYWEAPONS )
+					{
+						if( SecBulls[i].SecType != SEC_MINE ) SecAmmoUsed[ TempWeapon ]++;
+						if( SecondaryAmmo[ TempWeapon ] ) SecondaryAmmo[ TempWeapon ]--;
+						if( !SecondaryAmmo[ TempWeapon ] ) SecondaryWeaponsGot[ TempWeapon ] = 0;
+					}
 				}
 			}
 		}
