@@ -9797,6 +9797,7 @@ TEXTINFO *InitTextInfo( void )
 	TEXTINFO *TextInfo;
 
 	TextInfo = (TEXTINFO*)malloc ( sizeof (TEXTINFO) );
+	memset( TextInfo, 0, sizeof(TEXTINFO) );
 
 	if (!TextInfo)
 	{	Msg("Title.c   InitTextInfo:  unable to allocate memory\n");
@@ -9993,6 +9994,8 @@ void AddToFlatMenuList( MENUITEM *Item )
 void AddToTextStack( TEXTINFO *TextInfo )
 {
 	int i;
+
+	if(!TextInfo)return;
 	
 	for ( i = 0; i < TextStackLevel; i++ )
 	{
@@ -10003,7 +10006,8 @@ void AddToTextStack( TEXTINFO *TextInfo )
 		}
 	}
 
-	TextStack[ TextStackLevel++ ] = TextInfo;
+	if( TextStackLevel + 1 < MAXTEXTITEMS )
+		TextStack[ TextStackLevel++ ] = TextInfo;
 }
 
 void DrawFlatMenuList( MENUITEM *Item )
@@ -13603,6 +13607,9 @@ void DrawHighlightBox(TEXTINFO *TextInfo, uint8 r, uint8 g, uint8 b)
 {
 	float xmin, ymin, xmax, ymax, widthX, widthY, height, length, templength, actuallength;
 	int i, font;
+
+	if(!TextInfo)return;
+
 	font = GetScreenFont(TextInfo->font);
 
 	widthX = (float)ceil(ModeScaleX);
