@@ -47,7 +47,7 @@ double	Gamma = 1.0;
 BOOL InitTload( TLOADHEADER * Tloadheader  )
 {
 	int i;
-
+	memset( Tloadheader, 0, sizeof(TLOADHEADER) );
 	Tloadheader->num_texture_files = 0;
 	for( i = 0 ; i < MAXTPAGESPERTLOAD ; i++ )
 	{
@@ -145,7 +145,7 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 // create a default material for each texture
 BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 {
-    int i;
+	int i;
 	RENDERMATERIAL mat;
 
 	memset(&mat, 0, sizeof(RENDERMATERIAL));
@@ -164,7 +164,7 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 	for (i = 0; i<Tloadheader->num_texture_files; i++)
 		Tloadheader->lpMat[i] = mat;
 
-    return TRUE;
+	return TRUE;
 }
 
 //
@@ -173,9 +173,9 @@ BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
 
 BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 {
-    LPTEXTURE lpSrcTexture = NULL;
-    release_texture(Tloadheader->lpTexture[n]);
-	//Tloadheader->lpTexture[n] = NULL;
+	LPTEXTURE lpSrcTexture = NULL;
+	release_texture(Tloadheader->lpTexture[n]);
+	Tloadheader->lpTexture[n] = NULL;
 	if ( !Tloadheader->PlaceHolder[ n ] )
 		if( Tloadheader->MipMap[n] )
 			FSCreateTexture(
@@ -236,7 +236,8 @@ BOOL TloadReloadPlaceHolder( TLOADHEADER *Tloadheader, int16 n )
 void
 TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 {
-    release_texture(Tloadheader->lpTexture[n]);
+	release_texture(Tloadheader->lpTexture[n]);
+	Tloadheader->lpTexture[n] = NULL;
 	if ( Tloadheader->PlaceHolder[ n ] )
 	{
 		free( Tloadheader->PlaceHolderFile[ n ] );
@@ -254,12 +255,10 @@ ReleaseTloadheader( TLOADHEADER * Tloadheader )
 {
     int i;
     for (i = 0; i < Tloadheader->num_texture_files; i++)
-	{
+    {
         TloadReleaseTexture( Tloadheader , i);
     }
-
-	InitTload( Tloadheader  );
-  
+    InitTload( Tloadheader );
 }
 
 BOOL TloadAllTextures(TLOADHEADER * Tloadheader)
