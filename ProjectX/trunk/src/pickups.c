@@ -3382,7 +3382,7 @@ BOOL LoadPickupsPositions( void )
   FILE    * fp;
   int16   Count;
   VECTOR  Dir = { 0.0F, 0.0F, 0.0F };
-  uint16  i;
+  uint16  i = 0;
   uint16  TriggerMod = (uint16) -1;
   int32   StartingState = 1;
   int32   FileSize;
@@ -4771,6 +4771,9 @@ void InitValidPickups()
 ===================================================================*/
 BOOL FilterPickup( uint16 PickupType )
 {
+	if ( PickupType < 0 || PickupType > MAXPICKUPTYPES )
+		return FALSE;
+
 	// if in these modes
 	if( ( ChangeLevel_MyGameStatus == STATUS_StartingMultiplayer ) ||
 		( ChangeLevel_MyGameStatus == STATUS_WaitingAfterScore ) ||
