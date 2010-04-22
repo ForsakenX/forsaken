@@ -184,7 +184,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 		// off only works in full screen...
 		// turn on vertical syncing
 		else if (!strcasecmp(option,"VSync")){
-			render_info.vsync = FALSE;
+			render_info.vsync = TRUE;
 		}
 
 		// debugging information send to Log...

@@ -6524,7 +6524,7 @@ void DrawSlider( MENUITEM *Item )
 	sprintf( val, "%d", s->value );
 	Print4x5Text( min, sx, y, 8 );
 	Print4x5Text( max, ex, y, 8 );
-	colour = ( MenuState == MENUSTATE_Slider && SliderItem == Item ) ? 0 : 1;
+	colour = ( MenuState == MENUSTATE_Slider && SliderItem == Item ) ? GRAY : RED ;
 	Print4x5Text( val, sx + ( ex - sx ) * ( s->value - s->min ) / ( s->max - s->min ), y, colour );
 }
 
