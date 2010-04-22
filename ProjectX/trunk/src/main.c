@@ -183,7 +183,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 		// off only works in full screen...
 		// turn on vertical syncing
-		else if (!strcasecmp(option,"NoVSync")){
+		else if (!strcasecmp(option,"VSync")){
 			render_info.vsync = FALSE;
 		}
 
@@ -285,9 +285,6 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
 			// sleep time for every loop
 			else if ( sscanf( option, "sleep:%d", &cliSleep )){}
-
-			// reset the mouse to 0 at interval
-			else if ( sscanf( option, "mouse_reset:%u", &MouseResetTimer )){}
 
 			// select the pilot
 			else if ( sscanf( option , "pilot:%s", config_name )){}
@@ -399,9 +396,7 @@ static BOOL AppInit( char * lpCmdLine )
 {
 	ZEROMEM(render_info);
 
-	// default vsync for everyone (dont change this)
-	// read comments about mouse sensitivity in input_sdl.c
-	render_info.vsync = TRUE;
+	render_info.vsync = FALSE;
 
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..

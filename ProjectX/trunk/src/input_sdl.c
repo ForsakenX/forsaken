@@ -274,26 +274,23 @@ void app_mouse_motion( SDL_MouseMotionEvent motion )
 // other wise absence of movement will cause old value to stick around
 // and the player will continue to move by the last motion
 
-// the reset timer was added because computers that render to fast
-// render ahead of the input events from the mouse
+// the reset timer was added because the mouse only updates at about 125fps (8ms)
+// so most of the time we render ahead of the input events from the mouse
 // so the mouse ends up with 0's most of the time 
-// and then *framelag destroys the value when it does come through
+// the game was designed to have duplicate mouse input events during those periods
+// other wise mouse responsiveness drops off greatly
 
-uint MouseResetTimer = 0;
-static Uint32 last_mouse_reset = 0;
+extern float real_framelag;
 void reset_mouse_motion( void )
 {
-	if(MouseResetTimer)
+	static float framelagfix = 0.0f;
+	framelagfix -= real_framelag;
+	if(framelagfix <= 0.0f)
 	{
-		Uint32 t = SDL_GetTicks();
-		if ( t - last_mouse_reset < MouseResetTimer )
-		{
-			return;
-		}
-		last_mouse_reset = t;
+		mouse_state.xrel = 0;
+		mouse_state.yrel = 0;
+		framelagfix = 0.028f;
 	}
-	mouse_state.xrel = 0;
-	mouse_state.yrel = 0;
 }
 
 //////////////////////////////////////////////
