@@ -64,7 +64,7 @@ extern render_info_t render_info;
 // color names are defined in text.h colors_t
 uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 	// r, g, b   values...
-	{ 200,200,200 },	// gray 
+	{ 192,192,192 },	// gray
 	{ 255,64,64 },		// red 
 	{ 64,255,64 },		// green 
 	{ 64,64,255 },		// blue 
