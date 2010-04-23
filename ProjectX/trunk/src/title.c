@@ -6515,17 +6515,30 @@ void DrawSlider( MENUITEM *Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	Print4x5Text( Item->StrPnt , x , y , 2 );
-	sx = Print4x5Text( " ", -1, y, 2 );
+	// text label for the slider
+	Print4x5Text( Item->StrPnt , x , y , GREEN );
+
+	// print a space and get the start position
+	sx = Print4x5Text( " ", -1, y, GREEN );
+
+	// calculate end position
 	ex = sx + (int) floor( ( 128 >> 1 ) * ModeScaleX );
+
+	// get the slider start/current/stop values
 	s = (SLIDER *) (Item->Variable);
 	sprintf( min, "%d", s->min );
 	sprintf( max, "%d", s->max );
 	sprintf( val, "%d", s->value );
-	Print4x5Text( min, sx, y, 8 );
-	Print4x5Text( max, ex, y, 8 );
-	colour = ( MenuState == MENUSTATE_Slider && SliderItem == Item ) ? GRAY : RED ;
+
+	// slider value 
+	colour = RED; //( MenuState == MENUSTATE_Slider && SliderItem == Item ) ? GRAY : RED ;
 	Print4x5Text( val, sx + ( ex - sx ) * ( s->value - s->min ) / ( s->max - s->min ), y, colour );
+
+	// minimum value
+	Print4x5Text( min, sx, y, GRAY );
+
+	// max value
+	Print4x5Text( max, ex, y, GRAY );
 }
 
 
