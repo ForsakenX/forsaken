@@ -265,6 +265,8 @@ int Print4x5Text( char * Text , int x , int y , int color )
 	g = Colourtrans[color][1];
 	b = Colourtrans[color][2];
 
+	//printf("rgb = %d-%d-%d , text = %s\n",r,g,b,Text);
+
 	if( x != -1 )
 		PermX = x;
 	while( ( num = *Text++ ) != 0 )
