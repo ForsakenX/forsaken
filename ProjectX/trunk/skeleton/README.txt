@@ -17,6 +17,10 @@
 	OpenAL32.dll version 1.12.854
 	SDL.dll version 1.2.14
 
+== Networking ==
+
+	Any 1.15. version is compatible with any other 1.15. version
+
 == Chat ==
 
 	#forsaken on irc.freenode.net

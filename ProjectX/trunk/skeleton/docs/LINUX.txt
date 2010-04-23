@@ -37,3 +37,34 @@
 			make
 			sudo make install
 
+	Binaries
+
+		The -static versions have more libraries built in rather than requiring you to have them installed.
+
+		The NON -debug versions are built in RELEASE mode with optimizations.
+
+		The -debug versions are built debug symbols, include profiling support and NO optimizations.
+
+	Profiling
+
+		To generate profiling output run, "gprof ./projectx-binary ./gmon.out > gmon.txt"
+
+	64 Bit
+
+                You need 32 bit lib's built including lua
+
+                http://ch.archive.ubuntu.com/ubuntu/pool/main/l/lua5.1/liblua5.1-0_5.1.4-5_i386.deb
+
+		Try the static version if all else fails
+
+	3 button mouse emulation
+
+		Linux commonly defaults to sending a middle click if both left/right mouse button are clicked together.
+	
+		You can disable three mouse button emulation in your Xorg configuration.
+
+		A quick fix is to bind the middle button to the same actions as both mouse buttons.
+
+                But then you loose the ability to use middle click on it's own if you have the button.
+
+

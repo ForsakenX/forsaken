@@ -1,0 +1,9 @@
+
+Wide Screen
+
+	You can pass -aspect:x:y on the command line to stop stretching
+
+Linux Users
+
+	Also read LINUX.txt
+
