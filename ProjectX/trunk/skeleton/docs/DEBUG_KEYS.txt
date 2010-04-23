@@ -1,0 +1,51 @@
+----------------------------------------------------------------
+Debug Mode Keys
+----------------------------------------------------------------
+
+F8		set/unshow target computer mode
+
+
+SHIFT
+
+	F1 	debug help
+
+	F2	grow frame-of-view
+	F3	shrink frame-of-view
+
+	F4	goto room menu
+
+	F5	spawn at the next start position
+
+	F6	set/unset clipping
+
+	F7	show/unshow bounding boxes
+
+	F8	show/unshow ef zones
+
+	F9	increment show portal (4th time resets to 0)
+
+	F10	show/unshow collision zones
+
+#ifdef POLYGONAL_COLLISIONS
+	F11	increment show skin (6th time resets to 0)
+#endif
+
+	F12	set/unset collisions
+
+	CTRL
+
+		F2	reset fov
+		F3	reset fov
+
+		
+CTRL
+
+	F1	show/unshow teleports
+
+	F2	show/unshow trigger zones
+
+	F3	enable/disable remote camera
+		only works if version is built with
+		REMOTE_CAMERA_ENABLED
+
+

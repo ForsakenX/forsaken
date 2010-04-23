@@ -1,0 +1,39 @@
+
+== ProjectX Linux ==
+
+
+	The static versions only require that you mainly have sdl, opengl and openal installed.
+
+
+	Packages for the game:
+
+		sudo apt-get install liblua5.1-0 liblua5.1-0-dev liblua5.1-socket-dev liblua5.1-socket2 lua5.1 libsdl1.2-dev zlib1g-dev libpng12-dev
+
+	Commands to fix up the lua on ubuntu
+
+		cd /usr/include
+		ln -s lua5.1/ lua
+		cd /usr/lib
+		ln -s liblua5.1.so liblua.so
+		ln -s liblua5.1.a liblua.a
+		ln -s liblua5.1-mime.a liblua-mime.a
+		ln -s liblua5.1-socket.a liblua-socket.a
+		ln -s liblua5.1-unix.a liblua-unix.a
+
+	Outdated ubuntu packages
+
+		sudo apt-get install libenet libenet1-dev
+		sudo apt-get install libopenal-dev
+
+	Build them your self
+
+		http://enet.bespin.org
+		http://kcat.strangesoft.net/openal.html
+
+	OpenAL Build Process
+
+			cd build
+			cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+			make
+			sudo make install
+

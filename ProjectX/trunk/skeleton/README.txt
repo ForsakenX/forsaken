@@ -1,9 +1,25 @@
 
-Do not mix the old pilot configs with the new game.
+== ProjectX ==
 
-Read files in install sub directory for help on installing.
+	site: http://fly.thruhere.net
+	contact: fskn.methods@gmail.com
 
-updated info on http://fly.thruhere.net
+== Upgrading ==
 
-live help and game lobby at #forsaken@irc.freenode.net
+	Do not mix the old pilot configs with the new game.
+
+== Documentation ==
+
+	Files are included in the docs directory in this folder.
+
+== Included DLL ==
+
+	OpenAL32.dll version 1.12.854
+	SDL.dll version 1.2.14
+
+== Chat ==
+
+	#forsaken on irc.freenode.net
+
+	https://webchat.freenode.net/?channels=6dof,forsaken
 
