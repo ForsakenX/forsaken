@@ -119,8 +119,8 @@
 		</Configuration>
 		<Configuration
 			Name="Debug D3D|Win32"
-			OutputDirectory=".\temp\debug\"
-			IntermediateDirectory=".\temp\deubg_d3d\trash"
+			OutputDirectory=".\temp\debug_d3d\"
+			IntermediateDirectory=".\temp\debug_d3d\trash"
 			ConfigurationType="1"
 			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
 			UseOfMFC="0"
@@ -140,26 +140,26 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;_DEBUG"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_DSOUND;SOUND_OPENAL;NET_ENET;_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
-				TypeLibraryName=".\temp\deubg_d3d\ProjectX.tlb"
+				TypeLibraryName=".\temp\debug_d3d\ProjectX.tlb"
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
 				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\deubg_d3d\trash\ProjectX.pch"
-				AssemblerListingLocation=".\temp\deubg_d3d\trash\"
-				ObjectFile=".\temp\deubg_d3d\trash\"
-				ProgramDataBaseFileName=".\temp\deubg_d3d\trash\"
+				PrecompiledHeaderFile=".\temp\debug_d3d\trash\ProjectX.pch"
+				AssemblerListingLocation=".\temp\debug_d3d\trash\"
+				ObjectFile=".\temp\debug_d3d\trash\"
+				ProgramDataBaseFileName=".\temp\debug_d3d\trash\"
 				WarningLevel="3"
 				SuppressStartupBanner="true"
 				Detect64BitPortabilityProblems="false"
@@ -172,7 +172,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;_DEBUG"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;NET_ENET;_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
@@ -182,117 +182,19 @@
 				Name="VCLinkerTool"
 				UseLibraryDependencyInputs="false"
 				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib"
-				OutputFile="deubg_d3d.exe"
+				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib GlU32.Lib OpenAL32.lib"
+				OutputFile="debug_d3d.exe"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="lib\enet;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
 				IgnoreAllDefaultLibraries="false"
 				IgnoreDefaultLibraryNames=""
 				GenerateDebugInformation="true"
-				ProgramDatabaseFile="Xrelease.pdb"
+				ProgramDatabaseFile="debug_d3d.pdb"
 				GenerateMapFile="false"
 				SubSystem="2"
 				OptimizeReferences="0"
 				EnableCOMDATFolding="0"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory=".\temp\release"
-			IntermediateDirectory=".\temp\release\Xtrash"
-			ConfigurationType="1"
-			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC70.vsprops"
-			UseOfMFC="0"
-			ATLMinimizesCRunTimeLibraryUsage="false"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;NDEBUG"
-				MkTypLibCompatible="true"
-				SuppressStartupBanner="true"
-				TargetEnvironment="1"
-				TypeLibraryName=".\temp\release\ProjectX.tlb"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				Optimization="3"
-				InlineFunctionExpansion="2"
-				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;USEINLINE;FINAL_RELEASE;BSP;PLAYER_SPEECH_TAUNTS"
-				StringPooling="true"
-				RuntimeLibrary="2"
-				EnableFunctionLevelLinking="true"
-				UsePrecompiledHeader="0"
-				PrecompiledHeaderFile=".\temp\release\ProjectX.pch"
-				AssemblerListingLocation=".\temp\release\Xtrash\"
-				ObjectFile=".\temp\release\Xtrash\"
-				ProgramDataBaseFileName=".\temp\release\Xtrash\"
-				SuppressStartupBanner="true"
-				DebugInformationFormat="0"
-				CallingConvention="0"
-				CompileAs="0"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;DINPUTJOY;SOUND_SUPPORT;SOUND_DSOUND;NET_ENET;NDEBUG"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalOptions="/MACHINE:I386"
-				AdditionalDependencies="gdi32.lib advapi32.lib ole32.lib kernel32.lib user32.lib odbc32.lib odbccp32.lib winmm.lib d3d9.lib d3dx9.lib dxerr9.lib ddraw.lib dsound.lib dinput.lib comctl32.lib ws2_32.lib enet.lib lua5.1_dll.lib mime.lib socket.lib dxguid.lib vfw32.lib version.lib sdl.lib sdlmain.lib"
-				OutputFile="ProjectX___Win32_Release.exe"
-				LinkIncremental="1"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="lib\enet;lib\lua;$(DXSDK_DIR)\lib;$(MSSDK_DIR)\lib;.\Library"
-				IgnoreAllDefaultLibraries="false"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile=""
-				SubSystem="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 			/>
