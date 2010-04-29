@@ -2259,27 +2259,29 @@ MENU	MENU_STATS_Start = {
 };
 
 px_timer_t quick_text_timer;
-void InitQuickText( MENU *Menu )
+BOOL quick_text_timer_initialized = FALSE;
+BOOL quick_text_timer_ok( void )
 {
-	static int initialized = 0;
-	if(!initialized)
+	if(!quick_text_timer_initialized)
 	{
 		timer_clear(&quick_text_timer);
-		initialized = 1;
+		quick_text_timer_initialized = TRUE;
+		return TRUE;
 	}
-	else
-	{
-		if(timer_peek(&quick_text_timer) < 0.8f)
-		{
-			MenuExit();
-			return;
-		}
-	}
+	return timer_peek(&quick_text_timer) > 0.05f;
+}
+void InitQuickText( MENU *Menu )
+{
+	if(!quick_text_timer_ok())
+		MenuExit();
+}
+void QuitQuickText( MENU *Menu )
+{
 	timer_run(&quick_text_timer);
 }
 
 MENU	MENU_QuickTextSend = {
-	"" , InitQuickText, NULL, NULL, 0,
+	"" , InitQuickText, QuitQuickText, NULL, 0,
 	{
 		{ 48, 144, 0, 0, 0, "Message: "/*"Message: "*/, 0, TEXTFLAG_AutoSelect, &QuickText, NULL,  SelectText, DrawTextItem, NULL, 0 } ,
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
