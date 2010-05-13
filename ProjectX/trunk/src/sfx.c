@@ -1850,6 +1850,14 @@ void DestroySound( int flags )
 	{
 		if(SpotSfxList[ i ].buffer)
 		{
+			// find dupe buffers
+			for( j=0; j < MAX_LOOPING_SFX; j++)
+			{
+				if(SpotSfxList[ j ].buffer == SpotSfxList[ i ].buffer)
+				{
+					SpotSfxList[ j ].buffer = NULL;
+				}
+			}
 			sound_release(SpotSfxList[ i ].buffer);
 			SpotSfxList[ i ].buffer = NULL;
 		}
