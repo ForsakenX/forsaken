@@ -648,7 +648,7 @@ static void new_connection( ENetPeer * peer )
 		packet.number = my_local_port;
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("network: sent my connect port (%d) to new connectionn",
+		DebugPrintf("network: sent my connect port (%d) to new connection\n",
 			my_local_port);
 	}
 
@@ -976,7 +976,7 @@ static void new_packet( ENetEvent * event )
 				// peer is not the host
 				else
 				{
-					DebugPrintf("network security: %s sent us new-player event but they are not the host",
+					DebugPrintf("network security: %s sent us new-player event but they are not the host\n",
 						address_to_str(&peer->address));
 				}
 			}
