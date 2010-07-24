@@ -955,6 +955,12 @@ static void new_packet( ENetEvent * event )
 				{
 					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 					ENetPeer * new_peer = find_peer_by_id( packet->id );
+					if( ! new_peer )
+					{
+						DebugPrintf("network security: failed to find new-player by id %d\n",
+							packet->id);
+						break;
+					}
 					DebugPrintf("network: host sent us new player event for id %d\n",
 						packet->id);
 					if(new_peer)
@@ -1031,9 +1037,15 @@ static void new_packet( ENetEvent * event )
 			break;
 		case LOST_CONNECTION:
 			{
-				// player is telling us that he lost connection to someone
+				// player is telling the host that he lost connection to someone
 				p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 				ENetPeer * bad_peer = find_peer_by_id( packet->id );
+				if(!bad_peer)
+				{
+					DebugPrintf("network security: player told us he lost connection from unknown player %d\n",
+						packet->id );
+					break;
+				}
 				if( i_am_host )
 				{
 					network_peer_data_t * bad_peer_data = bad_peer->data;
