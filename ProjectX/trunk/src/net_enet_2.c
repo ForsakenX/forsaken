@@ -183,7 +183,7 @@ static void enet_cleanup( void )
 	enet_host_destroy( enet_host );
 	enet_host = NULL;
 	enet_deinitialize();
-	DebugPrintf("enet_cleanup: finished\n");
+	DebugPrintf("network: enet cleanup finished\n");
 }
 
 static network_return_t enet_setup( char* str_address, int port )
@@ -199,7 +199,7 @@ static network_return_t enet_setup( char* str_address, int port )
 		initialized = 1;
 	}
 	
-	DebugPrintf("enet_setup: initialized\n");
+	DebugPrintf("network: enet setup initialized\n");
 
 	if ( ! str_address )	address.host = ENET_HOST_ANY;
 	else					enet_address_set_host( &address, str_address ); 
@@ -207,7 +207,7 @@ static network_return_t enet_setup( char* str_address, int port )
 	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 	my_local_port = address.port;
 
-	DebugPrintf("enet_setup: address %s\n", address_to_str(&address));
+	DebugPrintf("network: enet setup address %s\n", address_to_str(&address));
 
 	enet_host = enet_host_create( &address, max_peers, 0, 0 );
 
@@ -216,11 +216,11 @@ static network_return_t enet_setup( char* str_address, int port )
 		return NETWORK_ERROR_BIND;
 	}
 
-	DebugPrintf("enet_setup: initializing peers\n");
+	DebugPrintf("network: enet setup initializing peers\n");
 
 	init_peers();
 
-	DebugPrintf("enet_setup: finished\n");
+	DebugPrintf("network: enet setup finished\n");
 
 	return NETWORK_OK;
 }
@@ -236,7 +236,8 @@ static int enet_connect( char* str_address, int port )
 
 	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 	
-	DebugPrintf("enet_connect: connecting to address %s\n", address_to_str(&address));
+	DebugPrintf("network: enet connect to address %s\n",
+		address_to_str(&address));
 
 	peer = enet_host_connect( enet_host, &address, max_channels );
 
@@ -252,7 +253,7 @@ static int enet_connect( char* str_address, int port )
 	if( network_state == NETWORK_CONNECTING )
 		host = peer;
 
-	DebugPrintf("enet_connect: waiting for connection.\n", str_address);
+	DebugPrintf("network: enet connect pending\n");
 
 	return 1;
 }
@@ -266,7 +267,7 @@ static void enet_send_packet( ENetPeer* peer, ENetPacket* packet, int channel, f
 {
 	if ( packet == NULL )
 	{
-		DebugPrintf("enet_send_packet: received null for packet.\n");
+		DebugPrintf("network: enet send packet received null for packet\n");
 		return;
 	}
 	enet_peer_send( peer, channel, packet );
@@ -274,7 +275,10 @@ static void enet_send_packet( ENetPeer* peer, ENetPacket* packet, int channel, f
 		enet_host_flush( enet_host );
 }
 
-static void enet_send( ENetPeer* peer, void* data, int size, enet_uint32 type, int channel, flush_t flush )
+static void enet_send(
+	ENetPeer* peer, void* data, int size, 
+	enet_uint32 type, int channel, flush_t flush 
+)
 {
 	ENetPacket * packet = enet_packet_create( data, size, type );
 	enet_send_packet( peer, packet, channel, flush );
@@ -290,7 +294,7 @@ static network_player_t * find_player_with_lowest_id( void )
 	{
 		ENetPeer * player_peer = (ENetPeer*) player->data;
 		network_peer_data_t * player_data = (network_peer_data_t*) player_peer->data;
-		if( player_data->id < id )
+		if( player_data->id < id && player_data->id != NO_ID )
 		{
 			id = player_data->id;
 			lowest = player;
@@ -328,11 +332,16 @@ static void migrate_host( void )
 
 static enet_uint32 convert_flags( network_flags_t flags )
 {
-	enet_uint32 enet_flags = ENET_PACKET_FLAG_UNSEQUENCED;  // our default is unreliable and unsequenced
+	// our default is unreliable and unsequenced
+	enet_uint32 enet_flags = ENET_PACKET_FLAG_UNSEQUENCED;
 	if ( flags )
 	{
-		if ( flags & NETWORK_SEQUENCED ) enet_flags = 0; // sequenced and unreliable
-		if ( flags & NETWORK_RELIABLE  ) enet_flags |= ENET_PACKET_FLAG_RELIABLE; // note: enet reliable is always sequenced
+		// sequenced and unreliable
+		if ( flags & NETWORK_SEQUENCED )
+			enet_flags = 0;
+		// note: enet reliable is always sequenced
+		if ( flags & NETWORK_RELIABLE  )
+			enet_flags |= ENET_PACKET_FLAG_RELIABLE;
 	}
 	return enet_flags;
 }
@@ -468,23 +477,23 @@ static void disconnect_all( void )
 static void add_peer_to_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
 {
 	int x;
-	DebugPrintf("-- adding peer to connected list.\n");
+	DebugPrintf("network: adding peer to connected list\n");
 	for( x = 0; x < max_peers; x++ )
 	{
 		ENetPeer * connected = connected_list[x];
 		if( connected == peer )
 		{
-			DebugPrintf("-- peer already on connected list...\n");
+			DebugPrintf("network: peer already on connected list\n");
 			return; // already added
 		}
 		if( connected == NULL )
 		{
 			connected_list[x] = peer;
-			DebugPrintf("-- added peer to connected list...\n");
+			DebugPrintf("network: added peer to connected list\n");
 			return; // added
 		}
 	}
-	DebugPrintf("-- connected list is already full...\n");
+	DebugPrintf("network: connected list is already full\n");
 }
 
 static int peer_on_connected_list( ENetPeer ** connected_list, ENetPeer * peer )
@@ -558,7 +567,8 @@ static void new_connection( ENetPeer * peer )
 	network_peer_data_t * peer_data = peer->data;
 
 	// print debug info
-	DebugPrintf("-- new connection from address %s\n", address_to_str(&peer->address));
+	DebugPrintf("network: new connection from address %s\n",
+		address_to_str(&peer->address));
 
 	// some reason connection list was getting dirty
 	// this makes sure it's clean before we commence
@@ -578,7 +588,8 @@ static void new_connection( ENetPeer * peer )
 		packet.id = peer_data->id;
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("-- sent new player his id %d\n", peer_data->id);
+		DebugPrintf("network: sent new player his id %d\n",
+			peer_data->id);
 	}
 
 	// I'm not the host
@@ -591,7 +602,7 @@ static void new_connection( ENetPeer * peer )
 			if( peer == host )
 			{
 				network_state = NETWORK_SYNCHING;
-				DebugPrintf("-- we have connected to the host...\n");
+				DebugPrintf("network: we have connected to the host...\n");
 			}
 			// we connected to a new player
 			else
@@ -603,12 +614,13 @@ static void new_connection( ENetPeer * peer )
 				packet.id = peer_data->id;
 				network_send( host_data->player, &packet, sizeof(packet), 
 					convert_flags(NETWORK_RELIABLE), system_channel );
-				DebugPrintf("-- telling host that we have connected to new player %d\n", peer_data->id);
+				DebugPrintf("network: telling host that we have connected to new player %d\n",
+					peer_data->id);
 			}
 		}
 		else
 		{
-			DebugPrintf("-- we didn't start this connection\n");
+			DebugPrintf("network security: we didn't start this connection\n");
 		}
 	}
 
@@ -623,7 +635,7 @@ static void new_connection( ENetPeer * peer )
 		packet.id = my_id;
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("-- sent my id (%d) to new connection\n", my_id);
+		DebugPrintf("network: sent my id (%d) to new connection\n", my_id);
 	}
 
 	// tell the player my external port people should connect to
@@ -634,7 +646,8 @@ static void new_connection( ENetPeer * peer )
 		packet.number = my_local_port;
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("-- sent my connect port (%d) to new connection...\n", my_local_port);
+		DebugPrintf("network: sent my connect port (%d) to new connectionn",
+			my_local_port);
 	}
 
 	// Send my player name to the new connection
@@ -644,7 +657,8 @@ static void new_connection( ENetPeer * peer )
 		strncpy( packet.name, my_player_name, NETWORK_MAX_NAME_LENGTH-1 );
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("-- sent my name (%s) to new connection\n", my_player_name);
+		DebugPrintf("network: sent my name (%s) to new connection\n",
+			my_player_name);
 	}
 }
 
@@ -657,9 +671,12 @@ static void lost_connection( ENetPeer * peer )
 		char * name = "NULL";
 		if( peer_data->player && peer_data->player->name )
 			name = peer_data->player->name;
-		DebugPrintf("lost_connection: from %s '%s' @ %s\n",
+		DebugPrintf("network security: lost connection from %s %d (%s@%s)\n",
 			( host==peer ) ? "host" : "player",
-			name, address_to_str(&peer->address) );
+			peer_data->id,
+			name,
+			address_to_str(&peer->address)
+		);
 	}
 
 	// I'm still trying to connect to host
@@ -710,23 +727,22 @@ static void lost_connection( ENetPeer * peer )
 				p2p_id_packet_t packet;
 				packet.type = DISCONNECT;
 				packet.id = id;
-				network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-				DebugPrintf("-- telling everyone to drop connection\n");
+				network_broadcast( &packet, sizeof(packet),
+					convert_flags(NETWORK_RELIABLE), system_channel );
+				DebugPrintf("network: telling everyone to drop connection\n");
 			}
 
 			// I am not the host
 			else
 			{
-				{
-					// tell host that we lost a connection
-					network_peer_data_t * host_data = host->data;
-					p2p_id_packet_t packet;
-					packet.type = DISCONNECT;
-					packet.id = id;
-					network_send( host_data->player, &packet, sizeof(packet),
-						convert_flags(NETWORK_RELIABLE), system_channel );
-					DebugPrintf("-- telling host that we lost connection\n");
-				}
+				// tell host that we lost a connection
+				network_peer_data_t * host_data = host->data;
+				p2p_id_packet_t packet;
+				packet.type = DISCONNECT;
+				packet.id = id;
+				network_send( host_data->player, &packet, sizeof(packet),
+					convert_flags(NETWORK_RELIABLE), system_channel );
+				DebugPrintf("network: telling host that we lost connection\n");
 			}
 		}
 	}
@@ -740,7 +756,8 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 	size_t x;
 	ENetPeer * player_peer = player->data;
 	network_peer_data_t * peer_data = player_peer->data;
-	DebugPrintf("-- telling new player %d to connect to synchers\n", peer_data->id);
+	DebugPrintf("network: telling new player %d to connect to synchers\n",
+		peer_data->id);
 	for( x = 0; x < enet_host->peerCount; x++ )
 	{
 		ENetPeer * peer = &enet_host->peers[x];
@@ -752,8 +769,10 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 			packet.id = data->id;
 			packet.address = peer->address;
 			packet.address.port = data->connect_port;
-			network_send( player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-			DebugPrintf("-- sending connect for syncher %d\n", peer_data->id);
+			network_send( player, &packet, sizeof(packet),
+				convert_flags(NETWORK_RELIABLE), system_channel );
+			DebugPrintf("network: sending connect for syncher %d\n",
+				peer_data->id);
 		}
 	}
 }
@@ -764,8 +783,10 @@ static void send_new_player_event( ENetPeer * peer )
 	p2p_id_packet_t packet;
 	packet.type = NEW_PLAYER;
 	packet.id = peer_data->id;
-	network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-	DebugPrintf("-- sent new player event for player (%d) to everyone\n", peer_data->id);
+	network_broadcast( &packet, sizeof(packet),
+		convert_flags(NETWORK_RELIABLE), system_channel );
+	DebugPrintf("network: sent new player event for player (%d) to everyone\n",
+		peer_data->id);
 }
 
 static void send_new_player_event_for_existing_players( network_player_t * joiner )
@@ -773,7 +794,8 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 	ENetPeer * joiner_peer = joiner->data;
 	network_peer_data_t * joiner_data = joiner_peer->data;
 	network_player_t * player = network_players.first;
-	DebugPrintf("-- sending new player events to new player %d for existing players\n", joiner_data->id);
+	DebugPrintf("network: sending new player events to new player %d for existing players\n",
+		joiner_data->id);
 	while( player )
 	{
 		ENetPeer * peer = player->data;
@@ -781,8 +803,10 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 		p2p_id_packet_t packet;
 		packet.type = NEW_PLAYER;
 		packet.id = peer_data->id;
-		network_send( joiner, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-		DebugPrintf("-- sent new player event for existing player %d\n", peer_data->id);
+		network_send( joiner, &packet, sizeof(packet),
+			convert_flags(NETWORK_RELIABLE), system_channel );
+		DebugPrintf("network: sent new player event for existing player %d\n",
+			peer_data->id);
 		player = player->next;
 	}
 	// still need to send a new player event for me
@@ -790,8 +814,9 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 		p2p_id_packet_t packet;
 		packet.type = NEW_PLAYER;
 		packet.id = my_id;
-		network_send( joiner, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-		DebugPrintf("-- sent new player event for HOST\n");
+		network_send( joiner, &packet, sizeof(packet),
+			convert_flags(NETWORK_RELIABLE), system_channel );
+		DebugPrintf("network: sent new player event for HOST\n");
 	}
 }
 
@@ -799,7 +824,8 @@ static void new_player( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
 
-	DebugPrintf("-- player '%s' joined the game.\n", peer_data->player->name);
+	DebugPrintf("network: player '%s' joined the game.\n",
+		peer_data->player->name);
 
 	if( i_am_host )
 	{
@@ -811,7 +837,7 @@ static void new_player( ENetPeer * peer )
 	// once host starts sending me new player events then I'm in the game
 	if( network_state != NETWORK_CONNECTED )
 	{
-		DebugPrintf("-- we have joined the game.\n");
+		DebugPrintf("network: we have joined the game.\n");
 		network_state = NETWORK_CONNECTED;
 		network_event( NETWORK_JOIN, NULL   );  // we joined the game
 		// host will now send us new player events for all new players
@@ -826,7 +852,7 @@ static void new_player( ENetPeer * peer )
 
 	// sure they could just use the new player event
 	// but for simplicity they may desire to rely on one event for names
-	DebugPrintf("-- firing off name event because we received a new player event\n");
+	DebugPrintf("network: firing off name event because we received a new player event\n");
 	network_event( NETWORK_NAME, peer_data->player );
 }
 
@@ -836,14 +862,15 @@ static void peer_connected_to( ENetPeer * peer, peer_id_t id )
 	ENetPeer * joiner = find_peer_by_id( id );
 	if( ! joiner )
 	{
-		DebugPrintf("-- ERROR: failed to find joiner by address\n");
+		DebugPrintf("network security: failed to find joiner by id %d\n", id);
 		return;
 	}
 	joiner_data = joiner->data;
 	add_peer_to_connected_list( joiner_data->connected_peers, peer );
 	if( all_players_on_connected_list( joiner_data->connected_peers, joiner ) )
 	{
-		DebugPrintf("-- all players have connected to %s\n", address_to_str(&joiner->address));
+		DebugPrintf("network: all players have connected to player %d\n",
+			joiner_data->id);
 		new_player( joiner );
 	}
 }
@@ -855,7 +882,6 @@ static void new_packet( ENetEvent * event )
 	if ( event->channelID == system_channel )
 	{
 		p2p_packet_t * packet = ((p2p_packet_t *) event->packet->data);
-		//DebugPrintf("new_packet: system message\n");
 		switch( packet->type )
 		{
 		case YOUR_ID:
@@ -864,11 +890,11 @@ static void new_packet( ENetEvent * event )
 				{
 					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 					my_id = packet->id;
-					DebugPrintf("-- host says my id is %d\n", my_id );
+					DebugPrintf("network: host says my id is %d\n", my_id );
 				}
 				else
 				{
-					DebugPrintf("-- %s tried to tell me what my id is but they aren't the host...\n",
+					DebugPrintf("network security: %s tried to give me my id is but they aren't the host\n",
 						address_to_str(&peer->address));
 				}
 			}
@@ -879,12 +905,12 @@ static void new_packet( ENetEvent * event )
 				{
 					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 					peer_data->id = packet->id;
-					DebugPrintf("-- peer %s says their id is %d\n",
+					DebugPrintf("network: %s says their id is %d\n",
 						address_to_str(&peer->address), peer_data->id );
 				}
 				else
 				{
-					DebugPrintf("-- peer %s is telling me their id (%d) but I'm the authority on id's!!!\n",
+					DebugPrintf("network security: %s is telling me their id (%d) but I'm the host\n",
 						address_to_str(&peer->address), peer_data->id);
 				}
 			}
@@ -893,7 +919,7 @@ static void new_packet( ENetEvent * event )
 			{
 				p2p_number_packet_t * packet = (p2p_number_packet_t*) event->packet->data;
 				peer_data->connect_port = packet->number;
-				DebugPrintf("-- player %d says their connect port is %d\n",
+				DebugPrintf("network: player %d says their connect port is %d\n",
 					peer_data->id, peer_data->connect_port );
 				if( i_am_host )
 				{
@@ -905,15 +931,19 @@ static void new_packet( ENetEvent * event )
 						packet.id = peer_data->id;
 						packet.address = peer->address;
 						packet.address.port = peer_data->connect_port;
-						network_broadcast( &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
+						network_broadcast( &packet, sizeof(packet),
+							convert_flags(NETWORK_RELIABLE), system_channel );
 						peer_data->state = SYNCHING;
-						DebugPrintf("-- telling everyone to connect to player %d\n", peer_data->id);
+						DebugPrintf("network: telling everyone to connect to player %d\n",
+							peer_data->id);
 					}
 					// no players exist yet
 					// so just let the player in
 					else
 					{
 						peer_data->state = CONNECTED;
+						DebugPrintf("network: no other players yet so allowing player %d right away\n",
+							peer_data->id);
 					}
 				}
 			}
@@ -925,27 +955,29 @@ static void new_packet( ENetEvent * event )
 				{
 					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 					ENetPeer * new_peer = find_peer_by_id( packet->id );
-					DebugPrintf("-- host sent us new player event for id %d\n",packet->id);
+					DebugPrintf("network: host sent us new player event for id %d\n",
+						packet->id);
 					if(new_peer)
 					{
 						new_player( new_peer );
 					}
 					else
 					{
-						DebugPrintf("-- could not find the new player by id %d\n",packet->id);
+						DebugPrintf("network security: could not find the new player by id %d\n",
+							packet->id);
 					}
 				}
 				// peer is not the host
 				else
 				{
-					DebugPrintf("-- connection %s tried to send us new player event but they are not the host...",
-								address_to_str(&peer->address));
+					DebugPrintf("network security: %s sent us new-player event but they are not the host",
+						address_to_str(&peer->address));
 				}
 			}
 			// I am not host
 			else
 			{
-				DebugPrintf("-- connection %s tried to send us a new player event but we are host...\n",
+				DebugPrintf("network security: %s sent us new player event but I am the host\n",
 						address_to_str(&peer->address));
 			}
 			break;
@@ -954,8 +986,8 @@ static void new_packet( ENetEvent * event )
 				p2p_name_packet_t* packet = (p2p_name_packet_t*) event->packet->data;
 				char* name = packet->name;
 
-				DebugPrintf("-- '%s' @ %s has updated their name to '%s'.\n",
-							peer_data->player->name, address_to_str(&peer->address), name);
+				DebugPrintf("network: player %d has updated their name from '%s' to '%s'\n",
+					peer_data->id, peer_data->player->name, name );
 
 				update_player_name( peer_data->player, name );
 
@@ -971,7 +1003,13 @@ static void new_packet( ENetEvent * event )
 			{
 				p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 				ENetPeer * bad_peer = find_peer_by_id( packet->id );
-				if(!bad_peer) break; // finished
+				// bank if we can't find the peer
+				if(!bad_peer)
+				{
+					DebugPrintf("network security: %s told us to disconnect from unknown player %d\n",
+						peer_data->id, packet->id );
+					break;
+				}
 				// i am the host
 				if( i_am_host )
 				{
@@ -980,8 +1018,8 @@ static void new_packet( ENetEvent * event )
 					if( bad_peer_data->state == SYNCHING )
 					{			
 						// tell everyone to drop the connection
-						DebugPrintf("-- disconnecting %s ", address_to_str(&bad_peer->address) );
-						DebugPrintf("cause %s failed to connect to them...\n", address_to_str(&peer->address));
+						DebugPrintf("network: dropping player %d because they failed to synch with %d\n",
+							packet->id, peer_data->id );
 						// lost connection event will fire
 						// this will send a DISCONNECT message for us to everyone
 						// and will cleanup the peer and everything else
@@ -995,9 +1033,10 @@ static void new_packet( ENetEvent * event )
 						packet2.id = packet->id;
 						packet2.address = bad_peer->address;
 						packet2.address.port = peer_data->connect_port;
-						network_send( peer_data->player, &packet2, sizeof(packet2), convert_flags(NETWORK_RELIABLE), system_channel );
-						DebugPrintf("-- telling %s to reconnect to ", address_to_str(&peer->address));
-						DebugPrintf("valid player %s cause they lost connection...\n", address_to_str(&bad_peer->address));
+						network_send( peer_data->player, &packet2, sizeof(packet2),
+							convert_flags(NETWORK_RELIABLE), system_channel );
+						DebugPrintf("network: telling player %d to reconnect to valid player %d\n",
+							peer_data->id, packet->id );
 					}
 				}
 				// if not the host
@@ -1006,14 +1045,14 @@ static void new_packet( ENetEvent * event )
 					// host is telling us to disconnect from a player
 					if( peer == host )
 					{
-						DebugPrintf("-- host told us to disconnect from %s\n",
-									address_to_str(&bad_peer->address));
+						DebugPrintf("network: host told us to disconnect from player %d\n",
+							packet->id);
 						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
 					}
 					else
 					{
-						DebugPrintf("-- %s told us to disconnect from a connection but they are not the host...\n",
-									address_to_str(&peer->address));
+						DebugPrintf("network security: %s sent disconnect-from but they are not the host\n",
+							address_to_str(&peer->address));
 					}
 				}
 			}
@@ -1025,11 +1064,11 @@ static void new_packet( ENetEvent * event )
 				if( i_am_host )
 				{
 					// if we are also connected to this connection
-					ENetPeer * connector = find_peer_by_id( packet->id );
-					if( connector )
+					ENetPeer * target = find_peer_by_id( packet->id );
+					if( target )
 					{
-						DebugPrintf("-- player '%s' %s ", peer_data->player->name, address_to_str( &peer->address ));
-						DebugPrintf("successfully connected with %s\n",	address_to_str( &connector->address ));
+						DebugPrintf("network: player %d succesfully connected with player %d\n",
+							peer_data->id, packet->id);
 						peer_connected_to( peer, packet->id );
 					}
 					// if we are not connected to this connection
@@ -1041,13 +1080,13 @@ static void new_packet( ENetEvent * event )
 						packet2.id = packet->id;
 						network_send( peer_data->player, &packet2, sizeof(packet2),
 							convert_flags(NETWORK_RELIABLE), system_channel );
-						DebugPrintf("-- telling %s to drop new player %d because we are not connected to them\n", 
-							address_to_str(&peer->address), packet->id);
+						DebugPrintf("network security: telling player %d to drop unknown player %d\n", 
+							peer_data->id, packet->id);
 					}
 				}
 				else
 				{
-					DebugPrintf("-- %s just told me they connected to someone but I'm not the host\n",
+					DebugPrintf("network security: %s told me they connected to someone but I'm not the host\n",
 						address_to_str(&peer->address));
 				}
 			}
@@ -1061,11 +1100,12 @@ static void new_packet( ENetEvent * event )
 				{
 					ENetPeer* new_peer;
 					network_peer_data_t * new_peer_data;
-					DebugPrintf("-- host told us to connect to address %s\n", address_to_str( address ));
+					DebugPrintf("network: host told us to connect to player %d address %s\n",
+						packet->id, address_to_str( address ));
 					new_peer = enet_host_connect( enet_host, address, max_channels );
 					if(!new_peer)
 					{
-						DebugPrintf("-- enet_host_connect returned NULL.\n");
+						DebugPrintf("network: enet host connect returned NULL.\n");
 					}
 					else
 					{
@@ -1074,14 +1114,17 @@ static void new_packet( ENetEvent * event )
 						new_peer_data->id = packet->id;
 					}
 				}
+				// I'm the host
 				else
 				{
-					DebugPrintf("-- %s just told me to connect to someone but I'm the host\n",address_to_str(&peer->address));
+					DebugPrintf("network: %s just told me to connect to someone but I am the host!\n",
+						address_to_str(&peer->address));
 				}
 			}
 			break;
 		default:
-			DebugPrintf("-- received unknown packet type: %d\n",packet->type);
+			DebugPrintf("network security: received unknown packet type: %d\n",
+				packet->type);
 		}
 
 	}
@@ -1093,7 +1136,6 @@ static void new_packet( ENetEvent * event )
 		if( peer_data->state == PLAYING )
 		{
 			network_packet_t packet;
-			//DebugPrintf("new_packet: application message\n");
 			packet.size = (int) event->packet->dataLength;
 			packet.data = (void*) event->packet->data;
 			packet.from = peer_data->player;
@@ -1103,7 +1145,7 @@ static void new_packet( ENetEvent * event )
 		// not a valid player
 		else
 		{
-			DebugPrintf("-- got application packet from non player at address %s\n",
+			DebugPrintf("network security: got application packet from non player at address %s\n",
 						address_to_str(&peer->address) );	
 		}
 	}
@@ -1119,7 +1161,8 @@ static void new_packet( ENetEvent * event )
 network_return_t network_setup( char* player_name, int local_port )
 {
 	network_cleanup();
-	DebugPrintf("network_setup: name='%s' connect_port=%d\n", player_name, local_port);
+	DebugPrintf("network: setup name='%s' connect_port=%d\n",
+		player_name, local_port);
 	my_player_name = player_name;
 	network_state = NETWORK_DISCONNECTED;
 	return enet_setup( NULL, local_port );
@@ -1129,12 +1172,13 @@ int network_join( char* address, int port )
 {
 	if( enet_host == NULL )
 		return 0;
-	DebugPrintf("network_join: address '%s', local port %d\n",address,port);
+	DebugPrintf("network: join address '%s', local port %d\n",
+		address,port);
 	i_am_host = 0;
 	my_id = NO_ID;
 	if( network_state == NETWORK_CONNECTING )
 	{
-		DebugPrintf("network_join: already connecting...\n");
+		DebugPrintf("network: join already connecting...\n");
 		return 1;
 	}
 	network_state = NETWORK_CONNECTING;
@@ -1144,7 +1188,7 @@ int network_join( char* address, int port )
 void network_host( void )
 {
 	if( enet_host == NULL ) return;
-	DebugPrintf("network_host\n");
+	DebugPrintf("network: starting a host session\n");
 	i_am_host = 1;
 	my_id = LOWEST_ID;
 	host = NULL;
@@ -1154,7 +1198,7 @@ void network_host( void )
 void network_cleanup( void )
 {
 	if( enet_host == NULL ) return;
-	DebugPrintf("network_cleanup\n");
+	DebugPrintf("network: cleanup\n");
 	enet_host_flush(enet_host); // send any pending packets
 	disconnect_all();
 	destroy_players();
@@ -1165,10 +1209,14 @@ void network_cleanup( void )
 	i_am_host = 0;
 }
 
-void network_send( network_player_t* player, void* data, int size, network_flags_t flags, int channel )
+void network_send(
+	network_player_t* player, void* data, int size,
+	network_flags_t flags, int channel 
+)
 {
 	if( enet_host == NULL ) return;
-	enet_send( (ENetPeer*) player->data, data, size, convert_flags(flags), channel, (flags & NETWORK_FLUSH) );
+	enet_send( (ENetPeer*) player->data, data, size,
+		convert_flags(flags), channel, (flags & NETWORK_FLUSH) );
 }
 
 void network_broadcast( void* data, int size, network_flags_t flags, int channel )
@@ -1177,14 +1225,14 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 	ENetPacket * packet;
 	if(!data)
 	{
-		DebugPrintf("network_broadcast: received bad pointer.\n");
+		DebugPrintf("network: broadcast received bad pointer.\n");
 		return;
 	}
 	packet = enet_packet_create( data, size, convert_flags( flags ) );
 	if( enet_host == NULL ) return;
 	if( packet == NULL )
 	{
-		DebugPrintf("network_broadcast: failed to create packet.\n");
+		DebugPrintf("network: broadcast failed to create packet.\n");
 		return;
 	}
 	while(player)
@@ -1225,13 +1273,14 @@ void network_set_player_name( char* name )
 	ENetPacket * packet;
 	p2p_name_packet_t name_packet;
 	if( enet_host == NULL ) return;
-	DebugPrintf("network_set_player_name: set to '%s'\n",name);
+	DebugPrintf("network: set my player name to %s\n",name);
 	name_packet.type = NAME;
 	strncpy( name_packet.name, name, NETWORK_MAX_NAME_LENGTH-1 );
-	packet = enet_packet_create( &name_packet, sizeof(name_packet), convert_flags(NETWORK_RELIABLE|NETWORK_FLUSH) );
+	packet = enet_packet_create( &name_packet, sizeof(name_packet),
+		convert_flags(NETWORK_RELIABLE|NETWORK_FLUSH) );
 	if( packet == NULL )
 	{
-		DebugPrintf("network_set_player_name: failed to create packet\n");
+		DebugPrintf("network: set player name failed to create packet\n");
 		return;
 	}
 	while(player)
