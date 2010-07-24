@@ -53,9 +53,9 @@ char* my_player_name = NULL; // used in net_tracker.c
 int my_local_port = 0; // used in net_tracker.c
 
 // settings
-static int max_peers		= 25;
-static int max_channels		= 50;
-static int system_channel	= 0;
+static int max_peers = 40;
+static int max_channels = 50;
+static int system_channel = 0;
 
 /*
  *
@@ -1246,7 +1246,7 @@ void network_host( void )
 	network_state = NETWORK_CONNECTED;
 }
 
-void network_cleanup( void )
+int network_cleanup( void )
 {
 	if( enet_host == NULL ) return;
 	DebugPrintf("network: cleanup\n");
@@ -1258,6 +1258,7 @@ void network_cleanup( void )
 	network_state = NETWORK_DISCONNECTED;
 	my_id = NO_ID;
 	i_am_host = 0;
+	return 0; // success
 }
 
 void network_send(
