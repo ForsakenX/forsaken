@@ -68,10 +68,11 @@ struct  _network_player_t {
 	char name[ NETWORK_MAX_NAME_LENGTH ]; // 14 chars for player name + 1 /0
 	char ip[INET_ADDRSTRLEN];
 	int  port;
-	long int ping;
-	long int packet_loss;
-	long int bw_in;
-	long int bw_out;
+	unsigned long int ping;
+	unsigned long int packet_loss;
+	unsigned long int packets_lost;
+	unsigned long int bw_in;
+	unsigned long int bw_out;
 	network_player_t * prev;
 	network_player_t * next;
 	void* data; // internal use only

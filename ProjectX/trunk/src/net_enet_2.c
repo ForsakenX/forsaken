@@ -370,8 +370,24 @@ static void update_player( network_player_t* player )
 {
 	ENetPeer * peer = (ENetPeer*) player->data;
 	if(!peer) return;
-	player->ping = peer->roundTripTime;
-	player->packet_loss = peer->packetLoss;
+	if( player->ping != peer->roundTripTime )
+	{
+		player->ping = peer->roundTripTime;
+		DebugPrintf("network extra: player %s (%d) ping has changed to %d\n",
+			player->name, PEER_ID(peer), player->ping);
+	}
+	if( player->packet_loss != peer->packetLoss )
+	{
+		player->packet_loss = peer->packetLoss;
+		DebugPrintf("network extra: player %s (%d) packet loss has changed to %d\n",
+			player->name, PEER_ID(peer), player->packet_loss);
+	}
+	if( player->packets_lost != peer->packetsLost )
+	{
+		player->packets_lost = peer->packetsLost;
+		DebugPrintf("network extra: player %s (%d) packets lost has changed to %d\n",
+			player->name, PEER_ID(peer), player->packets_lost);
+	}
 }
 
 static void update_players( void )
