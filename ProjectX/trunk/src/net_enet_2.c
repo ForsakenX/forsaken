@@ -79,8 +79,8 @@ static char* address_to_str( ENetAddress * address )
  */
 
 typedef enum {
-	PLAYING,	// peer is valid player in game
-	UNUSED,
+	PLAYING,    // peer is valid player in game
+	UNUSED,     // unused peer
 	CONNECTED,  // this must much other enum which defines CONNECTED as well
 	CONNECTING, // host told us to connect
 	SYNCHING,   // host telling everyone to synch
@@ -201,13 +201,14 @@ static network_return_t enet_setup( char* str_address, int port )
 	
 	DebugPrintf("network: enet setup initialized\n");
 
-	if ( ! str_address )	address.host = ENET_HOST_ANY;
-	else					enet_address_set_host( &address, str_address ); 
+	if ( ! str_address ) address.host = ENET_HOST_ANY;
+	else enet_address_set_host( &address, str_address ); 
 
 	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 	my_local_port = address.port;
 
-	DebugPrintf("network: enet setup address %s\n", address_to_str(&address));
+	DebugPrintf("network: enet setup address %s\n",
+		address_to_str(&address));
 
 	enet_host = enet_host_create( &address, max_peers, 0, 0 );
 
@@ -231,8 +232,8 @@ static int enet_connect( char* str_address, int port )
 	ENetPeer* peer;
 	network_peer_data_t * peer_data;
 
-	if ( ! str_address )	address.host = ENET_HOST_ANY;
-	else					enet_address_set_host( &address, str_address ); 
+	if ( ! str_address ) address.host = ENET_HOST_ANY;
+	else enet_address_set_host( &address, str_address ); 
 
 	address.port = (port) ? port : NETWORK_DEFAULT_PORT;
 	
@@ -387,8 +388,8 @@ static network_player_t * create_player( ENetPeer * peer )
 	player->bw_out = peer->outgoingBandwidth;
 
 	// this is how we maintain relationship between peer and player
-	player->data		= peer;
-	peer_data->player	= player;
+	player->data = peer;
+	peer_data->player = player;
 
 	// update dynamic data (ping etc..)
 	update_player( player );
@@ -401,10 +402,10 @@ static void append_player( network_player_t * player )
 	// TODO - this should never happen but it does
 	if(!player)
 		return;
-	player->prev   = network_players.last;
+	player->prev = network_players.last;
 	if(player->prev)
 		player->prev->next = player;
-	player->next   = NULL;
+	player->next = NULL;
 	network_players.last = player;
 	if( network_players.first == NULL )
 		network_players.first = player;
@@ -824,7 +825,7 @@ static void new_player( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
 
-	DebugPrintf("network: player '%s' joined the game.\n",
+	DebugPrintf("network: player %s joined the game\n",
 		peer_data->player->name);
 
 	if( i_am_host )
@@ -837,10 +838,10 @@ static void new_player( ENetPeer * peer )
 	// once host starts sending me new player events then I'm in the game
 	if( network_state != NETWORK_CONNECTED )
 	{
-		DebugPrintf("network: we have joined the game.\n");
+		DebugPrintf("network: we have joined the game\n");
 		network_state = NETWORK_CONNECTED;
 		network_event( NETWORK_JOIN, NULL   );  // we joined the game
-		// host will now send us new player events for all new players
+		DebugPrintf("network: host will now send us new player events for all new players\n");
 	}
 
 	append_player( peer_data->player );
@@ -850,8 +851,7 @@ static void new_player( ENetPeer * peer )
 	if( peer == host )
 		network_event( NETWORK_HOST, peer_data->player );  // host has been set
 
-	// sure they could just use the new player event
-	// but for simplicity they may desire to rely on one event for names
+	// for simplicity user may desire to rely on only name events to set the name
 	DebugPrintf("network: firing off name event because we received a new player event\n");
 	network_event( NETWORK_NAME, peer_data->player );
 }
@@ -1146,7 +1146,7 @@ static void new_packet( ENetEvent * event )
 		else
 		{
 			DebugPrintf("network security: got application packet from non player at address %s\n",
-						address_to_str(&peer->address) );	
+				address_to_str(&peer->address) );	
 		}
 	}
 	enet_packet_destroy( event->packet );
@@ -1251,18 +1251,18 @@ void network_pump()
 	if( enet_host == NULL ) return;
 	while( enet_host_service( enet_host, &event, 0 ) > 0 )
 	{
-	        switch (event.type)
-	        {
-	        case ENET_EVENT_TYPE_CONNECT:
-				new_connection( event.peer );
-				break;
-	        case ENET_EVENT_TYPE_DISCONNECT:
-				lost_connection( event.peer );
-				break;
-	        case ENET_EVENT_TYPE_RECEIVE:
-				new_packet( &event );
-				break;
-	        }
+		switch (event.type)
+		{
+		case ENET_EVENT_TYPE_CONNECT:
+			new_connection( event.peer );
+			break;
+		case ENET_EVENT_TYPE_DISCONNECT:
+			lost_connection( event.peer );
+			break;
+		case ENET_EVENT_TYPE_RECEIVE:
+			new_packet( &event );
+			break;
+		}
 	}
 	update_players();
 }
