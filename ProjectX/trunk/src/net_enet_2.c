@@ -528,14 +528,15 @@ static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer *
  */
 
 typedef enum {
-	NAME,           // player tells us his name
-	CONNECT,        // host tells player to connect to another player
-	CONNECTED_TO,   // player tells the host they connected to a player
-	DISCONNECT,     // tell host connection broken, or tell players to break
-	NEW_PLAYER,     // host tells others that player is now synched
-	CONNECT_PORT,   // player telling host which port people should connect to
-	YOUR_ID,        // host tells you your id when you connect to them
-	MY_ID,          // player tells new player his id on connection
+	NAME,            // player tells us his name
+	CONNECT,         // host tells player to connect to another player
+	CONNECTED_TO,    // player tells the host they connected to a player
+	LOST_CONNECTION, // tell host that I lost a connection
+	DISCONNECT,      // host tells players to disconnect someone
+	NEW_PLAYER,      // host tells others that player is now synched
+	CONNECT_PORT,    // player telling host which port people should connect to
+	YOUR_ID,         // host tells you your id when you connect to them
+	MY_ID,           // player tells new player his id on connection
 } p2p_event_t;
 
 typedef struct {
@@ -732,14 +733,13 @@ static void lost_connection( ENetPeer * peer )
 					convert_flags(NETWORK_RELIABLE), system_channel );
 				DebugPrintf("network: telling everyone to drop connection\n");
 			}
-
 			// I am not the host
 			else
 			{
 				// tell host that we lost a connection
 				network_peer_data_t * host_data = host->data;
 				p2p_id_packet_t packet;
-				packet.type = DISCONNECT;
+				packet.type = LOST_CONNECTION;
 				packet.id = id;
 				network_send( host_data->player, &packet, sizeof(packet),
 					convert_flags(NETWORK_RELIABLE), system_channel );
@@ -1001,20 +1001,42 @@ static void new_packet( ENetEvent * event )
 			break;
 		case DISCONNECT:
 			{
+				// host is telling us to disconnect from someone
+				if( peer == host )
+				{
+					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
+					ENetPeer * bad_peer = find_peer_by_id( packet->id );
+					// bank if we can't find the peer
+					if(!bad_peer)
+					{
+						DebugPrintf("network security: host told us to disconnect from unknown player %d\n",
+							packet->id );
+						break;
+					}
+					// if not the host
+					else
+					{
+						DebugPrintf("network: host told us to disconnect from player %d\n",
+							packet->id);
+						// dissconnect message will fire and cleanup player
+						enet_peer_disconnect(bad_peer,0);
+					}
+				}
+				else
+				{
+					DebugPrintf("network security: %s told us to disconnect but they are not the host\n",
+						address_to_str(&peer->address));
+				}
+			}
+			break;
+		case LOST_CONNECTION:
+			{
+				// player is telling us that he lost connection to someone
 				p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 				ENetPeer * bad_peer = find_peer_by_id( packet->id );
-				// bank if we can't find the peer
-				if(!bad_peer)
-				{
-					DebugPrintf("network security: %s told us to disconnect from unknown player %d\n",
-						peer_data->id, packet->id );
-					break;
-				}
-				// i am the host
 				if( i_am_host )
 				{
 					network_peer_data_t * bad_peer_data = bad_peer->data;
-					// player telling host that they failed to connect to new connection
 					if( bad_peer_data->state == SYNCHING )
 					{			
 						// tell everyone to drop the connection
@@ -1039,21 +1061,10 @@ static void new_packet( ENetEvent * event )
 							peer_data->id, packet->id );
 					}
 				}
-				// if not the host
 				else
 				{
-					// host is telling us to disconnect from a player
-					if( peer == host )
-					{
-						DebugPrintf("network: host told us to disconnect from player %d\n",
-							packet->id);
-						enet_peer_disconnect(bad_peer,0); // dissconnect message will fire and cleanup player
-					}
-					else
-					{
-						DebugPrintf("network security: %s sent disconnect-from but they are not the host\n",
-							address_to_str(&peer->address));
-					}
+					DebugPrintf("network security: player %d told us he lost-connection but we are not host\n",
+						peer_data->id);
 				}
 			}
 			break;
