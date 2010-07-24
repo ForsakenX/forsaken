@@ -613,6 +613,44 @@ static void new_connection( ENetPeer * peer )
 	// create the player structure
 	peer_data->player = create_player( peer );
 
+	// tell player my id
+	// we have to do this right away
+	// if we wait till after we send the CONNECTED_TO message bellow
+	// then slow packets can end up causing the host to send a new-player event
+	// before the receiving party ever gets my id
+	if( peer != host )
+	{
+		p2p_id_packet_t packet;
+		packet.type = MY_ID;
+		packet.id = my_id;
+		enet_send( peer, &packet, sizeof(packet),
+			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+		DebugPrintf("network: sent my id (%d) to new connection\n", my_id);
+	}
+
+	// tell the player my external port people should connect to
+	// we need to send this to everyone in case they become host later
+	{
+		p2p_number_packet_t packet;
+		packet.type = CONNECT_PORT;
+		packet.number = my_local_port;
+		enet_send( peer, &packet, sizeof(packet),
+			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+		DebugPrintf("network: sent my connect port (%d) to new connection\n",
+			my_local_port);
+	}
+
+	// Send my player name to the new connection
+	{
+		p2p_name_packet_t packet;
+		packet.type = NAME;
+		strncpy( packet.name, my_player_name, NETWORK_MAX_NAME_LENGTH-1 );
+		enet_send( peer, &packet, sizeof(packet),
+			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+		DebugPrintf("network: sent my name (%s) to new connection\n",
+			my_player_name);
+	}
+
 	// 
 	if ( i_am_host )
 	{
@@ -663,39 +701,6 @@ static void new_connection( ENetPeer * peer )
 	// set the state of the peer
 	peer_data->state = CONNECTED;
 
-	// tell player my id
-	if( peer != host )
-	{
-		p2p_id_packet_t packet;
-		packet.type = MY_ID;
-		packet.id = my_id;
-		enet_send( peer, &packet, sizeof(packet),
-			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("network: sent my id (%d) to new connection\n", my_id);
-	}
-
-	// tell the player my external port people should connect to
-	// we need to send this to everyone in case they become host later
-	{
-		p2p_number_packet_t packet;
-		packet.type = CONNECT_PORT;
-		packet.number = my_local_port;
-		enet_send( peer, &packet, sizeof(packet),
-			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("network: sent my connect port (%d) to new connection\n",
-			my_local_port);
-	}
-
-	// Send my player name to the new connection
-	{
-		p2p_name_packet_t packet;
-		packet.type = NAME;
-		strncpy( packet.name, my_player_name, NETWORK_MAX_NAME_LENGTH-1 );
-		enet_send( peer, &packet, sizeof(packet),
-			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-		DebugPrintf("network: sent my name (%s) to new connection\n",
-			my_player_name);
-	}
 }
 
 static void lost_connection( ENetPeer * peer )
