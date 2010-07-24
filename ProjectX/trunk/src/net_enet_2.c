@@ -817,7 +817,7 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 		packet.id = my_id;
 		network_send( joiner, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel );
-		DebugPrintf("network: sent new player event for HOST\n");
+		DebugPrintf("network: sent new player event for existing player %d (HOST)\n", my_id );
 	}
 }
 
