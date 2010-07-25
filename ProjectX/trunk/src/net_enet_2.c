@@ -1255,7 +1255,7 @@ void network_host( void )
 	network_state = NETWORK_CONNECTED;
 }
 
-int network_cleanup( void )
+void network_cleanup( void )
 {
 	if( enet_host == NULL ) return;
 	DebugPrintf("network: cleanup\n");

@@ -53,7 +53,7 @@ int  network_join( char* address, int port );
 void network_host();
 
 void network_pump();	// process network routines, fire events, marshal packets
-int network_cleanup();	// stop and cleanup networking
+void network_cleanup();	// stop and cleanup networking
 
 /*
  *  Players
