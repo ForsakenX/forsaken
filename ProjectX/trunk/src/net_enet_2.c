@@ -917,11 +917,11 @@ static void pump_synchers( void )
 		network_peer_data_t * peer_data = (network_peer_data_t*) peer->data;
 		if( PEER_STATE(peer) == SYNCHING )
 		{
-			if( all_players_on_connected_list( peer_data->connected_peers, peer_data->player ) )
+			if( all_players_on_connected_list( peer_data->connected_peers, peer ) )
 			{
 				DebugPrintf("network: player %d is fully synched firing new player revent\n",
 					peer_data->id);
-				new_player( peer_data->player );
+				new_player( peer );
 			}
 		}
 	}
