@@ -1267,7 +1267,6 @@ void network_cleanup( void )
 	network_state = NETWORK_DISCONNECTED;
 	my_id = NO_ID;
 	i_am_host = 0;
-	return 0; // success
 }
 
 void network_send(
