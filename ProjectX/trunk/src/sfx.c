@@ -1899,8 +1899,6 @@ void DestroySound( int flags )
 
 	Sfx_Filenames[ SFX_LEVELSPEC_Start ].Flags = SFX_LevelSpec;
 
-	sound_destroy();
-
 	bSoundEnabled = FALSE;
 }
 

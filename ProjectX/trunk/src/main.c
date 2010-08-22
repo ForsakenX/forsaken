@@ -12,6 +12,7 @@
 #include "sfx.h"
 #include "SDL.h"
 #include "input.h"
+#include "sound.h"
 
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR
@@ -367,7 +368,16 @@ void CleanUpAndPostQuit(void)
 
 	// we dont control the cursor anymore
 	input_grab( FALSE );
-	
+
+	// close up lua
+	lua_shutdown();
+
+	// cleanup networking
+	network_cleanup();
+
+	// cleanup sound system
+	sound_destroy();
+
 	// should come last
 	SDL_Quit();
 }
@@ -607,18 +617,14 @@ int main( int argc, char* argv[] )
 			SDL_Delay( cliSleep );
 	}
 
+	DebugPrintf("exit(0)\n");
+
 	return 0;
 
 FAILURE:
 
 	//
 	CleanUpAndPostQuit();
-
-	// cleanup networking
-	network_cleanup();
-
-	// close up lua
-	lua_shutdown();
 
 #ifdef DEBUG_ON
 
@@ -628,6 +634,8 @@ FAILURE:
 		DebugPrintf( "Un-malloced blocks found!" );
 
 #endif
+
+	DebugPrintf("exit(1)\n");
 
 	return 1;
 }

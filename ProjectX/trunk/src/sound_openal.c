@@ -153,14 +153,11 @@ BOOL sound_init( void )
 
 void sound_destroy( void )
 {
-	return; // TODO - see sound_init()
-#if 0
 	ALCcontext * Context = alcGetCurrentContext();
 	ALCdevice * Device = alcGetContextsDevice(Context);
 	alcMakeContextCurrent(NULL);
 	alcDestroyContext(Context);
 	alcCloseDevice(Device);
-#endif
 }
 
 //
