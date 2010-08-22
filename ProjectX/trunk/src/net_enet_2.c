@@ -654,10 +654,9 @@ static void new_connection( ENetPeer * peer )
 	// 
 	if ( i_am_host )
 	{
-		// generate player id
-		peer_data->id = find_free_id();
 		// tell the new player his id
 		p2p_id_packet_t packet;
+		peer_data->id = find_free_id();
 		packet.type = YOUR_ID;
 		packet.id = peer_data->id;
 		enet_send( peer, &packet, sizeof(packet),
