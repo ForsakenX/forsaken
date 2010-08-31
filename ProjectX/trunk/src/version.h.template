@@ -2,19 +2,17 @@
 #define VERSION_HEADER
 
 #define PXV	"1"	// base version
-#define PXMPV	"15"	// multi player version
-#define PXRV	"1579"	// revision
-#define PXBV	"enet"	// build flag (official releases should NOT use this flag)
-
-// current version is 115 but 1069 has a bug which used 114
-#define PXMPVINT 114  // PXV and PXMPV this is sent over network to verify multiplayer compatability
+#define PXMPV	"16"	// multi player version
+#define PXRV	"1846"	// revision
+#define PXBV	"LINUX" // build flag
+#define PXMPVINT 116    // PXV and PXMPV this is sent over network to verify multiplayer compatability
 
 // it is critical that PXVersion contain no spaces for tracker messages
 
 #ifdef PXBV
-#define PXVersion			PXV "." PXMPV "." PXRV "-" PXBV
+#define PXVersion PXV "." PXMPV "." PXRV "-" PXBV
 #else
-#define PXVersion			PXV "." PXMPV "." PXRV
+#define PXVersion PXV "." PXMPV "." PXRV
 #endif
 
 #define ProjectXVersion	"ProjectX " PXVersion
