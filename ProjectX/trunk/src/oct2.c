@@ -5115,6 +5115,10 @@ void CalculateFramelag( void )
   
   framelag = real_framelag * 71.0F;
 
+  if(!framelag || !real_framelag)
+	  DebugPrintf("WARNING: framelag = %d, real_framelag = %d\n",
+		framelag, real_framelag);
+
   // debugging
   //if (TimeWorst == 0.0 || seconds > TimeWorst) TimeWorst = seconds;
   //if (TimeBest  == 0.0 || seconds < TimeBest)  TimeBest  = seconds;
