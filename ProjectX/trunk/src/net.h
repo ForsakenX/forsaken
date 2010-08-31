@@ -60,7 +60,7 @@ void network_cleanup();	// stop and cleanup networking
  */
 
 #define NETWORK_MAX_NAME_LENGTH 15
-#define INET_ADDRSTRLEN 16
+#define INET_ADDRSTRLEN 16 // 255.255.255.255\0
 
 typedef struct _network_player_t network_player_t;
 
