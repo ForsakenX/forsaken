@@ -2705,6 +2705,7 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	VECTOR	NewPos;
 	VECTOR	NewBob;
 	VECTOR	Move_Dir;
+	float tmp;
 
 	if( Ships[WhoIAm].Object.Mode != LIMBO_MODE )
 	{
@@ -2720,9 +2721,14 @@ void RemoteCameraMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	Move_Off.z = Bob.z - ShipPnt->Object.LastBob.z;
 	ShipPnt->Object.LastBob = Bob;
 	NewBob = Move_Off;
-	NewPos.x = Ships[WhoIAm].Object.Pos.x + ( NewBob.x * (50.0F / framelag) );
-	NewPos.y = Ships[WhoIAm].Object.Pos.y + ( NewBob.y * (50.0F / framelag) );
-	NewPos.z = Ships[WhoIAm].Object.Pos.z + ( NewBob.z * (50.0F / framelag) );
+
+	// protect against division by 0
+	if(framelag) tmp = 50.0F / framelag;
+	else         tmp = 0.0F;
+
+	NewPos.x = Ships[WhoIAm].Object.Pos.x + ( NewBob.x * tmp );
+	NewPos.y = Ships[WhoIAm].Object.Pos.y + ( NewBob.y * tmp );
+	NewPos.z = Ships[WhoIAm].Object.Pos.z + ( NewBob.z * tmp );
 
 	ApplyMatrix( &ShipPnt->Object.FinalMat, &SlideUp, &Move_Dir );			/* Calc Direction Vector */
 	MakeViewMatrix( &ShipPnt->Object.Pos, &NewPos, &Move_Dir, &ShipPnt->Object.FinalMat);
