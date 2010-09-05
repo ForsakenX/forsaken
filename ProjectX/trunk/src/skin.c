@@ -456,6 +456,9 @@ void DisplayBSPNode( BSP_NODE * Node )
 		case NODECUBE_Array:
 			for( NodeNum = 0; NodeNum < Depth; NodeNum++ )
 			{
+				if(!BSP_Nodes[NodeNum])
+					continue;
+
 				D = ( DotProduct( &CurrentCamera.Pos, &BSP_Nodes[ NodeNum ]->Normal ) + BSP_Nodes[ NodeNum ]->Offset );
 
 				if( D < 0 )
