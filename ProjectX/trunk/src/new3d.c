@@ -431,16 +431,14 @@ void ReflectVector( VECTOR * old, NORMAL * normal, VECTOR * new1 )
 ===================================================================*/
 void NormaliseVector( VECTOR *  v )
 {
-    float	inv_mod;
+	float inv_mod = (float) sqrt( ( v->x * v->x ) + ( v->y * v->y ) + ( v->z * v->z ) );
 
-    inv_mod = (float) sqrt( ( v->x * v->x ) + ( v->y * v->y ) + ( v->z * v->z ) );
 	if ( !inv_mod )
 		return;
-	inv_mod = 1.0F / inv_mod;
 
-    v->x = v->x * inv_mod;
-    v->y = v->y * inv_mod;
-    v->z = v->z * inv_mod;
+	v->x /= inv_mod;
+	v->y /= inv_mod;
+	v->z /= inv_mod;
 }
 
 
