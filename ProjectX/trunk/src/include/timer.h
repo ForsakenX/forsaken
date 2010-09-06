@@ -35,6 +35,7 @@ typedef struct timer {
   float   best;
   float   worst;
   float   seconds;
+  Uint32  millis;
 } px_timer_t;
 
 float timer_run   ( px_timer_t* );

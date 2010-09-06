@@ -15,7 +15,8 @@ float timer_peek( px_timer_t* stats )
 // send debug info to console
 void timer_debug( char* name, px_timer_t* stats )
 {
-  DebugPrintf("%s: seconds = %5f, best = %5f, worst = %5f\n",name,stats->seconds,stats->best,stats->worst);
+  DebugPrintf("%s: seconds = %5f, millis = %d, best = %5f, worst = %5f\n",
+	name,stats->seconds,stats->millis,stats->best,stats->worst);
 }
 
 // clear the timer
@@ -34,9 +35,6 @@ float timer_run( px_timer_t* stats )
   // current counter value
   Uint32 time_now;
 
-  // ms between last and now
-  Uint32 time_diff;
-
   // if there is no count_before then we know this is the first run
   if(!stats->last)
   {
@@ -53,10 +51,10 @@ float timer_run( px_timer_t* stats )
   time_now = SDL_GetTicks();
 
   // calculate ms since last run
-  time_diff = time_now - stats->last;
+  stats->millis = time_now - stats->last;
 
   // calculate the duration in seconds
-  stats->seconds = ((float)time_diff) / 1000.0F; // 1000 ms == 1 s
+  stats->seconds = ((float)stats->millis) / 1000.0F; // 1000 ms == 1 s
 
   // reset the last value
   stats->last = time_now;
