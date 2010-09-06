@@ -2752,7 +2752,7 @@ MENU	MENU_DebugMode = {
 		{ 200, 96, 0, 0, 0, "Show Plane RGB", 0, 0, &ShowPlaneRGB, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		
 		{ 200, 144, 0, 0, 0, "external forces", 0, 0, &ShowEFZones, NULL, SelectToggle, DrawToggle, NULL, 0 },
-		{ 200, 160, 0, 0, 0, "teleports", 0, 0, &ShowTeleports, NULL, SelectToggle, DrawToggle, NULL, 0 },
+		{ 200, 160, 0, 0, 0, "show teleports", 0, 0, &ShowTeleports, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 176, 0, 0, 0, "trigger zones", 0, 0, &ShowTrigZones, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 192, 0, 0, 0, "bounding boxes", 0, 0, &ShowBoundingBoxes, NULL, SelectToggle, DrawToggle, NULL, 0 },
 		{ 200, 208, 0, 0, 0, "collision zones", 0, 0, &ShowColZones, NULL, SelectToggle, DrawToggle, NULL, 0 },
