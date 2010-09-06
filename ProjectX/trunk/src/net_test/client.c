@@ -81,25 +81,16 @@ void describe_players( void )
 	}
 }
 
+#define PRINT_STATE(x) case x: puts("-- network state " #x); break;
 void debug_network_state( void )
 {
 	switch( network_state )
 	{
-	case NETWORK_CONNECTED:
-		printf("-- network state %s\n","NETWORK_CONNECTED:");
-		break;
-        case NETWORK_CONNECTING:
-		printf("-- network state %s\n","NETWORK_CONNECTING:");
-		break;
-        case NETWORK_DISCONNECTED:
-		printf("-- network state %s\n","NETWORK_DISCONNECTED:");
-		break;
-        case NETWORK_SYNCHING:
-		printf("-- network state %s\n","NETWORK_SYNCHING:");
-		break;
-        case NETWORK_SYNCH_FAILED:
-		printf("-- network state %s\n","NETWORK_SYNCH_FAILED:");
-		break;
+	PRINT_STATE( NETWORK_CONNECTED );
+	PRINT_STATE( NETWORK_CONNECTING );
+	PRINT_STATE( NETWORK_DISCONNECTED );
+	PRINT_STATE( NETWORK_SYNCHING );
+	PRINT_STATE( NETWORK_SYNCH_FAILED );
 	}
 }
 
