@@ -82,7 +82,7 @@ static char* address_to_str( ENetAddress * address )
 typedef enum {
 	PLAYING,    // peer is valid player in game
 	UNUSED,     // unused peer
-	CONNECTED,  // this must much other enum which defines CONNECTED as well
+	CONNECTED,  // this must match other enum which defines CONNECTED as well
 	CONNECTING, // host told us to connect
 	SYNCHING,   // host telling everyone to synch
 } network_peer_state_t;
