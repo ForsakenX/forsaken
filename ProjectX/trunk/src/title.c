@@ -3560,19 +3560,28 @@ extern BOOL InitView( void );
 extern BOOL render_mode_select( render_info_t * info );
 BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 {
+	render_info_t old_info = render_info;
 	// this happens if Msg() or something else is called during resize etc...
 	if(!render_info.Mode)
 		return TRUE;
 	render_info.default_mode.h    = render_info.Mode[mode].h;
 	render_info.default_mode.w    = render_info.Mode[mode].w;
-	render_info.fullscreen = fullscreen;
-	render_info.vsync = vsync;
-    if(!render_mode_select( &render_info ))
-		return FALSE;
+	render_info.fullscreen        = fullscreen;
+	render_info.vsync             = vsync;
+	if(!render_mode_select( &render_info ))
+	{
+		DebugPrintf("RenderModeSelect: failed to change mode\n");
+		render_info = old_info;
+		if(!render_mode_select( &render_info ))
+		{
+			DebugPrintf("RenderModeSelect: failed to change back\n");
+			exit(1);
+		}
+	}
 	if (!InitView())
 	{
-	    Msg("InitView failed.\n");
-        return FALSE;
+		Msg("InitView failed.\n");
+		return FALSE;
 	}
 	SetGamePrefs();
 	return TRUE;
