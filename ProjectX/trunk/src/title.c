@@ -3563,7 +3563,6 @@ BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 	// this happens if Msg() or something else is called during resize etc...
 	if(!render_info.Mode)
 		return TRUE;
-	render_info.default_mode.bpp  = render_info.Mode[mode].bpp;
 	render_info.default_mode.h    = render_info.Mode[mode].h;
 	render_info.default_mode.w    = render_info.Mode[mode].w;
 	render_info.fullscreen = fullscreen;
@@ -8669,12 +8668,14 @@ void MakeModeList( MENU *Menu )
 		if( ModeList.items < MAXLISTITEMS )
 		{
 			WhichMode[ModeList.items] = i;
-			sprintf( &ModeList.item[ModeList.items][0] , "%d x %d x %d" ,
-				render_info.Mode[i].w , render_info.Mode[i].h , render_info.Mode[i].bpp );
+			if(i==0)
+				sprintf( &ModeList.item[ModeList.items][0], "default");
+			else
+				sprintf( &ModeList.item[ModeList.items][0], "%d x %d" ,
+					render_info.Mode[i].w , render_info.Mode[i].h );
 
 			if( (render_info.Mode[i].w == render_info.ThisMode.w) &&				
-				(render_info.Mode[i].h == render_info.ThisMode.h) &&
-				(render_info.Mode[i].bpp == render_info.ThisMode.bpp))
+				(render_info.Mode[i].h == render_info.ThisMode.h))
 			{
 				ModeList.selected_item = ModeList.items;
 			}
@@ -9218,9 +9219,8 @@ void GetGamePrefs( void )
 	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
-    render_info.default_mode.w                    = config_get_int( "ScreenWidth",				640 );
-    render_info.default_mode.h                    = config_get_int( "ScreenHeight",				480 );
-    render_info.default_mode.bpp                  = config_get_int( "ScreenBPP",				24 );
+    render_info.default_mode.w  = config_get_int( "ScreenWidth", 0 );
+    render_info.default_mode.h  = config_get_int( "ScreenHeight", 0 );
 
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
@@ -9315,7 +9315,6 @@ void SetGamePrefs( void )
 
 	config_set_int( "ScreenWidth",			render_info.Mode[ render_info.CurrMode ].w );
 	config_set_int( "ScreenHeight",			render_info.Mode[ render_info.CurrMode ].h );
-	config_set_int( "ScreenBPP",			render_info.Mode[ render_info.CurrMode ].bpp );
 	config_set_int( "SfxVolume",			SfxSlider.value );
 	config_set_int( "FlagSfxVolume",		FlagSfxSlider.value );
 	config_set_int( "Gamma",			GammaSlider.value );

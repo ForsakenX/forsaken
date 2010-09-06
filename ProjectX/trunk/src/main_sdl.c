@@ -33,113 +33,66 @@ BOOL sdl_init( void )
 //
 /////////////////////////
 
-static BOOL enumerate_video_modes( Uint32 flags )
+/*
+	You can't trust ListModes.
+	Modes are standard and a list is updated at:
+		http://en.wikipedia.org/wiki/Display_resolution.
+	Default mode should match the current desktop.
+	BPP should be left alone to match whatever the desktop is at.
+*/
+
+#define NUMBER_MODES 16
+render_display_mode_t video_modes[NUMBER_MODES] = {
+{0,0}, // current video mode of the desktop
+{640,480},
+{800,600}, // default window mode
+{1024,768},
+{1152,864},
+{1280,768},
+{1280,800},
+{1280,960},
+{1280,1024},
+{1366,768},
+{1440,900},
+{1600,900},
+{1600,1200},
+{1680,1050},
+{1920,1080},
+{1920,1200} 
+};
+
+static void init_video_modes( Uint32 flags )
 {
-	SDL_Rect** modes;
+	int i;
+	render_info.Mode               = &video_modes;
+	render_info.NumModes           = NUMBER_MODES;
 
-	render_info.NumModes = 0;
-	if(render_info.Mode)
+	// in full screen then default to desktop resolution
+	if( flags & SDL_FULLSCREEN ) render_info.CurrMode = 0;
+
+	// in window mode default to 800x600 
+	else render_info.CurrMode = 2;
+
+	// try to find the users preferred mode
+	for( i = 1; i < render_info.NumModes; i++ ) // skip mode 0
 	{
-		free(render_info.Mode);
-		render_info.Mode = NULL;
-	}
-
-	modes = SDL_ListModes(NULL, flags);
-
-	if (modes == (SDL_Rect**)0) 
-	{
-		Msg("No video modes available for given format!\n");
-		return FALSE;
-	}
-
-	if (modes != (SDL_Rect**)-1) 
-	{
-		int i;
-		int count = 0;
-		DebugPrintf("resolutions restricted to following set:\n");
-		for (i=0; modes[i]; i++)
+		if( render_info.Mode[i].w == render_info.default_mode.w &&
+		    render_info.Mode[i].h == render_info.default_mode.h )
 		{
-			DebugPrintf("valid resolution: %d x %d\n", modes[i]->w, modes[i]->h);
-			if( modes[i]->w < 640 || modes[i]->h < 480 )
-				continue;
-			count++;
-		}
-		//
-		render_info.NumModes	= count;
-		render_info.Mode		= (render_display_mode_t *) malloc(sizeof(render_display_mode_t)*render_info.NumModes);
-		render_info.CurrMode	= 0;
-		//
-		count = 0;
-		for (i=0; modes[i]; i++)
-		{
-			if( modes[i]->w < 640 || modes[i]->h < 480 )
-				continue;
-			render_info.Mode[count].w		= modes[i]->w;
-			render_info.Mode[count].h		= modes[i]->h;
-			render_info.Mode[count].bpp		= render_info.default_mode.bpp;
-			count++;
-		}
-		//
-		{
-			int desired = -1;
-			int lowest  = 0;
-			for( i = 0; i < render_info.NumModes; i++ )
-			{
-				if( render_info.Mode[i].w == render_info.default_mode.w &&
-					render_info.Mode[i].h == render_info.default_mode.h	)
-							desired = i;
-				if( render_info.Mode[i].w < render_info.Mode[lowest].w &&
-					render_info.Mode[i].h < render_info.Mode[lowest].h	)
-							lowest = i;
-			}
-			render_info.CurrMode = lowest;
-			if( desired > -1 )
-				render_info.CurrMode = desired;
+			render_info.CurrMode = i;
+			DebugPrintf("init_video_modes: found requested resolution of %dx%d\n",
+				render_info.default_mode.w,
+				render_info.default_mode.h);
+			break;
 		}
 	}
 
-	// build a hard coded list of supported formats
-	// user can always pass in their own mode on the command line
-
-	else
-	{
-		render_info.NumModes			= 6;
-		render_info.Mode				= (render_display_mode_t *) malloc(sizeof(render_display_mode_t)*render_info.NumModes);
-		render_info.CurrMode			= 0;
-		// first mode is user selected
-		render_info.Mode[0].w			= render_info.default_mode.w;
-		render_info.Mode[0].h			= render_info.default_mode.h;
-		render_info.Mode[0].bpp			= render_info.default_mode.bpp;
-		// 640x480
-		render_info.Mode[1].w			= 640;
-		render_info.Mode[1].h			= 480;
-		render_info.Mode[1].bpp			= render_info.default_mode.bpp;
-		// 800x600
-		render_info.Mode[2].w			= 800;
-		render_info.Mode[2].h			= 600;
-		render_info.Mode[2].bpp			= render_info.default_mode.bpp;
-		// 1024x768
-		render_info.Mode[3].w			= 1024;
-		render_info.Mode[3].h			= 768;
-		render_info.Mode[3].bpp			= render_info.default_mode.bpp;
-		// 1280x800
-		render_info.Mode[4].w			= 1280;
-		render_info.Mode[4].h			= 800;
-		render_info.Mode[4].bpp			= render_info.default_mode.bpp;
-		// 1280x1024
-		render_info.Mode[5].w			= 1280;
-		render_info.Mode[5].h			= 1024;
-		render_info.Mode[5].bpp			= render_info.default_mode.bpp;
-	}
-
-	render_info.ThisMode			= render_info.Mode[ render_info.CurrMode ];
-	render_info.WindowsDisplay		= render_info.Mode[ render_info.CurrMode ];
-	render_info.window_size.cx		= render_info.ThisMode.w;
-	render_info.window_size.cy		= render_info.ThisMode.h;
-	render_info.WindowsDisplay.w    = render_info.ThisMode.w;
-	render_info.WindowsDisplay.h    = render_info.ThisMode.h;
-
-	return TRUE;
+	render_info.ThisMode           = render_info.Mode[ render_info.CurrMode ];
+	render_info.window_size.cx     = render_info.ThisMode.w;
+	render_info.window_size.cy     = render_info.ThisMode.h;
+	render_info.WindowsDisplay     = render_info.Mode[ render_info.CurrMode ];
+	render_info.WindowsDisplay.w   = render_info.ThisMode.w;
+	render_info.WindowsDisplay.h   = render_info.ThisMode.h;
 }
 
 static void set_window_icon( void )
@@ -159,9 +112,10 @@ static void set_window_icon( void )
 static void set_opengl_settings( void )
 {
 #ifdef OPENGL
-	int size;
-	int mode = render_info.default_mode.bpp;
+	// BPP should be left alone to match whatever the desktop is at.
+
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER,	1  );
+
 	// this causes issues on at least one card I've seen.
 	// best to leave this as an option.  if someone says they have
 	// low frame rate then suggest them to pass -forceaccel on cli
@@ -170,19 +124,9 @@ static void set_opengl_settings( void )
 		DebugPrintf("main_sdl: enabling accelerated visual\n");
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
 	}
+
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
-	if ( mode != 16 && mode != 24 && mode != 32 )
-	{
-		mode = 24;
-		DebugPrintf("main_sdl: invalid bpp (%d) defaulting to 24\n",mode);
-	}
-	size = ( mode > 16 ) ? 8 : 5 ;
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   size);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  size);
-	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
-	DebugPrintf("main_sdl: set pixel sizes to %d\n",size);
-	DebugPrintf("main_sdl: set pixel depth to %d\n",mode);
+
 #endif
 }
 
@@ -229,7 +173,7 @@ static BOOL create_video_surface( Uint32 flags )
 	render_info.screen = SDL_SetVideoMode(
 		render_info.ThisMode.w,
 		render_info.ThisMode.h,
-		render_info.ThisMode.bpp,
+		0, // BPP should be left alone to match whatever the desktop is at.
 		flags
 	);
 
@@ -265,8 +209,7 @@ BOOL sdl_init_video( void )
 
 	set_opengl_settings();
 
-	if(!enumerate_video_modes( flags ))
-		return FALSE;
+	init_video_modes( flags );
 
 	set_aspect_ratio();
 

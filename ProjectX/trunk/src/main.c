@@ -306,10 +306,6 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 				render_info.aspect_ratio = (float) w / (float) h;
 			}
 
-			// bits per pixel
-			// default is 32 bpp
-			else if ( sscanf( option, "bpp:%d", &render_info.default_mode.bpp ) ){}
-
 			// modifies texture dimentions.. don't now what uv stands for..
 			else if ( sscanf( option, "UVFix:%f", &UV_Fix ) ){}
 

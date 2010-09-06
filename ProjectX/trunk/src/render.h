@@ -27,7 +27,6 @@ typedef struct {
 typedef struct {
     int     w;                /* width */
     int     h;                /* height */
-    int     bpp;              /* bits per pixel */
 } render_display_mode_t;
 
 typedef struct
