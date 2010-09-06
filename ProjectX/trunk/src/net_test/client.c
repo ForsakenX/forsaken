@@ -318,6 +318,7 @@ void network_event( network_event_type_t type, void* data )
 int main (int argc, char ** argv) 
 {
 	setvbuf( stdin, NULL, _IONBF, 0 );
+	setvbuf( stdout, NULL, _IONBF, 0 );
 
 	if(parse_command_line( argc, argv ))
 		return 1;
