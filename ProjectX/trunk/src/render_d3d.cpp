@@ -63,6 +63,7 @@ void build_gamma_table( double gamma )
 
 LPDIRECT3D9			lpD3D; /* D3D interface object */
 LPDIRECT3DDEVICE9	lpD3DDevice;	/* D3D device */
+static int bpp = 16;
 
 // TODO - shouldn't sdl handle the window and resolution enumeration ?
 
@@ -70,7 +71,6 @@ BOOL render_init( render_info_t * info )
 {
 	HRESULT LastError;
 	render_viewport_t viewport;
-	int bpp = 16;
 
 	// should get this from d3d caps
 	bSquareOnly = FALSE;
@@ -116,8 +116,7 @@ BOOL render_init( render_info_t * info )
 
 	// 32 bit back buffer
 	// Also supports 32 bit zbuffer
-	if( info->default_mode.bpp >= 32 && 
-		SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, d3dpp.Windowed)))
+	if( SUCCEEDED(lpD3D->CheckDeviceType(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, D3DFMT_X8R8G8B8, D3DFMT_X8R8G8B8, d3dpp.Windowed)))
 	{
 		bpp = 32;
 		d3dpp.BackBufferFormat			= D3DFMT_X8R8G8B8;
@@ -231,8 +230,8 @@ BOOL render_init( render_info_t * info )
 		
 	info->aspect_ratio		= (float) info->ThisMode.w / (float) info->ThisMode.h;
 
-	DebugPrintf("Using display mode: %dx%dx%d\n",
-		info->ThisMode.w,info->ThisMode.h,info->ThisMode.bpp);
+	DebugPrintf("Using display mode: %dx%d\n",
+		info->ThisMode.w,info->ThisMode.h);
 
 	// try to create a device falling back to less capable versions
 
@@ -723,7 +722,7 @@ static BOOL init_render_states( render_info_t * info )
 	STATE(	D3DRS_SHADEMODE,		D3DSHADE_GOURAUD );
 	STATE(	D3DRS_LIGHTING,			FALSE);
 
-	if( info->ThisMode.bpp < 32 )
+	if( bpp < 32 )
 		STATE( D3DRS_DITHERENABLE, TRUE );
 
 	reset_cull();
