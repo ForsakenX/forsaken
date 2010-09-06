@@ -255,13 +255,13 @@ BOOL render_init( render_info_t * info )
 
 void render_cleanup( render_info_t * info )
 {
-    info->ok_to_render = FALSE;
+	info->ok_to_render = FALSE;
 	if(info->Mode)
 	{
 		free(info->Mode);
 		info->Mode = NULL;
 	}
-    // TODO - any opengl cleanup required ?
+	// TODO - any opengl cleanup required ?
 	//		i believe SDL_Quit() handles everything
 	//		and at this point we might just be changing resolutions
 	//		so sdl again may handle any context cleanup needed
