@@ -11317,7 +11317,7 @@ void DrawGeneralWeapons( MENUITEM *Item )
 void ProcessVduItems( MENU *Menu )
 {
 	MENUITEM *Item;
-	
+	if(!Menu)return;
 	for( Item = Menu->Item ; Item->x >= 0 ; Item++ )
 	{	if( Item->FuncDraw )
 		{  
