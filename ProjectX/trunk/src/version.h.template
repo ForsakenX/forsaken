@@ -1,13 +1,21 @@
 #ifndef VERSION_HEADER
 #define VERSION_HEADER
 
-#define PXV	"1"	// base version
-#define PXMPV	"16"	// multi player version
-#define PXRV	"1846"	// revision
-#define PXBV	"LINUX" // build flag
-#define PXMPVINT 116    // PXV and PXMPV this is sent over network to verify multiplayer compatability
+#define PXV	    "1"     // base version
+#define PXMPV	"17"	// multi player version
+#define PXMPVINT 117    // PXV and PXMPV this is sent over network to verify multiplayer compatability
+#define PXRV	"1865"	// revision
+#ifndef WIN32
+#define PXBV    "LINUX"
+#else
+#ifdef D3D
+#define PXBV	"D3D9"
+#else
+#define PXBV    "OPEN"
+#endif
+#endif
 
-// it is critical that PXVersion contain no spaces for tracker messages
+// it is critical that PrXVersion contain no spaces for tracker messages
 
 #ifdef PXBV
 #define PXVersion PXV "." PXMPV "." PXRV "-" PXBV
