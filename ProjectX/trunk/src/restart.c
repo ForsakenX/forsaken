@@ -853,12 +853,12 @@ void DisplayStartPoints( void )
 
 	for( Count = 0; Count < num_start_positions; Count++ )
 	{
-		TopLeft.x = ( StartPositions[ Count ].Pos.x - ( SHIP_RADIUS * 4.0F ) );
-		TopLeft.y = ( StartPositions[ Count ].Pos.y - ( SHIP_RADIUS * 4.0F ) );
-		TopLeft.z = ( StartPositions[ Count ].Pos.z - ( SHIP_RADIUS * 4.0F ) );
-		BottomRight.x = ( StartPositions[ Count ].Pos.x + ( SHIP_RADIUS * 4.0F ) );
-		BottomRight.y = ( StartPositions[ Count ].Pos.y + ( SHIP_RADIUS * 4.0F ) );
-		BottomRight.z = ( StartPositions[ Count ].Pos.z + ( SHIP_RADIUS * 4.0F ) );
+		TopLeft.x = ( StartPositions[ Count ].Pos.x - ( SHIP_RADIUS ) );
+		TopLeft.y = ( StartPositions[ Count ].Pos.y - ( SHIP_RADIUS ) );
+		TopLeft.z = ( StartPositions[ Count ].Pos.z - ( SHIP_RADIUS ) );
+		BottomRight.x = ( StartPositions[ Count ].Pos.x + ( SHIP_RADIUS ) );
+		BottomRight.y = ( StartPositions[ Count ].Pos.y + ( SHIP_RADIUS ) );
+		BottomRight.z = ( StartPositions[ Count ].Pos.z + ( SHIP_RADIUS ) );
 		CreateBoundingBox( &TopLeft, &BottomRight, StartPositions[ Count ].Group );
 	}
 }
