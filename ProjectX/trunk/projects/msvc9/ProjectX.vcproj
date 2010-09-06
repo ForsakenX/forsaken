@@ -151,7 +151,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK;D3D"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
