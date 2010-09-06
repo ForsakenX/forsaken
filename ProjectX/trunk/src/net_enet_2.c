@@ -84,6 +84,7 @@ typedef enum {
 	UNUSED,     // unused peer
 	CONNECTED,  // this must match other enum which defines CONNECTED as well
 	CONNECTING, // host told us to connect
+	ACKING,     // waiting for peer to ack my id
 	SYNCHING,   // host telling everyone to synch
 } network_peer_state_t;
 
@@ -571,6 +572,7 @@ typedef enum {
 	CONNECT_PORT,    // player telling host which port people should connect to
 	YOUR_ID,         // host tells you your id when you connect to them
 	MY_ID,           // player tells new player his id on connection
+	ACK_ID,          // player tells another player that he now has his id
 } p2p_event_t;
 
 typedef struct {
@@ -614,10 +616,6 @@ static void new_connection( ENetPeer * peer )
 	peer_data->player = create_player( peer );
 
 	// tell player my id
-	// we have to do this right away
-	// if we wait till after we send the CONNECTED_TO message bellow
-	// then slow packets can end up causing the host to send a new-player event
-	// before the receiving party ever gets my id
 	if( peer != host )
 	{
 		p2p_id_packet_t packet;
@@ -663,6 +661,7 @@ static void new_connection( ENetPeer * peer )
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
 		DebugPrintf("network: sent new player his id %d\n",
 			peer_data->id);
+		peer_data->state = CONNECTED;
 	}
 
 	// I'm not the host
@@ -676,30 +675,22 @@ static void new_connection( ENetPeer * peer )
 			{
 				network_state = NETWORK_SYNCHING;
 				DebugPrintf("network: we have connected to the host...\n");
+				peer_data->state = CONNECTED;
 			}
-			// we connected to a new player
 			else
 			{
-				// tell the host that we connected successfully
-				network_peer_data_t * host_data = host->data;
-				p2p_id_packet_t packet;
-				packet.type = CONNECTED_TO;
-				packet.id = peer_data->id;
-				network_send( host_data->player, &packet, sizeof(packet), 
-					convert_flags(NETWORK_RELIABLE), system_channel );
-				DebugPrintf("network: telling host that we have connected to new player %d\n",
-					peer_data->id);
+				//  we connected to a new player
+				//  we must now wait for them to ack our id
+				//  then we can tell the host that we connected
+				peer_data->state = ACKING;
 			}
 		}
 		else
 		{
 			DebugPrintf("network security: we didn't start this connection\n");
+			peer_data->state = CONNECTED;
 		}
 	}
-
-	// set the state of the peer
-	peer_data->state = CONNECTED;
-
 }
 
 static void lost_connection( ENetPeer * peer )
@@ -897,6 +888,13 @@ static void peer_connected_to( ENetPeer * peer, peer_id_t id )
 		DebugPrintf("network security: failed to find joiner by id %d\n", id);
 		return;
 	}
+	if( joiner->state == PLAYING )
+	{
+		network_peer_data_t * peer_data = peer->data;
+		DebugPrintf("network security: player %d @ %s sent us a succesfully-connected-to-new-player message for player %d but player %d is already in the game!\n",
+			peer_data->id, address_to_str(&peer->address), id, id);
+		return;
+	}
 	joiner_data = joiner->data;
 	add_peer_to_connected_list( joiner_data->connected_peers, peer );
 	if( all_players_on_connected_list( joiner_data->connected_peers, joiner ) )
@@ -960,11 +958,42 @@ static void new_packet( ENetEvent * event )
 					peer_data->id = packet->id;
 					DebugPrintf("network: %s says their id is %d\n",
 						address_to_str(&peer->address), peer_data->id );
+					// ack the player id
+					{
+						p2p_packet_t packet;
+						packet.type = ACK_ID;
+						enet_send( peer, &packet, sizeof(packet),
+							convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+						DebugPrintf("network: acking his id\n");
+					}
 				}
 				else
 				{
 					DebugPrintf("network security: %s is telling me their id (%d) but I'm the host\n",
 						address_to_str(&peer->address), packet->id);
+				}
+			}
+			break;
+		case ACK_ID:
+			DebugPrintf("network: player %d has acked my id\n", peer_data->id);
+			if( peer_data->state == ACKING ) // we were waiting for him to ack so we could tell host
+			{
+				if( peer_data->id == NO_ID )
+				{
+					DebugPrintf("network security: %s has ack'd my id before telling me their id!\n",
+						address_to_str(&peer->address));
+				}
+				else // tell the host that we connected successfully
+				{
+					network_peer_data_t * host_data = host->data;
+					p2p_id_packet_t packet;
+					packet.type = CONNECTED_TO;
+					packet.id = peer_data->id;
+					network_send( host_data->player, &packet, sizeof(packet), 
+						convert_flags(NETWORK_RELIABLE), system_channel );
+					DebugPrintf("network: telling host that we have connected to new player %d\n",
+						peer_data->id);
+					peer_data->state = CONNECTED;
 				}
 			}
 			break;
