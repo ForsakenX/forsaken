@@ -178,9 +178,9 @@ static void set_opengl_settings( void )
 	}
 	size = ( mode > 16 ) ? 8 : 5 ;
 	SDL_GL_SetAttribute(SDL_GL_RED_SIZE,   size);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, size);
 	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE,  size);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
+	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, mode);
 	DebugPrintf("main_sdl: set pixel sizes to %d\n",size);
 	DebugPrintf("main_sdl: set pixel depth to %d\n",mode);
 #endif
@@ -200,8 +200,8 @@ static print_info( void )
 	);
 
 	// actual depth size set by sdl
-    SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
-    DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
+	SDL_GL_GetAttribute(SDL_GL_DEPTH_SIZE, &bpp);
+	DebugPrintf("main_sdl: depth buffer is %d bpp\n", bpp);
 
 	// video driver
 	if(SDL_VideoDriverName(driver, 64)!=NULL)
