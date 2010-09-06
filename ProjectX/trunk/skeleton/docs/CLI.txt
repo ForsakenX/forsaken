@@ -113,16 +113,6 @@ Rendering Options
 	But your window size will be set to the 
 	value you picked...
 
--bpp:<number>
-
-	Bits per pixel.
-
-	24 is the default representing 8 bits for red, 
-	blue and green.
-
-	16 bit mode currently has rendering issues,
-	and 32 bit mode is pointless to use.
-
 -uvFix:<number>
 
 	Modifies texture dimentsions.
