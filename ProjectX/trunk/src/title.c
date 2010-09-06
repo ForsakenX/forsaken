@@ -9263,31 +9263,31 @@ void SetGamePrefs( void )
 {
 	// ip / port
 	
-	config_set_str( "HostAddress",	TCPAddress.text );		// remote address
-	config_set_str( "HostPort",		host_port_str.text );	// remote port
+	config_set_str( "HostAddress",	TCPAddress.text );	// remote address
+	config_set_str( "HostPort",	host_port_str.text );	// remote port
 	config_set_str( "LocalPort",	local_port_str.text );	// local
 
 	// tracker
 	
-	config_set_str( "TrackerServer",			tracker_server );
-	config_set_int( "TrackerPort",				tracker_port );
-	config_set_bool( "TrackerEnabled",			tracker_enabled );
+	config_set_str( "TrackerServer",		tracker_server );
+	config_set_int( "TrackerPort",			tracker_port );
+	config_set_bool( "TrackerEnabled",		tracker_enabled );
 	
 	// booleans
 
 	config_set_bool( "ResetKillsPerLevel",		MyResetKillsPerLevel );
-	config_set_bool( "BrightShips",				MyBrightShips );
-    config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
-    config_set_bool( "RearCameraActive",		RearCameraActive );
-    config_set_bool( "BikeEnginesOn",			BikeEnginesOn );
-    config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
-    config_set_bool( "ShowPlayersOnHUDbyKills",		ShowPlayersOnHUDbyKills );
-    config_set_bool( "BikeExhausts",			BikeExhausts );
-    config_set_bool( "BountyBonus",				BountyBonus );
-    config_set_bool( "RandomPickups",			MyRandomPickups );
-    config_set_bool( "UseShortPackets",			MyUseShortPackets );
-    config_set_bool( "ShowTeamInfo",			ShowTeamInfo );
-	config_set_bool( "FullScreen",				render_info.fullscreen );
+	config_set_bool( "BrightShips",			MyBrightShips );
+	config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
+	config_set_bool( "RearCameraActive",		RearCameraActive );
+	config_set_bool( "BikeEnginesOn",		BikeEnginesOn );
+	config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
+	config_set_bool( "ShowPlayersOnHUDbyKills",	ShowPlayersOnHUDbyKills );
+	config_set_bool( "BikeExhausts",		BikeExhausts );
+	config_set_bool( "BountyBonus",			BountyBonus );
+	config_set_bool( "RandomPickups",		MyRandomPickups );
+	config_set_bool( "UseShortPackets",		MyUseShortPackets );
+	config_set_bool( "ShowTeamInfo",		ShowTeamInfo );
+	config_set_bool( "FullScreen",			render_info.fullscreen );
 
 	config_set_bool( "AllowMugs",               MyPickupValid[ PICKUP_Mugs ] );
 	config_set_bool( "AllowHeatseaker",         MyPickupValid[ PICKUP_HeatseakerPickup ] );
@@ -9313,14 +9313,14 @@ void SetGamePrefs( void )
 
 	// integers
 
-	config_set_int( "ScreenWidth",				render_info.Mode[ render_info.CurrMode ].w );
-	config_set_int( "ScreenHeight",				render_info.Mode[ render_info.CurrMode ].h );
-	config_set_int( "ScreenBPP",				render_info.Mode[ render_info.CurrMode ].bpp );
-	config_set_int( "SfxVolume",				SfxSlider.value );
-	config_set_int( "FlagSfxVolume",			FlagSfxSlider.value );
-	config_set_int( "Gamma",					GammaSlider.value );
-	config_set_int( "water",					WaterDetailSlider.value );
-	config_set_int( "TimeLimit",				MyTimeLimit.value );
+	config_set_int( "ScreenWidth",			render_info.Mode[ render_info.CurrMode ].w );
+	config_set_int( "ScreenHeight",			render_info.Mode[ render_info.CurrMode ].h );
+	config_set_int( "ScreenBPP",			render_info.Mode[ render_info.CurrMode ].bpp );
+	config_set_int( "SfxVolume",			SfxSlider.value );
+	config_set_int( "FlagSfxVolume",		FlagSfxSlider.value );
+	config_set_int( "Gamma",			GammaSlider.value );
+	config_set_int( "water",			WaterDetailSlider.value );
+	config_set_int( "TimeLimit",			MyTimeLimit.value );
 	config_set_int( "KillMessageColour",		KillMessageColour );
 	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
 	config_set_int( "SystemMessageColour",		SystemMessageColour );
@@ -9328,23 +9328,23 @@ void SetGamePrefs( void )
 	config_set_int( "PlayerMessageColour",		PlayerMessageColour );
 	config_set_int( "PickupMessageColour",		PickupMessageColour );
 	config_set_int( "TauntMessageColour",		TauntMessageColour );
-	config_set_int( "MyMessageColour",			MyMessageColour );
-	config_set_int( "ColPerspective",			MyColPerspective );
-	config_set_int( "MaxKills",					MaxKillsSlider.value );
-	config_set_int( "GameType",					GameType );
-	config_set_int( "CTFrules",					CTFSlider.value );
+	config_set_int( "MyMessageColour",		MyMessageColour );
+	config_set_int( "ColPerspective",		MyColPerspective );
+	config_set_int( "MaxKills",			MaxKillsSlider.value );
+	config_set_int( "GameType",			GameType );
+	config_set_int( "CTFrules",			CTFSlider.value );
 	config_set_int( "NumPrimaryPickups",		NumPrimaryPickupsSlider.value );
-	config_set_int( "PacketsPerSecond",			MyPacketsSlider.value );
-	config_set_int( "BountyInterval",			BountyBonusSlider.value );
+	config_set_int( "PacketsPerSecond",		MyPacketsSlider.value );
+	config_set_int( "BountyInterval",		BountyBonusSlider.value );
 	config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
 	config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
 
-	config_set_int( "FlagScore",				GoalScoreSlider.value );
+	config_set_int( "FlagScore",			GoalScoreSlider.value );
 	GoalScore = GoalScoreSlider.value;
 
 	// Stereo options
-	config_set_bool( "StereoEnabled",			StereoEnabled );
-	config_set_float( "StereoEyeSep",			StereoEyeSep );
+	config_set_bool( "StereoEnabled",		StereoEnabled );
+	config_set_float( "StereoEyeSep",		StereoEyeSep );
 	config_set_float( "StereoFocalDist",		StereoFocalDist );
 	config_set_float( "StereoRightColor",		StereoRightColor );
 
