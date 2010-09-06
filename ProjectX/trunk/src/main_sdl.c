@@ -64,7 +64,7 @@ render_display_mode_t video_modes[NUMBER_MODES] = {
 static void init_video_modes( Uint32 flags )
 {
 	int i;
-	render_info.Mode               = &video_modes;
+	render_info.Mode               = video_modes;
 	render_info.NumModes           = NUMBER_MODES;
 
 	// in full screen then default to desktop resolution
