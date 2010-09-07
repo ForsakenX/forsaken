@@ -170,7 +170,7 @@ uint32 TauntID = 0;
 BOOL TauntUpdatable = FALSE;
 //float TauntDist = 0.0F;
 char CurrentTauntVariant;
-#define MAX_ANY_SFX 64
+#define MAX_ANY_SFX 256 // openal soft max is 256 so this feels good
 
 SFXNAME	Sfx_Filenames[MAX_SFX] =
 {
