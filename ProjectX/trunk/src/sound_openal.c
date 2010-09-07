@@ -31,11 +31,18 @@ struct {
 // buffer description
 //
 
-typedef struct sound_t {
+#define MAX_PATH 500
+
+typedef struct sound_buffer_t {
+	ALuint buffer;
+	char path[MAX_PATH];
+};
+
+typedef struct sound_source_t {
 	ALuint source;
 	ALuint buffer;
 	BOOL playing;
-	char path[500];
+	char path[MAX_PATH];
 };
 
 //
@@ -193,14 +200,14 @@ BOOL sound_listener_orientation(
 
 // (only 3d buffer routine)
 // TODO - we'll want to set velocity some day for moving players ?
-void sound_position( sound_t * source, float x, float y, float z, float min, float max )
+void sound_position( sound_source_t * source, float x, float y, float z, float min, float max )
 {
 	alSource3f(source->source, AL_POSITION, x, y, z);
 	alSourcef(source->source, AL_MAX_DISTANCE, max);
 	alSourcef(source->source, AL_REFERENCE_DISTANCE, min); // is this right?
 }
 
-void sound_play( sound_t * source )
+void sound_play( sound_source_t * source )
 {
 	if(!source->playing)
 		stats.playing++;
@@ -213,7 +220,7 @@ void sound_play( sound_t * source )
 		stats.playing);
 }
 
-void sound_play_looping( sound_t * source )
+void sound_play_looping( sound_source_t * source )
 {
 	if(!source->playing)
 		stats.playing++;
@@ -225,7 +232,7 @@ void sound_play_looping( sound_t * source )
 	DebugPrintf("sound_play_looping: playing %d\n",stats.playing);
 }
 
-void sound_stop( sound_t * source )
+void sound_stop( sound_source_t * source )
 {
 	if(source->playing)
 		stats.playing--;
@@ -236,14 +243,14 @@ void sound_stop( sound_t * source )
 	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
-long sound_size( sound_t * source )
+long sound_size( sound_source_t * source )
 {
 	ALint size;
 	alGetBufferi( source->buffer, AL_SIZE, &size );
 	return (long) size;
 }
 
-void sound_release( sound_t * source )
+void sound_release_source( sound_source_t * source )
 {
 	if(!source)
 		return;
@@ -252,23 +259,35 @@ void sound_release( sound_t * source )
 	source->playing = FALSE;
 	// deleting source implicitly detaches buffer
 	alDeleteSources( 1, &source->source );
-	// now good to delete the buffer
-	// buffers will not delete if they are attached to other sources
-	alGetError(); // clear error so we can see if buffer is attached elsewhere
-	alDeleteBuffers( 1, &source->buffer );
-	// if buffer attached elsewhere than error is generated
-	if(alGetError() == AL_NO_ERROR)
-		stats.buffers--;
 	// clean up resources
 	free(source);
 	source = NULL;
 	// show stats
 	stats.sources--;
-	DebugPrintf("sound_release: buffers %d sources %d playing %d\n",
+	DebugPrintf("sound_release_source: buffers %d sources %d playing %d\n",
 				stats.buffers,stats.sources,stats.playing);
 }
 
-long sound_bps( sound_t * source )
+void sound_release_buffer( sound_buffer_t * buffer )
+{
+	// buffers will not delete if they are attached to other sources
+	alGetError(); // clear error so we can see if buffer is attached elsewhere
+	alDeleteBuffers( 1, &buffer->buffer );
+	// if buffer attached elsewhere than error is generated
+	if(alGetError() == AL_NO_ERROR)
+		stats.buffers--;
+	else
+		DebugPrintf("sound_release_buffer: error buffer %d still attached to a source.\n",
+			buffer->buffer);
+	// clean up resources
+	free(buffer);
+	buffer = NULL;
+	// show stats
+	DebugPrintf("sound_release_buffer: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
+}
+
+long sound_bps( sound_source_t * source )
 {
 	long rate;
 	ALint freq, bits, channels;
@@ -281,20 +300,20 @@ long sound_bps( sound_t * source )
 	return rate;
 }
 
-float sound_get_pitch( sound_t * source )
+float sound_get_pitch( sound_source_t * source )
 {
 	ALfloat pitch;
 	alGetSourcef( source->source, AL_PITCH, &pitch );
 	return (float) pitch;
 }
 
-void sound_set_pitch( sound_t * source, float pitch )
+void sound_set_pitch( sound_source_t * source, float pitch )
 {
 	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
 	alSourcef( source->source, AL_PITCH, f );
 }
 
-void sound_volume( sound_t * source, long millibels )
+void sound_volume( sound_source_t * source, long millibels )
 {
 	// gain is scaled to (silence) 0.0f through (no change) 1.0f
 	// millibels = hundredths of decibels (dB)
@@ -304,7 +323,7 @@ void sound_volume( sound_t * source, long millibels )
 	//DebugPrintf("sound_volume: %d\n",millibels);
 }
 
-void sound_pan( sound_t * source, long _pan )
+void sound_pan( sound_source_t * source, long _pan )
 {
 	// where pan is -1 (left) to +1 (right)
 	// must be scaled from -1 <-> +1
@@ -314,41 +333,42 @@ void sound_pan( sound_t * source, long _pan )
 	alSource3f(source->source, AL_POSITION, pan, (float) sqrt(1 - pan*pan), 0.0f);
 }
 
-BOOL sound_is_playing( sound_t * source )
+BOOL sound_is_playing( sound_source_t * source )
 {
 	ALint state;
 	alGetSourcei( source->source, AL_SOURCE_STATE, &state );
 	return (state == AL_PLAYING);
 }
 
-long sound_get_seek( sound_t * source )
+long sound_get_seek( sound_source_t * source )
 {
 	ALint i;
 	alGetSourcei(source->source, AL_BYTE_OFFSET, &i);
 	return (long) i;
 }
 
-void sound_set_seek( sound_t * source, long bytes )
+void sound_set_seek( sound_source_t * source, long bytes )
 {
 	alSourcei(source->source, AL_BYTE_OFFSET, bytes);
 }
 
-sound_t * sound_load(char *path)
+sound_buffer_t * sound_load(char *path)
 {
 	ALenum error;
 	ALenum format;
 	SDL_AudioSpec wav_spec;
 	Uint8 *wav_buffer;
+
+	// create the buffer
+	sound_buffer_t * buffer = malloc(sizeof(sound_buffer_t));
 	char * file_path = convert_path(path);
-	sound_t * source = malloc(sizeof(sound_t));
-	strncpy(source->path,file_path,sizeof(source->path));
-	source->playing = FALSE;
+	strncpy(buffer->path,file_path,MAX_PATH-1);
 
 	// clear error code
 	alGetError();
 
 	// Generate Buffers
-	alGenBuffers(1, &source->buffer);
+	alGenBuffers(1, &buffer->buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenBuffers: %s\n", alGetString(error));
@@ -391,30 +411,53 @@ sound_t * sound_load(char *path)
 	}
 
 	// Copy data into AL Buffer 0
-	alBufferData(source->buffer,format,wav_buffer,wav_spec.size,wav_spec.freq);
+	alBufferData(buffer->buffer,format,wav_buffer,wav_spec.size,wav_spec.freq);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alBufferData: %s\n", alGetString(error));
-		alDeleteBuffers(1, &source->buffer);
+		alDeleteBuffers(1, &buffer->buffer);
 		return NULL;
 	}
 
 	// data has been coppied
 	SDL_FreeWAV(wav_buffer);
 
-	// Generate Sources
+	stats.buffers++;
+	DebugPrintf("sound_load: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
+
+	return buffer;
+}
+
+sound_source_t * sound_source( sound_buffer_t * buffer )
+{
+	ALenum error;
+
+	sound_source_t * source = malloc(sizeof(sound_source_t));
+	source->playing = FALSE;
+	source->buffer = buffer->buffer;
+	strncpy(source->path,buffer->path,MAX_PATH);
+
+	// clear errors
+	alGetError();
+
+	// generate a new source id
 	alGenSources(1,&source->source);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenSources: %s\n", alGetString(error));
+		free(source);
+		source = NULL;
 		return NULL;
 	}
 
-	// Attach buffer 0 to source
+	// attach the buffer to the source
 	alSourcei(source->source, AL_BUFFER, source->buffer);
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
+		free(source);
+		source = NULL;
 		return NULL;
 	}
 
@@ -423,59 +466,11 @@ sound_t * sound_load(char *path)
 		alSourcei(source->source,AL_SOURCE_RELATIVE,AL_TRUE);
 	}
 
-	stats.buffers++;
 	stats.sources++;
-	DebugPrintf("sound_load: buffers %d sources %d playing %d\n",
-				stats.buffers,stats.sources,stats.playing);
+	DebugPrintf("sound_source: sources %d buffers %d playing %d\n",
+				stats.sources,stats.buffers,stats.playing);
 
 	return source;
-}
-
-sound_t * sound_duplicate( sound_t * source )
-{
-	ALenum error;
-	
-	// the destination
-	sound_t * destination = malloc(sizeof(sound_t));
-	strncpy(destination->path, source->path, sizeof(destination->path));
-	destination->playing = FALSE;
-
-	// use the same buffer as the source
-	destination->buffer = source->buffer;
-
-	// clear errors
-	alGetError();
-
-	// generate a new source id
-	alGenSources(1,&destination->source);
-	if ((error = alGetError()) != AL_NO_ERROR)
-	{
-		DebugPrintf("alGenSources: %s\n", alGetString(error));
-		free(destination);
-		destination = NULL;
-		return NULL;
-	}
-
-	// attach the buffer to the source
-	alSourcei(destination->source, AL_BUFFER, destination->buffer);
-	if ((error = alGetError()) != AL_NO_ERROR)
-	{
-		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
-		free(destination);
-		destination = NULL;
-		return NULL;
-	}
-
-	if(!Sound3D)
-	{
-		alSourcei(destination->source,AL_SOURCE_RELATIVE,AL_TRUE);
-	}
-
-	stats.sources++;
-	DebugPrintf("sound_duplicate: buffers %d sources %d playing %d\n",
-				stats.buffers,stats.sources,stats.playing);
-
-	return destination;
 }
 
 #endif // SOUND_OPENAL
