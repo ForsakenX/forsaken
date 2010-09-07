@@ -2159,6 +2159,7 @@ uint32 PlaySfxWithTrigger( int16 Sfx, int16 TriggeredSfx )
 	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
+		return 0;
 	}
 	else
 	{
@@ -2189,6 +2190,7 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
+		return 0;
 	}
 	else
 	{
@@ -2216,6 +2218,7 @@ uint32 PlayGeneralPannedSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Fre
 	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
+		return 0;
 	}
 	else
 	{
@@ -2258,6 +2261,7 @@ uint32 PlaySpotSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, float
 	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
+		return 0;
 	}
 	else
 	{
@@ -2283,6 +2287,7 @@ uint32 PlayFixedSpotSfx(int16 Sfx, uint16 Group , VECTOR * SfxPos, float Freq, f
 	if ( index < 0 )
 	{
 		DebugPrintf("Unable to play sfx %hd - no free sfx holders\n",Sfx);
+		return 0;
 	}
 	else
 	{
