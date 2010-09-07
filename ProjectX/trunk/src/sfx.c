@@ -2124,6 +2124,8 @@ void InitSfxHolders( void )
 	BikerSpeechPlaying = FALSE;
 }
 
+// TODO we should probably find the farthest sound and kill it? 
+// isn't this done already in looping sfx or somewhere else ?
 int FindFreeSfxHolder( void )
 {
 	int i;
