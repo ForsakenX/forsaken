@@ -450,8 +450,9 @@ void sound_buffer_delete( int sfx )
 
 sound_source_t * sound_source_create( char *file, int sfxnum )
 {
+	sound_buffer_t * buffer;
 	if(!file) return NULL;
-	sound_buffer_t * buffer = sound_buffer_create(file,sfxnum);
+	buffer = sound_buffer_create(file,sfxnum);
 	if(!buffer)
 	{
 		DebugPrintf("sound: failed to create sound buffer %s for sfx %d\n",
