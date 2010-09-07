@@ -2672,19 +2672,12 @@ void ProcessLoopingSfx( void )
 	BOOL InRange = FALSE;
 	int i, flags;
 	long	Volume;
-	static float FrameSkip = 0.0F;
 	VECTOR Pos;
 
 	// print debug info
 	// only looping sound i know of is the bike engines
 	//PrintLoopingSfxDebug();
 
-	// process looping sfx every few frames
-	// i tried disabling this and saw no performance hit
-	FrameSkip += framelag;
-	if (FrameSkip < LOOPING_SFX_FRAME_SKIP) return;
-	else FrameSkip -= LOOPING_SFX_FRAME_SKIP;
-	
 	// process all looping sfx
 	for ( i = 0; i < MAX_LOOPING_SFX; i++ )
 	{
