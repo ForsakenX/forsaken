@@ -850,7 +850,7 @@ BOOL SetPosVelDir_Listner( VECTOR * Pos , VECTOR * Velocity , MATRIX * Mat )
 		Pos->z / 128.0F
 	)) return FALSE;
 
-    if(!sound_listener_velocity(
+	if(!sound_listener_velocity(
 		Velocity->x, // / 128.0F,
 		Velocity->y, // / 128.0F,
 		Velocity->z // / 128.0F,
@@ -1737,7 +1737,7 @@ void PreProcessSfx( void )
 void RequestMainSfx( void )
 {
 	uint16 i, current;
-
+DebugPrintf("main sfx\n");
 	current = 0;
 	for ( i = 0; i < MAX_SFX; i++ )
 	{
@@ -1910,7 +1910,7 @@ void DestroySound( int flags )
 	bSoundEnabled = FALSE;
 }
 
-void SetPannedBufferParams( void* sound_source, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
+void SetPannedSourceParams( void* sound_source, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects );
 
 #define SPEECH_AMPLIFY	( 1.0F / GLOBAL_MAX_SFX )
 #define SFX_2D 2
@@ -1926,7 +1926,9 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	int flags;
 
 	if( !bSoundEnabled )
+{
 		return FALSE;
+}
 
 	flags = Sfx_Filenames[ Sfx ].Flags;
 /*
@@ -1947,7 +1949,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	{
 	case 0:
 		//DebugPrintf("Sfx.c: PlaySfx() - sfx #%d does not exist!\n", Sfx);
-		return FALSE;
+		//return FALSE;
 	case 1:
 		sndobj_index = Sfx;
 		offset = 0;
@@ -2088,13 +2090,12 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 
 		if ( _type == SFX_TYPE_Normal )
 		{
-			int volume = ( Volume > 0 ) ? 0 : Volume;
-			sound_volume( SfxHolder[ HolderIndex ].source, volume );
+			sound_volume( SfxHolder[ HolderIndex ].source, Volume );
 		}
   
 		if ( ( _type == SFX_TYPE_Panned ) || ( _type == SFX_TYPE_Taunt ) )
 		{
-			SetPannedBufferParams( 
+			SetPannedSourceParams( 
 				SfxHolder[ HolderIndex ].source, 
 				SfxPos, 
 				Freq, 
@@ -2185,7 +2186,10 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 	int index;
 
 	if ( !GlobalSoundAttenuation || !bSoundEnabled )
+	{
+puts("1");
 		return 0;
+	}
 
 	index = FindFreeSfxHolder();
 	if ( index < 0 )
@@ -2343,65 +2347,63 @@ BOOL StopSfx( uint32 uid )
 				:	VECTOR * Pos
 	Output		:	Nothing
 ===================================================================*/
-void SetPannedBufferParams( void* sound_source, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects )
+void SetPannedSourceParams( void* sound_source, VECTOR *SfxPos, float Freq, VECTOR *Temp, float Distance, long Volume, uint16 Effects )
 {
-	VECTOR	Temp2;
-	float	nz;
-	float	sx, sxmod;
-	long	Pan = 0;
-	float mindist = SHIP_RADIUS * 6.0F;
-	float sxmin = 100.0F;
-	float sxmax = 10000.0F;
-	float currentdist;
-
-	if (!sound_source)
-		return;
-
-	if ( Distance && (!( Effects & SPOT_SFX_TYPE_NoPan )) )
+	if(!sound_source) return;
+	if( Sound3D )
 	{
-		ApplyMatrix( &Ships[ Current_Camera_View ].Object.FinalInvMat , Temp, &Temp2 );
-
-		currentdist = (float) sqrt( ( Temp2.x * Temp2.x ) + ( Temp2.z * Temp2.z ) );
-		
-		if( currentdist )
+		if(!SfxPos)
 		{
-			nz = Temp2.z / currentdist;
-
-			sxmod = ( Temp2.x < 0.0F ) ? -1.0F : 1.0F;
-
-			sx = ( currentdist > mindist ) ? 10000.0F :
-				( ( ( currentdist * ( sxmax - sxmin ) ) / mindist ) + sxmin );
-
-			sx *= sxmod;
-
-			Pan = (long) ( ( 1.0F - fabs(nz) )* ( sx ) );
+			DebugPrintf("SetPannedSourceParams given SfxPos=0\n");
+			return;
 		}
-		else
-		{
-			Pan = 0;
-		}
-		//DebugPrintf("nz: %f\tsx: %f\tsxmod: %f\tPan: %d\n", nz, sx, sxmod, Pan);
+		sound_position(
+			sound_source,
+			SfxPos->x / 128.0F,
+			SfxPos->y / 128.0F,
+			SfxPos->z / 128.0F,
+			1.0f,	// min distance
+			100.0f  // max distance
+		);
 	}
-    
-	if (sound_source)
+	else
 	{
-		if( !Sound3D )
+		VECTOR	Temp2;
+		float	nz;
+		float	sx, sxmod;
+		long	Pan = 0;
+		float mindist = SHIP_RADIUS * 6.0F;
+		float sxmin = 100.0F;
+		float sxmax = 10000.0F;
+		float currentdist;
+		if ( Distance && (!( Effects & SPOT_SFX_TYPE_NoPan )) )
 		{
-			sound_pan(sound_source, Pan);
-			sound_volume( sound_source , ( Volume > 0 ) ? 0 : Volume );
-			sound_set_pitch( sound_source, Freq );
+			ApplyMatrix( &Ships[ Current_Camera_View ].Object.FinalInvMat , Temp, &Temp2 );
+
+			currentdist = (float) sqrt( ( Temp2.x * Temp2.x ) + ( Temp2.z * Temp2.z ) );
+		
+			if( currentdist )
+			{
+				nz = Temp2.z / currentdist;
+
+				sxmod = ( Temp2.x < 0.0F ) ? -1.0F : 1.0F;
+
+				sx = ( currentdist > mindist ) ? 10000.0F :
+					( ( ( currentdist * ( sxmax - sxmin ) ) / mindist ) + sxmin );
+
+				sx *= sxmod;
+
+				Pan = (long) ( ( 1.0F - fabs(nz) )* ( sx ) );
+			}
+			else
+			{
+				Pan = 0;
+			}
+			//DebugPrintf("nz: %f\tsx: %f\tsxmod: %f\tPan: %d\n", nz, sx, sxmod, Pan);
 		}
-		else
-		{
-			sound_position(
-				sound_source,
-				SfxPos->x / 128.0F,
-				SfxPos->y / 128.0F,
-				SfxPos->z / 128.0F,
-				1.0f,	// min distance
-				100.0f  // max distance
-			);
-		}
+		sound_pan(sound_source, Pan);
+		sound_volume( sound_source , Volume );
+		sound_set_pitch( sound_source, Freq );
 	}
 }
 
@@ -2773,7 +2775,7 @@ void ProcessLoopingSfx( void )
 
 			Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
-			SetPannedBufferParams(
+			SetPannedSourceParams(
 				SpotSfxList[ i ].source,
 				&Pos, 
 				SpotSfxList[ i ].freq,
@@ -2984,7 +2986,7 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 		Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 		// set source parameters
-		SetPannedBufferParams( 
+		SetPannedSourceParams( 
 			SfxHolder[ i ].source,
 			SfxPos, 
 			0.0F, 

@@ -311,6 +311,7 @@ void sound_set_pitch( sound_source_t * source, float pitch )
 {
 	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
 	alSourcef( source->id, AL_PITCH, f );
+	//DebugPrintf("sound_pitch: %f\n",f);
 }
 
 void sound_volume( sound_source_t * source, long millibels )
@@ -331,6 +332,7 @@ void sound_pan( sound_source_t * source, long _pan )
 	// so:
 	float pan = (float) _pan / 10000.0f;
 	alSource3f(source->id, AL_POSITION, pan, (float) sqrt(1 - pan*pan), 0.0f);
+	//DebugPrintf("sound_pan: %f\n",pan);
 }
 
 BOOL sound_is_playing( sound_source_t * source )
