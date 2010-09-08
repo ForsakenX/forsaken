@@ -1737,7 +1737,6 @@ void PreProcessSfx( void )
 void RequestMainSfx( void )
 {
 	uint16 i, current;
-DebugPrintf("main sfx\n");
 	current = 0;
 	for ( i = 0; i < MAX_SFX; i++ )
 	{
@@ -1949,7 +1948,7 @@ BOOL StartPannedSfx(int16 Sfx, uint16 *Group , VECTOR * SfxPos, float Freq, int 
 	{
 	case 0:
 		//DebugPrintf("Sfx.c: PlaySfx() - sfx #%d does not exist!\n", Sfx);
-		//return FALSE;
+		return FALSE;
 	case 1:
 		sndobj_index = Sfx;
 		offset = 0;
@@ -2186,10 +2185,7 @@ uint32 PlaySfx( int16 Sfx, float Vol )
 	int index;
 
 	if ( !GlobalSoundAttenuation || !bSoundEnabled )
-	{
-puts("1");
 		return 0;
-	}
 
 	index = FindFreeSfxHolder();
 	if ( index < 0 )
