@@ -173,13 +173,13 @@ void sound_destroy( void )
 
 BOOL sound_listener_position( float x, float y, float z )
 {
-	alListener3f(AL_POSITION, x, y, z);
+	alListener3f(AL_POSITION, x, y, -z);
 	return TRUE;
 }
 
 BOOL sound_listener_velocity( float x, float y, float z )
 {
-	alListener3f(AL_VELOCITY, x, y, z);
+	alListener3f(AL_VELOCITY, x, y, -z);
 	return TRUE;
 }
 
@@ -189,7 +189,7 @@ BOOL sound_listener_orientation(
 	float ux, float uy, float uz  // up vector
 )
 {
-	float vector[6] = {fx,fy,fz,ux,uy,uz};
+	float vector[6] = {fx,fy,-fz,ux,uy,-uz};
 	alListenerfv(AL_ORIENTATION, &vector[0]);
 	return TRUE;
 }
@@ -202,7 +202,7 @@ BOOL sound_listener_orientation(
 // TODO - we'll want to set velocity some day for moving players ?
 void sound_position( sound_source_t * source, float x, float y, float z, float min, float max )
 {
-	alSource3f(source->id, AL_POSITION, x, y, z);
+	alSource3f(source->id, AL_POSITION, x, y, -z);
 	alSourcef(source->id, AL_MAX_DISTANCE, max);
 	alSourcef(source->id, AL_REFERENCE_DISTANCE, min); // is this right?
 }
