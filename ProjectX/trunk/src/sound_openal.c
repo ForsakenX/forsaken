@@ -461,10 +461,8 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 		return NULL;
 	}
 
-	if(!Sound3D)
-	{
-		alSourcei(source->id,AL_SOURCE_RELATIVE,AL_TRUE);
-	}
+	alSourcei(source->id,AL_SOURCE_RELATIVE,
+		Sound3D ? AL_FALSE : AL_TRUE);
 
 	stats.sources++;
 	DebugPrintf("sound_source: sources %d buffers %d playing %d\n",
