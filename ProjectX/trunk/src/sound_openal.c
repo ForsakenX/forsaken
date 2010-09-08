@@ -316,6 +316,7 @@ void sound_set_pitch( sound_source_t * source, float pitch )
 
 void sound_volume( sound_source_t * source, long millibels )
 {
+	millibels = ( millibels > 0 ) ? 0 : millibels;
 	// gain is scaled to (silence) 0.0f through (no change) 1.0f
 	// millibels = hundredths of decibels (dB)
 	// defined in Dsound.h as (no change) 0 and (silence) -10,000
