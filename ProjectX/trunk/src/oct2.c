@@ -64,11 +64,15 @@
 #include "shadows.h"
 #endif
 
+
 extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
 extern BOOL Bsp_Identical( BSP_HEADER *b1, BSP_HEADER *b2 );
 BSP_HEADER Bsp_Original;
 
+extern	render_viewport_t viewport;
+extern VECTOR View, Look, Up, PanFrom, PanTo, PanFrom2, PanTo2, VDULookPos, DiscLookPos, DiscViewPos, VDUViewPos, StartLookPos, StartViewPos;
+extern	RENDERMATRIX view;
 extern int    BountyInLevel;
 extern int    FlagsInLevel;
 extern int    TeamFlagsInLevel[ MAX_TEAMS ];
@@ -1849,7 +1853,6 @@ BOOL InitView( void )
 		case  STATUS_TitleLoadGameStartingSinglePlayer:
 		case  STATUS_StartingMultiplayer:
 		case  STATUS_GetPlayerNum:
-
 		if( InitTitle() != TRUE ) // bjd
 		{
 			SeriousError = TRUE;
@@ -1933,13 +1936,13 @@ BOOL InitView( void )
 
   case STATUS_ViewingScore:
 
-		// just the basics to get text to render
-
-		set_normal_states();
-
 		InitScoreDisplay();
 
+		// just the basics to get text to render
+
 		InitRenderBufs();
+
+		set_normal_states();
 
 		if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
 		{
@@ -1952,6 +1955,21 @@ BOOL InitView( void )
 		  SeriousError = TRUE;
 		  return FALSE;
 		}
+
+		MakeViewMatrix(&View, &Look, &Up, &CurrentCamera.Mat);
+		MatrixTranspose( &CurrentCamera.Mat, &CurrentCamera.InvMat );
+		CurrentCamera.Pos = View;
+		CurrentCamera.GroupImIn = -1;
+		CurrentCamera.Viewport = viewport;	
+		CurrentCamera.Viewport.X = 0;
+		CurrentCamera.Viewport.Y = 0;
+		CurrentCamera.Viewport.Width = render_info.window_size.cx;
+		CurrentCamera.Viewport.Height = render_info.window_size.cy;
+		CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+		CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+
+		Build_View();
+		CurrentCamera.View = view;
 
     break;
 
