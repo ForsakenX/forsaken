@@ -1737,9 +1737,7 @@ void ReleaseView(void)
   case  STATUS_QuittingFromTitles:
   case  STATUS_WaitingToStartMultiPlayerClient:
   case  STATUS_WaitingToStartDemo:        // Added by DC 24/1/98
-
     ReleaseFlyGirl();
-
     FreeAllLastAFrameScrPolys();
     ReleaseTitle();
     ReleaseTloadheader( &Tloadheader );
@@ -1749,26 +1747,15 @@ void ReleaseView(void)
     break;
 
   case STATUS_ViewingScore:
-#if 0 // used to release solid scr poly stuff
-    ReleaseTloadheader( &Tloadheader );
-    Free_All_Off_Files( &Title_OffsetFiles[ 0 ] );
-    ReleaseRenderBufs();
-#endif
-    break;
-
   case STATUS_ViewingStats:
     break;
 
   default:
-
     Bspfree();
-
-    
     FreeAllLastAFrameScrPolys();
     ReleaseMloadheader(&Mloadheader);
     ReleaseTloadheader( &Tloadheader );
     ReleaseModels();
-    
     if ( MCloadheader.Buffer )
     {
       free( MCloadheader.Buffer );
@@ -1779,14 +1766,11 @@ void ReleaseView(void)
       free( MCloadheadert0.Buffer );
       MCloadheadert0.Buffer = NULL;
     }
-	
-	Free_All_Off_Files( &OffsetFiles[ 0 ] );
+		Free_All_Off_Files( &OffsetFiles[ 0 ] );
     ReleaseSkinExecs();
     ReleasePortalExecs();
     ReleaseRenderBufs();
-  
-    WaterRelease();
-    
+		WaterRelease();	
     FreeTxtFile();
     FreeMsgFile();
   }
@@ -1945,11 +1929,30 @@ BOOL InitView( void )
 
 		if ( !CurrentMenu )
 		  MenuRestart( &MENU_Start );
-
     break;
 
   case STATUS_ViewingScore:
-    InitScoreDisplay();
+
+		// just the basics to get text to render
+
+		set_normal_states();
+
+		InitScoreDisplay();
+
+		InitRenderBufs();
+
+		if( !Load_All_Off_Files( &Title_OffsetFiles[ 0 ] ) )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+
+		if( !Tload( &Tloadheader ) )
+		{
+		  SeriousError = TRUE;
+		  return FALSE;
+		}
+
     break;
 
   case STATUS_ViewingStats:
@@ -1959,7 +1962,7 @@ BOOL InitView( void )
   default:
     
     // this will cause a lovely game loop and crash the game
-	// so don't remove this !!!!!!!!!
+		// so don't remove this !!!!!!!!!
     if( MyGameStatus != STATUS_InitView_0 )
 		InitView_MyGameStatus = MyGameStatus;
 
@@ -2378,6 +2381,7 @@ BOOL RenderScene( void )
 
   case STATUS_LevelEnd:
 	DebugState("STATUS_LevelEnd\n");
+
     FSClearBlack();
     ReceiveGameMessages();
     Browl -= framelag;
@@ -2421,7 +2425,7 @@ BOOL RenderScene( void )
 
       InitScene();  // STATSTEST
       InitView();
-	  // $$$
+
       NextworkOldBikeNum = -1;
       HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
 
@@ -2443,7 +2447,7 @@ BOOL RenderScene( void )
 
         InitScene();  // STATSTEST
         InitView();
-		// $$$
+
         NextworkOldBikeNum = -1;
         HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F * 2.0F;
       }
@@ -2466,7 +2470,30 @@ BOOL RenderScene( void )
       Browl = 30.0F;
     }
 
-    ScoreDisplay();
+		if (!FSBeginScene())
+		{
+			Msg( "DisplayTitle() : BeginScene failed\n" );
+			return FALSE;
+		}
+
+		if (ClearBuffers() != TRUE )
+		{
+			Msg( "DisplayTitle() : ClearBuffers failed\n" );
+			return FALSE;
+		}
+
+		ScoreDisplay();
+
+		if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
+			return FALSE;
+
+		if (!FSEndScene())
+		{
+			Msg( "DisplayTitle() : EndScene failed\n" );
+			return FALSE;
+		}
+
+		ScreenPolyProcess(); // only needed for flashing text
 
     HostMultiPlayerTimeout -= framelag;
 
@@ -4401,6 +4428,7 @@ BOOL  InitScoreDisplay()
 #ifdef SCROLLING_MESSAGES
   int i;
 #endif
+
    //Create the offscreen surface, by loading our bitmap.
 
   InitFont();
@@ -4530,6 +4558,7 @@ BOOL ClearZBuffer()
 
 void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 {
+	DebugPrintf("InitRenderBufs\n");
 	ReleaseRenderBufs();
 	// just vertex data
 	FSCreateDynamicVertexBuffer(&RenderBufs[0], 32767);
@@ -4544,6 +4573,7 @@ void InitRenderBufs(/* LPDIRECT3DDEVICE lpDev */) // bjd
 
 void ReleaseRenderBufs( void )
 {
+	DebugPrintf("ReleaseRenderBufs\n");
 	FSReleaseRenderObject(&RenderBufs[0]);
 	FSReleaseRenderObject(&RenderBufs[1]);
 	FSReleaseRenderObject(&RenderBufs[2]);
