@@ -270,6 +270,8 @@ void sound_release_source( sound_source_t * source )
 
 void sound_release_buffer( sound_buffer_t * buffer )
 {
+	if(!buffer)
+		return;
 	// buffers will not delete if they are attached to other sources
 	alGetError(); // clear error so we can see if buffer is attached elsewhere
 	alDeleteBuffers( 1, &buffer->id );
