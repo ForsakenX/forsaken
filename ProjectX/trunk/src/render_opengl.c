@@ -708,8 +708,8 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 
 		if (renderObject->textureGroups[i].texture)
 		{
-			// this is just a pointer to Tloadheader
-			// we do not need to worry about releasing it
+			// tload.c calls release_texture
+			// we should not release them here
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}

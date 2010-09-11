@@ -438,8 +438,10 @@ sound_buffer_t * sound_buffer_create( char *file, int sfxnum )
 	return buffer;
 }
 
-// TODO should this scan for something that has a pointer to the source?
-// TODO openal will not really delete the buffer until you delete all the sources...
+// TODO 
+//   openal will not really delete the buffer until you delete all the sources...
+//   make a table of sources and tell everything else to point to id's in that table ?
+//   that way we can simply iterate one list... 
 
 // use this if you want sound to reinit
 void sound_buffer_delete( int sfx )
