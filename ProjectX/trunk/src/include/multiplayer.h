@@ -5,7 +5,7 @@
 // Networking functions mainly used by title.c
 //
 
-BOOL StartAHostSession ( MENUITEM * Item );
+void StartAHostSession ( MENUITEM * Item );
 void GetPlayersInCurrentSession( MENUITEM *Item );
 void GoToSynchup ( MENUITEM * Item );
 void BailMultiplayer( MENU * Menu );

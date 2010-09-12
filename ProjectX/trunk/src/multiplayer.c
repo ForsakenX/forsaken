@@ -270,7 +270,7 @@ void copy_in_my_settings( void )
 
 extern MENU MENU_NEW_CreateGame;
 extern  BYTE          MyGameStatus;
-BOOL StartAHostSession ( MENUITEM * Item )
+void StartAHostSession ( MENUITEM * Item )
 {
 	int i;
 	Uint32	ms = SDL_GetTicks();
