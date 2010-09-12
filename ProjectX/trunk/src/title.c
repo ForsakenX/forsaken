@@ -9974,7 +9974,7 @@ void AddToFlatMenuList( MENUITEM *Item )
 
 		if (current >= l->items)
 		{
-			if (TextInfo->text != EmptyString)
+			if (TextInfo->text != (uint8*)EmptyString)
 			{	
 				TextInfo->text = EmptyString;
 				PrintTextItem(TextInfo);
@@ -10970,7 +10970,7 @@ void DrawFlatMenuSlider( MENUITEM *Item )
 	}
 	if (!SliderStored)
 	{
-		Msg("Title.c: DrawFlatMenuSlider() unable to store slider (increase MAXSLIDERSPERMENU??)\n");
+		Msg("Title.c: DrawFlatMenuSlider() unable to store slider (increase MAXSLIDERSPERMENU?)\n");
 		exit(1);
 	}
 
@@ -11166,7 +11166,7 @@ void DrawGeneralWeaponText( MENUITEM *Item )
 		// if the same as existing item, no need to redraw...
 		if ((TextInfo->xmin == Item->x + offset) &&
 			(TextInfo->ymin == (((Item->ymax - Item->y)/Total_Slots) * line) + Item->y) &&
-			(TextInfo->text == DescriptionList[WeaponList[i]]))
+			(TextInfo->text == (uint8*)DescriptionList[WeaponList[i]]))
 			continue;
 
 		TextInfo->xmin = Item->x + offset;
@@ -13725,8 +13725,8 @@ void SelectConnectionToJoin (MENUITEM *Item)
 		if( index )
 		{
 			// update the host settings
-			strncpy(TCPAddress.text, games_ip_at(index), sizeof(TCPAddress));
-			strncpy(host_port_str.text, games_port_at(index), sizeof(host_port_str));
+			strncpy(TCPAddress.text, games_ip_at(index), sizeof(TCPAddress.text));
+			strncpy(host_port_str.text, games_port_at(index), sizeof(host_port_str.text));
 		}
 		// game was not found
 		else
