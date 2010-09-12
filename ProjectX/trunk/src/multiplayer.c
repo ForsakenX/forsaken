@@ -334,7 +334,7 @@ void StartAHostSession ( MENUITEM * Item )
 			break;
 		}
 		PrintErrorMessage(error_str, 2, &MENU_NEW_CreateGame, 0);
-		return TRUE;
+		return;
 	}
 
 	network_host();
@@ -462,7 +462,7 @@ void StartAHostSession ( MENUITEM * Item )
 	
 	BrightShips = MyBrightShips;
 
-	return TRUE;
+	return;
 }
 
 /*===================================================================
