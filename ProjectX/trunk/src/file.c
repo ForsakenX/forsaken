@@ -257,7 +257,7 @@ void find_close( void )
 static glob_t glob_handle;
 static int glob_pos = -1;
 
-static char *find_strip_path( const char *path )
+static char *find_strip_path( char *path )
 {
 	char *c = strrchr(path, '/');
 	if( c )

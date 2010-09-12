@@ -338,7 +338,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 				{
 					// something has changed....
 
-					uint32Pnt = PolyAnim->vert;
+					uint32Pnt = (uint32*)PolyAnim->vert;
 					for( e = 0 ; e < PolyAnim->vertices ; e++ )
 					{
 
