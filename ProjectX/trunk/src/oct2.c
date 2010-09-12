@@ -877,8 +877,8 @@ void SetViewportError( char *where, render_viewport_t *vp )
   sprintf( msg,
 	"SetViewport failed in %s.\n"
     "size=%d\n"
-    "xpos=%d ypos=%d\n"
-    "width=%d height=%d\n"
+    "xpos=%lu ypos=%lu\n"
+    "width=%lu height=%lu\n"
     "xscale=%f yscale=%f\n"
     //"xmax=%f ymax=%f\n"
     "zmin=%f zmax=%f\n",
