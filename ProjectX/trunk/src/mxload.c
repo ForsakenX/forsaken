@@ -870,7 +870,7 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 								VertBufferLocked = TRUE;
 							}
 
-							uint32Pnt = PolyAnim->vert;
+							uint32Pnt = (uint32 *) PolyAnim->vert;
 							for( e = 0 ; e < PolyAnim->vertices ; e++ )
 							{
 
