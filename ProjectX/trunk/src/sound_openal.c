@@ -33,12 +33,12 @@ struct {
 
 #define MAX_PATH 500
 
-typedef struct sound_buffer_t {
+struct sound_buffer_t {
 	ALuint id;
 	char path[MAX_PATH];
 };
 
-typedef struct sound_source_t {
+struct sound_source_t {
 	ALuint id;
 	ALuint buffer;
 	BOOL playing;
