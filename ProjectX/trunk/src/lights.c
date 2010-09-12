@@ -312,7 +312,7 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	execbuf = Mloadheader->Group[group].num_execbufs;
 	while( execbuf--)
 	{
-		if (!(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
+		if (!(FSLockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], &lpPointer)))
 		{
 			return FALSE;
 		}	
@@ -907,7 +907,7 @@ __asm
 			}
 		}
 		/*	unlock the execute buffer	*/
-		if(!FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf]))
+		if(!FSUnlockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf]))
 			return FALSE;
 	}
 	
