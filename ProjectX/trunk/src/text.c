@@ -622,7 +622,7 @@ void PrintScoreSort( void )
 				{
 					if( Ships[GetPlayerByRank(i)].network_player != NULL )
 					{
-						sprintf( (char*) &buf[0] ,"Ping %d", Ships[GetPlayerByRank(i)].network_player->ping );
+						sprintf( (char*) &buf[0] ,"Ping %lu", Ships[GetPlayerByRank(i)].network_player->ping );
 						Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 					}
 				}
