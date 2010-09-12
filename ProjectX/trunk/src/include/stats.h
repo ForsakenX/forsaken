@@ -28,7 +28,6 @@ int GetTeamScore(int Player);																// Get a player's team's total scor
 int GetWeaponKillStats(int PlayerID, int WeaponType, int Weapon);			// Get Weapon Kill Stats	
 int GetPlayerByRank(int Player);																// Get the id of the player at 1st, 2nd 3rd place etc.
 int GetTeamScoreByTeamNumber(int Team);											// Get a player's team's total score (including kills)
-char* GetFavWeapon(int PlayerID, int WeaponType);								// Get name of player's weapon with the most kills of specified type
 char* GetWeaponName(int WeaponType, int Weapon);							// Get weapon name
 
 // new functions
