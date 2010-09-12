@@ -68,16 +68,18 @@ static void print_info ( void )
 		{	
 			// print all playback devices
 			const char * s = alcGetString(NULL, ALC_DEVICE_SPECIFIER);
-			do { 
+			while(s && *s != '\0')
+			{
 				DebugPrintf("playback: %s\n", s); 
-				while(*s++ != '\0'); 
-			} while(*s != '\0');
+				s += strlen(s)+1;
+			}
 			// print all capture devices
 			s = alcGetString(NULL, ALC_CAPTURE_DEVICE_SPECIFIER);
-			do { 
+			while(s && *s != '\0')
+			{ 
 				DebugPrintf("capture: %s\n", s); 
-				while(*s++ != '\0'); 
-			} while(*s != '\0');
+				s += strlen(s)+1;
+			}
 		}
 	} 
 	else 
