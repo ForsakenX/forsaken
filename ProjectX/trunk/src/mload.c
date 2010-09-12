@@ -418,7 +418,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			lpLVERTEX2 = (LPOLDLVERTEX ) Buffer;
 
-			if (!FSCreateVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], num_vertices))
+			if (!FSCreateVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], num_vertices))
 			{
 				Msg( "Mload : MakeExecBuffer Failed\n" );
 				return FALSE;
@@ -426,7 +426,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			DebugPrintf("created buffer to hold :%d verts\n", num_vertices);
 
-			if (!(FSLockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
+			if (!(FSLockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], &lpLVERTEX)))
 			{
 				Msg( "Mload() lock failed in %s\n", Filename );
 				return FALSE;
@@ -517,13 +517,13 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			}
 
 			/*	create an index buffer	*/
-			if (!FSCreateIndexBuffer(&Mloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
+			if (!FSCreateIndexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], triangleCount * 3))
 			{
 				return FALSE;
 			}
 
 			/*	lock the index buffer	*/
-			if (!(FSLockIndexBuffer(&Mloadheader->Group[group].renderObject[execbuf], &lpIndices)))
+			if (!(FSLockIndexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], &lpIndices)))
 			{
 				Msg( "Mload() lock failed in %s\n", Filename );
 				return FALSE;
@@ -606,14 +606,14 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			// this go here?
 			/*	unlock the vertex buffer	*/
-			if (!(FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() vb unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
 
 			/*	unlock the index buffer	*/
-			if (!(FSUnlockIndexBuffer(&Mloadheader->Group[group].renderObject[execbuf])))
+			if (!(FSUnlockIndexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
 				return FALSE ;
@@ -977,7 +977,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						return FALSE;
 					}
 */
-					if (!(FSLockVertexBuffer(&Mloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
+					if (!(FSLockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[ group ].renderObject[execbuf], &lpLVERTEX)))
 					{
 						Msg( "Mload : Lock VertexBuffer failed\n" );
 						return FALSE;
@@ -1043,7 +1043,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 						PolyAnim++;
 					}
 
-					if (!(FSUnlockVertexBuffer(&Mloadheader->Group[group].renderObject[execbuf])))
+					if (!(FSUnlockVertexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf])))
 					{
 						Msg( "Mload : Unlock VertexBuffer failed\n" );
 						return FALSE;
@@ -1178,7 +1178,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 				}
 				AddTransExe(
 					&Matrix,
-					&Mloadheader->Group[group].renderObject[i],
+					(RENDEROBJECT*)&Mloadheader->Group[group].renderObject[i],
 					0,
 					(uint16) -1,
 					(uint16) group,
@@ -1187,7 +1187,7 @@ BOOL ExecuteSingleGroupMloadHeader( MLOADHEADER * Mloadheader, uint16 group  )
 			}
 			else
 			{
-				if (!draw_object(&Mloadheader->Group[group].renderObject[i]))
+				if (!draw_object((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[i]))
 				{
 					return FALSE;
 				}
@@ -1244,7 +1244,7 @@ ReleaseMloadheader( MLOADHEADER * Mloadheader )
 
 		for (i = 0; i < Mloadheader->Group[group].num_execbufs; i++)
 		{
-			FSReleaseRenderObject(&(Mloadheader->Group[group].renderObject[i]));
+			FSReleaseRenderObject((RENDEROBJECT*)&(Mloadheader->Group[group].renderObject[i]));
 
 			if ( Mloadheader->Group[group].colour_cell_pnt[i] )
 				free( Mloadheader->Group[group].colour_cell_pnt[i] );
