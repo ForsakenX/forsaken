@@ -115,11 +115,11 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 
 	Char_Ptr = ( (uint8*)Src + length ) - 1;
 
-	while( Char_Ptr != Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
+	while( Char_Ptr != (uint8*)Src && *Char_Ptr != '\\' && *Char_Ptr != ':' && *Char_Ptr != '.' ) Char_Ptr--;
 
 	if( *Char_Ptr == '.' )
 	{
-		while( Src != Char_Ptr )
+		while( (uint8*)Src != Char_Ptr )
 			*Dest++ = *Src++;
 		strcpy( Dest, Ext );
 	}

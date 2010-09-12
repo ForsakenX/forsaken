@@ -232,7 +232,7 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 	fprintf( f, "Group     TMAX      TAVG      TMIN      Visits    Name\n" );
 	for ( j = 0; j < m->num_groups; j++ )
 	{
-		fprintf( f, "%s%3d %9d %9d %9d %9d      %s\n",
+		fprintf( f, "%s%3d %9d %9lu %9lu %9d      %s\n",
 			( VisiStats[ j ].tmax > 1000 ) ? "*" : " ",
 			j,
 			(int)VisiStats[ j ].tmax,
