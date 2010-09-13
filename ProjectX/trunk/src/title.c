@@ -1686,6 +1686,7 @@ MENU	MENU_NEW_Visuals = {
 		{ 20, 80,  50, 90, SLIDER_Percent,	LT_MENU_NEW_Visuals4 /*"gamma"*/,					FONT_Small,	TEXTFLAG_AutoSelect | TEXTFLAG_CentreY, &GammaSlider,	NULL,						SelectSlider,			DrawFlatMenuSlider, NULL, 0 },
 		
 		{ 20, 100, 200, 100, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
+		{ 20, 112, 150, 112, 0,					"Vertical Sync (requires restart)",			FONT_Small, TEXTFLAG_CentreY,	&render_info.vsync,	NewMenuSelectMode,	SelectFlatMenuToggle, DrawFlatMenuToggle,		NULL, 0 },
 		{ 20, 120, 200, 130, 0,					"anaglyph stereo 3d options",						FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_VisualsStereo,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },		 
 		{ 20, 150, 100, 160, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
@@ -3568,6 +3569,7 @@ BOOL RenderModeSelect( int mode, BOOL fullscreen, BOOL vsync )
 	render_info.default_mode.w    = render_info.Mode[mode].w;
 	render_info.fullscreen        = fullscreen;
 	render_info.vsync             = vsync;
+DebugPrintf("2 vsync = %d\n",render_info.vsync);
 	if(!render_mode_select( &render_info ))
 	{
 		DebugPrintf("RenderModeSelect: failed to change mode\n");
@@ -8706,7 +8708,6 @@ void MenuSelectMode( MENU *Menu )
 		RenderModeSelect(WhichMode[ModeList.selected_item], render_info.fullscreen, render_info.vsync);
 }
 
-
 void NewMenuSelectMode( MENUITEM *Item )
 {
 	int mode = WhichMode[ModeList.selected_item];
@@ -9230,6 +9231,7 @@ void GetGamePrefs( void )
 
     render_info.default_mode.w  = config_get_int( "ScreenWidth", 0 );
     render_info.default_mode.h  = config_get_int( "ScreenHeight", 0 );
+    render_info.vsync  = config_get_int( "VSync", 0 );
 
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
@@ -9319,6 +9321,7 @@ void SetGamePrefs( void )
 	config_set_bool( "AllowTranspulse",         MyPickupValid[ PICKUP_Transpulse ] );
 	config_set_bool( "AllowMantle",             MyPickupValid[ PICKUP_Mantle ] );
 	config_set_bool( "AllowInv",                MyPickupValid[ PICKUP_Inv ] );
+	config_set_bool( "VSync",                   render_info.vsync );
 
 	// integers
 

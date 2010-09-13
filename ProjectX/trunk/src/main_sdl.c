@@ -125,6 +125,7 @@ static void set_opengl_settings( void )
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL,	1  );
 	}
 
+	DebugPrintf("vsync set to %d\n",render_info.vsync);
 	SDL_GL_SetAttribute(SDL_GL_SWAP_CONTROL,	render_info.vsync );
 
 #endif
