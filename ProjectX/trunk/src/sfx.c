@@ -1873,6 +1873,12 @@ void DestroySound( int flags )
 		}
 		SpotSfxList[i].used = FALSE;
 	}
+	
+	// clear all sfx holders...
+	for( i = 0; i < MAX_ANY_SFX; i++ )
+	{
+		FreeSfxHolder( i );
+	}
 		
 	for (i = 0; i < MAX_SFX; i++)
 	{
@@ -1883,12 +1889,6 @@ void DestroySound( int flags )
 		}
 	}
 
-	// clear all sfx holders...
-	for( i = 0; i < MAX_ANY_SFX; i++ )
-	{
-		FreeSfxHolder( i );
-	}
-	
 	bSoundEnabled = FALSE;
 }
 
