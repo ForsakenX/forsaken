@@ -1861,13 +1861,6 @@ void DestroySound( int flags )
 	{
 		if(SpotSfxList[ i ].source)
 		{
-			for( j=0; j < MAX_LOOPING_SFX; j++)
-			{
-				if(SpotSfxList[ j ].source == SpotSfxList[ i ].source)
-				{
-					SpotSfxList[ j ].source = NULL;
-				}
-			}
 			sound_release_source(SpotSfxList[ i ].source);
 			SpotSfxList[ i ].source = NULL;
 		}
