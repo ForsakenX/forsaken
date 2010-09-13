@@ -346,7 +346,7 @@ void	MessageQuePrint( void )
 	for( i = 2, y=0 ; i >-1 ; i-- )
 	{
 		MessageTime[e] -= framelag;
-		if( MessageTime[e] < 0.0F && (MessageBank[(e-1)&3][0] == 0) )
+		if( MessageTime[e] <= 0.0F && (MessageBank[(e-1)&3][0] == 0) )
 		{
 			MessageTime[e] = 0.0F;
 			MessageBank[e][0] = 0;
