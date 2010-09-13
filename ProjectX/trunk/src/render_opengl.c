@@ -1,4 +1,4 @@
-#ifdef OPENGL
+#ifdef OPENGL1
 
 #include "main.h"
 #include "util.h"
