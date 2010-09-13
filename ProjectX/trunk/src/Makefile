@@ -53,6 +53,12 @@ ifeq ($(MUDFLAP),1)
 	endif
 endif
 
+ifeq ($(GL),3)
+	CFLAGS+= -DOPENGL3
+else
+	CFLAGS+= -DOPENGL1
+endif
+
 # ProjectX-specific macros
 CFLAGS+= -DOPENGL -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
 ifeq ($(DEBUG),1)
