@@ -8,7 +8,6 @@
 
 #define	MAX_MESSAGES 4
 #define  MAX_MESSAGES_LONG 100
-#define	MAXMESSAGETIME 480.0F
 //#define MAX_TEAMS 4
 #ifdef DEBUG_ON
 #define MAXTEXTMESSAGES (128+256)

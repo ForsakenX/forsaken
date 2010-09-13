@@ -45,6 +45,7 @@ extern BOOL BountyHunt;
 extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
+extern float	real_framelag;
 extern	BYTE	GameStatus[MAX_PLAYERS];	// Game Status for every Ship...
 
 extern	BOOL	TeamGame;
@@ -90,6 +91,7 @@ extern int GetPlayerByRank(int Player);
 int TextSrcX[MAXFONTCOLOURS][256];
 int	TextSrcY[MAXFONTCOLOURS][256];
 
+float MaxMessageTime = 5.0f;
 
 int ReliabilityTab[MAX_PLAYERS+1];
 
@@ -345,7 +347,7 @@ void	MessageQuePrint( void )
 	e &= 3;
 	for( i = 2, y=0 ; i >-1 ; i-- )
 	{
-		MessageTime[e] -= framelag;
+		MessageTime[e] -= real_framelag;
 		if( MessageTime[e] <= 0.0F && (MessageBank[(e-1)&3][0] == 0) )
 		{
 			MessageTime[e] = 0.0F;
@@ -515,9 +517,9 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 		Pnt = &TempMessage[0];
 
 		MessageSize = (float) strlen(&TempMessage[0]);
-		ThisMessageTime = MAXMESSAGETIME * (MessageSize / MAXPERLINE);
-		if( ThisMessageTime < (MAXMESSAGETIME * 0.25F) )
-			ThisMessageTime = MAXMESSAGETIME * 0.25F;
+		ThisMessageTime = MaxMessageTime * (MessageSize / MAXPERLINE);
+		if( ThisMessageTime < MaxMessageTime )
+			ThisMessageTime = MaxMessageTime;
 
 
 		while( Pnt )

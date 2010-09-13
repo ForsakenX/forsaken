@@ -63,7 +63,7 @@
 //#pragma optimize( "gty", on )
 
 extern render_info_t render_info;
-
+extern float MaxMessageTime;
 extern void SetViewportError( char *where, render_viewport_t *vp );
 extern BOOL ShowNamesAnyway;
 
@@ -9240,7 +9240,8 @@ void GetGamePrefs( void )
     PlayerMessageColour              = config_get_int( "PlayerMessageColour",		GREEN );
     PickupMessageColour              = config_get_int( "PickupMessageColour",		GREEN );
     TauntMessageColour               = config_get_int( "TauntMessageColour",		GREEN );
-    MyMessageColour                  = config_get_int( "MyMessageColour",			GREEN );
+    MyMessageColour                  = config_get_int( "MyMessageColour",			  GREEN );
+		MaxMessageTime                   = config_get_float( "MaxMessageTime",    5.0f );
 
 	CLAMP( MilestoneMessagesColour,	MAXFONTCOLOURS );
 	CLAMP( KillMessageColour,		MAXFONTCOLOURS );
@@ -9352,6 +9353,9 @@ void SetGamePrefs( void )
 
 	config_set_int( "FlagScore",			GoalScoreSlider.value );
 	GoalScore = GoalScoreSlider.value;
+
+	// floats
+	config_set_float( "MaxMessageTime",	MaxMessageTime );
 
 	// Stereo options
 	config_set_bool( "StereoEnabled",		StereoEnabled );
