@@ -1889,25 +1889,6 @@ void DestroySound( int flags )
 		FreeSfxHolder( i );
 	}
 	
-	if ( !( flags & DESTROYSOUND_KeepLevelSpecTable) )
-	{
-		// clear level specific sfx table...
-		for ( i = SFX_LEVELSPEC_Start; i <= SFX_LEVELSPEC_End; i++ )
-		{
-			//LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].file[0] = 0;
-			//LevelSpecificEffects[ i - SFX_LEVELSPEC_Start ].flags = 0;
-
-			if ( Sfx_Filenames[ i ].Name )
-			{
-				free( Sfx_Filenames[ i ].Name );
-				Sfx_Filenames[ i ].Name = NULL;
-			}
-			Sfx_Filenames[ i ].Flags = 0;
-		}
-	}
-
-	Sfx_Filenames[ SFX_LEVELSPEC_Start ].Flags = SFX_LevelSpec;
-
 	bSoundEnabled = FALSE;
 }
 
