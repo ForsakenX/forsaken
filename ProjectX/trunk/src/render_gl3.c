@@ -864,46 +864,6 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
 	return FSLockVertexBuffer( renderObject, (LVERTEX **) verts );
 }
 
-/*
-static void set_color( COLOR c )
-{
-	// COLOR is the value loaded from the files
-	// it's packed as uchar[4] (bgra) and glColor expects (rgba)
-	// so we flip the red/blue values with each other
-	c = (c & 0xff00ff00) | ((c & 0x00ff0000) >> 16) | ((c & 0x000000ff) << 16);
-	glColor4ubv((GLubyte*)&c);
-}
-
-static void draw_vert( void * _vert, BOOL orthographic )
-{
-	LVERTEX * vert = (LVERTEX*) _vert;
-	TLVERTEX * tlvert = (TLVERTEX*) _vert;
-	if(orthographic)
-	{
-		set_color( tlvert->color );
-		glTexCoord2f( tlvert->tu, tlvert->tv );
-		glVertex2f( tlvert->x, tlvert->y );
-	}
-	else
-	{
-		set_color( vert->color );
-		glTexCoord2f( vert->tu, vert->tv );
-		glVertex3f( vert->x, vert->y, vert->z );
-	}
-}
-
-static void set_material( RENDERMATERIAL * m )
-{
-	if(!m)return;
-	glMaterialfv( GL_FRONT, GL_DIFFUSE,	 (GLfloat*)&m->Diffuse  );
-	glMaterialfv( GL_FRONT, GL_AMBIENT,	 (GLfloat*)&m->Ambient  );
-	glMaterialfv( GL_FRONT, GL_SPECULAR, (GLfloat*)&m->Specular );
-	glMaterialfv( GL_FRONT, GL_EMISSION, (GLfloat*)&m->Emissive );
-	// gl specular exponent =~ d3d specular sharpness
-	glMaterialf ( GL_FRONT, GL_SHININESS,(GLfloat)m->Power      );
-}
-*/
-
 /* Draw render object:
  * - if 2D (orthographic), set up appropriately:
  *   - orthographic projection matrix
