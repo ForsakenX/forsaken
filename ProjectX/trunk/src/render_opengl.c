@@ -374,10 +374,23 @@ void set_alpha_states( void )
 	set_trans_state_9();
 }
 
+extern float framelag;
+
+// 16.7 ~ 1/85 * 71 / 0.05;
+// 85 is my fps, 71 is the framelag multiplier, 0.05 is a suitable
+// alpha for that fps.
+
 void set_alpha_fx_states( void )
 {
+	// higher = more white; < 1.0 makes it darker
+	float whiteness = 5.0f;
+
+	float src_a = framelag / 16.7f;
+	float dst_a = src_a / whiteness;
+
 	glEnable(GL_BLEND);
-	// TODO - need some type of states here that would create white out affect
+	glBlendFunc(GL_CONSTANT_ALPHA,GL_ONE_MINUS_CONSTANT_COLOR); // src, dest
+	glBlendColor(dst_a, dst_a, dst_a, src_a); // src, dest
 }
 
 // TODO - is the stencil buffer ever cleared ?
@@ -385,9 +398,17 @@ void set_alpha_fx_states( void )
 // TODO - FSClear is meant to clear current viewport
 //        perhaps we can automate and remove need for rect arg ?
 
+// disable clearing for the whiteout effect
+extern float WhiteOut;
+
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
+	if ( WhiteOut > 0.0f )
+	{
+		FSClearDepth(rect);
+		return;
+	}
 	int width = rect->x2 - rect->x1;
 	int height = rect->y2 - rect->y1;
 	int x = rect->x1;
@@ -407,6 +428,8 @@ BOOL FSClear(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
+	if ( WhiteOut > 0.0f )
+		return;
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;
