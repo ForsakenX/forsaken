@@ -89,6 +89,10 @@ static const char *default_fragment_shader =
 	"    vec2 dx;\n"
 	"    vec2 dy;\n"
 	"\n"
+	"    // This *may* be needed - see:\n"
+	"    // http://www.opengl.org/wiki/GLSL_Sampler\n"
+	"    // but I'm not sure because it's not really clear\n"
+	"    // on just how 'uniform' the control flow has to be\n"
 	"    dx = dFdx(texc);\n"
 	"    dy = dFdy(texc);\n"
 	"    if ( texturing_enabled )\n"
@@ -394,21 +398,35 @@ static void set_default_shaders( void )
 {
 	char *info_log;
 
+	// Clean up the existing shaders if any
+	if ( vertex_shader )
+	{
+		glDeleteShader( vertex_shader );
+		CHECK_GL_ERRORS;
+		vertex_shader = 0;
+	}
+	if ( fragment_shader )
+	{
+		glDeleteShader( fragment_shader );
+		CHECK_GL_ERRORS;
+		fragment_shader = 0;
+	}
+
 	vertex_shader = new_shader( GL_VERTEX_SHADER, default_vertex_shader, &info_log );
 	if ( ! vertex_shader )
 	{
-		DebugPrintf( "Failed to compile vertex shader! Info log: %s", info_log );
+		DebugPrintf( "Failed to compile vertex shader! Info log:\n-----\n%s\n-----\n", info_log );
 		return;
 	}
 	fragment_shader = new_shader( GL_FRAGMENT_SHADER, default_fragment_shader, &info_log );
 	if ( ! fragment_shader )
 	{
-		DebugPrintf( "Failed to compile fragment shader! Info log: %s", info_log );
+		DebugPrintf( "Failed to compile fragment shader! Info log:\n-----\n%s\n-----\n", info_log );
 		return;
 	}
 	if ( update_shader_program( &info_log ) == FALSE )
 	{
-		DebugPrintf( "Failed to compile fragment shader! Info log: %s", info_log );
+		DebugPrintf( "Failed to build shader program! Info log:\n-----\n%s\n-----\n", info_log );
 		return;
 	}
 }
