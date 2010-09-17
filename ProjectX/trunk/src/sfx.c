@@ -1226,6 +1226,10 @@ void PauseAllSfx( void )
 		if ( SpotSfxList[ i ].used )
 		{
 			temp = SpotSfxList[ i ];
+			// StopSfx will free the source
+			// so we can't leave the old pointer here 
+			temp.source = NULL;
+			temp.sourceloaded = FALSE;
 			StopSfx( SpotSfxList[ i ].uid );
 			SpotSfxList[ i ] = temp;
 		}
