@@ -367,10 +367,7 @@ sound_buffer_t * sound_load(char *path)
 	SDL_AudioSpec wav_spec;
 	Uint8 *wav_buffer;
 	sound_buffer_t * buffer;
-
-	// file path
 	char * file_path = convert_path(path);
-	strncpy(buffer->path,file_path,MAX_PATH-1);
 
 	// create the buffer
 	buffer = malloc(sizeof(sound_buffer_t));
@@ -379,6 +376,7 @@ sound_buffer_t * sound_load(char *path)
 		DebugPrintf("sound_load: failed to malloc buffer\n");
 		return 0;
 	}
+	strncpy(buffer->path,file_path,MAX_PATH-1);
 
 	// clear error code
 	alGetError();
