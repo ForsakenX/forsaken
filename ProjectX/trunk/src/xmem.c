@@ -1,5 +1,3 @@
-#ifdef DEBUG_ON
-
 #include <stdio.h>
 #include <malloc.h>
 #include <strings.h>
@@ -195,5 +193,3 @@ int UnMallocedBlocks( void )
 		MemUsed, BlocksUsed ); // break point
 	return BlocksUsed;
 }
-
-#endif // DEBUG_ON

@@ -373,7 +373,7 @@ sound_buffer_t * sound_load(char *path)
 	strncpy(buffer->path,file_path,MAX_PATH-1);
 
 	// create the buffer
-	sound_buffer_t * buffer = malloc(sizeof(sound_buffer_t));
+	buffer = malloc(sizeof(sound_buffer_t));
 	if(!buffer)
 	{
 		DebugPrintf("sound_load: failed to malloc buffer\n");
