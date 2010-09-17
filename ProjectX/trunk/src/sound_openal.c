@@ -10,6 +10,7 @@
 //#include <efx.h>
 //#include <efx-creative.h>
 #include <math.h>
+#include "xmem.h"
 
 //
 // globals
@@ -217,9 +218,8 @@ void sound_play( sound_source_t * source )
 	//
 	alSourcePlay( source->id );
 	//
-	DebugPrintf("sound_play: playing sound='%s' count=%d\n",
-		source->path,
-		stats.playing);
+	DebugPrintf("sound_play: playing sound='%s' count=%d source=%d\n",
+		source->path, stats.playing, source);
 }
 
 void sound_play_looping( sound_source_t * source )
@@ -263,11 +263,11 @@ void sound_release_source( sound_source_t * source )
 	alDeleteSources( 1, &source->id );
 	// clean up resources
 	free(source);
-	source = NULL;
 	// show stats
 	stats.sources--;
-	DebugPrintf("sound_release_source: buffers %d sources %d playing %d\n",
-				stats.buffers,stats.sources,stats.playing);
+	DebugPrintf("sound_release_source: buffers %d sources %d playing %d source %d\n",
+				stats.buffers,stats.sources,stats.playing,source);
+	source = NULL;
 }
 
 void sound_release_buffer( sound_buffer_t * buffer )
@@ -442,8 +442,8 @@ sound_buffer_t * sound_load(char *path)
 	SDL_FreeWAV(wav_buffer);
 
 	stats.buffers++;
-	DebugPrintf("sound_load: buffers %d sources %d playing %d\n",
-				stats.buffers,stats.sources,stats.playing);
+	DebugPrintf("sound_load: buffers %d sources %d playing %d buffer %d\n",
+				stats.buffers,stats.sources,stats.playing,buffer);
 
 	return buffer;
 }
@@ -496,8 +496,8 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 		Sound3D ? AL_FALSE : AL_TRUE);
 
 	stats.sources++;
-	DebugPrintf("sound_source: sources %d buffers %d playing %d\n",
-				stats.sources,stats.buffers,stats.playing);
+	DebugPrintf("sound_source: sources %d buffers %d playing %d source %d\n",
+				stats.sources,stats.buffers,stats.playing,source);
 
 	return source;
 }
