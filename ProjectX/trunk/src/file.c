@@ -35,6 +35,7 @@
 #define		O_BINARY 	0 // no such thing on unixa
 #endif
 
+#include "xmem.h"
 extern BOOL Debug;
 
 FILE * file_open(char * filename, char * mode)
@@ -54,6 +55,7 @@ BOOL is_folder( char* str )
 	char * path = convert_path(str);
 	if ( stat( path, &s ) == 0 && s.st_mode & S_IFDIR )
 		return TRUE;
+	DebugPrintf("folder '%s' is not a directory\n",path);
 	return FALSE;
 }
 
@@ -87,8 +89,10 @@ int folder_exists( char *pathspec, ... )
 	else
 	{
 		// path exists but is not a directory
+		DebugPrintf("'%s' is not a folder\n",path);
 		return 0;
 	}
+	DebugPrintf("folder '%s' does not exist\n",path);
 	return 0;
 }
 
@@ -148,15 +152,16 @@ long Get_File_Size( char * Filename )
 
 	char * path = convert_path(Filename);
 
-    if ( !stat( path, &st ) ) 
+  if ( !stat( path, &st ) ) 
 	{
 		return (long) st.st_size;
-    }
-    else 
+  }
+ 	else 
 	{
+		DebugPrintf("file '%s' does not exist\n",path);
 		perror("stat");
 		return 0;
-    }
+	}
 
 #endif
 }
