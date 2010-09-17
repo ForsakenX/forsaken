@@ -3632,7 +3632,8 @@ BOOL InitTitle()
 void
 ReleaseTitle(void)
 {
-   	int i;
+ 	int i;
+	DebugPrintf("ReleaseTitle\n");
 	for( i = 0; i < NUM_TITLE_LOOPS; i++ )
 	{
 		StopSfx( TitleLoopId[ i ] );
