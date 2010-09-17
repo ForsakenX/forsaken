@@ -483,7 +483,6 @@ typedef struct _SPOT_SFX_LIST
 	uint16					fixedgroup;				// current sfx group num
 	float					freq;					// frequency ( 0 for original frequency )
 	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
-	BOOL					sourceloaded;				// flag to indicate if source is loaded ( or about to be loaded )
 	void*					source;					// source address
 	float					distance;
 	int					SfxHolderIndex;
@@ -1349,7 +1348,6 @@ void ReTriggerSfx( void )
 
 			if ( temp.type == LOOPING_SFX_VariableGroup )
 			{
-
 				tempuid = PlaySpotSfx( temp.sfxindex, temp.group, temp.pos,	temp.freq, temp.vol, temp.Effects );
 			}
 
@@ -1365,7 +1363,8 @@ void ReTriggerSfx( void )
 						break;
 					}
 				}
-			}else
+			}
+			else
 			{
 				DebugPrintf("Unable to retrigger looping sfx after reloading sfx!!\n");
 			}
@@ -1846,6 +1845,8 @@ BOOL InitializeSound( int flags )
 void DestroySound( int flags )
 {
 	int i, j;
+
+	DebugPrintf("DestroySound\n");
 
 	ClearLevelSpecSfx();
 
@@ -2502,7 +2503,6 @@ int InitLoopingSfx( int16 Sfx, int variant, uint16 *Group, VECTOR *SfxPos, float
 	SpotSfxList[ index ].freq = Freq;
 	SpotSfxList[ index ].vol = Volume;
 	SpotSfxList[ index ].source = NULL;
-	SpotSfxList[ index ].sourceloaded = FALSE;
 	SpotSfxList[ index ].distance = 0.0F;
 	SpotSfxList[ index ].used = TRUE;
 	SpotSfxList[ index ].Effects = Effects;
@@ -2522,7 +2522,7 @@ void StopLoopingSfx( int index )
 
 	if ( SpotSfxList[ index ].source )
 	{
-		DebugPrintf("- looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
+		DebugPrintf("StopLoopingSfx - looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
 		sound_release_source( SpotSfxList[ index ].source );
 		SpotSfxList[ index ].source = NULL;
 	}
@@ -2546,7 +2546,7 @@ void ModifyLoopingSfx( uint32 uid, float Freq, float Volume )
 				SpotSfxList[ LoopingSfxIndex ].freq = Freq;
 
 				// if exists, set frequency...
-				if ( SpotSfxList[ LoopingSfxIndex ].sourceloaded && SpotSfxList[ LoopingSfxIndex ].source )
+				if ( SpotSfxList[ LoopingSfxIndex ].source )
 					sound_set_pitch( SpotSfxList[ LoopingSfxIndex ].source, (float)Freq );
 			}
 			if ( Volume && ( Volume != SpotSfxList[ LoopingSfxIndex ].vol ))
@@ -2584,7 +2584,6 @@ void PrintLoopingSfxDebug( void )
 	Print4x5Text( "fixed group",	X_OFFSET, LINE_HEIGHT * line++, 2 );
 	Print4x5Text( "freq",			X_OFFSET, LINE_HEIGHT * line++, 2 );
 	Print4x5Text( "vol",			X_OFFSET, LINE_HEIGHT * line++, 2 );
-	Print4x5Text( "sourceloaded",	X_OFFSET, LINE_HEIGHT * line++, 2 );
 	Print4x5Text( "source ptr",		X_OFFSET, LINE_HEIGHT * line++, 2 );
 	Print4x5Text( "distance",		X_OFFSET, LINE_HEIGHT * line++, 2 );
 	Print4x5Text( "holder index",	X_OFFSET, LINE_HEIGHT * line++, 2 );
@@ -2627,8 +2626,6 @@ void PrintLoopingSfxDebug( void )
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%1.1f", SpotSfxList[ i ].vol );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
-		sprintf( buf, "%s", SpotSfxList[ i ].sourceloaded ? "Y" : "N" );
-		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%s", SpotSfxList[ i ].source ? "Y" : "N" );
 		Print4x5Text( buf , DATA_OFFSET + X_OFFSET + i * GAP_SIZE , LINE_HEIGHT * line++, 2 );
 		sprintf( buf, "%4.0f", SpotSfxList[ i ].distance );
@@ -2645,13 +2642,15 @@ void PrintLoopingSfxDebug( void )
 
 void ProcessLoopingSfx( void )
 {
-	float	Modify;
-	VECTOR	Temp;
-	float	Distance, MaxDistance;
+	float	Modify = 0.0f, Distance = 0.0f, MaxDistance = 0.0f;
+	int i=0, flags=0;
+	long Volume = 0;
 	BOOL InRange = FALSE;
-	int i, flags;
-	long	Volume;
-	VECTOR Pos;
+	VECTOR Temp = {0.0f,0.0f,0.0f};
+	VECTOR Pos = {0.0f,0.0f,0.0f};
+
+	if(!bSoundEnabled)
+		return;
 
 	// print debug info
 	// only looping sound i know of is the bike engines
@@ -2711,20 +2710,21 @@ void ProcessLoopingSfx( void )
 
 		SpotSfxList[ i ].distance = Distance;
 
-		// if not in range and currently loaded then stop the sound ... 
-		if ( !InRange && SpotSfxList[ i ].sourceloaded )
+		// if not in range
+		if ( !InRange )
 		{
+			// if sound loaded then free it
 		 	if ( SpotSfxList[ i ].source )
 			{
 				DebugPrintf("ProcessLoopingSfx: Releasing dynamic looping sfx %d\n", SpotSfxList[ i ].sfxindex);
 				sound_release_source( SpotSfxList[ i ].source );
 				SpotSfxList[ i ].source = NULL;
 			}
-			SpotSfxList[ i ].sourceloaded = FALSE;
+			return;
 		}
 
 		// if in range & not loaded then find a free slot for the sound
-		if ( InRange && !SpotSfxList[ i ].sourceloaded )
+		if ( !SpotSfxList[ i ].source )
 		{
 			char * file = SfxFullPath[ SpotSfxList[i].sfxindex ][ SpotSfxList[i].variant ];
 
@@ -2734,13 +2734,11 @@ void ProcessLoopingSfx( void )
 			if( ! (SpotSfxList[ i ].source = sound_source_create( file, index )) )
 				continue;
 
-			SpotSfxList[ i ].sourceloaded = TRUE;
-
 			sound_set_pitch( SpotSfxList[ i ].source, SpotSfxList[ i ].freq );
 		}
 
 		// if in range, and source already loaded
-		if ( InRange && SpotSfxList[ i ].sourceloaded && SpotSfxList[ i ].source)
+		if ( SpotSfxList[ i ].source)
 		{
 			//DebugPrintf("ProcessLoopingSfx: adjusting looping sound volumne based on distance.\n");
 
@@ -2962,6 +2960,7 @@ BOOL UpdateTaunt( uint32 uid, uint16 Group, VECTOR *SfxPos )
 		Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * VolModify * GlobalSoundAttenuation );
 
 		// set source parameters
+		DebugPrintf("UpdateTaunt:\n");
 		SetPannedSourceParams( 
 			SfxHolder[ i ].source,
 			SfxPos, 
