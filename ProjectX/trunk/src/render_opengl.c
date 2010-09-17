@@ -392,7 +392,10 @@ void set_alpha_fx_states( void )
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_CONSTANT_ALPHA,GL_ONE_MINUS_CONSTANT_COLOR); // src, dest
+// TODO - windows is locked into GL1.1 must use glew or get proc address manually
+#ifndef WIN32
 	glBlendColor(dst_a, dst_a, dst_a, src_a); // src, dest
+#endif
 }
 
 // TODO - is the stencil buffer ever cleared ?
@@ -406,15 +409,16 @@ extern float WhiteOut;
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
+	int width, height, x, y;
 	if ( WhiteOut > 0.0f )
 	{
 		FSClearDepth(rect);
-		return;
+		return TRUE;
 	}
-	int width = rect->x2 - rect->x1;
-	int height = rect->y2 - rect->y1;
-	int x = rect->x1;
-	int y = render_info.ThisMode.h - rect->y1 - height;
+	width = rect->x2 - rect->x1;
+	height = rect->y2 - rect->y1;
+	x = rect->x1;
+	y = render_info.ThisMode.h - rect->y1 - height;
 	// here we employ a stencil buffer so that we
 	// only clear the desired part of the screen
 	glEnable(GL_SCISSOR_TEST);
@@ -431,7 +435,7 @@ BOOL FSClear(XYRECT * rect)
 BOOL FSClearBlack(void)
 {
 	if ( WhiteOut > 0.0f )
-		return;
+		return TRUE;
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;
