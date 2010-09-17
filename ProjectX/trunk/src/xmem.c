@@ -1,10 +1,12 @@
-#include <malloc.h>
+#ifdef DEBUG_ON
+
 #include <stdio.h>
+#include <malloc.h>
+#include <strings.h>
+#include "main.h"
 #include "util.h"
 
 size_t	MemUsed = 0;
-
-#ifdef DEBUG_ON
 
 #define	MAXBLOCKS 16384
 
@@ -63,7 +65,7 @@ void * X_malloc( size_t size, char *in_file, int in_line )
 	i = XMem_FindFree();
 	if( i == -1 )
 	{
-		Msg( "Ran out of free memory Blocks");
+		DebugPrintf( "Ran out of free memory Blocks"); // break point
 		return NULL;
 	}
 
@@ -91,7 +93,7 @@ void * X_calloc( size_t num,size_t size, char *in_file, int in_line )
 	i = XMem_FindFree();
 	if( i == -1 )
 	{
-		Msg( "Ran out of free memory Blocks");
+		DebugPrintf( "Ran out of free memory Blocks"); // break point
 		return NULL;
 	}
 
@@ -120,7 +122,7 @@ void X_free( void * Pnt, char *in_file, int in_line )
 	if ( !Pnt )
 	{
 		if ( in_file != last_file || in_line != last_line )
-			Msg( "Tried to free NULL block in %s line %d", in_file, in_line );
+			DebugPrintf( "Tried to free NULL block in %s line %d", in_file, in_line ); // break point
 		last_file = in_file;
 		last_line = in_line;
 		return;
@@ -129,7 +131,7 @@ void X_free( void * Pnt, char *in_file, int in_line )
 	if( i == -1 )
 	{
 		if ( in_file != last_file || in_line != last_line )
-	 		Msg( "Tried to free un-malloced block in %s line %d", in_file, in_line );
+	 		DebugPrintf( "Tried to free un-malloced block in %s line %d", in_file, in_line ); // break point
 		last_file = in_file;
 		last_line = in_line;
 		return;
@@ -153,7 +155,7 @@ void * X_realloc( void * Pnt , size_t size, char *in_file, int in_line )
 	i = XMem_FindSame( Pnt );
 	if( i == -1 )
 	{
-		Msg( "tried to realloc un-alloced block");
+		DebugPrintf( "tried to realloc un-alloced block"); // break point
 		return NULL;
 	}
 
@@ -185,12 +187,12 @@ int UnMallocedBlocks( void )
 			if ( BlockUsed[ i ] )
 			{
 				DebugPrintf( "Block size %d allocated in %s line %d but not freed\n",
-					BlockSize[ i ], BlockInFile[ i ], BlockInLine[ i ] );
+					BlockSize[ i ], BlockInFile[ i ], BlockInLine[ i ] ); // break point
 			}
 		}
 	}
 	DebugPrintf( "MemUsed = %d   BlocksUsed = %d\n",
-		MemUsed, BlocksUsed );
+		MemUsed, BlocksUsed ); // break point
 	return BlocksUsed;
 }
 

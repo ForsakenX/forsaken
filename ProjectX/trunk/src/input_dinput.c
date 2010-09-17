@@ -6,6 +6,7 @@
 #include <stdio.h>
 
 #ifdef DINPUTJOY
+#include "xmem.h"
 
 #include <windows.h>
 #include "dinput.h"

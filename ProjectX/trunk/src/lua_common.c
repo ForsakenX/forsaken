@@ -33,6 +33,7 @@
 #include "lua_common.h"
 #include "luasocket.h"
 #include "mime.h"
+#include "xmem.h"
 
 lua_State *L1;
 

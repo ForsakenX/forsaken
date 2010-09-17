@@ -11,6 +11,7 @@
 #include "object.h"
 #include "networking.h"
 #include "lines.h"
+#include "xmem.h"
 #include "camera.h"
 
 extern	CAMERA	CurrentCamera;

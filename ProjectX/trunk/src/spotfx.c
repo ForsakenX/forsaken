@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <malloc.h>
-
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"
@@ -32,6 +31,7 @@
 
 #include "sfx.h"
 #include "util.h"
+#include "xmem.h"
 
 /*===================================================================
 	External Variables

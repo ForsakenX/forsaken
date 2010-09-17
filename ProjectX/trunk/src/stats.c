@@ -41,6 +41,7 @@
 #include "secondary.h"
 #include "visi.h"
 #include "text.h"
+#include "xmem.h"
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on

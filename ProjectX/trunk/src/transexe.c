@@ -13,6 +13,7 @@
 
 #include "transexe.h"
 #include "models.h"
+#include "xmem.h"
 
 /*===================================================================
 		Externals...

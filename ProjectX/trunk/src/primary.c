@@ -39,6 +39,7 @@
 #include "ai.h"
 #include "water.h"
 #include "util.h"
+#include "xmem.h"
 
 #ifdef SHADOWTEST
 #include "shadows.h"

@@ -23,6 +23,7 @@
 #include "local.h"
 #include "util.h"
 #include "timer.h"
+#include "xmem.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

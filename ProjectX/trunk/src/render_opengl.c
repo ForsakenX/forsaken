@@ -7,6 +7,8 @@
 #include "file.h"
 #include "SDL.h"
 #include "SDL_opengl.h"
+#include <stdio.h>
+#include "xmem.h"
 
 extern render_info_t render_info;
 

@@ -31,6 +31,7 @@
  */
 
 #include "lua_common.h"
+#include "xmem.h"
 
 int config_save( void )
 {

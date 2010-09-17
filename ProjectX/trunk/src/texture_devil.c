@@ -1,3 +1,4 @@
+#include "xmem.h"
 
 #include "texture.h"
 

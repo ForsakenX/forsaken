@@ -7,6 +7,7 @@
 
 #include "texture.h"
 #include "file.h"
+#include "xmem.h"
 
 void destroy_image( texture_image_t * image )
 {

@@ -18,6 +18,7 @@
 #include "secondary.h"
 #include "main.h"
 #include "util.h"
+#include "xmem.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

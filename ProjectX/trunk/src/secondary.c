@@ -6,7 +6,6 @@
 ===================================================================*/
 #include <stdio.h>
 #include "main.h"
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -38,6 +37,7 @@
 #include "local.h"
 #include "util.h"
 #include "timer.h"
+#include "xmem.h"
 
 #define	SCATTER_TEST	0
 

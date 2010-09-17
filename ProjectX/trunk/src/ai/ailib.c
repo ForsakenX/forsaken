@@ -30,6 +30,7 @@
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
 #endif
+#include "xmem.h"
 
 //--------------------------------------------------------------------------
 // Externals

@@ -1,3 +1,4 @@
+#include "xmem.h"
 #ifdef SOUND_DSOUND
 
 #define DIRECTSOUND_VERSION 0x0700

@@ -27,6 +27,7 @@
 #pragma optimize( "gty", on )
 #endif
 
+#include "xmem.h"
 
 // Externals
 extern	float framelag;

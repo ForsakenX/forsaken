@@ -21,6 +21,7 @@
 #include "ai.h"
 #include "secondary.h"
 #include "primary.h"
+#include "xmem.h"
 
 // Externals
 extern	float framelag;

@@ -4,6 +4,8 @@
 #include "file.h"
 #include "util.h"
 #include "string.h"
+#include "render.h"
+#include "title.h"
 
 extern BOOL Debug;
 BOOL DebugLog = FALSE;
@@ -12,6 +14,8 @@ BOOL DebugLog = FALSE;
 #include <windows.h>	// for various things
 #include <ctype.h>		// for toupper
 #endif
+
+#include "xmem.h"
 
 char * convert_char( char from, char to, char* in )
 {
@@ -173,8 +177,6 @@ void DebugState( const char * str )
 //
 
 // temporarily jumps to desktop mode
-#include "render.h"
-#include "title.h"
 extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
 extern void input_grab( BOOL clip );

@@ -32,6 +32,7 @@
 
 #include "lua_common.h"
 #include "lua_games.h"
+#include "xmem.h"
 
 void games_update( void )
 {

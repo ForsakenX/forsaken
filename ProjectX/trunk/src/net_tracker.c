@@ -24,6 +24,7 @@
 #include "util.h"
 #include "version.h"
 #include "net.h"
+#include "xmem.h"
 
 // created in net_enet.c
 extern ENetHost* enet_host;

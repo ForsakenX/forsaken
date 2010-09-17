@@ -3,6 +3,8 @@
 
 #ifdef DEBUG_ON
 
+#include <stdio.h>
+
 #undef malloc
 #undef calloc
 #undef realloc
@@ -23,4 +25,3 @@ int UnMallocedBlocks( void );
 #endif
 
 #endif	// XMEM_INCLUDED
-

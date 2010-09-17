@@ -7,7 +7,8 @@
 
 #include	"new3d.h"
 #include	"quat.h"
-
+#include <stdio.h>
+#include "xmem.h"
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
 #endif
