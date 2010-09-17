@@ -13,7 +13,6 @@ extern void ProcessVduItems( MENU * Menu );
 extern BOOL InitialTexturesSet;
 extern BOOL cursor_clipped;
 extern BYTE MyGameStatus;
-extern BOOL QuitRequested;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
 
