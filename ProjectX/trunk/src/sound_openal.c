@@ -366,11 +366,19 @@ sound_buffer_t * sound_load(char *path)
 	ALenum format;
 	SDL_AudioSpec wav_spec;
 	Uint8 *wav_buffer;
+	sound_buffer_t * buffer;
+
+	// file path
+	char * file_path = convert_path(path);
+	strncpy(buffer->path,file_path,MAX_PATH-1);
 
 	// create the buffer
 	sound_buffer_t * buffer = malloc(sizeof(sound_buffer_t));
-	char * file_path = convert_path(path);
-	strncpy(buffer->path,file_path,MAX_PATH-1);
+	if(!buffer)
+	{
+		DebugPrintf("sound_load: failed to malloc buffer\n");
+		return 0;
+	}
 
 	// clear error code
 	alGetError();
@@ -380,12 +388,14 @@ sound_buffer_t * sound_load(char *path)
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alGenBuffers: %s\n", alGetString(error));
+		free(buffer);
 		return NULL;
 	}
 
 	if( SDL_LoadWAV(file_path, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
 	{
 		DebugPrintf("Could not open: %s\n", SDL_GetError());
+		free(buffer);
 		return NULL;
 	}
 
@@ -424,6 +434,7 @@ sound_buffer_t * sound_load(char *path)
 	{
 		DebugPrintf("alBufferData: %s\n", alGetString(error));
 		alDeleteBuffers(1, &buffer->id);
+		free(buffer);
 		return NULL;
 	}
 
@@ -440,8 +451,20 @@ sound_buffer_t * sound_load(char *path)
 sound_source_t * sound_source( sound_buffer_t * buffer )
 {
 	ALenum error;
+	sound_source_t * source;
 
-	sound_source_t * source = malloc(sizeof(sound_source_t));
+	if(!buffer)
+	{
+		DebugPrintf("sound_source: null buffer given\n");
+		return 0;
+	}
+
+	source = malloc(sizeof(sound_source_t));
+	if(!source)
+	{
+		DebugPrintf("sound_source: failed to malloc source\n");
+		return 0;
+	}
 	source->playing = FALSE;
 	source->buffer = buffer->id;
 	strncpy(source->path,buffer->path,MAX_PATH);
