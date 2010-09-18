@@ -2148,13 +2148,13 @@ char CurrentSavedGameEnemiesKilled[ MAX_SAVEDGAME_INFO_LENGTH ];
 MENU	MENU_NEW_LoadGame = {
 	"" , InitTitleLoad , ExitTitleLoad, NULL, 0,
 	{
-		
-		{ 0, 0, 200 , 30, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &CurrentSavedGameLevel, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 0, 30, 200 , 60, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &CurrentSavedGameDate, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 0, 60, 200 , 90, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &CurrentSavedGameEnemiesKilled, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 0,90, 200 , 120, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &CurrentSavedGameTimeLevelPlayed, NULL, NULL, DrawFlatMenuName, NULL, 0 } ,
-		{ 0,120, 20 , 170, 0, "", FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &LoadSavedGameList, NULL, NULL, DrawLeftArrow, NULL, 0 } ,
-		{ 180,120, 200 , 170, 0, "", FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &LoadSavedGameList, NULL, NULL, DrawRightArrow, NULL, 0 } ,
+		{ 0,  0, 200,  30, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, &CurrentSavedGameLevel,           NULL, NULL, DrawFlatMenuName, NULL, 0 },
+		{ 0, 30, 200,  60, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, &CurrentSavedGameDate,            NULL, NULL, DrawFlatMenuName, NULL, 0 },
+		{ 0, 60, 200,  90, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, &CurrentSavedGameEnemiesKilled,   NULL, NULL, DrawFlatMenuName, NULL, 0 },
+		{ 0, 90, 200, 120, 0, "", FONT_Medium, TEXTFLAG_CentreX | TEXTFLAG_CentreY, &CurrentSavedGameTimeLevelPlayed, NULL, NULL, DrawFlatMenuName, NULL, 0 },
+
+		{ 0,   120,  20, 170, 0, "", FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &LoadSavedGameList, NULL, NULL, DrawLeftArrow,  NULL, 0 },
+		{ 180, 120, 200, 170, 0, "", FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY , &LoadSavedGameList, NULL, NULL, DrawRightArrow, NULL, 0 },
 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
@@ -8316,12 +8316,14 @@ void LoadLevelText( MENU *Menu )
 	fclose( f );
 }
 
+// TODO - need to port filetime to file.c
 void GetSavedGameData( void )
 {
 #ifdef WIN32
 	HANDLE hfile;
 	FILETIME Time;
 	SYSTEMTIME systime;
+#endif
 	FILE	*	fp;
 	int8		buf[ 256 ];
 	int8		biker[ 256 ];
@@ -8344,6 +8346,7 @@ void GetSavedGameData( void )
 	sprintf(filename, "savegame\\%s", LoadSavedGameList.item[ LoadSavedGameList.selected_item ] ); 
 #endif
 
+#ifdef WIN32
 	hfile = CreateFile( filename,	// pointer to name of the file 
 						GENERIC_READ,	// read mode 
 						FILE_SHARE_READ,	// share mode 
@@ -8360,6 +8363,7 @@ void GetSavedGameData( void )
 		CloseHandle(hfile);
 	}
 	else
+#endif
 	{
 #ifdef SAVEGAME_SLOTS
 		sprintf( CurrentSavedGameDate, SavedGameInfo( LoadSavedGameList.selected_item ) );
@@ -8440,7 +8444,6 @@ void GetSavedGameData( void )
 		Models[ BackgroundModel[ TITLE_MODEL_MenuTVDummy ] ].Visible = 0;
 		Models[ BackgroundModel[ TITLE_MODEL_MenuTV ] ].Visible = 1;
 	}
-#endif
 }
 
 void InitTitleLoad( MENU *Menu )
