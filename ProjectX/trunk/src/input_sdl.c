@@ -34,8 +34,8 @@ void input_grab( BOOL grab )
 	*/
 	// window mode
 	input_grabbed = grab;
-	//SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
-	//SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
+	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
+	SDL_ShowCursor( grab==1 ? SDL_DISABLE : SDL_ENABLE );
 	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
 }
 
