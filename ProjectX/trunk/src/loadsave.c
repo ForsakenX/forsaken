@@ -1,4 +1,5 @@
-
+// TODO: this code loads pointers !!!!!!!!!!
+// apparrently this is somehow possible if you save/load from save binary
 
 /*===================================================================
 		Include Files...	

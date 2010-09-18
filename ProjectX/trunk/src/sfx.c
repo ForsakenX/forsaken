@@ -470,24 +470,22 @@ sound_source_t * sound_source_create( char *file, int sfxnum )
 
 typedef struct _SPOT_SFX_LIST
 {
-	//struct				_SPOT_SFX_LIST *next;			// next list item
-	//struct				_SPOT_SFX_LIST *prev;			// prev list item
-	BOOL					used;					// is sfx in use?
-	int16					sfxindex;				// sfx num, from enum list
-	int					variant;				// sfx num, from enum list
-	int					flags;
-	VECTOR					*pos;					// current sfx position vector
-	VECTOR					fixedpos;
-	int					type;					// fixed or variable group?
-	uint16					*group;					// current sfx group num
-	uint16					fixedgroup;				// current sfx group num
-	float					freq;					// frequency ( 0 for original frequency )
-	float					vol;					// vol ( 0 = zero volume, 1 = full volume )
-	void*					source;					// source address
-	float					distance;
-	int					SfxHolderIndex;
-	uint16					Effects;
-	uint32					uid;
+	BOOL     used;       // is sfx in use?
+	int16    sfxindex;   // sfx num, from enum list
+	int      variant;    // sfx num, from enum list
+	int      flags;
+	VECTOR * pos;        // current sfx position vector
+	VECTOR   fixedpos;
+	int      type;       // fixed or variable group?
+	uint16 * group;      // current sfx group num
+	uint16   fixedgroup; // current sfx group num
+	float    freq;       // frequency ( 0 for original frequency )
+	float    vol;        // vol ( 0 = zero volume, 1 = full volume )
+	void   * source;     // source address
+	float    distance;
+	int      SfxHolderIndex;
+	uint16   Effects;
+	uint32   uid;
 } SPOT_SFX_LIST;
 
 #define MAX_LOOPING_SFX 64
@@ -499,12 +497,10 @@ char TauntPath[ 128 ];
 
 BOOL BikerSpeechPlaying = FALSE;
 
-#define MAX_CONCURRENT_SFX 32
-
 uint32 SfxUniqueID = 1;
 
 #define MAX_SFX_VARIANTS 16
-char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS];
+char *SfxFullPath[ MAX_SFX ][ MAX_SFX_VARIANTS ];
 
 /****************************************
 Externals
@@ -1260,7 +1256,8 @@ BOOL RestoreSfxData( uint32 id, VECTOR *pos, uint16 *group )
 				SpotSfxList[ i ].pos = pos;
 				SpotSfxList[ i ].group = group;
 				return TRUE;
-			}else
+			}
+			else
 			{
 				Msg("trying to restore group & pos addresses for non-variable looping sfx!\n");
 				return FALSE;
@@ -2796,6 +2793,8 @@ FILE *SaveAllSfx( FILE *fp )
 	return( fp );
 }
 
+// TODO: this code loads pointers !!!!!!!!!!
+// apparrently this is somehow possible if you save/load from same binary
 FILE *LoadAllSfx( FILE *fp )
 {
 	uint16 num_active_sfx = 0;
@@ -2810,24 +2809,18 @@ FILE *LoadAllSfx( FILE *fp )
 		for ( i = 0; i < MAX_LOOPING_SFX; i++ )
 		{
 			if ( SpotSfxList[ i ].used )
-			{
 				StopSfx( SpotSfxList[ i ].uid );
-			}
-
 			SpotSfxList[ i ].used = FALSE;
 		}
 		
 		// read in sfx data...
 		for ( i = 0; i < num_active_sfx; i++ )
-		{
 			fread( &SpotSfxList[ i ], sizeof( SPOT_SFX_LIST ), 1, fp );
-		}
 
 		fread( &SfxUniqueID, sizeof( uint32 ), 1, fp );
 		
 		ReTriggerSfx();
 	}
-
 
 	return( fp );
 }
