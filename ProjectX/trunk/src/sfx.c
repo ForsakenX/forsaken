@@ -2719,7 +2719,7 @@ void ProcessLoopingSfx( void )
 				sound_release_source( SpotSfxList[ i ].source );
 				SpotSfxList[ i ].source = NULL;
 			}
-			return;
+			continue;
 		}
 
 		// if in range & not loaded then find a free slot for the sound
