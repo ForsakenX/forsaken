@@ -284,19 +284,6 @@ void sound_release_buffer( sound_buffer_t * buffer )
 				stats.buffers,stats.sources,stats.playing);
 }
 
-long sound_bps( sound_source_t * source )
-{
-	long rate;
-	ALint freq, bits, channels;
-	alGetBufferi( source->buffer, AL_BITS, &bits );
-	alGetBufferi( source->buffer, AL_FREQUENCY, &freq );
-	alGetBufferi( source->buffer, AL_CHANNELS, &channels );
-	// bits should be a multiple of 8
-	// the remainder is lost when you convert to long, anyway
-	rate = (freq * channels * bits) / 8;
-	return rate;
-}
-
 float sound_get_pitch( sound_source_t * source )
 {
 	ALfloat pitch;

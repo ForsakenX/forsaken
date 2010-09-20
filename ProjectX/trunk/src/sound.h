@@ -56,7 +56,6 @@ void sound_release_buffer( sound_buffer_t * s );
 void sound_set_pitch( sound_source_t * s, float freq );
 void sound_volume( sound_source_t * s, long decibels );
 void sound_pan( sound_source_t * s, long pan );
-long sound_bps( sound_source_t * s );
 long sound_get_seek( sound_source_t * s );
 void sound_set_seek( sound_source_t * s, long bytes );
 void sound_position( sound_source_t * s, float x, float y, float z, float min_distance, float max_distance );
