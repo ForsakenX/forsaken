@@ -284,13 +284,6 @@ void sound_release_buffer( sound_buffer_t * buffer )
 				stats.buffers,stats.sources,stats.playing);
 }
 
-float sound_get_pitch( sound_source_t * source )
-{
-	ALfloat pitch;
-	alGetSourcef( source->id, AL_PITCH, &pitch );
-	return (float) pitch;
-}
-
 void sound_set_pitch( sound_source_t * source, float pitch )
 {
 	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
