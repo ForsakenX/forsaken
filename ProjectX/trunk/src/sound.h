@@ -51,7 +51,6 @@ void sound_play( sound_source_t * s );
 void sound_play_looping( sound_source_t * s );
 BOOL sound_is_playing( sound_source_t * s );
 void sound_stop( sound_source_t * s );
-long sound_size( sound_source_t * s );
 void sound_release_source( sound_source_t * s );
 void sound_release_buffer( sound_buffer_t * s );
 void sound_set_pitch( sound_source_t * s, float freq );

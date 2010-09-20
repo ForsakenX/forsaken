@@ -245,13 +245,6 @@ void sound_stop( sound_source_t * source )
 	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
-long sound_size( sound_source_t * source )
-{
-	ALint size;
-	alGetBufferi( source->buffer, AL_SIZE, &size );
-	return (long) size;
-}
-
 void sound_release_source( sound_source_t * source )
 {
 	if(!source)

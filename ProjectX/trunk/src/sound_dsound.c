@@ -105,14 +105,6 @@ void sound_stop( sound_t * buffer )
 	IDirectSoundBuffer_Stop( buffer );
 }
 
-long sound_size( sound_t * buffer )
-{
-	DSBCAPS dsbcaps; 
-	dsbcaps.dwSize = sizeof( DSBCAPS );
-	IDirectSoundBuffer_GetCaps( buffer,	&dsbcaps );
-	return (long) dsbcaps.dwBufferBytes;
-}
-
 void sound_release( sound_t * buffer )
 {
 	if (buffer != NULL)
