@@ -170,20 +170,6 @@ void sound_pan( sound_t * buffer, long pan )
 	IDirectSoundBuffer_SetPan( buffer, pan );
 }
 
-// this gets the current play location
-long sound_get_seek( sound_t * buffer )
-{
-	DWORD bytes;
-	IDirectSoundBuffer_GetCurrentPosition( buffer, &bytes, NULL	);
-	return (long) bytes;
-}
-
-// this moves to a specific offset in the buffer
-void sound_set_seek( sound_t * buffer, long time )
-{
-	IDirectSoundBuffer_SetCurrentPosition( buffer, (DWORD) time	);
-}
-
 // this sets the location in 3d space of the sound
 void sound_position( sound_t * buffer, float x, float y, float z, float min, float max )
 {

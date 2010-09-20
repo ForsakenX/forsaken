@@ -321,18 +321,6 @@ BOOL sound_is_playing( sound_source_t * source )
 	return (state == AL_PLAYING);
 }
 
-long sound_get_seek( sound_source_t * source )
-{
-	ALint i;
-	alGetSourcei(source->id, AL_BYTE_OFFSET, &i);
-	return (long) i;
-}
-
-void sound_set_seek( sound_source_t * source, long bytes )
-{
-	alSourcei(source->id, AL_BYTE_OFFSET, bytes);
-}
-
 sound_buffer_t * sound_load(char *path)
 {
 	ALenum error;
