@@ -354,6 +354,7 @@ sound_buffer_t * sound_load(char *path)
 	if( SDL_LoadWAV(file_path, &wav_spec, &wav_buffer, &wav_spec.size) == NULL )
 	{
 		DebugPrintf("Could not open: %s\n", SDL_GetError());
+		alDeleteBuffers( 1, &buffer->id );
 		free(buffer);
 		return NULL;
 	}
@@ -394,6 +395,7 @@ sound_buffer_t * sound_load(char *path)
 		DebugPrintf("alBufferData: %s\n", alGetString(error));
 		alDeleteBuffers(1, &buffer->id);
 		free(buffer);
+		SDL_FreeWAV(wav_buffer);
 		return NULL;
 	}
 
@@ -446,6 +448,7 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 	if ((error = alGetError()) != AL_NO_ERROR)
 	{
 		DebugPrintf("alSourcei AL_BUFFER: %s\n", alGetString(error));
+		alDeleteSources(1,&source->id);
 		free(source);
 		source = NULL;
 		return NULL;
