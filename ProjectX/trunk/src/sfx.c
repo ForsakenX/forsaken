@@ -2353,6 +2353,9 @@ void SetPannedSourceParams( void* sound_source, VECTOR *SfxPos, float Freq, VECT
 		{
 			ApplyMatrix( &Ships[ Current_Camera_View ].Object.FinalInvMat , Temp, &Temp2 );
 
+			// we only care about x plane because we only have left/right speakers in panning
+			// z is probably used to adjust for field of view (as things get farther away they
+			// move towards the center of screen)
 			currentdist = (float) sqrt( ( Temp2.x * Temp2.x ) + ( Temp2.z * Temp2.z ) );
 		
 			if( currentdist )
@@ -2366,6 +2369,8 @@ void SetPannedSourceParams( void* sound_source, VECTOR *SfxPos, float Freq, VECT
 
 				sx *= sxmod;
 
+				// the bigger z is than x becomes smaller hence sound shrinks into center of
+				// view with distance
 				Pan = (long) ( ( 1.0F - fabs(nz) )* ( sx ) );
 			}
 			else
@@ -2664,6 +2669,18 @@ void ProcessLoopingSfx( void )
 			flags = LevelSpecificEffects[ Sfx_Filenames[ SpotSfxList[ i ].sfxindex ].SfxLookup ].flags;
 */
 		
+
+//
+// Sound3D
+//
+//           in/out of range will not be needed if we implement a sound stealing algorithm
+//           so if we need to create a new sound and we are the max sounds then we can find
+//           the least significant sound based on distance/volume (attenuation?) and kill 
+//           that sound so we can fire off the new one. unless the new one is worse.
+//
+//           volume hacking based on distance calculations will not be needed
+//
+
 		// work out if sound in range, get parameters
 		if( Ships[ Current_Camera_View ].Object.Group != (uint16) -1 )
 		{
@@ -2736,13 +2753,7 @@ void ProcessLoopingSfx( void )
 		// if in range, and source already loaded
 		if ( SpotSfxList[ i ].source)
 		{
-			//DebugPrintf("ProcessLoopingSfx: adjusting looping sound volumne based on distance.\n");
-
-			// adjust source parameters
-			//Volume = ( 0 - (long) ( Distance * 0.6F ) );	// Scale it down by a factor...
-
 			Volume = (long)(( GlobalSoundAttenuation * Distance / MaxDistance ) * sound_minimum_volume);
-
 			Volume = sound_minimum_volume - (long)( (float)( sound_minimum_volume - Volume ) * SpotSfxList[ i ].vol * GlobalSoundAttenuation );
 
 			SetPannedSourceParams(
