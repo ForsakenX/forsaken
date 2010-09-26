@@ -37,7 +37,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_DSOUND;OPENGL;NET_ENET_2"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_DSOUND;OPENGL;OPENGL1;NET_ENET_2"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -51,7 +51,7 @@
 				FavorSizeOrSpeed="1"
 				WholeProgramOptimization="true"
 				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude;lib\libzlib;lib\libpng;"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;TEXTURE_PNG;OPENGL;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;LUA_USE_APICHECK"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;TEXTURE_PNG;OPENGL;OPENGL1;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;BSP;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
@@ -72,7 +72,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;OPENGL;NET_ENET_2"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;OPENGL;OPENGL1;NET_ENET_2"
 				Culture="1033"
 			/>
 			<Tool
@@ -145,7 +145,7 @@
 			/>
 			<Tool
 				Name="VCMIDLTool"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_DSOUND;OPENGL;NET_ENET_2;_DEBUG"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_DSOUND;OPENGL;OPENGL1;NET_ENET_2;_DEBUG"
 				MkTypLibCompatible="true"
 				SuppressStartupBanner="true"
 				TargetEnvironment="1"
@@ -156,7 +156,7 @@
 				Optimization="0"
 				InlineFunctionExpansion="0"
 				AdditionalIncludeDirectories=".\;..\..\src\include;..\..\src\;lib\enet\include;lib\lua\include;lib\include;..\..\src\ai\aiinclude;lib\libzlib;lib\libpng;"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;TEXTURE_PNG;OPENGL;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;TEXTURE_PNG;OPENGL;OPENGL1;NET_ENET_2;_CRT_SECURE_NO_WARNINGS;_CRT_SECURE_NO_DEPRECATE;DEBUG_ON;DEBUG_COMP;DEBUG_SPOTFX_SOUND;BSP;DEBUG_VIEWPORT;LUA_USE_APICHECK"
 				SmallerTypeCheck="false"
 				RuntimeLibrary="2"
 				DefaultCharIsUnsigned="true"
@@ -177,7 +177,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;OPENGL;NET_ENET_2;_DEBUG"
+				PreprocessorDefinitions="WIN32;SOUND_SUPPORT;SOUND_OPENAL;OPENGL;OPENGL1;NET_ENET_2;_DEBUG"
 				Culture="1033"
 			/>
 			<Tool
