@@ -18,7 +18,7 @@ extern "C" {
 #include "tload.h"
 #include <assert.h>
 #include "util.h"
-#include <dxerr9.h>
+#include <dxerr.h>
 #include "file.h"
 #include "texture.h"
 
@@ -356,11 +356,6 @@ BOOL render_init( render_info_t * info )
 void render_cleanup( render_info_t * info )
 {
     info->ok_to_render = FALSE;
-	if(info->Mode)
-	{
-		free(info->Mode);
-		info->Mode = NULL;
-	}
     RELEASE(lpD3DDevice);
 	RELEASE(lpD3D);
 }
@@ -1640,7 +1635,7 @@ const char * render_error_description( int error )
 #ifdef __WINE__
 	return "";
 #else
-	return DXGetErrorDescription9(error);
+	return DXGetErrorDescription(error);
 #endif
 }
 
