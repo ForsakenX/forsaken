@@ -382,7 +382,7 @@ void set_alpha_states( void )
 #define GL_ONE_MINUS_CONSTANT_COLOR 0x8002
 #define GL_CONSTANT_ALPHA 0x8003
 
-typedef void (*glBlendColorfunc) ( GLclampf, GLclampf, GLclampf, GLclampf );
+typedef void (APIENTRY * glBlendColorfunc) ( GLclampf, GLclampf, GLclampf, GLclampf );
 
 static void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
 {
