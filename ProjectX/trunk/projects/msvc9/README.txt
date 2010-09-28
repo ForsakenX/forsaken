@@ -3,19 +3,9 @@
 
 Requirements:
 
-	Visual Studios C++ 2008 Express
+	Visual Studios C++ 2010 Express
 
 	Windows 2003 Platform SDK
-
-	DirectX SDK
-
-
-Environment Variables:
-
-	You can set these environment variable or add the paths to include/lib directories in vs manually.
-
-		MSSDK_DIR =  path to your Window 2003 Platform SDK
-		DXSDK_DIR =  path to your DirectX SDK
 
 
 Templates:
