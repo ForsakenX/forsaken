@@ -7,6 +7,7 @@ Requirements:
 
 	Windows 2003 Platform SDK
 
+	lib/ folder should contain http://fly.thruhere.net/download/vs_lib/* extracted
 
 Templates:
 
