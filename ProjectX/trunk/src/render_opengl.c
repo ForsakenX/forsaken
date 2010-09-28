@@ -376,6 +376,25 @@ void set_alpha_states( void )
 	set_trans_state_9();
 }
 
+// windows needs explicit retrieval of newer GL functions...
+#if defined(WIN32) || !defined(GL_EXT_blend_color)
+
+#define GL_ONE_MINUS_CONSTANT_COLOR 0x8002
+#define GL_CONSTANT_ALPHA 0x8003
+
+typedef void (*glBlendColorfunc) ( GLclampf, GLclampf, GLclampf, GLclampf );
+
+static void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
+{
+	static glBlendColorfunc f = NULL;
+	if( !f ) f = SDL_GL_GetProcAddress( "glBlendColor" );
+	if( !f ) f = SDL_GL_GetProcAddress( "glBlendColorEXT" );
+	if( !f ) return;
+	f(red, green, blue, alpha);
+}
+
+#endif
+
 extern float framelag;
 
 // 16.7 ~ 1/85 * 71 / 0.05;
@@ -392,10 +411,7 @@ void set_alpha_fx_states( void )
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_CONSTANT_ALPHA,GL_ONE_MINUS_CONSTANT_COLOR); // src, dest
-// TODO - windows is locked into GL1.1 must use glew or get proc address manually
-#ifndef WIN32
 	glBlendColor(dst_a, dst_a, dst_a, src_a); // src, dest
-#endif
 }
 
 // TODO - is the stencil buffer ever cleared ?

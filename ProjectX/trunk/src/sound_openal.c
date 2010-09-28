@@ -12,25 +12,13 @@
 #include <math.h>
 #include "xmem.h"
 
-//
-// globals
-//
-
-// tells forsaken to use 3d functions
-BOOL Sound3D = FALSE;
-
-static ALCdevice* Device = NULL;
-static ALCcontext* Context = NULL;
+BOOL Sound3D = FALSE; // enable 3d sound
 
 struct {
 	int buffers;
 	int sources;
 	int playing;
 } stats;
-
-//
-// buffer description
-//
 
 #define MAX_PATH 500
 
@@ -47,8 +35,11 @@ struct sound_source_t {
 };
 
 //
-// Generic Functions
+// sound system load / unload
 //
+
+static ALCdevice* Device = NULL;
+static ALCcontext* Context = NULL;
 
 static void print_info ( void ) 
 {
@@ -171,7 +162,7 @@ void sound_destroy( void )
 }
 
 //
-// Listener
+// 3d routines
 //
 
 BOOL sound_listener_position( float x, float y, float z )
@@ -186,7 +177,6 @@ BOOL sound_listener_velocity( float x, float y, float z )
 	return TRUE;
 }
 
-// TODO - does the at-vector equate to forward vector?
 BOOL sound_listener_orientation( 
 	float fx, float fy, float fz, // forward vector
 	float ux, float uy, float uz  // up vector
@@ -197,18 +187,52 @@ BOOL sound_listener_orientation(
 	return TRUE;
 }
 
-//
-// Buffers
-//
-
-// (only 3d buffer routine)
-// TODO - we'll want to set velocity some day for moving players ?
+// TODO - we'll want to set velocity as well
 void sound_position( sound_source_t * source, float x, float y, float z, float min, float max )
 {
 	alSource3f(source->id, AL_POSITION, x, y, -z);
 	alSourcef(source->id, AL_MAX_DISTANCE, max);
 	alSourcef(source->id, AL_REFERENCE_DISTANCE, min); // is this right?
 }
+
+//
+// 2d routines
+//
+
+void sound_set_pitch( sound_source_t * source, float pitch )
+{
+	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
+	alSourcef( source->id, AL_PITCH, f );
+	DebugPrintf("sound_pitch: %f\n",f);
+}
+
+void sound_volume( sound_source_t * source, long millibels )
+{
+	ALfloat f;
+	millibels = ( millibels > 0 ) ? 0 : millibels;
+	// gain is scaled to (silence) 0.0f through (no change) 1.0f
+	// millibels = hundredths of decibels (dB)
+	// defined in Dsound.h as (no change) 0 and (silence) -10,000
+	f = (ALfloat) pow(10.0, millibels/2000.0);
+	alSourcef(source->id, AL_GAIN, f);
+	DebugPrintf("sound_volume: %ld\n",millibels);
+}
+
+void sound_pan( sound_source_t * source, long _pan )
+{
+	// where pan is -1 (left) to +1 (right)
+	// must be scaled from -1 <-> +1
+	// probably need to scale down by 10,000, since dsound goes from -10000 to +10000
+	// so:
+	float pan = (float) _pan / 10000.0f;
+	float pan2 = (float) sqrt(1 - pan*pan);
+	DebugPrintf("sound_pan: %f - %f\n",pan,pan2);
+	alSource3f(source->id, AL_POSITION, pan, pan2, 0.0f);
+}
+
+//
+//  play / stop
+//
 
 void sound_play( sound_source_t * source )
 {
@@ -245,81 +269,16 @@ void sound_stop( sound_source_t * source )
 	DebugPrintf("sound_stop: playing %d\n",stats.playing);
 }
 
-void sound_release_source( sound_source_t * source )
-{
-	if(!source)
-		return;
-	if(source->playing)
-		stats.playing--;
-	source->playing = FALSE;
-	// deleting source implicitly detaches buffer
-	alDeleteSources( 1, &source->id );
-	// clean up resources
-	free(source);
-	// show stats
-	stats.sources--;
-	DebugPrintf("sound_release_source: buffers %d sources %d playing %d source %d\n",
-				stats.buffers,stats.sources,stats.playing,source);
-	source = NULL;
-}
-
-void sound_release_buffer( sound_buffer_t * buffer )
-{
-	if(!buffer)
-		return;
-	// buffers will not delete if they are attached to other sources
-	alGetError(); // clear error so we can see if buffer is attached elsewhere
-	alDeleteBuffers( 1, &buffer->id );
-	// if buffer attached elsewhere than error is generated
-	if(alGetError() == AL_NO_ERROR)
-		stats.buffers--;
-	else
-		DebugPrintf("sound_release_buffer: error buffer %d still attached to a source.\n",
-			buffer->id);
-	// clean up resources
-	free(buffer);
-	buffer = NULL;
-	// show stats
-	DebugPrintf("sound_release_buffer: buffers %d sources %d playing %d\n",
-				stats.buffers,stats.sources,stats.playing);
-}
-
-void sound_set_pitch( sound_source_t * source, float pitch )
-{
-	ALfloat f = pitch ? pitch : 1.0f ; // 1.0f is default
-	alSourcef( source->id, AL_PITCH, f );
-	//DebugPrintf("sound_pitch: %f\n",f);
-}
-
-void sound_volume( sound_source_t * source, long millibels )
-{
-	ALfloat f;
-	millibels = ( millibels > 0 ) ? 0 : millibels;
-	// gain is scaled to (silence) 0.0f through (no change) 1.0f
-	// millibels = hundredths of decibels (dB)
-	// defined in Dsound.h as (no change) 0 and (silence) -10,000
-	f = (ALfloat) pow(10.0, millibels/2000.0);
-	alSourcef(source->id, AL_GAIN, f);
-	//DebugPrintf("sound_volume: %d\n",millibels);
-}
-
-void sound_pan( sound_source_t * source, long _pan )
-{
-	// where pan is -1 (left) to +1 (right)
-	// must be scaled from -1 <-> +1
-	// probably need to scale down by 10,000, since dsound goes from -10000 to +10000
-	// so:
-	float pan = (float) _pan / 10000.0f;
-	alSource3f(source->id, AL_POSITION, pan, (float) sqrt(1 - pan*pan), 0.0f);
-	//DebugPrintf("sound_pan: %f\n",pan);
-}
-
 BOOL sound_is_playing( sound_source_t * source )
 {
 	ALint state;
 	alGetSourcei( source->id, AL_SOURCE_STATE, &state );
 	return (state == AL_PLAYING);
 }
+
+//
+// load resources
+//
 
 sound_buffer_t * sound_load(char *path)
 {
@@ -367,11 +326,14 @@ sound_buffer_t * sound_load(char *path)
 			int i;
 			for(i = 0; i < (int) wav_spec.size; i++)
 				wav_buffer[i] ^= 0x80; // converts S8 to U8
+			DebugPrintf("sound_buffer: converted s8 to u8\n");
 		}
 		if(wav_spec.channels == 1)
 			format = AL_FORMAT_MONO8;
 		else
 			format = AL_FORMAT_STEREO8;
+		DebugPrintf("sound_buffer: format = %s\n",
+			format == AL_FORMAT_MONO8 ? "mono8" : "stereo8" );
 	}
 	else // 16 bit
 	{
@@ -381,11 +343,14 @@ sound_buffer_t * sound_load(char *path)
 			int i;
 			for(i = 0;i < (int)wav_spec.size/2;i++)
 				((Uint16*)wav_buffer)[i] ^= 0x8000; // converts U16 to S16
+			DebugPrintf("sound_buffer: converted u16 to s16\n");
 		}
 		if(wav_spec.channels == 1)
 			format = AL_FORMAT_MONO16;
 		else
 			format = AL_FORMAT_STEREO16;
+		DebugPrintf("sound_buffer: format = %s\n",
+			format == AL_FORMAT_MONO16 ? "mono16" : "stereo16" );
 	}
 
 	// Copy data into AL Buffer 0
@@ -462,6 +427,49 @@ sound_source_t * sound_source( sound_buffer_t * buffer )
 				stats.sources,stats.buffers,stats.playing,source);
 
 	return source;
+}
+
+//
+//  release resources
+//
+
+void sound_release_source( sound_source_t * source )
+{
+	if(!source)
+		return;
+	if(source->playing)
+		stats.playing--;
+	source->playing = FALSE;
+	// deleting source implicitly detaches buffer
+	alDeleteSources( 1, &source->id );
+	// clean up resources
+	free(source);
+	// show stats
+	stats.sources--;
+	DebugPrintf("sound_release_source: buffers %d sources %d playing %d source %d\n",
+				stats.buffers,stats.sources,stats.playing,source);
+	source = NULL;
+}
+
+void sound_release_buffer( sound_buffer_t * buffer )
+{
+	if(!buffer)
+		return;
+	// buffers will not delete if they are attached to other sources
+	alGetError(); // clear error so we can see if buffer is attached elsewhere
+	alDeleteBuffers( 1, &buffer->id );
+	// if buffer attached elsewhere than error is generated
+	if(alGetError() == AL_NO_ERROR)
+		stats.buffers--;
+	else
+		DebugPrintf("sound_release_buffer: error buffer %d still attached to a source.\n",
+			buffer->id);
+	// clean up resources
+	free(buffer);
+	buffer = NULL;
+	// show stats
+	DebugPrintf("sound_release_buffer: buffers %d sources %d playing %d\n",
+				stats.buffers,stats.sources,stats.playing);
 }
 
 #endif // SOUND_OPENAL
