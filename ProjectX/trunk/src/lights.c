@@ -413,7 +413,12 @@ clear:					mov		eax, [esi]
 					}
 #endif	//USEASM
 					
-				}else{
+				}
+// taken out by methods
+// this causes the black spots when white out doesn't work during death mode
+#if 0
+				else
+				{
 					//	Special Lighting effects
 					while( vert --)
 					{
@@ -436,6 +441,7 @@ clear:					mov		eax, [esi]
 						
 					}
 				}
+#endif
 			}else if( GroupWaterInfo[group] == WATERSTATE_ALLWATER )
 			{
 				// ****************** Full Water Effect ********************************
