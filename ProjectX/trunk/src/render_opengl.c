@@ -416,9 +416,12 @@ extern float framelag;
 
 // cooler white out effect made by lion but mostly implemented as software
 // by most drivers causing the game to slow down allot
-/*
-void set_alpha_fx_states( void )
+void set_whiteout_state( void )
 {
+	disable_zbuff_write();
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE); // src, dest
+/*
 	// higher = more white; < 1.0 makes it darker
 	float whiteness = 5.0f;
 
@@ -428,26 +431,18 @@ void set_alpha_fx_states( void )
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_CONSTANT_ALPHA,GL_ONE_MINUS_CONSTANT_COLOR); // src, dest
 	glBlendColor(dst_a, dst_a, dst_a, src_a); // src, dest
-}
 */
+}
 
 // TODO - is the stencil buffer ever cleared ?
 // TODO - do we even use the stencil buffer ?
 // TODO - FSClear is meant to clear current viewport
 //        perhaps we can automate and remove need for rect arg ?
 
-// disable clearing for the whiteout effect
-extern float WhiteOut;
-
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
 	int width, height, x, y;
-	if ( WhiteOut > 0.0f )
-	{
-		FSClearDepth(rect);
-		return TRUE;
-	}
 	width = rect->x2 - rect->x1;
 	height = rect->y2 - rect->y1;
 	x = rect->x1;
@@ -467,8 +462,6 @@ BOOL FSClear(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
-	if ( WhiteOut > 0.0f )
-		return TRUE;
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;

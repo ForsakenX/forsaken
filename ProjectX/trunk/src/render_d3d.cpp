@@ -732,17 +732,9 @@ static BOOL init_render_states( render_info_t * info )
 char buf[100];
 int LastError;
 
-// disable clearing for the whiteout effect
-extern float WhiteOut;
-
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
-	if ( WhiteOut > 0.0f )
-	{
-		FSClearDepth(rect);
-		return TRUE;
-	}
 	return lpD3DDevice->Clear( ((rect) ? 1 : 0), (D3DRECT*)rect, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, OPAQUE_BLACK, 1.0f, 0 ) == D3D_OK;
 }
 
@@ -753,8 +745,6 @@ BOOL FSClearDepth(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
-	if ( WhiteOut > 0.0f )
-		return TRUE;
 	// TODO - does this function actually clear the zbuff/stencil ?
 	// this specifies values for zbuff/stencil but then states D3DCLEAR_TARGET
 	return lpD3DDevice->Clear( 0, NULL, D3DCLEAR_TARGET, OPAQUE_BLACK, 1.0f, 0 ) == D3D_OK;

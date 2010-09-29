@@ -494,6 +494,13 @@ BOOL  FullScreenViewport();
 BOOL  ClearBuffers( void );
 BOOL  ClearZBuffer( void );
 
+BOOL clear_black(void)
+{
+  if ( WhiteOut > 0.0f )
+    return TRUE;
+	return FSClearBlack();
+}
+
 BOOL RenderCurrentCamera( void );
 
 void  PlotSimplePanel( void );
@@ -1281,7 +1288,7 @@ ResizeViewport( void )
   
 	SetFOV( hfov );
 
-	FSClearBlack();
+	clear_black();
 
 	return TRUE;
 }
@@ -1328,7 +1335,7 @@ BOOL FullScreenViewport()
         return FALSE;
     }
 	SetFOV( hfov );
-	FSClearBlack();
+	clear_black();
 	return TRUE;
 }
 
@@ -1985,7 +1992,7 @@ BOOL InitView( void )
 		InitView_MyGameStatus = MyGameStatus;
 
     MyGameStatus = STATUS_InitView_0;
-    FSClearBlack();
+    clear_black();
     CameraStatus = CAMERA_AtStart;  //prevents on screen menus from being suppressed
     break;
   }
@@ -2390,7 +2397,7 @@ BOOL RenderScene( void )
 
     if ( WaitingToQuit )
     {
-      FSClearBlack();
+      clear_black();
       CenterPrint4x5Text( PLEASE_WAIT, (render_info.window_size.cy>>1)-(FontHeight>>1) , 2 );
       SelectQuitCurrentGame( NULL );
     }
@@ -2400,7 +2407,7 @@ BOOL RenderScene( void )
   case STATUS_LevelEnd:
 	DebugState("STATUS_LevelEnd\n");
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
     Browl -= framelag;
 
@@ -2517,7 +2524,7 @@ BOOL RenderScene( void )
 
     if( input_buffer_find( SDLK_SPACE ) || ( OverallGameStatus == STATUS_WaitingAfterScore ) )
     {
-		FSClearBlack();
+		clear_black();
 		HostMultiPlayerTimeout = 60.0F * 60.0F * 2.0F;
 
       if( IsHost )
@@ -2547,7 +2554,7 @@ BOOL RenderScene( void )
 	DebugState("STATUS_WaitingAfterScore\n");
 
     InitFontTransTable( TRUE );
-    FSClearBlack();
+    clear_black();
     e = 0;
 
     if( IsHost )
@@ -2645,7 +2652,7 @@ BOOL RenderScene( void )
 
   case STATUS_Joining:
 	DebugState("STATUS_Joining\n");
-    FSClearBlack();
+    clear_black();
 
     ReceiveGameMessages();
     if( IMustQuit || IsHost || ( OverallGameStatus != STATUS_Normal ) )
@@ -2738,7 +2745,7 @@ BOOL RenderScene( void )
 
     if( ( IsHost ) && ( !CurrentMenu ) && ( !CurrentMenuItem ) )
     {
-		FSClearBlack();
+		clear_black();
       ReleaseView();
       // tell them all to load up a level
       MyGameStatus = STATUS_StartingMultiplayerSynch;
@@ -2766,7 +2773,7 @@ BOOL RenderScene( void )
           }
 		  else
 		  {
-				FSClearBlack();
+				clear_black();
 		  }
 
 
@@ -2815,7 +2822,7 @@ BOOL RenderScene( void )
       break;
     }
 
-    FSClearBlack();
+    clear_black();
     e = 0;
 
       for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -2911,7 +2918,7 @@ BOOL RenderScene( void )
   case STATUS_GetPlayerNum:
 	DebugState("STATUS_GetPlayerNum\n");
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
     
     CenterPrint4x5Text( "Requesting Player Number" , (render_info.window_size.cy>>1)-(FontHeight>>1) + ( ( FontHeight+2) * (MAX_PLAYERS+1)) , 2 );
@@ -3019,7 +3026,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
 
     MenuFrozen = FALSE; // ensure that menus are OK to use once in game
     JustExitedMenu = FALSE; 
@@ -3054,7 +3061,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
 
     ReceiveGameMessages();
 
@@ -3144,7 +3151,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
 
     ReceiveGameMessages();
 
@@ -3172,7 +3179,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
 
     ReceiveGameMessages();
 
@@ -3196,7 +3203,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
 
     ReceiveGameMessages();
 
@@ -3224,7 +3231,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
 
     // Can Cope with no Bsp file!!!
@@ -3290,7 +3297,7 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
 
     InitSoundInfo( &Mloadheader );
@@ -3308,7 +3315,7 @@ BOOL RenderScene( void )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
 #ifdef NO_PRECALCULATED_CELL_COLOURS
     CreateCellColours( &Mloadheader );
@@ -3326,7 +3333,7 @@ BOOL RenderScene( void )
 	else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
-    FSClearBlack();
+    clear_black();
     ReceiveGameMessages();
 	DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
@@ -3500,7 +3507,7 @@ BOOL RenderScene( void )
   case  STATUS_StartingSinglePlayer:
 	DebugState("STATUS_StartingSinglePlayer\n");
 
-    //FSClearBlack();
+    //clear_black();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -3564,7 +3571,7 @@ BOOL RenderScene( void )
       {
         if( NewLevelNum != LevelNum )
         {
-			FSClearBlack();
+			clear_black();
           ReleaseView();
           // the level has ended or changed...
           MyGameStatus = STATUS_ViewingStats;
@@ -3579,7 +3586,7 @@ BOOL RenderScene( void )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-	FSClearBlack();
+	clear_black();
 
     ReleaseLevel();
 
@@ -3597,7 +3604,7 @@ BOOL RenderScene( void )
   case  STATUS_TitleLoadGameStartingSinglePlayer:
 	DebugState("STATUS_TitleLoadGameStartingSinglePlayer\n");
 
-    //FSClearBlack();
+    //clear_black();
     MenuAbort();
     ReleaseView();
     // tell them all to load up a level
@@ -3614,7 +3621,7 @@ BOOL RenderScene( void )
   case  STATUS_InGameLoadGameStartingSinglePlayer:
 	DebugState("STATUS_InGameLoadGameStartingSinglePlayer\n");
 
-    //FSClearBlack();
+    //clear_black();
 
     NewLevelNum = InGameLoadGameLevelNum;
     MenuAbort();
@@ -4479,6 +4486,12 @@ BOOL ClearBuffers( void )
 	dummy.x2 = CurrentCamera.Viewport.X + CurrentCamera.Viewport.Width;
 	dummy.y2 = CurrentCamera.Viewport.Y + CurrentCamera.Viewport.Height;
 
+  if ( WhiteOut > 0.0f )
+  {
+    FSClearDepth(&dummy);
+    return TRUE;
+  }
+
 	return FSClear(&dummy);
 }
 
@@ -4592,7 +4605,7 @@ BOOL RenderCurrentCamera( void )
 	// set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
-		set_alpha_states();
+		set_whiteout_state();
 	}
 
 	// display background
@@ -4981,7 +4994,7 @@ InitViewport( void )
 	
 	SetFOV( hfov );
 
-	FSClearBlack();
+	clear_black();
 
 	return TRUE;
 }
