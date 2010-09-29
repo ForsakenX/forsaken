@@ -243,8 +243,37 @@ static resize_viewport( int width, int height )
 	FSSetViewPort(&viewport);
 }
 
+// windows needs explicit retrieval of newer GL functions...
+
+#ifdef WIN32
+
+static PFNGLBLENDCOLOREXTPROC glBlendColor = NULL;
+
+void no_glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha){}
+
+static void bind_glBlendColor(void)
+{
+	if( !glBlendColor ) glBlendColor = SDL_GL_GetProcAddress( "glBlendColor" );
+	if( !glBlendColor ) glBlendColor = SDL_GL_GetProcAddress( "glBlendColorEXT" );
+	if( !glBlendColor )
+	{
+		glBlendColor = (PFNGLBLENDCOLOREXTPROC) no_glBlendColor;
+		DebugPrintf("bind_glBlendColor: failed to get proc address");
+	}
+}
+
+static void bind_gl_funcs(void)
+{
+	bind_glBlendColor();
+}
+
+#endif // WIN32
+
 BOOL render_init( render_info_t * info )
 {
+#ifdef WIN32
+	bind_gl_funcs();
+#endif // WIN32
 	print_info();
 	detect_caps();
 	set_defaults();
@@ -375,25 +404,6 @@ void set_alpha_states( void )
 	glEnable(GL_BLEND);
 	set_trans_state_9();
 }
-
-// windows needs explicit retrieval of newer GL functions...
-#if defined(WIN32) || !defined(GL_EXT_blend_color)
-
-#define GL_ONE_MINUS_CONSTANT_COLOR 0x8002
-#define GL_CONSTANT_ALPHA 0x8003
-
-typedef void (APIENTRY * glBlendColorfunc) ( GLclampf, GLclampf, GLclampf, GLclampf );
-
-static void glBlendColor(GLclampf red, GLclampf green, GLclampf blue, GLclampf alpha)
-{
-	static glBlendColorfunc f = NULL;
-	if( !f ) f = SDL_GL_GetProcAddress( "glBlendColor" );
-	if( !f ) f = SDL_GL_GetProcAddress( "glBlendColorEXT" );
-	if( !f ) return;
-	f(red, green, blue, alpha);
-}
-
-#endif
 
 extern float framelag;
 
