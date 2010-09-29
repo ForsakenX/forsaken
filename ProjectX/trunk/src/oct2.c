@@ -4592,9 +4592,8 @@ BOOL RenderCurrentCamera( void )
 	// set all the Translucent execute status flags...
 	if( WhiteOut != 0.0F)
 	{
-		set_alpha_fx_states();
+		set_alpha_states();
 	}
-
 
 	// display background
 	if ( !DisplayBackground( &Mloadheader, &CurrentCamera ) )

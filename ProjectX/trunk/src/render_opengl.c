@@ -244,7 +244,7 @@ static resize_viewport( int width, int height )
 }
 
 // windows needs explicit retrieval of newer GL functions...
-
+/*
 #ifdef WIN32
 
 static PFNGLBLENDCOLOREXTPROC glBlendColor = NULL;
@@ -268,12 +268,15 @@ static void bind_gl_funcs(void)
 }
 
 #endif // WIN32
+*/
 
 BOOL render_init( render_info_t * info )
 {
+/*
 #ifdef WIN32
 	bind_gl_funcs();
 #endif // WIN32
+*/
 	print_info();
 	detect_caps();
 	set_defaults();
@@ -411,6 +414,9 @@ extern float framelag;
 // 85 is my fps, 71 is the framelag multiplier, 0.05 is a suitable
 // alpha for that fps.
 
+// cooler white out effect made by lion but mostly implemented as software
+// by most drivers causing the game to slow down allot
+/*
 void set_alpha_fx_states( void )
 {
 	// higher = more white; < 1.0 makes it darker
@@ -423,6 +429,7 @@ void set_alpha_fx_states( void )
 	glBlendFunc(GL_CONSTANT_ALPHA,GL_ONE_MINUS_CONSTANT_COLOR); // src, dest
 	glBlendColor(dst_a, dst_a, dst_a, src_a); // src, dest
 }
+*/
 
 // TODO - is the stencil buffer ever cleared ?
 // TODO - do we even use the stencil buffer ?
