@@ -55,11 +55,8 @@ BOOL FSEndScene(){ return TRUE; }
 // prototypes
 void reset_trans( void );
 
-// TODO - gl scales textures to be square automatically
-//        maybe this should be removed ?
-// TODO - all textures should be scaled to square
-//		  other wise should get this from gl caps
-BOOL bSquareOnly = FALSE;
+// TODO	- should get this from gl caps ?
+BOOL bSquareOnly = TRUE;
 
 //
 // Texture Routines

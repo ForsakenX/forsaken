@@ -203,11 +203,11 @@ void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert )
 {
 	static LPLVERTEX TriVert[ 3 ], Orig_TriVert[ 3 ];
 	static float u[ 3 ], v[ 3 ];
-	float du, dv;
-	int j, k;
-	int zu, zv, uz, vz;
-	float su, sv;
-	int Xsize, Ysize;
+	float du = 0.0f, dv = 0.0f;
+	int j = 0, k = 0;
+	int zu = 0, zv = 0, uz = 0, vz = 0;
+	float su = 0.0f, sv = 0.0f;
+	int Xsize = 0, Ysize = 0;
 
 	Xsize = Tloadheader.Xsize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
 	Ysize = Tloadheader.Ysize[Tpage] / ( 1 << Tloadheader.CurScale[Tpage] );
@@ -217,9 +217,15 @@ void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert )
 		if( Xsize != Ysize )
 		{
 			if( Xsize > Ysize )
+			{
 				Xsize = Ysize;
+//				DebugPrintf("-- here -- shrinking x to y = %d\n",Xsize);
+			}
 			if( Ysize > Xsize )
+			{
 				Ysize = Xsize;
+//				DebugPrintf("-- here -- shrinking y to x = %d\n",Xsize);
+			}
 		}
 	}
 
@@ -246,8 +252,13 @@ void FixUV( LPTRIANGLE Tri, LPLVERTEX Vert, uint16 Tpage, LPLVERTEX Orig_Vert )
 			zv++;
 		}
 	}
+/*
 	if ( zu != 1 || zv != 1 )
-		return; // not a square texture
+	{
+		DebugPrintf("-- here -- not a square texture\n");
+	//	return; // not a square texture
+	}
+*/
 	TriVert[ 0 ] = &Vert[ Tri->v1 ];
 	TriVert[ 1 ] = &Vert[ Tri->v2 ];
 	TriVert[ 2 ] = &Vert[ Tri->v3 ];
