@@ -576,7 +576,7 @@ extern float framelag;
 // 85 is my fps, 71 is the framelag multiplier, 0.05 is a suitable
 // alpha for that fps.
 
-void set_alpha_fx_states( void )
+void set_whiteout_state( void )
 {
 	// higher = more white; < 1.0 makes it darker
 	float whiteness = 5.0f;
