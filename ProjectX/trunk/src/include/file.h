@@ -4,6 +4,16 @@
 #include "main.h"
 #include <stdio.h>
 
+struct filetime
+{
+	int year;
+	int month;
+	int day;
+	int hour;
+	int minute;
+	int second;
+};
+
 void touch_file( char* path );
 BOOL is_folder( char* path );
 int folder_exists( char *pathspec, ... );
@@ -11,6 +21,7 @@ long Get_File_Size( char * Filename );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 long Write_File( char * Filename, char * File_Buffer, long Write_Size );
 long Get_File_Size( char * Filename );
+BOOL file_time( const char * path, struct filetime *t );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
 void AddCommentToLog( char * str );
 BOOL File_Exists( char * Filename );

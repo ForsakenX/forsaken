@@ -55,6 +55,7 @@
 #include "lua_games.h"
 #include "timer.h"
 #include "render.h"
+#include "file.h"
 
 
 #define MAX_SAVEGAME_SLOTS		16
@@ -8316,14 +8317,9 @@ void LoadLevelText( MENU *Menu )
 	fclose( f );
 }
 
-// TODO - need to port filetime to file.c
 void GetSavedGameData( void )
 {
-#ifdef WIN32
-	HANDLE hfile;
-	FILETIME Time;
-	SYSTEMTIME systime;
-#endif
+	struct filetime ftime;
 	FILE	*	fp;
 	int8		buf[ 256 ];
 	int8		biker[ 256 ];
@@ -8346,24 +8342,9 @@ void GetSavedGameData( void )
 	sprintf(filename, "savegame\\%s", LoadSavedGameList.item[ LoadSavedGameList.selected_item ] ); 
 #endif
 
-#ifdef WIN32
-	hfile = CreateFile( filename,	// pointer to name of the file 
-						GENERIC_READ,	// read mode 
-						FILE_SHARE_READ,	// share mode 
-						NULL,	// pointer to security descriptor 
-						OPEN_EXISTING,	// how to create 
-						FILE_ATTRIBUTE_NORMAL,	// file attributes 
-						NULL 	// handle to file with attributes to copy  
-						);
-	if ( hfile != INVALID_HANDLE_VALUE )
-	{
-		GetFileTime( hfile,	NULL,  NULL, &Time );
-		FileTimeToSystemTime( &Time, &systime );
-		sprintf( CurrentSavedGameDate, "saved %d-%d-%d at %2d:%02d", systime.wMonth, systime.wDay, systime.wYear, systime.wHour, systime.wMinute );
-		CloseHandle(hfile);
-	}
+	if ( file_time( filename, &ftime ) )
+		sprintf( CurrentSavedGameDate, "saved %d-%d-%d at %2d:%02d", ftime.month, ftime.day, ftime.year, ftime.hour, ftime.minute );
 	else
-#endif
 	{
 #ifdef SAVEGAME_SLOTS
 		sprintf( CurrentSavedGameDate, SavedGameInfo( LoadSavedGameList.selected_item ) );

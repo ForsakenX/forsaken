@@ -32,6 +32,7 @@
 #define		S_IREAD		_S_IREAD
 #define		S_IWRITE	_S_IWRITE
 #else // ! WIN32
+#include	<time.h>      // for file_time function
 #define		O_BINARY 	0 // no such thing on unixa
 #endif
 
@@ -165,6 +166,64 @@ long Get_File_Size( char * Filename )
 
 #endif
 }
+
+#ifdef WIN32
+BOOL file_time( const char * path, struct filetime *t )
+{
+	HANDLE hfile;
+	FILETIME Time;
+	SYSTEMTIME systime;
+
+	hfile = CreateFile( path,	// pointer to name of the file 
+						GENERIC_READ,	// read mode 
+						FILE_SHARE_READ,	// share mode 
+						NULL,	// pointer to security descriptor 
+						OPEN_EXISTING,	// how to create 
+						FILE_ATTRIBUTE_NORMAL,	// file attributes 
+						NULL 	// handle to file with attributes to copy  
+						);
+	if ( hfile == INVALID_HANDLE_VALUE )
+	{
+		DebugPrintf("failed to retrieve file '%s' modification time\n", path);
+		// TODO: print windows-specific error string?
+		return FALSE;
+	}
+	GetFileTime( hfile,	NULL,  NULL, &Time );
+	FileTimeToSystemTime( &Time, &systime );
+	//sprintf( CurrentSavedGameDate, "saved %d-%d-%d at %2d:%02d", systime.wMonth, systime.wDay, systime.wYear, systime.wHour, systime.wMinute );
+	t->year = systime.wYear;
+	t->month = systime.wMonth;
+	t->day = systime.wDay;
+	t->hour = systime.wHour;
+	t->minute = systime.wMinute;
+	t->second = systime.wSecond;
+	CloseHandle(hfile);
+
+	return TRUE;
+}
+#else
+BOOL file_time( const char * path, struct filetime *t )
+{
+	struct stat st;
+	struct tm lt;
+
+	if ( stat( path, &st ) != 0 )
+	{
+		DebugPrintf("failed to retrieve file '%s' modification time\n", path);
+		perror("stat");
+		return FALSE;
+	}
+	gmtime_r( &st.st_mtime, &lt );
+	t->year = lt.tm_year;
+	t->month = lt.tm_mon;
+	t->day = lt.tm_mday;
+	t->hour = lt.tm_hour;
+	t->minute = lt.tm_min;
+	t->second = lt.tm_sec;
+
+	return TRUE;
+}
+#endif
 
 long Read_File( char * Filename, char * File_Buffer, long Read_Size )
 {
