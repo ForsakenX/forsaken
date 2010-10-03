@@ -207,7 +207,7 @@ BOOL file_time( const char * path, struct filetime *t )
 	struct stat st;
 	struct tm lt;
 
-	if ( stat( path, &st ) != 0 )
+	if ( stat( convert_path(path), &st ) != 0 )
 	{
 		DebugPrintf("failed to retrieve file '%s' modification time\n", path);
 		perror("stat");

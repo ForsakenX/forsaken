@@ -8346,6 +8346,7 @@ void GetSavedGameData( void )
 		sprintf( CurrentSavedGameDate, "saved %d-%d-%d at %2d:%02d", ftime.month, ftime.day, ftime.year, ftime.hour, ftime.minute );
 	else
 	{
+DebugPrintf("failed to read file time\n");
 #ifdef SAVEGAME_SLOTS
 		sprintf( CurrentSavedGameDate, SavedGameInfo( LoadSavedGameList.selected_item ) );
 #else
