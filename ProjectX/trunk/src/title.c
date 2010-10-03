@@ -9143,7 +9143,7 @@ void GetGamePrefs( void )
     BountyBonus                      = config_get_bool( "BountyBonus",				TRUE );
     MyUseShortPackets                = config_get_bool( "UseShortPackets",			TRUE );
     ShowTeamInfo                     = config_get_bool( "ShowTeamInfo",				TRUE );
-	render_info.fullscreen			 = config_get_bool( "FullScreen",				TRUE );
+	render_info.fullscreen			 = config_get_bool( "FullScreen",				FALSE );
 
 	memset( MyPickupValid, 0, sizeof(MyPickupValid) );
 
