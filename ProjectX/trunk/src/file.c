@@ -214,8 +214,8 @@ BOOL file_time( const char * path, struct filetime *t )
 		return FALSE;
 	}
 	gmtime_r( &st.st_mtime, &lt );
-	t->year = lt.tm_year;
-	t->month = lt.tm_mon;
+	t->year = lt.tm_year + 1900;
+	t->month = lt.tm_mon + 1;
 	t->day = lt.tm_mday;
 	t->hour = lt.tm_hour;
 	t->minute = lt.tm_min;
