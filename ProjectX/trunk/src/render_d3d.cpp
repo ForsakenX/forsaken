@@ -681,10 +681,11 @@ void set_alpha_states( void )
 }
 
 // old lpD3DSpcFxTransCmdBuf
-void set_alpha_fx_states( void )
+void set_whiteout_state( void )
 {
-    STATE( D3DRS_ALPHABLENDENABLE, TRUE );
-	// TODO - need some type of states here that would create white out affect
+	disable_zbuff_write();
+	STATE( D3DRS_ALPHABLENDENABLE, TRUE );
+	set_trans_state_9();
 }
 
 /* bjd - CHECK
