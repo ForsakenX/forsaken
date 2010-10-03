@@ -191,26 +191,6 @@ BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	Tloadheader->lpTexture[n] = lpSrcTexture;
 	lpSrcTexture = NULL;
 
-	//  if( bSquareOnly )
-  {
-    if( Tloadheader->Xsize[n] != Tloadheader->Ysize[n] )
-    {
-      if( Tloadheader->Xsize[n] > Tloadheader->Ysize[n] )
-      {
-        Tloadheader->Xsize[n] = Tloadheader->Ysize[n];
-//        DebugPrintf("-- here -- shrinking x to y = %d\n",Tloadheader->Xsize[n]);
-      }
-      if( Tloadheader->Ysize[n] > Tloadheader->Xsize[n] )
-      {
-        Tloadheader->Ysize[n] = Tloadheader->Xsize[n];
-//        DebugPrintf("-- here -- shrinking y to x = %d\n",Tloadheader->Xsize[n]);
-      }
-    }
-  }
-
-	Tloadheader->Ysize[n]--;
-	Tloadheader->Xsize[n]--;
-
 	return TRUE;
 }
 

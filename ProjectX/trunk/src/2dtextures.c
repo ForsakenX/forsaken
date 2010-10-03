@@ -46,7 +46,7 @@ int8	*	VduFont512	= "f512x384.off";
 int8		FontFile[ 16 ];
 int8		TitleFontFile[ 16 ];
 
-float VduScaleX = 1.0f, VduScaleY = 1.0f;
+float VduScaleX, VduScaleY;
 
 
 	FRAME_INFO	*	Arc_Header = NULL;
@@ -210,23 +210,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 	int8			TempFilename[ 256 ];
 	OFF_BUFFER		*Placeholder_Off_Buffer;
 	
-//  if( bSquareOnly )
-  {
-    if( xsize != ysize )
-    {
-      if( xsize > ysize )
-      {
-        xsize = ysize;
-//        DebugPrintf("-- here -- shrinking x to y = %d\n",xsize);
-      }
-      if( ysize > xsize )
-      {
-        ysize = xsize;
-//        DebugPrintf("-- here -- shrinking y to x = %d\n",xsize);
-      }
-    }
-  }
-
 	Frm_Info = malloc( sizeof( FRAME_INFO ) );							// Allocate memory for return structure
 	if( Frm_Info == NULL ) return( NULL );
 
@@ -384,8 +367,8 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 	strcpy ( &TitleFontFile[ 0 ], VduFont512 );
 
 	//
-//	VduScaleX = (float)floor((double)((float)render_info.window_size.cx / 512.0F));
-//	VduScaleY = (float)floor((double)((float)render_info.window_size.cy / 384.0F));
+	VduScaleX = (float)floor((double)((float)render_info.window_size.cx / 512.0F));
+	VduScaleY = (float)floor((double)((float)render_info.window_size.cy / 384.0F));
 
 	last_tpage = 0;
 
