@@ -4,8 +4,8 @@ FLAGS=-pipe -g -fstack-protector-all
 CFLAGS+=-Wall -Wextra -DNET_ENET_2 -DDEBUG_ON -I. -I../ -I../include -I/usr/include/SDL
 
 LIBS=-lenet
-INCLUDE=../net.h ../util.h ../render.h ../include/main.h ../include/file.h ../include/new3d.h
-SRC=client.c ../util.c ../file.c ../net_enet_2.c
+INCLUDE=../net.h ../util.h ../render.h ../include/main.h ../include/file.h ../include/new3d.h ../include/xmem.h
+SRC=client.c ../util.c ../file.c ../net_enet_2.c ../xmem.c
 OBJS=$(patsubst %.c,%.o,$(SRC))
 
 BIN=client
