@@ -574,6 +574,7 @@ typedef enum {
 	YOUR_ID,         // host tells you your id when you connect to them
 	MY_ID,           // player tells new player his id on connection
 	ACK_ID,          // player tells another player that he now has his id
+	ACK_MY_ID,       // player tells host that he has his id
 } p2p_event_t;
 
 typedef struct {
@@ -737,7 +738,8 @@ static void lost_connection( ENetPeer * peer )
 		{
 			// we lost a player
 			network_event( NETWORK_LEFT,  peer_data->player );
-			destroy_player( peer_data->player );
+			if( peer_data->player )
+				destroy_player( peer_data->player );
 			peer_data->player = NULL;
 
 			// host left the game
@@ -943,6 +945,14 @@ static void new_packet( ENetEvent * event )
 					p2p_id_packet_t * packet = (p2p_id_packet_t*) event->packet->data;
 					my_id = packet->id;
 					DebugPrintf("network: host says my id is %d\n", my_id );
+					// ack my id
+					{
+						p2p_packet_t packet;
+						packet.type = ACK_MY_ID;
+						enet_send( peer, &packet, sizeof(packet),
+							convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+						DebugPrintf("network: acking my id\n");
+					}
 				}
 				else
 				{
@@ -1004,7 +1014,14 @@ static void new_packet( ENetEvent * event )
 				peer_data->connect_port = packet->number;
 				DebugPrintf("network: player %d says their connect port is %d\n",
 					peer_data->id, peer_data->connect_port );
-				if( i_am_host )
+			}
+			break;
+		case ACK_MY_ID:
+			if( i_am_host )
+			{
+				DebugPrintf("network: player %d has acked their id\n",
+					peer_data->id);
+				if( peer_data->connect_port )
 				{
 					// tell everyone to connect to new player
 					p2p_connect_packet_t packet;
@@ -1018,6 +1035,16 @@ static void new_packet( ENetEvent * event )
 					DebugPrintf("network: telling everyone to connect to player %d\n",
 						peer_data->id);
 				}
+				else
+				{
+					DebugPrintf("network security: %s acked their id before telling me their connect port!\n",
+						address_to_str(&peer->address));
+				}
+			}
+			else
+			{
+					DebugPrintf("network security: %s acked their id but I'm not the host!\n",
+						address_to_str(&peer->address));
 			}
 			break;
 		case NEW_PLAYER:
@@ -1066,10 +1093,6 @@ static void new_packet( ENetEvent * event )
 
 				if( peer_data->state == PLAYING )
 					network_event( NETWORK_NAME, peer_data->player );
-
-				// special case for first player in game
-				if( i_am_host && network_players.length == 0 )
-					new_player( peer );
 			}
 			break;
 		case DISCONNECT:
