@@ -1,7 +1,7 @@
 CC=gcc
 
 FLAGS=-pipe -g -fstack-protector-all
-CFLAGS+=-Wall -Wextra -DNET_ENET_2 -DDEBUG_ON -I. -I../ -I../include -I/usr/include/SDL
+CFLAGS+=$(FLAGS) -Wall -Wextra -D_FORTIFY_SOURCE=2 -DNET_ENET_2 -DDEBUG_ON -I. -I../ -I../include -I/usr/include/SDL
 
 LIBS=-lenet
 INCLUDE=../net.h ../util.h ../render.h ../include/main.h ../include/file.h ../include/new3d.h ../include/xmem.h
