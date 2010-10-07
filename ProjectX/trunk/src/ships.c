@@ -128,6 +128,7 @@ extern	MATRIX	MATRIX_Identity;
 extern	VECTOR	SlideRight;
 extern	VECTOR	SlideUp;
 extern	VECTOR	Forward;
+extern	float	real_framelag;
 extern	float	framelag;
 extern	float	Oldframelag;  
 extern	float	Demoframelag;  
@@ -2407,14 +2408,14 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 		RearCameraDisable = TRUE;
 	}
 	
-	ShipPnt->Timer -= framelag;
+	ShipPnt->Timer -= real_framelag;
 
 	ShipPnt->Object.Angle.y += ( MaxTurnSpeed * 0.04F ) * framelag;
 	ShipPnt->Object.Angle.x += ( MaxTurnSpeed * 0.03F ) * framelag;
 	ShipPnt->Object.Angle.z += ( MaxTurnSpeed * 0.02F ) * framelag;
 	Impact = CarryonDeathMove( ShipPnt , i );
 
-	if( (ShipPnt->Timer < -120.0F) || Impact )
+	if( (ShipPnt->Timer < (RESPAWN_TIMER*0.5f)) || Impact )
 	{
 		ScatterDir = ShipPnt->LastMove;
 		NormaliseVector( &ScatterDir );
@@ -2456,12 +2457,13 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		// commented out because it was causing conflicts with watch mode
 	//	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
 	//	Ships[MAX_PLAYERS].enable = 1;		// Turn Off the remote camera...
-		ShipPnt->Timer -= framelag;
+		ShipPnt->Timer -= real_framelag;
+
 		WhiteOut += framelag;
 		if( WhiteOut >= 512.0F )
 			WhiteOut = 512.0F;
-		if( ShipPnt->Timer < -250.0F )
-			ShipPnt->Timer = -251.0F;
+		if( ShipPnt->Timer < RESPAWN_TIMER )
+			ShipPnt->Timer = RESPAWN_TIMER - 1;
 
 		// hit respawn key
 		if( ( ShipPnt->Timer < RESPAWN_TIMER ) && ( AnyKeyReleased() != 0 ) )
@@ -2535,13 +2537,13 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 	input_grab(FALSE);
 	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
 	Ships[MAX_PLAYERS].enable = 1;		// Turn On the remote camera...
-	ShipPnt->Timer -= framelag;
+	ShipPnt->Timer -= real_framelag;
 	WhiteOut += framelag;
 	if( WhiteOut >= 512.0F )
 		WhiteOut = 512.0F;
-	if( ( ShipPnt->Timer < -120.0F ) && ( AnyKeyReleased() != 0 ) )
+	if( ( ShipPnt->Timer < (RESPAWN_TIMER*0.5f) ) && ( AnyKeyReleased() != 0 ) )
 	{
-		ShipPnt->Timer = -121.0F;
+		ShipPnt->Timer = (RESPAWN_TIMER*0.5f) - 1;
 		// All Lives have been lost.......
 		SpecialDestroyGame();
 

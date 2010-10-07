@@ -24,7 +24,7 @@
 
 #define DEG2RAD(D)				((D) * PI / 180.0F)
 
-#define RESPAWN_TIMER -250.0F
+#define RESPAWN_TIMER -3.5F // = -250.0F / 71.0f - framelag hack reversal
 
 //#define	SHIP_RADIUS	( 256.0F * GLOBAL_SCALE )
 #define	SHIP_RADIUS	( 300.0F * GLOBAL_SCALE )
