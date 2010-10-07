@@ -2349,6 +2349,8 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	VECTOR	ScatterDir;
 	BOOL	Impact = FALSE;
 
+	input_grab(FALSE);
+
 	control_ship( NULL, &control );
 	// fudge to stop you turboing while your dieing...
 	control.turbo = 0;
@@ -2444,6 +2446,7 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 /*===================================================================ÄÄÄ*/
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
+	input_grab(FALSE);
 	if( GodMode )
 	{
 		Current_Camera_View = WhoIAm;		// set it back to me...
@@ -2465,6 +2468,8 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 		// hit respawn key
 		if( ( ShipPnt->Timer < RESPAWN_TIMER ) && ( AnyKeyReleased() != 0 ) )
 		{
+			input_grab(TRUE);
+
 			// single player
 			if( MyGameStatus == STATUS_SinglePlayer )
 			{
@@ -2529,6 +2534,7 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 /*===================================================================ÄÄÄ*/
 void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 {
+	input_grab(FALSE);
 	Current_Camera_View = MAX_PLAYERS;	// set it back to Remote Camera..
 	Ships[MAX_PLAYERS].enable = 1;		// Turn On the remote camera...
 	ShipPnt->Timer -= framelag;
@@ -2554,6 +2560,8 @@ void ShipMode4( GLOBALSHIP * ShipPnt , BYTE i )
 void WatchMode5( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	ScatterDir;
+
+	input_grab(FALSE);
 
 	// clear any white out
 	WhiteOut = 0.0F;

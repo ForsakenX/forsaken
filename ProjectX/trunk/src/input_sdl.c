@@ -22,8 +22,9 @@ extern void CleanUpAndPostQuit(void);
 
 void input_grab( BOOL grab )
 {
-	/* took this out cause a player asked... if there is issues add it back...
-	// always acquire and hide mouse if in fullscreen
+	// 1. always acquire and hide mouse if in fullscreen
+	// 2. took this out cause a player asked... if there is issues add it back...
+	// 3. don't remember who asked or why ? need to enable again.
 	if( render_info.fullscreen )
 	{
 		input_grabbed = TRUE;
@@ -31,7 +32,6 @@ void input_grab( BOOL grab )
 		SDL_ShowCursor( FALSE );
 		return;
 	}
-	*/
 	// window mode
 	input_grabbed = grab;
 	SDL_WM_GrabInput( grab==1 ? SDL_GRAB_ON : SDL_GRAB_OFF );
