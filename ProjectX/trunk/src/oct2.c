@@ -2667,21 +2667,36 @@ BOOL RenderScene( void )
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
-    CenterPrint4x5Text( "Pickups Left   " , (render_info.window_size.cy>>1)-(FontHeight<<2), 8 );
+{
+	int i;
+	RENDEROBJECT ro;
+	FSCreateDynamic2dVertexBuffer(&ro, 32767);
+	FSCreateIndexBuffer(&ro, 32767*3);
+
+
+    CenterPrint4x5Text( "Pickups Left   " , (render_info.window_size.cy>>1)-(FontHeight<<2), GRAY );
     Printuint16( (uint16) Ships[WhoIAm].Pickups , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<2), 2 );
 
-    CenterPrint4x5Text( "RegenSlots Left" , (render_info.window_size.cy>>1)-(FontHeight<<1), 8 );
+    CenterPrint4x5Text( "RegenSlots Left" , (render_info.window_size.cy>>1)-(FontHeight<<1), GRAY );
     Printuint16( (uint16) Ships[WhoIAm].RegenSlots , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)-(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "Mines Left     " , (render_info.window_size.cy>>1), 8 );
+    CenterPrint4x5Text( "Mines Left     " , (render_info.window_size.cy>>1), GRAY );
     Printuint16( (uint16) Ships[WhoIAm].Mines , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1), 2 );
 
-    CenterPrint4x5Text( "Triggers Left  " , (render_info.window_size.cy>>1)+(FontHeight<<1), 8 );
+    CenterPrint4x5Text( "Triggers Left  " , (render_info.window_size.cy>>1)+(FontHeight<<1), GRAY );
     Printuint16( (uint16) Ships[WhoIAm].Triggers , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<1), 2 );
 
-    CenterPrint4x5Text( "TrigVars Left  " , (render_info.window_size.cy>>1)+(FontHeight<<2), 8 );
+    CenterPrint4x5Text( "TrigVars Left  " , (render_info.window_size.cy>>1)+(FontHeight<<2), GRAY );
     Printuint16( (uint16) Ships[WhoIAm].TrigVars , (render_info.window_size.cx>>1)+((17*FontWidth>>1)), (render_info.window_size.cy>>1)+(FontHeight<<2), 2 );
-    
+ 
+
+	DisplayNonSolidScrPolys(&ro);
+	DisplaySolidScrPolys(&ro);
+	FSReleaseRenderObject(&ro);
+	render_flip(&render_info);
+	ScreenPolyProcess();
+}
+
     // wait for all the pickup and mine stuff to be sent to me.....
     if( ( Ships[WhoIAm].Pickups == 0 ) && ( Ships[WhoIAm].Mines == 0 ) && ( Ships[WhoIAm].RegenSlots == 0 ) &&
       ( Ships[WhoIAm].Triggers == 0 ) && ( Ships[WhoIAm].TrigVars == 0 ) && OverallGameStatus == STATUS_Normal)
@@ -2691,6 +2706,7 @@ BOOL RenderScene( void )
         SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_JoiningTeamGame, 0);
 
       MyGameStatus = OverallGameStatus;
+			input_grab( TRUE );
 	  
 #ifdef DEMO_SUPPORT
       QueryPerformanceCounter((LARGE_INTEGER *) &GameStartedTime);
@@ -2806,6 +2822,7 @@ BOOL RenderScene( void )
     }
     SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     GameStatus[WhoIAm] = MyGameStatus;
+    PrintInitViewStatus( MyGameStatus );
     break;
 
 
@@ -3021,8 +3038,8 @@ BOOL RenderScene( void )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else
-	{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
@@ -3045,32 +3062,34 @@ BOOL RenderScene( void )
     
     InitFont();
 
+/*
     MyGameStatus = STATUS_InitView_1;
-    //PrintInitViewStatus( MyGameStatus );
+
     break;
   
-
   case STATUS_InitView_1:
 	DebugState("STATUS_InitView_1\n");
+
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else
-	{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
 
     ReceiveGameMessages();
+*/
 
     ReMakeSimplePanel = TRUE;
     
-	//    InitVisiExecList( lpDev );
+		// InitVisiExecList( lpDev );
     InitSkinExecs();
     InitPortalExecs();
-    InitRenderBufs(/* lpDev */); // bjd
+    InitRenderBufs();
 
     // Init the Texture Handler
     if( !InitTload( &Tloadheader ) )
@@ -3087,10 +3106,8 @@ BOOL RenderScene( void )
       return FALSE; // the model and visipoly data
     }
 
-
     // Can Cope with no .Wat file!!!
     PreWaterLoad( (char*) &WaterNames[LevelNum][0] );
-    
     
     if( OnceOnlyChangeLevel )
     {
@@ -3122,20 +3139,28 @@ BOOL RenderScene( void )
 
     EnableRelavantModels( &ModelNames[0] );
 
-	if( !PreInitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
-	{
-		SeriousError = TRUE;
-		return FALSE;
-	}
+		if( !PreInitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
+		{
+			SeriousError = TRUE;
+			return FALSE;
+		}
 
-	if( !Load_All_Off_Files( &OffsetFiles[ 0 ] ) )
-	{
-		SeriousError = TRUE;
-		return FALSE;
-	}
+		if( !Load_All_Off_Files( &OffsetFiles[ 0 ] ) )
+		{
+			SeriousError = TRUE;
+			return FALSE;
+		}
 
+    //  Load in And if nescessary ReScale Textures... 
+    if( !Tload( &Tloadheader ) )
+    {
+      SeriousError = TRUE;
+      return FALSE;
+    }
+
+/*
     MyGameStatus = STATUS_InitView_2;
-    //PrintInitViewStatus( MyGameStatus );
+    PrintInitViewStatus( MyGameStatus );
     break;
   
 
@@ -3146,21 +3171,14 @@ BOOL RenderScene( void )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else
-	{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
 
     ReceiveGameMessages();
-
-    //  Load in And if nescessary ReScale Textures... 
-    if( !Tload( &Tloadheader ) )
-    {
-      SeriousError = TRUE;
-      return FALSE;
-    }
 
     MyGameStatus = STATUS_InitView_3;
     PrintInitViewStatus( MyGameStatus );
@@ -3174,20 +3192,23 @@ BOOL RenderScene( void )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else
-	{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
 
     ReceiveGameMessages();
+*/
 
-      if( !InitModel( /*lpDev,*/ &ModelNames[0] ) ) // bjd
-        {
-        SeriousError = TRUE;
-        return FALSE;               // all 3d models....
-      }
+    if( !InitModel( &ModelNames[0] ) )
+    {
+       SeriousError = TRUE;
+       return FALSE;               // all 3d models....
+    }
+
+/*
     MyGameStatus = STATUS_InitView_4;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -3199,13 +3220,16 @@ BOOL RenderScene( void )
     if( IsHost )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-    }else{
+    }
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
 
     ReceiveGameMessages();
+*/
 
     if( !Mload( (char*) &LevelNames[LevelNum][0] , &Mloadheader ) )
     {
@@ -3215,6 +3239,7 @@ BOOL RenderScene( void )
 
     InitVisiStats( &Mloadheader );
 
+/*
     MyGameStatus = STATUS_InitView_5;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -3227,12 +3252,14 @@ BOOL RenderScene( void )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
     ReceiveGameMessages();
+*/
 
     // Can Cope with no Bsp file!!!
 #ifdef LOAD_ZBSP
@@ -3280,6 +3307,7 @@ BOOL RenderScene( void )
   
     SetUpShips();
 
+/*
     MyGameStatus = STATUS_InitView_6;
     PrintInitViewStatus( MyGameStatus );
 
@@ -3292,16 +3320,18 @@ BOOL RenderScene( void )
     {
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
     }
-	else
-	{
+		else
+		{
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
     }
 
     clear_black();
     ReceiveGameMessages();
+*/
 
     InitSoundInfo( &Mloadheader );
-    
+ 
+/*   
     MyGameStatus = STATUS_InitView_7;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -3312,14 +3342,18 @@ BOOL RenderScene( void )
 
     if( IsHost )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-	else
+		else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
     clear_black();
     ReceiveGameMessages();
+*/
+
 #ifdef NO_PRECALCULATED_CELL_COLOURS
     CreateCellColours( &Mloadheader );
 #endif
+
+/*
     MyGameStatus = STATUS_InitView_8;
     PrintInitViewStatus( MyGameStatus );
     break;
@@ -3330,24 +3364,28 @@ BOOL RenderScene( void )
 
     if( IsHost )
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
-	else
+		else
       SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
 
     clear_black();
     ReceiveGameMessages();
-	DebugState("STATUS_InitView_9\n");
+
+		DebugState("STATUS_InitView_9\n");
     MyGameStatus = STATUS_InitView_9;
     PrintInitViewStatus( MyGameStatus );
+*/
 
     InitShipSpeeds();
 
     // this will cause a lovely game loop and crash the game
-	// so don't remove this !!!!!!!!!
+		// so don't remove this !!!!!!!!!
     if( InitView_MyGameStatus != STATUS_InitView_0 )
-		MyGameStatus = InitView_MyGameStatus;
+			MyGameStatus = InitView_MyGameStatus;
 
-	//
-	input_grab( TRUE );
+/*
+		//
+		input_grab( TRUE );
+*/
 
     break;
 
@@ -3463,6 +3501,8 @@ BOOL RenderScene( void )
     GodModeOnceOnly = TRUE;
 
     MyGameStatus = ChangeLevel_MyGameStatus;
+
+    PrintInitViewStatus( MyGameStatus );
 
     break;
 
@@ -3586,7 +3626,7 @@ BOOL RenderScene( void )
   case STATUS_ViewingStats:
 	DebugState("STATUS_ViewingStats\n");
 
-	clear_black();
+		clear_black();
 
     ReleaseLevel();
 
@@ -3598,7 +3638,7 @@ BOOL RenderScene( void )
     MenuAbort();
     MenuRestart( &MENU_NEW_NumberOfCrystals );
     CameraStatus = CAMERA_AtRightVDU;
-        break;
+    break;
 
 
   case  STATUS_TitleLoadGameStartingSinglePlayer:
@@ -5328,7 +5368,11 @@ void PrintInitViewStatus( BYTE Status )
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )
-		CenterPrint4x5Text( InitViewMessages[i], ( render_info.window_size.cy >> 2 ) + ( i * ( FontHeight + ( FontHeight>>1 ) ) ) , GREEN );
+		CenterPrint4x5Text(
+			InitViewMessages[i],
+			( render_info.window_size.cy >> 2 ) + 
+			( i * ( FontHeight + ( FontHeight>>1 ) ) ) , 
+			GREEN );
 	DisplayNonSolidScrPolys(&ro);
 	DisplaySolidScrPolys(&ro);
 	FSReleaseRenderObject(&ro);
