@@ -137,8 +137,6 @@ extern	SLIDER	DemoEyesSelect;
 extern	LONGLONG	GameElapsedTime;
 #endif
 
-extern	volatile DWORD	XTimer;
-
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	uint16	FirstPickupUsed;
 extern	float	PickupMessageCount;
