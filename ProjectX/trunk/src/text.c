@@ -916,7 +916,7 @@ typedef struct
 	{
 		if ( !strcasecmp( token, "NewMessage" ) )
 		{
-			rv = GetMessageName())
+			rv = GetMessageName();
 			if (!rv)
 				continue;
 			if (rv == -1)
@@ -967,7 +967,7 @@ typedef struct
 			if ( fscanf( f, " %80s", token ) != 1 )
 				break;
 			IgnoreMessage = FALSE;
-			while ( _strcmp( token, "EndVars" ) 
+			while ( _strcmp( token, "EndVars" ) )
 			{
 	 			for ( j = 0; MessageVarLookup[ j ].keyword; j++ )
 				{
