@@ -2897,6 +2897,8 @@ BOOL RenderScene( void )
       NextworkOldBikeNum = -1;
       InitFontTransTable();
 
+			input_grab( TRUE );
+
     }
 	else
 	{
@@ -3583,6 +3585,8 @@ BOOL RenderScene( void )
     GameStatus[WhoIAm] = MyGameStatus;
     LevelTimeTaken = 0.0F;
     timer_run( &level_time );
+
+		input_grab( TRUE );
 
     break;
 
