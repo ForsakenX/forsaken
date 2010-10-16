@@ -371,8 +371,12 @@ void CleanUpAndPostQuit(void)
 	// cleanup networking
 	network_cleanup();
 
+#ifdef SOUND_SUPPORT
+
 	// cleanup sound system
 	sound_destroy();
+
+#endif
 
 	// should come last
 	SDL_Quit();
