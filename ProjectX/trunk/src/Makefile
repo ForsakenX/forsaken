@@ -30,10 +30,22 @@ else
 	LDFLAGS+=-s
 endif
 
+ifeq ($(MINGW),1)
+
+CFLAGS += -DMINGW `sdl-config --prefix=/mingw --cflags`
+LIBS += -lm -lglu32 -lopengl32 -lenet `sdl-config --prefix=/mingw --cflags --libs`
+LIBS += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
+
+else
+
+CFLAGS+= -I/usr/include/SDL -I/usr/include/lua -I/usr/include/AL
+
 ifeq ($(STATIC),1)
 	LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet -llua -llua-mime -llua-socket -Wl,-dy -lm -lpng12 -lz -lopenal
 else
 	LIBS=-lSDL -lGL -lGLU -lenet -llua -llua-mime -llua-socket -lm -lpng12 -lz -lopenal
+endif
+
 endif
 
 ifeq ($(PROFILE),1)
@@ -59,14 +71,14 @@ else
 	CFLAGS+= -DOPENGL1
 endif
 
+# ProjectX-specific includes
+CFLAGS += -I. -Iinclude -Iai/aiinclude
+
 # ProjectX-specific macros
 CFLAGS+= -DOPENGL -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
 ifeq ($(DEBUG),1)
 	CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT 
 endif
-
-# Include paths
-CFLAGS+= -I/usr/include/SDL -I. -Iinclude -Iai/aiinclude -I/usr/include/lua -I/usr/include/AL
 
 INCLUDE=$(wildcard include/*.h) $(wildcard ai/aiinclude/*.h)
 SRC=$(wildcard *.c) $(wildcard ai/*.c)
