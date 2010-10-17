@@ -765,6 +765,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 			renderObject->textureGroups[i].texture = NULL;
 		}
 	}
+	renderObject->numTextureGroups = 0;
 }
 
 //

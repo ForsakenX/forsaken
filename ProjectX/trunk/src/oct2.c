@@ -2670,6 +2670,7 @@ BOOL RenderScene( void )
 {
 	int i;
 	RENDEROBJECT ro;
+	ZEROMEM(ro);
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 
@@ -5369,6 +5370,7 @@ void PrintInitViewStatus( BYTE Status )
 {
 	int i;
 	RENDEROBJECT ro;
+	ZEROMEM(ro);
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
 	FSCreateIndexBuffer(&ro, 32767*3);
 	for( i = 0 ; i < ( Status - STATUS_InitView_0 )+1 ; i ++ )

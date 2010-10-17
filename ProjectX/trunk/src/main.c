@@ -402,9 +402,17 @@ extern BYTE MyGameStatus;
 extern BOOL sdl_init_video( void );
 extern BOOL sdl_init( void );
 
+#include "mload.h"
+extern RENDEROBJECT Portal_Execs[ MAXGROUPS ];
+extern RENDEROBJECT Skin_Execs[ MAXGROUPS ];
+extern RENDEROBJECT RenderBufs[4];
+
 static BOOL AppInit( char * lpCmdLine )
 {
 	ZEROMEM(render_info);
+	ZEROMEM(RenderBufs);
+	ZEROMEM(Portal_Execs);
+	ZEROMEM(Skin_Execs);
 
 	render_info.vsync = FALSE;
 
