@@ -23,17 +23,22 @@ CFLAGS=$(FLAGS)
 LDFLAGS=$(FLAGS)
 
 ifeq ($(DEBUG),1)
-	FLAGS+= -g -fstack-protector-all
-	CFLAGS+=-Wall -Wextra -D_FORTIFY_SOURCE=2
+	FLAGS+= -g 
+	CFLAGS+=-Wall -Wextra 
 else
 	CFLAGS+=-O2
 	LDFLAGS+=-s
 endif
 
+ifeq ($(SSP),1)
+	FLAGS+= -fstack-protector-all
+	CFLAGS+= -D_FORTIFY_SOURCE=2
+endif
+
 ifeq ($(MINGW),1)
 
-CFLAGS += -DMINGW `sdl-config --prefix=/mingw --cflags`
-LIBS += -lm -lglu32 -lopengl32 -lenet `sdl-config --prefix=/mingw --cflags --libs`
+CFLAGS += -DMINGW `sdl-config --cflags`
+LIBS += -lm -lglu32 -lopengl32 -lenet `sdl-config --libs`
 LIBS += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
 
 else
