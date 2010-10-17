@@ -16,6 +16,8 @@ extern BYTE MyGameStatus;
 extern render_info_t render_info;
 extern void CleanUpAndPostQuit(void);
 
+int Num_Joysticks = 0;
+
 //////////////////////////////////////////////
 // Generic Routines
 //////////////////////////////////////////////
@@ -480,8 +482,7 @@ BOOL joysticks_init(void)
 		// TODO
 		// JoystickInfo[i].NumBalls = SDL_JoystickNumBalls(joy);
 
-		JoystickInfo[i].Name = malloc(strlen( SDL_JoystickName(i) ) + 1);
-		strcpy( JoystickInfo[i].Name, SDL_JoystickName(i) );
+		JoystickInfo[i].Name = strdup( SDL_JoystickName(i) );
 
 		DebugPrintf( 
 			"joysticks_init: joystick (%d), name='%s', axises=%d, buttons=%d, hats=%d\n", 
@@ -556,7 +557,7 @@ BOOL joysticks_init(void)
 BOOL joysticks_cleanup( void )
 {
 	int i, j, k;
-	for (i = 0; i < Num_Joysticks; i++)
+	for (i = 0; i < MAX_JOYSTICKS; i++)
 	{
 		JoystickInfo[i].assigned = FALSE;
 		JoystickInfo[i].connected = FALSE;
