@@ -43,7 +43,6 @@ extern  BYTE  MyGameStatus;
 extern  float framelag;
 extern  float NitroFuel;
 extern USERCONFIG *player_config;
-extern int  Num_Joysticks;
 
 extern  float MaxMoveSpeed;
 extern  float MoveAccell;

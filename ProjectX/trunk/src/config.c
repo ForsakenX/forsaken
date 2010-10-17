@@ -19,7 +19,6 @@
 #include "xmem.h"
 #include "util.h"
 
-extern int	Num_Joysticks;
 extern LIST BikeList;
 extern LIST BikeComputer;
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];

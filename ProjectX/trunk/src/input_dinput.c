@@ -11,6 +11,8 @@
 #include <windows.h>
 #include "dinput.h"
 
+int Num_Joysticks = 0;
+
 BOOL  IsEqualGuid(GUID *lpguid1, GUID *lpguid2)
 {
    return (

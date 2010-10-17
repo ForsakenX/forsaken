@@ -101,7 +101,7 @@ mouse_state_t mouse_states[ INPUT_BUFFERS ];
 #define MAX_JOYSTICK_TEXT		128
 #define MAX_JOYNAME				16
 
-int Num_Joysticks;
+extern int Num_Joysticks;
 
 typedef struct {
 	BOOL assigned;

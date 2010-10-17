@@ -188,7 +188,6 @@ extern DIJOYSTATE2		js[ INPUT_BUFFERS ][ MAX_JOYSTICKS ];
 
 extern char *ShipActionText[];
 extern JOYSTICKINFO	JoystickInfo[MAX_JOYSTICKS];	
-extern int	Num_Joysticks;
 extern TLOADHEADER	Tloadheader;
 extern int	TeamMembers[MAX_TEAMS];
 extern	int16	ShowPortal;
