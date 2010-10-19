@@ -591,17 +591,9 @@ void set_whiteout_state( void )
 // TODO - FSClear is meant to clear current viewport
 //        perhaps we can automate and remove need for rect arg ?
 
-// disable clearing for the whiteout effect
-extern float WhiteOut;
-
 // clears color/zbuff same time to opaque black
 BOOL FSClear(XYRECT * rect)
 {
-	if ( WhiteOut > 0.0f )
-	{
-		FSClearDepth(rect);
-		return;
-	}
 	int width = rect->x2 - rect->x1;
 	int height = rect->y2 - rect->y1;
 	int x = rect->x1;
@@ -621,8 +613,6 @@ BOOL FSClear(XYRECT * rect)
 
 BOOL FSClearBlack(void)
 {
-	if ( WhiteOut > 0.0f )
-		return;
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 	return TRUE;
