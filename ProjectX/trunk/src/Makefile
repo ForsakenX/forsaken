@@ -26,7 +26,7 @@ ifeq ($(DEBUG),1)
 	FLAGS+= -g 
 	CFLAGS+=-Wall -Wextra 
 else
-	CFLAGS+=-O2
+	CFLAGS+=-O3
 	LDFLAGS+=-s
 endif
 
