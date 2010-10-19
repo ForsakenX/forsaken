@@ -4916,6 +4916,7 @@ BOOL DisplayTitle(void)
 		return FALSE;
 	}
 
+	FSClearBlack();
 	if (ClearBuffers() != TRUE )
 	{
 		Msg( "DisplayTitle() : ClearBuffers failed\n" );
