@@ -270,28 +270,30 @@ void app_mouse_motion( SDL_MouseMotionEvent motion )
 	mouse_state.yrel += motion.yrel;
 }
 
-// the motion event only goes off if we move the mouse
-// hence we need to clear out the old values each loop
-// other wise absence of movement will cause old value to stick around
-// and the player will continue to move by the last motion
-
-// the reset timer was added because the mouse only updates at about 125fps (8ms)
-// so most of the time we render ahead of the input events from the mouse
-// so the mouse ends up with 0's most of the time 
-// the game was designed to have duplicate mouse input events during those periods
-// other wise mouse responsiveness drops off greatly
-
 extern float real_framelag;
-void reset_mouse_motion( void )
+mouse_state_t* sdl_read_mouse(void)
 {
+	static mouse_state_t state;
+	// the mouse only updates at about 125fps (8ms)
+	// today we mostly render faster then input events from the mouse
+	// so the mouse ends up with 0's most of the time cause there is no pending update
+	// the game was designed to repeat the last mouse value for 0.028 seconds
+	// other wise mouse responsiveness drops off greatly
 	static float framelagfix = 0.0f;
 	framelagfix -= real_framelag;
 	if(framelagfix <= 0.0f)
 	{
-		mouse_state.xrel = 0;
-		mouse_state.yrel = 0;
 		framelagfix = 0.028f;
 	}
+	else
+	{
+		return &state;
+	}
+	state.xrel = mouse_state.xrel;
+	state.yrel = mouse_state.yrel;
+	mouse_state.xrel = 0;
+	mouse_state.yrel = 0;
+	return &state;
 }
 
 //////////////////////////////////////////////
@@ -635,7 +637,6 @@ BOOL joysticks_cleanup( void )
 
 void reset_events( void )
 {
-	reset_mouse_motion();
 	reset_mouse_wheel();
 	input_buffer_reset();
 }

@@ -416,6 +416,14 @@ static BOOL AppInit( char * lpCmdLine )
 
 	render_info.vsync = FALSE;
 
+#ifdef DXMOUSE
+	if(!dx_init_mouse())
+	{
+		DebugPrintf("Could not init dx mouse\n");
+		return FALSE;
+	}
+#endif
+
 #ifdef BREAKPAD
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__

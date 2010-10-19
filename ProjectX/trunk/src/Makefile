@@ -41,6 +41,11 @@ CFLAGS += -DMINGW `sdl-config --cflags`
 LIBS += -lm -lglu32 -lopengl32 -lenet `sdl-config --libs`
 LIBS += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
 
+ifeq ($(DXMOUSE),1)
+CFLAGS += -DDXMOUSE -Idinput
+LIBS +=  -Ldinput -ldinput -ldxguid
+endif
+
 else
 
 CFLAGS+= -I/usr/include/SDL -I/usr/include/lua -I/usr/include/AL

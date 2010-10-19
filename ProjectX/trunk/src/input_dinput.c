@@ -1,13 +1,85 @@
+#ifdef DXMOUSE
+#include "input.h"
+#include "util.h"
+#include <windows.h>
+#define DIRECTINPUT_VERSION 0x0700
+#include <dinput.h>
+
+LPDIRECTINPUT lpdi = NULL;
+LPDIRECTINPUTDEVICE lpdiMouse;
+DIMOUSESTATE mouse;
+
+BOOL dx_init_mouse( void )
+{
+	HRESULT  err;
+	GUID guid_mouse = GUID_SysMouse;
+
+	err = DirectInputCreate(GetModuleHandle(NULL), DIRECTINPUT_VERSION, &lpdi, NULL);
+	if (FAILED(err))
+		return FALSE;
+
+	err = IDirectInput_CreateDevice(lpdi, &guid_mouse, &lpdiMouse, NULL);
+	if ( err != DI_OK )
+		return FALSE;
+
+	err = IDirectInputDevice_SetDataFormat(lpdiMouse, &c_dfDIMouse);
+	if(err != DI_OK)
+		return FALSE;
+
+	err = IDirectInputDevice_SetCooperativeLevel(
+		lpdiMouse, GetActiveWindow(), DISCL_NONEXCLUSIVE | DISCL_BACKGROUND
+	);
+	if(err != DI_OK)
+		return FALSE;
+
+	err = IDirectInputDevice_Acquire(lpdiMouse);
+
+	return TRUE;
+}
+
+extern float real_framelag;
+mouse_state_t* dx_read_mouse( void )
+{
+	static float framelagfix = 0.0f;
+	static mouse_state_t state;
+	HRESULT hr;
+	framelagfix -= real_framelag;
+	if(framelagfix <= 0.0f)
+	{
+		framelagfix = 0.028f;
+	}
+	else
+	{
+		return &state;
+	}
+	hr = IDirectInputDevice_GetDeviceState(
+		lpdiMouse, sizeof(DIMOUSESTATE), &mouse);
+	if( hr == DI_OK )
+	{
+		state.xrel = mouse.lX;
+		state.yrel = mouse.lY;
+	}
+	else if( hr == DIERR_INPUTLOST )
+	{
+		DebugPrintf("dx input lost - reacuiring...\n");
+		IDirectInputDevice_Acquire(lpdiMouse);
+	}
+	else
+	{
+		DebugPrintf("mouse error: %d\n",hr);
+	}
+	return &state;
+}
+
+#endif // DXMOUSE
+#ifdef DINPUTJOY
 
 #include "input.h"
 #include "util.h"
 #include "render.h"
 #include "SDL.h"
 #include <stdio.h>
-
-#ifdef DINPUTJOY
 #include "xmem.h"
-
 #include <windows.h>
 #include "dinput.h"
 
