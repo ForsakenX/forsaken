@@ -409,6 +409,10 @@ extern RENDEROBJECT RenderBufs[4];
 
 static BOOL AppInit( char * lpCmdLine )
 {
+#ifdef DEBUG_ON
+	_LIB_VERSION = _SVID_; // enable matherr
+#endif
+
 	ZEROMEM(render_info);
 	ZEROMEM(RenderBufs);
 	ZEROMEM(Portal_Execs);

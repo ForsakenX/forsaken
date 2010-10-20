@@ -123,4 +123,11 @@ typedef struct
 // _strupr use strtoupper see util.h
 #endif
 
+#ifdef DEBUG_ON
+#define _SVID_SOURCE
+#include <errno.h>
+#include <math.h>
+extern _LIB_VERSION_TYPE _LIB_VERSION;
+#endif
+
 #endif	// MAIN_INCLUDED

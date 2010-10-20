@@ -1,13 +1,14 @@
-#include	"main.h"
-#include	"file.h"
-#include	"util.h"
-
 #include	<fcntl.h>
 #include	<string.h>
 #include	<sys/stat.h>
 #include	<stdarg.h>
 #include	<stdio.h>
 #include	<stdlib.h>
+
+#include	"main.h"
+#include	"file.h"
+#include	"util.h"
+#include "xmem.h"
 
 #ifdef WIN32
 #include	<io.h>		// for various things
@@ -36,7 +37,14 @@
 #define		O_BINARY 	0 // no such thing on unixa
 #endif
 
-#include "xmem.h"
+#ifndef S_IREAD
+#define S_IREAD 0400
+#endif
+
+#ifndef S_IWRITE
+#define S_IWRITE 0200
+#endif
+
 extern BOOL Debug;
 
 FILE * file_open(char * filename, char * mode)
