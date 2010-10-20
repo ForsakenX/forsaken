@@ -409,7 +409,7 @@ extern RENDEROBJECT RenderBufs[4];
 
 static BOOL AppInit( char * lpCmdLine )
 {
-#ifdef DEBUG_ON
+#if defined(DEBUG_ON) && defined(_SVID_)
 	_LIB_VERSION = _SVID_; // enable matherr
 #endif
 
