@@ -3934,10 +3934,10 @@ BOOL MainGame( void ) // bjd
 		return FALSE;
 
 	// show the stats screen
-   if(ShowStats)
-   {
-	  ScoreDisplay();
-   }
+	if(ShowStats)
+	{
+		ScoreDisplay();
+	}
 
    // show regular view
    else if( !FullRearView )
@@ -4002,12 +4002,12 @@ BOOL MainGame( void ) // bjd
         render_set_filter( 1, 1, 1 );
       }
 
-	  // non stereo - normal rendering
+	  	// non stereo - normal rendering
       else
-	  {
-		if( RenderCurrentCamera() != TRUE ) // bjd
-			return FALSE;
-	  }
+	  	{
+				if( RenderCurrentCamera() != TRUE ) // bjd
+					return FALSE;
+	  	}
   
       if( RearCameraActive && !RearCameraDisable )
       {
@@ -4067,8 +4067,8 @@ BOOL MainGame( void ) // bjd
           CurrentCamera.InvMat = ActiveRemoteCamera->InvMat;  
           CurrentCamera.Pos = ActiveRemoteCamera->Pos;
         }
-		else
-		{
+				else
+				{
           CameraRendering = CAMRENDERING_Missile;
 
           CurrentCamera.enable = 1;
@@ -4104,11 +4104,17 @@ BOOL MainGame( void ) // bjd
         SetFOV( main_fov );
 
       }
+
+			// screen polys like text and lense flair
+      CameraRendering = CAMRENDERING_Main;
+      CurrentCamera = MainCamera;
+      CurrentCamera.UseLowestLOD = FALSE;
+			RenderMainCamera2dPolys();
     }
 	
     // Full Screen Rear View....
-	else
-	{
+		else
+		{
       CameraRendering = CAMRENDERING_Rear;
       CurrentCamera.enable = 1;
       CurrentCamera.GroupImIn = Ships[Current_Camera_View].Object.Group;  
@@ -4133,7 +4139,6 @@ BOOL MainGame( void ) // bjd
 
       if( RenderCurrentCamera() != TRUE ) // bjd
           return FALSE;
-
     }
  /* done with rendering camera stuff */
   
@@ -4582,6 +4587,50 @@ void ReleaseRenderBufs( void )
 }
 
 
+BOOL RenderMainCamera2dPolys( void)
+{
+	Build_View();
+	CurrentCamera.View = view;
+
+	if (!FSSetView(&view))
+		return FALSE;
+
+  if (!FSSetViewPort(&CurrentCamera.Viewport)) 
+	{
+#ifdef DEBUG_VIEWPORT
+    SetViewportError( "RenderCurrentCamera1", &CurrentCamera.Viewport );
+#else
+    Msg("SetViewport failed.\n%s", render_error_description(0));
+#endif
+    return FALSE;
+  }
+
+  set_alpha_states();
+  
+  DoLensflareEffect();
+  DoAllSecBullLensflare();
+
+  if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
+    return FALSE;
+
+	set_normal_states();
+
+  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
+    return FALSE;
+
+  if (!FSSetViewPort(&viewport)) 
+	{
+#ifdef DEBUG_VIEWPORT
+    SetViewportError( "RenderCurrentCamera2", &viewport );
+#else
+    Msg("SetViewport failed.\n%s", render_error_description(0));
+#endif
+    return FALSE;
+  }
+
+  return TRUE;
+}
+
 /*===================================================================
   Procedure :  Render 1 Frame Using CurrentCamera...
   Input   :
@@ -4823,29 +4872,8 @@ Display Group Clipped Faceme Transluecent Polys
 		}
 	}
   }
-  
-  DoLensflareEffect();
-  DoAllSecBullLensflare();
 
-/*===================================================================
-  Display Transluecent Screen Polys
-===================================================================*/
-
-    if( !DisplayNonSolidScrPolys( &RenderBufs[ 3 ] ) )
-      return FALSE;
-
-//
-// turn off transparency modes
-//
-
-	set_normal_states();
-
-/*===================================================================
-  Display Solid Screen Polys
-===================================================================*/
-
-  if( !DisplaySolidScrPolys( &RenderBufs[ 3 ] ) )
-    return FALSE;
+  set_normal_states();
 
     if (!FSSetViewPort(&viewport)) {
 #ifdef DEBUG_VIEWPORT
