@@ -4105,11 +4105,6 @@ BOOL MainGame( void ) // bjd
 
       }
 
-			// screen polys like text and lense flair
-      CameraRendering = CAMRENDERING_Main;
-      CurrentCamera = MainCamera;
-      CurrentCamera.UseLowestLOD = FALSE;
-			RenderMainCamera2dPolys();
     }
 	
     // Full Screen Rear View....
@@ -4140,6 +4135,13 @@ BOOL MainGame( void ) // bjd
       if( RenderCurrentCamera() != TRUE ) // bjd
           return FALSE;
     }
+
+		// screen polys like text and lense flair
+    CameraRendering = CAMRENDERING_Main;
+    CurrentCamera = MainCamera;
+    CurrentCamera.UseLowestLOD = FALSE;
+		RenderMainCamera2dPolys();
+
  /* done with rendering camera stuff */
   
   /* do the target c omputer trick */
@@ -4202,7 +4204,6 @@ BOOL MainGame( void ) // bjd
     }
     else
     {
-        if( !FullRearView )
           DrawSimplePanel();
     }
 
