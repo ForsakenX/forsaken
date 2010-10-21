@@ -2586,7 +2586,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			if( SecBulls[i].Time >= SecBulls[i].Interval )
 			{
 				SecBulls[i].Time -= ( SecBulls[i].Interval * (float) ( (int32) ( SecBulls[i].Time / SecBulls[i].Interval ) ) );
-				memcpy( &SecBulls[ i ].OldPos[ 1 ], &SecBulls[ i ].OldPos[ 0 ], ( ( MAXTENTOLDPOS - 1 ) * sizeof( OLDPOS ) ) );
+				memmove( &SecBulls[ i ].OldPos[ 1 ], &SecBulls[ i ].OldPos[ 0 ], ( ( MAXTENTOLDPOS - 1 ) * sizeof( OLDPOS ) ) );
 				SecBulls[ i ].OldPos[ 0 ].Pos = SecBulls[ i ].Pos;
 				SecBulls[ i ].OldPos[ 0 ].Dir = SecBulls[ i ].DirVector;
 				SecBulls[ i ].OldPos[ 0 ].R = 128; //32;
@@ -2611,7 +2611,7 @@ BOOL ProcessMissiles( uint16 i, uint16 * NextMissile )
 			if( SecBulls[i].Time >= SecBulls[i].Interval )
 			{
 				SecBulls[i].Time -= ( SecBulls[i].Interval * (float) ( (int32) ( SecBulls[i].Time / SecBulls[i].Interval ) ) );
-				memcpy( &SecBulls[ i ].OldPos[ 1 ], &SecBulls[ i ].OldPos[ 0 ], ( ( MAXOLDPOS - 1 ) * sizeof( OLDPOS ) ) );
+				memmove( &SecBulls[ i ].OldPos[ 1 ], &SecBulls[ i ].OldPos[ 0 ], ( ( MAXOLDPOS - 1 ) * sizeof( OLDPOS ) ) );
 				SecBulls[ i ].OldPos[ 0 ].Pos = SecBulls[ i ].Pos;
 				SecBulls[ i ].OldPos[ 0 ].Dir = SecBulls[ i ].DirVector;
 				SecBulls[ i ].OldPos[ 0 ].R = 128; //32;
