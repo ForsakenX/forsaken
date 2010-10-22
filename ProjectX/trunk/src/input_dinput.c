@@ -38,7 +38,7 @@ BOOL dx_init_mouse( void )
 }
 
 extern float real_framelag;
-mouse_state_t* dx_read_mouse( void )
+mouse_state_t* read_mouse( void )
 {
 	static float framelagfix = 0.0f;
 	static mouse_state_t state;

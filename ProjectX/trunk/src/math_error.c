@@ -1,6 +1,7 @@
 #ifdef DEBUG_ON
 #include "main.h"
 #include "new3d.h"
+#include "util.h"
 int acos_exceptions = 0;
 int sqrt_exceptions = 0;
 int pow_exceptions = 0;

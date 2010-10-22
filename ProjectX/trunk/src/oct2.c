@@ -2668,7 +2668,6 @@ BOOL RenderScene( void )
     }
 
 {
-	int i;
 	RENDEROBJECT ro;
 	ZEROMEM(ro);
 	FSCreateDynamic2dVertexBuffer(&ro, 32767);
@@ -3873,7 +3872,7 @@ void CheckLevelEnd ( void )
   Input   :   nothing...
   Output    :   nothing
 ===================================================================*/
-
+BOOL RenderMainCamera2dPolys(void);
 BOOL MainGame( void ) // bjd
 {
   int i;

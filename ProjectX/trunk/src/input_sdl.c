@@ -270,8 +270,9 @@ void app_mouse_motion( SDL_MouseMotionEvent motion )
 	mouse_state.yrel += motion.yrel;
 }
 
+#ifndef DXMOUSE
 extern float real_framelag;
-mouse_state_t* sdl_read_mouse(void)
+mouse_state_t* read_mouse(void)
 {
 	static mouse_state_t state;
 	// the mouse only updates at about 125fps (8ms)
@@ -295,6 +296,7 @@ mouse_state_t* sdl_read_mouse(void)
 	mouse_state.yrel = 0;
 	return &state;
 }
+#endif
 
 //////////////////////////////////////////////
 // Joystick Events

@@ -80,7 +80,7 @@ void set_normal_states( void );
 void reset_zbuff( void );
 void reset_filtering( void );
 void set_alpha_fx_states( void );
-
+void set_whiteout_state( void );
 const char * render_error_description( int error );
 
 typedef struct {

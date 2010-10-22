@@ -567,11 +567,7 @@ static void ReadKeyboard( void )
 static void ReadMouse( void )
 {
 	int i;
-#ifdef DXMOUSE
-	mouse_state_t * state = dx_read_mouse();
-#else
-	mouse_state_t * state = sdl_read_mouse();
-#endif
+	mouse_state_t * state = read_mouse();
 	mouse_states[ new_input ].xrel = state->xrel;
 	mouse_states[ new_input ].yrel = state->yrel;
 	mouse_states[ new_input ].wheel = mouse_state.wheel;

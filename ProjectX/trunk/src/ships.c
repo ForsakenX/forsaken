@@ -2341,6 +2341,7 @@ void ShipMode0( GLOBALSHIP * ShipPnt , BYTE i )
 	Input		:	int16 which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
+#include "input.h"
 void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	VECTOR	Move_Dir;
