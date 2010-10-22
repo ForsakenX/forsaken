@@ -127,8 +127,10 @@ typedef struct
 #define _SVID_SOURCE
 #include <errno.h>
 #include <math.h>
+#ifdef __GNUC__
 extern _LIB_VERSION_TYPE;
 extern _LIB_VERSION;
+#endif
 #endif
 
 #endif	// MAIN_INCLUDED
