@@ -293,6 +293,7 @@
     <ClCompile Include="..\..\src\lua_games.c" />
     <ClCompile Include="..\..\src\main.c" />
     <ClCompile Include="..\..\src\main_sdl.c" />
+    <ClCompile Include="..\..\src\math_error.c" />
     <ClCompile Include="..\..\src\mload.c" />
     <ClCompile Include="..\..\src\models.c" />
     <ClCompile Include="..\..\src\multiplayer.c" />
