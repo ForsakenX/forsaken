@@ -702,7 +702,7 @@ static void lost_connection( ENetPeer * peer )
 	// print debug info
 	{
 		char * name = "NULL";
-		if( peer_data->player && peer_data->player->name )
+		if( peer_data->player && (peer_data->player->name[0] != 0) )
 			name = peer_data->player->name;
 		DebugPrintf("network security: lost connection from %s %d (%s@%s)\n",
 			( host==peer ) ? "host" : "player",
@@ -849,10 +849,20 @@ static void new_player( ENetPeer * peer )
 {
 	network_peer_data_t * peer_data = peer->data;
 
-	char * name = "NULL";
-	if( peer_data->player->name )
-		name = peer_data->player->name;
-	DebugPrintf("network: player %s joined the game\n", name);
+	// we are not even connected yet...
+	// only thing that should cause this is host telling us to connect to someone
+	// but new_connection hasn't fired yet and he's giving us a new player event
+	if(peer_data->state == CONNECTING || peer_data->player->name[0] == 0)
+	{
+		DebugPrintf("network error: "
+			"got new player message for %s "
+			"but they are still in state=CONNECTING or their name got wiped out! "
+			"This new player event will be ignored !!!\n");
+		return;
+	}
+
+	DebugPrintf("network: player %s joined the game\n",
+		peer_data->player->name);
 
 	if( i_am_host )
 	{

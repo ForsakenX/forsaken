@@ -535,7 +535,7 @@ char* msg_to_str( int msg_type )
 
 void set_player_name( int BikeNum, char* name )
 {
-	if( BikeNum < 0 || BikeNum >= MAX_PLAYERS ) return;
+	if( !name || BikeNum < 0 || BikeNum >= MAX_PLAYERS ) return;
 	strncpy( &Names[BikeNum][0], name, MAXSHORTNAME );
 	Names[BikeNum][MAXSHORTNAME-1] = 0;
 }
@@ -1258,8 +1258,8 @@ void network_event_player_name( network_player_t * player )
 	{
 		if( ( i != WhoIAm ) && (player == Ships[i].network_player) )
 		{
-			set_player_name( i, player->name );
 			DebugPrintf("Recieved name %s from player %d\n", player->name, i);
+			set_player_name( i, player->name );
 			NextworkOldBikeNum = -1;
 			return;
 		}
@@ -1306,6 +1306,8 @@ void network_event_player_left( network_player_t * player )
 					GameStatus[i] = STATUS_LeftCrashed;
 
 				InitShipStructure(i , FALSE );
+
+				memset(Names[i],0,sizeof(Names[i]));
 			}
 	}
 }
