@@ -4254,7 +4254,7 @@ void GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegen
 
 		if( i < NumRegenPoints )
 		{
-			memcpy( RegenSlots, ( RegenSlotsCopy[ Ship ] ) + i, sizeof( REGENPOINT ) );
+			memmove( RegenSlots, ( RegenSlotsCopy[ Ship ] ) + i, sizeof( REGENPOINT ) );//memcpy
 			RegenSlots++;
 			NumUsed++;
 
@@ -4288,7 +4288,7 @@ void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 #if DEBUG_PICKUPS
 		DebugPrintf( "Section %d, Number %d\n", ( Ships[ WhoIAm ].RegenSlots + 0 ), Num );
 #endif
-		memcpy( Ptr, Slots, ( sizeof( REGENPOINT ) * Num ) );
+		memmove( Ptr, Slots, ( sizeof( REGENPOINT ) * Num ) );//memcpy
 	}
 }
 
@@ -4347,7 +4347,7 @@ void CopyPickups( uint16 Player )
 
 	while( i != (uint16) -1 )
 	{
-		memcpy( &PickupsCopy[ Player ][ Num ], &Pickups[i], sizeof( PICKUP ) );
+		memmove( &PickupsCopy[ Player ][ Num ], &Pickups[i], sizeof( PICKUP ) );//memcpy
 		Num++;
 
 		i = Pickups[ i ].Prev;							/* Next Secondary Bullet */
@@ -4367,7 +4367,7 @@ void CopyRegenSlots( uint16 Player )
 
 	if( Ptr != NULL )
 	{
-		memcpy( Ptr, RegenPoints, ( NumRegenPoints * sizeof( REGENPOINT ) ) );
+		memmove( Ptr, RegenPoints, ( NumRegenPoints * sizeof( REGENPOINT ) ) );//memcpy
 	}
 	else
 	{

@@ -257,7 +257,7 @@ extern BOOL MyUseShortPackets;
 void copy_in_my_settings( void )
 {
 	memset( PickupValid, 0, sizeof(PickupValid) );
-	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+	memmove( PickupValid, MyPickupValid, sizeof(PickupValid) );//memcpy
 
 	TimeLimit.value		= MyTimeLimit.value;
 	PacketsSlider.value	= MyPacketsSlider.value;

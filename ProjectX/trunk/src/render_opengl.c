@@ -522,7 +522,7 @@ BOOL FSSetViewPort(render_viewport_t *view)
 GLfloat proj_matrix[4][4];
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	memcpy(&proj_matrix,&matrix->m,sizeof(proj_matrix));
+	memmove(&proj_matrix,&matrix->m,sizeof(proj_matrix));//memcpy
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf((GLfloat*)&matrix->m);
 	return TRUE;
@@ -552,21 +552,21 @@ static void reset_modelview( void )
 
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	memcpy(&view_matrix,&matrix->m,sizeof(view_matrix));
+	memmove(&view_matrix,&matrix->m,sizeof(view_matrix));//memcpy
 	reset_modelview();
 	return TRUE;
 }
 
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {	
-	memcpy(&world_matrix,&matrix->m,sizeof(world_matrix));
+	memmove(&world_matrix,&matrix->m,sizeof(world_matrix));//memcpy
 	reset_modelview();
 	return TRUE;
 }
 
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	memcpy(&matrix->m,&world_matrix,sizeof(matrix->m));
+	memmove(&matrix->m,&world_matrix,sizeof(matrix->m));//memcpy
 	return TRUE;
 }
 

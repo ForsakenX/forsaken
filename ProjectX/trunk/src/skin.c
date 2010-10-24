@@ -1044,7 +1044,7 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 //   	lpBufStart = Skin_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-	memcpy(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);
+	memmove(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);//memcpy
    
 //    lpInsStart = lpPointer;
    
@@ -1285,7 +1285,7 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
 //   	lpBufStart = Portal_debdesc.lpData;
 //   	lpPointer = lpBufStart;
    		
-	memcpy(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);
+	memmove(lpBufStart, Verts, sizeof(LVERTEX) * NumVerts);//memcpy
    
 //    lpInsStart = lpPointer;
 

@@ -517,7 +517,7 @@ void UpdateWaterMesh( WATEROBJECT * WO )
 	Tick = 0.04F * framelag;
 
 
-	memcpy( &Fc[0] , WO->Verts , WO->num_of_verts * sizeof(float) );
+	memmove( &Fc[0] , WO->Verts , WO->num_of_verts * sizeof(float) );//memcpy
 
 	VelsPnt = WO->Vels;
 	VelsPnt += WO->YVerts + 1;

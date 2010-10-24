@@ -61,7 +61,7 @@ BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )
 		duptree->Root = (BSP_NODE *) calloc( srctree->NumNodes, sizeof( BSP_NODE ) );
 		if ( !duptree->Root )
 			return FALSE;
-		memcpy( duptree->Root, srctree->Root, srctree->NumNodes * sizeof( BSP_NODE ) );
+		memmove( duptree->Root, srctree->Root, srctree->NumNodes * sizeof( BSP_NODE ) );//memcpy
 	}
 	return TRUE;
 }

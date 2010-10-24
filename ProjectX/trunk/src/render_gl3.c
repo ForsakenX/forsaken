@@ -721,7 +721,7 @@ MATRIX proj_matrix;
 
 BOOL FSSetProjection( RENDERMATRIX *matrix )
 {
-	memcpy(&proj_matrix,&matrix->m,sizeof(proj_matrix));
+	memmove(&proj_matrix,&matrix->m,sizeof(proj_matrix));//memcpy
 	mvp_needs_update = TRUE;
 	return TRUE;
 }
@@ -731,21 +731,21 @@ MATRIX world_matrix;
 
 BOOL FSSetView( RENDERMATRIX *matrix )
 {
-	memcpy(&view_matrix,&matrix->m,sizeof(view_matrix));
+	memmove(&view_matrix,&matrix->m,sizeof(view_matrix));//memcpy
 	mvp_needs_update = TRUE;
 	return TRUE;
 }
 
 BOOL FSSetWorld( RENDERMATRIX *matrix )
 {	
-	memcpy(&world_matrix,&matrix->m,sizeof(world_matrix));
+	memmove(&world_matrix,&matrix->m,sizeof(world_matrix));//memcpy
 	mvp_needs_update = TRUE;
 	return TRUE;
 }
 
 BOOL FSGetWorld(RENDERMATRIX *matrix)
 {
-	memcpy(&matrix->m,&world_matrix,sizeof(matrix->m));
+	memmove(&matrix->m,&world_matrix,sizeof(matrix->m));//memcpy
 	return TRUE;
 }
 

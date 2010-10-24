@@ -498,7 +498,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 			/* bjd - allows us to retrieve copies of the original vertices in the new format! */
 			Mloadheader->Group[group].originalVerts[execbuf] = malloc(sizeof(LVERTEX) * num_vertices);
-			memcpy(Mloadheader->Group[group].originalVerts[execbuf], &lpLVERTEX[0], sizeof(LVERTEX) * num_vertices);
+			memmove(Mloadheader->Group[group].originalVerts[execbuf], &lpLVERTEX[0], sizeof(LVERTEX) * num_vertices);//memcpy
 	
 			Buffer = (char *) lpLVERTEX2;
 			

@@ -8247,7 +8247,7 @@ void InitMultiplayerHostVDUPeerPeer( MENU *Menu )
 
 	// copy in my valid pickups
 	memset( PickupValid, 0, sizeof(PickupValid) );
-	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+	memmove( PickupValid, MyPickupValid, sizeof(PickupValid) );//memcpy
 
 }
 
@@ -9170,7 +9170,7 @@ void GetGamePrefs( void )
 	MyPickupValid[ PICKUP_Mantle ]            = config_get_bool( "AllowMantle",           FALSE );
 	MyPickupValid[ PICKUP_Inv ]               = config_get_bool( "AllowInv",              FALSE );
 
-	memcpy( PickupValid, MyPickupValid, sizeof(PickupValid) );
+	memmove( PickupValid, MyPickupValid, sizeof(PickupValid) );//memcpy
 
     // integers
 

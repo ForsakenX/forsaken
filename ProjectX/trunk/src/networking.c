@@ -2295,12 +2295,12 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		CopyOfSeed2					= lpInit->Seed2;
 		NumPrimaryPickups			= lpInit->NumPrimaryPickups;
 
-		memcpy( PlayerReady,	lpInit->PlayerReady,	sizeof(PlayerReady));
-		memcpy( GameStatus,		lpInit->GameStatus,		sizeof(GameStatus));
-		memcpy( TeamNumber,		lpInit->TeamNumber,		sizeof(TeamNumber));
-		memcpy( KillStats,		lpInit->KillStats,		sizeof(KillStats));
-		memcpy( KillCounter,	lpInit->KillCounter,	sizeof(KillCounter));
-		memcpy( BonusStats,		lpInit->BonusStats,		sizeof(BonusStats));
+		memmove( PlayerReady,	lpInit->PlayerReady,	sizeof(PlayerReady));//memcpy
+		memmove( GameStatus,		lpInit->GameStatus,		sizeof(GameStatus));//memcpy
+		memmove( TeamNumber,		lpInit->TeamNumber,		sizeof(TeamNumber));//memcpy
+		memmove( KillStats,		lpInit->KillStats,		sizeof(KillStats));//memcpy
+		memmove( KillCounter,	lpInit->KillCounter,	sizeof(KillCounter));//memcpy
+		memmove( BonusStats,		lpInit->BonusStats,		sizeof(BonusStats));//memcpy
 
 		memset( PickupValid, 0, sizeof(PickupValid) );  // turn off all weapons
 		UnpackPickupInfo( lpInit->PickupFlags );	// which weapons are enabled
@@ -3486,12 +3486,12 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 		PackPickupInfo( lpInit->PickupFlags );												// currently enabled pickups
 
-		memcpy( lpInit->KillStats,		KillStats,		sizeof(lpInit->KillStats));			// other players stats stats
-		memcpy( lpInit->KillCounter,	KillCounter,	sizeof(lpInit->KillCounter));		// other players kills counts
-		memcpy( lpInit->BonusStats,		BonusStats,		sizeof(lpInit->KillCounter));		// other players bonus stats
-		memcpy( lpInit->PlayerReady,	PlayerReady,	sizeof(lpInit->PlayerReady));		// other players ready status
-		memcpy( lpInit->GameStatus,		GameStatus,		sizeof(lpInit->GameStatus));		// other players game status
-		memcpy( lpInit->TeamNumber,		TeamNumber,		sizeof(lpInit->TeamNumber));		// what team everyone is on
+		memmove( lpInit->KillStats,		KillStats,		sizeof(lpInit->KillStats));			// other players stats stats//memcpy
+		memmove( lpInit->KillCounter,	KillCounter,	sizeof(lpInit->KillCounter));		// other players kills counts//memcpy
+		memmove( lpInit->BonusStats,		BonusStats,		sizeof(lpInit->KillCounter));		// other players bonus stats//memcpy
+		memmove( lpInit->PlayerReady,	PlayerReady,	sizeof(lpInit->PlayerReady));		// other players ready status//memcpy
+		memmove( lpInit->GameStatus,		GameStatus,		sizeof(lpInit->GameStatus));		// other players game status//memcpy
+		memmove( lpInit->TeamNumber,		TeamNumber,		sizeof(lpInit->TeamNumber));		// what team everyone is on//memcpy
 
 		strncpy( lpInit->LevelName, ShortLevelNames[NewLevelNum], 32 );						// level we are on
 
