@@ -564,6 +564,17 @@ static void ReadKeyboard( void )
 		key_state[ new_input ][ i ] = keys[ i ];
 }
 
+void clear_last_mouse_state(void)
+{
+	int i;
+	for ( i = 0; i < MAX_MOUSE_BUTTONS; i++ )
+	{
+		mouse_states[ new_input ].buttons[ i ] = 0;
+		mouse_states[ old_input ].buttons[ i ] = 0;
+		mouse_state.buttons[ i ] = 0;
+	}
+}
+
 static void ReadMouse( void )
 {
 	int i;

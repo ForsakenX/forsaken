@@ -2520,6 +2520,10 @@ void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 			Current_Camera_View = WhoIAm;		// set it back to me...
 			flush_input = TRUE;
 			control_ship( player_config, &control );
+
+			// so we don't fire from birth
+			clear_last_mouse_state();
+			control_ship( NULL, &control );
 		}
 		// respawn key not hit
 		else
