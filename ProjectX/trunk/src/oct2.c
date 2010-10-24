@@ -4242,7 +4242,7 @@ void PaintBackground( rect_t * box ) // pass NULL to black out all of the screen
 BOOL StatsNamePulse( void )
 {
 	static float pulse = 0.0F;
-	pulse += framelag / 60.0F;
+	pulse += real_framelag;
 
 	if (pulse > 1.0F)
 		pulse -= (float) floor( (double) pulse );
