@@ -855,9 +855,9 @@ static void new_player( ENetPeer * peer )
 	if(peer_data->state == CONNECTING || peer_data->player->name[0] == 0)
 	{
 		DebugPrintf("network error: "
-			"got new player message for %s "
+			"got new player message for %hhu "
 			"but they are still in state=CONNECTING or their name got wiped out! "
-			"This new player event will be ignored !!!\n");
+			"This new player event will be ignored !!!\n", peer_data->id);
 		return;
 	}
 
