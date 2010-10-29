@@ -19,14 +19,13 @@ MUDFLAP=0
 #endif
 
 FLAGS=-pipe
-CFLAGS=$(FLAGS)
+CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
 
 ifeq ($(DEBUG),1)
 	FLAGS+= -g 
-	CFLAGS+=-Wall -Wextra 
 else
-	CFLAGS+=-O3
+	CFLAGS+=-O3 -Winit-self
 	LDFLAGS+=-s
 endif
 
