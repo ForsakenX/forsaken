@@ -35,10 +35,19 @@ ifeq ($(SSP),1)
 	CFLAGS+= -D_FORTIFY_SOURCE=2
 endif
 
+SDL_CONFIG=sdl-config
+
 ifeq ($(MINGW),1)
 
-CFLAGS += -DMINGW `sdl-config --cflags`
-LIBS += -lm -lglu32 -lopengl32 -lenet `sdl-config --libs`
+ifeq ($(CROSS),1)
+CC=i586-mingw32msvc-gcc
+SDL_CONFIG=./mingw/bin/sdl-config
+CFLAGS += -I./mingw/include
+LIBS += -L./mingw/bin
+endif
+
+CFLAGS += -DMINGW `$(SDL_CONFIG) --cflags`
+LIBS += -lm -lglu32 -lopengl32 -lenet `$(SDL_CONFIG) --libs`
 LIBS += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
 
 ifeq ($(DXMOUSE),1)
