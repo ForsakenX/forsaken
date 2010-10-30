@@ -809,7 +809,7 @@ BOOL ProcessShips()
 			StartPos = ShipObjPnt->Pos;
 			OldGroup = ShipObjPnt->Group;
 
-				if( Ships[i].headlights )
+				if( ShipObjPnt->Mode != LIMBO_MODE && ShipPnt->headlights )
 				{
 					if( ShipObjPnt->light == (uint16) -1 )
 					{
@@ -2445,12 +2445,6 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 extern void clear_last_mouse_state(void);
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
-	ShipPnt->Object.Flags &= ~SHIP_Light;
-	if( ShipPnt->Object.light != (uint16) -1 )
-	{
-		KillUsedXLight( ShipPnt->Object.light );
-		ShipPnt->Object.light = (uint16) -1;
-	}
 	input_grab(FALSE);
 	if( GodMode )
 	{
