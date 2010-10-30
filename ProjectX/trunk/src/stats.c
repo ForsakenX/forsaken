@@ -45,9 +45,9 @@
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
-extern GetName(int Player);															// returns player's short name from Ships.c
+extern char* GetName(int Player);															// returns player's short name from Ships.c
 extern BOOL TeamGame;																// team game? (from Title.c)
-extern MilestoneMessagesColour;													// colour to display messages (from Title.c)
+extern int MilestoneMessagesColour;													// colour to display messages (from Title.c)
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];

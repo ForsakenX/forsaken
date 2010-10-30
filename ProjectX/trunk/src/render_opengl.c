@@ -201,7 +201,7 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 	return create_texture(texture, fileName, width, height, numMips, colourkey);
 }
 
-static print_info( void )
+static void print_info( void )
 {
 	GLboolean b;
 	glGetBooleanv(GL_STEREO,&b);
@@ -216,7 +216,7 @@ static print_info( void )
 	DebugPrintf( "extensions='%s'\n", glGetString(GL_EXTENSIONS));
 }
 
-static set_defaults( void )
+static void set_defaults( void )
 {
 	build_gamma_table(1.0f); // 1.0f means no gamma change
 	glShadeModel(GL_SMOOTH); // TODO - is there gouraud ?
@@ -228,7 +228,7 @@ static set_defaults( void )
 	set_normal_states(); // default preset render mode
 }
 
-static resize_viewport( int width, int height )
+static void resize_viewport( int width, int height )
 {
 	render_viewport_t viewport;
 	viewport.X = 0;

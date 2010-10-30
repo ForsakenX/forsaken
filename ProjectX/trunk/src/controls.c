@@ -141,7 +141,7 @@ Uint8
 js_pov[ INPUT_BUFFERS ][ MAX_JOYSTICKS ][ MAX_JOYSTICK_POVS ][ MAX_POV_DIRECTIONS ];
 
 // (Sfx.c)
-extern SendBikerTaunt();
+extern void SendBikerTaunt();
 
 BOOL flush_input = TRUE;
 

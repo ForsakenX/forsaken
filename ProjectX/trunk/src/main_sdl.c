@@ -135,7 +135,7 @@ static void set_opengl_settings( void )
 #endif
 }
 
-static print_info( void )
+static void print_info( void )
 {
 	int bpp;
 	char driver[64];

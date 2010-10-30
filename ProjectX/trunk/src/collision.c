@@ -2769,7 +2769,7 @@ void CollideBGOToCompObjChildren( COMP_OBJ * Children, int16 NumChildren )
 
 static BOOL move_object = TRUE;
 static BOOL bounce_object = TRUE;
-static NoBGObject = TRUE;
+static BOOL NoBGObject = TRUE;
 
 
 #if 0

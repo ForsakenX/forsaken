@@ -163,7 +163,7 @@ uint32        AnimOncePerFrame = 0;         // used for stuff that is displayed 
 
 extern BOOL bSoundEnabled;
 
-extern TeamCol[];
+extern int	TeamCol[ MAX_TEAMS ];
 extern int Num_StatsMessage_Parts;
 extern LIST BikeList;
 extern LIST LevelList;
@@ -599,7 +599,7 @@ extern SLIDER WatchPlayerSelect;
 
 // (Ships.c)
 extern int SwitchedToWatchMode;
-extern int GetName(int Player);
+extern char* GetName(int Player);
 
 // (stats.c)
 extern void ScoreSort();

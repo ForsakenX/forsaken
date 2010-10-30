@@ -302,7 +302,7 @@ mouse_state_t* read_mouse(void)
 // Joystick Events
 //////////////////////////////////////////////
 
-static get_deadzone( int joy, int axis )
+static int get_deadzone( int joy, int axis )
 {
 	// make sure this is a valid joystick/axis
 	if( joy > Num_Joysticks || axis > JoystickInfo[joy].NumAxis )
