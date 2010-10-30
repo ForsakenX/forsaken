@@ -340,10 +340,10 @@ static struct
   int next;
 } CheatTable[] = 
 {
-  { { SDLK_b, SDLK_u, SDLK_b, SDLK_b, SDLK_l, SDLK_e, SDLK_s, 0 }, EnableCheats, TRUE },
-  { { SDLK_j, SDLK_i, SDLK_m, SDLK_b, SDLK_e, SDLK_a, SDLK_m, 0 }, JimBeam, FALSE },
-  { { SDLK_l, SDLK_u, SDLK_m, SDLK_b, SDLK_e, SDLK_r, SDLK_j, SDLK_a, SDLK_c, SDLK_k, 0 }, Lumberjack, FALSE },
-  { { SDLK_i, SDLK_a, SDLK_m, SDLK_z, SDLK_e, SDLK_u, SDLK_s, 0 }, ToggleGodMode, FALSE },
+  { { SDLK_b, SDLK_u, SDLK_b, SDLK_b, SDLK_l, SDLK_e, SDLK_s, 0 }, EnableCheats, TRUE, 0 },
+  { { SDLK_j, SDLK_i, SDLK_m, SDLK_b, SDLK_e, SDLK_a, SDLK_m, 0 }, JimBeam, FALSE, 0 },
+  { { SDLK_l, SDLK_u, SDLK_m, SDLK_b, SDLK_e, SDLK_r, SDLK_j, SDLK_a, SDLK_c, SDLK_k, 0 }, Lumberjack, FALSE, 0 },
+  { { SDLK_i, SDLK_a, SDLK_m, SDLK_z, SDLK_e, SDLK_u, SDLK_s, 0 }, ToggleGodMode, FALSE, 0 },
 };
 // NOTE: add any new cheats to DisableCheats function to ensure they are not active in multiplayer game
 

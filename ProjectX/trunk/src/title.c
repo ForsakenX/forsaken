@@ -3554,7 +3554,7 @@ TITLE_EVENT_TIMER Title_Timers[MAXTITLETIMERS] = {
 	{0.75F,	0.0F, TITLE_EVENT_TIMER_IDLE, InitGeneralTimer},		//lower holopad
 	{0.5F,	0.0F, TITLE_EVENT_TIMER_IDLE, InitGeneralTimer},		// shrink object
 	{0.5F,	0.0F, TITLE_EVENT_TIMER_IDLE, InitGeneralTimer},		// expand object
-	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE}
+	{-1.0F, -1.0F, TITLE_EVENT_TIMER_IDLE, NULL}
 };
 
 extern BOOL InitView( void );

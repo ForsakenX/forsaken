@@ -43,7 +43,7 @@ BSP_HEADER Bsp_Header[ 2 ];
 float ColRad;
 																   
 BSP_NODE *	BSP_Nodes[256];
-BSP_PORTAL_HEADER Bsp_Portal_Header = { FALSE, 0 };
+BSP_PORTAL_HEADER Bsp_Portal_Header = { FALSE, 0, {} };
 
 
 BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup )

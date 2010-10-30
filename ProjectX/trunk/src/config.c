@@ -60,10 +60,10 @@ USERCONFIG default_config = {
 	{ 1,	{ SDLK_a	} },					// forward
 	{ 1,	{ SDLK_z	} },					// backward
 	{ 1,	{ SDLK_LALT	} },					// slide
-	{ 0 },										// roll
+	{ 0, {}  },										// roll
 	{ 1,	{ SDLK_s	} },					// turbo
-	{ 0 },										// cruise faster
-	{ 0 },										// cruise slower
+	{ 0, {}  },										// cruise faster
+	{ 0, {}  },										// cruise slower
 	{ 2,	{ LEFT_MOUSE } },					// fire primary
 	{ 2,	{ RIGHT_MOUSE } },					// fire secondary
 	{ 1,	{ SDLK_b } },						// fire mine
@@ -84,7 +84,7 @@ USERCONFIG default_config = {
 	{
 		{ 1, { SDLK_6 } },						// select secondary #1
 		{ 1, { SDLK_7 } },						// select secondary #2
-		{ 0	},									// select secondary #3 (thief missile -- not used)
+		{ 0, {} 	},									// select secondary #3 (thief missile -- not used)
 		{ 1, { SDLK_8 } },						// select secondary #4
 		{ 1, { SDLK_9 } },						// select secondary #5
 		{ 1, { SDLK_0 } },						// select secondary #6
@@ -92,17 +92,17 @@ USERCONFIG default_config = {
 		{ 1, { SDLK_y } },						// select secondary #8
 		{ 1, { SDLK_u } },						// select secondary #9
 		{ 1, { SDLK_i } },						// select secondary #10
-		{ 0 },									// select secondary #11 (spider mine -- not used)
+		{ 0, {}  },									// select secondary #11 (spider mine -- not used)
 	},
-	{ 0 },										// drop primary
-	{ 0 },										// drop secondary
-	{ 0 },										// drop shield
-	{ 0 },										// drop ammo
-	{ 0 },										// show messages
-	{ 0 },										// show statistics
+	{ 0, {}  },										// drop primary
+	{ 0, {}  },										// drop secondary
+	{ 0, {}  },										// drop shield
+	{ 0, {}  },										// drop ammo
+	{ 0, {}  },										// show messages
+	{ 0, {}  },										// show statistics
 	{ 1, { SDLK_RETURN } },				// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
-	{ 0 },					// send speech taunt
+	{ 0, {}  },					// send speech taunt
 #endif
 	// weapon selection priorities and orders
 	{
@@ -177,10 +177,10 @@ USERCONFIG my_controls = {
 	{ 1,	{ SDLK_a	} },						// forward
 	{ 1,	{ SDLK_z	} },						// backward
 	{ 1,	{ SDLK_LALT	} },					// slide
-	{ 0 },										// roll
+	{ 0, {}  },										// roll
 	{ 1,	{ SDLK_s	} },						// turbo
-	{ 0 },										// cruise faster
-	{ 0 },										// cruise slower
+	{ 0, {}  },										// cruise faster
+	{ 0, {}  },										// cruise slower
 	{ 2,	{ LEFT_MOUSE	} },	// fire primary
 	{ 2,	{ RIGHT_MOUSE	} },		// fire secondary
 	{ 1,	{ SDLK_b } },						// fire mine
@@ -201,7 +201,7 @@ USERCONFIG my_controls = {
 	{
 		{ 1, { SDLK_6 } },						// select secondary #1
 		{ 1, { SDLK_7 } },						// select secondary #2
-		{ 0	},									// select secondary #3 (thief missile -- not used)
+		{ 0, {} 	},									// select secondary #3 (thief missile -- not used)
 		{ 1, { SDLK_8 } },						// select secondary #4
 		{ 1, { SDLK_9 } },						// select secondary #5
 		{ 1, { SDLK_0 } },						// select secondary #6
@@ -209,17 +209,17 @@ USERCONFIG my_controls = {
 		{ 1, { SDLK_y } },						// select secondary #8
 		{ 1, { SDLK_u } },						// select secondary #9
 		{ 1, { SDLK_i } },						// select secondary #10
-		{ 0 },									// select secondary #11 (spider mine -- not used)
+		{ 0, {}  },									// select secondary #11 (spider mine -- not used)
 	},
-	{ 0 },										// drop primary
-	{ 0 },										// drop secondary
-	{ 0 },										// drop shield
-	{ 0 },										// drop ammo
-	{ 0 },										// show messages
-	{ 0 },										// show statistics
+	{ 0, {}  },										// drop primary
+	{ 0, {}  },										// drop secondary
+	{ 0, {}  },										// drop shield
+	{ 0, {}  },										// drop ammo
+	{ 0, {}  },										// show messages
+	{ 0, {} },										// show statistics
 	{ 1, { SDLK_RETURN } },					// send text message
 #ifdef PLAYER_SPEECH_TAUNTS
-	{ 0 },					// send speech taunt
+	{ 0, {}  },					// send speech taunt
 #endif
 
 	// weapon selection priorities and orders
