@@ -236,8 +236,6 @@ BOOL  IHaveAFlag			= FALSE;
 // Bounty Hunt
 BOOL  BountyHunt = FALSE;
 
-static char fname[256];
-static int fnum = 0;
 extern int CameraStatus;  
 
 char *  InitViewMessages[] = {

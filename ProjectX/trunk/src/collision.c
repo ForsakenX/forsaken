@@ -91,9 +91,6 @@ extern BOOL	DebugInfo;
 int no_collision = 0;
 int outside_group = 0;
 
-
-static void CalcNormal( VERT *v0, VERT *v1, VERT *v2, NORMAL *normal );
-
 	DWORD GroupPolyCol_timeMax = 0;
 
 static VECTOR		ColPoint;
@@ -1991,23 +1988,6 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 	return ( flag ) ? TRUE : FALSE;
 }
 #endif // !BSP_ONLY
-
-
-static void
-CalcNormal( VERT *v0, VERT *v1, VERT *v2, NORMAL *normal )
-{
-	VECTOR	d1;
-	VECTOR	d2;
-
-	d1.x = v2->x - v1->x;
-	d1.y = v2->y - v1->y;
-	d1.z = v2->z - v1->z;
-	d2.x = v0->x - v1->x;
-	d2.y = v0->y - v1->y;
-	d2.z = v0->z - v1->z;
-	CrossProduct( &d1, &d2, (VECTOR *) normal );
-	NormaliseVector( (VECTOR *) normal );
-}
 
 BOOL AmIOutsideGroup( MLOADHEADER * m, VECTOR * EndPos, uint16 EndGroup )
 {

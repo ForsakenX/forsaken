@@ -1531,32 +1531,6 @@ BOOL joystick_poll( int joysticknum )
 
 #endif // !  DINPUTJOY
 
-// returns TRUE if it is OK to repeat the given ship action
-static BOOL RepeatShipActionOK ( int action )
-{
-  switch (action)
-  {
-  case SHIPACTION_RotateUp:
-  case SHIPACTION_RotateDown:
-  case SHIPACTION_RotateLeft:
-  case SHIPACTION_RotateRight:
-  case SHIPACTION_RollLeft:
-  case SHIPACTION_RollRight:
-  case SHIPACTION_SlideUp:
-  case SHIPACTION_SlideDown:
-  case SHIPACTION_SlideLeft:
-  case SHIPACTION_SlideRight:
-  case SHIPACTION_MoveForward:
-  case SHIPACTION_MoveBack:
-  case SHIPACTION_Turbo:
-  case SHIPACTION_FirePrimary:
-  case SHIPACTION_FireSecondary:
-    return TRUE;
-  default: 
-    return FALSE;
-  }
-}
-
 void ReadJoystickInput(SHIPCONTROL *ctrl, int joysticknum)
 {
    int  ShipAction, axis;
