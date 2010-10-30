@@ -8588,7 +8588,7 @@ void ExitBikeSelection( MENUITEM * item )
 	strcpy(bike_name,BikeList.item[BikeList.selected_item]);
 	AddBikeArrow( bike_name, SelectedBike );
 	strcpy(biker_text,BikerText[BikeList.selected_item]);
-	if ( WhoIAm != -1 )
+	if ( WhoIAm != (uint8) -1 )
 	{
 		Ships[ WhoIAm ].BikeNum = ( SelectedBike % MAXBIKETYPES );
 	}

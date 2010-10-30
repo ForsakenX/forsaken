@@ -804,7 +804,7 @@ read_preferred_primary( FILE *f, USERCONFIG *u, char *last_token )
 	{
 		if ( j < MAX_PRIMARY_WEAPONS )
 		{
-			if ( pnum >= 0 && pnum < MAX_PRIMARY_WEAPONS )
+			if ( pnum < (uint16) MAX_PRIMARY_WEAPONS )
 			{
 				u->primary_priority[ pnum ] = j;
 				u->primary_order[ j ] = pnum;
@@ -833,7 +833,7 @@ read_preferred_secondary( FILE *f, USERCONFIG *u, char *last_token )
 	{
 		if ( j < MAX_SECONDARY_WEAPONS )
 		{
-			if ( pnum >= 0 && pnum < MAX_SECONDARY_WEAPONS )
+			if ( pnum < (uint16) MAX_SECONDARY_WEAPONS )
 			{
 				u->secondary_priority[ pnum ] = j;
 				u->secondary_order[ j ] = pnum;

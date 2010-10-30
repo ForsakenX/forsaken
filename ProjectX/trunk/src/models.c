@@ -2766,7 +2766,7 @@ void CreateModelSpotFXFirePrimary( VECTOR * Pos, VECTOR * Dir, VECTOR * Up,
 	VECTOR	TempVector = { 0.0F, 0.0F, 0.0F };
 	uint16	i;
 
-	if( Weapon != -1 )
+	if( Weapon != (uint8) -1 )
 	{
 		i = EnemyFirePrimary( OWNER_MODELSPOTFX, ModelIndex, 0, Weapon, Group, Pos, &TempVector, Dir, Up, 2, 0.0F, FALSE, NULL );
 
