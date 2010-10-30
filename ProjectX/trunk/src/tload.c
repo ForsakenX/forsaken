@@ -177,17 +177,22 @@ BOOL TloadTextureSurf( TLOADHEADER * Tloadheader , int n)
 	release_texture(Tloadheader->lpTexture[n]);
 	Tloadheader->lpTexture[n] = NULL;
 	if ( !Tloadheader->PlaceHolder[ n ] )
+	{
 		if( Tloadheader->MipMap[n] )
+		{
 			FSCreateTexture(
 				&lpSrcTexture, &Tloadheader->ImageFile[n][0],
 				&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
 				0, &Tloadheader->ColourKey[n]);
+		}
 		else
+		{
 			FSCreateTexture(
 				&lpSrcTexture, &Tloadheader->ImageFile[n][0],
 				&Tloadheader->Xsize[n], &Tloadheader->Ysize[n],
 				1, &Tloadheader->ColourKey[n]);
-
+		}
+	}
 	Tloadheader->lpTexture[n] = lpSrcTexture;
 	lpSrcTexture = NULL;
 

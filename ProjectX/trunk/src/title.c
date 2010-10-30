@@ -8112,14 +8112,15 @@ void InitInGameMenu( MENU *Menu )
 void InitDebugMode( MENU *Menu )
 {
 	MENUITEM *item;
-
 	for ( item = Menu->Item; item->x >= 0; item++ )
-
-		if ( item->Value == &ScreenSaving ||
-			 item->Value == &OldNodeCube ||
-			 item->Value == &NodeCube ||
-			 item->Value == &NodeCubeType )
-
+	{
+		if (
+			item->Value == &ScreenSaving ||
+			item->Value == &OldNodeCube ||
+			item->Value == &NodeCube ||
+			item->Value == &NodeCubeType 
+		)
+		{
 			if ( DebugInfo )
 			{
 				item->FuncSelect = SelectToggle;
@@ -8130,6 +8131,8 @@ void InitDebugMode( MENU *Menu )
 				item->FuncSelect = NULL;
 				item->FuncDraw = NULL;
 			}
+		}
+	}
 }
 
 

@@ -918,6 +918,7 @@ void ProcessGameKeys( void )
 
   // ESCAPE
   if ( input_buffer_find( SDLK_ESCAPE ) )
+	{
     // if were not currently in a menu
     //   ignore keystroke if we just exited the menu
     //   stops going back itno menu from hitting to many times
@@ -925,29 +926,38 @@ void ProcessGameKeys( void )
     {
       // if were playing a demo
       if( PlayDemo )
+			{
         // show the demo menu
         MenuRestart( &MENU_DemoPlaying );
+			}
       // if were playing the game
       else
-	  {
-			// show the multi-player menu
-			if(GameStatus[WhoIAm] != STATUS_PlayingDemo && GameStatus[WhoIAm] != STATUS_SinglePlayer)
-				 MenuRestart( &MENU_InGame );
-			// show the single-player menu
-			else
-				 MenuRestart( &MENU_InGameSingle );
-	  }
-
+		  {
+				// show the multi-player menu
+				if(GameStatus[WhoIAm] != STATUS_PlayingDemo && 
+					GameStatus[WhoIAm] != STATUS_SinglePlayer)
+				{
+					MenuRestart( &MENU_InGame );
+				}
+				// show the single-player menu
+				else
+				{
+					 MenuRestart( &MENU_InGameSingle );
+			  }
+			}
     // if were not in the menu
     // and the above check failed
     // reset variable so 3rd escape takes us back in
-	}else{
+		}
+		else
+		{
       JustExitedMenu = FALSE;
+		}
 	}
 
-
   // debuggin keys
-  if ( DebugInfo ) {
+  if ( DebugInfo ) 
+	{
 
     // Shift Modifier
     if ( SDL_GetModState() & KMOD_SHIFT )
@@ -955,10 +965,16 @@ void ProcessGameKeys( void )
 
       // Shift + F1
       if ( input_buffer_find( SDLK_F1 ) )
+			{
         if ( !CurrentMenu )
+				{
           MenuRestart( &MENU_DebugHelp );
+				}
         else if ( CurrentMenu == &MENU_DebugHelp )
+				{
           MenuExit();
+				}
+			}
 
       // Shift + Ctrl Modifier
       if ( SDL_GetModState() & KMOD_CTRL )
@@ -1015,10 +1031,16 @@ void ProcessGameKeys( void )
 
       // Shift + F9
       if ( input_buffer_find( SDLK_F9 ) )
+			{
         if( ShowPortal == 4 )
+				{
           ShowPortal = 0;
+				}
         else
+				{
           ShowPortal++;
+				}
+			}
 
       // Shift + F10
       if ( input_buffer_find( SDLK_F10 ) )
@@ -1076,15 +1098,20 @@ void ProcessGameKeys( void )
     else // no modifiers
     {
 
-		// F8
-		if ( input_buffer_find( SDLK_F8 ) )
-			// Awesome !!!
-			// We need to make this a standard feature!!!
-			if( TargetComputerOn )
-				TargetComputerOn = FALSE;
-			else
-				TargetComputerOn = TRUE;
-
+			// F8
+			if ( input_buffer_find( SDLK_F8 ) )
+			{
+				// Awesome !!!
+				// We need to make this a standard feature!!!
+				if( TargetComputerOn )
+				{
+					TargetComputerOn = FALSE;
+				}
+				else
+				{
+					TargetComputerOn = TRUE;
+				}
+			}
     }
 
   } // end debug keys
@@ -1093,17 +1120,29 @@ void ProcessGameKeys( void )
 
     // F1
     if ( input_buffer_find( SDLK_F1 )  )
+		{
       if ( !CurrentMenu )
+			{
         MenuRestart( &MENU_Controls );
+			}
       else if ( CurrentMenu == &MENU_Controls )
+			{
         MenuExit();
+			}
+		}
 
     // F2
     if ( input_buffer_find( SDLK_F2 )  )
+		{
       if ( !CurrentMenu )
+			{
         MenuRestart( &MENU_Options );
+			}
       else if ( CurrentMenu == &MENU_Options )
+			{
         MenuExit();
+			}
+		}
 
     // single player
     if ( MyGameStatus == STATUS_SinglePlayer )
@@ -1111,18 +1150,30 @@ void ProcessGameKeys( void )
 
       // F3
       if ( input_buffer_find( SDLK_F3 ) )
+			{
         if ( !CurrentMenu )
+				{
           MenuRestart( &MENU_LoadSavedGame );
+				}
         else if ( CurrentMenu == &MENU_LoadSavedGame )
+				{
           MenuExit();
+				}
+			}
   
       // F4        
       if ( input_buffer_find( SDLK_F4 ) )
+			{
         // quick save
         if ( !CurrentMenu )
+				{
           MenuRestart( &MENU_SaveGame );
+				}
         else if ( CurrentMenu == &MENU_SaveGame )
+				{
           MenuExit();
+				}
+			}
 
     }
 
@@ -1167,24 +1218,42 @@ void ProcessGameKeys( void )
 
         // Shift + F9
         if ( input_buffer_find( SDLK_F9 ) )
+				{
           if ( !CurrentMenu )
+					{
             MenuRestart( &MENU_EditMacro1 );
+					}
           else if ( CurrentMenu == &MENU_EditMacro1 )
+					{
             MenuExit();
+					}
+				}
 
         // Shift + F10
         if ( input_buffer_find( SDLK_F10 ) )
+				{
           if ( !CurrentMenu )
+					{
             MenuRestart( &MENU_EditMacro2 );
+					}
           else if ( CurrentMenu == &MENU_EditMacro2 )
+					{
             MenuExit();
+					}
+				}
 
         // Shift + F11
         if ( input_buffer_find( SDLK_F11 ) )
+				{
           if ( !CurrentMenu )
+					{
             MenuRestart( &MENU_EditMacro3 );
+					}
           else if ( CurrentMenu == &MENU_EditMacro3 )
+					{
             MenuExit();
+					}
+				}
 
       } // Shift Modifier
       else // no modifier
