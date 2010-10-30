@@ -659,8 +659,6 @@ BOOL	IsStartPosVacantVisibleGroup( int16 i , uint16 startpos );
 BOOL ObjectCollideNoBGObject( OBJECT *Obj, VECTOR *Move_Off, float radius );
 BOOL SwitchedToWatchMode =FALSE;
 
-extern	BOOL Headlights;
-
 BOOL	RearCameraDisable = FALSE;
 
 /*===================================================================
@@ -811,12 +809,7 @@ BOOL ProcessShips()
 			StartPos = ShipObjPnt->Pos;
 			OldGroup = ShipObjPnt->Group;
 
-			// processing you
-			if( WhoIAm == i)
-			{
-
-#if 1
-				if( Headlights )
+				if( Ships[i].headlights )
 				{
 					if( ShipObjPnt->light == (uint16) -1 )
 					{
@@ -824,6 +817,7 @@ BOOL ProcessShips()
 					}
 					if( ShipObjPnt->light != (uint16) -1 )
 					{
+DebugPrintf("adding light\n");
 						ShipObjPnt->Flags |= SHIP_Light;
 
 						XLights[ShipObjPnt->light].Size = (4096.0F+2048.0F)*GLOBAL_SCALE;
@@ -845,7 +839,10 @@ BOOL ProcessShips()
 						ShipObjPnt->light = (uint16) -1;
 					}
 				}
-#endif
+
+			// processing you
+			if( WhoIAm == i)
+			{
 
 				ShipObjPnt->NodeNetwork = 1;
 				if( !ShipObjPnt->NearestNode )
@@ -1748,6 +1745,7 @@ void InitShipsChangeLevel( MLOADHEADER * Mloadheader )
 		Ships[i].Object.Shield	= Start_Shield;
 		Ships[i].Object.Hull	= Start_Hull;
 		Ships[i].Object.light = (uint16) -1;
+		Ships[i].headlights = FALSE;
 
 		for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[i].OrbModels[ Count ] = (uint16) -1;
 		Ships[i].NumMultiples = 0;
@@ -2447,6 +2445,12 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 extern void clear_last_mouse_state(void);
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
+	ShipPnt->Object.Flags &= ~SHIP_Light;
+	if( ShipPnt->Object.light != (uint16) -1 )
+	{
+		KillUsedXLight( ShipPnt->Object.light );
+		ShipPnt->Object.light = (uint16) -1;
+	}
 	input_grab(FALSE);
 	if( GodMode )
 	{

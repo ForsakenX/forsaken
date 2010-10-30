@@ -1959,6 +1959,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				CheckCharging( lpVeryShortUpdate->WhoIAm, Ships[ lpVeryShortUpdate->WhoIAm ].Object.Flags, lpVeryShortUpdate->ShortGlobalShip.Flags );
 				OldMode = Ships[lpVeryShortUpdate->WhoIAm].Object.Mode;
 				OldStatus = GameStatus[lpVeryShortUpdate->WhoIAm];
+				Ships[lpVeryShortUpdate->WhoIAm].headlights = !!( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_Light );
 				if( !( Ships[lpVeryShortUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpVeryShortUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
 					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpVeryShortUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
@@ -2061,6 +2062,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				CheckCharging( lpUpdate->WhoIAm, Ships[ lpUpdate->WhoIAm ].Object.Flags, lpUpdate->ShortGlobalShip.Flags );
 				OldMode = Ships[lpUpdate->WhoIAm].Object.Mode;
 				OldStatus = GameStatus[lpUpdate->WhoIAm];
+				Ships[lpUpdate->WhoIAm].headlights = !!( lpUpdate->ShortGlobalShip.Flags & SHIP_Light );
 				if( !( Ships[lpUpdate->WhoIAm].Object.Flags & SHIP_Multiple ) && ( lpUpdate->ShortGlobalShip.Flags & SHIP_Multiple ) )
 				{
 					for( Count = 0; Count < MAXMULTIPLES; Count++ ) Ships[ lpUpdate->WhoIAm ].OrbModels[ Count ] = (uint16) -1;
@@ -4394,6 +4396,7 @@ uint32 BuildShipFlags( BYTE Player )
 		Flags |= ( (uint32) ( Ships[Player].Object.Hull * (1.0F/16.0F) ) ) << SHIP_Hull_Bit1;
 	}
 	Flags |= (Ships[ Player ].NumMultiples&15) << SHIP_NumMultiples_Bit1;
+	if( Ships[Player].headlights ) Flags |= SHIP_Light;
 	return Flags;
 }
 

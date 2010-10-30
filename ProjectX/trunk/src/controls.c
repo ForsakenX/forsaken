@@ -210,7 +210,6 @@ char FlashText[ 128 ];
 float FlashTextActive = 0.0F;
 
 BOOL FullRearView = FALSE;
-BOOL Headlights = FALSE;
 BOOL ShowStats = FALSE;
 BOOL ShowMessages = FALSE;	// display long list of chat messages
 BOOL ShowStatistics = FALSE;	// display statistics in game
@@ -707,7 +706,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 	  ShowStatistics = FALSE;
 
   if ( key_pressed( &conf->headlights ) )
-    Headlights = !Headlights;
+		Ships[WhoIAm].headlights = !Ships[WhoIAm].headlights;
 
   ctrl->slide_mode = key_held( &conf->move );
   ctrl->roll_mode = key_held( &conf->roll );

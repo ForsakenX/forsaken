@@ -375,7 +375,7 @@ typedef struct _GLOBALSHIP
 	uint16				PrimID;						// Bullet ID
 	uint16				SecID;						// Missile ID
 	BYTE				SecWeapon;					// Weapon
-
+	BOOL	headlights; // are my headlights on?
 
 	BOOL				DemoInterpolate;
 
