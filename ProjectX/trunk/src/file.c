@@ -376,7 +376,7 @@ char* find_file( char * str )
 
 char* find_next_file( void )
 {
-	if (glob_pos < 0 || glob_pos >= glob_handle.gl_pathc)
+	if (glob_pos < 0 || glob_pos >= (int)glob_handle.gl_pathc)
 		return NULL;
 	DebugPrintf("file: found file \"%s\" (%d of %d)\n", glob_handle.gl_pathv[glob_pos], glob_pos+1, glob_handle.gl_pathc);
 	return find_strip_path(glob_handle.gl_pathv[glob_pos++]);

@@ -38,9 +38,9 @@ static BOOL parse_chdir( char *cli )
 {
     char * option;
 	char cmdline[256];
-	int size;
+	size_t size;
 
-	size = sizeof(strlen(cli)+1);
+	size = strlen(cli)+1;
 	if ( size > sizeof(cmdline) )
 	{
 		Msg("Command line to long!");
@@ -137,7 +137,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 
     char * option;
 	char cmdline[256];
-	int size;
+	size_t size;
 
     //
     //  Set Global Defaults
@@ -152,7 +152,7 @@ static BOOL ParseCommandLine(char* lpCmdLine)
 	// Get the command line string
 	//
 
-	size = sizeof(strlen(lpCmdLine)+1);
+	size = strlen(lpCmdLine)+1;
 	if ( size > sizeof(cmdline) )
 	{
 		Msg("Command line to long!");

@@ -7854,7 +7854,7 @@ void TextType( TEXT *t, char c )
 	len = strlen( t->text );
 	if ( t->FuncType )
 		c = t->FuncType( t, c );
-	if ( c && ( len < (sizeof( t->text )-2) )
+	if ( c && ( len < (int)(sizeof( t->text )-2) )
 		&& ( !t->limit_length || ( len < t->limit_length ) ) )
 	{
 		memmove( t->text + t->insert_pos + 1, t->text + t->insert_pos, strlen( t->text ) - t->insert_pos + 1);

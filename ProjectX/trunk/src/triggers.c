@@ -910,7 +910,7 @@ BOOL Triggerload( char * Filename )
 	{
 		v = &TrigVars[ i ];
 		byteptr = (uint8 *) intpnt;
-		for ( j = 0; j < sizeof( v->Name ); j++ )
+		for ( j = 0; j < (int) sizeof( v->Name ); j++ )
 		{
 			v->Name[ j ] = *byteptr++;
 		}
