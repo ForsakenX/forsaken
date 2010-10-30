@@ -29,7 +29,9 @@
 #define BANKACCELL		0.03F
 #define BANKDECELL		0.03F
 
-#define CLAMP( V, MAX )		if ( (V) > (MAX) ) (V) = (MAX); else if ( (V) < -(MAX) ) (V) = -(MAX); else
+#define CLAMP( V, MAX )\
+	if ( (V) > (MAX) ) { (V) = (MAX);  }\
+	else if ( (V) < -(MAX) ) { (V) = -(MAX); }
 
 /* ship control structures */
 

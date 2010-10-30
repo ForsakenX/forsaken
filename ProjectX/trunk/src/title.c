@@ -9178,7 +9178,7 @@ void GetGamePrefs( void )
     // integers
 
     WaterDetailSlider.value          = config_get_int( "water",						WaterDetailSlider.max );
-	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max )	
+	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max );
 	SetWaterDetail( &WaterDetailSlider );
 
     SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
@@ -9214,7 +9214,7 @@ void GetGamePrefs( void )
 	CLAMP( MyPacketsSlider.value,		MyPacketsSlider.max );
 
     NumPrimaryPickupsSlider.value    = config_get_int( "NumPrimaryPickups",			1 );
-	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max )	
+	CLAMP( NumPrimaryPickupsSlider.value, NumPrimaryPickupsSlider.max );
 	NumPrimaryPickups = NumPrimaryPickupsSlider.value;
 
     render_info.default_mode.w  = config_get_int( "ScreenWidth", 0 );
