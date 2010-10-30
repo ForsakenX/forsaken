@@ -348,7 +348,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	LPTRIANGLE	FacePnt = NULL;
 	LPLVERTEX	lpLVERTEX = NULL;
 	WORD			*lpIndices = NULL;
-	int				start_index = 0;
 	int			i;
 	int ntris = 0;
 	int vertsCount = 0;

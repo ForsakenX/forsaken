@@ -228,8 +228,8 @@ BOOL RayPolyIntersect( float * P0 , float * P1 , float * P2 , float * P3 ,
 	float		Np1y;
 	float		Np2x;
 	float		Np2y;
-	float		Np3x;
-	float		Np3y;
+	float		Np3x = 0.f;
+	float		Np3y = 0.f;
 	float		Np4x;
 	float		Np4y;
 	float		Npcx;
@@ -670,10 +670,10 @@ BOOL BackgroundCollide( MCLOADHEADER *c, MLOADHEADER *m,
 {
 	float poffset, pdist;
 	VECTOR ppos, pmove, epos, tpos;
-	NORMAL fnorm, pnorm;
+	NORMAL fnorm, pnorm; ZEROMEM(pnorm);
 	uint16 group;
 	uint16 next_group;
-	uint16 last_group;
+	uint16 last_group = 0;
 	BOOL hit_bg, hit_portal, hit_any_portal;
 	float dist_bg;
 	VECTOR dv;
@@ -1388,7 +1388,7 @@ BOOL OneGroupPolyCol( MCLOADHEADER * MCloadheaderp ,MLOADHEADER * Mloadheader , 
 
 	VECTOR		ImpactNormal;
 	float		ImpactOffset;
-	MCFACE		BSPFace;
+	MCFACE		BSPFace; ZEROMEM(BSPFace);
 	
 	if( group == (uint16) -1)
 		return FALSE;
@@ -1807,10 +1807,9 @@ BOOL OneGroupPortalCol( MLOADHEADER * Mloadheader , uint16 group ,
 						int collisionhint )
 #ifdef BSP_ONLY
 {
-	float		Distance;
+	float		Distance = 0.0f;
 	uint16		flag = 0;	
 	BOOL		res;
-	float		SkinThickness = 300.0F * GLOBAL_SCALE;
 	BSP_PORTAL_GROUP	*pg;
 	BSP_PORTAL			*bp;
 	int					j;
@@ -3159,7 +3158,7 @@ BOOL ObjectCollide( OBJECT *Obj, VECTOR *Move_Off, float radius, BGOBJECT **BGOb
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	VECTOR Pos_New;
+	VECTOR Pos_New; ZEROMEM(Pos_New);
 	BOOL hit;
 	VECTOR ImpactPoint;
 	
@@ -3390,7 +3389,7 @@ BOOL ObjectCollideOnly( OBJECT *Obj, VECTOR *Move_Off, float radius, VECTOR *Tar
 	float ImpactPlane;
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
-	VECTOR Pos_New;
+	VECTOR Pos_New; ZEROMEM(Pos_New);
 	BOOL hit;
 	VECTOR ImpactPoint;
 	
@@ -3531,7 +3530,7 @@ BOOL QCollide( VECTOR *Start_Pos, uint16 Start_Group, VECTOR *Move_Off, float ra
 	float Num, Div;
 	VECTOR FeelerStart;
 	uint16 FeelerGroup;
-	NORMAL ImpactNormal;
+	NORMAL ImpactNormal; ZEROMEM(ImpactNormal);
 	float FeelerLength = FEELER_LENGTH_TO_RADIUS_RATIO * radius;
 	VECTOR StartPos;
 	BOOL hit;

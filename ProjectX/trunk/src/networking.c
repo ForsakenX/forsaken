@@ -1452,7 +1452,6 @@ void handle_tracker( void )
 
 void ReceiveGameMessages( void )
 {
-	DWORD		offset = 0;
 	int i;
 
 	for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -4445,7 +4444,7 @@ void SetShipBankAndMat( OBJECT * ShipObjPnt )
 ===================================================================*/
 BOOL UpdateAmmoAndValidateMessage( void * Message )
 {
-	BYTE					Weapon;
+	BYTE					Weapon = 0;
 	BYTE					TempWeapon;
 	BYTE					Player;
 	BYTE		*			MsgPnt;

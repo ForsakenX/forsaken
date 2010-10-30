@@ -9399,7 +9399,7 @@ BOOL TintModelVertices( uint16 Model, float percent, EXCLUDEDVERTICES *Exclude )
 	int i;
 	int *CurrentExclude;
 	int NumberToExclude;
-	int ExcludedSoFar;
+	int ExcludedSoFar = 0;
 
 	DstMloadheader = &ModelHeaders[ Model ];
 
@@ -10540,7 +10540,7 @@ void DrawFlatMenuKeyText( MENUITEM *Item )
 {
 	DEFKEY *kdef;
 	VirtualKeycode keycode;
-	char *keyword;
+	char *keyword = NULL;
   	TEXTINFO *TextInfo;
 
 	if ( Item->Variable )
@@ -11956,7 +11956,7 @@ void DisplayTextItem (TEXTINFO *TextInfo)
 	int i, j, font, num_invalid_chars, skip, UpToChar;
 	float totalheight = 0.0;
 	TEXTINFO TempTextInfo;
-  	TEXT *t;
+  	TEXT *t = NULL;
 	BOOL DoForceFit;
 
 	if (MenuState == MENUSTATE_Text2)
@@ -12087,7 +12087,7 @@ void PrintTextItem (TEXTINFO *TextInfo)
 {
 	int StartPos;
 	int length;
-	uint8 *str;
+	uint8 *str = NULL;
 	int i;
 	BOOL newline;
 
@@ -12777,8 +12777,6 @@ BOOL TVFrameDisplayed = FALSE;
 
 void LoadSavedGamePic( char *file )
 {
-	int frame = 0;
-
 	if ( DummyTextureIndex == -1 )
 		return;
 	
@@ -14173,7 +14171,7 @@ void UpdateAxisPtr( float pos )
 void ChooseJoyAxis( MENUITEM *Item )
 {
 	int i, joystick, axis, action;
-	MENUITEM *ToggleItem, *SliderItem, *CheckItem, *AxisActionItem, *SensitivityItem, *FineItem;
+	MENUITEM *ToggleItem=NULL, *SliderItem=NULL, *CheckItem=NULL, *AxisActionItem=NULL, *SensitivityItem=NULL, *FineItem=NULL;
 	float sensitivity;
 
 	joystick = JoystickMap[JoystickList.selected_item];
@@ -14925,7 +14923,6 @@ VECTOR HoloRot = { 0.0F, 0.0F, 0.0F };
 void PlotHoloScanLine( void )
 {
 	MATRIX Mat_R;
-	VECTOR zerovec = { 0.0F, 0.0F, 0.0F };
 	PLANE tempplane;
 
 	if ( CurrentHoloOffset >= MaxHoloPlaneOffset[ CurrentHoloPlane ] )

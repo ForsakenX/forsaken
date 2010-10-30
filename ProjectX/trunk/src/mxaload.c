@@ -126,7 +126,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	float		*	FloatPnt;
 	MFACE		*	MFacePnt;
 	TRIANGLE		FacePnt; // was a pointer
-	LPTRIANGLE	TempFacePnt;
+	LPTRIANGLE	TempFacePnt; ZEROMEM(TempFacePnt);
 	uint16			exec_type;			// the type of execute buffer
 	uint16			texture_type;		// the type of texture...0 normal  1 env
 	uint16			num_vertices;		// overall number of verts
@@ -143,7 +143,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	uint16			texgroup;
 	uint16			num_anim_vertices;
 	int				i,e;
-	uint16			tpage;
+	uint16			tpage = 0;
 	int				execbuf;
 	int				group;
 	uint16			ExecSize;

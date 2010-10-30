@@ -1143,7 +1143,6 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 	float r , g , b;
 	BOOL	InTitle;
 	BOOL	DoDisplay;
-	int count = 0;
 
 	if( NamePnt == &ModelNames[0] ) InTitle = FALSE;
 	else InTitle = TRUE;
@@ -5449,8 +5448,8 @@ BOOL CreateMXABoundingBox( MXALOADHEADER * DstMloadheader, MATRIX * Matrix, VECT
 void SetupModelSpotFX( uint16 i )
 {
 	int16		Count;
-	int16		NumSpotFX;
-	PVSPOTFX *	SpotFXPtr;
+	int16		NumSpotFX = 0;
+	PVSPOTFX *	SpotFXPtr = NULL;
 
 	if( ModelNames[ Models[i].ModelNum ].DoIMorph )
 	{
@@ -6408,8 +6407,8 @@ void CheckModelLinkList( void )
 ===================================================================*/
 void KillAllBikeEngines( void )
 {
-	uint16		NumSpotFX;
-	PVSPOTFX *	SpotFXPtr;
+	uint16		NumSpotFX  = 0;
+	PVSPOTFX *	SpotFXPtr = NULL;
 	int16		Count;
 	uint16		i;
 

@@ -336,7 +336,7 @@ int PickTeamGoal( int team )
 {
 	int j;
 	int goal;
-	float d, dmax;
+	float d, dmax = 0.0f;
 
 	goal = -1;
 	for ( j = 0; j < NumGoals; j++ )
@@ -415,7 +415,7 @@ void ProcessGoals( void )
 {
 	int j, k;
 	int NumFlags[ MAX_TEAMS ];
-	int NewTeams;
+	int NewTeams = 0;
 
 	if( ( ( MyGameStatus != STATUS_Normal ) && ( MyGameStatus != STATUS_PlayingDemo ) ) ||
 		( !CaptureTheFlag && !CTF ) || !NumGoals || !Goal ) // paranoia attack...

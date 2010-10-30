@@ -922,7 +922,7 @@ static int16	OnceOnlyFlag = 0;
 	VECTOR	UpVector;
 	VECTOR	DirVector;
 	VECTOR	Rotation;
-	float	Ammo;
+	float	Ammo = 0.0f;
 	int16	Count;
 	float	Old_PowerLevel;
 	float	Freq;
@@ -1634,7 +1634,6 @@ void ProcessPrimaryBullets( void )
 	VECTOR			EInt_Point2;
 	NORMAL			ENormal;
 	uint16			TempEnemyIndex;
-	VECTOR			TempNormal = { 0.0F , 1.0F , 0.0F };
 	GUNOBJECT	*	GunPtr;		// the first gun...
 	FIREPOS		*	FirePosPnt;
 	BOOL			Killed;
@@ -6262,7 +6261,7 @@ void CreateNmeLightningPulse( uint16 i, float Distance, VECTOR * Dir, uint16 Gro
 	VECTOR	NormLeftVector;
 	VECTOR	NormUpVector;
 	VECTOR	StartPos;
-	VECTOR	EndPos;
+	VECTOR	EndPos; ZEROMEM(EndPos);
 	int16	NumSegments;
 	int16	Count;
 	int16	NumSparks;
@@ -6620,7 +6619,7 @@ void CreateTransTrail( uint16 i )
 ===================================================================*/
 void DispPowerLevel( void )
 {
-	int16	Steps, Count;
+	int16	Steps=0, Count;
 	int16	x, y;
 
 	x = ((int16)render_info.window_size.cx / 2 ) - ( 16 * 4 );
@@ -6841,7 +6840,7 @@ uint16 CheckHitShip( uint16 OwnerType, uint16 Owner, VECTOR * Pos, uint16 Group,
 	uint16		ClosestShip;
 	float		ClosestLength;
 	float		Cos;
-	float		ShipRadius;
+	float		ShipRadius = 0.0f;
 
 	ClosestShip = (uint16) -1;
 	ClosestLength = *Dist;
@@ -7006,7 +7005,7 @@ uint16 CheckHitSecondary( VECTOR * Pos, uint16 Group, VECTOR * Dir, VECTOR * UpD
 	float		DistToSphere;
 	uint16		ClosestSecBull;
 	float		ClosestLength;
-	float		SecBullRadius;
+	float		SecBullRadius = 0.0f;
 	float		Cos;
 	int16		Count;
 	GROUPLIST * GroupsVisible;
@@ -7793,7 +7792,7 @@ void LoseAllWeapons( void )
 ===================================================================*/
 void DropPrimary( void )
 {
-	float	Ammo;
+	float	Ammo = 0.0f;
 	float	Speed;
 	float	LifeCount;
 	int16	PickupNum;

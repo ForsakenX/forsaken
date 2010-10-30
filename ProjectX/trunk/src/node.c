@@ -443,8 +443,6 @@ void ShowNodeNetwork( uint32 NetMask )
 	int o,i,e;
 	NODE * NodePnt;
 	NODE * NodeLink;
-	VECTOR Dir = { 0.0F , 0.0F , 1.0F };
-	VECTOR Up = { 0.0F , 1.0F , 0.0F };
 	uint16	line;
 	BOOL	Mutual;
 	BOOL	CanSee;

@@ -191,7 +191,7 @@ void AI_LookAhead( float Accuracy, VECTOR * SPos ,OBJECT * TObject , VECTOR * Ne
 ===================================================================*/
 void AI_GetNearestNODETarget( OBJECT * Object )
 {
-	float Angle;
+	float Angle = 0.0f;
 	int i;
 	float TempAngle;
 	NODE * Node;

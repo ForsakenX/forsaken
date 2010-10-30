@@ -1477,8 +1477,6 @@ float HealthCount = 0.0F;
 int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
 void DrawSimplePanel()
 {
-			static int max = 0;
-			static int least = 10000000;
 	int energy;
 
     if( WhoIAm == Current_Camera_View )
@@ -4288,7 +4286,6 @@ void ShowGameStats( stats_mode_t mode )
 		rect_t box;
 		if( mode == BOX_BG )
 		{
-			int x_padding = FontWidth*2;
 			int y_padding = FontHeight*2;
 
 			// whole width

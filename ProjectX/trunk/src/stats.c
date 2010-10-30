@@ -270,7 +270,6 @@ int GetKillStats(int Killer, int Victim)
 int GetScoreStats(int Player)
 {
 	int score = GetKills( Player ); // kills - suacides - friendly
-	int x = 0;
 
 	// add bonus points
 	score += GetBonusStats(Player);

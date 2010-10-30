@@ -46,7 +46,6 @@ void AI_AIR_MOVETOTARGET( register ENEMY * Enemy )
 	NODE * TNode;
 	NODE * Node;
 	NODE * NewNode;
-	VECTOR		TempOffset = { 0.0F, 0.0F, 0.0F };
 
 	SObject = &Enemy->Object;
 

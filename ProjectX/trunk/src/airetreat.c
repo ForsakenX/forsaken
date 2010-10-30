@@ -44,8 +44,6 @@ void AI_AIR_RETREAT( register ENEMY * Enemy )
 	NODE * TNode;
 	NODE * NewNode;
 
-	VECTOR		TempOffset = { 0.0F, 0.0F, 0.0F };
-
 	SObject = &Enemy->Object;
 	// Is it time to think???
 	AI_THINK( Enemy , FALSE , FALSE);

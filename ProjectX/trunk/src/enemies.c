@@ -5743,7 +5743,7 @@ ENEMY * CheckHitEnemy( uint16 OwnerType, uint16 Owner, VECTOR * Pos, VECTOR * Di
 	ENEMY	*	ClosestEnemy;
 	float		ClosestLength;
 	float		Cos;
-	float		ColRadius;
+	float		ColRadius = 0.0f;
 	ENEMY	*	Enemy;
 	ENEMY	*	NextEnemy;
 
@@ -5965,7 +5965,7 @@ void EnemyCrawlUnderPlayerControl( ENEMY * Enemy )
 void EnemyCrawlUnderAiControl( ENEMY * Enemy )
 {
 	float Turn;
-	float Move;
+	float Move = 0.0f;
 	Enemy->AIMoveFlags = 0;
 
 	// wooooh shit .......
@@ -6640,8 +6640,8 @@ void AutoDisplayMatrix( OBJECT * Object )
 ===================================================================*/
 void CarryOutAIMovementCommands( ENEMY * Enemy )
 {
-	float Turn;
-	float Move;
+	float Turn = 0.0f;
+	float Move = 0.0f;
 
 	if( Enemy->AIMoveFlags )
 	{
@@ -6713,7 +6713,7 @@ void CarryOutAIMovementCommands( ENEMY * Enemy )
 ===================================================================*/
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy )
 {
-	float Move;
+	float Move = 0.0f;
 
 	if( Enemy->AIMoveFlags )
 	{
@@ -6791,7 +6791,7 @@ void CarryOutPreciseAIMovementCommands( ENEMY * Enemy )
 ===================================================================*/
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * GObject )
 {
-	float Turn;
+	float Turn = 0.0f;
 
 	if( GObject->AIMoveFlags )
 	{

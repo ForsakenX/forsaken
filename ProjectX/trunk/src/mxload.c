@@ -115,7 +115,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	MFACE		*	MFacePnt;
 //	LPTRIANGLE	FacePnt;
 	TRIANGLE		FacePnt; // was a pointer
-	LPTRIANGLE	TempFacePnt;
+	LPTRIANGLE	TempFacePnt; ZEROMEM(TempFacePnt);
 	uint16			exec_type = 0;			// the type of execute buffer
 	uint16			texture_type = 0;		// the type of texture...0 normal  1 env
 	uint16			num_vertices = 0;		// overall number of verts
@@ -129,7 +129,7 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 	WORD			*lpIndices = NULL;
 	int				ibIndex = 0;
 	int				i,e,o;
-	uint16			tpage;
+	uint16			tpage = 0;
 	int				execbuf;
 	int				group;
 	uint16			ExecSize;

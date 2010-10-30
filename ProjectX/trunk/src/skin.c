@@ -123,7 +123,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	int16			FaceCnt;
 	uint16			Group;
 	VERT			Verts[ 4 ];
-	float			x, y, z;
+	float			x=0, y=0, z=0;
 	int16			Vnum;
 	int16			VertCount;
 	VECTOR			Vector1;
@@ -131,7 +131,7 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	VECTOR			Normal;
 	VECTOR			C;
 	float			I;
-	int32			Shade;
+	int32			Shade = 0;
 	float			PlaneOffset;
 
 	specular = RGB_MAKE( 255, 255, 255 );
@@ -542,7 +542,6 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 	COLOR		specular;
 	BSP_NODE	*	TempNode;
 	BSP_NODE	*	StartNode;
-	float			NumNodes = 0.0F;
 	int				Side;
 	uint16			line;
 
@@ -799,7 +798,6 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 	COLOR		color;
 	COLOR		specular;
 	TRIGGER_ZONE *	StartSide;
-	float			NumNodes = 0.0F;
 	int				Side;
 	uint16			line;
 	int16			SideCount;
@@ -899,7 +897,6 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 	COLOR		color;
 	COLOR		specular;
 	ZONESIDE	*	StartSide;
-	float			NumNodes = 0.0F;
 	int				Side;
 	uint16			line;
 	int16			SideCount;
@@ -1144,7 +1141,7 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 	PORTAL		*	PortalPtr;
 	MCFACE		*	PolyPtr;
 	VECTOR			Verts[ 4 ];
-	float			x, y, z;
+	float			x=0, y=0, z=0;
 
 	PortalVertCount = 0;
 	PortalTriCount = 0;

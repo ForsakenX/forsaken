@@ -2019,8 +2019,6 @@ BOOL CollectPickup( uint16 i )
 									goal = TeamGoal( team );
 									if ( goal )
 									{
-										VECTOR Dir = { 0.0F, 0.0F, 0.0F };
-
 										KillPickupSend( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
 										KillPickup( Pickups[ i ].Owner, Pickups[ i ].ID, PICKUPKILL_Immediate );
 										GenerateFlagAtHome( team );
@@ -3383,8 +3381,6 @@ BOOL LoadPickupsPositions( void )
   int16   Count;
   VECTOR  Dir = { 0.0F, 0.0F, 0.0F };
   uint16  i = 0;
-  uint16  TriggerMod = (uint16) -1;
-  int32   StartingState = 1;
   int32   FileSize;
   uint32  MagicNumber;
   uint32  VersionNumber;
@@ -4482,7 +4478,7 @@ uint16 FindClosestPickup( void )
 	uint16	i;
 	VECTOR	DistVector;
 	uint16	ClosestPickup = (uint16) -1;
-	float	ClosestDist;
+	float	ClosestDist = 0.0f;
 	float	Dist;
 
 	i = FirstPickupUsed;
@@ -4525,7 +4521,7 @@ uint16 FindClosestShip( void )
 	VECTOR		TempVector;
 	float		DistToSphere;
 	uint16		ClosestShip = (uint16) -1;
-	float		ClosestLength;
+	float		ClosestLength = 0.0f;
 
 	for( Count = 0; Count < MAX_PLAYERS; Count++ )
 	{
@@ -7219,7 +7215,7 @@ void CorrectForExtraOrMissingPickups( void )
 	int16	Count;
 	int16	Count2;
 	int16	Player;
-	int16	Weapon;
+	int16	Weapon = 0;
 	int16	NumWeapons;
 	int16	Diff;
 	int16	Pickup;

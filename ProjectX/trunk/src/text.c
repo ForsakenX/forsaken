@@ -584,7 +584,6 @@ void PrintScoreSort( void )
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
 				int left_offset = 0; // offset from left
-				int len = 0; // length of string
 
 				// make sure it's a valid player
 				if( GameStatus[GetPlayerByRank(i)] != STATUS_Normal )

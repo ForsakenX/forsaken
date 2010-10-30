@@ -278,8 +278,8 @@ BOOL	XLight1Group( MLOADHEADER * Mloadheader, uint16 group )
 	float	SizeX2;
 	float	x,y,z;
 	float	Posx,Posy,Posz;
-	float	Dirx,Diry,Dirz;
-	float	Cosa,CosArc;
+	float	Dirx = 0.0f, Diry = 0.0f, Dirz = 0.0f;
+	float	Cosa,CosArc = 0.0f;
 	float	rlen;
 	float	intense;
 	uint32	tempiR;
@@ -941,8 +941,8 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 	float	SizeX2;
 	float	x,y,z;
 	float	Posx,Posy,Posz;
-	float	Dirx,Diry,Dirz;
-	float	Cosa,CosArc;
+	float	Dirx = 0.0f, Diry = 0.0f, Dirz = 0.0f;
+	float	Cosa,CosArc = 0.0f;
 	float	rlen;
 	float	intense;
 	int	tempiR;
@@ -1191,8 +1191,8 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 	float	SizeX2;
 	float	x,y,z;
 	float	Posx,Posy,Posz;
-	float	Dirx,Diry,Dirz;
-	float	Cosa,CosArc;
+	float	Dirx = 0.0f, Diry = 0.0f, Dirz = 0.0f;
+	float	Cosa,CosArc = 0.0f;
 	float	rlen;
 	float	intense;
 	int	tempiR;

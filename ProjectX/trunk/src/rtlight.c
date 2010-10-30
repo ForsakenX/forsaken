@@ -329,7 +329,7 @@ static void InterpLightOff( RT_LIGHT *light, float t, PULSETYPE type )
 
 static float TurnOnPoint( RT_LIGHT *light, PULSETYPE type )
 {
-	float t;
+	float t = 0.0f;
 
 	switch ( type )
 	{
@@ -353,7 +353,7 @@ static float TurnOnPoint( RT_LIGHT *light, PULSETYPE type )
 
 static float TurnOffPoint( RT_LIGHT *light, PULSETYPE type )
 {
-	float t;
+	float t = 0.0f;
 
 	switch ( type )
 	{
