@@ -89,7 +89,7 @@ BOOL SaveSnapShot( int8 * Filename );
 ===================================================================*/
 extern BOOL Cheated;
 extern	char biker_name[];
-extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
+extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
 extern	int CrystalsFound;
 extern	int16 Lives;

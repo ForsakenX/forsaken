@@ -43,7 +43,7 @@
 		Externals ...
 ===================================================================*/
 extern	BYTE			WhoIAm;
-extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
+extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
 extern	BYTE	ChangeLevel_MyGameStatus;
 extern	BOOL	CountDownOn;

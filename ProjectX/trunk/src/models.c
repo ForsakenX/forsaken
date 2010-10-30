@@ -52,7 +52,7 @@ extern	MXALOADHEADER	MxaModelHeaders[ MAXMXAMODELHEADERS ];
 
 extern	BYTE			Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE			WhoIAm;
-extern	GLOBALSHIP		Ships[MAX_PLAYERS];
+extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	float			framelag;
 extern	XLIGHT * FirstLightVisible;
 

@@ -28,7 +28,7 @@
 #include "networking.h"
 #include "ships.h"
 
-extern GLOBALSHIP Ships[];
+extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 
 extern MENU MENU_NEW_Battle;
 extern MENU *CurrentMenu;

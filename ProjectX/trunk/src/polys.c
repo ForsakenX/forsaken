@@ -33,7 +33,7 @@ extern	MCLOADHEADER	MCloadheader;
 extern	MCLOADHEADER	MCloadheadert0;
 extern	TLOADHEADER		Tloadheader;
 extern	float			framelag;
-extern	GLOBALSHIP		Ships[MAX_PLAYERS];
+extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	FRAME_INFO	*	Laser_Header;
 extern	FRAME_INFO	*	AfterBurner_Header;
 extern	FRAME_INFO	*	LensFlare_Header;

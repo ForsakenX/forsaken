@@ -53,7 +53,7 @@ extern	float			framelag;
 extern	MATRIX			MATRIX_Identity;
 extern	int16			LevelNum;
 extern	char			LevelNames[MAXLEVELS][128];
-extern	GLOBALSHIP		Ships[MAX_PLAYERS];
+extern	GLOBALSHIP		Ships[MAX_PLAYERS+1];
 extern	BYTE			GameStatus[MAX_PLAYERS];
 extern	BYTE			WhoIAm;
 extern	MODELNAME		ModelNames[MAXMODELHEADERS];

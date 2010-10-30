@@ -37,7 +37,7 @@
 /*===================================================================
 		Externals ...
 ===================================================================*/
-extern	GLOBALSHIP		Ships[ MAX_PLAYERS ];
+extern	GLOBALSHIP		Ships[ MAX_PLAYERS+1 ];
 extern	float framelag;
 extern	BOOL	Entry;
 extern	BOOL	Exit;

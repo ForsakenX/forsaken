@@ -99,7 +99,7 @@ extern char MyName[];
 extern char NickName[];
 extern	BYTE					Current_Camera_View;		// which object is currently using the camera view....
 extern	BYTE                    WhoIAm;
-extern	GLOBALSHIP              Ships[MAX_PLAYERS];
+extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16					StatsCount;
 extern	SHORTNAMETYPE			Names;	// all the players short Names....

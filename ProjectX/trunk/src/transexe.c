@@ -20,7 +20,7 @@
 ===================================================================*/
 extern RENDERMATRIX identity;
 extern MODEL Models[MAXNUMOFMODELS];
-extern GLOBALSHIP Ships[MAX_PLAYERS];
+extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 
 /*===================================================================
 		Globals...
