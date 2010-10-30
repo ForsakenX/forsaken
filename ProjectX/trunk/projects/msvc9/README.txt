@@ -9,11 +9,6 @@ Requirements:
 
 	lib/ folder should contain http://fly.thruhere.net/download/vs_lib/* extracted
 
-Templates:
-
-	copy and edit src/version.h.template to projects/msvc9/version.h
-
-
 Debugging:
 
 	Default Debugger:
