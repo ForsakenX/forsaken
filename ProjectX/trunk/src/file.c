@@ -37,6 +37,8 @@
 #define		O_BINARY 	0 // no such thing on unixa
 #endif
 
+#include <unistd.h>
+
 #ifndef S_IREAD
 #define S_IREAD 0400
 #endif

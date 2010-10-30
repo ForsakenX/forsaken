@@ -2444,6 +2444,7 @@ void ShipMode1( GLOBALSHIP * ShipPnt , BYTE i )
 	Input		:	int16 which Ship
 	Output		:	Nothing
 /*===================================================================ÄÄÄ*/
+extern void clear_last_mouse_state(void);
 void ShipMode2( GLOBALSHIP * ShipPnt , BYTE i )
 {
 	input_grab(FALSE);

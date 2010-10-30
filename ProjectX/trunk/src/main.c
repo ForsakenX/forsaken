@@ -14,6 +14,10 @@
 #include "input.h"
 #include "sound.h"
 
+#ifndef WIN32
+#include <unistd.h>
+#endif
+
 #ifdef __WINE__
 #define LR_VGACOLOR LR_VGA_COLOR
 #endif
