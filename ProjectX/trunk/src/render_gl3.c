@@ -847,6 +847,11 @@ BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 	glGetIntegerv( GL_ARRAY_BUFFER_BINDING, &old_array_buf );
 	glBindBuffer( GL_ARRAY_BUFFER, (GLuint) renderObject->lpVertexBuffer );
 	*verts = (LVERTEX *) glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+	if(!*verts)
+	{
+		DebugPrintf("FSLockVertexBuffer: glMapBuffer returned NULL\n");
+		return FALSE;
+	}
 	CHECK_GL_ERRORS;
 	return TRUE;
 }
@@ -870,6 +875,11 @@ BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 	glGetIntegerv( GL_ELEMENT_ARRAY_BUFFER_BINDING, &old_index_buf );
 	glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, (GLuint) renderObject->lpIndexBuffer );
 	*indices = (WORD *) glMapBuffer( GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY );
+	if(!*indices)
+	{
+		DebugPrintf("FSLockIndexBuffer: glMapBuffer returned NULL\n");
+		return FALSE;
+	}
 	CHECK_GL_ERRORS;
 	return TRUE;
 }
