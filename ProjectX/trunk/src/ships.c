@@ -809,7 +809,11 @@ BOOL ProcessShips()
 			StartPos = ShipObjPnt->Pos;
 			OldGroup = ShipObjPnt->Group;
 
-				if( ShipObjPnt->Mode != LIMBO_MODE && ShipPnt->headlights )
+				if(
+					ShipPnt->headlights &&                                    // has headlights on
+					ShipObjPnt->Mode != LIMBO_MODE &&                         // not dead
+					(ShipObjPnt->Mode != DEATH_MODE || Random_Range(2))       // blink 50% while dieing
+				)
 				{
 					if( ShipObjPnt->light == (uint16) -1 )
 					{
@@ -817,7 +821,6 @@ BOOL ProcessShips()
 					}
 					if( ShipObjPnt->light != (uint16) -1 )
 					{
-DebugPrintf("adding light\n");
 						ShipObjPnt->Flags |= SHIP_Light;
 
 						XLights[ShipObjPnt->light].Size = (4096.0F+2048.0F)*GLOBAL_SCALE;
