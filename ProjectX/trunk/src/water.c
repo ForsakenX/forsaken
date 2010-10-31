@@ -149,6 +149,8 @@ BOOL PreWaterLoad( char * Filename )
 	while ( ( *FileNamePnt++ = *Buffer++ ) != 0 );
 
 	GetLevelTexturePath( &TempFilename[ 0 ], &buf[0], &ShortLevelNames[ LevelNum ][ 0 ] );
+	
+	DebugPrintf("loading water texture: %s\n",TempFilename);
 
 	WaterTPage = AddTexture( &Tloadheader , &TempFilename[ 0 ], TRUE , TRUE , TRUE, 0, 0 );		// dont colourkey
 	WaterBuffer = Buffer;
@@ -243,7 +245,9 @@ BOOL WaterLoad( void )
 
 		if ( WO->XVerts < 1 || WO->YVerts < 1 )
 		{
-			DebugPrintf("Not loading water, either xVerts or yVerts was less than 1: %d, %d\n",WO->XSize,WO->YSize);
+			DebugPrintf("Not loading water, either xVerts or yVerts was less than 1\n");
+			DebugPrintf("xVerts=%d, yVerts=%d, xSize=%d, ySize=%d, cellSize=%d\n",
+				WO->XVerts,WO->YVerts,WO->XSize,WO->YSize,WATER_CELLSIZE);
 			return FALSE;
 		}
 
@@ -359,6 +363,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 
 	if (!FSCreateVertexBuffer(&WO->renderObject, WO->num_of_verts))
 	{
+		DebugPrintf("water FSCreateVertexBuffer failed\n");
 		return FALSE;
 	}
 
@@ -370,16 +375,19 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 
 	if (!FSCreateIndexBuffer(&WO->renderObject, ntris*3 )) // 3 vertexes in a triangle
 	{
+		DebugPrintf("water FSCreateIndexBuffer failed\n");
 		return FALSE;
 	}
 
 	if (!FSLockVertexBuffer(&WO->renderObject, &lpLVERTEX))
 	{
+		DebugPrintf("water FSLockVertexBuffer failed\n");
 		return FALSE;
 	}
 
 	if (!(FSLockIndexBuffer(&WO->renderObject, &lpIndices)))
 	{
+		DebugPrintf("water FSLockIndexBuffer failed\n");
 		return FALSE;
 	}
 
@@ -424,14 +432,15 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 		}
 	}
 
-	if (!(FSUnlockVertexBuffer(/*WO->lpVertexBuffer*/&WO->renderObject)))
+	if (!(FSUnlockVertexBuffer(&WO->renderObject)))
 	{
+		DebugPrintf( "water FSUnlockVertexBuffer failed\n");
 		return FALSE;
 	}
 	
 	if (!(FSUnlockIndexBuffer(&WO->renderObject)))
 	{
-		Msg( "water FSUnlockIndexBuffer failed");
+		DebugPrintf( "water FSUnlockIndexBuffer failed\n");
 		return FALSE ;
 	}
 
@@ -441,7 +450,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].numVerts = WO->num_of_verts;
 	WO->renderObject.textureGroups[0].startIndex = 0;
 	WO->renderObject.textureGroups[0].startVert = 0;
-	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage];
+	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage]; 
 	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
 	WO->renderObject.material = Tloadheader.lpMat[WaterTPage];
 
