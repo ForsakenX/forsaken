@@ -1292,7 +1292,7 @@ void network_event_player_left( network_player_t * player )
 
 				if( Ships[i].Object.light != (uint16) -1  )
 				{
-					//KillUsedXLight(Ships[i].Object.light);
+					KillUsedXLight(Ships[i].Object.light);
 					Ships[i].Object.light = (uint16) -1;
 				}
 
