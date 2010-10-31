@@ -1064,7 +1064,7 @@ const char * render_error_description( int e )
 	while( ( error = glGetError() ) != GL_NO_ERROR )
 	{
 		str = gluErrorString(error);
-		DebugPrintf("render error: %s\n",str);
+		DebugPrintf("GL error: %s\n",str);
 	}
 	return (const char *) str;
 }
