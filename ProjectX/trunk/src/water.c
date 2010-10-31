@@ -209,6 +209,7 @@ BOOL WaterLoad( void )
 		return( FALSE );
 	}
 	
+	memset(FirstWaterObject, 0, NumOfWaterObjects * sizeof(FirstWaterObject));	
 	
 	WO = FirstWaterObject;
 	WO->Group = 0;
@@ -430,7 +431,7 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	
 	if (!(FSUnlockIndexBuffer(&WO->renderObject)))
 	{
-		Msg( "FSUnlockIndexBuffer failed");
+		Msg( "water FSUnlockIndexBuffer failed");
 		return FALSE ;
 	}
 
