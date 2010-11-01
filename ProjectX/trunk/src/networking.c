@@ -1061,7 +1061,6 @@ void SetupNetworkGame()
 		Ships[i].Object.Mat = TempMatrix;
 		Ships[i].Object.FinalMat = TempMatrix;
 		Ships[i].Object.FinalInvMat = TempMatrix;
-		Ships[i].FirstPacketRecieved = TRUE;
 		// reset external and internal force vectors to ship movement
 		Ships[i].Object.ExternalForce.x = 0.0F;
 		Ships[i].Object.ExternalForce.y = 0.0F;
@@ -1113,7 +1112,6 @@ void InitShipStructure( int i , BOOL ResetScore )
 	Ships[i].Object.FinalMat = TempMatrix;
 	Ships[i].Object.FinalInvMat = TempMatrix;
 
-	Ships[i].FirstPacketRecieved = TRUE;
 	// reset external and internal force vectors to ship movement
 	Ships[i].Object.ExternalForce.x = 0.0F;
 	Ships[i].Object.ExternalForce.y = 0.0F;
@@ -2095,26 +2093,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
 				if( lpUpdate->ShortGlobalShip.Flags & SHIP_IsHost  )
 					OverallGameStatus = lpUpdate->ShortGlobalShip.Status;
-
-				if( !Ships[lpUpdate->WhoIAm].FirstPacketRecieved  )
-				{
-#ifdef DEBUG_ON
-					if( ((int8)( Ships[lpUpdate->WhoIAm].LastPacketID + 1)) != lpUpdate->ShortGlobalShip.LastPacketID )
-					{
-						DebugPrintf("Missed %d Packets From %s\n",
-												(lpUpdate->ShortGlobalShip.LastPacketID + 1 - Ships[lpUpdate->WhoIAm].LastPacketID) ,
-												&Names[lpUpdate->WhoIAm][0] );
-					}
-					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
-#endif
-				}
-				else
-				{
-					Ships[lpUpdate->WhoIAm].FirstPacketRecieved = FALSE;
-#ifdef DEBUG_ON
-					Ships[lpUpdate->WhoIAm].LastPacketID  = lpUpdate->ShortGlobalShip.LastPacketID;
-#endif
-				}
 
 #ifdef DEMO_SUPPORT
 					if( CheckForName( lpUpdate->WhoIAm ) )
@@ -3516,10 +3494,10 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         lpUpdate = (LPUPDATEMSG)&CommBuff[0];
         lpUpdate->MsgCode = msg;
         lpUpdate->WhoIAm = WhoIAm;
-		lpUpdate->ShortGlobalShip = ShortGlobalShip;
+				lpUpdate->ShortGlobalShip = ShortGlobalShip;
         nBytes = sizeof( UPDATEMSG );
-		channel = CHANNEL_BIKE_POSITIONS;
-		flags = NETWORK_SEQUENCED;
+				channel = CHANNEL_BIKE_POSITIONS;
+				flags = NETWORK_SEQUENCED;
         break;
 
 	// following 3 pkts are bullet pkts

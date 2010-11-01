@@ -368,8 +368,6 @@ typedef struct _GLOBALSHIP
 	network_player_t *  network_player;
 	uint16				OrbModels[ MAXMULTIPLES ];	// Orbit Pulsar Model
 	float				OrbAmmo[ MAXMULTIPLES ];	// Orbit Pulsar Ammo
-	int8				LastPacketID;
-	BOOL				FirstPacketRecieved;
 
 	float				PrimPowerLevel;				// Trojax Powerlevel
 	uint16				PrimID;						// Bullet ID
@@ -425,9 +423,6 @@ typedef struct _SHORTGLOBALSHIP
 	float				Bank;			// How much Am I banked....
 #endif
 	QUAT				Quat;			// Final Quat...
-#ifdef DEBUG_ON 
-	int8				LastPacketID;	// should go in order.....
-#endif
 } SHORTGLOBALSHIP, *LPSHORTGLOBALSHIP;
 
 typedef struct _VERYSHORTGLOBALSHIP
