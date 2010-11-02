@@ -5233,13 +5233,13 @@ void CalculateFramelag( void )
   // since they are constantly updated via networking
   // and are not time based at all....
 
-  real_framelag  = timer_run( &framelag_timer );
-  
-  framelag = real_framelag * 71.0F;
+  while( !(real_framelag = timer_run( &framelag_timer )) )
+	{
+	  //DebugPrintf("WARNING: real_framelag=%d\n",real_framelag);
+		SDL_Delay(10);
+	}
 
-  if(!framelag || !real_framelag)
-	  DebugPrintf("WARNING: framelag = %d, real_framelag = %d\n",
-		framelag, real_framelag);
+  framelag = real_framelag * 71.0F;
 
   // debugging
   //if (TimeWorst == 0.0 || seconds > TimeWorst) TimeWorst = seconds;
