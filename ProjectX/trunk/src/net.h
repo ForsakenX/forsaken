@@ -92,24 +92,28 @@ void network_set_player_name( char* name );
  *  Sending Data
  */
 
-// unsequenced	| unreliable	- is the default
-// reliable		| unsequenced	- is not supported
-// reliable						- is always sequenced
-// sequenced	| unreliable	- will drop late pkts & instantly deliver arrived pkts (position updates)
-// sequenced	| reliable		- will wait for late pkts to arive
+// FLAGS
 
-// multiple types of pkts can all be sent on the same channel
-// reliable | sequenced will take part in the same sequencing order on a channel
-// unreliable | sequenced pkts will get dropped if they are late...
+// unsequenced  + unreliable	= is the default
+// reliable     + unsequenced	= is not supported
+// reliable                   = always sequenced
+// sequenced    + unreliable	= will drop late pkts & instantly deliver arrived pkts (position updates)
+// sequenced	  + reliable		= will wait for late pkts to arive
 
-// 1 pkt is handled at a time and normally you want to process all pkts that are in queue
-// thus regardless of pkt order you will process the arrived pkt within that frame...
-// there is no point in over channelizing everything...
+// CHANNELS (STREAMS)
 
-// channels are mainly good for separating sequenced streams...
-// for instance if you have a stream of position updates and another stream for voice pkts
-// you don't want your position pkt dropped cause a newer voice pkt came in first...
-// thus you would create channels to seperate those streams...
+// note the word "and" here means different types of packets mixed on a single stream
+// the "+" symbol means a single packet with those flags set
+
+// sequenced                  = will take part in the same sequencing order on a channel
+// unreliable and unsequenced = all on their own
+// unreliable + sequenced     = will get dropped if they are late...
+// unreliable and sequenced   = packets will respect sequencing and reliability always
+
+// NOTES
+
+// no need to over channalize 
+// use different channels for different streams
 
 typedef enum {
 	NETWORK_RELIABLE	= 2, // note: reliable is also sequenced
