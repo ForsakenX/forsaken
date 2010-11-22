@@ -89,6 +89,10 @@ else
 	CFLAGS+= -DOPENGL1
 endif
 
+ifeq ($(BOT),1)
+	CFLAGS+= -DBOT1
+endif
+
 # ProjectX-specific includes
 CFLAGS += -I. -Iinclude -Iai/aiinclude
 

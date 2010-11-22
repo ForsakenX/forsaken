@@ -3820,6 +3820,10 @@ void MainRoutines( void )
     DemoPlayingNetworkGameUpdate();
   }
 
+#ifdef BOT1
+	ProcessBot1();
+#endif
+
   ProcessShips();
 
 #ifdef SHADOWTEST
