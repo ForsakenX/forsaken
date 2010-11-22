@@ -37,27 +37,34 @@
 #include "timer.h"
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE WhoIAm;
+extern SHIPCONTROL control;
+extern float real_framelag;
+extern float framelag;
+extern float BankAccell;
+extern float MaxBankAngle;
 /*
 
 	RenderScene()
 	{
 		ReadInput(); // key/mouse read here
-		switch(STATUS)
+		switch(MyGameStatus)
 		{
 		case STATUS_Normal:
 			MainGame()
 			{
 				MainRoutines()
 				{
-					ProcessBot(); // you are here
+					ProcessBot1(); // you are here
 					ProcessShips()
 					{
 						ModeControl()
 						{
-							control_ship()
+							control_ship(control)
 							{
-								// applies key/mouse inputs against
-								// player config to perform actions
+								// clear the last settings
+								// player config used to apply key/mouse
+								ProcessBot2(control); // you are here
+								// clamp to max turn/roll/bank/slide
 							}
 						}
 					}
@@ -131,12 +138,43 @@ extern BYTE WhoIAm;
 		.numofcells[]
 		.StartPosInThisGroup
 
+	SHIPCONTROL control;
+		.pitch    // aim up/down
+		.yaw      // aim left/right
+		.roll     // roll
+		.right    // go negative for left
+		.up       // go negative for down
+		.forward  // go negative for back
+		.select_primary   = primary + 1 ?
+		.select_secondary = secondary + 1 ?
+
+		// booleans
+
+		.turbo
+		.fire_primary
+		.fire_secondary
+		.fire_mine
+		.drop_primary
+		.drop_secondary
+		.drop_shield
+		.drop_ammo
+
 */
+static void process(void)
+{
+	//GLOBALSHIP * me = &Ships[WhoIAm];
+	control.forward += 1;
+	control.fire_primary = 1;
+}
 void ProcessBot1( void )
 {
-	// your ship
-	GLOBALSHIP * me = &Ships[WhoIAm];
-	// move your own ship
-	me->Object.Speed.z = 1;
+	process();
+	// rest of control_ship will now clamp you to max movements
+	// automatically do bank again like control_ship would have
+	if(control.yaw)
+	{
+		int direction = (control.yaw > 0 ? -1 : 1);
+		control.bank += direction * BankAccell * MaxBankAngle * framelag;
+	}
 }
 #endif // BOT1

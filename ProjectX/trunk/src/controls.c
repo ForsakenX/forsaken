@@ -908,6 +908,10 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 		}
 	}
 
+#ifdef BOT1
+	ProcessBot1();
+#endif
+
   MaxMove = MoveAccell * MaxMoveSpeed * framelag;
   MaxTurbo = TurboAccell * MaxTurboSpeed * framelag;
   MaxTurn = TurnAccell * MaxTurnSpeed * framelag;
