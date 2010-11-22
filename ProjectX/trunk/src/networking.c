@@ -3279,6 +3279,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
     {
 
     case MSG_YOUQUIT:
+    	DebugPrintf("net_msg: MSG_YOUQUIT\n");
 
 		lpYouQuitMsg = (LPYOUQUITMSG)&CommBuff[0];
         lpYouQuitMsg->MsgCode = msg;
@@ -3291,6 +3292,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_BIKENUM:
+    	DebugPrintf("net_msg: MSG_BIKENUM\n");
 
 		lpBikeNumMsg = (LPBIKENUMMSG)&CommBuff[0];
         lpBikeNumMsg->MsgCode = msg;
@@ -3301,6 +3303,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		break;
 
 	case MSG_HEREIAM:
+		DebugPrintf("net_msg: MSG_HEREIAM\n");
 
         lpHereIAm = (LPHEREIAMMSG)&CommBuff[0];
         lpHereIAm->MsgCode = msg;
@@ -3319,6 +3322,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	// other wise whats the point of sending all this extra stuff...
 
     case MSG_INIT:
+    	DebugPrintf("net_msg: MSG_INIT\n");
 
 		// only host is allowed to send a MSG_INIT
 		if( !IsHost )
@@ -3478,6 +3482,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_VERYSHORTUPDATE: // short packets on
+    	//DebugPrintf("net_msg: MSG_VERYSHORTUPDATE\n");
 
         lpVeryShortUpdate = (LPVERYSHORTUPDATEMSG)&CommBuff[0];
         lpVeryShortUpdate->MsgCode = msg;
@@ -3490,6 +3495,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_UPDATE: // short packets off
+    	//DebugPrintf("net_msg: MSG_UPDATE\n");
 
         lpUpdate = (LPUPDATEMSG)&CommBuff[0];
         lpUpdate->MsgCode = msg;
@@ -3509,6 +3515,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	// probably just use those and turn off the f updates...
 
     case MSG_FUPDATE: // short packets off + fire weapon data
+    	DebugPrintf("net_msg: MSG_FUPDATE\n");
 
 		//DebugPrintf("F UPDATE\n");
 
@@ -3526,6 +3533,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_VERYSHORTFUPDATE: // short packets on + fire weapon data
+    	DebugPrintf("net_msg: MSG_VERYSHORTFUPDATE\n");
 
 		//DebugPrintf("F UPDATE\n");
 
@@ -3543,6 +3551,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_GROUPONLY_VERYSHORTFUPDATE:
+    	DebugPrintf("net_msg: MSG_GROUPONLY_VERYSHORTFUPDATE\n");
 
 		//DebugPrintf("F UPDATE GROUP ONLY\n");
 
@@ -3560,6 +3569,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_DROPPICKUP:
+    	DebugPrintf("net_msg: MSG_DROPPICKUP\n");
 
         lpDropPickup = (LPDROPPICKUPMSG) &CommBuff[0];
         lpDropPickup->MsgCode = msg;
@@ -3571,6 +3581,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_VERYSHORTDROPPICKUP:
+    	DebugPrintf("net_msg: MSG_VERYSHORTDROPPICKUP\n");
 
         lpVeryShortDropPickup = (LPVERYSHORTDROPPICKUPMSG) &CommBuff[0];
         lpVeryShortDropPickup->MsgCode = msg;
@@ -3582,6 +3593,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_KILLPICKUP:
+    	DebugPrintf("net_msg: MSG_KILLPICKUP\n");
 
         lpKillPickup = (LPKILLPICKUPMSG) &CommBuff[0];
         lpKillPickup->MsgCode = msg;
@@ -3593,6 +3605,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_TEAMGOALS:
+    	DebugPrintf("net_msg: MSG_TEAMGOALS\n");
 
         lpTeamGoals = (LPTEAMGOALSMSG) &CommBuff[0];
         lpTeamGoals->MsgCode = msg;
@@ -3604,6 +3617,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHOCKWAVE:
+    	DebugPrintf("net_msg: MSG_SHOCKWAVE\n");
 
         lpShockwave = (LPSHOCKWAVEMSG) &CommBuff[0];
         lpShockwave->MsgCode = msg;
@@ -3614,6 +3628,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_BGOUPDATE:
+    	DebugPrintf("net_msg: MSG_BGOUPDATE\n");
 
         lpBGOUpdate = (LPBGOUPDATEMSG) &CommBuff[0];
         lpBGOUpdate->MsgCode = msg;
@@ -3625,6 +3640,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_PRIMBULLPOSDIR:
+    	DebugPrintf("net_msg: MSG_PRIMBULLPOSDIR\n");
         lpPrimBullPosDir = (LPPRIMBULLPOSDIRMSG)&CommBuff[0];
         lpPrimBullPosDir->MsgCode = msg;
         lpPrimBullPosDir->WhoIAm = WhoIAm;
@@ -3635,6 +3651,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 	// appears to be mines..
 
     case MSG_SECBULLPOSDIR:
+    	DebugPrintf("net_msg: MSG_SECBULLPOSDIR\n");
         lpSecBullPosDir = (LPSECBULLPOSDIRMSG)&CommBuff[0];
         lpSecBullPosDir->MsgCode = msg;
         lpSecBullPosDir->WhoIAm = WhoIAm;
@@ -3645,6 +3662,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_TITANBITS:
+    	DebugPrintf("net_msg: MSG_TITANBITS\n");
 
         lpTitanBits = (LPTITANBITSMSG)&CommBuff[0];
         lpTitanBits->MsgCode = msg;
@@ -3656,6 +3674,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHIPHIT:
+    	DebugPrintf("net_msg: MSG_SHIPHIT\n");
 		
         lpShipHit = (LPSHIPHITMSG)&CommBuff[0];
         lpShipHit->MsgCode = msg;
@@ -3668,6 +3687,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTSHIPHIT:
+    	DebugPrintf("net_msg: MSG_SHORTSHIPHIT\n");
 
         lpShortShipHit = (LPSHORTSHIPHITMSG)&CommBuff[0];
         lpShortShipHit->MsgCode = msg;
@@ -3680,6 +3700,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHIPDIED:
+    	DebugPrintf("net_msg: MSG_SHIPDIED\n");
 
         lpShipDied = (LPSHIPDIEDMSG)&CommBuff[0];
         lpShipDied->MsgCode = msg;
@@ -3695,6 +3716,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_REQTIME:
+    	DebugPrintf("net_msg: MSG_REQTIME\n");
         lpReqTime = (LPREQTIMEMSG)&CommBuff[0];
         lpReqTime->MsgCode = msg;
         lpReqTime->WhoIAm = WhoIAm;
@@ -3704,6 +3726,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SETTIME:
+    	DebugPrintf("net_msg: MSG_SETTIME\n");
 
         lpSetTime = (LPSETTIMEMSG)&CommBuff[0];
         lpSetTime->MsgCode = msg;
@@ -3714,6 +3737,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         break;
 
     case MSG_STATUS:
+    	DebugPrintf("net_msg: MSG_STATUS\n");
 
 		lpStatus							= (LPSTATUSMSG)&CommBuff[0];
         lpStatus->MsgCode					= msg;
@@ -3732,6 +3756,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         break;
 
 	case MSG_NETSETTINGS:
+		DebugPrintf("net_msg: MSG_NETSETTINGS\n");
 
 		lpNetSettingsMsg						= (LPNETSETTINGSMSG)&CommBuff[0];
         lpNetSettingsMsg->MsgCode				= msg;
@@ -3745,6 +3770,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		break;
 
     case MSG_LONGSTATUS:
+    	DebugPrintf("net_msg: MSG_LONGSTATUS\n");
 
 		lpLongStatus = (LPLONGSTATUSMSG)&CommBuff[0];
         lpLongStatus->MsgCode				= msg;
@@ -3769,6 +3795,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTPICKUP:
+    	DebugPrintf("net_msg: MSG_SHORTPICKUP\n");
 
 		lpShortPickup = (LPSHORTPICKUPMSG)&CommBuff[0];
         lpShortPickup->MsgCode	= msg;
@@ -3782,6 +3809,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTREGENSLOT:
+    	DebugPrintf("net_msg: MSG_SHORTREGENSLOT\n");
 
 		lpShortRegenSlot = (LPSHORTREGENSLOTMSG)&CommBuff[0];
         lpShortRegenSlot->MsgCode		= msg;
@@ -3795,6 +3823,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTTRIGGER:
+    	DebugPrintf("net_msg: MSG_SHORTTRIGGER\n");
 
 		lpShortTrigger = (LPSHORTTRIGGERMSG)&CommBuff[0];
         lpShortTrigger->MsgCode		= msg;
@@ -3808,6 +3837,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTTRIGVAR:
+    	DebugPrintf("net_msg: MSG_SHORTTRIGVAR\n");
 
 		lpShortTrigVar = (LPSHORTTRIGVARMSG)&CommBuff[0];
         lpShortTrigVar->MsgCode		= msg;
@@ -3821,6 +3851,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 
 
     case MSG_SHORTMINE:
+    	DebugPrintf("net_msg: MSG_SHORTMINE\n");
 
 		lpShortMine				= (LPSHORTMINEMSG)&CommBuff[0];
         lpShortMine->MsgCode	= msg;
@@ -3833,6 +3864,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
         break;
 
     case MSG_TEXTMSG:
+    	DebugPrintf("net_msg: MSG_TEXTMSG\n");
 
 		lpTextMsg = (LPTEXTMSG)&CommBuff[0];
         lpTextMsg->MsgCode	= msg;
