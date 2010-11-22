@@ -3529,6 +3529,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		// uncomment to make secondaries reliable
 		//if(mask)
 		//	flags |= NETWORK_RELIABLE;
+		Interval = NetUpdateInterval; // reset pps timer
         break;
 
 
@@ -3547,6 +3548,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		// uncomment to make secondaries reliable
 		//if(mask)
 		//	flags |= NETWORK_RELIABLE;
+		Interval = NetUpdateInterval; // reset pps timer
         break;
 
 
