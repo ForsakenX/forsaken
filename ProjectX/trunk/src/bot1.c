@@ -54,16 +54,15 @@ extern float MaxBankAngle;
 			{
 				MainRoutines()
 				{
-					ProcessBot1(); // you are here
 					ProcessShips()
 					{
 						ModeControl()
 						{
-							control_ship(control)
+							control_ship()
 							{
 								// clear the last settings
 								// player config used to apply key/mouse
-								ProcessBot2(control); // you are here
+								ProcessBot1();
 								// clamp to max turn/roll/bank/slide
 							}
 						}
