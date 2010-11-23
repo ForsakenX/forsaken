@@ -76,6 +76,16 @@ extern float MaxBankAngle;
 
  Ships[]
 	.Object
+		.Pos
+		.Quat
+		.Group
+		.Speed
+		.Angle
+		.DirVector
+		.Shield
+		.Hull
+		.Energy
+		.PowerLevel
 	.enable
 	.ShipThatLastHitMe
 	.NumMultiples
