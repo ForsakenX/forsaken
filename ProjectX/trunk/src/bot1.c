@@ -239,6 +239,8 @@ static void control_bot( SHIPCONTROL * bot )
 		/* FIXME: should be lua calls */
 		luaopen_vecmat(Lbot);
 		luaopen_controls(Lbot);
+		luaopen_object(Lbot);
+		luaopen_ships(Lbot);
 		DebugPrintf("loading %s\n", BOT_FILE);
 		luaL_dofile(Lbot, BOT_FILE);
 	}
