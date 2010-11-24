@@ -1,5 +1,7 @@
 #ifdef BOT1
 #include <stdio.h>
+#include <lua.h>
+#include <lauxlib.h>
 #include "main.h"
 #include "new3d.h"
 #include "quat.h"
@@ -186,12 +188,32 @@ extern float NitroFuel;
 
 */
 
+lua_State *Lbot;
+
+#define BOT_FILE "bot1.lua"
+
 // put your bot logic here
 static void control_bot( SHIPCONTROL * bot )
 {
 	//GLOBALSHIP * me = &Ships[WhoIAm];
-	bot->forward = 1;
-	bot->fire_primary = 1;
+	SHIPCONTROL **botp;
+	if (!Lbot)
+	{
+		Lbot = luaL_newstate();
+		luaL_openlibs(Lbot);
+		/* FIXME: should be lua calls */
+		luaopen_vecmat(Lbot);
+		luaopen_controls(Lbot);
+		DebugPrintf("loading %s\n", BOT_FILE);
+		luaL_dofile(Lbot, BOT_FILE);
+	}
+	DebugPrintf("running Lua bot code\n", BOT_FILE);
+	lua_getglobal(Lbot, "control_bot");
+	botp = lua_newuserdata(Lbot, sizeof(void *));
+	*botp = bot;
+	luaL_getmetatable(Lbot, "SHIPCONTROLPTR");
+	lua_setmetatable(Lbot, -2);
+	lua_call(Lbot, 1, 0);
 }
 
 // game calls this each frame
