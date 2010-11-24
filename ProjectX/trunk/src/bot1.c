@@ -42,6 +42,22 @@ extern float real_framelag;
 extern float framelag;
 extern float BankAccell;
 extern float MaxBankAngle;
+extern float MaxMoveSpeed;
+extern float MoveAccell;
+extern float MoveDecell;
+extern float MaxTurboSpeed;
+extern float TurboAccell;
+extern float TurboDecell;
+extern float MaxTurnSpeed;
+extern float TurnAccell;
+extern float TurnDecell;
+extern float MaxRollSpeed;
+extern float RollAccell;
+extern float RollDecell;
+extern float MaxBankAngle;
+extern float BankAccell;
+extern float BankDecell;
+extern float NitroFuel;
 /*
 
 	RenderScene()
@@ -169,21 +185,85 @@ extern float MaxBankAngle;
 		.drop_ammo
 
 */
-static void process(void)
+
+// put your bot logic here
+static void control_bot( SHIPCONTROL * bot )
 {
 	//GLOBALSHIP * me = &Ships[WhoIAm];
-	control.forward += 1;
-	control.fire_primary = 1;
+	bot->forward = 1;
+	bot->fire_primary = 1;
 }
+
+// game calls this each frame
 void ProcessBot1( void )
 {
-	process();
-	// rest of control_ship will now clamp you to max movements
-	// automatically do bank again like control_ship would have
-	if(control.yaw)
+	// control bot through this
+	// by simply using booleans
+	// ex: bot->forward = 1;
+	SHIPCONTROL bot; ZEROMEM(bot);
+	control_bot(&bot);
+	// apply the desired actions using
+	// same parameters and constraints
+	// a human would have per frame
+	// mixing it with local user's inputs
+	// TODO: we would want functions to perform
+  //       actions not supported here from USERCONFIG
+	if ( bot.yaw )
 	{
-		int direction = (control.yaw > 0 ? -1 : 1);
-		control.bank += direction * BankAccell * MaxBankAngle * framelag;
+		int d = (bot.yaw < 0) ? 1 : -1;
+		control.yaw  -= d * TurnAccell * MaxTurnSpeed * framelag;
+		control.bank += d * BankAccell * MaxBankAngle * framelag;
 	}
+	if ( bot.pitch )
+	{
+		int d = (bot.pitch < 0) ? 1 : -1;
+		control.pitch -= d * TurnAccell * MaxTurnSpeed * framelag;
+	}
+	if ( bot.roll )
+	{
+		int d = (bot.right < 0) ? 1 : -1;
+		control.roll += d * RollAccell * MaxRollSpeed * framelag;
+	}
+	if ( bot.right )
+	{
+		int d = (bot.right < 0) ? 1 : -1;
+		control.right -= d * MoveAccell * MaxMoveSpeed * framelag;
+	}
+	if ( bot.up )
+	{
+		int d = (bot.up < 0) ? 1 : -1;
+		control.up -= d * MoveAccell * MaxMoveSpeed * framelag;
+	}
+	if(bot.turbo && !control.turbo)
+		PlaySfx( SFX_NitroStart, 0.66F );
+	control.turbo = bot.turbo;
+	if( bot.turbo )
+	{
+		if ( NitroFuel > 0.0F )
+		{
+			control.forward += TurboAccell * MaxTurboSpeed * framelag;
+		}
+		else
+		{
+			control.forward += MoveAccell * MaxMoveSpeed * framelag;
+		}
+	}
+	else if ( bot.forward )
+	{
+		int d = (bot.forward < 0) ? -1 : 1;
+		control.forward += d * MoveAccell * MaxMoveSpeed * framelag;
+	}
+	control.select_primary   = bot.select_primary;
+	control.select_secondary = bot.select_secondary;
+	control.turbo            = bot.turbo;
+	control.fire_primary     = bot.fire_primary;
+	control.fire_secondary   = bot.fire_secondary;
+	control.fire_mine        = bot.fire_mine;
+	control.drop_primary     = bot.drop_primary;
+	control.drop_secondary   = bot.drop_secondary;
+	control.drop_shield      = bot.drop_shield;
+	control.drop_ammo        = bot.drop_ammo;
+	// control_ship will now cap us to max:
+	//   move, turn, turbo, roll, and bank
 }
 #endif // BOT1
