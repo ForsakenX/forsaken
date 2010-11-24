@@ -135,6 +135,41 @@ extern float NitroFuel;
 	.RealPos
 	.RealGroup
 
+ SecBulls[ MAXSECONDARYWEAPONBULLETS ]
+  .Used
+  .NextInGroup
+  .PrevInGroup
+  .State
+  .Flags
+  .Type
+  .SecType
+  .DropCount
+  .MoveType
+  .Owner
+  .LifeCount
+  .ColFlag
+  .GroupImIn
+  .Target
+  .TargetType
+  .SpeedWanted
+  .SpeedInc
+  .Speed
+  .TurnSpeed
+  .ViewCone
+  .DirVector
+  .UpVector
+  .DropVector
+  .NumOldPos
+	.DirQuat
+
+ PrimBulls[ PRIMARYWEAPONBULLET ]
+  .Used
+  .Type
+  .Owner
+  .GroupImIn
+  .line
+  .TimeInterval
+
  Pickups[ MAXPICKUPTYPES ]
 	NextInGroup
 	PrevInGroup
@@ -207,7 +242,6 @@ static void control_bot( SHIPCONTROL * bot )
 		DebugPrintf("loading %s\n", BOT_FILE);
 		luaL_dofile(Lbot, BOT_FILE);
 	}
-	DebugPrintf("running Lua bot code\n", BOT_FILE);
 	lua_getglobal(Lbot, "control_bot");
 	botp = lua_newuserdata(Lbot, sizeof(void *));
 	*botp = bot;
