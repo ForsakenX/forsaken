@@ -450,12 +450,31 @@ static int luamat_index(lua_State *L)
 
 static int luamat_mul(lua_State *L)
 {
-	MATRIX *m1, *m2, *mr;
+	MATRIX *m1;
+	void *x2, *xr;
 	m1 = luaL_checkudata(L, 1, "MATRIX");
-	m2 = luaL_checkudata(L, 1, "MATRIX");
-	NEWOBJ(L, MATRIX, mr);
-	MatrixMultiply(m1, m2, mr);
-	return 1;
+	x2 = lua_touserdata(L, 2);
+	if (lua_getmetatable(L, 2))
+	{
+		lua_getfield(L, LUA_REGISTRYINDEX, "MATRIX");
+		if (lua_rawequal(L, -1, -2))
+		{
+			/* Matrix multiplication */
+			NEWOBJ(L, MATRIX, xr);
+			MatrixMultiply(m1, (MATRIX *) x2, (MATRIX *) xr);
+			return 1;
+		}
+		lua_pop(L, 1);
+		lua_getfield(L, LUA_REGISTRYINDEX, "VECTOR");
+		if (lua_rawequal(L, -1, -2))
+		{
+			/* Apply matrix to vector */
+			NEWOBJ(L, VECTOR, xr);
+			ApplyMatrix(m1, (VECTOR *) x2, (VECTOR *) xr);
+			return 1;
+		}
+	}
+	return luaL_argerror(L, 2, "expected matrix or vector on right side");
 }
 
 int luaopen_vecmat(lua_State *L)
