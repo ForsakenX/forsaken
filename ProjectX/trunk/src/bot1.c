@@ -232,29 +232,24 @@ void ProcessBot1( void )
   //       actions not supported here from USERCONFIG
 	if ( bot.yaw )
 	{
-		int d = (bot.yaw < 0) ? 1 : -1;
-		control.yaw  -= d * TurnAccell * MaxTurnSpeed * framelag;
-		control.bank += d * BankAccell * MaxBankAngle * framelag;
+		control.yaw  -= -bot.yaw * TurnAccell * MaxTurnSpeed * framelag;
+		control.bank += -bot.yaw * BankAccell * MaxBankAngle * framelag;
 	}
 	if ( bot.pitch )
 	{
-		int d = (bot.pitch < 0) ? 1 : -1;
-		control.pitch -= d * TurnAccell * MaxTurnSpeed * framelag;
+		control.pitch -= -bot.pitch * TurnAccell * MaxTurnSpeed * framelag;
 	}
 	if ( bot.roll )
 	{
-		int d = (bot.right < 0) ? 1 : -1;
-		control.roll += d * RollAccell * MaxRollSpeed * framelag;
+		control.roll += -bot.roll * RollAccell * MaxRollSpeed * framelag;
 	}
 	if ( bot.right )
 	{
-		int d = (bot.right < 0) ? 1 : -1;
-		control.right -= d * MoveAccell * MaxMoveSpeed * framelag;
+		control.right -= -bot.right * MoveAccell * MaxMoveSpeed * framelag;
 	}
 	if ( bot.up )
 	{
-		int d = (bot.up < 0) ? 1 : -1;
-		control.up -= d * MoveAccell * MaxMoveSpeed * framelag;
+		control.up -= -bot.up * MoveAccell * MaxMoveSpeed * framelag;
 	}
 	if(bot.turbo && !control.turbo)
 		PlaySfx( SFX_NitroStart, 0.66F );
@@ -272,8 +267,7 @@ void ProcessBot1( void )
 	}
 	else if ( bot.forward )
 	{
-		int d = (bot.forward < 0) ? -1 : 1;
-		control.forward += d * MoveAccell * MaxMoveSpeed * framelag;
+		control.forward += bot.forward * MoveAccell * MaxMoveSpeed * framelag;
 	}
 	control.select_primary   = bot.select_primary;
 	control.select_secondary = bot.select_secondary;
