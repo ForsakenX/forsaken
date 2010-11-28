@@ -658,7 +658,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -706,12 +705,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 	}
 
 	if( !TotalVerts ) return( FALSE );
-
-	Specular = RGB_MAKE( 255, 255, 255 );
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -774,7 +767,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
@@ -790,7 +782,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
  
@@ -806,7 +797,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    	
@@ -822,7 +812,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
@@ -902,7 +891,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -951,12 +939,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 	}
 
 	if( !TotalVerts ) return( FALSE );
-
-	Specular = RGB_MAKE( 255, 255, 255 );
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -1016,7 +998,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
@@ -1032,7 +1013,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
@@ -1049,7 +1029,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    					
@@ -1066,7 +1045,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
@@ -1196,7 +1174,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -1247,12 +1224,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
-
-	Specular = RGB_MAKE( 255, 255, 255 );
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
@@ -1313,7 +1284,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
@@ -1329,7 +1299,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
@@ -1345,7 +1314,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
@@ -1361,7 +1329,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		
@@ -1441,7 +1408,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	PolyVertPnt;
 	LPTRIANGLE	PolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -1492,12 +1458,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
-
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
-	Specular = RGB_MAKE( 255, 255, 255 );
 
 /*===================================================================
 		Lock Exec Buffer and get ready to fill in...
@@ -1557,7 +1517,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
 
@@ -1573,7 +1532,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v1;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    							
@@ -1589,7 +1547,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		   					PolyVertPnt->tu = Box_Ptr->u2;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    					
@@ -1605,7 +1562,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 		   					PolyVertPnt->tu = Box_Ptr->u1;
 		   					PolyVertPnt->tv = Box_Ptr->v2;
 		   					PolyVertPnt->color = Colour;
-		   					PolyVertPnt->specular = Specular;
 //		   					PolyVertPnt->dwReserved = 0;
 		   					PolyVertPnt++;
    		

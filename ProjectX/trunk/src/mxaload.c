@@ -264,11 +264,9 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				//lpLVERTEX->color |= 0xFF000000;
 				lpLVERTEX[i].color |= 0xFF000000;
 #endif
-//				lpLVERTEX->specular = lpLVERTEX2->specular;
-				//lpLVERTEX->specular = RGB_MAKE( 0 , 0 , 0 );
-				lpLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
+				// nothing used specular so we removed it from LVERTEX
+				// lpLVERTEX->specular = lpLVERTEX2->specular;
 //				lpLVERTEX->dwReserved = 0;
-				//lpLVERTEX++;
 				lpLVERTEX2++;
 			}
 

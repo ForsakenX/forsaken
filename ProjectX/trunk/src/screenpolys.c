@@ -567,7 +567,6 @@ void DoLensflareEffect( void )
 	int16		Count;
 	float		Center_X;
 	float		Center_Y;
-	COLOR	specular;
 	VECTOR		Int_Point;
 	uint16		Int_Group;
 	NORMAL		Int_Normal;
@@ -579,8 +578,6 @@ void DoLensflareEffect( void )
 	float		DistFactor;
 	uint8		Int;
 	uint16		i;
-
-	specular = RGB_MAKE( 255, 255, 255 );
 
 	Trans.x = -CurrentCamera.Pos.x;
 	Trans.y = -CurrentCamera.Pos.y;
@@ -963,7 +960,6 @@ void SecBullLensflare( uint16 i )
 	MATRIX		FinalMatrix;
 	float		Center_X;
 	float		Center_Y;
-	COLOR	specular;
 	VECTOR		Int_Point;
 	uint16		Int_Group;
 	NORMAL		Int_Normal;
@@ -974,8 +970,6 @@ void SecBullLensflare( uint16 i )
 	float		DistToBull;
 	float		DistFactor;
 	uint8		Int;
-
-	specular = RGB_MAKE( 255, 255, 255 );
 
 	Trans.x = -CurrentCamera.Pos.x;
 	Trans.y = -CurrentCamera.Pos.y;
@@ -2112,7 +2106,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPTLVERTEX	ScrPolyVertPnt; // pre-transformed verts!
 	LPTRIANGLE	ScrPolyFacePnt;
     LPTLVERTEX	lpBufStart;
@@ -2174,11 +2167,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
-
-//	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-//	else Specular = RGB_MAKE( 128, 128, 128 );
-
-	Specular = RGB_MAKE( 0, 0, 0 );
 
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );
@@ -2342,7 +2330,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      				ScrPolyVertPnt->sy = y1;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u1;
 		      				ScrPolyVertPnt->tv = v1;
@@ -2350,7 +2337,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      					
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 		      					
@@ -2358,7 +2344,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      				ScrPolyVertPnt->sy = y3;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u2;
 		      				ScrPolyVertPnt->tv = v2;
@@ -2366,7 +2351,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      						
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
     					
@@ -2462,7 +2446,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 	      					ScrPolyVertPnt->sy = y1;
 	      					ScrPolyVertPnt->sz = ZValue;
 	      					ScrPolyVertPnt->color = Colour;
-	      					ScrPolyVertPnt->specular = Specular;
 	      					ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u1;
 		      				ScrPolyVertPnt->tv = v1;
@@ -2470,7 +2453,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      					
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 		      					
@@ -2478,7 +2460,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      				ScrPolyVertPnt->sy = y3;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u2;
 		      				ScrPolyVertPnt->tv = v2;
@@ -2486,7 +2467,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 		      						
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 
@@ -2606,7 +2586,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	BOX_INFO	*	Box_Ptr;
 	OFF_INFO	*	Off_Ptr;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPTLVERTEX	ScrPolyVertPnt; // pre-transformed vertex type!
 	LPTRIANGLE	ScrPolyFacePnt;
     LPTLVERTEX	lpBufStart;//, lpInsStart, lpPointer;
@@ -2668,12 +2647,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
-
-	/* bjd curre driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
-	Specular = RGB_MAKE( 255, 255, 255 );
 
 	ZValue = 1.0F;
 	RHWValue = ( 1.0F / ZValue );
@@ -2858,7 +2831,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->sy = y1;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u1;
 		      				ScrPolyVertPnt->tv = v1;
@@ -2866,7 +2838,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      					
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 		      					
@@ -2874,7 +2845,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->sy = y3;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u2;
 		      				ScrPolyVertPnt->tv = v2;
@@ -2882,7 +2852,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      						
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
       					
@@ -2979,7 +2948,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 	      					ScrPolyVertPnt->sy = y1;
 	      					ScrPolyVertPnt->sz = ZValue;
 	      					ScrPolyVertPnt->color = Colour;
-	      					ScrPolyVertPnt->specular = Specular;
 	      					ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u1;
 		      				ScrPolyVertPnt->tv = v1;
@@ -2993,7 +2961,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
 
@@ -3007,7 +2974,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 		      				ScrPolyVertPnt->sy = y3;
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt->tu = u2;
 		      				ScrPolyVertPnt->tv = v2;
@@ -3021,7 +2987,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 							
 		      				ScrPolyVertPnt->sz = ZValue;
 		      				ScrPolyVertPnt->color = Colour;
-		      				ScrPolyVertPnt->specular = Specular;
 		      				ScrPolyVertPnt->rhw = RHWValue;
 		      				ScrPolyVertPnt++;
   					

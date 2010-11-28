@@ -116,7 +116,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 {
 	LPLVERTEX	Vert_Ptr;
 	COLOR		color;
-	COLOR		specular;
 	int16			Num_Lines;
 	uint16			i;
 
@@ -126,12 +125,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 		return FALSE; // don't display lines if not debugging
 	}
 
-	specular = RGB_MAKE( 255, 255, 255 );
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	specular = RGB_MAKE( 255, 255, 255 );
-	else specular = RGB_MAKE( 128, 128, 128 );
-	*/
-	
 	renderObject->numTextureGroups = 0;
 
 	if( *StartLine != (uint16) -1 )
@@ -168,7 +161,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				Vert_Ptr->tu = 0.0F;
 				Vert_Ptr->tv = 0.0F;
 				Vert_Ptr->color = color;
-				Vert_Ptr->specular = specular;
 //				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 	
@@ -191,7 +183,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 				Vert_Ptr->tu = 0.0F;
 				Vert_Ptr->tv = 0.0F;
 				Vert_Ptr->color = color;
-				Vert_Ptr->specular = specular;
 //				Vert_Ptr->dwReserved = 0;
 				Vert_Ptr++;
 

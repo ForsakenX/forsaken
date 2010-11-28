@@ -27,9 +27,6 @@
 
 #undef TESTING_SUBTRACTIVE
 
-#define	USE_SPECULAR
-#undef USE_SPECULAR
-
 /*===================================================================
 		Externals...	
 ===================================================================*/
@@ -746,11 +743,7 @@ __asm
 #else	//USEASM
 
 
-#ifdef	USE_SPECULAR
-												col = lpLVERTEX->specular;
-#else		
 												col = lpLVERTEX->color;
-#endif		
 #ifdef TESTING_SUBTRACTIVE
 												tempiA = col & 0xff000000;
 												// for subtraction, simply add the negative
@@ -782,12 +775,7 @@ __asm
 												col |= tempiA;
 #endif
 			
-#ifdef	USE_SPECULAR
-												lpLVERTEX->specular = col;
-#else		
 												lpLVERTEX->color = col;
-#endif		
-			
 #endif	//USEASM
 											}
 										}
@@ -872,12 +860,7 @@ __asm
 													}
 												}
 												
-#ifdef	USE_SPECULAR
-												col =  lpLVERTEX->specular;			// int
-#else		
 												col =  lpLVERTEX->color;				// int
-#endif		
-
 												tempiA = col & 0xff000000;
 												tempiR = (int) ( rlf * intense );
 												tempiG = (int) ( glf * intense );
@@ -887,12 +870,7 @@ __asm
 												clamp = carry - ( carry >> 8 );
 												col = ( ( col + inc - carry ) | clamp) & 0x00ffffff;
 												col |= tempiA;
-			
-#ifdef	USE_SPECULAR
-												lpLVERTEX->specular = col;
-#else		
 												lpLVERTEX->color = col;
-#endif		
 											}
 										}
 										Cell++;
@@ -976,14 +954,9 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 
 			while( vert --)
 			{
-#ifdef	USE_SPECULAR
-				lpLVERTEX->specular = 0;
-				lpLVERTEX++;		
-#else	
 				lpLVERTEX->color = lpLVERTEX2->color;
 				lpLVERTEX++;		
 				lpLVERTEX2++;		
-#endif
 			}
 		
 
@@ -1051,11 +1024,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 								if ( distance <  SizeX2  )					// float
 								{
 									distance = 1.0F - ( distance * Size );	// float
-#ifdef	USE_SPECULAR
-									col =  lpLVERTEX->specular;			// int
-#else
 									col =  lpLVERTEX->color;				// int
-#endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * distance );
 									tempiG = (int) ( glf * distance );
@@ -1065,12 +1034,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 									clamp = carry - ( carry >> 8 );
 									col = ( ( col + inc - carry ) | clamp) & 0x00ffffff;
 									col |= tempiA;
-
-#ifdef	USE_SPECULAR
-									lpLVERTEX->specular = col;
-#else
 									lpLVERTEX->color = col;
-#endif		
 								}
 								lpLVERTEX++;
 							}
@@ -1126,12 +1090,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 											intense = 1.0F + Cosa;
 										}
 									}
-									
-#ifdef	USE_SPECULAR
-									col =  lpLVERTEX->specular;			// int
-#else		
 									col =  lpLVERTEX->color;				// int
-#endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * intense );
 									tempiG = (int) ( glf * intense );
@@ -1141,12 +1100,7 @@ BOOL	XLightMxloadHeader( MXLOADHEADER * MXloadheader , VECTOR * Pos , float Radi
 									clamp = carry - ( carry >> 8 );
 									col = ( ( col + inc - carry ) | clamp) & 0x00ffffff;
 									col |= tempiA;
-
-#ifdef	USE_SPECULAR
-									lpLVERTEX->specular = col;
-#else		
 									lpLVERTEX->color = col;
-#endif		
 								}
 PLOP:
 								lpLVERTEX++;
@@ -1223,14 +1177,9 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 			lpLVERTEX2 = MXloadheader->Group[group].originalVerts[execbuf];
 			while( vert --)
 			{
-#ifdef	USE_SPECULAR
-				lpLVERTEX->specular = 0;
-				lpLVERTEX++;		
-#else	
 				lpLVERTEX->color = lpLVERTEX2->color;
 				lpLVERTEX++;		
 				lpLVERTEX2++;		
-#endif
 			}
 		
 
@@ -1298,11 +1247,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 								if ( distance <  SizeX2  )					// float
 								{
 									distance = 1.0F - ( distance * Size );	// float
-#ifdef	USE_SPECULAR
-									col =  lpLVERTEX->specular;			// int
-#else
 									col =  lpLVERTEX->color;				// int
-#endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * distance );
 									tempiG = (int) ( glf * distance );
@@ -1312,12 +1257,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 									clamp = carry - ( carry >> 8 );
 									col = ( ( col + inc - carry ) | clamp) & 0x00ffffff;
 									col |= tempiA;
-
-#ifdef	USE_SPECULAR
-									lpLVERTEX->specular = col;
-#else
 									lpLVERTEX->color = col;
-#endif		
 								}
 								lpLVERTEX++;
 							}
@@ -1373,12 +1313,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 											intense = 1.0F + Cosa;
 										}
 									}
-									
-#ifdef	USE_SPECULAR
-									col =  lpLVERTEX->specular;			// int
-#else		
 									col =  lpLVERTEX->color;				// int
-#endif		
 									tempiA = col & 0xff000000;
 									tempiR = (int) ( rlf * intense );
 									tempiG = (int) ( glf * intense );
@@ -1388,12 +1323,7 @@ BOOL	XLightMxaloadHeader( MXALOADHEADER * MXloadheader , VECTOR * Pos , float Ra
 									clamp = carry - ( carry >> 8 );
 									col = ( ( col + inc - carry ) | clamp) & 0x00ffffff;
 									col |= tempiA;
-
-#ifdef	USE_SPECULAR
-									lpLVERTEX->specular = col;
-#else		
 									lpLVERTEX->color = col;
-#endif		
 								}
 PLOP2:
 								lpLVERTEX++;

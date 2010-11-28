@@ -932,13 +932,13 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 	{
 		{ "pos",    3, GL_FLOAT,         GL_FALSE, 0  },
 		{ "vcolor", 4, GL_UNSIGNED_BYTE, GL_TRUE,  12 }, // 3*float
-		{ "vtexc",  2, GL_FLOAT,         GL_FALSE, 20 }, // 3*float + 2*COLOR
+		{ "vtexc",  2, GL_FLOAT,         GL_FALSE, 16 }, // 3*float + 1*COLOR
 		{ NULL,     0, 0,                0,        0  }
 	}, ortho_attr[] =
 	{
 		{ "tlpos",  4, GL_FLOAT,         GL_FALSE, 0 },
 		{ "vcolor", 4, GL_UNSIGNED_BYTE, GL_TRUE,  16 }, // 4*float
-		{ "vtexc",  2, GL_FLOAT,         GL_FALSE, 24 }, // 4*float + 2*COLOR
+		{ "vtexc",  2, GL_FLOAT,         GL_FALSE, 20 }, // 4*float + 1*COLOR
 		{ NULL,     0, 0,                0,        0  }
 	}, *attr;
 	//GLuint current_program;

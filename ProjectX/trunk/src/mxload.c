@@ -292,9 +292,10 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 
 				color = RGBA_MAKE( r , g , b , a  );
 				lpLVERTEX[i].color = color;
-
-				lpLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
 				lpLVERTEX2->color = color;
+
+				// nothing used specular so we removed it from LVERTEX
+				//lpLVERTEX[i]->specular = lpLVERTEX2->specular;
 
 				lpLVERTEX2++;
 			}

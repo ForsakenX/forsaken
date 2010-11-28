@@ -403,7 +403,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 			lpLVERTEX->tu = 0.0F;
 			lpLVERTEX->tv = 0.0F;
 			lpLVERTEX->color = RGBA_MAKE(128,128,128,128);
-			lpLVERTEX->specular = RGBA_MAKE(128,128,128,128);
 //			lpLVERTEX->dwReserved = 0;
 			
 			lpLVERTEX++;

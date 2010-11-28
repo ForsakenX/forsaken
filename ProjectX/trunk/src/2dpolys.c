@@ -1632,7 +1632,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
  	float			Distance;
 	MATRIX			MatrixCopy;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	FmPolyVertPnt;
 	LPTRIANGLE	FmPolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -1679,12 +1678,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 	}
 
 	if( !TotalVerts ) return( FALSE );
-
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
-	Specular = RGB_MAKE( 255, 255, 255 );
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -1881,7 +1874,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->tu = Box_Ptr->u1;
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -1891,7 +1883,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->tu = Box_Ptr->u2;
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -1901,7 +1892,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->tu = Box_Ptr->u2;
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -1911,7 +1901,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 							FmPolyVertPnt->tu = Box_Ptr->u1;
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -2007,7 +1996,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
  	float			Distance;
 	MATRIX			MatrixCopy;
 	COLOR		Colour;
-	COLOR		Specular;
 	LPLVERTEX	FmPolyVertPnt;
 	LPTRIANGLE	FmPolyFacePnt;
     LPLVERTEX	lpBufStart;
@@ -2054,12 +2042,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 	}
 
 	if( !TotalVerts ) return( FALSE );
-
-	/* bjd curr driver = 0 use to be software mode
-	if(render_info.CurrDriver != 0)	Specular = RGB_MAKE( 255, 255, 255 );
-	else Specular = RGB_MAKE( 128, 128, 128 );
-	*/
-	Specular = RGB_MAKE( 255, 255, 255 );
 
 	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
@@ -2256,7 +2238,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->tu = Box_Ptr->u1;
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -2266,7 +2247,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->tu = Box_Ptr->u2;
 							FmPolyVertPnt->tv = Box_Ptr->v1;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -2276,7 +2256,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->tu = Box_Ptr->u2;
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 
@@ -2286,7 +2265,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 							FmPolyVertPnt->tu = Box_Ptr->u1;
 							FmPolyVertPnt->tv = Box_Ptr->v2;
 							FmPolyVertPnt->color = Colour;
-							FmPolyVertPnt->specular = Specular;
 //							FmPolyVertPnt->dwReserved = 0;
 							FmPolyVertPnt++;
 

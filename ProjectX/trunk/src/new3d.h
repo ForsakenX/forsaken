@@ -71,10 +71,6 @@ typedef struct {
         COLOR dcColor;
     };
     union {
-        COLOR specular;
-		COLOR dcSpecular;
-    };
-    union {
         float tu;
         float dvTU;
     };
@@ -108,10 +104,6 @@ typedef struct {
     union {
         COLOR color;
         COLOR dcColor;
-    };
-    union {
-        COLOR specular;
-        COLOR dcSpecular;
     };
     union {
         float tu;

@@ -113,7 +113,6 @@ void InitSkinExecs( void )
 BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 {
 	COLOR		color;
-	COLOR		specular;
 	COLOR		skincolor;
 	COLOR		patchcolor;
 	COLOR		backpatchcolor;
@@ -134,7 +133,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 	int32			Shade = 0;
 	float			PlaneOffset;
 
-	specular = RGB_MAKE( 255, 255, 255 );
 	skincolor = RGBA_MAKE( 0, 0, 192, 128 );
 	patchcolor = RGBA_MAKE( 0, 192, 0, 128 );
 	backpatchcolor = RGBA_MAKE( 192, 0, 0, 128 );
@@ -252,7 +250,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 
@@ -262,7 +259,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 
@@ -272,7 +268,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 
@@ -292,7 +287,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 				SkinVerts[ SkinVertCount ].tu = 0.0F;
 				SkinVerts[ SkinVertCount ].tv = 0.0F;
 				SkinVerts[ SkinVertCount ].color = color;
-				SkinVerts[ SkinVertCount ].specular = specular;
 //				SkinVerts[ SkinVertCount ].dwReserved = 0;
 				SkinVertCount++;
 	
@@ -302,7 +296,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 				SkinVerts[ SkinVertCount ].tu = 0.0F;
 				SkinVerts[ SkinVertCount ].tv = 0.0F;
 				SkinVerts[ SkinVertCount ].color = color;
-				SkinVerts[ SkinVertCount ].specular = specular;
 //				SkinVerts[ SkinVertCount ].dwReserved = 0;
 				SkinVertCount++;
 	
@@ -312,7 +305,6 @@ BOOL CreateSkinExecList( MCLOADHEADER * MCloadheader, int16 NumVisible )
 				SkinVerts[ SkinVertCount ].tu = 0.0F;
 				SkinVerts[ SkinVertCount ].tv = 0.0F;
 				SkinVerts[ SkinVertCount ].color = color;
-				SkinVerts[ SkinVertCount ].specular = specular;
 //				SkinVerts[ SkinVertCount ].dwReserved = 0;
 				SkinVertCount++;
 	
@@ -355,7 +347,6 @@ void DisplayBSPNode( BSP_NODE * Node )
 	VECTOR			BRPos;
 	COLOR		color;
 	COLOR		tempcolor;
-	COLOR		specular;
 	float			D;
 	BSP_NODE	*	TempNode;
 	float			NumNodes = 0.0F;
@@ -402,7 +393,6 @@ void DisplayBSPNode( BSP_NODE * Node )
 				{
 					color = Node->Colour;
 				}
-				specular = RGB_MAKE( 255, 255, 255 );
 		
 				TLPos.x = ( Ships[ WhoIAm ].Object.Pos.x - BOXSIZE );
 				TLPos.y = ( Ships[ WhoIAm ].Object.Pos.y - BOXSIZE );
@@ -422,7 +412,6 @@ void DisplayBSPNode( BSP_NODE * Node )
 					SkinVerts[ SkinVertCount ].tu = 0.0F;
 					SkinVerts[ SkinVertCount ].tv = 0.0F;
 					SkinVerts[ SkinVertCount ].color = color;
-					SkinVerts[ SkinVertCount ].specular = specular;
 //					SkinVerts[ SkinVertCount ].dwReserved = 0;
 					SkinVertCount++;
 				}
@@ -475,9 +464,6 @@ void DisplayBSPNode( BSP_NODE * Node )
 					color = BSP_Nodes[ NodeNum ]->Colour;
 				}
 
-
-				specular = RGB_MAKE( 255, 255, 255 );
-		
 				TLPos.x = ( Ships[ WhoIAm ].Object.Pos.x - BOXSIZE );
 				TLPos.y = ( Ships[ WhoIAm ].Object.Pos.y - BOXSIZE );
 				TLPos.z = ( Ships[ WhoIAm ].Object.Pos.z - BOXSIZE );
@@ -496,7 +482,6 @@ void DisplayBSPNode( BSP_NODE * Node )
 					SkinVerts[ SkinVertCount ].tu = 0.0F;
 					SkinVerts[ SkinVertCount ].tv = 0.0F;
 					SkinVerts[ SkinVertCount ].color = color;
-					SkinVerts[ SkinVertCount ].specular = specular;
 //					SkinVerts[ SkinVertCount ].dwReserved = 0;
 					SkinVertCount++;
 				}
@@ -539,7 +524,6 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 	int16			Count;
 	int16			Vnum;
 	COLOR		color;
-	COLOR		specular;
 	BSP_NODE	*	TempNode;
 	BSP_NODE	*	StartNode;
 	int				Side;
@@ -555,7 +539,6 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 #else
 		color = RGBA_MAKE( 128, 0, 0, 128 );
 #endif
-		specular = RGB_MAKE( 255, 255, 255 );
 
 		Vnum = GimmeNodeVertices( Node, StartNode, Side, &TempVerts[ 0 ] );
 	
@@ -598,7 +581,6 @@ void DisplayNewBSPNode( BSP_NODE * Node )
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 		}
@@ -796,7 +778,6 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 	int16			Count;
 	int16			Vnum;
 	COLOR		color;
-	COLOR		specular;
 	TRIGGER_ZONE *	StartSide;
 	int				Side;
 	uint16			line;
@@ -808,7 +789,6 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 	for( SideCount = 0; SideCount < NumSides; SideCount++ )
 	{
 		color = RGBA_MAKE( Red, Green, Blue, Trans ); //0, 64, 0, 128 );
-		specular = RGB_MAKE( 255, 255, 255 );
 
 		Vnum = GimmeTriggerZoneVertices( Sides, StartSide, NumSides, Side, &TempVerts[ 0 ] );
 	
@@ -851,7 +831,6 @@ void DisplayTriggerZone( TRIGGER_ZONE * Sides, int16 NumSides, uint16 Group,
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 		}
@@ -895,7 +874,6 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 	int16			Count;
 	int16			Vnum;
 	COLOR		color;
-	COLOR		specular;
 	ZONESIDE	*	StartSide;
 	int				Side;
 	uint16			line;
@@ -917,8 +895,6 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 			if( Sides->Sensitive ) color = RGBA_MAKE( 64, 0, 0, 128 ); 
 			else color = RGBA_MAKE( 0, 64, 0, 128 );
 		}
-
-		specular = RGB_MAKE( 255, 255, 255 );
 
 		Vnum = GimmeColZoneVertices( Sides, StartSide, NumSides, Side, &TempVerts[ 0 ] );
 	
@@ -961,7 +937,6 @@ void DisplayColZone( ZONESIDE * Sides, int16 NumSides, uint16 Group, int16 Sensi
 			SkinVerts[ SkinVertCount ].tu = 0.0F;
 			SkinVerts[ SkinVertCount ].tv = 0.0F;
 			SkinVerts[ SkinVertCount ].color = color;
-			SkinVerts[ SkinVertCount ].specular = specular;
 //			SkinVerts[ SkinVertCount ].dwReserved = 0;
 			SkinVertCount++;
 		}
@@ -1131,7 +1106,6 @@ void ReleaseSkinExecs( void )
 BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 {
 	COLOR		color;
-	COLOR		specular;
 	int16			g;
 	int16			Count, Count2;
 	uint16			VertCount;
@@ -1163,7 +1137,6 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 	}
 
 	color = RGBA_MAKE( 192, 0, 0, 128 );
-	specular = RGB_MAKE( 255, 255, 255 );
 
 	for( g = 0; g < NumVisible; g++ )
 	{
@@ -1215,7 +1188,6 @@ BOOL CreatePortalExecList( MLOADHEADER * Mloadheader, int16 NumVisible )
 					PortalVerts[ PortalVertCount + Count2 ].tu = 0.0F;
 					PortalVerts[ PortalVertCount + Count2 ].tv = 0.0F;
 					PortalVerts[ PortalVertCount + Count2 ].color = color;
-					PortalVerts[ PortalVertCount + Count2 ].specular = specular;
 //					PortalVerts[ PortalVertCount + Count2 ].dwReserved = 0;
 				}
 

@@ -487,12 +487,8 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 
 // bjd - CHECK				lpLVERTEX2->dwReserved |= 0xff000000;
 
-				// right here you could set the specular value
-				// they seemed to have turned it off anyway
-				// testing shows that it appears to do nothing
+				// nothing used specular so we removed it from LVERTEX
 				//lpLVERTEX->specular = lpLVERTEX2->specular;
-				lpLVERTEX[i].specular = RGB_MAKE( 0 , 0 , 0 );
-//				lpLVERTEX++;
 				lpLVERTEX2++;
 			}
 

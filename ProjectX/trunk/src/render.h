@@ -204,7 +204,7 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject);
 };
 #endif
 
-// this is used to read the file because the file is encoded with dwReserved
+// this is used to read the file because the file
 typedef struct {
     union {
 		float     x;             /* Homogeneous coordinates */
