@@ -3,12 +3,19 @@
  * collided, endpos, endgroup, normal, newtarget =
  *     bgcollide(startpos, startgroup, move_off, bgcol)
  *
+ * me = Ships[WhoIAm()]
+ * meobj = me.Object
+ * if wouldcollide(meobj, meobj.Mat * vec(0, 0, 100)) then
+ *     print("I would collide if I moved forward 100 units")
+ * end
+ *
  * see also collision.h
  */
 #include <lua.h>
 #include <lauxlib.h>
 #include "object.h" /* FIXME: needed by collision.h */
 #include "collision.h"
+#include "ships.h" /* for SHIP_RADIUS */
 
 extern MCLOADHEADER MCloadheadert0;
 extern MLOADHEADER Mloadheader;
@@ -68,10 +75,28 @@ static int luacoll_bgcollide(lua_State *L)
 	return 5;
 }
 
+static int luacoll_wouldcollide(lua_State *L)
+{
+	OBJECT *obj;
+	VECTOR *move_off;
+	float radius;
+
+	obj = luaL_checkudata(L, 1, "OBJECT");
+	move_off = luaL_checkudata(L, 2, "VECTOR");
+	if (lua_isnoneornil(L, 3))
+		radius = SHIP_RADIUS;
+	else
+		radius = luaL_checknumber(L, 3);
+
+	lua_pushboolean(L, WouldObjectCollide(obj, move_off, radius, NULL));
+	return 1;
+}
+
 int luaopen_collision(lua_State *L)
 {
 	static const luaL_Reg funcs[] = {
 		{ "bgcollide", luacoll_bgcollide },
+		{ "wouldcollide", luacoll_wouldcollide },
 		{ NULL, NULL }
 	};
 	int i;
