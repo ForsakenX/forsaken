@@ -696,7 +696,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				{
 					VERT sum = {0,0,0};
 					VERT centroid = {0,0,0};
-					float length = Mloadheader->Group[group].Portal[portal].num_vertices_in_portal;
+					int length = Mloadheader->Group[group].Portal[portal].num_vertices_in_portal;
 
 					VertPnt = ( VERT* )	Buffer;
 					for( verts = 0 ; verts < length ; verts++ )
@@ -714,7 +714,6 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					centroid.z = sum.z / length;
 
 					Mloadheader->Group[group].Portal[portal].centroid = centroid;
-
 
 					//DebugPrintf("group %d portal %d centroid = { %f, %f, %f }\n", 
 					//	group, portal, centroid.x, centroid.y, centroid.z);
