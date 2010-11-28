@@ -17,6 +17,7 @@
 
 extern BYTE WhoIAm;
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
+extern BYTE GameStatus[MAX_PLAYERS+1];
 
 /* TODO - move this function to lua_vecmat.c and export it? */
 static void lua_pushvector(lua_State *L, VECTOR *v)
@@ -47,16 +48,24 @@ static void lua_pushobjptr(lua_State *L, void *v, const char *type)
 } while (0)
 static int luaship_table(lua_State *L)
 {
+	int shipidx;
 	GLOBALSHIP *ship;
-	ship = *((GLOBALSHIP **) luaL_checkudata(L, 1, "GLOBALSHIPPTR"));
-	lua_createtable(L, 0, 41);
+	shipidx = *((int *) luaL_checkudata(L, 1, "GLOBALSHIPIDX"));
+	ship = &Ships[shipidx];
+	lua_createtable(L, 0, 43);
 	/* Get a table for the Object field */
 	lua_pushobjptr(L, &ship->Object, "OBJECTPTR");
 	lua_getfield(L, -1, "table");
 	lua_pushvalue(L, -2);
 	lua_call(L, 1, 1);
-	lua_setfield(L, -1, "Object");
+	lua_setfield(L, -2, "Object");
 	lua_pop(L, 1); /* Get rid of the object pointer */
+	/* Add index field */
+	lua_pushinteger(L, shipidx);
+	lua_setfield(L, -2, "index");
+	/* Add status field */
+	lua_pushinteger(L, GameStatus[shipidx]);
+	lua_setfield(L, -2, "status");
 	FIELD(enable, integer);
 	FIELD(ShipThatLastKilledMe, integer);
 	FIELD(ShipThatLastHitMe, integer);
@@ -125,16 +134,27 @@ static int luaship_index(lua_State *L)
 {
 	GLOBALSHIP *ship;
 	const char *name;
-	ship = *((GLOBALSHIP **) luaL_checkudata(L, 1, "GLOBALSHIPPTR"));
+	int shipidx = *((int *) luaL_checkudata(L, 1, "GLOBALSHIPIDX"));
+	ship = &Ships[shipidx];
 	name = luaL_checkstring(L, 2);
 	if (!strcmp(name, "table"))
 	{
 		lua_pushcfunction(L, luaship_table);
 		return 1;
 	}
+	else if (!strcmp(name, "index"))
+	{
+		lua_pushinteger(L, shipidx);
+		return 1;
+	}
 	else if (!strcmp(name, "Object"))
 	{
 		lua_pushobjptr(L, &ship->Object, "OBJECTPTR");
+		return 1;
+	}
+	else if (!strcmp(name, "status"))
+	{
+		lua_pushinteger(L, GameStatus[shipidx]);
 		return 1;
 	}
 	FIELD(enable, integer);
@@ -184,15 +204,16 @@ static int luaship_index(lua_State *L)
 
 static int luaship_arrayindex(lua_State *L)
 {
-	GLOBALSHIP *ships, **ship;
+	GLOBALSHIP *ships;
+	int *shipidx;
 	int i;
 	ships = *((GLOBALSHIP **) luaL_checkudata(L, 1, "GLOBALSHIPARRAYPTR"));
 	i = luaL_checkint(L, 2);
-	if (i >= MAX_PLAYERS)
-		return luaL_argerror(L, 2, "array index exceeds MAX_PLAYERS limit");
-	ship = lua_newuserdata(L, sizeof(void *));
-	*ship = &Ships[i];
-	luaL_getmetatable(L, "GLOBALSHIPPTR");
+	if (i < 0 || i >= MAX_PLAYERS)
+		return luaL_argerror(L, 2, "invalid ship index");
+	shipidx = lua_newuserdata(L, sizeof(int));
+	*shipidx = i;
+	luaL_getmetatable(L, "GLOBALSHIPIDX");
 	lua_setmetatable(L, -2);
 	return 1;
 }
@@ -226,7 +247,7 @@ int luaopen_ships(lua_State *L)
 	luaL_newmetatable(L, "GLOBALSHIPARRAYPTR");
 	luaL_register(L, NULL, shiparrmt);
 	lua_setmetatable(L, -2);
-	luaL_newmetatable(L, "GLOBALSHIPPTR");
+	luaL_newmetatable(L, "GLOBALSHIPIDX");
 	luaL_register(L, NULL, shipmt);
 	lua_pop(L, 1);
 	lua_setglobal(L, "Ships");
