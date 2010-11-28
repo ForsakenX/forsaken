@@ -42,7 +42,7 @@ static int luaobj_table(lua_State *L)
 {
 	OBJECT *obj;
 	obj = *((OBJECT **) luaL_checkudata(L, 1, "OBJECTPTR"));
-	lua_createtable(L, 0, 38);
+	lua_createtable(L, 0, 39);
 	FIELD(Flags, integer); /* TODO */
 	FIELD(Type, integer); /* TODO - enum */
 	/* FIELD(ID, ???); ... TODO */
@@ -58,6 +58,7 @@ static int luaobj_table(lua_State *L)
 	FIELDPTR(FinalInvMat, matrix);
 	FIELDPTR(FinalQuat, matrix);
 	FIELDPTR(DirVector, vector);
+	FIELD(Group, integer);
 	FIELDPTR(Speed, vector);
 	FIELDPTR(Angle, vector);
 	FIELD(CruiseControl, integer);
