@@ -243,7 +243,7 @@ static void control_bot( SHIPCONTROL * bot )
 		luaopen_ships(Lbot);
 		luaopen_collision(Lbot);
 		DebugPrintf("loading %s\n", BOT_FILE);
-		luaL_dofile(Lbot, BOT_FILE);
+		lua_dofile(Lbot, BOT_FILE);
 	}
 	lua_getglobal(Lbot, "control_bot");
 	botp = lua_newuserdata(Lbot, sizeof(void *));

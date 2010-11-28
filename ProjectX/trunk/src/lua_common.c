@@ -1,8 +1,7 @@
 /* vim:set sw=4 ts=4:
  *
- * Copyright (C) 2009  Pim Goossens
- *
- * Modified by Daniel Aquino (aka methods) for ProjectX
+ * Copyright (C) 2010  Daniel Aquino
+ * Copyright (C) 2010  Pim Goossens
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -30,6 +29,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdio.h>
 #include "lua_common.h"
 #include "luasocket.h"
 #include "mime.h"
@@ -37,11 +37,20 @@
 
 lua_State *L1;
 
-int lua_dofile(char* name)
+int lua_dofile(lua_State *L, const char *name)
 {
-	char path[100] = "";
-	sprintf(path,"scripts/%s",name);
-	return luaL_dofile(L1,path);
+	char path[100];
+	snprintf(path, 100, "scripts/%s", name);
+	if (luaL_dofile(L,path))
+	{
+		if (lua_isstring(L, -1))
+			DebugPrintf("Error while loading %s: %s\n", path, lua_tostring(L, -1));
+		else
+			DebugPrintf("Unknown error while loading %s\n", path);
+		lua_pop(L, 1);
+		return 1;
+	}
+	return 0;
 }
 
 static int lua_debug_str(lua_State *state)
@@ -75,7 +84,7 @@ static int lua_register_funcs(void)
 
 static int load_init_file( void )
 {
-	if(lua_dofile("init.lua"))
+	if(lua_dofile(L1, "init.lua"))
 	{
 		Msg("error failed to load init.lua");
 		return 1;

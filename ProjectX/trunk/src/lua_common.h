@@ -1,8 +1,7 @@
 /* vim:set sw=4 ts=4:
  *
- * Copyright (C) 2009  Pim Goossens
- *
- * Modified by Daniel Aquino (aka methods) for ProjectX
+ * Copyright (C) 2010  Daniel Aquino
+ * Copyright (C) 2010  Pim Goossens
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -56,7 +55,7 @@
 
 extern lua_State *L1;
 
-int lua_dofile(char* name);
+int lua_dofile(lua_State *L, const char *name);
 int lua_init(void);
 void lua_shutdown(void);
 
