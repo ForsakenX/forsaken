@@ -136,6 +136,7 @@ static int luaobj_index(lua_State *L)
 	FIELDPTR(FinalInvMat, matrix);
 	FIELDPTR(FinalQuat, matrix);
 	FIELDPTR(DirVector, vector);
+	FIELD(Group, integer);
 	FIELDPTR(Speed, vector);
 	FIELDPTR(Angle, vector);
 	FIELD(CruiseControl, integer);
