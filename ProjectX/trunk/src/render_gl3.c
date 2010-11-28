@@ -10,10 +10,6 @@
 #include <stdio.h>
 #include "xmem.h"
 
-// NOTES
-//
-// * Material data is ignored completely
-
 #define CHECK_GL_ERRORS \
 	do \
 	{ \
@@ -910,7 +906,6 @@ BOOL FSLockPretransformedVertexBuffer(RENDEROBJECT *renderObject, TLVERTEX **ver
  *   - ... plus scaling and translation for Y-flipping (T*S*P)
  *   else:
  *   - update mvp if necessary (mvp_needs_update)
- * - (set material -- ignore at least for now)
  * - for each texture group (renderObject->numTextureGroups)
  *   - group = &renderObject->textureGroups[i]
  *   - if group->colourkey, enable color-keying

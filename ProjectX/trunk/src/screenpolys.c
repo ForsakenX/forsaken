@@ -2165,7 +2165,6 @@ BOOL ScrPolyDispSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * NextS
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	ZValue = 1.0F;
@@ -2645,7 +2644,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	ZValue = 1.0F;
@@ -2691,8 +2689,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = NULL;
 				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = FALSE;
 /* bjd - CHECK
-				OP_STATE_LIGHT( 1, lpPointer );
-			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
 			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
 			   	OP_STATE_RENDER( 1, lpPointer );
@@ -2705,8 +2701,6 @@ BOOL ScrPolyDispNonSolid( RENDEROBJECT *renderObject, int16 * TPage, uint16 * Ne
 				renderObject->textureGroups[renderObject->numTextureGroups].texture = Tloadheader.lpTexture[Count];
 				renderObject->textureGroups[renderObject->numTextureGroups].colourkey = Tloadheader.ColourKey[Count];
 /* bjd - CHECK
-				OP_STATE_LIGHT( 1, lpPointer );
-			   	    STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer);
 			   	OP_PROCESS_VERTICES( 1, lpPointer );
 			        PROCESSVERTICES_DATA( D3DPROCESSVERTICES_COPY, StartVert, NumVerts, lpPointer );
 			   	OP_STATE_RENDER( 1, lpPointer );

@@ -446,7 +446,6 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].texture = Tloadheader.lpTexture[Mxaloadheader->TloadIndex[tpage]];
 			Mxaloadheader->Group[ group ].renderObject[execbuf].textureGroups[i].colourkey = Tloadheader.ColourKey[Mxaloadheader->TloadIndex[tpage]];
 */
-			Mxaloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxaloadheader->TloadIndex[tpage]];
 
 			Mxaloadheader->Group[group].renderObject[execbuf].numTextureGroups = num_texture_groups;
 

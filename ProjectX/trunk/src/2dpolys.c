@@ -1679,7 +1679,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -1715,8 +1714,6 @@ BOOL FmPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*
 		if( NumVerts )
 		{
 /* bjd - CHECK
-		   	OP_STATE_LIGHT( 1, lpPointer );
-		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
 		   	    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, StartVert, NumVerts, lpPointer );
 		   	OP_STATE_RENDER( 1, lpPointer );
@@ -2043,7 +2040,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -2079,8 +2075,6 @@ BOOL FmPolyDispGroupUnclipped( /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDEROBJEC
 		if( NumVerts )
 		{
 /* bjd - CHECK
-		   	OP_STATE_LIGHT( 1, lpPointer );
-		   	    STATE_DATA( D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[ Count ], lpPointer );
 		   	OP_PROCESS_VERTICES( 1, lpPointer );
 		   	    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, StartVert, NumVerts, lpPointer );
 		   	OP_STATE_RENDER( 1, lpPointer );

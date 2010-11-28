@@ -40,7 +40,6 @@ typedef struct TLOADHEADER{
 	BOOL				ColourKey[MAXTPAGESPERTLOAD];	// 0 not colour keyed
     char                ImageFile[MAXTPAGESPERTLOAD][256]; /* files */
     LPTEXTURE			lpTexture[MAXTPAGESPERTLOAD]; /* texture objs */
-	RENDERMATERIAL		lpMat[MAXTPAGESPERTLOAD];
 	BOOL				MipMap[MAXTPAGESPERTLOAD];
 	BOOL				PlaceHolder[MAXTPAGESPERTLOAD];	// is the texture a placeholder ( for subsequent dynamic loading of textures? )
 	char				*PlaceHolderFile[MAXTPAGESPERTLOAD];	// current full path of file occupying placeholder ( needed to restore surface )
@@ -52,7 +51,6 @@ typedef struct TLOADHEADER{
  */
 BOOL InitTload( TLOADHEADER * Tloadheader  );
 BOOL Tload( TLOADHEADER * Tloadheader );
-BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader );
 BOOL TloadGetTextureHandle(TLOADHEADER * Tloadheader , int n);
 void TloadReleaseTexture(TLOADHEADER * Tloadheader, int n);
 void ReleaseTloadheader( TLOADHEADER * Tloadheader );

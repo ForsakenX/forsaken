@@ -706,7 +706,6 @@ BOOL PolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/R
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -940,7 +939,6 @@ BOOL PolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uint16 *
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 	if (!(FSLockVertexBuffer(renderObject, &lpBufStart)))
@@ -1222,7 +1220,6 @@ BOOL SolidPolyDispGroupClipped( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuff
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================
@@ -1456,7 +1453,6 @@ BOOL SolidPolyDispGroupUnclipped( RENDEROBJECT *renderObject, int16 * TPage, uin
 
 	if( !TotalVerts ) return( FALSE );
 
-	renderObject->material = Tloadheader.lpMat[ *TPage ];
 	renderObject->numTextureGroups = 0;
 
 /*===================================================================

@@ -126,19 +126,10 @@ typedef struct {
     float a;
 } COLORVALUE;
 
-typedef struct {
-    COLORVALUE   Diffuse;        /* Diffuse color RGBA */
-    COLORVALUE   Ambient;        /* Ambient color RGB */
-    COLORVALUE   Specular;       /* Specular 'shininess' */
-    COLORVALUE   Emissive;       /* Emissive color RGB */
-    float        Power;          /* Sharpness if specular highlight */
-} RENDERMATERIAL;
-
 typedef struct RENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	RENDERMATERIAL	material;
 	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_TEXTURE_GROUPS];
@@ -148,7 +139,6 @@ typedef struct LEVELRENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
-	RENDERMATERIAL	material;
 	BOOL			vbLocked;
 	int numTextureGroups;
 	TEXTUREGROUP textureGroups[MAX_LEVEL_TEXTURE_GROUPS];

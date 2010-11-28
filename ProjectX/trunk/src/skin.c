@@ -1045,8 +1045,6 @@ BOOL MakeNewSkinExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16	NumVerts, int16 Nu
 		}
    	}
 /* bjd - CHECK
-    OP_STATE_LIGHT( 1, lpPointer );
-        STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer );
     OP_PROCESS_VERTICES( 1, lpPointer );
         PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, 0, NumVerts, lpPointer );
     OP_STATE_RENDER( 1, lpPointer );
@@ -1259,8 +1257,6 @@ BOOL MakeNewPortalExec( LPLVERTEX Verts, LPTRIANGLE Tris, int16 NumVerts, int16 
 //    lpInsStart = lpPointer;
 
 /* bjd - CHECK   
-    OP_STATE_LIGHT( 1, lpPointer );
-        STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer );
     OP_PROCESS_VERTICES( 1, lpPointer );
         PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, 0, NumVerts, lpPointer );
     OP_STATE_RENDER( 1, lpPointer );

@@ -638,17 +638,6 @@ static void draw_vert( void * _vert, BOOL orthographic )
 	}
 }
 
-static void set_material( RENDERMATERIAL * m )
-{
-	if(!m)return;
-	glMaterialfv( GL_FRONT, GL_DIFFUSE,	 (GLfloat*)&m->Diffuse  );
-	glMaterialfv( GL_FRONT, GL_AMBIENT,	 (GLfloat*)&m->Ambient  );
-	glMaterialfv( GL_FRONT, GL_SPECULAR, (GLfloat*)&m->Specular );
-	glMaterialfv( GL_FRONT, GL_EMISSION, (GLfloat*)&m->Emissive );
-	// gl specular exponent =~ d3d specular sharpness
-	glMaterialf ( GL_FRONT, GL_SHININESS,(GLfloat)m->Power      );
-}
-
 static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, BOOL orthographic )
 {
 	int group;
@@ -672,8 +661,6 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, int primitive_type, 
 		// and move the origin from the bottom left corner to the upper left corner
 		glTranslatef(0.0f, -((float)render_info.ThisMode.h), 0.0f);
 	}
-
-	set_material( &renderObject->material );
 
 	for (group = 0; group < renderObject->numTextureGroups; group++)
 	{

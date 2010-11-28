@@ -74,7 +74,6 @@ extern	VECTOR			SlideUp;
 extern	VECTOR			SlideDown;
 extern	VECTOR			SlideLeft;
 extern	VECTOR			SlideRight;
-//extern	D3DMATERIALHANDLE hMat2;
 //extern	D3DTEXTUREHANDLE bTex;
 extern	MLOADHEADER		Mloadheader;
 extern	MCLOADHEADER	MCloadheader;

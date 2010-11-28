@@ -199,8 +199,6 @@ BOOL LinesDispGroup( uint16 Group, /*LPDIRECT3DEXECUTEBUFFER ExecBuffer*/RENDERO
 			OP_STATE_RENDER( 2, lpPointer );
 			    STATE_DATA( D3DRENDERSTATE_WRAPU, FALSE, lpPointer );
 			    STATE_DATA( D3DRENDERSTATE_WRAPV, FALSE, lpPointer );
-	   		OP_STATE_LIGHT( 1, lpPointer );
-	   		    STATE_DATA( D3DLIGHTSTATE_MATERIAL, 0, lpPointer );
 	   		OP_PROCESS_VERTICES( 1, lpPointer );
 	   		    PROCESSVERTICES_DATA( D3DPROCESSVERTICES_TRANSFORM, 0, ( Num_Lines * 2 ), lpPointer );
 	   		OP_STATE_RENDER( 1, lpPointer );

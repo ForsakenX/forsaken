@@ -451,7 +451,6 @@ BOOL InitWaterObject(WATEROBJECT * WO)
 	WO->renderObject.textureGroups[0].startVert = 0;
 	WO->renderObject.textureGroups[0].texture = Tloadheader.lpTexture[WaterTPage]; 
 	WO->renderObject.textureGroups[0].colourkey = Tloadheader.ColourKey[WaterTPage];
-	WO->renderObject.material = Tloadheader.lpMat[WaterTPage];
 
 	return TRUE;
 }

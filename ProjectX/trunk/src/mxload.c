@@ -390,9 +390,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 /* bjd - CHECK
 				OP_STATE_LIGHT(1, lpPointer);
 
-				if( Mxloadheader->num_texture_files == 0 ) STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
-				else STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxloadheader->TloadIndex[tpage]], lpPointer);
-
 				OP_PROCESS_VERTICES(1, lpPointer);
 					PROCESSVERTICES_DATA(D3DPROCESSVERTICES_TRANSFORM, group_vertex_start+8, group_vertex_num, lpPointer);
 				OP_STATE_RENDER(1, lpPointer);
@@ -507,17 +504,6 @@ BOOL Mxload( char * Filename, MXLOADHEADER * Mxloadheader , BOOL Panel, BOOL Sto
 //			Mxloadheader->Group[ group ].renderObject[execbuf].numVerts = num_vertices;
 //			Mxloadheader->Group[ group ].renderObject[execbuf].numTriangles = triangleCount; //num_triangles;
 
-			if( Mxloadheader->num_texture_files == 0 )
-			{
-				// ?
-				//STATE_DATA(D3DLIGHTSTATE_MATERIAL, 0, lpPointer);
-			}
-			else
-			{
-				DebugPrintf("setting a material\n");
-				Mxloadheader->Group[ group ].renderObject[execbuf].material = Tloadheader.lpMat[Mxloadheader->TloadIndex[tpage]];
-				//STATE_DATA(D3DLIGHTSTATE_MATERIAL, Tloadheader.hMat[Mxloadheader->TloadIndex[tpage]], lpPointer);
-			}
 /*
 			if( Mxloadheader->num_texture_files == 0 )
 			{

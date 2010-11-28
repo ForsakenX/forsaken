@@ -52,7 +52,6 @@ BOOL InitTload( TLOADHEADER * Tloadheader  )
 	for( i = 0 ; i < MAXTPAGESPERTLOAD ; i++ )
 	{
 		Tloadheader->lpTexture[i]     = NULL; // texture
-		memset(&Tloadheader->lpMat[i], 0, sizeof(RENDERMATERIAL));
 		Tloadheader->CurScale[i]      = 0;	  // handle
 		Tloadheader->Scale[i]		  = FALSE;// Should it scale??
 
@@ -105,12 +104,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 			Msg( "TLoadAllTextures() Failed\n" );
 			return FALSE;
 		}
-		// if there are any textures then create materials for them
-		if ( TloadCreateMaterials( Tloadheader ) != TRUE)
-		{
-			Msg( "TLoadCreateMaterials() Failed\n" );
-			return FALSE;
-		}
 	}
 	
 	for( e = 0 ; e < Tloadheader->num_texture_files*MAXSCALE ; e ++ )
@@ -142,31 +135,6 @@ BOOL Tload( TLOADHEADER * Tloadheader  )
 	return( TRUE );
 }
 	
-// create a default material for each texture
-BOOL TloadCreateMaterials( TLOADHEADER * Tloadheader )
-{
-	int i;
-	RENDERMATERIAL mat;
-
-	memset(&mat, 0, sizeof(RENDERMATERIAL));
-	mat.Diffuse.r = (float)1.0;
-	mat.Diffuse.g = (float)1.0;
-	mat.Diffuse.b = (float)1.0;
-	mat.Diffuse.a = (float)1.0;
-	mat.Ambient.r = (float)1.0;
-	mat.Ambient.g = (float)1.0;
-	mat.Ambient.b = (float)1.0;
-	mat.Specular.r = (float)0.0;
-	mat.Specular.g = (float)0.0;
-	mat.Specular.b = (float)0.0;
-	mat.Power = (float)0.0;
-
-	for (i = 0; i<Tloadheader->num_texture_files; i++)
-		Tloadheader->lpMat[i] = mat;
-
-	return TRUE;
-}
-
 //
 // this will create and set a brand new texture pointer
 //
@@ -253,7 +221,7 @@ TloadReleaseTexture(TLOADHEADER * Tloadheader, int n)
 
 /*
  * ReleaseTloadheader
- * Release all texture surfaces and texture interfaces and materials
+ * Release all texture surfaces and texture interfaces
  * Release Execute buffers
  */
 void
