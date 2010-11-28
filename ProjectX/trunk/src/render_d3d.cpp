@@ -1545,10 +1545,6 @@ HRESULT draw_render_object( RENDEROBJECT *renderObject, BOOL transformed /*aka 2
 	if (FAILED(LastError))
 		return LastError;
 
-	LastError = lpD3DDevice->SetMaterial((D3DMATERIAL9*)&renderObject->material);
-	if (FAILED(LastError))
-		return LastError;
-
 	for (int i = 0; i < renderObject->numTextureGroups; i++)
 	{
 		if(renderObject->textureGroups[i].colourkey)
