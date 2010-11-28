@@ -197,6 +197,13 @@ static int luaship_arrayindex(lua_State *L)
 	return 1;
 }
 
+static int luaship_arraylength(lua_State *L)
+{
+	(void) luaL_checkudata(L, 1, "GLOBALSHIPARRAYPTR");
+	lua_pushinteger(L, sizeof(Ships)/sizeof(Ships[0]));
+	return 1;
+}
+
 static int luaship_whoiam(lua_State *L)
 {
 	lua_pushinteger(L, WhoIAm);
@@ -207,6 +214,7 @@ int luaopen_ships(lua_State *L)
 {
 	static const luaL_Reg shiparrmt[] = {
 		{ "__index", luaship_arrayindex },
+		{ "__len", luaship_arraylength },
 		{ NULL, NULL }
 	};
 	static const luaL_Reg shipmt[] = {
