@@ -120,7 +120,7 @@ all: $(BIN)
 $(BIN): $(OBJS)
 	$(CC) -o $(BIN) $(OBJS) $(LDFLAGS) $(LIBS)
 
-$(OBJS): $(INCLUDE) $(SRC)
+$(OBJS): $(INCLUDE)
 
 clean:
 	$(RM) $(OBJS) $(BIN)
