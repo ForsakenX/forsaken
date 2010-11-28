@@ -122,6 +122,7 @@ struct PORTAL{
 	uint16 num_polys_in_portal;
 	MCFACE Poly[MAXPOLYSPERPORTAL];
 	VISTREE visible;
+	VERT centroid;
 };
 
 

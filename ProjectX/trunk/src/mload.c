@@ -693,17 +693,39 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					return FALSE;  
 				}
 	
-				VertPnt = ( VERT* )	Buffer;
-				for( verts = 0 ; verts < Mloadheader->Group[group].Portal[portal].num_vertices_in_portal ; verts ++ )
 				{
-					/*	get the Verts in the Portal	*/
-					Mloadheader->Group[group].Portal[portal].Verts[verts] = *VertPnt++;
+					VERT sum = {0,0,0};
+					VERT centroid = {0,0,0};
+					float length = Mloadheader->Group[group].Portal[portal].num_vertices_in_portal;
+
+					VertPnt = ( VERT* )	Buffer;
+					for( verts = 0 ; verts < length ; verts++ )
+					{
+						VERT vert = *VertPnt++;
+						sum.x += vert.x;
+						sum.y += vert.y;
+						sum.z += vert.z;
+						//DebugPrintf("portal %d vert %d = { %f, %f, %f }\n", portal, verts, vert->x, vert->y, vert->z);
+						Mloadheader->Group[group].Portal[portal].Verts[verts] = vert;
+					}
+
+					centroid.x = sum.x / length;
+					centroid.y = sum.y / length;
+					centroid.z = sum.z / length;
+
+					Mloadheader->Group[group].Portal[portal].centroid = centroid;
+
+
+					//DebugPrintf("group %d portal %d centroid = { %f, %f, %f }\n", 
+					//	group, portal, centroid.x, centroid.y, centroid.z);
 				}
+
 				Buffer = (char *) VertPnt;		
 					
 				Uint16Pnt = (uint16 *) Buffer;
 				// get the polys in the portal
 				Mloadheader->Group[group].Portal[portal].num_polys_in_portal = *Uint16Pnt++;
+
 				if ( Mloadheader->Group[group].Portal[portal].num_polys_in_portal > MAXPOLYSPERPORTAL )
 				{
 					Msg( "Mload : More than MAXPOLYSPERPORTAL\n" );
