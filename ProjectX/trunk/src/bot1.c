@@ -241,6 +241,7 @@ static void control_bot( SHIPCONTROL * bot )
 		luaopen_controls(Lbot);
 		luaopen_object(Lbot);
 		luaopen_ships(Lbot);
+		luaopen_collision(Lbot);
 		DebugPrintf("loading %s\n", BOT_FILE);
 		luaL_dofile(Lbot, BOT_FILE);
 	}
