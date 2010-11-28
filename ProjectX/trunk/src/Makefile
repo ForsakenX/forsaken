@@ -94,7 +94,7 @@ ifeq ($(BOT),1)
 endif
 
 # ProjectX-specific includes
-CFLAGS += -I. -Iinclude -Iai/aiinclude
+CFLAGS += -I.
 
 # ProjectX-specific macros
 CFLAGS+= -DOPENGL -DNET_ENET_2 -DBSP -DLUA_USE_APICHECK -DTEXTURE_PNG -DSOUND_SUPPORT -DSOUND_OPENAL
@@ -102,8 +102,8 @@ ifeq ($(DEBUG),1)
 	CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT 
 endif
 
-INCLUDE=$(wildcard include/*.h) $(wildcard ai/aiinclude/*.h)
-SRC=$(wildcard *.c) $(wildcard ai/*.c)
+INCLUDE=$(wildcard *.h)
+SRC=$(wildcard *.c)
 OBJS=$(patsubst %.c,%.o,$(SRC))
 
 ADD_FLAGS=
@@ -120,7 +120,7 @@ all: $(BIN)
 $(BIN): $(OBJS)
 	$(CC) -o $(BIN) $(OBJS) $(LDFLAGS) $(LIBS)
 
-$(OBJS): $(wildcard include/*.h) $(wildcard ai/aiinclude/*.h)
+$(OBJS): $(INCLUDE) $(SRC)
 
 clean:
 	$(RM) $(OBJS) $(BIN)
