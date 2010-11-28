@@ -9,26 +9,7 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include "object.h"
-
-/* TODO - move this function to lua_vecmat.c and export it? */
-static void lua_pushvector(lua_State *L, VECTOR *v)
-{
-	VECTOR *nv = lua_newuserdata(L, sizeof(VECTOR));
-	nv->x = v->x;
-	nv->y = v->y;
-	nv->z = v->z;
-	luaL_getmetatable(L, "VECTOR");
-	lua_setmetatable(L, -2);
-}
-
-/* TODO - move this function to lua_vecmat.c and export it? */
-static void lua_pushmatrix(lua_State *L, MATRIX *m)
-{
-	MATRIX *nm = lua_newuserdata(L, sizeof(MATRIX));
-	memcpy(nm, m, sizeof(MATRIX));
-	luaL_getmetatable(L, "MATRIX");
-	lua_setmetatable(L, -2);
-}
+#include "lua_vecmat.h"
 
 #define FIELD(f, type) do {       \
 	lua_push ## type(L, obj->f); \

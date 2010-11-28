@@ -16,6 +16,7 @@
 #include "object.h" /* FIXME: needed by collision.h */
 #include "collision.h"
 #include "ships.h" /* for SHIP_RADIUS */
+#include "lua_vecmat.h"
 
 extern MCLOADHEADER MCloadheadert0;
 extern MLOADHEADER Mloadheader;
@@ -26,17 +27,6 @@ extern MLOADHEADER Mloadheader;
 	luaL_getmetatable(L, #objtype);            \
 	lua_setmetatable(L, -2);                   \
 } while (0)
-
-/* TODO - move this function to lua_vecmat.c and export it? */
-static void lua_pushvector(lua_State *L, VECTOR *v)
-{
-	VECTOR *nv = lua_newuserdata(L, sizeof(VECTOR));
-	nv->x = v->x;
-	nv->y = v->y;
-	nv->z = v->z;
-	luaL_getmetatable(L, "VECTOR");
-	lua_setmetatable(L, -2);
-}
 
 static int luacoll_bgcollide(lua_State *L)
 {

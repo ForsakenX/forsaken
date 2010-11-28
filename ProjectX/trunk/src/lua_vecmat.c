@@ -1,6 +1,5 @@
 #include <string.h>
 #include <lua.h>
-#include <lualib.h>
 #include <lauxlib.h>
 #include "new3d.h"
 
@@ -521,4 +520,24 @@ int luaopen_vecmat(lua_State *L)
 	luaL_register(L, NULL, matmt);
 	lua_pop(L, 1);
 	return 0;
+}
+
+/* [-0, +1, m] */
+void lua_pushvector(lua_State *L, VECTOR *v)
+{
+	VECTOR *nv = lua_newuserdata(L, sizeof(VECTOR));
+	nv->x = v->x;
+	nv->y = v->y;
+	nv->z = v->z;
+	luaL_getmetatable(L, "VECTOR");
+	lua_setmetatable(L, -2);
+}
+
+/* [-0, +1, m] */
+void lua_pushmatrix(lua_State *L, MATRIX *m)
+{
+	MATRIX *nm = lua_newuserdata(L, sizeof(MATRIX));
+	memcpy(nm, m, sizeof(MATRIX));
+	luaL_getmetatable(L, "MATRIX");
+	lua_setmetatable(L, -2);
 }

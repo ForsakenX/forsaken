@@ -14,21 +14,11 @@
 #include "new3d.h"
 #include "object.h"
 #include "networking.h"
+#include "lua_vecmat.h"
 
 extern BYTE WhoIAm;
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE GameStatus[MAX_PLAYERS+1];
-
-/* TODO - move this function to lua_vecmat.c and export it? */
-static void lua_pushvector(lua_State *L, VECTOR *v)
-{
-	VECTOR *nv = lua_newuserdata(L, sizeof(VECTOR));
-	nv->x = v->x;
-	nv->y = v->y;
-	nv->z = v->z;
-	luaL_getmetatable(L, "VECTOR");
-	lua_setmetatable(L, -2);
-}
 
 static void lua_pushobjptr(lua_State *L, void *v, const char *type)
 {
