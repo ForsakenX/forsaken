@@ -1336,6 +1336,15 @@ BOOL FSCreateTexture(LPTEXTURE *texture, const char *fileName, uint16 *width, ui
 	return create_texture(texture, fileName, width, height, numMips, colourkey, D3DPOOL_MANAGED);
 }
 
+// stubs for normals
+BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{ renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) ); return TRUE; }
+BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{FSCreateNormalBuffer(renderObject, numNormals); return TRUE;}
+BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+{(*normals) = renderObject->lpNormalBuffer; return TRUE;}
+BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return TRUE;}
+
 BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 //	assert (numVertices < 10000);
