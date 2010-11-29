@@ -1,7 +1,7 @@
 /* Functions for accessing ship data from Lua.
  *
  * me = Ships[WhoIAm()]
- * print(me.Primary)
+ * print(me.Primary.name)
  * t = me:table()
  *
  * No support for modifying (yet?)
@@ -14,11 +14,18 @@
 #include "new3d.h"
 #include "object.h"
 #include "networking.h"
+#include "2dtextures.h" /* FIXME -- needed for primary.h and secondary.h */
+#include "primary.h"
+#include "secondary.h"
 #include "lua_vecmat.h"
+#include "lua_weapons.h"
 
 extern BYTE WhoIAm;
 extern GLOBALSHIP Ships[MAX_PLAYERS+1];
 extern BYTE GameStatus[MAX_PLAYERS+1];
+
+extern int8 PrimaryToFireLookup[ MAXPRIMARYWEAPONS ];
+extern int8 SecondaryToFireLookup[ MAXSECONDARYWEAPONS ];
 
 static void lua_pushobjptr(lua_State *L, void *v, const char *type)
 {
@@ -27,6 +34,20 @@ static void lua_pushobjptr(lua_State *L, void *v, const char *type)
 	luaL_getmetatable(L, type);
 	lua_setmetatable(L, -2);
 }
+
+#define GETTABLEFORPRIM(num) do {                     \
+	lua_getglobal(L, "weapons");                      \
+	lua_pushinteger(L, PrimaryToFireLookup[num] + 1); \
+	lua_gettable(L, -2);                              \
+	lua_remove(L, -2);                                \
+} while (0)
+
+#define GETTABLEFORSEC(num) do {                                     \
+	lua_getglobal(L, "weapons");                                     \
+	lua_pushinteger(L, SecondaryToFireLookup[num] + 1 + SECOFFSET); \
+	lua_gettable(L, -2);                                             \
+	lua_remove(L, -2);                                               \
+} while (0)
 
 #define FIELD(f, type) do {       \
 	lua_push ## type(L, ship->f); \
@@ -44,12 +65,23 @@ static int luaship_table(lua_State *L)
 	ship = &Ships[shipidx];
 	lua_createtable(L, 0, 43);
 	/* Get a table for the Object field */
+	/* This should work but apparently doesn't :-/  --
 	lua_pushobjptr(L, &ship->Object, "OBJECTPTR");
 	lua_getfield(L, -1, "table");
 	lua_pushvalue(L, -2);
 	lua_call(L, 1, 1);
-	lua_setfield(L, -2, "Object");
-	lua_pop(L, 1); /* Get rid of the object pointer */
+	*/
+	/* Get the C function that builds the table for Object... */
+	luaL_getmetatable(L, "OBJECTPTR");
+	lua_getfield(L, -1, "__index");
+	lua_pushobjptr(L, &ship->Object, "OBJECTPTR");
+	lua_pushliteral(L, "table");
+	lua_call(L, 2, 1);
+	/* ...and call it with the Object pointer */
+	lua_pushobjptr(L, &ship->Object, "OBJECTPTR");
+	lua_call(L, 1, 1);
+	lua_setfield(L, -3, "Object");
+	lua_pop(L, 1); /* Get rid of the metatable */
 	/* Add index field */
 	lua_pushinteger(L, shipidx);
 	lua_setfield(L, -2, "index");
@@ -69,8 +101,12 @@ static int luaship_table(lua_State *L)
 	FIELD(SecBullIdCount, integer);
 	FIELD(PickupIdCount, integer);
 	FIELD(Damage, number);
-	FIELD(Primary, integer);
-	FIELD(Secondary, integer);
+	/* FIELD(Primary, integer); -- no longer used */
+	/* FIELD(Secondary, integer); -- no longer used */
+	GETTABLEFORPRIM(ship->Primary);
+	lua_setfield(L, -2, "Primary");
+	GETTABLEFORSEC(ship->Secondary);
+	lua_setfield(L, -2, "Secondary");
 	FIELD(ModelNum, integer);
 	FIELD(Pickups, integer);
 	FIELD(RegenSlots, integer);
@@ -160,8 +196,18 @@ static int luaship_index(lua_State *L)
 	FIELD(SecBullIdCount, integer);
 	FIELD(PickupIdCount, integer);
 	FIELD(Damage, number);
-	FIELD(Primary, integer);
-	FIELD(Secondary, integer);
+	/* FIELD(Primary, integer); -- no longer used */
+	/* FIELD(Secondary, integer); -- no longer used */
+	if (!strcmp(name, "Primary"))
+	{
+		GETTABLEFORPRIM(ship->Primary);
+		return 1;
+	}
+	if (!strcmp(name, "Secondary"))
+	{
+		GETTABLEFORSEC(ship->Secondary);
+		return 1;
+	}
 	FIELD(ModelNum, integer);
 	FIELD(Pickups, integer);
 	FIELD(RegenSlots, integer);
