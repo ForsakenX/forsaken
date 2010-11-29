@@ -337,6 +337,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 	LPLVERTEX	lpLVERTEX;
 	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
+	NORMAL * lpNormals = NULL;
 	int				indexOffset = 0;
 	int				ibIndex = 0;
 	int				numTriangles = 0;
@@ -536,6 +537,18 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 				return FALSE;
 			}
 
+			if (!FSCreateNormalBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], triangleCount))
+			{
+				Msg( "Mload() failed to create normal buffer %s\n", Filename );
+				return FALSE;
+			}
+
+			if (!(FSLockNormalBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf], &lpNormals)))
+			{
+				Msg( "Mload() failed to lock normal buffer %s\n", Filename );
+				return FALSE;
+			}
+
 			ibIndex = 0;
 			indexOffset = 0;
 			
@@ -572,6 +585,11 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					FacePnt->v2 = MFacePnt->v2;
 					FacePnt->v3 = MFacePnt->v3;
 */
+
+					lpNormals->nx = MFacePnt->nx;
+					lpNormals->ny = MFacePnt->ny;
+					lpNormals->nz = MFacePnt->nz;
+
 					if ( MFacePnt->pad & 1 )
 					{
 						// colourkey triangle found
@@ -587,6 +605,7 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 					//FacePnt++;
 					//MFacePnt++;
 					MFacePnt++;
+					lpNormals++;
 					tempInt+=3;
 				}
 				//lpPointer = (LPVOID) FacePnt;
@@ -623,6 +642,12 @@ BOOL Mload( char * Filename, MLOADHEADER * Mloadheader  )
 			if (!(FSUnlockIndexBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
+				return FALSE ;
+			}
+
+			if (!(FSUnlockNormalBuffer((RENDEROBJECT*)&Mloadheader->Group[group].renderObject[execbuf])))
+			{
+				Msg( "Mxload() normal unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
 		}

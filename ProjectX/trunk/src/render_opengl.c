@@ -588,6 +588,12 @@ BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {FSCreateVertexBuffer(renderObject, numVertices); return TRUE;}
 
+BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{ renderObject->lpNormalBuffer = malloc( numNormals * sizeof(NORMAL) ); return TRUE; }
+
+BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{FSCreateNormalBuffer(renderObject, numNormals); return TRUE;}
+
 BOOL FSCreateIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 {
 	renderObject->lpIndexBuffer = malloc( numIndices * 3 * sizeof(WORD) );
@@ -598,10 +604,15 @@ BOOL FSCreateDynamicIndexBuffer(RENDEROBJECT *renderObject, int numIndices)
 
 BOOL FSLockIndexBuffer(RENDEROBJECT *renderObject, WORD **indices)
 {(*indices) = renderObject->lpIndexBuffer; return TRUE;}
+
 BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 {(*verts) = renderObject->lpVertexBuffer; return TRUE;}
 BOOL FSUnlockIndexBuffer(RENDEROBJECT *renderObject){return TRUE;}
 BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject){return TRUE;}
+
+BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+{(*normals) = renderObject->lpNormalBuffer; return TRUE;}
+BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject){return TRUE;}
 
 BOOL FSCreateDynamic2dVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {

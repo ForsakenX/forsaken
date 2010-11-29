@@ -138,6 +138,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 	LPLVERTEX	lpLVERTEX;
 	LPLVERTEX	lpBufStart = NULL;
 	WORD			*lpIndices = NULL;
+	NORMAL		*lpNormals = NULL;
 	int				ibIndex = 0;
 	uint16			frame;
 	uint16			texgroup;
@@ -335,6 +336,17 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 				return FALSE;
 			}
 
+			if (!FSCreateNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], triangleCount))
+			{
+				DebugPrintf("Mxload() failed to create normal buffer in %s\n", Filename);
+				return FALSE;
+			}
+			if (!(FSLockNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf], &lpNormals)))
+			{
+				Msg( "Mxload() normal lock failed in %s\n", Filename );
+				return FALSE;
+			}
+
 			ibIndex = 0;
 			indexOffset = 0;
 
@@ -369,6 +381,10 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					lpIndices[ibIndex] = FacePnt.v3;
 					ibIndex++;
 
+					lpNormals->nx = MFacePnt->nx;
+					lpNormals->ny = MFacePnt->ny;
+					lpNormals->nz = MFacePnt->nz;
+
 					if ( MFacePnt->pad & 1 )
 					{
 						// colourkey triangle found
@@ -383,6 +399,7 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 					//lpLVERTEX+=3;
 					//FacePnt++;
 					MFacePnt++;
+					lpNormals++;
 					tempInt+=3;
 				}
 
@@ -437,6 +454,12 @@ BOOL Mxaload( char * Filename, MXALOADHEADER * Mxaloadheader, BOOL StoreTriangle
 			if (!(FSUnlockIndexBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
 			{
 				Msg( "Mxload() ib unlock failed in %s\n", Filename );
+				return FALSE ;
+			}
+
+			if (!(FSUnlockNormalBuffer(&Mxaloadheader->Group[group].renderObject[execbuf])))
+			{
+				Msg( "Mxload() normal unlock failed in %s\n", Filename );
 				return FALSE ;
 			}
 /*

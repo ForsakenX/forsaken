@@ -803,10 +803,20 @@ BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_STATIC_DRAW );
 	return TRUE;
 }
-
 BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices)
 {
 	renderObject->lpVertexBuffer = create_buffer( numVertices * sizeof(LVERTEX), GL_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
+	return TRUE;
+}
+
+BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{
+	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_STATIC_DRAW );
+	return TRUE;
+}
+BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals)
+{
+	renderObject->lpNormalBuffer = create_buffer( numNormals * sizeof(NORMAL), GL_ELEMENT_ARRAY_BUFFER, GL_DYNAMIC_DRAW );
 	return TRUE;
 }
 
@@ -853,6 +863,34 @@ BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts)
 }
 
 BOOL FSUnlockVertexBuffer(RENDEROBJECT *renderObject)
+{
+	BOOL ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
+	glBindBuffer( GL_ARRAY_BUFFER, old_array_buf );
+	old_array_buf = 0;
+	CHECK_GL_ERRORS;
+	return ret;
+}
+
+BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals)
+{
+	if ( old_array_buf )
+	{
+		DebugPrintf( "Tried to lock more than one vertex buffer at once\n" );
+		return FALSE;
+	}
+	glGetIntegerv( GL_ARRAY_BUFFER_BINDING, &old_array_buf );
+	glBindBuffer( GL_ARRAY_BUFFER, (GLuint) renderObject->lpNormalBuffer );
+	*normals = (NORMAL *) glMapBuffer( GL_ARRAY_BUFFER, GL_WRITE_ONLY );
+	if(!*normals)
+	{
+		DebugPrintf("FSLockNormalBuffer: glMapBuffer returned NULL\n");
+		return FALSE;
+	}
+	CHECK_GL_ERRORS;
+	return TRUE;
+}
+
+BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject)
 {
 	BOOL ret = ( glUnmapBuffer( GL_ARRAY_BUFFER ) == GL_TRUE );
 	glBindBuffer( GL_ARRAY_BUFFER, old_array_buf );
@@ -946,6 +984,7 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 	int i;
 
 	glBindBuffer( GL_ARRAY_BUFFER, renderObject->lpVertexBuffer );
+
 	if ( renderObject->lpIndexBuffer )
 		glBindBuffer( GL_ELEMENT_ARRAY_BUFFER, renderObject->lpIndexBuffer );
 	else
@@ -971,6 +1010,20 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 			attr[i].offset
 		);
 		glEnableVertexAttribArray( loc );
+	}
+
+	CHECK_GL_ERRORS;
+
+	// tell it about the normal buffer
+	if ( renderObject->lpNormalBuffer )
+	{
+		glBindBuffer( GL_ARRAY_BUFFER, renderObject->lpNormalBuffer );
+		loc = glGetAttribLocation( current_program, "vnormal" );
+		if(loc)
+		{
+			glVertexAttribPointer( loc, 3, GL_FLOAT, GL_FALSE, 0, sizeof(NORMAL), 0 );
+			glEnableVertexAttribArray( loc );
+		}
 	}
 
 	CHECK_GL_ERRORS;
@@ -1010,6 +1063,13 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 		glDisableVertexAttribArray( loc );
 	}
 
+	if ( renderObject->lpNormalBuffer )
+	{
+		loc = glGetAttribLocation( current_program, "vnormal" );
+		if(loc)
+			glDisableVertexAttribArray( loc );
+	}
+
 	CHECK_GL_ERRORS;
 
 	return TRUE;
@@ -1026,6 +1086,11 @@ void FSReleaseRenderObject(RENDEROBJECT *renderObject)
 	{
 		glDeleteBuffers( 1, &renderObject->lpVertexBuffer );
 		renderObject->lpVertexBuffer = NULL;
+	}
+	if (renderObject->lpNormalBuffer)
+	{
+		glDeleteBuffers( 1, &renderObject->lpNormalBuffer );
+		renderObject->lpNormalBuffer = NULL;
 	}
 	if (renderObject->lpIndexBuffer)
 	{

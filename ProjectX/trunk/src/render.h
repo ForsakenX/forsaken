@@ -115,6 +115,7 @@ typedef struct TEXTUREGROUP
 } TEXTUREGROUP;
 
 typedef void * LPVERTEXBUFFER;
+typedef void * LPARRAYBUFFER;
 typedef void * LPINDEXBUFFER;
 
 // taken from d3d9
@@ -129,6 +130,7 @@ typedef struct {
 typedef struct RENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
+	LPARRAYBUFFER	lpNormalBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
 	BOOL			vbLocked;
 	int numTextureGroups;
@@ -138,6 +140,7 @@ typedef struct RENDEROBJECT
 typedef struct LEVELRENDEROBJECT
 {
 	LPVERTEXBUFFER	lpVertexBuffer;
+	LPARRAYBUFFER	lpNormalBuffer;
 	LPINDEXBUFFER	lpIndexBuffer;
 	BOOL			vbLocked;
 	int numTextureGroups;
@@ -169,6 +172,10 @@ BOOL FSSetWorld( RENDERMATRIX *matrix );
 BOOL FSSetProjection( RENDERMATRIX *matrix );
 BOOL FSSetView( RENDERMATRIX *matrix );
 
+BOOL FSCreateDynamicNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
+BOOL FSCreateNormalBuffer(RENDEROBJECT *renderObject, int numNormals);
+BOOL FSLockNormalBuffer(RENDEROBJECT *renderObject, NORMAL **normals);
+BOOL FSUnlockNormalBuffer(RENDEROBJECT *renderObject);
 BOOL FSCreateDynamicVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 BOOL FSCreateVertexBuffer(RENDEROBJECT *renderObject, int numVertices);
 BOOL FSLockVertexBuffer(RENDEROBJECT *renderObject, LVERTEX **verts);
