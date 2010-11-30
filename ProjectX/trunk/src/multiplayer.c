@@ -43,6 +43,7 @@ extern int OldColPerspective;
 extern int OldUseShortPackets;
 
 BOOL ResetKillsPerLevel;
+BOOL TintBikeTeamColor;
 BOOL MyResetKillsPerLevel;
 BOOL IpOnCLI = FALSE;
 

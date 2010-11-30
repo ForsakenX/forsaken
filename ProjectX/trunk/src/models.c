@@ -5499,6 +5499,11 @@ void SetupModelSpotFX( uint16 i )
 ===================================================================*/
 //#define	PHIL_TESTSFX
 
+extern BOOL TeamGame;
+extern int TeamCol[ MAX_TEAMS ];
+extern uint8 Colourtrans[MAXFONTCOLOURS][3];
+extern BYTE	TeamNumber[MAX_PLAYERS];
+
 void UpdateShipModel( uint16 Ship )
 {
 	uint16	Model;
@@ -5558,7 +5563,6 @@ void UpdateShipModel( uint16 Ship )
 					SetCompObjNonStealth( Ships[ Ship ].Object.Components, 1 );
 					UpdateObjectAmbientColour( &Ships[ Ship ].Object );
 				}
-
 
 				UpdateCompObjColours( Ships[ Ship ].Object.Components, 1, (int) Ships[ Ship ].Object.Red,
 									  (int) Ships[ Ship ].Object.Green, (int) Ships[ Ship ].Object.Blue );
@@ -5715,6 +5719,14 @@ void UpdateShipModel( uint16 Ship )
 			free( Ships[ Ship ].Object.Components );
 			Ships[ Ship ].Object.Components = NULL;
 		}
+	}
+
+	if(TeamGame)
+	{
+		int color = TeamCol[TeamNumber[Ship]];
+		Ships[ Ship ].Object.Red   = 255.0f-Colourtrans[color][0];
+		Ships[ Ship ].Object.Green = 255.0f-Colourtrans[color][1];
+		Ships[ Ship ].Object.Blue  = 255.0f-Colourtrans[color][2];
 	}
 }
 

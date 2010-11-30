@@ -114,6 +114,7 @@ extern BOOL flush_input;
 extern double	Gamma;
 extern BOOL MyUseShortPackets;
 extern BOOL MyResetKillsPerLevel;
+extern BOOL TintBikeTeamColor;
 extern int CrystalsFound;
 extern	int16	NumGoldBars;
 extern int Secrets;
@@ -1687,8 +1688,9 @@ MENU	MENU_NEW_Visuals = {
 		
 		{ 20, 100, 200, 100, 0,					LT_MENU_InGame2  /*"Toggle Full Screen" */,			FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuGoFullScreen,		DrawFlatMenuItem,	NULL, 0 },
 		{ 20, 112, 150, 112, 0,					"Vertical Sync (requires restart)",			FONT_Small, TEXTFLAG_CentreY,	&render_info.vsync,	NewMenuSelectMode,	SelectFlatMenuToggle, DrawFlatMenuToggle,		NULL, 0 },
-		{ 20, 120, 200, 130, 0,					"anaglyph stereo 3d options",						FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_VisualsStereo,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },		 
-		{ 20, 150, 100, 160, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
+		{ 20, 124, 200, 124, 0,					"anaglyph stereo 3d options",						FONT_Small, TEXTFLAG_CentreY,						NULL,			&MENU_NEW_VisualsStereo,	MenuChange,				DrawFlatMenuItem,	NULL, 0 },		 
+		{ 20, 136, 150, 136, 0,					"Tint Bike to Team Color",						FONT_Small, TEXTFLAG_CentreY,		&TintBikeTeamColor,		NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle,	NULL, 0 },		 
+		{ 20, 160, 100, 160, 0,					LT_MENU_NEW_Visuals5 /*"back"*/,					FONT_Small, TEXTFLAG_CentreY,						NULL,			NULL,						MenuItemBack,			DrawFlatMenuItem,	NULL, 0 },		 
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	}
 };
@@ -9133,6 +9135,7 @@ void GetGamePrefs( void )
 
 	// booleans
  
+    TintBikeTeamColor                = config_get_bool( "TintBikeTeamColor",		TRUE );
     MyResetKillsPerLevel             = config_get_bool( "ResetKillsPerLevel",		FALSE );
     MyBrightShips                    = config_get_bool( "BrightShips",				FALSE );
     MyRandomPickups                  = config_get_bool( "RandomPickups",			FALSE );
@@ -9275,6 +9278,7 @@ void SetGamePrefs( void )
 	
 	// booleans
 
+  config_set_bool( "TintBikeTeamColor",     TintBikeTeamColor );
 	config_set_bool( "ResetKillsPerLevel",		MyResetKillsPerLevel );
 	config_set_bool( "BrightShips",			MyBrightShips );
 	config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
