@@ -1,4 +1,4 @@
-#ifdef BOT1
+#ifdef LUA_BOT
 #include <stdio.h>
 #include <lua.h>
 #include <lauxlib.h>
@@ -320,4 +320,4 @@ void ProcessBot1( void )
 	// control_ship will now cap us to max:
 	//   move, turn, turbo, roll, and bank
 }
-#endif // BOT1
+#endif // LUA_BOT

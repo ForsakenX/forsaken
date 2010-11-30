@@ -908,7 +908,7 @@ void control_ship( USERCONFIG *conf, SHIPCONTROL *ctrl )
 		}
 	}
 
-#ifdef BOT1
+#ifdef LUA_BOT
 	ProcessBot1();
 #endif
 

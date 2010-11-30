@@ -90,7 +90,7 @@ else
 endif
 
 ifeq ($(BOT),1)
-	CFLAGS+= -DBOT1
+	CFLAGS+= -DLUA_BOT
 endif
 
 # ProjectX-specific includes
