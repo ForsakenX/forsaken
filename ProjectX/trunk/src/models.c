@@ -5503,6 +5503,7 @@ extern BOOL TeamGame;
 extern int TeamCol[ MAX_TEAMS ];
 extern uint8 Colourtrans[MAXFONTCOLOURS][3];
 extern BYTE	TeamNumber[MAX_PLAYERS];
+extern BOOL TintBikeTeamColor;
 
 void UpdateShipModel( uint16 Ship )
 {
@@ -5721,9 +5722,10 @@ void UpdateShipModel( uint16 Ship )
 		}
 	}
 
-	if(TeamGame)
+	if( TeamGame && TintBikeTeamColor && Ships[Ship].enable )
 	{
-		int color = TeamCol[TeamNumber[Ship]];
+		int team = TeamNumber[Ship]; if(team >= MAX_TEAMS || team < 0) return;
+		int color = TeamCol[team]; if(color >= MAXFONTCOLOURS || color < 0) return;
 		Ships[ Ship ].Object.Red   = 255.0f-Colourtrans[color][0];
 		Ships[ Ship ].Object.Green = 255.0f-Colourtrans[color][1];
 		Ships[ Ship ].Object.Blue  = 255.0f-Colourtrans[color][2];
