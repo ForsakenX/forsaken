@@ -125,6 +125,18 @@ void MatrixMultiply( MATRIX * m0, MATRIX * m1, MATRIX * m0m1 )
 				:	VECTOR	*	New Vert
 	Output		:	Nothing
 ===================================================================*/
+
+// this is how you really apply a matrix to a vector
+void MxV( MATRIX * m, VECTOR * v0, VECTOR * v1 )
+{
+	v1->x = m->_11 * v0->x + m->_21 * v0->y + m->_31 * v0->z + m->_41;
+	v1->y = m->_12 * v0->x + m->_22 * v0->y + m->_32 * v0->z + m->_42;
+	v1->z = m->_13 * v0->x + m->_23 * v0->y + m->_33 * v0->z + m->_43;
+}
+
+// this is not a general purpose m*v function
+// it's meant to only be used in certain places
+
 //#ifndef USEASM
 #if 1
 void ApplyMatrix( MATRIX * m, VECTOR * v0, VECTOR * v1 )
