@@ -9,6 +9,7 @@
 #include "SDL_opengl.h"
 #include <stdio.h>
 #include "xmem.h"
+#include "new3d.h"
 
 extern render_info_t render_info;
 
@@ -542,12 +543,13 @@ BOOL FSSetProjection( RENDERMATRIX *matrix )
 
 GLfloat view_matrix[4][4];
 GLfloat world_matrix[4][4];
+GLfloat mv_matrix[4][4];
 
 static void reset_modelview( void )
 {
 	glMatrixMode(GL_MODELVIEW);
-	glLoadMatrixf((GLfloat*)&view_matrix);
-	glMultMatrixf((GLfloat*)&world_matrix);
+	MatrixMultiply( &world_matrix, &view_matrix, &mv_matrix );
+	glLoadMatrixf((GLfloat*)&mv_matrix);
 }
 
 BOOL FSSetView( RENDERMATRIX *matrix )
