@@ -1001,15 +1001,18 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 	for ( i=0; attr[i].name; i++ )
 	{
 		loc = glGetAttribLocation( current_program, attr[i].name );
-		glVertexAttribPointer(
-			loc,
-			attr[i].components,
-			attr[i].type,
-			attr[i].normalized,
-			orthographic ? sizeof(TLVERTEX) : sizeof(LVERTEX),
-			attr[i].offset
-		);
-		glEnableVertexAttribArray( loc );
+		if (loc >= 0)
+		{
+			glVertexAttribPointer(
+				loc,
+				attr[i].components,
+				attr[i].type,
+				attr[i].normalized,
+				orthographic ? sizeof(TLVERTEX) : sizeof(LVERTEX),
+				attr[i].offset
+			);
+			glEnableVertexAttribArray( loc );
+		}
 	}
 
 	CHECK_GL_ERRORS;
@@ -1019,7 +1022,7 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 	{
 		glBindBuffer( GL_ARRAY_BUFFER, renderObject->lpNormalBuffer );
 		loc = glGetAttribLocation( current_program, "vnormal" );
-		if(loc)
+		if (loc >= 0)
 		{
 			glVertexAttribPointer( loc, 3, GL_FLOAT, GL_FALSE, 0, sizeof(NORMAL), 0 );
 			glEnableVertexAttribArray( loc );
@@ -1060,13 +1063,14 @@ static BOOL draw_render_object( RENDEROBJECT *renderObject, GLenum primitive_typ
 	for ( i=0; attr[i].name; i++ )
 	{
 		loc = glGetAttribLocation( current_program, attr[i].name );
-		glDisableVertexAttribArray( loc );
+		if (loc >= 0)
+			glDisableVertexAttribArray( loc );
 	}
 
 	if ( renderObject->lpNormalBuffer )
 	{
 		loc = glGetAttribLocation( current_program, "vnormal" );
-		if(loc)
+		if (loc >= 0)
 			glDisableVertexAttribArray( loc );
 	}
 
