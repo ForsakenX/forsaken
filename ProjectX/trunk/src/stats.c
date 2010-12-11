@@ -59,6 +59,8 @@ int x, z;																						// index counters
 int	ScoreSortTab[MAX_PLAYERS + 1];												// player numbers in order of highest score to lowest 								
 char *PrimaryWeaponName[MAXPRIMARYWEAPONS+1]			= { "PULSAR", "TROJAX", "PYROLITE", "TRANSPULSE", "SUSS-GUN", "LASER", "ORBITAL" };
 char *SecondaryWeaponName[TOTALSECONDARYWEAPONS]	= { "MUG", "SOLARIS", "THIEF", "SCATTER", "GRAVGON", "MFRL", "TITAN", "PURGE MINE", "PINE MINE", "QUANTUM MINE", "SPIDER MINE", "PINE MISSILE", "TITAN SHRAPNEL", "ENEMY SPIRAL MISSILE", "ENEMY HOMING MISSILE", "ENEMY BLUE HOMING MISSILE", "ENEMY FIREBALL", "ENEMY TENTACLE", "ENEMY DEPTH CHARGE" };
+BOOL FirstBlood = FALSE;
+BOOL FirstToFifty = FALSE;
 
 /*===================================================================
   Procedure :   Get Weapon Name...
@@ -121,6 +123,11 @@ void ResetAllStats()
 		// reset all player's sequential kill counters
 		KillCounter[x] = 0;
 	}
+
+	// reset flags
+	FirstBlood = FALSE;
+	FirstToFifty = FALSE;
+	
 }
 
 
@@ -158,6 +165,21 @@ void ResetIndividualStats(int Player)
 /* Update Individual Kill and Weapon Kill Statistics */
 void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 {
+	// killed with a direct hit of a titan
+	if(WeaponType == WEPTYPE_Secondary && Weapon == 6)
+	{
+			if(Killer == WhoIAm) PlaySfx( SFX_HOLYSHIT, 1.0F );
+			AddColourMessageToQue( MilestoneMessagesColour, "HOLY SHIT" );
+			return;				
+	}
+	// killed with a gravgon
+	if(WeaponType == WEPTYPE_Secondary && Weapon == 4)
+	{
+			if(Victim == WhoIAm) PlaySfx( SFX_HUMILIATION, 1.0F );
+			AddColourMessageToQue( MilestoneMessagesColour, "HUMILIATION" );
+			return;		
+	}
+
 	// note who killed whom
 	KillStats[Killer][Victim]++;
 	// note weapon used
@@ -194,14 +216,27 @@ void UpdateKillCount(int Killer)
 	// name of killer
 	if(Killer == WhoIAm)
 	{
-		strcpy(prefix, "YOU ARE");
+		strcpy(prefix, "YOU");
 		PlaySound = TRUE;
 	}
 	else
-	{
 		strcpy(prefix, (const char *)GetName(Killer));
-		strcat(prefix, " IS");
+
+	// first kill of the game
+	if(!FirstBlood)
+	{
+			FirstBlood = TRUE;
+			if(PlaySound) PlaySfx( SFX_FIRSTBLOOD, 1.0F );
+			sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOT FIRST BLOOD" );
+				AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
+			return;		
 	}
+
+	// grammar prefix
+	if(Killer == WhoIAm)
+		strcat(prefix, " ARE");
+	else
+		strcat(prefix, " IS");
 
 	// check for milestone achievements
 	switch(KillCounter[Killer])
@@ -350,7 +385,9 @@ int GetTeamScore(int Player)
 /* Get A Player's Total Kills */
 int GetTotalKills(int Killer)
 {
-	int kills = 0; // total number of kills
+	int kills = 0;
+	char tempstr[256];
+	char prefix[256];
 
 	// add kills achieved on all players
 	for(x = 0; x < MAX_PLAYERS; x++)
@@ -358,6 +395,24 @@ int GetTotalKills(int Killer)
 		// don't add suicides
 		if(Killer!=x)
 			kills += GetKillStats(Killer,x);	// add kills
+	}
+
+	// first to fifty kills
+	if(!FirstToFifty && kills >= 50)
+	{
+			FirstToFifty = TRUE;
+			if(Killer == WhoIAm)
+			{
+				strcpy(prefix, "YOU ARE");
+				PlaySfx( SFX_IMPRESSIVE, 1.0F );
+			}
+			else
+			{
+				strcpy(prefix, (const char *)GetName(Killer));
+				strcat(prefix, "IS");
+			}
+			sprintf( (char*)&tempstr[0], "%s %s", prefix, "FIRST TO 50 KILLS" );
+			AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 	}
 
 	return kills;
