@@ -62,6 +62,9 @@ extern	int				TeamFlag[ MAX_TEAMS ];
 
 extern render_info_t render_info;
 
+// (Ships.c)
+extern int SwitchedToWatchMode;
+
 // color names are defined in text.h colors_t
 uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 	// r, g, b   values...
@@ -628,6 +631,13 @@ void PrintScoreSort( void )
 					}
 				}
 
+				// watchers can see the location of all players
+				if(SwitchedToWatchMode && Ships[i].Object.Mode != LIMBO_MODE)
+				{
+					left_offset += ( 11 * FontWidth ); // give a padding space
+				  	Print4x5Text( &Mloadheader.Group[Ships[i].Object.Group].name[0], left_offset, top_offset, 2 );
+				}
+
 				top_offset += line_height;
 			}
 		}
@@ -708,7 +718,8 @@ void PrintScoreSort( void )
 			e = pos + 1;
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			{
-				if( ( TeamNumber[WhoIAm] == TeamNumber[i] ) && (GameStatus[i] == STATUS_Normal) )
+				if( ( TeamNumber[WhoIAm] == TeamNumber[i] || SwitchedToWatchMode) 
+						&& (GameStatus[i] == STATUS_Normal) && (Ships[i].Object.Mode != LIMBO_MODE) )
 				{
 					col = ( WhoIAm == i ) ? 0 : TeamCol[ TeamNumber[ i ] ];
 					Print4x5Text( &Names[i][0] , 8 , e*(FontHeight+1)+(FontHeight*4) , col );
