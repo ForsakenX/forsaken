@@ -398,6 +398,7 @@ void InitDemoList( MENU * Menu );
 void GetGamePrefs( void );
 void SetGamePrefs( void );
 void InitLoadSavedGameList( MENU * Menu );
+void WatchPlayerSelected( MENUITEM *Item);
 
 char *SearchKey( char c );
 void PauseDemoToggle( MENUITEM *Item );
@@ -447,6 +448,7 @@ BOOL SetAxisActionSlider( SLIDER *s );
 
 void InitHostMenu( MENU *Menu );
 void HostListPlayerSelected( MENUITEM *Item );
+void InitWatchList( MENU *Menu );
 
 /**************************
 new text functions
@@ -2937,6 +2939,12 @@ MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , 
 			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
 };
 
+MENU	MENU_Watch_Options = { LT_MENU_InGame24 /*"Watch Options"*/ , InitWatchList , NULL , NULL,	0,
+			{
+				OLDMENUITEM( 200, 112, LT_MENU_InGame24	/*"Watch Player"*/,	&HostPlayersList, WatchPlayerSelected, SelectList, DrawList ),  
+			{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } 
+};
+
 MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGameMenu , NULL,	0,
 			{
 					  OLDMENUITEM( 200, 112, LT_MENU_InGame1  /*"Set Up Biker"				*/,	(void *)biker_name,			&MENU_SetUpBiker,		MenuChange,				DrawNameVar),
@@ -2947,7 +2955,8 @@ MENU	MENU_InGame = { LT_MENU_InGame0 /*"Forsaken"*/ , InitInGameMenu , ExitInGam
 					  OLDMENUITEM( 200, 192, LT_MENU_InGame26 /*"Host Options"				*/,	NULL,						&MENU_Host_Options,		MenuChange,				MenuItemDrawName),
 					  OLDMENUITEM( 200, 224, LT_MENU_InGame8  /*"Quit to Main Menu"			*/,	NULL,						NULL,					SelectQuitCurrentGame,	MenuItemDrawName),
 					  OLDMENUITEM( 200, 240, LT_MENU_InGame25 /*"Quit to desktop"			*/,	NULL,						NULL,					SelectQuit,				MenuItemDrawName),
-					  OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"				*/,	(void*)&WatchPlayerSelect,	NULL,					SelectSlider,			DrawSlider),	
+				
+ 					  OLDMENUITEM( 200, 256, LT_MENU_InGame24 /*"Watch Player"*/, NULL, &MENU_Watch_Options, MenuChange, MenuItemDrawName),
 #ifndef EXTERNAL_DEMO
 #ifdef DEBUG_ON
 					  OLDMENUITEM( 200, 272, LT_MENU_InGame11 /*"Debugging"					*/,	&DebugInfo,					DebugModeChanged,		SelectToggle,			DrawToggle),
@@ -15275,6 +15284,35 @@ void InitTitleMessaging( void )
 }
 
 #endif
+
+
+void WatchPlayerSelected( MENUITEM *Item)
+{
+	WatchPlayerSelect.value = HostGamePlayersWhoIAm[HostPlayersList.selected_item];
+}
+
+void InitWatchList( MENU *Menu )
+{
+	BYTE i;
+
+	// refresh the list of players so we can select one for watch mode
+	HostPlayersList.items = 0;
+	for(i = 0; i < MAX_PLAYERS; i++ )
+	{
+		if ( GameStatus[ i ] == STATUS_Normal )
+		{
+			strncpy( HostPlayersList.item[ HostPlayersList.items ], Names[ i ], sizeof( HostPlayersList.item[ 0 ] ) );
+			
+			if(i == WhoIAm)
+				strcat( HostPlayersList.item[ HostPlayersList.items ], " (YOU)");
+
+			HostGamePlayersWhoIAm[ HostPlayersList.items ] = i;
+			HostPlayersList.items++;
+		}
+	}
+	HostPlayersList.display_items = MAX_PLAYERS;
+	HostPlayersList.selected_item = -1;
+}
 
 void RefreshHostPlayersList( LIST *List )
 {
