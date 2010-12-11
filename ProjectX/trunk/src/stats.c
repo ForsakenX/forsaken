@@ -168,7 +168,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	// killed with a direct hit of a titan
 	if(WeaponType == WEPTYPE_Secondary && Weapon == 6)
 	{
-			if(Killer == WhoIAm) PlaySfx( SFX_HOLYSHIT, 1.0F );
+			PlaySfx( SFX_HOLYSHIT, 1.0F );
 			AddColourMessageToQue( MilestoneMessagesColour, "HOLY SHIT" );
 			return;				
 	}
