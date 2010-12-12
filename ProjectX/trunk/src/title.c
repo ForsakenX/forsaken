@@ -15299,7 +15299,7 @@ void InitWatchList( MENU *Menu )
 	HostPlayersList.items = 0;
 	for(i = 0; i < MAX_PLAYERS; i++ )
 	{
-		if ( GameStatus[ i ] == STATUS_Normal )
+		if ( GameStatus[ i ] == STATUS_Normal || i == WhoIAm )
 		{
 			strncpy( HostPlayersList.item[ HostPlayersList.items ], Names[ i ], sizeof( HostPlayersList.item[ 0 ] ) );
 			
