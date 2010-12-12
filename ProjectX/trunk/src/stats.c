@@ -195,7 +195,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	{
 			for(i=0; i<MAX_PLAYERS; i++)
 			{
-					if(GetTotalKills(i) >= 2)
+					if(GetTotalKills(i) >= 50)
 					{
 						FirstToFifty = TRUE;
 						break;
@@ -203,7 +203,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			}
 			
 			// this is the person to 50 kills
-			if(!FirstToFifty && Killer!=Victim && GetTotalKills(Killer) == 1)
+			if(!FirstToFifty && Killer!=Victim && GetTotalKills(Killer) == 49)
 			{
 					FirstToFifty = TRUE;
 					if(Killer == WhoIAm)
