@@ -123,11 +123,6 @@ void ResetAllStats()
 		// reset all player's sequential kill counters
 		KillCounter[x] = 0;
 	}
-
-	// reset flags
-	FirstBlood = FALSE;
-	FirstToFifty = FALSE;
-	
 }
 
 
@@ -165,6 +160,65 @@ void ResetIndividualStats(int Player)
 /* Update Individual Kill and Weapon Kill Statistics */
 void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 {
+	char tempstr[256];
+	int i=0;
+	// should we check for the first kill of the game?
+	if(!FirstBlood)
+	{
+			for(i=0; i<MAX_PLAYERS; i++)
+			{
+					if(GetTotalKills(i) > 0)
+					{
+						FirstBlood = TRUE;
+						break;
+					}
+			}
+			
+			// this is the first kill
+			if(!FirstBlood)
+			{
+					FirstBlood = TRUE;					
+					if(Killer == WhoIAm)
+					{
+						AddColourMessageToQue(MilestoneMessagesColour, "YOU GOT FIRST BLOOD");
+						PlaySfx( SFX_FIRSTBLOOD, 1.0F );
+					}
+					else
+					{
+						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "GOT FIRST BLOOD" );
+						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
+					}
+			}
+	}
+	// should we check for first to fifty kills?
+	if(!FirstToFifty)
+	{
+			for(i=0; i<MAX_PLAYERS; i++)
+			{
+					if(GetTotalKills(i) >= 2)
+					{
+						FirstToFifty = TRUE;
+						break;
+					}
+			}
+			
+			// this is the person to 50 kills
+			if(!FirstToFifty && Killer!=Victim && GetTotalKills(Killer) == 1)
+			{
+					FirstToFifty = TRUE;
+					if(Killer == WhoIAm)
+					{
+						AddColourMessageToQue( MilestoneMessagesColour, "YOU ARE FIRST TO 50 KILLS" );
+						PlaySfx( SFX_IMPRESSIVE, 1.0F );
+					}
+					else
+					{
+						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "IS FIRST TO 50 KILLS" );
+						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
+					}
+			}
+	}
+
 	// killed with a direct hit of a titan
 	if(WeaponType == WEPTYPE_Secondary && Weapon == 6)
 	{
@@ -196,6 +250,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 
 	// reset the current kills this life for the victim
 	KillCounter[Victim] = 0;
+
 }
 
 /*===================================================================
@@ -216,27 +271,14 @@ void UpdateKillCount(int Killer)
 	// name of killer
 	if(Killer == WhoIAm)
 	{
-		strcpy(prefix, "YOU");
+		strcpy(prefix, "YOU ARE");
 		PlaySound = TRUE;
 	}
 	else
-		strcpy(prefix, (const char *)GetName(Killer));
-
-	// first kill of the game
-	if(!FirstBlood)
 	{
-			FirstBlood = TRUE;
-			if(PlaySound) PlaySfx( SFX_FIRSTBLOOD, 1.0F );
-			sprintf( (char*)&tempstr[0], "%s %s", prefix, "GOT FIRST BLOOD" );
-				AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
-			return;		
-	}
-
-	// grammar prefix
-	if(Killer == WhoIAm)
-		strcat(prefix, " ARE");
-	else
+		strcpy(prefix, (const char *)GetName(Killer));
 		strcat(prefix, " IS");
+	}
 
 	// check for milestone achievements
 	switch(KillCounter[Killer])
@@ -395,24 +437,6 @@ int GetTotalKills(int Killer)
 		// don't add suicides
 		if(Killer!=x)
 			kills += GetKillStats(Killer,x);	// add kills
-	}
-
-	// first to fifty kills
-	if(!FirstToFifty && kills >= 50)
-	{
-			FirstToFifty = TRUE;
-			if(Killer == WhoIAm)
-			{
-				strcpy(prefix, "YOU ARE");
-				PlaySfx( SFX_IMPRESSIVE, 1.0F );
-			}
-			else
-			{
-				strcpy(prefix, (const char *)GetName(Killer));
-				strcat(prefix, "IS");
-			}
-			sprintf( (char*)&tempstr[0], "%s %s", prefix, "FIRST TO 50 KILLS" );
-			AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 	}
 
 	return kills;
