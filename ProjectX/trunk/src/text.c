@@ -628,15 +628,18 @@ void PrintScoreSort( void )
 					{
 						sprintf( (char*) &buf[0] ,"Ping %lu", Ships[GetPlayerByRank(i)].network_player->ping );
 						Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+
+						// watchers can see the location of all players
+						if(SwitchedToWatchMode)
+						{
+							left_offset += ( 11 * FontWidth ); // give a padding space
+							 Print4x5Text( &Mloadheader.Group[Ships[GetPlayerByRank(i)].Object.Group].name[0], left_offset, top_offset, 2 );
+						}
+
 					}
 				}
 
-				// watchers can see the location of all players
-				if(SwitchedToWatchMode && Ships[i].Object.Mode != LIMBO_MODE)
-				{
-					left_offset += ( 11 * FontWidth ); // give a padding space
-				  	Print4x5Text( &Mloadheader.Group[Ships[i].Object.Group].name[0], left_offset, top_offset, 2 );
-				}
+
 
 				top_offset += line_height;
 			}
