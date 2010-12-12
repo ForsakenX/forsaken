@@ -238,6 +238,15 @@ static int luaship_index(lua_State *L)
 #undef FIELDPTR
 #undef FIELD
 
+static int luaship_equals(lua_State *L)
+{
+	lua_pushboolean(L,
+		*((int *) luaL_checkudata(L, 1, "GLOBALSHIPIDX")) ==
+		*((int *) luaL_checkudata(L, 2, "GLOBALSHIPIDX"))
+	);
+	return 1;
+}
+
 static int luaship_arrayindex(lua_State *L)
 {
 	GLOBALSHIP *ships;
@@ -276,6 +285,7 @@ int luaopen_ships(lua_State *L)
 	};
 	static const luaL_Reg shipmt[] = {
 		{ "__index", luaship_index },
+		{ "__eq", luaship_equals },
 		{ NULL, NULL }
 	};
 	GLOBALSHIP **ships = lua_newuserdata(L, sizeof(void *));
