@@ -26,6 +26,7 @@
 #include "restart.h"
 #include "xmem.h"
 #include "util.h"
+#include "water.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
@@ -1179,13 +1180,19 @@ int ClipGroup( CAMERA *cam, uint16 group )
 /*===================================================================
 		Disp Visipoly Model
 ===================================================================*/
+extern	float	WhiteOut;
+extern	uint16	GroupWaterInfo[MAXGROUPS];
+extern	float	GroupWaterLevel[MAXGROUPS];
+extern	float	GroupWaterIntensity_Red[MAXGROUPS];
+extern	float	GroupWaterIntensity_Green[MAXGROUPS];
+extern	float	GroupWaterIntensity_Blue[MAXGROUPS];
 BOOL
 DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam ) 
 {
 	RENDERMATRIX	Tempproj;
 	RENDERMATRIX	Tempview;
 	VISGROUP *g;
-	int	i;
+	int	i, group;
 	uint32 t;
 	render_viewport_t OldViewPort;
 
@@ -1214,14 +1221,39 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 		for ( g = cam->visible.first_visible, i = 0; g; g = g->next_visible, i++ )
 		{
 		 	ClipGroup( &CurrentCamera, (uint16) g->group );
-			CurrentGroupVisible = GroupsVisible[i];
+		  CurrentGroupVisible = GroupsVisible[i];
 			GroupInVisibleList = i;
+			group = GroupsVisible[i];
 
+#ifndef NEW_LIGHTING
 			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
 				return FALSE;
+#endif
 
-   			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
-					return FALSE;
+			render_lighting_enabled = 1;
+
+			if( WhiteOut != 0.0f )
+				render_lighting_env_whiteout = (int) WhiteOut;
+
+			if(GroupWaterInfo[group] != WATERSTATE_NOWATER)
+			{
+				render_lighting_env_water       = 1;
+				if( GroupWaterInfo[group] != WATERSTATE_ALLWATER )
+				{
+					render_lighting_env_water       = 2;
+					render_lighting_env_water_level = GroupWaterLevel[group];
+				}
+				render_lighting_env_water_red   = GroupWaterIntensity_Red[group];
+				render_lighting_env_water_green = GroupWaterIntensity_Green[group];
+				render_lighting_env_water_blue  = GroupWaterIntensity_Blue[group];
+			}
+
+ 			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
+				return FALSE;
+
+			render_lighting_enabled   = 0;
+			render_lighting_env_water = 0;
+			render_lighting_env_whiteout = 0;
 
 			DispGroupTriggerAreas( (uint16) g->group );
 			if ( CaptureTheFlag || CTF )

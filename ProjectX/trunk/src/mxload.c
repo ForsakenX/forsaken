@@ -912,7 +912,13 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 					{
 						if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 						{
+#ifndef NEW_LIGHTING
 							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+							render_lighting_enabled = 1;
+							render_light_ambience = 128.0f;
+							render_light_ambience_alpha = 255.0f;
+							render_light_ambience_alpha_enable = 1;
 						}
 #if 1
 						switch( Models[ Model ].Func )
@@ -946,9 +952,16 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 
 					if( Model != (uint16) -1 )
 					{
+
 						if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 						{
+#ifndef NEW_LIGHTING
 							if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+							render_lighting_enabled = 1;
+							render_light_ambience = 128.0f;
+							render_light_ambience_alpha = 255.0f;
+							render_light_ambience_alpha_enable = 1;
 						}
 
 						switch( Models[ Model ].Func )
@@ -968,7 +981,12 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 							case MODFUNC_OrbitPulsar:
 								if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 								{
+#ifndef NEW_LIGHTING
 									if( !LightModel( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+									render_lighting_enabled = 1;
+									render_light_ambience_alpha = 0.0f;
+									render_light_ambience_alpha_enable = 1;
 								}
 								break;
 
@@ -990,8 +1008,13 @@ BOOL ExecuteMxloadHeader( MXLOADHEADER * Mxloadheader, uint16 Model  )
 					{
 						if (!draw_object(&Mxloadheader->Group[group].renderObject[i]))
 						{
+							render_lighting_enabled = 0;
 							return FALSE;
 						}
+						render_lighting_enabled = 0;
+						render_light_ambience = 0.0f;
+						render_light_ambience_alpha = 255.0f;
+						render_light_ambience_alpha_enable = 0;
 					}
 				}
 			}

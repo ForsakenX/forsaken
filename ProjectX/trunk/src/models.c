@@ -1369,17 +1369,26 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 
 							if( Models[i].Flags & MODFLAG_AmbientLight )
 							{
+#ifndef NEW_LIGHTING
 								GetRealLightAmbient( &Models[i].Pos , &r , &g , &b );
 								AmbientLightMxaModel( &MxaModelHeaders[ ModelNum ],
 												Models[i].Red, Models[i].Green, Models[i].Blue, 0 , r , g , b);
+#endif
+								render_lighting_enabled  = 1;
+								render_color_blend_red   = Models[i].Red;
+								render_color_blend_green = Models[i].Green;
+								render_color_blend_blue  = Models[i].Blue;
 
 							}else if( Models[i].Flags & MODFLAG_RealLight )
 							{
+#ifndef NEW_LIGHTING
 								TempMatrix = Models[i].Mat;
 								TempMatrix._41 = Models[i].Pos.x;
 								TempMatrix._42 = Models[i].Pos.y;
 								TempMatrix._43 = Models[i].Pos.z;
 								XLightMxaloadHeader( &MxaModelHeaders[ ModelNum ], &Models[i].Pos, Models[i].Radius, &TempMatrix );
+#endif
+								render_lighting_enabled = 1;
 							}
 
 							if( Models[i].Flags & MODFLAG_Stealth )
@@ -1393,11 +1402,12 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
 
-								if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
-								{
-									DoDisplay = FALSE;
-								}
-					
+#ifndef NEW_LIGHTING
+								if( !LightMxaModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = FALSE;
+#endif
+								render_lighting_enabled = 1;
+								render_light_ambience_alpha = 255.0f;
+								render_light_ambience_alpha_enable = 1;
 							}
 
 							if( !( Models[i].Flags & MODFLAG_RealLight ) &&
@@ -1417,10 +1427,20 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								if( ExecuteMxaloadHeader( &MxaModelHeaders[ModelNum], ClipGroup ) != TRUE)
 								{
 									Msg( "ModelDisp() ExecuteMxaloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
+									render_lighting_enabled  = 0;
+									render_color_blend_red   = 0;
+									render_color_blend_green = 0;
+									render_color_blend_blue  = 0;
 									return FALSE;
 								}
 							}
 
+							render_lighting_enabled  = 0;
+							render_color_blend_red   = 0;
+							render_color_blend_green = 0;
+							render_color_blend_blue  = 0;
+							render_light_ambience_alpha = 255.0f;
+							render_light_ambience_alpha_enable = 0;
 						}
 						else
 						{
@@ -1433,18 +1453,29 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 							CreateMXBoundingBox( &ModelHeaders[ ModelNum ],	&Models[i].Mat, &Models[i].Pos,
 												 &Models[i].TempLines[ 0 ], Models[i].Group );
 #endif
+
 							if( Models[i].Flags & MODFLAG_AmbientLight )
 							{
+#ifndef NEW_LIGHTING
 								GetRealLightAmbient( &Models[i].Pos , &r , &g , &b );
 								AmbientLightMxModel( &ModelHeaders[ ModelNum ],
 												Models[i].Red, Models[i].Green, Models[i].Blue, 0 , r , g , b);
+#endif
+								render_lighting_enabled  = 1;
+								render_color_blend_red   = Models[i].Red;
+								render_color_blend_green = Models[i].Green;
+								render_color_blend_blue  = Models[i].Blue;
 							}else if( Models[i].Flags & MODFLAG_RealLight )
 							{
+#ifndef NEW_LIGHTING
 								TempMatrix = Models[i].Mat;
 								TempMatrix._41 = Models[i].Pos.x;
 								TempMatrix._42 = Models[i].Pos.y;
 								TempMatrix._43 = Models[i].Pos.z;
-								XLightMxloadHeader( &ModelHeaders[ ModelNum ], &Models[i].Pos, Models[i].Radius, &TempMatrix );
+								XLightMxloadHeader( &ModelHeaders[ ModelNum ], &Models[i].Pos, 
+									Models[i].Radius, &TempMatrix );
+#endif
+								render_lighting_enabled = 1;
 							}
 
 							if( Models[i].Flags & MODFLAG_Stealth )
@@ -1458,10 +1489,12 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 									ModelNum += ( ModelHeaders[Models[i].ModelNum].LOD + 1 );
 								}
 
-								if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) )
-								{
-									DoDisplay = FALSE;
-								}
+#ifndef NEW_LIGHTING
+								if( !LightMxModel( ModelNum, &Models[i].Pos, (float) Models[i].Red, (float) Models[i].Green, (float) Models[i].Blue, 255.0F ) ) DoDisplay = FALSE;
+#endif
+								render_lighting_enabled = 1;
+								render_light_ambience_alpha = 255.0f;
+								render_light_ambience_alpha_enable = 1;
 							}
 
 							//DebugPrintf("display = '%d', mip number = '%d', name = '%s'\n",
@@ -1472,10 +1505,21 @@ BOOL ModelDisp( uint16 group, /*LPDIRECT3DDEVICE lpDev,*/ MODELNAME * NamePnt  )
 								//count++;
 								if( ExecuteMxloadHeader( &ModelHeaders[ ModelNum ], i ) != TRUE)
 								{
-									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n", &ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
+									Msg( "ModelDisp() ExecuteMxloadHeader for %s Failed\n",
+										&ModelNames[ Models[i].ModelNum ].Name[ 0 ] );
+									render_lighting_enabled  = 0;
+									render_color_blend_red   = 0;
+									render_color_blend_green = 0;
+									render_color_blend_blue  = 0;
 									return FALSE;
 								}
 							}
+							render_lighting_enabled  = 0;
+							render_color_blend_red   = 0;
+							render_color_blend_green = 0;
+							render_color_blend_blue  = 0;
+							render_light_ambience_alpha = 255.0f;
+							render_light_ambience_alpha_enable = 0;
 						}
 					}
 				}
@@ -4056,24 +4100,6 @@ BOOL LightMxaModel( uint16 Model, VECTOR * Pos, float RF, float GF, float BF, fl
 	return TRUE;
 }
 
-BOOL DoesLightEffectGroup( MLOADHEADER * Mloadheader , VECTOR * Pos , float size , uint16 group )
-{
-	VECTOR	Temp;
-	Temp.x = Pos->x - Mloadheader->Group[group].center.x;
-	if( Temp.x < 0.0F )	Temp.x *= -1.0F;
-	Temp.y = Pos->y - Mloadheader->Group[group].center.y;
-	if( Temp.y < 0.0F )	Temp.y *= -1.0F;
-	Temp.z = Pos->z - Mloadheader->Group[group].center.z;
-	if( Temp.z < 0.0F )	Temp.z *= -1.0F;
-	if ( (Temp.x <= ( Mloadheader->Group[group].half_size.x + size ) ) &&
-		 (Temp.y <= ( Mloadheader->Group[group].half_size.y + size ) ) &&
-		 (Temp.z <= ( Mloadheader->Group[group].half_size.z + size ) ) )
-	{
-		return TRUE;
-	}
-	return FALSE;
-}
-
 /*===================================================================
 	Procedure	:	Shock Wave Damage to Ships and Mines.
 	Input		:	VECTOR	*	Position
@@ -5845,7 +5871,6 @@ void GetRealLightAmbient( VECTOR * Pos , float * Red , float * Green , float * B
 	*Red = RF;
 	*Green = GF;
 	*Blue = BF;
-
 }
 
 #define POINT_TO_PLANE( P, N ) ( (P)->x * (N)->Normal.x + (P)->y * (N)->Normal.y + (P)->z * (N)->Normal.z + ( (N)->Offset) )

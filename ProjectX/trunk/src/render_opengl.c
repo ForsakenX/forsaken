@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include "xmem.h"
 #include "new3d.h"
+#include "lights.h"
 
 extern render_info_t render_info;
 
@@ -633,6 +634,212 @@ static void set_color( COLOR c )
 	glColor4ubv((GLubyte*)&c);
 }
 
+int render_color_blend_red   = 0;
+int render_color_blend_green = 0;
+int render_color_blend_blue  = 0;
+
+int render_lighting_enabled = 0;
+int render_light_ambience = 0;
+int render_light_ambience_alpha = 255.0f;
+int render_light_ambience_alpha_enable = 0;
+
+int render_lighting_env_water         = 0;
+int render_lighting_env_water_level   = 0;
+float render_lighting_env_water_red   = 0.0f;
+float render_lighting_env_water_green = 0.0f;
+float render_lighting_env_water_blue  = 0.0f;
+
+int render_lighting_env_whiteout = 0;
+
+void do_water_effect( VECTOR * pos, uchar_t * color )
+{
+	uint32 r,g,b;
+	int x,y,z;
+	float intensity, seconds;
+	static float speed = 71.0f;
+	if( render_lighting_env_water == 2 && pos->y >= render_lighting_env_water_level )
+		return;
+	r = color[2] >> 2;
+	g = color[1] >> 2;
+	b = color[0] >> 2;
+	x = (float)((int)(pos->x * 0.35f) % 360);
+	y = (float)((int)(pos->y * 0.35f) % 360);
+	z = (float)((int)(pos->z * 0.35f) % 360);
+	seconds = SDL_GetTicks() / 1000.0f;
+  intensity = (float) (
+		( 
+			sin( D2R( x + seconds * speed ) ) +  // cral = seconds * speed
+			sin( D2R( y + seconds * speed ) ) + 
+			sin( D2R( z + seconds * speed ) ) 
+		) * 127.0F * 0.3333333F + 128.0F 
+	);
+	r += render_lighting_env_water_red   * intensity;
+	g += render_lighting_env_water_green * intensity;
+	b += render_lighting_env_water_blue  * intensity;
+	if(r > 255) r = 255;
+	if(g > 255) g = 255;
+	if(b > 255) b = 255;
+	color[2] = (uchar_t) r;
+	color[1] = (uchar_t) g;
+	color[0] = (uchar_t) b;
+}
+
+void do_whiteout_effect( VECTOR * pos, COLOR * color )
+{
+	int x,y,z,intensity;
+	float seconds;
+	static float speed = 71.0f;
+	x = (float)((int)(pos->x * 0.35f) % 360);
+	y = (float)((int)(pos->y * 0.35f) % 360);
+	z = (float)((int)(pos->z * 0.35f) % 360);
+	seconds = SDL_GetTicks() / 1000.0f;
+  intensity = (int) (
+		( 
+			sin( D2R( x + seconds * speed ) ) +  // cral = seconds * speed
+			sin( D2R( y + seconds * speed ) ) + 
+			sin( D2R( z + seconds * speed ) ) 
+		) * 127.0F * 0.3333333F + 128.0F 
+	);
+	intensity += render_lighting_env_whiteout;
+	if(intensity > 255) intensity = 255;
+	*color &= 0xffff;
+	*color |= ( intensity << 24 ) + ( intensity << 16 );
+}
+
+extern XLIGHT * FirstLightVisible;
+void GetRealLightAmbientWorldSpace( VECTOR * Pos , float * R , float * G , float * B, float * A )
+{
+	VECTOR ray;
+	float rlen, rlen2, lsize2, intensity, cosa, cosarc2;
+	XLIGHT * LightPnt = FirstLightVisible;
+
+	*R = *G = *B = render_light_ambience;
+	*A = render_light_ambience_alpha;
+	
+	while( LightPnt )
+	{
+		ray.x = Pos->x - LightPnt->Pos.x;
+		ray.y = Pos->y - LightPnt->Pos.y;
+		ray.z = Pos->z - LightPnt->Pos.z;
+
+		rlen2 = (
+			ray.x * ray.x +
+			ray.y * ray.y +
+			ray.z * ray.z
+		);
+
+		lsize2 = LightPnt->Size * LightPnt->Size;
+		
+		if( rlen2 < lsize2 )
+		{
+			if(LightPnt->Type == POINT_LIGHT)
+			{
+				intensity = 1.0F - rlen2 / (int) lsize2; 
+			}
+			else if(LightPnt->Type == SPOT_LIGHT)
+			{
+				if( rlen2 > 0.0F )
+				{
+					rlen = (float) sqrt( rlen2 );
+					ray.x /= rlen;
+					ray.y /= rlen;
+					ray.z /= rlen;
+				}
+				
+				cosa = ( 
+					ray.x * LightPnt->Dir.x +
+					ray.y * LightPnt->Dir.y + 
+					ray.z * LightPnt->Dir.z
+				);
+				
+				if ( rlen2 > lsize2 * 0.5F )
+				{
+					if ( cosa > LightPnt->CosArc )
+						intensity = (
+							( ( lsize2 - rlen2 ) / ( 0.75F * lsize2 ) ) *
+							( ( cosa - LightPnt->CosArc ) / ( 1.0F - LightPnt->CosArc )	));
+					else
+						goto NEXT_LIGHT;
+				}
+				else if ( rlen2 > MIN_LIGHT_SIZE ) 
+				{
+					cosarc2 = LightPnt->CosArc * (
+							1.0F - 
+							( lsize2 * 0.5F - rlen2 ) / 
+							( lsize2 * 0.5F - MIN_LIGHT_SIZE ) 
+					);
+					if ( cosa > cosarc2 )
+						intensity = (
+							( ( lsize2 - rlen2 ) / ( lsize2 - MIN_LIGHT_SIZE ) ) *
+							( ( cosa - cosarc2 ) / ( 1.0F - cosarc2 ) ));
+					else
+						goto NEXT_LIGHT;
+				}
+				else 
+				{
+					intensity = ( cosa > 0.0F ) ? 1.0F : 1.0F + cosa ;
+				}
+			}
+			else
+			{
+				DebugPrintf("Unknown light type %d\n",
+					LightPnt->Type);
+				goto NEXT_LIGHT;
+			}
+
+			*R += LightPnt->r * intensity;
+			*G += LightPnt->g * intensity;
+			*B += LightPnt->b * intensity;
+			*A += 255.0f * intensity;
+		}
+		
+NEXT_LIGHT:
+
+		LightPnt = LightPnt->NextVisible;
+	}
+
+	if( *R > 255.0F ) *R = 255.0F;
+	if( *G > 255.0F ) *G = 255.0F;
+	if( *B > 255.0F ) *B = 255.0F;
+	if( *A > 255.0F ) *A = 255.0F;
+}
+
+#define MINUS( X, Y )\
+	tmp = X;\
+	tmp -= Y;\
+	X = (tmp < 0) ? 0 :\
+		(tmp > 255) ? 255 : tmp
+
+#define ADD( X, Y )\
+	MINUS( X, -Y )
+
+// color = (vert + light) - blend
+// where blend = 255 - color
+#define MIX_COLOR_BLEND_LIGHT( COLOR, BLEND, LIGHT )\
+	ADD( COLOR, LIGHT );\
+	MINUS( COLOR, BLEND )
+
+void light_vert( LVERTEX * vert, uchar_t * color ) 
+{
+	int tmp;
+	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
+	VECTOR world, v = {vert->x,vert->y,vert->z};
+	MxV( &world_matrix, &v, &world );
+	if( render_lighting_env_whiteout )
+		do_whiteout_effect( &world, color );
+	else if( render_lighting_env_water )
+		do_water_effect( &world, color );
+#ifndef LIGHT_EVERYTHING
+	if( render_lighting_enabled )
+#endif
+		GetRealLightAmbientWorldSpace( &world, &r, &g, &b, &a );
+	MIX_COLOR_BLEND_LIGHT( color[0], render_color_blend_blue,  b );
+	MIX_COLOR_BLEND_LIGHT( color[1], render_color_blend_green, g );
+	MIX_COLOR_BLEND_LIGHT( color[2], render_color_blend_red,   r );
+	if( render_light_ambience_alpha_enable )
+		color[3] = a;
+}
+
 static void draw_vert( void * _vert, BOOL orthographic )
 {
 	LVERTEX * vert = (LVERTEX*) _vert;
@@ -645,7 +852,13 @@ static void draw_vert( void * _vert, BOOL orthographic )
 	}
 	else
 	{
+#ifdef NEW_LIGHTING
+		COLOR c = vert->color;
+		light_vert( vert, &c );
+		set_color( c );
+#else
 		set_color( vert->color );
+#endif
 		glTexCoord2f( vert->tu, vert->tv );
 		glVertex3f( vert->x, vert->y, vert->z );
 	}

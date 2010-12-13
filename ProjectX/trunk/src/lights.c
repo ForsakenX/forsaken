@@ -23,8 +23,6 @@
 #pragma optimize( "gty", on )
 #endif
 
-#define MIN_LIGHT_SIZE	( 1536.0F * GLOBAL_SCALE )
-
 #undef TESTING_SUBTRACTIVE
 
 /*===================================================================
@@ -73,9 +71,6 @@ uint16	FirstXLightFree;
 
 WORD	status;		
 DWORD	chop_status;		
-
-
-COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf );
 
 /*===================================================================
 	Floating Point Cull Mode
@@ -416,7 +411,6 @@ clear:					mov		eax, [esi]
 					//	Special Lighting effects
 					while( vert --)
 					{
-						
 						x = (float)((int) (lpLVERTEX2->x * 0.35F) % 360);
 						y = (float)((int) (lpLVERTEX2->y * 0.35F) % 360);
 						z = (float)((int) (lpLVERTEX2->z * 0.35F) % 360);
@@ -1346,122 +1340,6 @@ PLOP2:
 	
 	return TRUE;
 }
-
-
-
-/*===================================================================
-	Procedure	:	Set Xlight Mxloadheader...
-					Set all the ->color valus to be the same....
-	Input		:	nothing
-	Output		:	nothing
-===================================================================*/
-BOOL	SetColorMXAloadHeader( MXALOADHEADER * MXAloadheader , COLOR Col )
-{
-    LPLVERTEX	lpPointer = NULL;
-	LPLVERTEX	lpLVERTEX = NULL;
-	int		group;
-	int		execbuf;
-	int		vert;
-	group = MXAloadheader->num_groups;
-	while( group--)
-	{
-		execbuf = MXAloadheader->Group[group].num_execbufs;
-		while( execbuf--)
-		{
-			if (!(FSLockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf], &lpPointer)))
-			{
-				return FALSE;
-			}
-
-//			lpPointer = (LPLVERTEX) debDesc.lpData;
-		
-			lpLVERTEX = lpPointer;
-			vert = MXAloadheader->Group[group].num_verts_per_execbuf[execbuf];
-			while( vert --)
-			{
-				lpLVERTEX->color = Col;
-				lpLVERTEX++;		
-			}
-			/*	unlock the execute buffer	*/
-//			if ( MXAloadheader->Group[group].lpExBuf[execbuf]->lpVtbl->Unlock( MXAloadheader->Group[group].lpExBuf[execbuf] ) != D3D_OK)
-//				return FALSE;
-			if (!(FSUnlockVertexBuffer(&MXAloadheader->Group[group].renderObject[execbuf])))
-			{
-				return FALSE;
-			}
-		}
-	}
-	return TRUE;
-}
-
-/*===================================================================
-	Procedure	:	Make all the Cell Ambient Colours..
-	Input		:	MLOADHEADER * Mloadheader
-	Output		:	nothing
-===================================================================*/
-
-COLOR WorkOutAverageLight( VECTOR * Pos , MLOADHEADER * Mloadheader , uint16 group , uint16 execbuf )
-{
-	float	r,g,b;
-	float	R,G,B;
-	COLOR Colour;
-	LPLVERTEX	lpLVERTEX;
-	float	CellSize;
-	float	Distance;
-	int		i;
-	VECTOR	vPos;
-	float	Weight;
-	float	TotalWeight;
-
-	r = g = b = 0.0F;
-	TotalWeight = 0;
-
-	CellSize = 1.0F / Mloadheader->CellSize;
-
-	for ( execbuf = 0; execbuf < Mloadheader->Group[group].num_execbufs; execbuf++ )
-	{
-		lpLVERTEX = Mloadheader->Group[group].originalVerts[execbuf];
-		
-		for( i = 0 ; i < Mloadheader->Group[group].num_verts_per_execbuf[execbuf] ; i++ )
-		{
-			vPos.x = lpLVERTEX->x;
-			vPos.y = lpLVERTEX->y;
-			vPos.z = lpLVERTEX->z;
-			
-			Distance = DistanceVector2Vector( &vPos , Pos);
-			Weight = CellSize / Distance;
-			Weight *= Weight;
-//			if ( Weight > 1.0F )
-//				Weight = 1.0F;
-			Colour = lpLVERTEX->color;
-			
-			R = RGBA_GETRED(Colour) * Weight;
-			G = RGBA_GETGREEN(Colour) * Weight;
-			B = RGBA_GETBLUE(Colour) * Weight;
-			
-			
-			r += R;
-			g += G;
-			b += B;
-			TotalWeight += Weight;
-			lpLVERTEX++;
-		}
-	}
-
-	r /= TotalWeight;
-	g /= TotalWeight;
-	b /= TotalWeight;
-	if( r > 255 )
-		r = 255;
-	if( g > 255 )
-		g = 255;
-	if( b > 255 )
-		b = 255;
-	
-	return RGBA_MAKE( (int) (255.0F - r) , (int) (255.0F - g) , (int) (255.0F - b) , 0 );
-}
-
-
 
 /*===================================================================
 	Procedure	:	Find Nearest Cell Colour..

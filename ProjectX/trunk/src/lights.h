@@ -28,6 +28,7 @@
 #define	POINT_LIGHT	0
 #define	SPOT_LIGHT	1
  
+#define MIN_LIGHT_SIZE	( 1536.0F * GLOBAL_SCALE )
  
 /*
  * structures

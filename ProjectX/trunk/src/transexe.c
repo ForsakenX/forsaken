@@ -78,7 +78,10 @@ void ExecuteTransExe( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
+#ifndef NEW_LIGHTING
 					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+					render_lighting_enabled = 1;
 				}
 
 				switch( Models[ Model ].Func )
@@ -102,7 +105,12 @@ void ExecuteTransExe( uint16 group )
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
+#ifdef NEW_LIGHTING
 							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+							render_lighting_enabled = 1;
+							render_light_ambience_alpha = 0.0f;
+							render_light_ambience_alpha_enable = 1;
 						}
 						break;
 
@@ -127,6 +135,10 @@ void ExecuteTransExe( uint16 group )
 
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
+
+			render_lighting_enabled = 0;
+			render_light_ambience_alpha = 255.0f;
+			render_light_ambience_alpha_enable = 0;
 		}
 	}
 	FSSetWorld(&identity);
@@ -153,7 +165,10 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
+#ifndef NEW_LIGHTING
 					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+					render_lighting_enabled = 1;
 				}
 
 				switch( Models[ Model ].Func )
@@ -177,7 +192,10 @@ void ExecuteTransExeUnclipped( uint16 group )
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
+#ifndef NEW_LIGHTING
 							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
+#endif
+							render_lighting_enabled = 1;
 						}
 						break;
 
@@ -204,6 +222,8 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
+
+			render_lighting_enabled = 0;
 		}
 	}
 	FSSetWorld(&identity);
