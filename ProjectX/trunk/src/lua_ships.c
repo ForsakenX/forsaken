@@ -238,11 +238,24 @@ static int luaship_index(lua_State *L)
 #undef FIELDPTR
 #undef FIELD
 
+/* TODO: move to a common function file and export */
+static BOOL isudatatype(lua_State *L, int index, const char *mt)
+{
+	BOOL ret;
+	if (!lua_getmetatable(L, index))
+		return FALSE;
+	lua_getfield(L, LUA_REGISTRYINDEX, mt);
+	ret = lua_rawequal(L, -1, -2);
+	lua_pop(L, 2);
+	return ret;
+}
+
 static int luaship_equals(lua_State *L)
 {
 	lua_pushboolean(L,
-		*((int *) luaL_checkudata(L, 1, "GLOBALSHIPIDX")) ==
-		*((int *) luaL_checkudata(L, 2, "GLOBALSHIPIDX"))
+		isudatatype(L, 1, "GLOBALSHIPIDX") &&
+		isudatatype(L, 2, "GLOBALSHIPIDX") &&
+		*((int *) lua_touserdata(L, 1)) == *((int *) lua_touserdata(L, 2))
 	);
 	return 1;
 }
