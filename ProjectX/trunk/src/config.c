@@ -156,7 +156,7 @@ USERCONFIG default_config = {
 
 USERCONFIG my_controls = {
 	"Player",						// player name
-	1,								// bike (1=Beard)
+	0,								// bike (0=Lokasenna)
 	1,								// bike computer ( 1 = Brenda )
 	0.6F,							// mouse x sensitivity
 	0.6F,							// mouse y sensitivity
