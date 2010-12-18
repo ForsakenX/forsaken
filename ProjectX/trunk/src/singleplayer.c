@@ -42,6 +42,8 @@ extern	BOOL	CountDownOn;
 extern	BOOL	TeamGame;
 extern  int16   NewLevelNum;
 extern  BYTE          MyGameStatus;
+extern SLIDER WatchPlayerSelect;
+extern BOOL SwitchedToWatchMode;
 
 BOOL LoadASinglePlayerGame( MENUITEM * Item )
 {
@@ -57,6 +59,8 @@ BOOL LoadASinglePlayerGame( MENUITEM * Item )
 	}
 	WhoIAm = 0;								// I was the first to join...
 	Current_Camera_View = 0;				// set camera to that view
+	WatchPlayerSelect.value = 0;
+	SwitchedToWatchMode = FALSE;
 	Ships[WhoIAm].enable = 1;
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
 	set_my_player_name();
@@ -98,6 +102,8 @@ BOOL StartASinglePlayerGame( MENUITEM * Item )
 	
 	WhoIAm = 0;								// I was the first to join...
 	Current_Camera_View = 0;				// set camera to that view
+	WatchPlayerSelect.value = 0;
+	SwitchedToWatchMode = FALSE;
 	Ships[WhoIAm].enable = 1;
 	
 	memset(&Names, 0, sizeof(SHORTNAMETYPE) );
