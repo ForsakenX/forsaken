@@ -11,7 +11,7 @@
 #
 # Notes:
 #   You will be stopped from deploying a production version if uncommitted changes exist.
-#   Svn up is ran and will properly set the version.h revision variable for you.
+#   Script will properly set the version.h revision variable for you.
 #
 # SSH Setup: 
 #   You should configure ~/.ssh/config so that ssh/scp lines below will work
