@@ -593,6 +593,7 @@ void CheckMetKillLimit();
 extern int KillMessageColour; 
 extern int SystemMessageColour;
 extern int FlagMessageColour;
+extern BOOL ShowTeamCamera;
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -4200,7 +4201,47 @@ BOOL MainGame( void ) // bjd
 					SetCam(MAX_PLAYERS+1, CamerasSet);
 					CamerasSet++;
 				}
-			}   
+			} 
+			// displays one team mate's camera on HUD
+			else if(TeamGame && ShowTeamCamera)
+			{
+	      float main_fov;
+	      TempMissileCam = Current_Camera_View;
+	      Current_Camera_View = -1;
+	      CameraRendering = CAMRENDERING_Pip;
+	      CurrentCamera.enable = 1;
+	      CurrentCamera.Viewport = viewport;
+	      CurrentCamera.Viewport.Width = viewport.Width  >>2;
+	      CurrentCamera.Viewport.Height = viewport.Height >>2;
+	      CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+	      CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+	      CurrentCamera.UseLowestLOD = TRUE;
+	      main_fov = hfov;
+	      SetFOV( normal_fov );
+	      CurrentCamera.Proj = proj;  
+	      Current_Camera_View=TempMissileCam;
+	      SetFOV( main_fov );
+
+				// pick first active team mate
+				for(i=0; i<MAX_PLAYERS; i++)
+				{
+						if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
+						{
+								CurrentCamera.GroupImIn = Ships[i].Object.Group; 
+								CurrentCamera.Mat = Ships[i].Object.FinalMat;  
+								CurrentCamera.InvMat = Ships[i].Object.FinalInvMat; 
+								CurrentCamera.Pos = Ships[i].Object.Pos; 
+        				CurrentCamera.Viewport.X = viewport.X;
+        				CurrentCamera.Viewport.Y = (viewport.Y+viewport.Height)-((viewport.Height >>4)+(viewport.Height >>2));
+								if( RenderCurrentCamera() != TRUE )
+								    return FALSE;
+
+								Print4x5Text( (char *)GetName(i), (CurrentCamera.Viewport.Width/2.0), CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height-(2.0*FontHeight), 4 );
+								break;
+						}
+				}
+
+			}  
     }
 	
     // Full Screen Rear View....
