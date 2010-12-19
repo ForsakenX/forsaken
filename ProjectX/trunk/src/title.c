@@ -793,7 +793,7 @@ SLIDER BikerSpeechSlider				= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER BikeCompSpeechSlider			= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
-SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F }; // which player's pov to watch
+SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS+1, 1, 0, 0, 0.0F }; // which player's pov to watch
 
 BOOL ShowTeamInfo;
 BOOL MenuFrozen					= FALSE;
@@ -15310,6 +15310,11 @@ void InitWatchList( MENU *Menu )
 			HostPlayersList.items++;
 		}
 	}
+
+	strncpy( HostPlayersList.item[ HostPlayersList.items ], "--OBSERVATORY--", sizeof( HostPlayersList.item[ 0 ] ) );
+	HostGamePlayersWhoIAm[ HostPlayersList.items ] = MAX_PLAYERS+1;
+	HostPlayersList.items++;
+
 	HostPlayersList.display_items = MAX_PLAYERS;
 	HostPlayersList.selected_item = -1;
 }

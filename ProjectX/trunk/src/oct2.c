@@ -3937,6 +3937,7 @@ BOOL MainGame( void ) // bjd
 {
   int i;
   static float fov_inc = 0.0F;
+	int CamerasSet=0;
 
   // For stereo
   VECTOR cam_offset;
@@ -4164,6 +4165,42 @@ BOOL MainGame( void ) // bjd
 
       }
 
+			// Observatory - show four ship camaras
+	    if( SwitchedToWatchMode && WatchPlayerSelect.value == MAX_PLAYERS+1 )
+			{
+        float main_fov;
+        TempMissileCam = Current_Camera_View;
+        Current_Camera_View = -1;
+        CameraRendering = CAMRENDERING_Pip;
+        CurrentCamera.enable = 1;
+        CurrentCamera.Viewport = viewport;
+        CurrentCamera.Viewport.Width = viewport.Width / (float)2.0;
+        CurrentCamera.Viewport.Height = viewport.Height / (float)2.0;
+        CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
+        CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
+        CurrentCamera.UseLowestLOD = TRUE;
+        main_fov = hfov;
+        SetFOV( normal_fov );
+        CurrentCamera.Proj = proj;  
+        Current_Camera_View=TempMissileCam;
+        SetFOV( main_fov );
+
+				// pick first four active ship camaras
+				for(i=0; i<MAX_PLAYERS && CamerasSet < 4; i++)
+				{
+					if(GameStatus[ i ] == STATUS_Normal && i != WhoIAm)
+					{
+						SetCam(i, CamerasSet);
+						CamerasSet++;
+					}
+				}
+				// black out other camaras
+				while(CamerasSet < 4)
+				{
+					SetCam(MAX_PLAYERS+1, CamerasSet);
+					CamerasSet++;
+				}
+			}   
     }
 	
     // Full Screen Rear View....
@@ -4272,6 +4309,51 @@ BOOL MainGame( void ) // bjd
   CheckLevelEnd();
 
   return TRUE;
+}
+
+/*===================================================================
+  Procedure :   Set Camera on the specified ship (for observatory)...
+===================================================================*/
+void SetCam(int ship, int Cam)
+{
+        CurrentCamera.GroupImIn = Ships[ship].Object.Group; 
+        CurrentCamera.Mat = Ships[ship].Object.FinalMat;  
+        CurrentCamera.InvMat = Ships[ship].Object.FinalInvMat; 
+        CurrentCamera.Pos = Ships[ship].Object.Pos; 
+
+				switch(Cam)
+				{
+					 // top left
+					 case 0:
+        				CurrentCamera.Viewport.X = 0.0;
+        				CurrentCamera.Viewport.Y = 0.0;
+								Print4x5Text( (char *)GetName(ship), CurrentCamera.Viewport.Width/(float)2.0, CurrentCamera.Viewport.Height-(2.0*FontHeight), 4 );
+								break;
+
+					// bottom left
+					case 1:
+        				CurrentCamera.Viewport.X = 0.0;
+        				CurrentCamera.Viewport.Y = CurrentCamera.Viewport.Height;
+								Print4x5Text( (char *)GetName(ship), CurrentCamera.Viewport.Width/(float)2.0, viewport.Height-(2.0*FontHeight), 4 );
+								break;
+
+					// top right
+					case 2:
+				        CurrentCamera.Viewport.X = CurrentCamera.Viewport.Width;
+        				CurrentCamera.Viewport.Y = 0.0;			
+								Print4x5Text( (char *)GetName(ship), (viewport.Width/(float)2.0) + (CurrentCamera.Viewport.Width/(float)2.0), CurrentCamera.Viewport.Height-(2.0*FontHeight), 4 );
+								break;
+
+					// bottom right
+					case 3:	
+        				CurrentCamera.Viewport.X = CurrentCamera.Viewport.Width;
+        				CurrentCamera.Viewport.Y = CurrentCamera.Viewport.Height;
+								Print4x5Text( (char *)GetName(ship), (viewport.Width/(float)2.0) + (CurrentCamera.Viewport.Width/(float)2.0), viewport.Height-(2.0*FontHeight), 4 );
+								break;
+				}
+
+        if( RenderCurrentCamera() != TRUE )
+            return FALSE;
 }
 
 
