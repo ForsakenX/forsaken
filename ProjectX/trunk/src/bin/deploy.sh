@@ -12,6 +12,7 @@
 # Notes:
 #   You will be stopped from deploying a production version if uncommitted changes exist.
 #   Script will properly set the version.h revision variable for you.
+#   You should also setup ssh keys because build() will run scp in the background.
 #
 # SSH Setup: 
 #   You should configure ~/.ssh/config so that ssh/scp lines below will work
