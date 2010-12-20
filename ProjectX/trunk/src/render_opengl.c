@@ -864,13 +864,13 @@ void light_vert( LVERTEX * vert, uchar_t * color )
 	}
 	else if(render_lighting_use_only_light_color_and_blend)
 	{
-		color[0] = 0;
-		color[1] = 0;
-		color[2] = 0;
+		color[0] = b;
+		color[1] = g;
+		color[2] = r;
 		color[3] = a;
-		ADD( color[0], b );
-		ADD( color[1], g );
-		ADD( color[2], r );
+		ADD( color[0], render_color_blend_blue );
+		ADD( color[1], render_color_blend_green );
+		ADD( color[2], render_color_blend_red );
 	}
 	else
 	{
