@@ -152,6 +152,7 @@ void ExecuteTransExe( uint16 group )
 			render_reset_lighting_variables();
 		}
 	}
+	render_reset_lighting_variables();
 	FSSetWorld(&identity);
 }
 
@@ -241,5 +242,6 @@ void ExecuteTransExeUnclipped( uint16 group )
 			render_reset_lighting_variables();
 		}
 	}
+	render_reset_lighting_variables();
 	FSSetWorld(&identity);
 }
