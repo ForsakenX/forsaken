@@ -1225,35 +1225,13 @@ DisplayBackground( MLOADHEADER	* Mloadheader, CAMERA *cam )
 			GroupInVisibleList = i;
 			group = GroupsVisible[i];
 
-#ifndef NEW_LIGHTING
 			if ( XLight1Group(  Mloadheader, GroupsVisible[i] ) != TRUE  )
 				return FALSE;
-#endif
-
-			render_lighting_enabled = 1;
-
-			if( WhiteOut != 0.0f )
-				render_lighting_env_whiteout = (int) WhiteOut;
-
-			if(GroupWaterInfo[group] != WATERSTATE_NOWATER)
-			{
-				render_lighting_env_water       = 1;
-				if( GroupWaterInfo[group] != WATERSTATE_ALLWATER )
-				{
-					render_lighting_env_water       = 2;
-					render_lighting_env_water_level = GroupWaterLevel[group];
-				}
-				render_lighting_env_water_red   = GroupWaterIntensity_Red[group];
-				render_lighting_env_water_green = GroupWaterIntensity_Green[group];
-				render_lighting_env_water_blue  = GroupWaterIntensity_Blue[group];
-			}
 
  			if ( ExecuteSingleGroupMloadHeader(  Mloadheader, (uint16) g->group ) != TRUE  )
 				return FALSE;
 
-			render_lighting_enabled   = 0;
-			render_lighting_env_water = 0;
-			render_lighting_env_whiteout = 0;
+			render_reset_lighting_variables();
 
 			DispGroupTriggerAreas( (uint16) g->group );
 			if ( CaptureTheFlag || CTF )

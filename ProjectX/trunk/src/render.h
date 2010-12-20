@@ -159,20 +159,21 @@ typedef struct {
     };
 } RENDERMATRIX;
 
+extern void render_reset_lighting_variables( void );
+extern int render_lighting_use_only_light_color_and_blend;
+extern int render_lighting_use_only_light_color;
+extern int render_lighting_point_lights_only;
 extern int render_lighting_enabled;
 extern int render_light_ambience;
 extern int render_light_ambience_alpha;
-extern int render_light_ambience_alpha_enable;
 extern int render_color_blend_red;
 extern int render_color_blend_green;
 extern int render_color_blend_blue;
-
 extern int render_lighting_env_water;
 extern int render_lighting_env_water_level;
 extern float render_lighting_env_water_red;
 extern float render_lighting_env_water_green;
 extern float render_lighting_env_water_blue;
-
 extern int render_lighting_env_whiteout;
 
 void render_set_filter( BOOL red, BOOL green, BOOL blue );

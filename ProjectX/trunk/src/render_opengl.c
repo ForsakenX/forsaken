@@ -639,9 +639,12 @@ int render_color_blend_green = 0;
 int render_color_blend_blue  = 0;
 
 int render_lighting_enabled = 0;
+int render_lighting_point_lights_only = 1;
+int render_lighting_use_only_light_color = 0;
+int render_lighting_use_only_light_color_and_blend = 0;
+
 int render_light_ambience = 0;
 int render_light_ambience_alpha = 255.0f;
-int render_light_ambience_alpha_enable = 0;
 
 int render_lighting_env_water         = 0;
 int render_lighting_env_water_level   = 0;
@@ -650,6 +653,25 @@ float render_lighting_env_water_green = 0.0f;
 float render_lighting_env_water_blue  = 0.0f;
 
 int render_lighting_env_whiteout = 0;
+
+void render_reset_lighting_variables( void )
+{
+	render_color_blend_red   = 0;
+	render_color_blend_green = 0;
+	render_color_blend_blue  = 0;
+	render_lighting_enabled = 0;
+	render_lighting_point_lights_only = 1;
+	render_lighting_use_only_light_color = 0;
+	render_lighting_use_only_light_color_and_blend = 0;
+	render_light_ambience = 0;
+	render_light_ambience_alpha = 255.0f;
+	render_lighting_env_water         = 0;
+	render_lighting_env_water_level   = 0;
+	render_lighting_env_water_red   = 0.0f;
+	render_lighting_env_water_green = 0.0f;
+	render_lighting_env_water_blue  = 0.0f;
+	render_lighting_env_whiteout = 0;
+}
 
 void do_water_effect( VECTOR * pos, uchar_t * color )
 {
@@ -666,7 +688,7 @@ void do_water_effect( VECTOR * pos, uchar_t * color )
 	y = (float)((int)(pos->y * 0.35f) % 360);
 	z = (float)((int)(pos->z * 0.35f) % 360);
 	seconds = SDL_GetTicks() / 1000.0f;
-  intensity = (float) (
+	intensity = (float) (
 		( 
 			sin( D2R( x + seconds * speed ) ) +  // cral = seconds * speed
 			sin( D2R( y + seconds * speed ) ) + 
@@ -693,7 +715,7 @@ void do_whiteout_effect( VECTOR * pos, COLOR * color )
 	y = (float)((int)(pos->y * 0.35f) % 360);
 	z = (float)((int)(pos->z * 0.35f) % 360);
 	seconds = SDL_GetTicks() / 1000.0f;
-  intensity = (int) (
+	intensity = (int) (
 		( 
 			sin( D2R( x + seconds * speed ) ) +  // cral = seconds * speed
 			sin( D2R( y + seconds * speed ) ) + 
@@ -732,7 +754,7 @@ void GetRealLightAmbientWorldSpace( VECTOR * Pos , float * R , float * G , float
 		
 		if( rlen2 < lsize2 )
 		{
-			if(LightPnt->Type == POINT_LIGHT)
+			if(render_lighting_point_lights_only || LightPnt->Type == POINT_LIGHT)
 			{
 				intensity = 1.0F - rlen2 / (int) lsize2; 
 			}
@@ -833,11 +855,29 @@ void light_vert( LVERTEX * vert, uchar_t * color )
 	if( render_lighting_enabled )
 #endif
 		GetRealLightAmbientWorldSpace( &world, &r, &g, &b, &a );
-	MIX_COLOR_BLEND_LIGHT( color[0], render_color_blend_blue,  b );
-	MIX_COLOR_BLEND_LIGHT( color[1], render_color_blend_green, g );
-	MIX_COLOR_BLEND_LIGHT( color[2], render_color_blend_red,   r );
-	if( render_light_ambience_alpha_enable )
+	if(render_lighting_use_only_light_color)
+	{
+		color[0] = b;
+		color[1] = g;
+		color[2] = r;
 		color[3] = a;
+	}
+	else if(render_lighting_use_only_light_color_and_blend)
+	{
+		color[0] = 0;
+		color[1] = 0;
+		color[2] = 0;
+		color[3] = a;
+		ADD( color[0], b );
+		ADD( color[1], g );
+		ADD( color[2], r );
+	}
+	else
+	{
+		MIX_COLOR_BLEND_LIGHT( color[0], render_color_blend_blue,  b );
+		MIX_COLOR_BLEND_LIGHT( color[1], render_color_blend_green, g );
+		MIX_COLOR_BLEND_LIGHT( color[2], render_color_blend_red,   r );
+	}
 }
 
 static void draw_vert( void * _vert, BOOL orthographic )

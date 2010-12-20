@@ -50,6 +50,17 @@ void AddTransExe( /*LPD3DMATRIX Matrix*/RENDERMATRIX *Matrix , /*LPDIRECT3DEXECU
 		TransExe[NumOfTransExe].Model = Model;
 		TransExe[NumOfTransExe].NumVerts = NumVerts;
 		TransExe[NumOfTransExe].group = group;
+
+		TransExe[NumOfTransExe].render_lighting_use_only_light_color_and_blend = render_lighting_use_only_light_color_and_blend;
+		TransExe[NumOfTransExe].render_lighting_use_only_light_color = render_lighting_use_only_light_color;
+		TransExe[NumOfTransExe].render_lighting_point_lights_only = render_lighting_point_lights_only;
+		TransExe[NumOfTransExe].render_lighting_enabled = render_lighting_enabled;
+		TransExe[NumOfTransExe].render_light_ambience = render_light_ambience;
+		TransExe[NumOfTransExe].render_light_ambience_alpha = render_light_ambience_alpha;
+		TransExe[NumOfTransExe].render_color_blend_red = render_color_blend_red;
+		TransExe[NumOfTransExe].render_color_blend_green = render_color_blend_green;
+		TransExe[NumOfTransExe].render_color_blend_blue = render_color_blend_blue;
+
 		NumOfTransExe++;
 	}
 }
@@ -70,6 +81,16 @@ void ExecuteTransExe( uint16 group )
 		{
 			Display = TRUE;
 
+	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
+	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
+ 		  render_lighting_use_only_light_color = TransExe[i].render_lighting_use_only_light_color;
+    	render_lighting_point_lights_only = TransExe[i].render_lighting_point_lights_only;
+ 		  render_light_ambience = TransExe[i].render_light_ambience;
+   		render_light_ambience_alpha = TransExe[i].render_light_ambience_alpha;
+	    render_color_blend_red = TransExe[i].render_color_blend_red;
+ 		  render_color_blend_green = TransExe[i].render_color_blend_green;
+   		render_color_blend_blue = TransExe[i].render_color_blend_blue;
+
 			if( TransExe[i].Model != (uint16) -1 )
 			{
 				Model = TransExe[i].Model;
@@ -78,10 +99,7 @@ void ExecuteTransExe( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
-#ifndef NEW_LIGHTING
 					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
-#endif
-					render_lighting_enabled = 1;
 				}
 
 				switch( Models[ Model ].Func )
@@ -105,12 +123,7 @@ void ExecuteTransExe( uint16 group )
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
-#ifdef NEW_LIGHTING
 							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
-#endif
-							render_lighting_enabled = 1;
-							render_light_ambience_alpha = 0.0f;
-							render_light_ambience_alpha_enable = 1;
 						}
 						break;
 
@@ -136,9 +149,7 @@ void ExecuteTransExe( uint16 group )
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 
-			render_lighting_enabled = 0;
-			render_light_ambience_alpha = 255.0f;
-			render_light_ambience_alpha_enable = 0;
+			render_reset_lighting_variables();
 		}
 	}
 	FSSetWorld(&identity);
@@ -157,6 +168,16 @@ void ExecuteTransExeUnclipped( uint16 group )
 		{
 			Display = TRUE;
 
+	    render_lighting_enabled = TransExe[i].render_lighting_enabled;
+	    render_lighting_use_only_light_color_and_blend = TransExe[i].render_lighting_use_only_light_color_and_blend;
+ 		  render_lighting_use_only_light_color = TransExe[i].render_lighting_use_only_light_color;
+    	render_lighting_point_lights_only = TransExe[i].render_lighting_point_lights_only;
+ 		  render_light_ambience = TransExe[i].render_light_ambience;
+   		render_light_ambience_alpha = TransExe[i].render_light_ambience_alpha;
+	    render_color_blend_red = TransExe[i].render_color_blend_red;
+ 		  render_color_blend_green = TransExe[i].render_color_blend_green;
+   		render_color_blend_blue = TransExe[i].render_color_blend_blue;
+
 			if( TransExe[i].Model != (uint16) -1 )
 			{
 				Model = TransExe[i].Model;
@@ -165,10 +186,7 @@ void ExecuteTransExeUnclipped( uint16 group )
 
 				if( ( Models[ Model ].Flags & MODFLAG_Light ) )
 				{
-#ifndef NEW_LIGHTING
 					if( !LightModel2( Models[ Model ].ModelNum, &Models[ Model ].Pos ) ) Display = FALSE;
-#endif
-					render_lighting_enabled = 1;
 				}
 
 				switch( Models[ Model ].Func )
@@ -192,10 +210,7 @@ void ExecuteTransExeUnclipped( uint16 group )
 					case MODFUNC_OrbitPulsar:
 						if( ( Ships[ Models[ Model ].Ship ].Object.Flags & SHIP_Stealth ) )
 						{
-#ifndef NEW_LIGHTING
 							if( !LightModel( Model, &Models[ Model ].Pos ) ) Display = FALSE;
-#endif
-							render_lighting_enabled = 1;
 						}
 						break;
 
@@ -223,7 +238,7 @@ void ExecuteTransExeUnclipped( uint16 group )
 			if( Display )
 					draw_object(&TransExe[i].renderObject);
 
-			render_lighting_enabled = 0;
+			render_reset_lighting_variables();
 		}
 	}
 	FSSetWorld(&identity);
