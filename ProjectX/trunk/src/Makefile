@@ -18,7 +18,7 @@ MUDFLAP=0
 #	HAVE_MUDFLAP=1
 #endif
 
-FLAGS=-pipe -w
+FLAGS=-pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
 
