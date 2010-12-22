@@ -663,6 +663,7 @@ void TitleLoadGame( MENUITEM *Item );
 void StartTimer( int timer );
 void SaveMacros( MENUITEM *Item );
 BOOL SetWaterDetail( SLIDER *slider );
+BOOL SetTextScale( SLIDER *slider );
 BOOL SetNumPrimaryPickups( SLIDER *slider );
 void InitHostWaitingToStart( MENU *Menu );
 void BackToJoinSession( MENUITEM *Item );
@@ -796,6 +797,7 @@ SLIDER BikeCompSpeechSlider			= { 0, 10, 1, 8, 0, 0.0F };
 SLIDER DemoEyesSelect				= { 0, MAX_PLAYERS, 1, 0, 0, 0.0F };
 SLIDER FlagSfxSlider						= { 0, 10, 1, 10, 0, 0.0F };
 SLIDER WatchPlayerSelect				= { 0, MAX_PLAYERS+1, 1, 0, 0, 0.0F }; // which player's pov to watch
+SLIDER TextScaleSlider				= { 0, 5, 1, 1, 0, 0.0F, 0.0F, 0, FALSE, NULL, NULL, SetTextScale };
 
 BOOL ShowTeamInfo;
 BOOL MenuFrozen					= FALSE;
@@ -2821,6 +2823,8 @@ MENU	MENU_Visuals = {
 	{
 		{ 200, 128 + ( 0*16 ), 0, 0, 0, LT_MENU_Visuals1		/*"Select Screen Mode"		*/, 0, 0, NULL,									&MENU_SelectScreenMode,		MenuChange,			MenuItemDrawName,		NULL, 0 },
 		
+		{ 200, 128 + ( 2*16 ), 0, 0, 0, "TEXT SCALE", 0, 0,	&TextScaleSlider,	NULL,	SelectSlider,	DrawSlider, NULL, 0 },
+
 		{ 200, 128 + ( 3*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 5*16 ), 0, 0, 0, LT_MENU_InGame30	/*"system messages"		*/, 0, 0,	&SystemMessageColour,		NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
@@ -9194,6 +9198,10 @@ void GetGamePrefs( void )
 	CLAMP( WaterDetailSlider.value, WaterDetailSlider.max );
 	SetWaterDetail( &WaterDetailSlider );
 
+		TextScaleSlider.value = config_get_int("TextScale", 0.0F);
+		CLAMP(TextScaleSlider.value, TextScaleSlider.max);
+		SetTextScale( &TextScaleSlider );
+
     SfxSlider.value                  = config_get_int( "SfxVolume",					(int)(SfxSlider.max				* 1.00F) );
     FlagSfxSlider.value              = config_get_int( "FlagSfxVolume",				(int)(FlagSfxSlider.max			* 0.80F) );
 	BikerSpeechSlider.value          = config_get_int( "BikerSpeechVolume",			(int)(BikerSpeechSlider.max		* 0.60F) );
@@ -9337,6 +9345,7 @@ void SetGamePrefs( void )
 	config_set_int( "FlagSfxVolume",		FlagSfxSlider.value );
 	config_set_int( "Gamma",			GammaSlider.value );
 	config_set_int( "water",			WaterDetailSlider.value );
+	config_set_int( "TextScale", TextScaleSlider.value );
 	config_set_int( "TimeLimit",			MyTimeLimit.value );
 	config_set_int( "KillMessageColour",		KillMessageColour );
 	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
@@ -14848,6 +14857,13 @@ BOOL SetWaterDetail( SLIDER *slider )
 		WATER_CELLSIZE = 64.0F;
 	}
 
+	return TRUE;
+}
+
+BOOL SetTextScale( SLIDER *slider )
+{
+	FontWidth = 8.0F + (4.0F*slider->value);
+	FontHeight = 8.0F + (4.0F*slider->value);
 	return TRUE;
 }
 

@@ -1611,8 +1611,8 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
 		ScrPolys[ i ].Frm_Info = &Text512_Header;	// Offset Info
-		ScrPolys[ i ].Xscale = 1.0F;
-		ScrPolys[ i ].Yscale = 1.0F;
+		ScrPolys[ i ].Xscale = FontWidth/8.0F;
+		ScrPolys[ i ].Yscale = FontHeight/8.0F;
 		AddScrPolyToTPage( i, GetTPage( *ScrPolys[ i ].Frm_Info, 0 ) );
 	}
 }
@@ -1706,8 +1706,8 @@ void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale,
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
 		ScrPolys[ i ].Frm_Info = &Text512_Header;	// Offset Info
-		ScrPolys[ i ].Xscale = XScale;
-		ScrPolys[ i ].Yscale = YScale;
+		ScrPolys[ i ].Xscale = XScale*(FontWidth/8.0F);
+		ScrPolys[ i ].Yscale = YScale*(FontHeight/8.0F);
 		AddScrPolyToTPage( i, GetTPage( *ScrPolys[ i ].Frm_Info, 0 ) );
 	}
 }
