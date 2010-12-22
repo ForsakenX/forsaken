@@ -41,7 +41,7 @@ function build
 		echo "failed to build $type: make -e $@"
 	else
 		mv projectx $name
-		scp $name fly.thruhere.net:/download/versions/${folder}/ &
+		scp $name fly.thruhere.net:/download/versions/${folder}/
 	fi
 }
 

@@ -109,10 +109,10 @@ char *TeamName[ MAX_TEAMS ] = // team colour names should match TeamCol[] colour
 	LT_TEAM_4  // yellow
 };
 
-int FontWidth = 4;
-int FontHeight = 5;
-int FontSourceWidth = 4;
-int FontSourceHeight = 5;
+int FontWidth = 8;
+int FontHeight = 8;
+int FontSourceWidth = 8;
+int FontSourceHeight = 8;
 
 int16	NumOfActivePlayers = 0;
 
@@ -1825,21 +1825,6 @@ void InitFont( void )
 	uint8 e;
 	int x,y;
 	int col;
-
-	if( render_info.window_size.cx >= 512 && render_info.window_size.cy >= 384 )
-	{
-		FontWidth = 8;
-		FontHeight = 8;
-		FontSourceWidth = 8;
-		FontSourceHeight = 8;
-	}
-	else
-	{
-		FontWidth = 4;
-		FontHeight = 5;
-		FontSourceWidth = 4;
-		FontSourceHeight = 5;
-	}
 
 	for( i = 0; i < 0x100 ; i++ )
 	{

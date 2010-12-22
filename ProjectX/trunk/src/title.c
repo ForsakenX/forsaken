@@ -113,6 +113,7 @@ extern float WATER_CELLSIZE;
 extern BOOL flush_input;
 extern double	Gamma;
 extern BOOL MyUseShortPackets;
+extern BOOL UseShortPackets;
 extern BOOL MyResetKillsPerLevel;
 extern BOOL TintBikeTeamColor;
 extern int CrystalsFound;
@@ -2928,10 +2929,10 @@ MENU	MENU_Start = { "Forsaken" , InitStartMenu , NULL , NULL, 0,
 
 					  {	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 } } };
 
-MENU	MENU_Host_Options = { LT_MENU_InGame26 /*"Host Options"*/ , InitHostMenu , NULL , NULL,	0,
+MENU	MENU_Host_Options = { "HOST OPTIONS FOR THIS GAME" , InitHostMenu , NULL , NULL,	0,
 			{
-					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&MyColPerspective,				NULL,								SelectToggle,	DrawColToggle),
-					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&MyUseShortPackets,			NULL,								SelectToggle,	DrawToggle),
+					OLDMENUITEM( 200, 112, LT_MENU_InGame27		/*"collision perspective"		*/,	&ColPerspective,				NULL,								SelectToggle,	DrawColToggle),
+					OLDMENUITEM( 200, 128, LT_MENU_InGame36		/*"short packets"				*/,	&UseShortPackets,			NULL,								SelectToggle,	DrawToggle),
 					OLDMENUITEM( 200, 160, LT_MENU_Options5		/*"Packets Per Second"		*/,	(void*)&PacketsSlider,		NULL,								SelectSlider,	DrawSlider),
 					OLDMENUITEM( 200, 176, LT_MENU_InGame6		/*"Level Select"				*/,	NULL,								&MENU_LevelSelect,			MenuChange,	MenuItemDrawName),
 					OLDMENUITEM( 200, 192, LT_MENU_RemovePlayer	/*"remove player"				*/,	&HostPlayersList,				HostListPlayerSelected,		SelectList,		DrawList ),  
