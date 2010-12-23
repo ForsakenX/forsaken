@@ -65,6 +65,7 @@
 #endif
 
 extern int HUDColour;
+extern BOOL ShowWeaponsPossessedOnHUD;
 
 extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
@@ -586,6 +587,8 @@ extern  int16 MinesInLevel[ MAXSECONDARYWEAPONS ];
 extern  int16 OrbsInLevel;
 extern  int16 OrbsToGenerate;
 extern  int16 OrbsInPlayers;
+
+extern int16 PrimaryWeaponsGot[ MAXPRIMARYWEAPONS ];
 
 // if met max kill limit, sets flag to change level
 void CheckMetKillLimit();
@@ -1545,6 +1548,7 @@ int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
 void DrawSimplePanel()
 {
 	int energy;
+	uint8 Count; uint8 pos = 0;
  	uint8 r = Colourtrans[HUDColour][0];
 	uint8 g = Colourtrans[HUDColour][1];
 	uint8 b = Colourtrans[HUDColour][2];
@@ -1609,6 +1613,49 @@ void DrawSimplePanel()
 			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.window_size.cy-((FontHeight*2)+4) ), r, g, b, 255 );
 			// Blt Secondary
 			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
+
+			// optionally show all the weapons and ammo currently possessed
+			if(ShowWeaponsPossessedOnHUD)
+			{
+				// Primaries
+				for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
+				{
+					if( PrimaryWeaponsGot[ Count ] > 0 && Count != PYROLITE_RIFLE && Count!= SUSS_GUN)
+					{
+						AddScreenPolyText( (uint16)( Count + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Count] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );	
+						if(Count == PULSAR)
+							Printuint16( (uint16) GeneralAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );	
+
+						pos++;
+					}	
+				}	
+				if( PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0)
+				{
+						AddScreenPolyText( (uint16)( PYROLITE_RIFLE + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[PYROLITE_RIFLE] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );
+
+					Printuint16( (uint16) PyroliteAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );
+					pos++;
+				}
+				if( PrimaryWeaponsGot[ SUSS_GUN ] > 0)
+				{
+						AddScreenPolyText( (uint16)( SUSS_GUN + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[SUSS_GUN] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );
+					Printuint16( (uint16) SussGunAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );
+					pos++;
+				}
+
+				// Secondaries
+				pos++;	
+				for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
+				{
+					if((uint16) SecondaryAmmo[ Count ] > 0)
+					{
+						AddScreenPolyText( (uint16)( Count + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Count] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );	
+						Printuint16( (uint16) SecondaryAmmo[ Count ] , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );	
+						pos++;
+					}	
+				}
+			}
+
 			// Blt Power Pods
 			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.window_size.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
 			// Blt Mine..

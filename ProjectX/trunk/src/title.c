@@ -139,6 +139,7 @@ BOOL NeedFlagAtHome = TRUE;
 BOOL CanCarryOwnFlag = FALSE;
 BOOL OwnFlagTeleportsHome = TRUE;
 
+BOOL ShowWeaponsPossessedOnHUD;
 BOOL ShowPlayersOnHUD;
 BOOL ShowPlayersOnHUDbyKills;
 
@@ -2856,7 +2857,7 @@ MENU	MENU_Options = {
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 240, 0, 0, 0, "HUD Show Kills Only",	0, 0, &ShowPlayersOnHUDbyKills,NULL,SelectToggle,DrawToggle,NULL, 0 },
-
+		{ 200, 256, 0, 0, 0, "HUD Show Weapons Got",	0, 0, &ShowWeaponsPossessedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -9155,6 +9156,7 @@ void GetGamePrefs( void )
     MissileCameraEnable              = config_get_bool( "MissileCameraEnable",		TRUE );
     RearCameraActive                 = config_get_bool( "RearCameraActive",			TRUE );
     BikeEnginesOn                    = config_get_bool( "BikeEnginesOn",			TRUE );
+		ShowWeaponsPossessedOnHUD				 = config_get_bool( "ShowWeaponsPossessedOnHUD", FALSE );
     ShowPlayersOnHUD                 = config_get_bool( "ShowPlayersOnHUD",			TRUE );
     ShowPlayersOnHUDbyKills          = config_get_bool( "ShowPlayersOnHUDbyKills",		TRUE );
     BikeExhausts                     = config_get_bool( "BikeExhausts",				TRUE );
@@ -9305,6 +9307,7 @@ void SetGamePrefs( void )
 	config_set_bool( "MissileCameraEnable",		MissileCameraEnable );
 	config_set_bool( "RearCameraActive",		RearCameraActive );
 	config_set_bool( "BikeEnginesOn",		BikeEnginesOn );
+	config_set_bool( "ShowWeaponsPossessedOnHUD", ShowWeaponsPossessedOnHUD );
 	config_set_bool( "ShowPlayersOnHUD",		ShowPlayersOnHUD );
 	config_set_bool( "ShowPlayersOnHUDbyKills",	ShowPlayersOnHUDbyKills );
 	config_set_bool( "BikeExhausts",		BikeExhausts );
