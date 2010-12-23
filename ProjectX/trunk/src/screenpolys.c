@@ -49,6 +49,7 @@ extern	FRAME_INFO	*	AfterBurner_Header;
 extern	FRAME_INFO	*	LensFlare_Header;
 extern	FRAME_INFO	*	Numbers_Header;
 extern	FRAME_INFO	*	Numbers2_Header;
+extern  FRAME_INFO  * Text512b_Header;
 extern	FRAME_INFO	*	Text512_Header;
 extern	FRAME_INFO	*	Orb_Header;
 extern	FRAME_INFO	*	Solid_Header;
@@ -1610,9 +1611,15 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 		ScrPolys[ i ].Frame = (float) Frame;		// Animation Frame
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
-		ScrPolys[ i ].Frm_Info = &Text512_Header;	// Offset Info
 		ScrPolys[ i ].Xscale = FontWidth/8.0F;
 		ScrPolys[ i ].Yscale = FontHeight/8.0F;
+
+		// Offset Info
+		if((FontHeight/8.0F) > 1.0F)
+				ScrPolys[ i ].Frm_Info = &Text512b_Header;	// bigger font
+		else
+				ScrPolys[ i ].Frm_Info = &Text512_Header;		// original font
+
 		AddScrPolyToTPage( i, GetTPage( *ScrPolys[ i ].Frm_Info, 0 ) );
 	}
 }
@@ -1705,9 +1712,15 @@ void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale,
 		ScrPolys[ i ].Frame = (float) Frame;		// Animation Frame
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
-		ScrPolys[ i ].Frm_Info = &Text512_Header;	// Offset Info
 		ScrPolys[ i ].Xscale = XScale*(FontWidth/8.0F);
 		ScrPolys[ i ].Yscale = YScale*(FontHeight/8.0F);
+
+		// Offset Info
+		if((FontHeight/8.0F) > 1.0F)
+				ScrPolys[ i ].Frm_Info = &Text512b_Header;	// bigger font
+		else
+				ScrPolys[ i ].Frm_Info = &Text512_Header;		// original font
+
 		AddScrPolyToTPage( i, GetTPage( *ScrPolys[ i ].Frm_Info, 0 ) );
 	}
 }

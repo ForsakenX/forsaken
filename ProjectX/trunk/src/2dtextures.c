@@ -41,9 +41,11 @@ extern render_info_t render_info;
 #define	DO_SCALE		TRUE
 #define	DONT_SCALE		FALSE
 
+int8  * FontBigFile = "fontbig.off";
 int8	*	Font512File = "font512.off";
 int8	*	VduFont512	= "f512x384.off";
 int8		FontFile[ 16 ];
+int8    FontFileBig [ 16 ];
 int8		TitleFontFile[ 16 ];
 
 float VduScaleX, VduScaleY;
@@ -79,6 +81,7 @@ float VduScaleX, VduScaleY;
 	FRAME_INFO	*	Numbers_Header = NULL;
 	FRAME_INFO	*	Numbers2_Header = NULL;
 	FRAME_INFO	*	Text512_Header = NULL;
+	FRAME_INFO  * Text512b_Header = NULL;
 	FRAME_INFO	*	Orb_Header = NULL;
 	FRAME_INFO	*	Multiple_Header = NULL;
 	FRAME_INFO	*	Solid_Header = NULL;
@@ -145,6 +148,7 @@ OFF_FILES OffsetFiles[] = {
 	{ "Flag.off",		&Flag_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Flag
 	{ "Flags.off",		&Flags_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Flags
 	{ &FontFile[ 0 ],	&Text512_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// 512x284 Font/Text
+	{ &FontFileBig[0], &Text512b_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger Font/text
 	{ NULL,				NULL,					DO_LOAD,	DO_SCALE,	LOAD_TPAGES_FINISH, 0, 0 },
 
 };
@@ -163,6 +167,7 @@ OFF_FILES Title_OffsetFiles[] = {
 	{ "",					&Title_TVFrame_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES_PLACEHOLDER | LOAD_TPAGES, 128, 128 },		
 	{ &TitleFontFile[ 0 ],	&Title_Fonts_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },	// vdu font page
 	{ &FontFile[ 0 ],		&Text512_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },	// 512x284 Font/Text
+  { &FontFileBig[ 0 ], &Text512b_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger font/text
 	{ NULL,					NULL, DO_LOAD, DO_SCALE, LOAD_TPAGES_FINISH, 0, 0 },			  
 };
 
@@ -362,6 +367,7 @@ BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 
 	// polytext is default now
 	strcpy( &FontFile[ 0 ], Font512File );
+	strcpy( &FontFileBig [ 0 ], FontBigFile );
 
 	// this still uses the old blitted font file
 	strcpy ( &TitleFontFile[ 0 ], VduFont512 );
