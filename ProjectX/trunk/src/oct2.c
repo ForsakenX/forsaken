@@ -64,6 +64,7 @@
 #include "shadows.h"
 #endif
 
+extern int HUDColour;
 
 extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
@@ -594,6 +595,9 @@ extern int KillMessageColour;
 extern int SystemMessageColour;
 extern int FlagMessageColour;
 extern BOOL ShowTeamCamera;
+
+// for HUD colour (text.c)
+uint8 Colourtrans[MAXFONTCOLOURS][3];
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -1541,11 +1545,14 @@ int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
 void DrawSimplePanel()
 {
 	int energy;
+ 	uint8 r = Colourtrans[HUDColour][0];
+	uint8 g = Colourtrans[HUDColour][1];
+	uint8 b = Colourtrans[HUDColour][2];
 
     if( WhoIAm == Current_Camera_View )
     {
 		// Add Crosshair Polygon..
-		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , 64, 255, 64, 255 );
+		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , r, g, b, 255 );
 
 		// trojax level
 		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
@@ -1560,31 +1567,31 @@ void DrawSimplePanel()
 			// 72   (first frame) is power bar charging
 			// 72-8 (last frame)  is power bar at full charge
 			if( energy > 8 ) energy = 8;
-			AddScreenPolyText( (72-energy), (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , 64, 255, 64, 255 );
+			AddScreenPolyText( (72-energy), (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , r, g, b, 255 );
 		}
 
 		// nitro bar
 		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
 		{
 			AddScreenPolyTextScale( 72, (float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
-			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, 64, 255, 64, 255 );
+			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, r, g, b, 255 );
 		}
 
 		// character flags
 		if( Ships[WhoIAm].Invul )
 		{
-			Print4x5Text( "I" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
+			Print4x5Text( "I" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 		{
-			Print4x5Text( "S" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
+			Print4x5Text( "S" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
 		}
 		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 		{
-			Print4x5Text( "C" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
-			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
+			Print4x5Text( "C" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
 		}
     }
     
@@ -1595,27 +1602,27 @@ void DrawSimplePanel()
           // Full Screen Minimum Stats...
 
 			// blt hull
-			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*1)+2) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*1)+2) ), r, g, b, 255 );
 			// blt shld
-			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*2)+4) ), r, g, b, 255 );
 			// Blt Primary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.window_size.cy-((FontHeight*2)+4) ), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.window_size.cy-((FontHeight*2)+4) ), r, g, b, 255 );
 			// Blt Secondary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
 			// Blt Power Pods
-			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.window_size.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), 32, 255, 32, 255 );
+			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.window_size.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
 			// Blt Mine..
 			energy = (int) GetBestMine();
 			if( energy != 65535 )
 			{
-				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), 32, 255, 32, 255 );
-				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.window_size.cx - ( FontWidth*5) , FontHeight , 2 );
+				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), r, g, b, 255 );
+				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.window_size.cx - ( FontWidth*5) , FontHeight , HUDColour );
 			}
 
 			// poly shld bar
 			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*2)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-					(uint8)(63+(ShieldHit * (192/24) )), (uint8)(255-(ShieldHit * (192/24) )), 64, 255 );
+					(uint8)(r+(ShieldHit * (192/24) )), (uint8)(g-(ShieldHit * (192/24) )), b, 255 );
 
 			if( ShieldHit )
 				ShieldHit -=1;
@@ -1623,19 +1630,19 @@ void DrawSimplePanel()
 			// poly hull bar
 			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*1)-2) ,
 					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-					(uint8)(63+(HullHit * (192/24) )), (uint8)(255-(HullHit * (192/24) )), 64, 255 );
+					(uint8)(r+(HullHit * (192/24) )), (uint8)(g-(HullHit * (192/24) )), b, 255 );
 
 			if( HullHit )
 				HullHit -=1;
 
 			// blt shield num
-			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.window_size.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.window_size.cy-((FontHeight*2)+4) , HUDColour );
 
 			// blt hull num
 			if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
 				Printuint16( (uint16) 1 , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
 			else
-				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
+				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , HUDColour );
 
 			// Blt Primary ammo
 			if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
@@ -1647,10 +1654,10 @@ void DrawSimplePanel()
 				else
 					energy = (int) GeneralAmmo;
 			}
-			Printuint16( (uint16) energy , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*2)+4) , 2 );
+			Printuint16( (uint16) energy , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*2)+4) , HUDColour );
 
 			// Blt Secondary ammo
-			Printuint16( (uint16) GetCurSecAmmo() , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
+			Printuint16( (uint16) GetCurSecAmmo() , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*1)+2) , HUDColour );
         }
     
       if( (NamesAreLegal != 0) || IsHost )
@@ -1692,13 +1699,13 @@ void DrawSimplePanel()
 					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Invulnerable" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , 2 );
+				Print4x5Text( "Invulnerable" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
 			// golden power pod
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , 2 );
+				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , 2 );
+				Print4x5Text( "Stealth" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
 	  }
     }
 	else
