@@ -488,6 +488,7 @@ void DrawFlatMenuToggle( MENUITEM *Item );
 
 void DrawMessagesToggle( MENUITEM *Item);	// message colour toggle - in game
 
+int InGameMenuColour;
 int KillMessageColour;
 int MilestoneMessagesColour;
 int SystemMessageColour;
@@ -2825,15 +2826,17 @@ MENU	MENU_Visuals = {
 		
 		{ 200, 128 + ( 2*16 ), 0, 0, 0, "TEXT SCALE", 0, 0,	&TextScaleSlider,	NULL,	SelectSlider,	DrawSlider, NULL, 0 },
 
-		{ 200, 128 + ( 3*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 5*16 ), 0, 0, 0, LT_MENU_InGame30	/*"system messages"		*/, 0, 0,	&SystemMessageColour,		NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 6*16 ), 0, 0, 0, LT_MENU_InGame31	/*"flag/bounty messages"	*/, 0, 0,	&FlagMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 7*16 ), 0, 0, 0, LT_MENU_InGame32	/*"player messages"			*/, 0, 0,	&PlayerMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 8*16 ), 0, 0, 0, LT_MENU_InGame33	/*"pickup messages"			*/, 0, 0,	&PickupMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 9*16 ), 0, 0, 0, LT_MENU_InGame34	/*"taunt messages"			*/, 0, 0,	&TauntMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 10*16 ), 0, 0, 0, LT_MENU_InGame35	/*"your messages"			*/, 0, 0,	&MyMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 11*16 ), 0, 0, 0, "SHOW TEAM CAMERA", 0, 0, &ShowTeamCamera, NULL,	SelectToggle,	DrawToggle,	NULL, 0 },		
+		{ 200, 128 + ( 3*16 ), 0, 0, 0, "MENU COLOUR ", 0, 0, &InGameMenuColour,	NULL,		SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+
+		{ 200, 128 + ( 4*16 ), 0, 0, 0, LT_MENU_InGame28	/*"normal kill messages"		*/, 0, 0, &KillMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 5*16 ), 0, 0, 0, LT_MENU_InGame29	/*"milestone kill messages"	*/, 0, 0,	&MilestoneMessagesColour,	NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 6*16 ), 0, 0, 0, LT_MENU_InGame30	/*"system messages"		*/, 0, 0,	&SystemMessageColour,		NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 7*16 ), 0, 0, 0, LT_MENU_InGame31	/*"flag/bounty messages"	*/, 0, 0,	&FlagMessageColour,				NULL,										SelectColourToggle, DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 8*16 ), 0, 0, 0, LT_MENU_InGame32	/*"player messages"			*/, 0, 0,	&PlayerMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 9*16 ), 0, 0, 0, LT_MENU_InGame33	/*"pickup messages"			*/, 0, 0,	&PickupMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 10*16 ), 0, 0, 0, LT_MENU_InGame34	/*"taunt messages"			*/, 0, 0,	&TauntMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 11*16 ), 0, 0, 0, LT_MENU_InGame35	/*"your messages"			*/, 0, 0,	&MyMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
+		{ 200, 128 + ( 12*16 ), 0, 0, 0, "SHOW TEAM CAMERA", 0, 0, &ShowTeamCamera, NULL,	SelectToggle,	DrawToggle,	NULL, 0 },		
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -5214,14 +5217,13 @@ void	MenuItemDrawName( MENUITEM * Item )
 {
 	int	x;
 	int	y;
-	static int col = 2;
 
 	if ( Item->StrPnt )
 	{
 		x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-		Print4x5Text( Item->StrPnt , x , y , col );
+		Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	}
 }
 
@@ -5234,8 +5236,7 @@ void	MenuItemDrawName( MENUITEM * Item )
 void	MenuItemDrawPageName( MENUITEM * Item )
 {
 	int	x;
-	int	y;
-	static int col = 2;
+	int	y;;
 	int page;
 
 	page = (int) Item->Value;
@@ -5244,7 +5245,7 @@ void	MenuItemDrawPageName( MENUITEM * Item )
 		x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 		y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-		Print4x5Text( Item->StrPnt , x , y , col );
+		Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	}
 }
 
@@ -5457,8 +5458,6 @@ void DrawKeyDefHelp3( MENUITEM * Item )
 	}
 }
 
-
-
 /*===================================================================
 	Procedure	:		Draw the Name and string variable in a menu item...
 	Input		:		MENUITEM * Item...
@@ -5473,7 +5472,7 @@ void DrawNameVar( MENUITEM * Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	Print4x5Text( Item->StrPnt , x , y , 2 );
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	var = (char *)(Item->Variable);
 	Print4x5Text( var, -1 , y , 1 );
 
@@ -5512,7 +5511,7 @@ void	DrawHelpKey( MENUITEM * Item )
 	if ( key )
 		Print4x5Text( key, x , y , 1 );
 	x = (int) ( ( ( Item->x + 64 ) >> 1 ) * ModeScaleX );
-	Print4x5Text( Item->StrPnt , x, y , 2 );
+	Print4x5Text( Item->StrPnt , x, y , InGameMenuColour );
 }
 
 
@@ -5534,7 +5533,7 @@ void MenuDraw( MENU * Menu )
 
 	//if ( (CameraStatus != CAMERA_AtDiscs) && (CameraStatus != CAMERA_AtVDU))
 	if (CameraStatus == CAMERA_AtStart)
-		CenterPrint4x5Text( Menu->Name , y , 2 );
+		CenterPrint4x5Text( Menu->Name , y , InGameMenuColour );
 
 	// only use menu item draw functions if not at VDU
 	if ((CameraStatus != CAMERA_AtLeftVDU) && (CameraStatus != CAMERA_AtRightVDU))
@@ -6540,16 +6539,15 @@ void DrawSlider( MENUITEM *Item )
 	int ex;
 	char min[20], max[20], val[20];
 	SLIDER *s;
-	int colour;
 
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
 	// text label for the slider
-	Print4x5Text( Item->StrPnt , x , y , GREEN );
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 
 	// print a space and get the start position
-	sx = Print4x5Text( " ", -1, y, GREEN );
+	sx = Print4x5Text( " ", -1, y, InGameMenuColour );
 
 	// calculate end position
 	ex = sx + (int) floor( ( 128 >> 1 ) * ModeScaleX );
@@ -6561,8 +6559,7 @@ void DrawSlider( MENUITEM *Item )
 	sprintf( val, "%d", s->value );
 
 	// slider value 
-	colour = RED; //( MenuState == MENUSTATE_Slider && SliderItem == Item ) ? GRAY : RED ;
-	Print4x5Text( val, sx + ( ex - sx ) * ( s->value - s->min ) / ( s->max - s->min ), y, colour );
+	Print4x5Text( val, sx + ( ex - sx ) * ( s->value - s->min ) / ( s->max - s->min ), y, RED );
 
 	// minimum value
 	Print4x5Text( min, sx, y, GRAY );
@@ -6610,7 +6607,7 @@ void DrawRadioButton( MENUITEM *Item )
 		else
 		{
 			// draw unselected item
-			Print4x5Text( Item->StrPnt , x , y , 2 );
+			Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 		}
 	}
 }
@@ -6652,7 +6649,7 @@ void DrawToggle( MENUITEM *Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	Print4x5Text( Item->StrPnt , x , y , 2 );
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	if ( Item->Variable )
 	{
 		if ( *(BOOL *)(Item->Variable ) )
@@ -6679,7 +6676,7 @@ void DrawColToggle( MENUITEM *Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	Print4x5Text( Item->StrPnt , x , y , 2 );
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 
 	if ( ColPerspective == COLPERS_Forsaken )
 		Print4x5Text( LT_ToggleShooter/*" SHOOTER"*/, -1 , y , 1 );
@@ -6713,7 +6710,7 @@ void DrawMessagesToggle( MENUITEM *Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	Print4x5Text( Item->StrPnt , x , y , 2 );
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
 	if ( Item->Variable )
 	{
 		switch(*(int*)(Item->Variable ))
@@ -7585,7 +7582,7 @@ void DrawList( MENUITEM *Item )
 	if ( !l )
 		return;
 
-	Print4x5Text( Item->StrPnt, x , y , 2 );
+	Print4x5Text( Item->StrPnt, x , y , InGameMenuColour );
 	x += (int) ( ( 16 >> 1 ) * ModeScaleX );
 	for ( j = 0; j < l->display_items; j++ )
 	{
@@ -7595,7 +7592,7 @@ void DrawList( MENUITEM *Item )
 		if ( it == l->selected_item )
 			colour = ( MenuState == MENUSTATE_List && CurrentList == l ) ? ( SelectionColour() ) : 1;
 		else
-			colour = 2;
+			colour = InGameMenuColour;
 		y += (int) ( (16 >> 1) * ModeScaleY );
 		Print4x5Text( l->item[ it ], x , y , colour );
 	}
@@ -7809,7 +7806,7 @@ void DrawTextItem( MENUITEM *Item )
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
-	tx = Print4x5Text( Item->StrPnt, x , y , 2 );
+	tx = Print4x5Text( Item->StrPnt, x , y , InGameMenuColour );
 	t = (TEXT *)(Item->Variable);
 	Print4x5Text( t->text, -1 , y , 1 );
 	if ( MenuState == MENUSTATE_Text && TextItem == Item )
@@ -9242,18 +9239,20 @@ void GetGamePrefs( void )
     render_info.default_mode.h  = config_get_int( "ScreenHeight", 0 );
     render_info.vsync  = config_get_int( "VSync", 0 );
 
+		InGameMenuColour								 = config_get_int( "InGameMenuColour", GREEN );
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
-    SystemMessageColour              = config_get_int( "SystemMessageColour",		GREEN );
-    FlagMessageColour                = config_get_int( "FlagMessageColour",			GREEN );
-    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		GREEN );
+    SystemMessageColour              = config_get_int( "SystemMessageColour",		YELLOW );
+    FlagMessageColour                = config_get_int( "FlagMessageColour",			BLUE );
+    PlayerMessageColour              = config_get_int( "PlayerMessageColour",		YELLOW );
     PickupMessageColour              = config_get_int( "PickupMessageColour",		GREEN );
     TauntMessageColour               = config_get_int( "TauntMessageColour",		GREEN );
-    MyMessageColour                  = config_get_int( "MyMessageColour",			  GREEN );
+    MyMessageColour                  = config_get_int( "MyMessageColour",			  YELLOW );
 		MaxMessageTime                   = config_get_float( "MaxMessageTime",    5.0f );
 		
 		ShowTeamCamera = config_get_bool( "ShowTeamCam", TRUE );
 
+	CLAMP( InGameMenuColour, MAXFONTCOLOURS );
 	CLAMP( MilestoneMessagesColour,	MAXFONTCOLOURS );
 	CLAMP( KillMessageColour,		MAXFONTCOLOURS );
 	CLAMP( SystemMessageColour,		MAXFONTCOLOURS );
@@ -9347,6 +9346,7 @@ void SetGamePrefs( void )
 	config_set_int( "water",			WaterDetailSlider.value );
 	config_set_int( "TextScale", TextScaleSlider.value );
 	config_set_int( "TimeLimit",			MyTimeLimit.value );
+	config_set_int( "InGameMenuColour", InGameMenuColour );
 	config_set_int( "KillMessageColour",		KillMessageColour );
 	config_set_int( "MilestoneMessagesColour",	MilestoneMessagesColour );
 	config_set_int( "SystemMessageColour",		SystemMessageColour );
@@ -15387,7 +15387,7 @@ BOOL GeneralTimeout( float *timer )
 	}else
 	{
  		sprintf( buf, "%d", (int)( *timer / 60.0F ) );
-		Print4x5Text( buf, 10, 10, 2 );
+		Print4x5Text( buf, 10, 10, InGameMenuColour );
 	}
 
 	return FALSE;
