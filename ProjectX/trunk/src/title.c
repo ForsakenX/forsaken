@@ -3606,6 +3606,15 @@ DebugPrintf("2 vsync = %d\n",render_info.vsync);
 		Msg("InitView failed.\n");
 		return FALSE;
 	}
+
+	// set default font scaling by resolution
+	TextScaleSlider.value = 1;
+	if(render_info.default_mode.w < 800)
+			TextScaleSlider.value = 0;
+	else if(render_info.default_mode.w >= 1280)
+			TextScaleSlider.value = 2;
+	SetTextScale(&TextScaleSlider);
+
 	SetGamePrefs();
 	return TRUE;
 }
