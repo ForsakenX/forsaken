@@ -1556,7 +1556,8 @@ void DrawSimplePanel()
     if( WhoIAm == Current_Camera_View )
     {
 		// Add Crosshair Polygon..
-		AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , r, g, b, 255 );
+		if(!CurrentMenu)
+			AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , r, g, b, 255 );
 
 		// trojax level
 		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
