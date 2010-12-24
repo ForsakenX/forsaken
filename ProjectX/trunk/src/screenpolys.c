@@ -1622,8 +1622,17 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 		ScrPolys[ i ].Frame = (float) Frame;		// Animation Frame
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
-		ScrPolys[ i ].Xscale = FontWidth/8.0F;
-		ScrPolys[ i ].Yscale = FontHeight/8.0F;
+
+		if(Frame == 63) // don't scale the cross hair
+		{
+			ScrPolys[ i ].Xscale = 1.0F;
+			ScrPolys[ i ].Yscale = 1.0F;
+		}
+		else
+		{
+			ScrPolys[ i ].Xscale = FontWidth/8.0F;
+			ScrPolys[ i ].Yscale = FontHeight/8.0F;
+		}
 
 		// Offset Info
 		if( Text512b_Header && FontHeight > 8.0F )
