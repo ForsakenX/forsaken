@@ -41,6 +41,7 @@ extern render_info_t render_info;
 #define	DO_SCALE		TRUE
 #define	DONT_SCALE		FALSE
 
+int8	*	OffsetPath = "data\\offsets\\";
 int8  * FontBigFile = "fontbig.off";
 int8	*	Font512File = "font512.off";
 int8	*	VduFont512	= "f512x384.off";
@@ -148,7 +149,7 @@ OFF_FILES OffsetFiles[] = {
 	{ "Flag.off",		&Flag_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Flag
 	{ "Flags.off",		&Flags_Header,			DONT_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// Flags
 	{ &FontFile[ 0 ],	&Text512_Header,		DO_LOAD,	DONT_SCALE, LOAD_TPAGES, 0, 0 },	// 512x284 Font/Text
-	{ &FontFileBig[0], &Text512b_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger Font/text
+	{ &FontFileBig[0], &Text512b_Header, DONT_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger Font/text
 	{ NULL,				NULL,					DO_LOAD,	DO_SCALE,	LOAD_TPAGES_FINISH, 0, 0 },
 
 };
@@ -167,7 +168,7 @@ OFF_FILES Title_OffsetFiles[] = {
 	{ "",					&Title_TVFrame_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES_PLACEHOLDER | LOAD_TPAGES, 128, 128 },		
 	{ &TitleFontFile[ 0 ],	&Title_Fonts_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },	// vdu font page
 	{ &FontFile[ 0 ],		&Text512_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 },	// 512x284 Font/Text
-  { &FontFileBig[ 0 ], &Text512b_Header, DO_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger font/text
+  { &FontFileBig[ 0 ], &Text512b_Header, DONT_LOAD, DONT_SCALE, LOAD_TPAGES, 0, 0 }, // bigger font/text
 	{ NULL,					NULL, DO_LOAD, DO_SCALE, LOAD_TPAGES_FINISH, 0, 0 },			  
 };
 
@@ -358,7 +359,6 @@ FRAME_INFO * Load_Off_File( int8 * Filename, BOOL Scale, int LoadTPages, int16 *
 BOOL Load_All_Off_Files( OFF_FILES * FileInfo )
 {
 	int8			TempFilename[ 256 ];
-	int8		*	OffsetPath = "data\\offsets\\";
 	int16			last_tpage;
 
 	if( !FileInfo ) return( FALSE );
@@ -496,8 +496,28 @@ FRAME_INFO ** Get_Frm_Info_Address( int16 Index )
 	Input		:	Nothing
 	Output		:	Nothing
 ===================================================================*/
+
+// in case they don't have the new font file we just default to use old one
+void EnableRelevantFontOffFiles( void )
+{
+	int8 path[256];
+	sprintf(path,"%s%s",OffsetPath,FontBigFile);
+	if( Get_File_Size( path ) == 0 )
+	{
+		DisableOffFile( &OffsetFiles[ 0 ], FontBigFile );
+		DisableOffFile( &Title_OffsetFiles[ 0 ], FontBigFile );
+	}
+	else
+	{
+		EnableOffFile(  &OffsetFiles[ 0 ], FontBigFile );
+		EnableOffFile(  &Title_OffsetFiles[ 0 ], FontBigFile );
+	}
+}
+
 void EnableRelevantOffFiles( OFF_FILES * FileInfo )
 {
+	EnableRelevantFontOffFiles();
+
 	if( !FileInfo ) return;
 	if( FileInfo != &OffsetFiles[ 0 ] ) return;
 
@@ -556,7 +576,7 @@ void EnableOffFile( OFF_FILES * FileInfo, int8 * Filename )
 	Output		:	Nothing
 ===================================================================*/
 void DisableOffFile( OFF_FILES * FileInfo, int8 * Filename )
-{		
+{
 	while( FileInfo->InfoPtrAddr != NULL )
 	{
 		if( !strcasecmp( &FileInfo->Filename[ 0 ], Filename ) )

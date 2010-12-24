@@ -1615,7 +1615,7 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 		ScrPolys[ i ].Yscale = FontHeight/8.0F;
 
 		// Offset Info
-		if((FontHeight/8.0F) > 1.0F)
+		if( Text512b_Header && FontHeight > 8.0F )
 				ScrPolys[ i ].Frm_Info = &Text512b_Header;	// bigger font
 		else
 				ScrPolys[ i ].Frm_Info = &Text512_Header;		// original font
@@ -1716,7 +1716,7 @@ void AddScreenPolyTextScale( uint16 Frame, float XPos, float YPos, float XScale,
 		ScrPolys[ i ].Yscale = YScale*(FontHeight/8.0F);
 
 		// Offset Info
-		if((FontHeight/8.0F) > 1.0F)
+		if(Text512b_Header && FontHeight > 8.0F)
 				ScrPolys[ i ].Frm_Info = &Text512b_Header;	// bigger font
 		else
 				ScrPolys[ i ].Frm_Info = &Text512_Header;		// original font
