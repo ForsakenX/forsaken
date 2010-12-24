@@ -1591,6 +1591,17 @@ void StartCountDown( int16 Minutes, int16 Seconds )
 				:	uint8	Trans
 	Output		:	void
 ===================================================================*/
+
+extern uint8 Colourtrans[MAXFONTCOLOURS][3];
+void AddScreenPolyTextColor( uint16 Frame, float XPos, float YPos, int Color, uint8 Trans )
+{
+	uint8 r,g,b;
+	r = Colourtrans[Color][0];
+	g = Colourtrans[Color][1];
+	b = Colourtrans[Color][2];
+	AddScreenPolyText( Frame, XPos, YPos, r, g, b, Trans );
+}
+
 void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 Green, uint8 Blue, uint8 Trans )
 {
 	uint16	i;
