@@ -3895,7 +3895,8 @@ void MainRoutines( void )
   FmPolyProcess();
   CheckTimeLimit();
   if( CountDownOn ) UpdateCountdownDigits();
-  ShowScreenMultiples();
+	if(!CurrentMenu)
+	  ShowScreenMultiples();
   ProcessActiveConditions();
   ProcessTriggerAreas();
   ProcessGoals();
