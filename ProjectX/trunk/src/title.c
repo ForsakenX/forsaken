@@ -2857,7 +2857,7 @@ MENU	MENU_Options = {
 		{ 200, 208, 0, 0, 0, LT_MENU_Options9	/*"Show Weapon Kills"*/,	0, 0, &ShowWeaponKills,			NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 224, 0, 0, 0, LT_MENU_Options13	/*"Show Players on HUD"*/,	0, 0, &ShowPlayersOnHUD,		NULL,					SelectToggle,	DrawToggle,			NULL, 0 },
 		{ 200, 240, 0, 0, 0, "HUD Show Kills Only",	0, 0, &ShowPlayersOnHUDbyKills,NULL,SelectToggle,DrawToggle,NULL, 0 },
-		{ 200, 256, 0, 0, 0, "HUD Show Weapons Got",	0, 0, &ShowWeaponsPossessedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
+		{ 200, 256, 0, 0, 0, "HUD Show Inventory",	0, 0, &ShowWeaponsPossessedOnHUD,NULL,SelectToggle,DrawToggle,NULL, 0 },
 		{	-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
