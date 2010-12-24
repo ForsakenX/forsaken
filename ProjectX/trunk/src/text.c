@@ -331,16 +331,8 @@ void	MessageQuePrint( void )
 	int i,e,y,z,MAX;
 	char MessageBuff[80];
 
-	// scale in-game text according to screenwidth
-	// small::: less than 800 res (e.g. 640x480)
-	if(render_info.window_size.cx < 800)
-		MAX = 38;
-	// medium::: less than 1024 res (e.g. 800x600)
-	else if(render_info.window_size.cx < 1024)
-		MAX = 59;
-	// big::: 1024+ (e.g. 1024x786, 1280x1024)
-	else
-		MAX = 80;
+	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
+	if(MAX < 10) MAX = 10;
 
 	e = CurrentMessage + 1;
 	e &= 3;
@@ -358,7 +350,6 @@ void	MessageQuePrint( void )
 		}
 		else
 		{
-			
 				// for all lines of this message
 				for(z=0; z*MAX < MAXPERLINE; z++)
 				{
@@ -394,16 +385,8 @@ void	MessageQuePrintAll( void )
 	int i,y,z,MAX;
 	char MessageBuff[150];
 
-	// scale in-game text according to screenwidth
-	// small::: less than 800 res (e.g. 640x480)
-	if(render_info.window_size.cx < 800)
-		MAX = 55;
-	// medium::: less than 1024 res (e.g. 800x600)
-	else if(render_info.window_size.cx < 1024)
-		MAX = 73;
-	// big::: 1024+ (e.g. 1024x786, 1280x1024)
-	else
-		MAX = 100;
+	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
+	if(MAX < 10) MAX = 10;
 
 	// for all messages in history
 	for (i=0, y=0; i < MAX_MESSAGES_LONG; i++)
