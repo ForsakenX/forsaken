@@ -174,8 +174,8 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 					}
 			}
 			
-			// this is the first kill
-			if(!FirstBlood)
+			// this is the first (non-suicide) kill
+			if(!FirstBlood && Killer != Victim)
 			{
 					FirstBlood = TRUE;					
 					if(Killer == WhoIAm)
