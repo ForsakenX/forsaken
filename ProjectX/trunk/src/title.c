@@ -7813,24 +7813,42 @@ void DrawTextItem( MENUITEM *Item )
 	TEXT *t;
 	int tx;
 	int colour;
+	char MessageBuff[80];
+	int z,MAX;
 
+	// calculate the start position for the text
 	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
 	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
 
+	// print the initial message (e.g., "whisper message: ") and get
+	// the start x position for the user text
 	tx = Print4x5Text( Item->StrPnt, x , y , InGameMenuColour );
+
+	// get the text message
 	t = (TEXT *)(Item->Variable);
-	Print4x5Text( t->text, -1 , y , 1 );
+
+	// get the maximum number of characters we can print on a line
+	MAX = floor((render_info.window_size.cx-tx-(FontWidth*2.0))/FontWidth);
+	if(MAX < 10) MAX = 10;
+
+	// display each line of text
+	for(z=0; z*MAX < t->insert_pos; z++)
+	{
+		strncpy(&MessageBuff[0],&t->text[MAX*z],MAX); 
+		Print4x5Text( &MessageBuff[0], tx, y + (z*(FontHeight+16)), 1);
+	}
+
+	// show the flashing cursor at the end of the text
+	if(z > 0) z--;
 	if ( MenuState == MENUSTATE_Text && TextItem == Item )
 	{
 		char hilite[2] = { 0, 0 };
-
-		x = tx + t->insert_pos * FontWidth;
+		x = tx + ((t->insert_pos - z*MAX)  *FontWidth);
 		hilite[ 0 ] = t->text[ t->insert_pos ];
 		if ( !hilite[ 0 ] )
 			hilite[ 0 ] = '0';
 		colour = SelectionColour();
-		Print4x5Text( hilite, x , y , colour );
-	
+		Print4x5Text( hilite, x, y + (z*(FontHeight+16)), colour );
 	}
 }
 
