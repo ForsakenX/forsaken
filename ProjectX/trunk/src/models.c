@@ -107,6 +107,7 @@ extern	BOOL			CTF;
 extern	BOOL			BikeEnginesOn;
 
 extern int KillMessageColour;
+extern int MatureContent;
 
 void RefreshModel( uint16 model );
 
@@ -4538,13 +4539,15 @@ void ThrowOutRider( uint16 Ship )
 {
 	VECTOR	Dir;
 
-	if( !SoundInfo[ Ships[ Ship ].Object.Group ][ Ships[ Current_Camera_View ].Object.Group ] )
+	if(!SoundInfo[ Ships[ Ship ].Object.Group ][ Ships[ Current_Camera_View ].Object.Group ] )
 	{
 		Dir = Ships[ Ship ].LastMove;
 		NormaliseVector( &Dir );
 
-//		ExplodeBody( &Ships[ Ship ].Object.Pos, &Dir, Ships[ Ship ].Object.Group );
-		CreateTomCruise( &Ships[ Ship ].Object.Pos, Ships[ Ship ].Object.Group );
+		if(MatureContent == 1)
+			CreateTomCruise( &Ships[ Ship ].Object.Pos, Ships[ Ship ].Object.Group );
+		else if(MatureContent == 2)
+			ExplodeBody( &Ships[ Ship ].Object.Pos, &Dir, Ships[ Ship ].Object.Group );
 	}
 }
 

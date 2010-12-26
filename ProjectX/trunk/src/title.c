@@ -489,6 +489,7 @@ void DrawFlatMenuToggle( MENUITEM *Item );
 
 void DrawMessagesToggle( MENUITEM *Item);	// message colour toggle - in game
 
+int MatureContent;
 int HUDColour;
 int InGameMenuColour;
 int KillMessageColour;
@@ -777,8 +778,8 @@ TEXT GamesLength				= { 0, 0, "", NULL };
 TEXT TCPAddress					= { 0, 0, "", NULL};
 TEXT OriginalText;
 
-SLIDER SensitivityXSlider				= { 1, 16, 1, 5, 0, 0.0F };
-SLIDER SensitivityYSlider				= { 1, 16, 1, 5, 0, 0.0F };
+SLIDER SensitivityXSlider				= { 0, 16, 1, 5, 0, 0.0F };
+SLIDER SensitivityYSlider				= { 0, 16, 1, 5, 0, 0.0F };
 SLIDER WaterDetailSlider				= { 1, 2, 1, 2, 0, 0.0F, 0, 0, FALSE, NULL, SetWaterDetail };
 SLIDER NumPrimaryPickupsSlider		= { 1, (MAX_PLAYERS*2), 1, 1, 0, 0.0F, 0, 0, FALSE, NULL, SetNumPrimaryPickups };
 SLIDER PacketsSlider						= { 1, 100, 1, 5, 0, 0.0F };
@@ -1616,15 +1617,13 @@ MENU	MENU_NEW_DetailLevels = {
 	"", NULL, ExitDetailLevels, NULL, 0,
 	{
 		{ 0, 10, 200, 10, 0, LT_MENU_NEW_DetailLevels0/*"DETAIL LEVELS"*/, FONT_Large, TEXTFLAG_CentreX | TEXTFLAG_CentreY,  NULL, NULL, NULL, DrawFlatMenuItem, NULL, 0  },
-		{ 10, 40, 140, 40, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 64, 115, 64, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
-#if !defined ( FINAL_RELEASE )
-		{ 10, 112, 150, 112, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &ShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-		{ 10, 120, 160, 120, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
-#endif
-		{ 10, 150, 135, 150, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
 
-
+		{ 10, 40, 150, 40, 0, "MATURE CONTENT", FONT_Small, TEXTFLAG_CentreY,  &MatureContent,	NULL,	SelectMultiToggle,	DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 56, 150, 56, 0, LT_MENU_NEW_DetailLevels4/*"Team Info"*/, FONT_Small, TEXTFLAG_CentreY,		&ShowTeamInfo,			NULL,	SelectFlatMenuToggle,	DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 72, 95, 72, 0, LT_MENU_NEW_DetailLevels8/*"Water Detail"*/, FONT_Small, TEXTFLAG_AutoSelect | TEXTFLAG_CentreY,		&WaterDetailSlider,		NULL,	SelectSlider,	DrawFlatMenuSlider, NULL, 0 },
+		{ 10, 86, 150, 86, 0, LT_MENU_NEW_DetailLevels14/*"Show Extra Info "*/, FONT_Small, TEXTFLAG_CentreY, &ShowInfo, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 102, 150, 102, 0, LT_MENU_NEW_DetailLevels15/*"Show Weapon Kills"*/, FONT_Small, TEXTFLAG_CentreY, &ShowWeaponKills, NULL, SelectFlatMenuToggle, DrawFlatMenuToggle, NULL, 0 },
+		{ 10, 150, 150, 150, 0, LT_MENU_NEW_DetailLevels16/*"Back"*/, FONT_Small, TEXTFLAG_CentreY,		NULL,		NULL,	MenuItemBack, DrawFlatMenuItem, NULL, 0 },
 		{ -1, -1, 0, 0, 0, "", 0, 0,  NULL, NULL, NULL, NULL, NULL, 0 }
 	 
 	}
@@ -2750,8 +2749,9 @@ MENU	MENU_Detail = {
 	LT_MENU_Detail0 /*"Detail Levels"*/, NULL, ExitDetailLevels, NULL, 0,
 	{
 		{ 200, 180, 0, 0, 0, LT_MENU_Detail4/*"Team Info"*/,     0, 0,  &ShowTeamInfo,     NULL,SelectToggle,DrawToggle,NULL, 0 },
-		{ 200, 308, 0, 0, 0, LT_MENU_Detail12/*"Water Detail"*/, 0, 0,	&WaterDetailSlider,NULL,SelectSlider,DrawSlider,NULL, 0 },
-		{ 200, 324, 0, 0, 0, LT_MENU_Detail13/*"gamma"*/,        0, 0,	&GammaSlider,      NULL,SelectSlider,DrawSlider,NULL, 0 },
+		{ 200, 196, 0, 0, 0, "MATURE CONTENT      ", 0, 0, &MatureContent, NULL, SelectMatureContentToggle, DrawMatureContentToggle,	NULL, 0 },
+		{ 200, 212, 0, 0, 0, LT_MENU_Detail12/*"Water Detail"*/, 0, 0,	&WaterDetailSlider,NULL,SelectSlider,DrawSlider,NULL, 0 },
+		{ 200, 228, 0, 0, 0, LT_MENU_Detail13/*"gamma"*/,        0, 0,	&GammaSlider,      NULL,SelectSlider,DrawSlider,NULL, 0 },
 		{-1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -6696,6 +6696,50 @@ void DrawColToggle( MENUITEM *Item )
 }
 
 /*===================================================================
+	Procedure	:		Select mature content toggle menuitem
+	Input		:		MENUITEM * Item...
+	Output		:		Nothing
+===================================================================*/
+void SelectMatureContentToggle( MENUITEM *Item )
+{
+		if(*(int *) Item->Variable > 1)
+			*(int *) Item->Variable = 0;
+		else
+			*(int *) Item->Variable =*(int *)Item->Variable + 1;
+}
+
+/*===================================================================
+	Procedure	:		Draw mature content toggle menuitem
+	Input		:		MENUITEM * Item...
+	Output		:		Nothing
+===================================================================*/
+void DrawMatureContentToggle( MENUITEM *Item )
+{
+	int	x;
+	int	y;
+
+	x = (int) ( ( Item->x >> 1 ) * ModeScaleX );
+	y = (int) ( ( Item->y >> 1 ) * ModeScaleY );
+
+	Print4x5Text( Item->StrPnt , x , y , InGameMenuColour );
+	if ( Item->Variable )
+	{
+		switch(*(int*)(Item->Variable ))
+		{
+			case 0:
+						Print4x5Text( "DISABLED", -1 , y , 1 );
+						break;
+			case 1:
+						Print4x5Text( "TOM CRUISE", -1 , y , 1 );
+						break;
+			case 2:
+						Print4x5Text( "GUTS", -1 , y , 1 );
+						break;
+		}
+	}
+}
+
+/*===================================================================
 	Procedure	:		Select a toggle menuitem
 	Input		:		MENUITEM * Item...
 	Output		:		Nothing
@@ -9269,6 +9313,7 @@ void GetGamePrefs( void )
     render_info.default_mode.h  = config_get_int( "ScreenHeight", 0 );
     render_info.vsync  = config_get_int( "VSync", 0 );
 
+		MatureContent										 = config_get_int( "MatureContent", 2);
 		HUDColour												 = config_get_int( "HUDColour", GREEN );
 		InGameMenuColour								 = config_get_int( "InGameMenuColour", GREEN );
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
@@ -9281,6 +9326,8 @@ void GetGamePrefs( void )
     MyMessageColour                  = config_get_int( "MyMessageColour",			  YELLOW );
 		MaxMessageTime                   = config_get_float( "MaxMessageTime",    5.0f );
 		
+
+
 		ShowTeamCamera = config_get_bool( "ShowTeamCam", TRUE );
 
 	CLAMP( InGameMenuColour, MAXFONTCOLOURS );
@@ -9397,6 +9444,7 @@ void SetGamePrefs( void )
 	config_set_int( "BountyInterval",		BountyBonusSlider.value );
 	config_set_int( "BikerSpeechVolume",		BikerSpeechSlider.value );
 	config_set_int( "BikeCompSpeechVol",		BikeCompSpeechSlider.value );
+	config_set_int( "MatureContent", MatureContent	);
 
 	config_set_int( "FlagScore",			GoalScoreSlider.value );
 	GoalScore = GoalScoreSlider.value;
@@ -10493,6 +10541,7 @@ void SelectMultiToggle( MENUITEM *Item )
 		DrawFlatToggleStatus(Item);
 	}
 }
+
 
 void DrawFlatMenuToggle( MENUITEM *Item )
 {
