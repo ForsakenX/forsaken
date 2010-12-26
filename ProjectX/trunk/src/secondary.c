@@ -173,7 +173,6 @@ extern	float	Host_CopyOfPyroliteAmmo[ MAX_PLAYERS ];
 extern	int16	Host_PickupsGot[ MAX_PLAYERS ][ MAXPICKUPTYPES ];
 extern  uint32  Host_Flags[ MAX_PLAYERS ];
 extern	int16	NumSuperNashrams;
-extern	char PrimaryNames[7][16];
 extern	PICKUP	Pickups[ MAXPICKUPS ];
 extern	float	RegenDelay;
 

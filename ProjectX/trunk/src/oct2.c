@@ -600,7 +600,7 @@ extern int FlagMessageColour;
 extern BOOL ShowTeamCamera;
 
 // for HUD colour (text.c)
-uint8 Colourtrans[MAXFONTCOLOURS][3];
+extern uint8 Colourtrans[MAXFONTCOLOURS][3];
 
 // watch mode select player (Title.c)
 extern SLIDER WatchPlayerSelect;
@@ -616,70 +616,29 @@ extern void ScoreSort();
     Weapon Names...
 ===================================================================*/
 char PrimaryNames[7][16] = {
-            { "Pulsar" } ,
-            { "Trojax" } ,
-            { "Pyrolite" } ,
-            { "Transpulse" } ,
-            { "Suss Gun" } ,
-            { "Laser" } ,
-            { "" }  
+            {"Pulsar" } ,
+            {"Trojax" } ,
+            {"Pyro" } ,
+            {"Trans" } ,
+            {"Suss" } ,
+            {"Laser" } ,
+            {"" }  
 };
 char SecondaryNames[12][16] = {
-            { "Mug" } ,
-            { "Solaris" } ,
-            { "Thief" } ,
-            { "Scatter" } ,
-            { "Gravgon" } , 
-            { "MFRL" } , 
-            { "Titan" } ,
-            { "Purge Mine" } ,
-            { "Pine Mine" } ,
-            { "Quantum Mine" } ,
-            { "Spider Mine" } ,
-            { "" }  
+            {"Mug" } ,
+            {"Solaris" } ,
+            {"Thief" } ,
+            {"Scatter" } ,
+            {"Gravgon" } , 
+            {"MFRL" } , 
+            {"Titan" } ,
+            {"Purge" } ,
+            {"Pine" } ,
+            {"Quantum" } ,
+            {"Spider" } ,
+            {"" }  
 
 };
-int PrimaryLengths[7] ={ 
-             sizeof("Puls")-1  ,
-             sizeof("Troj")-1  ,
-             sizeof("Pyro")-1  ,
-             sizeof("Tran")-1  ,
-             sizeof("Suss")-1  ,
-             sizeof("Beam")-1 };
-int SecondaryLengths[12] = {
-             sizeof("Mug ")-1 ,
-             sizeof("Sola")-1 ,
-             sizeof("Thei")-1 ,
-             sizeof("Scat")-1 ,
-             sizeof("Grav")-1 , 
-             sizeof("MFRL")-1 , 
-             sizeof("Tita"  )-1 ,
-             sizeof("Purg")-1 ,
-             sizeof("Pine")-1 ,
-             sizeof("Quan")-1,
-             sizeof("Spid")-1 };
-#if 0
-int PrimaryLengths[7] ={ 
-             sizeof("Pulsar")-1  ,
-             sizeof("Trojax")-1  ,
-             sizeof("Pyrolite")-1  ,
-             sizeof("Transpulse")-1  ,
-             sizeof("Suss Gun")-1  ,
-             sizeof("Beam Laser")-1 };
-int SecondaryLengths[12] = {
-             sizeof("Mug")-1 ,
-             sizeof("Solaris")-1 ,
-             sizeof("Thief")-1 ,
-             sizeof("Scatter")-1 ,
-             sizeof("Gravgon")-1 , 
-             sizeof("MFRL")-1 , 
-             sizeof("Titan")-1 ,
-             sizeof("Purge Mine")-1 ,
-             sizeof("Pine Mine")-1 ,
-             sizeof("Quantum Mine")-1,
-             sizeof("Spider Mine")-1 };
-#endif
-
 
 /*===================================================================
     Panel Description Stuff...
@@ -1543,21 +1502,36 @@ BOOL SetMatrixViewPort( void )
   return TRUE;
 }
 
+int GetCurPrimAmmo( void )
+{
+	if( Ships[WhoIAm].Primary == PYROLITE_RIFLE ) return PyroliteAmmo;
+	else if( Ships[WhoIAm].Primary == SUSS_GUN )  return SussGunAmmo;
+	else                                          return GeneralAmmo;
+}
+
 float HealthCount = 0.0F;
 int PowerSizes[6] = { 0 , 4 , 16 , 24 , 40 , 56 };
 void DrawSimplePanel()
 {
+	int current = 0;
+	int left  = render_info.window_size.cx - FontWidth*14;
+	int right = render_info.window_size.cx - FontWidth*5;
+	int top   = render_info.window_size.cy / 2.0F - FontHeight*5;
 	int energy;
 	uint8 Count; uint8 pos = 0;
  	uint8 r = Colourtrans[HUDColour][0];
 	uint8 g = Colourtrans[HUDColour][1];
 	uint8 b = Colourtrans[HUDColour][2];
 
-    if( WhoIAm == Current_Camera_View )
-    {
+  if( WhoIAm == Current_Camera_View )
+  {
 		// Add Crosshair Polygon..
 		if(!CurrentMenu)
-			AddScreenPolyText( (uint16) 63 , (float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) , r, g, b, 255 );
+			AddScreenPolyText( 
+				(uint16) 63 , 
+				(float) (viewport.X + (viewport.Width>>1)) , 
+				(float) (viewport.Y + (viewport.Height>>1)) , 
+				r, g, b, 255 );
 
 		// trojax level
 		energy = (int) ( ( PowerLevel * 0.01F ) * 9.0F );
@@ -1572,155 +1546,188 @@ void DrawSimplePanel()
 			// 72   (first frame) is power bar charging
 			// 72-8 (last frame)  is power bar at full charge
 			if( energy > 8 ) energy = 8;
-			AddScreenPolyText( (72-energy), (float) (viewport.X + (viewport.Width>>1))-16 , (float) (viewport.Y + (viewport.Height>>1))+4 , r, g, b, 255 );
+			AddScreenPolyText(
+				(72-energy), 
+				(float) (viewport.X + (viewport.Width>>1))-16 , 
+				(float) (viewport.Y + (viewport.Height>>1))+4 , 
+				r, g, b, 255 );
 		}
 
 		// nitro bar
 		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
 		{
-			AddScreenPolyTextScale( 72, (float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), (float) (viewport.Y + (viewport.Height>>1)-7 ) ,
-			(float) ( ( ( 1.0F / 100.0F ) * ( NitroFuel * 0.5F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F, r, g, b, 255 );
+			int bar = ( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram ) ?
+				(float) Ships[WhoIAm].SuperNashramTimer*0.008f :
+				(float) NitroFuel*0.04f;
+			AddScreenPolyTextScale( 
+				72, 
+				(float) ( (render_info.window_size.cx>>1) - (NitroFuel - 8) ), 
+				(float) (viewport.Y + (viewport.Height>>1)-7 ) ,
+				bar,
+				1.0F, 
+				r, g, b, 255 );
 		}
 
 		// character flags
 		if( Ships[WhoIAm].Invul )
 		{
-			Print4x5Text( "I" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
+			Print4x5Text( "Chaos" , left, top, HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
 		}
+		top += FontHeight;
 		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
 		{
-			Print4x5Text( "S" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
+			Print4x5Text( "GPP" , left, top, HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
 		}
+		top += FontHeight;
 		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
 		{
-			Print4x5Text( "C" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , FontWidth*4 , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
+			Print4x5Text(	"Stealth" , left, top, HUDColour );
+			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
 		}
-    }
+		top += FontHeight;
+
+  }
+	top += FontHeight;
     
-    if( Panel && !PlayDemo )
+  if( Panel && !PlayDemo )
+  {
+    if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
     {
-        if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
-        {
-          // Full Screen Minimum Stats...
-
-			// blt hull
-			AddScreenPolyText( (uint16) 56 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*1)+2) ), r, g, b, 255 );
-			// blt shld
-			AddScreenPolyText( (uint16) 55 , (float) FontWidth , (float) (render_info.window_size.cy-((FontHeight*2)+4) ), r, g, b, 255 );
-			// Blt Primary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Primary + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Ships[WhoIAm].Primary] ) ), (float) (render_info.window_size.cy-((FontHeight*2)+4) ), r, g, b, 255 );
-			// Blt Secondary
-			AddScreenPolyText( (uint16)( Ships[WhoIAm].Secondary + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Ships[WhoIAm].Secondary] ) ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
-
-			// optionally show all the weapons and ammo currently possessed
 			if(ShowWeaponsPossessedOnHUD)
 			{
-				// Primaries
+				// primaries using general ammo
 				for( Count = 0; Count < MAXPRIMARYWEAPONS; Count++ )
 				{
-					if( PrimaryWeaponsGot[ Count ] > 0 && Count != PYROLITE_RIFLE && Count!= SUSS_GUN)
+					if(Count == PYROLITE_RIFLE || Count == SUSS_GUN)
+						continue;
+					current = (Count == Ships[WhoIAm].Primary);
+					if( current || PrimaryWeaponsGot[ Count ] > 0 )
 					{
-						AddScreenPolyText( (uint16)( Count + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[Count] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );	
-						if(Count == PULSAR)
-							Printuint16( (uint16) GeneralAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );	
-
-						pos++;
+						Print4x5Text( PrimaryNames[ Count ], left, top, HUDColour );	
+						if( Count == PULSAR )
+							Printuint16( GeneralAmmo, right, top, HUDColour );	
 					}	
+					top += FontHeight;
+				}
+	
+				// primaries using pyro ammo
+				current = (PYROLITE_RIFLE == Ships[WhoIAm].Primary);
+				if( current || PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0 )
+				{
+					Print4x5Text( PrimaryNames[ PYROLITE_RIFLE ], left, top, HUDColour );	
+					Printuint16( PyroliteAmmo, right, top, HUDColour );	
 				}	
-				if( PrimaryWeaponsGot[ PYROLITE_RIFLE ] > 0)
-				{
-						AddScreenPolyText( (uint16)( PYROLITE_RIFLE + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[PYROLITE_RIFLE] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );
+				top += FontHeight;
 
-					Printuint16( (uint16) PyroliteAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );
-					pos++;
-				}
-				if( PrimaryWeaponsGot[ SUSS_GUN ] > 0)
+				// primaries using suss ammo
+				current = (SUSS_GUN == Ships[WhoIAm].Primary);
+				if( current || PrimaryWeaponsGot[ SUSS_GUN ] > 0 )
 				{
-						AddScreenPolyText( (uint16)( SUSS_GUN + 38 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*PrimaryLengths[SUSS_GUN] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );
-					Printuint16( (uint16) SussGunAmmo , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );
-					pos++;
+					Print4x5Text( PrimaryNames[ SUSS_GUN ], left, top, HUDColour );	
+					Printuint16( SussGunAmmo, right, top, HUDColour );	
 				}
+				top += FontHeight*2;
 
 				// Secondaries
-				pos++;	
 				for( Count = 0; Count < MAXSECONDARYWEAPONS; Count++ )
 				{
-					if((uint16) SecondaryAmmo[ Count ] > 0)
+					current = ( Count == Ships[WhoIAm].Secondary || GetBestMine() == Count );
+					if(Count == 7) top += FontHeight; // add space for mines
+					if( current || (uint16) SecondaryAmmo[ Count ] > 0 )
 					{
-						AddScreenPolyText( (uint16)( Count + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[Count] ) ) , (float) ((render_info.window_size.cy/2.0F)+((FontHeight*pos)+2)), r, g, b, 255 );	
-						Printuint16( (uint16) SecondaryAmmo[ Count ] , render_info.window_size.cx - ( FontWidth*5) , (render_info.window_size.cy/2.0F)+((FontHeight*pos)+2) , HUDColour );	
-						pos++;
+						Print4x5Text( SecondaryNames[Count], left, top, HUDColour );	
+						Printuint16( (uint16) SecondaryAmmo[ Count ] , right, top, HUDColour );	
 					}	
+					top += FontHeight;
 				}
 			}
 
-			// Blt Power Pods
-			AddScreenPolyText( (uint16) (Ships[WhoIAm].Object.PowerLevel + 57 ), (float) (render_info.window_size.cx >> 1) - ( ( FontWidth * 7) >>1 ) , (float) (render_info.window_size.cy-((FontHeight*1)+2)), r, g, b, 255 );
-			// Blt Mine..
-			energy = (int) GetBestMine();
-			if( energy != 65535 )
+			// normal display
+			top = render_info.window_size.cy / 2.0F + FontHeight * (MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 4);
+
+			// mine
+			int mine = (int) GetBestMine();
+			if( mine != 65535 )
 			{
-				AddScreenPolyText( (uint16)( energy + 44 ) , (float) (render_info.window_size.cx - ( FontWidth*6) - ( FontWidth*SecondaryLengths[energy] ) ), (float) (FontHeight), r, g, b, 255 );
-				Printuint16( (uint16) SecondaryAmmo[energy] , render_info.window_size.cx - ( FontWidth*5) , FontHeight , HUDColour );
+				int x = render_info.window_size.cx;
+				Print4x5Text( SecondaryNames[mine], x-FontWidth*10, FontHeight, HUDColour );
+				Printuint16( (uint16) SecondaryAmmo[mine], x-FontWidth*2, FontHeight, HUDColour );
 			}
 
-			// poly shld bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*2)-2) ,
-					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Shield *0.25F ) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-					(uint8)(r+(ShieldHit * (192/24) )), (uint8)(g-(ShieldHit * (192/24) )), b, 255 );
+			// power pods
+			Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
+			Printuint16( (uint16) Ships[WhoIAm].Object.PowerLevel, right, top, HUDColour );	
+			top += FontHeight;
+
+			// primary
+			Print4x5Text( PrimaryNames[Ships[WhoIAm].Primary], left, top, HUDColour );
+			Printuint16( (uint16) GetCurPrimAmmo() , right, top, HUDColour );
+			top += FontHeight;
+
+			// secondary
+			Print4x5Text( SecondaryNames[Ships[WhoIAm].Secondary], left, top, HUDColour );
+			Printuint16( (uint16) GetCurSecAmmo(), right, top, HUDColour );
+
+			// bottom left
+			top   = render_info.window_size.cy - FontWidth*3;
+			left  = FontWidth;
+			right = FontWidth*8;
+			int bars  = right + FontWidth*4;
+
+			// shield
+			Print4x5Text( "Shield", left, top, HUDColour );	
+
+			{
+				int red = (uint8)(r+(ShieldHit * (192/24) ));
+				int green = (uint8)(g-(ShieldHit * (192/24) ));
+				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
+						( Ships[WhoIAm].Object.Shield *0.25F ) ) *
+						( (32.0F-0.125F) + 0.125F ) );
+				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
+			}
+
+			Printuint16( (uint16) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
+			top += FontHeight;
 
 			if( ShieldHit )
 				ShieldHit -=1;
 
-			// poly hull bar
-			AddScreenPolyTextScale( 72, (float) (FontWidth*10)-4, (float) (render_info.window_size.cy-(FontHeight*1)-2) ,
-					(float) ( ( ( 1.0F / 256.0F ) * ( Ships[WhoIAm].Object.Hull * 0.25F) ) * ( (32.0F-0.125F) + 0.125F ) ) , 1.0F,
-					(uint8)(r+(HullHit * (192/24) )), (uint8)(g-(HullHit * (192/24) )), b, 255 );
+			// hull
+			top++;
+			Print4x5Text( "Hull", left, top, HUDColour );	
+
+			{
+				int red = (uint8)(r+(ShieldHit * (192/24) ));
+				int green = (uint8)(g-(ShieldHit * (192/24) ));
+				int scale_x = (float) ( ( ( 1.0F / 256.0F ) * 
+						( Ships[WhoIAm].Object.Hull *0.25F ) ) *
+						( (32.0F-0.125F) + 0.125F ) );
+				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
+			}
+
+			Printuint16( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
+			top += FontHeight;
 
 			if( HullHit )
 				HullHit -=1;
-
-			// blt shield num
-			Printuint16( (uint16) Ships[WhoIAm].Object.Shield , FontWidth*6 , render_info.window_size.cy-((FontHeight*2)+4) , HUDColour );
-
-			// blt hull num
-			if( Ships[WhoIAm].Object.Hull > 0.0F && Ships[WhoIAm].Object.Hull < 1.0F )
-				Printuint16( (uint16) 1 , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , 2 );
-			else
-				Printuint16( (uint16) Ships[WhoIAm].Object.Hull , FontWidth*6 , render_info.window_size.cy-((FontHeight*1)+2) , HUDColour );
-
-			// Blt Primary ammo
-			if( Ships[WhoIAm].Primary == PYROLITE_RIFLE )
-				energy =  (int) PyroliteAmmo;
-			else
-			{
-				if( Ships[WhoIAm].Primary == SUSS_GUN )
-					energy = (int) SussGunAmmo;
-				else
-					energy = (int) GeneralAmmo;
-			}
-			Printuint16( (uint16) energy , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*2)+4) , HUDColour );
-
-			// Blt Secondary ammo
-			Printuint16( (uint16) GetCurSecAmmo() , render_info.window_size.cx - ( FontWidth*5) , render_info.window_size.cy-((FontHeight*1)+2) , HUDColour );
-        }
-    
-      if( (NamesAreLegal != 0) || IsHost )
-      {
-        ScoreSort();
-        PrintScoreSort();
-		CheckMetKillLimit();
-      }
-      
+    }
+  
+    if( (NamesAreLegal != 0) || IsHost )
+    {
+      ScoreSort();
+      PrintScoreSort();
+			CheckMetKillLimit();
+    }
+     
 	  // show long message history
 	  if(ShowMessages) 
 		  MessageQuePrintAll();
+
 	  // show last 3 recent messages
 	  else
-		MessageQuePrint();
+			MessageQuePrint();
 	
 	  if( ! (CurrentMenu && CurrentMenuItem ) )
 	  {
@@ -1739,41 +1746,50 @@ void DrawSimplePanel()
 	  if(SwitchedToWatchMode)
 	  {
 			// show who i am watching
-			CenterPrint4x5Text( (char *)GetName(WatchPlayerSelect.value), render_info.window_size.cy - 15, 4 );
+			CenterPrint4x5Text( 
+				(char *)GetName(WatchPlayerSelect.value), 
+				render_info.window_size.cy - 15,
+				4 );
 			// display cross-hair
 			AddScreenPolyText(
 					(uint16) 63 ,
-					(float) (viewport.X + (viewport.Width>>1)) , (float) (viewport.Y + (viewport.Height>>1)) ,
+					(float) (viewport.X + (viewport.Width>>1)) , 
+					(float) (viewport.Y + (viewport.Height>>1)) ,
 					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Invulnerable" , FontWidth , render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
+				Print4x5Text( "Invulnerable" , FontWidth ,
+					render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
 			// golden power pod
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "Golden Power Pod" , FontWidth , render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
+				Print4x5Text( "Golden Power Pod" , FontWidth , 
+					render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
-				Print4x5Text( "Stealth" , FontWidth , render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
+				Print4x5Text( "Stealth" , FontWidth , 
+					render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
 	  }
-    }
+
+  }
 	else
 	{
-      if( Panel )
-      {
-        ScoreSort();
-        PrintScoreSort();
+		if( Panel )
+		{
+       ScoreSort();
+       PrintScoreSort();
 
-		if(ShowMessages) 
-			MessageQuePrintAll();
-		else
-			MessageQuePrint();
+			if(ShowMessages) 
+				MessageQuePrintAll();
+			else
+				MessageQuePrint();
 
-        if( DemoEyesSelect.value != MAX_PLAYERS )
-          Print4x5Text( Names[DemoEyesSelect.value] ,render_info.window_size.cx - (FontWidth*9), FontHeight , 0 );
-      }
-    }
-    if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
-      CenterPrint4x5Text( "Game Over" , (render_info.window_size.cy >> 1) - (FontHeight*2) , 2 );
+			if( DemoEyesSelect.value != MAX_PLAYERS )
+				Print4x5Text( Names[DemoEyesSelect.value] ,render_info.window_size.cx - (FontWidth*9), FontHeight , 0 );
+		}
+	}
+
+	if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
+		CenterPrint4x5Text( "Game Over" , (render_info.window_size.cy >> 1) - (FontHeight*2) , 2 );
 
 }
 
