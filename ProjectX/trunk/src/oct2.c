@@ -1516,7 +1516,7 @@ void DrawSimplePanel()
 	int current = 0;
 	int left  = render_info.window_size.cx - FontWidth*14;
 	int right = render_info.window_size.cx - FontWidth*5;
-	int top   = render_info.window_size.cy / 2.0F - FontHeight*5;
+	int top   = render_info.window_size.cy - FontHeight*30;
 	int energy;
 	uint8 Count; uint8 pos = 0;
  	uint8 r = Colourtrans[HUDColour][0];
@@ -1568,29 +1568,8 @@ void DrawSimplePanel()
 				r, g, b, 255 );
 		}
 
-		// character flags
-		if( Ships[WhoIAm].Invul )
-		{
-			Print4x5Text( "Chaos" , left, top, HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
-		}
-		top += FontHeight;
-		if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
-		{
-			Print4x5Text( "GPP" , left, top, HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
-		}
-		top += FontHeight;
-		if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
-		{
-			Print4x5Text(	"Stealth" , left, top, HUDColour );
-			Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
-		}
-		top += FontHeight;
+	} // end of who i am == current camera
 
-  }
-	top += FontHeight;
-    
   if( Panel && !PlayDemo )
   {
     if( !DrawPanel && (WhoIAm == Current_Camera_View ) ) 
@@ -1642,20 +1621,47 @@ void DrawSimplePanel()
 					}	
 					top += FontHeight;
 				}
-			}
+			} // end of show full inventory
 
-			// normal display
-			top = render_info.window_size.cy / 2.0F + FontHeight * (MAXPRIMARYWEAPONS + MAXSECONDARYWEAPONS + 4);
+			// top right
+			top = FontHeight;
 
 			// mine
 			int mine = (int) GetBestMine();
 			if( mine != 65535 )
 			{
-				int x = render_info.window_size.cx;
-				Print4x5Text( SecondaryNames[mine], x-FontWidth*10, FontHeight, HUDColour );
-				Printuint16( (uint16) SecondaryAmmo[mine], x-FontWidth*2, FontHeight, HUDColour );
+				int left = render_info.window_size.cx;
+				Print4x5Text( SecondaryNames[mine], left-FontWidth*10, top, HUDColour );
+				Printuint16( (uint16) SecondaryAmmo[mine], left-FontWidth*2, top, HUDColour );
 			}
+	
+			// bottom right
+			top = render_info.window_size.cy - FontHeight * 7;
 
+			// chaos
+			if( Ships[WhoIAm].Invul )
+			{
+				Print4x5Text( "Chaos" , left, top, HUDColour );
+				Printuint16( (uint16) (Ships[WhoIAm].InvulTimer / 60.0F) , right, top, HUDColour );
+			}
+			top += FontHeight;
+
+			// gulden power pod
+			if( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram )
+			{
+				Print4x5Text( "GPP" , left, top, HUDColour );
+				Printuint16( (uint16) (Ships[WhoIAm].SuperNashramTimer / 60.0F) , right, top, HUDColour );
+			}
+			top += FontHeight;
+
+			// stealth
+			if( Ships[WhoIAm].Object.Flags & SHIP_Stealth )
+			{
+				Print4x5Text(	"Stealth" , left, top, HUDColour );
+				Printuint16( (uint16) (Ships[WhoIAm].StealthTime / 60.0F) , right, top, HUDColour );
+			}
+			top += FontHeight;
+	    
 			// power pods
 			Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
 			Printuint16( (uint16) Ships[WhoIAm].Object.PowerLevel, right, top, HUDColour );	
@@ -1712,7 +1718,8 @@ void DrawSimplePanel()
 
 			if( HullHit )
 				HullHit -=1;
-    }
+
+    } // end of !DrawPanel && Iam = current camera view
   
     if( (NamesAreLegal != 0) || IsHost )
     {
@@ -1750,6 +1757,9 @@ void DrawSimplePanel()
 				(char *)GetName(WatchPlayerSelect.value), 
 				render_info.window_size.cy - 15,
 				4 );
+
+// TODO why is this here ? above code should just execute normally in watch mode to show hud
+
 			// display cross-hair
 			AddScreenPolyText(
 					(uint16) 63 ,
@@ -1770,7 +1780,7 @@ void DrawSimplePanel()
 					render_info.window_size.cy-((FontHeight*6)+12) , HUDColour );
 	  }
 
-  }
+  } // end of ( Panel && !PlayDemo )
 	else
 	{
 		if( Panel )
@@ -1784,12 +1794,19 @@ void DrawSimplePanel()
 				MessageQuePrint();
 
 			if( DemoEyesSelect.value != MAX_PLAYERS )
-				Print4x5Text( Names[DemoEyesSelect.value] ,render_info.window_size.cx - (FontWidth*9), FontHeight , 0 );
+				Print4x5Text( 
+					Names[DemoEyesSelect.value],
+					render_info.window_size.cx - (FontWidth*9), 
+					FontHeight, 
+					0 );
 		}
 	}
 
 	if( Ships[WhoIAm].Object.Mode == GAMEOVER_MODE )
-		CenterPrint4x5Text( "Game Over" , (render_info.window_size.cy >> 1) - (FontHeight*2) , 2 );
+		CenterPrint4x5Text( 
+			"Game Over" , 
+			(render_info.window_size.cy >> 1) - (FontHeight*2) , 
+			2 );
 
 }
 
