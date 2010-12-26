@@ -3062,7 +3062,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
 				AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
 				// received version request
-				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
+				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
 					// display my version number
 					AddColourMessageToQue(SystemMessageColour, YourVersion );
@@ -3915,7 +3915,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				MessageColour = MyMessageColour;
 				AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 				// sending version request
-				if(strcmp(&lpTextMsg->Text[0], (const char *) "VERSION") == 0)
+				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
 					// display my version number
 					AddColourMessageToQue(SystemMessageColour, YourVersion );
