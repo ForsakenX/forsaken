@@ -9296,7 +9296,7 @@ void GetGamePrefs( void )
     CTFSlider.value                  = config_get_int( "CTFrules",					CTF_STANDARD );
     GoalScoreSlider.value            = config_get_int( "FlagScore",					5 );
     BountyBonusSlider.value          = config_get_int( "BountyInterval",			10 );
-    MyPacketsSlider.value            = config_get_int( "PacketsPerSecond",			30 );
+    MyPacketsSlider.value            = config_get_int( "PacketsPerSecond",			10 );
 
 	CLAMP( MaxKillsSlider.value,		MaxKillsSlider.max );
 	CLAMP( MyTimeLimit.value,			MyTimeLimit.max );
