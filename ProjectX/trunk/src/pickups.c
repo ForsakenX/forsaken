@@ -3531,19 +3531,14 @@ BOOL LoadPickupsPositions( void )
         continue;
 
       /* if pickup is NOT valid */
-      if( !(
+      if( 
+         !FilterPickup( RegenPoints[ Count ].Type ) && 
+				 (!
+					 (( ( RegenPoints[ Count ].Type == PICKUP_Flag) && CaptureTheFlag) ||
+		       ( (RegenPoints[ Count ].Type == PICKUP_Bounty) && BountyHunt ))
+					)
+        )
 
-         /* this pickup is on the global valid list */
-         FilterPickup( RegenPoints[ Count ].Type ) &&
-
-         /* this pickup if it is flag only good in ctf mode */
-         ( (RegenPoints[ Count ].Type != PICKUP_Flag)   || CaptureTheFlag ) && 
-
-         /* this pickup if it is bounty only good in bounty mode) */
-         ( (RegenPoints[ Count ].Type != PICKUP_Bounty) || BountyHunt )
-
-         ))
-        /* not valid pickup */
       continue;
 
       /* setup regen point
