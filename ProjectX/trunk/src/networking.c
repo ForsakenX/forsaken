@@ -3050,7 +3050,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 					return;
 				sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-				AddColourMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
+				AddPlayerMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_Taunt1:
 			case TEXTMSGTYPE_Taunt2:
@@ -3060,7 +3060,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				return;
 			case TEXTMSGTYPE_QuickTaunt:
 				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
-				AddColourMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
+				AddPlayerMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
 				// received version request
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
@@ -3913,7 +3913,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				strncpy( &lpTextMsg->Text[0]	, &QuickText.text[0] , MAXTEXTMSG );
 				lpTextMsg->TextMsgType = Type;
 				MessageColour = MyMessageColour;
-				AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
+				AddPlayerMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 				// sending version request
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
 				{
@@ -3926,6 +3926,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 				strncpy( &lpTextMsg->Text[0]	, &QuickTextWhisper.text[0] , MAXTEXTMSG );
 				lpTextMsg->TextMsgType = Type;
 				MessageColour = MyMessageColour;
+				AddPlayerMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 				break;
 			case TEXTMSGTYPE_CaptureFlagMessage:
 				lpTextMsg->TextMsgType = Type;
@@ -3979,7 +3980,7 @@ void SendGameMessage( BYTE msg, network_player_t * to, BYTE ShipNum, BYTE Type, 
 		nBytes = sizeof( TEXTMSG );
 
 		// quick taunt already delt with
-		if (MyGameStatus != STATUS_StartingMultiplayer && Type != TEXTMSGTYPE_QuickTaunt)
+		if (MyGameStatus != STATUS_StartingMultiplayer && Type != TEXTMSGTYPE_QuickTaunt && Type != TEXTMSGTYPE_QuickTauntWhisper)
 			AddColourMessageToQue( MessageColour, (char*) &lpTextMsg->Text[0] );
 		break;
 

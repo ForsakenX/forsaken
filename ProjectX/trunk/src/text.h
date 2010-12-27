@@ -52,7 +52,9 @@ int	 Print4x5Text( char * Text , int x , int y , int color );
 void PrintClipped4x5Text( char * Text , int x , int y , int color );
 void Printuint16( uint16 tempnum , int x , int y , int color );
 void MessageQuePrint( void );
+void PlayerMessageQuePrint( void );
 void AddColourMessageToQue(  int Colour, char * Text, ... );
+void AddPlayerMessageToQue( int Colour, char * Text, ... );
 void RightJustifyPrint4x5Text( char * Text , int x , int y, int color );
 void InitTextMessages( void );
 

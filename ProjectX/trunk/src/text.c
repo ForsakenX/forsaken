@@ -83,6 +83,8 @@ uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 
 // custom colour messages (Title.c)
 extern int SystemMessageColour;
+extern int PlayerMessageColour;
+extern int MyMessageColour;
 
 // (stats.c)
 extern int GetPlayerByRank(int Player);
@@ -120,12 +122,18 @@ int	PermX;
 uint16 big[4] = { 10000 , 1000 , 100 , 10 };
 uint16 little[4] = { 1000 , 100 , 10 , 1 };
 
-int CurrentMessage = 0;
+// player text messages
+float PlayerMessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
+char PlayerMessageBank[MAX_MESSAGES][MAXPERLINE];
+int PlayerMessageColours[MAX_MESSAGES];
+// normal text messages short que
 float MessageTime[MAX_MESSAGES] = { 0.0F , 0.0F , 0.0F , 0.0F };
 int MessageColour[MAX_MESSAGES];
 char MessageBank[MAX_MESSAGES][MAXPERLINE];
+// all messages long que
 char MessageBankLong[MAX_MESSAGES_LONG][MAXPERLINE];
 int MessageColourLong[MAX_MESSAGES_LONG];
+
 uint8	CharTrans[256];
 
 uint16 NumOfTextMessages = 0;
@@ -322,56 +330,95 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 }
 				
 /*===================================================================
-	Procedure	:		Print All Message in the normal Que (last 3 messages)...
+	Procedure	:		Print All Message in the player message Que (last 4 messages)...
+	Input		:		nothing
+	Output		:		nothing
+===================================================================*/
+void	PlayerMessageQuePrint( void )
+{
+	int i,y,z,MAX, ypos;
+	char MessageBuff[80];
+
+	MAX = floor((render_info.window_size.cx-FontWidth*35)/FontWidth);
+	if(MAX < 10) MAX = 10;
+
+	ypos = render_info.window_size.cy- FontHeight;
+
+	for( i=MAX_MESSAGES-1, y=0; i>-1; i-- )
+	{
+		PlayerMessageTime[i] -= (real_framelag/5.0F);
+		if( PlayerMessageTime[i] <= 0.0F )
+		{
+			PlayerMessageTime[i] = 0.0F;
+			PlayerMessageBank[i][0] = 0;
+		}
+		else
+		{
+				for(z=0; z*MAX < MAXPERLINE; z++)
+				{
+					if(strcmp(&PlayerMessageBank[i][MAX*z],(const char*) "\0") != 0)
+						ypos-= FontHeight;
+					else
+						break;
+				}	
+		}
+	}
+
+	for( i=MAX_MESSAGES-1, y=0; i>-1; i-- )
+	{
+		if( PlayerMessageTime[i] > 0.0F )
+		{
+				for(z=0; z*MAX < MAXPERLINE; z++)
+				{
+					if(strcmp(&PlayerMessageBank[i][MAX*z],(const char*) "\0") != 0)
+					{
+						strncpy(&MessageBuff[0],&PlayerMessageBank[i][MAX*z],MAX); 
+						Print4x5Text( &MessageBuff[0], FontWidth*18 , ypos+FontHeight*y , PlayerMessageColours[i] ); // left-aligned
+						y++;
+					}
+					else
+						break;
+				}	
+		}
+	}
+}
+				
+/*===================================================================
+	Procedure	:		Print All Message in the normal Que (last 4 messages)...
 	Input		:		nothing
 	Output		:		nothing
 ===================================================================*/
 void	MessageQuePrint( void )
 {
-	int i,e,y,z,MAX;
+	int i,y,z,MAX;
 	char MessageBuff[80];
 
 	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
 	if(MAX < 10) MAX = 10;
 
-	e = CurrentMessage + 1;
-	e &= 3;
-	MessageTime[e] = 0.0F;
-	MessageBank[e][0] = 0;
-	e = CurrentMessage -2;
-	e &= 3;
-	for( i = 2, y=0 ; i >-1 ; i-- )
+	for( i=0, y=0; i<MAX_MESSAGES; i++ )
 	{
-		MessageTime[e] -= real_framelag;
-		if( MessageTime[e] <= 0.0F && (MessageBank[(e-1)&3][0] == 0) )
+		MessageTime[i] -= real_framelag;
+		if( MessageTime[i] <= 0.0F )
 		{
-			MessageTime[e] = 0.0F;
-			MessageBank[e][0] = 0;
+			MessageTime[i] = 0.0F;
+			MessageBank[i][0] = 0;
 		}
 		else
 		{
-				// for all lines of this message
 				for(z=0; z*MAX < MAXPERLINE; z++)
 				{
-					// that have contents 
-					if(strcmp(&MessageBankLong[i][MAX*z],(const char*) "\0") != 0)
+					if(strcmp(&MessageBank[i][MAX*z],(const char*) "\0") != 0)
 					{
-						// display it to the screen
-						strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
-						// centered
-						CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
-						// left-aligned
-						//Print4x5Text( &MessageBuff[0], FontWidth*20 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
-						y++; // move down to next line on screen
+						strncpy(&MessageBuff[0],&MessageBank[i][MAX*z],MAX); 
+						CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColour[i] );	// centered
+						//Print4x5Text( &MessageBuff[0], FontWidth*20 , ((y*(FontHeight+1))+16) , MessageColourLong[i] ); // left-aligned
+						y++;
 					}
 					else
 						break;
 				}	
-			
-			//CenterPrint4x5Text( &MessageBank[e][0] , (i*(FontHeight+1))+16 , MessageColour[e] );
 		}
-		e++;
-		e &= 3;
 	}
 }
 
@@ -388,34 +435,68 @@ void	MessageQuePrintAll( void )
 	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
 	if(MAX < 10) MAX = 10;
 
-	// for all messages in history
 	for (i=0, y=0; i < MAX_MESSAGES_LONG; i++)
 	{
-			// for all lines of this message
 			for(z=0; z*MAX < MAXPERLINE; z++)
 			{
-				// that have contents 
 				if(strcmp(&MessageBankLong[i][MAX*z],(const char*) "\0") != 0)
 				{
-					// display it to the screen
 					strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
 					//CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
 					Print4x5Text( &MessageBuff[0], FontWidth*25 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
-		
-					y++; // move down to next line on screen
+					y++;
 				}
 				else
 					break;
 			}
 	}
-
-	
 }
 
 char TempMessage[512];
 float MessageSize;
 float ThisMessageTime;
 
+/*===================================================================
+	Procedure	:		Add Colour Player Message to the Que (text messages)...
+	Input		:		char * Text
+	Output		:		nothing
+===================================================================*/
+
+void AddPlayerMessageToQueShort( char ** Text, int Colour )
+{
+	char * Pnt;
+	int i,x,j;
+	Pnt = *Text;
+
+	for(x = MAX_MESSAGES-1; x > 0; x--)
+	{
+		for(j = 0; j < MAXPERLINE; j++)
+			PlayerMessageBank[x][j] = 0;
+		strcpy((char *)PlayerMessageBank[x], (char *)PlayerMessageBank[x-1]);
+		PlayerMessageColours[x] = PlayerMessageColours[x-1];
+		PlayerMessageTime[x] = PlayerMessageTime[x-1];
+		PlayerMessageColours[x] = PlayerMessageColours[x-1];
+	}
+
+	for(j = 0; j < MAXPERLINE; j++)
+			PlayerMessageBank[0][j] = 0;
+	PlayerMessageTime[0] = ThisMessageTime;
+	PlayerMessageColours[0] = Colour;
+	MessageColourLong[0] = Colour;
+
+	for( i = 0 ; i < MAXPERLINE ; i++ )
+	{
+		PlayerMessageBank[0][i] = *Pnt;
+		MessageBankLong[0][i] = *Pnt;
+
+		if( *Pnt == 0 )
+		{
+			*Text = NULL;
+			return;
+		}
+		Pnt++;
+	}
+}
 
 /*===================================================================
 	Procedure	:		Add Colour Message to the Que Short...
@@ -428,38 +509,26 @@ void AddColourMessageToQueShort( char ** Text, int Colour )
 	int i,x,j;
 	Pnt = *Text;
 
-	CurrentMessage++;
-	CurrentMessage&=3;
-	MessageTime[CurrentMessage] = ThisMessageTime;
-	MessageColour[CurrentMessage] = Colour; // Set colour
-
-	/* save to longer buffer */
-	// shunt long que up one
-	for(x = MAX_MESSAGES_LONG-1; x > 0; x--)
+	for(x = MAX_MESSAGES-1; x > 0; x--)
 	{
-		// clean buffer
 		for(j = 0; j < MAXPERLINE; j++)
-			MessageBankLong[x][j] = 0;
-
-		// move message up que by one
-		strcpy((char *)MessageBankLong[x], (char *)MessageBankLong[x-1]);
-		MessageColourLong[x] = MessageColourLong[x-1];
+			MessageBank[x][j] = 0;
+		strcpy((char *)MessageBank[x], (char *)MessageBank[x-1]);
+		MessageColour[x] = MessageColour[x-1];
+		MessageTime[x] = MessageTime[x-1];
 	}
-	/* end of saving to longer buffer */
 
-	// clean first line of buffer
 	for(j = 0; j < MAXPERLINE; j++)
-			MessageBankLong[0][j] = 0;
+			MessageBank[0][j] = 0;
+	MessageTime[0] = ThisMessageTime;
+	MessageColour[0] = Colour;
+	MessageColourLong[0] = Colour;
 
-	// add message to buffers
 	for( i = 0 ; i < MAXPERLINE ; i++ )
 	{
-		MessageBank[CurrentMessage][i] = *Pnt;
-
-		// save current message to long que
+		MessageBank[0][i] = *Pnt;
 		MessageBankLong[0][i] = *Pnt;
-		MessageColourLong[0] = Colour;
-		
+
 		if( *Pnt == 0 )
 		{
 			*Text = NULL;
@@ -467,32 +536,34 @@ void AddColourMessageToQueShort( char ** Text, int Colour )
 		}
 		Pnt++;
 	}
-
-	i = MAXPERLINE-1;
-	while( *Pnt != 0x20 && i >= 0 )
-	{
-		Pnt--;
-		i--;
-	}
-
-	if( i >= 0 )
-	{
-		MessageBank[CurrentMessage][i+1] = 0;
-		*Text = Pnt+1;
-		return;
-	}
-
-	MessageBank[CurrentMessage][0] = 0;
-	*Text = NULL;
 }
 
-void AddColourMessageToQue( int Colour, char * Text, ... )
+/*===================================================================
+	Procedure	:		Save Message to long que and to appropriate short que
+	Input		:		char * Text
+	Output		:		nothing
+===================================================================*/
+void ProcessMessageToQue( BOOL PlayerText, int Colour, char * Text, ... )
 {
+	int x, j;
+
 	// -1 = do not display
 	if(Colour > -1)
 	{
 		char * Pnt;
-		va_list args;
+		va_list args;		
+
+		for(x = MAX_MESSAGES_LONG-1; x > 0; x--)
+		{
+			for(j = 0; j < MAXPERLINE; j++)
+				MessageBankLong[x][j] = 0;
+
+			strcpy((char *)MessageBankLong[x], (char *)MessageBankLong[x-1]);
+			MessageColourLong[x] = MessageColourLong[x-1];
+		}
+
+		for(j = 0; j < MAXPERLINE; j++)
+				MessageBankLong[0][j] = 0;
 
 		va_start( args, Text );
 		vsprintf( &TempMessage[0], Text, args);
@@ -507,12 +578,33 @@ void AddColourMessageToQue( int Colour, char * Text, ... )
 		if( ThisMessageTime < MaxMessageTime )
 			ThisMessageTime = MaxMessageTime;
 
-
-		while( Pnt )
+		if(PlayerText)
 		{
-			AddColourMessageToQueShort( &Pnt, Colour );
+			while( Pnt )
+				AddPlayerMessageToQueShort( &Pnt, Colour );
+		}
+		else
+		{
+			while( Pnt )
+				AddColourMessageToQueShort( &Pnt, Colour );
 		}
 	}
+}
+
+/*===================================================================
+	Procedure	:	use these as interfaces to the message ques
+	Input		:		char * Text
+	Output		:		nothing
+===================================================================*/
+
+void AddPlayerMessageToQue( int Colour, char * Text, ... )
+{
+	ProcessMessageToQue( TRUE, Colour, Text );
+}
+
+void AddColourMessageToQue( int Colour, char * Text, ... )
+{
+	ProcessMessageToQue( FALSE, Colour, Text );
 }
 	
 /*===================================================================
@@ -833,13 +925,12 @@ void TriggerTextMessage( uint16 * Data )
 ===================================================================*/
 void InitTextMessages( void )
 {
-	int i;
-	CurrentMessage = 0;
+/*(	int i;
 	for( i = 0 ; i < MAX_MESSAGES ; i++ )
 	{
 		MessageTime[i] = 0.0F;
 		MessageBank[i][0] = 0;
-	}
+	}*/
 }
 typedef struct {
 	char *keyword;

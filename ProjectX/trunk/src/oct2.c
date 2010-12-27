@@ -1734,8 +1734,11 @@ void DrawSimplePanel()
 
 	  // show last 3 recent messages
 	  else
+		{
 			MessageQuePrint();
-	
+			PlayerMessageQuePrint();	
+		}
+
 	  if( ! (CurrentMenu && CurrentMenuItem ) )
 	  {
 		  // if we are dead and waiting for a game
@@ -1791,8 +1794,10 @@ void DrawSimplePanel()
 			if(ShowMessages) 
 				MessageQuePrintAll();
 			else
+			{
 				MessageQuePrint();
-
+				PlayerMessageQuePrint();
+			}
 			if( DemoEyesSelect.value != MAX_PLAYERS )
 				Print4x5Text( 
 					Names[DemoEyesSelect.value],
