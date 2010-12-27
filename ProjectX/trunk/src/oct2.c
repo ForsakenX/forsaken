@@ -4319,18 +4319,18 @@ BOOL MainGame( void ) // bjd
 				// pick first active team mate
 				for(i=0; i<MAX_PLAYERS; i++)
 				{
-						if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
+						//if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
 						{
 								CurrentCamera.GroupImIn = Ships[i].Object.Group; 
 								CurrentCamera.Mat = Ships[i].Object.FinalMat;  
 								CurrentCamera.InvMat = Ships[i].Object.FinalInvMat; 
 								CurrentCamera.Pos = Ships[i].Object.Pos; 
         				CurrentCamera.Viewport.X = viewport.X;
-        				CurrentCamera.Viewport.Y = (viewport.Y+viewport.Height)-((viewport.Height >>4)+(viewport.Height >>2));
+        				CurrentCamera.Viewport.Y = (viewport.Y+viewport.Height-(FontHeight*2.0F))-((viewport.Height >>4)+(viewport.Height >>2));
 								if( RenderCurrentCamera() != TRUE )
 								    return FALSE;
 
-								Print4x5Text( (char *)GetName(i), (CurrentCamera.Viewport.Width/2.0), CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height-(2.0*FontHeight), 4 );
+								Print4x5TextSmall( (char *)GetName(i), (CurrentCamera.Viewport.Width/2.0)-32.0F, CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height-16.0F, WHITE );
 								break;
 						}
 				}
