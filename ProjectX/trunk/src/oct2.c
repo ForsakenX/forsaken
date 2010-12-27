@@ -4319,7 +4319,7 @@ BOOL MainGame( void ) // bjd
 				// pick first active team mate
 				for(i=0; i<MAX_PLAYERS; i++)
 				{
-						//if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
+						if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
 						{
 								CurrentCamera.GroupImIn = Ships[i].Object.Group; 
 								CurrentCamera.Mat = Ships[i].Object.FinalMat;  
