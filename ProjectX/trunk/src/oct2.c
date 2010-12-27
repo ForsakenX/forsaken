@@ -1556,7 +1556,7 @@ void DrawSimplePanel()
 		// nitro bar
 		if ( ( control.turbo || Ships[WhoIAm].Object.CruiseControl == CRUISE_NITRO ) && NitroFuel )
 		{
-			int bar = ( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram ) ?
+			float bar = ( Ships[WhoIAm].Object.Flags & SHIP_SuperNashram ) ?
 				(float) Ships[WhoIAm].SuperNashramTimer*0.008f :
 				(float) NitroFuel*0.04f;
 			AddScreenPolyTextScale( 
