@@ -81,10 +81,11 @@ uint8 Colourtrans[MAXFONTCOLOURS][3] = {
 	{ 255,255,255 }		// white
 };
 
-// custom colour messages (Title.c)
+// (Title.c)
 extern int SystemMessageColour;
 extern int PlayerMessageColour;
 extern int MyMessageColour;
+extern SLIDER TextScaleSlider;
 
 // (stats.c)
 extern int GetPlayerByRank(int Player);
@@ -200,10 +201,6 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 	}
 }
 
-
-
-
-
 /*===================================================================
 	Procedure	:		Print some Centered text at a specified Y
 	Input		:		char * Text, uint16 y
@@ -260,6 +257,22 @@ void RightJustifyPrint4x5Text( char * Text , int x , int y, int col )
 	Print4x5Text( Text , x , y , col );
 }
 
+int Print4x5TextSmall( char * Text , int x , int y , int color )
+{
+		int OldFontHeight = FontHeight;
+		int OldFontWidth = FontWidth;
+		int oldScale = TextScaleSlider.value;
+
+		FontHeight = 8.0F;
+		FontWidth = 8.0F;
+		TextScaleSlider.value = 0;
+
+		Print4x5Text( Text , x , y , color );
+
+		FontHeight = OldFontHeight;
+		FontWidth = OldFontWidth;
+		TextScaleSlider.value = oldScale;
+}
 
 /*===================================================================
 	Procedure	:		Print some text at a specified or the last pos
@@ -412,7 +425,6 @@ void	MessageQuePrint( void )
 					{
 						strncpy(&MessageBuff[0],&MessageBank[i][MAX*z],MAX); 
 						CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColour[i] );	// centered
-						//Print4x5Text( &MessageBuff[0], FontWidth*20 , ((y*(FontHeight+1))+16) , MessageColourLong[i] ); // left-aligned
 						y++;
 					}
 					else
@@ -443,7 +455,7 @@ void	MessageQuePrintAll( void )
 				{
 					strncpy(&MessageBuff[0],&MessageBankLong[i][MAX*z],MAX); 
 					//CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColourLong[i] );
-					Print4x5Text( &MessageBuff[0], FontWidth*25 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
+					Print4x5Text( &MessageBuff[0], FontWidth*23 , ((y*(FontHeight+1))+16) , MessageColourLong[i] );
 					y++;
 				}
 				else
@@ -694,27 +706,17 @@ void PrintScoreSort( void )
 					left_offset += (width * FontWidth);
 				}
 
-				left_offset += ( 1 * FontWidth ); // give a padding space
+				left_offset += 8.0F; // give a padding space
 
 				// Show pings for everyone except your self
 				if( GetPlayerByRank(i) != WhoIAm )
 				{
 					if( Ships[GetPlayerByRank(i)].network_player != NULL )
 					{
-						sprintf( (char*) &buf[0] ,"Ping %lu", Ships[GetPlayerByRank(i)].network_player->ping );
-						Print4x5Text( &buf[0] , left_offset, top_offset, ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
-
-						// watchers can see the location of all players
-						if(SwitchedToWatchMode)
-						{
-							left_offset += ( 11 * FontWidth ); // give a padding space
-							 Print4x5Text( &Mloadheader.Group[Ships[GetPlayerByRank(i)].Object.Group].name[0], left_offset, top_offset, 2 );
-						}
-
+						sprintf( (char*) &buf[0] ,"%*dms", 4, (int8) Ships[GetPlayerByRank(i)].network_player->ping );
+						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 					}
 				}
-
-
 
 				top_offset += line_height;
 			}
@@ -801,7 +803,9 @@ void PrintScoreSort( void )
 				{
 					col = ( WhoIAm == i ) ? 0 : TeamCol[ TeamNumber[ i ] ];
 					Print4x5Text( &Names[i][0] , 8 , e*(FontHeight+1)+(FontHeight*4) , col );
-					Print4x5Text( &Mloadheader.Group[Ships[i].Object.Group].name[0] , 8+(FontWidth*8) , e*(FontHeight+1)+(FontHeight*4) , 2 );
+
+					Print4x5TextSmall( &Mloadheader.Group[Ships[i].Object.Group].name[0] , 8+(FontWidth*8), e*(FontHeight+1)+(FontHeight*4)+((FontHeight-8.0F)/2.0F), 2 );
+
 					DisplayConnectionStatus( TeamBadConnection[TeamNumber[i]] , 2 , e*(FontHeight+1)+(FontHeight*4) );
 					e++;
 					NumOfActivePlayers++;

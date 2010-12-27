@@ -49,6 +49,7 @@ void PrintScoreSort( void );
 void CenterPrint4x5Text( char * Text , int y , int color );
 void CenterPrint4x5Text2( char * Text , int x, int y, int color );
 int	 Print4x5Text( char * Text , int x , int y , int color );
+int	 Print4x5TextSmall( char * Text , int x , int y , int color );
 void PrintClipped4x5Text( char * Text , int x , int y , int color );
 void Printuint16( uint16 tempnum , int x , int y , int color );
 void MessageQuePrint( void );
