@@ -550,12 +550,8 @@ void AddColourMessageToQueShort( char ** Text, int Colour )
 	}
 }
 
-/*===================================================================
-	Procedure	:		Save Message to long que and to appropriate short que
-	Input		:		char * Text
-	Output		:		nothing
-===================================================================*/
-void ProcessMessageToQue( BOOL PlayerText, int Colour, char * Text, ... )
+
+void AddPlayerMessageToQue( int Colour, char * Text, ... )
 {
 	int x, j;
 
@@ -590,33 +586,49 @@ void ProcessMessageToQue( BOOL PlayerText, int Colour, char * Text, ... )
 		if( ThisMessageTime < MaxMessageTime )
 			ThisMessageTime = MaxMessageTime;
 
-		if(PlayerText)
-		{
-			while( Pnt )
-				AddPlayerMessageToQueShort( &Pnt, Colour );
-		}
-		else
-		{
-			while( Pnt )
-				AddColourMessageToQueShort( &Pnt, Colour );
-		}
+		while( Pnt )
+			AddPlayerMessageToQueShort( &Pnt, Colour );
 	}
-}
-
-/*===================================================================
-	Procedure	:	use these as interfaces to the message ques
-	Input		:		char * Text
-	Output		:		nothing
-===================================================================*/
-
-void AddPlayerMessageToQue( int Colour, char * Text, ... )
-{
-	ProcessMessageToQue( TRUE, Colour, Text );
 }
 
 void AddColourMessageToQue( int Colour, char * Text, ... )
 {
-	ProcessMessageToQue( FALSE, Colour, Text );
+	int x, j;
+
+	// -1 = do not display
+	if(Colour > -1)
+	{
+		char * Pnt;
+		va_list args;		
+
+		for(x = MAX_MESSAGES_LONG-1; x > 0; x--)
+		{
+			for(j = 0; j < MAXPERLINE; j++)
+				MessageBankLong[x][j] = 0;
+
+			strcpy((char *)MessageBankLong[x], (char *)MessageBankLong[x-1]);
+			MessageColourLong[x] = MessageColourLong[x-1];
+		}
+
+		for(j = 0; j < MAXPERLINE; j++)
+				MessageBankLong[0][j] = 0;
+
+		va_start( args, Text );
+		vsprintf( &TempMessage[0], Text, args);
+		va_end( args );
+
+		TempMessage[511] = 0;
+
+		Pnt = &TempMessage[0];
+
+		MessageSize = (float) strlen(&TempMessage[0]);
+		ThisMessageTime = MaxMessageTime * (MessageSize / MAXPERLINE);
+		if( ThisMessageTime < MaxMessageTime )
+			ThisMessageTime = MaxMessageTime;
+
+		while( Pnt )
+			AddColourMessageToQueShort( &Pnt, Colour );
+	}
 }
 	
 /*===================================================================
@@ -929,12 +941,14 @@ void TriggerTextMessage( uint16 * Data )
 ===================================================================*/
 void InitTextMessages( void )
 {
-/*(	int i;
+	int i;
 	for( i = 0 ; i < MAX_MESSAGES ; i++ )
 	{
 		MessageTime[i] = 0.0F;
 		MessageBank[i][0] = 0;
-	}*/
+		PlayerMessageTime[i] = 0.F;
+		PlayerMessageBank[i][0] = 0;
+	}
 }
 typedef struct {
 	char *keyword;
