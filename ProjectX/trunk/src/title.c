@@ -3609,7 +3609,7 @@ DebugPrintf("2 vsync = %d\n",render_info.vsync);
 
 	// set default font scaling by resolution
 	TextScaleSlider.value = 1;
-	if(render_info.default_mode.w < 800)
+	if(render_info.default_mode.w < 1024)
 			TextScaleSlider.value = 0;
 	else if(render_info.default_mode.w >= 1280)
 			TextScaleSlider.value = 2;
