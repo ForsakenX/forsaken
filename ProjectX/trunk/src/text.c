@@ -691,22 +691,20 @@ void PrintScoreSort( void )
 				if( GameStatus[GetPlayerByRank(i)] != STATUS_Normal )
 					continue;
 
+				// blue dot for bad ping
+				if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
+					DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], 2, top_offset );
+
+				// give blue dot space
+				left_offset = 8;
+
 				// print name
 				if ( !( Ships[ GetPlayerByRank(i) ].Object.Flags & SHIP_CarryingBounty ) || FlashToggle )
-				{
-					// blue dot for bad ping
-					if( GameStatus[GetPlayerByRank(i)] == STATUS_Normal )
-						DisplayConnectionStatus( ReliabilityTab[GetPlayerByRank(i)], 2, top_offset );
-
-					// give blue dot space
-					left_offset = 8;
-
-					// player name
 					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, (( WhoIAm == GetPlayerByRank(i) ) ? GRAY : RED) );
-					left_offset += ( 8 * FontWidth ); // 8 = max characters in short player name
-				}
-				
-				left_offset += ( 1 * FontWidth ); // give a padding space
+				else
+					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, WHITE );
+
+				left_offset += ( 9 * FontWidth );
 				
 				// print real score
 				{
