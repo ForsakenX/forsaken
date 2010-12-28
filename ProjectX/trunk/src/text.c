@@ -948,6 +948,7 @@ void InitTextMessages( void )
 		MessageBank[i][0] = 0;
 		PlayerMessageTime[i] = 0.F;
 		PlayerMessageBank[i][0] = 0;
+		MessageBankLong[i][0] = 0;
 	}
 }
 typedef struct {
