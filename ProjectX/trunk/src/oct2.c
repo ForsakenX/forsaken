@@ -1664,7 +1664,7 @@ void DrawSimplePanel()
 	    
 			// power pods
 			Print4x5Text( "Power", left+FontWidth*3, top, HUDColour );
-			Printuint16( (uint16) Ships[WhoIAm].Object.PowerLevel, right, top, HUDColour );	
+			Printuint16( (uint16) Ships[WhoIAm].Object.PowerLevel+1, right, top, HUDColour );	
 			top += FontHeight;
 
 			// primary
