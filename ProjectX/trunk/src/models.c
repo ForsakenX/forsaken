@@ -4932,7 +4932,7 @@ void HitMe( uint16 OwnerType, uint16 OwnerID, float Damage, uint8 WeaponType, ui
 	char	tempstr[256];
 	char	teamstr[256];
 
-	if( !Ships[ WhoIAm ].Invul )
+	if( !(Ships[ WhoIAm ].Invul && GameStatus[ WhoIAm ] == STATUS_SinglePlayer) )
 	{
 		Ships[ WhoIAm ].Damage = Damage;
 		if( OwnerType != OWNER_SHIP ) Ships[ WhoIAm ].ShipThatLastHitMe = MAX_PLAYERS;

@@ -1860,13 +1860,16 @@ int16 DoDamage( BOOL OverrideInvul )
 	Message[ 0 ] = 0;
 			
 	if( GodMode ) return 0;
-	if( Ships[ WhoIAm ].Invul && !OverrideInvul ) return 0;
+	if( Ships[ WhoIAm ].Invul && !OverrideInvul && GameStatus[ WhoIAm ] == STATUS_SinglePlayer ) return 0;
 
 	if( Ships[WhoIAm].Object.Mode == NORMAL_MODE )
 	{
 		if( Ships[WhoIAm].Damage )
 		{
-			Ships[WhoIAm].Damage *= -1.0F;
+			if( Ships[ WhoIAm ].Invul) 
+				Ships[WhoIAm].Damage *= -0.5F;
+			else
+				Ships[WhoIAm].Damage *= -1.0F;
 			Ships[WhoIAm].Object.Shield += Ships[WhoIAm].Damage;
 
 			if( Ships[WhoIAm].Damage < 0.0F )
