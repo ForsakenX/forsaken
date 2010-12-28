@@ -208,6 +208,11 @@ void Printuint16( uint16 tempnum , int x , int y , int col )
 ===================================================================*/
 void CenterPrint4x5Text( char * Text , int y, int col )
 {
+ CenterPrint4x5TextOffset(  Text , y, col, 0 );
+}
+
+void CenterPrint4x5TextOffset( char * Text , int y, int col, int xoffset )
+{
 	char * Text2;
 	int x;
 	int	i;
@@ -218,7 +223,7 @@ void CenterPrint4x5Text( char * Text , int y, int col )
 
 	x = (render_info.window_size.cx >> 1 ) - (i * ( FontWidth >> 1 )  ); // i *2 is half the size of the chars...
 	
-	Print4x5Text( Text , x , y , col );
+	Print4x5Text( Text , x + xoffset, y , col );	
 }
 
 /*===================================================================
@@ -424,7 +429,8 @@ void	MessageQuePrint( void )
 					if(strcmp(&MessageBank[i][MAX*z],(const char*) "\0") != 0)
 					{
 						strncpy(&MessageBuff[0],&MessageBank[i][MAX*z],MAX); 
-						CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColour[i] );	// centered
+						CenterPrint4x5TextOffset(&MessageBuff[0],((y*(FontHeight+1))+16) , MessageColour[i], 3.0F*FontHeight ); // fix for overlaps with ping
+						//CenterPrint4x5Text( &MessageBuff[0],((y*(FontHeight+1))+16) , MessageColour[i] );	// original centered
 						y++;
 					}
 					else
