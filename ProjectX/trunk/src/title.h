@@ -493,6 +493,8 @@ void	MenuItemDrawName( MENUITEM * Item );
 void	MenuDraw( MENU * Menu );
 void	SetDifficulty( MENUITEM * Item );
 void	MenuItemDrawCursor( MENUITEM * Item );
+void	SelectMatureContentToggle( MENUITEM *Item );
+void	DrawMatureContentToggle( MENUITEM *Item );
 void	SelectColourToggle( MENUITEM *Item );
 void	SelectToggle( MENUITEM *Item );
 void	DrawToggle( MENUITEM *Item );
