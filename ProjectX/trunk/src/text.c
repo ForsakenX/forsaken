@@ -350,10 +350,11 @@ void PrintClipped4x5Text( char * Text , int x , int y , int col )
 void	PlayerMessageQuePrint( void )
 {
 	int i,y,z,MAX, ypos;
-	char MessageBuff[80];
+	char MessageBuff[150];
 
-	MAX = floor((render_info.window_size.cx-FontWidth*35)/FontWidth);
+	MAX = floor((render_info.window_size.cx-FontWidth*27)/FontWidth);
 	if(MAX < 10) MAX = 10;
+	else if(MAX > 149) MAX = 149;
 
 	ypos = render_info.window_size.cy- FontHeight;
 
@@ -386,7 +387,8 @@ void	PlayerMessageQuePrint( void )
 					if(strcmp(&PlayerMessageBank[i][MAX*z],(const char*) "\0") != 0)
 					{
 						strncpy(&MessageBuff[0],&PlayerMessageBank[i][MAX*z],MAX); 
-						Print4x5Text( &MessageBuff[0], FontWidth*18 , ypos+FontHeight*y , PlayerMessageColours[i] ); // left-aligned
+						
+						Print4x5Text( &MessageBuff[0], FontWidth*12 , ypos+FontHeight*y , PlayerMessageColours[i] ); // left-aligned
 						y++;
 					}
 					else
@@ -404,7 +406,7 @@ void	PlayerMessageQuePrint( void )
 void	MessageQuePrint( void )
 {
 	int i,y,z,MAX;
-	char MessageBuff[80];
+	char MessageBuff[150];
 
 	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
 	if(MAX < 10) MAX = 10;
