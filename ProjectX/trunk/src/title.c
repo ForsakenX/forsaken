@@ -7857,7 +7857,7 @@ void DrawTextItem( MENUITEM *Item )
 	TEXT *t;
 	int tx;
 	int colour;
-	char MessageBuff[80];
+	char MessageBuff[150];
 	int z,MAX;
 
 	// calculate the start position for the text
@@ -7872,8 +7872,9 @@ void DrawTextItem( MENUITEM *Item )
 	t = (TEXT *)(Item->Variable);
 
 	// get the maximum number of characters we can print on a line
-	MAX = floor((render_info.window_size.cx-tx-(FontWidth*2.0))/FontWidth);
+	MAX = floor((render_info.window_size.cx-tx-(FontWidth*3.0))/FontWidth);
 	if(MAX < 10) MAX = 10;
+	else if(MAX > 149) MAX = 149;
 
 	// display each line of text
 	for(z=0; z*MAX < t->insert_pos; z++)

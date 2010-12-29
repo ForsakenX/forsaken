@@ -410,6 +410,7 @@ void	MessageQuePrint( void )
 
 	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
 	if(MAX < 10) MAX = 10;
+	else if(MAX > 149) MAX = 149;
 
 	for( i=0, y=0; i<MAX_MESSAGES; i++ )
 	{
@@ -448,6 +449,7 @@ void	MessageQuePrintAll( void )
 
 	MAX = floor((render_info.window_size.cx-FontWidth*25)/FontWidth);
 	if(MAX < 10) MAX = 10;
+	else if(MAX > 149) MAX = 149;
 
 	for (i=0, y=0; i < MAX_MESSAGES_LONG; i++)
 	{
