@@ -1623,7 +1623,7 @@ void AddScreenPolyText( uint16 Frame, float XPos, float YPos, uint8 Red, uint8 G
 		ScrPolys[ i ].FrameRate = 0.0F;
 		ScrPolys[ i ].SeqNum = SCRSEQ_Nothing;
 
-		if(Frame == 63) // don't scale the cross hair
+		if(Frame >= 63 && Frame <= 72) // don't scale the cross hair or trojax power
 		{
 			ScrPolys[ i ].Xscale = 1.0F;
 			ScrPolys[ i ].Yscale = 1.0F;
