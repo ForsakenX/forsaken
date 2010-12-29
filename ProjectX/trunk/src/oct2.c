@@ -1685,6 +1685,7 @@ void DrawSimplePanel()
 			// shield
 			Print4x5Text( "Shield", left, top, HUDColour );	
 
+/*
 			{
 				int red = (uint8)(r+(ShieldHit * (192/24) ));
 				int green = (uint8)(g-(ShieldHit * (192/24) ));
@@ -1693,6 +1694,7 @@ void DrawSimplePanel()
 						( (32.0F-0.125F) + 0.125F ) );
 				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
 			}
+*/
 
 			Printuint16( (uint16) Ships[WhoIAm].Object.Shield, right, top, HUDColour );
 			top += FontHeight;
@@ -1704,6 +1706,7 @@ void DrawSimplePanel()
 			top++;
 			Print4x5Text( "Hull", left, top, HUDColour );	
 
+/*
 			{
 				int red = (uint8)(r+(ShieldHit * (192/24) ));
 				int green = (uint8)(g-(ShieldHit * (192/24) ));
@@ -1712,6 +1715,7 @@ void DrawSimplePanel()
 						( (32.0F-0.125F) + 0.125F ) );
 				AddScreenPolyTextScale( 72, bars, top+FontHeight*0.3, scale_x, 1.0f, red, green, b, 255 );
 			}
+*/
 
 			Printuint16( Ships[WhoIAm].Object.Hull , right, top, HUDColour );
 			top += FontHeight;
