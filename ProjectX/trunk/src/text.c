@@ -660,6 +660,8 @@ void PrintScoreSort( void )
 	int TeamBadConnection[MAX_TEAMS];
 	char buf[256];
 	int col;
+	uint16 scorewidth = 1;
+	uint16 tempwidth = 0;
 
 	NumOfActivePlayers = 0;
 
@@ -684,7 +686,28 @@ void PrintScoreSort( void )
 		if( ShowPlayersOnHUD )
  		{
 			int top_offset = FontHeight; // initial gap
-			int line_height = FontHeight+1;
+			int line_height = FontHeight+1;	
+
+			// calculate the width of the score column
+			if(ShowPlayersOnHUDbyKills)
+			{
+				for(i=0; i<MAX_PLAYERS; i++)
+				{
+					tempwidth = (uint16) log10(abs(GetKills(i)))+1;
+					if(GetKills(i) < 0)	tempwidth++;
+					if(tempwidth > scorewidth) scorewidth = tempwidth;			
+				}
+			}
+			else
+			{
+				for(i=0; i<MAX_PLAYERS; i++)
+				{
+					tempwidth = (uint16) log10(abs(GetRealScore(i)))+1;
+					if(GetRealScore(i) < 0)	tempwidth++;
+					if(tempwidth > scorewidth) scorewidth = tempwidth;
+				}
+			}
+			scorewidth *= FontWidth;
 
 			// print player lines
 			for( i = 0 ; i < MAX_PLAYERS ; i++ )
@@ -708,26 +731,24 @@ void PrintScoreSort( void )
 				else
 					Print4x5Text( &Names[GetPlayerByRank(i)][0], left_offset, top_offset, WHITE );
 
-				left_offset += ( 9 * FontWidth );
+				left_offset += ( 8 * FontWidth );
 				
 				// print real score
 				{
-					int width = 0;
 					if(ShowPlayersOnHUDbyKills)
-						width = Printint16( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
+						Printint16( GetKills(GetPlayerByRank(i)), left_offset, top_offset, GRAY ); // kills - suacides - friendly
 					else
-						width = Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
-					left_offset += (width * FontWidth);
+						Printint16( GetRealScore(GetPlayerByRank(i)), left_offset, top_offset, GRAY );// points + kills - suacides - friendly - deaths
 				}
 
-				left_offset += 8.0F; // give a padding space
+				left_offset += scorewidth+8.0F; // give a padding space
 
 				// Show pings for everyone except your self
 				if( GetPlayerByRank(i) != WhoIAm )
 				{
 					if( Ships[GetPlayerByRank(i)].network_player != NULL )
 					{
-						sprintf( (char*) &buf[0] ,"%*dms", 4, (int8) Ships[GetPlayerByRank(i)].network_player->ping );
+						sprintf( (char*) &buf[0] ,"%*dms", 4, (uint16) Ships[GetPlayerByRank(i)].network_player->ping );
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
 					}
 				}
