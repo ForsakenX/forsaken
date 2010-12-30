@@ -42,12 +42,16 @@
 #include "visi.h"
 #include "text.h"
 #include "xmem.h"
+#include "title.h"
 
 /* external variables */
-extern  BYTE  TeamNumber[MAX_PLAYERS];										// which team each player is on
-extern char* GetName(int Player);															// returns player's short name from Ships.c
-extern BOOL TeamGame;																// team game? (from Title.c)
-extern int MilestoneMessagesColour;													// colour to display messages (from Title.c)
+extern  BYTE  TeamNumber[MAX_PLAYERS];	// which team each player is on
+// (Ships.c)
+extern char* GetName(int Player);				// returns player's short name
+// (Title.c)
+extern BOOL TeamGame;										// team game?  
+extern int MilestoneMessagesColour;			// colour to display messages 
+extern SLIDER WatchPlayerSelect;				// which player is being watched 
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
@@ -179,15 +183,15 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			{
 					FirstBlood = TRUE;					
 					if(Killer == WhoIAm)
-					{
 						AddColourMessageToQue(MilestoneMessagesColour, "YOU GOT FIRST BLOOD");
-						PlaySfx( SFX_FIRSTBLOOD, 1.0F );
-					}
 					else
 					{
 						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "GOT FIRST BLOOD" );
 						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					}
+
+					if(Killer == WatchPlayerSelect.value)
+						PlaySfx( SFX_FIRSTBLOOD, 1.0F );
 			}
 	}
 	// should we check for first to fifty kills?
@@ -207,15 +211,15 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 			{
 					FirstToFifty = TRUE;
 					if(Killer == WhoIAm)
-					{
 						AddColourMessageToQue( MilestoneMessagesColour, "YOU ARE FIRST TO 50 KILLS" );
-						PlaySfx( SFX_IMPRESSIVE, 1.0F );
-					}
 					else
 					{
 						sprintf( (char*)&tempstr[0], "%s %s", (const char *)GetName(Killer), "IS FIRST TO 50 KILLS" );
 						AddColourMessageToQue( MilestoneMessagesColour, (char*)&tempstr[0] );
 					}
+
+					if(Killer == WatchPlayerSelect.value)
+						PlaySfx( SFX_IMPRESSIVE, 1.0F );
 			}
 	}
 
@@ -229,7 +233,7 @@ void UpdateKillStats(int Killer, int Victim, int WeaponType, int Weapon)
 	// killed with a gravgon
 	if(WeaponType == WEPTYPE_Secondary && Weapon == 4)
 	{
-			if(Victim == WhoIAm) PlaySfx( SFX_HUMILIATION, 1.0F );
+			if(Victim == WatchPlayerSelect.value) PlaySfx( SFX_HUMILIATION, 1.0F );
 			AddColourMessageToQue( MilestoneMessagesColour, "HUMILIATION" );
 			return;		
 	}
@@ -270,15 +274,15 @@ void UpdateKillCount(int Killer)
 
 	// name of killer
 	if(Killer == WhoIAm)
-	{
 		strcpy(prefix, "YOU ARE");
-		PlaySound = TRUE;
-	}
 	else
 	{
 		strcpy(prefix, (const char *)GetName(Killer));
 		strcat(prefix, " IS");
 	}
+
+	if(Killer == WatchPlayerSelect.value)
+		PlaySound = TRUE;
 
 	// check for milestone achievements
 	switch(KillCounter[Killer])
