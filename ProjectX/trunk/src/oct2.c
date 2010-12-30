@@ -1760,10 +1760,10 @@ void DrawSimplePanel()
 	  if(SwitchedToWatchMode)
 	  {
 			// show who i am watching
-			CenterPrint4x5Text( 
-				(char *)GetName(WatchPlayerSelect.value), 
-				render_info.window_size.cy - 15,
-				4 );
+			Print4x5Text( 
+				(char *)GetName(WatchPlayerSelect.value), FontWidth,
+				render_info.window_size.cy - 2.0F*FontHeight,
+				WHITE );
 
 // TODO why is this here ? above code should just execute normally in watch mode to show hud
 
@@ -1775,11 +1775,11 @@ void DrawSimplePanel()
 					64, 255, 64, 255 );
 			// invulnerable
 			if( Ships[WatchPlayerSelect.value].Invul )
-				Print4x5Text( "Invulnerable" , FontWidth ,
+				Print4x5Text( "Chaos" , FontWidth ,
 					render_info.window_size.cy-((FontHeight*4)+8) , HUDColour );
 			// golden power pod
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_SuperNashram )
-				Print4x5Text( "Golden Power Pod" , FontWidth , 
+				Print4x5Text( "GPP" , FontWidth , 
 					render_info.window_size.cy-((FontHeight*5)+10) , HUDColour );
 			// stealthed
 			if( Ships[WatchPlayerSelect.value].Object.Flags & SHIP_Stealth )
