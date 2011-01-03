@@ -1867,7 +1867,7 @@ int16 DoDamage( BOOL OverrideInvul )
 		if( Ships[WhoIAm].Damage )
 		{
 			if( Ships[ WhoIAm ].Invul) 
-				Ships[WhoIAm].Damage *= -0.33F;
+				Ships[WhoIAm].Damage *= -0.80F;
 			else
 				Ships[WhoIAm].Damage *= -1.0F;
 			Ships[WhoIAm].Object.Shield += Ships[WhoIAm].Damage;
