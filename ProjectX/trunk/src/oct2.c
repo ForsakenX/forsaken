@@ -197,8 +197,6 @@ char *CurrentLevelsList;
 
 px_timer_t level_time;
 
-void InitFontTransTable();
-
 void InitModeCase(void);
 void DebugState( const char * str );
 
@@ -2711,7 +2709,6 @@ BOOL RenderScene( void )
   case STATUS_WaitingAfterScore:
 	DebugState("STATUS_WaitingAfterScore\n");
 
-    InitFontTransTable( TRUE );
     clear_black();
     e = 0;
 
@@ -2785,15 +2782,12 @@ BOOL RenderScene( void )
 
       //DebugPrintf("STATUS_WaitingAfterScore setting MyGameStatus to STATUS_Normal\n");
       MyGameStatus = STATUS_Normal;
-      InitFontTransTable();
       GameStatus[WhoIAm] = MyGameStatus;
       SendGameMessage(MSG_LONGSTATUS, 0, 0, 0, 0);
 
     }else{
       if( OverallGameStatus == STATUS_Normal )
       {
-        InitFontTransTable();
-
         if( CountDownOn )
         {
           CreateCountdownDigits();
@@ -2987,8 +2981,6 @@ BOOL RenderScene( void )
   case  STATUS_StartingMultiplayerSynch:
 	DebugState("STATUS_StartingMultiplayerSynch\n");
 
-    InitFontTransTable( TRUE );
-
     ReceiveGameMessages();
 
     if( IMustQuit )
@@ -3053,7 +3045,6 @@ BOOL RenderScene( void )
 
 	  // $$$
       NextworkOldBikeNum = -1;
-      InitFontTransTable();
 
 			input_grab( TRUE );
 
@@ -3070,7 +3061,6 @@ BOOL RenderScene( void )
         SendGameMessage(MSG_STATUS, 0, 0, 0, 0);
         // $$$
         NextworkOldBikeNum = -1;
-        InitFontTransTable();
       }
     }
     break;

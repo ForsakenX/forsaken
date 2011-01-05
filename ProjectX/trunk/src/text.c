@@ -750,6 +750,18 @@ void PrintScoreSort( void )
 					{
 						sprintf( (char*) &buf[0] ,"%*dms", 4, (uint16) Ships[GetPlayerByRank(i)].network_player->ping );
 						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), ((GameStatus[i] == STATUS_Left) ? DARKGRAY : GREEN) );
+
+				/*		sprintf( (char*) &buf[0] ,"IP: %s PING: %d LOSS: %d LOST: %d BW IN: %d BW OUT: %d PORT: %d", 
+													Ships[GetPlayerByRank(i)].network_player->ip,
+													Ships[GetPlayerByRank(i)].network_player->ping,
+													Ships[GetPlayerByRank(i)].network_player->packet_loss,
+													Ships[GetPlayerByRank(i)].network_player->packets_lost,
+													Ships[GetPlayerByRank(i)].network_player->bw_in,
+													Ships[GetPlayerByRank(i)].network_player->bw_out,
+													Ships[GetPlayerByRank(i)].network_player->port);
+
+						Print4x5TextSmall( &buf[0] , left_offset, top_offset+((FontHeight-8.0F)/2.0F), GREEN );*/
+
 					}
 				}
 
@@ -1939,40 +1951,30 @@ void InitFont( void )
 {
 	uint16 i;
 	uint8 e;
-	int x,y;
-	int col;
 
 	for( i = 0; i < 0x100 ; i++ )
-	{
 		CharTrans[i] = 0;
-	}
 
 	e = 1;
 	for( i = 0 ; i < 0x30 ; i++ )
-	{
 		CharTrans[i] = 0;
-	}
+
 	for( ; i < 0x3a ; i++ , e++ )		// 0 - 9
-	{
 		CharTrans[i] = e;
-	}
+
 	for( ; i < 0x41 ; i++ )
-	{
 		CharTrans[i] = 0;
-	}
+
 	for( ; i < 0x5b ; i++ , e++ )		// a - z
-	{
 		CharTrans[i] = e;
-	}
+
 	for( ; i < 0x61 ; i++ )
-	{
 		CharTrans[i] = 0;
-	}
+
 	e = 11;
 	for( ; i < 0x7b ; i++ , e++ )		// A - Z
-	{
 		CharTrans[i] = e;
-	}
+
 	CharTrans['.'] = e++;
 	e = 73;
 	CharTrans[(uint8)','] = e++;
@@ -1986,307 +1988,26 @@ void InitFont( void )
 	CharTrans[(uint8)'+'] = e++;
 	CharTrans[(uint8)'-'] = e++;
 	CharTrans[(uint8)'='] = e++;
-	CharTrans[(uint8)'\''] = e++;
 
-	CharTrans[(uint8)'å'] = 11; //'A'
-	CharTrans[(uint8)'Å'] = 11; //'A'
-	CharTrans[(uint8)'ç'] = 13; //'C'
-	CharTrans[(uint8)'Ç'] = 13; //'C'
-
-
+	e++;
 	e = 86;
-	CharTrans[(uint8)'à'] = e;
-	CharTrans[(uint8)'À'] = e++;
-	CharTrans[(uint8)'á'] = e;
-	CharTrans[(uint8)'Á'] = e++;
-	CharTrans[(uint8)'ä'] = e;
-	CharTrans[(uint8)'Ä'] = e++;
-	CharTrans[(uint8)'â'] = e;
-	CharTrans[(uint8)'Â'] = e++;
-	CharTrans[(uint8)'è'] = e;
-	CharTrans[(uint8)'È'] = e++;
-	CharTrans[(uint8)'é'] = e;
-	CharTrans[(uint8)'É'] = e++;
-	CharTrans[(uint8)'ë'] = e;
-	CharTrans[(uint8)'Ë'] = e++;
-	CharTrans[(uint8)'ê'] = e;
-	CharTrans[(uint8)'Ê'] = e++;
-	CharTrans[(uint8)'ì'] = e;
-	CharTrans[(uint8)'Ì'] = e++;
-	CharTrans[(uint8)'í'] = e;
-	CharTrans[(uint8)'Í'] = e++;
-	CharTrans[(uint8)'ï'] = e;
-	CharTrans[(uint8)'Ï'] = e++;
-	CharTrans[(uint8)'î'] = e;
-	CharTrans[(uint8)'Î'] = e++;
-	CharTrans[(uint8)'ò'] = e;
-	CharTrans[(uint8)'Ò'] = e++;
-	CharTrans[(uint8)'ó'] = e;
-	CharTrans[(uint8)'Ó'] = e++;
-	CharTrans[(uint8)'ö'] = e;
-	CharTrans[(uint8)'Ö'] = e++;
-	CharTrans[(uint8)'ô'] = e;
-	CharTrans[(uint8)'Ô'] = e++;
-	CharTrans[(uint8)'ù'] = e;
-	CharTrans[(uint8)'Ù'] = e++;
-	CharTrans[(uint8)'ú'] = e;
-	CharTrans[(uint8)'Ú'] = e++;
-	CharTrans[(uint8)'ü'] = e;
-	CharTrans[(uint8)'Ü'] = e++;
-	CharTrans[(uint8)'û'] = e;
-	CharTrans[(uint8)'Û'] = e++;
-	CharTrans[(uint8)'ñ'] = e;
-	CharTrans[(uint8)'Ñ'] = e++;
-
-	for( col = 0 ; col < MAXFONTCOLOURS ; col++ )
-	{
-		for( e = 0 ; e < 255 ; e++ )
-		{
-			if( col < 8 )
-			{
-				y = ( ( e / 16 )* FontSourceHeight) + (col*(FontSourceHeight*3));
-				x = ( e & 15 )* FontSourceWidth ;
-			}else{
-				y = ( ( e / 16 )* FontSourceHeight) + (6*(FontSourceHeight*3));
-				x = ( ( e & 15 )* FontSourceWidth)+ ( FontSourceWidth * 16 );
-			}
-			TextSrcX[col][e] = x;
-			TextSrcY[col][e] = y;
-		}
-
-		TextSrcY[col][(uint8)'à'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'à'] = ( 0 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'á'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'á'] = ( 1 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ä'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ä'] = ( 2 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'â'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'â'] = ( 3 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'è'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'è'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'é'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'é'] = ( 5 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ë'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ë'] = ( 6 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ê'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ê'] = ( 7 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ì'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ì'] = ( 8 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'í'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'í'] = ( 9 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ï'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ï'] = ( 10 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'î'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'î'] = ( 11 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ò'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ò'] = ( 12 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ó'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ó'] = ( 13 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ö'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ö'] = ( 14 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ô'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ô'] = ( 15 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ù'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ù'] = ( 0 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ú'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ú'] = ( 1 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ü'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ü'] = ( 2 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'û'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'û'] = ( 3 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ñ'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ñ'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-	}
+	CharTrans[(uint8)'?'] = e++;
+	CharTrans[(uint8)'!'] = e++;
+	CharTrans[(uint8)'"'] = e++;
+	CharTrans[(uint8)'#'] = e++;
+	CharTrans[(uint8)'$'] = e++;
+//	CharTrans[(uint8)'%'] =
+ e++;
+	CharTrans[(uint8)'&'] = e++;
+	CharTrans[(uint8)':'] = e++;
+	CharTrans[(uint8)'@'] = e++;
+	CharTrans[(uint8)'\\'] = e++;
+	CharTrans[(uint8)'<'] = e++;
+	CharTrans[(uint8)'>'] = e++;
+	CharTrans[(uint8)'{'] = e++;
+	CharTrans[(uint8)'}'] = e++;
+	CharTrans[(uint8)'^'] = e++;
+	CharTrans[(uint8)'_'] = e++;
+	CharTrans[(uint8)'`'] = e++;
+	CharTrans[(uint8)'~'] = e++;
 }
-
-
-/*===================================================================
-	Procedure	:		Init the font surface...
-	Input		:		nothing
-	Output		:		nothing
-===================================================================*/
-void InitFontTransTable( void )
-{
-	uint16 i;
-	uint8 e;
-	int x,y;
-	int col;
-
-	for( i = 0; i < 0x100 ; i++ )
-	{
-		CharTrans[i] = 0;
-	}
-
-	e = 1;
-	for( i = 0 ; i < 0x30 ; i++ )
-	{
-		CharTrans[i] = 0;
-	}
-	for( ; i < 0x3a ; i++ , e++ )		// 0 - 9
-	{
-		CharTrans[i] = e;
-	}
-	for( ; i < 0x41 ; i++ )
-	{
-		CharTrans[i] = 0;
-	}
-	for( ; i < 0x5b ; i++ , e++ )		// a - z
-	{
-		CharTrans[i] = e;
-	}
-	for( ; i < 0x61 ; i++ )
-	{
-		CharTrans[i] = 0;
-	}
-	e = 11;
-	for( ; i < 0x7b ; i++ , e++ )		// A - Z
-	{
-		CharTrans[i] = e;
-	}
-	CharTrans['.'] = e++;
-	e = 73;
-	CharTrans[(uint8)','] = e++;
-	CharTrans[(uint8)';'] = e++;
-	CharTrans[(uint8)'['] = e;
-	CharTrans[(uint8)'('] = e++;
-	CharTrans[(uint8)']'] = e;
-	CharTrans[(uint8)')'] = e++;
-	CharTrans[(uint8)'*'] = e++;
-	CharTrans[(uint8)'/'] = e++;
-	CharTrans[(uint8)'+'] = e++;
-	CharTrans[(uint8)'-'] = e++;
-	CharTrans[(uint8)'='] = e++;
-	CharTrans[(uint8)'\''] = e++;
-
-	CharTrans[(uint8)'å'] = 11; //'A'
-	CharTrans[(uint8)'Å'] = 11; //'A'
-	CharTrans[(uint8)'ç'] = 13; //'C'
-	CharTrans[(uint8)'Ç'] = 13; //'C'
-
-	e = 86;
-	CharTrans[(uint8)'à'] = e;
-	CharTrans[(uint8)'À'] = e++;
-	CharTrans[(uint8)'á'] = e;
-	CharTrans[(uint8)'Á'] = e++;
-	CharTrans[(uint8)'ä'] = e;
-	CharTrans[(uint8)'Ä'] = e++;
-	CharTrans[(uint8)'â'] = e;
-	CharTrans[(uint8)'Â'] = e++;
-	CharTrans[(uint8)'è'] = e;
-	CharTrans[(uint8)'È'] = e++;
-	CharTrans[(uint8)'é'] = e;
-	CharTrans[(uint8)'É'] = e++;
-	CharTrans[(uint8)'ë'] = e;
-	CharTrans[(uint8)'Ë'] = e++;
-	CharTrans[(uint8)'ê'] = e;
-	CharTrans[(uint8)'Ê'] = e++;
-	CharTrans[(uint8)'ì'] = e;
-	CharTrans[(uint8)'Ì'] = e++;
-	CharTrans[(uint8)'í'] = e;
-	CharTrans[(uint8)'Í'] = e++;
-	CharTrans[(uint8)'ï'] = e;
-	CharTrans[(uint8)'Ï'] = e++;
-	CharTrans[(uint8)'î'] = e;
-	CharTrans[(uint8)'Î'] = e++;
-	CharTrans[(uint8)'ò'] = e;
-	CharTrans[(uint8)'Ò'] = e++;
-	CharTrans[(uint8)'ó'] = e;
-	CharTrans[(uint8)'Ó'] = e++;
-	CharTrans[(uint8)'ö'] = e;
-	CharTrans[(uint8)'Ö'] = e++;
-	CharTrans[(uint8)'ô'] = e;
-	CharTrans[(uint8)'Ô'] = e++;
-	CharTrans[(uint8)'ù'] = e;
-	CharTrans[(uint8)'Ù'] = e++;
-	CharTrans[(uint8)'ú'] = e;
-	CharTrans[(uint8)'Ú'] = e++;
-	CharTrans[(uint8)'ü'] = e;
-	CharTrans[(uint8)'Ü'] = e++;
-	CharTrans[(uint8)'û'] = e;
-	CharTrans[(uint8)'Û'] = e++;
-	CharTrans[(uint8)'ñ'] = e;
-	CharTrans[(uint8)'Ñ'] = e++;
-
-	for( col = 0 ; col < MAXFONTCOLOURS ; col++ )
-	{
-		for( e = 0 ; e < 255 ; e++ )
-		{
-			if( col < 8 )
-			{
-				y = ( ( e / 16 )* FontSourceHeight) + (col*(FontSourceHeight*3));
-				x = ( e & 15 )* FontSourceWidth ;
-			}else{
-				y = ( ( e / 16 )* FontSourceHeight) + (6*(FontSourceHeight*3));
-				x = ( ( e & 15 )* FontSourceWidth)+ ( FontSourceWidth * 16 );
-			}
-			TextSrcX[col][e] = x;
-			TextSrcY[col][e] = y;
-		}
-
-		TextSrcY[col][(uint8)'à'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'à'] = ( 0 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'á'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'á'] = ( 1 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ä'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ä'] = ( 2 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'â'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'â'] = ( 3 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'è'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'è'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'é'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'é'] = ( 5 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ë'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ë'] = ( 6 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ê'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ê'] = ( 7 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ì'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ì'] = ( 8 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'í'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'í'] = ( 9 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ï'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ï'] = ( 10 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'î'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'î'] = ( 11 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ò'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ò'] = ( 12 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ó'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ó'] = ( 13 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ö'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ö'] = ( 14 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ô'] = (7*(FontSourceHeight*3));
-		TextSrcX[col][(uint8)'ô'] = ( 15 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ù'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ù'] = ( 0 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ú'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ú'] = ( 1 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ü'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ü'] = ( 2 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'û'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'û'] = ( 3 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-		TextSrcY[col][(uint8)'ñ'] = (7*(FontSourceHeight*3))+FontSourceHeight;
-		TextSrcX[col][(uint8)'ñ'] = ( 4 * FontSourceWidth)+ ( FontSourceWidth * 16 );			
-	}
-}
-
-
-
-#if 0
-  Dec Chr  Dec Chr  Dec Chr  
-  --- ---  --- ---  --- ---  
-  128  Ç   144  É   160  á   
-  129  ü   145  æ   161  í   
-  130  é   146  Æ   162  ó   
-  131  â   147  ô   163  ú   
-  132  ä   148  ö   164  ñ   
-  133  à   149  ò   165  Ñ   
-  134  å   150  û   166  ª   
-  135  ç   151  ù   167  º   
-  136  ê   152  ÿ   168  ¿   
-  137  ë   153  Ö   169  _   
-  138  è   154  Ü   170  ¬   
-  139  ï   155  ¢   171  ½   
-  140  î   156  £   172  ¼   
-  141  ì   157  ¥   173  ¡   
-  142  Ä   158  P   174  «   
-  143  Å   159  ƒ   175  »   
-#endif
