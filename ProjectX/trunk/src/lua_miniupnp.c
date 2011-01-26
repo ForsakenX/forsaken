@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include <lua.h>
 #include <lauxlib.h>
 #include <miniupnpc.h>
@@ -99,7 +100,7 @@ static int luaupnp_getigdat(lua_State *L)
 	}
 }
 
-static void getigddata(lua_State *L, int index,
+static void getigddata(lua_State *L, int index, int cif,
 	const char **controlURL,
 	const char **servicetype,
 	const char **lanaddr
@@ -107,13 +108,13 @@ static void getigddata(lua_State *L, int index,
 {
 	if (controlURL)
 	{
-		lua_getfield(L, index, "controlURL");
+		lua_getfield(L, index, cif ? "controlURL_CIF" : "controlURL");
 		*controlURL = luaL_checkstring(L, -1);
 		lua_pop(L, 1);
 	}
 	if (servicetype)
 	{
-		lua_getfield(L, index, "servicetype");
+		lua_getfield(L, index, cif ? "servicetype_CIF" : "servicetype");
 		*servicetype = luaL_checkstring(L, -1);
 		lua_pop(L, 1);
 	}
@@ -136,7 +137,7 @@ static int luaupnp_addportmap(lua_State *L)
 	const char *proto;
 	int ret;
 
-	getigddata(L, 1, &controlURL, &servicetype, &lanaddr);
+	getigddata(L, 1, 0, &controlURL, &servicetype, &lanaddr);
 	port = lua_tointeger(L, 2);
 	luaL_argcheck(L, port > 0 && port < 65536, 2, "invalid port number");
 	portstr = lua_tostring(L, 2);
@@ -166,7 +167,7 @@ static int luaupnp_rmportmap(lua_State *L)
 	const char *proto;
 	int ret;
 
-	getigddata(L, 1, &controlURL, &servicetype, NULL);
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
 	port = lua_tointeger(L, 2);
 	luaL_argcheck(L, port > 0 && port < 65536, 2, "invalid port number");
 	portstr = lua_tostring(L, 2);
@@ -208,7 +209,7 @@ static int luaupnp_listportmaps(lua_State *L)
 	int ret;
 	int i;
 
-	getigddata(L, 1, &controlURL, &servicetype, NULL);
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
 
 	if (!UPNP_GetPortMappingNumberOfEntries(controlURL, servicetype, &n))
 		lua_createtable(L, n, 0);
@@ -261,7 +262,7 @@ static int luaupnp_findportmap(lua_State *L)
 	char localport[6];
 	int ret;
 
-	getigddata(L, 1, &controlURL, &servicetype, NULL);
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
 	extport = lua_tointeger(L, 2);
 	luaL_argcheck(L, extport > 0 && extport < 65536, 2, "invalid port number");
 	extportstr = lua_tostring(L, 2);
@@ -291,11 +292,95 @@ static int luaupnp_getwanaddr(lua_State *L)
 	char wanaddr[16];
 	int ret;
 
-	getigddata(L, 1, &controlURL, &servicetype, NULL);
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
 	ret = UPNP_GetExternalIPAddress(controlURL, servicetype, wanaddr);
 	if (!ret && wanaddr[0])
 	{
 		lua_pushstring(L, wanaddr);
+		return 1;
+	}
+	else
+	{
+		lua_pushnil(L);
+		lua_pushfstring(L, "%s (%d)", strupnperror(ret), ret);
+		return 2;
+	}
+}
+
+static int luaupnp_getconntype(lua_State *L)
+{
+	const char *controlURL;
+	const char *servicetype;
+	char conntype[64];
+	int ret;
+
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
+	ret = UPNP_GetConnectionTypeInfo(controlURL, servicetype, conntype);
+	if (!ret && conntype[0])
+	{
+		lua_pushstring(L, conntype);
+		return 1;
+	}
+	else
+	{
+		lua_pushnil(L);
+		lua_pushfstring(L, "%s (%d)", strupnperror(ret), ret);
+		return 2;
+	}
+}
+
+static int luaupnp_getconnstatus(lua_State *L)
+{
+	const char *controlURL;
+	const char *servicetype;
+	char status[64];
+	unsigned int uptime;
+	time_t now;
+	char lasterror[64];
+	int ret;
+
+	getigddata(L, 1, 0, &controlURL, &servicetype, NULL);
+	ret = UPNP_GetStatusInfo(controlURL, servicetype,
+		status, &uptime, lasterror);
+	if (!ret)
+	{
+		now = time(NULL);
+		lua_createtable(L, 0, 3);
+		lua_pushstring(L, status);
+		lua_setfield(L, -2, "status");
+		lua_pushinteger(L, uptime);
+		lua_setfield(L, -2, "uptime");
+		lua_pushinteger(L, now - uptime);
+		lua_setfield(L, -2, "starttime");
+		lua_pushstring(L, lasterror);
+		lua_setfield(L, -2, "lasterror");
+		return 1;
+	}
+	else
+	{
+		lua_pushnil(L);
+		lua_pushfstring(L, "%s (%d)", strupnperror(ret), ret);
+		return 2;
+	}
+}
+
+static int luaupnp_getbandwidth(lua_State *L)
+{
+	const char *controlURL_CIF;
+	const char *servicetype_CIF;
+	unsigned int down, up;
+	int ret;
+
+	getigddata(L, 1, 1, &controlURL_CIF, &servicetype_CIF, NULL);
+	ret = UPNP_GetLinkLayerMaxBitRates(controlURL_CIF, servicetype_CIF,
+		&down, &up);
+	if (!ret)
+	{
+		lua_createtable(L, 0, 2);
+		lua_pushinteger(L, down);
+		lua_setfield(L, -2, "downbps");
+		lua_pushinteger(L, up);
+		lua_setfield(L, -2, "upbps");
 		return 1;
 	}
 	else
@@ -319,6 +404,9 @@ int luaopen_miniupnp(lua_State *L)
 		{ "list", luaupnp_listportmaps },
 		{ "find", luaupnp_findportmap },
 		{ "wanaddr", luaupnp_getwanaddr },
+		{ "conntype", luaupnp_getconntype },
+		{ "connstatus", luaupnp_getconnstatus },
+		{ "bandwidth", luaupnp_getbandwidth },
 		{ NULL, NULL }
 	};
 
