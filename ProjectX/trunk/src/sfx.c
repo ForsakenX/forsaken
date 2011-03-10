@@ -2539,7 +2539,7 @@ void StopLoopingSfx( int index )
 
 	if ( SpotSfxList[ index ].source )
 	{
-		DebugPrintf("StopLoopingSfx - looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
+		//DebugPrintf("StopLoopingSfx - looping sound %d never stopped\n", SpotSfxList[ index ].sfxindex);
 		sound_release_source( SpotSfxList[ index ].source );
 		SpotSfxList[ index ].source = NULL;
 	}
