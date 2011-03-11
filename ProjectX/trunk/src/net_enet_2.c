@@ -1142,8 +1142,8 @@ static void new_packet( ENetEvent * event )
 				ENetPeer * bad_peer = find_peer_by_id( packet->id );
 				if(!bad_peer)
 				{
-					DebugPrintf("network security: player told us he lost connection from unknown player %d\n",
-						packet->id );
+					DebugPrintf("network security: player %d told us he lost connection from unknown player %d\n",
+						peer_data->id, packet->id );
 					break;
 				}
 				if( i_am_host )
