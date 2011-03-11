@@ -243,7 +243,7 @@ void sound_play( sound_source_t * source )
 	alSourcePlay( source->id );
 	//
 	//DebugPrintf("sound_play: playing sound='%s' count=%d source=%d\n",
-		source->path, stats.playing, source);
+	//	source->path, stats.playing, source);
 }
 
 void sound_play_looping( sound_source_t * source )
