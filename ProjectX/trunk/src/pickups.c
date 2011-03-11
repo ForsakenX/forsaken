@@ -2261,7 +2261,7 @@ void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 		if( ( Pickups[ i ].Owner == Owner ) && ( Pickups[ i ].ID == ID ) )
 		{
 #if DEBUG_PICKUPS
-			DebugPrintf( "Killed '%s' Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
+			DebugPrintf( "pickups: Killed '%s' Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
 #endif
 
 			switch( Style )
@@ -2343,8 +2343,8 @@ void KillPickup( uint16 Owner, uint16 ID, int16 Style )
 	AddFailedKillToQue( Owner, ID, Style, (uint16) -1 );
 
 #if DEBUG_PICKUPS
-	if( Owner != (uint16) -1 ) DebugPrintf( "Couldnt't kill pickup of Owner '%s', ID %d\n", &Names[ Owner ][ 0 ], ID );
-	else DebugPrintf( "Couldnt't kill pickup of No Owner, ID %d\n", ID );
+	if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Couldnt't kill pickup of Owner '%s', ID %d\n", &Names[ Owner ][ 0 ], ID );
+	else DebugPrintf( "pickups: Couldnt't kill pickup of No Owner, ID %d\n", ID );
 #endif
 }
 
@@ -2432,24 +2432,24 @@ void KillUsedPickup( uint16 i )
 			}
 
 #if DEBUG_PICKUPS
-			if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "Killed '%s' from slot %d, Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
-			else DebugPrintf( "Killed '%s' from slot %d, No Owner, ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, Pickups[i].ID );
+			if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "pickups: Killed '%s' from slot %d, Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
+			else DebugPrintf( "pickups: Killed '%s' from slot %d, No Owner, ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, Pickups[i].ID );
 #endif
 		}
 		else
 		{
 			Pickups[ i ].RegenSlot = -1;
 #if DEBUG_PICKUPS
-			if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "Killed '%s'. Owner '%s', ID %d with slot grater than max slots\n", Messages[ Pickups[i].Type ], &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
-			else DebugPrintf( "Killed '%s'. No Owner, ID %d with slot grater than max slots\n", Messages[ Pickups[i].Type ], Pickups[i].ID );
+			if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "pickups: Killed '%s'. Owner '%s', ID %d with slot grater than max slots\n", Messages[ Pickups[i].Type ], &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID );
+			else DebugPrintf( "pickups: Killed '%s'. No Owner, ID %d with slot grater than max slots\n", Messages[ Pickups[i].Type ], Pickups[i].ID );
 #endif
 		}
 	}
 	else
 	{
 #if DEBUG_PICKUPS
-		if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "Killed '%s' from slot %d, Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID  );
-		else DebugPrintf( "Killed '%s' from slot %d, No Owner, ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, Pickups[i].ID  );
+		if( Pickups[i].Owner != (uint16) -1 ) DebugPrintf( "pickups: Killed '%s' from slot %d, Owner '%s', ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, &Names[ Pickups[i].Owner ][ 0 ], Pickups[i].ID  );
+		else DebugPrintf( "pickups: Killed '%s' from slot %d, No Owner, ID %d\n", Messages[ Pickups[i].Type ], Pickups[i].RegenSlot, Pickups[i].ID  );
 #endif
 	}
 
@@ -2475,7 +2475,7 @@ void CleanUpPickup( uint16 i )
 #if DEBUG_PICKUPS
 	if( NumPickupType[ Pickups[ i ].Type ] < 0 )
 	{
-		DebugPrintf( "Killed more %s's than allowed\n", Messages[ Pickups[ i ].Type ] );
+		DebugPrintf( "pickups: Killed more %s's than allowed\n", Messages[ Pickups[ i ].Type ] );
 	}
 #endif
 
@@ -2557,7 +2557,7 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	
 	   			default:
 #if DEBUG_PICKUPS
-	   				DebugPrintf( "Tried to generated more %s's than allowed\n", Messages[ Type ] );
+	   				DebugPrintf( "pickups: Tried to generated more %s's than allowed\n", Messages[ Type ] );
 #endif
 					return( (uint16) -2 );
 	   				break;
@@ -2627,23 +2627,23 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 				RegenPoints[ RegenSlot ].PickupIndex = i;
 				RegenPoints[ RegenSlot ].PickupID = ID;
 #if DEBUG_PICKUPS
-				if( Owner != (uint16) -1 ) DebugPrintf( "Initialised '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
-				else DebugPrintf( "Initialised '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
+				if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Initialised '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
+				else DebugPrintf( "pickups: Initialised '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
 #endif
 			}
 			else
 			{
 #if DEBUG_PICKUPS
-				if( Owner != (uint16) -1 ) DebugPrintf( "Tried to init '%s', Owner '%s', ID %d, in regen slot grater than max slots\n", Messages[ Type ], &Names[ Owner ][ 0 ], ID );
-				else DebugPrintf( "Tried to init '%s', No Owner, ID %d, in regen slot grater than max slots\n", Messages[ Type ], ID );
+				if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Tried to init '%s', Owner '%s', ID %d, in regen slot grater than max slots\n", Messages[ Type ], &Names[ Owner ][ 0 ], ID );
+				else DebugPrintf( "pickups: Tried to init '%s', No Owner, ID %d, in regen slot grater than max slots\n", Messages[ Type ], ID );
 #endif
 			}
 		}
 		else
 		{
 #if DEBUG_PICKUPS
-			if( Owner != (uint16) -1 ) DebugPrintf( "Initialised '%s' in slot %d, Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
-			else DebugPrintf( "Initialised '%s' in slot %d, No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
+			if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Initialised '%s' in slot %d, Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
+			else DebugPrintf( "pickups: Initialised '%s' in slot %d, No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
 #endif
 		}
 
@@ -2762,8 +2762,8 @@ uint16 InitOnePickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, int
 	else
 	{
 #if DEBUG_PICKUPS
-		if( Owner != (uint16) -1 ) DebugPrintf( "Couldn't Initialise '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
-		else DebugPrintf( "Couldn't Initialise '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
+		if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Couldn't Initialise '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
+		else DebugPrintf( "pickups: Couldn't Initialise '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
 #endif
 	}
 
@@ -2916,8 +2916,8 @@ uint16 InitJoinPickup( VECTOR * Pos, uint16 Group, VECTOR * Dir, float Speed, in
 	else
 	{
 #if DEBUG_PICKUPS
-		if( Owner != (uint16) -1 ) DebugPrintf( "Couldn't Initialise '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
-		else DebugPrintf( "Couldn't Initialise '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
+		if( Owner != (uint16) -1 ) DebugPrintf( "pickups: Couldn't Initialise '%s' in slot %d. Owner '%s', ID %d\n", Messages[ Type ], RegenSlot, &Names[ Owner ][ 0 ], ID );
+		else DebugPrintf( "pickups: Couldn't Initialise '%s' in slot %d. No Owner, ID %d\n", Messages[ Type ], RegenSlot, ID );
 #endif
 	}
 	return i;
@@ -3000,7 +3000,7 @@ void ProcessPickups( void )
 //							if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 							{
 #if DEBUG_PICKUPS
-								DebugPrintf( "Tell %s to dissapear\n", Messages[ Pickups[ i ].Type ] );
+								DebugPrintf( "pickups: Tell %s to dissapear\n", Messages[ Pickups[ i ].Type ] );
 #endif
 							}
 
@@ -3025,7 +3025,7 @@ void ProcessPickups( void )
 //						if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 						{
 #if DEBUG_PICKUPS
-							DebugPrintf( "Kill %s immediatly\n", Messages[ Pickups[ i ].Type ] );
+							DebugPrintf( "pickups: Kill %s immediatly\n", Messages[ Pickups[ i ].Type ] );
 #endif
 						}
 
@@ -3358,7 +3358,7 @@ BOOL CheckValidRegenSlot( int16 Slot )
 		AddPickupToRegen( RegenPoints[ Slot ].Type );
 
 	/* let people know the pic file is messed up! */
-    DebugPrintf("Bad regen point detected! The PIC file needs to be fixed!\n");
+    DebugPrintf("pickups: Bad regen point detected! The PIC file needs to be fixed!\n");
 
 	/* failed */
 	return( FALSE );
@@ -3389,7 +3389,7 @@ BOOL LoadPickupsPositions( void )
   KillAllPickups();
 
 #if 0
-  DebugPrintf( "RandomSeeds %d, %d : NumPrimaryPickups %d\n", CopyOfSeed1, CopyOfSeed2, NumPrimaryPickups );
+  DebugPrintf( "pickups: RandomSeeds %d, %d : NumPrimaryPickups %d\n", CopyOfSeed1, CopyOfSeed2, NumPrimaryPickups );
 #endif
 
   /* convert the level_name into level_name.pic */
@@ -3720,7 +3720,7 @@ uint16 InitSlotPickup( uint16 Slot )
 #if DEBUG_PICKUPS
 		if( ( i == (uint16) -1 ) || ( i == (uint16) -2 ) )
 		{
-			DebugPrintf( "Unable to initialise pickup in slot %d\n", Slot );
+			DebugPrintf( "pickups: Unable to initialise pickup in slot %d\n", Slot );
 		}
 #endif
    	}
@@ -3978,7 +3978,7 @@ void ProcessRegenSlots( void )
 #if DEBUG_PICKUPS
 						if( ( i == (uint16) -1 ) || ( i == (uint16) -2 ) )
 						{
-							DebugPrintf( "Unable to initialise pickup in slot %d\n", Count );
+							DebugPrintf( "pickups: Unable to initialise pickup in slot %d\n", Count );
 						}
 #endif
 					}
@@ -4017,7 +4017,7 @@ void RegenerateQuedPickups( void )
 				case MPU_TYPE_INIT:
 					IP_Ptr = (SHORTPICKUP *) MissedPickups[ Count ].Struct;
 #if DEBUG_PICKUPS
-					DebugPrintf( "QUED INIT : " );
+					DebugPrintf( "pickups: QUED INIT : " );
 #endif
 					InitOnePickup( &IP_Ptr->Pos, IP_Ptr->Group,
 								   &IP_Ptr->Dir, IP_Ptr->Speed,
@@ -4030,7 +4030,7 @@ void RegenerateQuedPickups( void )
 				case MPU_TYPE_KILL:
 					KP_Ptr = (SHORTKILLPICKUP *) MissedPickups[ Count ].Struct;
 #if DEBUG_PICKUPS
-					DebugPrintf( "QUED KILL :" );
+					DebugPrintf( "pickups: QUED KILL :" );
 #endif
 					KillPickup( KP_Ptr->Owner, KP_Ptr->ID, KP_Ptr->Style );
 					break;
@@ -4139,13 +4139,13 @@ BOOL RegeneratePickup( uint16 Type )
 	/* the location given is occupied */
 	if ( i == (uint16) -1 )
 	{
-		DebugPrintf("RegeneratePickup (FAILED) location given is occupied.\n");
+		DebugPrintf("pickups: RegeneratePickup (FAILED) location given is occupied.\n");
 		return FALSE;
 	}
 	
 	/* too many of same type */
 	if( i == (uint16) -2 ){
-		DebugPrintf("RegeneratePickup (FAILED) too many of same type.\n");
+		DebugPrintf("pickups: RegeneratePickup (FAILED) too many of same type.\n");
 		return TRUE; /* dont complain */
 	}
 
@@ -4236,7 +4236,7 @@ void GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegen
 	int16	NumUsed = 0;
 
 #if DEBUG_PICKUPS
-	DebugPrintf( "Generate RegenSlot List : %d Regen Slots\n", NumRegenPoints );
+	DebugPrintf( "pickups: Generate RegenSlot List : %d Regen Slots\n", NumRegenPoints );
 #endif
 
 	for( Count = 0; Count < MAXGENREGENSLOTCOUNT; Count++ )
@@ -4250,7 +4250,7 @@ void GenRegenSlotList( uint16 Ship, SHORTREGENSLOT * RegenSlots, BYTE * NumRegen
 			NumUsed++;
 
 #if DEBUG_PICKUPS
-			DebugPrintf( "Section %d, Index %d\n", ( Section - 0 ), i );
+			DebugPrintf( "pickups: Section %d, Index %d\n", ( Section - 0 ), i );
 #endif
 		}
 	}
@@ -4269,7 +4269,7 @@ void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 	REGENPOINT	*	Ptr;
 
 #if DEBUG_PICKUPS
-	DebugPrintf( "Regenerate RegenSlot List : %d Regen Slots\n", NumRegenPoints );
+	DebugPrintf( "pickups: Regenerate RegenSlot List : %d Regen Slots\n", NumRegenPoints );
 #endif
 
 	if( RegenPoints )
@@ -4277,7 +4277,7 @@ void RegenRegenSlotList( SHORTREGENSLOT * Slots, BYTE Num )
 		Ptr = RegenPoints + ( ( Ships[ WhoIAm ].RegenSlots + 0 ) * MAXGENREGENSLOTCOUNT );
 
 #if DEBUG_PICKUPS
-		DebugPrintf( "Section %d, Number %d\n", ( Ships[ WhoIAm ].RegenSlots + 0 ), Num );
+		DebugPrintf( "pickups: Section %d, Number %d\n", ( Ships[ WhoIAm ].RegenSlots + 0 ), Num );
 #endif
 		memmove( Ptr, Slots, ( sizeof( REGENPOINT ) * Num ) );//memcpy
 	}
@@ -4363,7 +4363,7 @@ void CopyRegenSlots( uint16 Player )
 	else
 	{
 #if DEBUG_PICKUPS
-		DebugPrintf( "No regen point copy slot!\n" );
+		DebugPrintf( "pickups: No regen point copy slot!\n" );
 #endif
 	}
 }
@@ -5884,7 +5884,7 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 //			if( ( Pickups[ i ].Type >= PICKUP_Trojax ) && ( Pickups[ i ].Type <= PICKUP_Laser ) )
 			{
 #if DEBUG_PICKUPS
-				DebugPrintf( "Tell %s to collect %s\n", &Names[ Player ][ 0 ], Messages[ Pickups[ i ].Type ] );
+				DebugPrintf( "pickups: Tell %s to collect %s\n", &Names[ Player ][ 0 ], Messages[ Pickups[ i ].Type ] );
 #endif
 			}
 
@@ -7648,7 +7648,7 @@ void CorrectForExtraOrMissingPickups( void )
 				if ( ( TeamFlagsInLevel[ team ] + TeamFlagsInShips[ team ] ) == 1 )
 				{
 					if ( Host_TeamFlagTimer[ team ] > 0 )
-						DebugPrintf( "The %s flag has sorted itself out\n", TeamName[ team ] );
+						DebugPrintf( "pickups: The %s flag has sorted itself out\n", TeamName[ team ] );
 					Host_TeamFlagTimer[ team ] = 0; // correct number of flags -> cancel any existing timer
 				}
 				else if ( Host_TeamFlagTimer[ team ] > 0 )
@@ -7658,20 +7658,20 @@ void CorrectForExtraOrMissingPickups( void )
 					{
 						if ( !TeamFlagsInLevel[ team ] && !TeamFlagsInShips[ team ] )
 						{
-							DebugPrintf( "%s flag regenerated back in goal\n", TeamName[ team ] );
+							DebugPrintf( "pickups: %s flag regenerated back in goal\n", TeamName[ team ] );
 							GenerateFlagAtHome( team ); // generate missing flag back in its goal
 						}
 						else
 						{
 							KillAllPickupsOfTypeAndSend( TeamFlagPickup[ team ], PICKUPKILL_Immediate );
-							DebugPrintf( "%d %s flags in level killed\n", TeamFlagsInShips[ team ], TeamName[ team ] );
+							DebugPrintf( "pickups: %d %s flags in level killed\n", TeamFlagsInShips[ team ], TeamName[ team ] );
 						}
 						Host_TeamFlagTimer[ team ] = 0; // cancel timer
 					}
 				}
 				else
 				{
-					DebugPrintf( "The %s flag has messed up (%d player, %d level)\n",
+					DebugPrintf( "pickups: The %s flag has messed up (%d player, %d level)\n",
 								TeamName[ team ], TeamFlagsInShips[ team ], TeamFlagsInLevel[ team ] );
 					Host_TeamFlagTimer[ team ] = HOST_FLAG_TIME; // something's wrong with number of flags -> start timer
 				}
@@ -7699,16 +7699,16 @@ void CorrectForExtraOrMissingPickups( void )
 
 		if( NumWeapons < MaxPickupType[ PICKUP_Trojax + ( Count - 1 ) ] )
 		{
-			DebugPrintf( "OLD L %hd - P %hd - G %hd %s\n", CopyPrimaryInLevel[ Count ], CopyPrimaryInPlayers[ Count ], CopyPrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
-			DebugPrintf( "NEW L %hd - P %hd - G %hd %s\n", PrimaryInLevel[ Count ], PrimaryInPlayers[ Count ], PrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
+			DebugPrintf( "pickups: OLD L %hd - P %hd - G %hd %s\n", CopyPrimaryInLevel[ Count ], CopyPrimaryInPlayers[ Count ], CopyPrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
+			DebugPrintf( "pickups: NEW L %hd - P %hd - G %hd %s\n", PrimaryInLevel[ Count ], PrimaryInPlayers[ Count ], PrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
 			Msg( "A %s has disappeared from the level", PrimaryNames[ Count ] );
 		}
 		else
 		{
 			if( NumWeapons > MaxPickupType[ PICKUP_Trojax + ( Count - 1 ) ] )
 			{
-				DebugPrintf( "OLD L %hd - P %hd - G %hd %s\n", CopyPrimaryInLevel[ Count ], CopyPrimaryInPlayers[ Count ], CopyPrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
-				DebugPrintf( "NEW L %hd - P %hd - G %hd %s\n", PrimaryInLevel[ Count ], PrimaryInPlayers[ Count ], PrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
+				DebugPrintf( "pickups: OLD L %hd - P %hd - G %hd %s\n", CopyPrimaryInLevel[ Count ], CopyPrimaryInPlayers[ Count ], CopyPrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
+				DebugPrintf( "pickups: NEW L %hd - P %hd - G %hd %s\n", PrimaryInLevel[ Count ], PrimaryInPlayers[ Count ], PrimaryToGenerate[ Count ], PrimaryNames[ Count ] );
 				Msg( "An extra %s has appeared in the level", PrimaryNames[ Weapon ] );
 			}
 		}
@@ -7786,7 +7786,7 @@ BOOL AddFailedKillToQue( uint16 Owner, uint16 ID, int16 Style, uint16 NewOwner )
 
 	if( i != -1 )
 	{
-		DebugPrintf( "Added Failed KillPickup() Owner %d, ID %d to que\n", Owner, ID );
+		DebugPrintf( "pickups: Added Failed KillPickup() Owner %d, ID %d to que\n", Owner, ID );
 		FailedKill[ i ].ID = ID;
 		FailedKill[ i ].Owner = Owner;
 		FailedKill[ i ].NewOwner = NewOwner;
@@ -7868,7 +7868,7 @@ void ProcessFailedKills( void )
 		
 		if( FailedKill[ i ].Life < 0.0F )
 		{
-			DebugPrintf( "************** Dropped Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
+			DebugPrintf( "pickups: ************** Dropped Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
 			ReleaseFailedKillSlot( i );
 		}
 		else
@@ -7878,7 +7878,7 @@ void ProcessFailedKills( void )
 			if( Pickup != (uint16) -1 )
 			{
 				KillPickup( FailedKill[ i ].Owner, FailedKill[ i ].ID, FailedKill[ i ].Style );
-				DebugPrintf( "Removed Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
+				DebugPrintf( "pickups: Removed Failed KillPickup() Owner %d, ID %d from que\n", FailedKill[ i ].Owner, FailedKill[ i ].ID );
 				ReleaseFailedKillSlot( i );
 			}
 		}
