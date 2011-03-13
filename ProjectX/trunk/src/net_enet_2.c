@@ -179,10 +179,15 @@ static ENetPeer * find_peer_by_id( peer_id_t id )
 static peer_id_t find_free_id( void )
 {
 	peer_id_t id;
-	for( id = LOWEST_ID; id < HIGHEST_ID; id++ )
+	static peer_id_t last = LOWEST_ID;
+	if( last == HIGHEST_ID )
+		last = LOWEST_ID;
+	last++;
+	for( id = last; id <= HIGHEST_ID; id++ )
 	{
 		if( id != my_id && ! find_peer_by_id( id ) )
 		{
+			last = id;
 			return id;
 		}
 	}
