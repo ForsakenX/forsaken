@@ -257,7 +257,7 @@ static void bind_glBlendColor(void)
 	if( !glBlendColor )
 	{
 		glBlendColor = (PFNGLBLENDCOLOREXTPROC) no_glBlendColor;
-		DebugPrintf("bind_glBlendColor: failed to get proc address");
+		DebugPrintf("bind_glBlendColor: failed to get proc address\n");
 	}
 }
 

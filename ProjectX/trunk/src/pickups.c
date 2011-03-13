@@ -4017,7 +4017,7 @@ void RegenerateQuedPickups( void )
 				case MPU_TYPE_INIT:
 					IP_Ptr = (SHORTPICKUP *) MissedPickups[ Count ].Struct;
 #if DEBUG_PICKUPS
-					DebugPrintf( "pickups: QUED INIT : " );
+					DebugPrintf( "pickups: QUED INIT :\n" );
 #endif
 					InitOnePickup( &IP_Ptr->Pos, IP_Ptr->Group,
 								   &IP_Ptr->Dir, IP_Ptr->Speed,
@@ -4030,7 +4030,7 @@ void RegenerateQuedPickups( void )
 				case MPU_TYPE_KILL:
 					KP_Ptr = (SHORTKILLPICKUP *) MissedPickups[ Count ].Struct;
 #if DEBUG_PICKUPS
-					DebugPrintf( "pickups: QUED KILL :" );
+					DebugPrintf( "pickups: QUED KILL :\n" );
 #endif
 					KillPickup( KP_Ptr->Owner, KP_Ptr->ID, KP_Ptr->Style );
 					break;

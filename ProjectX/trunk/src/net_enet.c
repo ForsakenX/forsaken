@@ -891,7 +891,7 @@ static void new_packet( ENetEvent * event )
 				// peer is not the host
 				else
 				{
-					DebugPrintf("-- connection %s tried to send us new player event but they are not the host...",
+					DebugPrintf("-- connection %s tried to send us new player event but they are not the host...\n",
 								address_to_str(&peer->address));
 				}
 			}
@@ -928,8 +928,9 @@ static void new_packet( ENetEvent * event )
 					if( bad_peer_data->state == SYNCHING )
 					{			
 						// tell everyone to drop the connection
-						DebugPrintf("-- disconnecting %s ", address_to_str(address) );
-						DebugPrintf("cause %s failed to connect to them...\n", address_to_str(&peer->address));
+						DebugPrintf("-- disconnecting %s because %s failed to connect to them...\n", 
+							address_to_str(address),
+							address_to_str(&peer->address));
 						// lost connection event will fire
 						// this will send a DISCONNECT message for us to everyone
 						// and will cleanup the peer and everything else
@@ -943,8 +944,9 @@ static void new_packet( ENetEvent * event )
 						packet.address = *address;
 						packet.address.port = peer_data->connect_port;
 						network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-						DebugPrintf("-- telling %s to reconnect to ", address_to_str(&peer->address));
-						DebugPrintf("valid player %s cause they lost connection...\n", address_to_str(address));
+						DebugPrintf("-- telling %s to reconnect to valid player %s cause they lost connection...\n", 
+							address_to_str(&peer->address),
+							address_to_str(address));
 					}
 				}
 				// if not the host
@@ -976,8 +978,10 @@ static void new_packet( ENetEvent * event )
 					// if we are connected to this connection
 					if( connector )
 					{
-						DebugPrintf("-- player '%s' %s ", peer_data->player->name, address_to_str( &peer->address ));
-						DebugPrintf("successfully connected with %s\n",	address_to_str( address ));		
+						DebugPrintf("-- player '%s' %s successfully connected with %s\n",	
+							peer_data->player->name,
+							address_to_str( &peer->address ),
+							address_to_str( address ));		
 						peer_connected_to( peer, address );
 					}
 					// if we are not connected to this connection
@@ -988,8 +992,9 @@ static void new_packet( ENetEvent * event )
 						packet.type = DISCONNECT;
 						packet.address = *address;
 						network_send( peer_data->player, &packet, sizeof(packet), convert_flags(NETWORK_RELIABLE), system_channel );
-						DebugPrintf("-- telling %s to drop new connection ", address_to_str(&peer->address));
-						DebugPrintf("%s because we are not connected to them...\n", address_to_str(address) );
+						DebugPrintf("-- telling %s to drop new connection %s because we're not connected to them...\n"
+							address_to_str(&peer->address),
+							address_to_str(address));
 					}
 				}
 				// host tells player to connect to a new connection

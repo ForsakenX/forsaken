@@ -546,7 +546,6 @@ static BOOL RenderLoop()
     if (!RenderScene())
 	{
         Msg("RenderScene failed.\n");
-		DebugPrintf("RenderScene: failed.");
         return FALSE;
     }
 
@@ -566,7 +565,7 @@ static BOOL RenderLoop()
 			// this is the actual call to render a frame...
 			if (!render_flip(&render_info))
 			{
-				Msg("RenderLoop: render_flip() failed");
+				Msg("RenderLoop: render_flip() failed\n");
 				return FALSE;
 			}
 		}
@@ -655,7 +654,7 @@ FAILURE:
 	DebugMathErrors();
 
 	if ( UnMallocedBlocks() )
-		DebugPrintf( "Un-malloced blocks found!" );
+		DebugPrintf( "Un-malloced blocks found!\n" );
 
 #endif
 

@@ -220,7 +220,7 @@ BOOL OutputVisiStats( MLOADHEADER *m, char *lname )
 
 	if ( strlen(lname) == 0 )
 	{
-		DebugPrintf("Passed empty level name to OutputVisiStats!");
+		DebugPrintf("Passed empty level name to OutputVisiStats!\n");
 		return FALSE;
 	}
 
