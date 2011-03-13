@@ -286,7 +286,15 @@ void AddCommentToLog( char * str )
 		return;
 
 	if(!logfile_fp)
-		logfile_fp = file_open( convert_path("Logs\\projectx.log"), "w" );
+	{
+		time_t now;
+		struct tm *ts;
+		char buf[80];
+		now = time(NULL);
+		ts = localtime(&now);
+		strftime(buf,sizeof(buf),"logs\\%c %Z.txt",ts);
+		logfile_fp = file_open( convert_path(buf), "w" );
+	}
 
 	if( logfile_fp )
 	{
