@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdarg.h>
+#include <time.h>
+#include <sys/timeb.h>
 #include "main.h"
 #include "file.h"
 #include "util.h"
@@ -137,14 +139,24 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 
 void DebugPrintf( const char * format, ... )
 {
+	static FILE * logfile_fp;
   char buf[0x4000];
+	char *buf2;
+	int buf_length;
   va_list args;
+	struct timeb now;
+
+	ftime(&now);
+	sprintf( buf, "%ld.%.3d ",
+		now.time, now.millitm);
+	buf2 = strchr(buf,0);
+	buf_length = sizeof(buf)-strlen(buf);
 
 	if(!Debug)
 		return;
 
   va_start( args, format );
-  vsnprintf( buf, 0x4000, format, args );
+  vsnprintf( buf2, buf_length, format, args );
   va_end( args );
 
 #ifdef WIN32
@@ -153,8 +165,25 @@ void DebugPrintf( const char * format, ... )
   fputs( buf, stderr );
 #endif
 
-  if( DebugLog )
-    AddCommentToLog( buf );
+  if( !DebugLog )
+		return;
+
+	if(!logfile_fp)
+	{
+		time_t now;
+		struct tm *ts;
+		char buf[80];
+		now = time(NULL);
+		ts = localtime(&now);
+		strftime(buf,sizeof(buf),"logs\\%c %Z.txt",ts);
+		logfile_fp = file_open( convert_path(buf), "w" );
+	}
+
+	if( logfile_fp )
+	{
+		fputs( buf, logfile_fp );
+		fflush( logfile_fp );
+	}
 }
 
 // prints a message only if it wasn't the last one to be printed...

@@ -278,31 +278,6 @@ BOOL delete_file( char * str )
 #endif
 }
 
-void AddCommentToLog( char * str )
-{
-	static FILE * logfile_fp;
-
-	if(!Debug)
-		return;
-
-	if(!logfile_fp)
-	{
-		time_t now;
-		struct tm *ts;
-		char buf[80];
-		now = time(NULL);
-		ts = localtime(&now);
-		strftime(buf,sizeof(buf),"logs\\%c %Z.txt",ts);
-		logfile_fp = file_open( convert_path(buf), "w" );
-	}
-
-	if( logfile_fp )
-	{
-		fprintf( logfile_fp, "%s", str );
-		fflush( logfile_fp );
-	}
-}
-
 //
 // Find File Wrapper
 //

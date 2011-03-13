@@ -23,7 +23,6 @@ long Write_File( char * Filename, char * File_Buffer, long Write_Size );
 long Get_File_Size( char * Filename );
 BOOL file_time( const char * path, struct filetime *t );
 long Read_File( char * Filename, char * File_Buffer, long Read_Size );
-void AddCommentToLog( char * str );
 BOOL File_Exists( char * Filename );
 BOOL delete_file( char * path );
 
