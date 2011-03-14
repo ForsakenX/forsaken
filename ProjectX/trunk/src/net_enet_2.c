@@ -971,7 +971,7 @@ static void new_packet( ENetEvent * event )
 				}
 				else
 				{
-					DebugPrintf("network security: %s tried to give me my id is but they aren't the host\n",
+					DebugPrintf("network security: %s tried to give me my id but they aren't the host\n",
 						address_to_str(&peer->address));
 				}
 			}
