@@ -500,17 +500,6 @@ static void destroy_players( void )
 	network_players.last   = NULL;
 }
 
-static void disconnect_all( void )
-{
-	size_t x;
-	for( x = 0; x < enet_host->peerCount; x++ )
-	{
-		if ( enet_host->peers[x].state != ENET_PEER_STATE_DISCONNECTED )
-			enet_peer_disconnect_now( &enet_host->peers[x], 0 );
-	}
-	init_peers();
-}
-
 /*
  *
  *  hand shaking helpers
@@ -569,6 +558,8 @@ static int all_players_on_connected_list( ENetPeer ** connected_list, ENetPeer *
  */
 
 typedef enum {
+
+	// packet types
 	NAME,            // player tells us his name
 	CONNECT,         // host tells player to connect to another player
 	CONNECTED_TO,    // player tells the host they connected to a player
@@ -580,6 +571,12 @@ typedef enum {
 	MY_ID,           // player tells new player his id on connection
 	ACK_ID,          // player tells another player that he now has his id
 	ACK_MY_ID,       // player tells host that he has his id
+
+	// disconnect reasons
+	FAILED_SYNCH,    // host telling you that you failed to synch with someone
+	HOST_SAID_SO,    // host told me to disconnect from you
+	I_QUIT,          // I'm leaving the game
+	
 } p2p_event_t;
 
 typedef struct {
@@ -606,6 +603,17 @@ typedef struct {
 	p2p_event_t type;
 	peer_id_t id;
 } p2p_id_packet_t;
+
+static void disconnect_all( void )
+{
+	size_t x;
+	for( x = 0; x < enet_host->peerCount; x++ )
+	{
+		if ( enet_host->peers[x].state != ENET_PEER_STATE_DISCONNECTED )
+			enet_peer_disconnect_now( &enet_host->peers[x], I_QUIT );
+	}
+	init_peers();
+}
 
 static void new_connection( ENetPeer * peer )
 {
@@ -700,8 +708,9 @@ static void new_connection( ENetPeer * peer )
 	}
 }
 
-static void lost_connection( ENetPeer * peer )
+static void lost_connection( ENetPeer * peer, enet_uint32 data )
 {
+	char* reason = &data;
 	network_peer_data_t * peer_data = peer->data;
 
 	// print debug info
@@ -714,6 +723,20 @@ static void lost_connection( ENetPeer * peer )
 			peer_data->id,
 			name,
 			address_to_str(&peer->address));
+		switch(reason[0])
+		{
+			case FAILED_SYNCH:
+				DebugPrintf("network: reason was because you failed to synch with player %d\n", reason[1]); 
+				break;
+			case HOST_SAID_SO:
+				DebugPrintf("network: reason was because host told me to disconnect from you\n"); 
+				break;
+			case I_QUIT:
+				DebugPrintf("network: reason was because I'm leaving the game\n"); 
+				break;
+			default:
+				DebugPrintf("network: reason was unspecified\n");
+		}
 	}
 
 	// I'm still trying to connect to host
@@ -1130,7 +1153,7 @@ static void new_packet( ENetEvent * event )
 						DebugPrintf("network: host told us to disconnect from player %d\n",
 							packet->id);
 						// dissconnect message will fire and cleanup player
-						enet_peer_disconnect(bad_peer,0);
+						enet_peer_disconnect(bad_peer,HOST_SAID_SO);
 					}
 				}
 				else
@@ -1161,7 +1184,7 @@ static void new_packet( ENetEvent * event )
 						// lost connection event will fire
 						// this will send a DISCONNECT message for us to everyone
 						// and will cleanup the peer and everything else
-						enet_peer_disconnect(bad_peer,0);
+						enet_peer_disconnect_later(bad_peer,FAILED_SYNCH | peer_data->id << 8);
 					}
 					if( PEER_STATE(bad_peer) == PLAYING )
 					{
@@ -1384,7 +1407,7 @@ void network_pump()
 			new_connection( event.peer );
 			break;
 		case ENET_EVENT_TYPE_DISCONNECT:
-			lost_connection( event.peer );
+			lost_connection( event.peer, event.data );
 			break;
 		case ENET_EVENT_TYPE_RECEIVE:
 			new_packet( &event );
