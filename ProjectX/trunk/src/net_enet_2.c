@@ -766,7 +766,7 @@ static void lost_connection( ENetPeer * peer )
 				packet.type = DISCONNECT;
 				packet.id = id;
 				network_broadcast( &packet, sizeof(packet),
-					convert_flags(NETWORK_RELIABLE), system_channel );
+					NETWORK_RELIABLE, system_channel );
 				DebugPrintf("network: telling everyone to drop connection\n");
 			}
 			// I am not the host
@@ -778,7 +778,7 @@ static void lost_connection( ENetPeer * peer )
 				packet.type = LOST_CONNECTION;
 				packet.id = id;
 				network_send( host_data->player, &packet, sizeof(packet),
-					convert_flags(NETWORK_RELIABLE), system_channel );
+					NETWORK_RELIABLE, system_channel );
 				DebugPrintf("network: telling host that we lost connection\n");
 			}
 		}
@@ -805,7 +805,7 @@ static void tell_peer_to_connect_to_synchers( network_player_t * player )
 			packet.address = peer->address;
 			packet.address.port = PEER_CONNECT_PORT(peer);
 			network_send( player, &packet, sizeof(packet),
-				convert_flags(NETWORK_RELIABLE), system_channel );
+				NETWORK_RELIABLE, system_channel );
 			DebugPrintf("network: sending connect for syncher %d\n",
 				PEER_ID(player_peer));
 		}
@@ -818,7 +818,7 @@ static void send_new_player_event( ENetPeer * peer )
 	packet.type = NEW_PLAYER;
 	packet.id = PEER_ID(peer);
 	network_broadcast( &packet, sizeof(packet),
-		convert_flags(NETWORK_RELIABLE), system_channel );
+		NETWORK_RELIABLE, system_channel );
 	DebugPrintf("network: sent new player event for player (%d) to everyone\n",
 		PEER_ID(peer));
 }
@@ -834,7 +834,7 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 		packet.type = NEW_PLAYER;
 		packet.id = PLAYER_ID(player);
 		network_send( joiner, &packet, sizeof(packet),
-			convert_flags(NETWORK_RELIABLE), system_channel );
+			NETWORK_RELIABLE, system_channel );
 		DebugPrintf("network: sent new player event for existing player %d\n",
 			PLAYER_ID(player));
 		player = player->next;
@@ -845,7 +845,7 @@ static void send_new_player_event_for_existing_players( network_player_t * joine
 		packet.type = NEW_PLAYER;
 		packet.id = my_id;
 		network_send( joiner, &packet, sizeof(packet),
-			convert_flags(NETWORK_RELIABLE), system_channel );
+			NETWORK_RELIABLE, system_channel );
 		DebugPrintf("network: sent new player event for existing player %d (HOST)\n", my_id );
 	}
 }
@@ -1016,7 +1016,7 @@ static void new_packet( ENetEvent * event )
 					packet.type = CONNECTED_TO;
 					packet.id = peer_data->id;
 					network_send( host_data->player, &packet, sizeof(packet), 
-						convert_flags(NETWORK_RELIABLE), system_channel );
+						NETWORK_RELIABLE, system_channel );
 					DebugPrintf("network: telling host that we have connected to new player %d\n",
 						peer_data->id);
 					peer_data->state = CONNECTED;
@@ -1045,7 +1045,7 @@ static void new_packet( ENetEvent * event )
 					packet.address = peer->address;
 					packet.address.port = peer_data->connect_port;
 					network_broadcast( &packet, sizeof(packet),
-						convert_flags(NETWORK_RELIABLE), system_channel );
+						NETWORK_RELIABLE, system_channel );
 					peer_data->state = SYNCHING;
 					DebugPrintf("network: telling everyone to connect to player %d\n",
 						peer_data->id);
@@ -1172,7 +1172,7 @@ static void new_packet( ENetEvent * event )
 						packet2.address = bad_peer->address;
 						packet2.address.port = peer_data->connect_port;
 						network_send( peer_data->player, &packet2, sizeof(packet2),
-							convert_flags(NETWORK_RELIABLE), system_channel );
+							NETWORK_RELIABLE, system_channel );
 						DebugPrintf("network: telling player %d to reconnect to valid player %d\n",
 							peer_data->id, packet->id );
 					}
@@ -1206,7 +1206,7 @@ static void new_packet( ENetEvent * event )
 						packet2.type = DISCONNECT;
 						packet2.id = packet->id;
 						network_send( peer_data->player, &packet2, sizeof(packet2),
-							convert_flags(NETWORK_RELIABLE), system_channel );
+							NETWORK_RELIABLE, system_channel );
 						DebugPrintf("network security: telling player %d to drop unknown player %d\n", 
 							peer_data->id, packet->id);
 					}
