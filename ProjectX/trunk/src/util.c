@@ -176,7 +176,7 @@ void DebugPrintf( const char * format, ... )
 		now = time(NULL);
 		ts = localtime(&now);
 		strftime(buf,sizeof(buf),"Logs\\%c.txt",ts);
-		logfile_fp = file_open( convert_path(buf), "w" );
+		logfile_fp = file_open( buf, "w" );
 	}
 
 	if( logfile_fp )
