@@ -175,8 +175,13 @@ void DebugPrintf( const char * format, ... )
 		char buf[80];
 		now = time(NULL);
 		ts = localtime(&now);
-		strftime(buf,sizeof(buf),"Logs\\%c.txt",ts);
+		strftime(buf,sizeof(buf),"Logs\\%m-%d-%y %H.%M.%S.txt",ts);
 		logfile_fp = file_open( buf, "w" );
+		if(logfile_fp)
+		{
+			strftime(buf,sizeof(buf),"time zone = %z\n",ts);
+			fputs( buf, logfile_fp );
+		}
 	}
 
 	if( logfile_fp )
