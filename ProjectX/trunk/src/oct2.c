@@ -64,6 +64,8 @@
 #include "shadows.h"
 #endif
 
+void SetCam(int ship, int Cam);
+
 extern int HUDColour;
 extern BOOL ShowWeaponsPossessedOnHUD;
 
