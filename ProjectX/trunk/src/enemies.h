@@ -388,7 +388,7 @@ void ObjectRotateExternal( OBJECT * Object, VECTOR *Pos, VECTOR *point, VECTOR *
 void ReleaseAllEnemies( void );
 void DoNmeDamagedEffects( ENEMY * Enemy );
 void DispUntriggeredNMEs( void );
-
+void AccellDecell(  float *  value ,  float  Decell );
 
 BOOL Enemy_Load( FILE * fp );
 BOOL Enemy_Save( FILE * fp );

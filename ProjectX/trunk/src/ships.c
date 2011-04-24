@@ -682,9 +682,6 @@ void (* RemoteCameraModeControl[ ])( GLOBALSHIP * ShipPnt , BYTE i ) = {
 		RemoteCameraMode3
 };
 
-__inline
-void AccellDecell(  float *  value ,  float  Decell );
-
 /*===================================================================
 		Init All Ships ...
 ===================================================================*/
