@@ -253,7 +253,14 @@ static void control_bot( SHIPCONTROL * bot )
 	*botp = bot;
 	luaL_getmetatable(Lbot, "SHIPCONTROLPTR");
 	lua_setmetatable(Lbot, -2);
-	lua_call(Lbot, 1, 0);
+	if(lua_pcall(Lbot, 1, 0, 0))
+	{
+		const char * ptr = lua_tostring(Lbot,-1);
+		if(!ptr)
+			ptr = "Unknown Error";
+		Msg("error lua bot: %s",
+			(char*) ptr );
+	}
 }
 
 // game calls this each frame
