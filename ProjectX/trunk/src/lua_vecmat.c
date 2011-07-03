@@ -469,7 +469,7 @@ static int luamat_mul(lua_State *L)
 		{
 			/* Apply matrix to vector */
 			NEWOBJ(L, VECTOR, xr);
-			ApplyMatrix(m1, (VECTOR *) x2, (VECTOR *) xr);
+			MxV(m1, (VECTOR *) x2, (VECTOR *) xr);
 			return 1;
 		}
 	}
