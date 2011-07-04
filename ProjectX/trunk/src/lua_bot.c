@@ -263,6 +263,9 @@ static void control_bot( SHIPCONTROL * bot )
 	}
 }
 
+#define PASS_IF_SET(prop) \
+	if(bot.prop) control.prop = bot.prop
+
 // game calls this each frame
 void ProcessBot1( void )
 {
@@ -316,16 +319,16 @@ void ProcessBot1( void )
 	{
 		control.forward += bot.forward * MoveAccell * MaxMoveSpeed * framelag;
 	}
-	control.select_primary   = bot.select_primary;
-	control.select_secondary = bot.select_secondary;
-	control.turbo            = bot.turbo;
-	control.fire_primary     = bot.fire_primary;
-	control.fire_secondary   = bot.fire_secondary;
-	control.fire_mine        = bot.fire_mine;
-	control.drop_primary     = bot.drop_primary;
-	control.drop_secondary   = bot.drop_secondary;
-	control.drop_shield      = bot.drop_shield;
-	control.drop_ammo        = bot.drop_ammo;
+	PASS_IF_SET(select_primary);
+	PASS_IF_SET(select_secondary);
+	PASS_IF_SET(turbo);
+	PASS_IF_SET(fire_primary);
+	PASS_IF_SET(fire_secondary);
+	PASS_IF_SET(fire_mine);
+	PASS_IF_SET(drop_primary);
+	PASS_IF_SET(drop_secondary);
+	PASS_IF_SET(drop_shield);
+	PASS_IF_SET(drop_ammo);
 	// control_ship will now cap us to max:
 	//   move, turn, turbo, roll, and bank
 }
