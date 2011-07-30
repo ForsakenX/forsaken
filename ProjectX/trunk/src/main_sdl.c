@@ -175,6 +175,7 @@ static Uint32 create_video_flags( void )
 
 static BOOL create_video_surface( Uint32 flags )
 {
+#ifndef RENDER_DISABLED
 	render_info.screen = SDL_SetVideoMode(
 		render_info.ThisMode.w,
 		render_info.ThisMode.h,
@@ -189,6 +190,7 @@ static BOOL create_video_surface( Uint32 flags )
 	}
 	
 	print_info();
+#endif
 
 	return TRUE;
 }
