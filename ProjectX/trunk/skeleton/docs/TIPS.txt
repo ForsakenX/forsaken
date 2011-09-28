@@ -7,3 +7,7 @@ Linux Users
 
 	Also read LINUX.txt
 
+Caps Lock Button
+
+	Set SDL_DISABLE_LOCK_KEYS=1 in your environment to make it act like a normal button.
+
