@@ -914,6 +914,12 @@ BOOL Triggerload( char * Filename )
 		{
 			v->Name[ j ] = *byteptr++;
 		}
+
+					if( !(strncasecmp( "secret" , &v->Name[0], 6 ) ) )
+					{
+						DebugPrintf("Loaded secret: name=%s\n",v->Name);
+					}
+
 		intpnt = (int *) byteptr;
 		v->InitState = *intpnt++;
 		v->State = v->InitState;
