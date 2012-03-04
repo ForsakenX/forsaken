@@ -3826,13 +3826,22 @@ void RegeneratePickups( void )
 	}
 
 	/* regen primaries */
-	for( Count = 1; Count < MAXPRIMARYWEAPONS; Count++ )
+	static int last_regen_primary = 1;
+	if ( last_regen_primary >= MAXPRIMARYWEAPONS )
+		last_regen_primary = 1;
+	for( Count = last_regen_primary; Count < MAXPRIMARYWEAPONS; Count++ )
 	{
-		if(
-			NumPrimWeapons[ Count ] &&
-			RegeneratePickup( (uint16) ( PICKUP_Trojax + ( Count - 1 ) ) )
-		)
-			NumPrimWeapons[ Count ]--;
+		// if this weapon should be regenerated
+		if( ! NumPrimWeapons[ Count ] ) continue;
+		// get the weapon id
+		uint16 weapon = PICKUP_Trojax + ( Count - 1 );
+		// regenerate weapon
+		if ( ! RegeneratePickup( weapon ) ) continue;
+		// decrement count to regenerate
+		NumPrimWeapons[ Count ]--;
+		// start at next weapon next game loop
+		// this helps to mix up the weapons
+		last_regen_primary = Count + 1;
 	}
 
 	/* regen power pods */
