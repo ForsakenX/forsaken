@@ -13,3 +13,4 @@ Folder Layout:
 	skeleton/	Contains the game assets such as sounds and textures.
 	src/		Contains the source code for ProjectX.
 
+See src/README.txt for information on building.
