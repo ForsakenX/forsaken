@@ -1,70 +1,80 @@
-
-== ProjectX Linux ==
-
-
-	The static versions only require that you mainly have sdl, opengl and openal installed.
-
-
-	Packages for the game:
-
-		sudo apt-get install liblua5.1-0 liblua5.1-0-dev liblua5.1-socket-dev liblua5.1-socket2 lua5.1 libsdl1.2-dev zlib1g-dev libpng12-dev
-
-	Commands to fix up the lua on ubuntu
-
-		cd /usr/include
-		ln -s lua5.1/ lua
-		cd /usr/lib
-		ln -s liblua5.1.so liblua.so
-		ln -s liblua5.1.a liblua.a
-		ln -s liblua5.1-mime.a liblua-mime.a
-		ln -s liblua5.1-socket.a liblua-socket.a
-		ln -s liblua5.1-unix.a liblua-unix.a
-
-	Outdated ubuntu packages
-
-		sudo apt-get install libenet libenet1-dev
-		sudo apt-get install libopenal-dev
-
-	Build them your self
-
-		http://enet.bespin.org
-		http://kcat.strangesoft.net/openal.html
-
-	OpenAL Build Process
-
-			cd build
-			cmake .. -DCMAKE_INSTALL_PREFIX=/usr
-			make
-			sudo make install
+== Linux Versions ==
 
 	Binaries
 
-		The -static versions have more libraries built in rather than requiring you to have them installed.
+		-static		Has most libraries built in
 
-		The NON -debug versions are built in RELEASE mode with optimizations.
+		-debug		Debug symbols, profiling, no optimizations
 
-		The -debug versions are built debug symbols, include profiling support and NO optimizations.
+		non debug	Built with optimizations and no debug info (BETA)
 
-	Profiling
 
-		To generate profiling output run, "gprof ./projectx-binary ./gmon.out > gmon.txt"
+== Static Versions ==
 
-	64 Bit
+	The static versions only require that you mainly have sdl, opengl and openal installed.
 
-                You need 32 bit lib's built including lua
+		sudo apt-get install libsdl1.2-dev libopenal-dev
 
-                http://ch.archive.ubuntu.com/ubuntu/pool/main/l/lua5.1/liblua5.1-0_5.1.4-5_i386.deb
 
-		Try the static version if all else fails
+== Non Static Versions ==
 
-	3 button mouse emulation
+	Binaries are compiled against Ubuntu 11.10 oneiric.
 
-		Linux commonly defaults to sending a middle click if both left/right mouse button are clicked together.
-	
-		You can disable three mouse button emulation in your Xorg configuration.
+		sudo apt-get install \
+				liblua5.1-0 liblua5.1-0-dev \
+				liblua5.1-socket-dev liblua5.1-socket2 \
+				zlib1g-dev libpng12-dev
 
-		A quick fix is to bind the middle button to the same actions as both mouse buttons.
 
-                But then you loose the ability to use middle click on it's own if you have the button.
+== Building ==
 
+	Since Ubuntu moved to enet 1.3 you must compile the 1.2 branch your self.
+
+	Download the source from and follow the README file for compiling.
+
+		http://enet.bespin.org  (1.2 series)
+
+
+== Building (optional) ==
+
+	Some people may chose to install latest OpenAL.
+
+		http://kcat.strangesoft.net/openal.html
+
+	To build:
+
+		cd build
+		cmake .. -DCMAKE_INSTALL_PREFIX=/usr
+		make
+		sudo make install
+
+
+== 64 Bit OS ==
+
+	You need 32 bit lib's built including lua
+
+
+== Mouse ==
+
+	Linux commonly defaults to sending a middle click if both left/right buttons are clicked.
+
+	You can disable three mouse button emulation in your Xorg configuration.
+
+	A quick fix is to bind the middle button to the same actions as both mouse buttons.
+
+	But then you loose the ability to use middle click on it's own if you have the button.
+
+
+== Profiling ==
+
+	To generate profiling output run, "gprof ./projectx-binary ./gmon.out > gmon.txt"
+
+
+== Debugging ==
+
+	Use gdb as you normally would:
+
+		gdb --args ./projectx-debug ...
+		r # to start
+		bt # to backtrace
 
