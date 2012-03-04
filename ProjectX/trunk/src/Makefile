@@ -56,12 +56,19 @@ endif
 
 else
 
-CFLAGS+= -I/usr/include/SDL -I/usr/include/lua -I/usr/include/AL
+LUA=lua
+UBUNTU=$(shell test -d /usr/include/lua5.1 && echo -n 1)
+ifeq ($(UBUNTU),1)
+	LUA= lua5.1
+	LIBS+= -L/usr/lib/i386-linux-gnu
+endif
+
+CFLAGS+= -I/usr/include/SDL -I/usr/include/$(LUA) -I/usr/include/AL
 
 ifeq ($(STATIC),1)
-	LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet -llua -llua-mime -llua-socket -Wl,-dy -lm -lpng12 -lz -lopenal
+	LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet -l$(LUA) -l$(LUA)-mime -l$(LUA)-socket -Wl,-dy -lm -lpng12 -lz -lopenal
 else
-	LIBS=-lSDL -lGL -lGLU -lenet -llua -llua-mime -llua-socket -lm -lpng12 -lz -lopenal
+	LIBS=-lSDL -lGL -lGLU -lenet -l$(LUA) -l$(LUA)-mime -l$(LUA)-socket -lm -lpng12 -lz -lopenal
 endif
 
 endif
