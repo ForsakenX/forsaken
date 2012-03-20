@@ -9315,8 +9315,8 @@ void GetGamePrefs( void )
     render_info.vsync  = config_get_int( "VSync", 0 );
 
 		MatureContent										 = config_get_int( "MatureContent", 2);
-		HUDColour												 = config_get_int( "HUDColour", GREEN );
-		InGameMenuColour								 = config_get_int( "InGameMenuColour", GREEN );
+		HUDColour												 = config_get_int( "HUDColour", YELLOW );
+		InGameMenuColour								 = config_get_int( "InGameMenuColour", YELLOW );
     MilestoneMessagesColour          = config_get_int( "MilestoneMessagesColour",	RED );
     KillMessageColour                = config_get_int( "KillMessageColour",			GREEN );
     SystemMessageColour              = config_get_int( "SystemMessageColour",		YELLOW );
