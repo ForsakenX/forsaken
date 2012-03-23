@@ -597,7 +597,6 @@ void CheckMetKillLimit();
 extern int KillMessageColour; 
 extern int SystemMessageColour;
 extern int FlagMessageColour;
-extern BOOL ShowTeamCamera;
 
 // for HUD colour (text.c)
 extern uint8 Colourtrans[MAXFONTCOLOURS][3];
@@ -1692,7 +1691,7 @@ void DrawSimplePanel()
 
             // Average Kills Per Minute
             sprintf( MessageBuff, "KPM: %.2f", (float)GetTotalKills(WhoIAm) / (LevelTimeTaken / 60.0F) );
-            Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
+			Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
 
 /*
 			{
@@ -4301,46 +4300,6 @@ BOOL MainGame( void ) // bjd
 					CamerasSet++;
 				}
 			} 
-			// displays one team mate's camera on HUD
-			else if(TeamGame && ShowTeamCamera)
-			{
-	      float main_fov;
-	      TempMissileCam = Current_Camera_View;
-	      Current_Camera_View = -1;
-	      CameraRendering = CAMRENDERING_Pip;
-	      CurrentCamera.enable = 1;
-	      CurrentCamera.Viewport = viewport;
-	      CurrentCamera.Viewport.Width = viewport.Width  >>2;
-	      CurrentCamera.Viewport.Height = viewport.Height >>2;
-	      CurrentCamera.Viewport.ScaleX = CurrentCamera.Viewport.Width / (float)2.0;
-	      CurrentCamera.Viewport.ScaleY = CurrentCamera.Viewport.Height / (float)2.0;
-	      CurrentCamera.UseLowestLOD = TRUE;
-	      main_fov = hfov;
-	      SetFOV( normal_fov );
-	      CurrentCamera.Proj = proj;  
-	      Current_Camera_View=TempMissileCam;
-	      SetFOV( main_fov );
-
-				// pick first active team mate
-				for(i=0; i<MAX_PLAYERS; i++)
-				{
-						if(TeamNumber[WhoIAm] == TeamNumber[i] && GameStatus[i] == STATUS_Normal && i != WhoIAm)
-						{
-								CurrentCamera.GroupImIn = Ships[i].Object.Group; 
-								CurrentCamera.Mat = Ships[i].Object.FinalMat;  
-								CurrentCamera.InvMat = Ships[i].Object.FinalInvMat; 
-								CurrentCamera.Pos = Ships[i].Object.Pos; 
-        				CurrentCamera.Viewport.X = viewport.X;
-        				CurrentCamera.Viewport.Y = (viewport.Y+viewport.Height-(FontHeight*2.0F))-((viewport.Height >>4)+(viewport.Height >>2));
-								if( RenderCurrentCamera() != TRUE )
-								    return FALSE;
-
-								Print4x5TextSmall( (char *)GetName(i), (CurrentCamera.Viewport.Width/2.0)-32.0F, CurrentCamera.Viewport.Y+CurrentCamera.Viewport.Height-16.0F, WHITE );
-								break;
-						}
-				}
-
-			}  
     }
 	
     // Full Screen Rear View....

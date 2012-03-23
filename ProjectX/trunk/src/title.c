@@ -500,7 +500,6 @@ int PlayerMessageColour;
 int PickupMessageColour;
 int TauntMessageColour;
 int MyMessageColour;
-BOOL ShowTeamCamera = TRUE;
 
 void DrawColToggle( MENUITEM *Item);			// collisoin perspective - in game
 void RedrawFlatMenuKey( MENUITEM *Item);
@@ -2838,7 +2837,6 @@ MENU	MENU_Visuals = {
 		{ 200, 128 + ( 10*16 ), 0, 0, 0, LT_MENU_InGame33	/*"pickup messages"			*/, 0, 0,	&PickupMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 11*16 ), 0, 0, 0, LT_MENU_InGame34	/*"taunt messages"			*/, 0, 0,	&TauntMessageColour,			NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
 		{ 200, 128 + ( 12*16 ), 0, 0, 0, LT_MENU_InGame35	/*"your messages"			*/, 0, 0,	&MyMessageColour,				NULL,										SelectColourToggle,	DrawMessagesToggle,	NULL, 0 },
-		{ 200, 128 + ( 13*16 ), 0, 0, 0, "SHOW TEAM CAMERA", 0, 0, &ShowTeamCamera, NULL,	SelectToggle,	DrawToggle,	NULL, 0 },		
 		{ -1 , -1, 0, 0, 0, "" , 0, 0, NULL, NULL , NULL , NULL, NULL, 0 }
 	}
 };
@@ -9327,10 +9325,6 @@ void GetGamePrefs( void )
     MyMessageColour                  = config_get_int( "MyMessageColour",			  YELLOW );
 		MaxMessageTime                   = config_get_float( "MaxMessageTime",    5.0f );
 		
-
-
-		ShowTeamCamera = config_get_bool( "ShowTeamCam", TRUE );
-
 	CLAMP( InGameMenuColour, MAXFONTCOLOURS );
 	CLAMP( MilestoneMessagesColour,	MAXFONTCOLOURS );
 	CLAMP( KillMessageColour,		MAXFONTCOLOURS );
@@ -9414,7 +9408,6 @@ void SetGamePrefs( void )
 	config_set_bool( "AllowMantle",             MyPickupValid[ PICKUP_Mantle ] );
 	config_set_bool( "AllowInv",                MyPickupValid[ PICKUP_Inv ] );
 	config_set_bool( "VSync",                   render_info.vsync );
-	config_set_bool( "ShowTeamCam", ShowTeamCamera );
 
 	// integers
 
