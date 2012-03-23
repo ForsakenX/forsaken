@@ -68,6 +68,9 @@ void SetCam(int ship, int Cam);
 
 extern int HUDColour;
 extern BOOL ShowWeaponsPossessedOnHUD;
+extern BOOL ShowClockOnHUD;
+extern BOOL ShowKPMOnHUD;
+extern BOOL ShowSpeedOnHUD;
 
 extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
@@ -1675,6 +1678,7 @@ void DrawSimplePanel()
 			// secondary
 			Print4x5Text( SecondaryNames[Ships[WhoIAm].Secondary], left, top, HUDColour );
 			Printuint16( (uint16) GetCurSecAmmo(), right, top, HUDColour );
+            top += FontHeight;
 
 			// bottom left
 			top   = render_info.window_size.cy - FontWidth*3;
@@ -1686,13 +1690,25 @@ void DrawSimplePanel()
 			Print4x5Text( "Shield", left, top, HUDColour );	
 
             // Game Clock
-            sprintf( MessageBuff, "%02d:%02d", (int)(LevelTimeTaken / 60), (int)((int)LevelTimeTaken % 60) );
-            Print4x5Text( &MessageBuff[0], left, top-(FontHeight*2), WHITE);
+            if(ShowClockOnHUD)
+            {
+                sprintf( MessageBuff, "%02d:%02d", (int)(LevelTimeTaken / 60), (int)((int)LevelTimeTaken % 60) );
+                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*2), WHITE);
+            }
 
             // Average Kills Per Minute
-            sprintf( MessageBuff, "KPM: %.2f", (float)(GetTotalKills(WhoIAm)-GetFriendlyKills(WhoIAm)) / (LevelTimeTaken / 60.0F) );
-			Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
+            if(ShowKPMOnHUD)
+            {
+                sprintf( MessageBuff, "KPM: %.2f", (float)(GetTotalKills(WhoIAm)-GetFriendlyKills(WhoIAm)) / (LevelTimeTaken / 60.0F) );
+			    Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
+            }
 
+            // Current Speed
+            if(ShowSpeedOnHUD)
+            {
+                sprintf( MessageBuff, "%.2f, %.2f, %.2f", Ships[WhoIAm].Object.Speed.x, Ships[WhoIAm].Object.Speed.y, Ships[WhoIAm].Object.Speed.z); 
+                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*4), WHITE);
+            }
 /*
 			{
 				int red = (uint8)(r+(ShieldHit * (192/24) ));
