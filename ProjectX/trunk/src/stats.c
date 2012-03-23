@@ -43,6 +43,7 @@
 #include "text.h"
 #include "xmem.h"
 #include "title.h"
+#include "timer.h"
 
 /* external variables */
 extern  BYTE  TeamNumber[MAX_PLAYERS];	// which team each player is on
@@ -52,6 +53,11 @@ extern char* GetName(int Player);				// returns player's short name
 extern BOOL TeamGame;										// team game?  
 extern int MilestoneMessagesColour;			// colour to display messages 
 extern SLIDER WatchPlayerSelect;				// which player is being watched 
+extern float LevelTimeTaken; // time elapsed in this game
+// (oct2.c)
+extern px_timer_t level_timer;
+// (timer.c)
+extern void timer_clear( px_timer_t* stats );
 
 /* internal variables */
 int	PrimaryStats[MAX_PLAYERS+1][MAXPRIMARYWEAPONS+1];				// PrimaryStats[Killer][PrimaryWeaponType];
@@ -127,6 +133,9 @@ void ResetAllStats()
 		// reset all player's sequential kill counters
 		KillCounter[x] = 0;
 	}
+
+    LevelTimeTaken = 0.0F;
+    timer_clear( &level_timer );
 }
 
 

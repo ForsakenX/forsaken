@@ -1522,6 +1522,7 @@ void DrawSimplePanel()
  	uint8 r = Colourtrans[HUDColour][0];
 	uint8 g = Colourtrans[HUDColour][1];
 	uint8 b = Colourtrans[HUDColour][2];
+    char MessageBuff[150];
 
   if( WhoIAm == Current_Camera_View )
   {
@@ -1684,6 +1685,14 @@ void DrawSimplePanel()
 
 			// shield
 			Print4x5Text( "Shield", left, top, HUDColour );	
+
+            // Game Clock
+            sprintf( MessageBuff, "%02d:%02d", (int)(LevelTimeTaken / 60), (int)((int)LevelTimeTaken % 60) );
+            Print4x5Text( &MessageBuff[0], left, top-(FontHeight*2), WHITE);
+
+            // Average Kills Per Minute
+            sprintf( MessageBuff, "KPM: %.2f", (float)GetTotalKills(WhoIAm) / (LevelTimeTaken / 60.0F) );
+            Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
 
 /*
 			{
