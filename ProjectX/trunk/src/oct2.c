@@ -1690,7 +1690,7 @@ void DrawSimplePanel()
             Print4x5Text( &MessageBuff[0], left, top-(FontHeight*2), WHITE);
 
             // Average Kills Per Minute
-            sprintf( MessageBuff, "KPM: %.2f", (float)GetTotalKills(WhoIAm) / (LevelTimeTaken / 60.0F) );
+            sprintf( MessageBuff, "KPM: %.2f", (float)(GetTotalKills(WhoIAm)-GetFriendlyKills(WhoIAm)) / (LevelTimeTaken / 60.0F) );
 			Print4x5Text( &MessageBuff[0], left, top-(FontHeight*3), RED);
 
 /*
