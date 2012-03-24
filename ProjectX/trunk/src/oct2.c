@@ -71,6 +71,7 @@ extern BOOL ShowWeaponsPossessedOnHUD;
 extern BOOL ShowClockOnHUD;
 extern BOOL ShowKPMOnHUD;
 extern BOOL ShowSpeedOnHUD;
+extern BOOL ShowTotalSpeedOnHUD;
 
 extern render_info_t render_info;
 extern BOOL Bsp_Duplicate( BSP_HEADER *src, BSP_HEADER *dup );
@@ -1708,6 +1709,12 @@ void DrawSimplePanel()
             {
                 sprintf( MessageBuff, "%.2f, %.2f, %.2f", Ships[WhoIAm].Object.Speed.x, Ships[WhoIAm].Object.Speed.y, Ships[WhoIAm].Object.Speed.z); 
                 Print4x5Text( &MessageBuff[0], left, top-(FontHeight*4), WHITE);
+            }
+
+            if(ShowTotalSpeedOnHUD)
+            {
+                sprintf( MessageBuff, "%.0f", fabs(Ships[WhoIAm].Object.Speed.x) + fabs(Ships[WhoIAm].Object.Speed.y) + fabs(Ships[WhoIAm].Object.Speed.z)); 
+                Print4x5Text( &MessageBuff[0], left, top-(FontHeight*5), YELLOW);
             }
 /*
 			{
