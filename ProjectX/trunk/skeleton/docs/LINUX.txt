@@ -42,3 +42,13 @@
 		r # to start
 		bt # to backtrace
 
+== Ubuntu 11.04, 11.10 and 12.04 ==
+
+    For joystick axis to work correctly:
+
+    Add SDL_JOYSTICK_DEVICE=/dev/input/js0 to /etc/environment and relogin.
+    Then recalibrate (jscal -c /dev/input/js0).
+
+    The settings will be lost on reboot unless you also save the calibration:
+    Save with: jscal -p /dev/input/js0 > /etc/joystick.cal
+    Add: source /etc/joystick.cal to /etc/bash.bashrc 
