@@ -3,7 +3,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "main.h"
-#include "render.h"
 #include "net.h"
 
 #define MAX_LINE 100
@@ -14,7 +13,6 @@
 ////////////////////////////////////////////////////////
 
 BOOL Debug = TRUE;
-render_info_t render_info;
 
 char * my_player_name;
 int my_connect_port = 0;

@@ -6,7 +6,6 @@
 #include "file.h"
 #include "util.h"
 #include "string.h"
-#include "render.h"
 #include "title.h"
 
 extern BOOL Debug;
@@ -211,12 +210,13 @@ void DebugState( const char * str )
 //
 
 // temporarily jumps to desktop mode
-extern render_info_t render_info;
+//#include "render.h"
+//extern render_info_t render_info;
 extern void MenuGoFullScreen( MENUITEM *Item );
 extern void input_grab( BOOL clip );
 int Msg( const char * msg, ... )
 {
-	BOOL was_fullscreen = render_info.fullscreen;
+//	BOOL was_fullscreen = render_info.fullscreen;
 
 	char txt[ 1024 ];
 	va_list args;
