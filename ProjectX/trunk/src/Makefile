@@ -54,16 +54,16 @@ else # normal system build
   
   CFLAGS+= `$(SDL_CONFIG) --cflags` `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
   
-  LIB= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm -lpng12 -lz -lopenal
+  LIB+= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm -lpng12 -lz -lopenal
   
   ifeq ($(STATIC),1)
-    LIB= -Wl,-dn
+    LIB+= -Wl,-dn
   endif
   
-  LIB= -lenet `pkg-config --libs $(LUA) $(LUA)-socket`
+  LIB+= -lenet `pkg-config --libs $(LUA) $(LUA)-socket`
   
   ifeq ($(STATIC),1)
-    LIB= -Wl,-dy
+    LIB+= -Wl,-dy
   endif
 
 endif
