@@ -58,12 +58,12 @@ else
 
 LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
 
-CFLAGS+= -I/usr/include/SDL -I/usr/include/$(LUA) -I/usr/include/AL
+CFLAGS+= -I/usr/include/SDL `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
 
 ifeq ($(STATIC),1)
-	LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet -l$(LUA) -l$(LUA)-mime -l$(LUA)-socket -Wl,-dy -lm -lpng12 -lz -lopenal
+	LIBS=-lSDL -lGL -lGLU -Wl,-dn -lenet `pkg-config --libs $(LUA) $(LUA)-socket` -Wl,-dy -lm -lpng12 -lz -lopenal
 else
-	LIBS=-lSDL -lGL -lGLU -lenet -l$(LUA) -l$(LUA)-mime -l$(LUA)-socket -lm -lpng12 -lz -lopenal
+	LIBS=-lSDL -lGL -lGLU -lenet `pkg-config --libs $(LUA) $(LUA)-socket` -lm -lpng12 -lz -lopenal
 endif
 
 endif
