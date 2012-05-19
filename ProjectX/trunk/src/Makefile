@@ -48,13 +48,11 @@ ifeq ($(MINGW),1)
   
 else # normal system build
 
-  SDL_CONFIG=sdl-config
-
   LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
   
-  CFLAGS+= `$(SDL_CONFIG) --cflags` `pkg-config --cflags $(LUA) $(LUA)-socket libenet libpng zlib openal`
+  CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
   
-  LIB+= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm `pkg-config --libs libpng zlib openal`
+  LIB+= -lGL -lGLU -lm `pkg-config --libs sdl libpng zlib openal`
   
   ifeq ($(STATIC),1)
     LIB+= -Wl,-dn
