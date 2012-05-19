@@ -5,8 +5,8 @@
 #include "sound.h"
 #include "file.h"
 #include "SDL.h"
-#include <al.h>
-#include <alc.h>
+#include <AL/al.h>
+#include <AL/alc.h>
 //#include <efx.h>
 //#include <efx-creative.h>
 #include <math.h>

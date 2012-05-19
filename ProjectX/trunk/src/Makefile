@@ -52,15 +52,16 @@ else # normal system build
 
   LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
   
-  CFLAGS+= `$(SDL_CONFIG) --cflags` `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
+  CFLAGS+= `$(SDL_CONFIG) --cflags` `pkg-config --cflags $(LUA) $(LUA)-socket libenet libpng zlib openal`
   
-  LIB+= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm -lpng12 -lz -lopenal
+  LIB+= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm `pkg-config --libs libpng zlib openal`
   
   ifeq ($(STATIC),1)
     LIB+= -Wl,-dn
+    PKG_CFG_OPTS= --static
   endif
   
-  LIB+= -lenet `pkg-config --libs $(LUA) $(LUA)-socket`
+  LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
   
   ifeq ($(STATIC),1)
     LIB+= -Wl,-dy
@@ -143,6 +144,7 @@ check:
 	@echo "PROFILE = $(PROFILE)"
 	@echo "MUDFLAP = $(MUDFLAP)"
 	@echo "STATIC = $(STATIC)"
+	@echo "PKG_CFG_OPTS = $(PKG_CFG_OPTS)"
 	@echo "MINGW = $(MINGW)"
 	@echo "CROSS = $(CROSS)"
 	@echo "BOT = $(BOT)"
