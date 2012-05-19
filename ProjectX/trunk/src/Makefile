@@ -139,5 +139,7 @@ clean:
 
 check:
 	@echo "LUA = $(LUA)"
+	@echo "LIBS = $(LIBS)"
+	@echo "CFLAGS = $(CFLAGS)"
 
 .PHONY: all clean
