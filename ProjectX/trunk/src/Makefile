@@ -52,9 +52,9 @@ else # normal system build
 
   LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
   
-  CFLAGS+= -I/usr/include/SDL `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
+  CFLAGS+= `$(SDL_CONFIG) --cflags` `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
   
-  LIB=-lSDL -lGL -lGLU -lm -lpng12 -lz -lopenal
+  LIB= `$(SDL_CONFIG) --libs` -lGL -lGLU -lm -lpng12 -lz -lopenal
   
   ifeq ($(STATIC),1)
     LIB= -Wl,-dn
