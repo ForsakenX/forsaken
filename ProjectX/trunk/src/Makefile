@@ -131,4 +131,7 @@ $(OBJS): $(INCLUDE)
 clean:
 	$(RM) $(OBJS) $(BIN)
 
+check:
+	@echo "LUA = $(LUA)"
+
 .PHONY: all clean
