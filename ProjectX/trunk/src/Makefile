@@ -34,42 +34,42 @@ ifeq ($(SSP),1)
   CFLAGS+= -D_FORTIFY_SOURCE=2
 endif
 
-SDL_CONFIG=sdl-config
-
 ifeq ($(MINGW),1)
 
   ifeq ($(CROSS),1)
     CC=i586-mingw32msvc-gcc
     SDL_CONFIG=./mingw/bin/sdl-config
     CFLAGS += -I./mingw/include
-    LIBS += -L./mingw/bin
+    LIB += -L./mingw/bin
   endif
   
   CFLAGS += -DMINGW `$(SDL_CONFIG) --cflags`
-  LIBS += -lm -lglu32 -lopengl32 -lenet `$(SDL_CONFIG) --libs`
-  LIBS += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
+  LIB += -lm -lglu32 -lopengl32 -lenet `$(SDL_CONFIG) --libs`
+  LIB += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
   
   ifeq ($(DXMOUSE),1)
     CFLAGS += -DDXMOUSE -Idinput
-    LIBS +=  -Ldinput -ldinput -ldxguid
+    LIB +=  -Ldinput -ldinput -ldxguid
   endif
   
-else
+else # normal system build
+
+  SDL_CONFIG=sdl-config
 
   LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
   
   CFLAGS+= -I/usr/include/SDL `pkg-config --cflags $(LUA) $(LUA)-socket` -I/usr/include/AL
   
-  LIBS=-lSDL -lGL -lGLU -lm -lpng12 -lz -lopenal
+  LIB=-lSDL -lGL -lGLU -lm -lpng12 -lz -lopenal
   
   ifeq ($(STATIC),1)
-    LIBS= -Wl,-dn
+    LIB= -Wl,-dn
   endif
   
-  LIBS= -lenet `pkg-config --libs $(LUA) $(LUA)-socket`
+  LIB= -lenet `pkg-config --libs $(LUA) $(LUA)-socket`
   
   ifeq ($(STATIC),1)
-    LIBS= -Wl,-dy
+    LIB= -Wl,-dy
   endif
 
 endif
@@ -85,7 +85,7 @@ endif
 ifeq ($(MUDFLAP),1)
   ifeq ($(DEBUG),1)
     FLAGS+= -fmudflap
-    LIBS+= -lmudflap
+    LIB+= -lmudflap
   else
     X:=$(error Mudflap enabled without debug mode - probably not what you meant)
   endif
@@ -114,9 +114,9 @@ ifeq ($(DEBUG),1)
   CFLAGS+= -DDEBUG_ON -DDEBUG_COMP -DDEBUG_SPOTFX_SOUND -DDEBUG_VIEWPORT 
 endif
 
-INCLUDE=$(wildcard *.h)
+INC=$(wildcard *.h)
 SRC=$(wildcard *.c)
-OBJS=$(patsubst %.c,%.o,$(SRC))
+OBJ=$(patsubst %.c,%.o,$(SRC))
 
 ADD_FLAGS=
 ADD_CFLAGS=
@@ -129,17 +129,38 @@ BIN=projectx
 
 all: $(BIN)
 
-$(BIN): $(OBJS)
-	$(CC) -o $(BIN) $(OBJS) $(LDFLAGS) $(LIBS)
+$(BIN): $(OBJ)
+	$(CC) -o $(BIN) $(OBJ) $(LDFLAGS) $(LIB)
 
-$(OBJS): $(INCLUDE)
+$(OBJ): $(INC)
 
 clean:
-	$(RM) $(OBJS) $(BIN)
+	$(RM) $(OBJ) $(BIN)
 
 check:
+	@echo
+	@echo "INC = $(INC)"
+	@echo
+	@echo "SRC = $(SRC)"
+	@echo
+	@echo "OBJ = $(OBJ)"
+	@echo
+	@echo "DEBUG = $(DEBUG)"
+	@echo "PROFILE = $(PROFILE)"
+	@echo "MUDFLAP = $(MUDFLAP)"
+	@echo "STATIC = $(STATIC)"
+	@echo "MINGW = $(MINGW)"
+	@echo "CROSS = $(CROSS)"
+	@echo "BOT = $(BOT)"
+	@echo "GL = $(GL)"
+	@echo "RENDER_DISABLED = $(RENDER_DISABLED)"
 	@echo "LUA = $(LUA)"
-	@echo "LIBS = $(LIBS)"
+	@echo
+	@echo "CC = $(CC)"
+	@echo "BIN = $(BIN)"
 	@echo "CFLAGS = $(CFLAGS)"
+	@echo "LDFLAGS = $(LDFLAGS)"
+	@echo "LIB = $(LIB)"
+	@echo
 
 .PHONY: all clean
