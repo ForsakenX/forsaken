@@ -12,12 +12,6 @@ CC=gcc
 # http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
 MUDFLAP=0
 
-# Unused -- this would check for existence of Mudflap.
-#HAVE_MUDFLAP=0
-#ifneq ($(shell gcc -print-file-name=libmudflap.so), libmudflap.so)
-#  HAVE_MUDFLAP=1
-#endif
-
 FLAGS= -m32 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
