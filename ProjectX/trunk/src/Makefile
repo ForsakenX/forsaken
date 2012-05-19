@@ -56,12 +56,7 @@ endif
 
 else
 
-LUA=lua
-UBUNTU=$(shell test -d /usr/include/lua5.1 && echo -n 1)
-ifeq ($(UBUNTU),1)
-	LUA= lua5.1
-	LIBS+= -L/usr/lib/i386-linux-gnu
-endif
+LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
 
 CFLAGS+= -I/usr/include/SDL -I/usr/include/$(LUA) -I/usr/include/AL
 
