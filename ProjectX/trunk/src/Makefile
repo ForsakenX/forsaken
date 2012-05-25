@@ -52,14 +52,14 @@ else # normal system build
   
   CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
   
-  LIB+= -lGL -lGLU -lm `pkg-config --libs sdl libpng zlib openal`
+  LIB+= -lGL -lGLU `pkg-config --libs sdl`
   
   ifeq ($(STATIC),1)
     LIB+= -Wl,-dn
     PKG_CFG_OPTS= --static
   endif
   
-  LIB+= `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet`
+  LIB+= -lm `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal`
   
   ifeq ($(STATIC),1)
     LIB+= -Wl,-dy
