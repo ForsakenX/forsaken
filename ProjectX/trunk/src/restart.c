@@ -12,7 +12,6 @@
 #include "networking.h"
 #include "util.h"
 #include <math.h>
-#include <malloc.h>
 #include "mload.h"
 #include "models.h"
 
@@ -20,7 +19,6 @@
 #include "primary.h"
 #include "restart.h"
 #include "spotfx.h"
-#include "xmem.h"
 
 /*===================================================================
 	Defines

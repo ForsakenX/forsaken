@@ -105,7 +105,6 @@ num_start_points : uint16
 #include "lights.h"
 #include "triggers.h"
 
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

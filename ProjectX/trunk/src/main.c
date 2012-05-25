@@ -1,16 +1,16 @@
+#include "main.h"
 #include <stdio.h>
 #include <string.h>
 #include <search.h>
 #include "version.h"
 #include "render.h"
-#include "xmem.h"
 #include "util.h"
 #include "file.h"
 #include "net.h"
 #include "title.h"
 #include "lua_common.h"
 #include "sfx.h"
-#include "SDL.h"
+#include <SDL.h>
 #include "input.h"
 #include "sound.h"
 

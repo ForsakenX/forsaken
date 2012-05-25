@@ -1,7 +1,8 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
-#include "SDL.h"
+#include <SDL.h>
+#include "main.h"
 #include "config.h"
 
 /*===================================================================

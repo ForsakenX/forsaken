@@ -1,6 +1,7 @@
 #ifndef	SFX_INCLUDED
 #define	SFX_INCLUDED
 
+#include "main.h"
 #include "enemies.h"
 
 #define SFX_Biker			4	// biker speech

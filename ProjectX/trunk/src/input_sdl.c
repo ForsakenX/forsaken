@@ -1,7 +1,8 @@
+#include "main.h"
 #include "input.h"
 #include "util.h"
 #include "render.h"
-#include "SDL.h"
+#include <SDL.h>
 
 extern BOOL RenderModeReset( void );
 extern void SetGamePrefs( void );

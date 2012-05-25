@@ -50,7 +50,6 @@
 #include "local.h"
 #include "goal.h"
 #include "loadsave.h"
-#include "xmem.h"
 #include "stats.h"
 #include "timer.h"
 #include "demo.h"

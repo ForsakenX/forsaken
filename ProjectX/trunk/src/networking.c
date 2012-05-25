@@ -30,7 +30,6 @@
 #include "screenpolys.h"
 #include "goal.h"
 #include <stdio.h>
-#include "xmem.h"
 #include "local.h"
 #include "stats.h"
 #include "version.h"

@@ -1,7 +1,7 @@
 
+#include "main.h"
 #include <stdio.h>
 #include "new3d.h"
-#include "xmem.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

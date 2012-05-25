@@ -24,7 +24,6 @@
 #include "title.h"
 #include "visi.h"
 #include "text.h"
-#include "xmem.h"
 #include "util.h"
 
 #define GOAL_VERSION_NUMBER		(1)

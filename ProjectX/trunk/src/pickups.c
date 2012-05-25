@@ -30,7 +30,6 @@
 #include "controls.h"
 #include "visi.h"
 #include "sfx.h"
-#include <malloc.h>
 
 #include "triggers.h"
 #include "pickups.h"
@@ -40,7 +39,6 @@
 
 #include "goal.h"
 #include "local.h"
-#include "xmem.h"
 #include "util.h"
 
 #ifdef OPT_ON

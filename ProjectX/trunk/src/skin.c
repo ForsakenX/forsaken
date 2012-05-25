@@ -2,7 +2,7 @@
 	Debugging display routines collision skin
 ===================================================================*/
 #include <stdio.h>
-
+#include "main.h"
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -13,7 +13,6 @@
 #include "primary.h"
 #include "skin.h"
 #include "util.h"
-#include "xmem.h"
 
 #define USE_BSP_COLOURS
 

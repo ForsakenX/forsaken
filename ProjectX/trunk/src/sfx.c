@@ -66,7 +66,6 @@ FILE *LoadAllSfx( FILE *fp ){return fp;}
 #include "controls.h"
 #include "ships.h"
 #include "config.h"
-#include "xmem.h"
 #include "util.h"
 
 #ifdef OPT_ON

@@ -2,6 +2,7 @@
 // breakpad running through wine, built for windows doens't work well..
 #ifndef __WINE__
 
+#include "main.h"
 #include "util.h"
 
 //

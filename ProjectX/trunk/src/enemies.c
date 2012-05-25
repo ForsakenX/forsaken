@@ -3,7 +3,6 @@
 ===================================================================*/
 #include <stdio.h>
 #include <math.h>
-#include <malloc.h>
 
 #include "main.h"
 #include "new3d.h"
@@ -34,7 +33,6 @@
 #include "spotfx.h"
 #include "sfx.h"
 #include "title.h"
-#include "xmem.h"
 #include "util.h"
 
 #ifdef OPT_ON

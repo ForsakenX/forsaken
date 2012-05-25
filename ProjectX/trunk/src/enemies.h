@@ -5,6 +5,7 @@
 #ifndef ENEMIES_INCLUDED
 #define ENEMIES_INCLUDED
 
+#include "main.h"
 #include "node.h"
 #include "triggers.h"
 

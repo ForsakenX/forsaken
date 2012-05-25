@@ -2,8 +2,8 @@
 *	2 d p o l y s . c
 *	All routines to do with 2d always face you polygons...
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -16,7 +16,6 @@
 #include "spotfx.h"
 #include "water.h"
 #include "util.h"
-#include "xmem.h"
 
 #ifdef OPT_ON
 #pragma optimize( "gty", on )

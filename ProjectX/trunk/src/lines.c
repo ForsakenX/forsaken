@@ -2,8 +2,8 @@
 *	l i n e s . c
 *	All routines to do with lines...
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -11,7 +11,6 @@
 #include "object.h"
 #include "networking.h"
 #include "lines.h"
-#include "xmem.h"
 #include "camera.h"
 
 extern	CAMERA	CurrentCamera;

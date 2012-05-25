@@ -4,13 +4,12 @@
 #include "util.h"
 #include "sound.h"
 #include "file.h"
-#include "SDL.h"
+#include <SDL.h>
 #include <AL/al.h>
 #include <AL/alc.h>
 //#include <efx.h>
 //#include <efx-creative.h>
 #include <math.h>
-#include "xmem.h"
 
 BOOL Sound3D = FALSE; // enable 3d sound
 

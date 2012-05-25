@@ -47,7 +47,7 @@ num_frames : uint16 // number of animation frames
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
-
+#include "main.h"
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -61,7 +61,6 @@ num_frames : uint16 // number of animation frames
 
 #include "sfx.h"
 #include "spotfx.h"
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

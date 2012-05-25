@@ -24,7 +24,6 @@
 #include "goal.h"
 #include "title.h"
 #include "restart.h"
-#include "xmem.h"
 #include "util.h"
 #include "water.h"
 

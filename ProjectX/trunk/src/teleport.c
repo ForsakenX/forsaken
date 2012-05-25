@@ -25,7 +25,6 @@
 
 #include "sfx.h"
 #include "ships.h"
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

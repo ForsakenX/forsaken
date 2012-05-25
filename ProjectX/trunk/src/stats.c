@@ -29,6 +29,7 @@
 *
 \*******************************************************************/
 
+#include "main.h"
 #include "stats.h"
 #include <stdio.h>
 #include "new3d.h"
@@ -41,7 +42,6 @@
 #include "secondary.h"
 #include "visi.h"
 #include "text.h"
-#include "xmem.h"
 #include "title.h"
 #include "timer.h"
 

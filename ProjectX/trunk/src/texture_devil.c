@@ -1,10 +1,9 @@
-#include "xmem.h"
 
+#include "main.h"
 #include "texture.h"
 
 #ifdef TEXTURE_DEVIL
 
-#include <stdlib.h>
 
 #define IL_STATIC_LIB
 

@@ -11,8 +11,6 @@
 #include "networking.h"
 #include "util.h"
 
-#include	<stdlib.h>
-#include	<malloc.h>
 #include	<string.h>
 #include	"main.h"
 #include	"mload.h"
@@ -21,7 +19,6 @@
 #include	"triggers.h"
 #include	"pickups.h"
 #include	"restart.h"
-#include	"xmem.h"
 
 /*===================================================================
 	External variables

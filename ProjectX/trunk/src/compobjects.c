@@ -3,7 +3,6 @@
 ===================================================================*/
 #include <stdio.h>
 #include <math.h>
-#include <malloc.h>
 
 #include "main.h"
 #include "new3d.h"
@@ -30,7 +29,6 @@
 #include "mxaload.h"
 
 #include "spotfx.h"
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

@@ -6,7 +6,8 @@
 #include <dinput.h>
 #endif
 
-#include "SDL.h"
+#include "main.h"
+#include <SDL.h>
 #include "controls.h"
 
 /////////////

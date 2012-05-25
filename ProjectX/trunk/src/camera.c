@@ -3,8 +3,8 @@
 /*===================================================================
 		Include File...	
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -14,7 +14,6 @@
 #include "mload.h"
 #include "camera.h"
 
-#include "xmem.h"
 #include "util.h"
 
 #define	CAM_VERSION_NUMBER 1

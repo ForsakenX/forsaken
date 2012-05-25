@@ -1,10 +1,10 @@
-#include "xmem.h"
 
+#include "main.h"
 #include "texture.h"
 
 #ifdef TEXTURE_SDL
 
-#include "SDL.h"
+#include <SDL.h>
 #include "SDL_image.h" 
 
 static int init( void )

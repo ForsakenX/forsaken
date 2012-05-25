@@ -1,5 +1,6 @@
 #ifndef TEXT2D_INCLUDED
 #define TEXT2D_INCLUDED
+#include "main.h"
 
 /*===================================================================
 	Defines

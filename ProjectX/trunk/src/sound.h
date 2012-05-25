@@ -2,7 +2,7 @@
 #define SOUND_INCLUDED
 
 #include "main.h"
-#include "SDL.h"
+#include <SDL.h>
 
 //
 // Globals

@@ -1,6 +1,7 @@
 #ifndef GOAL_H
 #define GOAL_H
 
+#include "main.h"
 #define GOALSTATE_Off	(0)
 #define GOALSTATE_On	(1)
 

@@ -16,7 +16,6 @@ BOOL DebugLog = FALSE;
 #include <ctype.h>		// for toupper
 #endif
 
-#include "xmem.h"
 
 char * convert_char( char from, char to, char* in )
 {

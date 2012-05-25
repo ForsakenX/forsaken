@@ -2,6 +2,8 @@
 #ifndef BSP_INCLUDED
 #define BSP_INCLUDED
 
+#include "main.h"
+
 /*
  * Defines
  */

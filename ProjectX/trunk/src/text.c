@@ -21,7 +21,6 @@
 #include "text.h"
 #include "screenpolys.h"
 
-#include "xmem.h"
 #include "local.h"
 #include "stats.h"
 #include "util.h"

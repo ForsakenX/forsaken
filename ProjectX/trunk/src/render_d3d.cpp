@@ -7,7 +7,6 @@
 #include <windows.h>
 #include <windowsx.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <search.h>
 #include <d3d9.h>

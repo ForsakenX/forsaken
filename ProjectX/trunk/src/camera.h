@@ -3,6 +3,7 @@
 #ifndef CAMERA_INCLUDED
 #define CAMERA_INCLUDED
 
+#include "main.h"
 /*
  * Defines
  */

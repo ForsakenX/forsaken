@@ -3,12 +3,10 @@
 #include	<sys/stat.h>
 #include	<stdarg.h>
 #include	<stdio.h>
-#include	<stdlib.h>
 
 #include	"main.h"
 #include	"file.h"
 #include	"util.h"
-#include "xmem.h"
 
 #ifdef WIN32
 #include	<io.h>		// for various things

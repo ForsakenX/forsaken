@@ -37,7 +37,6 @@
 #include "local.h"
 #include "util.h"
 #include "timer.h"
-#include "xmem.h"
 
 #define	SCATTER_TEST	0
 

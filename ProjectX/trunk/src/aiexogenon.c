@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <malloc.h>
 
 #include "main.h"
 #include "new3d.h"
@@ -26,7 +25,6 @@
 #ifdef OPT_ON
 #pragma optimize( "gty", on )
 #endif
-#include "xmem.h"
 
 
 // Externals

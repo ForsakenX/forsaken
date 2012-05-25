@@ -12,6 +12,7 @@
 #ifndef SHIPS_INCLUDED
 #define SHIPS_INCLUDED
 
+#include "main.h"
 #include <math.h>
 #include "new3d.h"
 #include "mload.h"

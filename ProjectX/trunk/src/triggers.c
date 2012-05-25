@@ -27,7 +27,6 @@
 #include "camera.h"
 #include "teleport.h"
 #include "screenpolys.h"
-#include "xmem.h"
 #include "util.h"
 
 #undef DEBUG_TRIGGERS

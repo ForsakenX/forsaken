@@ -12,6 +12,7 @@
 #ifndef COLLISION_INCLUDED
 #define COLLISION_INCLUDED
 
+#include "main.h"
 #include "file.h"
 #include "render.h"
 #include "new3d.h"

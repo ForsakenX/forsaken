@@ -5,6 +5,7 @@
 // General Networking
 //
 
+#include "main.h"
 #include "net.h"
 
 // game tracker

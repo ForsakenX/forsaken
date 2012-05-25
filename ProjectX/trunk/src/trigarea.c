@@ -52,7 +52,6 @@ num_zones : uint16
 
 #include "primary.h"
 #include "secondary.h"
-#include "xmem.h"
 #include "util.h"
 
 

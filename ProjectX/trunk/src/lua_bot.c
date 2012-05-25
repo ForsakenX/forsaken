@@ -33,7 +33,6 @@
 #include "goal.h"
 #include "visi.h"
 #include "text.h"
-#include "xmem.h"
 #include "local.h"
 #include "util.h"
 #include "timer.h"

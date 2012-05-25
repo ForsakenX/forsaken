@@ -1,7 +1,7 @@
 
+#include "main.h"
 #include "timer.h"
 #include "util.h"
-#include "xmem.h"
 
 // run timer and compute seconds without modifying stats
 float timer_peek( px_timer_t* stats )

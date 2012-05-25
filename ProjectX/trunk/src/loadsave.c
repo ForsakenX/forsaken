@@ -40,7 +40,6 @@
 #include "restart.h"
 #include "sfx.h"
 #include "text.h"
-#include "xmem.h"
 #include "file.h"
 #include "util.h"
 #include "timer.h"

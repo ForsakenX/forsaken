@@ -6,8 +6,8 @@
 *	and do collision to any polygon in a specified group..
 *	or to the nearest polygon..
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -25,7 +25,6 @@
 #include "sphere.h"
 #include "secondary.h"
 #include "restart.h"
-#include "xmem.h"
 #include "util.h"
 
 //#undef COLLISION_FUDGE

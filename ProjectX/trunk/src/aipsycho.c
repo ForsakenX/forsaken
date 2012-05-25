@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 #include <math.h>
-#include <malloc.h>
 
 #include "main.h"
 #include "new3d.h"
@@ -21,7 +20,6 @@
 #include "ai.h"
 #include "secondary.h"
 #include "primary.h"
-#include "xmem.h"
 
 // Externals
 extern	float framelag;

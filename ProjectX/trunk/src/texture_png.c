@@ -1,13 +1,12 @@
 #ifdef TEXTURE_PNG
 
+#include "main.h"
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include <png.h>
 
 #include "texture.h"
 #include "file.h"
-#include "xmem.h"
 
 void destroy_image( texture_image_t * image )
 {

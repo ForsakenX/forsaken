@@ -1,10 +1,4 @@
 #include <stdio.h>
-#ifdef HAVE_MALLOC_H
-#include <malloc.h>
-#else
-// osx
-#include <stdlib.h>
-#endif
 #include "main.h"
 #include "util.h"
 

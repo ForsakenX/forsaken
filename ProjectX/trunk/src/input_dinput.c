@@ -1,4 +1,5 @@
 #ifdef DXMOUSE
+#include "main.h"
 #include "input.h"
 #include "util.h"
 #include <windows.h>
@@ -77,9 +78,8 @@ mouse_state_t* read_mouse( void )
 #include "input.h"
 #include "util.h"
 #include "render.h"
-#include "SDL.h"
+#include <SDL.h>
 #include <stdio.h>
-#include "xmem.h"
 #include <windows.h>
 #include "dinput.h"
 

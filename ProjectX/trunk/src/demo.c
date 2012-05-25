@@ -23,7 +23,6 @@
 #include "pickups.h"
 #include "primary.h"
 #include "controls.h"
-#include "xmem.h"
 #include "util.h"
 #include "demo.h"
 #include "file.h"

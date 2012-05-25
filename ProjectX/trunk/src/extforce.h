@@ -2,6 +2,7 @@
 #ifndef EXTFORCE_INCLUDED
 #define EXTFORCE_INCLUDED
 
+#include "main.h"
 /*
  * Defines
  */

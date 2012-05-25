@@ -26,6 +26,7 @@
 #define KEY_JOYSTICK_POV( K )				( ( (K) >> 2 ) & 0x03 )
 #define KEY_JOYSTICK_POVDIR( K )			( (K) & 0x03 )
 
+#include "main.h"
 #include "title.h"
 
 typedef short VirtualKeycode;

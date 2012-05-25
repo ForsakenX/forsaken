@@ -18,7 +18,6 @@
 #include "sfx.h"
 #include "render.h"
 #include "util.h"
-#include "xmem.h"
 
 // TEMP!! - for testing looping SFX
 #include "sfx.h"

@@ -1,6 +1,7 @@
 #ifndef	QUAT_DEFS
 #define	QUAT_DEFS
 
+#include "main.h"
 #include "new3d.h"
 
 /*===================================================================

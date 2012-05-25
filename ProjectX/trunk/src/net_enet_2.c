@@ -19,11 +19,11 @@
  */
 
 #ifdef NET_ENET_2
+#include "main.h"
 #include "net.h"
 #include "enet/enet.h"
 #include <stdio.h>
 #include <string.h>
-#include "xmem.h"
 
 // debug print f
 #include "util.h"

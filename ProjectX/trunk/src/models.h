@@ -4,6 +4,7 @@
 
 #include <math.h>
 
+#include "main.h"
 #include "new3d.h"
 #include "mload.h"
 #include "collision.h"

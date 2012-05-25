@@ -15,6 +15,7 @@
 	Includes
 ===================================================================*/
 #include <math.h>
+#include "main.h"
 
 #include "new3d.h"
 #include "ships.h"

@@ -30,7 +30,6 @@
 #include "main.h"
 #include "controls.h"
 #include "local.h"
-#include "xmem.h"
 #include "util.h"
 
 #ifdef OPT_ON

@@ -25,7 +25,6 @@
 
 #include "ships.h"
 #include "skin.h"
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

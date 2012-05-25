@@ -14,6 +14,7 @@
 	Includes
 ===================================================================*/
 
+#include "main.h"
 #include "file.h"
 #include "render.h"
 #include "new3d.h"

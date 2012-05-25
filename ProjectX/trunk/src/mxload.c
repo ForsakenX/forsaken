@@ -35,8 +35,8 @@ mxtype : uint16 // always 0 for mx format
 /*===================================================================
 		Include File...
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -48,7 +48,6 @@ mxtype : uint16 // always 0 for mx format
 
 #include "sfx.h"
 #include "spotfx.h"
-#include "xmem.h"
 #include "util.h"
 
 /*===================================================================

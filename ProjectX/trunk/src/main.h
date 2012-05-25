@@ -131,4 +131,11 @@ typedef struct
 #include <math.h>
 #endif
 
+// on osx trying to include malloc will not work
+// this brings in malloc on linux and osx
+#include <stdlib.h>
+
+// should be included after malloc/stdlib
+#include "xmem.h"
+
 #endif	// MAIN_INCLUDED

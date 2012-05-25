@@ -43,7 +43,6 @@
 #include "lines.h"
 #include "loadsave.h"
 
-#include "xmem.h"
 #include "net.h"
 #include "restart.h"
 #include "version.h"

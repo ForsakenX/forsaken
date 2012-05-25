@@ -1,6 +1,5 @@
 
 #include <stdio.h>
-#include <stdlib.h>
 #include <memory.h>
 #include <string.h>
 
@@ -16,7 +15,6 @@
 #include "models.h"
 #include "mxaload.h"
 #include "config.h"
-#include "xmem.h"
 #include "util.h"
 
 extern LIST BikeList;

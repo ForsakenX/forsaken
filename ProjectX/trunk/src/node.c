@@ -18,7 +18,7 @@
 		Include File...	
 ===================================================================*/
 #include <stdio.h>
-
+#include "main.h"
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -36,7 +36,6 @@
 #include "lines.h"
 
 #include "collision.h"
-#include "xmem.h"
 
 /*===================================================================
 		Defines

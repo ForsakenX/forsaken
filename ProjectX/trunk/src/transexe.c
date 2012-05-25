@@ -2,8 +2,8 @@
 /*===================================================================
 		Include File...	
 ===================================================================*/
+#include "main.h"
 #include <stdio.h>
-
 #include "new3d.h"
 #include "quat.h"
 #include "compobjects.h"
@@ -13,7 +13,6 @@
 
 #include "transexe.h"
 #include "models.h"
-#include "xmem.h"
 
 /*===================================================================
 		Externals...

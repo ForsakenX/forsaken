@@ -2,6 +2,7 @@
 #ifndef OBJECT_INCLUDED
 #define OBJECT_INCLUDED
 
+#include "main.h"
 #include "quat.h"
 #include "compobjects.h"
 

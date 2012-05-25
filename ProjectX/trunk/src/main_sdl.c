@@ -2,11 +2,10 @@
 #include "util.h"
 #include "render.h"
 #include "version.h"
-#include "SDL.h"
+#include <SDL.h>
 #ifdef OPENGL
 #include "SDL_opengl.h"
 #endif
-#include "xmem.h"
 
 extern render_info_t render_info;
 extern BOOL render_init( render_info_t * info );

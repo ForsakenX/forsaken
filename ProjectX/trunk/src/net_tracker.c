@@ -18,13 +18,13 @@
  * Boston, MA 02110-1301 USA.
  */
 
+#include "main.h"
 #include "enet/enet.h"
 #include <stdio.h>
 #include <string.h>
 #include "util.h"
 #include "version.h"
 #include "net.h"
-#include "xmem.h"
 
 // created in net_enet.c
 extern ENetHost* enet_host;

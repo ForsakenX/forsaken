@@ -5,6 +5,7 @@
  * Defines
  */
 //#define SAVEGAME_SLOTS
+#include "main.h"
 
 #define SAVEGAME_FOLDER			"Savegame"
 #define SNAPSHOT_FOLDER			"ScreenShots"
