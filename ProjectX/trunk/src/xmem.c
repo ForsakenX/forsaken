@@ -1,3 +1,4 @@
+#define XMEM_INCLUDED // we don't want xmem.h to include here
 #include <stdio.h>
 #include "main.h"
 #include "util.h"
