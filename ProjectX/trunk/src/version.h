@@ -2,10 +2,10 @@
 #define VERSION_HEADER
 
 // major version
-#define PXV	 1
+#define PXV	 "1"
 
 // multiplayer version (increase if you break multiplayer compatibility)
-#define PXMPV	 18
+#define PXMPV	 "18"
 
 // multiplayer compatibility flag
 		// TODO: use this format in future for now hard coded to existing format
@@ -13,9 +13,9 @@
 #define PXMPVINT 118
 
 // revision (should be provided at build time for official builds)
-// make -DPXRV=$(svn info | grep Revision | awk '{print $NF}')
+// make PXRV=$(svn info | grep Revision | awk '{print $NF}')
 #ifndef PXRV
-    #define PXRV	 0
+    #define PXRV	 "0"
 #endif
 
 // tag name so we know what type of build this is
