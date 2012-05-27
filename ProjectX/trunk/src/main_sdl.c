@@ -197,7 +197,7 @@ static BOOL create_video_surface( Uint32 flags )
 static void set_window_title( void )
 {
 	// window title, icon title (taskbar and other places)
-	SDL_WM_SetCaption(ProjectXVersion,"ProjectX");
+	SDL_WM_SetCaption(PXVersion,"ProjectX");
 }
 
 // TODO - we need a ui control for this

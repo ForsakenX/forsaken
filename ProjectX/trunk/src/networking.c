@@ -80,7 +80,7 @@ extern int   GetPlayerNumCount;
 
 extern BOOL	PickupValid[ MAXPICKUPTYPES ];
 
-#define YourVersion "YOUR VERSION: " ProjectXVersion
+#define YourVersion "YOUR VERSION: " PXVersion
 
 #define	ONEOVER32767 (1.0F / 32767.0F)
 #define	ONEOVER256 (1.0F / 256.0F)
@@ -3066,7 +3066,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					// display my version number
 					AddColourMessageToQue(SystemMessageColour, YourVersion );
 					// send my version number back
-					strncpy( (char *)&QuickText.text, ProjectXVersion , sizeof(ProjectXVersion) );
+					strncpy( (char *)&QuickText.text, PXVersion , sizeof(PXVersion) );
 					SendGameMessage(MSG_TEXTMSG, 0, 0, TEXTMSGTYPE_QuickTaunt, 0);
 					QuickText.text[0] = 0; // clean message buffer
 				}
