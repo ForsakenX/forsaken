@@ -31,7 +31,7 @@ endif
 ifeq ($(MINGW),1)
 
   ifeq ($(CROSS),1)
-    CC=i586-mingw32msvc-gcc
+    CC=i686-mingw32-gcc
     SDL_CONFIG=./mingw/bin/sdl-config
     CFLAGS += -I./mingw/include
     LIB += -L./mingw/bin
