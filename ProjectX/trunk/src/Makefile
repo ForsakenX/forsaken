@@ -2,6 +2,8 @@
 # General Compiler Settings
 #
 
+# for cross compiling be sure to specify your compiler ex:
+# make CC=i686-mingw32-gcc
 CC=gcc
 
 FLAGS= -m32 -pipe
@@ -12,12 +14,6 @@ DEBUG=0
 PROFILE=0
 STATIC=0
 MUDFLAP=0
-
-ifeq ($(MINGW),1)
-  ifeq ($(CROSS),1)
-    CC=i686-mingw32-gcc
-  endif
-endif
 
 ifeq ($(MUDFLAP),1)
   ifeq ($(DEBUG),1)
