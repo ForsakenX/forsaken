@@ -6,13 +6,23 @@
 # make CC=i686-mingw32-gcc
 CC=gcc
 
+# general compiler settings
 FLAGS= -m32 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
 
-DEBUG=0
-PROFILE=0
+# right now non debug build would probably crash anyway
+# we even release debug builds as the official release
+DEBUG=1
+
+# might as well leave gprof support on by default as well
+PROFILE=1
+
+# use this if you want to build everything statically
 STATIC=0
+
+# Mudflap is a pointer use checking library. For more info:
+# http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
 MUDFLAP=0
 
 ifeq ($(MUDFLAP),1)
@@ -24,16 +34,18 @@ ifeq ($(MUDFLAP),1)
   endif
 endif
 
+# stack-smash protection against buffer overflows and corrupt pointers
+# (enabled by default on many systems today)
+ifeq ($(SSP),1)
+  FLAGS+= -fstack-protector-all
+  CFLAGS+= -D_FORTIFY_SOURCE=2
+endif
+
 ifeq ($(DEBUG),1)
   FLAGS+= -g 
 else
   CFLAGS+=-O3 -Winit-self
   LDFLAGS+=-s
-endif
-
-ifeq ($(SSP),1)
-  FLAGS+= -fstack-protector-all
-  CFLAGS+= -D_FORTIFY_SOURCE=2
 endif
 
 ifeq ($(PROFILE),1)
