@@ -1,20 +1,32 @@
-# Written by The Lion
 #
-# The contents of this Makefile is in the public domain.
-
-DEBUG=0
-PROFILE=0
-STATIC=0
+# General Compiler Settings
+#
 
 CC=gcc
-
-# Mudflap is a pointer use checking library. For more info:
-# http://gcc.gnu.org/wiki/Mudflap_Pointer_Debugging
-MUDFLAP=0
 
 FLAGS= -m32 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
+
+DEBUG=0
+PROFILE=0
+STATIC=0
+MUDFLAP=0
+
+ifeq ($(MINGW),1)
+  ifeq ($(CROSS),1)
+    CC=i686-mingw32-gcc
+  endif
+endif
+
+ifeq ($(MUDFLAP),1)
+  ifeq ($(DEBUG),1)
+    FLAGS+= -fmudflap
+    LIB+= -lmudflap
+  else
+    X:=$(error Mudflap enabled without debug mode - probably not what you meant)
+  endif
+endif
 
 ifeq ($(DEBUG),1)
   FLAGS+= -g 
@@ -28,45 +40,6 @@ ifeq ($(SSP),1)
   CFLAGS+= -D_FORTIFY_SOURCE=2
 endif
 
-ifeq ($(MINGW),1)
-
-  ifeq ($(CROSS),1)
-    CC=i686-mingw32-gcc
-    SDL_CONFIG=./mingw/bin/sdl-config
-    CFLAGS += -I./mingw/include
-    LIB += -L./mingw/bin
-  endif
-  
-  CFLAGS += -DMINGW `$(SDL_CONFIG) --cflags`
-  LIB += -lm -lglu32 -lopengl32 -lenet `$(SDL_CONFIG) --libs`
-  LIB += -llua -lsocket -lmime -lluasocket -lws2_32 -lwsock32 -lpng14 -lz -lwinmm -lOpenAL32 
-  
-  ifeq ($(DXMOUSE),1)
-    CFLAGS += -DDXMOUSE -Idinput
-    LIB +=  -Ldinput -ldinput -ldxguid
-  endif
-  
-else # normal system build
-
-  LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
-  
-  CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
-  
-  LIB+= -lGL -lGLU `pkg-config --libs sdl`
-  
-  ifeq ($(STATIC),1)
-    LIB+= -Wl,-dn
-    PKG_CFG_OPTS= --static
-  endif
-  
-  LIB+= -lm `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal`
-  
-  ifeq ($(STATIC),1)
-    LIB+= -Wl,-dy
-  endif
-
-endif
-
 ifeq ($(PROFILE),1)
   ifneq ($(DEBUG),1)
     # Debug symbols needed for profiling to be useful
@@ -75,13 +48,34 @@ ifeq ($(PROFILE),1)
   FLAGS+= -pg
 endif
 
-ifeq ($(MUDFLAP),1)
-  ifeq ($(DEBUG),1)
-    FLAGS+= -fmudflap
-    LIB+= -lmudflap
-  else
-    X:=$(error Mudflap enabled without debug mode - probably not what you meant)
-  endif
+#
+# ProjectX Specific
+#
+
+# some systems use lua5.1
+LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
+
+# library headers
+CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
+
+# libraries
+ifeq ($(STATIC),1)
+  LIB+= -Wl,-dn
+  PKG_CFG_OPTS= --static
+endif
+LIB+= -lm `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal`
+ifeq ($(STATIC),1)
+  LIB+= -Wl,-dy
+endif
+
+# dynamic only libraries
+LIB+= `pkg-config --libs sdl`
+ifeq ($(MINGW),1)
+  LIB += -L./mingw/bin
+  LIB += -lglu32 -lopengl32
+  LIB += -lsocket -lws2_32 -lwsock32 -lwinmm -lOpenAL32 
+else
+  LIB += -lGL -lGLU
 endif
 
 ifeq ($(BOT),1)
@@ -92,6 +86,10 @@ endif
 CFLAGS += -I.
 
 # ProjectX-specific macros
+ifeq ($(DXMOUSE),1)
+  CFLAGS += -DDXMOUSE -Idinput
+  LIB += -Ldinput -ldinput -ldxguid
+endif
 ifeq ($(RENDER_DISABLED),1)
   CFLAGS+= -DRENDER_DISABLED
 else
@@ -111,6 +109,7 @@ INC=$(wildcard *.h)
 SRC=$(wildcard *.c)
 OBJ=$(patsubst %.c,%.o,$(SRC))
 
+# allows user to override settings
 ADD_FLAGS=
 ADD_CFLAGS=
 ADD_LDFLAGS=
