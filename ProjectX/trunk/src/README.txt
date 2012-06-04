@@ -2,6 +2,10 @@
 
 	Following is based off of Ubuntu 11.10 (oneirc).
 	
+	Ubuntu:
+		Since the lua5.1-socket.pc file doesn't do this for you:
+			make ADD_LDFLAGS=-llua5.1-mime 
+
 	sudo apt-get install \
 			libsdl-dev libopenal-dev \
 			liblua5.1-0-dev liblua5.1-socket-dev
@@ -30,7 +34,6 @@
 		cmake .. -DCMAKE_INSTALL_PREFIX=/usr
 		make
 		sudo make install
-
 
 == Profiling ==
 
