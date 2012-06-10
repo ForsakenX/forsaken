@@ -62,18 +62,29 @@ endif
 
 # some systems use lua5.1
 LUA=$(shell pkg-config lua5.1 && echo lua5.1 || echo lua)
+MACOSX=$(shell uname -a | grep -qi darwin && echo 1 || echo 0)
 
 # library headers
 CFLAGS+= `pkg-config --cflags sdl $(LUA) $(LUA)-socket libenet libpng zlib openal`
+ifeq ($(MACOSX),1)
+  CFLAGS += -DMACOSX
+endif
 
 # libraries
 ifeq ($(STATIC),1)
-  LIB+= -Wl,-dn
+  LD_STATIC=-dn
+  LD_DYNAMIC=-dy
+  # TODO - Static builds currently do not work on MACOSX
+  ifeq ($(MACOSX),1)
+    LD_STATIC=-static
+    LD_DYNAMIC=-dynamic
+  endif
+  LIB+= -Wl,$(LD_STATIC)
   PKG_CFG_OPTS= --static
 endif
 LIB+= -lm `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal`
 ifeq ($(STATIC),1)
-  LIB+= -Wl,-dy
+  LIB+= -Wl,$(LD_DYNAMIC)
 endif
 
 # dynamic only libraries
@@ -82,7 +93,12 @@ ifeq ($(MINGW),1)
   LIB += -L./mingw/bin
   LIB += -lglu32 -lopengl32
   LIB += -lsocket -lws2_32 -lwsock32 -lwinmm -lOpenAL32 
-else
+else ifeq ($(MACOSX),1)
+  # TODO - Support targeting X11 (need to compile sdl properly)
+  #LIB += -L/usr/X11/lib/ -lGL -lGLU
+  LIB += -framework OpenGL # OpenGL bundle on OSX.
+  LIB += -framework Cocoa  # Used to target Quartz by SDL.
+else	
   LIB += -lGL -lGLU
 endif
 

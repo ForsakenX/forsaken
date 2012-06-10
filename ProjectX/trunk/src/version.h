@@ -26,6 +26,8 @@
         #else
             #define PXBV  "OPEN"
         #endif
+    #elif defined(MACOSX)
+        #define PXBV  "MACOSX"
     #else
         #define PXBV  "LINUX"
     #endif

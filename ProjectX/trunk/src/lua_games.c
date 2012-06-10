@@ -36,6 +36,10 @@
 
 void games_update( void )
 {
+// TODO need to fix this bug..
+#ifdef MACOSX
+	return;
+#endif
 	lua_getglobal(L1, "games");
 	lua_getfield(L1, -1, "update");
 	lua_call(L1, 0, 0);
