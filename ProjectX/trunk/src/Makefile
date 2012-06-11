@@ -72,19 +72,15 @@ endif
 
 # libraries
 ifeq ($(STATIC),1)
-  LD_STATIC=-dn
-  LD_DYNAMIC=-dy
-  # TODO - Static builds currently do not work on MACOSX
   ifeq ($(MACOSX),1)
-    LD_STATIC=-static
-    LD_DYNAMIC=-dynamic
+     $(error MacOSX does not support static builds)
   endif
-  LIB+= -Wl,$(LD_STATIC)
+  LIB+= -Wl,-dn
   PKG_CFG_OPTS= --static
 endif
 LIB+= -lm `pkg-config $(PKG_CFG_OPTS) --libs $(LUA) $(LUA)-socket libenet libpng zlib openal`
 ifeq ($(STATIC),1)
-  LIB+= -Wl,$(LD_DYNAMIC)
+  LIB+= -Wl,-dy
 endif
 
 # dynamic only libraries
