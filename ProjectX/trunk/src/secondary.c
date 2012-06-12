@@ -5101,45 +5101,6 @@ void ScatterWeapons( VECTOR * Dir, int16 MaxPickupsAllowed )
 }
 
 /*===================================================================
-	Procedure	:	Scatter all weapons and powerups
-	Input		:	Nothing
-	Output		:	Nothing
-===================================================================*/
-void ShortScatterWeapons( void )
-{
-	int16	Count;
-
-	if( ( Ships[ WhoIAm ].Object.Flags & SHIP_SuperNashram ) ) LoseSuperNashram();
-
-	Ships[ WhoIAm ].Object.PowerLevel = 0;
-	NitroFuel = 0.0F;
-	Ships[ WhoIAm ].Object.Flags &= ~( SHIP_Stealth | SHIP_CarryingBounty | SHIP_CarryingFlag | SHIP_CarryingFlags );
-	Ships[ WhoIAm ].StealthTime = 0.0F;
-	Ships[ WhoIAm ].Invul = FALSE;
-	Ships[ WhoIAm ].InvulTimer = 0.0F;
-
-	if(	( Ships[ WhoIAm ].NumMultiples ) )
-	{
-		for( Count = 0; Count < Ships[ WhoIAm ].NumMultiples; Count++ )
-		{
-			if( Ships[ WhoIAm ].OrbModels[ Count ] != (uint16) -1 )
-			{
-				KillUsedModel( Ships[ WhoIAm ].OrbModels[ Count ] );
-				Ships[ WhoIAm ].OrbModels[ Count ] = (uint16) -1;
-			}
-		}
-
-		Ships[ WhoIAm ].NumMultiples = 0;
-	}
-
-	RestoreAmmo();
-	RestoreWeapons();
-
-	Ships[ WhoIAm ].Primary = PULSAR;
-	Ships[ WhoIAm ].Secondary = MUGMISSILE;
-}
-
-/*===================================================================
 	Procedure	:	Scatter all weapons and powerups for specific
 				:	Ship
 	Input		:	VECTOR	*	Genereal Direction to scatter

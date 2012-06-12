@@ -298,7 +298,6 @@ void ToggleSecondaryWeapons( int8 Secondary );
 
 void ScatterWeaponsForShip( uint16 Ship, VECTOR * Dir, int16 MaxPickupsAllowed );
 int16 HostGenerateSecondaryPickups( uint16 Ship, int16 NumAllowed );
-void ShortScatterWeapons( void );
 
 #endif // SECONDARY_INCLUDED
 
