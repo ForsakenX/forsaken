@@ -1293,7 +1293,11 @@ void network_event_player_left( network_player_t * player )
 					Ships[i].Object.light = (uint16) -1;
 				}
 
+				// Meth: Interesting seems that they toyd with idea of
+				//       blowing up the players mines and bullets when
+				//       they leave the game.
 				//KillOwnersSecBulls( (uint16) i );
+
 				Ships[i].enable = 0;
 
 				if ( GameStatus[i] == STATUS_StartingMultiplayer )
