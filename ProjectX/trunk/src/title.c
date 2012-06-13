@@ -4816,7 +4816,7 @@ BOOL DisplayTitle(void)
 		InitLevels( MULTIPLAYER_LEVELS );
 
 		TitleOnceOnly = FALSE;
-		WhoIAm = (uint8) -1;
+		WhoIAm = (uint8) UNASSIGNED_SHIP;
 
 		InitScreenFonts();
 
