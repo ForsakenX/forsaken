@@ -36,6 +36,9 @@
 #include "net_tracker.h"
 #include "timer.h"
 
+
+BYTE WhoIAm = UNASSIGNED_SHIP;
+
 extern BOOL Debug;
 
 int	PacketGot[256];
