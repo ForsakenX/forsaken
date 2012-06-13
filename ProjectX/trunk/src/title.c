@@ -16100,7 +16100,11 @@ BOOL ProcessText( int Key )
 		TextBackspace( (TEXT *)(TextItem->Variable) );
 		break;
 	case SDLK_DELETE:
+#ifdef MACOSX
+		TextBackspace( (TEXT *)(TextItem->Variable) );
+#else
 		TextDelete( (TEXT *)(TextItem->Variable) );
+#endif
 		break;
 	case SDLK_TAB:
 		TextClear( (TEXT *)(TextItem->Variable) );
