@@ -50,7 +50,7 @@ static ENetPeer* host;
 // my settings
 static int i_am_host = 0;
 static peer_id_t my_id = NO_ID;
-char* my_player_name = NULL; // used in net_tracker.c
+char my_player_name[NETWORK_MAX_NAME_LENGTH] = {0}; // used in net_tracker.c
 int my_local_port = 0; // used in net_tracker.c
 
 // settings
@@ -408,9 +408,10 @@ static void update_players( void )
 	}
 }
 
-static void update_player_name( network_player_t * player, char * name )
+static void set_player_name( char * target, char * source )
 {
-	strncpy( player->name, name, NETWORK_MAX_NAME_LENGTH-1 );
+	strncpy( target, source, NETWORK_MAX_NAME_LENGTH-1 );
+	target[NETWORK_MAX_NAME_LENGTH-1] = 0;
 }
 
 static network_player_t * create_player( ENetPeer * peer )
@@ -419,7 +420,7 @@ static network_player_t * create_player( ENetPeer * peer )
 	network_player_t * player = malloc( sizeof( network_player_t ) );
 
 	// name
-	update_player_name( player, "NULL" );
+	set_player_name( player->name, "NULL" );
 
 	// dotted decimal ip
 	enet_address_get_host_ip( &peer->address, player->ip, sizeof(player->ip) );
@@ -657,7 +658,7 @@ static void new_connection( ENetPeer * peer )
 	{
 		p2p_name_packet_t packet;
 		packet.type = NAME;
-		strncpy( packet.name, my_player_name, NETWORK_MAX_NAME_LENGTH-1 );
+		set_player_name( packet.name, my_player_name );
 		enet_send( peer, &packet, sizeof(packet),
 			convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
 		DebugPrintf("network: sent my name (%s) to new connection\n",
@@ -1122,12 +1123,14 @@ static void new_packet( ENetEvent * event )
 		case NAME:
 			{
 				p2p_name_packet_t* packet = (p2p_name_packet_t*) event->packet->data;
-				char* name = packet->name;
 
-				DebugPrintf("network: player %d has updated their name from '%s' to '%s'\n",
-					peer_data->id, peer_data->player->name, name );
+				DebugPrintf("network: player %d has updated their name from '%s'",
+					peer_data->id, peer_data->player->name );
 
-				update_player_name( peer_data->player, name );
+				set_player_name( peer_data->player->name, packet->name );
+
+				DebugPrintf(" to '%s'\n",
+					peer_data->player->name );
 
 				if( peer_data->state == PLAYING )
 					network_event( NETWORK_NAME, peer_data->player );
@@ -1313,7 +1316,7 @@ network_return_t network_setup( char* player_name, int local_port )
 	network_cleanup();
 	DebugPrintf("network: setup name='%s' connect_port=%d\n",
 		player_name, local_port);
-	my_player_name = player_name;
+	set_player_name(my_player_name,player_name);
 	network_state = NETWORK_DISCONNECTED;
 	return enet_setup( NULL, local_port );
 }
@@ -1421,13 +1424,14 @@ void network_pump()
 
 void network_set_player_name( char* name )
 {
+	set_player_name( my_player_name, name );
 	network_player_t * player = network_players.first;
 	ENetPacket * packet;
 	p2p_name_packet_t name_packet;
 	if( enet_host == NULL ) return;
 	DebugPrintf("network: set my player name to %s\n",name);
 	name_packet.type = NAME;
-	strncpy( name_packet.name, name, NETWORK_MAX_NAME_LENGTH-1 );
+	set_player_name( name_packet.name, name );
 	packet = enet_packet_create( &name_packet, sizeof(name_packet),
 		convert_flags(NETWORK_RELIABLE|NETWORK_FLUSH) );
 	if( packet == NULL )
