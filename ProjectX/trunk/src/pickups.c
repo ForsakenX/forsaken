@@ -5856,7 +5856,7 @@ BOOL CanPlayerCollectPickup( uint16 i, uint16 Player )
 							break;
 						}
 					}
-					WhoIAm = 0;
+					WhoIAm = 0; // TODO: (methods) why are we setting our selves to 0 ?
 				}
 				break;
 
