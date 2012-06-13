@@ -425,6 +425,49 @@ extern uint8	KillStats[MAX_PLAYERS][MAX_PLAYERS];
 extern uint8	BonusStats[MAX_PLAYERS];
 extern uint8	KillCounter[MAX_PLAYERS];	
 
+BOOL msg_is_valid( int msg_type )
+{
+	switch( msg_type )
+	{
+	case MSG_YOUQUIT:
+	case MSG_BIKENUM:
+	case MSG_HEREIAM:
+	case MSG_INIT:
+	case MSG_VERYSHORTUPDATE:
+	case MSG_UPDATE:
+	case MSG_FUPDATE:
+	case MSG_VERYSHORTFUPDATE:
+	case MSG_GROUPONLY_VERYSHORTFUPDATE:
+	case MSG_DROPPICKUP:
+	case MSG_VERYSHORTDROPPICKUP:
+	case MSG_KILLPICKUP:
+	case MSG_TEAMGOALS:
+	case MSG_SHOCKWAVE:
+	case MSG_BGOUPDATE:
+	case MSG_PRIMBULLPOSDIR:
+	case MSG_SECBULLPOSDIR:
+	case MSG_TITANBITS:
+	case MSG_SHIPHIT:
+	case MSG_SHORTSHIPHIT:
+	case MSG_SHIPDIED:
+	case MSG_REQTIME:
+	case MSG_SETTIME:
+	case MSG_STATUS:
+	case MSG_NETSETTINGS:
+	case MSG_LONGSTATUS:
+	case MSG_SHORTPICKUP:
+	case MSG_SHORTREGENSLOT:
+	case MSG_SHORTTRIGGER:
+	case MSG_SHORTTRIGVAR:
+	case MSG_SHORTMINE:
+	case MSG_TEXTMSG:
+	case MSG_VERYSHORTINTERPOLATE:
+	case MSG_INTERPOLATE:
+		return TRUE;
+	}
+	return FALSE;
+}
+
 char* msg_to_str( int msg_type )
 {
 	switch( msg_type )
@@ -1428,7 +1471,7 @@ void network_event( network_event_type_t type, void* data )
         case NETWORK_HOST:
                 network_event_new_host( player );
                 break;
-		case NETWORK_NAME:
+	case NETWORK_NAME:
                 network_event_player_name( player );
                 break;
         case NETWORK_DATA:
@@ -1564,6 +1607,43 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	VECTOR	Dir;
 	float	Force;
 	uint16	Pickup;
+
+	if( ! msg_is_valid( *MsgPnt ) )
+	{
+		DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping for unknown type: %d\n",
+			from->name, from->ip, from->port, *MsgPnt );
+		return;
+	}
+	if( RealPacketSize[*MsgPnt] != len )
+	{
+		DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for invalid size of %d expected %d\n",
+			from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, len, RealPacketSize[*MsgPnt]);
+		return;
+	}
+	{
+		int id = *(MsgPnt+1);
+		if ( *MsgPnt != MSG_HEREIAM && ( id < 0 || id >= MAX_PLAYERS ))
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for player id being out of range: %d\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
+			return;
+		}
+		if ( 
+			*MsgPnt != MSG_INIT && *MsgPnt != MSG_STATUS && *MsgPnt != MSG_LONGSTATUS && // will add to following structures
+			(GameStatus[id] == STATUS_Left || GameStatus[id] == STATUS_LeftCrashed || GameStatus[id] == STATUS_Null) 
+		){
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using inactive player id: %d\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
+			return;
+		}
+		if ( id == WhoIAm )
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using my player id: %d\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
+			return;
+		}
+	}
+				
 
 	// set flag sfx volume
 	FlagVolume = FlagSfxSlider.value / ( FlagSfxSlider.max / GLOBAL_MAX_SFX );
@@ -3219,7 +3299,9 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		return;
 	}
 
-	DebugPrintf("corrupt message: %d\n", *MsgPnt);
+	DebugPrintf("Evaluate Message: from %s (%s:%d) unhandled message of type: %s (%d)\n",
+			from->name, from->ip, from->port,
+			msg_to_str(*MsgPnt), *MsgPnt);
 }
 
 typedef enum {
