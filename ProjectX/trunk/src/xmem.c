@@ -54,6 +54,35 @@ int XMem_FindSame( void * Pnt )
 	return -1;
 }
 
+void * X_strdup( char *str, char *in_file, int in_line )
+{
+	void * Pnt;
+	int i;
+	
+	i = XMem_FindFree();
+	if( i == -1 )
+	{
+		DebugPrintf( "Ran out of free memory Blocks\n"); // break point
+		return NULL;
+	}
+
+	Pnt = strdup( str );
+	
+	if( !Pnt )
+		return Pnt;
+
+	int size = strlen(str)+1;
+
+	BlockUsed[i] = TRUE;
+	BlockPnts[i] = Pnt;
+	BlockSize[i] = size;
+	BlockInFile[i] = in_file;
+	BlockInLine[i] = in_line;
+	MemUsed += size;
+
+	return Pnt;
+
+}
 void * X_malloc( size_t size, char *in_file, int in_line )
 {
 	void * Pnt;

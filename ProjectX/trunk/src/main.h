@@ -135,6 +135,9 @@ typedef struct
 // this brings in malloc on linux and osx
 #include <stdlib.h>
 
+// xmem also needs strdup to be pulled in first
+#include <string.h>
+
 // should be included after malloc/stdlib
 #include "xmem.h"
 
