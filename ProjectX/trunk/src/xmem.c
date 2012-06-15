@@ -62,7 +62,7 @@ void * X_strdup( char *str, char *in_file, int in_line )
 	i = XMem_FindFree();
 	if( i == -1 )
 	{
-		DebugPrintf( "Ran out of free memory Blocks\n"); // break point
+		DebugPrintf( "MEM: Ran out of free memory Blocks\n"); // break point
 		return NULL;
 	}
 
@@ -91,7 +91,7 @@ void * X_malloc( size_t size, char *in_file, int in_line )
 	i = XMem_FindFree();
 	if( i == -1 )
 	{
-		DebugPrintf( "Ran out of free memory Blocks\n"); // break point
+		DebugPrintf( "MEM: Ran out of free memory Blocks\n"); // break point
 		return NULL;
 	}
 
@@ -119,7 +119,7 @@ void * X_calloc( size_t num,size_t size, char *in_file, int in_line )
 	i = XMem_FindFree();
 	if( i == -1 )
 	{
-		DebugPrintf( "Ran out of free memory Blocks\n"); // break point
+		DebugPrintf( "MEM: Ran out of free memory Blocks\n"); // break point
 		return NULL;
 	}
 
@@ -148,7 +148,7 @@ void X_free( void * Pnt, char *in_file, int in_line )
 	if ( !Pnt )
 	{
 		if ( in_file != last_file || in_line != last_line )
-			DebugPrintf( "Tried to free NULL block in %s line %d\n", in_file, in_line ); // break point
+			DebugPrintf( "MEM: Tried to free NULL block in %s line %d\n", in_file, in_line ); // break point
 		last_file = in_file;
 		last_line = in_line;
 		return;
@@ -157,7 +157,7 @@ void X_free( void * Pnt, char *in_file, int in_line )
 	if( i == -1 )
 	{
 		if ( in_file != last_file || in_line != last_line )
-	 		DebugPrintf( "Tried to free un-malloced block in %s line %d\n", in_file, in_line ); // break point
+	 		DebugPrintf( "MEM: Tried to free un-malloced block in %s line %d\n", in_file, in_line ); // break point
 		last_file = in_file;
 		last_line = in_line;
 		return;
@@ -181,7 +181,7 @@ void * X_realloc( void * Pnt , size_t size, char *in_file, int in_line )
 	i = XMem_FindSame( Pnt );
 	if( i == -1 )
 	{
-		DebugPrintf( "tried to realloc un-alloced block\n"); // break point
+		DebugPrintf( "MEM: tried to realloc un-alloced block\n"); // break point
 		return NULL;
 	}
 
@@ -212,12 +212,12 @@ int UnMallocedBlocks( void )
 		{
 			if ( BlockUsed[ i ] )
 			{
-				DebugPrintf( "Block size %d allocated in %s line %d but not freed\n",
+				DebugPrintf( "MEM: Block size %d allocated in %s line %d but not freed\n",
 					BlockSize[ i ], BlockInFile[ i ], BlockInLine[ i ] ); // break point
 			}
 		}
 	}
-	DebugPrintf( "MemUsed = %d   BlocksUsed = %d\n",
+	DebugPrintf( "MEM: MemUsed = %d   BlocksUsed = %d\n",
 		MemUsed, BlocksUsed ); // break point
 	return BlocksUsed;
 }
