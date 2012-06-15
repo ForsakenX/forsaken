@@ -453,6 +453,9 @@ BOOL joysticks_init(void)
 {
 	int i, j, k;
 
+	// initial memory cleaning
+	ZEROMEM(JoystickInfo);
+
 	joysticks_cleanup();
 
 	Num_Joysticks = SDL_NumJoysticks();
@@ -564,6 +567,9 @@ BOOL joysticks_cleanup( void )
 	int i, j, k;
 	for (i = 0; i < MAX_JOYSTICKS; i++)
 	{
+		DebugPrintf("cleaning up joystick: %s %d\n",
+			JoystickInfo[i].Name, i);
+
 		JoystickInfo[i].assigned = FALSE;
 		JoystickInfo[i].connected = FALSE;
 		JoystickInfo[i].NumButtons = 0;
