@@ -1024,43 +1024,43 @@ void SetupNetworkGame()
 		RealPacketSize[i] = 0;
 	}
 
-	RealPacketSize[MSG_UPDATE						] = sizeof( UPDATEMSG							);	
-	RealPacketSize[MSG_HEREIAM						] = sizeof( HEREIAMMSG							);	
-	RealPacketSize[MSG_INIT							] = sizeof( INITMSG								);	 
-	RealPacketSize[MSG_SHIPHIT						] = sizeof( SHIPHITMSG							);	
-	RealPacketSize[MSG_PRIMBULLPOSDIR				] = sizeof( PRIMBULLPOSDIRMSG					);	
-	RealPacketSize[MSG_SECBULLPOSDIR				] = sizeof( SECBULLPOSDIRMSG					);	
-	RealPacketSize[MSG_SHIPDIED						] = sizeof( SHIPDIEDMSG							);	 
-	RealPacketSize[MSG_DROPPICKUP					] = sizeof( DROPPICKUPMSG						);	
-	RealPacketSize[MSG_KILLPICKUP					] = sizeof( KILLPICKUPMSG						);	
-	RealPacketSize[MSG_STATUS						] = sizeof( STATUSMSG							);	
-	RealPacketSize[MSG_NETSETTINGS					] = sizeof( NETSETTINGSMSG						);
-	RealPacketSize[MSG_SHORTPICKUP					] = sizeof( SHORTPICKUPMSG						);	
-	RealPacketSize[MSG_SHOCKWAVE					] = sizeof( SHOCKWAVEMSG						);	
-	RealPacketSize[MSG_FUPDATE						] = sizeof( FUPDATEMSG							);	
-	RealPacketSize[MSG_SHORTMINE					] = sizeof( SHORTMINEMSG						);	
-	RealPacketSize[MSG_TEXTMSG						] = sizeof( TEXTMSG								);	
-	RealPacketSize[MSG_SHORTREGENSLOT				] = sizeof( SHORTREGENSLOTMSG					);	
-	RealPacketSize[MSG_SHORTTRIGGER					] = sizeof( SHORTTRIGGERMSG						);	 
-	RealPacketSize[MSG_SHORTTRIGVAR					] = sizeof( SHORTTRIGVARMSG						);	 
+	RealPacketSize[MSG_UPDATE]                         = sizeof(UPDATEMSG);
+	RealPacketSize[MSG_HEREIAM]                        = sizeof(HEREIAMMSG);
+	RealPacketSize[MSG_INIT]                           = sizeof(INITMSG);
+	RealPacketSize[MSG_SHIPHIT]                        = sizeof(SHIPHITMSG);
+	RealPacketSize[MSG_PRIMBULLPOSDIR]                 = sizeof(PRIMBULLPOSDIRMSG);
+	RealPacketSize[MSG_SECBULLPOSDIR]                  = sizeof(SECBULLPOSDIRMSG);
+	RealPacketSize[MSG_SHIPDIED]                       = sizeof(SHIPDIEDMSG);
+	RealPacketSize[MSG_DROPPICKUP]                     = sizeof(DROPPICKUPMSG);
+	RealPacketSize[MSG_KILLPICKUP]                     = sizeof(KILLPICKUPMSG);
+	RealPacketSize[MSG_STATUS]                         = sizeof(STATUSMSG);
+	RealPacketSize[MSG_NETSETTINGS]                    = sizeof(NETSETTINGSMSG);
+	RealPacketSize[MSG_SHORTPICKUP]                    = sizeof(SHORTPICKUPMSG);
+	RealPacketSize[MSG_SHOCKWAVE]                      = sizeof(SHOCKWAVEMSG);
+	RealPacketSize[MSG_FUPDATE]                        = sizeof(FUPDATEMSG);
+	RealPacketSize[MSG_SHORTMINE]                      = sizeof(SHORTMINEMSG);
+	RealPacketSize[MSG_TEXTMSG]                        = sizeof(TEXTMSG);
+	RealPacketSize[MSG_SHORTREGENSLOT]                 = sizeof(SHORTREGENSLOTMSG);
+	RealPacketSize[MSG_SHORTTRIGGER]                   = sizeof(SHORTTRIGGERMSG);
+	RealPacketSize[MSG_SHORTTRIGVAR]                   = sizeof(SHORTTRIGVARMSG);
 #ifdef DEMO_SUPPORT
-	RealPacketSize[MSG_INTERPOLATE					] = sizeof( INTERPOLATEMSG						);	
-	RealPacketSize[MSG_VERYSHORTINTERPOLATE			] = sizeof( VERYSHORTINTERPOLATEMSG				);	 
+	RealPacketSize[MSG_INTERPOLATE]                    = sizeof(INTERPOLATEMSG);
+	RealPacketSize[MSG_VERYSHORTINTERPOLATE]           = sizeof(VERYSHORTINTERPOLATEMSG);
 #endif
-	RealPacketSize[MSG_BGOUPDATE					] = sizeof( BGOUPDATEMSG						);	
-	RealPacketSize[MSG_LONGSTATUS					] = sizeof( LONGSTATUSMSG						);	
-	RealPacketSize[MSG_SETTIME						] = sizeof( SETTIMEMSG							);	
-	RealPacketSize[MSG_REQTIME						] = sizeof( REQTIMEMSG							);
-	RealPacketSize[MSG_BIKENUM						] = sizeof( BIKENUMMSG							);	
-	RealPacketSize[MSG_VERYSHORTUPDATE				] = sizeof( VERYSHORTUPDATEMSG					);	
-	RealPacketSize[MSG_VERYSHORTFUPDATE				] = sizeof( VERYSHORTFUPDATEMSG					);	 
-	RealPacketSize[MSG_TEAMGOALS					] = sizeof( TEAMGOALSMSG						);	
-	RealPacketSize[MSG_YOUQUIT						] = sizeof( YOUQUITMSG							);	
-	RealPacketSize[MSG_SHORTSHIPHIT					] = sizeof( SHORTSHIPHITMSG						);	 
-	RealPacketSize[MSG_TITANBITS					] = sizeof( TITANBITSMSG						);
-	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE	] = sizeof( GROUPONLY_VERYSHORTFUPDATEMSG		);	 
-	RealPacketSize[MSG_VERYSHORTDROPPICKUP			] = sizeof( VERYSHORTDROPPICKUPMSG				);	
-	
+	RealPacketSize[MSG_BGOUPDATE]                      = sizeof(BGOUPDATEMSG);
+	RealPacketSize[MSG_LONGSTATUS]                     = sizeof(LONGSTATUSMSG);
+	RealPacketSize[MSG_SETTIME]                        = sizeof(SETTIMEMSG);
+	RealPacketSize[MSG_REQTIME]                        = sizeof(REQTIMEMSG);
+	RealPacketSize[MSG_BIKENUM]                        = sizeof(BIKENUMMSG);
+	RealPacketSize[MSG_VERYSHORTUPDATE]                = sizeof(VERYSHORTUPDATEMSG);
+	RealPacketSize[MSG_VERYSHORTFUPDATE]               = sizeof(VERYSHORTFUPDATEMSG);
+	RealPacketSize[MSG_TEAMGOALS]                      = sizeof(TEAMGOALSMSG);
+	RealPacketSize[MSG_YOUQUIT]                        = sizeof(YOUQUITMSG);
+	RealPacketSize[MSG_SHORTSHIPHIT]                   = sizeof(SHORTSHIPHITMSG);
+	RealPacketSize[MSG_TITANBITS]                      = sizeof(TITANBITSMSG);
+	RealPacketSize[MSG_GROUPONLY_VERYSHORTFUPDATE]     = sizeof(GROUPONLY_VERYSHORTFUPDATEMSG);
+	RealPacketSize[MSG_VERYSHORTDROPPICKUP]            = sizeof(VERYSHORTDROPPICKUPMSG);
+
 	for( i = 0; i < 256; i++ )
 	{
 		if( RealPacketSize[i] < 1 ) continue;
