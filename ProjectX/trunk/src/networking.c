@@ -1628,17 +1628,17 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
 			return;
 		}
+		if ( id == WhoIAm ) // next check would also catch this since GameStatus[] isn't maintained for your self..
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using my player id: %d\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
+			return;
+		}
 		if ( 
 			*MsgPnt != MSG_INIT && *MsgPnt != MSG_STATUS && *MsgPnt != MSG_LONGSTATUS && // will add to following structures
 			(GameStatus[id] == STATUS_Left || GameStatus[id] == STATUS_LeftCrashed || GameStatus[id] == STATUS_Null) 
 		){
 			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using inactive player id: %d\n",
-				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
-			return;
-		}
-		if ( id == WhoIAm )
-		{
-			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using my player id: %d\n",
 				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
 			return;
 		}
