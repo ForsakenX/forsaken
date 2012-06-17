@@ -1019,6 +1019,8 @@ void SetupNetworkGame()
 {
 	int16 i,Count;
 
+	host_network_player = NULL;
+
 	for( i = 0 ; i < 256 ; i++ )
 	{
 		RealPacketSize[i] = 0;
@@ -2305,6 +2307,21 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 
     case MSG_INIT:
 
+		if(IsHost)
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because I am the host!\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt );
+			return;
+		}
+		if(host_network_player != NULL && host_network_player != from)
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because already received from %s (%s:%d)\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt,
+				host_network_player->name, host_network_player->ip, host_network_player->port
+			);
+			return;
+		}
+
 		lpInit = (LPINITMSG) MsgPnt;
 
 		// save host network pointer
@@ -2315,7 +2332,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		//
 		
 		WhoIAm	= lpInit->YouAre;
-		DebugPrintf("MSG_INIT: WhoIAm = %d\n",WhoIAm);
+		DebugPrintf("MSG_INIT: Host says my player id is: %d\n",WhoIAm);
 
 		// if it's max players or over then it's a special message
 		// tells us we are not allowed in game and reason
@@ -2326,7 +2343,15 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		// Check if we have the level
 		//
 
-		DebugPrintf("host says level is %s\n", lpInit->LevelName );
+		if (lpInit->LevelName[sizeof(lpInit->LevelName)-1] != 0)
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) %s (%d) setting last byte of LevelName null\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt );
+			lpInit->LevelName[sizeof(lpInit->LevelName)-1] = 0;
+			return;
+		}
+
+		DebugPrintf("MSG_INIT: host says level is %s\n", lpInit->LevelName );
 
 		NewLevelNum = FindSameLevel( &lpInit->LevelName[0] );
 
