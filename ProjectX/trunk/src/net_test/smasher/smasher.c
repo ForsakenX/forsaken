@@ -27,6 +27,11 @@ char msg_data[1000];
 
 void init() { memset(msg_data,1,sizeof(msg_data)); }
 
+void receive(network_packet_t * packet)
+{
+	printf("%s > %s %p\n", msg_to_str(packet->data[0]), packet->from->name, packet->data);
+}
+
 void loop()
 {
 	static int i = 0;
@@ -39,13 +44,16 @@ void loop()
 
 ////
 // Pending
-// 1339927845.545 net_msg: MSG_INIT
-// 1339927845.545 net_msg: MSG_STATUS
-// 1339927845.645 MSG_INIT: WhoIAm = 1
-// 1339927845.645 host says level is 
-// 1339927845.645 client cannot find level 
-// 1339927845.651 net_msg: MSG_STATUS
-// 1339927845.849 test LongStatus = 1
+// sent MSG_INIT probably in response to a HEREIAM should make sure I'm host
+// test LongStatus = 1  // what's this ?
+// maintain map of network_player_t to forsaken player id to validate
+////
+
+////
+// Shrink Packet Ideas
+// net.h already tracks host so we don't need fields like messaage->isHost 
+// net.h already maps it's own player id's to enet peer's
+//          so why not just leverage that instead of WhoIAm on every packet
 ////
 
 ////
@@ -237,7 +245,7 @@ void network_event( network_event_type_t type, void* data )
 	case NETWORK_DATA:
 		{
 			network_packet_t * packet = (network_packet_t*) data;
-			printf("%s > %p\n", packet->from->name, packet->data);
+			receive(packet);
 		}
 		break;
 	case NETWORK_NAME:
