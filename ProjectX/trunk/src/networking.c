@@ -249,7 +249,7 @@ int16	BikeModels[ MAXBIKETYPES ] = {
 
 char					MyName[ 32 ] = "Default game";
 char					NickName[ 32 ] = "Default game";
-char					tempstr[256];
+char					tempstr[MAXTEXTMSG];
 int16					NamesAreLegal = 1;
 SHORTNAMETYPE			Names;	// all the players short Names....
 BYTE					MyGameStatus = STATUS_Normal;//
@@ -1329,7 +1329,7 @@ void network_event_player_left( network_player_t * player )
 			{	
 				if( MyGameStatus == STATUS_Normal )
 				{
-					sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME );
+					snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[i][0] , HAS_LEFT_THE_GAME ); tempstr[sizeof(tempstr)-1]=0;
 	   				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				}
 
@@ -1399,7 +1399,7 @@ void network_event_new_host( network_player_t * player )
 		for( i = 0 ; i < MAX_PLAYERS ; i++ )
 			if( player == Ships[i].network_player )
 			{
-				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[i][0] , "has become the host." );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[i][0] , "has become the host." ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				break;
 			}
@@ -1430,7 +1430,7 @@ void network_event_player_joined( network_player_t * player )
 		DebugPrintf("network_event_player_joined: player '%s' joined the game.\n", player->name);
 		if( MyGameStatus == STATUS_Normal && !TeamGame )
 		{
-			sprintf( (char*) &tempstr[0] ,"%s %s", player->name, IS_JOINING_THE_GAME );
+			snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", player->name, IS_JOINING_THE_GAME ); tempstr[sizeof(tempstr)-1]=0;
 			AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 		}
 	}
@@ -2621,7 +2621,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					else
 						strcpy(&teamstr[0], "");
 
-   					sprintf( (char*)&tempstr[0] ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr[0] );
+   					snprintf( (char*)tempstr, sizeof(tempstr) ,"%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH ", &methodstr[0], &teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
    					AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 					ShipDiedSend( lpShipHit->ShipHit.WeaponType, lpShipHit->ShipHit.Weapon );
    				}
@@ -2705,7 +2705,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 						strcpy(&teamstr[0], "");
 
 					// called in TOL OFF multiplayer!!
-					sprintf( (char*)&tempstr[0], "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr[0] );
+					snprintf( (char*)tempstr, sizeof(tempstr), "%s %s %s %s", &Names[Ships[WhoIAm].ShipThatLastKilledMe][0], "KILLED YOU WITH", &methodstr[0]  ,&teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
    					AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
 					// update stats 1 (stats.c) -- somebody killed me
 					UpdateKillStats(lpShortShipHit->WhoHitYou,WhoIAm,lpShortShipHit->ShipHit.WeaponType, lpShortShipHit->ShipHit.Weapon);
@@ -2828,7 +2828,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			if( lpShipDied->WhoIAm == lpShipDied->WhoKilledMe )
 			{
 				// gee someone killed themselves...
-				sprintf( (char*) &tempstr[0] ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s %s", &Names[lpShipDied->WhoIAm][0], "KILLED HIMSELF WITH", &methodstr[0] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(KillMessageColour, (char*)&tempstr[0] );
 			}
 			else
@@ -2839,7 +2839,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					strcpy (&teamstr[0], "");
 
 				// gee someone killed somebody...who cares...
-				sprintf( (char*) &tempstr[0] ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr[0] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s %s %s %s" " %s", &Names[lpShipDied->WhoKilledMe][0], "KILLED", &Names[lpShipDied->WhoIAm][0], "WITH", &methodstr[0], &teamstr[0] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue( KillMessageColour, (char*)&tempstr[0] );
 			}
 
@@ -3130,22 +3130,28 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
     case MSG_TEXTMSG:
 
 		lpTextMsg = (LPTEXTMSG)MsgPnt;
+		if( lpTextMsg->Text[MAXTEXTMSG-1] != 0 )
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) %s (%d) forcing last byte to be null\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt );
+			lpTextMsg->Text[MAXTEXTMSG-1] = 0;
+		}
 		switch (lpTextMsg->TextMsgType)
 		{
 			case TEXTMSGTYPE_QuickTauntWhisper:
 				if( TeamNumber[WhoIAm] != TeamNumber[lpTextMsg->WhoIAm] )
 					return;
-				sprintf( (char*) &tempstr[0] ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s whispers %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
 				AddPlayerMessageToQue(PlayerMessageColour,  (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_Taunt1:
 			case TEXTMSGTYPE_Taunt2:
 			case TEXTMSGTYPE_Taunt3:
-				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(TauntMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_QuickTaunt:
-				sprintf( (char*) &tempstr[0] ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s says %s", &Names[lpTextMsg->WhoIAm][0],  &lpTextMsg->Text[0] ); tempstr[sizeof(tempstr)-1]=0;
 				AddPlayerMessageToQue(PlayerMessageColour, (char*)&tempstr[0] );
 				// received version request
 				if(strcmp(&lpTextMsg->Text[0], (const char *) "version") == 0)
@@ -3159,22 +3165,22 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 				}
 				return;
 			case TEXTMSGTYPE_JoiningTeamGame:
-				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME);
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,IS_JOINING_THE_GAME); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_EnteredWatchMode:
-				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE");
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"ENTERED WATCH MODE"); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_ExitedWatchMode:
-				sprintf( (char*) &tempstr[0] ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE");
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", &Names[lpTextMsg->WhoIAm][0] ,"EXITED WATCH MODE"); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(SystemMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_TitleMessage:
 				AddTitleMessage(lpTextMsg);
 				return;
 			case TEXTMSGTYPE_CaptureFlagMessage:
-				sprintf( (char*) tempstr ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s on the %s team has got the flag", Names[ lpTextMsg->WhoIAm ], TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(FlagMessageColour, lpTextMsg->Text );
 				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 					PlaySfx( SFX_MyTeamGotFlag, FlagVolume );
@@ -3182,7 +3188,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 					PlaySfx( SFX_OtherTeamGotFlag , FlagVolume );
 				return;
 			case TEXTMSGTYPE_ScoredWithFlag:
-				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_HAVE_SCORED, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				if ( TeamNumber[ WhoIAm ] == TeamNumber[ lpTextMsg->WhoIAm ] )
 					PlaySfx( SFX_MyTeamScored, FlagVolume );
@@ -3194,30 +3200,32 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			case TEXTMSGTYPE_ReturningFlag:
 				if ( lpTextMsg->WhoIAm != WhoIAm )
 				{
-					sprintf( (char*) tempstr ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]);
+					snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_ARE_RETURNING_THEIR_FLAG,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ]); tempstr[sizeof(tempstr)-1]=0;
 					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				}
 				return;
 			case TEXTMSGTYPE_ReturnedFlag:
-					sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+					snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_BEEN_RETURNED,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
 					AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_FlagDriftedIn:
-				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_DRIFTED_INTO_THEIR_GOAL,TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_FlagEscaped:
-				sprintf( (char*) tempstr ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] );
+				snprintf( (char*) tempstr, sizeof(tempstr) ,THE_COLOUR_TEAM_FLAG_HAS_ESCAPED_FROM_THEIR_GOAL, TeamName[ TeamNumber[ lpTextMsg->WhoIAm ] ] ); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				return;
 			case TEXTMSGTYPE_BountyMessage:
-				sprintf( (char*) tempstr ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY);
+				snprintf( (char*) tempstr, sizeof(tempstr) ,"%s %s", Names[ lpTextMsg->WhoIAm ] , HAS_GOT_THE_BOUNTY); tempstr[sizeof(tempstr)-1]=0;
 				AddColourMessageToQue(FlagMessageColour, (char*)&tempstr[0] );
 				PlaySfx( SFX_OtherTeamGotFlag, FlagVolume );
 				return;
 			case TEXTMSGTYPE_SpeechTaunt:
 				PlayRecievedSpeechTaunt( lpTextMsg->WhoIAm, lpTextMsg->Text[ 0 ] );
 				return;
+			default:
+				DebugPrintf("EvaluateMessage: Invalid MSG_TEXTMSG of type: %d\n",lpTextMsg->TextMsgType);
 		}
 		return;
 
