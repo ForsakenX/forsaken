@@ -53,6 +53,7 @@ int parse_command_line( int argc, char ** argv )
 
 void send_text_msg( char * line )
 {
+	line[strlen(line)-1] = 0; // wipe out the \n char
 	network_broadcast( (void*) line, strlen(line)+1,
 		NETWORK_RELIABLE, CHAT_CHANNEL );
 }
