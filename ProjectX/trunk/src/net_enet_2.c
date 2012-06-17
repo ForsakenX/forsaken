@@ -49,7 +49,7 @@ static ENetPeer* host;
 
 // my settings
 static int i_am_host = 0;
-static peer_id_t my_id = NO_ID;
+peer_id_t my_id = NO_ID; // used by nettest
 char my_player_name[NETWORK_MAX_NAME_LENGTH] = {0}; // used in net_tracker.c
 int my_local_port = 0; // used in net_tracker.c
 
