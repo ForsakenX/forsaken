@@ -16,6 +16,7 @@ BOOL tracker_enabled;
 // my ship number
 #define	UNASSIGNED_SHIP 0xff // WhoIAm before host gives me number
 extern BYTE	WhoIAm;  // which ship number i am
+extern network_player_t * host_network_player; // the host .. NULL if I am host
 
 // don't change these directly...
 // instead use:
