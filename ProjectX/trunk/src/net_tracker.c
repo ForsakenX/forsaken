@@ -38,10 +38,10 @@ static void send_tracker_message( char* host, int port, char* message );
  *  Wrappers
  */
 
-// 11 = hosting + white space
+// 12 = hosting + white space + null byte
 // +1 = comma for separating names
 #define MAX_PORT 5
-#define MAX_HOSTING_MSG (MAX_PORT + (MAXSHORTNAME+1) * MAX_PLAYERS + MAX_PXVersion + 11)
+#define MAX_HOSTING_MSG (MAX_PORT + (MAXSHORTNAME+1) * MAX_PLAYERS + MAX_PXVersion + 12)
 
 void send_tracker_update( char* host, int port )
 {
