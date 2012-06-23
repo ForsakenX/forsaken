@@ -36,4 +36,7 @@
 // the full version name (must contain no spaces for net_tracker)
 #define PXVersion "ProjectX-" PXV "." PXMPV "." PXRV "-" PXBV
 
+// this should be plenty if not please increase this
+#define MAX_PXVersion 40
+
 #endif
