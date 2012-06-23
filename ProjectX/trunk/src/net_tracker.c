@@ -25,6 +25,7 @@
 #include "util.h"
 #include "version.h"
 #include "net.h"
+#include "networking.h"
 
 // created in net_enet.c
 extern ENetHost* enet_host;
@@ -37,10 +38,27 @@ static void send_tracker_message( char* host, int port, char* message );
  *  Wrappers
  */
 
+// 11 = hosting + white space
+// +1 = comma for separating names
+#define MAX_PORT 5
+#define MAX_HOSTING_MSG (MAX_PORT + (MAXSHORTNAME+1) * MAX_PLAYERS + MAX_PXVersion + 11)
+
 void send_tracker_update( char* host, int port )
 {
-	char message[256] = "";
-	sprintf(message,"hosting %d %s %s\n",my_local_port,PXVersion,my_player_name);
+	int i;
+	char message[ MAX_HOSTING_MSG ];
+	sprintf(message,"hosting %d %s %s",my_local_port,PXVersion,my_player_name);
+	for(i=0; i<MAX_PLAYERS; i++)
+	{
+		if ( i != WhoIAm && STATUS_VALID_PLAYER(GameStatus[i]) )
+		{
+			//DebugPrintf("net_tracker_update: adding player %d with status %d\n",
+			//	i, GameStatus[i]);
+			strcat(message,",");
+			strncat(message,Names[i],MAXSHORTNAME);
+		}
+	}
+	strcat(message,"\n");
 	send_tracker_message( host, port, message );
 }
 
