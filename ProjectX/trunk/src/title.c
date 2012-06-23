@@ -213,7 +213,6 @@ extern	RENDEROBJECT RenderBufs[4];
 extern	int16		NumLevels;
 extern	char		ShortLevelNames[MAXLEVELS][32];
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
-extern	SHORTNAMETYPE			Names;	// all the players short Names....
 
 #define REGISTRY_EXPIRE_TIME	"ServiceID"
 #define DEFAULT_CONFIG_FILE		DEFAULT_PLAYER_NAME".txt"

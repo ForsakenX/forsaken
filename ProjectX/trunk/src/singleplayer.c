@@ -35,7 +35,6 @@ extern	BOOL	CaptureTheFlag;
 extern	BOOL	CTF;
 extern	int16	SelectedBike;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
-extern	SHORTNAMETYPE			Names;	// all the players short Names....
 extern	char	biker_name[256];
 extern	BOOL	CountDownOn;
 extern	BOOL	TeamGame;

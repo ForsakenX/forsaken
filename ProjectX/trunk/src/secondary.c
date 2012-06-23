@@ -114,7 +114,6 @@ extern	int16			NumOrbs;
 extern	uint16			CameraMissile;
 extern	int				MissileCameraActive;
 extern	MATRIX			ProjMatrix;
-extern	SHORTNAMETYPE	Names;
 extern	CAMERA			CurrentCamera;
 extern	MISSEDMINEMSG	MissedMines[ MAXMISSEDMINES ];
 extern	SHORTMINE		MissedInitMines[ MAXMISSEDMINES ];

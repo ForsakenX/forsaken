@@ -102,7 +102,6 @@ extern	BYTE                    WhoIAm;
 extern	GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern	int16					Stats[MAX_PLAYERS+1][MAX_PLAYERS+1];
 extern	int16					StatsCount;
-extern	SHORTNAMETYPE			Names;	// all the players short Names....
 extern	int16	SelectedBike;
 extern	SLIDER	NumOfPlayersSlider;
 extern	int MenuStackLevel;

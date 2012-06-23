@@ -127,7 +127,6 @@ extern	int16			NumMissedKillPickups;
 extern	float			NitroFuel;
 extern	float			NitroFuelUsed;
 
-extern	SHORTNAMETYPE	Names;	// all the players short Names....
 extern	BOOL            bSoundEnabled;
 
 extern	int16			NumOfActivePlayers;

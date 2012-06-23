@@ -93,7 +93,6 @@ extern	float			NmeDamageModifier;
 extern	int32			ColPerspective;
 extern	BOOL			TeamGame;
 extern	BYTE			TeamNumber[MAX_PLAYERS];
-extern	SHORTNAMETYPE	Names;	// all the players short Names....
 extern BOOL BikeExpanded;
 extern	ENEMY			Enemies[ MAXENEMIES ];
 extern	BIKEINFO		BikeCompFiles[ MAXBIKETYPES ];

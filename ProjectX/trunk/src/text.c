@@ -41,7 +41,6 @@ extern px_timer_t LastPacketTime[MAX_PLAYERS+1];
 extern BOOL	CTF;
 extern BOOL CaptureTheFlag;
 extern BOOL BountyHunt;
-extern SHORTNAMETYPE		   Names;	// all the players short Names....
 extern GLOBALSHIP              Ships[MAX_PLAYERS+1];
 extern float	framelag;
 extern float	real_framelag;
