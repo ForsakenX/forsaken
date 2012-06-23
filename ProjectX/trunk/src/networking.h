@@ -7,6 +7,8 @@
 
 #include "main.h"
 #include "net.h"
+#include "new3d.h"
+#include "object.h"
 
 // game tracker
 char tracker_server[256];
@@ -63,6 +65,8 @@ char host_address[256];
 #define NUMTITANBITS							10 
 
 BOOL PlayerReady[MAX_PLAYERS];
+extern BYTE GameStatus[];
+
 /*
  * structures
  */
@@ -974,6 +978,9 @@ typedef struct _REQTIMEMSG
 } REQTIMEMSG, *LPREQTIMEMSG;
 
 #define MAXLEVELSPERBATCH 8
+
+// expose Names to all that care
+extern SHORTNAMETYPE Names;
 
 /*
  * fn prototypes
