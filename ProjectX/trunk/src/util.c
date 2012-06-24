@@ -135,27 +135,57 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 	}
 }
 
-void DebugPrintf( const char * format, ... )
+void DebugPrintf( const char * format, ... ) // timestamp prefix
 {
-	static FILE * logfile_fp;
-	char buf[0x4000];
+	static char buf[0x4000];
 	char *buf2;
 	int buf_length;
 	va_list args;
-	struct timeb now;
 
+	if(!Debug)
+		return;
+
+	struct timeb now;
 	ftime(&now);
 	sprintf( buf, "%ld.%.3d ",
 		now.time, now.millitm);
+
 	buf2 = strchr(buf,0);
 	buf_length = sizeof(buf)-strlen(buf);
+
+	va_start( args, format );
+	vsnprintf( buf2, buf_length, format, args );
+	va_end( args );
+
+	buf[sizeof(buf)-1]=0; // terminate safely with null byte
+
+	DebugPuts(buf);
+}
+
+void DebugPrintf_( const char * format, ... ) // no timestamp prefix
+{
+	static char buf[0x4000];
+	int buf_length;
+	va_list args;
 
 	if(!Debug)
 		return;
 
 	va_start( args, format );
-	vsnprintf( buf2, buf_length, format, args );
+	vsnprintf( buf, sizeof(buf), format, args );
 	va_end( args );
+
+	buf[sizeof(buf)-1]=0; // terminate safely with null byte
+
+	DebugPuts(buf);
+}
+
+void DebugPuts( char * buf )
+{
+	static FILE * logfile_fp;
+
+	if(!Debug)
+		return;
 
 #ifdef WIN32
 	OutputDebugString( buf );
