@@ -698,6 +698,7 @@ static void new_connection( ENetPeer * peer )
 		for( x = 0; x < enet_host->peerCount; x++ )
 		{
 			ENetPeer * _peer = &enet_host->peers[x];
+			if ( ! PEER_USED( _peer ) ) continue;
 			if ( peer == _peer ) continue; // the peer does not need to send packets to him self
 			p2p_punch_packet_t packet;
 			packet.type         = NAT_PUNCH_THROUGH_LIST;
@@ -705,7 +706,7 @@ static void new_connection( ENetPeer * peer )
 			packet.connect_port = PEER_CONNECT_PORT( _peer );
 			enet_send( peer, &packet, sizeof(packet),
 				convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
-			DebugPrintf("network: sent new player %d the ip/port/connect_port for peer %d\n",
+			DebugPrintf("network: sent new player %d the ip/port (%s) and connect_port (%hu) for peer %hhu\n",
 				peer_data->id,
 				address_to_str(&_peer->address),
 				PEER_CONNECT_PORT(_peer),
