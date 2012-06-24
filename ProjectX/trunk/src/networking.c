@@ -1650,7 +1650,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		break;
 	}
 
-	DebugPrintf("EvaluateMessage: message %s got past initial checks\n",msg_to_str(*MsgPnt));
+	//DebugPrintf("EvaluateMessage: message %s got past initial checks\n",msg_to_str(*MsgPnt));
 				
 
 	// set flag sfx volume
