@@ -577,6 +577,9 @@ typedef enum {
 	FAILED_SYNCH,    // host telling you that you failed to synch with someone
 	HOST_SAID_SO,    // host told me to disconnect from you
 	I_QUIT,          // I'm leaving the game
+
+	// nat punching
+	NAT_PUNCH_THROUGH_LIST, // see explanation in new_connection()
 	
 } p2p_event_t;
 
@@ -604,6 +607,12 @@ typedef struct {
 	p2p_event_t type;
 	peer_id_t id;
 } p2p_id_packet_t;
+
+typedef struct {
+	p2p_event_t type;
+	ENetAddress address; // ip and port as the host see's it
+	unsigned short int connect_port;
+} p2p_punch_packet_t; // see explanation in net_connection()
 
 static void disconnect_all( void )
 {
@@ -678,6 +687,30 @@ static void new_connection( ENetPeer * peer )
 		DebugPrintf("network: sent new player his id %d\n",
 			peer_data->id);
 		peer_data->state = CONNECTED;
+		////
+		// send the list of player addressess and connect ports to the joiner
+		// the joiner will send an empty udp packet at these addresses
+		// this will cause the joiners nat router to allow return traffic
+		// which effectively punches a hole so existing players can connect
+		// http://en.wikipedia.org/wiki/UDP_hole_punching
+		////
+		size_t x;
+		for( x = 0; x < enet_host->peerCount; x++ )
+		{
+			ENetPeer * _peer = &enet_host->peers[x];
+			if ( peer == _peer ) continue; // don't send to my self
+			p2p_punch_packet_t packet;
+			packet.type         = NAT_PUNCH_THROUGH_LIST;
+			packet.address      = _peer->address; // ip and port as the host see's it
+			packet.connect_port = PEER_CONNECT_PORT( _peer );
+			enet_send( peer, &packet, sizeof(packet),
+				convert_flags(NETWORK_RELIABLE), system_channel, NO_FLUSH );
+			DebugPrintf("network: sent new player %d the ip/port/connect_port for peer %d\n",
+				peer_data->id,
+				address_to_str(&_peer->address),
+				PEER_CONNECT_PORT(_peer),
+				PEER_ID(_peer));
+		}
 	}
 
 	// I'm not the host
@@ -1272,6 +1305,22 @@ static void new_packet( ENetEvent * event )
 				{
 					DebugPrintf("network: %s just told me to connect to someone but I am the host!\n",
 						address_to_str(&peer->address));
+				}
+			}
+			break;
+		case NAT_PUNCH_THROUGH_LIST: // see explanation of this in net_connection()
+			{
+				p2p_punch_packet_t * packet = (p2p_punch_packet_t*) event->packet->data;
+				ENetAddress * address  = &packet->address;
+				ENetAddress * address2 = &packet->address;
+				address2->port = packet->connect_port;
+				ENetBuffer buffer;
+				buffer.dataLength = 0;
+				int i;
+				for(i=0; i<4; i++)
+				{
+					enet_socket_send( enet_host->socket, address,  &buffer, 1 ); // as host see's them
+					enet_socket_send( enet_host->socket, address2, &buffer, 1 ); // their connect port
 				}
 			}
 			break;
