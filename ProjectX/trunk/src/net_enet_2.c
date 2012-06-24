@@ -698,7 +698,7 @@ static void new_connection( ENetPeer * peer )
 		for( x = 0; x < enet_host->peerCount; x++ )
 		{
 			ENetPeer * _peer = &enet_host->peers[x];
-			if ( peer == _peer ) continue; // don't send to my self
+			if ( peer == _peer ) continue; // the peer does not need to send packets to him self
 			p2p_punch_packet_t packet;
 			packet.type         = NAT_PUNCH_THROUGH_LIST;
 			packet.address      = _peer->address; // ip and port as the host see's it
