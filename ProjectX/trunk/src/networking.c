@@ -472,108 +472,40 @@ char* msg_to_str( int msg_type )
 {
 	switch( msg_type )
 	{
-    case MSG_YOUQUIT:
-		return "MSG_YOUQUIT";
-		break;
-    case MSG_BIKENUM:
-		return "MSG_BIKENUM";
-		break;
-	case MSG_HEREIAM:
-		return "MSG_HEREIAM";
-        break;
-    case MSG_INIT:
-		return "MSG_INIT";
-		break;
-    case MSG_VERYSHORTUPDATE:
-		return "MSG_VERYSHORTUPDATE";
-        break;
-    case MSG_UPDATE:
-		return "MSG_UPDATE";
-        break;
-    case MSG_FUPDATE:
-		return "MSG_FUPDATE";
-        break;
-    case MSG_VERYSHORTFUPDATE:
-		return "MSG_VERYSHORTFUPDATE";
-        break;
-    case MSG_GROUPONLY_VERYSHORTFUPDATE:
-		return "MSG_GROUPONLY_VERYSHORTFUPDATE";
-        break;
-    case MSG_DROPPICKUP:
-		return "MSG_DROPPICKUP";
-        break;
-    case MSG_VERYSHORTDROPPICKUP:
-		return "MSG_VERYSHORTDROPPICKUP";
-        break;
-    case MSG_KILLPICKUP:
-		return "MSG_KILLPICKUP";
-        break;
-    case MSG_TEAMGOALS:
-		return "MSG_TEAMGOALS";
-        break;
-    case MSG_SHOCKWAVE:
-		return "MSG_SHOCKWAVE";
-        break;
-    case MSG_BGOUPDATE:
-		return "MSG_BGOUPDATE";
-        break;
-    case MSG_PRIMBULLPOSDIR:
-		return "MSG_PRIMBULLPOSDIR";
-        break;
-    case MSG_SECBULLPOSDIR:
-		return "MSG_SECBULLPOSDIR";
-        break;
-    case MSG_TITANBITS:
-		return "MSG_TITANBITS";
-        break;
-    case MSG_SHIPHIT:
-		return "MSG_SHIPHIT";
-        break;
-    case MSG_SHORTSHIPHIT:
-		return "MSG_SHORTSHIPHIT";
-        break;
-    case MSG_SHIPDIED:
-		return "MSG_SHIPDIED";
-        break;
-    case MSG_REQTIME:
-		return "MSG_REQTIME";
-        break;
-    case MSG_SETTIME:
-		return "MSG_SETTIME";
-        break;
-    case MSG_STATUS:
-		return "MSG_STATUS";
-        break;
-	case MSG_NETSETTINGS:
-		return "MSG_NETSETTINGS";
-		break;
-    case MSG_LONGSTATUS:
-		return "MSG_LONGSTATUS";
-        break;
-    case MSG_SHORTPICKUP:
-		return "MSG_SHORTPICKUP";
-        break;
-    case MSG_SHORTREGENSLOT:
-		return "MSG_SHORTREGENSLOT";
-        break;
-    case MSG_SHORTTRIGGER:
-		return "MSG_SHORTTRIGGER";
-        break;
-    case MSG_SHORTTRIGVAR:
-		return "MSG_SHORTTRIGVAR";
-        break;
-    case MSG_SHORTMINE:
-		return "MSG_SHORTMINE";
-        break;
-    case MSG_TEXTMSG:
-		return "MSG_TEXTMSG";
-		break;
-	case MSG_VERYSHORTINTERPOLATE:
-		return "MSG_VERYSHORTINTERPOLATE";
-		break;
-	case MSG_INTERPOLATE:
-		return "MSG_INTERPOLATE";
-		break;
+	case MSG_YOUQUIT:                        return "MSG_YOUQUIT";                      break;
+	case MSG_BIKENUM:                        return "MSG_BIKENUM";                      break;
+	case MSG_HEREIAM:                        return "MSG_HEREIAM";                      break;
+	case MSG_INIT:                           return "MSG_INIT";                         break;
+	case MSG_VERYSHORTUPDATE:                return "MSG_VERYSHORTUPDATE";              break;
+	case MSG_UPDATE:                         return "MSG_UPDATE";                       break;
+	case MSG_FUPDATE:                        return "MSG_FUPDATE";                      break;
+	case MSG_VERYSHORTFUPDATE:               return "MSG_VERYSHORTFUPDATE";             break;
+	case MSG_GROUPONLY_VERYSHORTFUPDATE:     return "MSG_GROUPONLY_VERYSHORTFUPDATE";   break;
+	case MSG_DROPPICKUP:                     return "MSG_DROPPICKUP";                   break;
+	case MSG_VERYSHORTDROPPICKUP:            return "MSG_VERYSHORTDROPPICKUP";          break;
+	case MSG_KILLPICKUP:                     return "MSG_KILLPICKUP";                   break;
+	case MSG_TEAMGOALS:                      return "MSG_TEAMGOALS";                    break;
+	case MSG_SHOCKWAVE:                      return "MSG_SHOCKWAVE";                    break;
+	case MSG_BGOUPDATE:                      return "MSG_BGOUPDATE";                    break;
+	case MSG_PRIMBULLPOSDIR:                 return "MSG_PRIMBULLPOSDIR";               break;
+	case MSG_SECBULLPOSDIR:                  return "MSG_SECBULLPOSDIR";                break;
+	case MSG_TITANBITS:                      return "MSG_TITANBITS";                    break;
+	case MSG_SHIPHIT:                        return "MSG_SHIPHIT";                      break;
+	case MSG_SHORTSHIPHIT:                   return "MSG_SHORTSHIPHIT";                 break;
+	case MSG_SHIPDIED:                       return "MSG_SHIPDIED";                     break;
+	case MSG_REQTIME:                        return "MSG_REQTIME";                      break;
+	case MSG_SETTIME:                        return "MSG_SETTIME";                      break;
+	case MSG_STATUS:                         return "MSG_STATUS";                       break;
+	case MSG_NETSETTINGS:                    return "MSG_NETSETTINGS";                  break;
+	case MSG_LONGSTATUS:                     return "MSG_LONGSTATUS";                   break;
+	case MSG_SHORTPICKUP:                    return "MSG_SHORTPICKUP";                  break;
+	case MSG_SHORTREGENSLOT:                 return "MSG_SHORTREGENSLOT";               break;
+	case MSG_SHORTTRIGGER:                   return "MSG_SHORTTRIGGER";                 break;
+	case MSG_SHORTTRIGVAR:                   return "MSG_SHORTTRIGVAR";                 break;
+	case MSG_SHORTMINE:                      return "MSG_SHORTMINE";                    break;
+	case MSG_TEXTMSG:                        return "MSG_TEXTMSG";                      break;
+	case MSG_VERYSHORTINTERPOLATE:           return "MSG_VERYSHORTINTERPOLATE";         break;
+	case MSG_INTERPOLATE:                    return "MSG_INTERPOLATE";                  break;
 	}
 	return "UNKNOWN";
 }
@@ -1610,32 +1542,49 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 	float	Force;
 	uint16	Pickup;
 
+	// check if it's a valid packet
+
 	if( ! msg_is_valid( *MsgPnt ) )
 	{
 		DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping for unknown type: %d\n",
 			from->name, from->ip, from->port, *MsgPnt );
 		return;
 	}
+
+	// check the size of the packet is proper for message type
+
 	if( RealPacketSize[*MsgPnt] != len )
 	{
 		DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for invalid size of %d expected %d\n",
 			from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, len, RealPacketSize[*MsgPnt]);
 		return;
 	}
+
+	// check player id is valid
+
 	{
 		int id = *(MsgPnt+1);
+
+		// make sure player id in valid range
+
 		if ( *MsgPnt != MSG_HEREIAM && ( id < 0 || id >= MAX_PLAYERS ))
 		{
 			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for player id being out of range: %d\n",
 				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
 			return;
 		}
+
+		// make sure packet doens't appear to come from my self
+
 		if ( id == WhoIAm ) // next check would also catch this since GameStatus[] isn't maintained for your self..
 		{
 			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) for using my player id: %d\n",
 				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt, id );
 			return;
 		}
+
+		// make sure player id is a valid player
+
 		if ( 
 			*MsgPnt != MSG_INIT && *MsgPnt != MSG_STATUS && *MsgPnt != MSG_LONGSTATUS && // will add to following structures
 			(GameStatus[id] == STATUS_Left || GameStatus[id] == STATUS_LeftCrashed || GameStatus[id] == STATUS_Null) 
@@ -3104,6 +3053,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		lpShortTrigger = (LPSHORTTRIGGERMSG)MsgPnt;
    		if( lpShortTrigger->Triggers == Ships[WhoIAm].Triggers )
    		{
+  			DebugPrintf( "Message from host to init trigger\n" );
 			if( lpShortTrigger->HowManyTriggers != 0 )
 			{
 				Ships[WhoIAm].Triggers -= 1;
@@ -3120,6 +3070,7 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		lpShortTrigVar = (LPSHORTTRIGVARMSG)MsgPnt;
    		if( lpShortTrigVar->TrigVars == Ships[WhoIAm].TrigVars )
    		{
+  			DebugPrintf( "Message from host to init trigvar\n" );
 			if( lpShortTrigVar->HowManyTrigVars != 0 )
 			{
 				Ships[WhoIAm].TrigVars -= 1;
