@@ -1594,6 +1594,63 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 			return;
 		}
 	}
+
+	// messages that only the host should send to you
+
+	switch (*MsgPnt)
+	{
+#ifdef DEMO_SUPPORT
+	case MSG_INTERPOLATE:
+	case MSG_VERYSHORTINTERPOLATE:
+#endif
+	case MSG_NETSETTINGS:
+	case MSG_TEAMGOALS:
+	case MSG_YOUQUIT:
+	case MSG_INIT:
+	case MSG_SETTIME:
+	case MSG_SHORTPICKUP:
+	case MSG_SHORTMINE:
+	case MSG_SHORTTRIGVAR:
+	case MSG_SHORTTRIGGER:
+	case MSG_SHORTREGENSLOT:
+
+		if(IsHost || (host_network_player != NULL && host_network_player != from))
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because only the host ",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt);
+			if(IsHost)
+			{
+				DebugPrintf_("(ME)");
+			}
+			else
+			{
+				DebugPrintf_("%s (%s:%n)",
+					host_network_player->name, host_network_player->ip, host_network_player->port );
+			}
+			DebugPrintf_(" is allowed to send this.\n");
+			return;
+		}
+
+	default:
+		break;
+	}
+
+	// messages that only the host should receive
+
+	switch (*MsgPnt)
+	{
+	case MSG_REQTIME:
+	case MSG_HEREIAM:
+		if( ! IsHost )
+		{
+			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because I am not the host...\n",
+				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt );
+		}
+	default:
+		break;
+	}
+
+	DebugPrintf("EvaluateMessage: message %s got past initial checks\n",msg_to_str(*MsgPnt));
 				
 
 	// set flag sfx volume
@@ -2255,21 +2312,6 @@ void EvaluateMessage( network_player_t * from, DWORD len , BYTE * MsgPnt )
 		return;
 
     case MSG_INIT:
-
-		if(IsHost)
-		{
-			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because I am the host!\n",
-				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt );
-			return;
-		}
-		if(host_network_player != NULL && host_network_player != from)
-		{
-			DebugPrintf("EvaluateMessage: from %s (%s:%d) dropping %s (%d) because already received from %s (%s:%d)\n",
-				from->name, from->ip, from->port, msg_to_str(*MsgPnt), *MsgPnt,
-				host_network_player->name, host_network_player->ip, host_network_player->port
-			);
-			return;
-		}
 
 		lpInit = (LPINITMSG) MsgPnt;
 
