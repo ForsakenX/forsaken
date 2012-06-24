@@ -138,10 +138,10 @@ void Change_Ext( const char * Src, char * Dest, const char * Ext )
 void DebugPrintf( const char * format, ... )
 {
 	static FILE * logfile_fp;
-  char buf[0x4000];
+	char buf[0x4000];
 	char *buf2;
 	int buf_length;
-  va_list args;
+	va_list args;
 	struct timeb now;
 
 	ftime(&now);
@@ -153,17 +153,17 @@ void DebugPrintf( const char * format, ... )
 	if(!Debug)
 		return;
 
-  va_start( args, format );
-  vsnprintf( buf2, buf_length, format, args );
-  va_end( args );
+	va_start( args, format );
+	vsnprintf( buf2, buf_length, format, args );
+	va_end( args );
 
 #ifdef WIN32
-  OutputDebugString( buf );
+	OutputDebugString( buf );
 #else
-  fputs( buf, stderr );
+	fputs( buf, stderr );
 #endif
 
-  if( !DebugLog )
+	if( !DebugLog )
 		return;
 
 	if(!logfile_fp)
