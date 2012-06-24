@@ -688,6 +688,14 @@ static void new_connection( ENetPeer * peer )
 			peer_data->id);
 		peer_data->state = CONNECTED;
 		////
+		// TODO A better approach would probably be to just have joiner connect
+		//      to the other hosts as well.  To protect against multiple connections
+		//      check if the player is already connected and disconnect the new connection.
+		//      But by doing a real connection you still get udp punch through AND
+		//      in the case of that the joiner has symmetric nat (which will fail with
+		//      nat punch through) you still have the chance that if the other side
+		//      has the port open so a connection can be made...
+		////
 		// send the list of player addressess and connect ports to the joiner
 		// the joiner will send an empty udp packet at these addresses
 		// this will cause the joiners nat router to allow return traffic

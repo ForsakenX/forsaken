@@ -47,6 +47,12 @@ void loop()
 // sent MSG_INIT probably in response to a HEREIAM should make sure I'm host
 // test LongStatus = 1  // what's this ?
 // maintain map of network_player_t to forsaken player id to validate
+// when new player joins anyone could quickly send them a MSG_INIT and since
+// 	they never received one yet they will believe that person is the host
+// 	would be nice to simply leverage fact that net.h knows who host is.
+// short level name uses 32 everywhere why not just use MAXSHORTLEVELNAME ?
+// 	32 is fine because max name in battle.dat is 12 bytes
+// is tempstr to long to send to rendering ?
 ////
 
 ////
