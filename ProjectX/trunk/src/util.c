@@ -165,7 +165,6 @@ void DebugPrintf( const char * format, ... ) // timestamp prefix
 void DebugPrintf_( const char * format, ... ) // no timestamp prefix
 {
 	static char buf[0x4000];
-	int buf_length;
 	va_list args;
 
 	if(!Debug)
