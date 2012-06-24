@@ -1163,7 +1163,7 @@ static void new_packet( ENetEvent * event )
 
 				set_player_name( peer_data->player->name, packet->name );
 
-				DebugPrintf(" to '%s'\n",
+				DebugPrintf_(" to '%s'\n",
 					peer_data->player->name );
 
 				if( peer_data->state == PLAYING )
