@@ -1,20 +1,63 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <unistd.h>
+#include <limits.h>
 #include "main.h"
 #include "net.h"
+#include "networking.h"
 
 ////////////////////////////////////////////////////////
 // Program
 ////////////////////////////////////////////////////////
 
 extern unsigned char my_id;
+extern char* msg_to_str( int msg_type );
 
 #define MAIN_CHANNEL 1
 #define NETWORK_UNRELIABLE 0
 
 #define MSGS 31
+
+char* msg_to_str( int msg_type )
+{
+	switch( msg_type )
+	{
+	case MSG_YOUQUIT:                        return "MSG_YOUQUIT";                      break;
+	case MSG_BIKENUM:                        return "MSG_BIKENUM";                      break;
+	case MSG_HEREIAM:                        return "MSG_HEREIAM";                      break;
+	case MSG_INIT:                           return "MSG_INIT";                         break;
+	case MSG_VERYSHORTUPDATE:                return "MSG_VERYSHORTUPDATE";              break;
+	case MSG_UPDATE:                         return "MSG_UPDATE";                       break;
+	case MSG_FUPDATE:                        return "MSG_FUPDATE";                      break;
+	case MSG_VERYSHORTFUPDATE:               return "MSG_VERYSHORTFUPDATE";             break;
+	case MSG_GROUPONLY_VERYSHORTFUPDATE:     return "MSG_GROUPONLY_VERYSHORTFUPDATE";   break;
+	case MSG_DROPPICKUP:                     return "MSG_DROPPICKUP";                   break;
+	case MSG_VERYSHORTDROPPICKUP:            return "MSG_VERYSHORTDROPPICKUP";          break;
+	case MSG_KILLPICKUP:                     return "MSG_KILLPICKUP";                   break;
+	case MSG_TEAMGOALS:                      return "MSG_TEAMGOALS";                    break;
+	case MSG_SHOCKWAVE:                      return "MSG_SHOCKWAVE";                    break;
+	case MSG_BGOUPDATE:                      return "MSG_BGOUPDATE";                    break;
+	case MSG_PRIMBULLPOSDIR:                 return "MSG_PRIMBULLPOSDIR";               break;
+	case MSG_SECBULLPOSDIR:                  return "MSG_SECBULLPOSDIR";                break;
+	case MSG_TITANBITS:                      return "MSG_TITANBITS";                    break;
+	case MSG_SHIPHIT:                        return "MSG_SHIPHIT";                      break;
+	case MSG_SHORTSHIPHIT:                   return "MSG_SHORTSHIPHIT";                 break;
+	case MSG_SHIPDIED:                       return "MSG_SHIPDIED";                     break;
+	case MSG_REQTIME:                        return "MSG_REQTIME";                      break;
+	case MSG_SETTIME:                        return "MSG_SETTIME";                      break;
+	case MSG_STATUS:                         return "MSG_STATUS";                       break;
+	case MSG_NETSETTINGS:                    return "MSG_NETSETTINGS";                  break;
+	case MSG_LONGSTATUS:                     return "MSG_LONGSTATUS";                   break;
+	case MSG_SHORTPICKUP:                    return "MSG_SHORTPICKUP";                  break;
+	case MSG_SHORTREGENSLOT:                 return "MSG_SHORTREGENSLOT";               break;
+	case MSG_SHORTTRIGGER:                   return "MSG_SHORTTRIGGER";                 break;
+	case MSG_SHORTTRIGVAR:                   return "MSG_SHORTTRIGVAR";                 break;
+	case MSG_SHORTMINE:                      return "MSG_SHORTMINE";                    break;
+	case MSG_TEXTMSG:                        return "MSG_TEXTMSG";                      break;
+	case MSG_VERYSHORTINTERPOLATE:           return "MSG_VERYSHORTINTERPOLATE";         break;
+	case MSG_INTERPOLATE:                    return "MSG_INTERPOLATE";                  break;
+	}
+	return "UNKNOWN";
+}
 
 // is this full list ?
 char * msg_name[] = { "MSG_BGOUPDATE","MSG_BIKENUM","MSG_DROPPICKUP","MSG_FUPDATE","MSG_GROUPONLY_VERYSHORTFUPDATE","MSG_HEREIAM","MSG_INIT","MSG_KILLPICKUP","MSG_LONGSTATUS","MSG_NETSETTINGS","MSG_PRIMBULLPOSDIR","MSG_REQTIME","MSG_SECBULLPOSDIR","MSG_SETTIME","MSG_SHIPDIED","MSG_SHIPHIT","MSG_SHOCKWAVE","MSG_SHORTMINE","MSG_SHORTPICKUP","MSG_SHORTREGENSLOT","MSG_SHORTSHIPHIT","MSG_SHORTTRIGGER","MSG_SHORTTRIGVAR","MSG_STATUS","MSG_TEAMGOALS","MSG_TEXTMSG","MSG_TITANBITS","MSG_VERYSHORTDROPPICKUP","MSG_VERYSHORTFUPDATE","MSG_VERYSHORTUPDATE","MSG_YOUQUIT" };
@@ -23,19 +66,28 @@ unsigned char msg_id[] = {175,244,136,31,236,34,51,153,223,170,85,241,102,239,11
 
 size_t msg_size[] = {12,3,56,68,28,3,408,8,64,20,72,2,76,8,20,56,28,232,264,244,36,244,244,24,10,515,184,36,44,40,3};
 
-char msg_data[1000];
+unsigned char msg_data[1000];
 
-void init() { memset(msg_data,1,sizeof(msg_data)); }
+void init() { }
 
 void receive(network_packet_t * packet)
 {
-	printf("%s > %s %p\n", msg_to_str(packet->data[0]), packet->from->name, packet->data);
+	printf("%s > %s %p\n", msg_to_str(packet->data), packet->from->name, (unsigned char *)packet->data);
+}
+
+void randomize_msg_data( void )
+{
+	int n;
+	srand(rand()%UINT_MAX);
+	for(n=0;n<sizeof(msg_data);n++)
+		msg_data[n] = rand()%UCHAR_MAX;
 }
 
 void loop()
 {
 	static int i = 0;
 	printf("Sending message %s (%d) size=%d\n",(char*)msg_name[i],msg_id[i],msg_size[i]);
+	randomize_msg_data();
 	msg_data[0] = msg_id[i];
 	msg_data[1] = my_id;
 	network_broadcast( msg_data, msg_size[i], NETWORK_UNRELIABLE, MAIN_CHANNEL );
@@ -46,13 +98,22 @@ void loop()
 // Pending
 // sent MSG_INIT probably in response to a HEREIAM should make sure I'm host
 // test LongStatus = 1  // what's this ?
-// maintain map of network_player_t to forsaken player id to validate
 // when new player joins anyone could quickly send them a MSG_INIT and since
 // 	they never received one yet they will believe that person is the host
 // 	would be nice to simply leverage fact that net.h knows who host is.
 // short level name uses 32 everywhere why not just use MAXSHORTLEVELNAME ?
 // 	32 is fine because max name in battle.dat is 12 bytes
 // is tempstr to long to send to rendering ?
+// MSG_BIKENUM and others let anyone set any packet they want we should instead
+// 	maintain our own connection -> player id mapping and save space in packets
+// 	this will also save a byte on every single packet received...
+// 	they could also send HEREIAM messages until they exhaust all player numbers
+// 		effectively allowing the game to be closed ...
+// Could probably check that host is sending messages during proper times
+// 	Like SetTeamGoals should only invoke if your in a team game..
+// 	Other wise it will crash the game..
+// MSG_UPDATE MSG_VERYSHORTUPDATE MSG_STATUS MSG_LONGSTATUS trust the SHIP_IsHost flag without checking
+// MSG_TEXT should validate it's actually a team game other wise we crash
 ////
 
 ////
@@ -60,6 +121,7 @@ void loop()
 // net.h already tracks host so we don't need fields like messaage->isHost 
 // net.h already maps it's own player id's to enet peer's
 //          so why not just leverage that instead of WhoIAm on every packet
+// plenty of messages like MSG_REQTIME are sent to everyone not just host
 ////
 
 ////
