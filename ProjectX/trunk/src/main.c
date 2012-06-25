@@ -130,7 +130,6 @@ extern TEXT host_port_str;
 extern BOOL DebugLog;
 extern uint8 QuickStart;
 extern BOOL IpOnCLI;
-extern uint MouseResetTimer;
 
 static BOOL ParseCommandLine(char* lpCmdLine)
 {
