@@ -114,6 +114,8 @@ void loop()
 // 	Other wise it will crash the game..
 // MSG_UPDATE MSG_VERYSHORTUPDATE MSG_STATUS MSG_LONGSTATUS trust the SHIP_IsHost flag without checking
 // MSG_TEXT should validate it's actually a team game other wise we crash
+// 	and it could be variable lengtha
+// should only send packets to players that need them...
 ////
 
 ////
@@ -128,8 +130,10 @@ void loop()
 // Fixed
 // 1. valid message id
 // 2. valid message size
-// 3. valid from player id
+// 3. valid player id
 // 4. text messages end in \0 and fit in receiving bucket
+// 5. player has a valid GameStatus[] before doing anything else
+// 6. only host is allowed to send you host related messages
 ////
 
 ////////////////////////////////////////////////////////
