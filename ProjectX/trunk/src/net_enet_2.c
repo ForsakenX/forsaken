@@ -1328,6 +1328,8 @@ static void new_packet( ENetEvent * event )
 				int i;
 				for(i=0; i<4; i++)
 				{
+					DebugPrintf("network: sending nat punch through for %s (%d)\n",
+						address_to_str(address), packet->connect_port);
 					enet_socket_send( enet_host->socket, address,  &buffer, 1 ); // as host see's them
 					enet_socket_send( enet_host->socket, address2, &buffer, 1 ); // their connect port
 				}
