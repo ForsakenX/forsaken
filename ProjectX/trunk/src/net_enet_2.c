@@ -1451,7 +1451,7 @@ void network_broadcast( void* data, int size, network_flags_t flags, int channel
 	while(player)
 	{
 		ENetPeer * peer = (ENetPeer*) player->data;
-		if( ! peer ) return;
+		if( ! peer ) continue;
 		enet_send_packet( peer, packet, channel, NO_FLUSH );
 		player = player->next;
 	}
