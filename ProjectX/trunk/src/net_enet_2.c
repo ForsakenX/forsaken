@@ -1501,7 +1501,9 @@ void network_set_player_name( char* name )
 	}
 	while(player)
 	{
-		enet_send_packet( (ENetPeer*) player->data, packet, system_channel, NO_FLUSH );
+		ENetPeer * peer = (ENetPeer*) player->data;
+		if( ! peer ) continue;
+		enet_send_packet( peer, packet, system_channel, NO_FLUSH );
 		player = player->next;
 	}
 	enet_host_flush( enet_host );
