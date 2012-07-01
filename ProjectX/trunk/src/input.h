@@ -23,7 +23,7 @@ int new_input;
 // Events //
 ////////////
 
-int input_grabbed;
+BOOL input_grabbed;
 void input_grab( BOOL grab );
 
 BOOL handle_events( void );
