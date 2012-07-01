@@ -850,7 +850,13 @@ static void lost_connection( ENetPeer * peer, enet_uint32 data )
 		}
 	}
 
-	init_peer( peer ); // cleanup the peer data
+	// make sure we don't leak and clean everything up
+
+	if( peer_data->player )
+		destroy_player( peer_data->player );
+	peer_data->player = NULL;
+
+	init_peer( peer );
 }
 
 // other wise multiple players joining at once would block each other
