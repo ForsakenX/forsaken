@@ -840,7 +840,7 @@ NEXT_LIGHT:
 	ADD( COLOR, LIGHT );\
 	MINUS( COLOR, BLEND )
 
-void light_vert( LVERTEX * vert, u_int8_t * color ) 
+void light_vert( LVERTEX * vert, COLOR * color ) 
 {
 	int tmp;
 	float r = 0.0f, g = 0.0f, b = 0.0f, a = 0.0f;
