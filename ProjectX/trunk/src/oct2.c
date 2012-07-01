@@ -608,7 +608,6 @@ extern u_int8_t Colourtrans[MAXFONTCOLOURS][3];
 extern SLIDER WatchPlayerSelect;
 
 // (Ships.c)
-extern int SwitchedToWatchMode;
 extern char* GetName(int Player);
 
 // (stats.c)

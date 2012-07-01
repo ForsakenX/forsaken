@@ -41,7 +41,6 @@ extern	_Bool	TeamGame;
 extern  int16_t   NewLevelNum;
 extern  BYTE          MyGameStatus;
 extern SLIDER WatchPlayerSelect;
-extern _Bool SwitchedToWatchMode;
 
 _Bool LoadASinglePlayerGame( MENUITEM * Item )
 {

@@ -60,9 +60,6 @@ extern	int				TeamFlag[ MAX_TEAMS ];
 
 extern render_info_t render_info;
 
-// (Ships.c)
-extern int SwitchedToWatchMode;
-
 // color names are defined in text.h colors_t
 u_int8_t Colourtrans[MAXFONTCOLOURS][3] = {
 	// r, g, b   values...

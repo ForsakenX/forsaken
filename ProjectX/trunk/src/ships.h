@@ -23,6 +23,8 @@
 #include "models.h"
 #include "mxload.h"
 
+extern _Bool SwitchedToWatchMode;
+
 #define DEG2RAD(D)				((D) * PI / 180.0F)
 
 #define RESPAWN_TIMER -3.5F // = -250.0F / 71.0f - framelag hack reversal
