@@ -3764,7 +3764,7 @@ ENEMY * TestEnemy = NULL;
 ENEMY * PutEnemiesAtNodes(void);
 void AutoMovement( OBJECT * Object , ENEMY * Enemy , BOOL AngleDecellBefore );
 void AutoMovementCrawl( OBJECT * Object , ENEMY * Enemy );
-__inline void AutoDisplay( OBJECT * Object );
+void AutoDisplay( OBJECT * Object );
 void CarryOutAIMovementCommands( ENEMY * Enemy );
 void CarryOutPreciseAIMovementCommands( ENEMY * Enemy );
 void CarryOutGUN_AIMovementCommands( GUNOBJECT * Object );
