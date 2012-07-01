@@ -7,7 +7,10 @@
 CC=gcc
 
 # general compiler settings
-FLAGS= -m32 -std=gnu99 -pipe
+ifeq ($(M32),1)
+  FLAGS= -m32
+endif
+FLAGS+= -std=gnu99 -pipe
 CFLAGS=$(FLAGS) -Wall -Wextra
 LDFLAGS=$(FLAGS)
 
