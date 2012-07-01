@@ -39,7 +39,7 @@ void input_grab( _Bool grab )
 	input_grabbed = grab;
 	SDL_WM_GrabInput( grab ? SDL_GRAB_ON : SDL_GRAB_OFF );
 	SDL_ShowCursor( grab ? SDL_DISABLE : SDL_ENABLE );
-	//DebugPrintf("input state: %s\n",(grab==1?"grabbed":"free"));
+	//DebugPrintf("input state: %s\n",(grab?"grabbed":"free"));
 }
 
 //////////////////////////////////////////////
